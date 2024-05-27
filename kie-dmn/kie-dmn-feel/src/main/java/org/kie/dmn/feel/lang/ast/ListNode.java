@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.github.javaparser.ast.stmt.BlockStmt;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.Type;
@@ -70,7 +71,7 @@ public class ListNode
     }
 
     @Override
-    public <T> T accept(Visitor<T> v) {
+    public BlockStmt accept(Visitor<BlockStmt> v) {
         return v.visit(this);
     }
 

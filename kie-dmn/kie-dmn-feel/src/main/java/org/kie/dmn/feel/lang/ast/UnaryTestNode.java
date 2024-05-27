@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.BiPredicate;
 
+import com.github.javaparser.ast.stmt.BlockStmt;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.lang.EvaluationContext;
@@ -29,7 +30,6 @@ import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.runtime.UnaryTestImpl;
 import org.kie.dmn.feel.util.BooleanEvalHelper;
-import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.dmn.feel.util.Msg;
 
 public class UnaryTestNode
@@ -244,7 +244,7 @@ public class UnaryTestNode
     }
 
     @Override
-    public <T> T accept(Visitor<T> v) {
+    public BlockStmt accept(Visitor<BlockStmt> v) {
         return v.visit(this);
     }
 }

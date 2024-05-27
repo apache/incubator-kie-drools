@@ -18,6 +18,11 @@
  */
 package org.kie.dmn.feel.lang.ast;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import com.github.javaparser.ast.stmt.BlockStmt;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.feel.exceptions.EndpointOfRangeNotValidTypeException;
 import org.kie.dmn.feel.exceptions.EndpointOfRangeOfDifferentTypeException;
@@ -25,10 +30,6 @@ import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.ast.forexpressioniterators.ForIteration;
 import org.kie.dmn.feel.lang.types.BuiltInType;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 import static org.kie.dmn.feel.lang.ast.forexpressioniterators.ForIterationUtils.getForIteration;
 
@@ -152,7 +153,7 @@ public class ForExpressionNode
     }
 
     @Override
-    public <T> T accept(Visitor<T> v) {
+    public BlockStmt accept(Visitor<BlockStmt> v) {
         return v.visit(this);
     }
 

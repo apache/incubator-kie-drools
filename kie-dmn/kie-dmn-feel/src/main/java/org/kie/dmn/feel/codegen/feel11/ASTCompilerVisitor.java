@@ -18,39 +18,10 @@
  */
 package org.kie.dmn.feel.codegen.feel11;
 
-import java.time.Duration;
-import java.time.chrono.ChronoPeriod;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
-
-import com.github.javaparser.StaticJavaParser;
-import com.github.javaparser.ast.body.FieldDeclaration;
-import com.github.javaparser.ast.body.Parameter;
-import com.github.javaparser.ast.expr.BinaryExpr;
-import com.github.javaparser.ast.expr.BooleanLiteralExpr;
-import com.github.javaparser.ast.expr.ConditionalExpr;
-import com.github.javaparser.ast.expr.EnclosedExpr;
-import com.github.javaparser.ast.expr.Expression;
-import com.github.javaparser.ast.expr.FieldAccessExpr;
-import com.github.javaparser.ast.expr.IntegerLiteralExpr;
-import com.github.javaparser.ast.expr.LambdaExpr;
-import com.github.javaparser.ast.expr.MethodCallExpr;
-import com.github.javaparser.ast.expr.NameExpr;
-import com.github.javaparser.ast.expr.NullLiteralExpr;
-import com.github.javaparser.ast.expr.StringLiteralExpr;
-import com.github.javaparser.ast.type.UnknownType;
-import org.kie.dmn.feel.lang.CompositeType;
-import org.kie.dmn.feel.lang.SimpleType;
+import com.github.javaparser.ast.stmt.BlockStmt;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.ast.ASTNode;
 import org.kie.dmn.feel.lang.ast.AtLiteralNode;
-import org.kie.dmn.feel.lang.ast.AtLiteralNode.TypeAndFn;
-import org.kie.dmn.feel.lang.ast.BaseNode;
 import org.kie.dmn.feel.lang.ast.BetweenNode;
 import org.kie.dmn.feel.lang.ast.BooleanNode;
 import org.kie.dmn.feel.lang.ast.CTypeNode;
@@ -83,603 +54,631 @@ import org.kie.dmn.feel.lang.ast.RangeNode;
 import org.kie.dmn.feel.lang.ast.SignedUnaryNode;
 import org.kie.dmn.feel.lang.ast.StringNode;
 import org.kie.dmn.feel.lang.ast.TemporalConstantNode;
-import org.kie.dmn.feel.lang.ast.TypeNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestListNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestNode;
 import org.kie.dmn.feel.lang.ast.Visitor;
-import org.kie.dmn.feel.lang.impl.MapBackedType;
-import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.parser.feel11.ScopeHelper;
-import org.kie.dmn.feel.util.Msg;
-import org.kie.dmn.feel.util.StringEvalHelper;
 
-import static org.kie.dmn.feel.codegen.feel11.DirectCompilerResult.mergeFDs;
-
-public class ASTCompilerVisitor implements Visitor<DirectCompilerResult> {
+public class ASTCompilerVisitor implements Visitor<BlockStmt> {
 
     ScopeHelper<Type> scopeHelper = new ScopeHelper<>();
 
     @Override
-    public DirectCompilerResult visit(ASTNode n) {
+    public BlockStmt visit(ASTNode n) {
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
     @Override
-    public DirectCompilerResult visit(DashNode n) {
-        return DirectCompilerResult.of(Expressions.dash(), BuiltInType.UNARY_TEST);
+    public BlockStmt visit(DashNode n) {
+        return  n.accept(this);
     }
 
     @Override
-    public DirectCompilerResult visit(BooleanNode n) {
-        return DirectCompilerResult.of(new BooleanLiteralExpr(n.getValue()), BuiltInType.BOOLEAN);
+    public BlockStmt visit(BooleanNode n) {
+        return  n.accept(this);
     }
 
     @Override
-    public DirectCompilerResult visit(NumberNode n) {
-        String originalText = n.getText();
-        String constantName = Constants.numericName(originalText);
-        FieldDeclaration constant = Constants.numeric(constantName, originalText);
-        return DirectCompilerResult.of(
-                new NameExpr(constantName),
-                BuiltInType.NUMBER,
-                constant);
+    public BlockStmt visit(NumberNode n) {
+        return n.accept(this);
+//        String originalText = n.getText();
+//        String constantName = Constants.numericName(originalText);
+//        FieldDeclaration constant = Constants.numeric(constantName, originalText);
+//        return BlockStmt.of(
+//                new NameExpr(constantName),
+//                BuiltInType.NUMBER,
+//                constant);
     }
 
     @Override
-    public DirectCompilerResult visit(StringNode n) {
-        return DirectCompilerResult.of(
-                Expressions.stringLiteral(n.getText()), // setString escapes the contents Java-style
-                BuiltInType.STRING);
+    public BlockStmt visit(StringNode n) {
+        return n.accept(this);
+//        return BlockStmt.of(
+//                Expressions.stringLiteral(n.getText()), // setString escapes the contents Java-style
+//                BuiltInType.STRING);
     }
 
     @Override
-    public DirectCompilerResult visit(AtLiteralNode n) {
-        DirectCompilerResult stringLiteral = n.getStringLiteral().accept(this);
-        String value = ((StringLiteralExpr) stringLiteral.getExpression()).asString();
-        TypeAndFn typeAndFn = AtLiteralNode.fromAtValue(value);
-        String functionName = typeAndFn.fnName;
-        Type resultType = typeAndFn.type;
-        if (resultType == BuiltInType.UNKNOWN) {
-            return DirectCompilerResult.of(CompiledFEELSupport.compiledErrorExpression(Msg.createMessage(Msg.MALFORMED_AT_LITERAL, n.getText())),
-                                           BuiltInType.UNKNOWN);
-        }
-        return DirectCompilerResult.of(Expressions.invoke(FeelCtx.getValue(functionName),
-                                                          stringLiteral.getExpression()),
-                                       resultType)
-                                   .withFD(stringLiteral);
+    public BlockStmt visit(AtLiteralNode n) {
+        return n.accept(this);
+//        BlockStmt stringLiteral = n.getStringLiteral().accept(this);
+//        String value = ((StringLiteralExpr) stringLiteral.getExpression()).asString();
+//        TypeAndFn typeAndFn = AtLiteralNode.fromAtValue(value);
+//        String functionName = typeAndFn.fnName;
+//        Type resultType = typeAndFn.type;
+//        if (resultType == BuiltInType.UNKNOWN) {
+//            return BlockStmt.of(CompiledFEELSupport.compiledErrorExpression(Msg.createMessage(Msg.MALFORMED_AT_LITERAL, n.getText())),
+//                                           BuiltInType.UNKNOWN);
+//        }
+//        return BlockStmt.of(Expressions.invoke(FeelCtx.getValue(functionName),
+//                                                          stringLiteral.getExpression()),
+//                                       resultType)
+//                                   .withFD(stringLiteral);
     }
 
     @Override
-    public DirectCompilerResult visit(UnaryTestListNode n) {
-        MethodCallExpr expr = Expressions.list();
-        HashSet<FieldDeclaration> fds = new HashSet<>();
-        for (BaseNode e : n.getElements()) {
-            DirectCompilerResult r = e.accept(this);
-            fds.addAll(r.getFieldDeclarations());
-            expr.addArgument(r.getExpression());
-        }
-
-        if (n.isNegated()) {
-            Expressions.NamedLambda negated =
-                    Expressions.namedUnaryLambda(
-                            Expressions.notExists(expr), n.getText());
-
-            fds.add(negated.field());
-            return DirectCompilerResult.of(
-                    Expressions.list(negated.name()),
-                    BuiltInType.LIST, fds);
-        } else {
-            return DirectCompilerResult.of(
-                    expr, BuiltInType.LIST, fds);
-        }
+    public BlockStmt visit(UnaryTestListNode n) {
+        return n.accept(this);
+//        MethodCallExpr expr = Expressions.list();
+//        HashSet<FieldDeclaration> fds = new HashSet<>();
+//        for (BaseNode e : n.getElements()) {
+//            BlockStmt r = e.accept(this);
+//            fds.addAll(r.getFieldDeclarations());
+//            expr.addArgument(r.getExpression());
+//        }
+//
+//        if (n.isNegated()) {
+//            Expressions.NamedLambda negated =
+//                    Expressions.namedUnaryLambda(
+//                            Expressions.notExists(expr), n.getText());
+//
+//            fds.add(negated.field());
+//            return BlockStmt.of(
+//                    Expressions.list(negated.name()),
+//                    BuiltInType.LIST, fds);
+//        } else {
+//            return BlockStmt.of(
+//                    expr, BuiltInType.LIST, fds);
+//        }
     }
 
     @Override
-    public DirectCompilerResult visit(NullNode n) {
-        return DirectCompilerResult.of(new NullLiteralExpr(), BuiltInType.UNKNOWN);
+    public BlockStmt visit(NullNode n) {
+        return n.accept(this);
+//        return BlockStmt.of(new NullLiteralExpr(), BuiltInType.UNKNOWN);
     }
 
     @Override
-    public DirectCompilerResult visit(NameDefNode n) {
-        StringLiteralExpr expr = Expressions.stringLiteral(StringEvalHelper.normalizeVariableName(n.getText()));
-        return DirectCompilerResult.of(expr, BuiltInType.STRING);
+    public BlockStmt visit(NameDefNode n) {
+        return n.accept(this);
+//        StringLiteralExpr expr = Expressions.stringLiteral(StringEvalHelper.normalizeVariableName(n.getText()));
+//        return BlockStmt.of(expr, BuiltInType.STRING);
     }
 
     @Override
-    public DirectCompilerResult visit(NameRefNode n) {
-        String nameRef = StringEvalHelper.normalizeVariableName(n.getText());
-        Type type = scopeHelper.resolve(nameRef).orElse(BuiltInType.UNKNOWN);
-        return DirectCompilerResult.of(FeelCtx.getValue(nameRef), type);
+    public BlockStmt visit(NameRefNode n) {
+        return n.accept(this);
+//        String nameRef = StringEvalHelper.normalizeVariableName(n.getText());
+//        Type type = scopeHelper.resolve(nameRef).orElse(BuiltInType.UNKNOWN);
+//        return BlockStmt.of(FeelCtx.getValue(nameRef), type);
     }
 
     @Override
-    public DirectCompilerResult visit(QualifiedNameNode n) {
-        List<NameRefNode> parts = n.getParts();
-        DirectCompilerResult nameRef0 = parts.get(0).accept(this);
-        Type typeCursor = nameRef0.resultType;
-        Expression currentContext = nameRef0.getExpression();
-        for (int i = 1; i < parts.size(); i++) {
-            NameRefNode acc = parts.get(i);
-            String key = acc.getText();
-            if (typeCursor instanceof CompositeType) {
-                CompositeType currentContextType = (CompositeType) typeCursor;
-                currentContext = Contexts.getKey(currentContext, currentContextType, key);
-                typeCursor = currentContextType.getFields().get(key);
-            } else {
-                //  degraded mode, or accessing fields of DATE etc.
-                currentContext = Expressions.path(currentContext, new StringLiteralExpr(key));
-                typeCursor = BuiltInType.UNKNOWN;
-            }
-        }
-        // If it was a NameRef expression, the number coercion is directly performed by the EvaluationContext for the simple variable.
-        // Otherwise in case of QualifiedName expression, for a structured type like this case, it need to be coerced on the last accessor:
-        return DirectCompilerResult.of(
-                Expressions.coerceNumber(currentContext),
-                typeCursor);
+    public BlockStmt visit(QualifiedNameNode n) {
+        return n.accept(this);
+//        List<NameRefNode> parts = n.getParts();
+//        BlockStmt nameRef0 = parts.get(0).accept(this);
+//        Type typeCursor = nameRef0.resultType;
+//        Expression currentContext = nameRef0.getExpression();
+//        for (int i = 1; i < parts.size(); i++) {
+//            NameRefNode acc = parts.get(i);
+//            String key = acc.getText();
+//            if (typeCursor instanceof CompositeType) {
+//                CompositeType currentContextType = (CompositeType) typeCursor;
+//                currentContext = Contexts.getKey(currentContext, currentContextType, key);
+//                typeCursor = currentContextType.getFields().get(key);
+//            } else {
+//                //  degraded mode, or accessing fields of DATE etc.
+//                currentContext = Expressions.path(currentContext, new StringLiteralExpr(key));
+//                typeCursor = BuiltInType.UNKNOWN;
+//            }
+//        }
+//        // If it was a NameRef expression, the number coercion is directly performed by the EvaluationContext for the simple variable.
+//        // Otherwise in case of QualifiedName expression, for a structured type like this case, it need to be coerced on the last accessor:
+//        return BlockStmt.of(
+//                Expressions.coerceNumber(currentContext),
+//                typeCursor);
     }
 
     @Override
-    public DirectCompilerResult visit(InfixOpNode n) {
-        DirectCompilerResult left = n.getLeft().accept(this);
-        DirectCompilerResult right = n.getRight().accept(this);
-        MethodCallExpr expr = Expressions.binary(
-                n.getOperator(),
-                left.getExpression(),
-                right.getExpression());
-        return DirectCompilerResult.of(expr, BuiltInType.UNKNOWN).withFD(left).withFD(right);
+    public BlockStmt visit(InfixOpNode n) {
+        return n.accept(this);
+//        BlockStmt left = n.getLeft().accept(this);
+//        BlockStmt right = n.getRight().accept(this);
+//        MethodCallExpr expr = Expressions.binary(
+//                n.getOperator(),
+//                left.getExpression(),
+//                right.getExpression());
+//        return BlockStmt.of(expr, BuiltInType.UNKNOWN).withFD(left).withFD(right);
     }
 
     @Override
-    public DirectCompilerResult visit(InstanceOfNode n) {
-        DirectCompilerResult expr = n.getExpression().accept(this);
-        DirectCompilerResult type = n.getType().accept(this);
-        switch (n.getType().getText()) {
-            case SimpleType.YEARS_AND_MONTHS_DURATION:
-                return DirectCompilerResult.of(Expressions.nativeInstanceOf(StaticJavaParser.parseClassOrInterfaceType(ChronoPeriod.class.getCanonicalName()),
-                                                                            expr.getExpression()),
-                                               BuiltInType.BOOLEAN,
-                                               mergeFDs(expr, type));
-            case SimpleType.DAYS_AND_TIME_DURATION:
-                return DirectCompilerResult.of(Expressions.nativeInstanceOf(StaticJavaParser.parseClassOrInterfaceType(Duration.class.getCanonicalName()),
-                                                                            expr.getExpression()),
-                                               BuiltInType.BOOLEAN,
-                                               mergeFDs(expr, type));
-            default:
-                return DirectCompilerResult.of(Expressions.isInstanceOf(expr.getExpression(), type.getExpression()),
-                                               BuiltInType.BOOLEAN,
-                                               mergeFDs(expr, type));
-        }
+    public BlockStmt visit(InstanceOfNode n) {
+        return n.accept(this);
+//        BlockStmt expr = n.getExpression().accept(this);
+//        BlockStmt type = n.getType().accept(this);
+//        switch (n.getType().getText()) {
+//            case SimpleType.YEARS_AND_MONTHS_DURATION:
+//                return BlockStmt.of(Expressions.nativeInstanceOf(StaticJavaParser.parseClassOrInterfaceType(ChronoPeriod.class.getCanonicalName()),
+//                                                                            expr.getExpression()),
+//                                               BuiltInType.BOOLEAN,
+//                                               mergeFDs(expr, type));
+//            case SimpleType.DAYS_AND_TIME_DURATION:
+//                return BlockStmt.of(Expressions.nativeInstanceOf(StaticJavaParser.parseClassOrInterfaceType(Duration.class.getCanonicalName()),
+//                                                                            expr.getExpression()),
+//                                               BuiltInType.BOOLEAN,
+//                                               mergeFDs(expr, type));
+//            default:
+//                return BlockStmt.of(Expressions.isInstanceOf(expr.getExpression(), type.getExpression()),
+//                                               BuiltInType.BOOLEAN,
+//                                               mergeFDs(expr, type));
+//        }
 
     }
 
     @Override
-    public DirectCompilerResult visit(CTypeNode n) {
-        if (!(n.getType() instanceof BuiltInType)) {
-            throw new UnsupportedOperationException();
-        }
-        BuiltInType feelCType = (BuiltInType) n.getType();
-        return DirectCompilerResult.of(new FieldAccessExpr(Constants.BuiltInTypeT, feelCType.name()),
-                                       BuiltInType.UNKNOWN);
+    public BlockStmt visit(CTypeNode n) {
+        return n.accept(this);
+//        if (!(n.getType() instanceof BuiltInType)) {
+//            throw new UnsupportedOperationException();
+//        }
+//        BuiltInType feelCType = (BuiltInType) n.getType();
+//        return BlockStmt.of(new FieldAccessExpr(Constants.BuiltInTypeT, feelCType.name()),
+//                                       BuiltInType.UNKNOWN);
     }
 
     @Override
-    public DirectCompilerResult visit(ListTypeNode n) {
-        DirectCompilerResult expr = n.getGenTypeNode().accept(this);
-        return DirectCompilerResult.of(Expressions.genListType(expr.getExpression()),
-                                       BuiltInType.UNKNOWN,
-                                       mergeFDs(expr));
+    public BlockStmt visit(ListTypeNode n) {
+        return n.accept(this);
+//        BlockStmt expr = n.getGenTypeNode().accept(this);
+//        return BlockStmt.of(Expressions.genListType(expr.getExpression()),
+//                                       BuiltInType.UNKNOWN,
+//                                       mergeFDs(expr));
     }
 
     @Override
-    public DirectCompilerResult visit(ContextTypeNode n) {
-        Map<String, DirectCompilerResult> fields = new HashMap<>();
-        for (Entry<String, TypeNode> kv : n.getGen().entrySet()) {
-            fields.put(kv.getKey(), kv.getValue().accept(this));
-        }
-        return DirectCompilerResult.of(Expressions.genContextType(fields.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getExpression()))),
-                                       BuiltInType.UNKNOWN,
-                                       mergeFDs(fields.values().stream().collect(Collectors.toList())));
+    public BlockStmt visit(ContextTypeNode n) {
+        return n.accept(this);
+//        Map<String, BlockStmt> fields = new HashMap<>();
+//        for (Entry<String, TypeNode> kv : n.getGen().entrySet()) {
+//            fields.put(kv.getKey(), kv.getValue().accept(this));
+//        }
+//        return BlockStmt.of(Expressions.genContextType(fields.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getExpression()))),
+//                                       BuiltInType.UNKNOWN,
+//                                       mergeFDs(fields.values().stream().collect(Collectors.toList())));
     }
 
     @Override
-    public DirectCompilerResult visit(FunctionTypeNode n) {
-        List<DirectCompilerResult> args = new ArrayList<>();
-        for (TypeNode arg : n.getArgTypes()) {
-            args.add(arg.accept(this));
-        }
-        DirectCompilerResult ret = n.getRetType().accept(this);
-        return DirectCompilerResult.of(Expressions.genFnType(args.stream().map(DirectCompilerResult::getExpression).collect(Collectors.toList()),
-                                                             ret.getExpression()),
-                                       BuiltInType.UNKNOWN,
-                                       mergeFDs(args))
-                                   .withFD(ret);
+    public BlockStmt visit(FunctionTypeNode n) {
+        return n.accept(this);
+//        List<BlockStmt> args = new ArrayList<>();
+//        for (TypeNode arg : n.getArgTypes()) {
+//            args.add(arg.accept(this));
+//        }
+//        BlockStmt ret = n.getRetType().accept(this);
+//        return BlockStmt.of(Expressions.genFnType(args.stream().map(BlockStmt::getExpression).collect(Collectors.toList()),
+//                                                             ret.getExpression()),
+//                                       BuiltInType.UNKNOWN,
+//                                       mergeFDs(args))
+//                                   .withFD(ret);
     }
 
     @Override
-    public DirectCompilerResult visit(IfExpressionNode n) {
-        DirectCompilerResult condition = n.getCondition().accept(this);
-        DirectCompilerResult thenExpr = n.getThenExpression().accept(this);
-        DirectCompilerResult elseExpr = n.getElseExpression().accept(this);
-
-        return DirectCompilerResult.of(
-                new ConditionalExpr(
-                        new BinaryExpr(
-                                Expressions.nativeInstanceOf(
-                                        Constants.BooleanT, condition.getExpression()),
-                                Expressions.reflectiveCastTo(
-                                        Constants.BooleanT, condition.getExpression()),
-                                BinaryExpr.Operator.AND),
-                        new EnclosedExpr(thenExpr.getExpression()),
-                        new EnclosedExpr(elseExpr.getExpression())),
-                thenExpr.resultType // should find common type between then/else
-        ).withFD(condition).withFD(thenExpr).withFD(elseExpr);
+    public BlockStmt visit(IfExpressionNode n) {
+        return n.accept(this);
+//        BlockStmt condition = n.getCondition().accept(this);
+//        BlockStmt thenExpr = n.getThenExpression().accept(this);
+//        BlockStmt elseExpr = n.getElseExpression().accept(this);
+//
+//        return BlockStmt.of(
+//                new ConditionalExpr(
+//                        new BinaryExpr(
+//                                Expressions.nativeInstanceOf(
+//                                        Constants.BooleanT, condition.getExpression()),
+//                                Expressions.reflectiveCastTo(
+//                                        Constants.BooleanT, condition.getExpression()),
+//                                BinaryExpr.Operator.AND),
+//                        new EnclosedExpr(thenExpr.getExpression()),
+//                        new EnclosedExpr(elseExpr.getExpression())),
+//                thenExpr.resultType // should find common type between then/else
+//        ).withFD(condition).withFD(thenExpr).withFD(elseExpr);
     }
 
     @Override
-    public DirectCompilerResult visit(ForExpressionNode n) {
-        DirectCompilerResult expr = n.getExpression().accept(this);
-        HashSet<FieldDeclaration> fds = new HashSet<>();
-
-        Expressions.NamedLambda namedLambda =
-                Expressions.namedLambda(
-                        expr.getExpression(),
-                        n.getExpression().getText());
-
-        fds.add(namedLambda.field());
-        fds.addAll(expr.getFieldDeclarations());
-
-        List<Expression> expressions = n.getIterationContexts()
-                .stream()
-                .map(iter -> iter.accept(this))
-                .peek(r -> fds.addAll(r.getFieldDeclarations()))
-                .map(DirectCompilerResult::getExpression)
-                .collect(Collectors.toList());
-
-        // .satisfies(expr)
-        return DirectCompilerResult.of(
-                Expressions.ffor(expressions, namedLambda.name()),
-                expr.resultType,
-                fds);
+    public BlockStmt visit(ForExpressionNode n) {
+        return n.accept(this);
+//        BlockStmt expr = n.getExpression().accept(this);
+//        HashSet<FieldDeclaration> fds = new HashSet<>();
+//
+//        Expressions.NamedLambda namedLambda =
+//                Expressions.namedLambda(
+//                        expr.getExpression(),
+//                        n.getExpression().getText());
+//
+//        fds.add(namedLambda.field());
+//        fds.addAll(expr.getFieldDeclarations());
+//
+//        List<Expression> expressions = n.getIterationContexts()
+//                .stream()
+//                .map(iter -> iter.accept(this))
+//                .peek(r -> fds.addAll(r.getFieldDeclarations()))
+//                .map(BlockStmt::getExpression)
+//                .collect(Collectors.toList());
+//
+//        // .satisfies(expr)
+//        return BlockStmt.of(
+//                Expressions.ffor(expressions, namedLambda.name()),
+//                expr.resultType,
+//                fds);
     }
 
     @Override
-    public DirectCompilerResult visit(BetweenNode n) {
-        DirectCompilerResult value = n.getValue().accept(this);
-        DirectCompilerResult start = n.getStart().accept(this);
-        DirectCompilerResult end = n.getEnd().accept(this);
-
-        return DirectCompilerResult.of(
-                Expressions.between(
-                        value.getExpression(),
-                        start.getExpression(),
-                        end.getExpression()),
-                BuiltInType.BOOLEAN)
-                .withFD(value)
-                .withFD(start)
-                .withFD(end);
+    public BlockStmt visit(BetweenNode n) {
+        return n.accept(this);
+//        BlockStmt value = n.getValue().accept(this);
+//        BlockStmt start = n.getStart().accept(this);
+//        BlockStmt end = n.getEnd().accept(this);
+//
+//        return BlockStmt.of(
+//                Expressions.between(
+//                        value.getExpression(),
+//                        start.getExpression(),
+//                        end.getExpression()),
+//                BuiltInType.BOOLEAN)
+//                .withFD(value)
+//                .withFD(start)
+//                .withFD(end);
     }
 
     @Override
-    public DirectCompilerResult visit(ContextNode n) {
-        if (n.getEntries().isEmpty()) {
-            return DirectCompilerResult.of(
-                    FeelCtx.emptyContext(), BuiltInType.CONTEXT);
-        }
-
-        scopeHelper.pushScope();
-
-        // openContext(feelCtx)
-        MapBackedType resultType = new MapBackedType();
-        DirectCompilerResult openContext =
-                DirectCompilerResult.of(FeelCtx.openContext(), resultType);
-
-        //   .setEntry( k,v )
-        //   .setEntry( k,v )
-        //   ...
-        DirectCompilerResult entries = n.getEntries()
-                .stream()
-                .map(e -> {
-                    DirectCompilerResult r = e.accept(this);
-                    scopeHelper.addInScope(e.getName().getText(), r.resultType);
-                    return r;
-                })
-                .reduce(openContext,
-                        (l, r) -> DirectCompilerResult.of(
-                                r.getExpression().asMethodCallExpr().setScope(l.getExpression()),
-                                r.resultType,
-                                DirectCompilerResult.mergeFDs(l, r)));
-
-        scopeHelper.popScope();
-
-        // .closeContext()
-        return DirectCompilerResult.of(
-                FeelCtx.closeContext(entries),
-                resultType,
-                entries.getFieldDeclarations());
+    public BlockStmt visit(ContextNode n) {
+        return n.accept(this);
+//        if (n.getEntries().isEmpty()) {
+//            return BlockStmt.of(
+//                    FeelCtx.emptyContext(), BuiltInType.CONTEXT);
+//        }
+//
+//        scopeHelper.pushScope();
+//
+//        // openContext(feelCtx)
+//        MapBackedType resultType = new MapBackedType();
+//        BlockStmt openContext =
+//                BlockStmt.of(FeelCtx.openContext(), resultType);
+//
+//        //   .setEntry( k,v )
+//        //   .setEntry( k,v )
+//        //   ...
+//        BlockStmt entries = n.getEntries()
+//                .stream()
+//                .map(e -> {
+//                    BlockStmt r = e.accept(this);
+//                    scopeHelper.addInScope(e.getName().getText(), r.resultType);
+//                    return r;
+//                })
+//                .reduce(openContext,
+//                        (l, r) -> BlockStmt.of(
+//                                r.getExpression().asMethodCallExpr().setScope(l.getExpression()),
+//                                r.resultType,
+//                                BlockStmt.mergeFDs(l, r)));
+//
+//        scopeHelper.popScope();
+//
+//        // .closeContext()
+//        return BlockStmt.of(
+//                FeelCtx.closeContext(entries),
+//                resultType,
+//                entries.getFieldDeclarations());
     }
 
     @Override
-    public DirectCompilerResult visit(ContextEntryNode n) {
-        DirectCompilerResult key = n.getName().accept(this);
-        DirectCompilerResult value = n.getValue().accept(this);
-        if (key.resultType != BuiltInType.STRING) {
-            throw new IllegalArgumentException(
-                    "a Context Entry Key must be a valid FEEL String type");
-        }
-        String keyText = key.getExpression().asStringLiteralExpr().getValue();
-
-        // .setEntry(key, value)
-        MethodCallExpr setEntryContextCall =
-                FeelCtx.setEntry(keyText, value.getExpression());
-
-        return DirectCompilerResult.of(
-                setEntryContextCall,
-                value.resultType,
-                value.getFieldDeclarations());
+    public BlockStmt visit(ContextEntryNode n) {
+        return n.accept(this);
+//        BlockStmt key = n.getName().accept(this);
+//        BlockStmt value = n.getValue().accept(this);
+//        if (key.resultType != BuiltInType.STRING) {
+//            throw new IllegalArgumentException(
+//                    "a Context Entry Key must be a valid FEEL String type");
+//        }
+//        String keyText = key.getExpression().asStringLiteralExpr().getValue();
+//
+//        // .setEntry(key, value)
+//        MethodCallExpr setEntryContextCall =
+//                FeelCtx.setEntry(keyText, value.getExpression());
+//
+//        return BlockStmt.of(
+//                setEntryContextCall,
+//                value.resultType,
+//                value.getFieldDeclarations());
     }
 
     @Override
-    public DirectCompilerResult visit(FilterExpressionNode n) {
-        DirectCompilerResult expr = n.getExpression().accept(this);
-        DirectCompilerResult filter = n.getFilter().accept(this);
-
-        Expressions.NamedLambda lambda = Expressions.namedLambda(filter.getExpression(), n.getFilter().getText());
-        DirectCompilerResult r = DirectCompilerResult.of(
-                Expressions.filter(expr.getExpression(), lambda.name()),
-                // here we could still try to infer the result type, but presently use ANY
-                BuiltInType.UNKNOWN).withFD(expr).withFD(filter);
-        r.addFieldDeclaration(lambda.field());
-        return r;
+    public BlockStmt visit(FilterExpressionNode n) {
+        return n.accept(this);
+//        BlockStmt expr = n.getExpression().accept(this);
+//        BlockStmt filter = n.getFilter().accept(this);
+//
+//        Expressions.NamedLambda lambda = Expressions.namedLambda(filter.getExpression(), n.getFilter().getText());
+//        BlockStmt r = BlockStmt.of(
+//                Expressions.filter(expr.getExpression(), lambda.name()),
+//                // here we could still try to infer the result type, but presently use ANY
+//                BuiltInType.UNKNOWN).withFD(expr).withFD(filter);
+//        r.addFieldDeclaration(lambda.field());
+//        return r;
     }
 
     @Override
-    public DirectCompilerResult visit(FormalParameterNode n) {
-        DirectCompilerResult name = n.getName().accept(this);
-        DirectCompilerResult type = n.getType().accept(this);
-        return DirectCompilerResult.of(Expressions.formalParameter(name.getExpression(), type.getExpression()),
-                                       BuiltInType.UNKNOWN)
-                                   .withFD(name)
-                                   .withFD(type);
+    public BlockStmt visit(FormalParameterNode n) {
+        return n.accept(this);
+//        BlockStmt name = n.getName().accept(this);
+//        BlockStmt type = n.getType().accept(this);
+//        return BlockStmt.of(Expressions.formalParameter(name.getExpression(), type.getExpression()),
+//                                       BuiltInType.UNKNOWN)
+//                                   .withFD(name)
+//                                   .withFD(type);
     }
 
     @Override
-    public DirectCompilerResult visit(FunctionDefNode n) {
-        MethodCallExpr list = Expressions.list();
-        n.getFormalParameters()
-                .stream()
-                .map(fp -> fp.accept(this))
-                .map(DirectCompilerResult::getExpression)
-                .forEach(list::addArgument);
-
-        if (n.isExternal()) {
-            List<String> paramNames =
-                    n.getFormalParameters().stream()
-                     .map(FormalParameterNode::getName)
-                     .map(BaseNode::getText)
-                     .collect(Collectors.toList());
-
-            return Functions.declaration(
-                    n, list,
-                    Functions.external(paramNames, n.getBody()));
-        } else {
-            DirectCompilerResult body = n.getBody().accept(this);
-            return Functions.declaration(n, list,
-                                         body.getExpression()).withFD(body);
-        }
+    public BlockStmt visit(FunctionDefNode n) {
+        return n.accept(this);
+//        MethodCallExpr list = Expressions.list();
+//        n.getFormalParameters()
+//                .stream()
+//                .map(fp -> fp.accept(this))
+//                .map(BlockStmt::getExpression)
+//                .forEach(list::addArgument);
+//
+//        if (n.isExternal()) {
+//            List<String> paramNames =
+//                    n.getFormalParameters().stream()
+//                     .map(FormalParameterNode::getName)
+//                     .map(BaseNode::getText)
+//                     .collect(Collectors.toList());
+//
+//            return Functions.declaration(
+//                    n, list,
+//                    Functions.external(paramNames, n.getBody()));
+//        } else {
+//            BlockStmt body = n.getBody().accept(this);
+//            return Functions.declaration(n, list,
+//                                         body.getExpression()).withFD(body);
+//        }
     }
 
     @Override
-    public DirectCompilerResult visit(FunctionInvocationNode n) {
-        TemporalConstantNode tcFolded = n.getTcFolded();
-        if (tcFolded != null) {
-            return replaceWithTemporalConstant(n, tcFolded);
-        }
-        DirectCompilerResult functionName = n.getName().accept(this);
-        DirectCompilerResult params = n.getParams().accept(this);
-        return DirectCompilerResult.of(
-                Expressions.invoke(functionName.getExpression(), params.getExpression()),
-                functionName.resultType)
-                .withFD(functionName)
-                .withFD(params);
+    public BlockStmt visit(FunctionInvocationNode n) {
+        return n.accept(this);
+//        TemporalConstantNode tcFolded = n.getTcFolded();
+//        if (tcFolded != null) {
+//            return replaceWithTemporalConstant(n, tcFolded);
+//        }
+//        BlockStmt functionName = n.getName().accept(this);
+//        BlockStmt params = n.getParams().accept(this);
+//        return BlockStmt.of(
+//                Expressions.invoke(functionName.getExpression(), params.getExpression()),
+//                functionName.resultType)
+//                .withFD(functionName)
+//                .withFD(params);
     }
 
-    public DirectCompilerResult replaceWithTemporalConstant(FunctionInvocationNode n, TemporalConstantNode tcFolded) {
-        MethodCallExpr methodCallExpr = new MethodCallExpr(new FieldAccessExpr(new NameExpr(tcFolded.fn.getClass().getCanonicalName()),
-                                                                               "INSTANCE"),
-                                                           "invoke");
-        for (Object p : tcFolded.params) {
-            if (p instanceof String) {
-                methodCallExpr.addArgument(Expressions.stringLiteral((String) p));
-            } else if (p instanceof Number) {
-                methodCallExpr.addArgument(new IntegerLiteralExpr(p.toString()));
-            } else {
-                throw new IllegalStateException("Unexpected Temporal Constant parameter found.");
-            }
-        }
-        methodCallExpr = new MethodCallExpr(methodCallExpr, "getOrElseThrow"); // since this AST Node exists, the Fn invocation returns result.
-        methodCallExpr.addArgument(new LambdaExpr(new Parameter(new UnknownType(), "e"),
-                                                  Expressions.newIllegalState()));
-        String constantName = Constants.dtConstantName(n.getText());
-        FieldDeclaration constant = Constants.dtConstant(constantName, methodCallExpr);
-        return DirectCompilerResult.of(new NameExpr(constantName),
-                                       BuiltInType.UNKNOWN,
-                                       constant);
-    }
-
-    @Override
-    public DirectCompilerResult visit(NamedParameterNode n) {
-        DirectCompilerResult name = n.getName().accept(this);
-        DirectCompilerResult expr = n.getExpression().accept(this);
-        return DirectCompilerResult.of(
-                Expressions.namedParameter(name.getExpression(), expr.getExpression()),
-                BuiltInType.UNKNOWN).withFD(name).withFD(expr);
+    public BlockStmt replaceWithTemporalConstant(FunctionInvocationNode n, TemporalConstantNode tcFolded) {
+        return null;
+//        MethodCallExpr methodCallExpr = new MethodCallExpr(new FieldAccessExpr(new NameExpr(tcFolded.fn.getClass()
+//        .getCanonicalName()),
+//                                                                               "INSTANCE"),
+//                                                           "invoke");
+//        for (Object p : tcFolded.params) {
+//            if (p instanceof String) {
+//                methodCallExpr.addArgument(Expressions.stringLiteral((String) p));
+//            } else if (p instanceof Number) {
+//                methodCallExpr.addArgument(new IntegerLiteralExpr(p.toString()));
+//            } else {
+//                throw new IllegalStateException("Unexpected Temporal Constant parameter found.");
+//            }
+//        }
+//        methodCallExpr = new MethodCallExpr(methodCallExpr, "getOrElseThrow"); // since this AST Node exists, the
+//        Fn invocation returns result.
+//        methodCallExpr.addArgument(new LambdaExpr(new Parameter(new UnknownType(), "e"),
+//                                                  Expressions.newIllegalState()));
+//        String constantName = Constants.dtConstantName(n.getText());
+//        FieldDeclaration constant = Constants.dtConstant(constantName, methodCallExpr);
+//        return BlockStmt.of(new NameExpr(constantName),
+//                                       BuiltInType.UNKNOWN,
+//                                       constant);
     }
 
     @Override
-    public DirectCompilerResult visit(InNode n) {
-        DirectCompilerResult value = n.getValue().accept(this);
-        DirectCompilerResult exprs = n.getExprs().accept(this);
-
-        if (exprs.resultType == BuiltInType.LIST) {
-            return DirectCompilerResult.of(
-                    Expressions.exists(exprs.getExpression(), value.getExpression()),
-                    BuiltInType.BOOLEAN).withFD(value).withFD(exprs);
-        } else if (exprs.resultType == BuiltInType.RANGE) {
-            return DirectCompilerResult.of(
-                    Expressions.includes(exprs.getExpression(), value.getExpression()),
-                    BuiltInType.BOOLEAN).withFD(value).withFD(exprs);
-        } else {
-            // this should be turned into a tree rewrite
-            return DirectCompilerResult.of(
-                    Expressions.exists(exprs.getExpression(), value.getExpression()),
-                    BuiltInType.BOOLEAN).withFD(value).withFD(exprs);
-        }
+    public BlockStmt visit(NamedParameterNode n) {
+        return n.accept(this);
+//        BlockStmt name = n.getName().accept(this);
+//        BlockStmt expr = n.getExpression().accept(this);
+//        return BlockStmt.of(
+//                Expressions.namedParameter(name.getExpression(), expr.getExpression()),
+//                BuiltInType.UNKNOWN).withFD(name).withFD(expr);
     }
 
     @Override
-    public DirectCompilerResult visit(IterationContextNode n) {
-        DirectCompilerResult iterName = n.getName().accept(this);
-        DirectCompilerResult iterExpr = n.getExpression().accept(this);
-
-        Expressions.NamedLambda nameLambda =
-                Expressions.namedLambda(
-                        iterName.getExpression(),
-                        n.getName().getText());
-        Expressions.NamedLambda exprLambda =
-                Expressions.namedLambda(
-                        iterExpr.getExpression(),
-                        n.getExpression().getText());
-
-        MethodCallExpr with =
-                new MethodCallExpr(null, "with")
-                        .addArgument(nameLambda.name())
-                        .addArgument(exprLambda.name());
-
-        DirectCompilerResult r =
-                DirectCompilerResult.of(with, BuiltInType.UNKNOWN);
-        r.addFieldDeclaration(nameLambda.field());
-        r.addFieldDeclaration(exprLambda.field());
-        r.withFD(iterName);
-        r.withFD(iterExpr);
-
-        BaseNode rangeEndExpr = n.getRangeEndExpr();
-        if (rangeEndExpr != null) {
-            DirectCompilerResult rangeEnd = rangeEndExpr.accept(this);
-            Expressions.NamedLambda rangeLambda =
-                    Expressions.namedLambda(
-                            rangeEnd.getExpression(),
-                            rangeEndExpr.getText());
-            with.addArgument(rangeLambda.name());
-            r.addFieldDeclaration(rangeLambda.field());
-            r.withFD(rangeEnd);
-        }
-
-        return r;
+    public BlockStmt visit(InNode n) {
+        return n.accept(this);
+//        BlockStmt value = n.getValue().accept(this);
+//        BlockStmt exprs = n.getExprs().accept(this);
+//
+//        if (exprs.resultType == BuiltInType.LIST) {
+//            return BlockStmt.of(
+//                    Expressions.exists(exprs.getExpression(), value.getExpression()),
+//                    BuiltInType.BOOLEAN).withFD(value).withFD(exprs);
+//        } else if (exprs.resultType == BuiltInType.RANGE) {
+//            return BlockStmt.of(
+//                    Expressions.includes(exprs.getExpression(), value.getExpression()),
+//                    BuiltInType.BOOLEAN).withFD(value).withFD(exprs);
+//        } else {
+//            // this should be turned into a tree rewrite
+//            return BlockStmt.of(
+//                    Expressions.exists(exprs.getExpression(), value.getExpression()),
+//                    BuiltInType.BOOLEAN).withFD(value).withFD(exprs);
+//        }
     }
 
     @Override
-    public DirectCompilerResult visit(ListNode n) {
-        MethodCallExpr list = Expressions.list();
-        DirectCompilerResult result = DirectCompilerResult.of(list, BuiltInType.LIST);
-
-        for (BaseNode e : n.getElements()) {
-            DirectCompilerResult r = e.accept(this);
-            result.withFD(r.getFieldDeclarations());
-            list.addArgument(r.getExpression());
-        }
-
-        return result;
+    public BlockStmt visit(IterationContextNode n) {
+        return n.accept(this);
+//        BlockStmt iterName = n.getName().accept(this);
+//        BlockStmt iterExpr = n.getExpression().accept(this);
+//
+//        Expressions.NamedLambda nameLambda =
+//                Expressions.namedLambda(
+//                        iterName.getExpression(),
+//                        n.getName().getText());
+//        Expressions.NamedLambda exprLambda =
+//                Expressions.namedLambda(
+//                        iterExpr.getExpression(),
+//                        n.getExpression().getText());
+//
+//        MethodCallExpr with =
+//                new MethodCallExpr(null, "with")
+//                        .addArgument(nameLambda.name())
+//                        .addArgument(exprLambda.name());
+//
+//        BlockStmt r =
+//                BlockStmt.of(with, BuiltInType.UNKNOWN);
+//        r.addFieldDeclaration(nameLambda.field());
+//        r.addFieldDeclaration(exprLambda.field());
+//        r.withFD(iterName);
+//        r.withFD(iterExpr);
+//
+//        BaseNode rangeEndExpr = n.getRangeEndExpr();
+//        if (rangeEndExpr != null) {
+//            BlockStmt rangeEnd = rangeEndExpr.accept(this);
+//            Expressions.NamedLambda rangeLambda =
+//                    Expressions.namedLambda(
+//                            rangeEnd.getExpression(),
+//                            rangeEndExpr.getText());
+//            with.addArgument(rangeLambda.name());
+//            r.addFieldDeclaration(rangeLambda.field());
+//            r.withFD(rangeEnd);
+//        }
+//
+//        return r;
     }
 
     @Override
-    public DirectCompilerResult visit(PathExpressionNode n) {
-        DirectCompilerResult expr = n.getExpression().accept(this);
-        BaseNode nameNode = n.getName();
-        if (nameNode instanceof QualifiedNameNode) {
-            QualifiedNameNode qualifiedNameNode = (QualifiedNameNode) n.getName();
-            List<Expression> exprs =
-                    qualifiedNameNode.getParts().stream()
-                            .map(name -> new StringLiteralExpr(name.getText()))
-                            .collect(Collectors.toList());
-
-            return DirectCompilerResult.of(
-                    Expressions.path(expr.getExpression(), exprs),
-                    // here we could still try to infer the result type, but presently use ANY
-                    BuiltInType.UNKNOWN).withFD(expr);
-        } else {
-            return DirectCompilerResult.of(
-                    Expressions.path(expr.getExpression(), new StringLiteralExpr(nameNode.getText())),
-                    // here we could still try to infer the result type, but presently use ANY
-                    BuiltInType.UNKNOWN).withFD(expr);
-        }
+    public BlockStmt visit(ListNode n) {
+        return n.accept(this);
+//        MethodCallExpr list = Expressions.list();
+//        BlockStmt result = BlockStmt.of(list, BuiltInType.LIST);
+//
+//        for (BaseNode e : n.getElements()) {
+//            BlockStmt r = e.accept(this);
+//            result.withFD(r.getFieldDeclarations());
+//            list.addArgument(r.getExpression());
+//        }
+//
+//        return result;
     }
 
     @Override
-    public DirectCompilerResult visit(QuantifiedExpressionNode n) {
-        DirectCompilerResult expr = n.getExpression().accept(this);
-        HashSet<FieldDeclaration> fds = new HashSet<>();
-
-        Expressions.NamedLambda namedLambda =
-                Expressions.namedLambda(
-                        expr.getExpression(),
-                        n.getExpression().getText());
-
-        fds.add(namedLambda.field());
-        fds.addAll(expr.getFieldDeclarations());
-
-        List<Expression> expressions = n.getIterationContexts()
-                .stream()
-                .map(iter -> iter.accept(this))
-                .peek(r -> fds.addAll(r.getFieldDeclarations()))
-                .map(DirectCompilerResult::getExpression)
-                .collect(Collectors.toList());
-
-        // .satisfies(expr)
-        return DirectCompilerResult.of(
-                Expressions.quantifier(n.getQuantifier(), namedLambda.name(), expressions),
-                expr.resultType,
-                fds);
+    public BlockStmt visit(PathExpressionNode n) {
+        return n.accept(this);
+//        BlockStmt expr = n.getExpression().accept(this);
+//        BaseNode nameNode = n.getName();
+//        if (nameNode instanceof QualifiedNameNode) {
+//            QualifiedNameNode qualifiedNameNode = (QualifiedNameNode) n.getName();
+//            List<Expression> exprs =
+//                    qualifiedNameNode.getParts().stream()
+//                            .map(name -> new StringLiteralExpr(name.getText()))
+//                            .collect(Collectors.toList());
+//
+//            return BlockStmt.of(
+//                    Expressions.path(expr.getExpression(), exprs),
+//                    // here we could still try to infer the result type, but presently use ANY
+//                    BuiltInType.UNKNOWN).withFD(expr);
+//        } else {
+//            return BlockStmt.of(
+//                    Expressions.path(expr.getExpression(), new StringLiteralExpr(nameNode.getText())),
+//                    // here we could still try to infer the result type, but presently use ANY
+//                    BuiltInType.UNKNOWN).withFD(expr);
+//        }
     }
 
     @Override
-    public DirectCompilerResult visit(RangeNode n) {
-        DirectCompilerResult start = n.getStart().accept(this);
-        DirectCompilerResult end = n.getEnd().accept(this);
-        return DirectCompilerResult.of(
-                Expressions.range(
-                        n.getLowerBound(),
-                        start.getExpression(),
-                        end.getExpression(),
-                        n.getUpperBound()),
-                BuiltInType.RANGE,
-                DirectCompilerResult.mergeFDs(start, end));
+    public BlockStmt visit(QuantifiedExpressionNode n) {
+        return n.accept(this);
+//        BlockStmt expr = n.getExpression().accept(this);
+//        HashSet<FieldDeclaration> fds = new HashSet<>();
+//
+//        Expressions.NamedLambda namedLambda =
+//                Expressions.namedLambda(
+//                        expr.getExpression(),
+//                        n.getExpression().getText());
+//
+//        fds.add(namedLambda.field());
+//        fds.addAll(expr.getFieldDeclarations());
+//
+//        List<Expression> expressions = n.getIterationContexts()
+//                .stream()
+//                .map(iter -> iter.accept(this))
+//                .peek(r -> fds.addAll(r.getFieldDeclarations()))
+//                .map(BlockStmt::getExpression)
+//                .collect(Collectors.toList());
+//
+//        // .satisfies(expr)
+//        return BlockStmt.of(
+//                Expressions.quantifier(n.getQuantifier(), namedLambda.name(), expressions),
+//                expr.resultType,
+//                fds);
     }
 
     @Override
-    public DirectCompilerResult visit(SignedUnaryNode n) {
-        DirectCompilerResult result = n.getExpression().accept(this);
-        if (n.getSign() == SignedUnaryNode.Sign.NEGATIVE) {
-            return DirectCompilerResult.of(
-                    Expressions.negate(result.getExpression()),
-                    result.resultType,
-                    result.getFieldDeclarations());
-        } else {
-            return DirectCompilerResult.of(
-                    Expressions.positive(result.getExpression()),
-                    result.resultType,
-                    result.getFieldDeclarations());
-        }
+    public BlockStmt visit(RangeNode n) {
+        return n.accept(this);
+//        BlockStmt start = n.getStart().accept(this);
+//        BlockStmt end = n.getEnd().accept(this);
+//        return BlockStmt.of(
+//                Expressions.range(
+//                        n.getLowerBound(),
+//                        start.getExpression(),
+//                        end.getExpression(),
+//                        n.getUpperBound()),
+//                BuiltInType.RANGE,
+//                BlockStmt.mergeFDs(start, end));
     }
 
     @Override
-    public DirectCompilerResult visit(UnaryTestNode n) {
-        DirectCompilerResult value = n.getValue().accept(this);
-        Expression expr = Expressions.unary(n.getOperator(), value.getExpression());
-        Expressions.NamedLambda namedLambda = Expressions.namedUnaryLambda(expr, n.getText());
-        DirectCompilerResult r =
-                DirectCompilerResult.of(namedLambda.name(), BuiltInType.UNARY_TEST)
-                        .withFD(value);
-        r.addFieldDeclaration(namedLambda.field());
-        return r;
+    public BlockStmt visit(SignedUnaryNode n) {
+        return n.accept(this);
+//        BlockStmt result = n.getExpression().accept(this);
+//        if (n.getSign() == SignedUnaryNode.Sign.NEGATIVE) {
+//            return BlockStmt.of(
+//                    Expressions.negate(result.getExpression()),
+//                    result.resultType,
+//                    result.getFieldDeclarations());
+//        } else {
+//            return BlockStmt.of(
+//                    Expressions.positive(result.getExpression()),
+//                    result.resultType,
+//                    result.getFieldDeclarations());
+//        }
+    }
+
+    @Override
+    public BlockStmt visit(UnaryTestNode n) {
+        return n.accept(this);
+//        BlockStmt value = n.getValue().accept(this);
+//        Expression expr = Expressions.unary(n.getOperator(), value.getExpression());
+//        Expressions.NamedLambda namedLambda = Expressions.namedUnaryLambda(expr, n.getText());
+//        BlockStmt r =
+//                BlockStmt.of(namedLambda.name(), BuiltInType.UNARY_TEST)
+//                        .withFD(value);
+//        r.addFieldDeclaration(namedLambda.field());
+//        return r;
     }
 }

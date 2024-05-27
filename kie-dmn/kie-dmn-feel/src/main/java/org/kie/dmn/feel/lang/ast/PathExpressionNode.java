@@ -18,6 +18,10 @@
  */
 package org.kie.dmn.feel.lang.ast;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.github.javaparser.ast.stmt.BlockStmt;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.lang.CompositeType;
@@ -26,9 +30,6 @@ import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.dmn.feel.util.Msg;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class PathExpressionNode
         extends BaseNode {
@@ -121,7 +122,7 @@ public class PathExpressionNode
     }
 
     @Override
-    public <T> T accept(Visitor<T> v) {
+    public BlockStmt accept(Visitor<BlockStmt> v) {
         return v.visit(this);
     }
 

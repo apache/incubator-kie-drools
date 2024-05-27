@@ -19,10 +19,10 @@
 package org.kie.dmn.feel.lang.ast;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import com.github.javaparser.ast.stmt.BlockStmt;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.lang.EvaluationContext;
@@ -130,7 +130,7 @@ public class FilterExpressionNode
     }
 
     @Override
-    public <T> T accept(Visitor<T> v) {
+    public BlockStmt accept(Visitor<BlockStmt> v) {
         return v.visit(this);
     }
 }

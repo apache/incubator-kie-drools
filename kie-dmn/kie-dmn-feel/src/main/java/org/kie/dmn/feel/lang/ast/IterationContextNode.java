@@ -18,6 +18,7 @@
  */
 package org.kie.dmn.feel.lang.ast;
 
+import com.github.javaparser.ast.stmt.BlockStmt;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
 
@@ -83,7 +84,7 @@ public class IterationContextNode
     }
 
     @Override
-    public <T> T accept(Visitor<T> v) {
+    public BlockStmt accept(Visitor<BlockStmt> v) {
         return v.visit(this);
     }
 
