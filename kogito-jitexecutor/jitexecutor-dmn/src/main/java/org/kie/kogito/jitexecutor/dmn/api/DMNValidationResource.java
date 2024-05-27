@@ -45,12 +45,12 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
+import static org.kie.kogito.jitexecutor.common.Constants.LINEBREAK;
+
 @Path("jitdmn/validate")
 public class DMNValidationResource {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DMNValidationResource.class);
-
-    static final String LINEBREAK = "******\n";
 
     // trick for resolver/implementation for NI
     static final DMNValidator validator = DMNValidatorFactory.newValidator(List.of(new ExtendedDMNProfile()));

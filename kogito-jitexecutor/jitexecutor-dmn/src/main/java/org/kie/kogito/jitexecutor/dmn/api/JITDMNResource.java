@@ -38,7 +38,7 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-import static org.kie.kogito.jitexecutor.dmn.api.DMNValidationResource.LINEBREAK;
+import static org.kie.kogito.jitexecutor.common.Constants.LINEBREAK;
 
 @Path("/jitdmn")
 public class JITDMNResource {

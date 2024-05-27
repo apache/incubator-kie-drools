@@ -80,7 +80,7 @@ class DMN15Test {
         Map<String, Object> context =
                 Map.of("p1", Map.of("Name", "P3", "Interests", Arrays.asList("Ski")));
         JITDMNPayload jitdmnpayload = new JITDMNPayload(modelRef, List.of(model),
-                                                        context);
+                context);
         given()
                 .contentType(ContentType.JSON)
                 .body(jitdmnpayload)
@@ -97,7 +97,7 @@ class DMN15Test {
         Map<String, Object> context =
                 Map.of("p1", Map.of("Name", "P3", "Interests", Arrays.asList("Ski", "Golf")));
         JITDMNPayload jitdmnpayload = new JITDMNPayload(modelRef, List.of(model),
-                                                        context);
+                context);
         given()
                 .contentType(ContentType.JSON)
                 .body(jitdmnpayload)
@@ -114,7 +114,7 @@ class DMN15Test {
         Map<String, Object> context =
                 Map.of("p1", Map.of("Name", "P3", "Interests", Arrays.asList("Golf")));
         JITDMNPayload jitdmnpayload = new JITDMNPayload(modelRef, List.of(model),
-                                                        context);
+                context);
         given()
                 .contentType(ContentType.JSON)
                 .body(jitdmnpayload)
@@ -126,7 +126,7 @@ class DMN15Test {
         context =
                 Map.of("p1", Map.of("Name", "P3", "Interests", Arrays.asList("Golf", "Jogging")));
         jitdmnpayload = new JITDMNPayload(modelRef, List.of(model),
-                                                        context);
+                context);
         given()
                 .contentType(ContentType.JSON)
                 .body(jitdmnpayload)
@@ -143,7 +143,7 @@ class DMN15Test {
         Map<String, Object> context =
                 Map.of("p1", Map.of("Name", "P3", "Interests", Arrays.asList("Ski")));
         JITDMNPayload jitdmnpayload = new JITDMNPayload(modelRef, List.of(model),
-                                                        context);
+                context);
         given()
                 .contentType(ContentType.JSON)
                 .body(jitdmnpayload)
@@ -213,7 +213,7 @@ class DMN15Test {
         Map<String, Object> context =
                 Map.of("A Person", Map.of("name", "John", "age", 47));
         JITDMNPayload jitdmnpayload = new JITDMNPayload(importingModelRef, List.of(model1, model2),
-                                                        context);
+                context);
         given()
                 .contentType(ContentType.JSON)
                 .body(jitdmnpayload)

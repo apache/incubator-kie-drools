@@ -33,6 +33,8 @@ import org.kie.dmn.openapi.DMNOASGeneratorFactory;
 import org.kie.dmn.openapi.model.DMNOASResult;
 import org.kie.kogito.jitexecutor.common.requests.MultipleResourcesPayload;
 import org.kie.kogito.jitexecutor.dmn.DMNEvaluator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -46,8 +48,12 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
+import static org.kie.kogito.jitexecutor.common.Constants.LINEBREAK;
+
 @Path("jitdmn/schema")
 public class SchemaResource {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(SchemaResource.class);
 
     // trick for resolver/implementation for NI
     static final OpenAPI x;
@@ -65,6 +71,10 @@ public class SchemaResource {
     @Consumes(MediaType.APPLICATION_XML)
     @Produces(MediaType.APPLICATION_JSON)
     public Response schema(String payload) {
+        LOGGER.debug(LINEBREAK);
+        LOGGER.debug("jitdmn/validate");
+        LOGGER.debug(payload);
+        LOGGER.debug(LINEBREAK);
         DMNModel dmnModel = DMNEvaluator.fromXML(payload).getDmnModel();
         DMNOASResult oasResult = DMNOASGeneratorFactory.generator(Collections.singletonList(dmnModel)).build();
         return fullSchema(dmnModel, oasResult, true);

@@ -16,7 +16,7 @@
   specific language governing permissions and limitations
   under the License.
 -->
-# Kogito JIT DMN Executor
+# Kogito JIT BPMN Executor
 
 ## Log configuration
 

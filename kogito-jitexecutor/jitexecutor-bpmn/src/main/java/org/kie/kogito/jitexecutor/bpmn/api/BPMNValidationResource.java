@@ -21,6 +21,8 @@ package org.kie.kogito.jitexecutor.bpmn.api;
 import org.kie.kogito.jitexecutor.bpmn.JITBPMNService;
 import org.kie.kogito.jitexecutor.bpmn.responses.JITBPMNValidationResult;
 import org.kie.kogito.jitexecutor.common.requests.MultipleResourcesPayload;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
@@ -30,8 +32,12 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
+import static org.kie.kogito.jitexecutor.common.Constants.LINEBREAK;
+
 @Path("jitbpmn/validate")
 public class BPMNValidationResource {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(BPMNValidationResource.class);
 
     @Inject
     JITBPMNService jitbpmnService;
@@ -40,6 +46,10 @@ public class BPMNValidationResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response schema(MultipleResourcesPayload payload) {
+        LOGGER.debug(LINEBREAK);
+        LOGGER.debug("jitbpmn/validate");
+        LOGGER.debug(payload.toString());
+        LOGGER.debug(LINEBREAK);
         JITBPMNValidationResult result = jitbpmnService.validatePayload(payload);
         return Response.ok(result.getErrors()).build();
     }
