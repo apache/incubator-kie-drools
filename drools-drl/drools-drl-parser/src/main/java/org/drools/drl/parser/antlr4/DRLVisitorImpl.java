@@ -514,21 +514,6 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
         return attributeDescr;
     }
 
-    @Override
-    public AttributeDescr visitDurationAttribute(DRLParser.DurationAttributeContext ctx) {
-        AttributeDescr attributeDescr = BaseDescrFactory.builder(new AttributeDescr(ctx.name.getText()))
-                .withParserRuleContext(ctx)
-                .build();
-        if (ctx.DECIMAL_LITERAL() != null) {
-            attributeDescr.setValue(ctx.DECIMAL_LITERAL().getText());
-            attributeDescr.setType(AttributeDescr.Type.NUMBER);
-        } else {
-            attributeDescr.setValue(unescapeJava(safeStripStringDelimiters(ctx.TIME_INTERVAL().getText())));
-            attributeDescr.setType(AttributeDescr.Type.EXPRESSION);
-        }
-        return attributeDescr;
-    }
-
     /**
      * entry point for LHS
      */
