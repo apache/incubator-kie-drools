@@ -82,11 +82,8 @@ public class ProcessInstanceMarshallerService {
         }
 
         public Builder withDefaultObjectMarshallerStrategies() {
-            ServiceLoader<ObjectMarshallerStrategy> loader = ServiceLoader.load(ObjectMarshallerStrategy.class, JbpmClassLoaderUtil.findClassLoader());
 
-            for (ObjectMarshallerStrategy strategy : loader) {
-                ProcessInstanceMarshallerService.this.strats.add(strategy);
-            }
+            ProcessInstanceMarshallerService.this.strats.addAll(List.of(ObjectMarshallerStrategyHelper.defaultStrategies()));
 
             ServiceLoader<NodeInstanceReader> readerLoader = ServiceLoader.load(NodeInstanceReader.class, JbpmClassLoaderUtil.findClassLoader());
 

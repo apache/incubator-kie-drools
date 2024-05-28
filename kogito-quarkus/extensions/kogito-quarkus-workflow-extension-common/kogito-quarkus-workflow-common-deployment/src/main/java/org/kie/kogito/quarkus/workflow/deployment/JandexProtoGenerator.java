@@ -54,7 +54,7 @@ import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 
 public class JandexProtoGenerator extends AbstractProtoGenerator<ClassInfo> {
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(JandexProtoGenerator.class);
     private static final DotName ENUM_VALUE_ANNOTATION = DotName.createSimple(ProtoEnumValue.class.getName());
     private static final DotName generatedAnnotation = DotName.createSimple(Generated.class.getCanonicalName());
     private static final DotName variableInfoAnnotation = DotName.createSimple(VariableInfo.class.getCanonicalName());
@@ -92,15 +92,29 @@ public class JandexProtoGenerator extends AbstractProtoGenerator<ClassInfo> {
         return Optional.of(name);
     }
 
-    @Override
-    protected ProtoMessage messageFromClass(Proto proto, Set<String> alreadyGenerated, ClassInfo clazz, String messageComment, String fieldComment) throws Exception {
-        Optional<String> optionalName = extractName(clazz);
-        if (!optionalName.isPresent()) {
-            // if name cannot be extracted let skip the object
-            return null;
+    protected Optional<String> fqn(ClassInfo dataModel) {
+        if (isHidden(dataModel)) {
+            // since class is marked as hidden skip processing of that class
+            return Optional.empty();
         }
 
-        String name = optionalName.get();
+        String name = dataModel.simpleName();
+        String altName = getReferenceOfModel(dataModel, "name");
+        if (altName != null) {
+            name = altName;
+        }
+        return Optional.of(dataModel.name().packagePrefix() + "." + name);
+    }
+
+    @Override
+    protected ProtoMessage messageFromClass(Proto proto, Set<String> alreadyGenerated, ClassInfo clazz, String messageComment, String fieldComment) throws Exception {
+        if (!shouldGenerateProto(clazz)) {
+            LOGGER.info("Skipping generating jandex proto for class {}", clazz);
+            return null;
+        }
+        LOGGER.debug("Generating reflection proto for class {}", clazz);
+
+        String name = extractName(clazz).get();
 
         ProtoMessage message = new ProtoMessage(name, clazz.name().prefix().toString());
         for (FieldInfo pd : extractAllFields(clazz)) {
@@ -157,7 +171,7 @@ public class JandexProtoGenerator extends AbstractProtoGenerator<ClassInfo> {
                 protoType = optionalProtoType.get();
             }
 
-            ProtoField protoField = message.addField(applicabilityByType(fieldTypeString), protoType, pd.name());
+            ProtoField protoField = message.addField(computeCardinalityModifier(fieldTypeString), protoType, pd.name());
             protoField.setComment(completeFieldComment);
             if (KOGITO_SERIALIZABLE.equals(protoType)) {
                 protoField.setOption(format("[(%s) = \"%s\"]", KOGITO_JAVA_CLASS_OPTION, fieldTypeString.equals(ARRAY) ? pd.type().toString() : pd.type().name().toString()));
@@ -166,6 +180,10 @@ public class JandexProtoGenerator extends AbstractProtoGenerator<ClassInfo> {
         message.setComment(messageComment);
         proto.addMessage(message);
         return message;
+    }
+
+    protected boolean shouldGenerateProto(ClassInfo clazz) {
+        return extractName(clazz).isPresent();
     }
 
     private boolean isCollection(FieldInfo pd) {

@@ -29,6 +29,10 @@ message JsonNode {
     string content = 1;
 }
 
+message Document {
+    string content = 1;
+}
+
 message Variable {
     string name = 1;
     string data_type = 2;

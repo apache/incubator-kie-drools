@@ -26,3 +26,4 @@ org.jbpm.flow.serialization.impl.marshallers.ProtobufIntegerMarshallerStrategy
 org.jbpm.flow.serialization.impl.marshallers.ProtobufDateMarshallerStrategy
 org.jbpm.flow.serialization.impl.marshallers.ProtobufDoubleMarshallerStrategy
 org.jbpm.flow.serialization.impl.marshallers.ProtobufJsonNodeMessageMarshaller
+org.jbpm.flow.serialization.impl.marshallers.ProtobufDocumentNodeMessageMarshaller
