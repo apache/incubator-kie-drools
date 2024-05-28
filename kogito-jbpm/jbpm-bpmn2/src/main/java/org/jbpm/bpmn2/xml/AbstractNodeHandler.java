@@ -409,7 +409,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
             return null;
         }
         Variable variable = var.get();
-        return new DataDefinition(variable.getId(), variable.getName(), variable.getType().getStringType());
+        return new DataDefinition(variable.getId(), variable.getName(), variable);
     }
 
     protected ItemDefinition getStructureRef(Parser parser, String id) {
@@ -630,10 +630,9 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
     }
 
     private DataDefinition toDataExpression(String expression) {
-        DataDefinition dataSpec = new DataDefinition(UUID.randomUUID().toString(), "EXPRESSION (" + expression + ")", null);
+        DataDefinition dataSpec = new DataDefinition(UUID.randomUUID().toString(), "EXPRESSION (" + expression + ")", (String) null);
         dataSpec.setExpression(expression);
         return dataSpec;
-
     }
 
     private boolean isExpr(String mvelExpression) {

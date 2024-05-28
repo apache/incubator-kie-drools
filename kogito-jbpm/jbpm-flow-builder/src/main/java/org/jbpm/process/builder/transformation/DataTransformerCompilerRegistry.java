@@ -16,14 +16,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.jbpm.process.core.impl;
+package org.jbpm.process.builder.transformation;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ServiceLoader;
 
-import org.jbpm.process.core.transformation.JavaDataTransformer;
-import org.jbpm.process.core.transformation.MVELDataTransformer;
-import org.kie.api.runtime.process.DataTransformer;
+import org.jbpm.util.JbpmClassLoaderUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,29 +36,37 @@ import org.slf4j.LoggerFactory;
  * otherwise they need to be registered manually with <code>register</code> method.
  * 
  */
-public class DataTransformerRegistry {
+public class DataTransformerCompilerRegistry {
 
-    private static final Logger logger = LoggerFactory.getLogger(DataTransformerRegistry.class);
-    private static final DataTransformerRegistry INSTANCE = new DataTransformerRegistry();
+    private static final Logger logger = LoggerFactory.getLogger(DataTransformerCompilerRegistry.class);
 
-    private Map<String, DataTransformer> registry;
+    private static DataTransformerCompilerRegistry INSTANCE;
 
-    protected DataTransformerRegistry() {
-        this.registry = new ConcurrentHashMap<>();
-        this.registry.put("http://www.mvel.org/2.0", new MVELDataTransformer());
-        this.registry.put("http://www.java.com/java", new JavaDataTransformer());
-    }
+    private List<DataTransformerCompiler> registry;
 
-    public static DataTransformerRegistry get() {
+    public static DataTransformerCompilerRegistry instance() {
+        if (INSTANCE == null) {
+            INSTANCE = new DataTransformerCompilerRegistry();
+        }
         return INSTANCE;
     }
 
-    public synchronized void register(String language, DataTransformer transformer) {
-        this.registry.put(language, transformer);
-        logger.debug("Manual registration of scripting language {} with instance {}", language, transformer);
+    protected DataTransformerCompilerRegistry() {
+        this.registry = new ArrayList<>();
+        ServiceLoader.load(DataTransformerCompiler.class, JbpmClassLoaderUtil.findClassLoader()).forEach(registry::add);
     }
 
-    public DataTransformer find(String language) {
-        return this.registry.get(language);
+    public void register(DataTransformerCompiler transformer) {
+        this.registry.add(transformer);
+        logger.debug("Manual registration of scripting language {} with instance {}", transformer.dialects(), transformer);
+    }
+
+    public DataTransformerCompiler find(String language) {
+        for (DataTransformerCompiler transformer : registry) {
+            if (transformer.accept(language)) {
+                return transformer;
+            }
+        }
+        throw new IllegalArgumentException("transformer not support for dialect " + language);
     }
 }

@@ -28,8 +28,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.jbpm.bpmn2.activity.BoundarySignalEventOnTaskWithTransformationModel;
+import org.jbpm.bpmn2.activity.BoundarySignalEventOnTaskWithTransformationProcess;
 import org.jbpm.bpmn2.handler.ReceiveTaskHandler;
 import org.jbpm.bpmn2.handler.SendTaskHandler;
+import org.jbpm.bpmn2.intermediate.IntermediateThrowEventSignalModel;
+import org.jbpm.bpmn2.intermediate.IntermediateThrowEventSignalProcess;
 import org.jbpm.bpmn2.objects.Person;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.jbpm.bpmn2.test.RequirePersistence;
@@ -39,6 +43,7 @@ import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.jbpm.test.util.NodeLeftCountDownProcessEventListener;
 import org.jbpm.test.util.ProcessCompletedCountDownProcessEventListener;
+import org.jbpm.test.utils.ProcessTestHelper;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.api.command.ExecutableCommand;
@@ -47,6 +52,7 @@ import org.kie.api.event.process.ProcessNodeLeftEvent;
 import org.kie.api.event.process.ProcessNodeTriggeredEvent;
 import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.api.runtime.rule.FactHandle;
+import org.kie.kogito.Application;
 import org.kie.kogito.internal.process.event.DefaultKogitoProcessEventListener;
 import org.kie.kogito.internal.process.event.KogitoProcessEventListener;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
@@ -58,6 +64,7 @@ import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
 import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcessInstance;
 import org.kie.kogito.process.EventDescription;
 import org.kie.kogito.process.NamedDataType;
+import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.workitems.InternalKogitoWorkItem;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -1794,27 +1801,20 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
     }
 
     @Test
-    @Disabled("Transfomer has been disabled")
     public void testSignalBoundaryEventWithTransformation() throws Exception {
-        kruntime = createKogitoProcessRuntime(
-                "BPMN2-BoundarySignalEventOnTaskWithTransformation.bpmn",
-                "BPMN2-IntermediateThrowEventSignal.bpmn2");
+        Application application = ProcessTestHelper.newApplication();
+        org.kie.kogito.process.Process<BoundarySignalEventOnTaskWithTransformationModel> processBoundary = BoundarySignalEventOnTaskWithTransformationProcess.newProcess(application);
+        org.kie.kogito.process.Process<IntermediateThrowEventSignalModel> processIntermediate = IntermediateThrowEventSignalProcess.newProcess(application);
 
-        TestWorkItemHandler handler = new TestWorkItemHandler();
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task",
-                handler);
-
-        Map<String, Object> params = new HashMap<>();
-        params.put("x", "john");
-        KogitoProcessInstance processInstance = kruntime.startProcess("BoundarySignalOnTask");
-
-        KogitoProcessInstance processInstance2 = kruntime.startProcess("SignalIntermediateEvent", params);
-        assertProcessInstanceFinished(processInstance2, kruntime);
-
-        assertProcessInstanceFinished(processInstance, kruntime);
-
-        String var = getProcessVarValue(processInstance, "x");
-        assertThat(var).isEqualTo("JOHN");
+        ProcessInstance<BoundarySignalEventOnTaskWithTransformationModel> instanceBoundary = processBoundary.createInstance(processBoundary.createModel());
+        instanceBoundary.start();
+        IntermediateThrowEventSignalModel modelIntermediate = processIntermediate.createModel();
+        modelIntermediate.setX("john");
+        ProcessInstance<IntermediateThrowEventSignalModel> instanceIntermediate = processIntermediate.createInstance(modelIntermediate);
+        instanceIntermediate.start();
+        assertThat(instanceIntermediate).extracting(ProcessInstance::status).isEqualTo(ProcessInstance.STATE_COMPLETED);
+        assertThat(instanceBoundary).extracting(ProcessInstance::status).isEqualTo(ProcessInstance.STATE_COMPLETED);
+        assertThat(instanceBoundary.variables().getX()).isEqualTo("JOHN");
     }
 
     @Test

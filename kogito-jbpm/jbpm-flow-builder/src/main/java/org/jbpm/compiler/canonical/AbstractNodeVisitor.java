@@ -25,6 +25,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.jbpm.process.builder.action.ActionCompilerRegistry;
+import org.jbpm.process.builder.transformation.DataTransformerCompilerRegistry;
 import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.context.variable.Mappable;
 import org.jbpm.process.core.context.variable.Variable;
@@ -69,6 +70,7 @@ import com.github.javaparser.ast.type.UnknownType;
 import com.github.javaparser.ast.type.WildcardType;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
+import static java.util.Collections.singletonList;
 import static org.drools.util.StringUtils.ucFirst;
 import static org.jbpm.ruleflow.core.Metadata.CUSTOM_AUTO_START;
 import static org.jbpm.ruleflow.core.Metadata.HIDDEN;
@@ -230,7 +232,7 @@ public abstract class AbstractNodeVisitor<T extends Node> extends AbstractVisito
         DataDefinition targetExpr = dataAssociation.getTarget();
         Transformation transformation = dataAssociation.getTransformation();
         List<Assignment> assignments = dataAssociation.getAssignments();
-        return toDataAssociation(toDataDef(sourceExpr), toDataDef(targetExpr), toAssignmentExpr(assignments), toTransformation(transformation));
+        return toDataAssociation(toDataDef(sourceExpr), toDataDef(targetExpr), toAssignmentExpr(assignments), toTransformation(sourceExpr, singletonList(targetExpr), transformation));
     }
 
     private Expression toAssignmentExpr(List<Assignment> assignments) {
@@ -250,15 +252,15 @@ public abstract class AbstractNodeVisitor<T extends Node> extends AbstractVisito
         return new MethodCallExpr(null, "java.util.Arrays.asList", NodeList.nodeList(expressions));
     }
 
-    protected Expression toTransformation(Transformation transformation) {
+    protected Expression toTransformation(List<DataDefinition> inputs, List<DataDefinition> outputs, Transformation transformation) {
         if (transformation == null) {
             return new NullLiteralExpr();
         }
         Expression lang = new StringLiteralExpr(transformation.getLanguage());
         Expression expression = new StringLiteralExpr(transformation.getExpression());
-        Expression source = new StringLiteralExpr(transformation.getSource());
+        Expression compiledExpression = DataTransformerCompilerRegistry.instance().find(transformation.getLanguage()).compile(inputs, outputs, transformation);
         ClassOrInterfaceType clazz = new ClassOrInterfaceType(null, "org.jbpm.workflow.core.node.Transformation");
-        return new ObjectCreationExpr(null, clazz, NodeList.nodeList(lang, expression, source));
+        return new ObjectCreationExpr(null, clazz, NodeList.nodeList(lang, expression, compiledExpression));
 
     }
 

@@ -21,6 +21,8 @@ package org.jbpm.workflow.core.impl;
 import java.io.Serializable;
 import java.util.UUID;
 
+import org.jbpm.process.core.context.variable.Variable;
+
 public class DataDefinition implements Serializable {
 
     private static final long serialVersionUID = -1819075545956349183L;
@@ -29,6 +31,8 @@ public class DataDefinition implements Serializable {
     private String label;
     private String type;
     private String expression;
+
+    private Variable variable;
 
     public DataDefinition(String expression) {
         this.id = UUID.randomUUID().toString();
@@ -48,6 +52,12 @@ public class DataDefinition implements Serializable {
         this(id, label, type, null);
     }
 
+    public DataDefinition(String id, String label, Variable variable) {
+        this.id = id;
+        this.label = label != null && !label.isEmpty() ? label : id;
+        this.variable = variable;
+    }
+
     public String getId() {
         return id;
     }
@@ -65,6 +75,9 @@ public class DataDefinition implements Serializable {
     }
 
     public String getType() {
+        if (variable != null) {
+            return variable.getType().getStringType();
+        }
         return type;
     }
 
@@ -128,7 +141,7 @@ public class DataDefinition implements Serializable {
         if (type == null) {
             if (other.type != null)
                 return false;
-        } else if (!type.equals(other.type))
+        } else if (!getType().equals(other.getType()))
             return false;
         return true;
     }
