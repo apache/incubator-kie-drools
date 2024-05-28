@@ -21,10 +21,13 @@ package org.jbpm.ruleflow.core.factory;
 import org.jbpm.process.core.event.EventFilter;
 import org.jbpm.process.core.event.EventTypeFilter;
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
+import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.node.EventNode;
 import org.kie.api.definition.process.WorkflowElementIdentifier;
+
+import static org.jbpm.ruleflow.core.Metadata.MESSAGE_REF;
 
 public abstract class AbstractEventNodeFactory<T extends AbstractEventNodeFactory<T, P>, P extends RuleFlowNodeContainerFactory<P, ?>> extends ExtendedNodeFactory<T, P> {
 
@@ -54,6 +57,8 @@ public abstract class AbstractEventNodeFactory<T extends AbstractEventNodeFactor
     public T eventType(String eventType) {
         EventTypeFilter filter = new EventTypeFilter();
         filter.setType(eventType);
+        filter.setCorrelationManager(((RuleFlowProcess) getEventNode().getProcess()).getCorrelationManager());
+        filter.setMessageRef((String) getNode().getMetaData().get(MESSAGE_REF));
         return eventFilter(filter);
     }
 

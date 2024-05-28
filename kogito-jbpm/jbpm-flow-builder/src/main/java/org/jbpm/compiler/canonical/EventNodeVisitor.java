@@ -44,8 +44,9 @@ public class EventNodeVisitor extends AbstractNodeVisitor<EventNode> {
 
     @Override
     public void visitNode(String factoryField, EventNode node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
-        body.addStatement(getAssignedFactoryMethod(factoryField, EventNodeFactory.class, getNodeId(node), getNodeKey(), getWorkflowElementConstructor(node.getId())))
-                .addStatement(getNameMethod(node, "Event"))
+        body.addStatement(getAssignedFactoryMethod(factoryField, EventNodeFactory.class, getNodeId(node), getNodeKey(), getWorkflowElementConstructor(node.getId())));
+        visitMetaData(node.getMetaData(), body, getNodeId(node));
+        body.addStatement(getNameMethod(node, "Event"))
                 .addStatement(getFactoryMethod(getNodeId(node), METHOD_EVENT_TYPE, new StringLiteralExpr(node.getType())));
 
         Variable variable = null;
@@ -72,7 +73,7 @@ public class EventNodeVisitor extends AbstractNodeVisitor<EventNode> {
             }
         }
         addNodeMappings(node, body, getNodeId(node));
-        visitMetaData(node.getMetaData(), body, getNodeId(node));
+
         body.addStatement(getDoneMethod(getNodeId(node)));
     }
 

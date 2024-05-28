@@ -22,6 +22,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.core.process.AbstractProcessContext;
+import org.jbpm.process.core.ContextResolver;
+import org.jbpm.process.core.context.variable.VariableScope;
 import org.kie.api.runtime.KieRuntime;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
@@ -35,6 +37,20 @@ public class KogitoProcessContextImpl extends AbstractProcessContext implements 
     public KogitoProcessContextImpl(KieRuntime kruntime) {
         super(kruntime);
         contextData = new HashMap<>();
+    }
+
+    public boolean isVariableResolvable(String variableId) {
+        if (contextData.containsKey(variableId)) {
+            return true;
+        }
+
+        KogitoNodeInstance nodeInstance = getNodeInstance();
+        if (nodeInstance instanceof ContextResolver) {
+            ContextResolver resolver = (ContextResolver) nodeInstance;
+            return resolver.resolveContext(VariableScope.VARIABLE_SCOPE, variableId) != null;
+        }
+
+        return nodeInstance.getVariable(variableId) != null;
     }
 
     @Override

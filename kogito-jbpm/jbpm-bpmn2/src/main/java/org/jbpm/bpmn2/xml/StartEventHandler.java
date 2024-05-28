@@ -50,6 +50,7 @@ import org.xml.sax.SAXException;
 import static org.jbpm.ruleflow.core.Metadata.EVENT_TYPE;
 import static org.jbpm.ruleflow.core.Metadata.EVENT_TYPE_MESSAGE;
 import static org.jbpm.ruleflow.core.Metadata.MAPPING_VARIABLE;
+import static org.jbpm.ruleflow.core.Metadata.MESSAGE_REF;
 import static org.jbpm.ruleflow.core.Metadata.MESSAGE_TYPE;
 import static org.jbpm.ruleflow.core.Metadata.TRIGGER_MAPPING;
 import static org.jbpm.ruleflow.core.Metadata.TRIGGER_MAPPING_INPUT;
@@ -138,6 +139,7 @@ public class StartEventHandler extends AbstractNodeHandler {
                 startNode.setMetaData(MESSAGE_TYPE, message.getType());
                 startNode.setMetaData(TRIGGER_TYPE, TriggerMetaData.TriggerType.ConsumeMessage.name());
                 startNode.setMetaData(TRIGGER_REF, message.getName());
+                startNode.setMetaData(MESSAGE_REF, message.getId());
 
                 addTriggerWithInMappings(startNode, "Message-" + message.getName(), message.getId(), ((RuleFlowProcess) parser.getMetaData().get("CurrentProcessDefinition")).getCorrelationManager());
             } else if ("timerEventDefinition".equals(nodeName)) {

@@ -53,7 +53,8 @@ public class @{invokerClassName} implements org.jbpm.process.instance.impl.Retur
 {
     private static final long serialVersionUID  = 510l;
 
-    public Object evaluate(org.kie.kogito.internal.process.runtime.KogitoProcessContext processContext) throws Exception {
+    public Object evaluate(org.kie.kogito.internal.process.runtime.KogitoProcessContext processContext) {
+        try {
 
         @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) processContext.getKieRuntime().getGlobal( "@{identifier}" );
         @end{}
@@ -67,8 +68,11 @@ public class @{invokerClassName} implements org.jbpm.process.instance.impl.Retur
 	        @end{","}@if{variables != empty},@end{}
 	        @foreach{identifier : variables} @{identifier}
 	        @end{","} );
+	    } catch(Exception e) {
+	       return new RuntimeException(e);
+	    }
     }
-    
+
     public String getMethodBytecode() {
         return null;
     }

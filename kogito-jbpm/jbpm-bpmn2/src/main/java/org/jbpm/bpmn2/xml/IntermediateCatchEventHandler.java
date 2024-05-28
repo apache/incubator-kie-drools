@@ -55,6 +55,7 @@ import static org.jbpm.ruleflow.core.Metadata.EVENT_TYPE_MESSAGE;
 import static org.jbpm.ruleflow.core.Metadata.EVENT_TYPE_SIGNAL;
 import static org.jbpm.ruleflow.core.Metadata.EVENT_TYPE_TIMER;
 import static org.jbpm.ruleflow.core.Metadata.LINK_NAME;
+import static org.jbpm.ruleflow.core.Metadata.MESSAGE_REF;
 import static org.jbpm.ruleflow.core.Metadata.MESSAGE_TYPE;
 import static org.jbpm.ruleflow.core.Metadata.SIGNAL_TYPE;
 import static org.jbpm.ruleflow.core.Metadata.TRIGGER_REF;
@@ -240,6 +241,7 @@ public class IntermediateCatchEventHandler extends AbstractNodeHandler {
                 eventNode.setMetaData(MESSAGE_TYPE, message.getType());
                 eventNode.setMetaData(TRIGGER_TYPE, CONSUME_MESSAGE);
                 eventNode.setMetaData(TRIGGER_REF, message.getName());
+                eventNode.setMetaData(MESSAGE_REF, message.getId());
                 List<EventFilter> eventFilters = new ArrayList<>();
                 EventTypeFilter eventFilter = new EventTypeFilter();
                 eventFilter.setCorrelationManager(((RuleFlowProcess) parser.getMetaData().get("CurrentProcessDefinition")).getCorrelationManager());

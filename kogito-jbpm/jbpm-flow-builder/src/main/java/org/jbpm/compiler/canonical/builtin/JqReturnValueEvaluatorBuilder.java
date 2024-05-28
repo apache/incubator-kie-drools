@@ -19,27 +19,33 @@
 package org.jbpm.compiler.canonical.builtin;
 
 import org.jbpm.process.core.ContextResolver;
-import org.jbpm.process.instance.impl.FeelReturnValueEvaluator;
+import org.jbpm.process.instance.impl.ExpressionReturnValueEvaluator;
 import org.kie.kogito.internal.utils.ConversionUtils;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.NodeList;
+import com.github.javaparser.ast.expr.ClassExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 
-public class FEELConstraintEvaluatorBuilder implements ReturnValueEvaluatorBuilder {
+public class JqReturnValueEvaluatorBuilder implements ReturnValueEvaluatorBuilder {
 
     @Override
     public boolean accept(String dialect) {
-        return dialect.toLowerCase().contains("feel");
+        return dialect.toLowerCase().contains("jq");
     }
 
     @Override
-    public Expression build(ContextResolver resolver, String expresssion, Class<?> type, String rootName) {
-        return new ObjectCreationExpr(null,
-                StaticJavaParser.parseClassOrInterfaceType(FeelReturnValueEvaluator.class.getName()),
-                new NodeList<>(new StringLiteralExpr(ConversionUtils.sanitizeString(expresssion))));
+    public Expression build(ContextResolver resolver, String expression, Class<?> type, String rootName) {
+        NodeList<Expression> arguments = new NodeList<>();
+        arguments.add(new StringLiteralExpr("jq"));
+        arguments.add(new StringLiteralExpr(ConversionUtils.sanitizeString(expression)));
+        arguments.add(new StringLiteralExpr(rootName));
+        arguments.add(new ClassExpr(StaticJavaParser.parseClassOrInterfaceType(type.getName())));
+
+        return new ObjectCreationExpr(null, StaticJavaParser.parseClassOrInterfaceType(ExpressionReturnValueEvaluator.class.getName()), arguments);
+
     }
 
 }

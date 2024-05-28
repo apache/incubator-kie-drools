@@ -23,11 +23,14 @@ import java.util.List;
 import org.jbpm.process.core.event.EventTypeFilter;
 import org.jbpm.process.core.timer.Timer;
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
+import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.impl.DataAssociation;
 import org.jbpm.workflow.core.node.EventTrigger;
 import org.jbpm.workflow.core.node.StartNode;
 import org.kie.api.definition.process.WorkflowElementIdentifier;
+
+import static org.jbpm.ruleflow.core.Metadata.MESSAGE_REF;
 
 public class StartNodeFactory<T extends RuleFlowNodeContainerFactory<T, ?>> extends NodeFactory<StartNodeFactory<T>, T> {
 
@@ -51,7 +54,9 @@ public class StartNodeFactory<T extends RuleFlowNodeContainerFactory<T, ?>> exte
     public StartNodeFactory<T> trigger(String triggerEventType, List<DataAssociation> dataAssociations) {
         EventTrigger trigger = new EventTrigger();
         EventTypeFilter eventFilter = new EventTypeFilter();
+        eventFilter.setCorrelationManager(((RuleFlowProcess) getStartNode().getProcess()).getCorrelationManager());
         eventFilter.setType(triggerEventType);
+        eventFilter.setMessageRef((String) getNode().getMetaData().get(MESSAGE_REF));
         trigger.addEventFilter(eventFilter);
         dataAssociations.forEach(trigger::addInAssociation);
         getStartNode().addTrigger(trigger);
@@ -65,6 +70,8 @@ public class StartNodeFactory<T extends RuleFlowNodeContainerFactory<T, ?>> exte
     public StartNodeFactory<T> trigger(String triggerEventType, String source, String target) {
         EventTrigger trigger = new EventTrigger();
         EventTypeFilter eventFilter = new EventTypeFilter();
+        eventFilter.setCorrelationManager(((RuleFlowProcess) getStartNode().getProcess()).getCorrelationManager());
+        eventFilter.setMessageRef((String) getNode().getMetaData().get(MESSAGE_REF));
         eventFilter.setType(triggerEventType);
         trigger.addEventFilter(eventFilter);
         if (source != null) {

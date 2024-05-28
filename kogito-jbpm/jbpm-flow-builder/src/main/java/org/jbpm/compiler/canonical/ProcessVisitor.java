@@ -26,6 +26,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import org.jbpm.compiler.canonical.builtin.ReturnValueEvaluatorBuilderService;
 import org.jbpm.compiler.canonical.descriptors.ExpressionUtils;
 import org.jbpm.compiler.canonical.node.NodeVisitorBuilderService;
 import org.jbpm.process.core.Context;
@@ -34,6 +35,11 @@ import org.jbpm.process.core.Work;
 import org.jbpm.process.core.context.exception.ActionExceptionHandler;
 import org.jbpm.process.core.context.exception.ExceptionScope;
 import org.jbpm.process.core.context.variable.VariableScope;
+import org.jbpm.process.core.correlation.Correlation;
+import org.jbpm.process.core.correlation.CorrelationManager;
+import org.jbpm.process.core.correlation.CorrelationProperties;
+import org.jbpm.process.core.correlation.Message;
+import org.jbpm.process.instance.impl.ReturnValueEvaluator;
 import org.jbpm.process.instance.impl.actions.SignalProcessInstanceAction;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.ruleflow.core.RuleFlowProcessFactory;
@@ -80,8 +86,11 @@ public class ProcessVisitor extends AbstractVisitor {
 
     private NodeVisitorBuilderService nodeVisitorService;
 
+    private ReturnValueEvaluatorBuilderService returnValueEvaluatorBuilderService;
+
     public ProcessVisitor(ClassLoader contextClassLoader) {
         nodeVisitorService = new NodeVisitorBuilderService(contextClassLoader);
+        returnValueEvaluatorBuilderService = ReturnValueEvaluatorBuilderService.instance(contextClassLoader);
     }
 
     public void visitProcess(WorkflowProcess process, MethodDeclaration processMethod, ProcessMetaData metadata) {
@@ -131,8 +140,9 @@ public class ProcessVisitor extends AbstractVisitor {
         ((org.jbpm.workflow.core.WorkflowProcess) process).getOutputValidator().ifPresent(
                 v -> body.addStatement(getFactoryMethod(FACTORY_FIELD_NAME, "outputValidator", ExpressionUtils.getLiteralExpr(v))));
 
-        visitCompensationScope(process, body);
         visitMetaData(process.getMetaData(), body, FACTORY_FIELD_NAME);
+        visitCollaboration(process, body);
+        visitCompensationScope(process, body);
         visitHeader(process, body);
 
         List<Node> processNodes = new ArrayList<>();
@@ -148,6 +158,40 @@ public class ProcessVisitor extends AbstractVisitor {
 
         MethodCallExpr getProcessMethod = new MethodCallExpr(new NameExpr(FACTORY_FIELD_NAME), "getProcess");
         body.addStatement(new ReturnStmt(getProcessMethod));
+    }
+
+    private void visitCollaboration(WorkflowProcess process, BlockStmt body) {
+        RuleFlowProcess ruleFlowProcess = (RuleFlowProcess) process;
+        CorrelationManager correlationManager = ruleFlowProcess.getCorrelationManager();
+
+        for (String messageId : correlationManager.getMessagesId()) {
+            Message message = correlationManager.findMessageById(messageId);
+            body.addStatement(getFactoryMethod(FACTORY_FIELD_NAME, "newCorrelationMessage",
+                    new StringLiteralExpr(message.getMessageRef()), new StringLiteralExpr(message.getMessageName()), new StringLiteralExpr(message.getMessageType())));
+        }
+
+        for (String correlationId : correlationManager.getCorrelationsId()) {
+            Correlation correlation = correlationManager.findCorrelationById(correlationId);
+            body.addStatement(getFactoryMethod(FACTORY_FIELD_NAME, "newCorrelationKey",
+                    new StringLiteralExpr(correlation.getId()), new StringLiteralExpr(correlation.getName())));
+
+            for (String messageId : correlationManager.getMessagesId()) {
+                CorrelationProperties properties = correlation.getMessageCorrelationFor(messageId);
+                for (String propertyName : properties.names()) {
+                    ReturnValueEvaluator evaluator = properties.getExpressionFor(propertyName);
+                    Expression returnValueEvaluator = returnValueEvaluatorBuilderService.build(ruleFlowProcess, evaluator.dialect(), evaluator.expression());
+                    body.addStatement(getFactoryMethod(FACTORY_FIELD_NAME, "newCorrelationProperty",
+                            new StringLiteralExpr(correlation.getId()), new StringLiteralExpr(messageId), new StringLiteralExpr(propertyName), returnValueEvaluator));
+                }
+            }
+            CorrelationProperties subscriptions = correlation.getProcessSubscription();
+            for (String propertyName : subscriptions.names()) {
+                ReturnValueEvaluator evaluator = subscriptions.getExpressionFor(propertyName);
+                Expression returnValueEvaluator = returnValueEvaluatorBuilderService.build(ruleFlowProcess, evaluator.dialect(), evaluator.expression());
+                body.addStatement(getFactoryMethod(FACTORY_FIELD_NAME, "newCorrelationSubscription",
+                        new StringLiteralExpr(correlation.getId()), new StringLiteralExpr(propertyName), returnValueEvaluator));
+            }
+        }
     }
 
     private void visitSubVariableScopes(org.kie.api.definition.process.Node[] nodes, BlockStmt body, Set<String> visitedVariables) {

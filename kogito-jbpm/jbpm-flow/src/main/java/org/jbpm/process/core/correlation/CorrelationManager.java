@@ -21,7 +21,11 @@ package org.jbpm.process.core.correlation;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
+
+import org.jbpm.process.instance.impl.ReturnValueEvaluator;
+import org.jbpm.util.JbpmClassLoaderUtil;
 
 public class CorrelationManager implements Serializable {
 
@@ -35,6 +39,7 @@ public class CorrelationManager implements Serializable {
     public CorrelationManager() {
         this.correlations = new HashMap<>();
         this.messages = new HashMap<>();
+        this.classLoader = JbpmClassLoaderUtil.findClassLoader();
     }
 
     public void setClassLoader(ClassLoader classLoader) {
@@ -91,7 +96,7 @@ public class CorrelationManager implements Serializable {
         CorrelationInstance correlationInstance = new CorrelationInstance(correlation.getId(), correlation.getName());
         CorrelationProperties properties = correlation.getMessageCorrelationFor(messageRef);
         for (String name : properties.names()) {
-            CorrelationExpressionEvaluator evaluator = properties.getExpressionFor(name);
+            ReturnValueEvaluator evaluator = properties.getExpressionFor(name);
             Object val = evaluator.eval(event);
             if (val == null) {
                 throw new IllegalArgumentException("Message property evaluated to null is not possible: " + messageRef + " property " + name);
@@ -110,7 +115,7 @@ public class CorrelationManager implements Serializable {
         CorrelationProperties properties = correlation.getProcessSubscription();
 
         for (String name : properties.names()) {
-            CorrelationExpressionEvaluator evaluator = properties.getExpressionFor(name);
+            ReturnValueEvaluator evaluator = properties.getExpressionFor(name);
             Object val = evaluator.eval(resolver);
             if (val == null) {
                 throw new IllegalArgumentException("Process Subscription property evaluated to null is not possible: " + messageRef + " property " + name);
@@ -130,14 +135,31 @@ public class CorrelationManager implements Serializable {
         throw new IllegalArgumentException("Correlation for message ref " + messageRef + " does not exist");
     }
 
-    public void addMessagePropertyExpression(String correlationRef, String messageRef, String propertyName, CorrelationExpressionEvaluator expression) {
+    public void addMessagePropertyExpression(String correlationRef, String messageRef, String propertyName, ReturnValueEvaluator expression) {
         correlations.get(correlationRef).getMessageCorrelationFor(messageRef).addProperty(propertyName, expression);
     }
 
-    public void addProcessSubscriptionPropertyExpression(String correlationRef, String propertyName, CorrelationExpressionEvaluator expression) {
+    public void addProcessSubscriptionPropertyExpression(String correlationRef, String propertyName, ReturnValueEvaluator expression) {
         if (!correlations.containsKey(correlationRef)) {
             return;
         }
         correlations.get(correlationRef).getProcessSubscription().addProperty(propertyName, expression);
     }
+
+    public Set<String> getMessagesId() {
+        return messages.keySet();
+    }
+
+    public Message findMessageById(String messageId) {
+        return messages.get(messageId);
+    }
+
+    public Set<String> getCorrelationsId() {
+        return correlations.keySet();
+    }
+
+    public Correlation findCorrelationById(String correlationId) {
+        return correlations.get(correlationId);
+    }
+
 }

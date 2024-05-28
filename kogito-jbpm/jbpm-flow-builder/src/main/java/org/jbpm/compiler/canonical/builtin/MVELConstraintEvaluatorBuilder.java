@@ -20,7 +20,6 @@ package org.jbpm.compiler.canonical.builtin;
 
 import org.jbpm.process.core.ContextResolver;
 import org.jbpm.process.instance.impl.MVELInterpretedReturnValueEvaluator;
-import org.jbpm.workflow.core.Constraint;
 import org.kie.kogito.internal.utils.ConversionUtils;
 
 import com.github.javaparser.StaticJavaParser;
@@ -29,19 +28,19 @@ import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 
-public class MVELConstraintEvaluatorBuilder implements ConstraintEvaluatorBuilder {
+public class MVELConstraintEvaluatorBuilder implements ReturnValueEvaluatorBuilder {
 
     @Override
-    public boolean accept(Constraint constraint) {
-        return "mvel".equals(constraint.getDialect());
+    public boolean accept(String dialect) {
+        return dialect.toLowerCase().contains("mvel");
     }
 
     @Override
-    public Expression build(ContextResolver resolver, Constraint constraint) {
+    public Expression build(ContextResolver resolver, String expression, Class<?> type, String rootName) {
 
         return new ObjectCreationExpr(null,
                 StaticJavaParser.parseClassOrInterfaceType(MVELInterpretedReturnValueEvaluator.class.getName()),
-                new NodeList<>(new StringLiteralExpr(ConversionUtils.sanitizeString(constraint.getConstraint()))));
+                new NodeList<>(new StringLiteralExpr(ConversionUtils.sanitizeString(expression))));
     }
 
 }

@@ -45,6 +45,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 import static org.jbpm.ruleflow.core.Metadata.EVENT_TYPE;
+import static org.jbpm.ruleflow.core.Metadata.MESSAGE_REF;
 
 public class BoundaryEventHandler extends AbstractNodeHandler {
 
@@ -408,6 +409,7 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
                 eventNode.setMetaData("MessageType", message.getType());
                 eventNode.setMetaData("TriggerType", "ConsumeMessage");
                 eventNode.setMetaData("TriggerRef", message.getName());
+                eventNode.setMetaData(MESSAGE_REF, message.getId());
                 List<EventFilter> eventFilters = new ArrayList<>();
                 EventTypeFilter eventFilter = new EventTypeFilter();
                 eventFilter.setCorrelationManager(((RuleFlowProcess) parser.getMetaData().get("CurrentProcessDefinition")).getCorrelationManager());

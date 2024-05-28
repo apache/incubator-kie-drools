@@ -23,17 +23,19 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jbpm.process.instance.impl.ReturnValueEvaluator;
+
 public class CorrelationProperties implements Serializable {
 
     private static final long serialVersionUID = 4740957354662392843L;
 
-    private Map<String, CorrelationExpressionEvaluator> properties;
+    private Map<String, ReturnValueEvaluator> properties;
 
     public CorrelationProperties() {
         this.properties = new HashMap<>();
     }
 
-    public void addProperty(String name, CorrelationExpressionEvaluator expression) {
+    public void addProperty(String name, ReturnValueEvaluator expression) {
         properties.put(name, expression);
     }
 
@@ -45,7 +47,7 @@ public class CorrelationProperties implements Serializable {
         return properties.keySet();
     }
 
-    public CorrelationExpressionEvaluator getExpressionFor(String propertyName) {
+    public ReturnValueEvaluator getExpressionFor(String propertyName) {
         return properties.get(propertyName);
     }
 

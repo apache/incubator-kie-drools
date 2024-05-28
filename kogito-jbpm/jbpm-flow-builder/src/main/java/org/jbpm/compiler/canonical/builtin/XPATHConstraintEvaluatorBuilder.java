@@ -20,28 +20,26 @@ package org.jbpm.compiler.canonical.builtin;
 
 import org.jbpm.process.core.ContextResolver;
 import org.jbpm.process.instance.impl.XPATHReturnValueEvaluator;
-import org.jbpm.workflow.core.Constraint;
 import org.kie.kogito.internal.utils.ConversionUtils;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.expr.Expression;
-import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 
-public class XPATHConstraintEvaluatorBuilder implements ConstraintEvaluatorBuilder {
+public class XPATHConstraintEvaluatorBuilder implements ReturnValueEvaluatorBuilder {
 
     @Override
-    public boolean accept(Constraint constraint) {
-        return constraint.getDialect().toLowerCase().contains("xpath");
+    public boolean accept(String dialect) {
+        return dialect.toLowerCase().contains("xpath");
     }
 
     @Override
-    public Expression build(ContextResolver resolver, Constraint constraint) {
+    public Expression build(ContextResolver resolver, String expression, Class<?> type, String rootName) {
         return new ObjectCreationExpr(null,
                 StaticJavaParser.parseClassOrInterfaceType(XPATHReturnValueEvaluator.class.getName()),
-                new NodeList<>(new StringLiteralExpr(ConversionUtils.sanitizeString(constraint.getConstraint())), new NullLiteralExpr()));
+                new NodeList<>(new StringLiteralExpr(ConversionUtils.sanitizeString(expression))));
     }
 
 }

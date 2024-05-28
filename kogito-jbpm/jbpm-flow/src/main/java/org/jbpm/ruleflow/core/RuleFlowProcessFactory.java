@@ -38,6 +38,7 @@ import org.jbpm.process.core.event.EventTypeFilter;
 import org.jbpm.process.core.timer.Timer;
 import org.jbpm.process.core.validation.ProcessValidationError;
 import org.jbpm.process.instance.impl.Action;
+import org.jbpm.process.instance.impl.ReturnValueEvaluator;
 import org.jbpm.process.instance.impl.actions.CancelNodeInstanceAction;
 import org.jbpm.process.instance.impl.actions.SignalProcessInstanceAction;
 import org.jbpm.ruleflow.core.validation.RuleFlowProcessValidator;
@@ -240,6 +241,33 @@ public class RuleFlowProcessFactory extends RuleFlowNodeContainerFactory<RuleFlo
         if (errors.length > 0) {
             throw new IllegalStateException("Process could not be validated !" + Arrays.toString(errors));
         }
+        return this;
+    }
+
+    public RuleFlowProcessFactory newCorrelationMessage(String messageId, String messageName, String messageType) {
+        RuleFlowProcess process = getRuleFlowProcess();
+        process.getCorrelationManager().newMessage(messageId, messageName, messageType);
+        return this;
+    }
+
+    public RuleFlowProcessFactory newCorrelationKey(String correlationKey, String correlationName) {
+        RuleFlowProcess process = getRuleFlowProcess();
+        process.getCorrelationManager().newCorrelation(correlationKey, correlationName);
+        return this;
+    }
+
+    public RuleFlowProcessFactory newCorrelationProperty(String correlationKeyId, String messageId, String propertyId, ReturnValueEvaluator evaluator) {
+        RuleFlowProcess process = getRuleFlowProcess();
+        process.getCorrelationManager().addMessagePropertyExpression(correlationKeyId, messageId, propertyId, evaluator);
+        return this;
+    }
+
+    public RuleFlowProcessFactory newCorrelationSubscription(String correlationKeyId, String propertyId, ReturnValueEvaluator evaluator) {
+        RuleFlowProcess process = getRuleFlowProcess();
+        if (!process.getCorrelationManager().isSubscribe(correlationKeyId)) {
+            process.getCorrelationManager().subscribeTo(correlationKeyId);
+        }
+        process.getCorrelationManager().addProcessSubscriptionPropertyExpression(correlationKeyId, propertyId, evaluator);
         return this;
     }
 

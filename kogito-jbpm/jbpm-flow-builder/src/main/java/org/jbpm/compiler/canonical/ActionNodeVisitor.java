@@ -63,6 +63,7 @@ public class ActionNodeVisitor extends AbstractNodeVisitor<ActionNode> {
     public void visitNode(String factoryField, ActionNode node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
         body.addStatement(getAssignedFactoryMethod(factoryField, ActionNodeFactory.class, getNodeId(node), getNodeKey(), getWorkflowElementConstructor(node.getId())))
                 .addStatement(getNameMethod(node, "Script"));
+        visitMetaData(node.getMetaData(), body, getNodeId(node));
 
         Optional<ExpressionSupplier> supplierAction = getAction(node, ExpressionSupplier.class);
         if (isIntermediateCompensation(node)) {
@@ -101,7 +102,6 @@ public class ActionNodeVisitor extends AbstractNodeVisitor<ActionNode> {
             body.addStatement(getFactoryMethod(getNodeId(node), METHOD_ACTION, lambda));
         }
         addNodeMappings(node, body, getNodeId(node));
-        visitMetaData(node.getMetaData(), body, getNodeId(node));
         body.addStatement(getDoneMethod(getNodeId(node)));
     }
 

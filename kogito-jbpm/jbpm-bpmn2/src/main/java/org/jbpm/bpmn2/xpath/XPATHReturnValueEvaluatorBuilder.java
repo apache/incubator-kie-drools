@@ -42,8 +42,7 @@ public class XPATHReturnValueEvaluatorBuilder
         String text = descr.getText();
 
         try {
-            XPATHReturnValueEvaluator expr = new XPATHReturnValueEvaluator(text,
-                    null);
+            XPATHReturnValueEvaluator expr = new XPATHReturnValueEvaluator(text);
 
             constraintNode.setEvaluator(expr);
 

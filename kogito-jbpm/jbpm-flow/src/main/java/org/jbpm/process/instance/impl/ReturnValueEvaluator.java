@@ -18,9 +18,36 @@
  */
 package org.jbpm.process.instance.impl;
 
+import java.util.function.Function;
+
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 
 public interface ReturnValueEvaluator {
 
-    Object evaluate(KogitoProcessContext processContext) throws Exception;
+    default Class<?> type() {
+        return Object.class;
+    }
+
+    default String dialect() {
+        return "functional";
+    }
+
+    default String expression() {
+        return "functional";
+    }
+
+    Object evaluate(KogitoProcessContext processContext);
+
+    default Object eval(Object event) {
+        return this.eval(name -> "value".equals(name) ? event : null);
+    }
+
+    default Object eval(Function<String, Object> resolver) {
+        return this.evaluate(new EmtpyKogitoProcessContext(resolver));
+    }
+
+    default String root() {
+        return null;
+    }
+
 }

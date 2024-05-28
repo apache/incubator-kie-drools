@@ -18,10 +18,6 @@
  */
 package org.jbpm.process.instance.impl;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -38,28 +34,17 @@ import org.kie.dmn.feel.lang.impl.FEELBuilder;
 import org.kie.dmn.feel.parser.feel11.profiles.KieExtendedFEELProfile;
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 
-public class FeelReturnValueEvaluator implements ReturnValueEvaluator, Externalizable {
-
-    private static final long serialVersionUID = 630l;
-
-    private String expr;
+public class FeelReturnValueEvaluator extends AbstractReturnValueEvaluator {
 
     public FeelReturnValueEvaluator() {
+        super("FEEL", "true()");
     }
 
     public FeelReturnValueEvaluator(String expr) {
-        this.expr = expr;
+        super("FEEL", expr);
     }
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        expr = in.readUTF();
-    }
-
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeUTF(expr);
-    }
-
-    public Object evaluate(KogitoProcessContext context) throws Exception {
+    public Object evaluate(KogitoProcessContext context) {
         Map<String, Object> variables = new HashMap<>();
         variables.put("kcontext", context);
 
@@ -82,12 +67,12 @@ public class FeelReturnValueEvaluator implements ReturnValueEvaluator, Externali
         FeelErrorEvaluatorListener listener = new FeelErrorEvaluatorListener();
         feel.addListener(listener);
 
-        Object value = feel.evaluate(expr, variables);
+        Object value = feel.evaluate(expression(), variables);
 
         processErrorEvents(listener.getErrorEvents());
         if (!(value instanceof Boolean)) {
             throw new RuntimeException("Constraints must return boolean values: " +
-                    expr + " returns " + value +
+                    expression() + " returns " + value +
                     (value == null ? "" : " (type=" + value.getClass()));
         }
 
@@ -113,7 +98,4 @@ public class FeelReturnValueEvaluator implements ReturnValueEvaluator, Externali
         return messageBuilder.toString();
     }
 
-    public String toString() {
-        return this.expr;
-    }
 }

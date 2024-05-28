@@ -170,6 +170,7 @@ public abstract class AbstractProcess<T extends Model> implements Process<T>, Pr
 
     @Override
     public <S> void send(Signal<S> signal) {
+        getProcessRuntime().signalEvent(signal.channel(), signal.payload());
         try (Stream<ProcessInstance<T>> stream = instances.stream()) {
             stream.forEach(pi -> pi.send(signal));
         }

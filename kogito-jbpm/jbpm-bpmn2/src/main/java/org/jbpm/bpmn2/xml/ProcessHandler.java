@@ -59,9 +59,10 @@ import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.core.correlation.CorrelationManager;
 import org.jbpm.process.core.event.EventFilter;
 import org.jbpm.process.core.event.EventTypeFilter;
-import org.jbpm.process.core.event.MVELMessageExpressionEvaluator;
 import org.jbpm.process.core.timer.Timer;
 import org.jbpm.process.instance.impl.Action;
+import org.jbpm.process.instance.impl.MVELInterpretedReturnValueEvaluator;
+import org.jbpm.process.instance.impl.ReturnValueEvaluator;
 import org.jbpm.process.instance.impl.actions.CancelNodeInstanceAction;
 import org.jbpm.process.instance.impl.actions.ProcessInstanceCompensationAction;
 import org.jbpm.process.instance.impl.actions.SignalProcessInstanceAction;
@@ -240,7 +241,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
                     correlationProperty.getMessageRefs().forEach(messageRef -> {
 
                         // for now only MVEL expressions
-                        MVELMessageExpressionEvaluator evaluator = new MVELMessageExpressionEvaluator(correlationProperty.getRetrievalExpression(messageRef).getScript());
+                        ReturnValueEvaluator evaluator = new MVELInterpretedReturnValueEvaluator(correlationProperty.getRetrievalExpression(messageRef).getScript());
                         correlationManager.addMessagePropertyExpression(key.getId(), messageRef, correlationProperty.getId(), evaluator);
                     });
                 }
@@ -251,7 +252,8 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
         for (CorrelationSubscription subscription : HandlerUtil.correlationSubscription(process).values()) {
             correlationManager.subscribeTo(subscription.getCorrelationKeyRef());
             for (Map.Entry<String, Expression> binding : subscription.getPropertyExpressions().entrySet()) {
-                MVELMessageExpressionEvaluator evaluator = new MVELMessageExpressionEvaluator(binding.getValue().getScript());
+
+                ReturnValueEvaluator evaluator = new MVELInterpretedReturnValueEvaluator(binding.getValue().getScript());
                 correlationManager.addProcessSubscriptionPropertyExpression(subscription.getCorrelationKeyRef(), binding.getKey(), evaluator);
             }
         }

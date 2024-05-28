@@ -46,8 +46,9 @@ public class BoundaryEventNodeVisitor extends AbstractNodeVisitor<BoundaryEventN
 
     @Override
     public void visitNode(String factoryField, BoundaryEventNode node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
-        body.addStatement(getAssignedFactoryMethod(factoryField, BoundaryEventNodeFactory.class, getNodeId(node), getNodeKey(), getWorkflowElementConstructor(node.getId())))
-                .addStatement(getNameMethod(node, "BoundaryEvent"))
+        body.addStatement(getAssignedFactoryMethod(factoryField, BoundaryEventNodeFactory.class, getNodeId(node), getNodeKey(), getWorkflowElementConstructor(node.getId())));
+        visitMetaData(node.getMetaData(), body, getNodeId(node));
+        body.addStatement(getNameMethod(node, "BoundaryEvent"))
                 .addStatement(getFactoryMethod(getNodeId(node), METHOD_EVENT_TYPE, new StringLiteralExpr(node.getType())))
                 .addStatement(getFactoryMethod(getNodeId(node), METHOD_ATTACHED_TO, new StringLiteralExpr(node.getAttachedToNodeId())))
                 .addStatement(getFactoryMethod(getNodeId(node), METHOD_SCOPE, getOrNullExpr(node.getScope())));
@@ -70,7 +71,6 @@ public class BoundaryEventNodeVisitor extends AbstractNodeVisitor<BoundaryEventN
             body.addStatement(getFactoryMethod(getNodeId(node), METHOD_ADD_COMPENSATION_HANDLER, new StringLiteralExpr(node.getAttachedToNodeId())));
         }
         addNodeMappings(node, body, getNodeId(node));
-        visitMetaData(node.getMetaData(), body, getNodeId(node));
         body.addStatement(getDoneMethod(getNodeId(node)));
     }
 }

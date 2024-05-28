@@ -18,11 +18,23 @@
  */
 package org.jbpm.bpmn2;
 
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.jbpm.bpmn2.collaboration.CollaborationBoundaryMessageModel;
+import org.jbpm.bpmn2.collaboration.CollaborationBoundaryMessageProcess;
+import org.jbpm.bpmn2.collaboration.CollaborationIntermediateMessageModel;
+import org.jbpm.bpmn2.collaboration.CollaborationIntermediateMessageProcess;
+import org.jbpm.bpmn2.collaboration.CollaborationStartMessageModel;
+import org.jbpm.bpmn2.collaboration.CollaborationStartMessageProcess;
 import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
+import org.jbpm.test.utils.ProcessTestHelper;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
+import org.kie.api.event.process.ProcessStartedEvent;
+import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.kogito.Application;
+import org.kie.kogito.internal.process.event.DefaultKogitoProcessEventListener;
+import org.kie.kogito.process.impl.Sig;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -31,49 +43,91 @@ public class CollaborationTest extends JbpmBpmn2TestCase {
 
     @Test
     public void testBoundaryMessageCollaboration() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/collaboration/BPMN2-CollaborationBoundaryMessage.bpmn2");
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task", new DoNothingWorkItemHandler());
-        KogitoProcessInstance pid = kruntime.startProcess("CollaborationBoundaryMessage", Collections.singletonMap("MessageId", "2"));
-        kruntime.signalEvent("Message-collaboration", new Message("1", "example"), pid.getStringId());
-        assertProcessInstanceActive(pid);
-        kruntime.signalEvent("Message-collaboration", new Message("2", "example"), pid.getStringId());
-        assertProcessInstanceCompleted(pid);
+        Application application = ProcessTestHelper.newApplication();
+        ProcessTestHelper.registerHandler(application, "Human Task", new DoNothingWorkItemHandler());
+        org.kie.kogito.process.Process<CollaborationBoundaryMessageModel> processDefinition = CollaborationBoundaryMessageProcess.newProcess(application);
+        CollaborationBoundaryMessageModel variables = processDefinition.createModel();
+        variables.setMessageId("2");
+        org.kie.kogito.process.ProcessInstance<CollaborationBoundaryMessageModel> processInstance = processDefinition.createInstance(variables);
+        processInstance.start();
+        processInstance.send(Sig.of("Message-collaboration", new Message("1", "example")));
+
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
+        processInstance.send(Sig.of("Message-collaboration", new Message("2", "example")));
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
+
     }
 
     @Test
     public void testStartMessageCollaboration() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/collaboration/BPMN2-CollaborationStartMessage.bpmn2");
-        kruntime.signalEvent("Message-collaboration", new Message("1", "example"));
-        assertThat(getNumberOfProcessInstances("CollaborationStartMessage")).isEqualTo(1);
+        final List<String> processInstanceId = new ArrayList<>();
+        Application application = ProcessTestHelper.newApplication();
+        ProcessTestHelper.registerProcessEventListener(application, new DefaultKogitoProcessEventListener() {
+            @Override
+            public void beforeProcessStarted(ProcessStartedEvent event) {
+                processInstanceId.add(event.getProcessInstance().getId());
+            }
+        });
+        ProcessTestHelper.registerHandler(application, "Human Task", new DoNothingWorkItemHandler());
+        org.kie.kogito.process.Process<CollaborationStartMessageModel> processDefinition = CollaborationStartMessageProcess.newProcess(application);
+
+        processDefinition.send(Sig.of("collaboration", new Message("1", "example")));
+
+        assertThat(processInstanceId).hasSize(1);
+
     }
 
     @Test
     public void testStartMessageCollaborationNoMatch() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/collaboration/BPMN2-CollaborationStartMessage.bpmn2");
+        final List<String> processInstanceId = new ArrayList<>();
+        Application application = ProcessTestHelper.newApplication();
+        ProcessTestHelper.registerProcessEventListener(application, new DefaultKogitoProcessEventListener() {
+            @Override
+            public void beforeProcessStarted(ProcessStartedEvent event) {
+                processInstanceId.add(event.getProcessInstance().getId());
+            }
+        });
+        ProcessTestHelper.registerHandler(application, "Human Task", new DoNothingWorkItemHandler());
+        org.kie.kogito.process.Process<CollaborationStartMessageModel> processDefinition = CollaborationStartMessageProcess.newProcess(application);
 
-        kruntime.signalEvent("Message-collaboration", new Message("2", "example"));
-        assertThat(getNumberOfProcessInstances("CollaborationStartMessage")).isZero();
+        processDefinition.send(Sig.of("Message-collaboration", new Message("2", "example")));
+
+        assertThat(processInstanceId).hasSize(0);
+
     }
 
     @Test
     public void testIntermediateMessageCollaboration() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/collaboration/BPMN2-CollaborationIntermediateMessage.bpmn2");
-        KogitoProcessInstance pid = kruntime.startProcess("CollaborationIntermediateMessage", Collections.singletonMap("MessageId", "2"));
-        kruntime.signalEvent("Message-collaboration", new Message("1", "example"), pid.getStringId());
-        assertProcessInstanceActive(pid);
-        kruntime.signalEvent("Message-collaboration", new Message("2", "example"), pid.getStringId());
-        assertProcessInstanceCompleted(pid);
+        Application application = ProcessTestHelper.newApplication();
+        ProcessTestHelper.registerHandler(application, "Human Task", new DoNothingWorkItemHandler());
+        org.kie.kogito.process.Process<CollaborationIntermediateMessageModel> processDefinition = CollaborationIntermediateMessageProcess.newProcess(application);
+        CollaborationIntermediateMessageModel variables = processDefinition.createModel();
+        variables.setMessageId("2");
+        org.kie.kogito.process.ProcessInstance<CollaborationIntermediateMessageModel> processInstance = processDefinition.createInstance(variables);
+        processInstance.start();
+        processInstance.send(Sig.of("Message-collaboration", new Message("1", "example")));
+
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
+        processInstance.send(Sig.of("Message-collaboration", new Message("2", "example")));
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
+
     }
 
     @Test
     public void testInvalidIntermediateMessageCollaboration() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/collaboration/BPMN2-CollaborationIntermediateMessage.bpmn2");
+        Application application = ProcessTestHelper.newApplication();
+        ProcessTestHelper.registerHandler(application, "Human Task", new DoNothingWorkItemHandler());
+        org.kie.kogito.process.Process<CollaborationIntermediateMessageModel> processDefinition = CollaborationIntermediateMessageProcess.newProcess(application);
+        CollaborationIntermediateMessageModel variables = processDefinition.createModel();
+        variables.setMessageId("2");
+        org.kie.kogito.process.ProcessInstance<CollaborationIntermediateMessageModel> processInstance = processDefinition.createInstance(variables);
+        processInstance.start();
 
-        KogitoProcessInstance pid = kruntime.startProcess("CollaborationIntermediateMessage", Collections.singletonMap("MessageId", "2"));
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
-            kruntime.signalEvent("Message-collaboration", new Message(null, "example"), pid.getStringId());
+            processInstance.send(Sig.of("Message-collaboration", new Message(null, "example")));
         });
-
-        assertProcessInstanceActive(pid);
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
+        processInstance.send(Sig.of("Message-collaboration", new Message("2", "example")));
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
 }

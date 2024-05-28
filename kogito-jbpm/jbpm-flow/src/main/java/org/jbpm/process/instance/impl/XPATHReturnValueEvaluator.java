@@ -18,10 +18,6 @@
  */
 package org.jbpm.process.instance.impl;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -40,97 +36,76 @@ import javax.xml.xpath.XPathVariableResolver;
 
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 
-public class XPATHReturnValueEvaluator
-        implements
-        ReturnValueEvaluator,
-        Externalizable {
-    private static final long serialVersionUID = 510l;
-
-    private String expression;
-    private String id;
+public class XPATHReturnValueEvaluator extends AbstractReturnValueEvaluator {
 
     public XPATHReturnValueEvaluator() {
+        super("XPath", "true()");
     }
 
-    public XPATHReturnValueEvaluator(final String expression,
-            final String id) {
-        this.expression = expression;
-        this.id = id;
+    public XPATHReturnValueEvaluator(final String expression) {
+        super("XPath", expression);
     }
 
-    public void readExternal(ObjectInput in) throws IOException,
-            ClassNotFoundException {
-        expression = (String) in.readObject();
-    }
-
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(expression);
-    }
-
-    public String getDialect() {
-        return this.id;
-    }
-
-    public Object evaluate(final KogitoProcessContext context) throws Exception {
-        XPathFactory factory = XPathFactory.newInstance();
-        XPath xpathEvaluator = factory.newXPath();
-        xpathEvaluator.setXPathFunctionResolver(
-                new XPathFunctionResolver() {
-                    public XPathFunction resolveFunction(QName functionName, int arity) {
-                        String localName = functionName.getLocalPart();
-                        if ("getVariable".equals(localName)) {
-                            return new GetVariableData();
-                        } else {
-                            throw new IllegalArgumentException("Unknown BPMN function: " + functionName);
+    public Object evaluate(final KogitoProcessContext context) {
+        try {
+            XPathFactory factory = XPathFactory.newInstance();
+            XPath xpathEvaluator = factory.newXPath();
+            xpathEvaluator.setXPathFunctionResolver(
+                    new XPathFunctionResolver() {
+                        public XPathFunction resolveFunction(QName functionName, int arity) {
+                            String localName = functionName.getLocalPart();
+                            if ("getVariable".equals(localName)) {
+                                return new GetVariableData();
+                            } else {
+                                throw new IllegalArgumentException("Unknown BPMN function: " + functionName);
+                            }
                         }
-                    }
 
-                    class GetVariableData implements XPathFunction {
-                        public Object evaluate(List args) throws XPathFunctionException {
-                            String varname = (String) args.get(0);
-                            return context.getVariable(varname);
+                        class GetVariableData implements XPathFunction {
+                            public Object evaluate(List args) throws XPathFunctionException {
+                                String varname = (String) args.get(0);
+                                return context.getVariable(varname);
+                            }
                         }
+                    });
+            xpathEvaluator.setXPathVariableResolver(new XPathVariableResolver() {
+
+                public Object resolveVariable(QName variableName) {
+                    return context.getVariable(variableName.getLocalPart());
+                }
+            });
+
+            xpathEvaluator.setNamespaceContext(new NamespaceContext() {
+                private static final String DROOLS_NAMESPACE_URI = "http://www.jboss.org/drools";
+                private String[] prefixes = { "drools", "bpmn2" };
+
+                @Override
+                public Iterator getPrefixes(String namespaceURI) {
+                    return Arrays.asList(prefixes).iterator();
+                }
+
+                @Override
+                public String getPrefix(String namespaceURI) {
+                    if (DROOLS_NAMESPACE_URI.equalsIgnoreCase(namespaceURI)) {
+                        return "bpmn2";
                     }
-                });
-        xpathEvaluator.setXPathVariableResolver(new XPathVariableResolver() {
-
-            public Object resolveVariable(QName variableName) {
-                return context.getVariable(variableName.getLocalPart());
-            }
-        });
-
-        xpathEvaluator.setNamespaceContext(new NamespaceContext() {
-            private static final String DROOLS_NAMESPACE_URI = "http://www.jboss.org/drools";
-            private String[] prefixes = { "drools", "bpmn2" };
-
-            @Override
-            public Iterator getPrefixes(String namespaceURI) {
-                return Arrays.asList(prefixes).iterator();
-            }
-
-            @Override
-            public String getPrefix(String namespaceURI) {
-                if (DROOLS_NAMESPACE_URI.equalsIgnoreCase(namespaceURI)) {
-                    return "bpmn2";
+                    return null;
                 }
-                return null;
-            }
 
-            @Override
-            public String getNamespaceURI(String prefix) {
-                if ("bpmn2".equalsIgnoreCase(prefix)) {
-                    return DROOLS_NAMESPACE_URI;
+                @Override
+                public String getNamespaceURI(String prefix) {
+                    if ("bpmn2".equalsIgnoreCase(prefix)) {
+                        return DROOLS_NAMESPACE_URI;
+                    }
+                    return null;
                 }
-                return null;
-            }
-        });
+            });
 
-        DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-        return xpathEvaluator.evaluate(this.expression, builder.newDocument(), XPathConstants.BOOLEAN);
-    }
-
-    public String toString() {
-        return this.expression;
+            DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            return xpathEvaluator.evaluate(this.expression, builder.newDocument(), XPathConstants.BOOLEAN);
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
 }

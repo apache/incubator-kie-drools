@@ -120,8 +120,7 @@ public class MVELReturnValueEvaluatorBuilder extends AbstractMVELBuilder
                 false,
                 MVELCompilationUnit.Scope.EXPRESSION);
 
-        MVELReturnValueEvaluator expr = new MVELReturnValueEvaluator(unit,
-                dialect.getId());
+        MVELReturnValueEvaluator expr = new MVELReturnValueEvaluator(unit);
 
         constraintNode.setEvaluator(expr);
 

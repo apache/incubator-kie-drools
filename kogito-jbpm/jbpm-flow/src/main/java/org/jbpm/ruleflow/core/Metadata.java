@@ -26,6 +26,7 @@ public class Metadata {
     public static final String TRIGGER_REF = "TriggerRef";
     public static final String REF = "Ref";
     public static final String MESSAGE_TYPE = "MessageType";
+    public static final String MESSAGE_REF = "MessageRef";
     public static final String SIGNAL_TYPE = "SignalType";
     public static final String PRODUCE_MESSAGE = "ProduceMessage";
     public static final String CONSUME_MESSAGE = "ConsumeMessage";
