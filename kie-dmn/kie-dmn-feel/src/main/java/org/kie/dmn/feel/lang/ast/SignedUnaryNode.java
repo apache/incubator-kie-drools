@@ -21,7 +21,6 @@ package org.kie.dmn.feel.lang.ast;
 import java.math.BigDecimal;
 import java.time.Duration;
 
-import com.github.javaparser.ast.stmt.BlockStmt;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.lang.EvaluationContext;
@@ -99,7 +98,7 @@ public class SignedUnaryNode
     }
 
     @Override
-    public BlockStmt accept(Visitor<BlockStmt> v) {
+    public <T> T accept(Visitor<T> v) {
         return v.visit(this);
     }
 }

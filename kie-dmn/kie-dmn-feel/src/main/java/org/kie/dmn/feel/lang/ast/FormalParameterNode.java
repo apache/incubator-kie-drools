@@ -55,8 +55,8 @@ public class FormalParameterNode extends BaseNode {
         return BuiltInType.UNKNOWN;
     }
 
-    @Override
-    public BlockStmt accept(Visitor<BlockStmt> v) {
+@Override
+public <T> T accept(Visitor<T> v) {
         return v.visit(this);
     }
 

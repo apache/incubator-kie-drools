@@ -21,7 +21,6 @@ package org.kie.dmn.feel.lang.ast;
 import java.time.Duration;
 import java.time.chrono.ChronoPeriod;
 
-import com.github.javaparser.ast.stmt.BlockStmt;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.SimpleType;
@@ -85,7 +84,7 @@ public class InstanceOfNode
     }
 
     @Override
-    public BlockStmt accept(Visitor<BlockStmt> v) {
+    public <T> T accept(Visitor<T> v) {
         return v.visit(this);
     }
 

@@ -163,8 +163,8 @@ public class FunctionInvocationNode
         return new ASTNode[] { name, params };
     }
 
-    @Override
-    public BlockStmt accept(Visitor<BlockStmt> v) {
+@Override
+public <T> T accept(Visitor<T> v) {
         return v.visit(this);
     }
 }

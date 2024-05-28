@@ -102,8 +102,8 @@ public class ContextNode
         return entries.toArray( new ASTNode[entries.size()] );
     }
 
-    @Override
-    public BlockStmt accept(Visitor<BlockStmt> v) {
+@Override
+public <T> T accept(Visitor<T> v) {
         return v.visit(this);
     }
 }

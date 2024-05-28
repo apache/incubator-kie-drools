@@ -18,7 +18,6 @@
  */
 package org.kie.dmn.feel.lang.ast;
 
-import com.github.javaparser.ast.stmt.BlockStmt;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.Type;
 
@@ -47,6 +46,6 @@ public interface ASTNode {
 
     ASTNode[] getChildrenNode();
 
-    BlockStmt accept(Visitor<BlockStmt> v);
+    <T> T accept(Visitor<T> v);
 
 }

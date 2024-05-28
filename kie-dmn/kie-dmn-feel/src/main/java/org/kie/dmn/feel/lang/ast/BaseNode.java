@@ -160,7 +160,7 @@ public class BaseNode
     }
 
     @Override
-    public BlockStmt accept(Visitor<BlockStmt> v) {
+    public <T> T accept(Visitor<T> v) {
         return v.visit(this);
     }
 }

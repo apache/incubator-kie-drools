@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import com.github.javaparser.ast.stmt.BlockStmt;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.lang.EvaluationContext;
@@ -94,7 +93,7 @@ public class QualifiedNameNode
     }
 
     @Override
-    public BlockStmt accept(Visitor<BlockStmt> v) {
+    public <T> T accept(Visitor<T> v) {
         return v.visit(this);
     }
 

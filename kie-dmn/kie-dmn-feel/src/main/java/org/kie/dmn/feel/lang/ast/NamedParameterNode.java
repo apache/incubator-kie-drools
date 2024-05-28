@@ -18,7 +18,6 @@
  */
 package org.kie.dmn.feel.lang.ast;
 
-import com.github.javaparser.ast.stmt.BlockStmt;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.impl.NamedParameter;
@@ -64,9 +63,8 @@ public class NamedParameterNode
         return new ASTNode[] { name, expression };
     }
 
-
     @Override
-    public BlockStmt accept(Visitor<BlockStmt> v) {
+    public <T> T accept(Visitor<T> v) {
         return v.visit(this);
     }
 }

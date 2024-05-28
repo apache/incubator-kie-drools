@@ -24,23 +24,28 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.expr.NameExpr;
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.runtime.FEELFunction.Param;
+import org.kie.dmn.feel.runtime.events.ASTEventBase;
 import org.kie.dmn.feel.runtime.functions.CustomFEELFunction;
 import org.kie.dmn.feel.runtime.functions.JavaFunction;
 import org.kie.dmn.feel.util.Msg;
 
 public class FunctionDefNode
         extends BaseNode {
+
+    public static final NameExpr FUNCTIONDEFNODE_N = new NameExpr(FunctionDefNode.class.getCanonicalName());
 
     private static final String ANONYMOUS = "<anonymous>";
     private static final Pattern METHOD_PARSER = Pattern.compile( "(.+)\\((.*)\\)" );
@@ -90,53 +95,61 @@ public class FunctionDefNode
     @Override
     public Object evaluate(EvaluationContext ctx) {
         List<Param> params = formalParameters.stream().map(p -> p.evaluate(ctx)).collect(Collectors.toList());
-        if( external ) {
-            try {
-                // creating a simple algorithm to find the method in java
-                // without using any external libraries in this initial implementation
-                Map<String, Object> conf = (Map<String, Object>) this.body.evaluate( ctx );
-                Map<String, Object> java = (Map<String, Object>) conf.get( "java" );
-                if( java != null ) {
-                    // this is a java function
-                    String clazzName = (String) java.get( "class" );
-                    String methodSignature = (String) java.get( "method signature" );
-                    if( clazzName != null && methodSignature != null ) {
-                        Class<?> clazz = Class.forName(clazzName, true, ctx.getRootClassLoader());
-                        String[] mp = parseMethod( methodSignature );
-                        if( mp != null ) {
-                            String methodName = mp[0];
-                            String[] paramTypeNames = parseParams( mp[1] );
-                            int numberOfParams = paramTypeNames.length;
-                            if( numberOfParams == params.size() ) {
-                                Class[] paramTypes = new Class[ numberOfParams ];
-                                for( int i = 0; i < numberOfParams; i++ ) {
-                                    paramTypes[i] = getTypeInterceptinException(ctx, paramTypeNames[i], ctx.getRootClassLoader());
-                                }
-                                return locateMethodOrThrow(ctx, params, clazz, methodName, paramTypes);
-                            } else {
-                                ctx.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.PARAMETER_COUNT_MISMATCH_ON_FUNCTION_DEFINITION, getText()) ) );
-                                return null;
+        return isExternal() ? staticEvaluation(ctx, params, getText(), (Map<String, Object>) body.evaluate( ctx ), this) : staticEvaluation(ctx, params, body);
+    }
+
+    public static Object staticEvaluation(EvaluationContext ctx, List<Param> params, String text, Map<String, Object> conf, FunctionDefNode functionDefNode) {
+        try {
+            // creating a simple algorithm to find the method in java
+            // without using any external libraries in this initial implementation
+            //Map<String, Object> conf = (Map<String, Object>) functionDefNode.body.evaluate( ctx );
+            Map<String, Object> java = (Map<String, Object>) conf.get( "java" );
+            if( java != null ) {
+                // this is a java function
+                String clazzName = (String) java.get( "class" );
+                String methodSignature = (String) java.get( "method signature" );
+                if( clazzName != null && methodSignature != null ) {
+                    Class<?> clazz = Class.forName(clazzName, true, ctx.getRootClassLoader());
+                    String[] mp = parseMethod( methodSignature );
+                    if( mp != null ) {
+                        String methodName = mp[0];
+                        String[] paramTypeNames = parseParams( mp[1] );
+                        int numberOfParams = paramTypeNames.length;
+                        if( numberOfParams == params.size() ) {
+                            Class[] paramTypes = new Class[ numberOfParams ];
+                            for( int i = 0; i < numberOfParams; i++ ) {
+                                paramTypes[i] = getTypeInterceptinException(ctx, paramTypeNames[i], ctx.getRootClassLoader(), functionDefNode);
                             }
+                            return locateMethodOrThrow(ctx, params, clazz, methodName, paramTypes, functionDefNode);
+                        } else {
+                            ctx.notifyEvt(() -> new ASTEventBase(FEELEvent.Severity.ERROR, Msg.createMessage(Msg.PARAMETER_COUNT_MISMATCH_ON_FUNCTION_DEFINITION, text), functionDefNode));
+                            return null;
                         }
                     }
                 }
-                ctx.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.UNABLE_TO_FIND_EXTERNAL_FUNCTION_AS_DEFINED_BY, getText()) ) );
-            } catch( ClassNotFoundException e ) {
-                ctx.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.CLASS_NOT_IN_CL, e.getMessage()), e) );
-            } catch( Exception e ) {
-                ctx.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.ERROR_RESOLVING_EXTERNAL_FUNCTION_AS_DEFINED_BY, getText()), e) );
             }
-            return null;
-        } else {
-            return new CustomFEELFunction( ANONYMOUS, params, body, ctx.current() ); // DMN spec, 10.3.2.13.2 User-defined functions: FEEL functions are lexical closures
+            ctx.notifyEvt(() -> new ASTEventBase(FEELEvent.Severity.ERROR, Msg.createMessage(Msg.UNABLE_TO_FIND_EXTERNAL_FUNCTION_AS_DEFINED_BY, text), functionDefNode));
+        } catch( ClassNotFoundException e ) {
+            ctx.notifyEvt(() -> new ASTEventBase(FEELEvent.Severity.ERROR, Msg.createMessage(Msg.CLASS_NOT_IN_CL, e.getMessage()), functionDefNode, e));
+        } catch( Exception e ) {
+            ctx.notifyEvt(() -> new ASTEventBase(FEELEvent.Severity.ERROR, Msg.createMessage(Msg.ERROR_RESOLVING_EXTERNAL_FUNCTION_AS_DEFINED_BY, text), functionDefNode, e));
         }
+        return null;
     }
 
-    private Object locateMethodOrThrow(EvaluationContext ctx, List<Param> params, Class<?> clazz, String methodName, Class[] paramTypes) throws NoSuchMethodException {
+    public static Object staticEvaluation(EvaluationContext ctx, List<Param> params, BaseNode baseNode) {
+        return new CustomFEELFunction( ANONYMOUS, params, baseNode, ctx.current() ); // DMN spec, 10.3.2.13.2 User-defined functions: FEEL functions are lexical closures
+    }
+
+//    public static Object staticEvaluation(EvaluationContext ctx, List<Param> params, Function<EvaluationContext, Object> bodyExecutor) {
+//        return new CustomFEELFunction( ANONYMOUS, params, bodyExecutor, ctx.current() ); // DMN spec, 10.3.2.13.2 User-defined functions: FEEL functions are lexical closures
+//    }
+
+    private static Object locateMethodOrThrow(EvaluationContext ctx, List<Param> params, Class<?> clazz, String methodName, Class[] paramTypes, FunctionDefNode functionDefNode) throws NoSuchMethodException {
         try {
             Method method = clazz.getMethod( methodName, paramTypes );
             if (!Modifier.isStatic(method.getModifiers())) {
-                throw new NoSuchMethodException("FEEL external function located method is actually not static: "+method.toString());
+                throw new NoSuchMethodException("FEEL external function located method is actually not static: "+ method.toString());
             }
             return new JavaFunction(ANONYMOUS, params, clazz, method);
         } catch (NoSuchMethodException e) {
@@ -147,11 +160,12 @@ public class FunctionDefNode
             String candidateMethods = (candidateMethodsHavingName.isEmpty() ? allCandidateMethods : candidateMethodsHavingName).stream()
                     .map(FunctionDefNode::feelMethodSignature)
                     .collect(Collectors.joining(", "));
-            ctx.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.INVALID_METHOD, candidateMethods), e) );
+
+            ctx.notifyEvt(() -> new ASTEventBase(FEELEvent.Severity.ERROR, Msg.createMessage(Msg.INVALID_METHOD, candidateMethods), functionDefNode, e));
             throw e;
         }
     }
-    
+
     private static String feelMethodSignature(Method method) {
         StringBuilder sb = new StringBuilder(method.getName());
         sb.append("(");
@@ -160,12 +174,12 @@ public class FunctionDefNode
         sb.append(")");
         return sb.toString();
     }
-    
-    private Class<?> getTypeInterceptinException(EvaluationContext ctx, String typeName, ClassLoader classLoader) {
+
+    private static Class<?> getTypeInterceptinException(EvaluationContext ctx, String typeName, ClassLoader classLoader, FunctionDefNode functionDefNode) {
         try {
             return getType(typeName, classLoader);
         } catch (ClassNotFoundException e) {
-            ctx.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.CLASS_NOT_IN_CL, e.getMessage()), e) );
+            ctx.notifyEvt(() -> new ASTEventBase(FEELEvent.Severity.ERROR, Msg.createMessage(Msg.CLASS_NOT_IN_CL, e.getMessage()), functionDefNode));
             return null;
         }
     }
@@ -247,7 +261,7 @@ public class FunctionDefNode
     }
 
     @Override
-    public BlockStmt accept(Visitor<BlockStmt> v) {
+    public <T> T accept(Visitor<T> v) {
         return v.visit(this);
     }
 
