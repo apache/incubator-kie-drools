@@ -32,7 +32,6 @@
 
   <modules>
     <module>integration-tests-trusty-service-common</module>
-    <module>integration-tests-trusty-service-quarkus</module>
     <module>integration-tests-trusty-service-springboot</module>
   </modules>
 
