@@ -19,19 +19,50 @@
 package org.kie.dmn.feel.runtime.functions;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.function.Supplier;
 
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.ast.BaseNode;
 
 public class CustomFEELFunction extends AbstractCustomFEELFunction<BaseNode> {
 
+    private Supplier<Object> bodySupplier;
     public CustomFEELFunction(String name, List<Param> parameters, BaseNode body, EvaluationContext evaluationContext) {
         super(name, parameters, body, evaluationContext);
     }
 
-    @Override
-    protected Object internalInvoke(EvaluationContext ctx) {
-        return this.body.evaluate(ctx);
+    public CustomFEELFunction(String name, List<Param> parameters, Supplier<Object> bodySupplier,
+                              EvaluationContext evaluationContext) {
+        super(name, parameters, null, evaluationContext);
+        this.bodySupplier = bodySupplier;
     }
 
+    @Override
+    protected Object internalInvoke(EvaluationContext ctx) {
+        if (body != null) {
+            return this.body.evaluate(ctx);
+        } else if (bodySupplier != null) {
+            return bodySupplier.get();
+        } else {
+            throw new IllegalStateException("No body nor bodyExecutor defined");
+        }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        CustomFEELFunction that = (CustomFEELFunction) o;
+        return Objects.equals(toString(), that.toString());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(toString());
+    }
 }

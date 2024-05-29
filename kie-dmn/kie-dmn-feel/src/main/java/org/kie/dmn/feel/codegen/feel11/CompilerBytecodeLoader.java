@@ -35,8 +35,12 @@ import com.github.javaparser.ast.comments.JavadocComment;
 import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.NullLiteralExpr;
+import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
+import org.eclipse.jdt.internal.compiler.ast.NullLiteral;
 import org.kie.dmn.feel.util.ClassLoaderUtil;
 import org.kie.memorycompiler.CompilationResult;
 import org.kie.memorycompiler.JavaCompiler;
@@ -180,6 +184,56 @@ public class CompilerBytecodeLoader {
         fieldDeclarations.stream()
                 .filter(fd -> fd.getVariable(0).getName().asString().startsWith("UT"))
                 .sorted(new SortFieldDeclarationStrategy()).forEach(classDecl::addMember);
+
+        if (generateClassListener != null) {
+            generateClassListener.generatedClass(cu);
+        }
+
+        LOG.debug("{}", cu);
+        return cu;
+    }
+
+    public <T> CompilationUnit getCompilationUnit(Class<T> clazz, String templateResourcePath, String cuPackage, String cuClass, String feelExpression, BlockStmt directCodegenResult, String lastVariableName) {
+        CompilationUnit cu = parse(CompilerBytecodeLoader.class.getResourceAsStream(templateResourcePath));
+        cu.setPackageDeclaration(cuPackage);
+        final String className = templateResourcePath.substring( 1, templateResourcePath.length() - 5);
+        ClassOrInterfaceDeclaration classSource = cu.getClassByName(className).orElseThrow(() -> new IllegalArgumentException("Cannot find class by name " + className));
+        classSource.setName( cuClass );
+
+        MethodDeclaration lookupMethod = cu
+                .findFirst(MethodDeclaration.class)
+                .orElseThrow(() -> new RuntimeException("Something unexpected changed in the template."));
+
+        lookupMethod.setComment(new JavadocComment("   FEEL: " + feelExpression + "   "));
+
+        ReturnStmt returnStmt =
+                lookupMethod.findFirst(ReturnStmt.class)
+                        .orElseThrow(() -> new RuntimeException("Something unexpected changed in the template."));
+        lookupMethod.setBody(directCodegenResult);
+        directCodegenResult.addStatement(returnStmt);
+        Expression returnExpression = lastVariableName != null ? new NameExpr(lastVariableName) : new NullLiteralExpr();
+        returnStmt.setExpression(returnExpression);
+
+//        Expression expr;
+//        if (clazz.equals(CompiledFEELUnaryTests.class)) {
+//            expr = new CastExpr(StaticJavaParser.parseType("java.util.List"), new EnclosedExpr(theExpression));
+//        } else {
+//            expr = theExpression;
+//        }
+//        returnStmt.setExpression(expr);
+
+        List<ClassOrInterfaceDeclaration> classDecls = cu.findAll(ClassOrInterfaceDeclaration.class);
+        if (classDecls.size() != 1) {
+            throw new RuntimeException("Something unexpected changed in the template.");
+        }
+//        ClassOrInterfaceDeclaration classDecl = classDecls.get(0);
+
+//        fieldDeclarations.stream()
+//                .filter(fd -> !isUnaryTest(fd))
+//                .sorted(new SortFieldDeclarationStrategy()).forEach(classDecl::addMember);
+//        fieldDeclarations.stream()
+//                .filter(fd -> fd.getVariable(0).getName().asString().startsWith("UT"))
+//                .sorted(new SortFieldDeclarationStrategy()).forEach(classDecl::addMember);
 
         if (generateClassListener != null) {
             generateClassListener.generatedClass(cu);

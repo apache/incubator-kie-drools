@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -32,7 +32,6 @@ import java.util.stream.Collectors;
 import com.github.javaparser.ast.expr.NameExpr;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
-import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.types.BuiltInType;
@@ -141,9 +140,10 @@ public class FunctionDefNode
         return new CustomFEELFunction( ANONYMOUS, params, baseNode, ctx.current() ); // DMN spec, 10.3.2.13.2 User-defined functions: FEEL functions are lexical closures
     }
 
-//    public static Object staticEvaluation(EvaluationContext ctx, List<Param> params, Function<EvaluationContext, Object> bodyExecutor) {
-//        return new CustomFEELFunction( ANONYMOUS, params, bodyExecutor, ctx.current() ); // DMN spec, 10.3.2.13.2 User-defined functions: FEEL functions are lexical closures
-//    }
+    public static Object staticEvaluation(EvaluationContext ctx, List<Param> params, Supplier<Object> bodySupplier) {
+        return new CustomFEELFunction(ANONYMOUS, params, bodySupplier, ctx.current()); // DMN spec, 10.3.2.13.2
+        // User-defined functions: FEEL functions are lexical closures
+    }
 
     private static Object locateMethodOrThrow(EvaluationContext ctx, List<Param> params, Class<?> clazz, String methodName, Class[] paramTypes, FunctionDefNode functionDefNode) throws NoSuchMethodException {
         try {

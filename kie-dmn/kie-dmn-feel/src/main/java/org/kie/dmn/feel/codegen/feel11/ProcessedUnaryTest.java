@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.List;
 
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.stmt.BlockStmt;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.kie.dmn.feel.lang.CompilerContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
@@ -41,6 +42,7 @@ public class ProcessedUnaryTest extends ProcessedFEELUnit {
 
     private final BaseNode ast;
     private DirectCompilerResult compiledExpression;
+    private BlockStmt codegenResult;
 
     public ProcessedUnaryTest(String expressions,
                               CompilerContext ctx, List<FEELProfile> profiles) {
@@ -54,32 +56,17 @@ public class ProcessedUnaryTest extends ProcessedFEELUnit {
         }
     }
 
-    private DirectCompilerResult getCompilerResult() {
-        if (compiledExpression == null) {
-            if (errorListener.isError()) {
-                compiledExpression = CompiledFEELSupport.compiledErrorUnaryTest(
-                        errorListener.event().getMessage());
-            } else {
-                try {
-                    compiledExpression = ast.accept(new ASTCompilerVisitor());
-                } catch (FEELCompilationError e) {
-                    compiledExpression = CompiledFEELSupport.compiledErrorUnaryTest(e.getMessage());
-                }
-            }
-        }
-        return compiledExpression;
-    }
-
     public CompilationUnit getSourceCode() {
-        DirectCompilerResult compilerResult = getCompilerResult();
+        ASTCompilerVisitor astVisitor = new ASTCompilerVisitor();
+        BlockStmt directCodegenResult = getCodegenResult(astVisitor);
         return compiler.getCompilationUnit(
                 CompiledFEELUnaryTests.class,
                 TEMPLATE_RESOURCE,
                 packageName,
                 TEMPLATE_CLASS,
                 expression,
-                compilerResult.getExpression(),
-                compilerResult.getFieldDeclarations());
+                directCodegenResult,
+                astVisitor.getLastVariableName());
     }
 
     public UnaryTestInterpretedExecutableExpression getInterpreted() {
@@ -103,5 +90,46 @@ public class ProcessedUnaryTest extends ProcessedFEELUnit {
     @Override
     public List<UnaryTest> apply(EvaluationContext evaluationContext) {
         return getInterpreted().apply(evaluationContext);
+    }
+
+    //    private DirectCompilerResult getCompilerResult() {
+//        if (compiledExpression == null) {
+//            if (errorListener.isError()) {
+//                compiledExpression = CompiledFEELSupport.compiledErrorUnaryTest(
+//                        errorListener.event().getMessage());
+//            } else {
+//                try {
+//                    compiledExpression = ast.accept(new ASTCompilerVisitor());
+//                } catch (FEELCompilationError e) {
+//                    compiledExpression = CompiledFEELSupport.compiledErrorUnaryTest(e.getMessage());
+//                }
+//            }
+//        }
+//        return compiledExpression;
+//    }
+
+    private BlockStmt getCodegenResult(ASTCompilerVisitor astVisitor) {
+        if (codegenResult == null) {
+            if (errorListener.isError()) {
+                // TODO gcardosi 1206 - restore
+                return null;
+//                compilerResult =
+//                        DirectCompilerResult.of(
+//                                CompiledFEELSupport.compiledErrorExpression(
+//                                        errorListener.event().getMessage()),
+//                                BuiltInType.UNKNOWN);
+            } else {
+                try {
+                    codegenResult = ast.accept(astVisitor);
+                } catch (FEELCompilationError e) {
+                    // TODO gcardosi 1206 - restore
+                    return null;
+//                    compilerResult = DirectCompilerResult.of(
+//                            CompiledFEELSupport.compiledErrorExpression(e.getMessage()),
+//                            BuiltInType.UNKNOWN);
+                }
+            }
+        }
+        return codegenResult;
     }
 }

@@ -21,6 +21,7 @@ package org.kie.dmn.feel.codegen.feel11;
 import java.util.List;
 
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.stmt.BlockStmt;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
@@ -47,6 +48,7 @@ public class ProcessedExpression extends ProcessedFEELUnit {
     private final BaseNode ast;
     private final DefaultMode executionMode;
     private DirectCompilerResult compilerResult;
+    private BlockStmt codegenResult;
 
     private final CompilerBytecodeLoader compilerBytecodeLoader = new CompilerBytecodeLoader();
     private CompiledFEELExpression executableFEELExpression;
@@ -65,15 +67,16 @@ public class ProcessedExpression extends ProcessedFEELUnit {
         if (ast == null) {
             return; // if parsetree/ast is invalid, no need of further processing and early return.
         }
-        List<FEELEvent> heuristicChecks = ast.accept(new ASTHeuristicCheckerVisitor());
-        if (!heuristicChecks.isEmpty()) {
-            for (FEELEventListener listener : ctx.getListeners()) {
-                heuristicChecks.forEach(listener::onEvent);
-            }
-        }
-        if (astVisitor.isVisitedTemporalCandidate()) {
-            ast.accept(new ASTTemporalConstantVisitor(ctx));
-        }
+        // TODO gcardosi 1206 - restore
+//        List<FEELEvent> heuristicChecks = ast.accept(new ASTHeuristicCheckerVisitor());
+//        if (!heuristicChecks.isEmpty()) {
+//            for (FEELEventListener listener : ctx.getListeners()) {
+//                heuristicChecks.forEach(listener::onEvent);
+//            }
+//        }
+//        if (astVisitor.isVisitedTemporalCandidate()) {
+//            ast.accept(new ASTTemporalConstantVisitor(ctx));
+//        }
     }
 
     public CompiledFEELExpression asCompiledFEELExpression() {
@@ -90,38 +93,38 @@ public class ProcessedExpression extends ProcessedFEELUnit {
         return this;
     }
 
-    private DirectCompilerResult getCompilerResult() {
-        if (compilerResult == null) {
-            if (errorListener.isError()) {
-                compilerResult =
-                        DirectCompilerResult.of(
-                                CompiledFEELSupport.compiledErrorExpression(
-                                        errorListener.event().getMessage()),
-                                BuiltInType.UNKNOWN);
-            } else {
-                try {
-                    compilerResult = ast.accept(new ASTCompilerVisitor());
-                } catch (FEELCompilationError e) {
-                    compilerResult = DirectCompilerResult.of(
-                            CompiledFEELSupport.compiledErrorExpression(e.getMessage()),
-                            BuiltInType.UNKNOWN);
-                }
-            }
-        }
-        return compilerResult;
-    }
+//    private DirectCompilerResult getCompilerResult() {
+//        if (compilerResult == null) {
+//            if (errorListener.isError()) {
+//                compilerResult =
+//                        DirectCompilerResult.of(
+//                                CompiledFEELSupport.compiledErrorExpression(
+//                                        errorListener.event().getMessage()),
+//                                BuiltInType.UNKNOWN);
+//            } else {
+//                try {
+//                    compilerResult = ast.accept(new ASTCompilerVisitor());
+//                } catch (FEELCompilationError e) {
+//                    compilerResult = DirectCompilerResult.of(
+//                            CompiledFEELSupport.compiledErrorExpression(e.getMessage()),
+//                            BuiltInType.UNKNOWN);
+//                }
+//            }
+//        }
+//        return compilerResult;
+//    }
 
     public CompilationUnit getSourceCode() {
-        DirectCompilerResult directCompilerResult = getCompilerResult();
+        ASTCompilerVisitor astVisitor = new ASTCompilerVisitor();
+        BlockStmt directCodegenResult = getCodegenResult(astVisitor);
         return compilerBytecodeLoader.getCompilationUnit(
                 CompiledFEELExpression.class,
                 TEMPLATE_RESOURCE,
                 packageName,
                 TEMPLATE_CLASS,
                 expression,
-                directCompilerResult.getExpression(),
-                directCompilerResult.getFieldDeclarations()
-        );
+                directCodegenResult,
+                astVisitor.getLastVariableName());
     }
 
     public InterpretedExecutableExpression getInterpreted() {
@@ -141,4 +144,30 @@ public class ProcessedExpression extends ProcessedFEELUnit {
     public Object apply(EvaluationContext evaluationContext) {
         return executableFEELExpression.apply(evaluationContext);
     }
+
+    private BlockStmt getCodegenResult(ASTCompilerVisitor astVisitor) {
+        if (codegenResult == null) {
+            if (errorListener.isError()) {
+                // TODO gcardosi 1206 - restore
+                return null;
+//                compilerResult =
+//                        DirectCompilerResult.of(
+//                                CompiledFEELSupport.compiledErrorExpression(
+//                                        errorListener.event().getMessage()),
+//                                BuiltInType.UNKNOWN);
+            } else {
+                try {
+                    codegenResult = ast.accept(astVisitor);
+                } catch (FEELCompilationError e) {
+                    // TODO gcardosi 1206 - restore
+                    return null;
+//                    compilerResult = DirectCompilerResult.of(
+//                            CompiledFEELSupport.compiledErrorExpression(e.getMessage()),
+//                            BuiltInType.UNKNOWN);
+                }
+            }
+        }
+        return codegenResult;
+    }
+
 }

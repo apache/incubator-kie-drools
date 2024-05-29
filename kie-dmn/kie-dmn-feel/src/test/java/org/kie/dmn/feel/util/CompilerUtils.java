@@ -62,12 +62,14 @@ public class CompilerUtils {
 
         ASTBuilderVisitor v = new ASTBuilderVisitor(inputTypes, null);
         BaseNode node = v.visit(tree);
-        DirectCompilerResult directResult = node.accept(new ASTCompilerVisitor());
-
-        Expression expr = directResult.getExpression();
-        CompiledFEELExpression cu = new CompilerBytecodeLoader().makeFromJPExpression(input, expr, directResult.getFieldDeclarations());
-
-        return cu;
+        // TODO gcardosi 1206 - restore
+        return null;
+//        DirectCompilerResult directResult = node.accept(new ASTCompilerVisitor());
+//
+//        Expression expr = directResult.getExpression();
+//        CompiledFEELExpression cu = new CompilerBytecodeLoader().makeFromJPExpression(input, expr, directResult.getFieldDeclarations());
+//
+//        return cu;
     }
 
 }

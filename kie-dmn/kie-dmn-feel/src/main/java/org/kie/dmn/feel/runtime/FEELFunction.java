@@ -70,7 +70,7 @@ public interface FEELFunction {
      */
     Object invokeReflectively(EvaluationContext ctx, Object[] params);
 
-    public static class Param {
+    class Param {
 
         public final String name;
         public final Type type;
