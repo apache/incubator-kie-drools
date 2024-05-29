@@ -55,7 +55,6 @@
     <module>monitoring</module>
     <module>process-svg</module>
     <module>task-notification</module>
-    <module>tracing-decision</module>
     <module>task-management</module>
     <module>marshallers</module>
     <module>process-definitions</module>
