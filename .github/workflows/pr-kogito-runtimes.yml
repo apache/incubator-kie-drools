@@ -65,7 +65,7 @@ jobs:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
           definition-file: https://raw.githubusercontent.com/${GROUP:apache}/incubator-kie-kogito-pipelines/${BRANCH:main}/.ci/pull-request-config.yaml
         env:
-          BUILD_MVN_OPTS_CURRENT: '-T 1.5C'
+          BUILD_MVN_OPTS_CURRENT: '-T 1.5C -Dvalidate-formatting'
       - name: Junit Report
         uses: apache/incubator-kie-kogito-pipelines/.ci/actions/action-junit-report@main
         if: ${{ always() }}
