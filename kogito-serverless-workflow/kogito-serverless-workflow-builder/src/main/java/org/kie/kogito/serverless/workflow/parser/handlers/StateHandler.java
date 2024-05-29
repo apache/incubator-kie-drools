@@ -436,7 +436,7 @@ public abstract class StateHandler<S extends State> {
             boolean shouldMerge, FilterableNodeSupplier nodeSupplier) {
 
         if (isTempVariable(actionVarName)) {
-            embeddedSubProcess.variable(actionVarName, new ObjectDataType(JsonNode.class.getCanonicalName()), KogitoTags.VARIABLE_TAGS, KogitoTags.INTERNAL_TAG);
+            embeddedSubProcess.variable(actionVarName, new ObjectDataType(JsonNode.class.getCanonicalName()), Map.of(KogitoTags.VARIABLE_TAGS, KogitoTags.INTERNAL_TAG));
         }
         NodeFactory<?, ?> startNode, currentNode;
         if (fromStateExpr != null) {

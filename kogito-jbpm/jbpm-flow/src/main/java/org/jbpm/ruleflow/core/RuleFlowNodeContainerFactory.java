@@ -18,6 +18,8 @@
  */
 package org.jbpm.ruleflow.core;
 
+import java.util.Map;
+
 import org.jbpm.process.core.Context;
 import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.context.exception.ActionExceptionHandler;
@@ -237,11 +239,11 @@ public abstract class RuleFlowNodeContainerFactory<T extends RuleFlowNodeContain
 
     public abstract T variable(String name, DataType type);
 
+    public abstract T variable(String name, DataType type, Map<String, Object> metadata);
+
     public abstract T variable(String name, DataType type, Object value);
 
-    public abstract T variable(String name, DataType type, String metaDataName, Object metaDataValue);
-
-    public abstract T variable(String name, DataType type, Object value, String metaDataName, Object metaDataValue);
+    public abstract T variable(String name, DataType type, Object value, Map<String, Object> metadata);
 
     private <S extends Context> S getScope(String scopeType, Class<S> scopeClass) {
         ContextContainer contextContainer = (ContextContainer) getNodeContainer();

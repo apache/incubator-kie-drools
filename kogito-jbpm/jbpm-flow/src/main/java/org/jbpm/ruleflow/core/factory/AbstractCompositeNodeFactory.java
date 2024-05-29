@@ -18,6 +18,9 @@
  */
 package org.jbpm.ruleflow.core.factory;
 
+import java.util.Collections;
+import java.util.Map;
+
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.core.datatype.DataType;
@@ -53,28 +56,28 @@ public abstract class AbstractCompositeNodeFactory<T extends RuleFlowNodeContain
 
     @Override
     public T variable(String name, DataType type) {
-        return variable(name, type, null);
+        return variable(name, type, Collections.emptyMap());
     }
 
     @Override
     public T variable(String name, DataType type, Object value) {
-        return variable(name, type, value, null, null);
+        return variable(name, type, value, Collections.emptyMap());
     }
 
     @Override
-    public T variable(String name, DataType type, String metaDataName, Object metaDataValue) {
-        return variable(name, type, null, metaDataName, metaDataValue);
+    public T variable(String name, DataType type, Map<String, Object> metaData) {
+        return variable(name, type, null, metaData);
     }
 
     @Override
-    public T variable(String name, DataType type, Object value, String metaDataName, Object metaDataValue) {
+    public T variable(String name, DataType type, Object value, Map<String, Object> metadata) {
         Variable variable = new Variable();
         variable.setName(name);
         variable.setType(type);
         variable.setValue(value);
         VariableScope variableScope = (VariableScope) getCompositeNode().getDefaultContext(VariableScope.VARIABLE_SCOPE);
-        if (metaDataName != null && metaDataValue != null) {
-            variable.setMetaData(metaDataName, metaDataValue);
+        for (Map.Entry<String, Object> entry : metadata.entrySet()) {
+            variable.setMetaData(entry.getKey(), entry.getValue());
         }
         if (variableScope == null) {
             variableScope = new VariableScope();

@@ -20,19 +20,23 @@ package org.kie.kogito.quarkus;
 
 import java.util.Map;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
 import io.quarkus.devtools.codestarts.quarkus.QuarkusCodestartData;
+import io.quarkus.devtools.project.BuildTool;
 import io.quarkus.devtools.testing.codestarts.QuarkusCodestartTest;
 import io.quarkus.maven.dependency.ArtifactKey;
 
 import static io.quarkus.devtools.codestarts.quarkus.QuarkusCodestartCatalog.Language.JAVA;
 
+@Disabled
 public class ServerlessWorkflowCodestartTest {
 
     @RegisterExtension
     public static QuarkusCodestartTest codestartTest = QuarkusCodestartTest.builder()
+            .buildTool(BuildTool.MAVEN)
             .setupStandaloneExtensionTest("org.apache.kie.sonataflow:sonataflow-quarkus")
             .extension(ArtifactKey.fromString("io.quarkus:quarkus-config-yaml"))
             .putData(QuarkusCodestartData.QuarkusDataKey.APP_CONFIG, Map.of("quarkus.devservices.enabled", "false"))

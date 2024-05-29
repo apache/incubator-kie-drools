@@ -22,11 +22,17 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.drools.io.ClassPathResource;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
+import org.jbpm.bpmn2.tags.ApprovalWithRequiredVariableTagsProcess;
+import org.jbpm.process.core.context.variable.Variable;
+import org.jbpm.ruleflow.core.RuleFlowProcess;
+import org.jbpm.test.utils.ProcessTestHelper;
 import org.junit.jupiter.api.Test;
 import org.kie.api.event.process.ProcessVariableChangedEvent;
+import org.kie.kogito.Application;
 import org.kie.kogito.internal.process.event.DefaultKogitoProcessEventListener;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
@@ -36,10 +42,24 @@ import org.kie.kogito.process.bpmn2.BpmnVariables;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.entry;
 import static org.kie.kogito.internal.process.runtime.KogitoProcessInstance.STATE_ABORTED;
 import static org.kie.kogito.internal.process.runtime.KogitoProcessInstance.STATE_ACTIVE;
 
 public class VariableTagsTest extends JbpmBpmn2TestCase {
+
+    @Test
+    public void testVariableMultipleMetadata() throws Exception {
+        Application app = ProcessTestHelper.newApplication();
+        ApprovalWithRequiredVariableTagsProcess processDefinition = (ApprovalWithRequiredVariableTagsProcess) ApprovalWithRequiredVariableTagsProcess.newProcess(app);
+
+        RuleFlowProcess processEngine = (RuleFlowProcess) processDefinition.process();
+        Optional<Variable> var = processEngine.getVariableScope().getVariables().stream().filter(e -> "approver".equals(e.getName())).findAny();
+        assertThat(var).isPresent();
+        assertThat(var.get().getMetaData()).hasSize(3);
+        assertThat(var.get().getMetaData()).containsExactly(entry("approver", "approver"), entry("customTags", "required"), entry("ItemSubjectRef", "ItemDefinition_9"));
+
+    }
 
     @Test
     public void testProcessWithMissingRequiredVariable() throws Exception {

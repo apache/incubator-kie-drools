@@ -32,11 +32,11 @@ import org.jbpm.ruleflow.core.WorkflowElementIdentifierFactory;
 import org.kie.api.definition.process.NodeContainer;
 import org.kie.api.definition.process.WorkflowElementIdentifier;
 import org.kie.kogito.internal.process.runtime.KogitoNode;
-import org.kie.kogito.internal.utils.KogitoTags;
 
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.expr.ClassExpr;
 import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
@@ -102,13 +102,28 @@ public abstract class AbstractVisitor {
                 if (!visitedVariables.add(variable.getName())) {
                     continue;
                 }
-                String tags = (String) variable.getMetaData(KogitoTags.VARIABLE_TAGS);
+
+                Map<String, Object> metaData = variable.getMetaData();
+                NodeList<Expression> parameters = new NodeList<>();
+                for (Map.Entry<String, Object> entry : metaData.entrySet().stream().filter(e -> e.getValue() != null).toList()) {
+                    parameters.add(new StringLiteralExpr(entry.getKey()));
+                    parameters.add(new StringLiteralExpr(entry.getValue().toString()));
+                }
+
+                Expression metadataExpression = new FieldAccessExpr(new NameExpr(Map.class.getPackage().getName()), Map.class.getSimpleName());
+                metadataExpression = new MethodCallExpr(metadataExpression, "of", parameters);
                 Object defaultValue = variable.getValue();
                 body.tryAddImportToParentCompilationUnit(variable.getType().getClass());
-                body.addStatement(getFactoryMethod(field, METHOD_VARIABLE, new StringLiteralExpr(variable.getName()),
-                        new MethodCallExpr(DataTypeResolver.class.getName() + ".fromClass", new ClassExpr(parseClassOrInterfaceType(variable.getType().getStringType()).removeTypeArguments())),
-                        defaultValue != null ? new StringLiteralExpr(defaultValue.toString()) : new NullLiteralExpr(), new StringLiteralExpr(KogitoTags.VARIABLE_TAGS),
-                        tags != null ? new StringLiteralExpr(tags) : new NullLiteralExpr()));
+
+                NodeList<Expression> variableFactoryParameters = new NodeList<>();
+                variableFactoryParameters.add(new StringLiteralExpr(variable.getName()));
+                variableFactoryParameters
+                        .add(new MethodCallExpr(DataTypeResolver.class.getName() + ".fromClass", new ClassExpr(parseClassOrInterfaceType(variable.getType().getStringType()).removeTypeArguments())));
+                if (defaultValue != null) {
+                    variableFactoryParameters.add(new StringLiteralExpr(defaultValue.toString()));
+                }
+                variableFactoryParameters.add(metadataExpression);
+                body.addStatement(getFactoryMethod(field, METHOD_VARIABLE, variableFactoryParameters.stream().toArray(Expression[]::new)));
             }
         }
     }
