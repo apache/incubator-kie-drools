@@ -27,6 +27,8 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalAccessor;
+import java.time.temporal.TemporalQueries;
+import java.time.temporal.TemporalQuery;
 import java.util.Optional;
 import java.util.function.BiPredicate;
 
@@ -39,6 +41,14 @@ public class DateTimeEvalHelper {
 
     public static ZonedDateTime coerceDateTime(final LocalDate value) {
         return ZonedDateTime.of(value, LocalTime.of(0, 0, 0, 0), ZoneOffset.UTC);
+    }
+    
+    public static String toParsableString(TemporalAccessor temporalAccessor) {
+        int hour = temporalAccessor.get(ChronoField.HOUR_OF_DAY);
+        int minute = temporalAccessor.get(ChronoField.MINUTE_OF_HOUR);
+        int second = temporalAccessor.get(ChronoField.SECOND_OF_MINUTE);
+        ZoneId query = temporalAccessor.query(TemporalQueries.zoneId());
+        return String.format("%02d:%02d:%02d@%s", hour, minute, second, query.getId());
     }
 
     /**

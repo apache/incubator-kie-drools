@@ -18,10 +18,13 @@
  */
 package org.kie.dmn.feel.codegen.feel11;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.OffsetTime;
 import java.time.ZonedDateTime;
+import java.time.temporal.TemporalAccessor;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -88,6 +91,7 @@ import org.kie.dmn.feel.lang.ast.Visitor;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.dmn.feel.runtime.FEELFunction;
+import org.kie.dmn.feel.util.DateTimeEvalHelper;
 import org.kie.dmn.feel.util.StringEvalHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -97,7 +101,6 @@ import static com.github.javaparser.StaticJavaParser.parseExpression;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.ASLIST_S;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.ATLITERALNODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.BETWEENNODE_CT;
-import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.BIG_DECIMAL_N;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.BOOLEANNODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.COMPARABLEPERIOD_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.COMPARABLEPERIOD_N;
@@ -108,7 +111,10 @@ import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.CONTEXTTYPENODE_C
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.CTYPENODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.DASHNODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.DETERMINEOPERATOR_S;
+import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.DURATION_CT;
+import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.DURATION_N;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.FEELCTX_N;
+import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.FEEL_TIME_S;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.FILTEREXPRESSIONNODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.FOREXPRESSIONNODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.FORMALPARAMETERNODE_CT;
@@ -140,6 +146,8 @@ import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.NOTIFYCOMPILATION
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.NULLNODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.NUMBEREVALHELPER_N;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.NUMBERNODE_CT;
+import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.OFFSETTIME_CT;
+import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.OFFSETTIME_N;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.OF_S;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.PARSE_S;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.PATHEXPRESSIONNODE_CT;
@@ -149,14 +157,17 @@ import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.QUANTIFIEDEXPRESS
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.RANGENODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.SIGNEDUNARYNODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.STRINGNODE_CT;
+import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.TEMPORALACCESSOR_CT;
+import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.TEMPORALACCESSOR_N;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.TEMPORALCONSTANTNODE_CT;
+import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.TIMEFUNCTION_N;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.UNARYTESTLISTNODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.UNARYTESTNODE_CT;
-import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.VALUEOF_S;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.VAR_S;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.ZONED_DATE_TIME_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.ZONED_DATE_TIME_N;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.ZONE_ID_N;
+import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.ZONE_OFFSET_N;
 import static org.kie.dmn.feel.codegen.feel11.Constants.BUILTINTYPE_E;
 
 public class ASTCompilerVisitor implements Visitor<BlockStmt> {
@@ -649,11 +660,7 @@ public class ASTCompilerVisitor implements Visitor<BlockStmt> {
         if (object == null) {
             return new NullLiteralExpr();
         }
-        if (object instanceof String string) {
-            return new StringLiteralExpr(StringEvalHelper.escapeInnerDoubleQuotes(string));
-        } else if (object instanceof Number number) {
-            return new IntegerLiteralExpr(number.toString());
-        } else if (object instanceof ComparablePeriod comparablePeriod) {
+        if (object instanceof ComparablePeriod comparablePeriod) {
             String variableName = getNextVariableName();
             NodeList arguments = NodeList.nodeList(new StringLiteralExpr(comparablePeriod.asPeriod().toString()));
 
@@ -663,6 +670,16 @@ public class ASTCompilerVisitor implements Visitor<BlockStmt> {
                                                                                                   COMPARABLEPERIOD_N, arguments);
             addExpression(variableDeclarationExpr, variableName);
             return new NameExpr(variableName);
+        } else if (object instanceof Duration duration) {
+            String variableName = getNextVariableName();
+            NodeList arguments = NodeList.nodeList(new StringLiteralExpr(duration.toString()));
+            VariableDeclarationExpr variableDeclarationExpr = getVariableDeclaratorWithMethodCall(variableName,
+                                                                                                  DURATION_CT,
+                                                                                                  PARSE_S,
+                                                                                                  DURATION_N,
+                                                                                                  arguments);
+            addExpression(variableDeclarationExpr, variableName);
+            return new NameExpr(variableName);
         } else if (object instanceof LocalDate localDate) {
             String variableName = getNextVariableName();
             NodeList arguments = NodeList.nodeList(new IntegerLiteralExpr(localDate.getYear()),
@@ -670,8 +687,10 @@ public class ASTCompilerVisitor implements Visitor<BlockStmt> {
                                                    new IntegerLiteralExpr(localDate.getDayOfMonth()));
 
             VariableDeclarationExpr variableDeclarationExpr = getVariableDeclaratorWithMethodCall(variableName,
-                                                                                                  LOCAL_DATE_CT, OF_S
-                    , LOCAL_DATE_N, arguments);
+                                                                                                  LOCAL_DATE_CT,
+                                                                                                  OF_S,
+                                                                                                  LOCAL_DATE_N,
+                                                                                                  arguments);
             addExpression(variableDeclarationExpr, variableName);
             return new NameExpr(variableName);
         } else if (object instanceof LocalDateTime localDateTime) {
@@ -702,6 +721,27 @@ public class ASTCompilerVisitor implements Visitor<BlockStmt> {
                                                                                                   arguments);
             addExpression(variableDeclarationExpr, variableName);
             return new NameExpr(variableName);
+        } else if (object instanceof Number number) {
+            return new IntegerLiteralExpr(number.toString());
+        } else if (object instanceof OffsetTime offsetTime) {
+            String variableName = getNextVariableName();
+            Expression zoneOffsetExpression = new MethodCallExpr(ZONE_OFFSET_N,
+                                                                 OF_S,
+                                                                 NodeList.nodeList(new StringLiteralExpr(offsetTime.getOffset().getId())));
+            NodeList arguments = NodeList.nodeList(new IntegerLiteralExpr(offsetTime.getHour()),
+                                                   new IntegerLiteralExpr(offsetTime.getMinute()),
+                                                   new IntegerLiteralExpr(offsetTime.getSecond()),
+                                                   new IntegerLiteralExpr(offsetTime.getNano()),
+                                                   zoneOffsetExpression);
+            VariableDeclarationExpr variableDeclarationExpr = getVariableDeclaratorWithMethodCall(variableName,
+                                                                                                  OFFSETTIME_CT,
+                                                                                                  OF_S,
+                                                                                                  OFFSETTIME_N,
+                                                                                                  arguments);
+            addExpression(variableDeclarationExpr, variableName);
+            return new NameExpr(variableName);
+        } else if (object instanceof String string) {
+            return new StringLiteralExpr(StringEvalHelper.escapeInnerDoubleQuotes(string));
         } else if (object instanceof ZonedDateTime zonedDateTime) {
             String variableName = getNextVariableName();
             Expression zoneIdExpression = new MethodCallExpr(ZONE_ID_N, OF_S,
@@ -719,6 +759,18 @@ public class ASTCompilerVisitor implements Visitor<BlockStmt> {
                                                                                                   OF_S,
                                                                                                   ZONED_DATE_TIME_N,
                                                                                                   arguments);
+            addExpression(variableDeclarationExpr, variableName);
+            return new NameExpr(variableName);
+        } else if (object instanceof TemporalAccessor temporalAccessor) {
+            // FallBack in case of Parse or other unmanaged classes - keep at the end
+            String variableName = getNextVariableName();
+            String parsedString = DateTimeEvalHelper.toParsableString(temporalAccessor);
+            Expression feelTimeExpression = new FieldAccessExpr(TIMEFUNCTION_N, FEEL_TIME_S);
+            VariableDeclarationExpr variableDeclarationExpr = getVariableDeclaratorWithMethodCall(variableName,
+                                                                                                  TEMPORALACCESSOR_CT,
+                                                                                                  PARSE_S,
+                                                                                                  feelTimeExpression,
+                                                                                                  NodeList.nodeList(new StringLiteralExpr(parsedString)));
             addExpression(variableDeclarationExpr, variableName);
             return new NameExpr(variableName);
         } else {

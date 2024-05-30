@@ -19,11 +19,15 @@
 package org.kie.dmn.feel.codegen.feel11;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.OffsetTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.time.temporal.TemporalAccessor;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -73,6 +77,7 @@ import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.UnaryTest;
+import org.kie.dmn.feel.runtime.functions.TimeFunction;
 import org.kie.dmn.feel.util.NumberEvalHelper;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
@@ -90,6 +95,7 @@ public class CodegenConstants {
     public static final String DETERMINEOPERATOR_S = "determineOperator";
     public static final String EVALUATE_S = "evaluate";
     public static final String FEELCTX_S = "feelExprCtx";
+    public static final String FEEL_TIME_S = "FEEL_TIME";
     public static final String GETBIGDECIMALORNULL_S  = "getBigDecimalOrNull";
     public static final String INSTANCE_S = "INSTANCE";
     public static final String NOTIFYCOMPILATIONERROR_S = "notifyCompilationError";
@@ -104,11 +110,15 @@ public class CodegenConstants {
     // java types
     public static final NameExpr ARRAYS_N = new NameExpr(Arrays.class.getCanonicalName());
     public static final NameExpr BIG_DECIMAL_N = new NameExpr(BigDecimal.class.getCanonicalName());
+    public static final NameExpr DURATION_N = new NameExpr(Duration.class.getCanonicalName());
     public static final NameExpr LOCAL_DATE_N = new NameExpr(LocalDate.class.getCanonicalName());
     public static final NameExpr LOCAL_DATE_TIME_N = new NameExpr(LocalDateTime.class.getCanonicalName());
     public static final NameExpr LOCAL_TIME_N = new NameExpr(LocalTime.class.getCanonicalName());
+    public static final NameExpr OFFSETTIME_N = new NameExpr(OffsetTime.class.getCanonicalName());
+    public static final NameExpr TEMPORALACCESSOR_N = new NameExpr(TemporalAccessor.class.getCanonicalName());
     public static final NameExpr ZONED_DATE_TIME_N = new NameExpr(ZonedDateTime.class.getCanonicalName());
     public static final NameExpr ZONE_ID_N = new NameExpr(ZoneId.class.getCanonicalName());
+    public static final NameExpr ZONE_OFFSET_N = new NameExpr(ZoneOffset.class.getCanonicalName());
 
     // DMN
     public static final NameExpr INFIXOPERATOR_N = new NameExpr(InfixOperator.class.getCanonicalName());
@@ -116,6 +126,8 @@ public class CodegenConstants {
     public static final NameExpr COMPARABLEPERIOD_N = new NameExpr(ComparablePeriod.class.getCanonicalName());
     public static final NameExpr FEELCTX_N = new NameExpr(FEELCTX_S);
     public static final NameExpr NUMBEREVALHELPER_N = new NameExpr(NumberEvalHelper.class.getCanonicalName());
+    public static final NameExpr TIMEFUNCTION_N = new NameExpr(TimeFunction.class.getCanonicalName());
+
     // Type
     public static final Type LIST_T = parseType(List.class.getCanonicalName());
 
@@ -123,14 +135,17 @@ public class CodegenConstants {
     // java types
     public static final ClassOrInterfaceType BIGDECIMAL_CT = parseClassOrInterfaceType(BigDecimal.class.getCanonicalName());
     public static final ClassOrInterfaceType BOOLEAN_CT = parseClassOrInterfaceType(Boolean.class.getCanonicalName());
+    public static final ClassOrInterfaceType DURATION_CT = parseClassOrInterfaceType(Duration.class.getCanonicalName());
     public static final ClassOrInterfaceType HASHMAP_CT = parseClassOrInterfaceType(HashMap.class.getCanonicalName());
     public static final ClassOrInterfaceType FUNCTION_CT = parseClassOrInterfaceType("java.util.function.Function<EvaluationContext, Object>");
     public static final ClassOrInterfaceType LOCAL_DATE_CT = parseClassOrInterfaceType(LocalDate.class.getCanonicalName());
     public static final ClassOrInterfaceType LOCAL_DATE_TIME_CT = parseClassOrInterfaceType(LocalDateTime.class.getCanonicalName());
     public static final ClassOrInterfaceType LOCAL_TIME_CT = parseClassOrInterfaceType(LocalTime.class.getCanonicalName());
+    public static final ClassOrInterfaceType OFFSETTIME_CT = parseClassOrInterfaceType(OffsetTime.class.getCanonicalName());
     public static final ClassOrInterfaceType MAP_CT = parseClassOrInterfaceType(Map.class.getCanonicalName());
     public static final ClassOrInterfaceType OBJECT_CT = parseClassOrInterfaceType(Object.class.getCanonicalName());
     public static final ClassOrInterfaceType STRING_CT = parseClassOrInterfaceType(String.class.getCanonicalName());
+    public static final ClassOrInterfaceType TEMPORALACCESSOR_CT = parseClassOrInterfaceType(TemporalAccessor.class.getCanonicalName());
     public static final ClassOrInterfaceType ZONED_DATE_TIME_CT = parseClassOrInterfaceType(ZonedDateTime.class.getCanonicalName());
 
     // DMN
