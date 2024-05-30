@@ -18,6 +18,10 @@
  */
 package org.kie.dmn.feel.codegen.feel11;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -30,6 +34,7 @@ import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.BooleanLiteralExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
+import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
@@ -43,6 +48,7 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.ast.ASTNode;
 import org.kie.dmn.feel.lang.ast.AtLiteralNode;
+import org.kie.dmn.feel.lang.ast.BaseNode;
 import org.kie.dmn.feel.lang.ast.BetweenNode;
 import org.kie.dmn.feel.lang.ast.BooleanNode;
 import org.kie.dmn.feel.lang.ast.CTypeNode;
@@ -74,49 +80,68 @@ import org.kie.dmn.feel.lang.ast.QuantifiedExpressionNode;
 import org.kie.dmn.feel.lang.ast.RangeNode;
 import org.kie.dmn.feel.lang.ast.SignedUnaryNode;
 import org.kie.dmn.feel.lang.ast.StringNode;
+import org.kie.dmn.feel.lang.ast.TemporalConstantNode;
 import org.kie.dmn.feel.lang.ast.TypeNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestListNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestNode;
 import org.kie.dmn.feel.lang.ast.Visitor;
 import org.kie.dmn.feel.lang.types.BuiltInType;
+import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
+import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.dmn.feel.util.StringEvalHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static com.github.javaparser.StaticJavaParser.parseExpression;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.ASLIST_S;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.ATLITERALNODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.BETWEENNODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.BIG_DECIMAL_N;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.BOOLEANNODE_CT;
-import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.BOOLEAN_CT;
+import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.COMPARABLEPERIOD_CT;
+import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.COMPARABLEPERIOD_N;
+import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.COMPILEDFEELSUPPORT_N;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.CONTEXTENTRYNODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.CONTEXTNODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.CONTEXTTYPENODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.CTYPENODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.DASHNODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.DETERMINEOPERATOR_S;
+import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.FEELCTX_N;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.FILTEREXPRESSIONNODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.FOREXPRESSIONNODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.FORMALPARAMETERNODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.FUNCTIONDEFNODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.FUNCTIONINVOCATIONNODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.FUNCTIONTYPENODE_CT;
+import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.GETBIGDECIMALORNULL_S;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.HASHMAP_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.IFEXPRESSIONNODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.INFIXOPERATOR_N;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.INFIXOPNODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.INNODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.INSTANCEOFNODE_CT;
+import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.INSTANCE_S;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.ITERATIONCONTEXTNODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.LISTNODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.LISTTYPENODE_CT;
+import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.LOCAL_DATE_CT;
+import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.LOCAL_DATE_N;
+import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.LOCAL_DATE_TIME_CT;
+import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.LOCAL_DATE_TIME_N;
+import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.LOCAL_TIME_CT;
+import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.LOCAL_TIME_N;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.MAP_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.NAMEDEFNODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.NAMEDPARAMETERNODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.NAMEREFNODE_CT;
+import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.NOTIFYCOMPILATIONERROR_S;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.NULLNODE_CT;
+import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.NUMBEREVALHELPER_N;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.NUMBERNODE_CT;
+import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.OF_S;
+import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.PARSE_S;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.PATHEXPRESSIONNODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.PUT_S;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.QUALIFIEDNAMENODE_CT;
@@ -124,10 +149,14 @@ import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.QUANTIFIEDEXPRESS
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.RANGENODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.SIGNEDUNARYNODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.STRINGNODE_CT;
+import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.TEMPORALCONSTANTNODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.UNARYTESTLISTNODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.UNARYTESTNODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.VALUEOF_S;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.VAR_S;
+import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.ZONED_DATE_TIME_CT;
+import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.ZONED_DATE_TIME_N;
+import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.ZONE_ID_N;
 import static org.kie.dmn.feel.codegen.feel11.Constants.BUILTINTYPE_E;
 
 public class ASTCompilerVisitor implements Visitor<BlockStmt> {
@@ -136,6 +165,7 @@ public class ASTCompilerVisitor implements Visitor<BlockStmt> {
     private final BlockStmt toPopulate;
     private final AtomicInteger variableCounter;
     private AtomicReference<String> lastVariableName = new AtomicReference<>();
+    private static final String EXTENDED_FUNCTION_PACKAGE = "org.kie.dmn.feel.runtime.functions.extended";
 
     public ASTCompilerVisitor() {
         toPopulate = new BlockStmt();
@@ -149,53 +179,50 @@ public class ASTCompilerVisitor implements Visitor<BlockStmt> {
 
     @Override
     public BlockStmt visit(AtLiteralNode n) {
-        n.getStringLiteral().accept(this);
-        Expression stringLiteralExpression = new NameExpr(lastVariableName.get());
-        return addNodeInstantiationStatement(ATLITERALNODE_CT, NodeList.nodeList(stringLiteralExpression), n.getText());
+        Expression stringLiteralExpression = getNodeExpression(n.getStringLiteral());
+        return addVariableDeclaratorWithObjectCreation(ATLITERALNODE_CT, NodeList.nodeList(stringLiteralExpression),
+                                                       n.getText());
     }
 
     @Override
     public BlockStmt visit(BetweenNode n) {
-        n.getValue().accept(this);
-        Expression valueExpression = new NameExpr(lastVariableName.get());
-        n.getStart().accept(this);
-        Expression startExpression = new NameExpr(lastVariableName.get());
-        n.getEnd().accept(this);
-        Expression endExpression = new NameExpr(lastVariableName.get());
-        return addNodeInstantiationStatement(BETWEENNODE_CT, NodeList.nodeList(valueExpression, startExpression, endExpression), n.getText());
+        Expression valueExpression = getNodeExpression(n.getValue());
+        Expression startExpression = getNodeExpression(n.getStart());
+        Expression endExpression = getNodeExpression(n.getEnd());
+        return addVariableDeclaratorWithObjectCreation(BETWEENNODE_CT, NodeList.nodeList(valueExpression,
+                                                                                         startExpression,
+                                                                                         endExpression), n.getText());
     }
 
     @Override
     public BlockStmt visit(BooleanNode n) {
         Expression valueExpression = new BooleanLiteralExpr(n.getValue());
-        return addNodeInstantiationStatement(BOOLEANNODE_CT, NodeList.nodeList(valueExpression), n.getText());
+        return addVariableDeclaratorWithObjectCreation(BOOLEANNODE_CT, NodeList.nodeList(valueExpression), n.getText());
     }
 
     @Override
     public BlockStmt visit(ContextEntryNode n) {
-        n.getName().accept(this);
-        Expression nameExpression = new NameExpr(lastVariableName.get());
-        n.getValue().accept(this);
-        Expression valueExpression = new NameExpr(lastVariableName.get());
-        return addNodeInstantiationStatement(CONTEXTENTRYNODE_CT, NodeList.nodeList(nameExpression, valueExpression), n.getText());
+        Expression nameExpression = getNodeExpression(n.getName());
+        Expression valueExpression = getNodeExpression(n.getValue());
+        return addVariableDeclaratorWithObjectCreation(CONTEXTENTRYNODE_CT, NodeList.nodeList(nameExpression,
+                                                                                              valueExpression),
+                                                       n.getText());
     }
 
     @Override
     public BlockStmt visit(ContextNode n) {
-        List entryNodesExpressions = n.getEntries().stream().map(entryNode -> {
-                    entryNode.accept(this);
-                    return new NameExpr(lastVariableName.get());
-                })
+        List entryNodesExpressions = n.getEntries().stream().map(entryNode -> getNodeExpression(entryNode))
                 .toList();
-        return addNodeInstantiationStatement(CONTEXTNODE_CT, NodeList.nodeList(getListExpression(entryNodesExpressions)), n.getText());
+        return addVariableDeclaratorWithObjectCreation(CONTEXTNODE_CT,
+                                                       NodeList.nodeList(getListExpression(entryNodesExpressions)),
+                                                       n.getText());
     }
 
     @Override
     public BlockStmt visit(ContextTypeNode n) {
         Map<Expression, Expression> genExpressions = new HashMap<>(); // THe key is the StringLiteralExpr of the original key; the value is the NameExpr pointing at generated variable
         for (Map.Entry<String, TypeNode> kv : n.getGen().entrySet()) {
-            kv.getValue().accept(this);
-            genExpressions.put(new StringLiteralExpr(kv.getKey()), new NameExpr(lastVariableName.get()));
+            genExpressions.put(new StringLiteralExpr(kv.getKey()), getNodeExpression(kv.getValue()));
         }
         // Creating the map
         String mapVariableName = getNextVariableName();
@@ -204,16 +231,17 @@ public class ASTCompilerVisitor implements Visitor<BlockStmt> {
         final ObjectCreationExpr objectCreationExpr = new ObjectCreationExpr(null, HASHMAP_CT, NodeList.nodeList());
         mapVariableDeclarator.setInitializer(objectCreationExpr);
         VariableDeclarationExpr mapVariableDeclarationExpr = new VariableDeclarationExpr(mapVariableDeclarator);
-        addNodeInstantiationStatement(mapVariableDeclarationExpr, mapVariableName);
+        addExpression(mapVariableDeclarationExpr, mapVariableName);
         // Populating the map
         Expression mapVariableExpression = new NameExpr(mapVariableName);
         genExpressions.forEach((key, value) -> {
             MethodCallExpr putExpression = new MethodCallExpr(mapVariableExpression, PUT_S);
             putExpression.addArgument(key);
             putExpression.addArgument(value);
-            addNodeInstantiationStatement(putExpression);
+            addExpression(putExpression);
         });
-        return addNodeInstantiationStatement(CONTEXTTYPENODE_CT, NodeList.nodeList(mapVariableExpression), n.getText());
+        return addVariableDeclaratorWithObjectCreation(CONTEXTTYPENODE_CT, NodeList.nodeList(mapVariableExpression),
+                                                       n.getText());
     }
 
     @Override
@@ -223,156 +251,139 @@ public class ASTCompilerVisitor implements Visitor<BlockStmt> {
         }
         BuiltInType feelCType = (BuiltInType) n.getType();
         Expression typeExpression = new FieldAccessExpr(BUILTINTYPE_E, feelCType.name());
-        return addNodeInstantiationStatement(CTYPENODE_CT, NodeList.nodeList(typeExpression), n.getText());
+        return addVariableDeclaratorWithObjectCreation(CTYPENODE_CT, NodeList.nodeList(typeExpression), n.getText());
     }
 
     @Override
     public BlockStmt visit(DashNode n) {
-        return addNodeInstantiationStatement(DASHNODE_CT, NodeList.nodeList(), n.getText());
+        return addVariableDeclaratorWithObjectCreation(DASHNODE_CT, NodeList.nodeList(), n.getText());
     }
 
     @Override
     public BlockStmt visit(ForExpressionNode n) {
-        List iterationContextsExpressions = n.getIterationContexts().stream().map(elementNode -> {
-                    elementNode.accept(this);
-                    return new NameExpr(lastVariableName.get());
-                })
+        List iterationContextsExpressions =
+                n.getIterationContexts().stream().map(elementNode -> getNodeExpression(elementNode))
                 .toList();
-        n.getExpression().accept(this);
-        Expression expressionExpression = new NameExpr(lastVariableName.get());
-        return addNodeInstantiationStatement(FOREXPRESSIONNODE_CT, NodeList.nodeList(getListExpression(iterationContextsExpressions),
-                                                                                   expressionExpression), n.getText());
+        Expression expressionExpression = getNodeExpression(n.getExpression());
+        return addVariableDeclaratorWithObjectCreation(FOREXPRESSIONNODE_CT,
+                                                       NodeList.nodeList(getListExpression(iterationContextsExpressions),
+                                                                         expressionExpression),
+                                                       n.getText());
     }
 
     @Override
     public BlockStmt visit(FilterExpressionNode n) {
-        n.getExpression().accept(this);
-        Expression expressionExpression = new NameExpr(lastVariableName.get());
-        n.getFilter().accept(this);
-        Expression filterExpression = new NameExpr(lastVariableName.get());
-        return addNodeInstantiationStatement(FILTEREXPRESSIONNODE_CT, NodeList.nodeList(expressionExpression,
-                                                                                     filterExpression), n.getText());
+        Expression expressionExpression = getNodeExpression(n.getExpression());
+        Expression filterExpression = getNodeExpression(n.getFilter());
+        return addVariableDeclaratorWithObjectCreation(FILTEREXPRESSIONNODE_CT, NodeList.nodeList(expressionExpression,
+                                                                                                  filterExpression),
+                                                       n.getText());
     }
 
     @Override
     public BlockStmt visit(FormalParameterNode n) {
-        n.getName().accept(this);
-        Expression nameExpression = new NameExpr(lastVariableName.get());
-        n.getType().accept(this);
-        Expression typeExpression = new NameExpr(lastVariableName.get());
-        return addNodeInstantiationStatement(FORMALPARAMETERNODE_CT, NodeList.nodeList(nameExpression, typeExpression), n.getText());
+        Expression nameExpression = getNodeExpression(n.getName());
+        Expression typeExpression = getNodeExpression(n.getType());
+        return addVariableDeclaratorWithObjectCreation(FORMALPARAMETERNODE_CT, NodeList.nodeList(nameExpression,
+                                                                                                 typeExpression),
+                                                       n.getText());
     }
 
     @Override
     public BlockStmt visit(FunctionDefNode n) {
-        List formalParametersExpressions = n.getFormalParameters().stream().map(elementNode -> {
-                    elementNode.accept(this);
-                    return new NameExpr(lastVariableName.get());
-                })
+        List formalParametersExpressions = n.getFormalParameters().stream()
+                .map(elementNode -> getNodeExpression(elementNode))
                 .toList();
-        n.getBody().accept(this);
-        Expression bodyExpression = new NameExpr(lastVariableName.get());
-        return addNodeInstantiationStatement(FUNCTIONDEFNODE_CT, NodeList.nodeList(getListExpression(formalParametersExpressions),
-                                                                                   new BooleanLiteralExpr(n.isExternal()),
-                                                                                   bodyExpression), n.getText());
+        Expression bodyExpression = getNodeExpression(n.getBody());
+        return addVariableDeclaratorWithObjectCreation(FUNCTIONDEFNODE_CT,
+                                                       NodeList.nodeList(getListExpression(formalParametersExpressions),
+                                                                         new BooleanLiteralExpr(n.isExternal()),
+                                                                         bodyExpression),
+                                                       n.getText());
     }
 
     @Override
     public BlockStmt visit(FunctionInvocationNode n) {
-        n.getName().accept(this);
-        Expression nameExpression = new NameExpr(lastVariableName.get());
-        n.getParams().accept(this);
-        Expression paramsExpression = new NameExpr(lastVariableName.get());
-        Expression tcFoldedExpression;
-        if (n.getTcFolded() != null) {
-            n.getTcFolded().accept(this);
-            tcFoldedExpression = new NameExpr(lastVariableName.get());
-        } else {
-            tcFoldedExpression = new NullLiteralExpr();
-        }
-        return addNodeInstantiationStatement(FUNCTIONINVOCATIONNODE_CT, NodeList.nodeList(nameExpression,
-                                                                                          paramsExpression, tcFoldedExpression), n.getText());
+        Expression nameExpression = getNodeExpression(n.getName());
+        Expression paramsExpression = getNodeExpression(n.getParams());
+        Expression tcFoldedExpression = getNodeExpression(n.getTcFolded());
+        return addVariableDeclaratorWithObjectCreation(FUNCTIONINVOCATIONNODE_CT, NodeList.nodeList(nameExpression,
+                                                                                                    paramsExpression,
+                                                                                                    tcFoldedExpression), n.getText());
     }
 
     @Override
     public BlockStmt visit(FunctionTypeNode n) {
-        List argTypesExpressions = n.getArgTypes().stream().map(argTypeNode -> {
-                    argTypeNode.accept(this);
-                    return new NameExpr(lastVariableName.get());
-                })
+        List argTypesExpressions = n.getArgTypes().stream().map(argTypeNode -> getNodeExpression(argTypeNode))
                 .toList();
-        n.getRetType().accept(this);
-        Expression retTypeExpression = new NameExpr(lastVariableName.get());
-        return addNodeInstantiationStatement(FUNCTIONTYPENODE_CT, NodeList.nodeList(getListExpression(argTypesExpressions),
-                                                                                    retTypeExpression), n.getText());
+        Expression retTypeExpression = getNodeExpression(n.getRetType());
+        return addVariableDeclaratorWithObjectCreation(FUNCTIONTYPENODE_CT,
+                                                       NodeList.nodeList(getListExpression(argTypesExpressions),
+                                                                         retTypeExpression),
+                                                       n.getText());
     }
 
     @Override
     public BlockStmt visit(IfExpressionNode n) {
-        n.getCondition().accept(this);
-        Expression conditionExpression = new NameExpr(lastVariableName.get());
-        n.getThenExpression().accept(this);
-        Expression thenExpression = new NameExpr(lastVariableName.get());
-        n.getElseExpression().accept(this);
-        Expression elseExpression = new NameExpr(lastVariableName.get());
-        return addNodeInstantiationStatement(IFEXPRESSIONNODE_CT, NodeList.nodeList(conditionExpression, thenExpression, elseExpression), n.getText());
+        Expression conditionExpression = getNodeExpression(n.getCondition());
+        Expression thenExpression = getNodeExpression(n.getThenExpression());
+        Expression elseExpression = getNodeExpression(n.getElseExpression());
+        return addVariableDeclaratorWithObjectCreation(IFEXPRESSIONNODE_CT, NodeList.nodeList(conditionExpression,
+                                                                                              thenExpression,
+                                                                                              elseExpression),
+                                                       n.getText());
     }
 
     @Override
     public BlockStmt visit(InfixOpNode n) {
         Expression determineOperatorExpression = new MethodCallExpr(INFIXOPERATOR_N, DETERMINEOPERATOR_S,
                                                               new NodeList<>(new StringLiteralExpr(n.getOperator().getSymbol())));
-        n.getLeft().accept(this);
-        Expression leftExpression = new NameExpr(lastVariableName.get());
-        n.getRight().accept(this);
-        Expression rightExpression = new NameExpr(lastVariableName.get());
-        return addNodeInstantiationStatement(INFIXOPNODE_CT, NodeList.nodeList(determineOperatorExpression, leftExpression, rightExpression), n.getText());
+        Expression leftExpression = getNodeExpression(n.getLeft());
+        Expression rightExpression = getNodeExpression(n.getRight());
+        return addVariableDeclaratorWithObjectCreation(INFIXOPNODE_CT, NodeList.nodeList(determineOperatorExpression,
+                                                                                         leftExpression,
+                                                                                         rightExpression), n.getText());
     }
 
     @Override
     public BlockStmt visit(InNode n) {
-        n.getValue().accept(this);
-        Expression valueExpression = new NameExpr(lastVariableName.get());
-        n.getExprs().accept(this);
-        Expression exprsExpression = new NameExpr(lastVariableName.get());
-        return addNodeInstantiationStatement(INNODE_CT, NodeList.nodeList(valueExpression, exprsExpression), n.getText());
+        Expression valueExpression = getNodeExpression(n.getValue());
+        Expression exprsExpression = getNodeExpression(n.getExprs());
+        return addVariableDeclaratorWithObjectCreation(INNODE_CT, NodeList.nodeList(valueExpression, exprsExpression)
+                , n.getText());
     }
 
     @Override
     public BlockStmt visit(InstanceOfNode n) {
-        n.getExpression().accept(this);
-        Expression expressionExpression = new NameExpr(lastVariableName.get());
-        n.getType().accept(this);
-        Expression typeExpression = new NameExpr(lastVariableName.get());
-        return addNodeInstantiationStatement(INSTANCEOFNODE_CT, NodeList.nodeList(expressionExpression, typeExpression), n.getText());
+        Expression expressionExpression = getNodeExpression(n.getExpression());
+        Expression typeExpression = getNodeExpression(n.getType());
+        return addVariableDeclaratorWithObjectCreation(INSTANCEOFNODE_CT, NodeList.nodeList(expressionExpression,
+                                                                                            typeExpression),
+                                                       n.getText());
     }
 
     @Override
     public BlockStmt visit(IterationContextNode n) {
-        n.getName().accept(this);
-        Expression nameExpression = new NameExpr(lastVariableName.get());
-        n.getExpression().accept(this);
-        Expression expressionExpression = new NameExpr(lastVariableName.get());
-        n.getRangeEndExpr().accept(this);
-        Expression rangeEndExprExpression = new NameExpr(lastVariableName.get());
-        return addNodeInstantiationStatement(ITERATIONCONTEXTNODE_CT, NodeList.nodeList(nameExpression, expressionExpression, rangeEndExprExpression), n.getText());
+        Expression nameExpression = getNodeExpression(n.getName());
+        Expression expressionExpression = getNodeExpression(n.getExpression());
+        Expression rangeEndExprExpression = getNodeExpression(n.getRangeEndExpr());
+        return addVariableDeclaratorWithObjectCreation(ITERATIONCONTEXTNODE_CT, NodeList.nodeList(nameExpression,
+                                                                                                  expressionExpression, rangeEndExprExpression), n.getText());
     }
 
     @Override
     public BlockStmt visit(ListNode n) {
-        List elements = n.getElements().stream().map(elementNode -> {
-                    elementNode.accept(this);
-                    return new NameExpr(lastVariableName.get());
-                })
+        List elements = n.getElements().stream().map(elementNode -> getNodeExpression(elementNode))
                 .toList();
-        return addNodeInstantiationStatement(LISTNODE_CT, NodeList.nodeList(getListExpression(elements)), n.getText());
+        return addVariableDeclaratorWithObjectCreation(LISTNODE_CT, NodeList.nodeList(getListExpression(elements)),
+                                                       n.getText());
     }
 
     @Override
     public BlockStmt visit(ListTypeNode n) {
-        n.getGenTypeNode().accept(this);
-        Expression genTypeNodeExpression = new NameExpr(lastVariableName.get());
-        return addNodeInstantiationStatement(LISTTYPENODE_CT, NodeList.nodeList(genTypeNodeExpression), n.getText());
+        Expression genTypeNodeExpression = getNodeExpression(n.getGenTypeNode());
+        return addVariableDeclaratorWithObjectCreation(LISTTYPENODE_CT, NodeList.nodeList(genTypeNodeExpression),
+                                                       n.getText());
     }
 
     @Override
@@ -380,158 +391,239 @@ public class ASTCompilerVisitor implements Visitor<BlockStmt> {
         List partsExpressions = n.getParts().stream().map(StringLiteralExpr::new)
                 .toList();
         Expression nameExpression = n.getName() != null ? new StringLiteralExpr(n.getName()) : new NullLiteralExpr();
-        return addNodeInstantiationStatement(NAMEDEFNODE_CT, NodeList.nodeList(getListExpression(partsExpressions),
-                                                                               nameExpression), n.getText());
+        return addVariableDeclaratorWithObjectCreation(NAMEDEFNODE_CT,
+                                                       NodeList.nodeList(getListExpression(partsExpressions),
+                                                                         nameExpression), n.getText());
     }
 
     @Override
     public BlockStmt visit(NamedParameterNode n) {
-        n.getName().accept(this);
-        Expression nameExpression = new NameExpr(lastVariableName.get());
-        n.getExpression().accept(this);
-        Expression expressionExpression = new NameExpr(lastVariableName.get());
-        return addNodeInstantiationStatement(NAMEDPARAMETERNODE_CT, NodeList.nodeList(nameExpression, expressionExpression), n.getText());
+        Expression nameExpression = getNodeExpression(n.getName());
+        Expression expressionExpression = getNodeExpression(n.getExpression());
+        return addVariableDeclaratorWithObjectCreation(NAMEDPARAMETERNODE_CT, NodeList.nodeList(nameExpression,
+                                                                                                expressionExpression)
+                , n.getText());
     }
 
     @Override
     public BlockStmt visit(NameRefNode n) {
         Expression typeExpression = getTypeExpression(n.getResultType());
-        return addNodeInstantiationStatement(NAMEREFNODE_CT, NodeList.nodeList(typeExpression), n.getText());
+        return addVariableDeclaratorWithObjectCreation(NAMEREFNODE_CT, NodeList.nodeList(typeExpression), n.getText());
     }
 
     @Override
     public BlockStmt visit(NullNode n) {
-        return addNodeInstantiationStatement(NULLNODE_CT, NodeList.nodeList(), n.getText());
+        return addVariableDeclaratorWithObjectCreation(NULLNODE_CT, NodeList.nodeList(), n.getText());
     }
 
     @Override
     public BlockStmt visit(NumberNode n) {
-        MethodCallExpr valueExpression = new MethodCallExpr(BIG_DECIMAL_N, VALUEOF_S);
-        valueExpression.addArgument(n.getValue().toEngineeringString());
-        return addNodeInstantiationStatement(NUMBERNODE_CT, NodeList.nodeList(valueExpression), n.getText());
+        MethodCallExpr valueExpression = new MethodCallExpr(NUMBEREVALHELPER_N, GETBIGDECIMALORNULL_S,
+                                                                 NodeList.nodeList(new StringLiteralExpr(n.getText())));
+        return addVariableDeclaratorWithObjectCreation(NUMBERNODE_CT, NodeList.nodeList(valueExpression), n.getText());
     }
 
     @Override
     public BlockStmt visit(PathExpressionNode n) {
-        n.getExpression().accept(this);
-        Expression expressionExpression = new NameExpr(lastVariableName.get());
-        n.getName().accept(this);
-        Expression nameExpression = new NameExpr(lastVariableName.get());
-        return addNodeInstantiationStatement(PATHEXPRESSIONNODE_CT, NodeList.nodeList(expressionExpression,
-                                                                                      nameExpression), n.getText());
+        Expression expressionExpression = getNodeExpression(n.getExpression());
+        Expression nameExpression = getNodeExpression(n.getName());
+        return addVariableDeclaratorWithObjectCreation(PATHEXPRESSIONNODE_CT, NodeList.nodeList(expressionExpression,
+                                                                                                nameExpression),
+                                                       n.getText());
     }
 
     @Override
     public BlockStmt visit(QualifiedNameNode n) {
-        List partsExpressions = n.getParts().stream().map(partNode -> {
-                    partNode.accept(this);
-                    return new NameExpr(lastVariableName.get());
-                })
+        List partsExpressions = n.getParts().stream().map(partNode -> getNodeExpression(partNode))
                 .toList();
         Expression typeExpression = getTypeExpression(n.getResultType());
-        return addNodeInstantiationStatement(QUALIFIEDNAMENODE_CT, NodeList.nodeList(getListExpression(partsExpressions),
-                                                                                     typeExpression), n.getText());
+        return addVariableDeclaratorWithObjectCreation(QUALIFIEDNAMENODE_CT,
+                                                       NodeList.nodeList(getListExpression(partsExpressions),
+                                                                         typeExpression),
+                                                       n.getText());
     }
 
     @Override
     public BlockStmt visit(QuantifiedExpressionNode n) {
         Expression quantifierExpression = getEnumExpression(n.getQuantifier());
-        List iterationContextsExpressions = n.getIterationContexts().stream().map(iterationContextNode -> {
-                    iterationContextNode.accept(this);
-                    return new NameExpr(lastVariableName.get());
-                })
+        List iterationContextsExpressions =
+                n.getIterationContexts().stream().map(iterationContextNode -> getNodeExpression(iterationContextNode))
                 .toList();
-        n.getExpression().accept(this);
-        Expression expressionExpression = new NameExpr(lastVariableName.get());
-        return addNodeInstantiationStatement(QUANTIFIEDEXPRESSIONNODE_CT, NodeList.nodeList(quantifierExpression, getListExpression(iterationContextsExpressions),
-                                                                                            expressionExpression), n.getText());
+        Expression expressionExpression = getNodeExpression(n.getExpression());
+        return addVariableDeclaratorWithObjectCreation(QUANTIFIEDEXPRESSIONNODE_CT,
+                                                       NodeList.nodeList(quantifierExpression,
+                                                                         getListExpression(iterationContextsExpressions),
+                                                                         expressionExpression), n.getText());
     }
 
     @Override
     public BlockStmt visit(RangeNode n) {
         Expression lowerBoundExpression = getEnumExpression(n.getLowerBound());
         Expression upperBoundExpression = getEnumExpression(n.getUpperBound());
-        n.getStart().accept(this);
-        Expression startExpression = new NameExpr(lastVariableName.get());
-        n.getEnd().accept(this);
-        Expression endExpression = new NameExpr(lastVariableName.get());
-        return addNodeInstantiationStatement(RANGENODE_CT, NodeList.nodeList(lowerBoundExpression, upperBoundExpression,
-                                                                             startExpression, endExpression), n.getText());
+        Expression startExpression = getNodeExpression(n.getStart());
+        Expression endExpression = getNodeExpression(n.getEnd());
+        return addVariableDeclaratorWithObjectCreation(RANGENODE_CT, NodeList.nodeList(lowerBoundExpression,
+                                                                                       upperBoundExpression,
+                                                                                       startExpression,
+                                                                                       endExpression), n.getText());
     }
 
     @Override
     public BlockStmt visit(SignedUnaryNode n) {
         Expression signExpression = getEnumExpression(n.getSign());
-        n.getExpression().accept(this);
-        Expression expressionExpression = new NameExpr(lastVariableName.get());
-        return addNodeInstantiationStatement(SIGNEDUNARYNODE_CT, NodeList.nodeList(signExpression, expressionExpression), n.getText());
+        Expression expressionExpression = getNodeExpression(n.getExpression());
+        return addVariableDeclaratorWithObjectCreation(SIGNEDUNARYNODE_CT, NodeList.nodeList(signExpression,
+                                                                                             expressionExpression),
+                                                       n.getText());
     }
 
     @Override
     public BlockStmt visit(StringNode n) {
-        return addNodeInstantiationStatement(STRINGNODE_CT, NodeList.nodeList(new StringLiteralExpr(n.getValue())), n.getText());
+        String valueString = StringEvalHelper.escapeInnerDoubleQuotes(n.getValue());
+        Expression valueExpression = new StringLiteralExpr(valueString);
+        return addVariableDeclaratorWithObjectCreation(STRINGNODE_CT, NodeList.nodeList(valueExpression), n.getText());
+    }
+
+    @Override
+    public BlockStmt visit(TemporalConstantNode n) {
+        Expression valueExpression = getObjectExpression(n.getValue());
+        FEELFunction fn = n.getFn();
+        Expression fnVariableNameExpression;
+        if (fn != null) {
+            Class fnClass = fn.getClass();
+            ClassOrInterfaceType fn_CT = parseClassOrInterfaceType(fnClass.getCanonicalName());
+            Expression fn_N = new NameExpr(fnClass.getCanonicalName());
+            if (fnClass.getPackageName().equals(EXTENDED_FUNCTION_PACKAGE)) {
+                addVariableDeclaratorWithWithFieldAccess(fn_CT, INSTANCE_S, fn_N);
+            } else {
+                addVariableDeclaratorWithObjectCreation(fn_CT,
+                                                        NodeList.nodeList());
+            }
+            fnVariableNameExpression = new NameExpr(lastVariableName.get());
+        } else {
+            fnVariableNameExpression = new NullLiteralExpr();
+        }
+        List paramsExpressions = n.getParams().stream().map(param -> getObjectExpression(param)).toList();
+        return addVariableDeclaratorWithObjectCreation(TEMPORALCONSTANTNODE_CT, NodeList.nodeList(valueExpression,
+                                                                                                  fnVariableNameExpression, getListExpression(paramsExpressions)), n.getText());
     }
 
     @Override
     public BlockStmt visit(UnaryTestListNode n) {
-        List elementsExpressions = n.getElements().stream().map(elementNode -> {
-                    elementNode.accept(this);
-                    return new NameExpr(lastVariableName.get());
-                })
+        List elementsExpressions = n.getElements().stream().map(elementNode -> getNodeExpression(elementNode))
                 .toList();
         Expression stateExpression = getEnumExpression(n.getState());
-        return addNodeInstantiationStatement(UNARYTESTLISTNODE_CT, NodeList.nodeList(getListExpression(elementsExpressions),
-                                                                                            stateExpression), n.getText());
+        return addVariableDeclaratorWithObjectCreation(UNARYTESTLISTNODE_CT,
+                                                       NodeList.nodeList(getListExpression(elementsExpressions),
+                                                                         stateExpression),
+                                                       n.getText());
     }
 
     @Override
     public BlockStmt visit(UnaryTestNode n) {
         Expression opExpression = getEnumExpression(n.getOperator());
-        n.getValue().accept(this);
-        Expression valueExpression = new NameExpr(lastVariableName.get());
-        return addNodeInstantiationStatement(UNARYTESTNODE_CT, NodeList.nodeList(opExpression, valueExpression), n.getText());
+        Expression valueExpression = getNodeExpression(n.getValue());
+        return addVariableDeclaratorWithObjectCreation(UNARYTESTNODE_CT, NodeList.nodeList(opExpression,
+                                                                                           valueExpression),
+                                                       n.getText());
     }
 
     public String getLastVariableName() {
         return lastVariableName.get();
     }
 
+    public BlockStmt returnError(String errorMessage) {
+        final MethodCallExpr methodCallExpr = new MethodCallExpr(COMPILEDFEELSUPPORT_N, NOTIFYCOMPILATIONERROR_S,
+                                                                 NodeList.nodeList(FEELCTX_N,
+                                                                                   Expressions.stringLiteral(errorMessage)));
+        return addExpression(methodCallExpr);
+    }
+
     private String getNextVariableName() {
         return String.format("%s_%d", VAR_S, variableCounter.getAndIncrement());
     }
 
-    private BlockStmt addNodeInstantiationStatement(ClassOrInterfaceType variableType, NodeList<Expression> arguments, String text) {
+    private BlockStmt addVariableDeclaratorWithObjectCreation(ClassOrInterfaceType variableType,
+                                                              NodeList<Expression> arguments, String text) {
         Expression textExpression = text!= null ? new StringLiteralExpr(StringEvalHelper.escapeInnerDoubleQuotes(text)) : new NullLiteralExpr();
         arguments.add(textExpression);
-        return addNodeInstantiationStatement(variableType, arguments);
+        return addVariableDeclaratorWithObjectCreation(variableType, arguments);
     }
 
-    private BlockStmt addNodeInstantiationStatement(ClassOrInterfaceType variableType, NodeList<Expression> arguments) {
+    private BlockStmt addVariableDeclaratorWithObjectCreation(ClassOrInterfaceType variableType,
+                                                              NodeList<Expression> arguments) {
         String variableName = getNextVariableName();
-        final VariableDeclarationExpr toAdd = getNodeInstantiationVariableDeclarator(variableName, variableType,
-                                                                                     arguments);
-        return addNodeInstantiationStatement(toAdd, variableName);
+        final VariableDeclarationExpr toAdd = getVariableDeclaratorWithObjectCreation(variableName, variableType,
+                                                                                      arguments);
+        return addExpression(toAdd, variableName);
     }
 
-    private BlockStmt addNodeInstantiationStatement(Expression toAdd, String variableName) {
+    private BlockStmt addVariableDeclaratorWithWithMethodCall(ClassOrInterfaceType variableType,
+                                                              String name,
+                                                              Expression scope,
+                                                              NodeList<Expression> arguments) {
+        String variableName = getNextVariableName();
+        final VariableDeclarationExpr toAdd = getVariableDeclaratorWithMethodCall(variableName,
+                                                                                  variableType,
+                                                                                  name,
+                                                                                  scope,
+                                                                                  arguments);
+        return addExpression(toAdd, variableName);
+    }
+
+    private BlockStmt addVariableDeclaratorWithWithFieldAccess(ClassOrInterfaceType variableType,
+                                                               String name,
+                                                               Expression scope) {
+
+        String variableName = getNextVariableName();
+        final VariableDeclarationExpr toAdd = getVariableDeclaratorWithFieldAccessExpr(variableName,
+                                                                                       variableType,
+                                                                                       name,
+                                                                                       scope);
+        return addExpression(toAdd, variableName);
+    }
+
+    private BlockStmt addExpression(Expression toAdd, String variableName) {
         lastVariableName.set(variableName);
-        return addNodeInstantiationStatement(toAdd);
+        return addExpression(toAdd);
     }
 
-    private BlockStmt addNodeInstantiationStatement(Expression toAdd) {
+    private BlockStmt addExpression(Expression toAdd) {
         toPopulate.addStatement(toAdd);
         LOGGER.debug(toPopulate.toString());
         return toPopulate;
     }
 
-
-    private VariableDeclarationExpr getNodeInstantiationVariableDeclarator(String variableName,
-                                                                           ClassOrInterfaceType variableType,
-                                                                           NodeList<Expression> arguments) {
+    private VariableDeclarationExpr getVariableDeclaratorWithObjectCreation(String variableName,
+                                                                            ClassOrInterfaceType variableType,
+                                                                            NodeList<Expression> arguments) {
         final VariableDeclarator variableDeclarator =
                 new VariableDeclarator(variableType, variableName);
         final ObjectCreationExpr objectCreationExpr = new ObjectCreationExpr(null, variableType, arguments);
         variableDeclarator.setInitializer(objectCreationExpr);
+        return new VariableDeclarationExpr(variableDeclarator);
+    }
+
+    private VariableDeclarationExpr getVariableDeclaratorWithMethodCall(String variableName,
+                                                                        ClassOrInterfaceType variableType,
+                                                                        String name,
+                                                                        Expression scope,
+                                                                        NodeList<Expression> arguments) {
+        final VariableDeclarator variableDeclarator =
+                new VariableDeclarator(variableType, variableName);
+        final MethodCallExpr methodCallExpr = new MethodCallExpr(scope, name, arguments);
+        variableDeclarator.setInitializer(methodCallExpr);
+        return new VariableDeclarationExpr(variableDeclarator);
+    }
+
+    private VariableDeclarationExpr getVariableDeclaratorWithFieldAccessExpr(String variableName,
+                                                                             ClassOrInterfaceType variableType,
+                                                                             String name,
+                                                                             Expression scope) {
+        final VariableDeclarator variableDeclarator =
+                new VariableDeclarator(variableType, variableName);
+        final FieldAccessExpr methodCallExpr = new FieldAccessExpr(scope, name);
+        variableDeclarator.setInitializer(methodCallExpr);
         return new VariableDeclarationExpr(variableDeclarator);
     }
 
@@ -542,6 +634,96 @@ public class ASTCompilerVisitor implements Visitor<BlockStmt> {
     private Expression getEnumExpression(Enum enumType) {
         Expression scopeExpression = parseExpression(enumType.getClass().getCanonicalName());
         return new FieldAccessExpr(scopeExpression, enumType.name());
+    }
+
+    private Expression getNodeExpression(BaseNode node) {
+        if (node != null) {
+            node.accept(this);
+            return new NameExpr(lastVariableName.get());
+        } else {
+            return new NullLiteralExpr();
+        }
+    }
+
+    private Expression getObjectExpression(Object object) {
+        if (object == null) {
+            return new NullLiteralExpr();
+        }
+        if (object instanceof String string) {
+            return new StringLiteralExpr(StringEvalHelper.escapeInnerDoubleQuotes(string));
+        } else if (object instanceof Number number) {
+            return new IntegerLiteralExpr(number.toString());
+        } else if (object instanceof ComparablePeriod comparablePeriod) {
+            String variableName = getNextVariableName();
+            NodeList arguments = NodeList.nodeList(new StringLiteralExpr(comparablePeriod.asPeriod().toString()));
+
+            VariableDeclarationExpr variableDeclarationExpr = getVariableDeclaratorWithMethodCall(variableName,
+                                                                                                  COMPARABLEPERIOD_CT,
+                                                                                                  PARSE_S,
+                                                                                                  COMPARABLEPERIOD_N, arguments);
+            addExpression(variableDeclarationExpr, variableName);
+            return new NameExpr(variableName);
+        } else if (object instanceof LocalDate localDate) {
+            String variableName = getNextVariableName();
+            NodeList arguments = NodeList.nodeList(new IntegerLiteralExpr(localDate.getYear()),
+                                                   new IntegerLiteralExpr(localDate.getMonthValue()),
+                                                   new IntegerLiteralExpr(localDate.getDayOfMonth()));
+
+            VariableDeclarationExpr variableDeclarationExpr = getVariableDeclaratorWithMethodCall(variableName,
+                                                                                                  LOCAL_DATE_CT, OF_S
+                    , LOCAL_DATE_N, arguments);
+            addExpression(variableDeclarationExpr, variableName);
+            return new NameExpr(variableName);
+        } else if (object instanceof LocalDateTime localDateTime) {
+            String variableName = getNextVariableName();
+            NodeList arguments = NodeList.nodeList(new IntegerLiteralExpr(localDateTime.getYear()),
+                                                   new IntegerLiteralExpr(localDateTime.getMonthValue()),
+                                                   new IntegerLiteralExpr(localDateTime.getDayOfMonth()),
+                                                   new IntegerLiteralExpr(localDateTime.getHour()),
+                                                   new IntegerLiteralExpr(localDateTime.getMinute()),
+                                                   new IntegerLiteralExpr(localDateTime.getSecond()));
+            VariableDeclarationExpr variableDeclarationExpr = getVariableDeclaratorWithMethodCall(variableName,
+                                                                                                  LOCAL_DATE_TIME_CT,
+                                                                                                  OF_S,
+                                                                                                  LOCAL_DATE_TIME_N,
+                                                                                                  arguments);
+            addExpression(variableDeclarationExpr, variableName);
+            return new NameExpr(variableName);
+        } else if (object instanceof LocalTime localTime) {
+            String variableName = getNextVariableName();
+            NodeList arguments = NodeList.nodeList(new IntegerLiteralExpr(localTime.getHour()),
+                                                   new IntegerLiteralExpr(localTime.getMinute()),
+                                                   new IntegerLiteralExpr(localTime.getSecond()),
+                                                   new IntegerLiteralExpr(localTime.getNano()));
+            VariableDeclarationExpr variableDeclarationExpr = getVariableDeclaratorWithMethodCall(variableName,
+                                                                                                  LOCAL_TIME_CT,
+                                                                                                  OF_S,
+                                                                                                  LOCAL_TIME_N,
+                                                                                                  arguments);
+            addExpression(variableDeclarationExpr, variableName);
+            return new NameExpr(variableName);
+        } else if (object instanceof ZonedDateTime zonedDateTime) {
+            String variableName = getNextVariableName();
+            Expression zoneIdExpression = new MethodCallExpr(ZONE_ID_N, OF_S,
+                                                             NodeList.nodeList(new StringLiteralExpr(zonedDateTime.getZone().getId())));
+            NodeList arguments = NodeList.nodeList(new IntegerLiteralExpr(zonedDateTime.getYear()),
+                                                   new IntegerLiteralExpr(zonedDateTime.getMonthValue()),
+                                                   new IntegerLiteralExpr(zonedDateTime.getDayOfMonth()),
+                                                   new IntegerLiteralExpr(zonedDateTime.getHour()),
+                                                   new IntegerLiteralExpr(zonedDateTime.getMinute()),
+                                                   new IntegerLiteralExpr(zonedDateTime.getSecond()),
+                                                   new IntegerLiteralExpr(zonedDateTime.getNano()),
+                                                   zoneIdExpression);
+            VariableDeclarationExpr variableDeclarationExpr = getVariableDeclaratorWithMethodCall(variableName,
+                                                                                                  ZONED_DATE_TIME_CT,
+                                                                                                  OF_S,
+                                                                                                  ZONED_DATE_TIME_N,
+                                                                                                  arguments);
+            addExpression(variableDeclarationExpr, variableName);
+            return new NameExpr(variableName);
+        } else {
+            throw new UnsupportedOperationException("Unexpected Object: " + object + " " + object.getClass());
+        }
     }
 
     // Move to a common package

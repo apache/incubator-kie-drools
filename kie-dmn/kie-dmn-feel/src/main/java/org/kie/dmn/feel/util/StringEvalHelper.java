@@ -120,7 +120,8 @@ public class StringEvalHelper {
      * @return
      */
     public static String escapeInnerDoubleQuotes(String s) {
-        return s.replaceAll("\"", "\\\\\"");
+        // The second replace is needed for strings that already contains an escaped double quote
+        return s.replace("\"", "\\\"").replace("\\\\\"", "\\\"");
     }
 
     public static String unescapeString(String text) {

@@ -34,7 +34,6 @@ import org.kie.dmn.feel.lang.ast.visitor.ASTTemporalConstantVisitor;
 import org.kie.dmn.feel.lang.impl.CompiledExecutableExpression;
 import org.kie.dmn.feel.lang.impl.CompiledExpressionImpl;
 import org.kie.dmn.feel.lang.impl.InterpretedExecutableExpression;
-import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.parser.feel11.ASTBuilderVisitor;
 
 import static org.kie.dmn.feel.codegen.feel11.ProcessedFEELUnit.DefaultMode.Compiled;
@@ -67,16 +66,15 @@ public class ProcessedExpression extends ProcessedFEELUnit {
         if (ast == null) {
             return; // if parsetree/ast is invalid, no need of further processing and early return.
         }
-        // TODO gcardosi 1206 - restore
-//        List<FEELEvent> heuristicChecks = ast.accept(new ASTHeuristicCheckerVisitor());
-//        if (!heuristicChecks.isEmpty()) {
-//            for (FEELEventListener listener : ctx.getListeners()) {
-//                heuristicChecks.forEach(listener::onEvent);
-//            }
-//        }
-//        if (astVisitor.isVisitedTemporalCandidate()) {
-//            ast.accept(new ASTTemporalConstantVisitor(ctx));
-//        }
+        List<FEELEvent> heuristicChecks = ast.accept(new ASTHeuristicCheckerVisitor());
+        if (!heuristicChecks.isEmpty()) {
+            for (FEELEventListener listener : ctx.getListeners()) {
+                heuristicChecks.forEach(listener::onEvent);
+            }
+        }
+        if (astVisitor.isVisitedTemporalCandidate()) {
+            ast.accept(new ASTTemporalConstantVisitor(ctx));
+        }
     }
 
     public CompiledFEELExpression asCompiledFEELExpression() {
@@ -148,22 +146,12 @@ public class ProcessedExpression extends ProcessedFEELUnit {
     private BlockStmt getCodegenResult(ASTCompilerVisitor astVisitor) {
         if (codegenResult == null) {
             if (errorListener.isError()) {
-                // TODO gcardosi 1206 - restore
-                return null;
-//                compilerResult =
-//                        DirectCompilerResult.of(
-//                                CompiledFEELSupport.compiledErrorExpression(
-//                                        errorListener.event().getMessage()),
-//                                BuiltInType.UNKNOWN);
+                return astVisitor.returnError(errorListener.event().getMessage());
             } else {
                 try {
                     codegenResult = ast.accept(astVisitor);
                 } catch (FEELCompilationError e) {
-                    // TODO gcardosi 1206 - restore
-                    return null;
-//                    compilerResult = DirectCompilerResult.of(
-//                            CompiledFEELSupport.compiledErrorExpression(e.getMessage()),
-//                            BuiltInType.UNKNOWN);
+                    return astVisitor.returnError(e.getMessage());
                 }
             }
         }

@@ -23,11 +23,13 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
@@ -35,10 +37,12 @@ import com.github.javaparser.ast.comments.JavadocComment;
 import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
+import com.github.javaparser.ast.stmt.Statement;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.eclipse.jdt.internal.compiler.ast.NullLiteral;
 import org.kie.dmn.feel.util.ClassLoaderUtil;
@@ -51,6 +55,9 @@ import org.slf4j.LoggerFactory;
 
 import static com.github.javaparser.StaticJavaParser.parse;
 import static org.drools.compiler.compiler.JavaDialectConfiguration.createNativeCompiler;
+import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.EVALUATE_S;
+import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.FEELCTX_N;
+import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.FEELCTX_S;
 
 public class CompilerBytecodeLoader {
 
@@ -92,21 +99,21 @@ public class CompilerBytecodeLoader {
 
     }
 
-    public CompiledFEELExpression makeFromJPExpression(Expression theExpression) {
-        return makeFromJPExpression(null, theExpression, Collections.emptySet());
-    }
+//    public CompiledFEELExpression makeFromJPExpression(Expression theExpression) {
+//        return makeFromJPExpression(null, theExpression, Collections.emptySet());
+//    }
 
     public CompiledFEELExpression makeFromJPExpression(String feelExpression, Expression theExpression, Set<FieldDeclaration> fieldDeclarations) {
         return internal_makefromJP(CompiledFEELExpression.class, "/TemplateCompiledFEELExpression.java", generateRandomPackage(), "TemplateCompiledFEELExpression", feelExpression, theExpression, fieldDeclarations);
     }
 
-    public CompiledFEELUnaryTests makeFromJPUnaryTestsExpression(String feelExpression, Expression theExpression, Set<FieldDeclaration> fieldDeclarations) {
-        return internal_makefromJP(CompiledFEELUnaryTests.class, "/TemplateCompiledFEELUnaryTests.java", generateRandomPackage(), "TemplateCompiledFEELUnaryTests", feelExpression, theExpression, fieldDeclarations);
-    }
-
-    public CompiledFEELUnaryTests makeFromJPUnaryTestsExpression(String packageName, String className, String feelExpression, Expression theExpression, Set<FieldDeclaration> fieldDeclarations) {
-        return internal_makefromJP(CompiledFEELUnaryTests.class, "/TemplateCompiledFEELUnaryTests.java", packageName, className, feelExpression, theExpression, fieldDeclarations);
-    }
+//    public CompiledFEELUnaryTests makeFromJPUnaryTestsExpression(String feelExpression, Expression theExpression, Set<FieldDeclaration> fieldDeclarations) {
+//        return internal_makefromJP(CompiledFEELUnaryTests.class, "/TemplateCompiledFEELUnaryTests.java", generateRandomPackage(), "TemplateCompiledFEELUnaryTests", feelExpression, theExpression, fieldDeclarations);
+//    }
+//
+//    public CompiledFEELUnaryTests makeFromJPUnaryTestsExpression(String packageName, String className, String feelExpression, Expression theExpression, Set<FieldDeclaration> fieldDeclarations) {
+//        return internal_makefromJP(CompiledFEELUnaryTests.class, "/TemplateCompiledFEELUnaryTests.java", packageName, className, feelExpression, theExpression, fieldDeclarations);
+//    }
 
     public <T> T internal_makefromJP(Class<T> clazz, String templateResourcePath, String cuPackage, String cuClass, String feelExpression, Expression theExpression, Set<FieldDeclaration> fieldDeclarations) {
         CompilationUnit cu = getCompilationUnit(clazz, templateResourcePath, cuPackage, cuClass, feelExpression, theExpression, fieldDeclarations);
@@ -210,9 +217,21 @@ public class CompilerBytecodeLoader {
                 lookupMethod.findFirst(ReturnStmt.class)
                         .orElseThrow(() -> new RuntimeException("Something unexpected changed in the template."));
         lookupMethod.setBody(directCodegenResult);
-        directCodegenResult.addStatement(returnStmt);
-        Expression returnExpression = lastVariableName != null ? new NameExpr(lastVariableName) : new NullLiteralExpr();
+        Optional<Statement> lastStatement = directCodegenResult.getStatements().getLast();
+        Expression returnExpression;
+        if (lastVariableName != null) {
+            returnExpression = new MethodCallExpr(new NameExpr(lastVariableName), EVALUATE_S, NodeList.nodeList(FEELCTX_N));
+        } else {
+            if (lastStatement.isPresent()) {
+                Statement lastStmt = lastStatement.get();
+                returnExpression = lastStmt.asExpressionStmt().getExpression();
+                directCodegenResult.remove(lastStmt);
+            } else {
+                returnExpression = new NullLiteralExpr();
+            }
+        }
         returnStmt.setExpression(returnExpression);
+        directCodegenResult.addStatement(returnStmt);
 
 //        Expression expr;
 //        if (clazz.equals(CompiledFEELUnaryTests.class)) {
@@ -247,7 +266,7 @@ public class CompilerBytecodeLoader {
         return fd.getVariable(0).getName().asString().startsWith("UT");
     }
 
-    private String generateRandomPackage() {
+    public String generateRandomPackage() {
         String uuid = UUID.randomUUID().toString().replaceAll("-", "");
         return this.getClass().getPackage().getName() + ".gen" + uuid;
     }

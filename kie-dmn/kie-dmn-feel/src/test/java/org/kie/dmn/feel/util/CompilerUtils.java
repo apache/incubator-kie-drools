@@ -21,7 +21,9 @@ package org.kie.dmn.feel.util;
 import java.util.Collections;
 import java.util.Map;
 
+import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.stmt.BlockStmt;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.kie.dmn.feel.codegen.feel11.ASTCompilerVisitor;
 import org.kie.dmn.feel.codegen.feel11.CodegenTestUtil;
@@ -40,6 +42,8 @@ import org.slf4j.LoggerFactory;
 public class CompilerUtils {
 
     public static final Logger LOG = LoggerFactory.getLogger(CompilerUtils.class);
+    private static final String TEMPLATE_RESOURCE = "/TemplateCompiledFEELExpression.java";
+    private static final String TEMPLATE_CLASS = "TemplateCompiledFEELExpression";
 
     public static Object parseCompileEvaluate(String feelLiteralExpression) {
         CompiledFEELExpression compiledExpression = parse( feelLiteralExpression );
@@ -62,14 +66,26 @@ public class CompilerUtils {
 
         ASTBuilderVisitor v = new ASTBuilderVisitor(inputTypes, null);
         BaseNode node = v.visit(tree);
-        // TODO gcardosi 1206 - restore
-        return null;
-//        DirectCompilerResult directResult = node.accept(new ASTCompilerVisitor());
-//
+        ASTCompilerVisitor astVisitor = new ASTCompilerVisitor();
+
+        BlockStmt directCodegenResult = node.accept(astVisitor);
+
+        CompilerBytecodeLoader compilerBytecodeLoader = new CompilerBytecodeLoader();
+        String packageName = compilerBytecodeLoader.generateRandomPackage();
+        CompilationUnit cu = compilerBytecodeLoader.getCompilationUnit(
+                CompiledFEELExpression.class,
+                TEMPLATE_RESOURCE,
+                packageName,
+                TEMPLATE_CLASS,
+                input,
+                directCodegenResult,
+                astVisitor.getLastVariableName());
+        CompiledFEELExpression toReturn = compilerBytecodeLoader.compileUnit(packageName, TEMPLATE_CLASS, cu);
+
 //        Expression expr = directResult.getExpression();
-//        CompiledFEELExpression cu = new CompilerBytecodeLoader().makeFromJPExpression(input, expr, directResult.getFieldDeclarations());
-//
-//        return cu;
+//        CompiledFEELExpression toReturn = new CompilerBytecodeLoader().makeFromJPExpression(input, expr, directResult.getFieldDeclarations());
+
+        return toReturn;
     }
 
 }
