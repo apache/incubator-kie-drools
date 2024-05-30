@@ -151,10 +151,8 @@
             </dependency>
             <dependency>
                 <groupId>org.optaplanner</groupId>
-                <artifactId>optaplanner-bom</artifactId>
+                <artifactId>optaplanner-quarkus</artifactId>
                 <version>${version.org.optaplanner}</version>
-                <type>pom</type>
-                <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>com.redislabs</groupId>
