@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.github.javaparser.ast.stmt.BlockStmt;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.Type;
@@ -39,6 +38,12 @@ public class FunctionTypeNode extends TypeNode {
         this.retType = gen;
     }
 
+    public FunctionTypeNode(List<TypeNode> argTypes, TypeNode retType, String text) {
+        this.argTypes = new ArrayList<>(argTypes);
+        this.retType = retType;
+        this.setText(text);
+    }
+
     @Override
     public Type evaluate(EvaluationContext ctx) {
         List<Type> args = argTypes.stream().map(t -> t.evaluate(ctx)).collect(Collectors.toList());
@@ -46,8 +51,8 @@ public class FunctionTypeNode extends TypeNode {
         return new GenFnType(args, ret);
     }
 
-@Override
-public <T> T accept(Visitor<T> v) {
+    @Override
+    public <T> T accept(Visitor<T> v) {
         return v.visit(this);
     }
 

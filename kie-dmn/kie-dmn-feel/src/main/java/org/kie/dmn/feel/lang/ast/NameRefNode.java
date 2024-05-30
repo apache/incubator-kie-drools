@@ -18,18 +18,15 @@
  */
 package org.kie.dmn.feel.lang.ast;
 
-import com.github.javaparser.ast.expr.NameExpr;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.Type;
-import org.kie.dmn.feel.runtime.events.ASTEventBase;
 import org.kie.dmn.feel.util.Msg;
 
 public class NameRefNode
         extends BaseNode {
 
-    public static final NameExpr NAMEREFNODE_N = new NameExpr(NameRefNode.class.getCanonicalName());
     private Type resultType;
 
     public NameRefNode(ParserRuleContext ctx, Type type) {
@@ -43,15 +40,16 @@ public class NameRefNode
         this.setText(text);
     }
 
-    @Override
-    public Object evaluate(EvaluationContext ctx) {
-        return staticEvaluation(ctx, getText(), this);
+    public NameRefNode(Type type, String text) {
+        this.resultType = type;
+        this.setText(text);
     }
 
-    public static Object staticEvaluation(EvaluationContext ctx, String text, NameRefNode nameRefNode) {
-        Object result = ctx.getValue( text );
-        if ( result == null && !ctx.isDefined( text ) ) {
-            ctx.notifyEvt(() -> new ASTEventBase(FEELEvent.Severity.ERROR, Msg.createMessage(Msg.UNKNOWN_VARIABLE_REFERENCE, text), nameRefNode));
+    @Override
+    public Object evaluate(EvaluationContext ctx) {
+        Object result = ctx.getValue( getText() );
+        if ( result == null && !ctx.isDefined( getText() ) ) {
+            ctx.notifyEvt( astEvent( FEELEvent.Severity.ERROR, Msg.createMessage( Msg.UNKNOWN_VARIABLE_REFERENCE, getText()), null) );
         }
         return result;
     }

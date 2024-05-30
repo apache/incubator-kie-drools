@@ -21,13 +21,13 @@ package org.kie.dmn.feel.lang.ast;
 public interface Visitor<T> {
     T visit(ASTNode n);
     T visit(AtLiteralNode n);
-    T visit(DashNode n);
     T visit(BetweenNode n);
     T visit(BooleanNode n);
     T visit(ContextNode n);
     T visit(ContextEntryNode n);
     T visit(ContextTypeNode n);
     T visit(CTypeNode n);
+    T visit(DashNode n);
     T visit(FilterExpressionNode n);
     T visit(ForExpressionNode n);
     T visit(FormalParameterNode n);

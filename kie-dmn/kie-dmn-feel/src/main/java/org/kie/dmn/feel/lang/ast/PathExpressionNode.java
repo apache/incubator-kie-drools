@@ -18,9 +18,6 @@
  */
 package org.kie.dmn.feel.lang.ast;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.lang.CompositeType;
@@ -29,6 +26,9 @@ import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.dmn.feel.util.Msg;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PathExpressionNode
         extends BaseNode {
@@ -40,6 +40,12 @@ public class PathExpressionNode
         super( ctx );
         this.expression = expression;
         this.name = name;
+    }
+
+    public PathExpressionNode(BaseNode expression, BaseNode name, String text) {
+        this.expression = expression;
+        this.name = name;
+        this.setText(text);
     }
 
     public BaseNode getExpression() {

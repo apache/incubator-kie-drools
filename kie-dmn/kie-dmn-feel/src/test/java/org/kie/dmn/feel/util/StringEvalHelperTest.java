@@ -21,6 +21,7 @@ package org.kie.dmn.feel.util;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.kie.dmn.feel.util.StringEvalHelper.escapeInnerDoubleQuotes;
 import static org.kie.dmn.feel.util.StringEvalHelper.normalizeVariableName;
 
 class StringEvalHelperTest {
@@ -49,6 +50,13 @@ class StringEvalHelperTest {
         assertThat(normalizeVariableName("b ")).isEqualTo("b");
         assertThat(normalizeVariableName("ab c  ")).isEqualTo("ab c");
         assertThat(normalizeVariableName("a\u00A0b")).isEqualTo("a b");
+    }
+
+    @Test
+    void escapeInnerDouble() {
+        String toEscape = "\"a\"";
+        String retrieved = escapeInnerDoubleQuotes(toEscape);
+        assertThat(retrieved).isEqualTo("\\\"a\\\"");
     }
 
 }

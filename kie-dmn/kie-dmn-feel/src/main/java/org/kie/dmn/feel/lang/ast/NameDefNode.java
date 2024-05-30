@@ -20,9 +20,7 @@ package org.kie.dmn.feel.lang.ast;
 
 import java.util.List;
 
-import com.github.javaparser.ast.stmt.BlockStmt;
 import org.antlr.v4.runtime.ParserRuleContext;
-import org.kie.dmn.feel.codegen.feel11.ASTCompilerVisitor;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.util.StringEvalHelper;
 
@@ -48,6 +46,12 @@ public class NameDefNode
         this.name = name;
     }
 
+    public NameDefNode(List<String> parts, String name, String text) {
+        this.parts = parts;
+        this.name = name;
+        this.setText(text);
+    }
+
     public List<String> getParts() {
         return parts;
     }
@@ -71,11 +75,6 @@ public class NameDefNode
 
     @Override
     public <T> T accept(Visitor<T> v) {
-        return v.visit(this);
-    }
-
-    @Override
-    public BlockStmt newInstance(ASTCompilerVisitor v) {
         return v.visit(this);
     }
 

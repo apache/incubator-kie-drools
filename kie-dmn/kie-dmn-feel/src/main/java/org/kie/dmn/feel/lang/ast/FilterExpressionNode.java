@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.github.javaparser.ast.stmt.BlockStmt;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.lang.EvaluationContext;
@@ -40,6 +39,12 @@ public class FilterExpressionNode
         super( ctx );
         this.expression = expression;
         this.filter = filter;
+    }
+
+    public FilterExpressionNode(BaseNode expression, BaseNode filter, String text) {
+        this.expression = expression;
+        this.filter = filter;
+        this.setText(text);
     }
 
     public BaseNode getExpression() {
@@ -129,8 +134,8 @@ public class FilterExpressionNode
         return new ASTNode[] { expression, filter };
     }
 
-@Override
-public <T> T accept(Visitor<T> v) {
+    @Override
+    public <T> T accept(Visitor<T> v) {
         return v.visit(this);
     }
 }

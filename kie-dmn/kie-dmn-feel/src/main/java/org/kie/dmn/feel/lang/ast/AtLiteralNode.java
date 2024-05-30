@@ -18,7 +18,6 @@
  */
 package org.kie.dmn.feel.lang.ast;
 
-import com.github.javaparser.ast.stmt.BlockStmt;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.lang.EvaluationContext;
@@ -35,6 +34,11 @@ public class AtLiteralNode
     public AtLiteralNode(ParserRuleContext ctx, StringNode stringLiteral) {
         super( ctx );
         this.stringLiteral = stringLiteral;
+    }
+
+    public AtLiteralNode(StringNode stringLiteral, String text) {
+        this.stringLiteral = stringLiteral;
+        this.setText(text);
     }
 
     public StringNode getStringLiteral() {
@@ -69,8 +73,8 @@ public class AtLiteralNode
         }
     }
 
-@Override
-public <T> T accept(Visitor<T> v) {
+    @Override
+    public <T> T accept(Visitor<T> v) {
         return v.visit(this);
     }
 

@@ -18,11 +18,6 @@
  */
 package org.kie.dmn.feel.lang.ast;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import com.github.javaparser.ast.stmt.BlockStmt;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.feel.exceptions.EndpointOfRangeNotValidTypeException;
 import org.kie.dmn.feel.exceptions.EndpointOfRangeOfDifferentTypeException;
@@ -30,6 +25,10 @@ import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.ast.forexpressioniterators.ForIteration;
 import org.kie.dmn.feel.lang.types.BuiltInType;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import static org.kie.dmn.feel.lang.ast.forexpressioniterators.ForIterationUtils.getForIteration;
 
@@ -47,6 +46,12 @@ public class ForExpressionNode
         for (BaseNode n : iterationContexts.getElements()) {
             this.iterationContexts.add((IterationContextNode) n);
         }
+    }
+
+    public ForExpressionNode(List<IterationContextNode> iterationContexts, BaseNode expression, String text) {
+        this.iterationContexts = iterationContexts;
+        this.expression = expression;
+        this.setText(text);
     }
 
     public List<IterationContextNode> getIterationContexts() {
@@ -152,8 +157,8 @@ public class ForExpressionNode
         return children;
     }
 
-@Override
-public <T> T accept(Visitor<T> v) {
+    @Override
+    public <T> T accept(Visitor<T> v) {
         return v.visit(this);
     }
 

@@ -20,11 +20,9 @@ package org.kie.dmn.feel.lang.ast;
 
 import java.util.function.Supplier;
 
-import com.github.javaparser.ast.stmt.BlockStmt;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
-import org.kie.dmn.feel.codegen.feel11.ASTCompilerVisitor;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.types.BuiltInType;
@@ -163,9 +161,5 @@ public class BaseNode
     @Override
     public <T> T accept(Visitor<T> v) {
         return v.visit(this);
-    }
-
-    public BlockStmt newInstance(ASTCompilerVisitor v) {
-        throw new UnsupportedOperationException("Not supported yet on " + this.getClass().getName());
     }
 }

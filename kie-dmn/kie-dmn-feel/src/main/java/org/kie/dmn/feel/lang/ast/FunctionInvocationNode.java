@@ -23,7 +23,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import com.github.javaparser.ast.stmt.BlockStmt;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.lang.EvaluationContext;
@@ -47,6 +46,13 @@ public class FunctionInvocationNode
         super( ctx );
         this.name = name;
         this.params = params;
+    }
+
+    public FunctionInvocationNode(BaseNode name, ListNode params, TemporalConstantNode tcFolded, String text) {
+        this.name = name;
+        this.params = params;
+        this.tcFolded = tcFolded;
+        this.setText(text);
     }
 
     public BaseNode getName() {
@@ -163,8 +169,8 @@ public class FunctionInvocationNode
         return new ASTNode[] { name, params };
     }
 
-@Override
-public <T> T accept(Visitor<T> v) {
+    @Override
+    public <T> T accept(Visitor<T> v) {
         return v.visit(this);
     }
 }

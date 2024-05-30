@@ -52,7 +52,9 @@ import org.kie.dmn.feel.util.StringEvalHelper;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static com.github.javaparser.StaticJavaParser.parseExpression;
-import static org.kie.dmn.feel.codegen.feel11.Constants.BuiltInTypeT;
+import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.FEELCTX_N;
+import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.FEELCTX_S;
+import static org.kie.dmn.feel.codegen.feel11.Constants.BUILTINTYPE_E;
 
 public class Expressions {
 
@@ -102,11 +104,11 @@ public class Expressions {
     }
 
     public static Expression negate(Expression expression) {
-        return new MethodCallExpr(STDLIB, "negate", NodeList.nodeList(FeelCtx.FEELCTX, expression));
+        return new MethodCallExpr(STDLIB, "negate", NodeList.nodeList(FEELCTX_N, expression));
     }
 
     public static Expression positive(Expression expression) {
-        return new MethodCallExpr(STDLIB, "positive", NodeList.nodeList(FeelCtx.FEELCTX, expression));
+        return new MethodCallExpr(STDLIB, "positive", NodeList.nodeList(FEELCTX_N, expression));
     }
 
     public static MethodCallExpr binary(
@@ -150,7 +152,7 @@ public class Expressions {
         return new MethodCallExpr(compiledFeelSemanticMappingsFQN(), op)
                 .addArgument(left)
                 .addArgument(right)
-                .addArgument(FeelCtx.FEELCTX);
+                .addArgument(FEELCTX_N);
     }
 
     private static MethodCallExpr equality(String op, Expression left, Expression right) {
@@ -181,14 +183,14 @@ public class Expressions {
             case GTE:
                 return unaryComparison("gte", right);
             case EQ:
-                return new MethodCallExpr(compiledFeelSemanticMappingsFQN(), "gracefulEq", new NodeList<>(FeelCtx.FEELCTX, right, LEFT_EXPR));
+                return new MethodCallExpr(compiledFeelSemanticMappingsFQN(), "gracefulEq", new NodeList<>(FEELCTX_N, right, LEFT_EXPR));
             case NE:
                 return unaryComparison("ne", right);
             case IN:
                 // only used in decision tables: refactor? how?
-                return new MethodCallExpr(compiledFeelSemanticMappingsFQN(), "includes", new NodeList<>(FeelCtx.FEELCTX, right, LEFT_EXPR));
+                return new MethodCallExpr(compiledFeelSemanticMappingsFQN(), "includes", new NodeList<>(FEELCTX_N, right, LEFT_EXPR));
             case NOT:
-                return new MethodCallExpr(compiledFeelSemanticMappingsFQN(), "notExists", new NodeList<>(FeelCtx.FEELCTX, right, LEFT_EXPR));
+                return new MethodCallExpr(compiledFeelSemanticMappingsFQN(), "notExists", new NodeList<>(FEELCTX_N, right, LEFT_EXPR));
             case TEST:
                 return coerceToBoolean(right);
             default:
@@ -214,7 +216,7 @@ public class Expressions {
 
     public static MethodCallExpr between(Expression value, Expression start, Expression end) {
         return new MethodCallExpr(null, "between")
-                .addArgument(FeelCtx.FEELCTX)
+                .addArgument(FEELCTX_N)
                 .addArgument(value)
                 .addArgument(start)
                 .addArgument(end);
@@ -240,7 +242,7 @@ public class Expressions {
                         .addArgument(quantifier == QuantifiedExpressionNode.Quantifier.SOME ?
                                              QUANTIFIER_SOME :
                                              QUANTIFIER_EVERY)
-                        .addArgument(FeelCtx.FEELCTX);
+                        .addArgument(FEELCTX_N);
 
         // .with(expr)
         // .with(expr)
@@ -256,7 +258,7 @@ public class Expressions {
             Expression returnExpr) {
         MethodCallExpr ffor =
                 new MethodCallExpr(Expressions.STDLIB, "ffor")
-                        .addArgument(FeelCtx.FEELCTX);
+                        .addArgument(FEELCTX_N);
 
         // .with(expr)
         // .with(expr)
@@ -281,7 +283,7 @@ public class Expressions {
                                        RangeNode.IntervalBoundary highBoundary) {
 
         return new MethodCallExpr(compiledFeelSemanticMappingsFQN(), "range")
-                .addArgument(FeelCtx.FEELCTX)
+                .addArgument(FEELCTX_N)
                 .addArgument(Constants.rangeBoundary(lowBoundary))
                 .addArgument(lowEndPoint)
                 .addArgument(highEndPoint)
@@ -290,21 +292,21 @@ public class Expressions {
 
     public static MethodCallExpr includes(Expression range, Expression target) {
         return new MethodCallExpr(compiledFeelSemanticMappingsFQN(), "includes")
-                .addArgument(FeelCtx.FEELCTX)
+                .addArgument(FEELCTX_N)
                 .addArgument(range)
                 .addArgument(target);
     }
 
     public static MethodCallExpr exists(Expression tests, Expression target) {
         return new MethodCallExpr(compiledFeelSemanticMappingsFQN(), "exists")
-                .addArgument(FeelCtx.FEELCTX)
+                .addArgument(FEELCTX_N)
                 .addArgument(tests)
                 .addArgument(target);
     }
 
     public static MethodCallExpr notExists(Expression expr) {
         return new MethodCallExpr(compiledFeelSemanticMappingsFQN(), "notExists")
-                .addArgument(FeelCtx.FEELCTX)
+                .addArgument(FEELCTX_N)
                 .addArgument(expr)
                 .addArgument(LEFT_EXPR);
     }
@@ -319,7 +321,7 @@ public class Expressions {
     public static LambdaExpr lambda(Expression expr) {
         return new LambdaExpr(
                 new NodeList<>(
-                        new Parameter(UNKNOWN_TYPE, FeelCtx.FEELCTX_N)),
+                        new Parameter(UNKNOWN_TYPE, FEELCTX_S)),
                 new ExpressionStmt(expr),
                 true);
     }
@@ -341,7 +343,7 @@ public class Expressions {
     public static LambdaExpr unaryLambda(Expression expr) {
         return new LambdaExpr(
                 new NodeList<>(
-                        new Parameter(UNKNOWN_TYPE, FeelCtx.FEELCTX_N),
+                        new Parameter(UNKNOWN_TYPE, FEELCTX_S),
                         new Parameter(UNKNOWN_TYPE, "left")),
                 new ExpressionStmt(expr),
                 true);
@@ -357,14 +359,14 @@ public class Expressions {
 
     public static MethodCallExpr invoke(Expression functionName, Expression params) {
         return new MethodCallExpr(STDLIB, "invoke")
-                .addArgument(FeelCtx.FEELCTX)
+                .addArgument(FEELCTX_N)
                 .addArgument(functionName)
                 .addArgument(params);
     }
 
     public static MethodCallExpr filter(Expression expr, Expression filter) {
         return new MethodCallExpr(new MethodCallExpr(STDLIB, "filter")
-                                          .addArgument(FeelCtx.FEELCTX)
+                                          .addArgument(FEELCTX_N)
                                           .addArgument(expr),
                                   "with")
                 .addArgument(filter);
@@ -372,7 +374,7 @@ public class Expressions {
 
     public static MethodCallExpr path(Expression expr, Expression filter) {
         return new MethodCallExpr(new MethodCallExpr(STDLIB, "path")
-                                          .addArgument(FeelCtx.FEELCTX)
+                                          .addArgument(FEELCTX_N)
                                           .addArgument(expr),
                                   "with")
                 .addArgument(filter);
@@ -380,7 +382,7 @@ public class Expressions {
 
     public static MethodCallExpr path(Expression expr, List<Expression> filters) {
         MethodCallExpr methodCallExpr = new MethodCallExpr(new MethodCallExpr(STDLIB, "path")
-                                                                   .addArgument(FeelCtx.FEELCTX)
+                                                                   .addArgument(FEELCTX_N)
                                                                    .addArgument(expr),
                                                            "with");
         filters.forEach(methodCallExpr::addArgument);
@@ -400,7 +402,7 @@ public class Expressions {
     }
 
     public static MethodCallExpr determineTypeFromName(String typeAsText) {
-        return new MethodCallExpr(BuiltInTypeT, "determineTypeFromName")
+        return new MethodCallExpr(BUILTINTYPE_E, "determineTypeFromName")
                 .addArgument(new StringLiteralExpr(typeAsText));
     }
 
@@ -452,7 +454,7 @@ public class Expressions {
 
     public static Expression coerceToBoolean(Expression expression) {
         return new MethodCallExpr(compiledFeelSemanticMappingsFQN(), "coerceToBoolean")
-                .addArgument(FeelCtx.FEELCTX)
+                .addArgument(FEELCTX_N)
                 .addArgument(expression);
     }
 

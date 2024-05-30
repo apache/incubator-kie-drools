@@ -63,6 +63,11 @@ public class UnaryTestListNode
         }
     }
 
+    public UnaryTestListNode(List<BaseNode> elements, State state, String text) {
+        this(elements, state);
+        this.setText(text);
+    }
+
     public boolean isNegated() {
         return state == State.Negated;
     }

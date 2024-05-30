@@ -18,10 +18,7 @@
  */
 package org.kie.dmn.feel.lang.ast;
 
-import com.github.javaparser.ast.expr.NameExpr;
-import com.github.javaparser.ast.stmt.BlockStmt;
 import org.antlr.v4.runtime.ParserRuleContext;
-import org.kie.dmn.feel.codegen.feel11.ASTCompilerVisitor;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.types.BuiltInType;
@@ -29,7 +26,6 @@ import org.kie.dmn.feel.lang.types.BuiltInType;
 public class InfixOpNode
         extends BaseNode {
 
-    public static final NameExpr INFIXOPNODE_N = new NameExpr(InfixOpNode.class.getCanonicalName());
     private InfixOperator operator;
     private BaseNode left;
     private BaseNode right;
@@ -39,6 +35,13 @@ public class InfixOpNode
         this.left = left;
         this.operator = InfixOperator.determineOperator(op);
         this.right = right;
+    }
+
+    public InfixOpNode(InfixOperator operator, BaseNode left, BaseNode right, String text) {
+        this.operator = operator;
+        this.left = left;
+        this.right = right;
+        this.setText(text);
     }
 
     public InfixOperator getOperator() {
@@ -119,13 +122,7 @@ public class InfixOpNode
     @Override
     public Object evaluate(EvaluationContext ctx) {
         if (this.left == null) return null;
-        Object rightObject = right != null ? right.evaluate(ctx) : null;
-        return staticEvaluation(ctx, operator, left.evaluate(ctx), rightObject);
-    }
-
-    public static Object staticEvaluation(EvaluationContext ctx, InfixOperator infixOperator, Object left, Object right) {
-        if (left == null) return null;
-        return infixOperator.evaluate(left, right, ctx);
+        return operator.evaluate(this, ctx);
     }
 
     @Override
@@ -138,8 +135,4 @@ public class InfixOpNode
         return v.visit(this);
     }
 
-    @Override
-    public BlockStmt newInstance(ASTCompilerVisitor v) {
-        return v.newInstance(this);
-    }
 }

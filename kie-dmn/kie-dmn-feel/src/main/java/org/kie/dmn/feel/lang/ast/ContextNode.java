@@ -23,7 +23,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.github.javaparser.ast.stmt.BlockStmt;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.lang.EvaluationContext;
@@ -47,11 +46,21 @@ public class ContextNode
 
     public ContextNode(ParserRuleContext ctx, ListNode list) {
         super( ctx );
+        List<ContextEntryNode> entryNodes = list.getElements().stream()
+                .map(ContextEntryNode.class::cast)
+                .toList();
+
         for( BaseNode node : list.getElements() ) {
             ContextEntryNode entry = (ContextEntryNode) node;
             entries.add( entry );
             parsedResultType.addField(entry.getName().getText(), entry.getResultType());
         }
+
+    }
+
+    public ContextNode(List<ContextEntryNode> entryNodes, String text) {
+        setListNode(entryNodes);
+        this.setText(text);
     }
 
     public List<ContextEntryNode> getEntries() {
@@ -102,8 +111,15 @@ public class ContextNode
         return entries.toArray( new ASTNode[entries.size()] );
     }
 
-@Override
-public <T> T accept(Visitor<T> v) {
+    @Override
+    public <T> T accept(Visitor<T> v) {
         return v.visit(this);
+    }
+
+    private void setListNode(List<ContextEntryNode> entryNodes) {
+        for( ContextEntryNode entry : entryNodes ) {
+            entries.add( entry );
+            parsedResultType.addField(entry.getName().getText(), entry.getResultType());
+        }
     }
 }

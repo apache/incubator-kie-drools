@@ -18,7 +18,6 @@
  */
 package org.kie.dmn.feel.lang.ast;
 
-import com.github.javaparser.ast.stmt.BlockStmt;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.Type;
@@ -36,6 +35,13 @@ public class IfExpressionNode
         this.condition = condition;
         this.thenExpression = thenExpression;
         this.elseExpression = elseExpression;
+    }
+
+    public IfExpressionNode(BaseNode condition, BaseNode thenExpression, BaseNode elseExpression, String text) {
+        this.condition = condition;
+        this.thenExpression = thenExpression;
+        this.elseExpression = elseExpression;
+        this.setText(text);
     }
 
     public BaseNode getCondition() {
@@ -87,8 +93,8 @@ public class IfExpressionNode
         return new ASTNode[] { condition, thenExpression, elseExpression };
     }
 
-@Override
-public <T> T accept(Visitor<T> v) {
+    @Override
+    public <T> T accept(Visitor<T> v) {
         return v.visit(this);
     }
 }

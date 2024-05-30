@@ -84,6 +84,12 @@ public class UnaryTestNode
         this.value = value;
     }
 
+    public UnaryTestNode( UnaryOperator op, BaseNode value, String text ) {
+        this.operator = op;
+        this.value = value;
+        this.setText( text);
+    }
+
     public UnaryOperator getOperator() {
         return operator;
     }

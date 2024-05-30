@@ -18,22 +18,18 @@
  */
 package org.kie.dmn.feel.lang.ast;
 
-import com.github.javaparser.ast.expr.NameExpr;
 import org.antlr.v4.runtime.ParserRuleContext;
-import org.kie.dmn.api.feel.runtime.events.FEELEvent;
+import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.UnaryTest;
-import org.kie.dmn.feel.runtime.events.ASTEventBase;
 import org.kie.dmn.feel.runtime.functions.ListContainsFunction;
 import org.kie.dmn.feel.util.Msg;
 
 public class InNode
         extends BaseNode {
-
-    public static final NameExpr INNODE_N = new NameExpr(InNode.class.getCanonicalName());
 
     private BaseNode value;
     private BaseNode exprs;
@@ -42,6 +38,12 @@ public class InNode
         super( ctx );
         this.value = value;
         this.exprs = exprs;
+    }
+
+    public InNode(BaseNode value, BaseNode exprs, String text) {
+        this.value = value;
+        this.exprs = exprs;
+        this.setText(text);
     }
 
     public BaseNode getValue() {
@@ -60,47 +62,31 @@ public class InNode
         this.exprs = exprs;
     }
 
+    @Override
     public Boolean evaluate(EvaluationContext ctx) {
-        return exprs == null ? null : staticEvaluation(ctx, this.value.evaluate(ctx), this.exprs.evaluate(ctx), this);
-    }
-
-    public static Boolean staticEvaluation(EvaluationContext ctx, Object value, Object expr, InNode inNode) {
+        if (exprs == null) return null;
+        Object value = this.value.evaluate( ctx );
+        Object expr = this.exprs.evaluate( ctx );
         if ( expr != null ) {
             if ( expr instanceof Iterable ) {
                 // evaluate in the collection
                 for ( Object e : ((Iterable) expr) ) {
                     // have to compare to Boolean.TRUE because in() might return null
-                    if (in(ctx, value, e, inNode) == Boolean.TRUE) {
+                    if ( in( ctx, value, e ) == Boolean.TRUE ) {
                         return true;
                     }
                 }
                 return false;
             } else {
                 // evaluate single entity
-                return in(ctx, value, expr, inNode);
+                return in( ctx, value, expr );
             }
         }
-        ctx.notifyEvt(() -> new ASTEventBase(FEELEvent.Severity.ERROR, Msg.createMessage(Msg.IS_NULL, "Expression"),
-                                             null));
+        ctx.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.IS_NULL, "Expression")) );
         return null;
     }
 
-    @Override
-    public Type getResultType() {
-        return BuiltInType.BOOLEAN;
-    }
-
-    @Override
-    public ASTNode[] getChildrenNode() {
-        return new ASTNode[]{value, exprs};
-    }
-
-    @Override
-    public <T> T accept(Visitor<T> v) {
-        return v.visit(this);
-    }
-
-    private static Boolean in(EvaluationContext ctx, Object value, Object expr, InNode inNode) {
+    private Boolean in(EvaluationContext ctx, Object value, Object expr) {
         // need to improve this to work with unary tests
         if ( expr == null ) {
             return value == expr;
@@ -110,10 +96,7 @@ public class InNode
             try {
                 return ((Range) expr).includes( value );
             } catch ( Exception e ) {
-                ctx.notifyEvt(() -> new ASTEventBase(FEELEvent.Severity.ERROR,
-                                                     Msg.createMessage(Msg.EXPRESSION_IS_RANGE_BUT_VALUE_IS_NOT_COMPARABLE, value.toString(), expr.toString()),
-                                                     inNode,
-                                                     e));
+                ctx.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.EXPRESSION_IS_RANGE_BUT_VALUE_IS_NOT_COMPARABLE, value.toString(), expr.toString() ), e ) );
                 return null;
             }
         } else if ( value != null ) {
@@ -122,5 +105,20 @@ public class InNode
             // value == null, expr != null
             return Boolean.FALSE;
         }
+    }
+
+    @Override
+    public Type getResultType() {
+        return BuiltInType.BOOLEAN;
+    }
+
+    @Override
+    public ASTNode[] getChildrenNode() {
+        return new ASTNode[] { value, exprs };
+    }
+
+    @Override
+    public <T> T accept(Visitor<T> v) {
+        return v.visit(this);
     }
 }

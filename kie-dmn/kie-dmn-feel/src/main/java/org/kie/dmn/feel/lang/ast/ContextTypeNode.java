@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.github.javaparser.ast.stmt.BlockStmt;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.Type;
@@ -35,6 +34,11 @@ public class ContextTypeNode extends TypeNode {
     public ContextTypeNode(ParserRuleContext ctx, Map<String, TypeNode> gen) {
         super( ctx );
         this.gen = new HashMap<>(gen);
+    }
+
+    public ContextTypeNode(Map<String, TypeNode> gen, String text) {
+        this.gen = gen;
+        this.setText(text);
     }
 
     @Override
@@ -50,8 +54,8 @@ public class ContextTypeNode extends TypeNode {
         return fields;
     }
 
-@Override
-public <T> T accept(Visitor<T> v) {
+    @Override
+    public <T> T accept(Visitor<T> v) {
         return v.visit(this);
     }
 

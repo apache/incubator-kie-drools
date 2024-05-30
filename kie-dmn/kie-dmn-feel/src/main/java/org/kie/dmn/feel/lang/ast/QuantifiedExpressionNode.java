@@ -33,7 +33,7 @@ import org.kie.dmn.feel.util.Msg;
 public class QuantifiedExpressionNode
         extends BaseNode {
 
-    public static enum Quantifier {
+    public enum Quantifier {
         SOME, EVERY;
 
         public static Quantifier resolve(String text) {
@@ -65,6 +65,13 @@ public class QuantifiedExpressionNode
         for ( BaseNode n : list.getElements() ) {
             this.iterationContexts.add( (IterationContextNode) n );
         }
+    }
+
+    public QuantifiedExpressionNode(Quantifier quantifier, List<IterationContextNode> iterationContexts, BaseNode expression, String text) {
+        this.quantifier = quantifier;
+        this.iterationContexts = iterationContexts;
+        this.expression = expression;
+        this.setText(text);
     }
 
     public Quantifier getQuantifier() {
@@ -198,6 +205,7 @@ public class QuantifiedExpressionNode
         children[ children.length-1 ] = expression;
         return children;
     }
+
 
     @Override
     public <T> T accept(Visitor<T> v) {
