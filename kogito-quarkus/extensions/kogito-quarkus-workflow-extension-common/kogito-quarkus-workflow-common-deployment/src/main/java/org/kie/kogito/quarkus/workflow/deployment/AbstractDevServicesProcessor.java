@@ -60,7 +60,7 @@ public abstract class AbstractDevServicesProcessor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractDevServicesProcessor.class);
     private static final ContainerLocator LOCATOR = new ContainerLocator(DataIndexInMemoryContainer.DEV_SERVICE_LABEL, DataIndexInMemoryContainer.PORT);
-    private static final String DATA_INDEX_CAPABILITY = "org.kie.kogito.data-index";
+    protected static final String DATA_INDEX_CAPABILITY = "org.kie.kogito.data-index";
     static Closeable closeable;
     static DataIndexDevServiceConfig cfg;
     static volatile boolean first = true;

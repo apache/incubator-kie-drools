@@ -27,6 +27,7 @@ import org.kie.kogito.serverless.workflow.devservices.DevModeServerlessWorkflowL
 
 import io.quarkus.arc.deployment.AdditionalBeanBuildItem;
 import io.quarkus.arc.processor.DotNames;
+import io.quarkus.deployment.Capabilities;
 import io.quarkus.deployment.IsDevelopment;
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
@@ -35,6 +36,8 @@ import io.quarkus.deployment.builditem.SystemPropertyBuildItem;
 import io.quarkus.deployment.dev.devservices.GlobalDevServicesConfig;
 import io.quarkus.devui.spi.page.CardPageBuildItem;
 import io.quarkus.devui.spi.page.Page;
+
+import static org.kie.kogito.quarkus.workflow.devservices.DataIndexEventPublisher.KOGITO_DATA_INDEX;
 
 public class ServerlessWorkflowDevServicesProcessor extends AbstractDevServicesProcessor {
     @BuildStep
@@ -45,16 +48,25 @@ public class ServerlessWorkflowDevServicesProcessor extends AbstractDevServicesP
     }
 
     @BuildStep(onlyIf = { GlobalDevServicesConfig.Enabled.class, IsDevelopment.class })
-    CardPageBuildItem createDevUILink(List<SystemPropertyBuildItem> systemPropertyBuildItems) {
-        Optional<String> dataindex_url_prop = getProperty(systemPropertyBuildItems, "kogito.data-index.url");
-        if (dataindex_url_prop.isPresent()) {
-            CardPageBuildItem cardPageBuildItem = new CardPageBuildItem();
-            cardPageBuildItem.addPage(Page.externalPageBuilder("Data Index GraphQL UI")
-                    .url(dataindex_url_prop.get() + "/q/graphql-ui/")
-                    .isHtmlContent()
-                    .icon("font-awesome-solid:signs-post"));
-            return cardPageBuildItem;
+    CardPageBuildItem createDataIndexDevUILink(Capabilities capabilities,
+            KogitoWorkflowBuildTimeConfig kogitoBuildTimeConfig,
+            List<SystemPropertyBuildItem> systemPropertyBuildItems) {
+
+        Optional<String> dataIndexUrlProp = getProperty(systemPropertyBuildItems, KOGITO_DATA_INDEX);
+
+        if (capabilities.isPresent(DATA_INDEX_CAPABILITY) || !areDevServicesEnabled(kogitoBuildTimeConfig) || dataIndexUrlProp.isEmpty()) {
+            return null;
         }
-        return null;
+
+        CardPageBuildItem cardPageBuildItem = new CardPageBuildItem();
+        cardPageBuildItem.addPage(Page.externalPageBuilder("Data Index GraphQL UI")
+                .url(dataIndexUrlProp.get() + "/q/graphql-ui/")
+                .isHtmlContent()
+                .icon("font-awesome-solid:signs-post"));
+        return cardPageBuildItem;
+    }
+
+    private boolean areDevServicesEnabled(KogitoWorkflowBuildTimeConfig kogitoBuildTimeConfig) {
+        return kogitoBuildTimeConfig.devservices.enabled.orElse(true);
     }
 }
