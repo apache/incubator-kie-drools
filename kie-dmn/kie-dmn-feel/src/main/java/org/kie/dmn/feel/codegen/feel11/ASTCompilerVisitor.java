@@ -98,6 +98,7 @@ import org.slf4j.LoggerFactory;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static com.github.javaparser.StaticJavaParser.parseExpression;
+import static com.github.javaparser.utils.StringEscapeUtils.escapeJava;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.ASLIST_S;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.ATLITERALNODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.BETWEENNODE_CT;
@@ -158,7 +159,6 @@ import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.RANGENODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.SIGNEDUNARYNODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.STRINGNODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.TEMPORALACCESSOR_CT;
-import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.TEMPORALACCESSOR_N;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.TEMPORALCONSTANTNODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.TIMEFUNCTION_N;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.UNARYTESTLISTNODE_CT;
@@ -490,9 +490,8 @@ public class ASTCompilerVisitor implements Visitor<BlockStmt> {
 
     @Override
     public BlockStmt visit(StringNode n) {
-        String valueString = StringEvalHelper.escapeInnerDoubleQuotes(n.getValue());
-        Expression valueExpression = new StringLiteralExpr(valueString);
-        return addVariableDeclaratorWithObjectCreation(STRINGNODE_CT, NodeList.nodeList(valueExpression), n.getText());
+        return addVariableDeclaratorWithObjectCreation(STRINGNODE_CT, NodeList.nodeList(),
+                                                       n.getText());
     }
 
     @Override
@@ -556,7 +555,7 @@ public class ASTCompilerVisitor implements Visitor<BlockStmt> {
 
     private BlockStmt addVariableDeclaratorWithObjectCreation(ClassOrInterfaceType variableType,
                                                               NodeList<Expression> arguments, String text) {
-        Expression textExpression = text!= null ? new StringLiteralExpr(StringEvalHelper.escapeInnerDoubleQuotes(text)) : new NullLiteralExpr();
+        Expression textExpression = text != null ? new StringLiteralExpr(escapeJava(text)) : new NullLiteralExpr();
         arguments.add(textExpression);
         return addVariableDeclaratorWithObjectCreation(variableType, arguments);
     }
@@ -741,7 +740,7 @@ public class ASTCompilerVisitor implements Visitor<BlockStmt> {
             addExpression(variableDeclarationExpr, variableName);
             return new NameExpr(variableName);
         } else if (object instanceof String string) {
-            return new StringLiteralExpr(StringEvalHelper.escapeInnerDoubleQuotes(string));
+            return new StringLiteralExpr(escapeJava(string));
         } else if (object instanceof ZonedDateTime zonedDateTime) {
             String variableName = getNextVariableName();
             Expression zoneIdExpression = new MethodCallExpr(ZONE_ID_N, OF_S,

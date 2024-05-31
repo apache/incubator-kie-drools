@@ -112,18 +112,6 @@ public class StringEvalHelper {
         return c != ' ' && c != '\u00A0' && !Character.isWhitespace(c);
     }
 
-    /**
-     * Method to escape inner double quotes, e.g.
-     * ""Hello"" with "\"Hello\""
-     *
-     * @param s
-     * @return
-     */
-    public static String escapeInnerDoubleQuotes(String s) {
-        // The second replace is needed for strings that already contains an escaped double quote
-        return s.replace("\"", "\\\"").replace("\\\\\"", "\\\"");
-    }
-
     public static String unescapeString(String text) {
         if ( text == null ) {
             return null;

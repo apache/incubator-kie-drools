@@ -85,16 +85,16 @@ public abstract class BaseFEELTest {
     protected abstract void instanceTest(String expression, Object result, FEELEvent.Severity severity,
                                          FEEL_TARGET testFEELTarget, Boolean useExtendedProfile, FEELDialect dialect);
 
-    protected void assertResult(final String expression, final Object result ) {
+    protected void assertResult(final String expression, final Object expected ) {
         Object retrieved = feel.evaluate( expression );
         String description = String.format("Evaluating: '%s'", expression);
         ObjectAssert<Object> assertion = assertThat(retrieved).as(description);
-        if( result == null ) {
+        if( expected == null ) {
         	assertion.isNull();
-        } else if( result instanceof Class<?> ) {
-        	assertion.isInstanceOf((Class<?>) result);
+        } else if( expected instanceof Class<?> ) {
+        	assertion.isInstanceOf((Class<?>) expected);
         } else {
-        	assertion.isEqualTo(result);
+        	assertion.isEqualTo(expected);
         }
     }
 

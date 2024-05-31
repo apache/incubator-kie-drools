@@ -32,8 +32,8 @@ public class StringNode extends BaseNode {
         this.value = StringEvalHelper.unescapeString(getText());
     }
 
-    public StringNode(String value, String text) {
-        this.value = value;
+    public StringNode(String text) {
+        this.value = StringEvalHelper.unescapeString(text);
         this.setText(text);
     }
 
