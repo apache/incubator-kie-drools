@@ -18,6 +18,7 @@
  */
 package org.kie.kogito.addons.quarkus.data.index.deployment;
 
+import org.eclipse.microprofile.config.ConfigProvider;
 import org.jboss.jandex.DotName;
 import org.jboss.jandex.Type;
 import org.kie.kogito.index.addon.vertx.VertxGraphiQLSetup;
@@ -33,14 +34,28 @@ import io.quarkus.arc.processor.DotNames;
 import io.quarkus.deployment.IsDevelopment;
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
+import io.quarkus.deployment.builditem.SystemPropertyBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.NativeImageResourceBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.ReflectiveHierarchyBuildItem;
 import io.quarkus.deployment.pkg.steps.NativeOrNativeSourcesBuild;
 
 public abstract class AbstractKogitoAddonsQuarkusDataIndexProcessor extends OneOfCapabilityKogitoAddOnProcessor {
+    private static final String QUARKUS_HTTP_PORT = "quarkus.http.port";
+    private static final String KOGITO_SERVICE_URL_PROP = "kogito.service.url";
+    private static final String KOGITO_DATA_INDEX_PROP = "kogito.data-index.url";
 
     AbstractKogitoAddonsQuarkusDataIndexProcessor() {
         super(KogitoCapability.SERVERLESS_WORKFLOW, KogitoCapability.PROCESSES);
+    }
+
+    @BuildStep(onlyIf = IsDevelopment.class)
+    public void buildDefaultDataIndexURLSystemProperty(BuildProducer<SystemPropertyBuildItem> systemProperties) {
+        // Setting a default `kogito.data-index.url` accordingly to the runtime url.
+        String dataIndexUrl = ConfigProvider.getConfig().getOptionalValue(KOGITO_SERVICE_URL_PROP, String.class).orElseGet(() -> {
+            Integer port = ConfigProvider.getConfig().getOptionalValue(QUARKUS_HTTP_PORT, Integer.class).orElse(8080);
+            return "http://localhost:" + port;
+        });
+        systemProperties.produce(new SystemPropertyBuildItem(KOGITO_DATA_INDEX_PROP, dataIndexUrl));
     }
 
     @BuildStep(onlyIf = IsDevelopment.class)
