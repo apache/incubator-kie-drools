@@ -49,13 +49,7 @@ public class ContextNode
         List<ContextEntryNode> entryNodes = list.getElements().stream()
                 .map(ContextEntryNode.class::cast)
                 .toList();
-
-        for( BaseNode node : list.getElements() ) {
-            ContextEntryNode entry = (ContextEntryNode) node;
-            entries.add( entry );
-            parsedResultType.addField(entry.getName().getText(), entry.getResultType());
-        }
-
+        setListNode(entryNodes);
     }
 
     public ContextNode(List<ContextEntryNode> entryNodes, String text) {

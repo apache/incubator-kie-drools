@@ -73,6 +73,8 @@ import org.kie.dmn.feel.lang.ast.StringNode;
 import org.kie.dmn.feel.lang.ast.TemporalConstantNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestListNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestNode;
+import org.kie.dmn.feel.lang.impl.JavaBackedType;
+import org.kie.dmn.feel.lang.impl.MapBackedType;
 import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.dmn.feel.runtime.Range;
@@ -90,6 +92,7 @@ public class CodegenConstants {
 
 
     // String
+    public static final String ADDFIELD_S = "addField";
     public static final String ASLIST_S = "asList";
     public static final String COMPILEDFEELSUPPORT_S = "CompiledFEELSupport";
     public static final String DETERMINEOPERATOR_S = "determineOperator";
@@ -125,6 +128,7 @@ public class CodegenConstants {
     public static final NameExpr COMPILEDFEELSUPPORT_N = new NameExpr(COMPILEDFEELSUPPORT_S);
     public static final NameExpr COMPARABLEPERIOD_N = new NameExpr(ComparablePeriod.class.getCanonicalName());
     public static final NameExpr FEELCTX_N = new NameExpr(FEELCTX_S);
+    public static final NameExpr JAVABACKEDTYPE_N = new NameExpr(JavaBackedType.class.getCanonicalName());
     public static final NameExpr NUMBEREVALHELPER_N = new NameExpr(NumberEvalHelper.class.getCanonicalName());
     public static final NameExpr TIMEFUNCTION_N = new NameExpr(TimeFunction.class.getCanonicalName());
 
@@ -153,6 +157,8 @@ public class CodegenConstants {
     public static final ClassOrInterfaceType COMPILEDFEELSUPPORT_CT = parseClassOrInterfaceType(CompiledFEELSupport.class.getSimpleName());
     public static final ClassOrInterfaceType FEELFUNCTION_CT = parseClassOrInterfaceType(FEELFunction.class.getCanonicalName());
     public static final ClassOrInterfaceType INFIXOPERATOR_CT = parseClassOrInterfaceType(InfixOperator.class.getCanonicalName());
+    public static final ClassOrInterfaceType JAVABACKEDTYPE_CT = parseClassOrInterfaceType(JavaBackedType.class.getCanonicalName());
+    public static final ClassOrInterfaceType MAPBACKEDTYPE_CT = parseClassOrInterfaceType(MapBackedType.class.getCanonicalName());
     public static final ClassOrInterfaceType PARAM_CT = parseClassOrInterfaceType(FEELFunction.Param.class.getCanonicalName());
     public static final ClassOrInterfaceType TYPE_CT = parseClassOrInterfaceType(org.kie.dmn.feel.lang.Type.class.getCanonicalName());
     public static final ClassOrInterfaceType UNARYTEST_CT = parseClassOrInterfaceType(UnaryTest.class.getCanonicalName());

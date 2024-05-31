@@ -19,7 +19,6 @@
 package org.kie.dmn.feel.codegen.feel11;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map.Entry;
@@ -44,11 +43,10 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
-import org.eclipse.jdt.internal.compiler.ast.NullLiteral;
+import org.drools.util.PortablePath;
 import org.kie.dmn.feel.util.ClassLoaderUtil;
 import org.kie.memorycompiler.CompilationResult;
 import org.kie.memorycompiler.JavaCompiler;
-import org.drools.util.PortablePath;
 import org.kie.memorycompiler.resources.MemoryResourceReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,7 +55,6 @@ import static com.github.javaparser.StaticJavaParser.parse;
 import static org.drools.compiler.compiler.JavaDialectConfiguration.createNativeCompiler;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.EVALUATE_S;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.FEELCTX_N;
-import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.FEELCTX_S;
 
 public class CompilerBytecodeLoader {
 
@@ -129,12 +126,14 @@ public class CompilerBytecodeLoader {
             CompilationResult compilationResult = compiler.compile(new String[]{cuPackage.replaceAll("\\.", "/") + "/" + cuClass + ".java"},
                                                                    pReader,
                                                                    pStore,
-                                                                   this.getClass().getClassLoader());
-            LOG.debug("{}", Arrays.asList(compilationResult.getErrors()));
-            LOG.debug("{}", Arrays.asList(compilationResult.getWarnings()));
+                                                                   Thread.currentThread().getContextClassLoader());
+            LOG.error("{}", Arrays.asList(compilationResult.getErrors()));
+            LOG.warn("{}", Arrays.asList(compilationResult.getWarnings()));
 
             String fqnClassName = cuPackage + "." + cuClass;
-            Class<T> loaded = (Class<T>) new TemplateLoader(this.getClass().getClassLoader()).load(pStore, fqnClassName);
+            Class<T> loaded =
+                    (Class<T>) new TemplateLoader(Thread.currentThread().getContextClassLoader()).load(pStore,
+                                                                                                       fqnClassName);
 
             return loaded.newInstance();
         } catch (Exception e) {
@@ -143,9 +142,9 @@ public class CompilerBytecodeLoader {
         return null;
     }
 
-    public String getSourceForUnaryTest(String packageName, String className, String feelExpression, DirectCompilerResult directResult) {
-        return getSourceForUnaryTest(packageName, className, feelExpression, directResult.getExpression(), directResult.getFieldDeclarations());
-    }
+//    public String getSourceForUnaryTest(String packageName, String className, String feelExpression, DirectCompilerResult directResult) {
+//        return getSourceForUnaryTest(packageName, className, feelExpression, directResult.getExpression(), directResult.getFieldDeclarations());
+//    }
 
     public String getSourceForUnaryTest(String packageName, String className, String feelExpression, Expression theExpression, Set<FieldDeclaration> fieldDeclarations) {
         CompilationUnit cu = getCompilationUnit(CompiledFEELUnaryTests.class, "/TemplateCompiledFEELUnaryTests.java", packageName, className, feelExpression, theExpression, fieldDeclarations);

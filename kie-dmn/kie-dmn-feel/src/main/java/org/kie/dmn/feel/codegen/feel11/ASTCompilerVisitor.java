@@ -88,17 +88,19 @@ import org.kie.dmn.feel.lang.ast.TypeNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestListNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestNode;
 import org.kie.dmn.feel.lang.ast.Visitor;
+import org.kie.dmn.feel.lang.impl.JavaBackedType;
+import org.kie.dmn.feel.lang.impl.MapBackedType;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.dmn.feel.util.DateTimeEvalHelper;
-import org.kie.dmn.feel.util.StringEvalHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static com.github.javaparser.StaticJavaParser.parseExpression;
 import static com.github.javaparser.utils.StringEscapeUtils.escapeJava;
+import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.ADDFIELD_S;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.ASLIST_S;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.ATLITERALNODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.BETWEENNODE_CT;
@@ -131,6 +133,8 @@ import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.INNODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.INSTANCEOFNODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.INSTANCE_S;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.ITERATIONCONTEXTNODE_CT;
+import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.JAVABACKEDTYPE_CT;
+import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.JAVABACKEDTYPE_N;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.LISTNODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.LISTTYPENODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.LOCAL_DATE_CT;
@@ -139,6 +143,7 @@ import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.LOCAL_DATE_TIME_C
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.LOCAL_DATE_TIME_N;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.LOCAL_TIME_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.LOCAL_TIME_N;
+import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.MAPBACKEDTYPE_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.MAP_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.NAMEDEFNODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.NAMEDPARAMETERNODE_CT;
@@ -161,6 +166,7 @@ import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.STRINGNODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.TEMPORALACCESSOR_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.TEMPORALCONSTANTNODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.TIMEFUNCTION_N;
+import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.TYPE_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.UNARYTESTLISTNODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.UNARYTESTNODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.VAR_S;
@@ -638,7 +644,55 @@ public class ASTCompilerVisitor implements Visitor<BlockStmt> {
     }
 
     private Expression getTypeExpression(Type type) {
-        return type instanceof Enum typeEnum ? getEnumExpression(typeEnum) : parseExpression(type.getClass().getCanonicalName());
+        if (type instanceof Enum typeEnum) {
+            return getEnumExpression(typeEnum);
+        } else if (type instanceof JavaBackedType javaBackedType) {
+            return getJavaBackedTypeExpression(javaBackedType);
+        } else if (type instanceof MapBackedType mapBackedType) {
+            return getMapBackedTypeExpression(mapBackedType);
+        } else {
+            // TODO gcardosi 1206 - fix
+            return parseExpression(type.getClass().getCanonicalName());
+        }
+    }
+
+
+    private Expression getJavaBackedTypeExpression(JavaBackedType javaBackedType) {
+        // Creating the JavaBackedType
+        String mapVariableName = getNextVariableName();
+        final VariableDeclarator mapVariableDeclarator =
+                new VariableDeclarator(TYPE_CT, mapVariableName);
+        Expression classExpression = new NameExpr(javaBackedType.getWrapped().getCanonicalName() + ".class");
+        final MethodCallExpr methodCallExpr = new MethodCallExpr(JAVABACKEDTYPE_N, OF_S, NodeList.nodeList(classExpression));
+        mapVariableDeclarator.setInitializer(methodCallExpr);
+        VariableDeclarationExpr mapVariableDeclarationExpr = new VariableDeclarationExpr(mapVariableDeclarator);
+        addExpression(mapVariableDeclarationExpr, mapVariableName);
+        return new NameExpr(mapVariableName);
+    }
+    
+    private Expression getMapBackedTypeExpression(MapBackedType mapBackedType) {
+        Map<Expression, Expression> fieldsExpressions = new HashMap<>(); // The key is the StringLiteralExpr of the original key; the value is the Expression pointing at type
+        for (Map.Entry<String, Type> kv : mapBackedType.getFields().entrySet()) {
+            fieldsExpressions.put(new StringLiteralExpr(kv.getKey()), getTypeExpression(kv.getValue()));
+        }
+
+        // Creating the MapBackedType
+        String mapVariableName = getNextVariableName();
+        final VariableDeclarator mapVariableDeclarator =
+                new VariableDeclarator(MAPBACKEDTYPE_CT, mapVariableName);
+        final ObjectCreationExpr objectCreationExpr = new ObjectCreationExpr(null, MAPBACKEDTYPE_CT, NodeList.nodeList(new StringLiteralExpr(mapBackedType.getName())));
+        mapVariableDeclarator.setInitializer(objectCreationExpr);
+        VariableDeclarationExpr mapVariableDeclarationExpr = new VariableDeclarationExpr(mapVariableDeclarator);
+        addExpression(mapVariableDeclarationExpr, mapVariableName);
+        // Populating the map
+        Expression mapVariableExpression = new NameExpr(mapVariableName);
+        fieldsExpressions.forEach((key, value) -> {
+            MethodCallExpr putExpression = new MethodCallExpr(mapVariableExpression, ADDFIELD_S);
+            putExpression.addArgument(key);
+            putExpression.addArgument(value);
+            addExpression(putExpression);
+        });
+        return new NameExpr(mapVariableName);
     }
 
     private Expression getEnumExpression(Enum enumType) {
