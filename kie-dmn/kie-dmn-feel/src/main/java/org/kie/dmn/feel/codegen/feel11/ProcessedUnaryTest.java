@@ -59,7 +59,7 @@ public class ProcessedUnaryTest extends ProcessedFEELUnit {
     public CompilationUnit getSourceCode() {
         ASTCompilerVisitor astVisitor = new ASTCompilerVisitor();
         BlockStmt directCodegenResult = getCodegenResult(astVisitor);
-        return compiler.getCompilationUnitForUnitTests(
+        return compiler.getCompilationUnit(
                 TEMPLATE_RESOURCE,
                 packageName,
                 TEMPLATE_CLASS,

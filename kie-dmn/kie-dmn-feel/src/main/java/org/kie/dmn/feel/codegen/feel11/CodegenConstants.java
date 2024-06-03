@@ -93,8 +93,10 @@ public class CodegenConstants {
 
     // String
     public static final String ADDFIELD_S = "addField";
+    public static final String APPLY_S = "apply";
     public static final String ASLIST_S = "asList";
     public static final String COMPILEDFEELSUPPORT_S = "CompiledFEELSupport";
+    public static final String CREATEBASENODE_S = "createBaseNode";
     public static final String DETERMINEOPERATOR_S = "determineOperator";
     public static final String EVALUATE_S = "evaluate";
     public static final String FEELCTX_S = "feelExprCtx";
@@ -143,6 +145,7 @@ public class CodegenConstants {
     public static final ClassOrInterfaceType DURATION_CT = parseClassOrInterfaceType(Duration.class.getCanonicalName());
     public static final ClassOrInterfaceType HASHMAP_CT = parseClassOrInterfaceType(HashMap.class.getCanonicalName());
     public static final ClassOrInterfaceType FUNCTION_CT = parseClassOrInterfaceType("java.util.function.Function<EvaluationContext, Object>");
+    public static final ClassOrInterfaceType ILLEGALSTATEEXCEPTION_CT = parseClassOrInterfaceType(IllegalStateException.class.getCanonicalName());
     public static final ClassOrInterfaceType LOCAL_DATE_CT = parseClassOrInterfaceType(LocalDate.class.getCanonicalName());
     public static final ClassOrInterfaceType LOCAL_DATE_TIME_CT = parseClassOrInterfaceType(LocalDateTime.class.getCanonicalName());
     public static final ClassOrInterfaceType LOCAL_TIME_CT = parseClassOrInterfaceType(LocalTime.class.getCanonicalName());

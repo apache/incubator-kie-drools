@@ -28,7 +28,6 @@ import java.util.UUID;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
@@ -36,12 +35,12 @@ import com.github.javaparser.ast.comments.JavadocComment;
 import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;
-import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.stmt.Statement;
+import com.github.javaparser.ast.stmt.ThrowStmt;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.util.PortablePath;
 import org.kie.dmn.feel.util.ClassLoaderUtil;
@@ -53,9 +52,7 @@ import org.slf4j.LoggerFactory;
 
 import static com.github.javaparser.StaticJavaParser.parse;
 import static org.drools.compiler.compiler.JavaDialectConfiguration.createNativeCompiler;
-import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.EVALUATE_S;
-import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.FEELCTX_N;
-import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.GETCOMPILEDUNARYTESTS_S;
+import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.CREATEBASENODE_S;
 
 public class CompilerBytecodeLoader {
 
@@ -143,17 +140,6 @@ public class CompilerBytecodeLoader {
         return null;
     }
 
-//    public String getSourceForUnaryTest(String packageName, String className, String feelExpression, DirectCompilerResult directResult) {
-//        return getSourceForUnaryTest(packageName, className, feelExpression, directResult.getExpression(), directResult.getFieldDeclarations());
-//    }
-
-//    public String getSourceForUnaryTest(String packageName, String className, String feelExpression, Expression theExpression, Set<FieldDeclaration> fieldDeclarations) {
-//        CompilationUnit cu = getCompilationUnit(CompiledFEELUnaryTests.class, "/TemplateCompiledFEELUnaryTests.java", packageName, className, feelExpression, theExpression, fieldDeclarations);
-//        ClassOrInterfaceDeclaration classSource = cu.getClassByName( className ).orElseThrow(() -> new IllegalArgumentException("Cannot find class by name " + className));
-//        classSource.setStatic( true );
-//        return classSource.toString();
-//    }
-
     private <T> CompilationUnit getCompilationUnit(Class<T> clazz, String templateResourcePath, String cuPackage, String cuClass, String feelExpression, Expression theExpression, Set<FieldDeclaration> fieldDeclarations) {
         CompilationUnit cu = parse(CompilerBytecodeLoader.class.getResourceAsStream(templateResourcePath));
         cu.setPackageDeclaration(cuPackage);
@@ -200,49 +186,35 @@ public class CompilerBytecodeLoader {
         return cu;
     }
 
-    public <T> CompilationUnit getCompilationUnitForFEELExpression(String templateResourcePath, String cuPackage,
-                                                                   String cuClass, String feelExpression,
-                                                                   BlockStmt directCodegenResult,
-                                                                   String lastVariableName) {
-        CompilationUnit cu = getCompilationUnit(templateResourcePath, cuPackage, cuClass);
-        MethodDeclaration lookupMethod = getMethodDeclaration(cu, feelExpression);
-        ReturnStmt returnStmt =getReturnStmt(lookupMethod, directCodegenResult);
+    public <T> CompilationUnit getCompilationUnit(String templateResourcePath, String cuPackage,
+                                                  String cuClass, String feelExpression,
+                                                  BlockStmt directCodegenResult,
+                                                  String lastVariableName) {
+        CompilationUnit toReturn = getCompilationUnit(templateResourcePath, cuPackage, cuClass);
+        populateFirstMethodJavadoc(toReturn, feelExpression);
+        MethodDeclaration createBaseNodeMethodDeclaration = getCreateBaseNodeMethodDeclaration(toReturn);
+        ReturnStmt returnStmt = getReturnStmt(createBaseNodeMethodDeclaration, directCodegenResult);
         Optional<Statement> lastStatement = directCodegenResult.getStatements().getLast();
-        Expression returnExpression = getReturnExpressionForFEELExpressions(lastVariableName, lastStatement,
-                                                                            directCodegenResult);
-        returnStmt.setExpression(returnExpression);
-
-        return getCompilationUnit(cu, directCodegenResult, returnStmt);
-    }
-
-    public <T> CompilationUnit getCompilationUnitForUnitTests(String templateResourcePath, String cuPackage,
-                                                              String cuClass, String feelExpression,
-                                                              BlockStmt directCodegenResult, String lastVariableName) {
-        CompilationUnit cu = getCompilationUnit(templateResourcePath, cuPackage, cuClass);
-        MethodDeclaration lookupMethod = getMethodDeclaration(cu, feelExpression);
-        ReturnStmt returnStmt = getReturnStmt(lookupMethod, directCodegenResult);
-        Optional<Statement> lastStatement = directCodegenResult.getStatements().getLast();
-        Expression returnExpression = getReturnExpressionForUnitTests(lastVariableName, lastStatement,
-                                                                            directCodegenResult);
-        returnStmt.setExpression(returnExpression);
-
-        return getCompilationUnit(cu, directCodegenResult, returnStmt);
-    }
-
-    private CompilationUnit getCompilationUnit(CompilationUnit cu, BlockStmt directCodegenResult, ReturnStmt returnStmt) {
-        directCodegenResult.addStatement(returnStmt);
-
-        List<ClassOrInterfaceDeclaration> classDecls = cu.findAll(ClassOrInterfaceDeclaration.class);
+        if (lastStatement.isPresent() && lastStatement.get() instanceof ThrowStmt) {
+            directCodegenResult.remove(returnStmt);
+            createBaseNodeMethodDeclaration.remove(returnStmt);
+        } else {
+            Expression returnExpression = getReturnExpression(lastVariableName, lastStatement,
+                                                              directCodegenResult);
+            returnStmt.setExpression(returnExpression);
+            directCodegenResult.addStatement(returnStmt);
+        }
+        List<ClassOrInterfaceDeclaration> classDecls = toReturn.findAll(ClassOrInterfaceDeclaration.class);
         if (classDecls.size() != 1) {
             throw new RuntimeException("Something unexpected changed in the template.");
         }
 
         if (generateClassListener != null) {
-            generateClassListener.generatedClass(cu);
+            generateClassListener.generatedClass(toReturn);
         }
 
-        LOG.debug("{}", cu);
-        return cu;
+        LOG.debug("{}", toReturn);
+        return toReturn;
     }
 
     private CompilationUnit getCompilationUnit(String templateResourcePath, String cuPackage, String cuClass) {
@@ -256,13 +228,18 @@ public class CompilerBytecodeLoader {
         return cu;
     }
 
-    private MethodDeclaration getMethodDeclaration(CompilationUnit cu, String feelExpression) {
-        MethodDeclaration lookupMethod = cu
+    private void populateFirstMethodJavadoc(CompilationUnit cu, String feelExpression) {
+        MethodDeclaration applyMethodDEclaration = cu
                 .findFirst(MethodDeclaration.class)
                 .orElseThrow(() -> new RuntimeException("Something unexpected changed in the template."));
+        applyMethodDEclaration.setComment(new JavadocComment("   FEEL: " + feelExpression + "   "));
+    }
 
-        lookupMethod.setComment(new JavadocComment("   FEEL: " + feelExpression + "   "));
-        return lookupMethod;
+    private MethodDeclaration getCreateBaseNodeMethodDeclaration(CompilationUnit cu) {
+        return cu
+                .findFirst(MethodDeclaration.class,
+                           methodDeclaration -> methodDeclaration.getName().asString().equals(CREATEBASENODE_S))
+                .orElseThrow(() -> new RuntimeException("Something unexpected changed in the template."));
     }
 
     private ReturnStmt getReturnStmt(MethodDeclaration lookupMethod, BlockStmt directCodegenResult) {
@@ -273,12 +250,12 @@ public class CompilerBytecodeLoader {
         return toReturn;
     }
 
-    private Expression getReturnExpressionForFEELExpressions(String lastVariableName,
-                                                             Optional<Statement> lastStatement,
-                                                             BlockStmt directCodegenResult) {
+    private Expression getReturnExpression(String lastVariableName,
+                                           Optional<Statement> lastStatement,
+                                           BlockStmt directCodegenResult) {
         Expression toReturn;
         if (lastVariableName != null) {
-            toReturn = new MethodCallExpr(new NameExpr(lastVariableName), EVALUATE_S, NodeList.nodeList(FEELCTX_N));
+            toReturn = new NameExpr(lastVariableName);
         } else {
             if (lastStatement.isPresent()) {
                 Statement lastStmt = lastStatement.get();
@@ -290,25 +267,6 @@ public class CompilerBytecodeLoader {
         }
         return toReturn;
     }
-
-    private Expression getReturnExpressionForUnitTests(String lastVariableName, Optional<Statement> lastStatement,
-                                                       BlockStmt directCodegenResult) {
-        Expression toReturn;
-        if (lastVariableName != null) {
-            toReturn = new MethodCallExpr(new NameExpr(lastVariableName), GETCOMPILEDUNARYTESTS_S, NodeList.nodeList());
-        } else {
-            if (lastStatement.isPresent()) {
-                Statement lastStmt = lastStatement.get();
-                Expression lastExpression = lastStmt.asExpressionStmt().getExpression();
-                toReturn = new MethodCallExpr(lastExpression, GETCOMPILEDUNARYTESTS_S, NodeList.nodeList());
-                directCodegenResult.remove(lastStmt);
-            } else {
-                toReturn = new NullLiteralExpr();
-            }
-        }
-        return toReturn;
-    }
-
 
     private boolean isUnaryTest(FieldDeclaration fd) {
         return fd.getVariable(0).getName().asString().startsWith("UT");

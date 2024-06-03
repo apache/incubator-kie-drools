@@ -94,7 +94,7 @@ public class ProcessedExpression extends ProcessedFEELUnit {
     public CompilationUnit getSourceCode() {
         ASTCompilerVisitor astVisitor = new ASTCompilerVisitor();
         BlockStmt directCodegenResult = getCodegenResult(astVisitor);
-        return compilerBytecodeLoader.getCompilationUnitForFEELExpression(
+        return compilerBytecodeLoader.getCompilationUnit(
                 TEMPLATE_RESOURCE,
                 packageName,
                 TEMPLATE_CLASS,

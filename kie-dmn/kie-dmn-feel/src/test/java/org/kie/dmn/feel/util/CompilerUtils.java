@@ -22,14 +22,12 @@ import java.util.Collections;
 import java.util.Map;
 
 import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.kie.dmn.feel.codegen.feel11.ASTCompilerVisitor;
 import org.kie.dmn.feel.codegen.feel11.CodegenTestUtil;
 import org.kie.dmn.feel.codegen.feel11.CompiledFEELExpression;
 import org.kie.dmn.feel.codegen.feel11.CompilerBytecodeLoader;
-import org.kie.dmn.feel.codegen.feel11.DirectCompilerResult;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.ast.BaseNode;
@@ -72,7 +70,7 @@ public class CompilerUtils {
 
         CompilerBytecodeLoader compilerBytecodeLoader = new CompilerBytecodeLoader();
         String packageName = compilerBytecodeLoader.generateRandomPackage();
-        CompilationUnit cu = compilerBytecodeLoader.getCompilationUnitForFEELExpression(
+        CompilationUnit cu = compilerBytecodeLoader.getCompilationUnit(
                 TEMPLATE_RESOURCE,
                 packageName,
                 TEMPLATE_CLASS,

@@ -23,18 +23,29 @@ import org.kie.dmn.feel.codegen.feel11.CompiledFEELExpression;
 import org.kie.dmn.feel.codegen.feel11.CompiledFEELSupport;
 import org.kie.dmn.feel.lang.EvaluationContext;
 
-
+import java.util.Collections;
 import java.util.List;
 import java.util.function.BiFunction;
 
+import org.kie.dmn.feel.lang.ast.UnaryTestListNode;
 import org.kie.dmn.feel.runtime.UnaryTest;
 
 public class TemplateCompiledFEELUnaryTests implements org.kie.dmn.feel.codegen.feel11.CompiledFEELUnaryTests {
 
 
+    private org.kie.dmn.feel.lang.ast.UnaryTestListNode BASE_NODE;
+
     @Override
     public java.util.List<org.kie.dmn.feel.runtime.UnaryTest> getUnaryTests() {
-        return null;
+        try {
+            return getBaseNode().getCompiledUnaryTests();
+        } catch (IllegalStateException e) {
+            org.kie.dmn.feel.runtime.UnaryTest unaryTest = (feelExprCtx, left) -> {
+                org.kie.dmn.feel.codegen.feel11.CompiledFEELSupport.notifyCompilationError(feelExprCtx, e.getMessage());
+                return false;
+            };
+            return java.util.Collections.singletonList(unaryTest);
+        }
     }
 
     private static TemplateCompiledFEELUnaryTests INSTANCE;
@@ -44,5 +55,16 @@ public class TemplateCompiledFEELUnaryTests implements org.kie.dmn.feel.codegen.
             INSTANCE = new TemplateCompiledFEELUnaryTests();
         }
         return INSTANCE;
+    }
+
+    private org.kie.dmn.feel.lang.ast.UnaryTestListNode getBaseNode() {
+        if (BASE_NODE == null) {
+            BASE_NODE = createBaseNode();
+        }
+        return BASE_NODE;
+    }
+
+    private org.kie.dmn.feel.lang.ast.UnaryTestListNode createBaseNode() {
+        return null;
     }
 }

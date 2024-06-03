@@ -47,6 +47,8 @@ import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
+import com.github.javaparser.ast.stmt.Statement;
+import com.github.javaparser.ast.stmt.ThrowStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.ast.ASTNode;
@@ -107,7 +109,6 @@ import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.BETWEENNODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.BOOLEANNODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.COMPARABLEPERIOD_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.COMPARABLEPERIOD_N;
-import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.COMPILEDFEELSUPPORT_N;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.CONTEXTENTRYNODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.CONTEXTNODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.CONTEXTTYPENODE_CT;
@@ -116,7 +117,6 @@ import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.DASHNODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.DETERMINEOPERATOR_S;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.DURATION_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.DURATION_N;
-import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.FEELCTX_N;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.FEEL_TIME_S;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.FILTEREXPRESSIONNODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.FOREXPRESSIONNODE_CT;
@@ -127,13 +127,13 @@ import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.FUNCTIONTYPENODE_
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.GETBIGDECIMALORNULL_S;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.HASHMAP_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.IFEXPRESSIONNODE_CT;
+import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.ILLEGALSTATEEXCEPTION_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.INFIXOPERATOR_N;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.INFIXOPNODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.INNODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.INSTANCEOFNODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.INSTANCE_S;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.ITERATIONCONTEXTNODE_CT;
-import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.JAVABACKEDTYPE_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.JAVABACKEDTYPE_N;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.LISTNODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.LISTTYPENODE_CT;
@@ -148,7 +148,6 @@ import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.MAP_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.NAMEDEFNODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.NAMEDPARAMETERNODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.NAMEREFNODE_CT;
-import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.NOTIFYCOMPILATIONERROR_S;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.NULLNODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.NUMBEREVALHELPER_N;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.NUMBERNODE_CT;
@@ -549,10 +548,10 @@ public class ASTCompilerVisitor implements Visitor<BlockStmt> {
     }
 
     public BlockStmt returnError(String errorMessage) {
-        final MethodCallExpr methodCallExpr = new MethodCallExpr(COMPILEDFEELSUPPORT_N, NOTIFYCOMPILATIONERROR_S,
-                                                                 NodeList.nodeList(FEELCTX_N,
-                                                                                   Expressions.stringLiteral(errorMessage)));
-        return addExpression(methodCallExpr);
+        ObjectCreationExpr illegalStateExceptionExpression = new ObjectCreationExpr(null, ILLEGALSTATEEXCEPTION_CT, NodeList.nodeList(Expressions.stringLiteral(errorMessage)));
+        ThrowStmt throwStmt = new ThrowStmt();
+        throwStmt.setExpression(illegalStateExceptionExpression);
+        return addStatement(throwStmt);
     }
 
     private String getNextVariableName() {
@@ -605,6 +604,12 @@ public class ASTCompilerVisitor implements Visitor<BlockStmt> {
     }
 
     private BlockStmt addExpression(Expression toAdd) {
+        toPopulate.addStatement(toAdd);
+        LOGGER.debug(toPopulate.toString());
+        return toPopulate;
+    }
+
+    private BlockStmt addStatement(Statement toAdd) {
         toPopulate.addStatement(toAdd);
         LOGGER.debug(toPopulate.toString());
         return toPopulate;

@@ -23,13 +23,20 @@ import static org.kie.dmn.feel.codegen.feel11.CompiledFEELSemanticMappings.*;
 import org.kie.dmn.feel.codegen.feel11.CompiledCustomFEELFunction;
 import org.kie.dmn.feel.codegen.feel11.CompiledFEELExpression;
 import org.kie.dmn.feel.codegen.feel11.CompiledFEELSupport;
+import org.kie.dmn.feel.lang.ast.BaseNode;
 import org.kie.dmn.feel.lang.EvaluationContext;
 
 public class TemplateCompiledFEELExpression implements org.kie.dmn.feel.codegen.feel11.CompiledFEELExpression {
 
+    private BaseNode BASE_NODE;
+
     @Override
     public Object apply(EvaluationContext feelExprCtx) {
-        return null;
+        try {
+            return getBaseNode().evaluate(feelExprCtx);
+        } catch (IllegalStateException e) {
+            return CompiledFEELSupport.notifyCompilationError(feelExprCtx, e.getMessage());
+        }
     }
 
     private static TemplateCompiledFEELExpression INSTANCE;
@@ -39,6 +46,17 @@ public class TemplateCompiledFEELExpression implements org.kie.dmn.feel.codegen.
             INSTANCE = new TemplateCompiledFEELExpression();
         }
         return INSTANCE;
+    }
+
+    private BaseNode getBaseNode() {
+        if (BASE_NODE == null) {
+            BASE_NODE = createBaseNode();
+        }
+        return BASE_NODE;
+    }
+
+    private BaseNode createBaseNode() {
+        return null;
     }
 
 }
