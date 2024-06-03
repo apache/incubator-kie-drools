@@ -241,6 +241,7 @@ drlKeywords returns [Token token]
     | DRL_GLOBAL
     | DRL_DECLARE
     | DRL_TRAIT
+    | DRL_TYPE
     | DRL_RULE
     | DRL_QUERY
     | DRL_WHEN
