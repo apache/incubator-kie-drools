@@ -2174,12 +2174,44 @@ class MiscDRLParserTest {
     }
 
     @Test
-    public void parse_Accumulate() throws Exception {
-        final PackageDescr pkg = parseAndGetPackageDescrFromFile(
-                                                               "accumulate.drl" );
+    void accumulate() {
+        final String drl = "rule R\n" +
+                "when\n" +
+                "     accumulate( Person( $age : age );\n" +
+                "                 $avg : average( $age ) );\n" +
+                "then\n" +
+                "end";
+        RuleDescr rule = parseAndGetFirstRuleDescr(drl);
+
+        PatternDescr out = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+        assertThat(out.getObjectType()).isEqualTo("Object");
+        AccumulateDescr accum = (AccumulateDescr) out.getSource();
+        assertThat(accum.isExternalFunction()).isTrue();
+
+        List<AccumulateDescr.AccumulateFunctionCallDescr> functions = accum.getFunctions();
+        assertThat(functions.size()).isEqualTo(1);
+        assertThat(functions.get(0).getFunction()).isEqualTo("average");
+        assertThat(functions.get(0).getBind()).isEqualTo("$avg");
+        assertThat(functions.get(0).getParams()[0]).isEqualTo("$age");
+
+        final PatternDescr pattern = accum.getInputPattern();
+        assertThat(pattern.getObjectType()).isEqualTo("Person");
+
+        // accum.getInput() is always AndDescr
+        assertThat(accum.getInput()).isInstanceOfSatisfying(AndDescr.class, and -> {
+            assertThat(and.getDescrs()).hasSize(1);
+            assertThat(and.getDescrs().get(0)).isInstanceOfSatisfying(PatternDescr.class, patternDescr -> {
+                assertThat(patternDescr.getObjectType()).isEqualTo("Person");
+            });
+        });
+    }
+
+    @Test
+    void fromAccumulate() {
+        final PackageDescr pkg = parseAndGetPackageDescrFromFile("from_accumulate.drl" );
 
         assertThat(pkg.getRules().size()).isEqualTo(1);
-        final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
+        final RuleDescr rule = pkg.getRules().get( 0 );
         assertThat(rule.getLhs().getDescrs().size()).isEqualTo(1);
 
         final PatternDescr outPattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
@@ -2191,8 +2223,16 @@ class MiscDRLParserTest {
 
         assertThat(accum.isExternalFunction()).isFalse();
 
-        final PatternDescr pattern = (PatternDescr) accum.getInputPattern();
+        final PatternDescr pattern = accum.getInputPattern();
         assertThat(pattern.getObjectType()).isEqualTo("Person");
+
+        // accum.getInput() is always AndDescr
+        assertThat(accum.getInput()).isInstanceOfSatisfying(AndDescr.class, and -> {
+            assertThat(and.getDescrs()).hasSize(1);
+            assertThat(and.getDescrs().get(0)).isInstanceOfSatisfying(PatternDescr.class, patternDescr -> {
+                assertThat(patternDescr.getObjectType()).isEqualTo("Person");
+            });
+        });
     }
 
     @Test
@@ -5231,5 +5271,37 @@ class MiscDRLParserTest {
 
         // At the moment, the parser accepts any input and let the compile phase validate it.
         assertThat(rule.getAttributes().get("duration").getValue()).isEqualTo("wrong input");
+    }
+
+    @Test
+    void accumulateWithEmptyActionAndReverse() {
+        final String drl = "rule R when\n" +
+                "    Number() from accumulate( Number(),\n" +
+                "        init( double total = 0; ),\n" +
+                "        action( ),\n" +
+                "        reverse( ),\n" +
+                "        result( new Double( total ) )\n" +
+                "    )\n" +
+                "then end";
+        RuleDescr rule = parseAndGetFirstRuleDescr(drl);
+
+        final PatternDescr outPattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+        final AccumulateDescr accum = (AccumulateDescr) outPattern.getSource();
+        assertThat(accum.getInitCode()).isEqualTo( "double total = 0;");
+        assertThat(accum.getActionCode()).isEmpty();
+        assertThat(accum.getReverseCode()).isEmpty();
+        assertThat(accum.getResultCode()).isEqualTo( "new Double( total )");
+
+        assertThat(accum.isExternalFunction()).isFalse();
+
+        final PatternDescr pattern = accum.getInputPattern();
+        assertThat(pattern.getObjectType()).isEqualTo("Number");
+
+        assertThat(accum.getInput()).isInstanceOfSatisfying(AndDescr.class, and -> {
+            assertThat(and.getDescrs()).hasSize(1);
+            assertThat(and.getDescrs().get(0)).isInstanceOfSatisfying(PatternDescr.class, patternDescr -> {
+                assertThat(patternDescr.getObjectType()).isEqualTo("Number");
+            });
+        });
     }
 }
