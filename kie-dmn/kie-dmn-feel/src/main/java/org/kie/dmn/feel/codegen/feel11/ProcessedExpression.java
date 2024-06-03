@@ -91,32 +91,10 @@ public class ProcessedExpression extends ProcessedFEELUnit {
         return this;
     }
 
-//    private DirectCompilerResult getCompilerResult() {
-//        if (compilerResult == null) {
-//            if (errorListener.isError()) {
-//                compilerResult =
-//                        DirectCompilerResult.of(
-//                                CompiledFEELSupport.compiledErrorExpression(
-//                                        errorListener.event().getMessage()),
-//                                BuiltInType.UNKNOWN);
-//            } else {
-//                try {
-//                    compilerResult = ast.accept(new ASTCompilerVisitor());
-//                } catch (FEELCompilationError e) {
-//                    compilerResult = DirectCompilerResult.of(
-//                            CompiledFEELSupport.compiledErrorExpression(e.getMessage()),
-//                            BuiltInType.UNKNOWN);
-//                }
-//            }
-//        }
-//        return compilerResult;
-//    }
-
     public CompilationUnit getSourceCode() {
         ASTCompilerVisitor astVisitor = new ASTCompilerVisitor();
         BlockStmt directCodegenResult = getCodegenResult(astVisitor);
-        return compilerBytecodeLoader.getCompilationUnit(
-                CompiledFEELExpression.class,
+        return compilerBytecodeLoader.getCompilationUnitForFEELExpression(
                 TEMPLATE_RESOURCE,
                 packageName,
                 TEMPLATE_CLASS,

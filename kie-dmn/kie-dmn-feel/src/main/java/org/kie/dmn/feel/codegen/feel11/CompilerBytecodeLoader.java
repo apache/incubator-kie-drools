@@ -55,6 +55,7 @@ import static com.github.javaparser.StaticJavaParser.parse;
 import static org.drools.compiler.compiler.JavaDialectConfiguration.createNativeCompiler;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.EVALUATE_S;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.FEELCTX_N;
+import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.GETCOMPILEDUNARYTESTS_S;
 
 public class CompilerBytecodeLoader {
 
@@ -153,7 +154,7 @@ public class CompilerBytecodeLoader {
 //        return classSource.toString();
 //    }
 
-    public <T> CompilationUnit getCompilationUnit(Class<T> clazz, String templateResourcePath, String cuPackage, String cuClass, String feelExpression, Expression theExpression, Set<FieldDeclaration> fieldDeclarations) {
+    private <T> CompilationUnit getCompilationUnit(Class<T> clazz, String templateResourcePath, String cuPackage, String cuClass, String feelExpression, Expression theExpression, Set<FieldDeclaration> fieldDeclarations) {
         CompilationUnit cu = parse(CompilerBytecodeLoader.class.getResourceAsStream(templateResourcePath));
         cu.setPackageDeclaration(cuPackage);
         final String className = templateResourcePath.substring( 1, templateResourcePath.length() - 5);
@@ -199,59 +200,42 @@ public class CompilerBytecodeLoader {
         return cu;
     }
 
-    public <T> CompilationUnit getCompilationUnit(Class<T> clazz, String templateResourcePath, String cuPackage, String cuClass, String feelExpression, BlockStmt directCodegenResult, String lastVariableName) {
-        CompilationUnit cu = parse(CompilerBytecodeLoader.class.getResourceAsStream(templateResourcePath));
-        cu.setPackageDeclaration(cuPackage);
-        final String className = templateResourcePath.substring( 1, templateResourcePath.length() - 5);
-        ClassOrInterfaceDeclaration classSource = cu.getClassByName(className).orElseThrow(() -> new IllegalArgumentException("Cannot find class by name " + className));
-        classSource.setName( cuClass );
-
-        MethodDeclaration lookupMethod = cu
-                .findFirst(MethodDeclaration.class)
-                .orElseThrow(() -> new RuntimeException("Something unexpected changed in the template."));
-
-        lookupMethod.setComment(new JavadocComment("   FEEL: " + feelExpression + "   "));
-
-        ReturnStmt returnStmt =
-                lookupMethod.findFirst(ReturnStmt.class)
-                        .orElseThrow(() -> new RuntimeException("Something unexpected changed in the template."));
-        lookupMethod.setBody(directCodegenResult);
+    public <T> CompilationUnit getCompilationUnitForFEELExpression(String templateResourcePath, String cuPackage,
+                                                                   String cuClass, String feelExpression,
+                                                                   BlockStmt directCodegenResult,
+                                                                   String lastVariableName) {
+        CompilationUnit cu = getCompilationUnit(templateResourcePath, cuPackage, cuClass);
+        MethodDeclaration lookupMethod = getMethodDeclaration(cu, feelExpression);
+        ReturnStmt returnStmt =getReturnStmt(lookupMethod, directCodegenResult);
         Optional<Statement> lastStatement = directCodegenResult.getStatements().getLast();
-        Expression returnExpression;
-        if (lastVariableName != null) {
-            returnExpression = new MethodCallExpr(new NameExpr(lastVariableName), EVALUATE_S, NodeList.nodeList(FEELCTX_N));
-        } else {
-            if (lastStatement.isPresent()) {
-                Statement lastStmt = lastStatement.get();
-                returnExpression = lastStmt.asExpressionStmt().getExpression();
-                directCodegenResult.remove(lastStmt);
-            } else {
-                returnExpression = new NullLiteralExpr();
-            }
-        }
+        Expression returnExpression = getReturnExpressionForFEELExpressions(lastVariableName, lastStatement,
+                                                                            directCodegenResult);
         returnStmt.setExpression(returnExpression);
-        directCodegenResult.addStatement(returnStmt);
 
-//        Expression expr;
-//        if (clazz.equals(CompiledFEELUnaryTests.class)) {
-//            expr = new CastExpr(StaticJavaParser.parseType("java.util.List"), new EnclosedExpr(theExpression));
-//        } else {
-//            expr = theExpression;
-//        }
-//        returnStmt.setExpression(expr);
+        return getCompilationUnit(cu, directCodegenResult, returnStmt);
+    }
+
+    public <T> CompilationUnit getCompilationUnitForUnitTests(String templateResourcePath, String cuPackage,
+                                                              String cuClass, String feelExpression,
+                                                              BlockStmt directCodegenResult, String lastVariableName) {
+        CompilationUnit cu = getCompilationUnit(templateResourcePath, cuPackage, cuClass);
+        MethodDeclaration lookupMethod = getMethodDeclaration(cu, feelExpression);
+        ReturnStmt returnStmt = getReturnStmt(lookupMethod, directCodegenResult);
+        Optional<Statement> lastStatement = directCodegenResult.getStatements().getLast();
+        Expression returnExpression = getReturnExpressionForUnitTests(lastVariableName, lastStatement,
+                                                                            directCodegenResult);
+        returnStmt.setExpression(returnExpression);
+
+        return getCompilationUnit(cu, directCodegenResult, returnStmt);
+    }
+
+    private CompilationUnit getCompilationUnit(CompilationUnit cu, BlockStmt directCodegenResult, ReturnStmt returnStmt) {
+        directCodegenResult.addStatement(returnStmt);
 
         List<ClassOrInterfaceDeclaration> classDecls = cu.findAll(ClassOrInterfaceDeclaration.class);
         if (classDecls.size() != 1) {
             throw new RuntimeException("Something unexpected changed in the template.");
         }
-//        ClassOrInterfaceDeclaration classDecl = classDecls.get(0);
-
-//        fieldDeclarations.stream()
-//                .filter(fd -> !isUnaryTest(fd))
-//                .sorted(new SortFieldDeclarationStrategy()).forEach(classDecl::addMember);
-//        fieldDeclarations.stream()
-//                .filter(fd -> fd.getVariable(0).getName().asString().startsWith("UT"))
-//                .sorted(new SortFieldDeclarationStrategy()).forEach(classDecl::addMember);
 
         if (generateClassListener != null) {
             generateClassListener.generatedClass(cu);
@@ -260,6 +244,71 @@ public class CompilerBytecodeLoader {
         LOG.debug("{}", cu);
         return cu;
     }
+
+    private CompilationUnit getCompilationUnit(String templateResourcePath, String cuPackage, String cuClass) {
+        CompilationUnit cu = parse(CompilerBytecodeLoader.class.getResourceAsStream(templateResourcePath));
+        cu.setPackageDeclaration(cuPackage);
+        final String className = templateResourcePath.substring(1, templateResourcePath.length() - 5);
+        ClassOrInterfaceDeclaration classSource =
+                cu.getClassByName(className).orElseThrow(() -> new IllegalArgumentException("Cannot find class by " +
+                                                                                                    "name " + className));
+        classSource.setName(cuClass);
+        return cu;
+    }
+
+    private MethodDeclaration getMethodDeclaration(CompilationUnit cu, String feelExpression) {
+        MethodDeclaration lookupMethod = cu
+                .findFirst(MethodDeclaration.class)
+                .orElseThrow(() -> new RuntimeException("Something unexpected changed in the template."));
+
+        lookupMethod.setComment(new JavadocComment("   FEEL: " + feelExpression + "   "));
+        return lookupMethod;
+    }
+
+    private ReturnStmt getReturnStmt(MethodDeclaration lookupMethod, BlockStmt directCodegenResult) {
+        ReturnStmt toReturn =
+                lookupMethod.findFirst(ReturnStmt.class)
+                        .orElseThrow(() -> new RuntimeException("Something unexpected changed in the template."));
+        lookupMethod.setBody(directCodegenResult);
+        return toReturn;
+    }
+
+    private Expression getReturnExpressionForFEELExpressions(String lastVariableName,
+                                                             Optional<Statement> lastStatement,
+                                                             BlockStmt directCodegenResult) {
+        Expression toReturn;
+        if (lastVariableName != null) {
+            toReturn = new MethodCallExpr(new NameExpr(lastVariableName), EVALUATE_S, NodeList.nodeList(FEELCTX_N));
+        } else {
+            if (lastStatement.isPresent()) {
+                Statement lastStmt = lastStatement.get();
+                toReturn = lastStmt.asExpressionStmt().getExpression();
+                directCodegenResult.remove(lastStmt);
+            } else {
+                toReturn = new NullLiteralExpr();
+            }
+        }
+        return toReturn;
+    }
+
+    private Expression getReturnExpressionForUnitTests(String lastVariableName, Optional<Statement> lastStatement,
+                                                       BlockStmt directCodegenResult) {
+        Expression toReturn;
+        if (lastVariableName != null) {
+            toReturn = new MethodCallExpr(new NameExpr(lastVariableName), GETCOMPILEDUNARYTESTS_S, NodeList.nodeList());
+        } else {
+            if (lastStatement.isPresent()) {
+                Statement lastStmt = lastStatement.get();
+                Expression lastExpression = lastStmt.asExpressionStmt().getExpression();
+                toReturn = new MethodCallExpr(lastExpression, GETCOMPILEDUNARYTESTS_S, NodeList.nodeList());
+                directCodegenResult.remove(lastStmt);
+            } else {
+                toReturn = new NullLiteralExpr();
+            }
+        }
+        return toReturn;
+    }
+
 
     private boolean isUnaryTest(FieldDeclaration fd) {
         return fd.getVariable(0).getName().asString().startsWith("UT");

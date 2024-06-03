@@ -72,8 +72,7 @@ public class CompilerUtils {
 
         CompilerBytecodeLoader compilerBytecodeLoader = new CompilerBytecodeLoader();
         String packageName = compilerBytecodeLoader.generateRandomPackage();
-        CompilationUnit cu = compilerBytecodeLoader.getCompilationUnit(
-                CompiledFEELExpression.class,
+        CompilationUnit cu = compilerBytecodeLoader.getCompilationUnitForFEELExpression(
                 TEMPLATE_RESOURCE,
                 packageName,
                 TEMPLATE_CLASS,

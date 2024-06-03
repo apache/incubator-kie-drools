@@ -100,6 +100,7 @@ public class CodegenConstants {
     public static final String FEELCTX_S = "feelExprCtx";
     public static final String FEEL_TIME_S = "FEEL_TIME";
     public static final String GETBIGDECIMALORNULL_S  = "getBigDecimalOrNull";
+    public static final String GETCOMPILEDUNARYTESTS_S = "getCompiledUnaryTests";
     public static final String INSTANCE_S = "INSTANCE";
     public static final String NOTIFYCOMPILATIONERROR_S = "notifyCompilationError";
     public static final String OF_S = "of";
