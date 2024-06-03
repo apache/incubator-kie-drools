@@ -699,7 +699,8 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
         AccumulateDescr accumulateDescr = BaseDescrFactory.builder(new AccumulateDescr())
                 .withParserRuleContext(ctx)
                 .build();
-        accumulateDescr.setInput(visitLhsAndDef(ctx.lhsAndDef()));
+        // accumulateDescr.input is always AndDescr
+        accumulateDescr.setInput(wrapWithAndDescr(visitLhsAndDef(ctx.lhsAndDef()), ctx.lhsAndDef()));
 
         // accumulate function
         for (DRLParser.AccumulateFunctionContext accumulateFunctionContext : ctx.accumulateFunction()) {
@@ -712,6 +713,18 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
         constraintDescrList.forEach(patternDescr::addConstraint);
 
         return patternDescr;
+    }
+
+    private AndDescr wrapWithAndDescr(BaseDescr baseDescr, ParserRuleContext ctx) {
+        if (baseDescr instanceof AndDescr andDescr) {
+            return andDescr;
+        } else {
+            AndDescr andDescr = BaseDescrFactory.builder(new AndDescr())
+                    .withParserRuleContext(ctx)
+                    .build();
+            andDescr.addDescr(baseDescr);
+            return andDescr;
+        }
     }
 
     @Override
@@ -775,7 +788,8 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
         AccumulateDescr accumulateDescr = BaseDescrFactory.builder(new AccumulateDescr())
                 .withParserRuleContext(ctx)
                 .build();
-        accumulateDescr.setInput(visitLhsAndDef(ctx.lhsAndDef()));
+        // accumulateDescr.input is always AndDescr
+        accumulateDescr.setInput(wrapWithAndDescr(visitLhsAndDef(ctx.lhsAndDef()), ctx.lhsAndDef()));
         if (ctx.DRL_INIT() != null) {
             // inline custom accumulate
             accumulateDescr.setInitCode(getTextPreservingWhitespace(ctx.initBlockStatements));

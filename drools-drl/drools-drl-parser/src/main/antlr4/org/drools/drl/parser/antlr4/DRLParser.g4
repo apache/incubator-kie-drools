@@ -340,7 +340,8 @@ fromAccumulate := ACCUMULATE LEFT_PAREN lhsAnd (COMMA|SEMICOLON)
                         ) RIGHT_PAREN
 */
 fromAccumulate : (DRL_ACCUMULATE|DRL_ACC) LPAREN lhsAndDef (COMMA|SEMI)
-                   ( DRL_INIT LPAREN initBlockStatements=chunk? RPAREN COMMA? DRL_ACTION LPAREN actionBlockStatements=chunk? RPAREN COMMA? ( DRL_REVERSE LPAREN reverseBlockStatements=chunk? RPAREN COMMA?)? DRL_RESULT LPAREN resultBlockStatements=chunk RPAREN
+                   ( DRL_INIT LPAREN initBlockStatements=chunk? RPAREN COMMA? DRL_ACTION LPAREN actionBlockStatements=chunk? RPAREN COMMA? DRL_REVERSE LPAREN reverseBlockStatements=chunk? RPAREN COMMA? DRL_RESULT LPAREN resultBlockStatements=chunk RPAREN
+                   | DRL_INIT LPAREN initBlockStatements=chunk? RPAREN COMMA? DRL_ACTION LPAREN actionBlockStatements=chunk? RPAREN COMMA? DRL_RESULT LPAREN resultBlockStatements=chunk RPAREN
                    | accumulateFunction
                    )
                  RPAREN (SEMI)?
