@@ -34,11 +34,12 @@ public class TemplateCompiledFEELUnaryTests implements org.kie.dmn.feel.codegen.
 
 
     private org.kie.dmn.feel.lang.ast.UnaryTestListNode BASE_NODE;
+    private java.util.List<org.kie.dmn.feel.runtime.UnaryTest> UNARY_TESTS;
 
     @Override
     public java.util.List<org.kie.dmn.feel.runtime.UnaryTest> getUnaryTests() {
         try {
-            return getBaseNode().getCompiledUnaryTests();
+            return getCompiledUnaryTests();
         } catch (IllegalStateException e) {
             org.kie.dmn.feel.runtime.UnaryTest unaryTest = (feelExprCtx, left) -> {
                 org.kie.dmn.feel.codegen.feel11.CompiledFEELSupport.notifyCompilationError(feelExprCtx, e.getMessage());
@@ -55,6 +56,13 @@ public class TemplateCompiledFEELUnaryTests implements org.kie.dmn.feel.codegen.
             INSTANCE = new TemplateCompiledFEELUnaryTests();
         }
         return INSTANCE;
+    }
+
+    private java.util.List<org.kie.dmn.feel.runtime.UnaryTest> getCompiledUnaryTests() {
+        if (UNARY_TESTS == null) {
+            UNARY_TESTS = getBaseNode().getCompiledUnaryTests();
+        }
+        return UNARY_TESTS;
     }
 
     private org.kie.dmn.feel.lang.ast.UnaryTestListNode getBaseNode() {
