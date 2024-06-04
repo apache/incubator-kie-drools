@@ -32,10 +32,13 @@ import java.util.Properties;
 
 import org.drools.core.common.DefaultEventHandle;
 import org.drools.core.impl.RuleBaseFactory;
+import org.drools.drl.parser.DrlParser;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil;
+import org.junit.Assume;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -68,6 +71,12 @@ public class StrictAnnotationTest {
     public static Collection<Object[]> getParameters() {
      // TODO: EM failed with some tests. File JIRAs
         return TestParametersUtil.getKieBaseCloudConfigurations(false);
+    }
+
+    @BeforeClass
+    public static void checkSkip() {
+        // if new antlr4 parser is enabled, skip this test, because DRL6_STRICT is not supported
+        Assume.assumeFalse(DrlParser.ANTLR4_PARSER_ENABLED);
     }
 
     @Test

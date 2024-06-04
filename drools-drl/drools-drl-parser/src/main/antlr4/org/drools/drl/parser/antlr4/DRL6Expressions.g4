@@ -811,7 +811,7 @@ identifierSuffix
 
 creator
     :	nonWildcardTypeArguments? createdName
-        (arrayCreatorRest | classCreatorRest)
+        (arrayCreatorRest | classCreatorRestExpr)
     ;
 
 createdName
@@ -822,7 +822,7 @@ createdName
 
 // Old parser cannot parse innerCreator with selector expression (outer.new InnerClass() != null) TODO: Delete this after investigation
 innerCreator
-    :	{!(helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF))}? drlIdentifier classCreatorRest
+    :	{!(helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF))}? drlIdentifier classCreatorRestExpr
     ;
 
 arrayCreatorRest
@@ -841,7 +841,7 @@ arrayInitializer
     :	LBRACE (variableInitializer (COMMA variableInitializer)* (COMMA)? )? RBRACE
     ;
 
-classCreatorRest
+classCreatorRestExpr // do not overwrite JavaParser.g4 classCreatorRest
     :	arguments //classBody?		//sotty:  restored classBody to allow for inline, anonymous classes
     ;
 

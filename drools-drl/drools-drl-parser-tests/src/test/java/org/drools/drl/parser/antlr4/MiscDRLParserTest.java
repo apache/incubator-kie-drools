@@ -5306,6 +5306,29 @@ class MiscDRLParserTest {
     }
 
     @Test
+    void functionWithAnonymousClass() {
+        final String text = "function Function<String, Integer> f() {\n" +
+                "    return new Function<String, Integer>() {\n" +
+                "        public Integer apply(String s) {\n" +
+                "            return s.length();\n" +
+                "        }\n" +
+                "    };\n" +
+                "}";
+        PackageDescr packageDescr = parseAndGetPackageDescr(text);
+        FunctionDescr function = packageDescr.getFunctions().get(0);
+
+        assertThat(function.getName()).isEqualTo("f");
+        assertThat(function.getReturnType()).isEqualToIgnoringWhitespace("Function<String, Integer>");
+        assertThat(function.getParameterTypes()).isEmpty();
+        assertThat(function.getParameterNames()).isEmpty();
+        assertThat(function.getBody()).isEqualToIgnoringWhitespace("return new Function<String, Integer>() {\n" +
+                                                                           "        public Integer apply(String s) {\n" +
+                                                                           "            return s.length();\n" +
+                                                                           "        }\n" +
+                                                                           "    };");
+    }
+
+    @Test
     void typeDeclarationWithTypeToken() {
         final String drl = "declare type Foo\n" + // "type" is just optional
                 "  id : int\n" +
