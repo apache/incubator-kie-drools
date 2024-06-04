@@ -18,6 +18,11 @@
  */
 package org.drools.drl.parser.antlr4;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+
 import org.drools.drl.ast.descr.AccumulateDescr;
 import org.drools.drl.ast.descr.AccumulateImportDescr;
 import org.drools.drl.ast.descr.AndDescr;
@@ -49,8 +54,10 @@ import org.drools.drl.ast.descr.WindowDeclarationDescr;
 import org.drools.drl.ast.descr.WindowReferenceDescr;
 import org.drools.drl.parser.DrlParser;
 import org.drools.drl.parser.DroolsParserException;
+import org.drools.io.InputStreamResource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kie.api.io.Resource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -61,17 +68,20 @@ class DescrCommonPropertyTest {
 
     private DrlParser parser;
 
+    private Resource resource;
+
     @BeforeEach
     public void setUp() {
         parser = ParserTestUtils.getParser();
     }
 
     private PackageDescr parseAndGetPackageDescr(String drl) {
-        try {
-            PackageDescr pkg =  parser.parse(null, drl);
+        try (InputStream inputStream = new ByteArrayInputStream(drl.getBytes(StandardCharsets.UTF_8))) {
+            resource = new InputStreamResource(inputStream);
+            PackageDescr pkg = parser.parse(resource);
             assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
             return pkg;
-        } catch (DroolsParserException e) {
+        } catch (DroolsParserException | IOException e) {
             throw new RuntimeException(e);
         }
     }
@@ -83,6 +93,7 @@ class DescrCommonPropertyTest {
         assertThat(descr.getColumn()).isEqualTo(column); // first column of the start token. column is 0-based
         assertThat(descr.getEndLine()).isEqualTo(endLine); // line of the end token. line is 1-based
         assertThat(descr.getEndColumn()).isEqualTo(endColumn); // last column of the end token. column is 0-based
+        assertThat(descr.getResource()).isEqualTo(resource);
     }
 
     @Test
