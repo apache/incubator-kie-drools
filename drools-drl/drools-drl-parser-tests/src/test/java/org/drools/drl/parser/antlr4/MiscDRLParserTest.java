@@ -20,6 +20,7 @@ package org.drools.drl.parser.antlr4;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.UncheckedIOException;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
@@ -127,6 +128,17 @@ class MiscDRLParserTest {
         try {
             return parser.parse(null, drl);
         } catch (DroolsParserException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private PackageDescr parseAndGetPackageDescrWithDsl(String dslrFileName, String dslFileName) {
+        try (InputStreamReader dslr = new InputStreamReader(getClass().getResourceAsStream(dslrFileName));
+             InputStreamReader dsl = new InputStreamReader(getClass().getResourceAsStream(dslFileName))) {
+            PackageDescr pkg = parser.parse(dslr, dsl);
+            assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
+            return pkg;
+        } catch (DroolsParserException | IOException e) {
             throw new RuntimeException(e);
         }
     }
@@ -1161,73 +1173,55 @@ class MiscDRLParserTest {
         assertThat(first.getObjectType()).isEqualTo("Cheese");
     }
 
-    @Disabled("Priority : low | Not yet support DSL")
     @Test
-    public void parse_ExpanderLineSpread() throws Exception {
-//        final DrlParser parser = new DrlParser(LanguageLevelOption.DRL6);
-//        final PackageDescr pkg = parser.parse( this.getReader( "expander_spread_lines.dslr" ),
-//                                               this.getReader( "complex.dsl" ) );
-//
-//        assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
-//
-//        final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
-//        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(1);
-//
-//        final OrDescr or = (OrDescr) rule.getLhs().getDescrs().get( 0 );
-//        assertThat(or.getDescrs().size()).isEqualTo(2);
-//        assertThat( (String) rule.getConsequence() ).isNotNull();
+    public void parse_ExpanderLineSpread() {
+        final PackageDescr pkg = parseAndGetPackageDescrWithDsl("expander_spread_lines.dslr", "complex.dsl");
 
+        final RuleDescr rule = pkg.getRules().get(0);
+        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(1);
+
+        final OrDescr or = (OrDescr) rule.getLhs().getDescrs().get(0);
+        assertThat(or.getDescrs().size()).isEqualTo(2);
+        assertThat((String) rule.getConsequence()).isNotNull();
     }
 
-    @Disabled("Priority : low | Not yet support DSL")
     @Test
-    public void parse_ExpanderMultipleConstraints() throws Exception {
-//        final DrlParser parser = new DrlParser(LanguageLevelOption.DRL6);
-//        final PackageDescr pkg = parser.parse( this.getReader( "expander_multiple_constraints.dslr" ),
-//                                               this.getReader( "multiple_constraints.dsl" ) );
-//
-//        assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
-//
-//        final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
-//        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(2);
-//
-//        PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
-//        assertThat(pattern.getObjectType()).isEqualTo("Person");
-//
-//        assertThat(pattern.getConstraint().getDescrs().size()).isEqualTo(2);
-//        assertThat(((ExprConstraintDescr) pattern.getConstraint().getDescrs().get(0)).getExpression()).isEqualTo("age < 42");
-//        assertThat(((ExprConstraintDescr) pattern.getConstraint().getDescrs().get(1)).getExpression()).isEqualTo("location==atlanta");
-//
-//        pattern = (PatternDescr) rule.getLhs().getDescrs().get( 1 );
-//        assertThat(pattern.getObjectType()).isEqualTo("Bar");
-//
-//        assertThat( (String) rule.getConsequence() ).isNotNull();
+    public void parse_ExpanderMultipleConstraints() {
+        final PackageDescr pkg = parseAndGetPackageDescrWithDsl("expander_multiple_constraints.dslr", "multiple_constraints.dsl");
 
+        final RuleDescr rule = pkg.getRules().get(0);
+        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(2);
+
+        PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
+        assertThat(pattern.getObjectType()).isEqualTo("Person");
+
+        assertThat(pattern.getConstraint().getDescrs().size()).isEqualTo(2);
+        assertThat(((ExprConstraintDescr) pattern.getConstraint().getDescrs().get(0)).getExpression()).isEqualTo("age < 42");
+        assertThat(((ExprConstraintDescr) pattern.getConstraint().getDescrs().get(1)).getExpression()).isEqualTo("location==atlanta");
+
+        pattern = (PatternDescr) rule.getLhs().getDescrs().get(1);
+        assertThat(pattern.getObjectType()).isEqualTo("Bar");
+
+        assertThat((String) rule.getConsequence()).isNotNull();
     }
 
-    @Disabled("Priority : low | Not yet support DSL")
     @Test
-    public void parse_ExpanderMultipleConstraintsFlush() throws Exception {
-//        final DrlParser parser = new DrlParser(LanguageLevelOption.DRL6);
-//        // this is similar to the other test, but it requires a flush to add the
-//        // constraints
-//        final PackageDescr pkg = parser.parse( this.getReader( "expander_multiple_constraints_flush.dslr" ),
-//                                               this.getReader( "multiple_constraints.dsl" ) );
-//
-//        assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
-//
-//        final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
-//        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(1);
-//
-//        final PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
-//        assertThat(pattern.getObjectType()).isEqualTo("Person");
-//
-//        assertThat(pattern.getConstraint().getDescrs().size()).isEqualTo(2);
-//        assertThat(((ExprConstraintDescr) pattern.getConstraint().getDescrs().get(0)).getExpression()).isEqualTo("age < 42");
-//        assertThat(((ExprConstraintDescr) pattern.getConstraint().getDescrs().get(1)).getExpression()).isEqualTo("location==atlanta");
-//
-//        assertThat( (String) rule.getConsequence() ).isNotNull();
+    public void parse_ExpanderMultipleConstraintsFlush() {
+        // this is similar to the other test, but it requires a flush to add the
+        // constraints
+        final PackageDescr pkg = parseAndGetPackageDescrWithDsl("expander_multiple_constraints_flush.dslr", "multiple_constraints.dsl");
 
+        final RuleDescr rule = pkg.getRules().get(0);
+        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(1);
+
+        final PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
+        assertThat(pattern.getObjectType()).isEqualTo("Person");
+
+        assertThat(pattern.getConstraint().getDescrs().size()).isEqualTo(2);
+        assertThat(((ExprConstraintDescr) pattern.getConstraint().getDescrs().get(0)).getExpression()).isEqualTo("age < 42");
+        assertThat(((ExprConstraintDescr) pattern.getConstraint().getDescrs().get(1)).getExpression()).isEqualTo("location==atlanta");
+
+        assertThat((String) rule.getConsequence()).isNotNull();
     }
 
     @Test
