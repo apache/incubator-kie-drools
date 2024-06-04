@@ -5327,4 +5327,17 @@ class MiscDRLParserTest {
                                                                            "        }\n" +
                                                                            "    };");
     }
+
+    @Test
+    void typeDeclarationWithTypeToken() {
+        final String drl = "declare type Foo\n" + // "type" is just optional
+                "  id : int\n" +
+                "end";
+        final PackageDescr pkg = parseAndGetPackageDescr(drl);
+
+        TypeDeclarationDescr typeDeclarationDescr = pkg.getTypeDeclarations().get(0);
+        assertThat(typeDeclarationDescr.getTypeName()).isEqualTo("Foo");
+        TypeFieldDescr typeFieldDescr = typeDeclarationDescr.getFields().get("id");
+        assertThat(typeFieldDescr.getPattern().getObjectType()).isEqualTo("int");
+    }
 }

@@ -61,7 +61,7 @@ declaredef : DRL_DECLARE (
  *                     END
  */
 
-typeDeclaration : DRL_TRAIT? name=drlQualifiedName (EXTENDS superTypes+=drlQualifiedName (COMMA superTypes+=drlQualifiedName)* )? drlAnnotation* field* DRL_END ;
+typeDeclaration : DRL_TRAIT? DRL_TYPE? name=drlQualifiedName (EXTENDS superTypes+=drlQualifiedName (COMMA superTypes+=drlQualifiedName)* )? drlAnnotation* field* DRL_END ;
 
 // entryPointDeclaration := ENTRY-POINT stringId annotation* END
 
