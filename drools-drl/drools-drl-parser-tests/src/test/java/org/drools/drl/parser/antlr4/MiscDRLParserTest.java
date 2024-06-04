@@ -1970,9 +1970,8 @@ class MiscDRLParserTest {
         assertThat(at.getValue()).isEqualTo("true");
     }
 
-    @Disabled("Priority : Low | Not written in docs nor other unit tests. Drop the support?")
     @Test
-    public void parse_Attributes_alternateSyntax() throws Exception {
+    public void parse_Attributes_alternateSyntax() {
         final RuleDescr rule = parseAndGetFirstRuleDescrFromFile(
                                                           "rule_attributes_alt.drl" );
         assertThat(rule.getName()).isEqualTo("simple_rule");
@@ -1981,27 +1980,27 @@ class MiscDRLParserTest {
         final Map<String, AttributeDescr> attrs = rule.getAttributes();
         assertThat(attrs.size()).isEqualTo(6);
 
-        AttributeDescr at = (AttributeDescr) attrs.get( "salience" );
+        AttributeDescr at = attrs.get( "salience" );
         assertThat(at.getName()).isEqualTo("salience");
         assertThat(at.getValue()).isEqualTo("42");
 
-        at = (AttributeDescr) attrs.get( "agenda-group" );
+        at = attrs.get( "agenda-group" );
         assertThat(at.getName()).isEqualTo("agenda-group");
         assertThat(at.getValue()).isEqualTo("my_group");
 
-        at = (AttributeDescr) attrs.get( "no-loop" );
+        at = attrs.get( "no-loop" );
         assertThat(at.getName()).isEqualTo("no-loop");
         assertThat(at.getValue()).isEqualTo("true");
 
-        at = (AttributeDescr) attrs.get( "lock-on-active" );
+        at = attrs.get( "lock-on-active" );
         assertThat(at.getName()).isEqualTo("lock-on-active");
         assertThat(at.getValue()).isEqualTo("true");
 
-        at = (AttributeDescr) attrs.get( "duration" );
+        at = attrs.get( "duration" );
         assertThat(at.getName()).isEqualTo("duration");
         assertThat(at.getValue()).isEqualTo("42");
 
-        at = (AttributeDescr) attrs.get( "activation-group" );
+        at = attrs.get( "activation-group" );
         assertThat(at.getName()).isEqualTo("activation-group");
         assertThat(at.getValue()).isEqualTo("my_activation_group");
     }
