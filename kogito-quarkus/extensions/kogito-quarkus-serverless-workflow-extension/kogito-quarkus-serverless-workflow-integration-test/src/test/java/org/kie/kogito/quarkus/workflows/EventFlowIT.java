@@ -19,9 +19,13 @@
 package org.kie.kogito.quarkus.workflows;
 
 import java.io.IOException;
+import java.net.URI;
 import java.time.Duration;
+import java.time.OffsetDateTime;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.awaitility.core.ConditionTimeoutException;
 import org.junit.jupiter.api.BeforeAll;
@@ -32,6 +36,7 @@ import org.kie.kogito.workflows.services.JavaSerializationMarshaller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.cloudevents.core.builder.CloudEventBuilder;
 import io.cloudevents.jackson.JsonFormat;
 import io.quarkus.test.junit.QuarkusIntegrationTest;
 import io.restassured.RestAssured;
@@ -54,6 +59,23 @@ class EventFlowIT {
         ObjectMapper mapper = new ObjectMapper().registerModule(JsonFormat.getCloudEventJacksonModule());
         marshallers = Map.of("quiet", new JavaSerializationMarshaller());
         defaultMarshaller = new ByteArrayCloudEventMarshaller(mapper);
+    }
+
+    @Test
+    void testStartingEventWithToStateFilter() {
+        given()
+                .contentType(ContentType.JSON)
+                .when()
+                .body(CloudEventBuilder.v1()
+                        .withId(UUID.randomUUID().toString())
+                        .withSource(URI.create("customer-arrival-event-source"))
+                        .withType("customer-arrival-type")
+                        .withTime(OffsetDateTime.now())
+                        .withData(defaultMarshaller.cloudEventDataFactory().apply(Collections.singletonMap("customer", Map.of("name", "pepe")))).build())
+                .post("/eventWithToStateFilter")
+                .then()
+                .statusCode(202);
+
     }
 
     @Test

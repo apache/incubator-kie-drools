@@ -1,0 +1,41 @@
+{
+"id": "GreetCustomer",
+"name": "Greet Customers when they arrive",
+"version": "1.0",
+"specVersion": "0.8",
+"start": "WaitForCustomerToArrive",
+"states":[
+{
+"name": "WaitForCustomerToArrive",
+"type": "event",
+"onEvents": [{
+"eventRefs": ["CustomerArrivesEvent"],
+"eventDataFilter": {
+"data": "${ .customer }",
+"toStateData": "${ .customerInfo }"
+},
+"actions":[
+{
+"functionRef": {
+"refName": "greetingFunction",
+"arguments": {
+"message": "${ .customerInfo.name } "
+}
+}
+}
+]
+}],
+"end": true
+}
+],
+"events": [{
+"name": "CustomerArrivesEvent",
+"type": "customer-arrival-type",
+"source": "customer-arrival-event-source"
+}],
+"functions": [{
+"name": "greetingFunction",
+ "type": "custom",
+  "operation": "sysout"
+}]
+}

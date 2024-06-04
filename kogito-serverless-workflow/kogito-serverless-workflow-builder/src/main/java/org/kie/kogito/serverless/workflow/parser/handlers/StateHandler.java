@@ -50,6 +50,7 @@ import org.kie.kogito.internal.utils.KogitoTags;
 import org.kie.kogito.serverless.workflow.SWFConstants;
 import org.kie.kogito.serverless.workflow.parser.ParserContext;
 import org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser;
+import org.kie.kogito.serverless.workflow.parser.VariableInfo;
 import org.kie.kogito.serverless.workflow.suppliers.CollectorActionSupplier;
 import org.kie.kogito.serverless.workflow.suppliers.CompensationActionSupplier;
 import org.kie.kogito.serverless.workflow.suppliers.ErrorExpressionActionSupplier;
@@ -424,7 +425,8 @@ public abstract class StateHandler<S extends State> {
             toExpr = eventFilter.getToStateData();
             useData = eventFilter.isUseData();
         }
-        return filterAndMergeNode(embeddedSubProcess, varName, null, dataExpr, toExpr, useData, true, nodeSupplier);
+        return filterAndMergeNode(embeddedSubProcess, isStartState ? new VariableInfo(DEFAULT_WORKFLOW_VAR, varName) : new VariableInfo(varName, varName), null, dataExpr, toExpr, useData, true,
+                nodeSupplier);
     }
 
     protected boolean isTempVariable(String varName) {
@@ -434,7 +436,13 @@ public abstract class StateHandler<S extends State> {
     protected final MakeNodeResult filterAndMergeNode(RuleFlowNodeContainerFactory<?, ?> embeddedSubProcess, String actionVarName, String fromStateExpr, String resultExpr, String toStateExpr,
             boolean useData,
             boolean shouldMerge, FilterableNodeSupplier nodeSupplier) {
+        return filterAndMergeNode(embeddedSubProcess, new VariableInfo(actionVarName, actionVarName), fromStateExpr, resultExpr, toStateExpr, useData, shouldMerge, nodeSupplier);
+    }
 
+    protected final MakeNodeResult filterAndMergeNode(RuleFlowNodeContainerFactory<?, ?> embeddedSubProcess, VariableInfo variableInfo, String fromStateExpr, String resultExpr, String toStateExpr,
+            boolean useData,
+            boolean shouldMerge, FilterableNodeSupplier nodeSupplier) {
+        String actionVarName = variableInfo.getOutputVar();
         if (isTempVariable(actionVarName)) {
             embeddedSubProcess.variable(actionVarName, new ObjectDataType(JsonNode.class.getCanonicalName()), Map.of(KogitoTags.VARIABLE_TAGS, KogitoTags.INTERNAL_TAG));
         }
@@ -451,7 +459,7 @@ public abstract class StateHandler<S extends State> {
 
         if (useData && resultExpr != null) {
             currentNode = connect(currentNode, embeddedSubProcess.actionNode(parserContext.newId()).action(ExpressionActionSupplier.of(workflow, resultExpr)
-                    .withVarNames(actionVarName, actionVarName).build()));
+                    .withVarNames(variableInfo.getInputVar(), actionVarName).build()));
         }
 
         if (useData) {
