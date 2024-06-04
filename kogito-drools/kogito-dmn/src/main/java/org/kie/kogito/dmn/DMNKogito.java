@@ -28,6 +28,8 @@ import org.drools.io.ReaderResource;
 import org.kie.api.io.Resource;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNRuntime;
+import org.kie.dmn.core.compiler.RuntimeTypeCheckOption;
+import org.kie.dmn.core.impl.DMNRuntimeImpl;
 import org.kie.dmn.core.internal.utils.DMNEvaluationUtils;
 import org.kie.dmn.core.internal.utils.DMNEvaluationUtils.DMNEvaluationResult;
 import org.kie.dmn.core.internal.utils.DMNRuntimeBuilder;
@@ -59,6 +61,9 @@ public class DMNKogito {
                 .buildConfiguration()
                 .fromResources(resources)
                 .getOrElseThrow(e -> new RuntimeException("Error initializing DMNRuntime", e));
+        boolean enableRuntimeTypeCheckOption = "true".equals(System.getProperty(RuntimeTypeCheckOption.PROPERTY_NAME, "false"));
+        RuntimeTypeCheckOption runtimeTypeCheckOption = new RuntimeTypeCheckOption(enableRuntimeTypeCheckOption);
+        ((DMNRuntimeImpl) dmnRuntime).setOption(runtimeTypeCheckOption);
         DMNKogitoCallbacks.afterCreateGenericDMNRuntime(dmnRuntime);
         return dmnRuntime;
     }
