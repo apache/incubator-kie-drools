@@ -52,7 +52,7 @@ import org.slf4j.LoggerFactory;
 
 import static com.github.javaparser.StaticJavaParser.parse;
 import static org.drools.compiler.compiler.JavaDialectConfiguration.createNativeCompiler;
-import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.CREATEBASENODE_S;
+import static org.kie.dmn.feel.codegen.feel11.DMNCodegenConstants.CREATEBASENODE_S;
 
 public class CompilerBytecodeLoader {
 
@@ -125,8 +125,12 @@ public class CompilerBytecodeLoader {
                                                                    pReader,
                                                                    pStore,
                                                                    Thread.currentThread().getContextClassLoader());
-            LOG.error("{}", Arrays.asList(compilationResult.getErrors()));
-            LOG.warn("{}", Arrays.asList(compilationResult.getWarnings()));
+            if (compilationResult.getErrors().length > 0) {
+                LOG.error("{}", Arrays.asList(compilationResult.getErrors()));
+            }
+            if (compilationResult.getWarnings().length > 0) {
+                LOG.warn("{}", Arrays.asList(compilationResult.getWarnings()));
+            }
 
             String fqnClassName = cuPackage + "." + cuClass;
             Class<T> loaded =

@@ -34,9 +34,9 @@ import org.kie.dmn.feel.lang.ast.RangeNode;
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static com.github.javaparser.StaticJavaParser.parseExpression;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.BIGDECIMAL_CT;
-import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.FUNCTION_CT;
-import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.RANGEBOUNDARY_S;
-import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.UNARYTEST_CT;
+import static org.kie.dmn.feel.codegen.feel11.DMNCodegenConstants.FUNCTION_CT;
+import static org.kie.dmn.feel.codegen.feel11.DMNCodegenConstants.RANGEBOUNDARY_S;
+import static org.kie.dmn.feel.codegen.feel11.DMNCodegenConstants.UNARYTEST_CT;
 
 public class Constants {
 
