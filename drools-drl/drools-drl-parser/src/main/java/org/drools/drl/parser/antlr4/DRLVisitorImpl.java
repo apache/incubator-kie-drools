@@ -207,7 +207,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
                 .withParserRuleContext(ctx)
                 .build();
         if (ctx.typeTypeOrVoid() != null) {
-            functionDescr.setReturnType(ctx.typeTypeOrVoid().getText());
+            functionDescr.setReturnType(getTextPreservingWhitespace(ctx.typeTypeOrVoid()));
         } else {
             functionDescr.setReturnType("void");
         }
