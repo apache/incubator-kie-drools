@@ -42,7 +42,7 @@ public class TemplateCompiledFEELUnaryTests implements org.kie.dmn.feel.codegen.
             return getCompiledUnaryTests();
         } catch (IllegalStateException e) {
             org.kie.dmn.feel.runtime.UnaryTest unaryTest = (feelExprCtx, left) -> {
-                org.kie.dmn.feel.codegen.feel11.CompiledFEELSupport.notifyCompilationError(feelExprCtx, e.getMessage());
+                notifyCompilationError(feelExprCtx, e.getMessage());
                 return false;
             };
             return java.util.Collections.singletonList(unaryTest);

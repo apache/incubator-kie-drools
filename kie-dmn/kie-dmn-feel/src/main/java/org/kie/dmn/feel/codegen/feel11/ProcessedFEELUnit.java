@@ -41,8 +41,7 @@ public abstract class ProcessedFEELUnit implements CompiledFEELExpression {
 
     protected final String packageName;
     protected final String expression;
-    protected final CompiledFEELSupport.SyntaxErrorListener errorListener =
-            new CompiledFEELSupport.SyntaxErrorListener();
+    protected final SyntaxErrorListener errorListener = new SyntaxErrorListener();
     protected final CompilerBytecodeLoader compiler =
             new CompilerBytecodeLoader();
 

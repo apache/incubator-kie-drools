@@ -18,13 +18,28 @@
  */
 package org.kie.dmn.feel.codegen.feel11;
 
-import java.util.function.Function;
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
+import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
+import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
+import org.kie.dmn.feel.runtime.events.SyntaxErrorEvent;
 
-import org.kie.dmn.feel.lang.CompiledExpression;
-import org.kie.dmn.feel.lang.EvaluationContext;
+public class SyntaxErrorListener implements FEELEventListener {
 
-public interface CompiledFEELExpression extends CompiledExpression,
-                                                Function<EvaluationContext, Object>,
-                                                CompilationErrorNotifier {
+    private FEELEvent event = null;
 
+    @Override
+    public void onEvent(FEELEvent evt) {
+        if (evt instanceof SyntaxErrorEvent
+                || evt instanceof InvalidParametersEvent) {
+            this.event = evt;
+        }
+    }
+
+    public boolean isError() {
+        return event != null;
+    }
+
+    public FEELEvent event() {
+        return event;
+    }
 }
