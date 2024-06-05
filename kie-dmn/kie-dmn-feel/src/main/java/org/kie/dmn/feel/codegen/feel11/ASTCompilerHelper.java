@@ -556,16 +556,16 @@ public class ASTCompilerHelper {
             BuiltInType feelCType = aliasFEELType.getBuiltInType();
             Expression typeExpression = new FieldAccessExpr(BUILTINTYPE_E, feelCType.name());
             // Creating the AliasFEELType
-            String mapVariableName = getNextVariableName();
+            String aliasFeelTypeVariableName = getNextVariableName();
             final VariableDeclarator aliasFeelTypeVariableDeclarator =
-                    new VariableDeclarator(ALIASFEELTYPE_CT, mapVariableName);
+                    new VariableDeclarator(ALIASFEELTYPE_CT, aliasFeelTypeVariableName);
             NodeList<Expression> arguments = NodeList.nodeList(new StringLiteralExpr(aliasFEELType.getName()), typeExpression);
             final ObjectCreationExpr objectCreationExpr = new ObjectCreationExpr(null, ALIASFEELTYPE_CT,
                                                                                  arguments);
             aliasFeelTypeVariableDeclarator.setInitializer(objectCreationExpr);
             VariableDeclarationExpr mapVariableDeclarationExpr = new VariableDeclarationExpr(aliasFeelTypeVariableDeclarator);
-            addExpression(mapVariableDeclarationExpr, mapVariableName);
-            return new NameExpr(mapVariableName);
+            addExpression(mapVariableDeclarationExpr, aliasFeelTypeVariableName);
+            return new NameExpr(aliasFeelTypeVariableName);
         }
 
     private Expression getJavaBackedTypeExpression(JavaBackedType javaBackedType) {
