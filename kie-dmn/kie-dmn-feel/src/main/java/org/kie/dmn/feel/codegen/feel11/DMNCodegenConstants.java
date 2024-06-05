@@ -58,6 +58,7 @@ import org.kie.dmn.feel.lang.ast.UnaryTestListNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestNode;
 import org.kie.dmn.feel.lang.impl.JavaBackedType;
 import org.kie.dmn.feel.lang.impl.MapBackedType;
+import org.kie.dmn.feel.lang.types.AliasFEELType;
 import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.UnaryTest;
@@ -92,6 +93,8 @@ public class DMNCodegenConstants {
                                                                                              ".Function" +
                                                                                              "<EvaluationContext, " +
                                                                                              "Object>");
+    public static final ClassOrInterfaceType ALIASFEELTYPE_CT =
+            parseClassOrInterfaceType(AliasFEELType.class.getCanonicalName());
     public static final ClassOrInterfaceType MAPBACKEDTYPE_CT =
             parseClassOrInterfaceType(MapBackedType.class.getCanonicalName());
     public static final ClassOrInterfaceType TYPE_CT =

@@ -79,6 +79,7 @@ import org.kie.dmn.feel.lang.ast.UnaryTestListNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestNode;
 import org.kie.dmn.feel.lang.impl.JavaBackedType;
 import org.kie.dmn.feel.lang.impl.MapBackedType;
+import org.kie.dmn.feel.lang.types.AliasFEELType;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.dmn.feel.util.CodegenUtils;
@@ -97,6 +98,7 @@ import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.OF_S;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.PUT_S;
 import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.VAR_S;
 import static org.kie.dmn.feel.codegen.feel11.Constants.BUILTINTYPE_E;
+import static org.kie.dmn.feel.codegen.feel11.DMNCodegenConstants.ALIASFEELTYPE_CT;
 import static org.kie.dmn.feel.codegen.feel11.DMNCodegenConstants.ATLITERALNODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.DMNCodegenConstants.BETWEENNODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.DMNCodegenConstants.BOOLEANNODE_CT;
@@ -537,7 +539,9 @@ public class ASTCompilerHelper {
     }
 
     private Expression getTypeExpression(Type type) {
-        if (type instanceof Enum typeEnum) {
+        if (type instanceof AliasFEELType aliasFEELType) {
+            return getAliasFEELType(aliasFEELType);
+        } else if (type instanceof Enum typeEnum) {
             return getEnumExpression(typeEnum);
         } else if (type instanceof JavaBackedType javaBackedType) {
             return getJavaBackedTypeExpression(javaBackedType);
@@ -547,6 +551,22 @@ public class ASTCompilerHelper {
             return parseExpression(type.getClass().getCanonicalName());
         }
     }
+
+        private Expression getAliasFEELType(AliasFEELType aliasFEELType) {
+            BuiltInType feelCType = aliasFEELType.getBuiltInType();
+            Expression typeExpression = new FieldAccessExpr(BUILTINTYPE_E, feelCType.name());
+            // Creating the AliasFEELType
+            String mapVariableName = getNextVariableName();
+            final VariableDeclarator aliasFeelTypeVariableDeclarator =
+                    new VariableDeclarator(ALIASFEELTYPE_CT, mapVariableName);
+            NodeList<Expression> arguments = NodeList.nodeList(new StringLiteralExpr(aliasFEELType.getName()), typeExpression);
+            final ObjectCreationExpr objectCreationExpr = new ObjectCreationExpr(null, ALIASFEELTYPE_CT,
+                                                                                 arguments);
+            aliasFeelTypeVariableDeclarator.setInitializer(objectCreationExpr);
+            VariableDeclarationExpr mapVariableDeclarationExpr = new VariableDeclarationExpr(aliasFeelTypeVariableDeclarator);
+            addExpression(mapVariableDeclarationExpr, mapVariableName);
+            return new NameExpr(mapVariableName);
+        }
 
     private Expression getJavaBackedTypeExpression(JavaBackedType javaBackedType) {
         // Creating the JavaBackedType
