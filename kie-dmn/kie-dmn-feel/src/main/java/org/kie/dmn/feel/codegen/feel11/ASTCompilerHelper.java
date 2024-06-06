@@ -21,6 +21,7 @@ package org.kie.dmn.feel.codegen.feel11;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -150,16 +151,22 @@ import static org.kie.dmn.feel.util.CodegenUtils.getVariableDeclaratorWithObject
 public class ASTCompilerHelper {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ASTCompilerVisitor.class);
+    private static final String EXTENDED_FUNCTION_PACKAGE = "org.kie.dmn.feel.runtime.functions.extended";
     private final ASTCompilerVisitor astCompilerVisitor;
     private final BlockStmt toPopulate;
     private final AtomicInteger variableCounter;
+    private final Map<BaseNode, NameExpr> baseNodeCache;
+    private final Map<Type, Expression> typeCache;
+    private final Map<Object, NameExpr> objectCache;
     private AtomicReference<String> lastVariableName = new AtomicReference<>();
-    private static final String EXTENDED_FUNCTION_PACKAGE = "org.kie.dmn.feel.runtime.functions.extended";
 
     public ASTCompilerHelper(ASTCompilerVisitor astCompilerVisitor) {
         this.astCompilerVisitor = astCompilerVisitor;
         toPopulate = new BlockStmt();
         variableCounter = new AtomicInteger(0);
+        baseNodeCache = new ConcurrentHashMap<>();
+        typeCache = new ConcurrentHashMap<>();
+        objectCache = new ConcurrentHashMap<>();
     }
 
     public BlockStmt add(AtLiteralNode n) {
@@ -175,6 +182,11 @@ public class ASTCompilerHelper {
         return addVariableDeclaratorWithObjectCreation(BETWEENNODE_CT, NodeList.nodeList(valueExpression,
                                                                                          startExpression,
                                                                                          endExpression), n.getText());
+    }
+
+    public BlockStmt add(BooleanNode n) {
+        Expression valueExpression = new BooleanLiteralExpr(n.getValue());
+        return addVariableDeclaratorWithObjectCreation(BOOLEANNODE_CT, NodeList.nodeList(valueExpression), n.getText());
     }
 
     public BlockStmt add(ContextEntryNode n) {
@@ -473,11 +485,6 @@ public class ASTCompilerHelper {
                                                        n.getText());
     }
 
-    public BlockStmt add(BooleanNode n) {
-        Expression valueExpression = new BooleanLiteralExpr(n.getValue());
-        return addVariableDeclaratorWithObjectCreation(BOOLEANNODE_CT, NodeList.nodeList(valueExpression), n.getText());
-    }
-
     public String getLastVariableName() {
         return lastVariableName.get();
     }
@@ -539,34 +546,41 @@ public class ASTCompilerHelper {
     }
 
     private Expression getTypeExpression(Type type) {
-        if (type instanceof AliasFEELType aliasFEELType) {
-            return getAliasFEELType(aliasFEELType);
-        } else if (type instanceof Enum typeEnum) {
-            return getEnumExpression(typeEnum);
-        } else if (type instanceof JavaBackedType javaBackedType) {
-            return getJavaBackedTypeExpression(javaBackedType);
-        } else if (type instanceof MapBackedType mapBackedType) {
-            return getMapBackedTypeExpression(mapBackedType);
-        } else {
-            return parseExpression(type.getClass().getCanonicalName());
+        if (!typeCache.containsKey(type)) {
+            Expression toPut;
+            if (type instanceof AliasFEELType aliasFEELType) {
+                toPut = getAliasFEELType(aliasFEELType);
+            } else if (type instanceof Enum typeEnum) {
+                toPut = getEnumExpression(typeEnum);
+            } else if (type instanceof JavaBackedType javaBackedType) {
+                toPut = getJavaBackedTypeExpression(javaBackedType);
+            } else if (type instanceof MapBackedType mapBackedType) {
+                toPut = getMapBackedTypeExpression(mapBackedType);
+            } else {
+                toPut = parseExpression(type.getClass().getCanonicalName());
+            }
+            typeCache.put(type, toPut);
         }
+        return typeCache.get(type);
     }
 
-        private Expression getAliasFEELType(AliasFEELType aliasFEELType) {
-            BuiltInType feelCType = aliasFEELType.getBuiltInType();
-            Expression typeExpression = new FieldAccessExpr(BUILTINTYPE_E, feelCType.name());
-            // Creating the AliasFEELType
-            String aliasFeelTypeVariableName = getNextVariableName();
-            final VariableDeclarator aliasFeelTypeVariableDeclarator =
-                    new VariableDeclarator(ALIASFEELTYPE_CT, aliasFeelTypeVariableName);
-            NodeList<Expression> arguments = NodeList.nodeList(new StringLiteralExpr(aliasFEELType.getName()), typeExpression);
-            final ObjectCreationExpr objectCreationExpr = new ObjectCreationExpr(null, ALIASFEELTYPE_CT,
-                                                                                 arguments);
-            aliasFeelTypeVariableDeclarator.setInitializer(objectCreationExpr);
-            VariableDeclarationExpr mapVariableDeclarationExpr = new VariableDeclarationExpr(aliasFeelTypeVariableDeclarator);
-            addExpression(mapVariableDeclarationExpr, aliasFeelTypeVariableName);
-            return new NameExpr(aliasFeelTypeVariableName);
-        }
+    private Expression getAliasFEELType(AliasFEELType aliasFEELType) {
+        BuiltInType feelCType = aliasFEELType.getBuiltInType();
+        Expression typeExpression = new FieldAccessExpr(BUILTINTYPE_E, feelCType.name());
+        // Creating the AliasFEELType
+        String aliasFeelTypeVariableName = getNextVariableName();
+        final VariableDeclarator aliasFeelTypeVariableDeclarator =
+                new VariableDeclarator(ALIASFEELTYPE_CT, aliasFeelTypeVariableName);
+        NodeList<Expression> arguments = NodeList.nodeList(new StringLiteralExpr(aliasFEELType.getName()),
+                                                           typeExpression);
+        final ObjectCreationExpr objectCreationExpr = new ObjectCreationExpr(null, ALIASFEELTYPE_CT,
+                                                                             arguments);
+        aliasFeelTypeVariableDeclarator.setInitializer(objectCreationExpr);
+        VariableDeclarationExpr mapVariableDeclarationExpr =
+                new VariableDeclarationExpr(aliasFeelTypeVariableDeclarator);
+        addExpression(mapVariableDeclarationExpr, aliasFeelTypeVariableName);
+        return new NameExpr(aliasFeelTypeVariableName);
+    }
 
     private Expression getJavaBackedTypeExpression(JavaBackedType javaBackedType) {
         // Creating the JavaBackedType
@@ -613,16 +627,22 @@ public class ASTCompilerHelper {
         if (object == null) {
             return new NullLiteralExpr();
         }
-        String variableName = getNextVariableName();
-        Expression objectExpression = CodegenUtils.getObjectExpression(object, variableName);
-        addExpression(objectExpression, variableName);
-        return new NameExpr(variableName);
+        if (!objectCache.containsKey(object)) {
+            String variableName = getNextVariableName();
+            Expression objectExpression = CodegenUtils.getObjectExpression(object, variableName);
+            addExpression(objectExpression, variableName);
+            objectCache.put(object, new NameExpr(lastVariableName.get()));
+        }
+        return objectCache.get(object);
     }
 
     private Expression getNodeExpression(BaseNode node) {
         if (node != null) {
-            node.accept(astCompilerVisitor);
-            return new NameExpr(lastVariableName.get());
+            if (!baseNodeCache.containsKey(node)) {
+                node.accept(astCompilerVisitor);
+                baseNodeCache.put(node, new NameExpr(lastVariableName.get()));
+            }
+            return baseNodeCache.get(node);
         } else {
             return new NullLiteralExpr();
         }

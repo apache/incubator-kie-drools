@@ -136,7 +136,6 @@ public class CompilerBytecodeLoader {
             Class<T> loaded =
                     (Class<T>) new TemplateLoader(Thread.currentThread().getContextClassLoader()).load(pStore,
                                                                                                        fqnClassName);
-
             return loaded.newInstance();
         } catch (Exception e) {
             LOG.error("Exception", e);
