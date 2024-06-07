@@ -33,6 +33,7 @@ import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.drools.drl.ast.descr.PackageDescr;
+import org.kie.api.io.Resource;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 
 /**
@@ -49,7 +50,7 @@ public class DRLParserHelper {
      */
     public static PackageDescr parse(String drl) {
         DRLParser drlParser = createDrlParser(drl);
-        return compilationUnitContext2PackageDescr(drlParser.compilationUnit(), drlParser.getTokenStream());
+        return compilationUnitContext2PackageDescr(drlParser.compilationUnit(), drlParser.getTokenStream(), null);
     }
 
     public static DRLParser createDrlParser(String drl) {
@@ -89,8 +90,8 @@ public class DRLParserHelper {
     /**
      * DRLVisitorImpl visits a parse tree and creates a PackageDescr
      */
-    public static PackageDescr compilationUnitContext2PackageDescr(DRLParser.CompilationUnitContext ctx, TokenStream tokenStream) {
-        DRLVisitorImpl visitor = new DRLVisitorImpl(tokenStream);
+    public static PackageDescr compilationUnitContext2PackageDescr(DRLParser.CompilationUnitContext ctx, TokenStream tokenStream, Resource resource) {
+        DRLVisitorImpl visitor = new DRLVisitorImpl(tokenStream, resource);
         Object descr = visitor.visit(ctx);
         if (descr instanceof PackageDescr) {
             return (PackageDescr) descr;
