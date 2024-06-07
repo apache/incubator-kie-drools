@@ -264,6 +264,7 @@ drlKeywords returns [Token token]
     | DRL_EVAL
     | DRL_FORALL
     | DRL_OVER
+    | DRL_ATTRIBUTES
     | DRL_SALIENCE
     | DRL_ENABLED
     | DRL_NO_LOOP

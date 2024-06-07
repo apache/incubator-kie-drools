@@ -89,6 +89,7 @@ DRL_STARTED_BY : 'startedby';
 DRL_WINDOW : 'window';
 
 // attributes
+DRL_ATTRIBUTES : 'attributes';
 DRL_SALIENCE : 'salience';
 DRL_ENABLED : 'enabled';
 DRL_NO_LOOP : 'no-loop';

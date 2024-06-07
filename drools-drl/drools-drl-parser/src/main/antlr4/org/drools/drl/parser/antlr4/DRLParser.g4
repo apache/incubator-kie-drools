@@ -440,13 +440,14 @@ drlAnnotation
     : {boolean buildState = buildDescr; buildDescr = true;} anno=fullAnnotation[null] {buildDescr = buildState;} // either standard Java annotation
     | AT name=drlQualifiedName (LPAREN chunk RPAREN)? ; // or support @watch(!*, age) etc.
 
-attributes : attribute ( COMMA? attribute )* ;
-attribute : name=( 'salience' | 'enabled' ) conditionalAttributeValue #expressionAttribute
-          | name=( 'no-loop' | 'auto-focus' | 'lock-on-active' | 'refract' | 'direct' ) BOOL_LITERAL? #booleanAttribute
-          | name=( 'agenda-group' | 'activation-group' | 'ruleflow-group' | 'date-effective' | 'date-expires' | 'dialect' ) DRL_STRING_LITERAL #stringAttribute
-          | name='calendars' DRL_STRING_LITERAL ( COMMA DRL_STRING_LITERAL )* #stringListAttribute
-          | name='timer' ( DECIMAL_LITERAL | LPAREN chunk RPAREN ) #intOrChunkAttribute
-          | name='duration' ( DECIMAL_LITERAL | LPAREN chunk RPAREN ) #intOrChunkAttribute
+// attributes := (ATTRIBUTES COLON?)? [ attribute ( COMMA? attribute )* ]
+attributes : (DRL_ATTRIBUTES COLON?)? attribute ( COMMA? attribute )* ;
+attribute : name=( DRL_SALIENCE | DRL_ENABLED ) conditionalAttributeValue #expressionAttribute
+          | name=( DRL_NO_LOOP | DRL_AUTO_FOCUS | DRL_LOCK_ON_ACTIVE | DRL_REFRACT | DRL_DIRECT ) BOOL_LITERAL? #booleanAttribute
+          | name=( DRL_AGENDA_GROUP | DRL_ACTIVATION_GROUP | DRL_RULEFLOW_GROUP | DRL_DATE_EFFECTIVE | DRL_DATE_EXPIRES | DRL_DIALECT ) DRL_STRING_LITERAL #stringAttribute
+          | name=DRL_CALENDARS DRL_STRING_LITERAL ( COMMA DRL_STRING_LITERAL )* #stringListAttribute
+          | name=DRL_TIMER ( DECIMAL_LITERAL | LPAREN chunk RPAREN ) #intOrChunkAttribute
+          | name=DRL_DURATION ( DECIMAL_LITERAL | LPAREN chunk RPAREN ) #intOrChunkAttribute
           ;
 
 conditionalAttributeValue : ( LPAREN conditionalExpression RPAREN | conditionalExpression ) ;
