@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.drools.drl.ast.descr.PackageDescr;
+import org.kie.api.io.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,6 +39,12 @@ public class DRLParserWrapper {
     private static final Logger LOGGER = LoggerFactory.getLogger(DRLParserWrapper.class);
 
     private final List<DRLParserError> errors = new ArrayList<>();
+
+    private final Resource resource;
+
+    public DRLParserWrapper(Resource resource) {
+        this.resource = resource;
+    }
 
     /**
      * Main entry point for parsing DRL
@@ -72,7 +79,7 @@ public class DRLParserWrapper {
         errors.addAll(errorListener.getErrors());
 
         try {
-            return compilationUnitContext2PackageDescr(cxt, drlParser.getTokenStream());
+            return compilationUnitContext2PackageDescr(cxt, drlParser.getTokenStream(), resource);
         } catch (Exception e) {
             LOGGER.error("Exception while creating PackageDescr", e);
             errors.add(new DRLParserError(e));
