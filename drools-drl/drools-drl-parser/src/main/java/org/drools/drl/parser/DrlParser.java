@@ -200,7 +200,7 @@ public class DrlParser {
     private PackageDescr compileWithAntlr4Parser(Function<DRLParserWrapper, PackageDescr> packageDescrFunction) throws DroolsParserException {
         try {
             // we don't use languageLevel here, assuming DRL6 compatible
-            DRLParserWrapper parser = new DRLParserWrapper();
+            DRLParserWrapper parser = new DRLParserWrapper(resource);
             PackageDescr packageDescr = packageDescrFunction.apply(parser);
             for (final DRLParserError drlParserError : parser.getErrors()) {
                 final ParserError err = new ParserError(resource,
