@@ -20,6 +20,7 @@ package org.drools.drl.parser.antlr4;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.drools.drl.ast.descr.BaseDescr;
+import org.kie.api.io.Resource;
 
 import static org.drools.drl.parser.antlr4.DescrHelper.populateCommonProperties;
 
@@ -50,6 +51,11 @@ public class BaseDescrFactory {
          */
         public Builder<T> withParserRuleContext(ParserRuleContext ctx) {
             populateCommonProperties(toReturn, ctx);
+            return this;
+        }
+
+        public Builder<T> withResource(Resource resource) {
+            toReturn.setResource(resource);
             return this;
         }
 
