@@ -91,7 +91,7 @@ class MiscDRLParserTest {
     private DrlParser parser;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         parser = ParserTestUtils.getParser();
     }
 
@@ -116,7 +116,7 @@ class MiscDRLParserTest {
 
     private PackageDescr parseAndGetPackageDescr(String drl) {
         try {
-            PackageDescr pkg =  parser.parse(null, drl);
+            PackageDescr pkg = parser.parse(null, drl);
             assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
             return pkg;
         } catch (DroolsParserException e) {
@@ -185,14 +185,14 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_validPackage() {
+    void validPackage() {
         final String source = "package foo.bar.baz";
         final PackageDescr pkg = parseAndGetPackageDescr(source);
         assertThat(pkg.getName()).isEqualTo("foo.bar.baz");
     }
 
     @Test
-    void parse_packageWithErrorNode() {
+    void packageWithErrorNode() {
         final String source = "package 12 foo.bar.baz";
         final PackageDescr pkg = parseAndGetPackageDescrWithoutErrorCheck(source);
         assertThat(parser.hasErrors()).isTrue();
@@ -200,7 +200,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_packageWithAllErrorNode() {
+    void packageWithAllErrorNode() {
         final String source = "package 12 12312 231";
         final PackageDescr pkg = parseAndGetPackageDescrWithoutErrorCheck(source);
         assertThat(parser.hasErrors()).isTrue();
@@ -208,9 +208,9 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_import() {
+    void importDef() {
         final String source = "package foo; import com.foo.Bar; import com.foo.Baz;";
-        PackageDescr pkg =parseAndGetPackageDescr(source);
+        PackageDescr pkg = parseAndGetPackageDescr(source);
         assertThat(pkg.getName()).isEqualTo("foo");
         assertThat(pkg.getImports()).hasSize(2);
         ImportDescr impdescr = pkg.getImports().get(0);
@@ -225,7 +225,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_functionImport() {
+    void functionImport() {
         final String source = "package foo\n" +
                 "import function java.lang.Math.max\n" +
                 "import function java.lang.Math.min;\n" +
@@ -258,7 +258,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_globalWithComplexType() {
+    void globalWithComplexType() {
         final String source = "package foo.bar.baz\n" +
                 "import com.foo.Bar\n" +
                 "global java.util.List<java.util.Map<String,Integer>> aList;\n" +
@@ -290,7 +290,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_globalWithOrWithoutSemi() throws Exception {
+    void globalWithOrWithoutSemi() {
         String source = readResource("globals.drl");
         PackageDescr pkg = parseAndGetPackageDescr(source);
 
@@ -311,7 +311,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_functionImportWithNotExist() throws Exception {
+    void functionImportWithNotExist() {
         String source = readResource("test_FunctionImport.drl");
         PackageDescr pkg = parseAndGetPackageDescr(source);
 
@@ -326,7 +326,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_fromComplexAccessor() {
+    void fromComplexAccessor() {
         String source = "rule \"Invalid customer id\" ruleflow-group \"validate\" lock-on-active true \n" +
                 " when \n" +
                 "     o: Order( ) \n" +
@@ -351,7 +351,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_fromWithInlineList() {
+    void fromWithInlineList() {
         String source = "rule XYZ \n" +
                 " when \n" +
                 " o: Order( ) \n" +
@@ -370,7 +370,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_fromWithInlineListMethod() {
+    void fromWithInlineListMethod() {
         String source = "rule XYZ \n" +
                 " when \n" +
                 " o: Order( ) \n" +
@@ -390,7 +390,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_fromWithInlineListIndex() {
+    void fromWithInlineListIndex() {
         String source = "rule XYZ \n" +
                 " when \n" +
                 " o: Order( ) \n" +
@@ -409,7 +409,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_ruleWithoutEnd() {
+    void ruleWithoutEnd() {
         String source = "rule \"Invalid customer id\" \n" +
                 " when \n" +
                 " o: Order( ) \n" +
@@ -420,7 +420,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_orWithSpecialBind() {
+    void orWithSpecialBind() {
         String source = "rule \"A and (B or C or D)\" \n" +
                 "    when \n" +
                 "        pdo1 : ParametricDataObject( paramID == 101, stringValue == \"1000\" ) and \n" +
@@ -447,7 +447,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_compatibleRestriction() {
+    void compatibleRestriction() {
         String source = "package com.sample  rule test  when  Test( ( text == null || text2 matches \"\" ) )  then  end";
         PackageDescr pkg = parseAndGetPackageDescr(source);
 
@@ -459,7 +459,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_simpleConstraint() {
+    void simpleConstraint() {
         String source = "package com.sample  rule test  when  Cheese( type == 'stilton', price > 10 )  then  end";
         PackageDescr pkg = parseAndGetPackageDescr(source);
 
@@ -477,7 +477,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_stringEscapes() {
+    void stringEscapes() {
         String source = "package com.sample  rule test  when  Cheese( type matches \"\\..*\\\\.\" )  then  end";
         PackageDescr pkg = parseAndGetPackageDescr(source);
         assertThat(pkg.getName()).isEqualTo("com.sample");
@@ -493,7 +493,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_dialectWithSingleQuotation() {
+    void dialectWithSingleQuotation() {
         final String source = "dialect 'mvel'";
         PackageDescr pkg = parseAndGetPackageDescr(source);
         AttributeDescr attr = pkg.getAttributes().get(0);
@@ -502,7 +502,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_dialectWithDoubleQuotation() {
+    void dialectWithDoubleQuotation() {
         final String source = "dialect \"mvel\"";
         PackageDescr pkg = parseAndGetPackageDescr(source);
         AttributeDescr attr = pkg.getAttributes().get(0);
@@ -511,7 +511,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_emptyRuleWithoutWhen() throws Exception {
+    void emptyRuleWithoutWhen() {
         String source = readResource("empty_rule.drl"); // without WHEN
         RuleDescr ruleDescr = parseAndGetFirstRuleDescr(source);
 
@@ -523,7 +523,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_keywordCollisions() throws Exception {
+    void keywordCollisions() {
         String source = readResource("eol_funny_business.drl"); // keywords everywhere
 
         // Note: eol_funny_business.drl is modified from the one under drools-test-coverage to be more realistic.
@@ -535,7 +535,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_ternaryExpression() throws Exception {
+    void ternaryExpression() {
         String source = readResource("ternary_expression.drl");
         PackageDescr pkg = parseAndGetPackageDescr(source);
 
@@ -546,7 +546,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_functionWithArrays() throws Exception {
+    void functionWithArrays() {
         String source = readResource("function_arrays.drl");
 
         // Note: function_arrays.drl is modified from the one under drools-test-coverage to be more realistic.
@@ -570,7 +570,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_almostEmptyRule() throws Exception {
+    void almostEmptyRule() {
         String source = readResource("almost_empty_rule.drl");
         PackageDescr pkg = parseAndGetPackageDescr(source);
 
@@ -580,11 +580,11 @@ class MiscDRLParserTest {
 
         assertThat(rule.getName()).isEqualTo("almost_empty");
         assertThat(rule.getLhs()).isNotNull();
-        assertThat(((String) rule.getConsequence()).trim()).isEmpty();
+        assertThat(((String) rule.getConsequence())).isBlank();
     }
 
     @Test
-    void parse_quotedStringNameRule() throws Exception {
+    void quotedStringNameRule() {
         String source = readResource("quoted_string_name_rule.drl");
         PackageDescr pkg = parseAndGetPackageDescr(source);
 
@@ -593,11 +593,11 @@ class MiscDRLParserTest {
 
         assertThat(rule.getName()).isEqualTo("quoted string name");
         assertThat(rule.getLhs()).isNotNull();
-        assertThat(((String) rule.getConsequence()).trim()).isEmpty();
+        assertThat(((String) rule.getConsequence())).isBlank();
     }
 
     @Test
-    void parse_noLoop() throws Exception {
+    void noLoop() {
         String source = readResource("no-loop.drl");
         PackageDescr pkg = parseAndGetPackageDescr(source);
 
@@ -611,7 +611,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_autofocus() throws Exception {
+    void autofocus() {
         String source = readResource("autofocus.drl");
         PackageDescr pkg = parseAndGetPackageDescr(source);
 
@@ -625,11 +625,9 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_ruleFlowGroup() throws Exception {
+    void ruleFlowGroup() {
         String source = readResource("ruleflowgroup.drl");
         PackageDescr pkg = parseAndGetPackageDescr(source);
-
-
 
         RuleDescr rule = pkg.getRules().get(0);
         assertThat(rule).isNotNull();
@@ -641,14 +639,12 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_consequenceWithDeclaration() throws Exception {
+    void consequenceWithDeclaration() {
         String source = readResource("declaration-in-consequence.drl");
         PackageDescr pkg = parseAndGetPackageDescr(source);
 
         // Note : Removed "i\i;" from the original declaration-in-consequence.drl under drools-test-coverage
         // because it's not a valid java expression and doesn't make sense to test. (Right to raise a parser error)
-
-
 
         RuleDescr rule = pkg.getRules().get(0);
         assertThat(rule).isNotNull();
@@ -672,12 +668,10 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_or() {
+    void or() {
         final String text = "rule X when Person(age < 42, location==\"atlanta\") \nor\nPerson(name==\"bob\") then end";
         PackageDescr pkg = parseAndGetPackageDescr(text);
         RuleDescr rule = pkg.getRules().get(0);
-
-
 
         assertThat(rule).isNotNull();
 
@@ -687,12 +681,10 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_lhsWithStringQuotes() {
+    void lhsWithStringQuotes() {
         final String text = "rule X when Person( location==\"atlanta\\\"\") then end\n";
         PackageDescr pkg = parseAndGetPackageDescr(text);
         RuleDescr rule = pkg.getRules().get(0);
-
-
 
         assertThat(rule).isNotNull();
 
@@ -703,11 +695,10 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_lhsWithStringQuotesEscapeChars() {
+    void lhsWithStringQuotesEscapeChars() {
         final String text = "rule X when Cheese( $x: type, type == \"s\\tti\\\"lto\\nn\" ) then end\n";
         PackageDescr pkg = parseAndGetPackageDescr(text);
         RuleDescr rule = pkg.getRules().get(0);
-
 
         assertThat(rule).isNotNull();
 
@@ -718,7 +709,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_literalBoolAndNegativeNumbersRule() throws Exception {
+    void literalBoolAndNegativeNumbersRule() {
         RuleDescr rule = parseAndGetFirstRuleDescrFromFile("literal_bool_and_negative.drl");
 
         assertThat(rule).isNotNull();
@@ -755,11 +746,9 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_emptyPattern() throws Exception {
+    void emptyPattern() {
         String source = readResource("test_EmptyPattern.drl");
         PackageDescr pkg = parseAndGetPackageDescr(source);
-
-
 
         assertThat(pkg.getRules()).hasSize(1);
         final RuleDescr ruleDescr = pkg.getRules().get(0);
@@ -772,7 +761,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_simpleMethodCallWithFrom() throws Exception {
+    void simpleMethodCallWithFrom() {
         RuleDescr rule = parseAndGetFirstRuleDescrFromFile("test_SimpleMethodCallWithFrom.drl");
         final PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
         final FromDescr from = (FromDescr) pattern.getSource();
@@ -782,7 +771,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_simpleFunctionCallWithFrom() throws Exception {
+    void simpleFunctionCallWithFrom() {
         RuleDescr rule = parseAndGetFirstRuleDescrFromFile("test_SimpleFunctionCallWithFrom.drl");
         final PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
         final FromDescr from = (FromDescr) pattern.getSource();
@@ -792,9 +781,9 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_simpleAccessorWithFrom() throws Exception {
+    void simpleAccessorWithFrom() {
         RuleDescr rule = parseAndGetFirstRuleDescrFromFile("test_SimpleAccessorWithFrom.drl");
-        final PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+        final PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
         final FromDescr from = (FromDescr) pattern.getSource();
         final MVELExprDescr accessor = (MVELExprDescr) from.getDataSource();
 
@@ -802,9 +791,9 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_simpleAccessorAndArgWithFrom() throws Exception {
+    void simpleAccessorAndArgWithFrom() {
         RuleDescr rule = parseAndGetFirstRuleDescrFromFile("test_SimpleAccessorArgWithFrom.drl");
-        final PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+        final PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
         final FromDescr from = (FromDescr) pattern.getSource();
         final MVELExprDescr accessor = (MVELExprDescr) from.getDataSource();
 
@@ -812,10 +801,10 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_complexChainedAccessor() throws Exception {
+    void complexChainedAccessor() {
         RuleDescr rule = parseAndGetFirstRuleDescrFromFile("test_ComplexChainedCallWithFrom.drl");
 
-        final PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+        final PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
         final FromDescr from = (FromDescr) pattern.getSource();
         final MVELExprDescr accessor = (MVELExprDescr) from.getDataSource();
 
@@ -823,7 +812,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_from() throws Exception {
+    void from() {
         RuleDescr rule = parseAndGetFirstRuleDescrFromFile("from.drl");
         assertThat(rule).isNotNull();
 
@@ -833,7 +822,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_simpleRuleWithBindings() throws Exception {
+    void simpleRuleWithBindings() {
         RuleDescr rule = parseAndGetFirstRuleDescrFromFile("simple_rule.drl");
         assertThat(rule).isNotNull();
 
@@ -885,7 +874,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_multipleRestrictionsConstraint() throws Exception {
+    void multipleRestrictionsConstraint() {
         RuleDescr rule = parseAndGetFirstRuleDescrFromFile("restrictions_test.drl");
         assertThat(rule).isNotNull();
 
@@ -895,41 +884,36 @@ class MiscDRLParserTest {
 
         // The first pattern, with 2 restrictions on a single field (plus a
         // connective)
-        PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+        PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
         assertThat(pattern.getObjectType()).isEqualTo("Person");
-        assertThat( pattern.getConstraint().getDescrs()).hasSize(1);
+        assertThat(pattern.getConstraint().getDescrs()).hasSize(1);
 
         AndDescr and = (AndDescr) pattern.getConstraint();
-        ExprConstraintDescr fld = (ExprConstraintDescr) and.getDescrs().get( 0 );
+        ExprConstraintDescr fld = (ExprConstraintDescr) and.getDescrs().get(0);
         assertThat(fld.getExpression()).isEqualTo("age > 30 && < 40");
 
         // the second col, with 2 fields, the first with 2 restrictions, the
         // second field with one
-        pattern = (PatternDescr) rule.getLhs().getDescrs().get( 1 );
+        pattern = (PatternDescr) rule.getLhs().getDescrs().get(1);
         assertThat(pattern.getObjectType()).isEqualTo("Vehicle");
         assertThat(pattern.getConstraint().getDescrs()).hasSize(2);
 
         and = (AndDescr) pattern.getConstraint();
-        fld = (ExprConstraintDescr) and.getDescrs().get( 0 );
-        assertThat(fld.getExpression()).isEqualToIgnoringWhitespace( "type == \"sedan\" || == \"wagon\"");
+        fld = (ExprConstraintDescr) and.getDescrs().get(0);
+        assertThat(fld.getExpression()).isEqualToIgnoringWhitespace("type == \"sedan\" || == \"wagon\"");
 
         // now the second field
-        fld = (ExprConstraintDescr) and.getDescrs().get( 1 );
-        assertThat(fld.getExpression()).isEqualToIgnoringWhitespace( "age < 3");
+        fld = (ExprConstraintDescr) and.getDescrs().get(1);
+        assertThat(fld.getExpression()).isEqualToIgnoringWhitespace("age < 3");
     }
 
-//-------------------------------------------------------------------------
-// DROOLS-7271 : ported from RuleParserTest
-// Failing tests are annotated with @Disabled. We can fix issues one by one
-//-------------------------------------------------------------------------
-
     @Test
-    public void parse_LineNumberInAST() throws Exception {
+    void lineNumberInAST() {
         // also see testSimpleExpander to see how this works with an expander
         // (should be the same).
 
         final RuleDescr rule = parseAndGetFirstRuleDescrFromFile(
-                                                          "simple_rule.drl" );
+                "simple_rule.drl");
 
         assertThat(rule).isNotNull();
 
@@ -942,20 +926,20 @@ class MiscDRLParserTest {
 
         assertThat(lhs).isNotNull();
 
-        assertThat(lhs.getDescrs().size()).isEqualTo(3);
+        assertThat(lhs.getDescrs()).hasSize(3);
 
         // Check first pattern
-        final PatternDescr first = (PatternDescr) lhs.getDescrs().get( 0 );
+        final PatternDescr first = (PatternDescr) lhs.getDescrs().get(0);
         assertThat(first.getIdentifier()).isEqualTo("foo3");
         assertThat(first.getObjectType()).isEqualTo("Bar");
-        assertThat(first.getConstraint().getDescrs().size()).isEqualTo(1);
+        assertThat(first.getConstraint().getDescrs()).hasSize(1);
 
         // Check second pattern
-        final PatternDescr second = (PatternDescr) lhs.getDescrs().get( 1 );
+        final PatternDescr second = (PatternDescr) lhs.getDescrs().get(1);
         assertThat(second.getIdentifier()).isEqualTo("foo4");
         assertThat(second.getObjectType()).isEqualTo("Bar");
 
-        final PatternDescr third = (PatternDescr) lhs.getDescrs().get( 2 );
+        final PatternDescr third = (PatternDescr) lhs.getDescrs().get(2);
         assertThat(third.getObjectType()).isEqualTo("Baz");
 
         assertThat(first.getLine()).isEqualTo(19);
@@ -964,24 +948,20 @@ class MiscDRLParserTest {
     }
 
     @Test
-    public void parse_LineNumberIncludingCommentsInRHS() throws Exception {
+    void lineNumberIncludingCommentsInRHS() {
         PackageDescr pkg = parseAndGetPackageDescrFromFile(
-                                                         "test_CommentLineNumbersInConsequence.drl" );
+                "test_CommentLineNumbersInConsequence.drl");
 
-
-
-        final String rhs = (String) ((RuleDescr) pkg.getRules().get( 0 )).getConsequence();
+        final String rhs = (String) ((RuleDescr) pkg.getRules().get(0)).getConsequence();
         String expected = "\\s*//woot$\\s*first;$\\s*$\\s*//$\\s*$\\s*/\\* lala$\\s*$\\s*\\*/$\\s*second;$\\s*";
         assertThat(Pattern.compile(expected,
                                    Pattern.DOTALL | Pattern.MULTILINE).matcher(rhs).matches()).isTrue();
     }
 
     @Test
-    public void parse_LhsSemicolonDelim() throws Exception {
+    void lhsSemicolonDelim() {
         final RuleDescr rule = parseAndGetFirstRuleDescrFromFile(
-                                                          "lhs_semicolon_delim.drl" );
-
-
+                "lhs_semicolon_delim.drl");
 
         assertThat(rule).isNotNull();
 
@@ -991,36 +971,36 @@ class MiscDRLParserTest {
 
         assertThat(lhs).isNotNull();
 
-        assertThat(lhs.getDescrs().size()).isEqualTo(3);
+        assertThat(lhs.getDescrs()).hasSize(3);
 
         // System.err.println( lhs.getDescrs() );
 
         // Check first pattern
-        final PatternDescr first = (PatternDescr) lhs.getDescrs().get( 0 );
+        final PatternDescr first = (PatternDescr) lhs.getDescrs().get(0);
         assertThat(first.getIdentifier()).isEqualTo("foo3");
         assertThat(first.getObjectType()).isEqualTo("Bar");
 
-        assertThat(first.getConstraint().getDescrs().size()).isEqualTo(1);
+        assertThat(first.getConstraint().getDescrs()).hasSize(1);
 
         // LiteralDescr constraint = (LiteralDescr) first.getDescrs().get( 0 );
         AndDescr and = (AndDescr) first.getConstraint();
-        ExprConstraintDescr fld = (ExprConstraintDescr) and.getDescrs().get( 0 );
+        ExprConstraintDescr fld = (ExprConstraintDescr) and.getDescrs().get(0);
         assertThat(fld).isNotNull();
 
         assertThat(fld.getExpression()).isEqualTo("a==3");
 
         // Check second pattern
-        final PatternDescr second = (PatternDescr) lhs.getDescrs().get( 1 );
+        final PatternDescr second = (PatternDescr) lhs.getDescrs().get(1);
         assertThat(second.getIdentifier()).isEqualTo("foo4");
         assertThat(second.getObjectType()).isEqualTo("Bar");
 
-        assertThat(second.getDescrs().size()).isEqualTo(1);
+        assertThat(second.getDescrs()).hasSize(1);
 
-        final ExprConstraintDescr fieldBindingDescr = (ExprConstraintDescr) second.getDescrs().get( 0 );
+        final ExprConstraintDescr fieldBindingDescr = (ExprConstraintDescr) second.getDescrs().get(0);
         assertThat(fieldBindingDescr.getExpression()).isEqualTo("a4:a==4");
 
         // Check third pattern
-        final PatternDescr third = (PatternDescr) lhs.getDescrs().get( 2 );
+        final PatternDescr third = (PatternDescr) lhs.getDescrs().get(2);
         assertThat(third.getIdentifier()).isNull();
         assertThat(third.getObjectType()).isEqualTo("Baz");
 
@@ -1028,61 +1008,57 @@ class MiscDRLParserTest {
     }
 
     @Test
-    public void parse_NotNode() throws Exception {
+    void notNode() {
         final RuleDescr rule = parseAndGetFirstRuleDescrFromFile(
-                                                          "rule_not.drl" );
-
-
+                "rule_not.drl");
 
         assertThat(rule).isNotNull();
         assertThat(rule.getName()).isEqualTo("simple_rule");
 
         final AndDescr lhs = rule.getLhs();
-        assertThat(lhs.getDescrs().size()).isEqualTo(1);
-        final NotDescr not = (NotDescr) lhs.getDescrs().get( 0 );
-        assertThat(not.getDescrs().size()).isEqualTo(1);
-        final PatternDescr pattern = (PatternDescr) not.getDescrs().get( 0 );
+        assertThat(lhs.getDescrs()).hasSize(1);
+        final NotDescr not = (NotDescr) lhs.getDescrs().get(0);
+        assertThat(not.getDescrs()).hasSize(1);
+        final PatternDescr pattern = (PatternDescr) not.getDescrs().get(0);
 
         assertThat(pattern.getObjectType()).isEqualTo("Cheese");
-        assertThat(pattern.getConstraint().getDescrs().size()).isEqualTo(1);
+        assertThat(pattern.getConstraint().getDescrs()).hasSize(1);
 
         final AndDescr and = (AndDescr) pattern.getConstraint();
-        final ExprConstraintDescr fld = (ExprConstraintDescr) and.getDescrs().get( 0 );
+        final ExprConstraintDescr fld = (ExprConstraintDescr) and.getDescrs().get(0);
 
         assertThat(fld.getExpression()).isEqualTo("type == \"stilton\"");
     }
 
     @Test
-    public void parse_NotExistWithBrackets() throws Exception {
+    void notExistWithBrackets() {
 
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
-                                                               "not_exist_with_brackets.drl" );
+                "not_exist_with_brackets.drl");
 
-
-
-        final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
+        final RuleDescr rule = (RuleDescr) pkg.getRules().get(0);
 
         assertThat(rule).isNotNull();
         assertThat(rule.getName()).isEqualTo("simple_rule");
 
         final AndDescr lhs = rule.getLhs();
-        assertThat(lhs.getDescrs().size()).isEqualTo(2);
-        final NotDescr not = (NotDescr) lhs.getDescrs().get( 0 );
-        assertThat(not.getDescrs().size()).isEqualTo(1);
-        final PatternDescr pattern = (PatternDescr) not.getDescrs().get( 0 );
+        assertThat(lhs.getDescrs()).hasSize(2);
+        final NotDescr not = (NotDescr) lhs.getDescrs().get(0);
+        assertThat(not.getDescrs()).hasSize(1);
+        final PatternDescr pattern = (PatternDescr) not.getDescrs().get(0);
 
         assertThat(pattern.getObjectType()).isEqualTo("Cheese");
 
-        final ExistsDescr ex = (ExistsDescr) lhs.getDescrs().get(1 );
-        assertThat(ex.getDescrs().size()).isEqualTo(1);
-        final PatternDescr exPattern = (PatternDescr) ex.getDescrs().get( 0 );
+        final ExistsDescr ex = (ExistsDescr) lhs.getDescrs().get(1);
+        assertThat(ex.getDescrs()).hasSize(1);
+        final PatternDescr exPattern = (PatternDescr) ex.getDescrs().get(0);
         assertThat(exPattern.getObjectType()).isEqualTo("Foo");
     }
 
     @Test
-    public void parse_SimpleQuery() throws Exception {
+    void simpleQuery() {
         final QueryDescr query = parseAndGetFirstQueryDescrFromFile(
-                                                            "simple_query.drl" );
+                "simple_query.drl");
 
         assertThat(query).isNotNull();
 
@@ -1092,110 +1068,110 @@ class MiscDRLParserTest {
 
         assertThat(lhs).isNotNull();
 
-        assertThat(lhs.getDescrs().size()).isEqualTo(3);
+        assertThat(lhs.getDescrs()).hasSize(3);
 
         // Check first pattern
-        final PatternDescr first = (PatternDescr) lhs.getDescrs().get( 0 );
+        final PatternDescr first = (PatternDescr) lhs.getDescrs().get(0);
         assertThat(first.getIdentifier()).isEqualTo("foo3");
         assertThat(first.getObjectType()).isEqualTo("Bar");
 
-        assertThat(first.getConstraint().getDescrs().size()).isEqualTo(1);
+        assertThat(first.getConstraint().getDescrs()).hasSize(1);
 
         AndDescr and = (AndDescr) first.getConstraint();
-        ExprConstraintDescr fld = (ExprConstraintDescr) and.getDescrs().get( 0 );
+        ExprConstraintDescr fld = (ExprConstraintDescr) and.getDescrs().get(0);
         assertThat(fld).isNotNull();
 
         assertThat(fld.getExpression()).isEqualTo("a==3");
 
         // Check second pattern
-        final PatternDescr second = (PatternDescr) lhs.getDescrs().get( 1 );
+        final PatternDescr second = (PatternDescr) lhs.getDescrs().get(1);
         assertThat(second.getIdentifier()).isEqualTo("foo4");
         assertThat(second.getObjectType()).isEqualTo("Bar");
 
-        assertThat(second.getDescrs().size()).isEqualTo(1);
+        assertThat(second.getDescrs()).hasSize(1);
         // check it has field bindings.
-        final ExprConstraintDescr bindingDescr = (ExprConstraintDescr) second.getDescrs().get( 0 );
+        final ExprConstraintDescr bindingDescr = (ExprConstraintDescr) second.getDescrs().get(0);
         assertThat(bindingDescr.getExpression()).isEqualTo("a4:a==4");
     }
 
     @Test
-    public void parse_QueryRuleMixed() throws Exception {
+    void queryRuleMixed() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
-                                                               "query_and_rule.drl" );
+                "query_and_rule.drl");
 
-        assertThat(pkg.getRules().size()).isEqualTo(4); // as queries are rules
-        RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
+        assertThat(pkg.getRules()).hasSize(4); // as queries are rules
+        RuleDescr rule = (RuleDescr) pkg.getRules().get(0);
         assertThat(rule.getName()).isEqualTo("bar");
 
-        QueryDescr query = (QueryDescr) pkg.getRules().get( 1 );
+        QueryDescr query = (QueryDescr) pkg.getRules().get(1);
         assertThat(query.getName()).isEqualTo("simple_query");
 
-        rule = (RuleDescr) pkg.getRules().get( 2 );
+        rule = (RuleDescr) pkg.getRules().get(2);
         assertThat(rule.getName()).isEqualTo("bar2");
 
-        query = (QueryDescr) pkg.getRules().get( 3 );
+        query = (QueryDescr) pkg.getRules().get(3);
         assertThat(query.getName()).isEqualTo("simple_query2");
     }
 
     @Test
-    public void parse_MultipleRules() throws Exception {
+    void multipleRules() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
-                                                               "multiple_rules.drl" );
+                "multiple_rules.drl");
 
         final List<RuleDescr> rules = pkg.getRules();
 
-        assertThat(rules.size()).isEqualTo(2);
+        assertThat(rules).hasSize(2);
 
-        final RuleDescr rule0 = rules.get( 0 );
+        final RuleDescr rule0 = rules.get(0);
         assertThat(rule0.getName()).isEqualTo("Like Stilton");
 
-        final RuleDescr rule1 = rules.get( 1 );
+        final RuleDescr rule1 = rules.get(1);
         assertThat(rule1.getName()).isEqualTo("Like Cheddar");
 
         // checkout the first rule
         AndDescr lhs = rule1.getLhs();
         assertThat(lhs).isNotNull();
-        assertThat(lhs.getDescrs().size()).isEqualTo(1);
-        assertThat((String) rule0.getConsequence()).isEqualToIgnoringWhitespace( "System.out.println(\"I like \" + t);");
+        assertThat(lhs.getDescrs()).hasSize(1);
+        assertThat((String) rule0.getConsequence()).isEqualToIgnoringWhitespace("System.out.println(\"I like \" + t);");
 
         // Check first pattern
-        PatternDescr first = (PatternDescr) lhs.getDescrs().get( 0 );
+        PatternDescr first = (PatternDescr) lhs.getDescrs().get(0);
         assertThat(first.getObjectType()).isEqualTo("Cheese");
 
         // checkout the second rule
         lhs = rule1.getLhs();
         assertThat(lhs).isNotNull();
-        assertThat(lhs.getDescrs().size()).isEqualTo(1);
-        assertThat((String) rule1.getConsequence()).isEqualToIgnoringWhitespace( "System.out.println(\"I like \" + t);");
+        assertThat(lhs.getDescrs()).hasSize(1);
+        assertThat((String) rule1.getConsequence()).isEqualToIgnoringWhitespace("System.out.println(\"I like \" + t);");
 
         // Check first pattern
-        first = (PatternDescr) lhs.getDescrs().get( 0 );
+        first = (PatternDescr) lhs.getDescrs().get(0);
         assertThat(first.getObjectType()).isEqualTo("Cheese");
     }
 
     @Test
-    public void parse_ExpanderLineSpread() {
+    void expanderLineSpread() {
         final PackageDescr pkg = parseAndGetPackageDescrWithDsl("expander_spread_lines.dslr", "complex.dsl");
 
         final RuleDescr rule = pkg.getRules().get(0);
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(1);
+        assertThat(rule.getLhs().getDescrs()).hasSize(1);
 
         final OrDescr or = (OrDescr) rule.getLhs().getDescrs().get(0);
-        assertThat(or.getDescrs().size()).isEqualTo(2);
+        assertThat(or.getDescrs()).hasSize(2);
         assertThat((String) rule.getConsequence()).isNotNull();
     }
 
     @Test
-    public void parse_ExpanderMultipleConstraints() {
+    void expanderMultipleConstraints() {
         final PackageDescr pkg = parseAndGetPackageDescrWithDsl("expander_multiple_constraints.dslr", "multiple_constraints.dsl");
 
         final RuleDescr rule = pkg.getRules().get(0);
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(2);
+        assertThat(rule.getLhs().getDescrs()).hasSize(2);
 
         PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
         assertThat(pattern.getObjectType()).isEqualTo("Person");
 
-        assertThat(pattern.getConstraint().getDescrs().size()).isEqualTo(2);
+        assertThat(pattern.getConstraint().getDescrs()).hasSize(2);
         assertThat(((ExprConstraintDescr) pattern.getConstraint().getDescrs().get(0)).getExpression()).isEqualTo("age < 42");
         assertThat(((ExprConstraintDescr) pattern.getConstraint().getDescrs().get(1)).getExpression()).isEqualTo("location==atlanta");
 
@@ -1206,18 +1182,18 @@ class MiscDRLParserTest {
     }
 
     @Test
-    public void parse_ExpanderMultipleConstraintsFlush() {
+    void expanderMultipleConstraintsFlush() {
         // this is similar to the other test, but it requires a flush to add the
         // constraints
         final PackageDescr pkg = parseAndGetPackageDescrWithDsl("expander_multiple_constraints_flush.dslr", "multiple_constraints.dsl");
 
         final RuleDescr rule = pkg.getRules().get(0);
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(1);
+        assertThat(rule.getLhs().getDescrs()).hasSize(1);
 
         final PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
         assertThat(pattern.getObjectType()).isEqualTo("Person");
 
-        assertThat(pattern.getConstraint().getDescrs().size()).isEqualTo(2);
+        assertThat(pattern.getConstraint().getDescrs()).hasSize(2);
         assertThat(((ExprConstraintDescr) pattern.getConstraint().getDescrs().get(0)).getExpression()).isEqualTo("age < 42");
         assertThat(((ExprConstraintDescr) pattern.getConstraint().getDescrs().get(1)).getExpression()).isEqualTo("location==atlanta");
 
@@ -1225,238 +1201,244 @@ class MiscDRLParserTest {
     }
 
     @Test
-    public void parse_BasicBinding() throws Exception {
+    void basicBinding() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
-                                                               "basic_binding.drl" );
+                "basic_binding.drl");
 
-        final RuleDescr ruleDescr = (RuleDescr) pkg.getRules().get( 0 );
+        final RuleDescr ruleDescr = (RuleDescr) pkg.getRules().get(0);
 
         final AndDescr lhs = ruleDescr.getLhs();
-        assertThat(lhs.getDescrs().size()).isEqualTo(1);
-        final PatternDescr cheese = (PatternDescr) lhs.getDescrs().get( 0 );
+        assertThat(lhs.getDescrs()).hasSize(1);
+        final PatternDescr cheese = (PatternDescr) lhs.getDescrs().get(0);
         assertThat(cheese.getObjectType()).isEqualTo("Cheese");
-        assertThat(cheese.getConstraint().getDescrs().size()).isEqualTo(1);
-        final ExprConstraintDescr fieldBinding = (ExprConstraintDescr) cheese.getDescrs().get( 0 );
+        assertThat(cheese.getConstraint().getDescrs()).hasSize(1);
+        final ExprConstraintDescr fieldBinding = (ExprConstraintDescr) cheese.getDescrs().get(0);
         assertThat(fieldBinding.getExpression()).isEqualToIgnoringWhitespace("$type:type");
     }
 
     @Test
-    public void parse_BoundVariables() throws Exception {
+    void boundVariables() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
-                                                               "bindings.drl" );
+                "bindings.drl");
 
-        final RuleDescr ruleDescr = (RuleDescr) pkg.getRules().get( 0 );
+        final RuleDescr ruleDescr = (RuleDescr) pkg.getRules().get(0);
 
         final AndDescr lhs = ruleDescr.getLhs();
-        assertThat(lhs.getDescrs().size()).isEqualTo(2);
-        final PatternDescr cheese = (PatternDescr) lhs.getDescrs().get( 0 );
+        assertThat(lhs.getDescrs()).hasSize(2);
+        final PatternDescr cheese = (PatternDescr) lhs.getDescrs().get(0);
         assertThat(cheese.getObjectType()).isEqualTo("Cheese");
-        assertThat(cheese.getDescrs().size()).isEqualTo(1);
-        ExprConstraintDescr fieldBinding = (ExprConstraintDescr) cheese.getDescrs().get( 0 );
+        assertThat(cheese.getDescrs()).hasSize(1);
+        ExprConstraintDescr fieldBinding = (ExprConstraintDescr) cheese.getDescrs().get(0);
         assertThat(fieldBinding.getExpression()).isEqualTo("$type : type == \"stilton\"");
 
-        final PatternDescr person = (PatternDescr) lhs.getDescrs().get( 1 );
-        assertThat(person.getDescrs().size()).isEqualTo(2);
-        fieldBinding = (ExprConstraintDescr) person.getDescrs().get( 0 );
+        final PatternDescr person = (PatternDescr) lhs.getDescrs().get(1);
+        assertThat(person.getDescrs()).hasSize(2);
+        fieldBinding = (ExprConstraintDescr) person.getDescrs().get(0);
         assertThat(fieldBinding.getExpression()).isEqualTo("$name : name == \"bob\"");
 
-        ExprConstraintDescr fld = (ExprConstraintDescr) person.getDescrs().get( 1 );
+        ExprConstraintDescr fld = (ExprConstraintDescr) person.getDescrs().get(1);
         assertThat(fld.getExpression()).isEqualTo("likes == $type");
     }
 
     @Test
-    public void parse_OrNesting() throws Exception {
+    void orNesting() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
-                                                               "or_nesting.drl" );
+                "or_nesting.drl");
 
         assertThat(pkg).isNotNull();
-        assertThat(pkg.getRules().size()).isEqualTo(1);
-        final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
+        assertThat(pkg.getRules()).hasSize(1);
+        final RuleDescr rule = (RuleDescr) pkg.getRules().get(0);
         assertThat(rule.getName()).isEqualTo("simple_rule");
 
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(1);
+        assertThat(rule.getLhs().getDescrs()).hasSize(1);
 
-        final OrDescr or = (OrDescr) rule.getLhs().getDescrs().get( 0 );
-        assertThat(or.getDescrs().size()).isEqualTo(2);
+        final OrDescr or = (OrDescr) rule.getLhs().getDescrs().get(0);
+        assertThat(or.getDescrs()).hasSize(2);
 
-        final PatternDescr first = (PatternDescr) or.getDescrs().get( 0 );
+        final PatternDescr first = (PatternDescr) or.getDescrs().get(0);
         assertThat(first.getObjectType()).isEqualTo("Person");
 
-        final AndDescr and = (AndDescr) or.getDescrs().get( 1 );
-        assertThat(and.getDescrs().size()).isEqualTo(2);
+        final AndDescr and = (AndDescr) or.getDescrs().get(1);
+        assertThat(and.getDescrs()).hasSize(2);
 
-        final PatternDescr left = (PatternDescr) and.getDescrs().get( 0 );
+        final PatternDescr left = (PatternDescr) and.getDescrs().get(0);
         assertThat(left.getObjectType()).isEqualTo("Person");
 
-        final PatternDescr right = (PatternDescr) and.getDescrs().get( 1 );
+        final PatternDescr right = (PatternDescr) and.getDescrs().get(1);
         assertThat(right.getObjectType()).isEqualTo("Cheese");
     }
 
-    /** Test that explicit "&&", "||" works as expected */
+    /**
+     * Test that explicit "&&", "||" works as expected
+     */
     @Test
-    public void parse_AndOrRules() throws Exception {
+    void andOrRules() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
-                                                               "and_or_rule.drl" );
+                "and_or_rule.drl");
 
         assertThat(pkg).isNotNull();
-        assertThat(pkg.getRules().size()).isEqualTo(1);
-        final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
+        assertThat(pkg.getRules()).hasSize(1);
+        final RuleDescr rule = (RuleDescr) pkg.getRules().get(0);
         assertThat(rule.getName()).isEqualTo("simple_rule");
 
         // we will have 3 children under the main And node
         final AndDescr and = rule.getLhs();
-        assertThat(and.getDescrs().size()).isEqualTo(3);
+        assertThat(and.getDescrs()).hasSize(3);
 
-        PatternDescr left = (PatternDescr) and.getDescrs().get( 0 );
-        PatternDescr right = (PatternDescr) and.getDescrs().get( 1 );
+        PatternDescr left = (PatternDescr) and.getDescrs().get(0);
+        PatternDescr right = (PatternDescr) and.getDescrs().get(1);
         assertThat(left.getObjectType()).isEqualTo("Person");
         assertThat(right.getObjectType()).isEqualTo("Cheese");
 
-        assertThat(left.getConstraint().getDescrs().size()).isEqualTo(1);
+        assertThat(left.getConstraint().getDescrs()).hasSize(1);
 
-        ExprConstraintDescr fld = (ExprConstraintDescr) left.getConstraint().getDescrs().get( 0 );
+        ExprConstraintDescr fld = (ExprConstraintDescr) left.getConstraint().getDescrs().get(0);
 
         assertThat(fld.getExpression()).isEqualTo("name == \"mark\"");
 
-        assertThat(right.getConstraint().getDescrs().size()).isEqualTo(1);
+        assertThat(right.getConstraint().getDescrs()).hasSize(1);
 
-        fld = (ExprConstraintDescr) right.getConstraint().getDescrs().get( 0 );
+        fld = (ExprConstraintDescr) right.getConstraint().getDescrs().get(0);
 
         assertThat(fld.getExpression()).isEqualTo("type == \"stilton\"");
 
         // now the "||" part
-        final OrDescr or = (OrDescr) and.getDescrs().get( 2 );
-        assertThat(or.getDescrs().size()).isEqualTo(2);
-        left = (PatternDescr) or.getDescrs().get( 0 );
-        right = (PatternDescr) or.getDescrs().get( 1 );
+        final OrDescr or = (OrDescr) and.getDescrs().get(2);
+        assertThat(or.getDescrs()).hasSize(2);
+        left = (PatternDescr) or.getDescrs().get(0);
+        right = (PatternDescr) or.getDescrs().get(1);
         assertThat(left.getObjectType()).isEqualTo("Person");
         assertThat(right.getObjectType()).isEqualTo("Cheese");
-        assertThat(left.getConstraint().getDescrs().size()).isEqualTo(1);
+        assertThat(left.getConstraint().getDescrs()).hasSize(1);
 
-        fld = (ExprConstraintDescr) left.getConstraint().getDescrs().get( 0 );
+        fld = (ExprConstraintDescr) left.getConstraint().getDescrs().get(0);
 
         assertThat(fld.getExpression()).isEqualTo("name == \"mark\"");
 
-        assertThat(right.getConstraint().getDescrs().size()).isEqualTo(1);
+        assertThat(right.getConstraint().getDescrs()).hasSize(1);
 
-        fld = (ExprConstraintDescr) right.getConstraint().getDescrs().get( 0 );
+        fld = (ExprConstraintDescr) right.getConstraint().getDescrs().get(0);
 
         assertThat(fld.getExpression()).isEqualTo("type == \"stilton\"");
 
-        assertThat((String) rule.getConsequence()).isEqualToIgnoringWhitespace( "System.out.println( \"Mark and Michael\" );");
+        assertThat((String) rule.getConsequence()).isEqualToIgnoringWhitespace("System.out.println( \"Mark and Michael\" );");
     }
 
-    /** test basic foo : Fact() || Fact() stuff */
+    /**
+     * test basic foo : Fact() || Fact() stuff
+     */
     @Test
-    public void parse_OrWithBinding() throws Exception {
+    void orWithBinding() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
-                                                               "or_binding.drl" );
+                "or_binding.drl");
 
-        assertThat(pkg.getRules().size()).isEqualTo(1);
-        final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(2);
+        assertThat(pkg.getRules()).hasSize(1);
+        final RuleDescr rule = (RuleDescr) pkg.getRules().get(0);
+        assertThat(rule.getLhs().getDescrs()).hasSize(2);
 
-        final OrDescr or = (OrDescr) rule.getLhs().getDescrs().get( 0 );
-        assertThat(or.getDescrs().size()).isEqualTo(2);
+        final OrDescr or = (OrDescr) rule.getLhs().getDescrs().get(0);
+        assertThat(or.getDescrs()).hasSize(2);
 
-        final PatternDescr leftPattern = (PatternDescr) or.getDescrs().get( 0 );
+        final PatternDescr leftPattern = (PatternDescr) or.getDescrs().get(0);
         assertThat(leftPattern.getObjectType()).isEqualTo("Person");
         assertThat(leftPattern.getIdentifier()).isEqualTo("foo");
 
-        final PatternDescr rightPattern = (PatternDescr) or.getDescrs().get( 1 );
+        final PatternDescr rightPattern = (PatternDescr) or.getDescrs().get(1);
         assertThat(rightPattern.getObjectType()).isEqualTo("Person");
         assertThat(rightPattern.getIdentifier()).isEqualTo("foo");
 
-        final PatternDescr cheeseDescr = (PatternDescr) rule.getLhs().getDescrs().get( 1 );
+        final PatternDescr cheeseDescr = (PatternDescr) rule.getLhs().getDescrs().get(1);
         assertThat(cheeseDescr.getObjectType()).isEqualTo("Cheese");
         assertThat(cheeseDescr.getIdentifier()).isEqualTo(null);
 
-        assertThat((String) rule.getConsequence()).isEqualToIgnoringWhitespace( "System.out.println( \"Mark and Michael\" + bar );");
+        assertThat((String) rule.getConsequence()).isEqualToIgnoringWhitespace("System.out.println( \"Mark and Michael\" + bar );");
     }
 
-    /** test basic foo : Fact() || Fact() stuff binding to an "or" */
+    /**
+     * test basic foo : Fact() || Fact() stuff binding to an "or"
+     */
     @Test
-    public void parse_OrBindingComplex() throws Exception {
+    void orBindingComplex() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
-                                                               "or_binding_complex.drl" );
-
-        assertThat(pkg.getRules().size()).isEqualTo(1);
-        final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(1);
-
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(1);
-
-        final OrDescr or = (OrDescr) rule.getLhs().getDescrs().get( 0 );
-        assertThat(or.getDescrs().size()).isEqualTo(2);
-
-        // first fact
-        final PatternDescr firstFact = (PatternDescr) or.getDescrs().get( 0 );
-        assertThat(firstFact.getObjectType()).isEqualTo("Person");
-        assertThat(firstFact.getIdentifier()).isEqualTo("foo");
-
-        // second "option"
-        final PatternDescr secondFact = (PatternDescr) or.getDescrs().get( 1 );
-        assertThat(secondFact.getObjectType()).isEqualTo("Person");
-        assertThat(secondFact.getConstraint().getDescrs().size()).isEqualTo(1);
-        assertThat(secondFact.getIdentifier()).isEqualTo("foo");
-
-        assertThat((String) rule.getConsequence()).isEqualToIgnoringWhitespace( "System.out.println( \"Mark and Michael\" + bar );");
-    }
-
-    @Test
-    public void parse_OrBindingWithBrackets() throws Exception {
-        final PackageDescr pkg = parseAndGetPackageDescrFromFile(
-                                                               "or_binding_with_brackets.drl" );
-
-        assertThat(pkg.getRules().size()).isEqualTo(1);
-        final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(1);
-
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(1);
-
-        final OrDescr or = (OrDescr) rule.getLhs().getDescrs().get( 0 );
-        assertThat(or.getDescrs().size()).isEqualTo(2);
-
-        // first fact
-        final PatternDescr firstFact = (PatternDescr) or.getDescrs().get( 0 );
-        assertThat(firstFact.getObjectType()).isEqualTo("Person");
-        assertThat(firstFact.getIdentifier()).isEqualTo("foo");
-
-        // second "option"
-        final PatternDescr secondFact = (PatternDescr) or.getDescrs().get( 0 );
-        assertThat(secondFact.getObjectType()).isEqualTo("Person");
-        assertThat(secondFact.getIdentifier()).isEqualTo("foo");
-
-        assertThat((String) rule.getConsequence()).isEqualToIgnoringWhitespace( "System.out.println( \"Mark and Michael\" + bar );");
-    }
-
-    @Test
-    void parenthesesOrAndOr() throws Exception {
-        final PackageDescr pkg = parseAndGetPackageDescrFromFile(
-                                                               "brackets_precedence.drl" );
+                "or_binding_complex.drl");
 
         assertThat(pkg.getRules()).hasSize(1);
-        final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
+        final RuleDescr rule = (RuleDescr) pkg.getRules().get(0);
+        assertThat(rule.getLhs().getDescrs()).hasSize(1);
+
+        assertThat(rule.getLhs().getDescrs()).hasSize(1);
+
+        final OrDescr or = (OrDescr) rule.getLhs().getDescrs().get(0);
+        assertThat(or.getDescrs()).hasSize(2);
+
+        // first fact
+        final PatternDescr firstFact = (PatternDescr) or.getDescrs().get(0);
+        assertThat(firstFact.getObjectType()).isEqualTo("Person");
+        assertThat(firstFact.getIdentifier()).isEqualTo("foo");
+
+        // second "option"
+        final PatternDescr secondFact = (PatternDescr) or.getDescrs().get(1);
+        assertThat(secondFact.getObjectType()).isEqualTo("Person");
+        assertThat(secondFact.getConstraint().getDescrs()).hasSize(1);
+        assertThat(secondFact.getIdentifier()).isEqualTo("foo");
+
+        assertThat((String) rule.getConsequence()).isEqualToIgnoringWhitespace("System.out.println( \"Mark and Michael\" + bar );");
+    }
+
+    @Test
+    void orBindingWithBrackets() {
+        final PackageDescr pkg = parseAndGetPackageDescrFromFile(
+                "or_binding_with_brackets.drl");
+
+        assertThat(pkg.getRules()).hasSize(1);
+        final RuleDescr rule = (RuleDescr) pkg.getRules().get(0);
+        assertThat(rule.getLhs().getDescrs()).hasSize(1);
+
+        assertThat(rule.getLhs().getDescrs()).hasSize(1);
+
+        final OrDescr or = (OrDescr) rule.getLhs().getDescrs().get(0);
+        assertThat(or.getDescrs()).hasSize(2);
+
+        // first fact
+        final PatternDescr firstFact = (PatternDescr) or.getDescrs().get(0);
+        assertThat(firstFact.getObjectType()).isEqualTo("Person");
+        assertThat(firstFact.getIdentifier()).isEqualTo("foo");
+
+        // second "option"
+        final PatternDescr secondFact = (PatternDescr) or.getDescrs().get(0);
+        assertThat(secondFact.getObjectType()).isEqualTo("Person");
+        assertThat(secondFact.getIdentifier()).isEqualTo("foo");
+
+        assertThat((String) rule.getConsequence()).isEqualToIgnoringWhitespace("System.out.println( \"Mark and Michael\" + bar );");
+    }
+
+    @Test
+    void parenthesesOrAndOr() {
+        final PackageDescr pkg = parseAndGetPackageDescrFromFile(
+                "brackets_precedence.drl");
+
+        assertThat(pkg.getRules()).hasSize(1);
+        final RuleDescr rule = (RuleDescr) pkg.getRules().get(0);
 
         final AndDescr rootAnd = (AndDescr) rule.getLhs();
 
         assertThat(rootAnd.getDescrs()).hasSize(2);
 
-        final OrDescr leftOr = (OrDescr) rootAnd.getDescrs().get( 0 );
+        final OrDescr leftOr = (OrDescr) rootAnd.getDescrs().get(0);
 
         assertThat(leftOr.getDescrs()).hasSize(2);
-        final NotDescr not = (NotDescr) leftOr.getDescrs().get( 0 );
-        final PatternDescr foo1 = (PatternDescr) not.getDescrs().get( 0 );
+        final NotDescr not = (NotDescr) leftOr.getDescrs().get(0);
+        final PatternDescr foo1 = (PatternDescr) not.getDescrs().get(0);
         assertThat(foo1.getObjectType()).isEqualTo("Foo");
-        final PatternDescr foo2 = (PatternDescr) leftOr.getDescrs().get( 1 );
+        final PatternDescr foo2 = (PatternDescr) leftOr.getDescrs().get(1);
         assertThat(foo2.getObjectType()).isEqualTo("Foo");
 
-        final OrDescr rightOr = (OrDescr) rootAnd.getDescrs().get( 1 );
+        final OrDescr rightOr = (OrDescr) rootAnd.getDescrs().get(1);
 
         assertThat(rightOr.getDescrs()).hasSize(2);
-        final PatternDescr shoes = (PatternDescr) rightOr.getDescrs().get( 0 );
+        final PatternDescr shoes = (PatternDescr) rightOr.getDescrs().get(0);
         assertThat(shoes.getObjectType()).isEqualTo("Shoes");
-        final PatternDescr butt = (PatternDescr) rightOr.getDescrs().get( 1 );
+        final PatternDescr butt = (PatternDescr) rightOr.getDescrs().get(1);
         assertThat(butt.getObjectType()).isEqualTo("Butt");
     }
 
@@ -1522,7 +1504,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void multipleLevelNestAndOrOrOrAnd() throws Exception {
+    void multipleLevelNestAndOrOrOrAnd() {
         final String drl = "rule and_or_or_or_and\n" +
                 "  when\n" +
                 "     (Foo(x == 1) and (Bar(x == 2) or Foo(x == 3))) or (Bar(x == 4) or (Foo(x == 5) and Bar(x == 6)))\n" +
@@ -1562,7 +1544,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void multipleLevelNestWithThreeOrSiblings() throws Exception {
+    void multipleLevelNestWithThreeOrSiblings() {
         final String drl = "rule nest_or_siblings\n" +
                 "  when\n" +
                 "     (A() or (B() or C() or (D() and E())))\n" +
@@ -1597,7 +1579,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    public void existsMultipleLevelNestWithThreeOrSiblings() throws Exception {
+    void existsMultipleLevelNestWithThreeOrSiblings() {
         final String drl = "rule nest_or_siblings\n" +
                 "  when\n" +
                 "     exists(A() or (B() or C() or (D() and E())))\n" +
@@ -1635,113 +1617,112 @@ class MiscDRLParserTest {
     }
 
     @Test
-    public void parse_EvalMultiple() throws Exception {
+    void evalMultiple() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
-                                                               "eval_multiple.drl" );
+                "eval_multiple.drl");
 
-        assertThat(pkg.getRules().size()).isEqualTo(1);
-        final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(4);
+        assertThat(pkg.getRules()).hasSize(1);
+        final RuleDescr rule = (RuleDescr) pkg.getRules().get(0);
+        assertThat(rule.getLhs().getDescrs()).hasSize(4);
 
-        final EvalDescr eval = (EvalDescr) rule.getLhs().getDescrs().get(0 );
-        assertThat((String) eval.getContent()).isEqualToIgnoringWhitespace( "abc(\"foo\") + 5");
+        final EvalDescr eval = (EvalDescr) rule.getLhs().getDescrs().get(0);
+        assertThat((String) eval.getContent()).isEqualToIgnoringWhitespace("abc(\"foo\") + 5");
 
-        final PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 1 );
+        final PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get(1);
         assertThat(pattern.getObjectType()).isEqualTo("Foo");
-
     }
 
     @Test
-    public void parse_WithEval() throws Exception {
+    void withEval() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
-                                                               "with_eval.drl" );
+                "with_eval.drl");
 
-        assertThat(pkg.getRules().size()).isEqualTo(1);
-        final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(3);
-        PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+        assertThat(pkg.getRules()).hasSize(1);
+        final RuleDescr rule = (RuleDescr) pkg.getRules().get(0);
+        assertThat(rule.getLhs().getDescrs()).hasSize(3);
+        PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
         assertThat(pattern.getObjectType()).isEqualTo("Foo");
-        pattern = (PatternDescr) rule.getLhs().getDescrs().get( 1 );
+        pattern = (PatternDescr) rule.getLhs().getDescrs().get(1);
         assertThat(pattern.getObjectType()).isEqualTo("Bar");
 
-        final EvalDescr eval = (EvalDescr) rule.getLhs().getDescrs().get( 2 );
-        assertThat((String) eval.getContent()).isEqualToIgnoringWhitespace( "abc(\"foo\")");
-        assertThat((String) rule.getConsequence()).isEqualToIgnoringWhitespace( "Kapow");
+        final EvalDescr eval = (EvalDescr) rule.getLhs().getDescrs().get(2);
+        assertThat((String) eval.getContent()).isEqualToIgnoringWhitespace("abc(\"foo\")");
+        assertThat((String) rule.getConsequence()).isEqualToIgnoringWhitespace("Kapow");
     }
 
     @Test
-    public void parse_WithRetval() throws Exception {
+    void withRetval() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
-                                                               "with_retval.drl" );
+                "with_retval.drl");
 
-        assertThat(pkg.getRules().size()).isEqualTo(1);
+        assertThat(pkg.getRules()).hasSize(1);
 
-        final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(1);
-        final PatternDescr col = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
-        assertThat(col.getConstraint().getDescrs().size()).isEqualTo(1);
+        final RuleDescr rule = (RuleDescr) pkg.getRules().get(0);
+        assertThat(rule.getLhs().getDescrs()).hasSize(1);
+        final PatternDescr col = (PatternDescr) rule.getLhs().getDescrs().get(0);
+        assertThat(col.getConstraint().getDescrs()).hasSize(1);
         assertThat(col.getObjectType()).isEqualTo("Foo");
-        final ExprConstraintDescr fld = (ExprConstraintDescr) col.getConstraint().getDescrs().get( 0 );
+        final ExprConstraintDescr fld = (ExprConstraintDescr) col.getConstraint().getDescrs().get(0);
 
         assertThat(fld.getExpression()).isEqualToIgnoringWhitespace("name== (a + b)");
     }
 
     @Test
-    public void parse_WithPredicate() throws Exception {
+    void withPredicate() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
-                                                               "with_predicate.drl" );
+                "with_predicate.drl");
 
-        assertThat(pkg.getRules().size()).isEqualTo(1);
+        assertThat(pkg.getRules()).hasSize(1);
 
-        final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(1);
-        final PatternDescr col = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+        final RuleDescr rule = (RuleDescr) pkg.getRules().get(0);
+        assertThat(rule.getLhs().getDescrs()).hasSize(1);
+        final PatternDescr col = (PatternDescr) rule.getLhs().getDescrs().get(0);
         AndDescr and = (AndDescr) col.getConstraint();
-        assertThat(and.getDescrs().size()).isEqualTo(2);
+        assertThat(and.getDescrs()).hasSize(2);
 
-        final ExprConstraintDescr field = (ExprConstraintDescr) col.getDescrs().get( 0 );
-        final ExprConstraintDescr pred = (ExprConstraintDescr) and.getDescrs().get( 1 );
+        final ExprConstraintDescr field = (ExprConstraintDescr) col.getDescrs().get(0);
+        final ExprConstraintDescr pred = (ExprConstraintDescr) and.getDescrs().get(1);
         assertThat(field.getExpression()).isEqualToIgnoringWhitespace("$age2:age");
-        assertThat(pred.getExpression()).isEqualToIgnoringWhitespace( "$age2 == $age1+2");
+        assertThat(pred.getExpression()).isEqualToIgnoringWhitespace("$age2 == $age1+2");
     }
 
     @Test
-    public void parse_NotWithConstraint() throws Exception {
+    void notWithConstraint() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
-                                                               "not_with_constraint.drl" );
+                "not_with_constraint.drl");
 
-        assertThat(pkg.getRules().size()).isEqualTo(1);
+        assertThat(pkg.getRules()).hasSize(1);
 
-        final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(2);
+        final RuleDescr rule = (RuleDescr) pkg.getRules().get(0);
+        assertThat(rule.getLhs().getDescrs()).hasSize(2);
 
-        PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
-        final ExprConstraintDescr fieldBinding = (ExprConstraintDescr) pattern.getDescrs().get( 0 );
+        PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
+        final ExprConstraintDescr fieldBinding = (ExprConstraintDescr) pattern.getDescrs().get(0);
         assertThat(fieldBinding.getExpression()).isEqualToIgnoringWhitespace("$likes:like");
 
-        final NotDescr not = (NotDescr) rule.getLhs().getDescrs().get( 1 );
-        pattern = (PatternDescr) not.getDescrs().get( 0 );
+        final NotDescr not = (NotDescr) rule.getLhs().getDescrs().get(1);
+        pattern = (PatternDescr) not.getDescrs().get(0);
 
-        final ExprConstraintDescr fld = (ExprConstraintDescr) pattern.getConstraint().getDescrs().get( 0 );
+        final ExprConstraintDescr fld = (ExprConstraintDescr) pattern.getConstraint().getDescrs().get(0);
 
         assertThat(fld.getExpression()).isEqualToIgnoringWhitespace("type == $likes");
     }
 
     @Test
-    public void parse_Functions() throws Exception {
+    void functions() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
-                                                               "functions.drl" );
+                "functions.drl");
 
-        assertThat(pkg.getRules().size()).isEqualTo(2);
+        assertThat(pkg.getRules()).hasSize(2);
 
         final List<FunctionDescr> functions = pkg.getFunctions();
-        assertThat(functions.size()).isEqualTo(2);
+        assertThat(functions).hasSize(2);
 
-        FunctionDescr func = functions.get( 0 );
+        FunctionDescr func = functions.get(0);
         assertThat(func.getName()).isEqualTo("functionA");
         assertThat(func.getReturnType()).isEqualTo("String");
-        assertThat(func.getParameterNames().size()).isEqualTo(2);
-        assertThat(func.getParameterTypes().size()).isEqualTo(2);
+        assertThat(func.getParameterNames()).hasSize(2);
+        assertThat(func.getParameterTypes()).hasSize(2);
         assertThat(func.getLine()).isEqualTo(21);
         assertThat(func.getColumn()).isEqualTo(0);
 
@@ -1751,17 +1732,17 @@ class MiscDRLParserTest {
         assertThat(func.getParameterTypes().get(1)).isEqualTo("Integer");
         assertThat(func.getParameterNames().get(1)).isEqualTo("i");
 
-        assertThat(func.getBody()).isEqualToIgnoringWhitespace( "foo();");
+        assertThat(func.getBody()).isEqualToIgnoringWhitespace("foo();");
 
-        func = functions.get( 1 );
+        func = functions.get(1);
         assertThat(func.getName()).isEqualTo("functionB");
-        assertThat(func.getText()).isEqualToIgnoringWhitespace( "bar();");
+        assertThat(func.getText()).isEqualToIgnoringWhitespace("bar();");
     }
 
     @Test
-    public void parse_Comment() throws Exception {
+    void comment() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
-                                                               "comment.drl" );
+                "comment.drl");
 
         assertThat(pkg).isNotNull();
 
@@ -1769,320 +1750,314 @@ class MiscDRLParserTest {
     }
 
     @Test
-    public void parse_Attributes() throws Exception {
+    void attributes() {
         final RuleDescr rule = parseAndGetFirstRuleDescrFromFile(
-                                                          "rule_attributes.drl" );
+                "rule_attributes.drl");
         assertThat(rule.getName()).isEqualTo("simple_rule");
-        assertThat((String) rule.getConsequence()).isEqualToIgnoringWhitespace( "bar();");
+        assertThat((String) rule.getConsequence()).isEqualToIgnoringWhitespace("bar();");
 
         final Map<String, AttributeDescr> attrs = rule.getAttributes();
-        assertThat(attrs.size()).isEqualTo(6);
+        assertThat(attrs).hasSize(6);
 
-        AttributeDescr at = (AttributeDescr) attrs.get( "salience" );
+        AttributeDescr at = (AttributeDescr) attrs.get("salience");
         assertThat(at.getName()).isEqualTo("salience");
         assertThat(at.getValue()).isEqualTo("42");
 
-        at = (AttributeDescr) attrs.get( "agenda-group" );
+        at = (AttributeDescr) attrs.get("agenda-group");
         assertThat(at.getName()).isEqualTo("agenda-group");
         assertThat(at.getValue()).isEqualTo("my_group");
 
-        at = (AttributeDescr) attrs.get( "no-loop" );
+        at = (AttributeDescr) attrs.get("no-loop");
         assertThat(at.getName()).isEqualTo("no-loop");
         assertThat(at.getValue()).isEqualTo("true");
 
-        at = (AttributeDescr) attrs.get( "duration" );
+        at = (AttributeDescr) attrs.get("duration");
         assertThat(at.getName()).isEqualTo("duration");
         assertThat(at.getValue()).isEqualTo("42");
 
-        at = (AttributeDescr) attrs.get( "activation-group" );
+        at = (AttributeDescr) attrs.get("activation-group");
         assertThat(at.getName()).isEqualTo("activation-group");
         assertThat(at.getValue()).isEqualTo("my_activation_group");
 
-        at = (AttributeDescr) attrs.get( "lock-on-active" );
+        at = (AttributeDescr) attrs.get("lock-on-active");
         assertThat(at.getName()).isEqualTo("lock-on-active");
         assertThat(at.getValue()).isEqualTo("true");
     }
 
     @Test
-    public void parse_Attributes2() throws Exception {
+    void attributes2() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
-                                                               "rule_attributes2.drl" );
-
+                "rule_attributes2.drl");
 
         List<RuleDescr> rules = pkg.getRules();
-        assertThat(rules.size()).isEqualTo(3);
+        assertThat(rules).hasSize(3);
 
-        RuleDescr rule = rules.get( 0 );
+        RuleDescr rule = rules.get(0);
         assertThat(rule.getName()).isEqualTo("rule1");
         Map<String, AttributeDescr> attrs = rule.getAttributes();
-        assertThat(attrs.size()).isEqualTo(2);
-        AttributeDescr at = (AttributeDescr) attrs.get( "salience" );
+        assertThat(attrs).hasSize(2);
+        AttributeDescr at = (AttributeDescr) attrs.get("salience");
         assertThat(at.getName()).isEqualTo("salience");
         assertThat(at.getValue()).isEqualTo("(42)");
-        at = (AttributeDescr) attrs.get( "agenda-group" );
+        at = (AttributeDescr) attrs.get("agenda-group");
         assertThat(at.getName()).isEqualTo("agenda-group");
         assertThat(at.getValue()).isEqualTo("my_group");
 
-        rule = rules.get( 1 );
+        rule = rules.get(1);
         assertThat(rule.getName()).isEqualTo("rule2");
         attrs = rule.getAttributes();
-        assertThat(attrs.size()).isEqualTo(2);
-        at = (AttributeDescr) attrs.get( "salience" );
+        assertThat(attrs).hasSize(2);
+        at = (AttributeDescr) attrs.get("salience");
         assertThat(at.getName()).isEqualTo("salience");
         assertThat(at.getValue()).isEqualTo("(Integer.MIN_VALUE)");
-        at = (AttributeDescr) attrs.get( "no-loop" );
+        at = (AttributeDescr) attrs.get("no-loop");
         assertThat(at.getName()).isEqualTo("no-loop");
 
-        rule = rules.get( 2 );
+        rule = rules.get(2);
         assertThat(rule.getName()).isEqualTo("rule3");
         attrs = rule.getAttributes();
-        assertThat(attrs.size()).isEqualTo(2);
-        at = (AttributeDescr) attrs.get( "enabled" );
+        assertThat(attrs).hasSize(2);
+        at = (AttributeDescr) attrs.get("enabled");
         assertThat(at.getName()).isEqualTo("enabled");
         assertThat(at.getValue()).isEqualTo("(Boolean.TRUE)");
-        at = (AttributeDescr) attrs.get( "activation-group" );
+        at = (AttributeDescr) attrs.get("activation-group");
         assertThat(at.getName()).isEqualTo("activation-group");
         assertThat(at.getValue()).isEqualTo("my_activation_group");
-
     }
 
     @Test
-    public void parse_AttributeRefract() throws Exception {
+    void attributeRefract() {
         final String source = "rule Test refract when Person() then end";
 
         PackageDescr pkg = parseAndGetPackageDescr(
-                                                 source );
+                source);
 
-
-        RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
+        RuleDescr rule = (RuleDescr) pkg.getRules().get(0);
 
         assertThat(rule.getName()).isEqualTo("Test");
         Map<String, AttributeDescr> attributes = rule.getAttributes();
-        assertThat(attributes.size()).isEqualTo(1);
-        AttributeDescr refract = attributes.get( "refract" );
+        assertThat(attributes).hasSize(1);
+        AttributeDescr refract = attributes.get("refract");
         assertThat(refract).isNotNull();
         assertThat(refract.getValue()).isEqualTo("true");
-
     }
 
     @Test
-    public void parse_EnabledExpression() throws Exception {
+    void enabledExpression() {
         final RuleDescr rule = parseAndGetFirstRuleDescrFromFile(
-                                                          "rule_enabled_expression.drl" );
+                "rule_enabled_expression.drl");
         assertThat(rule.getName()).isEqualTo("simple_rule");
-        assertThat((String) rule.getConsequence()).isEqualToIgnoringWhitespace( "bar();");
+        assertThat((String) rule.getConsequence()).isEqualToIgnoringWhitespace("bar();");
 
         final Map<String, AttributeDescr> attrs = rule.getAttributes();
-        assertThat(attrs.size()).isEqualTo(3);
+        assertThat(attrs).hasSize(3);
 
-        AttributeDescr at = (AttributeDescr) attrs.get( "enabled" );
+        AttributeDescr at = (AttributeDescr) attrs.get("enabled");
         assertThat(at.getName()).isEqualTo("enabled");
         assertThat(at.getValue()).isEqualTo("( 1 + 1 == 2 )");
 
-        at = (AttributeDescr) attrs.get( "salience" );
+        at = (AttributeDescr) attrs.get("salience");
         assertThat(at.getName()).isEqualTo("salience");
         assertThat(at.getValue()).isEqualTo("( 1+2 )");
 
-        at = (AttributeDescr) attrs.get( "lock-on-active" );
+        at = (AttributeDescr) attrs.get("lock-on-active");
         assertThat(at.getName()).isEqualTo("lock-on-active");
         assertThat(at.getValue()).isEqualTo("true");
     }
 
     @Test
-    public void parse_DurationExpression() throws Exception {
+    void durationExpression() {
         final RuleDescr rule = parseAndGetFirstRuleDescrFromFile(
-                                                          "rule_duration_expression.drl" );
+                "rule_duration_expression.drl");
         assertThat(rule.getName()).isEqualTo("simple_rule");
-        assertThat((String) rule.getConsequence()).isEqualToIgnoringWhitespace( "bar();");
+        assertThat((String) rule.getConsequence()).isEqualToIgnoringWhitespace("bar();");
 
         final Map<String, AttributeDescr> attrs = rule.getAttributes();
-        assertThat(attrs.size()).isEqualTo(2);
+        assertThat(attrs).hasSize(2);
 
-        AttributeDescr at = (AttributeDescr) attrs.get( "duration" );
+        AttributeDescr at = (AttributeDescr) attrs.get("duration");
         assertThat(at.getName()).isEqualTo("duration");
         assertThat(at.getValue()).isEqualTo("1h30m");
 
-        at = (AttributeDescr) attrs.get( "lock-on-active" );
+        at = (AttributeDescr) attrs.get("lock-on-active");
         assertThat(at.getName()).isEqualTo("lock-on-active");
         assertThat(at.getValue()).isEqualTo("true");
     }
 
     @Test
-    public void parse_Calendars() throws Exception {
+    void calendars() {
         final RuleDescr rule = parseAndGetFirstRuleDescrFromFile(
-                                                          "rule_calendars_attribute.drl" );
+                "rule_calendars_attribute.drl");
         assertThat(rule.getName()).isEqualTo("simple_rule");
-        assertThat((String) rule.getConsequence()).isEqualToIgnoringWhitespace( "bar();");
+        assertThat((String) rule.getConsequence()).isEqualToIgnoringWhitespace("bar();");
 
         final Map<String, AttributeDescr> attrs = rule.getAttributes();
-        assertThat(attrs.size()).isEqualTo(2);
+        assertThat(attrs).hasSize(2);
 
-        AttributeDescr at = (AttributeDescr) attrs.get( "calendars" );
+        AttributeDescr at = (AttributeDescr) attrs.get("calendars");
         assertThat(at.getName()).isEqualTo("calendars");
         assertThat(at.getValue()).isEqualTo("[ \"cal1\" ]");
 
-        at = (AttributeDescr) attrs.get( "lock-on-active" );
+        at = (AttributeDescr) attrs.get("lock-on-active");
         assertThat(at.getName()).isEqualTo("lock-on-active");
         assertThat(at.getValue()).isEqualTo("true");
     }
 
     @Test
-    public void parse_Calendars2() throws Exception {
+    void calendars2() {
         final RuleDescr rule = parseAndGetFirstRuleDescrFromFile(
-                                                          "rule_calendars_attribute2.drl" );
+                "rule_calendars_attribute2.drl");
 
         assertThat(rule.getName()).isEqualTo("simple_rule");
-        assertThat((String) rule.getConsequence()).isEqualToIgnoringWhitespace( "bar();");
+        assertThat((String) rule.getConsequence()).isEqualToIgnoringWhitespace("bar();");
 
         final Map<String, AttributeDescr> attrs = rule.getAttributes();
-        assertThat(attrs.size()).isEqualTo(2);
+        assertThat(attrs).hasSize(2);
 
-        AttributeDescr at = (AttributeDescr) attrs.get( "calendars" );
+        AttributeDescr at = (AttributeDescr) attrs.get("calendars");
         assertThat(at.getName()).isEqualTo("calendars");
         assertThat(at.getValue()).isEqualTo("[ \"cal 1\", \"cal 2\", \"cal 3\" ]");
 
-        at = (AttributeDescr) attrs.get( "lock-on-active" );
+        at = (AttributeDescr) attrs.get("lock-on-active");
         assertThat(at.getName()).isEqualTo("lock-on-active");
         assertThat(at.getValue()).isEqualTo("true");
     }
 
     @Test
-    public void parse_Timer() throws Exception {
-        final RuleDescr rule = parseAndGetFirstRuleDescrFromFile("rule_timer_attribute.drl" );
+    void timer() {
+        final RuleDescr rule = parseAndGetFirstRuleDescrFromFile("rule_timer_attribute.drl");
         assertThat(rule.getName()).isEqualTo("simple_rule");
-        assertThat((String) rule.getConsequence()).isEqualToIgnoringWhitespace( "bar();");
+        assertThat((String) rule.getConsequence()).isEqualToIgnoringWhitespace("bar();");
 
         final Map<String, AttributeDescr> attrs = rule.getAttributes();
-        assertThat(attrs.size()).isEqualTo(2);
+        assertThat(attrs).hasSize(2);
 
-        AttributeDescr at = (AttributeDescr) attrs.get( "timer" );
+        AttributeDescr at = (AttributeDescr) attrs.get("timer");
         assertThat(at.getName()).isEqualTo("timer");
         assertThat(at.getValue()).isEqualTo("int: 0 1; start=1_000_000, repeat-limit=0");
 
-        at = (AttributeDescr) attrs.get( "lock-on-active" );
+        at = (AttributeDescr) attrs.get("lock-on-active");
         assertThat(at.getName()).isEqualTo("lock-on-active");
         assertThat(at.getValue()).isEqualTo("true");
     }
 
     @Test
-    public void parse_Attributes_alternateSyntax() {
+    void attributes_alternateSyntax() {
         final RuleDescr rule = parseAndGetFirstRuleDescrFromFile(
-                                                          "rule_attributes_alt.drl" );
+                "rule_attributes_alt.drl");
         assertThat(rule.getName()).isEqualTo("simple_rule");
-        assertThat((String) rule.getConsequence()).isEqualToIgnoringWhitespace( "bar();");
+        assertThat((String) rule.getConsequence()).isEqualToIgnoringWhitespace("bar();");
 
         final Map<String, AttributeDescr> attrs = rule.getAttributes();
-        assertThat(attrs.size()).isEqualTo(6);
+        assertThat(attrs).hasSize(6);
 
-        AttributeDescr at = attrs.get( "salience" );
+        AttributeDescr at = attrs.get("salience");
         assertThat(at.getName()).isEqualTo("salience");
         assertThat(at.getValue()).isEqualTo("42");
 
-        at = attrs.get( "agenda-group" );
+        at = attrs.get("agenda-group");
         assertThat(at.getName()).isEqualTo("agenda-group");
         assertThat(at.getValue()).isEqualTo("my_group");
 
-        at = attrs.get( "no-loop" );
+        at = attrs.get("no-loop");
         assertThat(at.getName()).isEqualTo("no-loop");
         assertThat(at.getValue()).isEqualTo("true");
 
-        at = attrs.get( "lock-on-active" );
+        at = attrs.get("lock-on-active");
         assertThat(at.getName()).isEqualTo("lock-on-active");
         assertThat(at.getValue()).isEqualTo("true");
 
-        at = attrs.get( "duration" );
+        at = attrs.get("duration");
         assertThat(at.getName()).isEqualTo("duration");
         assertThat(at.getValue()).isEqualTo("42");
 
-        at = attrs.get( "activation-group" );
+        at = attrs.get("activation-group");
         assertThat(at.getName()).isEqualTo("activation-group");
         assertThat(at.getValue()).isEqualTo("my_activation_group");
     }
 
     @Test
-    public void parse_Enumeration() throws Exception {
+    void enumeration() {
         final RuleDescr rule = parseAndGetFirstRuleDescrFromFile(
-                                                           "enumeration.drl" );
+                "enumeration.drl");
         assertThat(rule.getName()).isEqualTo("simple_rule");
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(1);
-        final PatternDescr col = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+        assertThat(rule.getLhs().getDescrs()).hasSize(1);
+        final PatternDescr col = (PatternDescr) rule.getLhs().getDescrs().get(0);
         assertThat(col.getObjectType()).isEqualTo("Foo");
-        assertThat(col.getConstraint().getDescrs().size()).isEqualTo(1);
-        final ExprConstraintDescr fld = (ExprConstraintDescr) col.getConstraint().getDescrs().get( 0 );
+        assertThat(col.getConstraint().getDescrs()).hasSize(1);
+        final ExprConstraintDescr fld = (ExprConstraintDescr) col.getConstraint().getDescrs().get(0);
 
         assertThat(fld.getExpression()).isEqualToIgnoringWhitespace("bar == Foo.BAR");
     }
 
     @Test
-    public void parse_ExtraLhsNewline() throws Exception {
+    void extraLhsNewline() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
-                       "extra_lhs_newline.drl" );
-
+                "extra_lhs_newline.drl");
     }
 
     @Test
-    public void parse_SoundsLike() throws Exception {
+    void soundsLike() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
-                                                               "soundslike_operator.drl" );
+                "soundslike_operator.drl");
 
-        RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
-        PatternDescr pat = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+        RuleDescr rule = (RuleDescr) pkg.getRules().get(0);
+        PatternDescr pat = (PatternDescr) rule.getLhs().getDescrs().get(0);
 
         pat.getConstraint();
     }
 
     @Test
-    public void parse_PackageAttributes() throws Exception {
+    void packageAttributes() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
-                                                               "package_attributes.drl" );
+                "package_attributes.drl");
 
-        AttributeDescr at = (AttributeDescr) pkg.getAttributes().get( 0 );
+        AttributeDescr at = (AttributeDescr) pkg.getAttributes().get(0);
         assertThat(at.getName()).isEqualTo("agenda-group");
         assertThat(at.getValue()).isEqualTo("x");
-        at = (AttributeDescr) pkg.getAttributes().get( 1 );
+        at = (AttributeDescr) pkg.getAttributes().get(1);
         assertThat(at.getName()).isEqualTo("dialect");
         assertThat(at.getValue()).isEqualTo("java");
 
-        assertThat(pkg.getRules().size()).isEqualTo(2);
+        assertThat(pkg.getRules()).hasSize(2);
 
-        assertThat(pkg.getImports().size()).isEqualTo(2);
+        assertThat(pkg.getImports()).hasSize(2);
 
-        RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
+        RuleDescr rule = (RuleDescr) pkg.getRules().get(0);
         assertThat(rule.getName()).isEqualTo("bar");
-        at = (AttributeDescr) rule.getAttributes().get( "agenda-group" );
+        at = (AttributeDescr) rule.getAttributes().get("agenda-group");
         assertThat(at.getName()).isEqualTo("agenda-group");
         assertThat(at.getValue()).isEqualTo("x");
-        at = (AttributeDescr) rule.getAttributes().get( "dialect" );
+        at = (AttributeDescr) rule.getAttributes().get("dialect");
         assertThat(at.getName()).isEqualTo("dialect");
         assertThat(at.getValue()).isEqualTo("java");
 
-        rule = (RuleDescr) pkg.getRules().get( 1 );
+        rule = (RuleDescr) pkg.getRules().get(1);
         assertThat(rule.getName()).isEqualTo("baz");
-        at = (AttributeDescr) rule.getAttributes().get( "dialect" );
+        at = (AttributeDescr) rule.getAttributes().get("dialect");
         assertThat(at.getName()).isEqualTo("dialect");
         assertThat(at.getValue()).isEqualTo("mvel");
-        at = (AttributeDescr) rule.getAttributes().get( "agenda-group" );
+        at = (AttributeDescr) rule.getAttributes().get("agenda-group");
         assertThat(at.getName()).isEqualTo("agenda-group");
         assertThat(at.getValue()).isEqualTo("x");
-
     }
 
     @Test
-    public void parse_StatementOrdering1() throws Exception {
+    void statementOrdering1() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
-                                                               "statement_ordering_1.drl" );
+                "statement_ordering_1.drl");
 
-        assertThat(pkg.getRules().size()).isEqualTo(2);
+        assertThat(pkg.getRules()).hasSize(2);
 
         assertThat(((RuleDescr) pkg.getRules().get(0)).getName()).isEqualTo("foo");
         assertThat(((RuleDescr) pkg.getRules().get(1)).getName()).isEqualTo("bar");
 
-        assertThat(pkg.getFunctions().size()).isEqualTo(2);
+        assertThat(pkg.getFunctions()).hasSize(2);
 
         assertThat(((FunctionDescr) pkg.getFunctions().get(0)).getName()).isEqualTo("cheeseIt");
         assertThat(((FunctionDescr) pkg.getFunctions().get(1)).getName()).isEqualTo("uncheeseIt");
 
-        assertThat(pkg.getImports().size()).isEqualTo(4);
+        assertThat(pkg.getImports()).hasSize(4);
         assertThat(((ImportDescr) pkg.getImports().get(0)).getTarget()).isEqualTo("im.one");
         assertThat(((ImportDescr) pkg.getImports().get(1)).getTarget()).isEqualTo("im.two");
         assertThat(((ImportDescr) pkg.getImports().get(2)).getTarget()).isEqualTo("im.three");
@@ -2090,42 +2065,41 @@ class MiscDRLParserTest {
     }
 
     @Test
-    public void parse_RuleNamesStartingWithNumbers() throws Exception {
+    void ruleNamesStartingWithNumbers() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
-                                                               "rule_names_number_prefix.drl" );
+                "rule_names_number_prefix.drl");
 
-        assertThat(pkg.getRules().size()).isEqualTo(2);
+        assertThat(pkg.getRules()).hasSize(2);
 
         assertThat(((RuleDescr) pkg.getRules().get(0)).getName()).isEqualTo("1. Do Stuff!");
         assertThat(((RuleDescr) pkg.getRules().get(1)).getName()).isEqualTo("2. Do More Stuff!");
     }
 
     @Test
-    public void parse_EvalWithNewline() throws Exception {
+    void evalWithNewline() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
-                                                                 "eval_with_newline.drl");
-
+                "eval_with_newline.drl");
     }
 
     @Test
-    public void parse_EndPosition() throws Exception {
+    void endPosition() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
-                                                               "test_EndPosition.drl" );
-        final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
-        final PatternDescr col = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+                "test_EndPosition.drl");
+        final RuleDescr rule = (RuleDescr) pkg.getRules().get(0);
+        final PatternDescr col = (PatternDescr) rule.getLhs().getDescrs().get(0);
         assertThat(col.getLine()).isEqualTo(23);
         assertThat(col.getEndLine()).isEqualTo(25);
     }
 
     @Test
-    public void parse_GroupBy() throws Exception {
-        final PackageDescr pkg = parseAndGetPackageDescrFromFile( "groupBy.drl" );
+    void groupBy() {
+        final PackageDescr pkg = parseAndGetPackageDescrFromFile("groupBy.drl");
 
-        assertThat(pkg.getRules().size()).isEqualTo(1);
+        assertThat(pkg.getRules()).hasSize(1);
         final RuleDescr rule = pkg.getRules().get(0);
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(1);
+        assertThat(rule.getLhs().getDescrs()).hasSize(1);
 
-        final PatternDescr outPattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+        final PatternDescr outPattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
         final GroupByDescr groupBy = (GroupByDescr) outPattern.getSource();
         assertThat(groupBy.getGroupingKey()).isEqualToIgnoringWhitespace("$initial");
         assertThat(groupBy.getGroupingFunction()).isEqualToIgnoringWhitespace("$p.getName().substring(0, 1)");
@@ -2155,13 +2129,13 @@ class MiscDRLParserTest {
     }
 
     @Test
-    public void parse_QualifiedClassname() throws Exception {
+    void qualifiedClassname() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
-                                                               "qualified_classname.drl" );
+                "qualified_classname.drl");
 
-        final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
+        final RuleDescr rule = (RuleDescr) pkg.getRules().get(0);
 
-        final PatternDescr p = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+        final PatternDescr p = (PatternDescr) rule.getLhs().getDescrs().get(0);
 
         assertThat(p.getObjectType()).isEqualTo("com.cheeseco.Cheese");
     }
@@ -2176,13 +2150,13 @@ class MiscDRLParserTest {
                 "end";
         RuleDescr rule = parseAndGetFirstRuleDescr(drl);
 
-        PatternDescr out = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+        PatternDescr out = (PatternDescr) rule.getLhs().getDescrs().get(0);
         assertThat(out.getObjectType()).isEqualTo("Object");
         AccumulateDescr accum = (AccumulateDescr) out.getSource();
         assertThat(accum.isExternalFunction()).isTrue();
 
         List<AccumulateDescr.AccumulateFunctionCallDescr> functions = accum.getFunctions();
-        assertThat(functions.size()).isEqualTo(1);
+        assertThat(functions).hasSize(1);
         assertThat(functions.get(0).getFunction()).isEqualTo("average");
         assertThat(functions.get(0).getBind()).isEqualTo("$avg");
         assertThat(functions.get(0).getParams()[0]).isEqualTo("$age");
@@ -2201,18 +2175,18 @@ class MiscDRLParserTest {
 
     @Test
     void fromAccumulate() {
-        final PackageDescr pkg = parseAndGetPackageDescrFromFile("from_accumulate.drl" );
+        final PackageDescr pkg = parseAndGetPackageDescrFromFile("from_accumulate.drl");
 
-        assertThat(pkg.getRules().size()).isEqualTo(1);
-        final RuleDescr rule = pkg.getRules().get( 0 );
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(1);
+        assertThat(pkg.getRules()).hasSize(1);
+        final RuleDescr rule = pkg.getRules().get(0);
+        assertThat(rule.getLhs().getDescrs()).hasSize(1);
 
-        final PatternDescr outPattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+        final PatternDescr outPattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
         final AccumulateDescr accum = (AccumulateDescr) outPattern.getSource();
-        assertThat(accum.getInitCode()).isEqualTo( "int x = 0;");
-        assertThat(accum.getActionCode()).isEqualTo( "x++;");
+        assertThat(accum.getInitCode()).isEqualTo("int x = 0;");
+        assertThat(accum.getActionCode()).isEqualTo("x++;");
         assertThat(accum.getReverseCode()).isNull();
-        assertThat(accum.getResultCode()).isEqualTo( "new Integer(x)");
+        assertThat(accum.getResultCode()).isEqualTo("new Integer(x)");
 
         assertThat(accum.isExternalFunction()).isFalse();
 
@@ -2229,20 +2203,20 @@ class MiscDRLParserTest {
     }
 
     @Test
-    public void parse_AccumulateWithBindings() throws Exception {
+    void accumulateWithBindings() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
-                                                               "accumulate_with_bindings.drl" );
+                "accumulate_with_bindings.drl");
 
-        assertThat(pkg.getRules().size()).isEqualTo(1);
-        final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(1);
+        assertThat(pkg.getRules()).hasSize(1);
+        final RuleDescr rule = (RuleDescr) pkg.getRules().get(0);
+        assertThat(rule.getLhs().getDescrs()).hasSize(1);
 
-        final PatternDescr outPattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+        final PatternDescr outPattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
         final AccumulateDescr accum = (AccumulateDescr) outPattern.getSource();
-        assertThat(outPattern.getIdentifier()).isEqualTo( "$counter");
-        assertThat(accum.getInitCode()).isEqualTo( "int x = 0;");
-        assertThat(accum.getActionCode()).isEqualTo( "x++;");
-        assertThat(accum.getResultCode()).isEqualTo( "new Integer(x)");
+        assertThat(outPattern.getIdentifier()).isEqualTo("$counter");
+        assertThat(accum.getInitCode()).isEqualTo("int x = 0;");
+        assertThat(accum.getActionCode()).isEqualTo("x++;");
+        assertThat(accum.getResultCode()).isEqualTo("new Integer(x)");
 
         final PatternDescr pattern = (PatternDescr) accum.getInputPattern();
         assertThat(pattern.getObjectType()).isEqualTo("Person");
@@ -2253,7 +2227,7 @@ class MiscDRLParserTest {
      * - Optional comma delimiting init, action, and result.
      */
     @Test
-    public void accumulateWithoutOptionalDelimiters() throws Exception {
+    void accumulateWithoutOptionalDelimiters() {
         String source = "rule \"AccumulateParserTest\"\n"
                 + "when\n"
                 + "     $counter:Integer() from accumulate( $person : Person( age > 21 ),\n"
@@ -2262,18 +2236,18 @@ class MiscDRLParserTest {
                 + "                                         result( new Integer(x) ) );\n"
                 + "then\n"
                 + "end\n";
-        final PackageDescr pkg = parseAndGetPackageDescr( source );
+        final PackageDescr pkg = parseAndGetPackageDescr(source);
 
-        assertThat(pkg.getRules().size()).isEqualTo(1);
-        final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(1);
+        assertThat(pkg.getRules()).hasSize(1);
+        final RuleDescr rule = (RuleDescr) pkg.getRules().get(0);
+        assertThat(rule.getLhs().getDescrs()).hasSize(1);
 
-        final PatternDescr outPattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+        final PatternDescr outPattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
         final AccumulateDescr accum = (AccumulateDescr) outPattern.getSource();
-        assertThat(outPattern.getIdentifier()).isEqualTo( "$counter");
-        assertThat(accum.getInitCode()).isEqualTo( "int x = 0");
-        assertThat(accum.getActionCode()).isEqualTo( "x++");
-        assertThat(accum.getResultCode()).isEqualTo( "new Integer(x)");
+        assertThat(outPattern.getIdentifier()).isEqualTo("$counter");
+        assertThat(accum.getInitCode()).isEqualTo("int x = 0");
+        assertThat(accum.getActionCode()).isEqualTo("x++");
+        assertThat(accum.getResultCode()).isEqualTo("new Integer(x)");
 
         final PatternDescr pattern = (PatternDescr) accum.getInputPattern();
         assertThat(pattern.getObjectType()).isEqualTo("Person");
@@ -2283,20 +2257,20 @@ class MiscDRLParserTest {
      * When the accumulate function (e.g. count()) has no arguments.
      */
     @Test
-    public void accumulateCount() throws Exception {
+    void accumulateCount() {
         String source = "rule R when\n" +
-                        "   accumulate (\n" +
-                        "       Person(), $result : count() " +
-                        "         )" +
-                        "then\n" +
-                        "end";
-        final PackageDescr pkg = parseAndGetPackageDescr( source );
+                "   accumulate (\n" +
+                "       Person(), $result : count() " +
+                "         )" +
+                "then\n" +
+                "end";
+        final PackageDescr pkg = parseAndGetPackageDescr(source);
 
-        assertThat(pkg.getRules().size()).isEqualTo(1);
-        final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(1);
+        assertThat(pkg.getRules()).hasSize(1);
+        final RuleDescr rule = (RuleDescr) pkg.getRules().get(0);
+        assertThat(rule.getLhs().getDescrs()).hasSize(1);
 
-        final PatternDescr outPattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+        final PatternDescr outPattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
         final AccumulateDescr accum = (AccumulateDescr) outPattern.getSource();
         assertThat(accum).isNotNull();
 
@@ -2311,15 +2285,15 @@ class MiscDRLParserTest {
     }
 
     @Test
-    public void parse_Collect() throws Exception {
+    void collect() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
-                                                               "collect.drl" );
+                "collect.drl");
 
-        assertThat(pkg.getRules().size()).isEqualTo(1);
-        final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(1);
+        assertThat(pkg.getRules()).hasSize(1);
+        final RuleDescr rule = (RuleDescr) pkg.getRules().get(0);
+        assertThat(rule.getLhs().getDescrs()).hasSize(1);
 
-        final PatternDescr outPattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+        final PatternDescr outPattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
         final CollectDescr collect = (CollectDescr) outPattern.getSource();
 
         final PatternDescr pattern = (PatternDescr) collect.getInputPattern();
@@ -2327,23 +2301,23 @@ class MiscDRLParserTest {
     }
 
     @Test
-    public void parse_Predicate2() throws Exception {
+    void predicate2() {
         // predicates are also prefixed by the eval keyword
         final RuleDescr rule = parseAndGetFirstRuleDescr(
-                                                  "rule X when Foo(eval( $var.equals(\"xyz\") )) then end" );
+                "rule X when Foo(eval( $var.equals(\"xyz\") )) then end");
 
-        final PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
-        final List< ? > constraints = pattern.getConstraint().getDescrs();
-        assertThat(constraints.size()).isEqualTo(1);
+        final PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
+        final List<?> constraints = pattern.getConstraint().getDescrs();
+        assertThat(constraints).hasSize(1);
 
-        final ExprConstraintDescr predicate = (ExprConstraintDescr) constraints.get( 0 );
+        final ExprConstraintDescr predicate = (ExprConstraintDescr) constraints.get(0);
         assertThat(predicate.getExpression()).isEqualToIgnoringWhitespace("eval( $var.equals(\"xyz\") )");
     }
 
     @Test
-    public void parse_EscapedStrings() throws Exception {
+    void escapedStrings() {
         final RuleDescr rule = parseAndGetFirstRuleDescrFromFile(
-                                                          "escaped-string.drl" );
+                "escaped-string.drl");
 
         assertThat(rule).isNotNull();
 
@@ -2351,30 +2325,30 @@ class MiscDRLParserTest {
 
         final String expected = "String s = \"\\\"\\n\\t\\\\\";";
 
-        assertThat((String) rule.getConsequence()).isEqualToIgnoringWhitespace( expected);
+        assertThat((String) rule.getConsequence()).isEqualToIgnoringWhitespace(expected);
     }
 
     @Test
-    public void parse_NestedCEs() throws Exception {
+    void nestedCEs() {
         final RuleDescr rule = parseAndGetFirstRuleDescrFromFile(
-                                                          "nested_conditional_elements.drl" );
+                "nested_conditional_elements.drl");
 
         assertThat(rule).isNotNull();
 
         final AndDescr root = rule.getLhs();
-        final NotDescr not1 = (NotDescr) root.getDescrs().get( 0 );
-        final AndDescr and1 = (AndDescr) not1.getDescrs().get( 0 );
+        final NotDescr not1 = (NotDescr) root.getDescrs().get(0);
+        final AndDescr and1 = (AndDescr) not1.getDescrs().get(0);
 
-        final PatternDescr state = (PatternDescr) and1.getDescrs().get( 0 );
-        final NotDescr not2 = (NotDescr) and1.getDescrs().get( 1 );
-        final AndDescr and2 = (AndDescr) not2.getDescrs().get( 0 );
-        final PatternDescr person = (PatternDescr) and2.getDescrs().get( 0 );
-        final PatternDescr cheese = (PatternDescr) and2.getDescrs().get( 1 );
+        final PatternDescr state = (PatternDescr) and1.getDescrs().get(0);
+        final NotDescr not2 = (NotDescr) and1.getDescrs().get(1);
+        final AndDescr and2 = (AndDescr) not2.getDescrs().get(0);
+        final PatternDescr person = (PatternDescr) and2.getDescrs().get(0);
+        final PatternDescr cheese = (PatternDescr) and2.getDescrs().get(1);
 
-        final PatternDescr person2 = (PatternDescr) root.getDescrs().get( 1 );
-        final OrDescr or = (OrDescr) root.getDescrs().get( 2 );
-        final PatternDescr cheese2 = (PatternDescr) or.getDescrs().get( 0 );
-        final PatternDescr cheese3 = (PatternDescr) or.getDescrs().get( 1 );
+        final PatternDescr person2 = (PatternDescr) root.getDescrs().get(1);
+        final OrDescr or = (OrDescr) root.getDescrs().get(2);
+        final PatternDescr cheese2 = (PatternDescr) or.getDescrs().get(0);
+        final PatternDescr cheese3 = (PatternDescr) or.getDescrs().get(1);
 
         assertThat("State").isEqualTo(state.getObjectType());
         assertThat("Person").isEqualTo(person.getObjectType());
@@ -2385,244 +2359,239 @@ class MiscDRLParserTest {
     }
 
     @Test
-    public void parse_Forall() throws Exception {
+    void forall() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
-                                                               "forall.drl" );
+                "forall.drl");
 
-        assertThat(pkg.getRules().size()).isEqualTo(1);
-        final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(1);
+        assertThat(pkg.getRules()).hasSize(1);
+        final RuleDescr rule = (RuleDescr) pkg.getRules().get(0);
+        assertThat(rule.getLhs().getDescrs()).hasSize(1);
 
-        final ForallDescr forall = (ForallDescr) rule.getLhs().getDescrs().get(0 );
+        final ForallDescr forall = (ForallDescr) rule.getLhs().getDescrs().get(0);
 
-        assertThat(forall.getDescrs().size()).isEqualTo(2);
+        assertThat(forall.getDescrs()).hasSize(2);
         final PatternDescr pattern = forall.getBasePattern();
         assertThat(pattern.getObjectType()).isEqualTo("Person");
         final List<BaseDescr> remaining = forall.getRemainingPatterns();
-        assertThat(remaining.size()).isEqualTo(1);
-        final PatternDescr cheese = (PatternDescr) remaining.get( 0 );
+        assertThat(remaining).hasSize(1);
+        final PatternDescr cheese = (PatternDescr) remaining.get(0);
         assertThat(cheese.getObjectType()).isEqualTo("Cheese");
     }
 
     @Test
-    public void parse_ForallWithFrom() throws Exception {
+    void forallWithFrom() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
-                                                               "forallwithfrom.drl" );
+                "forallwithfrom.drl");
 
-        assertThat(pkg.getRules().size()).isEqualTo(1);
-        final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(1);
+        assertThat(pkg.getRules()).hasSize(1);
+        final RuleDescr rule = (RuleDescr) pkg.getRules().get(0);
+        assertThat(rule.getLhs().getDescrs()).hasSize(1);
 
-        final ForallDescr forall = (ForallDescr) rule.getLhs().getDescrs().get( 0 );
+        final ForallDescr forall = (ForallDescr) rule.getLhs().getDescrs().get(0);
 
-        assertThat(forall.getDescrs().size()).isEqualTo(2);
+        assertThat(forall.getDescrs()).hasSize(2);
         final PatternDescr pattern = forall.getBasePattern();
         assertThat(pattern.getObjectType()).isEqualTo("Person");
         assertThat(((FromDescr) pattern.getSource()).getDataSource().toString()).isEqualTo("$village");
         final List<BaseDescr> remaining = forall.getRemainingPatterns();
-        assertThat(remaining.size()).isEqualTo(1);
-        final PatternDescr cheese = (PatternDescr) remaining.get( 0 );
+        assertThat(remaining).hasSize(1);
+        final PatternDescr cheese = (PatternDescr) remaining.get(0);
         assertThat(cheese.getObjectType()).isEqualTo("Cheese");
         assertThat(((FromDescr) cheese.getSource()).getDataSource().toString()).isEqualTo("$cheesery");
     }
 
     @Test
-    public void parse_Memberof() throws Exception {
+    void memberof() {
         final String text = "rule X when Country( $cities : city )\nPerson( city memberOf $cities )\n then end";
         AndDescr descrs = parseAndGetFirstRuleDescr(
-                                              text).getLhs();
+                text).getLhs();
 
-        assertThat(descrs.getDescrs().size()).isEqualTo(2);
-        PatternDescr pat = (PatternDescr) descrs.getDescrs().get( 1 );
-        ExprConstraintDescr fieldConstr = (ExprConstraintDescr) pat.getConstraint().getDescrs().get( 0 );
+        assertThat(descrs.getDescrs()).hasSize(2);
+        PatternDescr pat = (PatternDescr) descrs.getDescrs().get(1);
+        ExprConstraintDescr fieldConstr = (ExprConstraintDescr) pat.getConstraint().getDescrs().get(0);
 
         assertThat(fieldConstr.getExpression()).isEqualTo("city memberOf $cities");
     }
 
     @Test
-    public void parse_NotMemberof() throws Exception {
+    void notMemberof() {
         final String text = "rule X when Country( $cities : city )\nPerson( city not memberOf $cities ) then end\n";
         AndDescr descrs = parseAndGetFirstRuleDescr(
-                                              text).getLhs();
+                text).getLhs();
 
-        assertThat(descrs.getDescrs().size()).isEqualTo(2);
-        PatternDescr pat = (PatternDescr) descrs.getDescrs().get( 1 );
-        ExprConstraintDescr fieldConstr = (ExprConstraintDescr) pat.getConstraint().getDescrs().get( 0 );
+        assertThat(descrs.getDescrs()).hasSize(2);
+        PatternDescr pat = (PatternDescr) descrs.getDescrs().get(1);
+        ExprConstraintDescr fieldConstr = (ExprConstraintDescr) pat.getConstraint().getDescrs().get(0);
 
         assertThat(fieldConstr.getExpression()).isEqualTo("city not memberOf $cities");
     }
 
     @Test
-    public void parse_InOperator() throws Exception {
+    void inOperator() {
         final RuleDescr rule = parseAndGetFirstRuleDescrFromFile(
-                                                          "in_operator_test.drl" );
+                "in_operator_test.drl");
 
         assertThat(rule).isNotNull();
 
-        assertThat((String) rule.getConsequence()).isEqualToIgnoringWhitespace( "consequence();");
+        assertThat((String) rule.getConsequence()).isEqualToIgnoringWhitespace("consequence();");
         assertThat(rule.getName()).isEqualTo("simple_rule");
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(2);
+        assertThat(rule.getLhs().getDescrs()).hasSize(2);
 
         // The first pattern, with 2 restrictions on a single field (plus a
         // connective)
-        PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+        PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
         assertThat(pattern.getObjectType()).isEqualTo("Person");
-        assertThat(pattern.getConstraint().getDescrs().size()).isEqualTo(1);
+        assertThat(pattern.getConstraint().getDescrs()).hasSize(1);
 
-        ExprConstraintDescr fld = (ExprConstraintDescr) pattern.getConstraint().getDescrs().get( 0 );
+        ExprConstraintDescr fld = (ExprConstraintDescr) pattern.getConstraint().getDescrs().get(0);
         assertThat(fld.getExpression()).isEqualTo("age > 30 && < 40");
 
         // the second col, with 2 fields, the first with 2 restrictions, the
         // second field with one
-        pattern = (PatternDescr) rule.getLhs().getDescrs().get( 1 );
+        pattern = (PatternDescr) rule.getLhs().getDescrs().get(1);
         assertThat(pattern.getObjectType()).isEqualTo("Vehicle");
-        assertThat(pattern.getConstraint().getDescrs().size()).isEqualTo(2);
+        assertThat(pattern.getConstraint().getDescrs()).hasSize(2);
 
-        fld = (ExprConstraintDescr) pattern.getConstraint().getDescrs().get( 0 );
+        fld = (ExprConstraintDescr) pattern.getConstraint().getDescrs().get(0);
         assertThat(fld.getExpression()).isEqualToIgnoringWhitespace("type in ( \"sedan\", \"wagon\" )");
 
         // now the second field
-        fld = (ExprConstraintDescr) pattern.getConstraint().getDescrs().get( 1 );
+        fld = (ExprConstraintDescr) pattern.getConstraint().getDescrs().get(1);
         assertThat(fld.getExpression()).isEqualTo("age < 3");
-
     }
 
     @Test
-    public void parse_NotInOperator() throws Exception {
+    void notInOperator() {
         final RuleDescr rule = parseAndGetFirstRuleDescrFromFile(
-                                                          "notin_operator_test.drl" );
+                "notin_operator_test.drl");
 
         assertThat(rule).isNotNull();
 
-        assertThat((String) rule.getConsequence()).isEqualToIgnoringWhitespace( "consequence();");
+        assertThat((String) rule.getConsequence()).isEqualToIgnoringWhitespace("consequence();");
         assertThat(rule.getName()).isEqualTo("simple_rule");
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(2);
+        assertThat(rule.getLhs().getDescrs()).hasSize(2);
 
         // The first pattern, with 2 restrictions on a single field (plus a
         // connective)
-        PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+        PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
         assertThat(pattern.getObjectType()).isEqualTo("Person");
-        assertThat(pattern.getConstraint().getDescrs().size()).isEqualTo(1);
+        assertThat(pattern.getConstraint().getDescrs()).hasSize(1);
 
-        ExprConstraintDescr fld = (ExprConstraintDescr) pattern.getConstraint().getDescrs().get( 0 );
+        ExprConstraintDescr fld = (ExprConstraintDescr) pattern.getConstraint().getDescrs().get(0);
         assertThat(fld.getExpression()).isEqualTo("age > 30 && < 40");
 
         // the second col, with 2 fields, the first with 2 restrictions, the
         // second field with one
-        pattern = (PatternDescr) rule.getLhs().getDescrs().get( 1 );
+        pattern = (PatternDescr) rule.getLhs().getDescrs().get(1);
         assertThat(pattern.getObjectType()).isEqualTo("Vehicle");
-        assertThat(pattern.getConstraint().getDescrs().size()).isEqualTo(2);
+        assertThat(pattern.getConstraint().getDescrs()).hasSize(2);
 
-        fld = (ExprConstraintDescr) pattern.getConstraint().getDescrs().get( 0 );
+        fld = (ExprConstraintDescr) pattern.getConstraint().getDescrs().get(0);
         assertThat(fld.getExpression()).isEqualToIgnoringWhitespace("type not in ( \"sedan\", \"wagon\" )");
 
         // now the second field
-        fld = (ExprConstraintDescr) pattern.getConstraint().getDescrs().get( 1 );
+        fld = (ExprConstraintDescr) pattern.getConstraint().getDescrs().get(1);
         assertThat(fld.getExpression()).isEqualTo("age < 3");
-
     }
 
     @Test
-    public void parse_CheckOrDescr() throws Exception {
+    void checkOrDescr() {
         final String text = "rule X when Person( eval( age == 25 ) || ( eval( name.equals( \"bob\" ) ) && eval( age == 30 ) ) ) then end";
         PatternDescr pattern = (PatternDescr) parseAndGetFirstRuleDescr(
-                                                                  text ).getLhs().getDescrs().get( 0 );
+                text).getLhs().getDescrs().get(0);
 
-        assertThat(pattern.getDescrs().size()).isEqualTo(1);
+        assertThat(pattern.getDescrs()).hasSize(1);
         assertThat(AndDescr.class).isEqualTo(pattern.getConstraint().getClass());
 
         assertThat(pattern.getConstraint().getDescrs().get(0).getClass()).isEqualTo(ExprConstraintDescr.class);
-
     }
 
     @Test
-    public void parse_ConstraintAndConnective() throws Exception {
+    void constraintAndConnective() {
         final String text = "rule X when Person( age < 42 && location==\"atlanta\") then end";
         PatternDescr pattern = (PatternDescr) parseAndGetFirstRuleDescr(
-                                                                  text ).getLhs().getDescrs().get( 0 );
+                text).getLhs().getDescrs().get(0);
 
-        assertThat(pattern.getDescrs().size()).isEqualTo(1);
-        ExprConstraintDescr fcd = (ExprConstraintDescr) pattern.getDescrs().get( 0 );
+        assertThat(pattern.getDescrs()).hasSize(1);
+        ExprConstraintDescr fcd = (ExprConstraintDescr) pattern.getDescrs().get(0);
         assertThat(fcd.getExpression()).isEqualToIgnoringWhitespace("age < 42 && location==\"atlanta\"");
     }
 
     @Test
-    public void parse_ConstraintOrConnective() throws Exception {
+    void constraintOrConnective() {
         final String text = "rule X when Person( age < 42 || location==\"atlanta\") then end";
         PatternDescr pattern = (PatternDescr) parseAndGetFirstRuleDescr(
-                                                                  text ).getLhs().getDescrs().get( 0 );
+                text).getLhs().getDescrs().get(0);
 
-        assertThat(pattern.getDescrs().size()).isEqualTo(1);
-        ExprConstraintDescr fcd = (ExprConstraintDescr) pattern.getDescrs().get( 0 );
+        assertThat(pattern.getDescrs()).hasSize(1);
+        ExprConstraintDescr fcd = (ExprConstraintDescr) pattern.getDescrs().get(0);
         assertThat(fcd.getExpression()).isEqualToIgnoringWhitespace("age < 42 || location==\"atlanta\"");
     }
 
     @Test
-    public void parse_Restrictions() throws Exception {
+    void restrictions() {
         final String text = "rule X when Foo( bar > 1 || == 1 ) then end\n";
 
         AndDescr descrs = (AndDescr) parseAndGetFirstRuleDescr(
-                                                         text ).getLhs();
+                text).getLhs();
 
-        assertThat(descrs.getDescrs().size()).isEqualTo(1);
-        PatternDescr pat = (PatternDescr) descrs.getDescrs().get( 0 );
-        ExprConstraintDescr fieldConstr = (ExprConstraintDescr) pat.getConstraint().getDescrs().get( 0 );
+        assertThat(descrs.getDescrs()).hasSize(1);
+        PatternDescr pat = (PatternDescr) descrs.getDescrs().get(0);
+        ExprConstraintDescr fieldConstr = (ExprConstraintDescr) pat.getConstraint().getDescrs().get(0);
 
         assertThat(fieldConstr.getExpression()).isEqualTo("bar > 1 || == 1");
     }
 
     @Test
-    public void parse_Semicolon() throws Exception {
+    void semicolon() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
-                                                               "semicolon.drl" );
-
-
+                "semicolon.drl");
 
         assertThat(pkg.getName()).isEqualTo("org.drools.mvel.compiler");
-        assertThat(pkg.getGlobals().size()).isEqualTo(1);
-        assertThat(pkg.getRules().size()).isEqualTo(3);
+        assertThat(pkg.getGlobals()).hasSize(1);
+        assertThat(pkg.getRules()).hasSize(3);
 
-        final RuleDescr rule1 = (RuleDescr) pkg.getRules().get( 0 );
-        assertThat(rule1.getLhs().getDescrs().size()).isEqualTo(2);
+        final RuleDescr rule1 = (RuleDescr) pkg.getRules().get(0);
+        assertThat(rule1.getLhs().getDescrs()).hasSize(2);
 
-        final RuleDescr query1 = (RuleDescr) pkg.getRules().get( 1 );
-        assertThat(query1.getLhs().getDescrs().size()).isEqualTo(3);
+        final RuleDescr query1 = (RuleDescr) pkg.getRules().get(1);
+        assertThat(query1.getLhs().getDescrs()).hasSize(3);
 
-        final RuleDescr rule2 = (RuleDescr) pkg.getRules().get( 2 );
-        assertThat(rule2.getLhs().getDescrs().size()).isEqualTo(2);
+        final RuleDescr rule2 = (RuleDescr) pkg.getRules().get(2);
+        assertThat(rule2.getLhs().getDescrs()).hasSize(2);
     }
 
     @Test
-    public void parse_Eval() throws Exception {
+    void eval() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
-                                                               "eval_parsing.drl" );
+                "eval_parsing.drl");
 
         assertThat(pkg.getName()).isEqualTo("org.drools.mvel.compiler");
-        assertThat(pkg.getRules().size()).isEqualTo(1);
+        assertThat(pkg.getRules()).hasSize(1);
 
-        final RuleDescr rule1 = (RuleDescr) pkg.getRules().get( 0 );
-        assertThat(rule1.getLhs().getDescrs().size()).isEqualTo(1);
+        final RuleDescr rule1 = (RuleDescr) pkg.getRules().get(0);
+        assertThat(rule1.getLhs().getDescrs()).hasSize(1);
     }
 
     @Test
-    public void parse_AccumulateReverse() throws Exception {
+    void accumulateReverse() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
-                                                               "accumulateReverse.drl" );
+                "accumulateReverse.drl");
 
-        assertThat(pkg.getRules().size()).isEqualTo(1);
-        final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(1);
+        assertThat(pkg.getRules()).hasSize(1);
+        final RuleDescr rule = (RuleDescr) pkg.getRules().get(0);
+        assertThat(rule.getLhs().getDescrs()).hasSize(1);
 
-        final PatternDescr out = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+        final PatternDescr out = (PatternDescr) rule.getLhs().getDescrs().get(0);
         final AccumulateDescr accum = (AccumulateDescr) out.getSource();
-        assertThat(accum.getInitCode()).isEqualToIgnoringWhitespace( "int x = 0 ;"
-                                       );
-        assertThat(accum.getActionCode()).isEqualToIgnoringWhitespace( "x++;"
-                                       );
-        assertThat(accum.getReverseCode()).isEqualToIgnoringWhitespace( "x--;"
-                                       );
-        assertThat(accum.getResultCode()).isEqualToIgnoringWhitespace( "new Integer(x)"
-                                       );
+        assertThat(accum.getInitCode()).isEqualToIgnoringWhitespace("int x = 0 ;"
+        );
+        assertThat(accum.getActionCode()).isEqualToIgnoringWhitespace("x++;"
+        );
+        assertThat(accum.getReverseCode()).isEqualToIgnoringWhitespace("x--;"
+        );
+        assertThat(accum.getResultCode()).isEqualToIgnoringWhitespace("new Integer(x)"
+        );
         assertThat(accum.isExternalFunction()).isFalse();
 
         final PatternDescr pattern = (PatternDescr) accum.getInputPattern();
@@ -2630,20 +2599,20 @@ class MiscDRLParserTest {
     }
 
     @Test
-    public void parse_AccumulateExternalFunction() throws Exception {
+    void accumulateExternalFunction() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
-                                                               "accumulateExternalFunction.drl" );
+                "accumulateExternalFunction.drl");
 
-        assertThat(pkg.getRules().size()).isEqualTo(1);
-        final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(1);
+        assertThat(pkg.getRules()).hasSize(1);
+        final RuleDescr rule = (RuleDescr) pkg.getRules().get(0);
+        assertThat(rule.getLhs().getDescrs()).hasSize(1);
 
-        final PatternDescr out = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+        final PatternDescr out = (PatternDescr) rule.getLhs().getDescrs().get(0);
         final AccumulateDescr accum = (AccumulateDescr) out.getSource();
-        assertThat(accum.getFunctions().get( 0 ).getParams()[0]).isEqualToIgnoringWhitespace( "$age"
-                                       );
-        assertThat(accum.getFunctions().get( 0 ).getFunction()).isEqualToIgnoringWhitespace( "average"
-                                       );
+        assertThat(accum.getFunctions().get(0).getParams()[0]).isEqualToIgnoringWhitespace("$age"
+        );
+        assertThat(accum.getFunctions().get(0).getFunction()).isEqualToIgnoringWhitespace("average"
+        );
         assertThat(accum.isExternalFunction()).isTrue();
 
         final PatternDescr pattern = (PatternDescr) accum.getInputPattern();
@@ -2651,15 +2620,15 @@ class MiscDRLParserTest {
     }
 
     @Test
-    public void parse_CollectWithNestedFrom() throws Exception {
+    void collectWithNestedFrom() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
-                                                               "collect_with_nested_from.drl" );
+                "collect_with_nested_from.drl");
 
-        assertThat(pkg.getRules().size()).isEqualTo(1);
-        final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(1);
+        assertThat(pkg.getRules()).hasSize(1);
+        final RuleDescr rule = (RuleDescr) pkg.getRules().get(0);
+        assertThat(rule.getLhs().getDescrs()).hasSize(1);
 
-        final PatternDescr out = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+        final PatternDescr out = (PatternDescr) rule.getLhs().getDescrs().get(0);
         final CollectDescr collect = (CollectDescr) out.getSource();
 
         PatternDescr person = (PatternDescr) collect.getInputPattern();
@@ -2672,15 +2641,15 @@ class MiscDRLParserTest {
     }
 
     @Test
-    public void parse_AccumulateWithNestedFrom() throws Exception {
+    void accumulateWithNestedFrom() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
-                                                               "accumulate_with_nested_from.drl" );
+                "accumulate_with_nested_from.drl");
 
-        assertThat(pkg.getRules().size()).isEqualTo(1);
-        final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(1);
+        assertThat(pkg.getRules()).hasSize(1);
+        final RuleDescr rule = (RuleDescr) pkg.getRules().get(0);
+        assertThat(rule.getLhs().getDescrs()).hasSize(1);
 
-        final PatternDescr out = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+        final PatternDescr out = (PatternDescr) rule.getLhs().getDescrs().get(0);
         final AccumulateDescr accumulate = (AccumulateDescr) out.getSource();
 
         PatternDescr person = (PatternDescr) accumulate.getInputPattern();
@@ -2693,22 +2662,22 @@ class MiscDRLParserTest {
     }
 
     @Test
-    public void parse_AccumulateMultipleFunctions() throws Exception {
+    void accumulateMultipleFunctions() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
-                                                               "accumulateMultipleFunctions.drl" );
+                "accumulateMultipleFunctions.drl");
 
-        assertThat(pkg.getRules().size()).isEqualTo(1);
+        assertThat(pkg.getRules()).hasSize(1);
 
-        RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(1);
+        RuleDescr rule = (RuleDescr) pkg.getRules().get(0);
+        assertThat(rule.getLhs().getDescrs()).hasSize(1);
 
-        PatternDescr out = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+        PatternDescr out = (PatternDescr) rule.getLhs().getDescrs().get(0);
         assertThat(out.getObjectType()).isEqualTo("Object");
         AccumulateDescr accum = (AccumulateDescr) out.getSource();
         assertThat(accum.isExternalFunction()).isTrue();
 
         List<AccumulateDescr.AccumulateFunctionCallDescr> functions = accum.getFunctions();
-        assertThat(functions.size()).isEqualTo(3);
+        assertThat(functions).hasSize(3);
         assertThat(functions.get(0).getFunction()).isEqualTo("average");
         assertThat(functions.get(0).getBind()).isEqualTo("$a1");
         assertThat(functions.get(0).getParams()[0]).isEqualTo("$price");
@@ -2726,7 +2695,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    public void parse_AccumulateMnemonic() throws Exception {
+    void accumulateMnemonic() {
         String drl = "package org.drools.mvel.compiler\n" +
                 "rule \"Accumulate 1\"\n" +
                 "when\n" +
@@ -2735,20 +2704,20 @@ class MiscDRLParserTest {
                 "then\n" +
                 "end\n";
         PackageDescr pkg = parseAndGetPackageDescr(
-                                                       drl );
+                drl);
 
-        assertThat(pkg.getRules().size()).isEqualTo(1);
+        assertThat(pkg.getRules()).hasSize(1);
 
-        RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(1);
+        RuleDescr rule = (RuleDescr) pkg.getRules().get(0);
+        assertThat(rule.getLhs().getDescrs()).hasSize(1);
 
-        PatternDescr out = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+        PatternDescr out = (PatternDescr) rule.getLhs().getDescrs().get(0);
         assertThat(out.getObjectType()).isEqualTo("Object");
         AccumulateDescr accum = (AccumulateDescr) out.getSource();
         assertThat(accum.isExternalFunction()).isTrue();
 
         List<AccumulateDescr.AccumulateFunctionCallDescr> functions = accum.getFunctions();
-        assertThat(functions.size()).isEqualTo(1);
+        assertThat(functions).hasSize(1);
         assertThat(functions.get(0).getFunction()).isEqualTo("average");
         assertThat(functions.get(0).getBind()).isEqualTo("$a1");
         assertThat(functions.get(0).getParams()[0]).isEqualTo("$price");
@@ -2758,7 +2727,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    public void parse_AccumulateMnemonic2() throws Exception {
+    void accumulateMnemonic2() {
         String drl = "package org.drools.mvel.compiler\n" +
                 "rule \"Accumulate 1\"\n" +
                 "when\n" +
@@ -2767,20 +2736,20 @@ class MiscDRLParserTest {
                 "then\n" +
                 "end\n";
         PackageDescr pkg = parseAndGetPackageDescr(
-                                                       drl );
+                drl);
 
-        assertThat(pkg.getRules().size()).isEqualTo(1);
+        assertThat(pkg.getRules()).hasSize(1);
 
-        RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(1);
+        RuleDescr rule = (RuleDescr) pkg.getRules().get(0);
+        assertThat(rule.getLhs().getDescrs()).hasSize(1);
 
-        PatternDescr out = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+        PatternDescr out = (PatternDescr) rule.getLhs().getDescrs().get(0);
         assertThat(out.getObjectType()).isEqualTo("Number");
         AccumulateDescr accum = (AccumulateDescr) out.getSource();
         assertThat(accum.isExternalFunction()).isTrue();
 
         List<AccumulateDescr.AccumulateFunctionCallDescr> functions = accum.getFunctions();
-        assertThat(functions.size()).isEqualTo(1);
+        assertThat(functions).hasSize(1);
         assertThat(functions.get(0).getFunction()).isEqualTo("average");
         assertThat(functions.get(0).getParams()[0]).isEqualTo("$price");
 
@@ -2789,7 +2758,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    public void parse_ImportAccumulate() throws Exception {
+    void importAccumulate() {
         String drl = "package org.drools.mvel.compiler\n" +
                 "import acc foo.Bar baz\n" +
                 "import accumulate foo.Bar2 baz2\n" +
@@ -2801,9 +2770,9 @@ class MiscDRLParserTest {
                 "then\n" +
                 "end\n";
         PackageDescr pkg = parseAndGetPackageDescr(
-                                                       drl );
+                drl);
 
-        assertThat(pkg.getAccumulateImports().size()).isEqualTo(2);
+        assertThat(pkg.getAccumulateImports()).hasSize(2);
         AccumulateImportDescr imp = (AccumulateImportDescr) pkg.getAccumulateImports().get(0);
         assertThat(imp.getTarget()).isEqualTo("foo.Bar");
         assertThat(imp.getFunctionName()).isEqualTo("baz");
@@ -2812,18 +2781,18 @@ class MiscDRLParserTest {
         assertThat(imp.getTarget()).isEqualTo("foo.Bar2");
         assertThat(imp.getFunctionName()).isEqualTo("baz2");
 
-        assertThat(pkg.getRules().size()).isEqualTo(1);
+        assertThat(pkg.getRules()).hasSize(1);
 
-        RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(1);
+        RuleDescr rule = (RuleDescr) pkg.getRules().get(0);
+        assertThat(rule.getLhs().getDescrs()).hasSize(1);
 
-        PatternDescr out = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+        PatternDescr out = (PatternDescr) rule.getLhs().getDescrs().get(0);
         assertThat(out.getObjectType()).isEqualTo("Object");
         AccumulateDescr accum = (AccumulateDescr) out.getSource();
         assertThat(accum.isExternalFunction()).isTrue();
 
         List<AccumulateDescr.AccumulateFunctionCallDescr> functions = accum.getFunctions();
-        assertThat(functions.size()).isEqualTo(2);
+        assertThat(functions).hasSize(2);
         assertThat(functions.get(0).getFunction()).isEqualTo("baz");
         assertThat(functions.get(0).getBind()).isEqualTo("$v1");
         assertThat(functions.get(0).getParams()[0]).isEqualTo("$price");
@@ -2837,25 +2806,25 @@ class MiscDRLParserTest {
     }
 
     @Test
-    public void parse_AccumulateMultipleFunctionsConstraint() throws Exception {
+    void accumulateMultipleFunctionsConstraint() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
-                                                               "accumulateMultipleFunctionsConstraint.drl" );
+                "accumulateMultipleFunctionsConstraint.drl");
 
-        assertThat(pkg.getRules().size()).isEqualTo(1);
+        assertThat(pkg.getRules()).hasSize(1);
 
-        RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(1);
+        RuleDescr rule = (RuleDescr) pkg.getRules().get(0);
+        assertThat(rule.getLhs().getDescrs()).hasSize(1);
 
-        PatternDescr out = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+        PatternDescr out = (PatternDescr) rule.getLhs().getDescrs().get(0);
         assertThat(out.getObjectType()).isEqualTo("Object");
-        assertThat(out.getConstraint().getDescrs().size()).isEqualTo(2);
+        assertThat(out.getConstraint().getDescrs()).hasSize(2);
         assertThat(out.getConstraint().getDescrs().get(0).toString()).isEqualTo("$a1 > 10 && $M1 <= 100");
         assertThat(out.getConstraint().getDescrs().get(1).toString()).isEqualTo("$m1 == 5");
         AccumulateDescr accum = (AccumulateDescr) out.getSource();
         assertThat(accum.isExternalFunction()).isTrue();
 
         List<AccumulateDescr.AccumulateFunctionCallDescr> functions = accum.getFunctions();
-        assertThat(functions.size()).isEqualTo(3);
+        assertThat(functions).hasSize(3);
         assertThat(functions.get(0).getFunction()).isEqualTo("average");
         assertThat(functions.get(0).getBind()).isEqualTo("$a1");
         assertThat(functions.get(0).getParams()[0]).isEqualTo("$price");
@@ -2873,212 +2842,204 @@ class MiscDRLParserTest {
     }
 
     @Test
-    public void parse_OrCE() throws Exception {
+    void orCE() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
-                                                               "or_ce.drl" );
+                "or_ce.drl");
 
-        assertThat(pkg.getRules().size()).isEqualTo(1);
-        final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(2);
+        assertThat(pkg.getRules()).hasSize(1);
+        final RuleDescr rule = (RuleDescr) pkg.getRules().get(0);
+        assertThat(rule.getLhs().getDescrs()).hasSize(2);
 
-        final PatternDescr person = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+        final PatternDescr person = (PatternDescr) rule.getLhs().getDescrs().get(0);
         assertThat(person.getObjectType()).isEqualTo("Person");
         assertThat(person.getIdentifier()).isEqualTo("$p");
 
-        final OrDescr or = (OrDescr) rule.getLhs().getDescrs().get( 1 );
-        assertThat(or.getDescrs().size()).isEqualTo(2);
+        final OrDescr or = (OrDescr) rule.getLhs().getDescrs().get(1);
+        assertThat(or.getDescrs()).hasSize(2);
 
-        final PatternDescr cheese1 = (PatternDescr) or.getDescrs().get( 0 );
+        final PatternDescr cheese1 = (PatternDescr) or.getDescrs().get(0);
         assertThat(cheese1.getObjectType()).isEqualTo("Cheese");
         assertThat(cheese1.getIdentifier()).isEqualTo("$c");
-        final PatternDescr cheese2 = (PatternDescr) or.getDescrs().get( 1 );
+        final PatternDescr cheese2 = (PatternDescr) or.getDescrs().get(1);
         assertThat(cheese2.getObjectType()).isEqualTo("Cheese");
         assertThat(cheese2.getIdentifier()).isNull();
     }
 
     @Test
-    public void parse_RuleSingleLine() throws Exception {
+    void ruleSingleLine() {
         final String text = "rule \"another test\" salience 10 when eval( true ) then System.out.println(1); end";
         RuleDescr rule = parseAndGetFirstRuleDescr(
-                                            text );
+                text);
 
         assertThat(rule.getName()).isEqualTo("another test");
-        assertThat((String)rule.getConsequence()).isEqualToIgnoringWhitespace("System.out.println(1); ");
+        assertThat((String) rule.getConsequence()).isEqualToIgnoringWhitespace("System.out.println(1); ");
     }
 
     @Test
-    public void parse_RuleTwoLines() throws Exception {
+    void ruleTwoLines() {
         final String text = "rule \"another test\" salience 10 when eval( true ) then System.out.println(1);\n end";
         RuleDescr rule = parseAndGetFirstRuleDescr(
-                                            text );
+                text);
 
         assertThat(rule.getName()).isEqualTo("another test");
-        assertThat((String)rule.getConsequence()).isEqualToIgnoringWhitespace("System.out.println(1);\n ");
+        assertThat((String) rule.getConsequence()).isEqualToIgnoringWhitespace("System.out.println(1);\n ");
     }
 
     @Test
-    public void parse_RuleParseLhs3() throws Exception {
+    void ruleParseLhs3() {
         final String text = "rule X when (or\nnot Person()\n(and Cheese()\nMeat()\nWine())) then end";
         AndDescr pattern = parseAndGetFirstRuleDescr(
-                                               text ).getLhs();
+                text).getLhs();
 
-        assertThat(pattern.getDescrs().size()).isEqualTo(1);
-        OrDescr or = (OrDescr) pattern.getDescrs().get( 0 );
-        assertThat(or.getDescrs().size()).isEqualTo(2);
-        NotDescr not = (NotDescr) or.getDescrs().get( 0 );
-        AndDescr and = (AndDescr) or.getDescrs().get( 1 );
-        assertThat(not.getDescrs().size()).isEqualTo(1);
-        PatternDescr person = (PatternDescr) not.getDescrs().get( 0 );
+        assertThat(pattern.getDescrs()).hasSize(1);
+        OrDescr or = (OrDescr) pattern.getDescrs().get(0);
+        assertThat(or.getDescrs()).hasSize(2);
+        NotDescr not = (NotDescr) or.getDescrs().get(0);
+        AndDescr and = (AndDescr) or.getDescrs().get(1);
+        assertThat(not.getDescrs()).hasSize(1);
+        PatternDescr person = (PatternDescr) not.getDescrs().get(0);
         assertThat(person.getObjectType()).isEqualTo("Person");
-        assertThat(and.getDescrs().size()).isEqualTo(3);
-        PatternDescr cheese = (PatternDescr) and.getDescrs().get( 0 );
+        assertThat(and.getDescrs()).hasSize(3);
+        PatternDescr cheese = (PatternDescr) and.getDescrs().get(0);
         assertThat(cheese.getObjectType()).isEqualTo("Cheese");
-        PatternDescr meat = (PatternDescr) and.getDescrs().get( 1 );
+        PatternDescr meat = (PatternDescr) and.getDescrs().get(1);
         assertThat(meat.getObjectType()).isEqualTo("Meat");
-        PatternDescr wine = (PatternDescr) and.getDescrs().get( 2 );
+        PatternDescr wine = (PatternDescr) and.getDescrs().get(2);
         assertThat(wine.getObjectType()).isEqualTo("Wine");
-
     }
 
     @Test
-    public void parse_AccumulateMultiPattern() throws Exception {
+    void accumulateMultiPattern() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
-                                                               "accumulate_multi_pattern.drl" );
+                "accumulate_multi_pattern.drl");
 
-        assertThat(pkg.getRules().size()).isEqualTo(1);
-        final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(1);
+        assertThat(pkg.getRules()).hasSize(1);
+        final RuleDescr rule = (RuleDescr) pkg.getRules().get(0);
+        assertThat(rule.getLhs().getDescrs()).hasSize(1);
 
-        final PatternDescr outPattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+        final PatternDescr outPattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
         final AccumulateDescr accum = (AccumulateDescr) outPattern.getSource();
-        assertThat(outPattern.getIdentifier()).isEqualToIgnoringWhitespace( "$counter"
-                                       );
-        assertThat(accum.getInitCode()).isEqualToIgnoringWhitespace( "int x = 0 ;"
-                                       );
-        assertThat(accum.getActionCode()).isEqualToIgnoringWhitespace( "x++;"
-                                      );
-        assertThat(accum.getResultCode()).isEqualToIgnoringWhitespace( "new Integer(x)"
-                                       );
+        assertThat(outPattern.getIdentifier()).isEqualToIgnoringWhitespace("$counter"
+        );
+        assertThat(accum.getInitCode()).isEqualToIgnoringWhitespace("int x = 0 ;"
+        );
+        assertThat(accum.getActionCode()).isEqualToIgnoringWhitespace("x++;"
+        );
+        assertThat(accum.getResultCode()).isEqualToIgnoringWhitespace("new Integer(x)"
+        );
 
         final AndDescr and = (AndDescr) accum.getInput();
-        assertThat(and.getDescrs().size()).isEqualTo(2);
-        final PatternDescr person = (PatternDescr) and.getDescrs().get( 0 );
-        final PatternDescr cheese = (PatternDescr) and.getDescrs().get( 1 );
+        assertThat(and.getDescrs()).hasSize(2);
+        final PatternDescr person = (PatternDescr) and.getDescrs().get(0);
+        final PatternDescr cheese = (PatternDescr) and.getDescrs().get(1);
         assertThat(person.getObjectType()).isEqualTo("Person");
         assertThat(cheese.getObjectType()).isEqualTo("Cheese");
     }
 
     @Test
-    public void parse_PluggableOperators() throws Exception {
+    void pluggableOperators() {
 
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
-                                                               "pluggable_operators.drl" );
+                "pluggable_operators.drl");
 
+        assertThat(pkg.getRules()).hasSize(1);
+        final RuleDescr rule = (RuleDescr) pkg.getRules().get(0);
+        assertThat(rule.getLhs().getDescrs()).hasSize(5);
 
-
-        assertThat(pkg.getRules().size()).isEqualTo(1);
-        final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(5);
-
-        final PatternDescr eventA = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+        final PatternDescr eventA = (PatternDescr) rule.getLhs().getDescrs().get(0);
         assertThat(eventA.getIdentifier()).isEqualTo("$a");
         assertThat(eventA.getObjectType()).isEqualTo("EventA");
 
-        final PatternDescr eventB = (PatternDescr) rule.getLhs().getDescrs().get( 1 );
+        final PatternDescr eventB = (PatternDescr) rule.getLhs().getDescrs().get(1);
         assertThat(eventB.getIdentifier()).isEqualTo("$b");
         assertThat(eventB.getObjectType()).isEqualTo("EventB");
-        assertThat(eventB.getConstraint().getDescrs().size()).isEqualTo(1);
-        assertThat(eventB.getConstraint().getDescrs().size()).isEqualTo(1);
+        assertThat(eventB.getConstraint().getDescrs()).hasSize(1);
+        assertThat(eventB.getConstraint().getDescrs()).hasSize(1);
 
-        final ExprConstraintDescr fcdB = (ExprConstraintDescr) eventB.getConstraint().getDescrs().get( 0 );
+        final ExprConstraintDescr fcdB = (ExprConstraintDescr) eventB.getConstraint().getDescrs().get(0);
         assertThat(fcdB.getExpression()).isEqualTo("this after[1,10] $a || this not after[15,20] $a");
 
-        final PatternDescr eventC = (PatternDescr) rule.getLhs().getDescrs().get( 2 );
+        final PatternDescr eventC = (PatternDescr) rule.getLhs().getDescrs().get(2);
         assertThat(eventC.getIdentifier()).isEqualTo("$c");
         assertThat(eventC.getObjectType()).isEqualTo("EventC");
-        assertThat(eventC.getConstraint().getDescrs().size()).isEqualTo(1);
-        final ExprConstraintDescr fcdC = (ExprConstraintDescr) eventC.getConstraint().getDescrs().get( 0 );
+        assertThat(eventC.getConstraint().getDescrs()).hasSize(1);
+        final ExprConstraintDescr fcdC = (ExprConstraintDescr) eventC.getConstraint().getDescrs().get(0);
         assertThat(fcdC.getExpression()).isEqualTo("this finishes $b");
 
-        final PatternDescr eventD = (PatternDescr) rule.getLhs().getDescrs().get( 3 );
+        final PatternDescr eventD = (PatternDescr) rule.getLhs().getDescrs().get(3);
         assertThat(eventD.getIdentifier()).isEqualTo("$d");
         assertThat(eventD.getObjectType()).isEqualTo("EventD");
-        assertThat(eventD.getConstraint().getDescrs().size()).isEqualTo(1);
-        final ExprConstraintDescr fcdD = (ExprConstraintDescr) eventD.getConstraint().getDescrs().get( 0 );
+        assertThat(eventD.getConstraint().getDescrs()).hasSize(1);
+        final ExprConstraintDescr fcdD = (ExprConstraintDescr) eventD.getConstraint().getDescrs().get(0);
         assertThat(fcdD.getExpression()).isEqualTo("this not starts $a");
 
-        final PatternDescr eventE = (PatternDescr) rule.getLhs().getDescrs().get( 4 );
+        final PatternDescr eventE = (PatternDescr) rule.getLhs().getDescrs().get(4);
         assertThat(eventE.getIdentifier()).isEqualTo("$e");
         assertThat(eventE.getObjectType()).isEqualTo("EventE");
-        assertThat(eventE.getConstraint().getDescrs().size()).isEqualTo(1);
+        assertThat(eventE.getConstraint().getDescrs()).hasSize(1);
 
-        ExprConstraintDescr fcdE = (ExprConstraintDescr) eventE.getConstraint().getDescrs().get( 0 );
+        ExprConstraintDescr fcdE = (ExprConstraintDescr) eventE.getConstraint().getDescrs().get(0);
         assertThat(fcdE.getExpression()).isEqualTo("this not before[1, 10] $b || after[1, 10] $c && this after[1, 5] $d");
     }
 
     @Test
-    public void parse_RuleMetadata() throws Exception {
+    void ruleMetadata() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
-                                                               "Rule_with_Metadata.drl" );
-
+                "Rule_with_Metadata.drl");
 
         // @fooAttribute(barValue)
         // @fooAtt2(barVal2)
-        RuleDescr rule = pkg.getRules().get( 0 );
-        assertThat(rule.getAnnotationNames().contains("fooMeta1")).isTrue();
+        RuleDescr rule = pkg.getRules().get(0);
+        assertThat(rule.getAnnotationNames()).contains("fooMeta1");
         assertThat(rule.getAnnotation("fooMeta1").getValue()).isEqualTo("barVal1");
-        assertThat(rule.getAnnotationNames().contains("fooMeta2")).isTrue();
+        assertThat(rule.getAnnotationNames()).contains("fooMeta2");
         assertThat(rule.getAnnotation("fooMeta2").getValue()).isEqualTo("barVal2");
-        assertThat((String) rule.getConsequence()).isEqualToIgnoringWhitespace( "System.out.println(\"Consequence\");"
-                                      );
+        assertThat((String) rule.getConsequence()).isEqualToIgnoringWhitespace("System.out.println(\"Consequence\");"
+        );
     }
 
     @Test
-    public void parse_RuleExtends() throws Exception {
+    void ruleExtends() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
-                                                               "Rule_with_Extends.drl" );
+                "Rule_with_Extends.drl");
 
-
-
-        RuleDescr rule = pkg.getRules().get( 0 );
+        RuleDescr rule = pkg.getRules().get(0);
         assertThat(rule.getParentName() != null).isTrue();
         assertThat(rule.getParentName()).isEqualTo("rule1");
 
         AndDescr lhs = rule.getLhs();
         assertThat(lhs).isNotNull();
-        assertThat(lhs.getDescrs().size()).isEqualTo(1);
+        assertThat(lhs.getDescrs()).hasSize(1);
 
-        PatternDescr pattern = (PatternDescr) lhs.getDescrs().get( 0 );
+        PatternDescr pattern = (PatternDescr) lhs.getDescrs().get(0);
         assertThat(pattern.getObjectType()).isEqualTo("foo");
         assertThat(pattern.getIdentifier()).isEqualTo("$foo");
-
     }
 
     @Test
-    public void parse_TypeDeclarationWithFields() throws Exception {
+    void typeDeclarationWithFields() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
-                                                               "declare_type_with_fields.drl" );
-
+                "declare_type_with_fields.drl");
 
         List<TypeDeclarationDescr> td = pkg.getTypeDeclarations();
-        assertThat(td.size()).isEqualTo(3);
+        assertThat(td).hasSize(3);
 
-        TypeDeclarationDescr d = td.get( 0 );
+        TypeDeclarationDescr d = td.get(0);
         assertThat(d.getTypeName()).isEqualTo("SomeFact");
-        assertThat(d.getFields().size()).isEqualTo(2);
-        assertThat(d.getFields().containsKey("name")).isTrue();
-        assertThat(d.getFields().containsKey("age")).isTrue();
+        assertThat(d.getFields()).hasSize(2);
+        assertThat(d.getFields()).containsKey("name");
+        assertThat(d.getFields()).containsKey("age");
 
-        TypeFieldDescr f = d.getFields().get("name" );
+        TypeFieldDescr f = d.getFields().get("name");
         assertThat(f.getPattern().getObjectType()).isEqualTo("String");
 
-        f = d.getFields().get( "age" );
+        f = d.getFields().get("age");
         assertThat(f.getPattern().getObjectType()).isEqualTo("Integer");
 
-        d = td.get( 1 );
+        d = td.get(1);
         assertThat(d.getTypeName()).isEqualTo("AnotherFact");
 
-        TypeDeclarationDescr type = td.get( 2 );
+        TypeDeclarationDescr type = td.get(2);
         assertThat(type.getTypeName()).isEqualTo("Person");
 
         assertThat(type.getAnnotation("role").getValue()).isEqualTo("fact");
@@ -3086,92 +3047,88 @@ class MiscDRLParserTest {
         assertThat(type.getAnnotation("doc").getValue("author")).isEqualTo("\"Bob\"");
         assertThat(type.getAnnotation("doc").getValue("date")).isEqualTo("Calendar.getInstance().getDate()");
 
-        assertThat(type.getFields().size()).isEqualTo(2);
-        TypeFieldDescr field = type.getFields().get( "name" );
+        assertThat(type.getFields()).hasSize(2);
+        TypeFieldDescr field = type.getFields().get("name");
         assertThat(field.getFieldName()).isEqualTo("name");
         assertThat(field.getPattern().getObjectType()).isEqualTo("String");
         assertThat(field.getInitExpr()).isEqualTo("\"John Doe\"");
         assertThat(field.getAnnotation("length").getValue("max")).isEqualTo("50");
-        assertThat( field.getAnnotation( "key" ) ).isNotNull();
+        assertThat(field.getAnnotation("key")).isNotNull();
 
-        field = type.getFields().get( "age" );
+        field = type.getFields().get("age");
         assertThat(field.getFieldName()).isEqualTo("age");
         assertThat(field.getPattern().getObjectType()).isEqualTo("int");
         assertThat(field.getInitExpr()).isEqualTo("-1");
         assertThat(field.getAnnotation("ranged").getValue("min")).isEqualTo("0");
         assertThat(field.getAnnotation("ranged").getValue("max")).isEqualTo("150");
         assertThat(field.getAnnotation("ranged").getValue("unknown")).isEqualTo("-1");
-
     }
 
     @Test
-    public void parse_QualifiedTypeDeclaration() throws Exception {
+    void qualifiedTypeDeclaration() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
-                                                               "qualified_type_declaration.drl" );
+                "qualified_type_declaration.drl");
 
-        TypeDeclarationDescr someFact = pkg.getTypeDeclarations().get( 0 );
+        TypeDeclarationDescr someFact = pkg.getTypeDeclarations().get(0);
         assertThat(someFact.getTypeName()).isEqualTo("SomeFact");
         assertThat(someFact.getNamespace()).isEqualTo("com.sample1");
 
-        EnumDeclarationDescr color = pkg.getEnumDeclarations().get( 0 );
+        EnumDeclarationDescr color = pkg.getEnumDeclarations().get(0);
         assertThat(color.getTypeName()).isEqualTo("Color");
         assertThat(color.getNamespace()).isEqualTo("com.sample2");
     }
 
     @Test
-    public void parenthesesOneLevelNestWithThreeSiblings() throws Exception {
-        final PackageDescr pkg = parseAndGetPackageDescrFromFile( "Rule_with_nested_LHS.drl" );
+    void parenthesesOneLevelNestWithThreeSiblings() {
+        final PackageDescr pkg = parseAndGetPackageDescrFromFile("Rule_with_nested_LHS.drl");
 
-
-
-        RuleDescr rule = pkg.getRules().get( 0 );
+        RuleDescr rule = pkg.getRules().get(0);
         assertThat(rule.getName()).isEqualTo("test");
 
         AndDescr lhs = rule.getLhs();
         assertThat(lhs).isNotNull();
-        assertThat(lhs.getDescrs().size()).isEqualTo(2);
+        assertThat(lhs.getDescrs()).hasSize(2);
 
-        PatternDescr a = (PatternDescr) lhs.getDescrs().get( 0 );
+        PatternDescr a = (PatternDescr) lhs.getDescrs().get(0);
         assertThat(a.getObjectType()).isEqualTo("A");
 
-        OrDescr or = (OrDescr) lhs.getDescrs().get( 1 );
-        assertThat(or.getDescrs().size()).isEqualTo(3);
+        OrDescr or = (OrDescr) lhs.getDescrs().get(1);
+        assertThat(or.getDescrs()).hasSize(3);
 
-        AndDescr and1 = (AndDescr) or.getDescrs().get( 0 );
-        assertThat(and1.getDescrs().size()).isEqualTo(2);
-        PatternDescr b = (PatternDescr) and1.getDescrs().get( 0 );
-        PatternDescr c = (PatternDescr) and1.getDescrs().get( 1 );
+        AndDescr and1 = (AndDescr) or.getDescrs().get(0);
+        assertThat(and1.getDescrs()).hasSize(2);
+        PatternDescr b = (PatternDescr) and1.getDescrs().get(0);
+        PatternDescr c = (PatternDescr) and1.getDescrs().get(1);
         assertThat(b.getObjectType()).isEqualTo("B");
         assertThat(c.getObjectType()).isEqualTo("C");
 
-        AndDescr and2 = (AndDescr) or.getDescrs().get( 1 );
-        assertThat(and2.getDescrs().size()).isEqualTo(2);
-        PatternDescr d = (PatternDescr) and2.getDescrs().get( 0 );
-        PatternDescr e = (PatternDescr) and2.getDescrs().get( 1 );
+        AndDescr and2 = (AndDescr) or.getDescrs().get(1);
+        assertThat(and2.getDescrs()).hasSize(2);
+        PatternDescr d = (PatternDescr) and2.getDescrs().get(0);
+        PatternDescr e = (PatternDescr) and2.getDescrs().get(1);
         assertThat(d.getObjectType()).isEqualTo("D");
         assertThat(e.getObjectType()).isEqualTo("E");
 
-        AndDescr and3 = (AndDescr) or.getDescrs().get( 2 );
-        assertThat(and3.getDescrs().size()).isEqualTo(2);
-        PatternDescr f = (PatternDescr) and3.getDescrs().get( 0 );
-        PatternDescr g = (PatternDescr) and3.getDescrs().get( 1 );
+        AndDescr and3 = (AndDescr) or.getDescrs().get(2);
+        assertThat(and3.getDescrs()).hasSize(2);
+        PatternDescr f = (PatternDescr) and3.getDescrs().get(0);
+        PatternDescr g = (PatternDescr) and3.getDescrs().get(1);
         assertThat(f.getObjectType()).isEqualTo("F");
         assertThat(g.getObjectType()).isEqualTo("G");
     }
 
     @Test
-    public void parse_EntryPoint() throws Exception {
+    void entryPoint() {
         final String text = "rule X when StockTick( symbol==\"ACME\") from entry-point StreamA then end";
 
         PackageDescr pkg = parseAndGetPackageDescr(
-                                                 text );
+                text);
 
+        RuleDescr rule = pkg.getRules().get(0);
+        PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
 
-        RuleDescr rule = pkg.getRules().get( 0 );
-        PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
-
-        assertThat(pattern.getDescrs().size()).isEqualTo(1);
-        ExprConstraintDescr fcd = (ExprConstraintDescr) pattern.getDescrs().get( 0 );
+        assertThat(pattern.getDescrs()).hasSize(1);
+        ExprConstraintDescr fcd = (ExprConstraintDescr) pattern.getDescrs().get(0);
         assertThat(fcd.getExpression()).isEqualTo("symbol==\"ACME\"");
 
         assertThat(pattern.getSource()).isNotNull();
@@ -3180,18 +3137,17 @@ class MiscDRLParserTest {
     }
 
     @Test
-    public void parse_EntryPoint2() throws Exception {
+    void entryPoint2() {
         final String text = "rule X when StockTick( symbol==\"ACME\") from entry-point \"StreamA\" then end";
 
         PackageDescr pkg = parseAndGetPackageDescr(
-                                                 text );
+                text);
 
+        RuleDescr rule = pkg.getRules().get(0);
+        PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
 
-        RuleDescr rule = pkg.getRules().get( 0 );
-        PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
-
-        assertThat(pattern.getDescrs().size()).isEqualTo(1);
-        ExprConstraintDescr fcd = (ExprConstraintDescr) pattern.getDescrs().get( 0 );
+        assertThat(pattern.getDescrs()).hasSize(1);
+        ExprConstraintDescr fcd = (ExprConstraintDescr) pattern.getDescrs().get(0);
         assertThat(fcd.getExpression()).isEqualTo("symbol==\"ACME\"");
 
         assertThat(pattern.getSource()).isNotNull();
@@ -3200,283 +3156,272 @@ class MiscDRLParserTest {
     }
 
     @Test
-    public void parse_SlidingWindow() throws Exception {
+    void slidingWindow() {
         final String text = "rule X when StockTick( symbol==\"ACME\") over window:length(10) then end";
 
-        PackageDescr pkg = parseAndGetPackageDescr( text );
+        PackageDescr pkg = parseAndGetPackageDescr(text);
 
+        RuleDescr rule = pkg.getRules().get(0);
+        PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
 
-        RuleDescr rule = pkg.getRules().get( 0 );
-        PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
-
-        assertThat(pattern.getDescrs().size()).isEqualTo(1);
-        ExprConstraintDescr fcd = (ExprConstraintDescr) pattern.getDescrs().get( 0 );
+        assertThat(pattern.getDescrs()).hasSize(1);
+        ExprConstraintDescr fcd = (ExprConstraintDescr) pattern.getDescrs().get(0);
         assertThat(fcd.getExpression()).isEqualTo("symbol==\"ACME\"");
 
         List<BehaviorDescr> behaviors = pattern.getBehaviors();
         assertThat(behaviors).isNotNull();
-        assertThat(behaviors.size()).isEqualTo(1);
-        BehaviorDescr descr = behaviors.get( 0 );
+        assertThat(behaviors).hasSize(1);
+        BehaviorDescr descr = behaviors.get(0);
         assertThat(descr.getType()).isEqualTo("window");
         assertThat(descr.getSubType()).isEqualTo("length");
         assertThat(descr.getParameters().get(0)).isEqualTo("10");
     }
 
     @Test
-    public void parse_RuleOldSyntax1() throws Exception {
+    void ruleOldSyntax1() {
         final String source = "rule \"Test\" when ( not $r :LiteralRestriction( operator == Operator.EQUAL ) ) then end";
 
         PackageDescr pkg = parseAndGetPackageDescr(
-                                                 source );
+                source);
 
-
-        RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
+        RuleDescr rule = (RuleDescr) pkg.getRules().get(0);
 
         assertThat(rule.getName()).isEqualTo("Test");
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(1);
-        assertThat(((NotDescr) rule.getLhs().getDescrs().get(0)).getDescrs().size()).isEqualTo(1);
-        NotDescr notDescr = (NotDescr) rule.getLhs().getDescrs().get( 0 );
-        PatternDescr patternDescr = (PatternDescr) notDescr.getDescrs().get( 0 );
+        assertThat(rule.getLhs().getDescrs()).hasSize(1);
+        assertThat(((NotDescr) rule.getLhs().getDescrs().get(0)).getDescrs()).hasSize(1);
+        NotDescr notDescr = (NotDescr) rule.getLhs().getDescrs().get(0);
+        PatternDescr patternDescr = (PatternDescr) notDescr.getDescrs().get(0);
         assertThat(patternDescr.getIdentifier()).isEqualTo("$r");
-        assertThat(patternDescr.getDescrs().size()).isEqualTo(1);
-        ExprConstraintDescr fieldConstraintDescr = (ExprConstraintDescr) patternDescr.getDescrs().get( 0 );
+        assertThat(patternDescr.getDescrs()).hasSize(1);
+        ExprConstraintDescr fieldConstraintDescr = (ExprConstraintDescr) patternDescr.getDescrs().get(0);
         assertThat(fieldConstraintDescr.getExpression()).isEqualToIgnoringWhitespace("operator == Operator.EQUAL");
     }
 
     @Test
-    public void parse_RuleOldSyntax2() throws Exception {
+    void ruleOldSyntax2() {
         final String source = "rule \"Test\" when ( $r :LiteralRestriction( operator == Operator.EQUAL ) ) then end";
 
         PackageDescr pkg = parseAndGetPackageDescr(
-                                                 source );
+                source);
 
-
-        RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
+        RuleDescr rule = (RuleDescr) pkg.getRules().get(0);
 
         assertThat(rule.getName()).isEqualTo("Test");
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(1);
-        PatternDescr patternDescr = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+        assertThat(rule.getLhs().getDescrs()).hasSize(1);
+        PatternDescr patternDescr = (PatternDescr) rule.getLhs().getDescrs().get(0);
         assertThat(patternDescr.getIdentifier()).isEqualTo("$r");
-        assertThat(patternDescr.getDescrs().size()).isEqualTo(1);
-        ExprConstraintDescr fieldConstraintDescr = (ExprConstraintDescr) patternDescr.getDescrs().get( 0 );
+        assertThat(patternDescr.getDescrs()).hasSize(1);
+        ExprConstraintDescr fieldConstraintDescr = (ExprConstraintDescr) patternDescr.getDescrs().get(0);
         assertThat(fieldConstraintDescr.getExpression()).isEqualToIgnoringWhitespace("operator == Operator.EQUAL");
     }
 
     @Test
-    public void parse_TypeWithMetaData() throws Exception {
+    void typeWithMetaData() {
 
         PackageDescr pkg = parseAndGetPackageDescrFromFile(
-                                                         "type_with_meta.drl" );
-
-
+                "type_with_meta.drl");
 
         final List<TypeDeclarationDescr> declarations = pkg.getTypeDeclarations();
 
-        assertThat(declarations.size()).isEqualTo(3);
+        assertThat(declarations).hasSize(3);
     }
 
     @Test
-    public void parse_NullConstraints() throws Exception {
+    void nullConstraints() {
         final String text = "rule X when Person( name == null ) then end";
         PatternDescr pattern = (PatternDescr) parseAndGetFirstRuleDescr(
-                                                                  text ).getLhs().getDescrs().get( 0 );
+                text).getLhs().getDescrs().get(0);
 
-        assertThat(pattern.getDescrs().size()).isEqualTo(1);
-        ExprConstraintDescr fcd = (ExprConstraintDescr) pattern.getDescrs().get( 0 );
+        assertThat(pattern.getDescrs()).hasSize(1);
+        ExprConstraintDescr fcd = (ExprConstraintDescr) pattern.getDescrs().get(0);
         assertThat(fcd.getExpression()).isEqualTo("name == null");
         assertThat(fcd.getPosition()).isEqualTo(0);
         assertThat(fcd.getType()).isEqualTo(ExprConstraintDescr.Type.NAMED);
     }
 
     @Test
-    public void parse_PositionalConstraintsOnly() throws Exception {
+    void positionalConstraintsOnly() {
         final String text = "rule X when Person( \"Mark\", 42; ) then end";
         PatternDescr pattern = (PatternDescr) parseAndGetFirstRuleDescr(
-                                                                  text ).getLhs().getDescrs().get( 0 );
+                text).getLhs().getDescrs().get(0);
 
-        assertThat(pattern.getDescrs().size()).isEqualTo(2);
-        ExprConstraintDescr fcd = (ExprConstraintDescr) pattern.getDescrs().get( 0 );
+        assertThat(pattern.getDescrs()).hasSize(2);
+        ExprConstraintDescr fcd = (ExprConstraintDescr) pattern.getDescrs().get(0);
         assertThat(fcd.getExpression()).isEqualTo("\"Mark\"");
         assertThat(fcd.getPosition()).isEqualTo(0);
         assertThat(fcd.getType()).isEqualTo(ExprConstraintDescr.Type.POSITIONAL);
-        fcd = (ExprConstraintDescr) pattern.getDescrs().get( 1 );
+        fcd = (ExprConstraintDescr) pattern.getDescrs().get(1);
         assertThat(fcd.getExpression()).isEqualTo("42");
         assertThat(fcd.getPosition()).isEqualTo(1);
         assertThat(fcd.getType()).isEqualTo(ExprConstraintDescr.Type.POSITIONAL);
     }
 
     @Test
-    public void parse_IsQuery() throws Exception {
+    void isQuery() {
         final String text = "rule X when ?person( \"Mark\", 42; ) then end";
         PatternDescr pattern = (PatternDescr) parseAndGetFirstRuleDescr(
-                                                                  text ).getLhs().getDescrs().get( 0 );
+                text).getLhs().getDescrs().get(0);
 
         assertThat(pattern.isQuery()).isTrue();
 
-        assertThat(pattern.getDescrs().size()).isEqualTo(2);
-        ExprConstraintDescr fcd = (ExprConstraintDescr) pattern.getDescrs().get( 0 );
+        assertThat(pattern.getDescrs()).hasSize(2);
+        ExprConstraintDescr fcd = (ExprConstraintDescr) pattern.getDescrs().get(0);
         assertThat(fcd.getExpression()).isEqualTo("\"Mark\"");
         assertThat(fcd.getPosition()).isEqualTo(0);
         assertThat(fcd.getType()).isEqualTo(ExprConstraintDescr.Type.POSITIONAL);
-        fcd = (ExprConstraintDescr) pattern.getDescrs().get( 1 );
+        fcd = (ExprConstraintDescr) pattern.getDescrs().get(1);
         assertThat(fcd.getExpression()).isEqualTo("42");
         assertThat(fcd.getPosition()).isEqualTo(1);
         assertThat(fcd.getType()).isEqualTo(ExprConstraintDescr.Type.POSITIONAL);
     }
 
     @Test
-    public void parse_FromFollowedByQuery() throws Exception {
+    void fromFollowedByQuery() {
         // the 'from' expression requires a ";" to disambiguate the "?"
         // prefix for queries from the ternary operator "? :"
         final String text = "rule X when Cheese() from $cheesery ?person( \"Mark\", 42; ) then end";
         RuleDescr rule = parseAndGetFirstRuleDescr(
-                                            text );
+                text);
 
-
-        PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+        PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
         assertThat(pattern.getObjectType()).isEqualTo("Cheese");
         assertThat(pattern.getSource().getText()).isEqualTo("from $cheesery");
         assertThat(pattern.isQuery()).isFalse();
 
-        pattern = (PatternDescr) rule.getLhs().getDescrs().get( 1 );
+        pattern = (PatternDescr) rule.getLhs().getDescrs().get(1);
         assertThat(pattern.getObjectType()).isEqualTo("person");
         assertThat(pattern.isQuery()).isTrue();
-
     }
 
     @Test
-    public void parse_FromWithTernaryFollowedByQuery() throws Exception {
+    void fromWithTernaryFollowedByQuery() {
         // the 'from' expression requires a ";" to disambiguate the "?"
         // prefix for queries from the ternary operator "? :"
         final String text = "rule X when Cheese() from (isFull ? $cheesery : $market) ?person( \"Mark\", 42; ) then end";
         RuleDescr rule = parseAndGetFirstRuleDescr(
-                                            text );
+                text);
 
-
-        PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+        PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
         assertThat(pattern.getObjectType()).isEqualTo("Cheese");
         assertThat(pattern.getSource().getText()).isEqualToIgnoringWhitespace("from (isFull ? $cheesery : $market)");
         assertThat(pattern.isQuery()).isFalse();
 
-        pattern = (PatternDescr) rule.getLhs().getDescrs().get( 1 );
+        pattern = (PatternDescr) rule.getLhs().getDescrs().get(1);
         assertThat(pattern.getObjectType()).isEqualTo("person");
         assertThat(pattern.isQuery()).isTrue();
-
     }
 
     @Test
-    public void parse_MultiValueAnnotationsBackwardCompatibility() throws Exception {
+    void multiValueAnnotationsBackwardCompatibility() {
         // multiple values with no keys are parsed as a single value
         final String text = "rule X @ann1( val1, val2 ) @ann2( \"val1\", \"val2\" ) when then end";
         RuleDescr rule = parseAndGetFirstRuleDescr(
-                                            text );
+                text);
 
-        AnnotationDescr ann = rule.getAnnotation("ann1" );
+        AnnotationDescr ann = rule.getAnnotation("ann1");
         assertThat(ann).isNotNull();
         assertThat(ann.getValue()).isEqualTo("val1, val2");
 
-        ann = rule.getAnnotation( "ann2" );
+        ann = rule.getAnnotation("ann2");
         assertThat(ann).isNotNull();
         assertThat(ann.getValue()).isEqualTo("\"val1\", \"val2\"");
         assertThat(ann.getSingleValueAsString()).isEqualTo("\"val1\", \"val2\"");
     }
 
     @Test
-    public void parse_PositionalsAndNamedConstraints() throws Exception {
+    void positionalsAndNamedConstraints() {
         final String text = "rule X when Person( \"Mark\", 42; location == \"atlanta\" ) then end";
         PatternDescr pattern = (PatternDescr) parseAndGetFirstRuleDescr(
-                                                                  text ).getLhs().getDescrs().get( 0 );
+                text).getLhs().getDescrs().get(0);
 
-        assertThat(pattern.getDescrs().size()).isEqualTo(3);
-        ExprConstraintDescr fcd = (ExprConstraintDescr) pattern.getDescrs().get( 0 );
+        assertThat(pattern.getDescrs()).hasSize(3);
+        ExprConstraintDescr fcd = (ExprConstraintDescr) pattern.getDescrs().get(0);
         assertThat(fcd.getExpression()).isEqualTo("\"Mark\"");
         assertThat(fcd.getPosition()).isEqualTo(0);
         assertThat(fcd.getType()).isEqualTo(ExprConstraintDescr.Type.POSITIONAL);
-        fcd = (ExprConstraintDescr) pattern.getDescrs().get( 1 );
+        fcd = (ExprConstraintDescr) pattern.getDescrs().get(1);
         assertThat(fcd.getExpression()).isEqualTo("42");
         assertThat(fcd.getPosition()).isEqualTo(1);
         assertThat(fcd.getType()).isEqualTo(ExprConstraintDescr.Type.POSITIONAL);
 
-        fcd = (ExprConstraintDescr) pattern.getDescrs().get( 2 );
+        fcd = (ExprConstraintDescr) pattern.getDescrs().get(2);
         assertThat(fcd.getExpression()).isEqualTo("location == \"atlanta\"");
         assertThat(fcd.getPosition()).isEqualTo(2);
         assertThat(fcd.getType()).isEqualTo(ExprConstraintDescr.Type.NAMED);
-
     }
 
     @Test
-    public void parse_UnificationBinding() throws Exception {
+    void unificationBinding() {
         final String text = "rule X when $p := Person( $name := name, $loc : location ) then end";
         PatternDescr pattern = (PatternDescr) parseAndGetFirstRuleDescr(
-                                                                  text ).getLhs().getDescrs().get( 0 );
+                text).getLhs().getDescrs().get(0);
 
         assertThat(pattern.getIdentifier()).isEqualTo("$p");
         assertThat(pattern.isUnification()).isTrue();
 
-        assertThat(pattern.getDescrs().size()).isEqualTo(2);
-        ExprConstraintDescr bindingDescr = (ExprConstraintDescr) pattern.getDescrs().get( 0 );
+        assertThat(pattern.getDescrs()).hasSize(2);
+        ExprConstraintDescr bindingDescr = (ExprConstraintDescr) pattern.getDescrs().get(0);
         assertThat(bindingDescr.getExpression()).isEqualTo("$name := name");
 
-        bindingDescr = (ExprConstraintDescr) pattern.getDescrs().get( 1 );
+        bindingDescr = (ExprConstraintDescr) pattern.getDescrs().get(1);
         assertThat(bindingDescr.getExpression()).isEqualTo("$loc : location");
-
     }
 
     @Test
-    public void parse_BigLiterals() {
+    void bigLiterals() {
         final String text = "rule X when Primitives( bigInteger == (10I), " +
                 "                        bigDecimal == (10B), " +
                 "                        bigInteger < 50I, " +
                 "                        bigDecimal < 50.2B ) then end";
         PatternDescr pattern = (PatternDescr) parseAndGetFirstRuleDescr(
-                                                                  text ).getLhs().getDescrs().get( 0 );
+                text).getLhs().getDescrs().get(0);
 
-        assertThat(pattern.getDescrs().size()).isEqualTo(4);
-        ExprConstraintDescr ecd = (ExprConstraintDescr) pattern.getDescrs().get( 0 );
+        assertThat(pattern.getDescrs()).hasSize(4);
+        ExprConstraintDescr ecd = (ExprConstraintDescr) pattern.getDescrs().get(0);
         assertThat(ecd.getExpression()).isEqualTo("bigInteger == (10I)");
 
-        ecd = (ExprConstraintDescr) pattern.getDescrs().get( 1 );
+        ecd = (ExprConstraintDescr) pattern.getDescrs().get(1);
         assertThat(ecd.getExpression()).isEqualTo("bigDecimal == (10B)");
 
-        ecd = (ExprConstraintDescr) pattern.getDescrs().get( 2 );
+        ecd = (ExprConstraintDescr) pattern.getDescrs().get(2);
         assertThat(ecd.getExpression()).isEqualTo("bigInteger < 50I");
 
-        ecd = (ExprConstraintDescr) pattern.getDescrs().get( 3 );
+        ecd = (ExprConstraintDescr) pattern.getDescrs().get(3);
         assertThat(ecd.getExpression()).isEqualTo("bigDecimal < 50.2B");
     }
 
     @Test
-    public void parse_BindingComposite() throws Exception {
+    void bindingComposite() {
         final String text = "rule X when Person( $name : name == \"Bob\" || $loc : location == \"Montreal\" ) then end";
         PatternDescr pattern = (PatternDescr) parseAndGetFirstRuleDescr(
-                                                                  text ).getLhs().getDescrs().get( 0 );
+                text).getLhs().getDescrs().get(0);
 
         assertThat(pattern.getObjectType()).isEqualTo("Person");
         assertThat(pattern.isUnification()).isFalse();
 
         // embedded bindings are extracted at compile time
-        List< ? > constraints = pattern.getDescrs();
-        assertThat(constraints.size()).isEqualTo(1);
+        List<?> constraints = pattern.getDescrs();
+        assertThat(constraints).hasSize(1);
         assertThat(((ExprConstraintDescr) constraints.get(0)).getExpression()).isEqualTo("$name : name == \"Bob\" || $loc : location == \"Montreal\"");
     }
 
     @Test
-    public void parse_BindingCompositeWithMethods() throws Exception {
+    void bindingCompositeWithMethods() {
         final String text = "rule X when Person( $name : name.toUpperCase() == \"Bob\" || $loc : location[0].city == \"Montreal\" ) then end";
         PatternDescr pattern = (PatternDescr) parseAndGetFirstRuleDescr(
-                                                                  text ).getLhs().getDescrs().get( 0 );
+                text).getLhs().getDescrs().get(0);
 
         assertThat(pattern.getObjectType()).isEqualTo("Person");
         assertThat(pattern.isUnification()).isFalse();
 
         // embedded bindings are extracted at compile time
-        List< ? > constraints = pattern.getDescrs();
-        assertThat(constraints.size()).isEqualTo(1);
+        List<?> constraints = pattern.getDescrs();
+        assertThat(constraints).hasSize(1);
         assertThat(((ExprConstraintDescr) constraints.get(0)).getExpression()).isEqualTo("$name : name.toUpperCase() == \"Bob\" || $loc : location[0].city == \"Montreal\"");
     }
 
     @Test
-    public void parse_PluggableOperators2() throws Exception {
+    void pluggableOperators2() {
         final String text = "rule \"tt\"\n" +
                 "    dialect \"mvel\"\n" +
                 "when\n" +
@@ -3484,47 +3429,44 @@ class MiscDRLParserTest {
                 "then\n" +
                 "end";
         PatternDescr pattern = (PatternDescr) ((ExistsDescr) parseAndGetFirstRuleDescr(
-                                                                                 text ).getLhs().getDescrs().get( 0 )).getDescrs().get( 0 );
+                text).getLhs().getDescrs().get(0)).getDescrs().get(0);
 
         assertThat(pattern.getObjectType()).isEqualTo("TelephoneCall");
-        ExprConstraintDescr constr = (ExprConstraintDescr) pattern.getConstraint().getDescrs().get( 0 );
+        ExprConstraintDescr constr = (ExprConstraintDescr) pattern.getConstraint().getDescrs().get(0);
         assertThat(constr.getText()).isEqualTo("this finishes [1m] \"25-May-2011\"");
-
     }
 
     @Test
-    public void parse_InlineEval() throws Exception {
+    void inlineEval() {
         final String text = "rule \"inline eval\"\n" +
                 "when\n" +
                 "    Person( eval( name.startsWith(\"b\") && name.finishesWith(\"b\")) )\n" +
                 "then\n" +
                 "end";
         PatternDescr pattern = (PatternDescr) parseAndGetFirstRuleDescr(
-                                                                  text ).getLhs().getDescrs().get( 0 );
+                text).getLhs().getDescrs().get(0);
 
         assertThat(pattern.getObjectType()).isEqualTo("Person");
-        ExprConstraintDescr constr = (ExprConstraintDescr) pattern.getConstraint().getDescrs().get( 0 );
+        ExprConstraintDescr constr = (ExprConstraintDescr) pattern.getConstraint().getDescrs().get(0);
         assertThat(constr.getText()).isEqualToIgnoringWhitespace("eval( name.startsWith(\"b\") && name.finishesWith(\"b\"))");
-
     }
 
     @Test
-    public void parse_InfinityLiteral() throws Exception {
+    void infinityLiteral() {
         final String text = "rule \"infinity\"\n" +
                 "when\n" +
                 "    StockTick( this after[-*,*] $another )\n" +
                 "then\n" +
                 "end";
         PatternDescr pattern = (PatternDescr) parseAndGetFirstRuleDescr(
-                                                                  text ).getLhs().getDescrs().get( 0 );
+                text).getLhs().getDescrs().get(0);
 
         assertThat(pattern.getObjectType()).isEqualTo("StockTick");
-        ExprConstraintDescr constr = (ExprConstraintDescr) pattern.getConstraint().getDescrs().get( 0 );
+        ExprConstraintDescr constr = (ExprConstraintDescr) pattern.getConstraint().getDescrs().get(0);
         assertThat(constr.getText()).isEqualTo("this after[-*,*] $another");
-
     }
 
-    public static Stream<Arguments> entryPointIds() {
+    static Stream<Arguments> entryPointIds() {
         return Stream.of(
                 Arguments.of("eventStream", "eventStream"),
                 Arguments.of("\"My entry-point 'ID'\"", "My entry-point 'ID'")
@@ -3533,28 +3475,28 @@ class MiscDRLParserTest {
 
     @ParameterizedTest
     @MethodSource("entryPointIds")
-    public void parse_EntryPointDeclaration(String sourceId, String expectedId) throws Exception {
+    void parse_EntryPointDeclaration(String sourceId, String expectedId) {
         final String text = "package org.drools\n" +
                 "declare entry-point " + sourceId + "\n" +
                 "    @source(\"jndi://queues/events\")\n" +
                 "    @foo( true )\n" +
                 "end";
         PackageDescr pkg = parseAndGetPackageDescr(
-                                                 text );
+                text);
 
         assertThat(pkg.getName()).isEqualTo("org.drools");
-        assertThat(pkg.getEntryPointDeclarations().size()).isEqualTo(1);
+        assertThat(pkg.getEntryPointDeclarations()).hasSize(1);
 
         EntryPointDeclarationDescr epd = pkg.getEntryPointDeclarations().iterator().next();
 
         assertThat(epd.getEntryPointId()).isEqualTo(expectedId);
-        assertThat(epd.getAnnotations().size()).isEqualTo(2);
+        assertThat(epd.getAnnotations()).hasSize(2);
         assertThat(epd.getAnnotation("source").getValue()).isEqualTo("\"jndi://queues/events\"");
         assertThat(epd.getAnnotation("foo").getValue()).isEqualTo("true");
     }
 
     @Test
-    public void parse_WindowDeclaration() throws Exception {
+    void windowDeclaration() {
         final String text = "package org.drools\n" +
                 "declare window Ticks\n" +
                 "    @doc(\"last 10 stock ticks\")\n" +
@@ -3563,15 +3505,15 @@ class MiscDRLParserTest {
                 "        from entry-point stStream\n" +
                 "end";
         PackageDescr pkg = parseAndGetPackageDescr(
-                                                 text );
+                text);
 
         assertThat(pkg.getName()).isEqualTo("org.drools");
-        assertThat(pkg.getWindowDeclarations().size()).isEqualTo(1);
+        assertThat(pkg.getWindowDeclarations()).hasSize(1);
 
         WindowDeclarationDescr wdd = pkg.getWindowDeclarations().iterator().next();
 
         assertThat(wdd.getName()).isEqualTo("Ticks");
-        assertThat(wdd.getAnnotations().size()).isEqualTo(1);
+        assertThat(wdd.getAnnotations()).hasSize(1);
         assertThat(wdd.getAnnotation("doc").getValue()).isEqualTo("\"last 10 stock ticks\"");
 
         PatternDescr pd = wdd.getPattern();
@@ -3580,17 +3522,17 @@ class MiscDRLParserTest {
         assertThat(pd.getObjectType()).isEqualTo("StockTick");
         assertThat(pd.getSource().getText()).isEqualTo("stStream");
 
-        assertThat(pd.getBehaviors().size()).isEqualTo(1);
-        BehaviorDescr bd = pd.getBehaviors().get( 0 );
+        assertThat(pd.getBehaviors()).hasSize(1);
+        BehaviorDescr bd = pd.getBehaviors().get(0);
         assertThat(bd.getType()).isEqualTo("window");
         assertThat(bd.getSubType()).isEqualTo("length");
-        assertThat(bd.getParameters().size()).isEqualTo(2);
+        assertThat(bd.getParameters()).hasSize(2);
         assertThat(bd.getParameters().get(0)).isEqualTo("10");
         assertThat(bd.getParameters().get(1)).isEqualTo("$s.symbol");
     }
 
     @Test
-    public void parse_WindowUsage() throws Exception {
+    void windowUsage() {
         final String text = "package org.drools\n" +
                 "rule X\n" +
                 "when\n" +
@@ -3598,15 +3540,15 @@ class MiscDRLParserTest {
                 "then\n" +
                 "end\n";
         PackageDescr pkg = parseAndGetPackageDescr(
-                                                 text );
+                text);
 
         assertThat(pkg.getName()).isEqualTo("org.drools");
-        assertThat(pkg.getRules().size()).isEqualTo(1);
+        assertThat(pkg.getRules()).hasSize(1);
 
         RuleDescr rd = pkg.getRules().get(0);
 
         assertThat(rd.getName()).isEqualTo("X");
-        assertThat(rd.getLhs().getDescrs().size()).isEqualTo(1);
+        assertThat(rd.getLhs().getDescrs()).hasSize(1);
 
         PatternDescr pd = (PatternDescr) rd.getLhs().getDescrs().get(0);
         assertThat(pd).isNotNull();
@@ -3615,7 +3557,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    public void endInRhs() throws Exception {
+    void endInRhs() {
         final String text = "package org.drools\n" +
                 "rule X\n" +
                 "when\n" +
@@ -3623,14 +3565,14 @@ class MiscDRLParserTest {
                 "then\n" +
                 "    System.out.println($s.endsWith(\"xyz\"));\n" +
                 "end\n";
-        PackageDescr packageDescr = parseAndGetPackageDescr(text );
+        PackageDescr packageDescr = parseAndGetPackageDescr(text);
 
         RuleDescr ruleDescr = packageDescr.getRules().get(0);
         assertThat(ruleDescr.getConsequence().toString()).isEqualToIgnoringWhitespace("System.out.println($s.endsWith(\"xyz\"));");
     }
 
     @Test
-    public void endTokenInRhs() throws Exception {
+    void endTokenInRhs() {
         final String text = "package org.drools\n" +
                 "rule X\n" +
                 "when\n" +
@@ -3638,14 +3580,14 @@ class MiscDRLParserTest {
                 "then\n" +
                 "    int end = 10;\n" +
                 "end\n";
-        PackageDescr packageDescr = parseAndGetPackageDescr(text );
+        PackageDescr packageDescr = parseAndGetPackageDescr(text);
 
         RuleDescr ruleDescr = packageDescr.getRules().get(0);
         assertThat(ruleDescr.getConsequence().toString()).isEqualToIgnoringWhitespace("int end = 10;");
     }
 
     @Test
-    public void ruleTokenInRhs() throws Exception {
+    void ruleTokenInRhs() {
         final String text = "package org.drools\n" +
                 "rule X\n" +
                 "when\n" +
@@ -3653,7 +3595,7 @@ class MiscDRLParserTest {
                 "then\n" +
                 "    int rule = 10;\n" +
                 "end\n";
-        PackageDescr packageDescr = parseAndGetPackageDescr(text );
+        PackageDescr packageDescr = parseAndGetPackageDescr(text);
 
         RuleDescr ruleDescr = packageDescr.getRules().get(0);
         assertThat(ruleDescr.getConsequence().toString()).isEqualToIgnoringWhitespace("int rule = 10;");
@@ -3667,7 +3609,7 @@ class MiscDRLParserTest {
                 "    $s : String()\n" +
                 "then\n" +
                 "    delete($s);end\n"; // no space after semicolon
-        PackageDescr packageDescr = parseAndGetPackageDescr(text );
+        PackageDescr packageDescr = parseAndGetPackageDescr(text);
 
         RuleDescr ruleDescr = packageDescr.getRules().get(0);
         assertThat(ruleDescr.getConsequence().toString()).isEqualToIgnoringWhitespace("delete($s);");
@@ -3681,7 +3623,7 @@ class MiscDRLParserTest {
                 "    $p : Person()\n" +
                 "then\n" +
                 "    modify($p) { setAge(2) }end\n"; // no space after right brace
-        PackageDescr packageDescr = parseAndGetPackageDescr(text );
+        PackageDescr packageDescr = parseAndGetPackageDescr(text);
 
         RuleDescr ruleDescr = packageDescr.getRules().get(0);
         assertThat(ruleDescr.getConsequence().toString()).isEqualToIgnoringWhitespace("modify($p) { setAge(2) }");
@@ -4048,51 +3990,48 @@ class MiscDRLParserTest {
     }
 
     @Test
-    public void functionWithStringLiteral() {
+    void functionWithStringLiteral() {
         final String text = "function String star(String s) { return \"*\"; }";
         PackageDescr packageDescr = parseAndGetPackageDescr(text);
 
-
-        FunctionDescr function = packageDescr.getFunctions().get( 0 );
+        FunctionDescr function = packageDescr.getFunctions().get(0);
 
         assertThat(function.getName()).isEqualTo("star");
         assertThat(function.getReturnType()).isEqualTo("String");
         assertThat(function.getParameterTypes().get(0)).isEqualTo("String");
         assertThat(function.getParameterNames().get(0)).isEqualTo("s");
-        assertThat(function.getBody()).isEqualToIgnoringWhitespace( "return \"*\";");
+        assertThat(function.getBody()).isEqualToIgnoringWhitespace("return \"*\";");
     }
 
     @Test
-    public void functionWithStringLiteralAddition() {
+    void functionWithStringLiteralAddition() {
         final String text = "function String addStar(String s) { return s + \"*\"; }";
         PackageDescr packageDescr = parseAndGetPackageDescr(text);
 
-
-        FunctionDescr function = packageDescr.getFunctions().get( 0 );
+        FunctionDescr function = packageDescr.getFunctions().get(0);
 
         assertThat(function.getName()).isEqualTo("addStar");
         assertThat(function.getReturnType()).isEqualTo("String");
         assertThat(function.getParameterTypes().get(0)).isEqualTo("String");
         assertThat(function.getParameterNames().get(0)).isEqualTo("s");
-        assertThat(function.getBody()).isEqualToIgnoringWhitespace( "return s + \"*\";");
+        assertThat(function.getBody()).isEqualToIgnoringWhitespace("return s + \"*\";");
     }
 
     @Test
-    public void functionWithMultipleBlockStatements() {
+    void functionWithMultipleBlockStatements() {
         final String text = "function String star(String s) {\n" +
                 "    String result = s + \"*\";\n" +
                 "    return result;\n" +
                 "}";
         PackageDescr packageDescr = parseAndGetPackageDescr(text);
 
-
-        FunctionDescr function = packageDescr.getFunctions().get( 0 );
+        FunctionDescr function = packageDescr.getFunctions().get(0);
 
         assertThat(function.getName()).isEqualTo("star");
         assertThat(function.getReturnType()).isEqualTo("String");
         assertThat(function.getParameterTypes().get(0)).isEqualTo("String");
         assertThat(function.getParameterNames().get(0)).isEqualTo("s");
-        assertThat(function.getBody()).isEqualToIgnoringWhitespace( "String result = s + \"*\"; return result;");
+        assertThat(function.getBody()).isEqualToIgnoringWhitespace("String result = s + \"*\"; return result;");
     }
 
     @Test
@@ -4104,7 +4043,6 @@ class MiscDRLParserTest {
                 "then\n" +
                 "end\n";
         PackageDescr packageDescr = parseAndGetPackageDescr(text);
-
 
         RuleDescr ruleDescr = packageDescr.getRules().get(0);
         PatternDescr patternDescr = (PatternDescr) ruleDescr.getLhs().getDescrs().get(0);
@@ -4233,7 +4171,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    public void expiresWithTimeLiteralValue() {
+    void expiresWithTimeLiteralValue() {
         String text = "package org.drools\n" +
                 "declare StockFact\n" +
                 "    @role( value = event )\n" +
@@ -4337,12 +4275,12 @@ class MiscDRLParserTest {
         assertThat(ruleDescr.getLhs().getDescrs().get(0)).isInstanceOfSatisfying(NotDescr.class, notDescr -> {
             assertThat(notDescr.getDescrs()).hasSize(1);
             assertThat(notDescr.getDescrs().get(0)).isInstanceOfSatisfying(PatternDescr.class, patternDescr -> {
-               assertThat(patternDescr.getConstraint().getDescrs()).hasSize(1);
-               assertThat(patternDescr.getConstraint().getDescrs().get(0)).isInstanceOfSatisfying(ExprConstraintDescr.class, exprConstraintDescr -> {
-                   assertThat(exprConstraintDescr.getExpression()).isEqualTo("/strings [ this == \"It Does Work\" ]");
-                   assertThat(exprConstraintDescr.getType()).isEqualTo(ExprConstraintDescr.Type.NAMED);
-                   assertThat(exprConstraintDescr.getPosition()).isEqualTo(0);
-               });
+                assertThat(patternDescr.getConstraint().getDescrs()).hasSize(1);
+                assertThat(patternDescr.getConstraint().getDescrs().get(0)).isInstanceOfSatisfying(ExprConstraintDescr.class, exprConstraintDescr -> {
+                    assertThat(exprConstraintDescr.getExpression()).isEqualTo("/strings [ this == \"It Does Work\" ]");
+                    assertThat(exprConstraintDescr.getType()).isEqualTo(ExprConstraintDescr.Type.NAMED);
+                    assertThat(exprConstraintDescr.getPosition()).isEqualTo(0);
+                });
             });
         });
     }
@@ -4387,7 +4325,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    public void queryArgumentWithoutType() throws Exception {
+    void queryArgumentWithoutType() {
         final String text = "package org.drools\n" +
                 "query olderThan( $age )\n" +
                 "    $p : Person(age > (Integer)$age)\n" +
@@ -4401,7 +4339,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    public void queryMultipleArguments() throws Exception {
+    void queryMultipleArguments() {
         final String text = "package org.drools\n" +
                 "query olderThan( String $name, int $age )\n" +
                 "    $p : Person(age > $age)\n" +
@@ -4415,7 +4353,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    public void queryArrayArgument() throws Exception {
+    void queryArrayArgument() {
         final String text = "package org.drools\n" +
                 "query olderThan( int[] $ages )\n" +
                 "    $p : Person(age > $ages[0])\n" +
@@ -4429,7 +4367,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    public void queryZeroArgument() throws Exception {
+    void queryZeroArgument() {
         final String text = "package org.drools\n" +
                 "query olderThan()\n" +
                 "    $p : Person()\n" +
@@ -4443,7 +4381,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    public void queryNoArgument() throws Exception {
+    void queryNoArgument() {
         final String text = "package org.drools\n" +
                 "query olderThan\n" +
                 "    $p : Person()\n" +
@@ -4457,7 +4395,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    public void traitExtendsMultiple() throws Exception {
+    void traitExtendsMultiple() {
         final String source = "declare trait FatherTrait extends com.sample.ParentTrait, UncleTrait, org.test.GrandParentTrait end";
 
         PackageDescr pkg = parseAndGetPackageDescr(source);
@@ -4474,7 +4412,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    public void pluggableEvaluator() throws Exception {
+    void pluggableEvaluator() {
         final String source = "package org.drools\n" +
                 "rule R\n" +
                 "when\n" +
@@ -4497,15 +4435,15 @@ class MiscDRLParserTest {
     void namedConsequenceDo() {
         final String text =
                 "rule R when\n" +
-                "  $r : Result()\n" +
-                "  $p1 : Person(name == \"Mark\")\n" +
-                "  do[FoundMark]\n" +
-                "  $p2 : Person(name != \"Mark\", age > $p1.age)\n" +
-                "then\n" +
-                "  $r.addValue($p2.getName() + \" is older than \" + $p1.getName());\n" +
-                "then[FoundMark]\n" +
-                "  $r.addValue(\"Found \" + $p1.getName());\n" +
-                "end";
+                        "  $r : Result()\n" +
+                        "  $p1 : Person(name == \"Mark\")\n" +
+                        "  do[FoundMark]\n" +
+                        "  $p2 : Person(name != \"Mark\", age > $p1.age)\n" +
+                        "then\n" +
+                        "  $r.addValue($p2.getName() + \" is older than \" + $p1.getName());\n" +
+                        "then[FoundMark]\n" +
+                        "  $r.addValue(\"Found \" + $p1.getName());\n" +
+                        "end";
         PackageDescr packageDescr = parseAndGetPackageDescr(text);
         RuleDescr ruleDescr = packageDescr.getRules().get(0);
         NamedConsequenceDescr namedConsequenceDescr = (NamedConsequenceDescr) ruleDescr.getLhs().getDescrs().get(2);
@@ -4681,17 +4619,17 @@ class MiscDRLParserTest {
         OrDescr orDescr = (OrDescr) ruleDescr.getLhs().getDescrs().get(1);
         PatternDescr patternDescr1 = (PatternDescr) orDescr.getDescrs().get(0);
         assertThat(patternDescr1.getIdentifier()).isEqualTo("$p1");
-        assertThat(((ExprConstraintDescr)patternDescr1.getConstraint().getDescrs().get(0)).getExpression()).isEqualTo("name == \"Mark\"");
+        assertThat(((ExprConstraintDescr) patternDescr1.getConstraint().getDescrs().get(0)).getExpression()).isEqualTo("name == \"Mark\"");
         PatternDescr patternDescr2 = (PatternDescr) orDescr.getDescrs().get(1);
         assertThat(patternDescr2.getIdentifier()).isEqualTo("$p1");
-        assertThat(((ExprConstraintDescr)patternDescr2.getConstraint().getDescrs().get(0)).getExpression()).isEqualTo("name == \"Mario\"");
+        assertThat(((ExprConstraintDescr) patternDescr2.getConstraint().getDescrs().get(0)).getExpression()).isEqualTo("name == \"Mario\"");
 
         NamedConsequenceDescr namedConsequenceDescr = (NamedConsequenceDescr) ruleDescr.getLhs().getDescrs().get(2);
         assertThat(namedConsequenceDescr.getName()).isEqualTo("FoundMarkOrMario");
     }
 
     @Test
-    void testNamedConsequencesInsideOR1() {
+    void namedConsequencesInsideOR1() {
         final String text =
                 "import org.drools.mvel.compiler.Cheese;\n " +
                         "global java.util.List results;\n" +
@@ -4737,7 +4675,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void testNamedConsequencesInsideOR2() {
+    void namedConsequencesInsideOR2() {
         final String text =
                 "import org.drools.mvel.compiler.Cheese;\n " +
                         "global java.util.List results;\n" +
@@ -4783,7 +4721,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    public void queryComplexLhs() {
+    void queryComplexLhs() {
         final String text = "query isContainedIn(String x, String y)\n" +
                 "    Location (x, y;)\n" +
                 "    or\n" +
@@ -4923,7 +4861,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    public void enumDeclaration() {
+    void enumDeclaration() {
         final String text =
                 "declare enum PersonAge\n" +
                         "    @doc(author=\"Bob\")\n" +
@@ -4994,7 +4932,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    public void noWhitespaceBetweenRuleKeywordAndName() {
+    void noWhitespaceBetweenRuleKeywordAndName() {
         final String text = "rule X when then end rule\"Y\" when then end rule'Z'when then end";
 
         PackageDescr pkg = parseAndGetPackageDescr(text);
@@ -5063,7 +5001,7 @@ class MiscDRLParserTest {
                         "then\n" +
                         "end";
         RuleDescr rule = parseAndGetFirstRuleDescr(text);
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(2);
+        assertThat(rule.getLhs().getDescrs()).hasSize(2);
 
         final PatternDescr outPattern = (PatternDescr) rule.getLhs().getDescrs().get(1);
         AccumulateDescr accumulateDescr = (AccumulateDescr) outPattern.getSource();
@@ -5278,12 +5216,12 @@ class MiscDRLParserTest {
                 "then end";
         RuleDescr rule = parseAndGetFirstRuleDescr(drl);
 
-        final PatternDescr outPattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+        final PatternDescr outPattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
         final AccumulateDescr accum = (AccumulateDescr) outPattern.getSource();
-        assertThat(accum.getInitCode()).isEqualTo( "double total = 0;");
+        assertThat(accum.getInitCode()).isEqualTo("double total = 0;");
         assertThat(accum.getActionCode()).isEmpty();
         assertThat(accum.getReverseCode()).isEmpty();
-        assertThat(accum.getResultCode()).isEqualTo( "new Double( total )");
+        assertThat(accum.getResultCode()).isEqualTo("new Double( total )");
 
         assertThat(accum.isExternalFunction()).isFalse();
 

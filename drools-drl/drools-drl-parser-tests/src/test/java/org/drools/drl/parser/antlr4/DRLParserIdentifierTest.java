@@ -47,7 +47,7 @@ class DRLParserIdentifierTest {
     private DrlParser parser;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         parser = ParserTestUtils.getParser();
     }
 
@@ -108,7 +108,7 @@ class DRLParserIdentifierTest {
     }
 
     @Test
-    public void function() {
+    void function() {
         final String text = "function boolean contains(String s) { return true; }";
         PackageDescr packageDescr = parseAndGetPackageDescr(text);
         FunctionDescr function = packageDescr.getFunctions().get(0);
@@ -116,7 +116,7 @@ class DRLParserIdentifierTest {
     }
 
     @Test
-    public void patternFilter() {
+    void patternFilter() {
         final String text = "rule X when StockTick( symbol==\"ACME\") over window:contains(10) then end";
         RuleDescr rule = parseAndGetFirstRuleDescr(text);
         PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
@@ -127,7 +127,7 @@ class DRLParserIdentifierTest {
     }
 
     @Test
-    public void accumulateFunction() {
+    void accumulateFunction() {
         final String text = "rule R1\n" +
                 "when\n" +
                 "     accumulate( Person( $age : age > 21 ), $ave : contains( $age ) );\n" +
@@ -140,7 +140,7 @@ class DRLParserIdentifierTest {
     }
 
     @Test
-    public void fromWindow() {
+    void fromWindow() {
         final String text =
                 "rule X\n" +
                         "when\n" +
@@ -155,7 +155,7 @@ class DRLParserIdentifierTest {
     }
 
     @Test
-    public void type() {
+    void type() {
         final String text = "global contains.matches bbb";
         PackageDescr pkg = parseAndGetPackageDescr(text);
         GlobalDescr global = pkg.getGlobals().get(0);
@@ -164,7 +164,7 @@ class DRLParserIdentifierTest {
     }
 
     @Test
-    public void unification() throws Exception {
+    void unification() {
         final String text = "rule X\n" +
                 "when\n" +
                 "  contains := Person()\n" +
@@ -176,7 +176,7 @@ class DRLParserIdentifierTest {
     }
 
     @Test
-    public void annotation() {
+    void annotation() {
         final String text = "rule R\n" +
                 "@contains.matches(soundslike=\"abc\")\n" +
                 "when\n" +
@@ -188,7 +188,7 @@ class DRLParserIdentifierTest {
     }
 
     @Test
-    public void constraintBoundVariable() {
+    void constraintBoundVariable() {
         final String text = "rule X\n" +
                 "when\n" +
                 "  Person( contains : age > 20)\n" +
@@ -200,7 +200,7 @@ class DRLParserIdentifierTest {
     }
 
     @Test
-    public void constraintBoundVariableUnify() {
+    void constraintBoundVariableUnify() {
         final String text = "rule X\n" +
                 "when\n" +
                 "  Person( contains := age > 20)\n" +
