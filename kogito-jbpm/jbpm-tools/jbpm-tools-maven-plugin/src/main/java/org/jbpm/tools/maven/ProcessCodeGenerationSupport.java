@@ -70,13 +70,13 @@ public class ProcessCodeGenerationSupport {
 
     private Path rootOutputFolder;
 
-    public ProcessCodeGenerationSupport(Path sourceFolder, Path outputFolder) {
+    public ProcessCodeGenerationSupport(Path sourceFolder, Path outputFolder, ClassLoader classLoader) {
         this.printer = new DefaultPrettyPrinter();
         this.bpmnSemanticModules = new SemanticModules();
         this.bpmnSemanticModules.addSemanticModule(new BPMNSemanticModule());
         this.bpmnSemanticModules.addSemanticModule(new BPMNExtensionsSemanticModule());
         this.bpmnSemanticModules.addSemanticModule(new BPMNDISemanticModule());
-        this.processCodeGenerator = new ProcessToExecModelGenerator("StaticProcessTemplate.java", Thread.currentThread().getContextClassLoader());
+        this.processCodeGenerator = new ProcessToExecModelGenerator("StaticProcessTemplate.java", classLoader);
         this.rootSourceFolder = sourceFolder;
         this.rootOutputFolder = outputFolder;
     }
@@ -212,6 +212,9 @@ public class ProcessCodeGenerationSupport {
         writeCompilationUnit(modelMetadata.generateUnit());
         writeCompilationUnit(inputMdelMetadata.generateUnit());
         writeCompilationUnit(outputModelMetadata.generateUnit());
+        for (CompilationUnit handler : metadata.getGeneratedHandlers().values()) {
+            writeCompilationUnit(handler);
+        }
     }
 
     private void writeCompilationUnit(CompilationUnit unit) throws IOException {

@@ -44,7 +44,7 @@ public class ProcessCodegenTestMojo extends AbstractMojo {
 
         Path sourceTestFolder = Paths.get(project.getBasedir().toString(), resources);
         Path outputTestFolder = Paths.get(project.getBuild().getDirectory(), "generated-test-sources", "jbpm");
-        ProcessCodeGenerationSupport codeGenSupport = new ProcessCodeGenerationSupport(sourceTestFolder, outputTestFolder);
+        ProcessCodeGenerationSupport codeGenSupport = new ProcessCodeGenerationSupport(sourceTestFolder, outputTestFolder, ClassLoaderHelper.getClassLoader(project));
         codeGenSupport.execute();
     }
 

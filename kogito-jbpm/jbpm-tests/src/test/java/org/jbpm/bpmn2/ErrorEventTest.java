@@ -23,6 +23,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.jbpm.bpmn2.error.EndErrorModel;
+import org.jbpm.bpmn2.error.EndErrorProcess;
+import org.jbpm.bpmn2.error.ErrorVariableModel;
+import org.jbpm.bpmn2.error.ErrorVariableProcess;
 import org.jbpm.bpmn2.handler.ServiceTaskHandler;
 import org.jbpm.bpmn2.handler.SignallingTaskHandlerDecorator;
 import org.jbpm.bpmn2.objects.ExceptionOnPurposeHandler;
@@ -32,10 +36,15 @@ import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.jbpm.process.instance.event.listeners.RuleAwareProcessEventListener;
 import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
+import org.jbpm.test.utils.EventTrackerProcessListener;
+import org.jbpm.test.utils.ProcessTestHelper;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.api.event.process.ProcessNodeLeftEvent;
+import org.kie.kogito.Application;
+import org.kie.kogito.handlers.AlwaysThrowingComponent_throwException__8DA0CD88_0714_43C1_B492_A70FADE42361_Handler;
+import org.kie.kogito.handlers.LoggingComponent_logException__E5B0E78B_0112_42F4_89FF_0DCC4FCB6BCD_Handler;
 import org.kie.kogito.internal.process.event.DefaultKogitoProcessEventListener;
 import org.kie.kogito.internal.process.event.KogitoProcessEventListener;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
@@ -440,22 +449,36 @@ public class ErrorEventTest extends JbpmBpmn2TestCase {
 
     @Test
     public void testEndError() throws Exception {
-        kruntime = createKogitoProcessRuntime("error/EndError.bpmn2");
+        Application app = ProcessTestHelper.newApplication();
+        EventTrackerProcessListener eventTrackerProcessListener = new EventTrackerProcessListener();
+        ProcessTestHelper.registerProcessEventListener(app, eventTrackerProcessListener);
+        org.kie.kogito.process.Process<EndErrorModel> processDefinition = EndErrorProcess.newProcess(app);
+        org.kie.kogito.process.ProcessInstance<EndErrorModel> instance = processDefinition.createInstance(processDefinition.createModel());
+        instance.start();
 
-        KogitoProcessInstance processInstance = kruntime.startProcess("EndError");
+        assertThat(eventTrackerProcessListener.tracked()).anyMatch(ProcessTestHelper.triggered("start"));
+        assertThat(eventTrackerProcessListener.tracked()).anyMatch(ProcessTestHelper.triggered("task"));
+        assertThat(instance.status()).isEqualTo(KogitoProcessInstance.STATE_ABORTED);
 
-        assertNodeTriggered(processInstance.getStringId(), "start", "task");
-
-        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_ABORTED);
     }
 
     @Test
     public void testErrorVariable() throws Exception {
-        kruntime = createKogitoProcessRuntime("error/ErrorVariable.bpmn2");
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Service Task", new WorkItemExecutionErrorWorkItemHandler("MY_ERROR"));
-        KogitoProcessInstance processInstance = kruntime.startProcess("ErrorVariable");
-        Object theException = processInstance.getVariables().get("theException");
-        assertThat(theException).isInstanceOf(WorkItemExecutionException.class);
+
+        Application app = ProcessTestHelper.newApplication();
+        ProcessTestHelper.registerHandler(app, "Service Task", new WorkItemExecutionErrorWorkItemHandler("MY_ERROR"));
+        ProcessTestHelper.registerHandler(app, "org.jbpm.bpmn2.services.AlwaysThrowingComponent_throwException__8DA0CD88_0714_43C1_B492_A70FADE42361_Handler",
+                new AlwaysThrowingComponent_throwException__8DA0CD88_0714_43C1_B492_A70FADE42361_Handler());
+        ProcessTestHelper.registerHandler(app, "org.jbpm.bpmn2.services.LoggingComponent_logException__E5B0E78B_0112_42F4_89FF_0DCC4FCB6BCD_Handler",
+                new LoggingComponent_logException__E5B0E78B_0112_42F4_89FF_0DCC4FCB6BCD_Handler());
+        org.kie.kogito.process.Process<ErrorVariableModel> processDefinition = ErrorVariableProcess.newProcess(app);
+        ErrorVariableModel model = processDefinition.createModel();
+        model.setTheException("theException");
+        org.kie.kogito.process.ProcessInstance<ErrorVariableModel> instance = processDefinition.createInstance(model);
+        instance.start();
+
+        assertThat(instance.variables().getTheException()).isInstanceOf(WorkItemExecutionException.class);
+        assertThat(instance.status()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
     }
 
     class ExceptionWorkItemHandler implements KogitoWorkItemHandler {

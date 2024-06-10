@@ -43,7 +43,7 @@ public class ProcessCodegenMojo extends AbstractMojo {
     public void execute() throws MojoExecutionException {
         Path sourceFolder = Paths.get(project.getBasedir().toString(), resources);
         Path outputFolder = Paths.get(project.getBuild().getDirectory(), "generated-sources", "jbpm");
-        ProcessCodeGenerationSupport codeGenSupport = new ProcessCodeGenerationSupport(sourceFolder, outputFolder);
+        ProcessCodeGenerationSupport codeGenSupport = new ProcessCodeGenerationSupport(sourceFolder, outputFolder, ClassLoaderHelper.getClassLoader(project));
         codeGenSupport.execute();
     }
 

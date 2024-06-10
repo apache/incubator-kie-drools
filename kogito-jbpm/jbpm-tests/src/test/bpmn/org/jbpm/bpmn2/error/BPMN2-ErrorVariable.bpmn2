@@ -29,7 +29,7 @@
   <bpmn2:interface id="_E5B0E78B-0112-42F4-89FF-0DCC4FCB6BCD_ServiceInterface" name="org.jbpm.services.LoggingComponent" implementationRef="org.jbpm.bpmn2.services.LoggingComponent">
     <bpmn2:operation id="_E5B0E78B-0112-42F4-89FF-0DCC4FCB6BCD_ServiceOperation" name="logException" implementationRef="logException"/>
   </bpmn2:interface>
-  <bpmn2:process id="ErrorVariable" drools:packageName="com.example" drools:version="1.0" drools:adHoc="false" name="ErrorVariable" isExecutable="true" processType="Public">
+  <bpmn2:process id="ErrorVariable" drools:packageName="org.jbpm.bpmn2.error" drools:version="1.0" drools:adHoc="false" name="ErrorVariable" isExecutable="true" processType="Public">
     <bpmn2:property id="theException" itemSubjectRef="_theExceptionItem" name="theException"/>
     <bpmn2:sequenceFlow id="_52EEDF72-07C7-46FE-BB5C-9513565AB210" sourceRef="_E5B0E78B-0112-42F4-89FF-0DCC4FCB6BCD" targetRef="_62803D2E-7500-4772-99F8-12CF68FB029A"/>
     <bpmn2:sequenceFlow id="_96D31184-08C6-4DC9-B405-4FC97B477DCC" sourceRef="_62803D2E-7500-4772-99F8-12CF68FB029A" targetRef="_D318B115-D923-4448-AA4E-CACCCDEB9DD5"/>
@@ -47,7 +47,7 @@
       <bpmn2:incoming>_52EEDF72-07C7-46FE-BB5C-9513565AB210</bpmn2:incoming>
       <bpmn2:outgoing>_96D31184-08C6-4DC9-B405-4FC97B477DCC</bpmn2:outgoing>
     </bpmn2:exclusiveGateway>
-    <bpmn2:serviceTask id="_E5B0E78B-0112-42F4-89FF-0DCC4FCB6BCD" drools:serviceimplementation="Java" drools:serviceinterface="org.jbpm.bpmn2.servicesLoggingComponent" drools:serviceoperation="logException" name="Error Handling" implementation="Java" operationRef="_E5B0E78B-0112-42F4-89FF-0DCC4FCB6BCD_ServiceOperation">
+    <bpmn2:serviceTask id="_E5B0E78B-0112-42F4-89FF-0DCC4FCB6BCD" drools:serviceimplementation="Java" drools:serviceinterface="org.jbpm.bpmn2.services.LoggingComponent" drools:serviceoperation="logException" name="Error Handling" implementation="Java" operationRef="_E5B0E78B-0112-42F4-89FF-0DCC4FCB6BCD_ServiceOperation">
       <bpmn2:extensionElements>
         <drools:metaData name="elementname">
           <drools:metaValue><![CDATA[Error Handling]]></drools:metaValue>
