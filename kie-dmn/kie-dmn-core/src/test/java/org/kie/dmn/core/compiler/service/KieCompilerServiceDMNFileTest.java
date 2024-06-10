@@ -18,9 +18,9 @@
  */
 package org.kie.dmn.core.compiler.service;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
 
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.identifiers.LocalComponentIdDmn;
 import org.kie.dmn.core.compiler.model.DmnCompilationContext;
 import org.kie.dmn.core.compiler.model.EfestoCallableOutputDMN;
@@ -40,21 +40,21 @@ import java.nio.file.Path;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.kie.efesto.common.api.utils.MemoryFileUtils.getFileFromFileName;
 
 public class KieCompilerServiceDMNFileTest {
 
     private static KieCompilerService kieCompilationService;
 
-    @BeforeClass
+    @BeforeAll
     public static void setUp() {
         kieCompilationService = new KieCompilationServiceDMNFile();
     }
 
     @Test
-    public void canManageResource() throws IOException {
+    void canManageResource() throws IOException {
         String fileName = "0001-input-data-string.dmn";
         File dmnFile = getFileFromFileName(fileName).orElseThrow(() -> new RuntimeException("Failed to get dmn file"));
         EfestoFileResource toProcess = new EfestoFileResource(dmnFile);
@@ -64,7 +64,7 @@ public class KieCompilerServiceDMNFileTest {
     }
 
     @Test
-    public void processResource() {
+    void processResource() {
         String modelName = "_0001-input-data-string";
         String fileName = "0001-input-data-string";
         String fullFileName = String.format("%s.dmn", fileName);
@@ -85,7 +85,7 @@ public class KieCompilerServiceDMNFileTest {
     }
 
     @Test
-    public void processResourcesWithoutRedirect() {
+    void processResourcesWithoutRedirect() {
         String modelName = "0001-input-data-string";
         String fileName = String.format("%s.dmn", modelName);
         File dmnFile = getFileFromFileName(fileName).orElseThrow(() -> new RuntimeException("Failed to get dmn file"));
@@ -94,6 +94,7 @@ public class KieCompilerServiceDMNFileTest {
                 EfestoCompilationContextUtils.buildWithParentClassLoader(Thread.currentThread().getContextClassLoader());
         CompilationManagerUtils.processResourceWithContext(toProcess, context);
         context.createIndexFiles(Path.of("/Users/gcardosi/tmp"));
+        // TODO @gcardosi
 
     }
 

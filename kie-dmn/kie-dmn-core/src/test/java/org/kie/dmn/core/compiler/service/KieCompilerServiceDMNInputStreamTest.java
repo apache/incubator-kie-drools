@@ -19,8 +19,9 @@
 package org.kie.dmn.core.compiler.service;
 
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.kie.efesto.compilationmanager.api.model.EfestoFileResource;
 import org.kie.efesto.compilationmanager.api.model.EfestoInputStreamResource;
 import org.kie.efesto.compilationmanager.api.service.KieCompilerService;
@@ -36,13 +37,13 @@ public class KieCompilerServiceDMNInputStreamTest {
 
     private static KieCompilerService kieCompilationService;
 
-    @BeforeClass
+    @BeforeAll
     public static void setUp() {
         kieCompilationService = new KieCompilationServiceDMNInputStream();
     }
 
     @Test
-    public void canManageResource() throws IOException {
+    void canManageResource() throws IOException {
         String fileName = "0001-input-data-string.dmn";
         File dmnFile = getFileFromFileName(fileName).orElseThrow(() -> new RuntimeException("Failed to get dmn file"));
         EfestoInputStreamResource toProcess = new EfestoInputStreamResource(Files.newInputStream(dmnFile.toPath()), fileName);

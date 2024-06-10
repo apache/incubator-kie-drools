@@ -19,8 +19,9 @@
 package org.kie.dmn.core.runtime.service;
 
 import org.assertj.core.api.Assertions;
-import org.junit.BeforeClass;
-import org.junit.Test;
+
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.identifiers.DmnIdFactory;
 import org.kie.dmn.api.identifiers.KieDmnComponentRoot;
@@ -52,7 +53,7 @@ public class KieRuntimeServiceDMNMapInputTest {
     private EfestoInput<Map<String, Object>> inputDMN;
     private EfestoRuntimeContext efestoRuntimeContext;
 
-    @BeforeClass
+    @BeforeAll
     public static void setup() {
         kieRuntimeServiceDMNMapInput = new KieRuntimeServiceDMNMapInput();
         memoryCompilerClassLoader =
@@ -60,7 +61,7 @@ public class KieRuntimeServiceDMNMapInputTest {
     }
 
     @Test
-    public void canManageManageableInput() {
+    void canManageManageableInput() {
         modelLocalUriId = getModelLocalUriIdFromDmnIdFactory(FILE_NAME, MODEL_NAME);
         Map<String, Object> inputData = new HashMap<>();
         inputDMN = new BaseEfestoInput<>(modelLocalUriId, inputData);
@@ -69,7 +70,7 @@ public class KieRuntimeServiceDMNMapInputTest {
     }
 
     @Test
-    public void evaluateCorrectInput() {
+    void evaluateCorrectInput() {
         modelLocalUriId = getModelLocalUriIdFromDmnIdFactory(FILE_NAME, MODEL_NAME);
         Map<String, Object> inputData = Map.of("Full Name", "John Doe");
         inputDMN = new BaseEfestoInput<>(modelLocalUriId, inputData);
