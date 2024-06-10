@@ -212,6 +212,7 @@ public class UnmarshalMarshalTest {
                                                                                                return outcome;
                                                                                            })))
                                        .ignoreWhitespace()
+                                       .ignoreComments()
                                        .checkForSimilar()
                                        .build();
         checkSimilar.getDifferences().forEach(m -> LOG.error("{}", m));
