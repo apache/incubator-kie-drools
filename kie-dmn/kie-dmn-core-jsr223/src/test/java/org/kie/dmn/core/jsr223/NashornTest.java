@@ -31,19 +31,19 @@ import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class NashornTest {
+class NashornTest {
     private static final Logger LOG = LoggerFactory.getLogger( NashornTest.class );
     private static final String NASHORN_ARGS = "nashorn.args";
     private String nashornArgsFromSys;
-    
+
     @BeforeEach
-    public void init() {
+    void init() {
         nashornArgsFromSys = System.getProperty(NASHORN_ARGS);
         System.setProperty(NASHORN_ARGS, "--language=es6"); // TODO document: anyway is a partial ES6 support.
     }
-    
+
     @AfterEach
-    public void end() {
+    void end() {
         if (nashornArgsFromSys != null) {
             System.setProperty(NASHORN_ARGS, nashornArgsFromSys);
         } else {
@@ -52,7 +52,7 @@ public class NashornTest {
     }
 
     @Test
-    public void testNashorn() {
+    void nashorn() {
         DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults()
             .setDecisionLogicCompilerFactory(new JSR223EvaluatorCompilerFactory())
             .buildConfiguration()
@@ -67,9 +67,9 @@ public class NashornTest {
         LOG.info("{}", evaluateAll.getMessages());
         assertThat(evaluateAll.getDecisionResultByName("BMI value classification").getResult()).isEqualTo("Normal range");
     }
-    
+
     @Test
-    public void testIsPersonNameAnAdult() {
+    void isPersonNameAnAdult() {
         DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults()
             .setDecisionLogicCompilerFactory(new JSR223EvaluatorCompilerFactory())
             .buildConfiguration()

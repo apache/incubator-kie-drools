@@ -24,9 +24,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNMessageType;
 import org.kie.dmn.feel.runtime.Range.RangeBoundary;
@@ -44,20 +43,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.validation.DMNValidator.Validation.ANALYZE_DECISION_TABLE;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
 
-@RunWith(Parameterized.class)
 public class OverlapHitPolicyTest extends AbstractDTAnalysisTest {
-
-    @Parameterized.Parameter()
     public HitPolicy hp;
 
-    @Parameterized.Parameters(name = "using {0}")
     public static Collection<HitPolicy> data() {
         // Overlaps are not checked for COLLECT hit policy
         return Arrays.asList(HitPolicy.values()).stream().filter(hp-> hp!= HitPolicy.COLLECT).collect(Collectors.toList());
     }
 
-    @Test
-    public void testOverlapHitPolicy() {
+    @MethodSource("data")
+    @ParameterizedTest(name = "using {0}")
+    public void overlapHitPolicy(HitPolicy hp) {
+        initOverlapHitPolicyTest(hp);
         Definitions definitions = getDefinitions("OverlapHitPolicy.dmn", "https://github.com/kiegroup/drools/kie-dmn/_3010653A-DD3F-4C88-89DA-3FDD845F6604", "OverlapHitPolicy");
 
         // mutates XML file in the Hit Policy, accordingly to this test parameter.
@@ -100,6 +97,10 @@ public class OverlapHitPolicyTest extends AbstractDTAnalysisTest {
 
         // Assert OVERLAPs same values
         assertThat(analysis.getOverlaps()).containsAll(overlaps);
+    }
+
+    public void initOverlapHitPolicyTest(HitPolicy hp) {
+        this.hp = hp;
     }
 
 }

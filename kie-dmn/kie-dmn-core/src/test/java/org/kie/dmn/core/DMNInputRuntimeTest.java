@@ -24,7 +24,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNDecisionResult;
 import org.kie.dmn.api.core.DMNMessage;
@@ -46,12 +48,10 @@ import static org.kie.dmn.core.util.DynamicTypeUtils.prototype;
 
 public class DMNInputRuntimeTest extends BaseInterpretedVsCompiledTest {
 
-    public DMNInputRuntimeTest(final boolean useExecModelCompiler ) {
-        super( useExecModelCompiler );
-    }
-
-    @Test
-    public void testInputStringEvaluateAll() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void inputStringEvaluateAll(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "0001-input-data-string.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel( "https://github.com/kiegroup/drools/kie-dmn", "_0001-input-data-string" );
         assertThat(dmnModel).isNotNull();
@@ -69,8 +69,10 @@ public class DMNInputRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat( result.get( "Greeting Message" )).isEqualTo("Hello John Doe" );
     }
 
-    @Test
-    public void testInputStringEvaluateDecisionByName() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void inputStringEvaluateDecisionByName(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "0001-input-data-string.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel( "https://github.com/kiegroup/drools/kie-dmn", "_0001-input-data-string" );
         assertThat(dmnModel).isNotNull();
@@ -100,8 +102,10 @@ public class DMNInputRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat( dmnResult.getDecisionResultByName( "Greeting Message" ).getEvaluationStatus()).isEqualTo(DMNDecisionResult.DecisionEvaluationStatus.NOT_EVALUATED );
     }
 
-    @Test
-    public void testInputStringEvaluateDecisionById() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void inputStringEvaluateDecisionById(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "0001-input-data-string.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel( "https://github.com/kiegroup/drools/kie-dmn", "_0001-input-data-string" );
         assertThat(dmnModel).isNotNull();
@@ -131,8 +135,10 @@ public class DMNInputRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat( dmnResult.getDecisionResultByName( "Greeting Message" ).getEvaluationStatus()).isEqualTo(DMNDecisionResult.DecisionEvaluationStatus.NOT_EVALUATED );
     }
 
-    @Test
-    public void testInputStringAllowedValuesEvaluateAll() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void inputStringAllowedValuesEvaluateAll(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "0003-input-data-string-allowed-values.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel( "https://github.com/kiegroup/kie-dmn", "0003-input-data-string-allowed-values" );
         assertThat(dmnModel).isNotNull();
@@ -147,13 +153,17 @@ public class DMNInputRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat( result.get( "Employment Status Statement" )).isEqualTo("You are SELF-EMPLOYED" );
     }
 
-    @Test
-    public void testInputStringNotInTypeScopeEvaluateAll() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void inputStringNotInTypeScopeEvaluateAll(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         testInputStringNotAllowedValuesEvaluateAll("NOT-ALLOWED-VALUE");
     }
 
-    @Test
-    public void testInputStringWrongTypeEvaluateAll() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void inputStringWrongTypeEvaluateAll(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         testInputStringNotAllowedValuesEvaluateAll(new Object());
     }
 
@@ -175,15 +185,19 @@ public class DMNInputRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat(dmnResult.getDecisionResults().get(0).getMessages().get(0).getSeverity()).isEqualTo(DMNMessage.Severity.ERROR);
     }
 
-    @Test
-    public void testInputNumberEvaluateAll() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void inputNumberEvaluateAll(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         inputNumberEvaluateAll(
             "0002-input-data-number.dmn", 
             "0002-input-data-number");
     }
 
-    @Test
-    public void testInputNumberEvaluateAllDMNWithScientificNotation() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void inputNumberEvaluateAllDMNWithScientificNotation(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         inputNumberEvaluateAll(
             "0002-input-data-number-scientific-notation.dmn", 
             "0002-input-data-number-scientific-notation");
@@ -206,8 +220,10 @@ public class DMNInputRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat((BigDecimal) resultValue).usingComparator(BigDecimal::compareTo).isEqualTo(new BigDecimal(12000));
     }
 
-    @Test
-    public void testGetRequiredInputsByName() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void getRequiredInputsByName(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "0001-input-data-string.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel( "https://github.com/kiegroup/drools/kie-dmn", "_0001-input-data-string" );
         assertThat(dmnModel).isNotNull();
@@ -221,8 +237,10 @@ public class DMNInputRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat( inputs).hasSize(0);
     }
 
-    @Test
-    public void testGetRequiredInputsById() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void getRequiredInputsById(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "0001-input-data-string.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel( "https://github.com/kiegroup/drools/kie-dmn", "_0001-input-data-string" );
         assertThat(dmnModel).isNotNull();
@@ -236,8 +254,10 @@ public class DMNInputRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat( inputs).hasSize(0);
     }
 
-    @Test
-    public void testNonexistantInputNodeName() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void nonexistantInputNodeName(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "0001-input-data-string.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel( "https://github.com/kiegroup/drools/kie-dmn", "_0001-input-data-string" );
         assertThat(dmnModel).isNotNull();
@@ -255,8 +275,10 @@ public class DMNInputRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat( dmnResult.getDecisionResults().get(0).getMessages().get(0).getSeverity()).isEqualTo(DMNMessage.Severity.ERROR);
     }
 
-    @Test
-    public void testAllowedValuesChecksInsideCollectionElement() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void allowedValuesChecksInsideCollectionElement(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "AllowedValuesChecks.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel(
                 "http://www.trisotech.com/definitions/_238bd96d-47cd-4746-831b-504f3e77b442",
@@ -289,8 +311,10 @@ public class DMNInputRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat(dmnResult4.getMessages().stream().anyMatch(m -> m.getMessageType().equals(DMNMessageType.ERROR_EVAL_NODE))).isTrue();
     }
 
-    @Test
-    public void testAllowedValuesChecksInsideCollection() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void allowedValuesChecksInsideCollection(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("valid_models/DMNv1_5/AllowedValuesChecksInsideCollection.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel(
                 "http://www.trisotech.com/definitions/_238bd96d-47cd-4746-831b-504f3e77b442",
@@ -323,8 +347,10 @@ public class DMNInputRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat(dmnResult4.getMessages().stream().anyMatch(m -> m.getMessageType().equals(DMNMessageType.ERROR_EVAL_NODE))).isTrue();
     }
 
-    @Test
-    public void testTypeConstraintsChecks() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void typeConstraintsChecks(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("valid_models/DMNv1_5/TypeConstraintsChecks.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel(
                 "http://www.trisotech.com/definitions/_238bd96d-47cd-4746-831b-504f3e77b442",
@@ -351,8 +377,10 @@ public class DMNInputRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat(dmnResult3.getMessages().stream().anyMatch(m -> m.getMessageType().equals(DMNMessageType.ERROR_EVAL_NODE))).isTrue();
     }
 
-    @Test
-    public void testDMNInputDataNodeTypeTest() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void dmnInputDataNodeTypeTest(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         // DROOLS-1569
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("DMNInputDataNodeTypeTest.dmn", this.getClass());
         final String MODEL_NAMESPACE = "http://www.trisotech.com/definitions/_17396034-163a-48aa-9a7f-c6eb17f9cc6c";
@@ -392,8 +420,10 @@ public class DMNInputRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat(idnCarDamageResponsibility.getType().isComposite()).isTrue();
     }
 
-    @Test
-    public void testInputClauseTypeRefWithAllowedValues() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void inputClauseTypeRefWithAllowedValues(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("actualInputMatchInputValues-forTypeRef.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://www.drools.org/kie-dmn/definitions", "definitions");
         assertThat(dmnModel).isNotNull();
@@ -409,8 +439,10 @@ public class DMNInputRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat(result.get("MyDecision")).isEqualTo("Decision taken");
     }
 
-    @Test
-    public void testInputDataTypeRefWithAllowedValues() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void inputDataTypeRefWithAllowedValues(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("actualInputMatchInputValues-forTypeRef.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://www.drools.org/kie-dmn/definitions", "definitions");
         assertThat(dmnModel).isNotNull();
@@ -425,15 +457,19 @@ public class DMNInputRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat(dmnResult.getMessages().get(0).getSourceId()).isEqualTo("_3d560678-a126-4654-a686-bc6d941fe40b");
     }
 
-    @Test
-    public void testMissingInputData() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void missingInputData(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final List<DMNMessage> messages = DMNRuntimeUtil.createExpectingDMNMessages("missing_input_data.dmn", getClass());
         assertThat(messages.get(0).getMessageType()).isEqualTo(DMNMessageType.ERR_COMPILING_FEEL);
     }
-    
-    
-    @Test
-    public void testOrdering() {
+
+
+    @ParameterizedTest
+    @MethodSource("params")
+    void ordering(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("Order.dmn", this.getClass());
         final DMNModel dmnModel = runtime	.getModel("http://www.trisotech.com/definitions/_6318588b-c32f-4070-848b-bd8017e6b94e", "Drawing 1");
 

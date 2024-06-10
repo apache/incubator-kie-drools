@@ -31,8 +31,8 @@ import org.kie.dmn.feel.lang.impl.MapBackedType;
 import org.kie.dmn.feel.runtime.functions.CustomFEELFunction;
 import org.kie.dmn.feel.runtime.functions.DTInvokerFunction;
 import org.kie.dmn.feel.runtime.functions.JavaFunction;
-import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.dmn.feel.util.Msg;
+import org.kie.dmn.feel.util.StringEvalHelper;
 
 public class ContextNode
         extends BaseNode {
@@ -67,7 +67,7 @@ public class ContextNode
             ctx.enterFrame();
             Map<String, Object> c = new LinkedHashMap<>();
             for( ContextEntryNode cen : entries ) {
-                String name = EvalHelper.normalizeVariableName( cen.evaluateName( ctx ) );
+                String name = StringEvalHelper.normalizeVariableName(cen.evaluateName(ctx ) );
                 if (c.containsKey(name)) {
                     ctx.notifyEvt( astEvent( FEELEvent.Severity.ERROR, Msg.createMessage( Msg.DUPLICATE_KEY_CTX, name)) );
                     return null;

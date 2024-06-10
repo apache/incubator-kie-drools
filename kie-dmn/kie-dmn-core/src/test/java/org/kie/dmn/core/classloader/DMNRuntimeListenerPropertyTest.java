@@ -21,7 +21,7 @@ package org.kie.dmn.core.classloader;
 import java.util.List;
 import java.util.UUID;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -78,7 +78,7 @@ public class DMNRuntimeListenerPropertyTest {
     }
 
     @Test
-    public void test() {
+    void test() {
         final String LISTENER_KEY = "org.kie.dmn.runtime.listeners.DMNRuntimeListenerPropertyTest";
         final String LISTENER_VALUE = "com.acme.TestPropertyListener";
         System.setProperty(LISTENER_KEY, LISTENER_VALUE);

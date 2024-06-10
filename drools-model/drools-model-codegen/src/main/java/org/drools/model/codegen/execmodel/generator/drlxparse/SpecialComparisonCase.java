@@ -53,9 +53,7 @@ abstract class SpecialComparisonCase {
 
     static SpecialComparisonCase specialComparisonFactory(TypedExpression left, TypedExpression right) {
         if (isNumber(left) && !isObject(right.getRawClass()) || isNumber(right) && !isObject(left.getRawClass())) { // Don't coerce Object yet. EvaluationUtil will handle it dynamically later
-            Optional<Class<?>> leftCast = typeNeedsCast(left.getType());
-            Optional<Class<?>> rightCast = typeNeedsCast(right.getType());
-            if (leftCast.isPresent() || rightCast.isPresent()) {
+            if (typeNeedsCast(left.getType()) || typeNeedsCast(right.getType())) {
                 return new ComparisonWithCast(true, left, right, of(Number.class), of(Number.class));
             } else {
                 return new NumberComparisonWithoutCast(left, right);
@@ -67,13 +65,8 @@ abstract class SpecialComparisonCase {
         return new PlainEvaluation(left, right);
     }
 
-    private static Optional<Class<?>> typeNeedsCast(Type t) {
-        boolean needCast = isObject((Class<?>)t) || isMap((Class<?>) t) || isList((Class<?>) t);
-        if (needCast) {
-            return of((Class<?>) t);
-        } else {
-            return Optional.empty();
-        }
+    private static boolean typeNeedsCast(Type t) {
+        return t instanceof Class && ( isObject((Class<?>)t) || isMap((Class<?>) t) || isList((Class<?>) t) );
     }
 
     private static boolean isList(Class<?> t) {

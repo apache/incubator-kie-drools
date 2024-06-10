@@ -1,3 +1,22 @@
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 package org.kie.dmn.core.ast;
 
 import java.io.File;
@@ -5,7 +24,7 @@ import java.math.BigDecimal;
 import java.util.stream.Collectors;
 
 import org.drools.util.FileUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNRuntime;
@@ -19,15 +38,15 @@ import org.kie.dmn.core.impl.DMNResultImplFactory;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class DMNContextEvaluatorTest {
+class DMNContextEvaluatorTest {
 
     private DMNResultImplFactory dmnResultFactory = new DMNResultImplFactory();
 
     @Test
-    public void  dateToDateTime() {
+    void dateToDateTime() {
         File file = FileUtils.getFile("0007-date-time.dmn");
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime(file);
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_69430b3e-17b8-430d-b760-c505bf6469f9", "dateTime Table 58");

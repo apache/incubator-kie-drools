@@ -24,10 +24,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.runtime.UnaryTest;
-import org.kie.dmn.feel.util.EvalHelper;
+import org.kie.dmn.feel.util.NumberEvalHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,8 +52,8 @@ public class ManualUnaryTestsTest {
     }
 
     @Test
-    public void testManualUnaryTests() {
-        Object left = EvalHelper.coerceNumber(7);
+    void manualUnaryTests() {
+        Object left = NumberEvalHelper.coerceNumber(7);
 
         CompiledFEELUnaryTests compiledUnaryTests = new ManualImpl1();
         LOG.debug("{}", compiledUnaryTests);

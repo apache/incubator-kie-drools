@@ -29,20 +29,17 @@ import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class FEELStringMarshallerUnmarshallTest {
 
-    @Parameterized.Parameters(name = "{index}: {0} ({1}) = {2}")
-    public static Collection<Object[]> data() {
+    private static Collection<Object[]> data() {
         final Object[][] cases = new Object[][] {
                 // numbers
                 { BuiltInType.NUMBER, "2", BigDecimal.valueOf( 2 ) },
@@ -93,18 +90,14 @@ public class FEELStringMarshallerUnmarshallTest {
         };
         return Arrays.asList( cases );
     }
-
-    @Parameterized.Parameter(0)
     public Type feelType;
-
-    @Parameterized.Parameter(1)
     public String value;
-
-    @Parameterized.Parameter(2)
     public Object result;
 
-    @Test
-    public void testExpression() {
+    @MethodSource("data")
+    @ParameterizedTest(name = "{index}: {0} ({1}) = {2}")
+    public void expression(Type feelType, String value, Object result) {
+        initFEELStringMarshallerUnmarshallTest(feelType, value, result);
         assertResult( feelType, value, result );
     }
 
@@ -114,5 +107,11 @@ public class FEELStringMarshallerUnmarshallTest {
         } else {
         	assertThat(FEELStringMarshaller.INSTANCE.unmarshall( feelType, value )).as("Unmarshalling: '" + value + "'").isEqualTo(result);
         }
+    }
+
+    public void initFEELStringMarshallerUnmarshallTest(Type feelType, String value, Object result) {
+        this.feelType = feelType;
+        this.value = value;
+        this.result = result;
     }
 }

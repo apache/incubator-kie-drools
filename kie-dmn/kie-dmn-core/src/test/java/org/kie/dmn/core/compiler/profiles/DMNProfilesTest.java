@@ -20,7 +20,8 @@ package org.kie.dmn.core.compiler.profiles;
 
 import java.math.BigDecimal;
 
-import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -43,12 +44,10 @@ public class DMNProfilesTest extends BaseInterpretedVsCompiledTest {
 
     public static final Logger LOG = LoggerFactory.getLogger(DMNProfilesTest.class);
 
-    public DMNProfilesTest(final boolean useExecModelCompiler) {
-        super(useExecModelCompiler);
-    }
-
-    @Test
-    public void testJust47() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void just47(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final KieServices ks = KieServices.Factory.get();
         final KieFileSystem kfs = ks.newKieFileSystem();
 
@@ -79,8 +78,10 @@ public class DMNProfilesTest extends BaseInterpretedVsCompiledTest {
         assertThat(result.get("decision result")).isEqualTo(new BigDecimal(47));
     }
 
-    @Test
-    public void testCustomModelCount() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void customModelCount(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final KieServices ks = KieServices.Factory.get();
         final KieFileSystem kfs = ks.newKieFileSystem();
 

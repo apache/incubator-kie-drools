@@ -1,4 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
 <definitions namespace="http://www.signavio.com/dmn/1.1/diagram/c9ba63acc22a4a3ebf40ea20ea4a3151.xml" exporterVersion="14.0.0" name="survey MID" id="id-e796bb668d4b42029fe366b4918690d3" sigExt:revisionId="b18de72f1f504ba99547e1ecbcf0ea8c" sigExt:revisionNumber="2" xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns:sig="http://www.signavio.com/dmn/1.1/diagram/c9ba63acc22a4a3ebf40ea20ea4a3151.xml" xmlns:sigExt="http://www.signavio.com/schema/dmn/1.1/" xmlns:feel="http://www.omg.org/spec/FEEL/20140401">
     <extensionElements/>
     <itemDefinition isCollection="false" name="num" id="id-860e9de87cb3ecc8cc1ddc7313e75b66" label="num">

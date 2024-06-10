@@ -20,7 +20,8 @@ package org.kie.dmn.core.classloader;
 
 import java.util.UUID;
 
-import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -42,12 +43,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class DMNEvalHelperAccessorCacheTest extends BaseInterpretedVsCompiledTest {
     public static final Logger LOG = LoggerFactory.getLogger(DMNEvalHelperAccessorCacheTest.class);
 
-    public DMNEvalHelperAccessorCacheTest(final boolean useExecModelCompiler) {
-        super(useExecModelCompiler);
-    }
 
-    @Test
-    public void testClassloaderFunctionInvocation() throws Exception {
+    @ParameterizedTest
+    @MethodSource("params")
+    void classloaderFunctionInvocation(boolean useExecModelCompiler) throws Exception {
+        init(useExecModelCompiler);
         final KieServices ks = KieServices.Factory.get();
 
         final KieContainer container1 = createKieContainer1(ks);

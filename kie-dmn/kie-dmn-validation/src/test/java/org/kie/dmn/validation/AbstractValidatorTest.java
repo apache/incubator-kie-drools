@@ -27,8 +27,8 @@ import java.util.stream.Collectors;
 
 import org.drools.io.FileSystemResource;
 import org.drools.io.ReaderResource;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.kie.api.io.Resource;
 import org.kie.dmn.api.marshalling.DMNExtensionRegister;
 import org.kie.dmn.api.marshalling.DMNMarshaller;
@@ -46,7 +46,7 @@ public abstract class AbstractValidatorTest {
     protected static DMNValidator validator;
     protected static DMNMarshaller marshaller;
 
-    @BeforeClass
+    @BeforeAll
     public static void init() {
         List<DMNProfile> defaultDMNProfiles = DMNAssemblerService.getDefaultDMNProfiles(ChainedProperties.getChainedProperties(ClassLoaderUtil.findDefaultClassLoader()));
         validator = DMNValidatorFactory.newValidator(defaultDMNProfiles);
@@ -58,7 +58,7 @@ public abstract class AbstractValidatorTest {
         }
     }
 
-    @AfterClass
+    @AfterAll
     public static void dispose() {
     	if (validator != null)
         validator.dispose();

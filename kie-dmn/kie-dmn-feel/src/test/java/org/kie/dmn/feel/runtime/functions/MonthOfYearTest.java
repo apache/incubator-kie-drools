@@ -24,21 +24,21 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
-public class MonthOfYearTest {
+class MonthOfYearTest {
 
     private MonthOfYearFunction fut;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         fut = MonthOfYearFunction.INSTANCE;
     }
 
     @Test
-    public void testMonthOfYearFunctionTemporalAccessor() {
+    void monthOfYearFunctionTemporalAccessor() {
         FunctionTestUtil.assertResult(fut.invoke(LocalDate.of(2019, 9, 17)), "September");
         FunctionTestUtil.assertResult(fut.invoke(LocalDateTime.of(2019, 9, 17, 0, 0, 0)), "September");
         FunctionTestUtil.assertResult(fut.invoke(OffsetDateTime.of(2019, 9, 17, 0, 0, 0, 0, ZoneOffset.UTC)), "September");

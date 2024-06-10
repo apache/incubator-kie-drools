@@ -1,9 +1,0 @@
-package org.drools.cep
-
-import org.drools.quarkus.test.StockTick
-
-rule R when
-    $a : StockTick( company == "DROO" )
-    $b : StockTick( company == "ACME", this after[5s,8s] $a )
-then
-end

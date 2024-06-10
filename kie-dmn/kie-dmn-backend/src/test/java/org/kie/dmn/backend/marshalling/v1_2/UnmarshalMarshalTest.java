@@ -33,7 +33,7 @@ import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.marshalling.DMNMarshaller;
 import org.kie.dmn.backend.marshalling.v1_2.extensions.MyTestRegister;
 import org.kie.dmn.backend.marshalling.v1x.DMNMarshallerFactory;
@@ -65,49 +65,49 @@ public class UnmarshalMarshalTest {
     protected static final Logger LOG = LoggerFactory.getLogger(UnmarshalMarshalTest.class);
 
     @Test
-    public void testV12_simple() throws Exception {
+    void v12Simple() throws Exception {
         testRoundTripV12("org/kie/dmn/backend/marshalling/v1_2/", "simple.dmn");
     }
 
     @Test
-    public void testV12_ch11example() throws Exception {
+    void v12Ch11example() throws Exception {
         testRoundTripV12("org/kie/dmn/backend/marshalling/v1_2/", "ch11example.dmn");
     }
 
     @Test
-    public void testV12_ImportName() throws Exception {
+    void v12_ImportName() throws Exception {
         testRoundTripV12("org/kie/dmn/backend/marshalling/v1_2/", "ImportName.dmn");
     }
 
     @Test
-    public void testV12_DecisionService20180911v12() throws Exception {
+    void v12_DecisionService20180911v12() throws Exception {
         // DROOLS-2987 DMN v1.2 marshaller failing marshalling DecisionService node and dmndi:DMNDecisionServiceDividerLine
         testRoundTripV12("org/kie/dmn/backend/marshalling/v1_2/", "DecisionService20180911v12.dmn");
     }
 
     @Test
-    public void testV12_DiamondWithColors() throws Exception {
+    void v12_DiamondWithColors() throws Exception {
         testRoundTripV12("org/kie/dmn/backend/marshalling/v1_2/", "diamondWithColors.dmn");
     }
 
     @Test
-    public void testV12_DMNDIDiagramElementExtension() throws Exception {
+    void v12_dmndiDiagramElementExtension() throws Exception {
         testRoundTripV12("org/kie/dmn/backend/marshalling/v1_2/", "DMNDIDiagramElementExtension.dmn");
     }
 
     @Test
-    public void testV12_DMNDIDiagramElementExtension_withContent() throws Exception {
+    void v12_dmndiDiagramElementExtensionWithContent() throws Exception {
         DMNMarshaller marshaller = DMNMarshallerFactory.newMarshallerWithExtensions(List.of(new MyTestRegister()));
         testRoundTrip("org/kie/dmn/backend/marshalling/v1_2/", "DMNDIDiagramElementExtension_withContent.dmn", marshaller, DMN12_SCHEMA_SOURCE);
     }
 
     @Test
-    public void test_hardcoded_java_max_call() throws Exception {
+    void hardcoded_java_max_call() throws Exception {
         testRoundTripV12("org/kie/dmn/backend/marshalling/v1_2/", "hardcoded-java-max-call.dmn");
     }
 
     @Test
-    public void test_FontSize_sharedStyle() throws Exception {
+    void font_size_shared_style() throws Exception {
         testRoundTripV12("org/kie/dmn/backend/marshalling/v1_2/", "test-FontSize-sharedStyle.dmn");
         Definitions definitions = MARSHALLER.unmarshal(new InputStreamReader(this.getClass().getResourceAsStream("test-FontSize-sharedStyle.dmn")));
         DMNShape shape0 = (DMNShape) definitions.getDMNDI().getDMNDiagram().get(0).getDMNDiagramElement().get(0);
@@ -117,12 +117,12 @@ public class UnmarshalMarshalTest {
     }
 
     @Test
-    public void test_DMNLabel_Text() throws Exception {
+    void dmnlabel_text() throws Exception {
         testRoundTripV12("org/kie/dmn/backend/marshalling/v1_2/", "DMNLabel-Text.dmn");
     }
 
     @Test
-    public void testV12_decision_list() throws Exception {
+    void v12DecisionList() throws Exception {
         testRoundTripV12("org/kie/dmn/backend/marshalling/v1_2/", "decision-list.dmn");
     }
 
@@ -258,6 +258,7 @@ DMNDIv1.2:
                                                        return outcome;
                                                    })))
                 .ignoreWhitespace()
+                .ignoreComments()
                 .checkForSimilar()
                 .build();
         checkSimilar.getDifferences().forEach(m -> LOG.error("{}", m));

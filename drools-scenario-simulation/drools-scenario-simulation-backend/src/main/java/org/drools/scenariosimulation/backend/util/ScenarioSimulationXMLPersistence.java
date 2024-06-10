@@ -62,7 +62,8 @@ public class ScenarioSimulationXMLPersistence {
         xt = XStreamUtils.createNonTrustingXStream(new DomDriver());
 
         xt.addPermission(new WildcardTypePermission( new String[] {
-                "org.drools.scenariosimulation.api.model.*"
+                "org.drools.scenariosimulation.api.model.*",
+                "org.drools.scenariosimulation.api.model.imports.*",
         }));
 
         xt.setMode(XStream.NO_REFERENCES);

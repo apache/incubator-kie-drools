@@ -39,6 +39,7 @@ import org.kie.dmn.core.impl.DMNResultImpl;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.FEEL;
+import org.kie.dmn.feel.lang.FEELDialect;
 import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
 import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
 import org.kie.dmn.feel.lang.impl.FEELImpl;
@@ -187,7 +188,7 @@ public class DMNInvocationEvaluator
             FEELEventListenersManager listenerMgr = new FEELEventListenersManager();
             listenerMgr.addListener(events::add);
 
-            EvaluationContextImpl ctx = new EvaluationContextImpl(listenerMgr, eventManager.getRuntime());
+            EvaluationContextImpl ctx = new EvaluationContextImpl(listenerMgr, eventManager.getRuntime(), FEELDialect.FEEL);
 
             invocationResult = function.invokeReflectively( ctx, namedParams );
 

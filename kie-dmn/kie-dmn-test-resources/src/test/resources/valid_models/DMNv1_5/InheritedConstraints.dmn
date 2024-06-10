@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<dmn:definitions xmlns="http://www.trisotech.com/definitions/_238bd96d-47cd-4746-831b-504f3e77b442"
+                      xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+                      xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+                      xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/"
+                      xmlns:feel="https://www.omg.org/spec/DMN/20230324/FEEL/"
+                      xmlns:dmn="https://www.omg.org/spec/DMN/20230324/MODEL/"
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      exporter="DMN Modeler"
+                      exporterVersion="5.1.10.201705011622"
+                      id="_238bd96d-47cd-4746-831b-504f3e77b442"
+                      name="InheritedConstraints"
+                      namespace="http://www.trisotech.com/definitions/_238bd96d-47cd-4746-831b-504f3e77b442">
+    <!-- simple type -->
+    <dmn:itemDefinition isCollection="false" label="A String" name="AString">
+        <dmn:typeRef>string</dmn:typeRef>
+        <dmn:allowedValues>
+            <dmn:text>string length( ? ) = 3</dmn:text>
+        </dmn:allowedValues>
+    </dmn:itemDefinition>
+    <dmn:itemDefinition isCollection="false" label="A Constrained String" name="AConstrainedString">
+        <dmn:typeRef>AString</dmn:typeRef>
+        <dmn:allowedValues>
+            <dmn:text>"Bob"</dmn:text>
+        </dmn:allowedValues>
+    </dmn:itemDefinition>
+
+    <!-- complex type -->
+   <dmn:itemDefinition isCollection="false" label="Person" name="Person">
+      <dmn:itemComponent id="_7939ee65-737d-4ea9-b912-448dd5fb2cf1"
+                              isCollection="false"
+                              name="name">
+         <dmn:typeRef>string</dmn:typeRef>
+      </dmn:itemComponent>
+       <dmn:itemComponent id="_7939ee65-737d-4ea9-b912-448dd5fb2cf2"
+                          isCollection="false"
+                          name="age">
+           <dmn:typeRef>number</dmn:typeRef>
+       </dmn:itemComponent>
+   </dmn:itemDefinition>
+    <dmn:itemDefinition isCollection="false" label="Adult Person" name="AdultPerson">
+        <dmn:typeRef>Person</dmn:typeRef>
+        <dmn:allowedValues>
+            <dmn:text>?.age >= 30</dmn:text>
+        </dmn:allowedValues>
+    </dmn:itemDefinition>
+    <dmn:itemDefinition isCollection="false" label="Adult Bob" name="AdultBob">
+        <dmn:typeRef>AdultPerson</dmn:typeRef>
+        <dmn:allowedValues>
+            <dmn:text>?.name = "Bob"</dmn:text>
+        </dmn:allowedValues>
+    </dmn:itemDefinition>
+</dmn:definitions>

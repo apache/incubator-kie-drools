@@ -18,21 +18,20 @@
  */
 package org.kie.dmn.openapi;
 
-import org.junit.Test;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.networknt.schema.JsonSchema;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.openapi.model.DMNOASResult;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.networknt.schema.JsonSchema;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class NumberAllowedValuesTest extends BaseDMNOASTest {
+class NumberAllowedValuesTest extends BaseDMNOASTest {
 
     @Test
-    public void testAllowedValues() throws Exception {
+    void allowedValues() throws Exception {
         final DMNRuntime runtime = createRuntime("numberAllowedValues.dmn", this.getClass());
         DMNOASResult result = DMNOASGeneratorFactory.generator(runtime.getModels()).build();
 
@@ -44,7 +43,7 @@ public class NumberAllowedValuesTest extends BaseDMNOASTest {
     }
 
     @Test
-    public void testNumberList() throws Exception {
+    void numberList() throws Exception {
         final DMNRuntime runtime = createRuntime("numberList.dmn", this.getClass());
         DMNOASResult result = DMNOASGeneratorFactory.generator(runtime.getModels()).build();
 
@@ -57,7 +56,7 @@ public class NumberAllowedValuesTest extends BaseDMNOASTest {
     }
 
     @Test
-    public void testGT() throws Exception {
+    void gt() throws Exception {
         final DMNRuntime runtime = createRuntime("numberGT.dmn", this.getClass());
         DMNOASResult result = DMNOASGeneratorFactory.generator(runtime.getModels()).build();
 

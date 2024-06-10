@@ -18,9 +18,6 @@
  */
 package org.kie.dmn.feel.lang.ast.forexpressioniterators;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
-
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -28,24 +25,27 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
-public class ZonedDateTimeRangeIteratorTest {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+class ZonedDateTimeRangeIteratorTest {
 
     private static ZonedDateTime before;
     private static ZonedDateTime after;
 
-    @BeforeClass
-    public static void setup() {
+    @BeforeAll
+    static void setup() {
         // Tests using on those variables relies on the exact hour/minute, because the ZonedDateTimeRangeIterator is meant to iterate on a full-day base
         before = getZonedDateTime(2021, 1, 1, 10, 15);
         after = getZonedDateTime(2021, 1, 3, 10, 15);
     }
 
     @Test
-    public void hasNextAscendantTest() {
+    void hasNextAscendantTest() {
         ZonedDateTimeRangeIterator iterator = new ZonedDateTimeRangeIterator(before, after);
         assertTrue(iterator.hasNext());
         ZonedDateTime next = iterator.next();
@@ -57,7 +57,7 @@ public class ZonedDateTimeRangeIteratorTest {
     }
 
     @Test
-    public void hasNextDescendantTest() {
+    void hasNextDescendantTest() {
         ZonedDateTimeRangeIterator iterator = new ZonedDateTimeRangeIterator(after, before);
         assertTrue(iterator.hasNext());
         ZonedDateTime next = iterator.next();
@@ -69,7 +69,7 @@ public class ZonedDateTimeRangeIteratorTest {
     }
 
     @Test
-    public void nextAscendantTest() {
+    void nextAscendantTest() {
         List<ZonedDateTime> expected = Arrays.asList(getZonedDateTime(2021, 1, 1, 10, 15),
                 getZonedDateTime(2021, 1, 2, 10, 15),
                 getZonedDateTime(2021, 1, 3, 10, 15));
@@ -78,7 +78,7 @@ public class ZonedDateTimeRangeIteratorTest {
     }
 
     @Test
-    public void nextDescendantTest() {
+    void nextDescendantTest() {
         List<ZonedDateTime> expected = Arrays.asList(getZonedDateTime(2021, 1, 3, 10, 15),
                 getZonedDateTime(2021, 1, 2, 10, 15),
                 getZonedDateTime(2021, 1, 1, 10, 15));
@@ -88,7 +88,7 @@ public class ZonedDateTimeRangeIteratorTest {
 
 
     @Test
-    public void hasNotNextAscendantTest() {
+    void hasNotNextAscendantTest() {
         ZonedDateTime start = getZonedDateTime(2021, 1, 1, 10, 15);
         ZonedDateTime end = getZonedDateTime(2021, 1, 2, 10, 14);
         ZonedDateTimeRangeIterator iterator = new ZonedDateTimeRangeIterator(start, end);
@@ -96,8 +96,9 @@ public class ZonedDateTimeRangeIteratorTest {
         assertEquals(start, retrieved);
         assertFalse(iterator.hasNext());
     }
+
     @Test
-    public void hasNotNextDescendantTest() {
+    void hasNotNextDescendantTest() {
         ZonedDateTime start = getZonedDateTime(2021, 1, 2, 10, 14);
         ZonedDateTime end = getZonedDateTime(2021, 1, 1, 10, 15);
         ZonedDateTimeRangeIterator iterator = new ZonedDateTimeRangeIterator(start, end);

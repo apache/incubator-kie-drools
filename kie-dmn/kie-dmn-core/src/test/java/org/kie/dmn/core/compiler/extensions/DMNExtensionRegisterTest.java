@@ -21,7 +21,7 @@ package org.kie.dmn.core.compiler.extensions;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -40,11 +40,11 @@ import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class DMNExtensionRegisterTest {
+class DMNExtensionRegisterTest {
     private static final Logger LOG = LoggerFactory.getLogger(DMNExtensionRegisterTest.class);
 
     @Test
-    public void testUsingSystemProperty() {
+    void usingSystemProperty() {
         try {
             System.setProperty("org.kie.dmn.profiles.FirstNameLastNameProfile", FirstNameLastNameProfile.class.getCanonicalName());
             assertThat(System.getProperty("org.kie.dmn.profiles.FirstNameLastNameProfile")).isEqualTo(FirstNameLastNameProfile.class.getCanonicalName());
@@ -81,7 +81,7 @@ public class DMNExtensionRegisterTest {
     }
 
     @Test
-    public void testUsingKModuleProperty() {
+    void usingKModuleProperty() {
         final KieServices ks = KieServices.Factory.get();
         final KieFileSystem kfs = ks.newKieFileSystem();
         
@@ -126,7 +126,7 @@ public class DMNExtensionRegisterTest {
     }
 
     @Test
-    public void testUsingKModuleProperty_WrongClasses() {
+    void usingKModulePropertyWrongClasses() {
         final KieServices ks = KieServices.Factory.get();
         final KieFileSystem kfs = ks.newKieFileSystem();
         

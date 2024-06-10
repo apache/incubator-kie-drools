@@ -33,23 +33,25 @@ import org.asciidoctor.ast.DescriptionListEntry;
 import org.asciidoctor.ast.Document;
 import org.asciidoctor.ast.ListItem;
 import org.asciidoctor.ast.StructuralNode;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.FEELProfile;
+import org.kie.dmn.feel.lang.impl.FEELBuilder;
 import org.kie.dmn.feel.parser.feel11.profiles.KieExtendedFEELProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ADocFEELExamplesTest {
+class ADocFEELExamplesTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(ADocFEELExamplesTest.class);
     private static final List<FEELProfile> profiles = new ArrayList<>();
     static {
         profiles.add(new KieExtendedFEELProfile());
     }
-    private final FEEL feel = FEEL.newInstance(profiles);
+
+    private final FEEL feel = FEELBuilder.builder().withProfiles(profiles).build();
 
     /**
      * Dev notes: the availability of the .adoc resource to this test and its refresh is governed by Maven.
@@ -57,7 +59,7 @@ public class ADocFEELExamplesTest {
      * $ mvn test -Dtest=org.kie.dmn.feel.documentation.ADocFEELExamplesTest
      */
     @Test
-    public void test() throws URISyntaxException {
+    void test() throws URISyntaxException {
         Asciidoctor asciidoctor = Asciidoctor.Factory.create();
         URL resource = this.getClass().getResource("/ref-dmn-feel-builtin-functions.adoc");
         URI uri = resource.toURI();

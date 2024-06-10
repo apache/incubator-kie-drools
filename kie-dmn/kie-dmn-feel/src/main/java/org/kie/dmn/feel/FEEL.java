@@ -23,12 +23,13 @@ import java.util.Map;
 import java.util.Set;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
+import org.kie.dmn.feel.codegen.feel11.ProcessedExpression;
 import org.kie.dmn.feel.lang.CompiledExpression;
 import org.kie.dmn.feel.lang.CompilerContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.FEELProfile;
 import org.kie.dmn.feel.lang.Type;
-import org.kie.dmn.feel.lang.impl.FEELImpl;
+import org.kie.dmn.feel.lang.impl.FEELBuilder;
 import org.kie.dmn.feel.runtime.UnaryTest;
 
 /**
@@ -37,41 +38,14 @@ import org.kie.dmn.feel.runtime.UnaryTest;
  * This class is the entry point for the engine use
  */
 public interface FEEL {
-
-    /**
-     * Factory method to create a new FEEL engine instance
-     *
-     * @return a newly instantiated FEEL engine instance
-     */
-    static FEEL newInstance() {
-        return new FEELImpl();
-    }
-
-    /**
-     * Factory method to create a new FEEL engine instance, using the specified classloader.
-     *
-     * @return a newly instantiated FEEL engine instance
-     */
-    static FEEL newInstance(ClassLoader cl) {
-        return new FEELImpl(cl);
-    }
-
-    /**
-     * Factory method to create a new FEEL engine instance using custom FEELProfile(s)
-     *
-     * @return a newly instantiated FEEL engine instance
-     */
-    static FEEL newInstance(List<FEELProfile> profiles) {
-        return new FEELImpl(profiles);
-    }
-
+    
     /**
      * Factory method to create a new FEEL engine instance using custom FEELProfile(s), using the specified classloader.
      *
      * @return a newly instantiated FEEL engine instance
      */
     static FEEL newInstance(ClassLoader cl, List<FEELProfile> profiles) {
-        return new FEELImpl(cl, profiles);
+        return FEELBuilder.builder().withClassloader(cl).withProfiles(profiles).build();
     }
 
     /**
@@ -92,6 +66,17 @@ public interface FEEL {
     CompiledExpression compile(String expression, CompilerContext ctx);
 
     /**
+     * Process the string expression using the given
+     * compiler context. The returned <code>ProcessedExpression</code>
+     * could be used to retrieve the actual <code>CompiledExpression</code>
+     *
+     * @param expression a FEEL expression
+     * @param ctx a compiler context
+     * @return the processed expression
+     */
+    ProcessedExpression processExpression(String expression, CompilerContext ctx);
+
+    /**
      * Compiles the string expression using the given
      * compiler context.
      *
@@ -99,7 +84,7 @@ public interface FEEL {
      * @param ctx a compiler context
      * @return the compiled unary tests
      */
-    CompiledExpression compileUnaryTests(String expression, CompilerContext ctx);
+    CompiledExpression processUnaryTests(String expression, CompilerContext ctx);
 
     /**
      * Evaluates the given FEEL expression and returns

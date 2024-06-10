@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNMessageType;
 import org.kie.dmn.validation.AbstractValidatorTest;
@@ -33,10 +33,10 @@ import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATIO
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_MODEL;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_SCHEMA;
 
-public class ValidatorInputDataTest extends AbstractValidatorTest {
+class ValidatorInputDataTest extends AbstractValidatorTest {
 
     @Test
-    public void testINPUT_MISSING_VAR_ReaderInput() throws IOException {
+    void input_missing_var_ReaderInput() throws IOException {
         try (final Reader reader = getReader("inputdata/INPUTDATA_MISSING_VAR.dmn")) {
             final List<DMNMessage> validate = validator.validate(
                     reader,
@@ -47,7 +47,7 @@ public class ValidatorInputDataTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testINPUT_MISSING_VAR_FileInput() {
+    void input_missing_var_FileInput() {
         final List<DMNMessage> validate = validator.validate(
                 getFile("inputdata/INPUTDATA_MISSING_VAR.dmn"),
                 VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
@@ -56,7 +56,7 @@ public class ValidatorInputDataTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testINPUT_MISSING_VAR_DefintionsInput() {
+    void input_missing_var_DefintionsInput() {
         final List<DMNMessage> validate = validator.validate(
                 getDefinitions("inputdata/INPUTDATA_MISSING_VAR.dmn",
                                "https://github.com/kiegroup/kie-dmn",
@@ -67,7 +67,7 @@ public class ValidatorInputDataTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testINPUT_MISMATCH_VAR_ReaderInput() throws IOException {
+    void input_mismatch_var_ReaderInput() throws IOException {
         try (final Reader reader = getReader("inputdata/INPUTDATA_MISMATCH_VAR.dmn")) {
             final List<DMNMessage> validate = validator.validate(
                     reader,
@@ -78,7 +78,7 @@ public class ValidatorInputDataTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testINPUT_MISMATCH_VAR_FileInput() {
+    void input_mismatch_var_FileInput() {
         final List<DMNMessage> validate = validator.validate(
                 getFile("inputdata/INPUTDATA_MISMATCH_VAR.dmn"),
                 VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
@@ -87,7 +87,7 @@ public class ValidatorInputDataTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testINPUT_MISMATCH_VAR_DefinitionsInput() {
+    void input_mismatch_var_DefinitionsInput() {
         final List<DMNMessage> validate = validator.validate(
                 getDefinitions("inputdata/INPUTDATA_MISMATCH_VAR.dmn",
                                "https://github.com/kiegroup/kie-dmn",

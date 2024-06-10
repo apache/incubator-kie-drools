@@ -18,23 +18,23 @@
  */
 package org.kie.dmn.validation;
 
-import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
-import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_MODEL;
-import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_SCHEMA;
-
 import java.io.IOException;
 import java.io.Reader;
 import java.util.List;
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNMessageType;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
+import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_MODEL;
+import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_SCHEMA;
 
-public class ValidatorBusinessKnowledgeModelTest extends AbstractValidatorTest {
+class ValidatorBusinessKnowledgeModelTest extends AbstractValidatorTest {
 
     @Test
-    public void testBKM_MISSING_VAR_ReaderInput() throws IOException {
+    void bkm_missing_var_ReaderInput() throws IOException {
         try (final Reader reader = getReader("businessknowledgemodel/BKM_MISSING_VAR.dmn")) {
             final List<DMNMessage> validate = validator.validate(
                     reader,
@@ -45,7 +45,7 @@ public class ValidatorBusinessKnowledgeModelTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testBKM_MISSING_VAR_FileInput() {
+    void bkm_missing_var_FileInput() {
         final List<DMNMessage> validate = validator.validate(
                 getFile("businessknowledgemodel/BKM_MISSING_VAR.dmn"),
                 VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
@@ -54,7 +54,7 @@ public class ValidatorBusinessKnowledgeModelTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testBKM_MISSING_VAR_DefinitionsInput() {
+    void bkm_missing_var_DefinitionsInput() {
         final List<DMNMessage> validate = validator.validate(
                 getDefinitions("businessknowledgemodel/BKM_MISSING_VAR.dmn",
                                "https://github.com/kiegroup/kie-dmn",
@@ -65,7 +65,7 @@ public class ValidatorBusinessKnowledgeModelTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testBKM_MISMATCH_VAR_ReaderInput() throws IOException {
+    void bkm_mismatch_var_ReaderInput() throws IOException {
         try (final Reader reader = getReader("businessknowledgemodel/BKM_MISMATCH_VAR.dmn")) {
             final List<DMNMessage> validate = validator.validate(
                     reader,
@@ -76,7 +76,7 @@ public class ValidatorBusinessKnowledgeModelTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testBKM_MISMATCH_VAR_FileInput() {
+    void bkm_mismatch_var_FileInput() {
         final List<DMNMessage> validate = validator.validate(
                 getFile("businessknowledgemodel/BKM_MISMATCH_VAR.dmn"),
                 VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
@@ -85,7 +85,7 @@ public class ValidatorBusinessKnowledgeModelTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testBKM_MISMATCH_VAR_DefinitionsInput() {
+    void bkm_mismatch_var_DefinitionsInput() {
         final List<DMNMessage> validate = validator.validate(
                 getDefinitions("businessknowledgemodel/BKM_MISMATCH_VAR.dmn",
                                "https://github.com/kiegroup/kie-dmn",
@@ -96,7 +96,7 @@ public class ValidatorBusinessKnowledgeModelTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testBKM_MISSING_EXPR_ReaderInput() throws IOException {
+    void bkm_missing_expr_ReaderInput() throws IOException {
         try (final Reader reader = getReader("businessknowledgemodel/BKM_MISSING_EXPR.dmn")) {
             final List<DMNMessage> validate = validator.validate(
                     reader,
@@ -107,7 +107,7 @@ public class ValidatorBusinessKnowledgeModelTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testBKM_MISSING_EXPR_FileInput() {
+    void bkm_missing_expr_FileInput() {
         final List<DMNMessage> validate = validator.validate(
                 getFile("businessknowledgemodel/BKM_MISSING_EXPR.dmn"),
                 VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
@@ -116,7 +116,7 @@ public class ValidatorBusinessKnowledgeModelTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testBKM_MISSING_EXPR_DefinitionsInput() {
+    void bkm_missing_expr_DefinitionsInput() {
         final List<DMNMessage> validate = validator.validate(
                 getDefinitions("businessknowledgemodel/BKM_MISSING_EXPR.dmn",
                                "https://github.com/kiegroup/kie-dmn",

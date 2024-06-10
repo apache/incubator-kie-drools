@@ -30,10 +30,13 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonPropertyOrder({"name", "when", "then"})
 public class Rule {
+
     @JsonProperty(required = true)
     private String name;
+
     @JsonProperty(required = true)
     private List<Base> when = new ArrayList<>();
+
     @JsonProperty(required = true)
     private AbstractThen then;
 
@@ -42,7 +45,7 @@ public class Rule {
         Rule result = new Rule();
         result.name = r.getName();
         for (BaseDescr dd: r.getLhs().getDescrs()) {
-            result.when.add((Base) Utils.from(dd));
+            result.when.add(Utils.from(dd));
         }
         result.then = StringThen.from(r.getConsequence().toString());
         return result;

@@ -18,15 +18,15 @@
  */
 package org.kie.dmn.model.api;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
-public class DecisionTableOrientationTest {
+class DecisionTableOrientationTest {
 
     @Test
-    public void testFromValue() {
+    void fromValue() {
         assertThat(DecisionTableOrientation.fromValue("Rule-as-Row")).isEqualTo(DecisionTableOrientation.RULE_AS_ROW);
         assertThat(DecisionTableOrientation.fromValue("Rule-as-Column")).isEqualTo(DecisionTableOrientation.RULE_AS_COLUMN);
         assertThat(DecisionTableOrientation.fromValue("CrossTable")).isEqualTo(DecisionTableOrientation.CROSS_TABLE);

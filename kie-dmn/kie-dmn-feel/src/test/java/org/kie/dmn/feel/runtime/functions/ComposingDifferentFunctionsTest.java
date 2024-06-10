@@ -27,20 +27,20 @@ import java.time.ZonedDateTime;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalQueries;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ComposingDifferentFunctionsTest {
+class ComposingDifferentFunctionsTest {
 
     private DateAndTimeFunction dateTimeFunction;
     private DateFunction dateFunction;
     private TimeFunction timeFunction;
     private StringFunction stringFunction;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         dateTimeFunction = new DateAndTimeFunction();
         dateFunction = new DateFunction();
         timeFunction = new TimeFunction();
@@ -48,7 +48,7 @@ public class ComposingDifferentFunctionsTest {
     }
 
     @Test
-    public void testComposite1() {
+    void composite1() {
         final FEELFnResult<TemporalAccessor> p1 = dateTimeFunction.invoke("2017-08-10T10:20:00+02:00");
         final FEELFnResult<TemporalAccessor> p2 = timeFunction.invoke("23:59:01");
 
@@ -60,7 +60,7 @@ public class ComposingDifferentFunctionsTest {
     }
 
     @Test
-    public void testComposite2() {
+    void composite2() {
         final FEELFnResult<TemporalAccessor> p1 = dateTimeFunction.invoke("-999999999-12-31T23:59:59.999999999+02:00");
         FunctionTestUtil.assertResult(p1, ZonedDateTime.of(-999999999, 12, 31, 23, 59, 59, 999_999_999, ZoneOffset.of("+02:00")));
 
@@ -68,7 +68,7 @@ public class ComposingDifferentFunctionsTest {
     }
 
     @Test
-    public void testComposite3() {
+    void composite3() {
         final FEELFnResult<TemporalAccessor> p1 = dateTimeFunction.invoke("-999999999-12-31T23:59:59.999999999@Europe/Paris");
         FunctionTestUtil.assertResult(p1, ZonedDateTime.of(-999999999, 12, 31, 23, 59, 59, 999_999_999, ZoneId.of("Europe/Paris")));
 
@@ -76,7 +76,7 @@ public class ComposingDifferentFunctionsTest {
     }
 
     @Test
-    public void testComposite4() {
+    void composite4() {
         final FEELFnResult<TemporalAccessor> p1 = dateFunction.invoke("2017-01-01");
         final FEELFnResult<TemporalAccessor> p2 = timeFunction.invoke("23:59:01@Europe/Paris");
 
@@ -92,7 +92,7 @@ public class ComposingDifferentFunctionsTest {
     }
 
     @Test
-    public void testComposite5() {
+    void composite5() {
         final FEELFnResult<TemporalAccessor> p1 = dateTimeFunction.invoke("2017-08-10T10:20:00@Europe/Paris");
         FunctionTestUtil.assertResult(p1, ZonedDateTime.of(2017, 8, 10, 10, 20, 0, 0, ZoneId.of("Europe/Paris")));
 

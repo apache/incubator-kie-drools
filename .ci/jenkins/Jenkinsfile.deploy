@@ -1,8 +1,26 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 import org.jenkinsci.plugins.workflow.libs.Library
 @Library('jenkins-pipeline-shared-libraries')_
 
 import org.kie.jenkins.MavenCommand
-import org.kie.jenkins.MavenStagingHelper
 
 deployProperties = [:]
 
@@ -24,7 +42,6 @@ pipeline {
         DROOLS_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
 
         PR_BRANCH_HASH = "${util.generateHash(10)}"
-        MAVEN_DEPLOY_LOCAL_DIR = "/tmp/maven_deploy_dir"
     }
 
     stages {
@@ -94,17 +111,46 @@ pipeline {
                 }
             }
         }
-        stage('Build & Test') {
+        stage('Deploy drools') {
             steps {
                 script {
-                    configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]){
-                        getMavenCommand()
-                            .withOptions(env.DROOLS_BUILD_MVN_OPTS ? [ env.DROOLS_BUILD_MVN_OPTS ] : [])
-                            .withOptions(env.BUILD_MVN_OPTS_CURRENT ? [ env.BUILD_MVN_OPTS_CURRENT ] : [])
-                            .withProperty('maven.test.failure.ignore', true)
-                            .skipTests(params.SKIP_TESTS)
-                            .withSettingsXmlFile(MAVEN_SETTINGS_FILE)
-                            .run('clean install')
+                    withCredentials([usernamePassword(credentialsId: env.MAVEN_REPO_CREDS_ID, usernameVariable: 'REPOSITORY_USER', passwordVariable: 'REPOSITORY_TOKEN')]) {
+                        def installOrDeploy
+                        if (shouldDeployToRepository()) {
+                            installOrDeploy = "deploy -DdeployAtEnd -Dapache.repository.username=${REPOSITORY_USER} -Dapache.repository.password=${REPOSITORY_TOKEN} -DretryFailedDeploymentCount=5"
+                        } else {
+                            installOrDeploy = 'install'
+                        }
+                        def mavenCommand = getMavenCommand()
+                           .withOptions(env.DROOLS_BUILD_MVN_OPTS ? [ env.DROOLS_BUILD_MVN_OPTS ] : [])
+                           .withOptions(env.BUILD_MVN_OPTS_CURRENT ? [ env.BUILD_MVN_OPTS_CURRENT ] : [])
+                           .withProperty('maven.test.failure.ignore', true)
+                           .skipTests(params.SKIP_TESTS)
+
+                        if (isRelease()) {
+                            withCredentials([file(credentialsId: 'asf-release-gpg-signing-key', variable: 'SIGNING_KEY')]) {
+                                withCredentials([file(credentialsId: 'asf-release-gpg-signing-key-password', variable: 'SIGNING_KEY_PASSWORD')]) {
+                                    // copy the key to singkey.gpg file in *plain text* so we can import it
+                                    sh ("cat \"${SIGNING_KEY}\" > \"${WORKSPACE}\"/signkey.gpg")
+                                    // Please do not remove list keys command. When gpg is run for the first time, it may initialize some internals.
+                                    sh ('gpg --list-keys')
+                                    sh ("gpg --batch --pinentry-mode=loopback --passphrase \"${SIGNING_KEY_PASSWORD}\" --import  \"${WORKSPACE}\"/signkey.gpg")
+                                    sh ("rm \"${WORKSPACE}\"/signkey.gpg")
+
+                                    mavenCommand.withProperty('gpg.passphrase', SIGNING_KEY_PASSWORD)
+                                        .withProfiles(['apache-release'])
+
+                                    // If there are passwords, this needs to be duplicated within the withCredentials block.
+                                    configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]) {
+                                        mavenCommand.withSettingsXmlFile(MAVEN_SETTINGS_FILE).run("clean $installOrDeploy")
+                                    }
+                                }
+                            }
+                        } else {
+                            configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]) {
+                                mavenCommand.withSettingsXmlFile(MAVEN_SETTINGS_FILE).run("clean $installOrDeploy")
+                            }
+                        }
                     }
                 }
             }
@@ -114,24 +160,6 @@ pipeline {
                         saveReports()
                         util.archiveConsoleLog()
                     }
-                }
-            }
-        }
-        stage('Deploy locally') {
-            steps {
-                script {
-                    runMavenDeploy(true)
-                }
-            }
-        }
-        stage('Stage artifacts') {
-            when {
-                expression { return shouldStageArtifacts() }
-            }
-            steps {
-                script {
-                    // Stage release artifacts
-                    runMavenStage()
                 }
             }
         }
@@ -212,10 +240,6 @@ void sendNotification() {
     }
 }
 
-boolean shouldStageArtifacts() {
-    return isRelease()
-}
-
 boolean shouldDeployToRepository() {
     return env.MAVEN_DEPLOY_REPOSITORY || getGitAuthor() == 'apache'
 }
@@ -274,42 +298,6 @@ MavenCommand getMavenCommand(String directory = '') {
         mvnCmd.withProperty('full')
     }
     return mvnCmd
-}
-
-void runMavenDeploy(boolean localDeployment = false) {
-    mvnCmd = getMavenCommand()
-
-    if(localDeployment) {
-        mvnCmd.withLocalDeployFolder(getLocalDeploymentFolder())
-    } else if (env.MAVEN_DEPLOY_REPOSITORY) {
-        mvnCmd.withDeployRepository(env.MAVEN_DEPLOY_REPOSITORY)
-    }
-
-    configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]){
-        mvnCmd.skipTests(true)
-            .withOptions(env.DROOLS_BUILD_MVN_OPTS ? [ env.DROOLS_BUILD_MVN_OPTS ] : [])
-            .withOptions(env.BUILD_MVN_OPTS_CURRENT ? [ env.BUILD_MVN_OPTS_CURRENT ] : [])
-            .withSettingsXmlFile(MAVEN_SETTINGS_FILE)
-            .run('clean deploy')
-    }
-}
-
-void runMavenStage() {
-    configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]){
-        MavenStagingHelper stagingHelper = getStagingHelper(getMavenCommand().withSettingsXmlFile(MAVEN_SETTINGS_FILE))
-        deployProperties.putAll(stagingHelper.stageLocalArtifacts(env.NEXUS_STAGING_PROFILE_ID, getLocalDeploymentFolder()))
-        stagingHelper.promoteStagingRepository(env.NEXUS_BUILD_PROMOTION_PROFILE_ID)
-    }
-}
-
-MavenStagingHelper getStagingHelper(MavenCommand mavenCommand) {
-    return new MavenStagingHelper(this, mavenCommand)
-        .withNexusReleaseUrl(env.NEXUS_RELEASE_URL)
-        .withNexusReleaseRepositoryId(env.NEXUS_RELEASE_REPOSITORY_ID)
-}
-
-String getLocalDeploymentFolder() {
-    return "${env.MAVEN_DEPLOY_LOCAL_DIR}/${getRepoName()}"
 }
 
 boolean isMainStream() {

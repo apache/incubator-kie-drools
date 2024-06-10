@@ -23,15 +23,18 @@ import java.math.MathContext;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
+
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
-import org.kie.dmn.feel.util.EvalHelper;
+import org.kie.dmn.feel.util.NumberEvalHelper;
 
 public class MeanFunction
         extends BaseFEELFunction {
 
-    private SumFunction sum = new SumFunction();
+    public static final MeanFunction INSTANCE = new MeanFunction();
+
+    private SumFunction sum = SumFunction.INSTANCE;
 
     public MeanFunction() {
         super( "mean" );
@@ -67,7 +70,7 @@ public class MeanFunction
         if( single instanceof BigDecimal ) {
             return FEELFnResult.ofResult((BigDecimal) single );
         } 
-        BigDecimal result = EvalHelper.getBigDecimalOrNull( single );
+        BigDecimal result = NumberEvalHelper.getBigDecimalOrNull(single );
         if ( result != null ) {
             return FEELFnResult.ofResult( result );
         } else {

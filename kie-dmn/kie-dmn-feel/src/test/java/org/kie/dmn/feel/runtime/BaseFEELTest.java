@@ -21,13 +21,13 @@ package org.kie.dmn.feel.runtime;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.assertj.core.api.ObjectAssert;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
 import org.kie.dmn.feel.FEEL;
+import org.kie.dmn.feel.lang.FEELDialect;
 import org.kie.dmn.feel.lang.FEELProfile;
+import org.kie.dmn.feel.lang.impl.FEELBuilder;
 import org.kie.dmn.feel.parser.feel11.profiles.DoCompileFEELProfile;
 import org.kie.dmn.feel.parser.feel11.profiles.KieExtendedFEELProfile;
 import org.mockito.ArgumentCaptor;
@@ -39,7 +39,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
-@RunWith(Parameterized.class)
 public abstract class BaseFEELTest {
 
     public enum FEEL_TARGET {
@@ -49,25 +48,26 @@ public abstract class BaseFEELTest {
 
     private FEEL feel = null; // due to @Parameter injection by JUnit framework, need to defer FEEL init to actual instance method, to have the opportunity for the JUNit framework to initialize all the @Parameters
 
-    @Parameterized.Parameter(0)
     public String expression;
 
-    @Parameterized.Parameter(1)
     public Object result;
 
-    @Parameterized.Parameter(2)
     public FEELEvent.Severity severity;
 
-    @Parameterized.Parameter(3)
     public FEEL_TARGET testFEELTarget;
 
-    @Parameterized.Parameter(4)
     public boolean useExtendedProfile;
 
-    @Test
-    public void testExpression() {
+    public void expression(String expression, Object result, FEELEvent.Severity severity, FEEL_TARGET testFEELTarget,
+                           Boolean useExtendedProfile, FEELDialect dialect) {
+        this.expression = expression;
+        this.result = result;
+        this.severity = severity;
+        this.testFEELTarget = testFEELTarget;
+        this.useExtendedProfile = useExtendedProfile;
+
         final List<FEELProfile> profiles = getFEELProfilesForTests();
-        feel = FEEL.newInstance(profiles);
+        feel = FEELBuilder.builder().withProfiles(profiles).withFEELDialect(dialect).build();
         final FEELEventListener listener = mock(FEELEventListener.class );
         feel.addListener( listener );
         feel.addListener(System.out::println);
@@ -82,25 +82,33 @@ public abstract class BaseFEELTest {
         }
     }
 
+    protected abstract void instanceTest(String expression, Object result, FEELEvent.Severity severity,
+                                         FEEL_TARGET testFEELTarget, Boolean useExtendedProfile, FEELDialect dialect);
+
     protected void assertResult(final String expression, final Object result ) {
+        Object retrieved = feel.evaluate( expression );
+        String description = String.format("Evaluating: '%s'", expression);
+        ObjectAssert<Object> assertion = assertThat(retrieved).as(description);
         if( result == null ) {
-        	assertThat(feel.evaluate( expression )).as("Evaluating: '" + expression + "'").isNull();
+        	assertion.isNull();
         } else if( result instanceof Class<?> ) {
-        	assertThat(feel.evaluate( expression )).as("Evaluating: '" + expression + "'").isInstanceOf((Class<?>) result);
+        	assertion.isInstanceOf((Class<?>) result);
         } else {
-        	assertThat(feel.evaluate( expression )).as("Evaluating: '" + expression + "'").isEqualTo(result);
+        	assertion.isEqualTo(result);
         }
     }
 
     protected static List<Object[]> addAdditionalParameters(final Object[][] cases, final boolean useExtendedProfile) {
-        final List<Object[]> results = new ArrayList<>();
+        return addAdditionalParameters(cases, useExtendedProfile, FEELDialect.FEEL);
+    }
+
+    protected static List<Object[]> addAdditionalParameters(final Object[][] cases, final boolean useExtendedProfile, FEELDialect feelDialect) {
+        final List<Object[]> toReturn = new ArrayList<>();
         for (final Object[] c : cases) {
-            results.add(new Object[]{c[0], c[1], c[2], FEEL_TARGET.AST_INTERPRETED, useExtendedProfile});
+            toReturn.add(new Object[]{c[0], c[1], c[2], FEEL_TARGET.AST_INTERPRETED, useExtendedProfile, feelDialect});
+            toReturn.add(new Object[]{c[0], c[1], c[2], FEEL_TARGET.JAVA_TRANSLATED, useExtendedProfile, feelDialect});
         }
-        for (final Object[] c : cases) {
-            results.add(new Object[]{c[0], c[1], c[2], FEEL_TARGET.JAVA_TRANSLATED, useExtendedProfile});
-        }
-        return results;
+        return toReturn;
     }
 
     private List<FEELProfile> getFEELProfilesForTests() {

@@ -24,7 +24,7 @@ import java.util.List;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
-import org.kie.dmn.feel.util.EvalHelper;
+import org.kie.dmn.feel.util.NumberEvalHelper;
 
 public class ProductFunction
         extends BaseFEELFunction {
@@ -46,7 +46,7 @@ public class ProductFunction
             if ( element instanceof BigDecimal ) {
                 product = product.multiply( (BigDecimal) element );
             } else if ( element instanceof Number ) {
-                product = product.multiply( EvalHelper.getBigDecimalOrNull( element ) );
+                product = product.multiply(NumberEvalHelper.getBigDecimalOrNull(element ) );
             } else {
                 return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "an element in the list is not suitable for the product"));
             }
@@ -63,7 +63,7 @@ public class ProductFunction
         if( single instanceof BigDecimal ) {
             return FEELFnResult.ofResult((BigDecimal) single );
         } 
-        BigDecimal result = EvalHelper.getBigDecimalOrNull( single );
+        BigDecimal result = NumberEvalHelper.getBigDecimalOrNull( single );
         if ( result != null ) {
             return FEELFnResult.ofResult( result );
         } else {

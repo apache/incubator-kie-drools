@@ -28,6 +28,8 @@ import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 public class AppendFunction
         extends BaseFEELFunction {
 
+    public static final AppendFunction INSTANCE = new AppendFunction();
+
     public AppendFunction() {
         super( "append" );
     }

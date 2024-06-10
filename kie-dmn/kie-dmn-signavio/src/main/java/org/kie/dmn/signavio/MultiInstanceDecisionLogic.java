@@ -19,7 +19,6 @@
 package org.kie.dmn.signavio;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -54,7 +53,7 @@ import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 import org.kie.dmn.feel.runtime.functions.MaxFunction;
 import org.kie.dmn.feel.runtime.functions.MinFunction;
 import org.kie.dmn.feel.runtime.functions.SumFunction;
-import org.kie.dmn.feel.util.EvalHelper;
+import org.kie.dmn.feel.util.NumberEvalHelper;
 import org.kie.dmn.model.api.DMNElement.ExtensionElements;
 
 import static java.util.Collections.emptySet;
@@ -290,7 +289,7 @@ public class MultiInstanceDecisionLogic {
                     r = new MaxFunction().invoke(invokationResults);
                     break;
                 case "COUNT":
-                    r = FEELFnResult.ofResult(EvalHelper.getBigDecimalOrNull(invokationResults.size()));
+                    r = FEELFnResult.ofResult(NumberEvalHelper.getBigDecimalOrNull(invokationResults.size()));
                     break;
                 case "ALLTRUE":
                     r = new AllFunction().invoke(invokationResults);

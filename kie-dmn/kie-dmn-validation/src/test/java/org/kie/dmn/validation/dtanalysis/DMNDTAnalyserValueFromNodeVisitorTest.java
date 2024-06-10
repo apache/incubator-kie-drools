@@ -20,21 +20,22 @@ package org.kie.dmn.validation.dtanalysis;
 
 import java.util.Collections;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.ast.FunctionInvocationNode;
-import org.kie.dmn.feel.lang.impl.FEELImpl;
+import org.kie.dmn.feel.lang.impl.FEELBuilder;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-public class DMNDTAnalyserValueFromNodeVisitorTest {
+class DMNDTAnalyserValueFromNodeVisitorTest {
 
-    private final FEELImpl tFEEL = (FEELImpl) org.kie.dmn.feel.FEEL.newInstance();
+    private final FEEL tFEEL = FEELBuilder.builder().build();
 
     /**
      * None of these are valid FEEL expression ootb and cannot be used to determine discrete value in the domain
      */
     @Test
-    public void smokeTest() {
+    void smokeTest() {
         DMNDTAnalyserValueFromNodeVisitor ut = new DMNDTAnalyserValueFromNodeVisitor(Collections.emptyList());
         assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> ut.visit(compile("date()")));
         assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> ut.visit(compile("date and time()")));
@@ -47,6 +48,6 @@ public class DMNDTAnalyserValueFromNodeVisitorTest {
     }
 
     private FunctionInvocationNode compile(String fnInvFEEL) {
-        return (FunctionInvocationNode) tFEEL.compileExpression(fnInvFEEL, tFEEL.newCompilerContext()).getInterpreted().getASTNode();
+        return (FunctionInvocationNode) tFEEL.processExpression(fnInvFEEL, tFEEL.newCompilerContext()).getInterpreted().getASTNode();
     }
 }

@@ -18,11 +18,6 @@
  */
 package org.kie.dmn.feel.lang.ast.infixexecutors;
 
-import ch.obermuhlner.math.big.BigDecimalMath;
-import org.junit.Before;
-import org.junit.Test;
-import org.kie.dmn.feel.lang.EvaluationContext;
-
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.time.Duration;
@@ -32,19 +27,27 @@ import java.util.Random;
 import java.util.function.BinaryOperator;
 import java.util.function.Supplier;
 
+import ch.obermuhlner.math.big.BigDecimalMath;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.kie.dmn.feel.lang.EvaluationContext;
+
 import static java.time.temporal.ChronoUnit.DAYS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.feel.lang.ast.infixexecutors.InfixExecutorUtils.isAllowedMultiplicationBasedOnSpec;
 import static org.kie.dmn.feel.lang.ast.infixexecutors.InfixExecutorUtils.math;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
-public class InfixExecutorUtilsTest {
+class InfixExecutorUtilsTest {
 
     private static List<BinaryOperator<BigDecimal>> MATH_OPERATORS;
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeEach
+    void setUp() throws Exception {
         MATH_OPERATORS = new ArrayList<>();
         MATH_OPERATORS.add((l, r) -> l.add(r, MathContext.DECIMAL128));
         MATH_OPERATORS.add((l, r) -> l.subtract(r, MathContext.DECIMAL128));
@@ -54,7 +57,7 @@ public class InfixExecutorUtilsTest {
     }
 
     @Test
-    public void math_BothNumbers() {
+    void math_BothNumbers() {
         final Random rnd = new Random();
         MATH_OPERATORS.forEach(operator -> {
             BigDecimal left = BigDecimal.valueOf(rnd.nextDouble());
@@ -68,7 +71,7 @@ public class InfixExecutorUtilsTest {
     }
 
     @Test
-    public void math_NumberAndString() {
+    void math_NumberAndString() {
         final Random rnd = new Random();
         MATH_OPERATORS.forEach(operator -> {
             BigDecimal left = BigDecimal.valueOf(rnd.nextDouble());
@@ -79,7 +82,7 @@ public class InfixExecutorUtilsTest {
     }
 
     @Test
-    public void isAllowedMultiplicationBasedOnSpecTest() {
+    void isAllowedMultiplicationBasedOnSpecTest() {
         EvaluationContext evaluationContext = mock(EvaluationContext.class);
         Object left = 23;
         Object right = 354.5;

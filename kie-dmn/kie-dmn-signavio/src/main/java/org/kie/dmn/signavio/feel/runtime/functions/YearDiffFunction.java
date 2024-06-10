@@ -31,7 +31,7 @@ import org.kie.dmn.feel.runtime.functions.BuiltInFunctions;
 import org.kie.dmn.feel.runtime.functions.DateAndTimeFunction;
 import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 import org.kie.dmn.feel.runtime.functions.ParameterName;
-import org.kie.dmn.feel.util.EvalHelper;
+import org.kie.dmn.feel.util.NumberEvalHelper;
 
 public class YearDiffFunction
         extends BaseFEELFunction {
@@ -49,7 +49,7 @@ public class YearDiffFunction
         }
 
         try {
-            return FEELFnResult.ofResult( EvalHelper.getBigDecimalOrNull( Period.between( LocalDate.from( datetime1 ), LocalDate.from( datetime2 ) ).toTotalMonths() / 12 ) );
+            return FEELFnResult.ofResult(NumberEvalHelper.getBigDecimalOrNull(Period.between(LocalDate.from(datetime1 ), LocalDate.from(datetime2 ) ).toTotalMonths() / 12 ) );
         } catch ( DateTimeException e ) {
             return FEELFnResult.ofError( new InvalidParametersEvent( Severity.ERROR, "datetime", "invalid 'date' or 'date and time' parameter", e ) );
         }

@@ -30,7 +30,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 
 import static org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity.ERROR;
 import static org.kie.dmn.signavio.util.DynamicTypeUtils.entry;
@@ -38,8 +40,13 @@ import static org.kie.dmn.signavio.util.DynamicTypeUtils.mapOf;
 
 public class FEELExtendedFunctionsTest extends ExtendedFunctionsBaseFEELTest {
 
-    @Parameterized.Parameters(name = "{index}: {0} ({1}) = {2}")
-    public static Collection<Object[]> data() {
+    @ParameterizedTest
+    @MethodSource("data")
+    protected void instanceTest(String expression, Object result, FEELEvent.Severity severity) {
+        expression(expression, result, severity);
+    }
+
+    private static Collection<Object[]> data() {
         final Object[][] cases = new Object[][] {
                 { "string(\"Happy %.0fth birthday, Mr %s!\", 38, \"Doe\")", "Happy 38th birthday, Mr Doe!", null},
                 { "all( true, true, true )", Boolean.TRUE , null},

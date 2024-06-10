@@ -1,3 +1,22 @@
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 package org.kie.dmn.feel.util;
 
 import java.math.BigDecimal;
@@ -8,17 +27,17 @@ import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CoerceUtilTest {
+class CoerceUtilTest {
 
     @Test
-    public void coerceParameterDateToDateTimeConverted() {
+    void coerceParameterDateToDateTimeConverted() {
         Object value = LocalDate.now();
         Object retrieved = CoerceUtil.coerceParameter(BuiltInType.DATE_TIME, value);
         assertNotNull(retrieved);
@@ -32,7 +51,7 @@ public class CoerceUtilTest {
     }
 
     @Test
-    public void coerceParameterDateToDateTimeNotConverted() {
+    void coerceParameterDateToDateTimeNotConverted() {
         Object value = "TEST_OBJECT";
         Object retrieved = CoerceUtil.coerceParameter(null, value);
         assertEquals(value, retrieved);
@@ -43,7 +62,7 @@ public class CoerceUtilTest {
     }
 
     @Test
-    public void coerceParamsCollectionToArrayConverted() {
+    void coerceParamsCollectionToArrayConverted() {
         Object item = "TESTED_OBJECT";
         Object value = Collections.singleton(item);
         Object[] actualParams1 = {value, "NOT_DATE"};
@@ -73,7 +92,7 @@ public class CoerceUtilTest {
     }
 
     @Test
-    public void coerceParamsToDateTimeConverted() {
+    void coerceParamsToDateTimeConverted() {
         Object value = LocalDate.now();
         Object[] actualParams = {value, "NOT_DATE"};
         Optional<Object[]> retrieved = CoerceUtil.coerceParams(LocalDate.class, ZonedDateTime.class, actualParams, 0);
@@ -91,7 +110,7 @@ public class CoerceUtilTest {
     }
 
     @Test
-    public void coerceParamsNotConverted() {
+    void coerceParamsNotConverted() {
         Object item = "TESTED_OBJECT";
         Object value = Collections.singleton(item);
         Object[] actualParams1 = {value, "NOT_DATE"};
@@ -107,7 +126,7 @@ public class CoerceUtilTest {
     }
 
     @Test
-    public void actualCoerceParameterToDateTimeConverted() {
+    void actualCoerceParameterToDateTimeConverted() {
         Object value = LocalDate.now();
         Object retrieved = CoerceUtil.actualCoerceParameter(BuiltInType.DATE_TIME, value);
         assertNotNull(retrieved);
@@ -121,7 +140,7 @@ public class CoerceUtilTest {
     }
 
     @Test
-    public void actualCoerceParameterNotConverted() {
+    void actualCoerceParameterNotConverted() {
         Object value = "TEST_OBJECT";
         Object retrieved = CoerceUtil.actualCoerceParameter(BuiltInType.DATE_TIME, value);
         assertNotNull(retrieved);
@@ -134,7 +153,7 @@ public class CoerceUtilTest {
     }
 
     @Test
-    public void actualCoerceParams() {
+    void actualCoerceParams() {
         Object value = LocalDate.now();
         Object[] actualParams = {value, "NOT_DATE"};
         Object coercedValue = BigDecimal.valueOf(1L);

@@ -1,7 +1,0 @@
-package org.drools.tms
-
-rule R when
-  $s : String( $l : length )
-then
-  insertLogical($l);
-end

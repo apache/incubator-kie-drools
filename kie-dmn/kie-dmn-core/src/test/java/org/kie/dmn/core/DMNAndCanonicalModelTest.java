@@ -18,7 +18,8 @@
  */
 package org.kie.dmn.core;
 
-import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.KieContainer;
@@ -36,12 +37,10 @@ public class DMNAndCanonicalModelTest extends BaseInterpretedVsCompiledTestCanon
 
     public static final Logger LOG = LoggerFactory.getLogger(DMNAndCanonicalModelTest.class);
 
-    public DMNAndCanonicalModelTest(final boolean useExecModelCompiler, boolean canonicalKieModule) {
-        super(useExecModelCompiler, canonicalKieModule);
-    }
-
-    @Test
-    public void testDMNAndCanonicalModel() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void dmnAndCanonicalModel(boolean useExecModelCompiler, boolean canonicalKieModule) {
+        init(useExecModelCompiler, canonicalKieModule);
         final KieServices ks = KieServices.Factory.get();
 
         ReleaseId releaseId = ks.newReleaseId("org.kie", "dmn-and-canonical", "1.0.0");
@@ -62,8 +61,10 @@ public class DMNAndCanonicalModelTest extends BaseInterpretedVsCompiledTestCanon
         assertThat(evaluateAll.getDecisionResultByName("Greeting Message").getResult()).isEqualTo("Hello John Doe");
     }
 
-    @Test
-    public void testDTAndCanonicalModel() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void dTAndCanonicalModel(boolean useExecModelCompiler, boolean canonicalKieModule) {
+        init(useExecModelCompiler, canonicalKieModule);
         final KieServices ks = KieServices.Factory.get();
 
         ReleaseId releaseId = ks.newReleaseId("org.kie", "dmn-and-canonical", "1.0.0");

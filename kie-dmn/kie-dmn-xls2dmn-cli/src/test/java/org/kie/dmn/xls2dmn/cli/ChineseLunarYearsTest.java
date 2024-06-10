@@ -21,7 +21,7 @@ package org.kie.dmn.xls2dmn.cli;
 import java.io.File;
 import java.time.LocalDate;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
@@ -29,18 +29,17 @@ import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import picocli.CommandLine;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.xls2dmn.cli.TestUtils.getRuntime;
 
-import picocli.CommandLine;
-
-public class ChineseLunarYearsTest {
+class ChineseLunarYearsTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(ChineseLunarYearsTest.class);
 
     @Test
-    public void testCLI() throws Exception {
+    void cli() throws Exception {
         File tempFile = File.createTempFile("xls2dmn", ".dmn");
         final DMNRuntime dmnRuntime = getRuntime(new CommandLine(new App())::execute, tempFile, new String[]{"src/test/resources/ChineseLunarYears.xlsx", tempFile.toString()});
         DMNModel dmnModel = dmnRuntime.getModels().get(0);

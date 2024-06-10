@@ -20,7 +20,7 @@ package org.kie.dmn.openapi;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.networknt.schema.JsonSchema;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.core.decisionservices.DMNDecisionServicesTest;
@@ -28,10 +28,10 @@ import org.kie.dmn.openapi.model.DMNOASResult;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class DS004decisionservicesTest extends BaseDMNOASTest {
+class DS004decisionservicesTest extends BaseDMNOASTest {
 
     @Test
-    public void test0004decisionservices_DS1() throws Exception {
+    void test0004decisionservices_DS1() throws Exception {
         final DMNRuntime runtime = createRuntime("0004-decision-services.dmn", DMNDecisionServicesTest.class);
         DMNOASResult result = DMNOASGeneratorFactory.generator(runtime.getModels()).build();
 
@@ -45,7 +45,7 @@ public class DS004decisionservicesTest extends BaseDMNOASTest {
     }
 
     @Test
-    public void test0004decisionservices_DS2() throws Exception {
+    void test0004decisionservices_DS2() throws Exception {
         final DMNRuntime runtime = createRuntime("0004-decision-services.dmn", DMNDecisionServicesTest.class);
         DMNOASResult result = DMNOASGeneratorFactory.generator(runtime.getModels()).build();
 

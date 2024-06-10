@@ -20,13 +20,13 @@ package org.kie.dmn.core.impl;
 
 import java.util.Collections;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.core.BaseDMNContextTest;
 
-public class DMNContextImplTest extends BaseDMNContextTest {
+class DMNContextImplTest extends BaseDMNContextTest {
 
     @Test
-    public void testEmptyContext() {
+    void emptyContext() {
         DMNContextImpl ctx1 = new DMNContextImpl();
         testCloneAndAlter(ctx1, Collections.emptyMap(), Collections.emptyMap());
 
@@ -35,7 +35,7 @@ public class DMNContextImplTest extends BaseDMNContextTest {
     }
 
     @Test
-    public void testContextWithEntries() {
+    void contextWithEntries() {
         DMNContextImpl ctx1 = new DMNContextImpl(DEFAULT_ENTRIES);
         testCloneAndAlter(ctx1, DEFAULT_ENTRIES, Collections.emptyMap());
 
@@ -44,7 +44,7 @@ public class DMNContextImplTest extends BaseDMNContextTest {
     }
 
     @Test
-    public void testContextWithEntriesAndMetadata() {
+    void contextWithEntriesAndMetadata() {
         DMNContextImpl ctx1 = new DMNContextImpl(DEFAULT_ENTRIES, DEFAULT_METADATA);
         testCloneAndAlter(ctx1, DEFAULT_ENTRIES, DEFAULT_METADATA);
 

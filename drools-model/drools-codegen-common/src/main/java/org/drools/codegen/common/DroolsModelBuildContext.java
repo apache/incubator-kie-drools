@@ -18,14 +18,14 @@
  */
 package org.drools.codegen.common;
 
-import org.drools.codegen.common.di.DependencyInjectionAnnotator;
-import org.drools.codegen.common.rest.RestAnnotator;
-
 import java.io.File;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.function.Predicate;
+
+import org.drools.codegen.common.di.DependencyInjectionAnnotator;
+import org.drools.codegen.common.rest.RestAnnotator;
 
 public interface DroolsModelBuildContext {
 
@@ -83,15 +83,11 @@ public interface DroolsModelBuildContext {
 
         Builder withApplicationProperties(File... files);
 
-//        Builder withAddonsConfig(AddonsConfig addonsConfig);
-
         Builder withClassAvailabilityResolver(Predicate<String> classAvailabilityResolver);
 
         Builder withClassLoader(ClassLoader classLoader);
 
         Builder withAppPaths(AppPaths appPaths);
-
-//        Builder withGAV(KogitoGAV gav);
 
         DroolsModelBuildContext build();
     }

@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNMessageType;
 import org.kie.dmn.validation.AbstractValidatorTest;
@@ -33,10 +33,10 @@ import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATIO
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_MODEL;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_SCHEMA;
 
-public class ValidatorDMNElementReferenceTest extends AbstractValidatorTest {
+class ValidatorDMNElementReferenceTest extends AbstractValidatorTest {
 
     @Test
-    public void testELEMREF_NOHASH_ReaderInput() throws IOException {
+    void elemref_nohash_ReaderInput() throws IOException {
         try (final Reader reader = getReader("dmnelementref/ELEMREF_NOHASH.dmn")) {
             final List<DMNMessage> validationMessages = validator.validate(
                     reader,
@@ -46,7 +46,7 @@ public class ValidatorDMNElementReferenceTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testELEMREF_NOHASH_FileInput() {
+    void elemref_nohash_FileInput() {
         final List<DMNMessage> validationMessages = validator.validate(
                 getFile("dmnelementref/ELEMREF_NOHASH.dmn"),
                 VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
@@ -54,7 +54,7 @@ public class ValidatorDMNElementReferenceTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testELEMREF_NOHASH_DefinitionsInput() {
+    void elemref_nohash_DefinitionsInput() {
         final List<DMNMessage> validationMessages = validator.validate(
                 getDefinitions("dmnelementref/ELEMREF_NOHASH.dmn",
                                "https://github.com/kiegroup/kie-dmn",

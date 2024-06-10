@@ -22,6 +22,7 @@ import java.util.function.Function;
 
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.Type;
+import org.kie.dmn.feel.lang.impl.FEELBuilder;
 import org.kie.dmn.feel.runtime.functions.extended.CodeFunction;
 import org.kie.dmn.feel.runtime.functions.extended.KieExtendedDMNFunctions;
 
@@ -36,7 +37,7 @@ public class FEELCodeMarshaller
         implements FEELMarshaller<String> {
 
     public static final FEELCodeMarshaller INSTANCE = new FEELCodeMarshaller();
-    private FEEL feel = FEEL.newInstance();
+    private FEEL feel = FEELBuilder.builder().build();
 
     private FEELCodeMarshaller() {}
 

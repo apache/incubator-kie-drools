@@ -26,6 +26,8 @@ import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 public class SublistFunction
         extends BaseFEELFunction {
 
+    public static final SublistFunction INSTANCE = new SublistFunction();
+
     public SublistFunction() {
         super( "sublist" );
     }

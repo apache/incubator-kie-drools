@@ -30,12 +30,13 @@ import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.api.io.Resource;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
+import org.kie.dmn.feel.util.NumberEvalHelper;
 import org.kie.dmn.model.api.DMNElement;
 import org.kie.efesto.common.api.model.GeneratedResources;
 import org.kie.pmml.api.dto.PMML4Result;
@@ -50,7 +51,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class DMNKiePMMLTrustyInvocationEvaluatorTest {
+class DMNKiePMMLTrustyInvocationEvaluatorTest {
 
     private static DMNKiePMMLTrustyInvocationEvaluator dmnKiePMMLTrustyInvocationEvaluator;
 
@@ -58,8 +59,8 @@ public class DMNKiePMMLTrustyInvocationEvaluatorTest {
     private static final String pmmlFileName = pmmlFileNameNoSuffix + ".pmml";
     private static final String model = "LogisticRegression";
 
-    @Before
-    public void setup() throws IOException {
+    @BeforeEach
+    void setup() throws IOException {
         URL pmmlUrl =  DMNKiePMMLTrustyInvocationEvaluatorTest.class.getResource(pmmlFileName);
         assertThat(pmmlUrl).isNotNull();
         String pmmlFilePath = pmmlUrl.getPath();
@@ -87,7 +88,7 @@ public class DMNKiePMMLTrustyInvocationEvaluatorTest {
     }
 
     @Test
-    public void getPMML4Result() {
+    void getPMML4Result() {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         DMNRuntime dmnRuntimeMock = mock(DMNRuntime.class);
         when(dmnRuntimeMock.getRootClassLoader()).thenReturn(classLoader);
@@ -131,7 +132,7 @@ public class DMNKiePMMLTrustyInvocationEvaluatorTest {
 //    }
 
     @Test
-    public void evaluate() {
+    void evaluate() {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         DMNRuntime dmnRuntimeMock = mock(DMNRuntime.class);
         when(dmnRuntimeMock.getRootClassLoader()).thenReturn(classLoader);
@@ -144,7 +145,7 @@ public class DMNKiePMMLTrustyInvocationEvaluatorTest {
     }
 
     @Test
-    public void compileFile() {
+    void compileFile() {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         Map<String, GeneratedResources> retrieved = dmnKiePMMLTrustyInvocationEvaluator.compileFile(pmmlFileName, classLoader);
         assertThat(retrieved).isNotNull().isNotEmpty().containsKey("pmml");

@@ -18,7 +18,8 @@
  */
 package org.kie.dmn.legacy.tests.core.v1_1;
 
-import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNModel;
@@ -30,6 +31,7 @@ import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.impl.CompositeTypeImpl;
 import org.kie.dmn.core.impl.SimpleTypeImpl;
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.FEELDialect;
 import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
 import org.kie.dmn.feel.lang.types.AliasFEELType;
 import org.kie.dmn.feel.lang.types.BuiltInType;
@@ -46,12 +48,10 @@ public class DMNCompilerTest extends BaseDMN1_1VariantTest {
 
     public static final Logger LOG = LoggerFactory.getLogger(DMNCompilerTest.class);
 
-    public DMNCompilerTest(VariantTestConf testConfig) {
-        super(testConfig);
-    }
-
-    @Test
-    public void testItemDefAllowedValuesString() {
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("params")
+    void itemDefAllowedValuesString(VariantTestConf conf) {
+        testConfig = conf;
         final DMNRuntime runtime = createRuntime("0003-input-data-string-allowed-values.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://github.com/kiegroup/kie-dmn", "0003-input-data-string-allowed-values" );
         assertThat(dmnModel).isNotNull();
@@ -70,7 +70,8 @@ public class DMNCompilerTest extends BaseDMN1_1VariantTest {
 
         final SimpleTypeImpl feelType = (SimpleTypeImpl) type;
 
-        final EvaluationContext ctx = new EvaluationContextImpl(ClassLoaderUtil.findDefaultClassLoader(), null);
+        // Defaulting FEELDialect to FEEL
+        final EvaluationContext ctx =  new EvaluationContextImpl(ClassLoaderUtil.findDefaultClassLoader(), null, FEELDialect.FEEL);
         assertThat(feelType.getFeelType()).isInstanceOf(AliasFEELType.class);
         assertThat(feelType.getFeelType().getName()).isEqualTo("tEmploymentStatus");
         assertThat(feelType.getAllowedValuesFEEL()).hasSize(4);
@@ -80,8 +81,10 @@ public class DMNCompilerTest extends BaseDMN1_1VariantTest {
         assertThat(feelType.getAllowedValuesFEEL().get( 3 ).apply( ctx, "STUDENT" )).isEqualTo(true);
     }
 
-    @Test
-    public void testCompositeItemDefinition() {
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("params")
+    void compositeItemDefinition(VariantTestConf conf) {
+        testConfig = conf;
         final DMNRuntime runtime = createRuntime("0008-LX-arithmetic.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://github.com/kiegroup/kie-dmn", "0008-LX-arithmetic" );
         assertThat(dmnModel).isNotNull();
@@ -117,8 +120,10 @@ public class DMNCompilerTest extends BaseDMN1_1VariantTest {
         assertThat(((SimpleTypeImpl)termMonths).getFeelType()).isEqualTo(BuiltInType.NUMBER);
     }
 
-    @Test
-    public void testCompilationThrowsNPE() {
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("params")
+    void compilationThrowsNPE(VariantTestConf conf) {
+        testConfig = conf;
         try {
             createRuntime("compilationThrowsNPE.dmn", this.getClass());
             fail("shouldn't have reached here.");
@@ -127,8 +132,10 @@ public class DMNCompilerTest extends BaseDMN1_1VariantTest {
         }
     }
 
-    @Test
-    public void testRecursiveFunctions() {
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("params")
+    void recursiveFunctions(VariantTestConf conf) {
+        testConfig = conf;
         // DROOLS-2161
         final DMNRuntime runtime = createRuntime("Recursive.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://github.com/kiegroup/kie-dmn", "Recursive" );
@@ -136,8 +143,10 @@ public class DMNCompilerTest extends BaseDMN1_1VariantTest {
         assertThat(evaluateModel(runtime, dmnModel, DMNFactory.newContext()).hasErrors()).isFalse();
     }
 
-    @Test
-    public void testImport() {
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("params")
+    void testImport(VariantTestConf conf) {
+        testConfig = conf;
         final DMNRuntime runtime = createRuntimeWithAdditionalResources("Importing_Model.dmn",
                                                                                        this.getClass(),
                                                                                        "Imported_Model.dmn");

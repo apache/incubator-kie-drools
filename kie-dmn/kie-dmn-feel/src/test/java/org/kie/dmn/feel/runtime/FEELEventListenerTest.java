@@ -18,14 +18,15 @@
  */
 package org.kie.dmn.feel.runtime;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.FEEL;
+import org.kie.dmn.feel.lang.impl.FEELBuilder;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class FEELEventListenerTest {
+class FEELEventListenerTest {
 
     private static final String LISTENER_OUTPUT = "Listener output";
 
@@ -33,23 +34,23 @@ public class FEELEventListenerTest {
 
     private String testVariable;
 
-    @Before
-    public void setup() {
+    @BeforeEach
+    void setup() {
         testVariable = null;
-        feel = FEEL.newInstance();
+        feel = FEELBuilder.builder().build();
         feel.addListener(event -> testVariable = LISTENER_OUTPUT);
         feel.addListener(System.out::println);
         feel.addListener( (evt) -> { if (evt.getSeverity() == Severity.ERROR) System.err.println(evt); } );
     }
 
     @Test
-    public void testParserError() {
+    void parserError() {
         feel.evaluate( "10 + / 5" );
         assertThat(testVariable).isEqualTo(LISTENER_OUTPUT);
     }
-    
+
     @Test
-    public void testSomeBuiltinFunctions() {
+    void someBuiltinFunctions() {
         System.out.println( feel.evaluate("append( null, 1, 2 )") );
         assertThat(testVariable).isEqualTo(LISTENER_OUTPUT);
     }

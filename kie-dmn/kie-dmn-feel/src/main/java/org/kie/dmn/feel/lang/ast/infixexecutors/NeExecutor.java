@@ -20,7 +20,7 @@ package org.kie.dmn.feel.lang.ast.infixexecutors;
 
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.ast.InfixOpNode;
-import org.kie.dmn.feel.util.EvalHelper;
+import org.kie.dmn.feel.util.BooleanEvalHelper;
 
 public class NeExecutor implements InfixExecutor {
 
@@ -35,7 +35,7 @@ public class NeExecutor implements InfixExecutor {
 
     @Override
     public Object evaluate(Object left, Object right, EvaluationContext ctx) {
-        Boolean result = EvalHelper.isEqual(left, right, ctx);
+        Boolean result = BooleanEvalHelper.isEqual(left, right);
         return result != null ? !result : null;
     }
 

@@ -641,6 +641,12 @@ public class DMNCompilerImpl implements DMNCompiler {
                     if (type instanceof CompositeTypeImpl) {
                         CompositeTypeImpl compositeTypeImpl = (CompositeTypeImpl) type;
                         type = new CompositeTypeImpl(namespace, name, id, isCollection, compositeTypeImpl.getFields(), baseType, baseFEELType);
+                        if (allowedValues != null && !allowedValues.isEmpty()) {
+                            type.setAllowedValues(allowedValues);
+                        }
+                        if (typeConstraint != null && !typeConstraint.isEmpty()) {
+                            type.setTypeConstraint(typeConstraint);
+                        }
                     } else if (type instanceof SimpleTypeImpl) {
                         type = new SimpleTypeImpl(namespace, name, id, isCollection, allowedValues, typeConstraint,
                                                   baseType, baseFEELType);

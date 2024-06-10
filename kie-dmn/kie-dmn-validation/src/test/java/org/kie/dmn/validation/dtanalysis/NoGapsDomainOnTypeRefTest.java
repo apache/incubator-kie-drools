@@ -20,24 +20,24 @@ package org.kie.dmn.validation.dtanalysis;
 
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.validation.dtanalysis.model.DTAnalysis;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.validation.DMNValidator.Validation.ANALYZE_DECISION_TABLE;
 
-public class NoGapsDomainOnTypeRefTest extends AbstractDTAnalysisTest {
+class NoGapsDomainOnTypeRefTest extends AbstractDTAnalysisTest {
 
     @Test
-    public void test_NoGapsDomainOnTypeRef() {
+    void no_gaps_domain_on_type_ref() {
         List<DMNMessage> validate = validator.validate(getReader("NoGapsDomainOnTypeRef.dmn"), ANALYZE_DECISION_TABLE);
 
         checkAnalysis(validate);
     }
 
     @Test
-    public void test_NoGapsDomainOnTypeRefv2() {
+    void no_gaps_domain_on_type_refv2() {
         List<DMNMessage> validate = validator.validate(getReader("NoGapsDomainOnTypeRefv2.dmn"), ANALYZE_DECISION_TABLE);
 
         checkAnalysis(validate);

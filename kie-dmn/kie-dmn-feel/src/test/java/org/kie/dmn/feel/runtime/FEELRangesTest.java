@@ -25,15 +25,22 @@ import java.time.Period;
 import java.util.Collection;
 import java.util.HashMap;
 
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
+import org.kie.dmn.feel.lang.FEELDialect;
 import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.dmn.feel.runtime.impl.RangeImpl;
 
 public class FEELRangesTest extends BaseFEELTest {
 
-    @Parameterized.Parameters(name = "{3}: {0} ({1}) = {2}")
-    public static Collection<Object[]> data() {
+    @ParameterizedTest
+    @MethodSource("data")
+    protected void instanceTest(String expression, Object result, FEELEvent.Severity severity, FEEL_TARGET testFEELTarget, Boolean useExtendedProfile, FEELDialect feelDialect) {
+        expression( expression,  result, severity, testFEELTarget, useExtendedProfile, feelDialect);
+    }
+
+    private static Collection<Object[]> data() {
         final Object[][] cases = new Object[][]{
                 {"[1..2]", new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.ONE, BigDecimal.valueOf(2), Range.RangeBoundary.CLOSED), null},
                 {"[2..1]", new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.valueOf(2), BigDecimal.ONE, Range.RangeBoundary.CLOSED), null},

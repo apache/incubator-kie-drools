@@ -24,49 +24,58 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
 import org.kie.dmn.core.BaseDMNContextTest;
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.FEELDialect;
 
-public class DMNContextFEELCtxWrapperTest extends BaseDMNContextTest {
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+class DMNContextFEELCtxWrapperTest extends BaseDMNContextTest {
 
     @Test
-    public void testEmptyContext() {
+    void emptyContext() {
         DMNContextFEELCtxWrapper ctx = new DMNContextFEELCtxWrapper(new EvaluationContextMock(Collections.emptyMap()));
         testCloneAndAlter(ctx, Collections.emptyMap(), Collections.emptyMap());
     }
 
     @Test
-    public void testContextWithEntries() {
+    void contextWithEntries() {
         DMNContextFEELCtxWrapper ctx = new DMNContextFEELCtxWrapper(new EvaluationContextMock(DEFAULT_ENTRIES));
         testCloneAndAlter(ctx, DEFAULT_ENTRIES, Collections.emptyMap());
     }
 
     @Test
-    public void testContextWithEntriesAndMetadata() {
+    void contextWithEntriesAndMetadata() {
         DMNContextFEELCtxWrapper ctx = new DMNContextFEELCtxWrapper(new EvaluationContextMock(DEFAULT_ENTRIES), DEFAULT_METADATA);
         testCloneAndAlter(ctx, DEFAULT_ENTRIES, DEFAULT_METADATA);
     }
 
-    @Test(expected = UnsupportedOperationException.class)
-    public void testPushScopeException() {
-        DMNContextFEELCtxWrapper ctx = new DMNContextFEELCtxWrapper(new EvaluationContextMock(Collections.emptyMap()));
-        ctx.pushScope("scopeName", "scopeNamespace");
+    @Test
+    void pushScopeException() {
+        assertThrows(UnsupportedOperationException.class, () -> {
+            DMNContextFEELCtxWrapper ctx = new DMNContextFEELCtxWrapper(new EvaluationContextMock(Collections.emptyMap()));
+            ctx.pushScope("scopeName", "scopeNamespace");
+        });
     }
 
-    @Test(expected = UnsupportedOperationException.class)
-    public void testPopScopeException() {
-        DMNContextFEELCtxWrapper ctx = new DMNContextFEELCtxWrapper(new EvaluationContextMock(Collections.emptyMap()));
-        ctx.popScope();
+    @Test
+    void popScopeException() {
+        assertThrows(UnsupportedOperationException.class, () -> {
+            DMNContextFEELCtxWrapper ctx = new DMNContextFEELCtxWrapper(new EvaluationContextMock(Collections.emptyMap()));
+            ctx.popScope();
+        });
     }
 
-    @Test(expected = UnsupportedOperationException.class)
-    public void testScopeNamespaceException() {
-        DMNContextFEELCtxWrapper ctx = new DMNContextFEELCtxWrapper(new EvaluationContextMock(Collections.emptyMap()));
-        ctx.scopeNamespace();
+    @Test
+    void scopeNamespaceException() {
+        assertThrows(UnsupportedOperationException.class, () -> {
+            DMNContextFEELCtxWrapper ctx = new DMNContextFEELCtxWrapper(new EvaluationContextMock(Collections.emptyMap()));
+            ctx.scopeNamespace();
+        });
     }
 
     private static class EvaluationContextMock implements EvaluationContext {
@@ -151,6 +160,12 @@ public class DMNContextFEELCtxWrapperTest extends BaseDMNContextTest {
         @Override
         public Object getRootObject() {
             throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public FEELDialect getDialect() {
+            // Defaulting FEELDialect to FEEL
+            return FEELDialect.FEEL;
         }
     }
 

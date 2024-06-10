@@ -21,7 +21,9 @@ package org.kie.dmn.core.typeref;
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNMessageType;
@@ -40,14 +42,12 @@ import static org.kie.dmn.core.util.DynamicTypeUtils.mapOf;
 
 public class DMNTyperefTest extends BaseInterpretedVsCompiledTest {
 
-    public DMNTyperefTest(final boolean useExecModelCompiler) {
-        super(useExecModelCompiler);
-    }
-
     public static final Logger LOG = LoggerFactory.getLogger(DMNTyperefTest.class);
 
-    @Test
-    public void testCircular3() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void circular3(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("circular3.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_EEE7FA5B-AF9C-4937-8870-D612D4D8D860", "new-file");
         assertThat(dmnModel).isNotNull();
@@ -64,8 +64,10 @@ public class DMNTyperefTest extends BaseInterpretedVsCompiledTest {
         assertThat(result.get("Decision-1")).isEqualTo("named John Doe age 40 ext age 41");
     }
 
-    @Test
-    public void testGenFn1() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void genFn1(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("wireGenFnType1.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_10795E58-CD3F-4203-B4D7-C80D9D8BE7BD", "wireGenFnType1");
         assertThat(dmnModel).isNotNull();
@@ -83,36 +85,46 @@ public class DMNTyperefTest extends BaseInterpretedVsCompiledTest {
         assertThat(result.get("Decision-1")).isEqualTo("Hello, World!");
     }
 
-    @Test
-    public void test_bkmWrongFnType() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void bkm_wrong_fn_type(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final List<DMNMessage> messages = DMNRuntimeUtil.createExpectingDMNMessages("bkmWrongFnType.dmn", this.getClass());
         assertThat(messages).isNotNull().isNotEmpty();
         assertThat(messages.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.TYPEREF_MISMATCH))).isTrue();
     }
 
-    @Test
-    public void test_bkmWrongFnType2() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void bkm_wrong_fn_type2(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final List<DMNMessage> messages = DMNRuntimeUtil.createExpectingDMNMessages("bkmWrongFnType2.dmn", this.getClass());
         assertThat(messages).isNotNull().isNotEmpty();
         assertThat(messages.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.PARAMETER_MISMATCH))).isTrue();
     }
 
-    @Test
-    public void test_bkmWrongFnType3() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void bkm_wrong_fn_type3(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final List<DMNMessage> messages = DMNRuntimeUtil.createExpectingDMNMessages("bkmWrongFnType3.dmn", this.getClass());
         assertThat(messages).isNotNull().isNotEmpty();
         assertThat(messages.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.PARAMETER_MISMATCH))).isTrue();
     }
 
-    @Test
-    public void test_bkmWrongFnType4() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void bkm_wrong_fn_type4(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final List<DMNMessage> messages = DMNRuntimeUtil.createExpectingDMNMessages("bkmWrongFnType4.dmn", this.getClass());
         assertThat(messages).isNotNull().isNotEmpty();
         assertThat(messages.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.PARAMETER_MISMATCH))).isTrue();
     }
 
-    @Test
-    public void testGenFn2() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void genFn2(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("wireGenFnType2.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_10795E58-CD3F-4203-B4D7-C80D9D8BE7BD", "wireGenFnType2");
         assertThat(dmnModel).isNotNull();
@@ -130,8 +142,10 @@ public class DMNTyperefTest extends BaseInterpretedVsCompiledTest {
         assertThat(result.get("Decision-1")).isEqualTo("Hello, World!");
     }
 
-    @Test
-    public void test_dsWrongFnType() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void ds_wrong_fn_type(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("dsWrongFnType.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_10795E58-CD3F-4203-B4D7-C80D9D8BE7BD", "dsWrongFnType");
         assertThat(dmnModel).isNotNull();
@@ -145,50 +159,64 @@ public class DMNTyperefTest extends BaseInterpretedVsCompiledTest {
         assertThat(dmnResult.getMessages()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isNotEmpty();
     }
 
-    @Test
-    public void test_dsWrongFnType2() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void ds_wrong_fn_type2(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final List<DMNMessage> messages = DMNRuntimeUtil.createExpectingDMNMessages("dsWrongFnType2.dmn", this.getClass());
         assertThat(messages).isNotNull().isNotEmpty();
         assertThat(messages.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.PARAMETER_MISMATCH))).isTrue();
     }
 
-    @Test
-    public void test_dsWrongFnType3() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void ds_wrong_fn_type3(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final List<DMNMessage> messages = DMNRuntimeUtil.createExpectingDMNMessages("dsWrongFnType3.dmn", this.getClass());
         assertThat(messages).isNotNull().isNotEmpty();
         assertThat(messages.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.PARAMETER_MISMATCH))).isTrue();
     }
 
-    @Test
-    public void test_dsWrongFnType4() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void ds_wrong_fn_type4(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final List<DMNMessage> messages = DMNRuntimeUtil.createExpectingDMNMessages("dsWrongFnType4.dmn", this.getClass());
         assertThat(messages).isNotNull().isNotEmpty();
         assertThat(messages.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.PARAMETER_MISMATCH))).isTrue();
     }
 
-    @Test
-    public void test_dsWrongFnType5() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void ds_wrong_fn_type5(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final List<DMNMessage> messages = DMNRuntimeUtil.createExpectingDMNMessages("dsWrongFnType5.dmn", this.getClass());
         assertThat(messages).isNotNull().isNotEmpty();
         assertThat(messages.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.TYPEREF_MISMATCH))).isTrue();
     }
 
-    @Test
-    public void test_dsWrongFnType6() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void ds_wrong_fn_type6(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final List<DMNMessage> messages = DMNRuntimeUtil.createExpectingDMNMessages("dsWrongFnType6.dmn", this.getClass());
         assertThat(messages).isNotNull().isNotEmpty();
         assertThat(messages.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.TYPEREF_MISMATCH))).isTrue();
     }
 
-    @Test
-    public void test_dsWrongFnType7() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void ds_wrong_fn_type7(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final List<DMNMessage> messages = DMNRuntimeUtil.createExpectingDMNMessages("dsWrongFnType7.dmn", this.getClass());
         assertThat(messages).isNotNull().isNotEmpty();
         assertThat(messages.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.TYPEREF_MISMATCH))).isTrue();
     }
 
-    @Test
-    public void testGenFn3() {
+    @ParameterizedTest
+    @MethodSource("params")
+    void genFn3(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("wireGenFnType3.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_10795E58-CD3F-4203-B4D7-C80D9D8BE7BD", "wireGenFnType3");
         assertThat(dmnModel).isNotNull();

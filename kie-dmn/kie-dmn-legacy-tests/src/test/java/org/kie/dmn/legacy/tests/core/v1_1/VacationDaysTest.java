@@ -20,7 +20,8 @@ package org.kie.dmn.legacy.tests.core.v1_1;
 
 import java.math.BigDecimal;
 
-import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
@@ -32,42 +33,45 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class VacationDaysTest extends BaseDMN1_1VariantTest {
 
-    public VacationDaysTest(VariantTestConf testConfig) {
-        super(testConfig);
-    }
-
-    @Test
-    public void testSolutionCase1() {
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("params")
+    void solutionCase1() {
         executeTest( 16, 1, 27 );
     }
 
-    @Test
-    public void testSolutionCase2() {
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("params")
+    void solutionCase2() {
         executeTest( 25, 5, 22 );
     }
 
-    @Test
-    public void testSolutionCase3() {
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("params")
+    void solutionCase3() {
         executeTest( 44, 20, 24 );
     }
 
-    @Test
-    public void testSolutionCase4() {
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("params")
+    void solutionCase4() {
         executeTest( 44, 30, 30 );
     }
 
-    @Test
-    public void testSolutionCase5() {
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("params")
+    void solutionCase5() {
         executeTest( 50, 20, 24 );
     }
 
-    @Test
-    public void testSolutionCase6() {
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("params")
+    void solutionCase6() {
         executeTest( 50, 30, 30 );
     }
 
-    @Test
-    public void testSolutionCase7() {
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("params")
+    void solutionCase7() {
         executeTest( 60, 20, 30 );
     }
 

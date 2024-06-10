@@ -18,6 +18,25 @@
  */
 package org.drools.mvel;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.Executor;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.drools.base.RuleBase;
 import org.drools.base.RuleBuildContext;
 import org.drools.base.base.DroolsQuery;
@@ -43,7 +62,6 @@ import org.drools.base.util.IndexedValueReader;
 import org.drools.base.util.index.ConstraintTypeOperator;
 import org.drools.compiler.rule.builder.EvaluatorWrapper;
 import org.drools.core.impl.KnowledgeBaseImpl;
-import org.drools.util.bitmask.BitMask;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.mvel.ConditionAnalyzer.CombinedCondition;
 import org.drools.mvel.ConditionAnalyzer.Condition;
@@ -56,6 +74,7 @@ import org.drools.mvel.ConditionAnalyzer.SingleCondition;
 import org.drools.mvel.accessors.ClassFieldReader;
 import org.drools.mvel.expr.MVELCompilationUnit;
 import org.drools.mvel.extractors.MVELObjectClassFieldReader;
+import org.drools.util.bitmask.BitMask;
 import org.drools.wiring.api.classloader.ProjectClassLoader;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.runtime.rule.FactHandle;
@@ -67,25 +86,6 @@ import org.mvel2.compiler.CompiledExpression;
 import org.mvel2.compiler.ExecutableStatement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.Executor;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.drools.base.reteoo.PropertySpecificUtil.allSetBitMask;
 import static org.drools.base.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
@@ -476,6 +476,10 @@ public class MVELConstraint extends MutableTypeConstraint<ContextEntry> implemen
             boolean firstProp = true;
             for (String propertyName : properties) {
                 String originalPropertyName = propertyName;
+                if (firstProp && pattern.map(p -> p.getDeclaration() != null && originalPropertyName.equals(p.getDeclaration().getBindingName())).orElse(false)) {
+                    // drop first property part if it is (redundantly) equal to the declared pattern binding name
+                    continue;
+                }
                 if (propertyName == null || propertyName.equals("this") || propertyName.length() == 0) {
                     return allSetButTraitBitMask();
                 }

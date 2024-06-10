@@ -20,6 +20,8 @@ package org.drools.model.operators;
 
 import org.drools.model.functions.Operator;
 
+import static org.drools.model.util.OperatorUtils.areEqual;
+
 public enum InOperator implements Operator.MultipleValue<Object, Object> {
 
     INSTANCE;
@@ -27,9 +29,7 @@ public enum InOperator implements Operator.MultipleValue<Object, Object> {
     @Override
     public boolean eval( Object a, Object[] bs ) {
         for (Object b : bs) {
-            if (a == null && b == null) {
-                return true;
-            } else if (a != null && a.equals( b )) {
+            if (areEqual(a, b)) {
                 return true;
             }
         }

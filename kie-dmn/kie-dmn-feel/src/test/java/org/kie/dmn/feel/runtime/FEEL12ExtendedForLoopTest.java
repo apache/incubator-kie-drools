@@ -18,10 +18,6 @@
  */
 package org.kie.dmn.feel.runtime;
 
-import org.junit.runners.Parameterized;
-import org.kie.dmn.api.feel.runtime.events.FEELEvent;
-import org.kie.dmn.feel.util.EvalHelper;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -31,13 +27,24 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
+import org.kie.dmn.feel.lang.FEELDialect;
+import org.kie.dmn.feel.util.NumberEvalHelper;
+
 import static org.kie.dmn.feel.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.feel.util.DynamicTypeUtils.mapOf;
 
 public class FEEL12ExtendedForLoopTest extends BaseFEELTest {
 
-    @Parameterized.Parameters(name = "{index}: {0} ({1}) = {2}")
-    public static Collection<Object[]> data() {
+    @ParameterizedTest
+    @MethodSource("data")
+    protected void instanceTest(String expression, Object result, FEELEvent.Severity severity, FEEL_TARGET testFEELTarget, Boolean useExtendedProfile, FEELDialect feelDialect) {
+        expression( expression,  result, severity, testFEELTarget, useExtendedProfile, feelDialect);
+    }
+
+    private static Collection<Object[]> data() {
         final Object[][] cases = new Object[][] {
           //normal:
           {"for x in [1, 2, 3] return x+1", Stream.of(1, 2, 3 ).map(x -> BigDecimal.valueOf(x + 1 ) ).collect(Collectors.toList() ), null},
@@ -62,7 +69,7 @@ public class FEEL12ExtendedForLoopTest extends BaseFEELTest {
     private static List<Object> l(final Object... args) {
         final List<Object> coerced = new ArrayList<>();
         for ( final Object a : args ) {
-            coerced.add(EvalHelper.coerceNumber(a));
+            coerced.add(NumberEvalHelper.coerceNumber(a));
         }
         return coerced;
     }

@@ -20,17 +20,17 @@ package org.kie.dmn.openapi;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.networknt.schema.JsonSchema;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.openapi.model.DMNOASResult;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class UndefinedTest extends BaseDMNOASTest {
+class UndefinedTest extends BaseDMNOASTest {
 
     @Test
-    public void testUndefinedIO() throws Exception {
+    void undefinedIO() throws Exception {
         final DMNRuntime runtime = createRuntime("undefinedIO.dmn", this.getClass());
         DMNOASResult result = DMNOASGeneratorFactory.generator(runtime.getModels()).build();
 

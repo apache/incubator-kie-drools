@@ -60,7 +60,7 @@ import org.kie.dmn.feel.lang.types.DefaultBuiltinFEELTypeRegistry;
 import org.kie.dmn.feel.lang.types.FEELTypeRegistry;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser.RelExpressionValueContext;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser.TypeContext;
-import org.kie.dmn.feel.util.EvalHelper;
+import org.kie.dmn.feel.util.StringEvalHelper;
 
 public class ASTBuilderVisitor
         extends FEEL_1_1BaseVisitor<BaseNode> {
@@ -571,7 +571,7 @@ public class ASTBuilderVisitor
     public TypeNode visitQnType(FEEL_1_1Parser.QnTypeContext ctx) {
         List<String> qns = new ArrayList<>();
         if (ctx.qualifiedName() != null) {
-            ctx.qualifiedName().nameRef().forEach(nr -> qns.add(EvalHelper.normalizeVariableName(ParserHelper.getOriginalText(nr))));
+            ctx.qualifiedName().nameRef().forEach(nr -> qns.add(StringEvalHelper.normalizeVariableName(ParserHelper.getOriginalText(nr))));
         } else if (ctx.FUNCTION() != null) {
             qns.add("function");
         } else {

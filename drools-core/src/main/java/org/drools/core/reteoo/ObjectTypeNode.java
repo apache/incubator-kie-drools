@@ -34,6 +34,7 @@ import org.drools.base.common.NetworkNode;
 import org.drools.base.common.RuleBasePartitionId;
 import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.base.rule.EntryPointId;
+import org.drools.base.rule.Pattern;
 import org.drools.base.time.JobHandle;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalFactHandle;
@@ -169,7 +170,7 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink {
     }
 
     @Override
-    public BitMask calculateDeclaredMask(ObjectType modifiedType, List<String> settableProperties) {
+    public BitMask calculateDeclaredMask(Pattern pattern, ObjectType modifiedType, List<String> settableProperties) {
         return EmptyBitMask.get();
     }
 

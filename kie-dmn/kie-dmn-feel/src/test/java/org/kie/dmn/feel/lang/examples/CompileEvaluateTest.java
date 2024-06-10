@@ -19,20 +19,20 @@
 package org.kie.dmn.feel.lang.examples;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.CompiledExpression;
 import org.kie.dmn.feel.lang.CompilerContext;
+import org.kie.dmn.feel.lang.impl.FEELBuilder;
 import org.kie.dmn.feel.lang.impl.MapBackedType;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.lang.types.GenListType;
@@ -43,9 +43,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.feel.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.feel.util.DynamicTypeUtils.prototype;
 
-public class CompileEvaluateTest {
+class CompileEvaluateTest {
     private static final Logger LOG = LoggerFactory.getLogger(CompileEvaluateTest.class);
-    private static final FEEL feel = FEEL.newInstance();
+    private static final FEEL feel = FEELBuilder.builder().build();
     private List<FEELEvent> errors;
     private FEELEventListener errorsCountingListener;
     
@@ -66,21 +66,21 @@ public class CompileEvaluateTest {
             }
         } );
     }
-    
-    @Before
-    public void before() {
+
+    @BeforeEach
+    void before() {
         errors = new ArrayList<>();
         errorsCountingListener = evt -> { if ( evt.getSeverity() == Severity.ERROR ) { errors.add(evt); } };
         feel.addListener( errorsCountingListener );
     }
-    
-    @After
-    public void after() {
+
+    @AfterEach
+    void after() {
         feel.removeListener( errorsCountingListener );
     }
-    
+
     @Test
-    public void test_isDynamicResolution() {
+    void is_dynamic_resolution() {
         CompilerContext ctx = feel.newCompilerContext();
         ctx.addInputVariableType( "Person List", BuiltInType.LIST);
         
@@ -103,10 +103,10 @@ public class CompileEvaluateTest {
         assertThat(result).isInstanceOf(List.class);
         assertThat((List<?>) result).hasSize(1);
         assertThat(((Map<?, ?>) ((List<?>) result).get(0)).get("Full Name")).isEqualTo("Edson Tirelli");
-    }        
-    
+    }
+
     @Test
-    public void test2() {
+    void test2() {
         CompilerContext ctx = feel.newCompilerContext();
         ctx.addInputVariableType( "MyPerson", new MapBackedType().addField( "FullName", BuiltInType.STRING ) );
         
@@ -123,7 +123,7 @@ public class CompileEvaluateTest {
     }
 
     @Test
-    public void test2OK() {
+    void test2OK() {
         CompilerContext ctx = feel.newCompilerContext();
         ctx.addInputVariableType( "MyPerson", new MapBackedType().addField( "FullName", BuiltInType.STRING ) );
         
@@ -136,9 +136,9 @@ public class CompileEvaluateTest {
         
         assertThat(result).isEqualTo("John Doe");
     }
-    
+
     @Test
-    public void testHyphenInProperty() {
+    void hyphenInProperty() {
         CompilerContext ctx = feel.newCompilerContext();
         ctx.addInputVariableType( "input", new MapBackedType().addField( "Primary-Key", BuiltInType.STRING ).addField( "Value", BuiltInType.STRING ) );
         CompiledExpression compiledExpression = feel.compile( "input.Primary-Key", ctx );
@@ -150,9 +150,9 @@ public class CompileEvaluateTest {
         assertThat(result).isEqualTo("k987");
         assertThat(errors).isEmpty();
     }
-    
+
     @Test
-    public void testHyphenInPropertyOfCollectionForProjection() {
+    void hyphenInPropertyOfCollectionForProjection() {
         MapBackedType compositeType = new MapBackedType().addField( "Primary-Key", BuiltInType.STRING ).addField( "Value", BuiltInType.STRING );
         CompilerContext ctx = feel.newCompilerContext();
         ctx.addInputVariableType( "input", new GenListType(compositeType) );
@@ -165,9 +165,9 @@ public class CompileEvaluateTest {
         assertThat(result).asList().containsExactly("k987");
         assertThat(errors).isEmpty();
     }
-    
+
     @Test
-    public void testHyphenInPropertyOfCollectionForAccessor() {
+    void hyphenInPropertyOfCollectionForAccessor() {
         MapBackedType compositeType = new MapBackedType().addField( "Primary-Key", BuiltInType.STRING ).addField( "Value", BuiltInType.STRING );
         CompilerContext ctx = feel.newCompilerContext();
         ctx.addInputVariableType( "my input", new GenListType(compositeType) );
@@ -180,25 +180,25 @@ public class CompileEvaluateTest {
         assertThat(result).isEqualTo("k987");
         assertThat(errors).isEmpty();
     }
-    
+
     @Test
-    public void testExternalFnMissingClass() {
+    void externalFnMissingClass() {
         CompiledExpression compiledExpression = feel.compile( "{ maximum : function( v1, v2 ) external { java : { class : \"java.lang.Meth\", method signature: \"max(long,long)\" } }, the max : maximum( 10, 20 ) }.the max", feel.newCompilerContext() );
         Object result = feel.evaluate(compiledExpression, new HashMap<>());
         
         assertThat(errors).anyMatch(fe -> fe.getMessage().contains("java.lang.Meth"));
     }
-    
+
     @Test
-    public void testExternalFnMissingMethod() {
+    void externalFnMissingMethod() {
         CompiledExpression compiledExpression = feel.compile( "{ maximum : function( v1, v2 ) external { java : { class : \""+Math.class.getCanonicalName()+"\", method signature: \"max(int,long)\" } }, the max : maximum( 10, 20 ) }.the max", feel.newCompilerContext() );
         Object result = feel.evaluate(compiledExpression, new HashMap<>());
         
         assertThat(errors).anyMatch(fe -> fe.getMessage().contains("max(int,int)") && fe.getMessage().contains("max(long,long)"));
-    }    
-    
+    }
+
     @Test
-    public void testExternalFnMissingMethodString() {
+    void externalFnMissingMethodString() {
         CompiledExpression compiledExpression = feel.compile( "{ fn : function( p1 ) external { java : { class : \""+SomeTestUtilClass.class.getCanonicalName()+"\", method signature: \"greet(String)\" } }, r : fn( \"John Doe\" ) }.r", feel.newCompilerContext() );
         Object result = feel.evaluate(compiledExpression, new HashMap<>());
         

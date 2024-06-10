@@ -18,15 +18,11 @@
  */
 package org.kie.dmn.core.classloader;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
-import static org.kie.dmn.core.util.DynamicTypeUtils.mapOf;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
@@ -41,6 +37,10 @@ import org.kie.dmn.model.api.DecisionTable;
 import org.kie.dmn.model.api.RuleAnnotation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
+import static org.kie.dmn.core.util.DynamicTypeUtils.mapOf;
 
 public class DTAnnotationListenerTest {
 
@@ -82,7 +82,7 @@ public class DTAnnotationListenerTest {
     }
 
     @Test
-    public void test() {
+    void test() {
         final DTAnnotationListener listenerUT = new DTAnnotationListener();
 
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("license.dmn", this.getClass());

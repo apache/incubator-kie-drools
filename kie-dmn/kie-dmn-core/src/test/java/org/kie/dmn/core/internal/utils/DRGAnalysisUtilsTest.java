@@ -21,7 +21,7 @@ package org.kie.dmn.core.internal.utils;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.core.BaseVariantTest;
@@ -47,7 +47,7 @@ public class DRGAnalysisUtilsTest {
     }
 
     @Test
-    public void testCH11usingDMN13() throws Exception {
+    void ch11usingDMN13() throws Exception {
         final DMNRuntime runtime = createRuntimeWithAdditionalResources("Chapter 11 Example.dmn", DMN13specificTest.class, "Financial.dmn");
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_9d01a0c4-f529-4ad8-ad8e-ec5fb5d96ad4", "Chapter 11 Example");
         assertThat(dmnModel).isNotNull();

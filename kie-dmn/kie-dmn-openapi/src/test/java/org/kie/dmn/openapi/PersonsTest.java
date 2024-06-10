@@ -20,17 +20,17 @@ package org.kie.dmn.openapi;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.networknt.schema.JsonSchema;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.openapi.model.DMNOASResult;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class PersonsTest extends BaseDMNOASTest {
+class PersonsTest extends BaseDMNOASTest {
 
     @Test
-    public void test() throws Exception {
+    void test() throws Exception {
         final DMNRuntime runtime = createRuntime("persons.dmn", this.getClass());
         DMNOASResult result = DMNOASGeneratorFactory.generator(runtime.getModels()).build();
 
@@ -43,7 +43,7 @@ public class PersonsTest extends BaseDMNOASTest {
     }
 
     @Test
-    public void testForPrefix() throws Exception {
+    void forPrefix() throws Exception {
         final DMNRuntime runtime = createRuntime("persons.dmn", this.getClass());
         DMNOASResult result = DMNOASGeneratorFactory.generator(runtime.getModels(), "#/definitions/").build();
 

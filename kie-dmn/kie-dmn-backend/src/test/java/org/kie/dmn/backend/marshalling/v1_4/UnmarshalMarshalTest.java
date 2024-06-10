@@ -33,7 +33,7 @@ import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.marshalling.DMNMarshaller;
 import org.kie.dmn.backend.marshalling.v1_3.extensions.TrisoExtensionRegister;
 import org.kie.dmn.backend.marshalling.v1x.DMNMarshallerFactory;
@@ -62,48 +62,48 @@ public class UnmarshalMarshalTest {
     protected static final Logger LOG = LoggerFactory.getLogger(UnmarshalMarshalTest.class);
 
     @Test
-    public void testV14_simple() throws Exception {
+    void v14Simple() throws Exception {
         testRoundTripV14("org/kie/dmn/backend/marshalling/v1_4/", "simple.dmn");
     }
 
     @Test
-    public void testV14_ch11example_asFromOMG() throws Exception {
+    void v14Ch11exampleAsFromOMG() throws Exception {
         DMNMarshaller marshaller = DMNMarshallerFactory.newMarshallerWithExtensions(List.of(new TrisoExtensionRegister())); // as the example from OMG contains example of extension element, preserving (re-using from package of 1.3)
         testRoundTrip("org/kie/dmn/backend/marshalling/v1_4/", "Chapter 11 Example.dmn", marshaller, DMN14_SCHEMA_SOURCE);
     }
 
     @Test
-    public void testV14_financial() throws Exception {
+    void v14Financial() throws Exception {
         testRoundTripV14("org/kie/dmn/backend/marshalling/v1_4/", "Financial.dmn");
     }
 
     @Test
-    public void testV14_loan_info() throws Exception {
+    void v14LoanInfo() throws Exception {
         testRoundTripV14("org/kie/dmn/backend/marshalling/v1_4/", "Loan info.dmn");
     }
 
     @Test
-    public void testV14_recommended_loan_product() throws Exception {
+    void v14RecommendedLoanProduct() throws Exception {
         testRoundTripV14("org/kie/dmn/backend/marshalling/v1_4/", "Recommended Loan Products.dmn");
     }
-    
+
     @Test
-    public void testV14_for() throws Exception {
+    void v14For() throws Exception {
         testRoundTripV14("org/kie/dmn/backend/marshalling/v1_4/", "sampleFor.dmn");
     }
-    
+
     @Test
-    public void testV14_quantified() throws Exception {
+    void v14Quantified() throws Exception {
         testRoundTripV14("org/kie/dmn/backend/marshalling/v1_4/", "sampleQuantified.dmn");
     }
-    
+
     @Test
-    public void testV14_conditional() throws Exception {
+    void v14Conditional() throws Exception {
         testRoundTripV14("org/kie/dmn/backend/marshalling/v1_4/", "sampleConditional.dmn");
     }
-    
+
     @Test
-    public void testV14_filter() throws Exception {
+    void v14Filter() throws Exception {
         testRoundTripV14("org/kie/dmn/backend/marshalling/v1_4/", "sampleFilter.dmn");
     }
 
@@ -239,6 +239,7 @@ DMNDIv1.2:
                                                        return outcome;
                                                    })))
                 .ignoreWhitespace()
+                .ignoreComments()
                 .checkForSimilar()
                 .build();
         checkSimilar.getDifferences().forEach(m -> LOG.error("{}", m));

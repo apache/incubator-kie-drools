@@ -30,6 +30,7 @@ import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.CompiledExpression;
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.impl.FEELBuilder;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.runtime.decisiontables.DTDecisionRule;
@@ -44,6 +45,8 @@ import org.slf4j.LoggerFactory;
 
 public class DecisionTableFunction
         extends BaseFEELFunction {
+
+    public static final DecisionTableFunction INSTANCE = new DecisionTableFunction();
 
     private static final Logger LOG = LoggerFactory.getLogger( DecisionTableFunction.class );
 
@@ -113,14 +116,14 @@ public class DecisionTableFunction
         }
 
         // TODO parse default output value.
-        FEEL feel = FEEL.newInstance();
+        FEEL feel = FEELBuilder.builder().build();
         List<DTDecisionRule> decisionRules = IntStream.range( 0, ruleList.size() )
                 .mapToObj( index -> toDecisionRule( ctx, feel, index, ruleList.get( index ), inputExpressions.size() ) )
                 .collect( Collectors.toList() );
 
         // TODO is there a way to avoid UUID and get from _evaluation_ ctx the name of the wrapping context? 
         // TODO also in this case it is using an ad-hoc created FEEL instance instead of the "hosted" one.
-        DecisionTableImpl dti = new DecisionTableImpl(UUID.randomUUID().toString(), inputExpressions, inputs, outputClauses, decisionRules, HitPolicy.fromString(hitPolicy), FEEL.newInstance());
+        DecisionTableImpl dti = new DecisionTableImpl(UUID.randomUUID().toString(), inputExpressions, inputs, outputClauses, decisionRules, HitPolicy.fromString(hitPolicy), FEELBuilder.builder().build());
         return new DTInvokerFunction( dti );
     }
 

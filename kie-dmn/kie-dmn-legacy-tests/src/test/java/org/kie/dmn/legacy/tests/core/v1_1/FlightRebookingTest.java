@@ -25,7 +25,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNDecisionResult;
 import org.kie.dmn.api.core.DMNModel;
@@ -38,12 +39,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class FlightRebookingTest extends BaseDMN1_1VariantTest {
 
-    public FlightRebookingTest(VariantTestConf testConfig) {
-        super(testConfig);
-    }
-
-    @Test
-    public void testSolution1() {
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("params")
+    public void testSolution1(VariantTestConf conf) {
+        testConfig = conf;
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("0019-flight-rebooking.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel("https://www.drools.org/kie-dmn", "0019-flight-rebooking" );
         assertThat(dmnModel).isNotNull();
@@ -64,8 +63,10 @@ public class FlightRebookingTest extends BaseDMN1_1VariantTest {
         assertThat(result.get("Rebooked Passengers")).isEqualTo(loadExpectedResult());
     }
 
-    @Test
-    public void testSolutionAlternate() {
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("params")
+    void solutionAlternate(VariantTestConf conf) {
+        testConfig = conf;
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("0019-flight-rebooking-alternative.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel("https://www.drools.org/kie-dmn", "0019-flight-rebooking" );
         assertThat(dmnModel).isNotNull();
@@ -86,8 +87,10 @@ public class FlightRebookingTest extends BaseDMN1_1VariantTest {
         assertThat(result.get("Rebooked Passengers")).isEqualTo(loadExpectedResult());
     }
 
-    @Test
-    public void testSolutionSingletonLists() {
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("params")
+    void solutionSingletonLists(VariantTestConf conf) {
+        testConfig = conf;
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("0019-flight-rebooking-singleton-lists.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel("https://www.drools.org/kie-dmn", "0019-flight-rebooking" );
         assertThat(dmnModel).isNotNull();
@@ -108,8 +111,10 @@ public class FlightRebookingTest extends BaseDMN1_1VariantTest {
         assertThat(result.get("Rebooked Passengers")).isEqualTo(loadExpectedResult());
     }
 
-    @Test
-    public void testSolutionBadExample() {
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("params")
+    void solutionBadExample(VariantTestConf conf) {
+        testConfig = conf;
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("0019-flight-rebooking-bad-example.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel("https://www.drools.org/kie-dmn", "0019-flight-rebooking" );
         assertThat(dmnModel).isNotNull();
@@ -130,8 +135,10 @@ public class FlightRebookingTest extends BaseDMN1_1VariantTest {
         assertThat(result.get("Rebooked Passengers")).isEqualTo(loadExpectedResult());
     }
 
-    @Test
-    public void testUninterpreted() {
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("params")
+    void uninterpreted(VariantTestConf conf) {
+        testConfig = conf;
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("0019-flight-rebooking-uninterpreted.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_188d6caf-a355-49b5-a692-bd6ce713da08", "0019-flight-rebooking" );
         runtime.addListener( DMNRuntimeUtil.createListener() );

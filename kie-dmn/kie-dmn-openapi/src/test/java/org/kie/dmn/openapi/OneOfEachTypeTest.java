@@ -20,7 +20,7 @@ package org.kie.dmn.openapi;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.networknt.schema.JsonSchema;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.core.stronglytyped.DMNRuntimeTypesTest;
@@ -28,10 +28,10 @@ import org.kie.dmn.openapi.model.DMNOASResult;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class OneOfEachTypeTest extends BaseDMNOASTest {
+class OneOfEachTypeTest extends BaseDMNOASTest {
 
     @Test
-    public void test() throws Exception {
+    void test() throws Exception {
         final DMNRuntime runtime = createRuntime("OneOfEachType.dmn", DMNRuntimeTypesTest.class);
         DMNOASResult result = DMNOASGeneratorFactory.generator(runtime.getModels()).build();
 

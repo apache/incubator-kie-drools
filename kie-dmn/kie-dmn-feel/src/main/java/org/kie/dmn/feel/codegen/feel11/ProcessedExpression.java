@@ -37,7 +37,7 @@ import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.parser.feel11.ASTBuilderVisitor;
 
 import static org.kie.dmn.feel.codegen.feel11.ProcessedFEELUnit.DefaultMode.Compiled;
-import static org.kie.dmn.feel.util.ClassLoaderUtil.CAN_PLATFORM_CLASSLOAD;;
+import static org.kie.dmn.feel.util.ClassLoaderUtil.CAN_PLATFORM_CLASSLOAD;
 
 public class ProcessedExpression extends ProcessedFEELUnit {
 
@@ -45,20 +45,20 @@ public class ProcessedExpression extends ProcessedFEELUnit {
     private static final String TEMPLATE_CLASS = "TemplateCompiledFEELExpression";
 
     private final BaseNode ast;
-    private final DefaultMode defaultBackend;
-    private DirectCompilerResult compiledExpression;
+    private final DefaultMode executionMode;
+    private DirectCompilerResult compilerResult;
 
-    private final CompilerBytecodeLoader compiler = new CompilerBytecodeLoader();
-    private CompiledFEELExpression defaultResult;
+    private final CompilerBytecodeLoader compilerBytecodeLoader = new CompilerBytecodeLoader();
+    private CompiledFEELExpression executableFEELExpression;
 
     public ProcessedExpression(
             String expression,
             CompilerContext ctx,
-            ProcessedFEELUnit.DefaultMode defaultBackend,
+            ProcessedFEELUnit.DefaultMode executionMode,
             List<FEELProfile> profiles) {
 
         super(expression, ctx, profiles);
-        this.defaultBackend = defaultBackend;
+        this.executionMode = executionMode;
         ParseTree tree = getFEELParser(expression, ctx, profiles).compilation_unit();
         ASTBuilderVisitor astVisitor = new ASTBuilderVisitor(ctx.getInputVariableTypes(), ctx.getFEELFeelTypeRegistry());
         ast = tree.accept(astVisitor);
@@ -76,51 +76,51 @@ public class ProcessedExpression extends ProcessedFEELUnit {
         }
     }
 
-    public CompiledFEELExpression getResult() {
-        if (defaultBackend == Compiled) {
+    public CompiledFEELExpression asCompiledFEELExpression() {
+        if (executionMode == Compiled) {
             if (CAN_PLATFORM_CLASSLOAD) {
-                defaultResult = getCompiled();
+                executableFEELExpression = getCompiled();
             } else {
                 throw new UnsupportedOperationException("Cannot jit classload on this platform.");
             }
         } else { // "legacy" interpreted AST compilation:
-            defaultResult = getInterpreted();
+            executableFEELExpression = getInterpreted();
         }
 
         return this;
     }
 
     private DirectCompilerResult getCompilerResult() {
-        if (compiledExpression == null) {
+        if (compilerResult == null) {
             if (errorListener.isError()) {
-                compiledExpression =
+                compilerResult =
                         DirectCompilerResult.of(
                                 CompiledFEELSupport.compiledErrorExpression(
                                         errorListener.event().getMessage()),
                                 BuiltInType.UNKNOWN);
             } else {
                 try {
-                    compiledExpression = ast.accept(new ASTCompilerVisitor());
+                    compilerResult = ast.accept(new ASTCompilerVisitor());
                 } catch (FEELCompilationError e) {
-                    compiledExpression = DirectCompilerResult.of(
+                    compilerResult = DirectCompilerResult.of(
                             CompiledFEELSupport.compiledErrorExpression(e.getMessage()),
                             BuiltInType.UNKNOWN);
                 }
             }
         }
-        return compiledExpression;
+        return compilerResult;
     }
 
     public CompilationUnit getSourceCode() {
-        DirectCompilerResult compilerResult = getCompilerResult();
-        return compiler.getCompilationUnit(
+        DirectCompilerResult directCompilerResult = getCompilerResult();
+        return compilerBytecodeLoader.getCompilationUnit(
                 CompiledFEELExpression.class,
                 TEMPLATE_RESOURCE,
                 packageName,
                 TEMPLATE_CLASS,
                 expression,
-                compilerResult.getExpression(),
-                compilerResult.getFieldDeclarations()
+                directCompilerResult.getExpression(),
+                directCompilerResult.getFieldDeclarations()
         );
     }
 
@@ -130,7 +130,7 @@ public class ProcessedExpression extends ProcessedFEELUnit {
 
     public CompiledExecutableExpression getCompiled() {
         CompiledFEELExpression compiledFEELExpression =
-                compiler.compileUnit(
+                compilerBytecodeLoader.compileUnit(
                         packageName,
                         TEMPLATE_CLASS,
                         getSourceCode());
@@ -139,6 +139,6 @@ public class ProcessedExpression extends ProcessedFEELUnit {
 
     @Override
     public Object apply(EvaluationContext evaluationContext) {
-        return defaultResult.apply(evaluationContext);
+        return executableFEELExpression.apply(evaluationContext);
     }
 }

@@ -20,7 +20,7 @@ package org.kie.dmn.validation.dtanalysis;
 
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.builder.Message.Level;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNMessageType;
@@ -29,10 +29,10 @@ import org.kie.dmn.validation.dtanalysis.model.DTAnalysis;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.validation.DMNValidator.Validation.ANALYZE_DECISION_TABLE;
 
-public class SomeProblemTest extends AbstractDTAnalysisTest {
+class SomeProblemTest extends AbstractDTAnalysisTest {
 
     @Test
-    public void test() {
+    void test() {
         List<DMNMessage> validate = validator.validate(getReader("SomeProblem.dmn"), ANALYZE_DECISION_TABLE);
 
         DTAnalysis analysis1 = getAnalysis(validate, "_a36e37f8-aae0-4118-8267-cbb37c7955cb");
@@ -43,54 +43,54 @@ public class SomeProblemTest extends AbstractDTAnalysisTest {
         DTAnalysis analysis2 = getAnalysis(validate, "_2aea80b4-19fa-4831-8829-4db925a128aa");
         assertThat(analysis2.isError()).isTrue();
     }
-    
+
     @Test
-    public void testLtGtNumber() {
+    void ltGtNumber() {
         List<DMNMessage> validate = validator.validate(getReader("problemLtGtNumber.dmn"), ANALYZE_DECISION_TABLE);
         assertThat(validate).anyMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_ANALYSIS_ERROR) && p.getText().contains("Unrecognized unary test: '<> 47'; did you meant to write 'not(47)' instead?"));
         
         DTAnalysis analysis1 = getAnalysis(validate, "_207A079D-3C86-48D9-AE18-40D9485514F3");
         assertThat(analysis1.isError()).isTrue();
     }
-    
+
     @Test
-    public void testGtLtString() {
+    void gtLtString() {
         List<DMNMessage> validate = validator.validate(getReader("problemGtLtString.dmn"), ANALYZE_DECISION_TABLE);
         assertThat(validate).anyMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_ANALYSIS_ERROR) && p.getText().contains("Unrecognized unary test: '><\"a\"'; did you meant to write 'not(\"a\")' instead?"));
         
         DTAnalysis analysis1 = getAnalysis(validate, "_207A079D-3C86-48D9-AE18-40D9485514F3");
         assertThat(analysis1.isError()).isTrue();
     }
-    
+
     @Test
-    public void testDiseqNumber() {
+    void diseqNumber() {
         List<DMNMessage> validate = validator.validate(getReader("problemDiseqNumber.dmn"), ANALYZE_DECISION_TABLE);
         assertThat(validate).anyMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_ANALYSIS_ERROR) && p.getText().contains("Unrecognized unary test: '!= 47'; did you meant to write 'not(47)' instead?"));
         
         DTAnalysis analysis1 = getAnalysis(validate, "_B390752D-2181-40AF-A42C-737B3009DBAB");
         assertThat(analysis1.isError()).isTrue();
     }
-    
+
     @Test
-    public void testDiseqString() {
+    void diseqString() {
         List<DMNMessage> validate = validator.validate(getReader("problemDiseqString.dmn"), ANALYZE_DECISION_TABLE);
         assertThat(validate).anyMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_ANALYSIS_ERROR) && p.getText().contains("Unrecognized unary test: '!=\"a\"'; did you meant to write 'not(\"a\")' instead?"));
         
         DTAnalysis analysis1 = getAnalysis(validate, "_B390752D-2181-40AF-A42C-737B3009DBAB");
         assertThat(analysis1.isError()).isTrue();
     }
-    
+
     @Test
-    public void testValidDiseqNumber1() {
+    void validDiseqNumber1() {
         List<DMNMessage> validate = validator.validate(getReader("validDiseqNumber1.dmn"), ANALYZE_DECISION_TABLE);
         assertThat(validate).anyMatch(p -> p.getLevel() == Level.WARNING && p.getMessageType().equals(DMNMessageType.DECISION_TABLE_ANALYSIS_ERROR) && p.getText().contains("Unmanaged unary test: '? != 47'; you could write 'not(47)' instead."));
         
         DTAnalysis analysis1 = getAnalysis(validate, "_C72B227B-AF0C-4BC4-9E3F-CD44F842C886");
         assertThat(analysis1.isError()).isTrue();
     }
-    
+
     @Test
-    public void testValidDiseqNumber2() {
+    void validDiseqNumber2() {
         List<DMNMessage> validate = validator.validate(getReader("validDiseqNumber2.dmn"), ANALYZE_DECISION_TABLE);
         assertThat(validate).noneMatch(p -> p.getLevel()== Level.ERROR || p.getLevel() == Level.WARNING);
         

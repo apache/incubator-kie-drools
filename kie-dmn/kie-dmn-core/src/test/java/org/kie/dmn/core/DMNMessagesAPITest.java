@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -38,13 +38,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class DMNMessagesAPITest {
 
     public static final Logger LOG = LoggerFactory.getLogger(DMNMessagesAPITest.class);
 
     @Test
-    public void testAPIUsage() {
+    void apiUsage() {
         // DROOLS-3335 Broken DMN resource should inhibit KJAR and report KieBuilder message
         final KieServices ks = KieServices.Factory.get();
         final KieContainer kieContainer = DMNRuntimeUtil.getKieContainerIgnoringErrors(ks.newReleaseId("org.kie", "dmn-test-" + UUID.randomUUID(), "1.0"),
@@ -69,21 +70,23 @@ public class DMNMessagesAPITest {
         assertThat(dmnMessage.getPath()).isEqualTo("incomplete_expression.dmn");
     }
 
-    @Test(expected = IllegalStateException.class)
-    public void testAPIUsageSnippetForDocumentation() {
-        KieServices ks = KieServices.Factory.get();
-        
-        ReleaseId releaseId = ks.newReleaseId("org.kie", "dmn-test-" + UUID.randomUUID(), "1.0");
-        Resource dmnResource = ks.getResources().newClassPathResource("incomplete_expression.dmn", this.getClass());
-        
-        KieFileSystem kfs = ks.newKieFileSystem()
-                              .generateAndWritePomXML(releaseId)
-                              .write(dmnResource);
-        KieBuilder kieBuilder = ks.newKieBuilder(kfs)
-                                  .buildAll();
-        Results results = kieBuilder.getResults();
-        if (results.hasMessages(Message.Level.ERROR)) {
-            throw new IllegalStateException(results.getMessages(Message.Level.ERROR).toString());
-        }
+    @Test
+    void apiUsageSnippetForDocumentation() {
+        assertThrows(IllegalStateException.class, () -> {
+            KieServices ks = KieServices.Factory.get();
+
+            ReleaseId releaseId = ks.newReleaseId("org.kie", "dmn-test-" + UUID.randomUUID(), "1.0");
+            Resource dmnResource = ks.getResources().newClassPathResource("incomplete_expression.dmn", this.getClass());
+
+            KieFileSystem kfs = ks.newKieFileSystem()
+                    .generateAndWritePomXML(releaseId)
+                    .write(dmnResource);
+            KieBuilder kieBuilder = ks.newKieBuilder(kfs)
+                    .buildAll();
+            Results results = kieBuilder.getResults();
+            if (results.hasMessages(Message.Level.ERROR)) {
+                throw new IllegalStateException(results.getMessages(Message.Level.ERROR).toString());
+            }
+        });
     }
 }

@@ -22,9 +22,8 @@ import java.io.StringReader;
 import java.math.BigDecimal;
 import java.util.UUID;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -42,22 +41,22 @@ import org.kie.dmn.core.compiler.AlphaNetworkOption;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.core.classloader.DMNClassloaderTest.getPom;
 
-@RunWith(Parameterized.class)
 public class AlphaNetworkSupportInLargeDecisionTableTest {
 
-    @Parameterized.Parameters(name = "{0}")
     public static Object[] params() {
         return new Object[]{true, false};
     }
 
-    private final boolean useAlphaNetwork;
+    private boolean useAlphaNetwork;
 
-    public AlphaNetworkSupportInLargeDecisionTableTest(final boolean useAlphaNetwork) {
+    public void initAlphaNetworkSupportInLargeDecisionTableTest(final boolean useAlphaNetwork) {
         this.useAlphaNetwork = useAlphaNetwork;
     }
 
-    @Test
-    public void evaluateDecisionTable() {
+    @MethodSource("params")
+    @ParameterizedTest(name = "{0}")
+    public void evaluateDecisionTable(final boolean useAlphaNetwork) {
+        initAlphaNetworkSupportInLargeDecisionTableTest(useAlphaNetwork);
         System.setProperty(AlphaNetworkOption.PROPERTY_NAME, Boolean.toString(useAlphaNetwork));
         KieServices kieServices = KieServices.get();
 

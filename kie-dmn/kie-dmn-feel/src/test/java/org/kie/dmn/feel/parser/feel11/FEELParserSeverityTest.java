@@ -20,7 +20,7 @@ package org.kie.dmn.feel.parser.feel11;
 
 import java.util.Collections;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
 import org.kie.dmn.feel.codegen.feel11.ProcessedExpression;
@@ -44,12 +44,12 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 
-public class FEELParserSeverityTest {
+class FEELParserSeverityTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(FEELParserSeverityTest.class);
 
     @Test
-    public void testUnexistentOperatorGTGT() {
+    void unexistentOperatorGTGT() {
         // RHDM-1119 
         String inputExpression = "1 >> 2";
         ASTNode number = parseSeverity(inputExpression, FEELEvent.Severity.WARN);
@@ -60,7 +60,7 @@ public class FEELParserSeverityTest {
     }
 
     @Test
-    public void testUnexistentOperatorGTGTGT() {
+    void unexistentOperatorGTGTGT() {
         // RHDM-1119 
         String inputExpression = "1 >>> 2";
         ASTNode number = parseSeverity(inputExpression, FEELEvent.Severity.WARN);
@@ -71,7 +71,7 @@ public class FEELParserSeverityTest {
     }
 
     @Test
-    public void testUnexistentOperatorEQEQ() {
+    void unexistentOperatorEQEQ() {
         // RHDM-1119 
         String inputExpression = "1 == 2";
         ASTNode number = parseSeverity(inputExpression, FEELEvent.Severity.WARN);
@@ -82,7 +82,7 @@ public class FEELParserSeverityTest {
     }
 
     @Test
-    public void testUnexistentOperatorInvokeLTLT() {
+    void unexistentOperatorInvokeLTLT() {
         // RHDM-1119 
         String inputExpression = "{ m: <<18 }.m(16)";
         ASTNode number = parseSeverity(inputExpression, FEELEvent.Severity.WARN);

@@ -21,7 +21,8 @@ package org.kie.dmn.core.v1_3;
 import java.math.BigDecimal;
 import java.util.Map;
 
-import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNMessage.Severity;
 import org.kie.dmn.api.core.DMNModel;
@@ -43,12 +44,10 @@ public class DMN13specificTest extends BaseVariantTest {
 
     public static final Logger LOG = LoggerFactory.getLogger(DMN13specificTest.class);
 
-    public DMN13specificTest(final BaseVariantTest.VariantTestConf conf) {
-        super(conf);
-    }
-
-    @Test
-    public void testDMNv1_3_simple() {
+    @MethodSource("params")
+    @ParameterizedTest(name = "{0}")
+    void dMNv13Simple(VariantTestConf conf) {
+        testConfig = conf;
         final DMNRuntime runtime = createRuntime("simple.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_9d01a0c4-f529-4ad8-ad8e-ec5fb5d96ad4", "Chapter 11 Example");
         assertThat(dmnModel).isNotNull();
@@ -71,8 +70,10 @@ public class DMN13specificTest extends BaseVariantTest {
         }
     }
 
-    @Test
-    public void testDMNv1_3_ch11() {
+    @MethodSource("params")
+    @ParameterizedTest(name = "{0}")
+    void dMNv13Ch11(VariantTestConf conf) {
+        testConfig = conf;
         testName = "testDMNv1_3_ch11";
 
         final DMNRuntime runtime = createRuntimeWithAdditionalResources("Chapter 11 Example.dmn", this.getClass(), "Financial.dmn");
@@ -111,8 +112,10 @@ public class DMN13specificTest extends BaseVariantTest {
         }
     }
 
-    @Test
-    public void testDMNv1_3_ch11_asSpecInputDataValues() {
+    @MethodSource("params")
+    @ParameterizedTest(name = "{0}")
+    void dMNv13Ch11AsSpecInputDataValues(VariantTestConf conf) {
+        testConfig = conf;
         testName = "testDMNv1_3_ch11_asSpecInputDataValues";
         final DMNRuntime runtime = createRuntimeWithAdditionalResources("Chapter 11 Example.dmn", this.getClass(), "Financial.dmn");
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_9d01a0c4-f529-4ad8-ad8e-ec5fb5d96ad4", "Chapter 11 Example");
@@ -150,8 +153,10 @@ public class DMN13specificTest extends BaseVariantTest {
         }
     }
 
-    @Test
-    public void testBKMencapsulatedlogictyperef() {
+    @MethodSource("params")
+    @ParameterizedTest(name = "{0}")
+    void bKMencapsulatedlogictyperef(VariantTestConf conf) {
+        testConfig = conf;
         final DMNRuntime runtime = createRuntime("bkmELTyperef.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_a49df6fc-c936-467a-9762-9aa3c9a93c06", "Drawing 1");
         assertThat(dmnModel).isNotNull();
@@ -172,9 +177,11 @@ public class DMN13specificTest extends BaseVariantTest {
             assertThat(allProperties.get("Decision1")).isEqualTo(new BigDecimal("3"));
         }
     }
-    
-    @Test
-    public void testBKMFnTypeVirtuous() {
+
+    @MethodSource("params")
+    @ParameterizedTest(name = "{0}")
+    void bkmFnTypeVirtuous(VariantTestConf conf) {
+        testConfig = conf;
         final DMNRuntime runtime = createRuntime("bkmFnTypeVirtuous.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_563323ba-325e-4a3f-938f-369854010eaf", "Drawing 1");
         assertThat(dmnModel).isNotNull();
@@ -190,9 +197,11 @@ public class DMN13specificTest extends BaseVariantTest {
         final DMNContext result = dmnResult.getContext();
         assertThat(result.get("do greet the name")).isEqualTo("Hello, John");
     }
-    
-    @Test
-    public void testBKMFnTypeWrongEL() {
+
+    @MethodSource("params")
+    @ParameterizedTest(name = "{0}")
+    void bkmFnTypeWrongEL(VariantTestConf conf) {
+        testConfig = conf;
         final DMNRuntime runtime = createRuntime("bkmFnTypeWrongEL.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_563323ba-325e-4a3f-938f-369854010eaf", "Drawing 1");
         assertThat(dmnModel).isNotNull();
@@ -208,9 +217,11 @@ public class DMN13specificTest extends BaseVariantTest {
         final DMNContext result = dmnResult.getContext();
         assertThat(result.get("do greet the name")).isEqualTo("Hello, John");
     }
-    
-    @Test
-    public void testBKMWrongELExpr() {
+
+    @MethodSource("params")
+    @ParameterizedTest(name = "{0}")
+    void bkmWrongELExpr(VariantTestConf conf) {
+        testConfig = conf;
         final DMNRuntime runtime = createRuntime("bkmWrongELExprType.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_563323ba-325e-4a3f-938f-369854010eaf", "Drawing 1");
         assertThat(dmnModel).isNotNull();

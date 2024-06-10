@@ -18,36 +18,36 @@
  */
 package org.kie.dmn.feel.runtime.functions;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
-public class StringLowerCaseFunctionTest {
+class StringLowerCaseFunctionTest {
 
     private StringLowerCaseFunction stringLowerCaseFunction;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         stringLowerCaseFunction = new StringLowerCaseFunction();
     }
 
     @Test
-    public void invokeNull() {
+    void invokeNull() {
         FunctionTestUtil.assertResultError(stringLowerCaseFunction.invoke(null), InvalidParametersEvent.class);
     }
 
     @Test
-    public void invokeLowercaseString() {
+    void invokeLowercaseString() {
         FunctionTestUtil.assertResult(stringLowerCaseFunction.invoke("teststring"), "teststring");
     }
 
     @Test
-    public void invokeUppercaseString() {
+    void invokeUppercaseString() {
         FunctionTestUtil.assertResult(stringLowerCaseFunction.invoke("TESTSTRING"), "teststring");
     }
 
     @Test
-    public void invokeMixedCaseString() {
+    void invokeMixedCaseString() {
         FunctionTestUtil.assertResult(stringLowerCaseFunction.invoke("testSTRing"), "teststring");
     }
 }
