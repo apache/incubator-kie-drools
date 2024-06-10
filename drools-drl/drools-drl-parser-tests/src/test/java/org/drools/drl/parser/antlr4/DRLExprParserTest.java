@@ -80,7 +80,7 @@ class DRLExprParserTest {
     }
 
     @Test
-    void andConnective() throws Exception {
+    void andConnective() {
         String source = "a > b && 10 != 20";
         ConstraintConnectiveDescr result = parser.parse( source );
         assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
@@ -104,7 +104,7 @@ class DRLExprParserTest {
     }
 
     @Test
-    void connective2() throws Exception {
+    void connective2() {
         String source = "(a > b || 10 != 20) && someMethod(10) == 20";
         ConstraintConnectiveDescr result = parser.parse( source );
         assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
@@ -140,7 +140,7 @@ class DRLExprParserTest {
     }
 
     @Test
-    void binding() throws Exception {
+    void binding() {
         String source = "$x : property";
         ConstraintConnectiveDescr result = parser.parse( source );
         assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
@@ -154,7 +154,7 @@ class DRLExprParserTest {
     }
 
     @Test
-    void bindingConstraint() throws Exception {
+    void bindingConstraint() {
         String source = "$x : property > value";
         ConstraintConnectiveDescr result = parser.parse( source );
         assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
@@ -174,7 +174,7 @@ class DRLExprParserTest {
     }
 
     @Test
-    void bindingWithRestrictions() throws Exception {
+    void bindingWithRestrictions() {
         String source = "$x : property > value && < 20";
         ConstraintConnectiveDescr result = parser.parse( source );
         assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
@@ -203,7 +203,7 @@ class DRLExprParserTest {
     }
 
     @Test
-    void doubleBinding() throws Exception {
+    void doubleBinding() {
         String source = "$x : x.m( 1, a ) && $y : y[z].foo";
         ConstraintConnectiveDescr result = parser.parse( source );
         assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
@@ -231,7 +231,7 @@ class DRLExprParserTest {
 
     @ParameterizedTest
     @EnumSource(Operator.BuiltInOperator.class)
-    void drlKeywordMethodCall(Operator.BuiltInOperator operator) throws Exception {
+    void drlKeywordMethodCall(Operator.BuiltInOperator operator) {
         // Skip operators that cannot be used as method names (==, !=, <, etc.).
         assumeFalse(nonKeywordBuiltInOperators.contains(operator));
 
@@ -248,7 +248,7 @@ class DRLExprParserTest {
 
     @ParameterizedTest
     @EnumSource(Operator.BuiltInOperator.class)
-    void drlKeywordInChainedMethodCallWithBinding(Operator.BuiltInOperator operator) throws Exception {
+    void drlKeywordInChainedMethodCallWithBinding(Operator.BuiltInOperator operator) {
         // Skip operators that cannot be used as method names (==, !=, <, etc.).
         assumeFalse(nonKeywordBuiltInOperators.contains(operator));
 
@@ -267,7 +267,7 @@ class DRLExprParserTest {
     }
 
     @Test
-    void deepBinding() throws Exception {
+    void deepBinding() {
         String source = "($a : a > $b : b[10].prop || 10 != 20) && $x : someMethod(10) == 20";
         ConstraintConnectiveDescr result = parser.parse( source );
         assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
@@ -307,7 +307,7 @@ class DRLExprParserTest {
 
     @Test
     @Timeout(10000L)
-    void nestedExpression() throws Exception {
+    void nestedExpression() {
         // DROOLS-982
         String source = "(((((((((((((((((((((((((((((((((((((((((((((((((( a > b ))))))))))))))))))))))))))))))))))))))))))))))))))";
         ConstraintConnectiveDescr result = parser.parse( source );

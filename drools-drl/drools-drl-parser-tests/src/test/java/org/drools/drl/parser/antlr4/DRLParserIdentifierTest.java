@@ -164,7 +164,7 @@ class DRLParserIdentifierTest {
     }
 
     @Test
-    void unification() throws Exception {
+    void unification() {
         final String text = "rule X\n" +
                 "when\n" +
                 "  contains := Person()\n" +

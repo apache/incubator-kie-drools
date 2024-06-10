@@ -185,14 +185,14 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_validPackage() {
+    void validPackage() {
         final String source = "package foo.bar.baz";
         final PackageDescr pkg = parseAndGetPackageDescr(source);
         assertThat(pkg.getName()).isEqualTo("foo.bar.baz");
     }
 
     @Test
-    void parse_packageWithErrorNode() {
+    void packageWithErrorNode() {
         final String source = "package 12 foo.bar.baz";
         final PackageDescr pkg = parseAndGetPackageDescrWithoutErrorCheck(source);
         assertThat(parser.hasErrors()).isTrue();
@@ -200,7 +200,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_packageWithAllErrorNode() {
+    void packageWithAllErrorNode() {
         final String source = "package 12 12312 231";
         final PackageDescr pkg = parseAndGetPackageDescrWithoutErrorCheck(source);
         assertThat(parser.hasErrors()).isTrue();
@@ -208,7 +208,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_import() {
+    void importDef() {
         final String source = "package foo; import com.foo.Bar; import com.foo.Baz;";
         PackageDescr pkg =parseAndGetPackageDescr(source);
         assertThat(pkg.getName()).isEqualTo("foo");
@@ -225,7 +225,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_functionImport() {
+    void functionImport() {
         final String source = "package foo\n" +
                 "import function java.lang.Math.max\n" +
                 "import function java.lang.Math.min;\n" +
@@ -258,7 +258,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_globalWithComplexType() {
+    void globalWithComplexType() {
         final String source = "package foo.bar.baz\n" +
                 "import com.foo.Bar\n" +
                 "global java.util.List<java.util.Map<String,Integer>> aList;\n" +
@@ -290,7 +290,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_globalWithOrWithoutSemi() throws Exception {
+    void globalWithOrWithoutSemi() {
         String source = readResource("globals.drl");
         PackageDescr pkg = parseAndGetPackageDescr(source);
 
@@ -311,7 +311,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_functionImportWithNotExist() throws Exception {
+    void functionImportWithNotExist() {
         String source = readResource("test_FunctionImport.drl");
         PackageDescr pkg = parseAndGetPackageDescr(source);
 
@@ -326,7 +326,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_fromComplexAccessor() {
+    void fromComplexAccessor() {
         String source = "rule \"Invalid customer id\" ruleflow-group \"validate\" lock-on-active true \n" +
                 " when \n" +
                 "     o: Order( ) \n" +
@@ -351,7 +351,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_fromWithInlineList() {
+    void fromWithInlineList() {
         String source = "rule XYZ \n" +
                 " when \n" +
                 " o: Order( ) \n" +
@@ -370,7 +370,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_fromWithInlineListMethod() {
+    void fromWithInlineListMethod() {
         String source = "rule XYZ \n" +
                 " when \n" +
                 " o: Order( ) \n" +
@@ -390,7 +390,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_fromWithInlineListIndex() {
+    void fromWithInlineListIndex() {
         String source = "rule XYZ \n" +
                 " when \n" +
                 " o: Order( ) \n" +
@@ -409,7 +409,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_ruleWithoutEnd() {
+    void ruleWithoutEnd() {
         String source = "rule \"Invalid customer id\" \n" +
                 " when \n" +
                 " o: Order( ) \n" +
@@ -420,7 +420,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_orWithSpecialBind() {
+    void orWithSpecialBind() {
         String source = "rule \"A and (B or C or D)\" \n" +
                 "    when \n" +
                 "        pdo1 : ParametricDataObject( paramID == 101, stringValue == \"1000\" ) and \n" +
@@ -447,7 +447,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_compatibleRestriction() {
+    void compatibleRestriction() {
         String source = "package com.sample  rule test  when  Test( ( text == null || text2 matches \"\" ) )  then  end";
         PackageDescr pkg = parseAndGetPackageDescr(source);
 
@@ -459,7 +459,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_simpleConstraint() {
+    void simpleConstraint() {
         String source = "package com.sample  rule test  when  Cheese( type == 'stilton', price > 10 )  then  end";
         PackageDescr pkg = parseAndGetPackageDescr(source);
 
@@ -477,7 +477,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_stringEscapes() {
+    void stringEscapes() {
         String source = "package com.sample  rule test  when  Cheese( type matches \"\\..*\\\\.\" )  then  end";
         PackageDescr pkg = parseAndGetPackageDescr(source);
         assertThat(pkg.getName()).isEqualTo("com.sample");
@@ -493,7 +493,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_dialectWithSingleQuotation() {
+    void dialectWithSingleQuotation() {
         final String source = "dialect 'mvel'";
         PackageDescr pkg = parseAndGetPackageDescr(source);
         AttributeDescr attr = pkg.getAttributes().get(0);
@@ -502,7 +502,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_dialectWithDoubleQuotation() {
+    void dialectWithDoubleQuotation() {
         final String source = "dialect \"mvel\"";
         PackageDescr pkg = parseAndGetPackageDescr(source);
         AttributeDescr attr = pkg.getAttributes().get(0);
@@ -511,7 +511,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_emptyRuleWithoutWhen() throws Exception {
+    void emptyRuleWithoutWhen() {
         String source = readResource("empty_rule.drl"); // without WHEN
         RuleDescr ruleDescr = parseAndGetFirstRuleDescr(source);
 
@@ -523,7 +523,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_keywordCollisions() throws Exception {
+    void keywordCollisions() {
         String source = readResource("eol_funny_business.drl"); // keywords everywhere
 
         // Note: eol_funny_business.drl is modified from the one under drools-test-coverage to be more realistic.
@@ -535,7 +535,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_ternaryExpression() throws Exception {
+    void ternaryExpression() {
         String source = readResource("ternary_expression.drl");
         PackageDescr pkg = parseAndGetPackageDescr(source);
 
@@ -546,7 +546,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_functionWithArrays() throws Exception {
+    void functionWithArrays() {
         String source = readResource("function_arrays.drl");
 
         // Note: function_arrays.drl is modified from the one under drools-test-coverage to be more realistic.
@@ -570,7 +570,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_almostEmptyRule() throws Exception {
+    void almostEmptyRule() {
         String source = readResource("almost_empty_rule.drl");
         PackageDescr pkg = parseAndGetPackageDescr(source);
 
@@ -584,7 +584,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_quotedStringNameRule() throws Exception {
+    void quotedStringNameRule() {
         String source = readResource("quoted_string_name_rule.drl");
         PackageDescr pkg = parseAndGetPackageDescr(source);
 
@@ -597,7 +597,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_noLoop() throws Exception {
+    void noLoop() {
         String source = readResource("no-loop.drl");
         PackageDescr pkg = parseAndGetPackageDescr(source);
 
@@ -611,7 +611,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_autofocus() throws Exception {
+    void autofocus() {
         String source = readResource("autofocus.drl");
         PackageDescr pkg = parseAndGetPackageDescr(source);
 
@@ -625,7 +625,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_ruleFlowGroup() throws Exception {
+    void ruleFlowGroup() {
         String source = readResource("ruleflowgroup.drl");
         PackageDescr pkg = parseAndGetPackageDescr(source);
 
@@ -641,7 +641,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_consequenceWithDeclaration() throws Exception {
+    void consequenceWithDeclaration() {
         String source = readResource("declaration-in-consequence.drl");
         PackageDescr pkg = parseAndGetPackageDescr(source);
 
@@ -672,7 +672,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_or() {
+    void or() {
         final String text = "rule X when Person(age < 42, location==\"atlanta\") \nor\nPerson(name==\"bob\") then end";
         PackageDescr pkg = parseAndGetPackageDescr(text);
         RuleDescr rule = pkg.getRules().get(0);
@@ -687,7 +687,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_lhsWithStringQuotes() {
+    void lhsWithStringQuotes() {
         final String text = "rule X when Person( location==\"atlanta\\\"\") then end\n";
         PackageDescr pkg = parseAndGetPackageDescr(text);
         RuleDescr rule = pkg.getRules().get(0);
@@ -703,7 +703,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_lhsWithStringQuotesEscapeChars() {
+    void lhsWithStringQuotesEscapeChars() {
         final String text = "rule X when Cheese( $x: type, type == \"s\\tti\\\"lto\\nn\" ) then end\n";
         PackageDescr pkg = parseAndGetPackageDescr(text);
         RuleDescr rule = pkg.getRules().get(0);
@@ -718,7 +718,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_literalBoolAndNegativeNumbersRule() throws Exception {
+    void literalBoolAndNegativeNumbersRule() {
         RuleDescr rule = parseAndGetFirstRuleDescrFromFile("literal_bool_and_negative.drl");
 
         assertThat(rule).isNotNull();
@@ -755,7 +755,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_emptyPattern() throws Exception {
+    void emptyPattern() {
         String source = readResource("test_EmptyPattern.drl");
         PackageDescr pkg = parseAndGetPackageDescr(source);
 
@@ -772,7 +772,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_simpleMethodCallWithFrom() throws Exception {
+    void simpleMethodCallWithFrom() {
         RuleDescr rule = parseAndGetFirstRuleDescrFromFile("test_SimpleMethodCallWithFrom.drl");
         final PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
         final FromDescr from = (FromDescr) pattern.getSource();
@@ -782,7 +782,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_simpleFunctionCallWithFrom() throws Exception {
+    void simpleFunctionCallWithFrom() {
         RuleDescr rule = parseAndGetFirstRuleDescrFromFile("test_SimpleFunctionCallWithFrom.drl");
         final PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
         final FromDescr from = (FromDescr) pattern.getSource();
@@ -792,7 +792,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_simpleAccessorWithFrom() throws Exception {
+    void simpleAccessorWithFrom() {
         RuleDescr rule = parseAndGetFirstRuleDescrFromFile("test_SimpleAccessorWithFrom.drl");
         final PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
         final FromDescr from = (FromDescr) pattern.getSource();
@@ -802,7 +802,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_simpleAccessorAndArgWithFrom() throws Exception {
+    void simpleAccessorAndArgWithFrom() {
         RuleDescr rule = parseAndGetFirstRuleDescrFromFile("test_SimpleAccessorArgWithFrom.drl");
         final PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
         final FromDescr from = (FromDescr) pattern.getSource();
@@ -812,7 +812,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_complexChainedAccessor() throws Exception {
+    void complexChainedAccessor() {
         RuleDescr rule = parseAndGetFirstRuleDescrFromFile("test_ComplexChainedCallWithFrom.drl");
 
         final PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
@@ -823,7 +823,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_from() throws Exception {
+    void from() {
         RuleDescr rule = parseAndGetFirstRuleDescrFromFile("from.drl");
         assertThat(rule).isNotNull();
 
@@ -833,7 +833,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_simpleRuleWithBindings() throws Exception {
+    void simpleRuleWithBindings() {
         RuleDescr rule = parseAndGetFirstRuleDescrFromFile("simple_rule.drl");
         assertThat(rule).isNotNull();
 
@@ -885,7 +885,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_multipleRestrictionsConstraint() throws Exception {
+    void multipleRestrictionsConstraint() {
         RuleDescr rule = parseAndGetFirstRuleDescrFromFile("restrictions_test.drl");
         assertThat(rule).isNotNull();
 
@@ -924,7 +924,7 @@ class MiscDRLParserTest {
 //-------------------------------------------------------------------------
 
     @Test
-    void parse_LineNumberInAST() throws Exception {
+    void lineNumberInAST() {
         // also see testSimpleExpander to see how this works with an expander
         // (should be the same).
 
@@ -964,7 +964,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_LineNumberIncludingCommentsInRHS() throws Exception {
+    void lineNumberIncludingCommentsInRHS() {
         PackageDescr pkg = parseAndGetPackageDescrFromFile(
                                                          "test_CommentLineNumbersInConsequence.drl" );
 
@@ -977,7 +977,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_LhsSemicolonDelim() throws Exception {
+    void lhsSemicolonDelim() {
         final RuleDescr rule = parseAndGetFirstRuleDescrFromFile(
                                                           "lhs_semicolon_delim.drl" );
 
@@ -1028,7 +1028,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_NotNode() throws Exception {
+    void notNode() {
         final RuleDescr rule = parseAndGetFirstRuleDescrFromFile(
                                                           "rule_not.drl" );
 
@@ -1053,7 +1053,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_NotExistWithBrackets() throws Exception {
+    void notExistWithBrackets() {
 
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
                                                                "not_exist_with_brackets.drl" );
@@ -1080,7 +1080,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_SimpleQuery() throws Exception {
+    void simpleQuery() {
         final QueryDescr query = parseAndGetFirstQueryDescrFromFile(
                                                             "simple_query.drl" );
 
@@ -1119,7 +1119,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_QueryRuleMixed() throws Exception {
+    void queryRuleMixed() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
                                                                "query_and_rule.drl" );
 
@@ -1138,7 +1138,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_MultipleRules() throws Exception {
+    void multipleRules() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
                                                                "multiple_rules.drl" );
 
@@ -1174,7 +1174,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_ExpanderLineSpread() {
+    void expanderLineSpread() {
         final PackageDescr pkg = parseAndGetPackageDescrWithDsl("expander_spread_lines.dslr", "complex.dsl");
 
         final RuleDescr rule = pkg.getRules().get(0);
@@ -1186,7 +1186,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_ExpanderMultipleConstraints() {
+    void expanderMultipleConstraints() {
         final PackageDescr pkg = parseAndGetPackageDescrWithDsl("expander_multiple_constraints.dslr", "multiple_constraints.dsl");
 
         final RuleDescr rule = pkg.getRules().get(0);
@@ -1206,7 +1206,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_ExpanderMultipleConstraintsFlush() {
+    void expanderMultipleConstraintsFlush() {
         // this is similar to the other test, but it requires a flush to add the
         // constraints
         final PackageDescr pkg = parseAndGetPackageDescrWithDsl("expander_multiple_constraints_flush.dslr", "multiple_constraints.dsl");
@@ -1225,7 +1225,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_BasicBinding() throws Exception {
+    void basicBinding() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
                                                                "basic_binding.drl" );
 
@@ -1241,7 +1241,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_BoundVariables() throws Exception {
+    void boundVariables() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
                                                                "bindings.drl" );
 
@@ -1265,7 +1265,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_OrNesting() throws Exception {
+    void orNesting() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
                                                                "or_nesting.drl" );
 
@@ -1294,7 +1294,7 @@ class MiscDRLParserTest {
 
     /** Test that explicit "&&", "||" works as expected */
     @Test
-    void parse_AndOrRules() throws Exception {
+    void andOrRules() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
                                                                "and_or_rule.drl" );
 
@@ -1348,7 +1348,7 @@ class MiscDRLParserTest {
 
     /** test basic foo : Fact() || Fact() stuff */
     @Test
-    void parse_OrWithBinding() throws Exception {
+    void orWithBinding() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
                                                                "or_binding.drl" );
 
@@ -1376,7 +1376,7 @@ class MiscDRLParserTest {
 
     /** test basic foo : Fact() || Fact() stuff binding to an "or" */
     @Test
-    void parse_OrBindingComplex() throws Exception {
+    void orBindingComplex() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
                                                                "or_binding_complex.drl" );
 
@@ -1404,7 +1404,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_OrBindingWithBrackets() throws Exception {
+    void orBindingWithBrackets() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
                                                                "or_binding_with_brackets.drl" );
 
@@ -1431,7 +1431,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parenthesesOrAndOr() throws Exception {
+    void parenthesesOrAndOr() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
                                                                "brackets_precedence.drl" );
 
@@ -1522,7 +1522,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void multipleLevelNestAndOrOrOrAnd() throws Exception {
+    void multipleLevelNestAndOrOrOrAnd() {
         final String drl = "rule and_or_or_or_and\n" +
                 "  when\n" +
                 "     (Foo(x == 1) and (Bar(x == 2) or Foo(x == 3))) or (Bar(x == 4) or (Foo(x == 5) and Bar(x == 6)))\n" +
@@ -1562,7 +1562,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void multipleLevelNestWithThreeOrSiblings() throws Exception {
+    void multipleLevelNestWithThreeOrSiblings() {
         final String drl = "rule nest_or_siblings\n" +
                 "  when\n" +
                 "     (A() or (B() or C() or (D() and E())))\n" +
@@ -1597,7 +1597,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void existsMultipleLevelNestWithThreeOrSiblings() throws Exception {
+    void existsMultipleLevelNestWithThreeOrSiblings() {
         final String drl = "rule nest_or_siblings\n" +
                 "  when\n" +
                 "     exists(A() or (B() or C() or (D() and E())))\n" +
@@ -1635,7 +1635,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_EvalMultiple() throws Exception {
+    void evalMultiple() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
                                                                "eval_multiple.drl" );
 
@@ -1652,7 +1652,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_WithEval() throws Exception {
+    void withEval() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
                                                                "with_eval.drl" );
 
@@ -1670,7 +1670,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_WithRetval() throws Exception {
+    void withRetval() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
                                                                "with_retval.drl" );
 
@@ -1687,7 +1687,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_WithPredicate() throws Exception {
+    void withPredicate() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
                                                                "with_predicate.drl" );
 
@@ -1706,7 +1706,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_NotWithConstraint() throws Exception {
+    void notWithConstraint() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
                                                                "not_with_constraint.drl" );
 
@@ -1728,7 +1728,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_Functions() throws Exception {
+    void functions() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
                                                                "functions.drl" );
 
@@ -1759,7 +1759,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_Comment() throws Exception {
+    void comment() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
                                                                "comment.drl" );
 
@@ -1769,7 +1769,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_Attributes() throws Exception {
+    void attributes() {
         final RuleDescr rule = parseAndGetFirstRuleDescrFromFile(
                                                           "rule_attributes.drl" );
         assertThat(rule.getName()).isEqualTo("simple_rule");
@@ -1804,7 +1804,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_Attributes2() throws Exception {
+    void attributes2() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
                                                                "rule_attributes2.drl" );
 
@@ -1847,7 +1847,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_AttributeRefract() throws Exception {
+    void attributeRefract() {
         final String source = "rule Test refract when Person() then end";
 
         PackageDescr pkg = parseAndGetPackageDescr(
@@ -1866,7 +1866,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_EnabledExpression() throws Exception {
+    void enabledExpression() {
         final RuleDescr rule = parseAndGetFirstRuleDescrFromFile(
                                                           "rule_enabled_expression.drl" );
         assertThat(rule.getName()).isEqualTo("simple_rule");
@@ -1889,7 +1889,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_DurationExpression() throws Exception {
+    void durationExpression() {
         final RuleDescr rule = parseAndGetFirstRuleDescrFromFile(
                                                           "rule_duration_expression.drl" );
         assertThat(rule.getName()).isEqualTo("simple_rule");
@@ -1908,7 +1908,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_Calendars() throws Exception {
+    void calendars() {
         final RuleDescr rule = parseAndGetFirstRuleDescrFromFile(
                                                           "rule_calendars_attribute.drl" );
         assertThat(rule.getName()).isEqualTo("simple_rule");
@@ -1927,7 +1927,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_Calendars2() throws Exception {
+    void calendars2() {
         final RuleDescr rule = parseAndGetFirstRuleDescrFromFile(
                                                           "rule_calendars_attribute2.drl" );
 
@@ -1947,7 +1947,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_Timer() throws Exception {
+    void timer() {
         final RuleDescr rule = parseAndGetFirstRuleDescrFromFile("rule_timer_attribute.drl" );
         assertThat(rule.getName()).isEqualTo("simple_rule");
         assertThat((String) rule.getConsequence()).isEqualToIgnoringWhitespace( "bar();");
@@ -1965,7 +1965,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_Attributes_alternateSyntax() {
+    void attributes_alternateSyntax() {
         final RuleDescr rule = parseAndGetFirstRuleDescrFromFile(
                                                           "rule_attributes_alt.drl" );
         assertThat(rule.getName()).isEqualTo("simple_rule");
@@ -2000,7 +2000,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_Enumeration() throws Exception {
+    void enumeration() {
         final RuleDescr rule = parseAndGetFirstRuleDescrFromFile(
                                                            "enumeration.drl" );
         assertThat(rule.getName()).isEqualTo("simple_rule");
@@ -2014,14 +2014,14 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_ExtraLhsNewline() throws Exception {
+    void extraLhsNewline() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
                        "extra_lhs_newline.drl" );
 
     }
 
     @Test
-    void parse_SoundsLike() throws Exception {
+    void soundsLike() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
                                                                "soundslike_operator.drl" );
 
@@ -2032,7 +2032,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_PackageAttributes() throws Exception {
+    void packageAttributes() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
                                                                "package_attributes.drl" );
 
@@ -2068,7 +2068,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_StatementOrdering1() throws Exception {
+    void statementOrdering1() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
                                                                "statement_ordering_1.drl" );
 
@@ -2090,7 +2090,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_RuleNamesStartingWithNumbers() throws Exception {
+    void ruleNamesStartingWithNumbers() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
                                                                "rule_names_number_prefix.drl" );
 
@@ -2101,14 +2101,14 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_EvalWithNewline() throws Exception {
+    void evalWithNewline() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
                                                                  "eval_with_newline.drl");
 
     }
 
     @Test
-    void parse_EndPosition() throws Exception {
+    void endPosition() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
                                                                "test_EndPosition.drl" );
         final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
@@ -2118,7 +2118,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_GroupBy() throws Exception {
+    void groupBy() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile( "groupBy.drl" );
 
         assertThat(pkg.getRules()).hasSize(1);
@@ -2155,7 +2155,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_QualifiedClassname() throws Exception {
+    void qualifiedClassname() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
                                                                "qualified_classname.drl" );
 
@@ -2229,7 +2229,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_AccumulateWithBindings() throws Exception {
+    void accumulateWithBindings() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
                                                                "accumulate_with_bindings.drl" );
 
@@ -2253,7 +2253,7 @@ class MiscDRLParserTest {
      * - Optional comma delimiting init, action, and result.
      */
     @Test
-    void accumulateWithoutOptionalDelimiters() throws Exception {
+    void accumulateWithoutOptionalDelimiters() {
         String source = "rule \"AccumulateParserTest\"\n"
                 + "when\n"
                 + "     $counter:Integer() from accumulate( $person : Person( age > 21 ),\n"
@@ -2283,7 +2283,7 @@ class MiscDRLParserTest {
      * When the accumulate function (e.g. count()) has no arguments.
      */
     @Test
-    void accumulateCount() throws Exception {
+    void accumulateCount() {
         String source = "rule R when\n" +
                         "   accumulate (\n" +
                         "       Person(), $result : count() " +
@@ -2311,7 +2311,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_Collect() throws Exception {
+    void collect() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
                                                                "collect.drl" );
 
@@ -2327,7 +2327,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_Predicate2() throws Exception {
+    void predicate2() {
         // predicates are also prefixed by the eval keyword
         final RuleDescr rule = parseAndGetFirstRuleDescr(
                                                   "rule X when Foo(eval( $var.equals(\"xyz\") )) then end" );
@@ -2341,7 +2341,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_EscapedStrings() throws Exception {
+    void escapedStrings() {
         final RuleDescr rule = parseAndGetFirstRuleDescrFromFile(
                                                           "escaped-string.drl" );
 
@@ -2355,7 +2355,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_NestedCEs() throws Exception {
+    void nestedCEs() {
         final RuleDescr rule = parseAndGetFirstRuleDescrFromFile(
                                                           "nested_conditional_elements.drl" );
 
@@ -2385,7 +2385,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_Forall() throws Exception {
+    void forall() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
                                                                "forall.drl" );
 
@@ -2405,7 +2405,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_ForallWithFrom() throws Exception {
+    void forallWithFrom() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
                                                                "forallwithfrom.drl" );
 
@@ -2427,7 +2427,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_Memberof() throws Exception {
+    void memberof() {
         final String text = "rule X when Country( $cities : city )\nPerson( city memberOf $cities )\n then end";
         AndDescr descrs = parseAndGetFirstRuleDescr(
                                               text).getLhs();
@@ -2440,7 +2440,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_NotMemberof() throws Exception {
+    void notMemberof() {
         final String text = "rule X when Country( $cities : city )\nPerson( city not memberOf $cities ) then end\n";
         AndDescr descrs = parseAndGetFirstRuleDescr(
                                               text).getLhs();
@@ -2453,7 +2453,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_InOperator() throws Exception {
+    void inOperator() {
         final RuleDescr rule = parseAndGetFirstRuleDescrFromFile(
                                                           "in_operator_test.drl" );
 
@@ -2488,7 +2488,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_NotInOperator() throws Exception {
+    void notInOperator() {
         final RuleDescr rule = parseAndGetFirstRuleDescrFromFile(
                                                           "notin_operator_test.drl" );
 
@@ -2523,7 +2523,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_CheckOrDescr() throws Exception {
+    void checkOrDescr() {
         final String text = "rule X when Person( eval( age == 25 ) || ( eval( name.equals( \"bob\" ) ) && eval( age == 30 ) ) ) then end";
         PatternDescr pattern = (PatternDescr) parseAndGetFirstRuleDescr(
                                                                   text ).getLhs().getDescrs().get( 0 );
@@ -2536,7 +2536,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_ConstraintAndConnective() throws Exception {
+    void constraintAndConnective() {
         final String text = "rule X when Person( age < 42 && location==\"atlanta\") then end";
         PatternDescr pattern = (PatternDescr) parseAndGetFirstRuleDescr(
                                                                   text ).getLhs().getDescrs().get( 0 );
@@ -2547,7 +2547,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_ConstraintOrConnective() throws Exception {
+    void constraintOrConnective() {
         final String text = "rule X when Person( age < 42 || location==\"atlanta\") then end";
         PatternDescr pattern = (PatternDescr) parseAndGetFirstRuleDescr(
                                                                   text ).getLhs().getDescrs().get( 0 );
@@ -2558,7 +2558,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_Restrictions() throws Exception {
+    void restrictions() {
         final String text = "rule X when Foo( bar > 1 || == 1 ) then end\n";
 
         AndDescr descrs = (AndDescr) parseAndGetFirstRuleDescr(
@@ -2572,7 +2572,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_Semicolon() throws Exception {
+    void semicolon() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
                                                                "semicolon.drl" );
 
@@ -2593,7 +2593,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_Eval() throws Exception {
+    void eval() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
                                                                "eval_parsing.drl" );
 
@@ -2605,7 +2605,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_AccumulateReverse() throws Exception {
+    void accumulateReverse() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
                                                                "accumulateReverse.drl" );
 
@@ -2630,7 +2630,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_AccumulateExternalFunction() throws Exception {
+    void accumulateExternalFunction() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
                                                                "accumulateExternalFunction.drl" );
 
@@ -2651,7 +2651,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_CollectWithNestedFrom() throws Exception {
+    void collectWithNestedFrom() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
                                                                "collect_with_nested_from.drl" );
 
@@ -2672,7 +2672,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_AccumulateWithNestedFrom() throws Exception {
+    void accumulateWithNestedFrom() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
                                                                "accumulate_with_nested_from.drl" );
 
@@ -2693,7 +2693,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_AccumulateMultipleFunctions() throws Exception {
+    void accumulateMultipleFunctions() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
                                                                "accumulateMultipleFunctions.drl" );
 
@@ -2726,7 +2726,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_AccumulateMnemonic() throws Exception {
+    void accumulateMnemonic() {
         String drl = "package org.drools.mvel.compiler\n" +
                 "rule \"Accumulate 1\"\n" +
                 "when\n" +
@@ -2758,7 +2758,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_AccumulateMnemonic2() throws Exception {
+    void accumulateMnemonic2() {
         String drl = "package org.drools.mvel.compiler\n" +
                 "rule \"Accumulate 1\"\n" +
                 "when\n" +
@@ -2789,7 +2789,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_ImportAccumulate() throws Exception {
+    void importAccumulate() {
         String drl = "package org.drools.mvel.compiler\n" +
                 "import acc foo.Bar baz\n" +
                 "import accumulate foo.Bar2 baz2\n" +
@@ -2837,7 +2837,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_AccumulateMultipleFunctionsConstraint() throws Exception {
+    void accumulateMultipleFunctionsConstraint() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
                                                                "accumulateMultipleFunctionsConstraint.drl" );
 
@@ -2873,7 +2873,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_OrCE() throws Exception {
+    void orCE() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
                                                                "or_ce.drl" );
 
@@ -2897,7 +2897,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_RuleSingleLine() throws Exception {
+    void ruleSingleLine() {
         final String text = "rule \"another test\" salience 10 when eval( true ) then System.out.println(1); end";
         RuleDescr rule = parseAndGetFirstRuleDescr(
                                             text );
@@ -2907,7 +2907,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_RuleTwoLines() throws Exception {
+    void ruleTwoLines() {
         final String text = "rule \"another test\" salience 10 when eval( true ) then System.out.println(1);\n end";
         RuleDescr rule = parseAndGetFirstRuleDescr(
                                             text );
@@ -2917,7 +2917,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_RuleParseLhs3() throws Exception {
+    void ruleParseLhs3() {
         final String text = "rule X when (or\nnot Person()\n(and Cheese()\nMeat()\nWine())) then end";
         AndDescr pattern = parseAndGetFirstRuleDescr(
                                                text ).getLhs();
@@ -2941,7 +2941,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_AccumulateMultiPattern() throws Exception {
+    void accumulateMultiPattern() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
                                                                "accumulate_multi_pattern.drl" );
 
@@ -2969,7 +2969,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_PluggableOperators() throws Exception {
+    void pluggableOperators() {
 
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
                                                                "pluggable_operators.drl" );
@@ -3016,7 +3016,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_RuleMetadata() throws Exception {
+    void ruleMetadata() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
                                                                "Rule_with_Metadata.drl" );
 
@@ -3033,7 +3033,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_RuleExtends() throws Exception {
+    void ruleExtends() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
                                                                "Rule_with_Extends.drl" );
 
@@ -3054,7 +3054,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_TypeDeclarationWithFields() throws Exception {
+    void typeDeclarationWithFields() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
                                                                "declare_type_with_fields.drl" );
 
@@ -3104,7 +3104,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_QualifiedTypeDeclaration() throws Exception {
+    void qualifiedTypeDeclaration() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
                                                                "qualified_type_declaration.drl" );
 
@@ -3118,7 +3118,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parenthesesOneLevelNestWithThreeSiblings() throws Exception {
+    void parenthesesOneLevelNestWithThreeSiblings() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile( "Rule_with_nested_LHS.drl" );
 
 
@@ -3159,7 +3159,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_EntryPoint() throws Exception {
+    void entryPoint() {
         final String text = "rule X when StockTick( symbol==\"ACME\") from entry-point StreamA then end";
 
         PackageDescr pkg = parseAndGetPackageDescr(
@@ -3179,7 +3179,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_EntryPoint2() throws Exception {
+    void entryPoint2() {
         final String text = "rule X when StockTick( symbol==\"ACME\") from entry-point \"StreamA\" then end";
 
         PackageDescr pkg = parseAndGetPackageDescr(
@@ -3199,7 +3199,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_SlidingWindow() throws Exception {
+    void slidingWindow() {
         final String text = "rule X when StockTick( symbol==\"ACME\") over window:length(10) then end";
 
         PackageDescr pkg = parseAndGetPackageDescr( text );
@@ -3222,7 +3222,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_RuleOldSyntax1() throws Exception {
+    void ruleOldSyntax1() {
         final String source = "rule \"Test\" when ( not $r :LiteralRestriction( operator == Operator.EQUAL ) ) then end";
 
         PackageDescr pkg = parseAndGetPackageDescr(
@@ -3243,7 +3243,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_RuleOldSyntax2() throws Exception {
+    void ruleOldSyntax2() {
         final String source = "rule \"Test\" when ( $r :LiteralRestriction( operator == Operator.EQUAL ) ) then end";
 
         PackageDescr pkg = parseAndGetPackageDescr(
@@ -3262,7 +3262,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_TypeWithMetaData() throws Exception {
+    void typeWithMetaData() {
 
         PackageDescr pkg = parseAndGetPackageDescrFromFile(
                                                          "type_with_meta.drl" );
@@ -3275,7 +3275,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_NullConstraints() throws Exception {
+    void nullConstraints() {
         final String text = "rule X when Person( name == null ) then end";
         PatternDescr pattern = (PatternDescr) parseAndGetFirstRuleDescr(
                                                                   text ).getLhs().getDescrs().get( 0 );
@@ -3288,7 +3288,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_PositionalConstraintsOnly() throws Exception {
+    void positionalConstraintsOnly() {
         final String text = "rule X when Person( \"Mark\", 42; ) then end";
         PatternDescr pattern = (PatternDescr) parseAndGetFirstRuleDescr(
                                                                   text ).getLhs().getDescrs().get( 0 );
@@ -3305,7 +3305,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_IsQuery() throws Exception {
+    void isQuery() {
         final String text = "rule X when ?person( \"Mark\", 42; ) then end";
         PatternDescr pattern = (PatternDescr) parseAndGetFirstRuleDescr(
                                                                   text ).getLhs().getDescrs().get( 0 );
@@ -3324,7 +3324,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_FromFollowedByQuery() throws Exception {
+    void fromFollowedByQuery() {
         // the 'from' expression requires a ";" to disambiguate the "?"
         // prefix for queries from the ternary operator "? :"
         final String text = "rule X when Cheese() from $cheesery ?person( \"Mark\", 42; ) then end";
@@ -3344,7 +3344,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_FromWithTernaryFollowedByQuery() throws Exception {
+    void fromWithTernaryFollowedByQuery() {
         // the 'from' expression requires a ";" to disambiguate the "?"
         // prefix for queries from the ternary operator "? :"
         final String text = "rule X when Cheese() from (isFull ? $cheesery : $market) ?person( \"Mark\", 42; ) then end";
@@ -3364,7 +3364,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_MultiValueAnnotationsBackwardCompatibility() throws Exception {
+    void multiValueAnnotationsBackwardCompatibility() {
         // multiple values with no keys are parsed as a single value
         final String text = "rule X @ann1( val1, val2 ) @ann2( \"val1\", \"val2\" ) when then end";
         RuleDescr rule = parseAndGetFirstRuleDescr(
@@ -3381,7 +3381,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_PositionalsAndNamedConstraints() throws Exception {
+    void positionalsAndNamedConstraints() {
         final String text = "rule X when Person( \"Mark\", 42; location == \"atlanta\" ) then end";
         PatternDescr pattern = (PatternDescr) parseAndGetFirstRuleDescr(
                                                                   text ).getLhs().getDescrs().get( 0 );
@@ -3404,7 +3404,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_UnificationBinding() throws Exception {
+    void unificationBinding() {
         final String text = "rule X when $p := Person( $name := name, $loc : location ) then end";
         PatternDescr pattern = (PatternDescr) parseAndGetFirstRuleDescr(
                                                                   text ).getLhs().getDescrs().get( 0 );
@@ -3422,7 +3422,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_BigLiterals() {
+    void bigLiterals() {
         final String text = "rule X when Primitives( bigInteger == (10I), " +
                 "                        bigDecimal == (10B), " +
                 "                        bigInteger < 50I, " +
@@ -3445,7 +3445,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_BindingComposite() throws Exception {
+    void bindingComposite() {
         final String text = "rule X when Person( $name : name == \"Bob\" || $loc : location == \"Montreal\" ) then end";
         PatternDescr pattern = (PatternDescr) parseAndGetFirstRuleDescr(
                                                                   text ).getLhs().getDescrs().get( 0 );
@@ -3460,7 +3460,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_BindingCompositeWithMethods() throws Exception {
+    void bindingCompositeWithMethods() {
         final String text = "rule X when Person( $name : name.toUpperCase() == \"Bob\" || $loc : location[0].city == \"Montreal\" ) then end";
         PatternDescr pattern = (PatternDescr) parseAndGetFirstRuleDescr(
                                                                   text ).getLhs().getDescrs().get( 0 );
@@ -3475,7 +3475,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_PluggableOperators2() throws Exception {
+    void pluggableOperators2() {
         final String text = "rule \"tt\"\n" +
                 "    dialect \"mvel\"\n" +
                 "when\n" +
@@ -3492,7 +3492,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_InlineEval() throws Exception {
+    void inlineEval() {
         final String text = "rule \"inline eval\"\n" +
                 "when\n" +
                 "    Person( eval( name.startsWith(\"b\") && name.finishesWith(\"b\")) )\n" +
@@ -3508,7 +3508,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_InfinityLiteral() throws Exception {
+    void infinityLiteral() {
         final String text = "rule \"infinity\"\n" +
                 "when\n" +
                 "    StockTick( this after[-*,*] $another )\n" +
@@ -3523,7 +3523,7 @@ class MiscDRLParserTest {
 
     }
 
-    public static Stream<Arguments> entryPointIds() {
+    static Stream<Arguments> entryPointIds() {
         return Stream.of(
                 Arguments.of("eventStream", "eventStream"),
                 Arguments.of("\"My entry-point 'ID'\"", "My entry-point 'ID'")
@@ -3532,7 +3532,7 @@ class MiscDRLParserTest {
 
     @ParameterizedTest
     @MethodSource("entryPointIds")
-    void parse_EntryPointDeclaration(String sourceId, String expectedId) throws Exception {
+    void parse_EntryPointDeclaration(String sourceId, String expectedId) {
         final String text = "package org.drools\n" +
                 "declare entry-point " + sourceId + "\n" +
                 "    @source(\"jndi://queues/events\")\n" +
@@ -3553,7 +3553,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_WindowDeclaration() throws Exception {
+    void windowDeclaration() {
         final String text = "package org.drools\n" +
                 "declare window Ticks\n" +
                 "    @doc(\"last 10 stock ticks\")\n" +
@@ -3589,7 +3589,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void parse_WindowUsage() throws Exception {
+    void windowUsage() {
         final String text = "package org.drools\n" +
                 "rule X\n" +
                 "when\n" +
@@ -3614,7 +3614,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void endInRhs() throws Exception {
+    void endInRhs() {
         final String text = "package org.drools\n" +
                 "rule X\n" +
                 "when\n" +
@@ -3629,7 +3629,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void endTokenInRhs() throws Exception {
+    void endTokenInRhs() {
         final String text = "package org.drools\n" +
                 "rule X\n" +
                 "when\n" +
@@ -3644,7 +3644,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void ruleTokenInRhs() throws Exception {
+    void ruleTokenInRhs() {
         final String text = "package org.drools\n" +
                 "rule X\n" +
                 "when\n" +
@@ -4386,7 +4386,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void queryArgumentWithoutType() throws Exception {
+    void queryArgumentWithoutType() {
         final String text = "package org.drools\n" +
                 "query olderThan( $age )\n" +
                 "    $p : Person(age > (Integer)$age)\n" +
@@ -4400,7 +4400,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void queryMultipleArguments() throws Exception {
+    void queryMultipleArguments() {
         final String text = "package org.drools\n" +
                 "query olderThan( String $name, int $age )\n" +
                 "    $p : Person(age > $age)\n" +
@@ -4414,7 +4414,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void queryArrayArgument() throws Exception {
+    void queryArrayArgument() {
         final String text = "package org.drools\n" +
                 "query olderThan( int[] $ages )\n" +
                 "    $p : Person(age > $ages[0])\n" +
@@ -4428,7 +4428,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void queryZeroArgument() throws Exception {
+    void queryZeroArgument() {
         final String text = "package org.drools\n" +
                 "query olderThan()\n" +
                 "    $p : Person()\n" +
@@ -4442,7 +4442,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void queryNoArgument() throws Exception {
+    void queryNoArgument() {
         final String text = "package org.drools\n" +
                 "query olderThan\n" +
                 "    $p : Person()\n" +
@@ -4456,7 +4456,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void traitExtendsMultiple() throws Exception {
+    void traitExtendsMultiple() {
         final String source = "declare trait FatherTrait extends com.sample.ParentTrait, UncleTrait, org.test.GrandParentTrait end";
 
         PackageDescr pkg = parseAndGetPackageDescr(source);
@@ -4473,7 +4473,7 @@ class MiscDRLParserTest {
     }
 
     @Test
-    void pluggableEvaluator() throws Exception {
+    void pluggableEvaluator() {
         final String source = "package org.drools\n" +
                 "rule R\n" +
                 "when\n" +
