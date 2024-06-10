@@ -580,7 +580,7 @@ class MiscDRLParserTest {
 
         assertThat(rule.getName()).isEqualTo("almost_empty");
         assertThat(rule.getLhs()).isNotNull();
-        assertThat(((String) rule.getConsequence()).trim()).isEmpty();
+        assertThat(((String) rule.getConsequence())).isBlank();
     }
 
     @Test
@@ -593,7 +593,7 @@ class MiscDRLParserTest {
 
         assertThat(rule.getName()).isEqualTo("quoted string name");
         assertThat(rule.getLhs()).isNotNull();
-        assertThat(((String) rule.getConsequence()).trim()).isEmpty();
+        assertThat(((String) rule.getConsequence())).isBlank();
     }
 
     @Test
@@ -942,13 +942,13 @@ class MiscDRLParserTest {
 
         assertThat(lhs).isNotNull();
 
-        assertThat(lhs.getDescrs().size()).isEqualTo(3);
+        assertThat(lhs.getDescrs()).hasSize(3);
 
         // Check first pattern
         final PatternDescr first = (PatternDescr) lhs.getDescrs().get( 0 );
         assertThat(first.getIdentifier()).isEqualTo("foo3");
         assertThat(first.getObjectType()).isEqualTo("Bar");
-        assertThat(first.getConstraint().getDescrs().size()).isEqualTo(1);
+        assertThat(first.getConstraint().getDescrs()).hasSize(1);
 
         // Check second pattern
         final PatternDescr second = (PatternDescr) lhs.getDescrs().get( 1 );
@@ -991,7 +991,7 @@ class MiscDRLParserTest {
 
         assertThat(lhs).isNotNull();
 
-        assertThat(lhs.getDescrs().size()).isEqualTo(3);
+        assertThat(lhs.getDescrs()).hasSize(3);
 
         // System.err.println( lhs.getDescrs() );
 
@@ -1000,7 +1000,7 @@ class MiscDRLParserTest {
         assertThat(first.getIdentifier()).isEqualTo("foo3");
         assertThat(first.getObjectType()).isEqualTo("Bar");
 
-        assertThat(first.getConstraint().getDescrs().size()).isEqualTo(1);
+        assertThat(first.getConstraint().getDescrs()).hasSize(1);
 
         // LiteralDescr constraint = (LiteralDescr) first.getDescrs().get( 0 );
         AndDescr and = (AndDescr) first.getConstraint();
@@ -1014,7 +1014,7 @@ class MiscDRLParserTest {
         assertThat(second.getIdentifier()).isEqualTo("foo4");
         assertThat(second.getObjectType()).isEqualTo("Bar");
 
-        assertThat(second.getDescrs().size()).isEqualTo(1);
+        assertThat(second.getDescrs()).hasSize(1);
 
         final ExprConstraintDescr fieldBindingDescr = (ExprConstraintDescr) second.getDescrs().get( 0 );
         assertThat(fieldBindingDescr.getExpression()).isEqualTo("a4:a==4");
@@ -1038,13 +1038,13 @@ class MiscDRLParserTest {
         assertThat(rule.getName()).isEqualTo("simple_rule");
 
         final AndDescr lhs = rule.getLhs();
-        assertThat(lhs.getDescrs().size()).isEqualTo(1);
+        assertThat(lhs.getDescrs()).hasSize(1);
         final NotDescr not = (NotDescr) lhs.getDescrs().get( 0 );
-        assertThat(not.getDescrs().size()).isEqualTo(1);
+        assertThat(not.getDescrs()).hasSize(1);
         final PatternDescr pattern = (PatternDescr) not.getDescrs().get( 0 );
 
         assertThat(pattern.getObjectType()).isEqualTo("Cheese");
-        assertThat(pattern.getConstraint().getDescrs().size()).isEqualTo(1);
+        assertThat(pattern.getConstraint().getDescrs()).hasSize(1);
 
         final AndDescr and = (AndDescr) pattern.getConstraint();
         final ExprConstraintDescr fld = (ExprConstraintDescr) and.getDescrs().get( 0 );
@@ -1066,15 +1066,15 @@ class MiscDRLParserTest {
         assertThat(rule.getName()).isEqualTo("simple_rule");
 
         final AndDescr lhs = rule.getLhs();
-        assertThat(lhs.getDescrs().size()).isEqualTo(2);
+        assertThat(lhs.getDescrs()).hasSize(2);
         final NotDescr not = (NotDescr) lhs.getDescrs().get( 0 );
-        assertThat(not.getDescrs().size()).isEqualTo(1);
+        assertThat(not.getDescrs()).hasSize(1);
         final PatternDescr pattern = (PatternDescr) not.getDescrs().get( 0 );
 
         assertThat(pattern.getObjectType()).isEqualTo("Cheese");
 
         final ExistsDescr ex = (ExistsDescr) lhs.getDescrs().get(1 );
-        assertThat(ex.getDescrs().size()).isEqualTo(1);
+        assertThat(ex.getDescrs()).hasSize(1);
         final PatternDescr exPattern = (PatternDescr) ex.getDescrs().get( 0 );
         assertThat(exPattern.getObjectType()).isEqualTo("Foo");
     }
@@ -1092,14 +1092,14 @@ class MiscDRLParserTest {
 
         assertThat(lhs).isNotNull();
 
-        assertThat(lhs.getDescrs().size()).isEqualTo(3);
+        assertThat(lhs.getDescrs()).hasSize(3);
 
         // Check first pattern
         final PatternDescr first = (PatternDescr) lhs.getDescrs().get( 0 );
         assertThat(first.getIdentifier()).isEqualTo("foo3");
         assertThat(first.getObjectType()).isEqualTo("Bar");
 
-        assertThat(first.getConstraint().getDescrs().size()).isEqualTo(1);
+        assertThat(first.getConstraint().getDescrs()).hasSize(1);
 
         AndDescr and = (AndDescr) first.getConstraint();
         ExprConstraintDescr fld = (ExprConstraintDescr) and.getDescrs().get( 0 );
@@ -1112,7 +1112,7 @@ class MiscDRLParserTest {
         assertThat(second.getIdentifier()).isEqualTo("foo4");
         assertThat(second.getObjectType()).isEqualTo("Bar");
 
-        assertThat(second.getDescrs().size()).isEqualTo(1);
+        assertThat(second.getDescrs()).hasSize(1);
         // check it has field bindings.
         final ExprConstraintDescr bindingDescr = (ExprConstraintDescr) second.getDescrs().get( 0 );
         assertThat(bindingDescr.getExpression()).isEqualTo("a4:a==4");
@@ -1123,7 +1123,7 @@ class MiscDRLParserTest {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
                                                                "query_and_rule.drl" );
 
-        assertThat(pkg.getRules().size()).isEqualTo(4); // as queries are rules
+        assertThat(pkg.getRules()).hasSize(4); // as queries are rules
         RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
         assertThat(rule.getName()).isEqualTo("bar");
 
@@ -1144,7 +1144,7 @@ class MiscDRLParserTest {
 
         final List<RuleDescr> rules = pkg.getRules();
 
-        assertThat(rules.size()).isEqualTo(2);
+        assertThat(rules).hasSize(2);
 
         final RuleDescr rule0 = rules.get( 0 );
         assertThat(rule0.getName()).isEqualTo("Like Stilton");
@@ -1155,7 +1155,7 @@ class MiscDRLParserTest {
         // checkout the first rule
         AndDescr lhs = rule1.getLhs();
         assertThat(lhs).isNotNull();
-        assertThat(lhs.getDescrs().size()).isEqualTo(1);
+        assertThat(lhs.getDescrs()).hasSize(1);
         assertThat((String) rule0.getConsequence()).isEqualToIgnoringWhitespace( "System.out.println(\"I like \" + t);");
 
         // Check first pattern
@@ -1165,7 +1165,7 @@ class MiscDRLParserTest {
         // checkout the second rule
         lhs = rule1.getLhs();
         assertThat(lhs).isNotNull();
-        assertThat(lhs.getDescrs().size()).isEqualTo(1);
+        assertThat(lhs.getDescrs()).hasSize(1);
         assertThat((String) rule1.getConsequence()).isEqualToIgnoringWhitespace( "System.out.println(\"I like \" + t);");
 
         // Check first pattern
@@ -1178,10 +1178,10 @@ class MiscDRLParserTest {
         final PackageDescr pkg = parseAndGetPackageDescrWithDsl("expander_spread_lines.dslr", "complex.dsl");
 
         final RuleDescr rule = pkg.getRules().get(0);
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(1);
+        assertThat(rule.getLhs().getDescrs()).hasSize(1);
 
         final OrDescr or = (OrDescr) rule.getLhs().getDescrs().get(0);
-        assertThat(or.getDescrs().size()).isEqualTo(2);
+        assertThat(or.getDescrs()).hasSize(2);
         assertThat((String) rule.getConsequence()).isNotNull();
     }
 
@@ -1190,12 +1190,12 @@ class MiscDRLParserTest {
         final PackageDescr pkg = parseAndGetPackageDescrWithDsl("expander_multiple_constraints.dslr", "multiple_constraints.dsl");
 
         final RuleDescr rule = pkg.getRules().get(0);
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(2);
+        assertThat(rule.getLhs().getDescrs()).hasSize(2);
 
         PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
         assertThat(pattern.getObjectType()).isEqualTo("Person");
 
-        assertThat(pattern.getConstraint().getDescrs().size()).isEqualTo(2);
+        assertThat(pattern.getConstraint().getDescrs()).hasSize(2);
         assertThat(((ExprConstraintDescr) pattern.getConstraint().getDescrs().get(0)).getExpression()).isEqualTo("age < 42");
         assertThat(((ExprConstraintDescr) pattern.getConstraint().getDescrs().get(1)).getExpression()).isEqualTo("location==atlanta");
 
@@ -1212,12 +1212,12 @@ class MiscDRLParserTest {
         final PackageDescr pkg = parseAndGetPackageDescrWithDsl("expander_multiple_constraints_flush.dslr", "multiple_constraints.dsl");
 
         final RuleDescr rule = pkg.getRules().get(0);
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(1);
+        assertThat(rule.getLhs().getDescrs()).hasSize(1);
 
         final PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
         assertThat(pattern.getObjectType()).isEqualTo("Person");
 
-        assertThat(pattern.getConstraint().getDescrs().size()).isEqualTo(2);
+        assertThat(pattern.getConstraint().getDescrs()).hasSize(2);
         assertThat(((ExprConstraintDescr) pattern.getConstraint().getDescrs().get(0)).getExpression()).isEqualTo("age < 42");
         assertThat(((ExprConstraintDescr) pattern.getConstraint().getDescrs().get(1)).getExpression()).isEqualTo("location==atlanta");
 
@@ -1232,10 +1232,10 @@ class MiscDRLParserTest {
         final RuleDescr ruleDescr = (RuleDescr) pkg.getRules().get( 0 );
 
         final AndDescr lhs = ruleDescr.getLhs();
-        assertThat(lhs.getDescrs().size()).isEqualTo(1);
+        assertThat(lhs.getDescrs()).hasSize(1);
         final PatternDescr cheese = (PatternDescr) lhs.getDescrs().get( 0 );
         assertThat(cheese.getObjectType()).isEqualTo("Cheese");
-        assertThat(cheese.getConstraint().getDescrs().size()).isEqualTo(1);
+        assertThat(cheese.getConstraint().getDescrs()).hasSize(1);
         final ExprConstraintDescr fieldBinding = (ExprConstraintDescr) cheese.getDescrs().get( 0 );
         assertThat(fieldBinding.getExpression()).isEqualToIgnoringWhitespace("$type:type");
     }
@@ -1248,15 +1248,15 @@ class MiscDRLParserTest {
         final RuleDescr ruleDescr = (RuleDescr) pkg.getRules().get( 0 );
 
         final AndDescr lhs = ruleDescr.getLhs();
-        assertThat(lhs.getDescrs().size()).isEqualTo(2);
+        assertThat(lhs.getDescrs()).hasSize(2);
         final PatternDescr cheese = (PatternDescr) lhs.getDescrs().get( 0 );
         assertThat(cheese.getObjectType()).isEqualTo("Cheese");
-        assertThat(cheese.getDescrs().size()).isEqualTo(1);
+        assertThat(cheese.getDescrs()).hasSize(1);
         ExprConstraintDescr fieldBinding = (ExprConstraintDescr) cheese.getDescrs().get( 0 );
         assertThat(fieldBinding.getExpression()).isEqualTo("$type : type == \"stilton\"");
 
         final PatternDescr person = (PatternDescr) lhs.getDescrs().get( 1 );
-        assertThat(person.getDescrs().size()).isEqualTo(2);
+        assertThat(person.getDescrs()).hasSize(2);
         fieldBinding = (ExprConstraintDescr) person.getDescrs().get( 0 );
         assertThat(fieldBinding.getExpression()).isEqualTo("$name : name == \"bob\"");
 
@@ -1270,20 +1270,20 @@ class MiscDRLParserTest {
                                                                "or_nesting.drl" );
 
         assertThat(pkg).isNotNull();
-        assertThat(pkg.getRules().size()).isEqualTo(1);
+        assertThat(pkg.getRules()).hasSize(1);
         final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
         assertThat(rule.getName()).isEqualTo("simple_rule");
 
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(1);
+        assertThat(rule.getLhs().getDescrs()).hasSize(1);
 
         final OrDescr or = (OrDescr) rule.getLhs().getDescrs().get( 0 );
-        assertThat(or.getDescrs().size()).isEqualTo(2);
+        assertThat(or.getDescrs()).hasSize(2);
 
         final PatternDescr first = (PatternDescr) or.getDescrs().get( 0 );
         assertThat(first.getObjectType()).isEqualTo("Person");
 
         final AndDescr and = (AndDescr) or.getDescrs().get( 1 );
-        assertThat(and.getDescrs().size()).isEqualTo(2);
+        assertThat(and.getDescrs()).hasSize(2);
 
         final PatternDescr left = (PatternDescr) and.getDescrs().get( 0 );
         assertThat(left.getObjectType()).isEqualTo("Person");
@@ -1299,26 +1299,26 @@ class MiscDRLParserTest {
                                                                "and_or_rule.drl" );
 
         assertThat(pkg).isNotNull();
-        assertThat(pkg.getRules().size()).isEqualTo(1);
+        assertThat(pkg.getRules()).hasSize(1);
         final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
         assertThat(rule.getName()).isEqualTo("simple_rule");
 
         // we will have 3 children under the main And node
         final AndDescr and = rule.getLhs();
-        assertThat(and.getDescrs().size()).isEqualTo(3);
+        assertThat(and.getDescrs()).hasSize(3);
 
         PatternDescr left = (PatternDescr) and.getDescrs().get( 0 );
         PatternDescr right = (PatternDescr) and.getDescrs().get( 1 );
         assertThat(left.getObjectType()).isEqualTo("Person");
         assertThat(right.getObjectType()).isEqualTo("Cheese");
 
-        assertThat(left.getConstraint().getDescrs().size()).isEqualTo(1);
+        assertThat(left.getConstraint().getDescrs()).hasSize(1);
 
         ExprConstraintDescr fld = (ExprConstraintDescr) left.getConstraint().getDescrs().get( 0 );
 
         assertThat(fld.getExpression()).isEqualTo("name == \"mark\"");
 
-        assertThat(right.getConstraint().getDescrs().size()).isEqualTo(1);
+        assertThat(right.getConstraint().getDescrs()).hasSize(1);
 
         fld = (ExprConstraintDescr) right.getConstraint().getDescrs().get( 0 );
 
@@ -1326,18 +1326,18 @@ class MiscDRLParserTest {
 
         // now the "||" part
         final OrDescr or = (OrDescr) and.getDescrs().get( 2 );
-        assertThat(or.getDescrs().size()).isEqualTo(2);
+        assertThat(or.getDescrs()).hasSize(2);
         left = (PatternDescr) or.getDescrs().get( 0 );
         right = (PatternDescr) or.getDescrs().get( 1 );
         assertThat(left.getObjectType()).isEqualTo("Person");
         assertThat(right.getObjectType()).isEqualTo("Cheese");
-        assertThat(left.getConstraint().getDescrs().size()).isEqualTo(1);
+        assertThat(left.getConstraint().getDescrs()).hasSize(1);
 
         fld = (ExprConstraintDescr) left.getConstraint().getDescrs().get( 0 );
 
         assertThat(fld.getExpression()).isEqualTo("name == \"mark\"");
 
-        assertThat(right.getConstraint().getDescrs().size()).isEqualTo(1);
+        assertThat(right.getConstraint().getDescrs()).hasSize(1);
 
         fld = (ExprConstraintDescr) right.getConstraint().getDescrs().get( 0 );
 
@@ -1352,12 +1352,12 @@ class MiscDRLParserTest {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
                                                                "or_binding.drl" );
 
-        assertThat(pkg.getRules().size()).isEqualTo(1);
+        assertThat(pkg.getRules()).hasSize(1);
         final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(2);
+        assertThat(rule.getLhs().getDescrs()).hasSize(2);
 
         final OrDescr or = (OrDescr) rule.getLhs().getDescrs().get( 0 );
-        assertThat(or.getDescrs().size()).isEqualTo(2);
+        assertThat(or.getDescrs()).hasSize(2);
 
         final PatternDescr leftPattern = (PatternDescr) or.getDescrs().get( 0 );
         assertThat(leftPattern.getObjectType()).isEqualTo("Person");
@@ -1380,14 +1380,14 @@ class MiscDRLParserTest {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
                                                                "or_binding_complex.drl" );
 
-        assertThat(pkg.getRules().size()).isEqualTo(1);
+        assertThat(pkg.getRules()).hasSize(1);
         final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(1);
+        assertThat(rule.getLhs().getDescrs()).hasSize(1);
 
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(1);
+        assertThat(rule.getLhs().getDescrs()).hasSize(1);
 
         final OrDescr or = (OrDescr) rule.getLhs().getDescrs().get( 0 );
-        assertThat(or.getDescrs().size()).isEqualTo(2);
+        assertThat(or.getDescrs()).hasSize(2);
 
         // first fact
         final PatternDescr firstFact = (PatternDescr) or.getDescrs().get( 0 );
@@ -1397,7 +1397,7 @@ class MiscDRLParserTest {
         // second "option"
         final PatternDescr secondFact = (PatternDescr) or.getDescrs().get( 1 );
         assertThat(secondFact.getObjectType()).isEqualTo("Person");
-        assertThat(secondFact.getConstraint().getDescrs().size()).isEqualTo(1);
+        assertThat(secondFact.getConstraint().getDescrs()).hasSize(1);
         assertThat(secondFact.getIdentifier()).isEqualTo("foo");
 
         assertThat((String) rule.getConsequence()).isEqualToIgnoringWhitespace( "System.out.println( \"Mark and Michael\" + bar );");
@@ -1408,14 +1408,14 @@ class MiscDRLParserTest {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
                                                                "or_binding_with_brackets.drl" );
 
-        assertThat(pkg.getRules().size()).isEqualTo(1);
+        assertThat(pkg.getRules()).hasSize(1);
         final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(1);
+        assertThat(rule.getLhs().getDescrs()).hasSize(1);
 
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(1);
+        assertThat(rule.getLhs().getDescrs()).hasSize(1);
 
         final OrDescr or = (OrDescr) rule.getLhs().getDescrs().get( 0 );
-        assertThat(or.getDescrs().size()).isEqualTo(2);
+        assertThat(or.getDescrs()).hasSize(2);
 
         // first fact
         final PatternDescr firstFact = (PatternDescr) or.getDescrs().get( 0 );
@@ -1639,9 +1639,9 @@ class MiscDRLParserTest {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
                                                                "eval_multiple.drl" );
 
-        assertThat(pkg.getRules().size()).isEqualTo(1);
+        assertThat(pkg.getRules()).hasSize(1);
         final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(4);
+        assertThat(rule.getLhs().getDescrs()).hasSize(4);
 
         final EvalDescr eval = (EvalDescr) rule.getLhs().getDescrs().get(0 );
         assertThat((String) eval.getContent()).isEqualToIgnoringWhitespace( "abc(\"foo\") + 5");
@@ -1656,9 +1656,9 @@ class MiscDRLParserTest {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
                                                                "with_eval.drl" );
 
-        assertThat(pkg.getRules().size()).isEqualTo(1);
+        assertThat(pkg.getRules()).hasSize(1);
         final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(3);
+        assertThat(rule.getLhs().getDescrs()).hasSize(3);
         PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
         assertThat(pattern.getObjectType()).isEqualTo("Foo");
         pattern = (PatternDescr) rule.getLhs().getDescrs().get( 1 );
@@ -1674,12 +1674,12 @@ class MiscDRLParserTest {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
                                                                "with_retval.drl" );
 
-        assertThat(pkg.getRules().size()).isEqualTo(1);
+        assertThat(pkg.getRules()).hasSize(1);
 
         final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(1);
+        assertThat(rule.getLhs().getDescrs()).hasSize(1);
         final PatternDescr col = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
-        assertThat(col.getConstraint().getDescrs().size()).isEqualTo(1);
+        assertThat(col.getConstraint().getDescrs()).hasSize(1);
         assertThat(col.getObjectType()).isEqualTo("Foo");
         final ExprConstraintDescr fld = (ExprConstraintDescr) col.getConstraint().getDescrs().get( 0 );
 
@@ -1691,13 +1691,13 @@ class MiscDRLParserTest {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
                                                                "with_predicate.drl" );
 
-        assertThat(pkg.getRules().size()).isEqualTo(1);
+        assertThat(pkg.getRules()).hasSize(1);
 
         final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(1);
+        assertThat(rule.getLhs().getDescrs()).hasSize(1);
         final PatternDescr col = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
         AndDescr and = (AndDescr) col.getConstraint();
-        assertThat(and.getDescrs().size()).isEqualTo(2);
+        assertThat(and.getDescrs()).hasSize(2);
 
         final ExprConstraintDescr field = (ExprConstraintDescr) col.getDescrs().get( 0 );
         final ExprConstraintDescr pred = (ExprConstraintDescr) and.getDescrs().get( 1 );
@@ -1710,10 +1710,10 @@ class MiscDRLParserTest {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
                                                                "not_with_constraint.drl" );
 
-        assertThat(pkg.getRules().size()).isEqualTo(1);
+        assertThat(pkg.getRules()).hasSize(1);
 
         final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(2);
+        assertThat(rule.getLhs().getDescrs()).hasSize(2);
 
         PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
         final ExprConstraintDescr fieldBinding = (ExprConstraintDescr) pattern.getDescrs().get( 0 );
@@ -1732,16 +1732,16 @@ class MiscDRLParserTest {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
                                                                "functions.drl" );
 
-        assertThat(pkg.getRules().size()).isEqualTo(2);
+        assertThat(pkg.getRules()).hasSize(2);
 
         final List<FunctionDescr> functions = pkg.getFunctions();
-        assertThat(functions.size()).isEqualTo(2);
+        assertThat(functions).hasSize(2);
 
         FunctionDescr func = functions.get( 0 );
         assertThat(func.getName()).isEqualTo("functionA");
         assertThat(func.getReturnType()).isEqualTo("String");
-        assertThat(func.getParameterNames().size()).isEqualTo(2);
-        assertThat(func.getParameterTypes().size()).isEqualTo(2);
+        assertThat(func.getParameterNames()).hasSize(2);
+        assertThat(func.getParameterTypes()).hasSize(2);
         assertThat(func.getLine()).isEqualTo(21);
         assertThat(func.getColumn()).isEqualTo(0);
 
@@ -1776,7 +1776,7 @@ class MiscDRLParserTest {
         assertThat((String) rule.getConsequence()).isEqualToIgnoringWhitespace( "bar();");
 
         final Map<String, AttributeDescr> attrs = rule.getAttributes();
-        assertThat(attrs.size()).isEqualTo(6);
+        assertThat(attrs).hasSize(6);
 
         AttributeDescr at = (AttributeDescr) attrs.get( "salience" );
         assertThat(at.getName()).isEqualTo("salience");
@@ -1810,12 +1810,12 @@ class MiscDRLParserTest {
 
 
         List<RuleDescr> rules = pkg.getRules();
-        assertThat(rules.size()).isEqualTo(3);
+        assertThat(rules).hasSize(3);
 
         RuleDescr rule = rules.get( 0 );
         assertThat(rule.getName()).isEqualTo("rule1");
         Map<String, AttributeDescr> attrs = rule.getAttributes();
-        assertThat(attrs.size()).isEqualTo(2);
+        assertThat(attrs).hasSize(2);
         AttributeDescr at = (AttributeDescr) attrs.get( "salience" );
         assertThat(at.getName()).isEqualTo("salience");
         assertThat(at.getValue()).isEqualTo("(42)");
@@ -1826,7 +1826,7 @@ class MiscDRLParserTest {
         rule = rules.get( 1 );
         assertThat(rule.getName()).isEqualTo("rule2");
         attrs = rule.getAttributes();
-        assertThat(attrs.size()).isEqualTo(2);
+        assertThat(attrs).hasSize(2);
         at = (AttributeDescr) attrs.get( "salience" );
         assertThat(at.getName()).isEqualTo("salience");
         assertThat(at.getValue()).isEqualTo("(Integer.MIN_VALUE)");
@@ -1836,7 +1836,7 @@ class MiscDRLParserTest {
         rule = rules.get( 2 );
         assertThat(rule.getName()).isEqualTo("rule3");
         attrs = rule.getAttributes();
-        assertThat(attrs.size()).isEqualTo(2);
+        assertThat(attrs).hasSize(2);
         at = (AttributeDescr) attrs.get( "enabled" );
         assertThat(at.getName()).isEqualTo("enabled");
         assertThat(at.getValue()).isEqualTo("(Boolean.TRUE)");
@@ -1858,7 +1858,7 @@ class MiscDRLParserTest {
 
         assertThat(rule.getName()).isEqualTo("Test");
         Map<String, AttributeDescr> attributes = rule.getAttributes();
-        assertThat(attributes.size()).isEqualTo(1);
+        assertThat(attributes).hasSize(1);
         AttributeDescr refract = attributes.get( "refract" );
         assertThat(refract).isNotNull();
         assertThat(refract.getValue()).isEqualTo("true");
@@ -1873,7 +1873,7 @@ class MiscDRLParserTest {
         assertThat((String) rule.getConsequence()).isEqualToIgnoringWhitespace( "bar();");
 
         final Map<String, AttributeDescr> attrs = rule.getAttributes();
-        assertThat(attrs.size()).isEqualTo(3);
+        assertThat(attrs).hasSize(3);
 
         AttributeDescr at = (AttributeDescr) attrs.get( "enabled" );
         assertThat(at.getName()).isEqualTo("enabled");
@@ -1896,7 +1896,7 @@ class MiscDRLParserTest {
         assertThat((String) rule.getConsequence()).isEqualToIgnoringWhitespace( "bar();");
 
         final Map<String, AttributeDescr> attrs = rule.getAttributes();
-        assertThat(attrs.size()).isEqualTo(2);
+        assertThat(attrs).hasSize(2);
 
         AttributeDescr at = (AttributeDescr) attrs.get( "duration" );
         assertThat(at.getName()).isEqualTo("duration");
@@ -1915,7 +1915,7 @@ class MiscDRLParserTest {
         assertThat((String) rule.getConsequence()).isEqualToIgnoringWhitespace( "bar();");
 
         final Map<String, AttributeDescr> attrs = rule.getAttributes();
-        assertThat(attrs.size()).isEqualTo(2);
+        assertThat(attrs).hasSize(2);
 
         AttributeDescr at = (AttributeDescr) attrs.get( "calendars" );
         assertThat(at.getName()).isEqualTo("calendars");
@@ -1935,7 +1935,7 @@ class MiscDRLParserTest {
         assertThat((String) rule.getConsequence()).isEqualToIgnoringWhitespace( "bar();");
 
         final Map<String, AttributeDescr> attrs = rule.getAttributes();
-        assertThat(attrs.size()).isEqualTo(2);
+        assertThat(attrs).hasSize(2);
 
         AttributeDescr at = (AttributeDescr) attrs.get( "calendars" );
         assertThat(at.getName()).isEqualTo("calendars");
@@ -1953,7 +1953,7 @@ class MiscDRLParserTest {
         assertThat((String) rule.getConsequence()).isEqualToIgnoringWhitespace( "bar();");
 
         final Map<String, AttributeDescr> attrs = rule.getAttributes();
-        assertThat(attrs.size()).isEqualTo(2);
+        assertThat(attrs).hasSize(2);
 
         AttributeDescr at = (AttributeDescr) attrs.get( "timer" );
         assertThat(at.getName()).isEqualTo("timer");
@@ -1972,7 +1972,7 @@ class MiscDRLParserTest {
         assertThat((String) rule.getConsequence()).isEqualToIgnoringWhitespace( "bar();");
 
         final Map<String, AttributeDescr> attrs = rule.getAttributes();
-        assertThat(attrs.size()).isEqualTo(6);
+        assertThat(attrs).hasSize(6);
 
         AttributeDescr at = attrs.get( "salience" );
         assertThat(at.getName()).isEqualTo("salience");
@@ -2004,10 +2004,10 @@ class MiscDRLParserTest {
         final RuleDescr rule = parseAndGetFirstRuleDescrFromFile(
                                                            "enumeration.drl" );
         assertThat(rule.getName()).isEqualTo("simple_rule");
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(1);
+        assertThat(rule.getLhs().getDescrs()).hasSize(1);
         final PatternDescr col = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
         assertThat(col.getObjectType()).isEqualTo("Foo");
-        assertThat(col.getConstraint().getDescrs().size()).isEqualTo(1);
+        assertThat(col.getConstraint().getDescrs()).hasSize(1);
         final ExprConstraintDescr fld = (ExprConstraintDescr) col.getConstraint().getDescrs().get( 0 );
 
         assertThat(fld.getExpression()).isEqualToIgnoringWhitespace("bar == Foo.BAR");
@@ -2043,9 +2043,9 @@ class MiscDRLParserTest {
         assertThat(at.getName()).isEqualTo("dialect");
         assertThat(at.getValue()).isEqualTo("java");
 
-        assertThat(pkg.getRules().size()).isEqualTo(2);
+        assertThat(pkg.getRules()).hasSize(2);
 
-        assertThat(pkg.getImports().size()).isEqualTo(2);
+        assertThat(pkg.getImports()).hasSize(2);
 
         RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
         assertThat(rule.getName()).isEqualTo("bar");
@@ -2072,17 +2072,17 @@ class MiscDRLParserTest {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
                                                                "statement_ordering_1.drl" );
 
-        assertThat(pkg.getRules().size()).isEqualTo(2);
+        assertThat(pkg.getRules()).hasSize(2);
 
         assertThat(((RuleDescr) pkg.getRules().get(0)).getName()).isEqualTo("foo");
         assertThat(((RuleDescr) pkg.getRules().get(1)).getName()).isEqualTo("bar");
 
-        assertThat(pkg.getFunctions().size()).isEqualTo(2);
+        assertThat(pkg.getFunctions()).hasSize(2);
 
         assertThat(((FunctionDescr) pkg.getFunctions().get(0)).getName()).isEqualTo("cheeseIt");
         assertThat(((FunctionDescr) pkg.getFunctions().get(1)).getName()).isEqualTo("uncheeseIt");
 
-        assertThat(pkg.getImports().size()).isEqualTo(4);
+        assertThat(pkg.getImports()).hasSize(4);
         assertThat(((ImportDescr) pkg.getImports().get(0)).getTarget()).isEqualTo("im.one");
         assertThat(((ImportDescr) pkg.getImports().get(1)).getTarget()).isEqualTo("im.two");
         assertThat(((ImportDescr) pkg.getImports().get(2)).getTarget()).isEqualTo("im.three");
@@ -2094,7 +2094,7 @@ class MiscDRLParserTest {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
                                                                "rule_names_number_prefix.drl" );
 
-        assertThat(pkg.getRules().size()).isEqualTo(2);
+        assertThat(pkg.getRules()).hasSize(2);
 
         assertThat(((RuleDescr) pkg.getRules().get(0)).getName()).isEqualTo("1. Do Stuff!");
         assertThat(((RuleDescr) pkg.getRules().get(1)).getName()).isEqualTo("2. Do More Stuff!");
@@ -2121,9 +2121,9 @@ class MiscDRLParserTest {
     void parse_GroupBy() throws Exception {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile( "groupBy.drl" );
 
-        assertThat(pkg.getRules().size()).isEqualTo(1);
+        assertThat(pkg.getRules()).hasSize(1);
         final RuleDescr rule = pkg.getRules().get(0);
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(1);
+        assertThat(rule.getLhs().getDescrs()).hasSize(1);
 
         final PatternDescr outPattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
         final GroupByDescr groupBy = (GroupByDescr) outPattern.getSource();
@@ -2182,7 +2182,7 @@ class MiscDRLParserTest {
         assertThat(accum.isExternalFunction()).isTrue();
 
         List<AccumulateDescr.AccumulateFunctionCallDescr> functions = accum.getFunctions();
-        assertThat(functions.size()).isEqualTo(1);
+        assertThat(functions).hasSize(1);
         assertThat(functions.get(0).getFunction()).isEqualTo("average");
         assertThat(functions.get(0).getBind()).isEqualTo("$avg");
         assertThat(functions.get(0).getParams()[0]).isEqualTo("$age");
@@ -2203,9 +2203,9 @@ class MiscDRLParserTest {
     void fromAccumulate() {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile("from_accumulate.drl" );
 
-        assertThat(pkg.getRules().size()).isEqualTo(1);
+        assertThat(pkg.getRules()).hasSize(1);
         final RuleDescr rule = pkg.getRules().get( 0 );
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(1);
+        assertThat(rule.getLhs().getDescrs()).hasSize(1);
 
         final PatternDescr outPattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
         final AccumulateDescr accum = (AccumulateDescr) outPattern.getSource();
@@ -2233,9 +2233,9 @@ class MiscDRLParserTest {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
                                                                "accumulate_with_bindings.drl" );
 
-        assertThat(pkg.getRules().size()).isEqualTo(1);
+        assertThat(pkg.getRules()).hasSize(1);
         final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(1);
+        assertThat(rule.getLhs().getDescrs()).hasSize(1);
 
         final PatternDescr outPattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
         final AccumulateDescr accum = (AccumulateDescr) outPattern.getSource();
@@ -2264,9 +2264,9 @@ class MiscDRLParserTest {
                 + "end\n";
         final PackageDescr pkg = parseAndGetPackageDescr( source );
 
-        assertThat(pkg.getRules().size()).isEqualTo(1);
+        assertThat(pkg.getRules()).hasSize(1);
         final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(1);
+        assertThat(rule.getLhs().getDescrs()).hasSize(1);
 
         final PatternDescr outPattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
         final AccumulateDescr accum = (AccumulateDescr) outPattern.getSource();
@@ -2292,9 +2292,9 @@ class MiscDRLParserTest {
                         "end";
         final PackageDescr pkg = parseAndGetPackageDescr( source );
 
-        assertThat(pkg.getRules().size()).isEqualTo(1);
+        assertThat(pkg.getRules()).hasSize(1);
         final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(1);
+        assertThat(rule.getLhs().getDescrs()).hasSize(1);
 
         final PatternDescr outPattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
         final AccumulateDescr accum = (AccumulateDescr) outPattern.getSource();
@@ -2315,9 +2315,9 @@ class MiscDRLParserTest {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
                                                                "collect.drl" );
 
-        assertThat(pkg.getRules().size()).isEqualTo(1);
+        assertThat(pkg.getRules()).hasSize(1);
         final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(1);
+        assertThat(rule.getLhs().getDescrs()).hasSize(1);
 
         final PatternDescr outPattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
         final CollectDescr collect = (CollectDescr) outPattern.getSource();
@@ -2334,7 +2334,7 @@ class MiscDRLParserTest {
 
         final PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
         final List< ? > constraints = pattern.getConstraint().getDescrs();
-        assertThat(constraints.size()).isEqualTo(1);
+        assertThat(constraints).hasSize(1);
 
         final ExprConstraintDescr predicate = (ExprConstraintDescr) constraints.get( 0 );
         assertThat(predicate.getExpression()).isEqualToIgnoringWhitespace("eval( $var.equals(\"xyz\") )");
@@ -2389,17 +2389,17 @@ class MiscDRLParserTest {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
                                                                "forall.drl" );
 
-        assertThat(pkg.getRules().size()).isEqualTo(1);
+        assertThat(pkg.getRules()).hasSize(1);
         final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(1);
+        assertThat(rule.getLhs().getDescrs()).hasSize(1);
 
         final ForallDescr forall = (ForallDescr) rule.getLhs().getDescrs().get(0 );
 
-        assertThat(forall.getDescrs().size()).isEqualTo(2);
+        assertThat(forall.getDescrs()).hasSize(2);
         final PatternDescr pattern = forall.getBasePattern();
         assertThat(pattern.getObjectType()).isEqualTo("Person");
         final List<BaseDescr> remaining = forall.getRemainingPatterns();
-        assertThat(remaining.size()).isEqualTo(1);
+        assertThat(remaining).hasSize(1);
         final PatternDescr cheese = (PatternDescr) remaining.get( 0 );
         assertThat(cheese.getObjectType()).isEqualTo("Cheese");
     }
@@ -2409,18 +2409,18 @@ class MiscDRLParserTest {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
                                                                "forallwithfrom.drl" );
 
-        assertThat(pkg.getRules().size()).isEqualTo(1);
+        assertThat(pkg.getRules()).hasSize(1);
         final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(1);
+        assertThat(rule.getLhs().getDescrs()).hasSize(1);
 
         final ForallDescr forall = (ForallDescr) rule.getLhs().getDescrs().get( 0 );
 
-        assertThat(forall.getDescrs().size()).isEqualTo(2);
+        assertThat(forall.getDescrs()).hasSize(2);
         final PatternDescr pattern = forall.getBasePattern();
         assertThat(pattern.getObjectType()).isEqualTo("Person");
         assertThat(((FromDescr) pattern.getSource()).getDataSource().toString()).isEqualTo("$village");
         final List<BaseDescr> remaining = forall.getRemainingPatterns();
-        assertThat(remaining.size()).isEqualTo(1);
+        assertThat(remaining).hasSize(1);
         final PatternDescr cheese = (PatternDescr) remaining.get( 0 );
         assertThat(cheese.getObjectType()).isEqualTo("Cheese");
         assertThat(((FromDescr) cheese.getSource()).getDataSource().toString()).isEqualTo("$cheesery");
@@ -2432,7 +2432,7 @@ class MiscDRLParserTest {
         AndDescr descrs = parseAndGetFirstRuleDescr(
                                               text).getLhs();
 
-        assertThat(descrs.getDescrs().size()).isEqualTo(2);
+        assertThat(descrs.getDescrs()).hasSize(2);
         PatternDescr pat = (PatternDescr) descrs.getDescrs().get( 1 );
         ExprConstraintDescr fieldConstr = (ExprConstraintDescr) pat.getConstraint().getDescrs().get( 0 );
 
@@ -2445,7 +2445,7 @@ class MiscDRLParserTest {
         AndDescr descrs = parseAndGetFirstRuleDescr(
                                               text).getLhs();
 
-        assertThat(descrs.getDescrs().size()).isEqualTo(2);
+        assertThat(descrs.getDescrs()).hasSize(2);
         PatternDescr pat = (PatternDescr) descrs.getDescrs().get( 1 );
         ExprConstraintDescr fieldConstr = (ExprConstraintDescr) pat.getConstraint().getDescrs().get( 0 );
 
@@ -2461,13 +2461,13 @@ class MiscDRLParserTest {
 
         assertThat((String) rule.getConsequence()).isEqualToIgnoringWhitespace( "consequence();");
         assertThat(rule.getName()).isEqualTo("simple_rule");
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(2);
+        assertThat(rule.getLhs().getDescrs()).hasSize(2);
 
         // The first pattern, with 2 restrictions on a single field (plus a
         // connective)
         PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
         assertThat(pattern.getObjectType()).isEqualTo("Person");
-        assertThat(pattern.getConstraint().getDescrs().size()).isEqualTo(1);
+        assertThat(pattern.getConstraint().getDescrs()).hasSize(1);
 
         ExprConstraintDescr fld = (ExprConstraintDescr) pattern.getConstraint().getDescrs().get( 0 );
         assertThat(fld.getExpression()).isEqualTo("age > 30 && < 40");
@@ -2476,7 +2476,7 @@ class MiscDRLParserTest {
         // second field with one
         pattern = (PatternDescr) rule.getLhs().getDescrs().get( 1 );
         assertThat(pattern.getObjectType()).isEqualTo("Vehicle");
-        assertThat(pattern.getConstraint().getDescrs().size()).isEqualTo(2);
+        assertThat(pattern.getConstraint().getDescrs()).hasSize(2);
 
         fld = (ExprConstraintDescr) pattern.getConstraint().getDescrs().get( 0 );
         assertThat(fld.getExpression()).isEqualToIgnoringWhitespace("type in ( \"sedan\", \"wagon\" )");
@@ -2496,13 +2496,13 @@ class MiscDRLParserTest {
 
         assertThat((String) rule.getConsequence()).isEqualToIgnoringWhitespace( "consequence();");
         assertThat(rule.getName()).isEqualTo("simple_rule");
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(2);
+        assertThat(rule.getLhs().getDescrs()).hasSize(2);
 
         // The first pattern, with 2 restrictions on a single field (plus a
         // connective)
         PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
         assertThat(pattern.getObjectType()).isEqualTo("Person");
-        assertThat(pattern.getConstraint().getDescrs().size()).isEqualTo(1);
+        assertThat(pattern.getConstraint().getDescrs()).hasSize(1);
 
         ExprConstraintDescr fld = (ExprConstraintDescr) pattern.getConstraint().getDescrs().get( 0 );
         assertThat(fld.getExpression()).isEqualTo("age > 30 && < 40");
@@ -2511,7 +2511,7 @@ class MiscDRLParserTest {
         // second field with one
         pattern = (PatternDescr) rule.getLhs().getDescrs().get( 1 );
         assertThat(pattern.getObjectType()).isEqualTo("Vehicle");
-        assertThat(pattern.getConstraint().getDescrs().size()).isEqualTo(2);
+        assertThat(pattern.getConstraint().getDescrs()).hasSize(2);
 
         fld = (ExprConstraintDescr) pattern.getConstraint().getDescrs().get( 0 );
         assertThat(fld.getExpression()).isEqualToIgnoringWhitespace("type not in ( \"sedan\", \"wagon\" )");
@@ -2528,7 +2528,7 @@ class MiscDRLParserTest {
         PatternDescr pattern = (PatternDescr) parseAndGetFirstRuleDescr(
                                                                   text ).getLhs().getDescrs().get( 0 );
 
-        assertThat(pattern.getDescrs().size()).isEqualTo(1);
+        assertThat(pattern.getDescrs()).hasSize(1);
         assertThat(AndDescr.class).isEqualTo(pattern.getConstraint().getClass());
 
         assertThat(pattern.getConstraint().getDescrs().get(0).getClass()).isEqualTo(ExprConstraintDescr.class);
@@ -2541,7 +2541,7 @@ class MiscDRLParserTest {
         PatternDescr pattern = (PatternDescr) parseAndGetFirstRuleDescr(
                                                                   text ).getLhs().getDescrs().get( 0 );
 
-        assertThat(pattern.getDescrs().size()).isEqualTo(1);
+        assertThat(pattern.getDescrs()).hasSize(1);
         ExprConstraintDescr fcd = (ExprConstraintDescr) pattern.getDescrs().get( 0 );
         assertThat(fcd.getExpression()).isEqualToIgnoringWhitespace("age < 42 && location==\"atlanta\"");
     }
@@ -2552,7 +2552,7 @@ class MiscDRLParserTest {
         PatternDescr pattern = (PatternDescr) parseAndGetFirstRuleDescr(
                                                                   text ).getLhs().getDescrs().get( 0 );
 
-        assertThat(pattern.getDescrs().size()).isEqualTo(1);
+        assertThat(pattern.getDescrs()).hasSize(1);
         ExprConstraintDescr fcd = (ExprConstraintDescr) pattern.getDescrs().get( 0 );
         assertThat(fcd.getExpression()).isEqualToIgnoringWhitespace("age < 42 || location==\"atlanta\"");
     }
@@ -2564,7 +2564,7 @@ class MiscDRLParserTest {
         AndDescr descrs = (AndDescr) parseAndGetFirstRuleDescr(
                                                          text ).getLhs();
 
-        assertThat(descrs.getDescrs().size()).isEqualTo(1);
+        assertThat(descrs.getDescrs()).hasSize(1);
         PatternDescr pat = (PatternDescr) descrs.getDescrs().get( 0 );
         ExprConstraintDescr fieldConstr = (ExprConstraintDescr) pat.getConstraint().getDescrs().get( 0 );
 
@@ -2579,17 +2579,17 @@ class MiscDRLParserTest {
 
 
         assertThat(pkg.getName()).isEqualTo("org.drools.mvel.compiler");
-        assertThat(pkg.getGlobals().size()).isEqualTo(1);
-        assertThat(pkg.getRules().size()).isEqualTo(3);
+        assertThat(pkg.getGlobals()).hasSize(1);
+        assertThat(pkg.getRules()).hasSize(3);
 
         final RuleDescr rule1 = (RuleDescr) pkg.getRules().get( 0 );
-        assertThat(rule1.getLhs().getDescrs().size()).isEqualTo(2);
+        assertThat(rule1.getLhs().getDescrs()).hasSize(2);
 
         final RuleDescr query1 = (RuleDescr) pkg.getRules().get( 1 );
-        assertThat(query1.getLhs().getDescrs().size()).isEqualTo(3);
+        assertThat(query1.getLhs().getDescrs()).hasSize(3);
 
         final RuleDescr rule2 = (RuleDescr) pkg.getRules().get( 2 );
-        assertThat(rule2.getLhs().getDescrs().size()).isEqualTo(2);
+        assertThat(rule2.getLhs().getDescrs()).hasSize(2);
     }
 
     @Test
@@ -2598,10 +2598,10 @@ class MiscDRLParserTest {
                                                                "eval_parsing.drl" );
 
         assertThat(pkg.getName()).isEqualTo("org.drools.mvel.compiler");
-        assertThat(pkg.getRules().size()).isEqualTo(1);
+        assertThat(pkg.getRules()).hasSize(1);
 
         final RuleDescr rule1 = (RuleDescr) pkg.getRules().get( 0 );
-        assertThat(rule1.getLhs().getDescrs().size()).isEqualTo(1);
+        assertThat(rule1.getLhs().getDescrs()).hasSize(1);
     }
 
     @Test
@@ -2609,9 +2609,9 @@ class MiscDRLParserTest {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
                                                                "accumulateReverse.drl" );
 
-        assertThat(pkg.getRules().size()).isEqualTo(1);
+        assertThat(pkg.getRules()).hasSize(1);
         final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(1);
+        assertThat(rule.getLhs().getDescrs()).hasSize(1);
 
         final PatternDescr out = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
         final AccumulateDescr accum = (AccumulateDescr) out.getSource();
@@ -2634,9 +2634,9 @@ class MiscDRLParserTest {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
                                                                "accumulateExternalFunction.drl" );
 
-        assertThat(pkg.getRules().size()).isEqualTo(1);
+        assertThat(pkg.getRules()).hasSize(1);
         final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(1);
+        assertThat(rule.getLhs().getDescrs()).hasSize(1);
 
         final PatternDescr out = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
         final AccumulateDescr accum = (AccumulateDescr) out.getSource();
@@ -2655,9 +2655,9 @@ class MiscDRLParserTest {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
                                                                "collect_with_nested_from.drl" );
 
-        assertThat(pkg.getRules().size()).isEqualTo(1);
+        assertThat(pkg.getRules()).hasSize(1);
         final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(1);
+        assertThat(rule.getLhs().getDescrs()).hasSize(1);
 
         final PatternDescr out = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
         final CollectDescr collect = (CollectDescr) out.getSource();
@@ -2676,9 +2676,9 @@ class MiscDRLParserTest {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
                                                                "accumulate_with_nested_from.drl" );
 
-        assertThat(pkg.getRules().size()).isEqualTo(1);
+        assertThat(pkg.getRules()).hasSize(1);
         final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(1);
+        assertThat(rule.getLhs().getDescrs()).hasSize(1);
 
         final PatternDescr out = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
         final AccumulateDescr accumulate = (AccumulateDescr) out.getSource();
@@ -2697,10 +2697,10 @@ class MiscDRLParserTest {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
                                                                "accumulateMultipleFunctions.drl" );
 
-        assertThat(pkg.getRules().size()).isEqualTo(1);
+        assertThat(pkg.getRules()).hasSize(1);
 
         RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(1);
+        assertThat(rule.getLhs().getDescrs()).hasSize(1);
 
         PatternDescr out = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
         assertThat(out.getObjectType()).isEqualTo("Object");
@@ -2708,7 +2708,7 @@ class MiscDRLParserTest {
         assertThat(accum.isExternalFunction()).isTrue();
 
         List<AccumulateDescr.AccumulateFunctionCallDescr> functions = accum.getFunctions();
-        assertThat(functions.size()).isEqualTo(3);
+        assertThat(functions).hasSize(3);
         assertThat(functions.get(0).getFunction()).isEqualTo("average");
         assertThat(functions.get(0).getBind()).isEqualTo("$a1");
         assertThat(functions.get(0).getParams()[0]).isEqualTo("$price");
@@ -2737,10 +2737,10 @@ class MiscDRLParserTest {
         PackageDescr pkg = parseAndGetPackageDescr(
                                                        drl );
 
-        assertThat(pkg.getRules().size()).isEqualTo(1);
+        assertThat(pkg.getRules()).hasSize(1);
 
         RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(1);
+        assertThat(rule.getLhs().getDescrs()).hasSize(1);
 
         PatternDescr out = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
         assertThat(out.getObjectType()).isEqualTo("Object");
@@ -2748,7 +2748,7 @@ class MiscDRLParserTest {
         assertThat(accum.isExternalFunction()).isTrue();
 
         List<AccumulateDescr.AccumulateFunctionCallDescr> functions = accum.getFunctions();
-        assertThat(functions.size()).isEqualTo(1);
+        assertThat(functions).hasSize(1);
         assertThat(functions.get(0).getFunction()).isEqualTo("average");
         assertThat(functions.get(0).getBind()).isEqualTo("$a1");
         assertThat(functions.get(0).getParams()[0]).isEqualTo("$price");
@@ -2769,10 +2769,10 @@ class MiscDRLParserTest {
         PackageDescr pkg = parseAndGetPackageDescr(
                                                        drl );
 
-        assertThat(pkg.getRules().size()).isEqualTo(1);
+        assertThat(pkg.getRules()).hasSize(1);
 
         RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(1);
+        assertThat(rule.getLhs().getDescrs()).hasSize(1);
 
         PatternDescr out = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
         assertThat(out.getObjectType()).isEqualTo("Number");
@@ -2780,7 +2780,7 @@ class MiscDRLParserTest {
         assertThat(accum.isExternalFunction()).isTrue();
 
         List<AccumulateDescr.AccumulateFunctionCallDescr> functions = accum.getFunctions();
-        assertThat(functions.size()).isEqualTo(1);
+        assertThat(functions).hasSize(1);
         assertThat(functions.get(0).getFunction()).isEqualTo("average");
         assertThat(functions.get(0).getParams()[0]).isEqualTo("$price");
 
@@ -2803,7 +2803,7 @@ class MiscDRLParserTest {
         PackageDescr pkg = parseAndGetPackageDescr(
                                                        drl );
 
-        assertThat(pkg.getAccumulateImports().size()).isEqualTo(2);
+        assertThat(pkg.getAccumulateImports()).hasSize(2);
         AccumulateImportDescr imp = (AccumulateImportDescr) pkg.getAccumulateImports().get(0);
         assertThat(imp.getTarget()).isEqualTo("foo.Bar");
         assertThat(imp.getFunctionName()).isEqualTo("baz");
@@ -2812,10 +2812,10 @@ class MiscDRLParserTest {
         assertThat(imp.getTarget()).isEqualTo("foo.Bar2");
         assertThat(imp.getFunctionName()).isEqualTo("baz2");
 
-        assertThat(pkg.getRules().size()).isEqualTo(1);
+        assertThat(pkg.getRules()).hasSize(1);
 
         RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(1);
+        assertThat(rule.getLhs().getDescrs()).hasSize(1);
 
         PatternDescr out = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
         assertThat(out.getObjectType()).isEqualTo("Object");
@@ -2823,7 +2823,7 @@ class MiscDRLParserTest {
         assertThat(accum.isExternalFunction()).isTrue();
 
         List<AccumulateDescr.AccumulateFunctionCallDescr> functions = accum.getFunctions();
-        assertThat(functions.size()).isEqualTo(2);
+        assertThat(functions).hasSize(2);
         assertThat(functions.get(0).getFunction()).isEqualTo("baz");
         assertThat(functions.get(0).getBind()).isEqualTo("$v1");
         assertThat(functions.get(0).getParams()[0]).isEqualTo("$price");
@@ -2841,21 +2841,21 @@ class MiscDRLParserTest {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
                                                                "accumulateMultipleFunctionsConstraint.drl" );
 
-        assertThat(pkg.getRules().size()).isEqualTo(1);
+        assertThat(pkg.getRules()).hasSize(1);
 
         RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(1);
+        assertThat(rule.getLhs().getDescrs()).hasSize(1);
 
         PatternDescr out = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
         assertThat(out.getObjectType()).isEqualTo("Object");
-        assertThat(out.getConstraint().getDescrs().size()).isEqualTo(2);
+        assertThat(out.getConstraint().getDescrs()).hasSize(2);
         assertThat(out.getConstraint().getDescrs().get(0).toString()).isEqualTo("$a1 > 10 && $M1 <= 100");
         assertThat(out.getConstraint().getDescrs().get(1).toString()).isEqualTo("$m1 == 5");
         AccumulateDescr accum = (AccumulateDescr) out.getSource();
         assertThat(accum.isExternalFunction()).isTrue();
 
         List<AccumulateDescr.AccumulateFunctionCallDescr> functions = accum.getFunctions();
-        assertThat(functions.size()).isEqualTo(3);
+        assertThat(functions).hasSize(3);
         assertThat(functions.get(0).getFunction()).isEqualTo("average");
         assertThat(functions.get(0).getBind()).isEqualTo("$a1");
         assertThat(functions.get(0).getParams()[0]).isEqualTo("$price");
@@ -2877,16 +2877,16 @@ class MiscDRLParserTest {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
                                                                "or_ce.drl" );
 
-        assertThat(pkg.getRules().size()).isEqualTo(1);
+        assertThat(pkg.getRules()).hasSize(1);
         final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(2);
+        assertThat(rule.getLhs().getDescrs()).hasSize(2);
 
         final PatternDescr person = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
         assertThat(person.getObjectType()).isEqualTo("Person");
         assertThat(person.getIdentifier()).isEqualTo("$p");
 
         final OrDescr or = (OrDescr) rule.getLhs().getDescrs().get( 1 );
-        assertThat(or.getDescrs().size()).isEqualTo(2);
+        assertThat(or.getDescrs()).hasSize(2);
 
         final PatternDescr cheese1 = (PatternDescr) or.getDescrs().get( 0 );
         assertThat(cheese1.getObjectType()).isEqualTo("Cheese");
@@ -2922,15 +2922,15 @@ class MiscDRLParserTest {
         AndDescr pattern = parseAndGetFirstRuleDescr(
                                                text ).getLhs();
 
-        assertThat(pattern.getDescrs().size()).isEqualTo(1);
+        assertThat(pattern.getDescrs()).hasSize(1);
         OrDescr or = (OrDescr) pattern.getDescrs().get( 0 );
-        assertThat(or.getDescrs().size()).isEqualTo(2);
+        assertThat(or.getDescrs()).hasSize(2);
         NotDescr not = (NotDescr) or.getDescrs().get( 0 );
         AndDescr and = (AndDescr) or.getDescrs().get( 1 );
-        assertThat(not.getDescrs().size()).isEqualTo(1);
+        assertThat(not.getDescrs()).hasSize(1);
         PatternDescr person = (PatternDescr) not.getDescrs().get( 0 );
         assertThat(person.getObjectType()).isEqualTo("Person");
-        assertThat(and.getDescrs().size()).isEqualTo(3);
+        assertThat(and.getDescrs()).hasSize(3);
         PatternDescr cheese = (PatternDescr) and.getDescrs().get( 0 );
         assertThat(cheese.getObjectType()).isEqualTo("Cheese");
         PatternDescr meat = (PatternDescr) and.getDescrs().get( 1 );
@@ -2945,9 +2945,9 @@ class MiscDRLParserTest {
         final PackageDescr pkg = parseAndGetPackageDescrFromFile(
                                                                "accumulate_multi_pattern.drl" );
 
-        assertThat(pkg.getRules().size()).isEqualTo(1);
+        assertThat(pkg.getRules()).hasSize(1);
         final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(1);
+        assertThat(rule.getLhs().getDescrs()).hasSize(1);
 
         final PatternDescr outPattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
         final AccumulateDescr accum = (AccumulateDescr) outPattern.getSource();
@@ -2961,7 +2961,7 @@ class MiscDRLParserTest {
                                        );
 
         final AndDescr and = (AndDescr) accum.getInput();
-        assertThat(and.getDescrs().size()).isEqualTo(2);
+        assertThat(and.getDescrs()).hasSize(2);
         final PatternDescr person = (PatternDescr) and.getDescrs().get( 0 );
         final PatternDescr cheese = (PatternDescr) and.getDescrs().get( 1 );
         assertThat(person.getObjectType()).isEqualTo("Person");
@@ -2975,10 +2975,9 @@ class MiscDRLParserTest {
                                                                "pluggable_operators.drl" );
 
 
-
-        assertThat(pkg.getRules().size()).isEqualTo(1);
+        assertThat(pkg.getRules()).hasSize(1);
         final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(5);
+        assertThat(rule.getLhs().getDescrs()).hasSize(5);
 
         final PatternDescr eventA = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
         assertThat(eventA.getIdentifier()).isEqualTo("$a");
@@ -2987,8 +2986,8 @@ class MiscDRLParserTest {
         final PatternDescr eventB = (PatternDescr) rule.getLhs().getDescrs().get( 1 );
         assertThat(eventB.getIdentifier()).isEqualTo("$b");
         assertThat(eventB.getObjectType()).isEqualTo("EventB");
-        assertThat(eventB.getConstraint().getDescrs().size()).isEqualTo(1);
-        assertThat(eventB.getConstraint().getDescrs().size()).isEqualTo(1);
+        assertThat(eventB.getConstraint().getDescrs()).hasSize(1);
+        assertThat(eventB.getConstraint().getDescrs()).hasSize(1);
 
         final ExprConstraintDescr fcdB = (ExprConstraintDescr) eventB.getConstraint().getDescrs().get( 0 );
         assertThat(fcdB.getExpression()).isEqualTo("this after[1,10] $a || this not after[15,20] $a");
@@ -2996,21 +2995,21 @@ class MiscDRLParserTest {
         final PatternDescr eventC = (PatternDescr) rule.getLhs().getDescrs().get( 2 );
         assertThat(eventC.getIdentifier()).isEqualTo("$c");
         assertThat(eventC.getObjectType()).isEqualTo("EventC");
-        assertThat(eventC.getConstraint().getDescrs().size()).isEqualTo(1);
+        assertThat(eventC.getConstraint().getDescrs()).hasSize(1);
         final ExprConstraintDescr fcdC = (ExprConstraintDescr) eventC.getConstraint().getDescrs().get( 0 );
         assertThat(fcdC.getExpression()).isEqualTo("this finishes $b");
 
         final PatternDescr eventD = (PatternDescr) rule.getLhs().getDescrs().get( 3 );
         assertThat(eventD.getIdentifier()).isEqualTo("$d");
         assertThat(eventD.getObjectType()).isEqualTo("EventD");
-        assertThat(eventD.getConstraint().getDescrs().size()).isEqualTo(1);
+        assertThat(eventD.getConstraint().getDescrs()).hasSize(1);
         final ExprConstraintDescr fcdD = (ExprConstraintDescr) eventD.getConstraint().getDescrs().get( 0 );
         assertThat(fcdD.getExpression()).isEqualTo("this not starts $a");
 
         final PatternDescr eventE = (PatternDescr) rule.getLhs().getDescrs().get( 4 );
         assertThat(eventE.getIdentifier()).isEqualTo("$e");
         assertThat(eventE.getObjectType()).isEqualTo("EventE");
-        assertThat(eventE.getConstraint().getDescrs().size()).isEqualTo(1);
+        assertThat(eventE.getConstraint().getDescrs()).hasSize(1);
 
         ExprConstraintDescr fcdE = (ExprConstraintDescr) eventE.getConstraint().getDescrs().get( 0 );
         assertThat(fcdE.getExpression()).isEqualTo("this not before[1, 10] $b || after[1, 10] $c && this after[1, 5] $d");
@@ -3025,9 +3024,9 @@ class MiscDRLParserTest {
         // @fooAttribute(barValue)
         // @fooAtt2(barVal2)
         RuleDescr rule = pkg.getRules().get( 0 );
-        assertThat(rule.getAnnotationNames().contains("fooMeta1")).isTrue();
+        assertThat(rule.getAnnotationNames()).contains("fooMeta1");
         assertThat(rule.getAnnotation("fooMeta1").getValue()).isEqualTo("barVal1");
-        assertThat(rule.getAnnotationNames().contains("fooMeta2")).isTrue();
+        assertThat(rule.getAnnotationNames()).contains("fooMeta2");
         assertThat(rule.getAnnotation("fooMeta2").getValue()).isEqualTo("barVal2");
         assertThat((String) rule.getConsequence()).isEqualToIgnoringWhitespace( "System.out.println(\"Consequence\");"
                                       );
@@ -3046,7 +3045,7 @@ class MiscDRLParserTest {
 
         AndDescr lhs = rule.getLhs();
         assertThat(lhs).isNotNull();
-        assertThat(lhs.getDescrs().size()).isEqualTo(1);
+        assertThat(lhs.getDescrs()).hasSize(1);
 
         PatternDescr pattern = (PatternDescr) lhs.getDescrs().get( 0 );
         assertThat(pattern.getObjectType()).isEqualTo("foo");
@@ -3061,13 +3060,13 @@ class MiscDRLParserTest {
 
 
         List<TypeDeclarationDescr> td = pkg.getTypeDeclarations();
-        assertThat(td.size()).isEqualTo(3);
+        assertThat(td).hasSize(3);
 
         TypeDeclarationDescr d = td.get( 0 );
         assertThat(d.getTypeName()).isEqualTo("SomeFact");
-        assertThat(d.getFields().size()).isEqualTo(2);
-        assertThat(d.getFields().containsKey("name")).isTrue();
-        assertThat(d.getFields().containsKey("age")).isTrue();
+        assertThat(d.getFields()).hasSize(2);
+        assertThat(d.getFields()).containsKey("name");
+        assertThat(d.getFields()).containsKey("age");
 
         TypeFieldDescr f = d.getFields().get("name" );
         assertThat(f.getPattern().getObjectType()).isEqualTo("String");
@@ -3086,7 +3085,7 @@ class MiscDRLParserTest {
         assertThat(type.getAnnotation("doc").getValue("author")).isEqualTo("\"Bob\"");
         assertThat(type.getAnnotation("doc").getValue("date")).isEqualTo("Calendar.getInstance().getDate()");
 
-        assertThat(type.getFields().size()).isEqualTo(2);
+        assertThat(type.getFields()).hasSize(2);
         TypeFieldDescr field = type.getFields().get( "name" );
         assertThat(field.getFieldName()).isEqualTo("name");
         assertThat(field.getPattern().getObjectType()).isEqualTo("String");
@@ -3129,30 +3128,30 @@ class MiscDRLParserTest {
 
         AndDescr lhs = rule.getLhs();
         assertThat(lhs).isNotNull();
-        assertThat(lhs.getDescrs().size()).isEqualTo(2);
+        assertThat(lhs.getDescrs()).hasSize(2);
 
         PatternDescr a = (PatternDescr) lhs.getDescrs().get( 0 );
         assertThat(a.getObjectType()).isEqualTo("A");
 
         OrDescr or = (OrDescr) lhs.getDescrs().get( 1 );
-        assertThat(or.getDescrs().size()).isEqualTo(3);
+        assertThat(or.getDescrs()).hasSize(3);
 
         AndDescr and1 = (AndDescr) or.getDescrs().get( 0 );
-        assertThat(and1.getDescrs().size()).isEqualTo(2);
+        assertThat(and1.getDescrs()).hasSize(2);
         PatternDescr b = (PatternDescr) and1.getDescrs().get( 0 );
         PatternDescr c = (PatternDescr) and1.getDescrs().get( 1 );
         assertThat(b.getObjectType()).isEqualTo("B");
         assertThat(c.getObjectType()).isEqualTo("C");
 
         AndDescr and2 = (AndDescr) or.getDescrs().get( 1 );
-        assertThat(and2.getDescrs().size()).isEqualTo(2);
+        assertThat(and2.getDescrs()).hasSize(2);
         PatternDescr d = (PatternDescr) and2.getDescrs().get( 0 );
         PatternDescr e = (PatternDescr) and2.getDescrs().get( 1 );
         assertThat(d.getObjectType()).isEqualTo("D");
         assertThat(e.getObjectType()).isEqualTo("E");
 
         AndDescr and3 = (AndDescr) or.getDescrs().get( 2 );
-        assertThat(and3.getDescrs().size()).isEqualTo(2);
+        assertThat(and3.getDescrs()).hasSize(2);
         PatternDescr f = (PatternDescr) and3.getDescrs().get( 0 );
         PatternDescr g = (PatternDescr) and3.getDescrs().get( 1 );
         assertThat(f.getObjectType()).isEqualTo("F");
@@ -3170,7 +3169,7 @@ class MiscDRLParserTest {
         RuleDescr rule = pkg.getRules().get( 0 );
         PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
 
-        assertThat(pattern.getDescrs().size()).isEqualTo(1);
+        assertThat(pattern.getDescrs()).hasSize(1);
         ExprConstraintDescr fcd = (ExprConstraintDescr) pattern.getDescrs().get( 0 );
         assertThat(fcd.getExpression()).isEqualTo("symbol==\"ACME\"");
 
@@ -3190,7 +3189,7 @@ class MiscDRLParserTest {
         RuleDescr rule = pkg.getRules().get( 0 );
         PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
 
-        assertThat(pattern.getDescrs().size()).isEqualTo(1);
+        assertThat(pattern.getDescrs()).hasSize(1);
         ExprConstraintDescr fcd = (ExprConstraintDescr) pattern.getDescrs().get( 0 );
         assertThat(fcd.getExpression()).isEqualTo("symbol==\"ACME\"");
 
@@ -3209,13 +3208,13 @@ class MiscDRLParserTest {
         RuleDescr rule = pkg.getRules().get( 0 );
         PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
 
-        assertThat(pattern.getDescrs().size()).isEqualTo(1);
+        assertThat(pattern.getDescrs()).hasSize(1);
         ExprConstraintDescr fcd = (ExprConstraintDescr) pattern.getDescrs().get( 0 );
         assertThat(fcd.getExpression()).isEqualTo("symbol==\"ACME\"");
 
         List<BehaviorDescr> behaviors = pattern.getBehaviors();
         assertThat(behaviors).isNotNull();
-        assertThat(behaviors.size()).isEqualTo(1);
+        assertThat(behaviors).hasSize(1);
         BehaviorDescr descr = behaviors.get( 0 );
         assertThat(descr.getType()).isEqualTo("window");
         assertThat(descr.getSubType()).isEqualTo("length");
@@ -3233,12 +3232,12 @@ class MiscDRLParserTest {
         RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
 
         assertThat(rule.getName()).isEqualTo("Test");
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(1);
-        assertThat(((NotDescr) rule.getLhs().getDescrs().get(0)).getDescrs().size()).isEqualTo(1);
+        assertThat(rule.getLhs().getDescrs()).hasSize(1);
+        assertThat(((NotDescr) rule.getLhs().getDescrs().get(0)).getDescrs()).hasSize(1);
         NotDescr notDescr = (NotDescr) rule.getLhs().getDescrs().get( 0 );
         PatternDescr patternDescr = (PatternDescr) notDescr.getDescrs().get( 0 );
         assertThat(patternDescr.getIdentifier()).isEqualTo("$r");
-        assertThat(patternDescr.getDescrs().size()).isEqualTo(1);
+        assertThat(patternDescr.getDescrs()).hasSize(1);
         ExprConstraintDescr fieldConstraintDescr = (ExprConstraintDescr) patternDescr.getDescrs().get( 0 );
         assertThat(fieldConstraintDescr.getExpression()).isEqualToIgnoringWhitespace("operator == Operator.EQUAL");
     }
@@ -3254,10 +3253,10 @@ class MiscDRLParserTest {
         RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
 
         assertThat(rule.getName()).isEqualTo("Test");
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(1);
+        assertThat(rule.getLhs().getDescrs()).hasSize(1);
         PatternDescr patternDescr = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
         assertThat(patternDescr.getIdentifier()).isEqualTo("$r");
-        assertThat(patternDescr.getDescrs().size()).isEqualTo(1);
+        assertThat(patternDescr.getDescrs()).hasSize(1);
         ExprConstraintDescr fieldConstraintDescr = (ExprConstraintDescr) patternDescr.getDescrs().get( 0 );
         assertThat(fieldConstraintDescr.getExpression()).isEqualToIgnoringWhitespace("operator == Operator.EQUAL");
     }
@@ -3272,7 +3271,7 @@ class MiscDRLParserTest {
 
         final List<TypeDeclarationDescr> declarations = pkg.getTypeDeclarations();
 
-        assertThat(declarations.size()).isEqualTo(3);
+        assertThat(declarations).hasSize(3);
     }
 
     @Test
@@ -3281,7 +3280,7 @@ class MiscDRLParserTest {
         PatternDescr pattern = (PatternDescr) parseAndGetFirstRuleDescr(
                                                                   text ).getLhs().getDescrs().get( 0 );
 
-        assertThat(pattern.getDescrs().size()).isEqualTo(1);
+        assertThat(pattern.getDescrs()).hasSize(1);
         ExprConstraintDescr fcd = (ExprConstraintDescr) pattern.getDescrs().get( 0 );
         assertThat(fcd.getExpression()).isEqualTo("name == null");
         assertThat(fcd.getPosition()).isEqualTo(0);
@@ -3294,7 +3293,7 @@ class MiscDRLParserTest {
         PatternDescr pattern = (PatternDescr) parseAndGetFirstRuleDescr(
                                                                   text ).getLhs().getDescrs().get( 0 );
 
-        assertThat(pattern.getDescrs().size()).isEqualTo(2);
+        assertThat(pattern.getDescrs()).hasSize(2);
         ExprConstraintDescr fcd = (ExprConstraintDescr) pattern.getDescrs().get( 0 );
         assertThat(fcd.getExpression()).isEqualTo("\"Mark\"");
         assertThat(fcd.getPosition()).isEqualTo(0);
@@ -3313,7 +3312,7 @@ class MiscDRLParserTest {
 
         assertThat(pattern.isQuery()).isTrue();
 
-        assertThat(pattern.getDescrs().size()).isEqualTo(2);
+        assertThat(pattern.getDescrs()).hasSize(2);
         ExprConstraintDescr fcd = (ExprConstraintDescr) pattern.getDescrs().get( 0 );
         assertThat(fcd.getExpression()).isEqualTo("\"Mark\"");
         assertThat(fcd.getPosition()).isEqualTo(0);
@@ -3387,7 +3386,7 @@ class MiscDRLParserTest {
         PatternDescr pattern = (PatternDescr) parseAndGetFirstRuleDescr(
                                                                   text ).getLhs().getDescrs().get( 0 );
 
-        assertThat(pattern.getDescrs().size()).isEqualTo(3);
+        assertThat(pattern.getDescrs()).hasSize(3);
         ExprConstraintDescr fcd = (ExprConstraintDescr) pattern.getDescrs().get( 0 );
         assertThat(fcd.getExpression()).isEqualTo("\"Mark\"");
         assertThat(fcd.getPosition()).isEqualTo(0);
@@ -3413,7 +3412,7 @@ class MiscDRLParserTest {
         assertThat(pattern.getIdentifier()).isEqualTo("$p");
         assertThat(pattern.isUnification()).isTrue();
 
-        assertThat(pattern.getDescrs().size()).isEqualTo(2);
+        assertThat(pattern.getDescrs()).hasSize(2);
         ExprConstraintDescr bindingDescr = (ExprConstraintDescr) pattern.getDescrs().get( 0 );
         assertThat(bindingDescr.getExpression()).isEqualTo("$name := name");
 
@@ -3431,7 +3430,7 @@ class MiscDRLParserTest {
         PatternDescr pattern = (PatternDescr) parseAndGetFirstRuleDescr(
                                                                   text ).getLhs().getDescrs().get( 0 );
 
-        assertThat(pattern.getDescrs().size()).isEqualTo(4);
+        assertThat(pattern.getDescrs()).hasSize(4);
         ExprConstraintDescr ecd = (ExprConstraintDescr) pattern.getDescrs().get( 0 );
         assertThat(ecd.getExpression()).isEqualTo("bigInteger == (10I)");
 
@@ -3456,7 +3455,7 @@ class MiscDRLParserTest {
 
         // embedded bindings are extracted at compile time
         List< ? > constraints = pattern.getDescrs();
-        assertThat(constraints.size()).isEqualTo(1);
+        assertThat(constraints).hasSize(1);
         assertThat(((ExprConstraintDescr) constraints.get(0)).getExpression()).isEqualTo("$name : name == \"Bob\" || $loc : location == \"Montreal\"");
     }
 
@@ -3471,7 +3470,7 @@ class MiscDRLParserTest {
 
         // embedded bindings are extracted at compile time
         List< ? > constraints = pattern.getDescrs();
-        assertThat(constraints.size()).isEqualTo(1);
+        assertThat(constraints).hasSize(1);
         assertThat(((ExprConstraintDescr) constraints.get(0)).getExpression()).isEqualTo("$name : name.toUpperCase() == \"Bob\" || $loc : location[0].city == \"Montreal\"");
     }
 
@@ -3543,12 +3542,12 @@ class MiscDRLParserTest {
                                                  text );
 
         assertThat(pkg.getName()).isEqualTo("org.drools");
-        assertThat(pkg.getEntryPointDeclarations().size()).isEqualTo(1);
+        assertThat(pkg.getEntryPointDeclarations()).hasSize(1);
 
         EntryPointDeclarationDescr epd = pkg.getEntryPointDeclarations().iterator().next();
 
         assertThat(epd.getEntryPointId()).isEqualTo(expectedId);
-        assertThat(epd.getAnnotations().size()).isEqualTo(2);
+        assertThat(epd.getAnnotations()).hasSize(2);
         assertThat(epd.getAnnotation("source").getValue()).isEqualTo("\"jndi://queues/events\"");
         assertThat(epd.getAnnotation("foo").getValue()).isEqualTo("true");
     }
@@ -3566,12 +3565,12 @@ class MiscDRLParserTest {
                                                  text );
 
         assertThat(pkg.getName()).isEqualTo("org.drools");
-        assertThat(pkg.getWindowDeclarations().size()).isEqualTo(1);
+        assertThat(pkg.getWindowDeclarations()).hasSize(1);
 
         WindowDeclarationDescr wdd = pkg.getWindowDeclarations().iterator().next();
 
         assertThat(wdd.getName()).isEqualTo("Ticks");
-        assertThat(wdd.getAnnotations().size()).isEqualTo(1);
+        assertThat(wdd.getAnnotations()).hasSize(1);
         assertThat(wdd.getAnnotation("doc").getValue()).isEqualTo("\"last 10 stock ticks\"");
 
         PatternDescr pd = wdd.getPattern();
@@ -3580,11 +3579,11 @@ class MiscDRLParserTest {
         assertThat(pd.getObjectType()).isEqualTo("StockTick");
         assertThat(pd.getSource().getText()).isEqualTo("stStream");
 
-        assertThat(pd.getBehaviors().size()).isEqualTo(1);
+        assertThat(pd.getBehaviors()).hasSize(1);
         BehaviorDescr bd = pd.getBehaviors().get( 0 );
         assertThat(bd.getType()).isEqualTo("window");
         assertThat(bd.getSubType()).isEqualTo("length");
-        assertThat(bd.getParameters().size()).isEqualTo(2);
+        assertThat(bd.getParameters()).hasSize(2);
         assertThat(bd.getParameters().get(0)).isEqualTo("10");
         assertThat(bd.getParameters().get(1)).isEqualTo("$s.symbol");
     }
@@ -3601,12 +3600,12 @@ class MiscDRLParserTest {
                                                  text );
 
         assertThat(pkg.getName()).isEqualTo("org.drools");
-        assertThat(pkg.getRules().size()).isEqualTo(1);
+        assertThat(pkg.getRules()).hasSize(1);
 
         RuleDescr rd = pkg.getRules().get(0);
 
         assertThat(rd.getName()).isEqualTo("X");
-        assertThat(rd.getLhs().getDescrs().size()).isEqualTo(1);
+        assertThat(rd.getLhs().getDescrs()).hasSize(1);
 
         PatternDescr pd = (PatternDescr) rd.getLhs().getDescrs().get(0);
         assertThat(pd).isNotNull();
@@ -5063,7 +5062,7 @@ class MiscDRLParserTest {
                         "then\n" +
                         "end";
         RuleDescr rule = parseAndGetFirstRuleDescr(text);
-        assertThat(rule.getLhs().getDescrs().size()).isEqualTo(2);
+        assertThat(rule.getLhs().getDescrs()).hasSize(2);
 
         final PatternDescr outPattern = (PatternDescr) rule.getLhs().getDescrs().get(1);
         AccumulateDescr accumulateDescr = (AccumulateDescr) outPattern.getSource();

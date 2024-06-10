@@ -67,7 +67,7 @@ class DRLExprParserTest {
         assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
 
         assertThat(result.getConnective()).isEqualTo(ConnectiveType.AND);
-        assertThat(result.getDescrs().size()).isEqualTo(1);
+        assertThat(result.getDescrs()).hasSize(1);
 
         RelationalExprDescr expr = (RelationalExprDescr) result.getDescrs().get( 0 );
         assertThat(expr.getOperator()).isEqualTo(">");
@@ -86,7 +86,7 @@ class DRLExprParserTest {
         assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
 
         assertThat(result.getConnective()).isEqualTo(ConnectiveType.AND);
-        assertThat(result.getDescrs().size()).isEqualTo(2);
+        assertThat(result.getDescrs()).hasSize(2);
 
         RelationalExprDescr expr = (RelationalExprDescr) result.getDescrs().get( 0 );
         assertThat(expr.getOperator()).isEqualTo(">");
@@ -110,11 +110,11 @@ class DRLExprParserTest {
         assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
 
         assertThat(result.getConnective()).isEqualTo(ConnectiveType.AND);
-        assertThat(result.getDescrs().size()).isEqualTo(2);
+        assertThat(result.getDescrs()).hasSize(2);
 
         ConstraintConnectiveDescr or = (ConstraintConnectiveDescr) result.getDescrs().get( 0 );
         assertThat(or.getConnective()).isEqualTo(ConnectiveType.OR);
-        assertThat(or.getDescrs().size()).isEqualTo(2);
+        assertThat(or.getDescrs()).hasSize(2);
 
         RelationalExprDescr expr = (RelationalExprDescr) or.getDescrs().get( 0 );
         assertThat(expr.getOperator()).isEqualTo(">");
@@ -146,7 +146,7 @@ class DRLExprParserTest {
         assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
 
         assertThat(result.getConnective()).isEqualTo(ConnectiveType.AND);
-        assertThat(result.getDescrs().size()).isEqualTo(1);
+        assertThat(result.getDescrs()).hasSize(1);
 
         BindingDescr bind = (BindingDescr) result.getDescrs().get( 0 );
         assertThat(bind.getVariable()).isEqualTo("$x");
@@ -160,7 +160,7 @@ class DRLExprParserTest {
         assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
 
         assertThat(result.getConnective()).isEqualTo(ConnectiveType.AND);
-        assertThat(result.getDescrs().size()).isEqualTo(1);
+        assertThat(result.getDescrs()).hasSize(1);
 
         RelationalExprDescr rel = (RelationalExprDescr) result.getDescrs().get( 0 );
         assertThat(rel.getOperator()).isEqualTo(">");
@@ -180,7 +180,7 @@ class DRLExprParserTest {
         assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
 
         assertThat(result.getConnective()).isEqualTo(ConnectiveType.AND);
-        assertThat(result.getDescrs().size()).isEqualTo(2);
+        assertThat(result.getDescrs()).hasSize(2);
 
         RelationalExprDescr rel = (RelationalExprDescr) result.getDescrs().get( 0 );
         assertThat(rel.getOperator()).isEqualTo(">");
@@ -209,7 +209,7 @@ class DRLExprParserTest {
         assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
 
         assertThat(result.getConnective()).isEqualTo(ConnectiveType.AND);
-        assertThat(result.getDescrs().size()).isEqualTo(2);
+        assertThat(result.getDescrs()).hasSize(2);
 
         BindingDescr bind = (BindingDescr) result.getDescrs().get( 0 );
         assertThat(bind.getVariable()).isEqualTo("$x");
@@ -240,7 +240,7 @@ class DRLExprParserTest {
         assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
 
         assertThat(result.getConnective()).isEqualTo(ConnectiveType.AND);
-        assertThat(result.getDescrs().size()).isEqualTo(1);
+        assertThat(result.getDescrs()).hasSize(1);
 
         AtomicExprDescr descr = (AtomicExprDescr) result.getDescrs().get( 0 );
         assertThat(descr.getExpression()).isEqualTo(source);
@@ -259,7 +259,7 @@ class DRLExprParserTest {
         assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
 
         assertThat(result.getConnective()).isEqualTo(ConnectiveType.AND);
-        assertThat(result.getDescrs().size()).isEqualTo(1);
+        assertThat(result.getDescrs()).hasSize(1);
 
         BindingDescr bind = (BindingDescr) result.getDescrs().get( 0 );
         assertThat(bind.getVariable()).isEqualTo(bindingVariableSource);
@@ -273,11 +273,11 @@ class DRLExprParserTest {
         assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
 
         assertThat(result.getConnective()).isEqualTo(ConnectiveType.AND);
-        assertThat(result.getDescrs().size()).isEqualTo(2);
+        assertThat(result.getDescrs()).hasSize(2);
 
         ConstraintConnectiveDescr or = (ConstraintConnectiveDescr) result.getDescrs().get( 0 );
         assertThat(or.getConnective()).isEqualTo(ConnectiveType.OR);
-        assertThat(or.getDescrs().size()).isEqualTo(2);
+        assertThat(or.getDescrs()).hasSize(2);
 
         RelationalExprDescr expr = (RelationalExprDescr) or.getDescrs().get( 0 );
         assertThat(expr.getOperator()).isEqualTo(">");
@@ -314,7 +314,7 @@ class DRLExprParserTest {
         assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
 
         assertThat(result.getConnective()).isEqualTo(ConnectiveType.AND);
-        assertThat(result.getDescrs().size()).isEqualTo(1);
+        assertThat(result.getDescrs()).hasSize(1);
 
         RelationalExprDescr expr = (RelationalExprDescr) result.getDescrs().get( 0 );
         assertThat(expr.getOperator()).isEqualTo(">");
@@ -354,7 +354,7 @@ class DRLExprParserTest {
         assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
 
         assertThat(result.getConnective()).isEqualTo(ConnectiveType.AND);
-        assertThat(result.getDescrs().size()).isEqualTo(1);
+        assertThat(result.getDescrs()).hasSize(1);
 
         AtomicExprDescr expr = (AtomicExprDescr) result.getDescrs().get( 0 );
 
@@ -368,7 +368,7 @@ class DRLExprParserTest {
         assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
 
         assertThat(result.getConnective()).isEqualTo(ConnectiveType.AND);
-        assertThat(result.getDescrs().size()).isEqualTo(1);
+        assertThat(result.getDescrs()).hasSize(1);
 
         // Unlike the other keywords, instanceof can only be used in a relational expression,
         // so it needs to be tested differently.
@@ -471,10 +471,10 @@ class DRLExprParserTest {
         assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
 
         assertThat(result.getConnective()).isEqualTo(ConnectiveType.AND); // root is AND
-        assertThat(result.getDescrs().size()).isEqualTo(1);
+        assertThat(result.getDescrs()).hasSize(1);
         ConstraintConnectiveDescr or = (ConstraintConnectiveDescr) result.getDescrs().get(0);
         assertThat(or.getConnective()).isEqualTo(ConnectiveType.OR);
-        assertThat(or.getDescrs().size()).isEqualTo(2);
+        assertThat(or.getDescrs()).hasSize(2);
 
         RelationalExprDescr expr = (RelationalExprDescr) or.getDescrs().get(0);
         assertThat(expr.getOperator()).isEqualTo("==");
@@ -498,10 +498,10 @@ class DRLExprParserTest {
         assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
 
         assertThat(result.getConnective()).isEqualTo(ConnectiveType.AND); // root is AND
-        assertThat(result.getDescrs().size()).isEqualTo(1);
+        assertThat(result.getDescrs()).hasSize(1);
         ConstraintConnectiveDescr or = (ConstraintConnectiveDescr) result.getDescrs().get(0);
         assertThat(or.getConnective()).isEqualTo(ConnectiveType.OR);
-        assertThat(or.getDescrs().size()).isEqualTo(2);
+        assertThat(or.getDescrs()).hasSize(2);
 
         RelationalExprDescr expr = (RelationalExprDescr) or.getDescrs().get(0);
         assertThat(expr.getOperator()).isEqualTo("==");
@@ -525,7 +525,7 @@ class DRLExprParserTest {
         assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
 
         assertThat(result.getConnective()).isEqualTo(ConnectiveType.AND);
-        assertThat(result.getDescrs().size()).isEqualTo(2);
+        assertThat(result.getDescrs()).hasSize(2);
 
         RelationalExprDescr expr = (RelationalExprDescr) result.getDescrs().get(0);
         assertThat(expr.getOperator()).isEqualTo("==");
@@ -549,7 +549,7 @@ class DRLExprParserTest {
         assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
 
         assertThat(result.getConnective()).isEqualTo(ConnectiveType.AND);
-        assertThat(result.getDescrs().size()).isEqualTo(2);
+        assertThat(result.getDescrs()).hasSize(2);
 
         RelationalExprDescr expr = (RelationalExprDescr) result.getDescrs().get(0);
         assertThat(expr.getOperator()).isEqualTo("==");
@@ -572,7 +572,7 @@ class DRLExprParserTest {
         ConstraintConnectiveDescr result = parser.parse(source);
         assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
 
-        assertThat(result.getDescrs().size()).isEqualTo(1);
+        assertThat(result.getDescrs()).hasSize(1);
 
         BindingDescr bind = (BindingDescr) result.getDescrs().get(0);
         assertThat(bind.getVariable()).isEqualTo("$bd");

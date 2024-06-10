@@ -169,7 +169,7 @@ public class DescrDumperTest {
                                      ctx );
 
         assertThat(result).isEqualTo(expected);
-        assertThat(ctx.getBindings().size()).isEqualTo(1);
+        assertThat(ctx.getBindings()).hasSize(1);
         BindingDescr bind = ctx.getBindings().get( 0 );
         assertThat(bind.getVariable()).isEqualTo("$x");
         assertThat(bind.getExpression()).isEqualTo("property");
@@ -186,7 +186,7 @@ public class DescrDumperTest {
                                      ctx );
 
         assertThat(result).isEqualTo(expected);
-        assertThat(ctx.getBindings().size()).isEqualTo(3);
+        assertThat(ctx.getBindings()).hasSize(3);
         BindingDescr bind = ctx.getBindings().get( 0 );
         assertThat(bind.getVariable()).isEqualTo("$a");
         assertThat(bind.getExpression()).isEqualTo("a");
@@ -231,7 +231,7 @@ public class DescrDumperTest {
                                      ctx );
 
         assertThat(result).isEqualTo(expected);
-        assertThat(ctx.getBindings().size()).isEqualTo(1);
+        assertThat(ctx.getBindings()).hasSize(1);
         BindingDescr bind = ctx.getBindings().get( 0 );
         assertThat(bind.getVariable()).isEqualTo("$x");
         assertThat(bind.getExpression()).isEqualTo("age");
@@ -248,7 +248,7 @@ public class DescrDumperTest {
                                      ctx );
 
         assertThat(result).isEqualTo(expected);
-        assertThat(ctx.getBindings().size()).isEqualTo(1);
+        assertThat(ctx.getBindings()).hasSize(1);
         BindingDescr bind = ctx.getBindings().get( 0 );
         assertThat(bind.getVariable()).isEqualTo("$x");
         assertThat(bind.getExpression()).isEqualTo("age");
@@ -265,7 +265,7 @@ public class DescrDumperTest {
                                      ctx );
 
         assertThat(result).isEqualTo(expected);
-        assertThat(ctx.getBindings().size()).isEqualTo(1);
+        assertThat(ctx.getBindings()).hasSize(1);
         BindingDescr bind = ctx.getBindings().get( 0 );
         assertThat(bind.getVariable()).isEqualTo("$x");
         assertThat(bind.getExpression()).isEqualTo("age");
@@ -280,7 +280,7 @@ public class DescrDumperTest {
         ConstraintConnectiveDescr ccd = new ConstraintConnectiveDescr( );
         ccd.addDescr( atomicExpr );
         String[] instanceofAndCastedExpr = dumper.processImplicitConstraints(expr, atomicExpr, ccd, ccd.getDescrs().indexOf( atomicExpr ), null);
-        assertThat(ccd.getDescrs().size()).isEqualTo(2);
+        assertThat(ccd.getDescrs()).hasSize(2);
         assertThat(ccd.getDescrs().get(0).toString()).isEqualTo(expectedInstanceof);
         assertThat(atomicExpr.getRewrittenExpression()).isEqualTo(expectedcasted);
 
