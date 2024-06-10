@@ -46,22 +46,22 @@ import static org.junit.jupiter.api.Assumptions.assumeFalse;
 /**
  * DRLExprTreeTest
  */
-public class DRLExprParserTest {
+class DRLExprParserTest {
 
     DrlExprParser parser;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         this.parser = DrlExprParserFactory.getDrlExprParser(LanguageLevelOption.DRL6);
     }
 
     @AfterEach
-    public void tearDown() {
+    void tearDown() {
         this.parser = null;
     }
 
     @Test
-    public void testSimpleExpression() {
+    void simpleExpression() {
         String source = "a > b";
         ConstraintConnectiveDescr result = parser.parse( source );
         assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
@@ -80,7 +80,7 @@ public class DRLExprParserTest {
     }
 
     @Test
-    public void testAndConnective() throws Exception {
+    void andConnective() throws Exception {
         String source = "a > b && 10 != 20";
         ConstraintConnectiveDescr result = parser.parse( source );
         assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
@@ -104,7 +104,7 @@ public class DRLExprParserTest {
     }
 
     @Test
-    public void testConnective2() throws Exception {
+    void connective2() throws Exception {
         String source = "(a > b || 10 != 20) && someMethod(10) == 20";
         ConstraintConnectiveDescr result = parser.parse( source );
         assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
@@ -140,7 +140,7 @@ public class DRLExprParserTest {
     }
 
     @Test
-    public void testBinding() throws Exception {
+    void binding() throws Exception {
         String source = "$x : property";
         ConstraintConnectiveDescr result = parser.parse( source );
         assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
@@ -154,7 +154,7 @@ public class DRLExprParserTest {
     }
 
     @Test
-    public void testBindingConstraint() throws Exception {
+    void bindingConstraint() throws Exception {
         String source = "$x : property > value";
         ConstraintConnectiveDescr result = parser.parse( source );
         assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
@@ -174,7 +174,7 @@ public class DRLExprParserTest {
     }
 
     @Test
-    public void testBindingWithRestrictions() throws Exception {
+    void bindingWithRestrictions() throws Exception {
         String source = "$x : property > value && < 20";
         ConstraintConnectiveDescr result = parser.parse( source );
         assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
@@ -203,7 +203,7 @@ public class DRLExprParserTest {
     }
 
     @Test
-    public void testDoubleBinding() throws Exception {
+    void doubleBinding() throws Exception {
         String source = "$x : x.m( 1, a ) && $y : y[z].foo";
         ConstraintConnectiveDescr result = parser.parse( source );
         assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
@@ -231,7 +231,7 @@ public class DRLExprParserTest {
 
     @ParameterizedTest
     @EnumSource(Operator.BuiltInOperator.class)
-    public void testDrlKeywordMethodCall(Operator.BuiltInOperator operator) throws Exception {
+    void drlKeywordMethodCall(Operator.BuiltInOperator operator) throws Exception {
         // Skip operators that cannot be used as method names (==, !=, <, etc.).
         assumeFalse(nonKeywordBuiltInOperators.contains(operator));
 
@@ -248,7 +248,7 @@ public class DRLExprParserTest {
 
     @ParameterizedTest
     @EnumSource(Operator.BuiltInOperator.class)
-    public void testDrlKeywordInChainedMethodCallWithBinding(Operator.BuiltInOperator operator) throws Exception {
+    void drlKeywordInChainedMethodCallWithBinding(Operator.BuiltInOperator operator) throws Exception {
         // Skip operators that cannot be used as method names (==, !=, <, etc.).
         assumeFalse(nonKeywordBuiltInOperators.contains(operator));
 
@@ -267,7 +267,7 @@ public class DRLExprParserTest {
     }
 
     @Test
-    public void testDeepBinding() throws Exception {
+    void deepBinding() throws Exception {
         String source = "($a : a > $b : b[10].prop || 10 != 20) && $x : someMethod(10) == 20";
         ConstraintConnectiveDescr result = parser.parse( source );
         assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
@@ -307,7 +307,7 @@ public class DRLExprParserTest {
 
     @Test
     @Timeout(10000L)
-    public void testNestedExpression() throws Exception {
+    void nestedExpression() throws Exception {
         // DROOLS-982
         String source = "(((((((((((((((((((((((((((((((((((((((((((((((((( a > b ))))))))))))))))))))))))))))))))))))))))))))))))))";
         ConstraintConnectiveDescr result = parser.parse( source );
@@ -349,7 +349,7 @@ public class DRLExprParserTest {
             "Object[][].class.getName()",
             "new<Integer>ArrayList<Integer>()"
     })
-    void testKeywords(String source) {
+    void keywords(String source) {
         ConstraintConnectiveDescr result = parser.parse( source );
         assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
 
@@ -362,7 +362,7 @@ public class DRLExprParserTest {
     }
 
     @Test
-    public void testKeyword_instanceof() {
+    void keywordInstanceof() {
         String source = "a instanceof A";
         ConstraintConnectiveDescr result = parser.parse( source );
         assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
@@ -383,7 +383,7 @@ public class DRLExprParserTest {
     }
 
     @Test
-    public void testMismatchedInput() {
+    void mismatchedInput() {
         String source = "+";
         parser.parse(source);
         assertThat(parser.hasErrors()).isTrue();
@@ -412,7 +412,7 @@ public class DRLExprParserTest {
     }
 
     @Test
-    public void testExtraneousInput() {
+    void extraneousInput() {
         String source = "a +; b";
         parser.parse(source);
         assertThat(parser.hasErrors()).isTrue();
@@ -441,7 +441,7 @@ public class DRLExprParserTest {
     }
 
     @Test
-    public void testNoViableAlt() {
+    void noViableAlt() {
         String source = "a~a";
         parser.parse(source);
 

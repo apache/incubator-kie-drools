@@ -39,7 +39,7 @@ public class DescrDumperTest {
     private DescrDumper dumper;
 
     @BeforeEach
-    public void setUp() throws Exception {
+    void setUp() throws Exception {
         // configure operators
         new SetEvaluatorsDefinition();
         new MatchesEvaluatorsDefinition();
@@ -48,7 +48,7 @@ public class DescrDumperTest {
     }
 
     @Test
-    public void testDump() throws Exception {
+    void dump() throws Exception {
         String input = "price > 10 && < 20 || == $val || == 30";
         String expected = "( price > 10 && price < 20 || price == $val || price == 30 )";
 
@@ -59,7 +59,7 @@ public class DescrDumperTest {
     }
 
     @Test
-    public void testDumpMatches() throws Exception {
+    void dumpMatches() throws Exception {
         String input = "type.toString matches \"something\\swith\\tsingle escapes\"";
         String expected = "type.toString ~= \"something\\swith\\tsingle escapes\"";
 
@@ -70,7 +70,7 @@ public class DescrDumperTest {
     }
 
     @Test
-    public void testDumpMatches2() throws Exception {
+    void dumpMatches2() throws Exception {
         String input = "type.toString matches 'something\\swith\\tsingle escapes'";
         String expected = "type.toString ~= \"something\\swith\\tsingle escapes\"";
 
@@ -81,7 +81,7 @@ public class DescrDumperTest {
     }
 
     @Test
-    public void testDumpMatches3() throws Exception {
+    void dumpMatches3() throws Exception {
         String input = "this[\"content\"] matches \"hello ;=\"";
         String expected = "this[\"content\"] ~= \"hello ;=\"";
 
@@ -92,7 +92,7 @@ public class DescrDumperTest {
     }
 
     @Test
-    public void testDumpContains() throws Exception {
+    void dumpContains() throws Exception {
         String input = "list contains \"b\"";
         String expected = "list contains \"b\"";
 
@@ -103,7 +103,7 @@ public class DescrDumperTest {
     }
 
     @Test
-    public void testDumpContains2() throws Exception {
+    void dumpContains2() throws Exception {
         String input = "list not contains \"b\"";
         String expected = "!( list contains \"b\" )";
 
@@ -114,7 +114,7 @@ public class DescrDumperTest {
     }
 
     @Test
-    public void testDumpExcludes() throws Exception {
+    void dumpExcludes() throws Exception {
         String input = "list excludes \"b\"";
         String expected = "!( list contains \"b\" )";
 
@@ -125,7 +125,7 @@ public class DescrDumperTest {
     }
 
     @Test
-    public void testDumpExcludes2() throws Exception {
+    void dumpExcludes2() throws Exception {
         String input = "list not excludes \"b\"";
         String expected = "list contains \"b\"";
 
@@ -135,8 +135,9 @@ public class DescrDumperTest {
         assertThat(result).isEqualTo(expected);
     }
 
-    @Test @Disabled
-    public void testDumpWithDateAttr() throws Exception {
+    @Test
+    @Disabled
+    void dumpWithDateAttr() throws Exception {
         String input = "son.birthDate == \"01-jan-2000\"";
         String expected = "son.birthDate == org.drools.util.DateUtils.parseDate( \"01-jan-2000\" )";
 
@@ -147,7 +148,7 @@ public class DescrDumperTest {
     }
 
     @Test
-    public void testDumpComplex() throws Exception {
+    void dumpComplex() throws Exception {
         String input = "a ( > 60 && < 70 ) || ( > 50 && < 55 ) && a3 == \"black\" || a == 40 && a3 == \"pink\" || a == 12 && a3 == \"yellow\" || a3 == \"blue\"";
         String expected = "( ( a > 60 && a < 70 || a > 50 && a < 55 ) && a3 == \"black\" || a == 40 && a3 == \"pink\" || a == 12 && a3 == \"yellow\" || a3 == \"blue\" )";
 
@@ -158,7 +159,7 @@ public class DescrDumperTest {
     }
 
     @Test
-    public void testDumpBindings() throws Exception {
+    void dumpBindings() throws Exception {
         String input = "$x : property > value";
         String expected = "property > value";
 
@@ -175,7 +176,7 @@ public class DescrDumperTest {
     }
 
     @Test
-    public void testDumpBindings2() throws Exception {
+    void dumpBindings2() throws Exception {
         String input = "( $a : a > $b : b[10].prop || 10 != 20 ) && $x : someMethod(10) == 20";
         String expected = "( a > b[10].prop || 10 != 20 ) && someMethod(10) == 20";
 
@@ -198,7 +199,7 @@ public class DescrDumperTest {
     }
 
     @Test
-    public void testDumpBindings3() throws Exception {
+    void dumpBindings3() throws Exception {
         String input = "( $a : a > $b : b[10].prop || 10 != 20 ) && $x : someMethod(10)";
         String expected = "( a > b[10].prop || 10 != 20 )";
 
@@ -209,7 +210,7 @@ public class DescrDumperTest {
     }
 
     @Test
-    public void testDumpBindings4() throws Exception {
+    void dumpBindings4() throws Exception {
         String input = "( $a : a > $b : b[10].prop || $x : someMethod(10) ) && 10 != 20";
         String expected = "( a > b[10].prop ) && 10 != 20";
 
@@ -220,7 +221,7 @@ public class DescrDumperTest {
     }
 
     @Test
-    public void testDumpBindingsWithRestriction() throws Exception {
+    void dumpBindingsWithRestriction() throws Exception {
         String input = "$x : age > 10 && < 20 || > 30";
         String expected = "( age > 10 && age < 20 || age > 30 )";
 
@@ -237,7 +238,7 @@ public class DescrDumperTest {
     }
 
     @Test
-    public void testDumpBindingsComplexOp() throws Exception {
+    void dumpBindingsComplexOp() throws Exception {
         String input = "$x : age in (10, 20, $someVal)";
         String expected = "( age == 10 || age == 20 || age == $someVal )";
 
@@ -254,7 +255,7 @@ public class DescrDumperTest {
     }
 
     @Test
-    public void testDumpBindingsComplexOp2() throws Exception {
+    void dumpBindingsComplexOp2() throws Exception {
         String input = "$x : age not in (10, 20, $someVal)";
         String expected = "age != 10 && age != 20 && age != $someVal";
 
@@ -271,7 +272,7 @@ public class DescrDumperTest {
     }
 
     @Test
-    public void testProcessInlineCast() throws Exception {
+    void processInlineCast() throws Exception {
         String expr = "field1#Class.field2";
         String expectedInstanceof = "field1 instanceof Class";
         String expectedcasted = "((Class)field1).field2";
@@ -297,7 +298,7 @@ public class DescrDumperTest {
     }
 
     @Test
-    public void testProcessNullSafeDereferencing() throws Exception {
+    void processNullSafeDereferencing() throws Exception {
         String expr = "field1!.field2";
         String expectedNullCheck = "field1 != null";
         String expectedExpr = "field1.field2";
@@ -322,7 +323,7 @@ public class DescrDumperTest {
     }
 
     @Test
-    public void testProcessImplicitConstraints() throws Exception {
+    void processImplicitConstraints() throws Exception {
         String expr = "field1#Class!.field2";
         String expectedConstraints = "field1 instanceof Class";
         String expectedExpr = "((Class)field1).field2";

@@ -71,7 +71,7 @@ class DescrCommonPropertyTest {
     private Resource resource;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         parser = ParserTestUtils.getParser();
     }
 
