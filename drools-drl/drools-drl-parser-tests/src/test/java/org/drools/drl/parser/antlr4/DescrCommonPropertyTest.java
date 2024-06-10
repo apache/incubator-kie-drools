@@ -332,7 +332,7 @@ class DescrCommonPropertyTest {
 
     @Test
     void behaviorDescr() {
-        final String source = "rule X when StockTick( symbol==\"ACME\") over window:length(10) then end";;
+        final String source = "rule X when StockTick( symbol==\"ACME\") over window:length(10) then end";
         final PackageDescr pkg = parseAndGetPackageDescr(source);
         final RuleDescr rule = pkg.getRules().get(0);
         PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
@@ -349,11 +349,12 @@ class DescrCommonPropertyTest {
                 "    Adult( $children : children)\n" +
                 "    Child() from $children\n" +
                 "  then\n" +
-                "end";;
+                "end";
+        ;
         final PackageDescr pkg = parseAndGetPackageDescr(source);
         final RuleDescr rule = pkg.getRules().get(0);
         PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get(1);
-        FromDescr from = (FromDescr)  pattern.getSource();
+        FromDescr from = (FromDescr) pattern.getSource();
 
         // Backward Compatibility Notes:
         //   The old DRL6Parser doesn't populate common properties of FromDescr (seem to be wrong).
@@ -376,7 +377,7 @@ class DescrCommonPropertyTest {
         final PackageDescr pkg = parseAndGetPackageDescr(source);
         final RuleDescr rule = pkg.getRules().get(0);
         PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get(0);
-        CollectDescr collect = (CollectDescr)  pattern.getSource();
+        CollectDescr collect = (CollectDescr) pattern.getSource();
 
         assertProperties(collect, 35, 64, 3, 21, 3, 49);
     }

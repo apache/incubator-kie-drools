@@ -18,8 +18,6 @@
  */
 package org.drools.drl.parser.antlr4;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import org.drools.compiler.lang.DescrDumper;
 import org.drools.compiler.lang.DumperContext;
 import org.drools.drl.ast.descr.AtomicExprDescr;
@@ -33,6 +31,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.internal.builder.conf.LanguageLevelOption;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class DescrDumperTest {
 
@@ -52,8 +52,8 @@ public class DescrDumperTest {
         String input = "price > 10 && < 20 || == $val || == 30";
         String expected = "( price > 10 && price < 20 || price == $val || price == 30 )";
 
-        ConstraintConnectiveDescr descr = parse( input );
-        String result = dumper.dump( descr );
+        ConstraintConnectiveDescr descr = parse(input);
+        String result = dumper.dump(descr);
 
         assertThat(result).isEqualTo(expected);
     }
@@ -63,8 +63,8 @@ public class DescrDumperTest {
         String input = "type.toString matches \"something\\swith\\tsingle escapes\"";
         String expected = "type.toString ~= \"something\\swith\\tsingle escapes\"";
 
-        ConstraintConnectiveDescr descr = parse( input );
-        String result = dumper.dump( descr );
+        ConstraintConnectiveDescr descr = parse(input);
+        String result = dumper.dump(descr);
 
         assertThat(result).isEqualTo(expected);
     }
@@ -74,8 +74,8 @@ public class DescrDumperTest {
         String input = "type.toString matches 'something\\swith\\tsingle escapes'";
         String expected = "type.toString ~= \"something\\swith\\tsingle escapes\"";
 
-        ConstraintConnectiveDescr descr = parse( input );
-        String result = dumper.dump( descr );
+        ConstraintConnectiveDescr descr = parse(input);
+        String result = dumper.dump(descr);
 
         assertThat(result).isEqualTo(expected);
     }
@@ -85,8 +85,8 @@ public class DescrDumperTest {
         String input = "this[\"content\"] matches \"hello ;=\"";
         String expected = "this[\"content\"] ~= \"hello ;=\"";
 
-        ConstraintConnectiveDescr descr = parse( input );
-        String result = dumper.dump( descr );
+        ConstraintConnectiveDescr descr = parse(input);
+        String result = dumper.dump(descr);
 
         assertThat(result).isEqualTo(expected);
     }
@@ -96,8 +96,8 @@ public class DescrDumperTest {
         String input = "list contains \"b\"";
         String expected = "list contains \"b\"";
 
-        ConstraintConnectiveDescr descr = parse( input );
-        String result = dumper.dump( descr );
+        ConstraintConnectiveDescr descr = parse(input);
+        String result = dumper.dump(descr);
 
         assertThat(result).isEqualTo(expected);
     }
@@ -107,8 +107,8 @@ public class DescrDumperTest {
         String input = "list not contains \"b\"";
         String expected = "!( list contains \"b\" )";
 
-        ConstraintConnectiveDescr descr = parse( input );
-        String result = dumper.dump( descr );
+        ConstraintConnectiveDescr descr = parse(input);
+        String result = dumper.dump(descr);
 
         assertThat(result).isEqualTo(expected);
     }
@@ -118,8 +118,8 @@ public class DescrDumperTest {
         String input = "list excludes \"b\"";
         String expected = "!( list contains \"b\" )";
 
-        ConstraintConnectiveDescr descr = parse( input );
-        String result = dumper.dump( descr );
+        ConstraintConnectiveDescr descr = parse(input);
+        String result = dumper.dump(descr);
 
         assertThat(result).isEqualTo(expected);
     }
@@ -129,8 +129,8 @@ public class DescrDumperTest {
         String input = "list not excludes \"b\"";
         String expected = "list contains \"b\"";
 
-        ConstraintConnectiveDescr descr = parse( input );
-        String result = dumper.dump( descr );
+        ConstraintConnectiveDescr descr = parse(input);
+        String result = dumper.dump(descr);
 
         assertThat(result).isEqualTo(expected);
     }
@@ -141,8 +141,8 @@ public class DescrDumperTest {
         String input = "son.birthDate == \"01-jan-2000\"";
         String expected = "son.birthDate == org.drools.util.DateUtils.parseDate( \"01-jan-2000\" )";
 
-        ConstraintConnectiveDescr descr = parse( input );
-        String result = dumper.dump( descr );
+        ConstraintConnectiveDescr descr = parse(input);
+        String result = dumper.dump(descr);
 
         assertThat(result).isEqualTo(expected);
     }
@@ -152,8 +152,8 @@ public class DescrDumperTest {
         String input = "a ( > 60 && < 70 ) || ( > 50 && < 55 ) && a3 == \"black\" || a == 40 && a3 == \"pink\" || a == 12 && a3 == \"yellow\" || a3 == \"blue\"";
         String expected = "( ( a > 60 && a < 70 || a > 50 && a < 55 ) && a3 == \"black\" || a == 40 && a3 == \"pink\" || a == 12 && a3 == \"yellow\" || a3 == \"blue\" )";
 
-        ConstraintConnectiveDescr descr = parse( input );
-        String result = dumper.dump( descr );
+        ConstraintConnectiveDescr descr = parse(input);
+        String result = dumper.dump(descr);
 
         assertThat(result).isEqualTo(expected);
     }
@@ -163,14 +163,14 @@ public class DescrDumperTest {
         String input = "$x : property > value";
         String expected = "property > value";
 
-        ConstraintConnectiveDescr descr = parse( input );
+        ConstraintConnectiveDescr descr = parse(input);
         DumperContext ctx = new DumperContext();
-        String result = dumper.dump( descr,
-                                     ctx );
+        String result = dumper.dump(descr,
+                                    ctx);
 
         assertThat(result).isEqualTo(expected);
         assertThat(ctx.getBindings()).hasSize(1);
-        BindingDescr bind = ctx.getBindings().get( 0 );
+        BindingDescr bind = ctx.getBindings().get(0);
         assertThat(bind.getVariable()).isEqualTo("$x");
         assertThat(bind.getExpression()).isEqualTo("property");
     }
@@ -180,20 +180,20 @@ public class DescrDumperTest {
         String input = "( $a : a > $b : b[10].prop || 10 != 20 ) && $x : someMethod(10) == 20";
         String expected = "( a > b[10].prop || 10 != 20 ) && someMethod(10) == 20";
 
-        ConstraintConnectiveDescr descr = parse( input );
+        ConstraintConnectiveDescr descr = parse(input);
         DumperContext ctx = new DumperContext();
-        String result = dumper.dump( descr,
-                                     ctx );
+        String result = dumper.dump(descr,
+                                    ctx);
 
         assertThat(result).isEqualTo(expected);
         assertThat(ctx.getBindings()).hasSize(3);
-        BindingDescr bind = ctx.getBindings().get( 0 );
+        BindingDescr bind = ctx.getBindings().get(0);
         assertThat(bind.getVariable()).isEqualTo("$a");
         assertThat(bind.getExpression()).isEqualTo("a");
-        bind = ctx.getBindings().get( 1 );
+        bind = ctx.getBindings().get(1);
         assertThat(bind.getVariable()).isEqualTo("$b");
         assertThat(bind.getExpression()).isEqualTo("b[10].prop");
-        bind = ctx.getBindings().get( 2 );
+        bind = ctx.getBindings().get(2);
         assertThat(bind.getVariable()).isEqualTo("$x");
         assertThat(bind.getExpression()).isEqualTo("someMethod(10)");
     }
@@ -203,8 +203,8 @@ public class DescrDumperTest {
         String input = "( $a : a > $b : b[10].prop || 10 != 20 ) && $x : someMethod(10)";
         String expected = "( a > b[10].prop || 10 != 20 )";
 
-        ConstraintConnectiveDescr descr = parse( input );
-        String result = dumper.dump( descr );
+        ConstraintConnectiveDescr descr = parse(input);
+        String result = dumper.dump(descr);
 
         assertThat(result).isEqualTo(expected);
     }
@@ -214,8 +214,8 @@ public class DescrDumperTest {
         String input = "( $a : a > $b : b[10].prop || $x : someMethod(10) ) && 10 != 20";
         String expected = "( a > b[10].prop ) && 10 != 20";
 
-        ConstraintConnectiveDescr descr = parse( input );
-        String result = dumper.dump( descr );
+        ConstraintConnectiveDescr descr = parse(input);
+        String result = dumper.dump(descr);
 
         assertThat(result).isEqualTo(expected);
     }
@@ -225,14 +225,14 @@ public class DescrDumperTest {
         String input = "$x : age > 10 && < 20 || > 30";
         String expected = "( age > 10 && age < 20 || age > 30 )";
 
-        ConstraintConnectiveDescr descr = parse( input );
+        ConstraintConnectiveDescr descr = parse(input);
         DumperContext ctx = new DumperContext();
-        String result = dumper.dump( descr,
-                                     ctx );
+        String result = dumper.dump(descr,
+                                    ctx);
 
         assertThat(result).isEqualTo(expected);
         assertThat(ctx.getBindings()).hasSize(1);
-        BindingDescr bind = ctx.getBindings().get( 0 );
+        BindingDescr bind = ctx.getBindings().get(0);
         assertThat(bind.getVariable()).isEqualTo("$x");
         assertThat(bind.getExpression()).isEqualTo("age");
     }
@@ -242,14 +242,14 @@ public class DescrDumperTest {
         String input = "$x : age in (10, 20, $someVal)";
         String expected = "( age == 10 || age == 20 || age == $someVal )";
 
-        ConstraintConnectiveDescr descr = parse( input );
+        ConstraintConnectiveDescr descr = parse(input);
         DumperContext ctx = new DumperContext();
-        String result = dumper.dump( descr,
-                                     ctx );
+        String result = dumper.dump(descr,
+                                    ctx);
 
         assertThat(result).isEqualTo(expected);
         assertThat(ctx.getBindings()).hasSize(1);
-        BindingDescr bind = ctx.getBindings().get( 0 );
+        BindingDescr bind = ctx.getBindings().get(0);
         assertThat(bind.getVariable()).isEqualTo("$x");
         assertThat(bind.getExpression()).isEqualTo("age");
     }
@@ -259,14 +259,14 @@ public class DescrDumperTest {
         String input = "$x : age not in (10, 20, $someVal)";
         String expected = "age != 10 && age != 20 && age != $someVal";
 
-        ConstraintConnectiveDescr descr = parse( input );
+        ConstraintConnectiveDescr descr = parse(input);
         DumperContext ctx = new DumperContext();
-        String result = dumper.dump( descr,
-                                     ctx );
+        String result = dumper.dump(descr,
+                                    ctx);
 
         assertThat(result).isEqualTo(expected);
         assertThat(ctx.getBindings()).hasSize(1);
-        BindingDescr bind = ctx.getBindings().get( 0 );
+        BindingDescr bind = ctx.getBindings().get(0);
         assertThat(bind.getVariable()).isEqualTo("$x");
         assertThat(bind.getExpression()).isEqualTo("age");
     }
@@ -277,9 +277,9 @@ public class DescrDumperTest {
         String expectedInstanceof = "field1 instanceof Class";
         String expectedcasted = "((Class)field1).field2";
         AtomicExprDescr atomicExpr = new AtomicExprDescr(expr);
-        ConstraintConnectiveDescr ccd = new ConstraintConnectiveDescr( );
-        ccd.addDescr( atomicExpr );
-        String[] instanceofAndCastedExpr = dumper.processImplicitConstraints(expr, atomicExpr, ccd, ccd.getDescrs().indexOf( atomicExpr ), null);
+        ConstraintConnectiveDescr ccd = new ConstraintConnectiveDescr();
+        ccd.addDescr(atomicExpr);
+        String[] instanceofAndCastedExpr = dumper.processImplicitConstraints(expr, atomicExpr, ccd, ccd.getDescrs().indexOf(atomicExpr), null);
         assertThat(ccd.getDescrs()).hasSize(2);
         assertThat(ccd.getDescrs().get(0).toString()).isEqualTo(expectedInstanceof);
         assertThat(atomicExpr.getRewrittenExpression()).isEqualTo(expectedcasted);
@@ -289,8 +289,8 @@ public class DescrDumperTest {
         String expectedInstanceof2 = "((Class1)field1).field2 instanceof Class2";
         expectedcasted = "((Class2)((Class1)field1).field2).field3";
         atomicExpr = new AtomicExprDescr(expr);
-        ccd = new ConstraintConnectiveDescr( );
-        instanceofAndCastedExpr = dumper.processImplicitConstraints(expr, atomicExpr, ccd, ccd.getDescrs().indexOf( atomicExpr ), null);
+        ccd = new ConstraintConnectiveDescr();
+        instanceofAndCastedExpr = dumper.processImplicitConstraints(expr, atomicExpr, ccd, ccd.getDescrs().indexOf(atomicExpr), null);
         assertThat(ccd.getDescrs().get(0).toString()).isEqualTo(expectedInstanceof1);
         assertThat(ccd.getDescrs().get(1).toString()).isEqualTo(expectedInstanceof2);
         assertThat(instanceofAndCastedExpr[1]).isEqualTo(expectedcasted);
@@ -303,8 +303,8 @@ public class DescrDumperTest {
         String expectedNullCheck = "field1 != null";
         String expectedExpr = "field1.field2";
         AtomicExprDescr atomicExpr = new AtomicExprDescr(expr);
-        ConstraintConnectiveDescr ccd = new ConstraintConnectiveDescr( );
-        String[] nullCheckAndExpr = dumper.processImplicitConstraints( expr, atomicExpr, ccd, ccd.getDescrs().indexOf( atomicExpr ), null );
+        ConstraintConnectiveDescr ccd = new ConstraintConnectiveDescr();
+        String[] nullCheckAndExpr = dumper.processImplicitConstraints(expr, atomicExpr, ccd, ccd.getDescrs().indexOf(atomicExpr), null);
         assertThat(ccd.getDescrs().get(0).toString()).isEqualTo(expectedNullCheck);
         assertThat(nullCheckAndExpr[1]).isEqualTo(expectedExpr);
         assertThat(atomicExpr.getRewrittenExpression()).isEqualTo(expectedExpr);
@@ -314,8 +314,8 @@ public class DescrDumperTest {
         String expectedNullCheck2 = "field1.field2 != null";
         expectedExpr = "field1.field2.field3";
         atomicExpr = new AtomicExprDescr(expr);
-        ccd = new ConstraintConnectiveDescr( );
-        nullCheckAndExpr = dumper.processImplicitConstraints( expr, atomicExpr, ccd, ccd.getDescrs().indexOf( atomicExpr ), null );
+        ccd = new ConstraintConnectiveDescr();
+        nullCheckAndExpr = dumper.processImplicitConstraints(expr, atomicExpr, ccd, ccd.getDescrs().indexOf(atomicExpr), null);
         assertThat(ccd.getDescrs().get(0).toString()).isEqualTo(expectedNullCheck1);
         assertThat(ccd.getDescrs().get(1).toString()).isEqualTo(expectedNullCheck2);
         assertThat(nullCheckAndExpr[1]).isEqualTo(expectedExpr);
@@ -328,8 +328,8 @@ public class DescrDumperTest {
         String expectedConstraints = "field1 instanceof Class";
         String expectedExpr = "((Class)field1).field2";
         AtomicExprDescr atomicExpr = new AtomicExprDescr(expr);
-        ConstraintConnectiveDescr ccd = new ConstraintConnectiveDescr( );
-        String[] constraintsAndExpr = dumper.processImplicitConstraints( expr, atomicExpr, ccd, ccd.getDescrs().indexOf( atomicExpr ), null );
+        ConstraintConnectiveDescr ccd = new ConstraintConnectiveDescr();
+        String[] constraintsAndExpr = dumper.processImplicitConstraints(expr, atomicExpr, ccd, ccd.getDescrs().indexOf(atomicExpr), null);
         assertThat(ccd.getDescrs().get(0).toString()).isEqualTo(expectedConstraints);
         assertThat(constraintsAndExpr[1]).isEqualTo(expectedExpr);
         assertThat(atomicExpr.getRewrittenExpression()).isEqualTo(expectedExpr);
@@ -339,8 +339,8 @@ public class DescrDumperTest {
         String expectedConstraints2 = "field1.field2 instanceof Class";
         expectedExpr = "((Class)field1.field2).field3";
         atomicExpr = new AtomicExprDescr(expr);
-        ccd = new ConstraintConnectiveDescr( );
-        constraintsAndExpr = dumper.processImplicitConstraints( expr, atomicExpr, ccd, ccd.getDescrs().indexOf( atomicExpr ), null );
+        ccd = new ConstraintConnectiveDescr();
+        constraintsAndExpr = dumper.processImplicitConstraints(expr, atomicExpr, ccd, ccd.getDescrs().indexOf(atomicExpr), null);
         assertThat(ccd.getDescrs().get(0).toString()).isEqualTo(expectedConstraints1);
         assertThat(ccd.getDescrs().get(1).toString()).isEqualTo(expectedConstraints2);
         assertThat(constraintsAndExpr[1]).isEqualTo(expectedExpr);
@@ -351,20 +351,19 @@ public class DescrDumperTest {
         expectedConstraints2 = "((Class)field1).field2 != null";
         expectedExpr = "((Class)field1).field2.field3";
         atomicExpr = new AtomicExprDescr(expr);
-        ccd = new ConstraintConnectiveDescr( );
-        constraintsAndExpr = dumper.processImplicitConstraints( expr, atomicExpr, ccd, ccd.getDescrs().indexOf( atomicExpr ), null );
+        ccd = new ConstraintConnectiveDescr();
+        constraintsAndExpr = dumper.processImplicitConstraints(expr, atomicExpr, ccd, ccd.getDescrs().indexOf(atomicExpr), null);
         assertThat(ccd.getDescrs().get(0).toString()).isEqualTo(expectedConstraints1);
         assertThat(ccd.getDescrs().get(1).toString()).isEqualTo(expectedConstraints2);
         assertThat(constraintsAndExpr[1]).isEqualTo(expectedExpr);
         assertThat(atomicExpr.getRewrittenExpression()).isEqualTo(expectedExpr);
     }
 
-    public ConstraintConnectiveDescr parse( final String constraint ) {
+    public ConstraintConnectiveDescr parse(final String constraint) {
         DrlExprParser parser = DrlExprParserFactory.getDrlExprParser(LanguageLevelOption.DRL6);
-        ConstraintConnectiveDescr result = parser.parse( constraint );
+        ConstraintConnectiveDescr result = parser.parse(constraint);
         assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
 
         return result;
     }
-
 }
