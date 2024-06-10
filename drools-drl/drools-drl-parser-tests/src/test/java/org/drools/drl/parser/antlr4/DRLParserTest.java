@@ -56,22 +56,22 @@ class DRLParserTest {
         PackageDescr packageDescr = parse(drl);
         assertThat(packageDescr.getName()).isEqualTo("org.test");
 
-        assertThat(packageDescr.getImports().size()).isEqualTo(1);
+        assertThat(packageDescr.getImports()).hasSize(1);
         assertThat(packageDescr.getImports().get(0).getTarget()).isEqualTo("org.test.model.Person");
 
-        assertThat(packageDescr.getGlobals().size()).isEqualTo(1);
+        assertThat(packageDescr.getGlobals()).hasSize(1);
         GlobalDescr globalDescr = packageDescr.getGlobals().get(0);
         assertThat(globalDescr.getType()).isEqualTo("String");
         assertThat(globalDescr.getIdentifier()).isEqualTo("result");
 
-        assertThat(packageDescr.getRules().size()).isEqualTo(1);
+        assertThat(packageDescr.getRules()).hasSize(1);
         RuleDescr ruleDescr = packageDescr.getRules().get(0);
 
         AnnotationDescr annotationDescr = ruleDescr.getAnnotation("Test");
         assertThat(annotationDescr).isNotNull();
         assertThat(annotationDescr.getValue()).isEqualTo("true");
 
-        assertThat(ruleDescr.getAttributes().size()).isEqualTo(2);
+        assertThat(ruleDescr.getAttributes()).hasSize(2);
         assertThat(ruleDescr.getAttributes().get("no-loop")).isNotNull();
         AttributeDescr salience = ruleDescr.getAttributes().get("salience");
         assertThat(salience).isNotNull();
@@ -79,13 +79,13 @@ class DRLParserTest {
 
         assertThat(ruleDescr.getName()).isEqualTo("TestRule");
 
-        assertThat(ruleDescr.getLhs().getDescrs().size()).isEqualTo(1);
+        assertThat(ruleDescr.getLhs().getDescrs()).hasSize(1);
         PatternDescr patternDescr = (PatternDescr) ruleDescr.getLhs().getDescrs().get(0);
         assertThat(patternDescr.getIdentifier()).isEqualTo("$p");
         assertThat(patternDescr.getObjectType()).isEqualTo("Person");
 
         List<? extends BaseDescr> constraints = patternDescr.getConstraint().getDescrs();
-        assertThat(constraints.size()).isEqualTo(1);
+        assertThat(constraints).hasSize(1);
         ExprConstraintDescr expr = (ExprConstraintDescr) constraints.get(0);
         assertThat(expr.getExpression()).isEqualTo("age >= 18");
 
