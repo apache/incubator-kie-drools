@@ -312,10 +312,10 @@
     </profile>
 
     <profile>
-      <id>disableNewParser</id>
+      <id>enableNewParser</id>
       <activation>
         <property>
-          <name>disableNewParser</name>
+          <name>enableNewParser</name>
         </property>
       </activation>
       <build>
@@ -325,7 +325,8 @@
             <artifactId>maven-surefire-plugin</artifactId>
             <configuration>
               <systemPropertyVariables>
-                <drools.drl.antlr4.parser.enabled>false</drools.drl.antlr4.parser.enabled>
+                <!-- false by default. Activate this profile when you test the new parser -->
+                <drools.drl.antlr4.parser.enabled>true</drools.drl.antlr4.parser.enabled>
               </systemPropertyVariables>
             </configuration>
           </plugin>
