@@ -275,6 +275,7 @@
     <profile>
       <id>enableNewParser</id>
       <activation>
+        <activeByDefault>true</activeByDefault> <!-- activate for the new parser test purpose -->
         <property>
           <name>enableNewParser</name>
         </property>
