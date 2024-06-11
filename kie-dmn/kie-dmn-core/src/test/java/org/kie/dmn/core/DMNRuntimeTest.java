@@ -41,7 +41,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -74,7 +73,7 @@ import org.kie.dmn.feel.lang.FEELProperty;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.dmn.feel.marshaller.FEELStringMarshaller;
-import org.kie.dmn.feel.util.EvalHelper;
+import org.kie.dmn.feel.util.NumberEvalHelper;
 import org.kie.dmn.model.api.Decision;
 import org.kie.dmn.model.api.Definitions;
 import org.kie.dmn.model.api.ItemDefinition;
@@ -1543,8 +1542,8 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         final DMNContext result = dmnResult.getContext();
 
         assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
-        assertThat( (List<?>)result.get("My Decision")).asList().containsExactly( prototype( entry("Full Name", "Prof. John Doe"), entry("Age", EvalHelper.coerceNumber(33)) ),
-                                                                  prototype( entry("Full Name", "Prof. 47"), entry("Age", EvalHelper.coerceNumber(47))));
+        assertThat( (List<?>)result.get("My Decision")).asList().containsExactly( prototype( entry("Full Name", "Prof. John Doe"), entry("Age", NumberEvalHelper.coerceNumber(33)) ),
+                                                                  prototype( entry("Full Name", "Prof. 47"), entry("Age", NumberEvalHelper.coerceNumber(47))));
     }
 
     @ParameterizedTest

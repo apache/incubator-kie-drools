@@ -34,7 +34,7 @@ import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 import org.kie.dmn.feel.util.Msg;
 
 import static org.kie.dmn.feel.lang.ast.infixexecutors.InfixExecutorUtils.addLocalDateAndDuration;
-import static org.kie.dmn.feel.util.EvalHelper.getBigDecimalOrNull;
+import static org.kie.dmn.feel.util.NumberEvalHelper.getBigDecimalOrNull;
 
 public class AddExecutor implements InfixExecutor {
 

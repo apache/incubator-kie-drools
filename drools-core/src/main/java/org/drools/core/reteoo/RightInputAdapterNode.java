@@ -27,6 +27,7 @@ import org.drools.base.base.ObjectType;
 import org.drools.base.common.NetworkNode;
 import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.base.reteoo.NodeTypeEnums;
+import org.drools.base.rule.Pattern;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.ActivationsManager;
 import org.drools.core.common.InternalFactHandle;
@@ -290,7 +291,7 @@ public class RightInputAdapterNode extends ObjectSource
     }      
     
     @Override
-    public BitMask calculateDeclaredMask(ObjectType modifiedType, List<String> settableProperties) {
+    public BitMask calculateDeclaredMask(Pattern pattern, ObjectType modifiedType, List<String> settableProperties) {
         throw new UnsupportedOperationException();
     }
 

@@ -90,8 +90,8 @@ import org.kie.dmn.feel.lang.ast.Visitor;
 import org.kie.dmn.feel.lang.impl.MapBackedType;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.parser.feel11.ScopeHelper;
-import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.dmn.feel.util.Msg;
+import org.kie.dmn.feel.util.StringEvalHelper;
 
 import static org.kie.dmn.feel.codegen.feel11.DirectCompilerResult.mergeFDs;
 
@@ -181,13 +181,13 @@ public class ASTCompilerVisitor implements Visitor<DirectCompilerResult> {
 
     @Override
     public DirectCompilerResult visit(NameDefNode n) {
-        StringLiteralExpr expr = Expressions.stringLiteral(EvalHelper.normalizeVariableName(n.getText()));
+        StringLiteralExpr expr = Expressions.stringLiteral(StringEvalHelper.normalizeVariableName(n.getText()));
         return DirectCompilerResult.of(expr, BuiltInType.STRING);
     }
 
     @Override
     public DirectCompilerResult visit(NameRefNode n) {
-        String nameRef = EvalHelper.normalizeVariableName(n.getText());
+        String nameRef = StringEvalHelper.normalizeVariableName(n.getText());
         Type type = scopeHelper.resolve(nameRef).orElse(BuiltInType.UNKNOWN);
         return DirectCompilerResult.of(FeelCtx.getValue(nameRef), type);
     }

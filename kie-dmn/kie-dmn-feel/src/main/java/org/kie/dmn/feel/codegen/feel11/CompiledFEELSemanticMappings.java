@@ -18,6 +18,12 @@
  */
 package org.kie.dmn.feel.codegen.feel11;
 
+import java.time.Period;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.Supplier;
+
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.ast.InfixOperator;
@@ -27,14 +33,9 @@ import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.runtime.events.ASTEventBase;
 import org.kie.dmn.feel.runtime.functions.ListContainsFunction;
 import org.kie.dmn.feel.runtime.impl.RangeImpl;
+import org.kie.dmn.feel.util.BooleanEvalHelper;
 import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.dmn.feel.util.Msg;
-
-import java.time.Period;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.function.Supplier;
 
 /**
  * The purpose of this class is to offer import .* methods to compiled FEEL classes compiling expressions.
@@ -286,7 +287,7 @@ public class CompiledFEELSemanticMappings {
 
     public static Boolean and(boolean left, Object right) {
         if (left == true) {
-            return EvalHelper.getBooleanOrNull(right);
+            return BooleanEvalHelper.getBooleanOrNull(right);
         } else {
             return false;
         }
@@ -324,7 +325,7 @@ public class CompiledFEELSemanticMappings {
         if (right == true) {
             return true;
         } else {
-            return EvalHelper.getBooleanOrNull(left);
+            return BooleanEvalHelper.getBooleanOrNull(left);
         }
     }
 
@@ -382,7 +383,7 @@ public class CompiledFEELSemanticMappings {
      * Delegates to {@link EvalHelper} except evaluationcontext
      */
     public static Boolean lt(Object left, Object right) {
-        return EvalHelper.compare(left, right, null, (l, r) -> l.compareTo(r) < 0);
+        return BooleanEvalHelper.compare(left, right, (l, r) -> l.compareTo(r) < 0);
     }
 
     /**
@@ -399,7 +400,7 @@ public class CompiledFEELSemanticMappings {
      * Delegates to {@link EvalHelper} except evaluationcontext
      */
     public static Boolean gt(Object left, Object right) {
-        return EvalHelper.compare(left, right, null, (l, r) -> l.compareTo(r) > 0);
+        return BooleanEvalHelper.compare(left, right, (l, r) -> l.compareTo(r) > 0);
     }
 
     /**
@@ -407,7 +408,7 @@ public class CompiledFEELSemanticMappings {
      * Delegates to {@link EvalHelper} except evaluationcontext
      */
     public static Boolean eq(Object left, Object right) {
-        return EvalHelper.isEqual(left, right, null);
+        return BooleanEvalHelper.isEqual(left, right);
     }
 
     public static Boolean gracefulEq(EvaluationContext ctx, Object left, Object right) {
@@ -448,7 +449,7 @@ public class CompiledFEELSemanticMappings {
      * FEEL spec Table 39
      */
     public static Boolean ne(Object left, Object right) {
-        return not(EvalHelper.isEqual(left, right, null));
+        return not(BooleanEvalHelper.isEqual(left, right));
     }
 
     public static Object negateTest(Object param) {

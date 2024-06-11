@@ -39,7 +39,7 @@ class FEELProfileTest {
     void feelProfileFunctionsAndValues() {
 
         // Instantiate a new FEEL with the profile to try the method that uses the data cache
-        FEEL feel = FEEL.newInstance(List.of(new TestFEELProfile()));
+        FEEL feel = FEELBuilder.builder().withProfiles(List.of(new TestFEELProfile())).build();
 
         assertThat(feel.evaluate("use cache(\"val 1\")")).isEqualTo("1");
         assertThat(feel.evaluate("use cache(\"val 3\")")).isEqualTo("3");

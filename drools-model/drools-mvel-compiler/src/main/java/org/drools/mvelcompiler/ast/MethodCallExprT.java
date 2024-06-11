@@ -58,6 +58,11 @@ public class MethodCallExprT implements TypedExpression {
     }
 
     @Override
+    public Optional<Type> getScopeType() {
+        return scope.flatMap(TypedExpression::getScopeType);
+    }
+
+    @Override
     public Node toJavaExpression() {
         Node scopeE = scope.map(TypedExpression::toJavaExpression).orElse(null);
 

@@ -18,6 +18,7 @@
  */
 package org.kie.dmn.openapi.impl;
 
+import org.kie.dmn.feel.lang.FEELDialect;
 import org.kie.dmn.feel.lang.ast.AtLiteralNode;
 import org.kie.dmn.feel.lang.ast.InfixOpNode;
 import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
@@ -29,11 +30,13 @@ import org.kie.dmn.feel.util.ClassLoaderUtil;
 public class MapperHelper {
 
     static Object evaluateInfixOpNode(InfixOpNode toEvaluate) {
-        return toEvaluate.evaluate(new EvaluationContextImpl(ClassLoaderUtil.findDefaultClassLoader(), null));
+        // Defaulting FEELDialect to FEEL
+        return toEvaluate.evaluate(new EvaluationContextImpl(ClassLoaderUtil.findDefaultClassLoader(), null, FEELDialect.FEEL));
     }
 
     static Object evaluateAtLiteralNode(AtLiteralNode toEvaluate) {
-        return toEvaluate.evaluate(new EvaluationContextImpl(ClassLoaderUtil.findDefaultClassLoader(), null));
+        // Defaulting FEELDialect to FEEL
+        return toEvaluate.evaluate(new EvaluationContextImpl(ClassLoaderUtil.findDefaultClassLoader(), null, FEELDialect.FEEL));
     }
 
     private MapperHelper() {

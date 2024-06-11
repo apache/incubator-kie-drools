@@ -35,6 +35,7 @@ import org.kie.dmn.feel.lang.ast.RangeNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestListNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestNode;
 import org.kie.dmn.feel.lang.ast.visitor.ASTTemporalConstantVisitor;
+import org.kie.dmn.feel.lang.impl.FEELBuilder;
 import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
 import org.kie.dmn.feel.parser.feel11.ASTBuilderVisitor;
 import org.kie.dmn.feel.parser.feel11.FEELParser;
@@ -89,7 +90,7 @@ public class DMNUnaryTestsMapper {
 
     static BaseNode getBaseNode(String expression) {
         LOG.debug("getBaseNode {}", expression);
-        FEEL feelInstance = FEEL.newInstance();
+        FEEL feelInstance = FEELBuilder.builder().build();
         CompilerContext ctx = feelInstance.newCompilerContext();
         ParseTree tree = getFEELParser(expression, ctx).unaryTestsRoot();
         ASTBuilderVisitor astVisitor = new ASTBuilderVisitor(ctx.getInputVariableTypes(),

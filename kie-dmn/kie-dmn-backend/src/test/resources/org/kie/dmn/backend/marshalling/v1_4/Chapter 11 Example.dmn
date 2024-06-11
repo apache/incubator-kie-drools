@@ -1,3 +1,22 @@
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
 <semantic:definitions xmlns:semantic="https://www.omg.org/spec/DMN/20211108/MODEL/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:include1="http://www.trisotech.com/definitions/_5e8e877a-af87-434b-9c36-ed51c8d6b514" xmlns:drools="http://www.drools.org/kie/dmn/1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:rss="http://purl.org/rss/2.0/" xmlns:trisofeed="http://trisotech.com/feed" xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:feel="https://www.omg.org/spec/DMN/20211108/FEEL/"              xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"  xmlns="http://www.trisotech.com/definitions/_9d01a0c4-f529-4ad8-ad8e-ec5fb5d96ad4" id="_9d01a0c4-f529-4ad8-ad8e-ec5fb5d96ad4" name="Chapter 11 Example" namespace="http://www.trisotech.com/definitions/_9d01a0c4-f529-4ad8-ad8e-ec5fb5d96ad4" exporter="DMN Modeler" exporterVersion="6.2.2.1" triso:logoChoice="None">
     <semantic:description/>
     <semantic:extensionElements>

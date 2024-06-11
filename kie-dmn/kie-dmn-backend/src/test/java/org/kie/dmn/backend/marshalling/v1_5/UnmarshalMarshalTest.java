@@ -240,6 +240,7 @@ DMNDIv1.2:
                                                        return outcome;
                                                    })))
                 .ignoreWhitespace()
+                .ignoreComments()
                 .checkForSimilar()
                 .build();
         checkSimilar.getDifferences().forEach(m -> LOG.error("{}", m));

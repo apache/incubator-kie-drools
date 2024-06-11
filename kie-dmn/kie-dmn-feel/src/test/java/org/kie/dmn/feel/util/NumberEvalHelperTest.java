@@ -16,12 +16,22 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.api.fluent;
+package org.kie.dmn.feel.util;
 
-public interface SplitNodeBuilder<T extends NodeContainerBuilder<T, ?>> extends NodeBuilder<SplitNodeBuilder<T>, T> {
+import java.math.BigDecimal;
 
-    SplitNodeBuilder<T> type(int type);
+import org.junit.jupiter.api.Test;
 
-    SplitNodeBuilder<T> constraint(long toNodeId, String name, String type, Dialect dialect, String constraint, int priority);
+import static org.assertj.core.api.Assertions.assertThat;
+
+class NumberEvalHelperTest {
+
+
+    @Test
+    void getBigDecimalOrNull() {
+        assertThat(NumberEvalHelper.getBigDecimalOrNull(10d)).isEqualTo(new BigDecimal("10"));
+        assertThat(NumberEvalHelper.getBigDecimalOrNull(10.00000000D)).isEqualTo(new BigDecimal("10"));
+        assertThat(NumberEvalHelper.getBigDecimalOrNull(10000000000.5D)).isEqualTo(new BigDecimal("10000000000.5"));
+    }
 
 }

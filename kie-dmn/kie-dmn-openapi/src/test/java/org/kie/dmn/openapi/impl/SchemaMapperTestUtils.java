@@ -29,13 +29,14 @@ import org.kie.dmn.core.impl.SimpleTypeImpl;
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.codegen.feel11.ProcessedExpression;
 import org.kie.dmn.feel.lang.ast.BaseNode;
+import org.kie.dmn.feel.lang.impl.FEELBuilder;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.model.v1_5.KieDMNModelInstrumentedBase;
 
 class SchemaMapperTestUtils {
 
-    static final FEEL feel = FEEL.newInstance();
+    static final FEEL feel = FEELBuilder.builder().build();
 
     static final DMNTypeRegistry typeRegistry = new DMNTypeRegistryV15(Collections.emptyMap());
     static final DMNType FEEL_STRING = typeRegistry.resolveType(KieDMNModelInstrumentedBase.URI_FEEL, "string");

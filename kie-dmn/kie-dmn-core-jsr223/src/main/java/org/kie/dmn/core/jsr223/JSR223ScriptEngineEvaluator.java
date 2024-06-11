@@ -30,7 +30,7 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 
 import org.kie.dmn.feel.runtime.FEELFunction;
-import org.kie.dmn.feel.util.EvalHelper;
+import org.kie.dmn.feel.util.NumberEvalHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,7 +62,7 @@ public class JSR223ScriptEngineEvaluator {
         Bindings engineScope = createBindings(ins);
         Object result = scriptEngine.eval(expression, engineScope);
         LOG.debug("Script eval of '{}' result: {}", expression, result);
-        return EvalHelper.coerceNumber(result);
+        return NumberEvalHelper.coerceNumber(result);
     }
     
     /**

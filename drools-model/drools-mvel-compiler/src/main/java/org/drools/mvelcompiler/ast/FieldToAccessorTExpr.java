@@ -69,6 +69,11 @@ public class FieldToAccessorTExpr implements TypedExpression {
     }
 
     @Override
+    public Optional<Type> getScopeType() {
+        return scope.getType();
+    }
+
+    @Override
     public Node toJavaExpression() {
         List<Expression> expressionArguments = this.arguments.stream()
                 .map(this::convertToStringIfNeeded)

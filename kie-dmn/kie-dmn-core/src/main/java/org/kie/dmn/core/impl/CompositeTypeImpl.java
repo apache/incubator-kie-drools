@@ -32,6 +32,7 @@ import org.kie.dmn.feel.lang.impl.MapBackedType;
 import org.kie.dmn.feel.lang.types.GenListType;
 import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.dmn.feel.util.EvalHelper.PropertyValueResult;
+import org.kie.dmn.feel.util.NumberEvalHelper;
 
 /**
  * @see DMNType
@@ -120,7 +121,7 @@ public class CompositeTypeImpl
                     } catch ( IllegalAccessException | IllegalArgumentException | InvocationTargetException e ) {
                         return false;
                     }
-                    Object fieldValue = EvalHelper.coerceNumber( invoked );
+                    Object fieldValue = NumberEvalHelper.coerceNumber(invoked );
                     if ( !f.getValue().isInstanceOf( fieldValue ) ) {
                         return false;
                     }

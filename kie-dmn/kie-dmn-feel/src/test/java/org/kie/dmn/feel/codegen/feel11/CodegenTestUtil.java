@@ -19,6 +19,7 @@
 package org.kie.dmn.feel.codegen.feel11;
 
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.FEELDialect;
 import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
 import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
 import org.kie.dmn.feel.util.ClassLoaderUtil;
@@ -30,10 +31,12 @@ public class CodegenTestUtil {
     }
 
     public static EvaluationContext newEmptyEvaluationContext(FEELEventListenersManager mgr) {
-        return new EvaluationContextImpl(ClassLoaderUtil.findDefaultClassLoader(), mgr);
+        // Defaulting FEELDialect to FEEL
+        return new EvaluationContextImpl(ClassLoaderUtil.findDefaultClassLoader(), mgr, FEELDialect.FEEL);
     }
 
     public static EvaluationContext newEmptyEvaluationContext() {
-        return new EvaluationContextImpl(ClassLoaderUtil.findDefaultClassLoader(), null);
+        // Defaulting FEELDialect to FEEL
+        return new EvaluationContextImpl(ClassLoaderUtil.findDefaultClassLoader(), null, FEELDialect.FEEL);
     }
 }

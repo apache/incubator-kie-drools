@@ -46,8 +46,8 @@ public class TemporalConstantFoldingParserTest {
     }
     public String expression;
 
-    static final FEEL FEEL_STRICT = FEEL.newInstance();
-    static final FEEL FEEL_KIE = FEEL.newInstance(List.of(new KieExtendedFEELProfile()));
+    static final FEEL FEEL_STRICT = FEELBuilder.builder().build();
+    static final FEEL FEEL_KIE = FEELBuilder.builder().withProfiles(List.of(new KieExtendedFEELProfile())).build();
 
     @MethodSource("data")
     @ParameterizedTest(name = "{0}")

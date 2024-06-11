@@ -1,4 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
@@ -6,7 +25,7 @@
   <parent>
     <groupId>org.apache</groupId>
     <artifactId>apache</artifactId>
-    <version>30</version>
+    <version>32</version>
   </parent>
 
   <groupId>org.kie</groupId>
@@ -32,67 +51,9 @@
     </license>
   </licenses>
 
-  <repositories>
-    <repository>
-      <!-- Duplicating the Maven Central repository here (as it is already coming from Super POM) makes the build much faster,
-           as the Maven Central is now treated as the first (default) repository (because it is before the Apache Nexus one).
-           Artifacts with release (fixed) versions are being downloaded primarily from there. Without the central being the
-           first repository the Apache Nexus would be contacted first and since it is quite slow it slows down the build.
-           We use Apache repo only to download our SNAPSHOTs. -->
-      <id>central</id>
-      <name>Central Repository</name>
-      <url>https://repo.maven.apache.org/maven2</url>
-      <layout>default</layout>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-    <repository>
-      <id>apache-public-repository-group</id>
-      <name>Apache Public Repository Group</name>
-      <url>https://repository.apache.org/content/groups/public/</url>
-      <releases>
-        <enabled>true</enabled>
-        <updatePolicy>never</updatePolicy>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-        <updatePolicy>daily</updatePolicy>
-      </snapshots>
-    </repository>
-  </repositories>
-
-  <pluginRepositories>
-    <pluginRepository>
-      <!-- Duplicating the Maven Central repository here (as it is already coming from Super POM) makes the build much faster,
-           as the Maven Central is now treated as the first (default) repository (because it is before the Apache Nexus one).
-           Artifacts with release (fixed) versions are being downloaded primarily from there. Without the central being the
-           first repository the Apache Nexus would be contacted first and since it is quite slow it slows down the build.
-           We use Apache repo only to download our SNAPSHOTs. -->
-      <id>central</id>
-      <name>Central Repository</name>
-      <url>https://repo.maven.apache.org/maven2</url>
-      <layout>default</layout>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </pluginRepository>
-    <pluginRepository>
-      <id>apache-public-repository-group</id>
-      <name>Apache Public Repository Group</name>
-      <url>https://repository.apache.org/content/groups/public/</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </pluginRepository>
-  </pluginRepositories>
-
   <scm>
     <connection>scm:git:https://github.com/apache/incubator-kie-drools.git</connection>
-    <developerConnection>scm:git:git@github.com:apache/incubator-kie-drools.git</developerConnection>
+    <developerConnection>scm:git:https://github.com/apache/incubator-kie-drools.git</developerConnection>
     <url>https://github.com/apache/incubator-kie-drools</url>
   </scm>
 
@@ -106,23 +67,34 @@
   </issueManagement>
   <developers>
     <developer>
-      <name>All developers are listed on the team website</name>
-      <url>http://www.drools.org/community/team.html</url>
+      <name>The Apache KIE Team</name>
+      <email>dev@kie.apache.org</email>
+      <url>https://kie.apache.org</url>
+      <organization>Apache Software Foundation</organization>
+      <organizationUrl>http://apache.org/</organizationUrl>
     </developer>
   </developers>
-  <contributors>
-    <contributor>
-      <name>All contributors are listed on the team website</name>
-      <url>http://www.drools.org/community/team.html</url>
-    </contributor>
-  </contributors>
   <mailingLists>
     <mailingList>
-      <name>Development mailing list</name>
-      <post>dev@kie.apache.org</post>
+      <name>Development List</name>
       <subscribe>dev-subscribe@kie.apache.org</subscribe>
       <unsubscribe>dev-unsubscribe@kie.apache.org</unsubscribe>
+      <post>dev@kie.apache.org</post>
       <archive>https://lists.apache.org/list.html?dev@kie.apache.org</archive>
+    </mailingList>
+    <mailingList>
+      <name>User List</name>
+      <subscribe>users-subscribe@kie.apache.org</subscribe>
+      <unsubscribe>users-unsubscribe@kie.apache.org</unsubscribe>
+      <post>users@kie.apache.org</post>
+      <archive>https://lists.apache.org/list.html?users@kie.apache.org</archive>
+    </mailingList>
+    <mailingList>
+      <name>Commits List</name>
+      <subscribe>commits-subscribe@kie.apache.org</subscribe>
+      <unsubscribe>commits-unsubscribe@kie.apache.org</unsubscribe>
+      <post>commits@kie.apache.org</post>
+      <archive>https://lists.apache.org/list.html?commits@kie.apache.org</archive>
     </mailingList>
     <mailingList>
       <name>setup</name>
@@ -143,6 +115,7 @@
   <properties>
     <project.build.outputTimestamp>2024-01-12T00:00:00Z</project.build.outputTimestamp>
     <version.maven.artifact.plugin>3.4.1</version.maven.artifact.plugin>
+    <version.apache-rat-plugin>0.16.1</version.apache-rat-plugin>
   </properties>
 
   <build>
@@ -154,6 +127,45 @@
           <version>${version.maven.artifact.plugin}</version>
           <configuration>
             <outputTimestamp>${project.build.outputTimestamp}</outputTimestamp>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.rat</groupId>
+          <artifactId>apache-rat-plugin</artifactId>
+          <version>${version.apache-rat-plugin}</version>
+          <configuration>
+            <excludes>
+              <exclude>.git-blame-ignore-revs</exclude>
+              <exclude>**/lunr-2.3.9.min.js</exclude>
+              <exclude>**/mvel.jj</exclude>
+              <exclude>**/*.csv</exclude>
+              <exclude>**/*.sdo</exclude>
+              <exclude>**/*.sdt</exclude>
+              <exclude>**/TestingEmptyFile.txt</exclude>
+              <exclude>**/*.test_json</exclude>
+              <exclude>**/*.pmml_json</exclude>
+              <exclude>**/*.drl_json</exclude>
+              <exclude>**/*.dslr</exclude>
+              <exclude>**/DMN*.xsd</exclude>
+              <exclude>**/DC.xsd</exclude>
+              <exclude>**/DI.xsd</exclude>
+              <exclude>**/KiePMML*.txt</exclude>
+              <exclude>**/TargetValueFactoryTest_01.txt</exclude>
+              <exclude>**/TargetFieldFactoryTest_01.txt</exclude>
+              <exclude>**/*.uml</exclude>
+              <exclude>**/drools-model</exclude>
+              <exclude>**/testFile.txt</exclude>
+              <exclude>**/simple.dot</exclude>
+              <exclude>**/*.log</exclude>
+              <exclude>**/*.lst</exclude>
+              <exclude>**/checkstyle-cachefile</exclude>
+              <exclude>**/smoke*.drl.txt</exclude>
+              <exclude>**/test*.txt</exclude>
+              <exclude>**/test*.yml</exclude>
+              <exclude>**/drl.ftl</exclude>
+              <exclude>**/goal.txt</exclude>
+              <exclude>**/adult.txt</exclude>
+            </excludes>
           </configuration>
         </plugin>
       </plugins>

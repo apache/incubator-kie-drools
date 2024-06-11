@@ -973,7 +973,7 @@ public class DMNEvaluatorCompiler implements DMNDecisionLogicCompiler {
     private DMNExpressionEvaluator compileIterator(DMNCompilerContext ctx, DMNModelImpl model, DMNBaseNode node, String exprName, Iterator expression) {
         if (expression.getIteratorVariable() == null || expression.getIteratorVariable().isEmpty()) {
             MsgUtil.reportMessage(logger, DMNMessage.Severity.ERROR, node.getSource(), model, null, null, Msg.MISSING_EXPRESSION_FOR_ITERATOR,
-                    expression.getTypeRef().toString().toLowerCase(), node.getIdentifierString());
+                    "iteratorVariable", node.getIdentifierString());
             return null;
         }
 

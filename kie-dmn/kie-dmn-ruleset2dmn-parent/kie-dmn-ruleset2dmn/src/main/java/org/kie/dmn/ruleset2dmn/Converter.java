@@ -51,7 +51,7 @@ import org.dmg.pmml.rule_set.SimpleRule;
 import org.kie.dmn.api.marshalling.DMNMarshaller;
 import org.kie.dmn.backend.marshalling.v1x.DMNMarshallerFactory;
 import org.kie.dmn.feel.codegen.feel11.CodegenStringUtil;
-import org.kie.dmn.feel.util.EvalHelper;
+import org.kie.dmn.feel.util.NumberEvalHelper;
 import org.kie.dmn.model.api.DMNElementReference;
 import org.kie.dmn.model.api.Decision;
 import org.kie.dmn.model.api.DecisionRule;
@@ -400,7 +400,7 @@ public class Converter {
                 case DOUBLE:
                 case FLOAT:
                 case INTEGER:
-                    BigDecimal bdOrNull = EvalHelper.getBigDecimalOrNull(input);
+                    BigDecimal bdOrNull = NumberEvalHelper.getBigDecimalOrNull(input);
                     if (bdOrNull != null) {
                         return bdOrNull.toPlainString();
                     } else {
@@ -413,7 +413,7 @@ public class Converter {
             }
         }
         LOG.debug("feelLiteralValue for {} and DD not available", input);
-        BigDecimal bdOrNull = EvalHelper.getBigDecimalOrNull(input);
+        BigDecimal bdOrNull = NumberEvalHelper.getBigDecimalOrNull(input);
         if (bdOrNull != null) {
             return bdOrNull.toPlainString();
         } else {

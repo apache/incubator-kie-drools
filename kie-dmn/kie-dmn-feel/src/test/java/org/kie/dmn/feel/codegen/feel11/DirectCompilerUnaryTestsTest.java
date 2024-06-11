@@ -33,7 +33,7 @@ import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
 import org.kie.dmn.feel.parser.feel11.ASTBuilderVisitor;
 import org.kie.dmn.feel.parser.feel11.FEELParser;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser;
-import org.kie.dmn.feel.util.EvalHelper;
+import org.kie.dmn.feel.util.NumberEvalHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,7 +44,7 @@ public class DirectCompilerUnaryTestsTest {
     public static final Logger LOG = LoggerFactory.getLogger(DirectCompilerUnaryTestsTest.class);
 
     private List<Boolean> parseCompileEvaluate(String feelLiteralExpression, Object l) {
-        Object left = EvalHelper.coerceNumber(l);
+        Object left = NumberEvalHelper.coerceNumber(l);
         FEELEventListenersManager mgr = new FEELEventListenersManager();
         CompiledFEELSupport.SyntaxErrorListener listener = new CompiledFEELSupport.SyntaxErrorListener();
         mgr.addListener(listener);
