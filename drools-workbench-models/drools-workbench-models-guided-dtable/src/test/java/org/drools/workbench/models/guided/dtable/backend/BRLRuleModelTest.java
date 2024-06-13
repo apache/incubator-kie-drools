@@ -1384,7 +1384,7 @@ public class BRLRuleModelTest {
                 "when\n" +
                 "  x : Context( )\n" +
                 "then\n" +
-                "  x.add( \"test\" );\n" +
+                "  x.add( @{test} );\n" +
                 "end\n";
 
         assertEqualsIgnoreWhitespace(expected,
