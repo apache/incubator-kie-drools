@@ -146,7 +146,7 @@ System.out.println(&quot;timer on stage 1&quot;);</bpmn2:script>
           </bpmn2:assignment>
         </bpmn2:dataInputAssociation>
       </bpmn2:userTask>
-      <bpmn2:completionCondition xsi:type="bpmn2:tFormalExpression" id="_pGbIkjuFEeqlirl1r42RDw" language="http://www.jboss.org/drools/rule">caseFile_stage1_finished</bpmn2:completionCondition>
+      <bpmn2:completionCondition xsi:type="bpmn2:tFormalExpression" id="_pGbIkjuFEeqlirl1r42RDw" language="http://www.java.com/java">caseFile_stage1_finished</bpmn2:completionCondition>
     </bpmn2:adHocSubProcess>
     <bpmn2:boundaryEvent id="_9BA107AB-9119-489E-873F-319C80A3D872" drools:selectable="true" drools:boundaryca="false" drools:dockerinfo="147.0^144.0|" color:background-color="#f5deb3" color:border-color="#a0522d" color:color="#000000" name="boundaryEvent" attachedToRef="_C962DC6C-D200-459A-81B3-DC6AF084EFEE" cancelActivity="false">
       <bpmn2:extensionElements>

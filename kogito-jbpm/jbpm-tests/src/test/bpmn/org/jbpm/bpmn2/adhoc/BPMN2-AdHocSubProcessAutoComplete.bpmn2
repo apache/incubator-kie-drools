@@ -30,7 +30,7 @@
              xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
              xmlns:tns="http://www.jboss.org/drools">
 
-  <process processType="Private" isExecutable="true" id="AdHocSubProcess" name="AdHoc SubProcess" >
+  <process processType="Private" isExecutable="true" id="AdHocSubProcessAutoComplete" name="AdHoc SubProcess" tns:packageName="org.jbpm.bpmn2.adhoc" >
 
     <!-- nodes -->
     <startEvent id="_1" name="StartProcess" />

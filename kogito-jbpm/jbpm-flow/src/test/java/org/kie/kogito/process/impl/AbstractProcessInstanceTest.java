@@ -120,7 +120,7 @@ public class AbstractProcessInstanceTest {
         when(process.getNodesRecursively()).thenReturn(Arrays.asList(node));
 
         NodeInstance nodeInstance = mock(NodeInstance.class);
-        when(wpi.getNodeInstance(node)).thenReturn(nodeInstance);
+        when(wpi.getNodeByPredicate(any(), any())).thenReturn(nodeInstance);
         return nodeInstance;
     }
 

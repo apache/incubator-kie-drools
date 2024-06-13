@@ -31,7 +31,7 @@
              xmlns:tns="http://www.jboss.org/drools">
 
   <itemDefinition id="_testItem" structureRef="Integer" />
-  <process processType="Private" isExecutable="true" id="AdHocSubProcess" name="AdHoc SubProcess" >
+  <process processType="Private" isExecutable="true" id="AdHocSubProcessEmptyCompleteExpression" name="AdHoc SubProcess" tns:packageName="org.jbpm.bpmn2.adhoc">
     <!-- process variables -->
     <property id="counter" itemSubjectRef="_testItem"/>
     <!-- nodes -->

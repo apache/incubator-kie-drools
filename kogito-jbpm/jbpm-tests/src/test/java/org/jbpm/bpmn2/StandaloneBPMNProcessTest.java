@@ -24,12 +24,20 @@ import java.io.StringReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.jbpm.bpmn2.adhoc.AdHocSubProcessAutoCompleteExpressionModel;
+import org.jbpm.bpmn2.adhoc.AdHocSubProcessAutoCompleteExpressionProcess;
+import org.jbpm.bpmn2.adhoc.AdHocSubProcessAutoCompleteModel;
+import org.jbpm.bpmn2.adhoc.AdHocSubProcessAutoCompleteProcess;
+import org.jbpm.bpmn2.adhoc.AdHocSubProcessEmptyCompleteExpressionProcess;
+import org.jbpm.bpmn2.adhoc.AdHocTerminateEndEventModel;
+import org.jbpm.bpmn2.adhoc.AdHocTerminateEndEventProcess;
 import org.jbpm.bpmn2.handler.ReceiveTaskHandler;
 import org.jbpm.bpmn2.handler.SendTaskHandler;
 import org.jbpm.bpmn2.handler.ServiceTaskHandler;
@@ -42,12 +50,14 @@ import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.jbpm.process.instance.impl.humantask.InternalHumanTaskWorkItem;
 import org.jbpm.test.util.NodeLeftCountDownProcessEventListener;
 import org.jbpm.test.util.ProcessCompletedCountDownProcessEventListener;
+import org.jbpm.test.utils.ProcessTestHelper;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.api.io.Resource;
 import org.kie.internal.io.ResourceFactory;
+import org.kie.kogito.Application;
 import org.kie.kogito.internal.process.event.DefaultKogitoProcessEventListener;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
@@ -56,6 +66,7 @@ import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcessInstance;
 import org.w3c.dom.Document;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
 
@@ -506,24 +517,70 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
     }
 
     @Test
-    @Disabled("Process does not complete.")
     public void testAdHocSubProcessAutoComplete() throws Exception {
-        kruntime = createKogitoProcessRuntime("BPMN2-AdHocSubProcessAutoComplete.bpmn2");
+        // this autocomplete when we detect
+        // getActivityInstanceAttribute("numberOfActiveInstances") == 0
+        Application app = ProcessTestHelper.newApplication();
+        org.kie.kogito.process.Process<AdHocSubProcessAutoCompleteModel> definition = AdHocSubProcessAutoCompleteProcess.newProcess(app);
 
-        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
-        KogitoProcessInstance processInstance = kruntime.startProcess("AdHocSubProcess");
-        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_ACTIVE);
+        org.kie.kogito.process.ProcessInstance<AdHocSubProcessAutoCompleteModel> instance = definition.createInstance(definition.createModel());
+        instance.start();
+        assertThat(instance.status()).isEqualTo(KogitoProcessInstance.STATE_ACTIVE);
 
-        KogitoWorkItem workItem = workItemHandler.getWorkItem();
-        assertThat(workItem).isNull();
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
-        kruntime.getKieSession().fireAllRules();
-        workItem = workItemHandler.getWorkItem();
-        assertThat(workItem).withFailMessage("KogitoWorkItem should not be null.").isNotNull();
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
-        kruntime.getKogitoWorkItemManager().completeWorkItem(workItem.getStringId(), null);
-        assertProcessInstanceCompleted(processInstance.getStringId(), kruntime);
+        // adhoc we need to trigger the human task
+        instance.triggerNode("_2-1");
+        ProcessTestHelper.completeWorkItem(instance, "john", Collections.emptyMap());
+
+        assertThat(instance.status()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
+    }
+
+    @Test
+    public void testAdHocSubProcessAutoCompleteExpression() throws Exception {
+        // this autocomplete when we detect
+        // getActivityInstanceAttribute("numberOfActiveInstances") == 0
+        Application app = ProcessTestHelper.newApplication();
+        org.kie.kogito.process.Process<AdHocSubProcessAutoCompleteExpressionModel> definition = AdHocSubProcessAutoCompleteExpressionProcess.newProcess(app);
+        AdHocSubProcessAutoCompleteExpressionModel model = definition.createModel();
+        model.setCounter(3);
+        org.kie.kogito.process.ProcessInstance<AdHocSubProcessAutoCompleteExpressionModel> instance = definition.createInstance(model);
+        instance.start();
+        assertThat(instance.status()).isEqualTo(KogitoProcessInstance.STATE_ACTIVE);
+
+        // adhoc we need to trigger the human task
+        instance.triggerNode("_2-1");
+        ProcessTestHelper.completeWorkItem(instance, "john", Collections.singletonMap("testHT", 0));
+
+        assertThat(instance.status()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
+    }
+
+    @Test
+    public void testAdHocTerminateEndEvent() throws Exception {
+        // this autocomplete when we detect
+        // terminate end event within adhoc process the adhoc should finish
+        Application app = ProcessTestHelper.newApplication();
+        org.kie.kogito.process.Process<AdHocTerminateEndEventModel> definition = AdHocTerminateEndEventProcess.newProcess(app);
+        AdHocTerminateEndEventModel model = definition.createModel();
+        model.setComplete(false);
+        org.kie.kogito.process.ProcessInstance<AdHocTerminateEndEventModel> instance = definition.createInstance(model);
+        instance.start();
+        assertThat(instance.status()).isEqualTo(KogitoProcessInstance.STATE_ACTIVE);
+
+        // adhoc we need to trigger the human task
+        instance.triggerNode("_560E157E-3173-4CFD-9CC6-26676D8B0A02");
+        ProcessTestHelper.completeWorkItem(instance, "john", Collections.emptyMap());
+
+        assertThat(instance.status()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
+    }
+
+    @Test
+    public void testAdHocSubProcessEmptyCompleteExpression() throws Exception {
+        try {
+            Application app = ProcessTestHelper.newApplication();
+            AdHocSubProcessEmptyCompleteExpressionProcess.newProcess(app);
+            fail("Process should be invalid, there should be build errors");
+        } catch (RuntimeException e) {
+            // there should be build errors
+        }
     }
 
     @Test

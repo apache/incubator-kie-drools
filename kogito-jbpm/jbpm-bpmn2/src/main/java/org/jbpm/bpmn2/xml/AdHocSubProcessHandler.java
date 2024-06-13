@@ -63,17 +63,26 @@ public class AdHocSubProcessHandler extends CompositeContextNodeHandler {
         if ("false".equals(cancelRemainingInstances)) {
             dynamicNode.setCancelRemainingInstances(false);
         }
+
+        dynamicNode.setLanguage("http://www.java.com/java");
+
         // by default it should not autocomplete as it's adhoc
         org.w3c.dom.Node xmlNode = element.getFirstChild();
         dynamicNode.setActivationCondition((String) node.getMetaData().get(CUSTOM_ACTIVATION_CONDITION));
         while (xmlNode != null) {
             String nodeName = xmlNode.getNodeName();
             if (COMPLETION_CONDITION.equals(nodeName)) {
+                Element completeConditionElement = (Element) xmlNode;
+                String dialect = completeConditionElement.getAttribute("language");
+
                 String expression = xmlNode.getTextContent();
                 if (AUTOCOMPLETE_EXPRESSIONS.contains(expression)) {
                     dynamicNode.setAutoComplete(true);
                 } else {
                     dynamicNode.setCompletionCondition(expression);
+                    if (!dialect.isBlank()) {
+                        dynamicNode.setLanguage(dialect);
+                    }
                 }
             }
             xmlNode = xmlNode.getNextSibling();
@@ -104,7 +113,7 @@ public class AdHocSubProcessHandler extends CompositeContextNodeHandler {
         visitConnectionsAndAssociations(dynamicNode, xmlDump, metaDataType);
 
         if (dynamicNode.isAutoComplete()) {
-            xmlDump.append("    <completionCondition xsi:type=\"tFormalExpression\">" + AUTOCOMPLETE_COMPLETION_CONDITION + "</completionCondition>" + EOL);
+            xmlDump.append("<completionCondition xsi:type=\"tFormalExpression\" language=\"" + dynamicNode.getLanguage() + "\">" + AUTOCOMPLETE_COMPLETION_CONDITION + "</completionCondition>" + EOL);
         }
         endNode("adHocSubProcess", xmlDump);
     }

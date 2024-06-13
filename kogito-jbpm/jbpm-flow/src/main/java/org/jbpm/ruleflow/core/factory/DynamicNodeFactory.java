@@ -18,13 +18,11 @@
  */
 package org.jbpm.ruleflow.core.factory;
 
-import java.util.function.Predicate;
-
+import org.jbpm.process.instance.impl.ReturnValueEvaluator;
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.node.DynamicNode;
 import org.kie.api.definition.process.WorkflowElementIdentifier;
-import org.kie.api.runtime.process.ProcessContext;
 
 public class DynamicNodeFactory<T extends RuleFlowNodeContainerFactory<T, ?>> extends AbstractCompositeNodeFactory<DynamicNodeFactory<T>, T> {
 
@@ -45,12 +43,12 @@ public class DynamicNodeFactory<T extends RuleFlowNodeContainerFactory<T, ?>> ex
         return this;
     }
 
-    public DynamicNodeFactory<T> activationExpression(Predicate<ProcessContext> activationExpression) {
+    public DynamicNodeFactory<T> activationExpression(ReturnValueEvaluator activationExpression) {
         getDynamicNode().setActivationExpression(activationExpression);
         return this;
     }
 
-    public DynamicNodeFactory<T> completionExpression(Predicate<ProcessContext> completionExpression) {
+    public DynamicNodeFactory<T> completionExpression(ReturnValueEvaluator completionExpression) {
         getDynamicNode().setCompletionExpression(completionExpression);
         return this;
     }

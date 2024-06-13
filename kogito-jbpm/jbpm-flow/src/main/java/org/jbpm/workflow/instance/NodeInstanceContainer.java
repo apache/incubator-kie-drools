@@ -20,11 +20,13 @@ package org.jbpm.workflow.instance;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.function.Predicate;
 
 import org.jbpm.workflow.core.node.AsyncEventNode;
 import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.NodeContainer;
 import org.kie.api.definition.process.WorkflowElementIdentifier;
+import org.kie.kogito.internal.process.runtime.KogitoNode;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstanceContainer;
 
@@ -61,12 +63,11 @@ public interface NodeInstanceContainer extends KogitoNodeInstanceContainer {
 
     NodeInstance getNodeInstance(String nodeInstanceId, boolean recursive);
 
-    default NodeInstance getByNodeDefinitionId(final String nodeDefinitionId, NodeContainer nodeContainer) {
+    default NodeInstance getNodeByPredicate(NodeContainer nodeContainer, Predicate<KogitoNode> nodeTest) {
         for (Node node : nodeContainer.getNodes()) {
-
-            if (nodeDefinitionId.equals(node.getUniqueId())) {
+            if (nodeTest.test((KogitoNode) node)) {
                 if (nodeContainer instanceof Node) {
-                    Collection<KogitoNodeInstance> nodeInstances = getKogitoNodeInstances(ni -> ni.getNode().getId() == (((Node) nodeContainer).getId()), true);
+                    Collection<KogitoNodeInstance> nodeInstances = getKogitoNodeInstances(ni -> ni.getNode().getId().equals(((Node) nodeContainer).getId()), true);
                     if (nodeInstances.isEmpty()) {
                         return ((NodeInstanceContainer) getNodeInstance((Node) nodeContainer)).getNodeInstance(node);
                     } else {
@@ -78,15 +79,21 @@ public interface NodeInstanceContainer extends KogitoNodeInstanceContainer {
             }
 
             if (node instanceof NodeContainer) {
-                NodeInstance ni = getByNodeDefinitionId(nodeDefinitionId, ((NodeContainer) node));
-
+                NodeInstance ni = getNodeByPredicate(((NodeContainer) node), nodeTest);
                 if (ni != null) {
                     return ni;
                 }
             }
         }
+        return null;
+    }
 
-        throw new IllegalArgumentException("Node with definition id " + nodeDefinitionId + " was not found");
+    default NodeInstance getByNodeDefinitionId(String nodeDefinitionId, NodeContainer nodeContainer) {
+        NodeInstance nodeInstance = getNodeByPredicate(nodeContainer, ni -> nodeDefinitionId.equals(ni.getUniqueId()));
+        if (nodeInstance == null) {
+            throw new IllegalArgumentException("Node with definition id " + nodeDefinitionId + " was not found");
+        }
+        return nodeInstance;
     }
 
     default Node resolveAsync(Node node) {

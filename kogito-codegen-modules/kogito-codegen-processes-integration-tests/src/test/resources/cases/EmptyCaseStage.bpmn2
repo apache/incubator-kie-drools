@@ -26,7 +26,7 @@
         <drools:metaValue><![CDATA[CASE]]></drools:metaValue>
       </drools:metaData>
     </bpmn2:extensionElements>
-    <bpmn2:property id="continue" itemSubjectRef="_continueItem"/>
+    <bpmn2:property id="shouldContinue" itemSubjectRef="_continueItem"/>
     <bpmn2:adHocSubProcess id="_421CEBE9-39CE-4729-9742-19092560F745" drools:selectable="true" color:background-color="#fafad2" color:border-color="#000000" color:color="#000000" name="" ordering="Sequential">
       <bpmn2:extensionElements>
         <drools:metaData name="elementname">
@@ -39,7 +39,7 @@
         <bpmn2:inputSet id="_JaoAglAwEeekOsAiqAUZKw"/>
         <bpmn2:outputSet id="_JaoAg1AwEeekOsAiqAUZKw"/>
       </bpmn2:ioSpecification>
-      <bpmn2:completionCondition xsi:type="bpmn2:tFormalExpression" id="_JaoAhFAwEeekOsAiqAUZKw" language="http://www.jboss.org/drools/rule"><![CDATA[v$continue]]></bpmn2:completionCondition>
+      <bpmn2:completionCondition xsi:type="bpmn2:tFormalExpression" id="_JaoAhFAwEeekOsAiqAUZKw" language="http://www.java.com/java"><![CDATA[shouldContinue]]></bpmn2:completionCondition>
     </bpmn2:adHocSubProcess>
     <bpmn2:startEvent id="_CFF602B7-06FA-4BAD-907D-003FACBC5357" drools:selectable="true" color:background-color="#9acd32" color:border-color="#000000" color:color="#000000" name="">
       <bpmn2:extensionElements>

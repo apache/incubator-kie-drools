@@ -1333,16 +1333,6 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     }
 
     @Test
-    public void testAdHocSubProcessEmptyCompleteExpression() throws Exception {
-        try {
-            createKogitoProcessRuntime("BPMN2-AdHocSubProcessEmptyCompleteExpression.bpmn2");
-            fail("Process should be invalid, there should be build errors");
-        } catch (RuntimeException e) {
-            // there should be build errors
-        }
-    }
-
-    @Test
     public void testSubProcessWithTypeVariable() throws Exception {
         kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/subprocess/BPMN2-SubProcessWithTypeVariable.bpmn2");
 

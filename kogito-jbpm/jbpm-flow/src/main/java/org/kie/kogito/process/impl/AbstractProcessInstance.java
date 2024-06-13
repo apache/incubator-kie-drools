@@ -40,7 +40,6 @@ import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.WorkflowProcess;
 import org.jbpm.workflow.instance.NodeInstance;
-import org.jbpm.workflow.instance.NodeInstanceContainer;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
@@ -441,17 +440,13 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
         WorkflowProcessInstance wfpi = processInstance();
         RuleFlowProcess rfp = ((RuleFlowProcess) wfpi.getProcess());
 
-        org.kie.api.definition.process.Node node = rfp.getNodesRecursively()
-                .stream()
-                .filter(ni -> Objects.equals(nodeId, ni.getUniqueId()) || Objects.equals(nodeId, ni.getName()) || Objects.equals(nodeId, ni.getId().toExternalFormat()))
-                .findFirst()
-                .orElseThrow(() -> new NodeNotFoundException(this.id, nodeId));
-
-        org.kie.api.definition.process.Node parentNode = rfp.getParentNode(node.getId());
-
-        NodeInstanceContainer nodeInstanceContainerNode = parentNode == null ? wfpi : ((NodeInstanceContainer) wfpi.getNodeInstance(parentNode));
-
-        nodeInstanceContainerNode.getNodeInstance(node).trigger(null, Node.CONNECTION_DEFAULT_TYPE);
+        // we avoid create containers incorrectly
+        NodeInstance nodeInstance = wfpi.getNodeByPredicate(rfp,
+                ni -> Objects.equals(nodeId, ni.getName()) || Objects.equals(nodeId, ni.getId().toExternalFormat()));
+        if (nodeInstance == null) {
+            throw new NodeNotFoundException(this.id, nodeId);
+        }
+        nodeInstance.trigger(null, Node.CONNECTION_DEFAULT_TYPE);
 
         addToUnitOfWork(pi -> ((MutableProcessInstances<T>) process.instances()).update(pi.id(), pi));
     }
