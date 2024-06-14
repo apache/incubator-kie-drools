@@ -18,6 +18,8 @@
  */
 package org.kie.efesto.runtimemanager.core.mocks;
 
+import java.util.Objects;
+
 import org.kie.efesto.common.api.identifiers.LocalUri;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.runtimemanager.api.model.EfestoInput;
@@ -35,5 +37,18 @@ public abstract class AbstractMockEfestoInput implements EfestoInput<String> {
     @Override
     public String getInputData() {
         return this.getClass().getSimpleName();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AbstractMockEfestoInput that = (AbstractMockEfestoInput) o;
+        return Objects.equals(modelLocalUriId, that.modelLocalUriId) && Objects.equals(getInputData(), that.getInputData());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(modelLocalUriId);
     }
 }

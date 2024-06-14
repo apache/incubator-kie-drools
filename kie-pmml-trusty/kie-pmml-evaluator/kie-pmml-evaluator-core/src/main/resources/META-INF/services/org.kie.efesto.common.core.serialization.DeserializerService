@@ -1,0 +1,3 @@
+# SPI implementations
+org.kie.pmml.evaluator.core.serialization.PMMLRequestDataDeserializerService
+org.kie.pmml.evaluator.core.serialization.AbstractModelDeserializerService

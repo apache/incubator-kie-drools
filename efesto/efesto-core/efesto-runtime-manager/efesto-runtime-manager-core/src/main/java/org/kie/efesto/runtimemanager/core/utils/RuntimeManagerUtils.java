@@ -18,16 +18,6 @@
  */
 package org.kie.efesto.runtimemanager.core.utils;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import org.kie.efesto.common.api.cache.EfestoClassKey;
 import org.kie.efesto.common.api.cache.EfestoIdentifierClassKey;
 import org.kie.efesto.common.api.model.EfestoRuntimeContext;
@@ -38,6 +28,11 @@ import org.kie.efesto.runtimemanager.api.service.KieRuntimeService;
 import org.kie.efesto.runtimemanager.api.service.RuntimeServiceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.kie.efesto.common.api.utils.CollectionUtils.findAtMostOne;
 import static org.kie.efesto.runtimemanager.api.utils.SPIUtils.getKieRuntimeService;
@@ -73,7 +68,7 @@ public class RuntimeManagerUtils {
         logger.trace("{} {}", context, input);
         Optional<KieRuntimeService> retrieved = getKieRuntimeServiceLocal(context, input);
         return retrieved.isPresent() ? retrieved.flatMap(kieRuntimeService -> kieRuntimeService.evaluateInput(input,
-                context)) : Optional.empty();
+                                                                                                              context)) : Optional.empty();
     }
 
     public static Optional<EfestoInput> getOptionalInput(String modelLocalUriIdString, String inputDataString) {
@@ -86,7 +81,7 @@ public class RuntimeManagerUtils {
                 .map(optional -> optional.get())
                 .collect(Collectors.toList());
         return findAtMostOne(efestoInputs,
-                (s1, s2) -> new KieRuntimeServiceException("Found more than one EfestoInput: " + s1 + " and " + s2));
+                             (s1, s2) -> new KieRuntimeServiceException("Found more than one EfestoInput: " + s1 + " and " + s2));
     }
 
     static void populateFirstLevelCache(final Map<EfestoClassKey, List<KieRuntimeService>> toPopulate) {

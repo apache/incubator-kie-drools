@@ -16,21 +16,27 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.efesto.runtimemanager.core.mocks;
+package org.kie.efesto.runtimemanager.api.service;
 
-import org.kie.efesto.common.api.identifiers.LocalUri;
-import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
-import org.kie.efesto.runtimemanager.api.model.AbstractEfestoOutput;
+import java.util.Collection;
 
-public class MockEfestoOutput extends AbstractEfestoOutput<String> {
+import org.kie.efesto.common.api.model.EfestoRuntimeContext;
+import org.kie.efesto.runtimemanager.api.model.EfestoInput;
+import org.kie.efesto.runtimemanager.api.model.EfestoOutput;
 
-    public MockEfestoOutput() {
-        super(new ModelLocalUriId(LocalUri.parse("/mock/" + MockEfestoOutput.class.getCanonicalName().replace('.',
-                                                                                                              '/'))),
-              "MockEfestoOutput");
-    }
+/**
+ * This is the type that run on local JVM
+ */
+public interface LocalRuntimeManager {
 
-    public MockEfestoOutput(ModelLocalUriId modelLocalUriId, String outputData) {
-        super(modelLocalUriId, outputData);
-    }
+    /**
+     * Produce a <code>Collection&lt;EfestoOutput&gt;</code> from the given <code>EfestoInput</code>
+     *
+     * @param context
+     * @param toEvaluate
+     * @return
+     */
+    Collection<EfestoOutput> evaluateInput(EfestoRuntimeContext context,
+                                           EfestoInput... toEvaluate);
+
 }

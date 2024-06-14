@@ -1,0 +1,4 @@
+# SPI implementations
+org.kie.efesto.common.core.serialization.EfestoClassKeyDeserializerService
+org.kie.efesto.common.core.serialization.EfestoIdentifierClassKeyDeserializerService
+org.kie.efesto.common.core.serialization.ModelLocalUriIdDeserializerService

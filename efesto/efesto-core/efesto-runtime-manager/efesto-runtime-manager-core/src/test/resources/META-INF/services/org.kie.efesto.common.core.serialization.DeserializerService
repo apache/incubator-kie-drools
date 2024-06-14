@@ -1,0 +1,2 @@
+# SPI implementations
+org.kie.efesto.runtimemanager.core.mocks.MockEfestoOutputDeserializerService

@@ -18,12 +18,12 @@
  */
 package org.kie.efesto.runtimemanager.core.mocks;
 
-import org.kie.efesto.common.api.cache.EfestoClassKey;
-import org.kie.efesto.runtimemanager.api.model.EfestoInput;
-import org.kie.efesto.common.api.model.EfestoRuntimeContext;
-import org.kie.efesto.runtimemanager.api.service.KieRuntimeService;
-
 import java.util.Optional;
+
+import org.kie.efesto.common.api.cache.EfestoClassKey;
+import org.kie.efesto.common.api.model.EfestoRuntimeContext;
+import org.kie.efesto.runtimemanager.api.model.EfestoInput;
+import org.kie.efesto.runtimemanager.api.service.KieRuntimeService;
 
 // This service is required to find IndexFile "testb" in classpath
 public class TestBKieRuntimeService<T extends AbstractMockEfestoInput> implements KieRuntimeService<String, String, T, MockEfestoOutput, EfestoRuntimeContext> {

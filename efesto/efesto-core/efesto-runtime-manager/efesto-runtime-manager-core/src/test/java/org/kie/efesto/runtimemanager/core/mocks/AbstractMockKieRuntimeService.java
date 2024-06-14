@@ -18,13 +18,13 @@
  */
 package org.kie.efesto.runtimemanager.core.mocks;
 
+import java.util.Optional;
+
 import org.kie.efesto.common.api.exceptions.KieEfestoCommonException;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
-import org.kie.efesto.runtimemanager.api.model.EfestoInput;
 import org.kie.efesto.common.api.model.EfestoRuntimeContext;
+import org.kie.efesto.runtimemanager.api.model.EfestoInput;
 import org.kie.efesto.runtimemanager.api.service.KieRuntimeService;
-
-import java.util.Optional;
 
 import static org.kie.efesto.common.core.utils.JSONUtils.getObjectMapper;
 

@@ -16,21 +16,23 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.efesto.runtimemanager.core.mocks;
+package org.kie.efesto.runtimemanager.api.service;
 
-import org.kie.efesto.common.api.identifiers.LocalUri;
-import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
-import org.kie.efesto.runtimemanager.api.model.AbstractEfestoOutput;
+import java.util.Optional;
 
-public class MockEfestoOutput extends AbstractEfestoOutput<String> {
+import org.kie.efesto.runtimemanager.api.model.EfestoOutput;
 
-    public MockEfestoOutput() {
-        super(new ModelLocalUriId(LocalUri.parse("/mock/" + MockEfestoOutput.class.getCanonicalName().replace('.',
-                                                                                                              '/'))),
-              "MockEfestoOutput");
-    }
+/**
+ * This is the implementation that run on different JVMs
+ */
+public interface DistributedRuntimeManager {
 
-    public MockEfestoOutput(ModelLocalUriId modelLocalUriId, String outputData) {
-        super(modelLocalUriId, outputData);
-    }
+    /**
+     * Return an <code>Optional&lt;EfestoOutput&gt;</code> from the given <b>modelLocalUriIdString</b> and <b>inputDataString</b>
+     *
+     * @param modelLocalUriIdString
+     * @param inputDataString
+     * @return
+     */
+    Optional<EfestoOutput> evaluateInput(String modelLocalUriIdString, String inputDataString);
 }

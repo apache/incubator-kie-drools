@@ -16,21 +16,23 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.efesto.runtimemanager.core.mocks;
+package org.kie.efesto.runtimemanager.core.service;
 
-import org.kie.efesto.common.api.identifiers.LocalUri;
-import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
-import org.kie.efesto.runtimemanager.api.model.AbstractEfestoOutput;
+import java.util.List;
 
-public class MockEfestoOutput extends AbstractEfestoOutput<String> {
+import org.kie.efesto.runtimemanager.api.service.KieRuntimeService;
+import org.kie.efesto.runtimemanager.api.service.RuntimeServiceProvider;
 
-    public MockEfestoOutput() {
-        super(new ModelLocalUriId(LocalUri.parse("/mock/" + MockEfestoOutput.class.getCanonicalName().replace('.',
-                                                                                                              '/'))),
-              "MockEfestoOutput");
+import static org.kie.efesto.runtimemanager.api.utils.SPIUtils.getLocalDiscoveredKieRuntimeServices;
+
+/**
+ * This is the default, JVM-local, implementation of the communication layer abstraction API, to be invoked internally by the framework.
+ */
+public class LocalRuntimeServiceProviderImpl implements RuntimeServiceProvider {
+
+    @Override
+    public List<KieRuntimeService> getKieRuntimeServices() {
+        return getLocalDiscoveredKieRuntimeServices();
     }
 
-    public MockEfestoOutput(ModelLocalUriId modelLocalUriId, String outputData) {
-        super(modelLocalUriId, outputData);
-    }
 }

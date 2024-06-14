@@ -56,4 +56,10 @@ public class KieRuntimeServicePMML implements KieRuntimeService<PMMLRuntimeConte
     public String getModelType() {
         return PMML_STRING;
     }
+
+    @Override
+    public Optional<EfestoInputPMML> parseJsonInput(String modelLocalUriIdString, String inputDataString) {
+        // This implementation is not meant to be executed from a different JVM
+        return Optional.empty();
+    }
 }

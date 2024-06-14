@@ -22,17 +22,20 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
+import org.kie.efesto.common.api.model.EfestoRuntimeContext;
 import org.kie.efesto.runtimemanager.api.model.EfestoInput;
-import org.kie.efesto.runtimemanager.api.model.EfestoLocalRuntimeContext;
 import org.kie.efesto.runtimemanager.api.model.EfestoOutput;
-import org.kie.efesto.runtimemanager.api.service.RuntimeManager;
+import org.kie.efesto.runtimemanager.api.service.LocalRuntimeManager;
 
 import static org.kie.efesto.runtimemanager.core.utils.RuntimeManagerUtils.getOptionalOutput;
 
-public class RuntimeManagerImpl implements RuntimeManager {
+/**
+ * This is the implementation that runs on local JVM
+ */
+public class LocalRuntimeManagerImpl implements LocalRuntimeManager {
 
     @Override
-    public Collection<EfestoOutput> evaluateInput(EfestoLocalRuntimeContext context, EfestoInput... toEvaluate) {
+    public Collection<EfestoOutput> evaluateInput(EfestoRuntimeContext context, EfestoInput... toEvaluate) {
         if (toEvaluate.length == 1) { // minor optimization for the (most typical) case with 1 input
             return getOptionalOutput(context, toEvaluate[0]).map(Collections::singletonList).orElse(Collections.emptyList());
         }
@@ -42,6 +45,5 @@ public class RuntimeManagerImpl implements RuntimeManager {
         }
         return toReturn;
     }
-
 
 }
