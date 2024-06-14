@@ -18,8 +18,8 @@
  */
 package org.kie.dmn.efesto.compiler.model;
 
-import org.kie.dmn.efesto.api.identifiers.DmnIdFactory;
-import org.kie.dmn.efesto.api.identifiers.KieDmnComponentRoot;
+import org.kie.dmn.api.identifiers.DmnIdFactory;
+import org.kie.dmn.api.identifiers.KieDmnComponentRoot;
 import org.kie.efesto.common.api.identifiers.EfestoAppRoot;
 import org.kie.efesto.compilationmanager.api.model.EfestoCallableOutputModelContainer;
 

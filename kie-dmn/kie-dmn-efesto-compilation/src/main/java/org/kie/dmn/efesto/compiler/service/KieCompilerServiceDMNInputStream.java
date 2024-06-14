@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -16,17 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.dmn.core.compiler.service;
+package org.kie.dmn.efesto.compiler.service;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
-
+import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNModel;
-import org.kie.dmn.core.compiler.utils.DmnCompilerUtils;
+import org.kie.dmn.core.compiler.profiles.ExtendedDMNProfile;
+import org.kie.dmn.efesto.compiler.utils.DmnCompilerUtils;
+import org.kie.dmn.validation.DMNValidator;
+import org.kie.dmn.validation.DMNValidatorFactory;
 import org.kie.efesto.compilationmanager.api.exceptions.EfestoCompilationManagerException;
 import org.kie.efesto.compilationmanager.api.exceptions.KieCompilerServiceException;
 import org.kie.efesto.compilationmanager.api.model.EfestoCompilationContext;
@@ -35,13 +32,22 @@ import org.kie.efesto.compilationmanager.api.model.EfestoInputStreamResource;
 import org.kie.efesto.compilationmanager.api.model.EfestoResource;
 import org.kie.efesto.compilationmanager.api.service.KieCompilerService;
 
-import static org.kie.dmn.core.compiler.utils.DmnCompilerUtils.getDMNModel;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.kie.dmn.efesto.compiler.utils.DmnCompilerUtils.getDMNModel;
 
 /**
  * For the moment being, use this for DMN "validation", since DMN does not have a code-generation phase
  */
-public class KieCompilationServiceDMNInputStream implements KieCompilerService<EfestoCompilationOutput,
-        EfestoCompilationContext> {
+public class KieCompilerServiceDMNInputStream implements KieCompilerService<EfestoCompilationOutput, EfestoCompilationContext> {
+
+    static final DMNValidator validator = DMNValidatorFactory.newValidator(Arrays.asList(new ExtendedDMNProfile()));
 
     @Override
     public boolean canManageResource(EfestoResource toProcess) {
@@ -56,17 +62,27 @@ public class KieCompilationServiceDMNInputStream implements KieCompilerService<E
                                                                 toProcess.getClass().getName()));
         }
         EfestoInputStreamResource inputStreamResource = (EfestoInputStreamResource) toProcess;
-        String modelSource = getModelSource(inputStreamResource.getContent());
-        DMNModel dmnModel = getDMNModel(modelSource);
-        return Collections.singletonList(DmnCompilerUtils.getDefaultEfestoCompilationOutput(inputStreamResource.getFileName(),
-                                                                                            dmnModel.getName(),
-                                                                                            modelSource));
+        List<DMNMessage> messages = validator.validate(new InputStreamReader(inputStreamResource.getContent()),
+                DMNValidator.Validation.VALIDATE_SCHEMA,
+                DMNValidator.Validation.VALIDATE_MODEL,
+                DMNValidator.Validation.VALIDATE_COMPILATION,
+                DMNValidator.Validation.ANALYZE_DECISION_TABLE);
+        if (DmnCompilerUtils.hasError(messages)) {
+            return Collections.emptyList();
+        } else {
+            String modelSource = getModelSource(inputStreamResource.getContent());
+            DMNModel dmnModel = getDMNModel(modelSource);
+            return Collections.singletonList(DmnCompilerUtils.getDefaultEfestoCompilationOutput(inputStreamResource.getFileName(),
+                    dmnModel.getName(),
+                    modelSource));
+        }
     }
 
     @Override
     public String getModelType() {
         return "dmn";
     }
+
 
     private String getModelSource(InputStream inputStream) {
         String newLine = System.getProperty("line.separator");

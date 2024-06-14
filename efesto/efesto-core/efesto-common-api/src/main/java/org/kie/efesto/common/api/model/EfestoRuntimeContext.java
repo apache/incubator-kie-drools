@@ -16,25 +16,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.dmn.api.identifiers;
 
-import java.util.Map;
+package org.kie.efesto.common.api.model;
 
-import org.kie.efesto.common.api.identifiers.ComponentRoot;
-import org.kie.efesto.common.api.identifiers.EfestoComponentRoot;
+import org.kie.efesto.common.api.listener.EfestoListener;
 
-import static org.kie.efesto.common.api.utils.EfestoAppRootHelper.getComponentRootBySPI;
+public interface EfestoRuntimeContext<T extends EfestoListener> extends EfestoContext<T> {
 
-public class KieDmnComponentRoot implements EfestoComponentRoot {
-
-    private static final Map<Class<? extends ComponentRoot>, ComponentRoot> INSTANCES;
-
-    static {
-        INSTANCES = getComponentRootBySPI(DmnComponentRoot.class);
-    }
-
-    @Override
-    public <T extends ComponentRoot> T get(Class<T> providerId) {
-        return (T) INSTANCES.get(providerId);
-    }
 }

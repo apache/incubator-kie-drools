@@ -19,11 +19,11 @@
 package org.kie.dmn.efesto.compiler.service;
 
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.kie.efesto.compilationmanager.api.model.EfestoFileResource;
 import org.kie.efesto.compilationmanager.api.model.EfestoInputStreamResource;
-import org.kie.efesto.compilationmanager.api.service.KieCompilationService;
+import org.kie.efesto.compilationmanager.api.service.KieCompilerService;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,11 +34,11 @@ import static org.kie.efesto.common.api.utils.MemoryFileUtils.getFileFromFileNam
 
 public class KieCompilerServiceDMNInputStreamTest {
 
-    private static KieCompilationService kieCompilationService;
+    private static KieCompilerService kieCompilationService;
 
-    @BeforeClass
+    @BeforeAll
     public static void setUp() {
-        kieCompilationService = new KieCompilationServiceDMNInputStream();
+        kieCompilationService = new KieCompilerServiceDMNInputStream();
     }
 
     @Test

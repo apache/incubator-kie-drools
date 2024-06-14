@@ -16,21 +16,26 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.dmn.core.compiler.model;
+package org.kie.dmn.api.identifiers;
 
-import org.kie.efesto.compilationmanager.core.model.EfestoCompilationContextImpl;
-import org.kie.internal.builder.KnowledgeBuilderConfiguration;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.memorycompiler.KieMemoryCompiler;
+import java.util.Map;
 
-public class DmnCompilationContextImpl extends EfestoCompilationContextImpl implements DmnCompilationContext {
+import org.kie.efesto.common.api.identifiers.ComponentRoot;
+import org.kie.efesto.common.api.identifiers.EfestoComponentRoot;
+import org.kie.efesto.common.api.utils.EfestoAppRootHelper;
 
-    public DmnCompilationContextImpl(KieMemoryCompiler.MemoryCompilerClassLoader memoryCompilerClassLoader) {
-        super(memoryCompilerClassLoader);
+import static org.kie.efesto.common.api.utils.EfestoAppRootHelper.getComponentRootBySPI;
+
+public class KieDmnComponentRoot implements EfestoComponentRoot {
+
+    private static final Map<Class<? extends ComponentRoot>, ComponentRoot> INSTANCES;
+
+    static {
+        INSTANCES = EfestoAppRootHelper.getComponentRootBySPI(DmnComponentRoot.class);
     }
 
     @Override
-    public KnowledgeBuilderConfiguration newKnowledgeBuilderConfiguration() {
-        return KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration(memoryCompilerClassLoader);
+    public <T extends ComponentRoot> T get(Class<T> providerId) {
+        return (T) INSTANCES.get(providerId);
     }
 }

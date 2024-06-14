@@ -47,6 +47,18 @@ public interface KieCompilerService<E extends EfestoCompilationOutput, U extends
      */
     List<E> processResource(EfestoResource toProcess, U context);
 
+    default boolean hasCompilationSource(String fileName) {
+        return false;
+    }
+
+    /**
+     * Retrieve the source of a given model file. Used to retrieve source from remote model (e.g. pmml model deployed in different jvm and looked for by dmn)
+     * @param fileName
+     */
+    default String getCompilationSource(String fileName) {
+        return null;
+    }
+
     /**
      * Return the model type that the CompilerService handles
      *

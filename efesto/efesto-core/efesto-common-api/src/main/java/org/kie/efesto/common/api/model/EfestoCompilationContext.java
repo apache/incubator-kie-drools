@@ -16,27 +16,30 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.dmn.core.compiler.model;
+package org.kie.efesto.common.api.model;
 
-import org.kie.dmn.api.identifiers.DmnIdFactory;
-import org.kie.dmn.api.identifiers.KieDmnComponentRoot;
-import org.kie.efesto.common.api.identifiers.EfestoAppRoot;
-import org.kie.efesto.compilationmanager.api.model.EfestoCallableOutputModelContainer;
+import java.nio.file.Path;
+import java.util.Map;
+import java.util.ServiceLoader;
 
-import java.util.Collections;
-import java.util.List;
+import org.kie.efesto.common.api.io.IndexFile;
+import org.kie.efesto.common.api.listener.EfestoListener;
 
-public class EfestoCallableOutputDMN extends EfestoCallableOutputModelContainer {
+/**
+ *
+ * Wrap MemoryCompilerClassLoader and convey generated classes to be used by other CompilationManager or RuntimeManager
+ *
+ */
+public interface EfestoCompilationContext<T extends EfestoListener> extends EfestoContext<T> {
 
-    public EfestoCallableOutputDMN(String fileName, String modelName, String modelSource) {
-        super(new EfestoAppRoot()
-                .get(KieDmnComponentRoot.class)
-                .get(DmnIdFactory.class)
-                .get(fileName, modelName), modelSource);
-    }
+    Map<String, byte[]> compileClasses(Map<String, String> sourcesMap);
 
-    @Override
-    public List<String> getFullClassNames() {
-        return Collections.emptyList();
+    void loadClasses(Map<String, byte[]> compiledClassesMap);
+    ServiceLoader getKieCompilerServiceLoader();
+
+    byte[] getCode(String name);
+
+    default Map<String, IndexFile> createIndexFiles(Path targetDirectory) {
+        throw new UnsupportedOperationException();
     }
 }
