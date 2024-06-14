@@ -21,11 +21,11 @@ package org.kie.pmml.api.runtime;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.kie.pmml.api.dto.PMMLRequestData;
-import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
+import org.kie.efesto.runtimemanager.api.model.EfestoLocalRuntimeContext;
 import org.kie.pmml.api.PMMLContext;
+import org.kie.pmml.api.dto.PMMLRequestData;
 
-public interface PMMLRuntimeContext extends EfestoRuntimeContext<PMMLListener>,
+public interface PMMLRuntimeContext extends EfestoLocalRuntimeContext<PMMLListener>,
                                             PMMLContext<PMMLListener> {
 
     PMMLRequestData getRequestData();

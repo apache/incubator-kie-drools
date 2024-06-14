@@ -16,34 +16,33 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.efesto.runtimemanager.core.mocks;
+package org.kie.efesto.common.core.serialization;
 
-import org.kie.efesto.common.api.cache.EfestoClassKey;
+import java.io.IOException;
+
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import org.kie.efesto.common.api.identifiers.LocalUri;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
-import org.kie.efesto.runtimemanager.api.model.EfestoInput;
 
-import static org.kie.efesto.common.api.identifiers.LocalUri.SLASH;
+public class ModelLocalUriIdDeserializer extends StdDeserializer<ModelLocalUriId> {
 
-public class MockKieRuntimeServiceA extends AbstractMockKieRuntimeService {
+    private static final long serialVersionUID = -3468047979532504909L;
 
+    public ModelLocalUriIdDeserializer() {
+        this(null);
+    }
 
-    public MockKieRuntimeServiceA() {
-        super(new ModelLocalUriId(LocalUri.parse(SLASH + MockEfestoInputA.class.getSimpleName() + SLASH + MockEfestoInputA.class.getPackage().getName())));
+    public ModelLocalUriIdDeserializer(Class<ModelLocalUriId> t) {
+        super(t);
     }
 
     @Override
-    public EfestoClassKey getEfestoClassKeyIdentifier() {
-        return new EfestoClassKey(MockEfestoInputA.class, String.class);
-    }
-
-    @Override
-    public String getModelType() {
-        return MockEfestoInputA.class.getSimpleName();
-    }
-
-    @Override
-    public EfestoInput getMockedEfestoInput() {
-        return new MockEfestoInputA();
+    public ModelLocalUriId deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
+        JsonNode node = p.getCodec().readTree(p);
+        String path = node.get("fullPath").asText();
+        return new ModelLocalUriId(LocalUri.parse(path));
     }
 }

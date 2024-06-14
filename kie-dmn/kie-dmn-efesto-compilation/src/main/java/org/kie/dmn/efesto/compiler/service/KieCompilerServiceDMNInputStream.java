@@ -26,7 +26,7 @@ import org.kie.dmn.validation.DMNValidator;
 import org.kie.dmn.validation.DMNValidatorFactory;
 import org.kie.efesto.compilationmanager.api.exceptions.EfestoCompilationManagerException;
 import org.kie.efesto.compilationmanager.api.exceptions.KieCompilerServiceException;
-import org.kie.efesto.compilationmanager.api.model.EfestoCompilationContext;
+import org.kie.efesto.common.api.model.EfestoCompilationContext;
 import org.kie.efesto.compilationmanager.api.model.EfestoCompilationOutput;
 import org.kie.efesto.compilationmanager.api.model.EfestoInputStreamResource;
 import org.kie.efesto.compilationmanager.api.model.EfestoResource;

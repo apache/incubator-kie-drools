@@ -18,19 +18,18 @@
  */
 package org.kie.dmn.efesto.runtime.utils;
 
+import java.util.Map;
+import java.util.Optional;
+
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.efesto.runtime.model.EfestoOutputDMN;
 import org.kie.dmn.efesto.runtime.service.DMNEvaluator;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
-import org.kie.efesto.common.api.model.EfestoRuntimeContext;
 import org.kie.efesto.common.api.model.GeneratedModelResource;
 import org.kie.efesto.runtimemanager.api.model.EfestoInput;
 import org.kie.efesto.runtimemanager.api.model.EfestoLocalRuntimeContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Map;
-import java.util.Optional;
 
 import static org.kie.efesto.runtimemanager.api.utils.GeneratedResourceUtils.getGeneratedModelResource;
 import static org.kie.efesto.runtimemanager.api.utils.GeneratedResourceUtils.isPresentExecutableOrModelOrRedirect;
@@ -42,7 +41,7 @@ public class DmnRuntimeHelper {
     private DmnRuntimeHelper() {
     }
 
-    public static boolean canManage(EfestoInput toEvaluate, EfestoRuntimeContext context) {
+    public static boolean canManage(EfestoInput toEvaluate, EfestoLocalRuntimeContext context) {
         return isPresentExecutableOrModelOrRedirect(toEvaluate.getModelLocalUriId(), context);
     }
 

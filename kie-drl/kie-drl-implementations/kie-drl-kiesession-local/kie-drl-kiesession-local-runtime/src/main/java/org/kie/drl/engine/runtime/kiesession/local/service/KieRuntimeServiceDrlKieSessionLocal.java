@@ -26,11 +26,11 @@ import org.kie.drl.engine.runtime.kiesession.local.model.EfestoOutputDrlKieSessi
 import org.kie.drl.engine.runtime.kiesession.local.utils.DrlRuntimeHelper;
 import org.kie.efesto.common.api.cache.EfestoClassKey;
 import org.kie.efesto.runtimemanager.api.model.EfestoInput;
-import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
+import org.kie.efesto.runtimemanager.api.model.EfestoLocalRuntimeContext;
 import org.kie.efesto.runtimemanager.api.service.KieRuntimeService;
 
-
-public class KieRuntimeServiceDrlKieSessionLocal implements KieRuntimeService<String, KieSession, EfestoInputDrlKieSessionLocal, EfestoOutputDrlKieSessionLocal, EfestoRuntimeContext> {
+public class KieRuntimeServiceDrlKieSessionLocal implements KieRuntimeService<String, KieSession,
+        EfestoInputDrlKieSessionLocal, EfestoOutputDrlKieSessionLocal, EfestoLocalRuntimeContext> {
 
     @Override
     public EfestoClassKey getEfestoClassKeyIdentifier() {
@@ -38,12 +38,13 @@ public class KieRuntimeServiceDrlKieSessionLocal implements KieRuntimeService<St
     }
 
     @Override
-    public boolean canManageInput(EfestoInput toEvaluate, EfestoRuntimeContext context) {
+    public boolean canManageInput(EfestoInput toEvaluate, EfestoLocalRuntimeContext context) {
         return DrlRuntimeHelper.canManage(toEvaluate, context);
     }
 
     @Override
-    public Optional<EfestoOutputDrlKieSessionLocal> evaluateInput(EfestoInputDrlKieSessionLocal toEvaluate, EfestoRuntimeContext context) {
+    public Optional<EfestoOutputDrlKieSessionLocal> evaluateInput(EfestoInputDrlKieSessionLocal toEvaluate,
+                                                                  EfestoLocalRuntimeContext context) {
         return DrlRuntimeHelper.execute(toEvaluate, context);
     }
 

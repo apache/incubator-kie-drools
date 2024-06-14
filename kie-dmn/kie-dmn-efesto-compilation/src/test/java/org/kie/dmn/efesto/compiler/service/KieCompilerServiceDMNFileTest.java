@@ -90,8 +90,7 @@ public class KieCompilerServiceDMNFileTest {
         String fileName = String.format("%s.dmn", modelName);
         File dmnFile = getFileFromFileName(fileName).orElseThrow(() -> new RuntimeException("Failed to get dmn file"));
         EfestoFileResource toProcess = new EfestoFileResource(dmnFile);
-        EfestoCompilationContext context =
-                (EfestoCompilationContext) EfestoCompilationContextUtils.buildWithParentClassLoader(Thread.currentThread().getContextClassLoader());
+        EfestoCompilationContext context = EfestoCompilationContextUtils.buildWithParentClassLoader(Thread.currentThread().getContextClassLoader());
         CompilationManagerUtils.processResourceWithContext(toProcess, context);
         context.createIndexFiles(Path.of("/Users/gcardosi/tmp"));
 

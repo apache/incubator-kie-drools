@@ -33,7 +33,7 @@ import org.kie.efesto.compilationmanager.api.exceptions.KieCompilerServiceExcept
 import org.kie.efesto.compilationmanager.api.model.EfestoCallableOutput;
 import org.kie.efesto.compilationmanager.api.model.EfestoCallableOutputClassesContainer;
 import org.kie.efesto.compilationmanager.api.model.EfestoClassesContainer;
-import org.kie.efesto.compilationmanager.api.model.EfestoCompilationContext;
+import org.kie.efesto.common.api.model.EfestoCompilationContext;
 import org.kie.efesto.compilationmanager.api.model.EfestoCompilationOutput;
 import org.kie.efesto.compilationmanager.api.model.EfestoRedirectOutput;
 import org.kie.efesto.compilationmanager.api.model.EfestoResource;

@@ -24,7 +24,7 @@ import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.efesto.common.api.identifiers.LocalUri;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
-import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
+import org.kie.efesto.runtimemanager.api.model.EfestoLocalRuntimeContext;
 import org.kie.efesto.runtimemanager.core.model.EfestoRuntimeContextUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -38,7 +38,7 @@ class EfestoKieSessionUtilTest {
     @Disabled("DROOLS-7090 : In this test, there is no RuntimeService for drl so this cannot find IndexFile.drl_json")
     @Test
     void loadKieSession() {
-        EfestoRuntimeContext context = EfestoRuntimeContextUtils.buildWithParentClassLoader(Thread.currentThread().getContextClassLoader());
+        EfestoLocalRuntimeContext context = EfestoRuntimeContextUtils.buildWithParentClassLoader(Thread.currentThread().getContextClassLoader());
         ModelLocalUriId localUri = new ModelLocalUriId(LocalUri.parse("/drl" + basePath));
         KieSession retrieved = EfestoKieSessionUtil.loadKieSession(localUri, context);
         assertThat(retrieved).isNotNull();
@@ -47,7 +47,7 @@ class EfestoKieSessionUtilTest {
 
     @Test
     void loadModel() {
-        EfestoRuntimeContext context = EfestoRuntimeContextUtils.buildWithParentClassLoader(Thread.currentThread().getContextClassLoader());
+        EfestoLocalRuntimeContext context = EfestoRuntimeContextUtils.buildWithParentClassLoader(Thread.currentThread().getContextClassLoader());
         Model retrieved = EfestoKieSessionUtil.loadModel(fullModelResourcesSourceClassName, context);
         assertThat(retrieved).isNotNull();
     }

@@ -34,7 +34,7 @@ import org.kie.efesto.common.api.model.GeneratedExecutableResource;
 import org.kie.efesto.common.api.model.GeneratedResources;
 import org.kie.efesto.runtimemanager.api.exceptions.KieRuntimeServiceException;
 import org.kie.efesto.runtimemanager.api.model.EfestoInput;
-import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
+import org.kie.efesto.common.api.model.EfestoRuntimeContext;
 import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.enums.PMML_STEP;

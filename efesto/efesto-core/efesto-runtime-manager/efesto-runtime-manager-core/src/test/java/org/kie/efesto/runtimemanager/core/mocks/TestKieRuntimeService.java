@@ -22,7 +22,7 @@ import java.util.Optional;
 
 import org.kie.efesto.common.api.cache.EfestoClassKey;
 import org.kie.efesto.runtimemanager.api.model.EfestoInput;
-import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
+import org.kie.efesto.common.api.model.EfestoRuntimeContext;
 import org.kie.efesto.runtimemanager.api.service.KieRuntimeService;
 
 // This service is required to find IndexFile "test" in classpath
@@ -48,5 +48,10 @@ public class TestKieRuntimeService<T extends AbstractMockEfestoInput> implements
     @Override
     public boolean canManageInput(EfestoInput toEvaluate, EfestoRuntimeContext context) {
         return false;
+    }
+
+    @Override
+    public Optional<T> parseJsonInput(String modelLocalUriIdString, String inputDataString) {
+        return Optional.empty();
     }
 }

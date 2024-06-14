@@ -22,7 +22,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.kie.efesto.compilationmanager.api.exceptions.KieCompilerServiceException;
-import org.kie.efesto.compilationmanager.api.model.EfestoCompilationContext;
+import org.kie.efesto.common.api.model.EfestoCompilationContext;
 import org.kie.efesto.compilationmanager.api.model.EfestoCompilationOutput;
 import org.kie.efesto.compilationmanager.api.model.EfestoResource;
 

@@ -21,8 +21,9 @@ package org.kie.efesto.runtimemanager.api.service;
 import java.util.Collection;
 
 import org.kie.efesto.runtimemanager.api.model.EfestoInput;
+import org.kie.efesto.runtimemanager.api.model.EfestoLocalRuntimeContext;
 import org.kie.efesto.runtimemanager.api.model.EfestoOutput;
-import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
+import org.kie.efesto.common.api.model.EfestoRuntimeContext;
 
 public interface RuntimeManager {
 
@@ -32,6 +33,6 @@ public interface RuntimeManager {
      * @param toEvaluate
      * @return
      */
-    Collection<EfestoOutput> evaluateInput(EfestoRuntimeContext context,
+    Collection<EfestoOutput> evaluateInput(EfestoLocalRuntimeContext context,
                                            EfestoInput... toEvaluate);
 }

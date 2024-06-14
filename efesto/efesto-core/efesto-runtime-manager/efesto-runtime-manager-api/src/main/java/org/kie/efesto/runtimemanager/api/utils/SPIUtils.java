@@ -27,7 +27,8 @@ import java.util.Set;
 
 import org.kie.efesto.runtimemanager.api.exceptions.KieRuntimeServiceException;
 import org.kie.efesto.runtimemanager.api.model.EfestoInput;
-import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
+import org.kie.efesto.common.api.model.EfestoRuntimeContext;
+import org.kie.efesto.runtimemanager.api.model.EfestoLocalRuntimeContext;
 import org.kie.efesto.runtimemanager.api.service.KieRuntimeService;
 import org.kie.efesto.runtimemanager.api.service.RuntimeManager;
 import org.slf4j.Logger;
@@ -60,7 +61,7 @@ public class SPIUtils {
                              (s1, s2) -> new KieRuntimeServiceException("Found more than one compiler services: " + s1 + " and " + s2));
     }
 
-    public static Optional<KieRuntimeService> getKieRuntimeServiceFromEfestoRuntimeContext(EfestoInput<?> input, EfestoRuntimeContext context) {
+    public static Optional<KieRuntimeService> getKieRuntimeServiceFromEfestoRuntimeContext(EfestoInput<?> input, EfestoLocalRuntimeContext context) {
         if ( logger.isTraceEnabled() ) {
             logger.trace("getKieRuntimeServiceFromEfestoRuntimeContext {} {}", input, context);
         }
@@ -110,7 +111,7 @@ public class SPIUtils {
         return runtimeManagerLoader;
     }
 
-    public static Set<String> collectModelTypes(EfestoRuntimeContext context) {
+    public static Set<String> collectModelTypes(EfestoLocalRuntimeContext context) {
         List<KieRuntimeService> kieRuntimeServices = getKieRuntimeServices(false);
         Set<String> modelTypes = new HashSet<>();
         for (KieRuntimeService kieRuntimeService : kieRuntimeServices) {

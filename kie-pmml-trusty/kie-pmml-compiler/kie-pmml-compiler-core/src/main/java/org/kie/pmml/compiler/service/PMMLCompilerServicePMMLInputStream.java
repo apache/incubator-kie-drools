@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.kie.efesto.common.utils.PackageClassNameUtils;
-import org.kie.efesto.compilationmanager.api.model.EfestoCompilationContext;
+import org.kie.efesto.common.api.model.EfestoCompilationContext;
 import org.kie.efesto.compilationmanager.api.model.EfestoCompilationOutput;
 import org.kie.efesto.compilationmanager.api.model.EfestoInputStreamResource;
 import org.kie.memorycompiler.KieMemoryCompiler;

@@ -18,7 +18,7 @@
  */
 package org.kie.dmn.efesto.compiler.model;
 
-import org.kie.efesto.compilationmanager.api.model.EfestoCompilationContext;
+import org.kie.efesto.common.api.model.EfestoCompilationContext;
 import org.kie.efesto.compilationmanager.core.model.EfestoCompilationContextImpl;
 import org.kie.efesto.compilationmanager.core.model.EfestoCompilationContextUtils;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;

@@ -16,32 +16,21 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.efesto.compilationmanager.api.model;
+package org.kie.efesto.runtimemanager.api.model;
 
-import java.nio.file.Path;
-import java.util.Map;
 import java.util.ServiceLoader;
 
-import org.kie.efesto.common.api.io.IndexFile;
 import org.kie.efesto.common.api.listener.EfestoListener;
-import org.kie.efesto.common.api.model.EfestoContext;
-import org.kie.efesto.compilationmanager.api.service.KieCompilerService;
+import org.kie.efesto.common.api.model.EfestoRuntimeContext;
+import org.kie.efesto.runtimemanager.api.service.KieRuntimeService;
 
 /**
- *
- * Wrap MemoryCompilerClassLoader and convey generated classes to be used by other CompilationManager or RuntimeManager
- *
+ * This is the internal, local-JVM specific, <code>EfestoRuntimeContext</code>. To be used, internally, by <code>RuntimeServiceProviders</code>
+ * @param <T>
  */
-public interface EfestoCompilationContext<T extends EfestoListener> extends EfestoContext<T> {
+public interface EfestoLocalRuntimeContext<T extends EfestoListener> extends EfestoRuntimeContext<T> {
 
-    Map<String, byte[]> compileClasses(Map<String, String> sourcesMap);
+    Class<?> loadClass(String className) throws ClassNotFoundException;
 
-    void loadClasses(Map<String, byte[]> compiledClassesMap);
-    ServiceLoader<KieCompilerService> getKieCompilerServiceLoader();
-
-    byte[] getCode(String name);
-
-    default Map<String, IndexFile> createIndexFiles(Path targetDirectory) {
-        throw new UnsupportedOperationException();
-    }
+    ServiceLoader<KieRuntimeService> getKieRuntimeService();
 }

@@ -26,7 +26,7 @@ import java.util.ServiceLoader;
 import java.util.Set;
 
 import org.kie.efesto.compilationmanager.api.exceptions.KieCompilerServiceException;
-import org.kie.efesto.compilationmanager.api.model.EfestoCompilationContext;
+import org.kie.efesto.common.api.model.EfestoCompilationContext;
 import org.kie.efesto.compilationmanager.api.model.EfestoResource;
 import org.kie.efesto.compilationmanager.api.service.CompilationManager;
 import org.kie.efesto.compilationmanager.api.service.KieCompilerService;

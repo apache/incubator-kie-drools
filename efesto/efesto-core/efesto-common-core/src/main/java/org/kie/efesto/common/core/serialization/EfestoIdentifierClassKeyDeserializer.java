@@ -24,25 +24,36 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
-import org.kie.efesto.common.api.identifiers.LocalUri;
+import org.kie.efesto.common.api.cache.EfestoClassKey;
+import org.kie.efesto.common.api.cache.EfestoIdentifierClassKey;
+import org.kie.efesto.common.api.exceptions.KieEfestoCommonException;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 
-public class ModelLocalUriIdDeSerializer extends StdDeserializer<ModelLocalUriId> {
+import static org.kie.efesto.common.core.utils.JSONUtils.getObjectMapper;
+
+public class EfestoIdentifierClassKeyDeserializer extends StdDeserializer<EfestoIdentifierClassKey> {
 
     private static final long serialVersionUID = -3468047979532504909L;
 
-    public ModelLocalUriIdDeSerializer() {
+    public EfestoIdentifierClassKeyDeserializer() {
         this(null);
     }
 
-    public ModelLocalUriIdDeSerializer(Class<ModelLocalUriId> t) {
+    public EfestoIdentifierClassKeyDeserializer(Class<EfestoIdentifierClassKey> t) {
         super(t);
     }
 
     @Override
-    public ModelLocalUriId deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
+    public EfestoIdentifierClassKey deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
         JsonNode node = p.getCodec().readTree(p);
-        String path = node.get("fullPath").asText();
-        return new ModelLocalUriId(LocalUri.parse(path));
+        try {
+            String modelLocalUriIdString = node.get("modelLocalUriId").toString();
+            ModelLocalUriId modelLocalUriId = getObjectMapper().readValue(modelLocalUriIdString, ModelLocalUriId.class);
+            String efestoClassKeyString = node.get("efestoClassKey").toString();
+            EfestoClassKey efestoClassKey = getObjectMapper().readValue(efestoClassKeyString, EfestoClassKey.class);
+            return new EfestoIdentifierClassKey(modelLocalUriId, efestoClassKey);
+        } catch (Exception e) {
+            throw new KieEfestoCommonException(String.format("Failed to deserialize %s as EfestoIdentifierClassKey", node), e);
+        }
     }
 }

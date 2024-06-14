@@ -28,8 +28,9 @@ import java.util.Optional;
 import org.kie.efesto.common.api.cache.EfestoClassKey;
 import org.kie.efesto.common.api.cache.EfestoIdentifierClassKey;
 import org.kie.efesto.runtimemanager.api.model.EfestoInput;
+import org.kie.efesto.runtimemanager.api.model.EfestoLocalRuntimeContext;
 import org.kie.efesto.runtimemanager.api.model.EfestoOutput;
-import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
+import org.kie.efesto.common.api.model.EfestoRuntimeContext;
 import org.kie.efesto.runtimemanager.api.service.KieRuntimeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,7 +72,7 @@ public class RuntimeManagerUtils {
         });
     }
 
-    static Optional<KieRuntimeService> getKieRuntimeServiceLocal(EfestoRuntimeContext context, EfestoInput input) {
+    static Optional<KieRuntimeService> getKieRuntimeServiceLocal(EfestoLocalRuntimeContext context, EfestoInput input) {
 
         KieRuntimeService cachedKieRuntimeService = getKieRuntimeServiceFromSecondLevelCache(input);
         if (cachedKieRuntimeService != null) {
@@ -119,8 +120,8 @@ public class RuntimeManagerUtils {
      * @param input
      * @return <code>Optional</code> of found <code>KieRuntimeService</code>, or <code>Optional.empty()</code>
      */
-    static Optional<KieRuntimeService> getKieRuntimeServiceFromEfestoRuntimeContextLocal(EfestoRuntimeContext context,
-                                                                               EfestoInput input) {
+    static Optional<KieRuntimeService> getKieRuntimeServiceFromEfestoRuntimeContextLocal(EfestoLocalRuntimeContext context,
+                                                                                         EfestoInput input) {
         logger.warn("Cannot find KieRuntimeService for {}, looking inside context classloader",
                     input.getModelLocalUriId());
         Optional<KieRuntimeService> retrieved = getKieRuntimeServiceFromEfestoRuntimeContext(input, context);
@@ -140,7 +141,7 @@ public class RuntimeManagerUtils {
         stored.add(toAdd);
     }
 
-    static Optional<EfestoOutput> getOptionalOutput(EfestoRuntimeContext context, EfestoInput input) {
+    static Optional<EfestoOutput> getOptionalOutput(EfestoLocalRuntimeContext context, EfestoInput input) {
         Optional<KieRuntimeService> retrieved = getKieRuntimeServiceLocal(context, input);
         return retrieved.isPresent() ? retrieved.flatMap(kieRuntimeService -> kieRuntimeService.evaluateInput(input,
                                                                                                               context)) : Optional.empty();

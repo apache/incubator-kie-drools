@@ -20,18 +20,19 @@ package org.kie.dmn.efesto.runtime.service;
 
 
 import org.assertj.core.api.Assertions;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNResult;
-import org.kie.dmn.efesto.api.identifiers.DmnIdFactory;
-import org.kie.dmn.efesto.api.identifiers.KieDmnComponentRoot;
-import org.kie.dmn.efesto.api.identifiers.LocalComponentIdDmn;
+import org.kie.dmn.api.identifiers.DmnIdFactory;
+import org.kie.dmn.api.identifiers.KieDmnComponentRoot;
+import org.kie.dmn.api.identifiers.LocalComponentIdDmn;
 import org.kie.dmn.efesto.runtime.model.EfestoOutputDMN;
 import org.kie.efesto.common.api.identifiers.EfestoAppRoot;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.common.api.model.EfestoRuntimeContext;
 import org.kie.efesto.runtimemanager.api.model.BaseEfestoInput;
 import org.kie.efesto.runtimemanager.api.model.EfestoInput;
+import org.kie.efesto.runtimemanager.api.model.EfestoLocalRuntimeContext;
 import org.kie.efesto.runtimemanager.core.model.EfestoRuntimeContextUtils;
 import org.kie.memorycompiler.KieMemoryCompiler;
 
@@ -51,9 +52,9 @@ public class KieRuntimeServiceDMNMapInputTest {
     private ModelLocalUriId modelLocalUriId;
 
     private EfestoInput<Map<String, Object>> inputDMN;
-    private EfestoRuntimeContext efestoRuntimeContext;
+    private EfestoLocalRuntimeContext efestoRuntimeContext;
 
-    @BeforeClass
+    @BeforeAll
     public static void setup() {
         kieRuntimeServiceDMNMapInput = new KieRuntimeServiceDMNMapInput();
         memoryCompilerClassLoader =
@@ -91,7 +92,7 @@ public class KieRuntimeServiceDMNMapInputTest {
                 .get(fileName, modelName);
     }
 
-    static EfestoRuntimeContext getEfestoContext(ClassLoader parenClassLoader) {
+    static EfestoLocalRuntimeContext getEfestoContext(ClassLoader parenClassLoader) {
         return EfestoRuntimeContextUtils.buildWithParentClassLoader(parenClassLoader);
     }
 }

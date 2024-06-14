@@ -115,10 +115,10 @@ The [org.kie.efesto.compilationmanager.api.model](efesto-core/efesto-compilation
 
 
 #### EfestoCompilationContext
-The `org.kie.efesto.compilationmanager.api.model.EfestoCompilationContext` define the environment to use for the processing and requires a `Classloader` as building parameter; `EfestoCompilationContext` embed a `ClassLoader` that wrap the one provided for instantiation. Since the most common use case is to do code-generation, that embedded **classloader** is capable of dynamic class loading, and is responsible to class compilation and classloader manipulation; it should not be exposed publicly to avoid uncontrolled and unforeseeable behaviors.
+The `org.kie.efesto.common.api.model.EfestoCompilationContext` define the environment to use for the processing and requires a `Classloader` as building parameter; `EfestoCompilationContext` embed a `ClassLoader` that wrap the one provided for instantiation. Since the most common use case is to do code-generation, that embedded **classloader** is capable of dynamic class loading, and is responsible to class compilation and classloader manipulation; it should not be exposed publicly to avoid uncontrolled and unforeseeable behaviors.
 
 The [org.kie.efesto.compilationmanager.api.model](efesto-core/efesto-compilation-manager/efesto-compilation-manager-api/src/main/java/org/kie/efesto/compilationmanager/api/model) package contains the *default* `EfestoCompilationContextImpl` implementation.
-Every plugin could also create its own subclass of `org.kie.efesto.compilationmanager.api.model.EfestoCompilationContext`; e.g. `DrlCompilationContext` subclass it to also use `KnowledgeBuilderConfiguration`.
+Every plugin could also create its own subclass of `org.kie.efesto.common.api.model.EfestoCompilationContext`; e.g. `DrlCompilationContext` subclass it to also use `KnowledgeBuilderConfiguration`.
 This subclassing activity is important to avoid that plugin-specific needs leaks out of the plugin boundary.
 
 For the moment being, the *container* project (i.e., the project that **uses** the efesto framework) is responsible to instantiate the *context* (providing the required classloader).
@@ -164,7 +164,7 @@ The [org.kie.efesto.runtimemanager.api.model](efesto-core/efesto-runtime-manager
 
 #### EfestoRuntimeContext
 
-he `org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext` define the environment to use for the evaluation and requires a `Classloader` as building parameter; `EfestoRuntimeContext` embed a `ClassLoader` that wrap the one provided for instantiation. Since the most common use case is to do code-generation, that embedded **classloader** is capable of dynamic class loading, and is responsible to class compilation and classloader manipulation; it should not be exposed publicly to avoid uncontrolled and unforeseeable behaviors. 
+he `org.kie.efesto.common.api.model.EfestoRuntimeContext` define the environment to use for the evaluation and requires a `Classloader` as building parameter; `EfestoRuntimeContext` embed a `ClassLoader` that wrap the one provided for instantiation. Since the most common use case is to do code-generation, that embedded **classloader** is capable of dynamic class loading, and is responsible to class compilation and classloader manipulation; it should not be exposed publicly to avoid uncontrolled and unforeseeable behaviors. 
 
 The [org.kie.efesto.runtimemanager.api.model](efesto-core/efesto-runtime-manager/efesto-runtime-manager-api/src/main/java/org/kie/efesto/runtimemanager/api/model) package contains the *default* `EfestoRuntimeContextImpl` implementation.
 Every plugin could also create its own subclass of `org.kie.efesto.runtimemanager.core.model.EfestoRuntimeContextImpl`.

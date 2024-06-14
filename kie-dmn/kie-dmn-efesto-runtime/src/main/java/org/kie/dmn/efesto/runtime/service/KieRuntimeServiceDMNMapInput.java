@@ -19,10 +19,9 @@
 package org.kie.dmn.efesto.runtime.service;
 
 import org.kie.dmn.api.core.DMNResult;
-import org.kie.dmn.efesto.api.identifiers.LocalComponentIdDmn;
+import org.kie.dmn.api.identifiers.LocalComponentIdDmn;
 import org.kie.dmn.efesto.runtime.model.EfestoOutputDMN;
 import org.kie.efesto.common.api.cache.EfestoClassKey;
-import org.kie.efesto.common.api.model.EfestoRuntimeContext;
 import org.kie.efesto.runtimemanager.api.exceptions.KieRuntimeServiceException;
 import org.kie.efesto.runtimemanager.api.model.BaseEfestoInput;
 import org.kie.efesto.runtimemanager.api.model.EfestoInput;
@@ -39,7 +38,7 @@ import static org.kie.dmn.efesto.runtime.utils.DmnRuntimeHelper.canManage;
 import static org.kie.dmn.efesto.runtime.utils.DmnRuntimeHelper.execute;
 import static org.kie.efesto.runtimemanager.core.model.EfestoRuntimeContextUtils.buildWithParentClassLoader;
 
-public class KieRuntimeServiceDMNMapInput implements KieRuntimeService<Map<String, Object>, DMNResult, EfestoInput<Map<String, Object>>, EfestoOutputDMN, EfestoRuntimeContext> {
+public class KieRuntimeServiceDMNMapInput implements KieRuntimeService<Map<String, Object>, DMNResult, EfestoInput<Map<String, Object>>, EfestoOutputDMN, EfestoLocalRuntimeContext> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KieRuntimeServiceDMNMapInput.class);
 
@@ -49,21 +48,21 @@ public class KieRuntimeServiceDMNMapInput implements KieRuntimeService<Map<Strin
     }
 
     @Override
-    public boolean canManageInput(EfestoInput toEvaluate, EfestoRuntimeContext context) {
+    public boolean canManageInput(EfestoInput toEvaluate, EfestoLocalRuntimeContext context) {
         return canManage(toEvaluate, context)
                 && toEvaluate.getModelLocalUriId() instanceof LocalComponentIdDmn;
     }
 
     @Override
     public Optional<EfestoOutputDMN> evaluateInput(EfestoInput<Map<String, Object>> toEvaluate,
-                                                   EfestoRuntimeContext context) {
+                                                   EfestoLocalRuntimeContext context) {
         if (!canManageInput(toEvaluate, context)) {
             throw new KieRuntimeServiceException("Wrong parameters " + toEvaluate + " " + context);
         }
         if (!(context instanceof EfestoLocalRuntimeContext)) {
             context = buildWithParentClassLoader(context.getClass().getClassLoader(), context.getGeneratedResourcesMap());
         }
-        return execute(toEvaluate, (EfestoLocalRuntimeContext) context);
+        return execute(toEvaluate,  context);
     }
 
     @Override

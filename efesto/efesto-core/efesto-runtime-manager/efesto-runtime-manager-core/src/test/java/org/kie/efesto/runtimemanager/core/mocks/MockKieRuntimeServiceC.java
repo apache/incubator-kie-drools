@@ -22,12 +22,12 @@ import org.kie.efesto.common.api.cache.EfestoClassKey;
 import org.kie.efesto.common.api.identifiers.LocalUri;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
 import org.kie.efesto.runtimemanager.api.model.EfestoInput;
-import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
 
 public class MockKieRuntimeServiceC extends AbstractMockKieRuntimeService {
 
-    private final static ModelLocalUriId modelLocalUriIdC =
-            new ModelLocalUriId(LocalUri.parse("/" + MockEfestoInputC.class.getSimpleName() + "/" + MockEfestoInputC.class.getPackage().getName()));
+    public MockKieRuntimeServiceC() {
+        super(new ModelLocalUriId(LocalUri.parse("/" + MockEfestoInputC.class.getSimpleName() + "/" + MockEfestoInputC.class.getPackage().getName())));
+    }
 
     @Override
     public EfestoClassKey getEfestoClassKeyIdentifier() {
@@ -35,7 +35,13 @@ public class MockKieRuntimeServiceC extends AbstractMockKieRuntimeService {
     }
 
     @Override
-    public boolean canManageInput(EfestoInput toEvaluate, EfestoRuntimeContext context) {
-        return toEvaluate.getModelLocalUriId().equals(modelLocalUriIdC);
+    public String getModelType() {
+        return MockEfestoInputC.class.getSimpleName();
     }
+
+    @Override
+    public EfestoInput getMockedEfestoInput() {
+        return new MockEfestoInputC();
+    }
+
 }

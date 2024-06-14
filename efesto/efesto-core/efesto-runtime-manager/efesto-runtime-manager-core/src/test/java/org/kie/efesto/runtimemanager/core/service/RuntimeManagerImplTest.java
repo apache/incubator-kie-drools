@@ -26,8 +26,8 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.efesto.runtimemanager.api.model.EfestoInput;
+import org.kie.efesto.runtimemanager.api.model.EfestoLocalRuntimeContext;
 import org.kie.efesto.runtimemanager.api.model.EfestoOutput;
-import org.kie.efesto.runtimemanager.api.model.EfestoRuntimeContext;
 import org.kie.efesto.runtimemanager.core.mocks.MockEfestoInputA;
 import org.kie.efesto.runtimemanager.core.mocks.MockEfestoInputB;
 import org.kie.efesto.runtimemanager.core.mocks.MockEfestoInputC;
@@ -40,7 +40,7 @@ import static org.assertj.core.api.Assertions.fail;
 class RuntimeManagerImplTest {
 
     private static RuntimeManagerImpl runtimeManager;
-    private static EfestoRuntimeContext context;
+    private static EfestoLocalRuntimeContext context;
 
     private static final List<Class<? extends EfestoInput>> MANAGED_Efesto_INPUTS =
             Arrays.asList(MockEfestoInputA.class,

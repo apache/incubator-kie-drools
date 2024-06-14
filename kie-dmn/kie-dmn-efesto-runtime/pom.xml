@@ -22,6 +22,16 @@
                 <artifactId>kie-dmn-efesto-api</artifactId>
                 <version>${version}</version>
             </dependency>
+          <dependency>
+            <groupId>org.kie</groupId>
+            <artifactId>efesto-runtime-manager-api</artifactId>
+            <version>${version}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.kie</groupId>
+            <artifactId>efesto-runtime-manager-core</artifactId>
+            <version>${version}</version>
+          </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -37,6 +47,10 @@
         </dependency>
         <!-- End DMN -->
         <!-- Efesto -->
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>efesto-runtime-manager-api</artifactId>
+      </dependency>
         <dependency>
             <groupId>org.kie</groupId>
             <artifactId>efesto-runtime-manager-core</artifactId>
