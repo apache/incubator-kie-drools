@@ -337,13 +337,14 @@ public class GuidedDTBRDRLPersistence extends RuleModelDRLPersistenceImpl {
                     final ActionFieldFunction afvClone = new ActionFieldFunction();
                     afvClone.setMethod(((ActionFieldFunction) fieldValue).getMethod());
                     afvClone.setField(fieldValue.getField());
-                    afvClone.setNature(BaseSingleFieldConstraint.TYPE_LITERAL);
                     afvClone.setType(fieldValue.getType());
                     String value = fieldValue.getValue();
                     String templateKeyValue = rowDataProvider.getTemplateKeyValue(value);
                     if (Objects.equals("", templateKeyValue)) {
+                        afvClone.setNature(fieldValue.getNature());
                         afvClone.setValue(value);
                     } else {
+                        afvClone.setNature(BaseSingleFieldConstraint.TYPE_LITERAL);
                         afvClone.setValue(templateKeyValue);
                     }
 
