@@ -32,55 +32,54 @@
 
   <itemDefinition id="_xItem" structureRef="String" />
 
-  <process processType="Private" isExecutable="true" id="IntermediateCatchEvent" name="IntermediateCatchEvent Process" >
+  <itemDefinition id="_2_MessageType" structureRef="String" />
+  <message id="_2_Message" itemRef="_2_MessageType" />
+
+  <process processType="Private" isExecutable="true" id="IntermediateThrowEventMessageWithTransformation" tns:packageName="org.jbpm.bpmn2.intermediate" name="Message Intermediate Throw Event Process" >
 
     <!-- process variables -->
     <property id="x" itemSubjectRef="_xItem"/>
 
     <!-- nodes -->
     <startEvent id="_1" name="StartProcess" />
-    <intermediateCatchEvent id="_3" name="timer" >
-      <timerEventDefinition>
-        <timeCycle>1s###1s</timeCycle>
-      </timerEventDefinition>
-    </intermediateCatchEvent>
-    <scriptTask id="_4" name="Event" >
-      <script>System.out.println("Timer triggered");</script>
-    </scriptTask>
-    <endEvent id="_5" name="EndProcess" />
+    <intermediateThrowEvent id="_2" name="MessageEvent" >
+      <dataInput id="_2_Input" name="param" itemSubjectRef="_xItem"/>
+      <dataInputAssociation>
+        <sourceRef>x</sourceRef>
+        <targetRef>_2_Input</targetRef>
+        <transformation language="http://www.java.com/java">x.toUpperCase();</transformation>
+      </dataInputAssociation>
+      <inputSet>
+        <dataInputRefs>_2_Input</dataInputRefs>
+      </inputSet>
+      <messageEventDefinition messageRef="_2_Message"/>
+    </intermediateThrowEvent>
+    <endEvent id="_3" name="EndEvent" />
 
     <!-- connections -->
-    <sequenceFlow id="_1-_3" sourceRef="_1" targetRef="_3" />
-    <sequenceFlow id="_3-_4" sourceRef="_3" targetRef="_4" />
-    <sequenceFlow id="_4-_5" sourceRef="_4" targetRef="_5" />
+    <sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2" />
+    <sequenceFlow id="_2-_3" sourceRef="_2" targetRef="_3" />
 
   </process>
 
   <bpmndi:BPMNDiagram>
-    <bpmndi:BPMNPlane bpmnElement="IntermediateCatchEvent" >
+    <bpmndi:BPMNPlane bpmnElement="MessageIntermediateEvent" >
       <bpmndi:BPMNShape bpmnElement="_1" >
         <dc:Bounds x="16" y="16" width="48" height="48" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_2" >
+        <dc:Bounds x="96" y="16" width="131" height="48" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="_3" >
-        <dc:Bounds x="96" y="16" width="48" height="48" />
+        <dc:Bounds x="262" y="15" width="48" height="48" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="_4" >
-        <dc:Bounds x="176" y="16" width="80" height="48" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="_5" >
-        <dc:Bounds x="288" y="16" width="48" height="48" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge bpmnElement="_1-_3" >
+      <bpmndi:BPMNEdge bpmnElement="_1-_2" >
         <di:waypoint x="40" y="40" />
-        <di:waypoint x="120" y="40" />
+        <di:waypoint x="161" y="40" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="_3-_4" >
-        <di:waypoint x="120" y="40" />
-        <di:waypoint x="216" y="40" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="_4-_5" >
-        <di:waypoint x="216" y="40" />
-        <di:waypoint x="312" y="40" />
+      <bpmndi:BPMNEdge bpmnElement="_2-_3" >
+        <di:waypoint x="161" y="40" />
+        <di:waypoint x="286" y="39" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

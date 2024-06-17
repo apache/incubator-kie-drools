@@ -40,7 +40,7 @@
     </operation>
   </interface>
 
-  <process processType="Private" isExecutable="true" id="ServiceProcessWithMvelTransformation" name="Service Process" >
+  <process processType="Private" isExecutable="true" id="ServiceProcessWithMvelTransformation" name="Service Process" tns:packageName="org.jbpm.bpmn2.service">
 
     <!-- process variables -->
     <property id="s" itemSubjectRef="_sItem"/>

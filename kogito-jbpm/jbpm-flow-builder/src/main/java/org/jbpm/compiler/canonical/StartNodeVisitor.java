@@ -84,7 +84,7 @@ public class StartNodeVisitor extends AbstractNodeVisitor<StartNode> {
 
                 body.addStatement(getFactoryMethod(getNodeId(startNode), METHOD_TRIGGER,
                         new StringLiteralExpr((String) nodeMetaData.get(TRIGGER_REF)),
-                        buildDataAssociationsExpression(startNode.getIoSpecification().getDataOutputAssociation())));
+                        buildDataAssociationsExpression(startNode, startNode.getIoSpecification().getDataOutputAssociation())));
 
                 String triggerMapping = (String) nodeMetaData.get(TRIGGER_MAPPING);
                 variable = variableScope.findVariable(triggerMapping);
@@ -99,13 +99,13 @@ public class StartNodeVisitor extends AbstractNodeVisitor<StartNode> {
             } else {
                 body.addStatement(getFactoryMethod(getNodeId(startNode), METHOD_TRIGGER,
                         new StringLiteralExpr((String) nodeMetaData.get(MESSAGE_TYPE)),
-                        buildDataAssociationsExpression(startNode.getIoSpecification().getDataOutputAssociation())));
+                        buildDataAssociationsExpression(startNode, startNode.getIoSpecification().getDataOutputAssociation())));
             }
             metadata.addSignal((String) nodeMetaData.get(MESSAGE_TYPE), variable != null ? variable.getType().getStringType() : null);
         } else {
             body.addStatement(getFactoryMethod(getNodeId(startNode), METHOD_TRIGGER,
                     new StringLiteralExpr((String) nodeMetaData.get(TRIGGER_REF)),
-                    buildDataAssociationsExpression(startNode.getIoSpecification().getDataOutputAssociation())));
+                    buildDataAssociationsExpression(startNode, startNode.getIoSpecification().getDataOutputAssociation())));
         }
     }
 

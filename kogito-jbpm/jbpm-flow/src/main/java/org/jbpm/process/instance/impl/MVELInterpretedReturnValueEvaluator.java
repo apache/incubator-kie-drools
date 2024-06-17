@@ -45,12 +45,12 @@ public class MVELInterpretedReturnValueEvaluator extends AbstractReturnValueEval
 
             @Override
             public boolean isResolveable(String name) {
-                return resolver.apply("#{" + name + "}") != null;
+                return resolver.apply(name) != null;
             };
 
             @Override
             public VariableResolver getVariableResolver(String name) {
-                return new SimpleValueResolver(resolver.apply("#{" + name + "}"));
+                return new SimpleValueResolver(resolver.apply(name));
             };
         };
         return MVEL.eval(expression, factory);

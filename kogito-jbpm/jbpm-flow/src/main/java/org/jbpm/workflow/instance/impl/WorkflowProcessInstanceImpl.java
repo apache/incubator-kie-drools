@@ -41,6 +41,7 @@ import java.util.stream.Stream;
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.mvel.util.MVELEvaluator;
 import org.jbpm.process.core.ContextContainer;
+import org.jbpm.process.core.ContextResolver;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.core.timer.BusinessCalendar;
@@ -539,7 +540,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
 
     public TimerInstance configureSLATimer(String slaDueDateExpression) {
         // setup SLA if provided
-        slaDueDateExpression = resolveVariable(slaDueDateExpression);
+        slaDueDateExpression = resolveVariable(slaDueDateExpression).toString();
         if (slaDueDateExpression == null || slaDueDateExpression.trim().isEmpty()) {
             logger.debug("Sla due date expression resolved to no value '{}'", slaDueDateExpression);
             return null;
@@ -593,7 +594,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
                 for (String type : events) {
                     addEventListener(type, EMPTY_EVENT_LISTENER, true);
                     if (isVariableExpression(type)) {
-                        addEventListener(resolveVariable(type), EMPTY_EVENT_LISTENER, true);
+                        addEventListener(resolveVariable(type).toString(), EMPTY_EVENT_LISTENER, true);
                     }
                 }
             }
@@ -731,7 +732,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
                 if (nodeInstances != null && !nodeInstances.isEmpty()) {
                     StringBuilder st = new StringBuilder();
                     for (NodeInstance ni : nodeInstances) {
-                        String result = resolveVariable(e, new NodeInstanceResolverFactory(ni));
+                        Object result = resolveVariable(e, new NodeInstanceResolverFactory(ni));
                         st.append(result).append("###");
                     }
                     return st.toString();
@@ -745,14 +746,19 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
     }
 
     protected List<String> resolveVariables(List<String> events) {
-        return events.stream().map(this::resolveVariable).collect(Collectors.toList());
+        return events.stream().map(this::resolveVariable).map(Object::toString).collect(Collectors.toList());
     }
 
-    private String resolveVariable(String s) {
+    private Object resolveVariable(String s) {
         return resolveVariable(s, new ProcessInstanceResolverFactory(this));
     }
 
-    private String resolveVariable(String s, VariableResolverFactory factory) {
+    private Object resolveVariable(String s, VariableResolverFactory factory) {
+        VariableScope var = (VariableScope) ((ContextResolver) this.getProcess()).resolveContext(VariableScope.VARIABLE_SCOPE, s);
+        if (var != null) {
+            return getVariable(s);
+        }
+
         Map<String, String> replacements = new HashMap<>();
         Matcher matcher = PatternConstants.PARAMETER_MATCHER.matcher(s);
         while (matcher.find()) {

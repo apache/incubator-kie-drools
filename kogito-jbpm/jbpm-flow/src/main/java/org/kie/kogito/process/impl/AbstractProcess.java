@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -309,5 +310,22 @@ public abstract class AbstractProcess<T extends Model> implements Process<T>, Pr
         public String[] getEventTypes() {
             return new String[0];
         }
+    }
+
+    @Override
+    public int hashCode() {
+        return id().hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        AbstractProcess other = (AbstractProcess) obj;
+        return Objects.equals(id(), other.id());
     }
 }

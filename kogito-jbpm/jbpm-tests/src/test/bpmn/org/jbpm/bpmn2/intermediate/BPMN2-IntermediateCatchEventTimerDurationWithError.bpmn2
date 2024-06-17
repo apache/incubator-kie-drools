@@ -22,10 +22,8 @@
 <bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:g="http://www.jboss.org/drools/flow/gpd" xmlns:java="http://www.java.com/javaTypes" xmlns:tns="http://www.jboss.org/drools" xmlns="http://www.jboss.org/drools" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd" id="Definition" exporter="org.eclipse.bpmn2.modeler.core" exporterVersion="1.2.1.Final" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="http://www.example.org/MinimalExample" typeLanguage="http://www.java.com/javaTypes">
   <bpmn2:itemDefinition id="_xItem" isCollection="false" structureRef="Integer"/>
   <bpmn2:itemDefinition id="ItemDefinition_1" isCollection="false" structureRef="Boolean"/>
-  <bpmn2:process id="IntermediateCatchEvent" name="IntermediateCatchEvent Process" isExecutable="true" processType="Private">
-    <bpmn2:extensionElements>
-      <tns:global identifier="TestOK" type="Boolean"/>
-    </bpmn2:extensionElements>
+  <bpmn2:process id="IntermediateCatchEventTimerDurationWithError" name="IntermediateCatchEvent Process" isExecutable="true" processType="Private" tns:packageName="org.jbpm.bpmn2.intermediate" > 
+    <bpmn2:property id="TestOK" itemSubjectRef="ItemDefinition_1" name="TestOK"/>
     <bpmn2:property id="x" itemSubjectRef="_xItem" name="x"/>
     <bpmn2:startEvent id="_1" name="StartProcess">
       <bpmn2:outgoing>_1-_3</bpmn2:outgoing>
@@ -40,8 +38,11 @@
     <bpmn2:scriptTask id="_4" name="Event">
       <bpmn2:incoming>_3-_4</bpmn2:incoming>
       <bpmn2:outgoing>_4-_5</bpmn2:outgoing>
-      <bpmn2:script>kcontext.getKieRuntime().getGlobal(&quot;TestOK&quot;).toString();
-</bpmn2:script>
+      <bpmn2:script>
+        System.out.println("TestOK: " + TestOK);
+        kcontext.setVariable("TestOK", Boolean.TRUE);
+        System.out.println("TestOK: " + kcontext.getVariable("TestOK"));
+     </bpmn2:script>
     </bpmn2:scriptTask>
     <bpmn2:endEvent id="_5" name="EndProcess">
       <bpmn2:incoming>_4-_5</bpmn2:incoming>

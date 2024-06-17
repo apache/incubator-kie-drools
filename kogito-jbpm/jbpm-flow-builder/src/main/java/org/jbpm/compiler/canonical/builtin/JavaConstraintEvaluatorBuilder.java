@@ -63,7 +63,6 @@ public class JavaConstraintEvaluatorBuilder implements ReturnValueEvaluatorBuild
         if (blockStmt == null) {
             blockStmt = StaticJavaParser.parseBlock("{" + expression + "}");
         }
-
         Set<NameExpr> identifiers = new HashSet<>(blockStmt.findAll(NameExpr.class));
 
         for (NameExpr v : identifiers) {

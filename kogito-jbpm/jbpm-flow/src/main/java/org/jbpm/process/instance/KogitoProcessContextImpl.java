@@ -50,7 +50,7 @@ public class KogitoProcessContextImpl extends AbstractProcessContext implements 
             return resolver.resolveContext(VariableScope.VARIABLE_SCOPE, variableId) != null;
         }
 
-        return nodeInstance.getVariable(variableId) != null;
+        return getVariable(variableId) != null;
     }
 
     @Override

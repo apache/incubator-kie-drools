@@ -19,11 +19,14 @@
 package org.jbpm.process.instance.impl.actions;
 
 import java.io.Serializable;
+import java.util.Map;
 import java.util.function.Supplier;
 
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.impl.Action;
+import org.jbpm.workflow.core.impl.NodeIoHelper;
+import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
 import org.kie.kogito.event.impl.MessageProducer;
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
@@ -44,7 +47,8 @@ public class ProduceEventAction<T> implements Action, Serializable {
 
     @Override
     public void execute(KogitoProcessContext context) throws Exception {
-        Object object = context.getVariable(varName);
+        Map<String, Object> inputs = NodeIoHelper.processInputs((NodeInstanceImpl) context.getNodeInstance(), var -> context.getVariable(var));
+        Object object = inputs.get(varName);
         KogitoProcessInstance pi = context.getProcessInstance();
         InternalKnowledgeRuntime runtime = (InternalKnowledgeRuntime) context.getKieRuntime();
         InternalProcessRuntime process = (InternalProcessRuntime) runtime.getProcessRuntime();

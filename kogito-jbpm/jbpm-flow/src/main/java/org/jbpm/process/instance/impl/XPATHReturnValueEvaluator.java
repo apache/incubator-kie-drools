@@ -42,7 +42,7 @@ public class XPATHReturnValueEvaluator extends AbstractReturnValueEvaluator {
         super("XPath", "true()");
     }
 
-    public XPATHReturnValueEvaluator(final String expression) {
+    public XPATHReturnValueEvaluator(String expression) {
         super("XPath", expression);
     }
 

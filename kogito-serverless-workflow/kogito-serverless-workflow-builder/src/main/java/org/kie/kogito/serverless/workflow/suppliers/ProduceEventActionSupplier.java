@@ -38,6 +38,7 @@ import com.github.javaparser.ast.expr.StringLiteralExpr;
 import io.serverlessworkflow.api.Workflow;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
+import static org.jbpm.ruleflow.core.Metadata.MAPPING_VARIABLE_INPUT;
 
 public class ProduceEventActionSupplier extends SWFProduceEventAction implements ExpressionSupplier {
 
@@ -49,7 +50,8 @@ public class ProduceEventActionSupplier extends SWFProduceEventAction implements
 
     @Override
     public Expression get(KogitoNode node, ProcessMetaData metadata) {
-        return AbstractNodeVisitor.buildProducerAction(parseClassOrInterfaceType(SWFProduceEventAction.class.getCanonicalName()), TriggerMetaData.of(node), metadata)
+        return AbstractNodeVisitor.buildProducerAction(parseClassOrInterfaceType(SWFProduceEventAction.class.getCanonicalName()), TriggerMetaData.of(node, (String) node.getMetaData()
+                .get(MAPPING_VARIABLE_INPUT)), metadata)
                 .addArgument(new StringLiteralExpr(exprLang))
                 .addArgument(data != null ? new StringLiteralExpr().setString(data) : new NullLiteralExpr());
     }

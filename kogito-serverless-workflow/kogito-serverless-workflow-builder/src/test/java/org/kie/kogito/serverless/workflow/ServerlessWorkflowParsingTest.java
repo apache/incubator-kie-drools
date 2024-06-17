@@ -425,7 +425,7 @@ public class ServerlessWorkflowParsingTest extends AbstractServerlessWorkflowPar
         ActionNode actionNode = (ActionNode) process.getNodes()[4];
         assertThat(actionNode.getName()).isEqualTo("TestKafkaEvent");
         assertThat(actionNode.getMetaData("TriggerType")).isEqualTo("ProduceMessage");
-        assertThat(actionNode.getMetaData("MappingVariable")).isEqualTo("workflowdata");
+        assertThat(actionNode.getMetaData("MappingVariableInput")).isEqualTo("workflowdata");
         assertThat(actionNode.getMetaData("TriggerRef")).isEqualTo("kafka");
         assertThat(actionNode.getMetaData("MessageType")).isEqualTo("com.fasterxml.jackson.databind.JsonNode");
     }

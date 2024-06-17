@@ -78,10 +78,11 @@ public class NodeFactoryUtils {
         return actionNode
                 .name(name)
                 .metaData(Metadata.EVENT_TYPE, "message")
-                .metaData(Metadata.MAPPING_VARIABLE, inputVar)
+                .metaData(Metadata.MAPPING_VARIABLE_INPUT, inputVar)
                 .metaData(Metadata.TRIGGER_REF, type)
                 .metaData(Metadata.MESSAGE_TYPE, JSON_NODE)
-                .metaData(Metadata.TRIGGER_TYPE, "ProduceMessage");
+                .metaData(Metadata.TRIGGER_TYPE, "ProduceMessage")
+                .inMapping(inputVar, inputVar);
     }
 
     public static <T extends StartNodeFactory<P>, P extends RuleFlowNodeContainerFactory<P, ?>> T startMessageNode(T nodeFactory, EventDefinition eventDefinition, String inputVar, String outputVar) {

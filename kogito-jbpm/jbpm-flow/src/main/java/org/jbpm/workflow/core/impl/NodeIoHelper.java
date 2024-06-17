@@ -25,14 +25,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-import org.jbpm.process.core.impl.DataTransformerRegistry;
 import org.jbpm.process.instance.KogitoProcessContextImpl;
 import org.jbpm.process.instance.impl.AssignmentAction;
 import org.jbpm.process.instance.impl.AssignmentProducer;
 import org.jbpm.workflow.core.node.Assignment;
 import org.jbpm.workflow.core.node.Transformation;
 import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
-import org.kie.api.runtime.process.DataTransformer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -84,10 +82,9 @@ public class NodeIoHelper {
         try {
             if (mapping.getTransformation() != null) {
                 Transformation transformation = mapping.getTransformation();
-                DataTransformer transformer = DataTransformerRegistry.get().find(transformation.getLanguage());
                 Object parameterValue = null;
-                if (transformer != null) {
-                    parameterValue = transformer.transform(transformation.getCompiledExpression(), dataSet);
+                if (transformation != null) {
+                    parameterValue = transformation.getCompiledExpression().eval(var -> dataSet.get(var));
                 }
                 if (parameterValue != null) {
                     producer.accept(mapping.getTarget().getLabel(), parameterValue);

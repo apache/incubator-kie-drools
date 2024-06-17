@@ -35,7 +35,7 @@
   <itemDefinition id="_2_MessageType" structureRef="String" />
   <message id="_2_Message" itemRef="_2_MessageType" />
 
-  <process processType="Private" isExecutable="true" id="MessageIntermediateEvent" name="Message Intermediate Throw Event Process" >
+  <process processType="Private" isExecutable="true" id="IntermediateThrowEventMessageWithTransformation" tns:packageName="org.jbpm.bpmn2.intermediate" name="Message Intermediate Throw Event Process" >
 
     <!-- process variables -->
     <property id="x" itemSubjectRef="_xItem"/>
@@ -47,7 +47,7 @@
       <dataInputAssociation>
         <sourceRef>x</sourceRef>
         <targetRef>_2_Input</targetRef>
-        <transformation language="http://www.java.com/java">param.toUpperCase();</transformation>
+        <transformation language="http://www.java.com/java">x.toUpperCase()</transformation>
       </dataInputAssociation>
       <inputSet>
         <dataInputRefs>_2_Input</dataInputRefs>

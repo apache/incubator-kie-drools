@@ -49,7 +49,11 @@ import org.xml.sax.SAXException;
 
 import static org.jbpm.bpmn2.xml.ProcessHandler.createJavaAction;
 import static org.jbpm.ruleflow.core.Metadata.EVENT_TYPE;
+import static org.jbpm.ruleflow.core.Metadata.EVENT_TYPE_COMPENSATION;
+import static org.jbpm.ruleflow.core.Metadata.EVENT_TYPE_ESCALATION;
+import static org.jbpm.ruleflow.core.Metadata.EVENT_TYPE_LINK;
 import static org.jbpm.ruleflow.core.Metadata.EVENT_TYPE_MESSAGE;
+import static org.jbpm.ruleflow.core.Metadata.EVENT_TYPE_SIGNAL;
 import static org.jbpm.ruleflow.core.Metadata.MAPPING_VARIABLE;
 import static org.jbpm.ruleflow.core.Metadata.MAPPING_VARIABLE_INPUT;
 import static org.jbpm.ruleflow.core.Metadata.MESSAGE_TYPE;
@@ -87,21 +91,25 @@ public class IntermediateThrowEventHandler extends AbstractNodeHandler {
                 // reuse already created ActionNode
                 setThrowVariable(ioSpecification, node);
                 handleSignalNode(node, element, uri, localName, parser);
+                node.setMetaData(EVENT_TYPE, EVENT_TYPE_SIGNAL);
                 break;
             } else if ("messageEventDefinition".equals(nodeName)) {
                 // reuse already created ActionNode
                 setThrowVariable(ioSpecification, node);
                 handleMessageNode(node, element, uri, localName, parser);
+                node.setMetaData(EVENT_TYPE, EVENT_TYPE_MESSAGE);
                 break;
             } else if ("escalationEventDefinition".equals(nodeName)) {
                 // reuse already created ActionNode
                 setThrowVariable(ioSpecification, node);
                 handleEscalationNode(node, element, uri, localName, parser);
+                node.setMetaData(EVENT_TYPE, EVENT_TYPE_ESCALATION);
                 break;
             } else if ("compensateEventDefinition".equals(nodeName)) {
                 // reuse already created ActionNode
                 setThrowVariable(ioSpecification, node);
                 handleThrowCompensationEventNode(node, element, uri, localName, parser);
+                node.setMetaData(EVENT_TYPE, EVENT_TYPE_COMPENSATION);
                 break;
             } else if ("linkEventDefinition".equals(nodeName)) {
                 ThrowLinkNode linkNode = new ThrowLinkNode();
@@ -109,6 +117,7 @@ public class IntermediateThrowEventHandler extends AbstractNodeHandler {
                 node = linkNode;
                 setThrowVariable(ioSpecification, node);
                 handleLinkNode(element, node, xmlNode, parser);
+                node.setMetaData(EVENT_TYPE, EVENT_TYPE_LINK);
             }
             xmlNode = xmlNode.getNextSibling();
         }

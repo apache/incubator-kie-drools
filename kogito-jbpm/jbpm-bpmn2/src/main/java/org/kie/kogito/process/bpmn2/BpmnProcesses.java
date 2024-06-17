@@ -21,6 +21,7 @@ package org.kie.kogito.process.bpmn2;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import org.kie.kogito.Model;
 import org.kie.kogito.process.Process;
@@ -44,4 +45,22 @@ public class BpmnProcesses implements Processes {
     public Collection<String> processIds() {
         return mappedProcesses.keySet();
     }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(mappedProcesses.keySet());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        BpmnProcesses other = (BpmnProcesses) obj;
+        return Objects.equals(mappedProcesses, other.mappedProcesses);
+    }
+
 }

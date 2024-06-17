@@ -33,10 +33,7 @@
 
   <itemDefinition id="_xItem" structureRef="String" />
 
-  <itemDefinition id="HelloMessageType" structureRef="String" />
-  <message id="HelloMessage" itemRef="HelloMessageType" />
-
-  <process processType="Private" isExecutable="true" id="IntermediateCatchEvent" name="IntermediateCatchEvent Process" >
+  <process processType="Private" isExecutable="true" id="IntermediateCatchEventSignalWithTransformation" name="IntermediateCatchEvent Process" tns:packageName="org.jbpm.bpmn2.intermediate" >
 
     <!-- process variables -->
     <property id="x" itemSubjectRef="_xItem"/>
@@ -61,16 +58,16 @@
       </dataInputAssociation>
     </userTask>
     <intermediateCatchEvent id="_4" name="event" >
-      <dataOutput id="_4_Output" name="param" />
+      <dataOutput id="_4_Output" name="param" itemSubjectRef="_xItem"/>
       <dataOutputAssociation>
       <sourceRef>_4_Output</sourceRef>
       <targetRef>x</targetRef>
-      <transformation language="http://www.java.com/java">param.toUpperCase();</transformation>
+      <transformation language="http://www.java.com/java">param.toUpperCase()</transformation>
       </dataOutputAssociation>
       <outputSet>
         <dataOutputRefs>_4_Output</dataOutputRefs>
       </outputSet>
-      <messageEventDefinition messageRef="HelloMessage"/>
+      <signalEventDefinition signalRef="MyMessage"/>
     </intermediateCatchEvent>
     <scriptTask id="_5" name="Event" >
       <script>System.out.println(x);</script>

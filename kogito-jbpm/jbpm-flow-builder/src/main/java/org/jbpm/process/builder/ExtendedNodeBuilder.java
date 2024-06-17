@@ -27,17 +27,14 @@ import org.drools.drl.ast.descr.ActionDescr;
 import org.drools.drl.ast.descr.ProcessDescr;
 import org.jbpm.process.builder.dialect.ProcessDialect;
 import org.jbpm.process.builder.dialect.ProcessDialectRegistry;
-import org.jbpm.process.core.impl.DataTransformerRegistry;
 import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.impl.DataAssociation;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
 import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.core.node.Assignment;
-import org.jbpm.workflow.core.node.Transformation;
 import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.Process;
-import org.kie.api.runtime.process.DataTransformer;
 
 public class ExtendedNodeBuilder
         implements
@@ -71,13 +68,6 @@ public class ExtendedNodeBuilder
     protected void buildDataAssociation(PackageBuildContext context, Collection<DataAssociation> dataAssociations, Map<String, Object> parameters) {
 
         for (DataAssociation dataAssociation : dataAssociations) {
-            Transformation transformation = dataAssociation.getTransformation();
-            if (transformation != null) {
-
-                DataTransformer transformer = DataTransformerRegistry.get().find(transformation.getLanguage());
-                transformation.setCompiledExpression(transformer.compile(transformation.getExpression(), parameters));
-
-            }
             List<Assignment> assignments = dataAssociation.getAssignments();
             if (assignments != null) {
                 for (Assignment assignment : assignments) {

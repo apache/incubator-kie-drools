@@ -23,6 +23,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -31,17 +32,23 @@ import java.util.Map;
 import org.jbpm.bpmn2.objects.NotAvailableGoodsReport;
 import org.jbpm.bpmn2.objects.Person;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
+import org.jbpm.bpmn2.start.SignalStartWithTransformationModel;
+import org.jbpm.bpmn2.start.SignalStartWithTransformationProcess;
 import org.jbpm.test.util.NodeLeftCountDownProcessEventListener;
+import org.jbpm.test.utils.ProcessTestHelper;
 import org.junit.jupiter.api.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieRepository;
 import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.internal.io.ResourceFactory;
+import org.kie.kogito.Application;
 import org.kie.kogito.internal.process.event.DefaultKogitoProcessEventListener;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
+import org.kie.kogito.process.impl.Sig;
 import org.kie.kogito.process.workitems.InternalKogitoWorkItem;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -474,22 +481,24 @@ public class StartEventTest extends JbpmBpmn2TestCase {
 
     @Test
     public void testSignalStartWithTransformation() throws Exception {
+        Application app = ProcessTestHelper.newApplication();
         NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("StartProcess", 1);
-        kruntime = createKogitoProcessRuntime("BPMN2-SignalStartWithTransformation.bpmn2");
-        kruntime.getProcessEventManager().addEventListener(countDownListener);
-        final List<KogitoProcessInstance> list = new ArrayList<>();
-        kruntime.getProcessEventManager().addEventListener(new DefaultKogitoProcessEventListener() {
+
+        ProcessTestHelper.registerProcessEventListener(app, countDownListener);
+        final List<ProcessInstance> list = new ArrayList<>();
+        ProcessTestHelper.registerProcessEventListener(app, new DefaultKogitoProcessEventListener() {
             @Override
             public void beforeProcessStarted(ProcessStartedEvent event) {
-                list.add((KogitoProcessInstance) event.getProcessInstance());
+                list.add(event.getProcessInstance());
             }
         });
-        kruntime.signalEvent("MySignal", "NewValue");
+        org.kie.kogito.process.Process<SignalStartWithTransformationModel> definition = SignalStartWithTransformationProcess.newProcess(app);
+
+        definition.send(Sig.of("MySignal", "NewValue"));
+
         countDownListener.waitTillCompleted();
-        assertThat(getNumberOfProcessInstances("Minimal")).isEqualTo(1);
-        assertThat(list).isNotNull().hasSize(1);
-        String var = getProcessVarValue(list.get(0), "x");
-        assertThat(var).isEqualTo("NEWVALUE");
+        assertThat(list).extracting(e -> e.getProcessId()).containsExactly("SignalStartWithTransformation");
+        assertThat(list).extracting(e -> ((KogitoProcessInstance) e).getVariables()).containsExactly(Collections.singletonMap("x", "NEWVALUE"));
     }
 
     /**

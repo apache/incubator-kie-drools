@@ -19,7 +19,7 @@
   -->
 
 <definitions id="Definition"
-             targetNamespace=""
+             targetNamespace="http://www.example.org/MinimalExample"
              typeLanguage="http://www.java.com/javaTypes"
              expressionLanguage="http://www.mvel.org/2.0"
              xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
@@ -31,82 +31,90 @@
              xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
              xmlns:tns="http://www.jboss.org/drools">
 
-  <itemDefinition id="_instanceMetadataItem" structureRef="org.w3c.dom.Document" />
+  <itemDefinition id="_xItem" structureRef="String" />
 
-  <process processType="Private" isExecutable="true" id="XPathProcess" name="XPathProcess" tns:packageName="org.jbpm.bpmn2.activity">
+  <process processType="Private" isExecutable="true" id="IntermediateCatchEventSignal2" name="IntermediateCatchEvent 2 Process" tns:packageName="org.jbpm.bpmn2.intermediate">
 
     <!-- process variables -->
-    <property id="instanceMetadata" itemSubjectRef="_instanceMetadataItem"/>
+    <property id="x" itemSubjectRef="_xItem"/>
 
     <!-- nodes -->
-    <startEvent id="_1" name="" />
-    <exclusiveGateway id="_2" name="" gatewayDirection="Diverging" />
-    <scriptTask id="_3" name="Task1" >
-      <script>System.out.println("Task 1");</script>
+    <startEvent id="_1" name="StartProcess"  isInterrupting="true"/>
+    <userTask id="_2" name="UserTask" >
+      <ioSpecification>
+        <dataInput id="_2_NodeNameInput" name="NodeName" />
+        <inputSet>
+          <dataInputRefs>_2_NodeNameInput</dataInputRefs>
+        </inputSet>
+        <outputSet>
+        </outputSet>
+      </ioSpecification>
+      <dataInputAssociation>
+        <targetRef>_2_NodeNameInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression">UserTask</from>
+          <to xsi:type="tFormalExpression">_2_NodeNameInput</to>
+        </assignment>
+      </dataInputAssociation>
+    </userTask>
+    <intermediateCatchEvent id="_4" name="event" >
+      <dataOutput id="_4_Output" name="event" dtype="String" />
+      <dataOutputAssociation>
+      <sourceRef>_4_Output</sourceRef>
+      <targetRef>x</targetRef>
+      </dataOutputAssociation>
+      <outputSet>
+        <dataOutputRefs>_4_Output</dataOutputRefs>
+      </outputSet>
+      <signalEventDefinition signalRef="MyMessage"/>
+    </intermediateCatchEvent>
+    <scriptTask id="_5" name="Event" >
+      <script>System.out.println(x);</script>
     </scriptTask>
-    <scriptTask id="_4" name="Task2" >
-      <script>System.out.println("Task 2");</script>
-    </scriptTask>
-    <exclusiveGateway id="_5" name="" gatewayDirection="Converging" />
-    <endEvent id="_6" name="" />
+    <endEvent id="_6" name="EndProcess" >
+        <terminateEventDefinition />
+    </endEvent>
 
     <!-- connections -->
     <sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2" />
-    <sequenceFlow id="_2-_3" sourceRef="_2" targetRef="_3" >
-      <conditionExpression xsi:type="tFormalExpression" language="http://www.w3.org/1999/XPath" >count($instanceMetadata/instanceMetadata/user[@approved='true']) = 1</conditionExpression>
-    </sequenceFlow>
-    <sequenceFlow id="_2-_4" sourceRef="_2" targetRef="_4" >
-      <conditionExpression xsi:type="tFormalExpression" language="http://www.w3.org/1999/XPath" >count($instanceMetadata/instanceMetadata/user[@approved='false']) = 1</conditionExpression>
-    </sequenceFlow>
-    <sequenceFlow id="_3-_5" sourceRef="_3" targetRef="_5" />
+    <sequenceFlow id="_2-_4" sourceRef="_2" targetRef="_4" />
     <sequenceFlow id="_4-_5" sourceRef="_4" targetRef="_5" />
     <sequenceFlow id="_5-_6" sourceRef="_5" targetRef="_6" />
 
   </process>
 
   <bpmndi:BPMNDiagram>
-    <bpmndi:BPMNPlane bpmnElement="XPathProcess" >
+    <bpmndi:BPMNPlane bpmnElement="IntermediateCatchEvent2" >
       <bpmndi:BPMNShape bpmnElement="_1" >
-        <dc:Bounds x="16" y="56" width="48" height="48" />
+        <dc:Bounds x="16" y="16" width="48" height="48" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="_2" >
-        <dc:Bounds x="96" y="56" width="48" height="48" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="_3" >
-        <dc:Bounds x="176" y="16" width="80" height="48" />
+        <dc:Bounds x="96" y="16" width="100" height="48" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="_4" >
-        <dc:Bounds x="176" y="96" width="80" height="48" />
+        <dc:Bounds x="228" y="16" width="48" height="48" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="_5" >
-        <dc:Bounds x="288" y="56" width="48" height="48" />
+        <dc:Bounds x="308" y="16" width="80" height="48" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="_6" >
-        <dc:Bounds x="368" y="56" width="48" height="48" />
+        <dc:Bounds x="420" y="16" width="48" height="48" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge bpmnElement="_1-_2" >
-        <di:waypoint x="40" y="80" />
-        <di:waypoint x="120" y="80" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="_2-_3" >
-        <di:waypoint x="120" y="80" />
-        <di:waypoint x="216" y="40" />
+        <di:waypoint x="40" y="40" />
+        <di:waypoint x="146" y="40" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="_2-_4" >
-        <di:waypoint x="120" y="80" />
-        <di:waypoint x="216" y="120" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="_3-_5" >
-        <di:waypoint x="216" y="40" />
-        <di:waypoint x="312" y="80" />
+        <di:waypoint x="146" y="40" />
+        <di:waypoint x="252" y="40" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="_4-_5" >
-        <di:waypoint x="216" y="120" />
-        <di:waypoint x="312" y="80" />
+        <di:waypoint x="252" y="40" />
+        <di:waypoint x="348" y="40" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="_5-_6" >
-        <di:waypoint x="312" y="80" />
-        <di:waypoint x="392" y="80" />
+        <di:waypoint x="348" y="40" />
+        <di:waypoint x="444" y="40" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

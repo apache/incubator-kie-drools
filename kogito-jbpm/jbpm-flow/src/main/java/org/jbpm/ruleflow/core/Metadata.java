@@ -44,6 +44,7 @@ public class Metadata {
     public static final String EVENT_TYPE_ERROR = "error";
     public static final String EVENT_TYPE_CONDITIONAL = "conditional";
     public static final String EVENT_TYPE_LINK = "link";
+    public static final Object EVENT_TYPE_ESCALATION = "Escalation";
     public static final String CUSTOM_SCOPE = "customScope";
     public static final String ATTACHED_TO = "AttachedTo";
     public static final String TIME_CYCLE = "TimeCycle";

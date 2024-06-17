@@ -31,7 +31,7 @@
              xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
              xmlns:tns="http://www.jboss.org/drools">
 
-  <process processType="Private" isExecutable="true" id="BPMN2-IntermediateCatchSignalBetweenUserTasks" name="Default Process" tns:packageName="defaultPackage" tns:version="1" >
+  <process processType="Private" isExecutable="true" id="IntermediateCatchSignalBetweenUserTasks" name="Default Process" tns:packageName="org.jbpm.bpmn2.intermediate" tns:version="1" >
 
     <!-- nodes -->
     <startEvent id="StartEvent_1" name="StartProcess"  isInterrupting="true"/>

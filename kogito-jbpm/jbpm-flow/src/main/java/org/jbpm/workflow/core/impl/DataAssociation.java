@@ -29,12 +29,18 @@ import org.jbpm.workflow.core.node.Transformation;
 
 public class DataAssociation implements Serializable {
 
+    public enum DataAssociationType {
+        INPUT,
+        OUTPUT
+    }
+
     private static final long serialVersionUID = 5L;
 
     private List<DataDefinition> sources;
     private DataDefinition target;
     private List<Assignment> assignments;
     private Transformation transformation;
+    private DataAssociationType type;
 
     public DataAssociation(Assignment assignment) {
         this(Collections.emptyList(), null, Collections.singletonList(assignment), null);
@@ -47,6 +53,14 @@ public class DataAssociation implements Serializable {
         this.transformation = transformation;
         this.assignments = assignments == null ? new ArrayList<>() : assignments;
         this.assignments.forEach(this::buildInterpretedAssignment);
+    }
+
+    public DataAssociationType getType() {
+        return type;
+    }
+
+    public void setType(DataAssociationType type) {
+        this.type = type;
     }
 
     private Assignment buildInterpretedAssignment(Assignment assignment) {

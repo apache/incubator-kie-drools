@@ -49,7 +49,8 @@ import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.core.datatype.DataTypeResolver;
-import org.jbpm.process.core.impl.DataTransformerRegistry;
+import org.jbpm.process.instance.impl.MVELInterpretedReturnValueEvaluator;
+import org.jbpm.process.instance.impl.ReturnValueEvaluator;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.ruleflow.core.WorkflowElementIdentifierFactory;
 import org.jbpm.util.PatternConstants;
@@ -57,6 +58,7 @@ import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.impl.DataAssociation;
+import org.jbpm.workflow.core.impl.DataAssociation.DataAssociationType;
 import org.jbpm.workflow.core.impl.DataDefinition;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
@@ -74,7 +76,6 @@ import org.jbpm.workflow.core.node.ForEachNode;
 import org.jbpm.workflow.core.node.StateNode;
 import org.jbpm.workflow.core.node.TimerNode;
 import org.jbpm.workflow.core.node.Transformation;
-import org.kie.api.runtime.process.DataTransformer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
@@ -425,7 +426,10 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
         while (xmlNode != null) {
             String nodeName = xmlNode.getNodeName();
             if ("dataOutputAssociation".equals(nodeName)) {
-                readDataAssociation((Element) xmlNode, id -> ioSpec.getDataOutput().get(id), id -> getVariableDataSpec(parser, id)).ifPresent(e -> ioSpec.getDataOutputAssociation().add(e));
+                readDataAssociation((Element) xmlNode, id -> ioSpec.getDataOutput().get(id), id -> getVariableDataSpec(parser, id)).ifPresent(e -> {
+                    e.setType(DataAssociationType.OUTPUT);
+                    ioSpec.getDataOutputAssociation().add(e);
+                });
             }
             xmlNode = xmlNode.getNextSibling();
         }
@@ -440,7 +444,10 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
         while (xmlNode != null) {
             String nodeName = xmlNode.getNodeName();
             if ("dataInputAssociation".equals(nodeName)) {
-                readDataAssociation((Element) xmlNode, id -> getVariableDataSpec(parser, id), id -> ioSpec.getDataInput().get(id)).ifPresent(e -> ioSpec.getDataInputAssociation().add(e));
+                readDataAssociation((Element) xmlNode, id -> getVariableDataSpec(parser, id), id -> ioSpec.getDataInput().get(id)).ifPresent(e -> {
+                    e.setType(DataAssociationType.INPUT);
+                    ioSpec.getDataInputAssociation().add(e);
+                });
             }
             xmlNode = xmlNode.getNextSibling();
         }
@@ -457,9 +464,15 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
                 ioSpec.getDataInputs().addAll(readDataInput(parser, xmlNode));
                 ioSpec.getDataOutputs().addAll(readDataOutput(parser, xmlNode));
             } else if ("dataInputAssociation".equals(nodeName)) {
-                readDataAssociation((Element) xmlNode, id -> getVariableDataSpec(parser, id), id -> ioSpec.getDataInput().get(id)).ifPresent(e -> ioSpec.getDataInputAssociation().add(e));
+                readDataAssociation((Element) xmlNode, id -> getVariableDataSpec(parser, id), id -> ioSpec.getDataInput().get(id)).ifPresent(e -> {
+                    e.setType(DataAssociationType.INPUT);
+                    ioSpec.getDataInputAssociation().add(e);
+                });
             } else if ("dataOutputAssociation".equals(nodeName)) {
-                readDataAssociation((Element) xmlNode, id -> ioSpec.getDataOutput().get(id), id -> getVariableDataSpec(parser, id)).ifPresent(e -> ioSpec.getDataOutputAssociation().add(e));
+                readDataAssociation((Element) xmlNode, id -> ioSpec.getDataOutput().get(id), id -> getVariableDataSpec(parser, id)).ifPresent(e -> {
+                    e.setType(DataAssociationType.OUTPUT);
+                    ioSpec.getDataOutputAssociation().add(e);
+                });
             }
             xmlNode = xmlNode.getNextSibling();
         }
@@ -561,11 +574,11 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
         String lang = element.get().getAttribute("language");
         String expression = element.get().getTextContent();
 
-        DataTransformer transformer = DataTransformerRegistry.get().find(lang);
-        if (transformer == null) {
-            throw new ProcessParsingValidationException("No transformer registered for language " + lang);
+        ReturnValueEvaluator evaluator = null;
+        if (lang.toLowerCase().contains("mvel")) {
+            evaluator = new MVELInterpretedReturnValueEvaluator(expression);
         }
-        return new Transformation(lang, expression);
+        return new Transformation(lang, expression, evaluator);
     }
 
     protected List<DataDefinition> readSources(org.w3c.dom.Node parent, Function<String, DataDefinition> variableResolver) {

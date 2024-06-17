@@ -24,21 +24,27 @@ import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import org.jbpm.compiler.canonical.builtin.ReturnValueEvaluatorBuilderService;
 import org.jbpm.process.builder.action.ActionCompilerRegistry;
-import org.jbpm.process.builder.transformation.DataTransformerCompilerRegistry;
+import org.jbpm.process.core.Context;
 import org.jbpm.process.core.ContextContainer;
+import org.jbpm.process.core.ContextResolver;
 import org.jbpm.process.core.context.variable.Mappable;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
+import org.jbpm.process.core.datatype.DataTypeResolver;
 import org.jbpm.process.instance.impl.actions.ProduceEventAction;
 import org.jbpm.process.instance.impl.actions.SignalProcessInstanceAction;
 import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.ruleflow.core.factory.MappableNodeFactory;
+import org.jbpm.util.JbpmClassLoaderUtil;
 import org.jbpm.workflow.core.impl.ConnectionImpl;
 import org.jbpm.workflow.core.impl.DataAssociation;
+import org.jbpm.workflow.core.impl.DataAssociation.DataAssociationType;
 import org.jbpm.workflow.core.impl.DataDefinition;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
+import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.core.node.Assignment;
 import org.jbpm.workflow.core.node.HumanTaskNode;
 import org.jbpm.workflow.core.node.StartNode;
@@ -46,6 +52,7 @@ import org.jbpm.workflow.core.node.Transformation;
 import org.kie.api.definition.process.Connection;
 import org.kie.api.definition.process.Node;
 
+import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.AssignExpr;
@@ -215,24 +222,25 @@ public abstract class AbstractNodeVisitor<T extends Node> extends AbstractVisito
 
     protected void addNodeMappings(Mappable node, BlockStmt body, String variableName) {
         for (DataAssociation entry : node.getInAssociations()) {
-            body.addStatement(getFactoryMethod(variableName, MappableNodeFactory.METHOD_IN_ASSOCIATION, buildDataAssociationExpression(entry)));
+            body.addStatement(getFactoryMethod(variableName, MappableNodeFactory.METHOD_IN_ASSOCIATION, buildDataAssociationExpression((NodeImpl) node, entry)));
         }
         for (DataAssociation entry : node.getOutAssociations()) {
-            body.addStatement(getFactoryMethod(variableName, MappableNodeFactory.METHOD_OUT_ASSOCIATION, buildDataAssociationExpression(entry)));
+            body.addStatement(getFactoryMethod(variableName, MappableNodeFactory.METHOD_OUT_ASSOCIATION, buildDataAssociationExpression((NodeImpl) node, entry)));
         }
     }
 
-    protected Expression buildDataAssociationsExpression(List<DataAssociation> dataAssociations) {
-        NodeList<Expression> expressions = NodeList.nodeList(dataAssociations.stream().map(this::buildDataAssociationExpression).collect(Collectors.toList()));
+    protected Expression buildDataAssociationsExpression(NodeImpl node, List<DataAssociation> dataAssociations) {
+        NodeList<Expression> expressions = NodeList.nodeList(dataAssociations.stream().map(da -> buildDataAssociationExpression(node, da)).collect(Collectors.toList()));
         return new MethodCallExpr(null, "java.util.Arrays.asList", NodeList.nodeList(expressions));
     }
 
-    protected Expression buildDataAssociationExpression(DataAssociation dataAssociation) {
+    protected Expression buildDataAssociationExpression(NodeImpl node, DataAssociation dataAssociation) {
         List<DataDefinition> sourceExpr = dataAssociation.getSources();
         DataDefinition targetExpr = dataAssociation.getTarget();
         Transformation transformation = dataAssociation.getTransformation();
         List<Assignment> assignments = dataAssociation.getAssignments();
-        return toDataAssociation(toDataDef(sourceExpr), toDataDef(targetExpr), toAssignmentExpr(assignments), toTransformation(sourceExpr, singletonList(targetExpr), transformation));
+        return toDataAssociation(toDataDef(sourceExpr), toDataDef(targetExpr), toAssignmentExpr(assignments),
+                toTransformation(node, dataAssociation.getType(), sourceExpr, singletonList(targetExpr), transformation));
     }
 
     private Expression toAssignmentExpr(List<Assignment> assignments) {
@@ -252,16 +260,44 @@ public abstract class AbstractNodeVisitor<T extends Node> extends AbstractVisito
         return new MethodCallExpr(null, "java.util.Arrays.asList", NodeList.nodeList(expressions));
     }
 
-    protected Expression toTransformation(List<DataDefinition> inputs, List<DataDefinition> outputs, Transformation transformation) {
+    protected Expression toTransformation(NodeImpl node, DataAssociationType type, List<DataDefinition> inputs, List<DataDefinition> outputs, Transformation transformation) {
         if (transformation == null) {
             return new NullLiteralExpr();
         }
-        Expression lang = new StringLiteralExpr(transformation.getLanguage());
-        Expression expression = new StringLiteralExpr(transformation.getExpression());
-        Expression compiledExpression = DataTransformerCompilerRegistry.instance().find(transformation.getLanguage()).compile(inputs, outputs, transformation);
-        ClassOrInterfaceType clazz = new ClassOrInterfaceType(null, "org.jbpm.workflow.core.node.Transformation");
-        return new ObjectCreationExpr(null, clazz, NodeList.nodeList(lang, expression, compiledExpression));
 
+        Expression lang = new StringLiteralExpr(transformation.getLanguage());
+        Expression expression = new StringLiteralExpr(sanitizeString(transformation.getExpression()));
+
+        ContextResolver contextResolver = type.equals(DataAssociationType.INPUT) ? node : wrapContextResolver(node, inputs);
+
+        ReturnValueEvaluatorBuilderService service = ReturnValueEvaluatorBuilderService.instance();
+        Expression returnValueEvaluatorExpression = service.build(contextResolver, transformation.getLanguage(), transformation.getExpression(), Object.class, null);
+        ClassOrInterfaceType clazz = StaticJavaParser.parseClassOrInterfaceType(Transformation.class.getName());
+        return new ObjectCreationExpr(null, clazz, NodeList.nodeList(lang, expression, returnValueEvaluatorExpression));
+
+    }
+
+    private ContextResolver wrapContextResolver(NodeImpl node, List<DataDefinition> variables) {
+        VariableScope variableScope = new VariableScope();
+
+        for (DataDefinition variable : variables) {
+            Variable var = new Variable();
+            var.setId(variable.getId());
+            var.setName(variable.getLabel());
+            var.setType(DataTypeResolver.fromType(variable.getType(), JbpmClassLoaderUtil.findClassLoader()));
+            variableScope.addVariable(var);
+        }
+        return new ContextResolver() {
+
+            @Override
+            public Context resolveContext(String contextId, Object param) {
+                if (VariableScope.VARIABLE_SCOPE.equals(contextId)) {
+                    return variableScope.resolveContext(param);
+                }
+                return null;
+            }
+
+        };
     }
 
     protected Expression toDataAssociation(Expression sourceExprs, Expression target, Expression transformation, Expression assignments) {
@@ -360,7 +396,7 @@ public abstract class AbstractNodeVisitor<T extends Node> extends AbstractVisito
     }
 
     protected ObjectCreationExpr buildProducerAction(Node node, ProcessMetaData metadata) {
-        TriggerMetaData trigger = TriggerMetaData.of(node);
+        TriggerMetaData trigger = TriggerMetaData.of(node, (String) node.getMetaData().get(Metadata.MAPPING_VARIABLE_INPUT));
         return buildProducerAction(parseClassOrInterfaceType(ProduceEventAction.class.getCanonicalName()).setTypeArguments(NodeList.nodeList(parseClassOrInterfaceType(trigger.getDataType()))),
                 trigger, metadata);
 
@@ -369,8 +405,10 @@ public abstract class AbstractNodeVisitor<T extends Node> extends AbstractVisito
     public static ObjectCreationExpr buildProducerAction(ClassOrInterfaceType actionClass, TriggerMetaData trigger, ProcessMetaData metadata) {
         metadata.addTrigger(trigger);
         return new ObjectCreationExpr(null, actionClass, NodeList.nodeList(
-                new StringLiteralExpr(trigger.getName()), new StringLiteralExpr(trigger.getModelRef()),
-                new LambdaExpr(NodeList.nodeList(), new NameExpr("producer_" + trigger.getOwnerId()))));
+                new StringLiteralExpr(trigger.getName()),
+                new StringLiteralExpr(trigger.getModelRef()),
+                new LambdaExpr(NodeList.nodeList(),
+                        new NameExpr("producer_" + trigger.getOwnerId()))));
     }
 
     protected void visitCompensationScope(ContextContainer process, BlockStmt body) {

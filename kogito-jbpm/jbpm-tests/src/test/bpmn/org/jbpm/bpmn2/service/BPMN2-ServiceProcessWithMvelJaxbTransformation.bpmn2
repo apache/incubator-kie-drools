@@ -40,7 +40,7 @@
     </operation>
   </interface>
 
-  <process processType="Private" isExecutable="true" id="ServiceProcessWithMvelJaxbTransformation" name="Service Process" >
+  <process processType="Private" isExecutable="true" id="ServiceProcessWithMvelJaxbTransformation" name="Service Process" tns:packageName="org.jbpm.bpmn2.service" >
     <extensionElements>
       <tns:import name="jakarta.xml.bind.JAXBContext"/>
       <tns:import name="java.io.StringReader"/>
@@ -56,7 +56,7 @@
     <serviceTask id="_2" name="Hello" operationRef="_2_ServiceOperation" implementation="Other" >
       <ioSpecification>
         <dataInput id="_2_param" name="Parameter" />
-        <dataOutput id="_2_result" name="Result" />
+        <dataOutput id="_2_result" name="Result" itemSubjectRef="_2_InMessageType"/>
         <inputSet>
           <dataInputRefs>_2_param</dataInputRefs>
         </inputSet>
@@ -67,18 +67,28 @@
       <dataInputAssociation>
         <sourceRef>s</sourceRef>      
         <targetRef>_2_param</targetRef>
-        <transformation language="http://www.mvel.org/2.0"><![CDATA[
+        <transformation language="java"><![CDATA[
+        try {
           StringWriter result = new java.io.StringWriter();
-          JAXBContext.newInstance(Person, Address).createMarshaller().marshal(s, result);
-          return result.toString();]]>
+          JAXBContext.newInstance(Person.class, Address.class).createMarshaller().marshal(s, result);
+          return result.toString();
+        } catch(Throwable th) {
+            throw new RuntimeException(th);
+        }
+          ]]>
       </transformation>
       </dataInputAssociation>
       <dataOutputAssociation>
         <sourceRef>_2_result</sourceRef>
         <targetRef>s</targetRef>
-        <transformation language="http://www.mvel.org/2.0"><![CDATA[
-          StringReader result = new java.io.StringReader(Result);
-          return JAXBContext.newInstance(Person, Address).createUnmarshaller().unmarshal(result);]]>
+        <transformation language="java"><![CDATA[
+            try {
+                StringReader result = new java.io.StringReader(Result);
+                return JAXBContext.newInstance(Person.class, Address.class).createUnmarshaller().unmarshal(result);
+            } catch(Throwable th) {
+                throw new RuntimeException(th);
+            }
+          ]]>
         </transformation>
       </dataOutputAssociation>
     </serviceTask>
