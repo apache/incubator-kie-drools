@@ -20,6 +20,7 @@ package org.kie.kogito.jobs.embedded;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
@@ -35,7 +36,7 @@ public class TestEventPublisher implements EventPublisher {
     private CountDownLatch latch;
 
     public List<DataEvent<?>> getEvents() {
-        return events;
+        return Collections.unmodifiableList(events);
     }
 
     public TestEventPublisher() {
@@ -56,6 +57,7 @@ public class TestEventPublisher implements EventPublisher {
 
     public void setLatch(CountDownLatch latch) {
         this.latch = latch;
+        events = new ArrayList<>();
     }
 
 }
