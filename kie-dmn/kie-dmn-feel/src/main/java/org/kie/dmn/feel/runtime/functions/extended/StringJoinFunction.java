@@ -55,6 +55,10 @@ public class StringJoinFunction extends BaseFEELFunction {
         return FEELFnResult.ofResult(sj.toString());
     }
 
+    public FEELFnResult<String> invoke(@ParameterName("list") String stringValue, @ParameterName("delimiter") String delimiter) {
+        return invoke(List.of(stringValue), delimiter);
+    }
+
     public FEELFnResult<String> invoke(@ParameterName("list") List<?> list) {
         return invoke(list, null);
     }
