@@ -16,12 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.dmn.feel.runtime.functions;
+package org.kie.dmn.feel.runtime.functions.extended;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
-import org.kie.dmn.feel.runtime.functions.extended.RoundHalfUpFunction;
+import org.kie.dmn.feel.runtime.functions.FunctionTestUtil;
 
 import java.math.BigDecimal;
 
