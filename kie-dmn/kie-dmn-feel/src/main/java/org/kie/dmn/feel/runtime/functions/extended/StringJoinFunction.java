@@ -56,6 +56,10 @@ public class StringJoinFunction extends BaseFEELFunction {
     }
 
     public FEELFnResult<String> invoke(@ParameterName("list") String stringValue, @ParameterName("delimiter") String delimiter) {
+        if ( stringValue == null ) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "cannot be null"));
+        }
+
         return invoke(List.of(stringValue), delimiter);
     }
 
