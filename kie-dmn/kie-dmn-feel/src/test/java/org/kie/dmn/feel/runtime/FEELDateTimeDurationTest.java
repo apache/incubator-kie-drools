@@ -29,6 +29,8 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalField;
+import java.time.temporal.TemporalQueries;
 import java.util.Collection;
 
 import org.junit.jupiter.params.ParameterizedTest;
@@ -37,6 +39,8 @@ import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.lang.FEELDialect;
 import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.dmn.feel.runtime.custom.ZonedOffsetTime;
+
+import static java.time.temporal.ChronoField.HOUR_OF_DAY;
 
 public class FEELDateTimeDurationTest extends BaseFEELTest {
 
@@ -192,10 +196,10 @@ public class FEELDateTimeDurationTest extends BaseFEELTest {
                                                                                                                              ":31+11:00[Australia/Melbourne]", ZonedDateTime::from), null},
                 { "@\"-P1D\" + @\"2023-10-10T10:31:00@Australia/Melbourne\"", DateTimeFormatter.ISO_DATE_TIME.parse("2023-10-09T10" +
                                                                                                                              ":31+11:00[Australia/Melbourne]", ZonedDateTime::from), null},
-                { "@\"P1D\" + @\"10:15:00@Australia/Melbourne\"", DateTimeFormatter.ISO_TIME.parse( "10:15+10:00", OffsetTime::from ), null},
-                { "@\"-P1D\" + @\"10:15:00@Australia/Melbourne\"", DateTimeFormatter.ISO_TIME.parse( "10:15+10:00", OffsetTime::from ), null},
-                { "@\"PT1H\" + @\"10:15:00@Australia/Melbourne\"", DateTimeFormatter.ISO_TIME.parse( "11:15+10:00", OffsetTime::from ), null},
-                { "@\"-PT1H\" + @\"10:15:00@Australia/Melbourne\"", DateTimeFormatter.ISO_TIME.parse( "09:15+10:00", OffsetTime::from ), null},
+                { "@\"P1D\" + @\"10:15:00@Australia/Melbourne\"", getCorrectOffsetTime( "10:15", "Australia/Melbourne"), null},
+                { "@\"-P1D\" + @\"10:15:00@Australia/Melbourne\"", getCorrectOffsetTime( "10:15", "Australia/Melbourne"), null},
+                { "@\"PT1H\" + @\"10:15:00@Australia/Melbourne\"", getCorrectOffsetTime( "11:15", "Australia/Melbourne"), null},
+                { "@\"-PT1H\" + @\"10:15:00@Australia/Melbourne\"", getCorrectOffsetTime( "09:15", "Australia/Melbourne"), null},
 
 
                 // TODO support for zones - fix when timezones solved out (currently returns ZonedDateTime)
@@ -318,5 +322,17 @@ public class FEELDateTimeDurationTest extends BaseFEELTest {
                 { "@\"2020-12-30\" + @\"-PT25H\"", LocalDate.of(2020, 12, 28 ), null  }
         };
         return addAdditionalParameters(cases, false);
+    }
+
+    private static OffsetTime getCorrectOffsetTime(String baseTime, String zone) {
+        String correctOffsetTimeString = getCorrectOffsetTimeString(baseTime, zone);
+        return DateTimeFormatter.ISO_TIME.parse( correctOffsetTimeString, OffsetTime::from );
+    }
+
+    private static String getCorrectOffsetTimeString(String baseTime, String zone) {
+        ZoneId zoneId = ZoneId.of(zone);
+        ZoneOffset offset = zoneId.getRules().getOffset(LocalDateTime.now());
+        String diffOffset = offset.getId();
+        return String.format("%s%s",baseTime, diffOffset);
     }
 }
