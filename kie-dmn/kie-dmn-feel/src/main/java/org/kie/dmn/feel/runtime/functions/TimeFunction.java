@@ -22,6 +22,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.DateTimeException;
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetTime;
 import java.time.ZoneId;
@@ -35,6 +36,7 @@ import java.time.temporal.TemporalQueries;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
+import org.kie.dmn.feel.runtime.custom.ZonedOffsetTime;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
 public class TimeFunction
@@ -77,6 +79,11 @@ public class TimeFunction
                 // if it does not contain any zone information at all, then I know for certain is a local time.
                 LocalTime asLocalTime = parsed.query(LocalTime::from);
                 return FEELFnResult.ofResult(asLocalTime);
+            } else if (parsed.query(TemporalQueries.zone()) != null) {
+                LocalTime asLocalTime = parsed.query(LocalTime::from);
+                ZoneId zoneId = parsed.query(TemporalQueries.zone());
+                ZonedOffsetTime zonedOffsetTime = ZonedOffsetTime.of(asLocalTime, zoneId);
+                return FEELFnResult.ofResult(zonedOffsetTime);
             }
 
             return FEELFnResult.ofResult(parsed);

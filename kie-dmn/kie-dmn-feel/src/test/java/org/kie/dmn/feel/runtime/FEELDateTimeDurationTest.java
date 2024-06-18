@@ -36,6 +36,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.lang.FEELDialect;
 import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
+import org.kie.dmn.feel.runtime.custom.ZonedOffsetTime;
 
 public class FEELDateTimeDurationTest extends BaseFEELTest {
 
@@ -88,6 +89,9 @@ public class FEELDateTimeDurationTest extends BaseFEELTest {
                 { "(@\"13:20:00@Etc/UTC\").timezone", "Etc/UTC" , null},
                 { "(@\"13:20:00@Etc/GMT\").timezone", "Etc/GMT" , null},
                 { "-duration( \"P2Y2M\" )", ComparablePeriod.parse( "-P2Y2M" ) , null},
+                {"@\"2023-10-10T10:31:00@Australia/Melbourne\"", DateTimeFormatter.ISO_DATE_TIME.parse("2023-10-10T10" +
+                                                                                                               ":31+11:00[Australia/Melbourne]", ZonedDateTime::from), null},
+                {"@\"10:15:00@Australia/Melbourne\"", ZonedOffsetTime.of(LocalTime.of(10, 15), ZoneId.of("Australia/Melbourne")), null},
 
                 // comparison operators
                 { "duration( \"P1Y6M\" ) = duration( \"P1Y6M\" )", Boolean.TRUE , null},
@@ -183,6 +187,16 @@ public class FEELDateTimeDurationTest extends BaseFEELTest {
                 { "-duration( \"PT1H1M\" ) + time(\"22:57:00\")", LocalTime.of(21, 56, 0) , null},
                 { "time( 22, 57, 00, duration(\"PT5H\")) + duration( \"PT1H1M\" )", OffsetTime.of( 23, 58, 0, 0, ZoneOffset.ofHours( 5 ) ) , null},
                 { "duration( \"PT1H1M\" ) + time( 22, 57, 00, duration(\"PT5H\"))", OffsetTime.of( 23, 58, 0, 0, ZoneOffset.ofHours( 5 ) ) , null},
+
+                { "@\"P1D\" + @\"2023-10-10T10:31:00@Australia/Melbourne\"", DateTimeFormatter.ISO_DATE_TIME.parse("2023-10-11T10" +
+                                                                                                                             ":31+11:00[Australia/Melbourne]", ZonedDateTime::from), null},
+                { "@\"-P1D\" + @\"2023-10-10T10:31:00@Australia/Melbourne\"", DateTimeFormatter.ISO_DATE_TIME.parse("2023-10-09T10" +
+                                                                                                                             ":31+11:00[Australia/Melbourne]", ZonedDateTime::from), null},
+                { "@\"P1D\" + @\"10:15:00@Australia/Melbourne\"", DateTimeFormatter.ISO_TIME.parse( "10:15+10:00", OffsetTime::from ), null},
+                { "@\"-P1D\" + @\"10:15:00@Australia/Melbourne\"", DateTimeFormatter.ISO_TIME.parse( "10:15+10:00", OffsetTime::from ), null},
+                { "@\"PT1H\" + @\"10:15:00@Australia/Melbourne\"", DateTimeFormatter.ISO_TIME.parse( "11:15+10:00", OffsetTime::from ), null},
+                { "@\"-PT1H\" + @\"10:15:00@Australia/Melbourne\"", DateTimeFormatter.ISO_TIME.parse( "09:15+10:00", OffsetTime::from ), null},
+
 
                 // TODO support for zones - fix when timezones solved out (currently returns ZonedDateTime)
 //                { "date and time(\"2016-07-29T05:48:23.765-05:00\") + duration( \"P1Y1M\" ) ", OffsetDateTime.of(2017, 8, 29, 5, 48, 23, 765000000, ZoneOffset.ofHours( -5 )), null},
