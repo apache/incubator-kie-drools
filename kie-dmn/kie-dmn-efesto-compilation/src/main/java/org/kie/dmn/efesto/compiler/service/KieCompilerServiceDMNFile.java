@@ -28,6 +28,7 @@ import org.kie.dmn.efesto.compiler.utils.DmnCompilerUtils;
 import org.kie.dmn.validation.DMNValidator;
 import org.kie.dmn.validation.DMNValidatorFactory;
 import org.kie.efesto.common.api.identifiers.EfestoAppRoot;
+import org.kie.efesto.common.api.io.MemoryFile;
 import org.kie.efesto.common.core.storage.ContextStorage;
 import org.kie.efesto.compilationmanager.api.exceptions.EfestoCompilationManagerException;
 import org.kie.efesto.compilationmanager.api.exceptions.KieCompilerServiceException;
@@ -38,7 +39,13 @@ import org.kie.efesto.compilationmanager.api.model.EfestoResource;
 import org.kie.efesto.compilationmanager.api.service.KieCompilerService;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.StringReader;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -63,18 +70,26 @@ public class KieCompilerServiceDMNFile implements KieCompilerService<EfestoCompi
                                                                 toProcess.getClass().getName()));
         }
         EfestoFileResource fileResource = (EfestoFileResource) toProcess;
-        List<DMNMessage> messages = validator.validate(fileResource.getContent(),
-                DMNValidator.Validation.VALIDATE_SCHEMA,
-                DMNValidator.Validation.VALIDATE_MODEL,
-                DMNValidator.Validation.VALIDATE_COMPILATION,
-                DMNValidator.Validation.ANALYZE_DECISION_TABLE);
+        File dmnFile = fileResource.getContent();
+        String modelSource;
+        try {
+            modelSource = dmnFile instanceof MemoryFile memoryFile ? new String(memoryFile.getContent(), StandardCharsets.UTF_8) : ( Files.readString(dmnFile.toPath()));
+
+        } catch (IOException e) {
+            throw new KieCompilerServiceException(String.format("%s failed to read content of %s",
+                                                                this.getClass().getName(),
+                                                                fileResource.getContent()));
+        }
+        List<DMNMessage> messages = validator.validate(new StringReader(modelSource),
+                                                       DMNValidator.Validation.VALIDATE_SCHEMA,
+                                                       DMNValidator.Validation.VALIDATE_MODEL,
+                                                       DMNValidator.Validation.VALIDATE_COMPILATION,
+                                                       DMNValidator.Validation.ANALYZE_DECISION_TABLE);
         if (DmnCompilerUtils.hasError(messages)) {
             return Collections.emptyList();
         }
         try {
-            File dmnFile = fileResource.getContent();
             String fileName = dmnFile.getName();
-            String modelSource = Files.readString(dmnFile.toPath());
             LocalCompilationSourceIdDmn localCompilationSourceIdDmn = new EfestoAppRoot()
                     .get(KieDmnComponentRoot.class)
                     .get(DmnIdFactory.class)
@@ -95,7 +110,7 @@ public class KieCompilerServiceDMNFile implements KieCompilerService<EfestoCompi
                 .get(KieDmnComponentRoot.class)
                 .get(DmnIdFactory.class)
                 .get(fileName);
-        return ContextStorage.getEfestoCompilationContext(localCompilationSourceIdDmn) != null;
+        return ContextStorage.getEfestoCompilationSource(localCompilationSourceIdDmn) != null;
     }
 
     @Override

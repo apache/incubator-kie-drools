@@ -35,6 +35,8 @@ import org.kie.efesto.compilationmanager.api.service.KieCompilerService;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.StringReader;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -62,15 +64,22 @@ public class KieCompilerServiceDMNInputStream implements KieCompilerService<Efes
                                                                 toProcess.getClass().getName()));
         }
         EfestoInputStreamResource inputStreamResource = (EfestoInputStreamResource) toProcess;
-        List<DMNMessage> messages = validator.validate(new InputStreamReader(inputStreamResource.getContent()),
+        String modelSource;
+        try {
+            modelSource = new String(inputStreamResource.getContent().readAllBytes(), StandardCharsets.UTF_8);
+        } catch (Exception e) {
+            throw new KieCompilerServiceException(String.format("Unable to read content from %s", toProcess), e);
+        }
+        List<DMNMessage> messages = validator.validate(new StringReader(modelSource),
                 DMNValidator.Validation.VALIDATE_SCHEMA,
                 DMNValidator.Validation.VALIDATE_MODEL,
                 DMNValidator.Validation.VALIDATE_COMPILATION,
                 DMNValidator.Validation.ANALYZE_DECISION_TABLE);
         if (DmnCompilerUtils.hasError(messages)) {
-            return Collections.emptyList();
+            String errors = messages.stream().map(DMNMessage::getText).collect(Collectors.joining("\n"));
+            throw new KieCompilerServiceException(String.format("Validation errors from %s:\r\n%s", ((EfestoInputStreamResource) toProcess).getFileName(), errors));
+
         } else {
-            String modelSource = getModelSource(inputStreamResource.getContent());
             DMNModel dmnModel = getDMNModel(modelSource);
             return Collections.singletonList(DmnCompilerUtils.getDefaultEfestoCompilationOutput(inputStreamResource.getFileName(),
                     dmnModel.getName(),

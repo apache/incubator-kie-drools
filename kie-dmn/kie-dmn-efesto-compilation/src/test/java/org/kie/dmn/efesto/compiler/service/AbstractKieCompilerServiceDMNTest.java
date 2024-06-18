@@ -19,34 +19,78 @@
 package org.kie.dmn.efesto.compiler.service;
 
 import java.io.File;
-import java.util.Optional;
+import java.nio.charset.StandardCharsets;
 
-import org.drools.util.FileUtils;
-import org.drools.util.IoUtils;
+import org.kie.dmn.efesto.compiler.model.DmnCompilationContext;
+import org.kie.dmn.efesto.compiler.model.DmnCompilationContextImpl;
+import org.kie.efesto.common.api.identifiers.LocalUri;
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
+import org.kie.efesto.common.api.io.MemoryFile;
+import org.kie.efesto.common.api.model.EfestoCompilationContext;
+import org.kie.efesto.common.core.storage.ContextStorage;
+import org.kie.efesto.compilationmanager.api.exceptions.EfestoCompilationManagerException;
+import org.kie.efesto.compilationmanager.api.service.CompilationManager;
 import org.kie.efesto.compilationmanager.api.service.KieCompilerService;
+import org.kie.efesto.compilationmanager.core.model.EfestoCompilationContextImpl;
+import org.kie.efesto.compilationmanager.core.model.EfestoCompilationContextUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.kie.efesto.common.api.utils.MemoryFileUtils.getFileFromFileName;
+import static org.kie.efesto.common.api.identifiers.LocalUri.SLASH;
+import static org.kie.efesto.common.utils.PackageClassNameUtils.getSanitizedClassName;
 
 public abstract class AbstractKieCompilerServiceDMNTest {
 
-    protected static final String modelName = "_0001-input-data-string";
-    protected static final String dmnFileName = "0001-input-data-string";
-    protected static final String fileName = String.format("%s.dmn", dmnFileName);
-    protected static KieCompilerService kieCompilationService;
+    protected static final String dmnModelName = "loan";
+    protected static final String dmnFileName = "loan";
+    protected static final String dmnFullFileName = String.format("%s.dmn", dmnFileName);
+    protected static final String dmnFullPathFileName = String.format("valid_models/DMNv1_x/%s", dmnFullFileName);
     protected static File dmnFile;
 
+    protected static final String dmnPmmlModelName = "TestRegressionDMN";
+    protected static final String dmnPmmlFileName = "KiePMMLRegression";
+    protected static final String dmnPmmlFullFileName = String.format("%s.dmn", dmnPmmlFileName);
+    protected static final String dmnPmmlFullPathFileName = String.format("valid_models/DMNv1_x/pmml/%s", dmnPmmlFullFileName);
+    protected static File dmnPmmlFile;
+
+    protected static final String pmmlModelName =  "TestRegression";
+    protected static final String pmmlFileName = "test_regression";
+    protected static final String pmmlFullFileName = String.format("%s.pmml", pmmlFileName);
+    protected static final String pmmlFullPathFileName = String.format("valid_models/DMNv1_x/pmml/%s", pmmlFullFileName);
+    protected static File pmmlFile;
+
+    protected static KieCompilerService kieCompilationService;
+    protected static DmnCompilationContext dmnCompilationContext;
+    private static final CompilationManager compilationManager =
+            org.kie.efesto.compilationmanager.api.utils.SPIUtils.getCompilationManager(false).orElseThrow(() -> new EfestoCompilationManagerException("Failed to find an instance of CompilationManager: please check classpath and dependencies"));
+
+
+
     protected static void commonSetUp() {
-        dmnFile = getFileFromFileName(fileName).orElseThrow(() -> new RuntimeException("Failed to get dmn file"));
-        try {
-            Optional<File> newFIle = org.kie.efesto.common.api.utils.MemoryFileUtils.getFileFromFileName("valid_models/DMNv1_x/loan.dmn");
-            assertTrue(newFIle.isPresent());
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
+        dmnFile = org.kie.efesto.common.api.utils.MemoryFileUtils.getFileFromFileName(dmnFullPathFileName).orElseThrow(() -> new RuntimeException("Failed to get dmn file"));
+        pmmlFile = org.kie.efesto.common.api.utils.MemoryFileUtils.getFileFromFileName(pmmlFullPathFileName).orElseThrow(() -> new RuntimeException("Failed to get dmn file"));
+        dmnPmmlFile = org.kie.efesto.common.api.utils.MemoryFileUtils.getFileFromFileName(dmnPmmlFullPathFileName).orElseThrow(() -> new RuntimeException("Failed to get dmn file"));
+
+        EfestoCompilationContext pmmlCompilationContext = EfestoCompilationContextUtils.buildWithParentClassLoader(Thread.currentThread().getContextClassLoader());
+
+//        InputStream is = new ByteArrayInputStream(((MemoryFile) pmmlFile).getContent());
+//        EfestoInputStreamResource pmmlFileResource = new EfestoInputStreamResource(is, pmmlFullPathFileName);
+//        compilationManager.processResource(pmmlCompilationContext, pmmlFileResource);
+//        ContextStorage.putEfestoCompilationContext(getPmmlModelLocalUriId(), pmmlCompilationContext);
+        ContextStorage.putEfestoCompilationSource(getPmmlModelLocalUriId(), new String(((MemoryFile) pmmlFile).getContent(), StandardCharsets.UTF_8));
+        dmnCompilationContext = (DmnCompilationContext) EfestoCompilationContextUtils.buildFromContext((EfestoCompilationContextImpl) pmmlCompilationContext, DmnCompilationContextImpl.class);
+    }
+
+    private static ModelLocalUriId getPmmlModelLocalUriId() {
+        String path = "/pmml/" + getFileNameNoSuffix(pmmlFullFileName) + SLASH + getSanitizedClassName(pmmlModelName);
+        LocalUri parsed = LocalUri.parse(path);
+        return new ModelLocalUriId(parsed);
+    }
+
+    private static String getFileNameNoSuffix(String fileName) {
+        return fileName.contains(".") ? fileName.substring(0, fileName.lastIndexOf('.')) : fileName;
     }
 
 }

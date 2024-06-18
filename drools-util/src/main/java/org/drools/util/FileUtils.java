@@ -23,13 +23,17 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
+import java.util.jar.JarFile;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
+import java.util.zip.ZipEntry;
 
 /**
  * Utility to access files
@@ -57,6 +61,38 @@ public class FileUtils {
             throw new IllegalArgumentException("Failed to find file " + fileName);
         }
         return toReturn;
+    }
+
+    /**
+     * Retrieve the <code>File</code> from jars
+     *
+     * @param fileName
+     * @return
+     */
+    public static File getFileFromDependency(String fileName) throws IOException {
+        URL jarUrl =
+                Collections.list(Thread.currentThread().getContextClassLoader().getResources(fileName))
+                        .stream()
+                        .filter(url -> url.getProtocol().equals("jar"))
+                        .findFirst()
+                        .orElseThrow(() -> new RuntimeException("Failed to retrieve jar containing " + fileName));
+        String jarFileName = jarUrl.getFile();
+        String jarPath = jarFileName.substring(jarFileName.lastIndexOf(":") + 1,
+                                               jarFileName.lastIndexOf("!"));
+        System.out.println(jarPath);
+        final JarFile jarFile = new JarFile(new File(jarPath));
+        System.out.println(jarFile);
+        String foundFile = Collections.list(jarFile.entries())
+                .stream()
+                .filter(entry -> entry.getName().equals(fileName) && !entry.isDirectory())
+                .map(ZipEntry::getName)
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Failed to find file " + fileName));
+        System.out.println(foundFile);
+        URL r = Thread.currentThread().getContextClassLoader().getResource(foundFile);
+        System.out.println(r);
+
+        return null;
     }
 
     /**

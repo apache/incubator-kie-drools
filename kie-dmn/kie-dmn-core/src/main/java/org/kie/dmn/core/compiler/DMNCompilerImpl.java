@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -102,11 +103,16 @@ import org.kie.dmn.model.api.OutputClause;
 import org.kie.dmn.model.api.UnaryTests;
 import org.kie.dmn.model.v1_1.TInformationItem;
 import org.kie.dmn.model.v1_1.extensions.DecisionServices;
+import org.kie.efesto.common.api.identifiers.LocalUri;
+import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
+import org.kie.efesto.common.core.storage.ContextStorage;
 import org.kie.internal.io.ResourceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.kie.dmn.core.compiler.UnnamedImportUtils.processMergedModel;
+import static org.kie.efesto.common.api.identifiers.LocalUri.SLASH;
+import static org.kie.efesto.common.utils.PackageClassNameUtils.getSanitizedClassName;
 
 public class DMNCompilerImpl implements DMNCompiler {
 
@@ -321,11 +327,16 @@ public class DMNCompilerImpl implements DMNCompiler {
         logger.trace("locationURI: {}", locationURI);
         Resource pmmlResource = null;
         try {
-            URI resolveRelativeURI = DMNCompilerImpl.resolveRelativeURI(model, locationURI);
-            pmmlResource = resolveRelativeURI.isAbsolute() ?
-                    ResourceFactory.newFileResource(resolveRelativeURI.getPath()) :
-                    ResourceFactory.newClassPathResource(resolveRelativeURI.getPath(), classLoader);
-        } catch (URISyntaxException | IOException e) {
+            //////////
+            ModelLocalUriId modelLocalUriId = getModelLocalUriId(locationURI, i.getName());
+            String pmmlSource = ContextStorage.getEfestoCompilationSource(modelLocalUriId);
+            pmmlResource = ResourceFactory.newByteArrayResource(pmmlSource.getBytes(StandardCharsets.UTF_8));
+
+//            URI resolveRelativeURI = DMNCompilerImpl.resolveRelativeURI(model, locationURI);
+//            pmmlResource = resolveRelativeURI.isAbsolute() ?
+//                    ResourceFactory.newFileResource(resolveRelativeURI.getPath()) :
+//                    ResourceFactory.newClassPathResource(resolveRelativeURI.getPath(), classLoader);
+        } catch (Exception e) {
             new PMMLImportErrConsumer(model, i, node).accept(e);
         }
         logger.trace("pmmlResource: {}", pmmlResource);
@@ -345,6 +356,16 @@ public class DMNCompilerImpl implements DMNCompiler {
             URI relativeURI = dmnModelURI.resolve(relativeAsURI);
             return relativeURI;
         }
+    }
+
+    private static ModelLocalUriId getModelLocalUriId(String fileName, String modelName) {
+        String path = "/pmml/" + getFileNameNoSuffix(fileName) + SLASH + getSanitizedClassName(modelName);
+        LocalUri parsed = LocalUri.parse(path);
+        return new ModelLocalUriId(parsed);
+    }
+
+    private static String getFileNameNoSuffix(String fileName) {
+        return fileName.contains(".") ? fileName.substring(0, fileName.lastIndexOf('.')) : fileName;
     }
 
     private void importFromModel(DMNModelImpl model, DMNModel m, String iAlias) {

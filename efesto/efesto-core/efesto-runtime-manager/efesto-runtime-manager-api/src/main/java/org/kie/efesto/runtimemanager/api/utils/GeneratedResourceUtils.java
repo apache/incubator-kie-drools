@@ -44,7 +44,7 @@ public class GeneratedResourceUtils {
     }
 
     public static boolean isPresentExecutableOrModelOrRedirect(ModelLocalUriId modelLocalUriId, EfestoContext context) {
-        return  getGeneratedExecutableResource(modelLocalUriId, context.getGeneratedResourcesMap()).isPresent() ||
+        return getGeneratedExecutableResource(modelLocalUriId, context.getGeneratedResourcesMap()).isPresent() ||
                 getGeneratedModelResource(modelLocalUriId, context.getGeneratedResourcesMap()).isPresent() ||
                 getGeneratedRedirectResource(modelLocalUriId, context.getGeneratedResourcesMap()).isPresent();
     }

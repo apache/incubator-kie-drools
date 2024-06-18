@@ -22,6 +22,31 @@
                 <artifactId>kie-dmn-efesto-api</artifactId>
                 <version>${version}</version>
             </dependency>
+          <dependency>
+            <groupId>org.kie</groupId>
+            <artifactId>kie-dmn-test-resources</artifactId>
+            <version>${version}</version>
+            <classifier>tests</classifier>
+            <scope>test</scope>
+          </dependency>
+          <dependency>
+            <groupId>org.kie</groupId>
+            <artifactId>kie-pmml-compiler-core</artifactId>
+            <version>${version}</version>
+            <scope>test</scope>
+          </dependency>
+          <dependency>
+            <groupId>org.kie</groupId>
+            <artifactId>kie-pmml-models-regression-compiler</artifactId>
+            <version>${version}</version>
+            <scope>test</scope>
+          </dependency>
+          <dependency>
+            <groupId>org.kie</groupId>
+            <artifactId>kie-pmml-models-regression-evaluator</artifactId>
+            <version>${version}</version>
+            <scope>test</scope>
+          </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -48,6 +73,27 @@
         </dependency>
         <!-- End Efesto -->
         <!-- TEST -->
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-dmn-test-resources</artifactId>
+        <classifier>tests</classifier>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-pmml-compiler-core</artifactId>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-pmml-models-regression-compiler</artifactId>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-pmml-models-regression-evaluator</artifactId>
+        <scope>test</scope>
+      </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
