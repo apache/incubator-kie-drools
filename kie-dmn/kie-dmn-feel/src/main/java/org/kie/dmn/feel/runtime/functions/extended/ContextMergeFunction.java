@@ -59,6 +59,10 @@ public class ContextMergeFunction extends BaseFEELFunction {
     }
 
     public FEELFnResult<Map<String, Object>> invoke(@ParameterName("contexts") Object context) {
+        if (context == null) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "entries", "cannot be null"));
+        }
+
         return invoke(List.of(context));
     }
 
