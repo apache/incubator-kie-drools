@@ -75,7 +75,7 @@ public class EndNodeVisitor extends AbstractNodeVisitor<EndNode> {
         } else if (node.getMetaData(TRIGGER_REF) != null) {
             body.addStatement(getFactoryMethod(getNodeId(node), METHOD_ACTION, buildProducerAction(node, metadata)));
         } else if (node.getMetaData(REF) != null && EVENT_TYPE_SIGNAL.equals(node.getMetaData(EVENT_TYPE))) {
-            body.addStatement(getFactoryMethod(getNodeId(node), METHOD_ACTION, buildAction((String) node.getMetaData(REF),
+            body.addStatement(getFactoryMethod(getNodeId(node), METHOD_ACTION, buildSignalAction((String) node.getMetaData(REF),
                     (String) node.getMetaData(VARIABLE), (String) node.getMetaData(MAPPING_VARIABLE_INPUT), (String) node.getMetaData(CUSTOM_SCOPE))));
         }
         addNodeMappings(node, body, getNodeId(node));

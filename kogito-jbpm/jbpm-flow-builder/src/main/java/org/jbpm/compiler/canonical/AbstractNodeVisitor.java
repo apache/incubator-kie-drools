@@ -33,6 +33,7 @@ import org.jbpm.process.core.context.variable.Mappable;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.core.datatype.DataTypeResolver;
+import org.jbpm.process.instance.impl.actions.HandleEscalationAction;
 import org.jbpm.process.instance.impl.actions.ProduceEventAction;
 import org.jbpm.process.instance.impl.actions.SignalProcessInstanceAction;
 import org.jbpm.ruleflow.core.Metadata;
@@ -371,7 +372,7 @@ public abstract class AbstractNodeVisitor<T extends Node> extends AbstractVisito
                 conditionBody);
     }
 
-    public static ObjectCreationExpr buildAction(String signalName, String variable, String inputVariable, String scope) {
+    public static ObjectCreationExpr buildSignalAction(String signalName, String variable, String inputVariable, String scope) {
         return new ObjectCreationExpr(null,
                 parseClassOrInterfaceType(SignalProcessInstanceAction.class.getCanonicalName()),
                 new NodeList<>(new StringLiteralExpr(signalName), variable != null ? new StringLiteralExpr(variable.replace("\"", "\\\""))
@@ -381,6 +382,15 @@ public abstract class AbstractNodeVisitor<T extends Node> extends AbstractVisito
                         scope != null ? new StringLiteralExpr(scope)
                                 : new CastExpr(
                                         parseClassOrInterfaceType(String.class.getCanonicalName()), new NullLiteralExpr())));
+    }
+
+    public static ObjectCreationExpr buildEscalationAction(String faultName, String inputVariable) {
+        return new ObjectCreationExpr(null,
+                parseClassOrInterfaceType(HandleEscalationAction.class.getCanonicalName()),
+                new NodeList<>(
+                        faultName != null ? new StringLiteralExpr(faultName) : new NullLiteralExpr(),
+                        inputVariable != null ? new StringLiteralExpr(inputVariable) : new NullLiteralExpr()));
+
     }
 
     public static LambdaExpr buildCompensationLambdaExpr(String compensationRef) {

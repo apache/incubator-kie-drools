@@ -24,6 +24,7 @@ import java.util.Optional;
 import org.jbpm.process.core.context.exception.CompensationScope;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
+import org.jbpm.process.instance.impl.actions.HandleEscalationAction;
 import org.jbpm.process.instance.impl.actions.ProcessInstanceCompensationAction;
 import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.ruleflow.core.factory.ActionNodeFactory;
@@ -79,27 +80,34 @@ public class ActionNodeVisitor extends AbstractNodeVisitor<ActionNode> {
         } else if (node.getMetaData(TRIGGER_REF) != null) { // if there is trigger defined on end event create TriggerMetaData for it
             body.addStatement(getFactoryMethod(getNodeId(node), METHOD_ACTION, buildProducerAction(node, metadata)));
         } else if (node.getMetaData(REF) != null && EVENT_TYPE_SIGNAL.equals(node.getMetaData(EVENT_TYPE))) {
-            body.addStatement(getFactoryMethod(getNodeId(node), METHOD_ACTION, buildAction((String) node.getMetaData(REF),
+            body.addStatement(getFactoryMethod(getNodeId(node), METHOD_ACTION, buildSignalAction((String) node.getMetaData(REF),
                     (String) node.getMetaData(VARIABLE), (String) node.getMetaData(MAPPING_VARIABLE_INPUT), (String) node.getMetaData(CUSTOM_SCOPE))));
         } else if (node.getAction() instanceof DroolsConsequenceAction) {
-            BlockStmt actionBody = new BlockStmt();
-            String consequence = getActionConsequence(node.getAction());
-            if (consequence == null || consequence.trim().isEmpty()) {
-                LOGGER.warn("Action node {} name {} has no action defined!", node.getId().toExternalFormat(), node.getName());
+            DroolsConsequenceAction droolsConsequenceAction = (DroolsConsequenceAction) node.getAction();
+            if (droolsConsequenceAction.getMetaData("Action") instanceof HandleEscalationAction) {
+                HandleEscalationAction action = (HandleEscalationAction) droolsConsequenceAction.getMetaData("Action");
+                body.addStatement(getFactoryMethod(getNodeId(node), METHOD_ACTION, buildEscalationAction(action.getFaultName(), action.getVariableName())));
             } else {
-                List<Variable> variables = variableScope.getVariables();
-                variables.stream()
-                        .filter(v -> consequence.contains(v.getName()))
-                        .map(ActionNodeVisitor::makeAssignment)
-                        .forEach(actionBody::addStatement);
+                BlockStmt actionBody = new BlockStmt();
+                String consequence = getActionConsequence(node.getAction());
+                if (consequence == null || consequence.trim().isEmpty()) {
+                    LOGGER.warn("Action node {} name {} has no action defined!", node.getId().toExternalFormat(), node.getName());
+                } else {
+                    List<Variable> variables = variableScope.getVariables();
+                    variables.stream()
+                            .filter(v -> consequence.contains(v.getName()))
+                            .map(ActionNodeVisitor::makeAssignment)
+                            .forEach(actionBody::addStatement);
 
-                BlockStmt blockStmt = StaticJavaParser.parseBlock("{" + consequence + "}");
-                blockStmt.getStatements().forEach(actionBody::addStatement);
+                    BlockStmt blockStmt = StaticJavaParser.parseBlock("{" + consequence + "}");
+                    blockStmt.getStatements().forEach(actionBody::addStatement);
+                }
+                LambdaExpr lambda = new LambdaExpr(
+                        new Parameter(new UnknownType(), KCONTEXT_VAR), // (kcontext) ->
+                        actionBody);
+                body.addStatement(getFactoryMethod(getNodeId(node), METHOD_ACTION, lambda));
             }
-            LambdaExpr lambda = new LambdaExpr(
-                    new Parameter(new UnknownType(), KCONTEXT_VAR), // (kcontext) ->
-                    actionBody);
-            body.addStatement(getFactoryMethod(getNodeId(node), METHOD_ACTION, lambda));
+
         }
         addNodeMappings(node, body, getNodeId(node));
         body.addStatement(getDoneMethod(getNodeId(node)));

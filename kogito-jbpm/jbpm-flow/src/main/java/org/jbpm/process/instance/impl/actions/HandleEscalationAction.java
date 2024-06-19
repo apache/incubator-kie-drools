@@ -45,6 +45,14 @@ public class HandleEscalationAction implements Action, Serializable {
         this.variableName = variableName;
     }
 
+    public String getFaultName() {
+        return faultName;
+    }
+
+    public String getVariableName() {
+        return variableName;
+    }
+
     @Override
     public void execute(KogitoProcessContext context) throws Exception {
         ExceptionScopeInstance scopeInstance = (ExceptionScopeInstance) ((NodeInstance) context.getNodeInstance()).resolveContextInstance(ExceptionScope.EXCEPTION_SCOPE,
@@ -53,12 +61,13 @@ public class HandleEscalationAction implements Action, Serializable {
             Object event = variableName == null ? null : context.getVariable(variableName);
             NodeInstanceImpl impl = ((NodeInstanceImpl) context.getNodeInstance());
             // for event nodes we create a "virtual assignment and we process it"
-            Map<String, Object> outputSet = Collections.singletonMap(variableName, event);
+            Map<String, Object> outputSet = variableName != null ? Collections.singletonMap(variableName, event) : Collections.emptyMap();
             NodeIoHelper.processOutputs(impl, varRef -> outputSet.get(varRef), target -> impl.getVariable(target));
-            context.getContextData().put("Exception", context.getVariable(variableName));
+            if (variableName != null) {
+                context.getContextData().put("Exception", context.getVariable(variableName));
+            }
             scopeInstance.handleException(faultName, context);
         } else {
-
             ((ProcessInstance) context.getProcessInstance()).setState(STATE_ABORTED);
         }
     }

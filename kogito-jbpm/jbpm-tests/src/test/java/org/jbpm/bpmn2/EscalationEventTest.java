@@ -19,22 +19,40 @@
 package org.jbpm.bpmn2;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.jbpm.bpmn2.escalation.EscalationBoundaryEventWithTaskModel;
+import org.jbpm.bpmn2.escalation.EscalationBoundaryEventWithTaskProcess;
+import org.jbpm.bpmn2.escalation.EventSubprocessEscalationModel;
+import org.jbpm.bpmn2.escalation.EventSubprocessEscalationProcess;
+import org.jbpm.bpmn2.escalation.MultiEscalationModel;
+import org.jbpm.bpmn2.escalation.MultiEscalationProcess;
+import org.jbpm.bpmn2.escalation.TopLevelEscalationModel;
+import org.jbpm.bpmn2.escalation.TopLevelEscalationProcess;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
+import org.jbpm.test.utils.EventTrackerProcessListener;
+import org.jbpm.test.utils.ProcessTestHelper;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.api.event.process.ProcessNodeLeftEvent;
 import org.kie.api.event.process.ProcessNodeTriggeredEvent;
+import org.kie.api.event.process.ProcessStartedEvent;
+import org.kie.api.event.process.SignalEvent;
+import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.kogito.Application;
 import org.kie.kogito.internal.process.event.DefaultKogitoProcessEventListener;
 import org.kie.kogito.internal.process.event.KogitoProcessEventListener;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
+import org.kie.kogito.process.impl.Sig;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.jbpm.test.utils.ProcessTestHelper.left;
+import static org.jbpm.test.utils.ProcessTestHelper.triggered;
 
 public class EscalationEventTest extends JbpmBpmn2TestCase {
 
@@ -63,37 +81,83 @@ public class EscalationEventTest extends JbpmBpmn2TestCase {
     };
 
     @Test
+    public void testMultiEscalation() throws Exception {
+        Application app = ProcessTestHelper.newApplication();
+        ProcessTestHelper.registerProcessEventListener(app, new DefaultKogitoProcessEventListener() {
+            @Override
+            public void onSignal(SignalEvent event) {
+                logger.info("on signal {}", event);
+            }
+        });
+        org.kie.kogito.process.Process<MultiEscalationModel> definition = MultiEscalationProcess.newProcess(app);
+        MultiEscalationModel model = definition.createModel();
+        model.setData("data");
+        model.setEnddata("end_data");
+        org.kie.kogito.process.ProcessInstance<MultiEscalationModel> instance = definition.createInstance(model);
+        instance.start();
+        assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_ABORTED);
+    }
+
+    @Test
+    public void testTopLevelEscalation() throws Exception {
+        Application app = ProcessTestHelper.newApplication();
+        List<String> instances = new ArrayList<>();
+        ProcessTestHelper.registerProcessEventListener(app, new DefaultKogitoProcessEventListener() {
+            @Override
+            public void beforeProcessStarted(ProcessStartedEvent event) {
+                instances.add(event.getProcessInstance().getId());
+            }
+        });
+        org.kie.kogito.process.Process<TopLevelEscalationModel> definition = TopLevelEscalationProcess.newProcess(app);
+        TopLevelEscalationModel model = definition.createModel();
+        model.setData("data");
+        definition.send(Sig.of("Escalation-START_NEW", "data"));
+        assertThat(instances).hasSize(1);
+    }
+
+    @Test
     public void testEventSubprocessEscalation() throws Exception {
-        kruntime = createKogitoProcessRuntime("escalation/BPMN2-EventSubprocessEscalation.bpmn2");
         final List<String> executednodes = new ArrayList<>();
         KogitoProcessEventListener listener = new DefaultKogitoProcessEventListener() {
 
             @Override
             public void afterNodeLeft(ProcessNodeLeftEvent event) {
-                if (event.getNodeInstance().getNodeName()
-                        .equals("Script Task 1")) {
+                if (event.getNodeInstance().getNodeName().equals("Script Task 1")) {
                     executednodes.add(((KogitoNodeInstance) event.getNodeInstance()).getStringId());
                 }
             }
 
         };
-
-        kruntime.getProcessEventManager().addEventListener(listener);
+        EventTrackerProcessListener tracker = new EventTrackerProcessListener();
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task",
-                workItemHandler);
-        KogitoProcessInstance processInstance = kruntime
-                .startProcess("BPMN2-EventSubprocessEscalation");
-        assertProcessInstanceActive(processInstance);
-        kruntime.getProcessEventManager().addEventListener(listener);
+
+        Application app = ProcessTestHelper.newApplication();
+        ProcessTestHelper.registerProcessEventListener(app, listener);
+        ProcessTestHelper.registerProcessEventListener(app, tracker);
+        ProcessTestHelper.registerHandler(app, "Human Task", workItemHandler);
+
+        org.kie.kogito.process.Process<EventSubprocessEscalationModel> processDefinition = EventSubprocessEscalationProcess.newProcess(app);
+        org.kie.kogito.process.ProcessInstance<EventSubprocessEscalationModel> instance = processDefinition.createInstance(processDefinition.createModel());
+        instance.start();
+
+        assertThat(instance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
 
         KogitoWorkItem workItem = workItemHandler.getWorkItem();
         assertThat(workItem).isNotNull();
-        kruntime.getKogitoWorkItemManager().completeWorkItem(workItem.getStringId(), null);
-        assertProcessInstanceFinished(processInstance, kruntime);
-        assertNodeTriggered(processInstance.getStringId(), "start", "User Task 1",
-                "end", "Sub Process 1", "start-sub", "Script Task 1", "end-sub");
+
+        ProcessTestHelper.completeWorkItem(instance, "john", Collections.emptyMap());
+
+        assertThat(instance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
         assertThat(executednodes).hasSize(1);
+
+        assertThat(tracker.tracked())
+                .anyMatch(triggered("start"))
+                .anyMatch(triggered("User Task 1"))
+                .anyMatch(triggered("end"))
+                .anyMatch(left("Sub Process 1"))
+                .anyMatch(left("start-sub"))
+                .anyMatch(triggered("Script Task 1"))
+                .anyMatch(triggered("end-sub"));
 
     }
 
@@ -135,22 +199,22 @@ public class EscalationEventTest extends JbpmBpmn2TestCase {
     }
 
     @Test
-    @Disabled("General escalation is not yet supported.")
-    // TODO: implement general escalation
-    // TODO: implement asynchronous escalation
     public void testGeneralEscalationBoundaryEventWithTask() throws Exception {
-        kruntime = createKogitoProcessRuntime("escalation/BPMN2-EscalationBoundaryEventWithTask.bpmn2");
-
         TestWorkItemHandler handler = new TestWorkItemHandler();
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task", handler);
-        Map<String, Object> params = new HashMap<>();
-        params.put("x", "0");
-        KogitoProcessInstance processInstance = kruntime.startProcess("non-interrupting-escalation", params);
 
-        kruntime.getKogitoWorkItemManager().completeWorkItem(handler.getWorkItem().getStringId(), null);
-        assertProcessInstanceCompleted(processInstance);
-        // Did escalation fire? 
-        assertProcessVarValue(processInstance, "x", "1");
+        Application app = ProcessTestHelper.newApplication();
+        ProcessTestHelper.registerHandler(app, "Human Task", handler);
+
+        org.kie.kogito.process.Process<EscalationBoundaryEventWithTaskModel> processDefinition = EscalationBoundaryEventWithTaskProcess.newProcess(app);
+        EscalationBoundaryEventWithTaskModel model = processDefinition.createModel();
+        model.setX("0");
+        org.kie.kogito.process.ProcessInstance<EscalationBoundaryEventWithTaskModel> instance = processDefinition.createInstance(model);
+        instance.start();
+        ProcessTestHelper.completeWorkItem(instance, "john", Collections.emptyMap());
+
+        assertThat(instance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
+        assertThat(instance.variables().getX()).isEqualTo("1");
+
     }
 
     @Test

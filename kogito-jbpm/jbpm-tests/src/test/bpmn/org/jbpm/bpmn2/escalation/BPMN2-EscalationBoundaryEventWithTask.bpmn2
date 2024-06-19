@@ -31,57 +31,51 @@
              xmlns:tns="http://www.jboss.org/drools">
 
   <itemDefinition id="_xItem" structureRef="String" />
-
-  <itemDefinition id="_2_MessageType" structureRef="String" />
-  <message id="_2_Message" itemRef="_2_MessageType" />
-
-  <process processType="Private" isExecutable="true" id="IntermediateThrowEventMessageWithTransformation" tns:packageName="org.jbpm.bpmn2.intermediate" name="Message Intermediate Throw Event Process" >
+  <escalation id="escId" escalationCode="Code3" />
+  
+  <process processType="Private" isExecutable="true" id="EscalationBoundaryEventWithTask" name="Escalation Boundary Event Process" tns:packageName="org.jbpm.bpmn2.escalation">
 
     <!-- process variables -->
     <property id="x" itemSubjectRef="_xItem"/>
-
-    <!-- nodes -->
-    <startEvent id="_1" name="StartProcess" />
-    <intermediateThrowEvent id="_2" name="MessageEvent" >
-      <dataInput id="_2_Input" name="param" itemSubjectRef="_xItem"/>
-      <dataInputAssociation>
-        <sourceRef>x</sourceRef>
-        <targetRef>_2_Input</targetRef>
-        <transformation language="http://www.java.com/java">x.toUpperCase();</transformation>
-      </dataInputAssociation>
-      <inputSet>
-        <dataInputRefs>_2_Input</dataInputRefs>
-      </inputSet>
-      <messageEventDefinition messageRef="_2_Message"/>
-    </intermediateThrowEvent>
-    <endEvent id="_3" name="EndEvent" />
-
-    <!-- connections -->
+    
+   <!-- process nodes/seqs -->
+    <startEvent id="_1" name="Start" />
     <sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2" />
+    
+    <subProcess id="_2" name="Sub"  >
+      <startEvent id="_2-1" name="startSub" />
+      <sequenceFlow id="_2-1-_2-2" sourceRef="_2-1" targetRef="_2-2" />
+      
+      <intermediateThrowEvent id="_2-2" name="escSub">
+        <escalationEventDefinition id="EscalationEventDefinition_2" escalationRef="escId"/>
+      </intermediateThrowEvent>
+      <sequenceFlow id="_2-2-_2-3" sourceRef="_2-2" targetRef="_2-3" />
+    
+      <userTask id="_2-3" name="User Task" />
+      <sequenceFlow id="_2-3-_2-4" sourceRef="_2-3" targetRef="_2-4" />
+      
+      <endEvent id="_2-4" name="endSub" />
+    </subProcess>
     <sequenceFlow id="_2-_3" sourceRef="_2" targetRef="_3" />
 
+    
+    <boundaryEvent id="_4" name="CatchEscalation" attachedToRef="_2" cancelActivity="false" >
+      <escalationEventDefinition />
+    </boundaryEvent>
+    
+        
+    <endEvent id="_3" name="End" >
+        <terminateEventDefinition/>
+    </endEvent>
+    <sequenceFlow id="_4-_5" sourceRef="_4" targetRef="_5" />
+    
+    <scriptTask id="_5" name="Goodbye" >
+      <script>kcontext.setVariable("x", Integer.toString(Integer.parseInt(kcontext.getVariable("x").toString()) + 1));</script>
+    </scriptTask>
+    <sequenceFlow id="_5-_6" sourceRef="_5" targetRef="_6" />
+    
+    <endEvent id="_6" name="AnotherEnd" />
+    
   </process>
-
-  <bpmndi:BPMNDiagram>
-    <bpmndi:BPMNPlane bpmnElement="MessageIntermediateEvent" >
-      <bpmndi:BPMNShape bpmnElement="_1" >
-        <dc:Bounds x="16" y="16" width="48" height="48" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="_2" >
-        <dc:Bounds x="96" y="16" width="131" height="48" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="_3" >
-        <dc:Bounds x="262" y="15" width="48" height="48" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge bpmnElement="_1-_2" >
-        <di:waypoint x="40" y="40" />
-        <di:waypoint x="161" y="40" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="_2-_3" >
-        <di:waypoint x="161" y="40" />
-        <di:waypoint x="286" y="39" />
-      </bpmndi:BPMNEdge>
-    </bpmndi:BPMNPlane>
-  </bpmndi:BPMNDiagram>
 
 </definitions>

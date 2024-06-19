@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jbpm.process.core.timer.Timer;
+import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
 import org.kie.api.definition.process.Connection;
@@ -41,6 +42,10 @@ public class StartNode extends ExtendedNodeImpl {
     private boolean isInterrupting;
 
     private Timer timer;
+
+    public StartNode() {
+        setMetaData(Metadata.EVENT_TYPE, Metadata.EVENT_TYPE_NONE);
+    }
 
     public void addTrigger(Trigger trigger) {
         if (triggers == null) {

@@ -34,6 +34,8 @@ import org.jbpm.bpmn2.activity.BoundarySignalEventOnTaskWithTransformationModel;
 import org.jbpm.bpmn2.activity.BoundarySignalEventOnTaskWithTransformationProcess;
 import org.jbpm.bpmn2.handler.ReceiveTaskHandler;
 import org.jbpm.bpmn2.handler.SendTaskHandler;
+import org.jbpm.bpmn2.intermediate.EventSubprocessErrorSignalEmbeddedModel;
+import org.jbpm.bpmn2.intermediate.EventSubprocessErrorSignalEmbeddedProcess;
 import org.jbpm.bpmn2.intermediate.IntermediateCatchEventMessageWithTransformationModel;
 import org.jbpm.bpmn2.intermediate.IntermediateCatchEventMessageWithTransformationProcess;
 import org.jbpm.bpmn2.intermediate.IntermediateCatchEventSignal2Model;
@@ -2351,20 +2353,17 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
 
     @Test
     public void testEventSubprocessWithEmbeddedSignals() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/intermediate/BPMN2-EventSubprocessErrorSignalEmbedded.bpmn2");
-        KogitoProcessInstance processInstance = kruntime.startProcess("EventSubprocessErrorSignalEmbedded");
+        Application app = ProcessTestHelper.newApplication();
 
-        assertProcessInstanceActive(processInstance.getStringId(), kruntime);
-        assertProcessInstanceActive(processInstance);
-        kruntime.signalEvent("signal1", null, processInstance.getStringId());
-        assertProcessInstanceActive(processInstance.getStringId(), kruntime);
-
-        kruntime.signalEvent("signal2", null, processInstance.getStringId());
-        assertProcessInstanceActive(processInstance.getStringId(), kruntime);
-
-        kruntime.signalEvent("signal3", null, processInstance.getStringId());
-
-        assertProcessInstanceFinished(processInstance, kruntime);
+        org.kie.kogito.process.Process<EventSubprocessErrorSignalEmbeddedModel> definition = EventSubprocessErrorSignalEmbeddedProcess.newProcess(app);
+        org.kie.kogito.process.ProcessInstance<EventSubprocessErrorSignalEmbeddedModel> instance = definition.createInstance(definition.createModel());
+        instance.start();
+        instance.send(Sig.of("signal1", null));
+        assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_ACTIVE);
+        instance.send(Sig.of("signal2", null));
+        assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_ACTIVE);
+        instance.send(Sig.of("signal3", null));
+        assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_ABORTED);
     }
 
     @Test

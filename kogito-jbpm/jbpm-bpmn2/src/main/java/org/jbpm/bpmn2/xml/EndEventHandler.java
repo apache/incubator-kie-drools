@@ -89,6 +89,7 @@ public class EndEventHandler extends AbstractNodeHandler {
                 handleMessageNode(node, element, uri, localName, parser);
             } else if ("errorEventDefinition".equals(nodeName)) {
                 FaultNode faultNode = new FaultNode();
+                faultNode.setMetaData(node.getMetaData());
                 faultNode.setId(node.getId());
                 faultNode.setName(node.getName());
                 faultNode.setTerminateParent(true);
@@ -100,6 +101,7 @@ public class EndEventHandler extends AbstractNodeHandler {
                 break;
             } else if ("escalationEventDefinition".equals(nodeName)) {
                 FaultNode faultNode = new FaultNode();
+                faultNode.setMetaData(node.getMetaData());
                 faultNode.setId(node.getId());
                 faultNode.setName(node.getName());
                 node = faultNode;
@@ -258,6 +260,7 @@ public class EndEventHandler extends AbstractNodeHandler {
                         throw new ProcessParsingValidationException("Could not find escalation " + escalationRef);
                     }
                     faultNode.setFaultName(escalation.getEscalationCode());
+                    faultNode.setMetaData("FaultCode", escalation.getEscalationCode());
                 } else {
                     // BPMN2 spec, p. 83: end event's with <escalationEventDefintions>
                     // are _required_ to reference a specific escalation(-code).

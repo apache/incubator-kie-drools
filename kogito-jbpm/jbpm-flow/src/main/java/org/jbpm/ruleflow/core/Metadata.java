@@ -36,6 +36,7 @@ public class Metadata {
     public static final String TRIGGER_MAPPING_INPUT = "TriggerMappingInput";
     public static final String MAPPING_VARIABLE = "MappingVariable";
     public static final String MAPPING_VARIABLE_INPUT = "MappingVariableInput";
+    public static final String FAULT_CODE = "FaultCode";
     public static final String EVENT_TYPE = "EventType";
     public static final String EVENT_TYPE_TIMER = "Timer";
     public static final String EVENT_TYPE_SIGNAL = "signal";
@@ -43,8 +44,9 @@ public class Metadata {
     public static final String EVENT_TYPE_COMPENSATION = "Compensation";
     public static final String EVENT_TYPE_ERROR = "error";
     public static final String EVENT_TYPE_CONDITIONAL = "conditional";
+    public static final String EVENT_TYPE_NONE = "none";
     public static final String EVENT_TYPE_LINK = "link";
-    public static final Object EVENT_TYPE_ESCALATION = "Escalation";
+    public static final String EVENT_TYPE_ESCALATION = "Escalation";
     public static final String CUSTOM_SCOPE = "customScope";
     public static final String ATTACHED_TO = "AttachedTo";
     public static final String TIME_CYCLE = "TimeCycle";

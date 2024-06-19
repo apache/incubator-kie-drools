@@ -304,14 +304,12 @@ public class ProcessVisitor extends AbstractVisitor {
                 String faultCode = e.getKey();
                 ActionExceptionHandler handler = (ActionExceptionHandler) e.getValue();
                 Optional<String> faultVariable = Optional.ofNullable(handler.getFaultVariable());
-                SignalProcessInstanceAction action =
-                        (SignalProcessInstanceAction) handler.getAction().getMetaData("Action");
+                SignalProcessInstanceAction action = (SignalProcessInstanceAction) handler.getAction().getMetaData("Action");
                 String signalName = action.getSignalName();
                 body.addStatement(getFactoryMethod(getFieldName(context.getContextContainer()), METHOD_ERROR_EXCEPTION_HANDLER,
                         new StringLiteralExpr(signalName),
-                        new StringLiteralExpr(faultCode),
-                        faultVariable.<Expression> map(StringLiteralExpr::new)
-                                .orElse(new NullLiteralExpr())));
+                        faultCode != null ? new StringLiteralExpr(faultCode) : new NullLiteralExpr(),
+                        faultVariable.<Expression> map(StringLiteralExpr::new).orElse(new NullLiteralExpr())));
             });
         }
     }

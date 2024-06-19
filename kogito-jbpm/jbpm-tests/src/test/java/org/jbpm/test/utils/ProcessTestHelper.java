@@ -24,6 +24,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import org.kie.api.event.process.ProcessNodeEvent;
+import org.kie.api.event.process.ProcessNodeLeftEvent;
 import org.kie.api.event.process.ProcessNodeTriggeredEvent;
 import org.kie.kogito.Application;
 import org.kie.kogito.Model;
@@ -85,4 +86,9 @@ public class ProcessTestHelper {
         };
     }
 
+    public static <T extends ProcessNodeEvent> Predicate<T> left(String nodeName) {
+        return e -> {
+            return e instanceof ProcessNodeLeftEvent && nodeName.equals(((ProcessNodeLeftEvent) e).getNodeInstance().getNodeName());
+        };
+    }
 }

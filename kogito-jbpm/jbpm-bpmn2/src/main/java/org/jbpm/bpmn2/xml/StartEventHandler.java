@@ -48,7 +48,15 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 import static org.jbpm.ruleflow.core.Metadata.EVENT_TYPE;
+import static org.jbpm.ruleflow.core.Metadata.EVENT_TYPE_COMPENSATION;
+import static org.jbpm.ruleflow.core.Metadata.EVENT_TYPE_CONDITIONAL;
+import static org.jbpm.ruleflow.core.Metadata.EVENT_TYPE_ERROR;
+import static org.jbpm.ruleflow.core.Metadata.EVENT_TYPE_ESCALATION;
 import static org.jbpm.ruleflow.core.Metadata.EVENT_TYPE_MESSAGE;
+import static org.jbpm.ruleflow.core.Metadata.EVENT_TYPE_NONE;
+import static org.jbpm.ruleflow.core.Metadata.EVENT_TYPE_SIGNAL;
+import static org.jbpm.ruleflow.core.Metadata.EVENT_TYPE_TIMER;
+import static org.jbpm.ruleflow.core.Metadata.FAULT_CODE;
 import static org.jbpm.ruleflow.core.Metadata.MAPPING_VARIABLE;
 import static org.jbpm.ruleflow.core.Metadata.MESSAGE_REF;
 import static org.jbpm.ruleflow.core.Metadata.MESSAGE_TYPE;
@@ -89,7 +97,7 @@ public class StartEventHandler extends AbstractNodeHandler {
         findSourceMappingVar(startNode.getIoSpecification().getDataOutputAssociation()).ifPresent(data -> {
             startNode.getMetaData().put(TRIGGER_MAPPING_INPUT, data.getLabel());
         });
-
+        startNode.setMetaData(EVENT_TYPE, EVENT_TYPE_NONE);
         org.w3c.dom.Node xmlNode = element.getFirstChild();
         while (xmlNode != null) {
             String nodeName = xmlNode.getNodeName();
@@ -106,6 +114,7 @@ public class StartEventHandler extends AbstractNodeHandler {
                 }
                 ConstraintTrigger trigger = new ConstraintTrigger();
                 trigger.setConstraint(constraint);
+                startNode.setMetaData(EVENT_TYPE, EVENT_TYPE_CONDITIONAL);
                 startNode.addTrigger(trigger);
                 break;
             } else if ("signalEventDefinition".equals(nodeName)) {
@@ -116,6 +125,7 @@ public class StartEventHandler extends AbstractNodeHandler {
                 if (type != null && type.trim().length() > 0) {
                     addTriggerWithInMappings(startNode, type);
                 }
+                startNode.setMetaData(EVENT_TYPE, EVENT_TYPE_SIGNAL);
                 startNode.setMetaData(MESSAGE_TYPE, type);
                 startNode.setMetaData(TRIGGER_TYPE, TriggerMetaData.TriggerType.Signal.name());
                 Signal signal = findSignalByName(parser, type);
@@ -143,6 +153,7 @@ public class StartEventHandler extends AbstractNodeHandler {
 
                 addTriggerWithInMappings(startNode, "Message-" + message.getName(), message.getId(), ((RuleFlowProcess) parser.getMetaData().get("CurrentProcessDefinition")).getCorrelationManager());
             } else if ("timerEventDefinition".equals(nodeName)) {
+                startNode.setMetaData(EVENT_TYPE, EVENT_TYPE_TIMER);
                 handleTimerNode(startNode, element, uri, localName, parser);
                 // following event definitions are only for event sub process and will be validated to not be included in top process definitions
             } else if ("errorEventDefinition".equals(nodeName)) {
@@ -150,7 +161,7 @@ public class StartEventHandler extends AbstractNodeHandler {
                 //   - a <startEvent> in an Event Sub-Process
                 //    - *without* the 'isInterupting' attribute always interrupts (containing process)
                 startNode.setInterrupting(true);
-
+                startNode.setMetaData(EVENT_TYPE, EVENT_TYPE_ERROR);
                 String errorRef = ((Element) xmlNode).getAttribute("errorRef");
                 if (errorRef != null && errorRef.trim().length() > 0) {
                     List<Error> errors = (List<Error>) ((ProcessBuildData) parser.getData()).getMetaData("Errors");
@@ -166,7 +177,7 @@ public class StartEventHandler extends AbstractNodeHandler {
                     if (error == null) {
                         throw new ProcessParsingValidationException("Could not find error " + errorRef);
                     }
-                    startNode.setMetaData("FaultCode", error.getErrorCode());
+                    startNode.setMetaData(FAULT_CODE, error.getErrorCode());
                     startNode.setMetaData(MESSAGE_TYPE, error.getErrorCode());
                     startNode.setMetaData(TRIGGER_REF, error.getErrorCode());
                     startNode.setMetaData(TRIGGER_TYPE, TriggerMetaData.TriggerType.Signal.name());
@@ -174,6 +185,7 @@ public class StartEventHandler extends AbstractNodeHandler {
                     addTriggerWithInMappings(startNode, "Error-" + error.getErrorCode());
                 }
             } else if ("escalationEventDefinition".equals(nodeName)) {
+                startNode.setMetaData(EVENT_TYPE, EVENT_TYPE_ESCALATION);
                 String escalationRef = ((Element) xmlNode).getAttribute("escalationRef");
                 if (escalationRef != null && escalationRef.trim().length() > 0) {
                     Map<String, Escalation> escalations = (Map<String, Escalation>) ((ProcessBuildData) parser.getData()).getMetaData(ProcessHandler.ESCALATIONS);
@@ -184,10 +196,15 @@ public class StartEventHandler extends AbstractNodeHandler {
                     if (escalation == null) {
                         throw new ProcessParsingValidationException("Could not find escalation " + escalationRef);
                     }
-
+                    startNode.setMetaData(FAULT_CODE, escalation.getEscalationCode());
+                    startNode.setMetaData(TRIGGER_REF, "Escalation-" + escalation.getEscalationCode());
                     addTriggerWithInMappings(startNode, "Escalation-" + escalation.getEscalationCode());
+                } else {
+                    startNode.setMetaData(TRIGGER_REF, "Escalation-");
+                    addTriggerWithInMappings(startNode, "Escalation-");
                 }
             } else if ("compensateEventDefinition".equals(nodeName)) {
+                startNode.setMetaData(EVENT_TYPE, EVENT_TYPE_COMPENSATION);
                 handleCompensationNode(startNode, xmlNode);
             }
             xmlNode = xmlNode.getNextSibling();

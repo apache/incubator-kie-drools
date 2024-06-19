@@ -309,7 +309,7 @@ public class IntermediateThrowEventHandler extends AbstractNodeHandler {
                     DroolsConsequenceAction action = createJavaAction(new HandleEscalationAction(faultName, variable));
                     actionNode.setAction(action);
                 } else {
-                    throw new ProcessParsingValidationException("General escalation is not yet supported");
+                    throw new ProcessParsingValidationException("Invalid throw escalation. escalation code is required");
                 }
             }
             xmlNode = xmlNode.getNextSibling();
