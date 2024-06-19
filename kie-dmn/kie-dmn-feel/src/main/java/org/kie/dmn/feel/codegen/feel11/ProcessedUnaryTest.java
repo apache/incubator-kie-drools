@@ -41,7 +41,6 @@ public class ProcessedUnaryTest extends ProcessedFEELUnit {
     private static final String TEMPLATE_CLASS = "TemplateCompiledFEELUnaryTests";
 
     private final BaseNode ast;
-    private DirectCompilerResult compiledExpression;
     private BlockStmt codegenResult;
 
     public ProcessedUnaryTest(String expressions,

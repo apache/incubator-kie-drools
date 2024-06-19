@@ -46,7 +46,6 @@ public class ProcessedExpression extends ProcessedFEELUnit {
 
     private final BaseNode ast;
     private final DefaultMode executionMode;
-    private DirectCompilerResult compilerResult;
     private BlockStmt codegenResult;
 
     private final CompilerBytecodeLoader compilerBytecodeLoader = new CompilerBytecodeLoader();
