@@ -26,10 +26,12 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAdjuster;
+import java.time.temporal.TemporalAmount;
 import java.time.temporal.TemporalField;
 import java.time.temporal.TemporalQueries;
 import java.time.temporal.TemporalQuery;
 import java.time.temporal.TemporalUnit;
+import java.time.temporal.ValueRange;
 import java.util.Objects;
 
 /**
@@ -62,8 +64,6 @@ public final class ZonedOffsetTime
         return zoneId.getId();
     }
 
-
-
     private ZonedOffsetTime(LocalTime localTime, ZoneId zoneId) {
         ZoneOffset offset = zoneId.getRules().getOffset(LocalDateTime.now());
         this.offset = OffsetTime.of(localTime, offset);
@@ -72,12 +72,7 @@ public final class ZonedOffsetTime
 
     @Override
     public int compareTo(ZonedOffsetTime o) {
-        return offset.compareTo(offset);
-    }
-
-    @Override
-    public boolean isSupported(TemporalUnit unit) {
-        return offset.isSupported(unit);
+        return offset.compareTo(o.offset);
     }
 
     @Override
@@ -86,13 +81,38 @@ public final class ZonedOffsetTime
     }
 
     @Override
+    public Temporal with(TemporalAdjuster adjuster) {
+        return offset.with(adjuster);
+    }
+
+    @Override
     public Temporal plus(long amountToAdd, TemporalUnit unit) {
         return offset.plus(amountToAdd, unit);
     }
 
     @Override
+    public Temporal plus(TemporalAmount amount) {
+        return offset.plus(amount);
+    }
+
+    @Override
+    public Temporal minus(long amountToSubtract, TemporalUnit unit) {
+        return offset.minus(amountToSubtract, unit);
+    }
+
+    @Override
+    public Temporal minus(TemporalAmount amount) {
+        return offset.minus(amount);
+    }
+
+    @Override
     public long until(Temporal endExclusive, TemporalUnit unit) {
         return offset.until(endExclusive, unit);
+    }
+
+    @Override
+    public boolean isSupported(TemporalUnit unit) {
+        return offset.isSupported(unit);
     }
 
     @Override
@@ -120,8 +140,13 @@ public final class ZonedOffsetTime
     }
 
     @Override
-    public String toString() {
-        return offset.toString();
+    public ValueRange range(TemporalField field) {
+        return offset.range(field);
+    }
+
+    @Override
+    public int get(TemporalField field) {
+        return offset.get(field);
     }
 
     @Override
@@ -139,4 +164,10 @@ public final class ZonedOffsetTime
     public int hashCode() {
         return Objects.hash(offset, zoneId);
     }
+
+    @Override
+    public String toString() {
+        return offset.toString();
+    }
+
 }

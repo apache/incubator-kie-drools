@@ -202,6 +202,14 @@ public class FEELDateTimeDurationTest extends BaseFEELTest {
                 { "@\"-PT1H\" + @\"10:15:00@Australia/Melbourne\"", getCorrectOffsetTime( "09:15", "Australia/Melbourne"), null},
 
 
+                { "@\"10:15:00@Australia/Melbourne\" + @\"P1D\"", getCorrectOffsetTime( "10:15", "Australia/Melbourne"), null},
+                { "@\"10:15:00@Australia/Melbourne\" - @\"P1D\"", getCorrectOffsetTime( "10:15", "Australia/Melbourne"), null},
+                { "@\"10:15:00@Australia/Melbourne\" + @\"-P1D\"", getCorrectOffsetTime( "10:15", "Australia/Melbourne"), null},
+                { "@\"10:15:00@Australia/Melbourne\" + @\"PT1H\"", getCorrectOffsetTime( "11:15", "Australia/Melbourne"), null},
+                { "@\"10:15:00@Australia/Melbourne\" - @\"PT1H\"", getCorrectOffsetTime( "09:15", "Australia/Melbourne"), null},
+                { "@\"10:15:00@Australia/Melbourne\" + @\"-PT1H\"", getCorrectOffsetTime( "09:15", "Australia/Melbourne"), null},
+
+
                 // TODO support for zones - fix when timezones solved out (currently returns ZonedDateTime)
 //                { "date and time(\"2016-07-29T05:48:23.765-05:00\") + duration( \"P1Y1M\" ) ", OffsetDateTime.of(2017, 8, 29, 5, 48, 23, 765000000, ZoneOffset.ofHours( -5 )), null},
 //                { "date and time(\"2016-07-29T05:48:23.765-05:00\") + duration( \"P1DT1H1M\" ) ", OffsetDateTime.of(2016, 7, 30, 6, 49, 23, 765000000, ZoneOffset.ofHours( -5 )), null},
