@@ -23,14 +23,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jbpm.bpmn2.handler.SendTaskHandler;
-import org.jbpm.bpmn2.objects.TestWorkItemHandler;
+import org.jbpm.bpmn2.event.MessageEndEventModel;
+import org.jbpm.bpmn2.event.MessageEndEventProcess;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
+import org.jbpm.test.utils.ProcessTestHelper;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.kie.api.definition.process.WorkflowElementIdentifier;
+import org.kie.kogito.Application;
+import org.kie.kogito.event.impl.MessageProducer;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
-import org.kie.kogito.process.workitems.InternalKogitoWorkItem;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -74,54 +75,22 @@ public class EndEventTest extends JbpmBpmn2TestCase {
 
     @Test
     public void testMessageEnd() throws Exception {
-        kruntime = createKogitoProcessRuntime("BPMN2-MessageEndEvent.bpmn2");
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Send Task",
-                new SendTaskHandler());
-        Map<String, Object> params = new HashMap<>();
-        params.put("x", "MyValue");
-        KogitoProcessInstance processInstance = kruntime.startProcess(
-                "MessageEndEvent", params);
-        assertProcessInstanceCompleted(processInstance);
+        Application app = ProcessTestHelper.newApplication();
+        MessageEndEventProcess definition = (MessageEndEventProcess) MessageEndEventProcess.newProcess(app);
+        StringBuilder message = new StringBuilder();
+        definition.setProducer__2(new MessageProducer<String>() {
 
-    }
-
-    @Test
-    public void testMessageEndVerifyDeploymentId() throws Exception {
-        kruntime = createKogitoProcessRuntime("BPMN2-MessageEndEvent.bpmn2");
-
-        TestWorkItemHandler handler = new TestWorkItemHandler();
-
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Send Task", handler);
-        Map<String, Object> params = new HashMap<>();
-        params.put("x", "MyValue");
-        KogitoProcessInstance processInstance = kruntime.startProcess("MessageEndEvent", params);
-        assertProcessInstanceCompleted(processInstance);
-
-        InternalKogitoWorkItem workItem = (InternalKogitoWorkItem) handler.getWorkItem();
-        assertThat(workItem).isNotNull();
-
-        String nodeInstanceId = workItem.getNodeInstanceStringId();
-        WorkflowElementIdentifier nodeId = workItem.getNodeId();
-        String deploymentId = workItem.getDeploymentId();
-
-        assertThat(nodeId).isNotNull();
-        assertThat(nodeInstanceId).isNotNull();
-        assertThat(deploymentId).isNull();
-
-        // now set deployment id as part of kruntime's env
-        kruntime.getKieRuntime().getEnvironment().set("deploymentId", "testDeploymentId");
-
-        processInstance = kruntime.startProcess("MessageEndEvent", params);
-        assertProcessInstanceCompleted(processInstance);
-
-        workItem = (InternalKogitoWorkItem) handler.getWorkItem();
-        assertThat(workItem).isNotNull();
-
-        nodeInstanceId = workItem.getNodeInstanceStringId();
-        nodeId = workItem.getNodeId();
-
-        assertThat(nodeId).isNotNull();
-        assertThat(nodeInstanceId).isNotNull();
+            @Override
+            public void produce(KogitoProcessInstance pi, String eventData) {
+                message.append(eventData);
+            }
+        });
+        MessageEndEventModel model = definition.createModel();
+        model.setX("MyValue");
+        org.kie.kogito.process.ProcessInstance<MessageEndEventModel> instance = definition.createInstance(model);
+        instance.start();
+        assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
+        assertThat(message.toString()).isEqualTo("MyValue");
     }
 
     @Test

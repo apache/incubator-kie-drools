@@ -20,6 +20,7 @@ package org.jbpm.bpmn2.objects;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.jbpm.process.instance.impl.humantask.InternalHumanTaskWorkItem;
 import org.jbpm.process.instance.impl.workitem.Active;
@@ -73,6 +74,7 @@ public class TestWorkItemHandler implements KogitoWorkItemHandler {
     public void transitionToPhase(KogitoWorkItem workItem, KogitoWorkItemManager manager, Transition<?> transition) {
 
         if (transition.phase().equals(Complete.ID)) {
+            ((InternalKogitoWorkItem) workItem).setResults((Map<String, Object>) transition.data());
             ((InternalKogitoWorkItemManager) manager).internalCompleteWorkItem((InternalKogitoWorkItem) workItem);
         }
     }

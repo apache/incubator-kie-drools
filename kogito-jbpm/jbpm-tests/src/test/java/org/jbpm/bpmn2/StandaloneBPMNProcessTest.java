@@ -757,16 +757,6 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
     }
 
     @Test
-    public void testMessageEnd() throws Exception {
-        kruntime = createKogitoProcessRuntime("BPMN2-MessageEndEvent.bpmn2");
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Send Task", new SendTaskHandler());
-        Map<String, Object> params = new HashMap<>();
-        params.put("x", "MyValue");
-        KogitoProcessInstance processInstance = kruntime.startProcess("MessageEndEvent", params);
-        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
-    }
-
-    @Test
     public void testMessageIntermediateThrow() throws Exception {
         Application app = ProcessTestHelper.newApplication();
         ProcessTestHelper.registerHandler(app, "Send Task", new SendTaskHandler());

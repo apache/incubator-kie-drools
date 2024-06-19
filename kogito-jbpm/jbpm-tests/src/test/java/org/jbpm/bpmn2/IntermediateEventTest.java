@@ -70,6 +70,7 @@ import org.jbpm.test.util.NodeLeftCountDownProcessEventListener;
 import org.jbpm.test.util.ProcessCompletedCountDownProcessEventListener;
 import org.jbpm.test.utils.EventTrackerProcessListener;
 import org.jbpm.test.utils.ProcessTestHelper;
+import org.jbpm.test.utils.ProcessTestHelper.CompletionKogitoEventListener;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.api.command.ExecutableCommand;
@@ -1914,18 +1915,11 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
     @Test
     public void testIntermediateCatchEventTimerDurationWithError() throws Exception {
         Application app = ProcessTestHelper.newApplication();
-
-        final CountDownLatch latch = new CountDownLatch(1);
-        ProcessTestHelper.registerProcessEventListener(app, new DefaultKogitoProcessEventListener() {
-            @Override
-            public void afterProcessCompleted(ProcessCompletedEvent event) {
-                latch.countDown();
-            }
-        });
         org.kie.kogito.process.Process<IntermediateCatchEventTimerDurationWithErrorModel> definition = IntermediateCatchEventTimerDurationWithErrorProcess.newProcess(app);
         IntermediateCatchEventTimerDurationWithErrorProcessInstance instance = (IntermediateCatchEventTimerDurationWithErrorProcessInstance) definition.createInstance(definition.createModel());
         instance.start();
-        latch.await(10, TimeUnit.SECONDS);
+        CompletionKogitoEventListener listener = ProcessTestHelper.registerCompletionEventListener(instance);
+        listener.await();
         assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
         assertThat(instance.variables().getTestOK()).isEqualTo(Boolean.TRUE);
 

@@ -20,9 +20,11 @@ package org.jbpm.test.utils;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
+import org.jbpm.bpmn2.intermediate.IntermediateCatchEventTimerDurationWithErrorProcessInstance;
 import org.kie.api.event.process.ProcessNodeEvent;
 import org.kie.api.event.process.ProcessNodeLeftEvent;
 import org.kie.api.event.process.ProcessNodeTriggeredEvent;
@@ -31,6 +33,7 @@ import org.kie.kogito.Model;
 import org.kie.kogito.StaticApplication;
 import org.kie.kogito.StaticConfig;
 import org.kie.kogito.auth.SecurityPolicy;
+import org.kie.kogito.internal.process.event.KogitoEventListener;
 import org.kie.kogito.internal.process.event.KogitoProcessEventListener;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
 import org.kie.kogito.process.ProcessConfig;
@@ -42,10 +45,14 @@ import org.kie.kogito.process.impl.DefaultWorkItemHandlerConfig;
 import org.kie.kogito.process.impl.StaticProcessConfig;
 import org.kie.kogito.services.uow.CollectingUnitOfWorkFactory;
 import org.kie.kogito.services.uow.DefaultUnitOfWorkManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static java.util.Collections.emptyList;
 
 public class ProcessTestHelper {
+
+    private static Logger LOGGER = LoggerFactory.getLogger(ProcessTestHelper.class);
 
     public static Application newApplication() {
         BpmnProcesses bpmnProcesses = new BpmnProcesses();
@@ -91,4 +98,42 @@ public class ProcessTestHelper {
             return e instanceof ProcessNodeLeftEvent && nodeName.equals(((ProcessNodeLeftEvent) e).getNodeInstance().getNodeName());
         };
     }
+
+    public static class CompletionKogitoEventListener implements KogitoEventListener {
+
+        private String id;
+        private CountDownLatch latch;
+
+        public CompletionKogitoEventListener(String id) {
+            this.id = id;
+            this.latch = new CountDownLatch(1);
+        }
+
+        @Override
+        public void signalEvent(String type, Object event) {
+            latch.countDown();
+            LOGGER.info("Completion was invoked");
+        }
+
+        @Override
+        public String[] getEventTypes() {
+            return new String[] { "processInstanceCompleted:" + id };
+        }
+
+        public void await() {
+            try {
+                latch.await();
+            } catch (InterruptedException e) {
+                LOGGER.info("Completion was interrupted", e);
+            }
+        }
+
+    }
+
+    public static CompletionKogitoEventListener registerCompletionEventListener(IntermediateCatchEventTimerDurationWithErrorProcessInstance instance) {
+        CompletionKogitoEventListener completionEventListener = new CompletionKogitoEventListener(instance.id());
+        instance.internalGetProcessInstance().addEventListener("processInstanceCompleted:" + instance.id(), completionEventListener, false);
+        return completionEventListener;
+    }
+
 }

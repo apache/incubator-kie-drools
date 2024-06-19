@@ -19,6 +19,7 @@
 package org.jbpm.bpmn2.objects;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import jakarta.xml.bind.annotation.XmlRootElement;
 
@@ -34,6 +35,11 @@ public class Person implements Serializable {
     }
 
     public Person(String name) {
+        this.name = name;
+    }
+
+    public Person(long id, String name) {
+        this.id = id;
         this.name = name;
     }
 
@@ -65,4 +71,22 @@ public class Person implements Serializable {
     public String toString() {
         return "Person [id=" + id + ", name=" + name + ", age=" + age + "]";
     }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(age, id, name);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Person other = (Person) obj;
+        return Objects.equals(age, other.age) && Objects.equals(id, other.id) && Objects.equals(name, other.name);
+    }
+
 }

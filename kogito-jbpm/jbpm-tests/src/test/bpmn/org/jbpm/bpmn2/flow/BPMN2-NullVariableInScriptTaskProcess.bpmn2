@@ -34,9 +34,9 @@
   <itemDefinition id="_timeExecution" structureRef="java.lang.Long" />
 
   <process processType="Private" isExecutable="true" 
-           id="nullVariableInScriptAfterTimer" 
+           id="NullVariableInScriptTaskProcess" 
            name="nullVariableInScriptAfterTimer" 
-           tns:packageName="defaultPackage" >
+           tns:packageName="org.jbpm.bpmn2.flow" >
 
     <!-- process variables -->
     <property id="timeBeforeTimer" itemSubjectRef="_timeBefore"/>

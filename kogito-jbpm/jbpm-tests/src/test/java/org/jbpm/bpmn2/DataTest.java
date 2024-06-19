@@ -32,6 +32,8 @@ import org.jbpm.bpmn2.activity.XPathProcessProcess;
 import org.jbpm.bpmn2.core.Association;
 import org.jbpm.bpmn2.core.DataStore;
 import org.jbpm.bpmn2.core.Definitions;
+import org.jbpm.bpmn2.flow.DataOutputAssociationsHumanTaskModel;
+import org.jbpm.bpmn2.flow.DataOutputAssociationsHumanTaskProcess;
 import org.jbpm.bpmn2.xml.ProcessHandler;
 import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
@@ -358,8 +360,8 @@ public class DataTest extends JbpmBpmn2TestCase {
 
     @Test
     public void testDataOutputAssociationsforHumanTask() throws Exception {
-        kruntime = createKogitoProcessRuntime("BPMN2-DataOutputAssociations-HumanTask.bpmn2");
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task",
+        Application app = ProcessTestHelper.newApplication();
+        ProcessTestHelper.registerHandler(app, "Human Task",
                 new KogitoWorkItemHandler() {
 
                     public void abortWorkItem(KogitoWorkItem manager,
@@ -396,10 +398,11 @@ public class DataTest extends JbpmBpmn2TestCase {
                     }
 
                 });
-        Map<String, Object> params = new HashMap<>();
-        KogitoProcessInstance processInstance = kruntime.startProcess("process",
-                params);
 
+        org.kie.kogito.process.Process<DataOutputAssociationsHumanTaskModel> definition = DataOutputAssociationsHumanTaskProcess.newProcess(app);
+        org.kie.kogito.process.ProcessInstance<DataOutputAssociationsHumanTaskModel> instance = definition.createInstance(definition.createModel());
+
+        instance.start();
     }
 
     @Test

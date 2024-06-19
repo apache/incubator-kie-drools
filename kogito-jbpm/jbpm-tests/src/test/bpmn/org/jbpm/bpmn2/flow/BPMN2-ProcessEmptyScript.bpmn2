@@ -27,7 +27,7 @@
              xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
              xmlns:tns="http://www.jboss.org/drools">
 
-  <process id="Minimal" name="Minimal Process" tns:packageName="com.sample">
+  <process id="ProcessEmptyScript" name="Minimal Process" tns:packageName="org.jbpm.bpmn2.flow">
     <startEvent id="_1" name="StartProcess"/>
     <sequenceFlow sourceRef="_1" targetRef="_2"/>
     <scriptTask id="_2" name="Hello">
