@@ -62,8 +62,8 @@ jobs:
           java-version: "17"
           distribution: "zulu"
           server-id: apache.snapshots.https
-          server-username: MAVEN_USERNAME
-          server-password: MAVEN_PASSWORD
+          server-username: NEXUS_USER
+          server-password: NEXUS_PW
 
       - name: "Setup Linux"
         if: runner.os == 'Linux'
@@ -134,6 +134,9 @@ jobs:
       - name: "Build and publish macOS"
         if: runner.os == 'macOS' && github.event_name != 'pull_request'
         shell: bash
+        env:
+          NEXUS_USER: ${{ secrets.NEXUS_USER }}
+          NEXUS_PW: ${{ secrets.NEXUS_PW }}
         run: |
           mvn clean deploy -B -ntp -DdeployAtEnd -DskipTests -pl jitexecutor-native/jitexecutor-native-darwin -am -Pjitexecutor-native
 
@@ -146,6 +149,9 @@ jobs:
       - name: "Build and Publish Linux"
         if: runner.os == 'Linux' && github.event_name != 'pull_request'
         shell: bash
+        env:
+          NEXUS_USER: ${{ secrets.NEXUS_USER }}
+          NEXUS_PW: ${{ secrets.NEXUS_PW }}
         run: |
           mvn clean deploy -B -ntp -DdeployAtEnd -DskipTests -pl jitexecutor-native/jitexecutor-native-linux -am -Pjitexecutor-native
 
@@ -158,6 +164,9 @@ jobs:
       - name: "Build and Publish Windows"
         if: runner.os == 'Windows' && github.event_name != 'pull_request'
         shell: pwsh
+        env:
+          NEXUS_USER: ${{ secrets.NEXUS_USER }}
+          NEXUS_PW: ${{ secrets.NEXUS_PW }}
         run: |
           mvn clean deploy -B -ntp -DdeployAtEnd -DskipTests -pl jitexecutor-native/jitexecutor-native-win32 -am -Pjitexecutor-native
 

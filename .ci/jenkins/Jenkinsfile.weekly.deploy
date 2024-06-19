@@ -118,14 +118,16 @@ pipeline {
         stage('Trigger JIT Executor Native GH workflow') {
             steps {
                 script {
-                    checkoutTag = getProjectVersion(false)
-                    kogitoVersion = getProjectVersion()
-                    withCredentials([usernamePassword(credentialsId: "${getGitAuthorPushCredsId()}", usernameVariable: 'GITHUB_USER', passwordVariable: 'GITHUB_TOKEN')]) {
-                        sh """
-                        git config user.email ${GITHUB_USER}@jenkins.kie.apache.org
-                        git config user.name ${GITHUB_USER}
-                        gh workflow run "publish-jitexecutor-native.yml" --ref "${checkoutTag}" -f kogito_runtime_version="${kogitoVersion}" --repo="https://github.com/${getGitAuthor()}/${getRepoName()}"
-                        """
+                    dir(getRepoName()) {
+                        checkoutTag = getProjectVersion(false)
+                        kogitoVersion = getProjectVersion()
+                        withCredentials([usernamePassword(credentialsId: "${getGitAuthorPushCredsId()}", usernameVariable: 'GITHUB_USER', passwordVariable: 'GITHUB_TOKEN')]) {
+                            sh """
+                            git config user.email ${GITHUB_USER}@jenkins.kie.apache.org
+                            git config user.name ${GITHUB_USER}
+                            gh workflow run "publish-jitexecutor-native.yml" --ref "${checkoutTag}" -f kogito_runtime_version="${kogitoVersion}" --repo="https://github.com/${getGitAuthor()}/${getRepoName()}"
+                            """
+                        }
                     }
                 }
             }
