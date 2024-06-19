@@ -34,6 +34,7 @@ import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalQueries;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
+import org.kie.dmn.feel.runtime.custom.ZonedOffsetTime;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 import org.kie.dmn.feel.runtime.functions.BaseFEELFunction;
 import org.kie.dmn.feel.runtime.functions.BuiltInFunctions;
@@ -81,6 +82,11 @@ public class TimeFunction extends BaseFEELFunction {
                 // if it does not contain any zone information at all, then I know for certain is a local time.
                 LocalTime asLocalTime = parsed.query(LocalTime::from);
                 return FEELFnResult.ofResult(asLocalTime);
+            } else if (parsed.query(TemporalQueries.zone()) != null) {
+                LocalTime asLocalTime = parsed.query(LocalTime::from);
+                ZoneId zoneId = parsed.query(TemporalQueries.zone());
+                ZonedOffsetTime zonedOffsetTime = ZonedOffsetTime.of(asLocalTime, zoneId);
+                return FEELFnResult.ofResult(zonedOffsetTime);
             }
 
             return FEELFnResult.ofResult(parsed);
