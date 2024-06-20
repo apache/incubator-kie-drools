@@ -64,8 +64,6 @@ pipeline {
 
                     checkout scm // To make sure the repository containing the script is available on the Jenkins node.
                     imageUtils = load '.ci/jenkins/scripts/imageUtils.groovy'
-
-                    env.PROJECT_VERSION = maven.mvnGetVersionProperty(getMavenCommand(), 'project.version')
                 }
             }
             post {
@@ -74,7 +72,6 @@ pipeline {
                         setDeployPropertyIfNeeded('git.branch', getBuildBranch())
                         setDeployPropertyIfNeeded('git.branchQuickstarts', getQuickStartsBranch())
                         setDeployPropertyIfNeeded('git.author', getGitAuthor())
-                        setDeployPropertyIfNeeded('project.version', getProjectVersion())
                     }
                 }
             }
@@ -83,8 +80,8 @@ pipeline {
         stage('Clone repositories') {
             steps {
                 script {
-                    checkoutRepo(optaplannerRepository, optaplannerFolder)
-                    checkoutRepo(quickstartsRepository, quickstartsFolder)
+                    checkoutRepo(optaplannerRepository, optaplannerFolder, getBuildBranch())
+                    checkoutRepo(quickstartsRepository, quickstartsFolder, getQuickStartsBranch())
                 }
             }
         }
@@ -92,6 +89,7 @@ pipeline {
         stage('Update project version') {
             steps {
                 script {
+                    env.PROJECT_VERSION = maven.mvnGetVersionProperty(getOptaplannerMavenCommand(), 'project.version')
                     if (getDroolsVersion()) {
                         maven.mvnSetVersionProperty(getOptaplannerMavenCommand(), 'version.org.drools', getDroolsVersion())
                     }
@@ -214,15 +212,15 @@ void archiveJUnitTestResults() {
     }
 }
 
-void checkoutRepo(String repo, String dirName) {
+void checkoutRepo(String repo, String dirName, String branchName) {
     dir(dirName) {
         deleteDir()
-        checkout(githubscm.resolveRepository(repo, getGitAuthor(), getBuildBranch(), false, getGitAuthorCredsId()))
+        checkout(githubscm.resolveRepository(repo, getGitAuthor(), branchName, false, getGitAuthorCredsId()))
         // need to manually checkout branch since on a detached branch after checkout command
-        sh "git checkout ${getBuildBranch()}"
+        sh "git checkout ${branchName}"
         checkoutDatetime = getCheckoutDatetime()
         if (checkoutDatetime) {
-            sh "git checkout `git rev-list -n 1 --before=\"${checkoutDatetime}\" ${getBuildBranch()}`"
+            sh "git checkout `git rev-list -n 1 --before=\"${checkoutDatetime}\" ${branchName}`"
         }
     }
 }

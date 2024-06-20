@@ -445,6 +445,8 @@ void setupWeeklyDeployJob() {
         MAVEN_DEPENDENCIES_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
         MAVEN_DEPLOY_REPOSITORY: "${MAVEN_ARTIFACTS_UPLOAD_REPOSITORY_URL}",
         MAVEN_REPO_CREDS_ID: "${MAVEN_ARTIFACTS_UPLOAD_REPOSITORY_CREDS_ID}",
+
+        DISABLE_DEPLOY: Utils.isDeployDisabled(this),
     ])
     KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         parameters {
