@@ -35,6 +35,5 @@ class ContextMergeFunctionTest {
     @Test
     void invokeListNull() {
         FunctionTestUtil.assertResultError(contextMergeFunction.invoke(null), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(contextMergeFunction.invoke((Object) null), InvalidParametersEvent.class);
     }
 }

@@ -39,15 +39,12 @@ class ContextFunctionTest {
     @Test
     void invokeListNull() {
         FunctionTestUtil.assertResultError(contextFunction.invoke(null), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(contextFunction.invoke((Object) null), InvalidParametersEvent.class);
     }
 
     @Test
     void invokeContainsNull() {
         FunctionTestUtil.assertResultError(contextFunction.invoke(List.of(new ContextEntry("name", null))), InvalidParametersEvent.class);
         FunctionTestUtil.assertResultError(contextFunction.invoke(List.of(new ContextEntry(null, "John Doe"))), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(contextFunction.invoke(new ContextEntry("name", null)), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(contextFunction.invoke(new ContextEntry(null, "John Doe")), InvalidParametersEvent.class);
     }
 
     @Test

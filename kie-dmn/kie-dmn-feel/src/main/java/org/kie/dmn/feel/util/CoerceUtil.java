@@ -21,6 +21,7 @@ package org.kie.dmn.feel.util;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 import org.kie.dmn.feel.lang.Type;
@@ -61,6 +62,9 @@ public class CoerceUtil {
                             coerceParam(singletonValue.getClass(), expectedParameterType, singletonValue);
                 }
             }
+        }
+        if (Collection.class.isAssignableFrom(expectedParameterType)) {
+            return Optional.of(List.of(actualObject));
         }
         if (actualObject instanceof LocalDate localDate &&
                 ZonedDateTime.class.isAssignableFrom(expectedParameterType)) {
