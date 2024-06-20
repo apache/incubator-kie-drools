@@ -108,7 +108,8 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
                         this.getGlobalVariableContext(),
                         this.sourcesGenerator,
                         this.packageSources,
-                        oneClassPerRule));
+                        oneClassPerRule,
+                        this.getBuildContext()));
 
         for (CompilationPhase phase : phases) {
             phase.process();

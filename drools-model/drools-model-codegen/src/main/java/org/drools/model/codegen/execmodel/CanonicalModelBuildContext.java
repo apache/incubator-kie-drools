@@ -26,7 +26,9 @@ import java.util.Map;
 import java.util.Set;
 
 import org.drools.compiler.kie.builder.impl.BuildContext;
+import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.ResultsImpl;
+import org.kie.api.builder.model.KieBaseModel;
 
 public class CanonicalModelBuildContext extends BuildContext {
 
@@ -35,6 +37,8 @@ public class CanonicalModelBuildContext extends BuildContext {
 
     private final Collection<GeneratedClassWithPackage> allGeneratedPojos = new HashSet<>();
     private final Map<String, Class<?>> allCompiledClasses = new HashMap<>();
+
+    private final Map<KieBaseModel, InternalKieModule> includeModules = new HashMap<>();
 
     public CanonicalModelBuildContext() { }
 
@@ -83,5 +87,15 @@ public class CanonicalModelBuildContext extends BuildContext {
     private String resource2Package(String resource) {
         int pathEndPos = resource.lastIndexOf('/');
         return pathEndPos <= 0 ? "" :resource.substring(0, pathEndPos).replace('/', '.');
+    }
+
+    @Override
+    public void addIncludeModule(KieBaseModel kieBaseModel, InternalKieModule includeModule) {
+        includeModules.put(kieBaseModel, includeModule);
+    }
+
+    @Override
+    public Map<KieBaseModel, InternalKieModule> getIncludeModules() {
+        return includeModules;
     }
 }
