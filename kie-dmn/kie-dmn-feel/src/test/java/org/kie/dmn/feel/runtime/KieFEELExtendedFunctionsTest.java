@@ -50,6 +50,7 @@ public class KieFEELExtendedFunctionsTest extends BaseFEELTest {
                 { "string join([\"a\",\"b\",\"c\"], \"\")", "abc", null},
                 { "string join([\"a\",\"b\",\"c\"], null)", "abc", null},
                 { "string join([\"a\"], \"X\")", "a", null},
+                { "string join(\"a\", \"X\")", "a", null},
                 { "string join([\"a\",null,\"c\"], \"X\")", "aXc", null},
                 { "string join([], \"X\")", "", null},
                 { "string join([\"a\",\"b\",\"c\"])", "abc", null},

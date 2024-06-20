@@ -41,26 +41,28 @@ import org.kie.dmn.feel.runtime.functions.SplitFunction;
 import org.kie.dmn.feel.runtime.functions.SqrtFunction;
 import org.kie.dmn.feel.runtime.functions.StddevFunction;
 import org.kie.dmn.feel.runtime.functions.extended.DateFunction;
+import org.kie.dmn.feel.runtime.functions.extended.StringJoinFunction;
 import org.kie.dmn.feel.runtime.functions.extended.TimeFunction;
 
 import static java.math.BigDecimal.valueOf;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ExtendedDMNProfileTest {
+
     private final DateFunction dateFunction = DateFunction.INSTANCE;
-    private final TimeFunction timeFunction = TimeFunction.INSTANCE;
-    private final SplitFunction splitFunction = SplitFunction.INSTANCE;
-    private final ProductFunction productFunction = ProductFunction.INSTANCE;
-    private final MedianFunction medianFunction = MedianFunction.INSTANCE;
-    private final StddevFunction stddevFunction = StddevFunction.INSTANCE;
-    private final ModeFunction modeFunction = ModeFunction.INSTANCE;
-    private final AbsFunction absFunction = AbsFunction.INSTANCE;
-    private final ModuloFunction moduloFunction = ModuloFunction.INSTANCE;
-    private final SqrtFunction sqrtFunction = SqrtFunction.INSTANCE;
-    private final LogFunction logFunction = LogFunction.INSTANCE;
-    private final ExpFunction expFunction = ExpFunction.INSTANCE;
     private final EvenFunction evenFunction = EvenFunction.INSTANCE;
+    private final ExpFunction expFunction = ExpFunction.INSTANCE;
+    private final LogFunction logFunction = LogFunction.INSTANCE;
+    private final MedianFunction medianFunction = MedianFunction.INSTANCE;
+    private final ModeFunction modeFunction = ModeFunction.INSTANCE;
+    private final ModuloFunction moduloFunction = ModuloFunction.INSTANCE;
     private final OddFunction oddFunction = OddFunction.INSTANCE;
+    private final ProductFunction productFunction = ProductFunction.INSTANCE;
+    private final SplitFunction splitFunction = SplitFunction.INSTANCE;
+    private final SqrtFunction sqrtFunction = SqrtFunction.INSTANCE;
+    private final StddevFunction stddevFunction = StddevFunction.INSTANCE;
+    private final StringJoinFunction stringJoinFunction = StringJoinFunction.INSTANCE;
+    private final TimeFunction timeFunction = TimeFunction.INSTANCE;
 
     @Test
     void dateFunctionInvokeParamStringDateTime() {
@@ -160,6 +162,19 @@ class ExtendedDMNProfileTest {
     void evenFunctionFractional() {
         assertNull(evenFunction.invoke(valueOf(5.5)));
         assertResult(evenFunction.invoke(valueOf(2.0)), Boolean.TRUE);
+    }
+
+    @Test
+    void stringJoinFunction() {
+        assertResult(stringJoinFunction.invoke(Arrays.asList("a", "b", "c"), "_and_"), "a_and_b_and_c");
+        assertResult(stringJoinFunction.invoke(Arrays.asList("a", "b", "c"), ""), "abc");
+        assertResult(stringJoinFunction.invoke(Arrays.asList("a", "b", "c"), null), "abc");
+        assertResult(stringJoinFunction.invoke(Arrays.asList("a"), "X"), "a");
+        assertResult(stringJoinFunction.invoke(Arrays.asList("a", null, "c"), "X"), "aXc");
+        assertResult(stringJoinFunction.invoke(Collections.emptyList(), "X"), "");
+        assertResult(stringJoinFunction.invoke(Arrays.asList("a", "b", "c")), "abc");
+        assertResult(stringJoinFunction.invoke(Arrays.asList("a", null, "c")), "ac");
+        assertResult(stringJoinFunction.invoke(Collections.emptyList()), "");
     }
 
     private static <T> void assertResult(final FEELFnResult<T> result, final T val) {

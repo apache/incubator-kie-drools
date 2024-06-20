@@ -75,12 +75,4 @@ public class ContextFunction extends BaseFEELFunction {
         return FEELFnResult.ofResult(result);
     }
 
-    public FEELFnResult<Map<String, Object>> invoke(@ParameterName("entries") Object entry) {
-        if (entry == null) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "entries", "cannot be null"));
-        }
-
-        return invoke(List.of(entry));
-    }
-
 }

@@ -52,18 +52,10 @@ public class ContextMergeFunction extends BaseFEELFunction {
         for (int i = 0; i < contexts.size(); i++) {
             FEELFnResult<Map<String, Object>> ci = ContextPutFunction.toMap(contexts.get(i));
             final int index = i + 1;
-            ci.consume(event -> errors.append("context of index ").append(index).append(" ").append(event.getMessage()), result::putAll);
+            ci.consume(event -> errors.append("context of index " + (index) + " " + event.getMessage()), values -> result.putAll(values));
         }
 
         return errors.isEmpty() ? FEELFnResult.ofResult(Collections.unmodifiableMap(result)) : FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, errors.toString()));
-    }
-
-    public FEELFnResult<Map<String, Object>> invoke(@ParameterName("contexts") Object context) {
-        if (context == null) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "entries", "cannot be null"));
-        }
-
-        return invoke(List.of(context));
     }
 
 }
