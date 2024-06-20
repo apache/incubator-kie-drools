@@ -18,18 +18,18 @@
  */
 package org.drools.example.api.defaultkiesessionfromfile;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.PrintStream;
+
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.KieRepository;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
-
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.io.PrintStream;
 
 import static org.junit.Assert.assertEquals;
 
@@ -105,8 +105,7 @@ public class DefaultKieSessionFromByteArrayExampleTest {
         File folder = new File("drools-examples-api").getAbsoluteFile();
         File exampleFolder = null;
         while (folder != null) {
-            exampleFolder = new File(folder,
-                                     exampleName);
+            exampleFolder = new File(folder, exampleName);
             if (exampleFolder.exists()) {
                 break;
             }
@@ -116,8 +115,7 @@ public class DefaultKieSessionFromByteArrayExampleTest {
 
         if (exampleFolder != null) {
 
-            File targetFolder = new File(exampleFolder,
-                                         "target");
+            File targetFolder = new File(exampleFolder, "target");
             if (!targetFolder.exists()) {
                 throw new RuntimeException("The target folder does not exist, please build project " + exampleName + " first");
             }
