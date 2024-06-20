@@ -112,16 +112,42 @@ public class DMNIteratorEvaluator implements DMNExpressionEvaluator {
 
         if (type instanceof Every) {
             for (Object satisfies : returnList) {
-                if (!(satisfies instanceof Boolean) || ((Boolean) satisfies).booleanValue() == false) {
-                    return new EvaluatorResultImpl(Boolean.FALSE, ResultType.SUCCESS);
+                if (satisfies instanceof Boolean satifiesBoolean) {
+                    if (!satifiesBoolean) {
+                        return new EvaluatorResultImpl(Boolean.FALSE, ResultType.SUCCESS);
+                    }
+                } else {
+                    MsgUtil.reportMessage(logger,
+                            DMNMessage.Severity.ERROR,
+                            node,
+                            result,
+                            null,
+                            null,
+                            Msg.RESULT_NOT_BOOLEAN,
+                            name,
+                            "every's satisfy");
+                    return new EvaluatorResultImpl(null, ResultType.FAILURE);
                 }
             }
             return new EvaluatorResultImpl(Boolean.TRUE, ResultType.SUCCESS);
         }
         if (type instanceof Some) {
             for (Object satisfies : returnList) {
-                if (satisfies instanceof Boolean && ((Boolean) satisfies).booleanValue() == true) {
-                    return new EvaluatorResultImpl(Boolean.TRUE, ResultType.SUCCESS);
+                if (satisfies instanceof Boolean satifiesBoolean) {
+                    if (satifiesBoolean) {
+                        return new EvaluatorResultImpl(Boolean.TRUE, ResultType.SUCCESS);
+                    }
+                } else {
+                    MsgUtil.reportMessage(logger,
+                            DMNMessage.Severity.ERROR,
+                            node,
+                            result,
+                            null,
+                            null,
+                            Msg.RESULT_NOT_BOOLEAN,
+                            name,
+                            "some's satisfy");
+                    return new EvaluatorResultImpl(null, ResultType.FAILURE);
                 }
             }
             return new EvaluatorResultImpl(Boolean.FALSE, ResultType.SUCCESS);

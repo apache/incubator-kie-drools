@@ -19,7 +19,6 @@
 package org.kie.dmn.core.ast;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -85,7 +84,7 @@ public class DMNFilterEvaluator implements DMNExpressionEvaluator {
                 return new EvaluatorResultImpl(null, ResultType.FAILURE);
             }
 
-            // 10.3.2.9.4 Type conversions "to singleton list" 
+            // 10.3.2.9.4 Type conversions "to singleton list"
             inObj = Collections.singletonList(inObj);
         }
 
@@ -109,8 +108,21 @@ public class DMNFilterEvaluator implements DMNExpressionEvaluator {
                 Object evalReturn = evaluate.getResult();
 
                 //If the evaluation is a boolean result, we add the item based on a return of true
-                if (evalReturn instanceof Boolean && ((Boolean) evalReturn).booleanValue() == true) {
-                    returnList.add(item);
+                if (evalReturn instanceof Boolean booleanResult) {
+                    if (booleanResult) {
+                        returnList.add(item);
+                    }
+                } else {
+                    MsgUtil.reportMessage(logger,
+                            DMNMessage.Severity.ERROR,
+                            node,
+                            result,
+                            null,
+                            null,
+                            Msg.RESULT_NOT_BOOLEAN,
+                            name,
+                            "filter's match");
+                    return new EvaluatorResultImpl(null, ResultType.FAILURE);
                 }
 
                 //If on the first evaluation, a number is returned, we are using an index instead of a boolean filter

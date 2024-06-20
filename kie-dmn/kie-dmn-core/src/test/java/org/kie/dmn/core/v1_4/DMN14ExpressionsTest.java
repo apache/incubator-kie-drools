@@ -170,14 +170,14 @@ public class DMN14ExpressionsTest extends BaseVariantTest {
         testConfig = conf;
         setup();
         DMNResult results = runtime.evaluateByName(model, new DMNContextImpl(Collections.singletonMap("Number Input", 5)), "Match by index");
-        assertThat(results.getDecisionResultByName("Match by index").getResult()).isEqualTo(new BigDecimal(5));
+        assertThat(results.getDecisionResultByName("Match by index").getResult()).asList().hasSize(1);
+        assertThat(results.getDecisionResultByName("Match by index").getResult()).asList().contains(new BigDecimal(5));
 
         results = runtime.evaluateByName(model, new DMNContextImpl(Collections.singletonMap("Number Input", -2)), "Match by index");
         assertThat(results.getDecisionResultByName("Match by index").getResult()).isEqualTo(new BigDecimal(9));
 
         results = runtime.evaluateByName(model, new DMNContextImpl(Collections.singletonMap("Number Input", 0)), "Match by index");
         assertThat(results.getMessages()).hasSizeGreaterThan(0);
-
     }
 
     @MethodSource("params")

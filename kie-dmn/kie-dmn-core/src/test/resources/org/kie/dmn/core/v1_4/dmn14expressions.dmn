@@ -245,7 +245,7 @@
             </semantic:in>
             <semantic:match id="_362153c8-76bd-4139-aee8-8ef75ebfe42a">
                 <semantic:literalExpression id="_2c32d1c1-d954-4422-80a4-36bc2ec63443" triso:descriptionVisible="false">
-                    <semantic:text>Number Input</semantic:text>
+                    <semantic:text>item = Number Input</semantic:text>
                 </semantic:literalExpression>
             </semantic:match>
         </semantic:filter>
