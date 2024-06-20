@@ -19,15 +19,23 @@
 package org.jbpm.bpmn2;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.jbpm.bpmn2.error.EndErrorModel;
 import org.jbpm.bpmn2.error.EndErrorProcess;
+import org.jbpm.bpmn2.error.ErrorBoundaryEventOnServiceTaskModel;
+import org.jbpm.bpmn2.error.ErrorBoundaryEventOnServiceTaskProcess;
 import org.jbpm.bpmn2.error.ErrorVariableModel;
 import org.jbpm.bpmn2.error.ErrorVariableProcess;
-import org.jbpm.bpmn2.handler.ServiceTaskHandler;
+import org.jbpm.bpmn2.event.BoundaryErrorEventDefaultHandlerWithoutErrorCodeWithStructureRefModel;
+import org.jbpm.bpmn2.event.BoundaryErrorEventDefaultHandlerWithoutErrorCodeWithStructureRefProcess;
+import org.jbpm.bpmn2.event.BoundaryErrorEventDefaultHandlerWithoutErrorCodeWithoutStructureRefModel;
+import org.jbpm.bpmn2.event.BoundaryErrorEventDefaultHandlerWithoutErrorCodeWithoutStructureRefProcess;
+import org.jbpm.bpmn2.event.BoundaryErrorEventSubProcessExceptionMappingModel;
+import org.jbpm.bpmn2.event.BoundaryErrorEventSubProcessExceptionMappingProcess;
 import org.jbpm.bpmn2.handler.SignallingTaskHandlerDecorator;
 import org.jbpm.bpmn2.objects.ExceptionOnPurposeHandler;
 import org.jbpm.bpmn2.objects.MyError;
@@ -44,6 +52,7 @@ import org.junit.jupiter.api.Test;
 import org.kie.api.event.process.ProcessNodeLeftEvent;
 import org.kie.kogito.Application;
 import org.kie.kogito.handlers.AlwaysThrowingComponent_throwException__8DA0CD88_0714_43C1_B492_A70FADE42361_Handler;
+import org.kie.kogito.handlers.HelloService_helloException_ServiceTask_2_Handler;
 import org.kie.kogito.handlers.LoggingComponent_logException__E5B0E78B_0112_42F4_89FF_0DCC4FCB6BCD_Handler;
 import org.kie.kogito.internal.process.event.DefaultKogitoProcessEventListener;
 import org.kie.kogito.internal.process.event.KogitoProcessEventListener;
@@ -220,24 +229,36 @@ public class ErrorEventTest extends JbpmBpmn2TestCase {
 
     @Test
     public void testErrorBoundaryEventOnServiceTask() throws Exception {
-        kruntime = createKogitoProcessRuntime("BPMN2-ErrorBoundaryEventOnServiceTask.bpmn2");
+        Application app = ProcessTestHelper.newApplication();
+        EventTrackerProcessListener listener = new EventTrackerProcessListener();
+        ProcessTestHelper.registerProcessEventListener(app, listener);
         TestWorkItemHandler handler = new TestWorkItemHandler();
+        ProcessTestHelper.registerHandler(app, "Human Task", handler);
+        ProcessTestHelper.registerHandler(app, "org.jbpm.bpmn2.objects.HelloService_helloException_ServiceTask_2_Handler", new HelloService_helloException_ServiceTask_2_Handler());
 
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task", handler);
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Service Task", new ServiceTaskHandler());
-        Map<String, Object> params = new HashMap<>();
-        params.put("s", "test");
-        KogitoProcessInstance processInstance = kruntime.startProcess("BPMN2-ErrorBoundaryEventOnServiceTask", params);
+        org.kie.kogito.process.Process<ErrorBoundaryEventOnServiceTaskModel> definition = ErrorBoundaryEventOnServiceTaskProcess.newProcess(app);
+
+        ErrorBoundaryEventOnServiceTaskModel model = definition.createModel();
+        model.setS("test");
+        org.kie.kogito.process.ProcessInstance<ErrorBoundaryEventOnServiceTaskModel> instance = definition.createInstance(model);
+        instance.start();
 
         List<KogitoWorkItem> workItems = handler.getWorkItems();
         assertThat(workItems).hasSize(1);
-        kruntime.getKogitoWorkItemManager().completeWorkItem(workItems.get(0).getStringId(), null);
+        ProcessTestHelper.completeWorkItem(instance, "john", Collections.emptyMap());
 
-        assertProcessInstanceFinished(processInstance, kruntime);
-        assertNodeTriggered(processInstance.getStringId(), "start", "split", "User Task", "Service task error attached", "end0",
-                "Script Task", "error2");
+        assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
 
-        assertNotNodeTriggered(processInstance.getStringId(), "end");
+        assertThat(listener.tracked())
+                .anyMatch(ProcessTestHelper.triggered("start"))
+                .anyMatch(ProcessTestHelper.triggered("split"))
+                .anyMatch(ProcessTestHelper.triggered("User Task"))
+                .anyMatch(ProcessTestHelper.triggered("Service task error attached"))
+                .anyMatch(ProcessTestHelper.triggered("end0"))
+                .anyMatch(ProcessTestHelper.triggered("Script Task"))
+                .anyMatch(ProcessTestHelper.triggered("error2"))
+                .noneMatch(ProcessTestHelper.triggered("end"));
+
     }
 
     @Test
@@ -394,35 +415,56 @@ public class ErrorEventTest extends JbpmBpmn2TestCase {
 
     @Test
     public void testBoundaryErrorEventDefaultHandlerWithoutErrorCodeWithStructureRef() throws Exception {
-        kruntime = createKogitoProcessRuntime("BPMN2-BoundaryErrorEventDefaultHandlerWithoutErrorCodeWithStructureRef.bpmn2");
+        Application app = ProcessTestHelper.newApplication();
+        EventTrackerProcessListener listener = new EventTrackerProcessListener();
         ExceptionWorkItemHandler handler = new ExceptionWorkItemHandler();
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task", handler);
+        ProcessTestHelper.registerHandler(app, "Human Task", handler);
+        ProcessTestHelper.registerProcessEventListener(app, listener);
+        org.kie.kogito.process.Process<BoundaryErrorEventDefaultHandlerWithoutErrorCodeWithStructureRefModel> definition =
+                BoundaryErrorEventDefaultHandlerWithoutErrorCodeWithStructureRefProcess.newProcess(app);
+        org.kie.kogito.process.ProcessInstance<BoundaryErrorEventDefaultHandlerWithoutErrorCodeWithStructureRefModel> instance = definition.createInstance(definition.createModel());
+        instance.start();
 
-        KogitoProcessInstance processInstance = kruntime.startProcess("com.sample.bpmn.hello");
+        assertThat(listener.tracked())
+                .anyMatch(ProcessTestHelper.triggered("Start"))
+                .anyMatch(ProcessTestHelper.triggered("User Task"))
+                .anyMatch(ProcessTestHelper.left("MyBoundaryErrorEvent"));
 
-        assertNodeTriggered(processInstance.getStringId(), "Start", "User Task", "MyBoundaryErrorEvent");
     }
 
     @Test
     public void testBoundaryErrorEventDefaultHandlerWithoutErrorCodeWithoutStructureRef() throws Exception {
-        kruntime = createKogitoProcessRuntime("BPMN2-BoundaryErrorEventDefaultHandlerWithoutErrorCodeWithoutStructureRef.bpmn2");
+
+        Application app = ProcessTestHelper.newApplication();
+        EventTrackerProcessListener listener = new EventTrackerProcessListener();
         ExceptionWorkItemHandler handler = new ExceptionWorkItemHandler();
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task", handler);
+        ProcessTestHelper.registerHandler(app, "Human Task", handler);
+        ProcessTestHelper.registerProcessEventListener(app, listener);
+        org.kie.kogito.process.Process<BoundaryErrorEventDefaultHandlerWithoutErrorCodeWithoutStructureRefModel> definition =
+                BoundaryErrorEventDefaultHandlerWithoutErrorCodeWithoutStructureRefProcess.newProcess(app);
+        org.kie.kogito.process.ProcessInstance<BoundaryErrorEventDefaultHandlerWithoutErrorCodeWithoutStructureRefModel> instance = definition.createInstance(definition.createModel());
+        instance.start();
 
-        KogitoProcessInstance processInstance = kruntime.startProcess("com.sample.bpmn.hello");
-
-        assertNodeTriggered(processInstance.getStringId(), "Start", "User Task", "MyBoundaryErrorEvent");
+        assertThat(listener.tracked())
+                .anyMatch(ProcessTestHelper.triggered("Start"))
+                .anyMatch(ProcessTestHelper.triggered("User Task"))
+                .anyMatch(ProcessTestHelper.left("MyBoundaryErrorEvent"));
     }
 
     @Test
     public void testBoundaryErrorEventSubProcessExceptionMapping() throws Exception {
-        kruntime = createKogitoProcessRuntime("BPMN2-BoundaryErrorEventSubProcessExceptionMapping.bpmn2");
+        Application app = ProcessTestHelper.newApplication();
         ExceptionWorkItemHandler handler = new ExceptionWorkItemHandler();
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task", handler);
+        ProcessTestHelper.registerHandler(app, "Human Task", handler);
+        org.kie.kogito.process.Process<BoundaryErrorEventSubProcessExceptionMappingModel> definition =
+                BoundaryErrorEventSubProcessExceptionMappingProcess.newProcess(app);
+        org.kie.kogito.process.ProcessInstance<BoundaryErrorEventSubProcessExceptionMappingModel> instance = definition.createInstance(definition.createModel());
+        instance.start();
 
-        KogitoProcessInstance processInstance = kruntime.startProcess("com.sample.bpmn.hello");
+        assertThat(instance.variables().getVar1())
+                .isNotNull()
+                .isInstanceOf(RuntimeException.class);
 
-        assertThat(getProcessVarValue(processInstance, "var1")).isEqualTo("java.lang.RuntimeException");
     }
 
     @Test

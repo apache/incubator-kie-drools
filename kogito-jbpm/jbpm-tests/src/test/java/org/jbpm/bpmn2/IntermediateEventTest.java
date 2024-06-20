@@ -21,6 +21,7 @@ package org.jbpm.bpmn2;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -32,6 +33,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.jbpm.bpmn2.activity.BoundarySignalEventOnTaskWithTransformationModel;
 import org.jbpm.bpmn2.activity.BoundarySignalEventOnTaskWithTransformationProcess;
+import org.jbpm.bpmn2.event.BoundarySignalWithNameEventOnTaskModel;
+import org.jbpm.bpmn2.event.BoundarySignalWithNameEventOnTaskProcess;
+import org.jbpm.bpmn2.event.BoundaryTimerCycleISOModel;
+import org.jbpm.bpmn2.event.BoundaryTimerCycleISOProcess;
+import org.jbpm.bpmn2.event.BoundaryTimerCycleISOVariableModel;
+import org.jbpm.bpmn2.event.BoundaryTimerCycleISOVariableProcess;
 import org.jbpm.bpmn2.handler.ReceiveTaskHandler;
 import org.jbpm.bpmn2.handler.SendTaskHandler;
 import org.jbpm.bpmn2.intermediate.EventSubprocessErrorSignalEmbeddedModel;
@@ -127,6 +134,34 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
     /*
      * TESTS!
      */
+
+    @Test
+    public void testBoundaryTimerCycleISO() {
+        Application app = ProcessTestHelper.newApplication();
+        NodeLeftCountDownProcessEventListener listener = new NodeLeftCountDownProcessEventListener("Send Update Timer", 3);
+        ProcessTestHelper.registerProcessEventListener(app, listener);
+        org.kie.kogito.process.Process<BoundaryTimerCycleISOModel> definition = BoundaryTimerCycleISOProcess.newProcess(app);
+        org.kie.kogito.process.ProcessInstance<BoundaryTimerCycleISOModel> instance = definition.createInstance(definition.createModel());
+        instance.start();
+        listener.waitTillCompleted();
+        ProcessTestHelper.completeWorkItem(instance, "john", Collections.emptyMap());
+        assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
+    }
+
+    @Test
+    public void testBoundaryTimerCycleISOVariable() {
+        Application app = ProcessTestHelper.newApplication();
+        NodeLeftCountDownProcessEventListener listener = new NodeLeftCountDownProcessEventListener("Send Update Timer", 3);
+        ProcessTestHelper.registerProcessEventListener(app, listener);
+        org.kie.kogito.process.Process<BoundaryTimerCycleISOVariableModel> definition = BoundaryTimerCycleISOVariableProcess.newProcess(app);
+        BoundaryTimerCycleISOVariableModel model = definition.createModel();
+        model.setCronStr("R3/PT0.1S");
+        org.kie.kogito.process.ProcessInstance<BoundaryTimerCycleISOVariableModel> instance = definition.createInstance(model);
+        instance.start();
+        listener.waitTillCompleted();
+        ProcessTestHelper.completeWorkItem(instance, "john", Collections.emptyMap());
+        assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
+    }
 
     @Test
     public void testSignalBoundaryEvent() throws Exception {
@@ -239,15 +274,18 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
 
     @Test
     public void testSignalBoundaryEventOnTaskWithSignalName() throws Exception {
-        kruntime = createKogitoProcessRuntime("BPMN2-BoundarySignalWithNameEventOnTaskbpmn2.bpmn");
 
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task",
-                new TestWorkItemHandler());
-        kruntime.getProcessEventManager().addEventListener(LOGGING_EVENT_LISTENER);
-        KogitoProcessInstance processInstance = kruntime
-                .startProcess("BoundarySignalOnTask");
-        kruntime.signalEvent("MySignal", "value");
-        assertProcessInstanceFinished(processInstance, kruntime);
+        Application app = ProcessTestHelper.newApplication();
+
+        ProcessTestHelper.registerHandler(app, "Human Task", new TestWorkItemHandler());
+        ProcessTestHelper.registerProcessEventListener(app, LOGGING_EVENT_LISTENER);
+        org.kie.kogito.process.Process<BoundarySignalWithNameEventOnTaskModel> definition =
+                BoundarySignalWithNameEventOnTaskProcess.newProcess(app);
+        org.kie.kogito.process.ProcessInstance<BoundarySignalWithNameEventOnTaskModel> instance = definition.createInstance(definition.createModel());
+        instance.start();
+
+        instance.send(Sig.of("MySignal", "value"));
+        assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
 
     }
 

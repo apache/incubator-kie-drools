@@ -24,6 +24,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.jbpm.bpmn2.JbpmBpmn2TestCase;
+import org.jbpm.bpmn2.flow.BooleanStructureRefModel;
+import org.jbpm.bpmn2.flow.BooleanStructureRefProcess;
 import org.jbpm.bpmn2.flow.DefaultObjectStructureRefModel;
 import org.jbpm.bpmn2.flow.DefaultObjectStructureRefProcess;
 import org.jbpm.bpmn2.flow.FloatStructureRefModel;
@@ -34,12 +36,12 @@ import org.jbpm.bpmn2.flow.ObjectStructureRefModel;
 import org.jbpm.bpmn2.flow.ObjectStructureRefProcess;
 import org.jbpm.bpmn2.objects.Person;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
-import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.core.datatype.impl.coverter.TypeConverterRegistry;
 import org.jbpm.test.utils.ProcessTestHelper;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.Application;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
+import org.kie.kogito.process.bpmn2.BpmnVariables;
 
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
@@ -70,20 +72,19 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
 
     @Test
     public void testBooleanStructureRef() throws Exception {
-        kruntime = createKogitoProcessRuntime("BPMN2-BooleanStructureRef.bpmn2");
+        Application app = ProcessTestHelper.newApplication();
 
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task",
-                workItemHandler);
-        KogitoProcessInstance processInstance = kruntime.startProcess("StructureRef");
-        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_ACTIVE);
+        ProcessTestHelper.registerHandler(app, "Human Task", workItemHandler);
+        org.kie.kogito.process.Process<BooleanStructureRefModel> definition = BooleanStructureRefProcess.newProcess(app);
 
-        Map<String, Object> res = new HashMap<>();
-        res.put("testHT", "true");
-        kruntime.getKogitoWorkItemManager().completeWorkItem(
-                workItemHandler.getWorkItem().getStringId(), res);
+        org.kie.kogito.process.ProcessInstance<BooleanStructureRefModel> instance = definition.createInstance(definition.createModel());
+        instance.start();
+        assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_ACTIVE);
 
-        assertProcessInstanceCompleted(processInstance.getStringId(), kruntime);
+        ProcessTestHelper.completeWorkItem(instance, "john", Collections.singletonMap("testHT", "true"));
+
+        assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
@@ -182,29 +183,29 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
 
     @Test
     public void testNotExistingVarBooleanStructureRefOnStart() throws Exception {
-        kruntime = createKogitoProcessRuntime("BPMN2-BooleanStructureRef.bpmn2");
+        Application app = ProcessTestHelper.newApplication();
 
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task",
-                workItemHandler);
-
-        Map<String, Object> params = new HashMap<>();
-        params.put("not existing", "invalid boolean");
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> kruntime.startProcess("StructureRef", params));
+        ProcessTestHelper.registerHandler(app, "Human Task", workItemHandler);
+        org.kie.kogito.process.Process<BooleanStructureRefModel> definition = BooleanStructureRefProcess.newProcess(app);
+        org.kie.kogito.Model model = BpmnVariables.create(Collections.singletonMap("not existing", "invalid boolean"));
+        org.kie.kogito.process.ProcessInstance<? extends org.kie.kogito.Model> instance = definition.createInstance(model);
+        assertThat(instance.variables().toMap()).doesNotContainKey("non existing");
 
     }
 
     @Test
     public void testInvalidBooleanStructureRefOnStart() throws Exception {
-        kruntime = createKogitoProcessRuntime("BPMN2-BooleanStructureRef.bpmn2");
+        Application app = ProcessTestHelper.newApplication();
 
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task",
-                workItemHandler);
+        ProcessTestHelper.registerHandler(app, "Human Task", workItemHandler);
+        org.kie.kogito.process.Process<BooleanStructureRefModel> definition = BooleanStructureRefProcess.newProcess(app);
+        org.kie.kogito.Model model = BpmnVariables.create(Collections.singletonMap("test", "invalid boolean"));
 
-        Map<String, Object> params = new HashMap<>();
-        params.put("test", "invalid boolean");
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> kruntime.startProcess("StructureRef", params));
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
+            org.kie.kogito.process.ProcessInstance<? extends org.kie.kogito.Model> instance = definition.createInstance(model);
+        });
     }
 
     @Test
@@ -234,36 +235,19 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
 
     @Test
     public void testInvalidBooleanStructureRefOnStartVerifyErrorMsg() throws Exception {
-        kruntime = createKogitoProcessRuntime("BPMN2-BooleanStructureRef.bpmn2");
+        Application app = ProcessTestHelper.newApplication();
 
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task",
-                workItemHandler);
+        ProcessTestHelper.registerHandler(app, "Human Task", workItemHandler);
+        org.kie.kogito.process.Process<BooleanStructureRefModel> definition = BooleanStructureRefProcess.newProcess(app);
+        org.kie.kogito.Model model = BpmnVariables.create(Collections.singletonMap("test", "invalid boolean"));
+
         try {
-            Map<String, Object> params = new HashMap<>();
-            params.put("test", "invalid boolean");
-            kruntime.startProcess("StructureRef", params);
+            definition.createInstance(model);
         } catch (IllegalArgumentException e) {
-            assertThat(e.getMessage()).isEqualTo("Variable 'test' has incorrect data type expected:java.lang.Boolean actual:java.lang.String");
+            assertThat(e.getMessage()).isEqualTo("Can not set java.lang.Boolean field org.jbpm.bpmn2.flow.BooleanStructureRefModel.test to java.lang.String");
         }
 
-    }
-
-    @Test
-    public void testInvalidBooleanStructureRefOnStartWithDisabledCheck() throws Exception {
-        // Temporarily disable check for variables strict that is enabled by default for tests
-        VariableScope.setVariableStrictOption(false);
-        kruntime = createKogitoProcessRuntime("BPMN2-BooleanStructureRef.bpmn2");
-
-        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task",
-                workItemHandler);
-
-        Map<String, Object> params = new HashMap<>();
-        params.put("test", "invalid boolean");
-        kruntime.startProcess("StructureRef", params);
-        // enable it back for other tests
-        VariableScope.setVariableStrictOption(true);
     }
 
     @Test

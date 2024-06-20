@@ -310,6 +310,7 @@ public class ProcessVisitor extends AbstractVisitor {
                         new StringLiteralExpr(signalName),
                         faultCode != null ? new StringLiteralExpr(faultCode) : new NullLiteralExpr(),
                         faultVariable.<Expression> map(StringLiteralExpr::new).orElse(new NullLiteralExpr())));
+
             });
         }
     }

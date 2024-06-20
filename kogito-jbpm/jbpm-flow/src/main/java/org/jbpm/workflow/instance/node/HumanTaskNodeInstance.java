@@ -215,14 +215,12 @@ public class HumanTaskNodeInstance extends WorkItemNodeInstance {
     @Override
     protected void addWorkItemListener() {
         super.addWorkItemListener();
-        getProcessInstance().addEventListener(TIMER_TRIGGERED_EVENT, this, false);
         getProcessInstance().addEventListener(WORK_ITEM_TRANSITION, this, false);
     }
 
     @Override
     protected void removeWorkItemListener() {
         super.removeWorkItemListener();
-        getProcessInstance().removeEventListener(TIMER_TRIGGERED_EVENT, this, false);
         getProcessInstance().removeEventListener(WORK_ITEM_TRANSITION, this, false);
     }
 

@@ -31,7 +31,7 @@ public class BrokenStructureRefTest {
 
     @Test
     public void testProcessWithBrokenItemDefinitionUri() throws Exception {
-        String inputBpmn = getClass().getResource("/BPMN2-BrokenStructureRef.bpmn2").getPath();
+        String inputBpmn = getClass().getResource("/org/jbpm/bpmn2/flow/BPMN2-BrokenStructureRef.bpmn2").getPath();
         XmlProcessDumper dumper = XmlProcessDumperFactory.getXmlProcessDumperFactoryService().newXmlProcessDumper();
         assertThat(dumper).isNotNull();
         String processXml = new String(Files.readAllBytes(Paths.get(inputBpmn)));

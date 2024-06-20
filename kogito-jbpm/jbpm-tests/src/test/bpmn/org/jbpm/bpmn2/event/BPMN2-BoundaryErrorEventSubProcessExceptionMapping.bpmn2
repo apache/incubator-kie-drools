@@ -25,8 +25,8 @@
   <bpmn2:itemDefinition id="ItemDefinition_1" structureRef="Integer"/>
   <bpmn2:itemDefinition id="ItemDefinition_2" structureRef="Boolean"/>
   <bpmn2:itemDefinition id="ItemDefinition_3" structureRef="java.lang.Exception"/>
-  <bpmn2:error id="Error_1" name="Error_1" structureRef="ItemDefinition_3"/>
-  <bpmn2:process id="com.sample.bpmn.hello" tns:version="1" tns:packageName="defaultPackage" tns:adHoc="false" name="Hello World" isExecutable="true" processType="Private">
+  <bpmn2:error id="Error_1" name="Error_1"/>
+  <bpmn2:process id="BoundaryErrorEventSubProcessExceptionMapping" tns:version="1" tns:packageName="org.jbpm.bpmn2.event" tns:adHoc="false" name="Hello World" isExecutable="true" processType="Private">
     <bpmn2:extensionElements>
       <tns:import name="java.lang.IllegalArgumentException"/>
     </bpmn2:extensionElements>

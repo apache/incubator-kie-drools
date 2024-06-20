@@ -32,7 +32,7 @@
 
   <itemDefinition id="_testItem" structureRef="Boolean" />
 
-  <process processType="Private" isExecutable="true" id="StructureRef" name="StructureRef" tns:packageName="defaultPackage" >
+  <process processType="Private" isExecutable="true" id="BooleanStructureRef" name="StructureRef" tns:packageName="org.jbpm.bpmn2.flow" >
 
     <!-- process variables -->
     <property id="test" itemSubjectRef="_testItem"/>
