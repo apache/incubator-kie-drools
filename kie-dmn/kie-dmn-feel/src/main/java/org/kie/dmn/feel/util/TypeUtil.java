@@ -37,7 +37,7 @@ import java.util.Set;
 
 import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.dmn.feel.runtime.Range;
-import org.kie.dmn.feel.runtime.custom.ZonedOffsetTime;
+import org.kie.dmn.feel.runtime.custom.ZoneTime;
 import org.kie.dmn.feel.runtime.functions.DateAndTimeFunction;
 import org.kie.dmn.feel.runtime.functions.DateFunction;
 import org.kie.dmn.feel.runtime.functions.TimeFunction;
@@ -73,8 +73,10 @@ public final class TypeUtil {
             return formatString(val.toString(), wrapForCodeUsage);
         } else if (val instanceof LocalDate) {
             return formatDate((LocalDate) val, wrapForCodeUsage);
-        } else if (val instanceof LocalTime || val instanceof OffsetTime || val instanceof ZonedOffsetTime) {
+        } else if (val instanceof LocalTime || val instanceof OffsetTime) {
             return formatTimeString(TimeFunction.FEEL_TIME.format((TemporalAccessor) val), wrapForCodeUsage);
+        } else if (val instanceof ZoneTime zoneTime) {
+            return formatTimeString(zoneTime.format(), wrapForCodeUsage);
         } else if (val instanceof LocalDateTime || val instanceof OffsetDateTime) {
             return formatDateTimeString(DateAndTimeFunction.FEEL_DATE_TIME.format((TemporalAccessor) val), wrapForCodeUsage);
         } else if (val instanceof ZonedDateTime) {

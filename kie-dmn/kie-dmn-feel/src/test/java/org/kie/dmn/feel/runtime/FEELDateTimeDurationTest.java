@@ -29,8 +29,6 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalField;
-import java.time.temporal.TemporalQueries;
 import java.util.Collection;
 
 import org.junit.jupiter.params.ParameterizedTest;
@@ -38,9 +36,9 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.lang.FEELDialect;
 import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
-import org.kie.dmn.feel.runtime.custom.ZonedOffsetTime;
+import org.kie.dmn.feel.runtime.custom.ZoneTime;
 
-import static java.time.temporal.ChronoField.HOUR_OF_DAY;
+import static org.kie.dmn.feel.runtime.functions.TimeFunction.timeStringWithSeconds;
 
 public class FEELDateTimeDurationTest extends BaseFEELTest {
 
@@ -95,7 +93,7 @@ public class FEELDateTimeDurationTest extends BaseFEELTest {
                 { "-duration( \"P2Y2M\" )", ComparablePeriod.parse( "-P2Y2M" ) , null},
                 {"@\"2023-10-10T10:31:00@Australia/Melbourne\"", DateTimeFormatter.ISO_DATE_TIME.parse("2023-10-10T10" +
                                                                                                                ":31+11:00[Australia/Melbourne]", ZonedDateTime::from), null},
-                {"@\"10:15:00@Australia/Melbourne\"", ZonedOffsetTime.of(LocalTime.of(10, 15), ZoneId.of("Australia/Melbourne")), null},
+                {"@\"10:15:00@Australia/Melbourne\"", ZoneTime.of(LocalTime.of(10, 15), ZoneId.of("Australia/Melbourne"), true), null},
 
                 // comparison operators
                 { "duration( \"P1Y6M\" ) = duration( \"P1Y6M\" )", Boolean.TRUE , null},
@@ -196,18 +194,21 @@ public class FEELDateTimeDurationTest extends BaseFEELTest {
                                                                                                                              ":31+11:00[Australia/Melbourne]", ZonedDateTime::from), null},
                 { "@\"-P1D\" + @\"2023-10-10T10:31:00@Australia/Melbourne\"", DateTimeFormatter.ISO_DATE_TIME.parse("2023-10-09T10" +
                                                                                                                              ":31+11:00[Australia/Melbourne]", ZonedDateTime::from), null},
-                { "@\"P1D\" + @\"10:15:00@Australia/Melbourne\"", getCorrectOffsetTime( "10:15", "Australia/Melbourne"), null},
-                { "@\"-P1D\" + @\"10:15:00@Australia/Melbourne\"", getCorrectOffsetTime( "10:15", "Australia/Melbourne"), null},
-                { "@\"PT1H\" + @\"10:15:00@Australia/Melbourne\"", getCorrectOffsetTime( "11:15", "Australia/Melbourne"), null},
-                { "@\"-PT1H\" + @\"10:15:00@Australia/Melbourne\"", getCorrectOffsetTime( "09:15", "Australia/Melbourne"), null},
+                { "@\"P1D\" + @\"10:15:00@Australia/Melbourne\"", getCorrectZoneTime("10:15", "Australia/Melbourne"), null},
+                { "@\"-P1D\" + @\"10:15:00@Australia/Melbourne\"", getCorrectZoneTime("10:15", "Australia/Melbourne"), null},
+                { "@\"PT1H\" + @\"10:15:00@Australia/Melbourne\"", getCorrectZoneTime("11:15", "Australia/Melbourne"), null},
+                { "@\"-PT1H\" + @\"10:15:00@Australia/Melbourne\"", getCorrectZoneTime("09:15", "Australia/Melbourne"), null},
 
 
-                { "@\"10:15:00@Australia/Melbourne\" + @\"P1D\"", getCorrectOffsetTime( "10:15", "Australia/Melbourne"), null},
-                { "@\"10:15:00@Australia/Melbourne\" - @\"P1D\"", getCorrectOffsetTime( "10:15", "Australia/Melbourne"), null},
-                { "@\"10:15:00@Australia/Melbourne\" + @\"-P1D\"", getCorrectOffsetTime( "10:15", "Australia/Melbourne"), null},
-                { "@\"10:15:00@Australia/Melbourne\" + @\"PT1H\"", getCorrectOffsetTime( "11:15", "Australia/Melbourne"), null},
-                { "@\"10:15:00@Australia/Melbourne\" - @\"PT1H\"", getCorrectOffsetTime( "09:15", "Australia/Melbourne"), null},
-                { "@\"10:15:00@Australia/Melbourne\" + @\"-PT1H\"", getCorrectOffsetTime( "09:15", "Australia/Melbourne"), null},
+                { "@\"10:15:00@Australia/Melbourne\" + @\"P1D\"", getCorrectZoneTime("10:15", "Australia/Melbourne"), null},
+                { "@\"10:15:00@Australia/Melbourne\" - @\"P1D\"", getCorrectZoneTime("10:15", "Australia/Melbourne"), null},
+                { "@\"10:15:00@Australia/Melbourne\" + @\"-P1D\"", getCorrectZoneTime("10:15", "Australia/Melbourne"), null},
+                { "@\"10:15:00@Australia/Melbourne\" + @\"PT1H\"", getCorrectZoneTime("11:15", "Australia/Melbourne"), null},
+                { "@\"10:15:00@Australia/Melbourne\" - @\"PT1H\"", getCorrectZoneTime("09:15", "Australia/Melbourne"), null},
+                { "@\"10:15:00@Australia/Melbourne\" + @\"-PT1H\"", getCorrectZoneTime("09:15", "Australia/Melbourne"), null},
+
+                {"string(@\"10:10@Australia/Melbourne\" + @\"PT1H\")", "11:10@Australia/Melbourne", null},
+                {"string(@\"10:10:00@Australia/Melbourne\" + @\"PT1H\")", "11:10:00@Australia/Melbourne", null},
 
 
                 // TODO support for zones - fix when timezones solved out (currently returns ZonedDateTime)
@@ -332,15 +333,10 @@ public class FEELDateTimeDurationTest extends BaseFEELTest {
         return addAdditionalParameters(cases, false);
     }
 
-    private static OffsetTime getCorrectOffsetTime(String baseTime, String zone) {
-        String correctOffsetTimeString = getCorrectOffsetTimeString(baseTime, zone);
-        return DateTimeFormatter.ISO_TIME.parse( correctOffsetTimeString, OffsetTime::from );
+    private static ZoneTime getCorrectZoneTime(String baseTime, String zone) {
+        LocalTime localTime = DateTimeFormatter.ISO_TIME.parse(baseTime, LocalTime::from );
+        ZoneId zoneId = ZoneId.of(zone);
+        return ZoneTime.of(localTime, zoneId, timeStringWithSeconds(baseTime));
     }
 
-    private static String getCorrectOffsetTimeString(String baseTime, String zone) {
-        ZoneId zoneId = ZoneId.of(zone);
-        ZoneOffset offset = zoneId.getRules().getOffset(LocalDateTime.now());
-        String diffOffset = offset.getId();
-        return String.format("%s%s",baseTime, diffOffset);
-    }
 }

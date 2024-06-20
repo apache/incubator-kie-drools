@@ -34,7 +34,7 @@ import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalQueries;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
-import org.kie.dmn.feel.runtime.custom.ZonedOffsetTime;
+import org.kie.dmn.feel.runtime.custom.ZoneTime;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 import org.kie.dmn.feel.runtime.functions.BaseFEELFunction;
 import org.kie.dmn.feel.runtime.functions.BuiltInFunctions;
@@ -42,6 +42,8 @@ import org.kie.dmn.feel.runtime.functions.DateAndTimeFunction;
 import org.kie.dmn.feel.runtime.functions.FEELConversionFunctionNames;
 import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 import org.kie.dmn.feel.runtime.functions.ParameterName;
+
+import static org.kie.dmn.feel.runtime.functions.TimeFunction.timeStringWithSeconds;
 
 public class TimeFunction extends BaseFEELFunction {
     public static final TimeFunction INSTANCE = new TimeFunction();
@@ -83,10 +85,11 @@ public class TimeFunction extends BaseFEELFunction {
                 LocalTime asLocalTime = parsed.query(LocalTime::from);
                 return FEELFnResult.ofResult(asLocalTime);
             } else if (parsed.query(TemporalQueries.zone()) != null) {
+                boolean hasZeroSeconds = timeStringWithSeconds(val);
                 LocalTime asLocalTime = parsed.query(LocalTime::from);
                 ZoneId zoneId = parsed.query(TemporalQueries.zone());
-                ZonedOffsetTime zonedOffsetTime = ZonedOffsetTime.of(asLocalTime, zoneId);
-                return FEELFnResult.ofResult(zonedOffsetTime);
+                ZoneTime zoneTime = ZoneTime.of(asLocalTime, zoneId, hasZeroSeconds);
+                return FEELFnResult.ofResult(zoneTime);
             }
 
             return FEELFnResult.ofResult(parsed);
