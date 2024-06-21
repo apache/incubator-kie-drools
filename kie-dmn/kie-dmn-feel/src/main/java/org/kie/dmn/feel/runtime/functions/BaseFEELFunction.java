@@ -62,22 +62,6 @@ public abstract class BaseFEELFunction
         this.symbol = new FunctionSymbol( name, this );
     }
 
-    private enum CandidateParametersStatus {
-        PERFECT_MATCH(true),
-        COERCED(true),
-        MISSING(false);
-
-        private final boolean found;
-
-        CandidateParametersStatus(boolean found) {
-            this.found = found;
-        }
-
-        public boolean isFound() {
-            return found;
-        }
-    }
-
     @Override
     public String getName() {
         return name;
@@ -194,7 +178,7 @@ public abstract class BaseFEELFunction
     }
 
     private CandidateMethod getCandidateMethod(EvaluationContext ctx, Object[] params, boolean isNamedParams, List<String> available) {
-        CandidateMethod candidateMethod = null;
+        CandidateMethod candidate = null;
         // first, look for exact matches
         for ( Method m : getClass().getDeclaredMethods() ) {
             if ( !Modifier.isPublic(m.getModifiers()) || !m.getName().equals( "invoke" ) ) {
@@ -241,7 +225,7 @@ public abstract class BaseFEELFunction
                 continue;
             }
 
-            CandidateParametersStatus candidateParameterStatus = CandidateParametersStatus.PERFECT_MATCH;
+            boolean found = true;
             for ( int i = 0; i < parameterTypes.length; i++ ) {
                 Class<?> currentIdxActualParameterType = cm.getActualClasses()[i];
                 Class<?> expectedParameterType = parameterTypes[i];
@@ -249,38 +233,34 @@ public abstract class BaseFEELFunction
                     Optional<Object[]> coercedParams = coerceParams(currentIdxActualParameterType, expectedParameterType, actualParams, i);
                     if (coercedParams.isPresent()) {
                         cm.setActualParams(coercedParams.get());
-                        candidateParameterStatus = CandidateParametersStatus.COERCED;
                         continue;
                     }
-                    candidateParameterStatus = CandidateParametersStatus.MISSING;
+                    found = false;
                     break;
                 }
             }
-            if ( candidateParameterStatus.isFound() ) {
+            if ( found ) {
                 cm.setApply( m );
-                if (candidateMethod == null) {
-                    candidateMethod = cm;
-                } else if (candidateParameterStatus == CandidateParametersStatus.PERFECT_MATCH) {
-                    candidateMethod = cm;
-                    break;
+                if (candidate == null) {
+                    candidate = cm;
                 } else {
-                    if (cm.getScore() > candidateMethod.getScore()) {
-                        candidateMethod = cm;
-                    } else if (cm.getScore() == candidateMethod.getScore()) {
-                        if (isNamedParams && nullCount(cm.actualParams)<nullCount(candidateMethod.actualParams)) {
-                            candidateMethod = cm; // `cm` narrower for named parameters without need of passing nulls.
-                        } else if (candidateMethod.getApply().getParameterTypes().length == 1
+                    if (cm.getScore() > candidate.getScore()) {
+                        candidate = cm;
+                    } else if (cm.getScore() == candidate.getScore()) {
+                        if (isNamedParams && nullCount(cm.actualParams) < nullCount(candidate.actualParams)) {
+                            candidate = cm; // `cm` narrower for named parameters without need of passing nulls.
+                        } else if (candidate.getApply().getParameterTypes().length == 1
                                 && cm.getApply().getParameterTypes().length == 1
-                                && candidateMethod.getApply().getParameterTypes()[0].equals(Object.class)
+                                && candidate.getApply().getParameterTypes()[0].equals(Object.class)
                                 && !cm.getApply().getParameterTypes()[0].equals(Object.class)) {
-                            candidateMethod = cm; // `cm` is more narrowed, hence reflect `candidateMethod` to be now `cm`.
+                            candidate = cm; // `cm` is more narrowed, hence reflect `candidate` to be now `cm`.
                         }
                     }
                 }
             }
         }
 
-        return candidateMethod;
+        return candidate;
     }
     
     private static long nullCount(Object[] params) {
