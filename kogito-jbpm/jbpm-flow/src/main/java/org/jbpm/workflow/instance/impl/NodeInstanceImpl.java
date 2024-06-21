@@ -258,6 +258,7 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
 
     protected void captureError(Exception e) {
         logger.error("capture error", e);
+        e.printStackTrace();
         getProcessInstance().setErrorState(this, e);
     }
 

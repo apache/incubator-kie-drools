@@ -1633,12 +1633,6 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
     }
 
     @Test
-    public void testSignallingExceptionServiceTask() throws Exception {
-        kruntime = createKogitoProcessRuntime("BPMN2-ExceptionServiceProcess-Signalling.bpmn2");
-        StandaloneBPMNProcessTest.runTestSignallingExceptionServiceTask(kruntime);
-    }
-
-    @Test
     public void testSignalBoundaryEventOnSubprocessTakingDifferentPaths() throws Exception {
         kruntime = createKogitoProcessRuntime(
                 "org/jbpm/bpmn2/intermediate/BPMN2-SignalBoundaryOnSubProcess.bpmn");

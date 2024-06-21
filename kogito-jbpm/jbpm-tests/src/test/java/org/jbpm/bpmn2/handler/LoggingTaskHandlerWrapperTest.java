@@ -19,31 +19,47 @@
 package org.jbpm.bpmn2.handler;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import org.jbpm.bpmn2.JbpmBpmn2TestCase;
 import org.jbpm.bpmn2.handler.LoggingTaskHandlerDecorator.InputParameter;
+import org.jbpm.bpmn2.subprocess.ExceptionThrowingServiceProcessModel;
+import org.jbpm.bpmn2.subprocess.ExceptionThrowingServiceProcessProcess;
+import org.jbpm.test.utils.ProcessTestHelper;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.Application;
+import org.kie.kogito.handlers.ExceptionService_throwException__2_Handler;
+import org.slf4j.LoggerFactory;
+
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.read.ListAppender;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class LoggingTaskHandlerWrapperTest extends JbpmBpmn2TestCase {
+public class LoggingTaskHandlerWrapperTest {
 
     @Test
     public void testLimitExceptionInfoList() throws Exception {
-        kruntime = createKogitoProcessRuntime("BPMN2-ExceptionThrowingServiceProcess.bpmn2");
+        Application app = ProcessTestHelper.newApplication();
 
-        LoggingTaskHandlerDecorator loggingTaskHandlerWrapper = new LoggingTaskHandlerDecorator(ServiceTaskHandler.class, 2);
-        loggingTaskHandlerWrapper.setPrintStackTrace(false);
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Service Task", loggingTaskHandlerWrapper);
+        LoggingTaskHandlerDecorator loggingTaskHandlerWrapper = new LoggingTaskHandlerDecorator(ExceptionService_throwException__2_Handler.class, 2);
 
-        Map<String, Object> params = new HashMap<>();
-        params.put("serviceInputItem", "exception message");
-        kruntime.startProcess("ServiceProcess", params);
-        kruntime.startProcess("ServiceProcess", params);
-        kruntime.startProcess("ServiceProcess", params);
+        ProcessTestHelper.registerHandler(app, "org.jbpm.bpmn2.objects.ExceptionService_throwException__2_Handler", loggingTaskHandlerWrapper);
+
+        org.kie.kogito.process.Process<ExceptionThrowingServiceProcessModel> definition = ExceptionThrowingServiceProcessProcess.newProcess(app);
+        ExceptionThrowingServiceProcessModel model = definition.createModel();
+        model.setServiceInputItem("exception message");
+        org.kie.kogito.process.ProcessInstance<ExceptionThrowingServiceProcessModel> instance1 = definition.createInstance(model);
+        instance1.start();
+        assertThat(instance1.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_ACTIVE);
+
+        org.kie.kogito.process.ProcessInstance<ExceptionThrowingServiceProcessModel> instance2 = definition.createInstance(model);
+        instance2.start();
+        assertThat(instance2.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_ACTIVE);
+
+        org.kie.kogito.process.ProcessInstance<ExceptionThrowingServiceProcessModel> instance3 = definition.createInstance(model);
+        instance3.start();
+        assertThat(instance3.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_ACTIVE);
 
         int size = loggingTaskHandlerWrapper.getWorkItemExceptionInfoList().size();
         assertThat(size).as("WorkItemExceptionInfoList is too large: " + size).isEqualTo(2);
@@ -51,26 +67,41 @@ public class LoggingTaskHandlerWrapperTest extends JbpmBpmn2TestCase {
 
     @Test
     public void testFormatLoggingError() throws Exception {
-        kruntime = createKogitoProcessRuntime("BPMN2-ExceptionThrowingServiceProcess.bpmn2");
+        ListAppender<ILoggingEvent> logAppender = new ListAppender<>();
+        LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
+        logAppender.setContext(loggerContext);
+        ch.qos.logback.classic.Logger decoratorLogger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(LoggingTaskHandlerDecorator.class);
+        decoratorLogger.addAppender(logAppender);
 
-        LoggingTaskHandlerDecorator loggingTaskHandlerWrapper = new LoggingTaskHandlerDecorator(ServiceTaskHandler.class, 2);
+        logAppender.start();
+
+        Application app = ProcessTestHelper.newApplication();
+
+        LoggingTaskHandlerDecorator loggingTaskHandlerWrapper = new LoggingTaskHandlerDecorator(ExceptionService_throwException__2_Handler.class, 2);
+        LoggingTaskHandlerDecorator.setLogger(decoratorLogger);
         loggingTaskHandlerWrapper.setLoggedMessageFormat("{0} - {1} - {2} - {3}");
         List<InputParameter> inputParameters = new ArrayList<LoggingTaskHandlerDecorator.InputParameter>();
         inputParameters.add(InputParameter.EXCEPTION_CLASS);
         inputParameters.add(InputParameter.WORK_ITEM_ID);
         inputParameters.add(InputParameter.WORK_ITEM_NAME);
         inputParameters.add(InputParameter.PROCESS_INSTANCE_ID);
-
         loggingTaskHandlerWrapper.setLoggedMessageInput(inputParameters);
-
         loggingTaskHandlerWrapper.setPrintStackTrace(false);
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Service Task", loggingTaskHandlerWrapper);
 
-        Map<String, Object> params = new HashMap<>();
-        params.put("serviceInputItem", "exception message");
-        kruntime.startProcess("ServiceProcess", params);
-        kruntime.startProcess("ServiceProcess", params);
-        kruntime.startProcess("ServiceProcess", params);
+        ProcessTestHelper.registerHandler(app, "org.jbpm.bpmn2.objects.ExceptionService_throwException__2_Handler", loggingTaskHandlerWrapper);
+
+        org.kie.kogito.process.Process<ExceptionThrowingServiceProcessModel> definition = ExceptionThrowingServiceProcessProcess.newProcess(app);
+        ExceptionThrowingServiceProcessModel model = definition.createModel();
+        model.setServiceInputItem("exception message");
+        org.kie.kogito.process.ProcessInstance<ExceptionThrowingServiceProcessModel> instance1 = definition.createInstance(model);
+        instance1.start();
+        assertThat(instance1.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_ACTIVE);
+
+        String wid = loggingTaskHandlerWrapper.getWorkItemExceptionInfoList().get(0).getWorkItemId();
+        assertThat(logAppender.list.get(0).getFormattedMessage()).isEqualTo("RuntimeException - " + wid + " - org.jbpm.bpmn2.objects.ExceptionService_throwException__2_Handler - " + instance1.id());
+
+        decoratorLogger.detachAppender(logAppender);
+
     }
 
 }

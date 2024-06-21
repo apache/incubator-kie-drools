@@ -18,9 +18,18 @@
   ~ under the License.
   -->
 
-<bpmn:definitions id="EAPK_CCE882F2_23D3_4e7e_80FE_6D8C0AF83CAA" targetNamespace="www.sparxsystems.com.au/bpmn20" xmlns:ssbp="www.sparxsystems.com.au/bpmn20" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" exporter="Enterprise Architect" exporterVersion="10.0.1004">
+<bpmn:definitions id="EAPK_CCE882F2_23D3_4e7e_80FE_6D8C0AF83CAA" 
+targetNamespace="www.sparxsystems.com.au/bpmn20" 
+xmlns:ssbp="www.sparxsystems.com.au/bpmn20" 
+xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xmlns:di="http://www.omg.org/spec/DD/20100524/DI" 
+xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" 
+xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" 
+xmlns:drools="http://www.jboss.org/drools"
+exporter="Enterprise Architect" exporterVersion="10.0.1004">
 	
-	<bpmn:process id="EAID_DP000000_23D3_4e7e_80FE_6D8C0AF83CAA">
+	<bpmn:process id="ServiceTask" drools:packageName="org.jbpm.bpmn2.service">
 		<bpmn:startEvent id="EAID_010AED45_CEDD_4cba_9153_7ED25329D3E2" name="StartEvent1" isInterrupting="true" parallelMultiple="false">
 			<bpmn:outgoing>EAID_DE09F4BA_6B35_4699_8AC9_84819B916A98</bpmn:outgoing>
 		</bpmn:startEvent>
@@ -48,8 +57,8 @@
 	</bpmn:process>
 	<bpmn:itemDefinition id="EAID_691666AE_9DFF_4003_B94E_D40F037565C1" isCollection="false" structureRef="java.lang.String"/>
 	<bpmn:message id="EAID_137CB429_F782_4fee_8CC8_D57206264E3E" name="Message1" itemRef="EAID_691666AE_9DFF_4003_B94E_D40F037565C1"/>
-	<bpmn:interface id="EAID_B73BF5BB_A892_460d_B3BA_5D8873850689" name="Interface1">
-		<bpmn:operation id="EAID_6F76C1D0_E4CA_4b76_8A2F_9F7C33D2C90F" name="Operation1">
+	<bpmn:interface id="EAID_B73BF5BB_A892_460d_B3BA_5D8873850689" name="org.jbpm.bpmn2.services.Interface1">
+		<bpmn:operation id="EAID_6F76C1D0_E4CA_4b76_8A2F_9F7C33D2C90F" name="operation1">
 			<bpmn:inMessageRef>EAID_137CB429_F782_4fee_8CC8_D57206264E3E</bpmn:inMessageRef>
 		</bpmn:operation>
 	</bpmn:interface>

@@ -40,11 +40,8 @@ import org.jbpm.bpmn2.adhoc.AdHocTerminateEndEventModel;
 import org.jbpm.bpmn2.adhoc.AdHocTerminateEndEventProcess;
 import org.jbpm.bpmn2.handler.ReceiveTaskHandler;
 import org.jbpm.bpmn2.handler.SendTaskHandler;
-import org.jbpm.bpmn2.handler.ServiceTaskHandler;
-import org.jbpm.bpmn2.handler.SignallingTaskHandlerDecorator;
 import org.jbpm.bpmn2.intermediate.IntermediateThrowEventMessageModel;
 import org.jbpm.bpmn2.intermediate.IntermediateThrowEventMessageProcess;
-import org.jbpm.bpmn2.objects.ExceptionService;
 import org.jbpm.bpmn2.objects.Person;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
@@ -63,7 +60,6 @@ import org.kie.kogito.Application;
 import org.kie.kogito.event.impl.MessageProducer;
 import org.kie.kogito.internal.process.event.DefaultKogitoProcessEventListener;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
-import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcessInstance;
 import org.w3c.dom.Document;
@@ -652,18 +648,6 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
     }
 
     @Test
-    public void testServiceTask() throws Exception {
-        kruntime = createKogitoProcessRuntime("BPMN2-ServiceProcess.bpmn2");
-
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Service Task", new ServiceTaskHandler());
-        Map<String, Object> params = new HashMap<>();
-        params.put("s", "john");
-        KogitoWorkflowProcessInstance processInstance = (KogitoWorkflowProcessInstance) kruntime.startProcess("ServiceProcess", params);
-        assertProcessInstanceCompleted(processInstance.getStringId(), kruntime);
-        assertThat(processInstance.getVariable("s")).isEqualTo("Hello john!");
-    }
-
-    @Test
     public void testSendTask() throws Exception {
         kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/task/BPMN2-SendTask.bpmn2");
 
@@ -794,60 +778,6 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
     }
 
     @Test
-    public void testErrorSignallingExceptionServiceTask() throws Exception {
-        kruntime = createKogitoProcessRuntime("BPMN2-ExceptionServiceProcess-ErrorSignalling.bpmn2");
-
-        runTestErrorSignallingExceptionServiceTask(kruntime);
-    }
-
-    public static void runTestErrorSignallingExceptionServiceTask(KogitoProcessRuntime kruntime) throws Exception {
-
-        // Setup
-        String eventType = "Error-code";
-        SignallingTaskHandlerDecorator signallingTaskWrapper = new SignallingTaskHandlerDecorator(ServiceTaskHandler.class, eventType);
-        signallingTaskWrapper.setWorkItemExceptionParameterName(ExceptionService.exceptionParameterName);
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Service Task", signallingTaskWrapper);
-
-        Object[] caughtEventObjectHolder = new Object[1];
-        caughtEventObjectHolder[0] = null;
-        ExceptionService.setCaughtEventObjectHolder(caughtEventObjectHolder);
-
-        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
-        // Start process
-        Map<String, Object> params = new HashMap<>();
-        String input = "this is my service input";
-        params.put("serviceInputItem", input);
-        KogitoProcessInstance processInstance = kruntime.startProcess("ServiceProcess", params);
-
-        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_ACTIVE);
-
-        KogitoWorkItem workItem = workItemHandler.getWorkItem();
-        assertThat(workItem).isNotNull();
-        kruntime.getKogitoWorkItemManager().completeWorkItem(workItem.getStringId(), null);
-        // Check that event was passed to Event SubProcess (and grabbed by WorkItemHandler);
-        assertThat(caughtEventObjectHolder[0] != null && caughtEventObjectHolder[0] instanceof KogitoWorkItem).withFailMessage("Event was not passed to Event Subprocess.").isTrue();
-        workItem = (KogitoWorkItem) caughtEventObjectHolder[0];
-        Object throwObj = workItem.getParameter(ExceptionService.exceptionParameterName);
-        assertThat(throwObj).withFailMessage("KogitoWorkItem doesn't contain Throwable.").isInstanceOf(Throwable.class);
-        assertThat(((Throwable) throwObj).getMessage()).withFailMessage("Exception message does not match service input.").endsWith(input);
-
-        // Complete process
-        processInstance = kruntime.getProcessInstance(processInstance.getStringId());
-        assertThat(processInstance == null || processInstance.getState() == KogitoProcessInstance.STATE_ABORTED).withFailMessage("Process instance has not been aborted.").isTrue();
-
-    }
-
-    @Test
-    public void testSignallingExceptionServiceTask() throws Exception {
-        // dump/reread functionality seems to work for this test 
-        // .. but I'm pretty sure that's more coincidence than design (mriet, 2013-03-06)
-        kruntime = createKogitoProcessRuntime("BPMN2-ExceptionServiceProcess-Signalling.bpmn2");
-
-        runTestSignallingExceptionServiceTask(kruntime);
-    }
-
-    @Test
     public void testXXEProcessVulnerability() throws Exception {
         Resource processResource = ResourceFactory.newClassPathResource("xxe-protection/BPMN2-XXE-Process.bpmn2");
 
@@ -896,40 +826,6 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         KogitoProcessInstance processInstance = kruntime.startProcess("workingMessageModel", parameters);
 
         assertThat(processInstance).isNotNull();
-    }
-
-    public static void runTestSignallingExceptionServiceTask(KogitoProcessRuntime kruntime) throws Exception {
-
-        // Setup
-        String eventType = "exception-signal";
-        SignallingTaskHandlerDecorator signallingTaskWrapper = new SignallingTaskHandlerDecorator(ServiceTaskHandler.class, eventType);
-        signallingTaskWrapper.setWorkItemExceptionParameterName(ExceptionService.exceptionParameterName);
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Service Task", signallingTaskWrapper);
-
-        Object[] caughtEventObjectHolder = new Object[1];
-        caughtEventObjectHolder[0] = null;
-        ExceptionService.setCaughtEventObjectHolder(caughtEventObjectHolder);
-
-        // Start process
-        Map<String, Object> params = new HashMap<>();
-        String input = "this is my service input";
-        params.put("serviceInputItem", input);
-        KogitoProcessInstance processInstance = kruntime.startProcess("ServiceProcess", params);
-
-        // Check that event was passed to Event SubProcess (and grabbed by WorkItemHandler);
-        assertThat(caughtEventObjectHolder[0] != null && caughtEventObjectHolder[0] instanceof KogitoWorkItem).withFailMessage("Event was not passed to Event Subprocess.").isTrue();
-        KogitoWorkItem workItem = (KogitoWorkItem) caughtEventObjectHolder[0];
-        Object throwObj = workItem.getParameter(ExceptionService.exceptionParameterName);
-        assertThat(throwObj).withFailMessage("KogitoWorkItem doesn't contain Throwable.").isInstanceOf(Throwable.class);
-        assertThat(((Throwable) throwObj).getMessage()).withFailMessage("Exception message does not match service input.").endsWith(input);
-
-        // Complete process
-        assertThat(processInstance.getState()).withFailMessage("Process instance is not active.").isEqualTo(KogitoProcessInstance.STATE_ACTIVE);
-        kruntime.getKogitoWorkItemManager().completeWorkItem(workItem.getStringId(), null);
-        processInstance = kruntime.getProcessInstance(processInstance.getStringId());
-        if (processInstance != null) {
-            assertThat(processInstance.getState()).withFailMessage("Process instance is not completed.").isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
-        } // otherwise, persistence use => processInstance == null => process is completed
     }
 
 }

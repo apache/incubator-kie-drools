@@ -27,12 +27,12 @@
   <bpmn2:itemDefinition id="_sItem2" structureRef="java.lang.String"/>
   <bpmn2:itemDefinition id="_2_InMessageType" structureRef="java.lang.String"/>
   <bpmn2:message id="_2_InMessage" itemRef="_2_InMessageType" name="_2_InMessage"/>
-  <bpmn2:interface id="_2_ServiceInterface" name="justaname" implementationRef="SimpleService">
-    <bpmn2:operation id="_2_ServiceOperation" implementationRef="hello" name="hello">
+  <bpmn2:interface id="_2_ServiceInterface" name="justaname" implementationRef="org.jbpm.bpmn2.services.Interface1">
+    <bpmn2:operation id="_2_ServiceOperation" implementationRef="operation1" name="operation1">
       <bpmn2:inMessageRef>_2_InMessage</bpmn2:inMessageRef>
     </bpmn2:operation>
   </bpmn2:interface>
-  <bpmn2:process id="org.jboss.qa.jbpm.CallWS" tns:version="1" tns:packageName="defaultPackage" tns:adHoc="false" name="CallWS" isExecutable="true" processType="Private">
+  <bpmn2:process id="ServiceTaskWebService" tns:version="1" tns:packageName="org.jbpm.bpmn2.service" tns:adHoc="false" name="CallWS" isExecutable="true" processType="Private">
     <bpmn2:startEvent id="StartEvent_1" name="Start">
       <bpmn2:outgoing>SequenceFlow_3</bpmn2:outgoing>
     </bpmn2:startEvent>

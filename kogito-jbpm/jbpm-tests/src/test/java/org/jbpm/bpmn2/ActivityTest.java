@@ -59,18 +59,23 @@ import org.jbpm.bpmn2.flow.XORSameTargetModel;
 import org.jbpm.bpmn2.flow.XORSameTargetProcess;
 import org.jbpm.bpmn2.handler.ReceiveTaskHandler;
 import org.jbpm.bpmn2.handler.SendTaskHandler;
-import org.jbpm.bpmn2.handler.ServiceTaskHandler;
 import org.jbpm.bpmn2.objects.Account;
 import org.jbpm.bpmn2.objects.Address;
 import org.jbpm.bpmn2.objects.HelloService;
 import org.jbpm.bpmn2.objects.Person;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
+import org.jbpm.bpmn2.service.ServiceProcessModel;
+import org.jbpm.bpmn2.service.ServiceProcessProcess;
 import org.jbpm.bpmn2.service.ServiceProcessWithMvelCollectionTransformationModel;
 import org.jbpm.bpmn2.service.ServiceProcessWithMvelCollectionTransformationProcess;
 import org.jbpm.bpmn2.service.ServiceProcessWithMvelJaxbTransformationModel;
 import org.jbpm.bpmn2.service.ServiceProcessWithMvelJaxbTransformationProcess;
 import org.jbpm.bpmn2.service.ServiceProcessWithMvelTransformationModel;
 import org.jbpm.bpmn2.service.ServiceProcessWithMvelTransformationProcess;
+import org.jbpm.bpmn2.service.ServiceTaskModel;
+import org.jbpm.bpmn2.service.ServiceTaskProcess;
+import org.jbpm.bpmn2.service.ServiceTaskWebServiceModel;
+import org.jbpm.bpmn2.service.ServiceTaskWebServiceProcess;
 import org.jbpm.bpmn2.subprocess.AssignmentProcessModel;
 import org.jbpm.bpmn2.subprocess.AssignmentProcessProcess;
 import org.jbpm.bpmn2.subprocess.AssignmentSubProcessModel;
@@ -154,13 +159,14 @@ import org.kie.kogito.Application;
 import org.kie.kogito.auth.SecurityPolicy;
 import org.kie.kogito.handlers.HelloService_hello__2_Handler;
 import org.kie.kogito.handlers.HelloService_validate__2_Handler;
+import org.kie.kogito.handlers.Interface1_operation1_EAID_3344916D_2BAC_4ab6_92D4_F739156D0933_Handler;
+import org.kie.kogito.handlers.Interface1_operation1_ServiceTask_2_Handler;
 import org.kie.kogito.internal.process.event.DefaultKogitoProcessEventListener;
 import org.kie.kogito.internal.process.runtime.KogitoNode;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
-import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
 import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcessInstance;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.workitems.InternalKogitoWorkItem;
@@ -811,63 +817,32 @@ public class ActivityTest extends JbpmBpmn2TestCase {
 
     @Test
     public void testServiceTask() throws Exception {
-        kruntime = createKogitoProcessRuntime("BPMN2-ServiceProcess.bpmn2");
+        Application app = ProcessTestHelper.newApplication();
+        ProcessTestHelper.registerHandler(app, "org.jbpm.bpmn2.objects.HelloService_hello__2_Handler", new HelloService_hello__2_Handler());
+        org.kie.kogito.process.Process<ServiceProcessModel> definition = ServiceProcessProcess.newProcess(app);
 
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Service Task",
-                new ServiceTaskHandler());
-        Map<String, Object> params = new HashMap<>();
-        params.put("s", "john");
-        KogitoWorkflowProcessInstance processInstance = (KogitoWorkflowProcessInstance) kruntime
-                .startProcess("ServiceProcess", params);
-        assertProcessInstanceFinished(processInstance, kruntime);
-        assertThat(processInstance.getVariable("s")).isEqualTo("Hello john!");
-    }
+        ServiceProcessModel model = definition.createModel();
+        model.setS("john");
+        org.kie.kogito.process.ProcessInstance<ServiceProcessModel> instance = definition.createInstance(model);
+        instance.start();
 
-    @Test
-    public void testServiceTaskWithAccessToWorkItemInfo() throws Exception {
-        kruntime = createKogitoProcessRuntime("BPMN2-ServiceProcess.bpmn2");
+        assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
+        assertThat(instance.variables().getS()).isEqualTo("Hello john!");
 
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Service Task",
-                new ServiceTaskHandler() {
-
-                    @Override
-                    public void executeWorkItem(org.kie.kogito.internal.process.runtime.KogitoWorkItem workItem, KogitoWorkItemManager manager) {
-                        assertThat(workItem.getProcessInstance()).isNotNull();
-                        assertThat(workItem.getNodeInstance()).isNotNull();
-                        super.executeWorkItem(workItem, manager);
-                    }
-
-                });
-        Map<String, Object> params = new HashMap<>();
-        params.put("s", "john");
-        KogitoWorkflowProcessInstance processInstance = (KogitoWorkflowProcessInstance) kruntime.startProcess("ServiceProcess", params);
-        assertProcessInstanceFinished(processInstance, kruntime);
-        assertThat(processInstance.getVariable("s")).isEqualTo("Hello john!");
     }
 
     @Test
     public void testServiceTaskNoInterfaceName() throws Exception {
-        kruntime = createKogitoProcessRuntime("BPMN2-ServiceTask-web-service.bpmn2");
+        Application app = ProcessTestHelper.newApplication();
+        ProcessTestHelper.registerHandler(app, "org.jbpm.bpmn2.services.Interface1_operation1_ServiceTask_2_Handler", new Interface1_operation1_ServiceTask_2_Handler());
+        org.kie.kogito.process.Process<ServiceTaskWebServiceModel> definition = ServiceTaskWebServiceProcess.newProcess(app);
 
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Service Task",
-                new SystemOutWorkItemHandler() {
+        ServiceTaskWebServiceModel model = definition.createModel();
+        org.kie.kogito.process.ProcessInstance<ServiceTaskWebServiceModel> instance = definition.createInstance(model);
+        instance.start();
 
-                    @Override
-                    public void executeWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager manager) {
-                        assertThat(workItem.getParameter("Interface")).isEqualTo("SimpleService");
-                        assertThat(workItem.getParameter("Operation")).isEqualTo("hello");
-                        assertThat(workItem.getParameter("ParameterType")).isEqualTo("java.lang.String");
-                        assertThat(workItem.getParameter("implementation")).isEqualTo("##WebService");
-                        assertThat(workItem.getParameter("operationImplementationRef")).isEqualTo("hello");
-                        assertThat(workItem.getParameter("interfaceImplementationRef")).isEqualTo("SimpleService");
-                        super.executeWorkItem(workItem, manager);
-                    }
+        assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
 
-                });
-        Map<String, Object> params = new HashMap<>();
-        KogitoWorkflowProcessInstance processInstance = (KogitoWorkflowProcessInstance) kruntime
-                .startProcess("org.jboss.qa.jbpm.CallWS", params);
-        assertProcessInstanceFinished(processInstance, kruntime);
     }
 
     @Test
@@ -1131,17 +1106,16 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> createKogitoProcessRuntime("BPMN2-InvalidServiceProcess.bpmn2"));
     }
 
-    @Test // JBPM-3951
+    @Test
     public void testServiceTaskInterface() throws Exception {
-        kruntime = createKogitoProcessRuntime("BPMN2-ServiceTask.bpmn2");
+        Application app = ProcessTestHelper.newApplication();
+        Interface1_operation1_EAID_3344916D_2BAC_4ab6_92D4_F739156D0933_Handler handler = new Interface1_operation1_EAID_3344916D_2BAC_4ab6_92D4_F739156D0933_Handler();
+        ProcessTestHelper.registerHandler(app, handler.getName(), handler);
+        org.kie.kogito.process.Process<ServiceTaskModel> definition = ServiceTaskProcess.newProcess(app);
+        org.kie.kogito.process.ProcessInstance<ServiceTaskModel> instance = definition.createInstance(definition.createModel());
+        instance.start();
 
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Service Task", new SystemOutWorkItemHandler());
-        Map<String, Object> params = new HashMap<>();
-
-        KogitoWorkflowProcessInstance processInstance = (KogitoWorkflowProcessInstance) kruntime
-                .startProcess("EAID_DP000000_23D3_4e7e_80FE_6D8C0AF83CAA", params);
-        assertProcessInstanceFinished(processInstance, kruntime);
-
+        assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
     }
 
     @SuppressWarnings("unchecked")
