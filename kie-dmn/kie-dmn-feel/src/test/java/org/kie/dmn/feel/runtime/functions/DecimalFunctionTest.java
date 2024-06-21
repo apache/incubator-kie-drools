@@ -64,4 +64,10 @@ class DecimalFunctionTest {
     void invokeLargerScale() {
         FunctionTestUtil.assertResult(decimalFunction.invoke(BigDecimal.valueOf(10.123456789), BigDecimal.valueOf(6)), BigDecimal.valueOf(10.123457));
     }
+
+    @Test
+    void invokeOutRangeScale() {
+        FunctionTestUtil.assertResultError(decimalFunction.invoke(BigDecimal.valueOf(1.5), BigDecimal.valueOf(6177)), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(decimalFunction.invoke(BigDecimal.valueOf(1.5), BigDecimal.valueOf(-6122)), InvalidParametersEvent.class);
+    }
 }

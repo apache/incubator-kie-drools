@@ -36,6 +36,9 @@ class FloorFunctionTest {
     @Test
     void invokeNull() {
         FunctionTestUtil.assertResultError(floorFunction.invoke(null), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(floorFunction.invoke((BigDecimal) null, null), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(floorFunction.invoke(BigDecimal.ONE, null), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(floorFunction.invoke(null, BigDecimal.ONE), InvalidParametersEvent.class);
     }
 
     @Test
@@ -53,4 +56,9 @@ class FloorFunctionTest {
         FunctionTestUtil.assertResultBigDecimal(floorFunction.invoke(BigDecimal.valueOf(-10.2)), BigDecimal.valueOf(-11));
     }
 
+    @Test
+    void invokeOutRangeScale() {
+        FunctionTestUtil.assertResultError(floorFunction.invoke(BigDecimal.valueOf(1.5), BigDecimal.valueOf(6177)), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(floorFunction.invoke(BigDecimal.valueOf(1.5), BigDecimal.valueOf(-6122)), InvalidParametersEvent.class);
+    }
 }

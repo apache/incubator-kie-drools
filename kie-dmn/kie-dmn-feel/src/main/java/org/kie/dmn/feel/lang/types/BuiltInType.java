@@ -44,6 +44,7 @@ import org.kie.dmn.feel.marshaller.FEELStringMarshaller;
 import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.UnaryTest;
+import org.kie.dmn.feel.runtime.custom.ZoneTime;
 
 public enum BuiltInType implements SimpleType {
 
@@ -124,7 +125,7 @@ public enum BuiltInType implements SimpleType {
             return STRING;
         } else if( o instanceof LocalDate ) {
             return DATE;
-        } else if( o instanceof LocalTime || o instanceof OffsetTime ) {
+        } else if( o instanceof LocalTime || o instanceof OffsetTime || o instanceof ZoneTime) {
             return TIME;
         } else if( o instanceof ZonedDateTime || o instanceof OffsetDateTime || o instanceof LocalDateTime ) {
             return DATE_TIME;
