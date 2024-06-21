@@ -69,8 +69,8 @@ public class DMNFilterEvaluator implements DMNExpressionEvaluator {
         }
         Object inObj = inResult.getResult();
 
-        if (inObj instanceof Range) {
-            inObj = new IterableRange((Range) inObj);
+        if (inObj instanceof Range range) {
+            inObj = new IterableRange(range);
         } else if (!(inObj instanceof Iterable)) {
             if (inObj == null) {
                 MsgUtil.reportMessage(logger,
@@ -95,13 +95,12 @@ public class DMNFilterEvaluator implements DMNExpressionEvaluator {
         try {
             result.setContext(dmnContext);
 
-            boolean first = true;
-            for (Object item : (Iterable) inObj) {
+            for (Object item : (Iterable<?>) inObj) {
 
                 dmnContext.set("item", item);
                 if (item instanceof Map) {
                     Map<String, Object> complexItem = (Map<String, Object>) item;
-                    complexItem.forEach((k, v) -> dmnContext.set(k, v));
+                    complexItem.forEach(dmnContext::set);
                 }
 
                 EvaluatorResult evaluate = filterEvaluator.evaluate(eventManager, dmnr);
@@ -109,7 +108,7 @@ public class DMNFilterEvaluator implements DMNExpressionEvaluator {
 
                 //If the evaluation is a boolean result, we add the item based on a return of true
                 if (evalReturn instanceof Boolean booleanResult) {
-                    if (booleanResult) {
+                    if (Boolean.TRUE.equals(booleanResult)) {
                         returnList.add(item);
                     }
                 } else {
@@ -119,34 +118,10 @@ public class DMNFilterEvaluator implements DMNExpressionEvaluator {
                             result,
                             null,
                             null,
-                            Msg.RESULT_NOT_BOOLEAN,
-                            name,
-                            "filter's match");
+                            Msg.FILTER_EXPRESSION_RESULT_NOT_BOOLEAN,
+                            name);
                     return new EvaluatorResultImpl(null, ResultType.FAILURE);
                 }
-
-                //If on the first evaluation, a number is returned, we are using an index instead of a boolean filter
-                if (first && evalReturn instanceof Number) {
-                    List list = inObj instanceof List ? (List) inObj : List.of(inObj);
-                    int i = ((Number) evalReturn).intValue();
-                    if (i > 0 && i <= list.size()) {
-                        return new EvaluatorResultImpl(list.get(i - 1), ResultType.SUCCESS);
-                    } else if (i < 0 && Math.abs(i) <= list.size()) {
-                        return new EvaluatorResultImpl(list.get(list.size() + i), ResultType.SUCCESS);
-                    } else {
-                        MsgUtil.reportMessage(logger,
-                                              DMNMessage.Severity.ERROR,
-                                              node,
-                                              result,
-                                              null,
-                                              null,
-                                              Msg.INDEX_OUT_OF_BOUND,
-                                              list.size(),
-                                              i);
-                        return new EvaluatorResultImpl(null, ResultType.FAILURE);
-                    }
-                }
-                first = false;
             }
 
         } finally {

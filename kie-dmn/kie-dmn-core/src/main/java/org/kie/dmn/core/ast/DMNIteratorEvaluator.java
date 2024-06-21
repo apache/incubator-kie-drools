@@ -72,8 +72,8 @@ public class DMNIteratorEvaluator implements DMNExpressionEvaluator {
         }
         Object inObj = inResult.getResult();
 
-        if (inObj instanceof Range) {
-            inObj = new IterableRange((Range) inObj);
+        if (inObj instanceof Range range) {
+            inObj = new IterableRange(range);
         } else if (!(inObj instanceof Iterable)) {
             if (inObj == null) {
                 MsgUtil.reportMessage(logger,
@@ -113,7 +113,7 @@ public class DMNIteratorEvaluator implements DMNExpressionEvaluator {
         if (type instanceof Every) {
             for (Object satisfies : returnList) {
                 if (satisfies instanceof Boolean satifiesBoolean) {
-                    if (!satifiesBoolean) {
+                    if (Boolean.FALSE.equals(satifiesBoolean)) {
                         return new EvaluatorResultImpl(Boolean.FALSE, ResultType.SUCCESS);
                     }
                 } else {
@@ -123,9 +123,8 @@ public class DMNIteratorEvaluator implements DMNExpressionEvaluator {
                             result,
                             null,
                             null,
-                            Msg.RESULT_NOT_BOOLEAN,
-                            name,
-                            "every's satisfy");
+                            Msg.ITERATOR_EXPRESSION_RESULT_NOT_BOOLEAN,
+                            name);
                     return new EvaluatorResultImpl(null, ResultType.FAILURE);
                 }
             }
@@ -134,7 +133,7 @@ public class DMNIteratorEvaluator implements DMNExpressionEvaluator {
         if (type instanceof Some) {
             for (Object satisfies : returnList) {
                 if (satisfies instanceof Boolean satifiesBoolean) {
-                    if (satifiesBoolean) {
+                    if (Boolean.TRUE.equals(satifiesBoolean)) {
                         return new EvaluatorResultImpl(Boolean.TRUE, ResultType.SUCCESS);
                     }
                 } else {
@@ -144,9 +143,8 @@ public class DMNIteratorEvaluator implements DMNExpressionEvaluator {
                             result,
                             null,
                             null,
-                            Msg.RESULT_NOT_BOOLEAN,
-                            name,
-                            "some's satisfy");
+                            Msg.ITERATOR_EXPRESSION_RESULT_NOT_BOOLEAN,
+                            name);
                     return new EvaluatorResultImpl(null, ResultType.FAILURE);
                 }
             }
