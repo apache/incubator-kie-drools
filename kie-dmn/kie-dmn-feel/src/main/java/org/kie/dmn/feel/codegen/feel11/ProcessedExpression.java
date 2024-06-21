@@ -20,15 +20,12 @@ package org.kie.dmn.feel.codegen.feel11;
 
 import java.util.List;
 
-import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.stmt.BlockStmt;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
 import org.kie.dmn.feel.lang.CompilerContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.FEELProfile;
-import org.kie.dmn.feel.lang.ast.BaseNode;
 import org.kie.dmn.feel.lang.ast.visitor.ASTHeuristicCheckerVisitor;
 import org.kie.dmn.feel.lang.ast.visitor.ASTTemporalConstantVisitor;
 import org.kie.dmn.feel.lang.impl.CompiledExecutableExpression;
@@ -44,11 +41,8 @@ public class ProcessedExpression extends ProcessedFEELUnit {
     private static final String TEMPLATE_RESOURCE = "/TemplateCompiledFEELExpression.java";
     private static final String TEMPLATE_CLASS = "TemplateCompiledFEELExpression";
 
-    private final BaseNode ast;
     private final DefaultMode executionMode;
-    private BlockStmt codegenResult;
 
-    private final CompilerBytecodeLoader compilerBytecodeLoader = new CompilerBytecodeLoader();
     private CompiledFEELExpression executableFEELExpression;
 
     public ProcessedExpression(
@@ -56,8 +50,7 @@ public class ProcessedExpression extends ProcessedFEELUnit {
             CompilerContext ctx,
             ProcessedFEELUnit.DefaultMode executionMode,
             List<FEELProfile> profiles) {
-
-        super(expression, ctx, profiles);
+        super(expression, ctx, profiles, TEMPLATE_RESOURCE, TEMPLATE_CLASS);
         this.executionMode = executionMode;
         ParseTree tree = getFEELParser(expression, ctx, profiles).compilation_unit();
         ASTBuilderVisitor astVisitor = new ASTBuilderVisitor(ctx.getInputVariableTypes(), ctx.getFEELFeelTypeRegistry());
@@ -90,49 +83,17 @@ public class ProcessedExpression extends ProcessedFEELUnit {
         return this;
     }
 
-    public CompilationUnit getSourceCode() {
-        ASTCompilerVisitor astVisitor = new ASTCompilerVisitor();
-        BlockStmt directCodegenResult = getCodegenResult(astVisitor);
-        return compilerBytecodeLoader.getCompilationUnit(
-                TEMPLATE_RESOURCE,
-                packageName,
-                TEMPLATE_CLASS,
-                expression,
-                directCodegenResult,
-                astVisitor.getLastVariableName());
-    }
-
     public InterpretedExecutableExpression getInterpreted() {
         return new InterpretedExecutableExpression(new CompiledExpressionImpl(ast));
     }
 
     public CompiledExecutableExpression getCompiled() {
-        CompiledFEELExpression compiledFEELExpression =
-                compilerBytecodeLoader.compileUnit(
-                        packageName,
-                        TEMPLATE_CLASS,
-                        getSourceCode());
-        return new CompiledExecutableExpression(compiledFEELExpression);
+        return new CompiledExecutableExpression(getCommonCompiled());
     }
 
     @Override
     public Object apply(EvaluationContext evaluationContext) {
         return executableFEELExpression.apply(evaluationContext);
-    }
-
-    private BlockStmt getCodegenResult(ASTCompilerVisitor astVisitor) {
-        if (codegenResult == null) {
-            if (errorListener.isError()) {
-                return astVisitor.returnError(errorListener.event().getMessage());
-            } else {
-                try {
-                    codegenResult = ast.accept(astVisitor);
-                } catch (FEELCompilationError e) {
-                    return astVisitor.returnError(e.getMessage());
-                }
-            }
-        }
-        return codegenResult;
     }
 
 }

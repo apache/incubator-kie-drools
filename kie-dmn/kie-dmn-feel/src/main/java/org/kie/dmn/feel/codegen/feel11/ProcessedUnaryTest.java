@@ -21,8 +21,6 @@ package org.kie.dmn.feel.codegen.feel11;
 import java.util.Collections;
 import java.util.List;
 
-import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.stmt.BlockStmt;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.kie.dmn.feel.lang.CompilerContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
@@ -40,12 +38,9 @@ public class ProcessedUnaryTest extends ProcessedFEELUnit {
     public static final String TEMPLATE_RESOURCE = "/TemplateCompiledFEELUnaryTests.java";
     public static final String TEMPLATE_CLASS = "TemplateCompiledFEELUnaryTests";
 
-    private final BaseNode ast;
-    private BlockStmt codegenResult;
-
     public ProcessedUnaryTest(String expressions,
                               CompilerContext ctx, List<FEELProfile> profiles) {
-        super(expressions, ctx, Collections.emptyList());
+        super(expressions, ctx, Collections.emptyList(), TEMPLATE_RESOURCE, TEMPLATE_CLASS);
         ParseTree tree = getFEELParser(expression, ctx, profiles).unaryTestsRoot();
         ASTBuilderVisitor astVisitor = new ASTBuilderVisitor(ctx.getInputVariableTypes(), ctx.getFEELFeelTypeRegistry());
         BaseNode initialAst = tree.accept(astVisitor);
@@ -53,18 +48,6 @@ public class ProcessedUnaryTest extends ProcessedFEELUnit {
         if (astVisitor.isVisitedTemporalCandidate()) {
             ast.accept(new ASTTemporalConstantVisitor(ctx));
         }
-    }
-
-    public CompilationUnit getSourceCode() {
-        ASTCompilerVisitor astVisitor = new ASTCompilerVisitor();
-        BlockStmt directCodegenResult = getCodegenResult(astVisitor);
-        return compiler.getCompilationUnit(
-                TEMPLATE_RESOURCE,
-                packageName,
-                TEMPLATE_CLASS,
-                expression,
-                directCodegenResult,
-                astVisitor.getLastVariableName());
     }
 
     public UnaryTestInterpretedExecutableExpression getInterpreted() {
@@ -76,13 +59,7 @@ public class ProcessedUnaryTest extends ProcessedFEELUnit {
     }
 
     public UnaryTestCompiledExecutableExpression getCompiled() {
-        CompiledFEELUnaryTests compiledFEELExpression =
-                compiler.compileUnit(
-                        packageName,
-                        TEMPLATE_CLASS,
-                        getSourceCode());
-
-        return new UnaryTestCompiledExecutableExpression(compiledFEELExpression);
+        return new UnaryTestCompiledExecutableExpression(getCommonCompiled());
     }
 
     @Override
@@ -90,28 +67,4 @@ public class ProcessedUnaryTest extends ProcessedFEELUnit {
         return getInterpreted().apply(evaluationContext);
     }
 
-    private BlockStmt getCodegenResult(ASTCompilerVisitor astVisitor) {
-        if (codegenResult == null) {
-            if (errorListener.isError()) {
-                // TODO gcardosi 1206 - restore
-                return null;
-//                compilerResult =
-//                        DirectCompilerResult.of(
-//                                CompiledFEELSupport.compiledErrorExpression(
-//                                        errorListener.event().getMessage()),
-//                                BuiltInType.UNKNOWN);
-            } else {
-                try {
-                    codegenResult = ast.accept(astVisitor);
-                } catch (FEELCompilationError e) {
-                    // TODO gcardosi 1206 - restore
-                    return null;
-//                    compilerResult = DirectCompilerResult.of(
-//                            CompiledFEELSupport.compiledErrorExpression(e.getMessage()),
-//                            BuiltInType.UNKNOWN);
-                }
-            }
-        }
-        return codegenResult;
-    }
 }
