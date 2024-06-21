@@ -55,7 +55,7 @@ public class ContextMergeFunction extends BaseFEELFunction {
             ci.consume(event -> errors.append("context of index " + (index) + " " + event.getMessage()), values -> result.putAll(values));
         }
 
-        return errors.isEmpty() ? FEELFnResult.ofResult(Collections.unmodifiableMap(result)) : FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, errors.toString()));
+        return errors.length() == 0 ? FEELFnResult.ofResult(Collections.unmodifiableMap(result)) : FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, errors.toString()));
     }
 
 }
