@@ -35,6 +35,8 @@ import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class TimeFunctionTest {
 
@@ -172,5 +174,15 @@ class TimeFunctionTest {
         FunctionTestUtil.assertResult(
                 timeFunction.invoke(10, 43, BigDecimal.valueOf(15.154), Duration.ofHours(-1)),
                 OffsetTime.of(10, 43, 15, 154000000, ZoneOffset.ofHours(-1)));
+    }
+
+    @Test
+    void timeStringWithSeconds() {
+        assertTrue(TimeFunction.timeStringWithSeconds("10:10:00@Australia/Melbourne"));
+        assertTrue(TimeFunction.timeStringWithSeconds("10:10:00+10:00"));
+        assertTrue(TimeFunction.timeStringWithSeconds("10:10:00:123"));
+
+        assertFalse(TimeFunction.timeStringWithSeconds("10:10@Australia/Melbourne"));
+        assertFalse(TimeFunction.timeStringWithSeconds("10:10+10:00"));
     }
 }
