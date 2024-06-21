@@ -21,6 +21,8 @@ package org.kie.dmn.feel.lang.ast;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -112,12 +114,19 @@ public class UnaryTestListNode
 
     public List<UnaryTest> getCompiledUnaryTests() {
         return notNode != null ? Collections.singletonList(getUnaryTest(notNode)) :
-                elements.stream().filter(UnaryTestNode.class::isInstance)
-                        .map(UnaryTestNode.class::cast)
+                elements.stream()
+                        .filter(baseNode -> baseNode instanceof UnaryTestNode || baseNode instanceof DashNode)
                         .map(this::getUnaryTest).toList();
     }
 
-    private UnaryTest getUnaryTest(UnaryTestNode baseNode) {
-        return baseNode.getUnaryTest();
+    private UnaryTest getUnaryTest(BaseNode baseNode) {
+        if (baseNode instanceof UnaryTestNode) {
+            return ((UnaryTestNode) baseNode).getUnaryTest();
+        } else if (baseNode instanceof DashNode) {
+            return DashNode.DashUnaryTest.INSTANCE;
+        } else {
+            throw new RuntimeException("Unexpected node type: " + baseNode.getClass().getSimpleName());
+        }
     }
+
 }

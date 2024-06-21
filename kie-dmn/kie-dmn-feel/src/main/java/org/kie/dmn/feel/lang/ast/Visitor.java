@@ -54,9 +54,9 @@ public interface Visitor<T> {
     T visit(StringNode n);
 
     default T visit(TemporalConstantNode n) {
-        // TODO gcardosi 1206 - check
         return null;
     }
+
     T visit(UnaryTestListNode n);
     T visit(UnaryTestNode n);
 }

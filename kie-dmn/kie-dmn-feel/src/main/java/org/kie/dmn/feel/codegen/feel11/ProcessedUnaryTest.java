@@ -37,8 +37,8 @@ import org.kie.dmn.feel.runtime.UnaryTest;
 
 public class ProcessedUnaryTest extends ProcessedFEELUnit {
 
-    private static final String TEMPLATE_RESOURCE = "/TemplateCompiledFEELUnaryTests.java";
-    private static final String TEMPLATE_CLASS = "TemplateCompiledFEELUnaryTests";
+    public static final String TEMPLATE_RESOURCE = "/TemplateCompiledFEELUnaryTests.java";
+    public static final String TEMPLATE_CLASS = "TemplateCompiledFEELUnaryTests";
 
     private final BaseNode ast;
     private BlockStmt codegenResult;
@@ -89,22 +89,6 @@ public class ProcessedUnaryTest extends ProcessedFEELUnit {
     public List<UnaryTest> apply(EvaluationContext evaluationContext) {
         return getInterpreted().apply(evaluationContext);
     }
-
-    //    private DirectCompilerResult getCompilerResult() {
-//        if (compiledExpression == null) {
-//            if (errorListener.isError()) {
-//                compiledExpression = CompiledFEELSupport.compiledErrorUnaryTest(
-//                        errorListener.event().getMessage());
-//            } else {
-//                try {
-//                    compiledExpression = ast.accept(new ASTCompilerVisitor());
-//                } catch (FEELCompilationError e) {
-//                    compiledExpression = CompiledFEELSupport.compiledErrorUnaryTest(e.getMessage());
-//                }
-//            }
-//        }
-//        return compiledExpression;
-//    }
 
     private BlockStmt getCodegenResult(ASTCompilerVisitor astVisitor) {
         if (codegenResult == null) {

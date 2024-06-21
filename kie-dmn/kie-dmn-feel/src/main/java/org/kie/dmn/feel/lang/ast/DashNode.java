@@ -32,6 +32,7 @@ public class DashNode
     }
 
     public DashNode(String text) {
+        this.setText(text);
     }
 
     @Override

@@ -77,12 +77,7 @@ public class CompilerUtils {
                 input,
                 directCodegenResult,
                 astVisitor.getLastVariableName());
-        CompiledFEELExpression toReturn = compilerBytecodeLoader.compileUnit(packageName, TEMPLATE_CLASS, cu);
-
-//        Expression expr = directResult.getExpression();
-//        CompiledFEELExpression toReturn = new CompilerBytecodeLoader().makeFromJPExpression(input, expr, directResult.getFieldDeclarations());
-
-        return toReturn;
+        return compilerBytecodeLoader.compileUnit(packageName, TEMPLATE_CLASS, cu);
     }
 
 }

@@ -29,10 +29,6 @@ public class NameRefNode
 
     private Type resultType;
 
-//    public static void main(String[] args) {
-//        new org.kie.dmn.feel.lang.ast.NameRefNode(org.kie.dmn.feel.lang.impl.MapBackedType, "person");
-//    }
-
     public NameRefNode(ParserRuleContext ctx, Type type) {
         super( ctx );
         this.resultType = type;

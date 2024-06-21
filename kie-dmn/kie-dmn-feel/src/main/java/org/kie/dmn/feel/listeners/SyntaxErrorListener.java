@@ -16,41 +16,31 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.dmn.feel.lang.ast;
+package org.kie.dmn.feel.listeners;
 
-import org.antlr.v4.runtime.ParserRuleContext;
-import org.kie.dmn.feel.lang.EvaluationContext;
-import org.kie.dmn.feel.lang.Type;
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
+import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
+import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
+import org.kie.dmn.feel.runtime.events.SyntaxErrorEvent;
 
-public class CTypeNode extends TypeNode {
+// thread-unsafe
+public class SyntaxErrorListener implements FEELEventListener {
 
-    private final Type type;
-
-    public CTypeNode(ParserRuleContext ctx, Type type) {
-        super( ctx );
-        this.type = type;
-    }
-
-    public CTypeNode(Type type) {
-        this.type = type;
-    }
-
-    public CTypeNode(Type type, String text) {
-        this.type = type;
-        this.setText(text);
-    }
+    private FEELEvent event = null;
 
     @Override
-    public Type evaluate(EvaluationContext ctx) {
-        return type;
+    public void onEvent(FEELEvent evt) {
+        if (evt instanceof SyntaxErrorEvent
+                || evt instanceof InvalidParametersEvent) {
+            this.event = evt;
+        }
     }
 
-    @Override
-    public <T> T accept(Visitor<T> v) {
-        return v.visit(this);
+    public boolean isError() {
+        return event != null;
     }
 
-    public Type getType() {
-        return type;
+    public FEELEvent event() {
+        return event;
     }
 }
