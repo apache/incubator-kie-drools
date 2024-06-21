@@ -20,7 +20,6 @@ package org.kie.dmn.feel.util;
 
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -73,7 +72,9 @@ public class CoerceUtil {
            singleton list. */
         if (!Collection.class.isAssignableFrom(currentIdxActualParameterType) &&
                 Collection.class.isAssignableFrom(expectedParameterType)) {
-            return Optional.of(new ArrayList<>(List.of(actualObject)));
+            Object singletonValue = coerceParam(currentIdxActualParameterType, currentIdxActualParameterType, actualObject)
+                    .orElse(actualObject);
+            return Optional.of(List.of(singletonValue));
         }
         if (actualObject instanceof LocalDate localDate &&
                 ZonedDateTime.class.isAssignableFrom(expectedParameterType)) {
