@@ -20,6 +20,7 @@ package org.kie.dmn.feel.util;
 
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -50,6 +51,10 @@ public class CoerceUtil {
 
     static Optional<Object> coerceParam(Class<?> currentIdxActualParameterType, Class<?> expectedParameterType,
                                         Object actualObject) {
+        /* 10.3.2.9.4 Type conversions
+           from singleton list:
+           When the type of the expression is List<T>, the value of the expression is a singleton list and the target
+           type is T, the expression is converted by unwrapping the first element. */
         if (Collection.class.isAssignableFrom(currentIdxActualParameterType)) {
             Collection<?> valueCollection = (Collection<?>) actualObject;
             if (valueCollection.size() == 1) {
@@ -63,8 +68,12 @@ public class CoerceUtil {
                 }
             }
         }
-        if (Collection.class.isAssignableFrom(expectedParameterType)) {
-            return Optional.of(List.of(actualObject));
+        /* to singleton list:
+           When the type of the expression is T and the target type is List<T> the expression is converted to a
+           singleton list. */
+        if (!Collection.class.isAssignableFrom(currentIdxActualParameterType) &&
+                Collection.class.isAssignableFrom(expectedParameterType)) {
+            return Optional.of(new ArrayList<>(List.of(actualObject)));
         }
         if (actualObject instanceof LocalDate localDate &&
                 ZonedDateTime.class.isAssignableFrom(expectedParameterType)) {
