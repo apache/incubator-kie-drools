@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -18,13 +18,14 @@
  */
 package org.kie.dmn.feel.codegen.feel11;
 
-import java.util.function.Function;
-
-import org.kie.dmn.feel.lang.CompiledExpression;
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.runtime.events.ASTEventBase;
 
-public interface CompiledFEELExpression extends CompiledExpression,
-                                                Function<EvaluationContext, Object>,
-                                                CompilationErrorNotifier {
+public interface CompilationErrorNotifier {
 
+    default Object notifyCompilationError(EvaluationContext feelExprCtx, String message) {
+        feelExprCtx.notifyEvt(() -> new ASTEventBase(FEELEvent.Severity.ERROR, message, null));
+        return null;
+    }
 }

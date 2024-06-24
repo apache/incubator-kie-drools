@@ -35,6 +35,12 @@ public class NamedParameterNode
         this.expression = expression;
     }
 
+    public NamedParameterNode(NameDefNode name, BaseNode expression, String text) {
+        this.name = name;
+        this.expression = expression;
+        this.setText(text);
+    }
+
     public NameDefNode getName() {
         return name;
     }

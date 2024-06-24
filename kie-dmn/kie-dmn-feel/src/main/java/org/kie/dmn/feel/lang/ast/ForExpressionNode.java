@@ -48,6 +48,12 @@ public class ForExpressionNode
         }
     }
 
+    public ForExpressionNode(List<IterationContextNode> iterationContexts, BaseNode expression, String text) {
+        this.iterationContexts = iterationContexts;
+        this.expression = expression;
+        this.setText(text);
+    }
+
     public List<IterationContextNode> getIterationContexts() {
         return iterationContexts;
     }

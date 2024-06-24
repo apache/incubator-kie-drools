@@ -18,6 +18,7 @@
  */
 package org.kie.dmn.feel.lang.ast;
 
+import java.util.Objects;
 import java.util.function.Supplier;
 
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -161,5 +162,21 @@ public class BaseNode
     @Override
     public <T> T accept(Visitor<T> v) {
         return v.visit(this);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof BaseNode baseNode)) {
+            return false;
+        }
+        return Objects.equals(this.getClass(), o.getClass()) && Objects.equals(text, baseNode.text);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(text);
     }
 }

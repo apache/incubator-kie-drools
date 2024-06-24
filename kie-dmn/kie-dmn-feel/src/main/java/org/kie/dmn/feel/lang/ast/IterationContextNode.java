@@ -41,6 +41,13 @@ public class IterationContextNode
         this.rangeEndExpr = rangeEndExpr;
     }
 
+    public IterationContextNode(NameDefNode name, BaseNode expression, BaseNode rangeEndExpr, String text) {
+        this.name = name;
+        this.expression = expression;
+        this.rangeEndExpr = rangeEndExpr;
+        this.setText(text);
+    }
+
     public NameDefNode getName() {
         return name;
     }

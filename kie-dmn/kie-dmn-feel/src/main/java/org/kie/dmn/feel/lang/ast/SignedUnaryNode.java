@@ -32,7 +32,7 @@ import org.kie.dmn.feel.util.NumberEvalHelper;
 public class SignedUnaryNode
         extends BaseNode {
 
-    public static enum Sign {
+    public enum Sign {
         POSITIVE, NEGATIVE;
 
         public static Sign determineSign(String str) {
@@ -52,6 +52,12 @@ public class SignedUnaryNode
         super( ctx );
         sign = Sign.determineSign( ctx.start.getText() );
         expression = expr;
+    }
+
+    public SignedUnaryNode(Sign sign, BaseNode expression, String text) {
+        this.sign = sign;
+        this.expression = expression;
+        this.setText(text);
     }
 
     public Sign getSign() {
