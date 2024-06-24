@@ -33,6 +33,11 @@ public class BooleanNode
         value = Boolean.valueOf( ctx.getText() );
     }
 
+    public BooleanNode(Boolean value, String text) {
+        this.value = value;
+        this.setText( text );
+    }
+
     public Boolean getValue() {
         return value;
     }

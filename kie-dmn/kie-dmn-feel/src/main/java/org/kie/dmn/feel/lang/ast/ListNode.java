@@ -46,6 +46,11 @@ public class ListNode
         this.elements = elements;
     }
 
+    public ListNode(List<BaseNode> elements, String text) {
+        this.elements = elements;
+        this.setText(text);
+    }
+
     public List<BaseNode> getElements() {
         return elements;
     }

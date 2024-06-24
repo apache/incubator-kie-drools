@@ -36,6 +36,11 @@ public class NumberNode
         value = NumberEvalHelper.getBigDecimalOrNull(ctx.getText() );
     }
 
+    public NumberNode(BigDecimal value, String text) {
+        this.value = value;
+        this.setText(text);
+    }
+
     public BigDecimal getValue() {
         return value;
     }

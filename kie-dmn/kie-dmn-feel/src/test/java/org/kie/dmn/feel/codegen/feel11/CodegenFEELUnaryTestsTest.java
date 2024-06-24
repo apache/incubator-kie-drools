@@ -23,7 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.stmt.BlockStmt;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.lang.EvaluationContext;
@@ -38,30 +39,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.kie.dmn.feel.codegen.feel11.ProcessedUnaryTest.TEMPLATE_CLASS;
+import static org.kie.dmn.feel.codegen.feel11.ProcessedUnaryTest.TEMPLATE_RESOURCE;
 
-public class DirectCompilerUnaryTestsTest {
+public class CodegenFEELUnaryTestsTest {
 
-    public static final Logger LOG = LoggerFactory.getLogger(DirectCompilerUnaryTestsTest.class);
-
-    private List<Boolean> parseCompileEvaluate(String feelLiteralExpression, Object l) {
-        Object left = NumberEvalHelper.coerceNumber(l);
-        FEELEventListenersManager mgr = new FEELEventListenersManager();
-        CompiledFEELSupport.SyntaxErrorListener listener = new CompiledFEELSupport.SyntaxErrorListener();
-        mgr.addListener(listener);
-        EvaluationContext emptyContext = CodegenTestUtil.newEmptyEvaluationContext(mgr);
-        CompiledFEELUnaryTests compiledUnaryTests = parse(feelLiteralExpression, mgr, listener);
-        LOG.debug("{}", compiledUnaryTests);
-        List<Boolean> result = compiledUnaryTests.getUnaryTests()
-                .stream()
-                .map(ut -> ut.apply(emptyContext, left))
-                .collect(Collectors.toList());
-        if (listener.isError()) {
-            LOG.debug("{}", listener.event());
-            return Collections.emptyList();
-        }
-        LOG.debug("{}", result);
-        return result;
-    }
+    public static final Logger LOG = LoggerFactory.getLogger(CodegenFEELUnaryTestsTest.class);
 
     @Test
     void dash() {
@@ -109,27 +92,59 @@ public class DirectCompilerUnaryTestsTest {
         assertThat(parseCompileEvaluate("\"asd\"", "asd")).containsExactly(Boolean.TRUE);
     }
 
-    private CompiledFEELUnaryTests parse(String input, FEELEventListenersManager mgr, CompiledFEELSupport.SyntaxErrorListener listener) {
+
+    private List<Boolean> parseCompileEvaluate(String feelLiteralExpression, Object l) {
+        Object left = NumberEvalHelper.coerceNumber(l);
+        FEELEventListenersManager mgr = new FEELEventListenersManager();
+        SyntaxErrorListener listener = new SyntaxErrorListener();
+        mgr.addListener(listener);
+        EvaluationContext emptyContext = CodegenTestUtil.newEmptyEvaluationContext(mgr);
+        CompiledFEELUnaryTests compiledUnaryTests = parse(feelLiteralExpression, mgr, listener);
+        LOG.debug("{}", compiledUnaryTests);
+        List<Boolean> result = compiledUnaryTests.getUnaryTests()
+                .stream()
+                .map(ut -> ut.apply(emptyContext, left))
+                .collect(Collectors.toList());
+        if (listener.isError()) {
+            LOG.debug("{}", listener.event());
+            return Collections.emptyList();
+        }
+        LOG.debug("{}", result);
+        return result;
+    }
+
+    private CompiledFEELUnaryTests parse(String input, FEELEventListenersManager mgr, SyntaxErrorListener listener) {
         return parse( input, Collections.emptyMap(), mgr, listener );
     }
 
-    private CompiledFEELUnaryTests parse(String input, Map<String, Type> inputTypes, FEELEventListenersManager mgr, CompiledFEELSupport.SyntaxErrorListener listener) {
+    private CompiledFEELUnaryTests parse(String input, Map<String, Type> inputTypes, FEELEventListenersManager mgr, SyntaxErrorListener listener) {
         FEEL_1_1Parser parser = FEELParser.parse(mgr, input, inputTypes, Collections.emptyMap(), Collections.emptyList(), Collections.emptyList(), null);
 
         ParseTree tree = parser.unaryTestsRoot();
-        DirectCompilerResult directResult;
+        ASTCompilerVisitor compilerVisitor = new ASTCompilerVisitor();
+        BlockStmt directCodegenResult;
+
         if (listener.isError()) {
-            directResult = CompiledFEELSupport.compiledErrorUnaryTest(listener.event().getMessage());
+            directCodegenResult = compilerVisitor.returnError(listener.event().getMessage());
         } else {
             ASTBuilderVisitor v = new ASTBuilderVisitor(inputTypes, null);
             BaseNode node = v.visit(tree);
             BaseNode transformed = node.accept(new ASTUnaryTestTransform()).node();
-            directResult = transformed.accept(new ASTCompilerVisitor());
+            directCodegenResult = transformed.accept(compilerVisitor);
         }
-        Expression expr = directResult.getExpression();
-        CompiledFEELUnaryTests cu = new CompilerBytecodeLoader().makeFromJPUnaryTestsExpression(input, expr, directResult.getFieldDeclarations());
 
-        return cu;
+        CompilerBytecodeLoader compilerBytecodeLoader = new CompilerBytecodeLoader();
+        String packageName = compilerBytecodeLoader.generateRandomPackage();
+        CompilationUnit cu = new CompilerBytecodeLoader()
+                .getCompilationUnit(
+                        TEMPLATE_RESOURCE,
+                        packageName,
+                        TEMPLATE_CLASS,
+                        input,
+                        directCodegenResult,
+                        compilerVisitor.getLastVariableName());
+
+        return compilerBytecodeLoader.compileUnit(packageName, TEMPLATE_CLASS, cu);
     }
     
 

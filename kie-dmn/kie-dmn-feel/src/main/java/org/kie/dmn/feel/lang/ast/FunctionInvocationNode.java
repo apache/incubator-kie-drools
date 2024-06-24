@@ -48,6 +48,13 @@ public class FunctionInvocationNode
         this.params = params;
     }
 
+    public FunctionInvocationNode(BaseNode name, ListNode params, TemporalConstantNode tcFolded, String text) {
+        this.name = name;
+        this.params = params;
+        this.tcFolded = tcFolded;
+        this.setText(text);
+    }
+
     public BaseNode getName() {
         return name;
     }

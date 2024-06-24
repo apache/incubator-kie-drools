@@ -39,6 +39,12 @@ public class InstanceOfNode
         this.type = type;
     }
 
+    public InstanceOfNode(BaseNode expression, TypeNode type, String text) {
+        this.expression = expression;
+        this.type = type;
+        this.setText(text);
+    }
+
     public BaseNode getExpression() {
         return expression;
     }

@@ -32,6 +32,11 @@ public class StringNode extends BaseNode {
         this.value = StringEvalHelper.unescapeString(getText());
     }
 
+    public StringNode(String text) {
+        this.value = StringEvalHelper.unescapeString(text);
+        this.setText(text);
+    }
+
     @Override
     public Object evaluate(EvaluationContext ctx) {
         return getValue();

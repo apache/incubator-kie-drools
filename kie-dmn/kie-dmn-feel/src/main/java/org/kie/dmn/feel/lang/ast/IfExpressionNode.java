@@ -37,6 +37,13 @@ public class IfExpressionNode
         this.elseExpression = elseExpression;
     }
 
+    public IfExpressionNode(BaseNode condition, BaseNode thenExpression, BaseNode elseExpression, String text) {
+        this.condition = condition;
+        this.thenExpression = thenExpression;
+        this.elseExpression = elseExpression;
+        this.setText(text);
+    }
+
     public BaseNode getCondition() {
         return condition;
     }
