@@ -32,6 +32,7 @@ import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.parser.feel11.FEELParserTest;
 import org.kie.dmn.feel.runtime.FEELConditionsAndLoopsTest;
 import org.kie.dmn.feel.runtime.FEELTernaryLogicTest;
+import org.kie.dmn.feel.runtime.functions.CustomFEELFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -284,7 +285,7 @@ public class DirectCompilerTest {
 
     @Test
     void basic_function_definition() {
-        assertThat(parseCompileEvaluate("function (a, b) a + b")).isInstanceOf(CompiledCustomFEELFunction.class);
+        assertThat(parseCompileEvaluate("function (a, b) a + b")).isInstanceOf(CustomFEELFunction.class);
         assertThat(parseCompileEvaluate("{ s : function (a, b) a + b, x : 1, y : 2, r : s(x,y) }.r")).isEqualTo(new BigDecimal(3));
     }
 
@@ -320,7 +321,7 @@ public class DirectCompilerTest {
         assertThat(parseCompileEvaluate("{ }")).isEqualTo(Collections.emptyMap());
         assertThat(parseCompileEvaluate("{ a : 1 }")).isEqualTo(mapOf(entry("a", new BigDecimal(1))));
         assertThat(parseCompileEvaluate("{ \"a\" : 1 }")).isEqualTo(mapOf(entry("a", new BigDecimal(1))));
-        assertThat(parseCompileEvaluate("{ \" a\" : 1 }")).isEqualTo(mapOf(entry(" a", new BigDecimal(1)))); // Demonstrating a bad practice.
+        assertThat(parseCompileEvaluate("{ \" a\" : 1 }")).isEqualTo(mapOf(entry("a", new BigDecimal(1)))); // Demonstrating a bad practice.
         assertThat(parseCompileEvaluate("{ a : 1, b : 2, c : 3 }")).isEqualTo(mapOf(entry("a", new BigDecimal(1)), entry("b", new BigDecimal(2)), entry("c", new BigDecimal(3))));
         assertThat(parseCompileEvaluate("{ a : 1, a name : \"John Doe\" }")).isEqualTo(mapOf(entry("a", new BigDecimal(1)), entry("a name", "John Doe")));
 

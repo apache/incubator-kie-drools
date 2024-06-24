@@ -41,6 +41,13 @@ public class BetweenNode
         this.end = end;
     }
 
+    public BetweenNode(BaseNode value, BaseNode start, BaseNode end, String text) {
+        this.value = value;
+        this.start = start;
+        this.end = end;
+        this.setText(text);
+    }
+
     public BaseNode getValue() {
         return value;
     }

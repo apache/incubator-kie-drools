@@ -32,6 +32,11 @@ public class ListTypeNode extends TypeNode {
         this.genTypeNode = gen;
     }
 
+    public ListTypeNode(TypeNode genTypeNode, String text) {
+        this.genTypeNode = genTypeNode;
+        this.setText(text);
+    }
+
     @Override
     public Type evaluate(EvaluationContext ctx) {
         Type gen = genTypeNode.evaluate(ctx);

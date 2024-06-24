@@ -40,6 +40,12 @@ public class InNode
         this.exprs = exprs;
     }
 
+    public InNode(BaseNode value, BaseNode exprs, String text) {
+        this.value = value;
+        this.exprs = exprs;
+        this.setText(text);
+    }
+
     public BaseNode getValue() {
         return value;
     }

@@ -40,6 +40,11 @@ public class NameRefNode
         this.setText(text);
     }
 
+    public NameRefNode(Type type, String text) {
+        this.resultType = type;
+        this.setText(text);
+    }
+
     @Override
     public Object evaluate(EvaluationContext ctx) {
         Object result = ctx.getValue( getText() );

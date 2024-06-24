@@ -18,9 +18,6 @@
  */
 package org.kie.dmn.feel.codegen.feel11;
 
-import java.math.BigDecimal;
-import java.util.List;
-
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.FieldDeclaration;
@@ -31,26 +28,20 @@ import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
-import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
 import org.kie.dmn.feel.lang.ast.RangeNode;
-import org.kie.dmn.feel.runtime.Range;
-import org.kie.dmn.feel.runtime.UnaryTest;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static com.github.javaparser.StaticJavaParser.parseExpression;
-import static com.github.javaparser.StaticJavaParser.parseType;
+import static org.kie.dmn.feel.codegen.feel11.CodegenConstants.BIGDECIMAL_CT;
+import static org.kie.dmn.feel.codegen.feel11.DMNCodegenConstants.FUNCTION_CT;
+import static org.kie.dmn.feel.codegen.feel11.DMNCodegenConstants.RANGEBOUNDARY_S;
+import static org.kie.dmn.feel.codegen.feel11.DMNCodegenConstants.UNARYTEST_CT;
 
 public class Constants {
 
-    public static final Expression DECIMAL_128 = parseExpression("java.math.MathContext.DECIMAL128");
-    public static final ClassOrInterfaceType BigDecimalT = parseClassOrInterfaceType(BigDecimal.class.getCanonicalName());
-    public static final ClassOrInterfaceType BooleanT = parseClassOrInterfaceType(Boolean.class.getCanonicalName());
-    private static final Type ListT = parseType(List.class.getCanonicalName());
-    public static final ClassOrInterfaceType UnaryTestT = parseClassOrInterfaceType(UnaryTest.class.getCanonicalName());
-    public static final String RangeBoundary = Range.RangeBoundary.class.getCanonicalName();
-    public static final Expression BuiltInTypeT = parseExpression("org.kie.dmn.feel.lang.types.BuiltInType");
-    public static final ClassOrInterfaceType FunctionT = parseClassOrInterfaceType("java.util.function.Function<EvaluationContext, Object>");
+    public static final Expression DECIMAL_128_E = parseExpression("java.math.MathContext.DECIMAL128");
+    public static final Expression BUILTINTYPE_E = parseExpression("org.kie.dmn.feel.lang.types.BuiltInType");
 
     public static FieldDeclaration of(Type type, String name, Expression initializer) {
         return new FieldDeclaration(
@@ -60,7 +51,7 @@ public class Constants {
 
     public static FieldDeclaration numeric(String name, String numericValue) {
         ObjectCreationExpr initializer = new ObjectCreationExpr();
-        initializer.setType(BigDecimalT);
+        initializer.setType(BIGDECIMAL_CT);
         String originalText = numericValue;
         try {
             Long.parseLong(originalText);
@@ -68,8 +59,8 @@ public class Constants {
         } catch (Throwable t) {
             initializer.addArgument(new StringLiteralExpr(originalText));
         }
-        initializer.addArgument(DECIMAL_128);
-        return of(BigDecimalT, name, initializer);
+        initializer.addArgument(DECIMAL_128_E);
+        return of(BIGDECIMAL_CT, name, initializer);
     }
 
     public static String numericName(String originalText) {
@@ -77,7 +68,7 @@ public class Constants {
     }
 
     public static FieldDeclaration unaryTest(String name, LambdaExpr value) {
-        return of(UnaryTestT, name, value);
+        return of(UNARYTEST_CT, name, value);
     }
 
     public static String unaryTestName(String originalText) {
@@ -85,7 +76,7 @@ public class Constants {
     }
 
     public static FieldDeclaration function(String name, LambdaExpr value) {
-        return of(FunctionT, name, value);
+        return of(FUNCTION_CT, name, value);
     }
 
     public static String functionName(String originalText) {
@@ -102,7 +93,7 @@ public class Constants {
 
     public static FieldAccessExpr rangeBoundary(RangeNode.IntervalBoundary boundary) {
         return new FieldAccessExpr(
-                new NameExpr(RangeBoundary),
+                new NameExpr(RANGEBOUNDARY_S),
                 boundary == RangeNode.IntervalBoundary.OPEN ? "OPEN" : "CLOSED");
     }
 }

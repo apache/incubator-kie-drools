@@ -28,6 +28,10 @@ public class NullNode
         super( ctx );
     }
 
+    public NullNode(String text) {
+        this.setText(text);
+    }
+
     @Override
     public Object evaluate(EvaluationContext ctx) {
         return null;

@@ -66,6 +66,14 @@ public class RangeNode
         this.end = end;
     }
 
+    public RangeNode(IntervalBoundary lowerBound, IntervalBoundary upperBound, BaseNode start, BaseNode end, String text) {
+        this.lowerBound = lowerBound;
+        this.upperBound = upperBound;
+        this.start = start;
+        this.end = end;
+        this.setText(text);
+    }
+
     public IntervalBoundary getLowerBound() {
         return lowerBound;
     }
