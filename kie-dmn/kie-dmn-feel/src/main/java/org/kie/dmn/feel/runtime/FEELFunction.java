@@ -70,15 +70,6 @@ public interface FEELFunction {
      */
     Object invokeReflectively(EvaluationContext ctx, Object[] params);
 
-    /**
-     * The default value to return instead of <code>null</code>, to be used with the B-FEEL syntax
-     * @return
-     */
-    default Object defaultValue() {
-        // To be overridden by specific classes for B-FEEL compliance
-        return null;
-    }
-
     class Param {
 
         public final String name;

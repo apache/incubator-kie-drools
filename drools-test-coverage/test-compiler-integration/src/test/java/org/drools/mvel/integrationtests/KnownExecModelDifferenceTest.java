@@ -25,8 +25,6 @@ import java.util.List;
 
 import org.drools.mvel.compiler.Person;
 import org.drools.mvel.integrationtests.facts.VarargsFact;
-import org.drools.mvel.integrationtests.facts.vehicles.DieselCar;
-import org.drools.mvel.integrationtests.facts.vehicles.ElectricCar;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
@@ -162,59 +160,6 @@ public class KnownExecModelDifferenceTest {
         ksession.fireAllRules();
 
         assertThat(fact.getValueList()).containsExactly(10L, 20L); // Coerced with both cases
-    }
-
-    @Test
-    public void property_subClassMethod_genericsReturnType() {
-        // DROOLS-7197
-        String str = "package com.example.reproducer\n" +
-                     "import " + DieselCar.class.getCanonicalName() + ";\n" +
-                     "rule R\n" +
-                     "dialect \"mvel\"\n" +
-                     "when\n" +
-                     "  $v : DieselCar(motor.adBlueRequired == true)\n" +
-                     "then\n" +
-                     "  $v.score = 5;\n" +
-                     "end";
-
-        if (kieBaseTestConfiguration.isExecutableModel()) {
-            KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str);
-            assertThat(kieBuilder.getResults().hasMessages(Level.ERROR)).isTrue(); // Fail with exec-model
-        } else {
-            KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
-            KieSession ksession = kbase.newKieSession();
-
-            DieselCar dieselCar = new DieselCar("ABC", "Model 1.6", 85, true);
-
-            ksession.insert(dieselCar);
-            ksession.fireAllRules();
-
-            assertThat(dieselCar.getScore()).isEqualTo(5);
-        }
-    }
-
-    @Test
-    public void property_subClassMethod_explicitReturnType() {
-        // DROOLS-7197
-        String str = "package com.example.reproducer\n" +
-                     "import " + ElectricCar.class.getCanonicalName() + ";\n" +
-                     "rule R\n" +
-                     "dialect \"mvel\"\n" +
-                     "when\n" +
-                     "  $v : ElectricCar(engine.batterySize > 70)\n" +
-                     "then\n" +
-                     "  $v.score = 5;\n" +
-                     "end";
-
-        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
-        KieSession ksession = kbase.newKieSession();
-
-        ElectricCar electricCar = new ElectricCar("XYZ", "Model 3", 200, 90);
-
-        ksession.insert(electricCar);
-        ksession.fireAllRules();
-
-        assertThat(electricCar.getScore()).isEqualTo(5); // works for both cases
     }
 
     @Test

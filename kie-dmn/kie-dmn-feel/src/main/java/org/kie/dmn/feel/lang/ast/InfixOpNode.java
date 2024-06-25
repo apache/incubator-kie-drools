@@ -37,6 +37,13 @@ public class InfixOpNode
         this.right = right;
     }
 
+    public InfixOpNode(InfixOperator operator, BaseNode left, BaseNode right, String text) {
+        this.operator = operator;
+        this.left = left;
+        this.right = right;
+        this.setText(text);
+    }
+
     public InfixOperator getOperator() {
         return operator;
     }

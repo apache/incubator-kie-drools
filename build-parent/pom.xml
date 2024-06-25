@@ -54,7 +54,7 @@
       - A version property must be specified in the format "version.{groupId}", optionally with a suffix to make it unique.
       - Version properties must be sorted alphabetically (other form of sorting were found to be unclear and ambiguous).
     -->
-    <version.ch.qos.logback>1.4.12</version.ch.qos.logback>
+    <version.ch.qos.logback>1.4.14</version.ch.qos.logback>
     <version.commons-codec>1.16.1</version.commons-codec>
     <version.commons-collections>3.2.2</version.commons-collections>
     <version.commons-logging>1.1.1</version.commons-logging>
@@ -162,7 +162,7 @@
     <version.plugin.annotations>3.7.1</version.plugin.annotations>
     <version.artifact.transfer>0.9.1</version.artifact.transfer>
     <version.shared.utils>3.3.4</version.shared.utils>
-    <version.common.compress>1.26.0</version.common.compress>
+    <version.common.compress>1.26.1</version.common.compress>
     <version.common.exec>1.3</version.common.exec>
     <!-- -->
     <!-- Jacoco plugin configurations -->
@@ -1703,9 +1703,6 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-deploy-plugin</artifactId>
           <version>${version.maven-deploy-plugin}</version>
-          <configuration>
-            <retryFailedDeploymentCount>10</retryFailedDeploymentCount>
-          </configuration>
         </plugin>
         <plugin>
           <groupId>org.codehaus.mojo</groupId>

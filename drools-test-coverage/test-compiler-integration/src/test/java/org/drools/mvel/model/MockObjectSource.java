@@ -18,8 +18,13 @@
  */
 package org.drools.mvel.model;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.drools.base.base.ObjectType;
 import org.drools.base.common.RuleBasePartitionId;
+import org.drools.base.rule.Pattern;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.PropagationContext;
@@ -27,10 +32,6 @@ import org.drools.core.reteoo.ObjectSink;
 import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.util.bitmask.BitMask;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 public class MockObjectSource extends ObjectSource {
     private static final long serialVersionUID = 510l;
@@ -90,7 +91,7 @@ public class MockObjectSource extends ObjectSource {
     }
     
     @Override
-    public BitMask calculateDeclaredMask(ObjectType modifiedType, List<String> settableProperties) {
+    public BitMask calculateDeclaredMask(Pattern pattern, ObjectType modifiedType, List<String> settableProperties) {
         throw new UnsupportedOperationException();
     }
 }

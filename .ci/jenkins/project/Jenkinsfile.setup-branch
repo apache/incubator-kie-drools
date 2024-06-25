@@ -108,6 +108,25 @@ pipeline {
                 }
             }
         }
+
+        // Launch the weekly to deploy all artifacts from the branch
+        stage('Launch the weekly') {
+            when {
+                expression { return params.DEPLOY }
+            }
+            steps {
+                script {
+                    def buildParams = getDefaultBuildParams()
+                    addBooleanParam(buildParams, 'SKIP_TESTS', true)
+                    build(job: '../other/0-weekly', wait: false, parameters: buildParams, propagate: false)
+                }
+            }
+            post {
+                failure {
+                    addFailedStage('weekly')
+                }
+            }
+        }
     }
     post {
         unsuccessful {
@@ -196,7 +215,7 @@ String getDroolsVersion() {
     return params.DROOLS_VERSION ?: getVersionFromReleaseBranch(getBuildBranch())
 }
 
-String getVersionFromReleaseBranch(String releaseBranch, int microVersion = 0, String suffix = 'SNAPSHOT') {
+String getVersionFromReleaseBranch(String releaseBranch, int microVersion = 999, String suffix = 'SNAPSHOT') {
     String [] versionSplit = releaseBranch.split("\\.")
     if (versionSplit.length == 3
         && versionSplit[0].isNumber()

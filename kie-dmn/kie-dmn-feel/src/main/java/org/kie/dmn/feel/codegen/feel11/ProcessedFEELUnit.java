@@ -21,8 +21,12 @@ package org.kie.dmn.feel.codegen.feel11;
 import java.util.List;
 import java.util.UUID;
 
+import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.stmt.BlockStmt;
 import org.kie.dmn.feel.lang.CompilerContext;
 import org.kie.dmn.feel.lang.FEELProfile;
+import org.kie.dmn.feel.lang.ast.BaseNode;
+import org.kie.dmn.feel.lang.impl.CompiledExecutableExpression;
 import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
 import org.kie.dmn.feel.parser.feel11.FEELParser;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser;
@@ -41,17 +45,44 @@ public abstract class ProcessedFEELUnit implements CompiledFEELExpression {
 
     protected final String packageName;
     protected final String expression;
-    protected final CompiledFEELSupport.SyntaxErrorListener errorListener =
-            new CompiledFEELSupport.SyntaxErrorListener();
+    protected final String templateResource;
+    protected final String templateClass;
+
+    protected BaseNode ast;
+    protected BlockStmt codegenResult;
+    protected final SyntaxErrorListener errorListener = new SyntaxErrorListener();
     protected final CompilerBytecodeLoader compiler =
             new CompilerBytecodeLoader();
 
     ProcessedFEELUnit(String expression,
                       CompilerContext ctx,
-                      List<FEELProfile> profiles) {
+                      List<FEELProfile> profiles,
+                      String templateResource,
+                      String templateClass) {
 
         this.expression = expression;
         this.packageName = generateRandomPackage();
+        this.templateResource = templateResource;
+        this.templateClass = templateClass;
+    }
+
+    public CompilationUnit getSourceCode() {
+        ASTCompilerVisitor astVisitor = new ASTCompilerVisitor();
+        BlockStmt directCodegenResult = getCodegenResult(astVisitor);
+        return compiler.getCompilationUnit(
+                templateResource,
+                packageName,
+                templateClass,
+                expression,
+                directCodegenResult,
+                astVisitor.getLastVariableName());
+    }
+
+    public <T> T getCommonCompiled() {
+        return compiler.compileUnit(
+                        packageName,
+                        templateClass,
+                        getSourceCode());
     }
 
     protected FEEL_1_1Parser getFEELParser(String expression, CompilerContext ctx, List<FEELProfile> profiles) {
@@ -69,6 +100,21 @@ public abstract class ProcessedFEELUnit implements CompiledFEELExpression {
                 ctx.getFEELFunctions(),
                 profiles,
                 ctx.getFEELFeelTypeRegistry());
+    }
+
+    protected BlockStmt getCodegenResult(ASTCompilerVisitor astVisitor) {
+        if (codegenResult == null) {
+            if (errorListener.isError()) {
+                return astVisitor.returnError(errorListener.event().getMessage());
+            } else {
+                try {
+                    codegenResult = ast.accept(astVisitor);
+                } catch (FEELCompilationError e) {
+                    return astVisitor.returnError(e.getMessage());
+                }
+            }
+        }
+        return codegenResult;
     }
 
     private String generateRandomPackage() {

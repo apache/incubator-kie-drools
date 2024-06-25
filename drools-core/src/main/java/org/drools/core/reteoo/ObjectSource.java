@@ -121,14 +121,14 @@ public abstract class ObjectSource extends BaseNode {
         
         if ( isPropertyReactive(context.getRuleBase(), objectType) ) {
             List<String> settableProperties = getAccessibleProperties( context.getRuleBase(), objectType );
-            declaredMask = calculateDeclaredMask(objectType, settableProperties);
+            declaredMask = calculateDeclaredMask(pattern, objectType, settableProperties);
         } else {
             // if property specific is not on, then accept all modification propagations
             declaredMask = AllSetBitMask.get();
         }
     }
     
-    public abstract BitMask calculateDeclaredMask(ObjectType modifiedType, List<String> settableProperties);
+    public abstract BitMask calculateDeclaredMask(Pattern pattern, ObjectType modifiedType, List<String> settableProperties);
     
     public void resetInferredMask() {
         this.inferredMask = EmptyBitMask.get();

@@ -24,6 +24,7 @@ import java.util.List;
 
 import org.drools.base.base.ObjectType;
 import org.drools.base.common.RuleBasePartitionId;
+import org.drools.base.rule.Pattern;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.PropagationContext;
@@ -89,7 +90,7 @@ public class MockObjectSource extends ObjectSource {
     }
     
     @Override
-    public BitMask calculateDeclaredMask(ObjectType modifiedType, List<String> settableProperties) {
+    public BitMask calculateDeclaredMask(Pattern pattern, ObjectType modifiedType, List<String> settableProperties) {
         throw new UnsupportedOperationException();
     }
 }

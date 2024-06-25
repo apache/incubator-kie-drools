@@ -117,6 +117,7 @@ import static java.util.stream.Collectors.toList;
 import static org.drools.model.codegen.execmodel.generator.DslMethodNames.PATTERN_CALL;
 import static org.drools.model.codegen.execmodel.generator.DslMethodNames.isDslTopLevelNamespace;
 import static org.drools.model.codegen.execmodel.generator.expressiontyper.ExpressionTyper.findLeftLeafOfNameExprTraversingParent;
+import static org.drools.util.ClassUtils.actualTypeFromGenerics;
 import static org.drools.util.ClassUtils.toRawClass;
 import static org.drools.util.MethodUtils.findMethod;
 
@@ -161,7 +162,7 @@ public class DrlxParseUtil {
         Method accessor = getAccessor(clazz, name, context);
         if (accessor != null) {
             MethodCallExpr body = new MethodCallExpr( scope, accessor.getName() );
-            return new TypedExpression( body, accessor.getGenericReturnType() );
+            return new TypedExpression( body, actualTypeFromGenerics( type, accessor.getGenericReturnType() ) );
         } else {
             // try parse it as inner class
             for (Class<?> declaredClass : clazz.getClasses()) {

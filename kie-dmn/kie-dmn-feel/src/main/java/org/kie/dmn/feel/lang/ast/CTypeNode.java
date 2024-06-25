@@ -26,14 +26,18 @@ public class CTypeNode extends TypeNode {
 
     private final Type type;
 
-    public CTypeNode(Type type) {
-        super();
-        this.type = type;
-    }
-
     public CTypeNode(ParserRuleContext ctx, Type type) {
         super( ctx );
         this.type = type;
+    }
+
+    public CTypeNode(Type type) {
+        this.type = type;
+    }
+
+    public CTypeNode(Type type, String text) {
+        this.type = type;
+        this.setText(text);
     }
 
     @Override

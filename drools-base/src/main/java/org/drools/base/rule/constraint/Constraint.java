@@ -83,10 +83,6 @@ public interface Constraint
      */
     boolean isTemporal();
 
-    default BitMask getListenedPropertyMask(ObjectType objectType, List<String> settableProperties ) {
-        return getListenedPropertyMask(Optional.empty(), objectType, settableProperties);
-    }
-
     /**
      * Returns property reactivity BitMask of this constraint.
      *

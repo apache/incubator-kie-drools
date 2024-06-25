@@ -274,6 +274,13 @@ public class ExpressionTyperTest {
         assertThat(typedExpression.getExpression().toString()).isEqualTo(expected);
     }
 
+    @Test
+    public void thisWithGetterReactivity() {
+        Expression expression = DrlxParseUtil.parseExpression("_this.getAge() > 20").getExpr();
+        TypedExpressionResult result = new ExpressionTyper(ruleContext, Person.class, null, true).toTypedExpression(expression);
+        assertThat(result.getReactOnProperties()).containsExactly("age");
+    }
+
     private TypedExpression toTypedExpression(String inputExpression, Class<?> patternType, TypedDeclarationSpec... declarations) {
 
         for(TypedDeclarationSpec d : declarations) {
