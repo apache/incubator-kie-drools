@@ -232,7 +232,7 @@ public abstract class BaseFEELFunction
                 if ( currentIdxActualParameterType != null && !expectedParameterType.isAssignableFrom( currentIdxActualParameterType ) ) {
                     Optional<Object[]> coercedParams = coerceParams(currentIdxActualParameterType, expectedParameterType, actualParams, i);
                     if (coercedParams.isPresent()) {
-                        cm.setActualParams(coercedParams.get());
+                        cm.setActualParams(coercedParams.get(), CandidateMethod.ParameterTypesStatus.COERCED);
                         continue;
                     }
                     found = false;
@@ -287,7 +287,7 @@ public abstract class BaseFEELFunction
             Object[] remaining = new Object[cm.getActualParams().length - parameterTypes.length + 1];
             newParams[newParams.length - 1] = remaining;
             System.arraycopy( cm.getActualParams(), parameterTypes.length - 1, remaining, 0, remaining.length );
-            cm.setActualParams( newParams );
+            cm.setActualParams( newParams , CandidateMethod.ParameterTypesStatus.VARIABLE_PARAMETER_FUNCTION_CALL );
         }
     }
 
@@ -361,22 +361,20 @@ public abstract class BaseFEELFunction
     }
 
     private static class CandidateMethod {
-        private Method   apply         = null;
+        private Method apply = null;
         private Object[] actualParams;
-        private Class[]  actualClasses = null;
-        private int score;
+        private Class<?>[] actualClasses = null;
+        private ParameterTypesStatus actualParamsStatus = ParameterTypesStatus.PERFECT_MATCH;
+
+        enum ParameterTypesStatus {
+            PERFECT_MATCH,
+            VARIABLE_PARAMETER_FUNCTION_CALL,
+            COERCED;
+        }
 
         public CandidateMethod(Object[] actualParams) {
             this.actualParams = actualParams;
             populateActualClasses();
-        }
-
-        private void calculateScore() {
-            if ( actualClasses.length > 0 && actualClasses[actualClasses.length - 1] != null && actualClasses[actualClasses.length - 1].isArray() ) {
-                score = 1;
-            } else {
-                score = 10;
-            }
         }
 
         public Method getApply() {
@@ -385,15 +383,15 @@ public abstract class BaseFEELFunction
 
         public void setApply(Method apply) {
             this.apply = apply;
-            calculateScore();
         }
 
         public Object[] getActualParams() {
             return actualParams;
         }
 
-        public void setActualParams(Object[] actualParams) {
+        public void setActualParams(Object[] actualParams, ParameterTypesStatus parameterTypesStatus) {
             this.actualParams = actualParams;
+            this.actualParamsStatus = parameterTypesStatus;
             populateActualClasses();
         }
 
@@ -401,14 +399,17 @@ public abstract class BaseFEELFunction
             this.actualClasses = Stream.of( this.actualParams ).map( p -> p != null ? p.getClass() : null ).toArray( Class[]::new );
         }
 
-        public Class[] getActualClasses() {
+        public Class<?>[] getActualClasses() {
             return actualClasses;
         }
 
         public int getScore() {
-            return score;
+            return switch (actualParamsStatus) {
+                case PERFECT_MATCH -> 10;
+                case COERCED -> 5;
+                case VARIABLE_PARAMETER_FUNCTION_CALL -> 1;
+            };
         }
-
     }
 
 }
