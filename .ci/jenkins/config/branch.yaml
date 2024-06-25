@@ -90,7 +90,8 @@ maven:
     creds_id: apache-nexus-kie-deploy-credentials
 cloud:
   image:
-    registry_credentials: dockerhub_apache_kie_registry_token
+    registry_user_credentials_id: DOCKERHUB_USER
+    registry_token_credentials_id: DOCKERHUB_TOKEN
     registry: docker.io
     namespace: apache
     latest_git_branch: main
