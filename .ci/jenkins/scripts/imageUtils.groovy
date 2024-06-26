@@ -21,18 +21,25 @@ containerEngine = 'docker'
 containerTlsOptions = ''
 
 void loginRegistry() {
-    loginContainerRegistry(getOperatorImageRegistry(), getOperatorImageRegistryCredentials())
+    loginContainerRegistry(getOperatorImageRegistry(), getOperatorImageRegistryUserCredentialsId(), getOperatorImageRegistryTokenCredentialsId())
 }
 
-void loginContainerRegistry(String registry, String credsId) {
-    echo "Using credentials ($credsId) to login to registry ($registry)"
-    withCredentials([usernamePassword(credentialsId: credsId, usernameVariable: 'REGISTRY_USER', passwordVariable: 'REGISTRY_PWD')]) {
-        sh "${containerEngine} login ${containerTlsOptions} -u ${REGISTRY_USER} -p ${REGISTRY_PWD} ${registry}"
+void loginContainerRegistry(String registry, String userCredsId, String tokenCredsId) {
+    withCredentials([string(credentialsId: userCredsId, variable: 'REGISTRY_USER')]) {
+        withCredentials([string(credentialsId: tokenCredsId, variable: 'REGISTRY_TOKEN')]) {
+            sh """
+            echo "${REGISTRY_TOKEN}" | ${containerEngine} login -u "${REGISTRY_USER}" --password-stdin ${registry}
+            """.trim()
+        }
     }
 }
 
-String getOperatorImageRegistryCredentials() {
-    return params.OPERATOR_IMAGE_REGISTRY_CREDENTIALS
+String getOperatorImageRegistryUserCredentialsId() {
+    return params.OPERATOR_IMAGE_REGISTRY_USER_CREDENTIALS_ID
+}
+
+String getOperatorImageRegistryTokenCredentialsId() {
+    return params.OPERATOR_IMAGE_REGISTRY_TOKEN_CREDENTIALS_ID
 }
 
 String getOperatorImageRegistry() {
@@ -61,23 +68,6 @@ void pushImage(String image) {
     loginRegistry()
     retry(env.MAX_REGISTRY_RETRIES ?: 1) {
         sh "${containerEngine} push ${containerTlsOptions} ${image}"
-    }
-}
-
-boolean removeQuayTag(String namespace, String imageName, String tag) {
-    String image = "quay.io/${namespace}/${imageName}:${tag}"
-    echo "Removing a temporary image tag ${image}"
-    try {
-        def output = 'false'
-        withCredentials([usernamePassword(credentialsId: getOperatorImageRegistryCredentials(), usernameVariable: 'QUAY_USER', passwordVariable: 'QUAY_TOKEN')]) {
-            output = sh(returnStdout: true, script: "curl -H 'Content-Type: application/json' -H 'Authorization: Bearer ${QUAY_TOKEN}' -X DELETE https://quay.io/api/v1/repository/${namespace}/${imageName}/tag/${tag}").trim()
-            if (output != '') {
-                echo "$output"
-            }
-        }
-        return output == ''
-    } catch (err) {
-        echo "[ERROR] Cannot remove a temporary image tag ${image}."
     }
 }
 

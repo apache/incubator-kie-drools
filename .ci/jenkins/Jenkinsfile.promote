@@ -316,10 +316,8 @@ void pushOperatorFinalImage() {
 }
 
 void removeOperatorImageTemporaryTag() {
-    if (!imageUtils.removeQuayTag(getOperatorImageNamespace(), getOperatorImageName(), getOperatorImageTemporaryTag())) {
-        String temporaryImageName = imageUtils.getImageFullName(getOperatorImageNamespace(), getOperatorImageName(),
-                getOperatorImageTemporaryTag())
-        error "Cannot remove the OptaPlanner Operator temporary image tag (${temporaryImageName}) from quay.io. "
-                + "The tag should be removed manually."
-    }
+    String temporaryImageName = imageUtils.getImageFullName(getOperatorImageNamespace(), getOperatorImageName(),
+            getOperatorImageTemporaryTag())
+    // https://docs.docker.com/docker-hub/api/latest/#tag/repositories
+    error "Dockerhub API does not allow deleting tags via API. The OptaPlanner Operator temporary image tag (${temporaryImageName}) should be removed manually."
 }

@@ -363,7 +363,8 @@ void setupDeployJob(JobType jobType, String envName = '') {
             stringParam('QUICKSTARTS_BUILD_BRANCH_NAME', Utils.isMainBranch(this) ? 'development' : "${GIT_BRANCH}", 'Base branch for quickstarts. Set if you are not on a multibranch pipeline.')
 
             stringParam('OPERATOR_IMAGE_REGISTRY', "${CLOUD_IMAGE_REGISTRY}", 'Image registry to use to deploy images.')
-            stringParam('OPERATOR_IMAGE_REGISTRY_CREDENTIALS', "${CLOUD_IMAGE_REGISTRY_CREDENTIALS}", 'Image registry credentials.')
+            stringParam('OPERATOR_IMAGE_REGISTRY_USER_CREDENTIALS_ID', "${CLOUD_IMAGE_REGISTRY_USER_CREDENTIALS_ID}", 'Image registry user credentials id.')
+            stringParam('OPERATOR_IMAGE_REGISTRY_TOKEN_CREDENTIALS_ID', "${CLOUD_IMAGE_REGISTRY_TOKEN_CREDENTIALS_ID}", 'Image registry token credentials id.')
             stringParam('OPERATOR_IMAGE_NAMESPACE', "${CLOUD_IMAGE_NAMESPACE}", 'Operator image namespace to use to deploy image.')
             stringParam('OPERATOR_IMAGE_TAG', '', 'Image tag to use to deploy the operator image. OptaPlanner project version if not set.')
         }
@@ -406,7 +407,8 @@ void setupPromoteJob(JobType jobType) {
             booleanParam('SEND_NOTIFICATION', false, 'In case you want the pipeline to send a notification on CI channel for this run.')
 
             stringParam('OPERATOR_IMAGE_REGISTRY', "${CLOUD_IMAGE_REGISTRY}", 'Image registry to use to deploy images.')
-            stringParam('OPERATOR_IMAGE_REGISTRY_CREDENTIALS', "${CLOUD_IMAGE_REGISTRY_CREDENTIALS}", 'Image registry credentials.')
+            stringParam('OPERATOR_IMAGE_REGISTRY_USER_CREDENTIALS_ID', "${CLOUD_IMAGE_REGISTRY_USER_CREDENTIALS_ID}", 'Image registry user credentials id.')
+            stringParam('OPERATOR_IMAGE_REGISTRY_TOKEN_CREDENTIALS_ID', "${CLOUD_IMAGE_REGISTRY_TOKEN_CREDENTIALS_ID}", 'Image registry token credentials id.')
             stringParam('OPERATOR_IMAGE_NAMESPACE', "${CLOUD_IMAGE_NAMESPACE}", 'Operator image namespace to use to deploy image.')
         }
     }
