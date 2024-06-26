@@ -25,10 +25,10 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import org.apache.commons.io.IOUtils;
+import org.drools.base.definitions.InternalKnowledgePackage;
+import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.compiler.compiler.io.Folder;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kie.builder.impl.MemoryKieModule;
@@ -40,6 +40,7 @@ import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.Message.Level;
@@ -259,9 +260,6 @@ public class KieContainerTest {
     @Test(timeout = 20000)
     public void testIncrementalCompilationSynchronization() {
 
-        int MAX_THREAD = 8;
-        ExecutorService executor = Executors.newFixedThreadPool(MAX_THREAD);
-
         try {
             for (int n = 0; n < 1; n++) {
                 LOG.info("*** run : n = " + n);
@@ -282,24 +280,16 @@ public class KieContainerTest {
                 LOG.info("  1st iteration done");
 
                 running = true;
-//                for (int m = 0; m < MAX_THREAD; m++) {
-//                    executor.execute(new Runnable() {
-//
-//                        public void run() {
-//                            long dummy = 0;
-//                            while (running) {  // The thread runs until 'running' is set to false
-//                                dummy += 1;    // Simple increment to keep the thread busy
-//                                if (dummy < 0) {
-//                                    dummy = 0;
-//                                }
-//                                dummy += 1;
-//                            }
-//                        }
-//                    });
-//                }
 
                 Thread t = new Thread(() -> {
                     for (int i = 1; i < 10; i++) {
+                        while (!previousRuleExists(kieContainer, i)) { // if rule1 exists, we can change it to rule2
+                            try {
+                                Thread.sleep(1);
+                            } catch (InterruptedException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
                         ReleaseId releaseId1 = kieServices.newReleaseId("org.kie.test", "sync-scanner-test", "1.0." + i);
                         LOG.info("  getKieModuleFromDrls: " + releaseId1.toExternalForm());
                         KieUtil.getKieModuleFromDrls(releaseId1, kieBaseTestConfiguration, createDRL("rule" + i));
@@ -344,6 +334,13 @@ public class KieContainerTest {
         } finally {
             running = false;
         }
+    }
+
+    private static boolean previousRuleExists(KieContainer kieContainer, int i) {
+        KieBase kieBase = kieContainer.getKieBase();
+        InternalKnowledgePackage internalKnowledgePackage = (InternalKnowledgePackage)kieBase.getKiePackage("org.kie.test");
+        RuleImpl rule = internalKnowledgePackage.getRule("rule" + (i - 1));
+        return rule != null;
     }
 
     static class SlownessAgendaEventListener extends org.kie.api.event.rule.DefaultAgendaEventListener {
