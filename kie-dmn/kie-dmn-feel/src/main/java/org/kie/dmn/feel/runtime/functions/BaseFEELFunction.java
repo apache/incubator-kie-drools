@@ -162,7 +162,7 @@ public abstract class BaseFEELFunction
     }
 
     private Object[] rearrangeParameters(Object[] params, List<String> pnames) {
-        if ( pnames.size() > 0 ) {
+        if ( !pnames.isEmpty() ) {
             Object[] actualParams = new Object[pnames.size()];
             for ( int i = 0; i < actualParams.length; i++ ) {
                 for ( int j = 0; j < params.length; j++ ) {
@@ -186,7 +186,7 @@ public abstract class BaseFEELFunction
             }
 
             Object[] actualParams;
-            boolean injectCtx = Arrays.stream( m.getParameterTypes() ).anyMatch( p -> EvaluationContext.class.isAssignableFrom( p ) );
+            boolean injectCtx = Arrays.stream( m.getParameterTypes() ).anyMatch(EvaluationContext.class::isAssignableFrom);
             if( injectCtx ) {
                 actualParams = new Object[ params.length + 1 ];
                 int j = 0;
@@ -206,7 +206,7 @@ public abstract class BaseFEELFunction
                 actualParams = params;
             }
             if( isNamedParams ) {
-                actualParams = calculateActualParams( ctx, m, actualParams, available );
+                actualParams = calculateActualParams( m, actualParams );
                 if( actualParams == null ) {
                     // incompatible method
                     continue;
@@ -246,7 +246,7 @@ public abstract class BaseFEELFunction
                 } else {
                     if (cm.getScore() > candidate.getScore()) {
                         candidate = cm;
-                    } else if (cm.getScore() == candidate.getScore()) {
+                    } else if (cm.getScore() == candidate.getScore() && !candidate.isCoerced()) {
                         if (isNamedParams && nullCount(cm.actualParams) < nullCount(candidate.actualParams)) {
                             candidate = cm; // `cm` narrower for named parameters without need of passing nulls.
                         } else if (candidate.getApply().getParameterTypes().length == 1
@@ -291,7 +291,7 @@ public abstract class BaseFEELFunction
         }
     }
 
-    private Object[] calculateActualParams(EvaluationContext ctx, Method m, Object[] params, List<String> available) {
+    private Object[] calculateActualParams(Method m, Object[] params) {
         Annotation[][] pas = m.getParameterAnnotations();
         List<String> names = new ArrayList<>( m.getParameterCount() );
         for ( int i = 0; i < m.getParameterCount(); i++ ) {
@@ -364,10 +364,10 @@ public abstract class BaseFEELFunction
         private Method apply = null;
         private Object[] actualParams;
         private Class<?>[] actualClasses = null;
-        private ParameterTypesStatus actualParamsStatus = ParameterTypesStatus.PERFECT_MATCH;
+        private ParameterTypesStatus actualParamsStatus = ParameterTypesStatus.MATCHED;
 
         enum ParameterTypesStatus {
-            PERFECT_MATCH,
+            MATCHED,
             VARIABLE_PARAMETER_FUNCTION_CALL,
             COERCED;
         }
@@ -405,10 +405,14 @@ public abstract class BaseFEELFunction
 
         public int getScore() {
             return switch (actualParamsStatus) {
-                case PERFECT_MATCH -> 10;
-                case COERCED -> 5;
-                case VARIABLE_PARAMETER_FUNCTION_CALL -> 1;
+                case MATCHED -> 10;
+                case VARIABLE_PARAMETER_FUNCTION_CALL -> 2;
+                case COERCED -> 1;
             };
+        }
+
+        public boolean isCoerced() {
+            return actualParamsStatus == ParameterTypesStatus.COERCED;
         }
     }
 
