@@ -205,17 +205,6 @@ pipeline {
                 }
             }
         }
-        stage('Stage artifacts') {
-            when {
-                expression { return shouldStageArtifacts() }
-            }
-            steps {
-                script {
-                    // Stage release artifacts
-                    runMavenStage(getOptaplannerMavenCommand(), optaplannerRepository)
-                }
-            }
-        }
 
         stage('Create PRs') {
             when {
