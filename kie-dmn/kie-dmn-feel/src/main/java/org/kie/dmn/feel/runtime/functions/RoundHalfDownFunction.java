@@ -16,27 +16,24 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.dmn.feel.runtime.functions.extended;
+package org.kie.dmn.feel.runtime.functions;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
-import org.kie.dmn.feel.runtime.functions.BaseFEELFunction;
-import org.kie.dmn.feel.runtime.functions.FEELFnResult;
-import org.kie.dmn.feel.runtime.functions.ParameterName;
 
 /**
  * provisional access for DMN14-126
  */
-public class FloorFunction
+public class RoundHalfDownFunction
         extends BaseFEELFunction {
 
-    public static final FloorFunction INSTANCE = new FloorFunction();
+    public static final RoundHalfDownFunction INSTANCE = new RoundHalfDownFunction();
 
-    public FloorFunction() {
-        super( "floor" );
+    public RoundHalfDownFunction() {
+        super( "round half down" );
     }
     
     public FEELFnResult<BigDecimal> invoke(@ParameterName( "n" ) BigDecimal n) {
@@ -50,6 +47,10 @@ public class FloorFunction
         if ( scale == null ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "scale", "cannot be null"));
         }
-        return FEELFnResult.ofResult( n.setScale( scale.intValue(), RoundingMode.FLOOR ) );
+        // Based on Table 76: Semantics of numeric functions, the scale is in range −6111 .. 6176
+        if (scale.compareTo(BigDecimal.valueOf(-6111)) < 0 || scale.compareTo(BigDecimal.valueOf(6176)) > 0) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "scale", "must be in range between -6111 to 6176."));
+        }
+        return FEELFnResult.ofResult( n.setScale( scale.intValue(), RoundingMode.HALF_DOWN ) );
     }
 }

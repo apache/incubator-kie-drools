@@ -70,8 +70,7 @@ public class ASTTemporalConstantVisitor extends DefaultedVisitor<ASTNode> {
                                                                          DateAndTimeFunction.INSTANCE,
                                                                          DurationFunction.INSTANCE,
                                                                          org.kie.dmn.feel.runtime.functions.extended.TimeFunction.INSTANCE,
-                                                                         org.kie.dmn.feel.runtime.functions.extended.DateFunction.INSTANCE,
-                                                                         org.kie.dmn.feel.runtime.functions.extended.DurationFunction.INSTANCE);
+                                                                         org.kie.dmn.feel.runtime.functions.extended.DateFunction.INSTANCE);
     public static final Set<String> TEMPORAL_FNS_NAMES = TEMPORAL_FNS.stream().map(FEELFunction::getName).collect(Collectors.toSet());
 
     public ASTTemporalConstantVisitor(CompilerContext ctx) {
@@ -200,10 +199,6 @@ public class ASTTemporalConstantVisitor extends DefaultedVisitor<ASTNode> {
                 FEELFnResult<TemporalAmount> invoke = DurationFunction.INSTANCE.invoke(p0);
                 return invoke.cata(e -> null,
                                    v -> new TemporalConstantNode(n, v, DurationFunction.INSTANCE, Collections.singletonList(p0)));
-            } else if (fn == org.kie.dmn.feel.runtime.functions.extended.DurationFunction.INSTANCE) {
-                FEELFnResult<TemporalAmount> invoke = org.kie.dmn.feel.runtime.functions.extended.DurationFunction.INSTANCE.invoke(p0);
-                return invoke.cata(e -> null,
-                                   v -> new TemporalConstantNode(n, v, org.kie.dmn.feel.runtime.functions.extended.DurationFunction.INSTANCE, Collections.singletonList(p0)));
             }
         }
         return null;

@@ -16,13 +16,32 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.dmn.feel.runtime.functions.extended;
+package org.kie.dmn.feel.runtime.functions;
+
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.OffsetTime;
+import java.time.ZonedDateTime;
+import java.time.chrono.ChronoPeriod;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.function.Predicate;
 
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.FEELDialect;
-import org.kie.dmn.feel.lang.ast.*;
+import org.kie.dmn.feel.lang.ast.AtLiteralNode;
+import org.kie.dmn.feel.lang.ast.BaseNode;
+import org.kie.dmn.feel.lang.ast.FunctionInvocationNode;
+import org.kie.dmn.feel.lang.ast.NullNode;
+import org.kie.dmn.feel.lang.ast.NumberNode;
+import org.kie.dmn.feel.lang.ast.StringNode;
 import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
 import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
 import org.kie.dmn.feel.parser.feel11.ASTBuilderVisitor;
@@ -31,24 +50,14 @@ import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.Range.RangeBoundary;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
-import org.kie.dmn.feel.runtime.functions.BaseFEELFunction;
-import org.kie.dmn.feel.runtime.functions.FEELFnResult;
-import org.kie.dmn.feel.runtime.functions.ParameterName;
 import org.kie.dmn.feel.runtime.impl.RangeImpl;
-
-import java.time.*;
-import java.time.chrono.ChronoPeriod;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.function.Predicate;
 
 public class RangeFunction extends BaseFEELFunction {
 
     public static final RangeFunction INSTANCE = new RangeFunction();
-    // Defaulting FEELDialect to FEEL
-    private static final EvaluationContext STUBBED = new EvaluationContextImpl(Thread.currentThread().getContextClassLoader(), new FEELEventListenersManager(), 0, FEELDialect.FEEL);
+
+    private static EvaluationContext STUBBED;
+
 
     private static final List<Predicate<BaseNode>> ALLOWED_NODES = Arrays.asList(baseNode -> baseNode instanceof NullNode,
             baseNode -> baseNode instanceof NumberNode,
@@ -111,12 +120,12 @@ public class RangeFunction extends BaseFEELFunction {
         if (!nodeIsAllowed(rightNode)) {
             return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "from", "right endpoint is not a recognised valid literal"));
         }
-        Object left = leftNode.evaluate(STUBBED);
+        Object left = leftNode.evaluate(getStubbed());
         if (!nodeValueIsAllowed(left)) {
             return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "from", "left endpoint is not a valid value " + left.getClass()));
         }
 
-        Object right = rightNode.evaluate(STUBBED);
+        Object right = rightNode.evaluate(getStubbed());
         if (!nodeValueIsAllowed(right)) {
             return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "from", "right endpoint is not a valid value " + right.getClass()));
         }
@@ -167,6 +176,15 @@ public class RangeFunction extends BaseFEELFunction {
         ASTBuilderVisitor v = new ASTBuilderVisitor(Collections.emptyMap(), null);
         BaseNode expr = v.visit(tree);
         return expr;
+    }
+
+    private EvaluationContext getStubbed() {
+        if (STUBBED == null) {
+            // Defaulting FEELDialect to FEEL
+            STUBBED = new EvaluationContextImpl(Thread.currentThread().getContextClassLoader(),
+                                                new FEELEventListenersManager(), 0, FEELDialect.FEEL);
+        }
+        return STUBBED;
     }
 
 }

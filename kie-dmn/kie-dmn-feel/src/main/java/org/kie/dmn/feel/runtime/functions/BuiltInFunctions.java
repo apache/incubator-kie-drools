@@ -119,7 +119,20 @@ public class BuiltInFunctions {
             OverlapsAfterFunction.INSTANCE,
             MeetsFunction.INSTANCE,
             MetByFunction.INSTANCE,
-            ListReplaceFunction.INSTANCE
+            ListReplaceFunction.INSTANCE,
+            StringJoinFunction.INSTANCE,
+
+            NowFunction.INSTANCE,
+            TodayFunction.INSTANCE,
+            ContextPutFunction.INSTANCE,
+            ContextMergeFunction.INSTANCE,
+            ContextFunction.INSTANCE,
+            RoundUpFunction.INSTANCE,
+            RoundDownFunction.INSTANCE,
+            RoundHalfUpFunction.INSTANCE,
+            RoundHalfDownFunction.INSTANCE,
+
+            RangeFunction.INSTANCE,
     };
 
     public static FEELFunction[] getFunctions() {

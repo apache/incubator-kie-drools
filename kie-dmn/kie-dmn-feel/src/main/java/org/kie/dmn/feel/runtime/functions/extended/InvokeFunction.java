@@ -39,6 +39,8 @@ import org.kie.dmn.feel.runtime.functions.ParameterName;
 @Deprecated
 public class InvokeFunction extends BaseFEELFunction {
 
+    public static final InvokeFunction INSTANCE = new InvokeFunction();
+
     public InvokeFunction() {
         super("invoke");
     }

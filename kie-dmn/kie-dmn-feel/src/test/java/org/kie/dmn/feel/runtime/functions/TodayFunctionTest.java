@@ -22,7 +22,6 @@ import java.time.LocalDate;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kie.dmn.feel.runtime.functions.extended.TodayFunction;
 
 class TodayFunctionTest {
 

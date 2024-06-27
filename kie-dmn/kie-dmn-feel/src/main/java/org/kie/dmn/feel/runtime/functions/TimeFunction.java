@@ -63,6 +63,13 @@ public class TimeFunction
                                                   .withResolverStyle(ResolverStyle.STRICT);
     }
 
+    public static boolean timeStringWithSeconds(String val) {
+        return timePattern.matcher(val).find();
+    }
+
+    private static final BigDecimal NANO_MULT = BigDecimal.valueOf( 1000000000 );
+
+
     public TimeFunction() {
         super(FEELConversionFunctionNames.TIME);
     }
@@ -71,7 +78,6 @@ public class TimeFunction
         if ( val == null ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "from", "cannot be null"));
         }
-        
         try {
             TemporalAccessor parsed = FEEL_TIME.parse(val);
 
@@ -90,18 +96,15 @@ public class TimeFunction
                 ZoneTime zoneTime = ZoneTime.of(asLocalTime, zoneId, hasSeconds);
                 return FEELFnResult.ofResult(zoneTime);
             }
-
             return FEELFnResult.ofResult(parsed);
         } catch (DateTimeException e) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "from", e));
+            return manageDateTimeException(e, val);
         }
     }
 
-    public static boolean timeStringWithSeconds(String val) {
-        return timePattern.matcher(val).find();
+    public FEELFnResult<TemporalAccessor> manageDateTimeException(DateTimeException e, String val) {
+        return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "from", e));
     }
-
-    private static final BigDecimal NANO_MULT = BigDecimal.valueOf( 1000000000 );
 
     public FEELFnResult<TemporalAccessor> invoke(
             @ParameterName("hour") Number hour, @ParameterName("minute") Number minute,

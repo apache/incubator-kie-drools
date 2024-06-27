@@ -26,6 +26,8 @@ import org.kie.dmn.feel.util.TypeUtil;
 public class CodeFunction
         extends BaseFEELFunction {
 
+    public static final CodeFunction INSTANCE = new CodeFunction();
+
     public CodeFunction() {
         super( "code" );
     }

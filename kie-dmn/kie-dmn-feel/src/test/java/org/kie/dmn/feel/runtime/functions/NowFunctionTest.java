@@ -23,7 +23,6 @@ import java.time.temporal.TemporalAccessor;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kie.dmn.feel.runtime.functions.extended.NowFunction;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

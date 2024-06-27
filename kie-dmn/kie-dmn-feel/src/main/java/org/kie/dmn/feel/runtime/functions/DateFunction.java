@@ -66,9 +66,14 @@ public class DateFunction
         try {
             return FEELFnResult.ofResult(LocalDate.from(FEEL_DATE.parse(val)));
         } catch (DateTimeException e) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "date", e));
+            return manageDateTimeException(e, val);
         }
     }
+
+    public FEELFnResult<TemporalAccessor> manageDateTimeException(DateTimeException e, String val) {
+        return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "date", e));
+    }
+
 
     public FEELFnResult<TemporalAccessor> invoke(@ParameterName( "year" ) Number year, @ParameterName( "month" ) Number month, @ParameterName( "day" ) Number day) {
         if ( year == null ) {

@@ -16,16 +16,15 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.dmn.feel.runtime.functions.extended;
+package org.kie.dmn.feel.runtime.functions;
 
 import java.time.ZonedDateTime;
 import java.time.temporal.TemporalAccessor;
 
-import org.kie.dmn.feel.runtime.functions.BaseFEELFunction;
-import org.kie.dmn.feel.runtime.functions.FEELFnResult;
-
 public class NowFunction
         extends BaseFEELFunction {
+
+    public static final NowFunction INSTANCE = new NowFunction();
 
     public NowFunction() {
         super( "now" );
