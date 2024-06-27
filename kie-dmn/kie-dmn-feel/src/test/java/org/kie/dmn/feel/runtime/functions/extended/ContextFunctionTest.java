@@ -25,6 +25,7 @@ import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 import org.kie.dmn.feel.runtime.functions.FunctionTestUtil;
 
 import java.util.List;
+import java.util.Map;
 
 class ContextFunctionTest {
 
@@ -42,13 +43,19 @@ class ContextFunctionTest {
     }
 
     @Test
-    void invokeContainsNull() {
-        FunctionTestUtil.assertResultError(contextFunction.invoke(List.of(new ContextEntry("name", null))), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(contextFunction.invoke(List.of(new ContextEntry(null, "John Doe"))), InvalidParametersEvent.class);
-    }
+    void invokeContainsNoKeyAndValue() {
+        FunctionTestUtil.assertResultError(contextFunction.invoke(List.of(
+                Map.of("test", "name", "value", "John Doe"),
+                Map.of("key", "name", "test", "John Doe"))), InvalidParametersEvent.class);
+}
 
     @Test
     void invokeDuplicateKey() {
-        FunctionTestUtil.assertResultError(contextFunction.invoke(List.of(new ContextEntry("name", "John Doe"), new ContextEntry("name", "Doe John"))), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(contextFunction.invoke(List.of(
+                Map.of("key", "name", "value", "John Doe"),
+                Map.of("key", "name", "value", "John Doe"))), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultNotError(contextFunction.invoke(List.of(
+                Map.of("key", "name", "value", "John Doe"),
+                Map.of("key", "age", "value", 12))));
     }
 }
