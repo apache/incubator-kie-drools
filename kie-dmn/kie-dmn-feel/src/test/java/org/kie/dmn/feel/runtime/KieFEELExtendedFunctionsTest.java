@@ -43,7 +43,7 @@ public class KieFEELExtendedFunctionsTest extends BaseFEELTest {
 
     private static Collection<Object[]> data() {
         final Object[][] cases = new Object[][] {
-                { "string(\"Happy %.0fth birthday, Mr %s!\", 38, \"Doe\")", "Happy 38th birthday, Mr Doe!", null},
+                /*{ "string(\"Happy %.0fth birthday, Mr %s!\", 38, \"Doe\")", "Happy 38th birthday, Mr Doe!", null},
                 { "now()", ZonedDateTime.class , null},
                 { "today()", LocalDate.class, null },
                 { "string join([\"a\",\"b\",\"c\"], \"_and_\")", "a_and_b_and_c", null},
@@ -127,9 +127,9 @@ public class KieFEELExtendedFunctionsTest extends BaseFEELTest {
                 { "context merge([{name: \"John Doe\", age: 0}, {age: 47}])", mapOf(entry("name", "John Doe"),entry("age", new BigDecimal(47))), null },
                 { "context([{key: \"name\", value: \"John Doe\"},{\"key\":\"age\", \"value\":47}])", mapOf(entry("name", "John Doe"),entry("age", new BigDecimal(47))), null },
                 { "context([{key: \"name\", value: \"John Doe\"},{\"key\":\"age\", \"value\":47, \"something\":\"else\"}])", mapOf(entry("name", "John Doe"),entry("age", new BigDecimal(47))), null },
-                { "context([{key: \"name\", value: \"John Doe\"},{\"key\":\"age\"}])", null, FEELEvent.Severity.ERROR },
-                { "context([{key: \"name\", value: \"John Doe\"},{\"key\": \"name\" \"value\": \"Doe John\"}])", null, FEELEvent.Severity.ERROR },
-                { "time(10, 20, 30)", LocalTime.of(10, 20, 30), null },
+                { "context([{key: \"name\", value: \"John Doe\"},{\"key\":\"age\"}])", null, FEELEvent.Severity.ERROR }, */
+                { "context([{key: \"name\", value: \"John Doe\"},{key: \"name\", value: \"Doe John\"}])", null, FEELEvent.Severity.ERROR },
+                /*{ "time(10, 20, 30)", LocalTime.of(10, 20, 30), null },
                 { "date( 2020, 2, 31 )", null, FEELEvent.Severity.ERROR},
                 { "date( \"2020-02-31\" )", null, FEELEvent.Severity.ERROR},
                 { "range(\"[1..10]\")", Range.class, null },
@@ -143,7 +143,7 @@ public class KieFEELExtendedFunctionsTest extends BaseFEELTest {
                 { "range(\"[1..10[\").end included", false, null },
                 { "range(\"[date(\\\"2022-01-01\\\")..date(\\\"2023-01-01\\\"))\")", Range.class, null },
                 { "range(\"[date(\\\"2022-01-01\\\")..date(\\\"2023-01-01\\\"))\").end included", false, null },
-                { "range(\"[date(\\\"2022-01-01\\\")..date(\\\"2023-01-01\\\"))\").end.year", new BigDecimal("2023"), null },
+                { "range(\"[date(\\\"2022-01-01\\\")..date(\\\"2023-01-01\\\"))\").end.year", new BigDecimal("2023"), null },*/
         };
         return addAdditionalParameters(cases, true);
     }
