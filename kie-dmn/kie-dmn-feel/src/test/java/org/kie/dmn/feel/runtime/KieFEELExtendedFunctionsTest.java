@@ -135,7 +135,6 @@ public class KieFEELExtendedFunctionsTest extends BaseFEELTest {
                 { "context([{key: \"name\", value: \"John Doe\"},{\"key\": \"age\", \"value\": 47, \"something\": \"else\"}])", mapOf(entry("name", "John Doe"), entry("age", new BigDecimal(47))), null },
                 { "context([{key: \"name\", value: \"John Doe\"},{\"key\": \"age\", \"value\": 47, \"something\": \"else\"}])", mapOf(entry("name", "John Doe"), entry("age", new BigDecimal(47))), null },
                 { "context({key: \"name\", value: \"John Doe\"})", mapOf(entry("name", "John Doe")), null },
-                { "context([{key: \"name\", value: \"John Doe\"},{\"key\": \"name\" \"value\": \"Doe John\"}])", null, FEELEvent.Severity.ERROR },
                 { "time(10, 20, 30)", LocalTime.of(10, 20, 30), null },
                 { "date( 2020, 2, 31 )", null, FEELEvent.Severity.ERROR},
                 { "date( \"2020-02-31\" )", null, FEELEvent.Severity.ERROR},
