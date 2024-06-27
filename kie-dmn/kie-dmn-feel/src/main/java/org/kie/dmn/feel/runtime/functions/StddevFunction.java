@@ -70,18 +70,6 @@ public class StddevFunction
         return FEELFnResult.ofResult( SqrtFunction.sqrt( mean ) );
     }
 
-    public FEELFnResult<BigDecimal> invoke(@ParameterName("list") Object sole) {
-        if ( sole == null ) {
-            // Arrays.asList does not accept null as parameter
-            return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "list", "the single value list cannot be null"));
-        } else if (NumberEvalHelper.getBigDecimalOrNull(sole) == null) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "list",
-                                                                   "the value can not be converted to a number"));
-        }
-        return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "list",
-                                                               "sample standard deviation of a single sample is undefined"));
-        }
-
     public FEELFnResult<BigDecimal> invoke(@ParameterName("n") Object[] list) {
         if ( list == null ) {
             // Arrays.asList does not accept null as parameter

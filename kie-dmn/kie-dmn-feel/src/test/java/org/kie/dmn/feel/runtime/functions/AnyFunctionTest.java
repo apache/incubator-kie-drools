@@ -36,21 +36,6 @@ class AnyFunctionTest {
     }
 
     @Test
-    void invokeBooleanParamNull() {
-        FunctionTestUtil.assertResultNull(anyFunction.invoke((Boolean) null));
-    }
-
-    @Test
-    void invokeBooleanParamTrue() {
-        FunctionTestUtil.assertResult(anyFunction.invoke(true), true);
-    }
-
-    @Test
-    void invokeBooleanParamFalse() {
-        FunctionTestUtil.assertResult(anyFunction.invoke(false), false);
-    }
-
-    @Test
     void invokeArrayParamNull() {
         FunctionTestUtil.assertResultError(anyFunction.invoke((Object[]) null), InvalidParametersEvent.class);
     }

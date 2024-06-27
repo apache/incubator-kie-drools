@@ -57,10 +57,6 @@ public class AnyFunction
         }
     }
 
-    public FEELFnResult<Boolean> invoke(@ParameterName( "list" ) Boolean single) {
-        return FEELFnResult.ofResult( single );
-    }
-
     public FEELFnResult<Boolean> invoke(@ParameterName( "b" ) Object[] list) {
         if ( list == null ) { 
             // Arrays.asList does not accept null as parameter

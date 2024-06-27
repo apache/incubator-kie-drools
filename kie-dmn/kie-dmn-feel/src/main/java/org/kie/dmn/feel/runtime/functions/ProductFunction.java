@@ -54,23 +54,6 @@ public class ProductFunction
         return FEELFnResult.ofResult( product );
     }
 
-    public FEELFnResult<BigDecimal> invoke(@ParameterName("list") Number single) {
-        if ( single == null ) { 
-            // Arrays.asList does not accept null as parameter
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "the single value list cannot be null"));
-        }
-        
-        if( single instanceof BigDecimal ) {
-            return FEELFnResult.ofResult((BigDecimal) single );
-        } 
-        BigDecimal result = NumberEvalHelper.getBigDecimalOrNull( single );
-        if ( result != null ) {
-            return FEELFnResult.ofResult( result );
-        } else {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "single element in list not a number"));
-        }
-    }
-
     public FEELFnResult<BigDecimal> invoke(@ParameterName("n") Object[] list) {
         if ( list == null ) { 
             // Arrays.asList does not accept null as parameter

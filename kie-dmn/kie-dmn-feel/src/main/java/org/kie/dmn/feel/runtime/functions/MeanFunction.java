@@ -47,9 +47,8 @@ public class MeanFunction
 
         FEELFnResult<BigDecimal> s = sum.invoke( list );
         
-        Function<FEELEvent, FEELFnResult<BigDecimal>> ifLeft = (event) -> {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "unable to sum the elements which is required to calculate the mean"));
-        };
+        Function<FEELEvent, FEELFnResult<BigDecimal>> ifLeft = (event) ->
+                FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "unable to sum the elements which is required to calculate the mean"));
         
         Function<BigDecimal, FEELFnResult<BigDecimal>> ifRight = (sum) -> {
             try {
@@ -60,22 +59,6 @@ public class MeanFunction
         };
         
         return s.cata(ifLeft, ifRight);
-    }
-
-    public FEELFnResult<BigDecimal> invoke(@ParameterName( "list" ) Number single) {
-        if ( single == null ) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "single", "the single value list cannot be null"));
-        }
-
-        if( single instanceof BigDecimal ) {
-            return FEELFnResult.ofResult((BigDecimal) single );
-        } 
-        BigDecimal result = NumberEvalHelper.getBigDecimalOrNull(single );
-        if ( result != null ) {
-            return FEELFnResult.ofResult( result );
-        } else {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "single element in list is not a number"));
-        }
     }
 
     public FEELFnResult<BigDecimal> invoke(@ParameterName( "n" ) Object[] list) {
