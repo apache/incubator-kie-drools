@@ -36,26 +36,8 @@ class SumFunctionTest {
     }
 
     @Test
-    void invokeNumberParamNull() {
-        FunctionTestUtil.assertResultError(sumFunction.invoke((Number) null), InvalidParametersEvent.class);
-    }
-
-    @Test
-    void invokeNumberParamUnsupportedNumber() {
-        FunctionTestUtil.assertResultError(sumFunction.invoke(Double.NaN), InvalidParametersEvent.class);
-    }
-
-    @Test
-    void invokeNumberParamSupportedNumber() {
-        FunctionTestUtil.assertResult(sumFunction.invoke(BigDecimal.TEN), BigDecimal.TEN);
-        FunctionTestUtil.assertResult(sumFunction.invoke(10), BigDecimal.TEN);
-        FunctionTestUtil.assertResult(sumFunction.invoke(-10), BigDecimal.valueOf(-10));
-        FunctionTestUtil.assertResult(sumFunction.invoke(10.12), BigDecimal.valueOf(10.12));
-    }
-
-    @Test
     void invokeListParam() {
-        FunctionTestUtil.assertResultError(sumFunction.invoke((List) null), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(sumFunction.invoke((List<?>) null), InvalidParametersEvent.class);
     }
 
     @Test

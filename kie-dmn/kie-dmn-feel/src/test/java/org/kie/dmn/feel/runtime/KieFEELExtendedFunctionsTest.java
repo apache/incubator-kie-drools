@@ -55,6 +55,7 @@ public class KieFEELExtendedFunctionsTest extends BaseFEELTest {
                 { "string join([], \"X\")", "", null},
                 { "string join([\"a\",\"b\",\"c\"])", "abc", null},
                 { "string join([\"a\",null,\"c\"])", "ac", null},
+                { "string join(\"a\")", "a", null},
                 { "string join([])", "", null},
                 { "string join([\"a\",123,\"c\"], null)", null, FEELEvent.Severity.ERROR},
                 { "string join(null, null)", null, FEELEvent.Severity.ERROR},
