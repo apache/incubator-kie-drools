@@ -19,6 +19,7 @@
 package org.kie.dmn.feel.runtime.functions;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
+import org.kie.dmn.feel.runtime.FEELBooleanFunction;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
 import java.util.regex.Matcher;
@@ -26,7 +27,7 @@ import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 public class MatchesFunction
-        extends BaseFEELFunction {
+        extends BaseFEELFunction implements FEELBooleanFunction {
 
     public static final MatchesFunction INSTANCE = new MatchesFunction();
 

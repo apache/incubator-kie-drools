@@ -28,6 +28,7 @@ import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
 import org.kie.dmn.feel.parser.feel11.ASTBuilderVisitor;
 import org.kie.dmn.feel.parser.feel11.FEELParser;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser;
+import org.kie.dmn.feel.runtime.FEELRangeFunction;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.Range.RangeBoundary;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
@@ -44,7 +45,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
 
-public class RangeFunction extends BaseFEELFunction {
+public class RangeFunction extends BaseFEELFunction implements FEELRangeFunction {
 
     public static final RangeFunction INSTANCE = new RangeFunction();
     // Defaulting FEELDialect to FEEL

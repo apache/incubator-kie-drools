@@ -102,4 +102,9 @@ public class BeforeFunction
         }
     }
 
+    @Override
+    public Object defaultValue() {
+        return false;
+    }
+
 }

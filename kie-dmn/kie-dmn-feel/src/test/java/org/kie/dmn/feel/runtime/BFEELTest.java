@@ -18,13 +18,23 @@
  */
 package org.kie.dmn.feel.runtime;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.OffsetTime;
+import java.time.ZoneOffset;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.lang.FEELDialect;
-
+import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
+import org.kie.dmn.feel.runtime.custom.ZoneTime;
+import org.kie.dmn.feel.runtime.impl.RangeImpl;
 
 public class BFEELTest extends BaseFEELTest {
 
@@ -44,8 +54,7 @@ public class BFEELTest extends BaseFEELTest {
 
     private static Collection<Object[]> data() {
         final Object[][] cases = new Object[][] {
-                //{"\"a\"", "a", null},
-                {"\"a\" = 1", false, null},
+//                {"\"a\" = 1", false, null},
 //                {"\"a\" != 1", true, null},
 //                {"\"a\" < 1", false, null},
 //                {"\"a\" <= null", false, null},
@@ -55,10 +64,42 @@ public class BFEELTest extends BaseFEELTest {
 //                {"true and \"x\"", false, null},
 //                {"false or \"x\"", false, null},
 //                {"\"a\" in [1..100]", false, null},
-//                {"null between 1 and 100", false, null},
+//                {"null between 1 and 100", false, FEELEvent.Severity.ERROR},
+
+//                {"matches(\"bad pattern\",\"[0-9\")", false, null},
+//                {"before(date(\"2021-01-01\"), null)", false, null},
+//                {"all(true,\"x\",true)", false, null},
+//                {"any(null)", false, null},
+
+//                {"decimal(\"a\", 0)", BigDecimal.ZERO, FEELEvent.Severity.ERROR},
+//                {"round up(\"5.5\", 0)", BigDecimal.ZERO, FEELEvent.Severity.ERROR},
+//                {"string length(22)", BigDecimal.ZERO, FEELEvent.Severity.ERROR},
+//                {"day of year(\"a\")", BigDecimal.ZERO, FEELEvent.Severity.ERROR},
+//                {"count([1,null,3])", BigDecimal.valueOf(3), null},
+//                {"sum([1, null, 3])", BigDecimal.valueOf(4), null},
+//                {"sum([1, \"1\" ,3])", BigDecimal.valueOf(4), null},
+//                {"sum([])", BigDecimal.ZERO, null},
+//                {"mean([\"a\"])", BigDecimal.ZERO, null},
+//                {"mean([1, \"a\", 3])", BigDecimal.valueOf(2), null},
+//
+//                {"lower case(12)", "", FEELEvent.Severity.ERROR},
 //                {"string(null)", "", null},
+//                {"day of week(\"a\")", "", FEELEvent.Severity.ERROR},
 //                {"substring(\"a\", \"z\")", "", FEELEvent.Severity.ERROR},
+
+//                {"time(\"a\")", OffsetTime.of(0, 0, 0, 0, ZoneOffset.ofHoursMinutes(0, 0)), null},
+//                {"date(null)", LocalDate.of(1970, 1, 1), null},
+
+//                {"duration(\"a\")", ComparablePeriod.parse("P0M" ) , null},
+//                {"years and months duration(null, null)", ComparablePeriod.parse("P0M" ) , null},
+
+//                {"split(\"abc\", 22)", Collections.emptyList(), FEELEvent.Severity.ERROR},
+//                {"mode([null,null,null, 1, 1, 2])", List.of(BigDecimal.ONE), null},
+
+                {"range(\"x\")", new RangeImpl(Range.RangeBoundary.OPEN, BigDecimal.ZERO, BigDecimal.ZERO, Range.RangeBoundary.OPEN), null},
+
+
         };
-        return addAdditionalParameters(cases, false, FEELDialect.BFEEL);
+        return addAdditionalParametersForBothProfiles(cases, FEELDialect.BFEEL);
     }
 }

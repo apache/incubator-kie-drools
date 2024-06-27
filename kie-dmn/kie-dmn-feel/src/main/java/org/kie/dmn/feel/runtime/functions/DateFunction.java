@@ -27,6 +27,7 @@ import java.time.format.SignStyle;
 import java.time.temporal.TemporalAccessor;
 import java.util.regex.Pattern;
 
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
@@ -66,9 +67,14 @@ public class DateFunction
         try {
             return FEELFnResult.ofResult(LocalDate.from(FEEL_DATE.parse(val)));
         } catch (DateTimeException e) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "date", e));
+            return manageDateTimeException(e, val);
         }
     }
+
+    public FEELFnResult<TemporalAccessor> manageDateTimeException(DateTimeException e, String val) {
+        return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "date", e));
+    }
+
 
     public FEELFnResult<TemporalAccessor> invoke(@ParameterName( "year" ) Number year, @ParameterName( "month" ) Number month, @ParameterName( "day" ) Number day) {
         if ( year == null ) {
@@ -98,5 +104,10 @@ public class DateFunction
         } catch (DateTimeException e) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "from", "date-parsing exception", e));
         }
+    }
+
+    @Override
+    public Object defaultValue() {
+        return LocalDate.of(1970, 1, 1);
     }
 }

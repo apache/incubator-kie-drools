@@ -121,10 +121,6 @@ public class InfixOpNode
 
     @Override
     public Object evaluate(EvaluationContext ctx) {
-        // TODO {gcardosi} only for analysis
-        if (true) {
-            throw new UnsupportedOperationException();
-        }
         if (this.left == null) return null;
         return operator.evaluate(this, ctx);
     }

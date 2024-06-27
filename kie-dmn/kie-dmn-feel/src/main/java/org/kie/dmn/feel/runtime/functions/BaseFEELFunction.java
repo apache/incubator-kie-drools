@@ -84,10 +84,23 @@ public abstract class BaseFEELFunction
         try {
             boolean isNamedParams = params.length > 0 && params[0] instanceof NamedParameter;
             if ( !isCustomFunction() ) {
+                List<String> available = null;
+                if ( isNamedParams ) {
+                    available = Stream.of( params ).map( p -> ((NamedParameter) p).getName() ).collect( Collectors.toList() );
+                }
 
-                CandidateMethod cm = getCandidateMethod( ctx, params, isNamedParams );
+
+                CandidateMethod cm = getCandidateMethod( ctx, params, isNamedParams, available );
 
                 if ( cm != null ) {
+                    if (cm.actualParams != null) {
+                        for (int i = 0; i < cm.actualParams.length; i++) {
+                            if (cm.actualParams[i] instanceof List list) {
+                                cm.actualParams[i] =  getFEELDialectFixedList(ctx, list);
+                            }
+                        }
+                    }
+
                     Object result = cm.apply.invoke( this, cm.actualParams );
 
                     if ( result instanceof Either ) {
@@ -130,7 +143,7 @@ public abstract class BaseFEELFunction
             logger.error( "Error trying to call function " + getName() + ".", e );
             ctx.notifyEvt( () -> new FEELEventBase( Severity.ERROR, "Error trying to call function " + getName() + ".", e ));
         }
-        return ctx.getFEELDialect().equals(FEELDialect.BFEEL) ? defaultValue() : null;
+        return getFEELDialectFixedObject(ctx, null);
     }
 
     /**
@@ -144,12 +157,9 @@ public abstract class BaseFEELFunction
     }
 
     private Object getEitherResult(EvaluationContext ctx, Either<FEELEvent, Object> source, Supplier<List<String>> parameterNamesSupplier,
-                                   Supplier<List<Object>> parameterValuesSupplier) {
-        if (ctx.getFEELDialect().equals(FEELDialect.BFEEL)
-                && source.getOrElse(null) == null) {
-            source = Either.ofRight(defaultValue());
-        }
-        return source.cata(left -> {
+                                    Supplier<List<Object>> parameterValuesSupplier) {
+        source = getFEELDialectFixedEither(ctx, source);
+        return source.cata((left) -> {
             ctx.notifyEvt(() -> {
                               if (left instanceof InvalidParametersEvent invalidParametersEvent) {
                                   invalidParametersEvent.setNodeName(getName());
@@ -161,6 +171,33 @@ public abstract class BaseFEELFunction
             );
             return null;
         }, Function.identity());
+    }
+
+    private Either<FEELEvent, Object> getFEELDialectFixedEither(EvaluationContext ctx, Either<FEELEvent, Object> source) {
+        if (ctx.getFEELDialect().equals(FEELDialect.BFEEL)
+                && source.getOrElse(null) == null) {
+            return Either.ofRight(defaultValue());
+        } else {
+            return source;
+        }
+    }
+
+    private Object getFEELDialectFixedObject(EvaluationContext ctx, Object source) {
+        if (ctx.getFEELDialect().equals(FEELDialect.BFEEL)
+                && source == null) {
+            return defaultValue();
+        } else {
+            return source;
+        }
+    }
+
+    private List getFEELDialectFixedList(EvaluationContext ctx, List source) {
+        if (ctx.getFEELDialect().equals(FEELDialect.BFEEL)
+                && source != null) {
+            return emendedList(source);
+        } else {
+            return source;
+        }
     }
 
     private Object[] rearrangeParameters(Object[] params, List<String> pnames) {
@@ -179,14 +216,15 @@ public abstract class BaseFEELFunction
         return params;
     }
 
-    private CandidateMethod getCandidateMethod(EvaluationContext ctx, Object[] params, boolean isNamedParams) {
+    private CandidateMethod getCandidateMethod(EvaluationContext ctx, Object[] params, boolean isNamedParams, List<String> available) {
         CandidateMethod candidate = null;
         // first, look for exact matches
-        for ( Method m : getClass().getDeclaredMethods() ) {
-            if ( !Modifier.isPublic(m.getModifiers()) || !m.getName().equals( "invoke" ) ) {
-                continue;
-            }
-
+        Method[] declaredMethods = getClass().getMethods();
+        List<Method> invokeMethods = Arrays.stream(declaredMethods)
+                .filter(m -> Modifier.isPublic(m.getModifiers()) &&
+                                                      m.getName().equals("invoke"))
+                .toList();
+        for ( Method m : invokeMethods) {
             Object[] actualParams;
             boolean injectCtx = Arrays.stream( m.getParameterTypes() ).anyMatch(EvaluationContext.class::isAssignableFrom);
             if( injectCtx ) {
@@ -208,7 +246,7 @@ public abstract class BaseFEELFunction
                 actualParams = params;
             }
             if( isNamedParams ) {
-                actualParams = calculateActualParams( m, actualParams );
+                actualParams = calculateActualParams(  m, actualParams );
                 if( actualParams == null ) {
                     // incompatible method
                     continue;
