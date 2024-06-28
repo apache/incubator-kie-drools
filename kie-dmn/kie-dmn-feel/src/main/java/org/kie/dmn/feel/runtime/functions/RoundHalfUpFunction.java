@@ -29,7 +29,7 @@ public class RoundHalfUpFunction
 
     public static final RoundHalfUpFunction INSTANCE = new RoundHalfUpFunction();
 
-    public RoundHalfUpFunction() {
+    private RoundHalfUpFunction() {
         super( "round half up" );
     }
     

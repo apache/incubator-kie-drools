@@ -26,7 +26,7 @@ public class StartsWithFunction
 
     public static final StartsWithFunction INSTANCE = new StartsWithFunction();
 
-    public StartsWithFunction() {
+    private StartsWithFunction() {
         super( "starts with" );
     }
 

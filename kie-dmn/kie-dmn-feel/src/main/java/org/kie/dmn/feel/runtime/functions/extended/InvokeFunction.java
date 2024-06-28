@@ -41,7 +41,7 @@ public class InvokeFunction extends BaseFEELFunction {
 
     public static final InvokeFunction INSTANCE = new InvokeFunction();
 
-    public InvokeFunction() {
+    private InvokeFunction() {
         super("invoke");
     }
 

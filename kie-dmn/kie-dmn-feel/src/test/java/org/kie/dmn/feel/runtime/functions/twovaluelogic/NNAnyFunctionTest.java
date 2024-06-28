@@ -22,19 +22,14 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 import org.kie.dmn.feel.runtime.functions.FunctionTestUtil;
 
 class NNAnyFunctionTest {
 
-    private NNAnyFunction anyFunction;
+    private static final NNAnyFunction anyFunction = NNAnyFunction.INSTANCE;
 
-    @BeforeEach
-    void setUp() {
-        anyFunction = new NNAnyFunction();
-    }
 
     @Test
     void invokeBooleanParamNull() {

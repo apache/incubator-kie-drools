@@ -70,7 +70,7 @@ public class TimeFunction
     private static final BigDecimal NANO_MULT = BigDecimal.valueOf( 1000000000 );
 
 
-    public TimeFunction() {
+    protected TimeFunction() {
         super(FEELConversionFunctionNames.TIME);
     }
 

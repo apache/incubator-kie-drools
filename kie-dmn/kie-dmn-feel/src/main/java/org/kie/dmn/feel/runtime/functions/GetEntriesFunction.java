@@ -30,7 +30,7 @@ public class GetEntriesFunction extends BaseFEELFunction {
 
     public static final GetEntriesFunction INSTANCE = new GetEntriesFunction();
 
-    public GetEntriesFunction() {
+    private GetEntriesFunction() {
         super("get entries");
     }
 

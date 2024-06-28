@@ -26,7 +26,7 @@ public class TodayFunction
 
     public static final TodayFunction INSTANCE = new TodayFunction();
 
-    public TodayFunction() {
+    private TodayFunction() {
         super( "today" );
     }
 

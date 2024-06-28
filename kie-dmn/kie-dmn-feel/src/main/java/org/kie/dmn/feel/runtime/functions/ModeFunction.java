@@ -35,7 +35,7 @@ public class ModeFunction
         extends BaseFEELFunction {
     public static final ModeFunction INSTANCE = new ModeFunction();
 
-    ModeFunction() {
+    private ModeFunction() {
         super("mode");
     }
 

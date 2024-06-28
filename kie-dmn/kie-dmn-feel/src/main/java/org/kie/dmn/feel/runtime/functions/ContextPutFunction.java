@@ -28,16 +28,12 @@ import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.lang.types.impl.ImmutableFPAWrappingPOJO;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
-/**
- * Proposal DMN14-187
- * Experimental for DMN14-181
- * See also: DMN14-182, DMN14-183
- */
+
 public class ContextPutFunction extends BaseFEELFunction {
 
     public static final ContextPutFunction INSTANCE = new ContextPutFunction();
 
-    public ContextPutFunction() {
+    private ContextPutFunction() {
         super("context put");
     }
 

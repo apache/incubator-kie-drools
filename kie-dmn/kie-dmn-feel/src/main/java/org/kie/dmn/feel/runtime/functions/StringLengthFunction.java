@@ -29,7 +29,7 @@ public class StringLengthFunction
 
     public static final StringLengthFunction INSTANCE = new StringLengthFunction();
 
-    public StringLengthFunction() {
+    private StringLengthFunction() {
         super( "string length" );
     }
 

@@ -33,7 +33,7 @@ public class DurationFunction
 
     public static final DurationFunction INSTANCE = new DurationFunction();
 
-    public DurationFunction() {
+    private DurationFunction() {
         super(FEELConversionFunctionNames.DURATION);
     }
 

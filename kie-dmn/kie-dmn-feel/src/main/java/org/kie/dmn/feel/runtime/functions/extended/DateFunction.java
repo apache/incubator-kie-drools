@@ -34,7 +34,7 @@ import org.kie.dmn.feel.runtime.functions.ParameterName;
 public class DateFunction extends org.kie.dmn.feel.runtime.functions.DateFunction {
     public static final DateFunction INSTANCE = new DateFunction();
 
-    DateFunction() {
+    private DateFunction() {
     }
 
     @Override

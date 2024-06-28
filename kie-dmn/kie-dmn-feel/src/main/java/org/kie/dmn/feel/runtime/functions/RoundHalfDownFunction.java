@@ -29,7 +29,7 @@ public class RoundHalfDownFunction
 
     public static final RoundHalfDownFunction INSTANCE = new RoundHalfDownFunction();
 
-    public RoundHalfDownFunction() {
+    private RoundHalfDownFunction() {
         super( "round half down" );
     }
     

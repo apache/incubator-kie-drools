@@ -35,7 +35,7 @@ import org.kie.dmn.feel.runtime.functions.ParameterName;
 public class TimeFunction extends org.kie.dmn.feel.runtime.functions.TimeFunction {
     public static final TimeFunction INSTANCE = new TimeFunction();
 
-    TimeFunction() {
+    private TimeFunction() {
     }
 
     @Override

@@ -78,7 +78,7 @@ public class RangeFunction extends BaseFEELFunction {
             object -> object instanceof LocalTime);
 
 
-    public RangeFunction() {
+    private RangeFunction() {
         super("range");
     }
 

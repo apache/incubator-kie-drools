@@ -29,7 +29,7 @@ public class RoundUpFunction
 
     public static final RoundUpFunction INSTANCE = new RoundUpFunction();
 
-    public RoundUpFunction() {
+    private RoundUpFunction() {
         super( "round up" );
     }
     

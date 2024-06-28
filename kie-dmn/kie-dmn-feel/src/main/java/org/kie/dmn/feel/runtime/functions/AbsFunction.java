@@ -30,7 +30,7 @@ public class AbsFunction
         extends BaseFEELFunction {
     public static final AbsFunction INSTANCE = new AbsFunction();
 
-    AbsFunction() {
+    private AbsFunction() {
         super( "abs" );
     }
 

@@ -28,7 +28,7 @@ public class StringJoinFunction extends BaseFEELFunction {
 
     public static final StringJoinFunction INSTANCE = new StringJoinFunction();
 
-    public StringJoinFunction() {
+    private StringJoinFunction() {
         super("string join");
     }
 

@@ -29,7 +29,7 @@ public class GetValueFunction extends BaseFEELFunction {
 
     public static final GetValueFunction INSTANCE = new GetValueFunction();
 
-    public GetValueFunction() {
+    private GetValueFunction() {
         super("get value");
     }
 

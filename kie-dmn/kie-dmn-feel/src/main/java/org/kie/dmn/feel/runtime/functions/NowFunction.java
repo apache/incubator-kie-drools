@@ -26,7 +26,7 @@ public class NowFunction
 
     public static final NowFunction INSTANCE = new NowFunction();
 
-    public NowFunction() {
+    private NowFunction() {
         super( "now" );
     }
 

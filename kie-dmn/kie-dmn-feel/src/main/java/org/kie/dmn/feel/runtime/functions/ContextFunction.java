@@ -25,16 +25,12 @@ import java.util.Map;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
-/**
- * Proposal DMN14-187
- * Experimental for DMN14-183, an inverse of `get entries()`
- * See also: DMN14-181, DMN14-182
- */
+
 public class ContextFunction extends BaseFEELFunction {
 
     public static final ContextFunction INSTANCE = new ContextFunction();
 
-    public ContextFunction() {
+    private ContextFunction() {
         super("context");
     }
 

@@ -28,7 +28,7 @@ public class CodeFunction
 
     public static final CodeFunction INSTANCE = new CodeFunction();
 
-    public CodeFunction() {
+    private CodeFunction() {
         super( "code" );
     }
 

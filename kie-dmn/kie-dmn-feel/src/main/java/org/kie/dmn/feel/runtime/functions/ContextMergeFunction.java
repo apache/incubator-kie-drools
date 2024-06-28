@@ -26,16 +26,11 @@ import java.util.Map;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
-/**
- * Proposal DMN14-187
- * Experimental for DMN14-182
- * See also: DMN14-181, DMN14-183
- */
 public class ContextMergeFunction extends BaseFEELFunction {
 
     public static final ContextMergeFunction INSTANCE = new ContextMergeFunction();
 
-    public ContextMergeFunction() {
+    private ContextMergeFunction() {
         super("context merge");
     }
 
