@@ -63,7 +63,7 @@ public class TimeFunction extends org.kie.dmn.feel.runtime.functions.TimeFunctio
     }
 
     @Override
-    public FEELFnResult<TemporalAccessor> manageDateTimeException(DateTimeException e, String val) {
+    protected FEELFnResult<TemporalAccessor> manageDateTimeException(DateTimeException e, String val) {
         // try to parse it as a date time and extract the date component
         // NOTE: this is an extension to the standard
         return BuiltInFunctions.getFunction(DateAndTimeFunction.class).invoke(val)

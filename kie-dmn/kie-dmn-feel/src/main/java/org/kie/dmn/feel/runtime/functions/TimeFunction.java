@@ -102,10 +102,6 @@ public class TimeFunction
         }
     }
 
-    public FEELFnResult<TemporalAccessor> manageDateTimeException(DateTimeException e, String val) {
-        return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "from", e));
-    }
-
     public FEELFnResult<TemporalAccessor> invoke(
             @ParameterName("hour") Number hour, @ParameterName("minute") Number minute,
             @ParameterName("second") Number seconds) {
@@ -172,6 +168,10 @@ public class TimeFunction
         } catch (DateTimeException e) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "from", "time-parsing exception", e));
         }
+    }
+
+    protected FEELFnResult<TemporalAccessor> manageDateTimeException(DateTimeException e, String val) {
+        return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "from", e));
     }
 
 }

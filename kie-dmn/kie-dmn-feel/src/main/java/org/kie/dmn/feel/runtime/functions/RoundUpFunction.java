@@ -24,9 +24,6 @@ import java.math.RoundingMode;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
-/**
- * provisional access for DMN14-126
- */
 public class RoundUpFunction
         extends BaseFEELFunction {
 

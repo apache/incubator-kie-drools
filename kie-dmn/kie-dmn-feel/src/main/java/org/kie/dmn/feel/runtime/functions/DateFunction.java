@@ -70,11 +70,6 @@ public class DateFunction
         }
     }
 
-    public FEELFnResult<TemporalAccessor> manageDateTimeException(DateTimeException e, String val) {
-        return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "date", e));
-    }
-
-
     public FEELFnResult<TemporalAccessor> invoke(@ParameterName( "year" ) Number year, @ParameterName( "month" ) Number month, @ParameterName( "day" ) Number day) {
         if ( year == null ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "year", "cannot be null"));
@@ -103,5 +98,9 @@ public class DateFunction
         } catch (DateTimeException e) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "from", "date-parsing exception", e));
         }
+    }
+
+    protected FEELFnResult<TemporalAccessor> manageDateTimeException(DateTimeException e, String val) {
+        return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "date", e));
     }
 }
