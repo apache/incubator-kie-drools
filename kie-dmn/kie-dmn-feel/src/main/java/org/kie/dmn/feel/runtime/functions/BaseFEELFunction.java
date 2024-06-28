@@ -87,14 +87,14 @@ public abstract class BaseFEELFunction
                 CandidateMethod cm = getCandidateMethod( ctx, params, isNamedParams );
 
                 if ( cm != null ) {
-                    Object result = cm.apply.invoke( this, cm.actualParams );
+                    Object result = cm.actualMethod.invoke(this, cm.actualParams );
 
                     if ( result instanceof Either ) {
                         @SuppressWarnings("unchecked")
                         Either<FEELEvent, Object> either = (Either<FEELEvent, Object>) result;
                         return getEitherResult(ctx,
                                                either,
-                                                        () -> Stream.of(cm.apply.getParameters()).map(p -> p.getAnnotation(ParameterName.class).value()).collect(Collectors.toList()),
+                                                        () -> Stream.of(cm.actualMethod.getParameters()).map(p -> p.getAnnotation(ParameterName.class).value()).collect(Collectors.toList()),
                                                         () -> Arrays.asList(cm.actualParams));
                     }
 
@@ -130,6 +130,13 @@ public abstract class BaseFEELFunction
         return null;
     }
 
+    @Override
+    public List<List<Param>> getParameters() {
+        // TODO: we could implement this method using reflection, just for consistency,
+        // but it is not used at the moment
+        return Collections.emptyList();
+    }
+
     /**
      * this method should be overriden by custom function implementations that should be invoked reflectively
      * @param ctx
@@ -140,66 +147,24 @@ public abstract class BaseFEELFunction
         throw new RuntimeException( "This method should be overriden by classes that implement custom feel functions" );
     }
 
-    private Object getEitherResult(EvaluationContext ctx, Either<FEELEvent, Object> source, Supplier<List<String>> parameterNamesSupplier,
-                                    Supplier<List<Object>> parameterValuesSupplier) {
-        return source.cata((left) -> {
-            ctx.notifyEvt(() -> {
-                              if (left instanceof InvalidParametersEvent invalidParametersEvent) {
-                                  invalidParametersEvent.setNodeName(getName());
-                                  invalidParametersEvent.setActualParameters(parameterNamesSupplier.get(),
-                                                                             parameterValuesSupplier.get());
-                              }
-                              return left;
-                          }
-            );
-            return null;
-        }, Function.identity());
-    }
-
-    private Object[] rearrangeParameters(Object[] params, List<String> pnames) {
-        if ( pnames.size() > 0 ) {
-            Object[] actualParams = new Object[pnames.size()];
-            for ( int i = 0; i < actualParams.length; i++ ) {
-                for ( int j = 0; j < params.length; j++ ) {
-                    if ( ((NamedParameter) params[j]).getName().equals( pnames.get( i ) ) ) {
-                        actualParams[i] = ((NamedParameter) params[j]).getValue();
-                        break;
-                    }
-                }
-            }
-            params = actualParams;
-        }
-        return params;
-    }
-
-    private CandidateMethod getCandidateMethod(EvaluationContext ctx, Object[] params, boolean isNamedParams) {
+    /**
+     *
+     * @param ctx
+     * @param params
+     * @param isNamedParams <code>true</code> if the parameter refers to value to be retrieved inside <code>ctx</code>; <code>false</code> if the parameter is the actual value
+     * @return
+     */
+    protected CandidateMethod getCandidateMethod(EvaluationContext ctx, Object[] params, boolean isNamedParams) {
         CandidateMethod candidate = null;
-        // first, look for exact matches
-        for ( Method m : getClass().getDeclaredMethods() ) {
-            if ( !Modifier.isPublic(m.getModifiers()) || !m.getName().equals( "invoke" ) ) {
-                continue;
-            }
+        List<Method> invokeMethods = Arrays.stream(getClass().getDeclaredMethods())
+                .filter(m -> Modifier.isPublic(m.getModifiers()) && m.getName().equals("invoke"))
+                .toList();
 
-            Object[] actualParams;
-            boolean injectCtx = Arrays.stream( m.getParameterTypes() ).anyMatch( p -> EvaluationContext.class.isAssignableFrom( p ) );
-            if( injectCtx ) {
-                actualParams = new Object[ params.length + 1 ];
-                int j = 0;
-                for (int i = 0; i < m.getParameterCount(); i++) {
-                    if( EvaluationContext.class.isAssignableFrom( m.getParameterTypes()[i] ) ) {
-                        if( isNamedParams ) {
-                            actualParams[i] = new NamedParameter( "ctx", ctx );
-                        } else {
-                            actualParams[i] = ctx;
-                        }
-                    } else if (j < params.length) {
-                        actualParams[i] = params[j];
-                        j++;
-                    }
-                }
-            } else {
-                actualParams = params;
-            }
+        // first, look for exact matches
+        for ( Method m : invokeMethods) {
+
+            Object[] actualParams = getActualParameters(ctx, params, isNamedParams, m);
+
             if( isNamedParams ) {
                 actualParams = calculateActualParams(m, actualParams );
                 if( actualParams == null ) {
@@ -235,7 +200,7 @@ public abstract class BaseFEELFunction
                 }
             }
             if ( found ) {
-                cm.setApply( m );
+                cm.setActualMethod(m );
                 if (candidate == null) {
                     candidate = cm;
                 } else {
@@ -244,10 +209,10 @@ public abstract class BaseFEELFunction
                     } else if (cm.getScore() == candidate.getScore()) {
                         if (isNamedParams && nullCount(cm.actualParams)<nullCount(candidate.actualParams)) {
                             candidate = cm; // `cm` narrower for named parameters without need of passing nulls.
-                        } else if (candidate.getApply().getParameterTypes().length == 1
-                                && cm.getApply().getParameterTypes().length == 1
-                                && candidate.getApply().getParameterTypes()[0].equals(Object.class)
-                                && !cm.getApply().getParameterTypes()[0].equals(Object.class)) {
+                        } else if (candidate.getActualMethod().getParameterTypes().length == 1
+                                && cm.getActualMethod().getParameterTypes().length == 1
+                                && candidate.getActualMethod().getParameterTypes()[0].equals(Object.class)
+                                && !cm.getActualMethod().getParameterTypes()[0].equals(Object.class)) {
                             candidate = cm; // `cm` is more narrowed, hence reflect `candidate` to be now `cm`.
                         }
                     } else {
@@ -258,16 +223,67 @@ public abstract class BaseFEELFunction
         }
         return candidate;
     }
-    
-    private static long nullCount(Object[] params) {
-        return Stream.of(params).filter(x -> x == null).count();
+
+    protected Object[] getActualParameters(EvaluationContext ctx, Object[] params, boolean isNamedParams, Method m) {
+        Object[] actualParams;
+        // Here, we check if any of the parameters is an EvaluationContext
+        boolean injectCtx = Arrays.stream( m.getParameterTypes() ).anyMatch(EvaluationContext.class::isAssignableFrom);
+        if( injectCtx ) {
+            actualParams = new Object[ params.length + 1 ];
+            int j = 0;
+            for (int i = 0; i < m.getParameterCount(); i++) {
+                if( EvaluationContext.class.isAssignableFrom( m.getParameterTypes()[i] ) ) {
+                    if( isNamedParams ) {
+                        actualParams[i] = new NamedParameter( "ctx", ctx );
+                    } else {
+                        actualParams[i] = ctx;
+                    }
+                } else if (j < params.length) {
+                    actualParams[i] = params[j];
+                    j++;
+                }
+            }
+        } else {
+            actualParams = params;
+        }
+        return actualParams;
     }
 
-    @Override
-    public List<List<Param>> getParameters() {
-        // TODO: we could implement this method using reflection, just for consistency,
-        // but it is not used at the moment
-        return Collections.emptyList();
+    private Object getEitherResult(EvaluationContext ctx, Either<FEELEvent, Object> source, Supplier<List<String>> parameterNamesSupplier,
+                                    Supplier<List<Object>> parameterValuesSupplier) {
+        return source.cata((left) -> {
+            ctx.notifyEvt(() -> {
+                              if (left instanceof InvalidParametersEvent invalidParametersEvent) {
+                                  invalidParametersEvent.setNodeName(getName());
+                                  invalidParametersEvent.setActualParameters(parameterNamesSupplier.get(),
+                                                                             parameterValuesSupplier.get());
+                              }
+                              return left;
+                          }
+            );
+            return null;
+        }, Function.identity());
+    }
+
+    private Object[] rearrangeParameters(Object[] params, List<String> pnames) {
+        if ( pnames.size() > 0 ) {
+            Object[] actualParams = new Object[pnames.size()];
+            for ( int i = 0; i < actualParams.length; i++ ) {
+                for ( int j = 0; j < params.length; j++ ) {
+                    if ( ((NamedParameter) params[j]).getName().equals( pnames.get( i ) ) ) {
+                        actualParams[i] = ((NamedParameter) params[j]).getValue();
+                        break;
+                    }
+                }
+            }
+            params = actualParams;
+        }
+        return params;
+    }
+
+
+    private static long nullCount(Object[] params) {
+        return Stream.of(params).filter(x -> x == null).count();
     }
 
     /**
@@ -356,8 +372,8 @@ public abstract class BaseFEELFunction
         return false;
     }
 
-    private static class CandidateMethod {
-        private Method   apply         = null;
+    protected static class CandidateMethod {
+        private Method actualMethod = null;
         private Object[] actualParams;
         private Class[]  actualClasses = null;
         private int score;
@@ -375,12 +391,12 @@ public abstract class BaseFEELFunction
             }
         }
 
-        public Method getApply() {
-            return apply;
+        public Method getActualMethod() {
+            return actualMethod;
         }
 
-        public void setApply(Method apply) {
-            this.apply = apply;
+        public void setActualMethod(Method actualMethod) {
+            this.actualMethod = actualMethod;
             calculateScore();
         }
 
