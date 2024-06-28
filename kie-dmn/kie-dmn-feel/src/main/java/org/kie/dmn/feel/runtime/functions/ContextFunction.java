@@ -60,6 +60,9 @@ public class ContextFunction extends BaseFEELFunction {
                 } else {
                     return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "entry of index " + (h_index) + " is missing a `value` entry"));
                 }
+                if (result.containsKey(key)) {
+                    return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "entry of index " + (h_index) + " contains duplicate key"));
+                }
                 result.put(key, value);
             } else {
                 return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "entry of index " + (h_index) + " is not a valid context"));
