@@ -83,13 +83,8 @@ public abstract class BaseFEELFunction
         try {
             boolean isNamedParams = params.length > 0 && params[0] instanceof NamedParameter;
             if ( !isCustomFunction() ) {
-                List<String> available = null;
-                if ( isNamedParams ) {
-                    available = Stream.of( params ).map( p -> ((NamedParameter) p).getName() ).collect( Collectors.toList() );
-                }
 
-
-                CandidateMethod cm = getCandidateMethod( ctx, params, isNamedParams, available );
+                CandidateMethod cm = getCandidateMethod( ctx, params, isNamedParams );
 
                 if ( cm != null ) {
                     Object result = cm.apply.invoke( this, cm.actualParams );
@@ -177,7 +172,7 @@ public abstract class BaseFEELFunction
         return params;
     }
 
-    private CandidateMethod getCandidateMethod(EvaluationContext ctx, Object[] params, boolean isNamedParams, List<String> available) {
+    private CandidateMethod getCandidateMethod(EvaluationContext ctx, Object[] params, boolean isNamedParams) {
         CandidateMethod candidate = null;
         // first, look for exact matches
         for ( Method m : getClass().getDeclaredMethods() ) {
@@ -206,7 +201,7 @@ public abstract class BaseFEELFunction
                 actualParams = params;
             }
             if( isNamedParams ) {
-                actualParams = calculateActualParams( ctx, m, actualParams, available );
+                actualParams = calculateActualParams(m, actualParams );
                 if( actualParams == null ) {
                     // incompatible method
                     continue;
@@ -292,7 +287,7 @@ public abstract class BaseFEELFunction
         }
     }
 
-    private Object[] calculateActualParams(EvaluationContext ctx, Method m, Object[] params, List<String> available) {
+    private Object[] calculateActualParams(Method m, Object[] params) {
         Annotation[][] pas = m.getParameterAnnotations();
         List<String> names = new ArrayList<>( m.getParameterCount() );
         for ( int i = 0; i < m.getParameterCount(); i++ ) {
