@@ -106,6 +106,11 @@ public abstract class AbstractDroolsModelBuildContext implements DroolsModelBuil
     }
 
     @Override
+    public void removeApplicationProperty(String key) {
+        applicationProperties.removeApplicationProperty(key);
+    }
+
+    @Override
     public String getPackageName() {
         return packageName;
     }
