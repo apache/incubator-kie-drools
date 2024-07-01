@@ -138,7 +138,7 @@
     <version.io.swagger.core.v3>2.2.19</version.io.swagger.core.v3>
     <version.io.swagger.parser.v3>2.1.19</version.io.swagger.parser.v3>
     <version.io.swagger.swagger-parser>1.0.55</version.io.swagger.swagger-parser>
-    <version.org.xmlunit>2.9.1</version.org.xmlunit>
+    <version.org.xmlunit>2.10.0</version.org.xmlunit>
     <!-- therefore the property is rewritten in that repository parent -->
     <version.org.asciidoctor.asciidoctorj>2.2.0</version.org.asciidoctor.asciidoctorj>
     <version.org.asciidoctor.asciidoctorj-pdf>1.5.0</version.org.asciidoctor.asciidoctorj-pdf>
