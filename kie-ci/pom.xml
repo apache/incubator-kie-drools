@@ -36,6 +36,7 @@
 
   <properties>
     <java.module.name>org.kie.ci</java.module.name>
+    <excludedGroups>org.kie.test.testcategory.TurtleTestCategory</excludedGroups>
   </properties>
 
   <dependencies>
@@ -158,7 +159,12 @@
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
       <scope>test</scope>
-    </dependency>    
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-test-util</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
@@ -235,4 +241,17 @@
     </plugins>
   </build>
 
+  <profiles>
+    <profile>
+      <id>runTurtleTests</id>
+      <activation>
+        <property>
+          <name>runTurtleTests</name>
+        </property>
+      </activation>
+      <properties>
+        <excludedGroups/>
+      </properties>
+    </profile>
+  </profiles>
 </project>

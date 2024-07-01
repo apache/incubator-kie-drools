@@ -30,6 +30,7 @@ import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.drools.compiler.kie.builder.impl.BuildContext;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
@@ -89,7 +90,7 @@ public class KieModuleRepoTest {
 
     @Before
     public void before() throws Exception {
-        kieModuleRepo = new KieModuleRepo();
+        kieModuleRepo = new KieModuleRepo(new ReentrantLock());
 
         // store the original values as we need to restore them after the test
         maxSizeGaCacheOrig = KieModuleRepo.MAX_SIZE_GA_CACHE;
@@ -139,6 +140,15 @@ public class KieModuleRepoTest {
         kieModuleRepoField.setAccessible(true);
         kieModuleRepoField.set(kieRepository, kieModuleRepo);
         kieModuleRepoField.setAccessible(false);
+        // share the lock between KieModuleRepo and KieRepository
+        final Field KieModuleRepoLockField = KieModuleRepo.class.getDeclaredField("lock");
+        KieModuleRepoLockField.setAccessible(true);
+        Object lock = KieModuleRepoLockField.get(kieModuleRepo);
+        KieModuleRepoLockField.setAccessible(false);
+        final Field kieRepositoryImplLockField = KieRepositoryImpl.class.getDeclaredField("lock");
+        kieRepositoryImplLockField.setAccessible(true);
+        kieRepositoryImplLockField.set(kieRepository, lock);
+        kieRepositoryImplLockField.setAccessible(false);
 
         // kie container
         final KieContainerImpl kieContainerImpl = new KieContainerImpl(mockKieProject, kieRepository);
