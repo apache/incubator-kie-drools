@@ -28,14 +28,13 @@ import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
-import org.drools.core.common.TupleSetsImpl;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.reteoo.MultiInputNode.MultiInputNodeMemory;
-import org.drools.core.reteoo.sequencing.ConditionalSignalCounter;
 import org.drools.core.reteoo.sequencing.Sequence;
-import org.drools.core.reteoo.sequencing.Sequence.LogicCircuitStep;
-import org.drools.core.reteoo.sequencing.Sequence.SequenceStep;
-import org.drools.core.reteoo.sequencing.Sequence.Step;
+import org.drools.core.reteoo.sequencing.Step.LogicCircuitStep;
+import org.drools.core.reteoo.sequencing.Step.SequenceStep;
+import org.drools.core.reteoo.sequencing.Step;
+import org.drools.core.reteoo.sequencing.Sequence.SequenceMemory;
 import org.drools.core.reteoo.sequencing.SignalProcessor;
 import org.drools.core.reteoo.sequencing.LogicGate;
 import org.drools.core.reteoo.sequencing.SignalStatus;
@@ -51,7 +50,6 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.ArrayList;
 import java.util.List;
 
 public class MultiInputNode extends LeftTupleSource
@@ -70,8 +68,6 @@ public class MultiInputNode extends LeftTupleSource
     private AlphaAdapter[] alphaAdapters;
 
     private DynamicFilterProto[]   dynamicFilters;
-
-    private LogicGate[]                gates;
 
     private LeftTupleSinkNode      previousTupleSinkNode;
 
@@ -170,35 +166,39 @@ public class MultiInputNode extends LeftTupleSource
                     gates.add(g);
                 }
             } else if (s.getClass() ==  SequenceStep.class) {
-                populateGates( ((SequenceStep)s).getSequence(), gates);
+                populateGates(((SequenceStep)s).getSequence(), gates);
             }
         }
     }
 
-    public SequencerMemory createSequencerMemory(MultiInputNodeMemory nodeMemory) {
-        int signalAdapters = 0;
-        int counters = 0;
+    public SequencerMemory createSequencerMemory(TupleImpl lt, LeftTupleSink sink, MultiInputNodeMemory nodeMemory) {
+//        int signalAdapters = 0;
+//        int counters = 0;
+//
+//        if (gates == null) {
+//            List<LogicGate> gatesList = new ArrayList<>();
+//            populateGates(sequencer.getSequence(), gatesList);
+//            gates = gatesList.toArray(new LogicGate[gatesList.size()]);
+//        }
+//
+//        for (LogicGate gate : gates) {
+//            counters = counters + gate.getInputSignalCounters().length;
+//            if ( gate.getOutput().getClass() == ConditionalSignalCounter.class) {
+//                ++counters;
+//            }
+//            signalAdapters = signalAdapters + gate.getSignalAdapterIndexes().length;
+//        }
+//
+//        long[] gateMemory = new long[gates.length];
+//        long[] counterMemory = new long[counters];
+//
+//        SequencerMemory sequencerMemory = new SequencerMemory(lt, sink,this, nodeMemory, gateMemory, counterMemory,
+//                                                            new SignalAdapter[signalAdapters], new SignalAdapter[signalAdapters]);
 
-        if (gates == null) {
-            List<LogicGate> gatesList = new ArrayList<>();
-            populateGates(sequencer.getSequence(), gatesList);
-            gates = gatesList.toArray(new LogicGate[gatesList.size()]);
-        }
+        SequencerMemory sequencerMemory = new SequencerMemory(lt, sink,this, nodeMemory);
+        //sequencerMemory.initialiseSequenceMemory(sequencer.getSequence());
 
-        for (LogicGate gate : gates) {
-            counters = counters + gate.getInputSignalCounters().length;
-            if ( gate.getOutput().getClass() == ConditionalSignalCounter.class) {
-                ++counters;
-            }
-            signalAdapters = signalAdapters + gate.getSignalAdapterIndexes().length;
-        }
-
-        long[] gateMemory = new long[gates.length];
-        long[] counterMemory = new long[counters];
-
-        SequencerMemory circuitMemory = new SequencerMemory(this, nodeMemory, gateMemory, counterMemory,
-                                                            new SignalAdapter[signalAdapters], new SignalAdapter[signalAdapters]);
-        return circuitMemory;
+        return sequencerMemory;
     }
 
     public Sequencer getSequencer() {
@@ -257,8 +257,15 @@ public class MultiInputNode extends LeftTupleSource
         return NodeTypeEnums.MultiInputNode;
     }
 
-    public void fail(SequencerMemory memory) {
-        System.out.println("fail");
+    public void matched(SequencerMemory memory) {
+        TupleImpl  leftTuple = memory.getLeftTuple();
+
+        TupleImpl childTuple = TupleFactory.createLeftTuple(leftTuple,
+                                                            memory.getSink(),
+                                                            leftTuple.getPropagationContext(), false);
+
+        childTuple.setStagedType(Tuple.INSERT);
+        memory.getNodeMemory().getStagedChildTuples().add(childTuple);
     }
 
     public static class MultiInputNodeMemory extends AbstractLinkedListNode<Memory>
@@ -270,7 +277,7 @@ public class MultiInputNode extends LeftTupleSource
 
         private TupleMemory       leftTupleMemory;
 
-        private TupleSets         stagedRightTuples;
+        private TupleList         stagedChildTuples;
         
         private SegmentMemory     memory;
 
@@ -282,10 +289,14 @@ public class MultiInputNode extends LeftTupleSource
 
         public MultiInputNodeMemory(MultiInputNode node, LinkedList<DynamicFilter>[] activeFilters, DynamicFilter[] filters) {
             this.node = node;
-            stagedRightTuples = new TupleSetsImpl();
+            stagedChildTuples = new TupleList();
             leftTupleMemory = new TupleList();
             this.activeFilters = activeFilters;
             this.filters = filters;
+        }
+
+        public MultiInputNode getNode() {
+            return node;
         }
 
         public void addActiveFilter(DynamicFilter filter) {
@@ -315,8 +326,8 @@ public class MultiInputNode extends LeftTupleSource
             return leftTupleMemory;
         }
 
-        public TupleSets getStagedRightTuples() {
-            return stagedRightTuples;
+        public TupleList getStagedChildTuples() {
+            return stagedChildTuples;
         }
 
         public SegmentMemory getMemory() {
@@ -380,16 +391,16 @@ public class MultiInputNode extends LeftTupleSource
     public static class SignalAdapter extends AbstractLinkedListNode<SignalAdapter>  {
         private SignalProcessor output;
         private int             signalBitIndex;
-        private SequencerMemory memory;
+        private SequenceMemory  memory;
 
-        public SignalAdapter(SignalProcessor output, int signalBitIndex, SequencerMemory memory) {
+        public SignalAdapter(SignalProcessor output, int signalBitIndex, SequenceMemory memory) {
             this.output = output;
             this.signalBitIndex = signalBitIndex;
             this.memory         = memory;
         }
 
-        public void receive() {
-            output.receive(signalBitIndex, SignalStatus.MATCHED, memory);
+        public void receive(ReteEvaluator reteEvaluator) {
+            output.consume(signalBitIndex, SignalStatus.MATCHED, memory, reteEvaluator);
         }
     }
 
@@ -450,7 +461,7 @@ public class MultiInputNode extends LeftTupleSource
 
             if (constraint.isAllowed(factHandle, reteEvaluator)) {
                 for (SignalAdapter signal = signalAdapters.getFirst(); signal != null; signal = signal.getNext()) {
-                    signal.receive();
+                    signal.receive(reteEvaluator);
                 }
             }
         }
@@ -690,15 +701,15 @@ public class MultiInputNode extends LeftTupleSource
 //        }
 //    }
 
-//    public static class PhreakMultiInputNode {
-//        public void doNode(MultiInputNode multiInputNode,
-//                           MultiInputMemory memory,
-//                           LeftTupleSink sink,
-//                           ReteEvaluator reteEvaluator,
-//                           TupleSets srcLeftTuples,
-//                           TupleSets trgLeftTuples,
-//                           TupleSets stagedLeftTuples) {
-//
+    public static class PhreakMultiInputNode {
+        public void doNode(MultiInputNode node,
+                           MultiInputNodeMemory memory,
+                           LeftTupleSink sink,
+                           ReteEvaluator reteEvaluator,
+                           TupleSets srcLeftTuples,
+                           TupleSets trgLeftTuples,
+                           TupleSets stagedLeftTuples) {
+
 //            TupleSets srcRightTuples = memory.getStagedRightTuples().takeAll();
 //
 //            if (srcLeftTuples.getDeleteFirst() != null) {
@@ -710,16 +721,16 @@ public class MultiInputNode extends LeftTupleSource
 //                // TODO
 //            }
 //
-//            if (srcLeftTuples.getInsertFirst() != null) {
-//                doLeftInserts(memory, srcLeftTuples);
-//            }
+            if (srcLeftTuples.getInsertFirst() != null) {
+                doLeftInserts(node, memory, sink, srcLeftTuples, reteEvaluator);
+            }
 //
 //            if (srcRightTuples.getInsertFirst() != null) {
 //                doRightInserts(multiInputNode, sink, memory, reteEvaluator, srcRightTuples, trgLeftTuples, stagedLeftTuples);
 //            }
-//
-//            srcLeftTuples.resetAll();
-//        }
+
+            srcLeftTuples.resetAll();
+        }
 //
 //        private void doRightInserts(MultiInputNode multiInputNode, LeftTupleSink sink, MultiInputMemory memory,
 //                                    ReteEvaluator reteEvaluator, TupleSets srcRightTuples,
@@ -740,31 +751,43 @@ public class MultiInputNode extends LeftTupleSource
 //
 //        }
 //
-//        private void doLeftDeletes(TupleSets srcLeftTuples, TupleSets trgLeftTuples, TupleSets stagedLeftTuples) {
-//            for (TupleImpl leftTuple = srcLeftTuples.getDeleteFirst(); leftTuple != null; ) {
-//                TupleImpl next = leftTuple.getStagedNext();
-//                leftTuple.getMemory().remove(leftTuple);
-//                leftTuple.setContextObject(null);
-//                // TODO add code here to propagate deletion of child LT (mdp)
+        private void doLeftDeletes(MultiInputNode node,
+                                   TupleSets srcLeftTuples, TupleSets trgLeftTuples, TupleSets stagedLeftTuples,
+                                   ReteEvaluator evaluator) {
+            for (TupleImpl leftTuple = srcLeftTuples.getDeleteFirst(); leftTuple != null; ) {
+                TupleImpl next = leftTuple.getStagedNext();
+
+                SequencerMemory sequencerMemory = (SequencerMemory) leftTuple.getContextObject();
+                node.getSequencer().stop(sequencerMemory, evaluator);
+                leftTuple.getMemory().remove(leftTuple);
+                leftTuple.setContextObject(null);
+                // TODO add code here to propagate deletion of child LT (mdp)
+
+                leftTuple.clearStaged();
+                leftTuple = next;
+            }
+        }
 //
-//                leftTuple.clearStaged();
-//                leftTuple = next;
-//            }
-//        }
-//
-//        private void doLeftInserts(MultiInputMemory memory,
-//                                   TupleSets srcLeftTuples) {
-//
-//            // this only needs to add it to the left memory. As everything is driven by the receiving of right inputs.
-//            for (TupleImpl leftTuple = srcLeftTuples.getInsertFirst(); leftTuple != null; ) {
-//                TupleImpl next = leftTuple.getStagedNext();
-//
-//                memory.getLeftTupleMemory().add(leftTuple);
-//                leftTuple.setContextObject( new MaskValue());
-//
-//                leftTuple.clearStaged();
-//                leftTuple = next;
-//            }
-//        }
-//    }
+        private void doLeftInserts(MultiInputNode node,
+                                   MultiInputNodeMemory memory,
+                                   LeftTupleSink sink,
+                                   TupleSets srcLeftTuples,
+                                   ReteEvaluator evaluator) {
+
+            // this only needs to add it to the left memory. As everything is driven by the receiving of right inputs.
+            for (TupleImpl leftTuple = srcLeftTuples.getInsertFirst(); leftTuple != null; ) {
+                TupleImpl next = leftTuple.getStagedNext();
+
+                memory.getLeftTupleMemory().add(leftTuple);
+                //lt.setContextObject(mnode.createSequencerMemory(lt, new MockLeftTupleSink(buildContext.getNextNodeId(), buildContext), nodeMemory));
+
+                SequencerMemory sequencerMemory = memory.node.createSequencerMemory(leftTuple, sink, memory);
+                node.getSequencer().start(sequencerMemory, evaluator);
+                leftTuple.setContextObject(sequencerMemory);
+
+                leftTuple.clearStaged();
+                leftTuple = next;
+            }
+        }
+    }
 }

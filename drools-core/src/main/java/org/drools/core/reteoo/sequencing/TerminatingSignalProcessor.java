@@ -1,6 +1,7 @@
 package org.drools.core.reteoo.sequencing;
 
-import org.drools.core.reteoo.sequencing.Sequencer.SequencerMemory;
+import org.drools.core.common.ReteEvaluator;
+import org.drools.core.reteoo.sequencing.Sequence.SequenceMemory;
 
 public class TerminatingSignalProcessor extends SignalProcessor {
     private static TerminatingSignalProcessor INSTANCE = new TerminatingSignalProcessor();
@@ -10,17 +11,17 @@ public class TerminatingSignalProcessor extends SignalProcessor {
     }
 
     @Override
-    public void propagate(SignalStatus signalStatus, SequencerMemory memory) {
-        memory.getNode().getSequencer().next(memory);
+    public void consume(SignalStatus signalStatus, SequenceMemory memory, ReteEvaluator reteEvaluator) {
+        memory.getSequence().next(memory, reteEvaluator);
     }
 
     @Override
-    public void receive(int signalBitIndex, SignalStatus signalStatus, SequencerMemory memory) {
+    public void consume(int signalBitIndex, SignalStatus signalStatus, SequenceMemory memory, ReteEvaluator reteEvaluator) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    protected void reset(SequencerMemory memory) {
+    protected void reset(SequenceMemory memory, ReteEvaluator reteEvaluator) {
         throw new UnsupportedOperationException();
     }
 }

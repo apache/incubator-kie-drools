@@ -33,8 +33,10 @@ import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.reteoo.JoinNode;
+import org.drools.core.reteoo.MockLeftTupleSink;
 import org.drools.core.reteoo.MultiInputNode;
 import org.drools.core.reteoo.MultiInputNode.DynamicFilter;
+import org.drools.core.reteoo.sequencing.Sequence.SequenceMemory;
 import org.drools.core.reteoo.sequencing.Sequencer.SequencerMemory;
 import org.drools.core.reteoo.MultiInputNode.DynamicFilterProto;
 import org.drools.core.reteoo.MultiInputNode.MultiInputNodeMemory;
@@ -66,23 +68,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Collections;
 
-public class PhreakSequencerActivateDeactivateStepTest {
-    BuildContext          buildContext;
-    JoinNode              joinNode;
-    JoinNode              sinkNode;
-    InternalWorkingMemory wm;
-    BetaMemory bm;
-    
-    BetaMemory bm0;
+public class PhreakSequencerActivateDeactivateStepTest extends AbstractPhreakSequencerSubsequenceTest {
 
-    MultiInputNode mnode;
-
-    private StatefulKnowledgeSessionImpl session;
-
-    private MultiInputNodeMemory nodeMemory;
-
-    private SequencerMemory sequencerMemory;
-
+    private SequenceMemory sequenceMemory;
 
     @Before
     public void setup() {
@@ -133,22 +121,17 @@ public class PhreakSequencerActivateDeactivateStepTest {
 
         LogicCircuit circuit2 = new LogicCircuit(mnode, gate2);
 
-        Sequence seq = new Sequence(circuit1, circuit2);
-        mnode.setSequencer(new Sequencer(mnode, seq));
+        seq0 = new Sequence(0, circuit1, circuit2);
+        mnode.setSequencer(new Sequencer(mnode, seq0));
         mnode.setDynamicFilters( new DynamicFilterProto[] {bfilter, cfilter, dfilter});
 
         SessionsAwareKnowledgeBase kbase       = new SessionsAwareKnowledgeBase(buildContext.getRuleBase());
         SessionConfiguration       sessionConf = kbase.getSessionConfiguration();
         sessionConf.setOption(ThreadSafeOption.YES);
 
-        session = (StatefulKnowledgeSessionImpl) kbase.newKieSession(sessionConf, null);
+        createSession();
 
-        InternalFactHandle   fhA0   = (InternalFactHandle) session.insert(new A(0));
-        nodeMemory = session.getNodeMemory(mnode);
-        LeftTuple            lt     = new LeftTuple(fhA0, mnode, true);
-        lt.setContextObject(mnode.createSequencerMemory(nodeMemory));
-        nodeMemory.getLeftTupleMemory().add(lt);
-        sequencerMemory = (SequencerMemory) lt.getContextObject();
+        sequenceMemory = sequencerMemory.getSequenceMemory(seq0);
     }
 
     @Test
@@ -157,15 +140,15 @@ public class PhreakSequencerActivateDeactivateStepTest {
         assertThat(nodeMemory.getFilters()).usingRecursiveComparison().isEqualTo(new DynamicFilter[3]);
         assertThat(nodeMemory.getActiveFilters()).usingRecursiveComparison().isEqualTo(new LinkedList[3]);
         assertThat(nodeMemory.getActiveFilters()).usingRecursiveComparison().isEqualTo(new LinkedList[3]);
-        assertThat(sequencerMemory.getActiveSignalAdapters()).usingRecursiveComparison().isEqualTo(new SignalAdapter[4]);
-        assertThat(sequencerMemory.getSignalAdapters()).usingRecursiveComparison().isEqualTo(new SignalAdapter[4]);
+        assertThat(sequenceMemory.getActiveSignalAdapters()).usingRecursiveComparison().isEqualTo(new SignalAdapter[4]);
+        assertThat(sequenceMemory.getSignalAdapters()).usingRecursiveComparison().isEqualTo(new SignalAdapter[4]);
         assertThat(sequencerMemory.getCurrentStep()).isEqualTo(-1); // sequence not yet started
     }
 
     @Test
     public void testActivateAfterFirstCircuitStep() {
         // activate LogicCircuit1 and check filters are adapters are created and made active
-        mnode.getSequencer().start(sequencerMemory);
+        mnode.getSequencer().start(sequencerMemory, session);
 
         DynamicFilter filter0 = nodeMemory.getFilters()[0]; // B
         DynamicFilter filter1 = nodeMemory.getFilters()[1]; // C
@@ -182,21 +165,21 @@ public class PhreakSequencerActivateDeactivateStepTest {
         assertThat(nodeMemory.getActiveFilters()[2]).isNull(); // D is not yet active
 
         // Check correct activation of SignalAdapters
-        SignalAdapter signal0 = sequencerMemory.getSignalAdapters()[0];
-        SignalAdapter signal1 = sequencerMemory.getSignalAdapters()[1];
-        assertThat(sequencerMemory.getSignalAdapters()).usingRecursiveComparison().isEqualTo(new SignalAdapter[] {signal0, signal1, null, null });
-        assertThat(sequencerMemory.getActiveSignalAdapters()).usingRecursiveComparison().isEqualTo(new SignalAdapter[] {signal0, signal1, null, null });
+        SignalAdapter signal0 = sequenceMemory.getSignalAdapters()[0];
+        SignalAdapter signal1 = sequenceMemory.getSignalAdapters()[1];
+        assertThat(sequenceMemory.getSignalAdapters()).usingRecursiveComparison().isEqualTo(new SignalAdapter[] {signal0, signal1, null, null });
+        assertThat(sequenceMemory.getActiveSignalAdapters()).usingRecursiveComparison().isEqualTo(new SignalAdapter[] {signal0, signal1, null, null });
     }
 
     @Test
     public void testDeactivateAndActivateAfterSecondCircuitStep() {
-        mnode.getSequencer().start(sequencerMemory);
+        mnode.getSequencer().start(sequencerMemory, session);
 
         DynamicFilter filter0 = nodeMemory.getFilters()[0]; // B
         DynamicFilter filter1 = nodeMemory.getFilters()[1]; // C
 
-        SignalAdapter signal0 = sequencerMemory.getSignalAdapters()[0];
-        SignalAdapter signal1 = sequencerMemory.getSignalAdapters()[1];
+        SignalAdapter signal0 = sequenceMemory.getSignalAdapters()[0];
+        SignalAdapter signal1 = sequenceMemory.getSignalAdapters()[1];
 
         InternalFactHandle fhB0 = (InternalFactHandle) session.insert(new B(0, "b"));
         assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0); // still step 0
@@ -217,18 +200,18 @@ public class PhreakSequencerActivateDeactivateStepTest {
         assertThat(nodeMemory.getActiveFilters()[2].getFirst()).isSameAs(filter2);
 
         // Check correct activation of SignalAdapters
-        SignalAdapter signal2 = sequencerMemory.getSignalAdapters()[2];
-        SignalAdapter signal3 = sequencerMemory.getSignalAdapters()[3];
+        SignalAdapter signal2 = sequenceMemory.getSignalAdapters()[2];
+        SignalAdapter signal3 = sequenceMemory.getSignalAdapters()[3];
 
-        assertThat(sequencerMemory.getSignalAdapters()).usingRecursiveComparison().isEqualTo(new SignalAdapter[] {signal0, signal1, signal2, signal3 });
-        assertThat(sequencerMemory.getActiveSignalAdapters()).usingRecursiveComparison().isEqualTo(new SignalAdapter[] {null, null, signal2, signal3 }); // 0 and 1 are no longer active
+        assertThat(sequenceMemory.getSignalAdapters()).usingRecursiveComparison().isEqualTo(new SignalAdapter[] {signal0, signal1, signal2, signal3 });
+        assertThat(sequenceMemory.getActiveSignalAdapters()).usingRecursiveComparison().isEqualTo(new SignalAdapter[] {null, null, signal2, signal3 }); // 0 and 1 are no longer active
 
         // @formatter:on
     }
 
     @Test
     public void testDeactivateAfterEndStep() {
-        mnode.getSequencer().start(sequencerMemory);
+        mnode.getSequencer().start(sequencerMemory, session);
 
         assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0); // step 0
         InternalFactHandle fhB0 = (InternalFactHandle) session.insert(new B(0, "b"));
@@ -240,28 +223,9 @@ public class PhreakSequencerActivateDeactivateStepTest {
         assertThat(sequencerMemory.getCurrentStep()).isEqualTo(-1); // Now step -1, which means it's finished.
 
         // make sure there are no active SignalAapters or active Filters.
-        assertThat(sequencerMemory.getActiveSignalAdapters()).usingRecursiveComparison().isEqualTo(new SignalAdapter[] {null, null, null, null }); // 0 and 1 are no longer active
+        assertThat(sequenceMemory.getActiveSignalAdapters()).usingRecursiveComparison().isEqualTo(new SignalAdapter[] {null, null, null, null }); // 0 and 1 are no longer active
         assertThat(nodeMemory.getActiveFilters()[0].size()).isEqualTo(0);
         assertThat(nodeMemory.getActiveFilters()[1].size()).isEqualTo(0);
         assertThat(nodeMemory.getActiveFilters()[2].size()).isEqualTo(0);
     }
-
-    public static BuildContext createContext() {
-
-        CompositeBaseConfiguration conf = (CompositeBaseConfiguration) RuleBaseFactory.newKnowledgeBaseConfiguration();
-
-        KnowledgeBaseImpl rbase = new KnowledgeBaseImpl("ID",
-                                                        conf );
-        BuildContext buildContext = new BuildContext( rbase, Collections.emptyList() );
-
-        RuleImpl rule = new RuleImpl( "rule1").setPackage( "org.pkg1" );
-        InternalKnowledgePackage pkg = CoreComponentFactory.get().createKnowledgePackage( "org.pkg1" );
-        pkg.getDialectRuntimeRegistry().setDialectData( "java", new JavaDialectRuntimeData() );
-
-        pkg.addRule( rule );
-        buildContext.setRule( rule );
-
-        return buildContext;
-    }
-
 }

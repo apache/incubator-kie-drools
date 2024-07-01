@@ -86,6 +86,10 @@ public class PseudoClockScheduler implements TimerService, SessionPseudoClock, E
         return this.jobFactoryManager;
     }
 
+    public PriorityQueue<TimerJobInstance> getQueue() {
+        return queue;
+    }
+
     @Override
     public long getCurrentTime() {
         return this.timer.get();

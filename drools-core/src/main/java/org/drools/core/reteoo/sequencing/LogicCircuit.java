@@ -1,12 +1,10 @@
 package org.drools.core.reteoo.sequencing;
 
-import org.drools.base.util.index.ConstraintTypeOperator;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.LeftTupleSinkNode;
 import org.drools.core.reteoo.MultiInputNode;
+import org.drools.core.reteoo.sequencing.Sequence.SequenceMemory;
 import org.drools.core.reteoo.sequencing.Sequencer.SequencerMemory;
-
-import java.util.function.Consumer;
-import java.util.function.LongPredicate;
 
 public class LogicCircuit {
 
@@ -25,15 +23,15 @@ public class LogicCircuit {
         return gates;
     }
 
-    public void activate(SequencerMemory sequenceMemory) {
+    public void activate(SequenceMemory sequenceMemory, ReteEvaluator reteEvaluator) {
         for (LogicGate gate : gates) {
-            gate.activate(sequenceMemory);
+            gate.activate(sequenceMemory, reteEvaluator);
         }
     }
 
-    public void deactivate(SequencerMemory sequenceMemory) {
+    public void deactivate(SequenceMemory sequenceMemory, ReteEvaluator reteEvaluator) {
         for (LogicGate gate : gates) {
-            gate.deactivate(sequenceMemory);
+            gate.deactivate(sequenceMemory, reteEvaluator);
         }
     }
 
@@ -44,61 +42,61 @@ public class LogicCircuit {
 //        }
     }
 
-
-
-    public static interface Loop {
-
-        SignalStatus newMatch();
-
-        SignalStatus status();
-    }
-
-    public static class Repetitions {
-        public static Loop create(IntPredicate p) { return new LambdaCounterRepetition(p);}
-        public static Loop one        = new LambdaCounterRepetition((int a) -> a == 1);
-        public static Loop zeroOrMore = new LambdaCounterRepetition((int a) -> true);
-        public static Loop oneOrMore  = new LambdaCounterRepetition((int a) -> a >= 1);
-        public static Loop zeroOrOne  = new LambdaCounterRepetition((int a) -> a <= 1);
-    }
-
-    public static class UntilLoop implements Loop {
-
-        @Override
-        public SignalStatus newMatch() {
-            return null;
-        }
-
-        @Override
-        public SignalStatus status() {
-            return null;
-        }
-    }
-
-    public static class LambdaCounterRepetition implements Loop {
-        private SignalStatus status = SignalStatus.UNMATCHED;
-        private int count;
-
-        private IntPredicate predicate;
-
-        public LambdaCounterRepetition(IntPredicate predicate) {
-            this.predicate = predicate;
-            status = predicate.test(count) ? SignalStatus.MATCHED: SignalStatus.UNMATCHED;
-        }
-
-        public SignalStatus newMatch() {
-            if (status == SignalStatus.UNMATCHED) {
-                status = predicate.test(++count) ? SignalStatus.MATCHED : SignalStatus.UNMATCHED;
-            } else if (status == SignalStatus.MATCHED) {
-                status = predicate.test(++count) ? SignalStatus.MATCHED : SignalStatus.FAILED;
-            }
-            return status();
-        }
-
-        @Override
-        public SignalStatus status() {
-            return  status;
-        }
-    }
+//
+//
+//    public static interface Loop {
+//
+//        SignalStatus newMatch();
+//
+//        SignalStatus status();
+//    }
+//
+//    public static class Repetitions {
+//        public static Loop create(IntPredicate p) { return new LambdaCounterRepetition(p);}
+//        public static Loop one        = new LambdaCounterRepetition((int a) -> a == 1);
+//        public static Loop zeroOrMore = new LambdaCounterRepetition((int a) -> true);
+//        public static Loop oneOrMore  = new LambdaCounterRepetition((int a) -> a >= 1);
+//        public static Loop zeroOrOne  = new LambdaCounterRepetition((int a) -> a <= 1);
+//    }
+//
+//    public static class UntilLoop implements Loop {
+//
+//        @Override
+//        public SignalStatus newMatch() {
+//            return null;
+//        }
+//
+//        @Override
+//        public SignalStatus status() {
+//            return null;
+//        }
+//    }
+//
+//    public static class LambdaCounterRepetition implements Loop {
+//        private SignalStatus status = SignalStatus.UNMATCHED;
+//        private int count;
+//
+//        private IntPredicate predicate;
+//
+//        public LambdaCounterRepetition(IntPredicate predicate) {
+//            this.predicate = predicate;
+//            status = predicate.test(count) ? SignalStatus.MATCHED: SignalStatus.UNMATCHED;
+//        }
+//
+//        public SignalStatus newMatch() {
+//            if (status == SignalStatus.UNMATCHED) {
+//                status = predicate.test(++count) ? SignalStatus.MATCHED : SignalStatus.UNMATCHED;
+//            } else if (status == SignalStatus.MATCHED) {
+//                status = predicate.test(++count) ? SignalStatus.MATCHED : SignalStatus.FAILED;
+//            }
+//            return status();
+//        }
+//
+//        @Override
+//        public SignalStatus status() {
+//            return  status;
+//        }
+//    }
 
     public interface LongBiPredicate {
         boolean test(long a, long b);

@@ -1,6 +1,7 @@
 package org.drools.core.reteoo.sequencing;
 
-import org.drools.core.reteoo.sequencing.Sequencer.SequencerMemory;
+import org.drools.core.common.ReteEvaluator;
+import org.drools.core.reteoo.sequencing.Sequence.SequenceMemory;
 
 public class LogicGateOutputSignalProcessor extends SignalProcessor {
     private SignalIndex[] gates;
@@ -35,31 +36,31 @@ public class LogicGateOutputSignalProcessor extends SignalProcessor {
         }
     }
 
-    public void propagate(SignalStatus signalStatus, SequencerMemory memory) {
+    public void consume(SignalStatus signalStatus, SequenceMemory memory, ReteEvaluator reteEvaluator) {
         switch (gates.length) {
             case 4:
-                gate4.receive(index4, signalStatus, memory);
+                gate4.consume(index4, signalStatus, memory, reteEvaluator);
             case 3:
-                gate3.receive(index3, signalStatus, memory);
+                gate3.consume(index3, signalStatus, memory, reteEvaluator);
             case 2:
-                gate2.receive(index2, signalStatus, memory);
+                gate2.consume(index2, signalStatus, memory, reteEvaluator);
             case 1:
-                gate1.receive(index1, signalStatus, memory);
+                gate1.consume(index1, signalStatus, memory, reteEvaluator);
                 break;
             default:
                 for (int i = gates.length - 1; i >= 0; i--) {
-                    gates[i].getGate().receive(gates[i].getBitIndex(), signalStatus, memory);
+                    gates[i].getGate().consume(gates[i].getBitIndex(), signalStatus, memory, reteEvaluator);
                 }
         }
     }
 
     @Override
-    public void receive(int signalBitIndex, SignalStatus signalStatus, SequencerMemory memory) {
+    public void consume(int signalBitIndex, SignalStatus signalStatus, SequenceMemory memory, ReteEvaluator reteEvaluator) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    protected void reset(SequencerMemory memory) {
+    protected void reset(SequenceMemory memory, ReteEvaluator reteEvaluator) {
         // Do nothing
     }
 }

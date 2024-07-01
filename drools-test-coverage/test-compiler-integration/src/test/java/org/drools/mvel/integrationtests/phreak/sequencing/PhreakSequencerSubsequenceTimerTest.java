@@ -20,36 +20,25 @@ package org.drools.mvel.integrationtests.phreak.sequencing;
 
 import org.drools.base.base.ClassObjectType;
 import org.drools.base.base.ObjectType;
-import org.drools.base.definitions.InternalKnowledgePackage;
-import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.base.rule.Pattern;
 import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
+import org.drools.base.time.JobHandle;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.impl.KnowledgeBaseImpl;
-import org.drools.core.impl.RuleBaseFactory;
-import org.drools.core.reteoo.BetaMemory;
-import org.drools.core.reteoo.CoreComponentFactory;
-import org.drools.core.reteoo.JoinNode;
-import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.reteoo.MockLeftTupleSink;
-import org.drools.core.reteoo.MultiInputNode;
 import org.drools.core.reteoo.MultiInputNode.DynamicFilterProto;
-import org.drools.core.reteoo.MultiInputNode.MultiInputNodeMemory;
-import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.reteoo.sequencing.Gates;
 import org.drools.core.reteoo.sequencing.LogicCircuit;
 import org.drools.core.reteoo.sequencing.LogicGate;
 import org.drools.core.reteoo.sequencing.Sequence;
-import org.drools.core.reteoo.sequencing.Step;
-import org.drools.core.reteoo.sequencing.Sequencer;
+import org.drools.core.reteoo.sequencing.Sequence.LoopController;
 import org.drools.core.reteoo.sequencing.Sequence.SequenceMemory;
-import org.drools.core.reteoo.sequencing.Sequencer.SequencerMemory;
+import org.drools.core.reteoo.sequencing.Sequence.TimoutController;
+import org.drools.core.reteoo.sequencing.Sequencer;
+import org.drools.core.reteoo.sequencing.Step;
 import org.drools.core.reteoo.sequencing.TerminatingSignalProcessor;
-import org.drools.core.rule.JavaDialectRuntimeData;
+import org.drools.core.time.impl.DurationTimer;
+import org.drools.core.time.impl.PseudoClockScheduler;
 import org.drools.kiesession.rulebase.SessionsAwareKnowledgeBase;
-import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.mvel.integrationtests.phreak.A;
 import org.drools.mvel.integrationtests.phreak.B;
 import org.drools.mvel.integrationtests.phreak.sequencing.MultiInputNodeBuilder.AlphaConstraint;
@@ -58,15 +47,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.runtime.conf.ThreadSafeOption;
-import org.kie.internal.conf.CompositeBaseConfiguration;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class PhreakSequencerSubsequenceTest extends AbstractPhreakSequencerSubsequenceTest {
-
+public class PhreakSequencerSubsequenceTimerTest extends AbstractPhreakSequencerSubsequenceTest {
 
     @Before
     public void setup() {
@@ -125,43 +112,97 @@ public class PhreakSequencerSubsequenceTest extends AbstractPhreakSequencerSubse
         SessionsAwareKnowledgeBase kbase       = new SessionsAwareKnowledgeBase(buildContext.getRuleBase());
         SessionConfiguration       sessionConf = kbase.getSessionConfiguration();
         sessionConf.setOption(ThreadSafeOption.YES);
-
-        createSession();
     }
 
     @Test
-    public void testSubSequence() {
+    public void testSubSequenceFailSeq1() {
+        seq1.setController(new TimoutController(seq1, new DurationTimer(1000)));
+        createSession();
+
         ArrayList<SequenceMemory> stack = sequencerMemory.getSequenceStack();
         assertThat(stack.size()).isEqualTo(0);
 
         mnode.getSequencer().start(sequencerMemory, session);
         assertThat(stack.size()).isEqualTo(2);
 
-        assertThat(stack.get(0).getSequence()).isSameAs(seq0);
-        assertThat(stack.get(1).getSequence()).isSameAs(seq1);
-        assertThat(sequencerMemory.getCurrentSequence().getSequence()).isSameAs(seq1);
-        assertThat(sequencerMemory.getCurrentStep()).isSameAs(0);
+        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0);
+        InternalFactHandle fhB10 = (InternalFactHandle) session.insert(new B(0, "b"));
+        assertThat(sequencerMemory.getCurrentSequence().getSequence()).isEqualTo(seq1);
+        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(1);
+        PseudoClockScheduler pseudo = (PseudoClockScheduler) session.getTimerService();
+        pseudo.advanceTime(2000, TimeUnit.MILLISECONDS);
+        session.fireAllRules();
 
-        InternalFactHandle fhB0 = (InternalFactHandle) session.insert(new B(0, "b"));
-        assertThat(sequencerMemory.getCurrentStep()).isSameAs(1);
-
-        // After this B it should transition to the next step, which is a subsequence
-        InternalFactHandle fhB1 = (InternalFactHandle) session.insert(new B(0, "b"));
-        assertThat(stack.get(0).getSequence()).isSameAs(seq0);
-        assertThat(stack.get(1).getSequence()).isSameAs(seq2);
-        assertThat(sequencerMemory.getCurrentSequence().getSequence()).isSameAs(seq2);
-        assertThat(sequencerMemory.getCurrentStep()).isSameAs(0);
-
-        InternalFactHandle fhB2 = (InternalFactHandle) session.insert(new B(0, "b"));
-        assertThat(stack.get(0).getSequence()).isSameAs(seq0);
-        assertThat(stack.get(1).getSequence()).isSameAs(seq2);
-        assertThat(sequencerMemory.getCurrentSequence().getSequence()).isSameAs(seq2);
-        assertThat(sequencerMemory.getCurrentStep()).isSameAs(1);
-
-        InternalFactHandle fhB3 = (InternalFactHandle) session.insert(new B(0, "b"));
+        // check its all finished
+        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(-1);
         assertThat(stack.isEmpty()).isTrue();
+    }
 
-        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(-1); // terminated
+    @Test
+    public void testSubSequenceFailSeq2() {
+        seq1.setController(new TimoutController(seq1, new DurationTimer(1000)));
+        seq2.setController(new TimoutController(seq2, new DurationTimer(1000)));
+        createSession();
+
+        ArrayList<SequenceMemory> stack = sequencerMemory.getSequenceStack();
+        assertThat(stack.size()).isEqualTo(0);
+
+        mnode.getSequencer().start(sequencerMemory, session);
+        assertThat(stack.size()).isEqualTo(2);
+
+        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0);
+        InternalFactHandle fhB10 = (InternalFactHandle) session.insert(new B(0, "b"));
+        SequenceMemory     seq1Memory = sequencerMemory.getSequenceMemory(seq1);
+        JobHandle jh1 = seq1Memory.getJobHandle();
+        assertThat(jh1).isNotNull();
+        assertThat(jh1.isCancel()).isFalse();
+        InternalFactHandle fhB20 = (InternalFactHandle) session.insert(new B(0, "b"));
+        InternalFactHandle fhB30 = (InternalFactHandle) session.insert(new B(0, "b"));
+        assertThat(sequencerMemory.getCurrentSequence().getSequence()).isEqualTo(seq2);
+        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(1);
+        assertThat(seq1Memory.getJobHandle()).isNull();
+        assertThat(jh1.isCancel()).isTrue();
+
+        PseudoClockScheduler pseudo = (PseudoClockScheduler) session.getTimerService();
+        pseudo.advanceTime(2000, TimeUnit.MILLISECONDS);
+        session.fireAllRules();
+
+        // check its all finished
+        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(-1);
+        assertThat(stack.isEmpty()).isTrue();
+    }
+
+    @Test
+    public void testSubSequenceComplete() {
+        seq1.setController(new TimoutController(seq1, new DurationTimer(1000)));
+        seq2.setController(new TimoutController(seq2, new DurationTimer(1000)));
+        createSession();
+
+        ArrayList<SequenceMemory> stack = sequencerMemory.getSequenceStack();
+        assertThat(stack.size()).isEqualTo(0);
+
+        mnode.getSequencer().start(sequencerMemory, session);
+        assertThat(stack.size()).isEqualTo(2);
+
+        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0);
+        InternalFactHandle fhB10 = (InternalFactHandle) session.insert(new B(0, "b"));
+        SequenceMemory     seq1Memory = sequencerMemory.getSequenceMemory(seq1);
+        JobHandle jh1 = seq1Memory.getJobHandle();
+        InternalFactHandle fhB20 = (InternalFactHandle) session.insert(new B(0, "b"));
+        InternalFactHandle fhB30 = (InternalFactHandle) session.insert(new B(0, "b"));
+        SequenceMemory seq2Memory = sequencerMemory.getSequenceMemory(seq2);
+        JobHandle jh2 = seq2Memory.getJobHandle();
+        InternalFactHandle fhB40 = (InternalFactHandle) session.insert(new B(0, "b"));
+
+        assertThat(seq1Memory.getJobHandle()).isNull();
+        assertThat(jh1.isCancel()).isTrue();
+
+        assertThat(seq2Memory.getJobHandle()).isNull();
+        assertThat(jh2.isCancel()).isTrue();
+
+        // check its all finished
+        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(-1);
+        assertThat(stack.isEmpty()).isTrue();
     }
 
 }

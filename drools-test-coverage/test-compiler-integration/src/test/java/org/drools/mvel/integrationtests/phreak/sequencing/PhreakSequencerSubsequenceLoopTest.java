@@ -42,10 +42,11 @@ import org.drools.core.reteoo.sequencing.Gates;
 import org.drools.core.reteoo.sequencing.LogicCircuit;
 import org.drools.core.reteoo.sequencing.LogicGate;
 import org.drools.core.reteoo.sequencing.Sequence;
-import org.drools.core.reteoo.sequencing.Step;
-import org.drools.core.reteoo.sequencing.Sequencer;
+import org.drools.core.reteoo.sequencing.Sequence.LoopController;
 import org.drools.core.reteoo.sequencing.Sequence.SequenceMemory;
+import org.drools.core.reteoo.sequencing.Sequencer;
 import org.drools.core.reteoo.sequencing.Sequencer.SequencerMemory;
+import org.drools.core.reteoo.sequencing.Step;
 import org.drools.core.reteoo.sequencing.TerminatingSignalProcessor;
 import org.drools.core.rule.JavaDialectRuntimeData;
 import org.drools.kiesession.rulebase.SessionsAwareKnowledgeBase;
@@ -65,8 +66,7 @@ import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class PhreakSequencerSubsequenceTest extends AbstractPhreakSequencerSubsequenceTest {
-
+public class PhreakSequencerSubsequenceLoopTest extends AbstractPhreakSequencerSubsequenceTest {
 
     @Before
     public void setup() {
@@ -126,11 +126,21 @@ public class PhreakSequencerSubsequenceTest extends AbstractPhreakSequencerSubse
         SessionConfiguration       sessionConf = kbase.getSessionConfiguration();
         sessionConf.setOption(ThreadSafeOption.YES);
 
-        createSession();
+        session = (StatefulKnowledgeSessionImpl) kbase.newKieSession(sessionConf, null);
+
+        InternalFactHandle   fhA0   = (InternalFactHandle) session.insert(new A(0));
+        nodeMemory = session.getNodeMemory(mnode);
+        LeftTuple            lt     = new LeftTuple(fhA0, mnode, true);
+        lt.setContextObject(mnode.createSequencerMemory(lt, new MockLeftTupleSink(buildContext.getNextNodeId(), buildContext), nodeMemory));
+        nodeMemory.getLeftTupleMemory().add(lt);
+        sequencerMemory = (SequencerMemory) lt.getContextObject();
     }
 
     @Test
     public void testSubSequence() {
+        seq1.setController(new LoopController(c -> c < 2));
+        seq2.setController(new LoopController(c -> c < 2));
+
         ArrayList<SequenceMemory> stack = sequencerMemory.getSequenceStack();
         assertThat(stack.size()).isEqualTo(0);
 
@@ -140,28 +150,57 @@ public class PhreakSequencerSubsequenceTest extends AbstractPhreakSequencerSubse
         assertThat(stack.get(0).getSequence()).isSameAs(seq0);
         assertThat(stack.get(1).getSequence()).isSameAs(seq1);
         assertThat(sequencerMemory.getCurrentSequence().getSequence()).isSameAs(seq1);
-        assertThat(sequencerMemory.getCurrentStep()).isSameAs(0);
 
-        InternalFactHandle fhB0 = (InternalFactHandle) session.insert(new B(0, "b"));
-        assertThat(sequencerMemory.getCurrentStep()).isSameAs(1);
+        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0);
+        InternalFactHandle fhB10 = (InternalFactHandle) session.insert(new B(0, "b"));
+        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(1);
+        InternalFactHandle fhB11 = (InternalFactHandle) session.insert(new B(0, "b"));
+        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0); // looped back to first step, but still seq1
+        assertThat(sequencerMemory.getSequenceMemory(seq1).getCount()).isEqualTo(1); // first loop
+        assertThat(stack.get(1).getSequence()).isSameAs(seq1);
 
-        // After this B it should transition to the next step, which is a subsequence
-        InternalFactHandle fhB1 = (InternalFactHandle) session.insert(new B(0, "b"));
+        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0);
+        InternalFactHandle fhB12 = (InternalFactHandle) session.insert(new B(0, "b"));
+        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(1);
+        InternalFactHandle fhB13 = (InternalFactHandle) session.insert(new B(0, "b"));
+        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0); // looped back to first step, but still seq1
+        assertThat(sequencerMemory.getSequenceMemory(seq1).getCount()).isEqualTo(2); // second loop
+        assertThat(stack.get(1).getSequence()).isSameAs(seq1);
+
+        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0);
+        InternalFactHandle fhB14 = (InternalFactHandle) session.insert(new B(0, "b"));
+        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(1);
+        InternalFactHandle fhB15 = (InternalFactHandle) session.insert(new B(0, "b"));
+        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0); // looped back to first step, but now seq2
+        assertThat(sequencerMemory.getSequenceMemory(seq1).getCount()).isEqualTo(3);
+
         assertThat(stack.get(0).getSequence()).isSameAs(seq0);
-        assertThat(stack.get(1).getSequence()).isSameAs(seq2);
-        assertThat(sequencerMemory.getCurrentSequence().getSequence()).isSameAs(seq2);
-        assertThat(sequencerMemory.getCurrentStep()).isSameAs(0);
+        assertThat(stack.get(1).getSequence()).isSameAs(seq2); // now on subsequence seq2
 
-        InternalFactHandle fhB2 = (InternalFactHandle) session.insert(new B(0, "b"));
-        assertThat(stack.get(0).getSequence()).isSameAs(seq0);
+        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0);
+        InternalFactHandle fhB20 = (InternalFactHandle) session.insert(new B(0, "b"));
+        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(1);
+        InternalFactHandle fhB21 = (InternalFactHandle) session.insert(new B(0, "b"));
+        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0); // looped back to first step, but still seq1
+        assertThat(sequencerMemory.getSequenceMemory(seq2).getCount()).isEqualTo(1); // second loop
         assertThat(stack.get(1).getSequence()).isSameAs(seq2);
-        assertThat(sequencerMemory.getCurrentSequence().getSequence()).isSameAs(seq2);
-        assertThat(sequencerMemory.getCurrentStep()).isSameAs(1);
 
-        InternalFactHandle fhB3 = (InternalFactHandle) session.insert(new B(0, "b"));
+        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0);
+        InternalFactHandle fhB22 = (InternalFactHandle) session.insert(new B(0, "b"));
+        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(1);
+        InternalFactHandle fhB23 = (InternalFactHandle) session.insert(new B(0, "b"));
+        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0); // looped back to first step, but still seq1
+        assertThat(sequencerMemory.getSequenceMemory(seq2).getCount()).isEqualTo(2); // second loop
+        assertThat(stack.get(1).getSequence()).isSameAs(seq2);
+
+        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0);
+        InternalFactHandle fhB24 = (InternalFactHandle) session.insert(new B(0, "b"));
+        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(1);
+        InternalFactHandle fhB25 = (InternalFactHandle) session.insert(new B(0, "b")); // it finishes after this
+
+        // check its all finished
+        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(-1);
         assertThat(stack.isEmpty()).isTrue();
-
-        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(-1); // terminated
     }
 
 }

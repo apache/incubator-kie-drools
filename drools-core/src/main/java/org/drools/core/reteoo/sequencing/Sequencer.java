@@ -1,89 +1,69 @@
 package org.drools.core.reteoo.sequencing;
 
+import org.drools.core.common.ReteEvaluator;
+import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.MultiInputNode;
-import org.drools.core.reteoo.MultiInputNode.DynamicFilter;
 import org.drools.core.reteoo.MultiInputNode.MultiInputNodeMemory;
 import org.drools.core.reteoo.MultiInputNode.SignalAdapter;
-import org.drools.core.reteoo.sequencing.Sequence.Step;
+import org.drools.core.reteoo.TupleImpl;
+import org.drools.core.reteoo.sequencing.Sequence.SequenceMemory;
+import org.drools.core.reteoo.sequencing.Step.SequenceStep;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Sequencer {
 
     private MultiInputNode node;
     private Sequence       sequence;
 
+    private Sequence[]     sequencences;
+
     public Sequencer(MultiInputNode node, Sequence sequence) {
         this.node = node;
         this.sequence = sequence;
+        this.sequencences = populateSequences(sequence, new ArrayList<>()).stream().toArray(Sequence[]::new);
     }
 
-    public void start(SequencerMemory memory) {
-        start(sequence, memory);
-    }
-
-    public void start(Sequence sequence, SequencerMemory memory) {
-        memory.pushSequence(new SequenceMemory(sequence));
-        sequence.getSteps()[0].activate(memory);
-    }
-
-    public void next(SequencerMemory memory) {
-        SequenceMemory currentSequence = memory.getCurrentSequence();
-        int step = currentSequence.getStep();
-
-        currentSequence.getSequence().getSteps()[step].deactivate(memory);
-        step = currentSequence.incrementStep();
-
-        if (step < currentSequence.getSequence().getSteps().length) {
-            currentSequence.getSequence().getSteps()[step].activate(memory);
-        } else {
-            memory.popSequence(); // pop is here, but the push was in the activate of the step
-            if ( memory.getCurrentSequence() != null) {
-                next(memory);
-            } else {
-                terminate(memory);
+    public static List<Sequence> populateSequences(Sequence sequence, List<Sequence> list) {
+        list.add(sequence);
+        for (Step step  : sequence.getSteps()) {
+            if (step instanceof SequenceStep) {
+                populateSequences(((SequenceStep)step).getSequence(), list);
             }
         }
+
+        return list;
     }
 
-    public void terminate(SequencerMemory memory) {
-        System.out.println("Terminated");
+    public Sequence[] getSequencences() {
+        return sequencences;
     }
 
-    public void fail(SequencerMemory memory) {
-        node.fail(memory);
+    public void start(SequencerMemory memory, ReteEvaluator reteEvaluator) {
+        sequence.start(memory, reteEvaluator);
+    }
+
+    public void stop(SequencerMemory memory, ReteEvaluator reteEvaluator) {
+        // deactive each active sequence on the stack.
+        ArrayList<SequenceMemory>  stack = memory.getSequenceStack();
+        for (int i = stack.size()-1; i >= 0; i--) {
+            SequenceMemory sequenceMemory = stack.get(i);
+            sequenceMemory.getSequence().getSteps()[sequenceMemory.getStep()].deactivate(sequenceMemory, reteEvaluator);
+        }
+        stack.clear();
+    }
+
+    public void next(SequencerMemory sequencerMemory, ReteEvaluator reteEvaluator) {
+        SequenceMemory sequenceMemory = sequencerMemory.getCurrentSequence();
+        if (sequenceMemory != null) {
+            sequenceMemory.getSequence().next(sequenceMemory, reteEvaluator);
+        }
+    }
+
+    public void fail(SequenceMemory memory) {
+        //node.fail(memory);
         // TODO reset all memory
-    }
-
-
-    public  interface Repeater {
-
-    }
-
-
-    public void complete() {
-
-    }
-
-    public static class SequenceMemory {
-        private Sequence sequence;
-        private int step;
-
-        public SequenceMemory(Sequence sequence) {
-            this.sequence = sequence;
-        }
-
-        public Sequence getSequence() {
-            return sequence;
-        }
-
-        public int incrementStep() {
-            return ++step;
-        }
-
-        public int getStep() {
-            return step;
-        }
     }
 
     public Sequence getSequence() {
@@ -91,129 +71,37 @@ public class Sequencer {
     }
 
     public static class SequencerMemory {
-        private SignalAdapter[] signalAdapters;
 
-        private SignalAdapter[] activeSignalAdapters;
-
-        private long[] gateMemory;
-
-        private long[] counterMemory;
-
-        private SignalStatus[] signalStatuses;
+        private TupleImpl lt;
 
         private MultiInputNode node;
+
+        private SequenceMemory[] sequenceMemories;
+
+        private final LeftTupleSink sink;
 
         private MultiInputNodeMemory nodeMemory;
 
         private ArrayList<SequenceMemory> sequenceStack = new ArrayList<>();
 
-        public SequencerMemory(MultiInputNode node, MultiInputNodeMemory nodeMemory, long[] gateMemory, long[] counterMemory,
-                               SignalAdapter[] signalAdapters, SignalAdapter[] activeSignalAdapters) {
-            this.node = node;
-            this.gateMemory = gateMemory;
-            this.counterMemory = counterMemory;
-            this.nodeMemory = nodeMemory;
-            this.signalAdapters = signalAdapters;
-            this.activeSignalAdapters = activeSignalAdapters;
-            this.signalStatuses       = new SignalStatus[gateMemory.length + counterMemory.length];
+        public SequencerMemory(TupleImpl lt, LeftTupleSink sink, MultiInputNode node, MultiInputNodeMemory nodeMemory) {
+            this.lt                   = lt;
+            this.node                 = node;
+            this.sink                 = sink;
+            this.nodeMemory           = nodeMemory;
+            this.sequenceMemories     = new SequenceMemory[node.getSequencer().getSequencences().length];
         }
 
-        public SignalAdapter activateSignalAdapter(int filterIndex, LogicGate gate, int signalAdapterIndex, int signalBitIndex) {
-            if (activeSignalAdapters[signalAdapterIndex] != null) {
-                throw new RuntimeException("Defensive coding, this should not be re-entrant");
-            }
-
-            SignalAdapter signalAdapter = signalAdapters[signalAdapterIndex];
-
-            if (signalAdapter == null) {
-                ConditionalSignalCounter counter = null;
-                for ( ConditionalSignalCounter c : gate.getInputSignalCounters()) {
-                    if ( c.getSignalIndex() == signalAdapterIndex) {
-                        counter = c;
-                        break;
-                    }
-                }
-                signalAdapter = new SignalAdapter(counter == null ? gate : counter, signalBitIndex, this);
-                signalAdapters[signalAdapterIndex] = signalAdapter;
-            }
-
-            activeSignalAdapters[signalAdapterIndex] = signalAdapter;
-
-            DynamicFilter filter = nodeMemory.getActiveDynamicFilter(filterIndex);
-            filter.addSignalAdapter(signalAdapter);
-
-            return signalAdapter;
+        public TupleImpl getLeftTuple() {
+            return lt;
         }
 
-        public void deactivateSignalAdapter(int filterIndex, LogicGate gate, int signalAdapterIndex) {
-            SignalAdapter signalAdapter = activeSignalAdapters[signalAdapterIndex];
-            activeSignalAdapters[signalAdapterIndex] = null;
-
-            DynamicFilter filter = nodeMemory.getActiveDynamicFilter(filterIndex);
-            filter.removeSignalAdapter(signalAdapter);
-
-            if (filter.getSignalAdapters().isEmpty()) {
-                nodeMemory.removeActiveFilter(filter);
-            }
-        }
-
-        public long[] getLogicGateMemory() {
-            return gateMemory;
-        }
-
-        public SignalStatus getLogicGateSignalStatus(int index) {
-            return signalStatuses[index];
-        }
-
-        public void setLogicGateSignalStatus(int index, SignalStatus status) {
-            signalStatuses[index] = status;
-        }
-
-        public SignalStatus getCounterSignalStatus(int index) {
-            return signalStatuses[gateMemory.length + index];
-        }
-
-        public void setCounterSignalStatus(int index, SignalStatus status) {
-            signalStatuses[gateMemory.length + index] = status;
-        }
-
-        public SignalStatus[] getLogicGateSignalStatus() {
-            return signalStatuses;
-        }
-
-        public void setLogicGateMemory(long[] logicGateMemory) {
-            this.gateMemory = logicGateMemory;
-        }
-
-        public long[] getCounterMemory() {
-            return counterMemory;
+        public LeftTupleSink getSink() {
+            return sink;
         }
 
         public MultiInputNode getNode() {
             return node;
-        }
-
-        public void resetLogicGateMemory(int gateIndex) {
-            gateMemory[gateIndex]     = 0;
-            signalStatuses[gateIndex] = null;
-        }
-
-        public void resetSignalCounterMemory(int counterIndex) {
-            signalStatuses[gateMemory.length + counterIndex] = null;
-            counterMemory[counterIndex] = 0;
-        }
-
-
-        public SignalAdapter[] getSignalAdapters() {
-            return signalAdapters;
-        }
-
-        public SignalAdapter[] getActiveSignalAdapters() {
-            return activeSignalAdapters;
-        }
-
-        public long[] getGateMemory() {
-            return gateMemory;
         }
 
         public MultiInputNodeMemory getNodeMemory() {
@@ -244,5 +132,32 @@ public class Sequencer {
         public ArrayList<SequenceMemory> getSequenceStack() {
             return sequenceStack;
         }
+
+        public SequenceMemory getSequenceMemory(Sequence sequence) {
+            SequenceMemory sequenceMemory = sequenceMemories[sequence.getSequenceIndex()];
+            if (sequenceMemory == null) {
+
+                int signalAdapters = 0;
+                int counters       = 0;
+
+                for (LogicGate gate : sequence.getGates()) {
+                    counters = counters + gate.getInputSignalCounters().length;
+                    if ( gate.getOutput().getClass() == ConditionalSignalCounter.class) {
+                        ++counters;
+                    }
+                    signalAdapters = signalAdapters + gate.getSignalAdapterIndexes().length;
+                }
+
+                long[] gateMemory    = new long[sequence.getGates().length];
+                long[] counterMemory = new long[counters];
+
+                sequenceMemory = new SequenceMemory(this, sequence, new SignalAdapter[signalAdapters], new SignalAdapter[signalAdapters],
+                                                    gateMemory, counterMemory, nodeMemory);
+                sequenceMemories[sequence.getSequenceIndex()] = sequenceMemory;
+            }
+
+            return sequenceMemory;
+        }
     }
+
 }

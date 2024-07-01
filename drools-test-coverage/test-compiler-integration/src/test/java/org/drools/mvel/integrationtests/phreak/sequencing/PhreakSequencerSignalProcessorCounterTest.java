@@ -33,6 +33,7 @@ import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.reteoo.JoinNode;
 import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.MockLeftTupleSink;
 import org.drools.core.reteoo.MultiInputNode;
 import org.drools.core.reteoo.MultiInputNode.DynamicFilterProto;
 import org.drools.core.reteoo.MultiInputNode.MultiInputNodeMemory;
@@ -44,6 +45,7 @@ import org.drools.core.reteoo.sequencing.LogicGate;
 import org.drools.core.reteoo.sequencing.LogicGateOutputSignalProcessor;
 import org.drools.core.reteoo.sequencing.Sequence;
 import org.drools.core.reteoo.sequencing.Sequencer;
+import org.drools.core.reteoo.sequencing.Sequence.SequenceMemory;
 import org.drools.core.reteoo.sequencing.Sequencer.SequencerMemory;
 import org.drools.core.reteoo.sequencing.SignalIndex;
 import org.drools.core.reteoo.sequencing.TerminatingSignalProcessor;
@@ -67,28 +69,7 @@ import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class PhreakSequencerCounterTest {
-    BuildContext          buildContext;
-    JoinNode              joinNode;
-    JoinNode              sinkNode;
-    InternalWorkingMemory wm;
-    BetaMemory bm;
-    
-    BetaMemory bm0;
-
-    MultiInputNode mnode;
-
-    private StatefulKnowledgeSessionImpl session;
-
-    private MultiInputNodeMemory nodeMemory;
-
-    private SequencerMemory sequencerMemory;
-
-    private DynamicFilterProto bfilter;
-    private DynamicFilterProto cfilter;
-    private DynamicFilterProto dfilter;
-    private DynamicFilterProto efilter;
-
+public class PhreakSequencerSignalProcessorCounterTest extends AbstractPhreakSequencerSubsequenceTest {
 
     @Before
     public void setup() {
@@ -131,28 +112,6 @@ public class PhreakSequencerCounterTest {
         efilter = new DynamicFilterProto((AlphaNodeFieldConstraint) epattern.getConstraints().get(0), 3);
     }
 
-    private void createSession() {
-        SessionsAwareKnowledgeBase kbase       = new SessionsAwareKnowledgeBase(buildContext.getRuleBase());
-        SessionConfiguration       sessionConf = kbase.getSessionConfiguration();
-        sessionConf.setOption(ThreadSafeOption.YES);
-
-        if (session != null) {
-            nodeMemory = null;
-            sequencerMemory = null;
-            session.dispose();
-            session = null;
-        }
-
-        session = (StatefulKnowledgeSessionImpl) kbase.newKieSession(sessionConf, null);
-
-        InternalFactHandle   fhA0   = (InternalFactHandle) session.insert(new A(0));
-        nodeMemory = session.getNodeMemory(mnode);
-        LeftTuple            lt     = new LeftTuple(fhA0, mnode, true);
-        lt.setContextObject(mnode.createSequencerMemory(nodeMemory));
-        nodeMemory.getLeftTupleMemory().add(lt);
-        sequencerMemory = (SequencerMemory) lt.getContextObject();
-    }
-
     @Test
     public void testEventCountEqual() {
         LogicGate gate1 = new LogicGate((inputMask, sourceMask) -> Gates.and(inputMask, sourceMask),0,
@@ -168,13 +127,13 @@ public class PhreakSequencerCounterTest {
 
         LogicCircuit circuit1 = new LogicCircuit(mnode, gate1);
 
-        Sequence seq = new Sequence(circuit1);
+        Sequence seq = new Sequence(0, circuit1);
         mnode.setSequencer(new Sequencer(mnode, seq));
         mnode.setDynamicFilters( new DynamicFilterProto[] {bfilter, cfilter});
 
         createSession();
 
-        mnode.getSequencer().start(sequencerMemory);
+        mnode.getSequencer().start(sequencerMemory, session);
 
         assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0);
         InternalFactHandle fhB0 = (InternalFactHandle) session.insert(new B(0, "b"));
@@ -199,12 +158,12 @@ public class PhreakSequencerCounterTest {
 
         LogicCircuit circuit1 = new LogicCircuit(mnode, gate1);
 
-        Sequence seq = new Sequence(circuit1);
+        Sequence seq = new Sequence(0, circuit1);
         mnode.setSequencer(new Sequencer(mnode, seq));
         mnode.setDynamicFilters( new DynamicFilterProto[] {bfilter, cfilter});
 
         createSession(); // pass
-        mnode.getSequencer().start(sequencerMemory);
+        mnode.getSequencer().start(sequencerMemory, session);
 
         assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0);
         InternalFactHandle fhB0 = (InternalFactHandle) session.insert(new B(0, "b"));
@@ -216,7 +175,7 @@ public class PhreakSequencerCounterTest {
         InternalFactHandle fhB2 = (InternalFactHandle) session.insert(new B(2, "b"));
 
         createSession(); // fail
-        mnode.getSequencer().start(sequencerMemory);
+        mnode.getSequencer().start(sequencerMemory, session);
 
         assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0);
         fhB0 = (InternalFactHandle) session.insert(new B(0, "b"));
@@ -242,12 +201,12 @@ public class PhreakSequencerCounterTest {
 
         LogicCircuit circuit1 = new LogicCircuit(mnode, gate1);
 
-        Sequence seq = new Sequence(circuit1);
+        Sequence seq = new Sequence(0, circuit1);
         mnode.setSequencer(new Sequencer(mnode, seq));
         mnode.setDynamicFilters( new DynamicFilterProto[] {bfilter, cfilter});
 
         createSession(); // pass
-        mnode.getSequencer().start(sequencerMemory);
+        mnode.getSequencer().start(sequencerMemory, session);
 
         assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0);
         InternalFactHandle fhB0 = (InternalFactHandle) session.insert(new B(0, "b"));
@@ -259,7 +218,7 @@ public class PhreakSequencerCounterTest {
         InternalFactHandle fhB2 = (InternalFactHandle) session.insert(new B(2, "b"));
 
         createSession(); // fail
-        mnode.getSequencer().start(sequencerMemory);
+        mnode.getSequencer().start(sequencerMemory, session);
 
         assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0);
         fhB0 = (InternalFactHandle) session.insert(new B(0, "b"));
@@ -282,33 +241,34 @@ public class PhreakSequencerCounterTest {
 
         LogicCircuit circuit1 = new LogicCircuit(mnode, gate1);
 
-        Sequence seq = new Sequence(circuit1);
+        Sequence seq = new Sequence(0, circuit1);
         mnode.setSequencer(new Sequencer(mnode, seq));
         mnode.setDynamicFilters( new DynamicFilterProto[] {bfilter, cfilter});
 
         createSession(); // pass
-        mnode.getSequencer().start(sequencerMemory);
+        mnode.getSequencer().start(sequencerMemory, session);
+        SequenceMemory sequenceMemory = sequencerMemory.getSequenceMemory(seq);
 
         assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0);
-        assertThat(sequencerMemory.getCounterMemory()[counter.getCounterIndex()]).isEqualTo(0);
+        assertThat(sequenceMemory.getCounterMemories()[counter.getCounterIndex()]).isEqualTo(0);
         InternalFactHandle fhB0 = (InternalFactHandle) session.insert(new B(0, "b"));
         InternalFactHandle fhB1 = (InternalFactHandle) session.insert(new B(1, "b"));
         InternalFactHandle fhC0 = (InternalFactHandle) session.insert(new C(0, "c"));
 
         assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0);
-        assertThat(sequencerMemory.getCounterMemory()[counter.getCounterIndex()]).isEqualTo(1);
+        assertThat(sequenceMemory.getCounterMemories()[counter.getCounterIndex()]).isEqualTo(1);
         InternalFactHandle fhC1 = (InternalFactHandle) session.insert(new C(0, "c"));
         InternalFactHandle fhC2 = (InternalFactHandle) session.insert(new C(0, "c"));
         InternalFactHandle fhB3 = (InternalFactHandle) session.insert(new B(1, "b"));
 
         assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0);
-        assertThat(sequencerMemory.getCounterMemory()[counter.getCounterIndex()]).isEqualTo(2);
+        assertThat(sequenceMemory.getCounterMemories()[counter.getCounterIndex()]).isEqualTo(2);
         InternalFactHandle fhB4 = (InternalFactHandle) session.insert(new B(0, "b"));
         InternalFactHandle fhB5 = (InternalFactHandle) session.insert(new B(1, "b"));
         InternalFactHandle fhC3 = (InternalFactHandle) session.insert(new C(0, "c"));
 
         // now attempts next step, which is finished
-        assertThat(sequencerMemory.getCounterMemory()[counter.getCounterIndex()]).isEqualTo(3);
+        assertThat(sequenceMemory.getCounterMemories()[counter.getCounterIndex()]).isEqualTo(3);
         assertThat(sequencerMemory.getCurrentStep()).isEqualTo(-1); // terminated
     }
 
@@ -335,61 +295,43 @@ public class PhreakSequencerCounterTest {
 
         LogicCircuit circuit1 = new LogicCircuit(mnode, gate1, gate2);
 
-        Sequence seq = new Sequence(circuit1);
+        Sequence seq = new Sequence(0, circuit1);
         mnode.setSequencer(new Sequencer(mnode, seq));
         mnode.setDynamicFilters( new DynamicFilterProto[] {bfilter, cfilter, dfilter});
 
         // D First
         createSession();
-        mnode.getSequencer().start(sequencerMemory);
+        mnode.getSequencer().start(sequencerMemory, session);
+        SequenceMemory sequenceMemory = sequencerMemory.getSequenceMemory(seq);
 
         InternalFactHandle fhD0 = (InternalFactHandle) session.insert(new D(0, "d"));
-        assertThat(sequencerMemory.getCounterMemory()[counter1.getCounterIndex()]).isEqualTo(0);
+        assertThat(sequenceMemory.getCounterMemories()[counter1.getCounterIndex()]).isEqualTo(0);
 
         InternalFactHandle fhB0 = (InternalFactHandle) session.insert(new B(0, "b"));
         InternalFactHandle fhC0 = (InternalFactHandle) session.insert(new C(0, "c"));
-        assertThat(sequencerMemory.getCounterMemory()[counter1.getCounterIndex()]).isEqualTo(1);
-        assertThat(sequencerMemory.getCounterMemory()[counter2.getCounterIndex()]).isEqualTo(0);
+        assertThat(sequenceMemory.getCounterMemories()[counter1.getCounterIndex()]).isEqualTo(1);
+        assertThat(sequenceMemory.getCounterMemories()[counter2.getCounterIndex()]).isEqualTo(0);
 
         InternalFactHandle fhB1 = (InternalFactHandle) session.insert(new B(0, "b"));
         InternalFactHandle fhC1 = (InternalFactHandle) session.insert(new C(0, "c"));
-        assertThat(sequencerMemory.getCounterMemory()[counter1.getCounterIndex()]).isEqualTo(0);
-        assertThat(sequencerMemory.getCounterMemory()[counter2.getCounterIndex()]).isEqualTo(1);
+        assertThat(sequenceMemory.getCounterMemories()[counter1.getCounterIndex()]).isEqualTo(0);
+        assertThat(sequenceMemory.getCounterMemories()[counter2.getCounterIndex()]).isEqualTo(1);
 
         InternalFactHandle fhB2 = (InternalFactHandle) session.insert(new B(0, "b"));
         InternalFactHandle fhC2 = (InternalFactHandle) session.insert(new C(0, "c"));
-        assertThat(sequencerMemory.getCounterMemory()[counter1.getCounterIndex()]).isEqualTo(1);
-        assertThat(sequencerMemory.getCounterMemory()[counter2.getCounterIndex()]).isEqualTo(1);
+        assertThat(sequenceMemory.getCounterMemories()[counter1.getCounterIndex()]).isEqualTo(1);
+        assertThat(sequenceMemory.getCounterMemories()[counter2.getCounterIndex()]).isEqualTo(1);
 
         InternalFactHandle fhB3 = (InternalFactHandle) session.insert(new B(0, "b"));
         InternalFactHandle fhC = (InternalFactHandle) session.insert(new C(0, "c"));
-        assertThat(sequencerMemory.getCounterMemory()[counter1.getCounterIndex()]).isEqualTo(2);
-        assertThat(sequencerMemory.getCounterMemory()[counter2.getCounterIndex()]).isEqualTo(1);
+        assertThat(sequenceMemory.getCounterMemories()[counter1.getCounterIndex()]).isEqualTo(2);
+        assertThat(sequenceMemory.getCounterMemories()[counter2.getCounterIndex()]).isEqualTo(1);
 
         // Needs a final D to terminate
         assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0);
         InternalFactHandle fhD1 = (InternalFactHandle) session.insert(new D(0, "d"));
-        assertThat(sequencerMemory.getCounterMemory()[counter1.getCounterIndex()]).isEqualTo(0);
-        assertThat(sequencerMemory.getCounterMemory()[counter2.getCounterIndex()]).isEqualTo(2);
+        assertThat(sequenceMemory.getCounterMemories()[counter1.getCounterIndex()]).isEqualTo(0);
+        assertThat(sequenceMemory.getCounterMemories()[counter2.getCounterIndex()]).isEqualTo(2);
         assertThat(sequencerMemory.getCurrentStep()).isEqualTo(-1); // terminated
     }
-
-    public static BuildContext createContext() {
-
-        CompositeBaseConfiguration conf = (CompositeBaseConfiguration) RuleBaseFactory.newKnowledgeBaseConfiguration();
-
-        KnowledgeBaseImpl rbase = new KnowledgeBaseImpl("ID",
-                                                        conf );
-        BuildContext buildContext = new BuildContext( rbase, Collections.emptyList() );
-
-        RuleImpl rule = new RuleImpl( "rule1").setPackage( "org.pkg1" );
-        InternalKnowledgePackage pkg = CoreComponentFactory.get().createKnowledgePackage( "org.pkg1" );
-        pkg.getDialectRuntimeRegistry().setDialectData( "java", new JavaDialectRuntimeData() );
-
-        pkg.addRule( rule );
-        buildContext.setRule( rule );
-
-        return buildContext;
-    }
-
 }

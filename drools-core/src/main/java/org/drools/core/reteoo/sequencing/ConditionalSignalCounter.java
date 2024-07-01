@@ -1,7 +1,8 @@
 package org.drools.core.reteoo.sequencing;
 
 import org.drools.base.util.index.ConstraintTypeOperator;
-import org.drools.core.reteoo.sequencing.Sequencer.SequencerMemory;
+import org.drools.core.common.ReteEvaluator;
+import org.drools.core.reteoo.sequencing.Sequence.SequenceMemory;
 
 import java.util.function.Consumer;
 import java.util.function.LongPredicate;
@@ -58,23 +59,25 @@ public class ConditionalSignalCounter extends SignalProcessor {
         this.output = output;
     }
 
-    public void propagate(SignalStatus incommingSignalStatus, SequencerMemory memory) {
-        receive(incommingSignalStatus, memory,
-                (SignalStatus status) -> output.propagate(status, memory));
+    @Override
+    public void consume(SignalStatus incommingSignalStatus, SequenceMemory memory, ReteEvaluator reteEvaluator) {
+        consume(incommingSignalStatus, memory,
+                (SignalStatus status) -> output.consume(status, memory, reteEvaluator));
     }
 
-    public void receive(int signalBitIndex, SignalStatus incommingSignalStatus, SequencerMemory memory) {
-        receive(incommingSignalStatus, memory,
-                (SignalStatus status) -> output.receive(signalBitIndex, incommingSignalStatus, memory));
+    @Override
+    public void consume(int signalBitIndex, SignalStatus incommingSignalStatus, SequenceMemory memory, ReteEvaluator reteEvaluator) {
+        consume(incommingSignalStatus, memory,
+                (SignalStatus status) -> output.consume(signalBitIndex, incommingSignalStatus, memory, reteEvaluator));
     }
 
-    private void receive(SignalStatus inputSignalStatus, SequencerMemory memory, Consumer<SignalStatus> propagator) {
+    private void consume(SignalStatus inputSignalStatus, SequenceMemory memory, Consumer<SignalStatus> propagator) {
         SignalStatus status = memory.getCounterSignalStatus(counterIndex);
 
         SignalStatus priorStatus   = status;
-        long         originalCount = memory.getCounterMemory()[counterIndex];
+        long         originalCount = memory.getCounterMemories()[counterIndex];
         long         newCount      = ++originalCount;
-        memory.getCounterMemory()[counterIndex] = newCount;
+        memory.getCounterMemories()[counterIndex] = newCount;
 
         boolean matched = constraint.test(newCount);
         if (matched) {
@@ -87,7 +90,7 @@ public class ConditionalSignalCounter extends SignalProcessor {
         memory.setCounterSignalStatus(counterIndex, status);
 
         if (status == SignalStatus.FAILED) {
-            memory.getNode().getSequencer().fail(memory);
+            memory.getSequencerMemory().getNode().getSequencer().fail(memory);
         } else if (priorStatus != status) {
             propagator.accept(status);
         }
@@ -99,15 +102,7 @@ public class ConditionalSignalCounter extends SignalProcessor {
 
     LongPredicate ANY = c -> true;
 
-    public void activate(SequencerMemory memory) {
-
-    }
-
-    public void deactivate(SequencerMemory memory) {
-
-    }
-
-    public void reset(SequencerMemory memory) {
+    public void reset(SequenceMemory memory, ReteEvaluator reteEvaluator) {
         memory.resetSignalCounterMemory(counterIndex);
     }
 }

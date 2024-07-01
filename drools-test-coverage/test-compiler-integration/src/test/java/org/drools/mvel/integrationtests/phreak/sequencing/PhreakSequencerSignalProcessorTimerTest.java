@@ -24,6 +24,7 @@ import org.drools.base.definitions.InternalKnowledgePackage;
 import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.base.rule.Pattern;
 import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
+import org.drools.core.ClockType;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
@@ -37,17 +38,21 @@ import org.drools.core.reteoo.MockLeftTupleSink;
 import org.drools.core.reteoo.MultiInputNode;
 import org.drools.core.reteoo.MultiInputNode.DynamicFilterProto;
 import org.drools.core.reteoo.MultiInputNode.MultiInputNodeMemory;
-import org.drools.core.reteoo.sequencing.Sequencer.SequencerMemory;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.reteoo.sequencing.LogicCircuit;
+import org.drools.core.reteoo.sequencing.ConditionalSignalCounter;
 import org.drools.core.reteoo.sequencing.Gates;
+import org.drools.core.reteoo.sequencing.LogicCircuit;
 import org.drools.core.reteoo.sequencing.LogicGate;
-import org.drools.core.reteoo.sequencing.LogicGateOutputSignalProcessor;
+import org.drools.core.reteoo.sequencing.LogicGate.DelayFromActivatedTimer;
+import org.drools.core.reteoo.sequencing.LogicGate.DelayFromMatchTimer;
+import org.drools.core.reteoo.sequencing.LogicGate.TimeoutTimer;
 import org.drools.core.reteoo.sequencing.Sequence;
 import org.drools.core.reteoo.sequencing.Sequencer;
-import org.drools.core.reteoo.sequencing.SignalIndex;
+import org.drools.core.reteoo.sequencing.Sequencer.SequencerMemory;
 import org.drools.core.reteoo.sequencing.TerminatingSignalProcessor;
 import org.drools.core.rule.JavaDialectRuntimeData;
+import org.drools.core.time.impl.DurationTimer;
+import org.drools.core.time.impl.PseudoClockScheduler;
 import org.drools.kiesession.rulebase.SessionsAwareKnowledgeBase;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.mvel.integrationtests.phreak.A;
@@ -64,10 +69,11 @@ import org.kie.api.runtime.conf.ThreadSafeOption;
 import org.kie.internal.conf.CompositeBaseConfiguration;
 
 import java.util.Collections;
+import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class PhreakSequencerLogicGateTest extends AbstractPhreakSequencerSubsequenceTest {
+public class PhreakSequencerSignalProcessorTimerTest extends AbstractPhreakSequencerSubsequenceTest {
 
     @Before
     public void setup() {
@@ -111,11 +117,13 @@ public class PhreakSequencerLogicGateTest extends AbstractPhreakSequencerSubsequ
     }
 
     @Test
-    public void testAnd() {
+    public void testTimeout() {
         LogicGate gate1 = new LogicGate((inputMask, sourceMask) -> Gates.and(inputMask, sourceMask),0,
                                         new int[] {0, 1}, // B and C
                                         new int[] {0, 1}, // Each SignalAdapter must be in a unique index  for the Sequence
                                         0);
+
+        gate1.setPropagationTimer(new TimeoutTimer(gate1, new DurationTimer(1000)));
 
         gate1.setOutput(TerminatingSignalProcessor.get());
 
@@ -129,28 +137,82 @@ public class PhreakSequencerLogicGateTest extends AbstractPhreakSequencerSubsequ
 
         mnode.getSequencer().start(sequencerMemory, session);
         assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0); // step 0
-        InternalFactHandle fhB0 = (InternalFactHandle) session.insert(new B(0, "b"));
-        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0); // step 0
-        InternalFactHandle fhC0 = (InternalFactHandle) session.insert(new C(0, "c"));
-        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(-1); // terminated
-
-        // reverse B and C
+        InternalFactHandle   fhB0   = (InternalFactHandle) session.insert(new B(0, "b"));
+        PseudoClockScheduler pseudo = (PseudoClockScheduler) session.getTimerService();
+        assertThat(pseudo.getQueue().size()).isEqualTo(1);
+        pseudo.advanceTime(2000, TimeUnit.MILLISECONDS);
+        session.fireAllRules(); // if the rest of the system is immediate, why isn't this?
+        assertThat(pseudo.getQueue().size()).isEqualTo(0);
         createSession();
+
         mnode.getSequencer().start(sequencerMemory, session);
         assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0); // step 0
-        fhC0 = (InternalFactHandle) session.insert(new C(0, "c"));
+        fhB0   = (InternalFactHandle) session.insert(new B(0, "b"));
+        pseudo = (PseudoClockScheduler) session.getTimerService();
+        assertThat(pseudo.getQueue().size()).isEqualTo(1);
 
-        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0); // step 0
-        fhB0 = (InternalFactHandle) session.insert(new B(0, "b"));
-        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(-1); // terminated
+        InternalFactHandle fhC0   = (InternalFactHandle) session.insert(new C(0, "c"));
+        pseudo = (PseudoClockScheduler) session.getTimerService();
+        assertThat(pseudo.getQueue().peek().isCanceled()).isTrue(); // cancelled timers, stay on the queue until they fire (where they noop)
+        pseudo.advanceTime(2000, TimeUnit.MILLISECONDS);
+        session.fireAllRules(); // if the rest of the system is immediate, why isn't this?
     }
 
     @Test
-    public void testOr() {
-        LogicGate gate1 = new LogicGate((inputMask, sourceMask) -> Gates.or(inputMask, sourceMask),0,
+    public void testTimeoutWithCountFailure() {
+        LogicGate gate1 = new LogicGate((inputMask, sourceMask) -> Gates.and(inputMask, sourceMask),0,
+                                        new int[] {0}, // B
+                                        new int[] {0},
+                                        0);
+
+        ConditionalSignalCounter counter = new ConditionalSignalCounter(0, 0, c -> c <= 2);
+        counter.setOutput(gate1);
+        gate1.setInputSignalCounters(new ConditionalSignalCounter[] {counter});
+
+        //gate1.setPropagationTimer(new TimeoutTimer(gate1, new DurationTimer(1000)));
+        gate1.setOutput(TerminatingSignalProcessor.get());
+
+        LogicCircuit circuit1 = new LogicCircuit(mnode, gate1);
+
+        Sequence seq = new Sequence(0, circuit1);
+        mnode.setSequencer(new Sequencer(mnode, seq));
+        mnode.setDynamicFilters( new DynamicFilterProto[] {bfilter});
+
+        createSession();
+
+        mnode.getSequencer().start(sequencerMemory, session);
+        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0); // step 0
+        InternalFactHandle   fhB0   = (InternalFactHandle) session.insert(new B(0, "b"));
+        InternalFactHandle   fhB1   = (InternalFactHandle) session.insert(new B(0, "b"));
+        InternalFactHandle   fhB2   = (InternalFactHandle) session.insert(new B(0, "b"));
+        PseudoClockScheduler pseudo = (PseudoClockScheduler) session.getTimerService();
+//        assertThat(pseudo.getQueue().size()).isEqualTo(1);
+//        pseudo.advanceTime(2000, TimeUnit.MILLISECONDS);
+        session.fireAllRules(); // if the rest of the system is immediate, why isn't this?
+//        assertThat(pseudo.getQueue().size()).isEqualTo(0);
+//
+//        mnode.getSequencer().start(sequencerMemory, session);
+//        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0); // step 0
+//        fhB0   = (InternalFactHandle) session.insert(new B(0, "b"));
+//        pseudo = (PseudoClockScheduler) session.getTimerService();
+//        assertThat(pseudo.getQueue().size()).isEqualTo(1);
+//
+//        InternalFactHandle fhC0   = (InternalFactHandle) session.insert(new C(0, "c"));
+//        pseudo = (PseudoClockScheduler) session.getTimerService();
+//        assertThat(pseudo.getQueue().peek().isCanceled()).isTrue(); // cancelled timers, stay on the queue until they fire (where they noop)
+//        pseudo.advanceTime(2000, TimeUnit.MILLISECONDS);
+//        session.fireAllRules(); // if the rest of the system is immediate, why isn't this?
+    }
+
+
+    @Test
+    public void testDelayFromActivation() {
+        LogicGate gate1 = new LogicGate((inputMask, sourceMask) -> Gates.and(inputMask, sourceMask),0,
                                         new int[] {0, 1}, // B and C
                                         new int[] {0, 1}, // Each SignalAdapter must be in a unique index  for the Sequence
                                         0);
+
+        gate1.setPropagationTimer(new DelayFromActivatedTimer(gate1, new DurationTimer(1000)));
 
         gate1.setOutput(TerminatingSignalProcessor.get());
 
@@ -164,68 +226,58 @@ public class PhreakSequencerLogicGateTest extends AbstractPhreakSequencerSubsequ
 
         mnode.getSequencer().start(sequencerMemory, session);
         assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0); // step 0
-        InternalFactHandle fhB0 = (InternalFactHandle) session.insert(new B(0, "b"));
+        InternalFactHandle   fhB0   = (InternalFactHandle) session.insert(new B(0, "b"));
+        InternalFactHandle fhC0   = (InternalFactHandle) session.insert(new C(0, "c"));
+        PseudoClockScheduler pseudo = (PseudoClockScheduler) session.getTimerService();
+        assertThat(pseudo.getQueue().size()).isEqualTo(1);
+        pseudo.advanceTime(2000, TimeUnit.MILLISECONDS);
+        session.fireAllRules(); // if the rest of the system is immediate, why isn't this?
+        assertThat(pseudo.getQueue().size()).isEqualTo(0);
 
-        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(-1); // terminated
-
-        // reverse B and C
         createSession();
+
         mnode.getSequencer().start(sequencerMemory, session);
         assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0); // step 0
-        InternalFactHandle fhC0 = (InternalFactHandle) session.insert(new C(0, "c"));
-
-        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(-1); // terminated
+        fhB0   = (InternalFactHandle) session.insert(new B(0, "b"));
+        pseudo = (PseudoClockScheduler) session.getTimerService();
+        assertThat(pseudo.getQueue().size()).isEqualTo(1);
+        pseudo.advanceTime(2000, TimeUnit.MILLISECONDS);
+        session.fireAllRules(); // if the rest of the system is immediate, why isn't this?
+        assertThat(pseudo.getQueue().size()).isEqualTo(0);
     }
 
-
     @Test
-    public void testComposite() {
+    public void testDelayFromMatch() {
         LogicGate gate1 = new LogicGate((inputMask, sourceMask) -> Gates.and(inputMask, sourceMask),0,
                                         new int[] {0, 1}, // B and C
                                         new int[] {0, 1}, // Each SignalAdapter must be in a unique index  for the Sequence
                                         0);
 
-        LogicGate gate2 = new LogicGate((inputMask, sourceMask) -> Gates.and(inputMask, sourceMask),1,
-                                        new int[] {2}, // D
-                                        new int[] {2}, // D
-                                        1);
+        gate1.setPropagationTimer(new DelayFromMatchTimer(gate1, new DurationTimer(1000)));
 
-        gate1.setOutput(new LogicGateOutputSignalProcessor(SignalIndex.of(gate2, 2))); // gate bits must come after signals
-        gate2.setOutput(TerminatingSignalProcessor.get());
-        gate2.setInputGates(gate1);
+        gate1.setOutput(TerminatingSignalProcessor.get());
 
-        LogicCircuit circuit1 = new LogicCircuit(mnode, gate1, gate2);
+        LogicCircuit circuit1 = new LogicCircuit(mnode, gate1);
 
         Sequence seq = new Sequence(0, circuit1);
         mnode.setSequencer(new Sequencer(mnode, seq));
-        mnode.setDynamicFilters( new DynamicFilterProto[] {bfilter, cfilter, dfilter});
+        mnode.setDynamicFilters( new DynamicFilterProto[] {bfilter, cfilter});
 
-        // D last
         createSession();
+
         mnode.getSequencer().start(sequencerMemory, session);
         assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0); // step 0
-        InternalFactHandle fhB0 = (InternalFactHandle) session.insert(new B(0, "b"));
-        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0); // step 0
-        InternalFactHandle fhC0 = (InternalFactHandle) session.insert(new C(0, "c"));
-        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0); // step 0
-
-        // now it'll transition
-        InternalFactHandle fhD0 = (InternalFactHandle) session.insert(new D(0, "d"));
-        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(-1); // terminated
-
-        // change order, D first
-        createSession();
-        mnode.getSequencer().start(sequencerMemory, session);
-        fhD0 = (InternalFactHandle) session.insert(new D(0, "d"));
-        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0); // step 0
-
-        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0); // step 0
-        fhB0 = (InternalFactHandle) session.insert(new B(0, "b"));
-        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0); // step 0
-
-        // now it'll transition
-        fhC0 = (InternalFactHandle) session.insert(new C(0, "c"));
-        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(-1); // terminated
+        InternalFactHandle   fhB0   = (InternalFactHandle) session.insert(new B(0, "b"));
+        PseudoClockScheduler pseudo = (PseudoClockScheduler) session.getTimerService();
+        assertThat(pseudo.getQueue().size()).isEqualTo(0); // not created activation, only on match
+        InternalFactHandle fhC0   = (InternalFactHandle) session.insert(new C(0, "c"));
+        assertThat(pseudo.getQueue().size()).isEqualTo(1);
+        pseudo.advanceTime(500, TimeUnit.MILLISECONDS);
+        session.fireAllRules(); // if the rest of the system is immediate, why isn't this?
+        assertThat(pseudo.getQueue().size()).isEqualTo(1); // still 1
+        pseudo.advanceTime(1000, TimeUnit.MILLISECONDS);
+        session.fireAllRules();
+        assertThat(pseudo.getQueue().size()).isEqualTo(0);
     }
 
 }
