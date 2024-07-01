@@ -207,7 +207,7 @@
     <module>drools-model</module>
     <module>drools-examples-api</module>
     <module>drools-test-coverage</module>
-    <module>drools-scenario-simulation</module>
+<!--    <module>drools-scenario-simulation</module>
     <module>drools-metric</module>
     <module>drools-alphanetwork-compiler</module>
     <module>drools-engine</module>
@@ -223,7 +223,7 @@
     <module>kie-archetypes</module>
     <module>drools-quarkus-extension</module>
     <module>drools-reliability</module>
-    <module>drools-drlonyaml-parent</module>
+    <module>drools-drlonyaml-parent</module> -->
   </modules>
 
   <profiles>

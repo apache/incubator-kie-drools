@@ -35,8 +35,12 @@ import org.drools.drl.ast.descr.RuleDescr;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.ResourceChange;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class RuleCompilationPhase extends ImmutableRuleCompilationPhase {
+
+    private static final Logger LOG = LoggerFactory.getLogger(RuleCompilationPhase.class);
 
     public static CompilationPhase of(
             PackageRegistry pkgRegistry,
@@ -129,6 +133,7 @@ public class RuleCompilationPhase extends ImmutableRuleCompilationPhase {
                     }
                 }
 
+                LOG.info("preProcessRules 1: {}", rulesToBeRemoved);
                 rulesToBeRemoved.forEach(pkg::removeRule);
 
                 for (RuleDescr ruleDescr : packageDescr.getRules()) {
@@ -142,6 +147,7 @@ public class RuleCompilationPhase extends ImmutableRuleCompilationPhase {
 
                 if (!rulesToBeRemoved.isEmpty()) {
                     rulesToBeRemoved.addAll(findChildrenRulesToBeRemoved(packageDescr, rulesToBeRemoved));
+                    LOG.info("preProcessRules 2: {}", rulesToBeRemoved);
                     kBase.removeRules(rulesToBeRemoved);
                 }
             });

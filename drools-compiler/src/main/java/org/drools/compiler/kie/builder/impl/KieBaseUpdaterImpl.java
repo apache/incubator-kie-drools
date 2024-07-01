@@ -54,6 +54,14 @@ public class KieBaseUpdaterImpl implements KieBaseUpdater {
 
     @Override
     public void run() {
+        log.warn("run");
+        ctx.cs.getChanges().entrySet().forEach( entry -> {
+            String resourceName = entry.getKey();
+            ResourceChangeSet resourceChangeSet = entry.getValue();
+            if (resourceName.equals("rules1.drl")) {
+                log.warn("  " + resourceName + " -> " + resourceChangeSet.getChanges());
+            }
+        });
         InternalKnowledgeBuilder kbuilder = ctx.kbuilder;
 
         CompositeKnowledgeBuilder ckbuilder = kbuilder.batch();
@@ -108,6 +116,7 @@ public class KieBaseUpdaterImpl implements KieBaseUpdater {
 
             for (ResourceChange change : changeSet.getChanges()) {
                 if (change.getType() == ResourceChange.Type.RULE) {
+                    log.info("createKieBaseUpdate : change = " + change);
                     switch (change.getChangeType()) {
                         case ADDED:
                             kieBaseUpdate.registerRuleToBeAdded(newPkg.getRule( change.getName() ));
