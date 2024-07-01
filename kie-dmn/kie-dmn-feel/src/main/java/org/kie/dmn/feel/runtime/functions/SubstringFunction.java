@@ -28,7 +28,7 @@ public class SubstringFunction
 
     public static final SubstringFunction INSTANCE = new SubstringFunction();
 
-    public SubstringFunction() {
+    private SubstringFunction() {
         super( "substring" );
     }
 

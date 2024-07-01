@@ -18,30 +18,36 @@
  */
 package org.kie.dmn.feel.runtime.functions;
 
+import java.util.List;
+import java.util.Map;
+
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
-class StringLowerCaseFunctionTest {
+class ContextFunctionTest {
 
-    private static final StringLowerCaseFunction stringLowerCaseFunction = StringLowerCaseFunction.INSTANCE;
+    private static final ContextFunction contextFunction = ContextFunction.INSTANCE;
+
 
     @Test
-    void invokeNull() {
-        FunctionTestUtil.assertResultError(stringLowerCaseFunction.invoke(null), InvalidParametersEvent.class);
+    void invokeListNull() {
+        FunctionTestUtil.assertResultError(contextFunction.invoke(null), InvalidParametersEvent.class);
     }
 
     @Test
-    void invokeLowercaseString() {
-        FunctionTestUtil.assertResult(stringLowerCaseFunction.invoke("teststring"), "teststring");
+    void invokeContainsNoKeyAndValue() {
+        FunctionTestUtil.assertResultError(contextFunction.invoke(List.of(
+                Map.of("test", "name", "value", "John Doe"),
+                Map.of("key", "name", "test", "John Doe"))), InvalidParametersEvent.class);
     }
 
     @Test
-    void invokeUppercaseString() {
-        FunctionTestUtil.assertResult(stringLowerCaseFunction.invoke("TESTSTRING"), "teststring");
-    }
-
-    @Test
-    void invokeMixedCaseString() {
-        FunctionTestUtil.assertResult(stringLowerCaseFunction.invoke("testSTRing"), "teststring");
+    void invokeDuplicateKey() {
+        FunctionTestUtil.assertResultError(contextFunction.invoke(List.of(
+                Map.of("key", "name", "value", "John Doe"),
+                Map.of("key", "name", "value", "John Doe"))), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultNotError(contextFunction.invoke(List.of(
+                Map.of("key", "name", "value", "John Doe"),
+                Map.of("key", "age", "value", 12))));
     }
 }

@@ -452,12 +452,7 @@ public class ASTCompilerHelper {
             Class fnClass = fn.getClass();
             ClassOrInterfaceType fn_CT = parseClassOrInterfaceType(fnClass.getCanonicalName());
             Expression fn_N = new NameExpr(fnClass.getCanonicalName());
-            if (fnClass.getPackageName().equals(EXTENDED_FUNCTION_PACKAGE)) {
-                addVariableDeclaratorWithWithFieldAccess(fn_CT, INSTANCE_S, fn_N);
-            } else {
-                addVariableDeclaratorWithObjectCreation(fn_CT,
-                                                        NodeList.nodeList());
-            }
+            addVariableDeclaratorWithWithFieldAccess(fn_CT, INSTANCE_S, fn_N);
             fnVariableNameExpression = new NameExpr(lastVariableName.get());
         } else {
             fnVariableNameExpression = new NullLiteralExpr();

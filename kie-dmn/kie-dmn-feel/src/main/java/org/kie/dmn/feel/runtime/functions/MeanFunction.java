@@ -36,7 +36,7 @@ public class MeanFunction
 
     private SumFunction sum = SumFunction.INSTANCE;
 
-    public MeanFunction() {
+    private MeanFunction() {
         super( "mean" );
     }
 

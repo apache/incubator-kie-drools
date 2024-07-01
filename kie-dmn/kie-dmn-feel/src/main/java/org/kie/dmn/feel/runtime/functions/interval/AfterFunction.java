@@ -31,7 +31,7 @@ public class AfterFunction
 
     public static final AfterFunction INSTANCE = new AfterFunction();
 
-    public AfterFunction() {
+    private AfterFunction() {
         super( "after" );
     }
 

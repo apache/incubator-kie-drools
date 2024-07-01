@@ -22,98 +22,93 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 import org.kie.dmn.feel.runtime.functions.FunctionTestUtil;
 
 class NNAllFunctionTest {
 
-    private NNAllFunction NNAllFunction;
+    private static final NNAllFunction nnAllFunction = NNAllFunction.INSTANCE;
 
-    @BeforeEach
-    void setUp() {
-        NNAllFunction = new NNAllFunction();
-    }
 
     @Test
     void invokeBooleanParamNull() {
-        FunctionTestUtil.assertResult(NNAllFunction.invoke((Boolean) null), true);
+        FunctionTestUtil.assertResult(nnAllFunction.invoke((Boolean) null), true);
     }
 
     @Test
     void invokeBooleanParamTrue() {
-        FunctionTestUtil.assertResult(NNAllFunction.invoke(true), true);
+        FunctionTestUtil.assertResult(nnAllFunction.invoke(true), true);
     }
 
     @Test
     void invokeBooleanParamFalse() {
-        FunctionTestUtil.assertResult(NNAllFunction.invoke(false), false);
+        FunctionTestUtil.assertResult(nnAllFunction.invoke(false), false);
     }
 
     @Test
     void invokeArrayParamNull() {
-        FunctionTestUtil.assertResult(NNAllFunction.invoke((Object[]) null), true);
+        FunctionTestUtil.assertResult(nnAllFunction.invoke((Object[]) null), true);
     }
 
     @Test
     void invokeArrayParamEmptyArray() {
-        FunctionTestUtil.assertResult(NNAllFunction.invoke(new Object[]{}), true);
+        FunctionTestUtil.assertResult(nnAllFunction.invoke(new Object[]{}), true);
     }
 
     @Test
     void invokeArrayParamReturnTrue() {
-        FunctionTestUtil.assertResult(NNAllFunction.invoke(new Object[]{Boolean.TRUE, Boolean.TRUE}), true);
+        FunctionTestUtil.assertResult(nnAllFunction.invoke(new Object[]{Boolean.TRUE, Boolean.TRUE}), true);
     }
 
     @Test
     void invokeArrayParamReturnFalse() {
-        FunctionTestUtil.assertResult(NNAllFunction.invoke(new Object[]{Boolean.TRUE, Boolean.FALSE}), false);
-        FunctionTestUtil.assertResult(NNAllFunction.invoke(new Object[]{Boolean.TRUE, null, Boolean.FALSE}), false);
+        FunctionTestUtil.assertResult(nnAllFunction.invoke(new Object[]{Boolean.TRUE, Boolean.FALSE}), false);
+        FunctionTestUtil.assertResult(nnAllFunction.invoke(new Object[]{Boolean.TRUE, null, Boolean.FALSE}), false);
     }
 
     @Test
     void invokeArrayParamReturnNull() {
-        FunctionTestUtil.assertResult(NNAllFunction.invoke(new Object[]{Boolean.TRUE, null, Boolean.TRUE}), true);
+        FunctionTestUtil.assertResult(nnAllFunction.invoke(new Object[]{Boolean.TRUE, null, Boolean.TRUE}), true);
     }
 
     @Test
     void invokeArrayParamTypeHeterogenousArray() {
-        FunctionTestUtil.assertResultError(NNAllFunction.invoke(new Object[]{Boolean.TRUE, 1}), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(NNAllFunction.invoke(new Object[]{Boolean.FALSE, 1}), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(NNAllFunction.invoke(new Object[]{Boolean.TRUE, null, 1}), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(nnAllFunction.invoke(new Object[]{Boolean.TRUE, 1}), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(nnAllFunction.invoke(new Object[]{Boolean.FALSE, 1}), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(nnAllFunction.invoke(new Object[]{Boolean.TRUE, null, 1}), InvalidParametersEvent.class);
     }
 
     @Test
     void invokeListParamNull() {
-        FunctionTestUtil.assertResult(NNAllFunction.invoke((List) null), true);
+        FunctionTestUtil.assertResult(nnAllFunction.invoke((List) null), true);
     }
 
     @Test
     void invokeListParamEmptyList() {
-        FunctionTestUtil.assertResult(NNAllFunction.invoke(Collections.emptyList()), true);
+        FunctionTestUtil.assertResult(nnAllFunction.invoke(Collections.emptyList()), true);
     }
 
     @Test
     void invokeListParamReturnTrue() {
-        FunctionTestUtil.assertResult(NNAllFunction.invoke(Arrays.asList(Boolean.TRUE, Boolean.TRUE)), true);
+        FunctionTestUtil.assertResult(nnAllFunction.invoke(Arrays.asList(Boolean.TRUE, Boolean.TRUE)), true);
     }
 
     @Test
     void invokeListParamReturnFalse() {
-        FunctionTestUtil.assertResult(NNAllFunction.invoke(Arrays.asList(Boolean.TRUE, Boolean.FALSE)), false);
-        FunctionTestUtil.assertResult(NNAllFunction.invoke(Arrays.asList(Boolean.TRUE, null, Boolean.FALSE)), false);
+        FunctionTestUtil.assertResult(nnAllFunction.invoke(Arrays.asList(Boolean.TRUE, Boolean.FALSE)), false);
+        FunctionTestUtil.assertResult(nnAllFunction.invoke(Arrays.asList(Boolean.TRUE, null, Boolean.FALSE)), false);
     }
 
     @Test
     void invokeListParamReturnNull() {
-        FunctionTestUtil.assertResult(NNAllFunction.invoke(Arrays.asList(Boolean.TRUE, null, Boolean.TRUE)), true);
+        FunctionTestUtil.assertResult(nnAllFunction.invoke(Arrays.asList(Boolean.TRUE, null, Boolean.TRUE)), true);
     }
 
     @Test
     void invokeListParamTypeHeterogenousArray() {
-        FunctionTestUtil.assertResultError(NNAllFunction.invoke(Arrays.asList(Boolean.TRUE, 1)), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(NNAllFunction.invoke(Arrays.asList(Boolean.FALSE, 1)), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(NNAllFunction.invoke(Arrays.asList(Boolean.TRUE, null, 1)), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(nnAllFunction.invoke(Arrays.asList(Boolean.TRUE, 1)), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(nnAllFunction.invoke(Arrays.asList(Boolean.FALSE, 1)), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(nnAllFunction.invoke(Arrays.asList(Boolean.TRUE, null, 1)), InvalidParametersEvent.class);
     }
 }

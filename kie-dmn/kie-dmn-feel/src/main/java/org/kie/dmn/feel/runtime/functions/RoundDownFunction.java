@@ -16,27 +16,21 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.dmn.feel.runtime.functions.extended;
+package org.kie.dmn.feel.runtime.functions;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
-import org.kie.dmn.feel.runtime.functions.BaseFEELFunction;
-import org.kie.dmn.feel.runtime.functions.FEELFnResult;
-import org.kie.dmn.feel.runtime.functions.ParameterName;
 
-/**
- * provisional access for DMN14-126
- */
-public class RoundHalfUpFunction
+public class RoundDownFunction
         extends BaseFEELFunction {
 
-    public static final RoundHalfUpFunction INSTANCE = new RoundHalfUpFunction();
+    public static final RoundDownFunction INSTANCE = new RoundDownFunction();
 
-    public RoundHalfUpFunction() {
-        super( "round half up" );
+    private RoundDownFunction() {
+        super( "round down" );
     }
     
     public FEELFnResult<BigDecimal> invoke(@ParameterName( "n" ) BigDecimal n) {
@@ -54,6 +48,6 @@ public class RoundHalfUpFunction
         if (scale.compareTo(BigDecimal.valueOf(-6111)) < 0 || scale.compareTo(BigDecimal.valueOf(6176)) > 0) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "scale", "must be in range between -6111 to 6176."));
         }
-        return FEELFnResult.ofResult( n.setScale( scale.intValue(), RoundingMode.HALF_UP ) );
+        return FEELFnResult.ofResult( n.setScale( scale.intValue(), RoundingMode.DOWN ) );
     }
 }

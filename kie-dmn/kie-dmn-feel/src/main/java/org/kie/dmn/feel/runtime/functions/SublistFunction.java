@@ -20,6 +20,7 @@ package org.kie.dmn.feel.runtime.functions;
 
 import java.math.BigDecimal;
 import java.util.List;
+
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
@@ -28,7 +29,7 @@ public class SublistFunction
 
     public static final SublistFunction INSTANCE = new SublistFunction();
 
-    public SublistFunction() {
+    private SublistFunction() {
         super( "sublist" );
     }
 

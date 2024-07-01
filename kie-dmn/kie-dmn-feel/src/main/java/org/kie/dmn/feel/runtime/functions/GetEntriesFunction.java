@@ -25,13 +25,12 @@ import java.util.stream.Collectors;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
-import org.kie.dmn.feel.runtime.functions.extended.ContextPutFunction;
 
 public class GetEntriesFunction extends BaseFEELFunction {
 
     public static final GetEntriesFunction INSTANCE = new GetEntriesFunction();
 
-    public GetEntriesFunction() {
+    private GetEntriesFunction() {
         super("get entries");
     }
 

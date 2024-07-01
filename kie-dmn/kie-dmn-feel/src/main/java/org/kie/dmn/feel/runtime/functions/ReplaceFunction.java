@@ -26,7 +26,7 @@ public class ReplaceFunction
 
     public static final ReplaceFunction INSTANCE = new ReplaceFunction();
 
-    public ReplaceFunction() {
+    private ReplaceFunction() {
         super( "replace" );
     }
 

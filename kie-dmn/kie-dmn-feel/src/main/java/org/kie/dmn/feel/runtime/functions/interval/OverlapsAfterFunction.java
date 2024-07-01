@@ -28,7 +28,7 @@ public class OverlapsAfterFunction
 
     public static final OverlapsAfterFunction INSTANCE = new OverlapsAfterFunction();
 
-    public OverlapsAfterFunction() {
+    private OverlapsAfterFunction() {
         super("overlaps after");
     }
 

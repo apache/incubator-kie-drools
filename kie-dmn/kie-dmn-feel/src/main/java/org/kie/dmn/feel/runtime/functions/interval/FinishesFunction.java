@@ -31,7 +31,7 @@ public class FinishesFunction
 
     public static final FinishesFunction INSTANCE = new FinishesFunction();
 
-    public FinishesFunction() {
+    private FinishesFunction() {
         super( "finishes" );
     }
 

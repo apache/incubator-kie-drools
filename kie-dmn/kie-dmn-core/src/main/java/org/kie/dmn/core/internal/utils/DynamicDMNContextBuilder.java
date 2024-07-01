@@ -182,11 +182,11 @@ public class DynamicDMNContextBuilder {
                 case UNKNOWN:
                     return value;
                 case DATE:
-                    return new DateFunction().invoke((String) value).getOrElseThrow(FailedConversionException::new);
+                    return DateFunction.INSTANCE.invoke((String) value).getOrElseThrow(FailedConversionException::new);
                 case TIME:
-                    return new TimeFunction().invoke((String) value).getOrElseThrow(FailedConversionException::new);
+                    return TimeFunction.INSTANCE.invoke((String) value).getOrElseThrow(FailedConversionException::new);
                 case DATE_TIME:
-                    return new DateAndTimeFunction().invoke((String) value).getOrElseThrow(FailedConversionException::new);
+                    return DateAndTimeFunction.INSTANCE.invoke((String) value).getOrElseThrow(FailedConversionException::new);
                 case BOOLEAN:
                     return value;
                 case NUMBER:
@@ -194,7 +194,7 @@ public class DynamicDMNContextBuilder {
                 case STRING:
                     return value;
                 case DURATION:
-                    return new DurationFunction().invoke((String) value).getOrElseThrow(FailedConversionException::new);
+                    return DurationFunction.INSTANCE.invoke((String) value).getOrElseThrow(FailedConversionException::new);
                 default:
                     throw new IllegalArgumentException();
             }

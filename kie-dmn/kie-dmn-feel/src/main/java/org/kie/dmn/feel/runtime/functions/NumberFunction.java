@@ -29,7 +29,7 @@ public class NumberFunction
 
     public static final NumberFunction INSTANCE = new NumberFunction();
 
-    public NumberFunction() {
+    private NumberFunction() {
         super(FEELConversionFunctionNames.NUMBER);
     }
 

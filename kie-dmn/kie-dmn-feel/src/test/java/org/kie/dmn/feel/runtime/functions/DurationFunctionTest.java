@@ -22,19 +22,13 @@ import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAmount;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
 class DurationFunctionTest {
 
-    private DurationFunction durationFunction;
-
-    @BeforeEach
-    void setUp() {
-        durationFunction = new DurationFunction();
-    }
+    private static final DurationFunction durationFunction = DurationFunction.INSTANCE;
 
     @Test
     void invokeParamStringNull() {
