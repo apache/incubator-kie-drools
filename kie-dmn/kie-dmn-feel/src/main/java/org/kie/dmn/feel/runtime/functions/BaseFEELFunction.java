@@ -224,7 +224,16 @@ public abstract class BaseFEELFunction
         return candidate;
     }
 
-    protected Object[] getActualParameters(EvaluationContext ctx, Object[] params, boolean isNamedParams, Method m) {
+    /**
+     * This method insert <code>context</code> reference inside the given parameters, if the given <code>Method</code> signature include it.
+     * Depending on the <code>isNamedParams</code>, the reference could be the given <code>EvaluationContext</code> itself, or a <code>NamedParameter</code>
+     * @param ctx
+     * @param params
+     * @param isNamedParams
+     * @param m
+     * @return
+     */
+    static Object[] getActualParameters(EvaluationContext ctx, Object[] params, boolean isNamedParams, Method m) {
         Object[] actualParams;
         // Here, we check if any of the parameters is an EvaluationContext
         boolean injectCtx = Arrays.stream( m.getParameterTypes() ).anyMatch(EvaluationContext.class::isAssignableFrom);
