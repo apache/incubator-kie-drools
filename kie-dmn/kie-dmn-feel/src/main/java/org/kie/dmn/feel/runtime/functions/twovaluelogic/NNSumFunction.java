@@ -34,7 +34,7 @@ public class NNSumFunction
 
     public static final NNSumFunction INSTANCE = new NNSumFunction();
 
-    public NNSumFunction() {
+    private NNSumFunction() {
         super( "nn sum" );
     }
 

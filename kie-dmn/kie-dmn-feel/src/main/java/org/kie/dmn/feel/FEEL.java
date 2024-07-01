@@ -148,7 +148,7 @@ public interface FEEL {
      * Evaluates the given compiled FEEL expression using the
      * given EvaluationContext, and returns the result
      *
-     * @param expression a FEEL expression
+     * @param expr a FEEL expression
      * @param ctx the EvaluationContext to be used for defining
      *            input variables and additional feel event listeners
      *            contextual to this method call

@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -18,22 +18,17 @@
  */
 package org.kie.dmn.feel.runtime.functions;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
 class SubstringBeforeFunctionTest {
 
-    private SubstringBeforeFunction substringBeforeFunction;
-
-    @BeforeEach
-    void setUp() {
-        substringBeforeFunction = new SubstringBeforeFunction();
-    }
+    private static final SubstringBeforeFunction substringBeforeFunction = SubstringBeforeFunction.INSTANCE;
 
     @Test
     void invokeNull() {
-        FunctionTestUtil.assertResultError(substringBeforeFunction.invoke((String) null, null), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(substringBeforeFunction.invoke((String) null, null),
+                                           InvalidParametersEvent.class);
         FunctionTestUtil.assertResultError(substringBeforeFunction.invoke(null, "test"), InvalidParametersEvent.class);
         FunctionTestUtil.assertResultError(substringBeforeFunction.invoke("test", null), InvalidParametersEvent.class);
     }

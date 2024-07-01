@@ -28,7 +28,7 @@ public class ModuloFunction
         extends BaseFEELFunction {
     public static final ModuloFunction INSTANCE = new ModuloFunction();
 
-    ModuloFunction() {
+    private ModuloFunction() {
         super( "modulo" );
     }
 

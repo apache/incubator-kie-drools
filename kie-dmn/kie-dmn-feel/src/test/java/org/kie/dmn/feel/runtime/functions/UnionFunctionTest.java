@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -22,18 +22,12 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
 class UnionFunctionTest {
 
-    private UnionFunction unionFunction;
-
-    @BeforeEach
-    void setUp() {
-        unionFunction = new UnionFunction();
-    }
+    private static final UnionFunction unionFunction = UnionFunction.INSTANCE;
 
     @Test
     void invokeNull() {
@@ -52,13 +46,15 @@ class UnionFunctionTest {
 
     @Test
     void invokeSingleObjectInAList() {
-        FunctionTestUtil.assertResult(unionFunction.invoke(new Object[]{Collections.singletonList(10)}), Collections.singletonList(10));
+        FunctionTestUtil.assertResult(unionFunction.invoke(new Object[]{Collections.singletonList(10)}),
+                                      Collections.singletonList(10));
     }
 
     @Test
     void invokeSingleObjectInAnArray() {
         final int[] testArray = new int[]{10};
-        FunctionTestUtil.assertResult(unionFunction.invoke(new Object[]{testArray}), Collections.singletonList(testArray));
+        FunctionTestUtil.assertResult(unionFunction.invoke(new Object[]{testArray}),
+                                      Collections.singletonList(testArray));
     }
 
     @Test
@@ -68,7 +64,8 @@ class UnionFunctionTest {
 
     @Test
     void invokeListContainsNull() {
-        FunctionTestUtil.assertResult(unionFunction.invoke(new Object[]{Arrays.asList(null, 10, null)}), Arrays.asList(null, 10));
+        FunctionTestUtil.assertResult(unionFunction.invoke(new Object[]{Arrays.asList(null, 10, null)}),
+                                      Arrays.asList(null, 10));
     }
 
     @Test
@@ -79,7 +76,8 @@ class UnionFunctionTest {
 
     @Test
     void invokeListsSomeDuplicates() {
-        final Object[] params = new Object[]{Arrays.asList(10, 8, 3), Arrays.asList(1, 10, 2), Arrays.asList(10, 3, 2, 5)};
+        final Object[] params = new Object[]{Arrays.asList(10, 8, 3), Arrays.asList(1, 10, 2), Arrays.asList(10, 3, 2
+                , 5)};
         FunctionTestUtil.assertResultList(unionFunction.invoke(params), Arrays.asList(10, 8, 3, 1, 2, 5));
     }
 
@@ -91,12 +89,14 @@ class UnionFunctionTest {
 
     @Test
     void invokeListAndSingleObject() {
-        FunctionTestUtil.assertResultList(unionFunction.invoke(new Object[]{Arrays.asList(10, 4, 5), 1}), Arrays.asList(10, 4, 5, 1));
+        FunctionTestUtil.assertResultList(unionFunction.invoke(new Object[]{Arrays.asList(10, 4, 5), 1}),
+                                          Arrays.asList(10, 4, 5, 1));
     }
 
     @Test
     void invokeListAndSingleObjectWithDuplicates() {
-        FunctionTestUtil.assertResultList(unionFunction.invoke(new Object[]{5, Arrays.asList(10, 4, 5), 10}), Arrays.asList(5, 10, 4));
+        FunctionTestUtil.assertResultList(unionFunction.invoke(new Object[]{5, Arrays.asList(10, 4, 5), 10}),
+                                          Arrays.asList(5, 10, 4));
     }
 
     @Test

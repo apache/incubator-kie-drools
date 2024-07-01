@@ -31,7 +31,7 @@ public class OverlapsBeforeFunction
 
     public static final OverlapsBeforeFunction INSTANCE = new OverlapsBeforeFunction();
 
-    public OverlapsBeforeFunction() {
+    private OverlapsBeforeFunction() {
         super("overlaps before");
     }
 

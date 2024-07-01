@@ -27,7 +27,7 @@ public class StringFunction
 
     public static final StringFunction INSTANCE = new StringFunction();
 
-    public StringFunction() {
+    private StringFunction() {
         super(FEELConversionFunctionNames.STRING);
     }
 

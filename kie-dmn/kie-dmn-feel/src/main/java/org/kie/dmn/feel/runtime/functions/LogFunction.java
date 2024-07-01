@@ -29,7 +29,7 @@ public class LogFunction
         extends BaseFEELFunction {
     public static final LogFunction INSTANCE = new LogFunction();
 
-    LogFunction() {
+    private LogFunction() {
         super("log");
     }
 

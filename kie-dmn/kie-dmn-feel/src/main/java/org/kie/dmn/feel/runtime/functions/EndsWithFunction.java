@@ -26,7 +26,7 @@ public class EndsWithFunction
 
     public static final EndsWithFunction INSTANCE = new EndsWithFunction();
 
-    public EndsWithFunction() {
+    private EndsWithFunction() {
         super( "ends with" );
     }
 

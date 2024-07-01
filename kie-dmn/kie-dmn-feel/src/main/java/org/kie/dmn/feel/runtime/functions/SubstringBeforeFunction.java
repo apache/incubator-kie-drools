@@ -26,7 +26,7 @@ public class SubstringBeforeFunction
 
     public static final SubstringBeforeFunction INSTANCE = new SubstringBeforeFunction();
 
-    public SubstringBeforeFunction() {
+    private SubstringBeforeFunction() {
         super( "substring before" );
     }
 

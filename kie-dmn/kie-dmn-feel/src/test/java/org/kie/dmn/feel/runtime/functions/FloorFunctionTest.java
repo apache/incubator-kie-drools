@@ -20,18 +20,12 @@ package org.kie.dmn.feel.runtime.functions;
 
 import java.math.BigDecimal;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
 class FloorFunctionTest {
 
-    private FloorFunction floorFunction;
-
-    @BeforeEach
-    void setUp() {
-        floorFunction = new FloorFunction();
-    }
+    private static final FloorFunction floorFunction = FloorFunction.INSTANCE;
 
     @Test
     void invokeNull() {
