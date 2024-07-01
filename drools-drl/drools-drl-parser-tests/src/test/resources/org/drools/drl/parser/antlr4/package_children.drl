@@ -1,0 +1,53 @@
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the License for the specific language governing permissions and limitations
+ * under the License.
+ */
+
+package org.drools.compiler.test
+
+unit TestUnit
+
+import org.drools.compiler.Cheese
+
+import function abc.def.x
+
+import accumulate foo.Bar2 baz2
+
+global List result
+
+declare Person end
+
+declare enum Color WHITE; end
+
+declare entry-point EntryPoint end
+
+declare window Window
+  Double() over window:length( 10 )
+end
+
+query MyQuery
+  Cheese()
+end
+
+function String doSomething() {}
+
+enabled true;
+
+dialect "java"
+
+rule "My Rule"
+when
+then
+end
