@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -24,7 +24,6 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
@@ -32,19 +31,16 @@ import static java.math.BigDecimal.valueOf;
 
 class WeekOfYearTest {
 
-    private WeekOfYearFunction fut;
-
-    @BeforeEach
-    void setUp() {
-        fut = WeekOfYearFunction.INSTANCE;
-    }
+    private static final WeekOfYearFunction fut = WeekOfYearFunction.INSTANCE;
 
     @Test
     void weekOfYearFunctionTemporalAccessor() {
         FunctionTestUtil.assertResult(fut.invoke(LocalDate.of(2019, 9, 17)), valueOf(38));
         FunctionTestUtil.assertResult(fut.invoke(LocalDateTime.of(2019, 9, 17, 0, 0, 0)), valueOf(38));
-        FunctionTestUtil.assertResult(fut.invoke(OffsetDateTime.of(2019, 9, 17, 0, 0, 0, 0, ZoneOffset.UTC)), valueOf(38));
-        FunctionTestUtil.assertResult(fut.invoke(ZonedDateTime.of(2019, 9, 17, 0, 0, 0, 0, ZoneOffset.UTC)), valueOf(38));
+        FunctionTestUtil.assertResult(fut.invoke(OffsetDateTime.of(2019, 9, 17, 0, 0, 0, 0, ZoneOffset.UTC)),
+                                      valueOf(38));
+        FunctionTestUtil.assertResult(fut.invoke(ZonedDateTime.of(2019, 9, 17, 0, 0, 0, 0, ZoneOffset.UTC)),
+                                      valueOf(38));
         FunctionTestUtil.assertResultError(fut.invoke(null), InvalidParametersEvent.class);
     }
 }

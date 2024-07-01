@@ -25,7 +25,6 @@ import java.util.List;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
-import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.dmn.feel.util.NumberEvalHelper;
 
 // based on the examples of calculations, stddev is supposed to return sample standard deviation, not population standard deviation
@@ -33,7 +32,7 @@ public class StddevFunction
         extends BaseFEELFunction {
     public static final StddevFunction INSTANCE = new StddevFunction();
 
-    StddevFunction() {
+    private StddevFunction() {
         super("stddev");
     }
 

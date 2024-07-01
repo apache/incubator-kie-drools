@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -23,19 +23,13 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 import org.kie.dmn.feel.runtime.functions.FunctionTestUtil;
 
 class MaxFunctionTest {
 
-    private NNMaxFunction maxFunction;
-
-    @BeforeEach
-    void setUp() {
-        maxFunction = new NNMaxFunction();
-    }
+    private static final NNMaxFunction maxFunction = NNMaxFunction.INSTANCE;
 
     @Test
     void invokeNullList() {
@@ -49,7 +43,8 @@ class MaxFunctionTest {
 
     @Test
     void invokeListWithHeterogenousTypes() {
-        FunctionTestUtil.assertResultError(maxFunction.invoke(Arrays.asList(1, "test", BigDecimal.valueOf(10.2))), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(maxFunction.invoke(Arrays.asList(1, "test", BigDecimal.valueOf(10.2))),
+                                           InvalidParametersEvent.class);
     }
 
     @Test
@@ -80,7 +75,8 @@ class MaxFunctionTest {
 
     @Test
     void invokeArrayWithHeterogenousTypes() {
-        FunctionTestUtil.assertResultError(maxFunction.invoke(new Object[]{1, "test", BigDecimal.valueOf(10.2)}), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(maxFunction.invoke(new Object[]{1, "test", BigDecimal.valueOf(10.2)}),
+                                           InvalidParametersEvent.class);
     }
 
     @Test

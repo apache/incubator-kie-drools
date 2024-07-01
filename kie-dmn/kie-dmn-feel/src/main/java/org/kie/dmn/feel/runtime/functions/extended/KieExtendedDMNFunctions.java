@@ -40,23 +40,10 @@ public class KieExtendedDMNFunctions {
     protected static final FEELFunction[] FUNCTIONS = new FEELFunction[]{
                                                                          TimeFunction.INSTANCE,
                                                                          DateFunction.INSTANCE,
-                                                                         DurationFunction.INSTANCE,
 
                                                                          // additional functions not part of the spec version 1.1
-                                                                         new NowFunction(),
-                                                                         new TodayFunction(),
-                                                                         new CodeFunction(),
-                                                                         new InvokeFunction(),
-
-                                                                         ContextPutFunction.INSTANCE,
-                                                                         ContextMergeFunction.INSTANCE,
-                                                                         ContextFunction.INSTANCE,
-                                                                         FloorFunction.INSTANCE,
-                                                                         CeilingFunction.INSTANCE,
-                                                                         RoundUpFunction.INSTANCE,
-                                                                         RoundDownFunction.INSTANCE,
-                                                                         RoundHalfUpFunction.INSTANCE,
-                                                                         RoundHalfDownFunction.INSTANCE,
+                                                                         CodeFunction.INSTANCE,
+                                                                         InvokeFunction.INSTANCE,
 
                                                                          // CQL based, two value logic functions
                                                                         NNAnyFunction.INSTANCE,
@@ -69,9 +56,6 @@ public class KieExtendedDMNFunctions {
                                                                         NNModeFunction.INSTANCE,
                                                                         NNStddevFunction.INSTANCE,
                                                                         NNSumFunction.INSTANCE,
-
-                                                                        StringJoinFunction.INSTANCE,
-                                                                        RangeFunction.INSTANCE,
 
     };
 

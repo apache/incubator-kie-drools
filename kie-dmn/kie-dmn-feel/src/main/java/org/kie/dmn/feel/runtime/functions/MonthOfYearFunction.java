@@ -29,7 +29,7 @@ import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 public class MonthOfYearFunction extends BaseFEELFunction {
     public static final MonthOfYearFunction INSTANCE = new MonthOfYearFunction();
 
-    MonthOfYearFunction() {
+    private MonthOfYearFunction() {
         super("month of year");
     }
 

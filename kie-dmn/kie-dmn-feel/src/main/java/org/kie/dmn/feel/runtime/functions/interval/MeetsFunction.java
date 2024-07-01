@@ -29,7 +29,7 @@ public class MeetsFunction extends BaseFEELFunction {
 
     public static final MeetsFunction INSTANCE = new MeetsFunction();
 
-    public MeetsFunction() {
+    private MeetsFunction() {
         super( "meets" );
     }
 

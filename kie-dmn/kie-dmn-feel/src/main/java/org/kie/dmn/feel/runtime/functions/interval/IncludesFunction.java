@@ -31,7 +31,7 @@ public class IncludesFunction
 
     public static final IncludesFunction INSTANCE = new IncludesFunction();
 
-    public IncludesFunction() {
+    private IncludesFunction() {
         super( "includes" );
     }
 

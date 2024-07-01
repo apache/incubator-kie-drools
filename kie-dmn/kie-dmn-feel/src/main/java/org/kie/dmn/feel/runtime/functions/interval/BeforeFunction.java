@@ -30,7 +30,7 @@ public class BeforeFunction
 
     public static final BeforeFunction INSTANCE = new BeforeFunction();
 
-    public BeforeFunction() {
+    private BeforeFunction() {
         super( "before" );
     }
 
