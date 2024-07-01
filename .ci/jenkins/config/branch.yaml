@@ -95,6 +95,11 @@ cloud:
     registry: docker.io
     namespace: apache
     latest_git_branch: main
+release:
+  gpg:
+    sign:
+      key-credentials-id: 'asf-release-gpg-signing-key'
+      passphrase-credentials-id: 'asf-release-gpg-signing-key-passphrase'
 jenkins:
   email_creds_id: DROOLS_CI_NOTIFICATION_EMAILS
   agent:
