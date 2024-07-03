@@ -18,15 +18,11 @@
  */
 package org.kie.dmn.feel.runtime.functions;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -43,11 +39,8 @@ import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.dmn.feel.runtime.events.FEELEventBase;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 import org.kie.dmn.feel.util.Either;
-import org.kie.dmn.feel.util.NumberEvalHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.kie.dmn.feel.util.CoerceUtil.coerceParams;
 
 public abstract class BaseFEELFunction
         implements FEELFunction {
@@ -107,7 +100,9 @@ public abstract class BaseFEELFunction
                 }
             } else {
                 if ( isNamedParams ) {
-                    params = rearrangeParameters(params, this.getParameters().get(0).stream().map(Param::getName).collect(Collectors.toList()));
+                    // This is inherently frail because it expects that, if, the first parameter is NamedParameter and the function is a CustomFunction, then all parameters are NamedParameter
+                    NamedParameter[] namedParams = Arrays.stream(params).map(NamedParameter.class::cast).toArray(NamedParameter[]::new);
+                    params = BaseFEELFunctionHelper.rearrangeParameters(namedParams, this.getParameters().get(0).stream().map(Param::getName).collect(Collectors.toList()));
                 }
                 Object result = invoke( ctx, params );
                 if ( result instanceof Either ) {
@@ -119,9 +114,9 @@ public abstract class BaseFEELFunction
                                                           either,
                                                           () -> IntStream.of( 0, usedParams.length ).mapToObj( i -> "arg" + i ).collect( Collectors.toList() ),
                                                           () -> Arrays.asList( usedParams ));
-                    return normalizeResult( eitherResult );
+                    return BaseFEELFunctionHelper.normalizeResult( eitherResult );
                 }
-                return normalizeResult( result );
+                return BaseFEELFunctionHelper.normalizeResult( result );
             }
         } catch ( Exception e ) {
             logger.error( "Error trying to call function " + getName() + ".", e );
@@ -163,10 +158,12 @@ public abstract class BaseFEELFunction
         // first, look for exact matches
         for ( Method m : invokeMethods) {
 
-            Object[] actualParams = getActualParameters(ctx, params, isNamedParams, m);
+            Object[] actualParams = BaseFEELFunctionHelper.addCtxParamIfRequired(ctx, params, isNamedParams, m);
 
             if( isNamedParams ) {
-                actualParams = calculateActualParams(m, actualParams );
+                // This is inherently frail because it expects that, if, the first parameter is NamedParameter and the function is a CustomFunction, then all parameters are NamedParameter
+                NamedParameter[] namedParams = Arrays.stream(actualParams).map(NamedParameter.class::cast).toArray(NamedParameter[]::new);
+                actualParams = BaseFEELFunctionHelper.calculateActualParams(m, namedParams );
                 if( actualParams == null ) {
                     // incompatible method
                     continue;
@@ -178,27 +175,14 @@ public abstract class BaseFEELFunction
             if (!isNamedParams && actualParams.length > 0) {
                 // if named parameters, then it has been adjusted already in the calculateActualParams method,
                 // otherwise adjust here
-                adjustForVariableParameters( cm, parameterTypes );
+                BaseFEELFunctionHelper.adjustForVariableParameters( cm, parameterTypes );
             }
 
             if ( parameterTypes.length != cm.getActualParams().length ) {
                 continue;
             }
 
-            boolean found = true;
-            for ( int i = 0; i < parameterTypes.length; i++ ) {
-                Class<?> currentIdxActualParameterType = cm.getActualClasses()[i];
-                Class<?> expectedParameterType = parameterTypes[i];
-                if ( currentIdxActualParameterType != null && !expectedParameterType.isAssignableFrom( currentIdxActualParameterType ) ) {
-                    Optional<Object[]> coercedParams = coerceParams(currentIdxActualParameterType, expectedParameterType, actualParams, i);
-                    if (coercedParams.isPresent()) {
-                        cm.setActualParams(coercedParams.get());
-                        continue;
-                    }
-                    found = false;
-                    break;
-                }
-            }
+            boolean found = BaseFEELFunctionHelper.areParametersMatching(parameterTypes, cm);
             if ( found ) {
                 cm.setActualMethod(m );
                 if (candidate == null) {
@@ -207,7 +191,7 @@ public abstract class BaseFEELFunction
                     if (cm.getScore() > candidate.getScore()) {
                         candidate = cm;
                     } else if (cm.getScore() == candidate.getScore()) {
-                        if (isNamedParams && nullCount(cm.actualParams)<nullCount(candidate.actualParams)) {
+                        if (isNamedParams && BaseFEELFunctionHelper.nullCount(cm.actualParams) < BaseFEELFunctionHelper.nullCount(candidate.actualParams)) {
                             candidate = cm; // `cm` narrower for named parameters without need of passing nulls.
                         } else if (candidate.getActualMethod().getParameterTypes().length == 1
                                 && cm.getActualMethod().getParameterTypes().length == 1
@@ -224,40 +208,6 @@ public abstract class BaseFEELFunction
         return candidate;
     }
 
-    /**
-     * This method insert <code>context</code> reference inside the given parameters, if the given <code>Method</code> signature include it.
-     * Depending on the <code>isNamedParams</code>, the reference could be the given <code>EvaluationContext</code> itself, or a <code>NamedParameter</code>
-     * @param ctx
-     * @param params
-     * @param isNamedParams
-     * @param m
-     * @return
-     */
-    static Object[] getActualParameters(EvaluationContext ctx, Object[] params, boolean isNamedParams, Method m) {
-        Object[] actualParams;
-        // Here, we check if any of the parameters is an EvaluationContext
-        boolean injectCtx = Arrays.stream( m.getParameterTypes() ).anyMatch(EvaluationContext.class::isAssignableFrom);
-        if( injectCtx ) {
-            actualParams = new Object[ params.length + 1 ];
-            int j = 0;
-            for (int i = 0; i < m.getParameterCount(); i++) {
-                if( EvaluationContext.class.isAssignableFrom( m.getParameterTypes()[i] ) ) {
-                    if( isNamedParams ) {
-                        actualParams[i] = new NamedParameter( "ctx", ctx );
-                    } else {
-                        actualParams[i] = ctx;
-                    }
-                } else if (j < params.length) {
-                    actualParams[i] = params[j];
-                    j++;
-                }
-            }
-        } else {
-            actualParams = params;
-        }
-        return actualParams;
-    }
-
     private Object getEitherResult(EvaluationContext ctx, Either<FEELEvent, Object> source, Supplier<List<String>> parameterNamesSupplier,
                                     Supplier<List<Object>> parameterValuesSupplier) {
         return source.cata((left) -> {
@@ -272,109 +222,6 @@ public abstract class BaseFEELFunction
             );
             return null;
         }, Function.identity());
-    }
-
-    private Object[] rearrangeParameters(Object[] params, List<String> pnames) {
-        if ( pnames.size() > 0 ) {
-            Object[] actualParams = new Object[pnames.size()];
-            for ( int i = 0; i < actualParams.length; i++ ) {
-                for ( int j = 0; j < params.length; j++ ) {
-                    if ( ((NamedParameter) params[j]).getName().equals( pnames.get( i ) ) ) {
-                        actualParams[i] = ((NamedParameter) params[j]).getValue();
-                        break;
-                    }
-                }
-            }
-            params = actualParams;
-        }
-        return params;
-    }
-
-
-    private static long nullCount(Object[] params) {
-        return Stream.of(params).filter(x -> x == null).count();
-    }
-
-    /**
-     * Adjust CandidateMethod considering var args signature. 
-     */
-    private void adjustForVariableParameters(CandidateMethod cm, Class<?>[] parameterTypes) {
-        if ( parameterTypes.length > 0 && parameterTypes[parameterTypes.length - 1].isArray() ) {
-            // then it is a variable parameters function call
-            Object[] newParams = new Object[parameterTypes.length];
-            if ( newParams.length > 1 ) {
-                System.arraycopy( cm.getActualParams(), 0, newParams, 0, newParams.length - 1 );
-            }
-            Object[] remaining = new Object[cm.getActualParams().length - parameterTypes.length + 1];
-            newParams[newParams.length - 1] = remaining;
-            System.arraycopy( cm.getActualParams(), parameterTypes.length - 1, remaining, 0, remaining.length );
-            cm.setActualParams( newParams );
-        }
-    }
-
-    private Object[] calculateActualParams(Method m, Object[] params) {
-        Annotation[][] pas = m.getParameterAnnotations();
-        List<String> names = new ArrayList<>( m.getParameterCount() );
-        for ( int i = 0; i < m.getParameterCount(); i++ ) {
-            for ( int p = 0; p < pas[i].length; i++ ) {
-                if ( pas[i][p] instanceof ParameterName ) {
-                    names.add( ((ParameterName) pas[i][p]).value() );
-                    break;
-                }
-            }
-            if ( names.get( i ) == null ) {
-                // no name found
-                return null;
-            }
-        }
-        Object[] actualParams = new Object[names.size()];
-        boolean isVariableParameters = m.getParameterCount() > 0 && m.getParameterTypes()[m.getParameterCount()-1].isArray();
-        String variableParamPrefix = isVariableParameters ? names.get( names.size()-1 ) : null;
-        List<Object> variableParams = isVariableParameters ? new ArrayList<>(  ) : null;
-        for ( Object o : params ) {
-            NamedParameter np = (NamedParameter) o;
-            if( names.contains( np.getName() ) ) {
-                actualParams[names.indexOf( np.getName() )] = np.getValue();
-            } else if( isVariableParameters ) {
-                // check if it is a variable parameters method
-                if( np.getName().matches( variableParamPrefix + "\\d+" ) ) {
-                    int index = Integer.parseInt( np.getName().substring( variableParamPrefix.length() ) ) - 1;
-                    if( variableParams.size() <= index ) {
-                        for( int i = variableParams.size(); i < index; i++ ) {
-                            // need to add nulls in case the user skipped indexes
-                            variableParams.add( null );
-                        }
-                        variableParams.add( np.getValue() );
-                    } else {
-                        variableParams.set( index, np.getValue() );
-                    }
-                } else {
-                    // invalid parameter, method is incompatible
-                    return null;
-                }
-            } else {
-                // invalid parameter, method is incompatible
-                return null;
-            }
-        }
-        if( isVariableParameters ) {
-            actualParams[ actualParams.length - 1 ] = variableParams.toArray();
-        }
-
-        return actualParams;
-    }
-
-    private Object normalizeResult(Object result) {
-        // this is to normalize types returned by external functions
-        if (result != null && result.getClass().isArray()) {
-            List<Object> objs = new ArrayList<>();
-            for (int i = 0; i < Array.getLength(result); i++) {
-                objs.add(NumberEvalHelper.coerceNumber(Array.get(result, i)));
-            }
-            return objs;
-        } else {
-            return NumberEvalHelper.coerceNumber(result);
-        }
     }
 
     protected boolean isCustomFunction() {

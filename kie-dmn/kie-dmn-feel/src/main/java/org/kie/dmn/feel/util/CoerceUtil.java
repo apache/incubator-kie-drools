@@ -21,6 +21,7 @@ package org.kie.dmn.feel.util;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 import org.kie.dmn.feel.lang.Type;
@@ -49,6 +50,10 @@ public class CoerceUtil {
 
     static Optional<Object> coerceParam(Class<?> currentIdxActualParameterType, Class<?> expectedParameterType,
                                         Object actualObject) {
+        /* 10.3.2.9.4 Type conversions
+           from singleton list:
+           When the type of the expression is List<T>, the value of the expression is a singleton list and the target
+           type is T, the expression is converted by unwrapping the first element. */
         if (Collection.class.isAssignableFrom(currentIdxActualParameterType)) {
             Collection<?> valueCollection = (Collection<?>) actualObject;
             if (valueCollection.size() == 1) {
@@ -62,6 +67,19 @@ public class CoerceUtil {
                 }
             }
         }
+        /* to singleton list:
+           When the type of the expression is T and the target type is List<T> the expression is converted to a
+           singleton list. */
+        if (!Collection.class.isAssignableFrom(currentIdxActualParameterType) &&
+                Collection.class.isAssignableFrom(expectedParameterType)) {
+            Object singletonValue = coerceParam(currentIdxActualParameterType, currentIdxActualParameterType, actualObject)
+                    .orElse(actualObject);
+            return Optional.of(List.of(singletonValue));
+        }
+        /* from date to date and time
+            When the type of the expression is date and the target type is date and time, the expression is converted
+            to a date time value in which the time of day is UTC midnight (00:00:00)
+         */
         if (actualObject instanceof LocalDate localDate &&
                 ZonedDateTime.class.isAssignableFrom(expectedParameterType)) {
             Object coercedObject = DateTimeEvalHelper.coerceDateTime(localDate);

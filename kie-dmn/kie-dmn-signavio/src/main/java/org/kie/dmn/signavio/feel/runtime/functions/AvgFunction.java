@@ -39,7 +39,7 @@ public class AvgFunction
     }
 
     public FEELFnResult<BigDecimal> invoke(@ParameterName("list") Number single) {
-        return BuiltInFunctions.getFunction(MeanFunction.class).invoke(single);
+        return BuiltInFunctions.getFunction(MeanFunction.class).invoke(List.of(single));
     }
 
     public FEELFnResult<BigDecimal> invoke(@ParameterName("n") Object[] list) {

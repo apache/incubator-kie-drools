@@ -67,7 +67,6 @@ public class AllFunction
             // Arrays.asList does not accept null as parameter
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "b", "cannot be null"));
         }
-        
         return invoke( Arrays.asList( list ) );
     }
 }
