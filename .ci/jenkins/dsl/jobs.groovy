@@ -312,6 +312,9 @@ void setupDeployJob(JobType jobType, String envName = '') {
         MAVEN_SETTINGS_CONFIG_FILE_ID: "${MAVEN_SETTINGS_FILE_ID}",
         OPTAPLANNER_LATEST_STREAM: "${GIT_MAIN_BRANCH}",
         DISABLE_DEPLOY: Utils.isDeployDisabled(this),
+
+        RELEASE_GPG_SIGN_KEY_CREDS_ID: Utils.getReleaseGpgSignKeyCredentialsId(this),
+        RELEASE_GPG_SIGN_PASSPHRASE_CREDS_ID: Utils.getReleaseGpgSignPassphraseCredentialsId(this)
     ])
     if (jobType == JobType.PULL_REQUEST) {
         jobParams.env.putAll([
