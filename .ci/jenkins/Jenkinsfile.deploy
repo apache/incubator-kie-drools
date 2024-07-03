@@ -152,30 +152,22 @@ pipeline {
                         if (params.SKIP_TESTS) {
                             mvnCmd.skipTests() // Conflict somehow with Python testing. If `skipTests={anyvalue}` is set, then exec plugin is not executed ...
                         }
-                        if (isRelease()) {
-                            withCredentials([file(credentialsId: 'asf-release-gpg-signing-key', variable: 'SIGNING_KEY')]) {
-                                withCredentials([file(credentialsId: 'asf-release-gpg-signing-key-password', variable: 'SIGNING_KEY_PASSWORD')]) {
-                                    // copy the key to singkey.gpg file in *plain text* so we can import it
-                                    sh ('cat $SIGNING_KEY > $WORKSPACE/signkey.gpg')
-                                    // Please do not remove list keys command. When gpg is run for the first time, it may initialize some internals.
-                                    sh ('gpg --list-keys')
-                                    sh ("gpg --batch --pinentry-mode=loopback --passphrase \"${SIGNING_KEY_PASSWORD}\" --import signkey.gpg")
-                                    sh ('rm $WORKSPACE/signkey.gpg')
-
-                                    mvnCmd.withProperty('gpg.passphrase', SIGNING_KEY_PASSWORD)
-                                        .withProfiles(['apache-release'])
-
-                                    configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]){
-                                        mvnCmd.withSettingsXmlFile(MAVEN_SETTINGS_FILE)
-                                            .run("clean $installOrDeploy")
-                                    }
-                                }
-                            }
-                        } else {
-                            configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]){
-                                mvnCmd.withSettingsXmlFile(MAVEN_SETTINGS_FILE)
+                        def Closure mavenRunClosure = {
+                            configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]) {
+                                mavenCommand.withSettingsXmlFile(MAVEN_SETTINGS_FILE)
                                     .run("clean $installOrDeploy")
                             }
+                        }
+                        if (isRelease()) {
+                            release.gpgImportKeyFromFileWithPassword(getReleaseGpgSignKeyCredsId(), getReleaseGpgSignPassphraseCredsId())
+                            withCredentials([string(credentialsId: getReleaseGpgSignPassphraseCredsId(), variable: 'SIGNING_KEY_PASSWORD')]) {
+                                mvnCmd.withProperty('gpg.passphrase', SIGNING_KEY_PASSWORD)
+                                    .withProfiles(['apache-release'])
+
+                                mavenRunClosure()
+                            }
+                        } else {
+                            mavenRunClosure()
                         }
 
                     }
@@ -327,4 +319,12 @@ String getWorkflowCommonDeploymentPath() {
 
 String getDataIndexEphemeralReleaseImage() {
     return "docker.io/apache/incubator-kie-kogito-data-index-ephemeral:${util.getMajorMinorVersion(getProjectVersion())}"
+}
+
+String getReleaseGpgSignKeyCredsId() {
+    return env.RELEASE_GPG_SIGN_KEY_CREDS_ID
+}
+
+String getReleaseGpgSignPassphraseCredsId() {
+    return env.RELEASE_GPG_SIGN_PASSPHRASE_CREDS_ID
 }
