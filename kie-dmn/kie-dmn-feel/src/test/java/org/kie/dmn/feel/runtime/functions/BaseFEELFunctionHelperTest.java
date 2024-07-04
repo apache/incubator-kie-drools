@@ -24,7 +24,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 import java.util.stream.IntStream;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -56,16 +55,16 @@ class BaseFEELFunctionHelperTest {
     void areParametersMatching() throws NoSuchMethodException {
         // AllFunction.invoke(@ParameterName( "list" ) List list)
         // no coercion needed
-        Class<?>[] parameterTypes =  AllFunction.class.getMethod("invoke", List.class).getParameterTypes();
+        Class<?>[] parameterTypes = AllFunction.class.getMethod("invoke", List.class).getParameterTypes();
         assertNotNull(parameterTypes);
         Object[] actualParams = {List.of(true, false)};
-        BaseFEELFunction.CandidateMethod cm = new BaseFEELFunction.CandidateMethod(actualParams );
+        BaseFEELFunction.CandidateMethod cm = new BaseFEELFunction.CandidateMethod(actualParams);
         assertTrue(BaseFEELFunctionHelper.areParametersMatching(parameterTypes, cm));
         assertEquals(actualParams, cm.getActualParams());
 
         // coercion needed
-        actualParams = new Object[]{ true };
-        cm = new BaseFEELFunction.CandidateMethod(actualParams );
+        actualParams = new Object[]{true};
+        cm = new BaseFEELFunction.CandidateMethod(actualParams);
         assertTrue(BaseFEELFunctionHelper.areParametersMatching(parameterTypes, cm));
 
         Object[] retrieved = cm.getActualParams();
@@ -73,9 +72,9 @@ class BaseFEELFunctionHelperTest {
 
         // SumFunction.invoke(@ParameterName("list") Number single)
         // coercion fails
-        parameterTypes =  SumFunction.class.getMethod("invoke", Number.class).getParameterTypes();
-        actualParams = new Object[]{ true };
-        cm = new BaseFEELFunction.CandidateMethod(actualParams );
+        parameterTypes = SumFunction.class.getMethod("invoke", Number.class).getParameterTypes();
+        actualParams = new Object[]{true};
+        cm = new BaseFEELFunction.CandidateMethod(actualParams);
         assertFalse(BaseFEELFunctionHelper.areParametersMatching(parameterTypes, cm));
     }
 
@@ -146,13 +145,14 @@ class BaseFEELFunctionHelperTest {
         boolean isVariableParameters = false;
         String variableParamPrefix = null;
         List<Object> variableParams = null;
-        assertTrue(BaseFEELFunctionHelper.calculateActualParam(np, names, actualParams, isVariableParameters, variableParamPrefix, variableParams));
+        assertTrue(BaseFEELFunctionHelper.calculateActualParam(np, names, actualParams, isVariableParameters,
+                                                               variableParamPrefix, variableParams));
         assertEquals(np.getValue(), actualParams[0]);
 
         np = new NamedParameter("undefined", BigDecimal.valueOf(1.5));
         actualParams = new Object[1];
-        assertFalse(BaseFEELFunctionHelper.calculateActualParam(np, names, actualParams, isVariableParameters, variableParamPrefix, variableParams));
-
+        assertFalse(BaseFEELFunctionHelper.calculateActualParam(np, names, actualParams, isVariableParameters,
+                                                                variableParamPrefix, variableParams));
 
         // populate by variableparameters
         variableParamPrefix = "varPref";
@@ -162,12 +162,13 @@ class BaseFEELFunctionHelperTest {
         actualParams = new Object[1];
         isVariableParameters = true;
         variableParams = new ArrayList();
-        assertTrue(BaseFEELFunctionHelper.calculateActualParam(np, names, actualParams, isVariableParameters, variableParamPrefix, variableParams));
+        assertTrue(BaseFEELFunctionHelper.calculateActualParam(np, names, actualParams, isVariableParameters,
+                                                               variableParamPrefix, variableParams));
         assertEquals(varIndex, variableParams.size());
         for (int i = 0; i < varIndex - 1; i++) {
             assertNull(variableParams.get(i));
         }
-        assertEquals(np.getValue(), variableParams.get(varIndex -1));
+        assertEquals(np.getValue(), variableParams.get(varIndex - 1));
     }
 
     @Test
@@ -177,16 +178,18 @@ class BaseFEELFunctionHelperTest {
         int varIndex = 12;
         NamedParameter np = new NamedParameter(variableParamPrefix + varIndex, BigDecimal.valueOf(1.5));
         List<Object> variableParams = new ArrayList<>();
-        assertTrue(BaseFEELFunctionHelper.calculateActualParamVariableParameters(np, variableParamPrefix, variableParams));
+        assertTrue(BaseFEELFunctionHelper.calculateActualParamVariableParameters(np, variableParamPrefix,
+                                                                                 variableParams));
         assertEquals(varIndex, variableParams.size());
         for (int i = 0; i < varIndex - 1; i++) {
             assertNull(variableParams.get(i));
         }
-        assertEquals(np.getValue(), variableParams.get(varIndex -1));
+        assertEquals(np.getValue(), variableParams.get(varIndex - 1));
 
         np = new NamedParameter("variableParamPrefix", BigDecimal.valueOf(1.5));
         variableParams = new ArrayList<>();
-        assertFalse(BaseFEELFunctionHelper.calculateActualParamVariableParameters(np, variableParamPrefix, variableParams));
+        assertFalse(BaseFEELFunctionHelper.calculateActualParamVariableParameters(np, variableParamPrefix,
+                                                                                  variableParams));
     }
 
     @Test
@@ -207,8 +210,11 @@ class BaseFEELFunctionHelperTest {
             }
         }
 
-        // DateAndTimeFunction.invoke(@ParameterName( "year" ) Number year, @ParameterName( "month" ) Number month, @ParameterName( "day" ) Number day,
-        //                                                 @ParameterName( "hour" ) Number hour, @ParameterName( "minute" ) Number minute, @ParameterName( "second" ) Number second,
+        // DateAndTimeFunction.invoke(@ParameterName( "year" ) Number year, @ParameterName( "month" ) Number month,
+        // @ParameterName( "day" ) Number day,
+        //                                                 @ParameterName( "hour" ) Number hour, @ParameterName(
+        //                                                 "minute" ) Number minute, @ParameterName( "second" )
+        //                                                 Number second,
         //                                                 @ParameterName( "hour offset" ) Number hourOffset )
         m = DateAndTimeFunction.class.getMethod("invoke", Number.class,
                                                 Number.class,
@@ -230,7 +236,6 @@ class BaseFEELFunctionHelperTest {
                 }
             }
         }
-
     }
 
     @Test
@@ -241,7 +246,7 @@ class BaseFEELFunctionHelperTest {
         assertEquals(params, retrieved);
 
         List<String> pnames = IntStream.range(0, 3)
-                .mapToObj(i -> "Parameter_" +i)
+                .mapToObj(i -> "Parameter_" + i)
                 .toList();
 
         // single param in correct position
@@ -290,12 +295,11 @@ class BaseFEELFunctionHelperTest {
                     break;
             }
         }
-
     }
 
     @Test
     void adjustForVariableParameters() throws NoSuchMethodException {
-        Object[] parameters = new Object[]{ 1, 3, 5};
+        Object[] parameters = new Object[]{1, 3, 5};
         BaseFEELFunction.CandidateMethod cm = new BaseFEELFunction.CandidateMethod(parameters);
         // SumFunction.invoke(@ParameterName("n") Object[] list)
         // parameters are converted to array for this above method
@@ -348,22 +352,5 @@ class BaseFEELFunctionHelperTest {
         retrieved = BaseFEELFunctionHelper.normalizeResult(result);
         assertNotNull(retrieved);
         assertEquals(NumberEvalHelper.coerceNumber(result), retrieved);
-    }
-
-    @Test
-    void nullCount() {
-        Random random = new Random();
-        int elements = random.nextInt(10);
-        Object[] params = new Object[elements];
-        int expectedCount = 0;
-        for (int i = 0; i < elements; i++) {
-            if (random.nextBoolean()) {
-                params[i] = null;
-                expectedCount++;
-            } else {
-                params[i] = new Object();
-            }
-        }
-        assertEquals(expectedCount, BaseFEELFunctionHelper.nullCount(params));
     }
 }

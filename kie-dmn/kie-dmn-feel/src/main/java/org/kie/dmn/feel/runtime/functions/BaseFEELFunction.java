@@ -45,14 +45,14 @@ import org.slf4j.LoggerFactory;
 public abstract class BaseFEELFunction
         implements FEELFunction {
 
-    private final Logger logger = LoggerFactory.getLogger( getClass() );
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private String name;
     private Symbol symbol;
 
     public BaseFEELFunction(String name) {
         this.name = name;
-        this.symbol = new FunctionSymbol( name, this );
+        this.symbol = new FunctionSymbol(name, this);
     }
 
     @Override
@@ -62,7 +62,7 @@ public abstract class BaseFEELFunction
 
     public void setName(String name) {
         this.name = name;
-        ((FunctionSymbol) this.symbol).setId( name );
+        ((FunctionSymbol) this.symbol).setId(name);
     }
 
     @Override
@@ -75,52 +75,60 @@ public abstract class BaseFEELFunction
         // use reflection to call the appropriate invoke method
         try {
             boolean isNamedParams = params.length > 0 && params[0] instanceof NamedParameter;
-            if ( !isCustomFunction() ) {
+            if (!isCustomFunction()) {
 
-                CandidateMethod cm = getCandidateMethod( ctx, params, isNamedParams );
+                CandidateMethod cm = getCandidateMethod(ctx, params, isNamedParams);
 
-                if ( cm != null ) {
-                    Object result = cm.actualMethod.invoke(this, cm.actualParams );
+                if (cm != null) {
+                    Object result = cm.actualMethod.invoke(this, cm.actualParams);
 
-                    if ( result instanceof Either ) {
+                    if (result instanceof Either) {
                         @SuppressWarnings("unchecked")
                         Either<FEELEvent, Object> either = (Either<FEELEvent, Object>) result;
                         return getEitherResult(ctx,
                                                either,
-                                                        () -> Stream.of(cm.actualMethod.getParameters()).map(p -> p.getAnnotation(ParameterName.class).value()).collect(Collectors.toList()),
-                                                        () -> Arrays.asList(cm.actualParams));
+                                               () -> Stream.of(cm.actualMethod.getParameters()).map(p -> p.getAnnotation(ParameterName.class).value()).collect(Collectors.toList()),
+                                               () -> Arrays.asList(cm.actualParams));
                     }
 
                     return result;
                 } else {
-                    // CandidateMethod cm could be null also if reflection failed on Platforms not supporting getClass().getDeclaredMethods()
+                    // CandidateMethod cm could be null also if reflection failed on Platforms not supporting
+                    // getClass().getDeclaredMethods()
                     String ps = getClass().toString();
-                    logger.error( "Unable to find function '" + getName() + "( " + ps.substring( 1, ps.length() - 1 ) + " )'" );
-                    ctx.notifyEvt(() -> new FEELEventBase(Severity.ERROR, "Unable to find function '" + getName() + "( " + ps.substring(1, ps.length() - 1) + " )'", null));
+                    logger.error("Unable to find function '" + getName() + "( " + ps.substring(1, ps.length() - 1) +
+                                         " )'");
+                    ctx.notifyEvt(() -> new FEELEventBase(Severity.ERROR, "Unable to find function '" + getName() +
+                            "( " + ps.substring(1, ps.length() - 1) + " )'", null));
                 }
             } else {
-                if ( isNamedParams ) {
-                    // This is inherently frail because it expects that, if, the first parameter is NamedParameter and the function is a CustomFunction, then all parameters are NamedParameter
-                    NamedParameter[] namedParams = Arrays.stream(params).map(NamedParameter.class::cast).toArray(NamedParameter[]::new);
-                    params = BaseFEELFunctionHelper.rearrangeParameters(namedParams, this.getParameters().get(0).stream().map(Param::getName).collect(Collectors.toList()));
+                if (isNamedParams) {
+                    // This is inherently frail because it expects that, if, the first parameter is NamedParameter
+                    // and the function is a CustomFunction, then all parameters are NamedParameter
+                    NamedParameter[] namedParams =
+                            Arrays.stream(params).map(NamedParameter.class::cast).toArray(NamedParameter[]::new);
+                    params = BaseFEELFunctionHelper.rearrangeParameters(namedParams,
+                                                                        this.getParameters().get(0).stream().map(Param::getName).collect(Collectors.toList()));
                 }
-                Object result = invoke( ctx, params );
-                if ( result instanceof Either ) {
+                Object result = invoke(ctx, params);
+                if (result instanceof Either) {
                     @SuppressWarnings("unchecked")
                     Either<FEELEvent, Object> either = (Either<FEELEvent, Object>) result;
 
                     final Object[] usedParams = params;
                     Object eitherResult = getEitherResult(ctx,
                                                           either,
-                                                          () -> IntStream.of( 0, usedParams.length ).mapToObj( i -> "arg" + i ).collect( Collectors.toList() ),
-                                                          () -> Arrays.asList( usedParams ));
-                    return BaseFEELFunctionHelper.normalizeResult( eitherResult );
+                                                          () -> IntStream.of(0, usedParams.length).mapToObj(i -> "arg"
+                                                                  + i).collect(Collectors.toList()),
+                                                          () -> Arrays.asList(usedParams));
+                    return BaseFEELFunctionHelper.normalizeResult(eitherResult);
                 }
-                return BaseFEELFunctionHelper.normalizeResult( result );
+                return BaseFEELFunctionHelper.normalizeResult(result);
             }
-        } catch ( Exception e ) {
-            logger.error( "Error trying to call function " + getName() + ".", e );
-            ctx.notifyEvt( () -> new FEELEventBase( Severity.ERROR, "Error trying to call function " + getName() + ".", e ));
+        } catch (Exception e) {
+            logger.error("Error trying to call function " + getName() + ".", e);
+            ctx.notifyEvt(() -> new FEELEventBase(Severity.ERROR, "Error trying to call function " + getName() + ".",
+                                                  e));
         }
         return null;
     }
@@ -139,14 +147,15 @@ public abstract class BaseFEELFunction
      * @return
      */
     public Object invoke(EvaluationContext ctx, Object[] params) {
-        throw new RuntimeException( "This method should be overriden by classes that implement custom feel functions" );
+        throw new RuntimeException("This method should be overriden by classes that implement custom feel functions");
     }
 
     /**
      *
      * @param ctx
      * @param params
-     * @param isNamedParams <code>true</code> if the parameter refers to value to be retrieved inside <code>ctx</code>; <code>false</code> if the parameter is the actual value
+     * @param isNamedParams <code>true</code> if the parameter refers to value to be retrieved inside
+     * <code>ctx</code>; <code>false</code> if the parameter is the actual value
      * @return
      */
     protected CandidateMethod getCandidateMethod(EvaluationContext ctx, Object[] params, boolean isNamedParams) {
@@ -156,60 +165,46 @@ public abstract class BaseFEELFunction
                 .toList();
 
         // first, look for exact matches
-        for ( Method m : invokeMethods) {
+        for (Method m : invokeMethods) {
 
-            Object[] actualParams = BaseFEELFunctionHelper.addCtxParamIfRequired(ctx, params, isNamedParams, m);
-
-            if( isNamedParams ) {
-                // This is inherently frail because it expects that, if, the first parameter is NamedParameter and the function is a CustomFunction, then all parameters are NamedParameter
-                NamedParameter[] namedParams = Arrays.stream(actualParams).map(NamedParameter.class::cast).toArray(NamedParameter[]::new);
-                actualParams = BaseFEELFunctionHelper.calculateActualParams(m, namedParams );
-                if( actualParams == null ) {
-                    // incompatible method
-                    continue;
-                }
-            }
-            CandidateMethod cm = new CandidateMethod( actualParams );
-
-            Class<?>[] parameterTypes = m.getParameterTypes();
-            if (!isNamedParams && actualParams.length > 0) {
-                // if named parameters, then it has been adjusted already in the calculateActualParams method,
-                // otherwise adjust here
-                BaseFEELFunctionHelper.adjustForVariableParameters( cm, parameterTypes );
-            }
-
-            if ( parameterTypes.length != cm.getActualParams().length ) {
+            Object[] actualParams = BaseFEELFunctionHelper.getAdjustedParametersForMethod(ctx, params, isNamedParams, m);
+            if (actualParams == null) {
+                // incompatible method
                 continue;
             }
 
-            boolean found = BaseFEELFunctionHelper.areParametersMatching(parameterTypes, cm);
-            if ( found ) {
-                cm.setActualMethod(m );
-                if (candidate == null) {
+            Class<?>[] parameterTypes = m.getParameterTypes();
+            if (parameterTypes.length != actualParams.length) {
+                continue;
+            }
+
+            CandidateMethod cm = new CandidateMethod(actualParams);
+            cm.setActualMethod(m);
+            if (candidate == null) {
+                candidate = cm;
+            } else {
+                if (cm.getScore() > candidate.getScore()) {
                     candidate = cm;
-                } else {
-                    if (cm.getScore() > candidate.getScore()) {
-                        candidate = cm;
-                    } else if (cm.getScore() == candidate.getScore()) {
-                        if (isNamedParams && BaseFEELFunctionHelper.nullCount(cm.actualParams) < BaseFEELFunctionHelper.nullCount(candidate.actualParams)) {
-                            candidate = cm; // `cm` narrower for named parameters without need of passing nulls.
-                        } else if (candidate.getActualMethod().getParameterTypes().length == 1
-                                && cm.getActualMethod().getParameterTypes().length == 1
-                                && candidate.getActualMethod().getParameterTypes()[0].equals(Object.class)
-                                && !cm.getActualMethod().getParameterTypes()[0].equals(Object.class)) {
-                            candidate = cm; // `cm` is more narrowed, hence reflect `candidate` to be now `cm`.
-                        }
-                    } else {
-                        // do nothing.
+                } else if (cm.getScore() == candidate.getScore()) {
+                    if (isNamedParams && ScoreHelper.nullCount(cm.actualParams) < ScoreHelper.nullCount(candidate.actualParams)) {
+                        candidate = cm; // `cm` narrower for named parameters without need of passing nulls.
+                    } else if (candidate.getActualMethod().getParameterTypes().length == 1
+                            && cm.getActualMethod().getParameterTypes().length == 1
+                            && candidate.getActualMethod().getParameterTypes()[0].equals(Object.class)
+                            && !cm.getActualMethod().getParameterTypes()[0].equals(Object.class)) {
+                        candidate = cm; // `cm` is more narrowed, hence reflect `candidate` to be now `cm`.
                     }
+                } else {
+                    // do nothing.
                 }
             }
         }
         return candidate;
     }
 
-    private Object getEitherResult(EvaluationContext ctx, Either<FEELEvent, Object> source, Supplier<List<String>> parameterNamesSupplier,
-                                    Supplier<List<Object>> parameterValuesSupplier) {
+    private Object getEitherResult(EvaluationContext ctx, Either<FEELEvent, Object> source,
+                                   Supplier<List<String>> parameterNamesSupplier,
+                                   Supplier<List<Object>> parameterValuesSupplier) {
         return source.cata((left) -> {
             ctx.notifyEvt(() -> {
                               if (left instanceof InvalidParametersEvent invalidParametersEvent) {
@@ -229,9 +224,10 @@ public abstract class BaseFEELFunction
     }
 
     protected static class CandidateMethod {
+
         private Method actualMethod = null;
         private Object[] actualParams;
-        private Class[]  actualClasses = null;
+        private Class[] actualClasses = null;
         private int score;
 
         public CandidateMethod(Object[] actualParams) {
@@ -240,7 +236,7 @@ public abstract class BaseFEELFunction
         }
 
         private void calculateScore() {
-            if ( actualClasses.length > 0 && actualClasses[actualClasses.length - 1] != null && actualClasses[actualClasses.length - 1].isArray() ) {
+            if (actualClasses.length > 0 && actualClasses[actualClasses.length - 1] != null && actualClasses[actualClasses.length - 1].isArray()) {
                 score = 1;
             } else {
                 score = 10;
@@ -266,7 +262,8 @@ public abstract class BaseFEELFunction
         }
 
         private void populateActualClasses() {
-            this.actualClasses = Stream.of( this.actualParams ).map( p -> p != null ? p.getClass() : null ).toArray( Class[]::new );
+            this.actualClasses =
+                    Stream.of(this.actualParams).map(p -> p != null ? p.getClass() : null).toArray(Class[]::new);
         }
 
         public Class[] getActualClasses() {
