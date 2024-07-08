@@ -21,8 +21,10 @@ package org.drools.example.api.defaultkiesessionfromfile;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FilenameFilter;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.util.Arrays;
 
 import org.junit.Test;
 import org.kie.api.KieServices;
@@ -120,11 +122,19 @@ public class DefaultKieSessionFromByteArrayExampleTest {
                 throw new RuntimeException("The target folder does not exist, please build project " + exampleName + " first");
             }
 
-            for (String str : targetFolder.list()) {
-                if (str.startsWith(exampleName) && !str.endsWith("-sources.jar") && !str.endsWith("-tests.jar") && !str.endsWith("-javadoc.jar")) {
-                    return new File(targetFolder, str);
-                }
+            FilenameFilter expectedJArFilter = (d, str ) -> str.startsWith(exampleName) &&
+                    str.endsWith(".jar") &&
+                    !str.endsWith("-sources.jar") &&
+                    !str.endsWith("-tests.jar") &&
+                    !str.endsWith("-javadoc.jar");
+            String[] foundFile = targetFolder.list(expectedJArFilter);
+            if (foundFile == null || foundFile.length == 0) {
+                throw new RuntimeException("The target jar does not exist, please build project " + exampleName + " first");
+            } else if (foundFile.length > 1) {
+                String errorFiles =  Arrays.toString(foundFile);
+                throw new RuntimeException("Multiple matching files exists: " + errorFiles + "; please check!");
             }
+            return new File(targetFolder, foundFile[0]);
         }
 
         throw new RuntimeException("The target jar does not exist, please build project " + exampleName + " first");
