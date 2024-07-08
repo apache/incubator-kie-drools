@@ -18,22 +18,17 @@
  */
 package org.kie.dmn.feel.runtime.functions;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
 class SubstringAfterFunctionTest {
 
-    private SubstringAfterFunction substringAfterFunction;
-
-    @BeforeEach
-    void setUp() {
-        substringAfterFunction = new SubstringAfterFunction();
-    }
+    private static final SubstringAfterFunction substringAfterFunction = SubstringAfterFunction.INSTANCE;
 
     @Test
     void invokeNull() {
-        FunctionTestUtil.assertResultError(substringAfterFunction.invoke((String) null, null), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(substringAfterFunction.invoke((String) null, null),
+                                           InvalidParametersEvent.class);
         FunctionTestUtil.assertResultError(substringAfterFunction.invoke(null, "test"), InvalidParametersEvent.class);
         FunctionTestUtil.assertResultError(substringAfterFunction.invoke("test", null), InvalidParametersEvent.class);
     }

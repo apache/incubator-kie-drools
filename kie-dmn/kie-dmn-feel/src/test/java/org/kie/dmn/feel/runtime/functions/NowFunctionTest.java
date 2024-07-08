@@ -21,24 +21,18 @@ package org.kie.dmn.feel.runtime.functions;
 import java.time.ZonedDateTime;
 import java.time.temporal.TemporalAccessor;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kie.dmn.feel.runtime.functions.extended.NowFunction;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class NowFunctionTest {
 
-    private NowFunction nowFunction;
-
-    @BeforeEach
-    void setUp() {
-        nowFunction = new NowFunction();
-    }
+    private static final NowFunction nowFunction = NowFunction.INSTANCE;
 
     @Test
     void invoke() {
-        // The current time that we need to compare will almost never be the same as another one we get for comparison purposes,
+        // The current time that we need to compare will almost never be the same as another one we get for
+        // comparison purposes,
         // because there is some execution between them, so the comparison assertion doesn't make sense.
         // Note: We cannot guarantee any part of the date to be the same. E.g. in case when the test is executed
         // at the exact moment when the year is flipped to the next one, we cannot guarantee the year will be the same.
@@ -49,5 +43,4 @@ class NowFunctionTest {
         assertThat(result).isNotNull();
         assertThat(result).isInstanceOfAny(ZonedDateTime.class);
     }
-
 }

@@ -26,7 +26,7 @@ public class ContainsFunction
 
     public static final ContainsFunction INSTANCE = new ContainsFunction();
 
-    public ContainsFunction() {
+    private ContainsFunction() {
         super( "contains" );
     }
 

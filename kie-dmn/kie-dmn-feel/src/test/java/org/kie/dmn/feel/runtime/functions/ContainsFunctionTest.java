@@ -18,18 +18,12 @@
  */
 package org.kie.dmn.feel.runtime.functions;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
 class ContainsFunctionTest {
 
-    private ContainsFunction containsFunction;
-
-    @BeforeEach
-    void setUp() {
-        containsFunction = new ContainsFunction();
-    }
+    private static final ContainsFunction containsFunction = ContainsFunction.INSTANCE;
 
     @Test
     void invokeParamsNull() {

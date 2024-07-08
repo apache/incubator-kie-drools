@@ -20,22 +20,19 @@ package org.kie.dmn.feel.runtime.functions;
 
 import java.math.BigDecimal;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
 class FloorFunctionTest {
 
-    private FloorFunction floorFunction;
-
-    @BeforeEach
-    void setUp() {
-        floorFunction = new FloorFunction();
-    }
+    private static final FloorFunction floorFunction = FloorFunction.INSTANCE;
 
     @Test
     void invokeNull() {
         FunctionTestUtil.assertResultError(floorFunction.invoke(null), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(floorFunction.invoke((BigDecimal) null, null), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(floorFunction.invoke(BigDecimal.ONE, null), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(floorFunction.invoke(null, BigDecimal.ONE), InvalidParametersEvent.class);
     }
 
     @Test
@@ -53,4 +50,9 @@ class FloorFunctionTest {
         FunctionTestUtil.assertResultBigDecimal(floorFunction.invoke(BigDecimal.valueOf(-10.2)), BigDecimal.valueOf(-11));
     }
 
+    @Test
+    void invokeOutRangeScale() {
+        FunctionTestUtil.assertResultError(floorFunction.invoke(BigDecimal.valueOf(1.5), BigDecimal.valueOf(6177)), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(floorFunction.invoke(BigDecimal.valueOf(1.5), BigDecimal.valueOf(-6122)), InvalidParametersEvent.class);
+    }
 }

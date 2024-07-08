@@ -36,6 +36,11 @@ public class AtLiteralNode
         this.stringLiteral = stringLiteral;
     }
 
+    public AtLiteralNode(StringNode stringLiteral, String text) {
+        this.stringLiteral = stringLiteral;
+        this.setText(text);
+    }
+
     public StringNode getStringLiteral() {
         return stringLiteral;
     }

@@ -62,6 +62,13 @@ public class FunctionDefNode
         }
     }
 
+    public FunctionDefNode(List<FormalParameterNode> formalParameters, boolean external, BaseNode body, String text) {
+        this.formalParameters = formalParameters;
+        this.external = external;
+        this.body = body;
+        this.setText(text);
+    }
+
     public List<FormalParameterNode> getFormalParameters() {
         return formalParameters;
     }
@@ -150,7 +157,7 @@ public class FunctionDefNode
             throw e;
         }
     }
-    
+
     private static String feelMethodSignature(Method method) {
         StringBuilder sb = new StringBuilder(method.getName());
         sb.append("(");
@@ -159,7 +166,7 @@ public class FunctionDefNode
         sb.append(")");
         return sb.toString();
     }
-    
+
     private Class<?> getTypeInterceptinException(EvaluationContext ctx, String typeName, ClassLoader classLoader) {
         try {
             return getType(typeName, classLoader);

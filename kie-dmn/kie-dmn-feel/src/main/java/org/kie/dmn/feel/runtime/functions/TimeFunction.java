@@ -32,9 +32,11 @@ import java.time.format.ResolverStyle;
 import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalQueries;
+import java.util.regex.Pattern;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
+import org.kie.dmn.feel.runtime.custom.ZoneTime;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
 public class TimeFunction
@@ -43,6 +45,10 @@ public class TimeFunction
     public static final TimeFunction INSTANCE = new TimeFunction();
 
     public static final DateTimeFormatter FEEL_TIME;
+
+    private static final String timePatternString = "[0-9]{2}[:]{1}[0-9]{2}[:]{1}[0-9]{2}";
+    private static final Pattern timePattern = Pattern.compile(timePatternString);
+
     static {
         FEEL_TIME = new DateTimeFormatterBuilder().parseCaseInsensitive()
                                                   .append(DateTimeFormatter.ISO_LOCAL_TIME)
@@ -57,7 +63,14 @@ public class TimeFunction
                                                   .withResolverStyle(ResolverStyle.STRICT);
     }
 
-    public TimeFunction() {
+    public static boolean timeStringWithSeconds(String val) {
+        return timePattern.matcher(val).find();
+    }
+
+    private static final BigDecimal NANO_MULT = BigDecimal.valueOf( 1000000000 );
+
+
+    protected TimeFunction() {
         super(FEELConversionFunctionNames.TIME);
     }
 
@@ -65,7 +78,6 @@ public class TimeFunction
         if ( val == null ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "from", "cannot be null"));
         }
-        
         try {
             TemporalAccessor parsed = FEEL_TIME.parse(val);
 
@@ -77,15 +89,18 @@ public class TimeFunction
                 // if it does not contain any zone information at all, then I know for certain is a local time.
                 LocalTime asLocalTime = parsed.query(LocalTime::from);
                 return FEELFnResult.ofResult(asLocalTime);
+            } else if (parsed.query(TemporalQueries.zone()) != null) {
+                boolean hasSeconds = timeStringWithSeconds(val);
+                LocalTime asLocalTime = parsed.query(LocalTime::from);
+                ZoneId zoneId = parsed.query(TemporalQueries.zone());
+                ZoneTime zoneTime = ZoneTime.of(asLocalTime, zoneId, hasSeconds);
+                return FEELFnResult.ofResult(zoneTime);
             }
-
             return FEELFnResult.ofResult(parsed);
         } catch (DateTimeException e) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "from", e));
+            return manageDateTimeException(e, val);
         }
     }
-
-    private static final BigDecimal NANO_MULT = BigDecimal.valueOf( 1000000000 );
 
     public FEELFnResult<TemporalAccessor> invoke(
             @ParameterName("hour") Number hour, @ParameterName("minute") Number minute,
@@ -153,6 +168,10 @@ public class TimeFunction
         } catch (DateTimeException e) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "from", "time-parsing exception", e));
         }
+    }
+
+    protected FEELFnResult<TemporalAccessor> manageDateTimeException(DateTimeException e, String val) {
+        return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "from", e));
     }
 
 }

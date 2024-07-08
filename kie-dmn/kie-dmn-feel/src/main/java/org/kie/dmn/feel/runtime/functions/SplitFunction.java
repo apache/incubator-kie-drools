@@ -29,7 +29,7 @@ public class SplitFunction
         extends BaseFEELFunction {
     public static final SplitFunction INSTANCE = new SplitFunction();
 
-    SplitFunction() {
+    private SplitFunction() {
         super( "split" );
     }
 

@@ -20,21 +20,32 @@ package org.kie.dmn.feel.codegen.feel11;
 
 import org.kie.dmn.feel.codegen.feel11.CompiledCustomFEELFunction;
 import org.kie.dmn.feel.codegen.feel11.CompiledFEELExpression;
-import org.kie.dmn.feel.codegen.feel11.CompiledFEELSupport;
 import org.kie.dmn.feel.lang.EvaluationContext;
 
-
+import java.util.Collections;
 import java.util.List;
 import java.util.function.BiFunction;
 
+import org.kie.dmn.feel.lang.ast.UnaryTestListNode;
 import org.kie.dmn.feel.runtime.UnaryTest;
 
 public class TemplateCompiledFEELUnaryTests implements org.kie.dmn.feel.codegen.feel11.CompiledFEELUnaryTests {
 
 
+    private org.kie.dmn.feel.lang.ast.UnaryTestListNode BASE_NODE;
+    private java.util.List<org.kie.dmn.feel.runtime.UnaryTest> UNARY_TESTS;
+
     @Override
     public java.util.List<org.kie.dmn.feel.runtime.UnaryTest> getUnaryTests() {
-        return null;
+        try {
+            return getCompiledUnaryTests();
+        } catch (IllegalStateException e) {
+            org.kie.dmn.feel.runtime.UnaryTest unaryTest = (feelExprCtx, left) -> {
+                notifyCompilationError(feelExprCtx, e.getMessage());
+                return false;
+            };
+            return java.util.Collections.singletonList(unaryTest);
+        }
     }
 
     private static TemplateCompiledFEELUnaryTests INSTANCE;
@@ -44,5 +55,23 @@ public class TemplateCompiledFEELUnaryTests implements org.kie.dmn.feel.codegen.
             INSTANCE = new TemplateCompiledFEELUnaryTests();
         }
         return INSTANCE;
+    }
+
+    private java.util.List<org.kie.dmn.feel.runtime.UnaryTest> getCompiledUnaryTests() {
+        if (UNARY_TESTS == null) {
+            UNARY_TESTS = getBaseNode().getCompiledUnaryTests();
+        }
+        return UNARY_TESTS;
+    }
+
+    private org.kie.dmn.feel.lang.ast.UnaryTestListNode getBaseNode() {
+        if (BASE_NODE == null) {
+            BASE_NODE = createBaseNode();
+        }
+        return BASE_NODE;
+    }
+
+    private org.kie.dmn.feel.lang.ast.UnaryTestListNode createBaseNode() {
+        return null;
     }
 }

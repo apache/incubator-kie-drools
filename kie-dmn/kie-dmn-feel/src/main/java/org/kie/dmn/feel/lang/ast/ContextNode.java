@@ -46,11 +46,15 @@ public class ContextNode
 
     public ContextNode(ParserRuleContext ctx, ListNode list) {
         super( ctx );
-        for( BaseNode node : list.getElements() ) {
-            ContextEntryNode entry = (ContextEntryNode) node;
-            entries.add( entry );
-            parsedResultType.addField(entry.getName().getText(), entry.getResultType());
-        }
+        List<ContextEntryNode> entryNodes = list.getElements().stream()
+                .map(ContextEntryNode.class::cast)
+                .toList();
+        setListNode(entryNodes);
+    }
+
+    public ContextNode(List<ContextEntryNode> entryNodes, String text) {
+        setListNode(entryNodes);
+        this.setText(text);
     }
 
     public List<ContextEntryNode> getEntries() {
@@ -104,5 +108,12 @@ public class ContextNode
     @Override
     public <T> T accept(Visitor<T> v) {
         return v.visit(this);
+    }
+
+    private void setListNode(List<ContextEntryNode> entryNodes) {
+        for( ContextEntryNode entry : entryNodes ) {
+            entries.add( entry );
+            parsedResultType.addField(entry.getName().getText(), entry.getResultType());
+        }
     }
 }

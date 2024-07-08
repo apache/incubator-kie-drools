@@ -31,7 +31,7 @@ public class StartedByFunction
 
     public static final StartedByFunction INSTANCE = new StartedByFunction();
 
-    public StartedByFunction() {
+    private StartedByFunction() {
         super( "started by" );
     }
 

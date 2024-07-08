@@ -36,7 +36,7 @@ public class NNModeFunction
         extends BaseFEELFunction {
     public static final NNModeFunction INSTANCE = new NNModeFunction();
 
-    NNModeFunction() {
+    private NNModeFunction() {
         super("nn mode");
     }
 

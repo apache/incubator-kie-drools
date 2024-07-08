@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.assertj.core.api.ObjectAssert;
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.CompiledExpression;
 import org.kie.dmn.feel.lang.CompilerContext;
@@ -60,18 +61,21 @@ public abstract class BaseFEELCompilerTest {
 
     abstract protected void instanceTest(String expression, Map<String, Type> inputTypes, Map<String, Object> inputValues, Object result, FEEL_TARGET testFEELTarget);
 
-
-    protected void assertResult(final String expression, final Map<String, Type> inputTypes, final Map<String, Object> inputValues, final Object result) {
+    protected void assertResult(final String expression, final Map<String, Type> inputTypes, final Map<String,
+            Object> inputValues, final Object expected) {
         final CompilerContext ctx = feel.newCompilerContext();
         inputTypes.forEach(ctx::addInputVariableType);
         final CompiledExpression compiledExpression = feel.compile(expression, ctx );
 
-        if( result == null ) {
-        	assertThat(feel.evaluate( compiledExpression, inputValues)).as("Evaluating: '" + expression + "'").isNull();
-        } else if( result instanceof Class<?> ) {
-        	assertThat(feel.evaluate( compiledExpression, inputValues)).as("Evaluating: '" + expression + "'").isInstanceOf((Class<?>) result);
+        Object retrieved = feel.evaluate(compiledExpression, inputValues);
+        String description = String.format("Evaluating: '%s'", expression);
+        ObjectAssert<Object> assertion = assertThat(retrieved).as(description);
+        if (expected == null) {
+            assertion.isNull();
+        } else if (expected instanceof Class<?>) {
+            assertion.isInstanceOf((Class<?>) expected);
         } else {
-        	assertThat(feel.evaluate( compiledExpression, inputValues)).as("Evaluating: '" + expression + "'").isEqualTo(result);
+            assertion.isEqualTo(expected);
         }
     }
 
@@ -79,8 +83,6 @@ public abstract class BaseFEELCompilerTest {
         final List<Object[]> results = new ArrayList<>();
         for (final Object[] c : cases) {
             results.add(new Object[]{c[0], c[1], c[2], c[3], FEEL_TARGET.AST_INTERPRETED});
-        }
-        for (final Object[] c : cases) {
             results.add(new Object[]{c[0], c[1], c[2], c[3], FEEL_TARGET.JAVA_TRANSLATED});
         }
         return results;

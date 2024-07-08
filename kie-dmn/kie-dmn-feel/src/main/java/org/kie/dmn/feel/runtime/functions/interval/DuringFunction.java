@@ -31,7 +31,7 @@ public class DuringFunction
 
     public static final DuringFunction INSTANCE = new DuringFunction();
 
-    public DuringFunction() {
+    private DuringFunction() {
         super( "during" );
     }
 

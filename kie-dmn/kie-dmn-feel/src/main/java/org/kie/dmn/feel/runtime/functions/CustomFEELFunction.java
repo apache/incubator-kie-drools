@@ -19,6 +19,7 @@
 package org.kie.dmn.feel.runtime.functions;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.ast.BaseNode;
@@ -34,4 +35,20 @@ public class CustomFEELFunction extends AbstractCustomFEELFunction<BaseNode> {
         return this.body.evaluate(ctx);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        CustomFEELFunction that = (CustomFEELFunction) o;
+        return Objects.equals(toString(), that.toString());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(toString());
+    }
 }

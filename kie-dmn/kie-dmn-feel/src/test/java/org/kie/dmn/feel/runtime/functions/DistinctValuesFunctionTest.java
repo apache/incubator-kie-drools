@@ -23,18 +23,12 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
 class DistinctValuesFunctionTest {
 
-    private DistinctValuesFunction distinctValuesFunction;
-
-    @BeforeEach
-    void setUp() {
-        distinctValuesFunction = new DistinctValuesFunction();
-    }
+    private static final DistinctValuesFunction distinctValuesFunction = DistinctValuesFunction.INSTANCE;
 
     @Test
     void invokeNull() {
@@ -57,7 +51,8 @@ class DistinctValuesFunctionTest {
 
     @Test
     void invokeEmptyList() {
-        FunctionTestUtil.assertResultList(distinctValuesFunction.invoke(Collections.emptyList()), Collections.emptyList());
+        FunctionTestUtil.assertResultList(distinctValuesFunction.invoke(Collections.emptyList()),
+                                          Collections.emptyList());
     }
 
     @Test

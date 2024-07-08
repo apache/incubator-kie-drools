@@ -33,17 +33,13 @@ public class DurationFunction
 
     public static final DurationFunction INSTANCE = new DurationFunction();
 
-    public DurationFunction() {
+    private DurationFunction() {
         super(FEELConversionFunctionNames.DURATION);
     }
 
     public FEELFnResult<TemporalAmount> invoke(@ParameterName( "from" ) String val) {
         if ( val == null ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "from", "cannot be null"));
-        }
-
-        if ( val.indexOf("-") > 0) {
-            return FEELFnResult.ofError( new InvalidParametersEvent(Severity.ERROR, "from", "negative values for units are not allowed.") );
         }
 
         try {

@@ -31,7 +31,7 @@ public class NotFunction
 
     public static final NotFunction INSTANCE = new NotFunction();
 
-    public NotFunction() {
+    private NotFunction() {
         super( "not" );
     }
 

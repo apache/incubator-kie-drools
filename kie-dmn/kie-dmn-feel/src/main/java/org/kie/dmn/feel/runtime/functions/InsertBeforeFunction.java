@@ -21,6 +21,7 @@ package org.kie.dmn.feel.runtime.functions;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
@@ -29,7 +30,7 @@ public class InsertBeforeFunction
 
     public static final InsertBeforeFunction INSTANCE = new InsertBeforeFunction();
 
-    public InsertBeforeFunction() {
+    private InsertBeforeFunction() {
         super( "insert before" );
     }
 

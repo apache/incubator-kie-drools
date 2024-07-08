@@ -18,6 +18,9 @@
  */
 package org.drools.example.api.kiemodulefrommultiplefiles;
 
+import java.io.File;
+import java.io.PrintStream;
+
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.KieRepository;
@@ -26,9 +29,6 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.File;
-import java.io.PrintStream;
 
 
 public class KieModuleFromMultipleFilesExample {
@@ -76,8 +76,7 @@ public class KieModuleFromMultipleFilesExample {
         File folder = new File( KieModuleFromMultipleFilesExample.class.getProtectionDomain().getCodeSource().getLocation().getPath() );
         File exampleFolder = null;
         while (folder != null) {
-            exampleFolder = new File(folder,
-                                     exampleName);
+            exampleFolder = new File(folder, exampleName);
             if (exampleFolder.exists()) {
                 break;
             }
@@ -87,14 +86,13 @@ public class KieModuleFromMultipleFilesExample {
 
         if (exampleFolder != null) {
 
-            File targetFolder = new File(exampleFolder,
-                                         "target");
+            File targetFolder = new File(exampleFolder, "target");
             if (!targetFolder.exists()) {
                 throw new RuntimeException("The target folder does not exist, please build project " + exampleName + " first");
             }
 
             for (String str : targetFolder.list()) {
-                if (str.startsWith(exampleName) && !str.endsWith("-sources.jar") && !str.endsWith("-tests.jar") && !str.endsWith("-javadoc.jar")) {
+                if (str.startsWith(exampleName) && str.endsWith(".jar") && !str.endsWith("-sources.jar") && !str.endsWith("-tests.jar") && !str.endsWith("-javadoc.jar")) {
                     return new File(targetFolder, str);
                 }
             }

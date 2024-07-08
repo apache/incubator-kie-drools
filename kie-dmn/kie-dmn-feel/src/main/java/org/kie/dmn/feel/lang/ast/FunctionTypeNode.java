@@ -38,6 +38,12 @@ public class FunctionTypeNode extends TypeNode {
         this.retType = gen;
     }
 
+    public FunctionTypeNode(List<TypeNode> argTypes, TypeNode retType, String text) {
+        this.argTypes = new ArrayList<>(argTypes);
+        this.retType = retType;
+        this.setText(text);
+    }
+
     @Override
     public Type evaluate(EvaluationContext ctx) {
         List<Type> args = argTypes.stream().map(t -> t.evaluate(ctx)).collect(Collectors.toList());

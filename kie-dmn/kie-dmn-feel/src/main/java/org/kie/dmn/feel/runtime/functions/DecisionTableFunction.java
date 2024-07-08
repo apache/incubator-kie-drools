@@ -50,7 +50,7 @@ public class DecisionTableFunction
 
     private static final Logger LOG = LoggerFactory.getLogger( DecisionTableFunction.class );
 
-    public DecisionTableFunction() {
+    private DecisionTableFunction() {
         super( "decision table" );
     }
 

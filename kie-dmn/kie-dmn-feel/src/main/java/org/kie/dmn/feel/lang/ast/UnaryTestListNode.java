@@ -21,12 +21,15 @@ package org.kie.dmn.feel.lang.ast;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.types.BuiltInType;
+import org.kie.dmn.feel.runtime.UnaryTest;
 
 public class UnaryTestListNode
         extends BaseNode {
@@ -38,7 +41,7 @@ public class UnaryTestListNode
 
     private List<BaseNode> elements;
     private State state;
-    private BaseNode notNode;
+    private UnaryTestNode notNode;
 
     public UnaryTestListNode(ParserRuleContext ctx) {
         this(ctx, new ArrayList<>(), State.Positive);
@@ -63,6 +66,11 @@ public class UnaryTestListNode
         }
     }
 
+    public UnaryTestListNode(List<BaseNode> elements, State state, String text) {
+        this(elements, state);
+        this.setText(text);
+    }
+
     public boolean isNegated() {
         return state == State.Negated;
     }
@@ -75,9 +83,10 @@ public class UnaryTestListNode
         return elements;
     }
 
-    public void setElements(List<BaseNode> elements) {
-        this.elements = elements;
+    public void setElements(List<UnaryTestNode> elements) {
+        this.elements = elements.stream().map(UnaryTestNode.class::cast).collect(Collectors.toList());
     }
+
 
     @Override
     public List evaluate(EvaluationContext ctx) {
@@ -102,4 +111,22 @@ public class UnaryTestListNode
     public <T> T accept(Visitor<T> v) {
         return v.visit(this);
     }
+
+    public List<UnaryTest> getCompiledUnaryTests() {
+        return notNode != null ? Collections.singletonList(getUnaryTest(notNode)) :
+                elements.stream()
+                        .filter(baseNode -> baseNode instanceof UnaryTestNode || baseNode instanceof DashNode)
+                        .map(this::getUnaryTest).toList();
+    }
+
+    private UnaryTest getUnaryTest(BaseNode baseNode) {
+        if (baseNode instanceof UnaryTestNode) {
+            return ((UnaryTestNode) baseNode).getUnaryTest();
+        } else if (baseNode instanceof DashNode) {
+            return DashNode.DashUnaryTest.INSTANCE;
+        } else {
+            throw new RuntimeException("Unexpected node type: " + baseNode.getClass().getSimpleName());
+        }
+    }
+
 }

@@ -35,7 +35,7 @@ public class NNMeanFunction
 
     public static final NNMeanFunction INSTANCE = new NNMeanFunction();
 
-    public NNMeanFunction() {
+    private NNMeanFunction() {
         super( "nn mean" );
     }
 

@@ -29,7 +29,7 @@ public class ExpFunction
         extends BaseFEELFunction {
     public static final ExpFunction INSTANCE = new ExpFunction();
 
-    ExpFunction() {
+    private ExpFunction() {
         super("exp");
     }
 

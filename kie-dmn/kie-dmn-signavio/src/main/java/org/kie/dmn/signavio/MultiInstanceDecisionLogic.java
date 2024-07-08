@@ -280,25 +280,25 @@ public class MultiInstanceDecisionLogic {
             FEELFnResult<?> r;
             switch (mi.aggregationFunction) {
                 case "SUM":
-                    r = new SumFunction().invoke(invokationResults);
+                    r = SumFunction.INSTANCE.invoke(invokationResults);
                     break;
                 case "MIN":
-                    r = new MinFunction().invoke(invokationResults);
+                    r = MinFunction.INSTANCE.invoke(invokationResults);
                     break;
                 case "MAX":
-                    r = new MaxFunction().invoke(invokationResults);
+                    r = MaxFunction.INSTANCE.invoke(invokationResults);
                     break;
                 case "COUNT":
                     r = FEELFnResult.ofResult(NumberEvalHelper.getBigDecimalOrNull(invokationResults.size()));
                     break;
                 case "ALLTRUE":
-                    r = new AllFunction().invoke(invokationResults);
+                    r = AllFunction.INSTANCE.invoke(invokationResults);
                     break;
                 case "ANYTRUE":
-                    r = new AnyFunction().invoke(invokationResults);
+                    r = AnyFunction.INSTANCE.invoke(invokationResults);
                     break;
                 case "ALLFALSE":
-                    FEELFnResult<Boolean> anyResult = new AnyFunction().invoke(invokationResults);
+                    FEELFnResult<Boolean> anyResult = AnyFunction.INSTANCE.invoke(invokationResults);
                     r = anyResult.map(b -> !b);
                     break;
                 case "COLLECT":

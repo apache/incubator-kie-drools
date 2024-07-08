@@ -47,16 +47,9 @@ public class AlphaNetworkSupportInLargeDecisionTableTest {
         return new Object[]{true, false};
     }
 
-    private boolean useAlphaNetwork;
-
-    public void initAlphaNetworkSupportInLargeDecisionTableTest(final boolean useAlphaNetwork) {
-        this.useAlphaNetwork = useAlphaNetwork;
-    }
-
     @MethodSource("params")
     @ParameterizedTest(name = "{0}")
     public void evaluateDecisionTable(final boolean useAlphaNetwork) {
-        initAlphaNetworkSupportInLargeDecisionTableTest(useAlphaNetwork);
         System.setProperty(AlphaNetworkOption.PROPERTY_NAME, Boolean.toString(useAlphaNetwork));
         KieServices kieServices = KieServices.get();
 

@@ -31,6 +31,10 @@ public class DashNode
         super( ctx );
     }
 
+    public DashNode(String text) {
+        this.setText(text);
+    }
+
     @Override
     public UnaryTest evaluate(EvaluationContext ctx) {
         // a dash is a unary test that always evaluates to true

@@ -42,6 +42,12 @@ public class QualifiedNameNode
         this.resultType = type;
     }
 
+    public QualifiedNameNode(List<NameRefNode> parts, Type resultType, String text) {
+        this.parts = parts;
+        this.resultType = resultType;
+        this.setText(text);
+    }
+
     public List<NameRefNode> getParts() {
         return parts;
     }

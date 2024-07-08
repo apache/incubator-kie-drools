@@ -20,18 +20,12 @@ package org.kie.dmn.feel.runtime.functions;
 
 import java.math.BigDecimal;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
 class StringLengthFunctionTest {
 
-    private StringLengthFunction stringLengthFunction;
-
-    @BeforeEach
-    void setUp() {
-        stringLengthFunction = new StringLengthFunction();
-    }
+    private static final StringLengthFunction stringLengthFunction = StringLengthFunction.INSTANCE;
 
     @Test
     void invokeNull() {

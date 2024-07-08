@@ -20,22 +20,14 @@ package org.kie.dmn.feel.runtime.functions;
 
 import java.time.LocalDate;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kie.dmn.feel.runtime.functions.extended.TodayFunction;
 
 class TodayFunctionTest {
 
-    private TodayFunction todayFunction;
-
-    @BeforeEach
-    void setUp() {
-        todayFunction = new TodayFunction();
-    }
+    private static final TodayFunction todayFunction = TodayFunction.INSTANCE;
 
     @Test
     void invoke() {
         FunctionTestUtil.assertResult(todayFunction.invoke(), LocalDate.now());
     }
-
 }

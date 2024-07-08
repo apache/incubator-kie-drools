@@ -44,6 +44,12 @@ public class FormalParameterNode extends BaseNode {
         }
     }
 
+    public FormalParameterNode(NameDefNode name, TypeNode type, String text) {
+        this.name = name;
+        this.type = type;
+        this.setText(text);
+    }
+
     @Override
     public BaseFEELFunction.Param evaluate(EvaluationContext ctx) {
         return new Param(name.evaluate(ctx), type.evaluate(ctx));

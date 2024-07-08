@@ -39,6 +39,13 @@ public class TemporalConstantNode extends BaseNode {
         this.params = Collections.unmodifiableList(params);
     }
 
+    public TemporalConstantNode(Object value, FEELFunction fn, List<Object> params, String text) {
+        this.value = value;
+        this.fn = fn;
+        this.params = params;
+        this.setText(text);
+    }
+
     @Override
     public Object evaluate(EvaluationContext ctx) {
         return value;
@@ -54,4 +61,15 @@ public class TemporalConstantNode extends BaseNode {
         return v.visit(this);
     }
 
+    public Object getValue() {
+        return value;
+    }
+
+    public FEELFunction getFn() {
+        return fn;
+    }
+
+    public List<Object> getParams() {
+        return params;
+    }
 }

@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
@@ -31,7 +32,7 @@ public class UnionFunction
 
     public static final UnionFunction INSTANCE = new UnionFunction();
 
-    public UnionFunction() {
+    private UnionFunction() {
         super( "union" );
     }
 

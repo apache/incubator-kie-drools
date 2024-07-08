@@ -20,18 +20,12 @@ package org.kie.dmn.feel.runtime.functions;
 
 import java.math.BigDecimal;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
 class NumberFunctionTest {
 
-    private NumberFunction numberFunction;
-
-    @BeforeEach
-    void setUp() {
-        numberFunction = new NumberFunction();
-    }
+    private static final NumberFunction numberFunction = NumberFunction.INSTANCE;
 
     @Test
     void invokeNull() {
@@ -87,8 +81,10 @@ class NumberFunctionTest {
     @Test
     void invokeNumberWithGroupAndDecimalChar() {
         FunctionTestUtil.assertResult(numberFunction.invoke("9 876.124", " ", "."), BigDecimal.valueOf(9876.124));
-        FunctionTestUtil.assertResult(numberFunction.invoke("9 876 000.124", " ", "."), BigDecimal.valueOf(9876000.124));
-        FunctionTestUtil.assertResult(numberFunction.invoke("9.876.000,124", ".", ","), BigDecimal.valueOf(9876000.124));
+        FunctionTestUtil.assertResult(numberFunction.invoke("9 876 000.124", " ", "."),
+                                      BigDecimal.valueOf(9876000.124));
+        FunctionTestUtil.assertResult(numberFunction.invoke("9.876.000,124", ".", ","),
+                                      BigDecimal.valueOf(9876000.124));
     }
 
     @Test
