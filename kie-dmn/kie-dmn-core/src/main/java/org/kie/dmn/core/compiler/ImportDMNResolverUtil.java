@@ -29,7 +29,6 @@ import org.kie.dmn.feel.util.Either;
 import org.kie.dmn.model.api.Definitions;
 import org.kie.dmn.model.api.Import;
 import org.kie.dmn.model.api.NamespaceConsts;
-import org.kie.dmn.model.v1_1.TDefinitions;
 import org.kie.dmn.model.v1_1.TImport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
