@@ -26,8 +26,10 @@ import java.util.stream.Collectors;
 import javax.xml.namespace.QName;
 
 import org.kie.dmn.feel.util.Either;
+import org.kie.dmn.model.api.Definitions;
 import org.kie.dmn.model.api.Import;
 import org.kie.dmn.model.api.NamespaceConsts;
+import org.kie.dmn.model.v1_1.TDefinitions;
 import org.kie.dmn.model.v1_1.TImport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,54 +43,60 @@ public class ImportDMNResolverUtil {
     }
 
     public static <T> Either<String, T> resolveImportDMN(Import importElement, Collection<T> dmns, Function<T, QName> idExtractor) {
+        final String importerDMNNamespace = ((Definitions) importElement.getParent()).getNamespace();
+        final String importerDMNName = ((Definitions) importElement.getParent()).getName();
         final String importNamespace = importElement.getNamespace();
         final String importName = importElement.getName();
         final String importLocationURI = importElement.getLocationURI(); // This is optional
         final String importModelName = importElement.getAdditionalAttributes().get(TImport.MODELNAME_QNAME);
 
-        LOGGER.debug("Resolving DMN Import with namespace={} name={} locationURI={}, modelName={}",
-                importNamespace, importName, importLocationURI, importModelName);
+        LOGGER.debug("Resolving an Import in DMN Model with name={} and namespace={}. " +
+                        "Importing a DMN model with namespace={} name={} locationURI={}, modelName={}",
+                importerDMNNamespace, importerDMNName, importNamespace, importName, importLocationURI, importModelName);
 
-        List<T> matchingDmns = dmns.stream()
+        List<T> matchingDMNList = dmns.stream()
                 .filter(m -> idExtractor.apply(m).getNamespaceURI().equals(importNamespace))
                 .collect(Collectors.toList());
-        if (matchingDmns.size() == 1) {
-            T located = matchingDmns.get(0);
+        if (matchingDMNList.size() == 1) {
+            T located = matchingDMNList.get(0);
             // Check if the located DMN Model in the NS, correspond for the import `drools:modelName`. 
             if (importModelName == null || idExtractor.apply(located).getLocalPart().equals(importModelName)) {
-                LOGGER.debug("DMN Import with namespace={} name={} locationURI={}, modelName={} resolved!",
-                        importNamespace, importName, importLocationURI, importModelName);
+                LOGGER.debug("DMN Model with name={} and namespace={} successfully imported a DMN " +
+                                "with namespace={} name={} locationURI={}, modelName={}",
+                        importerDMNNamespace, importerDMNName, importNamespace, importName, importLocationURI, importModelName);
                 return Either.ofRight(located);
             } else {
-                LOGGER.error("While importing DMN for namespace: {}, name: {}, modelName: {}, located " +
-                                "within namespace only {} but does not match for the actual modelName",
-                        importNamespace, importName, importModelName, idExtractor.apply(located));
+                LOGGER.error("DMN Model with name={} and namespace={} can't import a DMN with namespace={}, name={}, modelName={}, " +
+                                "located within namespace only {} but does not match for the actual modelName",
+                        importerDMNNamespace, importerDMNName, importNamespace, importName, importModelName, idExtractor.apply(located));
                 return Either.ofLeft(String.format(
-                        "While importing DMN for namespace: %s, name: %s, modelName: %s, located " +
-                                "within namespace only %s but does not match for the actual modelName",
-                        importNamespace, importName, importModelName, idExtractor.apply(located)));
+                        "DMN Model with name=%s and namespace=%s can't import a DMN with namespace=%s, name=%s, modelName=%s, " +
+                                "located within namespace only %s but does not match for the actual modelName",
+                        importerDMNNamespace, importerDMNName, importNamespace, importName, importModelName, idExtractor.apply(located)));
             }
         } else {
-            List<T> usingNSandName = matchingDmns.stream()
+            List<T> usingNSandName = matchingDMNList.stream()
                     .filter(dmn -> idExtractor.apply(dmn).getLocalPart().equals(importModelName))
                     .toList();
             if (usingNSandName.size() == 1) {
-                LOGGER.debug("DMN Import with namespace={} name={} locationURI={}, modelName={} resolved!",
-                        importNamespace, importName, importLocationURI, importModelName);
+                LOGGER.debug("DMN Model with name={} and namespace={} successfully imported a DMN " +
+                                "with namespace={} name={} locationURI={}, modelName={}",
+                        importerDMNNamespace, importerDMNName, importNamespace, importName, importLocationURI, importModelName);
                 return Either.ofRight(usingNSandName.get(0));
             } else if (usingNSandName.isEmpty()) {
-                LOGGER.error("Impossible to find the Imported DMN with namespace={} name={} locationURI={}, modelName={}.",
-                        importNamespace, importName, importLocationURI, importModelName);
+                LOGGER.error("DMN Model with name={} and namespace={} failed to import a DMN with namespace={} name={} locationURI={}, modelName={}.",
+                        importerDMNNamespace, importerDMNName, importNamespace, importName, importLocationURI, importModelName);
                 return Either.ofLeft(String.format(
-                        "Impossible to find the Imported DMN with namespace=%s name=%s locationURI=%s, modelName=%s.",
-                        importNamespace, importName, importLocationURI, importModelName));
+                        "DMN Model with name=%s and namespace=%s failed to import a DMN with namespace=%s name=%s locationURI=%s, modelName=%s. ",
+                        importerDMNNamespace, importerDMNName, importNamespace, importName, importLocationURI, importModelName));
             } else {
-                LOGGER.error("Found {} number of collision resolving an Imported DMN with namespace={} name={} locationURI={}, modelName={}",
-                        usingNSandName.size(), importNamespace, importName, importLocationURI, importModelName);
-                return Either.ofLeft(String.format("Found a collision resolving an Imported DMN with %s namespace, " +
+                LOGGER.error("DMN Model with name={} and namespace={} detected a collision ({} elements) trying to import a DMN with namespace={} name={} locationURI={}, modelName={}",
+                        importerDMNNamespace, importerDMNName, usingNSandName.size(), importNamespace, importName, importLocationURI, importModelName);
+                return Either.ofLeft(String.format(
+                        "DMN Model with name=%s and namespace=%s detected a collision trying to import a DMN with %s namespace, " +
                                 "%s name and modelName %s. There are %s DMN files with the same namespace in your project. " +
                                 "Please change the DMN namespaces and make them unique to fix this issue.",
-                        importNamespace, importName, importModelName, usingNSandName.size()));
+                        importerDMNNamespace, importerDMNName, importNamespace, importName, importModelName, usingNSandName.size()));
             }
         }
     }
