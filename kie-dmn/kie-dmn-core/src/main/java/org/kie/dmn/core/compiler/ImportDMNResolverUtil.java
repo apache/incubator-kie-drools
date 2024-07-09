@@ -50,8 +50,8 @@ public class ImportDMNResolverUtil {
                 importNamespace, importName, importLocationURI, importModelName);
 
         List<T> matchingDmns = dmns.stream()
-                             .filter(m -> idExtractor.apply(m).getNamespaceURI().equals(importNamespace))
-                             .collect(Collectors.toList());
+                .filter(m -> idExtractor.apply(m).getNamespaceURI().equals(importNamespace))
+                .collect(Collectors.toList());
         if (matchingDmns.size() == 1) {
             T located = matchingDmns.get(0);
             // Check if the located DMN Model in the NS, correspond for the import `drools:modelName`. 
@@ -70,7 +70,7 @@ public class ImportDMNResolverUtil {
             }
         } else {
             List<T> usingNSandName = matchingDmns.stream()
-                                            .filter(m -> idExtractor.apply(m).getLocalPart().equals(importModelName))
+                    .filter(dmn -> idExtractor.apply(dmn).getLocalPart().equals(importModelName))
                     .toList();
             if (usingNSandName.size() == 1) {
                 LOGGER.debug("DMN Import with namespace={} name={} locationURI={}, modelName={} resolved!",
@@ -85,9 +85,9 @@ public class ImportDMNResolverUtil {
             } else {
                 LOGGER.error("Found {} number of collision resolving an Imported DMN with namespace={} name={} locationURI={}, modelName={}",
                         usingNSandName.size(), importNamespace, importName, importLocationURI, importModelName);
-                return Either.ofLeft(String.format("Found a collision resolving an Imported DMN with %s namespace, %s " +
-                                "name and modelName %s. There are %s DMN files with the same namespace in your project. Please " +
-                                "change the DMN namespaces and make them unique to fix this issue.",
+                return Either.ofLeft(String.format("Found a collision resolving an Imported DMN with %s namespace, " +
+                                "%s name and modelName %s. There are %s DMN files with the same namespace in your project. " +
+                                "Please change the DMN namespaces and make them unique to fix this issue.",
                         importNamespace, importName, importModelName, usingNSandName.size()));
             }
         }
