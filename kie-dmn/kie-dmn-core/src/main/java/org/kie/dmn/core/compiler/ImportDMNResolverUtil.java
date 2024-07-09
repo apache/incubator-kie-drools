@@ -56,31 +56,35 @@ public class ImportDMNResolverUtil {
             T located = matchingDmns.get(0);
             // Check if the located DMN Model in the NS, correspond for the import `drools:modelName`. 
             if (importModelName == null || idExtractor.apply(located).getLocalPart().equals(importModelName)) {
-                LOGGER.debug("DMN Import with namespace={} and importModelName={} resolved!", importNamespace, importModelName);
+                LOGGER.debug("DMN Import with namespace={} name={} locationURI={}, modelName={} resolved!",
+                        importNamespace, importName, importLocationURI, importModelName);
                 return Either.ofRight(located);
             } else {
-                LOGGER.error("Impossible to find the Imported DMN with {} namespace, {} name and {} modelName.",
-                        importNamespace, importName, importModelName);
-                return Either.ofLeft(String.format("While importing DMN for namespace: %s, name: %s, modelName: %s, located " +
+                LOGGER.error("While importing DMN for namespace: {}, name: {}, modelName: {}, located " +
+                                "within namespace only {} but does not match for the actual modelName",
+                        importNamespace, importName, importModelName, idExtractor.apply(located));
+                return Either.ofLeft(String.format(
+                        "While importing DMN for namespace: %s, name: %s, modelName: %s, located " +
                                 "within namespace only %s but does not match for the actual modelName",
-                                                   importNamespace, importName, importModelName,
-                                                   idExtractor.apply(located)));
+                        importNamespace, importName, importModelName, idExtractor.apply(located)));
             }
         } else {
             List<T> usingNSandName = matchingDmns.stream()
                                             .filter(m -> idExtractor.apply(m).getLocalPart().equals(importModelName))
                     .toList();
             if (usingNSandName.size() == 1) {
-                LOGGER.debug("DMN Import with namespace={} and importModelName={} resolved!", importNamespace, importModelName);
+                LOGGER.debug("DMN Import with namespace={} name={} locationURI={}, modelName={} resolved!",
+                        importNamespace, importName, importLocationURI, importModelName);
                 return Either.ofRight(usingNSandName.get(0));
             } else if (usingNSandName.isEmpty()) {
-                LOGGER.error("Impossible to find the Imported DMN with {} namespace, {} name and {} modelName.",
-                        importNamespace, importName, importModelName);
-                return Either.ofLeft(String.format("Impossible to find the Imported DMN with %s namespace %s name and %s modelName.",
-                        importNamespace, importName, importModelName));
+                LOGGER.error("Impossible to find the Imported DMN with namespace={} name={} locationURI={}, modelName={}.",
+                        importNamespace, importName, importLocationURI, importModelName);
+                return Either.ofLeft(String.format(
+                        "Impossible to find the Imported DMN with namespace=%s name=%s locationURI=%s, modelName=%s.",
+                        importNamespace, importName, importLocationURI, importModelName));
             } else {
-                LOGGER.error("Found {} number of collision resolving an Imported DMN with {} namespace {} name and {} modelName.",
-                        usingNSandName.size(), importNamespace, importName, importModelName);
+                LOGGER.error("Found {} number of collision resolving an Imported DMN with namespace={} name={} locationURI={}, modelName={}",
+                        usingNSandName.size(), importNamespace, importName, importLocationURI, importModelName);
                 return Either.ofLeft(String.format("Found a collision resolving an Imported DMN with %s namespace, %s " +
                                 "name and modelName %s. There are %s DMN files with the same namespace in your project. Please " +
                                 "change the DMN namespaces and make them unique to fix this issue.",
