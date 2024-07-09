@@ -33,7 +33,7 @@ pipeline {
 
     options {
         timestamps()
-        timeout(time: 60, unit: 'MINUTES')
+        timeout(time: 180, unit: 'MINUTES')
     }
 
     environment {
@@ -65,7 +65,7 @@ pipeline {
                             maven.mvnVersionsSet(
                                 getMavenCommand().withSettingsXmlFile(MAVEN_SETTINGS_FILE),
                                 getDroolsVersion(),
-                                true
+                                false
                             )
                         }
                     }
