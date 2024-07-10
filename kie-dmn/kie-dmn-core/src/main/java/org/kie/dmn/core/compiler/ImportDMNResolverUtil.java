@@ -74,7 +74,7 @@ public class ImportDMNResolverUtil {
         } else {
             List<T> usingNSandName = matchingDMNList.stream()
                     .filter(dmn -> idExtractor.apply(dmn).getLocalPart().equals(importModelName))
-                    .toList();
+                    .collect(Collectors.toList());
             if (usingNSandName.size() == 1) {
                 LOGGER.debug("DMN Model with name={} and namespace={} successfully imported a DMN " +
                                 "with namespace={} name={} locationURI={}, modelName={}",
