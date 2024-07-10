@@ -18,6 +18,11 @@
  */
 package org.drools.compiler.kie.builder.impl;
 
+import java.util.Collections;
+import java.util.Map;
+
+import org.kie.api.builder.model.KieBaseModel;
+
 public class BuildContext {
     private final ResultsImpl messages;
 
@@ -35,5 +40,13 @@ public class BuildContext {
 
     public boolean registerResourceToBuild(String kBaseName, String resource) {
         return true;
+    }
+
+    public void addIncludeModule(KieBaseModel kieBaseModel, InternalKieModule includeModule) {
+        // no op
+    }
+
+    public Map<KieBaseModel, InternalKieModule> getIncludeModules() {
+        return Collections.emptyMap();
     }
 }
