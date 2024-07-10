@@ -30,13 +30,8 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.reteoo.MultiInputNode.MultiInputNodeMemory;
-import org.drools.core.reteoo.sequencing.Sequence;
-import org.drools.core.reteoo.sequencing.Step.LogicCircuitStep;
-import org.drools.core.reteoo.sequencing.Step.SequenceStep;
-import org.drools.core.reteoo.sequencing.Step;
 import org.drools.core.reteoo.sequencing.Sequence.SequenceMemory;
 import org.drools.core.reteoo.sequencing.SignalProcessor;
-import org.drools.core.reteoo.sequencing.LogicGate;
 import org.drools.core.reteoo.sequencing.SignalStatus;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.reteoo.sequencing.Sequencer;
@@ -106,14 +101,6 @@ public class MultiInputNode extends LeftTupleSource
         this.dynamicFilters = dynamicFilters;
     }
 
-//    public SequenceInputAdapter[] getSequenceInputAdapters() {
-//        return sequenceInputAdapters;
-//    }
-//
-//    public void setSequenceInputAdapters(SequenceInputAdapter[] sequenceInputAdapters) {
-//        this.sequenceInputAdapters = sequenceInputAdapters;
-//    }
-
     public void doAttach(BuildContext context) {
         super.doAttach(context);
         this.leftInput.addTupleSink( this, context );
@@ -157,46 +144,8 @@ public class MultiInputNode extends LeftTupleSource
         return memory;
     }
 
-
-    public void populateGates(Sequence sequence, List<LogicGate> gates) {
-        // recursively populate with all the LogicGates
-        for (Step s : sequence.getSteps()) {
-            if (s.getClass() ==  LogicCircuitStep.class) {
-                for ( LogicGate g : ((LogicCircuitStep) s).getCircuit().getGates()) {
-                    gates.add(g);
-                }
-            } else if (s.getClass() ==  SequenceStep.class) {
-                populateGates(((SequenceStep)s).getSequence(), gates);
-            }
-        }
-    }
-
     public SequencerMemory createSequencerMemory(TupleImpl lt, LeftTupleSink sink, MultiInputNodeMemory nodeMemory) {
-//        int signalAdapters = 0;
-//        int counters = 0;
-//
-//        if (gates == null) {
-//            List<LogicGate> gatesList = new ArrayList<>();
-//            populateGates(sequencer.getSequence(), gatesList);
-//            gates = gatesList.toArray(new LogicGate[gatesList.size()]);
-//        }
-//
-//        for (LogicGate gate : gates) {
-//            counters = counters + gate.getInputSignalCounters().length;
-//            if ( gate.getOutput().getClass() == ConditionalSignalCounter.class) {
-//                ++counters;
-//            }
-//            signalAdapters = signalAdapters + gate.getSignalAdapterIndexes().length;
-//        }
-//
-//        long[] gateMemory = new long[gates.length];
-//        long[] counterMemory = new long[counters];
-//
-//        SequencerMemory sequencerMemory = new SequencerMemory(lt, sink,this, nodeMemory, gateMemory, counterMemory,
-//                                                            new SignalAdapter[signalAdapters], new SignalAdapter[signalAdapters]);
-
         SequencerMemory sequencerMemory = new SequencerMemory(lt, sink,this, nodeMemory);
-        //sequencerMemory.initialiseSequenceMemory(sequencer.getSequence());
 
         return sequencerMemory;
     }
@@ -384,10 +333,6 @@ public class MultiInputNode extends LeftTupleSource
         return true;
     }
 
-    public static class MaskValue {
-        long mask = 0;
-    }
-
     public static class SignalAdapter extends AbstractLinkedListNode<SignalAdapter>  {
         private SignalProcessor output;
         private int             signalBitIndex;
@@ -399,7 +344,8 @@ public class MultiInputNode extends LeftTupleSource
             this.memory         = memory;
         }
 
-        public void receive(ReteEvaluator reteEvaluator) {
+        public void receive(ReteEvaluator reteEvaluator, InternalFactHandle factHandle) {
+            memory.getSequencerMemory().getEvents().add(factHandle);
             output.consume(signalBitIndex, SignalStatus.MATCHED, memory, reteEvaluator);
         }
     }
@@ -461,7 +407,7 @@ public class MultiInputNode extends LeftTupleSource
 
             if (constraint.isAllowed(factHandle, reteEvaluator)) {
                 for (SignalAdapter signal = signalAdapters.getFirst(); signal != null; signal = signal.getNext()) {
-                    signal.receive(reteEvaluator);
+                    signal.receive(reteEvaluator, factHandle);
                 }
             }
         }

@@ -21,6 +21,8 @@ import org.drools.core.time.JobContext;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.LongPredicate;
 
 public class Sequence {
@@ -31,6 +33,9 @@ public class Sequence {
     private LogicGate[] gates;
 
     private SequenceController controller;
+
+    private Consumer<SequenceMemory> onStart;
+    private Consumer<SequenceMemory> onEnd;
 
     public Sequence(int sequenceIndex, LogicCircuit... circuits) {
         steps = new Step[circuits.length];
@@ -57,6 +62,22 @@ public class Sequence {
         this.sequenceIndex = sequenceIndex;
         populateLogicGates();
         controller = new DefaultController();
+    }
+
+    public Consumer<SequenceMemory> getOnStart() {
+        return onStart;
+    }
+
+    public void setOnStart(Consumer<SequenceMemory> onStart) {
+        this.onStart = onStart;
+    }
+
+    public Consumer<SequenceMemory> getOnEnd() {
+        return onEnd;
+    }
+
+    public void setOnEnd(Consumer<SequenceMemory> onEnd) {
+        this.onEnd = onEnd;
     }
 
     public void populateLogicGates() {
@@ -102,11 +123,15 @@ public class Sequence {
         memory.pushSequence(sequenceMemory);
         sequenceMemory.setStep(0);
         getSteps()[0].activate(sequenceMemory, reteEvaluator);
+        if(onStart != null) {
+            onStart.accept(sequenceMemory);
+        }
         controller.start(sequenceMemory, reteEvaluator);
     }
 
     private void restart(SequenceMemory sequenceMemory, ReteEvaluator reteEvaluator) {
         sequenceMemory.setStep(0);
+        sequenceMemory.getSequencerMemory().getEvents().resetHeadByOffset(sequenceMemory.getSequencerMemory().getEvents().size() - sequenceMemory.getEventsStartPosition());
         getSteps()[0].activate(sequenceMemory, reteEvaluator);
     }
 
@@ -119,6 +144,9 @@ public class Sequence {
         if (step < sequenceMemory.getSequence().getSteps().length) {
             sequenceMemory.getSequence().getSteps()[step].activate(sequenceMemory, reteEvaluator);
         } else {
+            if(onEnd != null) {
+                onEnd.accept(sequenceMemory);
+            }
             controller.end(sequenceMemory, reteEvaluator);
         }
     }
@@ -516,6 +544,8 @@ public class Sequence {
 
         private MultiInputNodeMemory nodeMemory;
 
+        private int eventsStartPosition;
+
         public SequenceMemory(SequencerMemory sequencerMemory, Sequence sequence,
                               SignalAdapter[] signalAdapters, SignalAdapter[] activeSignalAdapters,
                               long[] gateMemory, long[] counterMemories, MultiInputNodeMemory nodeMemory) {
@@ -528,6 +558,7 @@ public class Sequence {
             this.nodeMemory           = nodeMemory;
             this.signalStatuses       = new SignalStatus[gateMemory.length + counterMemories.length];
         }
+
 
         public Sequence getSequence() {
             return sequence;
@@ -613,6 +644,14 @@ public class Sequence {
 
         public void setCount(int count) {
             this.count = count;
+        }
+
+        public int getEventsStartPosition() {
+            return eventsStartPosition;
+        }
+
+        public void setEventsStartPosition(int eventsStartPosition) {
+            this.eventsStartPosition = eventsStartPosition;
         }
 
         public SignalAdapter activateSignalAdapter(int filterIndex, LogicGate gate, int signalAdapterIndex, int signalBitIndex) {

@@ -20,36 +20,21 @@ package org.drools.mvel.integrationtests.phreak.sequencing;
 
 import org.drools.base.base.ClassObjectType;
 import org.drools.base.base.ObjectType;
-import org.drools.base.definitions.InternalKnowledgePackage;
-import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.base.rule.Pattern;
 import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.impl.KnowledgeBaseImpl;
-import org.drools.core.impl.RuleBaseFactory;
-import org.drools.core.reteoo.BetaMemory;
-import org.drools.core.reteoo.CoreComponentFactory;
-import org.drools.core.reteoo.JoinNode;
-import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.reteoo.MockLeftTupleSink;
-import org.drools.core.reteoo.MultiInputNode;
 import org.drools.core.reteoo.MultiInputNode.DynamicFilterProto;
-import org.drools.core.reteoo.MultiInputNode.MultiInputNodeMemory;
-import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.reteoo.sequencing.Gates;
 import org.drools.core.reteoo.sequencing.LogicCircuit;
 import org.drools.core.reteoo.sequencing.LogicGate;
 import org.drools.core.reteoo.sequencing.Sequence;
-import org.drools.core.reteoo.sequencing.Step;
-import org.drools.core.reteoo.sequencing.Sequencer;
 import org.drools.core.reteoo.sequencing.Sequence.SequenceMemory;
-import org.drools.core.reteoo.sequencing.Sequencer.SequencerMemory;
+import org.drools.core.reteoo.sequencing.Sequencer;
+import org.drools.core.reteoo.sequencing.Step;
 import org.drools.core.reteoo.sequencing.TerminatingSignalProcessor;
-import org.drools.core.rule.JavaDialectRuntimeData;
+import org.drools.core.util.CircularArrayList;
 import org.drools.kiesession.rulebase.SessionsAwareKnowledgeBase;
-import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.mvel.integrationtests.phreak.A;
 import org.drools.mvel.integrationtests.phreak.B;
 import org.drools.mvel.integrationtests.phreak.sequencing.MultiInputNodeBuilder.AlphaConstraint;
@@ -58,14 +43,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.runtime.conf.ThreadSafeOption;
-import org.kie.internal.conf.CompositeBaseConfiguration;
+import org.kie.api.runtime.rule.FactHandle;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class PhreakSequencerSubsequenceTest extends AbstractPhreakSequencerSubsequenceTest {
+public class PhreakSequencerEventsMemoryTest extends AbstractPhreakSequencerSubsequenceTest {
 
 
     @Before
@@ -87,26 +71,17 @@ public class PhreakSequencerSubsequenceTest extends AbstractPhreakSequencerSubse
 
         DynamicFilterProto bfilter = new DynamicFilterProto((AlphaNodeFieldConstraint) bpattern.getConstraints().get(0), 0);
 
-        LogicGate gate1 = get1InputLogicGate();
-        gate1.setOutput(TerminatingSignalProcessor.get());
-        LogicCircuit circuit1 = new LogicCircuit(mnode, gate1);
+        LogicCircuit circuit1 = getLogicCircuit();
+        LogicCircuit circuit2 = getLogicCircuit();
+        LogicCircuit circuit3 = getLogicCircuit();
+        LogicCircuit circuit4 = getLogicCircuit();
+        LogicCircuit circuit5 = getLogicCircuit();
+        LogicCircuit circuit6 = getLogicCircuit();
 
-        LogicGate gate2 = get1InputLogicGate();
-        gate2.setOutput(TerminatingSignalProcessor.get());
-        LogicCircuit circuit2 = new LogicCircuit(mnode, gate2);
+        seq1 = new Sequence(1, circuit2);
+        seq2 = new Sequence(2, circuit4, circuit5);
 
-        LogicGate gate3 = get1InputLogicGate();
-        gate3.setOutput(TerminatingSignalProcessor.get());
-        LogicCircuit circuit3 = new LogicCircuit(mnode, gate3);
-
-        LogicGate gate4 = get1InputLogicGate();
-        gate4.setOutput(TerminatingSignalProcessor.get());
-        LogicCircuit circuit4 = new LogicCircuit(mnode, gate4);
-
-        seq1 = new Sequence(1, circuit1, circuit2);
-        seq2 = new Sequence(2, circuit3, circuit4);
-
-        seq0 = new Sequence(0, Step.of(seq1), Step.of(seq2));
+        seq0 = new Sequence(0, Step.of(circuit1), Step.of(seq1), Step.of(circuit3), Step.of(seq2), Step.of(circuit6));
         mnode.setSequencer(new Sequencer(mnode, seq0));
         mnode.setDynamicFilters( new DynamicFilterProto[] {bfilter});
 
@@ -117,47 +92,62 @@ public class PhreakSequencerSubsequenceTest extends AbstractPhreakSequencerSubse
         createSession();
     }
 
+    private LogicCircuit getLogicCircuit() {
+        LogicGate gate1 = get1InputLogicGate();
+        gate1.setOutput(TerminatingSignalProcessor.get());
+        LogicCircuit circuit1 = new LogicCircuit(mnode, gate1);
+        return circuit1;
+    }
+
     private static LogicGate get1InputLogicGate() {
-        LogicGate gate1 = new LogicGate((inputMask, sourceMask) -> Gates.and(inputMask, sourceMask),0,
-                                        new int[] {0}, // B
-                                        new int[] {0}, //
+        LogicGate gate1 = new LogicGate((inputMask, sourceMask) -> Gates.and(inputMask, sourceMask), 0,
+                                        new int[]{0}, // B
+                                        new int[]{0}, //
                                         0);
         return gate1;
     }
 
     @Test
-    public void testSubSequence() {
+    public void testSequenceEventsMemory() {
         ArrayList<SequenceMemory> stack = sequencerMemory.getSequenceStack();
         assertThat(stack.size()).isEqualTo(0);
 
         mnode.getSequencer().start(sequencerMemory, session);
-        assertThat(stack.size()).isEqualTo(2);
 
-        assertThat(stack.get(0).getSequence()).isSameAs(seq0);
-        assertThat(stack.get(1).getSequence()).isSameAs(seq1);
-        assertThat(sequencerMemory.getCurrentSequence().getSequence()).isSameAs(seq1);
-        assertThat(sequencerMemory.getCurrentStep()).isSameAs(0);
-
+        CircularArrayList<FactHandle> events = sequencerMemory.getEvents();
+        assertThat(events.size()).isEqualTo(0);
         InternalFactHandle fhB0 = (InternalFactHandle) session.insert(new B(0, "b"));
-        assertThat(sequencerMemory.getCurrentStep()).isSameAs(1);
+        assertThat(to(events)).isEqualTo(new Object[] {0});
 
-        // After this B it should transition to the next step, which is a subsequence
-        InternalFactHandle fhB1 = (InternalFactHandle) session.insert(new B(0, "b"));
-        assertThat(stack.get(0).getSequence()).isSameAs(seq0);
-        assertThat(stack.get(1).getSequence()).isSameAs(seq2);
-        assertThat(sequencerMemory.getCurrentSequence().getSequence()).isSameAs(seq2);
-        assertThat(sequencerMemory.getCurrentStep()).isSameAs(0);
+        InternalFactHandle fhB1 = (InternalFactHandle) session.insert(new B(1, "b"));
+        assertThat(to(events)).isEqualTo(new Object[] {0}); // It's 0, because the subsequence of 1 input finished and it rewound.
 
-        InternalFactHandle fhB2 = (InternalFactHandle) session.insert(new B(0, "b"));
-        assertThat(stack.get(0).getSequence()).isSameAs(seq0);
-        assertThat(stack.get(1).getSequence()).isSameAs(seq2);
-        assertThat(sequencerMemory.getCurrentSequence().getSequence()).isSameAs(seq2);
-        assertThat(sequencerMemory.getCurrentStep()).isSameAs(1);
+        InternalFactHandle fhB2 = (InternalFactHandle) session.insert(new B(2, "b"));
+        assertThat(to(events)).isEqualTo(new Object[] {0, 2});
 
-        InternalFactHandle fhB3 = (InternalFactHandle) session.insert(new B(0, "b"));
-        assertThat(stack.isEmpty()).isTrue();
+        InternalFactHandle fhB3 = (InternalFactHandle) session.insert(new B(3, "b"));
+        assertThat(to(events)).isEqualTo(new Object[] {0, 2, 3}); // This subsequence has two inputs, so its still in the subsequence.
+
+        InternalFactHandle fhB4 = (InternalFactHandle) session.insert(new B(4, "b"));
+        assertThat(to(events)).isEqualTo(new Object[] {0, 2}); // The subsequence has finished and it's rewound.
+
+        InternalFactHandle fhB5 = (InternalFactHandle) session.insert(new B(5, "b"));
+        assertThat(to(events)).isEqualTo(new Object[] {0, 2, 5}); // everything has finished and it's added the last input
+
+        InternalFactHandle fhB6 = (InternalFactHandle) session.insert(new B(6, "b"));
+        assertThat(to(events)).isEqualTo(new Object[] {0, 2, 5}); // nothing is added as the sequence is finished.
 
         assertThat(sequencerMemory.getCurrentStep()).isEqualTo(-1); // terminated
+    }
+
+    public Object[] to(CircularArrayList<FactHandle> events) {
+        FactHandle[] facts = events.toArray();
+        Object[] objs = new Object[facts.length];
+        for(int i = 0; i < facts.length; i++) {
+            objs[i] = ((B)facts[i].getObject()).getObject();
+        }
+
+        return  objs;
     }
 
 }

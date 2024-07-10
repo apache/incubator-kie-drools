@@ -1,6 +1,7 @@
 package org.drools.core.reteoo.sequencing;
 
 import org.drools.core.common.ReteEvaluator;
+import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.MultiInputNode;
 import org.drools.core.reteoo.MultiInputNode.MultiInputNodeMemory;
@@ -8,6 +9,8 @@ import org.drools.core.reteoo.MultiInputNode.SignalAdapter;
 import org.drools.core.reteoo.TupleImpl;
 import org.drools.core.reteoo.sequencing.Sequence.SequenceMemory;
 import org.drools.core.reteoo.sequencing.Step.SequenceStep;
+import org.drools.core.util.CircularArrayList;
+import org.kie.api.runtime.rule.FactHandle;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,6 +61,13 @@ public class Sequencer {
         SequenceMemory sequenceMemory = sequencerMemory.getCurrentSequence();
         if (sequenceMemory != null) {
             sequenceMemory.getSequence().next(sequenceMemory, reteEvaluator);
+        } else {
+            // the root sequence has completed
+            TupleImpl lt = sequencerMemory.getLeftTuple();
+            sequencerMemory.getNodeMemory().getStagedChildTuples().add(new LeftTuple(lt, sequencerMemory.sink,
+                                                                                     lt.getPropagationContext(), false));
+            // notify?
+
         }
     }
 
@@ -74,6 +84,8 @@ public class Sequencer {
 
         private TupleImpl lt;
 
+        private CircularArrayList<FactHandle> events;
+
         private MultiInputNode node;
 
         private SequenceMemory[] sequenceMemories;
@@ -85,15 +97,21 @@ public class Sequencer {
         private ArrayList<SequenceMemory> sequenceStack = new ArrayList<>();
 
         public SequencerMemory(TupleImpl lt, LeftTupleSink sink, MultiInputNode node, MultiInputNodeMemory nodeMemory) {
-            this.lt                   = lt;
-            this.node                 = node;
-            this.sink                 = sink;
-            this.nodeMemory           = nodeMemory;
-            this.sequenceMemories     = new SequenceMemory[node.getSequencer().getSequencences().length];
+            this.lt               = lt;
+            this.events           = new CircularArrayList<>(FactHandle.class, 100);
+            this.node             = node;
+            this.sink             = sink;
+            this.nodeMemory       = nodeMemory;
+            this.sequenceMemories = new SequenceMemory[node.getSequencer().getSequencences().length];
+
         }
 
         public TupleImpl getLeftTuple() {
             return lt;
+        }
+
+        public CircularArrayList<FactHandle> getEvents() {
+            return events;
         }
 
         public LeftTupleSink getSink() {
