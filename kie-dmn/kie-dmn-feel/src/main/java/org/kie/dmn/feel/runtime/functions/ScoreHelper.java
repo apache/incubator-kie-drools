@@ -36,6 +36,7 @@ import org.slf4j.LoggerFactory;
  * <p>
  * Conditions considered (from most  to less relevant):
  * Condition                                        Score
+ * 1. last input not array                  ->      100000
  * 1. last parameter not array              ->      10000
  * 2. number of parameters                  ->      1000
  * 3. type identity of all parameters ->    ->      weighted value of matching parameters and values 0-1000
@@ -48,6 +49,7 @@ public class ScoreHelper {
 
     private static final List<Function<Compares, Integer>> SCORER_LIST;
 
+    static int lastInputNotArrayNotArrayScore = 100000;
     static int lastParameterNotArrayScore = 10000;
     static int numberOfParametersScore = 1000;
     static int coercedToVarargsScore = -10;
@@ -73,7 +75,7 @@ public class ScoreHelper {
                     compares.originalInput[i] != null &&
                     compares.originalInput[i] instanceof EvaluationContext) {
                 // Do not consider EvaluationContext for score
-                matchedEvaluationContext +=1;
+                matchedEvaluationContext += 1;
                 continue;
             }
             // In this case, we switch the parameter comparison, ignoring the first parameterType
@@ -82,44 +84,69 @@ public class ScoreHelper {
             Object originalValue = compares.originalInput[i];
             if (expectedType.equals(Object.class)) {
                 // parameter type is Object
-                counter +=1;
+                counter += 1;
             }
             if (originalValue == null) {
                 // null value has a potential match
-                counter +=1;
+                counter += 1;
             } else if (!(expectedType.isInstance(originalValue))) {
                 // do not count it
                 continue;
-            } else if (expectedType.isInterface() || expectedType.equals(originalValue.getClass()) || expectedType.isAssignableFrom(originalValue.getClass())) {
+            } else if (!(expectedType.equals(Object.class)) &&
+                    (expectedType.isInterface() ||
+                            expectedType.equals(originalValue.getClass()) ||
+                            expectedType.isAssignableFrom(originalValue.getClass()))) {
                 counter += 2;
             }
             logger.trace("typeIdentityOfParameters {} {} -> {}", expectedType, originalValue, counter);
         }
         int elementsToConsider = index - matchedEvaluationContext;
-        int toReturn = counter > 0 ?  Math.round(((float) counter/elementsToConsider) * 500) : 0;
+        int toReturn = counter > 0 ? Math.round(((float) counter / elementsToConsider) * 500) : 0;
         logger.trace("typeIdentityOfParameters {} -> {}", compares, toReturn);
         return toReturn;
     };
 
+    static final Function<Compares, Integer> lastInputNotArray =
+            compares -> {
+                int toReturn = isLastInputArray(compares.adaptedInput) ? 0 :
+                        lastInputNotArrayNotArrayScore;
+                logger.trace("lastInputNotArray {} -> {}", compares, toReturn);
+                return toReturn;
+            };
+
+    static boolean isLastInputArray(Object[] adaptedInput) {
+        return adaptedInput != null &&
+                adaptedInput.length > 0 &&
+                adaptedInput[adaptedInput.length - 1] != null &&
+                adaptedInput[adaptedInput.length - 1].getClass().isArray();
+    }
+
     static final Function<Compares, Integer> lastParameterNotArray =
             compares -> {
-                int toReturn = compares.adaptedInput.length > 0 &&
-                        compares.adaptedInput[compares.adaptedInput.length - 1] != null &&
-                        !compares.adaptedInput[compares.adaptedInput.length - 1].getClass().isArray() ? lastParameterNotArrayScore : 0;
+                int toReturn = isLastParameterArray(compares.parameterTypes) ? 0 :
+                        lastParameterNotArrayScore;
                 logger.trace("lastParameterNotArray {} -> {}", compares, toReturn);
                 return toReturn;
             };
 
+    static boolean isLastParameterArray(Class<?>[] parameterTypes) {
+        return parameterTypes != null &&
+                parameterTypes.length > 0 &&
+                parameterTypes[parameterTypes.length - 1] != null &&
+                parameterTypes[parameterTypes.length - 1].isArray();
+    }
+
     static final Function<Compares, Integer> coercedToVarargs =
             compares -> {
-                Object[] amendedOriginalInput = compares.originalInput != null ?  Arrays.stream(compares.originalInput)
+                Object[] amendedOriginalInput = compares.originalInput != null ? Arrays.stream(compares.originalInput)
                         .filter(o -> !(o instanceof EvaluationContext)).toArray() : new Object[0];
-                Object[] amendedAdaptedInput = compares.adaptedInput != null ?  Arrays.stream(compares.adaptedInput)
+                Object[] amendedAdaptedInput = compares.adaptedInput != null ? Arrays.stream(compares.adaptedInput)
                         .filter(o -> !(o instanceof EvaluationContext)).toArray() : new Object[0];
                 int toReturn = 0;
                 if (amendedOriginalInput.length >= amendedAdaptedInput.length &&
                         amendedAdaptedInput.length == 1 &&
-                        isCoercedToVarargs(amendedOriginalInput[amendedOriginalInput.length - 1], amendedAdaptedInput[0])) {
+                        isCoercedToVarargs(amendedOriginalInput[amendedOriginalInput.length - 1],
+                                           amendedAdaptedInput[0])) {
                     toReturn = coercedToVarargsScore;
                 }
                 logger.trace("coercedToVarargs {} -> {}", compares, toReturn);
@@ -127,9 +154,11 @@ public class ScoreHelper {
             };
 
     static boolean isCoercedToVarargs(Object originalInput, Object adaptedInput) {
-        boolean isOriginalInputCandidate = originalInput == null || !originalInput.getClass().equals(Object.class.arrayType());
-        boolean isAdaptedInputCandidate = adaptedInput != null &&  adaptedInput.getClass().equals(Object.class.arrayType());
-        return  isOriginalInputCandidate && isAdaptedInputCandidate;
+        boolean isOriginalInputCandidate =
+                originalInput == null || !originalInput.getClass().equals(Object.class.arrayType());
+        boolean isAdaptedInputCandidate =
+                adaptedInput != null && adaptedInput.getClass().equals(Object.class.arrayType());
+        return isOriginalInputCandidate && isAdaptedInputCandidate;
     }
 
     static final Function<Compares, Integer> nullCounts =
@@ -141,15 +170,16 @@ public class ScoreHelper {
 
     static {
         SCORER_LIST = new ArrayList<>();
+        SCORER_LIST.add(lastInputNotArray);
+        SCORER_LIST.add(lastParameterNotArray);
         SCORER_LIST.add(numberOfParameters);
         SCORER_LIST.add(typeIdentityOfParameters);
-        SCORER_LIST.add(lastParameterNotArray);
         SCORER_LIST.add(coercedToVarargs);
         SCORER_LIST.add(nullCounts);
     }
 
     static int score(Compares toScore) {
-        int toReturn =  SCORER_LIST.stream()
+        int toReturn = SCORER_LIST.stream()
                 .map(comparesIntegerFunction ->
                              comparesIntegerFunction.apply(toScore))
                 .reduce(0, Integer::sum);

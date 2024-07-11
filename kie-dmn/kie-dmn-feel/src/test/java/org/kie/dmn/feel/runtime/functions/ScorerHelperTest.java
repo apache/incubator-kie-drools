@@ -19,7 +19,6 @@
 package org.kie.dmn.feel.runtime.functions;
 
 import java.math.BigDecimal;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -30,9 +29,9 @@ import org.kie.dmn.feel.lang.EvaluationContext;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.kie.dmn.feel.runtime.functions.ScoreHelper.coercedToVarargsScore;
+import static org.kie.dmn.feel.runtime.functions.ScoreHelper.lastInputNotArrayNotArrayScore;
 import static org.kie.dmn.feel.runtime.functions.ScoreHelper.lastParameterNotArrayScore;
 import static org.kie.dmn.feel.runtime.functions.ScoreHelper.numberOfParametersScore;
-import static org.kie.dmn.feel.runtime.functions.ScoreHelper.typeIdentityOfParameters;
 
 class ScorerHelperTest {
 
@@ -43,12 +42,13 @@ class ScorerHelperTest {
         Object[] adaptedInput = new Object[] { "String" };
         ScoreHelper.Compares compares = new ScoreHelper.Compares(originalInput, adaptedInput, parameterTypes);
         int retrieved = ScoreHelper.score(compares);
-        //     0 (nullCounts)
-        //     0 (coercedToVarargs)
-        //  1000 (typeIdentityOfParameters)
-        //  1000 (numberOfParameters)
-        // 10000 (lastParameterNotArray)
-        int expected = lastParameterNotArrayScore + numberOfParametersScore + 1000;
+        //      0 (nullCounts)
+        //      0 (coercedToVarargs)
+        //   1000 (typeIdentityOfParameters)
+        //   1000 (numberOfParameters)
+        //  10000 (lastParameterNotArray)
+        // 100000 (lastInputNotArray)
+        int expected = lastInputNotArrayNotArrayScore + lastParameterNotArrayScore + numberOfParametersScore + 1000;
         assertEquals(expected, retrieved);
 
         originalInput = new Object[] { "String", "34" };
@@ -56,12 +56,13 @@ class ScorerHelperTest {
         adaptedInput = new Object[] { "String", null };
         compares = new ScoreHelper.Compares(originalInput, adaptedInput, parameterTypes);
         retrieved = ScoreHelper.score(compares);
-        //    -1 (nullCounts)
-        //     0 (coercedToVarargs)
-        //   500 (typeIdentityOfParameters)
-        //  1000 (numberOfParameters)
-        //     0 (lastParameterNotArray) // 0 because last parameter of adaptedInput is null
-        expected = numberOfParametersScore + 500 -1;
+        //     -1 (nullCounts)
+        //      0 (coercedToVarargs)
+        //    500 (typeIdentityOfParameters)
+        //   1000 (numberOfParameters)
+        //  10000 (lastParameterNotArray)
+        // 100000 (lastInputNotArray)
+        expected = lastInputNotArrayNotArrayScore + lastParameterNotArrayScore + numberOfParametersScore + 500 -1;
         assertEquals(expected, retrieved);
 
         originalInput = new Object[] { "String", "34" };
@@ -69,12 +70,13 @@ class ScorerHelperTest {
         adaptedInput = new Object[] { "String", 34 };
         compares = new ScoreHelper.Compares(originalInput, adaptedInput, parameterTypes);
         retrieved = ScoreHelper.score(compares);
-        //     0 (nullCounts)
-        //     0 (coercedToVarargs)
-        //   500 (typeIdentityOfParameters)
-        //  1000 (numberOfParameters)
-        // 10000 (lastParameterNotArray)
-        expected = lastParameterNotArrayScore +  numberOfParametersScore + 500;
+        //      0 (nullCounts)
+        //      0 (coercedToVarargs)
+        //    500 (typeIdentityOfParameters)
+        //   1000 (numberOfParameters)
+        //  10000 (lastParameterNotArray)
+        // 100000 (lastInputNotArray)
+        expected = lastInputNotArrayNotArrayScore + lastParameterNotArrayScore + numberOfParametersScore + 500;
         assertEquals(expected, retrieved);
 
         originalInput = new Object[] { "StringA", "StringB" };
@@ -82,12 +84,13 @@ class ScorerHelperTest {
         adaptedInput = new Object[] { "StringA", "StringB" };
         compares = new ScoreHelper.Compares(originalInput, adaptedInput, parameterTypes);
         retrieved = ScoreHelper.score(compares);
-        //     0 (nullCounts)
-        //     0 (coercedToVarargs)
-        //  1000 (typeIdentityOfParameters)
-        //  1000 (numberOfParameters)
-        // 10000 (lastParameterNotArray)
-        expected = lastParameterNotArrayScore + numberOfParametersScore + 1000;
+        //      0 (nullCounts)
+        //      0 (coercedToVarargs)
+        //   1000 (typeIdentityOfParameters)
+        //   1000 (numberOfParameters)
+        //  10000 (lastParameterNotArray)
+        // 100000 (lastInputNotArray)
+        expected = lastInputNotArrayNotArrayScore + lastParameterNotArrayScore + numberOfParametersScore + 1000;
         assertEquals(expected, retrieved);
 
         originalInput = new Object[] { "StringA", "StringB" };
@@ -95,11 +98,12 @@ class ScorerHelperTest {
         adaptedInput = new Object[] { new Object[] {"StringA", "StringB"} };
         compares = new ScoreHelper.Compares(originalInput, adaptedInput, parameterTypes);
         retrieved = ScoreHelper.score(compares);
-        //     0 (nullCounts)
-        //   -10 (coercedToVarargs)
-        //     0 (typeIdentityOfParameters)
-        //     0 (numberOfParameters)
-        //     0 (lastParameterNotArray)
+        //      0 (nullCounts)
+        //    -10 (coercedToVarargs)
+        //      0 (typeIdentityOfParameters)
+        //      0 (numberOfParameters)
+        //      0 (lastParameterNotArray)
+        //      0 (lastInputNotArray)
         expected = coercedToVarargsScore;
         assertEquals( expected, retrieved);
 
@@ -109,11 +113,12 @@ class ScorerHelperTest {
         adaptedInput = new Object[] { new Object[] {"StringA"} };
         compares = new ScoreHelper.Compares(originalInput, adaptedInput, parameterTypes);
         retrieved = ScoreHelper.score(compares);
-        //     0 (nullCounts)
-        //   -10 (coercedToVarargs)
-        //     0 (typeIdentityOfParameters)
-        //  1000 (numberOfParameters)
-        //     0 (lastParameterNotArray)
+        //      0 (nullCounts)
+        //    -10 (coercedToVarargs)
+        //      0 (typeIdentityOfParameters)
+        //   1000 (numberOfParameters)
+        //      0 (lastParameterNotArray)
+        //      0 (lastInputNotArray)
         expected = numberOfParametersScore + coercedToVarargsScore;
         assertEquals( expected, retrieved);
 
@@ -122,43 +127,122 @@ class ScorerHelperTest {
         adaptedInput = new Object[] { List.of("StringA") };
         compares = new ScoreHelper.Compares(originalInput, adaptedInput, parameterTypes);
         int retrievedToCompare = ScoreHelper.score(compares);
-        //     0 (nullCounts)
-        //     0 (coercedToVarargs)
-        //     0 (typeIdentityOfParameters)
-        //  1000 (numberOfParameters)
-        // 10000 (lastParameterNotArray)
-        expected = lastParameterNotArrayScore + numberOfParametersScore;
+        //      0 (nullCounts)
+        //      0 (coercedToVarargs)
+        //      0 (typeIdentityOfParameters)
+        //   1000 (numberOfParameters)
+        //  10000 (lastParameterNotArray)
+        // 100000 (lastInputNotArray)
+        expected = lastInputNotArrayNotArrayScore + lastParameterNotArrayScore + numberOfParametersScore;
         assertEquals( expected, retrievedToCompare);
         assertThat(retrievedToCompare).isGreaterThan(retrieved);
 
 
         originalInput = new Object[] { null };
         parameterTypes = new Class<?>[] { Object.class.arrayType() };
-        adaptedInput = new Object[] { new Object[] { null } };
+        adaptedInput = new Object[] { null };
         compares = new ScoreHelper.Compares(originalInput, adaptedInput, parameterTypes);
         retrieved = ScoreHelper.score(compares);
-        //     0 (nullCounts)
-        //   -10 (coercedToVarargs)
-        //     0 (typeIdentityOfParameters)
-        //  1000 (numberOfParameters)
-        //     0 (lastParameterNotArray)
-        expected = numberOfParametersScore + coercedToVarargsScore;
+        //     -1 (nullCounts)
+        //      0 (coercedToVarargs)
+        //    500 (typeIdentityOfParameters)
+        //   1000 (numberOfParameters)
+        //      0 (lastParameterNotArray)
+        // 100000 (lastInputNotArray)
+        expected = lastInputNotArrayNotArrayScore + numberOfParametersScore + 500 -1;
         assertEquals( expected, retrieved);
 
         originalInput = new Object[] { null };
         parameterTypes = new Class<?>[] { List.class };
-        adaptedInput = new Object[] {Collections.singletonList(null) };
+        adaptedInput = new Object[] { null };
         compares = new ScoreHelper.Compares(originalInput, adaptedInput, parameterTypes);
         retrievedToCompare = ScoreHelper.score(compares);
-        //     0 (nullCounts)
-        //     0 (coercedToVarargs)
-        //     0 (typeIdentityOfParameters)
-        //  1000 (numberOfParameters)
-        // 10000 (lastParameterNotArray)
-        expected = lastParameterNotArrayScore + numberOfParametersScore;
+        //     -1 (nullCounts)
+        //      0 (coercedToVarargs)
+        //    500 (typeIdentityOfParameters)
+        //   1000 (numberOfParameters)
+        //  10000 (lastParameterNotArray)
+        // 100000 (lastInputNotArray)
+        expected = lastInputNotArrayNotArrayScore + lastParameterNotArrayScore + numberOfParametersScore + 500 -1;
         assertEquals( expected, retrievedToCompare);
         assertThat(retrievedToCompare).isGreaterThan(retrieved);
 
+    }
+
+    @Test
+    void lastInputNotArray(){
+        Object[] adaptedInput = new Object[] { "String" };
+        ScoreHelper.Compares compares = new ScoreHelper.Compares(null, adaptedInput, null);
+        int retrieved = ScoreHelper.lastInputNotArray.apply(compares);
+        assertEquals(lastInputNotArrayNotArrayScore, retrieved);
+
+        adaptedInput = new Object[] { "String", 34, new Object() };
+        compares = new ScoreHelper.Compares(null, adaptedInput, null);
+        retrieved = ScoreHelper.lastInputNotArray.apply(compares);
+        assertEquals(lastInputNotArrayNotArrayScore, retrieved);
+
+        adaptedInput = new Object[] { null };
+        compares = new ScoreHelper.Compares(null, adaptedInput, null);
+        retrieved = ScoreHelper.lastInputNotArray.apply(compares);
+        assertEquals(lastInputNotArrayNotArrayScore, retrieved);
+
+        adaptedInput = new Object[] { new Object[]{} };
+        compares = new ScoreHelper.Compares(null, adaptedInput, null);
+        retrieved = ScoreHelper.lastInputNotArray.apply(compares);
+        assertEquals(0, retrieved);
+
+        adaptedInput = new Object[] { "String", 34,  new Object[]{} };
+        compares = new ScoreHelper.Compares(null, adaptedInput, null);
+        retrieved = ScoreHelper.lastInputNotArray.apply(compares);
+        assertEquals(0, retrieved);
+    }
+
+    @Test
+    void lastParameterNotArray(){
+        Class<?>[] parameterTypes = new Class<?>[] { String.class };
+        ScoreHelper.Compares compares = new ScoreHelper.Compares(null, null, parameterTypes);
+        int retrieved = ScoreHelper.lastParameterNotArray.apply(compares);
+        assertEquals(lastParameterNotArrayScore, retrieved);
+
+        parameterTypes = new Class<?>[] { String.class, Object.class };
+        compares = new ScoreHelper.Compares(null, null, parameterTypes);
+        retrieved = ScoreHelper.lastParameterNotArray.apply(compares);
+        assertEquals(lastParameterNotArrayScore, retrieved);
+
+        parameterTypes = new Class<?>[] { null };
+        compares = new ScoreHelper.Compares(null, null, parameterTypes);
+        retrieved = ScoreHelper.lastParameterNotArray.apply(compares);
+        assertEquals(lastParameterNotArrayScore, retrieved);
+
+        parameterTypes = new Class<?>[] { String.class, null };
+        compares = new ScoreHelper.Compares(null, null, parameterTypes);
+        retrieved = ScoreHelper.lastParameterNotArray.apply(compares);
+        assertEquals(lastParameterNotArrayScore, retrieved);
+
+        parameterTypes = new Class<?>[] { Object.class.arrayType(), String.class };
+        compares = new ScoreHelper.Compares(null, null, parameterTypes);
+        retrieved = ScoreHelper.lastParameterNotArray.apply(compares);
+        assertEquals(lastParameterNotArrayScore, retrieved);
+
+        parameterTypes = new Class<?>[] { Object.class.arrayType(), null };
+        compares = new ScoreHelper.Compares(null, null, parameterTypes);
+        retrieved = ScoreHelper.lastParameterNotArray.apply(compares);
+        assertEquals(lastParameterNotArrayScore, retrieved);
+
+        parameterTypes = new Class<?>[] { Object.class.arrayType() };
+        compares = new ScoreHelper.Compares(null, null, parameterTypes);
+        retrieved = ScoreHelper.lastParameterNotArray.apply(compares);
+        assertEquals(0, retrieved);
+
+        parameterTypes = new Class<?>[] { String.class, Object.class.arrayType() };
+        compares = new ScoreHelper.Compares(null, null, parameterTypes);
+        retrieved = ScoreHelper.lastParameterNotArray.apply(compares);
+        assertEquals(0, retrieved);
+
+        parameterTypes = new Class<?>[] { null, Object.class.arrayType() };
+        compares = new ScoreHelper.Compares(null, null, parameterTypes);
+        retrieved = ScoreHelper.lastParameterNotArray.apply(compares);
+        assertEquals(0, retrieved);
     }
 
     @Test
@@ -285,29 +369,12 @@ class ScorerHelperTest {
         compares = new ScoreHelper.Compares(originalInput, null, parameterTypes);
         retrieved = ScoreHelper.typeIdentityOfParameters.apply(compares);
         assertEquals(0, retrieved);
-    }
 
-    @Test
-    void lastParameterNotArray(){
-        Object[] adaptedInput = new Object[] { "String" };
-        ScoreHelper.Compares compares = new ScoreHelper.Compares(null, adaptedInput, null);
-        int retrieved = ScoreHelper.lastParameterNotArray.apply(compares);
-        assertEquals(lastParameterNotArrayScore, retrieved);
-
-        adaptedInput = new Object[] { "String", 34, new Object() };
-        compares = new ScoreHelper.Compares(null, adaptedInput, null);
-        retrieved = ScoreHelper.lastParameterNotArray.apply(compares);
-        assertEquals(lastParameterNotArrayScore, retrieved);
-
-        adaptedInput = new Object[] { new Object[]{} };
-        compares = new ScoreHelper.Compares(null, adaptedInput, null);
-        retrieved = ScoreHelper.lastParameterNotArray.apply(compares);
-        assertEquals(0, retrieved);
-
-        adaptedInput = new Object[] { "String", 34,  new Object[]{} };
-        compares = new ScoreHelper.Compares(null, adaptedInput, null);
-        retrieved = ScoreHelper.lastParameterNotArray.apply(compares);
-        assertEquals(0, retrieved);
+        originalInput = new Object[] { null };
+        parameterTypes = new Class<?>[] { Object.class.arrayType() };
+        compares = new ScoreHelper.Compares(originalInput, null, parameterTypes);
+        retrieved = ScoreHelper.typeIdentityOfParameters.apply(compares);
+        assertEquals(500, retrieved);
     }
 
     @Test

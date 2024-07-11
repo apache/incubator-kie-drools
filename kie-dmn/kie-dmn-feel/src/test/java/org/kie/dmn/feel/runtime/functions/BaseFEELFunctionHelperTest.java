@@ -67,17 +67,23 @@ class BaseFEELFunctionHelperTest {
         retrieved = BaseFEELFunctionHelper.adjustByCoercion(parameterTypes, actualParams);
         assertEquals(actualParams, retrieved);
 
-        // coercing null value to not-list type
+        // not coercing null value to not-list type
         actualParam = null;
         actualParams = new Object[]{actualParam};
         retrieved = BaseFEELFunctionHelper.adjustByCoercion(parameterTypes, actualParams);
         assertEquals(actualParams, retrieved);
 
-        // coercing value to singleton list
+        // not coercing null value to singleton list
         parameterTypes = new Class[]{List.class};
         retrieved = BaseFEELFunctionHelper.adjustByCoercion(parameterTypes, actualParams);
-        assertNotEquals(actualParams, retrieved);
+        assertEquals(actualParams, retrieved);
+
+        // coercing not-null value to singleton list
+        actualParam = "StringA";
+        actualParams = new Object[]{actualParam};
+        retrieved = BaseFEELFunctionHelper.adjustByCoercion(parameterTypes, actualParams);
         assertNotNull(retrieved);
+        assertNotEquals(actualParams, retrieved);
         assertEquals(1, retrieved.length);
         assertNotNull(retrieved[0]);
         assertThat(retrieved[0]).isInstanceOf(List.class);
@@ -85,18 +91,10 @@ class BaseFEELFunctionHelperTest {
         assertEquals(1, retrievedList.size());
         assertEquals(actualParam, retrievedList.get(0));
 
-        // coercing null value to singleton list
-        actualParam = null;
-        actualParams = new Object[]{actualParam};
+        // coercing null value to array: fails
+        parameterTypes = new Class[]{Object.class.arrayType()};
         retrieved = BaseFEELFunctionHelper.adjustByCoercion(parameterTypes, actualParams);
-        assertNotEquals(actualParams, retrieved);
-        assertNotNull(retrieved);
-        assertEquals(1, retrieved.length);
-        assertNotNull(retrieved[0]);
-        assertThat(retrieved[0]).isInstanceOf(List.class);
-        retrievedList = (List) retrieved[0];
-        assertEquals(1, retrievedList.size());
-        assertEquals(actualParam, retrievedList.get(0));
+        assertNull(retrieved);
 
         // coercing one object to different type: fails
         actualParam = 45;

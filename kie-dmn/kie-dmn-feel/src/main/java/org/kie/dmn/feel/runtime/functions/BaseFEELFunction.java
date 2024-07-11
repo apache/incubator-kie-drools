@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -167,7 +167,8 @@ public abstract class BaseFEELFunction
         // first, look for exact matches
         for (Method m : invokeMethods) {
 
-            Object[] adaptedInput = BaseFEELFunctionHelper.getAdjustedParametersForMethod(ctx, originalInput, isNamedParams, m);
+            Object[] adaptedInput = BaseFEELFunctionHelper.getAdjustedParametersForMethod(ctx, originalInput,
+                                                                                          isNamedParams, m);
             if (adaptedInput == null) {
                 // incompatible method
                 continue;
@@ -185,32 +186,9 @@ public abstract class BaseFEELFunction
             if (candidate == null) {
                 candidate = cm;
             } else if (cm.getScore() > candidate.getScore()) {
-                    candidate = cm;
-                }
+                candidate = cm;
             }
-
-
-//            CandidateMethod cm = new CandidateMethod(adaptedInput);
-//            cm.setActualMethod(m);
-//            if (candidate == null) {
-//                candidate = cm;
-//            } else {
-//                if (cm.getScore() > candidate.getScore()) {
-//                    candidate = cm;
-//                } else if (cm.getScore() == candidate.getScore()) {
-//                    if (isNamedParams && ScoreHelper.nullCount(cm.actualParams) < ScoreHelper.nullCount(candidate.actualParams)) {
-//                        candidate = cm; // `cm` narrower for named parameters without need of passing nulls.
-//                    } else if (candidate.getActualMethod().getParameterTypes().length == 1
-//                            && cm.getActualMethod().getParameterTypes().length == 1
-//                            && candidate.getActualMethod().getParameterTypes()[0].equals(Object.class)
-//                            && !cm.getActualMethod().getParameterTypes()[0].equals(Object.class)) {
-//                        candidate = cm; // `cm` is more narrowed, hence reflect `candidate` to be now `cm`.
-//                    }
-//                } else {
-//                    // do nothing.
-//                }
-//            }
-//        }
+        }
         return candidate;
     }
 
@@ -239,7 +217,6 @@ public abstract class BaseFEELFunction
 
         private Method actualMethod = null;
         private Object[] actualParams;
-        private Class[] actualClasses = null;
         private int score;
 
         public CandidateMethod(Method actualMethod, int score, Object[] actualParams) {
@@ -248,50 +225,12 @@ public abstract class BaseFEELFunction
             this.actualParams = actualParams;
         }
 
-//        public CandidateMethod(Object[] actualParams) {
-//            this.actualParams = actualParams;
-//            populateActualClasses();
-//        }
-//
-//        private void calculateScore() {
-//            if (actualClasses.length > 0 && actualClasses[actualClasses.length - 1] != null && actualClasses[actualClasses.length - 1].isArray()) {
-//                score = 1;
-//            } else {
-//                score = 10;
-//            }
-//        }
-
         public Method getActualMethod() {
             return actualMethod;
-        }
-
-//        public void setActualMethod(Method actualMethod) {
-//            this.actualMethod = actualMethod;
-//            calculateScore();
-//        }
-//
-//        public Object[] getActualParams() {
-//            return actualParams;
-//        }
-//
-//        public void setActualParams(Object[] actualParams) {
-//            this.actualParams = actualParams;
-//            populateActualClasses();
-//        }
-
-        private void populateActualClasses() {
-            this.actualClasses =
-                    Stream.of(this.actualParams).map(p -> p != null ? p.getClass() : null).toArray(Class[]::new);
-        }
-
-        public Class[] getActualClasses() {
-            return actualClasses;
         }
 
         public int getScore() {
             return score;
         }
-
     }
-
 }
