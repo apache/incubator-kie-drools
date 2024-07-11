@@ -10,10 +10,12 @@ import javax.xml.namespace.QName;
 
 import org.junit.Test;
 import org.kie.dmn.feel.util.Either;
+import org.kie.dmn.model.api.Definitions;
 import org.kie.dmn.model.api.Import;
 import org.kie.dmn.model.v1_1.TImport;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 
 public class ImportDMNResolverUtilTest {
 
@@ -156,6 +158,10 @@ public class ImportDMNResolverUtilTest {
             addAttributes.put(TImport.MODELNAME_QNAME, modelName);
         }
         i.setAdditionalAttributes(addAttributes);
+        final Definitions definitions = mock(Definitions.class);
+        definitions.setNamespace("ParentDMNNamespace");
+        definitions.setName("ParentDMN");
+        i.setParent(definitions);
         return i;
     }
 
