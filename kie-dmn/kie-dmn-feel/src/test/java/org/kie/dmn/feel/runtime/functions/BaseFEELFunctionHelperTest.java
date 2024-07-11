@@ -34,6 +34,7 @@ import org.kie.dmn.feel.lang.impl.NamedParameter;
 import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.dmn.feel.util.NumberEvalHelper;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
@@ -52,30 +53,57 @@ class BaseFEELFunctionHelperTest {
     }
 
     @Test
-    void areParametersMatching() throws NoSuchMethodException {
-        // AllFunction.invoke(@ParameterName( "list" ) List list)
+    void adjustByCoercion() {
         // no coercion needed
-        Class<?>[] parameterTypes = AllFunction.class.getMethod("invoke", List.class).getParameterTypes();
-        assertNotNull(parameterTypes);
-        Object[] actualParams = {List.of(true, false)};
-        BaseFEELFunction.CandidateMethod cm = new BaseFEELFunction.CandidateMethod(actualParams);
-        assertTrue(BaseFEELFunctionHelper.areParametersMatching(parameterTypes, cm));
-        assertEquals(actualParams, cm.getActualParams());
+        Object actualParam = List.of(true, false);
+        Class<?>[] parameterTypes = new Class[]{List.class};
+        Object[] actualParams = {actualParam};
+        Object[] retrieved = BaseFEELFunctionHelper.adjustByCoercion(parameterTypes, actualParams);
+        assertEquals(actualParams, retrieved);
 
-        // coercion needed
-        actualParams = new Object[]{true};
-        cm = new BaseFEELFunction.CandidateMethod(actualParams);
-        assertTrue(BaseFEELFunctionHelper.areParametersMatching(parameterTypes, cm));
+        actualParam = "StringA";
+        parameterTypes = new Class[]{String.class};
+        actualParams = new Object[]{actualParam};
+        retrieved = BaseFEELFunctionHelper.adjustByCoercion(parameterTypes, actualParams);
+        assertEquals(actualParams, retrieved);
 
-        Object[] retrieved = cm.getActualParams();
+        // coercing null value to not-list type
+        actualParam = null;
+        actualParams = new Object[]{actualParam};
+        retrieved = BaseFEELFunctionHelper.adjustByCoercion(parameterTypes, actualParams);
+        assertEquals(actualParams, retrieved);
+
+        // coercing value to singleton list
+        parameterTypes = new Class[]{List.class};
+        retrieved = BaseFEELFunctionHelper.adjustByCoercion(parameterTypes, actualParams);
         assertNotEquals(actualParams, retrieved);
+        assertNotNull(retrieved);
+        assertEquals(1, retrieved.length);
+        assertNotNull(retrieved[0]);
+        assertThat(retrieved[0]).isInstanceOf(List.class);
+        List retrievedList = (List) retrieved[0];
+        assertEquals(1, retrievedList.size());
+        assertEquals(actualParam, retrievedList.get(0));
 
-        // SumFunction.invoke(@ParameterName("list") Number single)
-        // coercion fails
-        parameterTypes = SumFunction.class.getMethod("invoke", Number.class).getParameterTypes();
-        actualParams = new Object[]{true};
-        cm = new BaseFEELFunction.CandidateMethod(actualParams);
-        assertFalse(BaseFEELFunctionHelper.areParametersMatching(parameterTypes, cm));
+        // coercing null value to singleton list
+        actualParam = null;
+        actualParams = new Object[]{actualParam};
+        retrieved = BaseFEELFunctionHelper.adjustByCoercion(parameterTypes, actualParams);
+        assertNotEquals(actualParams, retrieved);
+        assertNotNull(retrieved);
+        assertEquals(1, retrieved.length);
+        assertNotNull(retrieved[0]);
+        assertThat(retrieved[0]).isInstanceOf(List.class);
+        retrievedList = (List) retrieved[0];
+        assertEquals(1, retrievedList.size());
+        assertEquals(actualParam, retrievedList.get(0));
+
+        // coercing one object to different type: fails
+        actualParam = 45;
+        parameterTypes = new Class[]{String.class};
+        actualParams = new Object[]{actualParam};
+        retrieved = BaseFEELFunctionHelper.adjustByCoercion(parameterTypes, actualParams);
+        assertNull(retrieved);
     }
 
     @Test
@@ -294,39 +322,6 @@ class BaseFEELFunctionHelperTest {
                     assertEquals(params[0].getValue(), retrieved[i]);
                     break;
             }
-        }
-    }
-
-    @Test
-    void adjustForVariableParameters() throws NoSuchMethodException {
-        Object[] parameters = new Object[]{1, 3, 5};
-        BaseFEELFunction.CandidateMethod cm = new BaseFEELFunction.CandidateMethod(parameters);
-        // SumFunction.invoke(@ParameterName("n") Object[] list)
-        // parameters are converted to array for this above method
-        Method method = SumFunction.class.getMethod("invoke", Object.class.arrayType());
-        assertNotNull(method);
-        BaseFEELFunctionHelper.adjustForVariableParameters(cm, method.getParameterTypes());
-        Object[] retrieved = cm.getActualParams();
-        assertNotNull(retrieved);
-        assertEquals(1, retrieved.length);
-        assertEquals(Object.class.arrayType(), retrieved[0].getClass());
-        Object[] retrievedParams = (Object[]) retrieved[0];
-        assertEquals(parameters.length, retrievedParams.length);
-        for (int i = 0; i < parameters.length; i++) {
-            assertEquals(parameters[i], retrievedParams[i]);
-        }
-
-        cm = new BaseFEELFunction.CandidateMethod(parameters);
-        // SumFunction.invoke(@ParameterName("list") List list)
-        // parameters are not converted to array for this above method
-        method = SumFunction.class.getMethod("invoke", List.class);
-        assertNotNull(method);
-        BaseFEELFunctionHelper.adjustForVariableParameters(cm, method.getParameterTypes());
-        retrieved = cm.getActualParams();
-        assertNotNull(retrieved);
-        assertEquals(parameters.length, retrieved.length);
-        for (int i = 0; i < parameters.length; i++) {
-            assertEquals(parameters[i], retrieved[i]);
         }
     }
 

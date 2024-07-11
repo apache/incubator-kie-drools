@@ -21,7 +21,7 @@ package org.kie.dmn.feel.util;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.Collection;
-import java.util.List;
+import java.util.Collections;
 import java.util.Optional;
 
 import org.kie.dmn.feel.lang.Type;
@@ -74,7 +74,7 @@ public class CoerceUtil {
                 Collection.class.isAssignableFrom(expectedParameterType)) {
             Object singletonValue = coerceParam(currentIdxActualParameterType, currentIdxActualParameterType, actualObject)
                     .orElse(actualObject);
-            return Optional.of(List.of(singletonValue));
+            return Optional.of(Collections.singletonList(singletonValue));
         }
         /* from date to date and time
             When the type of the expression is date and the target type is date and time, the expression is converted

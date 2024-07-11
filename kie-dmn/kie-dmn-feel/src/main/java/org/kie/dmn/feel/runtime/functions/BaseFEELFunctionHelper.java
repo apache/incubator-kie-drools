@@ -24,9 +24,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.impl.NamedParameter;
@@ -67,57 +65,40 @@ public class BaseFEELFunctionHelper {
     /**
      * This method check if the input parameters, set inside the given <code>CandidateMethod</code>,
      * could match the given <code>parameterTypes</code>, eventually <b>coerced</b>.
-     * In case of match with coercion, the given <code>CandidateMethod</code> is updated.
+     * In case of match with coercion, a new <code>Object[]</code> with coerced values is returned.
      * @param parameterTypes
      * @param actualParams
-     * @return <code>true</code> if successfully matched, <code>false</code> otherwise
+     * @return an <code>Object[]</code>, with values eventually coerced, or <code>null</code> for incompatible and not coercible values
      */
     static Object[] adjustByCoercion(Class<?>[] parameterTypes, Object[] actualParams) {
         logger.trace("adjustByCoercion {} {}", parameterTypes, actualParams);
         Object[] toReturn = actualParams;
         int counter = Math.min(parameterTypes.length, actualParams.length);
         for (int i = 0; i < counter; i++) {
-            if (actualParams[i] != null) {
-                Class<?> currentIdxActualParameterType = actualParams[i].getClass();
-                Class<?> expectedParameterType = parameterTypes[i];
-                if (!expectedParameterType.isAssignableFrom(currentIdxActualParameterType)) {
-                    Optional<Object[]> coercedParams = coerceParams(currentIdxActualParameterType,
-                                                                    expectedParameterType, toReturn, i);
-                    if (coercedParams.isPresent()) {
-                        toReturn = coercedParams.get();
-                        continue;
-                    }
-                    return null;
+            Class<?> expectedParameterType = parameterTypes[i];
+            Optional<Object[]> coercedParams;
+            Object actualParam = actualParams[i];
+            if (actualParam != null) {
+                Class<?> currentIdxActualParameterType = actualParam.getClass();
+                if (expectedParameterType.isAssignableFrom(currentIdxActualParameterType)) {
+                    // not null object assignable to expected type: no need to coerce
+                    coercedParams = Optional.of(toReturn);
+                } else {
+                    // attempt to coerce
+                    coercedParams = coerceParams(currentIdxActualParameterType,
+                                                 expectedParameterType, toReturn, i);
                 }
+            } else {
+                // null object - no need to coerce
+                coercedParams = Optional.of(toReturn);
             }
+            if (coercedParams.isPresent()) {
+                toReturn = coercedParams.get();
+                continue;
+            }
+            return null;
         }
         return toReturn;
-    }
-
-    /**
-     * This method check if the input parameters, set inside the given <code>CandidateMethod</code>,
-     * could match the given <code>parameterTypes</code>, eventually <b>coerced</b>.
-     * In case of match with coercion, the given <code>CandidateMethod</code> is updated.
-     * @param parameterTypes
-     * @param cm
-     * @return <code>true</code> if successfully matched, <code>false</code> otherwise
-     */
-    static boolean areParametersMatching(Class<?>[] parameterTypes, BaseFEELFunction.CandidateMethod cm) {
-        logger.trace("areParametersMatching {} {}", parameterTypes, cm);
-        for (int i = 0; i < parameterTypes.length; i++) {
-            Class<?> currentIdxActualParameterType = cm.getActualClasses()[i];
-            Class<?> expectedParameterType = parameterTypes[i];
-            if (currentIdxActualParameterType != null && !expectedParameterType.isAssignableFrom(currentIdxActualParameterType)) {
-                Optional<Object[]> coercedParams = coerceParams(currentIdxActualParameterType, expectedParameterType,
-                                                                cm.getActualParams(), i);
-                if (coercedParams.isPresent()) {
-                    cm.setActualParams(coercedParams.get());
-                    continue;
-                }
-                return false;
-            }
-        }
-        return true;
     }
 
     /**
@@ -312,28 +293,6 @@ public class BaseFEELFunctionHelper {
             return toReturn;
         } else {
             return actualParams;
-        }
-    }
-
-    /**
-     * Adjust CandidateMethod considering var args signature.
-     * It converts a series of object to an array, if the last parameter type is an array.
-     * It is needed to differentiate function(list) from function(n0...nx), e.g.
-     * sum([1,2,3]) = 6
-     * sum(1,2,3) = 6
-     */
-    static void adjustForVariableParameters(BaseFEELFunction.CandidateMethod cm, Class<?>[] parameterTypes) {
-        logger.trace("adjustForVariableParameters {} {}", cm, parameterTypes);
-        if (parameterTypes.length > 0 && parameterTypes[parameterTypes.length - 1].isArray()) {
-            // then it is a variable parameters function call
-            Object[] newParams = new Object[parameterTypes.length];
-            if (newParams.length > 1) {
-                System.arraycopy(cm.getActualParams(), 0, newParams, 0, newParams.length - 1);
-            }
-            Object[] remaining = new Object[cm.getActualParams().length - parameterTypes.length + 1];
-            newParams[newParams.length - 1] = remaining;
-            System.arraycopy(cm.getActualParams(), parameterTypes.length - 1, remaining, 0, remaining.length);
-            cm.setActualParams(newParams);
         }
     }
 

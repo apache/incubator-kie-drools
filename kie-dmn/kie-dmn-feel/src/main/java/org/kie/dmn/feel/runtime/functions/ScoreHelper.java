@@ -36,10 +36,10 @@ import org.slf4j.LoggerFactory;
  * <p>
  * Conditions considered (from most  to less relevant):
  * Condition                                        Score
- * 1. number of parameters                  ->      10000
- * 2. type identity of all parameters ->    ->      weighted value of matching parameters and values 0-1000
- * 3. last parameter not array              ->      100
- * 4. coerced to varargs                    ->      10
+ * 1. last parameter not array              ->      10000
+ * 2. number of parameters                  ->      1000
+ * 3. type identity of all parameters ->    ->      weighted value of matching parameters and values 0-1000
+ * 4. coerced to varargs                    ->      -10
  * 4. null  counts                          ->      null objects * -1
  */
 public class ScoreHelper {
@@ -48,9 +48,9 @@ public class ScoreHelper {
 
     private static final List<Function<Compares, Integer>> SCORER_LIST;
 
-    static int numberOfParametersScore = 10000;
-    static int lastParameterNotArrayScore = 100;
-    static int coercedToVarargsScore = 10;
+    static int lastParameterNotArrayScore = 10000;
+    static int numberOfParametersScore = 1000;
+    static int coercedToVarargsScore = -10;
 
     static final Function<Compares, Integer> numberOfParameters = compares -> {
         int toReturn = compares.originalInput.length == compares.parameterTypes.length ? numberOfParametersScore : 0;
@@ -60,12 +60,17 @@ public class ScoreHelper {
 
     static final Function<Compares, Integer> typeIdentityOfParameters = compares -> {
         int index = Math.min(compares.originalInput.length, compares.parameterTypes.length);
-        boolean automaticallyAddedEvaluationContext =
-                compares.parameterTypes[0].equals(EvaluationContext.class) && !(compares.originalInput[0] instanceof EvaluationContext);
+        boolean automaticallyAddedEvaluationContext = compares.parameterTypes.length > 0 &&
+                compares.parameterTypes[0] != null &&
+                compares.parameterTypes[0].equals(EvaluationContext.class) &&
+                compares.originalInput.length > 0 &&
+                compares.originalInput[0] != null &&
+                !(compares.originalInput[0] instanceof EvaluationContext);
         int counter = 0;
         int matchedEvaluationContext = 0;
         for (int i = 0; i < index; i++) {
             if (compares.parameterTypes[i].equals(EvaluationContext.class) &&
+                    compares.originalInput[i] != null &&
                     compares.originalInput[i] instanceof EvaluationContext) {
                 // Do not consider EvaluationContext for score
                 matchedEvaluationContext +=1;
@@ -75,11 +80,16 @@ public class ScoreHelper {
             int inputIndex = automaticallyAddedEvaluationContext ? i + 1 : i;
             Class<?> expectedType = compares.parameterTypes[inputIndex];
             Object originalValue = compares.originalInput[i];
-            if (!(expectedType.isInstance(originalValue))) {
-                // do not count it
-            } else if (expectedType.equals(Object.class)) {
+            if (expectedType.equals(Object.class)) {
                 // parameter type is Object
                 counter +=1;
+            }
+            if (originalValue == null) {
+                // null value has a potential match
+                counter +=1;
+            } else if (!(expectedType.isInstance(originalValue))) {
+                // do not count it
+                continue;
             } else if (expectedType.isInterface() || expectedType.equals(originalValue.getClass()) || expectedType.isAssignableFrom(originalValue.getClass())) {
                 counter += 2;
             }
@@ -109,13 +119,18 @@ public class ScoreHelper {
                 int toReturn = 0;
                 if (amendedOriginalInput.length >= amendedAdaptedInput.length &&
                         amendedAdaptedInput.length == 1 &&
-                        (!amendedOriginalInput[amendedOriginalInput.length - 1].getClass().equals(Object.class.arrayType())) &&
-                        amendedAdaptedInput[0].getClass().equals(Object.class.arrayType())) {
+                        isCoercedToVarargs(amendedOriginalInput[amendedOriginalInput.length - 1], amendedAdaptedInput[0])) {
                     toReturn = coercedToVarargsScore;
                 }
                 logger.trace("coercedToVarargs {} -> {}", compares, toReturn);
                 return toReturn;
             };
+
+    static boolean isCoercedToVarargs(Object originalInput, Object adaptedInput) {
+        boolean isOriginalInputCandidate = originalInput == null || !originalInput.getClass().equals(Object.class.arrayType());
+        boolean isAdaptedInputCandidate = adaptedInput != null &&  adaptedInput.getClass().equals(Object.class.arrayType());
+        return  isOriginalInputCandidate && isAdaptedInputCandidate;
+    }
 
     static final Function<Compares, Integer> nullCounts =
             compares -> {

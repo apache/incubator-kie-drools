@@ -153,12 +153,12 @@ public abstract class BaseFEELFunction
     /**
      *
      * @param ctx
-     * @param params
+     * @param originalInput
      * @param isNamedParams <code>true</code> if the parameter refers to value to be retrieved inside
      * <code>ctx</code>; <code>false</code> if the parameter is the actual value
      * @return
      */
-    protected CandidateMethod getCandidateMethod(EvaluationContext ctx, Object[] params, boolean isNamedParams) {
+    protected CandidateMethod getCandidateMethod(EvaluationContext ctx, Object[] originalInput, boolean isNamedParams) {
         CandidateMethod candidate = null;
         List<Method> invokeMethods = Arrays.stream(getClass().getDeclaredMethods())
                 .filter(m -> Modifier.isPublic(m.getModifiers()) && m.getName().equals("invoke"))
@@ -167,38 +167,50 @@ public abstract class BaseFEELFunction
         // first, look for exact matches
         for (Method m : invokeMethods) {
 
-            Object[] actualParams = BaseFEELFunctionHelper.getAdjustedParametersForMethod(ctx, params, isNamedParams, m);
-            if (actualParams == null) {
+            Object[] adaptedInput = BaseFEELFunctionHelper.getAdjustedParametersForMethod(ctx, originalInput, isNamedParams, m);
+            if (adaptedInput == null) {
                 // incompatible method
                 continue;
             }
 
             Class<?>[] parameterTypes = m.getParameterTypes();
-            if (parameterTypes.length != actualParams.length) {
+            if (parameterTypes.length != adaptedInput.length) {
                 continue;
             }
 
-            CandidateMethod cm = new CandidateMethod(actualParams);
-            cm.setActualMethod(m);
+            ScoreHelper.Compares compares = new ScoreHelper.Compares(originalInput, adaptedInput, parameterTypes);
+            int score = ScoreHelper.score(compares);
+            CandidateMethod cm = new CandidateMethod(m, score, adaptedInput);
+
             if (candidate == null) {
                 candidate = cm;
-            } else {
-                if (cm.getScore() > candidate.getScore()) {
+            } else if (cm.getScore() > candidate.getScore()) {
                     candidate = cm;
-                } else if (cm.getScore() == candidate.getScore()) {
-                    if (isNamedParams && ScoreHelper.nullCount(cm.actualParams) < ScoreHelper.nullCount(candidate.actualParams)) {
-                        candidate = cm; // `cm` narrower for named parameters without need of passing nulls.
-                    } else if (candidate.getActualMethod().getParameterTypes().length == 1
-                            && cm.getActualMethod().getParameterTypes().length == 1
-                            && candidate.getActualMethod().getParameterTypes()[0].equals(Object.class)
-                            && !cm.getActualMethod().getParameterTypes()[0].equals(Object.class)) {
-                        candidate = cm; // `cm` is more narrowed, hence reflect `candidate` to be now `cm`.
-                    }
-                } else {
-                    // do nothing.
                 }
             }
-        }
+
+
+//            CandidateMethod cm = new CandidateMethod(adaptedInput);
+//            cm.setActualMethod(m);
+//            if (candidate == null) {
+//                candidate = cm;
+//            } else {
+//                if (cm.getScore() > candidate.getScore()) {
+//                    candidate = cm;
+//                } else if (cm.getScore() == candidate.getScore()) {
+//                    if (isNamedParams && ScoreHelper.nullCount(cm.actualParams) < ScoreHelper.nullCount(candidate.actualParams)) {
+//                        candidate = cm; // `cm` narrower for named parameters without need of passing nulls.
+//                    } else if (candidate.getActualMethod().getParameterTypes().length == 1
+//                            && cm.getActualMethod().getParameterTypes().length == 1
+//                            && candidate.getActualMethod().getParameterTypes()[0].equals(Object.class)
+//                            && !cm.getActualMethod().getParameterTypes()[0].equals(Object.class)) {
+//                        candidate = cm; // `cm` is more narrowed, hence reflect `candidate` to be now `cm`.
+//                    }
+//                } else {
+//                    // do nothing.
+//                }
+//            }
+//        }
         return candidate;
     }
 
@@ -230,36 +242,42 @@ public abstract class BaseFEELFunction
         private Class[] actualClasses = null;
         private int score;
 
-        public CandidateMethod(Object[] actualParams) {
+        public CandidateMethod(Method actualMethod, int score, Object[] actualParams) {
+            this.actualMethod = actualMethod;
+            this.score = score;
             this.actualParams = actualParams;
-            populateActualClasses();
         }
 
-        private void calculateScore() {
-            if (actualClasses.length > 0 && actualClasses[actualClasses.length - 1] != null && actualClasses[actualClasses.length - 1].isArray()) {
-                score = 1;
-            } else {
-                score = 10;
-            }
-        }
+//        public CandidateMethod(Object[] actualParams) {
+//            this.actualParams = actualParams;
+//            populateActualClasses();
+//        }
+//
+//        private void calculateScore() {
+//            if (actualClasses.length > 0 && actualClasses[actualClasses.length - 1] != null && actualClasses[actualClasses.length - 1].isArray()) {
+//                score = 1;
+//            } else {
+//                score = 10;
+//            }
+//        }
 
         public Method getActualMethod() {
             return actualMethod;
         }
 
-        public void setActualMethod(Method actualMethod) {
-            this.actualMethod = actualMethod;
-            calculateScore();
-        }
-
-        public Object[] getActualParams() {
-            return actualParams;
-        }
-
-        public void setActualParams(Object[] actualParams) {
-            this.actualParams = actualParams;
-            populateActualClasses();
-        }
+//        public void setActualMethod(Method actualMethod) {
+//            this.actualMethod = actualMethod;
+//            calculateScore();
+//        }
+//
+//        public Object[] getActualParams() {
+//            return actualParams;
+//        }
+//
+//        public void setActualParams(Object[] actualParams) {
+//            this.actualParams = actualParams;
+//            populateActualClasses();
+//        }
 
         private void populateActualClasses() {
             this.actualClasses =
