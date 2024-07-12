@@ -19,9 +19,11 @@
 package org.kie.dmn.feel.runtime.functions;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -35,6 +37,7 @@ import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.dmn.feel.util.NumberEvalHelper;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.in;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
@@ -53,6 +56,20 @@ class BaseFEELFunctionHelperTest {
     }
 
     @Test
+    void getAdjustedParametersForMethod() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        // StddevFunction.invoke(@ParameterName( "list" ) List<?> list)
+        Method method = StddevFunction.class.getMethod("invoke", List.class);
+        assertNotNull(method);
+        Object actualValue = Arrays.asList(2, 4, 7, 5);
+        Object[] parameters = {new NamedParameter("list", actualValue)};
+
+        Object[] retrieved = BaseFEELFunctionHelper.getAdjustedParametersForMethod(ctx, parameters, true, method);
+        assertNotNull(retrieved);
+        assertEquals(parameters.length, retrieved.length);
+        assertEquals(actualValue, retrieved[0]);
+    }
+
+    @Test
     void adjustByCoercion() {
         // no coercion needed
         Object actualParam = List.of(true, false);
@@ -64,6 +81,12 @@ class BaseFEELFunctionHelperTest {
         actualParam = "StringA";
         parameterTypes = new Class[]{String.class};
         actualParams = new Object[]{actualParam};
+        retrieved = BaseFEELFunctionHelper.adjustByCoercion(parameterTypes, actualParams);
+        assertEquals(actualParams, retrieved);
+
+        // coercing more objects to different types: fails
+        parameterTypes = new Class[]{String.class, Integer.class};
+        actualParams = new Object[]{"String", 34 };
         retrieved = BaseFEELFunctionHelper.adjustByCoercion(parameterTypes, actualParams);
         assertEquals(actualParams, retrieved);
 
@@ -102,6 +125,13 @@ class BaseFEELFunctionHelperTest {
         actualParams = new Object[]{actualParam};
         retrieved = BaseFEELFunctionHelper.adjustByCoercion(parameterTypes, actualParams);
         assertNull(retrieved);
+
+        // coercing more objects to different types: fails
+        parameterTypes = new Class[]{String.class, Integer.class};
+        actualParams = new Object[]{"String", "34" };
+        retrieved = BaseFEELFunctionHelper.adjustByCoercion(parameterTypes, actualParams);
+        assertNull(retrieved);
+
     }
 
     @Test

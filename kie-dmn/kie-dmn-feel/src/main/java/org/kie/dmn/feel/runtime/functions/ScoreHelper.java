@@ -82,6 +82,7 @@ public class ScoreHelper {
             int inputIndex = automaticallyAddedEvaluationContext ? i + 1 : i;
             Class<?> expectedType = compares.parameterTypes[inputIndex];
             Object originalValue = compares.originalInput[i];
+            Object adaptedValue = compares.adaptedInput != null && compares.adaptedInput.length > i ?  compares.adaptedInput[i] : null;
             if (expectedType.equals(Object.class)) {
                 // parameter type is Object
                 counter += 1;
@@ -89,14 +90,18 @@ public class ScoreHelper {
             if (originalValue == null) {
                 // null value has a potential match
                 counter += 1;
-            } else if (!(expectedType.isInstance(originalValue))) {
+            } else if (!(expectedType.isInstance(originalValue)) && !expectedType.isInstance(adaptedValue)) {
                 // do not count it
                 continue;
-            } else if (!(expectedType.equals(Object.class)) &&
-                    (expectedType.isInterface() ||
-                            expectedType.equals(originalValue.getClass()) ||
-                            expectedType.isAssignableFrom(originalValue.getClass()))) {
-                counter += 2;
+            } else if (!(expectedType.equals(Object.class))) {
+                if (adaptedValue != null &&
+                        (expectedType.equals(adaptedValue.getClass()) ||
+                        expectedType.isAssignableFrom(adaptedValue.getClass())))  {
+                    counter += 2;
+                } else if (expectedType.equals(originalValue.getClass()) ||
+                            expectedType.isAssignableFrom(originalValue.getClass()))  {
+                    counter += 3;
+                }
             }
             logger.trace("typeIdentityOfParameters {} {} -> {}", expectedType, originalValue, counter);
         }

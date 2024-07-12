@@ -19,12 +19,14 @@
 package org.kie.dmn.feel.runtime.functions;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.codegen.feel11.CodegenTestUtil;
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.impl.NamedParameter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -32,6 +34,7 @@ import static org.kie.dmn.feel.runtime.functions.ScoreHelper.coercedToVarargsSco
 import static org.kie.dmn.feel.runtime.functions.ScoreHelper.lastInputNotArrayNotArrayScore;
 import static org.kie.dmn.feel.runtime.functions.ScoreHelper.lastParameterNotArrayScore;
 import static org.kie.dmn.feel.runtime.functions.ScoreHelper.numberOfParametersScore;
+import static org.kie.dmn.feel.runtime.functions.ScoreHelper.typeIdentityOfParameters;
 
 class ScorerHelperTest {
 
@@ -67,16 +70,16 @@ class ScorerHelperTest {
 
         originalInput = new Object[] { "String", "34" };
         parameterTypes = new Class<?>[] { String.class, Integer.class };
-        adaptedInput = new Object[] { "String", 34 };
+        adaptedInput = null;
         compares = new ScoreHelper.Compares(originalInput, adaptedInput, parameterTypes);
         retrieved = ScoreHelper.score(compares);
         //      0 (nullCounts)
         //      0 (coercedToVarargs)
-        //    500 (typeIdentityOfParameters)
+        //    750 (typeIdentityOfParameters)
         //   1000 (numberOfParameters)
         //  10000 (lastParameterNotArray)
         // 100000 (lastInputNotArray)
-        expected = lastInputNotArrayNotArrayScore + lastParameterNotArrayScore + numberOfParametersScore + 500;
+        expected = lastInputNotArrayNotArrayScore + lastParameterNotArrayScore + numberOfParametersScore + 750;
         assertEquals(expected, retrieved);
 
         originalInput = new Object[] { "StringA", "StringB" };
@@ -100,11 +103,11 @@ class ScorerHelperTest {
         retrieved = ScoreHelper.score(compares);
         //      0 (nullCounts)
         //    -10 (coercedToVarargs)
-        //      0 (typeIdentityOfParameters)
+        //   1000 (typeIdentityOfParameters)
         //      0 (numberOfParameters)
         //      0 (lastParameterNotArray)
         //      0 (lastInputNotArray)
-        expected = coercedToVarargsScore;
+        expected = coercedToVarargsScore + 1000;
         assertEquals( expected, retrieved);
 
 
@@ -115,11 +118,11 @@ class ScorerHelperTest {
         retrieved = ScoreHelper.score(compares);
         //      0 (nullCounts)
         //    -10 (coercedToVarargs)
-        //      0 (typeIdentityOfParameters)
+        //   1000 (typeIdentityOfParameters)
         //   1000 (numberOfParameters)
         //      0 (lastParameterNotArray)
         //      0 (lastInputNotArray)
-        expected = numberOfParametersScore + coercedToVarargsScore;
+        expected = numberOfParametersScore + coercedToVarargsScore + 1000;
         assertEquals( expected, retrieved);
 
         originalInput = new Object[] { "StringA" };
@@ -129,11 +132,11 @@ class ScorerHelperTest {
         int retrievedToCompare = ScoreHelper.score(compares);
         //      0 (nullCounts)
         //      0 (coercedToVarargs)
-        //      0 (typeIdentityOfParameters)
+        //   1000 (typeIdentityOfParameters)
         //   1000 (numberOfParameters)
         //  10000 (lastParameterNotArray)
         // 100000 (lastInputNotArray)
-        expected = lastInputNotArrayNotArrayScore + lastParameterNotArrayScore + numberOfParametersScore;
+        expected = lastInputNotArrayNotArrayScore + lastParameterNotArrayScore + numberOfParametersScore + 1000;
         assertEquals( expected, retrievedToCompare);
         assertThat(retrievedToCompare).isGreaterThan(retrieved);
 
@@ -166,6 +169,34 @@ class ScorerHelperTest {
         expected = lastInputNotArrayNotArrayScore + lastParameterNotArrayScore + numberOfParametersScore + 500 -1;
         assertEquals( expected, retrievedToCompare);
         assertThat(retrievedToCompare).isGreaterThan(retrieved);
+
+        Object actualValue = Arrays.asList(2, 4, 7, 5);
+        originalInput = new Object[] {new NamedParameter("list", actualValue)};
+        parameterTypes = new Class<?>[] { List.class };
+        adaptedInput = new Object[] { actualValue };
+        compares = new ScoreHelper.Compares(originalInput, adaptedInput, parameterTypes);
+        retrieved = ScoreHelper.score(compares);
+        //      0 (nullCounts)
+        //      0 (coercedToVarargs)
+        //   1000 (typeIdentityOfParameters)
+        //   1000 (numberOfParameters)
+        //  10000 (lastParameterNotArray)
+        // 100000 (lastInputNotArray)
+        expected = lastInputNotArrayNotArrayScore + lastParameterNotArrayScore + numberOfParametersScore + 1000;
+        assertEquals( expected, retrieved);
+
+        parameterTypes = new Class<?>[] { Object.class };
+        compares = new ScoreHelper.Compares(originalInput, adaptedInput, parameterTypes);
+        retrievedToCompare = ScoreHelper.score(compares);
+        //      0 (nullCounts)
+        //      0 (coercedToVarargs)
+        //    500 (typeIdentityOfParameters)
+        //   1000 (numberOfParameters)
+        //  10000 (lastParameterNotArray)
+        // 100000 (lastInputNotArray)
+        expected = lastInputNotArrayNotArrayScore + lastParameterNotArrayScore + numberOfParametersScore + 500;
+        assertEquals( expected, retrievedToCompare);
+
 
     }
 
@@ -281,86 +312,93 @@ class ScorerHelperTest {
     @Test
     void typeIdentityOfParameters() {
         Object[] originalInput = new Object[] { "String" };
+        Object[] adaptedInput = originalInput;
         Class<?>[] parameterTypes = new Class<?>[] { String.class };
-        ScoreHelper.Compares compares = new ScoreHelper.Compares(originalInput, null, parameterTypes);
+        ScoreHelper.Compares compares = new ScoreHelper.Compares(originalInput, adaptedInput, parameterTypes);
         int retrieved = ScoreHelper.typeIdentityOfParameters.apply(compares);
         assertEquals(1000, retrieved);
 
-        originalInput = new Object[] { "String" };
         parameterTypes = new Class<?>[] { Object.class };
-        compares = new ScoreHelper.Compares(originalInput, null, parameterTypes);
+        compares = new ScoreHelper.Compares(originalInput, adaptedInput, parameterTypes);
         retrieved = ScoreHelper.typeIdentityOfParameters.apply(compares);
         assertEquals(500, retrieved);
 
         originalInput = new Object[] { "String", 34 };
+        adaptedInput = originalInput;
         parameterTypes = new Class<?>[] { String.class, Integer.class };
-        compares = new ScoreHelper.Compares(originalInput, null, parameterTypes);
+        compares = new ScoreHelper.Compares(originalInput, adaptedInput, parameterTypes);
         retrieved = ScoreHelper.typeIdentityOfParameters.apply(compares);
         assertEquals(1000, retrieved);
 
-        originalInput = new Object[] { "String", 34 };
         parameterTypes = new Class<?>[] { String.class, Object.class };
-        compares = new ScoreHelper.Compares(originalInput, null, parameterTypes);
+        compares = new ScoreHelper.Compares(originalInput, adaptedInput, parameterTypes);
         retrieved = ScoreHelper.typeIdentityOfParameters.apply(compares);
         assertEquals(750, retrieved);
 
         originalInput = new Object[] { "String", "34" };
+        adaptedInput = null;
         parameterTypes = new Class<?>[] { String.class, Integer.class };
-        compares = new ScoreHelper.Compares(originalInput, null, parameterTypes);
+        compares = new ScoreHelper.Compares(originalInput, adaptedInput, parameterTypes);
         retrieved = ScoreHelper.typeIdentityOfParameters.apply(compares);
-        assertEquals(500, retrieved);
+        assertEquals(750, retrieved);
 
         originalInput = new Object[] { "StringA", "StringB", 40 };
         parameterTypes = new Class<?>[] { String.class, Integer.class, Integer.class };
-        compares = new ScoreHelper.Compares(originalInput, null, parameterTypes);
+        compares = new ScoreHelper.Compares(originalInput, adaptedInput, parameterTypes);
         retrieved = ScoreHelper.typeIdentityOfParameters.apply(compares);
-        assertEquals(667, retrieved);
+        assertEquals(1000, retrieved);
 
         originalInput = new Object[] { "StringA", "StringB", 40 };
         parameterTypes = new Class<?>[] { String.class, Integer.class, String.class };
         compares = new ScoreHelper.Compares(originalInput, null, parameterTypes);
         retrieved = ScoreHelper.typeIdentityOfParameters.apply(compares);
-        assertEquals(333, retrieved);
+        assertEquals(500, retrieved);
 
         originalInput = new Object[] { CodegenTestUtil.newEmptyEvaluationContext(), "String" };
+        adaptedInput = originalInput;
         parameterTypes = new Class<?>[] { EvaluationContext.class, String.class };
-        compares = new ScoreHelper.Compares(originalInput, null, parameterTypes);
+        compares = new ScoreHelper.Compares(originalInput, adaptedInput, parameterTypes);
         retrieved = ScoreHelper.typeIdentityOfParameters.apply(compares);
         assertEquals(1000, retrieved);
 
         originalInput = new Object[] { "String" };
+        adaptedInput =  new Object[] { CodegenTestUtil.newEmptyEvaluationContext(), "String" };
+        parameterTypes = new Class<?>[] { EvaluationContext.class, String.class };
+        compares = new ScoreHelper.Compares(originalInput, adaptedInput, parameterTypes);
+        retrieved = ScoreHelper.typeIdentityOfParameters.apply(compares);
+        assertEquals(1500, retrieved);
+
+        originalInput = new Object[] { "String" };
+        adaptedInput = null;
         parameterTypes = new Class<?>[] {  Integer.class };
-        compares = new ScoreHelper.Compares(originalInput, null, parameterTypes);
+        compares = new ScoreHelper.Compares(originalInput, adaptedInput, parameterTypes);
         retrieved = ScoreHelper.typeIdentityOfParameters.apply(compares);
         assertEquals(0, retrieved);
 
-        originalInput = new Object[] { "String" };
-        parameterTypes = new Class<?>[] { EvaluationContext.class, String.class };
-        compares = new ScoreHelper.Compares(originalInput, null, parameterTypes);
-        retrieved = ScoreHelper.typeIdentityOfParameters.apply(compares);
-        assertEquals(1000, retrieved);
-
         originalInput = new Object[] { "String", 34 };
+        adaptedInput = new Object[] { CodegenTestUtil.newEmptyEvaluationContext(), "String", 34 };
         parameterTypes = new Class<?>[] { EvaluationContext.class, String.class, Integer.class };
-        compares = new ScoreHelper.Compares(originalInput, null, parameterTypes);
+        compares = new ScoreHelper.Compares(originalInput, adaptedInput, parameterTypes);
         retrieved = ScoreHelper.typeIdentityOfParameters.apply(compares);
-        assertEquals(1000, retrieved);
+        assertEquals(1500, retrieved);
 
         originalInput = new Object[] { "String", "34" };
+        adaptedInput = originalInput;
         parameterTypes = new Class<?>[] { EvaluationContext.class, String.class, Object.class };
-        compares = new ScoreHelper.Compares(originalInput, null, parameterTypes);
+        compares = new ScoreHelper.Compares(originalInput, adaptedInput, parameterTypes);
         retrieved = ScoreHelper.typeIdentityOfParameters.apply(compares);
         assertEquals(750, retrieved);
 
         originalInput = new Object[] { "String", "34" };
+        adaptedInput = null;
         parameterTypes = new Class<?>[] { EvaluationContext.class, String.class, Integer.class };
-        compares = new ScoreHelper.Compares(originalInput, null, parameterTypes);
+        compares = new ScoreHelper.Compares(originalInput, adaptedInput, parameterTypes);
         retrieved = ScoreHelper.typeIdentityOfParameters.apply(compares);
-        assertEquals(500, retrieved);
+        assertEquals(750, retrieved);
 
         originalInput = new Object[] { "String" };
         parameterTypes = new Class<?>[] { EvaluationContext.class, Integer.class };
-        compares = new ScoreHelper.Compares(originalInput, null, parameterTypes);
+        compares = new ScoreHelper.Compares(originalInput, adaptedInput, parameterTypes);
         retrieved = ScoreHelper.typeIdentityOfParameters.apply(compares);
         assertEquals(0, retrieved);
 
@@ -375,6 +413,13 @@ class ScorerHelperTest {
         compares = new ScoreHelper.Compares(originalInput, null, parameterTypes);
         retrieved = ScoreHelper.typeIdentityOfParameters.apply(compares);
         assertEquals(500, retrieved);
+
+        originalInput = new Object[] { "StringA", "StringB" };
+        parameterTypes = new Class<?>[] { Object.class.arrayType() };
+        adaptedInput = new Object[] { new Object[] {"StringA", "StringB"} };
+        compares = new ScoreHelper.Compares(originalInput, adaptedInput, parameterTypes);
+        retrieved = ScoreHelper.typeIdentityOfParameters.apply(compares);
+        assertEquals(1000, retrieved);
     }
 
     @Test

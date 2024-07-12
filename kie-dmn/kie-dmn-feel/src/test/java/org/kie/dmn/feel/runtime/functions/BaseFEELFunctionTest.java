@@ -269,6 +269,27 @@ class BaseFEELFunctionTest {
         assertEquals(List.class, parametersRetrieved[0].getType());
     }
 
+    @Test
+    void getStddevFunctionCandidateMethod() {
+        BaseFEELFunction toTest = StddevFunction.INSTANCE;
+
+        // invoke(@ParameterName("list") List<?> list)
+        Object actualValue = Arrays.asList(2, 4, 7, 5);
+        Object[] parameters = {new NamedParameter("list", actualValue)};
+        BaseFEELFunction.CandidateMethod candidateMethodRetrieved = toTest.getCandidateMethod(ctx, parameters, false);
+        assertNotNull(candidateMethodRetrieved);
+        Method retrieved = candidateMethodRetrieved.getActualMethod();
+        assertNotNull(retrieved);
+        assertTrue(Modifier.isPublic(retrieved.getModifiers()));
+        assertEquals("invoke", retrieved.getName());
+        Parameter[] parametersRetrieved = retrieved.getParameters();
+        assertNotNull(parametersRetrieved);
+        assertEquals(1, parametersRetrieved.length);
+        assertEquals(List.class, parametersRetrieved[0].getType());
+    }
+
+
+
 //    @Test
 //    void getCustomFunctionCandidateMethod() {
     // TODO {gcardosi}: verify behavior with CustomFEELFunction
