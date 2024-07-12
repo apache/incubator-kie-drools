@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.LongPredicate;
+import java.util.function.Predicate;
 
 public class Sequence {
     private int sequenceIndex;
@@ -184,16 +185,16 @@ public class Sequence {
     }
 
     public static class LoopController implements SequenceController {
-        private LongPredicate predicate;
+        private Predicate<SequenceMemory> predicate;
 
-        public LoopController(LongPredicate predicate) {
+        public LoopController(Predicate<SequenceMemory> predicate) {
             this.predicate = predicate;
         }
 
         @Override
         public void end(SequenceMemory sequenceMemory, ReteEvaluator reteEvaluator)  {
             int counts = sequenceMemory.getCount();
-            boolean restart = predicate.test(counts);
+            boolean restart = predicate.test(sequenceMemory);
             sequenceMemory.setCount(counts+1);
             SequencerMemory sequencerMemory = sequenceMemory.getSequencerMemory();
             if (restart) {

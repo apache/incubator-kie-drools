@@ -138,8 +138,8 @@ public class PhreakSequencerSubsequenceLoopTest extends AbstractPhreakSequencerS
 
     @Test
     public void testSubSequence() {
-        seq1.setController(new LoopController(c -> c < 2));
-        seq2.setController(new LoopController(c -> c < 2));
+        seq1.setController(new LoopController(m -> m.getCount() < 2));
+        seq2.setController(new LoopController(m -> m.getCount() < 2));
 
         ArrayList<SequenceMemory> stack = sequencerMemory.getSequenceStack();
         assertThat(stack.size()).isEqualTo(0);

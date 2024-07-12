@@ -83,7 +83,7 @@ public class PhreakSequencerAggregatorTest extends AbstractPhreakSequencerSubseq
         LogicCircuit circuit4 = getLogicCircuit();
 
         seq1 = new Sequence(1, circuit2, circuit3);
-        seq1.setController(new LoopController(c -> c < 2));
+        seq1.setController(new LoopController(m -> m.getCount() < 2));
 
         Consumer<SequenceMemory> aggregator = memory -> {
             CircularArrayList<FactHandle> events = memory.getSequencerMemory().getEvents();
