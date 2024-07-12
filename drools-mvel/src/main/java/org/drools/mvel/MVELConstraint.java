@@ -553,7 +553,7 @@ public class MVELConstraint extends MutableTypeConstraint<ContextEntry> implemen
     private int nextPropertyName(String expression, List<String> names, int cursor) {
         StringBuilder propertyNameBuilder = new StringBuilder();
         cursor = extractFirstIdentifier(expression, propertyNameBuilder, cursor);
-        if (propertyNameBuilder.length() == 0) {
+        if (propertyNameBuilder.isEmpty()) {
             return cursor;
         }
 
