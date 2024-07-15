@@ -21,6 +21,7 @@ package org.kie.dmn.feel.runtime.functions;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
+import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -37,11 +38,14 @@ import org.kie.dmn.feel.lang.ast.InfixOpNode;
 import org.kie.dmn.feel.lang.ast.InfixOperator;
 import org.kie.dmn.feel.lang.ast.NameRefNode;
 import org.kie.dmn.feel.lang.ast.NullNode;
+import org.kie.dmn.feel.lang.ast.NumberNode;
 import org.kie.dmn.feel.lang.impl.NamedParameter;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.runtime.FEELFunction;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -52,6 +56,39 @@ class BaseFEELFunctionTest {
     @BeforeEach
     public void setUp() {
         ctx = CodegenTestUtil.newEmptyEvaluationContext();
+    }
+
+    @Test
+    void invokeReflectiveCustomFunction() {
+        List<FEELFunction.Param> parameters = List.of(new FEELFunction.Param("foo", BuiltInType.UNKNOWN),
+                                                  new FEELFunction.Param("person's age", BuiltInType.UNKNOWN));
+
+        BaseNode left = new InfixOpNode(InfixOperator.EQ,
+                                        new NameRefNode(BuiltInType.UNKNOWN, "foo"),
+                                        new NullNode(""),
+                                        "foo = null");
+        BaseNode right = new InfixOpNode(InfixOperator.LT,
+                                        new NameRefNode(BuiltInType.UNKNOWN, "person's age"),
+                                        new NumberNode(BigDecimal.valueOf(18), "18"),
+                                        "person's age < 18");
+        BaseNode body = new InfixOpNode(InfixOperator.AND, left, right, "foo = null and person's age < 18");
+        BaseFEELFunction toTest = new CustomFEELFunction("<anonymous>",
+                                                         parameters,
+                                                         body,
+                                                         ctx);
+       Object[] params = {new NamedParameter("foo", null),
+       new NamedParameter("person's age", 16)};
+        Object retrieved = toTest.invokeReflectively(ctx, params);
+        assertNotNull(retrieved);
+        assertInstanceOf(Boolean.class, retrieved);
+        assertTrue((Boolean) retrieved);
+
+        params = new Object[]{new NamedParameter("foo", null),
+                new NamedParameter("person's age", 19)};
+        retrieved = toTest.invokeReflectively(ctx, params);
+        assertNotNull(retrieved);
+        assertInstanceOf(Boolean.class, retrieved);
+        assertFalse((Boolean) retrieved);
     }
 
     @Test
@@ -288,52 +325,4 @@ class BaseFEELFunctionTest {
         assertEquals(List.class, parametersRetrieved[0].getType());
     }
 
-
-
-//    @Test
-//    void getCustomFunctionCandidateMethod() {
-    // TODO {gcardosi}: verify behavior with CustomFEELFunction
-    //
-//        List<FEELFunction.Param> params = List.of(new FEELFunction.Param("foo", BuiltInType.UNKNOWN),
-//                                                  new FEELFunction.Param("foo", BuiltInType.UNKNOWN));
-//
-//        BaseNode body = new InfixOpNode(InfixOperator.EQ,
-//                                        new NameRefNode(BuiltInType.UNKNOWN, "foo"),
-//                                        new NullNode((String) null),
-//                                        "foo = null and person's age < 18");
-//        BaseFEELFunction toTest = new CustomFEELFunction("<anonymous>",
-//                                                         params,
-//                                                         body,
-//                                                         ctx);
-//
-//        // invoke(@ParameterName( "ctx" ) EvaluationContext ctx,
-//        //                                             @ParameterName("list") List list,
-//        //                                             @ParameterName("precedes") FEELFunction function
-//        Object[] parameters = {List.of(1, 2), AllFunction.INSTANCE};
-//        BaseFEELFunction.CandidateMethod candidateMethodRetrieved = toTest.getCandidateMethod(ctx, parameters, false);
-//        assertNotNull(candidateMethodRetrieved);
-//        Method retrieved = candidateMethodRetrieved.getActualMethod();
-//        assertNotNull(retrieved);
-//        assertTrue(Modifier.isPublic(retrieved.getModifiers()));
-//        assertEquals("invoke", retrieved.getName());
-//        Parameter[] parametersRetrieved = retrieved.getParameters();
-//        assertNotNull(parametersRetrieved);
-//        assertEquals(3, parametersRetrieved.length);
-//        assertEquals(EvaluationContext.class, parametersRetrieved[0].getType());
-//        assertEquals(List.class, parametersRetrieved[1].getType());
-//        assertEquals(FEELFunction.class, parametersRetrieved[2].getType());
-//
-//        // invoke(@ParameterName("list") List list)
-//        parameters = new Object[]{List.of(1, 3, 5)};
-//        candidateMethodRetrieved = toTest.getCandidateMethod(ctx, parameters, false);
-//        assertNotNull(candidateMethodRetrieved);
-//        retrieved = candidateMethodRetrieved.getActualMethod();
-//        assertNotNull(retrieved);
-//        assertTrue(Modifier.isPublic(retrieved.getModifiers()));
-//        assertEquals("invoke", retrieved.getName());
-//        parametersRetrieved = retrieved.getParameters();
-//        assertNotNull(parametersRetrieved);
-//        assertEquals(1, parametersRetrieved.length);
-//        assertEquals(List.class, parametersRetrieved[0].getType());
-//    }
 }
