@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -23,6 +23,7 @@ import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -159,37 +160,32 @@ public abstract class BaseFEELFunction
      * @return
      */
     protected CandidateMethod getCandidateMethod(EvaluationContext ctx, Object[] originalInput, boolean isNamedParams) {
-        CandidateMethod candidate = null;
-        List<Method> invokeMethods = Arrays.stream(getClass().getDeclaredMethods())
+        List<CandidateMethod> candidateMethods = Arrays.stream(getClass().getDeclaredMethods())
                 .filter(m -> Modifier.isPublic(m.getModifiers()) && m.getName().equals("invoke"))
+                .map(method -> getScoredCandidateMethod(ctx, originalInput, isNamedParams, method))
+                .filter(Objects::nonNull)
+                .sorted((o1, o2) -> o2.score - o1.score)
                 .toList();
 
-        // first, look for exact matches
-        for (Method m : invokeMethods) {
+        return candidateMethods.isEmpty() ? null : candidateMethods.get(0);
+    }
 
-            Object[] adaptedInput = BaseFEELFunctionHelper.getAdjustedParametersForMethod(ctx, originalInput,
-                                                                                          isNamedParams, m);
-            if (adaptedInput == null) {
-                // incompatible method
-                continue;
-            }
-
-            Class<?>[] parameterTypes = m.getParameterTypes();
-            if (parameterTypes.length != adaptedInput.length) {
-                continue;
-            }
-
-            ScoreHelper.Compares compares = new ScoreHelper.Compares(originalInput, adaptedInput, parameterTypes);
-            int score = ScoreHelper.score(compares);
-            CandidateMethod cm = new CandidateMethod(m, score, adaptedInput);
-
-            if (candidate == null) {
-                candidate = cm;
-            } else if (cm.getScore() > candidate.getScore()) {
-                candidate = cm;
-            }
+    private CandidateMethod getScoredCandidateMethod(EvaluationContext ctx, Object[] originalInput,
+                                                     boolean isNamedParams, Method m) {
+        Object[] adaptedInput = BaseFEELFunctionHelper.getAdjustedParametersForMethod(ctx, originalInput,
+                                                                                      isNamedParams, m);
+        if (adaptedInput == null) {
+            // incompatible method
+            return null;
         }
-        return candidate;
+
+        Class<?>[] parameterTypes = m.getParameterTypes();
+        if (parameterTypes.length != adaptedInput.length) {
+            return null;
+        }
+
+        ScoreHelper.Compares compares = new ScoreHelper.Compares(originalInput, adaptedInput, parameterTypes);
+        return new CandidateMethod(m, ScoreHelper.score(compares), adaptedInput);
     }
 
     private Object getEitherResult(EvaluationContext ctx, Either<FEELEvent, Object> source,
