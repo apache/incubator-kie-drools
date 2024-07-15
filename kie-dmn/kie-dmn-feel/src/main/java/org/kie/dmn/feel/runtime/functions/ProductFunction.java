@@ -30,7 +30,7 @@ public class ProductFunction
         extends BaseFEELFunction {
     public static final ProductFunction INSTANCE = new ProductFunction();
 
-    ProductFunction() {
+    private ProductFunction() {
         super( "product" );
     }
 

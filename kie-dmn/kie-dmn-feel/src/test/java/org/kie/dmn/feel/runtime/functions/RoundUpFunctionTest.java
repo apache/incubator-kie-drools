@@ -16,28 +16,22 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.dmn.feel.runtime.functions.extended;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
-import org.kie.dmn.feel.runtime.functions.FunctionTestUtil;
+package org.kie.dmn.feel.runtime.functions;
 
 import java.math.BigDecimal;
 
+import org.junit.jupiter.api.Test;
+import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
+
 class RoundUpFunctionTest {
 
-    private RoundUpFunction roundUpFunction;
-
-    @BeforeEach
-    void setUp() {
-        roundUpFunction = new RoundUpFunction();
-    }
+    private static final RoundUpFunction roundUpFunction = RoundUpFunction.INSTANCE;
 
     @Test
     void invokeNull() {
         FunctionTestUtil.assertResultError(roundUpFunction.invoke(null), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(roundUpFunction.invoke((BigDecimal) null, null), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(roundUpFunction.invoke((BigDecimal) null, null),
+                                           InvalidParametersEvent.class);
         FunctionTestUtil.assertResultError(roundUpFunction.invoke(BigDecimal.ONE, null), InvalidParametersEvent.class);
         FunctionTestUtil.assertResultError(roundUpFunction.invoke(null, BigDecimal.ONE), InvalidParametersEvent.class);
     }
@@ -45,35 +39,42 @@ class RoundUpFunctionTest {
     @Test
     void invokeRoundingUp() {
         FunctionTestUtil.assertResult(roundUpFunction.invoke(BigDecimal.valueOf(10.27)), BigDecimal.valueOf(11));
-        FunctionTestUtil.assertResult(roundUpFunction.invoke(BigDecimal.valueOf(10.27), BigDecimal.ONE), BigDecimal.valueOf(10.3));
+        FunctionTestUtil.assertResult(roundUpFunction.invoke(BigDecimal.valueOf(10.27), BigDecimal.ONE),
+                                      BigDecimal.valueOf(10.3));
     }
 
     @Test
     void invokeRoundingDown() {
         FunctionTestUtil.assertResult(roundUpFunction.invoke(BigDecimal.valueOf(10.24)), BigDecimal.valueOf(11));
-        FunctionTestUtil.assertResult(roundUpFunction.invoke(BigDecimal.valueOf(10.24), BigDecimal.ONE), BigDecimal.valueOf(10.3));
+        FunctionTestUtil.assertResult(roundUpFunction.invoke(BigDecimal.valueOf(10.24), BigDecimal.ONE),
+                                      BigDecimal.valueOf(10.3));
     }
 
     @Test
     void invokeRoundingEven() {
         FunctionTestUtil.assertResult(roundUpFunction.invoke(BigDecimal.valueOf(10.25)), BigDecimal.valueOf(11));
-        FunctionTestUtil.assertResult(roundUpFunction.invoke(BigDecimal.valueOf(10.25), BigDecimal.ONE), BigDecimal.valueOf(10.3));
+        FunctionTestUtil.assertResult(roundUpFunction.invoke(BigDecimal.valueOf(10.25), BigDecimal.ONE),
+                                      BigDecimal.valueOf(10.3));
     }
 
     @Test
     void invokeRoundingOdd() {
         FunctionTestUtil.assertResult(roundUpFunction.invoke(BigDecimal.valueOf(10.35)), BigDecimal.valueOf(11));
-        FunctionTestUtil.assertResult(roundUpFunction.invoke(BigDecimal.valueOf(10.35), BigDecimal.ONE), BigDecimal.valueOf(10.4));
+        FunctionTestUtil.assertResult(roundUpFunction.invoke(BigDecimal.valueOf(10.35), BigDecimal.ONE),
+                                      BigDecimal.valueOf(10.4));
     }
 
     @Test
     void invokeLargerScale() {
-        FunctionTestUtil.assertResult(roundUpFunction.invoke(BigDecimal.valueOf(10.123456789), BigDecimal.valueOf(6)), BigDecimal.valueOf(10.123457));
+        FunctionTestUtil.assertResult(roundUpFunction.invoke(BigDecimal.valueOf(10.123456789), BigDecimal.valueOf(6))
+                , BigDecimal.valueOf(10.123457));
     }
 
     @Test
     void invokeOutRangeScale() {
-        FunctionTestUtil.assertResultError(roundUpFunction.invoke(BigDecimal.valueOf(1.5), BigDecimal.valueOf(6177)), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(roundUpFunction.invoke(BigDecimal.valueOf(1.5), BigDecimal.valueOf(-6122)), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(roundUpFunction.invoke(BigDecimal.valueOf(1.5), BigDecimal.valueOf(6177)),
+                                           InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(roundUpFunction.invoke(BigDecimal.valueOf(1.5), BigDecimal.valueOf(-6122))
+                , InvalidParametersEvent.class);
     }
 }

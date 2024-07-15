@@ -26,7 +26,7 @@ public class StringLowerCaseFunction
 
     public static final StringLowerCaseFunction INSTANCE = new StringLowerCaseFunction();
 
-    public StringLowerCaseFunction() {
+    private StringLowerCaseFunction() {
         super( "lower case" );
     }
 

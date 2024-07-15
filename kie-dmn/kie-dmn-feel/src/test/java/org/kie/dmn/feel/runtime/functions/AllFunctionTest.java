@@ -22,18 +22,12 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
 class AllFunctionTest {
 
-    private AllFunction allFunction;
-
-    @BeforeEach
-    void setUp() {
-        allFunction = new AllFunction();
-    }
+    private static final AllFunction allFunction = AllFunction.INSTANCE;
 
     @Test
     void invokeArrayParamNull() {
@@ -63,9 +57,12 @@ class AllFunctionTest {
 
     @Test
     void invokeArrayParamTypeHeterogenousArray() {
-        FunctionTestUtil.assertResultError(allFunction.invoke(new Object[]{Boolean.TRUE, 1}), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(allFunction.invoke(new Object[]{Boolean.FALSE, 1}), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(allFunction.invoke(new Object[]{Boolean.TRUE, null, 1}), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(allFunction.invoke(new Object[]{Boolean.TRUE, 1}),
+                                           InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(allFunction.invoke(new Object[]{Boolean.FALSE, 1}),
+                                           InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(allFunction.invoke(new Object[]{Boolean.TRUE, null, 1}),
+                                           InvalidParametersEvent.class);
     }
 
     @Test
@@ -96,8 +93,11 @@ class AllFunctionTest {
 
     @Test
     void invokeListParamTypeHeterogenousArray() {
-        FunctionTestUtil.assertResultError(allFunction.invoke(Arrays.asList(Boolean.TRUE, 1)), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(allFunction.invoke(Arrays.asList(Boolean.FALSE, 1)), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(allFunction.invoke(Arrays.asList(Boolean.TRUE, null, 1)), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(allFunction.invoke(Arrays.asList(Boolean.TRUE, 1)),
+                                           InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(allFunction.invoke(Arrays.asList(Boolean.FALSE, 1)),
+                                           InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(allFunction.invoke(Arrays.asList(Boolean.TRUE, null, 1)),
+                                           InvalidParametersEvent.class);
     }
 }

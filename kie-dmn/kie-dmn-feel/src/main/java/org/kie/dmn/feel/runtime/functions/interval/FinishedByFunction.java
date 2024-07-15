@@ -31,7 +31,7 @@ public class FinishedByFunction
 
     public static final FinishedByFunction INSTANCE = new FinishedByFunction();
 
-    public FinishedByFunction() {
+    private FinishedByFunction() {
         super( "finished by" );
     }
 

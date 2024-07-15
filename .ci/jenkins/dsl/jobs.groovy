@@ -322,6 +322,9 @@ void setupDeployJob(JobType jobType) {
         MAVEN_REPO_CREDS_ID: "${MAVEN_ARTIFACTS_UPLOAD_REPOSITORY_CREDS_ID}",
 
         DROOLS_STREAM: Utils.getStream(this),
+
+        RELEASE_GPG_SIGN_KEY_CREDS_ID: Utils.getReleaseGpgSignKeyCredentialsId(this),
+        RELEASE_GPG_SIGN_PASSPHRASE_CREDS_ID: Utils.getReleaseGpgSignPassphraseCredentialsId(this)
     ])
     KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         parameters {

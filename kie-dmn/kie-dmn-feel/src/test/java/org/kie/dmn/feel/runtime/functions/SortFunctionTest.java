@@ -23,7 +23,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.Symbol;
@@ -32,12 +31,7 @@ import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
 class SortFunctionTest {
 
-    private SortFunction sortFunction;
-
-    @BeforeEach
-    void setUp() {
-        sortFunction = new SortFunction();
-    }
+    private static final SortFunction sortFunction = SortFunction.INSTANCE;
 
     @Test
     void invokeListParamNull() {

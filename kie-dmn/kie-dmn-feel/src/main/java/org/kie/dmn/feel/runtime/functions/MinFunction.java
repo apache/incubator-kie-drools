@@ -31,7 +31,7 @@ public class MinFunction
 
     public static final MinFunction INSTANCE = new MinFunction();
 
-    public MinFunction() {
+    private MinFunction() {
         super( "min" );
     }
 

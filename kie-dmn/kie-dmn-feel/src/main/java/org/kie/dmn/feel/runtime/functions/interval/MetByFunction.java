@@ -29,7 +29,7 @@ public class MetByFunction extends BaseFEELFunction {
 
     public static final MetByFunction INSTANCE = new MetByFunction();
 
-    public MetByFunction() {
+    private MetByFunction() {
         super("met by");
     }
 

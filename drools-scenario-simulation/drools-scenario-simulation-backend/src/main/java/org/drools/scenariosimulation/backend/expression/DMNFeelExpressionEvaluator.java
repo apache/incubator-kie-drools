@@ -51,7 +51,7 @@ import static org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity.ERROR;
 public class DMNFeelExpressionEvaluator extends AbstractExpressionEvaluator {
 
     private final ClassLoader classLoader;
-    private final CodeFunction codeFunction = new CodeFunction();
+    private final CodeFunction codeFunction = CodeFunction.INSTANCE;
 
     public DMNFeelExpressionEvaluator(ClassLoader classLoader) {
         this.classLoader = classLoader;

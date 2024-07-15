@@ -30,7 +30,7 @@ public class OverlapsFunction extends BaseFEELFunction {
 
     public static final OverlapsFunction INSTANCE = new OverlapsFunction();
 
-    public OverlapsFunction() {
+    private OverlapsFunction() {
         super("overlaps");
     }
 

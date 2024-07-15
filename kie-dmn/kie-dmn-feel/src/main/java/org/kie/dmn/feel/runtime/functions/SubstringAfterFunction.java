@@ -26,7 +26,7 @@ public class SubstringAfterFunction
 
     public static final SubstringAfterFunction INSTANCE = new SubstringAfterFunction();
 
-    public SubstringAfterFunction() {
+    private SubstringAfterFunction() {
         super( "substring after" );
     }
 

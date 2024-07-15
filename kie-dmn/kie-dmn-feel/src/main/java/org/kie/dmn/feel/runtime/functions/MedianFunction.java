@@ -31,7 +31,7 @@ public class MedianFunction
         extends BaseFEELFunction {
     public static final MedianFunction INSTANCE = new MedianFunction();
 
-    MedianFunction() {
+    private MedianFunction() {
         super("median");
     }
 

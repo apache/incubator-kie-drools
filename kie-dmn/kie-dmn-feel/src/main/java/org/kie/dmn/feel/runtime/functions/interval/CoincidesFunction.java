@@ -30,7 +30,7 @@ public class CoincidesFunction
 
     public static final CoincidesFunction INSTANCE = new CoincidesFunction();
 
-    public CoincidesFunction() {
+    private CoincidesFunction() {
         super( "coincides" );
     }
 

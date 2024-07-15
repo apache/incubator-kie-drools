@@ -33,7 +33,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
@@ -41,12 +40,7 @@ import org.kie.dmn.feel.runtime.impl.RangeImpl;
 
 class StringFunctionTest {
 
-    private StringFunction stringFunction;
-
-    @BeforeEach
-    void setUp() {
-        stringFunction = new StringFunction();
-    }
+    private static final StringFunction stringFunction = StringFunction.INSTANCE;
 
     @Test
     void invokeNull() {
@@ -56,7 +50,8 @@ class StringFunctionTest {
     @Test
     void invokeMaskNull() {
         FunctionTestUtil.assertResultError(stringFunction.invoke((String) null, null), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(stringFunction.invoke((String) null, new Object[]{}), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(stringFunction.invoke((String) null, new Object[]{}),
+                                           InvalidParametersEvent.class);
     }
 
     @Test
@@ -90,19 +85,22 @@ class StringFunctionTest {
     @Test
     void invokeLocalDateTime() {
         final LocalDateTime localDateTime = LocalDateTime.now();
-        FunctionTestUtil.assertResult(stringFunction.invoke(localDateTime), DateAndTimeFunction.FEEL_DATE_TIME.format(localDateTime));
+        FunctionTestUtil.assertResult(stringFunction.invoke(localDateTime),
+                                      DateAndTimeFunction.FEEL_DATE_TIME.format(localDateTime));
     }
 
     @Test
     void invokeOffsetDateTime() {
         final OffsetDateTime offsetDateTime = OffsetDateTime.now();
-        FunctionTestUtil.assertResult(stringFunction.invoke(offsetDateTime), DateAndTimeFunction.FEEL_DATE_TIME.format(offsetDateTime));
+        FunctionTestUtil.assertResult(stringFunction.invoke(offsetDateTime),
+                                      DateAndTimeFunction.FEEL_DATE_TIME.format(offsetDateTime));
     }
 
     @Test
     void invokeZonedDateTime() {
         final ZonedDateTime zonedDateTime = ZonedDateTime.now();
-        FunctionTestUtil.assertResult(stringFunction.invoke(zonedDateTime), DateAndTimeFunction.REGION_DATETIME_FORMATTER.format(zonedDateTime));
+        FunctionTestUtil.assertResult(stringFunction.invoke(zonedDateTime),
+                                      DateAndTimeFunction.REGION_DATETIME_FORMATTER.format(zonedDateTime));
     }
 
     @Test
@@ -224,11 +222,13 @@ class StringFunctionTest {
         contextMap.put("key1", "value1");
         contextMap.put("key2", childContextMap);
 
-        FunctionTestUtil.assertResult(stringFunction.invoke(contextMap), "{ key1 : value1, key2 : { childKey1 : childValue1 } }");
+        FunctionTestUtil.assertResult(stringFunction.invoke(contextMap), "{ key1 : value1, key2 : { childKey1 : " +
+                "childValue1 } }");
     }
 
     @Test
     void invokeMaskedFormat() {
-        FunctionTestUtil.assertResult(stringFunction.invoke("%s is here!", new Object[]{"Gorgonzola"}), "Gorgonzola is here!");
+        FunctionTestUtil.assertResult(stringFunction.invoke("%s is here!", new Object[]{"Gorgonzola"}), "Gorgonzola " +
+                "is here!");
     }
 }

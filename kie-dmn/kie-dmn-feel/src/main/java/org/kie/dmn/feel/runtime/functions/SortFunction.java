@@ -21,6 +21,7 @@ package org.kie.dmn.feel.runtime.functions;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.runtime.FEELFunction;
@@ -31,7 +32,7 @@ public class SortFunction
 
     public static final SortFunction INSTANCE = new SortFunction();
 
-    public SortFunction() {
+    private SortFunction() {
         super( "sort" );
     }
 

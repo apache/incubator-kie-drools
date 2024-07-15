@@ -30,8 +30,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiPredicate;
 
-import org.kie.dmn.feel.lang.EvaluationContext;
-import org.kie.dmn.feel.lang.FEELDialect;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.dmn.feel.runtime.Range;
