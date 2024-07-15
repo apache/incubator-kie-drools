@@ -51,6 +51,10 @@ import org.jbpm.bpmn2.flow.MinimalWithDIGraphicalModel;
 import org.jbpm.bpmn2.flow.MinimalWithDIGraphicalProcess;
 import org.jbpm.bpmn2.flow.MinimalWithGraphicalModel;
 import org.jbpm.bpmn2.flow.MinimalWithGraphicalProcess;
+import org.jbpm.bpmn2.flow.ProcessCustomDescriptionMetaDataModel;
+import org.jbpm.bpmn2.flow.ProcessCustomDescriptionMetaDataProcess;
+import org.jbpm.bpmn2.flow.ProcessVariableCustomDescriptionMetaDataModel;
+import org.jbpm.bpmn2.flow.ProcessVariableCustomDescriptionMetaDataProcess;
 import org.jbpm.bpmn2.flow.ProcessWithVariableNameModel;
 import org.jbpm.bpmn2.flow.ProcessWithVariableNameProcess;
 import org.jbpm.bpmn2.flow.UserTaskModel;
@@ -86,8 +90,16 @@ import org.jbpm.bpmn2.subprocess.CallActivityMIModel;
 import org.jbpm.bpmn2.subprocess.CallActivityMIProcess;
 import org.jbpm.bpmn2.subprocess.CallActivityModel;
 import org.jbpm.bpmn2.subprocess.CallActivityProcess;
+import org.jbpm.bpmn2.subprocess.CallActivityProcessBoundaryErrorModel;
+import org.jbpm.bpmn2.subprocess.CallActivityProcessBoundaryErrorProcess;
+import org.jbpm.bpmn2.subprocess.CallActivitySubProcessBoundaryErrorModel;
+import org.jbpm.bpmn2.subprocess.CallActivitySubProcessBoundaryErrorProcess;
 import org.jbpm.bpmn2.subprocess.CallActivitySubProcessModel;
 import org.jbpm.bpmn2.subprocess.CallActivitySubProcessProcess;
+import org.jbpm.bpmn2.subprocess.CallActivitySubProcessWithBoundaryEventModel;
+import org.jbpm.bpmn2.subprocess.CallActivitySubProcessWithBoundaryEventProcess;
+import org.jbpm.bpmn2.subprocess.CallActivityWithBoundaryEventModel;
+import org.jbpm.bpmn2.subprocess.CallActivityWithBoundaryEventProcess;
 import org.jbpm.bpmn2.subprocess.CallActivityWithIOexpressionModel;
 import org.jbpm.bpmn2.subprocess.CallActivityWithIOexpressionProcess;
 import org.jbpm.bpmn2.subprocess.InputMappingUsingValueModel;
@@ -969,31 +981,26 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     }
 
     @Test
-    public void testCallActivityWithBoundaryEvent() throws Exception {
-        ProcessCompletedCountDownProcessEventListener countDownListener = new ProcessCompletedCountDownProcessEventListener();
-        kruntime = createKogitoProcessRuntime(
-                "org/jbpm/bpmn2/subprocess/BPMN2-CallActivityWithBoundaryEvent.bpmn2",
-                "org/jbpm/bpmn2/subprocess/BPMN2-CallActivitySubProcessWithBoundaryEvent.bpmn2");
-        kruntime.getProcessEventManager().addEventListener(countDownListener);
-
+    public void testCallActivityWithBoundaryEvent() {
+        Application app = ProcessTestHelper.newApplication();
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task",
-                workItemHandler);
-        Map<String, Object> params = new HashMap<>();
-        params.put("x", "oldValue");
-        KogitoProcessInstance processInstance = kruntime.startProcess("CallActivityWithBoundaryEvent", params);
-
-        countDownListener.waitTillCompleted();
-
-        assertProcessInstanceFinished(processInstance, kruntime);
-        // assertEquals("new timer value",
-        // ((WorkflowProcessInstance) processInstance).getVariable("y"));
-        // first check the parent process executed nodes
-        assertNodeTriggered(processInstance.getStringId(), "StartProcess",
-                "CallActivity", "Boundary event", "Script Task", "end");
-        // then check child process executed nodes - is there better way to get child process id than simply increment?
-        assertNodeTriggered(processInstance.getStringId() + 1, "StartProcess2",
-                "User Task");
+        ProcessTestHelper.registerHandler(app, "Human Task", workItemHandler);
+        ProcessCompletedCountDownProcessEventListener listener = new ProcessCompletedCountDownProcessEventListener();
+        ProcessTestHelper.registerProcessEventListener(app, listener);
+        org.kie.kogito.process.Process<CallActivitySubProcessWithBoundaryEventModel> callActivitySubProcessWithBoundaryEventProcess = CallActivitySubProcessWithBoundaryEventProcess.newProcess(app);
+        org.kie.kogito.process.Process<CallActivityWithBoundaryEventModel> process = CallActivityWithBoundaryEventProcess.newProcess(app);
+        CallActivityWithBoundaryEventModel model = process.createModel();
+        model.setX("oldValue");
+        ProcessInstance<CallActivityWithBoundaryEventModel> processInstance = process.createInstance(model);
+        processInstance.start();
+        listener.waitTillCompleted();
+        assertThat(processInstance).extracting(ProcessInstance::status).isEqualTo(ProcessInstance.STATE_COMPLETED);
+        Collection<String> processNodes = process.findNodes(Objects::nonNull).stream().map(Node::getName).collect(Collectors.toSet());
+        Collection<String> subProcessNodes = callActivitySubProcessWithBoundaryEventProcess.findNodes(Objects::nonNull).stream().map(Node::getName).collect(Collectors.toSet());
+        assertThat(processNodes.containsAll(List.of("StartProcess",
+                "CallActivity", "Boundary event", "Script Task", "end"))).isTrue();
+        assertThat(subProcessNodes.containsAll(List.of("StartProcess2",
+                "User Task"))).isTrue();
     }
 
     @Test
@@ -1059,45 +1066,56 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     }
 
     @Test
-    public void testCallActivityWithBoundaryErrorEvent() throws Exception {
-        kruntime = createKogitoProcessRuntime(
-                "org/jbpm/bpmn2/subprocess/BPMN2-CallActivityProcessBoundaryError.bpmn2",
-                "org/jbpm/bpmn2/subprocess/BPMN2-CallActivitySubProcessBoundaryError.bpmn2");
+    public void testCallActivityWithBoundaryErrorEvent() {
+        Application app = ProcessTestHelper.newApplication();
+        SystemOutWorkItemHandler workItemHandler = new SystemOutWorkItemHandler();
+        ProcessTestHelper.registerHandler(app, "task1", workItemHandler);
+        ProcessCompletedCountDownProcessEventListener listener = new ProcessCompletedCountDownProcessEventListener();
+        ProcessTestHelper.registerProcessEventListener(app, listener);
+        org.kie.kogito.process.Process<CallActivitySubProcessBoundaryErrorModel> callActivitySubProcessBoundaryErrorProcess = CallActivitySubProcessBoundaryErrorProcess.newProcess(app);
+        org.kie.kogito.process.Process<CallActivityProcessBoundaryErrorModel> process = CallActivityProcessBoundaryErrorProcess.newProcess(app);
+        CallActivityProcessBoundaryErrorModel model = process.createModel();
+        ProcessInstance<CallActivityProcessBoundaryErrorModel> processInstance = process.createInstance(model);
+        processInstance.start();
+        assertThat(processInstance).extracting(ProcessInstance::status).isEqualTo(ProcessInstance.STATE_COMPLETED);
 
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("task1",
-                new SystemOutWorkItemHandler());
-        KogitoProcessInstance processInstance = kruntime.startProcess("CallActivityProcessBoundaryError");
-
-        assertProcessInstanceFinished(processInstance, kruntime);
-        assertNodeTriggered(processInstance.getStringId(), "StartProcess",
-                "Call Activity 1", "Boundary event", "Task Parent", "End2");
-        // then check child process executed nodes - is there better way to get child process id than simply increment?
-        assertNodeTriggered(processInstance.getStringId() + 1, "StartProcess", "Task 1", "End");
+        Collection<String> processNodes = process.findNodes(Objects::nonNull).stream().map(Node::getName).collect(Collectors.toSet());
+        Collection<String> subProcessNodes = callActivitySubProcessBoundaryErrorProcess.findNodes(Objects::nonNull).stream()
+                .map(Node::getName).collect(Collectors.toSet());
+        assertThat(processNodes.containsAll(List.of("StartProcess",
+                "Call Activity 1", "Boundary event", "Task Parent", "End2"))).isTrue();
+        assertThat(subProcessNodes.containsAll(List.of("StartProcess", "Task 1", "End"))).isTrue();
     }
 
     @Test
-    public void testCallActivityWithBoundaryErrorEventWithWaitState() throws Exception {
-        kruntime = createKogitoProcessRuntime(
-                "org/jbpm/bpmn2/subprocess/BPMN2-CallActivityProcessBoundaryError.bpmn2",
-                "org/jbpm/bpmn2/subprocess/BPMN2-CallActivitySubProcessBoundaryError.bpmn2");
-
+    public void testCallActivityWithBoundaryErrorEventWithWaitState() {
+        Application app = ProcessTestHelper.newApplication();
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("task1", workItemHandler);
-        KogitoProcessInstance processInstance = kruntime.startProcess("CallActivityProcessBoundaryError");
+        ProcessTestHelper.registerHandler(app, "task1", workItemHandler);
+
+        org.kie.kogito.process.Process<CallActivitySubProcessBoundaryErrorModel> callActivitySubProcessBoundaryErrorProcess = CallActivitySubProcessBoundaryErrorProcess.newProcess(app);
+        ProcessInstance<CallActivitySubProcessBoundaryErrorModel> subProcessInstance = callActivitySubProcessBoundaryErrorProcess
+                .createInstance(callActivitySubProcessBoundaryErrorProcess.createModel());
+        org.kie.kogito.process.Process<CallActivityProcessBoundaryErrorModel> process = CallActivityProcessBoundaryErrorProcess.newProcess(app);
+        CallActivityProcessBoundaryErrorModel model = process.createModel();
+        ProcessInstance<CallActivityProcessBoundaryErrorModel> processInstance = process.createInstance(model);
+        processInstance.start();
 
         org.kie.kogito.internal.process.runtime.KogitoWorkItem workItem = workItemHandler.getWorkItem();
         assertThat(workItem).isNotNull();
-        kruntime.getKogitoWorkItemManager().completeWorkItem(workItem.getStringId(), null);
+
+        subProcessInstance.completeWorkItem(workItem.getStringId(), Collections.emptyMap());
 
         workItem = workItemHandler.getWorkItem();
         assertThat(workItem).isNotNull();
-        kruntime.getKogitoWorkItemManager().completeWorkItem(workItem.getStringId(), null);
-
-        assertProcessInstanceFinished(processInstance, kruntime);
-        assertNodeTriggered(processInstance.getStringId(), "StartProcess",
-                "Call Activity 1", "Boundary event", "Task Parent", "End2");
-        // then check child process executed nodes - is there better way to get child process id than simply increment?
-        assertNodeTriggered(processInstance.getStringId() + 1, "StartProcess", "Task 1", "End");
+        processInstance.completeWorkItem(workItem.getStringId(), Collections.emptyMap());
+        assertThat(processInstance).extracting(ProcessInstance::status).isEqualTo(ProcessInstance.STATE_COMPLETED);
+        Collection<String> processNodes = process.findNodes(Objects::nonNull).stream().map(Node::getName).collect(Collectors.toSet());
+        Collection<String> subProcessNodes = callActivitySubProcessBoundaryErrorProcess.findNodes(Objects::nonNull).stream()
+                .map(Node::getName).collect(Collectors.toSet());
+        assertThat(processNodes.containsAll(List.of("StartProcess",
+                "Call Activity 1", "Boundary event", "Task Parent", "End2"))).isTrue();
+        assertThat(subProcessNodes.containsAll(List.of("StartProcess", "Task 1", "End"))).isTrue();
     }
 
     @Test
@@ -1246,28 +1264,27 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     }
 
     @Test
-    public void testProcessCustomDescriptionMetaData() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/flow/BPMN2-ProcessCustomDescriptionMetaData.bpmn2");
-
-        Map<String, Object> params = new HashMap<>();
-
-        KogitoProcessInstance processInstance = kruntime.startProcess("ProcessCustomDescriptionMetaData", params);
-        assertProcessInstanceCompleted(processInstance);
-
-        String description = processInstance.getDescription();
+    public void testProcessCustomDescriptionMetaData() {
+        Application app = ProcessTestHelper.newApplication();
+        org.kie.kogito.process.Process<ProcessCustomDescriptionMetaDataModel> process = ProcessCustomDescriptionMetaDataProcess.newProcess(app);
+        ProcessCustomDescriptionMetaDataModel model = process.createModel();
+        ProcessInstance<ProcessCustomDescriptionMetaDataModel> processInstance = process.createInstance(model);
+        processInstance.start();
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
+        String description = processInstance.description();
         assertThat(description).isNotNull().isEqualTo("my process with description");
     }
 
     @Test
-    public void testProcessVariableCustomDescriptionMetaData() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/flow/BPMN2-ProcessVariableCustomDescriptionMetaData.bpmn2");
-
-        Map<String, Object> params = new HashMap<>();
-        params.put("x", "variable name for process");
-        KogitoProcessInstance processInstance = kruntime.startProcess("ProcessVariableCustomDescriptionMetaData", params);
-        assertProcessInstanceCompleted(processInstance);
-
-        String description = processInstance.getDescription();
+    public void testProcessVariableCustomDescriptionMetaData() {
+        Application app = ProcessTestHelper.newApplication();
+        org.kie.kogito.process.Process<ProcessVariableCustomDescriptionMetaDataModel> process = ProcessVariableCustomDescriptionMetaDataProcess.newProcess(app);
+        ProcessVariableCustomDescriptionMetaDataModel model = process.createModel();
+        model.setX("variable name for process");
+        ProcessInstance<ProcessVariableCustomDescriptionMetaDataModel> processInstance = process.createInstance(model);
+        processInstance.start();
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
+        String description = processInstance.description();
         assertThat(description).isNotNull().isEqualTo("variable name for process");
     }
 
