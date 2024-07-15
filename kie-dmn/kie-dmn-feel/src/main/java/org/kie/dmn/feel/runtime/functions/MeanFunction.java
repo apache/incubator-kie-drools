@@ -47,7 +47,7 @@ public class MeanFunction
 
         FEELFnResult<BigDecimal> s = sum.invoke( list );
         
-        Function<FEELEvent, FEELFnResult<BigDecimal>> ifLeft = (event) ->
+        Function<FEELEvent, FEELFnResult<BigDecimal>> ifLeft = event ->
                 FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "unable to sum the elements which is required to calculate the mean"));
         
         Function<BigDecimal, FEELFnResult<BigDecimal>> ifRight = (sum) -> {
