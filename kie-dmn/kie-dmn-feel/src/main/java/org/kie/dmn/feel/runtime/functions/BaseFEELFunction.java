@@ -162,7 +162,7 @@ public abstract class BaseFEELFunction
     }
 
     private Object[] rearrangeParameters(Object[] params, List<String> pnames) {
-        if ( !pnames.isEmpty() ) {
+        if ( pnames.size() > 0 ) {
             Object[] actualParams = new Object[pnames.size()];
             for ( int i = 0; i < actualParams.length; i++ ) {
                 for ( int j = 0; j < params.length; j++ ) {
@@ -186,7 +186,7 @@ public abstract class BaseFEELFunction
             }
 
             Object[] actualParams;
-            boolean injectCtx = Arrays.stream( m.getParameterTypes() ).anyMatch(EvaluationContext.class::isAssignableFrom);
+            boolean injectCtx = Arrays.stream( m.getParameterTypes() ).anyMatch( p -> EvaluationContext.class.isAssignableFrom( p ) );
             if( injectCtx ) {
                 actualParams = new Object[ params.length + 1 ];
                 int j = 0;
@@ -206,7 +206,7 @@ public abstract class BaseFEELFunction
                 actualParams = params;
             }
             if( isNamedParams ) {
-                actualParams = calculateActualParams( m, actualParams );
+                actualParams = calculateActualParams( ctx, m, actualParams, available );
                 if( actualParams == null ) {
                     // incompatible method
                     continue;
@@ -232,7 +232,7 @@ public abstract class BaseFEELFunction
                 if ( currentIdxActualParameterType != null && !expectedParameterType.isAssignableFrom( currentIdxActualParameterType ) ) {
                     Optional<Object[]> coercedParams = coerceParams(currentIdxActualParameterType, expectedParameterType, actualParams, i);
                     if (coercedParams.isPresent()) {
-                        cm.setActualParams(coercedParams.get(), CandidateMethod.ParameterTypesStatus.COERCED);
+                        cm.setActualParams(coercedParams.get());
                         continue;
                     }
                     found = false;
@@ -246,8 +246,8 @@ public abstract class BaseFEELFunction
                 } else {
                     if (cm.getScore() > candidate.getScore()) {
                         candidate = cm;
-                    } else if (cm.getScore() == candidate.getScore() && !candidate.isCoerced()) {
-                        if (isNamedParams && nullCount(cm.actualParams) < nullCount(candidate.actualParams)) {
+                    } else if (cm.getScore() == candidate.getScore()) {
+                        if (isNamedParams && nullCount(cm.actualParams)<nullCount(candidate.actualParams)) {
                             candidate = cm; // `cm` narrower for named parameters without need of passing nulls.
                         } else if (candidate.getApply().getParameterTypes().length == 1
                                 && cm.getApply().getParameterTypes().length == 1
@@ -255,11 +255,12 @@ public abstract class BaseFEELFunction
                                 && !cm.getApply().getParameterTypes()[0].equals(Object.class)) {
                             candidate = cm; // `cm` is more narrowed, hence reflect `candidate` to be now `cm`.
                         }
+                    } else {
+                        // do nothing.
                     }
                 }
             }
         }
-
         return candidate;
     }
     
@@ -287,11 +288,11 @@ public abstract class BaseFEELFunction
             Object[] remaining = new Object[cm.getActualParams().length - parameterTypes.length + 1];
             newParams[newParams.length - 1] = remaining;
             System.arraycopy( cm.getActualParams(), parameterTypes.length - 1, remaining, 0, remaining.length );
-            cm.setActualParams( newParams , CandidateMethod.ParameterTypesStatus.VARIABLE_PARAMETER_FUNCTION_CALL );
+            cm.setActualParams( newParams );
         }
     }
 
-    private Object[] calculateActualParams(Method m, Object[] params) {
+    private Object[] calculateActualParams(EvaluationContext ctx, Method m, Object[] params, List<String> available) {
         Annotation[][] pas = m.getParameterAnnotations();
         List<String> names = new ArrayList<>( m.getParameterCount() );
         for ( int i = 0; i < m.getParameterCount(); i++ ) {
@@ -361,20 +362,22 @@ public abstract class BaseFEELFunction
     }
 
     private static class CandidateMethod {
-        private Method apply = null;
+        private Method   apply         = null;
         private Object[] actualParams;
-        private Class<?>[] actualClasses = null;
-        private ParameterTypesStatus actualParamsStatus = ParameterTypesStatus.MATCHED;
-
-        enum ParameterTypesStatus {
-            MATCHED,
-            VARIABLE_PARAMETER_FUNCTION_CALL,
-            COERCED;
-        }
+        private Class[]  actualClasses = null;
+        private int score;
 
         public CandidateMethod(Object[] actualParams) {
             this.actualParams = actualParams;
             populateActualClasses();
+        }
+
+        private void calculateScore() {
+            if ( actualClasses.length > 0 && actualClasses[actualClasses.length - 1] != null && actualClasses[actualClasses.length - 1].isArray() ) {
+                score = 1;
+            } else {
+                score = 10;
+            }
         }
 
         public Method getApply() {
@@ -383,15 +386,15 @@ public abstract class BaseFEELFunction
 
         public void setApply(Method apply) {
             this.apply = apply;
+            calculateScore();
         }
 
         public Object[] getActualParams() {
             return actualParams;
         }
 
-        public void setActualParams(Object[] actualParams, ParameterTypesStatus parameterTypesStatus) {
+        public void setActualParams(Object[] actualParams) {
             this.actualParams = actualParams;
-            this.actualParamsStatus = parameterTypesStatus;
             populateActualClasses();
         }
 
@@ -399,21 +402,14 @@ public abstract class BaseFEELFunction
             this.actualClasses = Stream.of( this.actualParams ).map( p -> p != null ? p.getClass() : null ).toArray( Class[]::new );
         }
 
-        public Class<?>[] getActualClasses() {
+        public Class[] getActualClasses() {
             return actualClasses;
         }
 
         public int getScore() {
-            return switch (actualParamsStatus) {
-                case MATCHED -> 10;
-                case VARIABLE_PARAMETER_FUNCTION_CALL -> 2;
-                case COERCED -> 1;
-            };
+            return score;
         }
 
-        public boolean isCoerced() {
-            return actualParamsStatus == ParameterTypesStatus.COERCED;
-        }
     }
 
 }
