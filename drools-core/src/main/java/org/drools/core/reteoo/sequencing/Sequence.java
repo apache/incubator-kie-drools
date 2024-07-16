@@ -38,14 +38,17 @@ public class Sequence {
     private Consumer<SequenceMemory> onStart;
     private Consumer<SequenceMemory> onEnd;
 
+    private int outputSize;
+
     public Sequence(int sequenceIndex, LogicCircuit... circuits) {
-        steps = new Step[circuits.length];
+        this.steps = new Step[circuits.length];
         for ( int i = 0; i < circuits.length; i++ ) {
-            steps[i] = new LogicCircuitStep(this, circuits[i]);
+            this.steps[i] = new LogicCircuitStep(this, circuits[i]);
         }
         this.sequenceIndex = sequenceIndex;
         populateLogicGates();
-        controller = new DefaultController();
+        this.controller = new DefaultController();
+        this.outputSize = 0;
     }
 
     public Sequence(int sequenceIndex, Step... steps) {
@@ -63,6 +66,14 @@ public class Sequence {
         this.sequenceIndex = sequenceIndex;
         populateLogicGates();
         controller = new DefaultController();
+    }
+
+    public int getOutputSize() {
+        return outputSize;
+    }
+
+    public void setOutputSize(int outputSize) {
+        this.outputSize = outputSize;
     }
 
     public Consumer<SequenceMemory> getOnStart() {

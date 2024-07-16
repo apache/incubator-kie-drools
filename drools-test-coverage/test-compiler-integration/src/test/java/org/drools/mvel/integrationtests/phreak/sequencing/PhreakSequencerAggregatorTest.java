@@ -86,17 +86,22 @@ public class PhreakSequencerAggregatorTest extends AbstractPhreakSequencerSubseq
         seq1.setController(new LoopController(m -> m.getCount() < 2));
 
         Consumer<SequenceMemory> aggregator = memory -> {
-            CircularArrayList<FactHandle> events = memory.getSequencerMemory().getEvents();
+            CircularArrayList<Object> events = memory.getSequencerMemory().getEvents();
             int eventsStartPosition = memory.getEventsStartPosition();
-            int end = events.size();
-            System.out.print("events: ");
-            for (int i = eventsStartPosition; i < end; i++) {
-                recorder.add((events.get(i)).getObject());
-                System.out.print((events.get(i)).getObject() + ", ");
+
+            List<Object> r = (List<Object>) events.get(eventsStartPosition-1);
+            if (r == null) {
+                events.set(eventsStartPosition-1,  recorder);
+                r = (List<Object>) events.get(eventsStartPosition-1);
             }
-            System.out.println("");
+
+            int end = events.size();
+            for (int i = eventsStartPosition; i < end; i++) {
+                r.add(((FactHandle)(events.get(i))).getObject());
+            }
         };
 
+        seq1.setOutputSize(1);
         seq0 = new Sequence(0, Step.of(circuit1), Step.of(seq1, aggregator), Step.of(circuit4));
         mnode.setSequencer(new Sequencer(mnode, seq0));
         mnode.setDynamicFilters(new DynamicFilterProto[] {bfilter});
@@ -130,28 +135,35 @@ public class PhreakSequencerAggregatorTest extends AbstractPhreakSequencerSubseq
 
         mnode.getSequencer().start(sequencerMemory, session);
 
-        CircularArrayList<FactHandle> events = sequencerMemory.getEvents();
+        CircularArrayList<Object> events = sequencerMemory.getEvents();
         assertThat(events.size()).isEqualTo(0);
         InternalFactHandle fhB0 = (InternalFactHandle) session.insert(b(0));
         assertThat(recorder.isEmpty()).isTrue();
         InternalFactHandle fhB1 = (InternalFactHandle) session.insert(b(1));
         assertThat(recorder.isEmpty()).isTrue();
         InternalFactHandle fhB2 = (InternalFactHandle) session.insert(b(2));
-        assertThat(recorder).containsExactly(b(0, 1, 2));
+        assertThat(recorder).containsExactly(b(1, 2));
         InternalFactHandle fhB3 = (InternalFactHandle) session.insert(b(3));
-        assertThat(recorder).containsExactly(b(0, 1, 2));
+        assertThat(recorder).containsExactly(b(1, 2));
         InternalFactHandle fhB4 = (InternalFactHandle) session.insert(b(4));
-        assertThat(recorder).containsExactly(b(0, 1, 2, 3, 4));
+        assertThat(recorder).containsExactly(b(1, 2, 3, 4));
         InternalFactHandle fhB5 = (InternalFactHandle) session.insert(b(5));
-        assertThat(recorder).containsExactly(b(0, 1, 2, 3, 4));
+        assertThat(recorder).containsExactly(b(1, 2, 3, 4));
         InternalFactHandle fhB6 = (InternalFactHandle) session.insert(b(6));
-        assertThat(recorder).containsExactly(b(0, 1, 2, 3, 4, 5, 6));
+        assertThat(recorder).containsExactly(b(1, 2, 3, 4, 5, 6));
         InternalFactHandle fhB7 = (InternalFactHandle) session.insert(b(7));
 
         assertThat(sequencerMemory.getCurrentStep()).isEqualTo(-1); // terminated
-        assertThat(recorder).containsExactly(b(0, 1, 2, 3, 4, 5, 6));
+        assertThat(recorder).containsExactly(b(1, 2, 3, 4, 5, 6));
         InternalFactHandle fhB8 = (InternalFactHandle) session.insert(b(8));
-        assertThat(recorder).containsExactly(b(0, 1, 2, 3, 4, 5, 6));
+        assertThat(recorder).containsExactly(b(1, 2, 3, 4, 5, 6));
+
+        assertThat(events.size()).isEqualTo(3);
+        assertThat(((FactHandle)events.get(0)).getObject()).isEqualTo(b(0));
+        assertThat(events.get(1)).isSameAs(recorder);
+        assertThat(((FactHandle)events.get(2)).getObject()).isEqualTo(b(7));
+
+
     }
 
     public B b(int i) {

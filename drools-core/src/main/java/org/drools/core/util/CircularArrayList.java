@@ -27,18 +27,18 @@ public class CircularArrayList<E> {
         head = head-offset;
     }
 
+    public boolean set(int index, E e) {
+        array[index % capacity] = e;
+        return true;
+    }
+
     public boolean add(E e) {
             array[head++ % capacity] = e;
-            //Arrays.stream(array).forEach(fh -> {if (fh != null) System.out.print(((FactHandle)fh).getObject() + ", ");});
-            //System.out.println("");
             return true;
+    }
 
-//        if (getHead() != e) {
-//            array[head++ % capacity] = e;
-//            return true;
-//        } else {
-//            return false;
-//        }
+    public void addEmpty(int size) {
+        head = head + size;
     }
 
     public E getHead() {

@@ -84,7 +84,7 @@ public class Sequencer {
 
         private TupleImpl lt;
 
-        private CircularArrayList<FactHandle> events;
+        private CircularArrayList<Object> events;
 
         private MultiInputNode node;
 
@@ -110,7 +110,7 @@ public class Sequencer {
             return lt;
         }
 
-        public CircularArrayList<FactHandle> getEvents() {
+        public CircularArrayList<Object> getEvents() {
             return events;
         }
 

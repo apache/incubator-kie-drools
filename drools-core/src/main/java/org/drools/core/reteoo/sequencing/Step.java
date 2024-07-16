@@ -2,6 +2,7 @@ package org.drools.core.reteoo.sequencing;
 
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.sequencing.Sequence.SequenceMemory;
+import org.drools.core.util.CircularArrayList;
 
 import java.util.function.Consumer;
 
@@ -29,13 +30,19 @@ public interface Step {
         return factory;
     }
 
+    static StepFactory of(Consumer<SequenceMemory> function) {
+        StepFactory factory = new StepFactory(StepFactoryType.ACTION);
+        factory.setAction(function);
+        return factory;
+    }
+
 
 
     Sequence getParentSequence();
 
 
     enum StepFactoryType {
-        LOGIC_CIRCUIT, SEQUENCE, AGGREGATOR;
+        LOGIC_CIRCUIT, SEQUENCE, AGGREGATOR, ACTION;
     }
 
     class StepFactory {
@@ -43,6 +50,7 @@ public interface Step {
         private LogicCircuit circuit;
         private Sequence sequence;
         private Consumer<SequenceMemory> aggregator;
+        private Consumer<SequenceMemory> action;
 
         public StepFactory(StepFactoryType type) {
             this.type = type;
@@ -76,6 +84,14 @@ public interface Step {
             this.aggregator = aggregator;
         }
 
+        public Consumer<SequenceMemory> getAction() {
+            return action;
+        }
+
+        public void setAction(Consumer<SequenceMemory> action) {
+            this.action = action;
+        }
+
         public Step createStep(Sequence parentSequence) {
             switch (type) {
                 case LOGIC_CIRCUIT:
@@ -84,6 +100,8 @@ public interface Step {
                     return new AggregatorStep(parentSequence, sequence, aggregator);
                 case SEQUENCE:
                     return new SequenceStep(parentSequence, sequence);
+                case ACTION:
+                    return new ActionStep(parentSequence, action);
             }
             throw new IllegalArgumentException("Unsupported step type: " + type);
         }
@@ -139,21 +157,24 @@ public interface Step {
 
         @Override
         public void activate(SequenceMemory sequenceMemory, ReteEvaluator reteEvaluator) {
-            System.out.println("step activated" + sequence);
             if (parentSequence != null) {
-                sequenceMemory.setEventsStartPosition(sequenceMemory.getSequencerMemory().getEvents().size());
-                System.out.println("start: " + sequenceMemory.getEventsStartPosition());
+                // reserved for any context or return data
+                // Also in the future it could be used to optional collect and hold nested array of subevents for later reference.
+                CircularArrayList<Object> events = sequenceMemory.getSequencerMemory().getEvents();
+
+                SequenceMemory subSequenceMemory = sequenceMemory.getSequencerMemory().getSequenceMemory(sequence);
+                events.addEmpty(subSequenceMemory.getSequence().getOutputSize());
+                subSequenceMemory.setEventsStartPosition(sequenceMemory.getSequencerMemory().getEvents().size());
             }
             sequence.start(sequenceMemory.getSequencerMemory(), reteEvaluator);
         }
 
         @Override
         public void deactivate(SequenceMemory sequenceMemory, ReteEvaluator reteEvaluator) {
-            System.out.println("step deactivate" + sequence);
             if (parentSequence != null) {
-                System.out.println("end1: " + sequenceMemory.getEventsStartPosition() + " : " + sequenceMemory.getSequencerMemory().getEvents().size() + " : " + sequenceMemory.getEventsStartPosition());
-                sequenceMemory.getSequencerMemory().getEvents().resetHeadByOffset(sequenceMemory.getSequencerMemory().getEvents().size() - sequenceMemory.getEventsStartPosition());
-                System.out.println("end2: " + sequenceMemory.getEventsStartPosition());
+                SequenceMemory subSequenceMemory = sequenceMemory.getSequencerMemory().getSequenceMemory(sequence);
+                CircularArrayList<Object> events = sequenceMemory.getSequencerMemory().getEvents();
+                events.resetHeadByOffset(events.size() - subSequenceMemory.getEventsStartPosition());
             }
         }
     }
@@ -162,6 +183,31 @@ public interface Step {
         public AggregatorStep(Sequence parentSequence, Sequence sequence, Consumer<SequenceMemory> consumer) {
             super(parentSequence, sequence);
             sequence.setOnEnd(consumer);
+        }
+    }
+
+    class ActionStep implements Step {
+        protected Sequence parentSequence;
+        private Consumer<SequenceMemory> consumer;
+
+        public ActionStep(Sequence parentSequence, Consumer<SequenceMemory> consumer) {
+            this.parentSequence = parentSequence;
+            this.consumer       = consumer;
+        }
+
+        @Override
+        public void activate(SequenceMemory memory, ReteEvaluator reteEvaluator) {
+            consumer.accept(memory);
+            memory.getSequence().next(memory, reteEvaluator); // transitions as soon as the action is fired
+        }
+
+        @Override
+        public void deactivate(SequenceMemory memory, ReteEvaluator reteEvaluator) {
+        }
+
+        @Override
+        public Sequence getParentSequence() {
+            return parentSequence;
         }
     }
 }
