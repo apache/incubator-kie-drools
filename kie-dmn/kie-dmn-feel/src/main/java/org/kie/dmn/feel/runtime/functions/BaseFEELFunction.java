@@ -23,7 +23,6 @@ import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -152,7 +151,6 @@ public abstract class BaseFEELFunction
     }
 
     /**
-     *
      * @param ctx
      * @param originalInput
      * @param isNamedParams <code>true</code> if the parameter refers to value to be retrieved inside
@@ -160,18 +158,27 @@ public abstract class BaseFEELFunction
      * @return
      */
     protected CandidateMethod getCandidateMethod(EvaluationContext ctx, Object[] originalInput, boolean isNamedParams) {
-        List<CandidateMethod> candidateMethods = Arrays.stream(getClass().getDeclaredMethods())
-                .filter(m -> Modifier.isPublic(m.getModifiers()) && m.getName().equals("invoke"))
-                .map(method -> getScoredCandidateMethod(ctx, originalInput, isNamedParams, method))
-                .filter(Objects::nonNull)
-                .sorted((o1, o2) -> o2.score - o1.score)
-                .toList();
-
-        return candidateMethods.isEmpty() ? null : candidateMethods.get(0);
+        CandidateMethod toReturn = null;
+        for (Method method : getClass().getDeclaredMethods()) {
+            if (Modifier.isPublic(method.getModifiers()) && method.getName().equals("invoke")) {
+                CandidateMethod candidateMethod = getCandidateMethod(ctx, originalInput, isNamedParams, method);
+                if (candidateMethod == null) {
+                    continue;
+                }
+                if (toReturn == null) {
+                    toReturn = candidateMethod;
+                } else if (candidateMethod.score > toReturn.score) {
+                    toReturn = candidateMethod;
+                } else if (candidateMethod.score == toReturn.score) {
+                    toReturn = getBestScoredCandidateMethod(originalInput, candidateMethod, toReturn);
+                }
+            }
+        }
+        return toReturn;
     }
 
-    private CandidateMethod getScoredCandidateMethod(EvaluationContext ctx, Object[] originalInput,
-                                                     boolean isNamedParams, Method m) {
+    private CandidateMethod getCandidateMethod(EvaluationContext ctx, Object[] originalInput,
+                                               boolean isNamedParams, Method m) {
         Object[] adaptedInput = BaseFEELFunctionHelper.getAdjustedParametersForMethod(ctx, originalInput,
                                                                                       isNamedParams, m);
         if (adaptedInput == null) {
@@ -185,7 +192,26 @@ public abstract class BaseFEELFunction
         }
 
         ScoreHelper.Compares compares = new ScoreHelper.Compares(originalInput, adaptedInput, parameterTypes);
-        return new CandidateMethod(m, ScoreHelper.score(compares), adaptedInput);
+        return new CandidateMethod(m, ScoreHelper.grossScore(compares), adaptedInput);
+    }
+
+    /**
+     * Returns the <b>left</b> <code>CandidateMethod</code> if its <b>fineScore</b> is greater than the <b>right</b> one,
+     * otherwise returns the <b>right</b> <code>CandidateMethod</code>
+     * @param originalInput
+     * @param left
+     * @param right
+     * @return
+     */
+    private CandidateMethod getBestScoredCandidateMethod(Object[] originalInput, CandidateMethod left,
+                                                         CandidateMethod right) {
+
+        ScoreHelper.Compares compares = new ScoreHelper.Compares(originalInput, left.getActualParams(),
+                                                                 left.getParameterTypes());
+        int leftScore = ScoreHelper.fineScore(compares);
+        compares = new ScoreHelper.Compares(originalInput, right.getActualParams(), right.getParameterTypes());
+        int rightScore = ScoreHelper.fineScore(compares);
+        return leftScore > rightScore ? left : right;
     }
 
     private Object getEitherResult(EvaluationContext ctx, Either<FEELEvent, Object> source,
@@ -227,6 +253,14 @@ public abstract class BaseFEELFunction
 
         public int getScore() {
             return score;
+        }
+
+        public Object[] getActualParams() {
+            return actualParams;
+        }
+
+        public Class<?>[] getParameterTypes() {
+            return actualMethod.getParameterTypes();
         }
     }
 }

@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * <p>
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Function;
+import java.util.function.ToIntFunction;
 import java.util.stream.Stream;
 
 import org.kie.dmn.feel.lang.EvaluationContext;
@@ -47,20 +47,21 @@ public class ScoreHelper {
 
     private final static Logger logger = LoggerFactory.getLogger(ScoreHelper.class);
 
-    private static final List<Function<Compares, Integer>> SCORER_LIST;
+    private static final List<ToIntFunction<Compares>> GROSS_SCORER_LIST;
+    private static final List<ToIntFunction<Compares>> FINE_SCORER_LIST;
 
     static int lastInputNotArrayNotArrayScore = 100000;
     static int lastParameterNotArrayScore = 10000;
     static int numberOfParametersScore = 1000;
     static int coercedToVarargsScore = -10;
 
-    static final Function<Compares, Integer> numberOfParameters = compares -> {
+    static final ToIntFunction<Compares> numberOfParameters = compares -> {
         int toReturn = compares.originalInput.length == compares.parameterTypes.length ? numberOfParametersScore : 0;
         logger.trace("numberOfParameters {} -> {}", compares, toReturn);
         return toReturn;
     };
 
-    static final Function<Compares, Integer> typeIdentityOfParameters = compares -> {
+    static final ToIntFunction<Compares> typeIdentityOfParameters = compares -> {
         int index = Math.min(compares.originalInput.length, compares.parameterTypes.length);
         boolean automaticallyAddedEvaluationContext = compares.parameterTypes.length > 0 &&
                 compares.parameterTypes[0] != null &&
@@ -111,7 +112,7 @@ public class ScoreHelper {
         return toReturn;
     };
 
-    static final Function<Compares, Integer> lastInputNotArray =
+    static final ToIntFunction<Compares> lastInputNotArray =
             compares -> {
                 int toReturn = isLastInputArray(compares.adaptedInput) ? 0 :
                         lastInputNotArrayNotArrayScore;
@@ -126,7 +127,7 @@ public class ScoreHelper {
                 adaptedInput[adaptedInput.length - 1].getClass().isArray();
     }
 
-    static final Function<Compares, Integer> lastParameterNotArray =
+    static final ToIntFunction<Compares> lastParameterNotArray =
             compares -> {
                 int toReturn = isLastParameterArray(compares.parameterTypes) ? 0 :
                         lastParameterNotArrayScore;
@@ -141,7 +142,7 @@ public class ScoreHelper {
                 parameterTypes[parameterTypes.length - 1].isArray();
     }
 
-    static final Function<Compares, Integer> coercedToVarargs =
+    static final ToIntFunction<Compares> coercedToVarargs =
             compares -> {
                 Object[] amendedOriginalInput = compares.originalInput != null ? Arrays.stream(compares.originalInput)
                         .filter(o -> !(o instanceof EvaluationContext)).toArray() : new Object[0];
@@ -166,7 +167,7 @@ public class ScoreHelper {
         return isOriginalInputCandidate && isAdaptedInputCandidate;
     }
 
-    static final Function<Compares, Integer> nullCounts =
+    static final ToIntFunction<Compares> nullCounts =
             compares -> {
                 int toReturn = nullCount(compares.adaptedInput) * -1;
                 logger.trace("nullCounts {} -> {}", compares, toReturn);
@@ -174,21 +175,32 @@ public class ScoreHelper {
             };
 
     static {
-        SCORER_LIST = new ArrayList<>();
-        SCORER_LIST.add(lastInputNotArray);
-        SCORER_LIST.add(lastParameterNotArray);
-        SCORER_LIST.add(numberOfParameters);
-        SCORER_LIST.add(typeIdentityOfParameters);
-        SCORER_LIST.add(coercedToVarargs);
-        SCORER_LIST.add(nullCounts);
+        GROSS_SCORER_LIST = new ArrayList<>();
+        GROSS_SCORER_LIST.add(lastInputNotArray);
+        GROSS_SCORER_LIST.add(lastParameterNotArray);
+
+        FINE_SCORER_LIST = new ArrayList<>();
+        FINE_SCORER_LIST.add(numberOfParameters);
+        FINE_SCORER_LIST.add(typeIdentityOfParameters);
+        FINE_SCORER_LIST.add(coercedToVarargs);
+        FINE_SCORER_LIST.add(nullCounts);
     }
 
-    static int score(Compares toScore) {
-        int toReturn = SCORER_LIST.stream()
-                .map(comparesIntegerFunction ->
-                             comparesIntegerFunction.apply(toScore))
-                .reduce(0, Integer::sum);
-        logger.trace("score {} -> {}", toScore, toReturn);
+    static int grossScore(Compares toScore) {
+        int toReturn = GROSS_SCORER_LIST.stream()
+                .mapToInt(comparesIntegerFunction ->
+                             comparesIntegerFunction.applyAsInt(toScore))
+                .sum();
+        logger.trace("grossScore {} -> {}", toScore, toReturn);
+        return toReturn;
+    }
+
+    static int fineScore(Compares toScore) {
+        int toReturn = FINE_SCORER_LIST.stream()
+                .mapToInt(comparesIntegerFunction ->
+                             comparesIntegerFunction.applyAsInt(toScore))
+                .sum();
+        logger.trace("fineScore {} -> {}", toScore, toReturn);
         return toReturn;
     }
 
