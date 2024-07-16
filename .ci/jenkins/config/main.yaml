@@ -53,5 +53,5 @@ jenkins:
         # At some point, this image will need to be changed when a release branch is created
         # but we need to make sure the image exists first ... simple tag before setting up the branch ?
         # See https://github.com/kiegroup/kie-issues/issues/551
-        image: quay.io/kiegroup/kogito-ci-build:main-latest
+        image: docker.io/apache/incubator-kie-kogito-ci-build:main-latest
         args: --privileged --group-add docker
