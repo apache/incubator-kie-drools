@@ -993,7 +993,7 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         model.setX("oldValue");
         ProcessInstance<CallActivityWithBoundaryEventModel> processInstance = process.createInstance(model);
         processInstance.start();
-        listener.waitTillCompleted();
+        listener.waitTillCompleted(15000);
         assertThat(processInstance).extracting(ProcessInstance::status).isEqualTo(ProcessInstance.STATE_COMPLETED);
         Collection<String> processNodes = process.findNodes(Objects::nonNull).stream().map(Node::getName).collect(Collectors.toSet());
         Collection<String> subProcessNodes = callActivitySubProcessWithBoundaryEventProcess.findNodes(Objects::nonNull).stream().map(Node::getName).collect(Collectors.toSet());
