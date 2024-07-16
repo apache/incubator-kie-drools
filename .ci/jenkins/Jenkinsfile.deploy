@@ -159,13 +159,9 @@ pipeline {
                             }
                         }
                         if (isRelease()) {
-                            release.gpgImportKeyFromFileWithPassword(getReleaseGpgSignKeyCredsId(), getReleaseGpgSignPassphraseCredsId())
-                            withCredentials([string(credentialsId: getReleaseGpgSignPassphraseCredsId(), variable: 'SIGNING_KEY_PASSWORD')]) {
-                                mvnCmd.withProperty('gpg.passphrase', SIGNING_KEY_PASSWORD)
-                                    .withProfiles(['apache-release'])
-
-                                mavenRunClosure()
-                            }
+                            release.gpgImportKeyFromStringWithoutPassword(getReleaseGpgSignKeyCredsId())
+                            mavenCommand.withProfiles(['apache-release'])
+                            mavenRunClosure()
                         } else {
                             mavenRunClosure()
                         }
