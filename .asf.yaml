@@ -17,3 +17,7 @@
 github:
   features:
     issues: true
+  enabled_merge_buttons:
+    squash:  true
+    merge:   false
+    rebase:  true
