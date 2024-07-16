@@ -62,16 +62,16 @@ class EventFlowIT {
     }
 
     @Test
-    void testStartingEventWithToStateFilter() {
+    void testStartingEventWithToStateFilter() throws IOException {
         given()
                 .contentType(ContentType.JSON)
                 .when()
-                .body(CloudEventBuilder.v1()
+                .body(defaultMarshaller.marshall(CloudEventBuilder.v1()
                         .withId(UUID.randomUUID().toString())
                         .withSource(URI.create("customer-arrival-event-source"))
                         .withType("customer-arrival-type")
                         .withTime(OffsetDateTime.now())
-                        .withData(defaultMarshaller.cloudEventDataFactory().apply(Collections.singletonMap("customer", Map.of("name", "pepe")))).build())
+                        .withData(defaultMarshaller.cloudEventDataFactory().apply(Collections.singletonMap("customer", Map.of("name", "pepe")))).build()))
                 .post("/eventWithToStateFilter")
                 .then()
                 .statusCode(202);

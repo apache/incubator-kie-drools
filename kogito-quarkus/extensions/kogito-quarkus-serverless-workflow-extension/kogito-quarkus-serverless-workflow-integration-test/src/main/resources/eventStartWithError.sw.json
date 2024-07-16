@@ -1,0 +1,76 @@
+{
+  "id": "startEventError",
+  "version": "1.0",
+  "name": "Workflow event test",
+  "description": "An test of a starting event with  error on action",
+  "start": "waitForEvent",
+  "events": [
+    {
+      "name": "startEvent",
+      "source": "",
+      "type": "start"
+    }
+  ],
+  "errors": [
+     {
+      "name": "odd number",
+      "code": "Odd situation"
+     }
+  ],
+  "functions": [   
+    {
+      "name": "publishEvenError",
+      "type": "asyncapi",
+      "operation": "specs/callbackResults.yaml#sendEvenError"
+    },
+     {
+      "name": "isEven",
+      "type": "custom",
+      "operation": "service:java:org.kie.kogito.workflows.services.EvenService::isEven"
+    }
+  ]
+  ,
+  "states": [
+    {
+      "name": "waitForEvent",
+      "type": "event",
+       "onEvents": [
+        {
+          "eventRefs": [
+            "startEvent"
+          ],
+          "actions": [ 
+          {
+            "name": "actionWithError",
+            "functionRef": {
+                 "refName": "isEven",
+                  "arguments": {
+                  "number": ".number"
+                }
+             }
+           }
+          ]
+          
+        }
+       ],
+      "onErrors": [
+        {
+          "errorRef": "odd number",
+          "transition": "PublishError"
+        }
+      ],
+      "end":true
+    },
+    {
+      "name": "PublishError",
+      "type": "operation",
+      "actions": [
+        {
+          "name": "publishEvenError",
+          "functionRef": "publishEvenError"
+        }
+      ],
+      "end": "true"
+    }
+  ]
+}

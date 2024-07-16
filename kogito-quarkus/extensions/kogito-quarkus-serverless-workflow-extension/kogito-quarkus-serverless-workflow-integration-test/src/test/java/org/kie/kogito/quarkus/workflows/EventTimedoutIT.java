@@ -19,7 +19,11 @@
 package org.kie.kogito.quarkus.workflows;
 
 import java.io.IOException;
+import java.net.URI;
+import java.time.OffsetDateTime;
+import java.util.Collections;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -28,8 +32,10 @@ import org.apache.kafka.common.serialization.ByteArraySerializer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.event.CloudEventMarshaller;
 import org.kie.kogito.event.Converter;
 import org.kie.kogito.event.cloudevents.CloudEventExtensionConstants;
+import org.kie.kogito.event.impl.ByteArrayCloudEventMarshaller;
 import org.kie.kogito.event.impl.ByteArrayCloudEventUnmarshallerFactory;
 import org.kie.kogito.test.quarkus.QuarkusTestProperty;
 import org.kie.kogito.test.quarkus.kafka.KafkaTypedTestClient;
@@ -41,10 +47,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import io.cloudevents.CloudEvent;
+import io.cloudevents.core.builder.CloudEventBuilder;
 import io.cloudevents.jackson.JsonFormat;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusIntegrationTest;
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 
+import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.kogito.quarkus.workflows.AssuredTestUtils.startProcess;
 
@@ -59,13 +69,17 @@ public class EventTimedoutIT {
     private ObjectMapper objectMapper;
     private KafkaTypedTestClient<byte[], ByteArraySerializer, ByteArrayDeserializer> kafkaClient;
 
+    private static CloudEventMarshaller<byte[]> defaultMarshaller;
+
     @BeforeEach
     void setup() {
+        RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
         kafkaClient = new KafkaTypedTestClient<>(kafkaBootstrapServers, ByteArraySerializer.class, ByteArrayDeserializer.class);
         objectMapper = new ObjectMapper()
                 .registerModule(new JavaTimeModule())
                 .registerModule(JsonFormat.getCloudEventJacksonModule())
                 .disable(com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        defaultMarshaller = new ByteArrayCloudEventMarshaller(objectMapper);
     }
 
     @AfterEach
@@ -89,6 +103,28 @@ public class EventTimedoutIT {
             } catch (IOException e) {
                 logger.info("Unmarshall exception", e);
             }
+        });
+        countDownLatch.await(10, TimeUnit.SECONDS);
+        assertThat(countDownLatch.getCount()).isZero();
+    }
+
+    @Test
+    void testStartEventWithError() throws InterruptedException, IOException {
+        given()
+                .contentType(ContentType.JSON)
+                .when()
+                .body(defaultMarshaller.marshall(CloudEventBuilder.v1()
+                        .withId(UUID.randomUUID().toString())
+                        .withSource(URI.create("source"))
+                        .withType("start")
+                        .withTime(OffsetDateTime.now())
+                        .withData(defaultMarshaller.cloudEventDataFactory().apply(Collections.singletonMap("number", 3))).build()))
+                .post("/startWithError")
+                .then()
+                .statusCode(202);
+        final CountDownLatch countDownLatch = new CountDownLatch(1);
+        kafkaClient.consume("sendEvenError", v -> {
+            countDownLatch.countDown();
         });
         countDownLatch.await(10, TimeUnit.SECONDS);
         assertThat(countDownLatch.getCount()).isZero();

@@ -59,7 +59,6 @@ public class EventHandler extends CompositeContextNodeHandler<EventState> {
             handleErrors(factory, embeddedContainer);
             return new MakeNodeResult(embeddedContainer);
         }
-
     }
 
     private MakeNodeResult processOnEvent(RuleFlowNodeContainerFactory<?, ?> factory, OnEvents onEvent) {
@@ -67,6 +66,9 @@ public class EventHandler extends CompositeContextNodeHandler<EventState> {
                 onEvent.getEventRefs(), (fact, onEventRef) -> filterAndMergeNode(fact, onEvent.getEventDataFilter(), getVarName(),
                         (f, inputVar, outputVar) -> buildEventNode(f, onEventRef, inputVar, outputVar)));
         CompositeContextNodeFactory<?> embeddedSubProcess = handleActions(makeCompositeNode(factory), onEvent.getActions());
+        if (isStartState) {
+            handleErrors(factory, embeddedSubProcess);
+        }
         connect(result.getOutgoingNode(), embeddedSubProcess);
         return new MakeNodeResult(result.getIncomingNode(), embeddedSubProcess);
     }

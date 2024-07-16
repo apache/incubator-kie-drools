@@ -54,6 +54,13 @@ channels:
       summary: Timeout Expired
       message:
         $ref: '#/components/messages/message'
+  sendEvenError:
+    description: A message channel for publishing errors
+    publish:
+      operationId: sendEvenError
+      summary: Reporting error
+      message:
+        $ref: '#/components/messages/message'
   error:
     description: A message channel for failed executions
     publish:
