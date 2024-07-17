@@ -29,6 +29,7 @@
   </appender>
 
   <logger name="org.kie" level="warn"/>
+  <logger name="org.kie.dmn.feel.runtime.functions" level="info"/> <!-- set to trace for very detailed logging <info -->
   <logger name="org.kie.dmn.feel.codegen" level="info"/> <!-- useful default when moving generic org.kie to <info -->
 
   <root level="warn">
