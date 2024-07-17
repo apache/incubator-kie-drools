@@ -20,6 +20,7 @@ package org.kie.dmn.feel.runtime.functions;
 
 import java.util.Arrays;
 import java.util.List;
+
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
@@ -28,7 +29,7 @@ public class AllFunction
 
     public static final AllFunction INSTANCE = new AllFunction();
 
-    public AllFunction() {
+    private AllFunction() {
         super( "all" );
     }
 
@@ -66,7 +67,6 @@ public class AllFunction
             // Arrays.asList does not accept null as parameter
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "b", "cannot be null"));
         }
-        
         return invoke( Arrays.asList( list ) );
     }
 }

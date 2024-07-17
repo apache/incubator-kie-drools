@@ -16,26 +16,18 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.dmn.feel.runtime.functions.extended;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
-import org.kie.dmn.feel.runtime.functions.FunctionTestUtil;
+package org.kie.dmn.feel.runtime.functions;
 
 import java.util.List;
 import java.util.Map;
 
+import org.junit.jupiter.api.Test;
+import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
+
 class ContextFunctionTest {
 
-    private ContextFunction contextFunction;
-    private record ContextEntry(String key, Object value) {}
+    private static final ContextFunction contextFunction = ContextFunction.INSTANCE;
 
-    @BeforeEach
-    void setUp() {
-        contextFunction = new ContextFunction();
-    }
 
     @Test
     void invokeListNull() {
@@ -47,7 +39,7 @@ class ContextFunctionTest {
         FunctionTestUtil.assertResultError(contextFunction.invoke(List.of(
                 Map.of("test", "name", "value", "John Doe"),
                 Map.of("key", "name", "test", "John Doe"))), InvalidParametersEvent.class);
-}
+    }
 
     @Test
     void invokeDuplicateKey() {

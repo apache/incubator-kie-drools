@@ -20,18 +20,12 @@ package org.kie.dmn.feel.runtime.functions;
 
 import java.math.BigDecimal;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
 class NotFunctionTest {
 
-    private NotFunction notFunction;
-
-    @BeforeEach
-    void setUp() {
-        notFunction = new NotFunction();
-    }
+    private static final NotFunction notFunction = NotFunction.INSTANCE;
 
     @Test
     void invokeNull() {

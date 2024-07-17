@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.dmn.feel.runtime.functions.extended;
+package org.kie.dmn.feel.runtime.functions;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -25,20 +25,12 @@ import java.util.Map;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
-import org.kie.dmn.feel.runtime.functions.BaseFEELFunction;
-import org.kie.dmn.feel.runtime.functions.FEELFnResult;
-import org.kie.dmn.feel.runtime.functions.ParameterName;
 
-/**
- * Proposal DMN14-187
- * Experimental for DMN14-182
- * See also: DMN14-181, DMN14-183
- */
 public class ContextMergeFunction extends BaseFEELFunction {
 
     public static final ContextMergeFunction INSTANCE = new ContextMergeFunction();
 
-    public ContextMergeFunction() {
+    private ContextMergeFunction() {
         super("context merge");
     }
 

@@ -24,7 +24,6 @@ import java.util.List;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
-import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.dmn.feel.util.NumberEvalHelper;
 
 public class SumFunction
@@ -32,7 +31,7 @@ public class SumFunction
 
     public static final SumFunction INSTANCE = new SumFunction();
 
-    public SumFunction() {
+    private SumFunction() {
         super( "sum" );
     }
 

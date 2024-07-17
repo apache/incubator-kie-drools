@@ -30,7 +30,7 @@ public class SqrtFunction
         extends BaseFEELFunction {
     public static final SqrtFunction INSTANCE = new SqrtFunction();
 
-    SqrtFunction() {
+    private SqrtFunction() {
         super("sqrt");
     }
 

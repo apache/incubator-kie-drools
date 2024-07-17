@@ -95,6 +95,11 @@ cloud:
     registry: docker.io
     namespace: apache
     latest_git_branch: main
+release:
+  gpg:
+    sign:
+      key-credentials-id: 'GPG_KEY'
+      passphrase-credentials-id: ''
 jenkins:
   email_creds_id: DROOLS_CI_NOTIFICATION_EMAILS
   agent:

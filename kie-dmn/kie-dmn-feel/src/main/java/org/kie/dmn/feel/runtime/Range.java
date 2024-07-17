@@ -20,7 +20,7 @@ package org.kie.dmn.feel.runtime;
 
 public interface Range {
 
-    static enum RangeBoundary {
+    enum RangeBoundary {
         OPEN, CLOSED;
     }
 

@@ -23,19 +23,13 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 import org.kie.dmn.feel.runtime.functions.FunctionTestUtil;
 
 class MinFunctionTest {
 
-    private NNMinFunction minFunction;
-
-    @BeforeEach
-    void setUp() {
-        minFunction = new NNMinFunction();
-    }
+    private static final NNMinFunction minFunction = NNMinFunction.INSTANCE;
 
     @Test
     void invokeNullList() {
@@ -49,7 +43,8 @@ class MinFunctionTest {
 
     @Test
     void invokeListWithHeterogenousTypes() {
-        FunctionTestUtil.assertResultError(minFunction.invoke(Arrays.asList(1, "test", BigDecimal.valueOf(10.2))), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(minFunction.invoke(Arrays.asList(1, "test", BigDecimal.valueOf(10.2))),
+                                           InvalidParametersEvent.class);
     }
 
     @Test
@@ -57,7 +52,7 @@ class MinFunctionTest {
         FunctionTestUtil.assertResult(minFunction.invoke(Collections.singletonList(1)), 1);
         FunctionTestUtil.assertResult(minFunction.invoke(Arrays.asList(null, 1, 2, 3)), 1);
         FunctionTestUtil.assertResult(minFunction.invoke(Arrays.asList(2, null, 1, 3)), 1);
-        FunctionTestUtil.assertResult(minFunction.invoke(Arrays.asList(2, 3, 1, null )), 1);
+        FunctionTestUtil.assertResult(minFunction.invoke(Arrays.asList(2, 3, 1, null)), 1);
     }
 
     @Test
@@ -80,7 +75,8 @@ class MinFunctionTest {
 
     @Test
     void invokeArrayWithHeterogenousTypes() {
-        FunctionTestUtil.assertResultError(minFunction.invoke(new Object[]{1, "test", BigDecimal.valueOf(10.2)}), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(minFunction.invoke(new Object[]{1, "test", BigDecimal.valueOf(10.2)}),
+                                           InvalidParametersEvent.class);
     }
 
     @Test

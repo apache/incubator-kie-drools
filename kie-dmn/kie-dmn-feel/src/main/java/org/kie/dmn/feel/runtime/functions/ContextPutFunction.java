@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.dmn.feel.runtime.functions.extended;
+package org.kie.dmn.feel.runtime.functions;
 
 import java.util.HashMap;
 import java.util.List;
@@ -27,20 +27,13 @@ import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.lang.types.impl.ImmutableFPAWrappingPOJO;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
-import org.kie.dmn.feel.runtime.functions.BaseFEELFunction;
-import org.kie.dmn.feel.runtime.functions.FEELFnResult;
-import org.kie.dmn.feel.runtime.functions.ParameterName;
 
-/**
- * Proposal DMN14-187
- * Experimental for DMN14-181
- * See also: DMN14-182, DMN14-183
- */
+
 public class ContextPutFunction extends BaseFEELFunction {
 
     public static final ContextPutFunction INSTANCE = new ContextPutFunction();
 
-    public ContextPutFunction() {
+    private ContextPutFunction() {
         super("context put");
     }
 

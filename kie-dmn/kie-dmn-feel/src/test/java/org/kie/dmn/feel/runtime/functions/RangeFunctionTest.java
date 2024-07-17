@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.dmn.feel.runtime.functions.extended;
+package org.kie.dmn.feel.runtime.functions;
 
 import java.math.BigDecimal;
 import java.time.Duration;
@@ -29,7 +29,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.lang.ast.AtLiteralNode;
 import org.kie.dmn.feel.lang.ast.BaseNode;
@@ -41,34 +40,29 @@ import org.kie.dmn.feel.lang.ast.StringNode;
 import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
-import org.kie.dmn.feel.runtime.functions.FEELFnResult;
-import org.kie.dmn.feel.runtime.functions.FunctionTestUtil;
 import org.kie.dmn.feel.runtime.impl.RangeImpl;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class RangeFunctionTest {
 
-    private RangeFunction rangeFunction;
-
-    @BeforeEach
-    void setUp() {
-        rangeFunction = new RangeFunction();
-    }
+    private static final RangeFunction rangeFunction = RangeFunction.INSTANCE;
 
     @Test
     void invokeNull() {
         List<String> from = Arrays.asList(null, " ", "", "[..]");
-        from.forEach(it ->  FunctionTestUtil.assertResultError(rangeFunction.invoke(it), InvalidParametersEvent.class, it));
+        from.forEach(it -> FunctionTestUtil.assertResultError(rangeFunction.invoke(it), InvalidParametersEvent.class,
+                                                              it));
     }
 
     @Test
     void invokeDifferentTypes() {
         List<String> from = Arrays.asList("[1..\"cheese\"]",
-                "[1..date(\"1978-09-12\")]",
-                "[1..date(\"1978-09-12\")]",
-                "[1..\"upper case(\"aBc4\")\"]");
-        from.forEach(it ->  FunctionTestUtil.assertResultError(rangeFunction.invoke(it), InvalidParametersEvent.class, it));
+                                          "[1..date(\"1978-09-12\")]",
+                                          "[1..date(\"1978-09-12\")]",
+                                          "[1..\"upper case(\"aBc4\")\"]");
+        from.forEach(it -> FunctionTestUtil.assertResultError(rangeFunction.invoke(it), InvalidParametersEvent.class,
+                                                              it));
     }
 
     @Test
@@ -81,169 +75,189 @@ class RangeFunctionTest {
     void invoke_LeftNull() {
         String from = "(..2)";
         FunctionTestUtil.assertResult(rangeFunction.invoke(from),
-                new RangeImpl(Range.RangeBoundary.OPEN, null, BigDecimal.valueOf(2), Range.RangeBoundary.OPEN),
-                from);
+                                      new RangeImpl(Range.RangeBoundary.OPEN, null, BigDecimal.valueOf(2),
+                                                    Range.RangeBoundary.OPEN),
+                                      from);
         from = "(..\"z\")";
         FunctionTestUtil.assertResult(rangeFunction.invoke(from),
-                new RangeImpl(Range.RangeBoundary.OPEN, null, "z", Range.RangeBoundary.OPEN),
-                from);
+                                      new RangeImpl(Range.RangeBoundary.OPEN, null, "z", Range.RangeBoundary.OPEN),
+                                      from);
         from = "(..\"yz\")";
         FunctionTestUtil.assertResult(rangeFunction.invoke(from),
-                new RangeImpl(Range.RangeBoundary.OPEN, null, "yz", Range.RangeBoundary.OPEN),
-                from);
+                                      new RangeImpl(Range.RangeBoundary.OPEN, null, "yz", Range.RangeBoundary.OPEN),
+                                      from);
         from = "(..date(\"1978-10-13\"))";
         FunctionTestUtil.assertResult(rangeFunction.invoke(from),
-                new RangeImpl(Range.RangeBoundary.OPEN, null, LocalDate.of(1978, 10, 13), Range.RangeBoundary.OPEN),
-                from);
+                                      new RangeImpl(Range.RangeBoundary.OPEN, null, LocalDate.of(1978, 10, 13),
+                                                    Range.RangeBoundary.OPEN),
+                                      from);
         from = "(..duration(\"P3DT20H14M\"))";
         FunctionTestUtil.assertResult(rangeFunction.invoke(from),
-                new RangeImpl(Range.RangeBoundary.OPEN, null, Duration.parse("P3DT20H14M"), Range.RangeBoundary.OPEN),
-                from);
+                                      new RangeImpl(Range.RangeBoundary.OPEN, null, Duration.parse("P3DT20H14M"),
+                                                    Range.RangeBoundary.OPEN),
+                                      from);
         from = "(..duration(\"P2Y6M\"))";
         FunctionTestUtil.assertResult(rangeFunction.invoke(from),
-                new RangeImpl(Range.RangeBoundary.OPEN,
-                        null,
-                        new ComparablePeriod(Period.parse("P2Y6M")),
-                        Range.RangeBoundary.OPEN),
-                from);
+                                      new RangeImpl(Range.RangeBoundary.OPEN,
+                                                    null,
+                                                    new ComparablePeriod(Period.parse("P2Y6M")),
+                                                    Range.RangeBoundary.OPEN),
+                                      from);
     }
 
     @Test
     void invoke_RightNull() {
         String from = "(1..)";
         FunctionTestUtil.assertResult(rangeFunction.invoke(from),
-                new RangeImpl(Range.RangeBoundary.OPEN, BigDecimal.ONE, null, Range.RangeBoundary.OPEN),
-                from);
+                                      new RangeImpl(Range.RangeBoundary.OPEN, BigDecimal.ONE, null,
+                                                    Range.RangeBoundary.OPEN),
+                                      from);
         from = "(\"a\"..)";
         FunctionTestUtil.assertResult(rangeFunction.invoke(from),
-                new RangeImpl(Range.RangeBoundary.OPEN, "a", null, Range.RangeBoundary.OPEN),
-                from);
+                                      new RangeImpl(Range.RangeBoundary.OPEN, "a", null, Range.RangeBoundary.OPEN),
+                                      from);
         from = "(\"ab\"..)";
         FunctionTestUtil.assertResult(rangeFunction.invoke(from),
-                new RangeImpl(Range.RangeBoundary.OPEN, "ab", null, Range.RangeBoundary.OPEN),
-                from);
+                                      new RangeImpl(Range.RangeBoundary.OPEN, "ab", null, Range.RangeBoundary.OPEN),
+                                      from);
         from = "(date(\"1978-09-12\")..)";
         FunctionTestUtil.assertResult(rangeFunction.invoke(from),
-                new RangeImpl(Range.RangeBoundary.OPEN, LocalDate.of(1978, 9, 12), null, Range.RangeBoundary.OPEN),
-                from);
+                                      new RangeImpl(Range.RangeBoundary.OPEN, LocalDate.of(1978, 9, 12), null,
+                                                    Range.RangeBoundary.OPEN),
+                                      from);
         from = "(duration(\"P2DT20H14M\")..)";
         FunctionTestUtil.assertResult(rangeFunction.invoke(from),
-                new RangeImpl(Range.RangeBoundary.OPEN, Duration.parse("P2DT20H14M"), null, Range.RangeBoundary.OPEN),
-                from);
+                                      new RangeImpl(Range.RangeBoundary.OPEN, Duration.parse("P2DT20H14M"), null,
+                                                    Range.RangeBoundary.OPEN),
+                                      from);
         from = "(duration(\"P1Y6M\")..)";
         FunctionTestUtil.assertResult(rangeFunction.invoke(from),
-                new RangeImpl(Range.RangeBoundary.OPEN,
-                        new ComparablePeriod(Period.parse("P1Y6M")),
-                        null,
-                        Range.RangeBoundary.OPEN),
-                from);
+                                      new RangeImpl(Range.RangeBoundary.OPEN,
+                                                    new ComparablePeriod(Period.parse("P1Y6M")),
+                                                    null,
+                                                    Range.RangeBoundary.OPEN),
+                                      from);
     }
 
     @Test
     void invoke_OpenOpenBoundaries() {
         String from = "(1..2)";
         FunctionTestUtil.assertResult(rangeFunction.invoke(from),
-                new RangeImpl(Range.RangeBoundary.OPEN, BigDecimal.ONE, BigDecimal.valueOf(2), Range.RangeBoundary.OPEN),
-                from);
+                                      new RangeImpl(Range.RangeBoundary.OPEN, BigDecimal.ONE, BigDecimal.valueOf(2),
+                                                    Range.RangeBoundary.OPEN),
+                                      from);
         from = "(\"a\"..\"z\")";
         FunctionTestUtil.assertResult(rangeFunction.invoke(from),
-                new RangeImpl(Range.RangeBoundary.OPEN, "a", "z", Range.RangeBoundary.OPEN),
-                from);
+                                      new RangeImpl(Range.RangeBoundary.OPEN, "a", "z", Range.RangeBoundary.OPEN),
+                                      from);
         from = "(\"ab\"..\"yz\")";
         FunctionTestUtil.assertResult(rangeFunction.invoke(from),
-                new RangeImpl(Range.RangeBoundary.OPEN, "ab", "yz", Range.RangeBoundary.OPEN),
-                from);
+                                      new RangeImpl(Range.RangeBoundary.OPEN, "ab", "yz", Range.RangeBoundary.OPEN),
+                                      from);
         from = "(date(\"1978-09-12\")..date(\"1978-10-13\"))";
         FunctionTestUtil.assertResult(rangeFunction.invoke(from),
-                new RangeImpl(Range.RangeBoundary.OPEN, LocalDate.of(1978, 9, 12), LocalDate.of(1978, 10, 13), Range.RangeBoundary.OPEN),
-                from);
+                                      new RangeImpl(Range.RangeBoundary.OPEN, LocalDate.of(1978, 9, 12),
+                                                    LocalDate.of(1978, 10, 13), Range.RangeBoundary.OPEN),
+                                      from);
         from = "(duration(\"P2DT20H14M\")..duration(\"P3DT20H14M\"))";
         FunctionTestUtil.assertResult(rangeFunction.invoke(from),
-                new RangeImpl(Range.RangeBoundary.OPEN, Duration.parse("P2DT20H14M"), Duration.parse("P3DT20H14M"), Range.RangeBoundary.OPEN),
-                from);
+                                      new RangeImpl(Range.RangeBoundary.OPEN, Duration.parse("P2DT20H14M"),
+                                                    Duration.parse("P3DT20H14M"), Range.RangeBoundary.OPEN),
+                                      from);
         from = "(duration(\"P1Y6M\")..duration(\"P2Y6M\"))";
         FunctionTestUtil.assertResult(rangeFunction.invoke(from),
-                new RangeImpl(Range.RangeBoundary.OPEN,
-                        new ComparablePeriod(Period.parse("P1Y6M")),
-                        new ComparablePeriod(Period.parse("P2Y6M")),
-                        Range.RangeBoundary.OPEN),
-                from);
+                                      new RangeImpl(Range.RangeBoundary.OPEN,
+                                                    new ComparablePeriod(Period.parse("P1Y6M")),
+                                                    new ComparablePeriod(Period.parse("P2Y6M")),
+                                                    Range.RangeBoundary.OPEN),
+                                      from);
     }
 
     @Test
     void invoke_OpenClosedBoundaries() {
         String from = "(1..2]";
         FunctionTestUtil.assertResult(rangeFunction.invoke(from),
-                new RangeImpl(Range.RangeBoundary.OPEN, BigDecimal.ONE, BigDecimal.valueOf(2), Range.RangeBoundary.CLOSED),
-                from);
+                                      new RangeImpl(Range.RangeBoundary.OPEN, BigDecimal.ONE, BigDecimal.valueOf(2),
+                                                    Range.RangeBoundary.CLOSED),
+                                      from);
         from = "(\"a\"..\"z\"]";
         FunctionTestUtil.assertResult(rangeFunction.invoke(from),
-                new RangeImpl(Range.RangeBoundary.OPEN, "a", "z", Range.RangeBoundary.CLOSED),
-                from);
+                                      new RangeImpl(Range.RangeBoundary.OPEN, "a", "z", Range.RangeBoundary.CLOSED),
+                                      from);
         from = "(date(\"1978-09-12\")..date(\"1978-10-13\")]";
         FunctionTestUtil.assertResult(rangeFunction.invoke(from),
-                new RangeImpl(Range.RangeBoundary.OPEN, LocalDate.of(1978, 9, 12), LocalDate.of(1978, 10, 13), Range.RangeBoundary.CLOSED),
-                from);
+                                      new RangeImpl(Range.RangeBoundary.OPEN, LocalDate.of(1978, 9, 12),
+                                                    LocalDate.of(1978, 10, 13), Range.RangeBoundary.CLOSED),
+                                      from);
         from = "(duration(\"P2DT20H14M\")..duration(\"P3DT20H14M\")]";
         FunctionTestUtil.assertResult(rangeFunction.invoke(from),
-                new RangeImpl(Range.RangeBoundary.OPEN, Duration.parse("P2DT20H14M"), Duration.parse("P3DT20H14M"), Range.RangeBoundary.CLOSED),
-                from);
+                                      new RangeImpl(Range.RangeBoundary.OPEN, Duration.parse("P2DT20H14M"),
+                                                    Duration.parse("P3DT20H14M"), Range.RangeBoundary.CLOSED),
+                                      from);
     }
 
     @Test
     void invoke_ClosedOpenBoundaries() {
         String from = "[1..2)";
         FunctionTestUtil.assertResult(rangeFunction.invoke(from),
-                new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.ONE, BigDecimal.valueOf(2), Range.RangeBoundary.OPEN),
-                from);
+                                      new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.ONE, BigDecimal.valueOf(2)
+                                              , Range.RangeBoundary.OPEN),
+                                      from);
         from = "[\"a\"..\"z\")";
         FunctionTestUtil.assertResult(rangeFunction.invoke(from),
-                new RangeImpl(Range.RangeBoundary.CLOSED, "a", "z", Range.RangeBoundary.OPEN),
-                from);
+                                      new RangeImpl(Range.RangeBoundary.CLOSED, "a", "z", Range.RangeBoundary.OPEN),
+                                      from);
         from = "[date(\"1978-09-12\")..date(\"1978-10-13\"))";
         FunctionTestUtil.assertResult(rangeFunction.invoke(from),
-                new RangeImpl(Range.RangeBoundary.CLOSED, LocalDate.of(1978, 9, 12), LocalDate.of(1978, 10, 13), Range.RangeBoundary.OPEN),
-                from);
+                                      new RangeImpl(Range.RangeBoundary.CLOSED, LocalDate.of(1978, 9, 12),
+                                                    LocalDate.of(1978, 10, 13), Range.RangeBoundary.OPEN),
+                                      from);
         from = "[duration(\"P2DT20H14M\")..duration(\"P3DT20H14M\"))";
         FunctionTestUtil.assertResult(rangeFunction.invoke("[duration(\"P2DT20H14M\")..duration(\"P3DT20H14M\"))"),
-                new RangeImpl(Range.RangeBoundary.CLOSED, Duration.parse("P2DT20H14M"), Duration.parse("P3DT20H14M"), Range.RangeBoundary.OPEN),
-                from);
+                                      new RangeImpl(Range.RangeBoundary.CLOSED, Duration.parse("P2DT20H14M"),
+                                                    Duration.parse("P3DT20H14M"), Range.RangeBoundary.OPEN),
+                                      from);
     }
 
     @Test
     void invoke_ClosedClosedBoundaries() {
         String from = "[1..2)";
         FunctionTestUtil.assertResult(rangeFunction.invoke("[1..2]"),
-                new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.ONE, BigDecimal.valueOf(2), Range.RangeBoundary.CLOSED),
-                from);
+                                      new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.ONE, BigDecimal.valueOf(2)
+                                              , Range.RangeBoundary.CLOSED),
+                                      from);
         from = "[2..1]";
         FunctionTestUtil.assertResult(rangeFunction.invoke(from),
-                new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.valueOf(2), BigDecimal.ONE, Range.RangeBoundary.CLOSED),
-                from);
+                                      new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.valueOf(2), BigDecimal.ONE
+                                              , Range.RangeBoundary.CLOSED),
+                                      from);
         from = "[\"a\"..\"z\"]";
         FunctionTestUtil.assertResult(rangeFunction.invoke(from),
-                new RangeImpl(Range.RangeBoundary.CLOSED, "a", "z", Range.RangeBoundary.CLOSED),
-                from);
+                                      new RangeImpl(Range.RangeBoundary.CLOSED, "a", "z", Range.RangeBoundary.CLOSED),
+                                      from);
         from = "[date(\"1978-09-12\")..date(\"1978-10-13\")]";
         FunctionTestUtil.assertResult(rangeFunction.invoke(from),
-                new RangeImpl(Range.RangeBoundary.CLOSED, LocalDate.of(1978, 9, 12), LocalDate.of(1978, 10, 13), Range.RangeBoundary.CLOSED),
-                from);
+                                      new RangeImpl(Range.RangeBoundary.CLOSED, LocalDate.of(1978, 9, 12),
+                                                    LocalDate.of(1978, 10, 13), Range.RangeBoundary.CLOSED),
+                                      from);
         from = "[duration(\"P2DT20H14M\")..duration(\"P3DT20H14M\")]";
         FunctionTestUtil.assertResult(rangeFunction.invoke(from),
-                new RangeImpl(Range.RangeBoundary.CLOSED, Duration.parse("P2DT20H14M"), Duration.parse("P3DT20H14M"), Range.RangeBoundary.CLOSED),
-                from);
+                                      new RangeImpl(Range.RangeBoundary.CLOSED, Duration.parse("P2DT20H14M"),
+                                                    Duration.parse("P3DT20H14M"), Range.RangeBoundary.CLOSED),
+                                      from);
     }
 
     @Test
     void invoke_WithOneFunctionNode() {
         String from = "[number(\"1\", \",\", \".\")\"..2]";
         FunctionTestUtil.assertResult(rangeFunction.invoke(from),
-                new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.ONE, BigDecimal.valueOf(2), Range.RangeBoundary.CLOSED),
-                from);
+                                      new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.ONE, BigDecimal.valueOf(2)
+                                              , Range.RangeBoundary.CLOSED),
+                                      from);
         from = "[\"a\"..lower case(\"Z\")]";
         FunctionTestUtil.assertResult(rangeFunction.invoke(from),
-                new RangeImpl(Range.RangeBoundary.CLOSED, "a", "z", Range.RangeBoundary.CLOSED),
-                from);
+                                      new RangeImpl(Range.RangeBoundary.CLOSED, "a", "z", Range.RangeBoundary.CLOSED),
+                                      from);
     }
 
     @Test
@@ -387,7 +401,6 @@ class RangeFunctionTest {
         assertThat(rangeFunction.getNullNode()).isInstanceOf(NullNode.class);
     }
 
-
     private NumberNode getNumberNode() {
         return (NumberNode) rangeFunction.parse("1");
     }
@@ -408,7 +421,8 @@ class RangeFunctionTest {
         return (FunctionInvocationNode) rangeFunction.parse("duration(\"P2DT20H14M\")");
     }
 
-    // 10.3.2.7 Endpoints can be either a literal or a qualified name of the following types: number, string, date, time, date and
+    // 10.3.2.7 Endpoints can be either a literal or a qualified name of the following types: number, string, date,
+    // time, date and
     //time, or duration.
     private static Object[][] validFunctionInvocationNodeData() {
         // Subset of FEELFunctionsTest.data
@@ -498,7 +512,8 @@ class RangeFunctionTest {
         };
     }
 
-    // 10.3.2.7 Endpoints can be either a literal or a qualified name of the following types: number, string, date, time, date and
+    // 10.3.2.7 Endpoints can be either a literal or a qualified name of the following types: number, string, date,
+    // time, date and
     //time, or duration.
     private static Object[][] invalidFunctionInvocationNodeData() {
         // Subset of FEELFunctionsTest.data
@@ -522,43 +537,68 @@ class RangeFunctionTest {
                 {"list contains([1, 2, 3], 5)", Boolean.FALSE},
                 {"sublist( [1, 2, 3, 4, 5 ], 3, 2 )", Arrays.asList(BigDecimal.valueOf(3), BigDecimal.valueOf(4))},
                 {"sublist( [1, 2, 3, 4, 5 ], -2, 1 )", Collections.singletonList(BigDecimal.valueOf(4))},
-                {"sublist( [1, 2, 3, 4, 5 ], -5, 3 )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2), BigDecimal.valueOf(3))},
-                {"sublist( [1, 2, 3, 4, 5 ], 1, 3 )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2), BigDecimal.valueOf(3))},
-                {"append( [1, 2], 3, 4 )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2), BigDecimal.valueOf(3), BigDecimal.valueOf(4))},
+                {"sublist( [1, 2, 3, 4, 5 ], -5, 3 )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2),
+                                                                     BigDecimal.valueOf(3))},
+                {"sublist( [1, 2, 3, 4, 5 ], 1, 3 )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2),
+                                                                    BigDecimal.valueOf(3))},
+                {"append( [1, 2], 3, 4 )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2),
+                                                         BigDecimal.valueOf(3), BigDecimal.valueOf(4))},
                 {"append( [], 3, 4 )", Arrays.asList(BigDecimal.valueOf(3), BigDecimal.valueOf(4))},
                 {"append( [1, 2] )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2))},
-                {"append( [1, 2], null, 4 )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2), null, BigDecimal.valueOf(4))},
-                {"append( 0, 1, 2 )", Arrays.asList(BigDecimal.valueOf(0), BigDecimal.valueOf(1), BigDecimal.valueOf(2))},
-                {"concatenate( [1, 2], [3] )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2), BigDecimal.valueOf(3))},
-                {"concatenate( [1, 2], 3, [4] )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2), BigDecimal.valueOf(3), BigDecimal.valueOf(4))},
-                {"insert before( [1, 2, 3], 1, 4 )", Arrays.asList(BigDecimal.valueOf(4), BigDecimal.valueOf(1), BigDecimal.valueOf(2), BigDecimal.valueOf(3))},
-                {"insert before( [1, 2, 3], 3, 4 )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2), BigDecimal.valueOf(4), BigDecimal.valueOf(3))},
-                {"insert before( [1, 2, 3], 3, null )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2), null, BigDecimal.valueOf(3))},
-                {"insert before( [1, 2, 3], -3, 4 )", Arrays.asList(BigDecimal.valueOf(4), BigDecimal.valueOf(1), BigDecimal.valueOf(2), BigDecimal.valueOf(3))},
-                {"insert before( [1, 2, 3], -1, 4 )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2), BigDecimal.valueOf(4), BigDecimal.valueOf(3))},
+                {"append( [1, 2], null, 4 )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2), null,
+                                                            BigDecimal.valueOf(4))},
+                {"append( 0, 1, 2 )", Arrays.asList(BigDecimal.valueOf(0), BigDecimal.valueOf(1),
+                                                    BigDecimal.valueOf(2))},
+                {"concatenate( [1, 2], [3] )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2),
+                                                             BigDecimal.valueOf(3))},
+                {"concatenate( [1, 2], 3, [4] )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2),
+                                                                BigDecimal.valueOf(3), BigDecimal.valueOf(4))},
+                {"insert before( [1, 2, 3], 1, 4 )", Arrays.asList(BigDecimal.valueOf(4), BigDecimal.valueOf(1),
+                                                                   BigDecimal.valueOf(2), BigDecimal.valueOf(3))},
+                {"insert before( [1, 2, 3], 3, 4 )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2),
+                                                                   BigDecimal.valueOf(4), BigDecimal.valueOf(3))},
+                {"insert before( [1, 2, 3], 3, null )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2),
+                                                                      null, BigDecimal.valueOf(3))},
+                {"insert before( [1, 2, 3], -3, 4 )", Arrays.asList(BigDecimal.valueOf(4), BigDecimal.valueOf(1),
+                                                                    BigDecimal.valueOf(2), BigDecimal.valueOf(3))},
+                {"insert before( [1, 2, 3], -1, 4 )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2),
+                                                                    BigDecimal.valueOf(4), BigDecimal.valueOf(3))},
                 {"remove( [1, 2, 3], 1 )", Arrays.asList(BigDecimal.valueOf(2), BigDecimal.valueOf(3))},
                 {"remove( [1, 2, 3], 3 )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2))},
                 {"remove( [1, 2, 3], -1 )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2))},
                 {"remove( [1, 2, 3], -3 )", Arrays.asList(BigDecimal.valueOf(2), BigDecimal.valueOf(3))},
-                {"reverse( [1, 2, 3] )", Arrays.asList(BigDecimal.valueOf(3), BigDecimal.valueOf(2), BigDecimal.valueOf(1))},
+                {"reverse( [1, 2, 3] )", Arrays.asList(BigDecimal.valueOf(3), BigDecimal.valueOf(2),
+                                                       BigDecimal.valueOf(1))},
                 {"index of( [1, 2, 3, 2], 2 )", Arrays.asList(BigDecimal.valueOf(2), BigDecimal.valueOf(4))},
                 {"index of( [1, 2, null, null], null )", Arrays.asList(BigDecimal.valueOf(3), BigDecimal.valueOf(4))},
                 {"index of( [1, 2, null, null], 1 )", Collections.singletonList(BigDecimal.valueOf(1))},
-                {"union( [1, 2, 1], [2, 3], 2, 4 )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2), BigDecimal.valueOf(3), BigDecimal.valueOf(4))},
-                {"union( [1, 2, null], 4 )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2), null, BigDecimal.valueOf(4))},
+                {"union( [1, 2, 1], [2, 3], 2, 4 )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2),
+                                                                   BigDecimal.valueOf(3), BigDecimal.valueOf(4))},
+                {"union( [1, 2, null], 4 )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2), null,
+                                                           BigDecimal.valueOf(4))},
                 {"union( null, 4 )", Arrays.asList(null, BigDecimal.valueOf(4))},
-                {"distinct values( [1, 2, 3, 2, 4] )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2), BigDecimal.valueOf(3), BigDecimal.valueOf(4))},
-                {"distinct values( [1, 2, null, 2, 4] )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2), null, BigDecimal.valueOf(4))},
+                {"distinct values( [1, 2, 3, 2, 4] )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2),
+                                                                     BigDecimal.valueOf(3), BigDecimal.valueOf(4))},
+                {"distinct values( [1, 2, null, 2, 4] )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2),
+                                                                        null, BigDecimal.valueOf(4))},
                 {"distinct values( 1 )", Collections.singletonList(BigDecimal.valueOf(1))},
-                {"sort( [3, 1, 4, 5, 2], function(x,y) x < y )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2), BigDecimal.valueOf(3),
-                        BigDecimal.valueOf(4), BigDecimal.valueOf(5))},
-                {"sort( [3, 1, 4, 5, 2] )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2), BigDecimal.valueOf(3),
-                        BigDecimal.valueOf(4), BigDecimal.valueOf(5))},
-                {"sort( list : [3, 1, 4, 5, 2] )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2), BigDecimal.valueOf(3),
-                        BigDecimal.valueOf(4), BigDecimal.valueOf(5))},
-                {"sort( [\"c\", \"e\", \"d\", \"a\", \"b\"], function(x,y) x < y )", Arrays.asList("a", "b", "c", "d", "e")},
-                {"sort( list : [\"c\", \"e\", \"d\", \"a\", \"b\"], precedes : function(x,y) x < y )", Arrays.asList("a", "b", "c", "d", "e")},
-                {"sort( precedes : function(x,y) x < y, list : [\"c\", \"e\", \"d\", \"a\", \"b\"] )", Arrays.asList("a", "b", "c", "d", "e")},
+                {"sort( [3, 1, 4, 5, 2], function(x,y) x < y )", Arrays.asList(BigDecimal.valueOf(1),
+                                                                               BigDecimal.valueOf(2),
+                                                                               BigDecimal.valueOf(3),
+                                                                               BigDecimal.valueOf(4),
+                                                                               BigDecimal.valueOf(5))},
+                {"sort( [3, 1, 4, 5, 2] )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2),
+                                                          BigDecimal.valueOf(3),
+                                                          BigDecimal.valueOf(4), BigDecimal.valueOf(5))},
+                {"sort( list : [3, 1, 4, 5, 2] )", Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2),
+                                                                 BigDecimal.valueOf(3),
+                                                                 BigDecimal.valueOf(4), BigDecimal.valueOf(5))},
+                {"sort( [\"c\", \"e\", \"d\", \"a\", \"b\"], function(x,y) x < y )", Arrays.asList("a", "b", "c", "d"
+                        , "e")},
+                {"sort( list : [\"c\", \"e\", \"d\", \"a\", \"b\"], precedes : function(x,y) x < y )", Arrays.asList(
+                        "a", "b", "c", "d", "e")},
+                {"sort( precedes : function(x,y) x < y, list : [\"c\", \"e\", \"d\", \"a\", \"b\"] )", Arrays.asList(
+                        "a", "b", "c", "d", "e")},
                 {"all( true )", true},
                 {"all( false )", false},
                 {"all( [true] )", true},
@@ -581,6 +621,4 @@ class RangeFunctionTest {
                 {"any( [] )", false},
         };
     }
-
-
 }

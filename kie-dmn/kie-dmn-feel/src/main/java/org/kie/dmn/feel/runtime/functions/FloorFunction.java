@@ -29,7 +29,7 @@ public class FloorFunction
 
     public static final FloorFunction INSTANCE = new FloorFunction();
 
-    public FloorFunction() {
+    private FloorFunction() {
         super( "floor" );
     }
 

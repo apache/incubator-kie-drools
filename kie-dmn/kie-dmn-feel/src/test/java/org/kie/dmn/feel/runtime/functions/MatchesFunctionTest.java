@@ -18,18 +18,12 @@
  */
 package org.kie.dmn.feel.runtime.functions;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
 class MatchesFunctionTest {
 
-    private MatchesFunction matchesFunction;
-
-    @BeforeEach
-    void setUp() {
-        matchesFunction = new MatchesFunction();
-    }
+    private final static MatchesFunction matchesFunction = MatchesFunction.INSTANCE;
 
     @Test
     void invokeNull() {

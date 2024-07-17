@@ -24,25 +24,21 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
 class MonthOfYearTest {
 
-    private MonthOfYearFunction fut;
-
-    @BeforeEach
-    void setUp() {
-        fut = MonthOfYearFunction.INSTANCE;
-    }
+    private static final MonthOfYearFunction fut = MonthOfYearFunction.INSTANCE;
 
     @Test
     void monthOfYearFunctionTemporalAccessor() {
         FunctionTestUtil.assertResult(fut.invoke(LocalDate.of(2019, 9, 17)), "September");
         FunctionTestUtil.assertResult(fut.invoke(LocalDateTime.of(2019, 9, 17, 0, 0, 0)), "September");
-        FunctionTestUtil.assertResult(fut.invoke(OffsetDateTime.of(2019, 9, 17, 0, 0, 0, 0, ZoneOffset.UTC)), "September");
-        FunctionTestUtil.assertResult(fut.invoke(ZonedDateTime.of(2019, 9, 17, 0, 0, 0, 0, ZoneOffset.UTC)), "September");
+        FunctionTestUtil.assertResult(fut.invoke(OffsetDateTime.of(2019, 9, 17, 0, 0, 0, 0, ZoneOffset.UTC)),
+                                      "September");
+        FunctionTestUtil.assertResult(fut.invoke(ZonedDateTime.of(2019, 9, 17, 0, 0, 0, 0, ZoneOffset.UTC)),
+                                      "September");
         FunctionTestUtil.assertResultError(fut.invoke(null), InvalidParametersEvent.class);
     }
 }
