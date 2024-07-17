@@ -58,16 +58,11 @@ public class AllFunction
         }
     }
 
-    public FEELFnResult<Boolean> invoke(@ParameterName( "list" ) Boolean single) {
-        return FEELFnResult.ofResult( single );
-    }
-
     public FEELFnResult<Boolean> invoke(@ParameterName( "b" ) Object[] list) {
         if ( list == null ) { 
             // Arrays.asList does not accept null as parameter
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "b", "cannot be null"));
         }
-        
         return invoke( Arrays.asList( list ) );
     }
 }

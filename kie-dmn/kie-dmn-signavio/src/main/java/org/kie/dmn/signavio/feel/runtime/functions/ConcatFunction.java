@@ -20,6 +20,7 @@ package org.kie.dmn.signavio.feel.runtime.functions;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
@@ -39,9 +40,9 @@ public class ConcatFunction
 		if (list == null) {
 			return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "list", "cannot be null"));
 		}
-		if (list.contains(null)) {
-			return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "list", "cannot contain null values"));
-		}
+        if (list.stream().anyMatch(Objects::isNull)) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "list", "cannot contain null values"));
+        }
 		
 		StringBuilder sb = new StringBuilder();
 		for (Object element : list) {
