@@ -40,10 +40,10 @@ public class ConcatFunction
 		if (list == null) {
 			return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "list", "cannot be null"));
 		}
-		if (list.stream().anyMatch(Objects::isNull)) {
-			return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "list", "cannot contain null values"));
-		}
-
+        if (list.stream().anyMatch(Objects::isNull)) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "list", "cannot contain null values"));
+        }
+		
 		StringBuilder sb = new StringBuilder();
 		for (Object element : list) {
 			if (!(element instanceof String)) {

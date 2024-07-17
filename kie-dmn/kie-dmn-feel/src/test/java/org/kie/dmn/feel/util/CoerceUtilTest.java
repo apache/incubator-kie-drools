@@ -24,6 +24,7 @@ import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -35,6 +36,46 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class CoerceUtilTest {
+
+    @Test
+    void coerceParam() {
+        // Coerce List to singleton
+        Class<?> currentIdxActualParameterType = List.class;
+        Class<?> expectedParameterType = Number.class;
+        Object valueObject = 34;
+        Object actualObject = List.of(valueObject);
+        Optional<Object> retrieved = CoerceUtil.coerceParam(currentIdxActualParameterType, expectedParameterType, actualObject);
+        assertNotNull(retrieved);
+        assertTrue(retrieved.isPresent());
+        assertEquals(valueObject, retrieved.get());
+
+        // Coerce single element to singleton list
+        currentIdxActualParameterType = Number.class;
+        expectedParameterType = List.class;
+        actualObject = 34;
+        retrieved = CoerceUtil.coerceParam(currentIdxActualParameterType, expectedParameterType, actualObject);
+        assertNotNull(retrieved);
+        assertTrue(retrieved.isPresent());
+        assertTrue(retrieved.get() instanceof List);
+        List lstRetrieved = (List) retrieved.get();
+        assertEquals(1, lstRetrieved.size());
+        assertEquals(actualObject, lstRetrieved.get(0));
+
+        // Coerce date to date and time
+        actualObject = LocalDate.now();
+        currentIdxActualParameterType = LocalDate.class;
+        expectedParameterType = ZonedDateTime.class;
+        retrieved = CoerceUtil.coerceParam(currentIdxActualParameterType, expectedParameterType, actualObject);
+        assertNotNull(retrieved);
+        assertTrue(retrieved.isPresent());
+        assertTrue(retrieved.get() instanceof ZonedDateTime);
+        ZonedDateTime zdtRetrieved = (ZonedDateTime) retrieved.get();
+        assertEquals(actualObject, zdtRetrieved.toLocalDate());
+        assertEquals(ZoneOffset.UTC, zdtRetrieved.getOffset());
+        assertEquals(0, zdtRetrieved.getHour());
+        assertEquals(0, zdtRetrieved.getMinute());
+        assertEquals(0, zdtRetrieved.getSecond());
+    }
 
     @Test
     void coerceParameterDateToDateTimeConverted() {
