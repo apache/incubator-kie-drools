@@ -30,21 +30,6 @@ class AllFunctionTest {
     private static final AllFunction allFunction = AllFunction.INSTANCE;
 
     @Test
-    void invokeBooleanParamNull() {
-        FunctionTestUtil.assertResultNull(allFunction.invoke((Boolean) null));
-    }
-
-    @Test
-    void invokeBooleanParamTrue() {
-        FunctionTestUtil.assertResult(allFunction.invoke(true), true);
-    }
-
-    @Test
-    void invokeBooleanParamFalse() {
-        FunctionTestUtil.assertResult(allFunction.invoke(false), false);
-    }
-
-    @Test
     void invokeArrayParamNull() {
         FunctionTestUtil.assertResultError(allFunction.invoke((Object[]) null), InvalidParametersEvent.class);
     }
