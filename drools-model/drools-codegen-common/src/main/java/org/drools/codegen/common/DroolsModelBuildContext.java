@@ -40,6 +40,8 @@ public interface DroolsModelBuildContext {
 
     void setApplicationProperty(String key, String value);
 
+    void removeApplicationProperty(String key);
+
     String getPackageName();
 
     ClassLoader getClassLoader();
