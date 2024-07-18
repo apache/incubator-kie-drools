@@ -156,6 +156,11 @@ public abstract class AbstractKogitoBuildContext implements KogitoBuildContext {
     }
 
     @Override
+    public void removeApplicationProperty(String key) {
+        applicationProperties.removeApplicationProperty(key);
+    }
+
+    @Override
     public String getPackageName() {
         return packageName;
     }

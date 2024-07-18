@@ -47,6 +47,11 @@ public interface KogitoApplicationPropertyProvider {
             public <T> Optional<T> getApplicationProperty(String property, Class<T> clazz) {
                 return Optional.ofNullable(convert(properties.getProperty(property), clazz));
             }
+
+            @Override
+            public void removeApplicationProperty(String key) {
+                properties.remove(key);
+            }
         };
     }
 
@@ -57,4 +62,6 @@ public interface KogitoApplicationPropertyProvider {
     Collection<String> getApplicationProperties();
 
     void setApplicationProperty(String key, String value);
+
+    void removeApplicationProperty(String key);
 }

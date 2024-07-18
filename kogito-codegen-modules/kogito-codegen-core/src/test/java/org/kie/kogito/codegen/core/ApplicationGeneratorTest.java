@@ -37,6 +37,7 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.kogito.codegen.api.Generator.REST_TYPE;
+import static org.kie.kogito.codegen.api.context.KogitoBuildContext.generateRESTConfigurationKeyForResource;
 
 public class ApplicationGeneratorTest {
 
@@ -165,6 +166,66 @@ public class ApplicationGeneratorTest {
                     .matches(files -> files.stream().anyMatch(gf -> REST_TYPE.equals(gf.type())));
         } else {
             assertThat(appGenerator.generateComponents()).isEmpty();
+        }
+    }
+
+    @ParameterizedTest
+    @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#contextBuilders")
+    public void keepRestFile(KogitoBuildContext.Builder contextBuilder) {
+        final KogitoBuildContext context = contextBuilder.build();
+        final ApplicationGenerator appGenerator = new ApplicationGenerator(context);
+        final MockGenerator restGenerator = new MockGenerator(context, true);
+        final String generateRESTConfigurationKeyForResource = generateRESTConfigurationKeyForResource(restGenerator.name());
+
+        assertThat(appGenerator.registerGeneratorIfEnabled(restGenerator))
+                .isNotEmpty();
+        assertThat(appGenerator.getGenerators()).hasSize(1);
+
+        if (context.hasRESTForGenerator(restGenerator)) {
+            // globally and engine-specific disable REST
+            context.setApplicationProperty(KogitoBuildContext.KOGITO_GENERATE_REST, "false");
+            context.setApplicationProperty(generateRESTConfigurationKeyForResource, "false");
+            assertThat(appGenerator.keepRestFile(restGenerator)).isFalse();
+
+            // globally disable REST, engine-specific enable REST
+            context.setApplicationProperty(KogitoBuildContext.KOGITO_GENERATE_REST, "false");
+            context.setApplicationProperty(generateRESTConfigurationKeyForResource, "true");
+            assertThat(appGenerator.keepRestFile(restGenerator)).isFalse();
+
+            // globally enable REST, engine-specific disable REST
+            context.setApplicationProperty(KogitoBuildContext.KOGITO_GENERATE_REST, "true");
+            context.setApplicationProperty(generateRESTConfigurationKeyForResource, "false");
+            assertThat(appGenerator.keepRestFile(restGenerator)).isFalse();
+
+            // globally and engine-specific enable REST
+            context.setApplicationProperty(KogitoBuildContext.KOGITO_GENERATE_REST, "true");
+            context.setApplicationProperty(generateRESTConfigurationKeyForResource, "true");
+            assertThat(appGenerator.keepRestFile(restGenerator)).isTrue();
+
+            // engine-specific enable REST
+            context.removeApplicationProperty(KogitoBuildContext.KOGITO_GENERATE_REST);
+            context.setApplicationProperty(generateRESTConfigurationKeyForResource, "true");
+            assertThat(appGenerator.keepRestFile(restGenerator)).isTrue();
+
+            // engine-specific disable REST
+            context.removeApplicationProperty(KogitoBuildContext.KOGITO_GENERATE_REST);
+            context.setApplicationProperty(generateRESTConfigurationKeyForResource, "false");
+            assertThat(appGenerator.keepRestFile(restGenerator)).isFalse();
+
+            // globally enable REST
+            context.setApplicationProperty(KogitoBuildContext.KOGITO_GENERATE_REST, "true");
+            context.removeApplicationProperty(generateRESTConfigurationKeyForResource);
+            assertThat(appGenerator.keepRestFile(restGenerator)).isTrue();
+
+            // globally disable REST
+            context.setApplicationProperty(KogitoBuildContext.KOGITO_GENERATE_REST, "false");
+            context.removeApplicationProperty(generateRESTConfigurationKeyForResource);
+            assertThat(appGenerator.keepRestFile(restGenerator)).isFalse();
+
+            // defaults
+            context.removeApplicationProperty(KogitoBuildContext.KOGITO_GENERATE_REST);
+            context.removeApplicationProperty(generateRESTConfigurationKeyForResource);
+            assertThat(appGenerator.keepRestFile(restGenerator)).isTrue();
         }
     }
 
