@@ -25,12 +25,11 @@ import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
 import org.drools.base.time.JobHandle;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.reteoo.MultiInputNode.DynamicFilterProto;
+import org.drools.core.reteoo.SequenceNode.DynamicFilterProto;
 import org.drools.core.reteoo.sequencing.Gates;
 import org.drools.core.reteoo.sequencing.LogicCircuit;
 import org.drools.core.reteoo.sequencing.LogicGate;
 import org.drools.core.reteoo.sequencing.Sequence;
-import org.drools.core.reteoo.sequencing.Sequence.LoopController;
 import org.drools.core.reteoo.sequencing.Sequence.SequenceMemory;
 import org.drools.core.reteoo.sequencing.Sequence.TimoutController;
 import org.drools.core.reteoo.sequencing.Sequencer;
@@ -133,7 +132,7 @@ public class PhreakSequencerSubsequenceTimerTest extends AbstractPhreakSequencer
         pseudo.advanceTime(2000, TimeUnit.MILLISECONDS);
         session.fireAllRules();
 
-        // check its all finished
+        // check it's all finished
         assertThat(sequencerMemory.getCurrentStep()).isEqualTo(-1);
         assertThat(stack.isEmpty()).isTrue();
     }

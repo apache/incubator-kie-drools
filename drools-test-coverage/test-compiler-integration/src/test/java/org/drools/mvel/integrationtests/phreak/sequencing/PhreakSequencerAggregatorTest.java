@@ -24,7 +24,7 @@ import org.drools.base.rule.Pattern;
 import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.reteoo.MultiInputNode.DynamicFilterProto;
+import org.drools.core.reteoo.SequenceNode.DynamicFilterProto;
 import org.drools.core.reteoo.sequencing.Gates;
 import org.drools.core.reteoo.sequencing.LogicCircuit;
 import org.drools.core.reteoo.sequencing.LogicGate;
@@ -33,7 +33,6 @@ import org.drools.core.reteoo.sequencing.Sequence.LoopController;
 import org.drools.core.reteoo.sequencing.Sequence.SequenceMemory;
 import org.drools.core.reteoo.sequencing.Sequencer;
 import org.drools.core.reteoo.sequencing.Step;
-import org.drools.core.reteoo.sequencing.Step.AggregatorStep;
 import org.drools.core.reteoo.sequencing.TerminatingSignalProcessor;
 import org.drools.core.util.CircularArrayList;
 import org.drools.kiesession.rulebase.SessionsAwareKnowledgeBase;
@@ -162,8 +161,6 @@ public class PhreakSequencerAggregatorTest extends AbstractPhreakSequencerSubseq
         assertThat(((FactHandle)events.get(0)).getObject()).isEqualTo(b(0));
         assertThat(events.get(1)).isSameAs(recorder);
         assertThat(((FactHandle)events.get(2)).getObject()).isEqualTo(b(7));
-
-
     }
 
     public B b(int i) {

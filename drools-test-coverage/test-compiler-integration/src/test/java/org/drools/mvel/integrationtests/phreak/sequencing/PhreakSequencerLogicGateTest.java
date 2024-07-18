@@ -20,25 +20,10 @@ package org.drools.mvel.integrationtests.phreak.sequencing;
 
 import org.drools.base.base.ClassObjectType;
 import org.drools.base.base.ObjectType;
-import org.drools.base.definitions.InternalKnowledgePackage;
-import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.base.rule.Pattern;
 import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
-import org.drools.core.SessionConfiguration;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.impl.KnowledgeBaseImpl;
-import org.drools.core.impl.RuleBaseFactory;
-import org.drools.core.reteoo.BetaMemory;
-import org.drools.core.reteoo.CoreComponentFactory;
-import org.drools.core.reteoo.JoinNode;
-import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.reteoo.MockLeftTupleSink;
-import org.drools.core.reteoo.MultiInputNode;
-import org.drools.core.reteoo.MultiInputNode.DynamicFilterProto;
-import org.drools.core.reteoo.MultiInputNode.MultiInputNodeMemory;
-import org.drools.core.reteoo.sequencing.Sequencer.SequencerMemory;
-import org.drools.core.reteoo.builder.BuildContext;
+import org.drools.core.reteoo.SequenceNode.DynamicFilterProto;
 import org.drools.core.reteoo.sequencing.LogicCircuit;
 import org.drools.core.reteoo.sequencing.Gates;
 import org.drools.core.reteoo.sequencing.LogicGate;
@@ -47,9 +32,6 @@ import org.drools.core.reteoo.sequencing.Sequence;
 import org.drools.core.reteoo.sequencing.Sequencer;
 import org.drools.core.reteoo.sequencing.SignalIndex;
 import org.drools.core.reteoo.sequencing.TerminatingSignalProcessor;
-import org.drools.core.rule.JavaDialectRuntimeData;
-import org.drools.kiesession.rulebase.SessionsAwareKnowledgeBase;
-import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.mvel.integrationtests.phreak.A;
 import org.drools.mvel.integrationtests.phreak.B;
 import org.drools.mvel.integrationtests.phreak.C;
@@ -60,10 +42,6 @@ import org.drools.mvel.integrationtests.phreak.sequencing.MultiInputNodeBuilder.
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.conf.EventProcessingOption;
-import org.kie.api.runtime.conf.ThreadSafeOption;
-import org.kie.internal.conf.CompositeBaseConfiguration;
-
-import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

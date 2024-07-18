@@ -21,6 +21,7 @@ import org.drools.base.common.RuleBasePartitionId;
 import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
 import org.drools.core.RuleBaseConfiguration;
+import org.drools.core.common.ActivationsManager;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
@@ -29,7 +30,7 @@ import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
 import org.drools.core.common.UpdateContext;
-import org.drools.core.reteoo.MultiInputNode.MultiInputNodeMemory;
+import org.drools.core.reteoo.SequenceNode.SequenceNodeMemory;
 import org.drools.core.reteoo.sequencing.Sequence.SequenceMemory;
 import org.drools.core.reteoo.sequencing.SignalProcessor;
 import org.drools.core.reteoo.sequencing.SignalStatus;
@@ -47,18 +48,16 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.List;
 
-public class MultiInputNode extends LeftTupleSource
+public class SequenceNode extends LeftTupleSource
     implements
     LeftTupleSinkNode,
-    MemoryFactory<MultiInputNodeMemory> {
+    MemoryFactory<SequenceNodeMemory> {
 
     private static final long      serialVersionUID = 510l;
 
     protected boolean              tupleMemoryEnabled;
 
     private Sequencer sequencer;
-
-    //private SequenceInputAdapter[] sequenceInputAdapters;
 
     private AlphaAdapter[] alphaAdapters;
 
@@ -68,13 +67,13 @@ public class MultiInputNode extends LeftTupleSource
 
     private LeftTupleSinkNode      nextTupleSinkNode;
 
-    public MultiInputNode() {
+    public SequenceNode() {
 
     }
 
-    public MultiInputNode(final int id,
-                          final LeftTupleSource tupleSource,
-                          final BuildContext context) {
+    public SequenceNode(final int id,
+                        final LeftTupleSource tupleSource,
+                        final BuildContext context) {
         super(id, context);
         setLeftTupleSource(tupleSource);
         this.tupleMemoryEnabled = context.isTupleMemoryEnabled();
@@ -130,21 +129,21 @@ public class MultiInputNode extends LeftTupleSource
             return true;
         }
 
-        if ( object == null || !(object instanceof MultiInputNode) || this.hashCode() != object.hashCode() ) {
+        if ( object == null || !(object instanceof SequenceNode) || this.hashCode() != object.hashCode() ) {
             return false;
         }
 
-        MultiInputNode other = (MultiInputNode)object;
+        SequenceNode other = (SequenceNode)object;
         return this.leftInput.getId() == other.leftInput.getId();
     }
 
-    public MultiInputNodeMemory createMemory(final RuleBaseConfiguration config, ReteEvaluator reteEvaluator) {
+    public SequenceNodeMemory createMemory(final RuleBaseConfiguration config, ReteEvaluator reteEvaluator) {
         LinkedList<DynamicFilter>[] filters = new LinkedList[alphaAdapters.length];
-        MultiInputNodeMemory memory = new MultiInputNodeMemory(this, filters, new DynamicFilter[filters.length]);
+        SequenceNodeMemory          memory  = new SequenceNodeMemory(this, filters, new DynamicFilter[filters.length]);
         return memory;
     }
 
-    public SequencerMemory createSequencerMemory(TupleImpl lt, LeftTupleSink sink, MultiInputNodeMemory nodeMemory) {
+    public SequencerMemory createSequencerMemory(TupleImpl lt, LeftTupleSink sink, SequenceNodeMemory nodeMemory) {
         SequencerMemory sequencerMemory = new SequencerMemory(lt, sink,this, nodeMemory);
 
         return sequencerMemory;
@@ -203,7 +202,7 @@ public class MultiInputNode extends LeftTupleSource
     }
 
     public int getType() {
-        return NodeTypeEnums.MultiInputNode;
+        return NodeTypeEnums.SequenceNode;
     }
 
     public void matched(SequencerMemory memory) {
@@ -217,7 +216,7 @@ public class MultiInputNode extends LeftTupleSource
         memory.getNodeMemory().getStagedChildTuples().add(childTuple);
     }
 
-    public static class MultiInputNodeMemory extends AbstractLinkedListNode<Memory>
+    public static class SequenceNodeMemory extends AbstractLinkedListNode<Memory>
         implements
         Externalizable,
         Memory {
@@ -234,9 +233,11 @@ public class MultiInputNode extends LeftTupleSource
 
         private DynamicFilter[] filters;
 
-        private MultiInputNode node;
+        private SequenceNode node;
 
-        public MultiInputNodeMemory(MultiInputNode node, LinkedList<DynamicFilter>[] activeFilters, DynamicFilter[] filters) {
+        private long          nodePosMaskBit;
+
+        public SequenceNodeMemory(SequenceNode node, LinkedList<DynamicFilter>[] activeFilters, DynamicFilter[] filters) {
             this.node = node;
             stagedChildTuples = new TupleList();
             leftTupleMemory = new TupleList();
@@ -244,7 +245,7 @@ public class MultiInputNode extends LeftTupleSource
             this.filters = filters;
         }
 
-        public MultiInputNode getNode() {
+        public SequenceNode getNode() {
             return node;
         }
 
@@ -292,7 +293,7 @@ public class MultiInputNode extends LeftTupleSource
         }
 
         public int getNodeType() {
-            return NodeTypeEnums.MultiInputNode;
+            return NodeTypeEnums.SequenceNode;
         }
 
         public void setSegmentMemory(SegmentMemory smem) {
@@ -321,6 +322,13 @@ public class MultiInputNode extends LeftTupleSource
             return filter;
         }
 
+        public void setNodePosMaskBit(long nodePosMaskBit) {
+            this.nodePosMaskBit = nodePosMaskBit;
+        }
+
+        public long getNodePosMaskBit() {
+            return nodePosMaskBit;
+        }
     }
 
     @Override
@@ -402,7 +410,7 @@ public class MultiInputNode extends LeftTupleSource
         public void assertObject(final InternalFactHandle factHandle,
                                  final PropagationContext pctx,
                                  final ReteEvaluator reteEvaluator,
-                                 final MultiInputNodeMemory memory) {
+                                 final SequenceNodeMemory memory) {
             System.out.println("true : " + factHandle.getObject());
 
             if (constraint.isAllowed(factHandle, reteEvaluator)) {
@@ -422,10 +430,10 @@ public class MultiInputNode extends LeftTupleSource
 
         private ObjectTypeNodeId otnId;
 
-        private MultiInputNode node;
+        private SequenceNode node;
 
 
-        public AlphaAdapter(int id, ObjectSource source, RuleBasePartitionId partitionId, MultiInputNode node, int adapterIndex) {
+        public AlphaAdapter(int id, ObjectSource source, RuleBasePartitionId partitionId, SequenceNode node, int adapterIndex) {
             super(id, source, partitionId);
             this.adapterIndex = adapterIndex;
             this.node = node;
@@ -436,7 +444,7 @@ public class MultiInputNode extends LeftTupleSource
                                  final ReteEvaluator reteEvaluator) {
             System.out.println(getClass().getSimpleName() + ":" + adapterIndex + ":" + factHandle.getObject());
 
-            MultiInputNodeMemory memory = reteEvaluator.getNodeMemory(node);
+            SequenceNodeMemory memory = reteEvaluator.getNodeMemory(node);
 
             LinkedList<DynamicFilter> filters       = memory.getActiveFilters()[adapterIndex];
             if (filters != null) {
@@ -444,6 +452,10 @@ public class MultiInputNode extends LeftTupleSource
                     f.assertObject(factHandle, pctx, reteEvaluator, memory);
                 }
             }
+        }
+
+        public void propagate() {
+
         }
 
         public void modifyObject(InternalFactHandle factHandle,
@@ -511,7 +523,7 @@ public class MultiInputNode extends LeftTupleSource
         }
 
         public int getType() {
-            return NodeTypeEnums.MultiInputNode; // need to update enums for multi input (mdp)
+            return NodeTypeEnums.SequenceNode; // need to update enums for multi input (mdp)
         }
 
         public void doAttach(BuildContext context) {
@@ -520,184 +532,37 @@ public class MultiInputNode extends LeftTupleSource
         }
     }
 
-
-//    /**
-//     * Used with the updateSink method, so that the parent ObjectSource
-//     * can  update the  TupleSink
-//     */
-//    public static class SequenceInputAdapter extends ObjectSource
-//            implements
-//            ObjectSinkNode,
-//            RightTupleSink {
-//        private int            sequenceIndex;
-//        private MultiInputNode multiNode;
-//
-//        public SequenceInputAdapter(int id, ObjectSource source, RuleBasePartitionId partitionId,
-//                                    int sequenceIndex, MultiInputNode multiNode) {
-//            super(id, source, partitionId);
-//            this.sequenceIndex = sequenceIndex;
-//            this.multiNode     = multiNode;
-//        }
-//
-//        public void assertObject(final InternalFactHandle factHandle,
-//                                 final PropagationContext pctx,
-//                                 final ReteEvaluator reteEvaluator) {
-//            // I don't do it here, but scope of the multiinput sequence is keyed to the LT.
-//            // this code should also wire up the reset call, which for current use case is timeout  (don't hard code it to timeout).
-//            SequenceIndexedRightTuple tuple = createTuple( factHandle, this, pctx ); // creates the RightTuple, with the index value of this right input adapter
-//
-//            multiNode.getSequenceProcessor().receive(tuple);
-//
-//            //MultiInputMemory memory = reteEvaluator.getNodeMemory(multiNode);
-//
-//        }
-//
-//        public SequenceIndexedRightTuple createTuple(InternalFactHandle handle,
-//                                                     RightTupleSink sink,
-//                                                     PropagationContext context) {
-//            SequenceIndexedRightTuple tuple = new SequenceIndexedRightTuple(handle, sink, sequenceIndex);
-//            tuple.setPropagationContext( context );
-//            return tuple;
-//        }
-//
-//        public void modifyObject(InternalFactHandle factHandle,
-//                                 ModifyPreviousTuples modifyPreviousTuples,
-//                                 PropagationContext context,
-//                                 ReteEvaluator reteEvaluator) {
-//
-//        }
-//
-//
-//        @Override
-//        public void retractRightTuple(TupleImpl rightTuple, PropagationContext context, ReteEvaluator reteEvaluator) {
-//            // for now assuming we don't have any deletes, but we could add this later.
-//        }
-//
-//        @Override
-//        public void modifyRightTuple(TupleImpl rightTuple, PropagationContext context, ReteEvaluator reteEvaluator) {
-//            // for now assuming we don't have any modifies, but we could add this later.
-//            // typically just gets treated as another add, as the processor is not that stateful (for this use case) - to keep it fast.
-//        }
-//
-//        public int getId() {
-//            return 0;
-//        }
-//
-//        public RuleBasePartitionId getPartitionId() {
-//            return multiNode.getPartitionId();
-//        }
-//
-//        public void byPassModifyToBetaNode(InternalFactHandle factHandle,
-//                                           ModifyPreviousTuples modifyPreviousTuples,
-//                                           PropagationContext context,
-//                                           ReteEvaluator reteEvaluator) {
-//            throw new UnsupportedOperationException();
-//        }
-//
-//        @Override
-//        public ObjectSinkNode getNextObjectSinkNode() {
-//            return null;
-//        }
-//
-//        @Override
-//        public void setNextObjectSinkNode(ObjectSinkNode next) {
-//
-//        }
-//
-//        @Override
-//        public ObjectSinkNode getPreviousObjectSinkNode() {
-//            return null;
-//        }
-//
-//        @Override
-//        public void setPreviousObjectSinkNode(ObjectSinkNode previous) {
-//
-//        }
-//
-//        @Override
-//        public BitMask calculateDeclaredMask(ObjectType modifiedType, List<String> settableProperties) {
-//            return null;
-//        }
-//
-//        @Override
-//        public void updateSink(ObjectSink sink, PropagationContext context, InternalWorkingMemory workingMemory) {
-//
-//        }
-//
-//        @Override
-//        public ObjectTypeNodeId getInputOtnId() {
-//            return null;
-//        }
-//
-//        public int getType() {
-//            return NodeTypeEnums.MultiInputNode; // need to update enums for multi input (mdp)
-//        }
-//
-//        public int getAssociationsSize() {
-//            return multiNode.getAssociationsSize();
-//        }
-//
-//
-//        @Override public Rule[] getAssociatedRules() {
-//            return multiNode.getAssociatedRules();
-//        }
-//
-//        public boolean isAssociatedWith(Rule rule) {
-//            return multiNode.isAssociatedWith( rule );
-//        }
-//    }
-
-    public static class PhreakMultiInputNode {
-        public void doNode(MultiInputNode node,
-                           MultiInputNodeMemory memory,
+    public static class PhreakSequenceNode {
+        public void doNode(SequenceNode node,
+                           SequenceNodeMemory memory,
                            LeftTupleSink sink,
                            ReteEvaluator reteEvaluator,
                            TupleSets srcLeftTuples,
                            TupleSets trgLeftTuples,
                            TupleSets stagedLeftTuples) {
+            
+            if (srcLeftTuples.getDeleteFirst() != null) {
+                doLeftDeletes(node, srcLeftTuples, trgLeftTuples, stagedLeftTuples, reteEvaluator);
+            }
 
-//            TupleSets srcRightTuples = memory.getStagedRightTuples().takeAll();
-//
-//            if (srcLeftTuples.getDeleteFirst() != null) {
-//                doLeftDeletes(srcLeftTuples, trgLeftTuples, stagedLeftTuples);
-//            }
-//
-//            if (srcLeftTuples.getUpdateFirst() != null) {
-//                // the nature of this is it needs to be a treated as a remove + add
-//                // TODO
-//            }
-//
+            if (srcLeftTuples.getUpdateFirst() != null) {
+                doLeftUpdates(node, srcLeftTuples, trgLeftTuples, stagedLeftTuples, reteEvaluator);
+            }
+
             if (srcLeftTuples.getInsertFirst() != null) {
                 doLeftInserts(node, memory, sink, srcLeftTuples, reteEvaluator);
             }
-//
-//            if (srcRightTuples.getInsertFirst() != null) {
-//                doRightInserts(multiInputNode, sink, memory, reteEvaluator, srcRightTuples, trgLeftTuples, stagedLeftTuples);
-//            }
-
+            
             srcLeftTuples.resetAll();
         }
-//
-//        private void doRightInserts(MultiInputNode multiInputNode, LeftTupleSink sink, MultiInputMemory memory,
-//                                    ReteEvaluator reteEvaluator, TupleSets srcRightTuples,
-//                                    TupleSets trgLeftTuples, TupleSets stagedLeftTuples) {
-//            FastIterator<TupleImpl> it = memory.getLeftTupleMemory().fastIterator();
-//            for ( LeftTuple leftTuple = (LeftTuple) memory.getLeftTupleMemory().getFirst(null); leftTuple != null; leftTuple = (LeftTuple) it.next(leftTuple) ) {
-//
-//                for (TupleImpl rightTuple = srcRightTuples.getInsertFirst(); rightTuple != null; ) {
-//                    TupleImpl next = rightTuple.getStagedNext();
-//
-//                    //multiInputNode.sequenceProcessor.receive((SequenceIndexedRightTuple) rightTuple);
-//
-//                    rightTuple.clearStaged();
-//                    rightTuple = next;
-//                }
-//            }
-//
-//
-//        }
-//
-        private void doLeftDeletes(MultiInputNode node,
+
+        private void doLeftUpdates(SequenceNode node, TupleSets srcLeftTuples, TupleSets trgLeftTuples, TupleSets stagedLeftTuples, ReteEvaluator reteEvaluator) {}
+
+        public void doNode(SequenceNode node, SequenceNodeMemory nodeMem, PathMemory pmem, SegmentMemory smem, LeftTupleSinkNode sink, ActivationsManager activationsManager, TupleSets srcTuples, TupleSets trgTuples, TupleSets stagedLeftTuples) {
+
+        }
+
+        private void doLeftDeletes(SequenceNode node,
                                    TupleSets srcLeftTuples, TupleSets trgLeftTuples, TupleSets stagedLeftTuples,
                                    ReteEvaluator evaluator) {
             for (TupleImpl leftTuple = srcLeftTuples.getDeleteFirst(); leftTuple != null; ) {
@@ -713,19 +578,16 @@ public class MultiInputNode extends LeftTupleSource
                 leftTuple = next;
             }
         }
-//
-        private void doLeftInserts(MultiInputNode node,
-                                   MultiInputNodeMemory memory,
+
+        private void doLeftInserts(SequenceNode node,
+                                   SequenceNodeMemory memory,
                                    LeftTupleSink sink,
                                    TupleSets srcLeftTuples,
                                    ReteEvaluator evaluator) {
-
-            // this only needs to add it to the left memory. As everything is driven by the receiving of right inputs.
             for (TupleImpl leftTuple = srcLeftTuples.getInsertFirst(); leftTuple != null; ) {
                 TupleImpl next = leftTuple.getStagedNext();
 
                 memory.getLeftTupleMemory().add(leftTuple);
-                //lt.setContextObject(mnode.createSequencerMemory(lt, new MockLeftTupleSink(buildContext.getNextNodeId(), buildContext), nodeMemory));
 
                 SequencerMemory sequencerMemory = memory.node.createSequencerMemory(leftTuple, sink, memory);
                 node.getSequencer().start(sequencerMemory, evaluator);
@@ -735,5 +597,6 @@ public class MultiInputNode extends LeftTupleSource
                 leftTuple = next;
             }
         }
+
     }
 }

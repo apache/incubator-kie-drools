@@ -10,9 +10,9 @@ import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.MockLeftTupleSink;
-import org.drools.core.reteoo.MultiInputNode;
-import org.drools.core.reteoo.MultiInputNode.DynamicFilterProto;
-import org.drools.core.reteoo.MultiInputNode.MultiInputNodeMemory;
+import org.drools.core.reteoo.SequenceNode;
+import org.drools.core.reteoo.SequenceNode.DynamicFilterProto;
+import org.drools.core.reteoo.SequenceNode.SequenceNodeMemory;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.reteoo.sequencing.Sequence;
 import org.drools.core.reteoo.sequencing.Sequencer.SequencerMemory;
@@ -27,13 +27,13 @@ import java.util.Collections;
 
 public class AbstractPhreakSequencerSubsequenceTest {
     StatefulKnowledgeSessionImpl session;
-    MultiInputNodeMemory nodeMemory;
-    SequencerMemory  sequencerMemory;
+    SequenceNodeMemory           nodeMemory;
+    SequencerMemory              sequencerMemory;
     BuildContext   buildContext;
     Sequence       seq0;
     Sequence       seq1;
-    Sequence       seq2;
-    MultiInputNode mnode;
+    Sequence     seq2;
+    SequenceNode mnode;
 
     DynamicFilterProto bfilter;
     DynamicFilterProto cfilter;

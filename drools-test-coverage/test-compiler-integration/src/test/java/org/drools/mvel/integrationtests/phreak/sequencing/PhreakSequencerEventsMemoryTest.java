@@ -24,7 +24,7 @@ import org.drools.base.rule.Pattern;
 import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.reteoo.MultiInputNode.DynamicFilterProto;
+import org.drools.core.reteoo.SequenceNode.DynamicFilterProto;
 import org.drools.core.reteoo.sequencing.Gates;
 import org.drools.core.reteoo.sequencing.LogicCircuit;
 import org.drools.core.reteoo.sequencing.LogicGate;

@@ -3,9 +3,9 @@ package org.drools.core.reteoo.sequencing;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
-import org.drools.core.reteoo.MultiInputNode;
-import org.drools.core.reteoo.MultiInputNode.MultiInputNodeMemory;
-import org.drools.core.reteoo.MultiInputNode.SignalAdapter;
+import org.drools.core.reteoo.SequenceNode;
+import org.drools.core.reteoo.SequenceNode.SequenceNodeMemory;
+import org.drools.core.reteoo.SequenceNode.SignalAdapter;
 import org.drools.core.reteoo.TupleImpl;
 import org.drools.core.reteoo.sequencing.Sequence.SequenceMemory;
 import org.drools.core.reteoo.sequencing.Step.SequenceStep;
@@ -17,12 +17,12 @@ import java.util.List;
 
 public class Sequencer {
 
-    private MultiInputNode node;
-    private Sequence       sequence;
+    private SequenceNode node;
+    private Sequence     sequence;
 
     private Sequence[]     sequencences;
 
-    public Sequencer(MultiInputNode node, Sequence sequence) {
+    public Sequencer(SequenceNode node, Sequence sequence) {
         this.node = node;
         this.sequence = sequence;
         this.sequencences = populateSequences(sequence, new ArrayList<>()).stream().toArray(Sequence[]::new);
@@ -66,8 +66,6 @@ public class Sequencer {
             TupleImpl lt = sequencerMemory.getLeftTuple();
             sequencerMemory.getNodeMemory().getStagedChildTuples().add(new LeftTuple(lt, sequencerMemory.sink,
                                                                                      lt.getPropagationContext(), false));
-            // notify?
-
         }
     }
 
@@ -86,17 +84,17 @@ public class Sequencer {
 
         private CircularArrayList<Object> events;
 
-        private MultiInputNode node;
+        private SequenceNode node;
 
         private SequenceMemory[] sequenceMemories;
 
         private final LeftTupleSink sink;
 
-        private MultiInputNodeMemory nodeMemory;
+        private SequenceNodeMemory nodeMemory;
 
         private ArrayList<SequenceMemory> sequenceStack = new ArrayList<>();
 
-        public SequencerMemory(TupleImpl lt, LeftTupleSink sink, MultiInputNode node, MultiInputNodeMemory nodeMemory) {
+        public SequencerMemory(TupleImpl lt, LeftTupleSink sink, SequenceNode node, SequenceNodeMemory nodeMemory) {
             this.lt               = lt;
             this.events           = new CircularArrayList<>(FactHandle.class, 100);
             this.node             = node;
@@ -118,11 +116,11 @@ public class Sequencer {
             return sink;
         }
 
-        public MultiInputNode getNode() {
+        public SequenceNode getNode() {
             return node;
         }
 
-        public MultiInputNodeMemory getNodeMemory() {
+        public SequenceNodeMemory getNodeMemory() {
             return nodeMemory;
         }
 

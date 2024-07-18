@@ -30,8 +30,8 @@ import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.ObjectRouter;
-import org.drools.core.reteoo.MultiInputNode;
-import org.drools.core.reteoo.MultiInputNode.AlphaAdapter;
+import org.drools.core.reteoo.SequenceNode;
+import org.drools.core.reteoo.SequenceNode.AlphaAdapter;
 import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.builder.BuildContext;
@@ -83,7 +83,7 @@ public class MultiInputNodeBuilder {
         return null;
     }
 
-    public MultiInputNode buildNode(Class leftType, Class[] rightTypes) {
+    public SequenceNode buildNode(Class leftType, Class[] rightTypes) {
         NodeFactory nFactory = CoreComponentFactory.get().getNodeFactoryService();
 
         EntryPointNode epn = buildContext.getRuleBase().getRete().getEntryPointNodes().get(EntryPointId.DEFAULT);
@@ -109,8 +109,8 @@ public class MultiInputNodeBuilder {
         }
 
 
-        MultiInputNode mn = new MultiInputNode(buildContext.getNextNodeId(),
-                                               leftTs, buildContext);
+        SequenceNode mn = new SequenceNode(buildContext.getNextNodeId(),
+                                           leftTs, buildContext);
 
         AlphaAdapter[] adapters = new AlphaAdapter[rightTypes.length];
         for ( int i = 0; i < rightTypes.length; i++ ) {

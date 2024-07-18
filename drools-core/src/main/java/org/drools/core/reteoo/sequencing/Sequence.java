@@ -7,11 +7,10 @@ import org.drools.core.common.ActivationsManager;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.phreak.PropagationEntry;
-import org.drools.core.reteoo.MultiInputNode.DynamicFilter;
-import org.drools.core.reteoo.MultiInputNode.MultiInputNodeMemory;
-import org.drools.core.reteoo.MultiInputNode.SignalAdapter;
+import org.drools.core.reteoo.SequenceNode.DynamicFilter;
+import org.drools.core.reteoo.SequenceNode.SequenceNodeMemory;
+import org.drools.core.reteoo.SequenceNode.SignalAdapter;
 import org.drools.core.reteoo.PathMemory;
-import org.drools.core.reteoo.sequencing.LogicGate.PropagationTimer;
 import org.drools.core.reteoo.sequencing.Sequencer.SequencerMemory;
 import org.drools.core.reteoo.sequencing.Step.LogicCircuitStep;
 import org.drools.core.reteoo.sequencing.Step.StepFactory;
@@ -22,8 +21,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.LongPredicate;
 import java.util.function.Predicate;
 
 public class Sequence {
@@ -554,13 +551,13 @@ public class Sequence {
 
         private SignalStatus[] signalStatuses;
 
-        private MultiInputNodeMemory nodeMemory;
+        private SequenceNodeMemory nodeMemory;
 
         private int eventsStartPosition;
 
         public SequenceMemory(SequencerMemory sequencerMemory, Sequence sequence,
                               SignalAdapter[] signalAdapters, SignalAdapter[] activeSignalAdapters,
-                              long[] gateMemory, long[] counterMemories, MultiInputNodeMemory nodeMemory) {
+                              long[] gateMemory, long[] counterMemories, SequenceNodeMemory nodeMemory) {
             this.sequencerMemory      = sequencerMemory;
             this.sequence             = sequence;
             this.signalAdapters       = signalAdapters;
@@ -634,7 +631,7 @@ public class Sequence {
             return signalStatuses;
         }
 
-        public MultiInputNodeMemory getNodeMemory() {
+        public SequenceNodeMemory getNodeMemory() {
             return nodeMemory;
         }
 

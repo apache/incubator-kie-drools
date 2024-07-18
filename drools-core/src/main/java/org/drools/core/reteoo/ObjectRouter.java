@@ -73,7 +73,7 @@ public class ObjectRouter {
 
     public static class Filter extends AbstractLinkedListNode<Filter>  {
         private AlphaNodeFieldConstraint constraint;
-        private MultiInputNode           node;
+        private SequenceNode             node;
 
 
         public Filter(AlphaNodeFieldConstraint constraint) {
@@ -203,7 +203,7 @@ public class ObjectRouter {
         }
 
         public int getType() {
-            return NodeTypeEnums.MultiInputNode; // need to update enums for multi input (mdp)
+            return NodeTypeEnums.SequenceNode; // need to update enums for multi input (mdp)
         }
 
         public void doAttach(BuildContext context) {

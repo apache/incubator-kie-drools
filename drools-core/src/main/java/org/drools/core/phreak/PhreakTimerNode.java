@@ -37,6 +37,7 @@ import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.SegmentMemory;
+import org.drools.core.reteoo.SegmentNodeMemory;
 import org.drools.core.reteoo.TimerNode;
 import org.drools.core.reteoo.TimerNode.TimerNodeMemory;
 import org.drools.core.reteoo.Tuple;
@@ -433,10 +434,10 @@ public class PhreakTimerNode {
         }
     }
 
-    private static void evaluate(PathMemory pmem,
+    public static void evaluate(PathMemory pmem,
                                  ActivationsManager activationsManager,
                                  LeftTupleSink sink,
-                                 TimerNodeMemory tm,
+                                 SegmentNodeMemory tm,
                                  TupleSets trgLeftTuples) {
         SegmentMemory[] smems = pmem.getSegmentMemories();
         SegmentMemory sm = tm.getSegmentMemory();
