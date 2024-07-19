@@ -291,66 +291,6 @@ public class Sequence {
     }
 
 
-
-//    public static class TimeoutTimer implements PropagationTimer {
-//        private LogicGate gate;
-//        private Timer     timer;
-//
-//        public TimeoutTimer(LogicGate gate, Timer timer) {
-//            this.gate  = gate;
-//            this.timer = timer;
-//        }
-//
-//        @Override
-//        public void activated(SequenceMemory memory, ReteEvaluator reteEvaluator)  {
-//            Trigger                 trigger   = timer.createTrigger(reteEvaluator.getTimerService().getCurrentTime(), null, null);
-//            SequenceTimerJobContext ctx       = new SequenceTimerJobContext(SequenceTimerJobContext.TIMEOUT, trigger, reteEvaluator, memory);
-//            JobHandle               jobHandle = reteEvaluator.getTimerService().scheduleJob(SequenceJob.getINSTANCE(), ctx, trigger);
-//            memory.setJobHandle(gate.getGateIndex(), jobHandle);
-//            System.out.println("handle created");
-//        }
-//
-//        @Override
-//        public void matched(SequenceMemory memory, ReteEvaluator reteEvaluator, SignalStatus status)  {
-//            memory.cancelJobHandle(gate.getGateIndex(), reteEvaluator);
-//            gate.propapate(memory, reteEvaluator, status);
-//        }
-//
-//        @Override
-//        public void failed(SequenceMemory memory, ReteEvaluator reteEvaluator)  {
-//            memory.cancelJobHandle(gate.getGateIndex(), reteEvaluator);
-//        }
-//    }
-//
-//    public static class DelayTimer implements PropagationTimer  {
-//        private LogicGate gate;
-//        private Timer timer;
-//
-//        public DelayTimer(LogicGate gate, Timer timer) {
-//            this.gate  = gate;
-//            this.timer = timer;
-//        }
-//
-//        @Override
-//        public void activated(SequenceMemory memory, ReteEvaluator reteEvaluator)  {
-//            Trigger                 trigger   = timer.createTrigger(reteEvaluator.getTimerService().getCurrentTime(), null, null);
-//            SequenceTimerJobContext ctx       = new SequenceTimerJobContext(SequenceTimerJobContext.TIMEOUT, trigger, reteEvaluator, gate, memory);
-//            JobHandle               jobHandle = reteEvaluator.getTimerService().scheduleJob(SequenceJob.getINSTANCE(), ctx, trigger);
-//            memory.setJobHandle(gate.getGateIndex(), jobHandle);
-//        }
-//
-//        @Override
-//        public void matched(SequenceMemory memory, ReteEvaluator reteEvaluator, SignalStatus status)  {
-//            //gate.propapate(memory, reteEvaluator, status);
-//        }
-//
-//        @Override
-//        public void failed(SequenceMemory memory, ReteEvaluator reteEvaluator)  {
-//            memory.cancelJobHandle(gate.getGateIndex(), reteEvaluator);
-//        }
-//    }
-
-
     public static class SequenceJob
             implements
             Job {
@@ -436,15 +376,8 @@ public class Sequence {
         }
 
         public void execute( final ReteEvaluator reteEvaluator, boolean needEvaluation ) {
-//            LogicGate gate = jobCtx.getGate();
             SequenceMemory sequenceMemory = jobCtx.getSequenceMemory();
 
-//
-//            SignalStatus status = sequencerMemory.getLogicGateSignalStatus(gate.getGateIndex());
-//
-//            sequencerMemory.clearJobHandle(gate.getGateIndex(), reteEvaluator); // clear rather than cancel, as it's actually firing
-//            System.out.println("execute");
-//
             switch (jobCtx.getActionType()) {
                 case SequenceTimerJobContext.DELAY:
 //                    if (status == SignalStatus.MATCHED) {
@@ -468,53 +401,6 @@ public class Sequence {
 //                    }
                     break;
             }
-//----------------
-            // Logic is satsified and waiting to transition
-
-            // Logic is not satsified and has run out of time.
-
-
-
-//            TupleList leftTuples = timerJobCtx.getTimerNodeMemory().getInsertOrUpdateLeftTuples();
-//            TupleImpl lt         = timerJobCtx.getTuple();
-//
-//            if ( log.isTraceEnabled() ) {
-//                log.trace( "Timer Executor {} {}", timerJobCtx.getTrigger(), lt );
-//            }
-//
-//            if ( timerJobCtx.getJobHandle().isCancel() ) {
-//                // this is to force a sync point, as during update propagate it can cancel the FH
-//                // we cannot have an update processed at the same timer is firing
-//                return;
-//            }
-//            if ( lt.getMemory() == null ) {
-//                // don't add it, if it's already added, which could happen with interval or cron timers
-//                leftTuples.add( lt );
-//            }
-//
-//            timerJobCtx.getTimerNodeMemory().setNodeDirtyWithoutNotify();
-//
-//            TimedRuleExecutionFilter filter = reteEvaluator.getRuleSessionConfiguration().getTimedRuleExecutionFilter();
-//            needEvaluation &= filter != null;
-//
-//            for (final PathMemory pmem : timerJobCtx.getPathMemories()) {
-//                if (pmem.getPathEndNode().getAssociatedTerminalsSize() == 0) {
-//                    // if the corresponding rule has been removed avoid to link and notify this pmem
-//                    continue;
-//                }
-//                ActivationsManager activationsManager = pmem.getActualActivationsManager(reteEvaluator);
-//                pmem.doLinkRule( activationsManager );
-//
-//                if (needEvaluation && filter.accept(new Rule[]{pmem.getRule()})) {
-//                    evaluateAndFireRule( pmem, activationsManager );
-//                }
-//            }
-        }
-
-        private void evaluateAndFireRule(PathMemory pmem, ActivationsManager activationsManager) {
-//            RuleExecutor ruleExecutor = pmem.getRuleAgendaItem().getRuleExecutor();
-//            ruleExecutor.evaluateNetworkIfDirty( activationsManager );
-//            ruleExecutor.fire( activationsManager );
         }
     }
 

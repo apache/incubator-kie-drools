@@ -540,7 +540,7 @@ public class SequenceNode extends LeftTupleSource
                            TupleSets srcLeftTuples,
                            TupleSets trgLeftTuples,
                            TupleSets stagedLeftTuples) {
-            
+
             if (srcLeftTuples.getDeleteFirst() != null) {
                 doLeftDeletes(node, srcLeftTuples, trgLeftTuples, stagedLeftTuples, reteEvaluator);
             }
@@ -590,8 +590,8 @@ public class SequenceNode extends LeftTupleSource
                 memory.getLeftTupleMemory().add(leftTuple);
 
                 SequencerMemory sequencerMemory = memory.node.createSequencerMemory(leftTuple, sink, memory);
-                node.getSequencer().start(sequencerMemory, evaluator);
                 leftTuple.setContextObject(sequencerMemory);
+                node.getSequencer().start(sequencerMemory, evaluator);
 
                 leftTuple.clearStaged();
                 leftTuple = next;

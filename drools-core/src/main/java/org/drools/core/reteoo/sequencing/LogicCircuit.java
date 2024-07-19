@@ -9,8 +9,6 @@ public class LogicCircuit {
 
     private SequenceNode node;
 
-    private LeftTupleSinkNode sink;
-
     private LogicGate[] gates;
 
     public LogicCircuit(SequenceNode node, LogicGate... gates) {
