@@ -420,18 +420,26 @@ public class RuleFlowProcessFactory extends RuleFlowNodeContainerFactory<RuleFlo
     }
 
     protected Node findNodeByIdOrUniqueIdInMetadata(NodeContainer nodeContainer, final String nodeRef, String errorMsg) {
-        Node node = null;
-        // try looking for a node with same "UniqueId" (in metadata)
-        for (Node containerNode : nodeContainer.getNodes()) {
-            if (nodeRef.equals(containerNode.getUniqueId())) {
-                node = containerNode;
-                break;
-            }
-        }
+        Node node = findNodeByUniqueId(nodeContainer, nodeRef);
         if (node == null) {
             throw new IllegalArgumentException(errorMsg);
         }
         return node;
+    }
+
+    private Node findNodeByUniqueId(NodeContainer nodeContainer, final String nodeRef) {
+        for (Node containedNode : nodeContainer.getNodes()) {
+            if (nodeRef.equals(containedNode.getUniqueId())) {
+                return containedNode;
+            }
+            if (containedNode instanceof NodeContainer) {
+                Node result = findNodeByUniqueId((NodeContainer) containedNode, nodeRef);
+                if (result != null) {
+                    return result;
+                }
+            }
+        }
+        return null;
     }
 
     private void postProcessNodes(RuleFlowProcess process, NodeContainer container) {

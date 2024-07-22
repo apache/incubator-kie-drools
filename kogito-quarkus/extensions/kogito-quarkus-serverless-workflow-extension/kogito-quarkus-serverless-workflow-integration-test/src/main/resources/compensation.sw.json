@@ -1,0 +1,93 @@
+{
+  "id": "compensation",
+  "version": "1.0",
+  "name": "Workflow Error example",
+  "description": "An example of how compensation works",
+  "start": "printStatus",
+   "errors": [
+    {
+      "name": "OddException",
+      "code": "java.lang.RuntimeException"
+     }
+   ],
+   "functions": [
+    {
+      "name": "isEven",
+      "type": "custom",
+      "operation": "service:java:org.kie.kogito.workflows.services.EvenService::isEven"
+    }],
+  "states": [
+ 	{
+      "name": "printStatus",
+      "type": "inject",
+      "data": {
+         "compensated": false
+      },
+      "compensatedBy" : "compensating",
+       "transition": "branch"
+    }, 
+    {
+      "name": "branch",
+      "type": "switch",
+      "dataConditions": [
+        {
+          "condition": ".shouldCompensate==true",
+          "transition": { 
+            "nextState" : "finish_compensate",
+            "compensate" : true
+           }
+        }, 
+        {
+          "condition": ".shouldCompensate==false",
+          "transition": { 
+            "nextState" : "finish_not_compensate",
+            "compensate" : false
+           }
+        }
+       ]
+    },
+    {
+      "name": "compensating",
+      "usedForCompensation" : true,
+      "type": "inject",
+      "data": {
+        "compensated": true
+      }, 
+      "transition" : "compensating_more"
+    },
+    {
+      "name": "compensating_more",
+      "usedForCompensation" : true,
+      "type": "operation",
+      "actions": [{ "functionRef": {
+            "refName": "isEven",
+            "arguments": {
+              "number": ".number"
+            }
+          }}],
+      "onErrors": [
+       {
+          "errorRef": "OddException",
+          "transition": "OddHandler"
+       }
+       ]
+    },
+    { "name": "OddHandler",
+       "type":"inject",
+       "data": { "isEven": false},
+       "end": true
+    },
+    {
+      "name": "finish_compensate",
+      "type": "operation",
+      "actions": [],
+      "end": true
+    },
+    {
+      "name": "finish_not_compensate",
+      "type": "operation",
+      "actions": [],
+      "end": true
+    }
+  ]
+}
