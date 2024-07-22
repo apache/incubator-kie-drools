@@ -35,6 +35,10 @@ import org.jbpm.bpmn2.activity.ScriptTaskModel;
 import org.jbpm.bpmn2.activity.ScriptTaskProcess;
 import org.jbpm.bpmn2.activity.ScriptTaskWithIOModel;
 import org.jbpm.bpmn2.activity.ScriptTaskWithIOProcess;
+import org.jbpm.bpmn2.activity.UserTaskWithBooleanOutputModel;
+import org.jbpm.bpmn2.activity.UserTaskWithBooleanOutputProcess;
+import org.jbpm.bpmn2.activity.UserTaskWithIOexpressionModel;
+import org.jbpm.bpmn2.activity.UserTaskWithIOexpressionProcess;
 import org.jbpm.bpmn2.activity.UserTaskWithParametrizedInputModel;
 import org.jbpm.bpmn2.activity.UserTaskWithParametrizedInputProcess;
 import org.jbpm.bpmn2.activity.UserTaskWithSimulationMetaDataModel;
@@ -92,6 +96,8 @@ import org.jbpm.bpmn2.subprocess.CallActivityModel;
 import org.jbpm.bpmn2.subprocess.CallActivityProcess;
 import org.jbpm.bpmn2.subprocess.CallActivityProcessBoundaryErrorModel;
 import org.jbpm.bpmn2.subprocess.CallActivityProcessBoundaryErrorProcess;
+import org.jbpm.bpmn2.subprocess.CallActivityProcessWithBoundaryEventModel;
+import org.jbpm.bpmn2.subprocess.CallActivityProcessWithBoundaryEventProcess;
 import org.jbpm.bpmn2.subprocess.CallActivitySubProcessBoundaryErrorModel;
 import org.jbpm.bpmn2.subprocess.CallActivitySubProcessBoundaryErrorProcess;
 import org.jbpm.bpmn2.subprocess.CallActivitySubProcessModel;
@@ -1004,48 +1010,52 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     }
 
     @Test
-    public void testCallActivityWithSubProcessWaitState() throws Exception {
-        kruntime = createKogitoProcessRuntime(
-                "org/jbpm/bpmn2/subprocess/BPMN2-CallActivityProcessWithBoundaryEvent.bpmn2",
-                "org/jbpm/bpmn2/subprocess/BPMN2-CallActivitySubProcessWithBoundaryEvent.bpmn2");
-
+    public void testCallActivityWithSubProcessWaitState() {
+        Application app = ProcessTestHelper.newApplication();
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task",
-                workItemHandler);
-        Map<String, Object> params = new HashMap<>();
-        KogitoProcessInstance processInstance = kruntime.startProcess("CallActivityProcessWithBoundaryEvent", params);
-        assertProcessInstanceActive(processInstance.getStringId(), kruntime);
+        EventTrackerProcessListener listener = new EventTrackerProcessListener();
+        ProcessTestHelper.registerHandler(app, "Human Task", workItemHandler);
+        ProcessTestHelper.registerProcessEventListener(app, listener);
 
-        org.kie.kogito.internal.process.runtime.KogitoWorkItem wi = workItemHandler.getWorkItem();
-        assertThat(wi).isNotNull();
+        org.kie.kogito.process.Process<CallActivitySubProcessWithBoundaryEventModel> callActivitySubProcessWithBoundaryEventProcess = CallActivitySubProcessWithBoundaryEventProcess.newProcess(app);
+        ProcessInstance<CallActivitySubProcessWithBoundaryEventModel> subProcessInstance =
+                callActivitySubProcessWithBoundaryEventProcess.createInstance(callActivitySubProcessWithBoundaryEventProcess.createModel());
+        org.kie.kogito.process.Process<CallActivityProcessWithBoundaryEventModel> process = CallActivityProcessWithBoundaryEventProcess.newProcess(app);
+        CallActivityProcessWithBoundaryEventModel model = process.createModel();
+        ProcessInstance<CallActivityProcessWithBoundaryEventModel> processInstance = process.createInstance(model);
+        processInstance.start();
 
-        kruntime.getKogitoWorkItemManager().completeWorkItem(wi.getStringId(), null);
-
-        assertProcessInstanceFinished(processInstance, kruntime);
-        // first check the parent process executed nodes
-        assertNodeTriggered(processInstance.getStringId(), "StartProcess", "Call Activity 1", "EndProcess");
-        // then check child process executed nodes - is there better way to get child process id than simply increment?
-        assertNodeTriggered(processInstance.getStringId() + 1, "StartProcess2", "User Task", "EndProcess");
+        assertThat(processInstance).extracting(ProcessInstance::status).isEqualTo(ProcessInstance.STATE_ACTIVE);
+        org.kie.kogito.internal.process.runtime.KogitoWorkItem workItem = workItemHandler.getWorkItem();
+        assertThat(workItem).isNotNull();
+        subProcessInstance.completeWorkItem(workItem.getStringId(), Collections.emptyMap());
+        assertThat(processInstance).extracting(ProcessInstance::status).isEqualTo(ProcessInstance.STATE_COMPLETED);
+        assertThat(listener.tracked()).anyMatch(ProcessTestHelper.triggered("Call Activity 1"));
+        assertThat(listener.tracked()).anyMatch(ProcessTestHelper.triggered("StartProcess"));
+        assertThat(listener.tracked()).anyMatch(ProcessTestHelper.triggered("EndProcess"));
+        assertThat(listener.tracked()).anyMatch(ProcessTestHelper.triggered("StartProcess2"));
+        assertThat(listener.tracked()).anyMatch(ProcessTestHelper.triggered("User Task"));
     }
 
     @Test
-    public void testUserTaskWithBooleanOutput() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/activity/BPMN2-UserTaskWithBooleanOutput.bpmn2");
+    public void testUserTaskWithBooleanOutput() {
+        Application app = ProcessTestHelper.newApplication();
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        ProcessTestHelper.registerHandler(app, "Human Task", workItemHandler);
+        org.kie.kogito.process.Process<UserTaskWithBooleanOutputModel> process = UserTaskWithBooleanOutputProcess.newProcess(app);
+        UserTaskWithBooleanOutputModel model = process.createModel();
+        model.setIsChecked(true);
+        ProcessInstance<UserTaskWithBooleanOutputModel> processInstance = process.createInstance(model);
+        processInstance.start();
 
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task",
-                workItemHandler);
-        KogitoProcessInstance processInstance = kruntime
-                .startProcess("UserTaskWithBooleanOutput");
-        assertProcessInstanceActive(processInstance);
+        assertThat(processInstance).extracting(ProcessInstance::status).isEqualTo(ProcessInstance.STATE_ACTIVE);
         org.kie.kogito.internal.process.runtime.KogitoWorkItem workItem = workItemHandler.getWorkItem();
         assertThat(workItem).isNotNull();
         assertThat(workItem.getParameter("ActorId")).isEqualTo("john");
         HashMap<String, Object> output = new HashMap<>();
-        output.put("isCheckedCheckbox", "true");
-        kruntime.getKogitoWorkItemManager()
-                .completeWorkItem(workItem.getStringId(), output);
-        assertProcessInstanceFinished(processInstance, kruntime);
+        output.put("isCheckedCheckbox", true);
+        processInstance.completeWorkItem(workItem.getStringId(), output);
+        assertThat(processInstance).extracting(ProcessInstance::status).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
@@ -1609,25 +1619,25 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     }
 
     @Test
-    public void testUserTaskWithExpressionsForIO() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/activity/BPMN2-UserTaskWithIOexpression.bpmn2");
-
+    public void testUserTaskWithExpressionsForIO() {
+        Application app = ProcessTestHelper.newApplication();
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
-        Map<String, Object> parameters = new HashMap<>();
-        parameters.put("person", new Person("john"));
+        ProcessTestHelper.registerHandler(app, "Human Task", workItemHandler);
+        org.kie.kogito.process.Process<UserTaskWithIOexpressionModel> processDefinition = UserTaskWithIOexpressionProcess.newProcess(app);
+        UserTaskWithIOexpressionModel model = processDefinition.createModel();
+        model.setPerson(new Person("john"));
+        org.kie.kogito.process.ProcessInstance<UserTaskWithIOexpressionModel> instance = processDefinition.createInstance(model);
+        instance.start();
 
-        KogitoProcessInstance processInstance = kruntime.startProcess("UserTaskWithIOexpression", parameters);
-        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_ACTIVE);
+        assertThat(instance).extracting(ProcessInstance::status).isEqualTo(ProcessInstance.STATE_ACTIVE);
         org.kie.kogito.internal.process.runtime.KogitoWorkItem workItem = workItemHandler.getWorkItem();
         assertThat(workItem).isNotNull();
         assertThat(workItem.getParameter("ActorId")).isEqualTo("john");
         assertThat(workItem.getParameter("personName")).isEqualTo("john");
-
-        kruntime.getKogitoWorkItemManager().completeWorkItem(workItem.getStringId(), Collections.singletonMap("personAge", 50));
-        Person person = (Person) processInstance.getVariables().get("person");
+        instance.completeWorkItem(workItem.getStringId(), Collections.singletonMap("personAge", 50));
+        Person person = instance.variables().getPerson();
         assertThat(person.getAge()).isEqualTo(50);
-        assertProcessInstanceFinished(processInstance, kruntime);
+        assertThat(instance).extracting(ProcessInstance::status).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
