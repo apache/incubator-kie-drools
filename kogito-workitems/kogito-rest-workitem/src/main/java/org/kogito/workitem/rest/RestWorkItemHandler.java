@@ -152,27 +152,27 @@ public class RestWorkItemHandler implements KogitoWorkItemHandler {
                 path += "?" + query;
             }
         } catch (MalformedURLException ex) {
-            logger.info("Parameter endpoint {} is not valid uri {}", endPoint, ex.getMessage());
+            logger.debug("Parameter endpoint {} is not valid uri {}", endPoint, ex.getMessage());
         }
 
         if (isEmpty(protocol)) {
             protocol = getParam(parameters, PROTOCOL, String.class, "http");
-            logger.info("Protocol not specified, using {}", protocol);
+            logger.debug("Protocol not specified, using {}", protocol);
         }
 
         boolean isSsl = protocol.equalsIgnoreCase("https");
 
         if (isEmpty(host)) {
             host = getParam(parameters, HOST, String.class, "localhost");
-            logger.info("Host not specified, using {}", host);
+            logger.debug("Host not specified, using {}", host);
         }
         if (port == -1) {
             port = getParam(parameters, PORT, Integer.class, isSsl ? DEFAULT_SSL_PORT : DEFAULT_PORT);
-            logger.info("Port not specified, using {}", port);
+            logger.debug("Port not specified, using {}", port);
         }
         if (isEmpty(path)) {
             path = endPoint;
-            logger.info("Path is empty, using whole endpoint {}", endPoint);
+            logger.debug("Path is empty, using whole endpoint {}", endPoint);
         }
         logger.debug("Invoking request with protocol {} host {} port {} and endpoint {}", protocol, host, port, path);
         WebClient client = isSsl ? httpsClient : httpClient;
