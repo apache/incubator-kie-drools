@@ -126,17 +126,14 @@ void setupProjectReleaseJob() {
 
         GIT_BRANCH_NAME: "${GIT_BRANCH}",
         GIT_AUTHOR: "${GIT_AUTHOR_NAME}",
-
-        DEFAULT_STAGING_REPOSITORY: "${MAVEN_NEXUS_STAGING_PROFILE_URL}",
-        ARTIFACTS_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
-
-        DROOLS_STREAM: Utils.getStream(this),
     ])
     KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         parameters {
             stringParam('RESTORE_FROM_PREVIOUS_JOB', '', 'URL to a previous stopped release job which needs to be continued')
 
-            stringParam('DROOLS_VERSION', '', 'Drools version to release as Major.minor.micro')
+            stringParam('RELEASE_VERSION', '', 'Drools version to release as Major.minor.micro')
+
+            stringParam('GIT_TAG_NAME', '', 'Git tag to create. i.e.: 10.0.0-rc1')
 
             booleanParam('SKIP_TESTS', false, 'Skip all tests')
         }
@@ -337,6 +334,8 @@ void setupDeployJob(JobType jobType) {
             booleanParam('CREATE_PR', false, 'Should we create a PR with the changes ?')
             stringParam('PROJECT_VERSION', '', 'Optional if not RELEASE. If RELEASE, cannot be empty.')
             stringParam('DROOLS_PR_BRANCH', '', 'PR branch name')
+
+            stringParam('GIT_TAG_NAME', '', 'Optional if not RELEASE. Tag to be created in the repository')
 
             booleanParam('SEND_NOTIFICATION', false, 'In case you want the pipeline to send a notification on CI channel for this run.')
         }
