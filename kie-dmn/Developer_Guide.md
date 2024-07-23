@@ -87,9 +87,17 @@ Finally, the `CompiledFEELExpression` to be executed is returned (`ProcessedExpr
 ![Sequence Diagram](uml/Compilation.png)
 
 ##### Interpreted vs Codegen
-The retrieved `CompiledFEELExpression` could be a _statically-interpreted_ `InterpretedExecutableExpression` (that wraps the original `BaseNode` **_ast_**) or could be a _dynamically-code-generated_ `CompiledExecutableExpression`, in which case:
+The retrieved `CompiledFEELExpression` could be a _statically-interpreted_ `InterpretedExecutableExpression` (that wraps the original `BaseNode` **_ast_**) or could be a _dynamically-code-generated_ `CompiledExecutableExpression`.
+In the first case, evaluation is executed by the DMN code as it is statically defined.
+In the latter case, code is generated out of the given model. In that code, some variable will be directly written in the generated, speeding up its execution.
+Beside that, generated code will invoke the same functions as the interpreted one.
+Codegen execution is enabled in two ways:
+1. adding the [DoCompileFEELProfile](kie-dmn-feel%2Fsrc%2Fmain%2Fjava%2Forg%2Fkie%2Fdmn%2Ffeel%2Fparser%2Ffeel11%2Fprofiles%2FDoCompileFEELProfile.java) to the FEEL instantiation
+2. setting the `doCompile` boolean in the `CompilerContext` (`CompilerContext.setDoCompile(true)`)
+
+When codegen is enabled, first the model is read and parsed as in the interpreted way; then:
 1. source code is generated out of the given  `BaseNode` **_ast_** (by `ASTCompilerVisitor`)
-2. code is compiled in-memory to a `CompiledExecutableExpression (by [CompilerBytecodeLoader](kie-dmn-feel%2Fsrc%2Fmain%2Fjava%2Forg%2Fkie%2Fdmn%2Ffeel%2Fcodegen%2Ffeel11%2FCompilerBytecodeLoader.java))
+2. code is compiled in-memory to a `CompiledExecutableExpression` (by [CompilerBytecodeLoader](kie-dmn-feel%2Fsrc%2Fmain%2Fjava%2Forg%2Fkie%2Fdmn%2Ffeel%2Fcodegen%2Ffeel11%2FCompilerBytecodeLoader.java))
 3. the above `CompiledFEELExpression` is wrapped and returned inside a `CompiledExecutableExpression`
 
 #### Validation
@@ -126,10 +134,10 @@ The critical point where this happen is the `BaseFEELFunction#getCandidateMethod
 Based on a algorithm defined in the [ScoreHelper](kie-dmn-feel%2Fsrc%2Fmain%2Fjava%2Forg%2Fkie%2Fdmn%2Ffeel%2Fruntime%2Ffunctions%2FScoreHelper.java), each `invoke` method is tested and provided a score. The one with the highest score will be used for actual function evaluation.
 
 ### Coercion
+`Coercion` is the feature for which a given object is transformed to an _equivalent_ object of a different type.
+One example of that coercion is applied whenever a number, or a string representing a number, is received, in which case it is translated to `BigDecimal`. Another example is when a method expects a list, and a single object is provided: in that case, the object is _coerced_ to a singleton list. The rules for coercion are the ones provided by the DMN specification.
 
-During `invoke` method discovery, inside `BaseFEELFunction`, the given input parameters are _coerced_ to potentially match the ones expected by the current `invoke` method. The rules for this coercion are the ones from the DMN specification.
-
-Another coercion is applied whenever a number, or a string representing a number, is received, in which case it is translated to `BigDecimal`
+During `invoke` method discovery, inside `BaseFEELFunction`, the given input parameters are _coerced_ to potentially match the ones expected by the current `invoke` method, and the _coerced_ values are stored to be used for the execution of that specific method.
 
 
 ## Development guidelines
