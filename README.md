@@ -83,5 +83,15 @@ The following two commands will execute tests on machine with locale different t
 1. `make test -Ptest-en`
 2. `make test -DTestEn`
 
+Documenting tips
+================
+
+UML diagrams have been used for architectural and design documentation. Those diagrams are in ".puml" format and have been created using the [PlantUML](https://plantuml.com/https://plantuml.com/) tool.
+Plugins exists to use it in different IDE:
+* [IDEA](https://plugins.jetbrains.com/plugin/7017-plantuml-integration)
+* [Eclipse](https://marketplace.eclipse.org/content/plantuml-plugin)
+* [VisualStudio](https://marketplace.visualstudio.com/items?itemName=jebbs.plantuml)
+
+
 
 
