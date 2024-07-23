@@ -18,6 +18,7 @@
  */
 package org.jbpm.test.utils;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
@@ -69,16 +70,38 @@ public class ProcessTestHelper {
         ((DefaultWorkItemHandlerConfig) app.config().get(ProcessConfig.class).workItemHandlers()).register(handlerName, handler);
     }
 
+    /**
+     * Will be removed in favor of the {@link #completeWorkItem(ProcessInstance, Map, String, String...)}
+     */
+    @Deprecated
     public static void completeWorkItem(ProcessInstance<? extends Model> processInstance, String userName, Map<String, Object> outputVars) {
-        completeWorkItem(processInstance, userName, outputVars, item -> {
-        });
+        completeWorkItem(processInstance, outputVars, item -> {
+        }, userName);
     }
 
+    /**
+     * Will be removed in favor of the {@link #completeWorkItem(ProcessInstance, Map, Consumer, String, String...)}
+     */
+    @Deprecated
     public static void completeWorkItem(ProcessInstance<? extends Model> processInstance, String userName, Map<String, Object> outputVars, Consumer<WorkItem> workItem) {
-        List<WorkItem> workItems = processInstance.workItems(SecurityPolicy.of(userName, emptyList()));
+        completeWorkItem(processInstance, outputVars, workItem, userName);
+    }
+
+    public static void completeWorkItem(ProcessInstance<? extends Model> processInstance, Map<String, Object> outputVars) {
+        completeWorkItem(processInstance, outputVars, item -> {
+        }, null);
+    }
+
+    public static void completeWorkItem(ProcessInstance<? extends Model> processInstance, Map<String, Object> outputVars, String userName, String... groups) {
+        completeWorkItem(processInstance, outputVars, item -> {
+        }, userName, groups);
+    }
+
+    public static void completeWorkItem(ProcessInstance<? extends Model> processInstance, Map<String, Object> outputVars, Consumer<WorkItem> workItem, String userName, String... groups) {
+        List<WorkItem> workItems = processInstance.workItems(SecurityPolicy.of(userName, Arrays.asList(groups)));
         workItems.stream().findFirst().ifPresent(e -> {
             workItem.accept(e);
-            processInstance.completeWorkItem(e.getId(), outputVars, SecurityPolicy.of(userName, emptyList()));
+            processInstance.completeWorkItem(e.getId(), outputVars, SecurityPolicy.of(userName, Arrays.asList(groups)));
         });
     }
 

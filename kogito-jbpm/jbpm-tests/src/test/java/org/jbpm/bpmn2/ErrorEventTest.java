@@ -253,7 +253,7 @@ public class ErrorEventTest extends JbpmBpmn2TestCase {
 
         List<KogitoWorkItem> workItems = handler.getWorkItems();
         assertThat(workItems).hasSize(1);
-        ProcessTestHelper.completeWorkItem(instance, "john", Collections.emptyMap());
+        ProcessTestHelper.completeWorkItem(instance, Collections.emptyMap(), "john");
 
         assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
 
@@ -357,7 +357,7 @@ public class ErrorEventTest extends JbpmBpmn2TestCase {
         org.kie.kogito.process.ProcessInstance<ExceptionServiceProcessErrorSignallingModel> instance = definition.createInstance(model);
         instance.start();
 
-        ProcessTestHelper.completeWorkItem(instance, "john", Collections.emptyMap());
+        ProcessTestHelper.completeWorkItem(instance, Collections.emptyMap(), "john");
         assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_ABORTED);
         assertThat(caughtEventObjectHolder[0] != null && caughtEventObjectHolder[0] instanceof KogitoWorkItem).withFailMessage("Event was not passed to Event Subprocess.").isTrue();
     }
@@ -382,7 +382,7 @@ public class ErrorEventTest extends JbpmBpmn2TestCase {
         org.kie.kogito.process.ProcessInstance<ExceptionServiceProcessSignallingModel> instance = definition.createInstance(model);
         instance.start();
 
-        ProcessTestHelper.completeWorkItem(instance, "john", Collections.emptyMap());
+        ProcessTestHelper.completeWorkItem(instance, Collections.emptyMap(), "john");
         assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
         assertThat(caughtEventObjectHolder[0] != null && caughtEventObjectHolder[0] instanceof KogitoWorkItem).withFailMessage("Event was not passed to Event Subprocess.").isTrue();
 

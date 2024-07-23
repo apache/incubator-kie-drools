@@ -51,7 +51,13 @@
       </intermediateThrowEvent>
       <sequenceFlow id="_2-2-_2-3" sourceRef="_2-2" targetRef="_2-3" />
     
-      <userTask id="_2-3" name="User Task" />
+      <userTask id="_2-3" name="User Task">
+        <potentialOwner id="_2-3-1">
+          <resourceAssignmentExpression id="_2-3-1-1">
+            <formalExpression>john</formalExpression>
+          </resourceAssignmentExpression>
+        </potentialOwner>
+      </userTask>
       <sequenceFlow id="_2-3-_2-4" sourceRef="_2-3" targetRef="_2-4" />
       
       <endEvent id="_2-4" name="endSub" />

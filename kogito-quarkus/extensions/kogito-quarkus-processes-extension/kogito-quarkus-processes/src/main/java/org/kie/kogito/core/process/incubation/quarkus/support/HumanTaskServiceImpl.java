@@ -98,16 +98,19 @@ class HumanTaskServiceImpl implements HumanTaskService {
     }
 
     @Override
-    public ExtendedDataContext create(LocalId id) {
+    public ExtendedDataContext create(LocalId id, DataContext dataContext) {
         TaskId taskId = ProcessIdParser.select(id, TaskId.class);
         ProcessInstanceId instanceId = taskId.processInstanceId();
         Process<MappableToModel<Model>> process = parseProcess(instanceId.processId());
 
-        WorkItem workItem = svc.signalTask(process, instanceId.processInstanceId(), taskId.taskId())
+        ExtendedDataContext edc = dataContext.as(ExtendedDataContext.class);
+        TaskMetaDataContext mdc = edc.meta().as(TaskMetaDataContext.class);
+        SecurityPolicy securityPolicy = convertPolicyObject(mdc.policy());
+
+        WorkItem workItem = svc.signalTask(process, instanceId.processInstanceId(), taskId.taskId(), securityPolicy)
                 .orElseThrow();
 
-        MapDataContext dataContext = MapDataContext.from(workItem);
-        return ExtendedDataContext.of(ProcessMetaDataContext.of(taskId), dataContext);
+        return ExtendedDataContext.of(ProcessMetaDataContext.of(taskId), MapDataContext.from(workItem));
     }
 
     @Override

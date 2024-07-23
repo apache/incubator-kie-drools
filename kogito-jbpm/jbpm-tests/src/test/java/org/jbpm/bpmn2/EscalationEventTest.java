@@ -145,7 +145,7 @@ public class EscalationEventTest extends JbpmBpmn2TestCase {
         KogitoWorkItem workItem = workItemHandler.getWorkItem();
         assertThat(workItem).isNotNull();
 
-        ProcessTestHelper.completeWorkItem(instance, "john", Collections.emptyMap());
+        ProcessTestHelper.completeWorkItem(instance, Collections.emptyMap(), "john");
 
         assertThat(instance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
         assertThat(executednodes).hasSize(1);
@@ -210,7 +210,7 @@ public class EscalationEventTest extends JbpmBpmn2TestCase {
         model.setX("0");
         org.kie.kogito.process.ProcessInstance<EscalationBoundaryEventWithTaskModel> instance = processDefinition.createInstance(model);
         instance.start();
-        ProcessTestHelper.completeWorkItem(instance, "john", Collections.emptyMap());
+        ProcessTestHelper.completeWorkItem(instance, Collections.emptyMap(), "john");
 
         assertThat(instance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
         assertThat(instance.variables().getX()).isEqualTo("1");

@@ -61,6 +61,8 @@ class AdHocFragmentsIT {
 
         String taskId = extractID(given()
                 .contentType(ContentType.JSON)
+                .queryParam("user", "john")
+                .queryParam("group", "manager")
                 .when()
                 .post("/AdHocFragments/{pid}/AdHocTask1", id)
                 .then()
@@ -73,6 +75,7 @@ class AdHocFragmentsIT {
         params.put("newVar1", "Gonzo");
         given()
                 .contentType(ContentType.JSON)
+                .queryParam("user", "john")
                 .when()
                 .body(params)
                 .post("/AdHocFragments/{id}/AdHocTask1/{taskId}", id, taskId)
@@ -122,6 +125,7 @@ class AdHocFragmentsIT {
 
         given()
                 .contentType(ContentType.JSON)
+                .queryParam("user", "john")
                 .when()
                 .post("/AdHocFragments/{pid}/Task", pid)
                 .then()

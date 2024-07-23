@@ -42,6 +42,7 @@ import org.junit.jupiter.api.Test;
 import org.kie.kogito.Application;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.process.bpmn2.BpmnVariables;
+import org.kie.kogito.process.workitem.Policies;
 
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
@@ -64,8 +65,10 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
 
         Map<String, Object> res = new HashMap<>();
         res.put("testHT", "test value");
+
         kruntime.getKogitoWorkItemManager().completeWorkItem(
-                workItemHandler.getWorkItem().getStringId(), res);
+                workItemHandler.getWorkItem().getStringId(), res,
+                Policies.of("john"));
 
         assertProcessInstanceCompleted(processInstance.getStringId(), kruntime);
     }
@@ -82,7 +85,7 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
         instance.start();
         assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_ACTIVE);
 
-        ProcessTestHelper.completeWorkItem(instance, "john", Collections.singletonMap("testHT", "true"));
+        ProcessTestHelper.completeWorkItem(instance, Collections.singletonMap("testHT", "true"), "john");
 
         assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
     }
@@ -101,7 +104,7 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
         instance.start();
         assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_ACTIVE);
 
-        ProcessTestHelper.completeWorkItem(instance, "john", Collections.singletonMap("testHT", value));
+        ProcessTestHelper.completeWorkItem(instance, Collections.singletonMap("testHT", value), "john");
 
         assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
         assertThat(instance.variables().getTest()).isEqualTo(Integer.valueOf(value));
@@ -122,7 +125,7 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
         instance.start();
         assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_ACTIVE);
 
-        ProcessTestHelper.completeWorkItem(instance, "john", Collections.singletonMap("testHT", value));
+        ProcessTestHelper.completeWorkItem(instance, Collections.singletonMap("testHT", value), "john");
 
         assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
         assertThat(instance.variables().getTest()).isEqualTo(Float.valueOf(value));
@@ -153,7 +156,7 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
         instance.start();
         assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_ACTIVE);
 
-        ProcessTestHelper.completeWorkItem(instance, "john", Collections.singletonMap("testHT", value));
+        ProcessTestHelper.completeWorkItem(instance, Collections.singletonMap("testHT", value), "john");
 
         assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
         assertThat(instance.variables().getTest()).isEqualTo(new Person(1, "john"));
@@ -174,7 +177,7 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
         instance.start();
         assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_ACTIVE);
 
-        ProcessTestHelper.completeWorkItem(instance, "john", Collections.singletonMap("testHT", value));
+        ProcessTestHelper.completeWorkItem(instance, Collections.singletonMap("testHT", value), "john");
 
         assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
         assertThat(instance.variables().getTest()).isEqualTo(value);
@@ -222,7 +225,7 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
         assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_ACTIVE);
 
         try {
-            ProcessTestHelper.completeWorkItem(instance, "john", Collections.singletonMap("testHT", true));
+            ProcessTestHelper.completeWorkItem(instance, Collections.singletonMap("testHT", true), "john");
             fail("");
         } catch (IllegalArgumentException iae) {
             logger.info("Expected IllegalArgumentException caught: " + iae);
@@ -265,7 +268,7 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
         assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_ACTIVE);
 
         try {
-            ProcessTestHelper.completeWorkItem(instance, "john", Collections.singletonMap(wrongDataOutput, true));
+            ProcessTestHelper.completeWorkItem(instance, Collections.singletonMap(wrongDataOutput, true), "john");
             fail("it should not work!");
         } catch (IllegalArgumentException e) {
             assertThat(e.getMessage()).isEqualTo("Data output '" + wrongDataOutput + "' is not defined in process 'IntegerStructureRef' for task 'User Task'");

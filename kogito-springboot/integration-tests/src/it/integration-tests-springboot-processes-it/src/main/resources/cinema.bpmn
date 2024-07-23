@@ -1,23 +1,5 @@
-<!--
-  ~ Licensed to the Apache Software Foundation (ASF) under one
-  ~ or more contributor license agreements.  See the NOTICE file
-  ~ distributed with this work for additional information
-  ~ regarding copyright ownership.  The ASF licenses this file
-  ~ to you under the Apache License, Version 2.0 (the
-  ~ "License"); you may not use this file except in compliance
-  ~ with the License.  You may obtain a copy of the License at
-  ~
-  ~   http://www.apache.org/licenses/LICENSE-2.0
-  ~
-  ~ Unless required by applicable law or agreed to in writing,
-  ~ software distributed under the License is distributed on an
-  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-  ~ KIND, either express or implied.  See the License for the
-  ~ specific language governing permissions and limitations
-  ~ under the License.
-  -->
-
-<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:bpsim="http://www.bpsim.org/schemas/1.0" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:drools="http://www.jboss.org/drools" id="_Fn2AALIuEDixAIoM09vFmg" exporter="jBPM Process Modeler" exporterVersion="2.0" targetNamespace="http://www.omg.org/bpmn20">
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:bpsim="http://www.bpsim.org/schemas/1.0" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:drools="http://www.jboss.org/drools" id="_qASusCfQED2czsDli3US7g" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd http://www.omg.org/spec/DD/20100524/DC DC.xsd http://www.omg.org/spec/DD/20100524/DI DI.xsd " exporter="jBPM Process Modeler" exporterVersion="2.0" targetNamespace="http://www.omg.org/bpmn20">
   <bpmn2:itemDefinition id="_movieItem" structureRef="org.acme.examples.model.Movie"/>
   <bpmn2:itemDefinition id="__D61BED76-3864-4739-8C22-63FF18984247_SkippableInputXItem" structureRef="Object"/>
   <bpmn2:itemDefinition id="__D61BED76-3864-4739-8C22-63FF18984247_PriorityInputXItem" structureRef="Object"/>
@@ -33,6 +15,9 @@
   <bpmn2:itemDefinition id="__D61BED76-3864-4739-8C22-63FF18984247_NotCompletedNotifyInputXItem" structureRef="Object"/>
   <bpmn2:itemDefinition id="__D61BED76-3864-4739-8C22-63FF18984247_movieInputXItem" structureRef="org.acme.examples.model.Movie"/>
   <bpmn2:itemDefinition id="__D61BED76-3864-4739-8C22-63FF18984247_reviewedRatingOutputXItem" structureRef="org.acme.examples.model.Rating"/>
+  <bpmn2:collaboration id="_D43F6ABB-99F4-4AB4-AE44-86819FA13066" name="Default Collaboration">
+    <bpmn2:participant id="_FD4777D6-19CC-4F1F-BF09-60B0BDD7BD88" name="Pool Participant" processRef="cinema"/>
+  </bpmn2:collaboration>
   <bpmn2:process id="cinema" drools:packageName="org.acme.examples" drools:version="1.0" drools:adHoc="false" name="cinema" isExecutable="true" processType="Public">
     <bpmn2:property id="movie" itemSubjectRef="_movieItem" name="movie"/>
     <bpmn2:sequenceFlow id="_37200CD0-1E72-4D87-B4C2-4E8CF14AD9A4" sourceRef="_D61BED76-3864-4739-8C22-63FF18984247" targetRef="_37532A87-2F19-4D55-A850-2AFD1924D87F">
@@ -70,11 +55,13 @@
         <bpmn2:dataInput id="_D61BED76-3864-4739-8C22-63FF18984247_TaskNameInputX" drools:dtype="Object" itemSubjectRef="__D61BED76-3864-4739-8C22-63FF18984247_TaskNameInputXItem" name="TaskName"/>
         <bpmn2:dataInput id="_D61BED76-3864-4739-8C22-63FF18984247_movieInputX" drools:dtype="org.acme.examples.model.Movie" itemSubjectRef="__D61BED76-3864-4739-8C22-63FF18984247_movieInputXItem" name="movie"/>
         <bpmn2:dataInput id="_D61BED76-3864-4739-8C22-63FF18984247_SkippableInputX" drools:dtype="Object" itemSubjectRef="__D61BED76-3864-4739-8C22-63FF18984247_SkippableInputXItem" name="Skippable"/>
+        <bpmn2:dataInput id="_D61BED76-3864-4739-8C22-63FF18984247_GroupIdInputX" drools:dtype="Object" itemSubjectRef="__D61BED76-3864-4739-8C22-63FF18984247_GroupIdInputXItem" name="GroupId"/>
         <bpmn2:dataOutput id="_D61BED76-3864-4739-8C22-63FF18984247_reviewedRatingOutputX" drools:dtype="org.acme.examples.model.Rating" itemSubjectRef="__D61BED76-3864-4739-8C22-63FF18984247_reviewedRatingOutputXItem" name="reviewedRating"/>
         <bpmn2:inputSet>
           <bpmn2:dataInputRefs>_D61BED76-3864-4739-8C22-63FF18984247_TaskNameInputX</bpmn2:dataInputRefs>
           <bpmn2:dataInputRefs>_D61BED76-3864-4739-8C22-63FF18984247_movieInputX</bpmn2:dataInputRefs>
           <bpmn2:dataInputRefs>_D61BED76-3864-4739-8C22-63FF18984247_SkippableInputX</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_D61BED76-3864-4739-8C22-63FF18984247_GroupIdInputX</bpmn2:dataInputRefs>
         </bpmn2:inputSet>
         <bpmn2:outputSet>
           <bpmn2:dataOutputRefs>_D61BED76-3864-4739-8C22-63FF18984247_reviewedRatingOutputX</bpmn2:dataOutputRefs>
@@ -96,6 +83,13 @@
         <bpmn2:assignment>
           <bpmn2:from xsi:type="bpmn2:tFormalExpression"><![CDATA[false]]></bpmn2:from>
           <bpmn2:to xsi:type="bpmn2:tFormalExpression"><![CDATA[_D61BED76-3864-4739-8C22-63FF18984247_SkippableInputX]]></bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation>
+        <bpmn2:targetRef>_D61BED76-3864-4739-8C22-63FF18984247_GroupIdInputX</bpmn2:targetRef>
+        <bpmn2:assignment>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression"><![CDATA[customer]]></bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression"><![CDATA[_D61BED76-3864-4739-8C22-63FF18984247_GroupIdInputX]]></bpmn2:to>
         </bpmn2:assignment>
       </bpmn2:dataInputAssociation>
       <bpmn2:dataOutputAssociation>
@@ -166,7 +160,7 @@
         </bpsim:Scenario>
       </bpsim:BPSimData>
     </bpmn2:extensionElements>
-    <bpmn2:source>_Fn2AALIuEDixAIoM09vFmg</bpmn2:source>
-    <bpmn2:target>_Fn2AALIuEDixAIoM09vFmg</bpmn2:target>
+    <bpmn2:source>_qASusCfQED2czsDli3US7g</bpmn2:source>
+    <bpmn2:target>_qASusCfQED2czsDli3US7g</bpmn2:target>
   </bpmn2:relationship>
 </bpmn2:definitions>

@@ -56,7 +56,9 @@ class AdHocFragmentsTest extends BaseRestTest {
 
         String taskId = extractID(given()
                 .contentType(ContentType.JSON)
-            .when()
+                .queryParam("user", "john")
+                .queryParam("group", "manager")
+                .when()
                 .post("/AdHocFragments/{pid}/AdHocTask1", id)
             .then()
                 .statusCode(201)
@@ -70,6 +72,7 @@ class AdHocFragmentsTest extends BaseRestTest {
                 .contentType(ContentType.JSON)
                 .when()
                 .body(params)
+                .queryParam("user", "john")
                 .post("/AdHocFragments/{id}/AdHocTask1/{taskId}", id, taskId)
                 .then()
                 .statusCode(200)
@@ -117,6 +120,7 @@ class AdHocFragmentsTest extends BaseRestTest {
 
         given()
                 .contentType(ContentType.JSON)
+                .queryParam("user", "john")
             .when()
                 .post("/AdHocFragments/{pid}/Task", pid)
             .then()

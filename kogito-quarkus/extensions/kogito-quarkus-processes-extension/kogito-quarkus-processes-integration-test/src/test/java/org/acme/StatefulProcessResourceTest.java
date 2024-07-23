@@ -18,6 +18,7 @@
  */
 package org.acme;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -263,13 +264,15 @@ public class StatefulProcessResourceTest {
                 created.data().as(MapDataContext.class)
                         .get("test", Payload.class).getValue());
 
+        TaskMetaDataContext tmdc = TaskMetaDataContext.of(Policy.of("manager", Collections.emptyList()));
+
         // send signal to complete (empty data context for this signal)
-        ExtendedDataContext taskCreated = taskSvc.create(pid.tasks().get("InitialTask"));
+        ExtendedDataContext taskCreated = taskSvc.create(pid.tasks().get("InitialTask"), ExtendedDataContext.of(tmdc, EmptyDataContext.Instance));
 
         String tid = taskCreated.data().as(MapDataContext.class).get("id", String.class);
         TaskInstanceId taskInstanceId = pid.tasks().get("InitialTask").instances().get(tid);
 
-        ExtendedDataContext result = taskSvc.complete(taskInstanceId, EmptyDataContext.Instance);
+        ExtendedDataContext result = taskSvc.complete(taskInstanceId, ExtendedDataContext.of(tmdc, EmptyDataContext.Instance));
 
         assertEquals("ad-hoc",
                 result.data().as(MapDataContext.class).get("test", Payload.class).getValue());

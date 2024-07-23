@@ -528,7 +528,7 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
 
         // adhoc we need to trigger the human task
         instance.triggerNode("_2-1");
-        ProcessTestHelper.completeWorkItem(instance, "john", Collections.emptyMap());
+        ProcessTestHelper.completeWorkItem(instance, Collections.emptyMap(), "john");
 
         assertThat(instance.status()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
     }
@@ -547,7 +547,7 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
 
         // adhoc we need to trigger the human task
         instance.triggerNode("_2-1");
-        ProcessTestHelper.completeWorkItem(instance, "john", Collections.singletonMap("testHT", 0));
+        ProcessTestHelper.completeWorkItem(instance, Collections.singletonMap("testHT", 0), "john");
 
         assertThat(instance.status()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
     }
@@ -566,7 +566,7 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
 
         // adhoc we need to trigger the human task
         instance.triggerNode("_560E157E-3173-4CFD-9CC6-26676D8B0A02");
-        ProcessTestHelper.completeWorkItem(instance, "john", Collections.emptyMap());
+        ProcessTestHelper.completeWorkItem(instance, Collections.emptyMap(), "john");
 
         assertThat(instance.status()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
     }

@@ -1,25 +1,8 @@
-<!--
-  ~ Licensed to the Apache Software Foundation (ASF) under one
-  ~ or more contributor license agreements.  See the NOTICE file
-  ~ distributed with this work for additional information
-  ~ regarding copyright ownership.  The ASF licenses this file
-  ~ to you under the Apache License, Version 2.0 (the
-  ~ "License"); you may not use this file except in compliance
-  ~ with the License.  You may obtain a copy of the License at
-  ~
-  ~   http://www.apache.org/licenses/LICENSE-2.0
-  ~
-  ~ Unless required by applicable law or agreed to in writing,
-  ~ software distributed under the License is distributed on an
-  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-  ~ KIND, either express or implied.  See the License for the
-  ~ specific language governing permissions and limitations
-  ~ under the License.
-  -->
-
-<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:bpsim="http://www.bpsim.org/schemas/1.0" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:drools="http://www.jboss.org/drools" id="_oPtyIJ7WEDidGqXCSGV4Ig" exporter="jBPM Process Modeler" exporterVersion="2.0" targetNamespace="http://www.omg.org/bpmn20">
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:bpsim="http://www.bpsim.org/schemas/1.0" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:drools="http://www.jboss.org/drools" id="_N6FuoCf0ED2UEYYcqSwxzw" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd http://www.omg.org/spec/DD/20100524/DC DC.xsd http://www.omg.org/spec/DD/20100524/DI DI.xsd " exporter="jBPM Process Modeler" exporterVersion="2.0" targetNamespace="http://www.omg.org/bpmn20">
   <bpmn2:itemDefinition id="_var1Item" structureRef="String"/>
   <bpmn2:itemDefinition id="_var2Item" structureRef="Integer"/>
+  <bpmn2:itemDefinition id="__731518E6-88A2-4CCC-A2C0-97C45189A7F3_ConditionInputXItem" structureRef="String"/>
   <bpmn2:itemDefinition id="__17762652-67B8-46FF-ADFE-D7AF3EA2ADAB_SkippableInputXItem" structureRef="Object"/>
   <bpmn2:itemDefinition id="__17762652-67B8-46FF-ADFE-D7AF3EA2ADAB_PriorityInputXItem" structureRef="Object"/>
   <bpmn2:itemDefinition id="__17762652-67B8-46FF-ADFE-D7AF3EA2ADAB_CommentInputXItem" structureRef="Object"/>
@@ -46,12 +29,22 @@
   <bpmn2:itemDefinition id="__1853795C-BF23-478D-BD43-7DAE695479DF_NotStartedNotifyInputXItem" structureRef="Object"/>
   <bpmn2:itemDefinition id="__1853795C-BF23-478D-BD43-7DAE695479DF_NotCompletedNotifyInputXItem" structureRef="Object"/>
   <bpmn2:itemDefinition id="__1853795C-BF23-478D-BD43-7DAE695479DF_newVar1OutputXItem" structureRef="String"/>
+  <bpmn2:itemDefinition id="_FACFF454-18FA-420D-A9AB-F4323E38499C_InMessageType"/>
+  <bpmn2:itemDefinition id="_FACFF454-18FA-420D-A9AB-F4323E38499C_OutMessageType"/>
   <bpmn2:itemDefinition id="__FACFF454-18FA-420D-A9AB-F4323E38499C_userInputXItem" structureRef="String"/>
   <bpmn2:itemDefinition id="__FACFF454-18FA-420D-A9AB-F4323E38499C_ageInputXItem" structureRef="Integer"/>
   <bpmn2:itemDefinition id="__FACFF454-18FA-420D-A9AB-F4323E38499C_resultOutputXItem" structureRef="String"/>
+  <bpmn2:message id="_FACFF454-18FA-420D-A9AB-F4323E38499C_InMessage" itemRef="_FACFF454-18FA-420D-A9AB-F4323E38499C_InMessageType"/>
+  <bpmn2:message id="_FACFF454-18FA-420D-A9AB-F4323E38499C_OutMessage" itemRef="_FACFF454-18FA-420D-A9AB-F4323E38499C_OutMessageType"/>
   <bpmn2:interface id="_FACFF454-18FA-420D-A9AB-F4323E38499C_ServiceInterface" name="org.kie.kogito.integrationtests.HelloService" implementationRef="org.kie.kogito.integrationtests.HelloService">
-    <bpmn2:operation id="_FACFF454-18FA-420D-A9AB-F4323E38499C_ServiceOperation" name="helloOutput" implementationRef="helloOutput"/>
+    <bpmn2:operation id="_FACFF454-18FA-420D-A9AB-F4323E38499C_ServiceOperation" name="helloOutput" implementationRef="helloOutput">
+      <bpmn2:inMessageRef>_FACFF454-18FA-420D-A9AB-F4323E38499C_InMessage</bpmn2:inMessageRef>
+      <bpmn2:outMessageRef>_FACFF454-18FA-420D-A9AB-F4323E38499C_OutMessage</bpmn2:outMessageRef>
+    </bpmn2:operation>
   </bpmn2:interface>
+  <bpmn2:collaboration id="_6442BC96-5175-49FA-81D9-A39886ED793E" name="Default Collaboration">
+    <bpmn2:participant id="_9FFCEBA1-BD15-4007-8C8B-131A9154CAA7" name="Pool Participant" processRef="AdHocFragments"/>
+  </bpmn2:collaboration>
   <bpmn2:process id="AdHocFragments" drools:packageName="org.kie.kogito" drools:version="1.0" drools:adHoc="true" name="AdHocFragments" isExecutable="true" processType="Public">
     <bpmn2:property id="var1" itemSubjectRef="_var1Item" name="var1"/>
     <bpmn2:property id="var2" itemSubjectRef="_var2Item" name="var2"/>
@@ -164,6 +157,11 @@
         <bpmn2:sourceRef>_1853795C-BF23-478D-BD43-7DAE695479DF_newVar1OutputX</bpmn2:sourceRef>
         <bpmn2:targetRef>var1</bpmn2:targetRef>
       </bpmn2:dataOutputAssociation>
+      <bpmn2:potentialOwner id="_N6KAECf0ED2UEYYcqSwxzw">
+        <bpmn2:resourceAssignmentExpression id="_N6KAESf0ED2UEYYcqSwxzw">
+          <bpmn2:formalExpression>john</bpmn2:formalExpression>
+        </bpmn2:resourceAssignmentExpression>
+      </bpmn2:potentialOwner>
     </bpmn2:userTask>
     <bpmn2:endEvent id="_319B612D-CD70-4FB0-8390-2F825115847E">
       <bpmn2:incoming>_830D53F8-A344-45AE-A1A1-2173DD983A43</bpmn2:incoming>
@@ -207,6 +205,11 @@
         <bpmn2:sourceRef>_17762652-67B8-46FF-ADFE-D7AF3EA2ADAB_newVar1OutputX</bpmn2:sourceRef>
         <bpmn2:targetRef>var1</bpmn2:targetRef>
       </bpmn2:dataOutputAssociation>
+      <bpmn2:potentialOwner id="_N6KnICf0ED2UEYYcqSwxzw">
+        <bpmn2:resourceAssignmentExpression id="_N6KnISf0ED2UEYYcqSwxzw">
+          <bpmn2:formalExpression>john</bpmn2:formalExpression>
+        </bpmn2:resourceAssignmentExpression>
+      </bpmn2:potentialOwner>
     </bpmn2:userTask>
     <bpmn2:scriptTask id="_89FFDFF9-8D8A-4B86-B48C-76F30299D8D3" name="Script Task" scriptFormat="http://www.java.com/java">
       <bpmn2:extensionElements>
@@ -228,26 +231,25 @@
         </drools:metaData>
       </bpmn2:extensionElements>
       <bpmn2:outgoing>_A6C76B12-32F2-4B07-AD3B-F502D8C3B745</bpmn2:outgoing>
-      <bpmn2:ioSpecification id="_yMLzyqD2Eeqe-f_gOENDXQ">
+      <bpmn2:ioSpecification>
         <bpmn2:dataInput id="_731518E6-88A2-4CCC-A2C0-97C45189A7F3_ConditionInputX" drools:dtype="String" itemSubjectRef="__731518E6-88A2-4CCC-A2C0-97C45189A7F3_ConditionInputXItem" name="Condition"/>
         <bpmn2:dataInput id="_731518E6-88A2-4CCC-A2C0-97C45189A7F3_TaskNameInputX" drools:dtype="Object" name="TaskName"/>
-        <bpmn2:inputSet id="_yMLzy6D2Eeqe-f_gOENDXQ">
+        <bpmn2:inputSet>
           <bpmn2:dataInputRefs>_731518E6-88A2-4CCC-A2C0-97C45189A7F3_ConditionInputX</bpmn2:dataInputRefs>
           <bpmn2:dataInputRefs>_731518E6-88A2-4CCC-A2C0-97C45189A7F3_TaskNameInputX</bpmn2:dataInputRefs>
         </bpmn2:inputSet>
-        <bpmn2:outputSet id="_yMLzzKD2Eeqe-f_gOENDXQ"/>
       </bpmn2:ioSpecification>
-      <bpmn2:dataInputAssociation id="_yMLzzaD2Eeqe-f_gOENDXQ">
+      <bpmn2:dataInputAssociation>
         <bpmn2:targetRef>_731518E6-88A2-4CCC-A2C0-97C45189A7F3_TaskNameInputX</bpmn2:targetRef>
-        <bpmn2:assignment id="_yMLzzqD2Eeqe-f_gOENDXQ">
-          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_yMLzz6D2Eeqe-f_gOENDXQ"><![CDATA[Milestone]]></bpmn2:from>
-          <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_yMLz0KD2Eeqe-f_gOENDXQ">_731518E6-88A2-4CCC-A2C0-97C45189A7F3_TaskNameInputX</bpmn2:to>
+        <bpmn2:assignment>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression"><![CDATA[Milestone]]></bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression"><![CDATA[_731518E6-88A2-4CCC-A2C0-97C45189A7F3_TaskNameInputX]]></bpmn2:to>
         </bpmn2:assignment>
       </bpmn2:dataInputAssociation>
     </bpmn2:task>
   </bpmn2:process>
   <bpmndi:BPMNDiagram>
-    <bpmndi:BPMNPlane bpmnElement="TestCase.AdHocFragments">
+    <bpmndi:BPMNPlane bpmnElement="AdHocFragments">
       <bpmndi:BPMNShape id="shape__731518E6-88A2-4CCC-A2C0-97C45189A7F3" bpmnElement="_731518E6-88A2-4CCC-A2C0-97C45189A7F3">
         <dc:Bounds height="102" width="154" x="388" y="304"/>
       </bpmndi:BPMNShape>
@@ -421,7 +423,7 @@
         </bpsim:Scenario>
       </bpsim:BPSimData>
     </bpmn2:extensionElements>
-    <bpmn2:source>_oPtyIJ7WEDidGqXCSGV4Ig</bpmn2:source>
-    <bpmn2:target>_oPtyIJ7WEDidGqXCSGV4Ig</bpmn2:target>
+    <bpmn2:source>_N6FuoCf0ED2UEYYcqSwxzw</bpmn2:source>
+    <bpmn2:target>_N6FuoCf0ED2UEYYcqSwxzw</bpmn2:target>
   </bpmn2:relationship>
 </bpmn2:definitions>

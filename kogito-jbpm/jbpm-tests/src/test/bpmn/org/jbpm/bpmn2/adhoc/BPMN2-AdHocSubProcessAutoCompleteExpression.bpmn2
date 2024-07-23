@@ -51,6 +51,11 @@
         <sourceRef>_2_testHTOutput</sourceRef>
         <targetRef>counter</targetRef>
       </dataOutputAssociation>
+      <potentialOwner id="_2-3-1">
+        <resourceAssignmentExpression id="_2-3-1-1">
+          <formalExpression>john</formalExpression>
+        </resourceAssignmentExpression>
+      </potentialOwner>
     </userTask>
     <!-- connections -->
     <completionCondition xsi:type="tFormalExpression">counter == 0</completionCondition>

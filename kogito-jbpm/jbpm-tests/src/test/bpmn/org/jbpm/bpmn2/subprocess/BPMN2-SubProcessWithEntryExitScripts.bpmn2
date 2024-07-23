@@ -1,196 +1,282 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-  ~ Licensed to the Apache Software Foundation (ASF) under one
-  ~ or more contributor license agreements.  See the NOTICE file
-  ~ distributed with this work for additional information
-  ~ regarding copyright ownership.  The ASF licenses this file
-  ~ to you under the Apache License, Version 2.0 (the
-  ~ "License"); you may not use this file except in compliance
-  ~ with the License.  You may obtain a copy of the License at
-  ~
-  ~   http://www.apache.org/licenses/LICENSE-2.0
-  ~
-  ~ Unless required by applicable law or agreed to in writing,
-  ~ software distributed under the License is distributed on an
-  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-  ~ KIND, either express or implied.  See the License for the
-  ~ specific language governing permissions and limitations
-  ~ under the License.
-  -->
-
-<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:tns="http://www.jboss.org/drools" xmlns="http://www.jboss.org/drools" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd" id="Definition" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="http://www.jboss.org/drools" typeLanguage="http://www.java.com/javaTypes">
-  <bpmn2:itemDefinition id="_String" structureRef="String"/>
-  <bpmn2:itemDefinition id="_Integer" structureRef="Integer"/>
-  <bpmn2:process id="SubProcessWithEntryExitScripts" tns:version="1" tns:packageName="org.jbpm.bpmn2.subprocess" name="Hello World" isExecutable="true" processType="Private">
-    <bpmn2:extensionElements/>
-    <bpmn2:property id="var2" itemSubjectRef="_Integer"/>
-    <bpmn2:property id="var3" itemSubjectRef="_Integer"/>
-    <bpmn2:property id="var1" itemSubjectRef="_Integer"/>
-    <bpmn2:property id="var4" itemSubjectRef="_Integer"/>
-    <bpmn2:property id="var5" itemSubjectRef="_Integer"/>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:bpsim="http://www.bpsim.org/schemas/1.0" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:drools="http://www.jboss.org/drools" id="_nPz2YCWnED24qrDb9miHmg" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd http://www.omg.org/spec/DD/20100524/DC DC.xsd http://www.omg.org/spec/DD/20100524/DI DI.xsd " exporter="jBPM Process Modeler" exporterVersion="2.0" targetNamespace="http://www.omg.org/bpmn20">
+  <bpmn2:itemDefinition id="_var2Item" structureRef="Integer"/>
+  <bpmn2:itemDefinition id="_var3Item" structureRef="Integer"/>
+  <bpmn2:itemDefinition id="_var1Item" structureRef="Integer"/>
+  <bpmn2:itemDefinition id="_var4Item" structureRef="Integer"/>
+  <bpmn2:itemDefinition id="_var5Item" structureRef="Integer"/>
+  <bpmn2:itemDefinition id="_UserTask_2_SkippableInputXItem" structureRef="Object"/>
+  <bpmn2:itemDefinition id="_UserTask_2_PriorityInputXItem" structureRef="Object"/>
+  <bpmn2:itemDefinition id="_UserTask_2_CommentInputXItem" structureRef="Object"/>
+  <bpmn2:itemDefinition id="_UserTask_2_DescriptionInputXItem" structureRef="Object"/>
+  <bpmn2:itemDefinition id="_UserTask_2_CreatedByInputXItem" structureRef="Object"/>
+  <bpmn2:itemDefinition id="_UserTask_2_TaskNameInputXItem" structureRef="Object"/>
+  <bpmn2:itemDefinition id="_UserTask_2_GroupIdInputXItem" structureRef="Object"/>
+  <bpmn2:itemDefinition id="_UserTask_2_ContentInputXItem" structureRef="Object"/>
+  <bpmn2:itemDefinition id="_UserTask_2_NotStartedReassignInputXItem" structureRef="Object"/>
+  <bpmn2:itemDefinition id="_UserTask_2_NotCompletedReassignInputXItem" structureRef="Object"/>
+  <bpmn2:itemDefinition id="_UserTask_2_NotStartedNotifyInputXItem" structureRef="Object"/>
+  <bpmn2:itemDefinition id="_UserTask_2_NotCompletedNotifyInputXItem" structureRef="Object"/>
+  <bpmn2:collaboration id="_95EBD00E-550E-449A-AA64-B490101643DE" name="Default Collaboration">
+    <bpmn2:participant id="_E7F6672F-77BC-4B62-AF87-314FE833BA2A" name="Pool Participant" processRef="SubProcessWithEntryExitScripts"/>
+  </bpmn2:collaboration>
+  <bpmn2:process id="SubProcessWithEntryExitScripts" drools:packageName="org.jbpm.bpmn2.subprocess" drools:version="1" drools:adHoc="false" name="Hello World" isExecutable="true" processType="Private">
+    <bpmn2:property id="var2" itemSubjectRef="_var2Item" name="var2"/>
+    <bpmn2:property id="var3" itemSubjectRef="_var3Item" name="var3"/>
+    <bpmn2:property id="var1" itemSubjectRef="_var1Item" name="var1"/>
+    <bpmn2:property id="var4" itemSubjectRef="_var4Item" name="var4"/>
+    <bpmn2:property id="var5" itemSubjectRef="_var5Item" name="var5"/>
+    <bpmn2:sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2"/>
+    <bpmn2:sequenceFlow id="SequenceFlow_8" sourceRef="UserTask_2" targetRef="_3"/>
+    <bpmn2:sequenceFlow id="SequenceFlow_7" sourceRef="ScriptTask_2" targetRef="UserTask_2"/>
+    <bpmn2:sequenceFlow id="SequenceFlow_12" sourceRef="SubProcess_1" targetRef="ScriptTask_2"/>
+    <bpmn2:sequenceFlow id="SequenceFlow_11" sourceRef="_2" targetRef="SubProcess_1"/>
     <bpmn2:scriptTask id="_2" name="Task1" scriptFormat="http://www.java.com/java">
+      <bpmn2:extensionElements>
+        <drools:metaData name="elementname">
+          <drools:metaValue><![CDATA[Task1]]></drools:metaValue>
+        </drools:metaData>
+      </bpmn2:extensionElements>
       <bpmn2:incoming>_1-_2</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_11</bpmn2:outgoing>
-      <bpmn2:script>System.err.println(&quot;Task 1, var1 = 10&quot;);
-kcontext.setVariable(&quot;var1&quot;, new Integer(10));
+      <bpmn2:script>System.err.println("Task 1, var1 = 10");
+kcontext.setVariable("var1", new Integer(10));
 </bpmn2:script>
     </bpmn2:scriptTask>
-    <bpmn2:startEvent id="_1" name="">
+    <bpmn2:startEvent id="_1">
       <bpmn2:outgoing>_1-_2</bpmn2:outgoing>
     </bpmn2:startEvent>
-    <bpmn2:sequenceFlow id="_1-_2" tns:priority="1" sourceRef="_1" targetRef="_2"/>
-    <bpmn2:scriptTask id="ScriptTask_2" name="Task3">
+    <bpmn2:scriptTask id="ScriptTask_2" name="Task3" scriptFormat="http://www.java.com/java">
+      <bpmn2:extensionElements>
+        <drools:metaData name="elementname">
+          <drools:metaValue><![CDATA[Task3]]></drools:metaValue>
+        </drools:metaData>
+      </bpmn2:extensionElements>
       <bpmn2:incoming>SequenceFlow_12</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_7</bpmn2:outgoing>
-      <bpmn2:script>System.err.println(&quot;Task 3, var3 = 30&quot;);
-kcontext.setVariable(&quot;var3&quot;,30);
+      <bpmn2:script>System.err.println("Task 3, var3 = 30");
+kcontext.setVariable("var3",30);
 </bpmn2:script>
     </bpmn2:scriptTask>
-    <bpmn2:sequenceFlow id="SequenceFlow_7" tns:priority="1" name="" sourceRef="ScriptTask_2" targetRef="UserTask_2"/>
-    <bpmn2:endEvent id="_3" name="">
+    <bpmn2:endEvent id="_3">
       <bpmn2:incoming>SequenceFlow_8</bpmn2:incoming>
-      <bpmn2:terminateEventDefinition id="TerminateEventDefinition_1"/>
+      <bpmn2:terminateEventDefinition/>
     </bpmn2:endEvent>
     <bpmn2:userTask id="UserTask_2" name="User Task 2">
+      <bpmn2:extensionElements>
+        <drools:metaData name="elementname">
+          <drools:metaValue><![CDATA[User Task 2]]></drools:metaValue>
+        </drools:metaData>
+      </bpmn2:extensionElements>
       <bpmn2:incoming>SequenceFlow_7</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_8</bpmn2:outgoing>
-      <bpmn2:ioSpecification id="_InputOutputSpecification_24">
-        <bpmn2:dataInput id="_DataInput_150" name="TaskName"/>
-        <bpmn2:dataInput id="_DataInput_151" name="Priority"/>
-        <bpmn2:dataInput id="_DataInput_152" name="Comment"/>
-        <bpmn2:dataInput id="_DataInput_153" name="GroupId"/>
-        <bpmn2:dataInput id="_DataInput_154" name="Skippable"/>
-        <bpmn2:dataInput id="_DataInput_155" name="Content"/>
-        <bpmn2:dataInput id="_DataInput_156" name="Locale"/>
-        <bpmn2:inputSet id="_InputSet_24" name="New Input Set">
-          <bpmn2:dataInputRefs>_DataInput_150</bpmn2:dataInputRefs>
-          <bpmn2:dataInputRefs>_DataInput_151</bpmn2:dataInputRefs>
-          <bpmn2:dataInputRefs>_DataInput_152</bpmn2:dataInputRefs>
-          <bpmn2:dataInputRefs>_DataInput_153</bpmn2:dataInputRefs>
-          <bpmn2:dataInputRefs>_DataInput_154</bpmn2:dataInputRefs>
-          <bpmn2:dataInputRefs>_DataInput_155</bpmn2:dataInputRefs>
-          <bpmn2:dataInputRefs>_DataInput_156</bpmn2:dataInputRefs>
+      <bpmn2:ioSpecification>
+        <bpmn2:dataInput id="UserTask_2_TaskNameInputX" drools:dtype="Object" itemSubjectRef="_UserTask_2_TaskNameInputXItem" name="TaskName"/>
+        <bpmn2:dataInput id="UserTask_2_SkippableInputX" drools:dtype="Object" itemSubjectRef="_UserTask_2_SkippableInputXItem" name="Skippable"/>
+        <bpmn2:inputSet>
+          <bpmn2:dataInputRefs>UserTask_2_TaskNameInputX</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>UserTask_2_SkippableInputX</bpmn2:dataInputRefs>
         </bpmn2:inputSet>
-        <bpmn2:outputSet id="_OutputSet_21" name="Output Set"/>
       </bpmn2:ioSpecification>
-      <bpmn2:dataInputAssociation id="_DataInputAssociation_150">
-        <bpmn2:targetRef>_DataInput_150</bpmn2:targetRef>
+      <bpmn2:dataInputAssociation>
+        <bpmn2:targetRef>UserTask_2_TaskNameInputX</bpmn2:targetRef>
+        <bpmn2:assignment>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression"><![CDATA[Task]]></bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression"><![CDATA[UserTask_2_TaskNameInputX]]></bpmn2:to>
+        </bpmn2:assignment>
       </bpmn2:dataInputAssociation>
-      <bpmn2:dataInputAssociation id="_DataInputAssociation_151">
-        <bpmn2:targetRef>_DataInput_151</bpmn2:targetRef>
+      <bpmn2:dataInputAssociation>
+        <bpmn2:targetRef>UserTask_2_SkippableInputX</bpmn2:targetRef>
+        <bpmn2:assignment>
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression"><![CDATA[false]]></bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression"><![CDATA[UserTask_2_SkippableInputX]]></bpmn2:to>
+        </bpmn2:assignment>
       </bpmn2:dataInputAssociation>
-      <bpmn2:dataInputAssociation id="_DataInputAssociation_152">
-        <bpmn2:targetRef>_DataInput_152</bpmn2:targetRef>
-      </bpmn2:dataInputAssociation>
-      <bpmn2:dataInputAssociation id="_DataInputAssociation_153">
-        <bpmn2:targetRef>_DataInput_153</bpmn2:targetRef>
-      </bpmn2:dataInputAssociation>
-      <bpmn2:dataInputAssociation id="_DataInputAssociation_154">
-        <bpmn2:targetRef>_DataInput_154</bpmn2:targetRef>
-      </bpmn2:dataInputAssociation>
-      <bpmn2:dataInputAssociation id="_DataInputAssociation_155">
-        <bpmn2:targetRef>_DataInput_155</bpmn2:targetRef>
-      </bpmn2:dataInputAssociation>
-      <bpmn2:dataInputAssociation id="_DataInputAssociation_156">
-        <bpmn2:targetRef>_DataInput_156</bpmn2:targetRef>
-      </bpmn2:dataInputAssociation>
+      <bpmn2:potentialOwner id="_nP1rkCWnED24qrDb9miHmg">
+        <bpmn2:resourceAssignmentExpression id="_nP1rkSWnED24qrDb9miHmg">
+          <bpmn2:formalExpression>john</bpmn2:formalExpression>
+        </bpmn2:resourceAssignmentExpression>
+      </bpmn2:potentialOwner>
     </bpmn2:userTask>
-    <bpmn2:sequenceFlow id="SequenceFlow_8" tns:priority="1" name="" sourceRef="UserTask_2" targetRef="_3"/>
     <bpmn2:subProcess id="SubProcess_1" name="SubProcess">
       <bpmn2:extensionElements>
-        <tns:onEntry-script scriptFormat="http://www.java.com/java">
-          <tns:script>System.err.println(&quot;SubProcess, var4 = 40&quot;);
-kcontext.setVariable(&quot;var4&quot;,40);
-</tns:script>
-        </tns:onEntry-script>
-        <tns:onExit-script scriptFormat="http://www.java.com/java">
-          <tns:script>System.err.println(&quot;SubProcess, var5 = 50&quot;);
-kcontext.setVariable(&quot;var5&quot;,50);
-</tns:script>
-        </tns:onExit-script>
+        <drools:metaData name="elementname">
+          <drools:metaValue><![CDATA[SubProcess]]></drools:metaValue>
+        </drools:metaData>
+        <drools:onEntry-script scriptFormat="http://www.java.com/java">
+          <drools:script><![CDATA[System.err.println("SubProcess, var4 = 40");
+kcontext.setVariable("var4",40);
+]]></drools:script>
+        </drools:onEntry-script>
+        <drools:onExit-script scriptFormat="http://www.java.com/java">
+          <drools:script><![CDATA[System.err.println("SubProcess, var5 = 50");
+kcontext.setVariable("var5",50);
+]]></drools:script>
+        </drools:onExit-script>
       </bpmn2:extensionElements>
       <bpmn2:incoming>SequenceFlow_11</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_12</bpmn2:outgoing>
-      <bpmn2:startEvent id="StartEvent_1" name="">
+      <bpmn2:sequenceFlow id="SequenceFlow_10" sourceRef="StartEvent_1" targetRef="ScriptTask_1"/>
+      <bpmn2:sequenceFlow id="SequenceFlow_9" sourceRef="ScriptTask_1" targetRef="EndEvent_1"/>
+      <bpmn2:startEvent id="StartEvent_1">
         <bpmn2:outgoing>SequenceFlow_10</bpmn2:outgoing>
       </bpmn2:startEvent>
-      <bpmn2:sequenceFlow id="SequenceFlow_10" tns:priority="1" name="" sourceRef="StartEvent_1" targetRef="ScriptTask_1"/>
       <bpmn2:scriptTask id="ScriptTask_1" name="Task2" scriptFormat="http://www.java.com/java">
+        <bpmn2:extensionElements>
+          <drools:metaData name="elementname">
+            <drools:metaValue><![CDATA[Task2]]></drools:metaValue>
+          </drools:metaData>
+        </bpmn2:extensionElements>
         <bpmn2:incoming>SequenceFlow_10</bpmn2:incoming>
         <bpmn2:outgoing>SequenceFlow_9</bpmn2:outgoing>
-        <bpmn2:script>System.err.println(&quot;Task 2, var2 = 20&quot;);
-kcontext.setVariable(&quot;var2&quot;,20);
+        <bpmn2:script>System.err.println("Task 2, var2 = 20");
+kcontext.setVariable("var2",20);
 </bpmn2:script>
       </bpmn2:scriptTask>
-      <bpmn2:sequenceFlow id="SequenceFlow_9" tns:priority="1" sourceRef="ScriptTask_1" targetRef="EndEvent_1"/>
-      <bpmn2:endEvent id="EndEvent_1" name="">
+      <bpmn2:endEvent id="EndEvent_1">
         <bpmn2:incoming>SequenceFlow_9</bpmn2:incoming>
       </bpmn2:endEvent>
     </bpmn2:subProcess>
-    <bpmn2:sequenceFlow id="SequenceFlow_11" tns:priority="1" name="" sourceRef="_2" targetRef="SubProcess_1"/>
-    <bpmn2:sequenceFlow id="SequenceFlow_12" tns:priority="1" name="" sourceRef="SubProcess_1" targetRef="ScriptTask_2"/>
   </bpmn2:process>
-  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
-    <bpmndi:BPMNPlane id="BPMNPlane_Process_1" bpmnElement="com.sample.bpmn.hello">
-      <bpmndi:BPMNShape id="BPMNShape_SubProcess_1" bpmnElement="SubProcess_1" isExpanded="true">
-        <dc:Bounds height="111.0" width="274.0" x="290.0" y="6.0"/>
+  <bpmndi:BPMNDiagram>
+    <bpmndi:BPMNPlane bpmnElement="SubProcessWithEntryExitScripts">
+      <bpmndi:BPMNShape id="shape_SubProcess_1" bpmnElement="SubProcess_1" isExpanded="true">
+        <dc:Bounds height="111" width="274" x="290" y="6"/>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_StartEvent_1" bpmnElement="_1">
-        <dc:Bounds height="36.0" width="36.0" x="40.0" y="43.0"/>
+      <bpmndi:BPMNShape id="shape_EndEvent_1" bpmnElement="EndEvent_1">
+        <dc:Bounds height="56" width="56" x="508" y="44"/>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_EndEvent_1" bpmnElement="_3">
-        <dc:Bounds height="36.0" width="36.0" x="990.0" y="43.0"/>
+      <bpmndi:BPMNShape id="shape_ScriptTask_1" bpmnElement="ScriptTask_1">
+        <dc:Bounds height="50" width="110" x="373" y="37"/>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_ScriptTask_1" bpmnElement="_2">
-        <dc:Bounds height="48.0" width="80.0" x="120.0" y="39.0"/>
+      <bpmndi:BPMNShape id="shape_StartEvent_1" bpmnElement="StartEvent_1">
+        <dc:Bounds height="56" width="56" x="310" y="44"/>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_ScriptTask_3" bpmnElement="ScriptTask_2">
-        <dc:Bounds height="50.0" width="110.0" x="630.0" y="35.0"/>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_UserTask_2" bpmnElement="UserTask_2">
-        <dc:Bounds height="50.0" width="110.0" x="820.0" y="35.0"/>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_EndEvent_2" bpmnElement="EndEvent_1">
-        <dc:Bounds height="36.0" width="36.0" x="508.0" y="44.0"/>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
-        <dc:Bounds height="36.0" width="36.0" x="310.0" y="44.0"/>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_ScriptTask_2" bpmnElement="ScriptTask_1">
-        <dc:Bounds height="50.0" width="110.0" x="373.0" y="37.0"/>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_1" bpmnElement="_1-_2">
-        <di:waypoint xsi:type="dc:Point" x="76.0" y="61.0"/>
-        <di:waypoint xsi:type="dc:Point" x="120.0" y="63.0"/>
+      <bpmndi:BPMNEdge id="edge_shape_ScriptTask_1_to_shape_EndEvent_1" bpmnElement="SequenceFlow_9">
+        <di:waypoint x="483" y="62"/>
+        <di:waypoint x="494" y="62"/>
+        <di:waypoint x="494" y="62"/>
+        <di:waypoint x="508" y="62"/>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_8" bpmnElement="SequenceFlow_7" sourceElement="BPMNShape_ScriptTask_3" targetElement="BPMNShape_UserTask_2">
-        <di:waypoint xsi:type="dc:Point" x="740.0" y="60.0"/>
-        <di:waypoint xsi:type="dc:Point" x="820.0" y="60.0"/>
+      <bpmndi:BPMNEdge id="edge_shape_StartEvent_1_to_shape_ScriptTask_1" bpmnElement="SequenceFlow_10">
+        <di:waypoint x="346" y="62"/>
+        <di:waypoint x="358" y="62"/>
+        <di:waypoint x="358" y="62"/>
+        <di:waypoint x="373" y="62"/>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_9" bpmnElement="SequenceFlow_8" sourceElement="BPMNShape_UserTask_2" targetElement="BPMNShape_EndEvent_1">
-        <di:waypoint xsi:type="dc:Point" x="930.0" y="60.0"/>
-        <di:waypoint xsi:type="dc:Point" x="990.0" y="61.0"/>
+      <bpmndi:BPMNShape id="shape_UserTask_2" bpmnElement="UserTask_2">
+        <dc:Bounds height="50" width="110" x="820" y="35"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape__3" bpmnElement="_3">
+        <dc:Bounds height="56" width="56" x="990" y="43"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape_ScriptTask_2" bpmnElement="ScriptTask_2">
+        <dc:Bounds height="50" width="110" x="630" y="35"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape__1" bpmnElement="_1">
+        <dc:Bounds height="56" width="56" x="40" y="43"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape__2" bpmnElement="_2">
+        <dc:Bounds height="48" width="80" x="120" y="39"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="edge_shape__2_to_shape_SubProcess_1" bpmnElement="SequenceFlow_11">
+        <di:waypoint x="200" y="63"/>
+        <di:waypoint x="290" y="61"/>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_10" bpmnElement="SequenceFlow_9" sourceElement="BPMNShape_ScriptTask_2" targetElement="BPMNShape_EndEvent_2">
-        <di:waypoint xsi:type="dc:Point" x="483.0" y="62.0"/>
-        <di:waypoint xsi:type="dc:Point" x="494.0" y="62.0"/>
-        <di:waypoint xsi:type="dc:Point" x="494.0" y="62.0"/>
-        <di:waypoint xsi:type="dc:Point" x="508.0" y="62.0"/>
+      <bpmndi:BPMNEdge id="edge_shape_SubProcess_1_to_shape_ScriptTask_2" bpmnElement="SequenceFlow_12">
+        <di:waypoint x="564" y="61"/>
+        <di:waypoint x="630" y="60"/>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_11" bpmnElement="SequenceFlow_10" sourceElement="BPMNShape_StartEvent_2" targetElement="BPMNShape_ScriptTask_2">
-        <di:waypoint xsi:type="dc:Point" x="346.0" y="62.0"/>
-        <di:waypoint xsi:type="dc:Point" x="358.0" y="62.0"/>
-        <di:waypoint xsi:type="dc:Point" x="358.0" y="62.0"/>
-        <di:waypoint xsi:type="dc:Point" x="373.0" y="62.0"/>
+      <bpmndi:BPMNEdge id="edge_shape_ScriptTask_2_to_shape_UserTask_2" bpmnElement="SequenceFlow_7">
+        <di:waypoint x="740" y="60"/>
+        <di:waypoint x="820" y="60"/>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_12" bpmnElement="SequenceFlow_11" sourceElement="BPMNShape_ScriptTask_1" targetElement="BPMNShape_SubProcess_1">
-        <di:waypoint xsi:type="dc:Point" x="200.0" y="63.0"/>
-        <di:waypoint xsi:type="dc:Point" x="290.0" y="61.0"/>
+      <bpmndi:BPMNEdge id="edge_shape_UserTask_2_to_shape__3" bpmnElement="SequenceFlow_8">
+        <di:waypoint x="930" y="60"/>
+        <di:waypoint x="990" y="61"/>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_13" bpmnElement="SequenceFlow_12" sourceElement="BPMNShape_SubProcess_1" targetElement="BPMNShape_ScriptTask_3">
-        <di:waypoint xsi:type="dc:Point" x="564.0" y="61.0"/>
-        <di:waypoint xsi:type="dc:Point" x="630.0" y="60.0"/>
+      <bpmndi:BPMNEdge id="edge_shape__1_to_shape__2" bpmnElement="_1-_2">
+        <di:waypoint x="76" y="61"/>
+        <di:waypoint x="120" y="63"/>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
+  <bpmn2:relationship type="BPSimData">
+    <bpmn2:extensionElements>
+      <bpsim:BPSimData>
+        <bpsim:Scenario id="default" name="Simulationscenario">
+          <bpsim:ScenarioParameters/>
+          <bpsim:ElementParameters elementRef="UserTask_2">
+            <bpsim:TimeParameters>
+              <bpsim:ProcessingTime>
+                <bpsim:NormalDistribution mean="0" standardDeviation="0"/>
+              </bpsim:ProcessingTime>
+            </bpsim:TimeParameters>
+            <bpsim:ResourceParameters>
+              <bpsim:Availability>
+                <bpsim:FloatingParameter value="0"/>
+              </bpsim:Availability>
+              <bpsim:Quantity>
+                <bpsim:FloatingParameter value="0"/>
+              </bpsim:Quantity>
+            </bpsim:ResourceParameters>
+            <bpsim:CostParameters>
+              <bpsim:UnitCost>
+                <bpsim:FloatingParameter value="0"/>
+              </bpsim:UnitCost>
+            </bpsim:CostParameters>
+          </bpsim:ElementParameters>
+          <bpsim:ElementParameters elementRef="ScriptTask_2">
+            <bpsim:TimeParameters>
+              <bpsim:ProcessingTime>
+                <bpsim:NormalDistribution mean="0" standardDeviation="0"/>
+              </bpsim:ProcessingTime>
+            </bpsim:TimeParameters>
+            <bpsim:ResourceParameters>
+              <bpsim:Availability>
+                <bpsim:FloatingParameter value="0"/>
+              </bpsim:Availability>
+              <bpsim:Quantity>
+                <bpsim:FloatingParameter value="0"/>
+              </bpsim:Quantity>
+            </bpsim:ResourceParameters>
+            <bpsim:CostParameters>
+              <bpsim:UnitCost>
+                <bpsim:FloatingParameter value="0"/>
+              </bpsim:UnitCost>
+            </bpsim:CostParameters>
+          </bpsim:ElementParameters>
+          <bpsim:ElementParameters elementRef="_1">
+            <bpsim:TimeParameters>
+              <bpsim:ProcessingTime>
+                <bpsim:NormalDistribution mean="0" standardDeviation="0"/>
+              </bpsim:ProcessingTime>
+            </bpsim:TimeParameters>
+          </bpsim:ElementParameters>
+          <bpsim:ElementParameters elementRef="_2">
+            <bpsim:TimeParameters>
+              <bpsim:ProcessingTime>
+                <bpsim:NormalDistribution mean="0" standardDeviation="0"/>
+              </bpsim:ProcessingTime>
+            </bpsim:TimeParameters>
+            <bpsim:ResourceParameters>
+              <bpsim:Availability>
+                <bpsim:FloatingParameter value="0"/>
+              </bpsim:Availability>
+              <bpsim:Quantity>
+                <bpsim:FloatingParameter value="0"/>
+              </bpsim:Quantity>
+            </bpsim:ResourceParameters>
+            <bpsim:CostParameters>
+              <bpsim:UnitCost>
+                <bpsim:FloatingParameter value="0"/>
+              </bpsim:UnitCost>
+            </bpsim:CostParameters>
+          </bpsim:ElementParameters>
+        </bpsim:Scenario>
+      </bpsim:BPSimData>
+    </bpmn2:extensionElements>
+    <bpmn2:source>_nPz2YCWnED24qrDb9miHmg</bpmn2:source>
+    <bpmn2:target>_nPz2YCWnED24qrDb9miHmg</bpmn2:target>
+  </bpmn2:relationship>
 </bpmn2:definitions>

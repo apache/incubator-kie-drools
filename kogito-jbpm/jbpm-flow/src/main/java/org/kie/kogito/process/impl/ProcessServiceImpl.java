@@ -170,7 +170,7 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
     @Override
-    public <T extends Model> Optional<WorkItem> signalTask(Process<T> process, String id, String taskName) {
+    public <T extends Model> Optional<WorkItem> signalTask(Process<T> process, String id, String taskName, SecurityPolicy policy) {
         return UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(), () -> process
                 .instances()
                 .findById(id)
@@ -183,13 +183,13 @@ public class ProcessServiceImpl implements ProcessService {
                     String taskNodeName = node.getName();
                     pi.send(Sig.of(taskNodeName, Collections.emptyMap()));
 
-                    return getTaskByName(pi, taskName).orElse(null);
+                    return getTaskByName(pi, taskName, policy).orElse(null);
                 }));
     }
 
-    public <T extends Model> Optional<WorkItem> getTaskByName(ProcessInstance<T> pi, String taskName) {
+    private <T extends Model> Optional<WorkItem> getTaskByName(ProcessInstance<T> pi, String taskName, SecurityPolicy... policies) {
         return pi
-                .workItems()
+                .workItems(policies)
                 .stream()
                 .filter(wi -> wi.getName().equals(taskName))
                 .findFirst();

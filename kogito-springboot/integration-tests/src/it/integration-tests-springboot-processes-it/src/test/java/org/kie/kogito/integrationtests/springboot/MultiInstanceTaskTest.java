@@ -69,6 +69,8 @@ class MultiInstanceTaskTest extends BaseRestTest {
 
         given()
                 .contentType(ContentType.JSON)
+                .queryParam("user", "admin")
+                .queryParam("group", "managers")
                 .when()
                 .body(Collections.singletonMap("output", "user3"))
                 .post("/multiinstancetaskprocess/{id}/MultiInstanceTask/{tId}", processId, tasks.get(0))
@@ -77,6 +79,8 @@ class MultiInstanceTaskTest extends BaseRestTest {
 
         given()
                 .contentType(ContentType.JSON)
+                .queryParam("user", "admin")
+                .queryParam("group", "managers")
                 .when()
                 .body(Collections.singletonMap("output", "user4"))
                 .post("/multiinstancetaskprocess/{id}/MultiInstanceTask/{tId}", processId, tasks.get(1))

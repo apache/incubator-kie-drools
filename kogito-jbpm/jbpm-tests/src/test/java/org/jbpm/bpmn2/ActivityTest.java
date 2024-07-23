@@ -45,26 +45,7 @@ import org.jbpm.bpmn2.activity.UserTaskWithSimulationMetaDataModel;
 import org.jbpm.bpmn2.activity.UserTaskWithSimulationMetaDataProcess;
 import org.jbpm.bpmn2.adhoc.SubProcessInAdHocProcessModel;
 import org.jbpm.bpmn2.adhoc.SubProcessInAdHocProcessProcess;
-import org.jbpm.bpmn2.flow.CompositeWithDIGraphicalModel;
-import org.jbpm.bpmn2.flow.CompositeWithDIGraphicalProcess;
-import org.jbpm.bpmn2.flow.MinimalImplicitModel;
-import org.jbpm.bpmn2.flow.MinimalImplicitProcess;
-import org.jbpm.bpmn2.flow.MinimalModel;
-import org.jbpm.bpmn2.flow.MinimalProcess;
-import org.jbpm.bpmn2.flow.MinimalWithDIGraphicalModel;
-import org.jbpm.bpmn2.flow.MinimalWithDIGraphicalProcess;
-import org.jbpm.bpmn2.flow.MinimalWithGraphicalModel;
-import org.jbpm.bpmn2.flow.MinimalWithGraphicalProcess;
-import org.jbpm.bpmn2.flow.ProcessCustomDescriptionMetaDataModel;
-import org.jbpm.bpmn2.flow.ProcessCustomDescriptionMetaDataProcess;
-import org.jbpm.bpmn2.flow.ProcessVariableCustomDescriptionMetaDataModel;
-import org.jbpm.bpmn2.flow.ProcessVariableCustomDescriptionMetaDataProcess;
-import org.jbpm.bpmn2.flow.ProcessWithVariableNameModel;
-import org.jbpm.bpmn2.flow.ProcessWithVariableNameProcess;
-import org.jbpm.bpmn2.flow.UserTaskModel;
-import org.jbpm.bpmn2.flow.UserTaskProcess;
-import org.jbpm.bpmn2.flow.XORSameTargetModel;
-import org.jbpm.bpmn2.flow.XORSameTargetProcess;
+import org.jbpm.bpmn2.flow.*;
 import org.jbpm.bpmn2.handler.ReceiveTaskHandler;
 import org.jbpm.bpmn2.handler.SendTaskHandler;
 import org.jbpm.bpmn2.objects.Account;
@@ -488,6 +469,223 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     }
 
     @Test
+    public void testUserTaskActorAssignment() {
+        Application app = ProcessTestHelper.newApplication();
+        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        ProcessTestHelper.registerHandler(app, "Human Task", workItemHandler);
+        org.kie.kogito.process.Process<UserTaskActorModel> processDefinition = UserTaskActorProcess.newProcess(app);
+        UserTaskActorModel model = processDefinition.createModel();
+        org.kie.kogito.process.ProcessInstance<UserTaskActorModel> instance = processDefinition.createInstance(model);
+        instance.start();
+        assertThat(instance).extracting(ProcessInstance::status).isEqualTo(ProcessInstance.STATE_ACTIVE);
+        KogitoWorkItem workItem = workItemHandler.getWorkItem();
+        assertThat(workItem).isNotNull();
+        assertThat(workItem.getParameter("ActorId")).isEqualTo("john");
+
+        ProcessTestHelper.completeWorkItem(instance, Collections.emptyMap(), "john");
+
+        assertThat(instance).extracting(ProcessInstance::status).isEqualTo(ProcessInstance.STATE_COMPLETED);
+    }
+
+    @Test
+    public void testUserTaskActorAssignmentActorFailure() {
+        Application app = ProcessTestHelper.newApplication();
+        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        ProcessTestHelper.registerHandler(app, "Human Task", workItemHandler);
+        org.kie.kogito.process.Process<UserTaskActorModel> processDefinition = UserTaskActorProcess.newProcess(app);
+        UserTaskActorModel model = processDefinition.createModel();
+        org.kie.kogito.process.ProcessInstance<UserTaskActorModel> instance = processDefinition.createInstance(model);
+        instance.start();
+        assertThat(instance).extracting(ProcessInstance::status).isEqualTo(ProcessInstance.STATE_ACTIVE);
+        KogitoWorkItem workItem = workItemHandler.getWorkItem();
+        assertThat(workItem).isNotNull();
+
+        ProcessTestHelper.completeWorkItem(instance, Collections.emptyMap(), "mary");
+
+        assertThat(instance).extracting(ProcessInstance::status).isEqualTo(ProcessInstance.STATE_ACTIVE);
+    }
+
+    @Test
+    public void testUserTaskActorAssignmentNoPolicyFailure() {
+        Application app = ProcessTestHelper.newApplication();
+        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        ProcessTestHelper.registerHandler(app, "Human Task", workItemHandler);
+        org.kie.kogito.process.Process<UserTaskActorModel> processDefinition = UserTaskActorProcess.newProcess(app);
+        UserTaskActorModel model = processDefinition.createModel();
+        org.kie.kogito.process.ProcessInstance<UserTaskActorModel> instance = processDefinition.createInstance(model);
+        instance.start();
+        assertThat(instance).extracting(ProcessInstance::status).isEqualTo(ProcessInstance.STATE_ACTIVE);
+        KogitoWorkItem workItem = workItemHandler.getWorkItem();
+        assertThat(workItem).isNotNull();
+
+        ProcessTestHelper.completeWorkItem(instance, Collections.emptyMap());
+
+        assertThat(instance).extracting(ProcessInstance::status).isEqualTo(ProcessInstance.STATE_ACTIVE);
+    }
+
+    @Test
+    public void testUserTaskGroupAssignment() {
+        Application app = ProcessTestHelper.newApplication();
+        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        ProcessTestHelper.registerHandler(app, "Human Task", workItemHandler);
+        org.kie.kogito.process.Process<UserTaskGroupModel> processDefinition = UserTaskGroupProcess.newProcess(app);
+        UserTaskGroupModel model = processDefinition.createModel();
+        org.kie.kogito.process.ProcessInstance<UserTaskGroupModel> instance = processDefinition.createInstance(model);
+        instance.start();
+        assertThat(instance).extracting(ProcessInstance::status).isEqualTo(ProcessInstance.STATE_ACTIVE);
+        KogitoWorkItem workItem = workItemHandler.getWorkItem();
+        assertThat(workItem).isNotNull();
+
+        ProcessTestHelper.completeWorkItem(instance, Collections.emptyMap(), "john", "IT");
+
+        assertThat(instance).extracting(ProcessInstance::status).isEqualTo(ProcessInstance.STATE_COMPLETED);
+    }
+
+    @Test
+    public void testUserTaskGroupAssignmentFailure() {
+        Application app = ProcessTestHelper.newApplication();
+        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        ProcessTestHelper.registerHandler(app, "Human Task", workItemHandler);
+        org.kie.kogito.process.Process<UserTaskGroupModel> processDefinition = UserTaskGroupProcess.newProcess(app);
+        UserTaskGroupModel model = processDefinition.createModel();
+        org.kie.kogito.process.ProcessInstance<UserTaskGroupModel> instance = processDefinition.createInstance(model);
+        instance.start();
+        assertThat(instance).extracting(ProcessInstance::status).isEqualTo(ProcessInstance.STATE_ACTIVE);
+        KogitoWorkItem workItem = workItemHandler.getWorkItem();
+        assertThat(workItem).isNotNull();
+
+        ProcessTestHelper.completeWorkItem(instance, Collections.emptyMap(), "john", "HR");
+
+        assertThat(instance).extracting(ProcessInstance::status).isEqualTo(ProcessInstance.STATE_ACTIVE);
+    }
+
+    @Test
+    public void testUserTaskGroupAssignmentNoPolicyFailure() {
+        Application app = ProcessTestHelper.newApplication();
+        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        ProcessTestHelper.registerHandler(app, "Human Task", workItemHandler);
+        org.kie.kogito.process.Process<UserTaskGroupModel> processDefinition = UserTaskGroupProcess.newProcess(app);
+        UserTaskGroupModel model = processDefinition.createModel();
+        org.kie.kogito.process.ProcessInstance<UserTaskGroupModel> instance = processDefinition.createInstance(model);
+        instance.start();
+        assertThat(instance).extracting(ProcessInstance::status).isEqualTo(ProcessInstance.STATE_ACTIVE);
+        KogitoWorkItem workItem = workItemHandler.getWorkItem();
+        assertThat(workItem).isNotNull();
+
+        ProcessTestHelper.completeWorkItem(instance, Collections.emptyMap());
+
+        assertThat(instance).extracting(ProcessInstance::status).isEqualTo(ProcessInstance.STATE_ACTIVE);
+    }
+
+    @Test
+    public void testUserTaskNoneAssignmentFailure() {
+        Application app = ProcessTestHelper.newApplication();
+        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        ProcessTestHelper.registerHandler(app, "Human Task", workItemHandler);
+        org.kie.kogito.process.Process<UserTaskNoneModel> processDefinition = UserTaskNoneProcess.newProcess(app);
+        UserTaskNoneModel model = processDefinition.createModel();
+        ProcessInstance<UserTaskNoneModel> instance = processDefinition.createInstance(model);
+        instance.start();
+        assertThat(instance).extracting(ProcessInstance::status).isEqualTo(ProcessInstance.STATE_ACTIVE);
+        KogitoWorkItem workItem = workItemHandler.getWorkItem();
+        assertThat(workItem).isNotNull();
+
+        ProcessTestHelper.completeWorkItem(instance, Collections.emptyMap(), "john", "HR");
+
+        assertThat(instance).extracting(ProcessInstance::status).isEqualTo(ProcessInstance.STATE_ACTIVE);
+    }
+
+    @Test
+    public void testUserTaskNoneAssignmentNoPolicyFailure() {
+        Application app = ProcessTestHelper.newApplication();
+        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        ProcessTestHelper.registerHandler(app, "Human Task", workItemHandler);
+        org.kie.kogito.process.Process<UserTaskNoneModel> processDefinition = UserTaskNoneProcess.newProcess(app);
+        UserTaskNoneModel model = processDefinition.createModel();
+        ProcessInstance<UserTaskNoneModel> instance = processDefinition.createInstance(model);
+        instance.start();
+        assertThat(instance).extracting(ProcessInstance::status).isEqualTo(ProcessInstance.STATE_ACTIVE);
+        KogitoWorkItem workItem = workItemHandler.getWorkItem();
+        assertThat(workItem).isNotNull();
+
+        ProcessTestHelper.completeWorkItem(instance, Collections.emptyMap());
+
+        assertThat(instance).extracting(ProcessInstance::status).isEqualTo(ProcessInstance.STATE_ACTIVE);
+    }
+
+    @Test
+    public void testUserTaskActorAndGroupAssignmentWithActor() {
+        Application app = ProcessTestHelper.newApplication();
+        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        ProcessTestHelper.registerHandler(app, "Human Task", workItemHandler);
+        org.kie.kogito.process.Process<UserTaskActorGroupModel> processDefinition = UserTaskActorGroupProcess.newProcess(app);
+        UserTaskActorGroupModel model = processDefinition.createModel();
+        ProcessInstance<UserTaskActorGroupModel> instance = processDefinition.createInstance(model);
+        instance.start();
+        assertThat(instance).extracting(ProcessInstance::status).isEqualTo(ProcessInstance.STATE_ACTIVE);
+        KogitoWorkItem workItem = workItemHandler.getWorkItem();
+        assertThat(workItem).isNotNull();
+
+        ProcessTestHelper.completeWorkItem(instance, Collections.emptyMap(), "john");
+
+        assertThat(instance).extracting(ProcessInstance::status).isEqualTo(ProcessInstance.STATE_COMPLETED);
+    }
+
+    @Test
+    public void testUserTaskActorAndGroupAssignmentWithGroup() {
+        Application app = ProcessTestHelper.newApplication();
+        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        ProcessTestHelper.registerHandler(app, "Human Task", workItemHandler);
+        org.kie.kogito.process.Process<UserTaskActorGroupModel> processDefinition = UserTaskActorGroupProcess.newProcess(app);
+        UserTaskActorGroupModel model = processDefinition.createModel();
+        ProcessInstance<UserTaskActorGroupModel> instance = processDefinition.createInstance(model);
+        instance.start();
+        assertThat(instance).extracting(ProcessInstance::status).isEqualTo(ProcessInstance.STATE_ACTIVE);
+        KogitoWorkItem workItem = workItemHandler.getWorkItem();
+        assertThat(workItem).isNotNull();
+
+        ProcessTestHelper.completeWorkItem(instance, Collections.emptyMap(), "mary", "IT");
+
+        assertThat(instance).extracting(ProcessInstance::status).isEqualTo(ProcessInstance.STATE_COMPLETED);
+    }
+
+    @Test
+    public void testUserTaskActorAndGroupAssignmentFailure() {
+        Application app = ProcessTestHelper.newApplication();
+        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        ProcessTestHelper.registerHandler(app, "Human Task", workItemHandler);
+        org.kie.kogito.process.Process<UserTaskActorGroupModel> processDefinition = UserTaskActorGroupProcess.newProcess(app);
+        UserTaskActorGroupModel model = processDefinition.createModel();
+        ProcessInstance<UserTaskActorGroupModel> instance = processDefinition.createInstance(model);
+        instance.start();
+        assertThat(instance).extracting(ProcessInstance::status).isEqualTo(ProcessInstance.STATE_ACTIVE);
+        KogitoWorkItem workItem = workItemHandler.getWorkItem();
+        assertThat(workItem).isNotNull();
+
+        ProcessTestHelper.completeWorkItem(instance, Collections.emptyMap(), "mary", "HR");
+
+        assertThat(instance).extracting(ProcessInstance::status).isEqualTo(ProcessInstance.STATE_ACTIVE);
+    }
+
+    @Test
+    public void testUserTaskActorAndGroupAssignmentNoPolicyFailure() {
+        Application app = ProcessTestHelper.newApplication();
+        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        ProcessTestHelper.registerHandler(app, "Human Task", workItemHandler);
+        org.kie.kogito.process.Process<UserTaskActorGroupModel> processDefinition = UserTaskActorGroupProcess.newProcess(app);
+        UserTaskActorGroupModel model = processDefinition.createModel();
+        ProcessInstance<UserTaskActorGroupModel> instance = processDefinition.createInstance(model);
+        instance.start();
+        assertThat(instance).extracting(ProcessInstance::status).isEqualTo(ProcessInstance.STATE_ACTIVE);
+        KogitoWorkItem workItem = workItemHandler.getWorkItem();
+        assertThat(workItem).isNotNull();
+
+        ProcessTestHelper.completeWorkItem(instance, Collections.emptyMap());
+
+        assertThat(instance).extracting(ProcessInstance::status).isEqualTo(ProcessInstance.STATE_ACTIVE);
+    }
+
+    @Test
     public void testUserTaskVerifyParameters() {
         Application app = ProcessTestHelper.newApplication();
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
@@ -565,7 +763,7 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         assertThat(processInstance.variables().getVar4()).isNotNull().hasToString("40");
         assertThat(processInstance.variables().getVar5()).isNotNull().hasToString("50");
 
-        ProcessTestHelper.completeWorkItem(processInstance, "john", Collections.emptyMap());
+        ProcessTestHelper.completeWorkItem(processInstance, Collections.emptyMap(), "john");
         assertThat(processInstance).extracting(ProcessInstance::status).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
 
@@ -888,7 +1086,7 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         assertThat(instance).extracting(ProcessInstance::status).isEqualTo(ProcessInstance.STATE_ACTIVE);
         receiveTaskHandler.setKnowledgeRuntime(kruntime);
         receiveTaskHandler.messageReceived("HelloMessage", "Hello john!");
-        ProcessTestHelper.completeWorkItem(instance, "john", Collections.emptyMap());
+        ProcessTestHelper.completeWorkItem(instance, Collections.emptyMap(), "john");
         assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
     }
 

@@ -302,6 +302,8 @@ class BasicRestIT {
                 .path("id");
 
         given()
+                .queryParam("user", "john")
+                .queryParam("group", "manager")
                 .when()
                 .get("/AdHocFragments/{id}/tasks", id)
                 .then()

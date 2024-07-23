@@ -144,7 +144,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         org.kie.kogito.process.ProcessInstance<BoundaryTimerCycleISOModel> instance = definition.createInstance(definition.createModel());
         instance.start();
         listener.waitTillCompleted();
-        ProcessTestHelper.completeWorkItem(instance, "john", Collections.emptyMap());
+        ProcessTestHelper.completeWorkItem(instance, Collections.emptyMap(), "john");
         assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
     }
 
@@ -159,7 +159,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         org.kie.kogito.process.ProcessInstance<BoundaryTimerCycleISOVariableModel> instance = definition.createInstance(model);
         instance.start();
         listener.waitTillCompleted();
-        ProcessTestHelper.completeWorkItem(instance, "john", Collections.emptyMap());
+        ProcessTestHelper.completeWorkItem(instance, Collections.emptyMap(), "john");
         assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
     }
 

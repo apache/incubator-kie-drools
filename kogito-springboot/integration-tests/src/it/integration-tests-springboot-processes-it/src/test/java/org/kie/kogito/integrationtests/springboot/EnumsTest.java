@@ -19,11 +19,9 @@
 package org.kie.kogito.integrationtests.springboot;
 
 import java.util.Collections;
-
 import java.util.HashMap;
 import java.util.Map;
 
-import io.restassured.http.ContentType;
 import org.acme.examples.model.Movie;
 import org.acme.examples.model.MovieGenre;
 import org.acme.examples.model.Rating;
@@ -32,6 +30,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.kie.kogito.process.workitem.TaskModel;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import io.restassured.http.ContentType;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -67,6 +67,7 @@ class EnumsTest extends BaseRestTest {
                 .path("id");
 
         TaskModel task = given()
+                .queryParam("group", "customer")
             .when()
                 .get("/cinema/{pid}/tasks", pid)
             .then()
@@ -79,6 +80,7 @@ class EnumsTest extends BaseRestTest {
 
         given()
                 .contentType(ContentType.JSON)
+                .queryParam("group", "customer")
             .when()
                 .body(Collections.singletonMap("reviewedRating", Rating.PG_13))
                 .post("/cinema/{pid}/ReviewRatingTask/{taskId}", pid, task.getId())

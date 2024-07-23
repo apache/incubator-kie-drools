@@ -51,8 +51,8 @@ public class QuarkusHumanTaskService implements HumanTaskService {
     }
 
     @Override
-    public ExtendedDataContext create(LocalId taskId) {
-        return delegate.create(taskId);
+    public ExtendedDataContext create(LocalId taskId, DataContext dataContext) {
+        return delegate.create(taskId, dataContext);
     }
 
     @Override

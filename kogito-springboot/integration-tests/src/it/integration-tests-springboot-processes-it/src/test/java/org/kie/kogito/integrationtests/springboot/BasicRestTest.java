@@ -259,9 +259,11 @@ class BasicRestTest extends BaseRestTest {
                 .path("id");
 
         given()
-                .when()
+                .queryParam("user", "john")
+                .queryParam("group", "manager")
+            .when()
                 .get("/AdHocFragments/{id}/tasks", id)
-                .then()
+            .then()
                 .statusCode(200)
                 .body("$.size()", is(1))
                 .body("[0].name", is("Task"));

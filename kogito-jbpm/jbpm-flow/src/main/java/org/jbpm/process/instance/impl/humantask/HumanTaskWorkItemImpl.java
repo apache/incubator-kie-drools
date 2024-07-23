@@ -191,10 +191,6 @@ public class HumanTaskWorkItemImpl extends KogitoWorkItemImpl implements Interna
             throw new NotAuthorizedException("User " + user + " is not authorized to access task instance with id " + getStringId());
         }
 
-        // if there are no assignments means open to everyone
-        if (getPotentialUsers().isEmpty() && getPotentialGroups().isEmpty()) {
-            return;
-        }
         // check if user is in potential users or groups 
         if (!getPotentialUsers().contains(user) &&
                 getPotentialGroups().stream().noneMatch(roles::contains)) {

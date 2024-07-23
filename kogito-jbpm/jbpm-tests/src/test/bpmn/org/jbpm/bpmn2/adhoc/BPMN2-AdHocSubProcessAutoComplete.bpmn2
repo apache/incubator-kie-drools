@@ -48,6 +48,11 @@
         <outputSet>
         </outputSet>
       </ioSpecification>
+      <potentialOwner id="_2-3-1">
+        <resourceAssignmentExpression id="_2-3-1-1">
+          <formalExpression>john</formalExpression>
+        </resourceAssignmentExpression>
+      </potentialOwner>
     </userTask>
     <!-- connections -->
     <completionCondition xsi:type="tFormalExpression">getActivityInstanceAttribute("numberOfActiveInstances") == 0</completionCondition>

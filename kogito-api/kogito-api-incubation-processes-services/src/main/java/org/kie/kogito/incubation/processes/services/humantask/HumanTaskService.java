@@ -26,7 +26,7 @@ import org.kie.kogito.incubation.common.MetaDataContext;
 public interface HumanTaskService {
     ExtendedDataContext get(LocalId id, MetaDataContext meta);
 
-    ExtendedDataContext create(LocalId taskId);
+    ExtendedDataContext create(LocalId taskId, DataContext dataContext);
 
     ExtendedDataContext abort(LocalId taskId, MetaDataContext meta);
 

@@ -48,9 +48,11 @@ public class $Type$Resource {
     @PostMapping(value = "/{id}/$taskName$", produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity signal(@PathVariable("id") final String id,
-                                               final UriComponentsBuilder uriComponentsBuilder) {
+                                 @RequestParam("user") final String user,
+                                 @RequestParam("group") final List<String> groups,
+                                 final UriComponentsBuilder uriComponentsBuilder) {
 
-        return processService.signalTask(process, id, "$taskName$")
+        return processService.signalTask(process, id, "$taskName$", SecurityPolicy.of(user, groups))
                 .map(task -> ResponseEntity
                         .created(uriComponentsBuilder
                                          .path("/$name$/{id}/$taskName$/{taskId}")

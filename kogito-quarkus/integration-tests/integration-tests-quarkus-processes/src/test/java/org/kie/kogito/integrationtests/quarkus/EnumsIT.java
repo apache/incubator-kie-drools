@@ -67,6 +67,7 @@ class EnumsIT {
                 .path("id");
 
         String taskId = given()
+                .queryParam("group", "customer")
                 .when()
                 .get("/cinema/{pid}/tasks", pid)
                 .then()
@@ -80,6 +81,7 @@ class EnumsIT {
         reviewedRating.put("reviewedRating", Rating.PG_13);
         given()
                 .contentType(ContentType.JSON)
+                .queryParam("group", "customer")
                 .when()
                 .body(reviewedRating)
                 .post("/cinema/{pid}/ReviewRatingTask/{taskId}", pid, taskId)

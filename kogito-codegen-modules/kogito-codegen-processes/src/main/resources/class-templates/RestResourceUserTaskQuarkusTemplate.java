@@ -40,8 +40,11 @@ public class $Type$Resource {
     @Path("/{id}/$taskName$")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response signal(@PathParam("id") final String id, @Context UriInfo uriInfo) {
-        return processService.signalTask(process, id, "$taskName$")
+    public Response signal(@PathParam("id") final String id,
+                           @QueryParam("user") final String user,
+                           @QueryParam("group") final List<String> groups,
+                           @Context UriInfo uriInfo) {
+        return processService.signalTask(process, id, "$taskName$", SecurityPolicy.of(user, groups))
                 .map(task -> Response
                         .created(uriInfo.getAbsolutePathBuilder().path(task.getId()).build())
                         .entity(task.getResults())
