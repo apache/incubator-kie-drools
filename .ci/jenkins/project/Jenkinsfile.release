@@ -81,7 +81,7 @@ pipeline {
             steps {
                 script {
                     if (!areArtifactsStaged()) {
-                        sendNotification("All artifacts have been staged.")
+                        sendNotification('All artifacts have been staged.')
                     }
                     setArtifactsStaged()
                 }
@@ -219,7 +219,7 @@ void sendSuccessfulReleaseNotification() {
     String bodyMsg = 'Release is successful with those jobs:\n'
     getAllJobNames().findAll { isJobConsideredOk(it) }.each {
         bodyMsg += "- ${it}\n"
-}
+    }
     bodyMsg += "\nPlease look here: ${BUILD_URL} for more information"
     sendNotification(bodyMsg)
 }
