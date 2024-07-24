@@ -2075,11 +2075,11 @@ To state that all facts of a given type in the working memory of the {RULE_ENGIN
 .Example rule with `forall` and a single pattern
 [source]
 ----
-rule "All full-time employees have red ID badges"
+rule "All employees have red ID badges"
   when
     forall( /employees[ badgeColor = "red" ] )
   then
-    // True, all full-time employees have red ID badges.
+    // True, all employees have red ID badges.
 end
 ----
 
