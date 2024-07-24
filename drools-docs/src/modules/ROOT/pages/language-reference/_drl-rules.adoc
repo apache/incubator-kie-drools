@@ -1345,10 +1345,10 @@ For groups of constraints, you can use a delimiting comma `,` to use implicit `a
 .Example patterns with multiple constraints
 [source]
 ----
-// Person is at least 50 years old and weighs at least 80 kilograms:
+// Person is more than 50 years old and weighs more than 80 kilograms:
 /persons[ age > 50, weight > 80 ]
 
-// Person is at least 50 years old, weighs at least 80 kilograms, and is taller than 2 meters:
+// Person is more than 50 years old, weighs more than 80 kilograms, and is taller than 2 meters:
 /persons[ age > 50, weight > 80, height > 2 ]
 ----
 
