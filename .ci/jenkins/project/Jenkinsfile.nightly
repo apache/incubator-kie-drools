@@ -88,9 +88,7 @@ pipeline {
                     addSkipIntegrationTestsParam(buildParams)
                     String quickstartsBranch
                     switch (getBuildBranch()) {
-                        case 'main': quickstartsBranch = '8.x'
-                            break
-                        case '9.x': quickstartsBranch = 'development'
+                        case 'main': quickstartsBranch = 'development'
                             break
                         default : quickstartsBranch = getBuildBranch()
                     }
