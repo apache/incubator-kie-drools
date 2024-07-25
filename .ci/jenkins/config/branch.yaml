@@ -33,7 +33,7 @@ repositories:
   job_display_name: optaplanner
 - name: incubator-kie-optaplanner-quickstarts
   job_display_name: optaplanner-quickstarts
-  branch: 8.x
+  branch: development
 # Not migrated to Apache yet
 # - name: incubator-kie-optaplanner-website
 #   job_display_name: optaplanner-website
