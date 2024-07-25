@@ -2113,8 +2113,7 @@ rule "Not all employees have health and dental care"
 end
 ----
 
-NOTE: The format `not( forall( p1 p2 p3 ...))` is +
-equivalent to `not( p1 and not( and p2 p3 ...))`.
+NOTE: The format `forall( p1 p2 p3 ...)` is equivalent to `not( p1 and not( and p2 p3 ... ) )`.
 
 --
 
