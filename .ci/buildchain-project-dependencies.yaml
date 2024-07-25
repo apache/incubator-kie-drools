@@ -24,12 +24,8 @@ dependencies:
       dependencies:
         default:
           - source: development
-            target: 9.x
-          - source: development
             target: main
       dependant:
         default:
-          - source: 9.x
-            target: development
           - source: main
             target: development
