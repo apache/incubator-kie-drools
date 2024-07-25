@@ -190,7 +190,6 @@ pipeline {
                         } else {
                             println '[WARN] no changes to commit'
                         }
-                        githubscm.setUserConfigFromCreds(getGitAuthorPushCredsId())
                         githubscm.tagRepository(getGitTagName())
                         githubscm.pushRemoteTag('origin', getGitTagName(), getGitAuthorPushCredsId())
                     }
