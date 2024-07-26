@@ -24,6 +24,8 @@ import java.util.Set;
 
 import org.kie.kogito.serverless.workflow.parser.ParserContext;
 import org.kie.kogito.serverless.workflow.utils.OpenAPIFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.serverlessworkflow.api.Workflow;
 import io.serverlessworkflow.api.functions.FunctionDefinition;
@@ -31,8 +33,11 @@ import io.serverlessworkflow.api.functions.FunctionDefinition;
 public class SpecWorkflowOperationIdFactory extends AbstractWorkflowOperationIdFactory {
     public static final String SPEC_PROP_VALUE = "SPEC_TITLE";
 
+    private static final Logger logger = LoggerFactory.getLogger(SpecWorkflowOperationIdFactory.class);
+
     @Override
     public String getFileName(Workflow workflow, FunctionDefinition function, Optional<ParserContext> context, URI uri, String operation, String service) {
+        logger.debug("Testing reproducible");
         return OpenAPIFactory.getOpenAPI(uri, workflow, function, context).getInfo()
                 .getTitle();
     }

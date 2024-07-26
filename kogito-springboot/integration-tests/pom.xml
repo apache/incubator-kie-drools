@@ -76,6 +76,10 @@
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-serverless-workflow-openapi-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-maven-plugin</artifactId>
     </dependency>
     <dependency>
