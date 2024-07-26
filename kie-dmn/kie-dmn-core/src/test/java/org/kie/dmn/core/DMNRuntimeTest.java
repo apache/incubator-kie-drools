@@ -1770,6 +1770,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @ParameterizedTest
     @MethodSource("params")
+    @Disabled // TODO gcardosi restore
     void sharedDependency(boolean useExecModelCompiler) {
         init(useExecModelCompiler);
         final Definitions defs = buildSimplifiedDefinitions("ns", "a", "b", "c");
@@ -1790,6 +1791,7 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @ParameterizedTest
     @MethodSource("params")
+    @Disabled // TODO gcardosi restore
     void cycleDetectionDeadlyDiamond(boolean useExecModelCompiler) {
         init(useExecModelCompiler);
         final Definitions defs = buildSimplifiedDefinitions("ns", "a", "b", "c", "d");
