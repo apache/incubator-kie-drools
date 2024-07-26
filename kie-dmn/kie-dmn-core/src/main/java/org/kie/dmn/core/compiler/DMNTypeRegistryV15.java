@@ -19,8 +19,8 @@
 package org.kie.dmn.core.compiler;
 
 import org.kie.dmn.api.core.DMNType;
-import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.impl.SimpleTypeImpl;
+import org.kie.dmn.core.impl.TupleIdentifier;
 import org.kie.dmn.model.v1_5.KieDMNModelInstrumentedBase;
 
 import javax.xml.namespace.QName;
@@ -31,7 +31,7 @@ public class DMNTypeRegistryV15 extends DMNTypeRegistryAbstract {
     private static final DMNType UNKNOWN = SimpleTypeImpl.UNKNOWN_DMNTYPE(KieDMNModelInstrumentedBase.URI_FEEL);
 
 
-    public DMNTypeRegistryV15(Map<DMNModelImpl.TupleIdentifier, QName> aliases) {
+    public DMNTypeRegistryV15(Map<TupleIdentifier, QName> aliases) {
         super(aliases);
     }
 

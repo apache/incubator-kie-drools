@@ -18,54 +18,6 @@
  */
 package org.kie.dmn.core.impl;
 
-import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
-
 class DMNModelImplTest {
 
-    @Test
-    void createTupleIdentifierById() {
-        String name = "name";
-        String wrongName = "wrong-name";
-        String retrieved = DMNModelImpl.generateIdFromName(name);
-        assertEquals(retrieved, DMNModelImpl.generateIdFromName(name));
-        assertNotEquals(retrieved, DMNModelImpl.generateIdFromName(wrongName));
-    }
-
-    @Test
-    void createTupleIdentifierByName() {
-        String id = "123124";
-        DMNModelImpl.TupleIdentifier retrieved = DMNModelImpl.createTupleIdentifierById(id);
-        assertNotNull(retrieved);
-        assertEquals(retrieved.getId(), id);
-        assertNull(retrieved.getName());
-    }
-
-    @Test
-    void generateIdFromName() {
-        String name = "name";
-        String wrongName = "wrong-name";
-        String retrieved = DMNModelImpl.generateIdFromName(name);
-        assertEquals(retrieved, DMNModelImpl.generateIdFromName(name));
-        assertNotEquals(retrieved, DMNModelImpl.generateIdFromName(wrongName));
-    }
-
-    @Test
-    void testTupleIdentifier() {
-        String id = "123124";
-        String wrongId = "3242342";
-        String name = "name";
-        String wrongName = "wrong-name";
-        DMNModelImpl.TupleIdentifier original = new DMNModelImpl.TupleIdentifier(id, name);
-        assertEquals(original, new DMNModelImpl.TupleIdentifier(id, name));
-        assertEquals(original, new DMNModelImpl.TupleIdentifier(null, name));
-        assertEquals(original, new DMNModelImpl.TupleIdentifier(id, null));
-        assertNotEquals(original, new DMNModelImpl.TupleIdentifier(id, wrongName));
-        assertNotEquals(original, new DMNModelImpl.TupleIdentifier(wrongId, name));
-        assertNotEquals(original, new DMNModelImpl.TupleIdentifier(wrongId, wrongName));
-        assertNotEquals(original, new DMNModelImpl.TupleIdentifier(null, wrongName));
-        assertNotEquals(original, new DMNModelImpl.TupleIdentifier(wrongId, null));
-
-    }
 }

@@ -72,6 +72,9 @@ import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.Definitions;
 
 import static org.kie.dmn.core.compiler.UnnamedImportUtils.isInUnnamedImport;
+import static org.kie.dmn.core.impl.TupleIdentifier.createTupleIdentifier;
+import static org.kie.dmn.core.impl.TupleIdentifier.createTupleIdentifierById;
+import static org.kie.dmn.core.impl.TupleIdentifier.createTupleIdentifierByName;
 
 public class DMNModelImpl
         implements DMNModel, DMNMessageManager, Externalizable {
@@ -80,8 +83,6 @@ public class DMNModelImpl
         // To ensure backward compatibility, append only:
         DMN_XML
     }
-
-    static final String AUTO_GENERATED_ID_PREFIX = "auto-generated-id";
 
     private SerializationFormat serializedAs = SerializationFormat.DMN_XML;
     private Resource resource;
@@ -461,13 +462,13 @@ public class DMNModelImpl
 
     public Map<String, QName> getImportAliasesForNS() {
         return importAliases.entrySet()
-                .stream().collect(Collectors.toMap(tupleIdentifierQNameEntry -> tupleIdentifierQNameEntry.getKey().name,
+                .stream().collect(Collectors.toMap(tupleIdentifierQNameEntry -> tupleIdentifierQNameEntry.getKey().getName(),
                                                    Entry::getValue));
     }
 
     public Optional<String> getImportAliasFor(String ns, String iModelName) {
         QName lookup = new QName(ns, iModelName);
-        return this.importAliases.entrySet().stream().filter(kv -> kv.getValue().equals(lookup)).map(kv -> kv.getKey().name).findFirst();
+        return this.importAliases.entrySet().stream().filter(kv -> kv.getValue().equals(lookup)).map(kv -> kv.getKey().getName()).findFirst();
     }
 
     public QName getImportNamespaceAndNameforAlias(String iAlias) {
@@ -502,7 +503,7 @@ public class DMNModelImpl
 
     public Map<String, DMNImportPMMLInfo> getPmmlImportInfo() {
         return pmmlImportInfo.entrySet()
-                .stream().collect(Collectors.toMap(tupleIdentifierQNameEntry -> tupleIdentifierQNameEntry.getKey().name,
+                .stream().collect(Collectors.toMap(tupleIdentifierQNameEntry -> tupleIdentifierQNameEntry.getKey().getName(),
                                                    Entry::getValue));
 
     }
@@ -562,56 +563,4 @@ public class DMNModelImpl
         }
     }
 
-    static TupleIdentifier createTupleIdentifier(String id, String name) {
-        return new TupleIdentifier(id, name);
-    }
-
-    static TupleIdentifier createTupleIdentifierById(String id) {
-        return new TupleIdentifier(id, null);
-    }
-
-    static TupleIdentifier createTupleIdentifierByName(String name) {
-       return new TupleIdentifier(generateIdFromName(name), name);
-    }
-
-    static String generateIdFromName(String name) {
-        return String.format("%s-%s", AUTO_GENERATED_ID_PREFIX, Objects.hash(name));
-    }
-
-    public static class TupleIdentifier {
-        private final String id;
-        private final String name;
-
-        public TupleIdentifier(String id, String name) {
-            this.id = id;
-            this.name = name;
-        }
-
-        public String getId() {
-            return id;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (!(o instanceof TupleIdentifier that)) {
-                return false;
-            }
-            // This "null" availability it is to allow for search based only on id or name
-            boolean equalId = id == null || that.id == null || id.equals(that.id);
-            boolean equalName = name == null || that.name == null || name.equals(that.name);
-            return equalId && equalName;
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(1); // we have to consider "null" comparisons, so everything should go in same "bucket"
-        }
-    }
 }

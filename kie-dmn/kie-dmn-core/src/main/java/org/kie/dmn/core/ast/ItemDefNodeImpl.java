@@ -47,10 +47,6 @@ public class ItemDefNodeImpl
         this.itemDef = itemDef;
     }
 
-    public String getId() {
-        return itemDef.getId();
-    }
-
     public String getName() {
         return itemDef.getName();
     }

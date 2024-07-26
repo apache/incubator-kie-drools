@@ -164,7 +164,7 @@ public class DMNCompilerTest extends BaseVariantTest {
         final ItemDefNode itemDef = dmnModel.getItemDefinitionByName("tEmploymentStatus" );
 
         assertThat(itemDef.getName()).isEqualTo("tEmploymentStatus");
-        assertThat(itemDef.getId()).isNull();
+        assertThat(itemDef.getId()).isNotNull();
 
         final DMNType type = itemDef.getType();
 

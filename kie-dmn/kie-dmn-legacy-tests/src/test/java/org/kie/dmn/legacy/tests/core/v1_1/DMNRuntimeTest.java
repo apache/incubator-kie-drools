@@ -37,7 +37,6 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -59,9 +58,12 @@ import org.kie.dmn.api.core.event.BeforeEvaluateDecisionEvent;
 import org.kie.dmn.api.core.event.BeforeEvaluateDecisionTableEvent;
 import org.kie.dmn.api.core.event.DMNRuntimeEventListener;
 import org.kie.dmn.core.api.DMNFactory;
+import org.kie.dmn.core.api.EvaluatorResult;
 import org.kie.dmn.core.ast.DMNContextEvaluator;
 import org.kie.dmn.core.ast.DecisionNodeImpl;
+import org.kie.dmn.core.ast.EvaluatorResultImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
+import org.kie.dmn.core.impl.SimpleTypeImpl;
 import org.kie.dmn.core.model.Person;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.kie.dmn.core.util.KieHelper;
@@ -71,9 +73,11 @@ import org.kie.dmn.feel.marshaller.FEELStringMarshaller;
 import org.kie.dmn.feel.util.NumberEvalHelper;
 import org.kie.dmn.model.api.Decision;
 import org.kie.dmn.model.api.Definitions;
+import org.kie.dmn.model.api.InformationItem;
 import org.kie.dmn.model.api.ItemDefinition;
 import org.kie.dmn.model.v1_1.TDecision;
 import org.kie.dmn.model.v1_1.TDefinitions;
+import org.kie.dmn.model.v1_1.TInformationItem;
 import org.mockito.ArgumentCaptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -1593,6 +1597,9 @@ public class DMNRuntimeTest extends BaseDMN1_1VariantTest {
         for (final String d : decisions) {
             final Decision dec = new TDecision();
             dec.setName(d);
+            InformationItem variable = new TInformationItem();
+            variable.setName("variable-" + d);
+            dec.setVariable(variable);
             def.getDrgElement().add(dec);
             def.addChildren(dec);
             dec.setParent(def);
@@ -1601,7 +1608,12 @@ public class DMNRuntimeTest extends BaseDMN1_1VariantTest {
     }
 
     private DecisionNodeImpl buildSimplifiedDecisionNode(final Definitions def, final String name) {
-        return new DecisionNodeImpl(def.getDrgElement().stream().filter(drg -> drg.getName().equals(name)).filter(Decision.class::isInstance).map(Decision.class::cast).findFirst().get());
+        DecisionNodeImpl toReturn = new DecisionNodeImpl(def.getDrgElement().stream().filter(drg -> drg.getName().equals(name)).filter(Decision.class::isInstance)
+                                                                 .map(Decision.class::cast)
+                                                                 .findFirst().get());
+        toReturn.setEvaluator((eventManager, result) -> new EvaluatorResultImpl(name, EvaluatorResult.ResultType.SUCCESS));
+        toReturn.setResultType(SimpleTypeImpl.UNKNOWN_DMNTYPE(""));
+        return toReturn;
     }
 
     @ParameterizedTest(name = "{0}")
@@ -1639,7 +1651,6 @@ public class DMNRuntimeTest extends BaseDMN1_1VariantTest {
 
     @ParameterizedTest(name = "{0}")
     @MethodSource("params")
-    @Disabled // TODO gcardosi restore
     void sharedDependency(VariantTestConf conf) {
         testConfig = conf;
         final Definitions defs = buildSimplifiedDefinitions("ns", "a", "b", "c");
@@ -1660,7 +1671,6 @@ public class DMNRuntimeTest extends BaseDMN1_1VariantTest {
 
     @ParameterizedTest(name = "{0}")
     @MethodSource("params")
-    @Disabled // TODO gcardosi restore
     void cycleDetectionDeadlyDiamond(VariantTestConf conf) {
         testConfig = conf;
         final Definitions defs = buildSimplifiedDefinitions("ns", "a", "b", "c", "d");
