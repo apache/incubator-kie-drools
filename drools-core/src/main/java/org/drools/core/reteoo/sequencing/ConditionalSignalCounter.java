@@ -8,9 +8,9 @@ import java.util.function.Consumer;
 import java.util.function.LongPredicate;
 
 public class ConditionalSignalCounter extends SignalProcessor {
-    private int           signalIndex;
-    private int           counterIndex;
-    private LongPredicate constraint;
+    private final int signalIndex;
+    private final int counterIndex;
+    private final LongPredicate constraint;
 
     private SignalProcessor output;
 

@@ -4,7 +4,7 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.sequencing.Sequence.SequenceMemory;
 
 public class LogicGateOutputSignalProcessor extends SignalProcessor {
-    private SignalIndex[] gates;
+    private final SignalIndex[] gates;
 
     private LogicGate gate1;
     private int       index1;

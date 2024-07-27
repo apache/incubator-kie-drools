@@ -42,12 +42,12 @@ public interface Step {
 
 
     enum StepFactoryType {
-        LOGIC_CIRCUIT, SEQUENCE, AGGREGATOR, ACTION;
+        LOGIC_CIRCUIT, SEQUENCE, AGGREGATOR, ACTION
     }
 
     class StepFactory {
-        private StepFactoryType type;
-        private LogicCircuit circuit;
+        private final StepFactoryType type;
+        private       LogicCircuit    circuit;
         private Sequence sequence;
         private Consumer<SequenceMemory> aggregator;
         private Consumer<SequenceMemory> action;
@@ -108,8 +108,8 @@ public interface Step {
     }
 
     class LogicCircuitStep implements Step {
-        private Sequence     parentSequence;
-        private LogicCircuit circuit;
+        private final Sequence     parentSequence;
+        private final LogicCircuit circuit;
 
         public LogicCircuitStep(Sequence parentSequence, LogicCircuit circuit) {
             this.parentSequence = parentSequence;
@@ -187,8 +187,8 @@ public interface Step {
     }
 
     class ActionStep implements Step {
-        protected Sequence parentSequence;
-        private Consumer<SequenceMemory> consumer;
+        protected     Sequence                 parentSequence;
+        private final Consumer<SequenceMemory> consumer;
 
         public ActionStep(Sequence parentSequence, Consumer<SequenceMemory> consumer) {
             this.parentSequence = parentSequence;

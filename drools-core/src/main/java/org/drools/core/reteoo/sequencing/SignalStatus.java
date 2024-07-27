@@ -7,7 +7,7 @@ public enum SignalStatus {
 
     private final int status;
 
-    private SignalStatus(int status) {
+    SignalStatus(int status) {
         this.status = status;
     }
 

@@ -84,7 +84,7 @@ public class PhreakSequencerActionTest extends AbstractPhreakSequencerSubsequenc
                             Step.of(circuit2),
                             Step.of( m -> recorder.add("spacer")),
                             Step.of( m -> recorder.add(((FactHandle)m.getSequencerMemory().getEvents().getHead()).getObject())));
-        mnode.setSequencer(new Sequencer(mnode, seq0));
+        mnode.setSequencer(new Sequencer(seq0));
         mnode.setDynamicFilters(new DynamicFilterProto[] {bfilter});
 
         SessionsAwareKnowledgeBase kbase       = new SessionsAwareKnowledgeBase(buildContext.getRuleBase());
@@ -97,7 +97,7 @@ public class PhreakSequencerActionTest extends AbstractPhreakSequencerSubsequenc
     private LogicCircuit getLogicCircuit() {
         LogicGate gate1 = get1InputLogicGate();
         gate1.setOutput(TerminatingSignalProcessor.get());
-        LogicCircuit circuit1 = new LogicCircuit(mnode, gate1);
+        LogicCircuit circuit1 = new LogicCircuit(gate1);
         return circuit1;
     }
 

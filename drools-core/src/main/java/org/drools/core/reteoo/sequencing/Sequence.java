@@ -3,14 +3,12 @@ package org.drools.core.reteoo.sequencing;
 import org.drools.base.time.JobHandle;
 import org.drools.base.time.Trigger;
 import org.drools.base.time.impl.Timer;
-import org.drools.core.common.ActivationsManager;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.reteoo.SequenceNode.DynamicFilter;
 import org.drools.core.reteoo.SequenceNode.SequenceNodeMemory;
 import org.drools.core.reteoo.SequenceNode.SignalAdapter;
-import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.sequencing.Sequencer.SequencerMemory;
 import org.drools.core.reteoo.sequencing.Step.LogicCircuitStep;
 import org.drools.core.reteoo.sequencing.Step.StepFactory;
@@ -24,7 +22,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 public class Sequence {
-    private int sequenceIndex;
+    private final int sequenceIndex;
 
     private Step[] steps;
 
@@ -193,7 +191,7 @@ public class Sequence {
     }
 
     public static class LoopController implements SequenceController {
-        private Predicate<SequenceMemory> predicate;
+        private final Predicate<SequenceMemory> predicate;
 
         public LoopController(Predicate<SequenceMemory> predicate) {
             this.predicate = predicate;
@@ -220,9 +218,9 @@ public class Sequence {
     }
 
     public static class TimoutController implements SequenceController {
-        private Sequence sequence;
-        private Timer     timer;
-        private DefaultController defaultController = DefaultController.getINSTANCE();
+        private final Sequence sequence;
+        private final Timer    timer;
+        private final DefaultController defaultController = DefaultController.getINSTANCE();
 
         public TimoutController(Sequence sequence, Timer timer) {
             this.sequence = sequence;
@@ -262,7 +260,7 @@ public class Sequence {
     }
 
     public static class CompositeController implements SequenceController {
-        private  SequenceController[] controllers;
+        private final SequenceController[] controllers;
 
         public CompositeController(SequenceController... controllers) {
             this.controllers = controllers;
@@ -294,7 +292,7 @@ public class Sequence {
     public static class SequenceJob
             implements
             Job {
-        private static SequenceJob INSTANCE = new SequenceJob();
+        private static final SequenceJob INSTANCE = new SequenceJob();
 
         public static SequenceJob getINSTANCE() {
             return INSTANCE;
@@ -415,29 +413,29 @@ public class Sequence {
     }
 
     public static class SequenceMemory {
-        private Sequence sequence;
+        private final Sequence sequence;
 
         private int step;
 
         private int count;
 
-        private SequencerMemory sequencerMemory;
+        private final SequencerMemory sequencerMemory;
 
-        private SignalAdapter[] signalAdapters;
+        private final SignalAdapter[] signalAdapters;
 
-        private SignalAdapter[] activeSignalAdapters;
+        private final SignalAdapter[] activeSignalAdapters;
 
-        private long[] gateMemory;
+        private final long[] gateMemory;
 
-        private long[] counterMemories;
+        private final long[] counterMemories;
 
         private JobHandle[] jobHandles;
 
         private JobHandle jobHandle;
 
-        private SignalStatus[] signalStatuses;
+        private final SignalStatus[] signalStatuses;
 
-        private SequenceNodeMemory nodeMemory;
+        private final SequenceNodeMemory nodeMemory;
 
         private int eventsStartPosition;
 

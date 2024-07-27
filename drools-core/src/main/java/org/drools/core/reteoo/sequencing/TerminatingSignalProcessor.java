@@ -4,7 +4,7 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.sequencing.Sequence.SequenceMemory;
 
 public class TerminatingSignalProcessor extends SignalProcessor {
-    private static TerminatingSignalProcessor INSTANCE = new TerminatingSignalProcessor();
+    private static final TerminatingSignalProcessor INSTANCE = new TerminatingSignalProcessor();
 
     public static TerminatingSignalProcessor get() {
         return INSTANCE;

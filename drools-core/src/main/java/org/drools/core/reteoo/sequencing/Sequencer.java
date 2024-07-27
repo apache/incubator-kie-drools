@@ -17,13 +17,11 @@ import java.util.List;
 
 public class Sequencer {
 
-    private SequenceNode node;
-    private Sequence     sequence;
+    private final Sequence     sequence;
 
-    private Sequence[]     sequencences;
+    private final Sequence[] sequencences;
 
-    public Sequencer(SequenceNode node, Sequence sequence) {
-        this.node = node;
+    public Sequencer(Sequence sequence) {
         this.sequence = sequence;
         this.sequencences = populateSequences(sequence, new ArrayList<>()).stream().toArray(Sequence[]::new);
     }
@@ -80,19 +78,19 @@ public class Sequencer {
 
     public static class SequencerMemory {
 
-        private TupleImpl lt;
+        private final TupleImpl lt;
 
-        private CircularArrayList<Object> events;
+        private final CircularArrayList<Object> events;
 
-        private SequenceNode node;
+        private final SequenceNode node;
 
-        private SequenceMemory[] sequenceMemories;
+        private final SequenceMemory[] sequenceMemories;
 
         private final LeftTupleSink sink;
 
-        private SequenceNodeMemory nodeMemory;
+        private final SequenceNodeMemory nodeMemory;
 
-        private ArrayList<SequenceMemory> sequenceStack = new ArrayList<>();
+        private final ArrayList<SequenceMemory> sequenceStack = new ArrayList<>();
 
         public SequencerMemory(TupleImpl lt, LeftTupleSink sink, SequenceNode node, SequenceNodeMemory nodeMemory) {
             this.lt               = lt;

@@ -105,10 +105,10 @@ public class PhreakSequencerSignalProcessorTimerTest extends AbstractPhreakSeque
 
         gate1.setOutput(TerminatingSignalProcessor.get());
 
-        LogicCircuit circuit1 = new LogicCircuit(mnode, gate1);
+        LogicCircuit circuit1 = new LogicCircuit(gate1);
 
         Sequence seq = new Sequence(0, circuit1);
-        mnode.setSequencer(new Sequencer(mnode, seq));
+        mnode.setSequencer(new Sequencer(seq));
         mnode.setDynamicFilters( new DynamicFilterProto[] {bfilter, cfilter});
 
         createSession();
@@ -150,10 +150,10 @@ public class PhreakSequencerSignalProcessorTimerTest extends AbstractPhreakSeque
         //gate1.setPropagationTimer(new TimeoutTimer(gate1, new DurationTimer(1000)));
         gate1.setOutput(TerminatingSignalProcessor.get());
 
-        LogicCircuit circuit1 = new LogicCircuit(mnode, gate1);
+        LogicCircuit circuit1 = new LogicCircuit(gate1);
 
         Sequence seq = new Sequence(0, circuit1);
-        mnode.setSequencer(new Sequencer(mnode, seq));
+        mnode.setSequencer(new Sequencer(seq));
         mnode.setDynamicFilters( new DynamicFilterProto[] {bfilter});
 
         createSession();
@@ -194,10 +194,10 @@ public class PhreakSequencerSignalProcessorTimerTest extends AbstractPhreakSeque
 
         gate1.setOutput(TerminatingSignalProcessor.get());
 
-        LogicCircuit circuit1 = new LogicCircuit(mnode, gate1);
+        LogicCircuit circuit1 = new LogicCircuit(gate1);
 
         Sequence seq = new Sequence(0, circuit1);
-        mnode.setSequencer(new Sequencer(mnode, seq));
+        mnode.setSequencer(new Sequencer(seq));
         mnode.setDynamicFilters( new DynamicFilterProto[] {bfilter, cfilter});
 
         createSession();
@@ -235,10 +235,10 @@ public class PhreakSequencerSignalProcessorTimerTest extends AbstractPhreakSeque
 
         gate1.setOutput(TerminatingSignalProcessor.get());
 
-        LogicCircuit circuit1 = new LogicCircuit(mnode, gate1);
+        LogicCircuit circuit1 = new LogicCircuit(gate1);
 
         Sequence seq = new Sequence(0, circuit1);
-        mnode.setSequencer(new Sequencer(mnode, seq));
+        mnode.setSequencer(new Sequencer(seq));
         mnode.setDynamicFilters( new DynamicFilterProto[] {bfilter, cfilter});
 
         createSession();

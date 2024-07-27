@@ -103,10 +103,10 @@ public class PhreakSequencerSignalProcessorCounterTest extends AbstractPhreakSeq
         counter.setOutput(gate1);
         gate1.setInputSignalCounters(new ConditionalSignalCounter[] {counter});
 
-        LogicCircuit circuit1 = new LogicCircuit(mnode, gate1);
+        LogicCircuit circuit1 = new LogicCircuit(gate1);
 
         Sequence seq = new Sequence(0, circuit1);
-        mnode.setSequencer(new Sequencer(mnode, seq));
+        mnode.setSequencer(new Sequencer(seq));
         mnode.setDynamicFilters( new DynamicFilterProto[] {bfilter, cfilter});
 
         createSession();
@@ -134,10 +134,10 @@ public class PhreakSequencerSignalProcessorCounterTest extends AbstractPhreakSeq
         counter.setOutput(gate1);
         gate1.setInputSignalCounters(new ConditionalSignalCounter[] {counter });
 
-        LogicCircuit circuit1 = new LogicCircuit(mnode, gate1);
+        LogicCircuit circuit1 = new LogicCircuit(gate1);
 
         Sequence seq = new Sequence(0, circuit1);
-        mnode.setSequencer(new Sequencer(mnode, seq));
+        mnode.setSequencer(new Sequencer(seq));
         mnode.setDynamicFilters( new DynamicFilterProto[] {bfilter, cfilter});
 
         createSession(); // pass
@@ -177,10 +177,10 @@ public class PhreakSequencerSignalProcessorCounterTest extends AbstractPhreakSeq
         counter.setOutput(gate1);
         gate1.setInputSignalCounters(new ConditionalSignalCounter[] {counter });
 
-        LogicCircuit circuit1 = new LogicCircuit(mnode, gate1);
+        LogicCircuit circuit1 = new LogicCircuit(gate1);
 
         Sequence seq = new Sequence(0, circuit1);
-        mnode.setSequencer(new Sequencer(mnode, seq));
+        mnode.setSequencer(new Sequencer(seq));
         mnode.setDynamicFilters( new DynamicFilterProto[] {bfilter, cfilter});
 
         createSession(); // pass
@@ -217,10 +217,10 @@ public class PhreakSequencerSignalProcessorCounterTest extends AbstractPhreakSeq
         counter.setOutput(TerminatingSignalProcessor.get());
         gate1.setOutput(counter);
 
-        LogicCircuit circuit1 = new LogicCircuit(mnode, gate1);
+        LogicCircuit circuit1 = new LogicCircuit(gate1);
 
         Sequence seq = new Sequence(0, circuit1);
-        mnode.setSequencer(new Sequencer(mnode, seq));
+        mnode.setSequencer(new Sequencer(seq));
         mnode.setDynamicFilters( new DynamicFilterProto[] {bfilter, cfilter});
 
         createSession(); // pass
@@ -271,10 +271,10 @@ public class PhreakSequencerSignalProcessorCounterTest extends AbstractPhreakSeq
         counter2.setOutput(TerminatingSignalProcessor.get());
         gate2.setOutput(counter2);
 
-        LogicCircuit circuit1 = new LogicCircuit(mnode, gate1, gate2);
+        LogicCircuit circuit1 = new LogicCircuit(gate1, gate2);
 
         Sequence seq = new Sequence(0, circuit1);
-        mnode.setSequencer(new Sequencer(mnode, seq));
+        mnode.setSequencer(new Sequencer(seq));
         mnode.setDynamicFilters( new DynamicFilterProto[] {bfilter, cfilter, dfilter});
 
         // D First

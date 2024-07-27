@@ -82,7 +82,7 @@ public class PhreakSequencerEventsMemoryTest extends AbstractPhreakSequencerSubs
         seq2 = new Sequence(2, circuit4, circuit5);
 
         seq0 = new Sequence(0, Step.of(circuit1), Step.of(seq1), Step.of(circuit3), Step.of(seq2), Step.of(circuit6));
-        mnode.setSequencer(new Sequencer(mnode, seq0));
+        mnode.setSequencer(new Sequencer(seq0));
         mnode.setDynamicFilters( new DynamicFilterProto[] {bfilter});
 
         SessionsAwareKnowledgeBase kbase       = new SessionsAwareKnowledgeBase(buildContext.getRuleBase());
@@ -95,7 +95,7 @@ public class PhreakSequencerEventsMemoryTest extends AbstractPhreakSequencerSubs
     private LogicCircuit getLogicCircuit() {
         LogicGate gate1 = get1InputLogicGate();
         gate1.setOutput(TerminatingSignalProcessor.get());
-        LogicCircuit circuit1 = new LogicCircuit(mnode, gate1);
+        LogicCircuit circuit1 = new LogicCircuit(gate1);
         return circuit1;
     }
 

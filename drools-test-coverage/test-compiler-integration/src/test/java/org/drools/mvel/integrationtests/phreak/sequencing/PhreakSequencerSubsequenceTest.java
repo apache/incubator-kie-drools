@@ -71,25 +71,25 @@ public class PhreakSequencerSubsequenceTest extends AbstractPhreakSequencerSubse
 
         LogicGate gate1 = get1InputLogicGate();
         gate1.setOutput(TerminatingSignalProcessor.get());
-        LogicCircuit circuit1 = new LogicCircuit(mnode, gate1);
+        LogicCircuit circuit1 = new LogicCircuit(gate1);
 
         LogicGate gate2 = get1InputLogicGate();
         gate2.setOutput(TerminatingSignalProcessor.get());
-        LogicCircuit circuit2 = new LogicCircuit(mnode, gate2);
+        LogicCircuit circuit2 = new LogicCircuit(gate2);
 
         LogicGate gate3 = get1InputLogicGate();
         gate3.setOutput(TerminatingSignalProcessor.get());
-        LogicCircuit circuit3 = new LogicCircuit(mnode, gate3);
+        LogicCircuit circuit3 = new LogicCircuit(gate3);
 
         LogicGate gate4 = get1InputLogicGate();
         gate4.setOutput(TerminatingSignalProcessor.get());
-        LogicCircuit circuit4 = new LogicCircuit(mnode, gate4);
+        LogicCircuit circuit4 = new LogicCircuit(gate4);
 
         seq1 = new Sequence(1, circuit1, circuit2);
         seq2 = new Sequence(2, circuit3, circuit4);
 
         seq0 = new Sequence(0, Step.of(seq1), Step.of(seq2));
-        mnode.setSequencer(new Sequencer(mnode, seq0));
+        mnode.setSequencer(new Sequencer(seq0));
         mnode.setDynamicFilters( new DynamicFilterProto[] {bfilter});
 
         SessionsAwareKnowledgeBase kbase       = new SessionsAwareKnowledgeBase(buildContext.getRuleBase());

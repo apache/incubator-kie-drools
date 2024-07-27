@@ -1,18 +1,13 @@
 package org.drools.core.reteoo.sequencing;
 
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.reteoo.LeftTupleSinkNode;
-import org.drools.core.reteoo.SequenceNode;
 import org.drools.core.reteoo.sequencing.Sequence.SequenceMemory;
 
 public class LogicCircuit {
 
-    private SequenceNode node;
+    private final LogicGate[] gates;
 
-    private LogicGate[] gates;
-
-    public LogicCircuit(SequenceNode node, LogicGate... gates) {
-        this.node = node;
+    public LogicCircuit(LogicGate... gates) {
         this.gates = gates;
     }
 

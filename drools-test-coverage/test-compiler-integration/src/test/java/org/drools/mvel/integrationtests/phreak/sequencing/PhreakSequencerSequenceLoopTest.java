@@ -81,17 +81,17 @@ public class PhreakSequencerSequenceLoopTest extends AbstractPhreakSequencerSubs
                                         new int[] {0}, //
                                         0);
         gate1.setOutput(TerminatingSignalProcessor.get());
-        LogicCircuit circuit1 = new LogicCircuit(mnode, gate1);
+        LogicCircuit circuit1 = new LogicCircuit(gate1);
 
         LogicGate gate2 = new LogicGate((inputMask, sourceMask) -> Gates.and(inputMask, sourceMask),1,
                                         new int[] {1}, // C
                                         new int[] {1}, //
                                         0);
         gate2.setOutput(TerminatingSignalProcessor.get());
-        LogicCircuit circuit2 = new LogicCircuit(mnode, gate2);
+        LogicCircuit circuit2 = new LogicCircuit(gate2);
 
         seq0 = new Sequence(0, circuit1, circuit2);
-        mnode.setSequencer(new Sequencer(mnode, seq0));
+        mnode.setSequencer(new Sequencer(seq0));
         mnode.setDynamicFilters( new DynamicFilterProto[] {bfilter, cfilter});
 
         SessionsAwareKnowledgeBase kbase       = new SessionsAwareKnowledgeBase(buildContext.getRuleBase());

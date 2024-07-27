@@ -3,11 +3,9 @@ package org.drools.core.reteoo.sequencing;
 import org.drools.base.time.JobHandle;
 import org.drools.base.time.Trigger;
 import org.drools.base.time.impl.Timer;
-import org.drools.core.common.ActivationsManager;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.phreak.PropagationEntry;
-import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.sequencing.LogicCircuit.LongBiPredicate;
 import org.drools.core.reteoo.sequencing.Sequence.SequenceMemory;
 import org.drools.core.time.Job;
@@ -18,13 +16,13 @@ public class LogicGate extends SignalProcessor {
 
     private SignalProcessor output;
 
-    private LongBiPredicate predicate;
+    private final LongBiPredicate predicate;
 
-    private int gateIndex;
+    private final int gateIndex;
 
     private LogicGate[] inputGates = EMPTY_INPUT_GATES;
 
-    private int[] filterIndexes;
+    private final int[] filterIndexes;
 
     private int[] signalAdapterIndexes;
 
@@ -43,7 +41,7 @@ public class LogicGate extends SignalProcessor {
         this.signalAdapterIndexes = signalAdapterIndexes;
 
         for (int i = 0; i < (signalAdapterIndexes.length + nbrOfInputGates); i++) {
-            allMatched = allMatched | (1 << i);
+            allMatched = allMatched | (1L << i);
         }
 
         this.gateIndex = gateIndex;
@@ -116,10 +114,10 @@ public class LogicGate extends SignalProcessor {
 
         switch (signalStatus) {
             case MATCHED:
-                currentMatched = currentMatched | (1 << (signalBitIndex - 1)); // ensures position is on, if it wasn't before. If it was on before, it remains on.
+                currentMatched = currentMatched | (1L << (signalBitIndex - 1)); // ensures position is on, if it wasn't before. If it was on before, it remains on.
                 break;
             case UNMATCHED:
-                currentMatched = currentMatched & ~(1 << (signalBitIndex - 1)); // ensures position is off, if it wasn't before. If it was off before, it remains off.
+                currentMatched = currentMatched & ~(1L << (signalBitIndex - 1)); // ensures position is off, if it wasn't before. If it was off before, it remains off.
                 break;
         }
 
@@ -208,8 +206,8 @@ public class LogicGate extends SignalProcessor {
     }
 
     public static class TimeoutTimer implements PropagationTimer {
-        private LogicGate gate;
-        private Timer timer;
+        private final LogicGate gate;
+        private final Timer     timer;
 
         public TimeoutTimer(LogicGate gate, Timer timer) {
             this.gate  = gate;
@@ -238,8 +236,8 @@ public class LogicGate extends SignalProcessor {
     }
 
     public static class DelayFromActivatedTimer implements PropagationTimer  {
-        private LogicGate gate;
-        private Timer timer;
+        private final LogicGate gate;
+        private final Timer     timer;
 
         public DelayFromActivatedTimer(LogicGate gate, Timer timer) {
             this.gate  = gate;
@@ -266,8 +264,8 @@ public class LogicGate extends SignalProcessor {
     }
 
     public static class DelayFromMatchTimer implements PropagationTimer  {
-        private LogicGate gate;
-        private Timer timer;
+        private final LogicGate gate;
+        private final Timer     timer;
 
         public DelayFromMatchTimer(LogicGate gate, Timer timer) {
             this.gate  = gate;
@@ -297,7 +295,7 @@ public class LogicGate extends SignalProcessor {
     public static class LogicGateJob
             implements
             Job {
-        private static LogicGateJob INSTANCE = new LogicGateJob();
+        private static final LogicGateJob INSTANCE = new LogicGateJob();
 
         public static LogicGateJob getINSTANCE() {
             return INSTANCE;
@@ -417,12 +415,6 @@ public class LogicGate extends SignalProcessor {
 
             // Logic is satsified and waiting to transition
             // Logic is not satsified and has run out of time.
-        }
-
-        private void evaluateAndFireRule(PathMemory pmem, ActivationsManager activationsManager) {
-//            RuleExecutor ruleExecutor = pmem.getRuleAgendaItem().getRuleExecutor();
-//            ruleExecutor.evaluateNetworkIfDirty( activationsManager );
-//            ruleExecutor.fire( activationsManager );
         }
     }
 }
