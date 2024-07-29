@@ -38,6 +38,7 @@ import org.drools.base.rule.Pattern;
 import org.drools.base.rule.RuleConditionElement;
 import org.drools.base.rule.accessor.DeclarationScopeResolver;
 
+import static org.drools.base.rule.EvalCondition.logWarnIfImproperEval;
 import static org.drools.compiler.rule.builder.PatternBuilder.buildAnalysis;
 import static org.drools.compiler.rule.builder.PatternBuilder.createImplicitBindings;
 import static org.drools.mvel.java.JavaRuleBuilderHelper.createVariableContext;
@@ -90,6 +91,7 @@ public abstract class AbstractASMEvalBuilder implements RuleConditionBuilder {
         Arrays.sort(declarations, SortDeclarations.instance);
 
         EvalCondition eval = EvalConditionFactory.Factory.get().createEvalCondition(declarations);
+        logWarnIfImproperEval(eval, (String) evalDescr.getContent());
 
         Map<String, Object> vars = createVariableContext( className,
                                                           (String)evalDescr.getContent(),

@@ -40,6 +40,7 @@ import org.drools.mvel.MVELDialectRuntimeData;
 import org.drools.mvel.expr.MVELCompilationUnit;
 import org.drools.mvel.expr.MVELEvalExpression;
 
+import static org.drools.base.rule.EvalCondition.logWarnIfImproperEval;
 import static org.drools.mvel.asm.AsmUtil.copyErrorLocation;
 
 public class MVELEvalBuilder
@@ -99,6 +100,7 @@ public class MVELEvalBuilder
                                                                        false,
                                                                        MVELCompilationUnit.Scope.EXPRESSION );
             final EvalCondition eval = EvalConditionFactory.Factory.get().createEvalCondition( previousDeclarations );
+            logWarnIfImproperEval(eval, (String) evalDescr.getContent());
 
             MVELEvalExpression expr = new MVELEvalExpression( unit,
                                                               dialect.getId() );
