@@ -54,6 +54,14 @@ public class KogitoProcessContextImpl extends AbstractProcessContext implements 
     }
 
     @Override
+    public Object getVariable(String variableId) {
+        if (contextData.containsKey(variableId)) {
+            return contextData.get(variableId);
+        }
+        return super.getVariable(variableId);
+    }
+
+    @Override
     public KogitoProcessInstance getProcessInstance() {
         return (KogitoProcessInstance) super.getProcessInstance();
     }

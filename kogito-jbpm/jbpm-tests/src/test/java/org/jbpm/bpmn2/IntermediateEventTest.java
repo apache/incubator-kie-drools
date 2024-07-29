@@ -64,10 +64,22 @@ import org.jbpm.bpmn2.intermediate.IntermediateThrowEventMessageModel;
 import org.jbpm.bpmn2.intermediate.IntermediateThrowEventMessageProcess;
 import org.jbpm.bpmn2.intermediate.IntermediateThrowEventMessageWithTransformationModel;
 import org.jbpm.bpmn2.intermediate.IntermediateThrowEventMessageWithTransformationProcess;
-import org.jbpm.bpmn2.intermediate.IntermediateThrowEventSignalModel;
-import org.jbpm.bpmn2.intermediate.IntermediateThrowEventSignalProcess;
+import org.jbpm.bpmn2.loop.MultiInstanceLoopBoundaryTimerModel;
+import org.jbpm.bpmn2.loop.MultiInstanceLoopBoundaryTimerProcess;
+import org.jbpm.bpmn2.loop.MultiInstanceLoopCharacteristicsProcessSequentialModel;
+import org.jbpm.bpmn2.loop.MultiInstanceLoopCharacteristicsProcessSequentialProcess;
+import org.jbpm.bpmn2.loop.MultiInstanceLoopCharacteristicsProcessWithOutputAndScriptsModel;
+import org.jbpm.bpmn2.loop.MultiInstanceLoopCharacteristicsProcessWithOutputAndScriptsProcess;
+import org.jbpm.bpmn2.loop.MultiInstanceLoopCharacteristicsTaskModel;
+import org.jbpm.bpmn2.loop.MultiInstanceLoopCharacteristicsTaskProcess;
+import org.jbpm.bpmn2.loop.MultiInstanceLoopCharacteristicsTaskSequentialModel;
+import org.jbpm.bpmn2.loop.MultiInstanceLoopCharacteristicsTaskSequentialProcess;
+import org.jbpm.bpmn2.loop.MultiInstanceLoopCharacteristicsTaskWithOutputCmpCondSequentialModel;
+import org.jbpm.bpmn2.loop.MultiInstanceLoopCharacteristicsTaskWithOutputCmpCondSequentialProcess;
 import org.jbpm.bpmn2.objects.Person;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
+import org.jbpm.bpmn2.start.IntermediateThrowEventSignalModel;
+import org.jbpm.bpmn2.start.IntermediateThrowEventSignalProcess;
 import org.jbpm.bpmn2.subprocess.EventSubprocessConditionalModel;
 import org.jbpm.bpmn2.subprocess.EventSubprocessConditionalProcess;
 import org.jbpm.bpmn2.subprocess.EventSubprocessMessageModel;
@@ -768,7 +780,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
 
         KogitoWorkItem workItem = workItemHandler.getWorkItem();
         assertThat(workItem).isNotNull();
-        ProcessTestHelper.completeWorkItem(instance, "john", Collections.emptyMap());
+        ProcessTestHelper.completeWorkItem(instance, Collections.emptyMap(), "john");
 
         assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
 
@@ -890,13 +902,15 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         KogitoWorkItem workItem = workItemHandler.getWorkItem();
         assertThat(workItem).isNotNull();
 
-        ProcessTestHelper.completeWorkItem(instance, "john", Collections.emptyMap());
+        ProcessTestHelper.completeWorkItem(instance, Collections.emptyMap(), "john");
 
         assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
 
         assertThat(trackerListener.tracked()).anyMatch(ProcessTestHelper.triggered("start"))
-                .anyMatch(ProcessTestHelper.triggered("User Task 1")).anyMatch(ProcessTestHelper.triggered("end"))
-                .anyMatch(ProcessTestHelper.left("Sub Process 1")).anyMatch(ProcessTestHelper.left("start-sub"))
+                .anyMatch(ProcessTestHelper.triggered("User Task 1"))
+                .anyMatch(ProcessTestHelper.triggered("end"))
+                .anyMatch(ProcessTestHelper.left("Sub Process 1"))
+                .anyMatch(ProcessTestHelper.left("start-sub"))
                 .anyMatch(ProcessTestHelper.triggered("Script Task 1"))
                 .anyMatch(ProcessTestHelper.triggered("end-sub"));
 
@@ -1924,26 +1938,155 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
     }
 
     @Test
-    public void testTimerMultipleInstances() throws Exception {
+    public void testMultiInstanceLoopBoundaryTimer() throws Exception {
+        Application app = ProcessTestHelper.newApplication();
         NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("timer", 3);
-        kruntime = createKogitoProcessRuntime("BPMN2-MultiInstanceLoopBoundaryTimer.bpmn2");
-        kruntime.getProcessEventManager().addEventListener(countDownListener);
+        ProcessTestHelper.registerProcessEventListener(app, countDownListener);
         TestWorkItemHandler handler = new TestWorkItemHandler();
+        ProcessTestHelper.registerHandler(app, "Human Task", handler);
 
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task", handler);
-        KogitoProcessInstance processInstance = kruntime.startProcess("MultiInstanceLoopBoundaryTimer");
-        assertProcessInstanceActive(processInstance);
+        org.kie.kogito.process.Process<MultiInstanceLoopBoundaryTimerModel> definition = MultiInstanceLoopBoundaryTimerProcess.newProcess(app);
+        org.kie.kogito.process.ProcessInstance<MultiInstanceLoopBoundaryTimerModel> instance = definition.createInstance(definition.createModel());
+        instance.start();
+
+        assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_ACTIVE);
 
         countDownListener.waitTillCompleted();
 
         List<KogitoWorkItem> workItems = handler.getWorkItems();
         assertThat(workItems).isNotNull().hasSize(3);
 
-        for (KogitoWorkItem wi : workItems) {
-            kruntime.getKogitoWorkItemManager().completeWorkItem(wi.getStringId(), null);
-        }
+        ProcessTestHelper.completeWorkItem(instance, "john", Collections.emptyMap());
+        ProcessTestHelper.completeWorkItem(instance, "mary", Collections.emptyMap());
+        ProcessTestHelper.completeWorkItem(instance, "krisv", Collections.emptyMap());
 
-        assertProcessInstanceFinished(processInstance, kruntime);
+        assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
+    }
+
+    @Test
+    public void testMultiInstanceLoopCharacteristicsProcessSequential() throws Exception {
+        Application app = ProcessTestHelper.newApplication();
+        TestWorkItemHandler handler = new TestWorkItemHandler();
+        ProcessTestHelper.registerHandler(app, "Human Task", handler);
+
+        org.kie.kogito.process.Process<MultiInstanceLoopCharacteristicsProcessSequentialModel> definition = MultiInstanceLoopCharacteristicsProcessSequentialProcess.newProcess(app);
+        MultiInstanceLoopCharacteristicsProcessSequentialModel model = definition.createModel();
+        model.setList(List.of(1, 2, 3));
+        org.kie.kogito.process.ProcessInstance<MultiInstanceLoopCharacteristicsProcessSequentialModel> instance = definition.createInstance(model);
+        instance.start();
+
+        assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_ACTIVE);
+
+        assertThat(handler.getWorkItems()).isNotNull().hasSize(1);
+        ProcessTestHelper.completeWorkItem(instance, "john", Collections.emptyMap());
+
+        assertThat(handler.getWorkItems()).isNotNull().hasSize(1);
+        ProcessTestHelper.completeWorkItem(instance, "john", Collections.emptyMap());
+
+        assertThat(handler.getWorkItems()).isNotNull().hasSize(1);
+        ProcessTestHelper.completeWorkItem(instance, "john", Collections.emptyMap());
+        assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
+    }
+
+    @Test
+    public void testMultiInstanceLoopCharacteristicsProcessWithOutputAndScripts() throws Exception {
+        Application app = ProcessTestHelper.newApplication();
+        TestWorkItemHandler handler = new TestWorkItemHandler();
+        ProcessTestHelper.registerHandler(app, "Human Task", handler);
+
+        org.kie.kogito.process.Process<MultiInstanceLoopCharacteristicsProcessWithOutputAndScriptsModel> definition =
+                MultiInstanceLoopCharacteristicsProcessWithOutputAndScriptsProcess.newProcess(app);
+        MultiInstanceLoopCharacteristicsProcessWithOutputAndScriptsModel model = definition.createModel();
+        model.setList(new ArrayList<>(List.of("1", "2", "3")));
+        model.setScriptList(new ArrayList<String>());
+        org.kie.kogito.process.ProcessInstance<MultiInstanceLoopCharacteristicsProcessWithOutputAndScriptsModel> instance = definition.createInstance(model);
+        instance.start();
+
+        assertThat(instance.variables().getListOut()).containsExactly("1 changed", "2 changed", "3 changed");
+
+        assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
+    }
+
+    @Test
+    public void testMultiInstanceLoopCharacteristicsTask() throws Exception {
+        Application app = ProcessTestHelper.newApplication();
+        TestWorkItemHandler handler = new TestWorkItemHandler();
+        ProcessTestHelper.registerHandler(app, "Human Task", handler);
+
+        org.kie.kogito.process.Process<MultiInstanceLoopCharacteristicsTaskModel> definition = MultiInstanceLoopCharacteristicsTaskProcess.newProcess(app);
+        MultiInstanceLoopCharacteristicsTaskModel model = definition.createModel();
+        model.setList(new ArrayList<>(List.of("1", "2", "3")));
+
+        org.kie.kogito.process.ProcessInstance<MultiInstanceLoopCharacteristicsTaskModel> instance = definition.createInstance(model);
+        instance.start();
+
+        List<KogitoWorkItem> workItems = handler.getWorkItems();
+        assertThat(workItems).isNotNull().hasSize(3);
+        assertThat(workItems.get(0).getParameter("Item")).isEqualTo("1");
+        assertThat(workItems.get(1).getParameter("Item")).isEqualTo("2");
+        assertThat(workItems.get(2).getParameter("Item")).isEqualTo("3");
+        ProcessTestHelper.completeWorkItem(instance, "john", Collections.emptyMap());
+        ProcessTestHelper.completeWorkItem(instance, "john", Collections.emptyMap());
+        ProcessTestHelper.completeWorkItem(instance, "john", Collections.emptyMap());
+
+        assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
+    }
+
+    @Test
+    public void testMultiInstanceLoopCharacteristicsTaskSequential() throws Exception {
+        Application app = ProcessTestHelper.newApplication();
+        TestWorkItemHandler handler = new TestWorkItemHandler();
+        ProcessTestHelper.registerHandler(app, "Human Task", handler);
+
+        org.kie.kogito.process.Process<MultiInstanceLoopCharacteristicsTaskSequentialModel> definition = MultiInstanceLoopCharacteristicsTaskSequentialProcess.newProcess(app);
+        MultiInstanceLoopCharacteristicsTaskSequentialModel model = definition.createModel();
+        model.setList(new ArrayList<>(List.of("1", "2", "3")));
+
+        org.kie.kogito.process.ProcessInstance<MultiInstanceLoopCharacteristicsTaskSequentialModel> instance = definition.createInstance(model);
+        instance.start();
+
+        List<KogitoWorkItem> workItems = null;
+        workItems = handler.getWorkItems();
+        assertThat(workItems).isNotNull().hasSize(1);
+        assertThat(workItems.get(0).getParameter("Item")).isEqualTo("1");
+        ProcessTestHelper.completeWorkItem(instance, "john", Collections.emptyMap());
+
+        workItems = handler.getWorkItems();
+        assertThat(workItems).isNotNull().hasSize(1);
+        assertThat(workItems.get(0).getParameter("Item")).isEqualTo("2");
+        ProcessTestHelper.completeWorkItem(instance, "john", Collections.emptyMap());
+
+        workItems = handler.getWorkItems();
+        assertThat(workItems).isNotNull().hasSize(1);
+        assertThat(workItems.get(0).getParameter("Item")).isEqualTo("3");
+        ProcessTestHelper.completeWorkItem(instance, "john", Collections.emptyMap());
+
+        assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
+    }
+
+    @Test
+    public void testMultiInstanceLoopCharacteristicsTaskWithOutputCmpCondSequential() throws Exception {
+        Application app = ProcessTestHelper.newApplication();
+        TestWorkItemHandler handler = new TestWorkItemHandler();
+        ProcessTestHelper.registerHandler(app, "Human Task", handler);
+
+        org.kie.kogito.process.Process<MultiInstanceLoopCharacteristicsTaskWithOutputCmpCondSequentialModel> definition =
+                MultiInstanceLoopCharacteristicsTaskWithOutputCmpCondSequentialProcess.newProcess(app);
+        MultiInstanceLoopCharacteristicsTaskWithOutputCmpCondSequentialModel model = definition.createModel();
+        model.setList(new ArrayList<>(List.of("1", "2", "3")));
+        model.setListOut(new ArrayList());
+
+        org.kie.kogito.process.ProcessInstance<MultiInstanceLoopCharacteristicsTaskWithOutputCmpCondSequentialModel> instance = definition.createInstance(model);
+        instance.start();
+
+        List<KogitoWorkItem> workItems = null;
+        workItems = handler.getWorkItems();
+        assertThat(workItems).isNotNull().hasSize(1);
+        assertThat(workItems.get(0).getParameter("Item")).isEqualTo("1");
+        ProcessTestHelper.completeWorkItem(instance, "john", Collections.emptyMap());
+
+        assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
+        assertThat(instance.variables().getListOut()).hasSize(1);
     }
 
     @Test

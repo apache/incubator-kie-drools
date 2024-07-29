@@ -21,6 +21,7 @@ package org.jbpm.bpmn2;
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -28,6 +29,8 @@ import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.jbpm.bpmn2.loop.MultiInstanceLoopCharacteristicsTaskModel;
+import org.jbpm.bpmn2.loop.MultiInstanceLoopCharacteristicsTaskProcess;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.InternalProcessRuntime;
@@ -35,6 +38,7 @@ import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.jbpm.process.instance.impl.humantask.InternalHumanTaskWorkItem;
 import org.jbpm.test.util.NodeLeftCountDownProcessEventListener;
+import org.jbpm.test.utils.ProcessTestHelper;
 import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.jbpm.workflow.instance.node.CompositeContextNodeInstance;
@@ -53,6 +57,7 @@ import org.kie.api.runtime.Context;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.internal.command.RegistryContext;
+import org.kie.kogito.Application;
 import org.kie.kogito.internal.process.event.DefaultKogitoProcessEventListener;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
@@ -1241,17 +1246,25 @@ public class FlowTest extends JbpmBpmn2TestCase {
 
     @Test
     public void testMultiInstanceLoopCharacteristicsTask() throws Exception {
-        kruntime = createKogitoProcessRuntime("BPMN2-MultiInstanceLoopCharacteristicsTask.bpmn2");
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task",
-                new SystemOutWorkItemHandler());
-        Map<String, Object> params = new HashMap<>();
-        List<String> myList = new ArrayList<>();
-        myList.add("First Item");
-        myList.add("Second Item");
-        params.put("list", myList);
-        KogitoProcessInstance processInstance = kruntime.startProcess(
-                "MultiInstanceLoopCharacteristicsTask", params);
-        assertProcessInstanceCompleted(processInstance);
+        Application app = ProcessTestHelper.newApplication();
+        TestWorkItemHandler handler = new TestWorkItemHandler();
+        ProcessTestHelper.registerHandler(app, "Human Task", handler);
+
+        org.kie.kogito.process.Process<MultiInstanceLoopCharacteristicsTaskModel> definition = MultiInstanceLoopCharacteristicsTaskProcess.newProcess(app);
+        MultiInstanceLoopCharacteristicsTaskModel model = definition.createModel();
+        model.setList(new ArrayList<>(List.of("First Item", "Second Item")));
+
+        org.kie.kogito.process.ProcessInstance<MultiInstanceLoopCharacteristicsTaskModel> instance = definition.createInstance(model);
+        instance.start();
+
+        List<KogitoWorkItem> workItems = handler.getWorkItems();
+        assertThat(workItems).isNotNull().hasSize(2);
+        assertThat(workItems.get(0).getParameter("Item")).isEqualTo("First Item");
+        assertThat(workItems.get(1).getParameter("Item")).isEqualTo("Second Item");
+        ProcessTestHelper.completeWorkItem(instance, "john", Collections.emptyMap());
+        ProcessTestHelper.completeWorkItem(instance, "john", Collections.emptyMap());
+
+        assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
 
     }
 

@@ -755,7 +755,13 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
             }
         }
         // this is just an expression
-        forEachNode.setCompletionConditionExpression(multiInstanceSpecification.getCompletionCondition());
+        ReturnValueEvaluator evaluator = null;
+        String completionConditionLang = multiInstanceSpecification.getCompletionConditionLang();
+        if ((completionConditionLang == null || completionConditionLang.isBlank() || completionConditionLang.toLowerCase().contains("mvel"))
+                && multiInstanceSpecification.getCompletionCondition() != null) {
+            evaluator = new MVELInterpretedReturnValueEvaluator(multiInstanceSpecification.getCompletionCondition());
+        }
+        forEachNode.setCompletionConditionExpression(evaluator);
         forEachNode.setMultiInstanceSpecification(multiInstanceSpecification);
 
         // This variable is used for adding items computed by each subcontext.
@@ -825,6 +831,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
             String completion = completeCondition.getTextContent();
             if (completion != null && !completion.isEmpty()) {
                 multiInstanceSpecification.setCompletionCondition(completion);
+                multiInstanceSpecification.setCompletionConditionLang(completeCondition.getAttribute("language"));
             }
         });
         return multiInstanceSpecification;

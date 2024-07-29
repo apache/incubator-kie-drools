@@ -21,6 +21,7 @@ package org.jbpm.ruleflow.core.factory;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.datatype.DataType;
 import org.jbpm.process.instance.impl.Action;
+import org.jbpm.process.instance.impl.ReturnValueEvaluator;
 import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.workflow.core.NodeContainer;
@@ -38,6 +39,7 @@ public class ForEachNodeFactory<T extends RuleFlowNodeContainerFactory<T, ?>> ex
     public static final String METHOD_OUTPUT_VARIABLE = "outputVariable";
     public static final String METHOD_OUTPUT_TEMP = "tempVariable";
     public static final String METHOD_SEQUENTIAL = "sequential";
+    public static final String METHOD_COMPLETE_CONDITION = "completionCondition";
 
     public ForEachNodeFactory(T nodeContainerFactory, NodeContainer nodeContainer, WorkflowElementIdentifier id) {
         super(nodeContainerFactory, nodeContainer, new ForEachNode(id), id);
@@ -72,6 +74,11 @@ public class ForEachNodeFactory<T extends RuleFlowNodeContainerFactory<T, ?>> ex
     public ForEachNodeFactory<T> outputCollectionExpression(String collectionExpression) {
         getForEachNode().setOutputCollectionExpression(collectionExpression);
         getForEachNode().getMultiInstanceSpecification().setLoopDataOutputRef(DataDefinition.toExpression(collectionExpression));
+        return this;
+    }
+
+    public ForEachNodeFactory<T> completionCondition(ReturnValueEvaluator completionConditionExpression) {
+        getForEachNode().setCompletionConditionExpression(completionConditionExpression);
         return this;
     }
 

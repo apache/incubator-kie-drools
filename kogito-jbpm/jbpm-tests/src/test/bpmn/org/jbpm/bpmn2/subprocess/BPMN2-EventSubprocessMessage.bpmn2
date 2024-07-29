@@ -31,7 +31,11 @@
     </bpmn2:endEvent>
     <bpmn2:userTask id="UserTask_1" name="User Task 1">
       <bpmn2:incoming>SequenceFlow_2</bpmn2:incoming>
-      <bpmn2:outgoing>SequenceFlow_1</bpmn2:outgoing>
+      <bpmn2:outgoing>SequenceFlow_1</bpmn2:outgoing>      <bpmn2:potentialOwner id="_1aVcYLe_EDyttMyrW6hRzg">
+      <bpmn2:resourceAssignmentExpression id="_1aVcYbe_EDyttMyrW6hRzg">
+          <bpmn2:formalExpression>john</bpmn2:formalExpression>
+        </bpmn2:resourceAssignmentExpression>
+      </bpmn2:potentialOwner>
     </bpmn2:userTask>
     <bpmn2:sequenceFlow id="SequenceFlow_2" tns:priority="1" name="" sourceRef="StartEvent_1" targetRef="UserTask_1"/>
     <bpmn2:subProcess id="SubProcess_1" name="Sub Process 1" triggeredByEvent="true" >

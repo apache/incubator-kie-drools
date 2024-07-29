@@ -31,6 +31,8 @@ public class MultiInstanceSpecification implements Serializable {
     private String completionCondition;
     private boolean isSequential = false;
 
+    private String completionConditionLang;
+
     public boolean hasMultiInstanceInput() {
         return loopDataInputRef != null;
     }
@@ -65,6 +67,14 @@ public class MultiInstanceSpecification implements Serializable {
 
     public DataDefinition getLoopDataInputRef() {
         return loopDataInputRef;
+    }
+
+    public void setCompletionConditionLang(String completionConditionLang) {
+        this.completionConditionLang = completionConditionLang;
+    }
+
+    public String getCompletionConditionLang() {
+        return completionConditionLang;
     }
 
     public void setCompletionCondition(String completionCondition) {

@@ -35,7 +35,7 @@
   <itemDefinition id="_2_multiInstanceItemType" structureRef="String" />
   <itemDefinition id="_2_multiInstanceItemOutType" structureRef="String" />
 
-  <process processType="Private" isExecutable="true" id="MultiInstanceLoopCharacteristicsTask" name="MultiInstanceLoopCharacteristics SubProcess" >
+  <process processType="Private" isExecutable="true" id="MultiInstanceLoopCharacteristicsTaskWithOutputCmpCondSequential" tns:packageName="org.jbpm.bpmn2.loop" name="MultiInstanceLoopCharacteristics SubProcess" >
 
     <!-- process variables -->
     <property id="list" itemSubjectRef="_listItem"/>
@@ -53,6 +53,7 @@
         <dataInput id="_2_input" name="MultiInstanceInput" />
         <dataInput id="_2_item" name="Item" />
         <dataOutput id="_2_listOutOutput" name="listOut"/>
+        <dataOutput id="_2_itemOut" name="itemOut"/>
         <inputSet>
           <dataInputRefs>_2_item</dataInputRefs>
         </inputSet>
@@ -68,6 +69,14 @@
         <sourceRef>list</sourceRef>
         <targetRef>_2_input</targetRef>
       </dataInputAssociation>
+      <dataOutputAssociation>
+        <sourceRef>_2_listOutOutput</sourceRef>
+        <targetRef>listOut</targetRef>
+      </dataOutputAssociation>
+      <dataOutputAssociation>
+        <sourceRef>_2_itemOut</sourceRef>
+        <targetRef>itemOut</targetRef>
+      </dataOutputAssociation>
       <potentialOwner>
         <resourceAssignmentExpression>
           <formalExpression>john</formalExpression>

@@ -31,8 +31,10 @@ import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.ContextInstance;
 import org.jbpm.process.instance.ContextableInstance;
+import org.jbpm.process.instance.KogitoProcessContextImpl;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.process.instance.impl.Action;
+import org.jbpm.process.instance.impl.ReturnValueEvaluator;
 import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.util.ContextFactory;
 import org.jbpm.workflow.core.Node;
@@ -239,22 +241,18 @@ public class ForEachNodeInstance extends CompositeContextNodeInstance {
 
             Map<String, Object> tempVariables = new HashMap<>();
             if (getForEachNode().getOutputVariableName() != null) {
+                Object outputVariable = from.getVariable(getForEachNode().getOutputVariableName());
 
                 Collection<Object> outputCollection = (Collection<Object>) this.getVariable(TEMP_OUTPUT_VAR);
                 if (outputCollection == null) {
                     outputCollection = new ArrayList<>();
+                }
 
-                }
-                Object outputVariable = from.getVariable(getForEachNode().getOutputVariableName());
-                if (outputVariable != null) {
-                    outputCollection.add(outputVariable);
-                }
+                outputCollection.add(outputVariable);
 
                 setVariable(TEMP_OUTPUT_VAR, outputCollection);
-                if (getForEachNode().getOutputVariableName() != null) {
-                    //  add temp collection under actual output name for completion condition evaluation
-                    tempVariables.put(getForEachNode().getOutputVariableName(), outputVariable);
-                }
+                tempVariables.put(getForEachNode().getOutputVariableName(), outputVariable);
+
                 String outputCollectionName = getForEachNode().getOutputCollectionExpression();
                 if (outputCollectionName != null) {
                     tempVariables.put(outputCollectionName, outputCollection);
@@ -262,7 +260,7 @@ public class ForEachNodeInstance extends CompositeContextNodeInstance {
 
             }
 
-            boolean isCompletionConditionMet = evaluateCompletionCondition(getForEachNode().getCompletionConditionExpression(), tempVariables);
+            boolean isCompletionConditionMet = getForEachNode().hasCompletionCondition() && evaluateCompletionCondition(getForEachNode().getCompletionConditionExpression(), tempVariables);
             if (isSequential() && !isCompletionConditionMet && !areNodeInstancesCompleted()) {
                 getFirstCompositeNodeInstance()
                         .ifPresent(nodeInstance -> {
@@ -319,21 +317,13 @@ public class ForEachNodeInstance extends CompositeContextNodeInstance {
             return getNodeInstanceContainer().getNodeInstances().size() == 1;
         }
 
-        private boolean evaluateCompletionCondition(String expression, Map<String, Object> tempVariables) {
-            if (expression == null || expression.isEmpty()) {
-                return false;
-            } else {
-                try {
-                    Object result = MVELProcessHelper.evaluator().eval(expression,
-                            new ForEachNodeInstanceResolverFactory(this, tempVariables));
-                    if (!(result instanceof Boolean)) {
-                        throw new IllegalArgumentException("Completion condition expression must return boolean values: " +
-                                result + " for expression " + expression);
-                    }
-                    return ((Boolean) result).booleanValue();
-                } catch (Exception t) {
-                    throw new IllegalArgumentException("Could not evaluate completion condition  " + expression, t);
-                }
+        private boolean evaluateCompletionCondition(ReturnValueEvaluator completeConditionEvaluator, Map<String, Object> tempVariables) {
+            try {
+                KogitoProcessContextImpl context = (KogitoProcessContextImpl) ContextFactory.fromNode(this);
+                context.setContextData(tempVariables);
+                return (Boolean) completeConditionEvaluator.evaluate(context);
+            } catch (Exception t) {
+                throw new IllegalArgumentException("Could not evaluate completion condition  " + completeConditionEvaluator, t);
             }
         }
 

@@ -81,7 +81,7 @@ public class WorkflowElementIdentifierFactory implements WorkflowElementIdentifi
 
     @Override
     public String toSanitizeString() {
-        return toExternalFormat().replaceAll("-", "_");
+        return toExternalFormat().replaceAll("-", "_").replaceAll("\\.", "_");
     }
 
 }

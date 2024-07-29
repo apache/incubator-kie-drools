@@ -27,6 +27,7 @@ import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.core.datatype.DataType;
 import org.jbpm.process.instance.impl.Action;
+import org.jbpm.process.instance.impl.ReturnValueEvaluator;
 import org.jbpm.ruleflow.core.WorkflowElementIdentifierFactory;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.ConnectionImpl;
@@ -51,7 +52,7 @@ public class ForEachNode extends CompositeContextNode {
     private String outputVariableName;
     private String collectionExpression;
     private String outputCollectionExpression;
-    private String completionConditionExpression;
+    private ReturnValueEvaluator completionConditionExpression;
 
     private Action finishAction;
     private boolean waitForCompletion = true;
@@ -345,12 +346,12 @@ public class ForEachNode extends CompositeContextNode {
         return ctx;
     }
 
-    public String getCompletionConditionExpression() {
+    public ReturnValueEvaluator getCompletionConditionExpression() {
         return completionConditionExpression;
     }
 
     public void setCompletionConditionExpression(
-            String completionConditionExpression) {
+            ReturnValueEvaluator completionConditionExpression) {
         this.completionConditionExpression = completionConditionExpression;
     }
 
@@ -360,5 +361,9 @@ public class ForEachNode extends CompositeContextNode {
 
     public void setSequential(boolean sequential) {
         this.getMultiInstanceSpecification().setSequential(sequential);
+    }
+
+    public boolean hasCompletionCondition() {
+        return completionConditionExpression != null;
     }
 }

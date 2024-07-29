@@ -34,7 +34,8 @@
 
   <itemDefinition id="_2_multiInstanceItemType" structureRef="String" />
 
-  <process processType="Private" isExecutable="true" id="MultiInstanceLoopCharacteristicsTask" name="MultiInstanceLoopCharacteristics SubProcess" >
+  <process processType="Private" isExecutable="true" id="MultiInstanceLoopCharacteristicsTask" 
+    tns:packageName="org.jbpm.bpmn2.loop" name="MultiInstanceLoopCharacteristics SubProcess" >
 
     <!-- process variables -->
     <property id="list" itemSubjectRef="_listItem"/>

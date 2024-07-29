@@ -23,7 +23,7 @@
   <itemDefinition id="_listItemOut" structureRef="java.util.List"/>
   <itemDefinition id="_2_multiInstanceItemType" structureRef="String" />
   <itemDefinition id="_2_multiInstanceItemOutType" structureRef="String" />
-  <process id="MultiInstanceLoopCharacteristicsProcessWithOutputAndScripts" tns:packageName="org.jbpm.bpmn2.flow" name="Multiple instances sub-process" isExecutable="true" processType="Private">
+  <process id="MultiInstanceLoopCharacteristicsProcessWithOutputAndScripts" tns:packageName="org.jbpm.bpmn2.loop" name="Multiple instances sub-process" isExecutable="true" processType="Private">
     <property id="list" itemSubjectRef="_listItem"/>
     <property id="listOut" itemSubjectRef="_listItemOut"/>
     <property id="scriptList" itemSubjectRef="_listItem"/>
@@ -77,7 +77,7 @@
         <script>
           System.out.println( &quot;start item:&quot; + item ); item = item + &quot; changed&quot;;
           System.out.println(&quot;update item to:&quot; + item);
-          context.setVariable(&quot;itemOut&quot;, item);
+          kcontext.setVariable(&quot;itemOut&quot;, item);
 </script>
       </scriptTask>
       <sequenceFlow id="_2-2-4-_2-2-3" sourceRef="_2-2-4" targetRef="_2-2-3"/>
