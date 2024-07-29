@@ -32,7 +32,7 @@ public class FaultNodeVisitorBuilder implements NodeVisitorBuilder {
 
     @Override
     public AbstractNodeVisitor<? extends Node> visitor(NodeVisitorBuilderService nodeVisitorService, ClassLoader classLoader) {
-        return new FaultNodeVisitor();
+        return new FaultNodeVisitor(classLoader);
     }
 
 }

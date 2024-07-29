@@ -32,7 +32,7 @@ public class BoundaryEventNodeVisitorBuilder implements NodeVisitorBuilder {
 
     @Override
     public AbstractNodeVisitor<? extends Node> visitor(NodeVisitorBuilderService nodeVisitorService, ClassLoader classLoader) {
-        return new BoundaryEventNodeVisitor();
+        return new BoundaryEventNodeVisitor(classLoader);
     }
 
 }

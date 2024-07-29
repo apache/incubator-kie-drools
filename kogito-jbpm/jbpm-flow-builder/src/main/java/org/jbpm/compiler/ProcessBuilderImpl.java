@@ -252,7 +252,7 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
                         context);
             }
 
-            if ("true".equals(System.getProperty("jbpm.enable.multi.con"))) {
+            if (Boolean.parseBoolean((String) ((NodeImpl) node).getProcess().getMetaData().get("jbpm.enable.multi.con"))) {
                 builder = ProcessNodeBuilderRegistry.INSTANCE.getNodeBuilder(NodeImpl.class);
                 if (builder != null) {
                     builder.build(process, processDescr, context, node);

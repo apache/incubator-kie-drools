@@ -21,7 +21,6 @@ package org.jbpm.compiler.canonical;
 import java.util.HashSet;
 import java.util.stream.Stream;
 
-import org.jbpm.compiler.canonical.node.NodeVisitorBuilderService;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.ruleflow.core.factory.CompositeContextNodeFactory;
 import org.jbpm.workflow.core.node.CompositeContextNode;
@@ -33,8 +32,8 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 
 public class CompositeContextNodeVisitor<T extends CompositeContextNode> extends AbstractCompositeNodeVisitor<T> {
 
-    public CompositeContextNodeVisitor(NodeVisitorBuilderService nodeVisitorService) {
-        super(nodeVisitorService);
+    public CompositeContextNodeVisitor(ClassLoader classLoader) {
+        super(classLoader);
     }
 
     @Override

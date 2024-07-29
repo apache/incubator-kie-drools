@@ -32,7 +32,7 @@ public class MilestoneNodeVisitorBuilder implements NodeVisitorBuilder {
 
     @Override
     public AbstractNodeVisitor<? extends Node> visitor(NodeVisitorBuilderService nodeVisitorService, ClassLoader classLoader) {
-        return new MilestoneNodeVisitor();
+        return new MilestoneNodeVisitor(classLoader);
     }
 
 }

@@ -29,17 +29,19 @@
              xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
              xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
              xmlns:tns="http://www.jboss.org/drools">
-
-  <process processType="Private" isExecutable="true" id="Minimal" name="Minimal Process" tns:packageName="com.sample" >
+  <itemDefinition id="_xItem" structureRef="org.jbpm.bpmn2.objects.Person" />
+  <process processType="Private" isExecutable="true" id="ConditionalStart" name="Minimal Process" tns:packageName="org.jbpm.bpmn2.event" >
 
     <extensionElements>
       <tns:import name="org.jbpm.bpmn2.objects.Person" />
     </extensionElements>
 
+    <property id="person" itemSubjectRef="_xItem"/>
+
     <!-- nodes -->
     <startEvent id="_1" name="StartProcess" >
       <conditionalEventDefinition>
-        <condition xsi:type="tFormalExpression" language="http://www.jboss.org/drools/rule">Person(name == "john")</condition>
+        <condition xsi:type="tFormalExpression" language="http://www.java.com/java">"john".equals(person.getName())</condition>
       </conditionalEventDefinition>
     </startEvent>
     <scriptTask id="_2" name="Hello" >

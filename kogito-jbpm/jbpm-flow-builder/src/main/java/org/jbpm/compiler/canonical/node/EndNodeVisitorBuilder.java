@@ -32,7 +32,7 @@ public class EndNodeVisitorBuilder implements NodeVisitorBuilder {
 
     @Override
     public AbstractNodeVisitor<? extends Node> visitor(NodeVisitorBuilderService nodeVisitorService, ClassLoader classLoader) {
-        return new EndNodeVisitor();
+        return new EndNodeVisitor(classLoader);
     }
 
 }

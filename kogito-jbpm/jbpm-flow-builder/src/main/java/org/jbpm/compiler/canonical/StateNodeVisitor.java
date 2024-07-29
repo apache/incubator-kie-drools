@@ -18,29 +18,13 @@
  */
 package org.jbpm.compiler.canonical;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map;
-import java.util.stream.Stream;
-
-import org.jbpm.compiler.canonical.node.NodeVisitorBuilderService;
-import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.ruleflow.core.factory.StateNodeFactory;
-import org.jbpm.workflow.core.Constraint;
-import org.jbpm.workflow.core.impl.ConnectionRef;
 import org.jbpm.workflow.core.node.StateNode;
-
-import com.github.javaparser.ast.expr.IntegerLiteralExpr;
-import com.github.javaparser.ast.expr.MethodCallExpr;
-import com.github.javaparser.ast.expr.StringLiteralExpr;
-import com.github.javaparser.utils.StringEscapeUtils;
-
-import static org.jbpm.ruleflow.core.factory.StateNodeFactory.METHOD_CONSTRAINT;
 
 public class StateNodeVisitor extends CompositeContextNodeVisitor<StateNode> {
 
-    public StateNodeVisitor(NodeVisitorBuilderService nodeVisitorService) {
-        super(nodeVisitorService);
+    public StateNodeVisitor(ClassLoader classLoader) {
+        super(classLoader);
     }
 
     @Override
@@ -58,27 +42,4 @@ public class StateNodeVisitor extends CompositeContextNodeVisitor<StateNode> {
         return "State";
     }
 
-    @Override
-    public Stream<MethodCallExpr> visitCustomFields(StateNode node, VariableScope variableScope) {
-        if (node.getConstraints() == null) {
-            return Stream.empty();
-        }
-
-        Collection<MethodCallExpr> result = new ArrayList<>();
-        for (Map.Entry<ConnectionRef, Collection<Constraint>> entry : node.getConstraints().entrySet()) {
-            ConnectionRef ref = entry.getKey();
-            for (Constraint constraint : entry.getValue()) {
-                if (constraint != null) {
-                    result.add(getFactoryMethod(getNodeId(node), METHOD_CONSTRAINT,
-                            getOrNullExpr(ref.getConnectionId()),
-                            getWorkflowElementConstructor(ref.getNodeId()),
-                            new StringLiteralExpr(ref.getToType()),
-                            new StringLiteralExpr(constraint.getDialect()),
-                            new StringLiteralExpr(StringEscapeUtils.escapeJava(constraint.getConstraint())),
-                            new IntegerLiteralExpr(constraint.getPriority())));
-                }
-            }
-        }
-        return result.stream();
-    }
 }

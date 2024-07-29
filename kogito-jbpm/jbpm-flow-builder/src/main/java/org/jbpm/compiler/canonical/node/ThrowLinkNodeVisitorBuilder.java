@@ -32,7 +32,7 @@ public class ThrowLinkNodeVisitorBuilder implements NodeVisitorBuilder {
 
     @Override
     public AbstractNodeVisitor<? extends Node> visitor(NodeVisitorBuilderService nodeVisitorService, ClassLoader classLoader) {
-        return new ThrowLinkNodeVisitor();
+        return new ThrowLinkNodeVisitor(classLoader);
     }
 
 }

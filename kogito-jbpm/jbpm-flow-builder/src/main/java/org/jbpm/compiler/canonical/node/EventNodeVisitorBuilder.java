@@ -32,7 +32,7 @@ public class EventNodeVisitorBuilder implements NodeVisitorBuilder {
 
     @Override
     public AbstractNodeVisitor<? extends Node> visitor(NodeVisitorBuilderService nodeVisitorService, ClassLoader classLoader) {
-        return new EventNodeVisitor();
+        return new EventNodeVisitor(classLoader);
     }
 
 }

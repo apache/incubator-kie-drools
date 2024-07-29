@@ -71,10 +71,8 @@ public class WorkItemNodeVisitor<T extends WorkItemNode> extends AbstractNodeVis
         }
     }
 
-    private final ClassLoader contextClassLoader;
-
     public WorkItemNodeVisitor(ClassLoader contextClassLoader) {
-        this.contextClassLoader = contextClassLoader;
+        super(contextClassLoader);
     }
 
     @Override
@@ -92,7 +90,7 @@ public class WorkItemNodeVisitor<T extends WorkItemNode> extends AbstractNodeVis
             final TaskDescriptor taskDescriptor = new TaskDescriptorBuilder(workName)
                     .withProcessMetadata(metadata)
                     .withWorkItemNode(node)
-                    .withClassloader(contextClassLoader)
+                    .withClassloader(getClassLoader())
                     .build();
             workName = taskDescriptor.getName();
             metadata.getGeneratedHandlers().put(workName, taskDescriptor.generateHandlerClassForService());

@@ -61,6 +61,10 @@ import static org.jbpm.ruleflow.core.factory.SubProcessNodeFactory.METHOD_WAIT_F
 
 public class LambdaSubProcessNodeVisitor extends AbstractNodeVisitor<SubProcessNode> {
 
+    public LambdaSubProcessNodeVisitor(ClassLoader classLoader) {
+        super(classLoader);
+    }
+
     @Override
     protected String getNodeKey() {
         return "subProcessNode";

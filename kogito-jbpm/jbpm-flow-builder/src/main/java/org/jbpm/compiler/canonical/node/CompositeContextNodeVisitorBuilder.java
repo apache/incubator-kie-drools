@@ -32,7 +32,7 @@ public class CompositeContextNodeVisitorBuilder implements NodeVisitorBuilder {
 
     @Override
     public AbstractNodeVisitor<? extends Node> visitor(NodeVisitorBuilderService nodeVisitorService, ClassLoader classLoader) {
-        return new CompositeContextNodeVisitor(nodeVisitorService);
+        return new CompositeContextNodeVisitor<>(classLoader);
     }
 
 }

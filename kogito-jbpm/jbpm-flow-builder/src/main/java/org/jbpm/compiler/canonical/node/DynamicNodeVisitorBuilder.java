@@ -32,7 +32,7 @@ public class DynamicNodeVisitorBuilder implements NodeVisitorBuilder {
 
     @Override
     public AbstractNodeVisitor<? extends Node> visitor(NodeVisitorBuilderService nodeVisitorService, ClassLoader classLoader) {
-        return new DynamicNodeVisitor(nodeVisitorService, classLoader);
+        return new DynamicNodeVisitor(classLoader);
     }
 
 }

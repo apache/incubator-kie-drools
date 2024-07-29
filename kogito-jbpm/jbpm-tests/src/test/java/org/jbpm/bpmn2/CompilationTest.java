@@ -46,7 +46,7 @@ public class CompilationTest extends JbpmBpmn2TestCase {
         TestJavaProcessDialect javaProcessDialect = new TestJavaProcessDialect();
         ProcessDialectRegistry.setDialect("java", javaProcessDialect);
 
-        String filename = "BPMN2-GatewaySplit-SequenceConditions.bpmn2";
+        String filename = "org/jbpm/bpmn2/flow/BPMN2-GatewaySplitSequenceConditions.bpmn2";
         kruntime = createKogitoProcessRuntime(filename);
 
         assertThat(javaProcessDialect.getActionDescrs()).as("No " + ActionDescr.class.getSimpleName() + " instances caught for testing!").isNotEmpty();

@@ -18,35 +18,19 @@
  */
 package org.jbpm.compiler.canonical;
 
-import java.util.Collection;
-import java.util.Map.Entry;
-import java.util.Objects;
-import java.util.function.Predicate;
-
-import org.jbpm.compiler.canonical.builtin.ReturnValueEvaluatorBuilderService;
 import org.jbpm.process.core.context.variable.VariableScope;
-import org.jbpm.process.instance.impl.ReturnValueConstraintEvaluator;
-import org.jbpm.process.instance.impl.ReturnValueEvaluator;
 import org.jbpm.ruleflow.core.factory.SplitFactory;
-import org.jbpm.workflow.core.Constraint;
-import org.jbpm.workflow.core.impl.ConnectionRef;
 import org.jbpm.workflow.core.node.Split;
 
-import com.github.javaparser.ast.expr.BooleanLiteralExpr;
-import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.IntegerLiteralExpr;
-import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 
-import static org.jbpm.ruleflow.core.factory.SplitFactory.METHOD_CONSTRAINT;
 import static org.jbpm.ruleflow.core.factory.SplitFactory.METHOD_TYPE;
 
 public class SplitNodeVisitor extends AbstractNodeVisitor<Split> {
 
-    ReturnValueEvaluatorBuilderService returnValueEvaluatorBuilderService;
-
-    public SplitNodeVisitor(ReturnValueEvaluatorBuilderService returnValueEvaluatorBuilderService) {
-        this.returnValueEvaluatorBuilderService = returnValueEvaluatorBuilderService;
+    public SplitNodeVisitor(ClassLoader classLoader) {
+        super(classLoader);
     }
 
     @Override
@@ -61,40 +45,7 @@ public class SplitNodeVisitor extends AbstractNodeVisitor<Split> {
                 .addStatement(getFactoryMethod(getNodeId(node), METHOD_TYPE, new IntegerLiteralExpr(node.getType())));
 
         visitMetaData(node.getMetaData(), body, getNodeId(node));
-
-        if (node.getType() == Split.TYPE_OR || node.getType() == Split.TYPE_XOR) {
-            for (Entry<ConnectionRef, Collection<Constraint>> entry : node.getConstraints().entrySet()) {
-                if (entry.getValue() == null || entry.getValue().isEmpty()) {
-                    continue;
-                }
-
-                for (Constraint constraint : entry.getValue().stream().filter(Predicate.not(Objects::isNull)).toList()) {
-                    Expression returnValueEvaluator;
-                    if (constraint instanceof ReturnValueConstraintEvaluator) {
-                        ReturnValueEvaluator evaluator = ((ReturnValueConstraintEvaluator) constraint).getReturnValueEvaluator();
-                        returnValueEvaluator = returnValueEvaluatorBuilderService.build(node,
-                                evaluator.dialect(),
-                                evaluator.expression(),
-                                evaluator.type(),
-                                evaluator.root());
-
-                    } else {
-                        returnValueEvaluator = returnValueEvaluatorBuilderService.build(node,
-                                constraint.getDialect(),
-                                constraint.getConstraint());
-                    }
-                    body.addStatement(getFactoryMethod(getNodeId(node), METHOD_CONSTRAINT,
-                            getWorkflowElementConstructor(entry.getKey().getNodeId()),
-                            new StringLiteralExpr(getOrDefault(entry.getKey().getConnectionId(), "")),
-                            new StringLiteralExpr(entry.getKey().getToType()),
-                            new StringLiteralExpr(constraint.getDialect()),
-                            returnValueEvaluator,
-                            new IntegerLiteralExpr(constraint.getPriority()),
-                            new BooleanLiteralExpr(constraint.isDefault())));
-
-                }
-            }
-        }
+        addConstraints(node, getReturnValueEvaluatorBuilderService(), body);
         body.addStatement(getDoneMethod(getNodeId(node)));
     }
 

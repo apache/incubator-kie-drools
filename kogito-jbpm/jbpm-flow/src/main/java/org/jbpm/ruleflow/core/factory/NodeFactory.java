@@ -19,13 +19,17 @@
 package org.jbpm.ruleflow.core.factory;
 
 import org.jbpm.process.core.context.variable.Mappable;
+import org.jbpm.process.instance.impl.ReturnValueConstraintEvaluator;
+import org.jbpm.process.instance.impl.ReturnValueEvaluator;
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
+import org.jbpm.workflow.core.impl.ConnectionRef;
+import org.jbpm.workflow.core.impl.NodeImpl;
 import org.kie.api.definition.process.WorkflowElementIdentifier;
 
 public abstract class NodeFactory<T extends NodeFactory<T, P>, P extends RuleFlowNodeContainerFactory<P, ?>> implements MappableNodeFactory<T> {
-
+    public static final String METHOD_CONSTRAINT = "constraint";
     public static final String METHOD_NAME = "name";
     public static final String METHOD_METADATA = "metaData";
     public static final String METHOD_DONE = "done";
@@ -71,4 +75,20 @@ public abstract class NodeFactory<T extends NodeFactory<T, P>, P extends RuleFlo
         return (Mappable) node;
     }
 
+    public T constraint(WorkflowElementIdentifier toNodeId, String name, String type, String dialect, ReturnValueEvaluator evaluator, int priority) {
+        return constraint(toNodeId, name, type, dialect, evaluator, priority, false);
+    }
+
+    public T constraint(WorkflowElementIdentifier toNodeId, String name, String type, String dialect, ReturnValueEvaluator evaluator, int priority, boolean isDefault) {
+        ReturnValueConstraintEvaluator constraintImpl = new ReturnValueConstraintEvaluator();
+        constraintImpl.setName(name);
+        constraintImpl.setType(type);
+        constraintImpl.setDialect(dialect);
+        constraintImpl.setPriority(priority);
+        constraintImpl.setEvaluator(evaluator);
+        constraintImpl.setConstraint("expression already given as evaluator");
+        constraintImpl.setDefault(isDefault);
+        ((NodeImpl) node).addConstraint(new ConnectionRef(name, toNodeId, Node.CONNECTION_DEFAULT_TYPE), constraintImpl);
+        return (T) this;
+    }
 }

@@ -297,7 +297,7 @@ public abstract class NodeImpl implements Node, ContextResolver, Mappable {
         if (list.size() == 1) {
             return list.get(0);
         }
-        if ("true".equals(System.getProperty("jbpm.enable.multi.con"))) {
+        if (Boolean.parseBoolean((String) getProcess().getMetaData().get("jbpm.enable.multi.con"))) {
             return list.get(0);
         } else {
             throw new IllegalArgumentException(
@@ -317,7 +317,7 @@ public abstract class NodeImpl implements Node, ContextResolver, Mappable {
         if (list.size() == 1) {
             return list.get(0);
         }
-        if ("true".equals(System.getProperty("jbpm.enable.multi.con"))) {
+        if (Boolean.parseBoolean((String) getProcess().getMetaData().get("jbpm.enable.multi.con"))) {
             return list.get(0);
         } else {
             throw new IllegalArgumentException(

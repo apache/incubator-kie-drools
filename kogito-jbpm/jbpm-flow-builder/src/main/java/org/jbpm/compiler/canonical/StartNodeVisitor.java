@@ -48,8 +48,9 @@ public class StartNodeVisitor extends AbstractNodeVisitor<StartNode> {
 
     private ReturnValueEvaluatorBuilderService returnValueEvaluatorBuilderService;
 
-    public StartNodeVisitor(ReturnValueEvaluatorBuilderService returnValueEvaluatorBuilderService) {
-        this.returnValueEvaluatorBuilderService = returnValueEvaluatorBuilderService;
+    public StartNodeVisitor(ClassLoader classLoader) {
+        super(classLoader);
+        this.returnValueEvaluatorBuilderService = ReturnValueEvaluatorBuilderService.instance(classLoader);
     }
 
     @Override

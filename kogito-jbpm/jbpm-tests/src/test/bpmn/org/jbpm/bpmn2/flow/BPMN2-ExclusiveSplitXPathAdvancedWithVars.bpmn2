@@ -32,7 +32,7 @@
   <itemDefinition id="_xItem" structureRef="Object" />
   <itemDefinition id="_yItem" structureRef="String" />
 
-  <process processType="Private" isExecutable="true" id="com.sample.test" name="Test" >
+  <process processType="Private" isExecutable="true" id="ExclusiveSplitXPathAdvancedWithVars" name="Test" tns:packageName="org.jbpm.bpmn2.flow">
 
     <!-- process variables -->
     <property id="x" itemSubjectRef="_xItem"/>
@@ -99,10 +99,10 @@
     <!-- connections -->
     <sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2" />
     <sequenceFlow id="_2-_3" sourceRef="_2" targetRef="_3" >
-      <conditionExpression xsi:type="tFormalExpression" language="http://www.w3.org/1999/XPath" >bpmn2:getVariable("x")//@value = 'a'</conditionExpression>
+      <conditionExpression xsi:type="tFormalExpression" language="http://www.w3.org/1999/XPath" >$x//@value = 'a'</conditionExpression>
     </sequenceFlow>
     <sequenceFlow id="_2-_4" sourceRef="_2" targetRef="_4" >
-      <conditionExpression xsi:type="tFormalExpression" language="http://www.w3.org/1999/XPath" >not(bpmn2:getVariable("x")//@value = 'a')</conditionExpression>
+      <conditionExpression xsi:type="tFormalExpression" language="http://www.w3.org/1999/XPath" >not($x//@value = 'a')</conditionExpression>
     </sequenceFlow>
     <sequenceFlow id="_3-_5" sourceRef="_3" targetRef="_5" />
     <sequenceFlow id="_4-_5" sourceRef="_4" targetRef="_5" />

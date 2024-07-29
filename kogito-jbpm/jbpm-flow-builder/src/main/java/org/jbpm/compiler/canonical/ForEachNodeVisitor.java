@@ -22,8 +22,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.jbpm.compiler.canonical.builtin.ReturnValueEvaluatorBuilderService;
-import org.jbpm.compiler.canonical.node.NodeVisitorBuilderService;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.ruleflow.core.factory.ForEachNodeFactory;
 import org.jbpm.workflow.core.Node;
@@ -46,11 +44,8 @@ import static org.jbpm.ruleflow.core.factory.ForEachNodeFactory.METHOD_SEQUENTIA
 
 public class ForEachNodeVisitor extends AbstractCompositeNodeVisitor<ForEachNode> {
 
-    private ReturnValueEvaluatorBuilderService returnValueEvaluatorBuilderService;
-
-    public ForEachNodeVisitor(NodeVisitorBuilderService nodeVisitorService, ReturnValueEvaluatorBuilderService returnValueEvaluatorBuilderService) {
-        super(nodeVisitorService);
-        this.returnValueEvaluatorBuilderService = returnValueEvaluatorBuilderService;
+    public ForEachNodeVisitor(ClassLoader classLoader) {
+        super(classLoader);
     }
 
     @Override
@@ -123,7 +118,7 @@ public class ForEachNodeVisitor extends AbstractCompositeNodeVisitor<ForEachNode
             String completionConditionDialect = node.getCompletionConditionExpression().dialect();
             String completionConditionExpression = node.getCompletionConditionExpression().expression();
             body.addStatement(getFactoryMethod(getNodeId(node), ForEachNodeFactory.METHOD_COMPLETE_CONDITION,
-                    returnValueEvaluatorBuilderService.build(node, completionConditionDialect, completionConditionExpression)));
+                    getReturnValueEvaluatorBuilderService().build(node, completionConditionDialect, completionConditionExpression)));
         }
         visitConnections(getNodeId(node), filterNodes.toArray(new Node[filterNodes.size()]), body);
 

@@ -143,7 +143,7 @@ public class Split extends NodeImpl implements Constrainable {
                             + "] only accepts default incoming connection type!");
         }
 
-        if (!getIncomingConnections(Node.CONNECTION_DEFAULT_TYPE).isEmpty() && !"true".equals(System.getProperty("jbpm.enable.multi.con"))) {
+        if (!getIncomingConnections(Node.CONNECTION_DEFAULT_TYPE).isEmpty() && !Boolean.parseBoolean((String) getProcess().getMetaData().get("jbpm.enable.multi.con"))) {
             throw new IllegalArgumentException(
                     "This type of node [" + connection.getTo().getUniqueId() + ", " + connection.getTo().getName()
                             + "] cannot have more than one incoming connection!");

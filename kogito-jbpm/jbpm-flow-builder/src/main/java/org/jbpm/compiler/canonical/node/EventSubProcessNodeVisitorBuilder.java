@@ -32,7 +32,7 @@ public class EventSubProcessNodeVisitorBuilder implements NodeVisitorBuilder {
 
     @Override
     public AbstractNodeVisitor<? extends Node> visitor(NodeVisitorBuilderService nodeVisitorService, ClassLoader classLoader) {
-        return new EventSubProcessNodeVisitor(nodeVisitorService);
+        return new EventSubProcessNodeVisitor(classLoader);
     }
 
 }

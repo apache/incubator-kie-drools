@@ -26,6 +26,10 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 
 public class ThrowLinkNodeVisitor extends AbstractNodeVisitor<ThrowLinkNode> {
 
+    public ThrowLinkNodeVisitor(ClassLoader classLoader) {
+        super(classLoader);
+    }
+
     @Override
     protected String getNodeKey() {
         return "throwLinkNode";

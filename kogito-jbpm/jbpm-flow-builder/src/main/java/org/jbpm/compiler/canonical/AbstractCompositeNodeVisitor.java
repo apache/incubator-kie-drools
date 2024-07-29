@@ -29,8 +29,9 @@ public abstract class AbstractCompositeNodeVisitor<T extends CompositeContextNod
 
     protected NodeVisitorBuilderService nodevisitorService;
 
-    public AbstractCompositeNodeVisitor(NodeVisitorBuilderService nodevisitorService) {
-        this.nodevisitorService = nodevisitorService;
+    public AbstractCompositeNodeVisitor(ClassLoader classLoader) {
+        super(classLoader);
+        this.nodevisitorService = new NodeVisitorBuilderService(classLoader);
     }
 
     protected <U extends Node> void visitNodes(String factoryField, U[] nodes, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {

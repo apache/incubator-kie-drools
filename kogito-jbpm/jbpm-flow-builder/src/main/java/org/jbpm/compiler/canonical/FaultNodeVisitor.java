@@ -32,6 +32,10 @@ import static org.jbpm.ruleflow.core.factory.FaultNodeFactory.METHOD_TERMINATE_P
 
 public class FaultNodeVisitor extends AbstractNodeVisitor<FaultNode> {
 
+    public FaultNodeVisitor(ClassLoader classLoader) {
+        super(classLoader);
+    }
+
     @Override
     protected String getNodeKey() {
         return "faultNode";

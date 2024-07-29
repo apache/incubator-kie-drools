@@ -23,7 +23,6 @@ import java.util.Collection;
 import java.util.stream.Stream;
 
 import org.jbpm.compiler.canonical.builtin.ReturnValueEvaluatorBuilderService;
-import org.jbpm.compiler.canonical.node.NodeVisitorBuilderService;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.ruleflow.core.factory.DynamicNodeFactory;
 import org.jbpm.workflow.core.node.DynamicNode;
@@ -38,8 +37,8 @@ public class DynamicNodeVisitor extends CompositeContextNodeVisitor<DynamicNode>
 
     private ReturnValueEvaluatorBuilderService builder;
 
-    public DynamicNodeVisitor(NodeVisitorBuilderService nodeVisitorService, ClassLoader classLoader) {
-        super(nodeVisitorService);
+    public DynamicNodeVisitor(ClassLoader classLoader) {
+        super(classLoader);
         this.builder = ReturnValueEvaluatorBuilderService.instance(classLoader);
     }
 

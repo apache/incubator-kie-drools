@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.stream.Stream;
 
-import org.jbpm.compiler.canonical.node.NodeVisitorBuilderService;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.ruleflow.core.factory.EventSubProcessNodeFactory;
 import org.jbpm.workflow.core.node.EventSubProcessNode;
@@ -36,8 +35,8 @@ import static org.jbpm.ruleflow.core.factory.EventSubProcessNodeFactory.METHOD_K
 
 public class EventSubProcessNodeVisitor extends CompositeContextNodeVisitor<EventSubProcessNode> {
 
-    public EventSubProcessNodeVisitor(NodeVisitorBuilderService nodeVisitorService) {
-        super(nodeVisitorService);
+    public EventSubProcessNodeVisitor(ClassLoader classLoader) {
+        super(classLoader);
     }
 
     @Override

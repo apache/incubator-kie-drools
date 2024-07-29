@@ -32,7 +32,7 @@ public class CatchLinkNodeVisitorBuilder implements NodeVisitorBuilder {
 
     @Override
     public AbstractNodeVisitor<? extends Node> visitor(NodeVisitorBuilderService nodeVisitorService, ClassLoader classLoader) {
-        return new CatchLinkNodeVisitor();
+        return new CatchLinkNodeVisitor(classLoader);
     }
 
 }

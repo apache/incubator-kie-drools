@@ -39,6 +39,10 @@ import static org.jbpm.ruleflow.core.factory.EventNodeFactory.METHOD_VARIABLE_NA
 
 public class BoundaryEventNodeVisitor extends AbstractNodeVisitor<BoundaryEventNode> {
 
+    public BoundaryEventNodeVisitor(ClassLoader classLoader) {
+        super(classLoader);
+    }
+
     @Override
     protected String getNodeKey() {
         return "boundaryEventNode";

@@ -59,7 +59,7 @@ public class MilestoneNode extends StateBasedNode implements Constrainable {
         if (!Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
             throwValidationException(connection, "only accepts default incoming connection type!");
         }
-        if (getFrom() != null && !Boolean.parseBoolean(System.getProperty("jbpm.enable.multi.con"))) {
+        if (getFrom() != null && !Boolean.parseBoolean((String) getProcess().getMetaData().get("jbpm.enable.multi.con"))) {
             throwValidationException(connection, "cannot have more than one incoming connection!");
         }
     }
@@ -70,7 +70,7 @@ public class MilestoneNode extends StateBasedNode implements Constrainable {
         if (!Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
             throwValidationException(connection, "only accepts default outgoing connection type!");
         }
-        if (getTo() != null && !Boolean.parseBoolean(System.getProperty("jbpm.enable.multi.con"))) {
+        if (getTo() != null && !Boolean.parseBoolean((String) getProcess().getMetaData().get("jbpm.enable.multi.con"))) {
             throwValidationException(connection, "cannot have more than one outgoing connection!");
         }
     }

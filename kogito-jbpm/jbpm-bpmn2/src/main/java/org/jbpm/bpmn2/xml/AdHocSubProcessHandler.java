@@ -23,7 +23,9 @@ import java.util.List;
 
 import org.jbpm.bpmn2.core.SequenceFlow;
 import org.jbpm.compiler.xml.Parser;
+import org.jbpm.compiler.xml.ProcessBuildData;
 import org.jbpm.process.core.context.variable.VariableScope;
+import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.node.DynamicNode;
 import org.w3c.dom.Element;
@@ -87,8 +89,9 @@ public class AdHocSubProcessHandler extends CompositeContextNodeHandler {
             }
             xmlNode = xmlNode.getNextSibling();
         }
+        RuleFlowProcess process = (RuleFlowProcess) ((ProcessBuildData) parser.getData()).getMetaData(ProcessHandler.CURRENT_PROCESS);
         List<SequenceFlow> connections = (List<SequenceFlow>) dynamicNode.getMetaData(ProcessHandler.CONNECTIONS);
-        ProcessHandler.linkConnections(dynamicNode, connections);
+        ProcessHandler.linkConnections(process, dynamicNode, connections);
         ProcessHandler.linkBoundaryEvents(dynamicNode);
 
         handleScript(dynamicNode, element, "onEntry");

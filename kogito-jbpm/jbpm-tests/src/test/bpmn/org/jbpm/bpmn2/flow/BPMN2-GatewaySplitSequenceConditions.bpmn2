@@ -31,7 +31,7 @@
              xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
              xmlns:tns="http://www.jboss.org/drools">
 
-  <process processType="Private" isExecutable="true" id="GatewayTest" name="GatewayTest" >
+  <process processType="Private" isExecutable="true" id="GatewaySplitSequenceConditions" name="GatewayTest" tns:packageName="org.jbpm.bpmn2.flow" >
 
     <!-- nodes -->
     <startEvent id="_1" name="StartProcess" />

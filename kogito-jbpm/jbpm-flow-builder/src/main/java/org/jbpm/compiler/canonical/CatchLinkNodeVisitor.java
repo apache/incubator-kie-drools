@@ -26,6 +26,10 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 
 public class CatchLinkNodeVisitor extends AbstractNodeVisitor<CatchLinkNode> {
 
+    public CatchLinkNodeVisitor(ClassLoader classLoader) {
+        super(classLoader);
+    }
+
     @Override
     protected String getNodeKey() {
         return "catchLinkNode";

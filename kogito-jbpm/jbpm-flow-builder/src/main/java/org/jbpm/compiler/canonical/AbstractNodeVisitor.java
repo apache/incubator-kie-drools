@@ -19,7 +19,9 @@
 package org.jbpm.compiler.canonical;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -33,13 +35,17 @@ import org.jbpm.process.core.context.variable.Mappable;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.core.datatype.DataTypeResolver;
+import org.jbpm.process.instance.impl.ReturnValueConstraintEvaluator;
+import org.jbpm.process.instance.impl.ReturnValueEvaluator;
 import org.jbpm.process.instance.impl.actions.HandleEscalationAction;
 import org.jbpm.process.instance.impl.actions.ProduceEventAction;
 import org.jbpm.process.instance.impl.actions.SignalProcessInstanceAction;
 import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.ruleflow.core.factory.MappableNodeFactory;
 import org.jbpm.util.JbpmClassLoaderUtil;
+import org.jbpm.workflow.core.Constraint;
 import org.jbpm.workflow.core.impl.ConnectionImpl;
+import org.jbpm.workflow.core.impl.ConnectionRef;
 import org.jbpm.workflow.core.impl.DataAssociation;
 import org.jbpm.workflow.core.impl.DataAssociation.DataAssociationType;
 import org.jbpm.workflow.core.impl.DataDefinition;
@@ -57,10 +63,12 @@ import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.AssignExpr;
+import com.github.javaparser.ast.expr.BooleanLiteralExpr;
 import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.ClassExpr;
 import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
@@ -82,6 +90,7 @@ import static java.util.Collections.singletonList;
 import static org.drools.util.StringUtils.ucFirst;
 import static org.jbpm.ruleflow.core.Metadata.CUSTOM_AUTO_START;
 import static org.jbpm.ruleflow.core.Metadata.HIDDEN;
+import static org.jbpm.ruleflow.core.factory.NodeFactory.METHOD_CONSTRAINT;
 import static org.jbpm.ruleflow.core.factory.NodeFactory.METHOD_DONE;
 import static org.jbpm.ruleflow.core.factory.NodeFactory.METHOD_NAME;
 import static org.kie.kogito.internal.utils.ConversionUtils.sanitizeString;
@@ -89,6 +98,22 @@ import static org.kie.kogito.internal.utils.ConversionUtils.sanitizeString;
 public abstract class AbstractNodeVisitor<T extends Node> extends AbstractVisitor {
 
     protected abstract String getNodeKey();
+
+    private ReturnValueEvaluatorBuilderService returnValueEvaluatorBuilderService;
+    private ClassLoader classLoader;
+
+    public AbstractNodeVisitor(ClassLoader classLoader) {
+        this.classLoader = classLoader;
+        this.returnValueEvaluatorBuilderService = ReturnValueEvaluatorBuilderService.instance(classLoader);
+    }
+
+    public ClassLoader getClassLoader() {
+        return classLoader;
+    }
+
+    public ReturnValueEvaluatorBuilderService getReturnValueEvaluatorBuilderService() {
+        return returnValueEvaluatorBuilderService;
+    }
 
     public void visitNode(T node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
         visitNode(FACTORY_FIELD_NAME, node, body, variableScope, metadata);
@@ -100,6 +125,8 @@ public abstract class AbstractNodeVisitor<T extends Node> extends AbstractVisito
             addScript(extendedNodeImpl, body, ON_ACTION_SCRIPT_METHOD, ExtendedNodeImpl.EVENT_NODE_ENTER);
             addScript(extendedNodeImpl, body, ON_ACTION_SCRIPT_METHOD, ExtendedNodeImpl.EVENT_NODE_EXIT);
         }
+
+        addConstraints(node, returnValueEvaluatorBuilderService, body);
     }
 
     private void addScript(ExtendedNodeImpl extendedNodeImpl, BlockStmt body, String factoryMethod, String actionType) {
@@ -120,6 +147,41 @@ public abstract class AbstractNodeVisitor<T extends Node> extends AbstractVisito
                     new StringLiteralExpr(sanitizeString(script.getConsequence())),
                     buildDroolsConsequenceAction(extendedNodeImpl, script.getDialect(), script.getConsequence())));
             ;
+        }
+    }
+
+    public void addConstraints(T currentNode, ReturnValueEvaluatorBuilderService returnValueEvaluatorBuilderService, BlockStmt body) {
+        NodeImpl node = (NodeImpl) currentNode;
+        for (Map.Entry<ConnectionRef, Collection<Constraint>> entry : node.getConstraints().entrySet()) {
+            if (entry.getValue() == null || entry.getValue().isEmpty()) {
+                continue;
+            }
+
+            for (Constraint constraint : entry.getValue().stream().filter(Predicate.not(Objects::isNull)).toList()) {
+                Expression returnValueEvaluator;
+                if (constraint instanceof ReturnValueConstraintEvaluator returnValueConstraintEvaluator) {
+                    ReturnValueEvaluator evaluator = returnValueConstraintEvaluator.getReturnValueEvaluator();
+                    returnValueEvaluator = returnValueEvaluatorBuilderService.build(node,
+                            evaluator.dialect(),
+                            evaluator.expression(),
+                            evaluator.type(),
+                            evaluator.root());
+
+                } else {
+                    returnValueEvaluator = returnValueEvaluatorBuilderService.build(node,
+                            constraint.getDialect(),
+                            constraint.getConstraint());
+                }
+                body.addStatement(getFactoryMethod(getNodeId(currentNode), METHOD_CONSTRAINT,
+                        getWorkflowElementConstructor(entry.getKey().getNodeId()),
+                        new StringLiteralExpr(getOrDefault(entry.getKey().getConnectionId(), "")),
+                        new StringLiteralExpr(entry.getKey().getToType()),
+                        new StringLiteralExpr(constraint.getDialect()),
+                        returnValueEvaluator,
+                        new IntegerLiteralExpr(constraint.getPriority()),
+                        new BooleanLiteralExpr(constraint.isDefault())));
+
+            }
         }
     }
 

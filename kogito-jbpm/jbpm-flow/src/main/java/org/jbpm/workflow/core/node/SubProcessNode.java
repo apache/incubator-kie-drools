@@ -77,7 +77,7 @@ public class SubProcessNode extends StateBasedNode implements ContextContainer {
                     "This type of node [" + connection.getTo().getUniqueId() + ", " + connection.getTo().getName()
                             + "] only accepts default incoming connection type!");
         }
-        if (getFrom() != null && !"true".equals(System.getProperty("jbpm.enable.multi.con"))) {
+        if (getFrom() != null && !Boolean.parseBoolean((String) getProcess().getMetaData().get("jbpm.enable.multi.con"))) {
             throw new IllegalArgumentException(
                     "This type of node [" + connection.getTo().getUniqueId() + ", " + connection.getTo().getName()
                             + "] cannot have more than one incoming connection!");
@@ -92,7 +92,7 @@ public class SubProcessNode extends StateBasedNode implements ContextContainer {
                     "This type of node [" + connection.getFrom().getUniqueId() + ", " + connection.getFrom().getName()
                             + "] only accepts default outgoing connection type!");
         }
-        if (getTo() != null && !"true".equals(System.getProperty("jbpm.enable.multi.con"))) {
+        if (getTo() != null && !Boolean.parseBoolean((String) getProcess().getMetaData().get("jbpm.enable.multi.con"))) {
             throw new IllegalArgumentException(
                     "This type of node [" + connection.getFrom().getUniqueId() + ", " + connection.getFrom().getName()
                             + "] cannot have more than one outgoing connection!");

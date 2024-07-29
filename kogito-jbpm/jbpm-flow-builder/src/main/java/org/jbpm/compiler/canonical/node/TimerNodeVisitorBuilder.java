@@ -32,7 +32,7 @@ public class TimerNodeVisitorBuilder implements NodeVisitorBuilder {
 
     @Override
     public AbstractNodeVisitor<? extends Node> visitor(NodeVisitorBuilderService nodeVisitorService, ClassLoader classLoader) {
-        return new TimerNodeVisitor();
+        return new TimerNodeVisitor(classLoader);
     }
 
 }

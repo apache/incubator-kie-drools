@@ -37,6 +37,10 @@ import static org.jbpm.ruleflow.core.factory.EventNodeFactory.METHOD_VARIABLE_NA
 
 public class EventNodeVisitor extends AbstractNodeVisitor<EventNode> {
 
+    public EventNodeVisitor(ClassLoader classLoader) {
+        super(classLoader);
+    }
+
     @Override
     protected String getNodeKey() {
         return "eventNode";

@@ -64,11 +64,10 @@ public class RuleSetNodeVisitor extends AbstractNodeVisitor<RuleSetNode> {
 
     public static final Logger logger = LoggerFactory.getLogger(ProcessToExecModelGenerator.class);
 
-    private final ClassLoader contextClassLoader;
     private final AssignableChecker assignableChecker;
 
     public RuleSetNodeVisitor(ClassLoader contextClassLoader) {
-        this.contextClassLoader = contextClassLoader;
+        super(contextClassLoader);
         this.assignableChecker = AssignableChecker.create(contextClassLoader);
     }
 
@@ -144,7 +143,7 @@ public class RuleSetNodeVisitor extends AbstractNodeVisitor<RuleSetNode> {
 
     private MethodCallExpr handleRuleUnit(VariableScope variableScope, ProcessMetaData metadata, RuleSetNode ruleSetNode, String nodeName, RuleType ruleType) {
         String unitName = ruleType.getName();
-        ProcessContextMetaModel processContext = new ProcessContextMetaModel(variableScope, contextClassLoader);
+        ProcessContextMetaModel processContext = new ProcessContextMetaModel(variableScope, getClassLoader());
         RuleUnitDescription description;
 
         try {
@@ -170,7 +169,7 @@ public class RuleSetNodeVisitor extends AbstractNodeVisitor<RuleSetNode> {
     }
 
     private GeneratedRuleUnitDescription generateRuleUnitDescription(String unitName, ProcessContextMetaModel processContext) {
-        GeneratedRuleUnitDescription d = new GeneratedRuleUnitDescription(unitName, contextClassLoader);
+        GeneratedRuleUnitDescription d = new GeneratedRuleUnitDescription(unitName, getClassLoader());
         for (Variable variable : processContext.getVariables()) {
             d.putDatasourceVar(
                     variable.getName(),
@@ -214,7 +213,7 @@ public class RuleSetNodeVisitor extends AbstractNodeVisitor<RuleSetNode> {
     private Class<?> loadUnitClass(String unitName, String packageName) throws ClassNotFoundException {
         ClassNotFoundException ex;
         try {
-            return contextClassLoader.loadClass(unitName);
+            return getClassLoader().loadClass(unitName);
         } catch (ClassNotFoundException e) {
             ex = e;
         }
@@ -223,7 +222,7 @@ public class RuleSetNodeVisitor extends AbstractNodeVisitor<RuleSetNode> {
         }
         // maybe the name is not qualified. Let's try with tacking the packageName at the front
         try {
-            return contextClassLoader.loadClass(packageName + "." + unitName);
+            return getClassLoader().loadClass(packageName + "." + unitName);
         } catch (ClassNotFoundException e) {
             // throw the original error
             throw ex;

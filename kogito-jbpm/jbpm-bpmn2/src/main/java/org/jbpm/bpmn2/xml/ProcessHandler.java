@@ -208,7 +208,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
         linkIntermediateLinks(process, throwLinks);
 
         List<SequenceFlow> connections = (List<SequenceFlow>) process.getMetaData(CONNECTIONS);
-        linkConnections(process, connections);
+        linkConnections(process, process, connections);
         linkBoundaryEvents(process);
 
         // This must be done *after* linkConnections(process, connections)
@@ -384,7 +384,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
         return RuleFlowProcess.class;
     }
 
-    public static void linkConnections(NodeContainer nodeContainer, List<SequenceFlow> connections) {
+    public static void linkConnections(RuleFlowProcess process, NodeContainer nodeContainer, List<SequenceFlow> connections) {
         if (connections != null) {
             for (SequenceFlow connection : connections) {
                 String sourceRef = connection.getSourceRef();
@@ -412,16 +412,14 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
                 result.setMetaData("bendpoints", connection.getBendpoints());
                 result.setMetaData(Metadata.UNIQUE_ID, connection.getId());
 
-                if ("true".equals(System.getProperty("jbpm.enable.multi.con"))) {
-                    NodeImpl nodeImpl = (NodeImpl) source;
+                if (source instanceof NodeImpl nodeImpl && Boolean.parseBoolean((String) process.getMetaData().get("jbpm.enable.multi.con"))) {
                     Constraint constraint = buildConstraint(connection, nodeImpl);
                     if (constraint != null) {
                         nodeImpl.addConstraint(new ConnectionRef(connection.getId(), target.getId(), org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE),
                                 constraint);
                     }
 
-                } else if (source instanceof Split) {
-                    Split split = (Split) source;
+                } else if (source instanceof Split split) {
                     Constraint constraint = buildConstraint(connection, split);
                     split.addConstraint(
                             new ConnectionRef(connection.getId(), target.getId(), org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE),

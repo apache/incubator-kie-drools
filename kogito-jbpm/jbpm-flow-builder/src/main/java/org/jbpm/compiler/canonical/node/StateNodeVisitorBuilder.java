@@ -32,7 +32,7 @@ public class StateNodeVisitorBuilder implements NodeVisitorBuilder {
 
     @Override
     public AbstractNodeVisitor<? extends Node> visitor(NodeVisitorBuilderService nodeVisitorService, ClassLoader classLoader) {
-        return new StateNodeVisitor(nodeVisitorService);
+        return new StateNodeVisitor(classLoader);
     }
 
 }

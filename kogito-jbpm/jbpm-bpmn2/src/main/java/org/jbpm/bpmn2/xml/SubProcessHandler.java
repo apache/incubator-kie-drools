@@ -25,7 +25,9 @@ import org.jbpm.bpmn2.core.Definitions;
 import org.jbpm.bpmn2.core.IntermediateLink;
 import org.jbpm.bpmn2.core.SequenceFlow;
 import org.jbpm.compiler.xml.Parser;
+import org.jbpm.compiler.xml.ProcessBuildData;
 import org.jbpm.process.core.context.variable.VariableScope;
+import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.node.CompositeContextNode;
@@ -74,6 +76,7 @@ public class SubProcessHandler extends AbstractNodeHandler {
         compositeNode.setIoSpecification(readIOEspecification(parser, element));
         compositeNode.setMultiInstanceSpecification(readMultiInstanceSpecification(parser, element, compositeNode.getIoSpecification()));
 
+        NodeContainer nodeContainer = (NodeContainer) parser.getParent();
         Node outcome = compositeNode;
         if (compositeNode.getMultiInstanceSpecification().hasMultiInstanceInput()) {
             ForEachNode forEachNode = (ForEachNode) decorateMultiInstanceSpecificationSubProcess(compositeNode, compositeNode.getMultiInstanceSpecification());
@@ -81,8 +84,9 @@ public class SubProcessHandler extends AbstractNodeHandler {
             handleScript(forEachNode, element, "onEntry");
             handleScript(forEachNode, element, "onExit");
 
+            RuleFlowProcess process = (RuleFlowProcess) ((ProcessBuildData) parser.getData()).getMetaData(ProcessHandler.CURRENT_PROCESS);
             List<SequenceFlow> connections = (List<SequenceFlow>) forEachNode.getMetaData(ProcessHandler.CONNECTIONS);
-            ProcessHandler.linkConnections(forEachNode, connections);
+            ProcessHandler.linkConnections(process, forEachNode, connections);
             ProcessHandler.linkBoundaryEvents(forEachNode);
 
             // This must be done *after* linkConnections(process, connections)
@@ -91,22 +95,23 @@ public class SubProcessHandler extends AbstractNodeHandler {
             ProcessHandler.linkAssociations((Definitions) forEachNode.getMetaData("Definitions"), forEachNode, associations);
             applyAsync(node, Boolean.parseBoolean((String) compositeNode.getMetaData().get("customAsync")));
             outcome = forEachNode;
+            nodeContainer.addNode(outcome);
         } else {
-            handleCompositeContextNode(compositeNode);
+            nodeContainer.addNode(outcome);
+            RuleFlowProcess process = (RuleFlowProcess) ((ProcessBuildData) parser.getData()).getMetaData(ProcessHandler.CURRENT_PROCESS);
+            handleCompositeContextNode(process, compositeNode);
         }
-        NodeContainer nodeContainer = (NodeContainer) parser.getParent();
-        nodeContainer.addNode(outcome);
 
         return outcome;
     }
 
-    protected void handleCompositeContextNode(CompositeContextNode compositeNode) throws SAXException {
+    protected void handleCompositeContextNode(RuleFlowProcess process, CompositeContextNode compositeNode) throws SAXException {
         List<SequenceFlow> connections = (List<SequenceFlow>) compositeNode.getMetaData(ProcessHandler.CONNECTIONS);
 
         List<IntermediateLink> throwLinks = (List<IntermediateLink>) compositeNode.getMetaData(ProcessHandler.LINKS);
         ProcessHandler.linkIntermediateLinks(compositeNode, throwLinks);
 
-        ProcessHandler.linkConnections(compositeNode, connections);
+        ProcessHandler.linkConnections(process, compositeNode, connections);
         ProcessHandler.linkBoundaryEvents(compositeNode);
 
         // This must be done *after* linkConnections(process, connections)

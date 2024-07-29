@@ -29,6 +29,10 @@ import static org.jbpm.ruleflow.core.factory.JoinFactory.METHOD_TYPE;
 
 public class JoinNodeVisitor extends AbstractNodeVisitor<Join> {
 
+    public JoinNodeVisitor(ClassLoader classLoader) {
+        super(classLoader);
+    }
+
     @Override
     protected String getNodeKey() {
         return "joinNode";

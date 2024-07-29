@@ -49,6 +49,10 @@ import static org.jbpm.ruleflow.core.factory.EndNodeFactory.METHOD_TERMINATE;
 
 public class EndNodeVisitor extends AbstractNodeVisitor<EndNode> {
 
+    public EndNodeVisitor(ClassLoader classLoader) {
+        super(classLoader);
+    }
+
     @Override
     protected String getNodeKey() {
         return "endNode";

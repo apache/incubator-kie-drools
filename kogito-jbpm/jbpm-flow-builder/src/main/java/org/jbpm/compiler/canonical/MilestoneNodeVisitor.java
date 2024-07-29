@@ -29,6 +29,10 @@ import static org.jbpm.ruleflow.core.factory.MilestoneNodeFactory.METHOD_CONDITI
 
 public class MilestoneNodeVisitor extends AbstractNodeVisitor<MilestoneNode> {
 
+    public MilestoneNodeVisitor(ClassLoader classLoader) {
+        super(classLoader);
+    }
+
     @Override
     protected String getNodeKey() {
         return "milestoneNode";

@@ -60,6 +60,8 @@ public class RuleFlowProcess extends WorkflowProcessImpl {
         ExceptionScope exceptionScope = new ExceptionScope();
         addContext(exceptionScope);
         setDefaultContext(exceptionScope);
+        // backward compatibility.
+        setMetaData("jbpm.enable.multi.con", System.getProperty("jbpm.enable.multi.con"));
     }
 
     public VariableScope getVariableScope() {

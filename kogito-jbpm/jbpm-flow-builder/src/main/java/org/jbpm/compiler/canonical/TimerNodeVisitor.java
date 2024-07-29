@@ -34,6 +34,10 @@ import static org.jbpm.ruleflow.core.factory.TimerNodeFactory.METHOD_TYPE;
 
 public class TimerNodeVisitor extends AbstractNodeVisitor<TimerNode> {
 
+    public TimerNodeVisitor(ClassLoader classLoader) {
+        super(classLoader);
+    }
+
     @Override
     protected String getNodeKey() {
         return "timerNode";

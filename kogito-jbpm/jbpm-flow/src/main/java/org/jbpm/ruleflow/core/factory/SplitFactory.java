@@ -18,19 +18,14 @@
  */
 package org.jbpm.ruleflow.core.factory;
 
-import org.jbpm.process.instance.impl.ReturnValueConstraintEvaluator;
-import org.jbpm.process.instance.impl.ReturnValueEvaluator;
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
-import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
-import org.jbpm.workflow.core.impl.ConnectionRef;
 import org.jbpm.workflow.core.node.Split;
 import org.kie.api.definition.process.WorkflowElementIdentifier;
 
 public class SplitFactory<T extends RuleFlowNodeContainerFactory<T, ?>> extends NodeFactory<SplitFactory<T>, T> {
 
     public static final String METHOD_TYPE = "type";
-    public static final String METHOD_CONSTRAINT = "constraint";
 
     public SplitFactory(T nodeContainerFactory, NodeContainer nodeContainer, WorkflowElementIdentifier id) {
         super(nodeContainerFactory, nodeContainer, new Split(), id);
@@ -59,23 +54,5 @@ public class SplitFactory<T extends RuleFlowNodeContainerFactory<T, ?>> extends 
 
     public ConstraintFactory<SplitFactory<T>> constraintBuilder(WorkflowElementIdentifier toNodeId, String name, String type, String dialect, String constraint) {
         return new ConstraintFactory<>(this, toNodeId, name, type, dialect, constraint);
-    }
-
-    public SplitFactory<T> constraint(WorkflowElementIdentifier toNodeId, String name, String type, String dialect, ReturnValueEvaluator evaluator, int priority) {
-        return constraint(toNodeId, name, type, dialect, evaluator, priority, false);
-    }
-
-    public SplitFactory<T> constraint(WorkflowElementIdentifier toNodeId, String name, String type, String dialect, ReturnValueEvaluator evaluator, int priority, boolean isDefault) {
-        ReturnValueConstraintEvaluator constraintImpl = new ReturnValueConstraintEvaluator();
-        constraintImpl.setName(name);
-        constraintImpl.setType(type);
-        constraintImpl.setDialect(dialect);
-        constraintImpl.setPriority(priority);
-        constraintImpl.setEvaluator(evaluator);
-        constraintImpl.setConstraint("expression already given as evaluator");
-        constraintImpl.setDefault(isDefault);
-        getSplit().addConstraint(
-                new ConnectionRef(name, toNodeId, Node.CONNECTION_DEFAULT_TYPE), constraintImpl);
-        return this;
     }
 }

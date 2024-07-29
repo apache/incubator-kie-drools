@@ -20,7 +20,6 @@ package org.jbpm.compiler.canonical.node;
 
 import org.jbpm.compiler.canonical.AbstractNodeVisitor;
 import org.jbpm.compiler.canonical.ForEachNodeVisitor;
-import org.jbpm.compiler.canonical.builtin.ReturnValueEvaluatorBuilderService;
 import org.jbpm.workflow.core.node.ForEachNode;
 import org.kie.api.definition.process.Node;
 
@@ -33,7 +32,7 @@ public class ForEachNodeVisitorBuilder implements NodeVisitorBuilder {
 
     @Override
     public AbstractNodeVisitor<? extends Node> visitor(NodeVisitorBuilderService nodeVisitorService, ClassLoader classLoader) {
-        return new ForEachNodeVisitor(nodeVisitorService, ReturnValueEvaluatorBuilderService.instance(classLoader));
+        return new ForEachNodeVisitor(classLoader);
     }
 
 }

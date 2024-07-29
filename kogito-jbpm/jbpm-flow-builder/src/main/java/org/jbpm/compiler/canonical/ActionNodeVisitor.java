@@ -55,6 +55,10 @@ public class ActionNodeVisitor extends AbstractNodeVisitor<ActionNode> {
 
     private static final String INTERMEDIATE_COMPENSATION_TYPE = "IntermediateThrowEvent-None";
 
+    public ActionNodeVisitor(ClassLoader classLoader) {
+        super(classLoader);
+    }
+
     @Override
     protected String getNodeKey() {
         return "actionNode";
