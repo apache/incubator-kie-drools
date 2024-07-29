@@ -602,6 +602,9 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
         if (getWorkflowProcess().getMetaData().containsKey(COMPENSATION)) {
             addEventListener("Compensation", new CompensationEventListener(this), true);
         }
+        if (getWorkflowProcess().getMetaData().containsKey(COMPENSATION)) {
+
+        }
     }
 
     private void unregisterExternalEventNodeListeners() {

@@ -28,6 +28,7 @@ import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.ContextInstanceContainer;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.context.AbstractContextInstance;
+import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.instance.node.CompositeContextNodeInstance;
 import org.kie.kogito.internal.process.event.KogitoObjectListenerAware;
@@ -113,6 +114,10 @@ public class VariableScopeInstance extends AbstractContextInstance {
                     oldValue, clonedValue, getVariableScope().tags(name), getProcessInstance(),
                     nodeInstance,
                     getProcessInstance().getKnowledgeRuntime());
+        }
+
+        if (getProcessInstance().getProcess().getMetaData().containsKey(Metadata.CONDITION)) {
+            getProcessInstance().signalEvent("Conditional", null);
         }
     }
 

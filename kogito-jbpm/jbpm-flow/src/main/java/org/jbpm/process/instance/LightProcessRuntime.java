@@ -242,27 +242,24 @@ public class LightProcessRuntime extends AbstractProcessRuntime {
     }
 
     private void initProcessEventListener(Process process) {
-        if (process instanceof RuleFlowProcess) {
-            for (Node node : ((RuleFlowProcess) process).getNodes()) {
-                if (node instanceof StartNode) {
-                    StartNode startNode = (StartNode) node;
-                    if (startNode != null) {
-                        List<Trigger> triggers = startNode.getTriggers();
-                        if (triggers != null) {
-                            for (Trigger trigger : triggers) {
-                                if (trigger instanceof EventTrigger) {
-                                    final List<EventFilter> filters = ((EventTrigger) trigger).getEventFilters();
-                                    String type = null;
-                                    for (EventFilter filter : filters) {
-                                        if (filter instanceof EventTypeFilter) {
-                                            type = ((EventTypeFilter) filter).getType();
-                                        }
+        if (process instanceof RuleFlowProcess ruleFlowProcess) {
+            for (Node node : ruleFlowProcess.getNodes()) {
+                if (node instanceof StartNode startNode) {
+                    List<Trigger> triggers = startNode.getTriggers();
+                    if (triggers != null) {
+                        for (Trigger trigger : triggers) {
+                            if (trigger instanceof EventTrigger eventTrigger) {
+                                final List<EventFilter> filters = eventTrigger.getEventFilters();
+                                String type = null;
+                                for (EventFilter filter : filters) {
+                                    if (filter instanceof EventTypeFilter eventTypeFilter) {
+                                        type = eventTypeFilter.getType();
                                     }
-                                    StartProcessEventListener listener = new StartProcessEventListener(startNode, trigger, process.getId(), filters);
-                                    signalManager.addEventListener(type, listener);
-                                    ((RuleFlowProcess) process).getRuntimeMetaData().put("StartProcessEventType", type);
-                                    ((RuleFlowProcess) process).getRuntimeMetaData().put("StartProcessEventListener", listener);
                                 }
+                                StartProcessEventListener listener = new StartProcessEventListener(startNode, trigger, process.getId(), filters);
+                                signalManager.addEventListener(type, listener);
+                                ruleFlowProcess.getRuntimeMetaData().put("StartProcessEventType", type);
+                                ruleFlowProcess.getRuntimeMetaData().put("StartProcessEventListener", listener);
                             }
                         }
                     }

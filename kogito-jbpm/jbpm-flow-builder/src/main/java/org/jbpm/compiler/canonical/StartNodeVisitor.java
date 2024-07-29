@@ -21,6 +21,7 @@ package org.jbpm.compiler.canonical;
 import java.util.Map;
 import java.util.Optional;
 
+import org.jbpm.compiler.canonical.builtin.ReturnValueEvaluatorBuilderService;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.core.timer.Timer;
@@ -28,13 +29,15 @@ import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.ruleflow.core.factory.StartNodeFactory;
 import org.jbpm.workflow.core.node.StartNode;
 
+import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.expr.BooleanLiteralExpr;
+import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 
 import static org.jbpm.ruleflow.core.Metadata.EVENT_TYPE;
-import static org.jbpm.ruleflow.core.Metadata.MESSAGE_TYPE;
+import static org.jbpm.ruleflow.core.Metadata.TRIGGER_EXPRESSION;
 import static org.jbpm.ruleflow.core.Metadata.TRIGGER_MAPPING;
 import static org.jbpm.ruleflow.core.Metadata.TRIGGER_REF;
 import static org.jbpm.ruleflow.core.factory.StartNodeFactory.METHOD_INTERRUPTING;
@@ -42,6 +45,12 @@ import static org.jbpm.ruleflow.core.factory.StartNodeFactory.METHOD_TIMER;
 import static org.jbpm.ruleflow.core.factory.StartNodeFactory.METHOD_TRIGGER;
 
 public class StartNodeVisitor extends AbstractNodeVisitor<StartNode> {
+
+    private ReturnValueEvaluatorBuilderService returnValueEvaluatorBuilderService;
+
+    public StartNodeVisitor(ReturnValueEvaluatorBuilderService returnValueEvaluatorBuilderService) {
+        this.returnValueEvaluatorBuilderService = returnValueEvaluatorBuilderService;
+    }
 
     @Override
     protected String getNodeKey() {
@@ -74,10 +83,10 @@ public class StartNodeVisitor extends AbstractNodeVisitor<StartNode> {
                 metadata.addSignal((String) nodeMetaData.get(TRIGGER_REF), computePayloadType(startNode, variableScope).orElse(null));
                 break;
             }
+            case Metadata.EVENT_TYPE_CONDITIONAL:
             case Metadata.EVENT_TYPE_ERROR:
             case Metadata.EVENT_TYPE_ESCALATION:
             case Metadata.EVENT_TYPE_COMPENSATION:
-            case Metadata.EVENT_TYPE_CONDITIONAL:
                 handleIO(startNode, startNode.getMetaData(), body, variableScope, metadata);
                 metadata.addSignal((String) nodeMetaData.get(TRIGGER_REF), null);
                 break;
@@ -94,15 +103,17 @@ public class StartNodeVisitor extends AbstractNodeVisitor<StartNode> {
     }
 
     protected void handleIO(StartNode startNode, Map<String, Object> nodeMetaData, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
-        if (nodeMetaData.containsKey(MESSAGE_TYPE)) {
-            body.addStatement(getFactoryMethod(getNodeId(startNode), METHOD_TRIGGER,
-                    new StringLiteralExpr((String) nodeMetaData.get(TRIGGER_REF)),
-                    buildDataAssociationsExpression(startNode, startNode.getIoSpecification().getDataOutputAssociation())));
-        } else if (nodeMetaData.containsKey(TRIGGER_REF)) {
-            body.addStatement(getFactoryMethod(getNodeId(startNode), METHOD_TRIGGER,
-                    new StringLiteralExpr((String) nodeMetaData.get(TRIGGER_REF)),
-                    buildDataAssociationsExpression(startNode, startNode.getIoSpecification().getDataOutputAssociation())));
+        if (!nodeMetaData.containsKey(TRIGGER_REF)) {
+            return;
         }
+
+        NodeList<Expression> arguments = new NodeList<>();
+        arguments.add(new StringLiteralExpr((String) nodeMetaData.get(TRIGGER_REF)));
+        arguments.add(buildDataAssociationsExpression(startNode, startNode.getIoSpecification().getDataOutputAssociation()));
+        if (nodeMetaData.containsKey(TRIGGER_EXPRESSION)) {
+            arguments.add(returnValueEvaluatorBuilderService.build(startNode, (String) nodeMetaData.get(Metadata.TRIGGER_EXPRESSION_LANGUAGE), (String) nodeMetaData.get(TRIGGER_EXPRESSION)));
+        }
+        body.addStatement(getFactoryMethod(getNodeId(startNode), METHOD_TRIGGER, arguments.toArray(Expression[]::new)));
     }
 
     public Optional<String> computePayloadType(StartNode startNode, VariableScope variableScope) {

@@ -26,6 +26,10 @@ public final class Sig<T> implements Signal<T> {
     private final T payload;
     private String referenceId;
 
+    public static <T> org.kie.kogito.process.Signal<T> of(String channel) {
+        return new Sig<>(channel, null);
+    }
+
     public static <T> org.kie.kogito.process.Signal<T> of(String channel, T payload) {
         return new Sig<>(channel, payload);
     }

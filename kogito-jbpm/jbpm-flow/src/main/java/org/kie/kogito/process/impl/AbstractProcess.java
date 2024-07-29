@@ -28,7 +28,6 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.jbpm.process.core.ProcessSupplier;
 import org.jbpm.process.core.timer.DateTimeUtils;
@@ -172,9 +171,6 @@ public abstract class AbstractProcess<T extends Model> implements Process<T>, Pr
     @Override
     public <S> void send(Signal<S> signal) {
         getProcessRuntime().signalEvent(signal.channel(), signal.payload());
-        try (Stream<ProcessInstance<T>> stream = instances.stream()) {
-            stream.forEach(pi -> pi.send(signal));
-        }
     }
 
     public Process<T> configure() {

@@ -32,6 +32,8 @@ public class Metadata {
     public static final String CONSUME_MESSAGE = "ConsumeMessage";
     public static final String NODE_TYPE = "NodeType";
     public static final String TRIGGER_TYPE = "TriggerType";
+    public static final String TRIGGER_EXPRESSION = "TriggerExpression";
+    public static final String TRIGGER_EXPRESSION_LANGUAGE = "TriggerExpressionLanguage";
     public static final String TRIGGER_MAPPING = "TriggerMapping";
     public static final String TRIGGER_MAPPING_INPUT = "TriggerMappingInput";
     public static final String MAPPING_VARIABLE = "MappingVariable";

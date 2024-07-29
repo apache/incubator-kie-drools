@@ -35,6 +35,7 @@ import org.jbpm.process.core.event.EventFilter;
 import org.jbpm.process.core.event.EventTypeFilter;
 import org.jbpm.process.core.event.NonAcceptingEventTypeFilter;
 import org.jbpm.process.core.timer.Timer;
+import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
@@ -60,6 +61,8 @@ import static org.jbpm.ruleflow.core.Metadata.FAULT_CODE;
 import static org.jbpm.ruleflow.core.Metadata.MAPPING_VARIABLE;
 import static org.jbpm.ruleflow.core.Metadata.MESSAGE_REF;
 import static org.jbpm.ruleflow.core.Metadata.MESSAGE_TYPE;
+import static org.jbpm.ruleflow.core.Metadata.TRIGGER_EXPRESSION;
+import static org.jbpm.ruleflow.core.Metadata.TRIGGER_EXPRESSION_LANGUAGE;
 import static org.jbpm.ruleflow.core.Metadata.TRIGGER_MAPPING;
 import static org.jbpm.ruleflow.core.Metadata.TRIGGER_MAPPING_INPUT;
 import static org.jbpm.ruleflow.core.Metadata.TRIGGER_REF;
@@ -103,11 +106,13 @@ public class StartEventHandler extends AbstractNodeHandler {
             String nodeName = xmlNode.getNodeName();
             if ("conditionalEventDefinition".equals(nodeName)) {
                 String constraint = null;
+                String language = null;
                 org.w3c.dom.Node subNode = xmlNode.getFirstChild();
                 while (subNode != null) {
                     String subnodeName = subNode.getNodeName();
                     if ("condition".equals(subnodeName)) {
-                        constraint = xmlNode.getTextContent();
+                        constraint = subNode.getTextContent();
+                        language = ((Element) subNode).getAttribute("language");
                         break;
                     }
                     subNode = subNode.getNextSibling();
@@ -115,7 +120,12 @@ public class StartEventHandler extends AbstractNodeHandler {
                 ConstraintTrigger trigger = new ConstraintTrigger();
                 trigger.setConstraint(constraint);
                 startNode.setMetaData(EVENT_TYPE, EVENT_TYPE_CONDITIONAL);
+                startNode.setMetaData(TRIGGER_REF, "Conditional");
+                startNode.setMetaData(TRIGGER_EXPRESSION, constraint);
+                startNode.setMetaData(TRIGGER_EXPRESSION_LANGUAGE, language);
                 startNode.addTrigger(trigger);
+                ((RuleFlowProcess) ((ProcessBuildData) parser.getData()).getMetaData(ProcessHandler.CURRENT_PROCESS))
+                        .setMetaData(Metadata.CONDITION, Boolean.TRUE);
                 break;
             } else if ("signalEventDefinition".equals(nodeName)) {
                 String type = ((Element) xmlNode).getAttribute("signalRef");
