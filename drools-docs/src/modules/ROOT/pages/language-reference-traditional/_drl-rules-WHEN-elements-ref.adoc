@@ -161,7 +161,7 @@ endif::[]
 rule "All full-time employees have red ID badges"
   when
     forall( $emp : Employee( type == "fulltime" )
-                   Employee( this == $emp, badgeColor = "red" ) )
+                   Employee( this == $emp, badgeColor == "red" ) )
   then
     // True, all full-time employees have red ID badges.
 end
@@ -176,7 +176,7 @@ To state that all facts of a given type in the working memory of the {RULE_ENGIN
 ----
 rule "All employees have red ID badges"
   when
-    forall( Employee( badgeColor = "red" ) )
+    forall( Employee( badgeColor == "red" ) )
   then
     // True, all employees have red ID badges.
 end
