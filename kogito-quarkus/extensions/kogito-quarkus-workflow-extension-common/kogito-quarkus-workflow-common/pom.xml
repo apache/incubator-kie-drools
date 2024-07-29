@@ -47,15 +47,8 @@
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>jbpm-flow</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>process-serialization-protobuf</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>jbpm-flow-migration</artifactId>
+      <artifactId>jbpm-deps-group-engine</artifactId>
+      <type>pom</type>
     </dependency>
   </dependencies>
 

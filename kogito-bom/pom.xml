@@ -1779,6 +1779,24 @@
       <!-- jbpm -->
       <dependency>
         <groupId>org.kie.kogito</groupId>
+        <artifactId>jbpm-deps-group-bpmn2-compiler</artifactId>
+        <version>${project.version}</version>
+        <type>pom</type>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>jbpm-deps-group-compiler</artifactId>
+        <version>${project.version}</version>
+        <type>pom</type>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>jbpm-deps-group-engine</artifactId>
+        <version>${project.version}</version>
+        <type>pom</type>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
         <artifactId>process-workitems</artifactId>
         <version>${project.version}</version>
       </dependency>

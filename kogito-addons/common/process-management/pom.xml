@@ -43,7 +43,8 @@
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>jbpm-flow</artifactId>
+      <artifactId>jbpm-deps-group-engine</artifactId>
+      <type>pom</type>
     </dependency>
 
     <!-- test dependencies -->

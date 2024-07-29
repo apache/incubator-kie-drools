@@ -39,13 +39,18 @@
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-api</artifactId>
     </dependency>
-
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>process-serialization-protobuf</artifactId>
+      <artifactId>jbpm-deps-group-engine</artifactId>
+      <type>pom</type>
     </dependency>
-
     <!-- test dependencies -->
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>jbpm-deps-group-bpmn2-compiler</artifactId>
+      <type>pom</type>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-jdbc-postgresql</artifactId>
@@ -71,16 +76,6 @@
     <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>jbpm-flow-builder</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>jbpm-bpmn2</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>

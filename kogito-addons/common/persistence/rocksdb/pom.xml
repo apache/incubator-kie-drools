@@ -50,7 +50,8 @@
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>process-serialization-protobuf</artifactId>
+      <artifactId>jbpm-deps-group-engine</artifactId>
+      <type>pom</type>
     </dependency>
     <dependency>
       <groupId>org.rocksdb</groupId>
@@ -67,9 +68,10 @@
       <artifactId>assertj-core</artifactId>
       <scope>test</scope>
     </dependency>
-     <dependency>
+    <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>jbpm-bpmn2</artifactId>
+      <artifactId>jbpm-deps-group-bpmn2-compiler</artifactId>
+      <type>pom</type>
       <scope>test</scope>
     </dependency>
      <dependency>

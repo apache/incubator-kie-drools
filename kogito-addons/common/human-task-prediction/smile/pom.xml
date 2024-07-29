@@ -79,18 +79,14 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>jbpm-flow-builder</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>org.mvel</groupId>
       <artifactId>mvel2</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>jbpm-bpmn2</artifactId>
+      <artifactId>jbpm-deps-group-bpmn2-compiler</artifactId>
+      <type>pom</type>
       <scope>test</scope>
     </dependency>
   </dependencies>
