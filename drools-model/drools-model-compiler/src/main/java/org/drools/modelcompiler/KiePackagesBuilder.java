@@ -72,7 +72,7 @@ import org.drools.base.rule.accessor.PatternExtractor;
 import org.drools.base.rule.accessor.ReadAccessor;
 import org.drools.base.rule.accessor.Salience;
 import org.drools.base.rule.constraint.QueryNameConstraint;
-import org.drools.base.time.impl.Timer;
+import org.drools.base.time.Timer;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.DroolsQueryImpl;
 import org.drools.core.base.accumulators.CountAccumulateFunction;

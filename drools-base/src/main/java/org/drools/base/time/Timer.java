@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.drools.base.time.impl;
+package org.drools.base.time;
 
 import java.io.Serializable;
 
@@ -25,8 +25,6 @@ import org.drools.base.reteoo.BaseTuple;
 import org.drools.base.rule.Declaration;
 import org.drools.base.rule.RuleComponent;
 import org.drools.base.rule.RuleConditionElement;
-import org.drools.base.time.JobHandle;
-import org.drools.base.time.Trigger;
 import org.kie.api.runtime.Calendars;
 
 public interface Timer extends Serializable, RuleComponent, RuleConditionElement {

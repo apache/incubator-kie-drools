@@ -1,4 +1,4 @@
-package org.drools.core.reteoo.sequencing;
+package org.drools.core.reteoo.sequencing.signalprocessors;
 
 public class Gates {
     public static boolean and(long a, long b) {return a == b;}

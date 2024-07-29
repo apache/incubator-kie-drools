@@ -43,7 +43,7 @@ import org.drools.base.rule.QueryElement;
 import org.drools.base.rule.WindowDeclaration;
 import org.drools.base.rule.WindowReference;
 import org.drools.base.rule.constraint.XpathConstraint;
-import org.drools.base.time.impl.Timer;
+import org.drools.base.time.Timer;
 import org.drools.core.ActivationListenerFactory;
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.InternalWorkingMemory;

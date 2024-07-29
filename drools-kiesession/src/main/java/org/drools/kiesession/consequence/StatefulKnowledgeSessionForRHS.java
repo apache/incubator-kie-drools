@@ -67,6 +67,7 @@ import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.Globals;
 import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.ObjectFilter;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItemManager;
@@ -568,6 +569,11 @@ public class StatefulKnowledgeSessionForRHS
 
     public SessionConfiguration getSessionConfiguration() {
         return delegate.getSessionConfiguration();
+    }
+
+    @Override
+    public KieSessionConfiguration getKieSessionConfiguration() {
+        return delegate.getKieSessionConfiguration();
     }
 
     public Collection<? extends Object> getObjects() {

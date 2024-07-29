@@ -1,4 +1,4 @@
-package org.drools.core.reteoo.sequencing;
+package org.drools.core.reteoo.sequencing.signalprocessors;
 
 public enum SignalStatus {
     MATCHED(0),

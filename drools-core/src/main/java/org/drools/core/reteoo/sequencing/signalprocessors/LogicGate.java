@@ -1,15 +1,17 @@
-package org.drools.core.reteoo.sequencing;
+package org.drools.core.reteoo.sequencing.signalprocessors;
 
+import org.drools.base.base.ValueResolver;
 import org.drools.base.time.JobHandle;
 import org.drools.base.time.Trigger;
-import org.drools.base.time.impl.Timer;
+import org.drools.base.time.Timer;
+import org.drools.core.RuleSessionConfiguration;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.WorkingMemoryAction;
-import org.drools.core.phreak.PropagationEntry;
-import org.drools.core.reteoo.sequencing.LogicCircuit.LongBiPredicate;
+import org.drools.core.phreak.actions.AbstractPropagationEntry;
+import org.drools.core.reteoo.sequencing.signalprocessors.LogicCircuit.LongBiPredicate;
 import org.drools.core.reteoo.sequencing.Sequence.SequenceMemory;
-import org.drools.core.time.Job;
-import org.drools.core.time.JobContext;
+import org.drools.base.time.Job;
+import org.drools.base.time.JobContext;
 
 public class LogicGate extends SignalProcessor {
     protected long allMatched;
@@ -96,12 +98,12 @@ public class LogicGate extends SignalProcessor {
     }
 
     @Override
-    public void consume(SignalStatus signalStatus, SequenceMemory memory, ReteEvaluator reteEvaluator) {
+    public void consume(SignalStatus signalStatus, SequenceMemory memory, ValueResolver valueResolver) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void consume(int signalBitIndex, SignalStatus signalStatus, SequenceMemory memory, ReteEvaluator reteEvaluator) {
+    public void consume(int signalBitIndex, SignalStatus signalStatus, SequenceMemory memory, ValueResolver valueResolver) {
         SignalStatus status = memory.getLogicGateSignalStatus(gateIndex);
 
         if (status == SignalStatus.FAILED) {
@@ -135,36 +137,36 @@ public class LogicGate extends SignalProcessor {
         memory.setLogicGateSignalStatus(gateIndex, status);
         if (priorStatus != status) {
             if (propagationTimer != null) {
-                propagationTimer.matched(memory, reteEvaluator, status);
+                propagationTimer.matched(memory, valueResolver, status);
             } else {
-                propapate(memory, reteEvaluator, status);
+                propapate(memory, valueResolver, status);
             }
         }
     }
 
-    public void propapate(SequenceMemory memory, ReteEvaluator reteEvaluator, SignalStatus status) {
-        resetPrior(memory, reteEvaluator);
-        output.consume(status, memory, reteEvaluator);
+    public void propapate(SequenceMemory memory, ValueResolver valueResolver, SignalStatus status) {
+        resetPrior(memory, valueResolver);
+        output.consume(status, memory, valueResolver);
     }
 
-    public void resetPrior(SequenceMemory memory, ReteEvaluator reteEvaluator) {
+    public void resetPrior(SequenceMemory memory, ValueResolver valueResolver) {
         for (LogicGate gate : inputGates) {
-            gate.reset(memory, reteEvaluator);
+            gate.reset(memory, valueResolver);
         }
 
-        memory.resetLogicGateMemory(gateIndex, reteEvaluator);
+        memory.resetLogicGateMemory(gateIndex, valueResolver);
 
         for (ConditionalSignalCounter counter : inputSignalCounters) {
-            counter.reset(memory, reteEvaluator);
+            counter.reset(memory, valueResolver);
         }
     }
 
-    public void reset(SequenceMemory memory, ReteEvaluator reteEvaluator) {
-        resetPrior(memory, reteEvaluator);
-        output.reset(memory, reteEvaluator);
+    public void reset(SequenceMemory memory, ValueResolver valueResolver) {
+        resetPrior(memory, valueResolver);
+        output.reset(memory, valueResolver);
     }
 
-    public void activate(SequenceMemory memory, ReteEvaluator reteEvaluator) {
+    public void activate(SequenceMemory memory, ValueResolver valueResolver) {
         if (memory.getLogicGateSignalStatus()[gateIndex] == null) {
             memory.getLogicGateSignalStatus()[gateIndex] = SignalStatus.UNMATCHED;
         }
@@ -173,34 +175,28 @@ public class LogicGate extends SignalProcessor {
         }
 
         if (propagationTimer != null) {
-            propagationTimer.activated(memory, reteEvaluator);
+            propagationTimer.activated(memory, valueResolver);
         }
-//        if (timer != null && timerActionType == LogicGateTimerJobContext.PASS_ON_WAIT) {
-//            Trigger trigger = timer.createTrigger(reteEvaluator.getTimerService().getCurrentTime(), null, null);
-//            LogicGateTimerJobContext ctx = new LogicGateTimerJobContext(timerActionType, trigger, reteEvaluator, this, memory);
-//            JobHandle jobHandle = reteEvaluator.getTimerService().scheduleJob(LogicGateJob.getINSTANCE(), ctx, trigger);
-//            memory.setJobHandle(gateIndex, jobHandle);
-//        }
     }
 
-    public void deactivate(SequenceMemory memory, ReteEvaluator reteEvaluator) {
+    public void deactivate(SequenceMemory memory, ValueResolver valueResolver) {
         for (int i = 0; i < filterIndexes.length; i++) {
             memory.deactivateSignalAdapter(filterIndexes[i], this, signalAdapterIndexes[i]);
         }
 
-        memory.resetLogicGateMemory(gateIndex, reteEvaluator);
+        memory.resetLogicGateMemory(gateIndex, valueResolver);
     }
 
     public interface PropagationTimer {
-        default void activated(SequenceMemory memory, ReteEvaluator reteEvaluator)  {
+        default void activated(SequenceMemory memory, ValueResolver valueResolver)  {
 
         }
 
-        default void matched(SequenceMemory memory, ReteEvaluator reteEvaluator, SignalStatus status)  {
+        default void matched(SequenceMemory memory, ValueResolver valueResolver, SignalStatus status)  {
 
         }
 
-        default void failed(SequenceMemory memory, ReteEvaluator reteEvaluator)  {
+        default void failed(SequenceMemory memory, ValueResolver valueResolver)  {
 
         }
     }
@@ -215,23 +211,23 @@ public class LogicGate extends SignalProcessor {
         }
 
         @Override
-        public void activated(SequenceMemory memory, ReteEvaluator reteEvaluator)  {
-            Trigger trigger = timer.createTrigger(reteEvaluator.getTimerService().getCurrentTime(), null, null);
-            LogicGateTimerJobContext ctx = new LogicGateTimerJobContext(LogicGateTimerJobContext.TIMEOUT, trigger, reteEvaluator, gate, memory);
-            JobHandle jobHandle = reteEvaluator.getTimerService().scheduleJob(LogicGateJob.getINSTANCE(), ctx, trigger);
+        public void activated(SequenceMemory memory, ValueResolver valueResolver)  {
+            Trigger trigger = timer.createTrigger(valueResolver.getTimerService().getCurrentTime(), null, null);
+            LogicGateTimerJobContext ctx = new LogicGateTimerJobContext(LogicGateTimerJobContext.TIMEOUT, trigger, valueResolver, gate, memory);
+            JobHandle jobHandle = valueResolver.getTimerService().scheduleJob(LogicGateJob.getINSTANCE(), ctx, trigger);
             memory.setJobHandle(gate.getGateIndex(), jobHandle);
             System.out.println("handle created");
         }
 
         @Override
-        public void matched(SequenceMemory memory, ReteEvaluator reteEvaluator, SignalStatus status)  {
-            memory.cancelJobHandle(gate.getGateIndex(), reteEvaluator);
-            gate.propapate(memory, reteEvaluator, status);
+        public void matched(SequenceMemory memory, ValueResolver valueResolver, SignalStatus status)  {
+            memory.cancelJobHandle(gate.getGateIndex(), valueResolver);
+            gate.propapate(memory, valueResolver, status);
         }
 
         @Override
-        public void failed(SequenceMemory memory, ReteEvaluator reteEvaluator)  {
-            memory.cancelJobHandle(gate.getGateIndex(), reteEvaluator);
+        public void failed(SequenceMemory memory, ValueResolver valueResolver)  {
+            memory.cancelJobHandle(gate.getGateIndex(), valueResolver);
         }
     }
 
@@ -245,21 +241,21 @@ public class LogicGate extends SignalProcessor {
         }
 
         @Override
-        public void activated(SequenceMemory memory, ReteEvaluator reteEvaluator)  {
-            Trigger trigger = timer.createTrigger(reteEvaluator.getTimerService().getCurrentTime(), null, null);
-            LogicGateTimerJobContext ctx = new LogicGateTimerJobContext(LogicGateTimerJobContext.TIMEOUT, trigger, reteEvaluator, gate, memory);
-            JobHandle jobHandle = reteEvaluator.getTimerService().scheduleJob(LogicGateJob.getINSTANCE(), ctx, trigger);
+        public void activated(SequenceMemory memory, ValueResolver valueResolver)  {
+            Trigger trigger = timer.createTrigger(valueResolver.getTimerService().getCurrentTime(), null, null);
+            LogicGateTimerJobContext ctx = new LogicGateTimerJobContext(LogicGateTimerJobContext.TIMEOUT, trigger, valueResolver, gate, memory);
+            JobHandle jobHandle = valueResolver.getTimerService().scheduleJob(LogicGateJob.getINSTANCE(), ctx, trigger);
             memory.setJobHandle(gate.getGateIndex(), jobHandle);
         }
 
         @Override
-        public void matched(SequenceMemory memory, ReteEvaluator reteEvaluator, SignalStatus status)  {
+        public void matched(SequenceMemory memory, ValueResolver valueResolver, SignalStatus status)  {
             //gate.propapate(memory, reteEvaluator, status);
         }
 
         @Override
-        public void failed(SequenceMemory memory, ReteEvaluator reteEvaluator)  {
-            memory.cancelJobHandle(gate.getGateIndex(), reteEvaluator);
+        public void failed(SequenceMemory memory, ValueResolver valueResolver)  {
+            memory.cancelJobHandle(gate.getGateIndex(), valueResolver);
         }
     }
 
@@ -273,22 +269,22 @@ public class LogicGate extends SignalProcessor {
         }
 
         @Override
-        public void activated(SequenceMemory memory, ReteEvaluator reteEvaluator)  {
+        public void activated(SequenceMemory memory, ValueResolver valueResolver)  {
 
         }
 
         @Override
-        public void matched(SequenceMemory memory, ReteEvaluator reteEvaluator, SignalStatus status)  {
-            Trigger trigger = timer.createTrigger(reteEvaluator.getTimerService().getCurrentTime(), null, null);
-            LogicGateTimerJobContext ctx = new LogicGateTimerJobContext(LogicGateTimerJobContext.DELAY, trigger, reteEvaluator, gate, memory);
-            JobHandle jobHandle = reteEvaluator.getTimerService().scheduleJob(LogicGateJob.getINSTANCE(), ctx, trigger);
+        public void matched(SequenceMemory memory, ValueResolver valueResolver, SignalStatus status)  {
+            Trigger trigger = timer.createTrigger(valueResolver.getTimerService().getCurrentTime(), null, null);
+            LogicGateTimerJobContext ctx = new LogicGateTimerJobContext(LogicGateTimerJobContext.DELAY, trigger, valueResolver, gate, memory);
+            JobHandle jobHandle = valueResolver.getTimerService().scheduleJob(LogicGateJob.getINSTANCE(), ctx, trigger);
             memory.setJobHandle(gate.getGateIndex(), jobHandle);
             System.out.println("delayed match");
         }
 
         @Override
-        public void failed(SequenceMemory memory, ReteEvaluator reteEvaluator)  {
-            memory.cancelJobHandle(gate.getGateIndex(), reteEvaluator);
+        public void failed(SequenceMemory memory, ValueResolver valueResolver)  {
+            memory.cancelJobHandle(gate.getGateIndex(), valueResolver);
         }
     }
 
@@ -303,9 +299,9 @@ public class LogicGate extends SignalProcessor {
 
         public void execute(JobContext ctx) {
             LogicGateTimerJobContext timerJobCtx   = (LogicGateTimerJobContext) ctx;
-            ReteEvaluator       reteEvaluator = timerJobCtx.getReteEvaluator();
+            ValueResolver       resolver = timerJobCtx.getValueResolver();
             System.out.println("add propagation");
-            reteEvaluator.addPropagation( new LogicGateTimerAction(timerJobCtx ));
+            resolver.as(ReteEvaluator.class).addPropagation( new LogicGateTimerAction(timerJobCtx ));
         }
     }
 
@@ -315,18 +311,18 @@ public class LogicGate extends SignalProcessor {
         private static final int DELAY   = 0;
         private static final int TIMEOUT = 1;
 
-        private       JobHandle jobHandle;
-        private final Trigger   trigger;
-        private final ReteEvaluator         reteEvaluator;
+        private       JobHandle     jobHandle;
+        private final Trigger       trigger;
+        private final ValueResolver valueResolver;
 
         private final LogicGate gate;
         private final SequenceMemory sequenceMemory;
 
         private final int actionType;
 
-        public LogicGateTimerJobContext(int actionType, Trigger trigger, ReteEvaluator reteEvaluator, LogicGate gate, SequenceMemory sequenceMemory) {
+        public LogicGateTimerJobContext(int actionType, Trigger trigger, ValueResolver valueResolver, LogicGate gate, SequenceMemory sequenceMemory) {
             this.trigger         = trigger;
-            this.reteEvaluator   = reteEvaluator;
+            this.valueResolver   = valueResolver;
             this.gate            = gate;
             this.sequenceMemory = sequenceMemory;
             this.actionType = actionType;
@@ -337,8 +333,8 @@ public class LogicGate extends SignalProcessor {
         }
 
         @Override
-        public ReteEvaluator getReteEvaluator() {
-            return reteEvaluator;
+        public ValueResolver getValueResolver() {
+            return valueResolver;
         }
 
         public void setJobHandle(JobHandle jobHandle) {
@@ -363,7 +359,7 @@ public class LogicGate extends SignalProcessor {
     }
 
     public static class LogicGateTimerAction
-            extends PropagationEntry.AbstractPropagationEntry
+            extends AbstractPropagationEntry
             implements WorkingMemoryAction {
 
         private final LogicGateTimerJobContext jobCtx;
@@ -374,7 +370,7 @@ public class LogicGate extends SignalProcessor {
 
         @Override
         public boolean requiresImmediateFlushing() {
-            return jobCtx.getReteEvaluator().getRuleSessionConfiguration().getTimedRuleExecutionFilter() != null;
+            return jobCtx.getValueResolver().getKieSessionConfiguration().as(RuleSessionConfiguration.KEY).getTimedRuleExecutionFilter() != null;
         }
 
         @Override

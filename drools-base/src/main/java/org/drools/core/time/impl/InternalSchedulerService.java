@@ -16,8 +16,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.drools.core.time;
+package org.drools.core.time.impl;
 
-public interface Job {
-    void execute(JobContext ctx);
+public interface InternalSchedulerService {
+    public void internalSchedule(TimerJobInstance timerJobInstance);
 }

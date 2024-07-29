@@ -24,14 +24,15 @@ import org.drools.base.rule.Pattern;
 import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.reteoo.SequenceNode.DynamicFilterProto;
-import org.drools.core.reteoo.sequencing.LogicCircuit;
-import org.drools.core.reteoo.sequencing.Gates;
-import org.drools.core.reteoo.sequencing.LogicGate;
-import org.drools.core.reteoo.sequencing.LogicGateOutputSignalProcessor;
+import org.drools.core.reteoo.sequencing.signalprocessors.LogicCircuit;
+import org.drools.core.reteoo.sequencing.signalprocessors.Gates;
+import org.drools.core.reteoo.sequencing.signalprocessors.LogicGate;
+import org.drools.core.reteoo.sequencing.signalprocessors.LogicGateOutputSignalProcessor;
 import org.drools.core.reteoo.sequencing.Sequence;
 import org.drools.core.reteoo.sequencing.Sequencer;
-import org.drools.core.reteoo.sequencing.SignalIndex;
-import org.drools.core.reteoo.sequencing.TerminatingSignalProcessor;
+import org.drools.core.reteoo.sequencing.signalprocessors.SignalIndex;
+import org.drools.core.reteoo.sequencing.steps.Step;
+import org.drools.core.reteoo.sequencing.signalprocessors.TerminatingSignalProcessor;
 import org.drools.mvel.integrationtests.phreak.A;
 import org.drools.mvel.integrationtests.phreak.B;
 import org.drools.mvel.integrationtests.phreak.C;
@@ -99,7 +100,7 @@ public class PhreakSequencerLogicGateTest extends AbstractPhreakSequencerSubsequ
 
         LogicCircuit circuit1 = new LogicCircuit(gate1);
 
-        Sequence seq = new Sequence(0, circuit1);
+        Sequence seq = new Sequence(0, Step.of(circuit1));
         mnode.setSequencer(new Sequencer(seq));
         mnode.setDynamicFilters( new DynamicFilterProto[] {bfilter, cfilter});
 
@@ -134,7 +135,7 @@ public class PhreakSequencerLogicGateTest extends AbstractPhreakSequencerSubsequ
 
         LogicCircuit circuit1 = new LogicCircuit(gate1);
 
-        Sequence seq = new Sequence(0, circuit1);
+        Sequence seq = new Sequence(0, Step.of(circuit1));
         mnode.setSequencer(new Sequencer(seq));
         mnode.setDynamicFilters( new DynamicFilterProto[] {bfilter, cfilter});
 
@@ -174,7 +175,7 @@ public class PhreakSequencerLogicGateTest extends AbstractPhreakSequencerSubsequ
 
         LogicCircuit circuit1 = new LogicCircuit(gate1, gate2);
 
-        Sequence seq = new Sequence(0, circuit1);
+        Sequence seq = new Sequence(0, Step.of(circuit1));
         mnode.setSequencer(new Sequencer(seq));
         mnode.setDynamicFilters( new DynamicFilterProto[] {bfilter, cfilter, dfilter});
 

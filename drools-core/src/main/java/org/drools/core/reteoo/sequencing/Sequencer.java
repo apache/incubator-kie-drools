@@ -1,5 +1,6 @@
 package org.drools.core.reteoo.sequencing;
 
+import org.drools.base.base.ValueResolver;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
@@ -8,7 +9,10 @@ import org.drools.core.reteoo.SequenceNode.SequenceNodeMemory;
 import org.drools.core.reteoo.SequenceNode.SignalAdapter;
 import org.drools.core.reteoo.TupleImpl;
 import org.drools.core.reteoo.sequencing.Sequence.SequenceMemory;
-import org.drools.core.reteoo.sequencing.Step.SequenceStep;
+import org.drools.core.reteoo.sequencing.signalprocessors.ConditionalSignalCounter;
+import org.drools.core.reteoo.sequencing.signalprocessors.LogicGate;
+import org.drools.core.reteoo.sequencing.steps.Step;
+import org.drools.core.reteoo.sequencing.steps.SequenceStep;
 import org.drools.core.util.CircularArrayList;
 import org.kie.api.runtime.rule.FactHandle;
 
@@ -45,20 +49,20 @@ public class Sequencer {
         sequence.start(memory, reteEvaluator);
     }
 
-    public void stop(SequencerMemory memory, ReteEvaluator reteEvaluator) {
+    public void stop(SequencerMemory memory, ValueResolver valueResolver) {
         // deactive each active sequence on the stack.
         ArrayList<SequenceMemory>  stack = memory.getSequenceStack();
         for (int i = stack.size()-1; i >= 0; i--) {
             SequenceMemory sequenceMemory = stack.get(i);
-            sequenceMemory.getSequence().getSteps()[sequenceMemory.getStep()].deactivate(sequenceMemory, reteEvaluator);
+            sequenceMemory.getSequence().getSteps()[sequenceMemory.getStep()].deactivate(sequenceMemory, valueResolver);
         }
         stack.clear();
     }
 
-    public void next(SequencerMemory sequencerMemory, ReteEvaluator reteEvaluator) {
+    public void next(SequencerMemory sequencerMemory, ValueResolver valueResolver) {
         SequenceMemory sequenceMemory = sequencerMemory.getCurrentSequence();
         if (sequenceMemory != null) {
-            sequenceMemory.getSequence().next(sequenceMemory, reteEvaluator);
+            sequenceMemory.getSequence().next(sequenceMemory, valueResolver);
         } else {
             // the root sequence has completed
             TupleImpl lt = sequencerMemory.getLeftTuple();

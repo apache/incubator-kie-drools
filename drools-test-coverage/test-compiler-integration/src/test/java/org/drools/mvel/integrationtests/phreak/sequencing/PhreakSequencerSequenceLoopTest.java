@@ -25,14 +25,15 @@ import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.reteoo.SequenceNode.DynamicFilterProto;
-import org.drools.core.reteoo.sequencing.Gates;
-import org.drools.core.reteoo.sequencing.LogicCircuit;
-import org.drools.core.reteoo.sequencing.LogicGate;
+import org.drools.core.reteoo.sequencing.signalprocessors.Gates;
+import org.drools.core.reteoo.sequencing.signalprocessors.LogicCircuit;
+import org.drools.core.reteoo.sequencing.signalprocessors.LogicGate;
 import org.drools.core.reteoo.sequencing.Sequence;
 import org.drools.core.reteoo.sequencing.Sequence.LoopController;
 import org.drools.core.reteoo.sequencing.Sequence.SequenceMemory;
 import org.drools.core.reteoo.sequencing.Sequencer;
-import org.drools.core.reteoo.sequencing.TerminatingSignalProcessor;
+import org.drools.core.reteoo.sequencing.steps.Step;
+import org.drools.core.reteoo.sequencing.signalprocessors.TerminatingSignalProcessor;
 import org.drools.kiesession.rulebase.SessionsAwareKnowledgeBase;
 import org.drools.mvel.integrationtests.phreak.A;
 import org.drools.mvel.integrationtests.phreak.B;
@@ -90,7 +91,7 @@ public class PhreakSequencerSequenceLoopTest extends AbstractPhreakSequencerSubs
         gate2.setOutput(TerminatingSignalProcessor.get());
         LogicCircuit circuit2 = new LogicCircuit(gate2);
 
-        seq0 = new Sequence(0, circuit1, circuit2);
+        seq0 = new Sequence(0, Step.of(circuit1), Step.of(circuit2));
         mnode.setSequencer(new Sequencer(seq0));
         mnode.setDynamicFilters( new DynamicFilterProto[] {bfilter, cfilter});
 

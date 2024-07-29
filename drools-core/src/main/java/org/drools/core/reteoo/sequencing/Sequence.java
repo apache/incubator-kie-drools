@@ -1,19 +1,25 @@
 package org.drools.core.reteoo.sequencing;
 
+import org.drools.base.base.ValueResolver;
 import org.drools.base.time.JobHandle;
 import org.drools.base.time.Trigger;
-import org.drools.base.time.impl.Timer;
+import org.drools.base.time.Timer;
+import org.drools.core.RuleSessionConfiguration;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.WorkingMemoryAction;
-import org.drools.core.phreak.PropagationEntry;
+import org.drools.core.phreak.actions.AbstractPropagationEntry;
 import org.drools.core.reteoo.SequenceNode.DynamicFilter;
 import org.drools.core.reteoo.SequenceNode.SequenceNodeMemory;
 import org.drools.core.reteoo.SequenceNode.SignalAdapter;
 import org.drools.core.reteoo.sequencing.Sequencer.SequencerMemory;
-import org.drools.core.reteoo.sequencing.Step.LogicCircuitStep;
-import org.drools.core.reteoo.sequencing.Step.StepFactory;
-import org.drools.core.time.Job;
-import org.drools.core.time.JobContext;
+import org.drools.core.reteoo.sequencing.signalprocessors.ConditionalSignalCounter;
+import org.drools.core.reteoo.sequencing.signalprocessors.LogicGate;
+import org.drools.core.reteoo.sequencing.signalprocessors.SignalStatus;
+import org.drools.core.reteoo.sequencing.steps.Step;
+import org.drools.core.reteoo.sequencing.steps.LogicCircuitStep;
+import org.drools.core.reteoo.sequencing.steps.Step.StepFactory;
+import org.drools.base.time.Job;
+import org.drools.base.time.JobContext;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,24 +40,6 @@ public class Sequence {
     private Consumer<SequenceMemory> onEnd;
 
     private int outputSize;
-
-    public Sequence(int sequenceIndex, LogicCircuit... circuits) {
-        this.steps = new Step[circuits.length];
-        for ( int i = 0; i < circuits.length; i++ ) {
-            this.steps[i] = new LogicCircuitStep(this, circuits[i]);
-        }
-        this.sequenceIndex = sequenceIndex;
-        populateLogicGates();
-        this.controller = new DefaultController();
-        this.outputSize = 0;
-    }
-
-    public Sequence(int sequenceIndex, Step... steps) {
-        this.steps = steps;
-        this.sequenceIndex = sequenceIndex;
-        populateLogicGates();
-        controller = new DefaultController();
-    }
 
     public Sequence(int sequenceIndex, StepFactory... stepFactories) {
         this.steps = new Step[stepFactories.length];
@@ -98,8 +86,6 @@ public class Sequence {
         gates = list.toArray(new LogicGate[0]);
     }
 
-
-
     public int getSequenceIndex() {
         return sequenceIndex;
     }
@@ -125,49 +111,49 @@ public class Sequence {
         this.controller = controller;
     }
 
-    public void start(SequencerMemory memory, ReteEvaluator reteEvaluator) {
+    public void start(SequencerMemory memory, ValueResolver valueResolver) {
         SequenceMemory sequenceMemory = memory.getSequenceMemory(this);
         memory.pushSequence(sequenceMemory);
         sequenceMemory.setStep(0);
-        getSteps()[0].activate(sequenceMemory, reteEvaluator);
+        getSteps()[0].activate(sequenceMemory, valueResolver);
         if(onStart != null) {
             onStart.accept(sequenceMemory);
         }
-        controller.start(sequenceMemory, reteEvaluator);
+        controller.start(sequenceMemory, valueResolver);
     }
 
-    private void restart(SequenceMemory sequenceMemory, ReteEvaluator reteEvaluator) {
+    private void restart(SequenceMemory sequenceMemory, ValueResolver valueResolver) {
         sequenceMemory.setStep(0);
         sequenceMemory.getSequencerMemory().getEvents().resetHeadByOffset(sequenceMemory.getSequencerMemory().getEvents().size() - sequenceMemory.getEventsStartPosition());
-        getSteps()[0].activate(sequenceMemory, reteEvaluator);
+        getSteps()[0].activate(sequenceMemory, valueResolver);
     }
 
-    public void next(SequenceMemory sequenceMemory, ReteEvaluator reteEvaluator) {
+    public void next(SequenceMemory sequenceMemory, ValueResolver valueResolver) {
         int step = sequenceMemory.getStep();
 
-        sequenceMemory.getSequence().getSteps()[step].deactivate(sequenceMemory, reteEvaluator);
+        sequenceMemory.getSequence().getSteps()[step].deactivate(sequenceMemory, valueResolver);
         step = sequenceMemory.incrementStep();
 
         if (step < sequenceMemory.getSequence().getSteps().length) {
-            sequenceMemory.getSequence().getSteps()[step].activate(sequenceMemory, reteEvaluator);
+            sequenceMemory.getSequence().getSteps()[step].activate(sequenceMemory, valueResolver);
         } else {
             if(onEnd != null) {
                 onEnd.accept(sequenceMemory);
             }
-            controller.end(sequenceMemory, reteEvaluator);
+            controller.end(sequenceMemory, valueResolver);
         }
     }
 
     public interface SequenceController {
-        default void start(SequenceMemory memory, ReteEvaluator reteEvaluator) {
+        default void start(SequenceMemory memory, ValueResolver valueResolver) {
 
         }
 
-        default void restart(SequenceMemory memory, ReteEvaluator reteEvaluator) {
+        default void restart(SequenceMemory memory, ValueResolver valueResolver) {
 
         }
 
-        void end(SequenceMemory memory, ReteEvaluator reteEvaluator);
+        void end(SequenceMemory memory, ValueResolver valueResolver);
     }
 
     public static class DefaultController implements SequenceController {
@@ -178,10 +164,10 @@ public class Sequence {
         }
 
         @Override
-        public void end(SequenceMemory sequenceMemory, ReteEvaluator reteEvaluator)  {
+        public void end(SequenceMemory sequenceMemory, ValueResolver valueResolver)  {
             SequencerMemory sequencerMemory = sequenceMemory.getSequencerMemory();
             sequencerMemory.popSequence(); // pop is here, but the push was in the start step
-            sequencerMemory.getNode().getSequencer().next(sequencerMemory, reteEvaluator);
+            sequencerMemory.getNode().getSequencer().next(sequencerMemory, valueResolver);
         }
 
         @Override
@@ -198,16 +184,16 @@ public class Sequence {
         }
 
         @Override
-        public void end(SequenceMemory sequenceMemory, ReteEvaluator reteEvaluator)  {
+        public void end(SequenceMemory sequenceMemory, ValueResolver valueResolver)  {
             int counts = sequenceMemory.getCount();
             boolean restart = predicate.test(sequenceMemory);
             sequenceMemory.setCount(counts+1);
             SequencerMemory sequencerMemory = sequenceMemory.getSequencerMemory();
             if (restart) {
-                sequenceMemory.getSequence().restart(sequenceMemory, reteEvaluator);
+                sequenceMemory.getSequence().restart(sequenceMemory, valueResolver);
             } else {
                 sequencerMemory.popSequence(); // pop is here, but the push was in the start step
-                sequencerMemory.getNode().getSequencer().next(sequencerMemory, reteEvaluator);
+                sequencerMemory.getNode().getSequencer().next(sequencerMemory, valueResolver);
             }
         }
 
@@ -218,36 +204,34 @@ public class Sequence {
     }
 
     public static class TimoutController implements SequenceController {
-        private final Sequence sequence;
         private final Timer    timer;
         private final DefaultController defaultController = DefaultController.getINSTANCE();
 
-        public TimoutController(Sequence sequence, Timer timer) {
-            this.sequence = sequence;
+        public TimoutController(Timer timer) {
             this.timer    = timer;
         }
 
         @Override
-        public void start(SequenceMemory memory, ReteEvaluator reteEvaluator) {
-            defaultController.start(memory, reteEvaluator);
-            Trigger                 trigger   = timer.createTrigger(reteEvaluator.getTimerService().getCurrentTime(), null, null);
-            SequenceTimerJobContext ctx       = new SequenceTimerJobContext(SequenceTimerJobContext.TIMEOUT, trigger, reteEvaluator, memory);
+        public void start(SequenceMemory memory, ValueResolver valueResolver) {
+            defaultController.start(memory, valueResolver);
+            Trigger                 trigger   = timer.createTrigger(valueResolver.getTimerService().getCurrentTime(), null, null);
+            SequenceTimerJobContext ctx       = new SequenceTimerJobContext(SequenceTimerJobContext.TIMEOUT, trigger, valueResolver, memory);
 
-            JobHandle               jobHandle = reteEvaluator.getTimerService().scheduleJob(SequenceJob.getINSTANCE(), ctx, trigger);
+            JobHandle               jobHandle = valueResolver.getTimerService().scheduleJob(SequenceJob.getINSTANCE(), ctx, trigger);
             memory.setJobHandle(jobHandle);
             System.out.println("handle created");
         }
 
         @Override
-        public void restart(SequenceMemory memory, ReteEvaluator reteEvaluator) {
-            defaultController.restart(memory, reteEvaluator);
-            reteEvaluator.getTimerService().removeJob(memory.getJobHandle());
+        public void restart(SequenceMemory memory, ValueResolver valueResolver) {
+            defaultController.restart(memory, valueResolver);
+            valueResolver.getTimerService().removeJob(memory.getJobHandle());
         }
 
         @Override
-        public void end(SequenceMemory memory, ReteEvaluator reteEvaluator)  {
-            defaultController.end(memory, reteEvaluator);
-            reteEvaluator.getTimerService().removeJob(memory.getJobHandle());
+        public void end(SequenceMemory memory, ValueResolver valueResolver)  {
+            defaultController.end(memory, valueResolver);
+            valueResolver.getTimerService().removeJob(memory.getJobHandle());
             memory.setJobHandle(null);
         }
 
@@ -267,23 +251,23 @@ public class Sequence {
         }
 
         @Override
-        public void start(SequenceMemory memory, ReteEvaluator reteEvaluator) {
+        public void start(SequenceMemory memory, ValueResolver valueResolver) {
             for ( SequenceController controller : controllers ) {
-                controller.start(memory, reteEvaluator);
+                controller.start(memory, valueResolver);
             }
         }
 
         @Override
-        public void restart(SequenceMemory memory, ReteEvaluator reteEvaluator) {
+        public void restart(SequenceMemory memory, ValueResolver valueResolver) {
             for ( SequenceController controller : controllers ) {
-                controller.restart(memory, reteEvaluator);
+                controller.restart(memory, valueResolver);
             }
         }
 
         @Override
-        public void end(SequenceMemory memory, ReteEvaluator reteEvaluator)  {
+        public void end(SequenceMemory memory, ValueResolver valueResolver)  {
             for ( SequenceController controller : controllers ) {
-                controller.end(memory, reteEvaluator);
+                controller.end(memory, valueResolver);
             }
         }
     }
@@ -300,9 +284,9 @@ public class Sequence {
 
         public void execute(JobContext ctx) {
             SequenceTimerJobContext timerJobCtx   = (SequenceTimerJobContext) ctx;
-            ReteEvaluator           reteEvaluator = timerJobCtx.getReteEvaluator();
+            ValueResolver           valueResolver = timerJobCtx.getValueResolver();
             System.out.println("add propagation");
-            reteEvaluator.addPropagation( new SequenceTimerAction(timerJobCtx ));
+            valueResolver.addPropagation( new SequenceTimerAction(timerJobCtx ));
         }
     }
 
@@ -314,15 +298,15 @@ public class Sequence {
 
         private       JobHandle     jobHandle;
         private final Trigger       trigger;
-        private final ReteEvaluator reteEvaluator;
+        private final ValueResolver valueResolver;
 
         private final SequenceMemory sequenceMemory;
 
         private final int actionType;
 
-        public SequenceTimerJobContext(int actionType, Trigger trigger, ReteEvaluator reteEvaluator, SequenceMemory sequenceMemory) {
+        public SequenceTimerJobContext(int actionType, Trigger trigger, ValueResolver valueResolver, SequenceMemory sequenceMemory) {
             this.trigger         = trigger;
-            this.reteEvaluator   = reteEvaluator;
+            this.valueResolver   = valueResolver;
             this.sequenceMemory = sequenceMemory;
             this.actionType = actionType;
         }
@@ -332,8 +316,8 @@ public class Sequence {
         }
 
         @Override
-        public ReteEvaluator getReteEvaluator() {
-            return reteEvaluator;
+        public ValueResolver getValueResolver() {
+            return valueResolver;
         }
 
         public void setJobHandle(JobHandle jobHandle) {
@@ -354,18 +338,18 @@ public class Sequence {
     }
 
     public static class SequenceTimerAction
-            extends PropagationEntry.AbstractPropagationEntry
+            extends AbstractPropagationEntry
             implements WorkingMemoryAction {
 
         private final SequenceTimerJobContext jobCtx;
 
-        private SequenceTimerAction( SequenceTimerJobContext jobCtx) {
+        private SequenceTimerAction(SequenceTimerJobContext jobCtx) {
             this.jobCtx = jobCtx;
         }
 
         @Override
         public boolean requiresImmediateFlushing() {
-            return jobCtx.getReteEvaluator().getRuleSessionConfiguration().getTimedRuleExecutionFilter() != null;
+            return jobCtx.getValueResolver().getKieSessionConfiguration().as(RuleSessionConfiguration.KEY).getTimedRuleExecutionFilter() != null;
         }
 
         @Override
@@ -599,7 +583,7 @@ public class Sequence {
             }
         }
 
-        public void resetLogicGateMemory(int gateIndex, ReteEvaluator reteEvaluator) {
+        public void resetLogicGateMemory(int gateIndex, ValueResolver valueResolver) {
             gateMemory[gateIndex]     = 0;
             signalStatuses[gateIndex] = null;
         }
@@ -609,16 +593,16 @@ public class Sequence {
             counterMemories[counterIndex]                    = 0;
         }
 
-        public void cancelJobHandle(int gateIndex, ReteEvaluator reteEvaluator) {
+        public void cancelJobHandle(int gateIndex, ValueResolver valueResolver) {
             if (jobHandles != null) {
                 JobHandle handle = jobHandles[gateIndex];
-                reteEvaluator.getTimerService().removeJob(handle);
+                valueResolver.getTimerService().removeJob(handle);
                 jobHandles[gateIndex] = null;
                 System.out.println("Job handle cancelled: " + handle);
             }
         }
 
-        public void clearJobHandle(int gateIndex, ReteEvaluator reteEvaluator) {
+        public void clearJobHandle(int gateIndex, ValueResolver valueResolver) {
             jobHandles[gateIndex] = null;
             System.out.println("Job handle cleared: ");
         }

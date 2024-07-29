@@ -38,7 +38,9 @@ import org.drools.core.common.ObjectTypeConfigurationRegistry;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.impl.InternalRuleBase;
-import org.drools.core.phreak.PropagationEntry;
+import org.drools.core.phreak.actions.Delete;
+import org.drools.core.phreak.actions.Insert;
+import org.drools.core.phreak.actions.Update;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.util.bitmask.BitMask;
 import org.slf4j.Logger;
@@ -197,9 +199,9 @@ public class EntryPointNode extends ObjectSource implements ObjectSink {
             // In case of parallel execution the CompositePartitionAwareObjectSinkAdapter
             // used by the OTNs will take care of enqueueing this insertion on the propagation queues
             // of the different agendas
-            PropagationEntry.Insert.execute( handle, context, reteEvaluator, objectTypeConf );
+            Insert.execute(handle, context, reteEvaluator, objectTypeConf);
         } else {
-            reteEvaluator.addPropagation( new PropagationEntry.Insert( handle, context, reteEvaluator, objectTypeConf ) );
+            reteEvaluator.addPropagation( new Insert(handle, context, reteEvaluator, objectTypeConf ));
         }
     }
 
@@ -213,9 +215,9 @@ public class EntryPointNode extends ObjectSource implements ObjectSink {
         }
 
         if (reteEvaluator.isThreadSafe()) {
-            reteEvaluator.addPropagation( new PropagationEntry.Update( handle, pctx, objectTypeConf ) );
+            reteEvaluator.addPropagation( new Update(handle, pctx, objectTypeConf ));
         } else {
-            PropagationEntry.Update.execute( handle, pctx, objectTypeConf, reteEvaluator );
+            Update.execute(handle, pctx, objectTypeConf, reteEvaluator);
         }
     }
 
@@ -297,7 +299,7 @@ public class EntryPointNode extends ObjectSource implements ObjectSink {
             log.trace( "Delete {}", handle.toString()  );
         }
 
-        reteEvaluator.addPropagation(new PropagationEntry.Delete(this, handle, context, objectTypeConf));
+        reteEvaluator.addPropagation(new Delete(this, handle, context, objectTypeConf));
     }
 
     public void immediateDeleteObject(InternalFactHandle handle, PropagationContext context,
@@ -306,7 +308,7 @@ public class EntryPointNode extends ObjectSource implements ObjectSink {
             log.trace( "Delete {}", handle.toString()  );
         }
 
-        PropagationEntry.Delete.execute(reteEvaluator, this, handle, context, objectTypeConf);
+        Delete.execute(reteEvaluator, this, handle, context, objectTypeConf);
     }
 
     public void propagateRetract(InternalFactHandle handle, PropagationContext context, ObjectTypeConf objectTypeConf, ReteEvaluator reteEvaluator) {

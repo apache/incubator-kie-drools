@@ -16,10 +16,29 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.drools.core.time;
+package org.drools.core.phreak;
 
-import org.drools.core.time.impl.TimerJobInstance;
+import org.drools.base.base.ValueResolver;
 
-public interface InternalSchedulerService {
-    public void internalSchedule(TimerJobInstance timerJobInstance);
+public interface PropagationEntry<T extends ValueResolver> {
+
+    default void execute(T t) {
+        internalExecute(t);
+        t.onWorkingMemoryAction(this);
+    }
+
+    void internalExecute(T t);
+
+    PropagationEntry getNext();
+    void setNext(PropagationEntry next);
+
+    boolean requiresImmediateFlushing();
+    
+    boolean isCalledFromRHS();
+
+    boolean isPartitionSplittable();
+    PropagationEntry getSplitForPartition(int partitionNr);
+
+    boolean defersExpiration();
+
 }

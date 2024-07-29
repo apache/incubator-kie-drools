@@ -27,16 +27,16 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.MockLeftTupleSink;
 import org.drools.core.reteoo.SequenceNode.DynamicFilterProto;
-import org.drools.core.reteoo.sequencing.Gates;
-import org.drools.core.reteoo.sequencing.LogicCircuit;
-import org.drools.core.reteoo.sequencing.LogicGate;
+import org.drools.core.reteoo.sequencing.signalprocessors.Gates;
+import org.drools.core.reteoo.sequencing.signalprocessors.LogicCircuit;
+import org.drools.core.reteoo.sequencing.signalprocessors.LogicGate;
 import org.drools.core.reteoo.sequencing.Sequence;
 import org.drools.core.reteoo.sequencing.Sequence.LoopController;
 import org.drools.core.reteoo.sequencing.Sequence.SequenceMemory;
 import org.drools.core.reteoo.sequencing.Sequencer;
 import org.drools.core.reteoo.sequencing.Sequencer.SequencerMemory;
-import org.drools.core.reteoo.sequencing.Step;
-import org.drools.core.reteoo.sequencing.TerminatingSignalProcessor;
+import org.drools.core.reteoo.sequencing.steps.Step;
+import org.drools.core.reteoo.sequencing.signalprocessors.TerminatingSignalProcessor;
 import org.drools.kiesession.rulebase.SessionsAwareKnowledgeBase;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.mvel.integrationtests.phreak.A;
@@ -101,8 +101,8 @@ public class PhreakSequencerSubsequenceLoopTest extends AbstractPhreakSequencerS
         gate4.setOutput(TerminatingSignalProcessor.get());
         LogicCircuit circuit4 = new LogicCircuit(gate4);
 
-        seq1 = new Sequence(1, circuit1, circuit2);
-        seq2 = new Sequence(2, circuit3, circuit4);
+        seq1 = new Sequence(1, Step.of(circuit1), Step.of(circuit2));
+        seq2 = new Sequence(2, Step.of(circuit3), Step.of(circuit4));
 
         seq0 = new Sequence(0, Step.of(seq1), Step.of(seq2));
         mnode.setSequencer(new Sequencer(seq0));

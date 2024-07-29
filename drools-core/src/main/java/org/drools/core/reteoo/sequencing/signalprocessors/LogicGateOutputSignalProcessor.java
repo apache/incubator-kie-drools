@@ -1,6 +1,6 @@
-package org.drools.core.reteoo.sequencing;
+package org.drools.core.reteoo.sequencing.signalprocessors;
 
-import org.drools.core.common.ReteEvaluator;
+import org.drools.base.base.ValueResolver;
 import org.drools.core.reteoo.sequencing.Sequence.SequenceMemory;
 
 public class LogicGateOutputSignalProcessor extends SignalProcessor {
@@ -36,31 +36,31 @@ public class LogicGateOutputSignalProcessor extends SignalProcessor {
         }
     }
 
-    public void consume(SignalStatus signalStatus, SequenceMemory memory, ReteEvaluator reteEvaluator) {
+    public void consume(SignalStatus signalStatus, SequenceMemory memory, ValueResolver valueResolver) {
         switch (gates.length) {
             case 4:
-                gate4.consume(index4, signalStatus, memory, reteEvaluator);
+                gate4.consume(index4, signalStatus, memory, valueResolver);
             case 3:
-                gate3.consume(index3, signalStatus, memory, reteEvaluator);
+                gate3.consume(index3, signalStatus, memory, valueResolver);
             case 2:
-                gate2.consume(index2, signalStatus, memory, reteEvaluator);
+                gate2.consume(index2, signalStatus, memory, valueResolver);
             case 1:
-                gate1.consume(index1, signalStatus, memory, reteEvaluator);
+                gate1.consume(index1, signalStatus, memory, valueResolver);
                 break;
             default:
                 for (int i = gates.length - 1; i >= 0; i--) {
-                    gates[i].getGate().consume(gates[i].getBitIndex(), signalStatus, memory, reteEvaluator);
+                    gates[i].getGate().consume(gates[i].getBitIndex(), signalStatus, memory, valueResolver);
                 }
         }
     }
 
     @Override
-    public void consume(int signalBitIndex, SignalStatus signalStatus, SequenceMemory memory, ReteEvaluator reteEvaluator) {
+    public void consume(int signalBitIndex, SignalStatus signalStatus, SequenceMemory memory, ValueResolver valueResolver) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    protected void reset(SequenceMemory memory, ReteEvaluator reteEvaluator) {
+    protected void reset(SequenceMemory memory, ValueResolver valueResolver) {
         // Do nothing
     }
 }

@@ -1,4 +1,4 @@
-package org.drools.core.reteoo.sequencing;
+package org.drools.core.reteoo.sequencing.signalprocessors;
 
 public class SignalIndex {
     private final LogicGate gate;

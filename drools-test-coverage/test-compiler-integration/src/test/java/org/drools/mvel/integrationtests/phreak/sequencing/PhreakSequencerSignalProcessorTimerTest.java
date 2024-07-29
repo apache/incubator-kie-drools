@@ -24,16 +24,17 @@ import org.drools.base.rule.Pattern;
 import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.reteoo.SequenceNode.DynamicFilterProto;
-import org.drools.core.reteoo.sequencing.ConditionalSignalCounter;
-import org.drools.core.reteoo.sequencing.Gates;
-import org.drools.core.reteoo.sequencing.LogicCircuit;
-import org.drools.core.reteoo.sequencing.LogicGate;
-import org.drools.core.reteoo.sequencing.LogicGate.DelayFromActivatedTimer;
-import org.drools.core.reteoo.sequencing.LogicGate.DelayFromMatchTimer;
-import org.drools.core.reteoo.sequencing.LogicGate.TimeoutTimer;
+import org.drools.core.reteoo.sequencing.signalprocessors.ConditionalSignalCounter;
+import org.drools.core.reteoo.sequencing.signalprocessors.Gates;
+import org.drools.core.reteoo.sequencing.signalprocessors.LogicCircuit;
+import org.drools.core.reteoo.sequencing.signalprocessors.LogicGate;
+import org.drools.core.reteoo.sequencing.signalprocessors.LogicGate.DelayFromActivatedTimer;
+import org.drools.core.reteoo.sequencing.signalprocessors.LogicGate.DelayFromMatchTimer;
+import org.drools.core.reteoo.sequencing.signalprocessors.LogicGate.TimeoutTimer;
 import org.drools.core.reteoo.sequencing.Sequence;
 import org.drools.core.reteoo.sequencing.Sequencer;
-import org.drools.core.reteoo.sequencing.TerminatingSignalProcessor;
+import org.drools.core.reteoo.sequencing.steps.Step;
+import org.drools.core.reteoo.sequencing.signalprocessors.TerminatingSignalProcessor;
 import org.drools.core.time.impl.DurationTimer;
 import org.drools.core.time.impl.PseudoClockScheduler;
 import org.drools.mvel.integrationtests.phreak.A;
@@ -107,7 +108,7 @@ public class PhreakSequencerSignalProcessorTimerTest extends AbstractPhreakSeque
 
         LogicCircuit circuit1 = new LogicCircuit(gate1);
 
-        Sequence seq = new Sequence(0, circuit1);
+        Sequence seq = new Sequence(0, Step.of(circuit1));
         mnode.setSequencer(new Sequencer(seq));
         mnode.setDynamicFilters( new DynamicFilterProto[] {bfilter, cfilter});
 
@@ -152,7 +153,7 @@ public class PhreakSequencerSignalProcessorTimerTest extends AbstractPhreakSeque
 
         LogicCircuit circuit1 = new LogicCircuit(gate1);
 
-        Sequence seq = new Sequence(0, circuit1);
+        Sequence seq = new Sequence(0, Step.of(circuit1));
         mnode.setSequencer(new Sequencer(seq));
         mnode.setDynamicFilters( new DynamicFilterProto[] {bfilter});
 
@@ -196,7 +197,7 @@ public class PhreakSequencerSignalProcessorTimerTest extends AbstractPhreakSeque
 
         LogicCircuit circuit1 = new LogicCircuit(gate1);
 
-        Sequence seq = new Sequence(0, circuit1);
+        Sequence seq = new Sequence(0, Step.of(circuit1));
         mnode.setSequencer(new Sequencer(seq));
         mnode.setDynamicFilters( new DynamicFilterProto[] {bfilter, cfilter});
 
@@ -237,7 +238,7 @@ public class PhreakSequencerSignalProcessorTimerTest extends AbstractPhreakSeque
 
         LogicCircuit circuit1 = new LogicCircuit(gate1);
 
-        Sequence seq = new Sequence(0, circuit1);
+        Sequence seq = new Sequence(0, Step.of(circuit1));
         mnode.setSequencer(new Sequencer(seq));
         mnode.setDynamicFilters( new DynamicFilterProto[] {bfilter, cfilter});
 

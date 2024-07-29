@@ -1,7 +1,7 @@
-package org.drools.core.reteoo.sequencing;
+package org.drools.core.reteoo.sequencing.signalprocessors;
 
+import org.drools.base.base.ValueResolver;
 import org.drools.base.util.index.ConstraintTypeOperator;
-import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.sequencing.Sequence.SequenceMemory;
 
 import java.util.function.Consumer;
@@ -60,15 +60,15 @@ public class ConditionalSignalCounter extends SignalProcessor {
     }
 
     @Override
-    public void consume(SignalStatus incommingSignalStatus, SequenceMemory memory, ReteEvaluator reteEvaluator) {
+    public void consume(SignalStatus incommingSignalStatus, SequenceMemory memory, ValueResolver valueResolver) {
         consume(incommingSignalStatus, memory,
-                (SignalStatus status) -> output.consume(status, memory, reteEvaluator));
+                (SignalStatus status) -> output.consume(status, memory, valueResolver));
     }
 
     @Override
-    public void consume(int signalBitIndex, SignalStatus incommingSignalStatus, SequenceMemory memory, ReteEvaluator reteEvaluator) {
+    public void consume(int signalBitIndex, SignalStatus incommingSignalStatus, SequenceMemory memory, ValueResolver valueResolver) {
         consume(incommingSignalStatus, memory,
-                (SignalStatus status) -> output.consume(signalBitIndex, incommingSignalStatus, memory, reteEvaluator));
+                (SignalStatus status) -> output.consume(signalBitIndex, incommingSignalStatus, memory, valueResolver));
     }
 
     private void consume(SignalStatus inputSignalStatus, SequenceMemory memory, Consumer<SignalStatus> propagator) {
@@ -102,7 +102,7 @@ public class ConditionalSignalCounter extends SignalProcessor {
 
     LongPredicate ANY = c -> true;
 
-    public void reset(SequenceMemory memory, ReteEvaluator reteEvaluator) {
+    public void reset(SequenceMemory memory, ValueResolver valueResolver) {
         memory.resetSignalCounterMemory(counterIndex);
     }
 }

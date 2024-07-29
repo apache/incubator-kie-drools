@@ -21,10 +21,12 @@ package org.drools.core.phreak;
 import java.util.Date;
 import java.util.List;
 
+import org.drools.base.base.ValueResolver;
 import org.drools.base.common.NetworkNode;
 import org.drools.base.time.JobHandle;
 import org.drools.base.time.Trigger;
-import org.drools.base.time.impl.Timer;
+import org.drools.base.time.Timer;
+import org.drools.core.RuleSessionConfiguration;
 import org.drools.core.common.ActivationsManager;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.PropagationContext;
@@ -32,6 +34,7 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.marshalling.TupleKey;
+import org.drools.core.phreak.actions.AbstractPropagationEntry;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.LeftTupleSource;
@@ -40,11 +43,10 @@ import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.reteoo.SegmentNodeMemory;
 import org.drools.core.reteoo.TimerNode;
 import org.drools.core.reteoo.TimerNode.TimerNodeMemory;
-import org.drools.core.reteoo.Tuple;
 import org.drools.core.reteoo.TupleFactory;
 import org.drools.core.reteoo.TupleImpl;
-import org.drools.core.time.Job;
-import org.drools.core.time.JobContext;
+import org.drools.base.time.Job;
+import org.drools.base.time.JobContext;
 import org.drools.core.time.TimerService;
 import org.drools.core.time.impl.DefaultJobHandle;
 import org.drools.core.util.LinkedList;
@@ -365,13 +367,13 @@ public class PhreakTimerNode {
             Job {
         public void execute(JobContext ctx) {
             TimerNodeJobContext timerJobCtx = (TimerNodeJobContext) ctx;
-            ReteEvaluator reteEvaluator = timerJobCtx.getReteEvaluator();
+            ValueResolver reteEvaluator = timerJobCtx.getValueResolver();
             reteEvaluator.addPropagation( new TimerAction( timerJobCtx ) );
         }
     }
 
     public static class TimerAction
-            extends PropagationEntry.AbstractPropagationEntry
+            extends AbstractPropagationEntry
             implements WorkingMemoryAction {
 
         private final TimerNodeJobContext timerJobCtx;
@@ -382,7 +384,7 @@ public class PhreakTimerNode {
 
         @Override
         public boolean requiresImmediateFlushing() {
-            return timerJobCtx.getReteEvaluator().getRuleSessionConfiguration().getTimedRuleExecutionFilter() != null;
+            return timerJobCtx.getValueResolver().getKieSessionConfiguration().as(RuleSessionConfiguration.KEY).getTimedRuleExecutionFilter() != null;
         }
 
         @Override
@@ -496,7 +498,7 @@ public class PhreakTimerNode {
         }
 
         @Override
-        public ReteEvaluator getReteEvaluator() {
+        public ValueResolver getValueResolver() {
             return reteEvaluator;
         }
 

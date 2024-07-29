@@ -41,7 +41,7 @@ import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
 import org.drools.base.rule.constraint.BetaConstraint;
 import org.drools.base.rule.constraint.Constraint;
 import org.drools.base.rule.constraint.XpathConstraint;
-import org.drools.base.time.impl.Timer;
+import org.drools.base.time.Timer;
 import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeNode;

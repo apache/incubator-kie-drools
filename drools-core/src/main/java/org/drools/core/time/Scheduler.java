@@ -18,6 +18,8 @@
  */
 package org.drools.core.time;
 
+import org.drools.base.time.Job;
+import org.drools.base.time.JobContext;
 import org.drools.base.time.JobHandle;
 import org.drools.base.time.Trigger;
 

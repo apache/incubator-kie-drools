@@ -25,15 +25,15 @@ import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.reteoo.SequenceNode.DynamicFilterProto;
-import org.drools.core.reteoo.sequencing.Gates;
-import org.drools.core.reteoo.sequencing.LogicCircuit;
-import org.drools.core.reteoo.sequencing.LogicGate;
+import org.drools.core.reteoo.sequencing.signalprocessors.Gates;
+import org.drools.core.reteoo.sequencing.signalprocessors.LogicCircuit;
+import org.drools.core.reteoo.sequencing.signalprocessors.LogicGate;
 import org.drools.core.reteoo.sequencing.Sequence;
 import org.drools.core.reteoo.sequencing.Sequence.LoopController;
 import org.drools.core.reteoo.sequencing.Sequence.SequenceMemory;
 import org.drools.core.reteoo.sequencing.Sequencer;
-import org.drools.core.reteoo.sequencing.Step;
-import org.drools.core.reteoo.sequencing.TerminatingSignalProcessor;
+import org.drools.core.reteoo.sequencing.steps.Step;
+import org.drools.core.reteoo.sequencing.signalprocessors.TerminatingSignalProcessor;
 import org.drools.core.util.CircularArrayList;
 import org.drools.kiesession.rulebase.SessionsAwareKnowledgeBase;
 import org.drools.mvel.integrationtests.phreak.A;
@@ -81,7 +81,7 @@ public class PhreakSequencerAggregatorTest extends AbstractPhreakSequencerSubseq
         LogicCircuit circuit3 = getLogicCircuit();
         LogicCircuit circuit4 = getLogicCircuit();
 
-        seq1 = new Sequence(1, circuit2, circuit3);
+        seq1 = new Sequence(1, Step.of(circuit2), Step.of(circuit3));
         seq1.setController(new LoopController(m -> m.getCount() < 2));
 
         Consumer<SequenceMemory> aggregator = memory -> {

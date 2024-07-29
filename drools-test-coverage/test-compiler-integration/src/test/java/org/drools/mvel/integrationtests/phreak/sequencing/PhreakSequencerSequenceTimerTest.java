@@ -24,14 +24,15 @@ import org.drools.base.rule.Pattern;
 import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.reteoo.SequenceNode.DynamicFilterProto;
-import org.drools.core.reteoo.sequencing.Gates;
-import org.drools.core.reteoo.sequencing.LogicCircuit;
-import org.drools.core.reteoo.sequencing.LogicGate;
+import org.drools.core.reteoo.sequencing.signalprocessors.Gates;
+import org.drools.core.reteoo.sequencing.signalprocessors.LogicCircuit;
+import org.drools.core.reteoo.sequencing.signalprocessors.LogicGate;
 import org.drools.core.reteoo.sequencing.Sequence;
 import org.drools.core.reteoo.sequencing.Sequence.SequenceMemory;
 import org.drools.core.reteoo.sequencing.Sequence.TimoutController;
 import org.drools.core.reteoo.sequencing.Sequencer;
-import org.drools.core.reteoo.sequencing.TerminatingSignalProcessor;
+import org.drools.core.reteoo.sequencing.steps.Step;
+import org.drools.core.reteoo.sequencing.signalprocessors.TerminatingSignalProcessor;
 import org.drools.core.time.impl.DurationTimer;
 import org.drools.core.time.impl.PseudoClockScheduler;
 import org.drools.mvel.integrationtests.phreak.A;
@@ -90,14 +91,14 @@ public class PhreakSequencerSequenceTimerTest  extends AbstractPhreakSequencerSu
         gate2.setOutput(TerminatingSignalProcessor.get());
         LogicCircuit circuit2 = new LogicCircuit(gate2);
 
-        seq0 = new Sequence(0, circuit1, circuit2);
+        seq0 = new Sequence(0, Step.of(circuit1), Step.of(circuit2));
         mnode.setSequencer(new Sequencer(seq0));
         mnode.setDynamicFilters(new DynamicFilterProto[]{bfilter, cfilter});
     }
 
     @Test
     public void testSequenceTimeout() {
-        seq0.setController(new TimoutController(seq0, new DurationTimer(1000)));
+        seq0.setController(new TimoutController(new DurationTimer(1000)));
         createSession();
 
         ArrayList<SequenceMemory> stack = sequencerMemory.getSequenceStack();
@@ -116,7 +117,7 @@ public class PhreakSequencerSequenceTimerTest  extends AbstractPhreakSequencerSu
 
     @Test
     public void testSequenceComplete() {
-        seq0.setController(new TimoutController(seq0, new DurationTimer(1000)));
+        seq0.setController(new TimoutController(new DurationTimer(1000)));
         createSession();
 
         ArrayList<SequenceMemory> stack = sequencerMemory.getSequenceStack();
