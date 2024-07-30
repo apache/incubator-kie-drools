@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * <p>
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -26,13 +26,14 @@ public class TupleIdentifier {
     private final String name;
 
     static final String AUTO_GENERATED_ID_PREFIX = "auto-generated-id";
+    static final String AUTO_GENERATED_NAME_PREFIX = "auto-generated-name";
 
     static TupleIdentifier createTupleIdentifier(String id, String name) {
         return new TupleIdentifier(id, name);
     }
 
     static TupleIdentifier createTupleIdentifierById(String id) {
-        return new TupleIdentifier(id, null);
+        return new TupleIdentifier(id, generateNameFromId(id));
     }
 
     static TupleIdentifier createTupleIdentifierByName(String name) {
@@ -41,6 +42,10 @@ public class TupleIdentifier {
 
     static String generateIdFromName(String name) {
         return String.format("%s-%s", AUTO_GENERATED_ID_PREFIX, Objects.hash(name));
+    }
+
+    static String generateNameFromId(String id) {
+        return String.format("%s-%s", AUTO_GENERATED_NAME_PREFIX, Objects.hash(id));
     }
 
     public TupleIdentifier(String id, String name) {
@@ -65,9 +70,13 @@ public class TupleIdentifier {
             return false;
         }
         // This "null" availability it is to allow for search based only on id or name
-        boolean equalId = id == null || that.id == null || id.equals(that.id);
-        boolean equalName = name == null || that.name == null || name.equals(that.name);
-        return equalId && equalName;
+        if (id == null || that.id == null) {
+            return Objects.equals(name, that.name);
+        } else if (name == null || that.name == null) {
+            return Objects.equals(id, that.id);
+        } else {
+            return Objects.equals(id, that.id) && Objects.equals(name, that.name);
+        }
     }
 
     @Override

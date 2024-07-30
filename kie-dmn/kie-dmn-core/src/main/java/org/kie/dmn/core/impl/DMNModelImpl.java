@@ -181,7 +181,7 @@ public class DMNModelImpl
 
     @Override
     public InputDataNode getInputById(String id) {
-        return this.inputs.get( createTupleIdentifierById(id) );
+        return this.inputs.get( new TupleIdentifier(id, null) );
     }
 
     @Override
@@ -218,7 +218,7 @@ public class DMNModelImpl
 
     @Override
     public DecisionNode getDecisionById(String id) {
-        return id != null ? this.decisions.get(createTupleIdentifierById(id)) : null;
+        return id != null ? this.decisions.get(new TupleIdentifier(id, null)) : null;
     }
 
     @Override
@@ -259,7 +259,7 @@ public class DMNModelImpl
     }
 
     public DecisionServiceNode getDecisionServiceById(String id) {
-        return this.decisionServices.get(createTupleIdentifierById(id));
+        return this.decisionServices.get(new TupleIdentifier(id, null));
     }
 
     public DecisionServiceNode getDecisionServiceByName(String name) {
@@ -280,7 +280,7 @@ public class DMNModelImpl
 
     @Override
     public BusinessKnowledgeModelNode getBusinessKnowledgeModelById(String id) {
-        return this.bkms.get( createTupleIdentifierById(id) );
+        return this.bkms.get( new TupleIdentifier(id, null) );
     }
 
     @Override
@@ -316,7 +316,7 @@ public class DMNModelImpl
 
     @Override
     public ItemDefNode getItemDefinitionById(String id) {
-        return this.itemDefs.get( createTupleIdentifierById(id) );
+        return this.itemDefs.get( new TupleIdentifier(id, null) );
     }
 
     @Override

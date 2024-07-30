@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * <p>
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -20,10 +20,8 @@ package org.kie.dmn.core.impl;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
+
 
 class TupleIdentifierTest {
 
@@ -32,17 +30,17 @@ class TupleIdentifierTest {
         String name = "name";
         String wrongName = "wrong-name";
         String retrieved = TupleIdentifier.generateIdFromName(name);
-        assertEquals(retrieved, TupleIdentifier.generateIdFromName(name));
-        assertNotEquals(retrieved, TupleIdentifier.generateIdFromName(wrongName));
+        assertThat(retrieved).isEqualTo(TupleIdentifier.generateIdFromName(name));
+        assertThat(retrieved).isNotEqualTo(TupleIdentifier.generateIdFromName(wrongName));
     }
 
     @Test
     void createTupleIdentifierByName() {
         String id = "123124";
         TupleIdentifier retrieved = TupleIdentifier.createTupleIdentifierById(id);
-        assertNotNull(retrieved);
-        assertEquals(retrieved.getId(), id);
-        assertNull(retrieved.getName());
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved.getId()).isEqualTo(id);
+        assertThat(retrieved.getName()).isNotNull();
     }
 
     @Test
@@ -50,8 +48,8 @@ class TupleIdentifierTest {
         String name = "name";
         String wrongName = "wrong-name";
         String retrieved = TupleIdentifier.generateIdFromName(name);
-        assertEquals(retrieved, TupleIdentifier.generateIdFromName(name));
-        assertNotEquals(retrieved, TupleIdentifier.generateIdFromName(wrongName));
+        assertThat(retrieved).isEqualTo(TupleIdentifier.generateIdFromName(name));
+        assertThat(retrieved).isNotEqualTo(TupleIdentifier.generateIdFromName(wrongName));
     }
 
     @Test
@@ -61,14 +59,13 @@ class TupleIdentifierTest {
         String name = "name";
         String wrongName = "wrong-name";
         TupleIdentifier original = new TupleIdentifier(id, name);
-        assertEquals(original, new TupleIdentifier(id, name));
-        assertEquals(original, new TupleIdentifier(null, name));
-        assertEquals(original, new TupleIdentifier(id, null));
-        assertNotEquals(original, new TupleIdentifier(id, wrongName));
-        assertNotEquals(original, new TupleIdentifier(wrongId, name));
-        assertNotEquals(original, new TupleIdentifier(wrongId, wrongName));
-        assertNotEquals(original, new TupleIdentifier(null, wrongName));
-        assertNotEquals(original, new TupleIdentifier(wrongId, null));
-
+        assertThat(original).isEqualTo(new TupleIdentifier(id, name));
+        assertThat(original).isEqualTo(new TupleIdentifier(null, name));
+        assertThat(original).isEqualTo(new TupleIdentifier(id, null));
+        assertThat(original).isNotEqualTo(new TupleIdentifier(id, wrongName));
+        assertThat(original).isNotEqualTo(new TupleIdentifier(wrongId, name));
+        assertThat(original).isNotEqualTo(new TupleIdentifier(wrongId, wrongName));
+        assertThat(original).isNotEqualTo(new TupleIdentifier(null, wrongName));
+        assertThat(original).isNotEqualTo(new TupleIdentifier(wrongId, null));
     }
 }

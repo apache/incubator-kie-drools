@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<definitions xmlns:semantic="https://www.omg.org/spec/DMN/20211108/MODEL/" 
+                      xmlns:dmn11="http://www.omg.org/spec/DMN/20151101/dmn.xsd" 
+                      xmlns:rss="http://purl.org/rss/2.0/" 
+                      xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" 
+                      xmlns:drools="http://www.drools.org/kie/dmn/1.1" 
+                      xmlns:trisofeed="http://trisotech.com/feed" 
+                      xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" 
+                      xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" 
+                      xmlns:triso="http://www.trisotech.com/2015/triso/modeling" 
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+                      xmlns:feel="https://www.omg.org/spec/DMN/20211108/FEEL/" 
+                      xmlns:include1="http://www.trisotech.com/definitions/_ae5b3c17-1ac3-4e1d-b4f9-2cf861aec6d9"             
+                      xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn"  
+                      xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"  
+                      xmlns="https://www.omg.org/spec/DMN/20211108/MODEL/" 
+                      id="_2a1d771a-a899-4fef-abd6-fc894332337c" name="Model B" 
+                      namespace="http://www.trisotech.com/definitions/_2a1d771a-a899-4fef-abd6-fc894332337c" exporter="DMN Modeler" exporterVersion="6.2.4.2" triso:logoChoice="Default">
+    <import namespace="http://www.trisotech.com/definitions/_ae5b3c17-1ac3-4e1d-b4f9-2cf861aec6d9" 
+                     name="modelA" 
+                     importType="https://www.omg.org/spec/DMN/20211108/MODEL/" />
+    <decision id="_96df766e-23e1-4aa6-9d5d-545fbe2f1e23" name="Evaluating Say Hello" triso:useOutputTypeAsAnswer="false">
+        <variable name="Evaluating Say Hello" id="_0a5ade68-3746-4022-99e3-e15e42216725" typeRef="string"/>
+        <informationRequirement id="_d3627327-056c-4117-b167-df7029d21511">
+            <requiredDecision href="http://www.trisotech.com/definitions/_ae5b3c17-1ac3-4e1d-b4f9-2cf861aec6d9#_f7fdaec4-d669-4797-b3b4-12b860de2eb5"/>
+        </informationRequirement>
+        <literalExpression typeRef="string" id="_026e05fb-6c07-4046-9c52-716ba5619a69" triso:expressionId="_5d8ea0f4-1c32-450d-a141-60df64654436">
+            <text>"Evaluating Say Hello to: "+modelA.Greet the Person</text>
+        </literalExpression>
+    </decision>
+</definitions>

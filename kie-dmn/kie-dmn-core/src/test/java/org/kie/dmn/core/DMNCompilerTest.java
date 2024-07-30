@@ -20,10 +20,12 @@ package org.kie.dmn.core;
 
 import java.util.Arrays;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.dmn.api.core.DMNContext;
+import org.kie.dmn.api.core.DMNDecisionResult;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
@@ -37,6 +39,7 @@ import org.kie.dmn.core.impl.BaseDMNTypeImpl;
 import org.kie.dmn.core.impl.CompositeTypeImpl;
 import org.kie.dmn.core.impl.DMNContextFPAImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
+import org.kie.dmn.core.impl.DMNResultImpl;
 import org.kie.dmn.core.impl.SimpleTypeImpl;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.kie.dmn.feel.lang.EvaluationContext;
@@ -47,6 +50,8 @@ import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
+import static org.assertj.core.api.InstanceOfAssertFactories.map;
+import static org.kie.dmn.api.core.DMNDecisionResult.DecisionEvaluationStatus.SUCCEEDED;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.core.util.DynamicTypeUtils.mapOf;
 import static org.kie.dmn.core.util.DynamicTypeUtils.prototype;
@@ -284,6 +289,57 @@ public class DMNCompilerTest extends BaseVariantTest {
             Map<String, Object> allProperties = outputSet.allFEELProperties();
             assertThat(allProperties.get("Greeting")).isEqualTo("Hello John!");
         }
+    }
+
+    @ParameterizedTest
+    @MethodSource("params")
+    void testNestedImports(VariantTestConf conf) {
+        testConfig = conf;
+        final DMNRuntime runtime = createRuntimeWithAdditionalResources("0089-nested-inputdata-imports.dmn",
+                                                                        this.getClass(),
+                                                                        "Model_B.dmn",
+                                                                        "Model_B2.dmn",
+                                                                        "Say_hello_1ID1D.dmn");
+
+        final DMNModel importedModelB = runtime.getModel("http://www.trisotech.com/definitions/_2a1d771a-a899-4fef-abd6-fc894332337c",
+                                                        "Model B");
+        assertThat(importedModelB).isNotNull();
+        for (final DMNMessage message : importedModelB.getMessages()) {
+            LOG.debug("{}", message);
+        }
+
+        final DMNModel importedModelB2 = runtime.getModel("http://www.trisotech.com/definitions/_9d46ece4-a96c-4cb0-abc0-0ca121ac3768",
+                                                         "Model B2");
+        assertThat(importedModelB2).isNotNull();
+        for (final DMNMessage message : importedModelB2.getMessages()) {
+            LOG.debug("{}", message);
+        }
+
+        final DMNModel importedModelA= runtime.getModel("http://www.trisotech.com/definitions/_ae5b3c17-1ac3-4e1d-b4f9-2cf861aec6d9",
+                                                         "Say hello 1ID1D");
+        assertThat(importedModelA).isNotNull();
+        for (final DMNMessage message : importedModelA.getMessages()) {
+            LOG.debug("{}", message);
+        }
+
+        final DMNModel modelC = runtime.getModel("http://www.trisotech.com/definitions/_10435dcd-8774-4575-a338-49dd554a0928",
+                                                   "Model C");
+        assertThat(modelC).isNotNull();
+        for (final DMNMessage message : modelC.getMessages()) {
+            LOG.debug("{}", message);
+        }
+
+        final DMNContext context = runtime.newContext();
+        context.set("Model B", mapOf(entry("modelA", mapOf(entry("Person name", "B.A.John")))));
+        context.set("Model B2", mapOf(entry("modelA", mapOf(entry("Person name", "B2.A.John2")))));
+
+        final DMNResult evaluateModelCDecision = runtime.evaluateByName(modelC, context, "Model C Decision based on Bs");
+        for (final DMNMessage message : evaluateModelCDecision.getMessages()) {
+            LOG.debug("{}", message);
+        }
+        LOG.debug("{}", evaluateModelCDecision);
+        assertThat(evaluateModelCDecision.getDecisionResults()).size().isEqualTo(3);
+        evaluateModelCDecision.getDecisionResults().forEach(dmnDecisionResult -> assertThat(dmnDecisionResult.getEvaluationStatus()).isEqualTo(SUCCEEDED));
     }
 
     @ParameterizedTest
