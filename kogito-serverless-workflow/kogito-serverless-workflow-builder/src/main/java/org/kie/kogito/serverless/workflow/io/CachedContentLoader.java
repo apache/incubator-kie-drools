@@ -20,7 +20,6 @@ package org.kie.kogito.serverless.workflow.io;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.net.URI;
 import java.nio.file.Path;
 import java.util.Optional;
 
@@ -48,10 +47,10 @@ public abstract class CachedContentLoader implements URIContentLoader {
         }
     }
 
-    private final URI uri;
+    protected final String uri;
     private URIContentLoader[] fallbackContentLoaders;
 
-    protected CachedContentLoader(URI uri, URIContentLoader... fallbackContentLoaders) {
+    protected CachedContentLoader(String uri, URIContentLoader... fallbackContentLoaders) {
         this.uri = uri;
         this.fallbackContentLoaders = fallbackContentLoaders;
     }
@@ -91,10 +90,13 @@ public abstract class CachedContentLoader implements URIContentLoader {
         }
     }
 
-    protected abstract byte[] loadURI(URI uri);
-
-    @Override
-    public URI uri() {
-        return uri;
+    protected static String trimScheme(String uri, String scheme) {
+        String str = uri;
+        if (str.toLowerCase().startsWith(scheme)) {
+            str = str.substring(scheme.length());
+        }
+        return str;
     }
+
+    protected abstract byte[] loadURI();
 }

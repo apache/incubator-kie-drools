@@ -18,7 +18,6 @@
  */
 package org.kie.kogito.serverless.workflow.io;
 
-import java.net.URI;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -45,7 +44,7 @@ class ClassPathContentLoaderTest {
     }
 
     void testPath(String prefix) {
-        ClassPathContentLoader contentLoader = new ClassPathContentLoader(URI.create(prefix + PATH), Optional.empty());
+        ClassPathContentLoader contentLoader = new ClassPathContentLoader(prefix + PATH, Optional.empty());
         assertThat(contentLoader.classpath()).isEqualTo(PATH);
     }
 

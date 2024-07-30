@@ -72,7 +72,8 @@ public class WorkflowRPCCodeGenProvider implements CodeGenProvider {
             }
             ProtocUtils.generateDescriptor(protoFiles, context);
             return true;
-        } catch (IOException io) {
+        } catch (Exception io) {
+            logger.error("Exception generating RPC code", io);
             throw new CodeGenException(io);
         }
     }

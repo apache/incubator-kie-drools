@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
+import java.net.URL;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.HashMap;
@@ -50,17 +51,19 @@ class HttpContentLoader extends CachedContentLoader {
 
     private Optional<Workflow> workflow;
     private String authRef;
+    private final URIContentLoaderType type;
 
-    HttpContentLoader(URI uri, Optional<Workflow> workflow, String authRef) {
+    HttpContentLoader(String uri, Optional<Workflow> workflow, String authRef, URIContentLoaderType type) {
         super(uri);
         this.workflow = workflow;
         this.authRef = authRef;
+        this.type = type;
     }
 
     @Override
-    protected byte[] loadURI(URI u) {
+    protected byte[] loadURI() {
         try {
-            HttpURLConnection conn = (HttpURLConnection) u.toURL().openConnection();
+            HttpURLConnection conn = (HttpURLConnection) new URL(uri).openConnection();
             // some http servers required specific accept header (*/* is specified for those we do not care about accept) 
             conn.setRequestProperty("Accept", "application/json,application/yaml,application/yml,application/text,text/*,*/*");
             workflow.map(Workflow::getAuth).map(Auth::getAuthDefs).stream().flatMap(Collection::stream)
@@ -74,7 +77,7 @@ class HttpContentLoader extends CachedContentLoader {
             } else {
                 try (InputStream is = conn.getErrorStream()) {
                     throw new IllegalArgumentException(String.format(
-                            "Failed to fetch remote file: %s. Status code is %d and response: %n %s", u, code, is == null ? "" : new String(is.readAllBytes())));
+                            "Failed to fetch remote file: %s. Status code is %d and response: %n %s", uri, code, is == null ? "" : new String(is.readAllBytes())));
                 }
             }
         } catch (IOException io) {
@@ -147,6 +150,11 @@ class HttpContentLoader extends CachedContentLoader {
 
     @Override
     public URIContentLoaderType type() {
-        return URIContentLoaderType.HTTP;
+        return type;
     }
+
+    static String uriToPath(String uri) {
+        return URI.create(uri).getPath();
+    }
+
 }

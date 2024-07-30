@@ -18,7 +18,6 @@
  */
 package org.kie.kogito.serverless.workflow.utils;
 
-import java.net.URI;
 import java.util.Optional;
 
 import org.kie.kogito.serverless.workflow.parser.ParserContext;
@@ -41,7 +40,7 @@ public class OpenAPIFactory {
     private OpenAPIFactory() {
     }
 
-    public static OpenAPI getOpenAPI(URI uri, Workflow workflow, FunctionDefinition function, Optional<ParserContext> context) {
+    public static OpenAPI getOpenAPI(String uri, Workflow workflow, FunctionDefinition function, Optional<ParserContext> context) {
         SwaggerParseResult result =
                 new OpenAPIParser().readContents(readString(buildLoader(uri, workflow, context, function.getAuthRef())), null, null);
         OpenAPI openAPI = result.getOpenAPI();

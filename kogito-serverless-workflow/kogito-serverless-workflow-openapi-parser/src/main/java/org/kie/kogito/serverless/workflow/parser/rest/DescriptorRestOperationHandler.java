@@ -18,7 +18,6 @@
  */
 package org.kie.kogito.serverless.workflow.parser.rest;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
@@ -86,7 +85,7 @@ public class DescriptorRestOperationHandler extends OpenAPITypeHandler {
     private <T extends RuleFlowNodeContainerFactory<T, ?>> WorkItemNodeFactory<T> addOpenApiParameters(WorkItemNodeFactory<T> node,
             Workflow workflow,
             FunctionDefinition function, ParserContext parserContext, WorkflowOperationId operationId) {
-        URI uri = operationId.getUri();
+        String uri = operationId.getUri();
         String serviceName = replaceNonAlphanumeric(operationId.getFileName());
         // although OpenAPIParser has built in support to load uri, it messes up when using contextclassloader, so using our retrieval apis to get the content
         OpenAPI openAPI = OpenAPIFactory.getOpenAPI(uri, workflow, function, Optional.of(parserContext));

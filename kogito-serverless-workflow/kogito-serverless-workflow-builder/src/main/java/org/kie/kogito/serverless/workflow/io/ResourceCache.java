@@ -18,9 +18,8 @@
  */
 package org.kie.kogito.serverless.workflow.io;
 
-import java.net.URI;
-import java.util.function.Function;
+import java.util.function.Supplier;
 
 public interface ResourceCache {
-    byte[] get(URI uri, Function<URI, byte[]> retrieveCall);
+    byte[] get(String uri, Supplier<byte[]> retrieveCall);
 }

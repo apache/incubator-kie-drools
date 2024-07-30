@@ -20,7 +20,6 @@ package org.kie.kogito.serverless.workflow.operationid;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.net.URI;
 import java.util.Optional;
 
 import org.kie.kogito.jackson.utils.ObjectMapperFactory;
@@ -47,13 +46,13 @@ public abstract class AbstractWorkflowOperationIdFactory implements WorkflowOper
     public WorkflowOperationId from(Workflow workflow, FunctionDefinition function, Optional<ParserContext> context) {
         ActionResource actionResource = ActionResourceFactory.getActionResource(function);
         Optional<String> convertedUri = convertURI(workflow, context, actionResource.getUri());
-        final URI uri;
         final String fileName;
+        final String uri;
         if (convertedUri.isPresent()) {
-            uri = URI.create(convertedUri.get());
+            uri = convertedUri.get();
             fileName = actionResource.getUri();
         } else {
-            uri = URI.create(actionResource.getUri());
+            uri = actionResource.getUri();
             fileName = getFileName(workflow, function, context, uri, actionResource.getOperation(), actionResource.getService());
         }
         if (fileName == null || fileName.isBlank()) {
@@ -88,5 +87,5 @@ public abstract class AbstractWorkflowOperationIdFactory implements WorkflowOper
         return definitions;
     }
 
-    protected abstract String getFileName(Workflow workflow, FunctionDefinition function, Optional<ParserContext> context, URI uri, String operation, String service);
+    protected abstract String getFileName(Workflow workflow, FunctionDefinition function, Optional<ParserContext> context, String uri, String operation, String service);
 }

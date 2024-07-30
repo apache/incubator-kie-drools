@@ -175,7 +175,7 @@ public class ServerlessWorkflowParser {
 
     private Optional<WorkflowModelValidator> modelValidator(ParserContext parserContext, Optional<DataInputSchema> schema) {
         return schema.map(s -> new JsonSchemaValidatorSupplier(JsonSchemaReader.read(
-                getBaseURI(workflow).map(u -> compoundURI(u, URI.create(s.getSchema()))).orElseGet(() -> URI.create(s.getSchema())),
+                getBaseURI(workflow).map(u -> compoundURI(u, s.getSchema())).orElseGet(() -> s.getSchema()),
                 readBytes(s.getSchema(), workflow, parserContext)), s.isFailOnValidationErrors()));
     }
 

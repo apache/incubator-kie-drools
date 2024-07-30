@@ -25,18 +25,34 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class FileContentLoader extends CachedContentLoader {
 
     private final Path path;
 
-    FileContentLoader(URI uri, URIContentLoader... fallbackContentLoaders) {
+    private static final Logger logger = LoggerFactory.getLogger(FileContentLoader.class);
+
+    FileContentLoader(String uri, URIContentLoader... fallbackContentLoaders) {
         super(uri, fallbackContentLoaders);
-        this.path = Path.of(getPath(uri));
+        this.path = obtainPath(uri);
     }
 
     @Override
     public URIContentLoaderType type() {
         return URIContentLoaderType.FILE;
+    }
+
+    private static Path obtainPath(String uri) {
+        if (uri.startsWith(URIContentLoaderType.FILE.scheme())) {
+            try {
+                return Path.of(URI.create(uri));
+            } catch (Exception ex) {
+                logger.info("URI {} is not valid one according to Java, trying alternative approach", uri, ex);
+            }
+        }
+        return Path.of(uriToPath(uri));
     }
 
     @Override
@@ -45,7 +61,7 @@ public class FileContentLoader extends CachedContentLoader {
     }
 
     @Override
-    protected byte[] loadURI(URI uri) {
+    protected byte[] loadURI() {
         try {
             return Files.readAllBytes(path);
         } catch (IOException io) {
@@ -53,7 +69,7 @@ public class FileContentLoader extends CachedContentLoader {
         }
     }
 
-    static String getPath(URI uri) {
-        return uri.getPath();
+    static String uriToPath(String uri) {
+        return trimScheme(uri, URIContentLoaderType.FILE.scheme());
     }
 }

@@ -19,7 +19,6 @@
 package org.kie.kogito.serverless.workflow.io;
 
 import java.io.UncheckedIOException;
-import java.net.URI;
 import java.net.URISyntaxException;
 
 import org.junit.jupiter.api.Test;
@@ -35,12 +34,12 @@ class URIContentLoaderTest {
 
     @Test
     void testExistingFile() throws URISyntaxException {
-        assertThat(readString(builder(Thread.currentThread().getContextClassLoader().getResource("pepe.txt").toURI()))).isEqualTo("my name is javierito");
+        assertThat(readString(builder(Thread.currentThread().getContextClassLoader().getResource("pepe a pepa.txt").toURI()))).isEqualTo("my name is javierito");
     }
 
     @Test
     void testExistingClasspath() {
-        assertThat(readString(builder("classpath:pepe.txt"))).isEqualTo("my name is javierito");
+        assertThat(readString(builder("classpath:pepe a pepa.txt"))).isEqualTo("my name is javierito");
     }
 
     @Test
@@ -52,18 +51,19 @@ class URIContentLoaderTest {
     @Test
     void testNotExistingClasspath() {
         Builder builder = builder("classpath:/noPepe.txt");
-        assertThatExceptionOfType(UncheckedIOException.class).isThrownBy(() -> readString(builder));
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> readString(builder));
     }
 
     @Test
     void testCompoundURI() {
-        assertThat(compoundURI(URI.create("classpath:pepe.json"), URI.create("pepa.json"))).isEqualTo(URI.create("classpath:/pepa.json"));
-        assertThat(compoundURI(URI.create("classpath:pepe.json"), URI.create("file:///pepa.json"))).isEqualTo(URI.create("file:///pepa.json"));
-        assertThat(compoundURI(URI.create("classpath:schema/pepe.json"), URI.create("/pepa.json"))).isEqualTo(URI.create("classpath:/pepa.json"));
-        assertThat(compoundURI(URI.create("classpath:schema/pepe.json"), URI.create("pepa.json"))).isEqualTo(URI.create("classpath:/schema/pepa.json"));
-        assertThat(compoundURI(URI.create("pepe.json"), URI.create("pepa.json"))).isEqualTo(URI.create("file:///pepa.json"));
-        assertThat(compoundURI(URI.create("schema/pepe.json"), URI.create("pepa.json"))).isEqualTo(URI.create("file:///schema/pepa.json"));
-        assertThat(compoundURI(URI.create("schema/pepe.json"), URI.create("/pepa.json"))).isEqualTo(URI.create("file:///pepa.json"));
-        assertThat(compoundURI(URI.create("pepe.json"), URI.create("classpath:pepa.json"))).isEqualTo(URI.create("classpath:pepa.json"));
+        assertThat(compoundURI("classpath:pepe.json", "pepa.json")).isEqualTo("classpath:pepa.json");
+        assertThat(compoundURI("classpath:pepe.json", "file:/pepa.json")).isEqualTo("file:/pepa.json");
+        assertThat(compoundURI("classpath:schema/pepe.json", "/pepa.json")).isEqualTo("classpath:/pepa.json");
+        assertThat(compoundURI("classpath:schema/pepe.json", "pepa.json")).isEqualTo("classpath:schema/pepa.json");
+        assertThat(compoundURI("pepe.json", "pepa.json")).isEqualTo("pepa.json");
+        assertThat(compoundURI("schema/pepe.json", "pepa.json")).isEqualTo("schema/pepa.json");
+        assertThat(compoundURI("schema/pepe.json", "/pepa.json")).isEqualTo("/pepa.json");
+        assertThat(compoundURI("pepe.json", "classpath:pepa.json")).isEqualTo("classpath:pepa.json");
     }
+
 }

@@ -18,12 +18,11 @@
  */
 package org.kie.kogito.serverless.workflow.io;
 
-import java.net.URI;
 import java.util.Collections;
 import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class ResourceCacheFactory {
     private static final AtomicReference<ResourceCache> cache = new AtomicReference<>(new LocalResourceCache());
@@ -33,11 +32,11 @@ public class ResourceCacheFactory {
     }
 
     private static class LocalResourceCache implements ResourceCache {
-        private final Map<URI, byte[]> map = Collections.synchronizedMap(new WeakHashMap<>());
+        private final Map<String, byte[]> map = Collections.synchronizedMap(new WeakHashMap<>());
 
         @Override
-        public byte[] get(URI uri, Function<URI, byte[]> retrieveCall) {
-            return map.computeIfAbsent(uri, retrieveCall);
+        public byte[] get(String uri, Supplier<byte[]> retrieveCall) {
+            return map.computeIfAbsent(uri, u -> retrieveCall.get());
         }
 
     }

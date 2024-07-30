@@ -19,13 +19,10 @@
 package org.kie.kogito.serverless.workflow.io;
 
 import java.io.InputStream;
-import java.net.URI;
 import java.nio.file.Path;
 import java.util.Optional;
 
 public interface URIContentLoader {
-
-    URI uri();
 
     InputStream getInputStream();
 

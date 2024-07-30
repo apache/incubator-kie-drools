@@ -18,16 +18,14 @@
  */
 package org.kie.kogito.serverless.workflow.operationid;
 
-import java.net.URI;
-
 public class WorkflowOperationId {
-    private final URI uri;
+    private final String uri;
     private final String operation;
     private final String fileName;
     private final String packageName;
     private final String service;
 
-    WorkflowOperationId(URI uri, String operation, String service, String fileName, String packageName) {
+    WorkflowOperationId(String uri, String operation, String service, String fileName, String packageName) {
         this.uri = uri;
         this.operation = operation;
         this.service = service;
@@ -35,7 +33,7 @@ public class WorkflowOperationId {
         this.packageName = packageName;
     }
 
-    public URI getUri() {
+    public String getUri() {
         return uri;
     }
 

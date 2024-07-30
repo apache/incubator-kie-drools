@@ -18,8 +18,7 @@
  */
 package org.kie.kogito.serverless.workflow.io;
 
-import java.net.URI;
-import java.util.function.Function;
+import java.util.function.Supplier;
 
 import io.quarkus.cache.Cache;
 import io.quarkus.cache.CacheName;
@@ -40,7 +39,7 @@ public class QuarkusResourceCache {
         ResourceCacheFactory.setResourceCache(this::get);
     }
 
-    private byte[] get(URI uri, Function<URI, byte[]> retrieveCall) {
-        return cache.get(uri, retrieveCall).await().indefinitely();
+    private byte[] get(String uri, Supplier<byte[]> retrieveCall) {
+        return cache.get(uri, u -> retrieveCall.get()).await().indefinitely();
     }
 }

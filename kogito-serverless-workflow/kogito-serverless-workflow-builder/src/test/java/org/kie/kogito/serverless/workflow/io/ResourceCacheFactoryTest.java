@@ -18,11 +18,10 @@
  */
 package org.kie.kogito.serverless.workflow.io;
 
-import java.net.URI;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Function;
+import java.util.function.Supplier;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,13 +30,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class ResourceCacheFactoryTest {
 
-    private URI uri;
+    private String uri;
 
     private AtomicInteger counter;
 
     @BeforeEach
     void setup() {
-        uri = URI.create("http:://www.google.com");
+        uri = "http:://www.google.com";
         counter = new AtomicInteger();
     }
 
@@ -62,11 +61,11 @@ public class ResourceCacheFactoryTest {
     }
 
     private static class TestResourceCache implements ResourceCache {
-        private Map<URI, byte[]> map = new ConcurrentHashMap<>();
+        private Map<String, byte[]> map = new ConcurrentHashMap<>();
 
         @Override
-        public byte[] get(URI uri, Function<URI, byte[]> retrieveCall) {
-            return map.computeIfAbsent(uri, retrieveCall);
+        public byte[] get(String uri, Supplier<byte[]> retrieveCall) {
+            return map.computeIfAbsent(uri, u -> retrieveCall.get());
         }
     }
 
@@ -77,7 +76,7 @@ public class ResourceCacheFactoryTest {
         }
     }
 
-    private byte[] called(URI uri) {
+    private byte[] called() {
         return new byte[] { (byte) counter.incrementAndGet() };
     }
 }

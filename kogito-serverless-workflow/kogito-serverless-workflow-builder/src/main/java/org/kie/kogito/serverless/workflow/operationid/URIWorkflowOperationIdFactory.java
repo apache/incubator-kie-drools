@@ -18,11 +18,10 @@
  */
 package org.kie.kogito.serverless.workflow.operationid;
 
-import java.net.URI;
-import java.nio.file.Path;
 import java.util.Optional;
 import java.util.Set;
 
+import org.kie.kogito.serverless.workflow.io.URIContentLoaderType;
 import org.kie.kogito.serverless.workflow.parser.ParserContext;
 
 import io.serverlessworkflow.api.Workflow;
@@ -33,8 +32,8 @@ public class URIWorkflowOperationIdFactory extends AbstractWorkflowOperationIdFa
     public static final String URI_PROP_VALUE = "FULL_URI";
 
     @Override
-    public String getFileName(Workflow workflow, FunctionDefinition function, Optional<ParserContext> context, URI uri, String operation, String service) {
-        return Path.of(uri.getPath()).toString();
+    public String getFileName(Workflow workflow, FunctionDefinition function, Optional<ParserContext> context, String uri, String operation, String service) {
+        return URIContentLoaderType.from(uri).uriToPath(uri);
     }
 
     @Override

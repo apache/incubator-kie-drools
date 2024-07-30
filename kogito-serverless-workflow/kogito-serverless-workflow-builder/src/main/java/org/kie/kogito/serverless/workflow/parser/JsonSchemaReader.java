@@ -20,7 +20,6 @@ package org.kie.kogito.serverless.workflow.parser;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -62,12 +61,12 @@ class JsonSchemaReader {
         }
     }
 
-    static JsonNode read(URI baseURI, byte[] content) {
+    static JsonNode read(String baseURI, byte[] content) {
         try {
             ObjectNode node = ObjectMapperFactory.get().readValue(content, ObjectNode.class);
             JsonNode id = node.get("$id");
             if (id != null) {
-                baseURI = URI.create(id.asText());
+                baseURI = id.asText();
             }
             Objects.requireNonNull(baseURI, "BaseURI must not be null");
             Map<String, JsonSchema> schemas = new HashMap<>();
@@ -88,7 +87,7 @@ class JsonSchemaReader {
         return node;
     }
 
-    private static void replaceRefsWithDefs(JsonNode node, URI baseURI, Map<String, JsonSchema> schemas, Counter counter) {
+    private static void replaceRefsWithDefs(JsonNode node, String baseURI, Map<String, JsonSchema> schemas, Counter counter) {
         if (node.isArray()) {
             node.elements().forEachRemaining(n -> replaceRefsWithDefs(n, baseURI, schemas, counter));
         } else if (node.isObject()) {
@@ -103,7 +102,7 @@ class JsonSchemaReader {
         }
     }
 
-    private static JsonSchema readSchema(String schemaRef, URI baseURI, Counter counter) {
+    private static JsonSchema readSchema(String schemaRef, String baseURI, Counter counter) {
         try {
             return new JsonSchema(
                     ObjectMapperFactory.get().readValue(URIContentLoaderFactory.readAllBytes(URIContentLoaderFactory.builder(schemaRef).withBaseURI(baseURI)), ObjectNode.class), counter);

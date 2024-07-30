@@ -19,35 +19,44 @@
 package org.kie.kogito.serverless.workflow.io;
 
 import java.io.File;
-import java.net.URI;
+import java.util.Optional;
+import java.util.function.Function;
 
 public enum URIContentLoaderType {
-    CLASSPATH(),
-    FILE(File.separatorChar),
-    HTTP();
+    CLASSPATH(ClassPathContentLoader::uriToPath),
+    FILE(FileContentLoader::uriToPath, File.separatorChar),
+    HTTP(HttpContentLoader::uriToPath),
+    HTTPS(HttpContentLoader::uriToPath);
 
     private final char[] additionalSeparators;
+    private final Function<String, String> getPathFunction;
 
-    private URIContentLoaderType(char... additionalSeparators) {
+    private final String scheme = name().toLowerCase() + ':';
+
+    private URIContentLoaderType(Function<String, String> getPathFunction, char... additionalSeparators) {
+        this.getPathFunction = getPathFunction;
         this.additionalSeparators = additionalSeparators;
     }
 
-    public static URIContentLoaderType from(URI uri) {
-        String scheme = uri.getScheme();
-        if (scheme == null) {
-            return FILE;
-        }
-        switch (uri.getScheme().toLowerCase()) {
-            case "file":
-                return FILE;
-            case "classpath":
-                return CLASSPATH;
-            case "http":
-            case "https":
-                return HTTP;
-            default:
-                throw new IllegalArgumentException("Unrecognized uri protocol " + uri);
-        }
+    public static Optional<String> scheme(String uri) {
+        int indexOf = uri.indexOf(":");
+        return indexOf == -1 ? Optional.empty() : Optional.of(uri.substring(0, indexOf).toLowerCase());
+    }
+
+    public static URIContentLoaderType from(String uri) {
+        return scheme(uri).map(scheme -> {
+            switch (scheme) {
+                default:
+                case "file":
+                    return FILE;
+                case "classpath":
+                    return CLASSPATH;
+                case "http":
+                    return HTTP;
+                case "https":
+                    return HTTPS;
+            }
+        }).orElse(FILE);
     }
 
     public boolean isAbsolutePath(String path) {
@@ -63,21 +72,32 @@ public enum URIContentLoaderType {
     }
 
     public String concat(String basePath, String additionalPath) {
-        char separator = separator();
-        if (!basePath.isBlank() && !isAbsolutePath(basePath)) {
-            basePath = separator + basePath;
+        if (isAbsolutePath(additionalPath)) {
+            return keepSchemaIfPresent(basePath, additionalPath);
         }
-        return basePath + separator + additionalPath;
+        int indexOf = lastIndexOf(basePath);
+        if (indexOf != -1) {
+            return keepSchemaIfPresent(basePath, basePath.substring(0, indexOf + 1) + additionalPath);
+        } else {
+            return keepSchemaIfPresent(basePath, additionalPath);
+        }
     }
 
-    public String trimLast(String path) {
-        int indexOf = lastIndexOf(path);
-        return indexOf != -1 ? path.substring(0, indexOf) : "";
+    private String keepSchemaIfPresent(String basePath, String resultPath) {
+        return basePath.startsWith(scheme) && !resultPath.startsWith(scheme) ? scheme + resultPath : resultPath;
     }
 
     public String lastPart(String path) {
         int indexOf = lastIndexOf(path);
         return indexOf != -1 ? path.substring(indexOf + 1) : path;
+    }
+
+    public String scheme() {
+        return scheme;
+    }
+
+    public String uriToPath(String uri) {
+        return getPathFunction.apply(uri);
     }
 
     private int lastIndexOf(String path) {
@@ -89,7 +109,4 @@ public enum URIContentLoaderType {
         return indexOf;
     }
 
-    private char separator() {
-        return additionalSeparators.length > 0 ? additionalSeparators[0] : '/';
-    }
 }
