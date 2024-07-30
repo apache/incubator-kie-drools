@@ -1,6 +1,7 @@
 package org.drools.core.reteoo.sequencing;
 
 import org.drools.base.base.ValueResolver;
+import org.drools.base.rule.RuleComponent;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
@@ -86,8 +87,6 @@ public class Sequencer {
 
         private final CircularArrayList<Object> events;
 
-        private final SequenceNode node;
-
         private final SequenceMemory[] sequenceMemories;
 
         private final LeftTupleSink sink;
@@ -96,13 +95,15 @@ public class Sequencer {
 
         private final ArrayList<SequenceMemory> sequenceStack = new ArrayList<>();
 
-        public SequencerMemory(TupleImpl lt, LeftTupleSink sink, SequenceNode node, SequenceNodeMemory nodeMemory) {
+        private Sequencer sequencer;
+
+        public SequencerMemory(Sequencer sequencer, TupleImpl lt, LeftTupleSink sink, SequenceNodeMemory nodeMemory) {
+            this.sequencer        = sequencer;
             this.lt               = lt;
             this.events           = new CircularArrayList<>(FactHandle.class, 100);
-            this.node             = node;
             this.sink             = sink;
             this.nodeMemory       = nodeMemory;
-            this.sequenceMemories = new SequenceMemory[node.getSequencer().getSequencences().length];
+            this.sequenceMemories = new SequenceMemory[sequencer.getSequencences().length];
 
         }
 
@@ -118,12 +119,12 @@ public class Sequencer {
             return sink;
         }
 
-        public SequenceNode getNode() {
-            return node;
-        }
-
         public SequenceNodeMemory getNodeMemory() {
             return nodeMemory;
+        }
+
+        public Sequencer getSequencer() {
+            return sequencer;
         }
 
         public SequenceMemory getCurrentSequence() {

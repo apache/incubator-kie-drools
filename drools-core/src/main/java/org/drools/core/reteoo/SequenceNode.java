@@ -31,6 +31,7 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.reteoo.SequenceNode.SequenceNodeMemory;
+import org.drools.core.reteoo.sequencing.DynamicFilters;
 import org.drools.core.reteoo.sequencing.Sequence.SequenceMemory;
 import org.drools.core.reteoo.sequencing.signalprocessors.SignalProcessor;
 import org.drools.core.reteoo.sequencing.signalprocessors.SignalStatus;
@@ -144,7 +145,7 @@ public class SequenceNode extends LeftTupleSource
     }
 
     public SequencerMemory createSequencerMemory(TupleImpl lt, LeftTupleSink sink, SequenceNodeMemory nodeMemory) {
-        SequencerMemory sequencerMemory = new SequencerMemory(lt, sink,this, nodeMemory);
+        SequencerMemory sequencerMemory = new SequencerMemory(sequencer, lt, sink, nodeMemory);
 
         return sequencerMemory;
     }
@@ -219,7 +220,7 @@ public class SequenceNode extends LeftTupleSource
     public static class SequenceNodeMemory extends AbstractLinkedListNode<Memory>
         implements
         Externalizable,
-        Memory {
+        Memory, DynamicFilters {
 
         private static final long serialVersionUID = 510l;
 

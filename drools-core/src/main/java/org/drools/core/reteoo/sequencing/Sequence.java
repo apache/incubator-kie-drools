@@ -1,6 +1,9 @@
 package org.drools.core.reteoo.sequencing;
 
 import org.drools.base.base.ValueResolver;
+import org.drools.base.rule.Declaration;
+import org.drools.base.rule.RuleComponent;
+import org.drools.base.rule.RuleConditionElement;
 import org.drools.base.time.JobHandle;
 import org.drools.base.time.Trigger;
 import org.drools.base.time.Timer;
@@ -21,13 +24,17 @@ import org.drools.core.reteoo.sequencing.steps.Step.StepFactory;
 import org.drools.base.time.Job;
 import org.drools.base.time.JobContext;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-public class Sequence {
+public class Sequence implements RuleConditionElement {
     private final int sequenceIndex;
 
     private Step[] steps;
@@ -111,6 +118,46 @@ public class Sequence {
         this.controller = controller;
     }
 
+    @Override
+    public Map<String, Declaration> getInnerDeclarations() {
+        return Map.of();
+    }
+
+    @Override
+    public Map<String, Declaration> getOuterDeclarations() {
+        return Map.of();
+    }
+
+    @Override
+    public Declaration resolveDeclaration(String identifier) {
+        return null;
+    }
+
+    @Override
+    public RuleConditionElement clone() {
+        return null;
+    }
+
+    @Override
+    public List<? extends RuleConditionElement> getNestedElements() {
+        return List.of();
+    }
+
+    @Override
+    public boolean isPatternScopeDelimiter() {
+        return false;
+    }
+
+    @Override
+    public void writeExternal(ObjectOutput out) throws IOException {
+
+    }
+
+    @Override
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+
+    }
+
     public void start(SequencerMemory memory, ValueResolver valueResolver) {
         SequenceMemory sequenceMemory = memory.getSequenceMemory(this);
         memory.pushSequence(sequenceMemory);
@@ -167,7 +214,7 @@ public class Sequence {
         public void end(SequenceMemory sequenceMemory, ValueResolver valueResolver)  {
             SequencerMemory sequencerMemory = sequenceMemory.getSequencerMemory();
             sequencerMemory.popSequence(); // pop is here, but the push was in the start step
-            sequencerMemory.getNode().getSequencer().next(sequencerMemory, valueResolver);
+            sequencerMemory.getSequencer().next(sequencerMemory, valueResolver);
         }
 
         @Override
@@ -193,7 +240,7 @@ public class Sequence {
                 sequenceMemory.getSequence().restart(sequenceMemory, valueResolver);
             } else {
                 sequencerMemory.popSequence(); // pop is here, but the push was in the start step
-                sequencerMemory.getNode().getSequencer().next(sequencerMemory, valueResolver);
+                sequencerMemory.getSequencer().next(sequencerMemory, valueResolver);
             }
         }
 
@@ -419,20 +466,20 @@ public class Sequence {
 
         private final SignalStatus[] signalStatuses;
 
-        private final SequenceNodeMemory nodeMemory;
+        private final DynamicFilters dynamicFilters;
 
         private int eventsStartPosition;
 
         public SequenceMemory(SequencerMemory sequencerMemory, Sequence sequence,
                               SignalAdapter[] signalAdapters, SignalAdapter[] activeSignalAdapters,
-                              long[] gateMemory, long[] counterMemories, SequenceNodeMemory nodeMemory) {
+                              long[] gateMemory, long[] counterMemories, DynamicFilters dynamicFilters) {
             this.sequencerMemory      = sequencerMemory;
             this.sequence             = sequence;
             this.signalAdapters       = signalAdapters;
             this.activeSignalAdapters = activeSignalAdapters;
             this.gateMemory           = gateMemory;
             this.counterMemories      = counterMemories;
-            this.nodeMemory           = nodeMemory;
+            this.dynamicFilters       = dynamicFilters;
             this.signalStatuses       = new SignalStatus[gateMemory.length + counterMemories.length];
         }
 
@@ -499,10 +546,6 @@ public class Sequence {
             return signalStatuses;
         }
 
-        public SequenceNodeMemory getNodeMemory() {
-            return nodeMemory;
-        }
-
         public int incrementStep() {
             return ++step;
         }
@@ -552,7 +595,7 @@ public class Sequence {
 
             activeSignalAdapters[signalAdapterIndex] = signalAdapter;
 
-            DynamicFilter filter = nodeMemory.getActiveDynamicFilter(filterIndex);
+            DynamicFilter filter = dynamicFilters.getActiveDynamicFilter(filterIndex);
             filter.addSignalAdapter(signalAdapter);
 
             return signalAdapter;
@@ -575,11 +618,11 @@ public class Sequence {
             SignalAdapter signalAdapter = activeSignalAdapters[signalAdapterIndex];
             activeSignalAdapters[signalAdapterIndex] = null;
 
-            DynamicFilter filter = nodeMemory.getActiveDynamicFilter(filterIndex);
+            DynamicFilter filter = dynamicFilters.getActiveDynamicFilter(filterIndex);
             filter.removeSignalAdapter(signalAdapter);
 
             if (filter.getSignalAdapters().isEmpty()) {
-                nodeMemory.removeActiveFilter(filter);
+                dynamicFilters.removeActiveFilter(filter);
             }
         }
 

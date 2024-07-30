@@ -395,7 +395,7 @@ public class LogicGate extends SignalProcessor {
                         System.out.println("1");
                     } else {
                         // fail
-                        sequenceMemory.getSequencerMemory().getNode().getSequencer().fail(sequenceMemory);
+                        sequenceMemory.getSequencerMemory().getSequencer().fail(sequenceMemory);
                         System.out.println("2");
                     }
                     break;
@@ -403,7 +403,7 @@ public class LogicGate extends SignalProcessor {
                     // fail, if not already transitioned
                     if (status != SignalStatus.MATCHED) {
                         // fail
-                        sequenceMemory.getSequencerMemory().getNode().getSequencer().fail(sequenceMemory);
+                        sequenceMemory.getSequencerMemory().getSequencer().fail(sequenceMemory);
                         System.out.println("3");
                     }
                     break;

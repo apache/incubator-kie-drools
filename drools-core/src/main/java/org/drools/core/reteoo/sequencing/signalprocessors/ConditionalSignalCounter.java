@@ -23,7 +23,7 @@ public class ConditionalSignalCounter extends SignalProcessor {
     public ConditionalSignalCounter(int signalIndex, int counterIndex, ConstraintTypeOperator operator, long cardinal) {
         this.signalIndex = signalIndex;
         this.counterIndex = counterIndex;
-        constraint        = c -> {
+        this.constraint        = c -> {
             switch (operator) {
                 case EQUAL:
                     return c == cardinal;
@@ -90,7 +90,7 @@ public class ConditionalSignalCounter extends SignalProcessor {
         memory.setCounterSignalStatus(counterIndex, status);
 
         if (status == SignalStatus.FAILED) {
-            memory.getSequencerMemory().getNode().getSequencer().fail(memory);
+            memory.getSequencerMemory().getSequencer().fail(memory);
         } else if (priorStatus != status) {
             propagator.accept(status);
         }
