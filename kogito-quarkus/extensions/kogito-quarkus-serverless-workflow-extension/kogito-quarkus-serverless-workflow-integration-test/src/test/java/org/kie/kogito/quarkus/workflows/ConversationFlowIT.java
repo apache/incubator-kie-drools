@@ -18,7 +18,7 @@
  */
 package org.kie.kogito.quarkus.workflows;
 
-import java.util.Collections;
+import java.util.Map;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -46,16 +46,34 @@ class ConversationFlowIT {
         given()
                 .contentType(ContentType.JSON)
                 .when()
-                .body(
-                        Collections
-                                .singletonMap(
-                                        "workflowdata",
-                                        Collections.singletonMap("fahrenheit", "100")))
+                .body(Map.of("fahrenheit", "100", "clusterName", "cluster1"))
                 .post("/fahrenheit_to_celsius")
                 .then()
                 .statusCode(201)
                 .body("id", notNullValue())
                 .body("workflowdata.fahrenheit", is("100"))
                 .body("workflowdata.celsius", is(37.808f)); //values from mock server
+    }
+
+    @Test
+    void wrongCluster() {
+        given()
+                .contentType(ContentType.JSON)
+                .when()
+                .body(Map.of("fahrenheit", "100", "clusterName", "cluster2"))
+                .post("/fahrenheit_to_celsius")
+                .then()
+                .statusCode(400);
+    }
+
+    @Test
+    void wrongData() {
+        given()
+                .contentType(ContentType.JSON)
+                .when()
+                .body(Map.of("fahrenheit", "100"))
+                .post("/fahrenheit_to_celsius")
+                .then()
+                .statusCode(400);
     }
 }

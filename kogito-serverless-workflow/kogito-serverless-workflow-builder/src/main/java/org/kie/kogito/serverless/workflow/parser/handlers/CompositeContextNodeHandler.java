@@ -19,6 +19,7 @@
 package org.kie.kogito.serverless.workflow.parser.handlers;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -209,9 +210,15 @@ public abstract class CompositeContextNodeHandler<S extends State> extends State
     private NodeFactory fromFunctionDefinition(RuleFlowNodeContainerFactory<?, ?> embeddedSubProcess,
             FunctionDefinition functionDef,
             FunctionRef functionRef, VariableInfo varInfo) {
-        return FunctionTypeHandlerFactory.instance().getTypeHandler(functionDef)
+        NodeFactory result = FunctionTypeHandlerFactory.instance().getTypeHandler(functionDef)
                 .map(type -> type.getActionNode(workflow, parserContext, embeddedSubProcess, functionDef, functionRef, varInfo))
-                .orElseGet(() -> (NodeFactory) embeddedSubProcess.actionNode(parserContext.newId()).name(functionRef.getRefName()).action(JavaDialect.ID, ""));
+                .orElseGet(() -> (NodeFactory) embeddedSubProcess.actionNode(parserContext.newId()).name(functionRef.getRefName()).action(JavaDialect.ID, "")
+                        .metaData(XORSPLITDEFAULT, varInfo));
+        Map<String, String> metadata = functionDef.getMetadata();
+        if (metadata != null) {
+            metadata.forEach((k, v) -> result.metaData(k, v));
+        }
+        return result;
     }
 
     private Optional<NodeFactory> fromPredefinedFunction(RuleFlowNodeContainerFactory<?, ?> embeddedSubProcess,

@@ -14,7 +14,10 @@
   "functions": [
     {
       "name": "multiplication",
-      "operation": "multiplication#Do Operation"
+      "operation": "multiplication#Do Operation",
+      "metadata": {
+        "configKey" : ".clusterName"
+      }
     },
     {
       "name": "subtraction",

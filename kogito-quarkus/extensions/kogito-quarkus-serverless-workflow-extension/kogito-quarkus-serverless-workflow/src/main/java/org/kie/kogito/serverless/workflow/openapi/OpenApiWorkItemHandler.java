@@ -22,10 +22,16 @@ import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
 
+import org.jbpm.process.instance.KogitoProcessContextImpl;
+import org.jbpm.util.ContextFactory;
+import org.jbpm.workflow.core.WorkflowProcess;
 import org.kie.kogito.event.cloudevents.extension.ProcessMeta;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
+import org.kie.kogito.process.expr.ExpressionHandlerFactory;
 import org.kie.kogito.process.workitem.WorkItemExecutionException;
+import org.kie.kogito.serverless.workflow.SWFConstants;
 import org.kie.kogito.serverless.workflow.WorkflowWorkItemHandler;
 
 import io.quarkus.restclient.runtime.RestClientBuilderFactory;
@@ -39,7 +45,7 @@ public abstract class OpenApiWorkItemHandler<T> extends WorkflowWorkItemHandler 
     @Override
     protected Object internalExecute(KogitoWorkItem workItem, Map<String, Object> parameters) {
         Class<T> clazz = getRestClass();
-        T ref = RestClientBuilderFactory.build(clazz).register(new ClientRequestFilter() {
+        T ref = RestClientBuilderFactory.build(clazz, calculatedConfigKey(workItem, parameters)).register(new ClientRequestFilter() {
             @Override
             public void filter(ClientRequestContext requestContext) throws IOException {
                 ProcessMeta.fromKogitoWorkItem(workItem).asMap().forEach((k, v) -> requestContext.getHeaders().put(k, Collections.singletonList(v)));
@@ -50,6 +56,20 @@ public abstract class OpenApiWorkItemHandler<T> extends WorkflowWorkItemHandler 
         } catch (WebApplicationException ex) {
             throw new WorkItemExecutionException(Integer.toString(ex.getResponse().getStatus()), ex.getMessage());
         }
+    }
+
+    private Optional<String> calculatedConfigKey(KogitoWorkItem workItem, Map<String, Object> parameters) {
+        String configKeyExpr = (String) workItem.getNodeInstance().getNode().getMetaData().get("configKey");
+        if (configKeyExpr == null) {
+            return Optional.empty();
+        }
+        KogitoProcessContextImpl context = ContextFactory.fromItem(workItem);
+        String result = ExpressionHandlerFactory.get(((WorkflowProcess) workItem.getProcessInstance().getProcess()).getExpressionLanguage(), configKeyExpr)
+                .eval(context.getVariable(SWFConstants.DEFAULT_WORKFLOW_VAR), String.class, context);
+        if (result == null || result.isBlank()) {
+            throw new IllegalArgumentException("Expression " + configKeyExpr + " returns null or empty value");
+        }
+        return Optional.of(result);
     }
 
     protected abstract Object internalExecute(T openAPIRef, Map<String, Object> parameters);

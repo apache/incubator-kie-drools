@@ -18,6 +18,8 @@
  */
 package io.quarkus.restclient.runtime;
 
+import java.util.Optional;
+
 import org.eclipse.microprofile.context.ManagedExecutor;
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
@@ -32,8 +34,13 @@ public class RestClientBuilderFactory extends RestClientBase {
     }
 
     public static RestClientBuilder build(Class<?> restClass) {
+        return build(restClass, Optional.empty());
+    }
+
+    public static RestClientBuilder build(Class<?> restClass, Optional<String> calculatedConfigKey) {
         RegisterRestClient annotation = restClass.getAnnotation(RegisterRestClient.class);
-        RestClientBuilderFactory instance = new RestClientBuilderFactory(restClass, annotation.baseUri(), annotation.configKey());
+        RestClientBuilderFactory instance =
+                new RestClientBuilderFactory(restClass, annotation.baseUri(), calculatedConfigKey.map(c -> annotation.configKey() + "." + c).orElse(annotation.configKey()));
         RestClientBuilder builder = RestClientBuilder.newBuilder();
         instance.configureBaseUrl(builder);
         instance.configureTimeouts(builder);

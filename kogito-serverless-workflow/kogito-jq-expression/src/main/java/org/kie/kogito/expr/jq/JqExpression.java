@@ -134,7 +134,9 @@ public class JqExpression implements Expression {
             if (sb.length() > 0) {
                 sb.append(' ');
             }
-            sb.append(out.asText());
+            if (!out.isNull() && out.asText() != null) {
+                sb.append(out.asText());
+            }
         }
 
         @Override
