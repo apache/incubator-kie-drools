@@ -31,6 +31,9 @@ import org.kie.api.definition.process.Process;
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.jackson.utils.ObjectMapperFactory;
+import org.kie.kogito.serverless.workflow.SWFConstants;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 import io.serverlessworkflow.api.Workflow;
 import io.serverlessworkflow.api.functions.FunctionDefinition;
@@ -89,6 +92,7 @@ public class MockBuilder {
     public static class KogitoProcessContextMockBuilder {
         private Consumer<KogitoProcessInstance> processInstanceMockManipulation;
         private Map<String, Object> constants = new HashMap<>();
+        private JsonNode input;
 
         public KogitoProcessContextMockBuilder withProcessInstanceMock(Consumer<KogitoProcessInstance> processInstanceMockManipulation) {
             this.processInstanceMockManipulation = processInstanceMockManipulation;
@@ -97,6 +101,11 @@ public class MockBuilder {
 
         public KogitoProcessContextMockBuilder withConstants(Map<String, Object> constants) {
             this.constants.putAll(constants);
+            return this;
+        }
+
+        public KogitoProcessContextMockBuilder withInput(JsonNode input) {
+            this.input = input;
             return this;
         }
 
@@ -112,6 +121,7 @@ public class MockBuilder {
             if (constants != null && !constants.isEmpty()) {
                 when(processMock.getMetaData()).thenReturn(Collections.singletonMap(Metadata.CONSTANTS, ObjectMapperFactory.get().valueToTree(constants)));
             }
+            when(context.getVariable(SWFConstants.INPUT_WORKFLOW_VAR)).thenReturn(input);
             return context;
         }
     }

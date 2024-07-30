@@ -21,6 +21,7 @@ package org.kie.kogito.serverless.workflow;
 public class SWFConstants {
 
     public static final String DEFAULT_WORKFLOW_VAR = "workflowdata";
+    public static final String INPUT_WORKFLOW_VAR = "workflowdatainput";
     public static final String RESULT = "Result";
     public static final String MODEL_WORKFLOW_VAR = "Parameter";
     public static final String CONTENT_DATA = "ContentData";

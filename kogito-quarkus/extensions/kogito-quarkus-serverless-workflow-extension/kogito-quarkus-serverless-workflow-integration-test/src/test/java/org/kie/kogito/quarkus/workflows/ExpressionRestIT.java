@@ -43,6 +43,7 @@ class ExpressionRestIT {
                 .then()
                 .statusCode(201)
                 .body("workflowdata.result", is(4))
+                .body("workflowdata.originalFirstX", is(2))
                 .body("workflowdata.number", nullValue())
                 .body("workflowdata.message", is("my name is javierito and in my native language dog is translated to perro and the header pepe is pepa"))
                 .body("workflowdata.user", is("anonymous"))

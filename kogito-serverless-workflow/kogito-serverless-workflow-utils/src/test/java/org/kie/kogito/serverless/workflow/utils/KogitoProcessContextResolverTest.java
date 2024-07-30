@@ -20,7 +20,10 @@ package org.kie.kogito.serverless.workflow.utils;
 
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
+import org.kie.kogito.jackson.utils.ObjectMapperFactory;
 import org.kie.kogito.serverless.workflow.test.MockBuilder;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
@@ -29,6 +32,7 @@ import static org.mockito.Mockito.when;
 public class KogitoProcessContextResolverTest {
 
     KogitoProcessContext context = MockBuilder.kogitoProcessContext()
+            .withInput(ObjectMapperFactory.get().createObjectNode().put("pepe", "pepe"))
             .withProcessInstanceMock(it -> {
                 when(it.getId()).thenReturn("value-id");
                 when(it.getProcessId()).thenReturn("value-process-id");
@@ -48,6 +52,11 @@ public class KogitoProcessContextResolverTest {
     @Test
     void testGetName() {
         assertThat(KogitoProcessContextResolver.get().readKey(context, "name")).isEqualTo("value-name");
+    }
+
+    @Test
+    void testGetInput() {
+        assertThat(KogitoProcessContextResolver.get().readKey(context, "input")).isInstanceOf(JsonNode.class);
     }
 
     @Test

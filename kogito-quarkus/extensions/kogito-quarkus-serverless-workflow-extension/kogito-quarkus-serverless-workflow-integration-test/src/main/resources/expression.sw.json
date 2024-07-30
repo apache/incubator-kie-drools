@@ -85,7 +85,7 @@
       "name": "finish",
       "type": "operation",
       "stateDataFilter": {
-        "input": "{result: .number, message: .message}"
+        "input": "{result: .number, message: .message, originalFirstX: $WORKFLOW.input.numbers[0].x}"
       },
       "actions": [
          {

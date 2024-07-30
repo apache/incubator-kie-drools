@@ -39,6 +39,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class JsonNodeModel implements Model, MapInput, MapInputId, MapOutput, MappableToModel<JsonNodeModelOutput> {
 
     private JsonNode workflowdata;
+    private JsonNode input;
     private String id;
     private Map<String, Object> additionalProperties = Collections.emptyMap();
 
@@ -57,6 +58,7 @@ public class JsonNodeModel implements Model, MapInput, MapInputId, MapOutput, Ma
             ObjectMapper mapper = ObjectMapperFactory.listenerAware();
             this.workflowdata = workflowdata == null ? mapper.createObjectNode() : mapper.convertValue(workflowdata, JsonNode.class);
         }
+        this.input = this.workflowdata.deepCopy();
     }
 
     public String getId() {
@@ -122,6 +124,9 @@ public class JsonNodeModel implements Model, MapInput, MapInputId, MapOutput, Ma
     public Map<String, Object> toMap() {
         Map<String, Object> map = new HashMap<>();
         map.put(SWFConstants.DEFAULT_WORKFLOW_VAR, workflowdata);
+        if (input != null) {
+            map.put(SWFConstants.INPUT_WORKFLOW_VAR, input);
+        }
         map.putAll(additionalProperties);
         return map;
     }
