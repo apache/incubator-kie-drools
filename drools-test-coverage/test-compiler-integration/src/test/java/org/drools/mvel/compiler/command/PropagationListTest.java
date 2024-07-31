@@ -125,7 +125,7 @@ public class PropagationListTest {
         };
     }
 
-    public static class TestEntry extends AbstractPropagationEntry {
+    public static class TestEntry extends AbstractPropagationEntry<ReteEvaluator> {
 
         final Checker checker;
         final int i;

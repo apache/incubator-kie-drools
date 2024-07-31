@@ -112,7 +112,7 @@ public class AgendaGroupQueueImpl
         reteEvaluator.addPropagation( new ClearAction( this.name ) );
     }
 
-    public class ClearAction extends AbstractPropagationEntry {
+    public class ClearAction extends AbstractPropagationEntry<ReteEvaluator> {
 
         private final String name;
 
@@ -130,7 +130,7 @@ public class AgendaGroupQueueImpl
         reteEvaluator.addPropagation( new SetFocusAction( this.name ) );
     }
 
-    public class SetFocusAction extends AbstractPropagationEntry {
+    public class SetFocusAction extends AbstractPropagationEntry<ReteEvaluator> {
 
         private final String name;
 
@@ -267,7 +267,7 @@ public class AgendaGroupQueueImpl
     }
 
     public static class DeactivateCallback
-            extends AbstractPropagationEntry
+            extends AbstractPropagationEntry<ReteEvaluator>
             implements WorkingMemoryAction {
 
         private static final long     serialVersionUID = 510l;

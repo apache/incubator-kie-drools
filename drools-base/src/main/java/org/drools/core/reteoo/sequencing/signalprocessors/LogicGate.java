@@ -4,9 +4,6 @@ import org.drools.base.base.ValueResolver;
 import org.drools.base.time.JobHandle;
 import org.drools.base.time.Trigger;
 import org.drools.base.time.Timer;
-import org.drools.core.RuleSessionConfiguration;
-import org.drools.core.common.ReteEvaluator;
-import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.phreak.actions.AbstractPropagationEntry;
 import org.drools.core.reteoo.sequencing.signalprocessors.LogicCircuit.LongBiPredicate;
 import org.drools.core.reteoo.sequencing.Sequence.SequenceMemory;
@@ -301,7 +298,7 @@ public class LogicGate extends SignalProcessor {
             LogicGateTimerJobContext timerJobCtx   = (LogicGateTimerJobContext) ctx;
             ValueResolver       resolver = timerJobCtx.getValueResolver();
             System.out.println("add propagation");
-            resolver.as(ReteEvaluator.class).addPropagation( new LogicGateTimerAction(timerJobCtx ));
+            resolver.addPropagation( new LogicGateTimerAction(timerJobCtx ));
         }
     }
 
@@ -359,8 +356,7 @@ public class LogicGate extends SignalProcessor {
     }
 
     public static class LogicGateTimerAction
-            extends AbstractPropagationEntry
-            implements WorkingMemoryAction {
+            extends AbstractPropagationEntry {
 
         private final LogicGateTimerJobContext jobCtx;
 
@@ -370,28 +366,28 @@ public class LogicGate extends SignalProcessor {
 
         @Override
         public boolean requiresImmediateFlushing() {
-            return jobCtx.getValueResolver().getKieSessionConfiguration().as(RuleSessionConfiguration.KEY).getTimedRuleExecutionFilter() != null;
+            return true;
         }
 
         @Override
-        public void internalExecute(final ReteEvaluator reteEvaluator) {
-            execute( reteEvaluator, false );
+        public void internalExecute(final ValueResolver valueResolver) {
+            execute( valueResolver, false );
         }
 
-        public void execute( final ReteEvaluator reteEvaluator, boolean needEvaluation ) {
+        public void execute( final ValueResolver valueResolver, boolean needEvaluation ) {
             LogicGate gate = jobCtx.getGate();
             SequenceMemory sequenceMemory = jobCtx.getSequenceMemory();
 
             SignalStatus status = sequenceMemory.getLogicGateSignalStatus(gate.getGateIndex());
 
-            sequenceMemory.clearJobHandle(gate.getGateIndex(), reteEvaluator); // clear rather than cancel, as it's actually firing
+            sequenceMemory.clearJobHandle(gate.getGateIndex(), valueResolver); // clear rather than cancel, as it's actually firing
             System.out.println("execute");
 
             switch (jobCtx.getActionType()) {
                 case LogicGateTimerJobContext.DELAY:
                     if (status == SignalStatus.MATCHED) {
                         // transition
-                        gate.propapate(sequenceMemory, reteEvaluator, status);
+                        gate.propapate(sequenceMemory, valueResolver, status);
                         System.out.println("1");
                     } else {
                         // fail

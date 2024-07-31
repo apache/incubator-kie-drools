@@ -35,7 +35,7 @@ import java.io.IOException;
 
 import static org.drools.base.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
 
-public class BeliefSystemLogicalCallback extends AbstractPropagationEntry implements WorkingMemoryAction {
+public class BeliefSystemLogicalCallback extends AbstractPropagationEntry<ReteEvaluator> implements WorkingMemoryAction {
 
     protected InternalFactHandle handle;
     protected PropagationContext context;

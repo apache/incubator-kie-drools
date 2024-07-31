@@ -23,7 +23,7 @@ import org.drools.base.base.ObjectType;
 import org.drools.base.rule.Pattern;
 import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.reteoo.SequenceNode.DynamicFilterProto;
+import org.drools.core.reteoo.DynamicFilterProto;
 import org.drools.core.reteoo.sequencing.signalprocessors.LogicCircuit;
 import org.drools.core.reteoo.sequencing.signalprocessors.Gates;
 import org.drools.core.reteoo.sequencing.signalprocessors.LogicGate;

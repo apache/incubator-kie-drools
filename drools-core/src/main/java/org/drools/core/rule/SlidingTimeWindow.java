@@ -358,7 +358,7 @@ public class SlidingTimeWindow
     }
 
     public static class BehaviorExpireWMAction
-            extends AbstractPropagationEntry
+            extends AbstractPropagationEntry<ReteEvaluator>
             implements WorkingMemoryAction {
         protected BehaviorRuntime behavior;
         protected BehaviorContext context;

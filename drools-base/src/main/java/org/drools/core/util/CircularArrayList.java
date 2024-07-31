@@ -1,11 +1,7 @@
 package org.drools.core.util;
 
-import org.kie.api.runtime.rule.FactHandle;
-
 import java.lang.reflect.Array;
-import java.util.AbstractList;
 import java.util.Arrays;
-import java.util.List;
 
 public class CircularArrayList<E> {
     private E[] array;

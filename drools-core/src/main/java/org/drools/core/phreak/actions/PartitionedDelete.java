@@ -7,7 +7,7 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.ObjectTypeNode;
 
-public class PartitionedDelete extends AbstractPartitionedPropagationEntry {
+public class PartitionedDelete extends AbstractPartitionedPropagationEntry<ReteEvaluator> {
     private final InternalFactHandle handle;
     private final PropagationContext context;
     private final ObjectTypeConf     objectTypeConf;

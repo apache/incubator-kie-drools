@@ -64,7 +64,7 @@ public class ReactiveObjectUtil {
         }
     }
 
-    static class ReactivePropagation extends AbstractPropagationEntry {
+    static class ReactivePropagation extends AbstractPropagationEntry<ReteEvaluator> {
 
         private final Object object;
         private final ReactiveFromNodeLeftTuple leftTuple;

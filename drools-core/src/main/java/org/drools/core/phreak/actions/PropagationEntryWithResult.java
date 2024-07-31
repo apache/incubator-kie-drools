@@ -1,13 +1,15 @@
 package org.drools.core.phreak.actions;
 
+import org.drools.base.base.ValueResolver;
+
 import java.util.concurrent.CountDownLatch;
 
-public abstract class PropagationEntryWithResult<T> extends AbstractPropagationEntry {
+public abstract class PropagationEntryWithResult<T extends ValueResolver, R> extends AbstractPropagationEntry<T> {
     private final CountDownLatch done = new CountDownLatch(1);
 
-    private T result;
+    private R result;
 
-    public final T getResult() {
+    public final R getResult() {
         try {
             done.await();
         } catch (InterruptedException e) {
@@ -16,7 +18,7 @@ public abstract class PropagationEntryWithResult<T> extends AbstractPropagationE
         return result;
     }
 
-    protected void done(T result) {
+    protected void done(R result) {
         this.result = result;
         done.countDown();
     }

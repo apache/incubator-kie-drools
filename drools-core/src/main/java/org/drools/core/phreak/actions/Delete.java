@@ -7,7 +7,7 @@ import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeConf;
 
-public class Delete extends AbstractPropagationEntry {
+public class Delete extends AbstractPropagationEntry<ReteEvaluator> {
     private final EntryPointNode     epn;
     private final InternalFactHandle handle;
     private final PropagationContext context;

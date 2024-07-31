@@ -1,9 +1,9 @@
 package org.drools.core.phreak.actions;
 
-import org.drools.core.common.ReteEvaluator;
+import org.drools.base.base.ValueResolver;
 import org.drools.core.phreak.PropagationEntry;
 
-public abstract class AbstractPropagationEntry implements PropagationEntry<ReteEvaluator> {
+public abstract class AbstractPropagationEntry<T extends ValueResolver> implements PropagationEntry<T> {
     protected PropagationEntry next;
 
     public void setNext(PropagationEntry next) {

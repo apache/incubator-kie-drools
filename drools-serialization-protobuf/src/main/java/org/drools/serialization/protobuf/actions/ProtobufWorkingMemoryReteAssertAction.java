@@ -19,6 +19,7 @@
 package org.drools.serialization.protobuf.actions;
 
 import org.drools.base.definitions.InternalKnowledgePackage;
+import org.drools.core.common.ReteEvaluator;
 import org.drools.serialization.protobuf.WorkingMemoryReteAssertAction;
 import org.drools.core.marshalling.MarshallerReaderContext;
 import org.drools.core.marshalling.MarshallerWriteContext;

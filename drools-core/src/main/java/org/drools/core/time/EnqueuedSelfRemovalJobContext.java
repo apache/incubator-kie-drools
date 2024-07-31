@@ -33,7 +33,7 @@ public class EnqueuedSelfRemovalJobContext extends SelfRemovalJobContext {
     @Override
     public void remove() {
         getValueResolver().as(ReteEvaluator.class)
-                          .addPropagation( new AbstractPropagationEntry() {
+                          .addPropagation( new AbstractPropagationEntry<ReteEvaluator>() {
             @Override
             public void internalExecute(ReteEvaluator reteEvaluator) {
                 timerInstances.remove( jobContext.getJobHandle().getId() );

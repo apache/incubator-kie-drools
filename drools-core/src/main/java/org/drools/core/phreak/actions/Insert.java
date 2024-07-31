@@ -21,7 +21,7 @@ import java.io.ObjectOutput;
 
 import static org.drools.base.rule.TypeDeclaration.NEVER_EXPIRES;
 
-public class Insert extends AbstractPropagationEntry implements Externalizable {
+public class Insert extends AbstractPropagationEntry<ReteEvaluator> implements Externalizable {
     private static final ObjectTypeNode.ExpireJob job = new ObjectTypeNode.ExpireJob();
 
     private InternalFactHandle handle;

@@ -110,7 +110,7 @@ public class AsyncReceiveNode extends LeftTupleSource
         return objectTypeConf;
     }
 
-    public static class AsyncReceiveAction extends AbstractPropagationEntry {
+    public static class AsyncReceiveAction extends AbstractPropagationEntry<ReteEvaluator> {
 
         private final AsyncReceiveNode asyncReceiveNode;
         private final Object object;

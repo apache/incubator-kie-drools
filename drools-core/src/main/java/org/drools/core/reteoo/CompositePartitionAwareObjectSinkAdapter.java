@@ -128,7 +128,7 @@ public class CompositePartitionAwareObjectSinkAdapter implements ObjectSinkPropa
         }
     }
 
-    public static class Insert extends AbstractPropagationEntry {
+    public static class Insert extends AbstractPropagationEntry<ReteEvaluator> {
 
         private final ObjectSinkPropagator propagator;
         private final InternalFactHandle factHandle;
@@ -151,7 +151,7 @@ public class CompositePartitionAwareObjectSinkAdapter implements ObjectSinkPropa
         }
     }
 
-    public static class HashedInsert extends AbstractPropagationEntry {
+    public static class HashedInsert extends AbstractPropagationEntry<ReteEvaluator> {
 
         private final AlphaNode sink;
         private final InternalFactHandle factHandle;

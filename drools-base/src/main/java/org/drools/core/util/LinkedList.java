@@ -24,8 +24,6 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.NoSuchElementException;
 
-import org.drools.core.reteoo.TupleImpl;
-
 /**
  * This is a simple linked linked implementation. Each node must implement </code>LinkedListNode<code> so that it references
  * the node before and after it. This way a node can be removed without having to scan the list to find it. This class
@@ -390,9 +388,9 @@ public class LinkedList<T extends DoubleLinkedEntry<T>>
     }
 
     // All the tuples except for TMS are AbstractTuple
-    public static class LinkedListFastIterator implements FastIterator<TupleImpl> {
+    public static class LinkedListFastIterator<T extends SingleLinkedEntry<T>> implements FastIterator<T> {
 
-        public TupleImpl next(TupleImpl object) {
+        public T next(T object) {
             return object.getNext();
         }
         

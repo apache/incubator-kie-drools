@@ -38,7 +38,7 @@ import org.drools.core.reteoo.RightTuple;
 import static org.drools.core.common.PhreakPropagationContextFactory.createPropagationContextForFact;
 
 public class WorkingMemoryReteExpireAction
-        extends AbstractPropagationEntry
+        extends AbstractPropagationEntry<ReteEvaluator>
         implements WorkingMemoryAction, Externalizable {
 
     protected DefaultEventHandle factHandle;
@@ -129,7 +129,7 @@ public class WorkingMemoryReteExpireAction
         this.factHandle = (DefaultEventHandle) in.readObject();
     }
 
-    public static class PartitionAwareWorkingMemoryReteExpireAction extends AbstractPartitionedPropagationEntry {
+    public static class PartitionAwareWorkingMemoryReteExpireAction extends AbstractPartitionedPropagationEntry<ReteEvaluator> {
         private final DefaultEventHandle factHandle;
         private final ObjectTypeNode node;
 

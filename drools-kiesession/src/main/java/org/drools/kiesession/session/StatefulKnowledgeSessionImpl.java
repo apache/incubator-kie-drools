@@ -731,7 +731,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         }
     }
 
-    private class ExecuteCloseLiveQuery extends PropagationEntryWithResult<Void> {
+    private class ExecuteCloseLiveQuery extends PropagationEntryWithResult<ReteEvaluator, Void> {
 
         private final InternalFactHandle factHandle;
 
@@ -1240,7 +1240,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     }
 
     public void submit(AtomicAction action) {
-        agenda.addPropagation( new AbstractPropagationEntry() {
+        agenda.addPropagation( new AbstractPropagationEntry<ReteEvaluator>() {
             @Override
             public void internalExecute(ReteEvaluator reteEvaluator ) {
                 action.execute( (KieSession)reteEvaluator );

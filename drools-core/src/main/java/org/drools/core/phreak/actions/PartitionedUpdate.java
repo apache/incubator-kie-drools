@@ -10,7 +10,7 @@ import org.drools.core.reteoo.ObjectTypeNode;
 
 import static org.drools.core.reteoo.EntryPointNode.removeRightTuplesMatchingOTN;
 
-public class PartitionedUpdate extends AbstractPartitionedPropagationEntry {
+public class PartitionedUpdate extends AbstractPartitionedPropagationEntry<ReteEvaluator> {
     private final InternalFactHandle handle;
     private final PropagationContext context;
     private final ObjectTypeConf     objectTypeConf;

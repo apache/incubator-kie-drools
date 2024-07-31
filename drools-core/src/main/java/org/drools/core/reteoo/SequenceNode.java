@@ -19,7 +19,6 @@ package org.drools.core.reteoo;
 import org.drools.base.base.ObjectType;
 import org.drools.base.common.RuleBasePartitionId;
 import org.drools.base.reteoo.NodeTypeEnums;
-import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.ActivationsManager;
 import org.drools.core.common.InternalFactHandle;
@@ -31,13 +30,10 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.TupleSets;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.reteoo.SequenceNode.SequenceNodeMemory;
-import org.drools.core.reteoo.sequencing.DynamicFilters;
-import org.drools.core.reteoo.sequencing.Sequence.SequenceMemory;
-import org.drools.core.reteoo.sequencing.signalprocessors.SignalProcessor;
-import org.drools.core.reteoo.sequencing.signalprocessors.SignalStatus;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.reteoo.sequencing.Sequencer;
-import org.drools.core.reteoo.sequencing.Sequencer.SequencerMemory;
+import org.drools.core.reteoo.sequencing.SequencerMemoryImpl;
+import org.drools.core.reteoo.sequencing.SequencerMemory;
 import org.drools.core.util.AbstractLinkedListNode;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.index.TupleList;
@@ -145,7 +141,7 @@ public class SequenceNode extends LeftTupleSource
     }
 
     public SequencerMemory createSequencerMemory(TupleImpl lt, LeftTupleSink sink, SequenceNodeMemory nodeMemory) {
-        SequencerMemory sequencerMemory = new SequencerMemory(sequencer, lt, sink, nodeMemory);
+        SequencerMemory sequencerMemory = new SequencerMemoryImpl(sequencer, lt, sink, this, nodeMemory);
 
         return sequencerMemory;
     }
@@ -206,21 +202,10 @@ public class SequenceNode extends LeftTupleSource
         return NodeTypeEnums.SequenceNode;
     }
 
-    public void matched(SequencerMemory memory) {
-        TupleImpl  leftTuple = memory.getLeftTuple();
-
-        TupleImpl childTuple = TupleFactory.createLeftTuple(leftTuple,
-                                                            memory.getSink(),
-                                                            leftTuple.getPropagationContext(), false);
-
-        childTuple.setStagedType(Tuple.INSERT);
-        memory.getNodeMemory().getStagedChildTuples().add(childTuple);
-    }
-
     public static class SequenceNodeMemory extends AbstractLinkedListNode<Memory>
         implements
         Externalizable,
-        Memory, DynamicFilters {
+        Memory {
 
         private static final long serialVersionUID = 510l;
 
@@ -251,14 +236,14 @@ public class SequenceNode extends LeftTupleSource
         }
 
         public void addActiveFilter(DynamicFilter filter) {
-            if (this.activeFilters[filter.activeFilterIndex] == null) {
-                this.activeFilters[filter.activeFilterIndex] = new LinkedList<>();
+            if (this.activeFilters[filter.getActiveFilterIndex()] == null) {
+                this.activeFilters[filter.getActiveFilterIndex()] = new LinkedList<>();
             }
-            this.activeFilters[filter.activeFilterIndex].add(filter);
+            this.activeFilters[filter.getActiveFilterIndex()].add(filter);
         }
 
         public void removeActiveFilter(DynamicFilter filter) {
-            this.activeFilters[filter.activeFilterIndex].remove(filter);
+            this.activeFilters[filter.getActiveFilterIndex()].remove(filter);
         }
 
         public LinkedList<DynamicFilter>[] getActiveFilters() {
@@ -342,86 +327,6 @@ public class SequenceNode extends LeftTupleSource
         return true;
     }
 
-    public static class SignalAdapter extends AbstractLinkedListNode<SignalAdapter>  {
-        private SignalProcessor output;
-        private int             signalBitIndex;
-        private SequenceMemory  memory;
-
-        public SignalAdapter(SignalProcessor output, int signalBitIndex, SequenceMemory memory) {
-            this.output = output;
-            this.signalBitIndex = signalBitIndex;
-            this.memory         = memory;
-        }
-
-        public void receive(ReteEvaluator reteEvaluator, InternalFactHandle factHandle) {
-            memory.getSequencerMemory().getEvents().add(factHandle);
-            output.consume(signalBitIndex, SignalStatus.MATCHED, memory, reteEvaluator);
-        }
-    }
-
-    public static class DynamicFilterProto {
-        private AlphaNodeFieldConstraint  constraint;
-        private int filterIndex;
-
-        public DynamicFilterProto(AlphaNodeFieldConstraint constraint, int filterIndex) {
-            this.constraint  = constraint;
-            this.filterIndex = filterIndex;
-        }
-
-        public AlphaNodeFieldConstraint getConstraint() {
-            return constraint;
-        }
-
-        public int getFilterIndex() {
-            return filterIndex;
-        }
-    }
-
-    public static class DynamicFilter extends AbstractLinkedListNode<DynamicFilter>  {
-        private AlphaNodeFieldConstraint  constraint;
-        private LinkedList<SignalAdapter> signalAdapters;
-        private int                       activeFilterIndex;
-
-        public DynamicFilter(DynamicFilterProto  proto) {
-            this.constraint        = proto.constraint;
-            this.activeFilterIndex = proto.filterIndex;
-            this.signalAdapters    = new LinkedList<>();
-        }
-
-        public AlphaNodeFieldConstraint getConstraint() {
-            return constraint;
-        }
-
-        public int getActiveFilterIndex() {
-            return activeFilterIndex;
-        }
-
-        public void addSignalAdapter(SignalAdapter signalAdapter) {
-            signalAdapters.add(signalAdapter);
-        }
-
-        public void removeSignalAdapter(SignalAdapter signalAdapter) {
-            signalAdapters.remove(signalAdapter);
-        }
-
-        public LinkedList<SignalAdapter> getSignalAdapters() {
-            return signalAdapters;
-        }
-
-        public void assertObject(final InternalFactHandle factHandle,
-                                 final PropagationContext pctx,
-                                 final ReteEvaluator reteEvaluator,
-                                 final SequenceNodeMemory memory) {
-            System.out.println("true : " + factHandle.getObject());
-
-            if (constraint.isAllowed(factHandle, reteEvaluator)) {
-                for (SignalAdapter signal = signalAdapters.getFirst(); signal != null; signal = signal.getNext()) {
-                    signal.receive(reteEvaluator, factHandle);
-                }
-            }
-        }
-    }
-
 
     public static class AlphaAdapter extends ObjectSource
             implements
@@ -450,7 +355,7 @@ public class SequenceNode extends LeftTupleSource
             LinkedList<DynamicFilter> filters       = memory.getActiveFilters()[adapterIndex];
             if (filters != null) {
                 for (DynamicFilter f = filters.getFirst(); f != null; f = f.getNext()) {
-                    f.assertObject(factHandle, pctx, reteEvaluator, memory);
+                    f.assertObject(factHandle, reteEvaluator);
                 }
             }
         }

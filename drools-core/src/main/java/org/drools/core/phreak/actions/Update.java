@@ -15,7 +15,7 @@ import java.io.ObjectOutput;
 
 import static org.drools.core.reteoo.EntryPointNode.removeRightTuplesMatchingOTN;
 
-public class Update extends AbstractPropagationEntry implements Externalizable {
+public class Update extends AbstractPropagationEntry<ReteEvaluator> implements Externalizable {
     private InternalFactHandle handle;
     private PropagationContext context;
     private ObjectTypeConf     objectTypeConf;

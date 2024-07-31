@@ -201,7 +201,7 @@ public class ReteooWorkingMemoryTest {
     }
 
     private static class ReentrantAction
-            extends AbstractPropagationEntry
+            extends AbstractPropagationEntry<ReteEvaluator>
             implements WorkingMemoryAction {
         // I am using AtomicInteger just as an int wrapper... nothing to do with concurrency here
         public AtomicInteger counter = new AtomicInteger(0);

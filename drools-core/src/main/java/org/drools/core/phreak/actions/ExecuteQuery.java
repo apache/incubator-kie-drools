@@ -13,7 +13,7 @@ import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.QueryTerminalNode;
 import org.drools.core.reteoo.TerminalNode;
 
-public class ExecuteQuery extends PropagationEntryWithResult<QueryTerminalNode[]> {
+public class ExecuteQuery extends PropagationEntryWithResult<ReteEvaluator, QueryTerminalNode[]> {
 
     private final String             queryName;
     private final DroolsQueryImpl    queryObject;

@@ -34,7 +34,7 @@ import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.Tuple;
 
 public class WorkingMemoryReteAssertAction
-        extends AbstractPropagationEntry
+        extends AbstractPropagationEntry<ReteEvaluator>
         implements WorkingMemoryAction {
     protected InternalFactHandle factHandle;
 

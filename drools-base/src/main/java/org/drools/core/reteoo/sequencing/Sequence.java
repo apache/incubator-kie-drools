@@ -2,19 +2,13 @@ package org.drools.core.reteoo.sequencing;
 
 import org.drools.base.base.ValueResolver;
 import org.drools.base.rule.Declaration;
-import org.drools.base.rule.RuleComponent;
 import org.drools.base.rule.RuleConditionElement;
 import org.drools.base.time.JobHandle;
 import org.drools.base.time.Trigger;
 import org.drools.base.time.Timer;
-import org.drools.core.RuleSessionConfiguration;
-import org.drools.core.common.ReteEvaluator;
-import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.phreak.actions.AbstractPropagationEntry;
-import org.drools.core.reteoo.SequenceNode.DynamicFilter;
-import org.drools.core.reteoo.SequenceNode.SequenceNodeMemory;
-import org.drools.core.reteoo.SequenceNode.SignalAdapter;
-import org.drools.core.reteoo.sequencing.Sequencer.SequencerMemory;
+import org.drools.core.reteoo.DynamicFilter;
+import org.drools.core.reteoo.SignalAdapter;
 import org.drools.core.reteoo.sequencing.signalprocessors.ConditionalSignalCounter;
 import org.drools.core.reteoo.sequencing.signalprocessors.LogicGate;
 import org.drools.core.reteoo.sequencing.signalprocessors.SignalStatus;
@@ -384,9 +378,7 @@ public class Sequence implements RuleConditionElement {
         }
     }
 
-    public static class SequenceTimerAction
-            extends AbstractPropagationEntry
-            implements WorkingMemoryAction {
+    public static class SequenceTimerAction extends AbstractPropagationEntry<ValueResolver> {
 
         private final SequenceTimerJobContext jobCtx;
 
@@ -396,15 +388,15 @@ public class Sequence implements RuleConditionElement {
 
         @Override
         public boolean requiresImmediateFlushing() {
-            return jobCtx.getValueResolver().getKieSessionConfiguration().as(RuleSessionConfiguration.KEY).getTimedRuleExecutionFilter() != null;
+            return true;
         }
 
         @Override
-        public void internalExecute(final ReteEvaluator reteEvaluator) {
+        public void internalExecute(final ValueResolver reteEvaluator) {
             execute( reteEvaluator, false );
         }
 
-        public void execute( final ReteEvaluator reteEvaluator, boolean needEvaluation ) {
+        public void execute( final ValueResolver reteEvaluator, boolean needEvaluation ) {
             SequenceMemory sequenceMemory = jobCtx.getSequenceMemory();
 
             switch (jobCtx.getActionType()) {
@@ -433,10 +425,10 @@ public class Sequence implements RuleConditionElement {
         }
     }
 
-    private void fail(SequenceMemory sequenceMemory, ReteEvaluator reteEvaluator) {
+    private void fail(SequenceMemory sequenceMemory, ValueResolver valueResolver) {
         int step = sequenceMemory.getStep();
 
-        sequenceMemory.getSequence().getSteps()[step].deactivate(sequenceMemory, reteEvaluator);
+        sequenceMemory.getSequence().getSteps()[step].deactivate(sequenceMemory, valueResolver);
 
         SequencerMemory sequencerMemory = sequenceMemory.getSequencerMemory();
         sequencerMemory.popSequence();
@@ -466,20 +458,17 @@ public class Sequence implements RuleConditionElement {
 
         private final SignalStatus[] signalStatuses;
 
-        private final DynamicFilters dynamicFilters;
-
         private int eventsStartPosition;
 
         public SequenceMemory(SequencerMemory sequencerMemory, Sequence sequence,
                               SignalAdapter[] signalAdapters, SignalAdapter[] activeSignalAdapters,
-                              long[] gateMemory, long[] counterMemories, DynamicFilters dynamicFilters) {
+                              long[] gateMemory, long[] counterMemories) {
             this.sequencerMemory      = sequencerMemory;
             this.sequence             = sequence;
             this.signalAdapters       = signalAdapters;
             this.activeSignalAdapters = activeSignalAdapters;
             this.gateMemory           = gateMemory;
             this.counterMemories      = counterMemories;
-            this.dynamicFilters       = dynamicFilters;
             this.signalStatuses       = new SignalStatus[gateMemory.length + counterMemories.length];
         }
 
@@ -595,7 +584,7 @@ public class Sequence implements RuleConditionElement {
 
             activeSignalAdapters[signalAdapterIndex] = signalAdapter;
 
-            DynamicFilter filter = dynamicFilters.getActiveDynamicFilter(filterIndex);
+            DynamicFilter filter = sequencerMemory.getActiveDynamicFilter(filterIndex);
             filter.addSignalAdapter(signalAdapter);
 
             return signalAdapter;
@@ -618,11 +607,11 @@ public class Sequence implements RuleConditionElement {
             SignalAdapter signalAdapter = activeSignalAdapters[signalAdapterIndex];
             activeSignalAdapters[signalAdapterIndex] = null;
 
-            DynamicFilter filter = dynamicFilters.getActiveDynamicFilter(filterIndex);
+            DynamicFilter filter = sequencerMemory.getActiveDynamicFilter(filterIndex);
             filter.removeSignalAdapter(signalAdapter);
 
             if (filter.getSignalAdapters().isEmpty()) {
-                dynamicFilters.removeActiveFilter(filter);
+                sequencerMemory.removeActiveFilter(filter);
             }
         }
 

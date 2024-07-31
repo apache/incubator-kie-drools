@@ -1,6 +1,8 @@
 package org.drools.core.phreak.actions;
 
-public abstract class AbstractPartitionedPropagationEntry extends AbstractPropagationEntry {
+import org.drools.base.base.ValueResolver;
+
+public abstract class AbstractPartitionedPropagationEntry<T extends ValueResolver> extends AbstractPropagationEntry<T> {
     protected final int partition;
 
     protected AbstractPartitionedPropagationEntry(int partition) {

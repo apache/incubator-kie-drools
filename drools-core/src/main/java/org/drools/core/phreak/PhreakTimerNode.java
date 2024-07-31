@@ -373,7 +373,7 @@ public class PhreakTimerNode {
     }
 
     public static class TimerAction
-            extends AbstractPropagationEntry
+            extends AbstractPropagationEntry<ReteEvaluator>
             implements WorkingMemoryAction {
 
         private final TimerNodeJobContext timerJobCtx;
