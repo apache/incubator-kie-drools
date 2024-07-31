@@ -366,7 +366,11 @@
         <artifactId>jackson-jq</artifactId>
         <version>${version.net.thisptr.jackson-jq}</version>
       </dependency>
-
+      <dependency>
+        <groupId>org.postgresql</groupId>
+        <artifactId>postgresql</artifactId>
+        <version>${version.org.postgresql}</version>
+      </dependency>
       <dependency>
         <groupId>io.smallrye</groupId>
         <artifactId>smallrye-open-api-core</artifactId>
