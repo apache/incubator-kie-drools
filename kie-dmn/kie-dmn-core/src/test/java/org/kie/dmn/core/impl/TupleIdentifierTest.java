@@ -22,20 +22,20 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-
 class TupleIdentifierTest {
 
     @Test
-    void createTupleIdentifierById() {
+    void createTupleIdentifier() {
+        String id = "123124";
         String name = "name";
-        String wrongName = "wrong-name";
-        String retrieved = TupleIdentifier.generateIdFromName(name);
-        assertThat(retrieved).isEqualTo(TupleIdentifier.generateIdFromName(name));
-        assertThat(retrieved).isNotEqualTo(TupleIdentifier.generateIdFromName(wrongName));
+        TupleIdentifier retrieved = TupleIdentifier.createTupleIdentifier(id, name);
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved.getId()).isEqualTo(id);
+        assertThat(retrieved.getName()).isEqualTo(name);
     }
 
     @Test
-    void createTupleIdentifierByName() {
+    void createTupleIdentifierById() {
         String id = "123124";
         TupleIdentifier retrieved = TupleIdentifier.createTupleIdentifierById(id);
         assertThat(retrieved).isNotNull();
@@ -44,28 +44,58 @@ class TupleIdentifierTest {
     }
 
     @Test
+    void createTupleIdentifierByName() {
+        String name = "name";
+        TupleIdentifier retrieved = TupleIdentifier.createTupleIdentifierByName(name);
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved.getName()).isEqualTo(name);
+        assertThat(retrieved.getId()).isNotNull();
+    }
+
+    @Test
     void generateIdFromName() {
         String name = "name";
         String wrongName = "wrong-name";
         String retrieved = TupleIdentifier.generateIdFromName(name);
-        assertThat(retrieved).isEqualTo(TupleIdentifier.generateIdFromName(name));
-        assertThat(retrieved).isNotEqualTo(TupleIdentifier.generateIdFromName(wrongName));
+        assertThat(retrieved).isEqualTo(TupleIdentifier.generateIdFromName(name))
+                .isNotEqualTo(TupleIdentifier.generateIdFromName(wrongName));
     }
 
     @Test
-    void testTupleIdentifier() {
+    void generateNameFromId() {
+        String id = "123124";
+        String wrongId = "423423";
+        String retrieved = TupleIdentifier.generateNameFromId(id);
+        assertThat(retrieved).isEqualTo(TupleIdentifier.generateNameFromId(id))
+                .isNotEqualTo(TupleIdentifier.generateNameFromId(wrongId));
+    }
+
+    @Test
+    void testTupleIdentifierEquality() {
         String id = "123124";
         String wrongId = "3242342";
         String name = "name";
         String wrongName = "wrong-name";
         TupleIdentifier original = new TupleIdentifier(id, name);
-        assertThat(original).isEqualTo(new TupleIdentifier(id, name));
-        assertThat(original).isEqualTo(new TupleIdentifier(null, name));
-        assertThat(original).isEqualTo(new TupleIdentifier(id, null));
-        assertThat(original).isNotEqualTo(new TupleIdentifier(id, wrongName));
-        assertThat(original).isNotEqualTo(new TupleIdentifier(wrongId, name));
-        assertThat(original).isNotEqualTo(new TupleIdentifier(wrongId, wrongName));
-        assertThat(original).isNotEqualTo(new TupleIdentifier(null, wrongName));
-        assertThat(original).isNotEqualTo(new TupleIdentifier(wrongId, null));
+        commonTestEquality(original, new TupleIdentifier(id, name), true);
+        commonTestEquality(original, new TupleIdentifier(id, name), true);
+        commonTestEquality(original, new TupleIdentifier(null, name), true);
+        commonTestEquality(original, new TupleIdentifier(id, null), true);
+
+        commonTestEquality(original, new TupleIdentifier(id, wrongName), false);
+        commonTestEquality(original, new TupleIdentifier(wrongId, name), false);
+        commonTestEquality(original, new TupleIdentifier(wrongId, wrongName), false);
+        commonTestEquality(original, new TupleIdentifier(null, wrongName), false);
+        commonTestEquality(original, new TupleIdentifier(wrongId, null), false);
+    }
+
+    private void commonTestEquality(TupleIdentifier original, TupleIdentifier comparison, boolean shouldBeEqual) {
+        if (shouldBeEqual) {
+            assertThat(original).isEqualTo(comparison);
+            assertThat(comparison).isEqualTo(original);
+        } else {
+            assertThat(original).isNotEqualTo(comparison);
+            assertThat(comparison).isNotEqualTo(original);
+        }
     }
 }
