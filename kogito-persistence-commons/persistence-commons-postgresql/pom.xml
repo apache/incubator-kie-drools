@@ -39,7 +39,7 @@
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>persistence-commons-jpa</artifactId>
+      <artifactId>persistence-commons-jpa-base</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>

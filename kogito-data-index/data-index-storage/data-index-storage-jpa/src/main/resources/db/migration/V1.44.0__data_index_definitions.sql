@@ -19,28 +19,28 @@
 
 create table definitions
 (
-    id       varchar2(255 char) not null,
-    version  varchar2(255 char) not null,
-    name     varchar2(255 char),
-    source   blob,
-    type     varchar2(255 char),
-    endpoint varchar2(255 char),
+    id       varchar2(255) not null,
+    version  varchar2(255) not null,
+    name     varchar2(255),
+    source   bytea,
+    type     varchar2(255),
+    endpoint varchar2(255),
     primary key (id, version)
 );
 
 create table definitions_addons
 (
-    process_id      varchar2(255 char) not null,
-    process_version varchar2(255 char) not null,
-    addon           varchar2(255 char) not null,
+    process_id      varchar2(255) not null,
+    process_version varchar2(255) not null,
+    addon           varchar2(255) not null,
     primary key (process_id, process_version, addon)
 );
 
 create table definitions_roles
 (
-    process_id      varchar2(255 char) not null,
-    process_version varchar2(255 char) not null,
-    role            varchar2(255 char) not null,
+    process_id      varchar2(255) not null,
+    process_version varchar2(255) not null,
+    role            varchar2(255) not null,
     primary key (process_id, process_version, role)
 );
 
@@ -57,4 +57,4 @@ alter table definitions_roles
             on delete cascade;
 
 alter table processes
-    add version varchar2(255 char);
+    add column version varchar2(255);

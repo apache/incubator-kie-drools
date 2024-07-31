@@ -42,13 +42,18 @@
       <artifactId>data-index-storage-jpa-common</artifactId>
      </dependency>
     <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-test-h2</artifactId>
-      <scope>test</scope>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>persistence-commons-jpa</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-jdbc-h2</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-test-h2</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>

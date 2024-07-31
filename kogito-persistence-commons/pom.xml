@@ -37,6 +37,7 @@
   <modules>
     <module>persistence-commons-api</module>
     <module>persistence-commons-protobuf</module>
+    <module>persistence-commons-jpa-base</module>
     <module>persistence-commons-jpa</module>
     <module>persistence-commons-postgresql</module>
     <module>persistence-commons-infinispan</module>

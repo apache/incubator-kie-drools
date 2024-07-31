@@ -71,7 +71,7 @@ public class ProcessDefinitionRegister {
             pd.setId(p.id());
             pd.setName(p.name());
             pd.setVersion(p.version());
-            pd.setType(pd.getType());
+            pd.setType(p.type());
             pd.setAddons(addons);
             // See ProcessInstanceEventBatch.buildSource
             pd.setEndpoint(endpoint + "/" + (p.id().contains(".") ? p.id().substring(p.id().lastIndexOf('.') + 1) : p.id()));
