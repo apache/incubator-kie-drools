@@ -90,10 +90,6 @@ public class AddExecutor implements InfixExecutor {
             if (right instanceof TemporalAmount temporalAmount) {
                 return temporal.plus(temporalAmount);
             }
-            if (right instanceof BigDecimal bigDecimal) {
-                Period toAdd = Period.ofDays(bigDecimal.intValue());
-                return temporal.plus(toAdd);
-            }
         } else if (left instanceof TemporalAmount temporalAmount) {
             if (right instanceof Temporal temporal) {
                 return temporal.plus(temporalAmount);
