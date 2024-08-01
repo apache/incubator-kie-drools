@@ -1345,10 +1345,10 @@ For groups of constraints, you can use a delimiting comma `,` to use implicit `a
 .Example patterns with multiple constraints
 [source]
 ----
-// Person is at least 50 years old and weighs at least 80 kilograms:
+// Person is more than 50 years old and weighs more than 80 kilograms:
 /persons[ age > 50, weight > 80 ]
 
-// Person is at least 50 years old, weighs at least 80 kilograms, and is taller than 2 meters:
+// Person is more than 50 years old, weighs more than 80 kilograms, and is taller than 2 meters:
 /persons[ age > 50, weight > 80, height > 2 ]
 ----
 
@@ -2062,7 +2062,7 @@ image::language-reference/forall.png[align="center"]
 rule "All full-time employees have red ID badges"
   when
     forall( $emp : /employees[ type == "fulltime" ]
-                   /employees[ this == $emp, badgeColor = "red" ] )
+                   /employees[ this == $emp, badgeColor == "red" ] )
   then
     // True, all full-time employees have red ID badges.
 end
@@ -2075,11 +2075,11 @@ To state that all facts of a given type in the working memory of the {RULE_ENGIN
 .Example rule with `forall` and a single pattern
 [source]
 ----
-rule "All full-time employees have red ID badges"
+rule "All employees have red ID badges"
   when
-    forall( /employees[ badgeColor = "red" ] )
+    forall( /employees[ badgeColor == "red" ] )
   then
-    // True, all full-time employees have red ID badges.
+    // True, all employees have red ID badges.
 end
 ----
 
