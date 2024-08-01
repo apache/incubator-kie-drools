@@ -21,6 +21,7 @@ package org.kie.dmn.feel.runtime;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -45,15 +46,11 @@ public class FEEL12ExtendedForLoopTest extends BaseFEELTest {
     }
 
     private static Collection<Object[]> data() {
-        List<Integer> nullObject = new ArrayList<>();
-        nullObject.add(null);
-        nullObject.add(null);
-        nullObject.add(null);
         final Object[][] cases = new Object[][] {
           //normal:
           {"for x in [1, 2, 3] return x+1", Stream.of(1, 2, 3 ).map(x -> BigDecimal.valueOf(x + 1 ) ).collect(Collectors.toList() ), null},
                 {"for x in @\"2021-01-01\"..@\"2021-01-03\" return x + @\"P1D\"", Stream.of("2021-01-02", "2021-01-03", "2021-01-04" ).map(LocalDate::parse).collect(Collectors.toList() ), null},
-                {"for x in @\"2021-01-01\"..@\"2021-01-03\" return x+1", nullObject, FEELEvent.Severity.ERROR},
+                {"for x in @\"2021-01-01\"..@\"2021-01-03\" return x+1", Arrays.asList(null, null, null), FEELEvent.Severity.ERROR},
 
           //extended:
           {"for x in 1..3 return x+1", Stream.of(1, 2, 3).map(x -> BigDecimal.valueOf(x + 1)).collect(Collectors.toList()), null},
