@@ -384,7 +384,7 @@ public class DMNCompilerImpl implements DMNCompiler {
                                       Msg.DUPLICATED_ITEM_DEFINITION,
                                       id.getName());
             }
-            if (id.getItemComponent() != null && id.getItemComponent().size() > 0) {
+            if (id.getItemComponent() != null && !id.getItemComponent().isEmpty()) {
                 DMNCompilerHelper.checkVariableName(model, id, id.getName());
                 CompositeTypeImpl compType = new CompositeTypeImpl(model.getNamespace(), id.getName(), id.getId(), id.isIsCollection());
                 DMNType preregistered = model.getTypeRegistry().registerType(compType);
@@ -402,6 +402,9 @@ public class DMNCompilerImpl implements DMNCompiler {
     private void processDrgElements(DMNCompilerContext ctx, DMNModelImpl model, Definitions dmndefs) {
         for ( DRGElement e : dmndefs.getDrgElement() ) {
             boolean foundIt = false;
+            if (e.getId() == null) {
+                e.setId(UUID.randomUUID().toString());
+            }
             for( DRGElementCompiler dc : drgCompilers ) {
                 if ( dc.accept( e ) ) {
                     foundIt = true;
@@ -436,10 +439,8 @@ public class DMNCompilerImpl implements DMNCompiler {
                         ds.setVariable(variable);
                     }
                     // continuing with normal compilation of Decision Service:
-                    boolean foundIt = false;
                     for (DRGElementCompiler dc : drgCompilers) {
                         if (dc.accept(ds)) {
-                            foundIt = true;
                             dc.compileNode(ds, this, model);
                         }
                     }
@@ -487,7 +488,7 @@ public class DMNCompilerImpl implements DMNCompiler {
     }
     
     @FunctionalInterface
-    public static interface AfterProcessDrgElements {
+    public interface AfterProcessDrgElements {
         void callback(DMNCompilerImpl compiler, DMNCompilerContext ctx, DMNModelImpl model);
     }
     
