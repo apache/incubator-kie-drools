@@ -61,7 +61,7 @@ public class AbstractPhreakSequencerSubsequenceTest {
     void createSession() {
         SessionsAwareKnowledgeBase kbase       = new SessionsAwareKnowledgeBase(buildContext.getRuleBase());
         SessionConfiguration       sessionConf = kbase.getSessionConfiguration();
-        sessionConf.setOption(ThreadSafeOption.YES);
+        sessionConf.setOption(ThreadSafeOption.NO);
         sessionConf.setClockType(ClockType.PSEUDO_CLOCK);
 
         if (session != null) {

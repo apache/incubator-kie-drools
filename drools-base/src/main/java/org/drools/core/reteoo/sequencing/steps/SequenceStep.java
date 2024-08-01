@@ -5,20 +5,13 @@ import org.drools.core.reteoo.sequencing.Sequence;
 import org.drools.core.reteoo.sequencing.Sequence.SequenceMemory;
 import org.drools.core.util.CircularArrayList;
 
-public class SequenceStep implements Step {
-    protected Sequence parentSequence;
+public class SequenceStep extends AbstractStep implements Step {
     protected Sequence sequence;
 
-    public SequenceStep(Sequence parentSequence, Sequence sequence) {
-        this.parentSequence = parentSequence;
+    public SequenceStep(int index, Sequence parentSequence, Sequence sequence) {
+        super(index, parentSequence);
         this.sequence       = sequence;
     }
-
-    @Override
-    public Sequence getParentSequence() {
-        return parentSequence;
-    }
-
 
     public Sequence getSequence() {
         return sequence;

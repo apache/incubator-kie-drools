@@ -247,7 +247,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
 
             while (node.getLeftTupleSource()  != null) {
                 if (NodeTypeEnums.isBetaNodeWithSubnetwork(node) && ((BetaNode)node).getRightInput().getParent().getAssociatedTerminalsSize() > 1) {
-                    exclbranchRoots.add( new Pair((LeftTupleNode) ((BetaNode)node).getRightInput(), node));
+                    exclbranchRoots.add( new Pair((LeftTupleNode) ((BetaNode)node).getRightInput().getParent(), node));
                 }
 
                 if (node.getLeftTupleSource().getAssociatedTerminalsSize()> 1) {

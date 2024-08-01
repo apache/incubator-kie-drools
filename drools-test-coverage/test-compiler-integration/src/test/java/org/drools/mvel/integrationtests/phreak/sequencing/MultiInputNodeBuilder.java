@@ -49,40 +49,6 @@ public class MultiInputNodeBuilder {
         return new MultiInputNodeBuilder(buildContext);
     }
 
-//    public MultiInputNode build(Class leftType, Class[] rightTypes) {
-//
-//    }
-
-    public ObjectRouter buildRouter(Class... alphaTypes) {
-//        NodeFactory nFactory = CoreComponentFactory.get().getNodeFactoryService();
-//        EntryPointNode epn = buildContext.getRuleBase().getRete().getEntryPointNodes().get(EntryPointId.DEFAULT);
-//
-//        buildContext.setCurrentEntryPoint(epn.getEntryPoint());
-//        buildContext.setTupleMemoryEnabled(true);
-//        buildContext.setPartitionId(RuleBasePartitionId.MAIN_PARTITION);
-//
-//        RouteAdapter[] adapters = new RouteAdapter[alphaTypes.length];
-//
-//        ObjectRouter router = new ObjectRouter();
-//
-//
-//        for (int i = 0 ; i < alphaTypes.length; i++) {
-//            ObjectTypeNode otn = nFactory.buildObjectTypeNode(buildContext.getNextNodeId(),
-//                                                              epn,
-//                                                              new ClassObjectType(alphaTypes[i]),
-//                                                              buildContext);
-//            otn.attach(buildContext);
-//            adapters[i] = new RouteAdapter(buildContext.getNextNodeId(), otn, buildContext.getPartitionId(), router, i);
-//            adapters[i].attach(buildContext);
-//        }
-//
-//        router.setRouterAdapters(adapters);
-//
-//        return router;
-
-        return null;
-    }
-
     public SequenceNode buildNode(Class leftType, Class[] rightTypes) {
         NodeFactory nFactory = CoreComponentFactory.get().getNodeFactoryService();
 
@@ -126,36 +92,6 @@ public class MultiInputNodeBuilder {
 
         return mn;
     }
-
-//    public RouteAdapter[] buildAdapters(Filter... filters) {
-//        for (int i = 0; i < filters.length; i++) {
-//
-//            //new RouteAdapter()
-//        }
-//    }
-
-//    public static class Filter<C> {
-//        public Class cls;
-//        public AlphaConstraint constraint;
-//
-//        public static <T> Filter create(Class<T> cls,  Predicate1<T> predicate1) {
-//            return new Filter(cls, predicate1);
-//        }
-//
-//        public Filter(Class<C> cls, Predicate1<C> predicate1) {
-//            this.cls = cls;
-//            this.constraint = new AlphaConstraint(predicate1);
-//        }
-//
-//        public Class getCls() {
-//            return cls;
-//        }
-//
-//        public AlphaConstraint getConstraint() {
-//            return constraint;
-//        }
-//    }
-
 
     public AlphaNodeFieldConstraint buildConstraint(Predicate1 predicate1) {
         return new AlphaConstraint(predicate1);

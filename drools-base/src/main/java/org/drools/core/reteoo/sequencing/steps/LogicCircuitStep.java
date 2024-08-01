@@ -6,18 +6,12 @@ import org.drools.core.reteoo.sequencing.signalprocessors.LogicGate;
 import org.drools.core.reteoo.sequencing.Sequence;
 import org.drools.core.reteoo.sequencing.Sequence.SequenceMemory;
 
-public class LogicCircuitStep implements Step {
-    private final Sequence     parentSequence;
+public class LogicCircuitStep extends AbstractStep implements Step {
     private final LogicCircuit circuit;
 
-    public LogicCircuitStep(Sequence parentSequence, LogicCircuit circuit) {
-        this.parentSequence = parentSequence;
+    public LogicCircuitStep(int index, Sequence parentSequence, LogicCircuit circuit) {
+        super(index, parentSequence);
         this.circuit        = circuit;
-    }
-
-    @Override
-    public Sequence getParentSequence() {
-        return parentSequence;
     }
 
     public LogicCircuit getCircuit() {

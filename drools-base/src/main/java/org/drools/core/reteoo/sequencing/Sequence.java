@@ -45,7 +45,7 @@ public class Sequence implements RuleConditionElement {
     public Sequence(int sequenceIndex, StepFactory... stepFactories) {
         this.steps = new Step[stepFactories.length];
         for ( int i = 0; i < steps.length; i++ ) {
-            steps[i] = stepFactories[i].createStep(this);
+            steps[i] = stepFactories[i].createStep(i,this);
         }
         this.sequenceIndex = sequenceIndex;
         populateLogicGates();
@@ -418,6 +418,7 @@ public class Sequence implements RuleConditionElement {
 //                        // fail
 //                        sequencerMemory.getNode().getSequencer().fail(sequencerMemory);
                     sequenceMemory.getSequence().fail(sequenceMemory, reteEvaluator);
+
                         System.out.println("2");
 //                    }
                     break;
@@ -426,13 +427,9 @@ public class Sequence implements RuleConditionElement {
     }
 
     private void fail(SequenceMemory sequenceMemory, ValueResolver valueResolver) {
-        int step = sequenceMemory.getStep();
-
-        sequenceMemory.getSequence().getSteps()[step].deactivate(sequenceMemory, valueResolver);
-
-        SequencerMemory sequencerMemory = sequenceMemory.getSequencerMemory();
-        sequencerMemory.popSequence();
-        System.out.println("fail timeout");
+        int index = sequenceMemory.getStep();
+        Step step = sequenceMemory.getSequence().getSteps()[index];
+        step.onFail(sequenceMemory, valueResolver);
     }
 
     public static class SequenceMemory {

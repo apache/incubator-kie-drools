@@ -12,6 +12,8 @@ public interface Step {
 
     void deactivate(SequenceMemory memory, ValueResolver valueResolver);
 
+    void onFail(SequenceMemory memory, ValueResolver valueResolver);
+
     static StepFactory of(LogicCircuit circuit) {
         StepFactory factory = new StepFactory(StepFactoryType.LOGIC_CIRCUIT);
         factory.setCircuit(circuit);
@@ -91,16 +93,16 @@ public interface Step {
             this.action = action;
         }
 
-        public Step createStep(Sequence parentSequence) {
+        public Step createStep(int index, Sequence parentSequence) {
             switch (type) {
                 case LOGIC_CIRCUIT:
-                    return new LogicCircuitStep(parentSequence, circuit);
+                    return new LogicCircuitStep(index, parentSequence, circuit);
                 case AGGREGATOR:
-                    return new AggregatorStep(parentSequence, sequence, aggregator);
+                    return new AggregatorStep(index, parentSequence, sequence, aggregator);
                 case SEQUENCE:
-                    return new SequenceStep(parentSequence, sequence);
+                    return new SequenceStep(index, parentSequence, sequence);
                 case ACTION:
-                    return new ActionStep(parentSequence, action);
+                    return new ActionStep(index, parentSequence, action);
             }
             throw new IllegalArgumentException("Unsupported step type: " + type);
         }

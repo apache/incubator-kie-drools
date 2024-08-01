@@ -110,7 +110,7 @@ public class PhreakSequencerSubsequenceLoopTest extends AbstractPhreakSequencerS
 
         SessionsAwareKnowledgeBase kbase       = new SessionsAwareKnowledgeBase(buildContext.getRuleBase());
         SessionConfiguration       sessionConf = kbase.getSessionConfiguration();
-        sessionConf.setOption(ThreadSafeOption.YES);
+        sessionConf.setOption(ThreadSafeOption.NO);
 
         session = (StatefulKnowledgeSessionImpl) kbase.newKieSession(sessionConf, null);
 

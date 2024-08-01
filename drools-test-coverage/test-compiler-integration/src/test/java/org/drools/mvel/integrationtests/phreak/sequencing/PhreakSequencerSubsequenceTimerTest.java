@@ -110,7 +110,7 @@ public class PhreakSequencerSubsequenceTimerTest extends AbstractPhreakSequencer
 
         SessionsAwareKnowledgeBase kbase       = new SessionsAwareKnowledgeBase(buildContext.getRuleBase());
         SessionConfiguration       sessionConf = kbase.getSessionConfiguration();
-        sessionConf.setOption(ThreadSafeOption.YES);
+        sessionConf.setOption(ThreadSafeOption.NO);
     }
 
     @Test

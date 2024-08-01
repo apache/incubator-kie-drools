@@ -6,12 +6,11 @@ import org.drools.core.reteoo.sequencing.Sequence.SequenceMemory;
 
 import java.util.function.Consumer;
 
-public class ActionStep implements Step {
-    protected     Sequence                 parentSequence;
+public class ActionStep extends AbstractStep implements Step {
     private final Consumer<SequenceMemory> consumer;
 
-    public ActionStep(Sequence parentSequence, Consumer<SequenceMemory> consumer) {
-        this.parentSequence = parentSequence;
+    public ActionStep(int index, Sequence parentSequence, Consumer<SequenceMemory> consumer) {
+        super(index, parentSequence);
         this.consumer       = consumer;
     }
 
@@ -23,10 +22,5 @@ public class ActionStep implements Step {
 
     @Override
     public void deactivate(SequenceMemory memory, ValueResolver valueResolver) {
-    }
-
-    @Override
-    public Sequence getParentSequence() {
-        return parentSequence;
     }
 }
