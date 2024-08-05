@@ -36,6 +36,7 @@
   <!--<logger name="org.drools.model.codegen.execmodel.generator.expressiontyper" level="debug"/>-->
 <!--    <logger name="org.drools.model.codegen.execmodel" level="debug"/>-->
   <logger name="org.drools.ancompiler" level="info"/>
+<!--  <logger name="org.drools.drl.parser.DrlParser" level="debug"/>-->
 
   <root level="warn">
     <appender-ref ref="consoleAppender" />
