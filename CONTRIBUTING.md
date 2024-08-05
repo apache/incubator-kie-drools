@@ -33,7 +33,7 @@ modified, such other license.
 
 ## Issues
 
-Kogito uses [JIRA to manage and report issues](https://issues.redhat.com/projects/KOGITO/).
+Kogito uses [Issues](https://github.com/apache/incubator-kie-kogito-runtimes/issues).
 
 If you believe you found a bug, please indicate a way to reproduce it, what you are seeing and what you would expect to see. Don't forget to indicate your Kogito, Java, Maven, Quarkus/Spring, GraalVM version. 
 
@@ -50,18 +50,18 @@ If you are interested in having more details, refer to the [Build section](#buil
 
 To contribute, use GitHub Pull Requests, from your **own** fork. 
 
-- PRs should be always related to an open JIRA issue. If there is none, you should create one.
+- PRs should be always related to an open an [issue](https://github.com/apache/incubator-kie-kogito-runtimes/issues). If there is none, you should [create one](https://github.com/apache/incubator-kie-kogito-runtimes/issues/new) by describing what problem you see that we need to fix.
 - Try to fix only one issue per PR.
-- Make sure to create a new branch. Usually branches are named after the JIRA ticket they are addressing. E.g. for ticket "KOGITO-XYZ An example issue" your branch should be at least prefixed with `KOGITO-XYZ`. E.g.:
+- Make sure to create a new branch. Usually branches are named after the github issue they are addressing. E.g. for ticket "Fix_#issue An example issue". E.g.:
 
-        git checkout -b KOGITO-XYZ
+        git checkout -b Fix_#XYZ
         # or
-        git checkout -b KOGITO-XYZ-my-fix
+        git checkout -b Fix_#XYZ-my-fix
 
-- When you submit your PR, make sure to include the ticket ID, and its title; e.g., "KOGITO-XYZ An example issue".
-- The description of your PR should describe the code you wrote. The issue that is solved should be at least described properly in the corresponding JIRA ticket. 
+- When you submit your PR, make sure to include the ticket ID, and its title; e.g., "Fix_#XYZ An example issue".
+- The description of your PR should describe the code you wrote. The issue that is solved should be at least described properly in the corresponding github issue. 
 - If your contribution spans across multiple repositories, 
-  use the same branch name (e.g. `KOGITO-XYZ`) in each PR so that our CI (Jenkins) can build them all at once.
+  use the same branch name (e.g. `Fix_#XYZ`) in each PR so that our CI (Jenkins) can build them all at once.
 - If your contribution spans across multiple repositories, make sure to list all the related PRs.
 
 ### Java Coding Guidelines
