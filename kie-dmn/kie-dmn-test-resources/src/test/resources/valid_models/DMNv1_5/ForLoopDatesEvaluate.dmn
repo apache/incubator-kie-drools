@@ -40,7 +40,7 @@
     <dmn:extensionElements/>
     <dmn:variable id="_4608E42A-977F-4786-AD2A-DE62804DECBA" name="forloopdates" typeRef="tDates"/>
     <dmn:literalExpression id="_3BC54643-D567-4148-8931-7A5892E5863F">
-      <dmn:text>for x in @"2021-01-01"..@"2021-01-03" return x+1</dmn:text>
+      <dmn:text>for x in @"2021-01-01"..@"2021-01-03" return x + duration("P1D")</dmn:text>
     </dmn:literalExpression>
   </dmn:decision>
   <dmndi:DMNDI>

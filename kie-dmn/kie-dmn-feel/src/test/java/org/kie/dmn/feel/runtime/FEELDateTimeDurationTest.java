@@ -51,6 +51,8 @@ public class FEELDateTimeDurationTest extends BaseFEELTest {
     private static Collection<Object[]> data() {
         final Object[][] cases = new Object[][] {
                 // date/time/duration function invocations
+                { "@\"2021-01-01\" + 10", null , FEELEvent.Severity.ERROR},
+                { "@\"2021-01-01T10:10:10\" + 10", null , FEELEvent.Severity.ERROR},
                 { "date(\"2016-07-29\")", DateTimeFormatter.ISO_DATE.parse( "2016-07-29", LocalDate::from ) , null},
                 { "@\"2016-07-29\"", DateTimeFormatter.ISO_DATE.parse( "2016-07-29", LocalDate::from ) , null},
                 { "date(\"-0105-07-29\")", DateTimeFormatter.ISO_DATE.parse( "-0105-07-29", LocalDate::from ) , null}, // 105 BC
