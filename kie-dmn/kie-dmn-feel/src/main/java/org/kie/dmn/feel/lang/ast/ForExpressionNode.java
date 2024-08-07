@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -25,6 +25,8 @@ import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.ast.forexpressioniterators.ForIteration;
 import org.kie.dmn.feel.lang.types.BuiltInType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,6 +37,7 @@ import static org.kie.dmn.feel.lang.ast.forexpressioniterators.ForIterationUtils
 public class ForExpressionNode
         extends BaseNode {
 
+    private static final Logger LOG = LoggerFactory.getLogger(ForExpressionNode.class);
 
     private List<IterationContextNode> iterationContexts;
     private BaseNode expression;
@@ -74,16 +77,11 @@ public class ForExpressionNode
     public Object evaluate(EvaluationContext ctx) {
         try {
             ctx.enterFrame();
-            List results = new ArrayList();
-            ctx.setValue("partial", results);
-            ForIteration[] ictx = initializeContexts(ctx, iterationContexts);
-
-            while (nextIteration(ctx, ictx)) {
-                Object result = expression.evaluate(ctx);
-                results.add(result);
-                ctx.exitFrame(); // last i-th scope unrolled, see also ForExpressionNode.nextIteration(...)
-            }
-            return results;
+            List<Object> toReturn = new ArrayList<>();
+            ctx.setValue("partial", toReturn);
+            populateToReturn(0, ctx, toReturn);
+            LOG.trace("returning {}", toReturn);
+            return toReturn;
         } catch (EndpointOfRangeNotValidTypeException | EndpointOfRangeOfDifferentTypeException e) {
             // ast error already reported
             return null;
@@ -92,28 +90,34 @@ public class ForExpressionNode
         }
     }
 
-    public static boolean nextIteration(EvaluationContext ctx, ForIteration[] ictx) {
-        int i = ictx.length - 1;
-        while (i >= 0 && i < ictx.length) {
-            if (ictx[i].hasNextValue()) {
-                ctx.enterFrame(); // on first iter, open last scope frame; or new ones when prev unrolled
-                setValueIntoContext(ctx, ictx[i]);
-                i++;
-            } else {
-                if (i > 0) {
-                    // end of iter loop for this i-th scope; i-th scope is always unrolled as part of the 
-                    // for-loop cycle, so here must unroll the _prev_ scope;
-                    // the if-guard for this code block makes sure NOT to unroll bottom one.
-                    ctx.exitFrame();
-                }
-                i--;
+    private void populateToReturn(int k, EvaluationContext ctx, List<Object> toPopulate) {
+        LOG.trace("populateToReturn at index {}", k);
+        if (k > iterationContexts.size() - 1) {
+            LOG.trace("Index {} out of range, returning", k);
+            return;
+        }
+        IterationContextNode iterationContextNode = iterationContexts.get(k);
+        ForIteration forIteration = createForIteration(ctx, iterationContextNode);
+        while (forIteration.hasNextValue()) {
+            LOG.trace("{} has next value", forIteration);
+            ctx.enterFrame(); // open loop scope frame, for every iter ctx, except last one as guarded by if clause
+            // above
+            setValueIntoContext(ctx, forIteration.getName(), forIteration.getNextValue());
+            if (k == iterationContexts.size() - 1) {
+                LOG.trace("i == iterationContexts.size() -1: this is the last iteration context; evaluating {}",
+                          expression);
+                Object result = expression.evaluate(ctx);
+                LOG.trace("add {} to toReturn", result);
+                toPopulate.add(result);
+            } else if (k < iterationContexts.size() - 1) {
+                populateToReturn(k + 1, ctx, toPopulate);
             }
         }
-        return i >= 0;
+        ctx.exitFrame();
     }
 
-    public static void setValueIntoContext(EvaluationContext ctx, ForIteration forIteration) {
-        ctx.setValue(forIteration.getName(), forIteration.getNextValue());
+    static void setValueIntoContext(EvaluationContext ctx, String name, Object value) {
+        ctx.setValue(name, value);
     }
 
     @Override
@@ -121,32 +125,19 @@ public class ForExpressionNode
         return BuiltInType.LIST;
     }
 
-    private ForIteration[] initializeContexts(EvaluationContext ctx, List<IterationContextNode> iterationContexts) {
-        ForIteration[] ictx = new ForIteration[iterationContexts.size()];
-        int i = 0;
-        for (IterationContextNode icn : iterationContexts) {
-            ictx[i] = createQuantifiedExpressionIterationContext(ctx, icn);
-            if (i < iterationContexts.size() - 1 && ictx[i].hasNextValue()) {
-                ctx.enterFrame(); // open loop scope frame, for every iter ctx, except last one as guarded by if clause above
-                setValueIntoContext(ctx, ictx[i]);
-            }
-            i++;
-        }
-        return ictx;
-    }
-
-    private ForIteration createQuantifiedExpressionIterationContext(EvaluationContext ctx, IterationContextNode icn) {
-        ForIteration fi;
-        String name = icn.evaluateName(ctx);
-        Object result = icn.evaluate(ctx);
-        Object rangeEnd = icn.evaluateRangeEnd(ctx);
+    private ForIteration createForIteration(EvaluationContext ctx, IterationContextNode iterationContextNode) {
+        LOG.trace("Creating ForIteration for {}", iterationContextNode);
+        ForIteration toReturn;
+        String name = iterationContextNode.evaluateName(ctx);
+        Object result = iterationContextNode.evaluate(ctx);
+        Object rangeEnd = iterationContextNode.evaluateRangeEnd(ctx);
         if (rangeEnd == null) {
-            Iterable values = result instanceof Iterable ? (Iterable) result : Collections.singletonList(result);
-            fi = new ForIteration(name, values);
+            Iterable values = result instanceof Iterable iterable? iterable : Collections.singletonList(result);
+            toReturn = new ForIteration(name, values);
         } else {
-            fi = getForIteration(ctx, name, result, rangeEnd);
+            toReturn = getForIteration(ctx, name, result, rangeEnd);
         }
-        return fi;
+        return toReturn;
     }
 
     @Override
@@ -161,5 +152,4 @@ public class ForExpressionNode
     public <T> T accept(Visitor<T> v) {
         return v.visit(this);
     }
-
 }
