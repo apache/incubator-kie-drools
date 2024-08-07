@@ -18,8 +18,8 @@
  */
 package org.kie.kogito.monitoring.core.common.process;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -49,7 +49,7 @@ import io.micrometer.core.instrument.Tag;
 public class MetricsProcessEventListener extends DefaultKogitoProcessEventListener {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MetricsProcessEventListener.class);
-    private static Map<String, AtomicInteger> gaugeMap = new HashMap<>();
+    private static Map<String, AtomicInteger> gaugeMap = new ConcurrentHashMap<>();
     private final String identifier;
     private final KogitoGAV gav;
     private final MeterRegistry meterRegistry;
