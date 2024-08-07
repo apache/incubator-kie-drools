@@ -32,11 +32,18 @@ import org.drools.base.reteoo.BaseTuple;
 import org.drools.base.rule.accessor.CompiledInvoker;
 import org.drools.base.rule.accessor.EvalExpression;
 import org.drools.base.rule.accessor.Wireable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class EvalCondition extends ConditionalElement
     implements
     Externalizable,
         Wireable {
+
+    private static final Logger LOG = LoggerFactory.getLogger(EvalCondition.class);
+
+    private static long warnLogCounter = 0;
+
     private static final long          serialVersionUID   = 510l;
 
     protected EvalExpression             expression;
@@ -222,5 +229,37 @@ public class EvalCondition extends ConditionalElement
     @Override
     public String toString() {
         return this.expression.toString();
+    }
+
+    public static void logWarnIfImproperEval(EvalCondition evalCondition, String evalExpression) {
+        if (warnLogCounter == 10) {
+            warnLogCounter++;
+            LOG.warn("More eval warnings will be suppressed...");
+            return;
+        } else if (warnLogCounter > 10) {
+            return; // avoid flooding the logs
+        }
+
+        if (evalExpression == null || evalExpression.isEmpty()) {
+            return; // cannot provide a meaningful warning
+        }
+
+        StringBuilder sb = new StringBuilder();
+        for (Declaration declaration : evalCondition.getRequiredDeclarations()) {
+            if (declaration.getPattern() != null) {
+                sb.append("'");
+                sb.append(declaration.getIdentifier());
+                sb.append("' comes from previous pattern '");
+                String className = declaration.getPattern().getObjectType().getClassName();
+                sb.append(className.substring(className.lastIndexOf('.') + 1));
+                sb.append("'. ");
+            }
+        }
+        if (!sb.isEmpty()) {
+            warnLogCounter++;
+            LOG.warn("In an eval expression [{}] : {}" +
+                             "Consider placing the constraint in the pattern and removing the eval if possible," +
+                             " as eval is not performance-efficient.", evalExpression, sb);
+        }
     }
 }

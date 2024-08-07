@@ -151,6 +151,7 @@ import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.conf.PropertySpecificOption;
 
 import static java.util.stream.Collectors.toList;
+import static org.drools.base.rule.EvalCondition.logWarnIfImproperEval;
 import static org.drools.base.rule.GroupElement.AND;
 import static org.drools.base.rule.GroupElement.OR;
 import static org.drools.compiler.rule.builder.RuleBuilder.buildTimer;
@@ -669,7 +670,9 @@ public class KiePackagesBuilder {
     private EvalCondition buildEval(RuleContext ctx, EvalImpl eval) {
         Declaration[] declarations = Stream.of( eval.getExpr().getVariables() ).map( ctx::getDeclaration ).toArray( Declaration[]::new );
         EvalExpression evalExpr = new LambdaEvalExpression(declarations, eval.getExpr());
-        return new EvalCondition(evalExpr, declarations);
+        EvalCondition evalCondition = new EvalCondition(evalExpr, declarations);
+        logWarnIfImproperEval(evalCondition, eval.getExpr().predicateInformation().getStringConstraint());
+        return evalCondition;
     }
 
     private ConditionalBranch buildConditionalConsequence(RuleContext ctx, ConditionalNamedConsequenceImpl consequence) {
