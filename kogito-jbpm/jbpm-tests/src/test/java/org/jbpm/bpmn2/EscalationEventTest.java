@@ -20,14 +20,22 @@ package org.jbpm.bpmn2;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
+import org.jbpm.bpmn2.escalation.EscalationBoundaryEventModel;
+import org.jbpm.bpmn2.escalation.EscalationBoundaryEventProcess;
 import org.jbpm.bpmn2.escalation.EscalationBoundaryEventWithTaskModel;
 import org.jbpm.bpmn2.escalation.EscalationBoundaryEventWithTaskProcess;
+import org.jbpm.bpmn2.escalation.EscalationEndEventHandlingModel;
+import org.jbpm.bpmn2.escalation.EscalationEndEventHandlingProcess;
+import org.jbpm.bpmn2.escalation.EscalationEndEventModel;
+import org.jbpm.bpmn2.escalation.EscalationEndEventProcess;
+import org.jbpm.bpmn2.escalation.EscalationWithDataMappingModel;
+import org.jbpm.bpmn2.escalation.EscalationWithDataMappingProcess;
 import org.jbpm.bpmn2.escalation.EventSubprocessEscalationModel;
 import org.jbpm.bpmn2.escalation.EventSubprocessEscalationProcess;
+import org.jbpm.bpmn2.escalation.IntermediateThrowEventEscalationModel;
+import org.jbpm.bpmn2.escalation.IntermediateThrowEventEscalationProcess;
 import org.jbpm.bpmn2.escalation.MultiEscalationModel;
 import org.jbpm.bpmn2.escalation.MultiEscalationProcess;
 import org.jbpm.bpmn2.escalation.TopLevelEscalationModel;
@@ -162,10 +170,14 @@ public class EscalationEventTest extends JbpmBpmn2TestCase {
     }
 
     @Test
-    public void testEscalationBoundaryEvent() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/escalation/BPMN2-EscalationBoundaryEvent.bpmn2");
-        KogitoProcessInstance processInstance = kruntime.startProcess("EscalationBoundaryEvent");
-        assertProcessInstanceCompleted(processInstance);
+    public void testEscalationBoundaryEvent() {
+        Application app = ProcessTestHelper.newApplication();
+        org.kie.kogito.process.Process<EscalationBoundaryEventModel> processDefinition = EscalationBoundaryEventProcess.newProcess(app);
+
+        EscalationBoundaryEventModel model = processDefinition.createModel();
+        org.kie.kogito.process.ProcessInstance<EscalationBoundaryEventModel> instance = processDefinition.createInstance(model);
+        instance.start();
+        assertThat(instance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
@@ -192,10 +204,13 @@ public class EscalationEventTest extends JbpmBpmn2TestCase {
     }
 
     @Test
-    public void testEscalationIntermediateThrowEventProcess() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/escalation/BPMN2-IntermediateThrowEventEscalation.bpmn2");
-        KogitoProcessInstance processInstance = kruntime.startProcess("IntermediateThrowEventEscalation");
-        assertProcessInstanceAborted(processInstance);
+    public void testEscalationIntermediateThrowEventProcess() {
+        Application app = ProcessTestHelper.newApplication();
+        org.kie.kogito.process.Process<IntermediateThrowEventEscalationModel> processDefinition = IntermediateThrowEventEscalationProcess.newProcess(app);
+        IntermediateThrowEventEscalationModel model = processDefinition.createModel();
+        org.kie.kogito.process.ProcessInstance<IntermediateThrowEventEscalationModel> instance = processDefinition.createInstance(model);
+        instance.start();
+        assertThat(instance.status()).isEqualTo(ProcessInstance.STATE_ABORTED);
     }
 
     @Test
@@ -268,29 +283,37 @@ public class EscalationEventTest extends JbpmBpmn2TestCase {
     }
 
     @Test
-    public void testEscalationEndEventProcess() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/escalation/BPMN2-EscalationEndEvent.bpmn2");
-        KogitoProcessInstance processInstance = kruntime.startProcess("EscalationEndEvent");
-        assertProcessInstanceAborted(processInstance.getStringId(), kruntime);
+    public void testEscalationEndEventProcess() {
+        Application app = ProcessTestHelper.newApplication();
+        org.kie.kogito.process.Process<EscalationEndEventModel> processDefinition = EscalationEndEventProcess.newProcess(app);
+        EscalationEndEventModel model = processDefinition.createModel();
+        org.kie.kogito.process.ProcessInstance<EscalationEndEventModel> instance = processDefinition.createInstance(model);
+        instance.start();
+        assertThat(instance.status()).isEqualTo(ProcessInstance.STATE_ABORTED);
     }
 
     @Test
-    public void testEscalationBoundaryEventAndIntermediate() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/escalation/BPMN2-EscalationWithDataMapping.bpmn2");
-        Map<String, Object> sessionArgs = new HashMap<>();
-        sessionArgs.put("Property_2", new java.lang.RuntimeException());
-        KogitoProcessInstance processInstance = kruntime.startProcess("EscalationWithDataMapping", sessionArgs);
-        assertProcessInstanceCompleted(processInstance);
-        assertProcessVarValue(processInstance, "Property_3", "java.lang.RuntimeException");
+    public void testEscalationBoundaryEventAndIntermediate() {
+        Application app = ProcessTestHelper.newApplication();
+        org.kie.kogito.process.Process<EscalationWithDataMappingModel> processDefinition = EscalationWithDataMappingProcess.newProcess(app);
+        EscalationWithDataMappingModel model = processDefinition.createModel();
+        model.setProperty_2("java.lang.RuntimeException");
+        org.kie.kogito.process.ProcessInstance<EscalationWithDataMappingModel> instance = processDefinition.createInstance(model);
+        instance.start();
+        assertThat(instance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
+        assertThat(instance.variables().getProperty_3()).isEqualTo("java.lang.RuntimeException");
     }
 
     @Test
-    public void testHandledEscalationEndEventProcess() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/escalation/BPMN2-EscalationEndEventHandling.bpmn2");
+    public void testHandledEscalationEndEventProcess() {
+        Application app = ProcessTestHelper.newApplication();
 
-        Map<String, Object> parameters = new HashMap<>();
-        parameters.put("hello", 70);
-        KogitoProcessInstance processInstance = kruntime.startProcess("EscalationEndEventHandling", parameters);
-        assertProcessInstanceFinished(processInstance, kruntime);
+        org.kie.kogito.process.Process<EscalationEndEventHandlingModel> processDefinition = EscalationEndEventHandlingProcess.newProcess(app);
+        EscalationEndEventHandlingModel model = processDefinition.createModel();
+        model.setHello(70);
+
+        org.kie.kogito.process.ProcessInstance<EscalationEndEventHandlingModel> instance = processDefinition.createInstance(model);
+        instance.start();
+        assertThat(instance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
 }
