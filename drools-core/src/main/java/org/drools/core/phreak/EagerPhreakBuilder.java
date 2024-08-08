@@ -61,6 +61,7 @@ import org.drools.core.reteoo.PathEndNode;
 import org.drools.core.reteoo.PathEndNode.PathMemSpec;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.QueryElementNode;
+import org.drools.core.reteoo.RightInputAdapterNode;
 import org.drools.core.reteoo.TupleToObjectNode;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.RuntimeComponentFactory;
@@ -1225,10 +1226,11 @@ public class EagerPhreakBuilder implements PhreakBuilder {
                 prevLt = lt;
                 lt = lt.getPeer();
             } else if (insert) {
-                BetaMemory bm = (BetaMemory) wm.getNodeMemories().peekNodeMemory(sink);
+                BetaNode betaNode = ((RightInputAdapterNode)sink).getBetaNode();
+                BetaMemory bm = (BetaMemory) wm.getNodeMemories().peekNodeMemory(betaNode);
                 if (bm != null) {
                     prevLt = TupleFactory.createPeer(tton, prevLt);
-                    bm.linkNode((BetaNode) sink, wm);
+                    bm.linkNode(betaNode, wm);
                     bm.getStagedRightTuples().addInsert(prevLt);
                 }
             }

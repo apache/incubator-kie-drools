@@ -140,8 +140,7 @@ public class MetricPhreakNetworkNodeFactoryImpl implements PhreakNetworkNodeFact
 
     public PhreakSequenceNode createPhreakSequenceNode() {
         if (MetricLogUtils.getInstance().isEnabled()) {
-            //return new PhreakSequenceNodeMetric();
-            throw new UnsupportedOperationException();
+            return new PhreakSequenceNodeMetric();
         } else {
             return new PhreakSequenceNode();
         }

@@ -20,7 +20,6 @@ import org.drools.base.base.ObjectType;
 import org.drools.base.common.RuleBasePartitionId;
 import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.common.ActivationsManager;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
@@ -464,9 +463,9 @@ public class SequenceNode extends LeftTupleSource
 
         private void doLeftUpdates(SequenceNode node, TupleSets srcLeftTuples, TupleSets trgLeftTuples, TupleSets stagedLeftTuples, ReteEvaluator reteEvaluator) {}
 
-        public void doNode(SequenceNode node, SequenceNodeMemory nodeMem, PathMemory pmem, SegmentMemory smem, LeftTupleSinkNode sink, ActivationsManager activationsManager, TupleSets srcTuples, TupleSets trgTuples, TupleSets stagedLeftTuples) {
-
-        }
+//        public void doNode(SequenceNode node, SequenceNodeMemory nodeMem, PathMemory pmem, SegmentMemory smem, LeftTupleSinkNode sink, ActivationsManager activationsManager, TupleSets srcTuples, TupleSets trgTuples, TupleSets stagedLeftTuples) {
+//
+//        }
 
         private void doLeftDeletes(SequenceNode node,
                                    TupleSets srcLeftTuples, TupleSets trgLeftTuples, TupleSets stagedLeftTuples,

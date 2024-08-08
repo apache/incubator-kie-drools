@@ -429,7 +429,7 @@ public class RuleNetworkEvaluator {
                     break;
                 }
                 case NodeTypeEnums.SequenceNode: {
-                    pSequenceNode.doNode((SequenceNode) node, (SequenceNodeMemory) nodeMem, pmem, smem, sink, activationsManager, srcTuples, trgTuples, stagedLeftTuples);
+                    pSequenceNode.doNode((SequenceNode) node, (SequenceNodeMemory) nodeMem, sink, activationsManager.getReteEvaluator(), srcTuples, trgTuples, stagedLeftTuples);
                     break;
                 }
                 case NodeTypeEnums.ConditionalBranchNode: {
