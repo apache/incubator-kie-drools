@@ -40,7 +40,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.kie.dmn.feel.util.CompilerUtils.parseCodegen;
+import static org.kie.dmn.feel.util.CompilerUtils.parseInterpreted;
 import static org.kie.dmn.feel.util.CompilerUtils.parseInterpretedCompileEvaluate;
 import static org.kie.dmn.feel.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.feel.util.DynamicTypeUtils.mapOf;
@@ -223,7 +223,7 @@ public class FEELCompilerTest {
 
     @Test
     void filter_path_tricky1() {
-        CompiledFEELExpression nameRef = CompilerUtils.parseCodegen("[ {x:1, y:2}, {x:2, y:3} ][x]");
+        CompiledFEELExpression nameRef = CompilerUtils.parseInterpreted("[ {x:1, y:2}, {x:2, y:3} ][x]");
         LOG.debug("{}", nameRef);
         
         EvaluationContext context = CodegenTestUtil.newEmptyEvaluationContext();
@@ -236,7 +236,7 @@ public class FEELCompilerTest {
 
     @Test
     void filter_path_tricky2() {
-        CompiledFEELExpression nameRef = CompilerUtils.parseCodegen("[ {x:1, y:2}, {x:2, y:3} ][x]");
+        CompiledFEELExpression nameRef = CompilerUtils.parseInterpreted("[ {x:1, y:2}, {x:2, y:3} ][x]");
         LOG.debug("{}", nameRef);
 
         EvaluationContext context = CodegenTestUtil.newEmptyEvaluationContext();
@@ -407,7 +407,7 @@ public class FEELCompilerTest {
     @Test
     void nameReference() {
         String inputExpression = "someSimpleName";
-        CompiledFEELExpression nameRef = parseCodegen(inputExpression, mapOf(entry("someSimpleName", BuiltInType.STRING) ) );
+        CompiledFEELExpression nameRef = parseInterpreted(inputExpression, mapOf(entry("someSimpleName", BuiltInType.STRING) ) );
         LOG.debug("{}", nameRef);
         
         EvaluationContext context = CodegenTestUtil.newEmptyEvaluationContext();
@@ -422,7 +422,7 @@ public class FEELCompilerTest {
     void qualifiedName() {
         String inputExpression = "My Person.Full Name";
         Type personType = new MapBackedType("Person", mapOf( entry("Full Name", BuiltInType.STRING), entry("Age", BuiltInType.NUMBER) ) );
-        CompiledFEELExpression qualRef = parseCodegen(inputExpression, mapOf(entry("My Person", personType) ) );
+        CompiledFEELExpression qualRef = parseInterpreted(inputExpression, mapOf(entry("My Person", personType) ) );
         LOG.debug("{}", qualRef);
         
         EvaluationContext context = CodegenTestUtil.newEmptyEvaluationContext();
@@ -433,7 +433,7 @@ public class FEELCompilerTest {
         assertThat(result).isEqualTo("John Doe" );
 
         // check number coercion for qualified name
-        CompiledFEELExpression personAgeExpression = parseCodegen("My Person.Age", mapOf(entry("My Person", personType)));
+        CompiledFEELExpression personAgeExpression = parseInterpreted("My Person.Age", mapOf(entry("My Person", personType)));
         LOG.debug("{}", personAgeExpression);
 
         Object resultPersonAge = personAgeExpression.apply(context); // Please notice input variable in context is a Map containing and entry value for int 47.
@@ -453,7 +453,7 @@ public class FEELCompilerTest {
     void qualifiedName2() {
         String inputExpression = "My Person.Full Name";
         Type personType = JavaBackedType.of(MyPerson.class);
-        CompiledFEELExpression qualRef = parseCodegen(inputExpression, mapOf(entry("My Person", personType) ) );
+        CompiledFEELExpression qualRef = parseInterpreted(inputExpression, mapOf(entry("My Person", personType) ) );
         LOG.debug("{}", qualRef);
         
         EvaluationContext context = CodegenTestUtil.newEmptyEvaluationContext();
@@ -468,7 +468,7 @@ public class FEELCompilerTest {
     void qualifiedName3() {
         String inputExpression = "a date.year";
         Type dateType = BuiltInType.DATE;
-        CompiledFEELExpression qualRef = parseCodegen(inputExpression, mapOf(entry("a date", dateType)));
+        CompiledFEELExpression qualRef = parseInterpreted(inputExpression, mapOf(entry("a date", dateType)));
         LOG.debug("{}", qualRef);
         
         EvaluationContext context = CodegenTestUtil.newEmptyEvaluationContext();
