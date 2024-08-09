@@ -32,6 +32,32 @@ import org.jbpm.bpmn2.activity.XPathProcessProcess;
 import org.jbpm.bpmn2.core.Association;
 import org.jbpm.bpmn2.core.DataStore;
 import org.jbpm.bpmn2.core.Definitions;
+import org.jbpm.bpmn2.data.DataInputAssociationsLazyCreatingModel;
+import org.jbpm.bpmn2.data.DataInputAssociationsLazyCreatingProcess;
+import org.jbpm.bpmn2.data.DataInputAssociationsModel;
+import org.jbpm.bpmn2.data.DataInputAssociationsProcess;
+import org.jbpm.bpmn2.data.DataInputAssociationsStringModel;
+import org.jbpm.bpmn2.data.DataInputAssociationsStringNoQuotesModel;
+import org.jbpm.bpmn2.data.DataInputAssociationsStringNoQuotesProcess;
+import org.jbpm.bpmn2.data.DataInputAssociationsStringObjectModel;
+import org.jbpm.bpmn2.data.DataInputAssociationsStringObjectProcess;
+import org.jbpm.bpmn2.data.DataInputAssociationsStringProcess;
+import org.jbpm.bpmn2.data.DataInputAssociationsXmlLiteralModel;
+import org.jbpm.bpmn2.data.DataInputAssociationsXmlLiteralProcess;
+import org.jbpm.bpmn2.data.DataObjectModel;
+import org.jbpm.bpmn2.data.DataObjectProcess;
+import org.jbpm.bpmn2.data.DataOutputAssociationsModel;
+import org.jbpm.bpmn2.data.DataOutputAssociationsProcess;
+import org.jbpm.bpmn2.data.DataOutputAssociationsXmlNodeModel;
+import org.jbpm.bpmn2.data.DataOutputAssociationsXmlNodeProcess;
+import org.jbpm.bpmn2.data.Evaluation2Model;
+import org.jbpm.bpmn2.data.Evaluation2Process;
+import org.jbpm.bpmn2.data.Evaluation3Model;
+import org.jbpm.bpmn2.data.Evaluation3Process;
+import org.jbpm.bpmn2.data.EvaluationModel;
+import org.jbpm.bpmn2.data.EvaluationProcess;
+import org.jbpm.bpmn2.data.ImportModel;
+import org.jbpm.bpmn2.data.ImportProcess;
 import org.jbpm.bpmn2.flow.DataOutputAssociationsHumanTaskModel;
 import org.jbpm.bpmn2.flow.DataOutputAssociationsHumanTaskProcess;
 import org.jbpm.bpmn2.xml.ProcessHandler;
@@ -55,21 +81,26 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class DataTest extends JbpmBpmn2TestCase {
 
     @Test
-    public void testImport() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/data/BPMN2-Import.bpmn2");
-        KogitoProcessInstance processInstance = kruntime.startProcess("Import");
-        assertProcessInstanceCompleted(processInstance);
+    public void testImport() {
+        Application app = ProcessTestHelper.newApplication();
+        org.kie.kogito.process.Process<ImportModel> process = ImportProcess.newProcess(app);
+        ImportModel model = process.createModel();
+        ProcessInstance<ImportModel> processInstance = process.createInstance(model);
+        processInstance.start();
 
+        assertThat(processInstance.status()).isEqualTo(org.jbpm.process.instance.ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
-    public void testDataObject() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/data/BPMN2-DataObject.bpmn2");
-        Map<String, Object> params = new HashMap<>();
-        params.put("employee", "UserId-12345");
-        KogitoProcessInstance processInstance = kruntime.startProcess("DataObject",
-                params);
-        assertProcessInstanceCompleted(processInstance);
+    public void testDataObject() {
+        Application app = ProcessTestHelper.newApplication();
+        org.kie.kogito.process.Process<DataObjectModel> process = DataObjectProcess.newProcess(app);
+        DataObjectModel model = process.createModel();
+        model.setEmployee("UserId-12345");
+        ProcessInstance<DataObjectModel> processInstance = process.createInstance(model);
+        processInstance.start();
+
+        assertThat(processInstance.status()).isEqualTo(org.jbpm.process.instance.ProcessInstance.STATE_COMPLETED);
 
     }
 
@@ -103,45 +134,47 @@ public class DataTest extends JbpmBpmn2TestCase {
     }
 
     @Test
-    public void testEvaluationProcess() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/data/BPMN2-Evaluation.bpmn2");
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task",
-                new SystemOutWorkItemHandler());
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler(
-                "RegisterRequest", new SystemOutWorkItemHandler());
-        Map<String, Object> params = new HashMap<>();
-        params.put("employee", "UserId-12345");
-        KogitoProcessInstance processInstance = kruntime.startProcess("Evaluation",
-                params);
-        assertProcessInstanceCompleted(processInstance);
+    public void testEvaluationProcess() {
+        Application app = ProcessTestHelper.newApplication();
+        ProcessTestHelper.registerHandler(app, "Human Task", new SystemOutWorkItemHandler());
+        ProcessTestHelper.registerHandler(app, "RegisterRequest", new SystemOutWorkItemHandler());
 
+        org.kie.kogito.process.Process<EvaluationModel> processDefinition = EvaluationProcess.newProcess(app);
+        EvaluationModel model = processDefinition.createModel();
+        model.setEmployee("UserId-12345");
+
+        org.kie.kogito.process.ProcessInstance<EvaluationModel> instance = processDefinition.createInstance(model);
+        instance.start();
+        assertThat(instance).extracting(ProcessInstance::status).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
-    public void testEvaluationProcess2() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/data/BPMN2-Evaluation2.bpmn2");
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task",
-                new SystemOutWorkItemHandler());
-        Map<String, Object> params = new HashMap<>();
-        params.put("employee", "UserId-12345");
-        KogitoProcessInstance processInstance = kruntime.startProcess("Evaluation2", params);
-        assertProcessInstanceCompleted(processInstance);
+    public void testEvaluationProcess2() {
+        Application app = ProcessTestHelper.newApplication();
+        ProcessTestHelper.registerHandler(app, "Human Task", new SystemOutWorkItemHandler());
 
+        org.kie.kogito.process.Process<Evaluation2Model> processDefinition = Evaluation2Process.newProcess(app);
+        Evaluation2Model model = processDefinition.createModel();
+        model.setEmployee("UserId-12345");
+
+        org.kie.kogito.process.ProcessInstance<Evaluation2Model> instance = processDefinition.createInstance(model);
+        instance.start();
+        assertThat(instance).extracting(ProcessInstance::status).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
-    public void testEvaluationProcess3() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/data/BPMN2-Evaluation3.bpmn2");
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task",
-                new SystemOutWorkItemHandler());
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler(
-                "RegisterRequest", new SystemOutWorkItemHandler());
-        Map<String, Object> params = new HashMap<>();
-        params.put("employee", "john2");
-        KogitoProcessInstance processInstance = kruntime.startProcess("Evaluation3",
-                params);
-        assertProcessInstanceCompleted(processInstance);
+    public void testEvaluationProcess3() {
+        Application app = ProcessTestHelper.newApplication();
+        ProcessTestHelper.registerHandler(app, "Human Task", new SystemOutWorkItemHandler());
+        ProcessTestHelper.registerHandler(app, "RegisterRequest", new SystemOutWorkItemHandler());
 
+        org.kie.kogito.process.Process<Evaluation3Model> processDefinition = Evaluation3Process.newProcess(app);
+        Evaluation3Model model = processDefinition.createModel();
+        model.setEmployee("john2");
+
+        org.kie.kogito.process.ProcessInstance<Evaluation3Model> instance = processDefinition.createInstance(model);
+        instance.start();
+        assertThat(instance).extracting(ProcessInstance::status).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
@@ -166,157 +199,151 @@ public class DataTest extends JbpmBpmn2TestCase {
 
     @Test
     public void testDataInputAssociations() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/data/BPMN2-DataInputAssociations.bpmn2");
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task",
-                new KogitoWorkItemHandler() {
-                    @Override
-                    public void abortWorkItem(KogitoWorkItem manager,
-                            KogitoWorkItemManager mgr) {
+        Application app = ProcessTestHelper.newApplication();
+        ProcessTestHelper.registerHandler(app, "Human Task", new KogitoWorkItemHandler() {
+            @Override
+            public void abortWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager mgr) {
+            }
 
-                    }
+            @Override
+            public void executeWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager mgr) {
+                assertThat(workItem.getParameter("coId")).isEqualTo("hello world");
+            }
+        });
 
-                    @Override
-                    public void executeWorkItem(KogitoWorkItem workItem,
-                            KogitoWorkItemManager mgr) {
-                        assertThat(workItem.getParameter("coId")).isEqualTo("hello world");
-                    }
-                });
         Document document = DocumentBuilderFactory
                 .newInstance()
                 .newDocumentBuilder()
-                .parse(new ByteArrayInputStream("<user hello='hello world' />"
-                        .getBytes()));
-        Map<String, Object> params = new HashMap<>();
-        params.put("instanceMetadata", document.getFirstChild());
-        KogitoProcessInstance processInstance = kruntime.startProcess("DataInputAssociations", params);
+                .parse(new ByteArrayInputStream("<user hello='hello world' />".getBytes()));
 
+        org.kie.kogito.process.Process<DataInputAssociationsModel> processDefinition = DataInputAssociationsProcess.newProcess(app);
+        DataInputAssociationsModel model = processDefinition.createModel();
+        model.setInstanceMetadata(document.getFirstChild());
+
+        org.kie.kogito.process.ProcessInstance<DataInputAssociationsModel> instance = processDefinition.createInstance(model);
+        instance.start();
     }
 
     @Test
-    public void testDataInputAssociationsWithStringObject() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/data/BPMN2-DataInputAssociationsStringObject.bpmn2");
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task",
-                new KogitoWorkItemHandler() {
+    public void testDataInputAssociationsWithStringObject() {
+        Application app = ProcessTestHelper.newApplication();
+        ProcessTestHelper.registerHandler(app, "Human Task", new KogitoWorkItemHandler() {
+            @Override
+            public void abortWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager mgr) {
+            }
 
-                    @Override
-                    public void abortWorkItem(KogitoWorkItem manager,
-                            KogitoWorkItemManager mgr) {
+            @Override
+            public void executeWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager mgr) {
+                assertThat(workItem.getParameter("coId")).isEqualTo("hello");
+            }
+        });
 
-                    }
+        org.kie.kogito.process.Process<DataInputAssociationsStringObjectModel> processDefinition = DataInputAssociationsStringObjectProcess.newProcess(app);
+        DataInputAssociationsStringObjectModel model = processDefinition.createModel();
+        model.setInstanceMetadata("hello");
 
-                    @Override
-                    public void executeWorkItem(KogitoWorkItem workItem,
-                            KogitoWorkItemManager mgr) {
-                        assertThat(workItem.getParameter("coId")).isEqualTo("hello");
-                    }
-
-                });
-        Map<String, Object> params = new HashMap<>();
-        params.put("instanceMetadata", "hello");
-        KogitoProcessInstance processInstance = kruntime.startProcess("DataInputAssociationsStringObject", params);
-
+        org.kie.kogito.process.ProcessInstance<DataInputAssociationsStringObjectModel> instance = processDefinition.createInstance(model);
+        instance.start();
     }
 
     /**
      * TODO testDataInputAssociationsWithLazyLoading
      */
     @Test
-    @Disabled
-    public void testDataInputAssociationsWithLazyLoading()
-            throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/data/BPMN2-DataInputAssociationsLazyCreating.bpmn2");
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task",
-                new KogitoWorkItemHandler() {
+    public void testDataInputAssociationsWithLazyLoading() throws Exception {
+        Application app = ProcessTestHelper.newApplication();
+        ProcessTestHelper.registerHandler(app, "Human Task", new KogitoWorkItemHandler() {
+            @Override
+            public void abortWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager mgr) {
+            }
 
-                    public void abortWorkItem(KogitoWorkItem manager,
-                            KogitoWorkItemManager mgr) {
+            @Override
+            public void executeWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager mgr) {
+                Element coIdParamObj = (Element) workItem.getParameter("coId");
+                assertThat(coIdParamObj.getNodeName()).isEqualTo("mydoc");
+                assertThat(coIdParamObj.getFirstChild().getNodeName()).isEqualTo("mynode");
+                assertThat(coIdParamObj.getFirstChild().getFirstChild().getNodeName()).isEqualTo("user");
+                assertThat(coIdParamObj.getFirstChild().getFirstChild().getAttributes().getNamedItem("hello").getNodeValue()).isEqualTo("hello world");
+            }
+        });
 
-                    }
-
-                    public void executeWorkItem(KogitoWorkItem workItem,
-                            KogitoWorkItemManager mgr) {
-                        Element coIdParamObj = (Element) workItem.getParameter("coId");
-                        assertThat(coIdParamObj.getNodeName()).isEqualTo("mydoc");
-                        assertThat(coIdParamObj.getFirstChild().getNodeName()).isEqualTo("mynode");
-                        assertThat(coIdParamObj.getFirstChild().getFirstChild().getNodeName()).isEqualTo("user");
-                        assertThat(coIdParamObj.getFirstChild().getFirstChild().getAttributes().getNamedItem("hello").getNodeValue()).isEqualTo("hello world");
-                    }
-
-                });
         Document document = DocumentBuilderFactory
                 .newInstance()
                 .newDocumentBuilder()
-                .parse(new ByteArrayInputStream("<user hello='hello world' />"
-                        .getBytes()));
+                .parse(new ByteArrayInputStream("<user hello='hello world' />".getBytes()));
         Map<String, Object> params = new HashMap<>();
         params.put("instanceMetadata", document.getFirstChild());
-        KogitoProcessInstance processInstance = kruntime.startProcess("DataInputAssociationsLazyCreating", params);
 
+        org.kie.kogito.process.Process<DataInputAssociationsLazyCreatingModel> processDefinition = DataInputAssociationsLazyCreatingProcess.newProcess(app);
+        DataInputAssociationsLazyCreatingModel model = processDefinition.createModel();
+        model.setInstanceMetadata(document.getFirstChild());
+
+        org.kie.kogito.process.ProcessInstance<DataInputAssociationsLazyCreatingModel> instance = processDefinition.createInstance(model);
+        instance.start();
     }
 
     @Test
-    public void testDataInputAssociationsWithString() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/data/BPMN2-DataInputAssociationsString.bpmn2");
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task",
-                new KogitoWorkItemHandler() {
+    public void testDataInputAssociationsWithString() {
+        Application app = ProcessTestHelper.newApplication();
+        ProcessTestHelper.registerHandler(app, "Human Task", new KogitoWorkItemHandler() {
+            @Override
+            public void abortWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager mgr) {
+            }
 
-                    public void abortWorkItem(KogitoWorkItem manager,
-                            KogitoWorkItemManager mgr) {
+            @Override
+            public void executeWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager mgr) {
+                assertThat(workItem.getParameter("coId")).isEqualTo("hello");
+            }
+        });
 
-                    }
+        org.kie.kogito.process.Process<DataInputAssociationsStringModel> processDefinition = DataInputAssociationsStringProcess.newProcess(app);
+        DataInputAssociationsStringModel model = processDefinition.createModel();
 
-                    public void executeWorkItem(KogitoWorkItem workItem,
-                            KogitoWorkItemManager mgr) {
-                        assertThat(workItem.getParameter("coId")).isEqualTo("hello");
-                    }
-
-                });
-        KogitoProcessInstance processInstance = kruntime.startProcess("DataInputAssociationsString");
-
+        org.kie.kogito.process.ProcessInstance<DataInputAssociationsStringModel> instance = processDefinition.createInstance(model);
+        instance.start();
     }
 
     @Test
-    public void testDataInputAssociationsWithStringWithoutQuotes()
-            throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/data/BPMN2-DataInputAssociationsStringNoQuotes.bpmn2");
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task",
-                new KogitoWorkItemHandler() {
+    public void testDataInputAssociationsWithStringWithoutQuotes() {
+        Application app = ProcessTestHelper.newApplication();
+        ProcessTestHelper.registerHandler(app, "Human Task", new KogitoWorkItemHandler() {
+            @Override
+            public void abortWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager mgr) {
+            }
 
-                    public void abortWorkItem(KogitoWorkItem manager,
-                            KogitoWorkItemManager mgr) {
+            @Override
+            public void executeWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager mgr) {
+                assertThat(workItem.getParameter("coId")).isEqualTo("hello");
+            }
+        });
 
-                    }
+        org.kie.kogito.process.Process<DataInputAssociationsStringNoQuotesModel> processDefinition = DataInputAssociationsStringNoQuotesProcess.newProcess(app);
+        DataInputAssociationsStringNoQuotesModel model = processDefinition.createModel();
 
-                    public void executeWorkItem(KogitoWorkItem workItem,
-                            KogitoWorkItemManager mgr) {
-                        assertThat(workItem.getParameter("coId")).isEqualTo("hello");
-                    }
-
-                });
-        KogitoProcessInstance processInstance = kruntime.startProcess("DataInputAssociationsStringNoQuotes");
-
+        org.kie.kogito.process.ProcessInstance<DataInputAssociationsStringNoQuotesModel> instance = processDefinition.createInstance(model);
+        instance.start();
     }
 
     @Test
-    public void testDataInputAssociationsWithXMLLiteral() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/data/BPMN2-DataInputAssociationsXmlLiteral.bpmn2");
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task",
-                new KogitoWorkItemHandler() {
+    public void testDataInputAssociationsWithXMLLiteral() {
+        Application app = ProcessTestHelper.newApplication();
+        ProcessTestHelper.registerHandler(app, "Human Task", new KogitoWorkItemHandler() {
+            @Override
+            public void abortWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager mgr) {
+            }
 
-                    public void abortWorkItem(KogitoWorkItem manager,
-                            KogitoWorkItemManager mgr) {
+            @Override
+            public void executeWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager mgr) {
+                assertThat(((org.w3c.dom.Node) workItem.getParameter("coId")).getNodeName()).isEqualTo("id");
+                assertThat(((org.w3c.dom.Node) workItem.getParameter("coId")).getFirstChild().getTextContent()).isEqualTo("some text");
+            }
+        });
 
-                    }
+        org.kie.kogito.process.Process<DataInputAssociationsXmlLiteralModel> processDefinition = DataInputAssociationsXmlLiteralProcess.newProcess(app);
+        DataInputAssociationsXmlLiteralModel model = processDefinition.createModel();
 
-                    public void executeWorkItem(KogitoWorkItem workItem,
-                            KogitoWorkItemManager mgr) {
-                        assertThat(((org.w3c.dom.Node) workItem.getParameter("coId")).getNodeName()).isEqualTo("id");
-                        assertThat(((org.w3c.dom.Node) workItem.getParameter("coId")).getFirstChild().getTextContent()).isEqualTo("some text");
-                    }
-
-                });
-        KogitoProcessInstance processInstance = kruntime.startProcess("DataInputAssociationsXmlLiteral");
-
+        org.kie.kogito.process.ProcessInstance<DataInputAssociationsXmlLiteralModel> instance = processDefinition.createInstance(model);
+        instance.start();
     }
 
     /**
@@ -359,118 +386,100 @@ public class DataTest extends JbpmBpmn2TestCase {
     }
 
     @Test
-    public void testDataOutputAssociationsforHumanTask() throws Exception {
+    public void testDataOutputAssociationsforHumanTask() {
         Application app = ProcessTestHelper.newApplication();
-        ProcessTestHelper.registerHandler(app, "Human Task",
-                new KogitoWorkItemHandler() {
+        ProcessTestHelper.registerHandler(app, "Human Task", new KogitoWorkItemHandler() {
+            @Override
+            public void abortWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager mgr) {
+            }
 
-                    public void abortWorkItem(KogitoWorkItem manager,
-                            KogitoWorkItemManager mgr) {
+            @Override
+            public void executeWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager mgr) {
+                DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+                DocumentBuilder builder;
+                try {
+                    builder = factory.newDocumentBuilder();
+                } catch (ParserConfigurationException e) {
+                    throw new RuntimeException(e);
+                }
+                final Map<String, Object> results = new HashMap<>();
+                // process metadata
+                org.w3c.dom.Document processMetadaDoc = builder.newDocument();
+                org.w3c.dom.Element processMetadata = processMetadaDoc.createElement("previoustasksowner");
+                processMetadaDoc.appendChild(processMetadata);
+                processMetadata.setAttribute("primaryname", "my_result");
+                results.put("output", processMetadata);
+                mgr.completeWorkItem(workItem.getStringId(), results);
+            }
+        });
 
-                    }
+        org.kie.kogito.process.Process<DataOutputAssociationsHumanTaskModel> processDefinition = DataOutputAssociationsHumanTaskProcess.newProcess(app);
+        DataOutputAssociationsHumanTaskModel model = processDefinition.createModel();
 
-                    public void executeWorkItem(KogitoWorkItem workItem,
-                            KogitoWorkItemManager mgr) {
-                        DocumentBuilderFactory factory = DocumentBuilderFactory
-                                .newInstance();
-                        DocumentBuilder builder;
-                        try {
-                            builder = factory.newDocumentBuilder();
-                        } catch (ParserConfigurationException e) {
-                            throw new RuntimeException(e);
-                        }
-                        final Map<String, Object> results = new HashMap<>();
-
-                        // process metadata
-                        org.w3c.dom.Document processMetadaDoc = builder
-                                .newDocument();
-                        org.w3c.dom.Element processMetadata = processMetadaDoc
-                                .createElement("previoustasksowner");
-                        processMetadaDoc.appendChild(processMetadata);
-                        // org.w3c.dom.Element procElement =
-                        // processMetadaDoc.createElement("previoustasksowner");
-                        processMetadata
-                                .setAttribute("primaryname", "my_result");
-                        // processMetadata.appendChild(procElement);
-                        results.put("output", processMetadata);
-
-                        mgr.completeWorkItem(workItem.getStringId(), results);
-                    }
-
-                });
-
-        org.kie.kogito.process.Process<DataOutputAssociationsHumanTaskModel> definition = DataOutputAssociationsHumanTaskProcess.newProcess(app);
-        org.kie.kogito.process.ProcessInstance<DataOutputAssociationsHumanTaskModel> instance = definition.createInstance(definition.createModel());
-
+        org.kie.kogito.process.ProcessInstance<DataOutputAssociationsHumanTaskModel> instance = processDefinition.createInstance(model);
         instance.start();
     }
 
     @Test
-    public void testDataOutputAssociations() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/data/BPMN2-DataOutputAssociations.bpmn2");
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task",
-                new KogitoWorkItemHandler() {
+    public void testDataOutputAssociations() {
+        Application app = ProcessTestHelper.newApplication();
+        ProcessTestHelper.registerHandler(app, "Human Task", new KogitoWorkItemHandler() {
+            @Override
+            public void abortWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager mgr) {
+            }
 
-                    public void abortWorkItem(KogitoWorkItem manager,
-                            KogitoWorkItemManager mgr) {
+            @Override
+            public void executeWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager mgr) {
+                try {
+                    Document document = DocumentBuilderFactory
+                            .newInstance()
+                            .newDocumentBuilder()
+                            .parse(new ByteArrayInputStream("<user hello='hello world' />".getBytes()));
+                    Map<String, Object> params = new HashMap<>();
+                    params.put("output", document.getFirstChild());
+                    mgr.completeWorkItem(workItem.getStringId(), params);
+                } catch (Throwable e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
 
-                    }
+        org.kie.kogito.process.Process<DataOutputAssociationsModel> processDefinition = DataOutputAssociationsProcess.newProcess(app);
+        DataOutputAssociationsModel model = processDefinition.createModel();
 
-                    public void executeWorkItem(KogitoWorkItem workItem,
-                            KogitoWorkItemManager mgr) {
-                        try {
-                            Document document = DocumentBuilderFactory
-                                    .newInstance()
-                                    .newDocumentBuilder()
-                                    .parse(new ByteArrayInputStream(
-                                            "<user hello='hello world' />"
-                                                    .getBytes()));
-                            Map<String, Object> params = new HashMap<>();
-                            params.put("output", document.getFirstChild());
-                            mgr.completeWorkItem(workItem.getStringId(), params);
-                        } catch (Throwable e) {
-                            throw new RuntimeException(e);
-                        }
-
-                    }
-
-                });
-        KogitoProcessInstance processInstance = kruntime.startProcess("DataOutputAssociations");
-
+        org.kie.kogito.process.ProcessInstance<DataOutputAssociationsModel> instance = processDefinition.createInstance(model);
+        instance.start();
     }
 
     @Test
-    public void testDataOutputAssociationsXmlNode() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/data/BPMN2-DataOutputAssociationsXmlNode.bpmn2");
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task",
-                new KogitoWorkItemHandler() {
+    public void testDataOutputAssociationsXmlNode() {
+        Application app = ProcessTestHelper.newApplication();
+        ProcessTestHelper.registerHandler(app, "Human Task", new KogitoWorkItemHandler() {
+            @Override
+            public void abortWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager mgr) {
+            }
 
-                    public void abortWorkItem(KogitoWorkItem manager,
-                            KogitoWorkItemManager mgr) {
+            @Override
+            public void executeWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager mgr) {
+                try {
+                    Document document = DocumentBuilderFactory
+                            .newInstance()
+                            .newDocumentBuilder()
+                            .parse(new ByteArrayInputStream("<user hello='hello world' />".getBytes()));
+                    Map<String, Object> params = new HashMap<>();
+                    params.put("output", document.getFirstChild());
+                    mgr.completeWorkItem(workItem.getStringId(), params);
+                } catch (Throwable e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
 
-                    }
+        org.kie.kogito.process.Process<DataOutputAssociationsXmlNodeModel> processDefinition = DataOutputAssociationsXmlNodeProcess.newProcess(app);
+        DataOutputAssociationsXmlNodeModel model = processDefinition.createModel();
 
-                    public void executeWorkItem(KogitoWorkItem workItem,
-                            KogitoWorkItemManager mgr) {
-                        try {
-                            Document document = DocumentBuilderFactory
-                                    .newInstance()
-                                    .newDocumentBuilder()
-                                    .parse(new ByteArrayInputStream(
-                                            "<user hello='hello world' />"
-                                                    .getBytes()));
-                            Map<String, Object> params = new HashMap<>();
-                            params.put("output", document.getFirstChild());
-                            mgr.completeWorkItem(workItem.getStringId(), params);
-                        } catch (Throwable e) {
-                            throw new RuntimeException(e);
-                        }
-
-                    }
-
-                });
-        KogitoProcessInstance processInstance = kruntime.startProcess("DataOutputAssociationsXmlNode");
-
+        org.kie.kogito.process.ProcessInstance<DataOutputAssociationsXmlNodeModel> instance = processDefinition.createInstance(model);
+        instance.start();
     }
 
     @Test
