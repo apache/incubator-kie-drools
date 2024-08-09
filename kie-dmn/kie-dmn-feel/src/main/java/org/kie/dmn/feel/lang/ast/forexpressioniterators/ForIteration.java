@@ -64,4 +64,12 @@ public class ForIteration {
     public String getName() {
         return name;
     }
+
+    @Override
+    public String toString() {
+        return "ForIteration{" +
+                "values=" + values +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }

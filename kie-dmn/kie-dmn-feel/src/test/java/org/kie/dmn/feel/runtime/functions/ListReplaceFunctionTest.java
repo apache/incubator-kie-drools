@@ -30,7 +30,7 @@ import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.kie.dmn.feel.util.CompilerUtils.parseCompileEvaluate;
+import static org.kie.dmn.feel.util.CompilerUtils.parseCodegenCompileEvaluate;
 
 class ListReplaceFunctionTest {
 
@@ -101,7 +101,7 @@ class ListReplaceFunctionTest {
     void invokeMatchInvalid() {
         List list = Arrays.asList(2, 4, 7, 8);
         String validMatchFunction = "function(item, newItem) item + newItem";
-        Object expressionObject = parseCompileEvaluate(validMatchFunction);
+        Object expressionObject = parseCodegenCompileEvaluate(validMatchFunction);
         assertThat(expressionObject).isInstanceOf(AbstractCustomFEELFunction.class);
         FunctionTestUtil.assertResultError(listReplaceFunction.invoke(list, (AbstractCustomFEELFunction)expressionObject, 3), InvalidParametersEvent.class);
     }
@@ -112,7 +112,7 @@ class ListReplaceFunctionTest {
         List expected = new ArrayList<>(list);
         expected.set(1, null);
         String validMatchFunction = "function(item, newItem) item = \"Element-1\"";
-        Object expressionObject = parseCompileEvaluate(validMatchFunction);
+        Object expressionObject = parseCodegenCompileEvaluate(validMatchFunction);
         assertThat(expressionObject).isInstanceOf(AbstractCustomFEELFunction.class);
         FunctionTestUtil.assertResult(listReplaceFunction.invoke(list, (AbstractCustomFEELFunction)expressionObject, null), expected);
     }
@@ -120,7 +120,7 @@ class ListReplaceFunctionTest {
     @Test
     void invokeReplaceByMatchWithNotNull() {
         String validMatchFunction = "function(item, newItem) item < newItem";
-        Object expressionObject = parseCompileEvaluate(validMatchFunction);
+        Object expressionObject = parseCodegenCompileEvaluate(validMatchFunction);
         assertThat(expressionObject).isInstanceOf(AbstractCustomFEELFunction.class);
         List list = Arrays.asList(BigDecimal.valueOf(2), BigDecimal.valueOf(4), BigDecimal.valueOf(7), BigDecimal.valueOf(8));
         List expected = new ArrayList<>(list);
