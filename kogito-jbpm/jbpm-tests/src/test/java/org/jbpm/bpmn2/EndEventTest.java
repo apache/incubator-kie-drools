@@ -19,58 +19,83 @@
 package org.jbpm.bpmn2;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
+import org.jbpm.bpmn2.escalation.EscalationEndEventModel;
+import org.jbpm.bpmn2.escalation.EscalationEndEventProcess;
+import org.jbpm.bpmn2.event.EndEventSignalWithDataModel;
+import org.jbpm.bpmn2.event.EndEventSignalWithDataProcess;
+import org.jbpm.bpmn2.event.ErrorEndEventModel;
+import org.jbpm.bpmn2.event.ErrorEndEventProcess;
 import org.jbpm.bpmn2.event.MessageEndEventModel;
 import org.jbpm.bpmn2.event.MessageEndEventProcess;
+import org.jbpm.bpmn2.event.OnEntryExitDesignerScriptProcessModel;
+import org.jbpm.bpmn2.event.OnEntryExitDesignerScriptProcessProcess;
+import org.jbpm.bpmn2.event.OnEntryExitMixedNamespacedScriptProcessModel;
+import org.jbpm.bpmn2.event.OnEntryExitMixedNamespacedScriptProcessProcess;
+import org.jbpm.bpmn2.event.OnEntryExitNamespacedScriptProcessModel;
+import org.jbpm.bpmn2.event.OnEntryExitNamespacedScriptProcessProcess;
+import org.jbpm.bpmn2.event.OnEntryExitScriptProcessModel;
+import org.jbpm.bpmn2.event.OnEntryExitScriptProcessProcess;
+import org.jbpm.bpmn2.event.ParallelSplitModel;
+import org.jbpm.bpmn2.event.ParallelSplitProcess;
+import org.jbpm.bpmn2.event.ParallelSplitTerminateModel;
+import org.jbpm.bpmn2.event.ParallelSplitTerminateProcess;
+import org.jbpm.bpmn2.event.SignalEndEventModel;
+import org.jbpm.bpmn2.event.SignalEndEventProcess;
+import org.jbpm.bpmn2.event.SubprocessWithParallelSplitTerminateModel;
+import org.jbpm.bpmn2.event.SubprocessWithParallelSplitTerminateProcess;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.jbpm.test.utils.ProcessTestHelper;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.Application;
 import org.kie.kogito.event.impl.MessageProducer;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
+import org.kie.kogito.process.ProcessInstance;
+import org.kie.kogito.process.impl.Sig;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class EndEventTest extends JbpmBpmn2TestCase {
 
     @Test
-    public void testImplicitEndParallel() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/event/BPMN2-ParallelSplit.bpmn2");
-        KogitoProcessInstance processInstance = kruntime.startProcess("ParallelSplit");
-        assertProcessInstanceCompleted(processInstance);
+    public void testImplicitEndParallel() {
+        Application app = ProcessTestHelper.newApplication();
+        org.kie.kogito.process.Process<ParallelSplitModel> process = ParallelSplitProcess.newProcess(app);
+        ProcessInstance<ParallelSplitModel> processInstance = process.createInstance(process.createModel());
+        processInstance.start();
+        assertThat(processInstance.status()).isEqualTo(org.jbpm.process.instance.ProcessInstance.STATE_COMPLETED);
+    }
+
+    @Test
+    public void testErrorEndEventProcess() {
+        Application app = ProcessTestHelper.newApplication();
+        org.kie.kogito.process.Process<ErrorEndEventModel> process = ErrorEndEventProcess.newProcess(app);
+        ProcessInstance<ErrorEndEventModel> processInstance = process.createInstance(process.createModel());
+        processInstance.start();
+        assertThat(processInstance.status()).isEqualTo(org.kie.api.runtime.process.ProcessInstance.STATE_ABORTED);
+        assertThat(((org.kie.kogito.process.impl.AbstractProcessInstance<ErrorEndEventModel>) processInstance)
+                .internalGetProcessInstance().getOutcome()).isEqualTo("error");
+    }
+
+    @Test
+    public void testEscalationEndEventProcess() {
+        Application app = ProcessTestHelper.newApplication();
+        org.kie.kogito.process.Process<EscalationEndEventModel> process = EscalationEndEventProcess.newProcess(app);
+        ProcessInstance<EscalationEndEventModel> processInstance = process.createInstance(process.createModel());
+        processInstance.start();
+        assertThat(processInstance.status()).isEqualTo(org.jbpm.process.instance.ProcessInstance.STATE_ABORTED);
 
     }
 
     @Test
-    public void testErrorEndEventProcess() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/event/BPMN2-ErrorEndEvent.bpmn2");
-        KogitoProcessInstance processInstance = kruntime
-                .startProcess("ErrorEndEvent");
-        assertProcessInstanceAborted(processInstance);
-        assertThat(((org.jbpm.process.instance.ProcessInstance) processInstance).getOutcome()).isEqualTo("error");
-
-    }
-
-    @Test
-    public void testEscalationEndEventProcess() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/escalation/BPMN2-EscalationEndEvent.bpmn2");
-        KogitoProcessInstance processInstance = kruntime
-                .startProcess("EscalationEndEvent");
-        assertProcessInstanceAborted(processInstance);
-
-    }
-
-    @Test
-    public void testSignalEnd() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/event/BPMN2-SignalEndEvent.bpmn2");
-        Map<String, Object> params = new HashMap<>();
-        params.put("x", "MyValue");
-        kruntime.startProcess("SignalEndEvent", params);
-
+    public void testSignalEnd() {
+        Application app = ProcessTestHelper.newApplication();
+        org.kie.kogito.process.Process<SignalEndEventModel> process = SignalEndEventProcess.newProcess(app);
+        SignalEndEventModel model = process.createModel();
+        model.setX("MyValue");
+        ProcessInstance<SignalEndEventModel> processInstance = process.createInstance(model);
+        processInstance.start();
     }
 
     @Test
@@ -94,94 +119,91 @@ public class EndEventTest extends JbpmBpmn2TestCase {
     }
 
     @Test
-    @Disabled("On Exit not supported, see https://issues.redhat.com/browse/KOGITO-2067")
-    public void testOnEntryExitScript() throws Exception {
-        kruntime = createKogitoProcessRuntime("BPMN2-OnEntryExitScriptProcess.bpmn2");
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("MyTask",
-                new SystemOutWorkItemHandler());
+    public void testOnEntryExitScript() {
+        Application app = ProcessTestHelper.newApplication();
+        ProcessTestHelper.registerHandler(app, "MyTask", new SystemOutWorkItemHandler());
+        org.kie.kogito.process.Process<OnEntryExitScriptProcessModel> process = OnEntryExitScriptProcessProcess.newProcess(app);
+        OnEntryExitScriptProcessModel model = process.createModel();
         List<String> myList = new ArrayList<>();
-        kruntime.getKieSession().setGlobal("list", myList);
-        KogitoProcessInstance processInstance = kruntime
-                .startProcess("OnEntryExitScriptProcess");
-        assertProcessInstanceCompleted(processInstance);
+        model.setList(myList);
+        ProcessInstance<OnEntryExitScriptProcessModel> processInstance = process.createInstance(model);
+        processInstance.start();
+        assertThat(processInstance.status()).isEqualTo(org.jbpm.process.instance.ProcessInstance.STATE_COMPLETED);
         assertThat(myList).hasSize(4);
-
     }
 
     @Test
-    @Disabled("On Exit not supported, see https://issues.redhat.com/browse/KOGITO-2067")
-    public void testOnEntryExitNamespacedScript() throws Exception {
-        kruntime = createKogitoProcessRuntime("BPMN2-OnEntryExitNamespacedScriptProcess.bpmn2");
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("MyTask",
-                new SystemOutWorkItemHandler());
+    public void testOnEntryExitNamespacedScript() {
+        Application app = ProcessTestHelper.newApplication();
+        ProcessTestHelper.registerHandler(app, "MyTask", new SystemOutWorkItemHandler());
+        org.kie.kogito.process.Process<OnEntryExitNamespacedScriptProcessModel> process = OnEntryExitNamespacedScriptProcessProcess.newProcess(app);
+        OnEntryExitNamespacedScriptProcessModel model = process.createModel();
         List<String> myList = new ArrayList<>();
-        kruntime.getKieSession().setGlobal("list", myList);
-        KogitoProcessInstance processInstance = kruntime
-                .startProcess("OnEntryExitScriptProcess");
-        assertProcessInstanceCompleted(processInstance);
+        model.setList(myList);
+        ProcessInstance<OnEntryExitNamespacedScriptProcessModel> processInstance = process.createInstance(model);
+        processInstance.start();
+        assertThat(processInstance.status()).isEqualTo(org.jbpm.process.instance.ProcessInstance.STATE_COMPLETED);
         assertThat(myList).hasSize(4);
-
     }
 
     @Test
-    @Disabled("On Exit not supported, see https://issues.redhat.com/browse/KOGITO-2067")
-    public void testOnEntryExitMixedNamespacedScript() throws Exception {
-        kruntime = createKogitoProcessRuntime("BPMN2-OnEntryExitMixedNamespacedScriptProcess.bpmn2");
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("MyTask",
-                new SystemOutWorkItemHandler());
+    public void testOnEntryExitMixedNamespacedScript() {
+        Application app = ProcessTestHelper.newApplication();
+        ProcessTestHelper.registerHandler(app, "MyTask", new SystemOutWorkItemHandler());
+        org.kie.kogito.process.Process<OnEntryExitMixedNamespacedScriptProcessModel> process = OnEntryExitMixedNamespacedScriptProcessProcess.newProcess(app);
+        OnEntryExitMixedNamespacedScriptProcessModel model = process.createModel();
         List<String> myList = new ArrayList<>();
-        kruntime.getKieSession().setGlobal("list", myList);
-        KogitoProcessInstance processInstance = kruntime
-                .startProcess("OnEntryExitScriptProcess");
-        assertProcessInstanceCompleted(processInstance);
+        model.setList(myList);
+        ProcessInstance<OnEntryExitMixedNamespacedScriptProcessModel> processInstance = process.createInstance(model);
+        processInstance.start();
+        assertThat(processInstance.status()).isEqualTo(org.jbpm.process.instance.ProcessInstance.STATE_COMPLETED);
         assertThat(myList).hasSize(4);
-
     }
 
     @Test
-    @Disabled("On Exit not supported, see https://issues.redhat.com/browse/KOGITO-2067")
-    public void testOnEntryExitScriptDesigner() throws Exception {
-        kruntime = createKogitoProcessRuntime("BPMN2-OnEntryExitDesignerScriptProcess.bpmn2");
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("MyTask",
-                new SystemOutWorkItemHandler());
+    public void testOnEntryExitScriptDesigner() {
+        Application app = ProcessTestHelper.newApplication();
+        ProcessTestHelper.registerHandler(app, "MyTask", new SystemOutWorkItemHandler());
+        org.kie.kogito.process.Process<OnEntryExitDesignerScriptProcessModel> process = OnEntryExitDesignerScriptProcessProcess.newProcess(app);
+        OnEntryExitDesignerScriptProcessModel model = process.createModel();
         List<String> myList = new ArrayList<>();
-        kruntime.getKieSession().setGlobal("list", myList);
-        KogitoProcessInstance processInstance = kruntime
-                .startProcess("OnEntryExitScriptProcess");
-        assertProcessInstanceCompleted(processInstance);
+        model.setList(myList);
+        ProcessInstance<OnEntryExitDesignerScriptProcessModel> processInstance = process.createInstance(model);
+        processInstance.start();
+        assertThat(processInstance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
         assertThat(myList).hasSize(4);
-
     }
 
     @Test
-    public void testTerminateWithinSubprocessEnd() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/event//BPMN2-SubprocessWithParallelSplitTerminate.bpmn2");
-        KogitoProcessInstance processInstance = kruntime.startProcess("SubprocessWithParallelSplitTerminate");
-
-        kruntime.signalEvent("signal1", null, processInstance.getStringId());
-
-        assertProcessInstanceCompleted(processInstance);
-
+    public void testTerminateWithinSubprocessEnd() {
+        Application app = ProcessTestHelper.newApplication();
+        org.kie.kogito.process.Process<SubprocessWithParallelSplitTerminateModel> process = SubprocessWithParallelSplitTerminateProcess.newProcess(app);
+        SubprocessWithParallelSplitTerminateModel model = process.createModel();
+        ProcessInstance<SubprocessWithParallelSplitTerminateModel> processInstance = process.createInstance(model);
+        processInstance.start();
+        processInstance.send(Sig.of("signal1", null));
+        assertThat(processInstance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
-    public void testTerminateEnd() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/event/BPMN2-ParallelSplitTerminate.bpmn2");
-        KogitoProcessInstance processInstance = kruntime.startProcess("ParallelSplitTerminate");
-
-        kruntime.signalEvent("Signal 1", null, processInstance.getStringId());
-
-        assertProcessInstanceCompleted(processInstance);
-
+    public void testTerminateEnd() {
+        Application app = ProcessTestHelper.newApplication();
+        org.kie.kogito.process.Process<ParallelSplitTerminateModel> process = ParallelSplitTerminateProcess.newProcess(app);
+        ParallelSplitTerminateModel model = process.createModel();
+        ProcessInstance<ParallelSplitTerminateModel> processInstance = process.createInstance(model);
+        processInstance.start();
+        processInstance.send(Sig.of("Signal 1", null));
+        assertThat(processInstance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
-    public void testSignalEndWithData() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/event/BPMN2-EndEventSignalWithData.bpmn2");
-        Map<String, Object> params = new HashMap<>();
-        KogitoProcessInstance processInstance = kruntime.startProcess("EndEventSignalWithData", params);
+    public void testSignalEndWithData() {
+        Application app = ProcessTestHelper.newApplication();
+        org.kie.kogito.process.Process<EndEventSignalWithDataModel> process = EndEventSignalWithDataProcess.newProcess(app);
+        EndEventSignalWithDataModel model = process.createModel();
+        ProcessInstance<EndEventSignalWithDataModel> processInstance = process.createInstance(model);
+        processInstance.start();
 
-        assertProcessInstanceCompleted(processInstance);
-
+        assertThat(processInstance.status()).isEqualTo(org.jbpm.process.instance.ProcessInstance.STATE_COMPLETED);
     }
 }
