@@ -219,7 +219,6 @@
     <module>kie-drl</module>
     <module>kie-dmn</module>
     <module>kie-pmml-trusty</module>
-    <module>kie-maven-plugin</module>
     <module>kie-archetypes</module>
     <module>drools-quarkus-extension</module>
     <module>drools-reliability</module>
