@@ -23,19 +23,38 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.assertj.core.api.Assertions;
+import org.jbpm.bpmn2.compensation.BookResourceProcess;
+import org.jbpm.bpmn2.compensation.BookingModel;
+import org.jbpm.bpmn2.compensation.BookingProcess;
+import org.jbpm.bpmn2.compensation.CancelResourceProcess;
+import org.jbpm.bpmn2.compensation.IntermediateThrowEventModel;
+import org.jbpm.bpmn2.compensation.IntermediateThrowEventProcess;
+import org.jbpm.bpmn2.compensation.ParallelOrderedCompensationIntermediateThrowEventModel;
+import org.jbpm.bpmn2.compensation.ParallelOrderedCompensationIntermediateThrowEventProcess;
+import org.jbpm.bpmn2.compensation.ThrowSpecificForSubProcessModel;
+import org.jbpm.bpmn2.compensation.ThrowSpecificForSubProcessProcess;
+import org.jbpm.bpmn2.compensation.UserTaskBeforeAssociatedActivityModel;
+import org.jbpm.bpmn2.compensation.UserTaskBeforeAssociatedActivityProcess;
+import org.jbpm.bpmn2.compensation.UserTaskCompensationModel;
+import org.jbpm.bpmn2.compensation.UserTaskCompensationProcess;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.jbpm.process.core.context.exception.CompensationScope;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
+import org.jbpm.test.utils.ProcessTestHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.api.event.process.ProcessNodeLeftEvent;
 import org.kie.api.event.process.ProcessNodeTriggeredEvent;
+import org.kie.kogito.Application;
 import org.kie.kogito.internal.process.event.DefaultKogitoProcessEventListener;
 import org.kie.kogito.internal.process.event.KogitoProcessEventListener;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
+import org.kie.kogito.process.ProcessInstance;
+import org.kie.kogito.process.impl.Sig;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class CompensationTest extends JbpmBpmn2TestCase {
 
@@ -73,38 +92,39 @@ public class CompensationTest extends JbpmBpmn2TestCase {
      */
 
     @Test
-    public void compensationViaIntermediateThrowEventProcess() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/compensation/BPMN2-IntermediateThrowEvent.bpmn2");
+    public void compensationViaIntermediateThrowEventProcess() {
+        Application app = ProcessTestHelper.newApplication();
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
-        Map<String, Object> params = new HashMap<>();
-        params.put("x", "0");
-        KogitoProcessInstance processInstance = kruntime.startProcess("IntermediateThrowEvent", params);
+        ProcessTestHelper.registerHandler(app, "Human Task", workItemHandler);
+        org.kie.kogito.process.Process<IntermediateThrowEventModel> process = IntermediateThrowEventProcess.newProcess(app);
+        IntermediateThrowEventModel model = process.createModel();
+        model.setX("0");
+        ProcessInstance<IntermediateThrowEventModel> processInstance = process.createInstance(model);
+        processInstance.start();
 
-        kruntime.getKogitoWorkItemManager().completeWorkItem(workItemHandler.getWorkItem().getStringId(), null);
+        processInstance.completeWorkItem(workItemHandler.getWorkItem().getStringId(), null);
 
         // compensation activity (assoc. with script task) signaled *after* script task
-        assertProcessInstanceCompleted(processInstance.getStringId(), kruntime);
-        assertProcessVarValue(processInstance, "x", "1");
+        assertThat(processInstance.status()).isEqualTo(org.jbpm.process.instance.ProcessInstance.STATE_COMPLETED);
+        assertThat(processInstance.variables().getX()).isEqualTo("1");
     }
 
     @Test
-    public void compensationTwiceViaSignal() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/compensation/BPMN2-IntermediateThrowEvent.bpmn2");
+    public void compensationTwiceViaSignal() {
+        Application app = ProcessTestHelper.newApplication();
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
-        Map<String, Object> params = new HashMap<>();
-        params.put("x", "0");
-        String processId = "IntermediateThrowEvent";
-        KogitoProcessInstance processInstance = kruntime.startProcess(processId, params);
+        ProcessTestHelper.registerHandler(app, "Human Task", workItemHandler);
+        org.kie.kogito.process.Process<IntermediateThrowEventModel> process = IntermediateThrowEventProcess.newProcess(app);
+        IntermediateThrowEventModel model = process.createModel();
+        model.setX("0");
+        ProcessInstance<IntermediateThrowEventModel> processInstance = process.createInstance(model);
+        processInstance.start();
 
-        // twice
-        kruntime.signalEvent("Compensation", CompensationScope.IMPLICIT_COMPENSATION_PREFIX + processId, processInstance.getStringId());
-        kruntime.getKogitoWorkItemManager().completeWorkItem(workItemHandler.getWorkItem().getStringId(), null);
+        processInstance.send(Sig.of("Compensation", CompensationScope.IMPLICIT_COMPENSATION_PREFIX + "IntermediateThrowEvent"));
+        processInstance.completeWorkItem(workItemHandler.getWorkItem().getStringId(), null);
 
-        // compensation activity (assoc. with script task) signaled *after* script task
-        assertProcessInstanceCompleted(processInstance.getStringId(), kruntime);
-        assertProcessVarValue(processInstance, "x", "2");
+        assertThat(processInstance.status()).isEqualTo(org.jbpm.process.instance.ProcessInstance.STATE_COMPLETED);
+        assertThat(processInstance.variables().getX()).isEqualTo("2");
     }
 
     @Test
@@ -122,60 +142,55 @@ public class CompensationTest extends JbpmBpmn2TestCase {
     }
 
     @Test
-    public void compensationOnlyAfterAssociatedActivityHasCompleted() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/compensation/BPMN2-UserTaskBeforeAssociatedActivity.bpmn2");
-        kruntime.getProcessEventManager().addEventListener(LOGGING_EVENT_LISTENER);
+    public void compensationOnlyAfterAssociatedActivityHasCompleted() {
+        Application app = ProcessTestHelper.newApplication();
+        ProcessTestHelper.registerProcessEventListener(app, LOGGING_EVENT_LISTENER);
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
-        Map<String, Object> params = new HashMap<>();
-        params.put("x", "0");
-        KogitoProcessInstance processInstance = kruntime.startProcess("UserTaskBeforeAssociatedActivity", params);
+        ProcessTestHelper.registerHandler(app, "Human Task", workItemHandler);
+        org.kie.kogito.process.Process<UserTaskBeforeAssociatedActivityModel> process = UserTaskBeforeAssociatedActivityProcess.newProcess(app);
+        UserTaskBeforeAssociatedActivityModel model = process.createModel();
+        model.setX("0");
+        ProcessInstance<UserTaskBeforeAssociatedActivityModel> processInstance = process.createInstance(model);
+        processInstance.start();
 
-        // should NOT cause compensation since compensated activity has not yet completed (or started)! 
-        kruntime.signalEvent("Compensation", "_3", processInstance.getStringId());
+        processInstance.send(Sig.of("Compensation", "_3"));
 
-        // user task -> script task (associated with compensation) --> intermeidate throw compensation event
-        kruntime.getKogitoWorkItemManager().completeWorkItem(workItemHandler.getWorkItem().getStringId(), null);
-        // compensation activity (assoc. with script task) signaled *after* to-compensate script task
-        assertProcessInstanceCompleted(processInstance.getStringId(), kruntime);
-        assertProcessVarValue(processInstance, "x", "1");
+        processInstance.completeWorkItem(workItemHandler.getWorkItem().getStringId(), null);
+        assertThat(processInstance.status()).isEqualTo(org.jbpm.process.instance.ProcessInstance.STATE_COMPLETED);
+        assertThat(processInstance.variables().getX()).isEqualTo("1");
     }
 
     @Test
-    public void orderedCompensation() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/compensation/BPMN2-ParallelOrderedCompensationIntermediateThrowEvent.bpmn2");
+    public void orderedCompensation() {
+        Application app = ProcessTestHelper.newApplication();
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
-        Map<String, Object> params = new HashMap<>();
-        params.put("x", "");
-        KogitoProcessInstance processInstance = kruntime.startProcess("ParallelOrderedCompensationIntermediateThrowEvent", params);
+        ProcessTestHelper.registerHandler(app, "Human Task", workItemHandler);
+        org.kie.kogito.process.Process<ParallelOrderedCompensationIntermediateThrowEventModel> process = ParallelOrderedCompensationIntermediateThrowEventProcess.newProcess(app);
+        ParallelOrderedCompensationIntermediateThrowEventModel model = process.createModel();
+        model.setX("");
+        ProcessInstance<ParallelOrderedCompensationIntermediateThrowEventModel> processInstance = process.createInstance(model);
+        processInstance.start();
+
         List<KogitoWorkItem> workItems = workItemHandler.getWorkItems();
-        List<String> workItemIds = new ArrayList<>();
-        for (KogitoWorkItem workItem : workItems) {
-            if ("Thr".equals(workItem.getParameter("NodeName"))) {
-                workItemIds.add(workItem.getStringId());
-            }
-        }
-        for (KogitoWorkItem workItem : workItems) {
-            if ("Two".equals(workItem.getParameter("NodeName"))) {
-                workItemIds.add(workItem.getStringId());
-            }
-        }
-        for (KogitoWorkItem workItem : workItems) {
-            if ("One".equals(workItem.getParameter("NodeName"))) {
-                workItemIds.add(workItem.getStringId());
-            }
-        }
-        for (String id : workItemIds) {
-            kruntime.getKogitoWorkItemManager().completeWorkItem(id, null);
-        }
+        final List<String> workItemIds = new ArrayList<>();
+
+        workItems.stream().filter(workItem -> "Thr".equals(workItem.getParameter("NodeName")))
+                .forEach(workItem -> workItemIds.add(workItem.getStringId()));
+
+        workItems.stream().filter(workItem -> "Two".equals(workItem.getParameter("NodeName")))
+                .forEach(workItem -> workItemIds.add(workItem.getStringId()));
+
+        workItems.stream().filter(workItem -> "One".equals(workItem.getParameter("NodeName")))
+                .forEach(workItem -> workItemIds.add(workItem.getStringId()));
+
+        workItemIds.forEach(id -> processInstance.completeWorkItem(id, null));
 
         // user task -> script task (associated with compensation) --> intermeidate throw compensation event
-        String xVal = getProcessVarValue(processInstance, "x");
+        String xVal = processInstance.variables().getX();
         // Compensation happens in the *REVERSE* order of completion
         // Ex: if the order is 3, 17, 282, then compensation should happen in the order of 282, 17, 3
         // Compensation did not fire in the same order as the associated activities completed.
-        Assertions.assertThat(xVal).isEqualTo("_171:_131:_141:_151:");
+        assertThat(xVal).isEqualTo("_171:_131:_141:_151:");
     }
 
     @Test
@@ -199,62 +214,71 @@ public class CompensationTest extends JbpmBpmn2TestCase {
     }
 
     @Test
-    public void specificCompensationOfASubProcess() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/compensation/BPMN2-ThrowSpecificForSubProcess.bpmn2");
+    public void specificCompensationOfASubProcess() {
+        Application app = ProcessTestHelper.newApplication();
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
-        Map<String, Object> params = new HashMap<>();
-        params.put("x", 1);
-        KogitoProcessInstance processInstance = kruntime.startProcess("ThrowSpecificForSubProcess", params);
+        ProcessTestHelper.registerHandler(app, "Human Task", workItemHandler);
+        org.kie.kogito.process.Process<ThrowSpecificForSubProcessModel> process = ThrowSpecificForSubProcessProcess.newProcess(app);
+        ThrowSpecificForSubProcessModel model = process.createModel();
+        model.setX(1);
+        ProcessInstance<ThrowSpecificForSubProcessModel> processInstance = process.createInstance(model);
+        processInstance.start();
 
         // compensation activity (assoc. with script task) signaled *after* to-compensate script task
-        assertProcessInstanceCompleted(processInstance.getStringId(), kruntime);
+        assertThat(processInstance.status()).isEqualTo(org.jbpm.process.instance.ProcessInstance.STATE_COMPLETED);
 
-        assertProcessVarValue(processInstance, "x", null);
+        assertThat(processInstance.variables().getX()).isNull();
     }
 
     @Test
     @Disabled
-    public void compensationViaCancellation() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/compensation/BPMN2-IntermediateThrowEvent.bpmn2");
+    public void compensationViaCancellation() {
+        Application app = ProcessTestHelper.newApplication();
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
-        Map<String, Object> params = new HashMap<>();
-        params.put("x", "0");
-        KogitoProcessInstance processInstance = kruntime.startProcess("IntermediateThrowEvent", params);
+        ProcessTestHelper.registerHandler(app, "Human Task", workItemHandler);
+        org.kie.kogito.process.Process<IntermediateThrowEventModel> process = IntermediateThrowEventProcess.newProcess(app);
+        IntermediateThrowEventModel model = process.createModel();
+        model.setX("0");
+        ProcessInstance<IntermediateThrowEventModel> processInstance = process.createInstance(model);
+        processInstance.start();
 
-        kruntime.signalEvent("Cancel", null, processInstance.getStringId());
-        kruntime.getKogitoWorkItemManager().completeWorkItem(workItemHandler.getWorkItem().getStringId(), null);
+        processInstance.send(Sig.of("Cancel", null));
+        processInstance.completeWorkItem(workItemHandler.getWorkItem().getStringId(), null);
 
         // compensation activity (assoc. with script task) signaled *after* script task
-        assertProcessInstanceCompleted(processInstance.getStringId(), kruntime);
-        assertProcessVarValue(processInstance, "x", "1");
+        assertThat(processInstance.status()).isEqualTo(org.jbpm.process.instance.ProcessInstance.STATE_COMPLETED);
+        assertThat(processInstance.variables().getX()).isEqualTo("1");
     }
 
     @Test
-    public void compensationInvokingSubProcess() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/compensation/BPMN2-UserTaskCompensation.bpmn2");
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task", new SystemOutWorkItemHandler());
-        Map<String, Object> params = new HashMap<>();
-        params.put("compensation", "True");
-        KogitoProcessInstance processInstance = kruntime.startProcess("UserTaskCompensation", params);
+    public void compensationInvokingSubProcess() {
+        Application app = ProcessTestHelper.newApplication();
+        ProcessTestHelper.registerHandler(app, "Human Task", new SystemOutWorkItemHandler());
+        org.kie.kogito.process.Process<UserTaskCompensationModel> process = UserTaskCompensationProcess.newProcess(app);
+        UserTaskCompensationModel model = process.createModel();
+        model.setCompensation("True");
+        ProcessInstance<UserTaskCompensationModel> processInstance = process.createInstance(model);
+        processInstance.start();
 
-        assertProcessInstanceCompleted(processInstance.getStringId(), kruntime);
-        assertProcessVarValue(processInstance, "compensation", "compensation");
+        assertThat(processInstance.status()).isEqualTo(org.jbpm.process.instance.ProcessInstance.STATE_COMPLETED);
+        assertThat(processInstance.variables().getCompensation()).isEqualTo("compensation");
     }
 
     /**
      * Test to demonstrate that Compensation Events work with Reusable
      * Subprocesses
      *
-     * @throws Exception
      */
     @Test
-    public void compensationWithReusableSubprocess() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/compensation/BPMN2-Booking.bpmn2",
-                "org/jbpm/bpmn2/compensation/BPMN2-BookResource.bpmn2", "org/jbpm/bpmn2/compensation/BPMN2-CancelResource.bpmn2");
-        KogitoProcessInstance processInstance = kruntime.startProcess("Booking");
-        assertProcessInstanceCompleted(processInstance.getStringId(), kruntime);
+    public void compensationWithReusableSubprocess() {
+        Application app = ProcessTestHelper.newApplication();
+        org.kie.kogito.process.Process<BookingModel> process = BookingProcess.newProcess(app);
+        BookResourceProcess.newProcess(app);
+        CancelResourceProcess.newProcess(app);
+        ProcessInstance<BookingModel> processInstance = process.createInstance(process.createModel());
+        processInstance.start();
+
+        assertThat(processInstance.status()).isEqualTo(org.jbpm.process.instance.ProcessInstance.STATE_COMPLETED);
     }
 
 }
