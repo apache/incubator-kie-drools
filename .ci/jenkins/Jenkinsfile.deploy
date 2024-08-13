@@ -128,7 +128,7 @@ pipeline {
                            .skipTests(params.SKIP_TESTS)
 
                         if (isRelease()) {
-                            release.gpgImportKeyFromStringWithoutPassword(getReleaseGpgSignKeyCredsId())
+                            releaseUtils.gpgImportKeyFromStringWithoutPassword(getReleaseGpgSignKeyCredsId())
                             mavenCommand.withProfiles(['apache-release'])
                         }
 
