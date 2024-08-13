@@ -127,10 +127,16 @@ pipeline {
                            .withProperty('maven.test.failure.ignore', true)
                            .skipTests(params.SKIP_TESTS)
 
+<<<<<<< HEAD
                         def Closure mavenRunClosure = {
                             configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]) {
                                 mavenCommand.withSettingsXmlFile(MAVEN_SETTINGS_FILE).run("clean $installOrDeploy")
                             }
+=======
+                        if (isRelease()) {
+                            releaseUtils.gpgImportKeyFromStringWithoutPassword(getReleaseGpgSignKeyCredsId())
+                            mavenCommand.withProfiles(['apache-release'])
+>>>>>>> 447a726122 (NO-ISSUE: Fix release configuration keys (#6045))
                         }
 
                         if (isRelease()) {
