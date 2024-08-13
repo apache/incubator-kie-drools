@@ -71,8 +71,8 @@ cloud:
 release:
   gpg:
     sign:
-      key-credentials-id: GPG_KEY
-      passphrase-credentials-id: ''
+      key_credentials_id: GPG_KEY
+      passphrase_credentials_id: ''
 jenkins:
   email_creds_id: DROOLS_CI_NOTIFICATION_EMAILS
   agent:
