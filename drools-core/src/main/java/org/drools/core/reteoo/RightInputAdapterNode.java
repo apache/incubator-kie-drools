@@ -3,6 +3,7 @@ package org.drools.core.reteoo;
 import org.drools.base.base.ObjectType;
 import org.drools.base.common.RuleBasePartitionId;
 import org.drools.base.reteoo.NodeTypeEnums;
+import org.drools.base.reteoo.ObjectTypeNodeId;
 import org.drools.base.rule.Pattern;
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.InternalFactHandle;
@@ -40,8 +41,8 @@ public abstract class RightInputAdapterNode<T extends  BetaNode> extends BaseNod
     protected BitMask                declaredMask = EmptyBitMask.get();
     protected BitMask                inferredMask = EmptyBitMask.get();
     private ObjectSinkNode           nextObjectSinkNode;
-    private BitMask                  negativeMask = EmptyBitMask.get();
-    private ObjectTypeNodeId         inputOtnId   = ObjectTypeNodeId.DEFAULT_ID;
+    private BitMask          negativeMask = EmptyBitMask.get();
+    private ObjectTypeNodeId inputOtnId   = ObjectTypeNodeId.DEFAULT_ID;
 
     private ObjectSource             source;
 

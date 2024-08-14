@@ -27,6 +27,7 @@ import org.drools.base.common.NetworkNode;
 import org.drools.base.common.RuleBasePartitionId;
 import org.drools.base.reteoo.BaseTerminalNode;
 import org.drools.base.reteoo.NodeTypeEnums;
+import org.drools.base.reteoo.ObjectTypeNodeId;
 import org.drools.base.rule.IndexableConstraint;
 import org.drools.base.util.index.IndexUtil;
 import org.drools.core.RuleBaseConfiguration;
@@ -50,7 +51,7 @@ import org.drools.core.phreak.DetachedTuple;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.base.rule.constraint.BetaConstraint;
-import org.drools.core.util.FastIterator;
+import org.drools.base.util.FastIterator;
 import org.kie.api.definition.rule.Rule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -473,8 +474,8 @@ public abstract class BetaNode extends LeftTupleSource
         public void assertObject(final InternalFactHandle factHandle,
                                  final PropagationContext context,
                                  final ReteEvaluator reteEvaluator) {
-            ObjectTypeNodeId otnId = bnNode.getRightInput().getInputOtnId();
-            TupleImpl detached = factHandle.getLinkedTuples().detachRightTupleAfter(getPartitionId(), otnId);
+            ObjectTypeNodeId otnId    = bnNode.getRightInput().getInputOtnId();
+            TupleImpl        detached = factHandle.getLinkedTuples().detachRightTupleAfter(getPartitionId(), otnId);
             if (detached != null) {
                 detachedTuples.add(new DetachedTuple((DefaultFactHandle) factHandle, detached));
             }

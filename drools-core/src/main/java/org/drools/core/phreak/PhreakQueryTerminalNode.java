@@ -23,14 +23,13 @@ import java.util.List;
 import org.drools.core.base.DroolsQueryImpl;
 import org.drools.core.common.ActivationsManager;
 import org.drools.core.common.TupleSets;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.QueryElementNode.QueryElementNodeMemory;
 import org.drools.core.reteoo.QueryTerminalNode;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.reteoo.TupleImpl;
-import org.drools.core.util.LinkedList;
+import org.drools.base.util.LinkedList;
 
 /**
 * Created with IntelliJ IDEA.

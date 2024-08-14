@@ -55,7 +55,7 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.Rete;
 import org.drools.core.reteoo.TupleToObjectNode;
 import org.drools.core.reteoo.RuleTerminalNode;
-import org.drools.core.reteoo.Sink;
+import org.drools.base.reteoo.Sink;
 import org.drools.base.rule.constraint.BetaConstraint;
 import org.drools.base.base.ObjectType;
 import org.kie.api.KieBase;

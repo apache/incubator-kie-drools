@@ -20,8 +20,8 @@ package org.drools.base.base;
 
 import org.drools.base.RuleBase;
 import org.drools.base.rule.accessor.GlobalResolver;
-import org.drools.core.phreak.PropagationEntry;
-import org.drools.core.time.TimerService;
+import org.drools.base.phreak.PropagationEntry;
+import org.drools.base.time.TimerService;
 import org.kie.api.runtime.KieSessionConfiguration;
 
 import java.util.function.Consumer;

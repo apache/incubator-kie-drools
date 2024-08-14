@@ -34,13 +34,13 @@ import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.marshalling.MarshallerReaderContext;
-import org.drools.core.phreak.actions.AbstractPropagationEntry;
+import org.drools.base.phreak.actions.AbstractPropagationEntry;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.WindowNode;
 import org.drools.core.reteoo.WindowNode.WindowMemory;
 import org.drools.base.time.Job;
 import org.drools.base.time.JobContext;
-import org.drools.core.time.TimerService;
+import org.drools.base.time.TimerService;
 import org.drools.core.time.impl.PointInTimeTrigger;
 import org.kie.api.runtime.rule.FactHandle;
 

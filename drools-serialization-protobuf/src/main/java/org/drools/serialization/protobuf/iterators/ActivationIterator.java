@@ -21,13 +21,12 @@ package org.drools.serialization.protobuf.iterators;
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.TupleImpl;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.reteoo.Tuple;
-import org.drools.core.util.Iterator;
+import org.drools.base.util.Iterator;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 

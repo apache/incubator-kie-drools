@@ -19,6 +19,8 @@
 package org.drools.core.reteoo;
 
 import org.drools.base.common.RuleBasePartitionId;
+import org.drools.base.reteoo.ObjectTypeNodeId;
+import org.drools.base.reteoo.Sink;
 import org.drools.util.bitmask.BitMask;
 
 /**

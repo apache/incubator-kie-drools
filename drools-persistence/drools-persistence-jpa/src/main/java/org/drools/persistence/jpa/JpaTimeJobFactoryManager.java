@@ -19,7 +19,7 @@
 package org.drools.persistence.jpa;
 
 import org.kie.api.runtime.ExecutableRunner;
-import org.drools.core.time.impl.InternalSchedulerService;
+import org.drools.base.time.impl.InternalSchedulerService;
 import org.drools.base.time.Job;
 import org.drools.base.time.JobContext;
 import org.drools.base.time.JobHandle;
@@ -27,7 +27,7 @@ import org.drools.core.time.SelfRemovalJob;
 import org.drools.base.time.Trigger;
 import org.drools.core.time.impl.CommandServiceTimerJobFactoryManager;
 import org.drools.core.time.impl.ThreadSafeTrackableTimeJobFactoryManager;
-import org.drools.core.time.impl.TimerJobInstance;
+import org.drools.base.time.impl.TimerJobInstance;
 
 public class JpaTimeJobFactoryManager
         extends ThreadSafeTrackableTimeJobFactoryManager

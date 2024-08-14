@@ -28,7 +28,7 @@ import org.drools.core.conflict.RuleAgendaConflictResolver;
 import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.marshalling.MarshallerReaderContext;
 import org.drools.core.phreak.RuleAgendaItem;
-import org.drools.core.phreak.actions.AbstractPropagationEntry;
+import org.drools.base.phreak.actions.AbstractPropagationEntry;
 import org.drools.core.util.ArrayQueue;
 import org.drools.core.util.Queue;
 import org.drools.core.util.QueueFactory;

@@ -22,17 +22,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.base.reteoo.NodeTypeEnums;
-import org.drools.core.common.BaseNode;
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.Memory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.phreak.RuleExecutor;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.consequence.InternalMatch;
-import org.drools.core.util.Iterator;
+import org.drools.base.util.Iterator;
 
 public class PhreakActivationIterator implements Iterator<InternalMatch> {
 

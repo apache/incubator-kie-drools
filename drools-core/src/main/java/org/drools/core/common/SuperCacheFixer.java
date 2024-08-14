@@ -38,15 +38,16 @@ import org.drools.core.reteoo.LeftTupleSinkNode;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.NotNode;
 import org.drools.core.reteoo.NotRight;
-import org.drools.core.reteoo.ObjectTypeNodeId;
+import org.drools.base.reteoo.ObjectTypeNodeId;
 import org.drools.core.reteoo.QueryElementNode;
 import org.drools.core.reteoo.QueryTerminalNode;
 import org.drools.core.reteoo.ReactiveFromNode;
+import org.drools.core.reteoo.SequenceNode;
 import org.drools.core.reteoo.TupleToObjectNode;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.RightTupleSink;
 import org.drools.core.reteoo.RuleTerminalNode;
-import org.drools.core.reteoo.Sink;
+import org.drools.base.reteoo.Sink;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.TimerNode;
 import org.drools.core.reteoo.TupleImpl;
@@ -77,6 +78,7 @@ public class SuperCacheFixer {
             case NodeTypeEnums.QueryElementNode: return (QueryElementNode) s;
             case NodeTypeEnums.TimerConditionNode: return (TimerNode) s;
             case NodeTypeEnums.MockBetaNode: return (LeftTupleNode) s;
+            case NodeTypeEnums.SequenceNode: return (SequenceNode) s;
             default:
                 throw new UnsupportedOperationException("Cannot be cast to LeftTupleNode: " + s);
         }
@@ -115,6 +117,7 @@ public class SuperCacheFixer {
             case NodeTypeEnums.QueryElementNode: return (QueryElementNode) n;
             case NodeTypeEnums.TimerConditionNode: return (TimerNode) n;
             case NodeTypeEnums.MockBetaNode: return (LeftTupleSinkNode) n;
+            case NodeTypeEnums.SequenceNode: return (SequenceNode) n;
             default:
                 throw new UnsupportedOperationException("Cannot be cast to LeftTupleNode: " + n);
         }
@@ -139,6 +142,7 @@ public class SuperCacheFixer {
             case NodeTypeEnums.QueryElementNode: return ((QueryElementNode) s).getInputOtnId();
             case NodeTypeEnums.TimerConditionNode: return ((TimerNode) s).getInputOtnId();
             case NodeTypeEnums.MockBetaNode: return ((LeftTupleSource)s).getInputOtnId();
+            case NodeTypeEnums.SequenceNode: return ((SequenceNode)s).getInputOtnId();
             default:
                 throw new UnsupportedOperationException("Node does not have an LeftInputOtnId: " + s);
         }
@@ -175,6 +179,7 @@ public class SuperCacheFixer {
             case NodeTypeEnums.ConditionalBranchNode: return  ((ConditionalBranchNode) s).getLeftTupleSource();
             case NodeTypeEnums.QueryElementNode: return  ((QueryElementNode) s).getLeftTupleSource();
             case NodeTypeEnums.TimerConditionNode: return  ((TimerNode) s).getLeftTupleSource();
+            case NodeTypeEnums.SequenceNode: return ((SequenceNode)s).getLeftTupleSource();
             default:
                 throw new UnsupportedOperationException("Does not have a LeftTupleSource: " + s);
         }

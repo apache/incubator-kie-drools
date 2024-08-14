@@ -1,6 +1,7 @@
 package org.drools.core.phreak.actions;
 
 import org.drools.base.base.ValueResolver;
+import org.drools.base.phreak.actions.AbstractPropagationEntry;
 
 import java.util.concurrent.CountDownLatch;
 

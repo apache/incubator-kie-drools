@@ -75,8 +75,8 @@ import org.drools.core.reteoo.TimerNode;
 import org.drools.core.reteoo.TimerNode.TimerNodeMemory;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.reteoo.TupleMemory;
-import org.drools.core.util.FastIterator;
-import org.drools.core.util.LinkedList;
+import org.drools.base.util.FastIterator;
+import org.drools.base.util.LinkedList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

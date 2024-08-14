@@ -25,6 +25,7 @@ import java.util.Objects;
 
 import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.base.reteoo.NodeTypeEnums;
+import org.drools.base.reteoo.Sink;
 import org.drools.base.rule.Declaration;
 import org.drools.base.rule.consequence.Consequence;
 import org.drools.core.common.ActivationGroupNode;

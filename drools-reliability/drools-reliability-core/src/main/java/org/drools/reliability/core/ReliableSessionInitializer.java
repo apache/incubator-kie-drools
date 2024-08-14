@@ -28,7 +28,7 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.Storage;
-import org.drools.core.phreak.PropagationEntry;
+import org.drools.base.phreak.PropagationEntry;
 import org.drools.core.phreak.actions.Insert;
 import org.drools.reliability.core.util.ReliabilityUtils;
 import org.kie.api.event.rule.AfterMatchFiredEvent;

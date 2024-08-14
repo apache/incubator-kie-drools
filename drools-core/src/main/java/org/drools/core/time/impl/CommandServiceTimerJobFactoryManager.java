@@ -18,6 +18,7 @@
  */
 package org.drools.core.time.impl;
 
+import org.drools.base.time.impl.TimerJobFactoryManager;
 import org.kie.api.runtime.ExecutableRunner;
 
 public interface CommandServiceTimerJobFactoryManager extends TimerJobFactoryManager {

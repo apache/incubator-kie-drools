@@ -1,6 +1,6 @@
 package org.drools.mvel.integrationtests.phreak.sequencing;
 
-import org.drools.core.util.CircularArrayList;
+import org.drools.base.util.CircularArrayList;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

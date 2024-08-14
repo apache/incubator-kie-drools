@@ -27,7 +27,7 @@ import org.drools.core.common.WorkingMemoryAction;
 import org.drools.base.definitions.InternalKnowledgePackage;
 import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.core.marshalling.MarshallerReaderContext;
-import org.drools.core.phreak.actions.AbstractPropagationEntry;
+import org.drools.base.phreak.actions.AbstractPropagationEntry;
 import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.reteoo.TerminalNode;

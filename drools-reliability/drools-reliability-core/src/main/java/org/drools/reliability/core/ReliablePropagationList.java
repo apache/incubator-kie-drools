@@ -20,7 +20,7 @@ package org.drools.reliability.core;
 
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.Storage;
-import org.drools.core.phreak.PropagationEntry;
+import org.drools.base.phreak.PropagationEntry;
 import org.drools.core.phreak.SynchronizedPropagationList;
 
 import java.io.Externalizable;

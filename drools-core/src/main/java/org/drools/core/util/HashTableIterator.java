@@ -18,6 +18,9 @@
  */
 package org.drools.core.util;
 
+import org.drools.base.util.Iterator;
+import org.drools.base.util.SingleLinkedEntry;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;

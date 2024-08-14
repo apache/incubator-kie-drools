@@ -24,7 +24,7 @@ import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.stmt.Statement;
 import org.drools.base.reteoo.NodeTypeEnums;
-import org.drools.core.reteoo.Sink;
+import org.drools.base.reteoo.Sink;
 
 import static com.github.javaparser.StaticJavaParser.parseStatement;
 import static com.github.javaparser.ast.NodeList.nodeList;

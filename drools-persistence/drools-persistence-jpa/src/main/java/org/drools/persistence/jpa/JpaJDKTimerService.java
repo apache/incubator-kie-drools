@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.drools.core.time.impl.InternalSchedulerService;
+import org.drools.base.time.impl.InternalSchedulerService;
 import org.drools.base.time.Job;
 import org.drools.base.time.JobContext;
 import org.drools.core.time.SelfRemovalJob;
@@ -31,7 +31,7 @@ import org.drools.core.time.SelfRemovalJobContext;
 import org.drools.base.time.Trigger;
 import org.drools.core.time.impl.DefaultTimerJobInstance;
 import org.drools.core.time.impl.JDKTimerService;
-import org.drools.core.time.impl.TimerJobInstance;
+import org.drools.base.time.impl.TimerJobInstance;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.ExecutableRunner;

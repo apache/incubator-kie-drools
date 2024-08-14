@@ -20,7 +20,6 @@ package org.drools.core.common;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.function.Consumer;
 
 import org.drools.base.base.ValueResolver;
 import org.drools.base.rule.EntryPointId;
@@ -31,13 +30,13 @@ import org.drools.core.event.AgendaEventSupport;
 import org.drools.core.event.RuleEventListenerSupport;
 import org.drools.core.event.RuleRuntimeEventSupport;
 import org.drools.core.impl.InternalRuleBase;
-import org.drools.core.phreak.PropagationEntry;
+import org.drools.base.phreak.PropagationEntry;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.rule.accessor.FactHandleFactory;
 import org.drools.core.rule.consequence.KnowledgeHelper;
-import org.drools.core.time.TimerService;
-import org.drools.core.time.impl.TimerJobInstance;
+import org.drools.base.time.TimerService;
+import org.drools.base.time.impl.TimerJobInstance;
 import org.kie.api.runtime.Calendars;
 import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.api.runtime.rule.EntryPoint;

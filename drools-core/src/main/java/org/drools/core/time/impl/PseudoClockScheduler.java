@@ -34,8 +34,11 @@ import org.drools.base.time.JobHandle;
 import org.drools.base.time.Trigger;
 import org.drools.base.time.Job;
 import org.drools.base.time.JobContext;
+import org.drools.base.time.impl.InternalSchedulerService;
+import org.drools.base.time.impl.TimerJobFactoryManager;
+import org.drools.base.time.impl.TimerJobInstance;
 import org.drools.core.time.SessionPseudoClock;
-import org.drools.core.time.TimerService;
+import org.drools.base.time.TimerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

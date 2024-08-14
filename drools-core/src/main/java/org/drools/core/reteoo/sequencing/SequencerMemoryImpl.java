@@ -1,20 +1,19 @@
 package org.drools.core.reteoo.sequencing;
 
-import org.drools.base.reteoo.BaseTuple;
-import org.drools.core.reteoo.DynamicFilter;
+import org.drools.base.reteoo.DynamicFilter;
+import org.drools.base.reteoo.sequencing.Sequence;
+import org.drools.base.reteoo.sequencing.Sequencer;
+import org.drools.base.reteoo.sequencing.SequencerMemory;
 import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.reteoo.LeftTupleNode;
 import org.drools.core.reteoo.LeftTupleSink;
-import org.drools.core.reteoo.LeftTupleSinkNode;
 import org.drools.core.reteoo.SequenceNode;
 import org.drools.core.reteoo.SequenceNode.SequenceNodeMemory;
-import org.drools.core.reteoo.SignalAdapter;
-import org.drools.core.reteoo.Sink;
+import org.drools.base.reteoo.SignalAdapter;
 import org.drools.core.reteoo.TupleImpl;
-import org.drools.core.reteoo.sequencing.Sequence.SequenceMemory;
-import org.drools.core.reteoo.sequencing.signalprocessors.ConditionalSignalCounter;
-import org.drools.core.reteoo.sequencing.signalprocessors.LogicGate;
-import org.drools.core.util.CircularArrayList;
+import org.drools.base.reteoo.sequencing.Sequence.SequenceMemory;
+import org.drools.base.reteoo.sequencing.signalprocessors.ConditionalSignalCounter;
+import org.drools.base.reteoo.sequencing.signalprocessors.LogicGate;
+import org.drools.base.util.CircularArrayList;
 import org.kie.api.runtime.rule.FactHandle;
 
 import java.util.ArrayList;

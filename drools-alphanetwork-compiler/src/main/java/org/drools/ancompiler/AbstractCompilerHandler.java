@@ -22,7 +22,7 @@ import java.util.NoSuchElementException;
 
 import org.drools.base.common.NetworkNode;
 import org.drools.core.reteoo.AlphaNode;
-import org.drools.core.reteoo.Sink;
+import org.drools.base.reteoo.Sink;
 import org.drools.base.rule.ContextEntry;
 import org.drools.core.util.index.AlphaRangeIndex;
 

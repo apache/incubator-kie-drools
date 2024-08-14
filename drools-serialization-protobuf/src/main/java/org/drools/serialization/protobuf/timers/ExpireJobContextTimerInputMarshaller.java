@@ -26,7 +26,7 @@ import org.drools.core.reteoo.ObjectTypeNode.ExpireJob;
 import org.drools.core.reteoo.ObjectTypeNode.ExpireJobContext;
 import org.drools.base.time.JobContext;
 import org.drools.base.time.JobHandle;
-import org.drools.core.time.TimerService;
+import org.drools.base.time.TimerService;
 import org.drools.core.time.impl.DefaultJobHandle;
 import org.drools.core.time.impl.PointInTimeTrigger;
 import org.drools.serialization.protobuf.ProtobufMarshallerReaderContext;

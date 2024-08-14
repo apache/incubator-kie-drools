@@ -18,8 +18,8 @@
  */
 package org.drools.core.reteoo;
 
-import org.drools.base.common.NetworkNode;
-import org.drools.core.common.BaseNode;
+import org.drools.base.reteoo.ObjectTypeNodeId;
+import org.drools.base.reteoo.Sink;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.common.SuperCacheFixer;

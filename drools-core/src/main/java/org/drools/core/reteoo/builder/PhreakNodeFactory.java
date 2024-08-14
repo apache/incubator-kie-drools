@@ -20,11 +20,19 @@ package org.drools.core.reteoo.builder;
 
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import org.drools.base.base.ClassObjectType;
 import org.drools.base.base.ObjectType;
 import org.drools.base.common.RuleBasePartitionId;
 import org.drools.base.definitions.rule.impl.RuleImpl;
+import org.drools.base.reteoo.DynamicFilterProto;
+import org.drools.base.reteoo.sequencing.Sequence;
+import org.drools.base.reteoo.sequencing.Sequencer;
 import org.drools.base.rule.Accumulate;
 import org.drools.base.rule.AsyncReceive;
 import org.drools.base.rule.AsyncSend;
@@ -33,6 +41,7 @@ import org.drools.base.rule.EntryPointId;
 import org.drools.base.rule.EvalCondition;
 import org.drools.base.rule.From;
 import org.drools.base.rule.GroupElement;
+import org.drools.base.rule.Pattern;
 import org.drools.base.rule.QueryElement;
 import org.drools.base.rule.accessor.DataProvider;
 import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
@@ -46,6 +55,7 @@ import org.drools.core.reteoo.AsyncReceiveNode;
 import org.drools.core.reteoo.AsyncSendNode;
 import org.drools.core.reteoo.ConditionalBranchEvaluator;
 import org.drools.core.reteoo.ConditionalBranchNode;
+import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.EvalConditionNode;
 import org.drools.core.reteoo.ExistsNode;
@@ -62,6 +72,8 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.QueryElementNode;
 import org.drools.core.reteoo.QueryTerminalNode;
 import org.drools.core.reteoo.ReactiveFromNode;
+import org.drools.core.reteoo.SequenceNode;
+import org.drools.core.reteoo.SequenceNode.AlphaAdapter;
 import org.drools.core.reteoo.TupleToObjectNode;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.TerminalNode;
@@ -103,6 +115,55 @@ public class PhreakNodeFactory implements NodeFactory, Serializable {
                                            final EvalCondition eval,
                                            final BuildContext context) {
         return new EvalConditionNode( id, tupleSource, eval, context );
+    }
+
+    public SequenceNode buildSequenceNode(final int id,
+                                          final LeftTupleSource tupleSource,
+                                          final Sequence seq,
+                                          final BuildContext context) {
+        SequenceNode node = new SequenceNode(id, tupleSource, context);
+        node.setSequencer(new Sequencer(seq));
+
+        NodeFactory nFactory = CoreComponentFactory.get().getNodeFactoryService();
+
+        Pattern[] patterns =  seq.getFilters();
+
+        // first attach the OTN sources in Rete.
+        Set<ObjectType>       objectTypeSet     = new HashSet<>();
+        Arrays.stream(patterns).forEach(p -> objectTypeSet.add(p.getObjectType()));
+        List<ObjectType> objectTypeList = new ArrayList<>(objectTypeSet);
+
+        ObjectSource[] otns = new ObjectSource[objectTypeList.size()];
+        EntryPointNode epn = context.getRuleBase().getRete().getEntryPointNode(context.getCurrentEntryPoint());
+        for ( int i = 0; i < objectTypeSet.size(); i++ ) {
+            otns[i] = nFactory.buildObjectTypeNode(context.getNextNodeId(),
+                                                   epn,
+                                                   objectTypeList.get(i),
+                                                   context);
+
+            otns[i].attach(context);
+        }
+
+        // For each source create an alpha adapter, which will map it to any filters on the stack.
+        AlphaAdapter[] adapters = new AlphaAdapter[objectTypeList.size()];
+        for ( int i = 0; i < objectTypeList.size(); i++ ) {
+            adapters[i] = new AlphaAdapter(context.getNextNodeId(), otns[i],
+                                           context.getPartitionId(), node, i);
+
+            adapters[i].attach(context);
+        }
+        node.setAlphaAdapters(adapters);
+
+
+        // Create all the dynamic filters, these are added on demand to the stack.
+        DynamicFilterProto[] filters = new DynamicFilterProto[patterns.length];
+        for ( int i = 0; i < patterns.length; i++ ) {
+            filters[i] = new DynamicFilterProto((AlphaNodeFieldConstraint) patterns[i].getConstraints().get(0), i);
+        }
+
+        node.setDynamicFilters( filters);
+
+        return node;
     }
 
     public TupleToObjectNode buildRightInputNode(int id, LeftTupleSource leftInput, LeftTupleSource splitStart, BuildContext context) {

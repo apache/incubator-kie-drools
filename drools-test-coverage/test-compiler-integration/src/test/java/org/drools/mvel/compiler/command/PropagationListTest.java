@@ -27,7 +27,7 @@ import java.util.concurrent.Executors;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.phreak.PropagationList;
 import org.drools.core.phreak.SynchronizedPropagationList;
-import org.drools.core.phreak.actions.AbstractPropagationEntry;
+import org.drools.base.phreak.actions.AbstractPropagationEntry;
 import org.junit.Ignore;
 import org.junit.Test;
 

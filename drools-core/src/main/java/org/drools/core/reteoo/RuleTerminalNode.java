@@ -24,6 +24,7 @@ import java.util.Objects;
 import org.drools.base.base.SalienceInteger;
 import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.base.reteoo.NodeTypeEnums;
+import org.drools.base.reteoo.ObjectTypeNodeId;
 import org.drools.base.rule.Declaration;
 import org.drools.base.rule.GroupElement;
 import org.drools.core.common.ReteEvaluator;

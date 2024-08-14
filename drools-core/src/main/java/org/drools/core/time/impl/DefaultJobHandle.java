@@ -21,6 +21,7 @@ package org.drools.core.time.impl;
 import java.io.Serializable;
 
 import org.drools.base.time.Job;
+import org.drools.base.time.impl.TimerJobInstance;
 
 /**
  * A default implementation for the JobHandle interface
@@ -33,7 +34,7 @@ public class DefaultJobHandle extends AbstractJobHandle<DefaultJobHandle> implem
 
     private long              id;
 
-    private TimerJobInstance  timerJobInstance;
+    private TimerJobInstance timerJobInstance;
 
     public DefaultJobHandle(long id) {
         this.id = id;

@@ -1,11 +1,12 @@
 package org.drools.core.phreak.actions;
 
+import org.drools.base.phreak.actions.AbstractPropagationEntry;
 import org.drools.core.common.DefaultEventHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.impl.WorkingMemoryReteExpireAction;
-import org.drools.core.phreak.PropagationEntry;
+import org.drools.base.phreak.PropagationEntry;
 import org.drools.core.reteoo.ClassObjectTypeConf;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.ObjectTypeNode;

@@ -18,7 +18,11 @@ package org.drools.core.reteoo;
 
 import org.drools.base.base.ObjectType;
 import org.drools.base.common.RuleBasePartitionId;
+import org.drools.base.reteoo.DynamicFilter;
+import org.drools.base.reteoo.DynamicFilterProto;
 import org.drools.base.reteoo.NodeTypeEnums;
+import org.drools.base.reteoo.ObjectTypeNodeId;
+import org.drools.base.rule.Pattern;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
@@ -30,11 +34,11 @@ import org.drools.core.common.TupleSets;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.reteoo.SequenceNode.SequenceNodeMemory;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.reteoo.sequencing.Sequencer;
+import org.drools.base.reteoo.sequencing.Sequencer;
 import org.drools.core.reteoo.sequencing.SequencerMemoryImpl;
-import org.drools.core.reteoo.sequencing.SequencerMemory;
-import org.drools.core.util.AbstractLinkedListNode;
-import org.drools.core.util.LinkedList;
+import org.drools.base.reteoo.sequencing.SequencerMemory;
+import org.drools.base.util.AbstractLinkedListNode;
+import org.drools.base.util.LinkedList;
 import org.drools.core.util.index.TupleList;
 import org.drools.util.bitmask.BitMask;
 
@@ -46,6 +50,7 @@ import java.util.List;
 
 public class SequenceNode extends LeftTupleSource
     implements
+    LeftTupleNode,
     LeftTupleSinkNode,
     MemoryFactory<SequenceNodeMemory> {
 
@@ -57,7 +62,7 @@ public class SequenceNode extends LeftTupleSource
 
     private AlphaAdapter[] alphaAdapters;
 
-    private DynamicFilterProto[]   dynamicFilters;
+    private DynamicFilterProto[] dynamicFilters;
 
     private LeftTupleSinkNode      previousTupleSinkNode;
 
@@ -112,7 +117,7 @@ public class SequenceNode extends LeftTupleSource
      * @return The debug string.
      */
     public String toString() {
-        return "[MultiInputNode(" + this.id + ")]]";
+        return "[SequenceNode(" + this.id + ")]]";
     }
 
     private int calculateHashCode() {
@@ -413,7 +418,7 @@ public class SequenceNode extends LeftTupleSource
         }
 
         @Override
-        public BitMask calculateDeclaredMask(ObjectType modifiedType, List<String> settableProperties) {
+        public BitMask calculateDeclaredMask(Pattern pattern, ObjectType modifiedType, List<String> settableProperties) {
             return null;
         }
 

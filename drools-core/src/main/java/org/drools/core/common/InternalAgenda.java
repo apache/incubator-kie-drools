@@ -21,7 +21,7 @@ package org.drools.core.common;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.drools.core.phreak.PropagationEntry;
+import org.drools.base.phreak.PropagationEntry;
 import org.kie.api.runtime.rule.Agenda;
 import org.kie.api.runtime.rule.AgendaFilter;
 
