@@ -51,6 +51,7 @@ import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.kogito.internal.process.event.KogitoProcessEventSupport;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 import org.kie.kogito.process.workitems.InternalKogitoWorkItemManager;
 import org.kie.kogito.process.workitems.impl.KogitoWorkItemImpl;
 import org.slf4j.Logger;
@@ -75,19 +76,19 @@ public class DynamicUtils {
                 parameters);
     }
 
-    public static void addDynamicWorkItem(
+    public static KogitoWorkItem addDynamicWorkItem(
             final org.kie.api.runtime.process.ProcessInstance dynamicProcessInstance,
             KieRuntime ksession,
             String workItemName,
             Map<String, Object> parameters) {
-        internalAddDynamicWorkItem((WorkflowProcessInstance) dynamicProcessInstance,
+        return internalAddDynamicWorkItem((WorkflowProcessInstance) dynamicProcessInstance,
                 null,
                 ksession,
                 workItemName,
                 parameters);
     }
 
-    private static void internalAddDynamicWorkItem(
+    private static KogitoWorkItem internalAddDynamicWorkItem(
             final WorkflowProcessInstance processInstance,
             final DynamicNodeInstance dynamicContext,
             KieRuntime ksession,
@@ -134,14 +135,7 @@ public class DynamicUtils {
         workItemNodeInstance.setMetaData("NodeType",
                 workItemName);
         workItem.setNodeInstanceId(workItemNodeInstance.getStringId());
-        if (ksession instanceof StatefulKnowledgeSession) {
-            workItemNodeInstance.setProcessInstance(processInstance);
-            workItemNodeInstance.setNodeInstanceContainer(dynamicContext == null ? processInstance : dynamicContext);
-            workItemNodeInstance.addEventListeners();
-            executeWorkItem((StatefulKnowledgeSession) ksession,
-                    workItem,
-                    workItemNodeInstance);
-        } else if (ksession instanceof CommandBasedStatefulKnowledgeSession) {
+        if (ksession instanceof CommandBasedStatefulKnowledgeSession) {
             ExecutableRunner runner = ((CommandBasedStatefulKnowledgeSession) ksession).getRunner();
             runner.execute(new ExecutableCommand<Void>() {
                 private static final long serialVersionUID = 5L;
@@ -164,11 +158,18 @@ public class DynamicUtils {
                 }
             });
         } else {
-            throw new IllegalArgumentException("Unsupported ksession: " + (ksession == null ? "null" : ksession.getClass().getName()));
+            workItemNodeInstance.setProcessInstance(processInstance);
+            workItemNodeInstance.setNodeInstanceContainer(dynamicContext == null ? processInstance : dynamicContext);
+            workItemNodeInstance.addEventListeners();
+            executeWorkItem(ksession,
+                    workItem,
+                    workItemNodeInstance);
+
         }
+        return workItem;
     }
 
-    private static void executeWorkItem(StatefulKnowledgeSession ksession,
+    private static void executeWorkItem(KieRuntime ksession,
             KogitoWorkItemImpl workItem,
             WorkItemNodeInstance workItemNodeInstance) {
         KogitoProcessRuntime kruntime = asKogitoProcessRuntime(ksession);
@@ -225,13 +226,7 @@ public class DynamicUtils {
         subProcessNodeInstance.setProcessInstance(processInstance);
         subProcessNodeInstance.setMetaData("NodeType",
                 "SubProcessNode");
-        if (ksession instanceof StatefulKnowledgeSession) {
-            return executeSubProcess(asKogitoProcessRuntime(ksession),
-                    processId,
-                    parameters,
-                    processInstance,
-                    subProcessNodeInstance);
-        } else if (ksession instanceof CommandBasedStatefulKnowledgeSession) {
+        if (ksession instanceof CommandBasedStatefulKnowledgeSession) {
             ExecutableRunner commandService = ((CommandBasedStatefulKnowledgeSession) ksession).getRunner();
             return commandService.execute(new ExecutableCommand<String>() {
                 private static final long serialVersionUID = 5L;
@@ -256,7 +251,11 @@ public class DynamicUtils {
                 }
             });
         } else {
-            throw new IllegalArgumentException("Unsupported ksession: " + (ksession == null ? "null" : ksession.getClass().getName()));
+            return executeSubProcess(asKogitoProcessRuntime(ksession),
+                    processId,
+                    parameters,
+                    processInstance,
+                    subProcessNodeInstance);
         }
     }
 

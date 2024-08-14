@@ -40,7 +40,7 @@ public class DefaultPathParamResolver implements PathParamResolver {
                 throw new IllegalArgumentException("malformed endpoint should contain enclosing '}' " + endPoint);
             }
             final String key = sb.substring(start + 1, end);
-            final Object value = parameters.get(key);
+            final Object value = getParam(parameters, key);
             if (value == null) {
                 throw new IllegalArgumentException("missing parameter " + key);
             }
@@ -50,5 +50,9 @@ public class DefaultPathParamResolver implements PathParamResolver {
         }
         parameters.keySet().removeAll(toRemove);
         return sb.toString();
+    }
+
+    protected Object getParam(Map<String, Object> parameters, String key) {
+        return parameters.get(key);
     }
 }

@@ -58,6 +58,7 @@
     <module>task-management</module>
     <module>marshallers</module>
     <module>process-definitions</module>
+    <module>dynamic</module>
   </modules>
 
   <profiles>

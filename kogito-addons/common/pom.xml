@@ -41,6 +41,7 @@
     <module>rest-exception-handler</module>
     <module>process-svg</module>
     <module>process-management</module>
+    <module>process-dynamic</module>
     <module>knative</module>
     <module>kubernetes</module>
     <module>kubernetes-service-catalog</module>

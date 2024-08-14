@@ -1,0 +1,33 @@
+{
+  "id": "dynamicWait",
+  "version": "1.0",
+  "name": "Test dynamic invocations",
+  "start": "doNothing",
+  "events": [
+    {
+      "name": "resumeEvent",
+      "source": "",
+      "type": "resume"
+    }
+  ],
+  "states": [  
+    {
+      "name": "doNothing",
+      "type": "operation",
+      "actions": [],
+      "transition": "waitForEvent"
+    }, 
+    {
+      "name": "waitForEvent",
+      "type": "event",
+       "onEvents": [
+        {
+          "eventRefs": [
+            "resumeEvent"
+          ]
+        }
+       ],
+      "end": true
+    }
+  ]
+}

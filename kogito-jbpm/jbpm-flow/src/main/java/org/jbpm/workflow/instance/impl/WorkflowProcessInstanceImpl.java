@@ -288,9 +288,12 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
     }
 
     public List<NodeInstance> getNodeInstances(WorkflowElementIdentifier nodeId, final List<NodeInstance> currentView) {
+        if (nodeId == null) {
+            return Collections.emptyList();
+        }
         List<NodeInstance> result = new ArrayList<>();
         for (final NodeInstance nodeInstance : currentView) {
-            if (nodeInstance.getNodeId().equals(nodeId)) {
+            if (nodeId.equals(nodeInstance.getNodeId())) {
                 result.add(nodeInstance);
             }
         }
@@ -712,7 +715,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
                             }
                             nodeInstance.trigger(null, Node.CONNECTION_DEFAULT_TYPE);
                         } else if (node instanceof CompositeNode) {
-                            Optional<NodeInstance> instance = this.nodeInstances.stream().filter(ni -> ni.getNodeId().equals(node.getId())).findFirst();
+                            Optional<NodeInstance> instance = this.nodeInstances.stream().filter(ni -> Objects.equals(ni.getNodeId(), node.getId())).findFirst();
                             instance.ifPresent(n -> ((CompositeNodeInstance) n).signalEvent(type, event));
                         }
                     }

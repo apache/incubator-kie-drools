@@ -213,9 +213,12 @@ public class RestWorkItemHandler implements KogitoWorkItemHandler {
     }
 
     private Class<?> getTargetInfo(KogitoWorkItem workItem) {
-        String varName = ((WorkItemNode) ((WorkItemNodeInstance) workItem.getNodeInstance()).getNode()).getIoSpecification().getOutputMappingBySources().get(RESULT);
-        if (varName != null) {
-            return getType(workItem, varName);
+        WorkItemNode node = (WorkItemNode) ((WorkItemNodeInstance) workItem.getNodeInstance()).getNode();
+        if (node != null) {
+            String varName = node.getIoSpecification().getOutputMappingBySources().get(RESULT);
+            if (varName != null) {
+                return getType(workItem, varName);
+            }
         }
         logger.warn("no out mapping for {}", RESULT);
         return null;

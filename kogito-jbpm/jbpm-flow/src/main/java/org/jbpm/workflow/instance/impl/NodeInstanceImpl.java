@@ -161,6 +161,9 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
 
     @Override
     public org.kie.api.definition.process.Node getNode() {
+        if (nodeId == null) {
+            return null;
+        }
         try {
             return ((org.jbpm.workflow.core.NodeContainer) this.nodeInstanceContainer.getNodeContainer()).internalGetNode(this.nodeId);
         } catch (IllegalArgumentException e) {
