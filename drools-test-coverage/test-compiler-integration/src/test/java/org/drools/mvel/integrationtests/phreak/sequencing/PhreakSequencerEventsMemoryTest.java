@@ -56,7 +56,7 @@ public class PhreakSequencerEventsMemoryTest extends AbstractPhreakSequencerSubs
         rule.addSequence(seq0);
         kbase.addPackage(pkg);
 
-        createSession2();
+        createSession();
     }
 
     private LogicCircuit getLogicCircuit() {

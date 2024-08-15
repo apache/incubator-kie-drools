@@ -84,7 +84,7 @@ public class PhreakSequencerSubsequenceLoopTest extends AbstractPhreakSequencerS
         seq2.setController(new LoopController(m -> m.getCount() < 2));
         kbase.addPackage(pkg);
 
-        createSession2();
+        createSession();
 
         ArrayList<SequenceMemory> stack = sequencerMemory.getSequenceStack();
         assertThat(stack.size()).isEqualTo(2);

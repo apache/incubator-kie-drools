@@ -59,7 +59,7 @@ public class PhreakSequencerLogicGateTest extends AbstractPhreakSequencerSubsequ
         rule.addSequence(seq);
         kbase.addPackage(pkg);
 
-        createSession2();
+        createSession();
         assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0); // step 0
         InternalFactHandle fhB0 = (InternalFactHandle) session.insert(new B(0, "b"));
         assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0); // step 0
@@ -67,7 +67,7 @@ public class PhreakSequencerLogicGateTest extends AbstractPhreakSequencerSubsequ
         assertThat(sequencerMemory.getCurrentStep()).isEqualTo(-1); // terminated
 
         // reverse B and C
-        createSession2();
+        createSession();
         assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0); // step 0
         fhC0 = (InternalFactHandle) session.insert(new C(0, "c"));
 
@@ -92,14 +92,14 @@ public class PhreakSequencerLogicGateTest extends AbstractPhreakSequencerSubsequ
         rule.addSequence(seq);
         kbase.addPackage(pkg);
 
-        createSession2();
+        createSession();
         assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0); // step 0
         InternalFactHandle fhB0 = (InternalFactHandle) session.insert(new B(0, "b"));
 
         assertThat(sequencerMemory.getCurrentStep()).isEqualTo(-1); // terminated
 
         // reverse B and C
-        createSession2();
+        createSession();
         assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0); // step 0
         InternalFactHandle fhC0 = (InternalFactHandle) session.insert(new C(0, "c"));
 
@@ -131,7 +131,7 @@ public class PhreakSequencerLogicGateTest extends AbstractPhreakSequencerSubsequ
         kbase.addPackage(pkg);
 
         // D last
-        createSession2();
+        createSession();
         assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0); // step 0
         InternalFactHandle fhB0 = (InternalFactHandle) session.insert(new B(0, "b"));
         assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0); // step 0
@@ -143,7 +143,7 @@ public class PhreakSequencerLogicGateTest extends AbstractPhreakSequencerSubsequ
         assertThat(sequencerMemory.getCurrentStep()).isEqualTo(-1); // terminated
 
         // change order, D first
-        createSession2();
+        createSession();
         fhD0 = (InternalFactHandle) session.insert(new D(0, "d"));
         assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0); // step 0
 

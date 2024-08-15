@@ -67,7 +67,7 @@ public class PhreakSequencerSignalProcessorTimerTest extends AbstractPhreakSeque
         rule.addSequence(seq);
         kbase.addPackage(pkg);
 
-        createSession2();
+        createSession();
         assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0); // step 0
         InternalFactHandle   fhB0   = (InternalFactHandle) session.insert(new B(0, "b"));
         PseudoClockScheduler pseudo = (PseudoClockScheduler) session.getTimerService();
@@ -76,7 +76,7 @@ public class PhreakSequencerSignalProcessorTimerTest extends AbstractPhreakSeque
         session.fireAllRules(); // if the rest of the system is immediate, why isn't this?
         assertThat(pseudo.getQueue().size()).isEqualTo(0);
 
-        createSession2();
+        createSession();
         assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0); // step 0
         fhB0   = (InternalFactHandle) session.insert(new B(0, "b"));
         pseudo = (PseudoClockScheduler) session.getTimerService();
@@ -110,7 +110,7 @@ public class PhreakSequencerSignalProcessorTimerTest extends AbstractPhreakSeque
         rule.addSequence(seq);
         kbase.addPackage(pkg);
 
-        createSession2();
+        createSession();
 
         assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0); // step 0
         InternalFactHandle   fhB0   = (InternalFactHandle) session.insert(new B(0, "b"));
@@ -154,7 +154,7 @@ public class PhreakSequencerSignalProcessorTimerTest extends AbstractPhreakSeque
         rule.addSequence(seq);
         kbase.addPackage(pkg);
 
-        createSession2();
+        createSession();
 
         assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0); // step 0
         InternalFactHandle   fhB0   = (InternalFactHandle) session.insert(new B(0, "b"));
@@ -165,7 +165,7 @@ public class PhreakSequencerSignalProcessorTimerTest extends AbstractPhreakSeque
         session.fireAllRules(); // if the rest of the system is immediate, why isn't this?
         assertThat(pseudo.getQueue().size()).isEqualTo(0);
 
-        createSession2();
+        createSession();
 
         assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0); // step 0
         fhB0   = (InternalFactHandle) session.insert(new B(0, "b"));
@@ -194,7 +194,7 @@ public class PhreakSequencerSignalProcessorTimerTest extends AbstractPhreakSeque
         rule.addSequence(seq);
         kbase.addPackage(pkg);
 
-        createSession2();
+        createSession();
 
         assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0); // step 0
         InternalFactHandle   fhB0   = (InternalFactHandle) session.insert(new B(0, "b"));

@@ -65,7 +65,7 @@ public class PhreakSequencerSignalProcessorCounterTest extends AbstractPhreakSeq
         rule.addSequence(seq);
         kbase.addPackage(pkg);
 
-        createSession2();
+        createSession();
 
         assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0);
         InternalFactHandle fhB0 = (InternalFactHandle) session.insert(new B(0, "b"));
@@ -95,7 +95,7 @@ public class PhreakSequencerSignalProcessorCounterTest extends AbstractPhreakSeq
         rule.addSequence(seq);
         kbase.addPackage(pkg);
 
-        createSession2();
+        createSession();
         assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0);
         InternalFactHandle fhB0 = (InternalFactHandle) session.insert(new B(0, "b"));
 
@@ -105,7 +105,7 @@ public class PhreakSequencerSignalProcessorCounterTest extends AbstractPhreakSeq
 
         InternalFactHandle fhB2 = (InternalFactHandle) session.insert(new B(2, "b"));
 
-        createSession2(); // fail
+        createSession(); // fail
         assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0);
         fhB0 = (InternalFactHandle) session.insert(new B(0, "b"));
 
@@ -135,7 +135,7 @@ public class PhreakSequencerSignalProcessorCounterTest extends AbstractPhreakSeq
         rule.addSequence(seq);
         kbase.addPackage(pkg);
 
-        createSession2(); // pass
+        createSession(); // pass
 
         assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0);
         InternalFactHandle fhB0 = (InternalFactHandle) session.insert(new B(0, "b"));
@@ -146,7 +146,7 @@ public class PhreakSequencerSignalProcessorCounterTest extends AbstractPhreakSeq
 
         InternalFactHandle fhB2 = (InternalFactHandle) session.insert(new B(2, "b"));
 
-        createSession2(); // fail
+        createSession(); // fail
         assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0);
         fhB0 = (InternalFactHandle) session.insert(new B(0, "b"));
 
@@ -173,7 +173,7 @@ public class PhreakSequencerSignalProcessorCounterTest extends AbstractPhreakSeq
         rule.addSequence(seq);
         kbase.addPackage(pkg);
 
-        createSession2(); // pass
+        createSession(); // pass
 
         SequenceMemory sequenceMemory = sequencerMemory.getSequenceMemory(seq);
 
@@ -229,7 +229,7 @@ public class PhreakSequencerSignalProcessorCounterTest extends AbstractPhreakSeq
         kbase.addPackage(pkg);
 
         // D First
-        createSession2();
+        createSession();
         SequenceMemory sequenceMemory = sequencerMemory.getSequenceMemory(seq);
 
         InternalFactHandle fhD0 = (InternalFactHandle) session.insert(new D(0, "d"));

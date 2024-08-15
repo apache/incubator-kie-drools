@@ -65,7 +65,7 @@ public class PhreakSequencerSubsequenceTest extends AbstractPhreakSequencerSubse
         rule.addSequence(seq0);
         kbase.addPackage(pkg);
 
-        createSession2();
+        createSession();
     }
 
     private static LogicGate get1InputLogicGate() {

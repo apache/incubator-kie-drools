@@ -78,7 +78,7 @@ public class PhreakSequencerAggregatorTest extends AbstractPhreakSequencerSubseq
         rule.addSequence(seq0);
         kbase.addPackage(pkg);
 
-        createSession2();
+        createSession();
     }
 
     private LogicCircuit getLogicCircuit() {

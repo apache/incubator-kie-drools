@@ -86,7 +86,7 @@ public class PhreakSequencerSubsequenceTimerTest extends AbstractPhreakSequencer
     @Test
     public void testSubSequenceFailSeq1() {
         seq1.setController(new TimoutController(new DurationTimer(1000)));
-        createSession2();
+        createSession();
 
         ArrayList<SequenceMemory> stack = sequencerMemory.getSequenceStack();
         assertThat(stack.size()).isEqualTo(2);
@@ -108,7 +108,7 @@ public class PhreakSequencerSubsequenceTimerTest extends AbstractPhreakSequencer
     public void testSubSequenceFailSeq2() {
         seq1.setController(new TimoutController(new DurationTimer(1000)));
         seq2.setController(new TimoutController(new DurationTimer(1000)));
-        createSession2();
+        createSession();
 
         ArrayList<SequenceMemory> stack = sequencerMemory.getSequenceStack();
         assertThat(stack.size()).isEqualTo(2);
@@ -139,7 +139,7 @@ public class PhreakSequencerSubsequenceTimerTest extends AbstractPhreakSequencer
     public void testSubSequenceComplete() {
         seq1.setController(new TimoutController(new DurationTimer(1000)));
         seq2.setController(new TimoutController(new DurationTimer(1000)));
-        createSession2();
+        createSession();
 
         ArrayList<SequenceMemory> stack = sequencerMemory.getSequenceStack();
         assertThat(stack.size()).isEqualTo(2);

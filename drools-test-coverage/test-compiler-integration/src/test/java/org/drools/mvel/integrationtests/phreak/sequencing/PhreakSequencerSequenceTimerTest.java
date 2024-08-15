@@ -69,7 +69,7 @@ public class PhreakSequencerSequenceTimerTest  extends AbstractPhreakSequencerSu
         rule.addSequence(seq0);
         kbase.addPackage(pkg);
 
-        createSession2();
+        createSession();
         ArrayList<SequenceMemory> stack = sequencerMemory.getSequenceStack();
         InternalFactHandle   fhB0   = (InternalFactHandle) session.insert(new B(0, "b"));
         PseudoClockScheduler pseudo = (PseudoClockScheduler) session.getTimerService();
@@ -86,7 +86,7 @@ public class PhreakSequencerSequenceTimerTest  extends AbstractPhreakSequencerSu
         rule.addSequence(seq0);
         kbase.addPackage(pkg);
 
-        createSession2();
+        createSession();
         ArrayList<SequenceMemory> stack = sequencerMemory.getSequenceStack();
 
         InternalFactHandle   fhB0   = (InternalFactHandle) session.insert(new B(0, "b"));

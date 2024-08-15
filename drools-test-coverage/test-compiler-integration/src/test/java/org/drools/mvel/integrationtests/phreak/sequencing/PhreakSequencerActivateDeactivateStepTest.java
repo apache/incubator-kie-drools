@@ -66,7 +66,7 @@ public class PhreakSequencerActivateDeactivateStepTest extends AbstractPhreakSeq
         rule.addSequence(seq0);
         kbase.addPackage(pkg);
 
-        createSession2();
+        createSession();
         sequenceMemory = sequencerMemory.getSequenceMemory(seq0);
     }
 
