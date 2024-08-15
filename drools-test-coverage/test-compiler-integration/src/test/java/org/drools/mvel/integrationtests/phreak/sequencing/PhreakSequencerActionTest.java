@@ -18,31 +18,18 @@
  */
 package org.drools.mvel.integrationtests.phreak.sequencing;
 
-import org.drools.base.base.ClassObjectType;
-import org.drools.base.base.ObjectType;
 import org.drools.base.rule.Pattern;
-import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
-import org.drools.core.SessionConfiguration;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.base.reteoo.DynamicFilterProto;
 import org.drools.base.reteoo.sequencing.signalprocessors.Gates;
 import org.drools.base.reteoo.sequencing.signalprocessors.LogicCircuit;
 import org.drools.base.reteoo.sequencing.signalprocessors.LogicGate;
 import org.drools.base.reteoo.sequencing.Sequence;
-import org.drools.base.reteoo.sequencing.Sequence.SequenceMemory;
-import org.drools.base.reteoo.sequencing.Sequencer;
 import org.drools.base.reteoo.sequencing.steps.Step;
 import org.drools.base.reteoo.sequencing.signalprocessors.TerminatingSignalProcessor;
 import org.drools.base.util.CircularArrayList;
-import org.drools.kiesession.rulebase.SessionsAwareKnowledgeBase;
-import org.drools.mvel.integrationtests.phreak.A;
 import org.drools.mvel.integrationtests.phreak.B;
-import org.drools.mvel.integrationtests.phreak.sequencing.MultiInputNodeBuilder.AlphaConstraint;
-import org.drools.mvel.integrationtests.phreak.sequencing.MultiInputNodeBuilder.Predicate1;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.api.conf.EventProcessingOption;
-import org.kie.api.runtime.conf.ThreadSafeOption;
 import org.kie.api.runtime.rule.FactHandle;
 
 import java.util.ArrayList;
@@ -56,23 +43,8 @@ public class PhreakSequencerActionTest extends AbstractPhreakSequencerSubsequenc
 
     @Before
     public void setup() {
-        buildContext = createContext();
-        buildContext.getRuleBase().getRuleBaseConfiguration().setOption(EventProcessingOption.STREAM);
+        initKBaseWithEmptyRule();
         recorder.clear();
-
-        MultiInputNodeBuilder builder = MultiInputNodeBuilder.create(buildContext);
-
-        mnode = builder.buildNode(A.class, new Class[]{B.class});
-
-        final ObjectType aObjectType = new ClassObjectType(A.class);
-        final ObjectType bObjectType = new ClassObjectType(B.class);
-
-        final Pattern bpattern = new Pattern(0,
-                                             bObjectType,
-                                             "b" );
-        bpattern.addConstraint(new AlphaConstraint( (Predicate1<B>) b -> b.getText().equals("b")));
-
-        DynamicFilterProto bfilter = new DynamicFilterProto((AlphaNodeFieldConstraint) bpattern.getConstraints().get(0), 0);
 
         LogicCircuit circuit1 = getLogicCircuit();
 
@@ -84,14 +56,12 @@ public class PhreakSequencerActionTest extends AbstractPhreakSequencerSubsequenc
                             Step.of(circuit2),
                             Step.of( m -> recorder.add("spacer")),
                             Step.of( m -> recorder.add(((FactHandle)m.getSequencerMemory().getEvents().getHead()).getObject())));
-        mnode.setSequencer(new Sequencer(seq0));
-        mnode.setDynamicFilters(new DynamicFilterProto[] {bfilter});
 
-        SessionsAwareKnowledgeBase kbase       = new SessionsAwareKnowledgeBase(buildContext.getRuleBase());
-        SessionConfiguration       sessionConf = kbase.getSessionConfiguration();
-        sessionConf.setOption(ThreadSafeOption.NO);
+        seq0.setFilters(new Pattern[]{bpattern});
+        rule.addSequence(seq0);
+        kbase.addPackage(pkg);
 
-        createSession();
+        createSession2();
     }
 
     private LogicCircuit getLogicCircuit() {
@@ -111,11 +81,6 @@ public class PhreakSequencerActionTest extends AbstractPhreakSequencerSubsequenc
 
     @Test
     public void testAction() {
-        ArrayList<SequenceMemory> stack = sequencerMemory.getSequenceStack();
-        assertThat(stack.size()).isEqualTo(0);
-
-        mnode.getSequencer().start(sequencerMemory, session);
-
         CircularArrayList<Object> events = sequencerMemory.getEvents();
         assertThat(events.size()).isEqualTo(0);
         InternalFactHandle fhB0 = (InternalFactHandle) session.insert(b(0));

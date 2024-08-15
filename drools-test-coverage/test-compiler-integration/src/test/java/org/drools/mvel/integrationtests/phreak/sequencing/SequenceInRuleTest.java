@@ -3,9 +3,7 @@ package org.drools.mvel.integrationtests.phreak.sequencing;
 import org.drools.base.base.ClassObjectType;
 import org.drools.base.base.ObjectType;
 import org.drools.base.definitions.InternalKnowledgePackage;
-import org.drools.base.definitions.impl.KnowledgePackageImpl;
 import org.drools.base.definitions.rule.impl.RuleImpl;
-import org.drools.base.reteoo.DynamicFilterProto;
 import org.drools.base.reteoo.sequencing.Sequence;
 import org.drools.base.reteoo.sequencing.signalprocessors.Gates;
 import org.drools.base.reteoo.sequencing.signalprocessors.LogicCircuit;
@@ -13,27 +11,18 @@ import org.drools.base.reteoo.sequencing.signalprocessors.LogicGate;
 import org.drools.base.reteoo.sequencing.signalprocessors.TerminatingSignalProcessor;
 import org.drools.base.reteoo.sequencing.steps.Step;
 import org.drools.base.rule.Pattern;
-import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.reteoo.CoreComponentFactory;
-import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.JavaDialectRuntimeData;
 import org.drools.kiesession.rulebase.SessionsAwareKnowledgeBase;
 import org.drools.mvel.integrationtests.phreak.A;
 import org.drools.mvel.integrationtests.phreak.B;
 import org.drools.mvel.integrationtests.phreak.C;
-import org.drools.mvel.integrationtests.phreak.D;
-import org.drools.mvel.integrationtests.phreak.E;
-import org.drools.mvel.integrationtests.phreak.sequencing.MultiInputNodeBuilder.AlphaConstraint;
-import org.drools.mvel.integrationtests.phreak.sequencing.MultiInputNodeBuilder.Predicate1;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.conf.CompositeBaseConfiguration;
-
-import java.util.Collections;
 
 public class SequenceInRuleTest {
     SessionsAwareKnowledgeBase kbase;
@@ -111,7 +100,6 @@ public class SequenceInRuleTest {
 //        pkg.addRule(rule);
 //
 //        buildContext.getRuleBase()
-
     }
 
     @Test

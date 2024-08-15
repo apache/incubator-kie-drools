@@ -18,30 +18,18 @@
  */
 package org.drools.mvel.integrationtests.phreak.sequencing;
 
-import org.drools.base.base.ClassObjectType;
-import org.drools.base.base.ObjectType;
 import org.drools.base.rule.Pattern;
-import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
-import org.drools.core.SessionConfiguration;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.base.reteoo.DynamicFilterProto;
 import org.drools.base.reteoo.sequencing.signalprocessors.Gates;
 import org.drools.base.reteoo.sequencing.signalprocessors.LogicCircuit;
 import org.drools.base.reteoo.sequencing.signalprocessors.LogicGate;
 import org.drools.base.reteoo.sequencing.Sequence;
 import org.drools.base.reteoo.sequencing.steps.Step;
-import org.drools.base.reteoo.sequencing.Sequencer;
 import org.drools.base.reteoo.sequencing.Sequence.SequenceMemory;
 import org.drools.base.reteoo.sequencing.signalprocessors.TerminatingSignalProcessor;
-import org.drools.kiesession.rulebase.SessionsAwareKnowledgeBase;
-import org.drools.mvel.integrationtests.phreak.A;
 import org.drools.mvel.integrationtests.phreak.B;
-import org.drools.mvel.integrationtests.phreak.sequencing.MultiInputNodeBuilder.AlphaConstraint;
-import org.drools.mvel.integrationtests.phreak.sequencing.MultiInputNodeBuilder.Predicate1;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.api.conf.EventProcessingOption;
-import org.kie.api.runtime.conf.ThreadSafeOption;
 
 import java.util.ArrayList;
 
@@ -49,25 +37,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class PhreakSequencerSubsequenceTest extends AbstractPhreakSequencerSubsequenceTest {
 
-
     @Before
     public void setup() {
-        buildContext = createContext();
-        buildContext.getRuleBase().getRuleBaseConfiguration().setOption(EventProcessingOption.STREAM);
-
-        MultiInputNodeBuilder builder = MultiInputNodeBuilder.create(buildContext);
-
-        mnode = builder.buildNode(A.class, new Class[]{B.class});
-
-        final ObjectType aObjectType = new ClassObjectType(A.class);
-        final ObjectType bObjectType = new ClassObjectType(B.class);
-
-        final Pattern bpattern = new Pattern(0,
-                                             bObjectType,
-                                             "b" );
-        bpattern.addConstraint(new AlphaConstraint( (Predicate1<B>) b -> b.getText().equals("b")));
-
-        DynamicFilterProto bfilter = new DynamicFilterProto((AlphaNodeFieldConstraint) bpattern.getConstraints().get(0), 0);
+        initKBaseWithEmptyRule();
 
         LogicGate gate1 = get1InputLogicGate();
         gate1.setOutput(TerminatingSignalProcessor.get());
@@ -89,14 +61,11 @@ public class PhreakSequencerSubsequenceTest extends AbstractPhreakSequencerSubse
         seq2 = new Sequence(2, Step.of(circuit3), Step.of(circuit4));
 
         seq0 = new Sequence(0, Step.of(seq1), Step.of(seq2));
-        mnode.setSequencer(new Sequencer(seq0));
-        mnode.setDynamicFilters( new DynamicFilterProto[] {bfilter});
+        seq0.setFilters(new Pattern[]{bpattern});
+        rule.addSequence(seq0);
+        kbase.addPackage(pkg);
 
-        SessionsAwareKnowledgeBase kbase       = new SessionsAwareKnowledgeBase(buildContext.getRuleBase());
-        SessionConfiguration       sessionConf = kbase.getSessionConfiguration();
-        sessionConf.setOption(ThreadSafeOption.YES);
-
-        createSession();
+        createSession2();
     }
 
     private static LogicGate get1InputLogicGate() {
@@ -110,9 +79,6 @@ public class PhreakSequencerSubsequenceTest extends AbstractPhreakSequencerSubse
     @Test
     public void testSubSequence() {
         ArrayList<SequenceMemory> stack = sequencerMemory.getSequenceStack();
-        assertThat(stack.size()).isEqualTo(0);
-
-        mnode.getSequencer().start(sequencerMemory, session);
         assertThat(stack.size()).isEqualTo(2);
 
         assertThat(stack.get(0).getSequence()).isSameAs(seq0);

@@ -18,12 +18,8 @@
  */
 package org.drools.mvel.integrationtests.phreak.sequencing;
 
-import org.drools.base.base.ClassObjectType;
-import org.drools.base.base.ObjectType;
 import org.drools.base.rule.Pattern;
-import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.base.reteoo.DynamicFilterProto;
 import org.drools.base.reteoo.sequencing.signalprocessors.ConditionalSignalCounter;
 import org.drools.base.reteoo.sequencing.signalprocessors.Gates;
 import org.drools.base.reteoo.sequencing.signalprocessors.LogicCircuit;
@@ -32,21 +28,14 @@ import org.drools.base.reteoo.sequencing.signalprocessors.LogicGate.DelayFromAct
 import org.drools.base.reteoo.sequencing.signalprocessors.LogicGate.DelayFromMatchTimer;
 import org.drools.base.reteoo.sequencing.signalprocessors.LogicGate.TimeoutTimer;
 import org.drools.base.reteoo.sequencing.Sequence;
-import org.drools.base.reteoo.sequencing.Sequencer;
 import org.drools.base.reteoo.sequencing.steps.Step;
 import org.drools.base.reteoo.sequencing.signalprocessors.TerminatingSignalProcessor;
 import org.drools.core.time.impl.DurationTimer;
 import org.drools.core.time.impl.PseudoClockScheduler;
-import org.drools.mvel.integrationtests.phreak.A;
 import org.drools.mvel.integrationtests.phreak.B;
 import org.drools.mvel.integrationtests.phreak.C;
-import org.drools.mvel.integrationtests.phreak.D;
-import org.drools.mvel.integrationtests.phreak.E;
-import org.drools.mvel.integrationtests.phreak.sequencing.MultiInputNodeBuilder.AlphaConstraint;
-import org.drools.mvel.integrationtests.phreak.sequencing.MultiInputNodeBuilder.Predicate1;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.api.conf.EventProcessingOption;
 
 import java.util.concurrent.TimeUnit;
 
@@ -54,45 +43,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class PhreakSequencerSignalProcessorTimerTest extends AbstractPhreakSequencerSubsequenceTest {
 
+
     @Before
     public void setup() {
-        buildContext = createContext();
-        buildContext.getRuleBase().getRuleBaseConfiguration().setOption(EventProcessingOption.STREAM);
-
-        MultiInputNodeBuilder builder = MultiInputNodeBuilder.create(buildContext);
-
-        mnode = builder.buildNode(A.class, new Class[]{B.class, C.class, D.class});
-
-        final ObjectType aObjectType = new ClassObjectType(A.class);
-        final ObjectType bObjectType = new ClassObjectType(B.class);
-        final ObjectType cObjectType = new ClassObjectType(C.class);
-        final ObjectType dObjectType = new ClassObjectType(D.class);
-        final ObjectType eObjectType = new ClassObjectType(E.class);
-
-        final Pattern bpattern = new Pattern(0,
-                                             bObjectType,
-                                             "b" );
-        bpattern.addConstraint(new AlphaConstraint( (Predicate1<B>) b -> b.getText().equals("b")));
-
-        final Pattern cpattern = new Pattern(0,
-                                             cObjectType,
-                                             "c" );
-        cpattern.addConstraint(new AlphaConstraint( (Predicate1<C>) c -> c.getText().equals("c")));
-
-        final Pattern dpattern = new Pattern(0,
-                                             dObjectType,
-                                             "d" );
-        dpattern.addConstraint(new AlphaConstraint( (Predicate1<D>) d -> d.getText().equals("d")));
-
-        final Pattern epattern = new Pattern(0,
-                                             eObjectType,
-                                             "e" );
-        epattern.addConstraint(new AlphaConstraint( (Predicate1<E>) e -> e.getText().equals("e")));
-
-        bfilter = new DynamicFilterProto((AlphaNodeFieldConstraint) bpattern.getConstraints().get(0), 0);
-        cfilter = new DynamicFilterProto((AlphaNodeFieldConstraint) cpattern.getConstraints().get(0), 1);
-        dfilter = new DynamicFilterProto((AlphaNodeFieldConstraint) dpattern.getConstraints().get(0), 2);
-        efilter = new DynamicFilterProto((AlphaNodeFieldConstraint) epattern.getConstraints().get(0), 3);
+        initKBaseWithEmptyRule();
     }
 
     @Test
@@ -109,12 +63,11 @@ public class PhreakSequencerSignalProcessorTimerTest extends AbstractPhreakSeque
         LogicCircuit circuit1 = new LogicCircuit(gate1);
 
         Sequence seq = new Sequence(0, Step.of(circuit1));
-        mnode.setSequencer(new Sequencer(seq));
-        mnode.setDynamicFilters( new DynamicFilterProto[] {bfilter, cfilter});
+        seq.setFilters(new Pattern[]{bpattern, cpattern});
+        rule.addSequence(seq);
+        kbase.addPackage(pkg);
 
-        createSession();
-
-        mnode.getSequencer().start(sequencerMemory, session);
+        createSession2();
         assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0); // step 0
         InternalFactHandle   fhB0   = (InternalFactHandle) session.insert(new B(0, "b"));
         PseudoClockScheduler pseudo = (PseudoClockScheduler) session.getTimerService();
@@ -122,9 +75,8 @@ public class PhreakSequencerSignalProcessorTimerTest extends AbstractPhreakSeque
         pseudo.advanceTime(2000, TimeUnit.MILLISECONDS);
         session.fireAllRules(); // if the rest of the system is immediate, why isn't this?
         assertThat(pseudo.getQueue().size()).isEqualTo(0);
-        createSession();
 
-        mnode.getSequencer().start(sequencerMemory, session);
+        createSession2();
         assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0); // step 0
         fhB0   = (InternalFactHandle) session.insert(new B(0, "b"));
         pseudo = (PseudoClockScheduler) session.getTimerService();
@@ -154,12 +106,12 @@ public class PhreakSequencerSignalProcessorTimerTest extends AbstractPhreakSeque
         LogicCircuit circuit1 = new LogicCircuit(gate1);
 
         Sequence seq = new Sequence(0, Step.of(circuit1));
-        mnode.setSequencer(new Sequencer(seq));
-        mnode.setDynamicFilters( new DynamicFilterProto[] {bfilter});
+        seq.setFilters(new Pattern[]{bpattern});
+        rule.addSequence(seq);
+        kbase.addPackage(pkg);
 
-        createSession();
+        createSession2();
 
-        mnode.getSequencer().start(sequencerMemory, session);
         assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0); // step 0
         InternalFactHandle   fhB0   = (InternalFactHandle) session.insert(new B(0, "b"));
         InternalFactHandle   fhB1   = (InternalFactHandle) session.insert(new B(0, "b"));
@@ -198,12 +150,12 @@ public class PhreakSequencerSignalProcessorTimerTest extends AbstractPhreakSeque
         LogicCircuit circuit1 = new LogicCircuit(gate1);
 
         Sequence seq = new Sequence(0, Step.of(circuit1));
-        mnode.setSequencer(new Sequencer(seq));
-        mnode.setDynamicFilters( new DynamicFilterProto[] {bfilter, cfilter});
+        seq.setFilters(new Pattern[]{bpattern, cpattern});
+        rule.addSequence(seq);
+        kbase.addPackage(pkg);
 
-        createSession();
+        createSession2();
 
-        mnode.getSequencer().start(sequencerMemory, session);
         assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0); // step 0
         InternalFactHandle   fhB0   = (InternalFactHandle) session.insert(new B(0, "b"));
         InternalFactHandle fhC0   = (InternalFactHandle) session.insert(new C(0, "c"));
@@ -213,9 +165,8 @@ public class PhreakSequencerSignalProcessorTimerTest extends AbstractPhreakSeque
         session.fireAllRules(); // if the rest of the system is immediate, why isn't this?
         assertThat(pseudo.getQueue().size()).isEqualTo(0);
 
-        createSession();
+        createSession2();
 
-        mnode.getSequencer().start(sequencerMemory, session);
         assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0); // step 0
         fhB0   = (InternalFactHandle) session.insert(new B(0, "b"));
         pseudo = (PseudoClockScheduler) session.getTimerService();
@@ -239,12 +190,12 @@ public class PhreakSequencerSignalProcessorTimerTest extends AbstractPhreakSeque
         LogicCircuit circuit1 = new LogicCircuit(gate1);
 
         Sequence seq = new Sequence(0, Step.of(circuit1));
-        mnode.setSequencer(new Sequencer(seq));
-        mnode.setDynamicFilters( new DynamicFilterProto[] {bfilter, cfilter});
+        seq.setFilters(new Pattern[]{bpattern, cpattern});
+        rule.addSequence(seq);
+        kbase.addPackage(pkg);
 
-        createSession();
+        createSession2();
 
-        mnode.getSequencer().start(sequencerMemory, session);
         assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0); // step 0
         InternalFactHandle   fhB0   = (InternalFactHandle) session.insert(new B(0, "b"));
         PseudoClockScheduler pseudo = (PseudoClockScheduler) session.getTimerService();

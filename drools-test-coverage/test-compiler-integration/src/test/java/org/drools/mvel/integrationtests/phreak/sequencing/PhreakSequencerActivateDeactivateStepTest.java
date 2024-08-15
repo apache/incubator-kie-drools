@@ -18,35 +18,22 @@
  */
 package org.drools.mvel.integrationtests.phreak.sequencing;
 
-import org.drools.base.base.ClassObjectType;
-import org.drools.base.base.ObjectType;
 import org.drools.base.rule.Pattern;
-import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
-import org.drools.core.SessionConfiguration;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.base.reteoo.DynamicFilter;
 import org.drools.base.reteoo.sequencing.Sequence.SequenceMemory;
-import org.drools.base.reteoo.DynamicFilterProto;
 import org.drools.base.reteoo.SignalAdapter;
 import org.drools.base.reteoo.sequencing.signalprocessors.LogicCircuit;
 import org.drools.base.reteoo.sequencing.signalprocessors.Gates;
 import org.drools.base.reteoo.sequencing.signalprocessors.LogicGate;
 import org.drools.base.reteoo.sequencing.Sequence;
-import org.drools.base.reteoo.sequencing.Sequencer;
 import org.drools.base.reteoo.sequencing.steps.Step;
 import org.drools.base.reteoo.sequencing.signalprocessors.TerminatingSignalProcessor;
-import org.drools.base.util.LinkedList;
-import org.drools.kiesession.rulebase.SessionsAwareKnowledgeBase;
-import org.drools.mvel.integrationtests.phreak.A;
 import org.drools.mvel.integrationtests.phreak.B;
 import org.drools.mvel.integrationtests.phreak.C;
 import org.drools.mvel.integrationtests.phreak.D;
-import org.drools.mvel.integrationtests.phreak.sequencing.MultiInputNodeBuilder.AlphaConstraint;
-import org.drools.mvel.integrationtests.phreak.sequencing.MultiInputNodeBuilder.Predicate1;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.api.conf.EventProcessingOption;
-import org.kie.api.runtime.conf.ThreadSafeOption;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -56,36 +43,7 @@ public class PhreakSequencerActivateDeactivateStepTest extends AbstractPhreakSeq
 
     @Before
     public void setup() {
-        buildContext = createContext();
-        buildContext.getRuleBase().getRuleBaseConfiguration().setOption(EventProcessingOption.STREAM);
-
-        MultiInputNodeBuilder builder = MultiInputNodeBuilder.create(buildContext);
-
-        mnode = builder.buildNode(A.class, new Class[]{B.class, C.class, D.class});
-
-        final ObjectType aObjectType = new ClassObjectType(A.class);
-        final ObjectType bObjectType = new ClassObjectType(B.class);
-        final ObjectType cObjectType = new ClassObjectType(C.class);
-        final ObjectType dObjectType = new ClassObjectType(D.class);
-
-        final Pattern bpattern = new Pattern(0,
-                                             bObjectType,
-                                             "b" );
-        bpattern.addConstraint(new AlphaConstraint( (Predicate1<B>) b -> b.getText().equals("b")));
-
-        final Pattern cpattern = new Pattern(0,
-                                             cObjectType,
-                                             "c" );
-        cpattern.addConstraint(new AlphaConstraint( (Predicate1<C>) c -> c.getText().equals("c")));
-
-        final Pattern dpattern = new Pattern(0,
-                                             dObjectType,
-                                             "d" );
-        dpattern.addConstraint(new AlphaConstraint( (Predicate1<D>) c -> c.getText().equals("d")));
-
-        DynamicFilterProto bfilter = new DynamicFilterProto((AlphaNodeFieldConstraint) bpattern.getConstraints().get(0), 0);
-        DynamicFilterProto cfilter = new DynamicFilterProto((AlphaNodeFieldConstraint) cpattern.getConstraints().get(0), 1);
-        DynamicFilterProto dfilter = new DynamicFilterProto((AlphaNodeFieldConstraint) dpattern.getConstraints().get(0), 2);
+        initKBaseWithEmptyRule();
 
         LogicGate gate1 = new LogicGate((inputMask, sourceMask) -> Gates.and(inputMask, sourceMask),0,
                                         new int[] {0, 1}, // B and C
@@ -104,34 +62,17 @@ public class PhreakSequencerActivateDeactivateStepTest extends AbstractPhreakSeq
         LogicCircuit circuit2 = new LogicCircuit(gate2);
 
         seq0 = new Sequence(0, Step.of(circuit1), Step.of(circuit2));
-        mnode.setSequencer(new Sequencer(seq0));
-        mnode.setDynamicFilters( new DynamicFilterProto[] {bfilter, cfilter, dfilter});
+        seq0.setFilters(new Pattern[]{bpattern, cpattern, dpattern});
+        rule.addSequence(seq0);
+        kbase.addPackage(pkg);
 
-        SessionsAwareKnowledgeBase kbase       = new SessionsAwareKnowledgeBase(buildContext.getRuleBase());
-        SessionConfiguration       sessionConf = kbase.getSessionConfiguration();
-        sessionConf.setOption(ThreadSafeOption.YES);
-
-        createSession();
-
+        createSession2();
         sequenceMemory = sequencerMemory.getSequenceMemory(seq0);
-    }
-
-    @Test
-    public void testInitialisedMemories() {
-        // make sure these are empty
-        assertThat(nodeMemory.getFilters()).usingRecursiveComparison().isEqualTo(new DynamicFilter[3]);
-        assertThat(nodeMemory.getActiveFilters()).usingRecursiveComparison().isEqualTo(new LinkedList[3]);
-        assertThat(nodeMemory.getActiveFilters()).usingRecursiveComparison().isEqualTo(new LinkedList[3]);
-        assertThat(sequenceMemory.getActiveSignalAdapters()).usingRecursiveComparison().isEqualTo(new SignalAdapter[4]);
-        assertThat(sequenceMemory.getSignalAdapters()).usingRecursiveComparison().isEqualTo(new SignalAdapter[4]);
-        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(-1); // sequence not yet started
     }
 
     @Test
     public void testActivateAfterFirstCircuitStep() {
         // activate LogicCircuit1 and check filters are adapters are created and made active
-        mnode.getSequencer().start(sequencerMemory, session);
-
         DynamicFilter filter0 = nodeMemory.getFilters()[0]; // B
         DynamicFilter filter1 = nodeMemory.getFilters()[1]; // C
         // [2] D is null
@@ -155,8 +96,6 @@ public class PhreakSequencerActivateDeactivateStepTest extends AbstractPhreakSeq
 
     @Test
     public void testDeactivateAndActivateAfterSecondCircuitStep() {
-        mnode.getSequencer().start(sequencerMemory, session);
-
         DynamicFilter filter0 = nodeMemory.getFilters()[0]; // B
         DynamicFilter filter1 = nodeMemory.getFilters()[1]; // C
 
@@ -193,8 +132,6 @@ public class PhreakSequencerActivateDeactivateStepTest extends AbstractPhreakSeq
 
     @Test
     public void testDeactivateAfterEndStep() {
-        mnode.getSequencer().start(sequencerMemory, session);
-
         assertThat(sequencerMemory.getCurrentStep()).isEqualTo(0); // step 0
         InternalFactHandle fhB0 = (InternalFactHandle) session.insert(new B(0, "b"));
         InternalFactHandle fhC0 = (InternalFactHandle) session.insert(new C(0, "c"));
