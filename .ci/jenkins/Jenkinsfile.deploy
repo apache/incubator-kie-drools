@@ -114,32 +114,28 @@ pipeline {
         stage('Deploy drools') {
             steps {
                 script {
-                    def installOrDeploy
-                    if (shouldDeployToRepository()) {
-                        installOrDeploy = 'deploy -DdeployAtEnd -DretryFailedDeploymentCount=5'
-                    } else {
-                        installOrDeploy = 'install'
-                    }
-                    def mavenCommand = getMavenCommand()
-                        .withOptions(env.DROOLS_BUILD_MVN_OPTS ? [ env.DROOLS_BUILD_MVN_OPTS ] : [])
-                        .withOptions(env.BUILD_MVN_OPTS_CURRENT ? [ env.BUILD_MVN_OPTS_CURRENT ] : [])
-                        .withProperty('maven.test.failure.ignore', true)
-                        .skipTests(params.SKIP_TESTS)
+                    withCredentials([usernamePassword(credentialsId: env.MAVEN_REPO_CREDS_ID, usernameVariable: 'REPOSITORY_USER', passwordVariable: 'REPOSITORY_TOKEN')]) {
+                        def installOrDeploy
+                        if (shouldDeployToRepository()) {
+                            installOrDeploy = "deploy -DdeployAtEnd -Dapache.repository.username=${REPOSITORY_USER} -Dapache.repository.password=${REPOSITORY_TOKEN} -DretryFailedDeploymentCount=5"
+                        } else {
+                            installOrDeploy = 'install'
+                        }
+                        def mavenCommand = getMavenCommand()
+                           .withOptions(env.DROOLS_BUILD_MVN_OPTS ? [ env.DROOLS_BUILD_MVN_OPTS ] : [])
+                           .withOptions(env.BUILD_MVN_OPTS_CURRENT ? [ env.BUILD_MVN_OPTS_CURRENT ] : [])
+                           .withProperty('maven.test.failure.ignore', true)
+                           .skipTests(params.SKIP_TESTS)
 
-                    if (isRelease()) {
-                        releaseUtils.gpgImportKeyFromStringWithoutPassword(getReleaseGpgSignKeyCredsId())
-                        mavenCommand.withProfiles(['apache-release'])
-                    } else {
-                        configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]) {
-                            mavenCommand.withSettingsXmlFile(MAVEN_SETTINGS_FILE)
+                        if (isRelease()) {
+                            releaseUtils.gpgImportKeyFromStringWithoutPassword(getReleaseGpgSignKeyCredsId())
+                            mavenCommand.withProfiles(['apache-release'])
                         }
-                        withCredentials([usernamePassword(credentialsId: env.MAVEN_REPO_CREDS_ID, usernameVariable: 'REPOSITORY_USER', passwordVariable: 'REPOSITORY_TOKEN')]) {
-                            mavenCommand
-                                .withProperty('apache.repository.username', "${REPOSITORY_USER}")
-                                .withProperty('apache.repository.password', "${REPOSITORY_TOKEN}")
+
+                        configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]) {
+                            mavenCommand.withSettingsXmlFile(MAVEN_SETTINGS_FILE).run("clean $installOrDeploy")
                         }
                     }
-                    mavenCommand.run("clean $installOrDeploy")
                 }
             }
             post {
