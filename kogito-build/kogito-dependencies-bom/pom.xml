@@ -367,6 +367,11 @@
         <version>${version.net.thisptr.jackson-jq}</version>
       </dependency>
       <dependency>
+        <groupId>net.thisptr</groupId>
+        <artifactId>jackson-jq-extra</artifactId>
+        <version>${version.net.thisptr.jackson-jq}</version>
+      </dependency>
+      <dependency>
         <groupId>org.postgresql</groupId>
         <artifactId>postgresql</artifactId>
         <version>${version.org.postgresql}</version>
