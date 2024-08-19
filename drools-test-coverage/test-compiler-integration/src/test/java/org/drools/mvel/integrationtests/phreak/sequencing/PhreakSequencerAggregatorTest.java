@@ -58,16 +58,16 @@ public class PhreakSequencerAggregatorTest extends AbstractPhreakSequencerSubseq
 
         Consumer<SequenceMemory> aggregator = memory -> {
             CircularArrayList<Object> events = memory.getSequencerMemory().getEvents();
-            int eventsStartPosition = memory.getEventsStartPosition();
+            int outputStartPosition = memory.getOutputStartPosition();
 
-            List<Object> r = (List<Object>) events.get(eventsStartPosition-1);
+            List<Object> r = (List<Object>) events.get(outputStartPosition);
             if (r == null) {
-                events.set(eventsStartPosition-1,  recorder);
-                r = (List<Object>) events.get(eventsStartPosition-1);
+                events.set(outputStartPosition,  recorder);
+                r = (List<Object>) events.get(outputStartPosition);
             }
 
             int end = events.size();
-            for (int i = eventsStartPosition; i < end; i++) {
+            for (int i = memory.getEventsStartPosition(); i < end; i++) {
                 r.add(((FactHandle)(events.get(i))).getObject());
             }
         };

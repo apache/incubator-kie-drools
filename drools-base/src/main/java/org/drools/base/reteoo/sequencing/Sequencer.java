@@ -58,11 +58,6 @@ public class Sequencer {
         }
     }
 
-    public void fail(SequenceMemory memory) {
-        //node.fail(memory);
-        // TODO reset all memory
-    }
-
     public Sequence getSequence() {
         return sequence;
     }

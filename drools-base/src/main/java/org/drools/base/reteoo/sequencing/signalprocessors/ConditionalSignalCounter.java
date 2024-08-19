@@ -62,16 +62,16 @@ public class ConditionalSignalCounter extends SignalProcessor {
     @Override
     public void consume(SignalStatus incommingSignalStatus, SequenceMemory memory, ValueResolver valueResolver) {
         consume(incommingSignalStatus, memory,
-                (SignalStatus status) -> output.consume(status, memory, valueResolver));
+                (SignalStatus status) -> output.consume(status, memory, valueResolver), valueResolver);
     }
 
     @Override
     public void consume(int signalBitIndex, SignalStatus incommingSignalStatus, SequenceMemory memory, ValueResolver valueResolver) {
         consume(incommingSignalStatus, memory,
-                (SignalStatus status) -> output.consume(signalBitIndex, incommingSignalStatus, memory, valueResolver));
+                (SignalStatus status) -> output.consume(signalBitIndex, incommingSignalStatus, memory, valueResolver), valueResolver);
     }
 
-    private void consume(SignalStatus inputSignalStatus, SequenceMemory memory, Consumer<SignalStatus> propagator) {
+    private void consume(SignalStatus inputSignalStatus, SequenceMemory memory, Consumer<SignalStatus> propagator, ValueResolver valueResolver) {
         SignalStatus status = memory.getCounterSignalStatus(counterIndex);
 
         SignalStatus priorStatus   = status;
@@ -90,7 +90,7 @@ public class ConditionalSignalCounter extends SignalProcessor {
         memory.setCounterSignalStatus(counterIndex, status);
 
         if (status == SignalStatus.FAILED) {
-            memory.getSequencerMemory().getSequencer().fail(memory);
+            memory.getSequence().fail(memory, valueResolver);
         } else if (priorStatus != status) {
             propagator.accept(status);
         }

@@ -38,18 +38,19 @@ public class AbstractPhreakSequencerSubsequenceTest {
     SequenceNodeMemory nodeMemory;
     SequencerMemory    sequencerMemory;
     BuildContext       buildContext;
-    Sequence       seq0;
-    Sequence       seq1;
-    Sequence                   seq2;
-    SequenceNode               snode;
+    Sequence           seq0;
+    Sequence           seq1;
+    Sequence           seq2;
+    Sequence           seq3;
+    SequenceNode       snode;
 
     Pattern bpattern;
     Pattern cpattern;
     Pattern dpattern;
     Pattern epattern;
 
-    RuleImpl                 rule;
-    InternalKnowledgePackage pkg;
+    RuleImpl                   rule;
+    InternalKnowledgePackage   pkg;
     SessionsAwareKnowledgeBase kbase;
 
     DynamicFilterProto bfilter;

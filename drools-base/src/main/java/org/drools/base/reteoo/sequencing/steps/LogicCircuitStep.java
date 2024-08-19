@@ -7,25 +7,25 @@ import org.drools.base.reteoo.sequencing.Sequence;
 import org.drools.base.reteoo.sequencing.Sequence.SequenceMemory;
 
 public class LogicCircuitStep extends AbstractStep implements Step {
-    private final LogicCircuit circuit;
+    private final LogicCircuit match;
 
     public LogicCircuitStep(int index, Sequence parentSequence, LogicCircuit circuit) {
         super(index, parentSequence);
-        this.circuit        = circuit;
+        this.match = circuit;
     }
 
     public LogicCircuit getCircuit() {
-        return circuit;
+        return match;
     }
 
     public void activate(SequenceMemory sequenceMemory, ValueResolver valueResolver) {
-        for (LogicGate gate : circuit.getGates()) {
+        for (LogicGate gate : match.getGates()) {
             gate.activate(sequenceMemory, valueResolver);
         }
     }
 
     public void deactivate(SequenceMemory sequenceMemory, ValueResolver valueResolver) {
-        for (LogicGate gate : circuit.getGates()) {
+        for (LogicGate gate : match.getGates()) {
             gate.deactivate(sequenceMemory, valueResolver);
         }
     }

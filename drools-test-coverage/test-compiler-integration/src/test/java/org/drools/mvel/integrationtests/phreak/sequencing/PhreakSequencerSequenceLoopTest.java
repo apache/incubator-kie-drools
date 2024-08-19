@@ -58,7 +58,7 @@ public class PhreakSequencerSequenceLoopTest extends AbstractPhreakSequencerSubs
         LogicCircuit circuit2 = new LogicCircuit(gate2);
 
         seq0 = new Sequence(0, Step.of(circuit1), Step.of(circuit2));
-        seq0.setFilters(new Pattern[]{bpattern, cpattern, dpattern, epattern});
+        seq0.setFilters(new Pattern[]{bpattern, cpattern});
     }
 
     @Test

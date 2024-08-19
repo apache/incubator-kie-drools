@@ -46,6 +46,8 @@ public class Sequence implements RuleConditionElement {
 
     private int outputSize;
 
+    private int subsequenceIndex = -1; // -1 is for when this is not parallel
+
     public Sequence(int sequenceIndex, StepFactory... stepFactories) {
         this.steps = new Step[stepFactories.length];
         for ( int i = 0; i < steps.length; i++ ) {
@@ -66,6 +68,14 @@ public class Sequence implements RuleConditionElement {
 
     public int getOutputSize() {
         return outputSize;
+    }
+
+    public int getSubsequenceIndex() {
+        return subsequenceIndex;
+    }
+
+    public void setSubsequenceIndex(int subsequenceIndex) {
+        this.subsequenceIndex = subsequenceIndex;
     }
 
     public void setOutputSize(int outputSize) {
@@ -438,7 +448,7 @@ public class Sequence implements RuleConditionElement {
         }
     }
 
-    private void fail(SequenceMemory sequenceMemory, ValueResolver valueResolver) {
+    public void fail(SequenceMemory sequenceMemory, ValueResolver valueResolver) {
         int index = sequenceMemory.getStep();
         Step step = sequenceMemory.getSequence().getSteps()[index];
         step.onFail(sequenceMemory, valueResolver);
@@ -481,7 +491,6 @@ public class Sequence implements RuleConditionElement {
             this.signalStatuses       = new SignalStatus[gateMemory.length + counterMemories.length];
         }
 
-
         public Sequence getSequence() {
             return sequence;
         }
@@ -498,7 +507,6 @@ public class Sequence implements RuleConditionElement {
         public void setCounterSignalStatus(int index, SignalStatus status) {
             signalStatuses[gateMemory.length + index] = status;
         }
-
 
         public SignalStatus getLogicGateSignalStatus(int index) {
             return signalStatuses[index];
@@ -566,6 +574,16 @@ public class Sequence implements RuleConditionElement {
 
         public int getEventsStartPosition() {
             return eventsStartPosition;
+        }
+
+        public int getOutputStartPosition() {
+            if (sequence.getSubsequenceIndex() == -1) {
+                return eventsStartPosition - sequence.getOutputSize();
+            } else {
+                int i = eventsStartPosition - ((sequence.getSubsequenceIndex() + 1) * sequence.getOutputSize());
+                System.out.println("eventsStartPosition = " + i);
+                return i;
+            }
         }
 
         public void setEventsStartPosition(int eventsStartPosition) {
