@@ -7,7 +7,7 @@ job_types:
   nightly:
     disabled: false
   other:
-    disabled: true
+    disabled: false
   pullrequest:
     disabled: false
   release:
