@@ -25,13 +25,13 @@ import java.util.function.Consumer;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.dmn.api.core.DMNContext;
-import org.kie.dmn.api.core.DMNDecisionResult;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.FEELPropertyAccessible;
+import org.kie.dmn.api.core.ast.DecisionNode;
 import org.kie.dmn.api.core.ast.ItemDefNode;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.compiler.DMNTypeRegistry;
@@ -39,18 +39,19 @@ import org.kie.dmn.core.impl.BaseDMNTypeImpl;
 import org.kie.dmn.core.impl.CompositeTypeImpl;
 import org.kie.dmn.core.impl.DMNContextFPAImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
-import org.kie.dmn.core.impl.DMNResultImpl;
 import org.kie.dmn.core.impl.SimpleTypeImpl;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.types.AliasFEELType;
 import org.kie.dmn.feel.lang.types.BuiltInType;
+import org.kie.dmn.model.api.Decision;
+import org.kie.dmn.model.api.InformationRequirement;
+import org.kie.dmn.model.api.KnowledgeRequirement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
-import static org.assertj.core.api.InstanceOfAssertFactories.map;
 import static org.kie.dmn.api.core.DMNDecisionResult.DecisionEvaluationStatus.SUCCEEDED;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.core.util.DynamicTypeUtils.mapOf;
@@ -468,6 +469,32 @@ public class DMNCompilerTest extends BaseVariantTest {
         assertThat(dmnAdultBobPerson.isAssignableValue(instanceAdultJoe)).isFalse();
         final Map<String, Object> instanceYoungJoe = prototype(entry("name", "Joe"), entry("age", 12));
         assertThat(dmnAdultBobPerson.isAssignableValue(instanceYoungJoe)).isFalse();
+    }
+
+    @ParameterizedTest
+    @MethodSource("params")
+    void localHrefs(VariantTestConf conf) {
+        testConfig = conf;
+        String nameSpace = "http://www.montera.com.au/spec/DMN/local-hrefs";
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("valid_models/DMNv1_5/LocalHrefs.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel(
+                nameSpace,
+                "LocalHrefs");
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
+        DecisionNode retrievedDecisionNode = dmnModel.getDecisionByName("decision_002");
+        assertThat(retrievedDecisionNode).isNotNull();
+        Decision retrievedDecision = retrievedDecisionNode.getDecision();
+        assertThat(retrievedDecision).isNotNull();
+        assertThat(retrievedDecision.getInformationRequirement())
+                .isNotNull()
+                .isNotEmpty()
+                .allSatisfy((Consumer<InformationRequirement>) informationRequirement -> assertThat(informationRequirement).isNotNull());
+        assertThat(retrievedDecision.getKnowledgeRequirement())
+                .isNotNull()
+                .isNotEmpty()
+                .allSatisfy((Consumer<KnowledgeRequirement>) knowledgeRequirement -> assertThat(knowledgeRequirement).isNotNull());
+
     }
 
     private void commonValidateUnnamedImport(String importingModelRef, String importedModelRef) {
