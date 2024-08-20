@@ -132,6 +132,12 @@ public class DMN15ValidationsTest {
         evaluate(modelNamespace, modelName, modelFileName, inputData);
     }
 
+    @Test
+    void localHrefsValidation() {
+        String modelFileName = "valid_models/DMNv1_5/LocalHrefs.dmn";
+        validate(modelFileName);
+    }
+
     private void commonUnnamedImportValidation(String importingModelRef, String importedModelRef) {
         String modelName = "Importing empty-named Model";
         String modelNamespace = "http://www.trisotech.com/dmn/definitions/_f79aa7a4-f9a3-410a-ac95-bea496edabgc";

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions namespace="http://www.montera.com.au/spec/DMN/local-hrefs"
+             name="LocalHrefs"
+             xmlns="https://www.omg.org/spec/DMN/20230324/MODEL/">
+
+  <description>Local (non-imported) qualified hrefs</description>
+
+  <inputData name="input_001" id="_input_001">
+    <variable name="input_001" typeRef="string"/>
+  </inputData>
+
+  <decision name="decision_001" id="_decision_001">
+    <variable name="decision_001" typeRef="string"/>
+    <literalExpression>
+      <text>"decision_001"</text>
+    </literalExpression>
+  </decision>
+
+  <businessKnowledgeModel name="bkm_001" id="_bkm_001">
+    <variable name="bkm_001"/>
+    <encapsulatedLogic>
+      <literalExpression>
+        <text>"bkm_001"</text>
+      </literalExpression>
+    </encapsulatedLogic>
+  </businessKnowledgeModel>
+
+  <!-- requirements hrefs refer to elements in this model -->
+  <decision name="decision_002" id="_decision_002">
+    <variable name="decision_002" typeRef="string"/>
+    <informationRequirement>
+      <requiredDecision href="http://www.montera.com.au/spec/DMN/local-hrefs#_decision_001"/>
+    </informationRequirement>
+    <informationRequirement>
+      <requiredInput href="http://www.montera.com.au/spec/DMN/local-hrefs#_input_001"/>
+    </informationRequirement>
+    <knowledgeRequirement>
+      <requiredKnowledge href="http://www.montera.com.au/spec/DMN/local-hrefs#_bkm_001"/>
+    </knowledgeRequirement>
+    <literalExpression>
+      <text>decision_001 + " " + input_001 + " " + bkm_001()</text>
+    </literalExpression>
+  </decision>
+
+</definitions>
+
