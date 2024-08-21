@@ -71,19 +71,26 @@ public class ExecutionFlowControlTest {
     @Test(timeout = 10000)
     public void testSalienceIntegerAndLoadOrder() throws Exception {
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(this.getClass(), kieBaseTestConfiguration, "test_salienceIntegerRule.drl");
-        KieSession ksession = kbase.newKieSession();
-        final List list = new ArrayList();
-        ksession.setGlobal( "list", list );
+        KieSession ksession = null;
+        try {
+            ksession = kbase.newKieSession();
+            final List<String> list = new ArrayList<>();
+            ksession.setGlobal("list", list);
 
-        final PersonInterface person = new Person( "Edson", "cheese" );
-        ksession.insert( person );
+            final PersonInterface person = new Person("Edson", "cheese");
+            ksession.insert(person);
 
-        ksession.fireAllRules();
+            ksession.fireAllRules();
 
-        assertThat(list.size()).as("Three rules should have been fired").isEqualTo(3);
-        assertThat(list.get(0)).as("Rule 4 should have been fired first").isEqualTo("Rule 4");
-        assertThat(list.get(1)).as("Rule 2 should have been fired second").isEqualTo("Rule 2");
-        assertThat(list.get(2)).as("Rule 3 should have been fired third").isEqualTo("Rule 3");
+            assertThat(list.size()).as("Three rules should have been fired").isEqualTo(3);
+            assertThat(list.get(0)).as("Rule 4 should have been fired first").isEqualTo("Rule 4");
+            assertThat(list.get(1)).as("Rule 2 should have been fired second").isEqualTo("Rule 2");
+            assertThat(list.get(2)).as("Rule 3 should have been fired third").isEqualTo("Rule 3");
+        } finally {
+            if (ksession != null) {
+                ksession.dispose();
+            }
+        }
     }
 
     @Test
