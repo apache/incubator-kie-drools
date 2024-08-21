@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<definitions xmlns:semantic="https://www.omg.org/spec/DMN/20211108/MODEL/" 
+                      xmlns:dmn11="http://www.omg.org/spec/DMN/20151101/dmn.xsd" 
+                      xmlns:rss="http://purl.org/rss/2.0/" 
+                      xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" 
+                      xmlns:drools="http://www.drools.org/kie/dmn/1.1" 
+                      xmlns:trisofeed="http://trisotech.com/feed" 
+                      xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" 
+                      xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" 
+                      xmlns:triso="http://www.trisotech.com/2015/triso/modeling" 
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+                      xmlns:feel="https://www.omg.org/spec/DMN/20211108/FEEL/" 
+                      xmlns:include1="http://www.trisotech.com/definitions/_2a1d771a-a899-4fef-abd6-fc894332337c" 
+                      xmlns:include2="http://www.trisotech.com/definitions/_9d46ece4-a96c-4cb0-abc0-0ca121ac3768"              
+                      xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn"  
+                      xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"  
+                      xmlns="https://www.omg.org/spec/DMN/20211108/MODEL/" 
+                      id="_10435dcd-8774-4575-a338-49dd554a0928" name="Model C" 
+                      namespace="http://www.trisotech.com/definitions/_10435dcd-8774-4575-a338-49dd554a0928" exporter="DMN Modeler" exporterVersion="6.2.4.2" triso:logoChoice="Default">
+    <import namespace="http://www.trisotech.com/definitions/_2a1d771a-a899-4fef-abd6-fc894332337c"
+                     name="Model B" 
+                     importType="https://www.omg.org/spec/DMN/20211108/MODEL/" />
+    <import namespace="http://www.trisotech.com/definitions/_9d46ece4-a96c-4cb0-abc0-0ca121ac3768" 
+                     name="Model B2" 
+                     importType="https://www.omg.org/spec/DMN/20211108/MODEL/" />
+    <decision id="_fc1bff6c-b1ca-4a10-ba9a-23b8f5e86e6a" name="Model C Decision based on Bs" triso:useOutputTypeAsAnswer="false">
+        <variable name="Model C Decision based on Bs" id="_2e323310-3d83-4c51-a256-3082e0ccacea" typeRef="Any"/>
+        <informationRequirement id="_e848f84a-25ef-432b-b944-2848f11ea91c">
+            <requiredDecision href="http://www.trisotech.com/definitions/_9d46ece4-a96c-4cb0-abc0-0ca121ac3768#_96df766e-23e1-4aa6-9d5d-545fbe2f1e23"/>
+        </informationRequirement>
+        <informationRequirement id="_dc7aa090-f5ce-4552-a467-2adb36d7e263">
+            <requiredDecision href="http://www.trisotech.com/definitions/_2a1d771a-a899-4fef-abd6-fc894332337c#_96df766e-23e1-4aa6-9d5d-545fbe2f1e23"/>
+        </informationRequirement>
+        <literalExpression id="_05fab753-c3c4-41a9-8984-e078f4aabe32" typeRef="Any" triso:expressionId="_66b680ec-9fc3-497d-831b-39708a930a1b">
+            <text>"B: " + Model B.Evaluating Say Hello + "; B2: " + Model B2.Evaluating B2 Say Hello</text>
+        </literalExpression>
+    </decision>
+</definitions>

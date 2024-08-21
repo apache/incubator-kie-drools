@@ -27,6 +27,7 @@ import javax.xml.namespace.QName;
 
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.core.impl.SimpleTypeImpl;
+import org.kie.dmn.core.impl.TupleIdentifier;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.model.v1_2.KieDMNModelInstrumentedBase;
 
@@ -38,7 +39,7 @@ public class DMNTypeRegistryV12 extends DMNTypeRegistryAbstract {
         super(Collections.emptyMap());
     }
 
-    public DMNTypeRegistryV12(Map<String, QName> aliases) {
+    public DMNTypeRegistryV12(Map<TupleIdentifier, QName> aliases) {
         super(aliases);
     }
 

@@ -384,10 +384,10 @@ public class DMNCompilerImpl implements DMNCompiler {
                                       Msg.DUPLICATED_ITEM_DEFINITION,
                                       id.getName());
             }
-            if (id.getItemComponent() != null && id.getItemComponent().size() > 0) {
+            if (id.getItemComponent() != null && !id.getItemComponent().isEmpty()) {
                 DMNCompilerHelper.checkVariableName(model, id, id.getName());
                 CompositeTypeImpl compType = new CompositeTypeImpl(model.getNamespace(), id.getName(), id.getId(), id.isIsCollection());
-                DMNType preregistered = model.getTypeRegistry().registerType(compType);
+                model.getTypeRegistry().registerType(compType);
             }
         }
 
@@ -402,6 +402,9 @@ public class DMNCompilerImpl implements DMNCompiler {
     private void processDrgElements(DMNCompilerContext ctx, DMNModelImpl model, Definitions dmndefs) {
         for ( DRGElement e : dmndefs.getDrgElement() ) {
             boolean foundIt = false;
+            if (e.getId() == null) {
+                e.setId(UUID.randomUUID().toString());
+            }
             for( DRGElementCompiler dc : drgCompilers ) {
                 if ( dc.accept( e ) ) {
                     foundIt = true;
@@ -436,10 +439,8 @@ public class DMNCompilerImpl implements DMNCompiler {
                         ds.setVariable(variable);
                     }
                     // continuing with normal compilation of Decision Service:
-                    boolean foundIt = false;
                     for (DRGElementCompiler dc : drgCompilers) {
                         if (dc.accept(ds)) {
-                            foundIt = true;
                             dc.compileNode(ds, this, model);
                         }
                     }
@@ -487,7 +488,7 @@ public class DMNCompilerImpl implements DMNCompiler {
     }
     
     @FunctionalInterface
-    public static interface AfterProcessDrgElements {
+    public interface AfterProcessDrgElements {
         void callback(DMNCompilerImpl compiler, DMNCompilerContext ctx, DMNModelImpl model);
     }
     
@@ -597,7 +598,31 @@ public class DMNCompilerImpl implements DMNCompiler {
      */
     public static String getId(DMNElementReference er) {
         String href = er.getHref();
-        return href.startsWith("#") ? href.substring(1) : href;
+        if (href.startsWith("#")) {
+            return href.substring(1);
+        } else {
+            Definitions rootElement = getRootElement(er);
+            String toRemove = String.format("%s#", rootElement.getNamespace());
+            return href.replace(toRemove, "");
+        }
+    }
+
+    /**
+     * Recursively navigate the given <code>DMNModelInstrumentedBase</code> until it gets to the root <code>Definitions</code> element.
+     * it throws a <code>RuntimeException</code> if such element could not be found.
+     *
+     * @param toNavigate
+     * @return
+     * @throws RuntimeException
+     */
+    public static Definitions getRootElement(DMNModelInstrumentedBase toNavigate) {
+        if ( toNavigate instanceof Definitions ) {
+            return (Definitions) toNavigate;
+        } else if ( toNavigate.getParent() != null ) {
+            return getRootElement(toNavigate.getParent());
+        } else {
+            throw new RuntimeException("Failed to get Definitions parent for " + toNavigate);
+        }
     }
 
     /**
