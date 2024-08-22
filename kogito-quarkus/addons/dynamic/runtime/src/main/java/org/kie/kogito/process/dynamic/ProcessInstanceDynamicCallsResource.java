@@ -18,6 +18,9 @@
  */
 package org.kie.kogito.process.dynamic;
 
+import java.util.Collection;
+import java.util.stream.Collectors;
+
 import org.kie.kogito.process.Process;
 import org.kogito.workitem.rest.RestWorkItemHandler;
 
@@ -40,12 +43,16 @@ import jakarta.ws.rs.core.Response;
 public class ProcessInstanceDynamicCallsResource {
 
     @Inject
-    Instance<Process<?>> processes;
-    @Inject
     Vertx vertx;
     @Inject
     WebClientOptions sslOptions;
     private RestWorkItemHandler handler;
+    private Collection<Process<?>> processes;
+
+    @Inject
+    ProcessInstanceDynamicCallsResource(Instance<Process<?>> processes) {
+        this.processes = processes.stream().collect(Collectors.toUnmodifiableList());
+    }
 
     @PostConstruct
     void init() {
@@ -57,8 +64,7 @@ public class ProcessInstanceDynamicCallsResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{processId}/{processInstanceId}/rest")
     public Response executeRestCall(@PathParam("processId") String processId, @PathParam("processInstanceId") String processInstanceId, RestCallInfo input) {
-        ProcessInstanceDynamicCallHelper.executeRestCall(handler, processes.stream(), processId, processInstanceId, input);
+        ProcessInstanceDynamicCallHelper.executeRestCall(handler, processes, processId, processInstanceId, input);
         return Response.status(200).build();
     }
-
 }

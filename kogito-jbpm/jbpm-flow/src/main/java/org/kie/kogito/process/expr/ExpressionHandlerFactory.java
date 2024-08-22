@@ -18,15 +18,18 @@
  */
 package org.kie.kogito.process.expr;
 
+import java.util.Collection;
 import java.util.Optional;
 import java.util.ServiceLoader;
+import java.util.stream.Collectors;
 
 public class ExpressionHandlerFactory {
 
     private ExpressionHandlerFactory() {
     }
 
-    private static final ServiceLoader<ExpressionHandler> serviceLoader = ServiceLoader.load(ExpressionHandler.class);
+    private static final Collection<ExpressionHandler> expressionHandlers = ServiceLoader.load(ExpressionHandler.class).stream()
+            .map(ServiceLoader.Provider::get).collect(Collectors.toUnmodifiableList());
 
     public static Expression get(String lang, String expr) {
         return getExpressionHandler(lang).orElseThrow(
@@ -34,10 +37,10 @@ public class ExpressionHandlerFactory {
     }
 
     public static boolean isSupported(String lang) {
-        return serviceLoader.stream().anyMatch(p -> p.get().lang().equals(lang));
+        return expressionHandlers.stream().map(ExpressionHandler::lang).anyMatch(lang::equals);
     }
 
     private static Optional<ExpressionHandler> getExpressionHandler(String lang) {
-        return serviceLoader.stream().filter(p -> p.get().lang().equals(lang)).findFirst().map(p -> p.get());
+        return expressionHandlers.stream().filter(p -> p.lang().equals(lang)).findFirst();
     }
 }

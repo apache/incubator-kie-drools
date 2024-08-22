@@ -18,9 +18,9 @@
  */
 package org.kie.kogito.process.dynamic;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Stream;
 
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.jbpm.process.instance.InternalProcessRuntime;
@@ -41,8 +41,8 @@ public class ProcessInstanceDynamicCallHelper {
     private ProcessInstanceDynamicCallHelper() {
     }
 
-    public static void executeRestCall(RestWorkItemHandler handler, Stream<Process<?>> processes, String processId, String processInstanceId, RestCallInfo input) {
-        Process<?> processDef = processes.filter(p -> p.id().equals(processId)).findAny().orElseThrow(() -> new IllegalArgumentException("Cannot find process " + processId));
+    public static void executeRestCall(RestWorkItemHandler handler, Collection<Process<?>> processes, String processId, String processInstanceId, RestCallInfo input) {
+        Process<?> processDef = processes.stream().filter(p -> p.id().equals(processId)).findAny().orElseThrow(() -> new IllegalArgumentException("Cannot find process " + processId));
         WorkflowProcessInstance pi = (WorkflowProcessInstance) findProcessInstance(processDef, processInstanceId);
         WorkflowProcessImpl process = (WorkflowProcessImpl) pi.getProcess();
         if (!process.isDynamic()) {
