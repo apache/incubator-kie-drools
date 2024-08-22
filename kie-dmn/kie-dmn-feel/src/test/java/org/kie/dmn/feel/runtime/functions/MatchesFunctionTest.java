@@ -19,50 +19,53 @@
 package org.kie.dmn.feel.runtime.functions;
 
 import org.junit.jupiter.api.Test;
-import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
+import org.mockito.MockedStatic;
 
+import java.security.InvalidParameterException;
 import java.util.regex.PatternSyntaxException;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doThrow;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.*;
 
 class MatchesFunctionTest {
 
-    private final static MatchesFunction matchesFunction = MatchesFunction.INSTANCE;
-
     @Test
     void invokeNull() {
-        FunctionTestUtil.assertResultError(matchesFunction.invoke((String) null, null), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(matchesFunction.invoke(null, "test"), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(matchesFunction.invoke("test", null), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(matchesFunction.invoke("abracadabra", "bra", " "), InvalidParametersEvent.class);
+        assertThrows(InvalidParameterException.class, () -> MatchesFunction.matchFunctionWithFlags(null, null, null));
+        assertThrows(InvalidParameterException.class, () -> MatchesFunction.matchFunctionWithFlags(null, "test",null));
+        assertThrows(InvalidParameterException.class, () -> MatchesFunction.matchFunctionWithFlags("test", null,null));
     }
 
     @Test
     void invokeUnsupportedFlags() {
-        FunctionTestUtil.assertResultError(matchesFunction.invoke("foobar", "fo.bar", "g"), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(matchesFunction.invoke("abracadabra", "bra", "p"), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(matchesFunction.invoke("abracadabra", "bra", "X"), InvalidParametersEvent.class);
+        assertThrows(IllegalArgumentException.class, () -> MatchesFunction.matchFunctionWithFlags("foobar", "fo.bar", "g"));
+        assertThrows(IllegalArgumentException.class, () -> MatchesFunction.matchFunctionWithFlags("abracadabra", "bra", "p"));
+        assertThrows(IllegalArgumentException.class, () -> MatchesFunction.matchFunctionWithFlags("abracadabra", "bra", "X"));
+        assertThrows(IllegalArgumentException.class, () -> MatchesFunction.matchFunctionWithFlags("abracadabra", "bra", " "));
+        assertThrows(IllegalArgumentException.class, () -> MatchesFunction.matchFunctionWithFlags("abracadabra", "bra", "iU"));
     }
 
     @Test
     void invokeWithoutFlagsMatch() {
-        FunctionTestUtil.assertResult(matchesFunction.invoke("test", "test"), true);
-        FunctionTestUtil.assertResult(matchesFunction.invoke("foobar", "^fo*b"), true);
-        FunctionTestUtil.assertResult(matchesFunction.invoke("abracadabra", "bra", ""), true);
-        FunctionTestUtil.assertResult(matchesFunction.invoke("abracadabra", "bra",null), true);
+        FunctionTestUtil.assertResult(MatchesFunction.matchFunctionWithFlags("test", "test",null), true);
+        FunctionTestUtil.assertResult(MatchesFunction.matchFunctionWithFlags("foobar", "^fo*b",null), true);
+        FunctionTestUtil.assertResult(MatchesFunction.matchFunctionWithFlags("abracadabra", "bra", ""), true);
+        FunctionTestUtil.assertResult(MatchesFunction.matchFunctionWithFlags("abracadabra", "bra",null), true);
+        FunctionTestUtil.assertResult(MatchesFunction.matchFunctionWithFlags("(?xi)[hello world()]", "hello",null), true);
     }
 
     @Test
     void invokeWithoutFlagsNotMatch() {
-        FunctionTestUtil.assertResult(matchesFunction.invoke("test", "testt"), false);
-        FunctionTestUtil.assertResult(matchesFunction.invoke("foobar", "^fo*bb"), false);
-        FunctionTestUtil.assertResult(matchesFunction.invoke("fo\nbar", "fo.bar"), false);
+        FunctionTestUtil.assertResult(MatchesFunction.matchFunctionWithFlags("test", "testt",null), false);
+        FunctionTestUtil.assertResult(MatchesFunction.matchFunctionWithFlags("foobar", "^fo*bb",null), false);
+        FunctionTestUtil.assertResult(MatchesFunction.matchFunctionWithFlags("fo\nbar", "fo.bar",null), false);
         FunctionTestUtil.assertResult(MatchesFunction.matchFunctionWithFlags("h", "(.)\3",null), false);
         FunctionTestUtil.assertResult(MatchesFunction.matchFunctionWithFlags("h", "(.)\2",null), false);
         FunctionTestUtil.assertResult(MatchesFunction.matchFunctionWithFlags("input", "\3",null), false);
+        FunctionTestUtil.assertResult(MatchesFunction.matchFunctionWithFlags("fo\nbar", "(?iU)(?iU)(ab)[|cd]",null), false);
+        FunctionTestUtil.assertResult(MatchesFunction.matchFunctionWithFlags("fo\nbar", "(?x)(?i)hello world","i"), false);
+        FunctionTestUtil.assertResult(MatchesFunction.matchFunctionWithFlags("fo\nbar", "(?xi)hello world",null), false);
     }
 
     @Test
@@ -79,10 +82,8 @@ class MatchesFunctionTest {
     void invokeWithFlagCaseInsensitive() {
         FunctionTestUtil.assertResult(MatchesFunction.matchFunctionWithFlags("foobar", "^Fo*bar", "i"), true);
         FunctionTestUtil.assertResult(MatchesFunction.matchFunctionWithFlags("foobar", "^Fo*bar", "i"), true);
-        //FunctionTestUtil.assertResult(matchesFunction.invoke("O", "[A-Z-[OI]]", "i"), false);//need to check
-        //FunctionTestUtil.assertResult(matchesFunction.invoke("i", "[A-Z-[OI]]", "i"), false);//need to check
-        FunctionTestUtil.assertResult(MatchesFunction.matchFunctionWithFlags("\u212A", "K","iU"), true);
-        FunctionTestUtil.assertResult(MatchesFunction.matchFunctionWithFlags("\u212A", "k","iU"), true);
+        FunctionTestUtil.assertResult(MatchesFunction.matchFunctionWithFlags("\u212A", "k","i"), true);
+        FunctionTestUtil.assertResult(MatchesFunction.matchFunctionWithFlags("\u212A", "K","i"), true);
     }
 
     @Test
@@ -94,4 +95,40 @@ class MatchesFunctionTest {
     void invokeWithAllFlags() {
         FunctionTestUtil.assertResult(MatchesFunction.matchFunctionWithFlags("fo\nbar", "Fo.^bar", "smi"), true);
     }
+
+    @Test
+    void checkForPatternTest() {
+        assertThrows(PatternSyntaxException.class, () -> MatchesFunction.matchFunctionWithFlags("foobar",  "(abc|def(ghi", "i"));
+    }
+
+    @Test
+    void checkFlagsTest() {
+        assertDoesNotThrow(() -> MatchesFunction.checkFlags("s"));
+        assertDoesNotThrow(() -> MatchesFunction.checkFlags("i"));
+        assertDoesNotThrow(() -> MatchesFunction.checkFlags("sx"));
+        assertDoesNotThrow(() -> MatchesFunction.checkFlags("six"));
+        assertDoesNotThrow(() -> MatchesFunction.checkFlags("sixm"));
+        assertThrows(IllegalArgumentException.class, () -> MatchesFunction.checkFlags("a"));
+        assertThrows(IllegalArgumentException.class, () -> MatchesFunction.checkFlags("sa"));
+        assertThrows(IllegalArgumentException.class, () -> MatchesFunction.checkFlags("siU@"));
+        assertThrows(IllegalArgumentException.class, () -> MatchesFunction.checkFlags("siUxU"));
+        assertThrows(IllegalArgumentException.class, () -> MatchesFunction.checkFlags("ss"));
+        assertThrows(IllegalArgumentException.class, () -> MatchesFunction.checkFlags("siiU"));
+        assertThrows(IllegalArgumentException.class, () -> MatchesFunction.checkFlags("si U"));
+        assertThrows(IllegalArgumentException.class, () -> MatchesFunction.checkFlags("U"));
+    }
+
+    @Test
+    void checkMatchFunctionWithFlagsInvocation() {
+        MatchesFunction matchesFunctionSpied = spy(MatchesFunction.INSTANCE);
+        matchesFunctionSpied.invoke("input", "pattern");
+        verify(matchesFunctionSpied, times(1)).invoke("input", "pattern", null);
+        try (MockedStatic<MatchesFunction> matchesFunctionMocked = mockStatic(MatchesFunction.class)) {
+            matchesFunctionSpied.invoke("input", "pattern");
+            matchesFunctionMocked.verify(() -> MatchesFunction.matchFunctionWithFlags("input", "pattern", null));
+            matchesFunctionSpied.invoke("input", "pattern", "flags");
+            matchesFunctionMocked.verify(() -> MatchesFunction.matchFunctionWithFlags("input", "pattern", "flags"));
+        }
+    }
+
 }
