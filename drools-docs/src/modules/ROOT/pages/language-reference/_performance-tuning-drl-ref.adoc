@@ -144,6 +144,9 @@ Alternatively, you can use `drools-metric` to expose the data using https://asci
 ----
 
 +
+If you want to use logging instead of Micrometer even though Micrometer is available in classpath, you can disable it by setting the system property `drools.metric.micrometer.disabled` to `true`.
+
++
 Regardless of whether you want to use logging or Micrometer, you need to enable `MetricLogUtils` by setting the system property `drools.metric.logger.enabled` to `true`. Optionally, you can change the microseconds threshold of metric reporting by setting the `drools.metric.logger.threshold` system property.
 
 +
