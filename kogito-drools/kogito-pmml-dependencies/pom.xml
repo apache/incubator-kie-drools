@@ -59,33 +59,33 @@
       <groupId>org.kie</groupId>
       <artifactId>kie-pmml-dependencies</artifactId>
       <exclusions>
+        <!-- Drools models -->
         <!-- Tree -->
         <exclusion>
           <groupId>org.kie</groupId>
-          <artifactId>kie-pmml-models-tree-model</artifactId>
+          <artifactId>kie-pmml-models-drools-tree-model</artifactId>
         </exclusion>
         <exclusion>
           <groupId>org.kie</groupId>
-          <artifactId>kie-pmml-models-tree-compiler</artifactId>
+          <artifactId>kie-pmml-models-drools-tree-compiler</artifactId>
         </exclusion>
         <exclusion>
           <groupId>org.kie</groupId>
-          <artifactId>kie-pmml-models-tree-evaluator</artifactId>
+          <artifactId>kie-pmml-models-drools-tree-evaluator</artifactId>
         </exclusion>
         <!-- Scorecard -->
         <exclusion>
           <groupId>org.kie</groupId>
-          <artifactId>kie-pmml-models-scorecard-model</artifactId>
+          <artifactId>kie-pmml-models-drools-scorecard-model</artifactId>
         </exclusion>
         <exclusion>
           <groupId>org.kie</groupId>
-          <artifactId>kie-pmml-models-scorecard-compiler</artifactId>
+          <artifactId>kie-pmml-models-drools-scorecard-compiler</artifactId>
         </exclusion>
         <exclusion>
           <groupId>org.kie</groupId>
-          <artifactId>kie-pmml-models-scorecard-evaluator</artifactId>
+          <artifactId>kie-pmml-models-drools-scorecard-evaluator</artifactId>
         </exclusion>
-
         <exclusion>
           <groupId>org.drools</groupId>
           <artifactId>drools-mvel</artifactId>
@@ -120,32 +120,31 @@
         </exclusion>
       </exclusions>
     </dependency>
-    <!-- Drools models -->
     <!-- Tree -->
     <dependency>
       <groupId>org.kie</groupId>
-      <artifactId>kie-pmml-models-drools-tree-model</artifactId>
+      <artifactId>kie-pmml-models-tree-model</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
-      <artifactId>kie-pmml-models-drools-tree-compiler</artifactId>
+      <artifactId>kie-pmml-models-tree-compiler</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
-      <artifactId>kie-pmml-models-drools-tree-evaluator</artifactId>
+      <artifactId>kie-pmml-models-tree-evaluator</artifactId>
     </dependency>
     <!-- Scorecard -->
     <dependency>
       <groupId>org.kie</groupId>
-      <artifactId>kie-pmml-models-drools-scorecard-model</artifactId>
+      <artifactId>kie-pmml-models-scorecard-model</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
-      <artifactId>kie-pmml-models-drools-scorecard-compiler</artifactId>
+      <artifactId>kie-pmml-models-scorecard-compiler</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
-      <artifactId>kie-pmml-models-drools-scorecard-evaluator</artifactId>
+      <artifactId>kie-pmml-models-scorecard-evaluator</artifactId>
     </dependency>
   </dependencies>
 </project>
