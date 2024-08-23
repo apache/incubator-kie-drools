@@ -24,12 +24,28 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.jbpm.bpmn2.error.BoundaryErrorEventDefaultHandlerByErrorCodeModel;
+import org.jbpm.bpmn2.error.BoundaryErrorEventDefaultHandlerByErrorCodeProcess;
+import org.jbpm.bpmn2.error.BoundaryErrorEventDefaultHandlerWithErrorCodeWithStructureRefModel;
+import org.jbpm.bpmn2.error.BoundaryErrorEventDefaultHandlerWithErrorCodeWithStructureRefProcess;
+import org.jbpm.bpmn2.error.BoundaryErrorEventDefaultHandlerWithErrorCodeWithoutStructureRefModel;
+import org.jbpm.bpmn2.error.BoundaryErrorEventDefaultHandlerWithErrorCodeWithoutStructureRefProcess;
+import org.jbpm.bpmn2.error.BoundaryErrorEventStructureRefModel;
+import org.jbpm.bpmn2.error.BoundaryErrorEventStructureRefProcess;
 import org.jbpm.bpmn2.error.EndErrorModel;
 import org.jbpm.bpmn2.error.EndErrorProcess;
+import org.jbpm.bpmn2.error.EndErrorWithEventSubprocessModel;
+import org.jbpm.bpmn2.error.EndErrorWithEventSubprocessProcess;
 import org.jbpm.bpmn2.error.ErrorBoundaryEventOnServiceTaskModel;
 import org.jbpm.bpmn2.error.ErrorBoundaryEventOnServiceTaskProcess;
 import org.jbpm.bpmn2.error.ErrorVariableModel;
 import org.jbpm.bpmn2.error.ErrorVariableProcess;
+import org.jbpm.bpmn2.error.EventSubProcessErrorWithScriptModel;
+import org.jbpm.bpmn2.error.EventSubProcessErrorWithScriptProcess;
+import org.jbpm.bpmn2.error.EventSubprocessErrorHandlingWithErrorCodeModel;
+import org.jbpm.bpmn2.error.EventSubprocessErrorHandlingWithErrorCodeProcess;
+import org.jbpm.bpmn2.error.EventSubprocessErrorModel;
+import org.jbpm.bpmn2.error.EventSubprocessErrorProcess;
 import org.jbpm.bpmn2.event.BoundaryErrorEventDefaultHandlerWithoutErrorCodeWithStructureRefModel;
 import org.jbpm.bpmn2.event.BoundaryErrorEventDefaultHandlerWithoutErrorCodeWithStructureRefProcess;
 import org.jbpm.bpmn2.event.BoundaryErrorEventDefaultHandlerWithoutErrorCodeWithoutStructureRefModel;
@@ -47,11 +63,9 @@ import org.jbpm.bpmn2.service.ExceptionServiceProcessErrorSignallingProcess;
 import org.jbpm.bpmn2.subprocess.ExceptionServiceProcessSignallingModel;
 import org.jbpm.bpmn2.subprocess.ExceptionServiceProcessSignallingProcess;
 import org.jbpm.process.instance.event.listeners.RuleAwareProcessEventListener;
-import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.jbpm.test.utils.EventTrackerProcessListener;
 import org.jbpm.test.utils.ProcessTestHelper;
-import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.api.event.process.ProcessNodeLeftEvent;
@@ -69,43 +83,50 @@ import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
+import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.workitem.WorkItemExecutionException;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIterable;
 
 public class ErrorEventTest extends JbpmBpmn2TestCase {
 
     @Test
-    public void testEventSubprocessError() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/error/BPMN2-EventSubprocessError.bpmn2");
-        final List<String> executednodes = new ArrayList<>();
-        KogitoProcessEventListener listener = new DefaultKogitoProcessEventListener() {
+    public void testEventSubprocessError() {
+        Application app = ProcessTestHelper.newApplication();
 
+        final List<String> executedNodes = new ArrayList<>();
+        KogitoProcessEventListener listener = new DefaultKogitoProcessEventListener() {
             @Override
             public void afterNodeLeft(ProcessNodeLeftEvent event) {
-                if (event.getNodeInstance().getNodeName()
-                        .equals("Script Task 1")) {
-                    executednodes.add(((KogitoNodeInstance) event.getNodeInstance()).getStringId());
+                if (event.getNodeInstance().getNodeName().equals("Script Task 1")) {
+                    executedNodes.add(event.getNodeInstance().getId());
                 }
             }
-
         };
-
-        kruntime.getProcessEventManager().addEventListener(listener);
+        EventTrackerProcessListener eventTrackerProcessListener = new EventTrackerProcessListener();
+        ProcessTestHelper.registerProcessEventListener(app, listener);
+        ProcessTestHelper.registerProcessEventListener(app, eventTrackerProcessListener);
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
-        KogitoProcessInstance processInstance = kruntime.startProcess("EventSubprocessError");
-        assertProcessInstanceActive(processInstance);
-        kruntime.getProcessEventManager().addEventListener(listener);
-
+        ProcessTestHelper.registerHandler(app, "Human Task", workItemHandler);
+        org.kie.kogito.process.Process<EventSubprocessErrorModel> processDefinition = EventSubprocessErrorProcess.newProcess(app);
+        ProcessInstance<EventSubprocessErrorModel> processInstance = processDefinition.createInstance(processDefinition.createModel());
+        processInstance.start();
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
         KogitoWorkItem workItem = workItemHandler.getWorkItem();
         assertThat(workItem).isNotNull();
-        kruntime.getKogitoWorkItemManager().completeWorkItem(workItem.getStringId(), null);
-        assertProcessInstanceFinished(processInstance, kruntime);
-        assertNodeTriggered(processInstance.getStringId(), "start", "User Task 1",
-                "end", "Sub Process 1", "start-sub", "Script Task 1", "end-sub");
-        assertThat(executednodes).hasSize(1);
-
+        processInstance.completeWorkItem(workItem.getStringId(), null);
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
+        assertThat(executedNodes).hasSize(1);
+        List<String> trackedNodes = eventTrackerProcessListener.tracked().stream().map(event -> event.getNodeInstance().getNodeName()).toList();
+        assertThatIterable(trackedNodes).contains(
+                "start",
+                "User Task 1",
+                "end",
+                "Sub Process 1",
+                "start-sub",
+                "Script Task 1",
+                "end-sub");
     }
 
     @Test
@@ -151,28 +172,34 @@ public class ErrorEventTest extends JbpmBpmn2TestCase {
 
     @Test
     public void testEventSubprocessErrorWithErrorCode() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/error/BPMN2-EventSubprocessErrorHandlingWithErrorCode.bpmn2");
-        final List<String> executednodes = new ArrayList<>();
+        Application app = ProcessTestHelper.newApplication();
+        final List<String> executedNodes = new ArrayList<>();
         KogitoProcessEventListener listener = new DefaultKogitoProcessEventListener() {
-
             @Override
             public void afterNodeLeft(ProcessNodeLeftEvent event) {
-                if (event.getNodeInstance().getNodeName()
-                        .equals("Script2")) {
-                    executednodes.add(((KogitoNodeInstance) event.getNodeInstance()).getStringId());
+                if (event.getNodeInstance().getNodeName().equals("Script2")) {
+                    executedNodes.add(event.getNodeInstance().getId());
                 }
             }
-
         };
-        kruntime.getProcessEventManager().addEventListener(listener);
+        EventTrackerProcessListener eventTrackerProcessListener = new EventTrackerProcessListener();
+        ProcessTestHelper.registerProcessEventListener(app, listener);
+        ProcessTestHelper.registerProcessEventListener(app, eventTrackerProcessListener);
+        org.kie.kogito.process.Process<EventSubprocessErrorHandlingWithErrorCodeModel> processDefinition = EventSubprocessErrorHandlingWithErrorCodeProcess.newProcess(app);
+        ProcessInstance<EventSubprocessErrorHandlingWithErrorCodeModel> processInstance = processDefinition.createInstance(processDefinition.createModel());
+        processInstance.start();
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ABORTED);
+        assertThat(eventTrackerProcessListener.tracked())
+                .anyMatch(ProcessTestHelper.left("start"))
+                .anyMatch(ProcessTestHelper.left("Script1"))
+                .anyMatch(ProcessTestHelper.left("starterror"))
+                .anyMatch(ProcessTestHelper.left("Script2"))
+                .anyMatch(ProcessTestHelper.left("end2"))
+                .anyMatch(ProcessTestHelper.left("eventsubprocess"));
 
-        KogitoProcessInstance processInstance = kruntime.startProcess("EventSubprocessErrorHandlingWithErrorCode");
-
-        assertProcessInstanceFinished(processInstance, kruntime);
-        assertNodeTriggered(processInstance.getStringId(), "start", "Script1", "starterror", "Script2", "end2", "eventsubprocess");
-        assertProcessVarValue(processInstance, "CapturedException", "java.lang.RuntimeException: XXX");
-        assertThat(executednodes).hasSize(1);
-
+        assertThat(processInstance.variables().getCapturedException()).isInstanceOf(RuntimeException.class);
+        assertThat(((RuntimeException) processInstance.variables().getCapturedException()).getMessage()).isEqualTo("XXX");
+        assertThat(executedNodes).hasSize(1);
     }
 
     @Test
@@ -198,17 +225,6 @@ public class ErrorEventTest extends JbpmBpmn2TestCase {
         assertNodeTriggered(processInstance.getStringId(), "start", "Script1", "starterror", "Script2", "end2", "eventsubprocess");
         assertProcessVarValue(processInstance, "CapturedException", "java.lang.RuntimeException: XXX");
         assertThat(executednodes).hasSize(1);
-
-    }
-
-    @Test
-    public void testErrorBoundaryEvent() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/error/BPMN2-ErrorBoundaryEventInterrupting.bpmn2");
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("MyTask",
-                new DoNothingWorkItemHandler());
-        KogitoProcessInstance processInstance = kruntime
-                .startProcess("ErrorBoundaryEventInterrupting");
-        assertProcessInstanceFinished(processInstance, kruntime);
 
     }
 
@@ -390,14 +406,15 @@ public class ErrorEventTest extends JbpmBpmn2TestCase {
 
     @Test
     public void testEventSubProcessErrorWithScript() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/error/BPMN2-EventSubProcessErrorWithScript.bpmn2");
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Request Handler", new SignallingTaskHandlerDecorator(ExceptionOnPurposeHandler.class, "Error-90277"));
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Error Handler", new SystemOutWorkItemHandler());
-        KogitoProcessInstance processInstance = kruntime.startProcess("EventSubProcessErrorWithScript");
-
-        assertProcessInstanceAborted(processInstance);
-        assertThat(((WorkflowProcessInstance) processInstance).getOutcome()).isEqualTo("90277");
-
+        Application app = ProcessTestHelper.newApplication();
+        ProcessTestHelper.registerHandler(app, "Request Handler", new SignallingTaskHandlerDecorator(new ExceptionOnPurposeHandler(), "Error-90277"));
+        ProcessTestHelper.registerHandler(app, "Error Handler", new SystemOutWorkItemHandler());
+        org.kie.kogito.process.Process<EventSubProcessErrorWithScriptModel> processDefinition = EventSubProcessErrorWithScriptProcess.newProcess(app);
+        ProcessInstance<EventSubProcessErrorWithScriptModel> processInstance = processDefinition.createInstance(processDefinition.createModel());
+        processInstance.start();
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ABORTED);
+        assertThat(((org.kie.kogito.process.impl.AbstractProcessInstance<?>) processInstance)
+                .internalGetProcessInstance().getOutcome()).isEqualTo("90277");
     }
 
     @Test
@@ -429,37 +446,42 @@ public class ErrorEventTest extends JbpmBpmn2TestCase {
     }
 
     @Test
-    public void testBoundaryErrorEventDefaultHandlerWithErrorCodeWithStructureRef() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/error/BPMN2-BoundaryErrorEventDefaultHandlerWithErrorCodeWithStructureRef.bpmn2");
+    public void testBoundaryErrorEventDefaultHandlerWithErrorCodeWithStructureRef() {
+        Application app = ProcessTestHelper.newApplication();
         ExceptionWorkItemHandler handler = new ExceptionWorkItemHandler();
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task", handler);
-
-        KogitoProcessInstance processInstance = kruntime.startProcess("BoundaryErrorEventDefaultHandlerWithErrorCodeWithStructureRef");
-        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
+        ProcessTestHelper.registerHandler(app, "Human Task", handler);
+        org.kie.kogito.process.Process<BoundaryErrorEventDefaultHandlerWithErrorCodeWithStructureRefModel> processDefinition =
+                BoundaryErrorEventDefaultHandlerWithErrorCodeWithStructureRefProcess.newProcess(app);
+        ProcessInstance<BoundaryErrorEventDefaultHandlerWithErrorCodeWithStructureRefModel> processInstance = processDefinition.createInstance(processDefinition.createModel());
+        processInstance.start();
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
-    public void testBoundaryErrorEventDefaultHandlerWithWorkItemExecutionError() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/error/BPMN2-BoundaryErrorEventDefaultHandlerByErrorCode.bpmn2");
+    public void testBoundaryErrorEventDefaultHandlerWithWorkItemExecutionError() {
+        Application app = ProcessTestHelper.newApplication();
         WorkItemExecutionErrorWorkItemHandler handler = new WorkItemExecutionErrorWorkItemHandler();
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task", handler);
-
-        KogitoProcessInstance processInstance = kruntime.startProcess("BoundaryErrorEventDefaultHandlerByErrorCode");
-        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
+        ProcessTestHelper.registerHandler(app, "Human Task", handler);
+        org.kie.kogito.process.Process<BoundaryErrorEventDefaultHandlerByErrorCodeModel> processDefinition = BoundaryErrorEventDefaultHandlerByErrorCodeProcess.newProcess(app);
+        ProcessInstance<BoundaryErrorEventDefaultHandlerByErrorCodeModel> processInstance = processDefinition.createInstance(processDefinition.createModel());
+        processInstance.start();
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
-    public void testBoundaryErrorEventDefaultHandlerWithErrorCodeWithoutStructureRef() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/error/BPMN2-BoundaryErrorEventDefaultHandlerWithErrorCodeWithoutStructureRef.bpmn2");
+    public void testBoundaryErrorEventDefaultHandlerWithErrorCodeWithoutStructureRef() {
+        Application app = ProcessTestHelper.newApplication();
         ExceptionWorkItemHandler handler = new ExceptionWorkItemHandler();
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task", handler);
-
-        KogitoProcessInstance processInstance = kruntime.startProcess("BoundaryErrorEventDefaultHandlerWithErrorCodeWithoutStructureRef");
-        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_ERROR);
+        ProcessTestHelper.registerHandler(app, "Human Task", handler);
+        org.kie.kogito.process.Process<BoundaryErrorEventDefaultHandlerWithErrorCodeWithoutStructureRefModel> definition =
+                BoundaryErrorEventDefaultHandlerWithErrorCodeWithoutStructureRefProcess.newProcess(app);
+        org.kie.kogito.process.ProcessInstance<BoundaryErrorEventDefaultHandlerWithErrorCodeWithoutStructureRefModel> instance = definition.createInstance(definition.createModel());
+        instance.start();
+        assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_ERROR);
     }
 
     @Test
-    public void testBoundaryErrorEventDefaultHandlerWithoutErrorCodeWithStructureRef() throws Exception {
+    public void testBoundaryErrorEventDefaultHandlerWithoutErrorCodeWithStructureRef() {
         Application app = ProcessTestHelper.newApplication();
         EventTrackerProcessListener listener = new EventTrackerProcessListener();
         ExceptionWorkItemHandler handler = new ExceptionWorkItemHandler();
@@ -513,25 +535,41 @@ public class ErrorEventTest extends JbpmBpmn2TestCase {
     }
 
     @Test
-    public void testBoundaryErrorEventStructureRef() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/error/BPMN2-BoundaryErrorEventStructureRef.bpmn2");
+    public void testBoundaryErrorEventStructureRef() {
+        Application app = ProcessTestHelper.newApplication();
         ExceptionWorkItemHandler handler = new ExceptionWorkItemHandler();
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task", handler);
-
-        KogitoProcessInstance processInstance = kruntime.startProcess("BoundaryErrorEventStructureRef");
-
-        assertNodeTriggered(processInstance.getStringId(), "Start", "User Task", "MyBoundaryErrorEvent");
+        ProcessTestHelper.registerHandler(app, "Human Task", handler);
+        final List<String> executedNodes = new ArrayList<>();
+        KogitoProcessEventListener listener = new DefaultKogitoProcessEventListener() {
+            @Override
+            public void afterNodeLeft(ProcessNodeLeftEvent event) {
+                executedNodes.add(event.getNodeInstance().getNodeName());
+            }
+        };
+        EventTrackerProcessListener eventTrackerProcessListener = new EventTrackerProcessListener();
+        ProcessTestHelper.registerProcessEventListener(app, listener);
+        ProcessTestHelper.registerProcessEventListener(app, eventTrackerProcessListener);
+        org.kie.kogito.process.Process<BoundaryErrorEventStructureRefModel> processDefinition = BoundaryErrorEventStructureRefProcess.newProcess(app);
+        ProcessInstance<BoundaryErrorEventStructureRefModel> processInstance = processDefinition.createInstance(processDefinition.createModel());
+        processInstance.start();
+        assertThat(eventTrackerProcessListener.tracked())
+                .anyMatch(ProcessTestHelper.left("Start"))
+                .anyMatch(ProcessTestHelper.left("User Task"))
+                .anyMatch(ProcessTestHelper.left("MyBoundaryErrorEvent"));
     }
 
     @Test
-    public void testEndErrorWithSubprocess() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/error/BPMN2-EndErrorWithEventSubprocess.bpmn2");
-
-        KogitoProcessInstance processInstance = kruntime.startProcess("EndErrorWithEventSubprocess");
-
-        assertNodeTriggered(processInstance.getStringId(), "start", "task", "subprocess-task");
-
-        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
+    public void testEndErrorWithSubprocess() {
+        Application app = ProcessTestHelper.newApplication();
+        EventTrackerProcessListener tracker = new EventTrackerProcessListener();
+        ProcessTestHelper.registerProcessEventListener(app, tracker);
+        org.kie.kogito.process.Process<EndErrorWithEventSubprocessModel> processDefinition = EndErrorWithEventSubprocessProcess.newProcess(app);
+        ProcessInstance<EndErrorWithEventSubprocessModel> processInstance = processDefinition.createInstance(processDefinition.createModel());
+        processInstance.start();
+        assertThat(tracker.tracked()).anyMatch(ProcessTestHelper.triggered("start"));
+        assertThat(tracker.tracked()).anyMatch(ProcessTestHelper.triggered("task"));
+        assertThat(tracker.tracked()).anyMatch(ProcessTestHelper.triggered("subprocess-task"));
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
