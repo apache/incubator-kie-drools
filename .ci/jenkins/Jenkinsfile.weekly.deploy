@@ -91,7 +91,8 @@ pipeline {
                     withCredentials([usernamePassword(credentialsId: env.MAVEN_REPO_CREDS_ID, usernameVariable: 'REPOSITORY_USER', passwordVariable: 'REPOSITORY_TOKEN')]) {
                         def installOrDeploy
                         if (shouldDeployToRepository()) {
-                            installOrDeploy = "deploy -DdeployAtEnd -Dapache.repository.username=${REPOSITORY_USER} -Dapache.repository.password=${REPOSITORY_TOKEN} -DretryFailedDeploymentCount=5"
+                            installOrDeploy = "deploy -DdeployAtEnd -Dapache.repository.username=${REPOSITORY_USER} -Dapache.repository.password=${REPOSITORY_TOKEN} -DretryFailedDeploymentCount=5" +
+                                    " -Dhttp.socket.timeout=300000 -Dhttp.connection.timeout=300000"
                         } else {
                             installOrDeploy = 'install'
                         }
