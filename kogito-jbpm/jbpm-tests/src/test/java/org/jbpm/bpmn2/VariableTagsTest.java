@@ -26,6 +26,11 @@ import java.util.Optional;
 
 import org.drools.io.ClassPathResource;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
+import org.jbpm.bpmn2.tags.ApprovalWithCustomVariableTagsModel;
+import org.jbpm.bpmn2.tags.ApprovalWithCustomVariableTagsProcess;
+import org.jbpm.bpmn2.tags.ApprovalWithReadonlyVariableTagsModel;
+import org.jbpm.bpmn2.tags.ApprovalWithReadonlyVariableTagsProcess;
+import org.jbpm.bpmn2.tags.ApprovalWithRequiredVariableTagsModel;
 import org.jbpm.bpmn2.tags.ApprovalWithRequiredVariableTagsProcess;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
@@ -34,8 +39,8 @@ import org.junit.jupiter.api.Test;
 import org.kie.api.event.process.ProcessVariableChangedEvent;
 import org.kie.kogito.Application;
 import org.kie.kogito.internal.process.event.DefaultKogitoProcessEventListener;
-import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
+import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.VariableViolationException;
 import org.kie.kogito.process.bpmn2.BpmnProcess;
 import org.kie.kogito.process.bpmn2.BpmnVariables;
@@ -43,8 +48,6 @@ import org.kie.kogito.process.bpmn2.BpmnVariables;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.entry;
-import static org.kie.kogito.internal.process.runtime.KogitoProcessInstance.STATE_ABORTED;
-import static org.kie.kogito.internal.process.runtime.KogitoProcessInstance.STATE_ACTIVE;
 
 public class VariableTagsTest extends JbpmBpmn2TestCase {
 
@@ -62,75 +65,80 @@ public class VariableTagsTest extends JbpmBpmn2TestCase {
     }
 
     @Test
-    public void testProcessWithMissingRequiredVariable() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/tags/BPMN2-ApprovalWithRequiredVariableTags.bpmn2");
+    public void testProcessWithMissingRequiredVariable() {
+        Application app = ProcessTestHelper.newApplication();
+        ApprovalWithRequiredVariableTagsProcess processDefinition = (ApprovalWithRequiredVariableTagsProcess) ApprovalWithRequiredVariableTagsProcess.newProcess(app);
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
-        assertThatExceptionOfType(VariableViolationException.class).isThrownBy(() -> kruntime.startProcess("ApprovalWithRequiredVariableTags"));
+        ProcessTestHelper.registerHandler(app, "Human Task", workItemHandler);
+        ApprovalWithRequiredVariableTagsModel model = processDefinition.createModel();
+
+        assertThatExceptionOfType(VariableViolationException.class).isThrownBy(() -> {
+            org.kie.kogito.process.ProcessInstance<ApprovalWithRequiredVariableTagsModel> instance = processDefinition.createInstance(model);
+            instance.start();
+        });
     }
 
     @Test
-    public void testProcessWithRequiredVariable() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/tags/BPMN2-ApprovalWithRequiredVariableTags.bpmn2");
-
+    public void testProcessWithRequiredVariable() {
+        Application app = ProcessTestHelper.newApplication();
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
-        Map<String, Object> parameters = new HashMap<>();
-        parameters.put("approver", "john");
-
-        KogitoProcessInstance processInstance = kruntime.startProcess("ApprovalWithRequiredVariableTags", parameters);
-        assertThat(processInstance.getState()).isEqualTo(STATE_ACTIVE);
+        ProcessTestHelper.registerHandler(app, "Human Task", workItemHandler);
+        org.kie.kogito.process.Process<ApprovalWithRequiredVariableTagsModel> processDefinition = ApprovalWithRequiredVariableTagsProcess.newProcess(app);
+        ApprovalWithRequiredVariableTagsModel model = processDefinition.createModel();
+        model.setApprover("john");
+        org.kie.kogito.process.ProcessInstance<ApprovalWithRequiredVariableTagsModel> instance = processDefinition.createInstance(model);
+        instance.start();
+        assertThat(instance).extracting(ProcessInstance::status).isEqualTo(ProcessInstance.STATE_ACTIVE);
         KogitoWorkItem workItem = workItemHandler.getWorkItem();
         assertThat(workItem).isNotNull();
-        kruntime.getKogitoWorkItemManager().completeWorkItem(workItem.getStringId(), null);
+        instance.completeWorkItem(workItem.getStringId(), null);
         workItem = workItemHandler.getWorkItem();
         assertThat(workItem).isNotNull();
-        kruntime.getKogitoWorkItemManager().completeWorkItem(workItem.getStringId(), null);
-        assertProcessInstanceFinished(processInstance, kruntime);
+        instance.completeWorkItem(workItem.getStringId(), null);
+        assertThat(instance).extracting(ProcessInstance::status).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
-    public void testProcessWithReadonlyVariable() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/tags/BPMN2-ApprovalWithReadonlyVariableTags.bpmn2");
-
+    public void testProcessWithReadonlyVariable() {
+        Application app = ProcessTestHelper.newApplication();
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
-        Map<String, Object> parameters = new HashMap<>();
-        parameters.put("approver", "john");
-
-        KogitoProcessInstance processInstance = kruntime.startProcess("ApprovalWithReadonlyVariableTags", parameters);
-        assertThat(processInstance.getState()).isEqualTo(STATE_ACTIVE);
+        ProcessTestHelper.registerHandler(app, "Human Task", workItemHandler);
+        org.kie.kogito.process.Process<ApprovalWithReadonlyVariableTagsModel> processDefinition = ApprovalWithReadonlyVariableTagsProcess.newProcess(app);
+        ApprovalWithReadonlyVariableTagsModel model = processDefinition.createModel();
+        model.setApprover("john");
+        org.kie.kogito.process.ProcessInstance<ApprovalWithReadonlyVariableTagsModel> instance = processDefinition.createInstance(model);
+        instance.start();
+        assertThat(instance).extracting(ProcessInstance::status).isEqualTo(ProcessInstance.STATE_ACTIVE);
         KogitoWorkItem workItem = workItemHandler.getWorkItem();
         assertThat(workItem).isNotNull();
-
         assertThatExceptionOfType(VariableViolationException.class)
-                .isThrownBy(() -> kruntime.getKogitoWorkItemManager().completeWorkItem(workItem.getStringId(), Collections.singletonMap("ActorId", "john")));
-
-        kruntime.abortProcessInstance(processInstance.getStringId());
-
-        assertProcessInstanceFinished(processInstance, kruntime);
+                .isThrownBy(() -> instance.completeWorkItem(workItem.getStringId(), Collections.singletonMap("ActorId", "john")));
+        instance.abort();
+        assertThat(instance).extracting(ProcessInstance::status).isEqualTo(ProcessInstance.STATE_ABORTED);
     }
 
     @Test
-    public void testProcessWithCustomVariableTag() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/tags/BPMN2-ApprovalWithCustomVariableTags.bpmn2");
+    public void testProcessWithCustomVariableTag() {
+        Application app = ProcessTestHelper.newApplication();
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
-        kruntime.getProcessEventManager().addEventListener(new DefaultKogitoProcessEventListener() {
-
+        ProcessTestHelper.registerHandler(app, "Human Task", workItemHandler);
+        DefaultKogitoProcessEventListener listener = new DefaultKogitoProcessEventListener() {
             @Override
             public void beforeVariableChanged(ProcessVariableChangedEvent event) {
                 if (event.hasTag("onlyAdmin")) {
-                    throw new VariableViolationException(((KogitoProcessInstance) event.getProcessInstance()).getStringId(), event.getVariableId(), "Variable can only be set by admins");
+                    throw new VariableViolationException(event.getProcessInstance().getId(), event.getVariableId(), "Variable can only be set by admins");
                 }
             }
+        };
+        ProcessTestHelper.registerProcessEventListener(app, listener);
+        org.kie.kogito.process.Process<ApprovalWithCustomVariableTagsModel> processDefinition = ApprovalWithCustomVariableTagsProcess.newProcess(app);
+        ApprovalWithCustomVariableTagsModel model = processDefinition.createModel();
+        model.setApprover("john");
 
+        assertThatExceptionOfType(VariableViolationException.class).isThrownBy(() -> {
+            org.kie.kogito.process.ProcessInstance<ApprovalWithCustomVariableTagsModel> instance = processDefinition.createInstance(model);
+            instance.start();
         });
-
-        Map<String, Object> parameters = new HashMap<>();
-        parameters.put("approver", "john");
-
-        assertThatExceptionOfType(VariableViolationException.class).isThrownBy(() -> kruntime.startProcess("ApprovalWithCustomVariableTags", parameters));
     }
 
     @Test
@@ -139,20 +147,16 @@ public class VariableTagsTest extends JbpmBpmn2TestCase {
         BpmnProcess process = processes.get(0);
         Map<String, Object> params = new HashMap<>();
         params.put("approver", "john");
-
         org.kie.kogito.process.ProcessInstance<BpmnVariables> instance = process.createInstance(BpmnVariables.create(params));
         instance.start();
-
-        assertThat(instance.status()).isEqualTo(STATE_ACTIVE);
-
+        assertThat(instance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
         assertThat(instance.variables().toMap()).hasSize(1);
         assertThat(instance.variables().toMap(BpmnVariables.OUTPUTS_ONLY)).isEmpty();
         assertThat(instance.variables().toMap(BpmnVariables.INPUTS_ONLY)).isEmpty();
         assertThat(instance.variables().toMap(BpmnVariables.INTERNAL_ONLY)).isEmpty();
         assertThat(instance.variables().toMap(v -> v.hasTag("onlyAdmin"))).hasSize(1).containsEntry("approver", "john");
-
         instance.abort();
-
-        assertThat(instance.status()).isEqualTo(STATE_ABORTED);
+        assertThat(instance.status()).isEqualTo(ProcessInstance.STATE_ABORTED);
     }
+
 }
