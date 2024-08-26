@@ -20,8 +20,11 @@
 package org.kie.dmn.validation.DMNv1x;
 
 import org.kie.dmn.model.api.*;
+import org.kie.dmn.model.api.DMNElement;
+import org.kie.dmn.model.api.DMNElementReference;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.core.impl.DMNMessageImpl;
+import org.kie.dmn.core.compiler.DMNCompilerImpl;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.parser.feel11.FEELParser;
@@ -45,7 +48,7 @@ end
 rule ELEMREF_NOHASH_p2
 when
   not( Import() )
-  $oc : DMNElementReference(href contains ":", !href.substring(href.indexOf(":") + 1).startsWith('#'))
+  $oc : DMNElementReference(href contains ":", !(href contains "#"))
 then
   reporter.report( DMNMessage.Severity.ERROR,  $oc , Msg.ELEMREF_NOHASH, $oc.getParentDRDElement().getIdentifierString() );
 end
@@ -60,7 +63,7 @@ end
 
 rule ELEMREF_MISSING_p2
 when
-  $elemRef: DMNElementReference(!href.startsWith("#"), $href: href, href.contains("#"), $targetId : rightOfHash(href), $targetNS : leftOfHash(href))
+  $elemRef: DMNElementReference(!href.startsWith("#"), $href: href, href.contains("#"), $targetId : rightOfHash(href), $targetNS : leftOfHash(href), $rootElement: DMNCompilerImpl.getRootElement(this), !$rootElement.namespace.equals($targetNS))
   (not (and Import( $importedNS : namespace )
             $importDef : Definitions( namespace == $importedNS, namespace == $targetNS ) from entry-point "DMNImports"
             DMNElement( id == $targetId ) from $importDef.drgElement
