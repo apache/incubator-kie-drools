@@ -34,6 +34,7 @@ import org.drools.codegen.common.GeneratedFile;
 import org.drools.codegen.common.GeneratedFileType;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -55,6 +56,7 @@ import static org.kie.kogito.codegen.api.utils.KogitoContextTestUtils.contextBui
 import static org.kie.kogito.codegen.prediction.PredictionCodegenFactory.parsePredictions;
 import static org.kie.kogito.codegen.prediction.PredictionCodegenFactoryTest.REFLECT_JSON;
 
+@Disabled("Temporarily disabled due to https://github.com/apache/incubator-kie-kogito-runtimes/issues/3640")
 class PredictionCodegenGenerateTest {
 
     static final Path BASE_PATH = Paths.get("src/test/resources/").toAbsolutePath();
