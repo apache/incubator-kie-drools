@@ -125,7 +125,7 @@ public class JsonSchemaGenerator {
                 if (merged == null) {
                     merged = read;
                 } else {
-                    JsonUtils.merge(read, merged);
+                    merged = (ObjectNode) JsonUtils.merge(read, merged);
                 }
             }
             try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {

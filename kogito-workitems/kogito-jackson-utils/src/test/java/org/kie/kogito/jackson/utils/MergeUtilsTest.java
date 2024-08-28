@@ -52,13 +52,13 @@ public class MergeUtilsTest {
 
     @Test
     void testTargetObjectSrcInt() {
-        assertThat(JsonObjectUtils.toJavaValue(MergeUtils.merge(new IntNode(3), ObjectMapperFactory.get().createObjectNode(), false))).isEqualTo(Collections.singletonMap("response", 3));
+        assertThat(JsonObjectUtils.toJavaValue(MergeUtils.merge(new IntNode(3), ObjectMapperFactory.get().createObjectNode(), false))).isEqualTo(3);
     }
 
     @Test
     void testTargetObjectSrcArray() {
         assertThat(JsonObjectUtils.toJavaValue(MergeUtils.merge(ObjectMapperFactory.get().createArrayNode().add(1).add(2).add(3), ObjectMapperFactory.get().createObjectNode(), false)))
-                .isEqualTo(Collections.singletonMap("response", Arrays.asList(1, 2, 3)));
+                .isEqualTo(Arrays.asList(1, 2, 3));
     }
 
     @Test

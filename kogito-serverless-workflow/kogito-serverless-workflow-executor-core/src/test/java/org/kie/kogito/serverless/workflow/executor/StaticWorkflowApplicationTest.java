@@ -62,7 +62,7 @@ class StaticWorkflowApplicationTest {
     void helloWorld() {
         Workflow workflow = helloWorldDef();
         try (StaticWorkflowApplication application = StaticWorkflowApplication.create()) {
-            assertThat(application.execute(workflow, Collections.emptyMap()).getWorkflowdata()).contains(new TextNode(GREETING_STRING));
+            assertThat(application.execute(workflow, Collections.emptyMap()).getWorkflowdata().asText()).isEqualTo(GREETING_STRING);
         }
     }
 
@@ -74,7 +74,7 @@ class StaticWorkflowApplicationTest {
         CharArrayReader reader = new CharArrayReader(writer.toCharArray());
         workflow = getWorkflow(reader, WorkflowFormat.JSON);
         try (StaticWorkflowApplication application = StaticWorkflowApplication.create()) {
-            assertThat(application.execute(workflow, Collections.emptyMap()).getWorkflowdata()).contains(new TextNode(GREETING_STRING));
+            assertThat(application.execute(workflow, Collections.emptyMap()).getWorkflowdata().asText()).isEqualTo(GREETING_STRING);
         }
     }
 

@@ -39,7 +39,7 @@ public class MergeUtils {
     }
 
     public static JsonNode merge(JsonNode src, JsonNode target, boolean mergeArray) {
-        if (target == null || target.isNull()) {
+        if (target == null || target.isNull() || target.isObject() && target.isEmpty() && src != null && !src.isNull()) {
             return src;
         } else if (target.isArray()) {
             return mergeArray(src, (ArrayNode) target, mergeArray);

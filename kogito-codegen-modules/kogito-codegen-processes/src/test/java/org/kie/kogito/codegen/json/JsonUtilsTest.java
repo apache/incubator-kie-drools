@@ -42,11 +42,11 @@ public class JsonUtilsTest {
         JsonNode node5 = createJson(mapper, mapper.createObjectNode().put("string", "javier"));
 
         JsonNode result = mapper.createObjectNode();
-        JsonUtils.merge(node1, result);
-        JsonUtils.merge(node2, result);
-        JsonUtils.merge(node3, result);
-        JsonUtils.merge(node4, result);
-        JsonUtils.merge(node5, result);
+        result = JsonUtils.merge(node1, result);
+        result = JsonUtils.merge(node2, result);
+        result = JsonUtils.merge(node3, result);
+        result = JsonUtils.merge(node4, result);
+        result = JsonUtils.merge(node5, result);
 
         assertThat(result.size()).isOne();
         JsonNode merged = result.get("merged");
@@ -73,7 +73,7 @@ public class JsonUtilsTest {
         JsonNode src = createJson(mapper, createJson(mapper, "property", Arrays.asList(1, 2, 3)));
         JsonNode target = createJson(mapper, mapper.createObjectNode().put("property", 4));
 
-        JsonUtils.merge(src, target);
+        target = JsonUtils.merge(src, target);
 
         assertThat(target.size()).isOne();
         JsonNode merged = target.get("merged");
@@ -95,7 +95,7 @@ public class JsonUtilsTest {
         JsonNode src = createJson(mapper, createJson(mapper, "property", Arrays.asList(1, 2, 3)));
         JsonNode target = createJson(mapper, mapper.createObjectNode());
 
-        JsonUtils.merge(src, target);
+        target = JsonUtils.merge(src, target);
 
         assertThat(target.size()).isOne();
         JsonNode merged = target.get("merged");

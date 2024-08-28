@@ -34,8 +34,8 @@ public class JsonUtils {
      * @param src JsonNode to be merged
      * @param target JsonNode to merge to
      */
-    public static void merge(JsonNode src, JsonNode target) {
-        MergeUtils.merge(src, target, true);
+    public static JsonNode merge(JsonNode src, JsonNode target) {
+        return MergeUtils.merge(src, target, true);
     }
 
 }

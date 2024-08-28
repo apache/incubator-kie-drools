@@ -77,7 +77,7 @@ public class StaticFluentWorkflowApplicationTest {
             }
         }).build()) {
             Workflow workflow = workflow("HelloWorld").start(inject(new TextNode(GREETING_STRING))).end().build();
-            assertThat(application.execute(workflow, Collections.emptyMap()).getWorkflowdata()).contains(new TextNode(GREETING_STRING));
+            assertThat(application.execute(workflow, Collections.emptyMap()).getWorkflowdata().asText()).isEqualTo(GREETING_STRING);
             assertThat(completed.get()).isTrue();
         }
     }
@@ -222,7 +222,7 @@ public class StaticFluentWorkflowApplicationTest {
         try (StaticWorkflowApplication application = StaticWorkflowApplication.create()) {
             Workflow workflow = workflow("PlayingWithExpression").constant("name", "Javierito").function(expr(INTERPOLATION, "\"My name is \"+$CONST.name"))
                     .start(operation().action(call(INTERPOLATION))).end().build();
-            assertThat(application.execute(workflow, Collections.emptyMap()).getWorkflowdata().get("response").asText()).isEqualTo("My name is Javierito");
+            assertThat(application.execute(workflow, Collections.emptyMap()).getWorkflowdata().asText()).isEqualTo("My name is Javierito");
         }
     }
 
@@ -280,7 +280,7 @@ public class StaticFluentWorkflowApplicationTest {
         try (StaticWorkflowApplication application = StaticWorkflowApplication.create()) {
             Workflow workflow = workflow("PlayingWithExpression").constant("name", "Javierito").function(expr(INTERPOLATION, "\"My name is \\($CONST.name)\""))
                     .start(operation().action(call(INTERPOLATION))).end().build();
-            assertThat(application.execute(workflow, Collections.emptyMap()).getWorkflowdata().get("response").asText()).isEqualTo("My name is Javierito");
+            assertThat(application.execute(workflow, Collections.emptyMap()).getWorkflowdata().asText()).isEqualTo("My name is Javierito");
         }
     }
 }
