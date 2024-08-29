@@ -45,7 +45,38 @@ import org.jbpm.bpmn2.activity.UserTaskWithSimulationMetaDataModel;
 import org.jbpm.bpmn2.activity.UserTaskWithSimulationMetaDataProcess;
 import org.jbpm.bpmn2.adhoc.SubProcessInAdHocProcessModel;
 import org.jbpm.bpmn2.adhoc.SubProcessInAdHocProcessProcess;
-import org.jbpm.bpmn2.flow.*;
+import org.jbpm.bpmn2.flow.CompositeWithDIGraphicalModel;
+import org.jbpm.bpmn2.flow.CompositeWithDIGraphicalProcess;
+import org.jbpm.bpmn2.flow.MinimalImplicitModel;
+import org.jbpm.bpmn2.flow.MinimalImplicitProcess;
+import org.jbpm.bpmn2.flow.MinimalMetadataModel;
+import org.jbpm.bpmn2.flow.MinimalMetadataProcess;
+import org.jbpm.bpmn2.flow.MinimalModel;
+import org.jbpm.bpmn2.flow.MinimalProcess;
+import org.jbpm.bpmn2.flow.MinimalWithDIGraphicalModel;
+import org.jbpm.bpmn2.flow.MinimalWithDIGraphicalProcess;
+import org.jbpm.bpmn2.flow.MinimalWithGraphicalModel;
+import org.jbpm.bpmn2.flow.MinimalWithGraphicalProcess;
+import org.jbpm.bpmn2.flow.ProcessCustomDescriptionMetaDataModel;
+import org.jbpm.bpmn2.flow.ProcessCustomDescriptionMetaDataProcess;
+import org.jbpm.bpmn2.flow.ProcessVariableCustomDescriptionMetaDataModel;
+import org.jbpm.bpmn2.flow.ProcessVariableCustomDescriptionMetaDataProcess;
+import org.jbpm.bpmn2.flow.ProcessWithVariableNameModel;
+import org.jbpm.bpmn2.flow.ProcessWithVariableNameProcess;
+import org.jbpm.bpmn2.flow.SubProcessModel;
+import org.jbpm.bpmn2.flow.SubProcessProcess;
+import org.jbpm.bpmn2.flow.UserTaskActorGroupModel;
+import org.jbpm.bpmn2.flow.UserTaskActorGroupProcess;
+import org.jbpm.bpmn2.flow.UserTaskActorModel;
+import org.jbpm.bpmn2.flow.UserTaskActorProcess;
+import org.jbpm.bpmn2.flow.UserTaskGroupModel;
+import org.jbpm.bpmn2.flow.UserTaskGroupProcess;
+import org.jbpm.bpmn2.flow.UserTaskModel;
+import org.jbpm.bpmn2.flow.UserTaskNoneModel;
+import org.jbpm.bpmn2.flow.UserTaskNoneProcess;
+import org.jbpm.bpmn2.flow.UserTaskProcess;
+import org.jbpm.bpmn2.flow.XORSameTargetModel;
+import org.jbpm.bpmn2.flow.XORSameTargetProcess;
 import org.jbpm.bpmn2.handler.ReceiveTaskHandler;
 import org.jbpm.bpmn2.handler.SendTaskHandler;
 import org.jbpm.bpmn2.objects.Account;
@@ -218,14 +249,13 @@ public class ActivityTest extends JbpmBpmn2TestCase {
 
     @Test
     public void testMinimalProcessMetaData() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/flow/BPMN2-MinimalProcessMetaData.bpmn2");
-
+        Application app = ProcessTestHelper.newApplication();
         final List<String> list1 = new ArrayList<>();
         final List<String> list2 = new ArrayList<>();
         final List<String> list3 = new ArrayList<>();
         final List<String> list4 = new ArrayList<>();
-        kruntime.getProcessEventManager().addEventListener(new DefaultKogitoProcessEventListener() {
 
+        ProcessTestHelper.registerProcessEventListener(app, new DefaultKogitoProcessEventListener() {
             @Override
             public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {
                 logger.debug("before node");
@@ -274,10 +304,14 @@ public class ActivityTest extends JbpmBpmn2TestCase {
                 }
             }
         });
-        Map<String, Object> params = new HashMap<>();
-        params.put("x", "krisv");
-        KogitoProcessInstance processInstance = kruntime.startProcess("MinimalMetadata", params);
-        assertProcessInstanceCompleted(processInstance);
+
+        org.kie.kogito.process.Process<MinimalMetadataModel> process = MinimalMetadataProcess.newProcess(app);
+        MinimalMetadataModel model = process.createModel();
+        model.setX("krisv");
+        ProcessInstance<MinimalMetadataModel> processInstance = process.createInstance(model);
+        processInstance.start();
+
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
         assertThat(list1).hasSize(3);
         assertThat(list2).hasSize(2);
         assertThat(list3).hasSize(1);
@@ -857,10 +891,8 @@ public class ActivityTest extends JbpmBpmn2TestCase {
 
     @Test
     public void testSubProcess() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/subprocess/BPMN2-SubProcess.bpmn2");
-
-        kruntime.getProcessEventManager().addEventListener(new DefaultKogitoProcessEventListener() {
-
+        Application app = ProcessTestHelper.newApplication();
+        ProcessTestHelper.registerProcessEventListener(app, new DefaultKogitoProcessEventListener() {
             @Override
             public void afterProcessStarted(ProcessStartedEvent event) {
                 logger.debug(event.toString());
@@ -876,8 +908,10 @@ public class ActivityTest extends JbpmBpmn2TestCase {
                 logger.debug(event.toString());
             }
         });
-        KogitoProcessInstance processInstance = kruntime.startProcess("SubProcess");
-        assertProcessInstanceCompleted(processInstance);
+        org.kie.kogito.process.Process<SubProcessModel> definition = SubProcessProcess.newProcess(app);
+        ProcessInstance<SubProcessModel> processInstance = definition.createInstance(definition.createModel());
+        processInstance.start();
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
