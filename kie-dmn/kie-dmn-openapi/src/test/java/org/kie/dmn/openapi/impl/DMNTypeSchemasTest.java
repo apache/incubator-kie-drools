@@ -29,9 +29,7 @@ import org.junit.jupiter.api.Test;
 import org.kie.dmn.core.impl.SimpleTypeImpl;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.openapi.impl.SchemaMapperTestUtils.FEEL_NUMBER;
 import static org.kie.dmn.openapi.impl.SchemaMapperTestUtils.FEEL_STRING;
 import static org.kie.dmn.openapi.impl.SchemaMapperTestUtils.getSchemaForSimpleType;
@@ -49,25 +47,23 @@ class DMNTypeSchemasTest {
         SimpleTypeImpl toRead = getSimpleType(allowedValuesString, null, FEEL_STRING, BuiltInType.STRING);
         AtomicReference<Schema> toPopulate = new AtomicReference<>(getSchemaForSimpleType(toRead));
         DMNTypeSchemas.populateSchemaWithConstraints(toPopulate.get(), toRead);
-        assertEquals(enumBase.size(), toPopulate.get().getEnumeration().size());
-        enumBase.forEach(en -> assertTrue(toPopulate.get().getEnumeration().contains(en)));
-        assertTrue(toPopulate.get().getExtensions().containsKey(DMNOASConstants.X_DMN_ALLOWED_VALUES));
+        assertThat(toPopulate.get().getEnumeration()).hasSameSizeAs(enumBase).containsAll(enumBase);
+        assertThat(toPopulate.get().getExtensions()).containsKey(DMNOASConstants.X_DMN_ALLOWED_VALUES);
         String retrieved =
                 ((String) toPopulate.get().getExtensions().get(DMNOASConstants.X_DMN_ALLOWED_VALUES)).replace(" ", "");
-        assertEquals(allowedValuesString, retrieved);
+        assertThat(retrieved).isEqualTo(allowedValuesString);
 
-        toEnum = Arrays.asList(1, 3, 6, 78);
+        toEnum = Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(3), BigDecimal.valueOf(6), BigDecimal.valueOf(78));
         allowedValuesString = String.join(",", toEnum.stream().map(toMap -> String.format("%s", toMap)).toList());
 
         toRead = getSimpleType(allowedValuesString, null, FEEL_NUMBER, BuiltInType.NUMBER);
         toPopulate.set(getSchemaForSimpleType(toRead));
         DMNTypeSchemas.populateSchemaWithConstraints(toPopulate.get(), toRead);
-        assertEquals(toEnum.size(), toPopulate.get().getEnumeration().size());
-        toEnum.stream().map(i -> BigDecimal.valueOf((int) i)).forEach(en -> assertTrue(toPopulate.get().getEnumeration().contains(en)));
-        assertTrue(toPopulate.get().getExtensions().containsKey(DMNOASConstants.X_DMN_ALLOWED_VALUES));
+        assertThat(toPopulate.get().getEnumeration()).hasSameSizeAs(toEnum).containsAll(toEnum);
+        assertThat(toPopulate.get().getExtensions()).containsKey(DMNOASConstants.X_DMN_ALLOWED_VALUES);
         retrieved = ((String) toPopulate.get().getExtensions().get(DMNOASConstants.X_DMN_ALLOWED_VALUES)).replace(" "
                 , "");
-        assertEquals(allowedValuesString, retrieved);
+        assertThat(retrieved).isEqualTo(allowedValuesString);
     }
 
     @Test
@@ -80,26 +76,24 @@ class DMNTypeSchemasTest {
         SimpleTypeImpl toRead = getSimpleType(null, typeConstraintsString, FEEL_STRING, BuiltInType.STRING);
         AtomicReference<Schema> toPopulate = new AtomicReference<>(getSchemaForSimpleType(toRead));
         DMNTypeSchemas.populateSchemaWithConstraints(toPopulate.get(), toRead);
-        assertEquals(enumBase.size(), toPopulate.get().getEnumeration().size());
-        enumBase.forEach(en -> assertTrue(toPopulate.get().getEnumeration().contains(en)));
-        assertTrue(toPopulate.get().getExtensions().containsKey(DMNOASConstants.X_DMN_TYPE_CONSTRAINTS));
+        assertThat(toPopulate.get().getEnumeration()).hasSameSizeAs(enumBase).containsAll(enumBase);
+        assertThat(toPopulate.get().getExtensions()).containsKey(DMNOASConstants.X_DMN_TYPE_CONSTRAINTS);
         String retrieved =
                 ((String) toPopulate.get().getExtensions().get(DMNOASConstants.X_DMN_TYPE_CONSTRAINTS)).replace(" ",
                                                                                                                 "");
-        assertEquals(typeConstraintsString, retrieved);
+        assertThat(retrieved).isEqualTo(typeConstraintsString);
 
-        toEnum = Arrays.asList(1, 3, 6, 78);
+        toEnum = Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(3), BigDecimal.valueOf(6), BigDecimal.valueOf(78));
         typeConstraintsString = String.join(",", toEnum.stream().map(toMap -> String.format("%s", toMap)).toList());
 
         toRead = getSimpleType(null, typeConstraintsString, FEEL_NUMBER, BuiltInType.NUMBER);
         toPopulate.set(getSchemaForSimpleType(toRead));
         DMNTypeSchemas.populateSchemaWithConstraints(toPopulate.get(), toRead);
-        assertEquals(toEnum.size(), toPopulate.get().getEnumeration().size());
-        toEnum.stream().map(i -> BigDecimal.valueOf((int) i)).forEach(en -> assertTrue(toPopulate.get().getEnumeration().contains(en)));
-        assertTrue(toPopulate.get().getExtensions().containsKey(DMNOASConstants.X_DMN_TYPE_CONSTRAINTS));
+        assertThat(toPopulate.get().getEnumeration()).hasSameSizeAs(toEnum).containsAll(toEnum);
+        assertThat(toPopulate.get().getExtensions()).containsKey(DMNOASConstants.X_DMN_TYPE_CONSTRAINTS);
         retrieved = ((String) toPopulate.get().getExtensions().get(DMNOASConstants.X_DMN_TYPE_CONSTRAINTS)).replace(
                 " ", "");
-        assertEquals(typeConstraintsString, retrieved);
+        assertThat(retrieved).isEqualTo(typeConstraintsString);
     }
 
     @Test
@@ -110,15 +104,15 @@ class DMNTypeSchemasTest {
         SimpleTypeImpl toRead = getSimpleType(allowedValuesString, null, FEEL_STRING, BuiltInType.STRING);
         AtomicReference<Schema> toPopulate = new AtomicReference<>(getSchemaForSimpleType(toRead));
         DMNTypeSchemas.populateSchemaWithConstraints(toPopulate.get(), toRead);
-        assertEquals(BigDecimal.ONE, toPopulate.get().getMinimum());
-        assertTrue(toPopulate.get().getExclusiveMinimum());
-        assertEquals(BigDecimal.TEN, toPopulate.get().getMaximum());
-        assertFalse(toPopulate.get().getExclusiveMaximum());
-        assertTrue(toPopulate.get().getExtensions().containsKey(DMNOASConstants.X_DMN_ALLOWED_VALUES));
+        assertThat(toPopulate.get().getMinimum()).isEqualTo(BigDecimal.ONE);
+        assertThat(toPopulate.get().getExclusiveMinimum()).isTrue();
+        assertThat(toPopulate.get().getMaximum()).isEqualTo(BigDecimal.TEN);
+        assertThat(toPopulate.get().getExclusiveMaximum()).isFalse();
+        assertThat(toPopulate.get().getExtensions()).containsKey(DMNOASConstants.X_DMN_ALLOWED_VALUES);
         String retrieved =
                 ((String) toPopulate.get().getExtensions().get(DMNOASConstants.X_DMN_ALLOWED_VALUES)).replace(" ", "");
         String expected = allowedValuesString.replace("(", "").replace(")", "");
-        assertEquals(expected, retrieved);
+        assertThat(retrieved).isEqualTo(expected);
     }
 
     @Test
@@ -129,15 +123,15 @@ class DMNTypeSchemasTest {
         SimpleTypeImpl toRead = getSimpleType(null, typeConstraintsString, FEEL_STRING, BuiltInType.STRING);
         AtomicReference<Schema> toPopulate = new AtomicReference<>(getSchemaForSimpleType(toRead));
         DMNTypeSchemas.populateSchemaWithConstraints(toPopulate.get(), toRead);
-        assertEquals(BigDecimal.ONE, toPopulate.get().getMinimum());
-        assertTrue(toPopulate.get().getExclusiveMinimum());
-        assertEquals(BigDecimal.TEN, toPopulate.get().getMaximum());
-        assertFalse(toPopulate.get().getExclusiveMaximum());
-        assertTrue(toPopulate.get().getExtensions().containsKey(DMNOASConstants.X_DMN_TYPE_CONSTRAINTS));
+        assertThat(toPopulate.get().getMinimum()).isEqualTo(BigDecimal.ONE);
+        assertThat(toPopulate.get().getExclusiveMinimum()).isTrue();
+        assertThat(toPopulate.get().getMaximum()).isEqualTo(BigDecimal.TEN);
+        assertThat(toPopulate.get().getExclusiveMaximum()).isFalse();
+        assertThat(toPopulate.get().getExtensions().containsKey(DMNOASConstants.X_DMN_TYPE_CONSTRAINTS)).isTrue();
         String retrieved =
                 ((String) toPopulate.get().getExtensions().get(DMNOASConstants.X_DMN_TYPE_CONSTRAINTS)).replace(" ",
                                                                                                                 "");
         String expected = typeConstraintsString.replace("(", "").replace(")", "");
-        assertEquals(expected, retrieved);
+        assertThat(retrieved).isEqualTo(expected);
     }
 }
