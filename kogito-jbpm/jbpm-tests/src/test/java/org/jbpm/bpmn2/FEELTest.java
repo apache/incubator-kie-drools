@@ -18,45 +18,65 @@
  */
 package org.jbpm.bpmn2;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import org.jbpm.bpmn2.feel.GatewayFEELModel;
+import org.jbpm.bpmn2.feel.GatewayFEELProcess;
+import org.jbpm.test.utils.EventTrackerProcessListener;
+import org.jbpm.test.utils.ProcessTestHelper;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.Application;
+import org.kie.kogito.process.ProcessInstance;
+import org.kie.kogito.process.ProcessInstanceExecutionException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 public class FEELTest extends JbpmBpmn2TestCase {
-
     @Test
-    public void testGatewayFEEL() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/feel/BPMN2-GatewayFEEL.bpmn2");
+    public void testGatewayFEEL() {
+        Application app = ProcessTestHelper.newApplication();
+        EventTrackerProcessListener eventTrackerProcessListener = new EventTrackerProcessListener();
 
-        Map<String, Object> params1 = new HashMap<String, Object>();
-        params1.put("VA", Boolean.TRUE);
-        params1.put("VB", Boolean.FALSE);
-        org.jbpm.workflow.instance.WorkflowProcessInstance procInstance1 = (org.jbpm.workflow.instance.WorkflowProcessInstance) kruntime.startProcess("GatewayFEEL", params1);
-        assertThat(procInstance1.getVariable("Task1")).isEqualTo("ok");
-        assertThat(procInstance1.getVariable("Task2")).isEqualTo("ok");
-        assertThat(procInstance1.getVariable("Task3")).isNull();
-        assertNodeTriggered(procInstance1.getStringId(), "Task2", "VA and not(VB)");
+        ProcessTestHelper.registerProcessEventListener(app, eventTrackerProcessListener);
+        org.kie.kogito.process.Process<GatewayFEELModel> process = GatewayFEELProcess.newProcess(app);
+        GatewayFEELModel model = process.createModel();
+        model.setVA(Boolean.TRUE);
+        model.setVB(Boolean.FALSE);
+        ProcessInstance<GatewayFEELModel> procInstance1 = process.createInstance(model);
+        procInstance1.start();
 
-        Map<String, Object> params2 = new HashMap<String, Object>();
-        params2.put("VA", Boolean.FALSE);
-        params2.put("VB", Boolean.TRUE);
-        org.jbpm.workflow.instance.WorkflowProcessInstance procInstance2 = (org.jbpm.workflow.instance.WorkflowProcessInstance) kruntime.startProcess("GatewayFEEL", params2);
-        assertThat(procInstance2.getVariable("Task1")).isEqualTo("ok");
-        assertThat(procInstance2.getVariable("Task2")).isNull();
-        assertThat(procInstance2.getVariable("Task3")).isEqualTo("ok");
-        assertNodeTriggered(procInstance2.getStringId(), "Task3", "VB or not(VA)");
+        assertThat(procInstance1.variables().getTask1()).isEqualTo("ok");
+        assertThat(procInstance1.variables().getTask2()).isEqualTo("ok");
+        assertThat(procInstance1.variables().getTask3()).isNull();
+
+        assertThat(eventTrackerProcessListener.tracked()).anyMatch(ProcessTestHelper.triggered("Task2"))
+                .anyMatch(ProcessTestHelper.triggered("VA and not(VB)"));
+
+        model.setVA(Boolean.FALSE);
+        model.setVB(Boolean.TRUE);
+
+        ProcessInstance<GatewayFEELModel> procInstance2 = process.createInstance(model);
+        procInstance2.start();
+
+        assertThat(procInstance2.variables().getTask1()).isEqualTo("ok");
+        assertThat(procInstance2.variables().getTask2()).isNull();
+        assertThat(procInstance2.variables().getTask3()).isEqualTo("ok");
+        assertThat(eventTrackerProcessListener.tracked()).anyMatch(ProcessTestHelper.triggered("Task3"))
+                .anyMatch(ProcessTestHelper.triggered("VB or not(VA)"));
     }
 
     @Test
     public void testGatewayFEELWrong() {
-        assertThatExceptionOfType(RuntimeException.class)
-                .isThrownBy(() -> createKogitoProcessRuntime("BPMN2-GatewayFEEL-wrong.bpmn2"))
-                .withMessageContaining("Invalid FEEL expression: 'VA and Not(VB)'")
-                .withMessageContaining("Invalid FEEL expression: 'VB or nOt(VA)'");
+        Application app = ProcessTestHelper.newApplication();
+        org.kie.kogito.process.Process<GatewayFEELModel> process = GatewayFEELProcess.newProcess(app);
+        ProcessInstance<GatewayFEELModel> instance = process.createInstance(process.createModel());
+        instance.start();
+        assertThat(instance.status()).isEqualTo(ProcessInstance.STATE_ERROR);
+        assertThat(instance.error().isPresent()).isTrue();
+        assertThatExceptionOfType(ProcessInstanceExecutionException.class)
+                .isThrownBy(instance::checkError).withMessageContaining("org.jbpm.process.instance.impl.FeelReturnValueEvaluatorException")
+                .withMessageContaining("ERROR Unknown variable 'VA'")
+                .withMessageContaining("ERROR Unknown variable name 'VB'");
+
     }
 
 }
