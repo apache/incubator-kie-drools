@@ -181,7 +181,7 @@ public class ExcelParser
                     mergedColStart = cell.getColumnIndex();
                 }
 
-                switch ( cell.getCellTypeEnum() ) {
+                switch ( cell.getCellType() ) {
                     case BOOLEAN:
                         newCell(listeners,
                                 i,
@@ -257,7 +257,7 @@ public class ExcelParser
     }
 
     private String getFormulaValue( DataFormatter formatter, FormulaEvaluator formulaEvaluator, Cell cell ) {
-        if ( formulaEvaluator.evaluate( cell ).getCellTypeEnum() == CellType.BOOLEAN ) {
+        if ( formulaEvaluator.evaluate( cell ).getCellType() == CellType.BOOLEAN ) {
             return cell.getBooleanCellValue() ? "true" : "false";
         }
         return formatter.formatCellValue(cell, formulaEvaluator);
@@ -266,7 +266,7 @@ public class ExcelParser
     private String tryToReadCachedValue( Cell cell ) {
         DataFormatter formatter = new DataFormatter( Locale.ENGLISH );
         String cachedValue;
-        switch ( cell.getCachedFormulaResultTypeEnum() ) {
+        switch ( cell.getCachedFormulaResultType() ) {
             case NUMERIC:
                 double num = cell.getNumericCellValue();
                 if ( num - Math.round( num ) != 0 ) {
@@ -296,7 +296,7 @@ public class ExcelParser
     }
 
     private String getCellValue( final CellValue cv ) {
-        switch ( cv.getCellTypeEnum() ) {
+        switch ( cv.getCellType() ) {
             case BOOLEAN:
                 return Boolean.toString( cv.getBooleanValue() );
             case NUMERIC:

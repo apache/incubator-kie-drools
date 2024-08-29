@@ -16,7 +16,7 @@
 
 package org.drools.scorecards.parser.xls;
 
-import org.apache.poi.hssf.util.CellReference;
+import org.apache.poi.ss.util.CellReference;
 import org.dmg.pmml.pmml_4_2.descr.*;
 import org.drools.core.util.StringUtils;
 import org.kie.pmml.pmml_4_2.extensions.PMMLExtensionNames;
