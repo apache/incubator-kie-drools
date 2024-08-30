@@ -92,7 +92,7 @@ pipeline {
                         def installOrDeploy
                         if (shouldDeployToRepository()) {
                             installOrDeploy = "deploy -DdeployAtEnd -Dapache.repository.username=${REPOSITORY_USER} -Dapache.repository.password=${REPOSITORY_TOKEN} -DretryFailedDeploymentCount=5" +
-                                    " -Dhttp.socket.timeout=300000 -Dhttp.connection.timeout=300000"
+                                    " -Daether.connector.basic.parallelPut=false"
                         } else {
                             installOrDeploy = 'install'
                         }
