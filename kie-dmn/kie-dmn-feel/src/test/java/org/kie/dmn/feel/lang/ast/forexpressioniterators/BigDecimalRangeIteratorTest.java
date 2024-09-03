@@ -25,9 +25,7 @@ import java.util.stream.IntStream;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class BigDecimalRangeIteratorTest {
 
@@ -36,13 +34,13 @@ class BigDecimalRangeIteratorTest {
         BigDecimal start = BigDecimal.valueOf(1);
         BigDecimal end = BigDecimal.valueOf(3);
         BigDecimalRangeIterator iterator = new BigDecimalRangeIterator(start, end);
-        assertTrue(iterator.hasNext());
+        assertThat(iterator.hasNext()).isTrue();
         BigDecimal next = iterator.next();
         while (!next.equals(end)) {
-            assertTrue(iterator.hasNext());
+            assertThat(iterator.hasNext()).isTrue();
             next = iterator.next();
         }
-        assertFalse(iterator.hasNext());
+        assertThat(iterator.hasNext()).isFalse();
     }
 
     @Test
@@ -50,13 +48,13 @@ class BigDecimalRangeIteratorTest {
         BigDecimal start = BigDecimal.valueOf(3);
         BigDecimal end = BigDecimal.valueOf(1);
         BigDecimalRangeIterator iterator = new BigDecimalRangeIterator(start, end);
-        assertTrue(iterator.hasNext());
+        assertThat(iterator.hasNext()).isTrue();
         BigDecimal next = iterator.next();
         while (!next.equals(end)) {
-            assertTrue(iterator.hasNext());
+            assertThat(iterator.hasNext()).isTrue();
             next = iterator.next();
         }
-        assertFalse(iterator.hasNext());
+        assertThat(iterator.hasNext()).isFalse();
     }
 
     @Test
@@ -65,7 +63,7 @@ class BigDecimalRangeIteratorTest {
         BigDecimal end = BigDecimal.valueOf(3);
         List<BigDecimal> expected = Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2), BigDecimal.valueOf(3));
         BigDecimalRangeIterator iterator = new BigDecimalRangeIterator(start, end);
-        IntStream.range(0, 3).forEach(i -> assertEquals(expected.get(i), iterator.next()));
+        IntStream.range(0, 3).forEach(i -> assertThat(expected.get(i)).isEqualTo(iterator.next()));
     }
 
     @Test
@@ -74,7 +72,7 @@ class BigDecimalRangeIteratorTest {
         BigDecimal end = BigDecimal.valueOf(1);
         List<BigDecimal> expected = Arrays.asList(BigDecimal.valueOf(3), BigDecimal.valueOf(2), BigDecimal.valueOf(1));
         BigDecimalRangeIterator iterator = new BigDecimalRangeIterator(start, end);
-        IntStream.range(0, 3).forEach(i -> assertEquals(expected.get(i), iterator.next()));
+        IntStream.range(0, 3).forEach(i -> assertThat(expected.get(i)).isEqualTo(iterator.next()));
     }
 
 

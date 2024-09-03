@@ -30,9 +30,9 @@ import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.Symbol;
 import org.kie.dmn.feel.runtime.FEELFunction;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 import static org.kie.dmn.feel.runtime.functions.BuiltInFunctions.FUNCTIONS;
 
 class BuiltInFunctionsTest {
@@ -43,24 +43,24 @@ class BuiltInFunctionsTest {
         Set< Class<? extends FEELFunction>> verifiedClasses = Stream.of(FUNCTIONS).map(this::validateFunction)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toUnmodifiableSet());
-        assertEquals(FUNCTIONS.length, verifiedClasses.size());
+        assertThat(verifiedClasses.size()).isEqualTo(FUNCTIONS.length);
     }
 
     @Test
     void getFunctionsByClassFails() {
-        assertThrows(IllegalArgumentException.class, () -> BuiltInFunctions.getFunction(FakeFunction.class));
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> BuiltInFunctions.getFunction(FakeFunction.class));
     }
 
     @Test
     void getFunctionsByNameFails() {
-        assertThrows(IllegalArgumentException.class, () -> BuiltInFunctions.getFunction(FakeFunction.FAKE_NAME));
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> BuiltInFunctions.getFunction(FakeFunction.FAKE_NAME));
     }
 
     private Class<? extends FEELFunction> validateFunction(FEELFunction toValidate) {
         Class<? extends FEELFunction> aClass = toValidate.getClass();
         try {
             Field instance = aClass.getDeclaredField("INSTANCE");
-            assertEquals(aClass, instance.getDeclaringClass());
+            assertThat(instance.getDeclaringClass()).isEqualTo(aClass);
             return aClass;
         } catch (NoSuchFieldException e) {
             fail("No INSTANCE field found for " + aClass);

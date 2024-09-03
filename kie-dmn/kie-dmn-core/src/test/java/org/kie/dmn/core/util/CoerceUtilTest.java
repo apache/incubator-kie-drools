@@ -21,6 +21,7 @@ package org.kie.dmn.core.util;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.Collections;
@@ -30,9 +31,7 @@ import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.core.impl.SimpleTypeImpl;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class CoerceUtilTest {
 
@@ -49,8 +48,8 @@ class CoerceUtilTest {
                                                   null,
                                                   BuiltInType.STRING);
         Object retrieved = CoerceUtil.coerceValue(requiredType, value);
-        assertNotNull(retrieved);
-        assertEquals(item, retrieved);
+        assertThat(retrieved).isNotNull();
+        assertThat(item).isEqualTo(retrieved);
     }
 
     @Test
@@ -66,8 +65,8 @@ class CoerceUtilTest {
                                                   null,
                                                   BuiltInType.STRING);
         Object retrieved = CoerceUtil.coerceValue(requiredType, value);
-        assertNotNull(retrieved);
-        assertEquals(value, retrieved);
+        assertThat(retrieved).isNotNull();
+        assertThat(value).isEqualTo(retrieved);
 
         value = "TESTED_OBJECT";
         requiredType = new SimpleTypeImpl("http://www.omg.org/spec/DMN/20180521/FEEL/",
@@ -79,12 +78,12 @@ class CoerceUtilTest {
                                                   null,
                                                   BuiltInType.STRING);
         retrieved = CoerceUtil.coerceValue(requiredType, value);
-        assertNotNull(retrieved);
-        assertEquals(value, retrieved);
+        assertThat(retrieved).isNotNull();
+        assertThat(value).isEqualTo(retrieved);
 
         requiredType = null;
         retrieved = CoerceUtil.coerceValue(requiredType, value);
-        assertEquals(value, retrieved);
+        assertThat(value).isEqualTo(retrieved);
 
         value = null;
         requiredType = new SimpleTypeImpl("http://www.omg.org/spec/DMN/20180521/FEEL/",
@@ -96,7 +95,7 @@ class CoerceUtilTest {
                                                          null,
                                                          BuiltInType.STRING);
         retrieved = CoerceUtil.coerceValue(requiredType, value);
-        assertEquals(value, retrieved);
+        assertThat(value).isEqualTo(retrieved);
 
     }
 
@@ -112,14 +111,15 @@ class CoerceUtilTest {
                                                   null,
                                                   BuiltInType.DATE_TIME);
         Object retrieved = CoerceUtil.coerceValue(requiredType, value);
-        assertNotNull(retrieved);
-        assertTrue(retrieved instanceof ZonedDateTime);
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved).isInstanceOf(ZonedDateTime.class);
         ZonedDateTime zdtRetrieved = (ZonedDateTime)retrieved;
-        assertEquals(value, zdtRetrieved.toLocalDate());
-        assertEquals(ZoneOffset.UTC, zdtRetrieved.getOffset());
-        assertEquals(0, zdtRetrieved.getHour());
-        assertEquals(0, zdtRetrieved.getMinute());
-        assertEquals(0, zdtRetrieved.getSecond());
+        assertThat(value).isEqualTo(zdtRetrieved.toLocalDate());
+        assertThat(ZoneOffset.UTC).isEqualTo(zdtRetrieved.getOffset());
+
+        assertThat(0).isEqualTo(zdtRetrieved.getHour());
+        assertThat(0).isEqualTo(zdtRetrieved.getMinute());
+        assertThat(0).isEqualTo(zdtRetrieved.getSecond());
     }
 
     @Test
@@ -134,8 +134,8 @@ class CoerceUtilTest {
                                                   null,
                                                   BuiltInType.DATE_TIME);
         Object retrieved = CoerceUtil.coerceValue(requiredType, value);
-        assertNotNull(retrieved);
-        assertEquals(value, retrieved);
+        assertThat(retrieved).isNotNull();
+        assertThat(value).isEqualTo(retrieved);
         value = LocalDate.now();
         requiredType = new SimpleTypeImpl("http://www.omg.org/spec/DMN/20180521/FEEL/",
                                                   "date",
@@ -146,8 +146,8 @@ class CoerceUtilTest {
                                                   null,
                                                   BuiltInType.DATE);
         retrieved = CoerceUtil.coerceValue(requiredType, value);
-        assertNotNull(retrieved);
-        assertEquals(value, retrieved);
+        assertThat(retrieved).isNotNull();
+        assertThat(value).isEqualTo(retrieved);
     }
 
     @Test
@@ -163,8 +163,8 @@ class CoerceUtilTest {
                                                   null,
                                                   BuiltInType.STRING);
         Object retrieved = CoerceUtil.actualCoerceValue(requiredType, value);
-        assertNotNull(retrieved);
-        assertEquals(item, retrieved);
+        assertThat(retrieved).isNotNull();
+        assertThat(item).isEqualTo(retrieved);
     }
 
     @Test
@@ -179,14 +179,14 @@ class CoerceUtilTest {
                                                   null,
                                                   BuiltInType.DATE_TIME);
         Object retrieved = CoerceUtil.actualCoerceValue(requiredType, value);
-        assertNotNull(retrieved);
-        assertTrue(retrieved instanceof ZonedDateTime);
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved).isInstanceOf(ZonedDateTime.class);
         ZonedDateTime zdtRetrieved = (ZonedDateTime)retrieved;
-        assertEquals(value, zdtRetrieved.toLocalDate());
-        assertEquals(ZoneOffset.UTC, zdtRetrieved.getOffset());
-        assertEquals(0, zdtRetrieved.getHour());
-        assertEquals(0, zdtRetrieved.getMinute());
-        assertEquals(0, zdtRetrieved.getSecond());
+        assertThat(value).isEqualTo(zdtRetrieved.toLocalDate());
+        assertThat(ZoneOffset.UTC).isEqualTo(zdtRetrieved.getOffset());
+        assertThat(0).isEqualTo(zdtRetrieved.getHour());
+        assertThat(0).isEqualTo(zdtRetrieved.getMinute());
+        assertThat(0).isEqualTo(zdtRetrieved.getSecond());
     }
 
     @Test
@@ -201,7 +201,7 @@ class CoerceUtilTest {
                                                   null,
                                                   BuiltInType.NUMBER);
         Object retrieved = CoerceUtil.actualCoerceValue(requiredType, value);
-        assertNotNull(retrieved);
-        assertEquals(value, retrieved);
+        assertThat(retrieved).isNotNull();
+        assertThat(value).isEqualTo(retrieved);
     }
 }

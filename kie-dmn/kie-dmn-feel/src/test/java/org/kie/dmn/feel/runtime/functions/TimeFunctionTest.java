@@ -34,8 +34,6 @@ import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class TimeFunctionTest {
 
@@ -189,11 +187,11 @@ class TimeFunctionTest {
 
     @Test
     void timeStringWithSeconds() {
-        assertTrue(TimeFunction.timeStringWithSeconds("10:10:00@Australia/Melbourne"));
-        assertTrue(TimeFunction.timeStringWithSeconds("10:10:00+10:00"));
-        assertTrue(TimeFunction.timeStringWithSeconds("10:10:00:123"));
+        assertThat(TimeFunction.timeStringWithSeconds("10:10:00@Australia/Melbourne")).isTrue();
+        assertThat(TimeFunction.timeStringWithSeconds("10:10:00+10:00")).isTrue();
+        assertThat(TimeFunction.timeStringWithSeconds("10:10:00:123")).isTrue();
 
-        assertFalse(TimeFunction.timeStringWithSeconds("10:10@Australia/Melbourne"));
-        assertFalse(TimeFunction.timeStringWithSeconds("10:10+10:00"));
+        assertThat(TimeFunction.timeStringWithSeconds("10:10@Australia/Melbourne")).isFalse();
+        assertThat(TimeFunction.timeStringWithSeconds("10:10+10:00")).isFalse();
     }
 }

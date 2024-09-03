@@ -56,8 +56,6 @@ import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_MODEL;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_SCHEMA;
@@ -558,9 +556,9 @@ class ValidatorTest extends AbstractValidatorTest {
                 .map(ClassPathResource::new)
                 .toArray(value -> new Resource[modelFiles.size()]);
         List<DMNMessage> dmnMessages = validatorBuilder.theseModels(resources);
-        assertNotNull(dmnMessages);
+        assertThat(dmnMessages).isNotNull();
         dmnMessages.forEach(dmnMessage -> LOGGER.error(dmnMessage.toString()));
-        assertTrue(dmnMessages.isEmpty());
+        assertThat(dmnMessages.isEmpty()).isTrue();
     }
 
 

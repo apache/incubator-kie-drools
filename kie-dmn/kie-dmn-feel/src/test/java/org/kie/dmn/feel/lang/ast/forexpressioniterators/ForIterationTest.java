@@ -26,9 +26,7 @@ import java.util.stream.IntStream;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class ForIterationTest {
 
@@ -37,13 +35,13 @@ class ForIterationTest {
         BigDecimal start = BigDecimal.valueOf(1);
         BigDecimal end = BigDecimal.valueOf(3);
         ForIteration iteration = new ForIteration("iteration", start, end);
-        assertTrue(iteration.hasNextValue());
+        assertThat(iteration.hasNextValue()).isTrue();
         BigDecimal next = (BigDecimal) iteration.getNextValue();
         while (!next.equals(end)) {
-            assertTrue(iteration.hasNextValue());
+            assertThat(iteration.hasNextValue()).isTrue();
             next = (BigDecimal) iteration.getNextValue();
         }
-        assertFalse(iteration.hasNextValue());
+        assertThat(iteration.hasNextValue()).isFalse();
     }
 
     @Test
@@ -51,13 +49,13 @@ class ForIterationTest {
         LocalDate start = LocalDate.of(2021, 1, 1);
         LocalDate end = LocalDate.of(2021, 1, 3);
         ForIteration iteration = new ForIteration("iteration", start, end);
-        assertTrue(iteration.hasNextValue());
+        assertThat(iteration.hasNextValue()).isTrue();
         LocalDate next = (LocalDate) iteration.getNextValue();
         while (!next.equals(end)) {
-            assertTrue(iteration.hasNextValue());
+            assertThat(iteration.hasNextValue()).isTrue();
             next = (LocalDate) iteration.getNextValue();
         }
-        assertFalse(iteration.hasNextValue());
+        assertThat(iteration.hasNextValue()).isFalse();
     }
 
     @Test
@@ -67,7 +65,7 @@ class ForIterationTest {
         List<BigDecimal> expected = Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2), BigDecimal.valueOf(3));
         ForIteration iteration = new ForIteration("iteration", start, end);
         iteration.hasNextValue();
-        IntStream.range(0, 3).forEach(i -> assertEquals(expected.get(i), iteration.getNextValue()));
+        IntStream.range(0, 3).forEach(i -> assertThat(expected.get(i)).isEqualTo(iteration.getNextValue()));
     }
 
     @Test
@@ -77,6 +75,6 @@ class ForIterationTest {
         List<LocalDate> expected = Arrays.asList(LocalDate.of(2021, 1, 3), LocalDate.of(2021, 1, 2), LocalDate.of(2021, 1, 1));
         ForIteration iteration = new ForIteration("iteration", start, end);
         iteration.hasNextValue();
-        IntStream.range(0, 3).forEach(i -> assertEquals(expected.get(i), iteration.getNextValue()));
+        IntStream.range(0, 3).forEach(i -> assertThat(expected.get(i)).isEqualTo(iteration.getNextValue()));
     }
 }
