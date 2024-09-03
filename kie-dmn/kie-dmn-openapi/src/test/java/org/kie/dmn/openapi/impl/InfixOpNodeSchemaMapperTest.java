@@ -29,7 +29,8 @@ import org.kie.dmn.feel.lang.ast.InfixOperator;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.runtime.functions.CountFunction;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.openapi.impl.SchemaMapperTestUtils.FEEL_NUMBER;
 import static org.kie.dmn.openapi.impl.SchemaMapperTestUtils.getBaseNode;
 import static org.kie.dmn.openapi.impl.SchemaMapperTestUtils.getSchemaForSimpleType;
@@ -57,8 +58,8 @@ class InfixOpNodeSchemaMapperTest {
                     expectedMaximum = rightValue;
                 }
             }
-            assertEquals(expectedMinimum, toPopulate.getMinItems());
-            assertEquals(expectedMaximum, toPopulate.getMaxItems());
+            assertThat(toPopulate.getMinItems()).isEqualTo(expectedMinimum);
+            assertThat(toPopulate.getMaxItems()).isEqualTo(expectedMaximum);
         });
     }
 }
