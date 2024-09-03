@@ -115,6 +115,7 @@
     </dependency>
   </dependencies>
   <build>
+    <finalName>${project.artifactId}</finalName>
     <pluginManagement>
       <plugins>
         <plugin>
@@ -128,12 +129,6 @@
               </goals>
             </execution>
           </executions>
-        </plugin>
-        <plugin>
-          <groupId>org.kie.kogito</groupId>
-          <artifactId>kogito-maven-plugin</artifactId>
-          <version>${project.version}</version>
-          <extensions>true</extensions>
         </plugin>
         <plugin>
           <artifactId>maven-resources-plugin</artifactId>
@@ -182,10 +177,28 @@
         </executions>
       </plugin>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <!-- override Infinispan BOM -->
-        <version>${version.compiler.plugin}</version>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>${version.resources.plugin}</version>
+        <executions>
+          <execution>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.basedir}/src/main/resources</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${project.parent.basedir}/integration-tests-springboot-processes-persistence-common/src/main/resources</directory>
+                  <includes>
+                    <include>**/*.bpmn</include>
+                    <include>**/*.wid</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
