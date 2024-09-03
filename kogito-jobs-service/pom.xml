@@ -39,6 +39,7 @@
     <module>jobs-recipients</module>
     <module>jobs-service-common</module>
     <module>jobs-service-postgresql-common</module>
+    <module>jobs-service-storage-jpa</module>
     <module>jobs-service-postgresql</module>
     <module>jobs-service-inmemory</module>
     <module>kogito-addons-jobs-service</module>
