@@ -133,10 +133,9 @@ class EnumGenerationTest extends BaseDMNOASTest {
         assertThat(node).isNotNull();
         ArrayNode arrayNode = (ArrayNode) node.get("enum");
         assertThat(arrayNode).isNotNull();
-        List<String> expected = Arrays.asList("a", "b", "c", null);
-        arrayNode.iterator().forEachRemaining(e -> {
-            assertThat(expected).contains(e.textValue());
-        });
+        
+        assertThat(arrayNode).extracting(node1 -> node1.textValue()).containsExactlyInAnyOrder("a", "b", "c", null);
+
         assertThat(node.get("nullable")).isNotNull().isInstanceOf(BooleanNode.class);
         assertThat(node.get("nullable").asBoolean()).isTrue();
     }

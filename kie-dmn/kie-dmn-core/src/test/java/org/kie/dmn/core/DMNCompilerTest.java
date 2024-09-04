@@ -339,7 +339,9 @@ public class DMNCompilerTest extends BaseVariantTest {
             LOG.debug("{}", message);
         }
         LOG.debug("{}", evaluateModelCDecision);
-        assertThat(evaluateModelCDecision.getDecisionResults()).size().isEqualTo(3);
+        assertThat(evaluateModelCDecision.getDecisionResults()).hasSize(3);
+        assertThat(evaluateModelCDecision.getDecisionResults()).allMatch(dmnDecisionResult -> dmnDecisionResult.getEvaluationStatus().equals(SUCCEEDED));
+
         evaluateModelCDecision.getDecisionResults().forEach(dmnDecisionResult -> assertThat(dmnDecisionResult.getEvaluationStatus()).isEqualTo(SUCCEEDED));
     }
 
