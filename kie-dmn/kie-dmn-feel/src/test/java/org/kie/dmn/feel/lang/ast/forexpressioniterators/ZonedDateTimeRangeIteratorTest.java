@@ -45,25 +45,25 @@ class ZonedDateTimeRangeIteratorTest {
     @Test
     void hasNextAscendantTest() {
         ZonedDateTimeRangeIterator iterator = new ZonedDateTimeRangeIterator(before, after);
-        assertThat(iterator.hasNext()).isTrue();
+        assertThat(iterator).hasNext();
         ZonedDateTime next = iterator.next();
         while (next.isBefore(after)) {
-            assertThat(iterator.hasNext()).isTrue();
+            assertThat(iterator).hasNext();
             next = iterator.next();
         }
-        assertThat(iterator.hasNext()).isFalse();
+        assertThat(iterator).isExhausted();
     }
 
     @Test
     void hasNextDescendantTest() {
         ZonedDateTimeRangeIterator iterator = new ZonedDateTimeRangeIterator(after, before);
-        assertThat(iterator.hasNext()).isTrue();
+        assertThat(iterator).hasNext();
         ZonedDateTime next = iterator.next();
         while (!next.equals(before)) {
-            assertThat(iterator.hasNext()).isTrue();
+            assertThat(iterator).hasNext();
             next = iterator.next();
         }
-        assertThat(iterator.hasNext()).isFalse();
+        assertThat(iterator).isExhausted();
     }
 
     @Test
@@ -92,7 +92,7 @@ class ZonedDateTimeRangeIteratorTest {
         ZonedDateTimeRangeIterator iterator = new ZonedDateTimeRangeIterator(start, end);
         ZonedDateTime retrieved = iterator.next();
         assertThat(retrieved).isEqualTo(start);
-        assertThat(iterator.hasNext()).isFalse();
+        assertThat(iterator).isExhausted();
     }
 
     @Test
@@ -102,7 +102,7 @@ class ZonedDateTimeRangeIteratorTest {
         ZonedDateTimeRangeIterator iterator = new ZonedDateTimeRangeIterator(start, end);
         ZonedDateTime retrieved = iterator.next();
         assertThat(retrieved).isEqualTo(start);
-        assertThat(iterator.hasNext()).isFalse();
+        assertThat(iterator).isExhausted();
     }
 
     private static ZonedDateTime getZonedDateTime(int year, int month, int dayOfMonth, int hour, int minute) {

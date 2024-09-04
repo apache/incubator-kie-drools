@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -71,7 +71,7 @@ class ForIterationUtilsTest {
         try {
             getForIteration(ctx, "iteration", "NOT", "VALID");
         } catch (Exception e) {
-            assertThat(e instanceof EndpointOfRangeNotValidTypeException).isTrue();
+            assertThat(e).isInstanceOf(EndpointOfRangeNotValidTypeException.class);
             final ArgumentCaptor<FEELEvent> captor = ArgumentCaptor.forClass(FEELEvent.class);
             verify(listener, times(1)).onEvent(captor.capture());
             reset(listener);
@@ -79,7 +79,7 @@ class ForIterationUtilsTest {
         try {
             getForIteration(ctx, "iteration", BigDecimal.valueOf(1), LocalDate.of(2021, 1, 1));
         } catch (Exception e) {
-            assertThat(e instanceof EndpointOfRangeOfDifferentTypeException).isTrue();
+            assertThat(e).isInstanceOf(EndpointOfRangeOfDifferentTypeException.class);
             final ArgumentCaptor<FEELEvent> captor = ArgumentCaptor.forClass(FEELEvent.class);
             verify(listener, times(1)).onEvent(captor.capture());
             reset(listener);
@@ -87,7 +87,7 @@ class ForIterationUtilsTest {
         try {
             getForIteration(ctx, "iteration", LocalDate.of(2021, 1, 1), BigDecimal.valueOf(1));
         } catch (Exception e) {
-            assertThat(e instanceof EndpointOfRangeOfDifferentTypeException).isTrue();
+            assertThat(e).isInstanceOf(EndpointOfRangeOfDifferentTypeException.class);
             final ArgumentCaptor<FEELEvent> captor = ArgumentCaptor.forClass(FEELEvent.class);
             verify(listener, times(1)).onEvent(captor.capture());
             reset(listener);
@@ -107,7 +107,7 @@ class ForIterationUtilsTest {
         try {
             valueMustBeValid(ctx, "INVALID");
         } catch (Exception e) {
-            assertThat(e instanceof EndpointOfRangeNotValidTypeException).isTrue();
+            assertThat(e).isInstanceOf(EndpointOfRangeNotValidTypeException.class);
             final ArgumentCaptor<FEELEvent> captor = ArgumentCaptor.forClass(FEELEvent.class);
             verify(listener, times(1)).onEvent(captor.capture());
         }
@@ -126,7 +126,7 @@ class ForIterationUtilsTest {
         try {
             validateValues(ctx, "INVALID", "INVALID");
         } catch (Exception e) {
-            assertThat(e instanceof EndpointOfRangeNotValidTypeException).isTrue();
+            assertThat(e).isInstanceOf(EndpointOfRangeNotValidTypeException.class);
             final ArgumentCaptor<FEELEvent> captor = ArgumentCaptor.forClass(FEELEvent.class);
             verify(listener, times(1)).onEvent(captor.capture());
             reset(listener);
@@ -134,7 +134,7 @@ class ForIterationUtilsTest {
         try {
             validateValues(ctx, BigDecimal.valueOf(1), LocalDate.of(2021, 1, 1));
         } catch (Exception e) {
-            assertThat(e instanceof EndpointOfRangeOfDifferentTypeException).isTrue();
+            assertThat(e).isInstanceOf(EndpointOfRangeOfDifferentTypeException.class);
             final ArgumentCaptor<FEELEvent> captor = ArgumentCaptor.forClass(FEELEvent.class);
             verify(listener, times(1)).onEvent(captor.capture());
             reset(listener);
@@ -142,12 +142,10 @@ class ForIterationUtilsTest {
         try {
             validateValues(ctx, LocalDate.of(2021, 1, 1), BigDecimal.valueOf(1));
         } catch (Exception e) {
-            assertThat(e instanceof EndpointOfRangeOfDifferentTypeException).isTrue();
+            assertThat(e).isInstanceOf(EndpointOfRangeOfDifferentTypeException.class);
             final ArgumentCaptor<FEELEvent> captor = ArgumentCaptor.forClass(FEELEvent.class);
             verify(listener, times(1)).onEvent(captor.capture());
             reset(listener);
         }
     }
-
-
 }

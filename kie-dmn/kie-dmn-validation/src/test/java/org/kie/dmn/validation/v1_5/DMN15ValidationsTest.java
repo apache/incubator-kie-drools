@@ -155,7 +155,7 @@ public class DMN15ValidationsTest {
         List<DMNMessage> dmnMessages = validatorBuilder.theseModels(resources);
         assertThat(dmnMessages).isNotNull();
         dmnMessages.forEach(dmnMessage -> LOG.error(dmnMessage.toString()));
-        assertThat(dmnMessages.isEmpty()).isTrue();
+        assertThat(dmnMessages).isEmpty();
     }
 
     private void evaluate(String modelNamespace, String modelName, String modelFileName,

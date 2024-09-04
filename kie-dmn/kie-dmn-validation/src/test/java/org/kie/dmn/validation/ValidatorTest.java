@@ -558,7 +558,7 @@ class ValidatorTest extends AbstractValidatorTest {
         List<DMNMessage> dmnMessages = validatorBuilder.theseModels(resources);
         assertThat(dmnMessages).isNotNull();
         dmnMessages.forEach(dmnMessage -> LOGGER.error(dmnMessage.toString()));
-        assertThat(dmnMessages.isEmpty()).isTrue();
+        assertThat(dmnMessages).isEmpty();
     }
 
 

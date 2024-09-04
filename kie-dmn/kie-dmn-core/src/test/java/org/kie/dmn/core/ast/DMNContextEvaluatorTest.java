@@ -73,7 +73,7 @@ class DMNContextEvaluatorTest {
         DMNExpressionEvaluator evaluator = ed.getEvaluator();
         EvaluatorResult evaluated = evaluator.evaluate(runtime, result);
         assertThat(evaluated).isNotNull();
-        assertThat(EvaluatorResult.ResultType.SUCCESS).isEqualTo(evaluated.getResultType());
+        assertThat(evaluated.getResultType()).isEqualTo(EvaluatorResult.ResultType.SUCCESS);
     }
 
     private DMNResultImpl createResult(DMNModel model, DMNContext context) {

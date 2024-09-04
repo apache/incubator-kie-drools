@@ -43,7 +43,7 @@ class BuiltInFunctionsTest {
         Set< Class<? extends FEELFunction>> verifiedClasses = Stream.of(FUNCTIONS).map(this::validateFunction)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toUnmodifiableSet());
-        assertThat(verifiedClasses.size()).isEqualTo(FUNCTIONS.length);
+        assertThat(verifiedClasses).hasSameSizeAs(FUNCTIONS);
     }
 
     @Test

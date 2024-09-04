@@ -42,25 +42,25 @@ class LocalDateRangeIteratorTest {
     @Test
     void hasNextAscendantTest() {
         LocalDateRangeIterator iterator = new LocalDateRangeIterator(before, after);
-        assertThat(iterator.hasNext()).isTrue();
+        assertThat(iterator).hasNext();
         LocalDate next = iterator.next();
         while (!next.equals(after)) {
-            assertThat(iterator.hasNext()).isTrue();
+            assertThat(iterator).hasNext();
             next = iterator.next();
         }
-        assertThat(iterator.hasNext()).isFalse();
+        assertThat(iterator).isExhausted();
     }
 
     @Test
     void hasNextDescendantTest() {
         LocalDateRangeIterator iterator = new LocalDateRangeIterator(after, before);
-        assertThat(iterator.hasNext()).isTrue();
+        assertThat(iterator).hasNext();
         LocalDate next = iterator.next();
         while (!next.equals(before)) {
-            assertThat(iterator.hasNext()).isTrue();
+            assertThat(iterator).hasNext();
             next = iterator.next();
         }
-        assertThat(iterator.hasNext()).isFalse();
+        assertThat(iterator).isExhausted();
     }
 
     @Test

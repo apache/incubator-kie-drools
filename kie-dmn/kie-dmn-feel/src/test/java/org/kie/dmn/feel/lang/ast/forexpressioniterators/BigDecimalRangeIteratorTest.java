@@ -34,13 +34,13 @@ class BigDecimalRangeIteratorTest {
         BigDecimal start = BigDecimal.valueOf(1);
         BigDecimal end = BigDecimal.valueOf(3);
         BigDecimalRangeIterator iterator = new BigDecimalRangeIterator(start, end);
-        assertThat(iterator.hasNext()).isTrue();
+        assertThat(iterator).hasNext();
         BigDecimal next = iterator.next();
         while (!next.equals(end)) {
-            assertThat(iterator.hasNext()).isTrue();
+            assertThat(iterator).hasNext();
             next = iterator.next();
         }
-        assertThat(iterator.hasNext()).isFalse();
+        assertThat(iterator).isExhausted();
     }
 
     @Test
@@ -48,13 +48,13 @@ class BigDecimalRangeIteratorTest {
         BigDecimal start = BigDecimal.valueOf(3);
         BigDecimal end = BigDecimal.valueOf(1);
         BigDecimalRangeIterator iterator = new BigDecimalRangeIterator(start, end);
-        assertThat(iterator.hasNext()).isTrue();
+        assertThat(iterator).hasNext();
         BigDecimal next = iterator.next();
         while (!next.equals(end)) {
-            assertThat(iterator.hasNext()).isTrue();
+            assertThat(iterator).hasNext();
             next = iterator.next();
         }
-        assertThat(iterator.hasNext()).isFalse();
+        assertThat(iterator).isExhausted();
     }
 
     @Test
