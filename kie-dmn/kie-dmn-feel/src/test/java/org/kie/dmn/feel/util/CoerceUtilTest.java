@@ -31,9 +31,7 @@ import java.util.Set;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class CoerceUtilTest {
 
@@ -45,61 +43,61 @@ class CoerceUtilTest {
         Object valueObject = 34;
         Object actualObject = List.of(valueObject);
         Optional<Object> retrieved = CoerceUtil.coerceParam(currentIdxActualParameterType, expectedParameterType, actualObject);
-        assertNotNull(retrieved);
-        assertTrue(retrieved.isPresent());
-        assertEquals(valueObject, retrieved.get());
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved).isPresent();
+        assertThat(retrieved.get()).isEqualTo(valueObject);
 
         // Coerce single element to singleton list
         currentIdxActualParameterType = Number.class;
         expectedParameterType = List.class;
         actualObject = 34;
         retrieved = CoerceUtil.coerceParam(currentIdxActualParameterType, expectedParameterType, actualObject);
-        assertNotNull(retrieved);
-        assertTrue(retrieved.isPresent());
-        assertTrue(retrieved.get() instanceof List);
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved).isPresent();
+        assertThat(retrieved.get()).isInstanceOf(List.class);
         List lstRetrieved = (List) retrieved.get();
-        assertEquals(1, lstRetrieved.size());
-        assertEquals(actualObject, lstRetrieved.get(0));
+        assertThat(lstRetrieved).hasSize(1);
+        assertThat(lstRetrieved.get(0)).isEqualTo(actualObject);
 
         // Coerce date to date and time
         actualObject = LocalDate.now();
         currentIdxActualParameterType = LocalDate.class;
         expectedParameterType = ZonedDateTime.class;
         retrieved = CoerceUtil.coerceParam(currentIdxActualParameterType, expectedParameterType, actualObject);
-        assertNotNull(retrieved);
-        assertTrue(retrieved.isPresent());
-        assertTrue(retrieved.get() instanceof ZonedDateTime);
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved).isPresent();
+        assertThat(retrieved.get() instanceof ZonedDateTime).isTrue();
         ZonedDateTime zdtRetrieved = (ZonedDateTime) retrieved.get();
-        assertEquals(actualObject, zdtRetrieved.toLocalDate());
-        assertEquals(ZoneOffset.UTC, zdtRetrieved.getOffset());
-        assertEquals(0, zdtRetrieved.getHour());
-        assertEquals(0, zdtRetrieved.getMinute());
-        assertEquals(0, zdtRetrieved.getSecond());
+        assertThat(zdtRetrieved.toLocalDate()).isEqualTo(actualObject);
+        assertThat(zdtRetrieved.getOffset()).isEqualTo(ZoneOffset.UTC);
+        assertThat(zdtRetrieved.getHour()).isEqualTo(0);
+        assertThat(zdtRetrieved.getMinute()).isEqualTo(0);
+        assertThat(zdtRetrieved.getSecond()).isEqualTo(0);
     }
 
     @Test
     void coerceParameterDateToDateTimeConverted() {
         Object value = LocalDate.now();
         Object retrieved = CoerceUtil.coerceParameter(BuiltInType.DATE_TIME, value);
-        assertNotNull(retrieved);
-        assertTrue(retrieved instanceof ZonedDateTime);
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved).isInstanceOf(ZonedDateTime.class);
         ZonedDateTime zdtRetrieved = (ZonedDateTime) retrieved;
-        assertEquals(value, zdtRetrieved.toLocalDate());
-        assertEquals(ZoneOffset.UTC, zdtRetrieved.getOffset());
-        assertEquals(0, zdtRetrieved.getHour());
-        assertEquals(0, zdtRetrieved.getMinute());
-        assertEquals(0, zdtRetrieved.getSecond());
+        assertThat(zdtRetrieved.toLocalDate()).isEqualTo(value);
+        assertThat(zdtRetrieved.getOffset()).isEqualTo(ZoneOffset.UTC);
+        assertThat(zdtRetrieved.getHour()).isEqualTo(0);
+        assertThat(zdtRetrieved.getMinute()).isEqualTo(0);
+        assertThat(zdtRetrieved.getSecond()).isEqualTo(0);
     }
 
     @Test
     void coerceParameterDateToDateTimeNotConverted() {
         Object value = "TEST_OBJECT";
         Object retrieved = CoerceUtil.coerceParameter(null, value);
-        assertEquals(value, retrieved);
+        assertThat(retrieved).isEqualTo(value);
 
         value = null;
         retrieved = CoerceUtil.coerceParameter(BuiltInType.DATE, value);
-        assertEquals(value, retrieved);
+        assertThat(retrieved).isEqualTo(value);
     }
 
     @Test
@@ -108,28 +106,28 @@ class CoerceUtilTest {
         Object value = Collections.singleton(item);
         Object[] actualParams1 = {value, "NOT_DATE"};
         Optional<Object[]> retrieved = CoerceUtil.coerceParams(Set.class, String.class, actualParams1, 0);
-        assertNotNull(retrieved);
-        assertTrue(retrieved.isPresent());
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved).isPresent();
         Object[] retrievedObjects = retrieved.get();
-        assertEquals(item, retrievedObjects[0]);
-        assertEquals(actualParams1[1], retrievedObjects[1]);
+        assertThat(retrievedObjects[0]).isEqualTo(item);
+        assertThat(retrievedObjects[1]).isEqualTo(actualParams1[1]);
 
 
         item = LocalDate.now();
         value = Collections.singleton(item);
         Object[] actualParams2 = {value, "NOT_DATE"};
         retrieved = CoerceUtil.coerceParams(Set.class, ZonedDateTime.class, actualParams2, 0);
-        assertNotNull(retrieved);
-        assertTrue(retrieved.isPresent());
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved).isPresent();
         retrievedObjects = retrieved.get();
-        assertTrue(retrievedObjects[0] instanceof ZonedDateTime);
+        assertThat(retrievedObjects[0]).isInstanceOf(ZonedDateTime.class);
         ZonedDateTime zdtRetrieved = (ZonedDateTime) retrievedObjects[0];
-        assertEquals(item, zdtRetrieved.toLocalDate());
-        assertEquals(ZoneOffset.UTC, zdtRetrieved.getOffset());
-        assertEquals(0, zdtRetrieved.getHour());
-        assertEquals(0, zdtRetrieved.getMinute());
-        assertEquals(0, zdtRetrieved.getSecond());
-        assertEquals(actualParams2[1], retrievedObjects[1]);
+        assertThat(zdtRetrieved.toLocalDate()).isEqualTo(item);
+        assertThat(zdtRetrieved.getOffset()).isEqualTo(ZoneOffset.UTC);
+        assertThat(zdtRetrieved.getHour()).isEqualTo(0);
+        assertThat(zdtRetrieved.getMinute()).isEqualTo(0);
+        assertThat(zdtRetrieved.getSecond()).isEqualTo(0);
+        assertThat(retrievedObjects[1]).isEqualTo(actualParams2[1]);
     }
 
     @Test
@@ -137,17 +135,17 @@ class CoerceUtilTest {
         Object value = LocalDate.now();
         Object[] actualParams = {value, "NOT_DATE"};
         Optional<Object[]> retrieved = CoerceUtil.coerceParams(LocalDate.class, ZonedDateTime.class, actualParams, 0);
-        assertNotNull(retrieved);
-        assertTrue(retrieved.isPresent());
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved).isPresent();
         Object[] retrievedObjects = retrieved.get();
-        assertTrue(retrievedObjects[0] instanceof ZonedDateTime);
+        assertThat(retrievedObjects[0]).isInstanceOf(ZonedDateTime.class);
         ZonedDateTime zdtRetrieved = (ZonedDateTime) retrievedObjects[0];
-        assertEquals(value, zdtRetrieved.toLocalDate());
-        assertEquals(ZoneOffset.UTC, zdtRetrieved.getOffset());
-        assertEquals(0, zdtRetrieved.getHour());
-        assertEquals(0, zdtRetrieved.getMinute());
-        assertEquals(0, zdtRetrieved.getSecond());
-        assertEquals(actualParams[1], retrievedObjects[1]);
+        assertThat(zdtRetrieved.toLocalDate()).isEqualTo(value);
+        assertThat(zdtRetrieved.getOffset()).isEqualTo(ZoneOffset.UTC);
+        assertThat(zdtRetrieved.getHour()).isEqualTo(0);
+        assertThat(zdtRetrieved.getMinute()).isEqualTo(0);
+        assertThat(zdtRetrieved.getSecond()).isEqualTo(0);
+        assertThat(retrievedObjects[1]).isEqualTo(actualParams[1]);
     }
 
     @Test
@@ -156,41 +154,41 @@ class CoerceUtilTest {
         Object value = Collections.singleton(item);
         Object[] actualParams1 = {value, "NOT_DATE"};
         Optional<Object[]> retrieved = CoerceUtil.coerceParams(Set.class, BigDecimal.class, actualParams1, 0);
-        assertNotNull(retrieved);
-        assertTrue(retrieved.isEmpty());
+        assertThat(retrieved).isNotNull();
+         assertThat(retrieved).isEmpty();
 
         value = LocalDate.now();
         Object[] actualParams2 = {value, "NOT_DATE"};
         retrieved = CoerceUtil.coerceParams(LocalDate.class, String.class, actualParams2, 0);
-        assertNotNull(retrieved);
-        assertTrue(retrieved.isEmpty());
+        assertThat(retrieved).isNotNull();
+         assertThat(retrieved).isEmpty();
     }
 
     @Test
     void actualCoerceParameterToDateTimeConverted() {
         Object value = LocalDate.now();
         Object retrieved = CoerceUtil.actualCoerceParameter(BuiltInType.DATE_TIME, value);
-        assertNotNull(retrieved);
-        assertTrue(retrieved instanceof ZonedDateTime);
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved).isInstanceOf(ZonedDateTime.class);
         ZonedDateTime zdtRetrieved = (ZonedDateTime) retrieved;
-        assertEquals(value, zdtRetrieved.toLocalDate());
-        assertEquals(ZoneOffset.UTC, zdtRetrieved.getOffset());
-        assertEquals(0, zdtRetrieved.getHour());
-        assertEquals(0, zdtRetrieved.getMinute());
-        assertEquals(0, zdtRetrieved.getSecond());
+        assertThat(zdtRetrieved.toLocalDate()).isEqualTo(value);
+        assertThat(zdtRetrieved.getOffset()).isEqualTo(ZoneOffset.UTC);
+        assertThat(zdtRetrieved.getHour()).isEqualTo(0);
+        assertThat(zdtRetrieved.getMinute()).isEqualTo(0);
+        assertThat(zdtRetrieved.getSecond()).isEqualTo(0);
     }
 
     @Test
     void actualCoerceParameterNotConverted() {
         Object value = "TEST_OBJECT";
         Object retrieved = CoerceUtil.actualCoerceParameter(BuiltInType.DATE_TIME, value);
-        assertNotNull(retrieved);
-        assertEquals(value, retrieved);
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved).isEqualTo(value);
 
         value = LocalDate.now();
         retrieved = CoerceUtil.actualCoerceParameter(BuiltInType.DATE, value);
-        assertNotNull(retrieved);
-        assertEquals(value, retrieved);
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved).isEqualTo(value);
     }
 
     @Test
@@ -199,10 +197,10 @@ class CoerceUtilTest {
         Object[] actualParams = {value, "NOT_DATE"};
         Object coercedValue = BigDecimal.valueOf(1L);
         Object[] retrieved = CoerceUtil.actualCoerceParams(actualParams, coercedValue, 0);
-        assertNotNull(retrieved);
-        assertEquals(actualParams.length, retrieved.length);
-        assertEquals(coercedValue, retrieved[0]);
-        assertEquals(actualParams[1], retrieved[1]);
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved).hasSameSizeAs(actualParams);
+        assertThat(retrieved[0]).isEqualTo(coercedValue);
+        assertThat(retrieved[1]).isEqualTo(actualParams[1]);
     }
 
 }

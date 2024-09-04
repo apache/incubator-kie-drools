@@ -36,9 +36,6 @@ import org.kie.dmn.model.api.Definitions;
 import org.kie.dmn.model.api.NamedElement;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.kie.dmn.core.compiler.UnnamedImportUtils.addIfNotPresent;
 import static org.kie.dmn.core.compiler.UnnamedImportUtils.isInUnnamedImport;
 
@@ -68,26 +65,26 @@ class UnnamedImportUtilsTest {
         final DMNModelImpl importingModel = (DMNModelImpl)runtime.getModel("http://www.trisotech.com/dmn/definitions/_f79aa7a4-f9a3-410a-ac95-bea496edabgc",
                                                                            "Importing named Model");
         assertThat(importingModel).isNotNull();
-        importedModel.getDecisions().forEach(node -> assertFalse(isInUnnamedImport(node, importingModel)));
-        importedModel.getBusinessKnowledgeModels().forEach(node -> assertFalse(isInUnnamedImport(node, importingModel)));
-        importedModel.getDecisionServices().forEach(node -> assertFalse(isInUnnamedImport(node, importingModel)));
-        importedModel.getInputs().forEach(node -> assertFalse(isInUnnamedImport(node, importingModel)));
-        importedModel.getItemDefinitions().forEach(node -> assertFalse(isInUnnamedImport(node, importingModel)));
+        importedModel.getDecisions().forEach(node -> assertThat(isInUnnamedImport(node, importingModel)).isFalse());
+        importedModel.getBusinessKnowledgeModels().forEach(node -> assertThat(isInUnnamedImport(node, importingModel)).isFalse());
+        importedModel.getDecisionServices().forEach(node -> assertThat(isInUnnamedImport(node, importingModel)).isFalse());
+        importedModel.getInputs().forEach(node -> assertThat(isInUnnamedImport(node, importingModel)).isFalse());
+        importedModel.getItemDefinitions().forEach(node -> assertThat(isInUnnamedImport(node, importingModel)).isFalse());
     }
 
     @Test
     void addIfNotPresentTrue() throws IOException {
         URL importedModelFileResource = Thread.currentThread().getContextClassLoader().getResource(
                 "valid_models/DMNv1_5/Imported_Model_Unamed.dmn");
-        assertNotNull(importedModelFileResource);
+        assertThat(importedModelFileResource).isNotNull();
         try (InputStream is = importedModelFileResource.openStream()) {
             String xml = new String(is.readAllBytes(), StandardCharsets.UTF_8);
             Definitions definitions = DMNMarshallerFactory.newDefaultMarshaller().unmarshal(xml);
-            definitions.getDecisionService().forEach(definition ->  assertTrue(added(definition)));
-            definitions.getBusinessContextElement().forEach(definition ->  assertTrue(added(definition)));
-            definitions.getDrgElement().forEach(definition ->  assertTrue(added(definition)));
-            definitions.getImport().forEach(definition ->  assertTrue(added(definition)));
-            definitions.getItemDefinition().forEach(definition ->  assertTrue(added(definition)));
+            definitions.getDecisionService().forEach(definition ->  assertThat(added(definition)).isTrue());
+            definitions.getBusinessContextElement().forEach(definition ->  assertThat(added(definition)).isTrue());
+            definitions.getDrgElement().forEach(definition ->  assertThat(added(definition)).isTrue());
+            definitions.getImport().forEach(definition ->  assertThat(added(definition)).isTrue());
+            definitions.getItemDefinition().forEach(definition ->  assertThat(added(definition)).isTrue());
         }
     }
 
@@ -117,11 +114,11 @@ class UnnamedImportUtilsTest {
                                                                                     "-f9a3-410a-ac95-bea496edabgc",
                                                                             "Importing empty-named Model");
         assertThat(importingModel).isNotNull();
-        importedModel.getDecisions().forEach(node -> assertTrue(isInUnnamedImport(node, importingModel)));
-        importedModel.getBusinessKnowledgeModels().forEach(node -> assertTrue(isInUnnamedImport(node, importingModel)));
-        importedModel.getDecisionServices().forEach(node -> assertTrue(isInUnnamedImport(node, importingModel)));
-        importedModel.getInputs().forEach(node -> assertTrue(isInUnnamedImport(node, importingModel)));
-        importedModel.getItemDefinitions().forEach(node -> assertTrue(isInUnnamedImport(node, importingModel)));
+        importedModel.getDecisions().forEach(node -> assertThat(isInUnnamedImport(node, importingModel)).isTrue());
+        importedModel.getBusinessKnowledgeModels().forEach(node -> assertThat(isInUnnamedImport(node, importingModel)).isTrue());
+        importedModel.getDecisionServices().forEach(node -> assertThat(isInUnnamedImport(node, importingModel)).isTrue());
+        importedModel.getInputs().forEach(node -> assertThat(isInUnnamedImport(node, importingModel)).isTrue());
+        importedModel.getItemDefinitions().forEach(node -> assertThat(isInUnnamedImport(node, importingModel)).isTrue());
     }
 
     private void commonAddIfNotPresentFalse(String importingModelRef, String importedModelRef) throws IOException {
@@ -135,16 +132,16 @@ class UnnamedImportUtilsTest {
         Definitions importingDefinitions = importingModel.getDefinitions();
         URL importedModelFileResource = Thread.currentThread().getContextClassLoader().getResource(
                 "valid_models/DMNv1_5/Imported_Model_Unamed.dmn");
-        assertNotNull(importedModelFileResource);
+        assertThat(importedModelFileResource).isNotNull();
         try (InputStream is = importedModelFileResource.openStream()) {
             String importedXml = new String(is.readAllBytes(), StandardCharsets.UTF_8);
             Definitions importedDefinitions = DMNMarshallerFactory.newDefaultMarshaller().unmarshal(importedXml);
-            importedDefinitions.getDecisionService().forEach(definition -> assertFalse(added(importingDefinitions.getDecisionService(), definition)));
-            importedDefinitions.getBusinessContextElement().forEach(definition -> assertFalse(added(importingDefinitions.getBusinessContextElement(), definition)));
-            importedDefinitions.getDrgElement().forEach(definition -> assertFalse(added(importingDefinitions.getDrgElement(), definition)));
-            importedDefinitions.getImport().forEach(definition -> assertFalse(added(importingDefinitions.getImport(),
-                                                                                    definition)));
-            importedDefinitions.getItemDefinition().forEach(definition -> assertFalse(added(importingDefinitions.getItemDefinition(), definition)));
+            importedDefinitions.getDecisionService().forEach(definition -> assertThat(added(importingDefinitions.getDecisionService(), definition)).isFalse());
+            importedDefinitions.getBusinessContextElement().forEach(definition -> assertThat(added(importingDefinitions.getBusinessContextElement(), definition)).isFalse());
+            importedDefinitions.getDrgElement().forEach(definition -> assertThat(added(importingDefinitions.getDrgElement(), definition)).isFalse());
+            importedDefinitions.getImport().forEach(definition -> assertThat(added(importingDefinitions.getImport(),
+                                                                                    definition)).isFalse());
+            importedDefinitions.getItemDefinition().forEach(definition -> assertThat(added(importingDefinitions.getItemDefinition(), definition)).isFalse());
         }
     }
 
