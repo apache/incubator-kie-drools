@@ -31,6 +31,7 @@ import org.slf4j.LoggerFactory;
 import io.smallrye.mutiny.Uni;
 import io.vertx.mutiny.pgclient.PgPool;
 import io.vertx.mutiny.sqlclient.Row;
+import io.vertx.mutiny.sqlclient.RowIterator;
 import io.vertx.mutiny.sqlclient.RowSet;
 import io.vertx.mutiny.sqlclient.SqlClient;
 import io.vertx.mutiny.sqlclient.Tuple;
@@ -98,5 +99,14 @@ public class PostgreSqlJobServiceManagementRepository implements JobServiceManag
                 .onItem().transform(RowSet::iterator)
                 .onItem().transform(iterator -> iterator.hasNext() ? from(iterator.next()) : null)
                 .onItem().invoke(r -> LOGGER.trace("Heartbeat {}", r)));
+    }
+
+    @Override
+    public Uni<Boolean> release(JobServiceManagementInfo info) {
+        return client.withTransaction(conn -> conn
+                .preparedQuery("UPDATE job_service_management SET token = null, last_heartbeat = null WHERE id = $1 AND token = $2 RETURNING id, token, last_heartbeat")
+                .execute(Tuple.of(info.getId(), info.getToken()))
+                .onItem().transform(RowSet::iterator)
+                .onItem().transform(RowIterator::hasNext));
     }
 }

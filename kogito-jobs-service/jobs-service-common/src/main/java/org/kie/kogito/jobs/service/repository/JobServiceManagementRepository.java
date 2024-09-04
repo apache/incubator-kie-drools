@@ -30,6 +30,8 @@ public interface JobServiceManagementRepository {
 
     Uni<JobServiceManagementInfo> set(JobServiceManagementInfo info);
 
+    Uni<Boolean> release(JobServiceManagementInfo info);
+
     Uni<JobServiceManagementInfo> heartbeat(JobServiceManagementInfo info);
 
 }

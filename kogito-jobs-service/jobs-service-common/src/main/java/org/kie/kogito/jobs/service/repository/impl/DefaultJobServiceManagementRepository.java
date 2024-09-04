@@ -52,4 +52,10 @@ public class DefaultJobServiceManagementRepository implements JobServiceManageme
         info.setLastHeartbeat(DateUtil.now().toOffsetDateTime());
         return set(info);
     }
+
+    @Override
+    public Uni<Boolean> release(JobServiceManagementInfo info) {
+        instance.set(new JobServiceManagementInfo(info.getId(), null, null));
+        return Uni.createFrom().item(true);
+    }
 }

@@ -104,4 +104,24 @@ class JPAReactiveJobServiceManagementRepositoryTest {
         JobServiceManagementInfo updated = tested.heartbeat(new JobServiceManagementInfo(id, "differentToken", null)).await().indefinitely();
         assertThat(updated).isNull();
     }
+
+    @Test
+    void testRelease() {
+        String id = "instance-id-5";
+        String token = "token5";
+        JobServiceManagementInfo created = create(id, token);
+
+        Boolean released = tested.release(created).await().indefinitely();
+        assertThat(released).isTrue();
+    }
+
+    @Test
+    void testReleaseNotExisting() {
+        String id = "instance-id-6";
+        String token = "token6";
+        JobServiceManagementInfo notExisting = new JobServiceManagementInfo(id, token, OffsetDateTime.now());
+
+        Boolean released = tested.release(notExisting).await().indefinitely();
+        assertThat(released).isFalse();
+    }
 }

@@ -20,6 +20,7 @@ package org.kie.kogito.jobs.service.management;
 
 import java.time.OffsetDateTime;
 import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -46,8 +47,10 @@ import jakarta.enterprise.event.Event;
 import jakarta.enterprise.inject.Instance;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -112,7 +115,7 @@ class JobServiceInstanceManagerTest {
 
         verify(tested, times(1)).release(infoCaptor.capture());
         assertThat(infoCaptor.getValue()).isEqualTo(tested.getCurrentInfo());
-        verify(repository, times(1)).set(new JobServiceManagementInfo());
+        verify(repository, times(1)).release(tested.getCurrentInfo());
     }
 
     @Test
@@ -153,7 +156,18 @@ class JobServiceInstanceManagerTest {
     @Test
     void heartbeatLeader() {
         tested.startup(startupEvent);
-        tested.heartbeat(tested.getCurrentInfo()).await().indefinitely();
-        verify(repository).heartbeat(tested.getCurrentInfo());
+        await().atMost(30, TimeUnit.SECONDS)
+                .untilAsserted(() -> {
+                    assertThat(tested.isLeader()).isTrue();
+                });
+        await().atMost(30, TimeUnit.SECONDS)
+                .untilAsserted(() -> {
+                    verify(repository, atLeastOnce()).heartbeat(infoCaptor.capture());
+                });
+        JobServiceManagementInfo lastHeartbeat = infoCaptor.getValue();
+        assertThat(lastHeartbeat).isNotNull();
+        assertThat(lastHeartbeat.getId()).isEqualTo(tested.getCurrentInfo().getId());
+        assertThat(lastHeartbeat.getToken()).isEqualTo(tested.getCurrentInfo().getToken());
+        assertThat(lastHeartbeat.getLastHeartbeat()).isNotNull();
     }
 }

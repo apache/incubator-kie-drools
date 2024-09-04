@@ -102,6 +102,11 @@ public class JPAReactiveJobServiceManagementRepository implements JobServiceMana
         return Uni.createFrom().completionStage(this.reactiveRepositoryHelper.runAsync(() -> this.doHeartbeat(info)));
     }
 
+    @Override
+    public Uni<Boolean> release(JobServiceManagementInfo info) {
+        return Uni.createFrom().completionStage(this.reactiveRepositoryHelper.runAsync(() -> this.doRelease(info)));
+    }
+
     private JobServiceManagementEntity findById(String id) {
         return repository.findById(id);
     }
@@ -122,6 +127,17 @@ public class JPAReactiveJobServiceManagementRepository implements JobServiceMana
         repository.persist(jobService);
 
         return from(jobService);
+    }
+
+    private Boolean doRelease(JobServiceManagementInfo info) {
+        JobServiceManagementEntity jobService = findByIdAndToken(info);
+        if (jobService == null) {
+            return false;
+        }
+        jobService.setToken(null);
+        jobService.setLastHeartBeat(null);
+        repository.persist(jobService);
+        return true;
     }
 
     JobServiceManagementInfo from(JobServiceManagementEntity jobService) {
