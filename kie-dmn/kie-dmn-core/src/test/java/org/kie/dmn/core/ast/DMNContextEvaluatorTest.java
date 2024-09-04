@@ -38,8 +38,6 @@ import org.kie.dmn.core.impl.DMNResultImplFactory;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class DMNContextEvaluatorTest {
 
@@ -74,8 +72,8 @@ class DMNContextEvaluatorTest {
         DMNResultImpl result = createResult(dmnModel, context );
         DMNExpressionEvaluator evaluator = ed.getEvaluator();
         EvaluatorResult evaluated = evaluator.evaluate(runtime, result);
-        assertNotNull(evaluated);
-        assertEquals(EvaluatorResult.ResultType.SUCCESS, evaluated.getResultType());
+        assertThat(evaluated).isNotNull();
+        assertThat(evaluated.getResultType()).isEqualTo(EvaluatorResult.ResultType.SUCCESS);
     }
 
     private DMNResultImpl createResult(DMNModel model, DMNContext context) {

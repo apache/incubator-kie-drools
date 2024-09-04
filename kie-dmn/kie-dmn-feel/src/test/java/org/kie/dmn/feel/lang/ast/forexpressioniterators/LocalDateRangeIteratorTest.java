@@ -26,9 +26,7 @@ import java.util.stream.IntStream;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class LocalDateRangeIteratorTest {
 
@@ -44,39 +42,39 @@ class LocalDateRangeIteratorTest {
     @Test
     void hasNextAscendantTest() {
         LocalDateRangeIterator iterator = new LocalDateRangeIterator(before, after);
-        assertTrue(iterator.hasNext());
+        assertThat(iterator).hasNext();
         LocalDate next = iterator.next();
         while (!next.equals(after)) {
-            assertTrue(iterator.hasNext());
+            assertThat(iterator).hasNext();
             next = iterator.next();
         }
-        assertFalse(iterator.hasNext());
+        assertThat(iterator).isExhausted();
     }
 
     @Test
     void hasNextDescendantTest() {
         LocalDateRangeIterator iterator = new LocalDateRangeIterator(after, before);
-        assertTrue(iterator.hasNext());
+        assertThat(iterator).hasNext();
         LocalDate next = iterator.next();
         while (!next.equals(before)) {
-            assertTrue(iterator.hasNext());
+            assertThat(iterator).hasNext();
             next = iterator.next();
         }
-        assertFalse(iterator.hasNext());
+        assertThat(iterator).isExhausted();
     }
 
     @Test
     void nextAscendantTest() {
         List<LocalDate> expected = Arrays.asList(LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 2), LocalDate.of(2021, 1, 3));
         LocalDateRangeIterator iterator = new LocalDateRangeIterator(before, after);
-        IntStream.range(0, 3).forEach(i -> assertEquals(expected.get(i), iterator.next()));
+        IntStream.range(0, 3).forEach(i -> assertThat(expected.get(i)).isEqualTo(iterator.next()));
     }
 
     @Test
     void nextDescendantTest() {
         List<LocalDate> expected = Arrays.asList(LocalDate.of(2021, 1, 3), LocalDate.of(2021, 1, 2), LocalDate.of(2021, 1, 1));
         LocalDateRangeIterator iterator = new LocalDateRangeIterator(after, before);
-        IntStream.range(0, 3).forEach(i -> assertEquals(expected.get(i), iterator.next()));
+        IntStream.range(0, 3).forEach(i -> assertThat(expected.get(i)).isEqualTo(iterator.next()));
     }
 
 
