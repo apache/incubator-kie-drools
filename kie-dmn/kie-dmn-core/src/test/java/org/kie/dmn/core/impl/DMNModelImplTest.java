@@ -53,7 +53,7 @@ class DMNModelImplTest {
             decisionNodeList.add(toAdd);
         });
 
-        decisionNodeList.forEach(decisionNode -> {
+        assertThat(decisionNodeList).allSatisfy(decisionNode -> {
             assertThat(model.getDecisionByName(decisionNode.getName()))
                     .isNotNull()
                     .isEqualTo(decisionNode);
@@ -72,7 +72,7 @@ class DMNModelImplTest {
             decisionNodeList.add(toAdd);
         });
 
-        decisionNodeList.forEach(decisionNode ->
+        assertThat(decisionNodeList).allSatisfy(decisionNode ->
                                          assertThat(model.getDecisionByName(decisionNode.getName()))
                                                  .isNotNull()
                                                  .isEqualTo(decisionNode));
@@ -86,7 +86,7 @@ class DMNModelImplTest {
             model.addDecision(toAdd);
             decisionNodeList.add(toAdd);
         });
-        decisionNodeList.forEach(decisionNode ->
+        assertThat(decisionNodeList).allSatisfy(decisionNode ->
                                          assertThat(model.getDecisionById(decisionNode.getId()))
                                                  .isNotNull()
                                                  .isEqualTo(decisionNode));
@@ -104,7 +104,7 @@ class DMNModelImplTest {
             decisionNodeList.add(toAdd);
         });
 
-        decisionNodeList.forEach(decisionNode -> {
+        assertThat(decisionNodeList).allSatisfy(decisionNode -> {
             assertThat(model.getDecisionByName(String.format("%s.%s", importedNameSpace, decisionNode.getName())))
                     .isNotNull()
                     .isEqualTo(decisionNode);
@@ -126,7 +126,7 @@ class DMNModelImplTest {
             decisionNodeList.add(toAdd);
         });
 
-        decisionNodeList.forEach(decisionNode ->
+        assertThat(decisionNodeList).allSatisfy(decisionNode ->
                                          assertThat(model.getDecisionByName(String.format("%s.%s", importedNameSpace, decisionNode.getName())))
                                                  .isNotNull()
                                                  .isEqualTo(decisionNode));
@@ -143,7 +143,7 @@ class DMNModelImplTest {
             model.addDecision(toAdd);
             decisionNodeList.add(toAdd);
         });
-        decisionNodeList.forEach(decisionNode ->
+        assertThat(decisionNodeList).allSatisfy(decisionNode ->
                                          assertThat(model.getDecisionById(String.format("%s#%s", importedNameSpace, decisionNode.getId())))
                                                  .isNotNull()
                                                  .isEqualTo(decisionNode));

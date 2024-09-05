@@ -341,8 +341,6 @@ public class DMNCompilerTest extends BaseVariantTest {
         LOG.debug("{}", evaluateModelCDecision);
         assertThat(evaluateModelCDecision.getDecisionResults()).hasSize(3);
         assertThat(evaluateModelCDecision.getDecisionResults()).allMatch(dmnDecisionResult -> dmnDecisionResult.getEvaluationStatus().equals(SUCCEEDED));
-
-        evaluateModelCDecision.getDecisionResults().forEach(dmnDecisionResult -> assertThat(dmnDecisionResult.getEvaluationStatus()).isEqualTo(SUCCEEDED));
     }
 
     @ParameterizedTest
@@ -417,13 +415,11 @@ public class DMNCompilerTest extends BaseVariantTest {
         assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
         assertThat(dmnModel.getMessages()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).hasSize(4);
         assertThat(dmnModel.getMessages(DMNMessage.Severity.WARN)).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).hasSize(4);
-        assertThat(dmnModel.getMessages(DMNMessage.Severity.WARN)
-                           .stream()
-                           .filter(m -> m.getSourceId().equals("_d72d6fab-1e67-4fe7-9c12-54800d6fe294") ||
+        assertThat(dmnModel.getMessages(DMNMessage.Severity.WARN)).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()))
+                           .filteredOn(m -> m.getSourceId().equals("_d72d6fab-1e67-4fe7-9c12-54800d6fe294") ||
                                         m.getSourceId().equals("_2390dd99-094d-4f97-aecc-9cccb697ce05") ||
                                         m.getSourceId().equals("_0c292d34-498e-4b08-ae99-3c694197b69f") ||
-                                        m.getSourceId().equals("_21c7d800-b806-4b2e-9a10-00828de7f2d2"))
-                           .count()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isEqualTo(4L);
+                                        m.getSourceId().equals("_21c7d800-b806-4b2e-9a10-00828de7f2d2")).hasSize(4);
     }
 
     @ParameterizedTest

@@ -20,9 +20,6 @@ package org.kie.dmn.feel.lang.ast.forexpressioniterators;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.IntStream;
 
 import org.junit.jupiter.api.Test;
 
@@ -62,19 +59,21 @@ class ForIterationTest {
     void getNextValueBigDecimalTest() {
         BigDecimal start = BigDecimal.valueOf(1);
         BigDecimal end = BigDecimal.valueOf(3);
-        List<BigDecimal> expected = Arrays.asList(BigDecimal.valueOf(1), BigDecimal.valueOf(2), BigDecimal.valueOf(3));
         ForIteration iteration = new ForIteration("iteration", start, end);
-        iteration.hasNextValue();
-        IntStream.range(0, 3).forEach(i -> assertThat(expected.get(i)).isEqualTo(iteration.getNextValue()));
+        assertThat(iteration.hasNextValue()).isTrue();
+        assertThat(iteration.getNextValue()).isEqualTo(BigDecimal.valueOf(1));
+        assertThat(iteration.getNextValue()).isEqualTo(BigDecimal.valueOf(2));
+        assertThat(iteration.getNextValue()).isEqualTo(BigDecimal.valueOf(3));
     }
 
     @Test
     void getNextValueLocalDateTest() {
         LocalDate start = LocalDate.of(2021, 1, 3);
         LocalDate end = LocalDate.of(2021, 1, 1);
-        List<LocalDate> expected = Arrays.asList(LocalDate.of(2021, 1, 3), LocalDate.of(2021, 1, 2), LocalDate.of(2021, 1, 1));
         ForIteration iteration = new ForIteration("iteration", start, end);
-        iteration.hasNextValue();
-        IntStream.range(0, 3).forEach(i -> assertThat(expected.get(i)).isEqualTo(iteration.getNextValue()));
+        assertThat(iteration.hasNextValue()).isTrue();
+        assertThat(iteration.getNextValue()).isEqualTo(LocalDate.of(2021, 1, 3));
+        assertThat(iteration.getNextValue()).isEqualTo(LocalDate.of(2021, 1, 2));
+        assertThat(iteration.getNextValue()).isEqualTo(LocalDate.of(2021, 1, 1));
     }
 }

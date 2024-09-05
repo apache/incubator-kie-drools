@@ -30,7 +30,6 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalAmount;
 import java.time.temporal.TemporalQueries;
-import java.util.Arrays;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -133,22 +132,18 @@ class ZoneTimeTest {
 
     @Test
     void isSupportedTemporalUnit() {
-        for (ChronoUnit unit : ChronoUnit.values()) {
-            assertThat(zoneTime.isSupported(unit)).isEqualTo(offsetTime.isSupported(unit));
-        }
+    	assertThat(ChronoUnit.values()).allMatch(unit -> zoneTime.isSupported(unit) == offsetTime.isSupported(unit));
     }
 
     @Test
     void isSupportedTemporalField() {
-        for (ChronoField field : ChronoField.values()) {
-            assertThat(zoneTime.isSupported(field)).isEqualTo(offsetTime.isSupported(field));
-        }
+    	assertThat(ChronoField.values()).allMatch(field -> zoneTime.isSupported(field) == offsetTime.isSupported(field));
     }
 
     @Test
     void getLong() {
-        Arrays.stream(ChronoField.values()).filter(offsetTime::isSupported)
-                .forEach(field -> assertThat(offsetTime.getLong(field)).isEqualTo(zoneTime.getLong(field)));
+        assertThat(ChronoField.values()).filteredOn(offsetTime::isSupported)
+                .allMatch(field -> offsetTime.getLong(field) == (zoneTime.getLong(field)));
     }
 
     @Test
@@ -167,16 +162,16 @@ class ZoneTimeTest {
 
     @Test
     void range() {
-        Arrays.stream(ChronoField.values()).filter(offsetTime::isSupported)
-                .forEach(field -> assertThat(offsetTime.range(field)).isEqualTo(zoneTime.range(field)));
+        assertThat(ChronoField.values()).filteredOn(offsetTime::isSupported)
+                .allMatch(field -> offsetTime.range(field).equals(zoneTime.range(field)));
     }
 
     @Test
     void get() {
-        Arrays.stream(ChronoField.values())
-                .filter(offsetTime::isSupported)
-                .filter(field -> field != ChronoField.NANO_OF_DAY && field != ChronoField.MICRO_OF_DAY) // Unsupported by offsettime.get()
-                .forEach(field -> assertThat(offsetTime.get(field)).isEqualTo(zoneTime.get(field)));
+    	assertThat(ChronoField.values())
+                .filteredOn(offsetTime::isSupported)
+                .filteredOn(field -> field != ChronoField.NANO_OF_DAY && field != ChronoField.MICRO_OF_DAY) // Unsupported by offsettime.get()
+                .allMatch(field -> offsetTime.get(field) == zoneTime.get(field));
     }
 
     @Test
