@@ -63,13 +63,13 @@ class LocalDateRangeIteratorTest {
     @Test
     void nextAscendantTest() {
         LocalDateRangeIterator iterator = new LocalDateRangeIterator(before, after);
-        assertThat(iterator).toIterable().containsExactlyInAnyOrder(LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 2), LocalDate.of(2021, 1, 3));
+        assertThat(iterator).toIterable().containsExactly(LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 2), LocalDate.of(2021, 1, 3));
     }
 
     @Test
     void nextDescendantTest() {
         LocalDateRangeIterator iterator = new LocalDateRangeIterator(after, before);
-        assertThat(iterator).toIterable().containsExactlyInAnyOrder(LocalDate.of(2021, 1, 3), LocalDate.of(2021, 1, 2), LocalDate.of(2021, 1, 1));
+        assertThat(iterator).toIterable().containsExactly(LocalDate.of(2021, 1, 3), LocalDate.of(2021, 1, 2), LocalDate.of(2021, 1, 1));
     }
 
 
