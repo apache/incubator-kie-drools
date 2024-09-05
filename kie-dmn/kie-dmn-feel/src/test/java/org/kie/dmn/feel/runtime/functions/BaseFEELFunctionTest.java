@@ -101,8 +101,8 @@ class BaseFEELFunctionTest {
         assertThat(retrieved.getName()).isEqualTo("invoke");
         Parameter[] parametersRetrieved = retrieved.getParameters();
         assertThat(parametersRetrieved).isNotNull();
-        assertThat(parametersRetrieved.length).isEqualTo(1);
-        assertThat(parametersRetrieved[0].getType()).isEqualTo(List.class);
+        assertThat(parametersRetrieved).hasSize(1);
+        assertThat(parametersRetrieved).extracting("type").containsExactly(List.class);
 
         // invoke(@ParameterName( "b" ) Object[] list)
         parameters = new Object[]{true, false};
@@ -114,8 +114,8 @@ class BaseFEELFunctionTest {
         assertThat(retrieved.getName()).isEqualTo("invoke");
         parametersRetrieved = retrieved.getParameters();
         assertThat(parametersRetrieved).isNotNull();
-        assertThat(parametersRetrieved.length).isEqualTo(1);
-        assertThat(parametersRetrieved[0].getType()).isEqualTo(Object.class.arrayType());
+        assertThat(parametersRetrieved).hasSize(1);
+        assertThat(parametersRetrieved).extracting("type").containsExactly(Object.class.arrayType());
     }
 
     @Test
@@ -132,8 +132,8 @@ class BaseFEELFunctionTest {
         assertThat(retrieved.getName()).isEqualTo("invoke");
         Parameter[] parametersRetrieved = retrieved.getParameters();
         assertThat(parametersRetrieved).isNotNull();
-        assertThat(parametersRetrieved.length).isEqualTo(1);
-        assertThat(parametersRetrieved[0].getType()).isEqualTo(String.class);
+        assertThat(parametersRetrieved).hasSize(1);
+        assertThat(parametersRetrieved).extracting("type").containsExactly(String.class);
 
         // invoke(@ParameterName( "date" ) TemporalAccessor date, @ParameterName( "time" ) TemporalAccessor time)
         parameters = new Object[]{LocalDate.of(2017, 6, 12), LocalTime.of(10, 6, 20)};
@@ -145,8 +145,8 @@ class BaseFEELFunctionTest {
         assertThat(retrieved.getName()).isEqualTo("invoke");
         parametersRetrieved = retrieved.getParameters();
         assertThat(parametersRetrieved).isNotNull();
-        assertThat(parametersRetrieved.length).isEqualTo(2);
-        Arrays.stream(parametersRetrieved).forEach(parameter -> assertThat(TemporalAccessor.class).isEqualTo(parameter.getType()));
+        assertThat(parametersRetrieved).hasSize(2);
+        assertThat(parametersRetrieved).extracting("type").containsExactly(TemporalAccessor.class, TemporalAccessor.class);
 
 
 //        invoke(@ParameterName( "year" ) Number year, @ParameterName( "month" ) Number month, @ParameterName( "day"
@@ -162,8 +162,9 @@ class BaseFEELFunctionTest {
         assertThat(retrieved.getName()).isEqualTo("invoke");
         parametersRetrieved = retrieved.getParameters();
         assertThat(parametersRetrieved).isNotNull();
-        assertThat(parametersRetrieved.length).isEqualTo(6);
-        Arrays.stream(parametersRetrieved).forEach(parameter -> assertThat(Number.class).isEqualTo(parameter.getType()));
+        assertThat(parametersRetrieved).hasSize(6);
+        assertThat(parametersRetrieved).extracting("type").containsExactly(Number.class, Number.class, Number.class, 
+        		Number.class, Number.class, Number.class);
 
 //        invoke(@ParameterName( "year" ) Number year, @ParameterName( "month" ) Number month, @ParameterName( "day"
 //        ) Number day,
@@ -179,8 +180,9 @@ class BaseFEELFunctionTest {
         assertThat(retrieved.getName()).isEqualTo("invoke");
         parametersRetrieved = retrieved.getParameters();
         assertThat(parametersRetrieved).isNotNull();
-        assertThat(parametersRetrieved.length).isEqualTo(7);
-        Arrays.stream(parametersRetrieved).forEach(parameter -> assertThat(Number.class).isEqualTo(parameter.getType()));
+        assertThat(parametersRetrieved).hasSize(7);
+        assertThat(parametersRetrieved).extracting("type").containsExactly(Number.class, Number.class, Number.class, 
+        		Number.class, Number.class, Number.class, Number.class);
 
 //        invoke(@ParameterName( "year" ) Number year, @ParameterName( "month" ) Number month, @ParameterName( "day"
 //        ) Number day,
@@ -196,11 +198,9 @@ class BaseFEELFunctionTest {
         assertThat(retrieved.getName()).isEqualTo("invoke");
         parametersRetrieved = retrieved.getParameters();
         assertThat(parametersRetrieved).isNotNull();
-        assertThat(parametersRetrieved.length).isEqualTo(7);
-        for (int i = 0; i < 6; i++) {
-            assertThat(parametersRetrieved[i].getType()).isEqualTo(Number.class);
-        }
-        assertThat(parametersRetrieved[6].getType()).isEqualTo(String.class);
+        assertThat(parametersRetrieved).hasSize(7);
+        assertThat(parametersRetrieved).extracting("type").containsExactly(Number.class, Number.class, Number.class, 
+        		Number.class, Number.class, Number.class, String.class);
     }
 
     @Test
@@ -217,8 +217,8 @@ class BaseFEELFunctionTest {
         assertThat(retrieved.getName()).isEqualTo("invoke");
         Parameter[] parametersRetrieved = retrieved.getParameters();
         assertThat(parametersRetrieved).isNotNull();
-        assertThat(parametersRetrieved.length).isEqualTo(1);
-        assertThat(parametersRetrieved[0].getType()).isEqualTo(String.class);
+        assertThat(parametersRetrieved).hasSize(1);
+        assertThat(parametersRetrieved).extracting("type").containsExactly(String.class);
 
 //      invoke(
 //            @ParameterName("hour") Number hour, @ParameterName("minute") Number minute,
@@ -232,8 +232,8 @@ class BaseFEELFunctionTest {
         assertThat(retrieved.getName()).isEqualTo("invoke");
         parametersRetrieved = retrieved.getParameters();
         assertThat(parametersRetrieved).isNotNull();
-        assertThat(parametersRetrieved.length).isEqualTo(3);
-        Arrays.stream(parametersRetrieved).forEach(parameter -> assertThat(Number.class).isEqualTo(parameter.getType()));
+        assertThat(parametersRetrieved).hasSize(3);
+        assertThat(parametersRetrieved).extracting("type").containsExactly(Number.class, Number.class, Number.class);
 
 //     invoke(
 //            @ParameterName("hour") Number hour, @ParameterName("minute") Number minute,
@@ -247,11 +247,10 @@ class BaseFEELFunctionTest {
         assertThat(retrieved.getName()).isEqualTo("invoke");
         parametersRetrieved = retrieved.getParameters();
         assertThat(parametersRetrieved).isNotNull();
-        assertThat(parametersRetrieved.length).isEqualTo(4);
-        for (int i = 0; i < 3; i++) {
-            assertThat(parametersRetrieved[i].getType()).isEqualTo(Number.class);
-        }
-        assertThat(parametersRetrieved[3].getType()).isEqualTo(Duration.class);
+        assertThat(parametersRetrieved).hasSize(4);
+        
+        assertThat(parametersRetrieved).extracting("type").containsExactly(Number.class, Number.class, Number.class, Duration.class);
+
 
 //      invoke(@ParameterName("from") TemporalAccessor date
         parameters = new Object[]{LocalTime.of(10, 6, 20)};
@@ -263,8 +262,8 @@ class BaseFEELFunctionTest {
         assertThat(retrieved.getName()).isEqualTo("invoke");
         parametersRetrieved = retrieved.getParameters();
         assertThat(parametersRetrieved).isNotNull();
-        assertThat(parametersRetrieved.length).isEqualTo(1);
-        assertThat(parametersRetrieved[0].getType()).isEqualTo(TemporalAccessor.class);
+        assertThat(parametersRetrieved).hasSize(1);
+        assertThat(parametersRetrieved).extracting("type").containsExactly(TemporalAccessor.class);
     }
 
     @Test
@@ -283,10 +282,8 @@ class BaseFEELFunctionTest {
         assertThat(retrieved.getName()).isEqualTo("invoke");
         Parameter[] parametersRetrieved = retrieved.getParameters();
         assertThat(parametersRetrieved).isNotNull();
-        assertThat(parametersRetrieved.length).isEqualTo(3);
-        assertThat(parametersRetrieved[0].getType()).isEqualTo(EvaluationContext.class);
-        assertThat(parametersRetrieved[1].getType()).isEqualTo(List.class);
-        assertThat(parametersRetrieved[2].getType()).isEqualTo(FEELFunction.class);
+        assertThat(parametersRetrieved).hasSize(3);
+        assertThat(parametersRetrieved).extracting("type").containsExactly(EvaluationContext.class, List.class, FEELFunction.class);
 
         // invoke(@ParameterName("list") List list)
         parameters = new Object[]{List.of(1, 3, 5)};
@@ -298,8 +295,8 @@ class BaseFEELFunctionTest {
         assertThat(retrieved.getName()).isEqualTo("invoke");
         parametersRetrieved = retrieved.getParameters();
         assertThat(parametersRetrieved).isNotNull();
-        assertThat(parametersRetrieved.length).isEqualTo(1);
-        assertThat(parametersRetrieved[0].getType()).isEqualTo(List.class);
+        assertThat(parametersRetrieved).hasSize(1);
+        assertThat(parametersRetrieved).extracting("type").containsExactly(List.class);
     }
 
     @Test
@@ -317,8 +314,8 @@ class BaseFEELFunctionTest {
         assertThat(retrieved.getName()).isEqualTo("invoke");
         Parameter[] parametersRetrieved = retrieved.getParameters();
         assertThat(parametersRetrieved).isNotNull();
-        assertThat(parametersRetrieved.length).isEqualTo(1);
-        assertThat(parametersRetrieved[0].getType()).isEqualTo(List.class);
+        assertThat(parametersRetrieved).hasSize(1);
+        assertThat(parametersRetrieved).extracting("type").containsExactly(List.class);
     }
 
 }
