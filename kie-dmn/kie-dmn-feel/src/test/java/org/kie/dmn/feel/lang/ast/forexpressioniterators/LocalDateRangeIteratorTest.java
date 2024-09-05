@@ -19,9 +19,6 @@
 package org.kie.dmn.feel.lang.ast.forexpressioniterators;
 
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.IntStream;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -65,16 +62,14 @@ class LocalDateRangeIteratorTest {
 
     @Test
     void nextAscendantTest() {
-        List<LocalDate> expected = Arrays.asList(LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 2), LocalDate.of(2021, 1, 3));
         LocalDateRangeIterator iterator = new LocalDateRangeIterator(before, after);
-        IntStream.range(0, 3).forEach(i -> assertThat(expected.get(i)).isEqualTo(iterator.next()));
+        assertThat(iterator).toIterable().containsExactly(LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 2), LocalDate.of(2021, 1, 3));
     }
 
     @Test
     void nextDescendantTest() {
-        List<LocalDate> expected = Arrays.asList(LocalDate.of(2021, 1, 3), LocalDate.of(2021, 1, 2), LocalDate.of(2021, 1, 1));
         LocalDateRangeIterator iterator = new LocalDateRangeIterator(after, before);
-        IntStream.range(0, 3).forEach(i -> assertThat(expected.get(i)).isEqualTo(iterator.next()));
+        assertThat(iterator).toIterable().containsExactly(LocalDate.of(2021, 1, 3), LocalDate.of(2021, 1, 2), LocalDate.of(2021, 1, 1));
     }
 
 

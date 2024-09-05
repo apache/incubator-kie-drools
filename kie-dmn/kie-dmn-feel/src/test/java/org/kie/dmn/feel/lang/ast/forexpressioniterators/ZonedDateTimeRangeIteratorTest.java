@@ -21,9 +21,6 @@ package org.kie.dmn.feel.lang.ast.forexpressioniterators;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.IntStream;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -68,20 +65,18 @@ class ZonedDateTimeRangeIteratorTest {
 
     @Test
     void nextAscendantTest() {
-        List<ZonedDateTime> expected = Arrays.asList(getZonedDateTime(2021, 1, 1, 10, 15),
+        ZonedDateTimeRangeIterator iterator = new ZonedDateTimeRangeIterator(before, after);
+        assertThat(iterator).toIterable().containsExactly(getZonedDateTime(2021, 1, 1, 10, 15),
                 getZonedDateTime(2021, 1, 2, 10, 15),
                 getZonedDateTime(2021, 1, 3, 10, 15));
-        ZonedDateTimeRangeIterator iterator = new ZonedDateTimeRangeIterator(before, after);
-        IntStream.range(0, 3).forEach(i -> assertThat(expected.get(i)).isEqualTo(iterator.next()));
     }
 
     @Test
     void nextDescendantTest() {
-        List<ZonedDateTime> expected = Arrays.asList(getZonedDateTime(2021, 1, 3, 10, 15),
+        ZonedDateTimeRangeIterator iterator = new ZonedDateTimeRangeIterator(after, before);
+        assertThat(iterator).toIterable().containsExactly(getZonedDateTime(2021, 1, 3, 10, 15),
                 getZonedDateTime(2021, 1, 2, 10, 15),
                 getZonedDateTime(2021, 1, 1, 10, 15));
-        ZonedDateTimeRangeIterator iterator = new ZonedDateTimeRangeIterator(after, before);
-        IntStream.range(0, 3).forEach(i -> assertThat(expected.get(i)).isEqualTo(iterator.next()));
     }
 
 
