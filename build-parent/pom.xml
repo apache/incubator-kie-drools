@@ -60,9 +60,9 @@
     <version.commons-logging>1.1.1</version.commons-logging>
     <version.commons-io>2.15.1</version.commons-io>
     <version.common-text>1.11.0</version.common-text>
-    <version.com.fasterxml.jackson>2.16.1</version.com.fasterxml.jackson>
-    <version.com.fasterxml.jackson.databind>2.16.1</version.com.fasterxml.jackson.databind>
-    <version.com.fasterxml.jackson.annotations>2.16.1</version.com.fasterxml.jackson.annotations>
+    <version.com.fasterxml.jackson>2.17.2</version.com.fasterxml.jackson>
+    <version.com.fasterxml.jackson.databind>2.17.2</version.com.fasterxml.jackson.databind>
+    <version.com.fasterxml.jackson.annotations>2.17.2</version.com.fasterxml.jackson.annotations>
     <version.com.github.victools>4.31.0</version.com.github.victools> <!-- victools should align with Jackson if possible -->
     <version.com.miglayout>3.7.4</version.com.miglayout>
     <version.domino-slf4j-logger>1.0.1</version.domino-slf4j-logger>
@@ -74,7 +74,7 @@
     <version.guru.nidi>0.18.0</version.guru.nidi>
     <version.info.picocli>4.7.5</version.info.picocli>
     <version.io.micrometer>1.12.2</version.io.micrometer>
-    <version.io.quarkus>3.8.4</version.io.quarkus>
+    <version.io.quarkus>3.8.6</version.io.quarkus>
     <version.io.smallrye.openapi.core>3.10.0</version.io.smallrye.openapi.core>
     <version.it.unimi.dsi.fastutil>8.5.11</version.it.unimi.dsi.fastutil>
     <version.junit>4.13.1</version.junit>
@@ -101,11 +101,11 @@
     <version.org.hsqldb>2.3.0</version.org.hsqldb>
     <version.org.infinispan>14.0.25.Final</version.org.infinispan>
     <version.org.javassist>3.26.0-GA</version.org.javassist>
-    <version.org.jboss.narayana.tomcat>7.0.1.Final</version.org.jboss.narayana.tomcat>
+    <version.org.jboss.narayana.tomcat>7.0.2.Final</version.org.jboss.narayana.tomcat>
     <version.org.jboss.logging>3.5.3.Final</version.org.jboss.logging>
     <version.org.jboss.transaction.spi>8.0.0.Final</version.org.jboss.transaction.spi>
     <version.org.jboss.weld.weld>3.1.6.Final</version.org.jboss.weld.weld>
-    <version.org.eclipse.microprofile.config>3.0.3</version.org.eclipse.microprofile.config>
+    <version.org.eclipse.microprofile.config>3.1</version.org.eclipse.microprofile.config>
     <version.jakarta.enterprise.cdi-api>4.0.1</version.jakarta.enterprise.cdi-api>
     <version.jakarta.activation>2.0.1</version.jakarta.activation>
     <version.jakarta.activation-api>2.1.2</version.jakarta.activation-api>
