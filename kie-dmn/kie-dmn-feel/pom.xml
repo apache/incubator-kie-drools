@@ -144,7 +144,7 @@
           <directory>${project.basedir}/src/test/resources</directory>
       </testResource>
       <testResource>
-        <directory>${project.basedir}/../</directory>
+        <directory>${project.basedir}/</directory>
         <includes>
           <include>ref-dmn-feel-builtin-functions.adoc</include>
         </includes>

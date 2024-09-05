@@ -47,6 +47,4 @@ abstract class AbstractMetricTest extends CommonTestMethodBase {
         MicrometerUtils.INSTANCE.clear();
         registry = null;
     }
-
-
 }

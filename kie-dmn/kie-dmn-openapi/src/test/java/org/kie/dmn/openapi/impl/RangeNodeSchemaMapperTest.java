@@ -33,9 +33,6 @@ import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.impl.RangeImpl;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.kie.dmn.openapi.impl.SchemaMapperTestUtils.getBaseNodes;
 
 class RangeNodeSchemaMapperTest {
@@ -48,10 +45,10 @@ class RangeNodeSchemaMapperTest {
         List<RangeNode> ranges = getBaseNodes(toRange, RangeNode.class);
         Schema toPopulate = OASFactory.createObject(Schema.class);
         RangeNodeSchemaMapper.populateSchemaFromListOfRanges(toPopulate, ranges);
-        assertEquals(BigDecimal.ONE, toPopulate.getMinimum());
-        assertTrue(toPopulate.getExclusiveMinimum());
-        assertEquals(BigDecimal.TEN, toPopulate.getMaximum());
-        assertFalse(toPopulate.getExclusiveMaximum());
+        assertThat(toPopulate.getMinimum()).isEqualTo(BigDecimal.ONE);
+        assertThat(toPopulate.getExclusiveMinimum()).isTrue();
+        assertThat(toPopulate.getMaximum()).isEqualTo(BigDecimal.TEN);
+        assertThat(toPopulate.getExclusiveMaximum()).isFalse();
     }
 
     @Test
@@ -66,10 +63,10 @@ class RangeNodeSchemaMapperTest {
 
         Schema toPopulate = OASFactory.createObject(Schema.class);
         RangeNodeSchemaMapper.populateSchemaFromListOfRanges(toPopulate, ranges);
-        assertEquals(expectedDates.get(0), toPopulate.getExtensions().get(DMNOASConstants.X_DMN_MINIMUM_VALUE));
-        assertTrue(toPopulate.getExclusiveMinimum());
-        assertEquals(expectedDates.get(1), toPopulate.getExtensions().get(DMNOASConstants.X_DMN_MAXIMUM_VALUE));
-        assertFalse(toPopulate.getExclusiveMaximum());
+        assertThat(toPopulate.getExtensions().get(DMNOASConstants.X_DMN_MINIMUM_VALUE)).isEqualTo(expectedDates.get(0));
+        assertThat(toPopulate.getExclusiveMinimum()).isTrue();
+        assertThat(toPopulate.getExtensions().get(DMNOASConstants.X_DMN_MAXIMUM_VALUE)).isEqualTo(expectedDates.get(1));
+        assertThat(toPopulate.getExclusiveMaximum()).isFalse();
     }
 
     @Test

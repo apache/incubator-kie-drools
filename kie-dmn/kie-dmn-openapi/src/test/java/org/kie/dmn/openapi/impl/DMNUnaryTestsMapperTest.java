@@ -22,7 +22,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
@@ -33,12 +32,8 @@ import org.kie.dmn.api.core.DMNUnaryTest;
 import org.kie.dmn.feel.lang.ast.BaseNode;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.kie.dmn.openapi.impl.DMNUnaryTestsMapper.getUnaryEvaluationNodesFromUnaryTests;
 import static org.kie.dmn.openapi.impl.SchemaMapperTestUtils.FEEL_NUMBER;
 import static org.kie.dmn.openapi.impl.SchemaMapperTestUtils.FEEL_STRING;
@@ -56,10 +51,9 @@ class DMNUnaryTestsMapperTest {
         expression += ", count (?) > 1";
         List<DMNUnaryTest> unaryTests = feel.evaluateUnaryTests(expression).stream().map(DMNUnaryTest.class::cast).toList();
         DMNUnaryTestsMapper.populateSchemaFromUnaryTests(toPopulate, unaryTests);
-        assertFalse(toPopulate.getNullable());
-        assertNotNull(toPopulate.getEnumeration());
-        assertEquals(expectedStrings.size(), toPopulate.getEnumeration().size());
-        expectedStrings.forEach(expectedString -> assertTrue(toPopulate.getEnumeration().contains(expectedString)));
+        assertThat(toPopulate.getNullable()).isFalse();
+        assertThat(toPopulate.getEnumeration()).isNotNull();
+        assertThat(toPopulate.getEnumeration()).hasSameSizeAs(expectedStrings).containsAll(expectedStrings);
     }
 
     @Test
@@ -70,10 +64,9 @@ class DMNUnaryTestsMapperTest {
         String expression = String.join(",", toEnum.stream().map(toMap -> String.format("%s", toMap.toString())).toList());
         List<DMNUnaryTest> unaryTests = feel.evaluateUnaryTests(expression).stream().map(DMNUnaryTest.class::cast).toList();
         DMNUnaryTestsMapper.populateSchemaFromUnaryTests(toPopulate, unaryTests);
-        assertTrue(toPopulate.getNullable());
-        assertNotNull(toPopulate.getEnumeration());
-        assertEquals(expectedStrings.size(), toPopulate.getEnumeration().size());
-        expectedStrings.stream().filter(Objects::nonNull).forEach(expectedString -> assertTrue(toPopulate.getEnumeration().contains(expectedString)));
+        assertThat(toPopulate.getNullable()).isTrue();
+        assertThat(toPopulate.getEnumeration()).isNotNull();
+        assertThat(toPopulate.getEnumeration()).hasSameSizeAs(expectedStrings).containsAll(expectedStrings);
     }
 
     @Test
@@ -83,19 +76,17 @@ class DMNUnaryTestsMapperTest {
         String expression = String.join(",", toEnum.stream().map(toMap -> String.format("%s", toMap)).toList());
         List<DMNUnaryTest> toCheck = feel.evaluateUnaryTests(expression).stream().map(DMNUnaryTest.class::cast).toList();
         AtomicReference<Schema> toPopulate = new AtomicReference<>(getSchemaForSimpleType(null, expression, FEEL_STRING, BuiltInType.STRING));
-        assertNull(toPopulate.get().getEnumeration());
+        assertThat(toPopulate.get().getEnumeration()).isNull();;
         DMNUnaryTestsMapper.populateSchemaFromUnaryTests(toPopulate.get(), toCheck);
-        assertEquals(enumBase.size(), toPopulate.get().getEnumeration().size());
-        enumBase.forEach(en -> assertTrue(toPopulate.get().getEnumeration().contains(en)));
+        assertThat(toPopulate.get().getEnumeration()).hasSameSizeAs(enumBase).containsAll(enumBase);
 
-        toEnum = Arrays.asList(1, 3, 6, 78);
-        expression = String.join(",", toEnum.stream().map(toMap -> String.format("%s", toMap)).toList());
+        List<BigDecimal>toEnum1 = Arrays.asList(BigDecimal.valueOf(1L), BigDecimal.valueOf(3), BigDecimal.valueOf(6), BigDecimal.valueOf(78));
+        expression = String.join(",", toEnum1.stream().map(toMap -> String.format("%s", toMap)).toList());
         toCheck = feel.evaluateUnaryTests(expression).stream().map(DMNUnaryTest.class::cast).toList();
         toPopulate.set(getSchemaForSimpleType(null, expression, FEEL_NUMBER, BuiltInType.NUMBER));
-        assertNull(toPopulate.get().getEnumeration());
+        assertThat(toPopulate.get().getEnumeration()).isNull();
         DMNUnaryTestsMapper.populateSchemaFromUnaryTests(toPopulate.get(), toCheck);
-        assertEquals(toEnum.size(), toPopulate.get().getEnumeration().size());
-        toEnum.stream().map(i -> BigDecimal.valueOf((int)i)).forEach(en -> assertTrue(toPopulate.get().getEnumeration().contains(en)));
+        assertThat(toPopulate.get().getEnumeration()).hasSameSizeAs(enumBase).extracting(value -> ((BigDecimal)value)).containsAll(toEnum1);
 
         toPopulate.set(OASFactory.createObject(Schema.class));
         List<LocalDate> expectedDates = Arrays.asList(LocalDate.of(2022, 1, 1), LocalDate.of(2024, 1, 1));
@@ -104,11 +95,10 @@ class DMNUnaryTestsMapperTest {
                 .toList();
         expression = String.join(",", formattedDates.stream().map(toMap -> String.format("%s", toMap)).toList());
         toCheck = feel.evaluateUnaryTests(expression).stream().map(DMNUnaryTest.class::cast).toList();
-        assertNull(toPopulate.get().getNullable());
+        assertThat(toPopulate.get().getNullable()).isNull();
         DMNUnaryTestsMapper.populateSchemaFromUnaryTests(toPopulate.get(), toCheck);
-        assertNotNull(toPopulate.get().getEnumeration());
-        assertEquals(expectedDates.size(), toPopulate.get().getEnumeration().size());
-        expectedDates.forEach(expectedDate -> assertTrue(toPopulate.get().getEnumeration().contains(expectedDate)));
+        assertThat(toPopulate.get().getEnumeration()).isNotNull();
+        assertThat(toPopulate.get().getEnumeration()).hasSameSizeAs(expectedDates).containsAll(expectedDates);
     }
 
     @Test
@@ -117,9 +107,9 @@ class DMNUnaryTestsMapperTest {
         String expression = String.join(",", toEnum.stream().map(toMap -> String.format("%s", toMap)).toList());
         List<DMNUnaryTest> toCheck =
                 feel.evaluateUnaryTests(expression).stream().map(DMNUnaryTest.class::cast).toList();
-        assertEquals(toEnum.size(), toCheck.size());
+        assertThat(toCheck).hasSameSizeAs(toEnum);
         Schema toPopulate = getSchemaForSimpleType(null, expression, FEEL_STRING, BuiltInType.STRING);
-        assertThrows(IllegalArgumentException.class, () -> DMNUnaryTestsMapper.populateSchemaFromUnaryTests(toPopulate, toCheck));
+        assertThatIllegalArgumentException().isThrownBy(() -> DMNUnaryTestsMapper.populateSchemaFromUnaryTests(toPopulate, toCheck));
     }
 
     @Test
@@ -130,11 +120,10 @@ class DMNUnaryTestsMapperTest {
         List<DMNUnaryTest> dmnUnaryTests =
                 feel.evaluateUnaryTests(expression).stream().map(DMNUnaryTest.class::cast).toList();
         AtomicReference<Schema> schemaRef = new AtomicReference<>(getSchemaForSimpleType(null, expression, FEEL_STRING, BuiltInType.STRING));
-        assertNull(schemaRef.get().getEnumeration());
+        assertThat(schemaRef.get().getEnumeration()).isNull();
         BaseNode toCheck = getUnaryEvaluationNodesFromUnaryTests(dmnUnaryTests).get(0);
         DMNUnaryTestsMapper.populateSchemaFromBaseNode(schemaRef.get(), toCheck);
-        assertEquals(enumBase.size(), schemaRef.get().getEnumeration().size());
-        enumBase.forEach(en -> assertTrue(schemaRef.get().getEnumeration().contains(en)));
+        assertThat(schemaRef.get().getEnumeration()).hasSameSizeAs(enumBase).containsAll(enumBase);
     }
 
 }
