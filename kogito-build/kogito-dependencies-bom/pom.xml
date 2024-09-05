@@ -35,28 +35,28 @@
 
   <properties>
     <!-- this version property is used in plugins but also in dependencies too -->
-    <version.io.quarkus>3.8.4</version.io.quarkus>
+    <version.io.quarkus>3.8.6</version.io.quarkus>
     <version.io.quarkus.quarkus-test>${version.io.quarkus}</version.io.quarkus.quarkus-test>
     <version.org.springframework.boot>3.2.6</version.org.springframework.boot>
-    <version.org.apache.kafka>3.6.1</version.org.apache.kafka>
+    <version.org.apache.kafka>3.7.0</version.org.apache.kafka>
 
     <version.org.bouncycastle.bc.jdk18on>1.78.1</version.org.bouncycastle.bc.jdk18on>
 
     <!-- dependencies versions -->
     <version.com.networknt>1.0.86</version.com.networknt>
-    <version.com.fasterxml.jackson>2.16.1</version.com.fasterxml.jackson>
-    <version.com.fasterxml.jackson.databind>2.16.1</version.com.fasterxml.jackson.databind>
+    <version.com.fasterxml.jackson>2.17.2</version.com.fasterxml.jackson>
+    <version.com.fasterxml.jackson.databind>2.17.2</version.com.fasterxml.jackson.databind>
     <version.com.jayway.jsonpath>2.9.0</version.com.jayway.jsonpath>
     <version.net.minidev.jsonsmart>2.4.10</version.net.minidev.jsonsmart>
     <version.net.thisptr.jackson-jq>1.0.0-preview.20240207</version.net.thisptr.jackson-jq>
-    <version.io.quarkiverse.jackson-jq>2.0.1</version.io.quarkiverse.jackson-jq>
+    <version.io.quarkiverse.jackson-jq>2.0.2</version.io.quarkiverse.jackson-jq>
     <version.io.quarkiverse.openapi.generator>2.4.1</version.io.quarkiverse.openapi.generator>
     <version.io.quarkiverse.asyncapi>0.3.0</version.io.quarkiverse.asyncapi>
     <version.io.quarkiverse.reactivemessaging.http>2.2.0</version.io.quarkiverse.reactivemessaging.http>
-    <version.io.quarkiverse.embedded.postgresql>0.2.2</version.io.quarkiverse.embedded.postgresql>
+    <version.io.quarkiverse.embedded.postgresql>0.2.2</version.io.quarkiverse.embedded.postgresql> <!-- TODO: no matching release yet -->
     <version.com.github.haifengl.smile>1.5.2</version.com.github.haifengl.smile>
     <version.com.github.javaparser>3.25.8</version.com.github.javaparser>
-    <version.com.fasterxml.jackson.datatype>2.16.1</version.com.fasterxml.jackson.datatype>
+    <version.com.fasterxml.jackson.datatype>2.17.2</version.com.fasterxml.jackson.datatype>
     <version.com.github.victools>4.31.0</version.com.github.victools>
     <version.com.github.tomakehurst.wiremock>2.35.1</version.com.github.tomakehurst.wiremock>
     <version.com.google.protobuf>3.25.0</version.com.google.protobuf>
@@ -87,12 +87,12 @@
     <version.io.smallrye-open-api>3.10.0</version.io.smallrye-open-api>
     <version.org.awaitility>4.2.0</version.org.awaitility>
 
-    <version.io.smallrye.reactive.mutiny-vertx-web-client>3.10.0</version.io.smallrye.reactive.mutiny-vertx-web-client>
+    <version.io.smallrye.reactive.mutiny-vertx-web-client>3.11.0</version.io.smallrye.reactive.mutiny-vertx-web-client>
 
     <version.io.vertx>4.5.7</version.io.vertx>
     <version.io.grpc>1.59.1</version.io.grpc>
 
-    <version.io.quarkus.camel>3.9.0</version.io.quarkus.camel>
+    <version.io.quarkus.camel>3.9.0</version.io.quarkus.camel> <!-- TODO: quarkus version mismatch -->
 
     <version.io.swagger.parser.v3>2.1.19</version.io.swagger.parser.v3>
     <version.io.swagger.core.v3>2.2.19</version.io.swagger.core.v3>
@@ -101,17 +101,17 @@
 
     <version.org.graalvm.nativeimage>23.1.2</version.org.graalvm.nativeimage>
 
-    <version.org.infinispan>14.0.25.Final</version.org.infinispan>
+    <version.org.infinispan>14.0.27.Final</version.org.infinispan>
     <version.org.infinispan.protostream>4.6.5.Final</version.org.infinispan.protostream>
 
     <version.org.rocksdb>7.10.2</version.org.rocksdb>
     <!-- consider migrating to 3.x JDK 9: https://jakarta.ee/specifications/restful-ws/ -->
     <version.jakarta.ws.rs>3.1.0</version.jakarta.ws.rs>
     <version.org.jboss.resteasy>6.2.7.Final</version.org.jboss.resteasy>
-    <version.org.keycloak>23.0.7</version.org.keycloak>
+    <version.org.keycloak>24.0.4</version.org.keycloak>
     <!-- It seems that the confluent kafka cannot replace wurstmeister/kafka so easily. See FAI-729 -->
     <version.wurstmeister.kafka>2.12-2.2.1</version.wurstmeister.kafka>
-    <version.org.mongo>4.9.1</version.org.mongo>
+    <version.org.mongo>4.11.1</version.org.mongo>
     <version.org.mongo-image>4.4.14</version.org.mongo-image>
     <version.org.mozilla.rhino>1.7.13</version.org.mozilla.rhino>
     <version.org.redis>2.0.4</version.org.redis>
@@ -121,15 +121,15 @@
     <version.org.assertj>3.24.2</version.org.assertj>
     <version.org.glassfish.jaxb>4.0.4</version.org.glassfish.jaxb>
     <version.org.json-unit-assertj>2.9.0</version.org.json-unit-assertj>
-    <version.org.hamcrest>1.3</version.org.hamcrest> <!-- else old version coming from Mockito wins and breaks tests -->
+    <version.org.hamcrest>2.2</version.org.hamcrest> <!-- else old version coming from Mockito wins and breaks tests -->
     <version.org.junit>5.10.2</version.org.junit>
     <version.org.junit.jupiter>5.10.2</version.org.junit.jupiter>
     <version.org.junit.vintage>5.10.2</version.org.junit.vintage>
     <version.org.junit.platform>1.10.2</version.org.junit.platform> <!-- otherwise Quarkus brings its own, silently disabling some tests -->
-    <version.org.mockito>5.2.0</version.org.mockito>
+    <version.org.mockito>5.8.0</version.org.mockito>
     <version.org.testcontainers>1.19.6</version.org.testcontainers>
     <version.org.xmlunit-core>2.10.0</version.org.xmlunit-core>
-    <version.io.rest-assured>5.3.2</version.io.rest-assured>
+    <version.io.rest-assured>5.4.0</version.io.rest-assured>
 
     <version.net.byte-buddy>1.14.11</version.net.byte-buddy>
 
@@ -150,7 +150,7 @@
     <version.com.github.stephenc.jcip>1.0-1</version.com.github.stephenc.jcip>
     <version.black.ninia>4.2.0</version.black.ninia>
     <version.com.google.collections>1.0</version.com.google.collections>
-    <version.com.google.guava>32.0.1-jre</version.com.google.guava>
+    <version.com.google.guava>33.0.0-jre</version.com.google.guava>
     <version.apache.commons.commons-compress>1.26.1</version.apache.commons.commons-compress>
   </properties>
 
@@ -496,12 +496,6 @@
       <dependency>
         <groupId>org.mockito</groupId>
         <artifactId>mockito-core</artifactId>
-        <version>${version.org.mockito}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.mockito</groupId>
-        <artifactId>mockito-inline</artifactId>
         <version>${version.org.mockito}</version>
         <scope>test</scope>
       </dependency>
