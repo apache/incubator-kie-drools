@@ -97,7 +97,7 @@ public class RhsParser {
         Expression actionArg = statement.getArgument(0);
         Class<?> actionClass = null;
         if (actionArg.isNameExpr()) {
-            actionClass = context.getTypedDeclarationById(actionArg.toString()).map(TypedDeclarationSpec::getDeclarationClass)
+            actionClass = context.getTypedDeclarationById(actionArg.toString()).<Class<?>>map(TypedDeclarationSpec::getDeclarationClass)
                     .orElseGet(() -> getClassFromAssignment(consequenceExpr, actionArg));
         } else if (actionArg.isLiteralExpr()) {
             actionClass = literalType(actionArg.asLiteralExpr());
