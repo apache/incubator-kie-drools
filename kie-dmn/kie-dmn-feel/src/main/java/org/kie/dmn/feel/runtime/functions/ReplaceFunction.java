@@ -20,6 +20,7 @@ package org.kie.dmn.feel.runtime.functions;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
+import org.kie.dmn.feel.util.XQueryImplUtil;
 
 public class ReplaceFunction
         extends BaseFEELFunction {
@@ -54,7 +55,8 @@ public class ReplaceFunction
             flagsString = "";
         }
 
-        return FEELFnResult.ofResult( input.replaceAll( flagsString + pattern, replacement ) );
+        return XQueryImplUtil.getReplaceFunctionXqueryImpl(input,flagsString+pattern,replacement);
+        //return FEELFnResult.ofResult( input.replaceAll( flagsString + pattern, replacement ) );
     }
 
 }

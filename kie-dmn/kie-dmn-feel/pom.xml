@@ -69,8 +69,8 @@
       </exclusions>
     </dependency>
     <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>drools-compiler</artifactId>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-compiler</artifactId>
     </dependency>
 
     <dependency>
@@ -78,10 +78,17 @@
       <artifactId>javaparser-core</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>net.sf.saxon</groupId>
+      <artifactId>Saxon-HE</artifactId>
+      <version>12.5</version>
+    </dependency>
+
+
     <!-- BigMath dependency to obtain BigDecimal advanced math -->
     <dependency>
-        <groupId>ch.obermuhlner</groupId>
-        <artifactId>big-math</artifactId>
+      <groupId>ch.obermuhlner</groupId>
+      <artifactId>big-math</artifactId>
     </dependency>
 
     <!-- Logging -->
@@ -141,7 +148,7 @@
   <build>
     <testResources>
       <testResource> <!-- as I will be including additional testResource directory, I need to re-explicit the default to Maven (standard Maven behaviour) -->
-          <directory>${project.basedir}/src/test/resources</directory>
+        <directory>${project.basedir}/src/test/resources</directory>
       </testResource>
       <testResource>
         <directory>${project.basedir}/../</directory>

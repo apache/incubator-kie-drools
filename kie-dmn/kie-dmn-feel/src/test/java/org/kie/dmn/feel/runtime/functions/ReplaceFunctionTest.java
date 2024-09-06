@@ -67,7 +67,7 @@ class ReplaceFunctionTest {
 
     @Test
     void invokeWithoutFlagsPatternMatches() {
-        FunctionTestUtil.assertResult(replaceFunction.invoke("testString", "^test", "ttt"), "tttString");
+        FunctionTestUtil.assertResult(replaceFunction.invoke("testString", "^test", "ttt"),"tttString");
         FunctionTestUtil.assertResult(replaceFunction.invoke("testStringtest", "^test", "ttt"), "tttStringtest");
     }
 
@@ -95,5 +95,7 @@ class ReplaceFunctionTest {
     @Test
     void invokeWithAllFlags() {
         FunctionTestUtil.assertResult(replaceFunction.invoke("fo\nbar", "O.^b", "ttt", "smi"), "ftttar");
+        FunctionTestUtil.assertResult(replaceFunction.invoke("banana","a","o"), "bonono");
+        FunctionTestUtil.assertResult(replaceFunction.invoke("abcd","(ab)|(a)","[1=$1][2=$2]"), "[1=ab][2=]cd");
     }
 }

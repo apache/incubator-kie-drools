@@ -19,14 +19,11 @@
 package org.kie.dmn.feel.runtime.functions;
 
 import java.security.InvalidParameterException;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
-import java.util.stream.Collectors;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
+import org.kie.dmn.feel.util.XQueryImplUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,25 +36,23 @@ public class MatchesFunction
         super( "matches" );
     }
 
-    public FEELFnResult<Boolean> invoke(@ParameterName("input") String input, @ParameterName("pattern") String pattern) {
+    public FEELFnResult<Object> invoke(@ParameterName("input") String input, @ParameterName("pattern") String pattern) {
         return invoke( input, pattern, null );
     }
 
-    public FEELFnResult<Boolean> invoke(@ParameterName("input") String input, @ParameterName("pattern") String pattern, @ParameterName("flags") String flags) {
+    public FEELFnResult<Object> invoke(@ParameterName("input") String input, @ParameterName("pattern") String pattern, @ParameterName("flags") String flags) {
         try {
             return matchFunctionWithFlags(input,pattern,flags);
         } catch ( PatternSyntaxException t ) {
             return FEELFnResult.ofError( new InvalidParametersEvent( Severity.ERROR, "pattern", "is invalid and can not be compiled", t ) );
-        } catch (InvalidParameterException t ) {
-            return FEELFnResult.ofError( new InvalidParametersEvent( Severity.ERROR, t.getMessage(), "cannot be null", t ) );
         } catch (IllegalArgumentException t ) {
-            return FEELFnResult.ofError( new InvalidParametersEvent( Severity.ERROR, "flags", "contains unknown flags", t ) );
+            return FEELFnResult.ofError( new InvalidParametersEvent( Severity.ERROR, t.getMessage(), "cannot be null or is invalid", t ) );
         } catch (Throwable t) {
             return FEELFnResult.ofError( new InvalidParametersEvent( Severity.ERROR, "pattern", "is invalid and can not be compiled", t ) );
         }
     }
 
-    static FEELFnResult<Boolean> matchFunctionWithFlags(String input, String pattern, String flags) {
+    static FEELFnResult<Object> matchFunctionWithFlags(String input, String pattern, String flags) {
         log.debug("Input:  {} , Pattern: {}, Flags: {}", input, pattern, flags);
         if ( input == null ) {
             throw new InvalidParameterException("input");
@@ -65,37 +60,6 @@ public class MatchesFunction
         if ( pattern == null ) {
             throw new InvalidParameterException("pattern");
         }
-            final String flagsString;
-            if (flags != null && !flags.isEmpty()) {
-                checkFlags(flags);
-                if(!flags.contains("U")){
-                    flags += "U";
-                }
-                flagsString = String.format("(?%s)", flags);
-            } else {
-                flagsString = "";
-            }
-            log.debug("flagsString: {}", flagsString);
-            String stringToBeMatched = flagsString + pattern;
-            log.debug("stringToBeMatched: {}", stringToBeMatched);
-            Pattern p=Pattern.compile(stringToBeMatched);
-            Matcher m = p.matcher( input );
-            boolean matchFound=m.find();
-            log.debug("matchFound: {}", matchFound);
-            return FEELFnResult.ofResult(matchFound);
-    }
-
-   static void checkFlags(String flags) {
-        Set<Character> allowedChars = Set.of('s','i','x','m');
-         boolean isValidFlag= flags.chars()
-                .mapToObj(c -> (char) c)
-                .allMatch(allowedChars::contains)
-                && flags.chars()
-                .mapToObj(c -> (char) c)
-                .collect(Collectors.toSet())
-                .size() == flags.length();
-         if(!isValidFlag){
-             throw new IllegalArgumentException("Not a valid flag parameter " +flags);
-         }
+        return XQueryImplUtil.getMatchesFunctionXqueryImpl(input, pattern, flags);
     }
 }
