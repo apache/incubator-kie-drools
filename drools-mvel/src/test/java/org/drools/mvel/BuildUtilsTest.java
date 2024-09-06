@@ -116,33 +116,12 @@ public class BuildUtilsTest {
         and.addChild( not );
         
         TemporalDependencyMatrix matrix = utils.calculateTemporalDistance( and );
-        //printMatrix( matrix.getMatrix() );
-        assertEqualsMatrix( expected, matrix.getMatrix() );
-
+        
+        assertThat(matrix.getMatrix()).isDeepEqualTo(expected);
         assertThat(matrix.getExpirationOffset(a)).isEqualTo(15);
         assertThat(matrix.getExpirationOffset(d)).isEqualTo(11);
         assertThat(matrix.getExpirationOffset(e)).isEqualTo(1);
         
-    }
-
-    public void assertEqualsMatrix( Interval[][] expected, Interval[][] matrix ) {
-        for( int i = 0; i < matrix.length; i++ ) {
-            for( int j = 0; j < matrix[i].length; j++ ) {
-                assertThat(matrix[i][j]).as("Wrong value at (" + i + ", " + j).isEqualTo(expected[i][j]);
-            }
-        }
-    }
-
-    public void printMatrix( Interval[][] matrix ) {
-        System.out.println("------------------------------------------------------------------");
-        for( int i = 0; i < matrix.length; i++ ) {
-            System.out.print("|  ");
-            for( int j = 0; j < matrix[i].length; j++ ) {
-                System.out.print( matrix[i][j] + "  ");
-            }
-            System.out.println("|");
-        }
-        System.out.println("------------------------------------------------------------------");
     }
     
 }
