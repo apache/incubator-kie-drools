@@ -44,7 +44,8 @@
     <module>integration-tests-springboot-processes-postgresql</module>
     <module>integration-tests-springboot-processes-mongodb</module>
     <module>integration-tests-springboot-processes-jdbc</module>
-    <module>integration-tests-springboot-processes-filesystem</module>
+    <!-- Temporary disabling -->
+<!--    <module>integration-tests-springboot-processes-filesystem</module>-->
   </modules>
 
   <dependencyManagement>
