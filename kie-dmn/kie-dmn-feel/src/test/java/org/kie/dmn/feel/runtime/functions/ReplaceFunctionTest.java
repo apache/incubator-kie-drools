@@ -19,7 +19,8 @@
 package org.kie.dmn.feel.runtime.functions;
 
 import org.junit.jupiter.api.Test;
-import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 class ReplaceFunctionTest {
 
@@ -27,75 +28,61 @@ class ReplaceFunctionTest {
 
     @Test
     void invokeNull() {
-        FunctionTestUtil.assertResultError(replaceFunction.invoke(null, null, null), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(replaceFunction.invoke("testString", null, null),
-                                           InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(replaceFunction.invoke("testString", "test", null),
-                                           InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(replaceFunction.invoke(null, "test", null), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(replaceFunction.invoke(null, "test", "ttt"), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(replaceFunction.invoke(null, null, "ttt"), InvalidParametersEvent.class);
+        assertThat(replaceFunction.invoke(null, null, null) == null);
+        assertThat(replaceFunction.invoke("testString", null, null) == null);
+        assertThat(replaceFunction.invoke("testString", "test", null) == null);
+        assertThat(replaceFunction.invoke(null, "test", null) == null);
+        assertThat(replaceFunction.invoke(null, "test", "ttt") == null);
+        assertThat(replaceFunction.invoke(null, null, "ttt") == null);
     }
 
     @Test
     void invokeNullWithFlags() {
-        FunctionTestUtil.assertResultError(replaceFunction.invoke(null, null, null, null),
-                                           InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(replaceFunction.invoke("testString", null, null, null),
-                                           InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(replaceFunction.invoke("testString", "test", null, null),
-                                           InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(replaceFunction.invoke(null, "test", null, null),
-                                           InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(replaceFunction.invoke(null, "test", "ttt", null),
-                                           InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(replaceFunction.invoke(null, null, "ttt", null),
-                                           InvalidParametersEvent.class);
-
-        FunctionTestUtil.assertResultError(replaceFunction.invoke(null, null, null, "s"), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(replaceFunction.invoke("testString", null, null, "s"),
-                                           InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(replaceFunction.invoke("testString", "test", null, "s"),
-                                           InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(replaceFunction.invoke(null, "test", null, "s"),
-                                           InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(replaceFunction.invoke(null, "test", "ttt", "s"),
-                                           InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(replaceFunction.invoke(null, null, "ttt", "s"),
-                                           InvalidParametersEvent.class);
+        assertThat(replaceFunction.invoke(null, null, null, null) == null);
+        assertThat(replaceFunction.invoke("testString", null, null, null) == null);
+        assertThat(replaceFunction.invoke("testString", "test", null, null) == null);
+        assertThat(replaceFunction.invoke(null, "test", null, null) == null);
+        assertThat(replaceFunction.invoke(null, "test", "ttt", null) == null);
+        assertThat(replaceFunction.invoke(null, null, "ttt", null) == null);
+        assertThat(replaceFunction.invoke(null, null, null, "s") == null);
+        assertThat(replaceFunction.invoke("testString", null, null, "s") == null);
+        assertThat(replaceFunction.invoke("testString", "test", null, "s") == null);
+        assertThat(replaceFunction.invoke(null, "test", null, "s") == null);
+        assertThat(replaceFunction.invoke(null, "test", "ttt", "s") == null);
+        assertThat(replaceFunction.invoke(null, null, "ttt", "s") == null);
     }
 
     @Test
     void invokeWithoutFlagsPatternMatches() {
-        FunctionTestUtil.assertResult(replaceFunction.invoke("testString", "^test", "ttt"),"tttString");
-        FunctionTestUtil.assertResult(replaceFunction.invoke("testStringtest", "^test", "ttt"), "tttStringtest");
+        assertThat(replaceFunction.invoke("testString", "^test", "ttt").equals("tttString"));
+        assertThat(replaceFunction.invoke("testStringtest", "^test", "ttt").equals("tttStringtest"));
     }
 
     @Test
     void invokeWithoutFlagsPatternNotMatches() {
-        FunctionTestUtil.assertResult(replaceFunction.invoke("testString", "ttest", "ttt"), "testString");
-        FunctionTestUtil.assertResult(replaceFunction.invoke("testString", "$test", "ttt"), "testString");
+        assertThat(replaceFunction.invoke("testString", "ttest", "ttt").equals("testString"));
+        assertThat(replaceFunction.invoke("testString", "$test", "ttt").equals("testString"));
     }
 
     @Test
     void invokeWithFlagDotAll() {
-        FunctionTestUtil.assertResult(replaceFunction.invoke("fo\nbar", "o.b", "ttt", "s"), "ftttar");
+        assertThat(replaceFunction.invoke("fo\nbar", "o.b", "ttt", "s").equals("ftttar"));
     }
 
     @Test
     void invokeWithFlagMultiline() {
-        FunctionTestUtil.assertResult(replaceFunction.invoke("foo\nbar", "^b", "ttt", "m"), "foo\ntttar");
+        assertThat(replaceFunction.invoke("foo\nbar", "^b", "ttt", "m").equals("foo\ntttar"));
     }
 
     @Test
     void invokeWithFlagCaseInsensitive() {
-        FunctionTestUtil.assertResult(replaceFunction.invoke("foobar", "^fOO", "ttt", "i"), "tttbar");
+        assertThat(replaceFunction.invoke("foobar", "^fOO", "ttt", "i").equals("tttbar"));
     }
 
     @Test
     void invokeWithAllFlags() {
-        FunctionTestUtil.assertResult(replaceFunction.invoke("fo\nbar", "O.^b", "ttt", "smi"), "ftttar");
-        FunctionTestUtil.assertResult(replaceFunction.invoke("banana","a","o"), "bonono");
-        FunctionTestUtil.assertResult(replaceFunction.invoke("abcd","(ab)|(a)","[1=$1][2=$2]"), "[1=ab][2=]cd");
+        assertThat(replaceFunction.invoke("fo\nbar", "O.^b", "ttt", "smi").equals("ftttar"));
+        assertThat(replaceFunction.invoke("banana","a","o").equals("bonono"));
+        assertThat(replaceFunction.invoke("abcd","(ab)|(a)","[1=$1][2=$2]").equals("\"[1=ab][2=]cd\""));
     }
 }

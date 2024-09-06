@@ -18,95 +18,58 @@
  */
 package org.kie.dmn.feel.util;
 
-import net.sf.saxon.s9api.*;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class XQueryImplUtilTest {
 
-    // Mocking the FEELFnResult class
-    private FEELFnResult<Object> mockFEELFnResult(Object value, boolean isError) {
-        FEELFnResult<Object> result = mock(FEELFnResult.class);
-        return result;
-    }
-
-    // Test for getMatchesFunctionXqueryImpl
-/*    @Test
-    public void testGetMatchesFunctionXqueryImpl() {
-        // Arrange
-        String input = "sampleInput";
-        String pattern = "samplePattern";
-        String flags = "i"; // ignore case
-        String xpathExpression = String.format("matches('%s', '%s', '%s')", input, pattern, flags);
-
-        FEELFnResult<Object> result = XQueryImplUtil.getMatchesFunctionXqueryImpl(input, pattern, flags);
-
-        assertEquals("true", result.getResult());
-        assertTrue(!result.isError());
-    }
-
-    // Test for getReplaceFunctionXqueryImpl
     @Test
-    public void testGetReplaceFunctionXqueryImpl() throws SaxonApiException {
-        // Arrange
-        String input = "<root>sampleInput</root>";
-        String pattern = "sampleInput";
-        String replacement = "replacedInput";
+    void getMatchesFunctionXqueryImpl() {
+        String input = "test";
+        String pattern = "^test";
+        String flags = "i";
+        Object retrieved = XQueryImplUtil.executeMatchesFunction(input, pattern,
+                flags);
+        String expected = "true";
+        System.out.println(retrieved);
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved.equals(expected));
 
-        // Mocking Processor and XSLT components
-        Processor processor = mock(Processor.class);
-        XsltCompiler compiler = mock(XsltCompiler.class);
-        XsltExecutable executable = mock(XsltExecutable.class);
-        XsltTransformer transformer = mock(XsltTransformer.class);
-        DocumentBuilder builder = mock(DocumentBuilder.class);
-        XdmNode source = mock(XdmNode.class);
-
-        StringWriter resultWriter = new StringWriter();
-
-        // Arrange the expected behavior
-        when(processor.newXsltCompiler()).thenReturn(compiler);
-        when(compiler.compile(new StreamSource("/resources/replace.xsl"))).thenReturn(executable);
-        when(executable.load()).thenReturn(transformer);
-        when(processor.newDocumentBuilder()).thenReturn(builder);
-        when(builder.build(any(StreamSource.class))).thenReturn(source);
-        when(transformer.getParameter(new QName("regex"))).thenReturn(new XdmAtomicValue(pattern));
-        when(transformer.getParameter(new QName("replacement"))).thenReturn(new XdmAtomicValue(replacement));
-        when(transformer.transform()).thenAnswer(invocation -> {
-            resultWriter.write("<root>replacedInput</root>");
-            return null;
-        });
-
-        // Act
-        FEELFnResult<Object> result = XQueryImplUtil.getReplaceFunctionXqueryImpl(input, pattern, replacement);
-
-        // Assert
-        assertEquals("<root>replacedInput</root>", result.getResult());
-        assertTrue(!result.isError());
+        input = "fo\nbar";
+        pattern = "o.b";
+        flags = "";
+        retrieved = XQueryImplUtil.executeMatchesFunction(input, pattern, flags);
+        expected = "false";
+        System.out.println(retrieved);
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved.equals(expected));
     }
 
-    // Test for evaluateXPathExpression
     @Test
-    public void testEvaluateXPathExpression() throws SaxonApiException {
-        // Arrange
-        String expression = "sampleExpression";
-        Processor processor = mock(Processor.class);
-        XPathCompiler xpathCompiler = mock(XPathCompiler.class);
-        XPathExecutable executable = mock(XPathExecutable.class);
-        XPathSelector selector = mock(XPathSelector.class);
-        XdmValue xdmValue = mock(XdmValue.class);
+    void getReplacesFunctionXqueryImpl() {
+        String input = "testString";
+        String pattern = "^test";
+        String replacement = "ttt";
+        String flags = "";
+        Object retrieved = XQueryImplUtil.executeReplaceFunction(input, pattern, replacement,
+                flags);
+        String expected = "tttString";
+        System.out.println(retrieved);
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved.equals(expected));
 
-        // Arrange the expected behavior
-        when(processor.newXPathCompiler()).thenReturn(xpathCompiler);
-        when(xpathCompiler.compile(expression)).thenReturn(executable);
-        when(executable.load()).thenReturn(selector);
-        when(selector.evaluate()).thenReturn(xdmValue);
-        when(xdmValue.toString()).thenReturn("sampleResult");
+        input = "fo\nbar";
+        pattern = "o.b";
+        replacement = "ttt";
+        flags = "s";
+        retrieved = XQueryImplUtil.executeReplaceFunction(input, pattern, replacement, flags);
+        expected = "ftttar";
+        System.out.println(retrieved);
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved.equals(expected));
+    }
 
-        // Act
-        FEELFnResult<Object> result = XQueryImplUtil.evaluateXPathExpression(expression);
-        //Assert
-    }*/
 }

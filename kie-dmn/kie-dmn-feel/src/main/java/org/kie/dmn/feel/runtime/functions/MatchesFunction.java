@@ -36,11 +36,11 @@ public class MatchesFunction
         super( "matches" );
     }
 
-    public FEELFnResult<Object> invoke(@ParameterName("input") String input, @ParameterName("pattern") String pattern) {
+    public Object invoke(@ParameterName("input") String input, @ParameterName("pattern") String pattern) {
         return invoke( input, pattern, null );
     }
 
-    public FEELFnResult<Object> invoke(@ParameterName("input") String input, @ParameterName("pattern") String pattern, @ParameterName("flags") String flags) {
+    public Object invoke(@ParameterName("input") String input, @ParameterName("pattern") String pattern, @ParameterName("flags") String flags) {
         try {
             return matchFunctionWithFlags(input,pattern,flags);
         } catch ( PatternSyntaxException t ) {
@@ -52,7 +52,7 @@ public class MatchesFunction
         }
     }
 
-    static FEELFnResult<Object> matchFunctionWithFlags(String input, String pattern, String flags) {
+    static Object matchFunctionWithFlags(String input, String pattern, String flags) {
         log.debug("Input:  {} , Pattern: {}, Flags: {}", input, pattern, flags);
         if ( input == null ) {
             throw new InvalidParameterException("input");
@@ -60,6 +60,6 @@ public class MatchesFunction
         if ( pattern == null ) {
             throw new InvalidParameterException("pattern");
         }
-        return XQueryImplUtil.getMatchesFunctionXqueryImpl(input, pattern, flags);
+        return XQueryImplUtil.executeMatchesFunction(input, pattern, flags);
     }
 }
