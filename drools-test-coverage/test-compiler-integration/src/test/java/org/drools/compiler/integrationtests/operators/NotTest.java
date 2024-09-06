@@ -311,4 +311,26 @@ public class NotTest {
         assertThat(results.size()).isEqualTo(1);
         assertThat(results.get(0)).isEqualTo("Paris");
     }
+
+    @Test
+    public void testNotWithUnification() {
+        // DROOLS-7629
+        final String drl =
+                "package org.drools.compiler.integrationtests.operators;\n" +
+                "rule R1 when\n" +
+                "      ( not ( $rao_v2 := String() and (\n" +
+                "          $rao_v2 := String()\n" +
+                "      ) ) and (\n" +
+                "         $rao_v2 := String()\n" +
+                "      )\n" +
+                "   )\n" +
+                "then\n" +
+                "end";
+
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("not-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession = kbase.newKieSession();
+
+        ksession.insert("test");
+        assertThat(ksession.fireAllRules()).isEqualTo(0);
+    }
 }

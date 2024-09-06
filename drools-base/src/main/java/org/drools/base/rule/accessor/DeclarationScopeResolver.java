@@ -109,7 +109,7 @@ public class DeclarationScopeResolver {
 
     public Declaration getDeclaration(String identifier) {
         // it may be a local bound variable
-        for (final Iterator<RuleConditionElement> iterator = buildList.descendingIterator(); iterator.hasNext();) {
+        for (final Iterator<RuleConditionElement> iterator = buildList.iterator(); iterator.hasNext();) {
             final Declaration declaration = iterator.next().resolveDeclaration( identifier );
             if ( declaration != null ) {
                 return declaration;
