@@ -20,8 +20,8 @@ package org.drools.beliefs.bayes.integration;
 
 import org.drools.beliefs.bayes.assembler.BayesPackage;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.junit.jupiter.api.Test;
 import org.drools.base.definitions.InternalKnowledgePackage;
-import org.junit.Test;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.io.ResourceFactory;
 
