@@ -23,9 +23,7 @@ import org.drools.beliefs.graph.GraphNode;
 import org.drools.beliefs.graph.impl.EdgeImpl;
 import org.drools.util.bitmask.OpenBitSet;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -56,11 +54,11 @@ public class GraphTest {
         int id = ints[0];
 
         Collection<Integer> adjVert = JunctionTreeBuilder.getAdjacentVertices(adjMatrix, id);
-        assertThat(adjVert.size()).isEqualTo(ints.length - 1);
+        assertThat(adjVert).hasSize(ints.length - 1);
         for ( int i = 1; i < ints.length; i++ ) {
             assertThat(adjMatrix[id][ints[i]]).as("link was not true " + id + ", " + i).isTrue();
             assertThat(adjMatrix[ints[i]][id]).as("link was not true " + i + ", " + id).isTrue();
-            assertThat(adjVert.contains(ints[i])).as("does not contain " + ints[i]).isTrue();
+            assertThat(adjVert).as("does not contain " + ints[i]).contains(ints[i]);
         }
 
         return   false;
@@ -74,14 +72,6 @@ public class GraphTest {
     }
 
 
-
-    public static List asList(int[] array) {
-        List list = new ArrayList(array.length);
-        for (int i = 0; i < array.length; i++) {
-            list.add(array[i]);
-        }
-        return list;
-    }
 
     public static OpenBitSet bitSet(String s) {
         OpenBitSet bitSet =  new OpenBitSet(  );
