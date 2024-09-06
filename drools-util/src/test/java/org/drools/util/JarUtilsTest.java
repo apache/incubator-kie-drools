@@ -29,4 +29,16 @@ public class JarUtilsTest {
         String normalized = JarUtils.normalizeSpringBootResourceUrlPath("BOOT-INF/classes!/org/example/MyClass.class");
         assertThat(normalized).isEqualTo("BOOT-INF/classes/org/example/MyClass.class");
     }
+
+    @Test
+    public void replaceNestedPathForSpringBoot32_shouldNotAffectOldPath() {
+        String result = JarUtils.replaceNestedPathForSpringBoot32("/dir/myapp.jar!/BOOT-INF/lib/mykjar.jar");
+        assertThat(result).isEqualTo("/dir/myapp.jar!/BOOT-INF/lib/mykjar.jar");
+    }
+
+    @Test
+    public void replaceNestedPathForSpringBoot32_shouldReplaceNewPath() {
+        String result = JarUtils.replaceNestedPathForSpringBoot32("/dir/myapp.jar/!BOOT-INF/lib/mykjar.jar");
+        assertThat(result).isEqualTo("/dir/myapp.jar!/BOOT-INF/lib/mykjar.jar");
+    }
 }
