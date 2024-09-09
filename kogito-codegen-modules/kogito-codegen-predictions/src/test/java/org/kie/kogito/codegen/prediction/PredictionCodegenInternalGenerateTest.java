@@ -29,7 +29,6 @@ import org.drools.codegen.common.AppPaths;
 import org.drools.codegen.common.GeneratedFile;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -49,7 +48,6 @@ import static org.kie.kogito.codegen.prediction.PredictionCodegenGenerateTest.co
 import static org.kie.kogito.codegen.prediction.PredictionCodegenGenerateTest.commonVerifyTotalFiles;
 import static org.kie.kogito.codegen.prediction.PredictionCodegenGenerateTest.getPredictionCodegen;
 
-@Disabled("Temporarily disabled due to https://github.com/apache/incubator-kie-kogito-runtimes/issues/3640")
 class PredictionCodegenInternalGenerateTest {
 
     @BeforeAll
@@ -80,19 +78,19 @@ class PredictionCodegenInternalGenerateTest {
 
             codeGenerator = getPredictionCodegen(context, SCORECARD_FULL_SOURCE);
             generatedFiles = codeGenerator.internalGenerate();
-            toAdd = arguments(codeGenerator, generatedFiles, 36, 34, 1, false,
+            toAdd = arguments(codeGenerator, generatedFiles, 4, 3, 1, false,
                     context.hasRESTForGenerator(codeGenerator));
             testArguments.add(toAdd);
 
             codeGenerator = getPredictionCodegen(context, MINING_FULL_SOURCE);
             generatedFiles = codeGenerator.internalGenerate();
-            toAdd = arguments(codeGenerator, generatedFiles, 79, 77, 1, false,
+            toAdd = arguments(codeGenerator, generatedFiles, 13, 12, 1, false,
                     context.hasRESTForGenerator(codeGenerator));
             testArguments.add(toAdd);
 
             codeGenerator = getPredictionCodegen(context, MULTIPLE_FULL_SOURCE);
             generatedFiles = codeGenerator.internalGenerate();
-            toAdd = arguments(codeGenerator, generatedFiles, 86, 84, 2, false,
+            toAdd = arguments(codeGenerator, generatedFiles, 13, 12, 2, false,
                     context.hasRESTForGenerator(codeGenerator));
             testArguments.add(toAdd);
             return testArguments.stream();
