@@ -19,6 +19,7 @@
 package org.jbpm.bpmn2;
 
 import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -75,6 +76,7 @@ import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcessInstance;
 import org.kie.kogito.process.ProcessInstance;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -388,6 +390,8 @@ public class DataTest extends JbpmBpmn2TestCase {
     @Test
     public void testDataOutputAssociationsforHumanTask() {
         Application app = ProcessTestHelper.newApplication();
+        List<org.w3c.dom.Document> documents = new ArrayList<>();
+        List<KogitoWorkItem> workItems = new ArrayList<>();
         ProcessTestHelper.registerHandler(app, "Human Task", new KogitoWorkItemHandler() {
             @Override
             public void abortWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager mgr) {
@@ -408,7 +412,9 @@ public class DataTest extends JbpmBpmn2TestCase {
                 org.w3c.dom.Element processMetadata = processMetadaDoc.createElement("previoustasksowner");
                 processMetadaDoc.appendChild(processMetadata);
                 processMetadata.setAttribute("primaryname", "my_result");
+                documents.add(processMetadaDoc);
                 results.put("output", processMetadata);
+                workItems.add(workItem);
                 mgr.completeWorkItem(workItem.getStringId(), results);
             }
         });
@@ -418,6 +424,16 @@ public class DataTest extends JbpmBpmn2TestCase {
 
         org.kie.kogito.process.ProcessInstance<DataOutputAssociationsHumanTaskModel> instance = processDefinition.createInstance(model);
         instance.start();
+        assertThat(instance.status()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
+        assertThat(documents.size()).isEqualTo(1);
+        NodeList nodeList = documents.get(0).getElementsByTagName("previoustasksowner");
+        assertThat(nodeList.getLength()).isEqualTo(1);
+        assertThat(nodeList.item(0).getAttributes().getNamedItem("primaryname")).isNotNull();
+        assertThat(nodeList.item(0).getAttributes().getNamedItem("primaryname").getNodeValue()).isEqualTo("my_result");
+        assertThat(workItems.size()).isGreaterThanOrEqualTo(1);
+        KogitoWorkItem workItem = workItems.get(0);
+        assertThat(workItem.getResults().get("output")).isInstanceOf(org.w3c.dom.Node.class);
+        assertThat((org.w3c.dom.Node) (workItem.getResults().get("output"))).isEqualTo(nodeList.item(0));
     }
 
     @Test
@@ -454,6 +470,8 @@ public class DataTest extends JbpmBpmn2TestCase {
     @Test
     public void testDataOutputAssociationsXmlNode() {
         Application app = ProcessTestHelper.newApplication();
+        List<KogitoWorkItem> workItems = new ArrayList<>();
+        List<org.w3c.dom.Document> documents = new ArrayList<>();
         ProcessTestHelper.registerHandler(app, "Human Task", new KogitoWorkItemHandler() {
             @Override
             public void abortWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager mgr) {
@@ -468,6 +486,8 @@ public class DataTest extends JbpmBpmn2TestCase {
                             .parse(new ByteArrayInputStream("<user hello='hello world' />".getBytes()));
                     Map<String, Object> params = new HashMap<>();
                     params.put("output", document.getFirstChild());
+                    workItems.add(workItem);
+                    documents.add(document);
                     mgr.completeWorkItem(workItem.getStringId(), params);
                 } catch (Throwable e) {
                     throw new RuntimeException(e);
@@ -480,6 +500,14 @@ public class DataTest extends JbpmBpmn2TestCase {
 
         org.kie.kogito.process.ProcessInstance<DataOutputAssociationsXmlNodeModel> instance = processDefinition.createInstance(model);
         instance.start();
+        assertThat(instance.status()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
+        assertThat(workItems.size()).isGreaterThanOrEqualTo(1);
+        KogitoWorkItem workItem = workItems.get(0);
+        assertThat(workItem).isNotNull();
+        assertThat(documents.size()).isGreaterThanOrEqualTo(1);
+        org.w3c.dom.Node node = documents.get(0).getFirstChild();
+        assertThat(workItem.getResults().get("output")).isInstanceOf(org.w3c.dom.Node.class);
+        assertThat((org.w3c.dom.Node) (workItem.getResults().get("output"))).isEqualTo(node);
     }
 
     @Test
