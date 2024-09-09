@@ -21,6 +21,7 @@ package org.kie.kogito.source.files;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.Objects;
 
 public final class SourceFile {
@@ -39,16 +40,28 @@ public final class SourceFile {
      * @param uri the URI of the source file
      */
     public SourceFile(String uri) {
-        this.uri = Objects.requireNonNull(uri);
+        this.uri = toPosixPath(Path.of(Objects.requireNonNull(uri)));
     }
 
     // Needed for serialization
     public void setUri(String uri) {
-        this.uri = uri;
+        this.uri = toPosixPath(Path.of(uri));
     }
 
     public String getUri() {
         return uri;
+    }
+
+    public static String toPosixPath(Path path) {
+        if (path == null) {
+            return null;
+        }
+
+        if (path.getFileSystem().getSeparator().equals("/")) {
+            return path.toString();
+        }
+
+        return path.toString().replace(path.getFileSystem().getSeparator(), "/");
     }
 
     public byte[] readContents() throws IOException {
