@@ -26,7 +26,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import com.github.javaparser.ParseProblemException;
 import com.github.javaparser.ast.Modifier;
@@ -65,7 +67,6 @@ import org.drools.mvelcompiler.PreprocessCompiler;
 import org.drools.util.StringUtils;
 
 import static com.github.javaparser.StaticJavaParser.parseExpression;
-import static java.util.stream.Collectors.toSet;
 import static org.drools.model.codegen.execmodel.PackageModel.DOMAIN_CLASSESS_METADATA_FILE_NAME;
 import static org.drools.model.codegen.execmodel.PackageModel.DOMAIN_CLASS_METADATA_INSTANCE;
 import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.addCurlyBracesToBlock;
@@ -251,7 +252,7 @@ public class Consequence {
     }
 
     private Set<String> extractUsedDeclarations(BlockStmt ruleConsequence, String consequenceString) {
-        Set<String> existingDecls = new HashSet<>();
+        Set<String> existingDecls = new TreeSet<>();
         existingDecls.addAll(context.getAvailableBindings());
         existingDecls.addAll(context.getGlobals().keySet());
         if (context.getRuleUnitDescr() != null) {
@@ -259,10 +260,14 @@ public class Consequence {
         }
 
         if (context.getRuleDialect() == RuleContext.RuleDialect.MVEL) {
-            return existingDecls.stream().filter(d -> containsWord(d, consequenceString)).collect(toSet());
+            return existingDecls.stream()
+                                .filter(d -> containsWord(d, consequenceString))
+                                .collect(Collectors.toCollection(TreeSet::new));
         } else if (ruleConsequence != null) {
-            Set<String> declUsedInRHS = ruleConsequence.findAll(NameExpr.class).stream().map(NameExpr::getNameAsString).collect(toSet());
-            return existingDecls.stream().filter(declUsedInRHS::contains).collect(toSet());
+            Set<String> declUsedInRHS = ruleConsequence.findAll(NameExpr.class).stream().map(NameExpr::getNameAsString).collect(Collectors.toCollection(TreeSet::new));
+            return existingDecls.stream()
+                                .filter(declUsedInRHS::contains)
+                                .collect(Collectors.toCollection(TreeSet::new));
         }
 
         throw new IllegalArgumentException("Unknown rule dialect " + context.getRuleDialect() + "!");
