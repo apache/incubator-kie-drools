@@ -20,11 +20,11 @@ package org.drools.beliefs.bayes;
 
 import org.drools.beliefs.graph.Graph;
 import org.drools.beliefs.graph.GraphNode;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.beliefs.bayes.GraphTest.addNode;
 import static org.drools.beliefs.bayes.GraphTest.bitSet;
-import static org.drools.beliefs.bayes.JunctionTreeTest.assertArray;
 import static org.drools.beliefs.bayes.JunctionTreeTest.scaleDouble;
 
 public class BayesProjectionTest {
@@ -66,7 +66,7 @@ public class BayesProjectionTest {
         BayesProjection p = new BayesProjection(vars, node1.getPotentials(), sepVarPos, sepVarMultipliers, projectedSepPotentials);
         p.project();
 
-        assertArray(new double[]{0.1, 0.2, 0.3, 0.4}, scaleDouble(3, projectedSepPotentials));
+        assertThat(scaleDouble(3, projectedSepPotentials)).containsExactly(0.1, 0.2, 0.3, 0.4);
     }
 
     @Test
@@ -110,7 +110,7 @@ public class BayesProjectionTest {
         p.project();
 
         // remember it's been normalized, from 0.3, 0.7, 1.1, 1.5
-        assertArray(new double[]{0.083, 0.194, 0.306, 0.417}, scaleDouble(3, projectedSepPotentials));
+        assertThat(scaleDouble(3, projectedSepPotentials)).containsExactly(0.083, 0.194, 0.306, 0.417);
     }
 
     @Test
@@ -156,7 +156,7 @@ public class BayesProjectionTest {
         p.project();
 
         // remember it's been normalized, from 0.4, 0.6, 1.2, 1.4
-        assertArray(new double[]{0.111, 0.167, 0.333, 0.389}, scaleDouble(3, projectedSepPotentials));
+        assertThat(scaleDouble(3, projectedSepPotentials)).containsExactly(0.111, 0.167, 0.333, 0.389);
     }
 
     @Test
@@ -202,7 +202,7 @@ public class BayesProjectionTest {
         p.project();
 
         // remember it's been normalized, from 0.6 0.8 1.0 1.2
-        assertArray(new double[]{0.167, 0.222, 0.278, 0.333}, scaleDouble(3, projectedSepPotentials));
+        assertThat(scaleDouble(3, projectedSepPotentials)).containsExactly(0.167, 0.222, 0.278, 0.333);
     }
 
 }
