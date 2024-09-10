@@ -140,7 +140,13 @@ pipeline {
                 script {
                     projectVersion = getProjectVersion(false)
                     dir(getRepoName()) {
-                        githubscm.setUserConfigFromCreds(getGitAuthorPushCredsId())
+                        if (githubscm.isThereAnyChanges()) {
+                            def commitMsg = "[${getBuildBranch()}] Update version to ${projectVersion}"
+                            githubscm.setUserConfigFromCreds(getGitAuthorPushCredsId())
+                            githubscm.commitChanges(commitMsg, { githubscm.findAndStageNotIgnoredFiles('pom.xml') })
+                        } else {
+                            println '[WARN] no changes to commit'
+                        }
                         githubscm.tagRepository(projectVersion)
                         githubscm.pushRemoteTag('origin', projectVersion, getGitAuthorPushCredsId())
                     }
