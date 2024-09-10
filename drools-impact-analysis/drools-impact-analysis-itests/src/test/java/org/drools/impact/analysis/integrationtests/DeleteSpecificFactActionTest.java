@@ -30,7 +30,7 @@ import org.drools.impact.analysis.model.right.ConsequenceAction;
 import org.drools.impact.analysis.model.right.DeleteSpecificFactAction;
 import org.drools.impact.analysis.model.right.SpecificProperty;
 import org.drools.impact.analysis.parser.ModelBuilder;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * This test is to verify that DeleteSpecificFactAction can be handled correctly.

@@ -28,7 +28,7 @@ import org.drools.impact.analysis.graph.Graph;
 import org.drools.impact.analysis.graph.Node;
 import org.drools.impact.analysis.graph.ReactivityType;
 import org.drools.impact.analysis.model.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

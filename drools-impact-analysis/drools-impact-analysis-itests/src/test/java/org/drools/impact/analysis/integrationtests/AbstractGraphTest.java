@@ -30,8 +30,7 @@ import org.drools.impact.analysis.graph.Link;
 import org.drools.impact.analysis.graph.Node;
 import org.drools.impact.analysis.graph.ReactivityType;
 import org.drools.impact.analysis.graph.graphviz.GraphImageGenerator;
-import org.junit.Rule;
-import org.junit.rules.TestName;
+import org.junit.jupiter.api.TestInfo;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.ReleaseId;
@@ -48,32 +47,26 @@ public class AbstractGraphTest {
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractGraphTest.class);
 
-    @Rule
-    public TestName testName = new TestName();
 
-    protected String getTestMethodName() {
-        return testName.getMethodName();
+    // Keep this method for test convenience
+    protected void generatePng(TestInfo testInfo, Graph graph) {
+        generatePng(testInfo, graph, "");
     }
 
     // Keep this method for test convenience
-    protected void generatePng(Graph graph) {
-        generatePng(graph, "");
+    protected void generateSvg(TestInfo testInfo, Graph graph) {
+        generateSvg(testInfo, graph, "");
     }
 
     // Keep this method for test convenience
-    protected void generateSvg(Graph graph) {
-        generateSvg(graph, "");
-    }
-
-    // Keep this method for test convenience
-    protected void generatePng(Graph graph, String suffix) {
-        GraphImageGenerator generator = new GraphImageGenerator(getTestMethodName() + suffix);
+    protected void generatePng(TestInfo testInfo, Graph graph, String suffix) {
+        GraphImageGenerator generator = new GraphImageGenerator(testInfo.getDisplayName() + suffix);
         generator.generatePng(graph);
     }
 
     // Keep this method for test convenience
-    protected void generateSvg(Graph graph, String suffix) {
-        GraphImageGenerator generator = new GraphImageGenerator(getTestMethodName() + suffix);
+    protected void generateSvg(TestInfo testInfo, Graph graph, String suffix) {
+        GraphImageGenerator generator = new GraphImageGenerator(testInfo.getDisplayName() + suffix);
         generator.generateSvg(graph);
     }
 
