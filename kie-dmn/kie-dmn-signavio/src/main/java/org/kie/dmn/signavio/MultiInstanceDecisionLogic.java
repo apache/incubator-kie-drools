@@ -132,6 +132,9 @@ public class MultiInstanceDecisionLogic {
             di.setEvaluator(miEvaluator);
             
             compiler.addCallback((cCompiler, cCtx, cModel) -> {
+                if (cModel != model) {
+                    return;
+                }
                 MIDDependenciesProcessor processor = new MIDDependenciesProcessor(midl, cModel);
                 addRequiredDecisions(miEvaluator, processor);
                 removeChildElementsFromIndex(cModel, processor);
