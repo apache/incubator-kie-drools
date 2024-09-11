@@ -23,26 +23,26 @@ import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 
 public class XQueryImplUtil {
 
-    public static Object executeMatchesFunction(String input, String pattern, String flags) throws SaxonApiException{
-        String xpathExpression = String.format("matches('%s', '%s', '%s')", input, pattern, flags);
-            return evaluateXPathExpression(xpathExpression);
+    public static Object executeMatchesFunction(String input, String pattern, String flags){
+        String XQueryExpression = String.format("matches('%s', '%s', '%s')", input, pattern, flags);
+            return evaluateXQueryExpression(XQueryExpression);
     }
 
-    public static Object executeReplaceFunction(String input, String pattern, String replacement, String flags)throws SaxonApiException {
-        String xpathExpression = String.format("replace('%s', '%s', '%s', '%s')", input, pattern, replacement, flags);
-            return evaluateXPathExpression(xpathExpression);
+    public static Object executeReplaceFunction(String input, String pattern, String replacement, String flags) {
+        String XQueryExpression = String.format("replace('%s', '%s', '%s', '%s')", input, pattern, replacement, flags);
+            return evaluateXQueryExpression(XQueryExpression);
     }
 
-     static Object evaluateXPathExpression (String expression) throws SaxonApiException {
-        Processor processor = new Processor(false);
-        XPathCompiler xpathCompiler = processor.newXPathCompiler();
-
-        XPathExecutable executable = xpathCompiler.compile(expression);
-        XPathSelector selector = executable.load();
-
-
-        XdmValue xdmValue= selector.evaluate();;
-        String result = xdmValue.toString();
-        return FEELFnResult.ofResult(result);
+     static Object evaluateXQueryExpression (String expression) {
+         try {
+             Processor processor = new Processor(false);
+             XQueryCompiler compiler = processor.newXQueryCompiler();
+             XQueryExecutable executable = compiler.compile(expression);
+             XQueryEvaluator queryEvaluator = executable.load();
+             XdmItem resultItem = queryEvaluator.evaluateSingle();
+             return ((XdmAtomicValue) resultItem).getValue();
+         } catch (ClassCastException | SaxonApiException e) {
+             throw new IllegalStateException(e);
+         }
     }
 }

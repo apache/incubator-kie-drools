@@ -31,12 +31,12 @@ public class ReplaceFunction
         super( "replace" );
     }
 
-    public Object invoke(@ParameterName("input") String input, @ParameterName("pattern") String pattern,
+    public FEELFnResult<Object> invoke(@ParameterName("input") String input, @ParameterName("pattern") String pattern,
                                        @ParameterName( "replacement" ) String replacement ) {
         return invoke(input, pattern, replacement, null);
     }
 
-    public Object invoke(@ParameterName("input") String input, @ParameterName("pattern") String pattern,
+    public FEELFnResult<Object> invoke(@ParameterName("input") String input, @ParameterName("pattern") String pattern,
                                        @ParameterName( "replacement" ) String replacement, @ParameterName("flags") String flags) {
         if ( input == null ) {
             return FEELFnResult.ofError( new InvalidParametersEvent( Severity.ERROR, "input", "cannot be null" ) );
@@ -48,7 +48,7 @@ public class ReplaceFunction
             return FEELFnResult.ofError( new InvalidParametersEvent( Severity.ERROR, "replacement", "cannot be null" ) );
         }
 
-        return XQueryImplUtil.executeReplaceFunction(input,pattern,replacement,flags);
+        return FEELFnResult.ofResult(XQueryImplUtil.executeReplaceFunction(input,pattern,replacement,flags));
     }
 
 }

@@ -38,8 +38,18 @@
     <java.module.name>org.kie.dmn.feel</java.module.name>
     <surefire.forkCount>2</surefire.forkCount>
     <enforcer.skip>true</enforcer.skip>
+    <version.net.sf.saxon.Saxon-HE>12.5</version.net.sf.saxon.Saxon-HE>
   </properties>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>net.sf.saxon</groupId>
+        <artifactId>Saxon-HE</artifactId>
+        <version>${version.net.sf.saxon.Saxon-HE}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
   <dependencies>
     <!-- Internal dependencies -->
     <dependency>
@@ -76,12 +86,6 @@
     <dependency>
       <groupId>com.github.javaparser</groupId>
       <artifactId>javaparser-core</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>net.sf.saxon</groupId>
-      <artifactId>Saxon-HE</artifactId>
-      <version>12.5</version>
     </dependency>
 
 
