@@ -18,23 +18,20 @@
  */
 package org.kie.dmn.feel.util;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class XQueryImplUtilTest {
 
     @Test
-    void getMatchesFunctionXqueryImpl() {
+    void executeMatchesFunctionTest() {
         String input = "test";
         String pattern = "^test";
         String flags = "i";
         Object retrieved = XQueryImplUtil.executeMatchesFunction(input, pattern,
                 flags);
         String expected = "true";
-        System.out.println(retrieved);
         assertThat(retrieved).isNotNull();
         assertThat(retrieved.equals(expected));
 
@@ -43,13 +40,12 @@ public class XQueryImplUtilTest {
         flags = "";
         retrieved = XQueryImplUtil.executeMatchesFunction(input, pattern, flags);
         expected = "false";
-        System.out.println(retrieved);
         assertThat(retrieved).isNotNull();
         assertThat(retrieved.equals(expected));
     }
 
     @Test
-    void getReplacesFunctionXqueryImpl() {
+    void executeReplaceFunctionTest() {
         String input = "testString";
         String pattern = "^test";
         String replacement = "ttt";
@@ -57,7 +53,6 @@ public class XQueryImplUtilTest {
         Object retrieved = XQueryImplUtil.executeReplaceFunction(input, pattern, replacement,
                 flags);
         String expected = "tttString";
-        System.out.println(retrieved);
         assertThat(retrieved).isNotNull();
         assertThat(retrieved.equals(expected));
 
@@ -67,7 +62,6 @@ public class XQueryImplUtilTest {
         flags = "s";
         retrieved = XQueryImplUtil.executeReplaceFunction(input, pattern, replacement, flags);
         expected = "ftttar";
-        System.out.println(retrieved);
         assertThat(retrieved).isNotNull();
         assertThat(retrieved.equals(expected));
     }

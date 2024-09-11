@@ -18,6 +18,7 @@
  */
 package org.kie.dmn.feel.util;
 
+import ch.obermuhlner.math.big.BigComplex;
 import net.sf.saxon.s9api.*;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
@@ -25,7 +26,7 @@ import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 
 public class XQueryImplUtil {
 
-    public static Object executeMatchesFunction(String input, String pattern, String flags) {
+    public static FEELFnResult<Object> executeMatchesFunction(String input, String pattern, String flags) {
         String xpathExpression = String.format("matches('%s', '%s', '%s')", input, pattern, flags);
         try {
             return evaluateXPathExpression(xpathExpression);
@@ -34,7 +35,7 @@ public class XQueryImplUtil {
         }
     }
 
-    public static Object executeReplaceFunction(String input, String pattern, String replacement, String flags) {
+    public static FEELFnResult<Object> executeReplaceFunction(String input, String pattern, String replacement, String flags) {
         String xpathExpression = String.format("replace('%s', '%s', '%s', '%s')", input, pattern, replacement, flags);
         try {
             return evaluateXPathExpression(xpathExpression);
@@ -43,13 +44,21 @@ public class XQueryImplUtil {
         }
     }
 
-     static Object evaluateXPathExpression (String expression) throws SaxonApiException {
+     static FEELFnResult<Object> evaluateXPathExpression (String expression) throws SaxonApiException {
+        try{
         Processor processor = new Processor(false);
         XPathCompiler xpathCompiler = processor.newXPathCompiler();
 
         XPathExecutable executable = xpathCompiler.compile(expression);
         XPathSelector selector = executable.load();
 
-        return selector.evaluate();
+
+        XdmValue xdmValue= selector.evaluate();;
+        String result = xdmValue.toString();
+        return FEELFnResult.ofResult(result);
+     }  catch ( SaxonApiException e ) {
+            return FEELFnResult.ofError( new InvalidParametersEvent( FEELEvent.Severity.ERROR, e.getMessage() ,e ) );
+    }
+
     }
 }

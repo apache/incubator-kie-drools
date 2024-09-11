@@ -103,12 +103,10 @@ class MatchesFunctionTest {
     @Test
     void checkMatchFunctionWithFlagsInvocation() {
         MatchesFunction matchesFunctionSpied = spy(MatchesFunction.INSTANCE);
-        matchesFunctionSpied.invoke("input", "pattern");
-        verify(matchesFunctionSpied, times(1)).invoke("input", "pattern", null);
+        matchesFunctionSpied.invoke("input", "pattern", "flags");
+        verify(matchesFunctionSpied, times(1)).invoke("input", "pattern", "flags");
         try (MockedStatic<MatchesFunction> matchesFunctionMocked = mockStatic(MatchesFunction.class)) {
-            matchesFunctionSpied.invoke("input", "pattern");
-            matchesFunctionMocked.verify(() -> MatchesFunction.matchFunctionWithFlags("input", "pattern", null));
-            matchesFunctionSpied.invoke("input", "pattern", "flags");
+            matchesFunctionSpied.invoke("input", "pattern","flags");
             matchesFunctionMocked.verify(() -> MatchesFunction.matchFunctionWithFlags("input", "pattern", "flags"));
         }
     }
