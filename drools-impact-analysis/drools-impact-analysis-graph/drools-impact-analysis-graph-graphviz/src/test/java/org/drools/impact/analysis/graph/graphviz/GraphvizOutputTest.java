@@ -28,8 +28,8 @@ import org.drools.impact.analysis.graph.Graph;
 import org.drools.impact.analysis.graph.Node;
 import org.drools.impact.analysis.graph.ReactivityType;
 import org.drools.impact.analysis.model.Rule;
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.linesOf;
@@ -43,7 +43,7 @@ import static org.assertj.core.api.Assertions.linesOf;
  */
 public class GraphvizOutputTest {
 
-    @After
+    @AfterEach
     public void tearDown() {
         Graphviz.releaseEngine();
     }
