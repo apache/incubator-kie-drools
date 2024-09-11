@@ -21,6 +21,7 @@ package org.kie.dmn.feel.runtime.functions;
 import java.security.InvalidParameterException;
 import java.util.regex.PatternSyntaxException;
 
+import net.sf.saxon.s9api.SaxonApiException;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 import org.kie.dmn.feel.util.XQueryImplUtil;
@@ -52,7 +53,7 @@ public class MatchesFunction
         }
     }
 
-    static FEELFnResult<Object> matchFunctionWithFlags(String input, String pattern, String flags) {
+    static FEELFnResult<Object> matchFunctionWithFlags(String input, String pattern, String flags) throws SaxonApiException {
         log.debug("Input:  {} , Pattern: {}, Flags: {}", input, pattern, flags);
         if ( input == null ) {
             throw new InvalidParameterException("input");
@@ -60,6 +61,6 @@ public class MatchesFunction
         if ( pattern == null ) {
             throw new InvalidParameterException("pattern");
         }
-        return XQueryImplUtil.executeMatchesFunction(input, pattern, flags);
+        return FEELFnResult.ofResult(XQueryImplUtil.executeMatchesFunction(input, pattern, flags));
     }
 }
