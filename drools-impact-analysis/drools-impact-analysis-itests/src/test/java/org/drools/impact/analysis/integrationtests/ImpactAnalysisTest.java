@@ -29,7 +29,7 @@ import org.drools.impact.analysis.graph.TextReporter;
 import org.drools.impact.analysis.integrationtests.domain.Order;
 import org.drools.impact.analysis.model.AnalysisModel;
 import org.drools.impact.analysis.parser.ModelBuilder;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.impact.analysis.graph.TextReporter.INDENT;

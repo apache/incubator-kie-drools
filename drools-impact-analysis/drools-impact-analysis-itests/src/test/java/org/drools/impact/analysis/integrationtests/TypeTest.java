@@ -22,13 +22,13 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import org.drools.util.StringUtils;
+import org.junit.jupiter.api.Test;
 import org.drools.impact.analysis.graph.Graph;
 import org.drools.impact.analysis.graph.ModelToGraphConverter;
 import org.drools.impact.analysis.graph.ReactivityType;
 import org.drools.impact.analysis.integrationtests.domain.PropHolder;
 import org.drools.impact.analysis.model.AnalysisModel;
 import org.drools.impact.analysis.parser.ModelBuilder;
-import org.junit.Test;
 
 public class TypeTest extends AbstractGraphTest {
 
