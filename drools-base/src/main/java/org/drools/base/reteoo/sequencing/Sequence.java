@@ -3,13 +3,13 @@ package org.drools.base.reteoo.sequencing;
 import org.drools.base.base.ValueResolver;
 import org.drools.base.phreak.actions.AbstractPropagationEntry;
 import org.drools.base.reteoo.DynamicFilter;
-import org.drools.base.reteoo.DynamicFilterProto;
 import org.drools.base.reteoo.sequencing.signalprocessors.ConditionalSignalCounter;
 import org.drools.base.reteoo.sequencing.signalprocessors.LogicGate;
 import org.drools.base.reteoo.sequencing.signalprocessors.SignalStatus;
 import org.drools.base.reteoo.sequencing.steps.LogicCircuitStep;
 import org.drools.base.reteoo.sequencing.steps.Step;
 import org.drools.base.reteoo.sequencing.steps.Step.StepFactory;
+import org.drools.base.reteoo.sequencing.steps.SubsequenceStep;
 import org.drools.base.rule.Declaration;
 import org.drools.base.rule.Pattern;
 import org.drools.base.rule.RuleConditionElement;
@@ -19,6 +19,8 @@ import org.drools.base.time.Timer;
 import org.drools.base.reteoo.SignalAdapter;
 import org.drools.base.time.Job;
 import org.drools.base.time.JobContext;
+import org.drools.base.util.CircularArrayList;
+import org.kie.api.runtime.rule.FactHandle;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -32,6 +34,11 @@ import java.util.function.Predicate;
 
 public class Sequence implements RuleConditionElement {
     private final int sequenceIndex;
+
+    private final SubsequenceStep parentStep;
+
+    //private Step step;
+    private Parent parent;
 
     private Pattern[] filters;
 
@@ -48,14 +55,20 @@ public class Sequence implements RuleConditionElement {
 
     private int subsequenceIndex = -1; // -1 is for when this is not parallel
 
-    public Sequence(int sequenceIndex, StepFactory... stepFactories) {
+    public Sequence(int sequenceIndex, SubsequenceStep parentStep, StepFactory... stepFactories) {
         this.steps = new Step[stepFactories.length];
+        this.sequenceIndex = sequenceIndex;
+        this.parentStep = parentStep;
+        this.controller = new DefaultController();
+
         for ( int i = 0; i < steps.length; i++ ) {
             steps[i] = stepFactories[i].createStep(i,this);
         }
-        this.sequenceIndex = sequenceIndex;
         populateLogicGates();
-        controller = new DefaultController();
+    }
+
+    public Sequence(int sequenceIndex, StepFactory... stepFactories) {
+        this(sequenceIndex, null, stepFactories);
     }
 
     public Pattern[] getFilters() {
@@ -174,15 +187,8 @@ public class Sequence implements RuleConditionElement {
 
     }
 
-    public void start(SequencerMemory memory, ValueResolver valueResolver) {
-        SequenceMemory sequenceMemory = memory.getSequenceMemory(this);
-        memory.pushSequence(sequenceMemory);
-        sequenceMemory.setStep(0);
-        getSteps()[0].activate(sequenceMemory, valueResolver);
-        if(onStart != null) {
-            onStart.accept(sequenceMemory);
-        }
-        controller.start(sequenceMemory, valueResolver);
+    public void start(SequenceMemory memory, ValueResolver valueResolver) {
+        controller.start(memory, valueResolver);
     }
 
     private void restart(SequenceMemory sequenceMemory, ValueResolver valueResolver) {
@@ -192,27 +198,23 @@ public class Sequence implements RuleConditionElement {
     }
 
     public void next(SequenceMemory sequenceMemory, ValueResolver valueResolver) {
-        int step = sequenceMemory.getStep();
-
-        sequenceMemory.getSequence().getSteps()[step].deactivate(sequenceMemory, valueResolver);
-        step = sequenceMemory.incrementStep();
-
-        if (step < sequenceMemory.getSequence().getSteps().length) {
-            sequenceMemory.getSequence().getSteps()[step].activate(sequenceMemory, valueResolver);
-        } else {
-            if(onEnd != null) {
-                onEnd.accept(sequenceMemory);
-            }
-            controller.end(sequenceMemory, valueResolver);
-        }
+         controller.next(sequenceMemory, valueResolver);
     }
 
     public interface SequenceController {
-        default void start(SequenceMemory memory, ValueResolver valueResolver) {
-
+        default void start(SequenceMemory sequenceMemory, ValueResolver valueResolver) {
+            sequenceMemory.setStep(0);
+            sequenceMemory.sequence.steps[0].activate(sequenceMemory, valueResolver);
+            if(sequenceMemory.sequence.onStart != null) {
+                sequenceMemory.sequence.onStart.accept(sequenceMemory);
+            }
         }
 
         default void restart(SequenceMemory memory, ValueResolver valueResolver) {
+
+        }
+
+        default void next(SequenceMemory memory, ValueResolver valueResolver) {
 
         }
 
@@ -226,11 +228,32 @@ public class Sequence implements RuleConditionElement {
             return INSTANCE;
         }
 
+        public void next(SequenceMemory sequenceMemory, ValueResolver valueResolver) {
+            Sequence sequence = sequenceMemory.getSequence();
+            int step = sequenceMemory.getStep();
+
+            sequence.steps[step].deactivate(sequenceMemory, valueResolver);
+            step = sequenceMemory.incrementStep();
+
+            if (step < sequenceMemory.getSequence().getSteps().length) {
+                sequence.steps[step].activate(sequenceMemory, valueResolver);
+            } else {
+                if(sequence.onEnd != null) {
+                    sequence.onEnd.accept(sequenceMemory);
+                }
+                end(sequenceMemory, valueResolver);
+            }
+        }
+
         @Override
         public void end(SequenceMemory sequenceMemory, ValueResolver valueResolver)  {
-            SequencerMemory sequencerMemory = sequenceMemory.getSequencerMemory();
-            sequencerMemory.popSequence(); // pop is here, but the push was in the start step
-            sequencerMemory.getSequencer().next(sequencerMemory, valueResolver);
+            SequenceMemory parent = sequenceMemory.getParent();
+            if (parent != null) {
+                SequenceMemory parentSeqMemory = parent.getSequencerMemory().getSequenceMemory(parent.getSequence());
+                parent.getSequence().next(parentSeqMemory, valueResolver);
+            } else {
+                sequenceMemory.getSequencerMemory().match(valueResolver);
+            }
         }
 
         @Override
@@ -241,6 +264,8 @@ public class Sequence implements RuleConditionElement {
 
     public static class LoopController implements SequenceController {
         private final Predicate<SequenceMemory> predicate;
+
+        private final SequenceController defaultController = DefaultController.getINSTANCE();
 
         public LoopController(Predicate<SequenceMemory> predicate) {
             this.predicate = predicate;
@@ -255,8 +280,7 @@ public class Sequence implements RuleConditionElement {
             if (restart) {
                 sequenceMemory.getSequence().restart(sequenceMemory, valueResolver);
             } else {
-                sequencerMemory.popSequence(); // pop is here, but the push was in the start step
-                sequencerMemory.getSequencer().next(sequencerMemory, valueResolver);
+                defaultController.end(sequenceMemory, valueResolver);
             }
         }
 
@@ -455,6 +479,8 @@ public class Sequence implements RuleConditionElement {
     }
 
     public static class SequenceMemory {
+        private SequenceMemory parent;
+
         private final Sequence sequence;
 
         private int step;
@@ -479,16 +505,34 @@ public class Sequence implements RuleConditionElement {
 
         private int eventsStartPosition;
 
-        public SequenceMemory(SequencerMemory sequencerMemory, Sequence sequence,
+        private CircularArrayList<Object> data;
+
+        public SequenceMemory(SequencerMemory sequencerMemory, Sequence sequence, CircularArrayList<Object> data,
+                              SignalAdapter[] signalAdapters, SignalAdapter[] activeSignalAdapters,
+                              long[] gateMemory, long[] counterMemories) {
+            this(sequencerMemory, null, sequence, data, signalAdapters, activeSignalAdapters, gateMemory, counterMemories);
+        }
+
+        public SequenceMemory(SequencerMemory sequencerMemory, SequenceMemory parent, Sequence sequence, CircularArrayList<Object> data,
                               SignalAdapter[] signalAdapters, SignalAdapter[] activeSignalAdapters,
                               long[] gateMemory, long[] counterMemories) {
             this.sequencerMemory      = sequencerMemory;
+            this.parent               = parent;
+            this.data                 = data;
             this.sequence             = sequence;
             this.signalAdapters       = signalAdapters;
             this.activeSignalAdapters = activeSignalAdapters;
             this.gateMemory           = gateMemory;
             this.counterMemories      = counterMemories;
             this.signalStatuses       = new SignalStatus[gateMemory.length + counterMemories.length];
+        }
+
+        public SequenceMemory getParent() {
+            return parent;
+        }
+
+        public void setParent(SequenceMemory parent) {
+            this.parent = parent;
         }
 
         public Sequence getSequence() {
@@ -574,6 +618,14 @@ public class Sequence implements RuleConditionElement {
 
         public int getEventsStartPosition() {
             return eventsStartPosition;
+        }
+
+        public void addData(FactHandle handle) {
+            data.add(handle);
+        }
+
+        public CircularArrayList<Object> getData() {
+            return data;
         }
 
         public int getOutputStartPosition() {

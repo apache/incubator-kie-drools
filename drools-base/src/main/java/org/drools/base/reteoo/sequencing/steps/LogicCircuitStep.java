@@ -9,8 +9,8 @@ import org.drools.base.reteoo.sequencing.Sequence.SequenceMemory;
 public class LogicCircuitStep extends AbstractStep implements Step {
     private final LogicCircuit match;
 
-    public LogicCircuitStep(int index, Sequence parentSequence, LogicCircuit circuit) {
-        super(index, parentSequence);
+    public LogicCircuitStep(int index, Sequence sequence, LogicCircuit circuit) {
+        super(StepType.LOGIC_CIRCUIT, index, sequence);
         this.match = circuit;
     }
 

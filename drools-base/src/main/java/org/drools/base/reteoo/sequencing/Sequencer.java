@@ -2,8 +2,9 @@ package org.drools.base.reteoo.sequencing;
 
 import org.drools.base.base.ValueResolver;
 import org.drools.base.reteoo.sequencing.Sequence.SequenceMemory;
-import org.drools.base.reteoo.sequencing.steps.SequenceStep;
+import org.drools.base.reteoo.sequencing.steps.SubsequenceStep;
 import org.drools.base.reteoo.sequencing.steps.Step;
+import org.drools.base.util.CircularArrayList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,8 +23,8 @@ public class Sequencer {
     public static List<Sequence> populateSequences(Sequence sequence, List<Sequence> list) {
         list.add(sequence);
         for (Step step  : sequence.getSteps()) {
-            if (step instanceof SequenceStep) {
-                populateSequences(((SequenceStep)step).getSequence(), list);
+            if (step instanceof SubsequenceStep) {
+                populateSequences(((SubsequenceStep)step).getSubsequence(), list);
             }
         }
 
@@ -35,28 +36,41 @@ public class Sequencer {
     }
 
     public void start(SequencerMemory memory, ValueResolver valueResolver) {
-        sequence.start(memory, valueResolver);
+        SequenceMemory sequenceMemory = memory.getOrCreateSequenceMemory(null, sequence, true);
+        memory.setChildSequenceMemory(sequenceMemory);
+        sequence.start(sequenceMemory, valueResolver);
     }
 
-    public void stop(SequencerMemory memory, ValueResolver valueResolver) {
-        // deactive each active sequence on the stack.
-        ArrayList<SequenceMemory> stack = memory.getSequenceStack();
-        for (int i = stack.size()-1; i >= 0; i--) {
-            SequenceMemory sequenceMemory = stack.get(i);
-            sequenceMemory.getSequence().getSteps()[sequenceMemory.getStep()].deactivate(sequenceMemory, valueResolver);
+
+    public void tips(SequencerMemory seqrMem, ValueResolver valueResolver) {
+        Sequence seq = seqrMem.getSequencer().getSequence();
+        SequenceMemory seqMem = seqrMem.getSequenceMemory(seq);
+        CircularArrayList<Object> data =  seqMem.getData();
+        Step step = seq.getSteps()[seqMem.getStep()];
+        switch (step.getType()) {
+            case SUB_SEQUENCE:
+                SubsequenceStep subseqStep = (SubsequenceStep) step;
+                subseqStep.getIndex();
+            case PARALLEL:
         }
-        stack.clear();
     }
 
-    public void next(SequencerMemory sequencerMemory, ValueResolver valueResolver) {
-        SequenceMemory sequenceMemory = sequencerMemory.getCurrentSequence();
-        if (sequenceMemory != null) {
-            sequenceMemory.getSequence().next(sequenceMemory, valueResolver);
-        } else {
-            // the root sequence has completed
-            sequencerMemory.match();
+    public void stop(SequenceMemory memory, ValueResolver valueResolver) {
+        while (memory != null) {
+            memory.getSequence().getSteps()[memory.getStep()].deactivate(memory, valueResolver);
+            memory = memory.getParent();
         }
     }
+
+//    public void next(SequenceMemory sequenceMemory, ValueResolver valueResolver) {
+//        SequenceMemory sequenceMemory = sequencerMemory.getCurrentSequence();
+//        if (sequenceMemory != null) {
+//            sequenceMemory.getSequence().next(sequenceMemory, valueResolver);
+//        } else {
+//            // the root sequence has completed
+//            sequencerMemory.match();
+//        }
+//    }
 
     public Sequence getSequence() {
         return sequence;

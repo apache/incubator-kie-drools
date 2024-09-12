@@ -7,21 +7,27 @@ import org.drools.base.reteoo.sequencing.SequencerMemory;
 
 public abstract class AbstractStep implements Step {
 
-    protected final int index;
-    protected final Sequence parentSequence;
-    protected StepFailureHandler failureHandler = FailStackFailureHandler.getInstance();
+    protected final int                index;
+    protected final Sequence           sequence; // the sequence the step is in
+    protected       StepFailureHandler failureHandler = FailStackFailureHandler.getInstance();
+    protected final StepType           type;
 
-    public AbstractStep(int index, Sequence parentSequence) {
-        this.index          = index;
-        this.parentSequence = parentSequence;
+    public AbstractStep(StepType type, int index, Sequence sequence) {
+        this.type = type;
+        this.index    = index;
+        this.sequence = sequence;
+    }
+
+    public StepType getType() {
+        return type;
     }
 
     public int getIndex() {
         return index;
     }
 
-    public Sequence getParentSequence() {
-        return parentSequence;
+    public Sequence getSequence() {
+        return sequence;
     }
 
     @Override
@@ -45,7 +51,7 @@ public abstract class AbstractStep implements Step {
         public void onFail(Step step, SequenceMemory sequenceMemory, ValueResolver valueResolver) {
             SequencerMemory sequencerMemory = sequenceMemory.getSequencerMemory();
             step.deactivate(sequenceMemory, valueResolver);
-            sequencerMemory.getSequencer().stop(sequencerMemory, valueResolver);
+            step.getSequence().fail(sequencerMemory.getSequenceMemory(step.getSequence()), valueResolver);
         }
     }
 }

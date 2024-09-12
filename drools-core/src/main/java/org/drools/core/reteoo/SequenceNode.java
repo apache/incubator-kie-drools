@@ -22,6 +22,7 @@ import org.drools.base.reteoo.DynamicFilter;
 import org.drools.base.reteoo.DynamicFilterProto;
 import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.base.reteoo.ObjectTypeNodeId;
+import org.drools.base.reteoo.sequencing.Sequence.SequenceMemory;
 import org.drools.base.rule.Pattern;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.InternalFactHandle;
@@ -82,6 +83,7 @@ public class SequenceNode extends LeftTupleSource
         initMasks(context); // Is this still relevant? (mdp for multi input)
 
         hashcode = calculateHashCode();
+        setStreamMode(true);
         //this.processor = new AnyNotAllInputProcessor(this); // hard coded for now. Inject the processor here, conditional on the behaviour you want.
     }
 
@@ -479,7 +481,8 @@ public class SequenceNode extends LeftTupleSource
                 TupleImpl next = leftTuple.getStagedNext();
 
                 SequencerMemory sequencerMemory = (SequencerMemory) leftTuple.getContextObject();
-                node.getSequencer().stop(sequencerMemory, evaluator);
+                SequenceMemory sequenceMemory = sequencerMemory.getSequenceMemory(sequencerMemory.getSequencer().getSequence());
+                node.getSequencer().stop(sequenceMemory, evaluator);
                 leftTuple.getMemory().remove(leftTuple);
                 leftTuple.setContextObject(null);
                 // TODO add code here to propagate deletion of child LT (mdp)

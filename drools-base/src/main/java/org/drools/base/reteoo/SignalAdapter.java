@@ -19,7 +19,7 @@ public class SignalAdapter extends AbstractLinkedListNode<SignalAdapter> {
     }
 
     public void receive(ValueResolver reteEvaluator, FactHandle factHandle) {
-        memory.getSequencerMemory().getEvents().add(factHandle);
+        memory.addData(factHandle);
         output.consume(signalBitIndex, SignalStatus.MATCHED, memory, reteEvaluator);
     }
 }

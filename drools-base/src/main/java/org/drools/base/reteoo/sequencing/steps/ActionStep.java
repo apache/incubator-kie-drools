@@ -9,8 +9,8 @@ import java.util.function.Consumer;
 public class ActionStep extends AbstractStep implements Step {
     private final Consumer<SequenceMemory> consumer;
 
-    public ActionStep(int index, Sequence parentSequence, Consumer<SequenceMemory> consumer) {
-        super(index, parentSequence);
+    public ActionStep(int index, Sequence sequence, Consumer<SequenceMemory> consumer) {
+        super(StepType.ACTION, index, sequence);
         this.consumer       = consumer;
     }
 

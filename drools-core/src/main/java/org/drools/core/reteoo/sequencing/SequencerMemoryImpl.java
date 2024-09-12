@@ -1,11 +1,16 @@
 package org.drools.core.reteoo.sequencing;
 
+import org.drools.base.base.ValueResolver;
 import org.drools.base.reteoo.DynamicFilter;
 import org.drools.base.reteoo.sequencing.Sequence;
 import org.drools.base.reteoo.sequencing.Sequencer;
 import org.drools.base.reteoo.sequencing.SequencerMemory;
+import org.drools.core.common.ActivationsManager;
+import org.drools.core.common.ReteEvaluator;
+import org.drools.core.common.TupleSets;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
+import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.SequenceNode;
 import org.drools.core.reteoo.SequenceNode.SequenceNodeMemory;
 import org.drools.base.reteoo.SignalAdapter;
@@ -17,6 +22,8 @@ import org.drools.base.util.CircularArrayList;
 import org.kie.api.runtime.rule.FactHandle;
 
 import java.util.ArrayList;
+
+import static org.drools.core.phreak.TupleEvaluationUtil.flushLeftTupleIfNecessary;
 
 public class SequencerMemoryImpl implements SequencerMemory {
 
@@ -35,6 +42,8 @@ public class SequencerMemoryImpl implements SequencerMemory {
     private SequenceNode node;
 
     private SequenceNodeMemory nodeMemory;
+
+    private SequenceMemory childSequenceMemory;
 
     public SequencerMemoryImpl(Sequencer sequencer, TupleImpl lt, LeftTupleSink sink, SequenceNode node, SequenceNodeMemory nodeMemory) {
         this.sequencer        = sequencer;
@@ -67,37 +76,48 @@ public class SequencerMemoryImpl implements SequencerMemory {
     }
 
     @Override
-    public SequenceMemory getCurrentSequence() {
-        if (!sequenceStack.isEmpty()) {
-            return sequenceStack.get(sequenceStack.size() - 1);
-        }
-
-        return null;
+    public SequenceMemory getChildSequenceMemory() {
+        return childSequenceMemory;
     }
 
     @Override
-    public SequenceMemory popSequence() {
-        return sequenceStack.remove(sequenceStack.size() - 1);
+    public void setChildSequenceMemory(SequenceMemory childSequenceMemory) {
+        this.childSequenceMemory = childSequenceMemory;
     }
 
-    @Override
-    public void pushSequence(SequenceMemory sequenceMemory) {
-        sequenceStack.add(sequenceMemory);
-    }
-
+//    @Override
+//    public SequenceMemory getCurrentSequence() {
+//        if (!sequenceStack.isEmpty()) {
+//            return sequenceStack.get(sequenceStack.size() - 1);
+//        }
+//
+//        return null;
+//    }
+//
+//    @Override
+//    public SequenceMemory popSequence() {
+//        return sequenceStack.remove(sequenceStack.size() - 1);
+//    }
+//
+//    @Override
+//    public void pushSequence(SequenceMemory sequenceMemory) {
+//        sequenceStack.add(sequenceMemory);
+//    }
+//
     @Override
     public int getCurrentStep() {
-        SequenceMemory seq = getCurrentSequence();
-        return seq != null ? seq.getStep() : -1;
+//        SequenceMemory seq = getCurrentSequence();
+//        return seq != null ? seq.getStep() : -1;
+        throw new UnsupportedOperationException();
     }
+//
+//    @Override
+//    public ArrayList<SequenceMemory> getSequenceStack() {
+//        return sequenceStack;
+//    }
 
-    @Override
-    public ArrayList<SequenceMemory> getSequenceStack() {
-        return sequenceStack;
-    }
 
-    @Override
-    public SequenceMemory getSequenceMemory(Sequence sequence) {
+    public SequenceMemory getOrCreateSequenceMemory(SequenceMemory parent, Sequence sequence, boolean newData) {
         SequenceMemory sequenceMemory = sequenceMemories[sequence.getSequenceIndex()];
         if (sequenceMemory == null) {
 
@@ -115,19 +135,39 @@ public class SequencerMemoryImpl implements SequencerMemory {
             long[] gateMemory    = new long[sequence.getGates().length];
             long[] counterMemory = new long[counters];
 
-            sequenceMemory                                = new SequenceMemory(this, sequence, new SignalAdapter[signalAdapters], new SignalAdapter[signalAdapters],
-                                                                               gateMemory, counterMemory);
+            CircularArrayList<Object> data = newData ? new CircularArrayList<>(1000) : parent.getData();
+
+            sequenceMemory  = new SequenceMemory(this, parent, sequence, data,
+                                                  new SignalAdapter[signalAdapters], new SignalAdapter[signalAdapters],
+                                                  gateMemory, counterMemory);
+
             sequenceMemories[sequence.getSequenceIndex()] = sequenceMemory;
         }
 
         return sequenceMemory;
     }
 
+    @Override
+    public SequenceMemory getSequenceMemory(Sequence sequence) {
+        SequenceMemory sequenceMemory = sequenceMemories[sequence.getSequenceIndex()];
+        return sequenceMemory;
+    }
+
 
     @Override
-    public void match() {
-        nodeMemory.getStagedChildTuples().add(new LeftTuple(lt, sink,
-                                                            lt.getPropagationContext(), false));
+    public void match(ValueResolver valueResolver) {
+        nodeMemory.getStagedChildTuples().add(new LeftTuple(lt, sink, lt.getPropagationContext(), false));
+
+        boolean shouldFlush = node.isStreamMode();
+
+        PathMemory pmem  = nodeMemory.getMemory().getPathMemories().get(0);
+        ActivationsManager activationsManager = pmem.getActualActivationsManager( valueResolver.as(ReteEvaluator.class) );
+        pmem.doLinkRule(activationsManager);
+        if (shouldFlush) {
+            flushLeftTupleIfNecessary(valueResolver.as(ReteEvaluator.class),
+                                      nodeMemory.getOrCreateSegmentMemory(node, valueResolver.as(ReteEvaluator.class)),
+                                      shouldFlush);
+        }
     }
 
     @Override

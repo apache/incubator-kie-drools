@@ -1,5 +1,6 @@
 package org.drools.base.reteoo.sequencing;
 
+import org.drools.base.base.ValueResolver;
 import org.drools.base.reteoo.BaseTuple;
 import org.drools.base.reteoo.DynamicFilter;
 import org.drools.base.reteoo.Sink;
@@ -17,19 +18,25 @@ public interface SequencerMemory {
 
     Sequencer getSequencer();
 
-    SequenceMemory getCurrentSequence();
+    SequenceMemory getChildSequenceMemory();
 
-    SequenceMemory popSequence();
+    void setChildSequenceMemory(SequenceMemory childSequenceMemory);
 
-    void pushSequence(SequenceMemory sequenceMemory);
-
+//    SequenceMemory getCurrentSequence();
+//
+//    SequenceMemory popSequence();
+//
+//    void pushSequence(SequenceMemory sequenceMemory);
+//
     int getCurrentStep();
+//
+//    ArrayList<SequenceMemory> getSequenceStack();
 
-    ArrayList<SequenceMemory> getSequenceStack();
+    SequenceMemory getOrCreateSequenceMemory(SequenceMemory parent, Sequence sequence, boolean newData);
 
     SequenceMemory getSequenceMemory(Sequence sequence);
 
-    void match();
+    void match(ValueResolver valueResolver);
 
     DynamicFilter getActiveDynamicFilter(int filterIndex);
 

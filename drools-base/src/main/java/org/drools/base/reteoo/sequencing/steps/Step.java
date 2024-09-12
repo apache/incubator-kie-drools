@@ -5,9 +5,7 @@ import org.drools.base.reteoo.sequencing.signalprocessors.LogicCircuit;
 import org.drools.base.reteoo.sequencing.Sequence;
 import org.drools.base.reteoo.sequencing.Sequence.SequenceMemory;
 
-import java.util.Arrays;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 public interface Step {
     void activate(SequenceMemory memory, ValueResolver valueResolver);
@@ -16,57 +14,59 @@ public interface Step {
 
     void onFail(SequenceMemory memory, ValueResolver valueResolver);
 
+    StepType getType();
+
     static StepFactory of(LogicCircuit circuit) {
-        StepFactory factory = new StepFactory(StepFactoryType.LOGIC_CIRCUIT);
+        StepFactory factory = new StepFactory(StepType.LOGIC_CIRCUIT);
         factory.setCircuit(circuit);
         return factory;
     }
 
-    static StepFactory of(Sequence sequence) {
-        StepFactory factory = new StepFactory(StepFactoryType.SEQUENCE);
-        factory.setSequence(sequence);
+    static StepFactory of(Sequence subsequence) {
+        StepFactory factory = new StepFactory(StepType.SUB_SEQUENCE);
+        factory.setSubsequence(subsequence);
         return factory;
     }
 
-    static StepFactory of(Sequence... sequences) {
-        StepFactory factory = new StepFactory(StepFactoryType.PARALLEL);
-        factory.setSequences(sequences);
+    static StepFactory of(Sequence... subsequences) {
+        StepFactory factory = new StepFactory(StepType.PARALLEL);
+        factory.setSubsequences(subsequences);
         return factory;
     }
 
     static StepFactory of(Sequence sequence, Consumer<SequenceMemory> function) {
-        StepFactory factory = new StepFactory(StepFactoryType.AGGREGATOR);
+        StepFactory factory = new StepFactory(StepType.AGGREGATOR);
         factory.setAggregator(function);
-        factory.setSequence(sequence);
+        factory.setSubsequence(sequence);
         return factory;
     }
 
     static StepFactory of(Consumer<SequenceMemory> function) {
-        StepFactory factory = new StepFactory(StepFactoryType.ACTION);
+        StepFactory factory = new StepFactory(StepType.ACTION);
         factory.setAction(function);
         return factory;
     }
 
-    Sequence getParentSequence();
+    Sequence getSequence();
 
 
-    enum StepFactoryType {
-        LOGIC_CIRCUIT, SEQUENCE, AGGREGATOR, ACTION, PARALLEL
+    enum StepType {
+        LOGIC_CIRCUIT, SUB_SEQUENCE, AGGREGATOR, ACTION, PARALLEL
     }
 
     class StepFactory {
-        private final StepFactoryType type;
-        private       LogicCircuit    circuit;
-        private Sequence sequence;
-        private Sequence[] sequences;
+        private final StepType     type;
+        private       LogicCircuit circuit;
+        private Sequence                 subsequence;
+        private Sequence[]               subsequences;
         private Consumer<SequenceMemory> aggregator;
         private Consumer<SequenceMemory> action;
 
-        public StepFactory(StepFactoryType type) {
+        public StepFactory(StepType type) {
             this.type = type;
         }
 
-        public StepFactoryType getType() {
+        public StepType getType() {
             return type;
         }
 
@@ -78,20 +78,20 @@ public interface Step {
             this.circuit = circuit;
         }
 
-        public Sequence getSequence() {
-            return sequence;
+        public Sequence getSubsequence() {
+            return subsequence;
         }
 
-        public void setSequence(Sequence sequence) {
-            this.sequence = sequence;
+        public void setSubsequence(Sequence subsequence) {
+            this.subsequence = subsequence;
         }
 
-        public Sequence[] getSequences() {
-            return sequences;
+        public Sequence[] getSubsequences() {
+            return subsequences;
         }
 
-        public void setSequences(Sequence[] sequences) {
-            this.sequences = sequences;
+        public void setSubsequences(Sequence[] subsequences) {
+            this.subsequences = subsequences;
         }
 
         public Consumer<SequenceMemory> getAggregator() {
@@ -110,31 +110,31 @@ public interface Step {
             this.action = action;
         }
 
-        public Step createStep(int index, Sequence parentSequence) {
+        public Step createStep(int index, Sequence sequence) {
             switch (type) {
                 case LOGIC_CIRCUIT:
-                    return new LogicCircuitStep(index, parentSequence, circuit);
+                    return new LogicCircuitStep(index, sequence, circuit);
                 case AGGREGATOR:
-                    return new AggregatorStep(index, parentSequence, sequence, aggregator);
-                case SEQUENCE:
-                    return new SequenceStep(index, parentSequence, sequence);
+                    return new AggregatorStep(index, sequence, this.subsequence, aggregator);
+                case SUB_SEQUENCE:
+                    return new SubsequenceStep(index, sequence, this.subsequence);
                 case ACTION:
-                    return new ActionStep(index, parentSequence, action);
+                    return new ActionStep(index, sequence, action);
                 case PARALLEL:
-                    SequenceStep[] steps = new SequenceStep[sequences.length];
+                    SubsequenceStep[] steps = new SubsequenceStep[subsequences.length];
                     for ( int i = 0; i < steps.length; i++ ) {
-                        steps[i] = (SequenceStep) Step.of(sequences[i]).createStep(i,parentSequence);
+                        steps[i] = (SubsequenceStep) Step.of(subsequences[i]).createStep(i, sequence);
                     }
                     int outputSize = 0;
                     // Parallel output size must be the same size as the largest output.
-                    for (int i = 0; i < sequences.length; i++ ) {
-                        Sequence s = sequences[i];
+                    for (int i = 0; i < subsequences.length; i++ ) {
+                        Sequence s = subsequences[i];
                         s.setSubsequenceIndex(i);
                         if (outputSize < s.getOutputSize() ) {
                             outputSize = s.getOutputSize();
                         }
                     }
-                    return new ParallelStep(index, outputSize, parentSequence, steps);
+                    return new ParallelStep(index, outputSize, sequence, steps);
             }
             throw new IllegalArgumentException("Unsupported step type: " + type);
         }

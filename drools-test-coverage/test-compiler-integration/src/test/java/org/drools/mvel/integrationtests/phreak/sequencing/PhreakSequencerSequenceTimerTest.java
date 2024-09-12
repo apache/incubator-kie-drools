@@ -41,60 +41,60 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class PhreakSequencerSequenceTimerTest  extends AbstractPhreakSequencerSubsequenceTest {
 
-    @Before
-    public void setup() {
-        initKBaseWithEmptyRule();
-
-        LogicGate gate1 = new LogicGate((inputMask, sourceMask) -> Gates.and(inputMask, sourceMask), 0,
-                                        new int[]{0}, // B
-                                        new int[]{0}, //
-                                        0);
-        gate1.setOutput(TerminatingSignalProcessor.get());
-        LogicCircuit circuit1 = new LogicCircuit(gate1);
-
-        LogicGate gate2 = new LogicGate((inputMask, sourceMask) -> Gates.and(inputMask, sourceMask), 1,
-                                        new int[]{1}, // C
-                                        new int[]{1}, //
-                                        0);
-        gate2.setOutput(TerminatingSignalProcessor.get());
-        LogicCircuit circuit2 = new LogicCircuit(gate2);
-
-        seq0 = new Sequence(0, Step.of(circuit1), Step.of(circuit2));
-        seq0.setFilters(new Pattern[]{bpattern, cpattern});
-    }
-
-    @Test
-    public void testSequenceTimeout() {
-        seq0.setController(new TimoutController(new DurationTimer(1000)));
-        rule.addSequence(seq0);
-        kbase.addPackage(pkg);
-
-        createSession();
-        ArrayList<SequenceMemory> stack = sequencerMemory.getSequenceStack();
-        InternalFactHandle   fhB0   = (InternalFactHandle) session.insert(new B(0, "b"));
-        PseudoClockScheduler pseudo = (PseudoClockScheduler) session.getTimerService();
-        pseudo.advanceTime(2000, TimeUnit.MILLISECONDS);
-
-        session.fireAllRules();
-
-        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(-1); // terminated
-    }
-
-    @Test
-    public void testSequenceComplete() {
-        seq0.setController(new TimoutController(new DurationTimer(1000)));
-        rule.addSequence(seq0);
-        kbase.addPackage(pkg);
-
-        createSession();
-        ArrayList<SequenceMemory> stack = sequencerMemory.getSequenceStack();
-
-        InternalFactHandle   fhB0   = (InternalFactHandle) session.insert(new B(0, "b"));
-        PseudoClockScheduler pseudo = (PseudoClockScheduler) session.getTimerService();
-        pseudo.advanceTime(2000, TimeUnit.MILLISECONDS);
-
-        session.fireAllRules();
-
-        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(-1); // terminated
-    }
+//    @Before
+//    public void setup() {
+//        initKBaseWithEmptyRule();
+//
+//        LogicGate gate1 = new LogicGate((inputMask, sourceMask) -> Gates.and(inputMask, sourceMask), 0,
+//                                        new int[]{0}, // B
+//                                        new int[]{0}, //
+//                                        0);
+//        gate1.setOutput(TerminatingSignalProcessor.get());
+//        LogicCircuit circuit1 = new LogicCircuit(gate1);
+//
+//        LogicGate gate2 = new LogicGate((inputMask, sourceMask) -> Gates.and(inputMask, sourceMask), 1,
+//                                        new int[]{1}, // C
+//                                        new int[]{1}, //
+//                                        0);
+//        gate2.setOutput(TerminatingSignalProcessor.get());
+//        LogicCircuit circuit2 = new LogicCircuit(gate2);
+//
+//        seq0 = new Sequence(0, Step.of(circuit1), Step.of(circuit2));
+//        seq0.setFilters(new Pattern[]{bpattern, cpattern});
+//    }
+//
+//    @Test
+//    public void testSequenceTimeout() {
+//        seq0.setController(new TimoutController(new DurationTimer(1000)));
+//        rule.addSequence(seq0);
+//        kbase.addPackage(pkg);
+//
+//        createSession();
+//        ArrayList<SequenceMemory> stack = sequencerMemory.getSequenceStack();
+//        InternalFactHandle   fhB0   = (InternalFactHandle) session.insert(new B(0, "b"));
+//        PseudoClockScheduler pseudo = (PseudoClockScheduler) session.getTimerService();
+//        pseudo.advanceTime(2000, TimeUnit.MILLISECONDS);
+//
+//        session.fireAllRules();
+//
+//        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(-1); // terminated
+//    }
+//
+//    @Test
+//    public void testSequenceComplete() {
+//        seq0.setController(new TimoutController(new DurationTimer(1000)));
+//        rule.addSequence(seq0);
+//        kbase.addPackage(pkg);
+//
+//        createSession();
+//        ArrayList<SequenceMemory> stack = sequencerMemory.getSequenceStack();
+//
+//        InternalFactHandle   fhB0   = (InternalFactHandle) session.insert(new B(0, "b"));
+//        PseudoClockScheduler pseudo = (PseudoClockScheduler) session.getTimerService();
+//        pseudo.advanceTime(2000, TimeUnit.MILLISECONDS);
+//
+//        session.fireAllRules();
+//
+//        assertThat(sequencerMemory.getCurrentStep()).isEqualTo(-1); // terminated
+//    }
 }

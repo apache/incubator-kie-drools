@@ -2,10 +2,13 @@ package org.drools.mvel.integrationtests.phreak.sequencing;
 
 import org.drools.base.base.ClassObjectType;
 import org.drools.base.base.ObjectType;
+import org.drools.base.base.ValueResolver;
 import org.drools.base.definitions.InternalKnowledgePackage;
 import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.base.rule.EntryPointId;
 import org.drools.base.rule.Pattern;
+import org.drools.base.rule.consequence.Consequence;
+import org.drools.base.rule.consequence.ConsequenceContext;
 import org.drools.core.ClockType;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.common.InternalFactHandle;
@@ -67,6 +70,17 @@ public class AbstractPhreakSequencerSubsequenceTest {
         kbase = new SessionsAwareKnowledgeBase(rbase);
 
         rule = new RuleImpl("rule1").setPackage("org.pkg1");
+        rule.setConsequence(new Consequence() {
+            @Override
+            public String getName() {
+                return "r1";
+            }
+
+            @Override
+            public void evaluate(ConsequenceContext knowledgeHelper, ValueResolver valueResolver) throws Exception {
+                System.out.println("help");
+            }
+        });
         pkg  = CoreComponentFactory.get().createKnowledgePackage("org.pkg1");
         pkg.getDialectRuntimeRegistry().setDialectData( "java", new JavaDialectRuntimeData());
         pkg.addRule( rule );

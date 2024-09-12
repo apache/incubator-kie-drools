@@ -5,9 +5,9 @@ import org.drools.base.reteoo.sequencing.Sequence.SequenceMemory;
 
 import java.util.function.Consumer;
 
-public class AggregatorStep extends SequenceStep implements Step {
-    public AggregatorStep(int index, Sequence parentSequence, Sequence sequence, Consumer<SequenceMemory> consumer) {
-        super(index, parentSequence, sequence);
-        sequence.setOnEnd(consumer);
+public class AggregatorStep extends SubsequenceStep implements Step {
+    public AggregatorStep(int index, Sequence sequence, Sequence subsequence, Consumer<SequenceMemory> consumer) {
+        super(index, sequence, subsequence);
+        subsequence.setOnEnd(consumer);
     }
 }
