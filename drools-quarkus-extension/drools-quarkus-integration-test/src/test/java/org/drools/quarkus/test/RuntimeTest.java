@@ -30,8 +30,7 @@ import org.kie.api.prototype.PrototypeFactInstance;
 import org.kie.api.runtime.KieRuntimeBuilder;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.api.prototype.PrototypeBuilder.prototype;
 
 @QuarkusTest
@@ -58,16 +57,15 @@ public class RuntimeTest {
 
     private void testSimpleDrl(KieSession ksession, String assetPackage) {
         List<String> pkgNames = ksession.getKieBase().getKiePackages().stream().map(KiePackage::getName).collect(Collectors.toList());
-        assertEquals(2, pkgNames.size());
-        assertTrue(pkgNames.contains("org.drools.quarkus.test"));
-        assertTrue(pkgNames.contains(assetPackage));
+        
+        assertThat(pkgNames).hasSize(2).containsExactlyInAnyOrder("org.drools.quarkus.test", assetPackage);
 
         Result result = new Result();
         ksession.insert(result);
         ksession.insert(new Person("Mark", 17));
         ksession.fireAllRules();
 
-        assertEquals("Mark can NOT drink", result.toString());
+        assertThat(result.toString()).isEqualTo("Mark can NOT drink");
     }
 
     @Test
@@ -85,7 +83,6 @@ public class RuntimeTest {
         ksession.insert(result);
 
         ksession.fireAllRules();
-
-        assertEquals("Mark can NOT drink", result.get("value"));
+        assertThat(result.get("value")).isEqualTo("Mark can NOT drink");
     }
 }
