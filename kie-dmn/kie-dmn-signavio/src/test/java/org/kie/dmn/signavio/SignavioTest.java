@@ -325,13 +325,9 @@ public class SignavioTest {
     void signavioMultiInstanceDecisionTableWithinMultipleFiles() {
         DMNRuntime dmnRuntime = createRuntime("MID with outside requirement.dmn", "survey MID SUM.dmn", "Signavio_Concat.dmn");
 
-        List<String> decisionNames = dmnRuntime
-                .getModels()
-                .stream()
-                .flatMap(dmnModel -> dmnModel.getDecisions().stream())
-                .map(DMNNode::getName)
-                .collect(Collectors.toList());
-
-        assertThat(decisionNames).containsOnly("sumUp", "iterating", "determineModifier", "concatNames");
+        assertThat(dmnRuntime.getModels())
+                .flatExtracting(DMNModel::getDecisions)
+                .extracting(DMNNode::getName)
+                .containsOnly("sumUp", "iterating", "determineModifier", "concatNames");
     }
 }
