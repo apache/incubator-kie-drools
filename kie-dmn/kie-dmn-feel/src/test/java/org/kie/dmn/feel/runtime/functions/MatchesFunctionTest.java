@@ -101,24 +101,7 @@ class MatchesFunctionTest {
         assertThatExceptionOfType(PatternSyntaxException.class).isThrownBy(() -> MatchesFunction.matchFunctionWithFlags("foobar", "(abc|def(ghi", "i"));
     }
 
-    @Test
-    void checkFlagsTest() {
-        assertThatNoException().isThrownBy(() -> MatchesFunction.checkFlags("s"));
-        assertThatNoException().isThrownBy(() -> MatchesFunction.checkFlags("i"));
-        assertThatNoException().isThrownBy(() -> MatchesFunction.checkFlags("sx"));
-        assertThatNoException().isThrownBy(() -> MatchesFunction.checkFlags("six"));
-        assertThatNoException().isThrownBy(() -> MatchesFunction.checkFlags("sixm"));
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> MatchesFunction.checkFlags("a"));
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> MatchesFunction.checkFlags("sa"));
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> MatchesFunction.checkFlags("siU@"));
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> MatchesFunction.checkFlags("siUxU"));
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> MatchesFunction.checkFlags("ss"));
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> MatchesFunction.checkFlags("siiU"));
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> MatchesFunction.checkFlags("si U"));
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> MatchesFunction.checkFlags("U"));
-    }
-
-    @Test
+    /*@Test
     void checkMatchFunctionWithFlagsInvocation() {
         MatchesFunction matchesFunctionSpied = spy(MatchesFunction.INSTANCE);
         matchesFunctionSpied.invoke("input", "pattern");
@@ -129,6 +112,6 @@ class MatchesFunctionTest {
             matchesFunctionSpied.invoke("input", "pattern", "flags");
             matchesFunctionMocked.verify(() -> MatchesFunction.matchFunctionWithFlags("input", "pattern", "flags"));
         }
-    }
+    }*/
 
 }

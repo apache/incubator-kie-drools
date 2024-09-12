@@ -31,17 +31,22 @@ public class XQueryImplUtilTest {
         String flags = "i";
         Object retrieved = XQueryImplUtil.executeMatchesFunction(input, pattern,
                 flags);
-        String expected = "true";
-        assertThat(retrieved).isNotNull();
-        assertThat(retrieved.equals(expected));
+        boolean expected = true;
+        assertThat(retrieved).isNotNull().isEqualTo(expected);
 
         input = "fo\nbar";
         pattern = "o.b";
         flags = "";
         retrieved = XQueryImplUtil.executeMatchesFunction(input, pattern, flags);
-        expected = "false";
-        assertThat(retrieved).isNotNull();
-        assertThat(retrieved.equals(expected));
+        expected = false;
+        assertThat(retrieved).isNotNull().isEqualTo(expected);
+
+        input = "test";
+        pattern = "test";
+        flags = "n";
+        retrieved = XQueryImplUtil.executeMatchesFunction(input, pattern, flags);
+        expected = true;
+        assertThat(retrieved).isNotNull().isEqualTo(expected);
     }
 
     @Test
@@ -53,8 +58,7 @@ public class XQueryImplUtilTest {
         Object retrieved = XQueryImplUtil.executeReplaceFunction(input, pattern, replacement,
                 flags);
         String expected = "tttString";
-        assertThat(retrieved).isNotNull();
-        assertThat(retrieved.equals(expected));
+        assertThat(retrieved).isNotNull().isEqualTo(expected);
 
         input = "fo\nbar";
         pattern = "o.b";
@@ -62,8 +66,7 @@ public class XQueryImplUtilTest {
         flags = "s";
         retrieved = XQueryImplUtil.executeReplaceFunction(input, pattern, replacement, flags);
         expected = "ftttar";
-        assertThat(retrieved).isNotNull();
-        assertThat(retrieved.equals(expected));
+        assertThat(retrieved).isNotNull().isEqualTo(expected);
     }
 
 }

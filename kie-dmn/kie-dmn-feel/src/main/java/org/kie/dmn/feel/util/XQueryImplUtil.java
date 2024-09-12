@@ -19,7 +19,6 @@
 package org.kie.dmn.feel.util;
 
 import net.sf.saxon.s9api.*;
-import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 
 public class XQueryImplUtil {
 
