@@ -23,8 +23,8 @@ import org.drools.template.parser.Column;
 import org.drools.template.parser.ColumnFactory;
 import org.drools.template.parser.LongColumn;
 import org.drools.template.parser.StringColumn;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
@@ -33,7 +33,7 @@ public class ColumnFactoryTest {
     
     private ColumnFactory f;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         f = new ColumnFactory();
     }

@@ -34,8 +34,8 @@ import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.template.model.Global;
 import org.drools.template.model.Import;
 import org.drools.template.parser.DataListener;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
@@ -61,7 +61,7 @@ public class SpreadsheetCompilerUnitTest {
     
     private SpreadsheetCompiler converter;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         converter = new SpreadsheetCompiler();
     }
