@@ -39,8 +39,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.core.util.DynamicTypeUtils.prototype;
 
@@ -155,9 +153,9 @@ public class DMN15ValidationsTest {
                                                        this.getClass()))
                 .toArray(value -> new Resource[allModelsFileNames.size()]);
         List<DMNMessage> dmnMessages = validatorBuilder.theseModels(resources);
-        assertNotNull(dmnMessages);
+        assertThat(dmnMessages).isNotNull();
         dmnMessages.forEach(dmnMessage -> LOG.error(dmnMessage.toString()));
-        assertTrue(dmnMessages.isEmpty());
+        assertThat(dmnMessages).isEmpty();
     }
 
     private void evaluate(String modelNamespace, String modelName, String modelFileName,

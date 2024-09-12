@@ -20,11 +20,10 @@ package org.drools.beliefs.bayes;
 
 import org.drools.beliefs.graph.Graph;
 import org.drools.beliefs.graph.GraphNode;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -63,7 +62,7 @@ public class GlobalUpdateTest {
     final List<String> messageResults      = new ArrayList<String>();
     final List<String> globalUpdateResults = new ArrayList<String>();
 
-    @Before
+    @BeforeEach
     public void startUp() {
         int i = 0;
         List<JunctionTreeSeparator> list = new ArrayList<JunctionTreeSeparator>();
@@ -111,92 +110,92 @@ public class GlobalUpdateTest {
     @Test
     public void testCollectFromRootClique() {
         bayesInstance.collectEvidence(n0);
-        assertThat(messageResults).isEqualTo(asList("3:2", "4:2", "2:1", "7:6", "8:6", "6:5", "5:1", "1:0"));
+        assertThat(messageResults).containsExactly("3:2", "4:2", "2:1", "7:6", "8:6", "6:5", "5:1", "1:0");
     }
 
     @Test
     public void testCollectFromMidTipClique() {
         bayesInstance.collectEvidence(n4);
-        assertThat(messageResults).isEqualTo(asList("0:1", "7:6", "8:6", "6:5", "5:1", "1:2", "3:2", "2:4"));
+        assertThat(messageResults).containsExactly("0:1", "7:6", "8:6", "6:5", "5:1", "1:2", "3:2", "2:4");
     }
 
     @Test
     public void testCollectFromEndTipClique() {
         bayesInstance.collectEvidence(n7);
-        assertThat(messageResults).isEqualTo(asList("0:1", "3:2", "4:2", "2:1", "1:5", "5:6", "8:6", "6:7"));
+        assertThat(messageResults).containsExactly("0:1", "3:2", "4:2", "2:1", "1:5", "5:6", "8:6", "6:7");
     }
 
     @Test
     public void testCollectFromMidClique() {
         bayesInstance.collectEvidence(n5);
-        assertThat(messageResults).isEqualTo(asList("0:1", "3:2", "4:2", "2:1", "1:5", "7:6", "8:6", "6:5"));
+        assertThat(messageResults).containsExactly("0:1", "3:2", "4:2", "2:1", "1:5", "7:6", "8:6", "6:5");
     }
 
     @Test
     public void testDistributeFromRootClique() {
         bayesInstance.distributeEvidence(n0);
-        assertThat(messageResults).isEqualTo(asList("0:1", "1:2", "2:3", "2:4", "1:5", "5:6", "6:7", "6:8"));
+        assertThat(messageResults).containsExactly("0:1", "1:2", "2:3", "2:4", "1:5", "5:6", "6:7", "6:8");
     }
 
     @Test
     public void testDistributeFromMidTipClique() {
         bayesInstance.distributeEvidence(n4);
-        assertThat(messageResults).isEqualTo(asList("4:2", "2:1", "1:0", "1:5", "5:6", "6:7", "6:8", "2:3"));
+        assertThat(messageResults).containsExactly("4:2", "2:1", "1:0", "1:5", "5:6", "6:7", "6:8", "2:3");
     }
 
     @Test
     public void testDistributeFromEndTipClique() {
         bayesInstance.distributeEvidence(n7);
-        assertThat(messageResults).isEqualTo(asList("7:6", "6:5", "5:1", "1:0", "1:2", "2:3", "2:4", "6:8"));
+        assertThat(messageResults).containsExactly("7:6", "6:5", "5:1", "1:0", "1:2", "2:3", "2:4", "6:8");
     }
 
     @Test
     public void testDistributeFromMidClique() {
         bayesInstance.distributeEvidence(n5);
-        assertThat(messageResults).isEqualTo(asList("5:1", "1:0", "1:2", "2:3", "2:4", "5:6", "6:7", "6:8"));
+        assertThat(messageResults).containsExactly("5:1", "1:0", "1:2", "2:3", "2:4", "5:6", "6:7", "6:8");
     }
 
     @Test
     public void testGlobalUpdateFromRootClique() {
         bayesInstance.globalUpdate(n0);
-        assertThat(messageResults).isEqualTo(asList("3:2", "4:2", "2:1", "7:6", "8:6", "6:5", "5:1", "1:0", //n0
+        assertThat(messageResults).containsExactly("3:2", "4:2", "2:1", "7:6", "8:6", "6:5", "5:1", "1:0", //n0
                 "0:1", "1:2", "2:3", "2:4", "1:5", "5:6", "6:7", "6:8" //n0
-        ));
-        assertThat(globalUpdateResults).isEqualTo(asList("0"));
+        );
+        assertThat(globalUpdateResults).containsExactly("0");
     }
 
     @Test
     public void testGlobalUpdateFromMidTipClique() {
         bayesInstance.globalUpdate(n4);
-        assertThat(messageResults).isEqualTo(asList("0:1", "7:6", "8:6", "6:5", "5:1", "1:2", "3:2", "2:4", //n4
+        assertThat(messageResults).containsExactly("0:1", "7:6", "8:6", "6:5", "5:1", "1:2", "3:2", "2:4", //n4
                 "4:2", "2:1", "1:0", "1:5", "5:6", "6:7", "6:8", "2:3" //n4
-        ));
-        assertThat(globalUpdateResults).isEqualTo(asList("4"));
+        );
+        assertThat(globalUpdateResults).containsExactly("4");
     }
 
     @Test
     public void testGlobalUpdateFromEndTipClique() {
         bayesInstance.globalUpdate(n7);
-        assertThat(messageResults).isEqualTo(asList("0:1", "3:2", "4:2", "2:1", "1:5", "5:6", "8:6", "6:7", //n7
+        assertThat(messageResults).containsExactly("0:1", "3:2", "4:2", "2:1", "1:5", "5:6", "8:6", "6:7", //n7
                 "7:6", "6:5", "5:1", "1:0", "1:2", "2:3", "2:4", "6:8" //n7
-        ));
-        assertThat(globalUpdateResults).isEqualTo(asList("7"));
+        );
+        assertThat(globalUpdateResults).containsExactly("7");
     }
 
     @Test
     public void testGlobalUpdateFromMidClique() {
         bayesInstance.globalUpdate(n5);
-        assertThat(messageResults).isEqualTo(asList("0:1", "3:2", "4:2", "2:1", "1:5", "7:6", "8:6", "6:5", //n5
+        assertThat(messageResults).containsExactly("0:1", "3:2", "4:2", "2:1", "1:5", "7:6", "8:6", "6:5", //n5
                 "5:1", "1:0", "1:2", "2:3", "2:4", "5:6", "6:7", "6:8" //n5
-        ));
-        assertThat(globalUpdateResults).isEqualTo(asList("5"));
+        );
+        assertThat(globalUpdateResults).containsExactly("5");
     }
 
 
     @Test
     public void testDistributeFromGlobalUpdate() {
         bayesInstance.globalUpdate();
-        assertThat(messageResults).isEqualTo(asList("3:2", "4:2", "2:1", "7:6", "8:6", "6:5", "5:1", "1:0", //n0
+        assertThat(messageResults).containsExactly("3:2", "4:2", "2:1", "7:6", "8:6", "6:5", "5:1", "1:0", //n0
                 "0:1", "1:2", "2:3", "2:4", "1:5", "5:6", "6:7", "6:8" //n0
 //                              "0:1", "3:2", "4:2", "2:1", "7:6", "8:6", "6:5", "5:1", //n1
 //                              "1:0", "1:2", "2:3", "2:4", "1:5", "5:6", "6:7", "6:8", //n1
@@ -214,18 +213,9 @@ public class GlobalUpdateTest {
 //                              "7:6", "6:5", "5:1", "1:0", "1:2", "2:3", "2:4", "6:8", //n7
 //                              "0:1", "3:2", "4:2", "2:1", "1:5", "5:6", "7:6", "6:8", //n8
 //                              "8:6", "6:5", "5:1", "1:0", "1:2", "2:3", "2:4", "6:7"  //n8
-        ));
+        );
 
-//        assertEquals( asList( "0", "1", "2", "3", "4", "5", "6", "7", "8"), globalUpdateResults);
-        assertThat(globalUpdateResults).isEqualTo(asList("0"));
-    }
-
-    public void testGlobalUpdate() {
-        bayesInstance.globalUpdate();
-    }
-
-    public List asList(String... items) {
-        return Arrays.asList(items);
+        assertThat(globalUpdateResults).containsExactly("0");
     }
 
     public void connectChildren(Graph<BayesVariable> graph, JunctionTreeClique parent, List list, JunctionTreeClique... children) {

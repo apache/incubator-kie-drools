@@ -24,26 +24,26 @@ import org.mockito.MockedStatic;
 import java.security.InvalidParameterException;
 import java.util.regex.PatternSyntaxException;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatNoException;
 import static org.mockito.Mockito.*;
 
 class MatchesFunctionTest {
 
     @Test
     void invokeNull() {
-        assertThrows(InvalidParameterException.class, () -> MatchesFunction.matchFunctionWithFlags(null, null, null));
-        assertThrows(InvalidParameterException.class, () -> MatchesFunction.matchFunctionWithFlags(null, "test",null));
-        assertThrows(InvalidParameterException.class, () -> MatchesFunction.matchFunctionWithFlags("test", null,null));
+        assertThatExceptionOfType(InvalidParameterException.class).isThrownBy(() -> MatchesFunction.matchFunctionWithFlags(null, null, null));
+        assertThatExceptionOfType(InvalidParameterException.class).isThrownBy(() -> MatchesFunction.matchFunctionWithFlags(null, "test", null));
+        assertThatExceptionOfType(InvalidParameterException.class).isThrownBy(() -> MatchesFunction.matchFunctionWithFlags("test", null, null));
     }
 
     @Test
     void invokeUnsupportedFlags() {
-        assertThrows(IllegalArgumentException.class, () -> MatchesFunction.matchFunctionWithFlags("foobar", "fo.bar", "g"));
-        assertThrows(IllegalArgumentException.class, () -> MatchesFunction.matchFunctionWithFlags("abracadabra", "bra", "p"));
-        assertThrows(IllegalArgumentException.class, () -> MatchesFunction.matchFunctionWithFlags("abracadabra", "bra", "X"));
-        assertThrows(IllegalArgumentException.class, () -> MatchesFunction.matchFunctionWithFlags("abracadabra", "bra", " "));
-        assertThrows(IllegalArgumentException.class, () -> MatchesFunction.matchFunctionWithFlags("abracadabra", "bra", "iU"));
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> MatchesFunction.matchFunctionWithFlags("foobar", "fo.bar", "g"));
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> MatchesFunction.matchFunctionWithFlags("abracadabra", "bra", "p"));
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> MatchesFunction.matchFunctionWithFlags("abracadabra", "bra", "X"));
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> MatchesFunction.matchFunctionWithFlags("abracadabra", "bra", " "));
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> MatchesFunction.matchFunctionWithFlags("abracadabra", "bra", "iU"));
     }
 
     @Test
@@ -98,10 +98,27 @@ class MatchesFunctionTest {
 
     @Test
     void checkForPatternTest() {
-        assertThrows(PatternSyntaxException.class, () -> MatchesFunction.matchFunctionWithFlags("foobar",  "(abc|def(ghi", "i"));
+        assertThatExceptionOfType(PatternSyntaxException.class).isThrownBy(() -> MatchesFunction.matchFunctionWithFlags("foobar", "(abc|def(ghi", "i"));
     }
 
-   /* @Test
+    @Test
+    void checkFlagsTest() {
+        assertThatNoException().isThrownBy(() -> MatchesFunction.checkFlags("s"));
+        assertThatNoException().isThrownBy(() -> MatchesFunction.checkFlags("i"));
+        assertThatNoException().isThrownBy(() -> MatchesFunction.checkFlags("sx"));
+        assertThatNoException().isThrownBy(() -> MatchesFunction.checkFlags("six"));
+        assertThatNoException().isThrownBy(() -> MatchesFunction.checkFlags("sixm"));
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> MatchesFunction.checkFlags("a"));
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> MatchesFunction.checkFlags("sa"));
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> MatchesFunction.checkFlags("siU@"));
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> MatchesFunction.checkFlags("siUxU"));
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> MatchesFunction.checkFlags("ss"));
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> MatchesFunction.checkFlags("siiU"));
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> MatchesFunction.checkFlags("si U"));
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> MatchesFunction.checkFlags("U"));
+    }
+
+    @Test
     void checkMatchFunctionWithFlagsInvocation() {
         MatchesFunction matchesFunctionSpied = spy(MatchesFunction.INSTANCE);
         matchesFunctionSpied.invoke("input", "pattern");
@@ -112,6 +129,6 @@ class MatchesFunctionTest {
             matchesFunctionSpied.invoke("input", "pattern", "flags");
             matchesFunctionMocked.verify(() -> MatchesFunction.matchFunctionWithFlags("input", "pattern", "flags"));
         }
-    }*/
+    }
 
 }

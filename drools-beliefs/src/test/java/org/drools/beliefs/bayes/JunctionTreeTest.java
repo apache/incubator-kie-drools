@@ -18,12 +18,10 @@
  */
 package org.drools.beliefs.bayes;
 
-import junit.framework.AssertionFailedError;
-
 import org.drools.beliefs.graph.Graph;
 import org.drools.beliefs.graph.GraphNode;
 import org.drools.util.bitmask.OpenBitSet;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -109,11 +107,11 @@ public class JunctionTreeTest {
         PotentialMultiplier m = new PotentialMultiplier(b.getProbabilityTable(), 1, parentVarPos, parentIndexMultipliers, vars, multipliers, potentials);
 
         m.multiple();
-        assertArray(new double[]{0.1, 0.2, 0.3, 0.4}, potentials);
+        assertThat(potentials).containsExactly(0.1, 0.2, 0.3, 0.4);
 
         // test that it's applying variable multiplications correctly ontop of each other. This simulates the application of project variabe multiplications
         m.multiple();
-        assertArray(new double[]{0.01, 0.04, 0.09, 0.16}, scaleDouble( 3, potentials ));
+        assertThat(scaleDouble(3, potentials)).containsExactly(0.01, 0.04, 0.09, 0.16);
     }
 
     @Test
@@ -145,11 +143,11 @@ public class JunctionTreeTest {
         PotentialMultiplier m = new PotentialMultiplier(c.getProbabilityTable(), 2, parentVarPos, parentIndexMultipliers, vars, multipliers, potentials);
 
         m.multiple();
-        assertArray(new double[]{0.1, 0.1, 0.2, 0.2, 0.3, 0.3, 0.4, 0.4, 0.5, 0.5, 0.6, 0.6, 0.7, 0.7, 0.8, 0.8}, scaleDouble( 3, potentials ));
+        assertThat(scaleDouble( 3, potentials )).containsExactly(0.1, 0.1, 0.2, 0.2, 0.3, 0.3, 0.4, 0.4, 0.5, 0.5, 0.6, 0.6, 0.7, 0.7, 0.8, 0.8);
 
         // test that it's applying variable multiplications correctly ontop of each other. This simulates the application of project variabe multiplications
         m.multiple();
-        assertArray(new double[]{0.01, 0.01, 0.04, 0.04, 0.09, 0.09, 0.16, 0.16, 0.25, 0.25, 0.36, 0.36, 0.49, 0.49, 0.64, 0.64}, scaleDouble( 3, potentials ) );
+        assertThat(scaleDouble( 3, potentials )).containsExactly(0.01, 0.01, 0.04, 0.04, 0.09, 0.09, 0.16, 0.16, 0.25, 0.25, 0.36, 0.36, 0.49, 0.49, 0.64, 0.64);
     }
 
     @Test
@@ -181,11 +179,11 @@ public class JunctionTreeTest {
         PotentialMultiplier m = new PotentialMultiplier(c.getProbabilityTable(), 2, parentVarPos, parentIndexMultipliers, vars, multipliers, potentials);
 
         m.multiple();
-        assertArray(new double[]{0.1, 0.3, 0.2, 0.4, 0.5, 0.7, 0.6, 0.8, 0.1, 0.3, 0.2, 0.4, 0.5, 0.7, 0.6, 0.8}, potentials);
+        assertThat(potentials).containsExactly(0.1, 0.3, 0.2, 0.4, 0.5, 0.7, 0.6, 0.8, 0.1, 0.3, 0.2, 0.4, 0.5, 0.7, 0.6, 0.8);
 
         // test that it's applying variable multiplications correctly ontop of each other. This simulates the application of project variabe multiplications
         m.multiple();
-        assertArray(new double[]{0.01, 0.09, 0.04, 0.16, 0.25, 0.49, 0.36, 0.64, 0.01, 0.09, 0.04, 0.16, 0.25, 0.49, 0.36, 0.64}, scaleDouble( 3, potentials ) );
+        assertThat(scaleDouble( 3, potentials )).containsExactly(0.01, 0.09, 0.04, 0.16, 0.25, 0.49, 0.36, 0.64, 0.01, 0.09, 0.04, 0.16, 0.25, 0.49, 0.36, 0.64);
     }
 
     @Test
@@ -228,26 +226,10 @@ public class JunctionTreeTest {
 
         JunctionTree jtree = new JunctionTree(graph, node1, new JunctionTreeClique[] { node1, node2 }, null );
 
-        assertArray(new double[]{0.1, 0.2, 0.1, 0.2}, scaleDouble( 3, node1.getPotentials() ));
-        assertArray(new double[]{0.01, 0.02, 0.06, 0.08}, scaleDouble( 3, node2.getPotentials() ));
+        assertThat(scaleDouble(3, node1.getPotentials())).containsExactly(0.1, 0.2, 0.1, 0.2);
+        
+        assertThat(scaleDouble(3, node2.getPotentials())).containsExactly(0.01, 0.02, 0.06, 0.08);
     }
-
-    public static void assertArray(double[] expected, double[] actual) {
-        if ( !Arrays.equals(expected, actual) ) {
-            System.err.print( "expected " );
-            for ( int i = 0; i <expected.length; i++ ) {
-                System.err.format("%.7f ", expected[i]);
-            }
-            System.err.println();
-            System.err.print( "actual " );
-            for ( int i = 0; i <actual.length; i++ ) {
-                System.err.format("%.7f ", actual[i]);
-            }
-            System.err.println();
-            throw new AssertionFailedError("Arrays are not Equal");
-        }
-    }
-
 
     public  static void assertIndexToKeyMapping(int numberOfStates, int[] indexMultipliers) {
         for (int i = 0; i < numberOfStates; i++) {

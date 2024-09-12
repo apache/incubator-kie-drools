@@ -28,7 +28,7 @@ import org.kie.dmn.model.v1_5.TDefinitions;
 import org.kie.dmn.model.v1_5.TInformationRequirement;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 
 class DMNCompilerImplTest {
 
@@ -70,7 +70,7 @@ class DMNCompilerImplTest {
 
         InformationRequirement informationRequirement = new TInformationRequirement();
         elementReference.setParent(informationRequirement);
-        assertThrows(RuntimeException.class, () -> DMNCompilerImpl.getRootElement(elementReference));
+        assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> DMNCompilerImpl.getRootElement(elementReference));
 
         informationRequirement.setParent(parent);
         retrieved = DMNCompilerImpl.getRootElement(elementReference);

@@ -37,13 +37,6 @@ import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.dmn.feel.util.NumberEvalHelper;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class BaseFEELFunctionHelperTest {
 
@@ -58,14 +51,14 @@ class BaseFEELFunctionHelperTest {
     void getAdjustedParametersForMethod() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         // StddevFunction.invoke(@ParameterName( "list" ) List<?> list)
         Method method = StddevFunction.class.getMethod("invoke", List.class);
-        assertNotNull(method);
+        assertThat(method).isNotNull();
         Object actualValue = Arrays.asList(2, 4, 7, 5);
         Object[] parameters = {new NamedParameter("list", actualValue)};
 
         Object[] retrieved = BaseFEELFunctionHelper.getAdjustedParametersForMethod(ctx, parameters, true, method);
-        assertNotNull(retrieved);
-        assertEquals(parameters.length, retrieved.length);
-        assertEquals(actualValue, retrieved[0]);
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved.length).isEqualTo(parameters.length);
+        assertThat(retrieved[0]).isEqualTo(actualValue);
     }
 
     @Test
@@ -75,103 +68,102 @@ class BaseFEELFunctionHelperTest {
         Class<?>[] parameterTypes = new Class[]{List.class};
         Object[] actualParams = {actualParam};
         Object[] retrieved = BaseFEELFunctionHelper.adjustByCoercion(parameterTypes, actualParams);
-        assertEquals(actualParams, retrieved);
+        assertThat(retrieved).isEqualTo(actualParams);
 
         actualParam = "StringA";
         parameterTypes = new Class[]{String.class};
         actualParams = new Object[]{actualParam};
         retrieved = BaseFEELFunctionHelper.adjustByCoercion(parameterTypes, actualParams);
-        assertEquals(actualParams, retrieved);
+        assertThat(retrieved).isEqualTo(actualParams);
 
         // coercing more objects to different types: fails
         parameterTypes = new Class[]{String.class, Integer.class};
         actualParams = new Object[]{"String", 34 };
         retrieved = BaseFEELFunctionHelper.adjustByCoercion(parameterTypes, actualParams);
-        assertEquals(actualParams, retrieved);
+        assertThat(retrieved).isEqualTo(actualParams);
 
         // not coercing null value to not-list type
         actualParam = null;
         actualParams = new Object[]{actualParam};
         retrieved = BaseFEELFunctionHelper.adjustByCoercion(parameterTypes, actualParams);
-        assertEquals(actualParams, retrieved);
+        assertThat(retrieved).isEqualTo(actualParams);
 
         // not coercing null value to singleton list
         parameterTypes = new Class[]{List.class};
         retrieved = BaseFEELFunctionHelper.adjustByCoercion(parameterTypes, actualParams);
-        assertEquals(actualParams, retrieved);
+        assertThat(retrieved).isEqualTo(actualParams);
 
         // coercing not-null value to singleton list
         actualParam = "StringA";
         actualParams = new Object[]{actualParam};
         retrieved = BaseFEELFunctionHelper.adjustByCoercion(parameterTypes, actualParams);
-        assertNotNull(retrieved);
-        assertNotEquals(actualParams, retrieved);
-        assertEquals(1, retrieved.length);
-        assertNotNull(retrieved[0]);
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved).isNotEqualTo(actualParams);
+        assertThat(retrieved.length).isEqualTo(1);
+        assertThat(retrieved[0]).isNotNull();
         assertThat(retrieved[0]).isInstanceOf(List.class);
         List retrievedList = (List) retrieved[0];
-        assertEquals(1, retrievedList.size());
-        assertEquals(actualParam, retrievedList.get(0));
+        assertThat(retrievedList.size()).isEqualTo(1);
+        assertThat(retrievedList.get(0)).isEqualTo(actualParam);
 
         // coercing null value to array: fails
         parameterTypes = new Class[]{Object.class.arrayType()};
         retrieved = BaseFEELFunctionHelper.adjustByCoercion(parameterTypes, actualParams);
-        assertNull(retrieved);
+        assertThat(retrieved).isNull();
 
         // coercing one object to different type: fails
         actualParam = 45;
         parameterTypes = new Class[]{String.class};
         actualParams = new Object[]{actualParam};
         retrieved = BaseFEELFunctionHelper.adjustByCoercion(parameterTypes, actualParams);
-        assertNull(retrieved);
+        assertThat(retrieved).isNull();
 
         // coercing more objects to different types: fails
         parameterTypes = new Class[]{String.class, Integer.class};
         actualParams = new Object[]{"String", "34" };
         retrieved = BaseFEELFunctionHelper.adjustByCoercion(parameterTypes, actualParams);
-        assertNull(retrieved);
-
+        assertThat(retrieved).isNull();
     }
 
     @Test
     void addCtxParamIfRequired() throws NoSuchMethodException {
         // AllFunction.invoke(@ParameterName( "list" ) List list)
         Method method = AllFunction.class.getMethod("invoke", List.class);
-        assertNotNull(method);
+        assertThat(method).isNotNull();
         Object[] parameters = {List.of(true, false)};
 
         Object[] retrieved = BaseFEELFunctionHelper.addCtxParamIfRequired(ctx, parameters, true, method);
-        assertNotNull(retrieved);
-        assertEquals(parameters.length, retrieved.length);
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved.length).isEqualTo(parameters.length);
         for (int i = 0; i < parameters.length; i++) {
-            assertEquals(parameters[i], retrieved[i]);
+            assertThat(retrieved[i]).isEqualTo(parameters[i]);
         }
 
         // SortFunction.invoke(@ParameterName( "ctx" ) EvaluationContext ctx,
         //                                             @ParameterName("list") List list,
         //                                             @ParameterName("precedes") FEELFunction function)
         method = SortFunction.class.getMethod("invoke", EvaluationContext.class, List.class, FEELFunction.class);
-        assertNotNull(method);
+        assertThat(method).isNotNull();
         parameters = new Object[]{List.of(1, 2), AllFunction.INSTANCE};
         // direct reference to ctx
         retrieved = BaseFEELFunctionHelper.addCtxParamIfRequired(ctx, parameters, false, method);
-        assertNotNull(retrieved);
-        assertEquals(parameters.length + 1, retrieved.length);
-        assertEquals(ctx, retrieved[0]);
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved.length).isEqualTo(parameters.length + 1);
+        assertThat(retrieved[0]).isEqualTo(ctx);
         for (int i = 0; i < parameters.length; i++) {
-            assertEquals(parameters[i], retrieved[i + 1]);
+            assertThat(retrieved[i + 1]).isEqualTo(parameters[i]);
         }
 
         // NamedParameter reference to ctx
         retrieved = BaseFEELFunctionHelper.addCtxParamIfRequired(ctx, parameters, true, method);
-        assertNotNull(retrieved);
-        assertEquals(parameters.length + 1, retrieved.length);
-        assertEquals(NamedParameter.class, retrieved[0].getClass());
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved.length).isEqualTo(parameters.length + 1);
+        assertThat(retrieved[0].getClass()).isEqualTo(NamedParameter.class);
         NamedParameter retrievedNamedParameter = (NamedParameter) retrieved[0];
-        assertEquals("ctx", retrievedNamedParameter.getName());
-        assertEquals(ctx, retrievedNamedParameter.getValue());
+        assertThat(retrievedNamedParameter.getName()).isEqualTo("ctx");
+        assertThat(retrievedNamedParameter.getValue()).isEqualTo(ctx);
         for (int i = 0; i < parameters.length; i++) {
-            assertEquals(parameters[i], retrieved[i + 1]);
+            assertThat(retrieved[i + 1]).isEqualTo(parameters[i]);
         }
     }
 
@@ -179,16 +171,16 @@ class BaseFEELFunctionHelperTest {
     void calculateActualParams() throws NoSuchMethodException {
         // CeilingFunction.invoke(@ParameterName( "n" ) BigDecimal n)
         Method m = CeilingFunction.class.getMethod("invoke", BigDecimal.class);
-        assertNotNull(m);
+        assertThat(m).isNotNull();
         NamedParameter[] parameters = {new NamedParameter("n", BigDecimal.valueOf(1.5))};
         Object[] retrieved = BaseFEELFunctionHelper.calculateActualParams(m, parameters);
-        assertNotNull(retrieved);
-        assertEquals(parameters.length, retrieved.length);
-        assertEquals(parameters[0].getValue(), retrieved[0]);
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved.length).isEqualTo(parameters.length);
+        assertThat(retrieved[0]).isEqualTo(parameters[0].getValue());
 
         parameters = new NamedParameter[]{new NamedParameter("undefined", BigDecimal.class)};
         retrieved = BaseFEELFunctionHelper.calculateActualParams(m, parameters);
-        assertNull(retrieved);
+        assertThat(retrieved).isNull();
     }
 
     @Test
@@ -200,14 +192,14 @@ class BaseFEELFunctionHelperTest {
         boolean isVariableParameters = false;
         String variableParamPrefix = null;
         List<Object> variableParams = null;
-        assertTrue(BaseFEELFunctionHelper.calculateActualParam(np, names, actualParams, isVariableParameters,
-                                                               variableParamPrefix, variableParams));
-        assertEquals(np.getValue(), actualParams[0]);
+        assertThat(BaseFEELFunctionHelper.calculateActualParam(np, names, actualParams, isVariableParameters,
+                variableParamPrefix, variableParams)).isTrue();
+        assertThat(actualParams[0]).isEqualTo(np.getValue());
 
         np = new NamedParameter("undefined", BigDecimal.valueOf(1.5));
         actualParams = new Object[1];
-        assertFalse(BaseFEELFunctionHelper.calculateActualParam(np, names, actualParams, isVariableParameters,
-                                                                variableParamPrefix, variableParams));
+        assertThat(BaseFEELFunctionHelper.calculateActualParam(np, names, actualParams, isVariableParameters,
+                variableParamPrefix, variableParams)).isFalse();
 
         // populate by variableparameters
         variableParamPrefix = "varPref";
@@ -217,13 +209,13 @@ class BaseFEELFunctionHelperTest {
         actualParams = new Object[1];
         isVariableParameters = true;
         variableParams = new ArrayList();
-        assertTrue(BaseFEELFunctionHelper.calculateActualParam(np, names, actualParams, isVariableParameters,
-                                                               variableParamPrefix, variableParams));
-        assertEquals(varIndex, variableParams.size());
+        assertThat(BaseFEELFunctionHelper.calculateActualParam(np, names, actualParams, isVariableParameters,
+                variableParamPrefix, variableParams)).isTrue();
+        assertThat(variableParams.size()).isEqualTo(varIndex);
         for (int i = 0; i < varIndex - 1; i++) {
-            assertNull(variableParams.get(i));
+            assertThat(variableParams.get(i)).isNull();
         }
-        assertEquals(np.getValue(), variableParams.get(varIndex - 1));
+        assertThat(variableParams.get(varIndex - 1)).isEqualTo(np.getValue());
     }
 
     @Test
@@ -233,33 +225,33 @@ class BaseFEELFunctionHelperTest {
         int varIndex = 12;
         NamedParameter np = new NamedParameter(variableParamPrefix + varIndex, BigDecimal.valueOf(1.5));
         List<Object> variableParams = new ArrayList<>();
-        assertTrue(BaseFEELFunctionHelper.calculateActualParamVariableParameters(np, variableParamPrefix,
-                                                                                 variableParams));
-        assertEquals(varIndex, variableParams.size());
+        assertThat(BaseFEELFunctionHelper.calculateActualParamVariableParameters(np, variableParamPrefix,
+                variableParams)).isTrue();
+        assertThat(variableParams.size()).isEqualTo(varIndex);
         for (int i = 0; i < varIndex - 1; i++) {
-            assertNull(variableParams.get(i));
+            assertThat(variableParams.get(i)).isNull();
         }
-        assertEquals(np.getValue(), variableParams.get(varIndex - 1));
+        assertThat(variableParams.get(varIndex - 1)).isEqualTo(np.getValue());
 
         np = new NamedParameter("variableParamPrefix", BigDecimal.valueOf(1.5));
         variableParams = new ArrayList<>();
-        assertFalse(BaseFEELFunctionHelper.calculateActualParamVariableParameters(np, variableParamPrefix,
-                                                                                  variableParams));
+        assertThat(BaseFEELFunctionHelper.calculateActualParamVariableParameters(np, variableParamPrefix,
+                variableParams)).isFalse();
     }
 
     @Test
     void getParametersNames() throws NoSuchMethodException {
         // SumFunction.invoke(@ParameterName("n") Object[] list)
         Method m = SumFunction.class.getMethod("invoke", Object.class.arrayType());
-        assertNotNull(m);
+        assertThat(m).isNotNull();
         List<String> retrieved = BaseFEELFunctionHelper.getParametersNames(m);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         int counter = 0;
         Annotation[][] pas = m.getParameterAnnotations();
         for (Annotation[] annotations : pas) {
             for (Annotation annotation : annotations) {
                 if (annotation instanceof ParameterName parameterName) {
-                    assertEquals(parameterName.value(), retrieved.get(counter));
+                    assertThat(retrieved.get(counter)).isEqualTo(parameterName.value());
                     counter++;
                 }
             }
@@ -278,15 +270,15 @@ class BaseFEELFunctionHelperTest {
                                                 Number.class,
                                                 Number.class,
                                                 Number.class);
-        assertNotNull(m);
+        assertThat(m).isNotNull();
         retrieved = BaseFEELFunctionHelper.getParametersNames(m);
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         counter = 0;
         pas = m.getParameterAnnotations();
         for (Annotation[] annotations : pas) {
             for (Annotation annotation : annotations) {
                 if (annotation instanceof ParameterName parameterName) {
-                    assertEquals(parameterName.value(), retrieved.get(counter));
+                    assertThat(retrieved.get(counter)).isEqualTo(parameterName.value());
                     counter++;
                 }
             }
@@ -297,8 +289,8 @@ class BaseFEELFunctionHelperTest {
     void rearrangeParameters() {
         NamedParameter[] params = {new NamedParameter("fake", new Object())};
         Object[] retrieved = BaseFEELFunctionHelper.rearrangeParameters(params, Collections.emptyList());
-        assertNotNull(retrieved);
-        assertEquals(params, retrieved);
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved).isEqualTo(params);
 
         List<String> pnames = IntStream.range(0, 3)
                 .mapToObj(i -> "Parameter_" + i)
@@ -307,26 +299,26 @@ class BaseFEELFunctionHelperTest {
         // single param in correct position
         params = new NamedParameter[]{new NamedParameter(pnames.get(0), new Object())};
         retrieved = BaseFEELFunctionHelper.rearrangeParameters(params, pnames);
-        assertNotNull(retrieved);
-        assertEquals(pnames.size(), retrieved.length);
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved.length).isEqualTo(pnames.size());
         for (int i = 0; i < retrieved.length; i++) {
             if (i == 0) {
-                assertEquals(params[0].getValue(), retrieved[i]);
+                assertThat(retrieved[i]).isEqualTo(params[0].getValue());
             } else {
-                assertNull(retrieved[i]);
+                assertThat(retrieved[i]).isNull();
             }
         }
 
         // single param in wrong position
         params = new NamedParameter[]{new NamedParameter(pnames.get(2), new Object())};
         retrieved = BaseFEELFunctionHelper.rearrangeParameters(params, pnames);
-        assertNotNull(retrieved);
-        assertEquals(pnames.size(), retrieved.length);
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved.length).isEqualTo(pnames.size());
         for (int i = 0; i < retrieved.length; i++) {
             if (i == 2) {
-                assertEquals(params[0].getValue(), retrieved[i]);
+                assertThat(retrieved[i]).isEqualTo(params[0].getValue());
             } else {
-                assertNull(retrieved[i]);
+                assertThat(retrieved[i]).isNull();
             }
         }
 
@@ -335,18 +327,18 @@ class BaseFEELFunctionHelperTest {
                 new NamedParameter(pnames.get(1), new Object()),
                 new NamedParameter(pnames.get(0), new Object())};
         retrieved = BaseFEELFunctionHelper.rearrangeParameters(params, pnames);
-        assertNotNull(retrieved);
-        assertEquals(pnames.size(), retrieved.length);
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved.length).isEqualTo(pnames.size());
         for (int i = 0; i < retrieved.length; i++) {
             switch (i) {
                 case 0:
-                    assertEquals(params[2].getValue(), retrieved[i]);
+                    assertThat(retrieved[i]).isEqualTo(params[2].getValue());
                     break;
                 case 1:
-                    assertEquals(params[1].getValue(), retrieved[i]);
+                    assertThat(retrieved[i]).isEqualTo(params[1].getValue());
                     break;
                 case 2:
-                    assertEquals(params[0].getValue(), retrieved[i]);
+                    assertThat(retrieved[i]).isEqualTo(params[0].getValue());
                     break;
             }
         }
@@ -357,22 +349,22 @@ class BaseFEELFunctionHelperTest {
         List<Object> originalResult = List.of(3, "4", 56);
         Object result = originalResult.toArray();
         Object retrieved = BaseFEELFunctionHelper.normalizeResult(result);
-        assertNotNull(retrieved);
-        assertInstanceOf(List.class, retrieved);
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved).isInstanceOf(List.class);
         List<Object> retrievedList = (List<Object>) retrieved;
-        assertEquals(originalResult.size(), retrievedList.size());
+        assertThat(retrievedList.size()).isEqualTo(originalResult.size());
         for (int i = 0; i < originalResult.size(); i++) {
-            assertEquals(NumberEvalHelper.coerceNumber(originalResult.get(i)), retrievedList.get(i));
+            assertThat(retrievedList.get(i)).isEqualTo(NumberEvalHelper.coerceNumber(originalResult.get(i)));
         }
 
         result = 23;
         retrieved = BaseFEELFunctionHelper.normalizeResult(result);
-        assertNotNull(retrieved);
-        assertEquals(NumberEvalHelper.coerceNumber(result), retrieved);
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved).isEqualTo(NumberEvalHelper.coerceNumber(result));
 
         result = "23";
         retrieved = BaseFEELFunctionHelper.normalizeResult(result);
-        assertNotNull(retrieved);
-        assertEquals(NumberEvalHelper.coerceNumber(result), retrieved);
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved).isEqualTo(NumberEvalHelper.coerceNumber(result));
     }
 }

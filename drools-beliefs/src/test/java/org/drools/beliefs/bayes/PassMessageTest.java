@@ -20,11 +20,11 @@ package org.drools.beliefs.bayes;
 
 import org.drools.beliefs.graph.Graph;
 import org.drools.beliefs.graph.GraphNode;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.beliefs.bayes.GraphTest.addNode;
 import static org.drools.beliefs.bayes.GraphTest.bitSet;
-import static org.drools.beliefs.bayes.JunctionTreeTest.assertArray;
 import static org.drools.beliefs.bayes.JunctionTreeTest.scaleDouble;
 
 public class PassMessageTest {
@@ -59,9 +59,9 @@ public class PassMessageTest {
 
         bayesInstance.passMessage(node1, sep, node2);
 
-        assertArray(new double[]{0.2, 0.3}, scaleDouble(3, bayesInstance.getCliqueStates()[node1.getId()].getPotentials()));
-        assertArray(new double[]{0.4, 0.6}, scaleDouble(3, sepState.getPotentials()));
-        assertArray(new double[]{0.417, 0.583}, scaleDouble(3, bayesInstance.getCliqueStates()[node2.getId()].getPotentials()));
+        assertThat(scaleDouble(3, bayesInstance.getCliqueStates()[node1.getId()].getPotentials())).containsExactly(0.2, 0.3);
+        assertThat(scaleDouble(3, sepState.getPotentials())).containsExactly(0.4, 0.6);
+        assertThat(scaleDouble(3, bayesInstance.getCliqueStates()[node2.getId()].getPotentials())).containsExactly(0.417, 0.583);
     }
 
 }

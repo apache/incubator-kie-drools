@@ -38,7 +38,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 
 public class DMNMessagesAPITest {
 
@@ -72,7 +72,7 @@ public class DMNMessagesAPITest {
 
     @Test
     void apiUsageSnippetForDocumentation() {
-        assertThrows(IllegalStateException.class, () -> {
+        assertThatExceptionOfType(IllegalStateException.class).isThrownBy(() -> {
             KieServices ks = KieServices.Factory.get();
 
             ReleaseId releaseId = ks.newReleaseId("org.kie", "dmn-test-" + UUID.randomUUID(), "1.0");

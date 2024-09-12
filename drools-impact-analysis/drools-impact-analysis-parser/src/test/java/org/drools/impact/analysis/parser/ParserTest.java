@@ -20,7 +20,7 @@ package org.drools.impact.analysis.parser;
 
 import org.drools.impact.analysis.model.AnalysisModel;
 import org.drools.impact.analysis.parser.domain.Person;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ParserTest {
 

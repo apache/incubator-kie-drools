@@ -43,11 +43,7 @@ import org.kie.dmn.feel.lang.impl.NamedParameter;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.runtime.FEELFunction;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class BaseFEELFunctionTest {
 
@@ -79,16 +75,16 @@ class BaseFEELFunctionTest {
        Object[] params = {new NamedParameter("foo", null),
        new NamedParameter("person's age", 16)};
         Object retrieved = toTest.invokeReflectively(ctx, params);
-        assertNotNull(retrieved);
-        assertInstanceOf(Boolean.class, retrieved);
-        assertTrue((Boolean) retrieved);
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved).isInstanceOf(Boolean.class);
+        assertThat((Boolean) retrieved).isTrue();
 
         params = new Object[]{new NamedParameter("foo", null),
                 new NamedParameter("person's age", 19)};
         retrieved = toTest.invokeReflectively(ctx, params);
-        assertNotNull(retrieved);
-        assertInstanceOf(Boolean.class, retrieved);
-        assertFalse((Boolean) retrieved);
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved).isInstanceOf(Boolean.class);
+        assertThat((Boolean) retrieved).isFalse();
     }
 
     @Test
@@ -98,28 +94,28 @@ class BaseFEELFunctionTest {
         // invoke(@ParameterName( "list" ) List list)
         Object[] parameters = {List.of(true, false)};
         BaseFEELFunction.CandidateMethod candidateMethodRetrieved = toTest.getCandidateMethod(ctx, parameters, false);
-        assertNotNull(candidateMethodRetrieved);
+        assertThat(candidateMethodRetrieved).isNotNull();
         Method retrieved = candidateMethodRetrieved.getActualMethod();
-        assertNotNull(retrieved);
-        assertTrue(Modifier.isPublic(retrieved.getModifiers()));
-        assertEquals("invoke", retrieved.getName());
+        assertThat(retrieved).isNotNull();
+        assertThat(Modifier.isPublic(retrieved.getModifiers())).isTrue();
+        assertThat(retrieved.getName()).isEqualTo("invoke");
         Parameter[] parametersRetrieved = retrieved.getParameters();
-        assertNotNull(parametersRetrieved);
-        assertEquals(1, parametersRetrieved.length);
-        assertEquals(List.class, parametersRetrieved[0].getType());
+        assertThat(parametersRetrieved).isNotNull();
+        assertThat(parametersRetrieved).hasSize(1);
+        assertThat(parametersRetrieved).extracting("type").containsExactly(List.class);
 
         // invoke(@ParameterName( "b" ) Object[] list)
         parameters = new Object[]{true, false};
         candidateMethodRetrieved = toTest.getCandidateMethod(ctx, parameters, false);
-        assertNotNull(candidateMethodRetrieved);
+        assertThat(candidateMethodRetrieved).isNotNull();
         retrieved = candidateMethodRetrieved.getActualMethod();
-        assertNotNull(retrieved);
-        assertTrue(Modifier.isPublic(retrieved.getModifiers()));
-        assertEquals("invoke", retrieved.getName());
+        assertThat(retrieved).isNotNull();
+        assertThat(Modifier.isPublic(retrieved.getModifiers())).isTrue();
+        assertThat(retrieved.getName()).isEqualTo("invoke");
         parametersRetrieved = retrieved.getParameters();
-        assertNotNull(parametersRetrieved);
-        assertEquals(1, parametersRetrieved.length);
-        assertEquals(Object.class.arrayType(), parametersRetrieved[0].getType());
+        assertThat(parametersRetrieved).isNotNull();
+        assertThat(parametersRetrieved).hasSize(1);
+        assertThat(parametersRetrieved).extracting("type").containsExactly(Object.class.arrayType());
     }
 
     @Test
@@ -129,29 +125,29 @@ class BaseFEELFunctionTest {
         // invoke(@ParameterName( "from" ) String val)
         Object[] parameters = {"2017-09-07T10:20:30"};
         BaseFEELFunction.CandidateMethod candidateMethodRetrieved = toTest.getCandidateMethod(ctx, parameters, false);
-        assertNotNull(candidateMethodRetrieved);
+        assertThat(candidateMethodRetrieved).isNotNull();
         Method retrieved = candidateMethodRetrieved.getActualMethod();
-        assertNotNull(retrieved);
-        assertTrue(Modifier.isPublic(retrieved.getModifiers()));
-        assertEquals("invoke", retrieved.getName());
+        assertThat(retrieved).isNotNull();
+        assertThat(Modifier.isPublic(retrieved.getModifiers())).isTrue();
+        assertThat(retrieved.getName()).isEqualTo("invoke");
         Parameter[] parametersRetrieved = retrieved.getParameters();
-        assertNotNull(parametersRetrieved);
-        assertEquals(1, parametersRetrieved.length);
-        assertEquals(String.class, parametersRetrieved[0].getType());
+        assertThat(parametersRetrieved).isNotNull();
+        assertThat(parametersRetrieved).hasSize(1);
+        assertThat(parametersRetrieved).extracting("type").containsExactly(String.class);
 
         // invoke(@ParameterName( "date" ) TemporalAccessor date, @ParameterName( "time" ) TemporalAccessor time)
         parameters = new Object[]{LocalDate.of(2017, 6, 12), LocalTime.of(10, 6, 20)};
         candidateMethodRetrieved = toTest.getCandidateMethod(ctx, parameters, false);
-        assertNotNull(candidateMethodRetrieved);
+        assertThat(candidateMethodRetrieved).isNotNull();
         retrieved = candidateMethodRetrieved.getActualMethod();
-        assertNotNull(retrieved);
-        assertTrue(Modifier.isPublic(retrieved.getModifiers()));
-        assertEquals("invoke", retrieved.getName());
+        assertThat(retrieved).isNotNull();
+        assertThat(Modifier.isPublic(retrieved.getModifiers())).isTrue();
+        assertThat(retrieved.getName()).isEqualTo("invoke");
         parametersRetrieved = retrieved.getParameters();
-        assertNotNull(parametersRetrieved);
-        assertEquals(2, parametersRetrieved.length);
-        Arrays.stream(parametersRetrieved).forEach(parameter -> assertEquals(TemporalAccessor.class,
-                                                                             parameter.getType()));
+        assertThat(parametersRetrieved).isNotNull();
+        assertThat(parametersRetrieved).hasSize(2);
+        assertThat(parametersRetrieved).extracting("type").containsExactly(TemporalAccessor.class, TemporalAccessor.class);
+
 
 //        invoke(@ParameterName( "year" ) Number year, @ParameterName( "month" ) Number month, @ParameterName( "day"
 //        ) Number day,
@@ -159,15 +155,16 @@ class BaseFEELFunctionTest {
 //               "second" ) Number second )
         parameters = new Object[]{2017, 6, 12, 10, 6, 20};
         candidateMethodRetrieved = toTest.getCandidateMethod(ctx, parameters, false);
-        assertNotNull(candidateMethodRetrieved);
+        assertThat(candidateMethodRetrieved).isNotNull();
         retrieved = candidateMethodRetrieved.getActualMethod();
-        assertNotNull(retrieved);
-        assertTrue(Modifier.isPublic(retrieved.getModifiers()));
-        assertEquals("invoke", retrieved.getName());
+        assertThat(retrieved).isNotNull();
+        assertThat(Modifier.isPublic(retrieved.getModifiers())).isTrue();
+        assertThat(retrieved.getName()).isEqualTo("invoke");
         parametersRetrieved = retrieved.getParameters();
-        assertNotNull(parametersRetrieved);
-        assertEquals(6, parametersRetrieved.length);
-        Arrays.stream(parametersRetrieved).forEach(parameter -> assertEquals(Number.class, parameter.getType()));
+        assertThat(parametersRetrieved).isNotNull();
+        assertThat(parametersRetrieved).hasSize(6);
+        assertThat(parametersRetrieved).extracting("type").containsExactly(Number.class, Number.class, Number.class, 
+        		Number.class, Number.class, Number.class);
 
 //        invoke(@ParameterName( "year" ) Number year, @ParameterName( "month" ) Number month, @ParameterName( "day"
 //        ) Number day,
@@ -176,15 +173,16 @@ class BaseFEELFunctionTest {
 //               @ParameterName( "hour offset" ) Number hourOffset )
         parameters = new Object[]{2017, 6, 12, 10, 6, 20, 2};
         candidateMethodRetrieved = toTest.getCandidateMethod(ctx, parameters, false);
-        assertNotNull(candidateMethodRetrieved);
+        assertThat(candidateMethodRetrieved).isNotNull();
         retrieved = candidateMethodRetrieved.getActualMethod();
-        assertNotNull(retrieved);
-        assertTrue(Modifier.isPublic(retrieved.getModifiers()));
-        assertEquals("invoke", retrieved.getName());
+        assertThat(retrieved).isNotNull();
+        assertThat(Modifier.isPublic(retrieved.getModifiers())).isTrue();
+        assertThat(retrieved.getName()).isEqualTo("invoke");
         parametersRetrieved = retrieved.getParameters();
-        assertNotNull(parametersRetrieved);
-        assertEquals(7, parametersRetrieved.length);
-        Arrays.stream(parametersRetrieved).forEach(parameter -> assertEquals(Number.class, parameter.getType()));
+        assertThat(parametersRetrieved).isNotNull();
+        assertThat(parametersRetrieved).hasSize(7);
+        assertThat(parametersRetrieved).extracting("type").containsExactly(Number.class, Number.class, Number.class, 
+        		Number.class, Number.class, Number.class, Number.class);
 
 //        invoke(@ParameterName( "year" ) Number year, @ParameterName( "month" ) Number month, @ParameterName( "day"
 //        ) Number day,
@@ -193,18 +191,16 @@ class BaseFEELFunctionTest {
 //               @ParameterName( "timezone" ) String timezone )
         parameters = new Object[]{2017, 6, 12, 10, 6, 20, "Europe/Paris"};
         candidateMethodRetrieved = toTest.getCandidateMethod(ctx, parameters, false);
-        assertNotNull(candidateMethodRetrieved);
+        assertThat(candidateMethodRetrieved).isNotNull();
         retrieved = candidateMethodRetrieved.getActualMethod();
-        assertNotNull(retrieved);
-        assertTrue(Modifier.isPublic(retrieved.getModifiers()));
-        assertEquals("invoke", retrieved.getName());
+        assertThat(retrieved).isNotNull();
+        assertThat(Modifier.isPublic(retrieved.getModifiers())).isTrue();
+        assertThat(retrieved.getName()).isEqualTo("invoke");
         parametersRetrieved = retrieved.getParameters();
-        assertNotNull(parametersRetrieved);
-        assertEquals(7, parametersRetrieved.length);
-        for (int i = 0; i < 6; i++) {
-            assertEquals(Number.class, parametersRetrieved[i].getType());
-        }
-        assertEquals(String.class, parametersRetrieved[6].getType());
+        assertThat(parametersRetrieved).isNotNull();
+        assertThat(parametersRetrieved).hasSize(7);
+        assertThat(parametersRetrieved).extracting("type").containsExactly(Number.class, Number.class, Number.class, 
+        		Number.class, Number.class, Number.class, String.class);
     }
 
     @Test
@@ -214,61 +210,60 @@ class BaseFEELFunctionTest {
         // invoke(@ParameterName( "from" ) String val)
         Object[] parameters = {"10:20:30"};
         BaseFEELFunction.CandidateMethod candidateMethodRetrieved = toTest.getCandidateMethod(ctx, parameters, false);
-        assertNotNull(candidateMethodRetrieved);
+        assertThat(candidateMethodRetrieved).isNotNull();
         Method retrieved = candidateMethodRetrieved.getActualMethod();
-        assertNotNull(retrieved);
-        assertTrue(Modifier.isPublic(retrieved.getModifiers()));
-        assertEquals("invoke", retrieved.getName());
+        assertThat(retrieved).isNotNull();
+        assertThat(Modifier.isPublic(retrieved.getModifiers())).isTrue();
+        assertThat(retrieved.getName()).isEqualTo("invoke");
         Parameter[] parametersRetrieved = retrieved.getParameters();
-        assertNotNull(parametersRetrieved);
-        assertEquals(1, parametersRetrieved.length);
-        assertEquals(String.class, parametersRetrieved[0].getType());
+        assertThat(parametersRetrieved).isNotNull();
+        assertThat(parametersRetrieved).hasSize(1);
+        assertThat(parametersRetrieved).extracting("type").containsExactly(String.class);
 
 //      invoke(
 //            @ParameterName("hour") Number hour, @ParameterName("minute") Number minute,
 //            @ParameterName("second") Number seconds)
         parameters = new Object[]{10, 6, 20};
         candidateMethodRetrieved = toTest.getCandidateMethod(ctx, parameters, false);
-        assertNotNull(candidateMethodRetrieved);
+        assertThat(candidateMethodRetrieved).isNotNull();
         retrieved = candidateMethodRetrieved.getActualMethod();
-        assertNotNull(retrieved);
-        assertTrue(Modifier.isPublic(retrieved.getModifiers()));
-        assertEquals("invoke", retrieved.getName());
+        assertThat(retrieved).isNotNull();
+        assertThat(Modifier.isPublic(retrieved.getModifiers())).isTrue();
+        assertThat(retrieved.getName()).isEqualTo("invoke");
         parametersRetrieved = retrieved.getParameters();
-        assertNotNull(parametersRetrieved);
-        assertEquals(3, parametersRetrieved.length);
-        Arrays.stream(parametersRetrieved).forEach(parameter -> assertEquals(Number.class, parameter.getType()));
+        assertThat(parametersRetrieved).isNotNull();
+        assertThat(parametersRetrieved).hasSize(3);
+        assertThat(parametersRetrieved).extracting("type").containsExactly(Number.class, Number.class, Number.class);
 
 //     invoke(
 //            @ParameterName("hour") Number hour, @ParameterName("minute") Number minute,
 //            @ParameterName("second") Number seconds, @ParameterName("offset") Duration offset)
         parameters = new Object[]{10, 6, 20, Duration.ofHours(3)};
         candidateMethodRetrieved = toTest.getCandidateMethod(ctx, parameters, false);
-        assertNotNull(candidateMethodRetrieved);
+        assertThat(candidateMethodRetrieved).isNotNull();
         retrieved = candidateMethodRetrieved.getActualMethod();
-        assertNotNull(retrieved);
-        assertTrue(Modifier.isPublic(retrieved.getModifiers()));
-        assertEquals("invoke", retrieved.getName());
+        assertThat(retrieved).isNotNull();
+        assertThat(Modifier.isPublic(retrieved.getModifiers())).isTrue();
+        assertThat(retrieved.getName()).isEqualTo("invoke");
         parametersRetrieved = retrieved.getParameters();
-        assertNotNull(parametersRetrieved);
-        assertEquals(4, parametersRetrieved.length);
-        for (int i = 0; i < 3; i++) {
-            assertEquals(Number.class, parametersRetrieved[i].getType());
-        }
-        assertEquals(Duration.class, parametersRetrieved[3].getType());
+        assertThat(parametersRetrieved).isNotNull();
+        assertThat(parametersRetrieved).hasSize(4);
+        
+        assertThat(parametersRetrieved).extracting("type").containsExactly(Number.class, Number.class, Number.class, Duration.class);
+
 
 //      invoke(@ParameterName("from") TemporalAccessor date
         parameters = new Object[]{LocalTime.of(10, 6, 20)};
         candidateMethodRetrieved = toTest.getCandidateMethod(ctx, parameters, false);
-        assertNotNull(candidateMethodRetrieved);
+        assertThat(candidateMethodRetrieved).isNotNull();
         retrieved = candidateMethodRetrieved.getActualMethod();
-        assertNotNull(retrieved);
-        assertTrue(Modifier.isPublic(retrieved.getModifiers()));
-        assertEquals("invoke", retrieved.getName());
+        assertThat(retrieved).isNotNull();
+        assertThat(Modifier.isPublic(retrieved.getModifiers())).isTrue();
+        assertThat(retrieved.getName()).isEqualTo("invoke");
         parametersRetrieved = retrieved.getParameters();
-        assertNotNull(parametersRetrieved);
-        assertEquals(1, parametersRetrieved.length);
-        assertEquals(TemporalAccessor.class, parametersRetrieved[0].getType());
+        assertThat(parametersRetrieved).isNotNull();
+        assertThat(parametersRetrieved).hasSize(1);
+        assertThat(parametersRetrieved).extracting("type").containsExactly(TemporalAccessor.class);
     }
 
     @Test
@@ -280,30 +275,28 @@ class BaseFEELFunctionTest {
         //                                             @ParameterName("precedes") FEELFunction function
         Object[] parameters = {List.of(1, 2), AllFunction.INSTANCE};
         BaseFEELFunction.CandidateMethod candidateMethodRetrieved = toTest.getCandidateMethod(ctx, parameters, false);
-        assertNotNull(candidateMethodRetrieved);
+        assertThat(candidateMethodRetrieved).isNotNull();
         Method retrieved = candidateMethodRetrieved.getActualMethod();
-        assertNotNull(retrieved);
-        assertTrue(Modifier.isPublic(retrieved.getModifiers()));
-        assertEquals("invoke", retrieved.getName());
+        assertThat(retrieved).isNotNull();
+        assertThat(Modifier.isPublic(retrieved.getModifiers())).isTrue();
+        assertThat(retrieved.getName()).isEqualTo("invoke");
         Parameter[] parametersRetrieved = retrieved.getParameters();
-        assertNotNull(parametersRetrieved);
-        assertEquals(3, parametersRetrieved.length);
-        assertEquals(EvaluationContext.class, parametersRetrieved[0].getType());
-        assertEquals(List.class, parametersRetrieved[1].getType());
-        assertEquals(FEELFunction.class, parametersRetrieved[2].getType());
+        assertThat(parametersRetrieved).isNotNull();
+        assertThat(parametersRetrieved).hasSize(3);
+        assertThat(parametersRetrieved).extracting("type").containsExactly(EvaluationContext.class, List.class, FEELFunction.class);
 
         // invoke(@ParameterName("list") List list)
         parameters = new Object[]{List.of(1, 3, 5)};
         candidateMethodRetrieved = toTest.getCandidateMethod(ctx, parameters, false);
-        assertNotNull(candidateMethodRetrieved);
+        assertThat(candidateMethodRetrieved).isNotNull();
         retrieved = candidateMethodRetrieved.getActualMethod();
-        assertNotNull(retrieved);
-        assertTrue(Modifier.isPublic(retrieved.getModifiers()));
-        assertEquals("invoke", retrieved.getName());
+        assertThat(retrieved).isNotNull();
+        assertThat(Modifier.isPublic(retrieved.getModifiers())).isTrue();
+        assertThat(retrieved.getName()).isEqualTo("invoke");
         parametersRetrieved = retrieved.getParameters();
-        assertNotNull(parametersRetrieved);
-        assertEquals(1, parametersRetrieved.length);
-        assertEquals(List.class, parametersRetrieved[0].getType());
+        assertThat(parametersRetrieved).isNotNull();
+        assertThat(parametersRetrieved).hasSize(1);
+        assertThat(parametersRetrieved).extracting("type").containsExactly(List.class);
     }
 
     @Test
@@ -314,15 +307,15 @@ class BaseFEELFunctionTest {
         Object actualValue = Arrays.asList(2, 4, 7, 5);
         Object[] parameters = {new NamedParameter("list", actualValue)};
         BaseFEELFunction.CandidateMethod candidateMethodRetrieved = toTest.getCandidateMethod(ctx, parameters, false);
-        assertNotNull(candidateMethodRetrieved);
+        assertThat(candidateMethodRetrieved).isNotNull();
         Method retrieved = candidateMethodRetrieved.getActualMethod();
-        assertNotNull(retrieved);
-        assertTrue(Modifier.isPublic(retrieved.getModifiers()));
-        assertEquals("invoke", retrieved.getName());
+        assertThat(retrieved).isNotNull();
+        assertThat(Modifier.isPublic(retrieved.getModifiers())).isTrue();
+        assertThat(retrieved.getName()).isEqualTo("invoke");
         Parameter[] parametersRetrieved = retrieved.getParameters();
-        assertNotNull(parametersRetrieved);
-        assertEquals(1, parametersRetrieved.length);
-        assertEquals(List.class, parametersRetrieved[0].getType());
+        assertThat(parametersRetrieved).isNotNull();
+        assertThat(parametersRetrieved).hasSize(1);
+        assertThat(parametersRetrieved).extracting("type").containsExactly(List.class);
     }
 
 }
