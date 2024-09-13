@@ -18,9 +18,6 @@
  */
 package org.kie.dmn.feel.runtime.functions;
 
-import java.security.InvalidParameterException;
-import java.util.regex.PatternSyntaxException;
-
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 import org.kie.dmn.feel.util.XQueryImplUtil;
@@ -36,35 +33,28 @@ public class MatchesFunction
         super( "matches" );
     }
 
-    public FEELFnResult<Boolean> FEELFnResult(@ParameterName("input") String input, @ParameterName("pattern") String pattern) {
+    public FEELFnResult<Boolean> invoke(@ParameterName("input") String input, @ParameterName("pattern") String pattern) {
         return invoke( input, pattern, null );
     }
 
     public FEELFnResult<Boolean> invoke(@ParameterName("input") String input, @ParameterName("pattern") String pattern, @ParameterName("flags") String flags) {
-        try {
-            return matchFunctionWithFlags(input,pattern,flags);
-        } catch (InvalidParameterException t ) {
-            return FEELFnResult.ofError( new InvalidParametersEvent( Severity.ERROR, t.getMessage(), "cannot be null or is invalid", t ) );
-        } catch (Throwable t) {
-            String errorMessage;
-            if (t.getMessage() != null && !t.getMessage().isEmpty()) {
-                errorMessage = "Error: " + t.getMessage();
-            } else {
-                errorMessage = String.format("Some of the provided parameters might be invalid. Input: '%s', Pattern: '%s', Flags: '%s'",
-                        input, pattern, flags);
-            }
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, errorMessage, t));
-        }
-    }
-
-    static FEELFnResult<Boolean> matchFunctionWithFlags(String input, String pattern, String flags) {
         log.debug("Input:  {} , Pattern: {}, Flags: {}", input, pattern, flags);
+
         if ( input == null ) {
-            throw new InvalidParameterException("input");
+            return FEELFnResult.ofError( new InvalidParametersEvent( Severity.ERROR, "input", "cannot be null" ) );
         }
         if ( pattern == null ) {
-            throw new InvalidParameterException("pattern");
+            return FEELFnResult.ofError( new InvalidParametersEvent( Severity.ERROR, "pattern", "cannot be null" ) );
         }
-        return FEELFnResult.ofResult(XQueryImplUtil.executeMatchesFunction(input, pattern, flags));
+
+        try {
+            return FEELFnResult.ofResult(XQueryImplUtil.executeMatchesFunction(input, pattern, flags));
+        } catch (Exception e) {
+            String errorMessage = String.format("Provided parameters lead to an error. Input: '%s', Pattern: '%s', Flags: '%s'. ", input, pattern, flags);
+            if (e.getMessage() != null && !e.getMessage().isEmpty()) {
+                errorMessage += e.getMessage();
+            }
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, errorMessage, e));
+        }
     }
 }

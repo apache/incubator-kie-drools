@@ -22,7 +22,7 @@ import net.sf.saxon.s9api.*;
 
 public class XQueryImplUtil {
 
-    public static Boolean executeMatchesFunction(String input, String pattern, String flags){
+    public static Boolean executeMatchesFunction(String input, String pattern, String flags) {
         flags = flags == null ? "" : flags;
         String xQueryExpression = String.format("matches('%s', '%s', '%s')", input, pattern, flags);
         return evaluateXQueryExpression(xQueryExpression, Boolean.class);
@@ -31,19 +31,27 @@ public class XQueryImplUtil {
     public static String executeReplaceFunction(String input, String pattern, String replacement, String flags) {
         flags = flags == null ? "" : flags;
         String xQueryExpression = String.format("replace('%s', '%s', '%s', '%s')", input, pattern, replacement, flags);
-            return evaluateXQueryExpression(xQueryExpression, String.class);
+        return evaluateXQueryExpression(xQueryExpression, String.class);
     }
 
-     static <T> T evaluateXQueryExpression (String expression, Class<T> expectedTypeResult) {
+     static <T> T evaluateXQueryExpression(String expression, Class<T> expectedTypeResult) {
          try {
              Processor processor = new Processor(false);
              XQueryCompiler compiler = processor.newXQueryCompiler();
              XQueryExecutable executable = compiler.compile(expression);
              XQueryEvaluator queryEvaluator = executable.load();
+             queryEvaluator.setExternalVariable(new QName("n"), new XdmAtomicValue(10));
              XdmItem resultItem = queryEvaluator.evaluateSingle();
-             return expectedTypeResult.cast((((XdmAtomicValue) resultItem).getValue()));
-         } catch (ClassCastException | SaxonApiException e) {
-             throw new IllegalStateException(e);
+
+             Object value = switch (expectedTypeResult.getSimpleName()) {
+                 case "Boolean" -> ((XdmAtomicValue) resultItem).getBooleanValue();
+                 case "String" -> resultItem.getStringValue();
+                 default -> throw new UnsupportedOperationException("Type " + expectedTypeResult.getSimpleName() + " is not managed.");
+             };
+
+             return expectedTypeResult.cast(value);
+         } catch (SaxonApiException e) {
+             throw new IllegalArgumentException(e);
          }
     }
 }

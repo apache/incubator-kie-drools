@@ -48,7 +48,16 @@ public class ReplaceFunction
             return FEELFnResult.ofError( new InvalidParametersEvent( Severity.ERROR, "replacement", "cannot be null" ) );
         }
 
-        return FEELFnResult.ofResult(String.valueOf(XQueryImplUtil.executeReplaceFunction(input,pattern,replacement,flags)));
+        try {
+            return FEELFnResult.ofResult(XQueryImplUtil.executeReplaceFunction(input, pattern, replacement, flags));
+        } catch (Exception e) {
+            String errorMessage = String.format("Provided parameters lead to an error. Input: '%s', Pattern: '%s', Replacement: '%s', Flags: '%s'. ",
+                    input, pattern, replacement, flags);
+            if (e.getMessage() != null && !e.getMessage().isEmpty()) {
+                errorMessage += e.getMessage();
+            }
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, errorMessage, e));
+        }
     }
 
 }

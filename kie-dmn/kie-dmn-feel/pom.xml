@@ -50,6 +50,7 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
+
   <dependencies>
     <!-- Internal dependencies -->
     <dependency>
@@ -149,10 +150,6 @@
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.apache.poi</groupId>
-      <artifactId>poi</artifactId>
-    </dependency>
 
   </dependencies>
 
@@ -162,7 +159,7 @@
           <directory>${project.basedir}/src/test/resources</directory>
       </testResource>
       <testResource>
-        <directory>${project.basedir}/../</directory>
+        <directory>${project.basedir}/</directory>
         <includes>
           <include>ref-dmn-feel-builtin-functions.adoc</include>
         </includes>

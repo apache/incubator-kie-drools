@@ -56,7 +56,7 @@ public class XQueryImplUtilTest {
         String pattern = "^test";
         String flags = "g";
         assertThatThrownBy(() -> XQueryImplUtil.executeMatchesFunction(input, pattern,
-                flags)).isInstanceOf(IllegalStateException.class).hasMessageContaining("Unrecognized flag");
+                flags)).isInstanceOf(IllegalArgumentException.class).hasMessageContaining("Unrecognized flag");
     }
 
     @Test
