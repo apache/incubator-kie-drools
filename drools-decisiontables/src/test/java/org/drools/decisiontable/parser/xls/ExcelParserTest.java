@@ -29,8 +29,8 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.drools.template.parser.DataListener;
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -47,7 +47,7 @@ public class ExcelParserTest {
     private Sheet sheet;
 
     
-    @After
+    @AfterEach
     public void tearDown() throws IOException {
         if(workbook != null) {
             workbook.close();

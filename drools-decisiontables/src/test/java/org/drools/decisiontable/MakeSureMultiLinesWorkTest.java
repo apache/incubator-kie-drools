@@ -20,8 +20,7 @@ package org.drools.decisiontable;
 
 import java.io.InputStream;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
 import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.io.ResourceFactory;
@@ -29,10 +28,10 @@ import org.kie.internal.utils.KieHelper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Ignore
+@Disabled
 public class MakeSureMultiLinesWorkTest {
 
-    @Test
+    @org.junit.jupiter.api.Test
     public void makeSureMultiLinesWork() {
 
         KieHelper kieHelper = new KieHelper();
