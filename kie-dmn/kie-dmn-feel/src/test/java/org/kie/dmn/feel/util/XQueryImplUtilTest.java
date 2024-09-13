@@ -21,6 +21,7 @@ package org.kie.dmn.feel.util;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class XQueryImplUtilTest {
 
@@ -36,17 +37,26 @@ public class XQueryImplUtilTest {
 
         input = "fo\nbar";
         pattern = "o.b";
-        flags = "";
+        flags = null;
         retrieved = XQueryImplUtil.executeMatchesFunction(input, pattern, flags);
         expected = false;
         assertThat(retrieved).isNotNull().isEqualTo(expected);
 
-        input = "test";
+        input = "TEST";
         pattern = "test";
-        flags = "n";
+        flags = "i";
         retrieved = XQueryImplUtil.executeMatchesFunction(input, pattern, flags);
         expected = true;
         assertThat(retrieved).isNotNull().isEqualTo(expected);
+    }
+
+    @Test
+    void executeMatchesFunctionInvokingException(){
+        String input = "test";
+        String pattern = "^test";
+        String flags = "g";
+        assertThatThrownBy(() -> XQueryImplUtil.executeMatchesFunction(input, pattern,
+                flags)).isInstanceOf(IllegalStateException.class).hasMessageContaining("Unrecognized flag");
     }
 
     @Test

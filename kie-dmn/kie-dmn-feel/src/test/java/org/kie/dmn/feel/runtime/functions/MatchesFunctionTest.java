@@ -22,10 +22,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 
 import java.security.InvalidParameterException;
-import java.util.regex.PatternSyntaxException;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatNoException;
 import static org.mockito.Mockito.*;
 
 class MatchesFunctionTest {
@@ -39,11 +37,11 @@ class MatchesFunctionTest {
 
     @Test
     void invokeUnsupportedFlags() {
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> MatchesFunction.matchFunctionWithFlags("foobar", "fo.bar", "g"));
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> MatchesFunction.matchFunctionWithFlags("abracadabra", "bra", "p"));
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> MatchesFunction.matchFunctionWithFlags("abracadabra", "bra", "X"));
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> MatchesFunction.matchFunctionWithFlags("abracadabra", "bra", " "));
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> MatchesFunction.matchFunctionWithFlags("abracadabra", "bra", "iU"));
+        assertThatExceptionOfType(IllegalStateException.class).isThrownBy(() -> MatchesFunction.matchFunctionWithFlags("foobar", "fo.bar", "g"));
+        assertThatExceptionOfType(IllegalStateException.class).isThrownBy(() -> MatchesFunction.matchFunctionWithFlags("abracadabra", "bra", "p"));
+        assertThatExceptionOfType(IllegalStateException.class).isThrownBy(() -> MatchesFunction.matchFunctionWithFlags("abracadabra", "bra", "X"));
+        assertThatExceptionOfType(IllegalStateException.class).isThrownBy(() -> MatchesFunction.matchFunctionWithFlags("abracadabra", "bra", " "));
+        assertThatExceptionOfType(IllegalStateException.class).isThrownBy(() -> MatchesFunction.matchFunctionWithFlags("abracadabra", "bra", "iU"));
     }
 
     @Test
@@ -63,9 +61,9 @@ class MatchesFunctionTest {
         FunctionTestUtil.assertResult(MatchesFunction.matchFunctionWithFlags("h", "(.)\3",null), false);
         FunctionTestUtil.assertResult(MatchesFunction.matchFunctionWithFlags("h", "(.)\2",null), false);
         FunctionTestUtil.assertResult(MatchesFunction.matchFunctionWithFlags("input", "\3",null), false);
-        FunctionTestUtil.assertResult(MatchesFunction.matchFunctionWithFlags("fo\nbar", "(?iU)(?iU)(ab)[|cd]",null), false);
-        FunctionTestUtil.assertResult(MatchesFunction.matchFunctionWithFlags("fo\nbar", "(?x)(?i)hello world","i"), false);
-        FunctionTestUtil.assertResult(MatchesFunction.matchFunctionWithFlags("fo\nbar", "(?xi)hello world",null), false);
+        assertThatExceptionOfType(IllegalStateException.class).isThrownBy(() -> MatchesFunction.matchFunctionWithFlags("fo\nbar", "(?iU)(?iU)(ab)[|cd]",null));
+        assertThatExceptionOfType(IllegalStateException.class).isThrownBy(() ->MatchesFunction.matchFunctionWithFlags("fo\nbar", "(?x)(?i)hello world","i"));
+        assertThatExceptionOfType(IllegalStateException.class).isThrownBy(() ->MatchesFunction.matchFunctionWithFlags("fo\nbar", "(?xi)hello world",null));
     }
 
     @Test
@@ -98,20 +96,20 @@ class MatchesFunctionTest {
 
     @Test
     void checkForPatternTest() {
-        assertThatExceptionOfType(PatternSyntaxException.class).isThrownBy(() -> MatchesFunction.matchFunctionWithFlags("foobar", "(abc|def(ghi", "i"));
+        assertThatExceptionOfType(IllegalStateException.class).isThrownBy(() -> MatchesFunction.matchFunctionWithFlags("foobar", "(abc|def(ghi", "i"));
     }
 
-    /*@Test
+    @Test
     void checkMatchFunctionWithFlagsInvocation() {
         MatchesFunction matchesFunctionSpied = spy(MatchesFunction.INSTANCE);
-        matchesFunctionSpied.invoke("input", "pattern");
+        matchesFunctionSpied.invoke("input", "pattern",null);
         verify(matchesFunctionSpied, times(1)).invoke("input", "pattern", null);
         try (MockedStatic<MatchesFunction> matchesFunctionMocked = mockStatic(MatchesFunction.class)) {
-            matchesFunctionSpied.invoke("input", "pattern");
+            matchesFunctionSpied.invoke("input", "pattern",null);
             matchesFunctionMocked.verify(() -> MatchesFunction.matchFunctionWithFlags("input", "pattern", null));
             matchesFunctionSpied.invoke("input", "pattern", "flags");
             matchesFunctionMocked.verify(() -> MatchesFunction.matchFunctionWithFlags("input", "pattern", "flags"));
         }
-    }*/
+    }
 
 }

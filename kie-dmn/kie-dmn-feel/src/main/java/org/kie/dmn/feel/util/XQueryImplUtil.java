@@ -23,13 +23,15 @@ import net.sf.saxon.s9api.*;
 public class XQueryImplUtil {
 
     public static Object executeMatchesFunction(String input, String pattern, String flags){
-        String XQueryExpression = String.format("matches('%s', '%s', '%s')", input, pattern, flags);
-            return evaluateXQueryExpression(XQueryExpression);
+        flags = flags == null ? "" : flags;
+        String xQueryExpression = String.format("matches('%s', '%s', '%s')", input, pattern, flags);
+        return evaluateXQueryExpression(xQueryExpression);
     }
 
     public static Object executeReplaceFunction(String input, String pattern, String replacement, String flags) {
-        String XQueryExpression = String.format("replace('%s', '%s', '%s', '%s')", input, pattern, replacement, flags);
-            return evaluateXQueryExpression(XQueryExpression);
+        flags = flags == null ? "" : flags;
+        String xQueryExpression = String.format("replace('%s', '%s', '%s', '%s')", input, pattern, replacement, flags);
+            return evaluateXQueryExpression(xQueryExpression);
     }
 
      static Object evaluateXQueryExpression (String expression) {
