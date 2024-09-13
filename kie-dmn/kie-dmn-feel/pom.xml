@@ -83,8 +83,8 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-compiler</artifactId>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-compiler</artifactId>
     </dependency>
 
     <dependency>
@@ -92,11 +92,10 @@
       <artifactId>javaparser-core</artifactId>
     </dependency>
 
-
     <!-- BigMath dependency to obtain BigDecimal advanced math -->
     <dependency>
-      <groupId>ch.obermuhlner</groupId>
-      <artifactId>big-math</artifactId>
+        <groupId>ch.obermuhlner</groupId>
+        <artifactId>big-math</artifactId>
     </dependency>
 
     <!-- Logging -->
@@ -150,16 +149,20 @@
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.apache.poi</groupId>
+      <artifactId>poi</artifactId>
+    </dependency>
 
   </dependencies>
 
   <build>
     <testResources>
       <testResource> <!-- as I will be including additional testResource directory, I need to re-explicit the default to Maven (standard Maven behaviour) -->
-        <directory>${project.basedir}/src/test/resources</directory>
+          <directory>${project.basedir}/src/test/resources</directory>
       </testResource>
       <testResource>
-        <directory>${project.basedir}/</directory>
+        <directory>${project.basedir}/../</directory>
         <includes>
           <include>ref-dmn-feel-builtin-functions.adoc</include>
         </includes>
@@ -186,4 +189,5 @@
 
     </plugins>
   </build>
+
 </project>

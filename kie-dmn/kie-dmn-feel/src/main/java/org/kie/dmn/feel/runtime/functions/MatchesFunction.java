@@ -36,23 +36,28 @@ public class MatchesFunction
         super( "matches" );
     }
 
-    public FEELFnResult<Object> FEELFnResult(@ParameterName("input") String input, @ParameterName("pattern") String pattern) {
+    public FEELFnResult<Boolean> FEELFnResult(@ParameterName("input") String input, @ParameterName("pattern") String pattern) {
         return invoke( input, pattern, null );
     }
 
-    public FEELFnResult<Object> invoke(@ParameterName("input") String input, @ParameterName("pattern") String pattern, @ParameterName("flags") String flags) {
+    public FEELFnResult<Boolean> invoke(@ParameterName("input") String input, @ParameterName("pattern") String pattern, @ParameterName("flags") String flags) {
         try {
             return matchFunctionWithFlags(input,pattern,flags);
-        } catch ( PatternSyntaxException t ) {
-            return FEELFnResult.ofError( new InvalidParametersEvent( Severity.ERROR, "pattern", "is invalid and can not be compiled", t ) );
-        } catch (IllegalArgumentException t ) {
+        } catch (InvalidParameterException t ) {
             return FEELFnResult.ofError( new InvalidParametersEvent( Severity.ERROR, t.getMessage(), "cannot be null or is invalid", t ) );
         } catch (Throwable t) {
-            return FEELFnResult.ofError( new InvalidParametersEvent( Severity.ERROR, "pattern", "is invalid and can not be compiled", t ) );
+            String errorMessage;
+            if (t.getMessage() != null && !t.getMessage().isEmpty()) {
+                errorMessage = "Error: " + t.getMessage();
+            } else {
+                errorMessage = String.format("Some of the provided parameters might be invalid. Input: '%s', Pattern: '%s', Flags: '%s'",
+                        input, pattern, flags);
+            }
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, errorMessage, t));
         }
     }
 
-    static FEELFnResult<Object> matchFunctionWithFlags(String input, String pattern, String flags) {
+    static FEELFnResult<Boolean> matchFunctionWithFlags(String input, String pattern, String flags) {
         log.debug("Input:  {} , Pattern: {}, Flags: {}", input, pattern, flags);
         if ( input == null ) {
             throw new InvalidParameterException("input");

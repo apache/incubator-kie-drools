@@ -48,7 +48,7 @@ public class ReplaceFunction
             return FEELFnResult.ofError( new InvalidParametersEvent( Severity.ERROR, "replacement", "cannot be null" ) );
         }
 
-        return FEELFnResult.ofResult(XQueryImplUtil.executeReplaceFunction(input,pattern,replacement,flags).toString());
+        return FEELFnResult.ofResult(String.valueOf(XQueryImplUtil.executeReplaceFunction(input,pattern,replacement,flags)));
     }
 
 }

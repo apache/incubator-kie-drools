@@ -22,26 +22,26 @@ import net.sf.saxon.s9api.*;
 
 public class XQueryImplUtil {
 
-    public static Object executeMatchesFunction(String input, String pattern, String flags){
+    public static Boolean executeMatchesFunction(String input, String pattern, String flags){
         flags = flags == null ? "" : flags;
         String xQueryExpression = String.format("matches('%s', '%s', '%s')", input, pattern, flags);
-        return evaluateXQueryExpression(xQueryExpression);
+        return evaluateXQueryExpression(xQueryExpression, Boolean.class);
     }
 
-    public static Object executeReplaceFunction(String input, String pattern, String replacement, String flags) {
+    public static String executeReplaceFunction(String input, String pattern, String replacement, String flags) {
         flags = flags == null ? "" : flags;
         String xQueryExpression = String.format("replace('%s', '%s', '%s', '%s')", input, pattern, replacement, flags);
-            return evaluateXQueryExpression(xQueryExpression);
+            return evaluateXQueryExpression(xQueryExpression, String.class);
     }
 
-     static Object evaluateXQueryExpression (String expression) {
+     static <T> T evaluateXQueryExpression (String expression, Class<T> expectedTypeResult) {
          try {
              Processor processor = new Processor(false);
              XQueryCompiler compiler = processor.newXQueryCompiler();
              XQueryExecutable executable = compiler.compile(expression);
              XQueryEvaluator queryEvaluator = executable.load();
              XdmItem resultItem = queryEvaluator.evaluateSingle();
-             return ((XdmAtomicValue) resultItem).getValue();
+             return expectedTypeResult.cast((((XdmAtomicValue) resultItem).getValue()));
          } catch (ClassCastException | SaxonApiException e) {
              throw new IllegalStateException(e);
          }

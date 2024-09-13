@@ -30,7 +30,7 @@ public class XQueryImplUtilTest {
         String input = "test";
         String pattern = "^test";
         String flags = "i";
-        Object retrieved = XQueryImplUtil.executeMatchesFunction(input, pattern,
+        boolean retrieved = XQueryImplUtil.executeMatchesFunction(input, pattern,
                 flags);
         boolean expected = true;
         assertThat(retrieved).isNotNull().isEqualTo(expected);
@@ -65,8 +65,8 @@ public class XQueryImplUtilTest {
         String pattern = "^test";
         String replacement = "ttt";
         String flags = "";
-        Object retrieved = XQueryImplUtil.executeReplaceFunction(input, pattern, replacement,
-                flags);
+        String retrieved = XQueryImplUtil.executeReplaceFunction(input, pattern, replacement,
+                flags).toString();
         String expected = "tttString";
         assertThat(retrieved).isNotNull().isEqualTo(expected);
 
@@ -74,7 +74,7 @@ public class XQueryImplUtilTest {
         pattern = "o.b";
         replacement = "ttt";
         flags = "s";
-        retrieved = XQueryImplUtil.executeReplaceFunction(input, pattern, replacement, flags);
+        retrieved = XQueryImplUtil.executeReplaceFunction(input, pattern, replacement, flags).toString();
         expected = "ftttar";
         assertThat(retrieved).isNotNull().isEqualTo(expected);
     }
