@@ -55,6 +55,8 @@ import org.kie.dmn.feel.runtime.functions.MinFunction;
 import org.kie.dmn.feel.runtime.functions.SumFunction;
 import org.kie.dmn.feel.util.NumberEvalHelper;
 import org.kie.dmn.model.api.DMNElement.ExtensionElements;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static java.util.Collections.emptySet;
 import static java.util.Collections.singleton;
@@ -62,6 +64,8 @@ import static java.util.stream.Collectors.toSet;
 
 @XStreamAlias("MultiInstanceDecisionLogic")
 public class MultiInstanceDecisionLogic {
+
+    private static Logger logger = LoggerFactory.getLogger(MultiInstanceDecisionLogic.class);
 
     @XStreamAlias("iterationExpression")
     private String iterationExpression;
@@ -132,6 +136,12 @@ public class MultiInstanceDecisionLogic {
             di.setEvaluator(miEvaluator);
             
             compiler.addCallback((cCompiler, cCtx, cModel) -> {
+                if (cModel != model) {
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Skipping MID processing for imported model: {}", cModel.getName());
+                    }
+                    return;
+                }
                 MIDDependenciesProcessor processor = new MIDDependenciesProcessor(midl, cModel);
                 addRequiredDecisions(miEvaluator, processor);
                 removeChildElementsFromIndex(cModel, processor);

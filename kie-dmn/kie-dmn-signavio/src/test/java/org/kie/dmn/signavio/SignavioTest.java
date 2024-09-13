@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -37,6 +38,7 @@ import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
+import org.kie.dmn.api.core.ast.DMNNode;
 import org.kie.dmn.model.api.DRGElement;
 import org.kie.dmn.model.api.Definitions;
 import org.slf4j.Logger;
@@ -50,17 +52,17 @@ public class SignavioTest {
     @Test
     void test() {
         DMNRuntime runtime = createRuntime("Test_Signavio_multiple.dmn");
-        
+
         List<DMNModel> models = runtime.getModels();
-        
+
         DMNContext context = runtime.newContext();
         context.set("persons", Arrays.asList("p1", "p2"));
-        
+
         DMNModel model0 = models.get(0);
         LOG.info("EVALUATE ALL:");
         DMNResult evaluateAll = runtime.evaluateAll(model0, context);
         LOG.info("{}", evaluateAll);
-        
+
         assertThat((List<String>) evaluateAll.getContext().get("Greeting for each Person in Persons")).contains("Hello p1", "Hello p2");
     }
 
@@ -142,14 +144,14 @@ public class SignavioTest {
         assertThat(evaluateAll.getDecisionResultByName("iterating").getResult()).isEqualTo(iterating);
     }
 
-    private DMNRuntime createRuntime(String modelFileName) {
-        final KieServices ks = KieServices.Factory.get();
+    private DMNRuntime createRuntime(String... modelFileNames) {
+        final KieServices ks = KieServices.get();
         final KieFileSystem kfs = ks.newKieFileSystem();
 
         KieModuleModel kmm = ks.newKieModuleModel();
         kmm.setConfigurationProperty("org.kie.dmn.profiles.signavio", "org.kie.dmn.signavio.KieDMNSignavioProfile");
         kfs.writeKModuleXML(kmm.toXML());
-        kfs.write(ks.getResources().newClassPathResource(modelFileName, this.getClass()));
+        Arrays.stream(modelFileNames).forEachOrdered(f -> kfs.write(ks.getResources().newClassPathResource(f, getClass())));
 
         KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
         Results results = kieBuilder.getResults();
@@ -214,21 +216,21 @@ public class SignavioTest {
     @SuppressWarnings("unchecked")
     void midTakesCareOfRequirements() {
         DMNRuntime runtime = createRuntime("Test_SignavioMID.dmn");
-    
+
         List<DMNModel> models = runtime.getModels();
-    
+
         DMNContext context = runtime.newContext();
         context.set("numbers1", Arrays.asList(1,2));
         context.set("numbers2", Arrays.asList(2,3));
-    
+
         DMNModel model0 = models.get(0);
         LOG.info("EVALUATE ALL:");
         DMNResult evaluateAll = runtime.evaluateAll(model0, context);
         LOG.info("{}", evaluateAll);
-    
+
         List<Object> result = (List<Object>) evaluateAll.getDecisionResultByName("calculate").getResult();
         assertThat(result).hasSize(6);
-        
+
         assertThat(result).doesNotContainNull();
     }
 
@@ -236,12 +238,12 @@ public class SignavioTest {
     @Test
     void signavioConcatFunction() {
         DMNRuntime runtime = createRuntime("Signavio_Concat.dmn");
-        
+
         List<DMNModel> models = runtime.getModels();
-        
+
         DMNContext context = runtime.newContext();
         context.set("listOfNames", Arrays.asList("John", "Jane", "Doe"));
-        
+
         DMNModel model0 = models.get(0);
         LOG.info("EVALUATE ALL:");
         DMNResult evaluateAll = runtime.evaluateAll(model0, context);
@@ -249,20 +251,20 @@ public class SignavioTest {
 
         assertThat(evaluateAll.getDecisionResultByName("concatNames").getResult()).isEqualTo("JohnJaneDoe");
     }
-    
-    
+
+
     private void checkBothFunctionsAreWorking(DMNRuntime runtime) {
         List<DMNModel> models = runtime.getModels();
-        
+
         DMNContext context = runtime.newContext();
         context.set("names", Arrays.asList("John Doe", "Jane Doe"));
         context.set("ages", Arrays.asList(37, 35));
-        
+
         DMNModel model0 = models.get(0);
         LOG.info("EVALUATE ALL:");
         DMNResult evaluateAll = runtime.evaluateAll(model0, context);
         LOG.info("{}", evaluateAll);
-        
+
         assertThat((List<?>) evaluateAll.getDecisionResultByName("zipvararg").getResult()).hasSize(2);
         assertThat((List<?>) evaluateAll.getDecisionResultByName("zipsinglelist").getResult()).hasSize(2);
     }
@@ -270,7 +272,7 @@ public class SignavioTest {
     @Test
     void signavioIterateMultiinstanceWithComplexInputs() {
         DMNRuntime runtime = createRuntime("Iterate Complex List.dmn");
-        
+
         DMNContext context = runtime.newContext();
         Map<String, Object> johnDoe = new HashMap<>();
         johnDoe.put("iD", "id-john");
@@ -279,7 +281,7 @@ public class SignavioTest {
         alice.put("iD", "id-alice");
         alice.put("name", "Alice");
         context.set("customer", Collections.singletonMap("persons", Arrays.asList(johnDoe, alice)));
-        
+
         DMNModel model0 = runtime.getModels().get(0);
         LOG.info("EVALUATE ALL:");
         DMNResult evaluateAll = runtime.evaluateAll(model0, context);
@@ -291,31 +293,41 @@ public class SignavioTest {
     @Test
     void signavioIterateMultiinstanceMultipleDecisions() {
         DMNRuntime runtime = createRuntime("MID with multiple inside decisions.dmn");
-        
+
         DMNContext context = runtime.newContext();
         context.set("names", Arrays.asList("John", "Alice"));
-        
+
         DMNModel model0 = runtime.getModels().get(0);
         LOG.info("EVALUATE ALL:");
         DMNResult evaluateAll = runtime.evaluateAll(model0, context);
         LOG.info("{}", evaluateAll);
-    
+
         assertThat(evaluateAll.getDecisionResultByName("overallage").getResult()).isEqualTo(new BigDecimal("18"));
     }
 
     @Test
     void signavioIterateMultiinstanceMultipleDecisionsOutside() {
         DMNRuntime runtime = createRuntime("MID with outside requirement.dmn");
-        
+
         DMNContext context = runtime.newContext();
         context.set("numbers", Arrays.asList(1,2,3));
         context.set("operand", "PLUS");
-        
+
         DMNModel model0 = runtime.getModels().get(0);
         LOG.info("EVALUATE ALL:");
         DMNResult evaluateAll = runtime.evaluateAll(model0, context);
         LOG.info("{}", evaluateAll);
-    
+
         assertThat(evaluateAll.getDecisionResultByName("sumUp").getResult()).isEqualTo(new BigDecimal("6"));
+    }
+
+    @Test
+    void signavioMultiInstanceDecisionTableWithinMultipleFiles() {
+        DMNRuntime dmnRuntime = createRuntime("MID with outside requirement.dmn", "survey MID SUM.dmn", "Signavio_Concat.dmn");
+
+        assertThat(dmnRuntime.getModels())
+                .flatExtracting(DMNModel::getDecisions)
+                .extracting(DMNNode::getName)
+                .containsOnly("sumUp", "iterating", "determineModifier", "concatNames");
     }
 }
