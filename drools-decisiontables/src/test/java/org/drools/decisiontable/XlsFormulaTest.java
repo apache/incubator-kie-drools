@@ -21,8 +21,8 @@ package org.drools.decisiontable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -36,7 +36,7 @@ public class XlsFormulaTest {
     
     private KieSession ksession;
 
-    @After
+    @AfterEach
     public void tearDown() {
         if (ksession != null) {
             ksession.dispose();

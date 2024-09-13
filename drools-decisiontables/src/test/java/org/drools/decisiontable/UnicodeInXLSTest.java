@@ -24,8 +24,8 @@ import java.util.List;
 import org.drools.drl.extensions.DecisionTableFactory;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 import org.kie.api.command.Command;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
@@ -43,7 +43,7 @@ public class UnicodeInXLSTest {
     
     private KieSession ksession;
 
-    @After
+    @AfterEach
     public void tearDown() {
         if (ksession != null) {
             ksession.dispose();

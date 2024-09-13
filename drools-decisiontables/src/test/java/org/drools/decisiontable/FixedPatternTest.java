@@ -23,8 +23,8 @@ import java.util.List;
 
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.DecisionTableConfiguration;
@@ -40,7 +40,7 @@ public class FixedPatternTest {
 
     private KieSession ksession;
 
-    @After
+    @AfterEach
     public void tearDown() {
         if (ksession != null) {
             ksession.dispose();
