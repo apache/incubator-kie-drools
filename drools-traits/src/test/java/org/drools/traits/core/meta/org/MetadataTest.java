@@ -103,7 +103,7 @@ public class MetadataTest {
         assertThat(sk.prop.get(ski)).isEqualTo("bye");
 
         LOGGER.debug( ski.map.toString());
-        Map tgt = new HashMap();
+        Map<String, Object> tgt = new HashMap<>();
         tgt.put( "prop", "bye" );
         tgt.put( "subProp", -99 );
         assertThat(ski.map).isEqualTo(tgt);
@@ -215,7 +215,7 @@ public class MetadataTest {
     @Test
     public void testDon() {
         Entity entity = new Entity( "123" );
-        entity._setDynamicProperties( new HashMap(  ) );
+        entity._setDynamicProperties( new HashMap<>(  ) );
         entity._getDynamicProperties().put( "prop", "hello" );
 
         Klass klass = Klass_.donKlass( entity )
@@ -229,7 +229,7 @@ public class MetadataTest {
     @Test
     public void testDonWithAttributes() {
         Entity entity = new Entity( "123" );
-        entity._setDynamicProperties( new HashMap() );
+        entity._setDynamicProperties( new HashMap<>() );
 
         SubKlass klass = SubKlass_.donSubKlass(entity )
                 .setTraitFactory(createStandaloneTraitFactory())
@@ -259,7 +259,7 @@ public class MetadataTest {
         AnotherKlass aki3 = AnotherKlass_.newAnotherKlass( "003" ).call();
         AnotherKlass aki4 = AnotherKlass_.newAnotherKlass( "004" ).call();
 
-        ArrayList<AnotherKlass> initial = new ArrayList( Arrays.asList( aki0, aki1 ) );
+        List<AnotherKlass> initial = new ArrayList<>( List.of( aki0, aki1 ) );
         SubKlass ski = SubKlass_.newSubKlass( URI.create( "123" ) )
                 .links( initial, Lit.SET )
                 .links( aki1, Lit.REMOVE )

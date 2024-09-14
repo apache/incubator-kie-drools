@@ -116,11 +116,8 @@ public class TraitTest extends CommonTraitTest {
     public VirtualPropertyMode mode;
 
     @Parameterized.Parameters
-    public static Collection<VirtualPropertyMode[]> modes() {
-        return Arrays.asList(new VirtualPropertyMode[][]
-                                      {
-                                              { VirtualPropertyMode.MAP }, { VirtualPropertyMode.TRIPLES }
-                                      });
+    public static Collection<VirtualPropertyMode> modes() {
+        return List.of(VirtualPropertyMode.MAP, VirtualPropertyMode.TRIPLES);
     }
 
     public TraitTest(VirtualPropertyMode m) {

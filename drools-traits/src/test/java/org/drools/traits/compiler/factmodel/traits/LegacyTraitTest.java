@@ -19,15 +19,14 @@
 package org.drools.traits.compiler.factmodel.traits;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import org.drools.base.factmodel.traits.Trait;
 import org.drools.base.factmodel.traits.Traitable;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.traits.compiler.CommonTraitTest;
-import org.drools.traits.core.factmodel.LogicalTypeInconsistencyException;
 import org.drools.traits.core.factmodel.TraitFactoryImpl;
 import org.drools.traits.core.factmodel.VirtualPropertyMode;
 import org.drools.traits.core.util.StandaloneTraitFactory;
@@ -47,7 +46,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
 import static org.drools.traits.compiler.factmodel.traits.TraitTestUtils.createStandaloneTraitFactory;
 
 @RunWith(Parameterized.class)
@@ -58,30 +56,26 @@ public class LegacyTraitTest extends CommonTraitTest {
     public VirtualPropertyMode mode;
 
     @Parameterized.Parameters
-    public static Collection modes() {
-        return Arrays.asList( new VirtualPropertyMode[][]
-                                      {
-                                              { VirtualPropertyMode.MAP },
-                                              { VirtualPropertyMode.TRIPLES }
-                                      } );
+    public static Collection<VirtualPropertyMode> modes() {
+        return List.of(VirtualPropertyMode.MAP, VirtualPropertyMode.TRIPLES);
     }
 
-    public LegacyTraitTest( VirtualPropertyMode m ) {
+    public LegacyTraitTest(VirtualPropertyMode m) {
         this.mode = m;
     }
 
 
 
-    private KieSession getSessionFromString( String drl ) {
+    private KieSession getSessionFromString(String drl) {
         KnowledgeBuilder knowledgeBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        knowledgeBuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ),
-                              ResourceType.DRL );
+        knowledgeBuilder.add(ResourceFactory.newByteArrayResource(drl.getBytes()),
+                              ResourceType.DRL);
         if (knowledgeBuilder.hasErrors()) {
-            throw new RuntimeException( knowledgeBuilder.getErrors().toString() );
+            throw new RuntimeException(knowledgeBuilder.getErrors().toString());
         }
 
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages( knowledgeBuilder.getKnowledgePackages() );
+        kbase.addPackages(knowledgeBuilder.getKnowledgePackages());
 
         KieSession session = kbase.newKieSession();
         return session;
@@ -160,7 +154,7 @@ public class LegacyTraitTest extends CommonTraitTest {
                         // enhanced so that declaration is not needed
                         // "declare ProcedureImpl end " +
                         "declare trait ExtendedProcedure " +
-                        "   @role( event )" +
+                        "   @role(event)" +
                         "end " +
 
                         // Surgery must be declared as trait, since it does not extend Thing
@@ -174,54 +168,54 @@ public class LegacyTraitTest extends CommonTraitTest {
                         "when " +
                         "    $p : ExtendedProcedure() " +
                         "then " +
-                        "    don( $p, Surgery.class ); " +
+                        "    don($p, Surgery.class); " +
                         "end " +
 
                         "rule 'Test 1' " +
                         "dialect 'mvel' " +
                         "when " +
-                        "    $s1 : ExtendedProcedure( $subject : subject ) " +
-                        "    $s2 : ExtendedProcedure( subject == $subject ) " +
+                        "    $s1 : ExtendedProcedure($subject : subject) " +
+                        "    $s2 : ExtendedProcedure(subject == $subject) " +
                         "then " +
                         "end " +
 
                         "rule 'Test 2' " +
                         "dialect 'mvel' " +
                         "when " +
-                        "    $s1 : ExtendedProcedure( $subject : subject.name ) " +
-                        "    $s2 : ExtendedProcedure( subject.name == $subject ) " +
+                        "    $s1 : ExtendedProcedure($subject : subject.name) " +
+                        "    $s2 : ExtendedProcedure(subject.name == $subject) " +
                         "then " +
                         "end " +
 
                         "rule 'Test 3' " +
                         "dialect 'mvel' " +
                         "when " +
-                        "    $s1 : ExtendedProcedure( ) " +
+                        "    $s1 : ExtendedProcedure() " +
                         "then " +
-                        "    update( $s1 ); " +
+                        "    update($s1); " +
                         "end " +
                         "\n";
 
-        KieSession ks = getSessionFromString( source );
-        TraitFactoryImpl.setMode(mode, ks.getKieBase() );
+        KieSession ks = getSessionFromString(source);
+        TraitFactoryImpl.setMode(mode, ks.getKieBase());
 
         ExtendedProcedureImpl procedure1 = new ExtendedProcedureImpl();
         ExtendedProcedureImpl procedure2 = new ExtendedProcedureImpl();
 
         PatientImpl patient1 = new PatientImpl();
         patient1.setName("John");
-        procedure1.setSubject( patient1 );
+        procedure1.setSubject(patient1);
         procedure1.setPers(new PatientImpl());
 
         PatientImpl patient2 = new PatientImpl();
         patient2.setName("John");
-        procedure2.setSubject( patient2 );
+        procedure2.setSubject(patient2);
         procedure2.setPers(new PatientImpl());
 
-        ks.insert( procedure1 );
-        ks.insert( procedure2 );
+        ks.insert(procedure1);
+        ks.insert(procedure2);
 
-        ks.fireAllRules( 500 );
+        ks.fireAllRules(500);
     }
 
 
@@ -256,63 +250,58 @@ public class LegacyTraitTest extends CommonTraitTest {
 
                         "rule 'Bar Don'" +
                         "when " +
-                        "   $b : BarImpl( this isA Foo.class, this not isA Foo2.class )\n" +
+                        "   $b : BarImpl(this isA Foo.class, this not isA Foo2.class)\n" +
                         "   String()\n" +
                         "then " +
-                        "   list.add( 3 ); " +
-                        "   retract( $b ); " +
+                        "   list.add(3); " +
+                        "   retract($b); " +
                         "end " +
 
                         "rule 'Don Bar' " +
                         "no-loop " +
                         "when " +
-                        "    $b : Foo( ) " +
+                        "    $b : Foo() " +
                         "then " +
-                        "    list.add( 1 ); " +
-                        "    don( $b, Foo2.class ); " +
+                        "    list.add(1); " +
+                        "    don($b, Foo2.class); " +
                         "end " +
 
                         "rule 'Cant really shed Foo but Foo2' " +
                         "when " +
                         "   $b : Foo2() " +
                         "then " +
-                        "   list.add( 2 ); " +
-                        "   shed( $b, Foo.class ); " +
-                        "   insert( \"done\" );" +
+                        "   list.add(2); " +
+                        "   shed($b, Foo.class); " +
+                        "   insert(\"done\");" +
                          "end " +
 
                         "";
 
 
-        KieSession ks = getSessionFromString( source );
+        KieSession ks = getSessionFromString(source);
         KieBase kieBase = ks.getKieBase();
         TraitFactoryImpl.setMode(mode, kieBase);
-        ArrayList list = new ArrayList();
-        ks.setGlobal( "list", list );
+        List<Integer> list = new ArrayList<>();
+        ks.setGlobal("list", list);
 
-        ks.insert( new BarImpl() );
+        ks.insert(new BarImpl());
 
         int n = ks.fireAllRules();
 
-        LOGGER.debug( list.toString() );
-        assertThat(list).isEqualTo(Arrays.asList(1, 2, 3));
+        LOGGER.debug(list.toString());
+        assertThat(list).containsExactly(1, 2, 3);
         assertThat(n).isEqualTo(3);
     }
 
 
 
     @Test
-    public void testTraitWithNonAccessorMethodShadowing() {
+    public void testTraitWithNonAccessorMethodShadowing() throws Exception {
         StandaloneTraitFactory factory = createStandaloneTraitFactory();
-        try {
-            SomeInterface r = (SomeInterface) factory.don( new SomeClass(), SomeInterface.class );
-            r.prepare();
-            assertThat(r.getFoo()).isEqualTo(42);
-            assertThat(r.doThis("that")).isEqualTo("I did that");
-        } catch ( LogicalTypeInconsistencyException e ) {
-            e.printStackTrace();
-            fail( e.getMessage() );
-        }
+        SomeInterface r = (SomeInterface) factory.don(new SomeClass(), SomeInterface.class);
+		r.prepare();
+		assertThat(r.getFoo()).isEqualTo(42);
+		assertThat(r.doThis("that")).isEqualTo("I did that");
     }
 
     @Test()
@@ -331,9 +320,9 @@ public class LegacyTraitTest extends CommonTraitTest {
                 "";
 
         KieHelper kh = new KieHelper();
-        kh.addContent( s1, ResourceType.DRL );
+        kh.addContent(s1, ResourceType.DRL);
 
-        assertThat(kh.verify().getMessages(Message.Level.ERROR).size()).isEqualTo(0);
+        assertThat(kh.verify().getMessages(Message.Level.ERROR)).isEmpty();
     }
 
 }
