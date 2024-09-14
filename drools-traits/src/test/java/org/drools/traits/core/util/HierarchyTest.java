@@ -41,9 +41,9 @@ public class HierarchyTest {
 
     @Test
     public void testHierEncoderTrivial() {
-        HierarchyEncoder encoder = new HierarchyEncoderImpl();
+        HierarchyEncoder<String> encoder = new HierarchyEncoderImpl<>();
 
-        encoder.encode( "A", Collections.EMPTY_LIST );
+        encoder.encode( "A", Collections.emptyList());
         encoder.encode("B", List.of("A"));
         encoder.encode("C", List.of("B"));
         encoder.encode( "D", Arrays.asList( "B", "C" ) );
@@ -58,13 +58,13 @@ public class HierarchyTest {
 
     @Test
     public void testHierManyRoots() {
-        HierarchyEncoder encoder = new HierarchyEncoderImpl();
+        HierarchyEncoder<String> encoder = new HierarchyEncoderImpl<>();
 
-        encoder.encode( "A", Collections.EMPTY_LIST );
-        encoder.encode( "B", Collections.EMPTY_LIST );
-        encoder.encode( "C", Collections.EMPTY_LIST );
-        encoder.encode( "D", Collections.EMPTY_LIST );
-        encoder.encode( "E", Collections.EMPTY_LIST );
+        encoder.encode( "A", Collections.emptyList());
+        encoder.encode( "B", Collections.emptyList());
+        encoder.encode( "C", Collections.emptyList());
+        encoder.encode( "D", Collections.emptyList());
+        encoder.encode( "E", Collections.emptyList());
 
         LOGGER.debug( encoder.toString() );
 
@@ -83,13 +83,13 @@ public class HierarchyTest {
 
     @Test
     public void testHierManyRootsPropagation() {
-        HierarchyEncoderImpl encoder = new HierarchyEncoderImpl();
+        HierarchyEncoderImpl<String> encoder = new HierarchyEncoderImpl<>();
 
-        encoder.encode( "A", Collections.EMPTY_LIST );
+        encoder.encode( "A", Collections.emptyList());
         encoder.encode("B", List.of("A"));
         encoder.encode("C", List.of("A"));
         encoder.encode( "D", Arrays.asList( "B", "C" ) );
-        encoder.encode( "E", Collections.EMPTY_LIST );
+        encoder.encode( "E", Collections.emptyList());
 
         LOGGER.debug( encoder.toString() );
 
@@ -116,10 +116,10 @@ public class HierarchyTest {
 
     @Test
     public void testHierALotOfClasses() {
-        HierarchyEncoder encoder = new HierarchyEncoderImpl();
+        HierarchyEncoder<String> encoder = new HierarchyEncoderImpl<>();
         int N = 1194;
 
-        encoder.encode( "A", Collections.EMPTY_LIST );
+        encoder.encode( "A", Collections.emptyList());
         for ( int j = 1; j < N; j++ ) {
             encoder.encode( "X" + j, List.of("A"));
         }
@@ -134,9 +134,9 @@ public class HierarchyTest {
 
     @Test
     public void testHierEncoderSimpleInheritance() {
-        HierarchyEncoder encoder = new HierarchyEncoderImpl();
+        HierarchyEncoder<String> encoder = new HierarchyEncoderImpl<>();
 
-        encoder.encode( "A", Collections.EMPTY_LIST );
+        encoder.encode( "A", Collections.emptyList());
         encoder.encode("B", List.of("A"));
         encoder.encode("C", List.of("A"));
         encoder.encode("D", List.of("B"));
@@ -160,9 +160,9 @@ public class HierarchyTest {
 
     @Test
     public void testHierEncoderAnotherSimpleInheritance() {
-        HierarchyEncoder encoder = new HierarchyEncoderImpl();
+        HierarchyEncoder<String> encoder = new HierarchyEncoderImpl<>();
 
-        encoder.encode( "R", Collections.EMPTY_LIST );
+        encoder.encode( "R", Collections.emptyList());
         encoder.encode("A1", List.of("R"));
         encoder.encode("A2", List.of("R"));
         encoder.encode("A3", List.of("R"));
@@ -193,9 +193,9 @@ public class HierarchyTest {
 
     @Test
     public void testHierEncoderAnotherSimpleInheritanceChangeOrder() {
-        HierarchyEncoder encoder = new HierarchyEncoderImpl();
+        HierarchyEncoder<String> encoder = new HierarchyEncoderImpl<>();
 
-        encoder.encode( "R", Collections.EMPTY_LIST );
+        encoder.encode( "R", Collections.emptyList());
 
         encoder.encode("B1", List.of("R"));
         encoder.encode("B2", List.of("R"));
@@ -233,9 +233,9 @@ public class HierarchyTest {
 
     @Test
     public void testHierEncoderBipartiteInheritance() {
-        HierarchyEncoder encoder = new HierarchyEncoderImpl();
+        HierarchyEncoder<String> encoder = new HierarchyEncoderImpl<>();
 
-        encoder.encode( "R", Collections.EMPTY_LIST );
+        encoder.encode( "R", Collections.emptyList());
         encoder.encode("A1", List.of("R"));
         encoder.encode("A2", List.of("R"));
         encoder.encode("A3", List.of("R"));
@@ -263,9 +263,9 @@ public class HierarchyTest {
 
     @Test
     public void testHierEncoderBipartiteInheritanceDiffOrder() {
-        HierarchyEncoder encoder = new HierarchyEncoderImpl();
+        HierarchyEncoder<String> encoder = new HierarchyEncoderImpl<>();
 
-        encoder.encode( "R", Collections.EMPTY_LIST );
+        encoder.encode( "R", Collections.emptyList());
 
         encoder.encode("B1", List.of("R"));
         encoder.encode("B2", List.of("R"));
@@ -296,9 +296,9 @@ public class HierarchyTest {
 
     @Test
     public void testSquare() {
-        HierarchyEncoder encoder = new HierarchyEncoderImpl();
+        HierarchyEncoder<String> encoder = new HierarchyEncoderImpl<>();
 
-        encoder.encode( "T", Collections.EMPTY_LIST );
+        encoder.encode( "T", Collections.emptyList());
         encoder.encode("A", List.of("T"));
         encoder.encode("B", List.of("T"));
         encoder.encode( "C", Arrays.asList( "A", "B" ) );
@@ -319,9 +319,9 @@ public class HierarchyTest {
 
     @Test
     public void testConflictArising() {
-        HierarchyEncoder encoder = new HierarchyEncoderImpl();
+        HierarchyEncoder<String> encoder = new HierarchyEncoderImpl<>();
 
-        encoder.encode( "A", Collections.EMPTY_LIST );
+        encoder.encode( "A", Collections.emptyList());
         encoder.encode("B", List.of("A"));
         encoder.encode("C", List.of("A"));
         encoder.encode("D", List.of("B"));
@@ -362,9 +362,9 @@ public class HierarchyTest {
 
     @Test
     public void testConflictArising2() {
-        HierarchyEncoder encoder = new HierarchyEncoderImpl();
+        HierarchyEncoder<String> encoder = new HierarchyEncoderImpl<>();
 
-        encoder.encode( "A", Collections.EMPTY_LIST );
+        encoder.encode( "A", Collections.emptyList());
         encoder.encode("B", List.of("A"));
         encoder.encode("C", List.of("A"));
         encoder.encode("D", List.of("B"));
@@ -391,9 +391,9 @@ public class HierarchyTest {
 
     @Test
     public void testHierEncoderBipartiteStarInheritance() {
-        HierarchyEncoder encoder = new HierarchyEncoderImpl();
+        HierarchyEncoder<String> encoder = new HierarchyEncoderImpl<>();
 
-        encoder.encode( "R", Collections.EMPTY_LIST );
+        encoder.encode( "R", Collections.emptyList());
 
         encoder.encode("B1", List.of("R"));
         encoder.encode("B2", List.of("R"));
@@ -434,9 +434,9 @@ public class HierarchyTest {
 
     @Test
     public void testHierEncoderBipartiteStarInheritanceDiffOrder() {
-        HierarchyEncoder encoder = new HierarchyEncoderImpl();
+        HierarchyEncoder<String> encoder = new HierarchyEncoderImpl<>();
 
-        encoder.encode( "R", Collections.EMPTY_LIST );
+        encoder.encode( "R", Collections.emptyList());
 
         encoder.encode("A1", List.of("R"));
         encoder.encode("A2", List.of("R"));
@@ -491,9 +491,9 @@ public class HierarchyTest {
 
     @Test
     public void testHierEncoderComplexInheritance() {
-        HierarchyEncoder encoder = new HierarchyEncoderImpl();
+        HierarchyEncoder<String> encoder = new HierarchyEncoderImpl<>();
 
-        encoder.encode( "A", Collections.EMPTY_LIST );
+        encoder.encode( "A", Collections.emptyList());
         checkHier( encoder, 'A' );
 
         encoder.encode("B", List.of("A"));
@@ -562,12 +562,12 @@ public class HierarchyTest {
         return l;
     }
 
-    private void checkHier( HierarchyEncoder encoder, char fin ) {
+    private void checkHier( HierarchyEncoder<String> encoder, char fin ) {
 
 
         List<String>[] sups = new ArrayList[ fin - 'A' + 1 ];
         for ( int j = 'A'; j <= fin; j++ ) {
-            sups[ j - 'A' ] = ((HierarchyEncoderImpl) encoder).ancestorValues( "" + (char) j );
+            sups[ j - 'A' ] = ((HierarchyEncoderImpl<String>) encoder).ancestorValues( "" + (char) j );
         };
 
         for ( int j = 'A' ; j <  'A' + sups.length ; j++ ) {
@@ -577,7 +577,7 @@ public class HierarchyTest {
                 BitSet xcode = encoder.getCode( x );
                 BitSet ycode = encoder.getCode( y );
 
-                int subOf = ((HierarchyEncoderImpl) encoder).superset(xcode, ycode);
+                int subOf = ((HierarchyEncoderImpl<String>) encoder).superset(xcode, ycode);
 
                 if ( x.equals( y ) ) {
                     assertThat(subOf).as(x + " vs " + y).isEqualTo(0);
@@ -600,9 +600,9 @@ public class HierarchyTest {
 
     @Test
     public void testHierEncoderMoreInheritance() {
-        HierarchyEncoderImpl encoder = new HierarchyEncoderImpl();
+        HierarchyEncoderImpl<String> encoder = new HierarchyEncoderImpl<>();
 
-        encoder.encode( "A", Collections.EMPTY_LIST );
+        encoder.encode( "A", Collections.emptyList());
         encoder.encode("B", List.of("A"));
         encoder.encode("C", List.of("A"));
         encoder.encode("D", List.of("A"));
@@ -656,9 +656,9 @@ public class HierarchyTest {
 
     @Test
     public void testSecondOrderInheritance() {
-        HierarchyEncoder encoder = new HierarchyEncoderImpl();
+        HierarchyEncoder<String> encoder = new HierarchyEncoderImpl<>();
 
-        encoder.encode( "T", Collections.EMPTY_LIST );
+        encoder.encode( "T", Collections.emptyList());
         encoder.encode("A", List.of("T"));
         encoder.encode("B", List.of("T"));
         encoder.encode("C", List.of("T"));
@@ -672,8 +672,8 @@ public class HierarchyTest {
 
         LOGGER.debug( encoder.toString() );
 
-        assertThat(((HierarchyEncoderImpl) encoder).superset(encoder.getCode("Z"), encoder.getCode("F")) < 0).isTrue() ;
-        assertThat(((HierarchyEncoderImpl) encoder).superset(encoder.getCode("F"), encoder.getCode("Z")) < 0).isTrue() ;
+        assertThat(((HierarchyEncoderImpl<String>) encoder).superset(encoder.getCode("Z"), encoder.getCode("F")) < 0).isTrue() ;
+        assertThat(((HierarchyEncoderImpl<String>) encoder).superset(encoder.getCode("F"), encoder.getCode("Z")) < 0).isTrue() ;
     }
 
 
@@ -682,9 +682,9 @@ public class HierarchyTest {
 
     @Test
     public void testDecoderAncestors() {
-        HierarchyEncoder encoder = new HierarchyEncoderImpl();
+        HierarchyEncoder<String> encoder = new HierarchyEncoderImpl<>();
 
-        encoder.encode( "Thing", Collections.EMPTY_LIST );
+        encoder.encode( "Thing", Collections.emptyList());
         encoder.encode("A", List.of("Thing"));
         encoder.encode("Z", List.of("Thing"));
         encoder.encode( "B", Arrays.asList( "A", "Z" ) );
@@ -701,7 +701,7 @@ public class HierarchyTest {
         LOGGER.debug( encoder.toString() );
 
         BitSet b;
-        Collection x;
+        Collection<String> x;
 
         b = parseBitSet( "1100111" );
         x = encoder.upperAncestors(b);
@@ -716,14 +716,14 @@ public class HierarchyTest {
         assertThat(x.contains("S")).isTrue();
         assertThat(x.contains("M")).isTrue();
         assertThat(x.contains("Thing")).isTrue();
-        assertThat(x.size()).isEqualTo(9);
+        assertThat(x).hasSize(9);
 
 
         b = parseBitSet( "100000" );
         x = encoder.upperAncestors(b);
         LOGGER.debug( "ANC " + x );
 
-        assertThat(x.size()).isEqualTo(2);
+        assertThat(x).hasSize(2);
         assertThat(x.contains("Q")).isTrue();
         assertThat(x.contains("Thing")).isTrue();
 
@@ -731,7 +731,7 @@ public class HierarchyTest {
         x = encoder.upperAncestors(b);
         LOGGER.debug( "ANC " + x );
 
-        assertThat(x.size()).isEqualTo(6);
+        assertThat(x).hasSize(6);
         assertThat(x.contains("A")).isTrue();
         assertThat(x.contains("Z")).isTrue();
         assertThat(x.contains("B")).isTrue();
@@ -743,7 +743,7 @@ public class HierarchyTest {
         x = encoder.upperAncestors(b);
         LOGGER.debug( "ANC " + x );
 
-        assertThat(x.size()).isEqualTo(4);
+        assertThat(x).hasSize(4);
         assertThat(x.contains("A")).isTrue();
         assertThat(x.contains("Z")).isTrue();
         assertThat(x.contains("C")).isTrue();
@@ -753,7 +753,7 @@ public class HierarchyTest {
         x = encoder.upperAncestors(b);
         LOGGER.debug( "ANC " + x );
 
-        assertThat(x.size()).isEqualTo(2);
+        assertThat(x).hasSize(2);
         assertThat(x.contains("A")).isTrue();
         assertThat(x.contains("Thing")).isTrue();
 
@@ -761,7 +761,7 @@ public class HierarchyTest {
         x = encoder.upperAncestors(b);
         LOGGER.debug( "ANC " + x );
 
-        assertThat(x.size()).isEqualTo(2);
+        assertThat(x).hasSize(2);
         assertThat(x.contains("Z")).isTrue();
         assertThat(x.contains("Thing")).isTrue();
 
@@ -769,7 +769,7 @@ public class HierarchyTest {
         x = encoder.upperAncestors(b);
         LOGGER.debug( "ANC " + x );
 
-        assertThat(x.size()).isEqualTo(1);
+        assertThat(x).hasSize(1);
         assertThat(x.contains("Thing")).isTrue();
 
 
@@ -777,7 +777,7 @@ public class HierarchyTest {
         x = encoder.upperAncestors(b);
         LOGGER.debug( "ANC " + x );
 
-        assertThat(x.size()).isEqualTo(4);
+        assertThat(x).hasSize(4);
         assertThat(x.contains("Thing")).isTrue();
         assertThat(x.contains("A")).isTrue();
         assertThat(x.contains("B")).isTrue();
@@ -788,9 +788,9 @@ public class HierarchyTest {
 
     @Test
     public void testDecoderDescendants() {
-        HierarchyEncoder encoder = new HierarchyEncoderImpl();
+        HierarchyEncoder<String> encoder = new HierarchyEncoderImpl<>();
 
-        encoder.encode( "Thing", Collections.EMPTY_LIST );
+        encoder.encode( "Thing", Collections.emptyList());
         encoder.encode("A", List.of("Thing"));
         encoder.encode("Z", List.of("Thing"));
         encoder.encode( "B", Arrays.asList( "A", "Z" ) );
@@ -806,14 +806,11 @@ public class HierarchyTest {
 
         LOGGER.debug( encoder.toString() );
 
-        BitSet b;
-        Collection x;
-
-        b = parseBitSet( "111" );
-        x = encoder.lowerDescendants(b);
+        BitSet b = parseBitSet( "111" );
+        Collection<String> x = encoder.lowerDescendants(b);
         LOGGER.debug( "DESC " + x );
 
-        assertThat(x.size()).isEqualTo(3);
+        assertThat(x).hasSize(3);
         assertThat(x.contains("C")).isTrue();
         assertThat(x.contains("N")).isTrue();
         assertThat(x.contains("T")).isTrue();
@@ -823,7 +820,7 @@ public class HierarchyTest {
         x = encoder.lowerDescendants(b);
         LOGGER.debug( "DESC " + x );
 
-        assertThat(x.size()).isEqualTo(5);
+        assertThat(x).hasSize(5);
         assertThat(x.contains("C")).isTrue();
         assertThat(x.contains("N")).isTrue();
         assertThat(x.contains("T")).isTrue();
@@ -835,7 +832,7 @@ public class HierarchyTest {
         x = encoder.lowerDescendants(b);
         LOGGER.debug( "DESC " + x );
 
-        assertThat(x.size()).isEqualTo(4);
+        assertThat(x).hasSize(4);
         assertThat(x.contains("Q")).isTrue();
         assertThat(x.contains("T")).isTrue();
         assertThat(x.contains("M")).isTrue();
@@ -848,14 +845,14 @@ public class HierarchyTest {
         x = encoder.lowerDescendants(b);
         LOGGER.debug( "DESC " + x );
 
-        assertThat(x.size()).isEqualTo(1);
+        assertThat(x).hasSize(1);
         assertThat(x.contains("T")).isTrue();
 
         b = parseBitSet( "1111" );
         x = encoder.lowerDescendants(b);
         LOGGER.debug( "DESC " + x );
 
-        assertThat(x.size()).isEqualTo(1);
+        assertThat(x).hasSize(1);
         assertThat(x.contains("N")).isTrue();
 
 
@@ -863,7 +860,7 @@ public class HierarchyTest {
         x = encoder.lowerDescendants(b);
         LOGGER.debug( "DESC " + x );
 
-        assertThat(x.size()).isEqualTo(5);
+        assertThat(x).hasSize(5);
         assertThat(x.contains("A")).isTrue();
         assertThat(x.contains("B")).isTrue();
         assertThat(x.contains("C")).isTrue();
@@ -875,7 +872,7 @@ public class HierarchyTest {
         x = encoder.lowerDescendants(new BitSet());
         LOGGER.debug( "DESC " + x );
 
-        assertThat(x.size()).isEqualTo(13);
+        assertThat(x).hasSize(13);
         assertThat(x.contains("Z")).isTrue();
         assertThat(x.contains("Thing")).isTrue();
 
@@ -884,9 +881,9 @@ public class HierarchyTest {
 
     @Test
     public void testHierEncoderDecoderLower() {
-        HierarchyEncoder encoder = new HierarchyEncoderImpl();
+        HierarchyEncoder<String> encoder = new HierarchyEncoderImpl<>();
 
-        encoder.encode( "Thing", Collections.EMPTY_LIST );
+        encoder.encode( "Thing", Collections.emptyList());
         encoder.encode("A", List.of("Thing"));
         encoder.encode("Z", List.of("Thing"));
         encoder.encode( "B", Arrays.asList( "A", "Z" ) );
@@ -902,16 +899,16 @@ public class HierarchyTest {
 
         LOGGER.debug( encoder.toString() );
 
-        Collection x;
+        Collection<String> x;
 
         x = encoder.lowerBorder( encoder.metMembersCode(List.of("B")));
         LOGGER.debug( "GCS " + x );
-        assertThat(x.size()).isEqualTo(1);
+        assertThat(x).hasSize(1);
         assertThat(x.contains("B")).isTrue();
 
         x = encoder.immediateChildren( encoder.metMembersCode(List.of("B")));
         LOGGER.debug( "GCS " + x );
-        assertThat(x.size()).isEqualTo(1);
+        assertThat(x).hasSize(1);
         assertThat(x.contains("N")).isTrue();
 
 
@@ -919,13 +916,13 @@ public class HierarchyTest {
         x = encoder.lowerBorder( encoder.metMembersCode( Arrays.asList( "Z", "Q" ) ) );
         LOGGER.debug( "GCS " + x );
 
-        assertThat(x.size()).isEqualTo(1);
+        assertThat(x).hasSize(1);
         assertThat(x.contains("T")).isTrue();
 
         x = encoder.immediateChildren( encoder.metMembersCode( Arrays.asList( "Z", "Q" ) ) );
         LOGGER.debug( "GCS " + x );
 
-        assertThat(x.size()).isEqualTo(1);
+        assertThat(x).hasSize(1);
         assertThat(x.contains("T")).isTrue();
 
 
@@ -934,14 +931,14 @@ public class HierarchyTest {
         x = encoder.lowerBorder( encoder.metMembersCode( Arrays.asList( "A", "Z" ) ) );
         LOGGER.debug( "GCS " + x );
 
-        assertThat(x.size()).isEqualTo(2);
+        assertThat(x).hasSize(2);
         assertThat(x.contains("B")).isTrue();
         assertThat(x.contains("C")).isTrue();
 
         x = encoder.immediateChildren( encoder.metMembersCode( Arrays.asList( "A", "Z" ) ) );
         LOGGER.debug( "GCS " + x );
 
-        assertThat(x.size()).isEqualTo(2);
+        assertThat(x).hasSize(2);
         assertThat(x.contains("B")).isTrue();
         assertThat(x.contains("C")).isTrue();
 
@@ -951,13 +948,13 @@ public class HierarchyTest {
         x = encoder.lowerBorder( encoder.metMembersCode(List.of("Thing")));
         LOGGER.debug( "GCS " + x );
 
-        assertThat(x.size()).isEqualTo(1);
+        assertThat(x).hasSize(1);
         assertThat(x.contains("Thing")).isTrue();
 
         x = encoder.immediateChildren( encoder.metMembersCode(List.of("Thing")));
         LOGGER.debug( "GCS " + x );
 
-        assertThat(x.size()).isEqualTo(5);
+        assertThat(x).hasSize(5);
         assertThat(x.contains("A")).isTrue();
         assertThat(x.contains("Z")).isTrue();
         assertThat(x.contains("P")).isTrue();
@@ -970,9 +967,9 @@ public class HierarchyTest {
 
     @Test
     public void testHierEncoderDecoderUpper() {
-        HierarchyEncoder encoder = new HierarchyEncoderImpl();
+        HierarchyEncoder<String> encoder = new HierarchyEncoderImpl<>();
 
-        encoder.encode( "Thing", Collections.EMPTY_LIST );
+        encoder.encode( "Thing", Collections.emptyList());
         encoder.encode("A", List.of("Thing"));
         encoder.encode("Z", List.of("Thing"));
         encoder.encode( "B", Arrays.asList( "A", "Z" ) );
@@ -988,16 +985,14 @@ public class HierarchyTest {
 
         LOGGER.debug( encoder.toString() );
 
-        Collection x;
-
-        x = encoder.upperBorder( encoder.metMembersCode(List.of("B")));
+        Collection<String> x = encoder.upperBorder( encoder.metMembersCode(List.of("B")));
         LOGGER.debug( "LCS " + x );
-        assertThat(x.size()).isEqualTo(1);
+        assertThat(x).hasSize(1);
         assertThat(x.contains("B")).isTrue();
 
         x = encoder.immediateParents( encoder.metMembersCode(List.of("B")));
         LOGGER.debug( "LCS " + x );
-        assertThat(x.size()).isEqualTo(2);
+        assertThat(x).hasSize(2);
         assertThat(x.contains("A")).isTrue();
         assertThat(x.contains("Z")).isTrue();
 
@@ -1006,13 +1001,13 @@ public class HierarchyTest {
         x = encoder.upperBorder( encoder.jointMembersCode( Arrays.asList( "Z", "Q" ) ) );
         LOGGER.debug( "LCS " + x );
 
-        assertThat(x.size()).isEqualTo(1);
+        assertThat(x).hasSize(1);
         assertThat(x.contains("Thing")).isTrue();
 
         x = encoder.immediateParents( encoder.jointMembersCode( Arrays.asList( "Z", "Q" ) ) );
         LOGGER.debug( "LCS " + x );
 
-        assertThat(x.size()).isEqualTo(1);
+        assertThat(x).hasSize(1);
         assertThat(x.contains("Thing")).isTrue();
 
 
@@ -1020,14 +1015,14 @@ public class HierarchyTest {
         x = encoder.upperBorder( encoder.jointMembersCode( Arrays.asList( "B", "C" ) ) );
         LOGGER.debug( "LCS " + x );
 
-        assertThat(x.size()).isEqualTo(2);
+        assertThat(x).hasSize(2);
         assertThat(x.contains("A")).isTrue();
         assertThat(x.contains("Z")).isTrue();
 
         x = encoder.immediateParents( encoder.jointMembersCode( Arrays.asList( "B", "C" ) ) );
         LOGGER.debug( "LCS " + x );
 
-        assertThat(x.size()).isEqualTo(2);
+        assertThat(x).hasSize(2);
         assertThat(x.contains("A")).isTrue();
         assertThat(x.contains("Z")).isTrue();
 
@@ -1035,13 +1030,13 @@ public class HierarchyTest {
         x = encoder.upperBorder( encoder.jointMembersCode(List.of("T")));
         LOGGER.debug( "LCS " + x );
 
-        assertThat(x.size()).isEqualTo(1);
+        assertThat(x).hasSize(1);
         assertThat(x.contains("T")).isTrue();
 
         x = encoder.immediateParents( encoder.jointMembersCode(List.of("T")));
         LOGGER.debug( "LCS " + x );
 
-        assertThat(x.size()).isEqualTo(2);
+        assertThat(x).hasSize(2);
         assertThat(x.contains("C")).isTrue();
         assertThat(x.contains("Q")).isTrue();
 
@@ -1057,7 +1052,7 @@ public class HierarchyTest {
     public void testClassInstanceHierarchies() {
         HierarchyEncoder<String> encoder = new HierarchyEncoderImpl<String>();
 
-        BitSet ak = encoder.encode( "A", Collections.EMPTY_LIST );
+        BitSet ak = encoder.encode( "A", Collections.emptyList());
         BitSet bk = encoder.encode("B", List.of("A"));
         BitSet ck = encoder.encode("C", List.of("A"));
         BitSet dk = encoder.encode("D", List.of("B"));
@@ -1139,7 +1134,7 @@ public class HierarchyTest {
     public void testUnwantedCodeOverriding() {
         HierarchyEncoder<String> encoder = new HierarchyEncoderImpl<String>();
 
-        BitSet ak = encoder.encode( "A", Collections.EMPTY_LIST );
+        BitSet ak = encoder.encode( "A", Collections.emptyList());
         BitSet ck = encoder.encode("C", List.of("A"));
         BitSet dk = encoder.encode("D", List.of("A"));
         BitSet gk = encoder.encode( "G", Arrays.asList( "C", "D" ) );
@@ -1186,7 +1181,7 @@ public class HierarchyTest {
     public void testDeepTree() {
         HierarchyEncoder<String> encoder = new HierarchyEncoderImpl<String>();
 
-        encoder.encode( "A", Collections.EMPTY_LIST );
+        encoder.encode( "A", Collections.emptyList());
 
         encoder.encode("B", List.of("A"));
 
@@ -1219,7 +1214,7 @@ public class HierarchyTest {
     public void testNestedTree() {
         HierarchyEncoder<String> encoder = new HierarchyEncoderImpl<String>();
 
-        encoder.encode( "A", Collections.EMPTY_LIST );
+        encoder.encode( "A", Collections.emptyList());
         encoder.encode("B", List.of("A"));
         encoder.encode("C", List.of("B"));
         encoder.encode("D", List.of("B"));
