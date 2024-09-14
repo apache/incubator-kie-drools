@@ -190,9 +190,9 @@ public class TraitTest extends CommonTraitTest {
 
         FactType impClass = kb.getFactType("org.drools.compiler.trait.test", "Imp");
 		TraitableBean imp = (TraitableBean) impClass.newInstance();
-		Class trait = kb.getFactType("org.drools.compiler.trait.test", "Student").getFactClass();
+		Class<?> trait = kb.getFactType("org.drools.compiler.trait.test", "Student").getFactClass();
 
-		TraitProxyImpl proxy = (TraitProxyImpl) tFactory.getProxy(imp, trait);
+		TraitProxyImpl proxy = (TraitProxyImpl) tFactory.getProxy(imp, trait, false);
 
 		Map<String, Object> virtualFields = imp._getDynamicProperties();
 		Map<String, Object> wrapper = proxy.getFields();
@@ -233,8 +233,6 @@ public class TraitTest extends CommonTraitTest {
         ks.insert("hire");
         ks.fireAllRules();
 
-        Collection<? extends Object> c = ks.getObjects();
-
         assertThat(info.contains("Worker")).isTrue();
         assertThat(info).hasSize(2);
 
@@ -267,7 +265,7 @@ public class TraitTest extends CommonTraitTest {
         assertThat(info.contains("DON")).isTrue();
         assertThat(info.contains("SHED")).isTrue();
 
-        Iterator it = wm.iterator();
+        Iterator<? extends Object> it = wm.iterator();
         Object x = it.next();
         if (x instanceof String) {
             x = it.next();
@@ -300,7 +298,7 @@ public class TraitTest extends CommonTraitTest {
         KieSession ks = getSession(source);
         TraitFactoryImpl.setMode(mode, ks.getKieBase());
 
-        List errors = new ArrayList();
+        List<String> errors = new ArrayList<>();
         ks.setGlobal("list", errors);
 
         ks.fireAllRules();
@@ -320,7 +318,7 @@ public class TraitTest extends CommonTraitTest {
         KieSession ks = getSession(source);
         TraitFactoryImpl.setMode(mode, ks.getKieBase());
 
-        List errors = new ArrayList();
+        List<String> errors = new ArrayList<>();
         ks.setGlobal("list", errors);
 
         ks.fireAllRules();
@@ -354,27 +352,27 @@ public class TraitTest extends CommonTraitTest {
 		TraitableBean imp = (TraitableBean) impClass.newInstance();
 		impClass.set(imp, "name", "aaa");
 
-		Class trait = kb.getFactType("org.drools.compiler.trait.test", "Student").getFactClass();
-		Class trait2 = kb.getFactType("org.drools.compiler.trait.test", "Role").getFactClass();
+		Class<?> trait = kb.getFactType("org.drools.compiler.trait.test", "Student").getFactClass();
+		Class<?> trait2 = kb.getFactType("org.drools.compiler.trait.test", "Role").getFactClass();
 
 		assertThat(trait).isNotNull();
-		TraitProxyImpl proxy = (TraitProxyImpl) tFactory.getProxy(imp, trait);
+		TraitProxyImpl proxy = (TraitProxyImpl) tFactory.getProxy(imp, trait, false);
 		proxy.getFields().put("field", "xyz");
 		//            proxy.getFields().put("name", "aaa");
 
 		assertThat(proxy).isNotNull();
 
-		TraitProxyImpl proxy2 = (TraitProxyImpl) tFactory.getProxy(imp, trait);
+		TraitProxyImpl proxy2 = (TraitProxyImpl) tFactory.getProxy(imp, trait, false);
 		assertThat(proxy).isSameAs(proxy2);
 
-		TraitProxyImpl proxy3 = (TraitProxyImpl) tFactory.getProxy(imp, trait2);
+		TraitProxyImpl proxy3 = (TraitProxyImpl) tFactory.getProxy(imp, trait2, false);
 		assertThat(proxy3).isNotNull();
 		assertThat(proxy3.getFields().get("field")).isEqualTo("xyz");
 		assertThat(proxy3.getFields().get("name")).isEqualTo("aaa");
 
 		TraitableBean imp2 = (TraitableBean) impClass.newInstance();
 		impClass.set(imp2, "name", "aaa");
-		TraitProxyImpl proxy4 = (TraitProxyImpl) tFactory.getProxy(imp2, trait);
+		TraitProxyImpl proxy4 = (TraitProxyImpl) tFactory.getProxy(imp2, trait, false);
 		//            proxy4.getFields().put("name", "aaa");
 		proxy4.getFields().put("field", "xyz");
 
@@ -403,8 +401,8 @@ public class TraitTest extends CommonTraitTest {
         FactType impClass = kb.getFactType("org.drools.compiler.trait.test",                                                 "Imp");
 		TraitableBean imp = (TraitableBean) impClass.newInstance();
 		FactType traitClass = kb.getFactType("org.drools.compiler.trait.test", "Student");
-		Class trait = traitClass.getFactClass();
-		TraitProxyImpl proxy = (TraitProxyImpl) tFactory.getProxy(imp, trait);
+		Class<?> trait = traitClass.getFactClass();
+		TraitProxyImpl proxy = (TraitProxyImpl) tFactory.getProxy(imp, trait, false);
 
 		Map<String, Object> virtualFields = imp._getDynamicProperties();
 		Map<String, Object> wrapper = proxy.getFields();
@@ -427,7 +425,7 @@ public class TraitTest extends CommonTraitTest {
 		//            TraitableBean ind = (TraitableBean) indClass.newInstance();
 		TraitableBean ind = new Entity();
 
-		TraitProxyImpl proxy2 = (TraitProxyImpl) tFactory.getProxy(ind, trait);
+		TraitProxyImpl proxy2 = (TraitProxyImpl) tFactory.getProxy(ind, trait, false);
 
 		Map<String, Object> virtualFields2 = ind._getDynamicProperties();
 		Map<String, Object> wrapper2 = proxy2.getFields();
@@ -447,11 +445,11 @@ public class TraitTest extends CommonTraitTest {
 		assertThat(virtualFields2).hasSize(4);
 
 		FactType traitClass2 = kb.getFactType("org.drools.compiler.trait.test", "Role");
-		Class trait2 = traitClass2.getFactClass();
+		Class<?> trait2 = traitClass2.getFactClass();
 		//            TraitableBean ind2 = (TraitableBean) indClass.newInstance();
 		TraitableBean ind2 = new Entity();
 
-		TraitProxyImpl proxy99 = (TraitProxyImpl) tFactory.getProxy(ind2, trait2);
+		TraitProxyImpl proxy99 = (TraitProxyImpl) tFactory.getProxy(ind2, trait2, false);
 
 		proxy99.getFields().put("surname", "xxx");
 		proxy99.getFields().put("name", "xyz");
@@ -459,7 +457,7 @@ public class TraitTest extends CommonTraitTest {
 
 		assertThat(proxy99.getFields()).hasSize(3);
 
-		TraitProxyImpl proxy100 = (TraitProxyImpl) tFactory.getProxy(ind2, trait);
+		TraitProxyImpl proxy100 = (TraitProxyImpl) tFactory.getProxy(ind2, trait, false);
 
 		assertThat(proxy100.getFields()).hasSize(4);
 
@@ -487,8 +485,8 @@ public class TraitTest extends CommonTraitTest {
 		TraitableBean imp = (TraitableBean) impClass.newInstance();
 
 		FactType studentClass = kb.getFactType("org.drools.compiler.trait.test", "Student");
-		Class trait = studentClass.getFactClass();
-		TraitProxyImpl proxy = (TraitProxyImpl) tFactory.getProxy(imp, trait);
+		Class<?> trait = studentClass.getFactClass();
+		TraitProxyImpl proxy = (TraitProxyImpl) tFactory.getProxy(imp, trait, false);
 
 		Map<String, Object> wrapper = proxy.getFields();
 		assertThat(wrapper).isNotEmpty();
@@ -509,8 +507,8 @@ public class TraitTest extends CommonTraitTest {
 		TraitableBean ind = new Entity();
 
 		FactType RoleClass = kb.getFactType("org.drools.compiler.trait.test", "Role");
-		Class trait2 = RoleClass.getFactClass();
-		TraitProxyImpl proxy2 = (TraitProxyImpl) tFactory.getProxy(ind, trait2);
+		Class<?> trait2 = RoleClass.getFactClass();
+		TraitProxyImpl proxy2 = (TraitProxyImpl) tFactory.getProxy(ind, trait2, false);
 
 		Map<String, Object> wrapper2 = proxy2.getFields();
 		assertThat(wrapper2).isEmpty();
@@ -546,8 +544,8 @@ public class TraitTest extends CommonTraitTest {
 		impClass.set(imp, "name", "john");
 
 		FactType traitClass = kb.getFactType("org.drools.compiler.trait.test", "Student");
-		Class trait = traitClass.getFactClass();
-		TraitProxyImpl proxy = (TraitProxyImpl) tFactory.getProxy(imp, trait);
+		Class<?> trait = traitClass.getFactClass();
+		TraitProxyImpl proxy = (TraitProxyImpl) tFactory.getProxy(imp, trait, false);
 
 		Map<String, Object> wrapper = proxy.getFields();
 
@@ -563,7 +561,7 @@ public class TraitTest extends CommonTraitTest {
 		//            FactType indClass = kb.getFactType("org.drools.compiler.trait.test","Entity");
 		TraitableBean ind = new Entity();
 
-		TraitProxyImpl proxy2 = (TraitProxyImpl) tFactory.getProxy(ind, trait);
+		TraitProxyImpl proxy2 = (TraitProxyImpl) tFactory.getProxy(ind, trait, false);
 
 		Map<String, Object> wrapper2 = proxy2.getFields();
 		assertThat(wrapper2.containsKey("name")).isTrue();
@@ -577,10 +575,10 @@ public class TraitTest extends CommonTraitTest {
 		assertThat(wrapper2.containsKey("surname")).isTrue();
 
 		FactType traitClass2 = kb.getFactType("org.drools.compiler.trait.test", "Role");
-		Class trait2 = traitClass2.getFactClass();
+		Class<?> trait2 = traitClass2.getFactClass();
 		TraitableBean ind2 = new Entity();
 
-		TraitProxyImpl proxy99 = (TraitProxyImpl) tFactory.getProxy(ind2, trait2);
+		TraitProxyImpl proxy99 = (TraitProxyImpl) tFactory.getProxy(ind2, trait2, false);
 		Map<String, Object> wrapper99 = proxy99.getFields();
 
 		assertThat(wrapper99.containsKey("name")).isFalse();
@@ -600,14 +598,14 @@ public class TraitTest extends CommonTraitTest {
 
 		TraitableBean ind0 = new Entity();
 
-		TraitProxyImpl proxy100 = (TraitProxyImpl) tFactory.getProxy(ind0, trait2);
+		TraitProxyImpl proxy100 = (TraitProxyImpl) tFactory.getProxy(ind0, trait2, false);
 		Map<String, Object> wrapper100 = proxy100.getFields();
 		assertThat(wrapper100.containsKey("name")).isFalse();
 		assertThat(wrapper100.containsKey("school")).isFalse();
 		assertThat(wrapper100.containsKey("age")).isFalse();
 		assertThat(wrapper100.containsKey("surname")).isFalse();
 
-		TraitProxyImpl proxy101 = (TraitProxyImpl) tFactory.getProxy(ind0, trait);
+		TraitProxyImpl proxy101 = (TraitProxyImpl) tFactory.getProxy(ind0, trait, false);
 		// object gains properties by virtue of another trait
 		// so new props are accessible even using the old proxy
 		assertThat(wrapper100.containsKey("name")).isTrue();
@@ -638,13 +636,11 @@ public class TraitTest extends CommonTraitTest {
         FactType impClass = kb.getFactType("org.drools.compiler.trait.test", "Imp");
 		TraitableBean imp = (TraitableBean) impClass.newInstance();
 		FactType traitClass = kb.getFactType("org.drools.compiler.trait.test", "Student");
-		Class trait = traitClass.getFactClass();
-		TraitProxyImpl proxy = (TraitProxyImpl) tFactory.getProxy(imp, trait);
+		Class<?> trait = traitClass.getFactClass();
+		TraitProxyImpl proxy = (TraitProxyImpl) tFactory.getProxy(imp, trait, false);
 		Object proxyFields = proxy.getFields();
 		Object coreTraits = imp._getTraitMap();
 		Object coreProperties = imp._getDynamicProperties();
-
-		assertThat(proxy.getObject() instanceof TraitableBean).isTrue();
 
 		assertThat(proxyFields).isNotNull();
 		assertThat(coreTraits).isNotNull();
@@ -690,8 +686,8 @@ public class TraitTest extends CommonTraitTest {
         FactType impClass = kb.getFactType("org.drools.compiler.trait.test", "Imp");
 		TraitableBean imp = (TraitableBean) impClass.newInstance();
 		FactType traitClass = kb.getFactType("org.drools.compiler.trait.test", "Student");
-		Class trait = traitClass.getFactClass();
-		TraitProxyImpl proxy = (TraitProxyImpl) tFactory.getProxy(imp, trait);
+		Class<?> trait = traitClass.getFactClass();
+		TraitProxyImpl proxy = (TraitProxyImpl) tFactory.getProxy(imp, trait, false);
 
 		impClass.set(imp, "name", "john");
 		proxy.getFields().put("surname", "xxx");
@@ -701,8 +697,8 @@ public class TraitTest extends CommonTraitTest {
 		assertThat(proxy.getFields()).hasSize(6);
 		assertThat(proxy.getFields().keySet()).contains("name", "surname", "age", "school", "name2", "nfield");
 
-		Collection<Object> col1 = proxy.getFields().values();
-		Collection<Object> col2 = Arrays.asList("john", null, 0, "xxx", "john", null);
+		List<Object> col1 = new ArrayList<>(proxy.getFields().values());
+		List<Object> col2 = Arrays.asList("john", null, 0, "xxx", "john", null);
 
 		Comparator<Object> comp = new Comparator<Object>() {
 
@@ -720,8 +716,8 @@ public class TraitTest extends CommonTraitTest {
 		    }
 		};
 
-		Collections.sort((List) col1, comp);
-		Collections.sort((List) col2, comp);
+		Collections.sort(col1, comp);
+		Collections.sort(col2, comp);
 		assertThat(col2).isEqualTo(col1);
 
 		assertThat(proxy.getFields().containsValue(null)).isTrue();
@@ -753,14 +749,14 @@ public class TraitTest extends CommonTraitTest {
 		TraitableBean imp = (TraitableBean) impClass.newInstance();
 		impClass.set(imp, "name", "john");
 		FactType traitClass = kb.getFactType("org.drools.compiler.trait.test", "Student");
-		Class trait = traitClass.getFactClass();
-		TraitProxyImpl proxy = (TraitProxyImpl) tFactory.getProxy(imp, trait);
+		Class<?> trait = traitClass.getFactClass();
+		TraitProxyImpl proxy = (TraitProxyImpl) tFactory.getProxy(imp, trait, false);
 
 		proxy.getFields().put("surname", "xxx");
 		proxy.getFields().put("name2", "john");
 		proxy.getFields().put("nfield", null);
 
-		Set set = new HashSet();
+		Set<String> set = new HashSet<>();
 		set.add("name");
 		set.add("surname");
 		set.add("age");
@@ -878,7 +874,7 @@ public class TraitTest extends CommonTraitTest {
         KieSession ks = getSessionFromString(source);
         TraitFactoryImpl.setMode(mode, ks.getKieBase());
 
-        List info = new ArrayList();
+        List<String> info = new ArrayList<>();
         ks.setGlobal("list", info);
 
         ks.fireAllRules();
@@ -895,7 +891,7 @@ public class TraitTest extends CommonTraitTest {
         KieSession ks = getSession(source);
         TraitFactoryImpl.setMode(mode, ks.getKieBase());
 
-        List info = new ArrayList();
+        List<String> info = new ArrayList<>();
         ks.setGlobal("list", info);
 
         ks.fireAllRules();
@@ -920,7 +916,7 @@ public class TraitTest extends CommonTraitTest {
         KieSession ks = getSession(source);
         TraitFactoryImpl.setMode(mode, ks.getKieBase());
 
-        List info = new ArrayList();
+        List<String> info = new ArrayList<>();
         ks.setGlobal("list", info);
 
         try {
@@ -999,7 +995,7 @@ public class TraitTest extends CommonTraitTest {
         TraitFactoryImpl.setMode(mode, ks.getKieBase());
 
 
-        List info = new ArrayList();
+        List<String> info = new ArrayList<>();
         ks.setGlobal("list", info);
 
         ks.fireAllRules();
@@ -1015,7 +1011,7 @@ public class TraitTest extends CommonTraitTest {
 
     }
 
-    private void printDebugInfoSessionObjects(final Collection<? extends Object> facts, final List globalList) {
+    private void printDebugInfoSessionObjects(final Collection<? extends Object> facts, final List<? extends Object> globalList) {
         LOGGER.debug(" -------------- " + facts.size() + " ---------------- ");
         for (Object o : facts) {
             LOGGER.debug("\t\t" + o);
@@ -1033,7 +1029,7 @@ public class TraitTest extends CommonTraitTest {
         TraitFactoryImpl.setMode(mode, ks.getKieBase());
 
 
-        List info = new ArrayList();
+        List<String> info = new ArrayList<>();
         ks.setGlobal("list", info);
 
         ks.fireAllRules();
@@ -1052,7 +1048,7 @@ public class TraitTest extends CommonTraitTest {
         KieSession ks = getSession(source);
         TraitFactoryImpl.setMode(mode, ks.getKieBase());
 
-        List info = new ArrayList();
+        List<String> info = new ArrayList<>();
         ks.setGlobal("list", info);
 
         ks.fireAllRules();
@@ -1072,7 +1068,7 @@ public class TraitTest extends CommonTraitTest {
         KieSession ks = getSession(source);
         TraitFactoryImpl.setMode(mode, ks.getKieBase());
 
-        List info = new ArrayList();
+        List<String> info = new ArrayList<>();
         ks.setGlobal("list", info);
 
         ks.fireAllRules();
@@ -1196,7 +1192,7 @@ public class TraitTest extends CommonTraitTest {
         TraitFactoryImpl.setMode(mode, ksession.getKieBase());
 
 
-        List list = new ArrayList();
+        List<String> list = new ArrayList<>();
         ksession.setGlobal("list", list);
 
         Person student = new Person("student", 18);
@@ -1215,14 +1211,13 @@ public class TraitTest extends CommonTraitTest {
         KieSession ksession = getSession("org/drools/compiler/factmodel/traits/testTraitDonMultiple.drl");
         TraitFactoryImpl.setMode(mode, ksession.getKieBase());
 
-        List list = new ArrayList();
+        List<Integer> list = new ArrayList<>();
         ksession.setGlobal("list", list);
         ksession.fireAllRules();
 
         for (Object o : ksession.getObjects()) {
             LOGGER.debug(o.toString());
         }
-        Collection x = ksession.getObjects();
         assertThat(ksession.getObjects()).hasSize(2);
 
         assertThat(list).hasSize(5);
@@ -1279,7 +1274,7 @@ public class TraitTest extends CommonTraitTest {
             throw new RuntimeException(kbuilder.getErrors().toString());
         }
 
-        List list = new ArrayList();
+        List<Integer> list = new ArrayList<>();
 
         KieBase kbase = kbuilder.newKieBase();
         TraitFactoryImpl.setMode(mode, kbase);
@@ -1350,7 +1345,7 @@ public class TraitTest extends CommonTraitTest {
 
         KieSession ksession = kb.newKieSession();
 
-        List list = new ArrayList();
+        List<String> list = new ArrayList<>();
         ksession.setGlobal("list", list);
 
         ksession.execute(CommandFactory.newFireAllRules());
@@ -1417,7 +1412,7 @@ public class TraitTest extends CommonTraitTest {
         KieSession ksession = getSessionFromString(drl);
         TraitFactoryImpl.setMode(mode, ksession.getKieBase());
 
-        List list = new ArrayList();
+        List<Object> list = new ArrayList<>();
         ksession.setGlobal("list", list);
 
         ksession.fireAllRules();
@@ -1425,8 +1420,8 @@ public class TraitTest extends CommonTraitTest {
         assertThat(list).hasSize(9);
         assertThat(list.contains("UniBoh")).isTrue();
         assertThat(list.contains("Skool")).isTrue();
-        assertThat(((Collection) list.get(3)).containsAll(Arrays.asList("workPlace", "nomen", "level"))).isTrue();
-        assertThat(((Collection) list.get(5)).containsAll(Arrays.asList("davide", "Skool", 0))).isTrue();
+        assertThat((Collection<String>) list.get(3)).contains("workPlace", "nomen", "level");
+        assertThat((Collection<Object>) list.get(5)).contains("davide", "Skool", 0);
         assertThat(list.contains(true)).isTrue();
         assertThat(list.contains("Floor84")).isTrue();
         assertThat(list.contains(99)).isTrue();
@@ -1479,7 +1474,7 @@ public class TraitTest extends CommonTraitTest {
         KieSession ksession = getSessionFromString(drl);
         TraitFactoryImpl.setMode(mode, ksession.getKieBase());
 
-        List list = new ArrayList();
+        List<Object> list = new ArrayList<>();
         ksession.setGlobal("list", list);
 
         FactHandle h = ksession.insert("trigger");
@@ -1625,7 +1620,7 @@ public class TraitTest extends CommonTraitTest {
         ksession.fireAllRules();
 
 
-        Collection yOld = ksession.getObjects();
+        Collection<? extends Object> yOld = ksession.getObjects();
         assertThat(yOld).hasSize(2);
 
         TraitableBean coreOld = null;
@@ -1667,19 +1662,19 @@ public class TraitTest extends CommonTraitTest {
 		TraitableBean imp = (TraitableBean) impClass.newInstance();
 		impClass.set(imp, "name", "aaabcd");
 
-		Class trait = kb.getFactType("org.drools.compiler.trait.test","Student").getFactClass();
-		Class trait2 = kb.getFactType("org.drools.compiler.trait.test","Role").getFactClass();
+		Class<?> trait = kb.getFactType("org.drools.compiler.trait.test","Student").getFactClass();
+		Class<?> trait2 = kb.getFactType("org.drools.compiler.trait.test","Role").getFactClass();
 
 		assertThat(trait).isNotNull();
 
-		TraitProxyImpl proxy = (TraitProxyImpl) traitBuilder.getProxy(imp, trait);
-		Thing thing = traitBuilder.getProxy(imp, Thing.class);
+		TraitProxyImpl proxy = (TraitProxyImpl) traitBuilder.getProxy(imp, trait, false);
+		Thing thing = traitBuilder.getProxy(imp, Thing.class, false);
 
 		TraitableBean core = proxy.getObject();
 
 
-		TraitProxyImpl proxy2 = (TraitProxyImpl) traitBuilder.getProxy(imp, trait);
-		Thing thing2 = traitBuilder.getProxy(imp, Thing.class);
+		TraitProxyImpl proxy2 = (TraitProxyImpl) traitBuilder.getProxy(imp, trait, false);
+		Thing thing2 = traitBuilder.getProxy(imp, Thing.class, false);
 
 		assertThat(proxy2).isSameAs(proxy);
 		assertThat(thing2).isSameAs(thing);
@@ -2014,7 +2009,7 @@ public class TraitTest extends CommonTraitTest {
         kbase.addPackages(kbuilder.getKnowledgePackages());
 
         KieSession ksession = kbase.newKieSession();
-        List list = new ArrayList();
+        List<String> list = new ArrayList<>();
         ksession.setGlobal("list", list);
 
 
@@ -2165,10 +2160,10 @@ public class TraitTest extends CommonTraitTest {
         kbase.addPackages(kbuilder.getKnowledgePackages());
         KieSession ksession = kbase.newKieSession();
 
-        ArrayList list = new ArrayList();
+        List<Boolean> list = new ArrayList<>();
         ksession.setGlobal("list", list);
 
-        int k = ksession.fireAllRules();
+        ksession.fireAllRules();
 
         assertThat(list.contains(true)).isTrue();
         assertThat(list).hasSize(1);
@@ -2265,7 +2260,7 @@ public class TraitTest extends CommonTraitTest {
 
         kbase.addPackages(kbuilder.getKnowledgePackages());
 
-        List list = new ArrayList();
+        List<Integer> list = new ArrayList<>();
         KieSession ksession = kbase.newKieSession();
         ksession.setGlobal("list", list);
 
@@ -2443,7 +2438,7 @@ public class TraitTest extends CommonTraitTest {
         KieSession ksession = getSession(source);
         TraitFactoryImpl.setMode(mode, ksession.getKieBase());
 
-        List list = new ArrayList();
+        List<String> list = new ArrayList<>();
         ksession.setGlobal("list", list);
 
         ksession.fireAllRules();
@@ -2505,7 +2500,7 @@ public class TraitTest extends CommonTraitTest {
         KieSession ks = getSessionFromString(source);
         TraitFactoryImpl.setMode(mode, ks.getKieBase());
 
-        List list = new ArrayList();
+        List<String> list = new ArrayList<>();
         ks.setGlobal("list", list);
         ks.fireAllRules();
 
@@ -2575,7 +2570,7 @@ public class TraitTest extends CommonTraitTest {
         KieSession ks = getSessionFromString(source);
         TraitFactoryImpl.setMode(mode, ks.getKieBase());
 
-        List list = new ArrayList();
+        List<String> list = new ArrayList<>();
         ks.setGlobal("list", list);
         ks.fireAllRules();
 
@@ -2647,17 +2642,17 @@ public class TraitTest extends CommonTraitTest {
         KieSession ks = getSessionFromString(source);
         TraitFactoryImpl.setMode(mode, ks.getKieBase());
 
-        List list = new ArrayList();
+        List<Object> list = new ArrayList<>();
         ks.setGlobal("list", list);
         ks.fireAllRules();
 
         assertThat(list).hasSize(6);
         assertThat(list.contains(null)).isFalse();
 
-        List hard = (List) list.get(0);
-        List soft = (List) list.get(1);
-        List otra = (List) list.get(2);
-        List more = (List) list.get(3);
+        List<Integer> hard = (List) list.get(0);
+        List<Integer> soft = (List) list.get(1);
+        List<Integer> otra = (List) list.get(2);
+        List<Integer> more = (List) list.get(3);
 
         assertThat(hard).isEmpty();
         assertThat(soft).isEmpty();
