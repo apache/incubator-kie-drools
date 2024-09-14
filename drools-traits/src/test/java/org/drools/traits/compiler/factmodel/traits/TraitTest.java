@@ -273,7 +273,7 @@ public class TraitTest extends CommonTraitTest {
 
         LOGGER.debug(x.getClass().toString());
         LOGGER.debug(x.getClass().getSuperclass().toString());
-        LOGGER.debug(Arrays.asList(x.getClass().getInterfaces()).toString());
+        LOGGER.debug(List.of(x.getClass().getInterfaces()).toString());
     }
     @Test
     public void testMixin() {
@@ -2012,12 +2012,10 @@ public class TraitTest extends CommonTraitTest {
         List<String> list = new ArrayList<>();
         ksession.setGlobal("list", list);
 
-
         int k = ksession.fireAllRules();
 
-        assertThat(list).isEqualTo(Arrays.asList("john", "john", "john", "john", "alan", "alan", "alan", "alan"));
         assertThat(k).isEqualTo(11);
-
+        assertThat(list).containsExactly("john", "john", "john", "john", "alan", "alan", "alan", "alan");
     }
 
 
@@ -2165,8 +2163,8 @@ public class TraitTest extends CommonTraitTest {
 
         ksession.fireAllRules();
 
-        assertThat(list.contains(true)).isTrue();
         assertThat(list).hasSize(1);
+        assertThat(list).contains(true);
     }
 
 
@@ -2383,10 +2381,7 @@ public class TraitTest extends CommonTraitTest {
         assertThat(k).isEqualTo(5);
 
         assertThat(list).hasSize(4);
-        assertThat(list.contains(1)).isTrue();
-        assertThat(list.contains(2)).isTrue();
-        assertThat(list.contains(3)).isTrue();
-        assertThat(list.contains(4)).isTrue();
+        assertThat(list).contains(1, 2, 3, 4);
 
     }
 
@@ -2447,7 +2442,7 @@ public class TraitTest extends CommonTraitTest {
 
         ksession.fireAllRules();
 
-        assertThat(list.contains("Italy")).isTrue();
+        assertThat(list).contains("Italy");
     }
 
 
@@ -2505,8 +2500,7 @@ public class TraitTest extends CommonTraitTest {
         ks.fireAllRules();
 
         assertThat(list).hasSize(2);
-        assertThat(list.contains("E")).isTrue();
-        assertThat(list.contains("X")).isTrue();
+        assertThat(list).contains("E", "X");
 
     }
 
@@ -2576,8 +2570,7 @@ public class TraitTest extends CommonTraitTest {
 
         LOGGER.debug(list.toString());
         assertThat(list).hasSize(2);
-        assertThat(list.contains("E")).isTrue();
-        assertThat(list.contains("X")).isTrue();
+        assertThat(list).contains("E", "X");
 
         ks.insert("shed");
         ks.fireAllRules();
@@ -2656,11 +2649,11 @@ public class TraitTest extends CommonTraitTest {
 
         assertThat(hard).isEmpty();
         assertThat(soft).isEmpty();
-        assertThat(Arrays.asList(1, 2, 3)).isEqualTo(more);
-        assertThat(List.of(42)).isEqualTo(otra);
+        assertThat(more).containsExactly(1, 2, 3);
+        assertThat(otra).containsExactly(42);
 
-        assertThat(list.contains(3)).isTrue();
-        assertThat(list.contains(0.421)).isTrue();
+        assertThat(list).contains(3);
+        assertThat(list).contains(0.421);
     }
 
 
@@ -2982,12 +2975,12 @@ public class TraitTest extends CommonTraitTest {
         KieSession ks = getSessionFromString(source);
         TraitFactoryImpl.setMode(mode, ks.getKieBase());
 
-        List<String> list = new ArrayList<>();
+        List<Character> list = new ArrayList<>();
         ks.setGlobal("list", list);
         ks.fireAllRules();
 
         LOGGER.debug(list.toString());
-        assertThat(list).isEqualTo(Arrays.asList('A', 'B', 'C', 'D', 'E', 'F', 'G', 'Z'));
+        assertThat(list).containsExactly('A', 'B', 'C', 'D', 'E', 'F', 'G', 'Z');
 
 
         for (Object o : ks.getObjects(object -> object instanceof TraitableBean)) {
@@ -3055,12 +3048,12 @@ public class TraitTest extends CommonTraitTest {
         KieSession ks = getSessionFromString(source);
         TraitFactoryImpl.setMode(mode, ks.getKieBase());
 
-        List<String> list = new ArrayList<>();
+        List<Character> list = new ArrayList<>();
         ks.setGlobal("list", list);
         ks.fireAllRules();
 
         LOGGER.debug(list.toString());
-        assertThat(list).isEqualTo(Arrays.asList('A', 'D', 'G', 'Z'));
+        assertThat(list).containsExactly('A', 'D', 'G', 'Z');
 
 
         for (Object o : ks.getObjects(object -> object instanceof TraitableBean)) {
@@ -3699,8 +3692,8 @@ public class TraitTest extends CommonTraitTest {
 
         ks.fireAllRules();
 
-        assertThat(list.contains(0)).isTrue();
         assertThat(list).hasSize(1);
+        assertThat(list).contains(0);
 
         ks.dispose();
     }
@@ -3783,7 +3776,7 @@ public class TraitTest extends CommonTraitTest {
         ks.fireAllRules();
 
         assertThat(list).hasSize(5);
-        assertThat(list).isEqualTo(Arrays.asList(99, "b", 11, Object.class, 42));
+        assertThat(list).containsExactly(99, "b", 11, Object.class, 42);
 
         ks.dispose();
     }
@@ -3944,12 +3937,8 @@ public class TraitTest extends CommonTraitTest {
 
         ks.fireAllRules();
 
-        assertThat(list.contains("A")).isTrue();
-        assertThat(list.contains("B")).isTrue();
-        assertThat(list.contains("C")).isTrue();
-        assertThat(list.contains("E")).isTrue();
-        assertThat(list.contains("F")).isTrue();
         assertThat(list).hasSize(5);
+        assertThat(list).contains("A", "B", "C", "E", "F");
 
         list.clear();
 
@@ -3958,17 +3947,10 @@ public class TraitTest extends CommonTraitTest {
         ks.insert("go");
         ks.fireAllRules();
 
-        assertThat(list.contains("H")).isTrue();
-        assertThat(list.contains("G")).isTrue();
-        assertThat(list.contains("HA")).isTrue();
-        assertThat(list.contains("HB")).isTrue();
-        assertThat(list.contains("HC")).isTrue();
-        assertThat(list.contains("HE")).isTrue();
-        assertThat(list.contains("HF")).isTrue();
-        assertThat(list.contains("HG")).isTrue();
-        assertThat(list.contains("HH")).isTrue();
-        LOGGER.debug(list.toString());
         assertThat(list).hasSize(9);
+        assertThat(list).contains("H", "G", "HA", "HB", "HC", "HE", "HF", "HG", "HH");
+        LOGGER.debug(list.toString());
+        
         list.clear();
 
         LOGGER.debug("---------------------------------------");
@@ -3976,17 +3958,8 @@ public class TraitTest extends CommonTraitTest {
         ks.insert("go2");
         ks.fireAllRules();
 
-        assertThat(list.contains("D")).isTrue();
-        assertThat(list.contains("HA")).isTrue();
-        assertThat(list.contains("HB")).isTrue();
-        assertThat(list.contains("HC")).isTrue();
-        assertThat(list.contains("HE")).isTrue();
-        assertThat(list.contains("HF")).isTrue();
-        assertThat(list.contains("HG")).isTrue();
-        assertThat(list.contains("HH")).isTrue();
-        assertThat(list.contains("HH")).isTrue();
-        assertThat(list.contains("HD")).isTrue();
         assertThat(list).hasSize(9);
+        assertThat(list).contains("D", "HA", "HB", "HC", "HE", "HF", "HG", "HH", "HH", "HD");
 
         ks.dispose();
 
@@ -4130,8 +4103,7 @@ public class TraitTest extends CommonTraitTest {
         ksession.setGlobal("list",list);
         ksession.fireAllRules();
 
-        assertThat(list.contains("correct1")).isTrue();
-        assertThat(list.contains("correct2")).isTrue();
+        assertThat(list).contains("correct1", "correct2");
     }
 
 
@@ -4184,7 +4156,7 @@ public class TraitTest extends CommonTraitTest {
         ksession.fireAllRules();
 
         LOGGER.debug(list.toString());
-        assertThat(list).isEqualTo(Arrays.asList("B", "C", "A"));
+        assertThat(list).containsExactly("B", "C", "A");
     }
 
 
@@ -4391,7 +4363,7 @@ public class TraitTest extends CommonTraitTest {
 
 
         assertThat(list).hasSize(4);
-        assertThat(list.containsAll(Arrays.asList(0, 1, 2, 3))).isTrue();
+        assertThat(list).contains(0, 1, 2, 3);
     }
 
     @Test
@@ -4582,7 +4554,7 @@ public class TraitTest extends CommonTraitTest {
         knowledgeSession.fireAllRules();
 
         assertThat(list).hasSize(2);
-        assertThat(list).isEqualTo(Arrays.asList("test.Mask.test.Core_Proxy", "org.drools.base.factmodel.traits.Thing.test.Core_Proxy"));
+        assertThat(list).containsExactly("test.Mask.test.Core_Proxy", "org.drools.base.factmodel.traits.Thing.test.Core_Proxy");
     }
 
 
@@ -4665,13 +4637,13 @@ public class TraitTest extends CommonTraitTest {
 
         LOGGER.debug(list.toString());
         assertThat(list).hasSize(2);
-        assertThat(list).isEqualTo(Arrays.asList("test.Mask.test.Core_Proxy", "test.Mask2.test.Core_Proxy"));
+        assertThat(list).containsExactly("test.Mask.test.Core_Proxy", "test.Mask2.test.Core_Proxy");
 
         knowledgeSession.insert("shed2");
         knowledgeSession.fireAllRules();
 
         assertThat(list).hasSize(3);
-        assertThat(list).isEqualTo(Arrays.asList("test.Mask.test.Core_Proxy", "test.Mask2.test.Core_Proxy", "org.drools.base.factmodel.traits.Thing.test.Core_Proxy"));
+        assertThat(list).containsExactly("test.Mask.test.Core_Proxy", "test.Mask2.test.Core_Proxy", "org.drools.base.factmodel.traits.Thing.test.Core_Proxy");
 
     }
 
@@ -4900,8 +4872,7 @@ public class TraitTest extends CommonTraitTest {
         ksession.fireAllRules();
 
         assertThat(list).hasSize(2);
-        assertThat(list.contains(1)).isTrue();
-        assertThat(list.contains(2)).isTrue();
+        assertThat(list).contains(1, 2);
 
     }
 
@@ -5059,7 +5030,7 @@ public class TraitTest extends CommonTraitTest {
 
         knowledgeSession.fireAllRules();
 
-        assertThat(list).isEqualTo(Arrays.asList(42, 43));
+        assertThat(list).containsExactly(42, 43);
     }
 
 
@@ -5179,14 +5150,14 @@ public class TraitTest extends CommonTraitTest {
         TraitFactoryImpl.setMode(mode, kbase);
         KieSession ksession = kbase.newKieSession();
 
-        List<Integer> list = new ArrayList<>();
+        List<Character> list = new ArrayList<>();
         ksession.setGlobal("list", list);
 
         Entity e = new Entity();
         ksession.insert(e);
         ksession.fireAllRules();
 
-        assertThat(list).isEqualTo(Arrays.asList('A', 'B', 'C'));
+        assertThat(list).containsExactly('A', 'B', 'C');
 
         ksession.insert("go");
         ksession.fireAllRules();
@@ -5194,7 +5165,7 @@ public class TraitTest extends CommonTraitTest {
         Set<BitSet> s = checkOTNPartitioning(e, ksession);
         assertThat(s).hasSize(2);
 
-        assertThat(list).isEqualTo(Arrays.asList('A', 'B', 'C'));
+        assertThat(list).containsExactly('A', 'B', 'C');
     }
 
 
@@ -5246,7 +5217,7 @@ public class TraitTest extends CommonTraitTest {
             assertThat(((RuleTerminalNodeLeftTuple) first).getRule().getName()).isEqualTo("Check");
         }
 
-        assertThat(list).isEqualTo(Arrays.asList(0, 42));
+        assertThat(list).containsExactly(0, 42);
     }
 
     @Test
@@ -5304,7 +5275,7 @@ public class TraitTest extends CommonTraitTest {
                 TraitProxyImpl tp = (TraitProxyImpl) o;
                 if (tp._getTypeCode().equals(c)) {
                     assertThat(tp.listAssignedOtnTypeCodes()).hasSize(1);
-                    assertThat(tp.listAssignedOtnTypeCodes().contains(b)).isTrue();
+                    assertThat(tp.listAssignedOtnTypeCodes()).contains(b);
                     counter++;
                 } else if (tp._getTypeCode().equals(d)) {
                     assertThat(tp.listAssignedOtnTypeCodes()).isEmpty();
@@ -5330,7 +5301,7 @@ public class TraitTest extends CommonTraitTest {
                 TraitProxyImpl tp = (TraitProxyImpl) o;
                 assertThat(tp._getTypeCode()).isEqualTo(d);
                 assertThat(tp.listAssignedOtnTypeCodes()).hasSize(1);
-                assertThat(tp.listAssignedOtnTypeCodes().contains(b)).isTrue();
+                assertThat(tp.listAssignedOtnTypeCodes()).contains(b);
                 counter2++;
             } else if (o instanceof TraitableBean) {
                 TraitableBean tb = (TraitableBean) o;
@@ -5379,7 +5350,7 @@ public class TraitTest extends CommonTraitTest {
         ksession.update(handle, new ExtEntity("x1", 35));
         ksession.fireAllRules();
 
-        assertThat(list).isEqualTo(Arrays.asList("x1", 42, "x1", 42));
+        assertThat(list).containsExactly("x1", 42, "x1", 42);
     }
 
 
@@ -5412,7 +5383,7 @@ public class TraitTest extends CommonTraitTest {
         knowledgeSession.insert(new StudentImpl());
 
         assertThat(knowledgeSession.fireAllRules()).isEqualTo(2);
-        assertThat(list).isEqualTo(Arrays.asList(1, 2));
+        assertThat(list).containsExactly(1, 2);
     }
 
 
@@ -5508,7 +5479,7 @@ public class TraitTest extends CommonTraitTest {
         knowledgeSession.insert(new StudentImpl());
 
         assertThat(knowledgeSession.fireAllRules()).isEqualTo(2);
-        assertThat(list).isEqualTo(Arrays.asList(1, 2));
+        assertThat(list).containsExactly(1, 2);
     }
 
     @Test
