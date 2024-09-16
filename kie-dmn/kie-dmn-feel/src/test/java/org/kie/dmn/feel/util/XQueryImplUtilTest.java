@@ -18,57 +18,99 @@
  */
 package org.kie.dmn.feel.util;
 
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class XQueryImplUtilTest {
 
-    @Test
-    void executeMatchesFunctionTest() {
-        assertThat(XQueryImplUtil.executeMatchesFunction("test", "^test", "i")).isTrue();
-        assertThat(XQueryImplUtil.executeMatchesFunction("fo\nbar", "o.b", null)).isFalse();
-        assertThat(XQueryImplUtil.executeMatchesFunction("TEST", "test", "i")).isTrue();
+    @ParameterizedTest
+    @MethodSource("executeMatchesFunctionTestData")
+    void executeMatchesFunctionTest(String input, String pattern, String flags, boolean expected) {
+        assertThat(XQueryImplUtil.executeMatchesFunction(input, pattern, flags)).isEqualTo(expected);
     }
 
-    @Test
-    void executeMatchesFunctionInvokingException() {
-        assertThatThrownBy(() -> XQueryImplUtil.executeMatchesFunction("test", "^test", "g"))
-                .isInstanceOf(IllegalArgumentException.class).hasMessageContaining("Unrecognized flag");
-        assertThatThrownBy(() -> XQueryImplUtil.executeMatchesFunction("test", "(?=\\s)", null))
-                .isInstanceOf(IllegalArgumentException.class).hasMessageContaining("No expression before quantifier");
-        assertThatThrownBy(() -> XQueryImplUtil.executeMatchesFunction("test", "(.)\\2", null))
-                .isInstanceOf(IllegalArgumentException.class).hasMessageContaining("invalid backreference \\2");
+    private static Object[][] executeMatchesFunctionTestData() {
+        return new Object[][] {
+                { "test", "^test", "i", true },
+                { "fo\nbar", "o.b", null, false },
+                { "TEST", "test", "i", true },
+        };
     }
 
-    @Test
-    void executeReplaceFunctionTest() {
-        assertThat(XQueryImplUtil.executeReplaceFunction("testString", "^test", "ttt", ""))
-                .isEqualTo("tttString");
-        assertThat(XQueryImplUtil.executeReplaceFunction("fo\nbar", "o.b", "ttt", "s"))
-                .isEqualTo("ftttar");
+    @ParameterizedTest
+    @MethodSource("executeMatchesFunctionInvokingExceptionTestData")
+    void executeMatchesFunctionInvokingExceptionTest(String input, String pattern, String flags,
+                                                     Class<?> expectedException, String exceptionMessage) {
+        assertThatThrownBy(() -> XQueryImplUtil.executeMatchesFunction(input, pattern, flags))
+                .isInstanceOf(expectedException).hasMessageContaining(exceptionMessage);
     }
 
-    @Test
-    void executeReplaceFunctionInvokingException() {
-        assertThatThrownBy(() -> XQueryImplUtil.executeReplaceFunction("fo\nbar", "o.b", "ttt", "g"))
-                .isInstanceOf(IllegalArgumentException.class).hasMessageContaining("Unrecognized flag");
-        assertThatThrownBy(() -> XQueryImplUtil.executeReplaceFunction("test", "(?=\\s)", "ttt", null))
-                .isInstanceOf(IllegalArgumentException.class).hasMessageContaining("No expression before quantifier");
-        assertThatThrownBy(() -> XQueryImplUtil.executeReplaceFunction("test", "(.)\\2", "ttt", null))
-                .isInstanceOf(IllegalArgumentException.class).hasMessageContaining("invalid backreference \\2");
+    private static Object[][] executeMatchesFunctionInvokingExceptionTestData() {
+        return new Object[][] {
+                { "test", "^test", "g", IllegalArgumentException.class, "Unrecognized flag" },
+                { "test", "(?=\\s)", null, IllegalArgumentException.class, "No expression before quantifier" },
+                { "test", "(.)\\2", "i", IllegalArgumentException.class, "invalid backreference \\2" },
+        };
     }
 
-    @Test
-    void evaluateXQueryExpressionParametersTest() {
-        assertThat(XQueryImplUtil.evaluateXQueryExpression("matches('test', '^test', 'i')", Boolean.class)).isTrue();
-        assertThat(XQueryImplUtil.evaluateXQueryExpression("matches('fo\\nbar', 'o.b', '')", Boolean.class)).isFalse();
-        assertThat(XQueryImplUtil.evaluateXQueryExpression("replace('testString', '^test', 'ttt', '')", String.class)).isEqualTo("tttString");
-        assertThatThrownBy(() -> XQueryImplUtil.evaluateXQueryExpression("matches('test', '^test', 'i')", Integer.class))
-                .isInstanceOf(UnsupportedOperationException.class);
-        assertThatThrownBy(() -> XQueryImplUtil.evaluateXQueryExpression("replace('testString', '^test', 'ttt', '')", Double.class))
-                .isInstanceOf(UnsupportedOperationException.class);
+    @ParameterizedTest
+    @MethodSource("executeReplaceFunctionTestData")
+    void executeReplaceFunctionTest(String input, String pattern, String replacement, String flags, String expected) {
+        assertThat(XQueryImplUtil.executeReplaceFunction(input, pattern, replacement, flags)).isEqualTo(expected);
+    }
+
+    private static Object[][] executeReplaceFunctionTestData() {
+        return new Object[][] {
+                { "testString", "^test", "ttt", "", "tttString" },
+                { "fo\nbar", "o.b", "ttt", "s", "ftttar" },
+        };
+    }
+
+    @ParameterizedTest
+    @MethodSource("executeReplaceFunctionInvokingExceptionTestData")
+    void executeReplaceFunctionInvokingExceptionTest(String input, String pattern, String replacement, String flags,
+                                                     Class<?> expectedException, String exceptionMessage) {
+        assertThatThrownBy(() -> XQueryImplUtil.executeReplaceFunction(input, pattern, replacement, flags))
+                .isInstanceOf(expectedException).hasMessageContaining(exceptionMessage);
+    }
+
+    private static Object[][] executeReplaceFunctionInvokingExceptionTestData() {
+        return new Object[][] {
+                { "fo\nbar", "o.b", "ttt", "g", IllegalArgumentException.class, "Unrecognized flag" },
+                { "test", "(?=\\s)", "ttt", null, IllegalArgumentException.class, "No expression before quantifier" },
+                { "test", "(.)\\2", "ttt", null, IllegalArgumentException.class, "invalid backreference \\2" },
+        };
+    }
+
+    @ParameterizedTest
+    @MethodSource("evaluateXQueryExpressionValidParametersTestData")
+    void evaluateXQueryExpressionValidParametersTest(String expression, Class<?> returnTypeClass, Object expectedResult) {
+        assertThat(XQueryImplUtil.evaluateXQueryExpression(expression, returnTypeClass)).isEqualTo(expectedResult);
+
+    }
+
+    private static Object[][] evaluateXQueryExpressionValidParametersTestData() {
+        return new Object[][] {
+                { "matches('test', '^test', 'i')", Boolean.class, true },
+                { "matches('fo\\nbar', 'o.b', '')", Boolean.class, false },
+                { "replace('testString', '^test', 'ttt', '')", String.class, "tttString" }
+        };
+    }
+
+    @ParameterizedTest
+    @MethodSource("evaluateXQueryExpressionInvalidParametersTestData")
+    void evaluateXQueryExpressionInvalidParametersTest(String expression, Class<?> returnTypeClass, Class<?> expectedException) {
+        assertThatThrownBy(() -> XQueryImplUtil.evaluateXQueryExpression(expression, returnTypeClass)).isInstanceOf(expectedException);
+    }
+
+    private static Object[][] evaluateXQueryExpressionInvalidParametersTestData() {
+        return new Object[][] {
+                { "matches('test', '^test', 'i')", Integer.class, UnsupportedOperationException.class },
+                { "replace('testString', '^test', 'ttt', '')", Double.class, UnsupportedOperationException.class },
+        };
     }
 
 }
