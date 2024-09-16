@@ -28,10 +28,8 @@ class ReplaceFunctionTest {
     @Test
     void invokeNull() {
         FunctionTestUtil.assertResultError(replaceFunction.invoke(null, null, null), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(replaceFunction.invoke("testString", null, null),
-                                           InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(replaceFunction.invoke("testString", "test", null),
-                                           InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(replaceFunction.invoke("testString", null, null), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(replaceFunction.invoke("testString", "test", null), InvalidParametersEvent.class);
         FunctionTestUtil.assertResultError(replaceFunction.invoke(null, "test", null), InvalidParametersEvent.class);
         FunctionTestUtil.assertResultError(replaceFunction.invoke(null, "test", "ttt"), InvalidParametersEvent.class);
         FunctionTestUtil.assertResultError(replaceFunction.invoke(null, null, "ttt"), InvalidParametersEvent.class);
@@ -39,30 +37,18 @@ class ReplaceFunctionTest {
 
     @Test
     void invokeNullWithFlags() {
-        FunctionTestUtil.assertResultError(replaceFunction.invoke(null, null, null, null),
-                                           InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(replaceFunction.invoke("testString", null, null, null),
-                                           InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(replaceFunction.invoke("testString", "test", null, null),
-                                           InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(replaceFunction.invoke(null, "test", null, null),
-                                           InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(replaceFunction.invoke(null, "test", "ttt", null),
-                                           InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(replaceFunction.invoke(null, null, "ttt", null),
-                                           InvalidParametersEvent.class);
-
+        FunctionTestUtil.assertResultError(replaceFunction.invoke(null, null, null, null), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(replaceFunction.invoke("testString", null, null, null), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(replaceFunction.invoke("testString", "test", null, null), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(replaceFunction.invoke(null, "test", null, null), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(replaceFunction.invoke(null, "test", "ttt", null), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(replaceFunction.invoke(null, null, "ttt", null), InvalidParametersEvent.class);
         FunctionTestUtil.assertResultError(replaceFunction.invoke(null, null, null, "s"), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(replaceFunction.invoke("testString", null, null, "s"),
-                                           InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(replaceFunction.invoke("testString", "test", null, "s"),
-                                           InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(replaceFunction.invoke(null, "test", null, "s"),
-                                           InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(replaceFunction.invoke(null, "test", "ttt", "s"),
-                                           InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(replaceFunction.invoke(null, null, "ttt", "s"),
-                                           InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(replaceFunction.invoke("testString", null, null, "s"), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(replaceFunction.invoke("testString", "test", null, "s"), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(replaceFunction.invoke(null, "test", null, "s"), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(replaceFunction.invoke(null, "test", "ttt", "s"), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(replaceFunction.invoke(null, null, "ttt", "s"), InvalidParametersEvent.class);
     }
 
     @Test
