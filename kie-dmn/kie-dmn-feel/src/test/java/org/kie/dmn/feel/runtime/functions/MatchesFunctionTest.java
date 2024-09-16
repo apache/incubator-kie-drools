@@ -19,6 +19,7 @@
 package org.kie.dmn.feel.runtime.functions;
 
 import org.junit.jupiter.api.Test;
+
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
 class MatchesFunctionTest {
@@ -39,7 +40,13 @@ class MatchesFunctionTest {
         FunctionTestUtil.assertResultError(matchesFunction.invoke("abracadabra", "bra", "X"), InvalidParametersEvent.class);
         FunctionTestUtil.assertResultError(matchesFunction.invoke("abracadabra", "bra", "X"), InvalidParametersEvent.class);
         FunctionTestUtil.assertResultError(matchesFunction.invoke("abracadabra", "bra", "iU"), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(matchesFunction.invoke("abracadabra", "bra", "iU asd"), InvalidParametersEvent.class);
    }
+
+    @Test
+    void invokeInvalidRegExPattern() {
+        FunctionTestUtil.assertResultError(matchesFunction.invoke("testString", "(?=\\s)"), InvalidParametersEvent.class);
+    }
 
     @Test
     void invokeWithoutFlagsMatch() {

@@ -23,60 +23,44 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-public class XQueryImplUtilTest {
+class XQueryImplUtilTest {
 
     @Test
     void executeMatchesFunctionTest() {
-        String input = "test";
-        String pattern = "^test";
-        String flags = "i";
-        boolean retrieved = XQueryImplUtil.executeMatchesFunction(input, pattern,
-                flags);
-        boolean expected = true;
-        assertThat(retrieved).isNotNull().isEqualTo(expected);
+        Boolean retrieved = XQueryImplUtil.executeMatchesFunction("test", "^test", "i");
+        assertThat(retrieved).isTrue();
 
-        input = "fo\nbar";
-        pattern = "o.b";
-        flags = null;
-        retrieved = XQueryImplUtil.executeMatchesFunction(input, pattern, flags);
-        expected = false;
-        assertThat(retrieved).isNotNull().isEqualTo(expected);
+        retrieved = XQueryImplUtil.executeMatchesFunction("fo\nbar", "o.b", null);
+        assertThat(retrieved).isFalse();
 
-        input = "TEST";
-        pattern = "test";
-        flags = "i";
-        retrieved = XQueryImplUtil.executeMatchesFunction(input, pattern, flags);
-        expected = true;
-        assertThat(retrieved).isNotNull().isEqualTo(expected);
+        retrieved = XQueryImplUtil.executeMatchesFunction("TEST", "test", "i");
+        assertThat(retrieved).isTrue();
     }
 
     @Test
     void executeMatchesFunctionInvokingException(){
-        String input = "test";
-        String pattern = "^test";
-        String flags = "g";
-        assertThatThrownBy(() -> XQueryImplUtil.executeMatchesFunction(input, pattern,
-                flags)).isInstanceOf(IllegalArgumentException.class).hasMessageContaining("Unrecognized flag");
+        assertThatThrownBy(() -> XQueryImplUtil.executeMatchesFunction("test", "^test", "g"))
+                .isInstanceOf(IllegalArgumentException.class).hasMessageContaining("Unrecognized flag");
+
+        assertThatThrownBy(() -> XQueryImplUtil.executeMatchesFunction("test", "(?=\\s)", null))
+                .isInstanceOf(IllegalArgumentException.class).hasMessageContaining("No expression before quantifier");
     }
 
     @Test
     void executeReplaceFunctionTest() {
-        String input = "testString";
-        String pattern = "^test";
-        String replacement = "ttt";
-        String flags = "";
-        String retrieved = XQueryImplUtil.executeReplaceFunction(input, pattern, replacement,
-                flags).toString();
-        String expected = "tttString";
-        assertThat(retrieved).isNotNull().isEqualTo(expected);
+        String retrieved = XQueryImplUtil.executeReplaceFunction("testString", "^test", "ttt", "");
+        assertThat(retrieved).isNotNull().isEqualTo("tttString");
 
-        input = "fo\nbar";
-        pattern = "o.b";
-        replacement = "ttt";
-        flags = "s";
-        retrieved = XQueryImplUtil.executeReplaceFunction(input, pattern, replacement, flags).toString();
-        expected = "ftttar";
-        assertThat(retrieved).isNotNull().isEqualTo(expected);
+        retrieved = XQueryImplUtil.executeReplaceFunction("fo\nbar", "o.b", "ttt", "s");
+        assertThat(retrieved).isNotNull().isEqualTo("ftttar");
+    }
+
+    void executeReplaceFunctionInvokingException(){
+        assertThatThrownBy(() -> XQueryImplUtil.executeReplaceFunction("fo\nbar", "o.b", "ttt", "g"))
+                .isInstanceOf(IllegalArgumentException.class).hasMessageContaining("Unrecognized flag");
+
+        assertThatThrownBy(() -> XQueryImplUtil.executeReplaceFunction("test", "(?=\\s)", "ttt", null))
+                .isInstanceOf(IllegalArgumentException.class).hasMessageContaining("No expression before quantifier");
     }
 
 }

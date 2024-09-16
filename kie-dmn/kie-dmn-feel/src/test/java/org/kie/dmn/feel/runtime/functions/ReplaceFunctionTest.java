@@ -52,6 +52,21 @@ class ReplaceFunctionTest {
     }
 
     @Test
+    void invokeUnsupportedFlags() {
+        FunctionTestUtil.assertResultError(replaceFunction.invoke("testString", "^test", "ttt", "g"), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(replaceFunction.invoke("testString", "^test", "ttt", "p"), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(replaceFunction.invoke("testString", "^test", "ttt", "X"), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(replaceFunction.invoke("testString", "^test", "ttt", "X"), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(replaceFunction.invoke("testString", "^test", "ttt", "iU"), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(replaceFunction.invoke("testString", "^test", "ttt", "iU asd"), InvalidParametersEvent.class);
+    }
+
+    @Test
+    void invokeInvalidRegExPattern() {
+        FunctionTestUtil.assertResultError(replaceFunction.invoke("testString", "(?=\\s)", "ttt"), InvalidParametersEvent.class);
+    }
+
+    @Test
     void invokeWithoutFlagsPatternMatches() {
         FunctionTestUtil.assertResult(replaceFunction.invoke("testString", "^test", "ttt"), "tttString");
         FunctionTestUtil.assertResult(replaceFunction.invoke("testStringtest", "^test", "ttt"), "tttStringtest");

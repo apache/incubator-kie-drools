@@ -18,7 +18,13 @@
  */
 package org.kie.dmn.feel.util;
 
-import net.sf.saxon.s9api.*;
+import net.sf.saxon.s9api.Processor;
+import net.sf.saxon.s9api.XdmAtomicValue;
+import net.sf.saxon.s9api.XdmItem;
+import net.sf.saxon.s9api.XQueryCompiler;
+import net.sf.saxon.s9api.XQueryEvaluator;
+import net.sf.saxon.s9api.XQueryExecutable;
+import net.sf.saxon.s9api.SaxonApiException;
 
 public class XQueryImplUtil {
 
@@ -40,7 +46,6 @@ public class XQueryImplUtil {
              XQueryCompiler compiler = processor.newXQueryCompiler();
              XQueryExecutable executable = compiler.compile(expression);
              XQueryEvaluator queryEvaluator = executable.load();
-             queryEvaluator.setExternalVariable(new QName("n"), new XdmAtomicValue(10));
              XdmItem resultItem = queryEvaluator.evaluateSingle();
 
              Object value = switch (expectedTypeResult.getSimpleName()) {
