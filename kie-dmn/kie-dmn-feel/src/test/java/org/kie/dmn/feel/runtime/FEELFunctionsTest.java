@@ -43,7 +43,6 @@ public class FEELFunctionsTest extends BaseFEELTest {
         final Object[][] cases = new Object[][] {
                 // constants
                 { "string(1.1)", "1.1" , null},
-              //  { "replace( \"  foo   bar zed  \", \"^(\\s)+|(\\s)+$|\\s+(?=\\s)\", \"\" )", "foo bar zed", null },
                 { "string(null)", null, null},
                 { "string(date(\"2016-08-14\"))", "2016-08-14" , null},
                 { "string(\"Happy %.0fth birthday, Mr %s!\", 38, \"Doe\")", "Happy 38th birthday, Mr Doe!", null},
@@ -85,6 +84,14 @@ public class FEELFunctionsTest extends BaseFEELTest {
                 { "matches(\"one\\ntwo\\nthree\", \"^two$\", \"m\")", Boolean.TRUE , null}, // MULTILINE flag set by "m"
                 { "matches(\"FoO\", \"foo\")", Boolean.FALSE , null},
                 { "matches(\"FoO\", \"foo\", \"i\")", Boolean.TRUE , null}, // CASE_INSENSITIVE flag set by "i"
+                { "matches(\"\\u212A\", \"k\", \"i\")", Boolean.TRUE , null},
+                { "matches(\"O\", \"[A-Z-[OI]]\", \"i\")", Boolean.FALSE , null},
+                { "matches(\"i\", \"[A-Z-[OI]]\", \"i\")", Boolean.FALSE , null},
+                { "matches(\"hello world\", \"hello\\ sworld\", \"x\")", Boolean.TRUE , null},
+                { "matches(\"abracadabra\", \"bra\", \"p\")", null , FEELEvent.Severity.ERROR},
+                { "matches(\"input\", \"pattern\", \" \")", null , FEELEvent.Severity.ERROR},
+                { "matches(\"input\", \"pattern\", \"X\")", null , FEELEvent.Severity.ERROR},
+                { "matches(\"h\", \"(.)\\2\")", null , FEELEvent.Severity.ERROR},
                 { "replace(\"banana\",\"a\",\"o\")", "bonono" , null},
                 { "replace(\"banana\",\"(an)+\", \"**\")", "b**a" , null},
                 { "replace(\"banana\",\"[aeiouy]\",\"[$0]\")", "b[a]n[a]n[a]" , null},
