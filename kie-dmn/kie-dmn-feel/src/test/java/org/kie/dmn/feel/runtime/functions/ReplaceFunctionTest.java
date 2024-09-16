@@ -19,63 +19,88 @@
 package org.kie.dmn.feel.runtime.functions;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
 class ReplaceFunctionTest {
 
     private static final ReplaceFunction replaceFunction = ReplaceFunction.INSTANCE;
 
-    @Test
-    void invokeNull() {
-        FunctionTestUtil.assertResultError(replaceFunction.invoke(null, null, null), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(replaceFunction.invoke("testString", null, null), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(replaceFunction.invoke("testString", "test", null), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(replaceFunction.invoke(null, "test", null), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(replaceFunction.invoke(null, "test", "ttt"), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(replaceFunction.invoke(null, null, "ttt"), InvalidParametersEvent.class);
+    @ParameterizedTest
+    @MethodSource("invokeNullTestData")
+    void invokeNullTest(String input, String pattern, String replacement, Class<?> expectedErrorEventClass) {
+        FunctionTestUtil.assertResultError(replaceFunction.invoke(input, pattern, replacement), expectedErrorEventClass);
     }
 
-    @Test
-    void invokeNullWithFlags() {
-        FunctionTestUtil.assertResultError(replaceFunction.invoke(null, null, null, null), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(replaceFunction.invoke("testString", null, null, null), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(replaceFunction.invoke("testString", "test", null, null), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(replaceFunction.invoke(null, "test", null, null), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(replaceFunction.invoke(null, "test", "ttt", null), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(replaceFunction.invoke(null, null, "ttt", null), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(replaceFunction.invoke(null, null, null, "s"), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(replaceFunction.invoke("testString", null, null, "s"), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(replaceFunction.invoke("testString", "test", null, "s"), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(replaceFunction.invoke(null, "test", null, "s"), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(replaceFunction.invoke(null, "test", "ttt", "s"), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(replaceFunction.invoke(null, null, "ttt", "s"), InvalidParametersEvent.class);
+    private static Object[][] invokeNullTestData() {
+        return new Object[][] {
+                { null, null, null, InvalidParametersEvent.class },
+                { "testString", null, null, InvalidParametersEvent.class },
+                { "testString", "test", null, InvalidParametersEvent.class },
+                { null, "test", null, InvalidParametersEvent.class },
+                { null, "test", "ttt", InvalidParametersEvent.class },
+                { null, null, "ttt", InvalidParametersEvent.class }
+        };
     }
 
-    @Test
-    void invokeUnsupportedFlags() {
-        FunctionTestUtil.assertResultError(replaceFunction.invoke("testString", "^test", "ttt", "g"), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(replaceFunction.invoke("testString", "^test", "ttt", "p"), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(replaceFunction.invoke("testString", "^test", "ttt", "X"), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(replaceFunction.invoke("testString", "^test", "ttt", "X"), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(replaceFunction.invoke("testString", "^test", "ttt", "iU"), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(replaceFunction.invoke("testString", "^test", "ttt", "iU asd"), InvalidParametersEvent.class);
+    @ParameterizedTest
+    @MethodSource("invokeNullWithFlagsTestData")
+    void invokeNullWithFlagsTest(String input, String pattern, String replacement, String flags, Class<?> expectedErrorEventClass) {
+        FunctionTestUtil.assertResultError(replaceFunction.invoke(input, pattern, replacement, flags), expectedErrorEventClass);
+    }
+
+    private static Object[][] invokeNullWithFlagsTestData() {
+        return new Object[][] {
+                { null, null, null, null, InvalidParametersEvent.class },
+                { "testString", null, null, null, InvalidParametersEvent.class },
+                { "testString", "test", null, null, InvalidParametersEvent.class },
+                { null, "test", null, null, InvalidParametersEvent.class },
+                { null, "test", "ttt", null, InvalidParametersEvent.class },
+                { null, null, "ttt", null, InvalidParametersEvent.class },
+                { null, null, null, "s", InvalidParametersEvent.class },
+                { "testString", null, null, "s", InvalidParametersEvent.class },
+                { "testString", "test", null, "s", InvalidParametersEvent.class },
+                { null, "test", null, "s", InvalidParametersEvent.class },
+                { null, "test", "ttt", "s", InvalidParametersEvent.class },
+                { null, null, "ttt", "s", InvalidParametersEvent.class },
+        };
+    }
+
+    @ParameterizedTest
+    @MethodSource("invokeUnsupportedFlagsTestData")
+    void invokeUnsupportedFlagsTest(String input, String pattern, String replacement, String flags, Class<?> expectedErrorEventClass) {
+        FunctionTestUtil.assertResultError(replaceFunction.invoke(input, pattern, replacement, flags), expectedErrorEventClass);
+  }
+
+    private static Object[][] invokeUnsupportedFlagsTestData() {
+        return new Object[][] {
+                { "testString", "^test", "ttt", "g", InvalidParametersEvent.class },
+                { "testString", "^test", "ttt", "p", InvalidParametersEvent.class },
+                { "testString", "^test", "ttt", "X", InvalidParametersEvent.class },
+                { "testString", "^test", "ttt", "iU", InvalidParametersEvent.class },
+                { "testString", "^test", "ttt", "iU asd", InvalidParametersEvent.class },
+        };
+    }
+
+    @ParameterizedTest
+    @MethodSource("invokeWithoutFlagsPatternTestData")
+    void invokeWithoutFlagsPatternTest(String input, String pattern, String replacement, String expectedResult) {
+        FunctionTestUtil.assertResult(replaceFunction.invoke(input, pattern, replacement), expectedResult);
+    }
+
+    private static Object[][] invokeWithoutFlagsPatternTestData() {
+        return new Object[][] {
+                { "testString", "^test", "ttt", "tttString" },
+                { "testStringtest", "^test", "ttt", "tttStringtest" },
+                { "testString", "ttest", "ttt", "testString" },
+                { "testString", "$test", "ttt", "testString" }
+        };
     }
 
     @Test
     void invokeInvalidRegExPattern() {
         FunctionTestUtil.assertResultError(replaceFunction.invoke("testString", "(?=\\s)", "ttt"), InvalidParametersEvent.class);
-    }
-
-    @Test
-    void invokeWithoutFlagsPatternMatches() {
-        FunctionTestUtil.assertResult(replaceFunction.invoke("testString", "^test", "ttt"), "tttString");
-        FunctionTestUtil.assertResult(replaceFunction.invoke("testStringtest", "^test", "ttt"), "tttStringtest");
-    }
-
-    @Test
-    void invokeWithoutFlagsPatternNotMatches() {
-        FunctionTestUtil.assertResult(replaceFunction.invoke("testString", "ttest", "ttt"), "testString");
-        FunctionTestUtil.assertResult(replaceFunction.invoke("testString", "$test", "ttt"), "testString");
     }
 
     @Test
