@@ -23,8 +23,8 @@ import java.util.List;
 import org.drools.template.model.Global;
 import org.drools.template.model.Import;
 import org.drools.template.parser.DecisionTableParseException;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -52,7 +52,7 @@ public class RuleSheetParserUtilTest {
     /**
      * This is here as the old way was to do this.
      */
-    @Ignore
+    @Disabled
     @Test
     public void testInvalidRuleName() {
         final String row = "RuleTable       This is my rule name (type class)";
