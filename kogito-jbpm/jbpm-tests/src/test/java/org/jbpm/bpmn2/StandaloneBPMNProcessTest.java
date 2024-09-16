@@ -48,6 +48,8 @@ import org.jbpm.bpmn2.data.Evaluation3Model;
 import org.jbpm.bpmn2.data.Evaluation3Process;
 import org.jbpm.bpmn2.data.EvaluationModel;
 import org.jbpm.bpmn2.data.EvaluationProcess;
+import org.jbpm.bpmn2.error.ErrorBoundaryEventInterruptingModel;
+import org.jbpm.bpmn2.error.ErrorBoundaryEventInterruptingProcess;
 import org.jbpm.bpmn2.event.ErrorEndEventModel;
 import org.jbpm.bpmn2.event.ErrorEndEventProcess;
 import org.jbpm.bpmn2.event.SignalEndEventModel;
@@ -64,25 +66,50 @@ import org.jbpm.bpmn2.flow.MinimalWithDIGraphicalModel;
 import org.jbpm.bpmn2.flow.MinimalWithDIGraphicalProcess;
 import org.jbpm.bpmn2.flow.MinimalWithGraphicalModel;
 import org.jbpm.bpmn2.flow.MinimalWithGraphicalProcess;
+import org.jbpm.bpmn2.flow.MultiInstanceLoopCharacteristicsProcessModel;
+import org.jbpm.bpmn2.flow.MultiInstanceLoopCharacteristicsProcessProcess;
 import org.jbpm.bpmn2.flow.SubProcessModel;
 import org.jbpm.bpmn2.flow.SubProcessProcess;
 import org.jbpm.bpmn2.flow.UserTaskModel;
 import org.jbpm.bpmn2.flow.UserTaskProcess;
 import org.jbpm.bpmn2.handler.ReceiveTaskHandler;
 import org.jbpm.bpmn2.handler.SendTaskHandler;
+import org.jbpm.bpmn2.intermediate.EventBasedSplit2Model;
+import org.jbpm.bpmn2.intermediate.EventBasedSplit2Process;
 import org.jbpm.bpmn2.intermediate.EventBasedSplit4Model;
 import org.jbpm.bpmn2.intermediate.EventBasedSplit4Process;
 import org.jbpm.bpmn2.intermediate.EventBasedSplitModel;
 import org.jbpm.bpmn2.intermediate.EventBasedSplitProcess;
+import org.jbpm.bpmn2.intermediate.IntermediateCatchEventMessageModel;
+import org.jbpm.bpmn2.intermediate.IntermediateCatchEventMessageProcess;
+import org.jbpm.bpmn2.intermediate.IntermediateCatchEventSignalModel;
+import org.jbpm.bpmn2.intermediate.IntermediateCatchEventSignalProcess;
+import org.jbpm.bpmn2.intermediate.IntermediateCatchEventTimerDurationModel;
+import org.jbpm.bpmn2.intermediate.IntermediateCatchEventTimerDurationProcess;
 import org.jbpm.bpmn2.intermediate.IntermediateThrowEventMessageModel;
 import org.jbpm.bpmn2.intermediate.IntermediateThrowEventMessageProcess;
+import org.jbpm.bpmn2.intermediate.IntermediateThrowEventNoneModel;
+import org.jbpm.bpmn2.intermediate.IntermediateThrowEventNoneProcess;
+import org.jbpm.bpmn2.intermediate.IntermediateThrowEventSignalModel;
+import org.jbpm.bpmn2.intermediate.IntermediateThrowEventSignalProcess;
 import org.jbpm.bpmn2.objects.Person;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
+import org.jbpm.bpmn2.start.MessageStartModel;
+import org.jbpm.bpmn2.start.MessageStartProcess;
+import org.jbpm.bpmn2.start.SignalStartModel;
+import org.jbpm.bpmn2.start.SignalStartProcess;
+import org.jbpm.bpmn2.start.TimerStartProcess;
 import org.jbpm.bpmn2.subprocess.CallActivityModel;
 import org.jbpm.bpmn2.subprocess.CallActivityProcess;
 import org.jbpm.bpmn2.subprocess.CallActivitySubProcessProcess;
+import org.jbpm.bpmn2.task.ReceiveTaskModel;
+import org.jbpm.bpmn2.task.ReceiveTaskProcess;
 import org.jbpm.bpmn2.task.SendTaskModel;
 import org.jbpm.bpmn2.task.SendTaskProcess;
+import org.jbpm.bpmn2.timer.TimerBoundaryEventDurationModel;
+import org.jbpm.bpmn2.timer.TimerBoundaryEventDurationProcess;
+import org.jbpm.bpmn2.timer.TimerBoundaryEventInterruptingModel;
+import org.jbpm.bpmn2.timer.TimerBoundaryEventInterruptingProcess;
 import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.jbpm.process.instance.impl.humantask.InternalHumanTaskWorkItem;
@@ -101,7 +128,6 @@ import org.kie.kogito.event.impl.MessageProducer;
 import org.kie.kogito.internal.process.event.DefaultKogitoProcessEventListener;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
-import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcessInstance;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.impl.Sig;
 import org.w3c.dom.Document;
@@ -363,23 +389,24 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
     @Timeout(10)
     public void testEventBasedSplit2() throws Exception {
         ProcessCompletedCountDownProcessEventListener countDownListener = new ProcessCompletedCountDownProcessEventListener(2);
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/intermediate/BPMN2-EventBasedSplit2.bpmn2");
-
-        kruntime.getProcessEventManager().addEventListener(countDownListener);
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Email2", new SystemOutWorkItemHandler());
-        // Yes
-        KogitoProcessInstance processInstance = kruntime.startProcess("EventBasedSplit2");
-        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_ACTIVE);
-        kruntime.signalEvent("Yes", "YesValue", processInstance.getStringId());
-        assertProcessInstanceCompleted(processInstance.getStringId(), kruntime);
-
-        // Timer
-        processInstance = kruntime.startProcess("EventBasedSplit2");
-        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_ACTIVE);
-
+        Application app = ProcessTestHelper.newApplication();
+        ProcessTestHelper.registerProcessEventListener(app, countDownListener);
+        ProcessTestHelper.registerHandler(app, "Email1", new SystemOutWorkItemHandler());
+        ProcessTestHelper.registerHandler(app, "Email2", new SystemOutWorkItemHandler());
+        org.kie.kogito.process.Process<EventBasedSplit2Model> processDefinition = EventBasedSplit2Process.newProcess(app);
+        EventBasedSplit2Model modelYes = processDefinition.createModel();
+        org.kie.kogito.process.ProcessInstance<EventBasedSplit2Model> instanceYes = processDefinition.createInstance(modelYes);
+        instanceYes.start();
+        assertThat(instanceYes.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_ACTIVE);
+        instanceYes.send(Sig.of("Yes", "YesValue"));
+        assertThat(instanceYes.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
+        EventBasedSplit2Model modelTimer = processDefinition.createModel();
+        org.kie.kogito.process.ProcessInstance<EventBasedSplit2Model> instanceTimer = processDefinition.createInstance(modelTimer);
+        instanceTimer.start();
+        assertThat(instanceTimer.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_ACTIVE);
         countDownListener.waitTillCompleted();
-        assertProcessInstanceCompleted(processInstance.getStringId(), kruntime);
+        assertThat(instanceYes.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
+        assertThat(instanceTimer.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
@@ -484,57 +511,67 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
 
     @Test
     public void testMultiInstanceLoopCharacteristicsProcess() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/flow/BPMN2-MultiInstanceLoopCharacteristicsProcess.bpmn2");
-        Map<String, Object> params = new HashMap<>();
+        Application app = ProcessTestHelper.newApplication();
+        org.kie.kogito.process.Process<MultiInstanceLoopCharacteristicsProcessModel> definition = MultiInstanceLoopCharacteristicsProcessProcess.newProcess(app);
+        MultiInstanceLoopCharacteristicsProcessModel model = definition.createModel();
         List<String> myList = new ArrayList<>();
         myList.add("First Item");
         myList.add("Second Item");
-        params.put("list", myList);
-        KogitoProcessInstance processInstance = kruntime.startProcess("MultiInstanceLoopCharacteristicsProcess", params);
-        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
+        model.setList(myList);
+        ProcessInstance<MultiInstanceLoopCharacteristicsProcessModel> processInstance = definition.createInstance(model);
+        processInstance.start();
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
     public void testErrorBoundaryEvent() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/error/BPMN2-ErrorBoundaryEventInterrupting.bpmn2");
-
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("MyTask", new DoNothingWorkItemHandler());
-        KogitoProcessInstance processInstance = kruntime.startProcess("ErrorBoundaryEventInterrupting");
-        assertProcessInstanceCompleted(processInstance.getStringId(), kruntime);
+        Application app = ProcessTestHelper.newApplication();
+        ProcessTestHelper.registerHandler(app, "MyTask", new DoNothingWorkItemHandler());
+        org.kie.kogito.process.Process<ErrorBoundaryEventInterruptingModel> definition = ErrorBoundaryEventInterruptingProcess.newProcess(app);
+        ErrorBoundaryEventInterruptingModel model = definition.createModel();
+        ProcessInstance<ErrorBoundaryEventInterruptingModel> processInstance = definition.createInstance(model);
+        processInstance.start();
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
     @Timeout(10)
     public void testTimerBoundaryEvent() throws Exception {
+        Application app = ProcessTestHelper.newApplication();
         NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("TimerEvent", 1);
         ProcessCompletedCountDownProcessEventListener processEventListener = new ProcessCompletedCountDownProcessEventListener();
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/timer/BPMN2-TimerBoundaryEventDuration.bpmn2");
-
-        kruntime.getProcessEventManager().addEventListener(countDownListener);
-        kruntime.getProcessEventManager().addEventListener(processEventListener);
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("MyTask", new DoNothingWorkItemHandler());
-        KogitoProcessInstance processInstance = kruntime.startProcess("TimerBoundaryEventDuration");
-        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_ACTIVE);
+        ProcessTestHelper.registerProcessEventListener(app, countDownListener);
+        ProcessTestHelper.registerProcessEventListener(app, processEventListener);
+        ProcessTestHelper.registerHandler(app, "MyTask", new DoNothingWorkItemHandler());
+        org.kie.kogito.process.Process<TimerBoundaryEventDurationModel> definition = TimerBoundaryEventDurationProcess.newProcess(app);
+        TimerBoundaryEventDurationModel model = definition.createModel();
+        org.kie.kogito.process.ProcessInstance<TimerBoundaryEventDurationModel> processInstance = definition.createInstance(model);
+        processInstance.start();
+        assertThat(processInstance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_ACTIVE);
         countDownListener.waitTillCompleted();
         processEventListener.waitTillCompleted();
-        assertProcessInstanceCompleted(processInstance.getStringId(), kruntime);
+        assertThat(processInstance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
     @Timeout(10)
-    public void testTimerBoundaryEventInterrupting() throws Exception {
+    public void testTimerBoundaryEventInterrupting() {
+        Application app = ProcessTestHelper.newApplication();
         NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("TimerEvent", 1);
         ProcessCompletedCountDownProcessEventListener processEventListener = new ProcessCompletedCountDownProcessEventListener();
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/timer/BPMN2-TimerBoundaryEventInterrupting.bpmn2");
-
-        kruntime.getProcessEventManager().addEventListener(countDownListener);
-        kruntime.getProcessEventManager().addEventListener(processEventListener);
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("MyTask", new DoNothingWorkItemHandler());
-        KogitoProcessInstance processInstance = kruntime.startProcess("TimerBoundaryEventInterrupting");
-        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_ACTIVE);
+        ProcessTestHelper.registerHandler(app, "MyTask", new DoNothingWorkItemHandler());
+        ProcessTestHelper.registerProcessEventListener(app, processEventListener);
+        ProcessTestHelper.registerProcessEventListener(app, countDownListener);
+        org.kie.kogito.process.Process<TimerBoundaryEventInterruptingModel> processDefinition = TimerBoundaryEventInterruptingProcess.newProcess(app);
+        TimerBoundaryEventInterruptingModel model = processDefinition.createModel();
+        org.kie.kogito.process.ProcessInstance<TimerBoundaryEventInterruptingModel> instance = processDefinition.createInstance(model);
+        logger.debug("Starting process instance");
+        instance.start();
+        assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_ACTIVE);
         countDownListener.waitTillCompleted();
         processEventListener.waitTillCompleted();
-        assertProcessInstanceCompleted(processInstance.getStringId(), kruntime);
+
+        assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
@@ -627,46 +664,50 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
     }
 
     @Test
-    public void testIntermediateCatchEventSignal() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/intermediate/BPMN2-IntermediateCatchEventSignal.bpmn2");
-
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task", new SystemOutWorkItemHandler());
-        KogitoProcessInstance processInstance = kruntime.startProcess("IntermediateCatchEventSignal");
-        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_ACTIVE);
-        // now signal process instance
-        kruntime.signalEvent("MyMessage", "SomeValue", processInstance.getStringId());
-        assertProcessInstanceCompleted(processInstance.getStringId(), kruntime);
+    public void testIntermediateCatchEventSignal() {
+        Application app = ProcessTestHelper.newApplication();
+        ProcessTestHelper.registerHandler(app, "Human Task", new SystemOutWorkItemHandler());
+        org.kie.kogito.process.Process<IntermediateCatchEventSignalModel> processDefinition = IntermediateCatchEventSignalProcess.newProcess(app);
+        IntermediateCatchEventSignalModel model = processDefinition.createModel();
+        ProcessInstance<IntermediateCatchEventSignalModel> processInstance = processDefinition.createInstance(model);
+        processInstance.start();
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
+        processInstance.send(Sig.of("MyMessage", "SomeValue"));
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
-    public void testIntermediateCatchEventMessage() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/intermediate/BPMN2-IntermediateCatchEventMessage.bpmn2");
-
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task", new SystemOutWorkItemHandler());
-
-        KogitoProcessInstance processInstance = kruntime.startProcess("IntermediateCatchEventMessage");
-        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_ACTIVE);
-        // now signal process instance
-        kruntime.signalEvent("Message-HelloMessage", "SomeValue", processInstance.getStringId());
-        assertProcessInstanceCompleted(processInstance.getStringId(), kruntime);
+    public void testIntermediateCatchEventMessage() {
+        Application app = ProcessTestHelper.newApplication();
+        ProcessTestHelper.registerHandler(app, "Human Task", new SystemOutWorkItemHandler());
+        org.kie.kogito.process.Process<IntermediateCatchEventMessageModel> processDefinition = IntermediateCatchEventMessageProcess.newProcess(app);
+        IntermediateCatchEventMessageModel model = processDefinition.createModel();
+        org.kie.kogito.process.ProcessInstance<IntermediateCatchEventMessageModel> instance = processDefinition.createInstance(model);
+        instance.start();
+        assertThat(instance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
+        instance.send(Sig.of("Message-HelloMessage", "SomeValue"));
+        assertThat(instance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
     @Timeout(10)
-    public void testIntermediateCatchEventTimer() throws Exception {
+    public void testIntermediateCatchEventTimer() {
+        Application app = ProcessTestHelper.newApplication();
         NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("timer", 1);
         ProcessCompletedCountDownProcessEventListener processEventListener = new ProcessCompletedCountDownProcessEventListener();
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/intermediate/BPMN2-IntermediateCatchEventTimerDuration.bpmn2");
-
-        kruntime.getProcessEventManager().addEventListener(countDownListener);
-        kruntime.getProcessEventManager().addEventListener(processEventListener);
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task", new DoNothingWorkItemHandler());
-        KogitoProcessInstance processInstance = kruntime.startProcess("IntermediateCatchEventTimerDuration");
-        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_ACTIVE);
-        // now wait for 1 second for timer to trigger
-        countDownListener.waitTillCompleted();
-        processEventListener.waitTillCompleted();
-        assertProcessInstanceCompleted(processInstance.getStringId(), kruntime);
+        ProcessTestHelper.registerProcessEventListener(app, countDownListener);
+        ProcessTestHelper.registerProcessEventListener(app, processEventListener);
+        ProcessTestHelper.registerHandler(app, "Human Task", new DoNothingWorkItemHandler());
+        org.kie.kogito.process.Process<IntermediateCatchEventTimerDurationModel> processDefinition = IntermediateCatchEventTimerDurationProcess.newProcess(app);
+        IntermediateCatchEventTimerDurationModel model = processDefinition.createModel();
+        org.kie.kogito.process.ProcessInstance<IntermediateCatchEventTimerDurationModel> instance = processDefinition.createInstance(model);
+        instance.start();
+        assertThat(instance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
+        boolean timerCompleted = countDownListener.waitTillCompleted();
+        boolean processCompleted = processEventListener.waitTillCompleted();
+        assertThat(timerCompleted).isTrue();
+        assertThat(processCompleted).isTrue();
+        assertThat(instance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
@@ -710,14 +751,19 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
 
     @Test
     public void testReceiveTask() throws Exception {
+        Application app = ProcessTestHelper.newApplication();
         kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/task/BPMN2-ReceiveTask.bpmn2");
-
         ReceiveTaskHandler receiveTaskHandler = new ReceiveTaskHandler(kruntime);
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Receive Task", receiveTaskHandler);
-        KogitoWorkflowProcessInstance processInstance = (KogitoWorkflowProcessInstance) kruntime.startProcess("ReceiveTask");
-        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_ACTIVE);
+        ProcessTestHelper.registerHandler(app, "Receive Task", receiveTaskHandler);
+        org.kie.kogito.process.Process<ReceiveTaskModel> processDefinition = ReceiveTaskProcess.newProcess(app);
+        ReceiveTaskModel model = processDefinition.createModel();
+        org.kie.kogito.process.ProcessInstance<ReceiveTaskModel> instance = processDefinition.createInstance(model);
+        instance.start();
+        assertThat(instance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
+        receiveTaskHandler.setKnowledgeRuntime(kruntime);
         receiveTaskHandler.messageReceived("HelloMessage", "Hello john!");
-        assertProcessInstanceCompleted(((KogitoProcessInstance) processInstance).getStringId(), kruntime);
+        ProcessTestHelper.completeWorkItem(instance, Collections.emptyMap(), "john");
+        assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
@@ -738,34 +784,35 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
     @Test
     @Timeout(1000)
     public void testTimerStart() throws Exception {
+        Application app = ProcessTestHelper.newApplication();
         NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("StartProcess", 5);
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/start/BPMN2-TimerStart.bpmn2");
-
-        kruntime.getProcessEventManager().addEventListener(countDownListener);
-        final List<String> list = new ArrayList<>();
-        kruntime.getProcessEventManager().addEventListener(new DefaultKogitoProcessEventListener() {
-
+        ProcessTestHelper.registerProcessEventListener(app, countDownListener);
+        final List<String> startedInstances = new ArrayList<>();
+        ProcessTestHelper.registerProcessEventListener(app, new DefaultKogitoProcessEventListener() {
+            @Override
             public void beforeProcessStarted(ProcessStartedEvent event) {
-                list.add(((KogitoProcessInstance) event.getProcessInstance()).getStringId());
+                startedInstances.add(((KogitoProcessInstance) event.getProcessInstance()).getStringId());
             }
-
         });
-
-        assertThat(list).isEmpty();
+        TimerStartProcess.newProcess(app);
+        assertThat(startedInstances).isEmpty();
         countDownListener.waitTillCompleted();
-        assertThat(list).hasSize(5);
+        assertThat(startedInstances).hasSize(5);
     }
 
     @Test
-    public void testSignalStart() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/start/BPMN2-SignalStart.bpmn2");
+    public void testSignalStart() {
+        Application app = ProcessTestHelper.newApplication();
         final List<String> list = new ArrayList<>();
-        kruntime.getProcessEventManager().addEventListener(new DefaultKogitoProcessEventListener() {
+        ProcessTestHelper.registerProcessEventListener(app, new DefaultKogitoProcessEventListener() {
+            @Override
             public void afterProcessStarted(ProcessStartedEvent event) {
-                list.add(((KogitoProcessInstance) event.getProcessInstance()).getStringId());
+                String processInstanceId = event.getProcessInstance().getId();
+                list.add(processInstanceId);
             }
         });
-        kruntime.signalEvent("MySignal", "NewValue");
+        org.kie.kogito.process.Process<SignalStartModel> process = SignalStartProcess.newProcess(app);
+        process.send(Sig.of("MySignal", "NewValue"));
         assertThat(list).hasSize(1);
     }
 
@@ -783,16 +830,18 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
     }
 
     @Test
-    public void testMessageStart() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/start/BPMN2-MessageStart.bpmn2");
-        final List<String> list = new ArrayList<>();
-        kruntime.getProcessEventManager().addEventListener(new DefaultKogitoProcessEventListener() {
-            public void afterProcessStarted(ProcessStartedEvent event) {
-                list.add(((KogitoProcessInstance) event.getProcessInstance()).getStringId());
+    public void testMessageStart() {
+        Application app = ProcessTestHelper.newApplication();
+        final List<String> startedProcesses = new ArrayList<>();
+        ProcessTestHelper.registerProcessEventListener(app, new DefaultKogitoProcessEventListener() {
+            @Override
+            public void beforeProcessStarted(ProcessStartedEvent event) {
+                startedProcesses.add(((KogitoProcessInstance) event.getProcessInstance()).getStringId());
             }
         });
-        kruntime.signalEvent("Message-HelloMessage", "NewValue");
-        assertThat(list).hasSize(1);
+        org.kie.kogito.process.Process<MessageStartModel> definition = MessageStartProcess.newProcess(app);
+        definition.send(Sig.of("HelloMessage", "NewValue"));
+        assertThat(startedProcesses).hasSize(1);
     }
 
     @Test
@@ -817,19 +866,23 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
     }
 
     @Test
-    public void testSignalIntermediateThrow() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/intermediate/BPMN2-IntermediateThrowEventSignal.bpmn2");
-        Map<String, Object> params = new HashMap<>();
-        params.put("x", "MyValue");
-        KogitoProcessInstance processInstance = kruntime.startProcess("IntermediateThrowEventSignal", params);
-        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
+    public void testSignalIntermediateThrow() {
+        Application app = ProcessTestHelper.newApplication();
+        org.kie.kogito.process.Process<IntermediateThrowEventSignalModel> process = IntermediateThrowEventSignalProcess.newProcess(app);
+        IntermediateThrowEventSignalModel model = process.createModel();
+        model.setX("MyValue");
+        ProcessInstance<IntermediateThrowEventSignalModel> processInstance = process.createInstance(model);
+        processInstance.start();
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
-    public void testNoneIntermediateThrow() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/intermediate/BPMN2-IntermediateThrowEventNone.bpmn2");
-        KogitoProcessInstance processInstance = kruntime.startProcess("IntermediateThrowEventNone");
-        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
+    public void testNoneIntermediateThrow() {
+        Application app = ProcessTestHelper.newApplication();
+        org.kie.kogito.process.Process<IntermediateThrowEventNoneModel> process = IntermediateThrowEventNoneProcess.newProcess(app);
+        ProcessInstance<IntermediateThrowEventNoneModel> processInstance = process.createInstance(process.createModel());
+        processInstance.start();
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
