@@ -20,65 +20,121 @@ package org.kie.dmn.feel.runtime.functions;
 
 import org.junit.jupiter.api.Test;
 
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
 class MatchesFunctionTest {
 
-    private final static MatchesFunction matchesFunction = MatchesFunction.INSTANCE;
+    private static final MatchesFunction matchesFunction = MatchesFunction.INSTANCE;
 
-    @Test
-    void invokeNull() {
-        FunctionTestUtil.assertResultError(matchesFunction.invoke((String) null, null), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(matchesFunction.invoke(null, "test"), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(matchesFunction.invoke("test", null), InvalidParametersEvent.class);
+    @ParameterizedTest
+    @MethodSource("invokeNullTestData")
+    void invokeNullTest(String input, String pattern, Class<?> expectedErrorEventClass) {
+        FunctionTestUtil.assertResultError(matchesFunction.invoke(input, pattern), expectedErrorEventClass);
     }
 
-    @Test
-    void invokeUnsupportedFlags() {
-        FunctionTestUtil.assertResultError(matchesFunction.invoke("foobar", "fo.bar", "g"), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(matchesFunction.invoke("abracadabra", "bra", "p"), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(matchesFunction.invoke("abracadabra", "bra", "X"), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(matchesFunction.invoke("abracadabra", "bra", "X"), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(matchesFunction.invoke("abracadabra", "bra", "iU"), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(matchesFunction.invoke("abracadabra", "bra", "iU asd"), InvalidParametersEvent.class);
+    private static Object[][] invokeNullTestData() {
+        return new Object[][] {
+                { null, null, InvalidParametersEvent.class },
+                { null, "test", InvalidParametersEvent.class },
+                { "test", null, InvalidParametersEvent.class },
+        };
+    }
+
+    @ParameterizedTest
+    @MethodSource("invokeUnsupportedFlagsTestData")
+    void invokeUnsupportedFlagsTest(String input, String pattern, String flags, Class<?> expectedErrorEventClass) {
+        FunctionTestUtil.assertResultError(matchesFunction.invoke(input, pattern, flags), expectedErrorEventClass);
    }
 
-    @Test
-    void invokeInvalidRegExPattern() {
-        FunctionTestUtil.assertResultError(matchesFunction.invoke("testString", "(?=\\s)"), InvalidParametersEvent.class);
+    private static Object[][] invokeUnsupportedFlagsTestData() {
+        return new Object[][] {
+                { "foobar", "fo.bar", "g", InvalidParametersEvent.class },
+                { "abracadabra", "bra", "p", InvalidParametersEvent.class },
+                { "abracadabra", "bra", "X", InvalidParametersEvent.class },
+                { "abracadabra", "bra", "iU", InvalidParametersEvent.class },
+                { "abracadabra", "bra", "iU asd", InvalidParametersEvent.class },
+        };
     }
 
-    @Test
-    void invokeWithoutFlagsMatch() {
-        FunctionTestUtil.assertResult(matchesFunction.invoke("test", "test"), true);
-        FunctionTestUtil.assertResult(matchesFunction.invoke("foobar", "^fo*b"), true);
-        FunctionTestUtil.assertResult(matchesFunction.invoke("abracadabra", "bra"), true);
-        FunctionTestUtil.assertResult(matchesFunction.invoke("abracadabra", "bra"), true);
-        FunctionTestUtil.assertResult(matchesFunction.invoke("(?xi)[hello world()]", "hello"), true);
+    @ParameterizedTest
+    @MethodSource("invokeWithoutFlagsMatchTestData")
+    void invokeWithoutFlagsMatchTest(String input, String pattern, Boolean expectedResult) {
+        FunctionTestUtil.assertResult(matchesFunction.invoke(input, pattern), expectedResult);
     }
 
-    @Test
-    void invokeNullOrEmptyFlagsMatch() {
-        FunctionTestUtil.assertResult(matchesFunction.invoke("test", "test",null), true);
-        FunctionTestUtil.assertResult(matchesFunction.invoke("foobar", "^fo*b",null), true);
-        FunctionTestUtil.assertResult(matchesFunction.invoke("abracadabra", "bra", ""), true);
-        FunctionTestUtil.assertResult(matchesFunction.invoke("abracadabra", "bra",null), true);
-        FunctionTestUtil.assertResult(matchesFunction.invoke("(?xi)[hello world()]", "hello",null), true);
+    private static Object[][] invokeWithoutFlagsMatchTestData() {
+        return new Object[][] {
+                { "test", "test", true },
+                { "foobar", "^fo*b", true },
+                { "abracadabra", "bra", true },
+                { "abracadabra", "bra", true },
+                { "(?xi)[hello world()]", "hello", true }
+        };
     }
 
-    @Test
-    void invokeWithoutFlagsNotMatch() {
-        FunctionTestUtil.assertResult(matchesFunction.invoke("test", "testt",null), false);
-        FunctionTestUtil.assertResult(matchesFunction.invoke("foobar", "^fo*bb",null), false);
-        FunctionTestUtil.assertResult(matchesFunction.invoke("fo\nbar", "fo.bar",null), false);
-        FunctionTestUtil.assertResult(matchesFunction.invoke("h", "(.)\3",null), false);
-        FunctionTestUtil.assertResult(matchesFunction.invoke("h", "(.)\2",null), false);
-        FunctionTestUtil.assertResult(matchesFunction.invoke("input", "\3",null), false);
-        FunctionTestUtil.assertResultError(matchesFunction.invoke("fo\nbar", "(?iU)(?iU)(ab)[|cd]",null), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(matchesFunction.invoke("fo\nbar", "(?x)(?i)hello world","i"), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(matchesFunction.invoke("fo\nbar", "(?xi)hello world",null), InvalidParametersEvent.class);
+    @ParameterizedTest
+    @MethodSource("invokeNullOrEmptyFlagsMatchTestData")
+    void invokeNullOrEmptyFlagsMatchTest(String input, String pattern, String flags, Boolean expectedResult) {
+        FunctionTestUtil.assertResult(matchesFunction.invoke(input, pattern, flags), expectedResult);
     }
 
+    private static Object[][] invokeNullOrEmptyFlagsMatchTestData() {
+        return new Object[][] {
+                { "test", "test", null, true },
+                { "foobar", "^fo*b", null, true },
+                { "abracadabra", "bra", null, true },
+                { "abracadabra", "bra", "", true },
+                { "(?xi)[hello world()]", "hello", null, true }
+        };
+    }
+
+    @ParameterizedTest
+    @MethodSource("invokeInvalidRegexTestData")
+    void invokeInvalidRegexTest(String input, String pattern, String flags, Class<?> expectedErrorEventClass) {
+        FunctionTestUtil.assertResultError(matchesFunction.invoke(input, pattern, flags), expectedErrorEventClass);
+    }
+
+    private static Object[][] invokeInvalidRegexTestData() {
+        return new Object[][] {
+                { "testString", "(?=\\\\s)", null, InvalidParametersEvent.class },
+                { "fo\nbar", "(?iU)(?iU)(ab)[|cd]", null, InvalidParametersEvent.class },
+                { "fo\nbar", "(?x)(?i)hello world", "i", InvalidParametersEvent.class },
+                { "fo\nbar", "(?xi)hello world", null, InvalidParametersEvent.class },
+        };
+    }
+
+    @ParameterizedTest
+    @MethodSource("invokeWithoutFlagsNotMatchTestData")
+    void invokeWithoutFlagsNotMatchTest(String input, String pattern, String flags, Boolean expectedResult) {
+        FunctionTestUtil.assertResult(matchesFunction.invoke(input, pattern, flags), expectedResult);
+    }
+
+    private static Object[][] invokeWithoutFlagsNotMatchTestData() {
+        return new Object[][] {
+                { "test", "testt", null, false },
+                { "foobar", "^fo*bb", null, false },
+                { "h", "(.)\3", null, false },
+                { "h", "(.)\2", null, false },
+                { "input", "\3", null, false }
+        };
+    }
+
+    @ParameterizedTest
+    @MethodSource("invokeWithFlagCaseInsensitiveTestData")
+    void invokeWithoutFlagsPatternTest(String input, String pattern, String flags, Boolean expectedResult) {
+        FunctionTestUtil.assertResult(matchesFunction.invoke(input, pattern, flags), expectedResult);
+    }
+
+    private static Object[][] invokeWithFlagCaseInsensitiveTestData() {
+        return new Object[][] {
+                { "foobar", "^Fo*bar", "i", true },
+                { "foobar", "^Fo*bar", "i", true },
+                { "\u212A", "k", "i", true },
+                { "\u212A", "K", "i", true }
+        };
+    }
 
     @Test
     void invokeWithFlagDotAll() {
@@ -88,14 +144,6 @@ class MatchesFunctionTest {
     @Test
     void invokeWithFlagMultiline() {
         FunctionTestUtil.assertResult(matchesFunction.invoke("fo\nbar", "^bar", "m"), true);
-    }
-
-    @Test
-    void invokeWithFlagCaseInsensitive() {
-        FunctionTestUtil.assertResult(matchesFunction.invoke("foobar", "^Fo*bar", "i"), true);
-        FunctionTestUtil.assertResult(matchesFunction.invoke("foobar", "^Fo*bar", "i"), true);
-        FunctionTestUtil.assertResult(matchesFunction.invoke("\u212A", "k","i"), true);
-        FunctionTestUtil.assertResult(matchesFunction.invoke("\u212A", "K","i"), true);
     }
 
     @Test
