@@ -14,6 +14,10 @@ This product also includes the following third-party components:
   Downloaded from: https://lunrjs.com/
   License: MIT
 
+* Saxon-HE
+  Downloaded from: https://www.saxonica.com/
+  License: Mozilla Public License 2.0
+
 * search-ui
   Downloaded from: https://gitlab.com/antora/antora-lunr-extension
   License: Mozilla Public License 2.0
