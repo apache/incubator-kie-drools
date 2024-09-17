@@ -43,7 +43,7 @@ The same dependency is used to specify the storage of the data index and the tra
 
     <dependency>
       <groupId>org.kie</groupId>
-      <artifactId>kogito-addons-quarkus-data-index-persistence-postgresql</artifactId>
+      <artifactId>kogito-addons-quarkus-data-index-postgresql</artifactId>
     </dependency>
 
 	
@@ -54,7 +54,7 @@ As this dependency will include the storage as well and the in-vm transport.
 
     <dependency>
       <groupId>org.kie</groupId>
-      <artifactId>kogito-addons-quarkus-data-index-persistence-<storage></artifactId>
+      <artifactId>kogito-addons-quarkus-data-index-<storage></artifactId>
     </dependency>
 
 
