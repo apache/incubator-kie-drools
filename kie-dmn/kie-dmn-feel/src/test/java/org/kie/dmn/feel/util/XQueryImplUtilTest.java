@@ -43,16 +43,16 @@ class XQueryImplUtilTest {
     @ParameterizedTest
     @MethodSource("executeMatchesFunctionInvokingExceptionTestData")
     void executeMatchesFunctionInvokingExceptionTest(String input, String pattern, String flags,
-                                                     Class<?> expectedException, String exceptionMessage) {
+                                                     String exceptionMessage) {
         assertThatThrownBy(() -> XQueryImplUtil.executeMatchesFunction(input, pattern, flags))
-                .isInstanceOf(expectedException).hasMessageContaining(exceptionMessage);
+                .isInstanceOf(IllegalArgumentException.class).hasMessageContaining(exceptionMessage);
     }
 
     private static Object[][] executeMatchesFunctionInvokingExceptionTestData() {
         return new Object[][] {
-                { "test", "^test", "g", IllegalArgumentException.class, "Unrecognized flag" },
-                { "test", "(?=\\s)", null, IllegalArgumentException.class, "No expression before quantifier" },
-                { "test", "(.)\\2", "i", IllegalArgumentException.class, "invalid backreference \\2" },
+                { "test", "^test", "g", "Unrecognized flag" },
+                { "test", "(?=\\s)", null, "No expression before quantifier" },
+                { "test", "(.)\\2", "i", "invalid backreference \\2" },
         };
     }
 
@@ -102,14 +102,15 @@ class XQueryImplUtilTest {
 
     @ParameterizedTest
     @MethodSource("evaluateXQueryExpressionInvalidParametersTestData")
-    void evaluateXQueryExpressionInvalidParametersTest(String expression, Class<?> returnTypeClass, Class<?> expectedException) {
-        assertThatThrownBy(() -> XQueryImplUtil.evaluateXQueryExpression(expression, returnTypeClass)).isInstanceOf(expectedException);
+    void evaluateXQueryExpressionInvalidParametersTest(String expression, Class<?> returnTypeClass) {
+        assertThatThrownBy(() -> XQueryImplUtil.evaluateXQueryExpression(expression, returnTypeClass))
+                .isInstanceOf(UnsupportedOperationException.class);
     }
 
     private static Object[][] evaluateXQueryExpressionInvalidParametersTestData() {
         return new Object[][] {
-                { "matches('test', '^test', 'i')", Integer.class, UnsupportedOperationException.class },
-                { "replace('testString', '^test', 'ttt', '')", Double.class, UnsupportedOperationException.class },
+                { "matches('test', '^test', 'i')", Integer.class },
+                { "replace('testString', '^test', 'ttt', '')", Double.class },
         };
     }
 

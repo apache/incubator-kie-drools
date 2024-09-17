@@ -30,31 +30,31 @@ class MatchesFunctionTest {
 
     @ParameterizedTest
     @MethodSource("invokeNullTestData")
-    void invokeNullTest(String input, String pattern, Class<?> expectedErrorEventClass) {
-        FunctionTestUtil.assertResultError(matchesFunction.invoke(input, pattern), expectedErrorEventClass);
+    void invokeNullTest(String input, String pattern) {
+        FunctionTestUtil.assertResultError(matchesFunction.invoke(input, pattern), InvalidParametersEvent.class);
     }
 
     private static Object[][] invokeNullTestData() {
         return new Object[][] {
-                { null, null, InvalidParametersEvent.class },
-                { null, "test", InvalidParametersEvent.class },
-                { "test", null, InvalidParametersEvent.class },
+                { null, null },
+                { null, "test" },
+                { "test", null },
         };
     }
 
     @ParameterizedTest
     @MethodSource("invokeUnsupportedFlagsTestData")
-    void invokeUnsupportedFlagsTest(String input, String pattern, String flags, Class<?> expectedErrorEventClass) {
-        FunctionTestUtil.assertResultError(matchesFunction.invoke(input, pattern, flags), expectedErrorEventClass);
+    void invokeUnsupportedFlagsTest(String input, String pattern, String flags) {
+        FunctionTestUtil.assertResultError(matchesFunction.invoke(input, pattern, flags), InvalidParametersEvent.class);
    }
 
     private static Object[][] invokeUnsupportedFlagsTestData() {
         return new Object[][] {
-                { "foobar", "fo.bar", "g", InvalidParametersEvent.class },
-                { "abracadabra", "bra", "p", InvalidParametersEvent.class },
-                { "abracadabra", "bra", "X", InvalidParametersEvent.class },
-                { "abracadabra", "bra", "iU", InvalidParametersEvent.class },
-                { "abracadabra", "bra", "iU asd", InvalidParametersEvent.class },
+                { "foobar", "fo.bar", "g" },
+                { "abracadabra", "bra", "p" },
+                { "abracadabra", "bra", "X" },
+                { "abracadabra", "bra", "iU" },
+                { "abracadabra", "bra", "iU asd" },
         };
     }
 
@@ -92,16 +92,16 @@ class MatchesFunctionTest {
 
     @ParameterizedTest
     @MethodSource("invokeInvalidRegexTestData")
-    void invokeInvalidRegexTest(String input, String pattern, String flags, Class<?> expectedErrorEventClass) {
-        FunctionTestUtil.assertResultError(matchesFunction.invoke(input, pattern, flags), expectedErrorEventClass);
+    void invokeInvalidRegexTest(String input, String pattern, String flags) {
+        FunctionTestUtil.assertResultError(matchesFunction.invoke(input, pattern, flags), InvalidParametersEvent.class);
     }
 
     private static Object[][] invokeInvalidRegexTestData() {
         return new Object[][] {
-                { "testString", "(?=\\\\s)", null, InvalidParametersEvent.class },
-                { "fo\nbar", "(?iU)(?iU)(ab)[|cd]", null, InvalidParametersEvent.class },
-                { "fo\nbar", "(?x)(?i)hello world", "i", InvalidParametersEvent.class },
-                { "fo\nbar", "(?xi)hello world", null, InvalidParametersEvent.class },
+                { "testString", "(?=\\\\s)", null },
+                { "fo\nbar", "(?iU)(?iU)(ab)[|cd]", null },
+                { "fo\nbar", "(?x)(?i)hello world", "i" },
+                { "fo\nbar", "(?xi)hello world", null },
         };
     }
 

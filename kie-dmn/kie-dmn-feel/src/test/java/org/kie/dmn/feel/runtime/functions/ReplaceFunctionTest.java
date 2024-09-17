@@ -29,57 +29,57 @@ class ReplaceFunctionTest {
 
     @ParameterizedTest
     @MethodSource("invokeNullTestData")
-    void invokeNullTest(String input, String pattern, String replacement, Class<?> expectedErrorEventClass) {
-        FunctionTestUtil.assertResultError(replaceFunction.invoke(input, pattern, replacement), expectedErrorEventClass);
+    void invokeNullTest(String input, String pattern, String replacement) {
+        FunctionTestUtil.assertResultError(replaceFunction.invoke(input, pattern, replacement), InvalidParametersEvent.class);
     }
 
     private static Object[][] invokeNullTestData() {
         return new Object[][] {
-                { null, null, null, InvalidParametersEvent.class },
-                { "testString", null, null, InvalidParametersEvent.class },
-                { "testString", "test", null, InvalidParametersEvent.class },
-                { null, "test", null, InvalidParametersEvent.class },
-                { null, "test", "ttt", InvalidParametersEvent.class },
-                { null, null, "ttt", InvalidParametersEvent.class }
+                { null, null, null },
+                { "testString", null, null },
+                { "testString", "test", null },
+                { null, "test", null },
+                { null, "test", "ttt" },
+                { null, null, "ttt" }
         };
     }
 
     @ParameterizedTest
     @MethodSource("invokeNullWithFlagsTestData")
-    void invokeNullWithFlagsTest(String input, String pattern, String replacement, String flags, Class<?> expectedErrorEventClass) {
-        FunctionTestUtil.assertResultError(replaceFunction.invoke(input, pattern, replacement, flags), expectedErrorEventClass);
+    void invokeNullWithFlagsTest(String input, String pattern, String replacement, String flags) {
+        FunctionTestUtil.assertResultError(replaceFunction.invoke(input, pattern, replacement, flags), InvalidParametersEvent.class);
     }
 
     private static Object[][] invokeNullWithFlagsTestData() {
         return new Object[][] {
-                { null, null, null, null, InvalidParametersEvent.class },
-                { "testString", null, null, null, InvalidParametersEvent.class },
-                { "testString", "test", null, null, InvalidParametersEvent.class },
-                { null, "test", null, null, InvalidParametersEvent.class },
-                { null, "test", "ttt", null, InvalidParametersEvent.class },
-                { null, null, "ttt", null, InvalidParametersEvent.class },
-                { null, null, null, "s", InvalidParametersEvent.class },
-                { "testString", null, null, "s", InvalidParametersEvent.class },
-                { "testString", "test", null, "s", InvalidParametersEvent.class },
-                { null, "test", null, "s", InvalidParametersEvent.class },
-                { null, "test", "ttt", "s", InvalidParametersEvent.class },
-                { null, null, "ttt", "s", InvalidParametersEvent.class },
+                { null, null, null, null },
+                { "testString", null, null, null },
+                { "testString", "test", null, null },
+                { null, "test", null, null },
+                { null, "test", "ttt", null },
+                { null, null, "ttt", null },
+                { null, null, null, "s" },
+                { "testString", null, null, "s" },
+                { "testString", "test", null, "s"  },
+                { null, "test", null, "s" },
+                { null, "test", "ttt", "s" },
+                { null, null, "ttt", "s" },
         };
     }
 
     @ParameterizedTest
     @MethodSource("invokeUnsupportedFlagsTestData")
-    void invokeUnsupportedFlagsTest(String input, String pattern, String replacement, String flags, Class<?> expectedErrorEventClass) {
-        FunctionTestUtil.assertResultError(replaceFunction.invoke(input, pattern, replacement, flags), expectedErrorEventClass);
+    void invokeUnsupportedFlagsTest(String input, String pattern, String replacement, String flags) {
+        FunctionTestUtil.assertResultError(replaceFunction.invoke(input, pattern, replacement, flags), InvalidParametersEvent.class);
   }
 
     private static Object[][] invokeUnsupportedFlagsTestData() {
         return new Object[][] {
-                { "testString", "^test", "ttt", "g", InvalidParametersEvent.class },
-                { "testString", "^test", "ttt", "p", InvalidParametersEvent.class },
-                { "testString", "^test", "ttt", "X", InvalidParametersEvent.class },
-                { "testString", "^test", "ttt", "iU", InvalidParametersEvent.class },
-                { "testString", "^test", "ttt", "iU asd", InvalidParametersEvent.class },
+                { "testString", "^test", "ttt", "g" },
+                { "testString", "^test", "ttt", "p" },
+                { "testString", "^test", "ttt", "X" },
+                { "testString", "^test", "ttt", "iU" },
+                { "testString", "^test", "ttt", "iU asd" },
         };
     }
 
