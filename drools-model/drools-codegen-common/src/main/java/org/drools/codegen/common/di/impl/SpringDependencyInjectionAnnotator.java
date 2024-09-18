@@ -18,6 +18,10 @@
  */
 package org.drools.codegen.common.di.impl;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Optional;
+
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.BooleanLiteralExpr;
@@ -36,10 +40,6 @@ import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.codegen.common.di.DependencyInjectionAnnotator;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Optional;
-
 public class SpringDependencyInjectionAnnotator implements DependencyInjectionAnnotator {
 
     @Override
@@ -53,7 +53,8 @@ public class SpringDependencyInjectionAnnotator implements DependencyInjectionAn
 
     @Override
     public <T extends NodeWithAnnotations<?>> T withNamed(T node, String name) {
-        node.addAnnotation(new SingleMemberAnnotationExpr(new Name("org.springframework.beans.factory.annotation.Qualifier"), new StringLiteralExpr(name)));
+        node.addAnnotation(new SingleMemberAnnotationExpr(new Name("org.springframework.beans.factory.annotation" +
+                                                                           ".Qualifier"), new StringLiteralExpr(name)));
         return node;
     }
 
@@ -65,7 +66,8 @@ public class SpringDependencyInjectionAnnotator implements DependencyInjectionAn
 
     @Override
     public <T extends NodeWithAnnotations<?>> T withNamedApplicationComponent(T node, String name) {
-        node.addAnnotation(new SingleMemberAnnotationExpr(new Name("org.springframework.stereotype.Component"), new StringLiteralExpr(name)));
+        node.addAnnotation(new SingleMemberAnnotationExpr(new Name("org.springframework.stereotype.Component"),
+                                                          new StringLiteralExpr(name)));
         return node;
     }
 
@@ -96,14 +98,18 @@ public class SpringDependencyInjectionAnnotator implements DependencyInjectionAn
     @Override
     public <T extends NodeWithAnnotations<?>> T withOptionalInjection(T node) {
         node.addAnnotation(
-                new NormalAnnotationExpr(new Name("org.springframework.beans.factory.annotation.Autowired"), NodeList.nodeList(new MemberValuePair("required", new BooleanLiteralExpr(false)))));
+                new NormalAnnotationExpr(new Name("org.springframework.beans.factory.annotation.Autowired"),
+                                         NodeList.nodeList(new MemberValuePair("required",
+                                                                               new BooleanLiteralExpr(false)))));
         node.addAnnotation("org.springframework.context.annotation.Lazy");
         return node;
     }
 
     @Override
     public <T extends NodeWithAnnotations<?>> T withIncomingMessage(T node, String channel) {
-        node.addAnnotation(new NormalAnnotationExpr(new Name("org.springframework.kafka.annotation.KafkaListener"), NodeList.nodeList(new MemberValuePair("topics", new StringLiteralExpr(channel)))));
+        node.addAnnotation(new NormalAnnotationExpr(new Name("org.springframework.kafka.annotation.KafkaListener"),
+                                                    NodeList.nodeList(new MemberValuePair("topics",
+                                                                                          new StringLiteralExpr(channel)))));
         return node;
     }
 
@@ -139,7 +145,8 @@ public class SpringDependencyInjectionAnnotator implements DependencyInjectionAn
         return new ConditionalExpr(
                 new BinaryExpr(new NameExpr(fieldName), new NullLiteralExpr(), BinaryExpr.Operator.NOT_EQUALS),
                 new NameExpr(fieldName),
-                new MethodCallExpr(new TypeExpr(new ClassOrInterfaceType(null, Collections.class.getCanonicalName())), "emptyList"));
+                new MethodCallExpr(new TypeExpr(new ClassOrInterfaceType(null, Collections.class.getCanonicalName()))
+                        , "emptyList"));
     }
 
     @Override
@@ -154,19 +161,22 @@ public class SpringDependencyInjectionAnnotator implements DependencyInjectionAn
 
     @Override
     public <T extends NodeWithAnnotations<?>> T withConfigInjection(T node, String configKey) {
-        node.addAnnotation(new SingleMemberAnnotationExpr(new Name("org.springframework.beans.factory.annotation.Value"), new StringLiteralExpr("${" + configKey + ":#{null}}")));
+        node.addAnnotation(new SingleMemberAnnotationExpr(new Name("org.springframework.beans.factory.annotation" +
+                                                                           ".Value"),
+                                                          new StringLiteralExpr("${" + configKey + ":#{null}}")));
         return node;
     }
 
     @Override
     public <T extends NodeWithAnnotations<?>> T withConfigInjection(T node, String configKey, String defaultValue) {
-        node.addAnnotation(new SingleMemberAnnotationExpr(new Name("org.springframework.beans.factory.annotation.Value"), new StringLiteralExpr("${" + configKey + ":" + defaultValue + "}")));
+        node.addAnnotation(new SingleMemberAnnotationExpr(new Name("org.springframework.beans.factory.annotation" +
+                                                                           ".Value"),
+                                                          new StringLiteralExpr("${" + configKey + ":" + defaultValue + "}")));
         return node;
     }
 
     /**
      * no-op, Spring beans are not lazy by default.
-     *
      * @param node node to be annotated
      * @return
      */
@@ -182,9 +192,8 @@ public class SpringDependencyInjectionAnnotator implements DependencyInjectionAn
     }
 
     @Override
-    public <T extends NodeWithAnnotations<?>> T withTransactional(T node) {
-        node.addAnnotation("org.springframework.transaction.annotation.Transactional");
-        return node;
+    public String getTransactionalAnnotation() {
+        return "org.springframework.transaction.annotation.Transactional";
     }
 
     @Override

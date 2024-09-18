@@ -165,7 +165,12 @@ public interface DependencyInjectionAnnotator {
      *
      * @param node node to be annotated
      */
-    <T extends NodeWithAnnotations<?>> T withTransactional(T node);
+    default <T extends NodeWithAnnotations<?>> T withTransactional(T node)  {
+        node.addAnnotation(getTransactionalAnnotation());
+        return node;
+    }
+
+    String getTransactionalAnnotation();
 
     /**
      * Annotates and enhances method used to produce messages

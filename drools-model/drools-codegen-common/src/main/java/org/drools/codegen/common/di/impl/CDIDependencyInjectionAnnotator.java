@@ -45,7 +45,8 @@ public class CDIDependencyInjectionAnnotator implements DependencyInjectionAnnot
 
     @Override
     public <T extends NodeWithAnnotations<?>> T withNamed(T node, String name) {
-        node.addAnnotation(new SingleMemberAnnotationExpr(new Name("jakarta.inject.Named"), new StringLiteralExpr(name)));
+        node.addAnnotation(new SingleMemberAnnotationExpr(new Name("jakarta.inject.Named"),
+                                                          new StringLiteralExpr(name)));
         return node;
     }
 
@@ -89,13 +90,17 @@ public class CDIDependencyInjectionAnnotator implements DependencyInjectionAnnot
 
     @Override
     public <T extends NodeWithAnnotations<?>> T withIncomingMessage(T node, String channel) {
-        node.addAnnotation(new SingleMemberAnnotationExpr(new Name("org.eclipse.microprofile.reactive.messaging.Incoming"), new StringLiteralExpr(channel)));
+        node.addAnnotation(new SingleMemberAnnotationExpr(new Name("org.eclipse.microprofile.reactive.messaging" +
+                                                                           ".Incoming"),
+                                                          new StringLiteralExpr(channel)));
         return node;
     }
 
     @Override
     public <T extends NodeWithAnnotations<?>> T withOutgoingMessage(T node, String channel) {
-        node.addAnnotation(new SingleMemberAnnotationExpr(new Name("org.eclipse.microprofile.reactive.messaging.Channel"), new StringLiteralExpr(channel)));
+        node.addAnnotation(new SingleMemberAnnotationExpr(new Name("org.eclipse.microprofile.reactive.messaging" +
+                                                                           ".Channel"),
+                                                          new StringLiteralExpr(channel)));
         return node;
     }
 
@@ -179,14 +184,14 @@ public class CDIDependencyInjectionAnnotator implements DependencyInjectionAnnot
     }
 
     @Override
-    public <T extends NodeWithAnnotations<?>> T withTransactional(T node) {
-        node.addAnnotation("jakarta.transaction.Transactional");
-        return node;
+    public String getTransactionalAnnotation() {
+        return "jakarta.transaction.Transactional";
     }
 
     @Override
     public <T extends NodeWithAnnotations<?>> T withTagAnnotation(T node, NodeList<MemberValuePair> attributes) {
-        node.addAnnotation(new NormalAnnotationExpr(new Name("org.eclipse.microprofile.openapi.annotations.tags.Tag"), attributes));
+        node.addAnnotation(new NormalAnnotationExpr(new Name("org.eclipse.microprofile.openapi.annotations.tags.Tag")
+                , attributes));
         return node;
     }
 }
