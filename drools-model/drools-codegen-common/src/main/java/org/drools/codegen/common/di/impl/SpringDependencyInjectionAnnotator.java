@@ -182,6 +182,12 @@ public class SpringDependencyInjectionAnnotator implements DependencyInjectionAn
     }
 
     @Override
+    public <T extends NodeWithAnnotations<?>> T withTransactional(T node) {
+        node.addAnnotation("org.springframework.transaction.annotation.Transactional");
+        return node;
+    }
+
+    @Override
     public <T extends NodeWithAnnotations<?>> T withFactoryMethod(T node) {
         node.addAnnotation("org.springframework.context.annotation.Bean");
         return node;

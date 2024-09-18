@@ -179,6 +179,12 @@ public class CDIDependencyInjectionAnnotator implements DependencyInjectionAnnot
     }
 
     @Override
+    public <T extends NodeWithAnnotations<?>> T withTransactional(T node) {
+        node.addAnnotation("jakarta.transaction.Transactional");
+        return node;
+    }
+
+    @Override
     public <T extends NodeWithAnnotations<?>> T withTagAnnotation(T node, NodeList<MemberValuePair> attributes) {
         node.addAnnotation(new NormalAnnotationExpr(new Name("org.eclipse.microprofile.openapi.annotations.tags.Tag"), attributes));
         return node;

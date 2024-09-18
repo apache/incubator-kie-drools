@@ -161,6 +161,13 @@ public interface DependencyInjectionAnnotator {
     <T extends NodeWithAnnotations<?>> T withConfigInjection(T node, String configKey, String defaultValue);
 
     /**
+     * Annotates given node with Transactional annotation
+     *
+     * @param node node to be annotated
+     */
+    <T extends NodeWithAnnotations<?>> T withTransactional(T node);
+
+    /**
      * Annotates and enhances method used to produce messages
      *
      * @param produceMethod method to be annotated
