@@ -25,11 +25,14 @@ import java.util.List;
 
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.KieUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
+import org.kie.api.builder.KieBuilder;
+import org.kie.api.builder.Message;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -175,5 +178,38 @@ public class DateCoercionTest {
         ksession.fireAllRules();
         assertThat(list.size()).isEqualTo(1);
         assertThat(list.get(0)).isEqualTo("working");
+    }
+
+    @Test
+    public void testLocalDateTimeCoercion() {
+        // DROOLS-7631
+        String drl = "import java.util.Date\n" +
+                     "import java.time.LocalDateTime\n" +
+                     "global java.util.List list\n" +
+                     "declare DateContainer\n" +
+                     "     date: Date\n" +
+                     "end\n" +
+                     "declare LocalDateTimeContainer\n" +
+                     "     date: LocalDateTime\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule Init when\n" +
+                     "then\n" +
+                     "    insert(new DateContainer(new Date( 1439882189744L )));" +
+                     "    insert(new LocalDateTimeContainer( LocalDateTime.now() ));" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"Test rule\"\n" +
+                     "when\n" +
+                     "    DateContainer( $date: date )\n" +
+                     "    LocalDateTimeContainer( date > $date )\n" +
+                     "then\n" +
+                     "    list.add(\"working\");\n" +
+                     "end\n";
+
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
+        List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
+        assertThat(errors).hasSize(1);
+        assertThat(errors.get(0).getText()).contains("Comparison operation requires compatible types");
     }
 }
