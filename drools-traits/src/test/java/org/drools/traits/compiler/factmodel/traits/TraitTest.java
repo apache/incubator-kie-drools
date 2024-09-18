@@ -103,6 +103,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatException;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -919,12 +921,11 @@ public class TraitTest extends CommonTraitTest {
         List<String> info = new ArrayList<>();
         ks.setGlobal("list", info);
 
-        try {
-            ks.fireAllRules();
-            fail("An exception was expected since a trait can't override the type of a core class field with these settings ");
-        } catch (Throwable rde) {
-            assertThat(rde.getCause()).isInstanceOf(UnsupportedOperationException.class);
-        }
+        assertThatException()
+        	.as("An exception was expected since a trait can't override the type of a core class field with these settings ")
+        	.isThrownBy(() -> ks.fireAllRules())
+        	.extracting(e -> e.getCause())
+        	.isInstanceOf(UnsupportedOperationException.class);
     }
 
 
@@ -949,12 +950,11 @@ public class TraitTest extends CommonTraitTest {
         KieSession ks = getSessionFromString(drl);
         TraitFactoryImpl.setMode(mode, ks.getKieBase());
 
-        try {
-            ks.fireAllRules();
-            fail("An exception was expected since a trait can't override the type of a core class field with these settings ");
-        } catch (Throwable rde) {
-            assertThat(rde.getCause()).isInstanceOf(UnsupportedOperationException.class);
-        }
+        assertThatException()
+        	.as("An exception was expected since a trait can't override the type of a core class field with these settings ")
+        	.isThrownBy(() -> ks.fireAllRules())
+        	.extracting(e -> e.getCause())
+        	.isInstanceOf(UnsupportedOperationException.class);
     }
 
 
@@ -978,12 +978,12 @@ public class TraitTest extends CommonTraitTest {
         KieSession ks = getSessionFromString(drl);
         TraitFactoryImpl.setMode(mode, ks.getKieBase());
 
-        try {
-            ks.fireAllRules();
-            fail("An exception was expected since a trait can't override the type of a core class field with these settings ");
-        } catch (Throwable rde) {
-            assertThat(rde.getCause()).isInstanceOf(UnsupportedOperationException.class);
-        }
+        
+        assertThatException()
+        	.as("An exception was expected since a trait can't override the type of a core class field with these settings ")
+        	.isThrownBy(() -> ks.fireAllRules())
+        	.extracting(e -> e.getCause())
+        	.isInstanceOf(UnsupportedOperationException.class);
     }
 
 
@@ -5677,10 +5677,7 @@ public class TraitTest extends CommonTraitTest {
         List<String> list = new ArrayList<String>();
         ks.setGlobal("list", list);
 
-        try {
-            ks.fireAllRules();
-            fail("don should fail due to the conflict in getShared() method");
-        } catch (Exception e) { }
+        assertThatException().as("don should fail due to the conflict in getShared() method").isThrownBy(()  -> ks.fireAllRules());
     }
 
     @Test

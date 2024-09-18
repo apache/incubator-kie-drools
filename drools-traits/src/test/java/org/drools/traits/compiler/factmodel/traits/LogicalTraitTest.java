@@ -77,7 +77,7 @@ public class LogicalTraitTest extends CommonTraitTest {
 
 
     @Test
-    public void testShadowAlias() {
+    public void testShadowAlias() throws Exception {
 
         KnowledgeBuilder kbuilderImpl = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilderImpl.add( ResourceFactory.newClassPathResource( "org/drools/compiler/factmodel/traits/testTraitedAliasing.drl" ), ResourceType.DRL );
@@ -100,11 +100,7 @@ public class LogicalTraitTest extends CommonTraitTest {
             LOGGER.debug( o.toString() );
         }
 
-        try {
-            ks = SerializationHelper.getSerialisedStatefulKnowledgeSession(ks, true );
-        } catch ( Exception e ) {
-            fail( e.getMessage(), e );
-        }
+        ks = SerializationHelper.getSerialisedStatefulKnowledgeSession(ks, true );
 
         LOGGER.debug( list.toString() );
         assertThat(list).doesNotContain(Boolean.FALSE);
