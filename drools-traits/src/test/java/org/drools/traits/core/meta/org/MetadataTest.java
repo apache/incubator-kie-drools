@@ -195,7 +195,7 @@ public class MetadataTest {
     public void testNewInstance() {
         Klass klass = Klass_.newKlass( URI.create( "test" ) ).call();
         assertThat(klass).isNotNull();
-        assertThat(klass instanceof KlassImpl).isTrue();
+        assertThat(klass).isInstanceOf(KlassImpl.class);
 
         SubKlass klass2 = SubKlass_.newSubKlass( URI.create( "test2" ) ).subProp( 42 ).prop( "hello" ).call();
 

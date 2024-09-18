@@ -998,7 +998,7 @@ public class LogicalTraitTest extends CommonTraitTest {
         ks.fireAllRules();
 
         for ( Object o : ks.getObjects( new ClassObjectFilter( ks.getKieBase().getFactType( "org.drools.test", "Y" ).getFactClass() ) ) ) {
-            assertThat(o instanceof TraitableBean).isTrue();
+            assertThat(o).isInstanceOf(TraitableBean.class);
             TraitableBean tb = (TraitableBean) o;
 
             TraitField fld = tb._getFieldTMS().getRegisteredTraitField("fld" );
@@ -1118,7 +1118,7 @@ public class LogicalTraitTest extends CommonTraitTest {
         ks.fireAllRules();
 
         for ( Object o : ks.getObjects( new ClassObjectFilter( ks.getKieBase().getFactType( "org.drools.test", "Y" ).getFactClass() ) ) ) {
-            assertThat(o instanceof TraitableBean).isTrue();
+            assertThat(o).isInstanceOf(TraitableBean.class);
         }
 
         try {

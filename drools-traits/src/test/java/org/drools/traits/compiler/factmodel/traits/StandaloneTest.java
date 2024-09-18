@@ -100,7 +100,7 @@ public class StandaloneTest {
         LOGGER.debug( "Is foo instance of Thing? : " + (foo instanceof Thing) );
 
         assertThat(foo.getName()).isEqualTo("john doe");
-        assertThat(foo instanceof Thing).isTrue();
+        assertThat(foo).isInstanceOf(Thing.class);
     }
 
 

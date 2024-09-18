@@ -647,15 +647,15 @@ public class TraitTest extends CommonTraitTest {
 		assertThat(coreProperties).isNotNull();
 
 		if (mode == VirtualPropertyMode.MAP) {
-		    assertThat(proxyFields instanceof MapWrapper).isTrue();
-		    assertThat(coreTraits instanceof TraitTypeMapImpl).isTrue();
-		    assertThat(coreProperties instanceof HashMap).isTrue();
+		    assertThat(proxyFields).isInstanceOf(MapWrapper.class);
+		    assertThat(coreTraits).isInstanceOf(TraitTypeMapImpl.class);
+		    assertThat(coreProperties).isInstanceOf(HashMap.class);
 		} else {
 		    assertThat(proxyFields.getClass().getName()).isEqualTo("org.drools.compiler.trait.test.Student.org.drools.compiler.trait.test.Imp_ProxyWrapper");
 
-		    assertThat(proxyFields instanceof TripleBasedStruct).isTrue();
-		    assertThat(coreTraits instanceof TraitTypeMapImpl).isTrue();
-		    assertThat(coreProperties instanceof TripleBasedBean).isTrue();
+		    assertThat(proxyFields).isInstanceOf(TripleBasedStruct.class);
+		    assertThat(coreTraits).isInstanceOf(TraitTypeMapImpl.class);
+		    assertThat(coreProperties).isInstanceOf(TripleBasedBean.class);
 		}
 
 
@@ -923,7 +923,7 @@ public class TraitTest extends CommonTraitTest {
             ks.fireAllRules();
             fail("An exception was expected since a trait can't override the type of a core class field with these settings ");
         } catch (Throwable rde) {
-            assertThat(rde.getCause() instanceof UnsupportedOperationException).isTrue();
+            assertThat(rde.getCause()).isInstanceOf(UnsupportedOperationException.class);
         }
     }
 
@@ -953,7 +953,7 @@ public class TraitTest extends CommonTraitTest {
             ks.fireAllRules();
             fail("An exception was expected since a trait can't override the type of a core class field with these settings ");
         } catch (Throwable rde) {
-            assertThat(rde.getCause() instanceof UnsupportedOperationException).isTrue();
+            assertThat(rde.getCause()).isInstanceOf(UnsupportedOperationException.class);
         }
     }
 
@@ -982,7 +982,7 @@ public class TraitTest extends CommonTraitTest {
             ks.fireAllRules();
             fail("An exception was expected since a trait can't override the type of a core class field with these settings ");
         } catch (Throwable rde) {
-            assertThat(rde.getCause() instanceof UnsupportedOperationException).isTrue();
+            assertThat(rde.getCause()).isInstanceOf(UnsupportedOperationException.class);
         }
     }
 
@@ -4677,7 +4677,7 @@ public class TraitTest extends CommonTraitTest {
             knowledgeSession.fireAllRules();
             fail("Core is not declared @Traitable, this test should have thrown an exception");
         } catch (Exception csq) {
-            assertThat(csq.getCause() instanceof IllegalStateException).isTrue();
+            assertThat(csq.getCause()).isInstanceOf(IllegalStateException.class);
         }
 
     }
@@ -5213,7 +5213,7 @@ public class TraitTest extends CommonTraitTest {
         for (final Object o : ksession.getObjects(object -> object.getClass().getName().contains("test.A"))) {
             InternalFactHandle handle = (InternalFactHandle) ksession.getFactHandle(o);
             TupleImpl          first  = handle.getFirstLeftTuple();
-            assertThat(first instanceof RuleTerminalNodeLeftTuple).isTrue();
+            assertThat(first).isInstanceOf(RuleTerminalNodeLeftTuple.class);
             assertThat(((RuleTerminalNodeLeftTuple) first).getRule().getName()).isEqualTo("Check");
         }
 
