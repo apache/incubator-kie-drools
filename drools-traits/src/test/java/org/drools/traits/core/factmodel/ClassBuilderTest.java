@@ -9,8 +9,7 @@
  *
  *   http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
+ * Unless required by applicable law or agreed to in writing, * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
@@ -79,14 +78,10 @@ public class ClassBuilderTest {
         try {
             ClassBuilder builder = new TraitClassBuilderFactory().getBeanClassBuilder();
 
-            ClassDefinition classDef = new ClassDefinition( "org.drools.TestClass1",
-                                                            null,
-                                                            new String[]{"java.io.Serializable"} );
-            FieldDefinition intDef = new FieldDefinition("intAttr",
-                                                         "int" );
+            ClassDefinition classDef = new ClassDefinition( "org.drools.TestClass1", null, new String[]{"java.io.Serializable"} );
+            FieldDefinition intDef = new FieldDefinition("intAttr", "int" );
 
-            FieldDefinition stringDef = new FieldDefinition( "stringAttr",
-                                                             "java.lang.String" );//"java.lang.String" );
+            FieldDefinition stringDef = new FieldDefinition( "stringAttr", "java.lang.String" );//"java.lang.String" );
             classDef.addField( intDef );
             classDef.addField( stringDef );
             
@@ -94,10 +89,8 @@ public class ClassBuilderTest {
 
             
             
-            intDef.setReadWriteAccessor( store.getAccessor( clazz,
-                                                            intDef.getName() ) );
-            stringDef.setReadWriteAccessor( store.getAccessor( clazz,
-                                                               stringDef.getName() ) );
+            intDef.setReadWriteAccessor( store.getAccessor( clazz, intDef.getName() ) );
+            stringDef.setReadWriteAccessor( store.getAccessor( clazz, stringDef.getName() ) );
 
             byte[] d = builder.buildClass( classDef, classLoader );
 
@@ -107,13 +100,11 @@ public class ClassBuilderTest {
             Serializable instance = (Serializable) clazz.newInstance();
 
             String stringValue = "Atributo String ok";
-            stringDef.setValue( instance,
-                                stringValue );
+            stringDef.setValue( instance, stringValue );
             assertThat(stringDef.getValue(instance)).as("Attribute should have been correctly set").isEqualTo(stringValue);
 
             int intValue = 50;
-            intDef.setValue( instance,
-                             new Integer( intValue ) );
+            intDef.setValue( instance, new Integer( intValue ) );
             assertThat(((Integer) intDef.getValue(instance)).intValue()).as("Attribute should have been correctly set").isEqualTo(intValue);
 
             // testing class rebuilding
@@ -131,8 +122,7 @@ public class ClassBuilderTest {
      * @throws FileNotFoundException
      * @throws IOException
      */
-    private void writeJar(byte[] data) throws FileNotFoundException,
-                                      IOException {
+    private void writeJar(byte[] data) throws FileNotFoundException, IOException {
         FileOutputStream out = new FileOutputStream("/Users/michaelneale/edson.jar");
         JarOutputStream jout = new JarOutputStream( out );
         JarEntry je = new JarEntry( "br/com/auster/TestClass1.class" );
@@ -147,29 +137,14 @@ public class ClassBuilderTest {
         try {
             ClassBuilder builder = new TraitClassBuilderFactory().getBeanClassBuilder();
 
-            ClassDefinition classDef = new ClassDefinition( "org.drools.TestClass2",
-                                                            null,
-                                                            new String[]{} );
-            FieldDefinition long1Def = new FieldDefinition( "longAttr1",
-                                                            "long",
-                                                            true );
-            FieldDefinition long2Def = new FieldDefinition( "longAttr2",
-                                                            "long",
-                                                            true );
-            FieldDefinition doubleDef = new FieldDefinition( "doubleAttr",
-                                                             "double",
-                                                             true );
-            FieldDefinition intDef = new FieldDefinition( "intAttr",
-                                                          "int",
-                                                          true );
-            FieldDefinition strDef = new FieldDefinition( "stringAttr",
-                                                          "java.lang.String",
-                                                          true );
-            FieldDefinition dateDef = new FieldDefinition( "dateAttr",
-                                                           "java.util.Date",
-                                                           true );
-            FieldDefinition str2Def = new FieldDefinition( "stringAttr2",
-                                                           "java.lang.String" );
+            ClassDefinition classDef = new ClassDefinition( "org.drools.TestClass2", null, new String[]{} );
+            FieldDefinition long1Def = new FieldDefinition( "longAttr1", "long", true );
+            FieldDefinition long2Def = new FieldDefinition( "longAttr2", "long", true );
+            FieldDefinition doubleDef = new FieldDefinition( "doubleAttr", "double", true );
+            FieldDefinition intDef = new FieldDefinition( "intAttr", "int", true );
+            FieldDefinition strDef = new FieldDefinition( "stringAttr", "java.lang.String", true );
+            FieldDefinition dateDef = new FieldDefinition( "dateAttr", "java.util.Date", true );
+            FieldDefinition str2Def = new FieldDefinition( "stringAttr2", "java.lang.String" );
             classDef.addField( long1Def );
             classDef.addField( long2Def );
             classDef.addField( doubleDef );
@@ -179,85 +154,57 @@ public class ClassBuilderTest {
             classDef.addField( str2Def );
 
             Class clazz = build(builder, classDef);
-            long1Def.setReadWriteAccessor( store.getAccessor( clazz,
-                                                              long1Def.getName() ) );
-            long2Def.setReadWriteAccessor( store.getAccessor( clazz,
-                                                              long2Def.getName() ) );
-            doubleDef.setReadWriteAccessor( store.getAccessor( clazz,
-                                                               doubleDef.getName() ) );
-            intDef.setReadWriteAccessor( store.getAccessor( clazz,
-                                                            intDef.getName() ) );
-            strDef.setReadWriteAccessor( store.getAccessor( clazz,
-                                                            strDef.getName( ) ) );
-            dateDef.setReadWriteAccessor( store.getAccessor( clazz,
-                                                             dateDef.getName() ) );
-            str2Def.setReadWriteAccessor( store.getAccessor( clazz,
-                                                             str2Def.getName() ) );
+            long1Def.setReadWriteAccessor( store.getAccessor( clazz, long1Def.getName() ) );
+            long2Def.setReadWriteAccessor( store.getAccessor( clazz, long2Def.getName() ) );
+            doubleDef.setReadWriteAccessor( store.getAccessor( clazz, doubleDef.getName() ) );
+            intDef.setReadWriteAccessor( store.getAccessor( clazz, intDef.getName() ) );
+            strDef.setReadWriteAccessor( store.getAccessor( clazz, strDef.getName( ) ) );
+            dateDef.setReadWriteAccessor( store.getAccessor( clazz, dateDef.getName() ) );
+            str2Def.setReadWriteAccessor( store.getAccessor( clazz, str2Def.getName() ) );
 
             Object x = clazz.newInstance();
             Object y = clazz.newInstance();
 
-            long1Def.setValue( x,
-                               Long.valueOf( 20 ) );
-            long2Def.setValue( x,
-                               Long.valueOf( 30 ) );
-            doubleDef.setValue( x,
-                                Double.valueOf( 50.0 ) );
-            intDef.setValue( x,
-                             Integer.valueOf( 10 ) );
-            strDef.setValue( x,
-                             "abc" );
-            dateDef.setValue( x,
-                              new Date( 1000 ) );
-            str2Def.setValue( x,
-                              "instance1" );
+            long1Def.setValue( x, Long.valueOf( 20 ) );
+            long2Def.setValue( x, Long.valueOf( 30 ) );
+            doubleDef.setValue( x, Double.valueOf( 50.0 ) );
+            intDef.setValue( x, Integer.valueOf( 10 ) );
+            strDef.setValue( x, "abc" );
+            dateDef.setValue( x, new Date( 1000 ) );
+            str2Def.setValue( x, "instance1" );
 
-            long1Def.setValue( y,
-                               Long.valueOf( 20 ) );
-            long2Def.setValue( y,
-                               Long.valueOf( 30 ) );
-            doubleDef.setValue( y,
-                                Double.valueOf( 50.0 ) );
-            intDef.setValue( y,
-                             Integer.valueOf( 10 ) );
-            strDef.setValue( y,
-                             "abc" );
-            dateDef.setValue( y,
-                              new Date( 1000 ) );
-            str2Def.setValue( y,
-                              "instance2" );
+            long1Def.setValue( y, Long.valueOf( 20 ) );
+            long2Def.setValue( y, Long.valueOf( 30 ) );
+            doubleDef.setValue( y, Double.valueOf( 50.0 ) );
+            intDef.setValue( y, Integer.valueOf( 10 ) );
+            strDef.setValue( y, "abc" );
+            dateDef.setValue( y, new Date( 1000 ) );
+            str2Def.setValue( y, "instance2" );
 
             Object o = new Object();
 
-            assertThat(x.equals(x)).isTrue();
+            assertThat(x).isEqualTo(x);;
 
-            assertThat(x.equals(o)).isFalse();
+            assertThat(x).isNotEqualTo(o);
 
-            assertThat(x.equals(y)).isTrue();
+            assertThat(x).isEqualTo(y);;
 
-            intDef.setValue( y,
-                             Integer.valueOf( 1 ) );
-            assertThat(x.equals(y)).isFalse();
+            intDef.setValue( y, Integer.valueOf( 1 ) );
+            assertThat(x).isNotEqualTo(y);
 
-            intDef.setValue( y,
-                             Integer.valueOf( 10 ) );
-            strDef.setValue( y,
-                             "xyz" );
-            assertThat(x.equals(y)).isFalse();
+            intDef.setValue( y, Integer.valueOf( 10 ) );
+            strDef.setValue( y, "xyz" );
+            assertThat(x).isNotEqualTo(y);
 
-            strDef.setValue( y,
-                             null );
-            assertThat(x.equals(y)).isFalse();
+            strDef.setValue( y, null );
+            assertThat(x).isNotEqualTo(y);
 
-            strDef.setValue( y,
-                             "abc" );
-            dateDef.setValue( y,
-                              new Date( 1 ) );
-            assertThat(x.equals(y)).isFalse();
+            strDef.setValue( y, "abc" );
+            dateDef.setValue( y, new Date( 1 ) );
+            assertThat(x).isNotEqualTo(y);
 
-            dateDef.setValue( y,
-                              null );
-            assertThat(x.equals(y)).isFalse();
+            dateDef.setValue( y, null );
+            assertThat(x).isNotEqualTo(y);
 
         } catch ( Exception e ) {
             e.printStackTrace();
@@ -270,30 +217,20 @@ public class ClassBuilderTest {
         try {
             ClassBuilder builder = new TraitClassBuilderFactory().getBeanClassBuilder();
 
-            ClassDefinition classDef = new ClassDefinition( "org.drools.TestClass3",
-                                                            null,
-                                                            new String[]{} );
-            FieldDefinition intDef = new FieldDefinition( "intAttr",
-                                                          "int",
-                                                          true );
-            FieldDefinition strDef = new FieldDefinition( "stringAttr",
-                                                          "java.lang.String",
-                                                          false );
+            ClassDefinition classDef = new ClassDefinition( "org.drools.TestClass3", null, new String[]{} );
+            FieldDefinition intDef = new FieldDefinition( "intAttr", "int", true );
+            FieldDefinition strDef = new FieldDefinition( "stringAttr", "java.lang.String", false );
             classDef.addField( intDef );
             classDef.addField( strDef );
 
             Class clazz = build(builder, classDef);
-            intDef.setReadWriteAccessor( store.getAccessor( clazz,
-                                                            intDef.getName() ) );
-            strDef.setReadWriteAccessor( store.getAccessor( clazz,
-                                                            strDef.getName() ) );
+            intDef.setReadWriteAccessor( store.getAccessor( clazz, intDef.getName() ) );
+            strDef.setReadWriteAccessor( store.getAccessor( clazz, strDef.getName() ) );
 
             Object x = clazz.newInstance();
 
-            intDef.setValue( x,
-                             new Integer( 10 ) );
-            strDef.setValue( x,
-                             "abc" );
+            intDef.setValue( x, new Integer( 10 ) );
+            strDef.setValue( x, "abc" );
 
             assertThat(x.hashCode()).as("Wrong hashcode calculation").isEqualTo(31 + 10);
             assertThat(x.hashCode()).as("Wrong hashcode calculation").isEqualTo(x.hashCode());
@@ -309,29 +246,14 @@ public class ClassBuilderTest {
         try {
             ClassBuilder builder = new TraitClassBuilderFactory().getBeanClassBuilder();
 
-            ClassDefinition classDef = new ClassDefinition( "org.drools.TestClass4",
-                                                            null,
-                                                            new String[]{} );
-            FieldDefinition long1Def = new FieldDefinition( "longAttr1",
-                                                            "long",
-                                                            true );
-            FieldDefinition long2Def = new FieldDefinition( "longAttr2",
-                                                            "long",
-                                                            true );
-            FieldDefinition doubleDef = new FieldDefinition( "doubleAttr",
-                                                             "double",
-                                                             true );
-            FieldDefinition intDef = new FieldDefinition( "intAttr",
-                                                          "int",
-                                                          true );
-            FieldDefinition strDef = new FieldDefinition( "stringAttr",
-                                                          "java.lang.String",
-                                                          true );
-            FieldDefinition dateDef = new FieldDefinition( "dateAttr",
-                                                           "java.util.Date",
-                                                           true );
-            FieldDefinition str2Def = new FieldDefinition( "stringAttr2",
-                                                           "java.lang.String" );
+            ClassDefinition classDef = new ClassDefinition( "org.drools.TestClass4", null, new String[]{} );
+            FieldDefinition long1Def = new FieldDefinition( "longAttr1", "long", true );
+            FieldDefinition long2Def = new FieldDefinition( "longAttr2", "long", true );
+            FieldDefinition doubleDef = new FieldDefinition( "doubleAttr", "double", true );
+            FieldDefinition intDef = new FieldDefinition( "intAttr", "int", true );
+            FieldDefinition strDef = new FieldDefinition( "stringAttr", "java.lang.String", true );
+            FieldDefinition dateDef = new FieldDefinition( "dateAttr", "java.util.Date", true );
+            FieldDefinition str2Def = new FieldDefinition( "stringAttr2", "java.lang.String" );
             classDef.addField( long1Def );
             classDef.addField( long2Def );
             classDef.addField( doubleDef );
@@ -341,37 +263,23 @@ public class ClassBuilderTest {
             classDef.addField( str2Def );
 
             Class clazz = build(builder, classDef);
-            long1Def.setReadWriteAccessor( store.getAccessor( clazz,
-                                                              long1Def.getName() ) );
-            long2Def.setReadWriteAccessor( store.getAccessor( clazz,
-                                                              long2Def.getName() ) );
-            doubleDef.setReadWriteAccessor( store.getAccessor( clazz,
-                                                               doubleDef.getName() ) );
-            intDef.setReadWriteAccessor( store.getAccessor( clazz,
-                                                            intDef.getName() ) );
-            strDef.setReadWriteAccessor( store.getAccessor( clazz,
-                                                            strDef.getName() ) );
-            dateDef.setReadWriteAccessor( store.getAccessor( clazz,
-                                                             dateDef.getName() ) );
-            str2Def.setReadWriteAccessor( store.getAccessor( clazz,
-                                                             str2Def.getName() ) );
+            long1Def.setReadWriteAccessor( store.getAccessor( clazz, long1Def.getName() ) );
+            long2Def.setReadWriteAccessor( store.getAccessor( clazz, long2Def.getName() ) );
+            doubleDef.setReadWriteAccessor( store.getAccessor( clazz, doubleDef.getName() ) );
+            intDef.setReadWriteAccessor( store.getAccessor( clazz, intDef.getName() ) );
+            strDef.setReadWriteAccessor( store.getAccessor( clazz, strDef.getName() ) );
+            dateDef.setReadWriteAccessor( store.getAccessor( clazz, dateDef.getName() ) );
+            str2Def.setReadWriteAccessor( store.getAccessor( clazz, str2Def.getName() ) );
 
             Object x = clazz.newInstance();
 
-            long1Def.setValue( x,
-                               new Long( 20 ) );
-            long2Def.setValue( x,
-                               new Long( 30 ) );
-            doubleDef.setValue( x,
-                                new Double( 50.0 ) );
-            intDef.setValue( x,
-                             new Integer( 10 ) );
-            strDef.setValue( x,
-                             "abc" );
-            dateDef.setValue( x,
-                              new Date( 1000 ) );
-            str2Def.setValue( x,
-                              "instance1" );
+            long1Def.setValue( x, new Long( 20 ) );
+            long2Def.setValue( x, new Long( 30 ) );
+            doubleDef.setValue( x, new Double( 50.0 ) );
+            intDef.setValue( x, new Integer( 10 ) );
+            strDef.setValue( x, "abc" );
+            dateDef.setValue( x, new Date( 1000 ) );
+            str2Def.setValue( x, "instance1" );
 
             String result = x.toString();
 
@@ -395,16 +303,13 @@ public class ClassBuilderTest {
         try {
             ClassBuilder builder = new TraitClassBuilderFactory().getBeanClassBuilder();
 
-            ClassDefinition classDef = new ClassDefinition( "org.drools.TestClass5",
-                                                            null,
-                                                            new String[]{} );
+            ClassDefinition classDef = new ClassDefinition( "org.drools.TestClass5", null, new String[]{} );
 
             String[] types = new String[]{"byte", "short", "int", "long", "float", "double", "char", "java.lang.String", "boolean"};
             FieldDefinition[] fields = new FieldDefinition[types.length];
             for ( int i = 0; i < types.length; i++ ) {
                 String attrName = types[i].substring( types[i].lastIndexOf( '.' ) + 1 );
-                attrName = attrName.substring( 0,
-                                               1 ).toLowerCase() + attrName.substring( 1 ) + "Attr";
+                attrName = attrName.substring( 0, 1 ).toLowerCase() + attrName.substring( 1 ) + "Attr";
                 fields[i] = new FieldDefinition( attrName, // attr name
                                                  types[i], // attr type
                                                  i % 2 == 0 ); // half of them are key
@@ -414,8 +319,7 @@ public class ClassBuilderTest {
             Class clazz = build(builder, classDef);
 
             for ( FieldDefinition field : fields ) {
-                field.setReadWriteAccessor( store.getAccessor( clazz,
-                                                               field.getName() ) );
+                field.setReadWriteAccessor( store.getAccessor( clazz, field.getName() ) );
             }
 
             Constructor< ? >[] cons = clazz.getConstructors();
@@ -434,15 +338,7 @@ public class ClassBuilderTest {
                     }
 
                     // test actual invocation
-                    Object instance = c.newInstance( (byte) 1,
-                                                     (short) 2,
-                                                     3,
-                                                     4l,
-                                                     5.0f,
-                                                     6.0d,
-                                                     'a',
-                                                     "xyz",
-                                                     true );
+                    Object instance = c.newInstance( (byte) 1, (short) 2, 3, 4l, 5.0f, 6.0d, 'a', "xyz", true );
 
                     assertThat(fields[0].getValue(instance)).isEqualTo((byte) 1);
                     assertThat(fields[1].getValue(instance)).isEqualTo((short) 2);
@@ -462,11 +358,7 @@ public class ClassBuilderTest {
                         }
                     }
                     // test actual invocation
-                    Object instance = c.newInstance( (byte) 1,
-                                                     3,
-                                                     5.0f,
-                                                     'a',
-                                                     true );
+                    Object instance = c.newInstance( (byte) 1, 3, 5.0f, 'a', true );
 
                     assertThat(fields[0].getValue(instance)).isEqualTo((byte) 1);
                     assertThat(fields[2].getValue(instance)).isEqualTo(3);
