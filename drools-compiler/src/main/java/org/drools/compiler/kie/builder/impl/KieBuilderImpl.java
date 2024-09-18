@@ -23,8 +23,10 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -363,7 +365,11 @@ public class KieBuilderImpl
     }
 
     public static boolean filterFileInKBase( InternalKieModule kieModule, KieBaseModel kieBase, String fileName, Supplier<InternalResource> file, boolean useFolders ) {
-        return isFileInKieBase( kieBase, fileName, file, useFolders ) &&
+        return filterFileInKBase(kieModule, kieBase, fileName, file, useFolders, null);
+    }
+
+    public static boolean filterFileInKBase( InternalKieModule kieModule, KieBaseModel kieBase, String fileName, Supplier<InternalResource> file, boolean useFolders, Map<InternalResource, String> packageNameCache) {
+        return isFileInKieBase( kieBase, fileName, file, useFolders, packageNameCache ) &&
                 ( isKieExtension( fileName ) || getResourceType( kieModule, fileName ) != null );
     }
 
@@ -371,7 +377,7 @@ public class KieBuilderImpl
         return !isJavaSourceFile( fileName ) && ResourceType.determineResourceType(fileName) != null;
     }
 
-    private static boolean isFileInKieBase( KieBaseModel kieBase, String fileName, Supplier<InternalResource> file, boolean useFolders ) {
+    private static boolean isFileInKieBase( KieBaseModel kieBase, String fileName, Supplier<InternalResource> file, boolean useFolders, Map<InternalResource, String> packageNameCache ) {
         int lastSep = fileName.lastIndexOf( "/" );
         if ( lastSep + 1 < fileName.length() && fileName.charAt( lastSep + 1 ) == '.' ) {
             // skip dot files
@@ -381,15 +387,15 @@ public class KieBuilderImpl
             return true;
         } else {
             String folderNameForFile = lastSep > 0 ? fileName.substring( 0, lastSep ) : "";
-            String pkgNameForFile = packageNameForFile( fileName, folderNameForFile, !useFolders, file );
+            String pkgNameForFile = packageNameForFile( fileName, folderNameForFile, !useFolders, file, packageNameCache );
             return isPackageInKieBase( kieBase, pkgNameForFile );
         }
     }
 
-    private static String packageNameForFile( String fileName, String folderNameForFile, boolean discoverPackage, Supplier<InternalResource> file ) {
+    private static String packageNameForFile( String fileName, String folderNameForFile, boolean discoverPackage, Supplier<InternalResource> file, Map<InternalResource, String> packageNameCache ) {
         String packageNameFromFolder = getRelativePackageName(folderNameForFile.replace( '/', '.' ));
         if (discoverPackage) {
-            String packageNameForFile = packageNameFromAsset(fileName, file.get());
+            String packageNameForFile = packageNameFromAsset(fileName, file.get(), packageNameCache);
             if (packageNameForFile != null) {
                 packageNameForFile = getRelativePackageName( packageNameForFile );
                 if ( !packageNameForFile.equals( packageNameFromFolder ) ) {
@@ -403,10 +409,18 @@ public class KieBuilderImpl
         return packageNameFromFolder;
     }
 
-    private static String packageNameFromAsset(String fileName, InternalResource file) {
+    private static String packageNameFromAsset(String fileName, InternalResource file, Map<InternalResource, String> packageNameCache) {
         if (file == null) {
             return null;
         }
+        if (packageNameCache != null) {
+            return packageNameCache.computeIfAbsent(file, f -> packageNameFromAsset(fileName, f));
+        } else {
+            return packageNameFromAsset(fileName, file);
+        }
+    }
+
+    private static String packageNameFromAsset(String fileName, InternalResource file) {
         if (fileName.endsWith( ".drl" )) {
             return packageNameFromDrl( new String(file.getBytes()) );
         }

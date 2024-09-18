@@ -32,6 +32,7 @@ import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.compiler.kproject.models.KieSessionModelImpl;
+import org.drools.io.InternalResource;
 import org.drools.util.StringUtils;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.model.KieBaseModel;
@@ -65,6 +66,8 @@ public abstract class AbstractKieProject implements KieProject {
 
     private final Map<String, KieSessionModel>   kSessionModels             = new HashMap<>();
 
+    private Map<InternalResource, String>        packageNameCache           = new HashMap<>();
+
     private static final Predicate<String> BUILD_ALL = s -> true;
 
     public ResultsImpl verify() {
@@ -83,6 +86,7 @@ public abstract class AbstractKieProject implements KieProject {
         for ( KieBaseModel model : kBaseModels.values() ) {
             buildKnowledgePackages((KieBaseModelImpl) model, buildContext);
         }
+        packageNameCache.clear();
     }
 
     private void verify(String[] kBaseNames, BuildContext buildContext) {
@@ -93,6 +97,7 @@ public abstract class AbstractKieProject implements KieProject {
             }
             buildKnowledgePackages( kieBaseModel, buildContext );
         }
+        packageNameCache.clear();
     }
 
     public KieBaseModel getDefaultKieBaseModel() {
@@ -331,7 +336,7 @@ public abstract class AbstractKieProject implements KieProject {
                            InternalKieModule kieModule, boolean useFolders) {
         for (String fileName : kieModule.getFileNames()) {
             if (buildFilter.test( fileName ) && !fileName.startsWith(".") && !fileName.endsWith(".properties") &&
-                    filterFileInKBase(kieModule, kieBaseModel, fileName, () -> kieModule.getResource( fileName ), useFolders)) {
+                    filterFileInKBase(kieModule, kieBaseModel, fileName, () -> kieModule.getResource( fileName ), useFolders, packageNameCache)) {
                 assets.add(new Asset( kieModule, fileName ));
             }
         }
