@@ -146,7 +146,12 @@ public final class TemplatedGenerator {
     }
 
     private InputStream getResource(String path) {
-        return this.getClass().getResourceAsStream(path);
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        InputStream is = classLoader.getResourceAsStream(path);
+        if (is == null) {
+            return this.getClass().getResourceAsStream(path);
+        }
+        return is;
     }
 
     public static Builder builder() {

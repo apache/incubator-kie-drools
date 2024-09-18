@@ -22,7 +22,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
-import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
+import org.kie.kogito.internal.process.workitem.KogitoWorkItem;
 
 import static org.kie.kogito.serverless.workflow.SWFConstants.CONTENT_DATA;
 import static org.kie.kogito.serverless.workflow.SWFConstants.MODEL_WORKFLOW_VAR;

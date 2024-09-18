@@ -40,7 +40,7 @@ public class BaseEventManager implements EventManager {
 
     @Override
     public EventBatch newBatch() {
-        return new ProcessInstanceEventBatch(service, addons);
+        return new DefaultInstanceEventBatch(service, addons);
     }
 
     @Override

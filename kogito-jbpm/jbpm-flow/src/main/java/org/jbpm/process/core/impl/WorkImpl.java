@@ -19,7 +19,6 @@
 package org.jbpm.process.core.impl;
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -30,9 +29,6 @@ import java.util.Set;
 
 import org.jbpm.process.core.ParameterDefinition;
 import org.jbpm.process.core.Work;
-import org.jbpm.process.instance.impl.humantask.DeadlineHelper;
-import org.jbpm.process.instance.impl.humantask.DeadlineInfo;
-import org.jbpm.process.instance.impl.humantask.Reassignment;
 import org.kie.kogito.process.workitems.WorkParametersFactory;
 
 public class WorkImpl implements Work, Serializable {
@@ -43,27 +39,9 @@ public class WorkImpl implements Work, Serializable {
     private Map<String, Object> parameters = new LinkedHashMap<>();
     private Map<String, ParameterDefinition> parameterDefinitions = new LinkedHashMap<>();
 
-    private Collection<DeadlineInfo<Map<String, Object>>> startDeadlines;
-    private Collection<DeadlineInfo<Map<String, Object>>> endDeadlines;
-    private Collection<DeadlineInfo<Reassignment>> startReassigments;
-    private Collection<DeadlineInfo<Reassignment>> endReassigments;
-
     private WorkParametersFactory factory;
 
-    private static final String NOT_STARTED = "NotStartedNotify";
-    private static final String NOT_COMPLETED = "NotCompletedNotify";
-
-    private static final String NOT_STARTED_ASSIGN = "NotStartedReassign";
-    private static final String NOT_COMPLETED_ASSIGN = "NotCompletedReassign";
-
-    private static final Set<String> META_NAMES = new HashSet<>();
-
-    static {
-        META_NAMES.add(NOT_STARTED);
-        META_NAMES.add(NOT_COMPLETED);
-        META_NAMES.add(NOT_STARTED_ASSIGN);
-        META_NAMES.add(NOT_COMPLETED_ASSIGN);
-    }
+    private Set<String> metaParameters = new HashSet<>();
 
     @Override
     public void setName(String name) {
@@ -104,6 +82,15 @@ public class WorkImpl implements Work, Serializable {
         return Collections.unmodifiableMap(parameters);
     }
 
+    public void setMetaParameters(Set<String> metaParameters) {
+        this.metaParameters = metaParameters;
+    }
+
+    @Override
+    public Set<String> getMetaParameters() {
+        return metaParameters;
+    }
+
     @Override
     public String toString() {
         return "Work " + name;
@@ -138,45 +125,6 @@ public class WorkImpl implements Work, Serializable {
     }
 
     @Override
-    public Collection<DeadlineInfo<Map<String, Object>>> getNotStartedDeadlines() {
-
-        if (startDeadlines == null) {
-            startDeadlines = DeadlineHelper.parseDeadlines(getParameter(NOT_STARTED));
-        }
-        return startDeadlines;
-
-    }
-
-    @Override
-    public Collection<DeadlineInfo<Map<String, Object>>> getNotCompletedDeadlines() {
-        if (endDeadlines == null) {
-            endDeadlines = DeadlineHelper.parseDeadlines(getParameter(NOT_COMPLETED));
-        }
-        return endDeadlines;
-    }
-
-    @Override
-    public Set<String> getMetaParameters() {
-        return META_NAMES;
-    }
-
-    @Override
-    public Collection<DeadlineInfo<Reassignment>> getNotStartedReassignments() {
-        if (startReassigments == null) {
-            startReassigments = DeadlineHelper.parseReassignments(getParameter(NOT_STARTED_ASSIGN));
-        }
-        return startReassigments;
-    }
-
-    @Override
-    public Collection<DeadlineInfo<Reassignment>> getNotCompletedReassigments() {
-        if (endReassigments == null) {
-            endReassigments = DeadlineHelper.parseReassignments(getParameter(NOT_COMPLETED_ASSIGN));
-        }
-        return endReassigments;
-    }
-
-    @Override
     public void setWorkParametersFactory(WorkParametersFactory factory) {
         this.factory = factory;
 
@@ -186,4 +134,5 @@ public class WorkImpl implements Work, Serializable {
     public WorkParametersFactory getWorkParametersFactory() {
         return factory;
     }
+
 }

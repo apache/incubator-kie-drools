@@ -21,7 +21,7 @@ package org.kie.kogito.serverless.workflow.executor;
 import java.util.Map;
 import java.util.function.Function;
 
-import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
+import org.kie.kogito.internal.process.workitem.KogitoWorkItem;
 import org.kie.kogito.jackson.utils.JsonObjectUtils;
 import org.kie.kogito.serverless.workflow.SWFConstants;
 import org.kie.kogito.serverless.workflow.WorkflowWorkItemHandler;

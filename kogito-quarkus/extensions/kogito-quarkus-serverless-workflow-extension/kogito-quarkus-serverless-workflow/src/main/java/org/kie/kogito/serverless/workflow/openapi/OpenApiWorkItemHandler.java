@@ -28,9 +28,9 @@ import org.jbpm.process.instance.KogitoProcessContextImpl;
 import org.jbpm.util.ContextFactory;
 import org.jbpm.workflow.core.WorkflowProcess;
 import org.kie.kogito.event.cloudevents.extension.ProcessMeta;
-import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
+import org.kie.kogito.internal.process.workitem.KogitoWorkItem;
+import org.kie.kogito.internal.process.workitem.WorkItemExecutionException;
 import org.kie.kogito.process.expr.ExpressionHandlerFactory;
-import org.kie.kogito.process.workitem.WorkItemExecutionException;
 import org.kie.kogito.serverless.workflow.SWFConstants;
 import org.kie.kogito.serverless.workflow.WorkflowWorkItemHandler;
 

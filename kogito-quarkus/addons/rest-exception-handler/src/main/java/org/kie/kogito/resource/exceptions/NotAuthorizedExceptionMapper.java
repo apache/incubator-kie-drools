@@ -18,7 +18,7 @@
  */
 package org.kie.kogito.resource.exceptions;
 
-import org.kie.kogito.process.workitem.NotAuthorizedException;
+import org.kie.kogito.internal.process.workitem.NotAuthorizedException;
 
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.Provider;

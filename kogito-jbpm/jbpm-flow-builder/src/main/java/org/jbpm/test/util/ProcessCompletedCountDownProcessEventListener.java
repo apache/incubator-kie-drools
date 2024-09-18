@@ -19,8 +19,12 @@
 package org.jbpm.test.util;
 
 import org.kie.api.event.process.ProcessCompletedEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ProcessCompletedCountDownProcessEventListener extends DefaultCountDownProcessEventListener {
+
+    private static final Logger logger = LoggerFactory.getLogger(ProcessCompletedCountDownProcessEventListener.class);
 
     public ProcessCompletedCountDownProcessEventListener() {
         super(1);
@@ -32,6 +36,7 @@ public class ProcessCompletedCountDownProcessEventListener extends DefaultCountD
 
     @Override
     public void afterProcessCompleted(ProcessCompletedEvent event) {
+        logger.info("process completed {}", event);
         countDown();
     }
 

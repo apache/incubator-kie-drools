@@ -31,7 +31,6 @@ import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.WorkflowProcess;
 import org.kie.kogito.Application;
 import org.kie.kogito.Model;
-import org.kie.kogito.auth.SecurityPolicy;
 import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessError;
@@ -158,9 +157,7 @@ public abstract class BaseProcessInstanceManagementResource<T> implements Proces
 
         return executeOnProcessInstance(processId, processInstanceId, processInstance -> {
             // use special security policy to bypass auth check as this is management operation
-            List<WorkItem> workItems = processInstance.workItems(new SecurityPolicy(null) {
-            });
-
+            List<WorkItem> workItems = processInstance.workItems();
             return buildOkResponse(workItems);
         });
     }

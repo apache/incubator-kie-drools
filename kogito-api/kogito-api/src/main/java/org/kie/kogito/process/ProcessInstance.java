@@ -29,11 +29,11 @@ import java.util.function.Predicate;
 
 import org.kie.kogito.correlation.Correlation;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
-import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
+import org.kie.kogito.internal.process.workitem.KogitoWorkItem;
+import org.kie.kogito.internal.process.workitem.Policy;
+import org.kie.kogito.internal.process.workitem.WorkItemTransition;
 import org.kie.kogito.process.flexible.AdHocFragment;
 import org.kie.kogito.process.flexible.Milestone;
-import org.kie.kogito.process.workitem.Policy;
-import org.kie.kogito.process.workitem.Transition;
 
 public interface ProcessInstance<T> {
 
@@ -157,7 +157,7 @@ public interface ProcessInstance<T> {
      * @param variables optional variables
      * @param policies optional list of policies to be enforced
      */
-    void completeWorkItem(String id, Map<String, Object> variables, Policy<?>... policies);
+    void completeWorkItem(String id, Map<String, Object> variables, Policy... policies);
 
     /**
      * Updates work item according to provided consumer
@@ -167,7 +167,7 @@ public interface ProcessInstance<T> {
      * @param policies optional security information
      * @return result of the operation performed by the updater
      */
-    <R> R updateWorkItem(String id, Function<KogitoWorkItem, R> updater, Policy<?>... policies);
+    <R> R updateWorkItem(String id, Function<KogitoWorkItem, R> updater, Policy... policies);
 
     /**
      * Aborts work item belonging to this process instance
@@ -175,7 +175,7 @@ public interface ProcessInstance<T> {
      * @param id id of the work item to complete
      * @param policies optional list of policies to be enforced
      */
-    void abortWorkItem(String id, Policy<?>... policies);
+    void abortWorkItem(String id, Policy... policies);
 
     /**
      * Transition work item belonging to this process instance not another life cycle phase
@@ -183,7 +183,7 @@ public interface ProcessInstance<T> {
      * @param id id of the work item to complete
      * @param transition target transition including phase, identity and data
      */
-    void transitionWorkItem(String id, Transition<?> transition);
+    void transitionWorkItem(String id, WorkItemTransition transition);
 
     /**
      * Returns work item identified by given id if found
@@ -192,7 +192,7 @@ public interface ProcessInstance<T> {
      * @param policies optional list of policies to be enforced
      * @return work item with its parameters if found
      */
-    WorkItem workItem(String workItemId, Policy<?>... policies);
+    WorkItem workItem(String workItemId, Policy... policies);
 
     /**
      * Return nodes that fulfills a particular filter
@@ -208,7 +208,7 @@ public interface ProcessInstance<T> {
      * @param policies optional list of policies to be enforced
      * @return list of work items
      */
-    List<WorkItem> workItems(Policy<?>... policies);
+    List<WorkItem> workItems(Policy... policies);
 
     /**
      * Returns list of filtered work items
@@ -216,7 +216,7 @@ public interface ProcessInstance<T> {
      * @param p the predicate to be applied to the node holding the work item
      * @return list of work items
      */
-    List<WorkItem> workItems(Predicate<KogitoNodeInstance> p, Policy<?>... policies);
+    List<WorkItem> workItems(Predicate<KogitoNodeInstance> p, Policy... policies);
 
     /**
      * Returns identifier of this process instance

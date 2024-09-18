@@ -18,7 +18,7 @@
  */
 package org.kie.kogito.resource.exceptions;
 
-import org.kie.kogito.process.workitem.WorkItemExecutionException;
+import org.kie.kogito.internal.process.workitem.WorkItemExecutionException;
 
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.Provider;

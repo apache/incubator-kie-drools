@@ -52,7 +52,7 @@
       <dataOutputAssociation>
         <sourceRef>output</sourceRef>
         <targetRef>instanceMetadata</targetRef>
-        <assignment>
+        <assignment language="XPath">
           <from>.</from>
           <to>.</to>
         </assignment>
@@ -72,7 +72,7 @@
       <dataInputAssociation>
         <sourceRef>instanceMetadata</sourceRef>
         <targetRef>coId</targetRef>
-        <assignment>
+        <assignment language="XPath">
           <from>@hello</from>
           <to>.</to>
         </assignment>

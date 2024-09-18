@@ -30,6 +30,8 @@ public interface WorkItem {
         throw new UnsupportedOperationException();
     }
 
+    String getWorkItemHandlerName();
+
     String getNodeInstanceId();
 
     String getName();
@@ -43,4 +45,6 @@ public interface WorkItem {
     Map<String, Object> getParameters();
 
     Map<String, Object> getResults();
+
+    String getExternalReferenceId();
 }

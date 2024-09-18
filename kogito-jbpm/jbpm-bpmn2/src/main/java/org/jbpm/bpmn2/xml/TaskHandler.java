@@ -70,6 +70,7 @@ public class TaskHandler extends AbstractNodeHandler {
         }
 
         // this is a hack as most of the examples in kogito depends on this evaluation
+        work.setParameter(Work.PARAMETER_UNIQUE_TASK_ID, workItemNode.getUniqueId());
         work.setParameter("NodeName", workItemNode.getName());
         setParameter(work, "TaskName", workItemNode.getIoSpecification().getDataInputAssociation());
         workItemNode.setMetaData("DataInputs", new HashMap<String, String>());

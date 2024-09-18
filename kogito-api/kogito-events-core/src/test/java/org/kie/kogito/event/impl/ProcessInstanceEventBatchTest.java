@@ -29,6 +29,7 @@ import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.api.event.process.ProcessVariableChangedEvent;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.kogito.event.impl.adapter.AdapterHelper;
 import org.kie.kogito.event.process.ProcessInstanceErrorDataEvent;
 import org.kie.kogito.event.process.ProcessInstanceNodeDataEvent;
 import org.kie.kogito.event.process.ProcessInstanceStateDataEvent;
@@ -48,29 +49,24 @@ public class ProcessInstanceEventBatchTest {
 
     @Test
     public void testNoServiceDefined() {
-        ProcessInstanceEventBatch batch = new ProcessInstanceEventBatch("", null);
-
-        assertThat(batch.extractRuntimeSource(singletonMap(PROCESS_ID_META_DATA, "travels"))).isEqualTo("/travels");
-        assertThat(batch.extractRuntimeSource(singletonMap(PROCESS_ID_META_DATA, "demo.orders"))).isEqualTo("/orders");
+        assertThat(AdapterHelper.extractRuntimeSource("", singletonMap(PROCESS_ID_META_DATA, "travels"))).isEqualTo("/travels");
+        assertThat(AdapterHelper.extractRuntimeSource("", singletonMap(PROCESS_ID_META_DATA, "demo.orders"))).isEqualTo("/orders");
     }
 
     @Test
     public void testNoProcessIdDefined() {
-        ProcessInstanceEventBatch batch = new ProcessInstanceEventBatch("http://localhost:8080", null);
-        assertThat(batch.extractRuntimeSource(emptyMap())).isNull();
+        assertThat(AdapterHelper.extractRuntimeSource("http://localhost:8080", emptyMap())).isNull();
     }
 
     @Test
     public void testServiceDefined() {
-        ProcessInstanceEventBatch batch = new ProcessInstanceEventBatch("http://localhost:8080", null);
-
-        assertThat(batch.extractRuntimeSource(singletonMap(PROCESS_ID_META_DATA, "travels"))).isEqualTo("http://localhost:8080/travels");
-        assertThat(batch.extractRuntimeSource(singletonMap(PROCESS_ID_META_DATA, "demo.orders"))).isEqualTo("http://localhost:8080/orders");
+        assertThat(AdapterHelper.extractRuntimeSource("http://localhost:8080", singletonMap(PROCESS_ID_META_DATA, "travels"))).isEqualTo("http://localhost:8080/travels");
+        assertThat(AdapterHelper.extractRuntimeSource("http://localhost:8080", singletonMap(PROCESS_ID_META_DATA, "demo.orders"))).isEqualTo("http://localhost:8080/orders");
     }
 
     @Test
     public void testEventSorting() {
-        ProcessInstanceEventBatch batch = new ProcessInstanceEventBatch("", null);
+        DefaultInstanceEventBatch batch = new DefaultInstanceEventBatch("", null);
         KogitoWorkflowProcess process = Mockito.mock(KogitoWorkflowProcess.class);
         KogitoWorkflowProcessInstance processInstance = Mockito.mock(KogitoWorkflowProcessInstance.class);
         KogitoNodeInstance nodeInstance = Mockito.mock(KogitoNodeInstance.class);
@@ -87,7 +83,7 @@ public class ProcessInstanceEventBatchTest {
         batch.append(mockEvent(ProcessCompletedEvent.class, processInstance));
         batch.append(mockEvent(ProcessNodeTriggeredEvent.class, processInstance, nodeInstance));
         batch.append(mockEvent(ProcessNodeLeftEvent.class, processInstance, nodeInstance));
-        assertThat(batch.processedEvents).hasExactlyElementsOfTypes(ProcessInstanceStateDataEvent.class, ProcessInstanceVariableDataEvent.class, ProcessInstanceNodeDataEvent.class,
+        assertThat(batch.events()).hasExactlyElementsOfTypes(ProcessInstanceStateDataEvent.class, ProcessInstanceVariableDataEvent.class, ProcessInstanceNodeDataEvent.class,
                 ProcessInstanceNodeDataEvent.class,
                 ProcessInstanceNodeDataEvent.class, ProcessInstanceNodeDataEvent.class, ProcessInstanceErrorDataEvent.class, ProcessInstanceNodeDataEvent.class, ProcessInstanceNodeDataEvent.class,
                 ProcessInstanceStateDataEvent.class);

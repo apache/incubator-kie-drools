@@ -33,7 +33,7 @@
   <artifactId>process-workitems</artifactId>
   <packaging>jar</packaging>
 
-  <name>Kogito :: Process :: WorkItems</name>
+  <name>Kogito :: jBPM :: WorkItems</name>
   <description>Kogito WorkItems</description>
 
   <properties>

@@ -33,6 +33,11 @@
             <groupId>org.kie.kogito</groupId>
             <artifactId>process-workitems</artifactId>
         </dependency>
+        
+        <dependency>
+            <groupId>org.kie.kogito</groupId>
+            <artifactId>jbpm-usertask</artifactId>
+        </dependency>
     </dependencies>
 
     <dependencyManagement>

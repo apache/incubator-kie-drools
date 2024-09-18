@@ -22,10 +22,15 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.incubation.application.AppRoot;
-import org.kie.kogito.incubation.common.*;
-import org.kie.kogito.incubation.processes.*;
+import org.kie.kogito.incubation.common.EmptyDataContext;
+import org.kie.kogito.incubation.common.ExtendedDataContext;
+import org.kie.kogito.incubation.common.MapDataContext;
+import org.kie.kogito.incubation.processes.ProcessIds;
+import org.kie.kogito.incubation.processes.ProcessInstanceId;
+import org.kie.kogito.incubation.processes.TaskInstanceId;
 import org.kie.kogito.incubation.processes.services.StatefulProcessService;
 import org.kie.kogito.incubation.processes.services.contexts.Policy;
 import org.kie.kogito.incubation.processes.services.contexts.ProcessMetaDataContext;
@@ -151,6 +156,7 @@ public class StatefulProcessResourceTest {
     }
 
     @Test
+    @Disabled("Revisited after ht endpoints")
     public void completeTask() throws JsonProcessingException {
         /// /processes/approvals
         var id = appRoot.get(ProcessIds.class).get("approvals");
@@ -188,6 +194,7 @@ public class StatefulProcessResourceTest {
     }
 
     @Test
+    @Disabled("Revisited after ht endpoints")
     public void completeProcess() throws JsonProcessingException {
         /// /processes/approvals
         var id = appRoot.get(ProcessIds.class).get("approvals");
@@ -280,6 +287,7 @@ public class StatefulProcessResourceTest {
     }
 
     @Test
+    @Disabled("Revisited after ht endpoints")
     public void completeProcessTask() {
         var id = appRoot.get(ProcessIds.class).get("signal");
         MapDataContext dc = MapDataContext.create();

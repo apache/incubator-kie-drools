@@ -18,7 +18,7 @@
  */
 package org.kie.kogito.serverless.workflow.workitemparams;
 
-import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
+import org.kie.kogito.internal.process.workitem.KogitoWorkItem;
 import org.kie.kogito.jackson.utils.JsonObjectUtils;
 
 public class ObjectResolver extends ExpressionWorkItemResolver<Object> {

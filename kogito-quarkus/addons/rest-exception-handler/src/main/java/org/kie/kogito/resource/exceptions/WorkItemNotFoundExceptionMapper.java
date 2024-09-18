@@ -18,7 +18,7 @@
  */
 package org.kie.kogito.resource.exceptions;
 
-import org.kie.kogito.internal.process.runtime.WorkItemNotFoundException;
+import org.kie.kogito.internal.process.workitem.WorkItemNotFoundException;
 
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.Provider;

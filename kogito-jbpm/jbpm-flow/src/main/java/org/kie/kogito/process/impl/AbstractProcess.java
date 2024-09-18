@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.locks.Lock;
@@ -48,8 +49,10 @@ import org.kie.kogito.event.correlation.DefaultCorrelationService;
 import org.kie.kogito.internal.process.runtime.KogitoNode;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
-import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
-import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
+import org.kie.kogito.internal.process.workitem.KogitoWorkItemHandler;
+import org.kie.kogito.internal.process.workitem.KogitoWorkItemManager;
+import org.kie.kogito.internal.process.workitem.Policy;
+import org.kie.kogito.internal.process.workitem.WorkItemTransition;
 import org.kie.kogito.internal.utils.ConversionUtils;
 import org.kie.kogito.jobs.DurationExpirationTime;
 import org.kie.kogito.jobs.ExactExpirationTime;
@@ -63,6 +66,9 @@ import org.kie.kogito.process.ProcessInstances;
 import org.kie.kogito.process.ProcessInstancesFactory;
 import org.kie.kogito.process.ProcessVersionResolver;
 import org.kie.kogito.process.Signal;
+import org.kie.kogito.process.WorkItem;
+
+import static org.kie.kogito.internal.process.workitem.KogitoWorkItemHandlerFactory.findAllKogitoWorkItemHandlersRegistered;
 
 @SuppressWarnings("unchecked")
 public abstract class AbstractProcess<T extends Model> implements Process<T>, ProcessSupplier {
@@ -84,16 +90,15 @@ public abstract class AbstractProcess<T extends Model> implements Process<T>, Pr
     private ProcessVersionResolver versionResolver;
 
     protected AbstractProcess() {
-        this(new LightProcessRuntimeServiceProvider());
+        this(null, new LightProcessRuntimeServiceProvider());
     }
 
     protected AbstractProcess(ProcessConfig config, Application application) {
-        this(new ConfiguredProcessServices(config));
-        this.app = application;
+        this(application, new ConfiguredProcessServices(config));
     }
 
-    protected AbstractProcess(ProcessRuntimeServiceProvider services) {
-        this(services, Collections.emptyList(), null, null, null);
+    protected AbstractProcess(Application application, ProcessRuntimeServiceProvider services) {
+        this(application, services, Collections.emptyList(), null, null, null);
     }
 
     protected AbstractProcess(Application app, Collection<KogitoWorkItemHandler> handlers, CorrelationService correlations) {
@@ -101,20 +106,30 @@ public abstract class AbstractProcess<T extends Model> implements Process<T>, Pr
     }
 
     protected AbstractProcess(Application app, Collection<KogitoWorkItemHandler> handlers, CorrelationService correlations, ProcessInstancesFactory factory) {
-        this(new ConfiguredProcessServices(app.config().get(ProcessConfig.class)), handlers, correlations, factory, app.config().get(ProcessConfig.class).versionResolver());
-        this.app = app;
+        this(app, new ConfiguredProcessServices(app.config().get(ProcessConfig.class)), handlers, correlations, factory, app.config().get(ProcessConfig.class).versionResolver());
+
     }
 
-    protected AbstractProcess(ProcessRuntimeServiceProvider services, Collection<KogitoWorkItemHandler> handlers, CorrelationService correlations, ProcessInstancesFactory factory,
+    protected AbstractProcess(Application app, ProcessRuntimeServiceProvider services, Collection<KogitoWorkItemHandler> handlers, CorrelationService correlations, ProcessInstancesFactory factory,
             ProcessVersionResolver versionResolver) {
+        this.app = app;
         this.services = services;
         this.instances = new MapProcessInstances<>();
         this.processInstancesFactory = factory;
         this.correlations = Optional.ofNullable(correlations).orElseGet(() -> new DefaultCorrelationService());
         this.versionResolver = Optional.ofNullable(versionResolver).orElse(p -> get().getVersion());
         KogitoWorkItemManager workItemManager = services.getKogitoWorkItemManager();
-        for (KogitoWorkItemHandler handler : handlers) {
-            workItemManager.registerWorkItemHandler(handler.getName(), handler);
+
+        // loading defaults
+        Collection<String> handlerIds = workItemManager.getHandlerIds();
+        findAllKogitoWorkItemHandlersRegistered().stream().filter(e -> !handlerIds.contains(e.getName())).forEach(workItemHandler -> {
+            workItemHandler.setApplication(app);
+            workItemManager.registerWorkItemHandler(workItemHandler.getName(), workItemHandler);
+        });
+        // overriding kogito work item handlers
+        for (KogitoWorkItemHandler workItemHandler : handlers) {
+            workItemHandler.setApplication(app);
+            workItemManager.registerWorkItemHandler(workItemHandler.getName(), workItemHandler);
         }
     }
 
@@ -126,6 +141,17 @@ public abstract class AbstractProcess<T extends Model> implements Process<T>, Pr
     @Override
     public String name() {
         return get().getName();
+    }
+
+    @Override
+    public WorkItemTransition newTransition(WorkItem workItem, String transitionId, Map<String, Object> map, Policy... policy) {
+        KogitoWorkItemHandler handler = getKogitoWorkItemHandler(workItem.getWorkItemHandlerName());
+        return handler.newTransition(transitionId, workItem.getPhaseStatus(), map, policy);
+    }
+
+    @Override
+    public KogitoWorkItemHandler getKogitoWorkItemHandler(String workItemHandlerName) {
+        return services.getKogitoWorkItemManager().getKogitoWorkItemHandler(workItemHandlerName);
     }
 
     @Override

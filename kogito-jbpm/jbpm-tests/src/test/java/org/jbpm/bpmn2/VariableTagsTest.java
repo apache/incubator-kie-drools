@@ -39,11 +39,12 @@ import org.junit.jupiter.api.Test;
 import org.kie.api.event.process.ProcessVariableChangedEvent;
 import org.kie.kogito.Application;
 import org.kie.kogito.internal.process.event.DefaultKogitoProcessEventListener;
-import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
+import org.kie.kogito.internal.process.workitem.KogitoWorkItem;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.VariableViolationException;
 import org.kie.kogito.process.bpmn2.BpmnProcess;
 import org.kie.kogito.process.bpmn2.BpmnVariables;
+import org.kie.kogito.process.impl.DefaultWorkItemHandlerConfig;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -143,7 +144,9 @@ public class VariableTagsTest extends JbpmBpmn2TestCase {
 
     @Test
     public void testRequiredVariableFiltering() {
-        List<BpmnProcess> processes = BpmnProcess.from(new ClassPathResource("org/jbpm/bpmn2/tags/BPMN2-ApprovalWithCustomVariableTags.bpmn2"));
+        DefaultWorkItemHandlerConfig config = new DefaultWorkItemHandlerConfig();
+        config.register("Human Task", new TestWorkItemHandler());
+        List<BpmnProcess> processes = BpmnProcess.from(config, new ClassPathResource("org/jbpm/bpmn2/tags/BPMN2-ApprovalWithCustomVariableTags.bpmn2"));
         BpmnProcess process = processes.get(0);
         Map<String, Object> params = new HashMap<>();
         params.put("approver", "john");

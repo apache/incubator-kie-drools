@@ -20,26 +20,31 @@ package org.jbpm.process.test;
 
 import java.util.Deque;
 import java.util.LinkedList;
+import java.util.Optional;
 
-import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
-import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
-import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
+import org.kie.kogito.internal.process.workitem.KogitoWorkItem;
+import org.kie.kogito.internal.process.workitem.KogitoWorkItemHandler;
+import org.kie.kogito.internal.process.workitem.KogitoWorkItemManager;
+import org.kie.kogito.internal.process.workitem.WorkItemTransition;
+import org.kie.kogito.process.workitems.impl.DefaultKogitoWorkItemHandler;
 
 /**
  * 
  */
-public class TestWorkItemHandler implements KogitoWorkItemHandler {
+public class TestWorkItemHandler extends DefaultKogitoWorkItemHandler {
 
     public Deque<KogitoWorkItem> workItems = new LinkedList<>();
 
     @Override
-    public void executeWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager manager) {
+    public Optional<WorkItemTransition> activateWorkItemHandler(KogitoWorkItemManager manager, KogitoWorkItemHandler handler, KogitoWorkItem workItem, WorkItemTransition transition) {
         this.workItems.add(workItem);
+        return Optional.empty();
     }
 
     @Override
-    public void abortWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager manager) {
+    public Optional<WorkItemTransition> abortWorkItemHandler(KogitoWorkItemManager manager, KogitoWorkItemHandler handler, KogitoWorkItem workItem, WorkItemTransition transition) {
         this.workItems.add(workItem);
+        return Optional.empty();
     }
 
     public Deque<KogitoWorkItem> getWorkItems() {

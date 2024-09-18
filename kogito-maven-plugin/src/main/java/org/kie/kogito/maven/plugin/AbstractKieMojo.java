@@ -140,7 +140,8 @@ public abstract class AbstractKieMojo extends AbstractMojo {
     }
 
     protected ClassLoader projectClassLoader() throws MojoExecutionException {
-        return MojoUtil.createProjectClassLoader(this.getClass().getClassLoader(),
+        ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+        return MojoUtil.createProjectClassLoader(contextClassLoader,
                 project,
                 outputDirectory,
                 null);

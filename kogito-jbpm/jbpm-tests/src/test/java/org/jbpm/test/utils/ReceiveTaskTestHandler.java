@@ -20,23 +20,20 @@ package org.jbpm.test.utils;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
-import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
-import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
-import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
+import org.kie.kogito.internal.process.workitem.KogitoWorkItem;
+import org.kie.kogito.internal.process.workitem.KogitoWorkItemHandler;
+import org.kie.kogito.internal.process.workitem.KogitoWorkItemManager;
+import org.kie.kogito.internal.process.workitem.WorkItemTransition;
+import org.kie.kogito.process.workitems.impl.DefaultKogitoWorkItemHandler;
 
-public class ReceiveTaskTestHandler implements KogitoWorkItemHandler {
+public class ReceiveTaskTestHandler extends DefaultKogitoWorkItemHandler {
 
     // TODO: use correlation instead of message id
     private Map<String, String> waiting = new HashMap<>();
 
     private KogitoWorkItemManager manager;
-
-    public void executeWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager manager) {
-        this.manager = manager;
-        String messageId = (String) workItem.getParameter("MessageId");
-        waiting.put(messageId, workItem.getStringId());
-    }
 
     public void messageReceived(String messageId, Object message) {
         String workItemId = waiting.get(messageId);
@@ -48,9 +45,19 @@ public class ReceiveTaskTestHandler implements KogitoWorkItemHandler {
         manager.completeWorkItem(workItemId, results);
     }
 
-    public void abortWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager manager) {
+    @Override
+    public Optional<WorkItemTransition> activateWorkItemHandler(KogitoWorkItemManager manager, KogitoWorkItemHandler handler, KogitoWorkItem workItem, WorkItemTransition transition) {
+        this.manager = manager;
+        String messageId = (String) workItem.getParameter("MessageId");
+        waiting.put(messageId, workItem.getStringId());
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<WorkItemTransition> abortWorkItemHandler(KogitoWorkItemManager manager, KogitoWorkItemHandler handler, KogitoWorkItem workItem, WorkItemTransition transition) {
         String messageId = (String) workItem.getParameter("MessageId");
         waiting.remove(messageId);
+        return Optional.empty();
     }
 
 }

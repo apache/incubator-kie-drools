@@ -19,15 +19,13 @@
 package org.kie.kogito.internal.process.event;
 
 import org.kie.api.event.process.ProcessEvent;
-import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
-import org.kie.kogito.process.workitem.Transition;
+import org.kie.kogito.internal.process.workitem.KogitoWorkItem;
+import org.kie.kogito.internal.process.workitem.WorkItemTransition;
 
 /**
  * An event when a work item has transition between life cycle phases
  */
-public interface ProcessWorkItemTransitionEvent
-        extends
-        ProcessEvent {
+public interface ProcessWorkItemTransitionEvent extends ProcessEvent {
 
     /**
      * Returns work item being transitioned
@@ -41,7 +39,7 @@ public interface ProcessWorkItemTransitionEvent
      * 
      * @return transition
      */
-    Transition<?> getTransition();
+    WorkItemTransition getTransition();
 
     /**
      * Indicated is the transition has already been done.

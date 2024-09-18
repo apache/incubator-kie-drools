@@ -18,6 +18,7 @@
  */
 package org.jbpm.test.utils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -36,7 +37,7 @@ import org.kie.kogito.StaticConfig;
 import org.kie.kogito.auth.SecurityPolicy;
 import org.kie.kogito.internal.process.event.KogitoEventListener;
 import org.kie.kogito.internal.process.event.KogitoProcessEventListener;
-import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
+import org.kie.kogito.internal.process.workitem.KogitoWorkItemHandler;
 import org.kie.kogito.process.ProcessConfig;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.WorkItem;
@@ -98,11 +99,23 @@ public class ProcessTestHelper {
     }
 
     public static void completeWorkItem(ProcessInstance<? extends Model> processInstance, Map<String, Object> outputVars, Consumer<WorkItem> workItem, String userName, String... groups) {
-        List<WorkItem> workItems = processInstance.workItems(SecurityPolicy.of(userName, Arrays.asList(groups)));
-        workItems.stream().findFirst().ifPresent(e -> {
-            workItem.accept(e);
+        List<WorkItem> workItems = new ArrayList<>();
+        if (userName != null) {
+            workItems.addAll(processInstance.workItems(SecurityPolicy.of(userName, Arrays.asList(groups))));
+        } else {
+            workItems.addAll(processInstance.workItems());
+        }
+        if (workItems.isEmpty()) {
+            return;
+        }
+        WorkItem e = workItems.get(0);
+        workItem.accept(e);
+        if (userName != null) {
             processInstance.completeWorkItem(e.getId(), outputVars, SecurityPolicy.of(userName, Arrays.asList(groups)));
-        });
+        } else {
+            processInstance.completeWorkItem(e.getId(), outputVars);
+        }
+
     }
 
     public static WorkItem findWorkItem(ProcessInstance<? extends Model> processInstance, String userName) {

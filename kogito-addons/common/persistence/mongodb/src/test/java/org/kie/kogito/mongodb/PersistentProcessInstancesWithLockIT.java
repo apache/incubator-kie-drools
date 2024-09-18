@@ -27,6 +27,9 @@ import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.bpmn2.BpmnProcess;
 import org.kie.kogito.process.bpmn2.BpmnProcessInstance;
 import org.kie.kogito.process.bpmn2.BpmnVariables;
+import org.kie.kogito.process.impl.DefaultWorkItemHandlerConfig;
+import org.kie.kogito.process.impl.StaticProcessConfig;
+import org.kie.kogito.process.workitems.impl.DefaultKogitoWorkItemHandler;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
@@ -36,7 +39,9 @@ import static org.kie.kogito.test.utils.ProcessInstancesTestUtils.assertOne;
 class PersistentProcessInstancesWithLockIT extends TestHelper {
 
     private BpmnProcess createProcess(MongoDBProcessInstancesFactory factory) {
-        BpmnProcess process = BpmnProcess.from(new ClassPathResource("BPMN2-UserTask.bpmn2")).get(0);
+        StaticProcessConfig config = new StaticProcessConfig();
+        ((DefaultWorkItemHandlerConfig) config.workItemHandlers()).register("Human Task", new DefaultKogitoWorkItemHandler());
+        BpmnProcess process = BpmnProcess.from(config, new ClassPathResource("BPMN2-UserTask.bpmn2")).get(0);
         process.setProcessInstancesFactory(factory);
         process.configure();
         return process;

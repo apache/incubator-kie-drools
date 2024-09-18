@@ -18,22 +18,22 @@
  */
 package org.kie.kogito.task.management.service;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
-import org.jbpm.process.instance.impl.humantask.HumanTaskHelper;
-import org.jbpm.process.instance.impl.humantask.InternalHumanTaskWorkItem;
-import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
+import org.kie.kogito.internal.process.workitem.KogitoWorkItem;
+import org.kie.kogito.internal.process.workitem.Policy;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessConfig;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.ProcessInstanceNotFoundException;
 import org.kie.kogito.process.Processes;
-import org.kie.kogito.process.workitem.HumanTaskWorkItem;
-import org.kie.kogito.process.workitem.Policy;
+import org.kie.kogito.process.WorkItem;
+import org.kie.kogito.process.workitems.InternalKogitoWorkItem;
 import org.kie.kogito.services.uow.UnitOfWorkExecutor;
 
 public class TaskManagementService implements TaskManagementOperations {
@@ -52,24 +52,16 @@ public class TaskManagementService implements TaskManagementOperations {
             String taskId,
             TaskInfo taskInfo,
             boolean shouldReplace,
-            Policy<?>... policies) {
+            Policy... policies) {
         ProcessInstance<?> pi = getProcessInstance(processId, processInstanceId, taskId);
         KogitoWorkItem workItem = UnitOfWorkExecutor.executeInUnitOfWork(processConfig.unitOfWorkManager(),
                 () -> pi.updateWorkItem(taskId,
                         wi -> {
-                            InternalHumanTaskWorkItem humanTask = HumanTaskHelper.asHumanTask(wi);
-                            setField(humanTask::setAdminGroups, taskInfo::getAdminGroups, shouldReplace);
-                            setField(humanTask::setAdminUsers, taskInfo::getAdminUsers, shouldReplace);
-                            setField(humanTask::setExcludedUsers, taskInfo::getExcludedUsers, shouldReplace);
-                            setField(humanTask::setPotentialUsers, taskInfo::getPotentialUsers, shouldReplace);
-                            setField(humanTask::setPotentialGroups, taskInfo::getPotentialGroups, shouldReplace);
-                            setField(humanTask::setTaskPriority, taskInfo::getPriority, shouldReplace);
-                            setField(humanTask::setTaskDescription, taskInfo::getDescription, shouldReplace);
-                            setMap(humanTask::setParameters, humanTask::setParameter, taskInfo.getInputParams(),
-                                    shouldReplace);
+                            InternalKogitoWorkItem task = (InternalKogitoWorkItem) wi;
+                            setMap(task::setParameters, task::setParameter, taskInfo.getInputParams(), shouldReplace);
                             return wi;
                         }, policies));
-        return convert((HumanTaskWorkItem) workItem);
+        return convert(workItem);
     }
 
     private void setMap(Consumer<Map<String, Object>> allConsumer,
@@ -87,25 +79,44 @@ public class TaskManagementService implements TaskManagementOperations {
         }
     }
 
-    private <T> boolean setField(Consumer<T> consumer, Supplier<T> supplier, boolean shouldReplace) {
-        T value = supplier.get();
-        boolean result = shouldReplace || value != null;
-        if (result) {
-            consumer.accept(value);
-        }
-        return result;
-    }
-
     @Override
-    public TaskInfo getTask(String processId, String processInstanceId, String taskId, Policy<?>... policies) {
-        return convert(HumanTaskHelper.findTask(getProcessInstance(processId, processInstanceId, taskId), taskId,
-                policies));
+    public TaskInfo getTask(String processId, String processInstanceId, String taskId, Policy... policies) {
+        WorkItem workItem = getProcessInstance(processId, processInstanceId, taskId).workItem(taskId, policies);
+        return convert(workItem);
     }
 
-    private TaskInfo convert(HumanTaskWorkItem humanTask) {
-        return new TaskInfo(humanTask.getTaskDescription(), humanTask.getTaskPriority(), humanTask.getPotentialUsers(),
-                humanTask.getPotentialGroups(), humanTask.getExcludedUsers(), humanTask.getAdminUsers(),
-                humanTask.getAdminGroups(), humanTask.getParameters());
+    private TaskInfo convert(WorkItem workItem) {
+        return new TaskInfo(
+                (String) workItem.getParameters().get("Description"),
+                (String) workItem.getParameters().get("Priority"),
+                toSet(workItem.getParameters().get("ActorId")),
+                toSet(workItem.getParameters().get("GroupId")),
+                toSet(workItem.getParameters().get("ExcludedUsersId")),
+                toSet(workItem.getParameters().get("BusinessAdministratorId")),
+                toSet(workItem.getParameters().get("BusinessGroupsId")),
+                workItem.getParameters());
+    }
+
+    private TaskInfo convert(KogitoWorkItem workItem) {
+        return new TaskInfo(
+                (String) workItem.getParameter("Description"),
+                (String) workItem.getParameter("Priority"),
+                toSet(workItem.getParameter("ActorId")),
+                toSet(workItem.getParameter("GroupId")),
+                toSet(workItem.getParameter("ExcludedUsersId")),
+                toSet(workItem.getParameter("BusinessAdministratorId")),
+                toSet(workItem.getParameter("BusinessGroupsId")),
+                workItem.getParameters());
+    }
+
+    private Set<String> toSet(Object value) {
+        if (value == null) {
+            return Collections.emptySet();
+        }
+        if (value instanceof String string) {
+            return Set.of(string.split(","));
+        }
+        return Collections.emptySet();
     }
 
     private ProcessInstance<?> getProcessInstance(String processId, String processInstanceId, String taskId) {
@@ -125,4 +136,5 @@ public class TaskManagementService implements TaskManagementOperations {
         return process.instances().findById(processInstanceId).orElseThrow(
                 () -> new ProcessInstanceNotFoundException(processInstanceId));
     }
+
 }

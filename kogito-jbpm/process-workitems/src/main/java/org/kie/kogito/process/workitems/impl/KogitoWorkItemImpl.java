@@ -55,6 +55,9 @@ public class KogitoWorkItemImpl implements InternalKogitoWorkItem, Serializable 
     private transient KogitoProcessInstance processInstance;
     private transient KogitoNodeInstance nodeInstance;
 
+    private String externalReferenceId;
+    private String actualOwner;
+
     public void setId(String id) {
         this.id = id;
     }
@@ -112,12 +115,13 @@ public class KogitoWorkItemImpl implements InternalKogitoWorkItem, Serializable 
     @Override
     public void setResults(Map<String, Object> results) {
         if (results != null) {
-            this.results = results;
+            this.results.clear();
+            this.results.putAll(results);
         }
     }
 
     @Override
-    public void setResult(String name, Object value) {
+    public void setOutput(String name, Object value) {
         results.put(name, value);
     }
 
@@ -224,6 +228,11 @@ public class KogitoWorkItemImpl implements InternalKogitoWorkItem, Serializable 
     @Override
     public void setCompleteDate(Date completeDate) {
         this.completeDate = completeDate;
+    }
+
+    @Override
+    public void removeOutput(String name) {
+        this.results.remove(name);
     }
 
     @Override
@@ -527,4 +536,23 @@ public class KogitoWorkItemImpl implements InternalKogitoWorkItem, Serializable 
         return obj instanceof WorkItemParamResolver ? ((WorkItemParamResolver) obj).apply(this) : obj;
     }
 
+    @Override
+    public String getExternalReferenceId() {
+        return externalReferenceId;
+    }
+
+    @Override
+    public void setExternalReferenceId(String externalReferenceId) {
+        this.externalReferenceId = externalReferenceId;
+    }
+
+    @Override
+    public String getActualOwner() {
+        return this.actualOwner;
+    }
+
+    @Override
+    public void setActualOwner(String actualOwner) {
+        this.actualOwner = actualOwner;
+    }
 }

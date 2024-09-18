@@ -52,14 +52,14 @@ import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.WorkItem;
 import org.kie.kogito.process.ProcessService;
-import org.kie.kogito.process.workitem.Attachment;
-import org.kie.kogito.process.workitem.AttachmentInfo;
-import org.kie.kogito.process.workitem.Comment;
-import org.kie.kogito.process.workitem.Policies;
 import org.kie.kogito.process.workitem.TaskModel;
 import org.kie.kogito.auth.IdentityProvider;
 import org.kie.kogito.auth.IdentityProviders;
 import org.kie.kogito.auth.SecurityPolicy;
+
+import org.kie.kogito.usertask.model.Attachment;
+import org.kie.kogito.usertask.model.AttachmentInfo;
+import org.kie.kogito.usertask.model.Comment;
 
 @Path("/$name$")
 public class $Type$Resource {
@@ -144,7 +144,7 @@ public class $Type$Resource {
     public List<TaskModel> getTasks_$name$(@PathParam("id") String id,
                                           @QueryParam("user") final String user,
                                           @QueryParam("group") final List<String> groups) {
-        return processService.getTasks(process, id, SecurityPolicy.of(IdentityProviders.of(user, groups)))
+        return processService.getWorkItems(process, id, SecurityPolicy.of(IdentityProviders.of(user, groups)))
                 .orElseThrow(NotFoundException::new)
                 .stream()
                 .map($TaskModelFactory$::from)

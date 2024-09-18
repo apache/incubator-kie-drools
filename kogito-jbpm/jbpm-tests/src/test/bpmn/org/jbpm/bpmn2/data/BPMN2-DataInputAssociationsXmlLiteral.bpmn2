@@ -42,7 +42,7 @@
     <startEvent id="_1" name="" />
     <userTask id="_2" name="Task">
       <ioSpecification>
-        <dataInput id='coId' name='coId'/>
+        <dataInput id='coId' name='coId' itemSubjectRef='_instanceMetadataItem'/>
         <inputSet>
           <dataInputRefs>coId</dataInputRefs>
         </inputSet>

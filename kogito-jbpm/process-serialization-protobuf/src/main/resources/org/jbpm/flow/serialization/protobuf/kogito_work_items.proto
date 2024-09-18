@@ -38,35 +38,4 @@ message HumanTaskWorkItemData {
     repeated string admin_groups = 9;
 
     optional string task_reference_name = 10;
-
-    repeated Comment comments = 11;
-    repeated Attachment attachments = 12;
-    map<string, Deadline> start_deadlines = 13;
-    map<string, Deadline> completed_deadlines = 14;
-    map<string, Reassignment> start_reassigments = 15;
-    map<string, Reassignment> completed_reassigments = 16;
-}
-
-message Comment {
-    string id = 1;
-    optional string content = 2;
-    optional int64  updatedAt = 3;
-    optional string updatedBy = 4;
-}
-
-message Attachment {
-    string id = 1;
-    optional string content = 2;
-    optional int64  updatedAt = 3;
-    optional string updatedBy = 4;
-    optional string name = 5;
-}
-
-message Deadline {
-    map<string, string> content = 1;
-}
-
-message Reassignment {
-    repeated string users = 1;
-    repeated string groups = 2;
 }

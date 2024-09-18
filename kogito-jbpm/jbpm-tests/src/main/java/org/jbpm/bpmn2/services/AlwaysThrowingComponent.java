@@ -18,7 +18,7 @@
  */
 package org.jbpm.bpmn2.services;
 
-import org.kie.kogito.process.workitem.WorkItemExecutionException;
+import org.kie.kogito.internal.process.workitem.WorkItemExecutionException;
 
 public class AlwaysThrowingComponent {
 

@@ -18,7 +18,7 @@
  */
 package org.kie.kogito.serverless.workflow.workitemparams;
 
-import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
+import org.kie.kogito.internal.process.workitem.KogitoWorkItem;
 import org.kie.kogito.process.workitems.impl.WorkItemParamResolver;
 import org.kie.kogito.serverless.workflow.utils.ConfigResolverHolder;
 

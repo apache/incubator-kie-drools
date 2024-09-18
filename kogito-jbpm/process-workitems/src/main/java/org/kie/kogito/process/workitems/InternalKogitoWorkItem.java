@@ -23,7 +23,11 @@ import java.util.Date;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 
-public interface InternalKogitoWorkItem extends org.drools.core.process.WorkItem, org.kie.kogito.internal.process.runtime.KogitoWorkItem {
+public interface InternalKogitoWorkItem extends org.drools.core.process.WorkItem, org.kie.kogito.internal.process.workitem.KogitoWorkItem {
+
+    void setExternalReferenceId(String id);
+
+    void setActualOwner(String owner);
 
     void setProcessInstanceId(String processInstanceId);
 
@@ -42,8 +46,6 @@ public interface InternalKogitoWorkItem extends org.drools.core.process.WorkItem
     void setNodeInstance(KogitoNodeInstance nodeInstance);
 
     void setProcessInstance(KogitoProcessInstance processInstance);
-
-    void setResult(String name, Object value);
 
     void setId(String string);
 }

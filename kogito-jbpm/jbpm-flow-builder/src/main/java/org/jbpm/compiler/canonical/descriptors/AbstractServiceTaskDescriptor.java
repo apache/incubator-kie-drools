@@ -18,16 +18,21 @@
  */
 package org.jbpm.compiler.canonical.descriptors;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import org.jbpm.compiler.canonical.NodeValidator;
 import org.jbpm.workflow.core.impl.DataAssociation;
 import org.jbpm.workflow.core.node.WorkItemNode;
-import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
-import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
-import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
-import org.kie.kogito.process.workitem.WorkItemExecutionException;
+import org.kie.kogito.internal.process.workitem.KogitoWorkItem;
+import org.kie.kogito.internal.process.workitem.KogitoWorkItemHandler;
+import org.kie.kogito.internal.process.workitem.KogitoWorkItemManager;
+import org.kie.kogito.internal.process.workitem.WorkItemExecutionException;
+import org.kie.kogito.internal.process.workitem.WorkItemTransition;
+import org.kie.kogito.process.workitems.impl.DefaultKogitoWorkItemHandler;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.Modifier;
@@ -58,6 +63,8 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.UnionType;
 
+import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
+
 public abstract class AbstractServiceTaskDescriptor implements TaskDescriptor {
 
     static final String PARAM_INTERFACE = "Interface";
@@ -87,22 +94,21 @@ public abstract class AbstractServiceTaskDescriptor implements TaskDescriptor {
 
     protected abstract Collection<Class<?>> getCompleteWorkItemExceptionTypes();
 
-    private Statement tryStmt(Expression expr, Collection<Class<?>> exceptions) {
-        return exceptions.isEmpty() ? new ExpressionStmt(expr)
-                : new TryStmt(
-                        new BlockStmt().addStatement(expr),
-                        NodeList
-                                .nodeList(
-                                        new CatchClause(
-                                                new Parameter(processException(exceptions), new SimpleName(EXCEPTION_NAME)),
-                                                new BlockStmt()
-                                                        .addStatement(
-                                                                new ThrowStmt(
-                                                                        new ObjectCreationExpr()
-                                                                                .setType(WorkItemExecutionException.class)
-                                                                                .addArgument(new StringLiteralExpr("500"))
-                                                                                .addArgument(new NameExpr(EXCEPTION_NAME)))))),
-                        null);
+    private BlockStmt tryStmt(BlockStmt blockStmt, Collection<Class<?>> exceptions) {
+        if (exceptions.isEmpty()) {
+            return blockStmt;
+        } else {
+            Expression newExceptionExpression = new ObjectCreationExpr()
+                    .setType(WorkItemExecutionException.class)
+                    .addArgument(new StringLiteralExpr("500"))
+                    .addArgument(new NameExpr(EXCEPTION_NAME));
+
+            BlockStmt throwBlockStmt = new BlockStmt().addStatement(new ThrowStmt(newExceptionExpression));
+            CatchClause catchClause = new CatchClause(new Parameter(processException(exceptions), new SimpleName(EXCEPTION_NAME)), throwBlockStmt);
+            NodeList<CatchClause> clauses = NodeList.nodeList(catchClause);
+            return new BlockStmt().addStatement(new TryStmt().setTryBlock(blockStmt).setCatchClauses(clauses));
+        }
+
     }
 
     private Type processException(Collection<Class<?>> exceptions) {
@@ -118,46 +124,15 @@ public abstract class AbstractServiceTaskDescriptor implements TaskDescriptor {
         return false;
     }
 
-    protected MethodCallExpr completeWorkItem(BlockStmt executeWorkItemBody, MethodCallExpr callService, Collection<Class<?>> exceptions) {
-        Expression results;
-
-        List<DataAssociation> outAssociations = workItemNode.getOutAssociations();
-        if (outAssociations.isEmpty() || isEmptyResult()) {
-            executeWorkItemBody.addStatement(tryStmt(callService, exceptions));
-            results = new MethodCallExpr(new NameExpr("java.util.Collections"), "emptyMap");
-        } else {
-            VariableDeclarationExpr resultField = new VariableDeclarationExpr()
-                    .addVariable(new VariableDeclarator(
-                            new ClassOrInterfaceType(null, Object.class.getCanonicalName()),
-                            RESULT_NAME));
-            executeWorkItemBody.addStatement(resultField);
-            executeWorkItemBody
-                    .addStatement(
-                            tryStmt(
-                                    new AssignExpr(
-                                            new NameExpr(RESULT_NAME),
-                                            callService,
-                                            AssignExpr.Operator.ASSIGN),
-                                    exceptions));
-            results = new MethodCallExpr(new NameExpr("java.util.Collections"), "singletonMap")
-                    .addArgument(new StringLiteralExpr(outAssociations.get(0).getSources().get(0).getLabel()))
-                    .addArgument(new NameExpr(RESULT_NAME));
-        }
-
-        return new MethodCallExpr(new NameExpr("workItemManager"), "completeWorkItem")
-                .addArgument(new MethodCallExpr(new NameExpr("workItem"), "getStringId"))
-                .addArgument(results);
-    }
-
     protected final ClassOrInterfaceDeclaration classDeclaration() {
         String unqualifiedName = StaticJavaParser.parseName(getName()).removeQualifier().asString();
         ClassOrInterfaceDeclaration cls = new ClassOrInterfaceDeclaration()
                 .setName(unqualifiedName)
                 .setModifiers(Modifier.Keyword.PUBLIC)
-                .addImplementedType(KogitoWorkItemHandler.class.getCanonicalName());
+                .addExtendedType(DefaultKogitoWorkItemHandler.class.getCanonicalName());
         ClassOrInterfaceType serviceType = new ClassOrInterfaceType(null, interfaceName);
 
-        final String serviceName = "service";
+        String serviceName = "service";
         FieldDeclaration serviceField = new FieldDeclaration()
                 .addVariable(new VariableDeclarator(serviceType, serviceName));
         cls.addMember(serviceField);
@@ -179,34 +154,53 @@ public abstract class AbstractServiceTaskDescriptor implements TaskDescriptor {
                                                 new NameExpr(serviceName),
                                                 AssignExpr.Operator.ASSIGN)));
 
+        Type workItemTransitionType = parseClassOrInterfaceType(WorkItemTransition.class.getName());
+        ClassOrInterfaceType optionalClass = parseClassOrInterfaceType(Optional.class.getName()).setTypeArguments(workItemTransitionType);
+
         // executeWorkItem method
         BlockStmt executeWorkItemBody = new BlockStmt();
-        MethodDeclaration executeWorkItem = new MethodDeclaration()
-                .setModifiers(Modifier.Keyword.PUBLIC)
-                .setType(void.class)
-                .setName("executeWorkItem")
-                .setBody(executeWorkItemBody)
-                .addParameter(KogitoWorkItem.class.getCanonicalName(), "workItem")
-                .addParameter(KogitoWorkItemManager.class.getCanonicalName(), "workItemManager");
-
         MethodCallExpr callService = new MethodCallExpr(new NameExpr("service"), operationName);
         this.handleParametersForServiceCall(executeWorkItemBody, callService);
 
-        MethodCallExpr completeWorkItem = completeWorkItem(
-                executeWorkItemBody,
-                callService,
-                getCompleteWorkItemExceptionTypes());
+        // execute work item handler
+        getWorkItemOutput(callService).forEach(executeWorkItemBody::addStatement);
+
+        Expression completeExpression = new ThisExpr();
+        completeExpression = new FieldAccessExpr(completeExpression, "workItemLifeCycle");
+        NodeList<Expression> arguments = new NodeList<>();
+        arguments.add(new StringLiteralExpr("complete"));
+        arguments.add(new MethodCallExpr(new NameExpr("workItem"), "getPhaseStatus"));
+        arguments.add(new NameExpr(RESULT_NAME));
+
+        completeExpression = new MethodCallExpr(completeExpression, "newTransition", arguments);
+        Statement completeWorkItem = new ReturnStmt(new MethodCallExpr(new NameExpr(Optional.class.getName()), "of", NodeList.nodeList(completeExpression)));
         executeWorkItemBody.addStatement(completeWorkItem);
+
+        executeWorkItemBody = tryStmt(executeWorkItemBody, getCompleteWorkItemExceptionTypes());
+
+        MethodDeclaration executeWorkItem = new MethodDeclaration()
+                .setModifiers(Modifier.Keyword.PUBLIC)
+                .setType(optionalClass)
+                .setName("activateWorkItemHandler")
+                .setBody(executeWorkItemBody)
+                .addParameter(KogitoWorkItemManager.class.getCanonicalName(), "workItemManager")
+                .addParameter(KogitoWorkItemHandler.class.getCanonicalName(), "workItemHandler")
+                .addParameter(KogitoWorkItem.class.getCanonicalName(), "workItem")
+                .addParameter(WorkItemTransition.class.getCanonicalName(), "transition");
 
         // abortWorkItem method
         BlockStmt abortWorkItemBody = new BlockStmt();
         MethodDeclaration abortWorkItem = new MethodDeclaration()
                 .setModifiers(Modifier.Keyword.PUBLIC)
-                .setType(void.class)
-                .setName("abortWorkItem")
+                .setType(optionalClass)
+                .setName("abortWorkItemHandler")
                 .setBody(abortWorkItemBody)
+                .addParameter(KogitoWorkItemManager.class.getCanonicalName(), "workItemManager")
+                .addParameter(KogitoWorkItemHandler.class.getCanonicalName(), "workItemHandler")
                 .addParameter(KogitoWorkItem.class.getCanonicalName(), "workItem")
-                .addParameter(KogitoWorkItemManager.class.getCanonicalName(), "workItemManager");
+                .addParameter(WorkItemTransition.class.getCanonicalName(), "transition");
+
+        abortWorkItemBody.addStatement(new ReturnStmt(new MethodCallExpr(new NameExpr(Optional.class.getName()), "empty")));
 
         // getName method
         MethodDeclaration getName = new MethodDeclaration()
@@ -219,5 +213,32 @@ public abstract class AbstractServiceTaskDescriptor implements TaskDescriptor {
                 .addMember(getName);
 
         return cls;
+    }
+
+    protected List<Statement> getWorkItemOutput(Expression callServiceExpression) {
+        List<Statement> statements = new ArrayList<>();
+
+        ClassOrInterfaceType stringType = new ClassOrInterfaceType(null, String.class.getCanonicalName());
+        ClassOrInterfaceType objectType = new ClassOrInterfaceType(null, Object.class.getCanonicalName());
+        ClassOrInterfaceType map = new ClassOrInterfaceType(null, Map.class.getCanonicalName()).setTypeArguments(stringType, objectType);
+        VariableDeclarationExpr resultField = new VariableDeclarationExpr(new VariableDeclarator(map, RESULT_NAME));
+        statements.add(new ExpressionStmt(resultField));
+
+        Expression resultExpression = null;
+        List<DataAssociation> outAssociations = workItemNode.getOutAssociations();
+        if (outAssociations.isEmpty() || isEmptyResult()) {
+            statements.add(new ExpressionStmt(callServiceExpression));
+            resultExpression = new MethodCallExpr(new NameExpr("java.util.Collections"), "emptyMap");
+            resultExpression = new AssignExpr(new NameExpr(RESULT_NAME), resultExpression, AssignExpr.Operator.ASSIGN);
+            statements.add(new ExpressionStmt(resultExpression));
+        } else {
+            resultExpression = new MethodCallExpr(new NameExpr("java.util.Collections"), "singletonMap")
+                    .addArgument(new StringLiteralExpr(outAssociations.get(0).getSources().get(0).getLabel()))
+                    .addArgument(callServiceExpression);
+            resultExpression = new AssignExpr(new NameExpr(RESULT_NAME), resultExpression, AssignExpr.Operator.ASSIGN);
+            statements.add(new ExpressionStmt(resultExpression));
+        }
+
+        return statements;
     }
 }

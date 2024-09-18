@@ -18,6 +18,8 @@
  */
 package org.kie.kogito.internal.process.runtime;
 
+import org.kie.kogito.internal.process.workitem.KogitoWorkItem;
+
 public interface KogitoWorkItemNodeInstance extends KogitoNodeInstance {
 
     KogitoWorkItem getWorkItem();

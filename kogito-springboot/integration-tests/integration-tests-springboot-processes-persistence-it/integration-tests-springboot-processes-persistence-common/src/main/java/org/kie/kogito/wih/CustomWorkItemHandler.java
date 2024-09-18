@@ -18,21 +18,25 @@
  */
 package org.kie.kogito.wih;
 
-import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
-import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
-import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
+import java.util.Collections;
+import java.util.Optional;
 
-import static java.util.Collections.emptyMap;
+import org.kie.kogito.internal.process.workitem.KogitoWorkItem;
+import org.kie.kogito.internal.process.workitem.KogitoWorkItemHandler;
+import org.kie.kogito.internal.process.workitem.KogitoWorkItemManager;
+import org.kie.kogito.internal.process.workitem.WorkItemTransition;
+import org.kie.kogito.process.workitems.impl.DefaultKogitoWorkItemHandler;
 
-public class CustomWorkItemHandler implements KogitoWorkItemHandler {
+public class CustomWorkItemHandler extends DefaultKogitoWorkItemHandler {
 
     @Override
-    public void executeWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager manager) {
-        manager.completeWorkItem(workItem.getStringId(), emptyMap());
+    public Optional<WorkItemTransition> activateWorkItemHandler(KogitoWorkItemManager manager, KogitoWorkItemHandler handler, KogitoWorkItem workitem, WorkItemTransition transition) {
+        return Optional.of(handler.completeTransition(workitem.getPhaseStatus(), Collections.emptyMap()));
     }
 
     @Override
-    public void abortWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager manager) {
-        manager.abortWorkItem(workItem.getStringId());
+    public Optional<WorkItemTransition> abortWorkItemHandler(KogitoWorkItemManager manager, KogitoWorkItemHandler handler, KogitoWorkItem workitem, WorkItemTransition transition) {
+        return Optional.of(handler.abortTransition(workitem.getPhaseStatus()));
     }
+
 }

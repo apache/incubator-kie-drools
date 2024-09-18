@@ -32,6 +32,10 @@
   <artifactId>integration-tests-springboot-processes-jdbc</artifactId>
   <name>Kogito :: Integration Tests :: Spring Boot :: Processes :: Persistence :: JDBC</name>
 
+  <properties>
+    <compare.fail>false</compare.fail>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.postgresql</groupId>

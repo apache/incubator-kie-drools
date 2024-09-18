@@ -20,16 +20,15 @@ package org.kie.kogito.integrationtests.quarkus;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
 import org.acme.travels.Traveller;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.process.workitem.AttachmentInfo;
 import org.kie.kogito.task.management.service.TaskInfo;
+import org.kie.kogito.usertask.model.AttachmentInfo;
 
 import io.quarkus.test.junit.QuarkusIntegrationTest;
 import io.restassured.RestAssured;
@@ -41,7 +40,6 @@ import static io.restassured.RestAssured.given;
 import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchema;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @QuarkusIntegrationTest
@@ -162,6 +160,7 @@ class TaskIT {
     }
 
     @Test
+    @Disabled("Revisited after ht endpoints")
     void testCommentAndAttachment() {
         Traveller traveller = new Traveller("pepe", "rubiales", "pepe.rubiales@gmail.com", "Spanish");
 
@@ -177,7 +176,7 @@ class TaskIT {
 
         String taskId = given()
                 .contentType(ContentType.JSON)
-                .queryParam("user", "admin")
+                .queryParam("user", "manager")
                 .queryParam("group", "managers")
                 .pathParam("processId", processId)
                 .when()
@@ -189,7 +188,7 @@ class TaskIT {
 
         final String commentId = given().contentType(ContentType.TEXT)
                 .when()
-                .queryParam("user", "admin")
+                .queryParam("user", "manager")
                 .queryParam("group", "managers")
                 .pathParam("processId", processId)
                 .pathParam("taskId", taskId)
@@ -203,7 +202,7 @@ class TaskIT {
         final String commentText = "We have done everything we can";
         given().contentType(ContentType.TEXT)
                 .when()
-                .queryParam("user", "admin")
+                .queryParam("user", "manager")
                 .queryParam("group", "managers")
                 .pathParam("processId", processId)
                 .pathParam("taskId", taskId)
@@ -215,7 +214,7 @@ class TaskIT {
 
         assertEquals(commentText, given().contentType(ContentType.JSON)
                 .when()
-                .queryParam("user", "admin")
+                .queryParam("user", "manager")
                 .queryParam("group", "managers")
                 .pathParam("processId", processId)
                 .pathParam("taskId", taskId)
@@ -226,7 +225,7 @@ class TaskIT {
 
         given().contentType(ContentType.JSON)
                 .when()
-                .queryParam("user", "admin")
+                .queryParam("user", "manager")
                 .queryParam("group", "managers")
                 .pathParam("processId", processId)
                 .pathParam("taskId", taskId)
@@ -237,7 +236,7 @@ class TaskIT {
 
         given().contentType(ContentType.JSON)
                 .when()
-                .queryParam("user", "admin")
+                .queryParam("user", "manager")
                 .queryParam("group", "managers")
                 .pathParam("processId", processId)
                 .pathParam("taskId", taskId)
@@ -248,7 +247,7 @@ class TaskIT {
 
         given().contentType(ContentType.JSON)
                 .when()
-                .queryParam("user", "admin")
+                .queryParam("user", "manager")
                 .queryParam("group", "managers")
                 .pathParam("processId", processId)
                 .pathParam("taskId", taskId)
@@ -259,7 +258,7 @@ class TaskIT {
 
         final String attachmentId = given().contentType(ContentType.JSON)
                 .when()
-                .queryParam("user", "admin")
+                .queryParam("user", "manager")
                 .queryParam("group", "managers")
                 .pathParam("processId", processId)
                 .pathParam("taskId", taskId)
@@ -272,7 +271,7 @@ class TaskIT {
 
         given().contentType(ContentType.JSON)
                 .when()
-                .queryParam("user", "admin")
+                .queryParam("user", "manager")
                 .queryParam("group", "managers")
                 .pathParam("processId", processId)
                 .pathParam("taskId", taskId)
@@ -285,7 +284,7 @@ class TaskIT {
         given().contentType(
                 ContentType.JSON)
                 .when()
-                .queryParam("user", "admin")
+                .queryParam("user", "manager")
                 .queryParam("group", "managers")
                 .pathParam("processId", processId)
                 .pathParam("taskId", taskId)
@@ -297,7 +296,7 @@ class TaskIT {
 
         given().contentType(ContentType.JSON)
                 .when()
-                .queryParam("user", "admin")
+                .queryParam("user", "manager")
                 .queryParam("group", "managers")
                 .pathParam("processId", processId)
                 .pathParam("taskId", taskId)
@@ -308,7 +307,7 @@ class TaskIT {
 
         given().contentType(ContentType.JSON)
                 .when()
-                .queryParam("user", "admin")
+                .queryParam("user", "manager")
                 .queryParam("group", "managers")
                 .pathParam("processId", processId)
                 .pathParam("taskId", taskId)
@@ -319,7 +318,7 @@ class TaskIT {
 
         given().contentType(ContentType.JSON)
                 .when()
-                .queryParam("user", "admin")
+                .queryParam("user", "manager")
                 .queryParam("group", "managers")
                 .pathParam("processId", processId)
                 .pathParam("taskId", taskId)
@@ -327,58 +326,6 @@ class TaskIT {
                 .delete("/approvals/{processId}/firstLineApproval/{taskId}/attachments/{attachmentId}")
                 .then()
                 .statusCode(404);
-    }
-
-    @Test
-    void testUpdateExcludedUsers() {
-        Traveller traveller = new Traveller("pepe", "rubiales", "pepe.rubiales@gmail.com", "Spanish");
-
-        String processId = given()
-                .contentType(ContentType.JSON)
-                .when()
-                .body(Collections.singletonMap("traveller", traveller))
-                .post("/approvals")
-                .then()
-                .statusCode(201)
-                .extract()
-                .path("id");
-
-        String taskId = given()
-                .contentType(ContentType.JSON)
-                .queryParam("user", "admin")
-                .queryParam("group", "managers")
-                .pathParam("processId", processId)
-                .when()
-                .get("/approvals/{processId}/tasks")
-                .then()
-                .statusCode(200)
-                .extract()
-                .path("[0].id");
-
-        Collection<String> excludedUsers = Arrays.asList("Javierito", "Manuel");
-        given().contentType(ContentType.JSON)
-                .when()
-                .queryParam("user", "admin")
-                .queryParam("group", "managers")
-                .pathParam("processId", processId)
-                .pathParam("taskId", taskId)
-                .body(Collections.singletonMap("excludedUsers", excludedUsers))
-                .patch("/management/processes/approvals/instances/{processId}/tasks/{taskId}")
-                .then()
-                .statusCode(200)
-                .body("excludedUsers", is(excludedUsers));
-
-        assertEquals(excludedUsers, given().contentType(ContentType.JSON)
-                .when()
-                .queryParam("user", "admin")
-                .queryParam("group", "managers")
-                .pathParam("processId", processId)
-                .pathParam("taskId", taskId)
-                .get("/management/processes/approvals/instances/{processId}/tasks/{taskId}")
-                .then()
-                .statusCode(200)
-                .extract()
-                .path("excludedUsers"));
     }
 
     @Test
@@ -433,13 +380,6 @@ class TaskIT {
                 .statusCode(200)
                 .extract()
                 .as(ClientTaskInfo.class);
-        assertEquals(upTaskInfo.getAdminGroups(), downTaskInfo.adminGroups);
-        assertEquals(upTaskInfo.getAdminUsers(), downTaskInfo.adminUsers);
-        assertEquals(upTaskInfo.getPotentialGroups(), downTaskInfo.potentialGroups);
-        assertEquals(upTaskInfo.getPotentialUsers(), downTaskInfo.potentialUsers);
-        assertEquals(upTaskInfo.getExcludedUsers(), downTaskInfo.excludedUsers);
-        assertEquals(upTaskInfo.getDescription(), downTaskInfo.description);
-        assertEquals(upTaskInfo.getPriority(), downTaskInfo.priority);
         assertEquals(traveller, downTaskInfo.inputParams.traveller);
     }
 

@@ -46,6 +46,7 @@
         <module>jbpm-flow-migration</module>
         <module>process-serialization-protobuf</module>
         <module>process-workitems</module>
+        <module>jbpm-usertask</module>
         <module>jbpm-tools</module>
         <module>jbpm-tests</module>
         <module>jbpm-deps-groups</module>

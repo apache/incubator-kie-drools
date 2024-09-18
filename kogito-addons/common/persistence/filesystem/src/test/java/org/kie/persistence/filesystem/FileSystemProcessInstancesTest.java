@@ -37,10 +37,13 @@ import org.kie.kogito.process.ProcessInstances;
 import org.kie.kogito.process.WorkItem;
 import org.kie.kogito.process.bpmn2.BpmnProcess;
 import org.kie.kogito.process.bpmn2.BpmnVariables;
-import org.kie.kogito.services.identity.StaticIdentityProvider;
+import org.kie.kogito.process.impl.DefaultWorkItemHandlerConfig;
+import org.kie.kogito.process.impl.StaticProcessConfig;
+import org.kie.kogito.process.workitems.impl.DefaultKogitoWorkItemHandler;
 import org.kie.kogito.uow.UnitOfWork;
 import org.kie.kogito.uow.UnitOfWorkManager;
 
+import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.entry;
@@ -59,10 +62,12 @@ import static org.mockito.Mockito.verify;
 
 class FileSystemProcessInstancesTest {
 
-    private SecurityPolicy securityPolicy = SecurityPolicy.of(new StaticIdentityProvider("john"));
+    private SecurityPolicy securityPolicy = SecurityPolicy.of("john", emptyList());
 
     private BpmnProcess createProcess(String fileName) {
-        BpmnProcess process = BpmnProcess.from(new ClassPathResource(fileName)).get(0);
+        StaticProcessConfig config = new StaticProcessConfig();
+        ((DefaultWorkItemHandlerConfig) config.workItemHandlers()).register("Human Task", new DefaultKogitoWorkItemHandler());
+        BpmnProcess process = BpmnProcess.from(config, new ClassPathResource(fileName)).get(0);
         process.setProcessInstancesFactory(new FileSystemProcessInstancesFactory());
         process.configure();
         abort(process.instances());

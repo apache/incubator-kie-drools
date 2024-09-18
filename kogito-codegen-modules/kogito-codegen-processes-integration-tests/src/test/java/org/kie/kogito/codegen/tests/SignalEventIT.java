@@ -88,6 +88,7 @@ public class SignalEventIT extends AbstractCodegenIT {
     public void testIntermediateSignalEventWithData() throws Exception {
         Map<TYPE, List<String>> resourcesTypeMap = new HashMap<>();
         resourcesTypeMap.put(TYPE.PROCESS, Collections.singletonList("signalevent/IntermediateCatchEventSignal.bpmn2"));
+        resourcesTypeMap.put(TYPE.USER_TASK, Collections.singletonList("signalevent/IntermediateCatchEventSignal.bpmn2"));
         Application app = generateCode(resourcesTypeMap);
         assertThat(app).isNotNull();
 
@@ -139,6 +140,7 @@ public class SignalEventIT extends AbstractCodegenIT {
     public void testBoundarySignalEventWithData() throws Exception {
         Map<TYPE, List<String>> resourcesTypeMap = new HashMap<>();
         resourcesTypeMap.put(TYPE.PROCESS, Collections.singletonList("signalevent/BoundarySignalEventOnTask.bpmn2"));
+        resourcesTypeMap.put(TYPE.USER_TASK, Collections.singletonList("signalevent/BoundarySignalEventOnTask.bpmn2"));
         Application app = generateCode(resourcesTypeMap);
         assertThat(app).isNotNull();
 
@@ -177,6 +179,7 @@ public class SignalEventIT extends AbstractCodegenIT {
     public void testBoundaryInterruptingSignalEventWithData() throws Exception {
         Map<TYPE, List<String>> resourcesTypeMap = new HashMap<>();
         resourcesTypeMap.put(TYPE.PROCESS, Collections.singletonList("signalevent/BoundaryInterruptingSignalEventOnTask.bpmn2"));
+        resourcesTypeMap.put(TYPE.USER_TASK, Collections.singletonList("signalevent/BoundaryInterruptingSignalEventOnTask.bpmn2"));
         Application app = generateCode(resourcesTypeMap);
         assertThat(app).isNotNull();
 
@@ -204,6 +207,7 @@ public class SignalEventIT extends AbstractCodegenIT {
     public void testIntermediateSignalEventWithDataControlledByUnitOfWork() throws Exception {
         Map<TYPE, List<String>> resourcesTypeMap = new HashMap<>();
         resourcesTypeMap.put(TYPE.PROCESS, Collections.singletonList("signalevent/IntermediateCatchEventSignal.bpmn2"));
+        resourcesTypeMap.put(TYPE.USER_TASK, Collections.singletonList("signalevent/IntermediateCatchEventSignal.bpmn2"));
         Application app = generateCode(resourcesTypeMap);
         assertThat(app).isNotNull();
         // create first unit of work

@@ -20,7 +20,7 @@ package org.kie.kogito.serverless.workflow.workitemparams;
 
 import java.util.function.UnaryOperator;
 
-import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
+import org.kie.kogito.internal.process.workitem.KogitoWorkItem;
 
 public class ConfigSuppliedWorkItemResolver<T> extends ConfigWorkItemResolver<T> {
 

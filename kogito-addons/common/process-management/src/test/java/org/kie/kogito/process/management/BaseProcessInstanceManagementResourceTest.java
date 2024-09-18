@@ -32,7 +32,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.kie.kogito.Application;
-import org.kie.kogito.auth.SecurityPolicy;
 import org.kie.kogito.process.ProcessError;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.ProcessInstances;
@@ -260,7 +259,7 @@ class BaseProcessInstanceManagementResourceTest {
 
     @Test
     void testDoGetWorkItemsInProcessInstance(@Mock WorkItem workItem) {
-        when(processInstance.workItems(any(SecurityPolicy.class))).thenReturn(singletonList(workItem));
+        when(processInstance.workItems()).thenReturn(singletonList(workItem));
         Object response = tested.doGetWorkItemsInProcessInstance(PROCESS_ID, PROCESS_INSTANCE_ID);
         assertThat(response).isInstanceOf(List.class);
         assertThat(((List) response).get(0)).isEqualTo(workItem);

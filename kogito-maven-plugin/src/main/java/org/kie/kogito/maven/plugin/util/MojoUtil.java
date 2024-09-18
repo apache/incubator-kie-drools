@@ -40,10 +40,14 @@ import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.util.maven.support.ReleaseIdImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.setDefaultsforEmptyKieModule;
 
 public final class MojoUtil {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(MojoUtil.class);
 
     public static Set<URL> getProjectFiles(final MavenProject mavenProject,
             final List<InternalKieModule> kmoduleDeps)
@@ -69,8 +73,9 @@ public final class MojoUtil {
         try {
             final Set<URL> urls = getProjectFiles(mavenProject, kmoduleDeps);
             urls.add(outputDirectory.toURI().toURL());
-
-            return URLClassLoader.newInstance(urls.toArray(new URL[0]), parentClassLoader);
+            URL[] urlArray = urls.toArray(new URL[urls.size()]);
+            LOGGER.debug("Creating maven project class loading with: {}", Arrays.asList(urlArray));
+            return URLClassLoader.newInstance(urlArray, parentClassLoader);
         } catch (final DependencyResolutionRequiredException | IOException e) {
             throw new MojoExecutionException("Error setting up Kie ClassLoader", e);
         }

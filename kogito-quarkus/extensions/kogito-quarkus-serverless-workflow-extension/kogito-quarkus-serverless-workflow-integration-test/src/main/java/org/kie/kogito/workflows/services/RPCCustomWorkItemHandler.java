@@ -20,7 +20,7 @@ package org.kie.kogito.workflows.services;
 
 import java.util.Map;
 
-import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
+import org.kie.kogito.internal.process.workitem.KogitoWorkItem;
 import org.kie.kogito.serverless.workflow.WorkflowWorkItemHandler;
 
 import jakarta.enterprise.context.ApplicationScoped;

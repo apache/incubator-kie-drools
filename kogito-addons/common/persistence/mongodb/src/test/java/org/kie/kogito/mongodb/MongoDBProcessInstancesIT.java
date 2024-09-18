@@ -44,7 +44,9 @@ import org.kie.kogito.process.ProcessInstances;
 import org.kie.kogito.process.WorkItem;
 import org.kie.kogito.process.bpmn2.BpmnProcess;
 import org.kie.kogito.process.bpmn2.BpmnVariables;
-import org.kie.kogito.services.identity.StaticIdentityProvider;
+import org.kie.kogito.process.impl.DefaultWorkItemHandlerConfig;
+import org.kie.kogito.process.impl.StaticProcessConfig;
+import org.kie.kogito.process.workitems.impl.DefaultKogitoWorkItemHandler;
 import org.kie.kogito.testcontainers.KogitoMongoDBContainer;
 import org.kie.kogito.uow.events.UnitOfWorkEndEvent;
 import org.kie.kogito.uow.events.UnitOfWorkStartEvent;
@@ -55,6 +57,7 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 
+import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.entry;
@@ -70,7 +73,7 @@ import static org.kie.kogito.test.utils.ProcessInstancesTestUtils.getFirst;
 @Testcontainers
 class MongoDBProcessInstancesIT {
 
-    private SecurityPolicy securityPolicy = SecurityPolicy.of(new StaticIdentityProvider("john"));
+    private SecurityPolicy securityPolicy = SecurityPolicy.of("john", emptyList());
 
     @Container
     final static KogitoMongoDBContainer mongoDBContainer = new KogitoMongoDBContainer();
@@ -113,7 +116,9 @@ class MongoDBProcessInstancesIT {
     }
 
     private void test(AbstractTransactionManager transactionManager) {
-        BpmnProcess process = BpmnProcess.from(new ClassPathResource("BPMN2-UserTask.bpmn2")).get(0);
+        StaticProcessConfig config = new StaticProcessConfig();
+        ((DefaultWorkItemHandlerConfig) config.workItemHandlers()).register("Human Task", new DefaultKogitoWorkItemHandler());
+        BpmnProcess process = BpmnProcess.from(config, new ClassPathResource("BPMN2-UserTask.bpmn2")).get(0);
         process.setProcessInstancesFactory(new MongoDBProcessInstancesFactory(mongoClient, transactionManager));
         process.configure();
 
@@ -200,7 +205,9 @@ class MongoDBProcessInstancesIT {
     }
 
     void testFindByIdReadMode(AbstractTransactionManager transactionManager) {
-        BpmnProcess process = BpmnProcess.from(new ClassPathResource("BPMN2-UserTask-Script.bpmn2")).get(0);
+        StaticProcessConfig config = new StaticProcessConfig();
+        ((DefaultWorkItemHandlerConfig) config.workItemHandlers()).register("Human Task", new DefaultKogitoWorkItemHandler());
+        BpmnProcess process = BpmnProcess.from(config, new ClassPathResource("BPMN2-UserTask-Script.bpmn2")).get(0);
         // workaround as BpmnProcess does not compile the scripts but just reads the xml
         for (Node node : ((WorkflowProcess) process.get()).getNodes()) {
             if (node instanceof ActionNode) {
@@ -260,7 +267,9 @@ class MongoDBProcessInstancesIT {
     }
 
     void testValuesReadMode(AbstractTransactionManager transactionManager) {
-        BpmnProcess process = BpmnProcess.from(new ClassPathResource("BPMN2-UserTask.bpmn2")).get(0);
+        StaticProcessConfig config = new StaticProcessConfig();
+        ((DefaultWorkItemHandlerConfig) config.workItemHandlers()).register("Human Task", new DefaultKogitoWorkItemHandler());
+        BpmnProcess process = BpmnProcess.from(config, new ClassPathResource("BPMN2-UserTask.bpmn2")).get(0);
         process.setProcessInstancesFactory(new MongoDBProcessInstancesFactory(mongoClient, transactionManager));
         process.configure();
 

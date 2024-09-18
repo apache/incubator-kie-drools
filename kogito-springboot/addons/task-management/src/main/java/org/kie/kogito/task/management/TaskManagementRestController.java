@@ -20,9 +20,9 @@ package org.kie.kogito.task.management;
 
 import java.util.List;
 
+import org.kie.kogito.jbpm.usertask.handler.Policies;
 import org.kie.kogito.process.ProcessConfig;
 import org.kie.kogito.process.Processes;
-import org.kie.kogito.process.workitem.Policies;
 import org.kie.kogito.task.management.service.TaskInfo;
 import org.kie.kogito.task.management.service.TaskManagementOperations;
 import org.kie.kogito.task.management.service.TaskManagementService;

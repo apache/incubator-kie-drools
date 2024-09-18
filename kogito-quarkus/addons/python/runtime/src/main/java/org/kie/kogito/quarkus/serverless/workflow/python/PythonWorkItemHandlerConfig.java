@@ -18,7 +18,7 @@
  */
 package org.kie.kogito.quarkus.serverless.workflow.python;
 
-import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
+import org.kie.kogito.internal.process.workitem.KogitoWorkItemHandler;
 import org.kie.kogito.process.impl.CachedWorkItemHandlerConfig;
 import org.kie.kogito.serverless.workflow.python.PythonScriptWorkItemHandler;
 import org.kie.kogito.serverless.workflow.python.PythonServiceWorkItemHandler;

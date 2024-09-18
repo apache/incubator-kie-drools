@@ -48,6 +48,8 @@ message WorkItemNodeInstanceContent {
     optional int64 complete_date = 11;
     optional google.protobuf.Any work_item_data = 12;
     map<string, string> timer_instance_reference = 13;
+    optional string actual_owner = 14;
+    optional string external_reference_id = 15;
 }
 
 message LambdaSubProcessNodeInstanceContent {

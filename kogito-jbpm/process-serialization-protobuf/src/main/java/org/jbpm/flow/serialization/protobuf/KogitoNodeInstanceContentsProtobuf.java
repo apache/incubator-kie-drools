@@ -1586,6 +1586,50 @@ public final class KogitoNodeInstanceContentsProtobuf {
          */
         java.lang.String getTimerInstanceReferenceOrThrow(
                 java.lang.String key);
+
+        /**
+         * <code>optional string actual_owner = 14;</code>
+         * 
+         * @return Whether the actualOwner field is set.
+         */
+        boolean hasActualOwner();
+
+        /**
+         * <code>optional string actual_owner = 14;</code>
+         * 
+         * @return The actualOwner.
+         */
+        java.lang.String getActualOwner();
+
+        /**
+         * <code>optional string actual_owner = 14;</code>
+         * 
+         * @return The bytes for actualOwner.
+         */
+        com.google.protobuf.ByteString
+                getActualOwnerBytes();
+
+        /**
+         * <code>optional string external_reference_id = 15;</code>
+         * 
+         * @return Whether the externalReferenceId field is set.
+         */
+        boolean hasExternalReferenceId();
+
+        /**
+         * <code>optional string external_reference_id = 15;</code>
+         * 
+         * @return The externalReferenceId.
+         */
+        java.lang.String getExternalReferenceId();
+
+        /**
+         * <code>optional string external_reference_id = 15;</code>
+         * 
+         * @return The bytes for externalReferenceId.
+         */
+        com.google.protobuf.ByteString
+                getExternalReferenceIdBytes();
     }
 
     /**
@@ -1612,6 +1656,8 @@ public final class KogitoNodeInstanceContentsProtobuf {
             phaseId_ = "";
             phaseStatus_ = "";
             name_ = "";
+            actualOwner_ = "";
+            externalReferenceId_ = "";
         }
 
         @java.lang.Override
@@ -2226,6 +2272,112 @@ public final class KogitoNodeInstanceContentsProtobuf {
             return map.get(key);
         }
 
+        public static final int ACTUAL_OWNER_FIELD_NUMBER = 14;
+        @SuppressWarnings("serial")
+        private volatile java.lang.Object actualOwner_ = "";
+
+        /**
+         * <code>optional string actual_owner = 14;</code>
+         * 
+         * @return Whether the actualOwner field is set.
+         */
+        @java.lang.Override
+        public boolean hasActualOwner() {
+            return ((bitField0_ & 0x00000080) != 0);
+        }
+
+        /**
+         * <code>optional string actual_owner = 14;</code>
+         * 
+         * @return The actualOwner.
+         */
+        @java.lang.Override
+        public java.lang.String getActualOwner() {
+            java.lang.Object ref = actualOwner_;
+            if (ref instanceof java.lang.String) {
+                return (java.lang.String) ref;
+            } else {
+                com.google.protobuf.ByteString bs =
+                        (com.google.protobuf.ByteString) ref;
+                java.lang.String s = bs.toStringUtf8();
+                actualOwner_ = s;
+                return s;
+            }
+        }
+
+        /**
+         * <code>optional string actual_owner = 14;</code>
+         * 
+         * @return The bytes for actualOwner.
+         */
+        @java.lang.Override
+        public com.google.protobuf.ByteString
+                getActualOwnerBytes() {
+            java.lang.Object ref = actualOwner_;
+            if (ref instanceof java.lang.String) {
+                com.google.protobuf.ByteString b =
+                        com.google.protobuf.ByteString.copyFromUtf8(
+                                (java.lang.String) ref);
+                actualOwner_ = b;
+                return b;
+            } else {
+                return (com.google.protobuf.ByteString) ref;
+            }
+        }
+
+        public static final int EXTERNAL_REFERENCE_ID_FIELD_NUMBER = 15;
+        @SuppressWarnings("serial")
+        private volatile java.lang.Object externalReferenceId_ = "";
+
+        /**
+         * <code>optional string external_reference_id = 15;</code>
+         * 
+         * @return Whether the externalReferenceId field is set.
+         */
+        @java.lang.Override
+        public boolean hasExternalReferenceId() {
+            return ((bitField0_ & 0x00000100) != 0);
+        }
+
+        /**
+         * <code>optional string external_reference_id = 15;</code>
+         * 
+         * @return The externalReferenceId.
+         */
+        @java.lang.Override
+        public java.lang.String getExternalReferenceId() {
+            java.lang.Object ref = externalReferenceId_;
+            if (ref instanceof java.lang.String) {
+                return (java.lang.String) ref;
+            } else {
+                com.google.protobuf.ByteString bs =
+                        (com.google.protobuf.ByteString) ref;
+                java.lang.String s = bs.toStringUtf8();
+                externalReferenceId_ = s;
+                return s;
+            }
+        }
+
+        /**
+         * <code>optional string external_reference_id = 15;</code>
+         * 
+         * @return The bytes for externalReferenceId.
+         */
+        @java.lang.Override
+        public com.google.protobuf.ByteString
+                getExternalReferenceIdBytes() {
+            java.lang.Object ref = externalReferenceId_;
+            if (ref instanceof java.lang.String) {
+                com.google.protobuf.ByteString b =
+                        com.google.protobuf.ByteString.copyFromUtf8(
+                                (java.lang.String) ref);
+                externalReferenceId_ = b;
+                return b;
+            } else {
+                return (com.google.protobuf.ByteString) ref;
+            }
+        }
+
         private byte memoizedIsInitialized = -1;
 
         @java.lang.Override
@@ -2285,6 +2437,12 @@ public final class KogitoNodeInstanceContentsProtobuf {
                             internalGetTimerInstanceReference(),
                             TimerInstanceReferenceDefaultEntryHolder.defaultEntry,
                             13);
+            if (((bitField0_ & 0x00000080) != 0)) {
+                com.google.protobuf.GeneratedMessageV3.writeString(output, 14, actualOwner_);
+            }
+            if (((bitField0_ & 0x00000100) != 0)) {
+                com.google.protobuf.GeneratedMessageV3.writeString(output, 15, externalReferenceId_);
+            }
             getUnknownFields().writeTo(output);
         }
 
@@ -2349,6 +2507,12 @@ public final class KogitoNodeInstanceContentsProtobuf {
                         .build();
                 size += com.google.protobuf.CodedOutputStream
                         .computeMessageSize(13, timerInstanceReference__);
+            }
+            if (((bitField0_ & 0x00000080) != 0)) {
+                size += com.google.protobuf.GeneratedMessageV3.computeStringSize(14, actualOwner_);
+            }
+            if (((bitField0_ & 0x00000100) != 0)) {
+                size += com.google.protobuf.GeneratedMessageV3.computeStringSize(15, externalReferenceId_);
             }
             size += getUnknownFields().getSerializedSize();
             memoizedSize = size;
@@ -2430,6 +2594,20 @@ public final class KogitoNodeInstanceContentsProtobuf {
             if (!internalGetTimerInstanceReference().equals(
                     other.internalGetTimerInstanceReference()))
                 return false;
+            if (hasActualOwner() != other.hasActualOwner())
+                return false;
+            if (hasActualOwner()) {
+                if (!getActualOwner()
+                        .equals(other.getActualOwner()))
+                    return false;
+            }
+            if (hasExternalReferenceId() != other.hasExternalReferenceId())
+                return false;
+            if (hasExternalReferenceId()) {
+                if (!getExternalReferenceId()
+                        .equals(other.getExternalReferenceId()))
+                    return false;
+            }
             if (!getUnknownFields().equals(other.getUnknownFields()))
                 return false;
             return true;
@@ -2491,6 +2669,14 @@ public final class KogitoNodeInstanceContentsProtobuf {
             if (!internalGetTimerInstanceReference().getMap().isEmpty()) {
                 hash = (37 * hash) + TIMER_INSTANCE_REFERENCE_FIELD_NUMBER;
                 hash = (53 * hash) + internalGetTimerInstanceReference().hashCode();
+            }
+            if (hasActualOwner()) {
+                hash = (37 * hash) + ACTUAL_OWNER_FIELD_NUMBER;
+                hash = (53 * hash) + getActualOwner().hashCode();
+            }
+            if (hasExternalReferenceId()) {
+                hash = (37 * hash) + EXTERNAL_REFERENCE_ID_FIELD_NUMBER;
+                hash = (53 * hash) + getExternalReferenceId().hashCode();
             }
             hash = (29 * hash) + getUnknownFields().hashCode();
             memoizedHashCode = hash;
@@ -2703,6 +2889,8 @@ public final class KogitoNodeInstanceContentsProtobuf {
                     workItemDataBuilder_ = null;
                 }
                 internalGetMutableTimerInstanceReference().clear();
+                actualOwner_ = "";
+                externalReferenceId_ = "";
                 return this;
             }
 
@@ -2805,6 +2993,14 @@ public final class KogitoNodeInstanceContentsProtobuf {
                 if (((from_bitField0_ & 0x00001000) != 0)) {
                     result.timerInstanceReference_ = internalGetTimerInstanceReference();
                     result.timerInstanceReference_.makeImmutable();
+                }
+                if (((from_bitField0_ & 0x00002000) != 0)) {
+                    result.actualOwner_ = actualOwner_;
+                    to_bitField0_ |= 0x00000080;
+                }
+                if (((from_bitField0_ & 0x00004000) != 0)) {
+                    result.externalReferenceId_ = externalReferenceId_;
+                    to_bitField0_ |= 0x00000100;
                 }
                 result.bitField0_ |= to_bitField0_;
             }
@@ -2960,6 +3156,16 @@ public final class KogitoNodeInstanceContentsProtobuf {
                 internalGetMutableTimerInstanceReference().mergeFrom(
                         other.internalGetTimerInstanceReference());
                 bitField0_ |= 0x00001000;
+                if (other.hasActualOwner()) {
+                    actualOwner_ = other.actualOwner_;
+                    bitField0_ |= 0x00002000;
+                    onChanged();
+                }
+                if (other.hasExternalReferenceId()) {
+                    externalReferenceId_ = other.externalReferenceId_;
+                    bitField0_ |= 0x00004000;
+                    onChanged();
+                }
                 this.mergeUnknownFields(other.getUnknownFields());
                 onChanged();
                 return this;
@@ -3073,6 +3279,16 @@ public final class KogitoNodeInstanceContentsProtobuf {
                                 bitField0_ |= 0x00001000;
                                 break;
                             } // case 106
+                            case 114: {
+                                actualOwner_ = input.readStringRequireUtf8();
+                                bitField0_ |= 0x00002000;
+                                break;
+                            } // case 114
+                            case 122: {
+                                externalReferenceId_ = input.readStringRequireUtf8();
+                                bitField0_ |= 0x00004000;
+                                break;
+                            } // case 122
                             default: {
                                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                                     done = true; // was an endgroup tag
@@ -4632,6 +4848,196 @@ public final class KogitoNodeInstanceContentsProtobuf {
                 internalGetMutableTimerInstanceReference().getMutableMap()
                         .putAll(values);
                 bitField0_ |= 0x00001000;
+                return this;
+            }
+
+            private java.lang.Object actualOwner_ = "";
+
+            /**
+             * <code>optional string actual_owner = 14;</code>
+             * 
+             * @return Whether the actualOwner field is set.
+             */
+            public boolean hasActualOwner() {
+                return ((bitField0_ & 0x00002000) != 0);
+            }
+
+            /**
+             * <code>optional string actual_owner = 14;</code>
+             * 
+             * @return The actualOwner.
+             */
+            public java.lang.String getActualOwner() {
+                java.lang.Object ref = actualOwner_;
+                if (!(ref instanceof java.lang.String)) {
+                    com.google.protobuf.ByteString bs =
+                            (com.google.protobuf.ByteString) ref;
+                    java.lang.String s = bs.toStringUtf8();
+                    actualOwner_ = s;
+                    return s;
+                } else {
+                    return (java.lang.String) ref;
+                }
+            }
+
+            /**
+             * <code>optional string actual_owner = 14;</code>
+             * 
+             * @return The bytes for actualOwner.
+             */
+            public com.google.protobuf.ByteString
+                    getActualOwnerBytes() {
+                java.lang.Object ref = actualOwner_;
+                if (ref instanceof String) {
+                    com.google.protobuf.ByteString b =
+                            com.google.protobuf.ByteString.copyFromUtf8(
+                                    (java.lang.String) ref);
+                    actualOwner_ = b;
+                    return b;
+                } else {
+                    return (com.google.protobuf.ByteString) ref;
+                }
+            }
+
+            /**
+             * <code>optional string actual_owner = 14;</code>
+             * 
+             * @param value The actualOwner to set.
+             * @return This builder for chaining.
+             */
+            public Builder setActualOwner(
+                    java.lang.String value) {
+                if (value == null) {
+                    throw new NullPointerException();
+                }
+                actualOwner_ = value;
+                bitField0_ |= 0x00002000;
+                onChanged();
+                return this;
+            }
+
+            /**
+             * <code>optional string actual_owner = 14;</code>
+             * 
+             * @return This builder for chaining.
+             */
+            public Builder clearActualOwner() {
+                actualOwner_ = getDefaultInstance().getActualOwner();
+                bitField0_ = (bitField0_ & ~0x00002000);
+                onChanged();
+                return this;
+            }
+
+            /**
+             * <code>optional string actual_owner = 14;</code>
+             * 
+             * @param value The bytes for actualOwner to set.
+             * @return This builder for chaining.
+             */
+            public Builder setActualOwnerBytes(
+                    com.google.protobuf.ByteString value) {
+                if (value == null) {
+                    throw new NullPointerException();
+                }
+                checkByteStringIsUtf8(value);
+                actualOwner_ = value;
+                bitField0_ |= 0x00002000;
+                onChanged();
+                return this;
+            }
+
+            private java.lang.Object externalReferenceId_ = "";
+
+            /**
+             * <code>optional string external_reference_id = 15;</code>
+             * 
+             * @return Whether the externalReferenceId field is set.
+             */
+            public boolean hasExternalReferenceId() {
+                return ((bitField0_ & 0x00004000) != 0);
+            }
+
+            /**
+             * <code>optional string external_reference_id = 15;</code>
+             * 
+             * @return The externalReferenceId.
+             */
+            public java.lang.String getExternalReferenceId() {
+                java.lang.Object ref = externalReferenceId_;
+                if (!(ref instanceof java.lang.String)) {
+                    com.google.protobuf.ByteString bs =
+                            (com.google.protobuf.ByteString) ref;
+                    java.lang.String s = bs.toStringUtf8();
+                    externalReferenceId_ = s;
+                    return s;
+                } else {
+                    return (java.lang.String) ref;
+                }
+            }
+
+            /**
+             * <code>optional string external_reference_id = 15;</code>
+             * 
+             * @return The bytes for externalReferenceId.
+             */
+            public com.google.protobuf.ByteString
+                    getExternalReferenceIdBytes() {
+                java.lang.Object ref = externalReferenceId_;
+                if (ref instanceof String) {
+                    com.google.protobuf.ByteString b =
+                            com.google.protobuf.ByteString.copyFromUtf8(
+                                    (java.lang.String) ref);
+                    externalReferenceId_ = b;
+                    return b;
+                } else {
+                    return (com.google.protobuf.ByteString) ref;
+                }
+            }
+
+            /**
+             * <code>optional string external_reference_id = 15;</code>
+             * 
+             * @param value The externalReferenceId to set.
+             * @return This builder for chaining.
+             */
+            public Builder setExternalReferenceId(
+                    java.lang.String value) {
+                if (value == null) {
+                    throw new NullPointerException();
+                }
+                externalReferenceId_ = value;
+                bitField0_ |= 0x00004000;
+                onChanged();
+                return this;
+            }
+
+            /**
+             * <code>optional string external_reference_id = 15;</code>
+             * 
+             * @return This builder for chaining.
+             */
+            public Builder clearExternalReferenceId() {
+                externalReferenceId_ = getDefaultInstance().getExternalReferenceId();
+                bitField0_ = (bitField0_ & ~0x00004000);
+                onChanged();
+                return this;
+            }
+
+            /**
+             * <code>optional string external_reference_id = 15;</code>
+             * 
+             * @param value The bytes for externalReferenceId to set.
+             * @return This builder for chaining.
+             */
+            public Builder setExternalReferenceIdBytes(
+                    com.google.protobuf.ByteString value) {
+                if (value == null) {
+                    throw new NullPointerException();
+                }
+                checkByteStringIsUtf8(value);
+                externalReferenceId_ = value;
+                bitField0_ |= 0x00004000;
+                onChanged();
                 return this;
             }
 
@@ -18058,7 +18464,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
                         "leSetNodeInstanceContent.TimerInstanceRe" +
                         "ferenceEntry\032=\n\033TimerInstanceReferenceEn" +
                         "try\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001B\022\n\020_" +
-                        "rule_flow_group\"\377\005\n\033WorkItemNodeInstance" +
+                        "rule_flow_group\"\351\006\n\033WorkItemNodeInstance" +
                         "Content\022\024\n\014work_item_id\030\001 \001(\t\022\031\n\021timer_i" +
                         "nstance_id\030\002 \003(\t\022/\n\"error_handling_proce" +
                         "ss_instance_id\030\003 \001(\tH\000\210\001\001\022\r\n\005state\030\004 \001(\005" +
@@ -18072,85 +18478,88 @@ public final class KogitoNodeInstanceContentsProtobuf {
                         "oogle.protobuf.AnyH\006\210\001\001\022\177\n\030timer_instanc" +
                         "e_reference\030\r \003(\0132].org.jbpm.flow.serial" +
                         "ization.protobuf.WorkItemNodeInstanceCon" +
-                        "tent.TimerInstanceReferenceEntry\032=\n\033Time" +
-                        "rInstanceReferenceEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005" +
-                        "value\030\002 \001(\t:\0028\001B%\n#_error_handling_proce" +
-                        "ss_instance_idB\013\n\t_phase_idB\017\n\r_phase_st" +
-                        "atusB\007\n\005_nameB\r\n\013_start_dateB\020\n\016_complet" +
-                        "e_dateB\021\n\017_work_item_data\"\303\002\n#LambdaSubP" +
-                        "rocessNodeInstanceContent\022 \n\023process_ins" +
-                        "tance_id\030\001 \001(\tH\000\210\001\001\022\031\n\021timer_instance_id" +
-                        "\030\002 \003(\t\022\207\001\n\030timer_instance_reference\030\003 \003(" +
-                        "\0132e.org.jbpm.flow.serialization.protobuf" +
-                        ".LambdaSubProcessNodeInstanceContent.Tim" +
-                        "erInstanceReferenceEntry\032=\n\033TimerInstanc" +
-                        "eReferenceEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 " +
-                        "\001(\t:\0028\001B\026\n\024_process_instance_id\"\267\002\n\035SubP" +
-                        "rocessNodeInstanceContent\022 \n\023process_ins" +
-                        "tance_id\030\001 \001(\tH\000\210\001\001\022\031\n\021timer_instance_id" +
-                        "\030\002 \003(\t\022\201\001\n\030timer_instance_reference\030\003 \003(" +
-                        "\0132_.org.jbpm.flow.serialization.protobuf" +
-                        ".SubProcessNodeInstanceContent.TimerInst" +
-                        "anceReferenceEntry\032=\n\033TimerInstanceRefer" +
-                        "enceEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028" +
-                        "\001B\026\n\024_process_instance_id\"\373\001\n\034MilestoneN" +
-                        "odeInstanceContent\022\031\n\021timer_instance_id\030" +
-                        "\001 \003(\t\022\200\001\n\030timer_instance_reference\030\002 \003(\013" +
-                        "2^.org.jbpm.flow.serialization.protobuf." +
-                        "MilestoneNodeInstanceContent.TimerInstan" +
-                        "ceReferenceEntry\032=\n\033TimerInstanceReferen" +
-                        "ceEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"" +
-                        "\032\n\030EventNodeInstanceContent\">\n\030TimerNode" +
-                        "InstanceContent\022\025\n\010timer_id\030\001 \001(\tH\000\210\001\001B\013" +
-                        "\n\t_timer_id\"\310\001\n\027JoinNodeInstanceContent\022" +
-                        "Z\n\007trigger\030\001 \003(\0132I.org.jbpm.flow.seriali" +
-                        "zation.protobuf.JoinNodeInstanceContent." +
-                        "JoinTrigger\032Q\n\013JoinTrigger\022\024\n\007node_id\030\001 " +
-                        "\001(\tH\000\210\001\001\022\024\n\007counter\030\002 \001(\005H\001\210\001\001B\n\n\010_node_" +
-                        "idB\n\n\010_counter\"\362\001\n\030StateNodeInstanceCont" +
-                        "ent\022\031\n\021timer_instance_id\030\001 \003(\t\022|\n\030timer_" +
-                        "instance_reference\030\002 \003(\0132Z.org.jbpm.flow" +
-                        ".serialization.protobuf.StateNodeInstanc" +
-                        "eContent.TimerInstanceReferenceEntry\032=\n\033" +
-                        "TimerInstanceReferenceEntry\022\013\n\003key\030\001 \001(\t" +
-                        "\022\r\n\005value\030\002 \001(\t:\0028\001\"\321\002\n#CompositeContext" +
-                        "NodeInstanceContent\022\031\n\021timer_instance_id" +
-                        "\030\001 \003(\t\022F\n\007context\030\002 \001(\01325.org.jbpm.flow." +
-                        "serialization.protobuf.WorkflowContext\022\207" +
-                        "\001\n\030timer_instance_reference\030\003 \003(\0132e.org." +
-                        "jbpm.flow.serialization.protobuf.Composi" +
-                        "teContextNodeInstanceContent.TimerInstan" +
-                        "ceReferenceEntry\032=\n\033TimerInstanceReferen" +
-                        "ceEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"" +
-                        "\276\002\n\032DynamicNodeInstanceContent\022\031\n\021timer_" +
-                        "instance_id\030\001 \003(\t\022F\n\007context\030\002 \001(\01325.org" +
-                        ".jbpm.flow.serialization.protobuf.Workfl" +
-                        "owContext\022~\n\030timer_instance_reference\030\003 " +
-                        "\003(\0132\\.org.jbpm.flow.serialization.protob" +
-                        "uf.DynamicNodeInstanceContent.TimerInsta" +
-                        "nceReferenceEntry\032=\n\033TimerInstanceRefere" +
-                        "nceEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001" +
-                        "\"\317\002\n\"EventSubProcessNodeInstanceContent\022" +
-                        "\031\n\021timer_instance_id\030\001 \003(\t\022F\n\007context\030\002 " +
-                        "\001(\01325.org.jbpm.flow.serialization.protob" +
-                        "uf.WorkflowContext\022\206\001\n\030timer_instance_re" +
-                        "ference\030\003 \003(\0132d.org.jbpm.flow.serializat" +
-                        "ion.protobuf.EventSubProcessNodeInstance" +
-                        "Content.TimerInstanceReferenceEntry\032=\n\033T" +
-                        "imerInstanceReferenceEntry\022\013\n\003key\030\001 \001(\t\022" +
-                        "\r\n\005value\030\002 \001(\t:\0028\001\"\214\003\n\032ForEachNodeInstan" +
-                        "ceContent\022\031\n\021timer_instance_id\030\001 \003(\t\022F\n\007" +
-                        "context\030\002 \001(\01325.org.jbpm.flow.serializat" +
-                        "ion.protobuf.WorkflowContext\022\026\n\016totalIns" +
-                        "tances\030\003 \001(\005\022\031\n\021executedInstances\030\004 \001(\005\022" +
-                        "\031\n\021hasAsyncInstances\030\005 \001(\010\022~\n\030timer_inst" +
-                        "ance_reference\030\006 \003(\0132\\.org.jbpm.flow.ser" +
-                        "ialization.protobuf.ForEachNodeInstanceC" +
-                        "ontent.TimerInstanceReferenceEntry\032=\n\033Ti" +
-                        "merInstanceReferenceEntry\022\013\n\003key\030\001 \001(\t\022\r" +
-                        "\n\005value\030\002 \001(\t:\0028\001\"/\n\035AsyncEventNodeInsta" +
-                        "nceContent\022\016\n\006job_id\030\001 \001(\tB$B\"KogitoNode" +
-                        "InstanceContentsProtobufb\006proto3"
+                        "tent.TimerInstanceReferenceEntry\022\031\n\014actu" +
+                        "al_owner\030\016 \001(\tH\007\210\001\001\022\"\n\025external_referenc" +
+                        "e_id\030\017 \001(\tH\010\210\001\001\032=\n\033TimerInstanceReferenc" +
+                        "eEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001B%" +
+                        "\n#_error_handling_process_instance_idB\013\n" +
+                        "\t_phase_idB\017\n\r_phase_statusB\007\n\005_nameB\r\n\013" +
+                        "_start_dateB\020\n\016_complete_dateB\021\n\017_work_i" +
+                        "tem_dataB\017\n\r_actual_ownerB\030\n\026_external_r" +
+                        "eference_id\"\303\002\n#LambdaSubProcessNodeInst" +
+                        "anceContent\022 \n\023process_instance_id\030\001 \001(\t" +
+                        "H\000\210\001\001\022\031\n\021timer_instance_id\030\002 \003(\t\022\207\001\n\030tim" +
+                        "er_instance_reference\030\003 \003(\0132e.org.jbpm.f" +
+                        "low.serialization.protobuf.LambdaSubProc" +
+                        "essNodeInstanceContent.TimerInstanceRefe" +
+                        "renceEntry\032=\n\033TimerInstanceReferenceEntr" +
+                        "y\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001B\026\n\024_pr" +
+                        "ocess_instance_id\"\267\002\n\035SubProcessNodeInst" +
+                        "anceContent\022 \n\023process_instance_id\030\001 \001(\t" +
+                        "H\000\210\001\001\022\031\n\021timer_instance_id\030\002 \003(\t\022\201\001\n\030tim" +
+                        "er_instance_reference\030\003 \003(\0132_.org.jbpm.f" +
+                        "low.serialization.protobuf.SubProcessNod" +
+                        "eInstanceContent.TimerInstanceReferenceE" +
+                        "ntry\032=\n\033TimerInstanceReferenceEntry\022\013\n\003k" +
+                        "ey\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001B\026\n\024_process_" +
+                        "instance_id\"\373\001\n\034MilestoneNodeInstanceCon" +
+                        "tent\022\031\n\021timer_instance_id\030\001 \003(\t\022\200\001\n\030time" +
+                        "r_instance_reference\030\002 \003(\0132^.org.jbpm.fl" +
+                        "ow.serialization.protobuf.MilestoneNodeI" +
+                        "nstanceContent.TimerInstanceReferenceEnt" +
+                        "ry\032=\n\033TimerInstanceReferenceEntry\022\013\n\003key" +
+                        "\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"\032\n\030EventNodeIn" +
+                        "stanceContent\">\n\030TimerNodeInstanceConten" +
+                        "t\022\025\n\010timer_id\030\001 \001(\tH\000\210\001\001B\013\n\t_timer_id\"\310\001" +
+                        "\n\027JoinNodeInstanceContent\022Z\n\007trigger\030\001 \003" +
+                        "(\0132I.org.jbpm.flow.serialization.protobu" +
+                        "f.JoinNodeInstanceContent.JoinTrigger\032Q\n" +
+                        "\013JoinTrigger\022\024\n\007node_id\030\001 \001(\tH\000\210\001\001\022\024\n\007co" +
+                        "unter\030\002 \001(\005H\001\210\001\001B\n\n\010_node_idB\n\n\010_counter" +
+                        "\"\362\001\n\030StateNodeInstanceContent\022\031\n\021timer_i" +
+                        "nstance_id\030\001 \003(\t\022|\n\030timer_instance_refer" +
+                        "ence\030\002 \003(\0132Z.org.jbpm.flow.serialization" +
+                        ".protobuf.StateNodeInstanceContent.Timer" +
+                        "InstanceReferenceEntry\032=\n\033TimerInstanceR" +
+                        "eferenceEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(" +
+                        "\t:\0028\001\"\321\002\n#CompositeContextNodeInstanceCo" +
+                        "ntent\022\031\n\021timer_instance_id\030\001 \003(\t\022F\n\007cont" +
+                        "ext\030\002 \001(\01325.org.jbpm.flow.serialization." +
+                        "protobuf.WorkflowContext\022\207\001\n\030timer_insta" +
+                        "nce_reference\030\003 \003(\0132e.org.jbpm.flow.seri" +
+                        "alization.protobuf.CompositeContextNodeI" +
+                        "nstanceContent.TimerInstanceReferenceEnt" +
+                        "ry\032=\n\033TimerInstanceReferenceEntry\022\013\n\003key" +
+                        "\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"\276\002\n\032DynamicNod" +
+                        "eInstanceContent\022\031\n\021timer_instance_id\030\001 " +
+                        "\003(\t\022F\n\007context\030\002 \001(\01325.org.jbpm.flow.ser" +
+                        "ialization.protobuf.WorkflowContext\022~\n\030t" +
+                        "imer_instance_reference\030\003 \003(\0132\\.org.jbpm" +
+                        ".flow.serialization.protobuf.DynamicNode" +
+                        "InstanceContent.TimerInstanceReferenceEn" +
+                        "try\032=\n\033TimerInstanceReferenceEntry\022\013\n\003ke" +
+                        "y\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"\317\002\n\"EventSubP" +
+                        "rocessNodeInstanceContent\022\031\n\021timer_insta" +
+                        "nce_id\030\001 \003(\t\022F\n\007context\030\002 \001(\01325.org.jbpm" +
+                        ".flow.serialization.protobuf.WorkflowCon" +
+                        "text\022\206\001\n\030timer_instance_reference\030\003 \003(\0132" +
+                        "d.org.jbpm.flow.serialization.protobuf.E" +
+                        "ventSubProcessNodeInstanceContent.TimerI" +
+                        "nstanceReferenceEntry\032=\n\033TimerInstanceRe" +
+                        "ferenceEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t" +
+                        ":\0028\001\"\214\003\n\032ForEachNodeInstanceContent\022\031\n\021t" +
+                        "imer_instance_id\030\001 \003(\t\022F\n\007context\030\002 \001(\0132" +
+                        "5.org.jbpm.flow.serialization.protobuf.W" +
+                        "orkflowContext\022\026\n\016totalInstances\030\003 \001(\005\022\031" +
+                        "\n\021executedInstances\030\004 \001(\005\022\031\n\021hasAsyncIns" +
+                        "tances\030\005 \001(\010\022~\n\030timer_instance_reference" +
+                        "\030\006 \003(\0132\\.org.jbpm.flow.serialization.pro" +
+                        "tobuf.ForEachNodeInstanceContent.TimerIn" +
+                        "stanceReferenceEntry\032=\n\033TimerInstanceRef" +
+                        "erenceEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:" +
+                        "\0028\001\"/\n\035AsyncEventNodeInstanceContent\022\016\n\006" +
+                        "job_id\030\001 \001(\tB$B\"KogitoNodeInstanceConten" +
+                        "tsProtobufb\006proto3"
         };
         descriptor = com.google.protobuf.Descriptors.FileDescriptor
                 .internalBuildGeneratedFileFrom(descriptorData,
@@ -18173,7 +18582,7 @@ public final class KogitoNodeInstanceContentsProtobuf {
         internal_static_org_jbpm_flow_serialization_protobuf_WorkItemNodeInstanceContent_fieldAccessorTable = new com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
                 internal_static_org_jbpm_flow_serialization_protobuf_WorkItemNodeInstanceContent_descriptor,
                 new java.lang.String[] { "WorkItemId", "TimerInstanceId", "ErrorHandlingProcessInstanceId", "State", "Variable", "Result", "PhaseId", "PhaseStatus", "Name", "StartDate",
-                        "CompleteDate", "WorkItemData", "TimerInstanceReference", });
+                        "CompleteDate", "WorkItemData", "TimerInstanceReference", "ActualOwner", "ExternalReferenceId", });
         internal_static_org_jbpm_flow_serialization_protobuf_WorkItemNodeInstanceContent_TimerInstanceReferenceEntry_descriptor =
                 internal_static_org_jbpm_flow_serialization_protobuf_WorkItemNodeInstanceContent_descriptor.getNestedTypes().get(0);
         internal_static_org_jbpm_flow_serialization_protobuf_WorkItemNodeInstanceContent_TimerInstanceReferenceEntry_fieldAccessorTable = new com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(

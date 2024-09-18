@@ -27,13 +27,17 @@ import org.jbpm.workflow.core.node.BoundaryEventNode;
 import org.jbpm.workflow.instance.NodeInstance;
 import org.jbpm.workflow.instance.NodeInstanceContainer;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BoundaryEventNodeInstance extends EventNodeInstance {
 
+    private static final Logger LOG = LoggerFactory.getLogger(BoundaryEventNodeInstance.class);
     private static final long serialVersionUID = -4958054074031174180L;
 
     @Override
     public void signalEvent(String type, Object event, Function<String, Object> varResolver) {
+        LOG.debug("Received boundary event signal {} and paydload {}", type, event);
         if (triggerTime == null) {
             triggerTime = new Date();
         }

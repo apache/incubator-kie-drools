@@ -23,16 +23,13 @@ import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
-import org.jbpm.process.instance.impl.humantask.HumanTaskWorkItemHandler;
-import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
+import org.kie.kogito.internal.process.workitem.KogitoWorkItemHandler;
+import org.kie.kogito.internal.process.workitem.Policy;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstanceNotFoundException;
 import org.kie.kogito.process.ProcessInstanceReadMode;
 import org.kie.kogito.process.WorkItem;
-import org.kie.kogito.process.workitem.LifeCyclePhase;
-import org.kie.kogito.process.workitem.Policy;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -90,21 +87,14 @@ public class JsonSchemaUtil {
             KogitoWorkItemHandler workItemHandler,
             String processInstanceId,
             String workItemId,
-            Policy<?>[] policies,
+            Policy[] policies,
             Map<String, Object> jsonSchema) {
         return process.instances().findById(processInstanceId, ProcessInstanceReadMode.READ_ONLY).map(pi -> {
-            jsonSchema
-                    .put(
-                            "phases",
-                            allowedPhases(
-                                    workItemHandler,
-                                    pi.workItem(workItemId, policies)));
+            WorkItem workItem = pi.workItem(workItemId, policies);
+            Set<String> transitions = workItemHandler.allowedTransitions(workItem.getPhaseStatus());
+            jsonSchema.put("phases", transitions);
             return jsonSchema;
         }).orElseThrow(() -> new ProcessInstanceNotFoundException(processInstanceId));
-    }
-
-    public static Set<String> allowedPhases(KogitoWorkItemHandler handler, WorkItem workItem) {
-        return HumanTaskWorkItemHandler.allowedPhases(handler, workItem.getPhase()).map(LifeCyclePhase::id).collect(Collectors.toSet());
     }
 
     public static String pathFor(String key) {

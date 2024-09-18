@@ -23,17 +23,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-import org.kie.kogito.internal.process.runtime.WorkItemNotFoundException;
+import org.kie.kogito.internal.process.workitem.InvalidLifeCyclePhaseException;
+import org.kie.kogito.internal.process.workitem.InvalidTransitionException;
+import org.kie.kogito.internal.process.workitem.NotAuthorizedException;
+import org.kie.kogito.internal.process.workitem.WorkItemExecutionException;
+import org.kie.kogito.internal.process.workitem.WorkItemNotFoundException;
 import org.kie.kogito.process.NodeInstanceNotFoundException;
 import org.kie.kogito.process.NodeNotFoundException;
 import org.kie.kogito.process.ProcessInstanceDuplicatedException;
 import org.kie.kogito.process.ProcessInstanceExecutionException;
 import org.kie.kogito.process.ProcessInstanceNotFoundException;
 import org.kie.kogito.process.VariableViolationException;
-import org.kie.kogito.process.workitem.InvalidLifeCyclePhaseException;
-import org.kie.kogito.process.workitem.InvalidTransitionException;
-import org.kie.kogito.process.workitem.NotAuthorizedException;
-import org.kie.kogito.process.workitem.WorkItemExecutionException;
 
 public abstract class BaseExceptionsHandler<T> {
 

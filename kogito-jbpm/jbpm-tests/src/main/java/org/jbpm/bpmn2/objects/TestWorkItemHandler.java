@@ -20,47 +20,34 @@ package org.jbpm.bpmn2.objects;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 
-import org.jbpm.process.instance.impl.humantask.InternalHumanTaskWorkItem;
-import org.jbpm.process.instance.impl.workitem.Active;
-import org.jbpm.process.instance.impl.workitem.Complete;
-import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
-import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
-import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
-import org.kie.kogito.process.workitem.HumanTaskWorkItem;
-import org.kie.kogito.process.workitem.Transition;
-import org.kie.kogito.process.workitems.InternalKogitoWorkItem;
-import org.kie.kogito.process.workitems.InternalKogitoWorkItemManager;
+import org.kie.kogito.internal.process.workitem.KogitoWorkItem;
+import org.kie.kogito.internal.process.workitem.KogitoWorkItemHandler;
+import org.kie.kogito.internal.process.workitem.KogitoWorkItemManager;
+import org.kie.kogito.internal.process.workitem.WorkItemTransition;
+import org.kie.kogito.process.workitems.impl.DefaultKogitoWorkItemHandler;
 
-public class TestWorkItemHandler implements KogitoWorkItemHandler {
+public class TestWorkItemHandler extends DefaultKogitoWorkItemHandler {
 
     private List<KogitoWorkItem> workItems = new ArrayList<>();
 
-    public void executeWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager manager) {
+    @Override
+    public Optional<WorkItemTransition> activateWorkItemHandler(KogitoWorkItemManager manager, KogitoWorkItemHandler handler, KogitoWorkItem workItem, WorkItemTransition transition) {
         workItems.add(workItem);
-
-        if (workItem instanceof HumanTaskWorkItem) {
-            InternalHumanTaskWorkItem humanTaskWorkItem = (InternalHumanTaskWorkItem) workItem;
-
-            humanTaskWorkItem.setPhaseId(Active.ID);
-            humanTaskWorkItem.setPhaseStatus(Active.STATUS);
-        }
-    }
-
-    public void abortWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager manager) {
+        return Optional.empty();
     }
 
     public KogitoWorkItem getWorkItem() {
-        if (workItems.size() == 0) {
-            return null;
-        }
-        if (workItems.size() == 1) {
-            KogitoWorkItem result = workItems.get(0);
-            this.workItems.clear();
-            return result;
-        } else {
-            throw new IllegalArgumentException("More than one work item active");
+        switch (workItems.size()) {
+            case 0:
+                return null;
+            case 1:
+                KogitoWorkItem result = workItems.get(0);
+                this.workItems.clear();
+                return result;
+            default:
+                throw new IllegalArgumentException("More than one work item active");
         }
     }
 
@@ -70,12 +57,4 @@ public class TestWorkItemHandler implements KogitoWorkItemHandler {
         return result;
     }
 
-    @Override
-    public void transitionToPhase(KogitoWorkItem workItem, KogitoWorkItemManager manager, Transition<?> transition) {
-
-        if (transition.phase().equals(Complete.ID)) {
-            ((InternalKogitoWorkItem) workItem).setResults((Map<String, Object>) transition.data());
-            ((InternalKogitoWorkItemManager) manager).internalCompleteWorkItem((InternalKogitoWorkItem) workItem);
-        }
-    }
 }

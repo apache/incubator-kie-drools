@@ -19,9 +19,12 @@
 package org.jbpm.test.util;
 
 import org.kie.api.event.process.ProcessNodeLeftEvent;
+import org.kie.api.event.process.ProcessNodeTriggeredEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class NodeLeftCountDownProcessEventListener extends DefaultCountDownProcessEventListener {
-
+    private static final Logger logger = LoggerFactory.getLogger(NodeLeftCountDownProcessEventListener.class);
     private String nodeName;
 
     public NodeLeftCountDownProcessEventListener() {
@@ -34,7 +37,13 @@ public class NodeLeftCountDownProcessEventListener extends DefaultCountDownProce
     }
 
     @Override
+    public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {
+        logger.info("before node left {}", event);
+    }
+
+    @Override
     public void afterNodeLeft(ProcessNodeLeftEvent event) {
+        logger.info("after node left {}", event);
         if (nodeName.equals(event.getNodeInstance().getNodeName())) {
             countDown();
         }

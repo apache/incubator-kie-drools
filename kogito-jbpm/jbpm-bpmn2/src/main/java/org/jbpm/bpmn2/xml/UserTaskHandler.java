@@ -43,7 +43,20 @@ public class UserTaskHandler extends TaskHandler {
     }
 
     private static final Set<String> taskParameters = Set.of(
-            "NotStartedNotify", "NotCompletedNotify", "NotCompletedReassign", "NotStartedReassign", "Description", "Comment", "ActorId", "GroupId", "Priority", "Skippable", "Content");
+            "NotStartedNotify",
+            "NotCompletedNotify",
+            "NotCompletedReassign",
+            "NotStartedReassign",
+            "Description",
+            "Comment",
+            "ActorId",
+            "GroupId",
+            "Priority",
+            "Skippable",
+            "Content",
+            "ExcludedOwnerId",
+            "BusinessAdministratorId",
+            "BusinessAdministratorGroupId");
 
     @Override
     protected Node handleNode(final Node node, final Element element, final String uri,

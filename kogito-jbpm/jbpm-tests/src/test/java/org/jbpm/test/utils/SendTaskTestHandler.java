@@ -18,30 +18,31 @@
  */
 package org.jbpm.test.utils;
 
-import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
-import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
-import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
+import java.util.Collections;
+import java.util.Optional;
+
+import org.kie.kogito.internal.process.workitem.KogitoWorkItem;
+import org.kie.kogito.internal.process.workitem.KogitoWorkItemHandler;
+import org.kie.kogito.internal.process.workitem.KogitoWorkItemManager;
+import org.kie.kogito.internal.process.workitem.WorkItemTransition;
+import org.kie.kogito.process.workitems.impl.DefaultKogitoWorkItemHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SendTaskTestHandler implements KogitoWorkItemHandler {
+public class SendTaskTestHandler extends DefaultKogitoWorkItemHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(SendTaskTestHandler.class);
 
     private String lastMessage;
     private boolean sent = false;
 
-    public void executeWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager manager) {
+    @Override
+    public Optional<WorkItemTransition> activateWorkItemHandler(KogitoWorkItemManager manager, KogitoWorkItemHandler handler, KogitoWorkItem workItem, WorkItemTransition transition) {
         String message = (String) workItem.getParameter("Message");
         this.lastMessage = message;
         this.sent = true;
         logger.debug("Sending message: {}", message);
-        manager.completeWorkItem(workItem.getStringId(), null);
-
-    }
-
-    public void abortWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager manager) {
-        // Do nothing, cannot be aborted
+        return Optional.of(this.workItemLifeCycle.newTransition("complete", workItem.getPhaseStatus(), Collections.emptyMap()));
     }
 
     public String lastMessage() {

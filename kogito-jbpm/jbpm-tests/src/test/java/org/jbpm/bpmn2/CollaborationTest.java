@@ -27,7 +27,7 @@ import org.jbpm.bpmn2.collaboration.CollaborationIntermediateMessageModel;
 import org.jbpm.bpmn2.collaboration.CollaborationIntermediateMessageProcess;
 import org.jbpm.bpmn2.collaboration.CollaborationStartMessageModel;
 import org.jbpm.bpmn2.collaboration.CollaborationStartMessageProcess;
-import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
+import org.jbpm.process.workitem.builtin.DoNothingWorkItemHandler;
 import org.jbpm.test.utils.ProcessTestHelper;
 import org.junit.jupiter.api.Test;
 import org.kie.api.event.process.ProcessStartedEvent;

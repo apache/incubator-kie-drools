@@ -21,25 +21,29 @@ package org.kie.kogito.serverless.workflow;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
-import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
-import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
-import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
+import org.kie.kogito.internal.process.workitem.KogitoWorkItem;
+import org.kie.kogito.internal.process.workitem.KogitoWorkItemHandler;
+import org.kie.kogito.internal.process.workitem.KogitoWorkItemManager;
+import org.kie.kogito.internal.process.workitem.WorkItemTransition;
 import org.kie.kogito.jackson.utils.JsonObjectUtils;
+import org.kie.kogito.process.workitems.impl.DefaultKogitoWorkItemHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class WorkflowWorkItemHandler implements KogitoWorkItemHandler {
+public abstract class WorkflowWorkItemHandler extends DefaultKogitoWorkItemHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(WorkflowWorkItemHandler.class);
 
     @Override
-    public void executeWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager manager) {
+    public Optional<WorkItemTransition> activateWorkItemHandler(KogitoWorkItemManager manager, KogitoWorkItemHandler handler, KogitoWorkItem workItem, WorkItemTransition transition) {
         Map<String, Object> parameters = new HashMap<>(workItem.getParameters());
         parameters.remove(SWFConstants.MODEL_WORKFLOW_VAR);
         logger.debug("Workflow workitem {} will be invoked with parameters {}", workItem.getName(), parameters);
-        manager.completeWorkItem(workItem.getStringId(), Collections.singletonMap("Result",
-                JsonObjectUtils.fromValue(internalExecute(workItem, parameters))));
+
+        Map<String, Object> params = Collections.singletonMap("Result", JsonObjectUtils.fromValue(internalExecute(workItem, parameters)));
+        return Optional.of(this.workItemLifeCycle.newTransition("complete", workItem.getPhaseStatus(), params));
     }
 
     protected abstract Object internalExecute(KogitoWorkItem workItem, Map<String, Object> parameters);
@@ -54,11 +58,6 @@ public abstract class WorkflowWorkItemHandler implements KogitoWorkItemHandler {
         V value = JsonObjectUtils.convertValue(params, clazz);
         logger.trace("Invoking workitemhandler with value {}", value);
         return value;
-    }
-
-    @Override
-    public void abortWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager manager) {
-        // abort does nothing
     }
 
 }

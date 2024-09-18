@@ -25,11 +25,11 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.drools.io.ClassPathResource;
-import org.jbpm.process.instance.impl.humantask.HumanTaskWorkItemHandler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.Model;
 import org.kie.kogito.auth.SecurityPolicy;
+import org.kie.kogito.internal.process.workitem.Policy;
 import org.kie.kogito.process.ProcessConfig;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.WorkItem;
@@ -38,7 +38,6 @@ import org.kie.kogito.process.bpmn2.BpmnVariables;
 import org.kie.kogito.process.impl.CachedWorkItemHandlerConfig;
 import org.kie.kogito.process.impl.DefaultProcessEventListenerConfig;
 import org.kie.kogito.process.impl.StaticProcessConfig;
-import org.kie.kogito.process.workitem.Policy;
 import org.kie.kogito.process.workitems.InternalKogitoWorkItem;
 import org.kie.kogito.services.identity.StaticIdentityProvider;
 import org.kie.kogito.services.uow.CollectingUnitOfWorkFactory;
@@ -50,7 +49,7 @@ import static org.kie.kogito.internal.process.runtime.KogitoProcessInstance.STAT
 
 public class PredictionAwareHumanTaskLifeCycleTest {
 
-    private Policy<?> securityPolicy = SecurityPolicy.of(new StaticIdentityProvider("john"));
+    private Policy securityPolicy = SecurityPolicy.of(new StaticIdentityProvider("john"));
 
     private AtomicBoolean predictNow;
     private List<String> trainedTasks;
@@ -88,7 +87,7 @@ public class PredictionAwareHumanTaskLifeCycleTest {
         };
 
         CachedWorkItemHandlerConfig wiConfig = new CachedWorkItemHandlerConfig();
-        wiConfig.register("Human Task", new HumanTaskWorkItemHandler(new PredictionAwareHumanTaskLifeCycle(predictionService)));
+        wiConfig.register("Human Task", new PredictionAwareHumanTaskWorkItemHandler(predictionService));
         config = new StaticProcessConfig(wiConfig, new DefaultProcessEventListenerConfig(), new DefaultUnitOfWorkManager(new CollectingUnitOfWorkFactory()));
     }
 

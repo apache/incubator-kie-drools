@@ -20,12 +20,9 @@ package org.jbpm.process.instance.event;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 
-import org.jbpm.workflow.instance.node.HumanTaskNodeInstance;
 import org.kie.api.event.process.MessageEvent;
 import org.kie.api.event.process.ProcessCompletedEvent;
 import org.kie.api.event.process.ProcessNodeLeftEvent;
@@ -34,9 +31,6 @@ import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.api.event.process.ProcessVariableChangedEvent;
 import org.kie.api.event.process.SLAViolatedEvent;
 import org.kie.api.event.process.SignalEvent;
-import org.kie.api.event.usertask.UserTaskDeadlineEvent;
-import org.kie.api.event.usertask.UserTaskDeadlineEvent.DeadlineType;
-import org.kie.api.event.usertask.UserTaskVariableEvent.VariableEventType;
 import org.kie.api.runtime.KieRuntime;
 import org.kie.internal.runtime.Closeable;
 import org.kie.kogito.auth.IdentityProvider;
@@ -45,11 +39,8 @@ import org.kie.kogito.internal.process.event.KogitoProcessEventSupport;
 import org.kie.kogito.internal.process.event.ProcessWorkItemTransitionEvent;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
-import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
-import org.kie.kogito.process.workitem.Attachment;
-import org.kie.kogito.process.workitem.Comment;
-import org.kie.kogito.process.workitem.HumanTaskWorkItem;
-import org.kie.kogito.process.workitem.Transition;
+import org.kie.kogito.internal.process.workitem.KogitoWorkItem;
+import org.kie.kogito.internal.process.workitem.WorkItemTransition;
 
 public class KogitoProcessEventSupportImpl implements KogitoProcessEventSupport {
 
@@ -187,13 +178,13 @@ public class KogitoProcessEventSupportImpl implements KogitoProcessEventSupport 
     }
 
     @Override
-    public void fireBeforeWorkItemTransition(final KogitoProcessInstance instance, KogitoWorkItem workitem, Transition<?> transition, KieRuntime kruntime) {
+    public void fireBeforeWorkItemTransition(final KogitoProcessInstance instance, KogitoWorkItem workitem, WorkItemTransition transition, KieRuntime kruntime) {
         final ProcessWorkItemTransitionEvent event = new KogitoProcessWorkItemTransitionEventImpl(instance, workitem, transition, kruntime, false, identityProvider.getName());
         notifyAllListeners(l -> l.beforeWorkItemTransition(event));
     }
 
     @Override
-    public void fireAfterWorkItemTransition(final KogitoProcessInstance instance, KogitoWorkItem workitem, Transition<?> transition, KieRuntime kruntime) {
+    public void fireAfterWorkItemTransition(final KogitoProcessInstance instance, KogitoWorkItem workitem, WorkItemTransition transition, KieRuntime kruntime) {
         final ProcessWorkItemTransitionEvent event = new KogitoProcessWorkItemTransitionEventImpl(instance, workitem, transition, kruntime, true, identityProvider.getName());
         notifyAllListeners(l -> l.afterWorkItemTransition(event));
     }
@@ -214,158 +205,6 @@ public class KogitoProcessEventSupportImpl implements KogitoProcessEventSupport 
     public void fireOnMigration(final KogitoProcessInstance processInstance, KieRuntime kruntime) {
         ProcessMigrationEventImpl event = new ProcessMigrationEventImpl(processInstance, kruntime, "System");
         notifyAllListeners(l -> l.onMigration(event));
-    }
-
-    // users tasks events
-    @Override
-    public void fireOnUserTaskNotStartedDeadline(KogitoProcessInstance instance,
-            KogitoNodeInstance nodeInstance,
-            HumanTaskWorkItem workItem,
-            Map<String, Object> notification,
-            KieRuntime kruntime) {
-        fireUserTaskNotification(instance, nodeInstance, workItem, notification, DeadlineType.Started, kruntime);
-    }
-
-    @Override
-    public void fireOnUserTaskNotCompletedDeadline(KogitoProcessInstance instance,
-            KogitoNodeInstance nodeInstance,
-            HumanTaskWorkItem workItem,
-            Map<String, Object> notification,
-            KieRuntime kruntime) {
-        fireUserTaskNotification(instance, nodeInstance, workItem, notification, DeadlineType.Completed, kruntime);
-    }
-
-    private void fireUserTaskNotification(KogitoProcessInstance instance,
-            KogitoNodeInstance nodeInstance,
-            HumanTaskWorkItem workItem,
-            Map<String, Object> notification,
-            DeadlineType type,
-            KieRuntime kruntime) {
-        UserTaskDeadlineEvent event = new UserTaskDeadlineEventImpl(instance, (HumanTaskNodeInstance) nodeInstance, workItem, notification, type, kruntime, identityProvider.getName());
-        notifyAllListeners(l -> l.onUserTaskDeadline(event));
-    }
-
-    @Override
-    public void fireOneUserTaskStateChange(
-            KogitoProcessInstance instance,
-            KogitoNodeInstance nodeInstance,
-            KieRuntime kruntime,
-            String oldStatus, String newStatus) {
-        UserTaskStateEventImpl event = new UserTaskStateEventImpl(instance, (HumanTaskNodeInstance) nodeInstance, kruntime, identityProvider.getName());
-        event.setOldStatus(oldStatus);
-        event.setNewStatus(newStatus);
-        notifyAllListeners(l -> l.onUserTaskState(event));
-    }
-
-    @Override
-    public void fireOnUserTaskAssignmentChange(
-            KogitoProcessInstance instance,
-            KogitoNodeInstance nodeInstance,
-            KieRuntime kruntime,
-            AssignmentType assignmentType,
-            Set<String> oldUsersId, Set<String> newUsersId) {
-        UserTaskAssignmentEventImpl event = new UserTaskAssignmentEventImpl(instance, (HumanTaskNodeInstance) nodeInstance, kruntime, identityProvider.getName());
-        event.setAssignmentType(assignmentType.name());
-        event.setOldUsersId(oldUsersId);
-        event.setNewUsersId(newUsersId);
-        notifyAllListeners(l -> l.onUserTaskAssignment(event));
-    }
-
-    @Override
-    public void fireOnUserTaskInputVariableChange(
-            KogitoProcessInstance instance,
-            KogitoNodeInstance nodeInstance,
-            KieRuntime kruntime,
-            String variableName, Object newValue, Object oldValue) {
-        UserTaskVariableEventImpl event = new UserTaskVariableEventImpl(instance, (HumanTaskNodeInstance) nodeInstance, kruntime, identityProvider.getName());
-        event.setVariableName(variableName);
-        event.setOldValue(oldValue);
-        event.setNewValue(newValue);
-        event.setVariableType(VariableEventType.INPUT);
-        notifyAllListeners(l -> l.onUserTaskInputVariable(event));
-    }
-
-    @Override
-    public void fireOnUserTaskOutputVariableChange(
-            KogitoProcessInstance instance,
-            KogitoNodeInstance nodeInstance,
-            KieRuntime kruntime,
-            String variableName, Object newValue, Object oldValue) {
-        UserTaskVariableEventImpl event = new UserTaskVariableEventImpl(instance, (HumanTaskNodeInstance) nodeInstance, kruntime, identityProvider.getName());
-        event.setVariableName(variableName);
-        event.setOldValue(oldValue);
-        event.setNewValue(newValue);
-        event.setVariableType(VariableEventType.OUTPUT);
-        notifyAllListeners(l -> l.onUserTaskOutputVariable(event));
-    }
-
-    @Override
-    public void fireOnUserTaskAttachmentAdded(
-            KogitoProcessInstance instance,
-            KogitoNodeInstance nodeInstance,
-            KieRuntime kruntime,
-            Attachment addedAttachment) {
-
-        UserTaskAttachmentEventImpl event = new UserTaskAttachmentEventImpl(instance, (HumanTaskNodeInstance) nodeInstance, kruntime, identityProvider.getName());
-        event.setNewAttachment(addedAttachment);
-        notifyAllListeners(l -> l.onUserTaskAttachmentAdded(event));
-    }
-
-    @Override
-    public void fireOnUserTaskAttachmentChange(
-            KogitoProcessInstance instance,
-            KogitoNodeInstance nodeInstance,
-            KieRuntime kruntime,
-            Attachment oldAttachment, Attachment newAttachment) {
-        UserTaskAttachmentEventImpl event = new UserTaskAttachmentEventImpl(instance, (HumanTaskNodeInstance) nodeInstance, kruntime, identityProvider.getName());
-        event.setOldAttachment(oldAttachment);
-        event.setNewAttachment(newAttachment);
-        notifyAllListeners(l -> l.onUserTaskAttachmentChange(event));
-    }
-
-    @Override
-    public void fireOnUserTaskAttachmentDeleted(
-            KogitoProcessInstance instance,
-            KogitoNodeInstance nodeInstance,
-            KieRuntime kruntime,
-            Attachment deletedAttachment) {
-        UserTaskAttachmentEventImpl event = new UserTaskAttachmentEventImpl(instance, (HumanTaskNodeInstance) nodeInstance, kruntime, identityProvider.getName());
-        event.setOldAttachment(deletedAttachment);
-        notifyAllListeners(l -> l.onUserTaskAttachmentDeleted(event));
-    }
-
-    @Override
-    public void fireOnUserTaskCommentAdded(
-            KogitoProcessInstance instance,
-            KogitoNodeInstance nodeInstance,
-            KieRuntime kruntime,
-            Comment addedComment) {
-        UserTaskCommentEventImpl event = new UserTaskCommentEventImpl(instance, (HumanTaskNodeInstance) nodeInstance, kruntime, identityProvider.getName());
-        event.setNewComment(addedComment);
-        notifyAllListeners(l -> l.onUserTaskCommentAdded(event));
-    }
-
-    @Override
-    public void fireOnUserTaskCommentChange(
-            KogitoProcessInstance instance,
-            KogitoNodeInstance nodeInstance,
-            KieRuntime kruntime,
-            Comment oldComment, Comment newComment) {
-        UserTaskCommentEventImpl event = new UserTaskCommentEventImpl(instance, (HumanTaskNodeInstance) nodeInstance, kruntime, identityProvider.getName());
-        event.setOldComment(oldComment);
-        event.setNewComment(newComment);
-        notifyAllListeners(l -> l.onUserTaskCommentChange(event));
-    }
-
-    @Override
-    public void fireOnUserTaskCommentDeleted(
-            KogitoProcessInstance instance,
-            KogitoNodeInstance nodeInstance,
-            KieRuntime kruntime,
-            Comment deletedComment) {
-        UserTaskCommentEventImpl event = new UserTaskCommentEventImpl(instance, (HumanTaskNodeInstance) nodeInstance, kruntime, identityProvider.getName());
-        event.setOldComment(deletedComment);
-        notifyAllListeners(l -> l.onUserTaskCommentDeleted(event));
     }
 
     @Override

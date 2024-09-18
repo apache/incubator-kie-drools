@@ -23,6 +23,7 @@ import java.util.List;
 import org.drools.compiler.rule.builder.PackageBuildContext;
 import org.jbpm.process.builder.AssignmentBuilder;
 import org.jbpm.workflow.core.impl.DataDefinition;
+import org.jbpm.workflow.core.impl.XPATHAssignmentAction;
 import org.jbpm.workflow.core.node.Assignment;
 
 public class XPATHAssignmentBuilder implements AssignmentBuilder {

@@ -19,12 +19,16 @@
 package org.kie.kogito.process;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.function.Predicate;
 
 import org.kie.kogito.Model;
 import org.kie.kogito.correlation.CompositeCorrelation;
 import org.kie.kogito.correlation.CorrelationService;
 import org.kie.kogito.internal.process.runtime.KogitoNode;
+import org.kie.kogito.internal.process.workitem.KogitoWorkItemHandler;
+import org.kie.kogito.internal.process.workitem.Policy;
+import org.kie.kogito.internal.process.workitem.WorkItemTransition;
 
 public interface Process<T> {
 
@@ -59,4 +63,8 @@ public interface Process<T> {
     void activate();
 
     void deactivate();
+
+    WorkItemTransition newTransition(WorkItem workItem, String transitionId, Map<String, Object> map, Policy... policy);
+
+    KogitoWorkItemHandler getKogitoWorkItemHandler(String workItemHandlerName);
 }

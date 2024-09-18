@@ -21,7 +21,7 @@ package org.kie.kogito.serverless.workflow.python;
 import java.util.Collections;
 import java.util.Map;
 
-import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
+import org.kie.kogito.internal.process.workitem.KogitoWorkItem;
 import org.kie.kogito.serverless.workflow.WorkflowWorkItemHandler;
 
 import jep.Interpreter;

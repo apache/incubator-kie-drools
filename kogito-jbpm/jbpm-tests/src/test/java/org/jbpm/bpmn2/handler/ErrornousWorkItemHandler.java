@@ -18,14 +18,18 @@
  */
 package org.jbpm.bpmn2.handler;
 
+import java.util.Optional;
+
 import org.kie.api.runtime.process.ProcessWorkItemHandlerException;
 import org.kie.api.runtime.process.ProcessWorkItemHandlerException.HandlingStrategy;
 import org.kie.api.runtime.process.WorkItem;
-import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
-import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
-import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
+import org.kie.kogito.internal.process.workitem.KogitoWorkItem;
+import org.kie.kogito.internal.process.workitem.KogitoWorkItemHandler;
+import org.kie.kogito.internal.process.workitem.KogitoWorkItemManager;
+import org.kie.kogito.internal.process.workitem.WorkItemTransition;
+import org.kie.kogito.process.workitems.impl.DefaultKogitoWorkItemHandler;
 
-public class ErrornousWorkItemHandler implements KogitoWorkItemHandler {
+public class ErrornousWorkItemHandler extends DefaultKogitoWorkItemHandler {
 
     private String processId;
     private HandlingStrategy strategy;
@@ -39,25 +43,23 @@ public class ErrornousWorkItemHandler implements KogitoWorkItemHandler {
     }
 
     @Override
-    public void executeWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager manager) {
+    public Optional<WorkItemTransition> activateWorkItemHandler(KogitoWorkItemManager manager, KogitoWorkItemHandler handler, KogitoWorkItem workItem, WorkItemTransition transition) {
         this.workItem = workItem;
         if (processId != null && strategy != null) {
 
             if (workItem.getParameter("isCheckedCheckbox") != null) {
-                manager.completeWorkItem(workItem.getStringId(), workItem.getParameters());
+                return Optional.of(this.workItemLifeCycle.newTransition("complete", workItem.getPhaseStatus(), workItem.getParameters()));
             } else {
-
                 throw new ProcessWorkItemHandlerException(processId, strategy, new RuntimeException("On purpose"));
             }
         }
-
-        manager.completeWorkItem(workItem.getStringId(), null);
+        return Optional.empty();
     }
 
     @Override
-    public void abortWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager manager) {
+    public Optional<WorkItemTransition> abortWorkItemHandler(KogitoWorkItemManager manager, KogitoWorkItemHandler handler, KogitoWorkItem workItem, WorkItemTransition transition) {
         this.workItem = workItem;
-
+        return Optional.empty();
     }
 
     public WorkItem getWorkItem() {

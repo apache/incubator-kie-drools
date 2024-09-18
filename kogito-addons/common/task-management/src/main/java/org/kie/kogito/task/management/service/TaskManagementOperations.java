@@ -18,7 +18,7 @@
  */
 package org.kie.kogito.task.management.service;
 
-import org.kie.kogito.process.workitem.Policy;
+import org.kie.kogito.internal.process.workitem.Policy;
 
 public interface TaskManagementOperations {
 
@@ -27,7 +27,7 @@ public interface TaskManagementOperations {
             String taskId,
             TaskInfo taskInfo,
             boolean replace,
-            Policy<?>... policies);
+            Policy... policies);
 
-    TaskInfo getTask(String processId, String processInstanceId, String taskId, Policy<?>... policies);
+    TaskInfo getTask(String processId, String processInstanceId, String taskId, Policy... policies);
 }

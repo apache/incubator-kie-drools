@@ -39,11 +39,14 @@ import org.kie.kogito.process.ProcessInstances;
 import org.kie.kogito.process.WorkItem;
 import org.kie.kogito.process.bpmn2.BpmnProcess;
 import org.kie.kogito.process.bpmn2.BpmnVariables;
-import org.kie.kogito.services.identity.StaticIdentityProvider;
+import org.kie.kogito.process.impl.DefaultWorkItemHandlerConfig;
+import org.kie.kogito.process.impl.StaticProcessConfig;
+import org.kie.kogito.process.workitems.impl.DefaultKogitoWorkItemHandler;
 import org.kie.kogito.testcontainers.KogitoInfinispanContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.entry;
@@ -82,7 +85,9 @@ class CacheProcessInstancesIT {
 
     @Test
     void testFindByIdReadMode() {
-        BpmnProcess process = BpmnProcess.from(new ClassPathResource("BPMN2-UserTask-Script.bpmn2")).get(0);
+        StaticProcessConfig config = new StaticProcessConfig();
+        ((DefaultWorkItemHandlerConfig) config.workItemHandlers()).register("Human Task", new DefaultKogitoWorkItemHandler());
+        BpmnProcess process = BpmnProcess.from(config, new ClassPathResource("BPMN2-UserTask-Script.bpmn2")).get(0);
         // workaround as BpmnProcess does not compile the scripts but just reads the xml
         for (Node node : ((WorkflowProcess) process.get()).getNodes()) {
             if (node instanceof ActionNode) {
@@ -126,7 +131,9 @@ class CacheProcessInstancesIT {
 
     @Test
     void testValuesReadMode() {
-        BpmnProcess process = BpmnProcess.from(new ClassPathResource("BPMN2-UserTask.bpmn2")).get(0);
+        StaticProcessConfig config = new StaticProcessConfig();
+        ((DefaultWorkItemHandlerConfig) config.workItemHandlers()).register("Human Task", new DefaultKogitoWorkItemHandler());
+        BpmnProcess process = BpmnProcess.from(config, new ClassPathResource("BPMN2-UserTask.bpmn2")).get(0);
         process.setProcessInstancesFactory(new CacheProcessInstancesFactory(cacheManager));
         process.configure();
 
@@ -143,7 +150,9 @@ class CacheProcessInstancesIT {
 
     @Test
     void testBasicFlow() {
-        BpmnProcess process = BpmnProcess.from(new ClassPathResource("BPMN2-UserTask.bpmn2")).get(0);
+        StaticProcessConfig config = new StaticProcessConfig();
+        ((DefaultWorkItemHandlerConfig) config.workItemHandlers()).register("Human Task", new DefaultKogitoWorkItemHandler());
+        BpmnProcess process = BpmnProcess.from(config, new ClassPathResource("BPMN2-UserTask.bpmn2")).get(0);
         process.setProcessInstancesFactory(new CacheProcessInstancesFactory(cacheManager));
         process.configure();
 
@@ -154,7 +163,7 @@ class CacheProcessInstancesIT {
 
         assertOne(process.instances());
 
-        SecurityPolicy asJohn = SecurityPolicy.of(new StaticIdentityProvider("john"));
+        SecurityPolicy asJohn = SecurityPolicy.of("john", emptyList());
 
         assertThat(getFirst(process.instances()).workItems(asJohn)).hasSize(1);
 

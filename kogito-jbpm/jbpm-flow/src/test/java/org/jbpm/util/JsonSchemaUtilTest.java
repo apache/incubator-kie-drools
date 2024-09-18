@@ -25,10 +25,10 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 
-import org.jbpm.process.instance.impl.humantask.HumanTaskWorkItemHandler;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.Config;
-import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
+import org.kie.kogito.internal.process.workitem.KogitoWorkItemHandler;
+import org.kie.kogito.internal.process.workitem.Policy;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessConfig;
 import org.kie.kogito.process.ProcessInstance;
@@ -36,7 +36,7 @@ import org.kie.kogito.process.ProcessInstanceReadMode;
 import org.kie.kogito.process.ProcessInstances;
 import org.kie.kogito.process.WorkItem;
 import org.kie.kogito.process.WorkItemHandlerConfig;
-import org.kie.kogito.process.workitem.Policy;
+import org.kie.kogito.process.workitems.impl.DefaultKogitoWorkItemHandler;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -105,7 +105,7 @@ public class JsonSchemaUtilTest {
     @Test
     <T> void testJsonSchemaPhases() throws IOException {
         InputStream in = new ByteArrayInputStream(example.getBytes());
-        Policy<T>[] policies = new Policy[0];
+        Policy[] policies = new Policy[0];
         Map<String, Object> schemaMap = JsonSchemaUtil.load(in);
         in.close();
         Process<T> process = mock(Process.class);
@@ -121,7 +121,7 @@ public class JsonSchemaUtilTest {
         when(config.get(any())).thenReturn(processConfig);
         WorkItemHandlerConfig workItemHandlerConfig = mock(WorkItemHandlerConfig.class);
         when(processConfig.workItemHandlers()).thenReturn(workItemHandlerConfig);
-        KogitoWorkItemHandler workItemHandler = new HumanTaskWorkItemHandler();
+        KogitoWorkItemHandler workItemHandler = new DefaultKogitoWorkItemHandler();
         when(workItemHandlerConfig.forName("Human Task")).thenReturn(workItemHandler);
         schemaMap = JsonSchemaUtil.addPhases(process, workItemHandler, "pepe", "task", policies, schemaMap);
         assertThat(((Collection) schemaMap.get("phases"))).isNotEmpty();

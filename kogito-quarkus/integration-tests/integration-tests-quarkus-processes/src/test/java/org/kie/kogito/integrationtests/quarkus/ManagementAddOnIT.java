@@ -78,8 +78,8 @@ class ManagementAddOnIT {
                 .statusCode(200)
                 .body("$.size()", is(2))
                 .body("$", hasItems(hasEntry("name", "Hello1"), hasEntry("name", "Hello2")))
-                .body("[0].state", is(0))
-                .body("[1].state", is(0));
+                .body("[0].state", is(1))
+                .body("[1].state", is(1));
     }
 
     @Test

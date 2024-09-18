@@ -20,12 +20,15 @@ package org.kie.kogito.addons.quarkus.knative.serving.customfunctions;
 
 import java.net.URI;
 import java.util.Map;
+import java.util.Optional;
 
 import org.kie.kogito.addons.k8s.resource.catalog.KubernetesServiceCatalog;
 import org.kie.kogito.addons.k8s.resource.catalog.KubernetesServiceCatalogKey;
-import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
-import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
-import org.kie.kogito.process.workitem.WorkItemExecutionException;
+import org.kie.kogito.internal.process.workitem.KogitoWorkItem;
+import org.kie.kogito.internal.process.workitem.KogitoWorkItemHandler;
+import org.kie.kogito.internal.process.workitem.KogitoWorkItemManager;
+import org.kie.kogito.internal.process.workitem.WorkItemExecutionException;
+import org.kie.kogito.internal.process.workitem.WorkItemTransition;
 import org.kogito.workitem.rest.RestWorkItemHandler;
 
 import io.vertx.mutiny.ext.web.client.WebClient;
@@ -56,10 +59,11 @@ public final class KnativeWorkItemHandler extends RestWorkItemHandler {
     }
 
     @Override
-    public void executeWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager manager) {
+    public Optional<WorkItemTransition> activateWorkItemHandler(KogitoWorkItemManager manager, KogitoWorkItemHandler handler, KogitoWorkItem workItem, WorkItemTransition transition) {
         Map<String, Object> parameters = workItem.getParameters();
         parameters.put(RestWorkItemHandler.URL, getUrl(parameters));
-        super.executeWorkItem(workItem, manager);
+
+        return super.activateWorkItemHandler(manager, handler, workItem, transition);
     }
 
     private String getUrl(Map<String, Object> parameters) {

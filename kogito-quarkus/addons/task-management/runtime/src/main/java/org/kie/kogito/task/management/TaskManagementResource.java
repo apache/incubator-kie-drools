@@ -20,9 +20,9 @@ package org.kie.kogito.task.management;
 
 import java.util.List;
 
+import org.kie.kogito.auth.SecurityPolicy;
 import org.kie.kogito.process.ProcessConfig;
 import org.kie.kogito.process.Processes;
-import org.kie.kogito.process.workitem.Policies;
 import org.kie.kogito.task.management.service.TaskInfo;
 import org.kie.kogito.task.management.service.TaskManagementOperations;
 import org.kie.kogito.task.management.service.TaskManagementService;
@@ -66,7 +66,7 @@ public class TaskManagementResource {
             @QueryParam("user") final String user,
             @QueryParam("group") final List<String> groups,
             TaskInfo taskInfo) {
-        taskService.updateTask(processId, processInstanceId, taskId, taskInfo, true, Policies.of(user, groups));
+        taskService.updateTask(processId, processInstanceId, taskId, taskInfo, true, SecurityPolicy.of(user, groups));
         return Response.ok().build();
     }
 
@@ -80,7 +80,7 @@ public class TaskManagementResource {
             @QueryParam("user") final String user,
             @QueryParam("group") final List<String> groups,
             TaskInfo taskInfo) {
-        return taskService.updateTask(processId, processInstanceId, taskId, taskInfo, false, Policies.of(user, groups));
+        return taskService.updateTask(processId, processInstanceId, taskId, taskInfo, false, SecurityPolicy.of(user, groups));
     }
 
     @GET
@@ -92,6 +92,6 @@ public class TaskManagementResource {
             @PathParam("taskId") String taskId,
             @QueryParam("user") final String user,
             @QueryParam("group") final List<String> groups) {
-        return taskService.getTask(processId, processInstanceId, taskId, Policies.of(user, groups));
+        return taskService.getTask(processId, processInstanceId, taskId, SecurityPolicy.of(user, groups));
     }
 }

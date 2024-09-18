@@ -35,14 +35,14 @@ import org.jbpm.bpmn2.flow.IntegerStructureRefProcess;
 import org.jbpm.bpmn2.flow.ObjectStructureRefModel;
 import org.jbpm.bpmn2.flow.ObjectStructureRefProcess;
 import org.jbpm.bpmn2.objects.Person;
-import org.jbpm.bpmn2.objects.TestWorkItemHandler;
+import org.jbpm.bpmn2.objects.TestUserTaskWorkItemHandler;
 import org.jbpm.process.core.datatype.impl.coverter.TypeConverterRegistry;
 import org.jbpm.test.utils.ProcessTestHelper;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.Application;
+import org.kie.kogito.auth.SecurityPolicy;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.process.bpmn2.BpmnVariables;
-import org.kie.kogito.process.workitem.Policies;
 
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
@@ -57,7 +57,7 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
     public void testStringStructureRef() throws Exception {
         kruntime = createKogitoProcessRuntime("BPMN2-StringStructureRef.bpmn2");
 
-        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        TestUserTaskWorkItemHandler workItemHandler = new TestUserTaskWorkItemHandler();
         kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
         KogitoProcessInstance processInstance = kruntime.startProcess("StructureRef");
@@ -68,7 +68,7 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
 
         kruntime.getKogitoWorkItemManager().completeWorkItem(
                 workItemHandler.getWorkItem().getStringId(), res,
-                Policies.of("john"));
+                SecurityPolicy.of("john", Collections.emptyList()));
 
         assertProcessInstanceCompleted(processInstance.getStringId(), kruntime);
     }
@@ -77,7 +77,7 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
     public void testBooleanStructureRef() throws Exception {
         Application app = ProcessTestHelper.newApplication();
 
-        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        TestUserTaskWorkItemHandler workItemHandler = new TestUserTaskWorkItemHandler();
         ProcessTestHelper.registerHandler(app, "Human Task", workItemHandler);
         org.kie.kogito.process.Process<BooleanStructureRefModel> definition = BooleanStructureRefProcess.newProcess(app);
 
@@ -95,7 +95,7 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
         String value = "25";
 
         Application app = ProcessTestHelper.newApplication();
-        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        TestUserTaskWorkItemHandler workItemHandler = new TestUserTaskWorkItemHandler();
         ProcessTestHelper.registerHandler(app, "Human Task", workItemHandler);
         IntegerStructureRefProcess definition = (IntegerStructureRefProcess) IntegerStructureRefProcess.newProcess(app);
 
@@ -116,7 +116,7 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
         String value = "5.5";
 
         Application app = ProcessTestHelper.newApplication();
-        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        TestUserTaskWorkItemHandler workItemHandler = new TestUserTaskWorkItemHandler();
         ProcessTestHelper.registerHandler(app, "Human Task", workItemHandler);
         FloatStructureRefProcess definition = (FloatStructureRefProcess) FloatStructureRefProcess.newProcess(app);
 
@@ -147,7 +147,7 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
         String value = "<person><id>1</id><name>john</name></person>";
 
         Application app = ProcessTestHelper.newApplication();
-        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        TestUserTaskWorkItemHandler workItemHandler = new TestUserTaskWorkItemHandler();
         ProcessTestHelper.registerHandler(app, "Human Task", workItemHandler);
         ObjectStructureRefProcess definition = (ObjectStructureRefProcess) ObjectStructureRefProcess.newProcess(app);
 
@@ -168,7 +168,7 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
         String value = "simple text for testing";
 
         Application app = ProcessTestHelper.newApplication();
-        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        TestUserTaskWorkItemHandler workItemHandler = new TestUserTaskWorkItemHandler();
         ProcessTestHelper.registerHandler(app, "Human Task", workItemHandler);
         DefaultObjectStructureRefProcess definition = (DefaultObjectStructureRefProcess) DefaultObjectStructureRefProcess.newProcess(app);
 
@@ -188,7 +188,7 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
     public void testNotExistingVarBooleanStructureRefOnStart() throws Exception {
         Application app = ProcessTestHelper.newApplication();
 
-        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        TestUserTaskWorkItemHandler workItemHandler = new TestUserTaskWorkItemHandler();
         ProcessTestHelper.registerHandler(app, "Human Task", workItemHandler);
         org.kie.kogito.process.Process<BooleanStructureRefModel> definition = BooleanStructureRefProcess.newProcess(app);
         org.kie.kogito.Model model = BpmnVariables.create(Collections.singletonMap("not existing", "invalid boolean"));
@@ -201,7 +201,7 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
     public void testInvalidBooleanStructureRefOnStart() throws Exception {
         Application app = ProcessTestHelper.newApplication();
 
-        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        TestUserTaskWorkItemHandler workItemHandler = new TestUserTaskWorkItemHandler();
         ProcessTestHelper.registerHandler(app, "Human Task", workItemHandler);
         org.kie.kogito.process.Process<BooleanStructureRefModel> definition = BooleanStructureRefProcess.newProcess(app);
         org.kie.kogito.Model model = BpmnVariables.create(Collections.singletonMap("test", "invalid boolean"));
@@ -215,7 +215,7 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
     public void testInvalidBooleanStructureRefOnWIComplete() throws Exception {
 
         Application app = ProcessTestHelper.newApplication();
-        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        TestUserTaskWorkItemHandler workItemHandler = new TestUserTaskWorkItemHandler();
         ProcessTestHelper.registerHandler(app, "Human Task", workItemHandler);
         IntegerStructureRefProcess definition = (IntegerStructureRefProcess) IntegerStructureRefProcess.newProcess(app);
 
@@ -240,7 +240,7 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
     public void testInvalidBooleanStructureRefOnStartVerifyErrorMsg() throws Exception {
         Application app = ProcessTestHelper.newApplication();
 
-        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        TestUserTaskWorkItemHandler workItemHandler = new TestUserTaskWorkItemHandler();
         ProcessTestHelper.registerHandler(app, "Human Task", workItemHandler);
         org.kie.kogito.process.Process<BooleanStructureRefModel> definition = BooleanStructureRefProcess.newProcess(app);
         org.kie.kogito.Model model = BpmnVariables.create(Collections.singletonMap("test", "invalid boolean"));
@@ -258,7 +258,7 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
         String wrongDataOutput = "not existing";
 
         Application app = ProcessTestHelper.newApplication();
-        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        TestUserTaskWorkItemHandler workItemHandler = new TestUserTaskWorkItemHandler();
         ProcessTestHelper.registerHandler(app, "Human Task", workItemHandler);
         IntegerStructureRefProcess definition = (IntegerStructureRefProcess) IntegerStructureRefProcess.newProcess(app);
 

@@ -40,6 +40,7 @@ import org.jbpm.bpmn2.escalation.MultiEscalationModel;
 import org.jbpm.bpmn2.escalation.MultiEscalationProcess;
 import org.jbpm.bpmn2.escalation.TopLevelEscalationModel;
 import org.jbpm.bpmn2.escalation.TopLevelEscalationProcess;
+import org.jbpm.bpmn2.objects.TestUserTaskWorkItemHandler;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.jbpm.test.utils.EventTrackerProcessListener;
 import org.jbpm.test.utils.ProcessTestHelper;
@@ -51,11 +52,12 @@ import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.api.event.process.SignalEvent;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.kogito.Application;
+import org.kie.kogito.auth.SecurityPolicy;
 import org.kie.kogito.internal.process.event.DefaultKogitoProcessEventListener;
 import org.kie.kogito.internal.process.event.KogitoProcessEventListener;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
-import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
+import org.kie.kogito.internal.process.workitem.KogitoWorkItem;
 import org.kie.kogito.process.impl.Sig;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -109,6 +111,8 @@ public class EscalationEventTest extends JbpmBpmn2TestCase {
     @Test
     public void testTopLevelEscalation() throws Exception {
         Application app = ProcessTestHelper.newApplication();
+        TestUserTaskWorkItemHandler workItemHandler = new TestUserTaskWorkItemHandler();
+        ProcessTestHelper.registerHandler(app, "Human Task", workItemHandler);
         List<String> instances = new ArrayList<>();
         ProcessTestHelper.registerProcessEventListener(app, new DefaultKogitoProcessEventListener() {
             @Override
@@ -137,7 +141,7 @@ public class EscalationEventTest extends JbpmBpmn2TestCase {
 
         };
         EventTrackerProcessListener tracker = new EventTrackerProcessListener();
-        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        TestUserTaskWorkItemHandler workItemHandler = new TestUserTaskWorkItemHandler();
 
         Application app = ProcessTestHelper.newApplication();
         ProcessTestHelper.registerProcessEventListener(app, listener);
@@ -215,7 +219,7 @@ public class EscalationEventTest extends JbpmBpmn2TestCase {
 
     @Test
     public void testGeneralEscalationBoundaryEventWithTask() throws Exception {
-        TestWorkItemHandler handler = new TestWorkItemHandler();
+        TestUserTaskWorkItemHandler handler = new TestUserTaskWorkItemHandler();
 
         Application app = ProcessTestHelper.newApplication();
         ProcessTestHelper.registerHandler(app, "Human Task", handler);
@@ -236,12 +240,12 @@ public class EscalationEventTest extends JbpmBpmn2TestCase {
     public void testInterruptingEscalationBoundaryEventOnTask() throws Exception {
         kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/escalation/BPMN2-EscalationBoundaryEventOnTaskInterrupting.bpmn2");
 
-        TestWorkItemHandler handler = new TestWorkItemHandler();
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task", handler);
+        TestUserTaskWorkItemHandler workItemHandler = new TestUserTaskWorkItemHandler();
+        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
         kruntime.getProcessEventManager().addEventListener(LOGGING_EVENT_LISTENER);
         KogitoProcessInstance processInstance = kruntime.startProcess("EscalationBoundaryEventOnTaskInterrupting");
 
-        List<KogitoWorkItem> workItems = handler.getWorkItems();
+        List<KogitoWorkItem> workItems = workItemHandler.getWorkItems();
         assertThat(workItems).hasSize(2);
 
         KogitoWorkItem workItem = workItems.get(0);
@@ -249,7 +253,7 @@ public class EscalationEventTest extends JbpmBpmn2TestCase {
             workItem = workItems.get(1);
         }
 
-        kruntime.getKogitoWorkItemManager().completeWorkItem(workItem.getStringId(), null);
+        kruntime.getKogitoWorkItemManager().completeWorkItem(workItem.getStringId(), Collections.emptyMap(), SecurityPolicy.of("john", Collections.emptyList()));
         assertProcessInstanceFinished(processInstance, kruntime);
     }
 

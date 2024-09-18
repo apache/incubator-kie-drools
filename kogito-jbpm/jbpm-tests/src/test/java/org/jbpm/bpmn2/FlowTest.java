@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -91,14 +92,14 @@ import org.jbpm.bpmn2.flow.MultipleGatewaysProcessModel;
 import org.jbpm.bpmn2.flow.MultipleGatewaysProcessProcess;
 import org.jbpm.bpmn2.loop.MultiInstanceLoopCharacteristicsTaskModel;
 import org.jbpm.bpmn2.loop.MultiInstanceLoopCharacteristicsTaskProcess;
+import org.jbpm.bpmn2.objects.TestUserTaskWorkItemHandler;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.jbpm.bpmn2.timer.ParallelSplitWithTimerProcessModel;
 import org.jbpm.bpmn2.timer.ParallelSplitWithTimerProcessProcess;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
-import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
-import org.jbpm.process.instance.impl.humantask.InternalHumanTaskWorkItem;
+import org.jbpm.process.workitem.builtin.SystemOutWorkItemHandler;
 import org.jbpm.test.util.NodeLeftCountDownProcessEventListener;
 import org.jbpm.test.utils.EventTrackerProcessListener;
 import org.jbpm.test.utils.ProcessTestHelper;
@@ -123,11 +124,14 @@ import org.kie.kogito.Application;
 import org.kie.kogito.internal.process.event.DefaultKogitoProcessEventListener;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
-import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
-import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
+import org.kie.kogito.internal.process.workitem.KogitoWorkItem;
+import org.kie.kogito.internal.process.workitem.KogitoWorkItemHandler;
+import org.kie.kogito.internal.process.workitem.KogitoWorkItemManager;
+import org.kie.kogito.internal.process.workitem.WorkItemTransition;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.impl.Sig;
+import org.kie.kogito.process.workitems.impl.KogitoWorkItemImpl;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -532,12 +536,12 @@ public class FlowTest extends JbpmBpmn2TestCase {
         ProcessTestHelper.registerHandler(app, "testWI", new SystemOutWorkItemHandler());
         ProcessTestHelper.registerHandler(app, "testWI2", new SystemOutWorkItemHandler() {
             @Override
-            public void executeWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager manager) {
+            public Optional<WorkItemTransition> activateWorkItemHandler(KogitoWorkItemManager manager, KogitoWorkItemHandler handler, KogitoWorkItem workItem, WorkItemTransition transition) {
                 Integer x = (Integer) workItem.getParameter("input1");
                 x++;
                 Map<String, Object> results = new HashMap<>();
                 results.put("output1", x);
-                manager.completeWorkItem(workItem.getStringId(), results);
+                return Optional.of(this.workItemLifeCycle.newTransition("complete", workItem.getPhaseStatus(), results));
             }
         });
         final Map<String, Integer> nodeInstanceExecutionCounter = new HashMap<>();
@@ -579,12 +583,12 @@ public class FlowTest extends JbpmBpmn2TestCase {
         ProcessTestHelper.registerHandler(app, "testWI", new SystemOutWorkItemHandler());
         ProcessTestHelper.registerHandler(app, "testWI2", new SystemOutWorkItemHandler() {
             @Override
-            public void executeWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager manager) {
+            public Optional<WorkItemTransition> activateWorkItemHandler(KogitoWorkItemManager manager, KogitoWorkItemHandler handler, KogitoWorkItem workItem, WorkItemTransition transition) {
                 Integer x = (Integer) workItem.getParameter("input1");
                 x++;
                 Map<String, Object> results = new HashMap<>();
                 results.put("output1", x);
-                manager.completeWorkItem(workItem.getStringId(), results);
+                return Optional.of(this.workItemLifeCycle.newTransition("complete", workItem.getPhaseStatus(), results));
             }
         });
         final Map<String, Integer> nodeInstanceExecutionCounter = new HashMap<>();
@@ -627,12 +631,12 @@ public class FlowTest extends JbpmBpmn2TestCase {
         ProcessTestHelper.registerHandler(app, "testWI", handler);
         ProcessTestHelper.registerHandler(app, "testWI2", new SystemOutWorkItemHandler() {
             @Override
-            public void executeWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager manager) {
+            public Optional<WorkItemTransition> activateWorkItemHandler(KogitoWorkItemManager manager, KogitoWorkItemHandler handler, KogitoWorkItem workItem, WorkItemTransition transition) {
                 Integer x = (Integer) workItem.getParameter("input1");
                 x++;
                 Map<String, Object> results = new HashMap<>();
                 results.put("output1", x);
-                manager.completeWorkItem(workItem.getStringId(), results);
+                return Optional.of(this.workItemLifeCycle.newTransition("complete", workItem.getPhaseStatus(), results));
             }
         });
         final Map<String, Integer> nodeInstanceExecutionCounter = new HashMap<>();
@@ -687,12 +691,12 @@ public class FlowTest extends JbpmBpmn2TestCase {
         ProcessTestHelper.registerHandler(app, "testWI", handler);
         ProcessTestHelper.registerHandler(app, "testWI2", new SystemOutWorkItemHandler() {
             @Override
-            public void executeWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager manager) {
+            public Optional<WorkItemTransition> activateWorkItemHandler(KogitoWorkItemManager manager, KogitoWorkItemHandler handler, KogitoWorkItem workItem, WorkItemTransition transition) {
                 Integer x = (Integer) workItem.getParameter("input1");
                 x++;
                 Map<String, Object> results = new HashMap<>();
                 results.put("output1", x);
-                manager.completeWorkItem(workItem.getStringId(), results);
+                return Optional.of(this.workItemLifeCycle.newTransition("complete", workItem.getPhaseStatus(), results));
             }
         });
         final Map<String, Integer> nodeInstanceExecutionCounter = new HashMap<>();
@@ -1232,7 +1236,7 @@ public class FlowTest extends JbpmBpmn2TestCase {
     @Test
     public void testMultiInstanceLoopCharacteristicsTask() throws Exception {
         Application app = ProcessTestHelper.newApplication();
-        TestWorkItemHandler handler = new TestWorkItemHandler();
+        TestUserTaskWorkItemHandler handler = new TestUserTaskWorkItemHandler();
         ProcessTestHelper.registerHandler(app, "Human Task", handler);
 
         org.kie.kogito.process.Process<MultiInstanceLoopCharacteristicsTaskModel> definition = MultiInstanceLoopCharacteristicsTaskProcess.newProcess(app);
@@ -1342,22 +1346,19 @@ public class FlowTest extends JbpmBpmn2TestCase {
     public void testLane() throws Exception {
         kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/flow/BPMN2-Lane.bpmn2");
 
-        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        TestUserTaskWorkItemHandler workItemHandler = new TestUserTaskWorkItemHandler();
         kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
         KogitoProcessInstance processInstance = kruntime.startProcess("Lane");
         assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_ACTIVE);
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task",
-                workItemHandler);
+
         KogitoWorkItem KogitoWorkItem = workItemHandler.getWorkItem();
         assertThat(KogitoWorkItem).isNotNull();
         assertThat(KogitoWorkItem.getParameter("ActorId")).isEqualTo("john");
         Map<String, Object> results = new HashMap<>();
-        ((InternalHumanTaskWorkItem) KogitoWorkItem).setActualOwner("mary");
+        ((KogitoWorkItemImpl) KogitoWorkItem).setParameter("ActorId", "mary");
         kruntime.getKogitoWorkItemManager().completeWorkItem(KogitoWorkItem.getStringId(),
                 results);
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task",
-                workItemHandler);
         KogitoWorkItem = workItemHandler.getWorkItem();
         assertThat(KogitoWorkItem).isNotNull();
         assertThat(KogitoWorkItem.getParameter("SwimlaneActorId")).isEqualTo("mary");

@@ -19,17 +19,12 @@
 package org.kie.kogito.internal.process.event;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import org.kie.api.runtime.KieRuntime;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
-import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
-import org.kie.kogito.process.workitem.Attachment;
-import org.kie.kogito.process.workitem.Comment;
-import org.kie.kogito.process.workitem.HumanTaskWorkItem;
-import org.kie.kogito.process.workitem.Transition;
+import org.kie.kogito.internal.process.workitem.KogitoWorkItem;
+import org.kie.kogito.internal.process.workitem.WorkItemTransition;
 
 public interface KogitoProcessEventSupport {
 
@@ -63,9 +58,9 @@ public interface KogitoProcessEventSupport {
 
     void fireAfterSLAViolated(KogitoProcessInstance instance, KogitoNodeInstance nodeInstance, KieRuntime kruntime);
 
-    void fireBeforeWorkItemTransition(KogitoProcessInstance instance, KogitoWorkItem workitem, Transition<?> transition, KieRuntime kruntime);
+    void fireBeforeWorkItemTransition(KogitoProcessInstance instance, KogitoWorkItem workitem, WorkItemTransition transition, KieRuntime kruntime);
 
-    void fireAfterWorkItemTransition(KogitoProcessInstance instance, KogitoWorkItem workitem, Transition<?> transition, KieRuntime kruntime);
+    void fireAfterWorkItemTransition(KogitoProcessInstance instance, KogitoWorkItem workitem, WorkItemTransition transition, KieRuntime kruntime);
 
     void fireOnSignal(KogitoProcessInstance instance, KogitoNodeInstance nodeInstance, KieRuntime kruntime, String signalName, Object signalObject);
 
@@ -74,93 +69,6 @@ public interface KogitoProcessEventSupport {
     void fireOnError(KogitoProcessInstance instance, KogitoNodeInstance nodeInstance, KieRuntime kruntime, Exception exception);
 
     void fireOnMigration(KogitoProcessInstance processInstance, KieRuntime runtime);
-
-    // user tasks events
-
-    void fireOneUserTaskStateChange(
-            KogitoProcessInstance instance,
-            KogitoNodeInstance nodeInstance,
-            KieRuntime kruntime,
-            String oldPhaseStatus, String newPhaseStatus);
-
-    void fireOnUserTaskNotStartedDeadline(
-            KogitoProcessInstance instance,
-            KogitoNodeInstance nodeInstance,
-            HumanTaskWorkItem workItem,
-            Map<String, Object> notification,
-            KieRuntime kruntime);
-
-    void fireOnUserTaskNotCompletedDeadline(
-            KogitoProcessInstance instance,
-            KogitoNodeInstance nodeInstance,
-            HumanTaskWorkItem workItem,
-            Map<String, Object> notification,
-            KieRuntime kruntime);
-
-    enum AssignmentType {
-        USER_OWNERS,
-        USER_GROUPS,
-        USERS_EXCLUDED,
-        ADMIN_GROUPS,
-        ADMIN_USERS
-    };
-
-    void fireOnUserTaskAssignmentChange(
-            KogitoProcessInstance instance,
-            KogitoNodeInstance nodeInstance,
-            KieRuntime kruntime,
-            AssignmentType assignmentType,
-            Set<String> oldUsersId, Set<String> newUsersId);
-
-    void fireOnUserTaskInputVariableChange(
-            KogitoProcessInstance instance,
-            KogitoNodeInstance nodeInstance,
-            KieRuntime kruntime,
-            String variableName,
-            Object newValue, Object oldValue);
-
-    void fireOnUserTaskOutputVariableChange(
-            KogitoProcessInstance instance,
-            KogitoNodeInstance nodeInstance,
-            KieRuntime kruntime,
-            String variableName,
-            Object newValue, Object oldValue);
-
-    void fireOnUserTaskAttachmentAdded(
-            KogitoProcessInstance instance,
-            KogitoNodeInstance nodeInstance,
-            KieRuntime kruntime,
-            Attachment addedAttachment);
-
-    void fireOnUserTaskAttachmentDeleted(
-            KogitoProcessInstance instance,
-            KogitoNodeInstance nodeInstance,
-            KieRuntime kruntime,
-            Attachment deletedAttachment);
-
-    void fireOnUserTaskAttachmentChange(
-            KogitoProcessInstance instance,
-            KogitoNodeInstance nodeInstance,
-            KieRuntime kruntime,
-            Attachment oldAttachment, Attachment newAttachment);
-
-    void fireOnUserTaskCommentChange(
-            KogitoProcessInstance instance,
-            KogitoNodeInstance nodeInstance,
-            KieRuntime kruntime,
-            Comment oldComment, Comment newComment);
-
-    void fireOnUserTaskCommentDeleted(
-            KogitoProcessInstance instance,
-            KogitoNodeInstance nodeInstance,
-            KieRuntime kruntime,
-            Comment deletedComment);
-
-    void fireOnUserTaskCommentAdded(
-            KogitoProcessInstance instance,
-            KogitoNodeInstance nodeInstance,
-            KieRuntime kruntime,
-            Comment addedComment);
 
     void reset();
 

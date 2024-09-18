@@ -19,19 +19,19 @@
 package org.kie.kogito.process.impl;
 
 import java.util.Collection;
-import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.jbpm.process.instance.impl.humantask.HumanTaskHelper;
-import org.jbpm.process.instance.impl.humantask.HumanTaskTransition;
 import org.jbpm.util.JsonSchemaUtil;
-import org.jbpm.workflow.core.node.HumanTaskNode;
-import org.jbpm.workflow.instance.node.HumanTaskNodeInstance;
+import org.jbpm.workflow.core.node.WorkItemNode;
+import org.jbpm.workflow.instance.node.WorkItemNodeInstance;
 import org.kie.kogito.Application;
 import org.kie.kogito.MapOutput;
 import org.kie.kogito.MappableToModel;
@@ -40,18 +40,24 @@ import org.kie.kogito.auth.SecurityPolicy;
 import org.kie.kogito.config.ConfigBean;
 import org.kie.kogito.correlation.CompositeCorrelation;
 import org.kie.kogito.internal.process.runtime.KogitoNode;
+import org.kie.kogito.internal.process.workitem.KogitoWorkItemHandler;
+import org.kie.kogito.internal.process.workitem.Policy;
+import org.kie.kogito.internal.process.workitem.WorkItemNotFoundException;
 import org.kie.kogito.process.Process;
-import org.kie.kogito.process.ProcessConfig;
 import org.kie.kogito.process.ProcessInstance;
+import org.kie.kogito.process.ProcessInstanceNotFoundException;
 import org.kie.kogito.process.ProcessInstanceReadMode;
 import org.kie.kogito.process.ProcessService;
 import org.kie.kogito.process.WorkItem;
-import org.kie.kogito.process.workitem.Attachment;
-import org.kie.kogito.process.workitem.AttachmentInfo;
-import org.kie.kogito.process.workitem.Comment;
-import org.kie.kogito.process.workitem.HumanTaskWorkItem;
-import org.kie.kogito.process.workitem.Policy;
 import org.kie.kogito.services.uow.UnitOfWorkExecutor;
+import org.kie.kogito.usertask.UserTask;
+import org.kie.kogito.usertask.UserTaskInstance;
+import org.kie.kogito.usertask.UserTasks;
+import org.kie.kogito.usertask.model.Attachment;
+import org.kie.kogito.usertask.model.AttachmentInfo;
+import org.kie.kogito.usertask.model.Comment;
+
+import static java.util.Collections.emptyMap;
 
 public class ProcessServiceImpl implements ProcessService {
 
@@ -163,229 +169,6 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
     @Override
-    public <T extends Model> Optional<List<WorkItem>> getTasks(Process<T> process, String id, SecurityPolicy policy) {
-        return process.instances()
-                .findById(id, ProcessInstanceReadMode.READ_ONLY)
-                .map(pi -> pi.workItems(HumanTaskNodeInstance.class::isInstance, policy));
-    }
-
-    @Override
-    public <T extends Model> Optional<WorkItem> signalTask(Process<T> process, String id, String taskName, SecurityPolicy policy) {
-        return UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(), () -> process
-                .instances()
-                .findById(id)
-                .map(pi -> {
-                    KogitoNode node = pi.process().findNodes(n -> n instanceof HumanTaskNode &&
-                            ((HumanTaskNode) n).getWork().getParameter("TaskName")
-                                    .equals(taskName))
-                            .iterator().next();
-
-                    String taskNodeName = node.getName();
-                    pi.send(Sig.of(taskNodeName, Collections.emptyMap()));
-
-                    return getTaskByName(pi, taskName, policy).orElse(null);
-                }));
-    }
-
-    private <T extends Model> Optional<WorkItem> getTaskByName(ProcessInstance<T> pi, String taskName, SecurityPolicy... policies) {
-        return pi
-                .workItems(policies)
-                .stream()
-                .filter(wi -> wi.getName().equals(taskName))
-                .findFirst();
-    }
-
-    @Override
-    public <T extends Model, R extends MapOutput> Optional<R> saveTask(Process<T> process,
-            String id,
-            String taskId,
-            SecurityPolicy policy,
-            MapOutput model,
-            Function<Map<String, Object>, R> mapper) {
-        return UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(), () -> process
-                .instances()
-                .findById(id)
-                .map(pi -> pi.updateWorkItem(taskId, wi -> HumanTaskHelper.updateContent(wi, model), policy)))
-                .map(mapper);
-    }
-
-    @Override
-    public <T extends MappableToModel<R>, R> Optional<R> taskTransition(
-            Process<T> process,
-            String id,
-            String taskId,
-            String phase,
-            SecurityPolicy policy,
-            MapOutput model) {
-        HumanTaskTransition transition =
-                model == null ? HumanTaskTransition.withoutModel(phase, policy)
-                        : HumanTaskTransition.withModel(phase, model, policy);
-        return UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(), () -> process
-                .instances()
-                .findById(id)
-                .map(pi -> {
-                    pi.transitionWorkItem(taskId, transition);
-                    return pi.variables().toModel();
-                }));
-    }
-
-    @Override
-    public <T extends MappableToModel<?>, R> Optional<R> getTask(Process<T> process,
-            String id,
-            String taskId,
-            SecurityPolicy policy,
-            Function<WorkItem, R> mapper) {
-        return process.instances()
-                .findById(id, ProcessInstanceReadMode.READ_ONLY)
-                .map(pi -> pi.workItem(taskId, policy))
-                .map(mapper);
-    }
-
-    @Override
-    public <T extends Model> Optional<Comment> addComment(Process<T> process,
-            String id,
-            String taskId,
-            SecurityPolicy policy,
-            String commentInfo) {
-        return UnitOfWorkExecutor.executeInUnitOfWork(
-                application.unitOfWorkManager(), () -> process
-                        .instances()
-                        .findById(id)
-                        .map(pi -> pi.updateWorkItem(
-                                taskId,
-                                wi -> HumanTaskHelper.addComment(wi, commentInfo, policy.value().getName()),
-                                policy)));
-    }
-
-    @Override
-    public <T extends Model> Optional<Comment> updateComment(Process<T> process,
-            String id,
-            String taskId,
-            String commentId,
-            SecurityPolicy policy,
-            String commentInfo) {
-        return UnitOfWorkExecutor.executeInUnitOfWork(
-                application.unitOfWorkManager(), () -> process
-                        .instances()
-                        .findById(id)
-                        .map(pi -> pi.updateWorkItem(
-                                taskId,
-                                wi -> HumanTaskHelper.updateComment(wi, commentId, commentInfo, policy.value().getName()),
-                                policy)));
-    }
-
-    @Override
-    public <T extends Model> Optional<Boolean> deleteComment(Process<T> process,
-            String id,
-            String taskId,
-            String commentId,
-            SecurityPolicy policy) {
-        return UnitOfWorkExecutor.executeInUnitOfWork(
-                application.unitOfWorkManager(), () -> process
-                        .instances()
-                        .findById(id)
-                        .map(pi -> pi.updateWorkItem(
-                                taskId,
-                                wi -> HumanTaskHelper.deleteComment(wi, commentId, policy.value().getName()),
-                                policy)));
-    }
-
-    @Override
-    public <T extends Model> Optional<Attachment> addAttachment(Process<T> process,
-            String id,
-            String taskId,
-            SecurityPolicy policy,
-            AttachmentInfo attachmentInfo) {
-        return UnitOfWorkExecutor.executeInUnitOfWork(
-                application.unitOfWorkManager(), () -> process
-                        .instances()
-                        .findById(id)
-                        .map(pi -> pi.updateWorkItem(
-                                taskId,
-                                wi -> HumanTaskHelper.addAttachment(wi, attachmentInfo, policy.value().getName()),
-                                policy)));
-    }
-
-    @Override
-    public <T extends Model> Optional<Attachment> updateAttachment(Process<T> process,
-            String id,
-            String taskId,
-            String attachmentId,
-            SecurityPolicy policy,
-            AttachmentInfo attachment) {
-        return UnitOfWorkExecutor.executeInUnitOfWork(
-                application.unitOfWorkManager(), () -> process
-                        .instances()
-                        .findById(id)
-                        .map(pi -> pi.updateWorkItem(
-                                taskId,
-                                wi -> HumanTaskHelper.updateAttachment(wi, attachmentId, attachment, policy.value().getName()),
-                                policy)));
-    }
-
-    @Override
-    public <T extends Model> Optional<Boolean> deleteAttachment(Process<T> process,
-            String id,
-            String taskId,
-            String attachmentId,
-            SecurityPolicy policy) {
-        return UnitOfWorkExecutor.executeInUnitOfWork(
-                application.unitOfWorkManager(), () -> process
-                        .instances()
-                        .findById(id)
-                        .map(pi -> pi.updateWorkItem(
-                                taskId,
-                                wi -> HumanTaskHelper.deleteAttachment(wi, attachmentId, policy.value().getName()),
-                                policy)));
-    }
-
-    @Override
-    public <T extends Model> Optional<Attachment> getAttachment(Process<T> process,
-            String id,
-            String taskId,
-            String attachmentId,
-            SecurityPolicy policy) {
-        return process.instances().findById(id)
-                .map(pi -> HumanTaskHelper.findTask(pi, taskId, policy))
-                .map(HumanTaskWorkItem::getAttachments)
-                .map(attachments -> attachments.get(attachmentId));
-    }
-
-    @Override
-    public <T extends Model> Optional<Collection<Attachment>> getAttachments(Process<T> process,
-            String id,
-            String taskId,
-            SecurityPolicy policy) {
-        return process.instances().findById(id)
-                .map(pi -> HumanTaskHelper.findTask(pi, taskId, policy))
-                .map(HumanTaskWorkItem::getAttachments)
-                .map(Map::values);
-    }
-
-    @Override
-    public <T extends Model> Optional<Comment> getComment(Process<T> process,
-            String id,
-            String taskId,
-            String commentId,
-            SecurityPolicy policy) {
-        return process.instances().findById(id)
-                .map(pi -> HumanTaskHelper.findTask(pi, taskId, policy))
-                .map(HumanTaskWorkItem::getComments)
-                .map(comments -> comments.get(commentId));
-    }
-
-    @Override
-    public <T extends Model> Optional<Collection<Comment>> getComments(Process<T> process,
-            String id,
-            String taskId,
-            SecurityPolicy policy) {
-        return process.instances().findById(id)
-                .map(pi -> HumanTaskHelper.findTask(pi, taskId, policy))
-                .map(HumanTaskWorkItem::getComments)
-                .map(Map::values);
-    }
-
-    @Override
     public <T extends MappableToModel<R>, R> Optional<R> signalProcessInstance(Process<T> process, String id, Object data, String signalName) {
         return UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(),
                 () -> process.instances().findById(id)
@@ -395,20 +178,293 @@ public class ProcessServiceImpl implements ProcessService {
                         }));
     }
 
-    //Schema
     @Override
-    public <T extends Model> Map<String, Object> getSchemaAndPhases(Process<T> process,
-            String id,
-            String taskId,
-            String taskName,
-            SecurityPolicy policy) {
-        return JsonSchemaUtil.addPhases(
-                process,
-                application.config().get(ProcessConfig.class).workItemHandlers().forName("Human Task"),
-                id,
-                taskId,
-                new Policy<?>[] { policy },
-                JsonSchemaUtil.load(Thread.currentThread().getContextClassLoader(), process.id(), taskName));
+    public <T extends Model> Optional<List<WorkItem>> getWorkItems(Process<T> process, String id, Policy... policy) {
+        return process.instances()
+                .findById(id, ProcessInstanceReadMode.READ_ONLY)
+                .map(pi -> pi.workItems(WorkItemNodeInstance.class::isInstance, policy));
     }
 
+    @Override
+    public <T extends Model> Optional<WorkItem> signalWorkItem(Process<T> process, String id, String taskNodeName, Policy... policy) {
+        return UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(), () -> {
+            Optional<ProcessInstance<T>> piFound = process.instances().findById(id);
+            if (piFound.isEmpty()) {
+                return Optional.empty();
+            }
+
+            ProcessInstance<T> pi = piFound.get();
+            return findWorkItem(pi, taskNodeName, policy);
+        });
+    }
+
+    private <T extends Model> Optional<WorkItem> findWorkItem(ProcessInstance<T> pi, String taskName, Policy... policy) {
+        KogitoNode node = pi.process().findNodes(worktItemNodeNamed(taskName)).iterator().next();
+        String taskNodeName = node.getName();
+        pi.send(Sig.of(taskNodeName, emptyMap()));
+        return getWorkItemByTaskName(pi, taskName, policy);
+    }
+
+    private Predicate<KogitoNode> worktItemNodeNamed(String taskName) {
+        return node -> node instanceof WorkItemNode workItemNode && taskName.equals(workItemNode.getWork().getParameter("TaskName"));
+    }
+
+    private <T extends Model> Optional<WorkItem> getWorkItemByTaskName(ProcessInstance<T> pi, String taskName, Policy... policies) {
+        return pi.workItems(policies)
+                .stream()
+                .filter(wi -> wi.getName().equals(taskName))
+                .findFirst();
+    }
+
+    @Override
+    public <T extends MappableToModel<R>, R> Optional<R> transitionWorkItem(
+            Process<T> process,
+            String processInstanceId,
+            String workItemId,
+            String phaseId,
+            Policy policy,
+            MapOutput model) {
+
+        return UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(), () -> {
+            return process.instances()
+                    .findById(processInstanceId)
+                    .map(pi -> {
+                        WorkItem workItem = pi.workItem(workItemId, policy);
+                        pi.transitionWorkItem(workItemId, process.newTransition(workItem, phaseId, model.toMap(), policy));
+                        return pi.variables().toModel();
+                    });
+        });
+    }
+
+    @Override
+    public <T extends MappableToModel<?>, R> Optional<R> getWorkItem(Process<T> process,
+            String id,
+            String taskId,
+            Policy policy,
+            Function<WorkItem, R> mapper) {
+        return process.instances()
+                .findById(id, ProcessInstanceReadMode.READ_ONLY)
+                .map(pi -> pi.workItem(taskId, policy))
+                .map(mapper);
+    }
+
+    @Override
+    public <T extends Model, R extends MapOutput> Optional<R> setWorkItemOutput(Process<T> process,
+            String id,
+            String taskId,
+            Policy policy,
+            MapOutput model,
+            Function<Map<String, Object>, R> mapper) {
+        return UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(), () -> {
+            return process.instances().findById(id)
+                    .map(pi -> pi.updateWorkItem(taskId, wi -> {
+                        wi.setOutputs(model.toMap());
+                        return model.toMap();
+                    }, policy)).map(mapper);
+        });
+    }
+
+    //Schema
+    @Override
+    public <T extends Model> Map<String, Object> getWorkItemSchemaAndPhases(Process<T> process,
+            String processInstanceId,
+            String workItemId,
+            String workItemTaskName,
+            Policy policy) {
+        // try to find work item handler
+        ProcessInstance<T> pi = process.instances().findById(processInstanceId).orElseThrow(() -> new ProcessInstanceNotFoundException(processInstanceId));
+        WorkItem workItem = pi.workItems(policy).stream()
+                .filter(wi -> wi.getId().equals(workItemId))
+                .findFirst()
+                .orElseThrow(() -> new WorkItemNotFoundException(workItemId));
+        KogitoWorkItemHandler handler = process.getKogitoWorkItemHandler(workItem.getWorkItemHandlerName());
+        // we compute the phases
+        return JsonSchemaUtil.addPhases(
+                process,
+                handler,
+                processInstanceId,
+                workItemId,
+                new Policy[] { policy },
+                JsonSchemaUtil.load(Thread.currentThread().getContextClassLoader(), process.id(), workItemTaskName));
+    }
+
+    @Override
+    public <T extends Model> Optional<Comment> addComment(Process<T> process,
+            String id,
+            String taskId,
+            SecurityPolicy policy,
+            String commentInfo) {
+        return updateUserTaskInstance(process, id, taskId, policy, userTaskInstance -> {
+            Comment comment = new Comment(UUID.randomUUID().toString(), policy.getUser());
+            comment.setContent(commentInfo);
+            comment.setUpdatedAt(new Date());
+            userTaskInstance.addComment(comment);
+            return comment;
+        });
+
+    }
+
+    @Override
+    public <T extends Model> Optional<Comment> updateComment(Process<T> process,
+            String id,
+            String taskId,
+            String commentId,
+            SecurityPolicy policy,
+            String commentInfo) {
+        return updateUserTaskInstance(process, id, taskId, policy, userTaskInstance -> {
+            Comment comment = new Comment(commentId, policy.getUser());
+            comment.setContent(commentInfo);
+            comment.setUpdatedAt(new Date());
+            userTaskInstance.updateComment(comment);
+            return comment;
+        });
+    }
+
+    @Override
+    public <T extends Model> Optional<Boolean> deleteComment(Process<T> process,
+            String id,
+            String taskId,
+            String commentId,
+            SecurityPolicy policy) {
+        return updateUserTaskInstance(process, id, taskId, policy, userTaskInstance -> {
+            Comment comment = new Comment(commentId, policy.getUser());
+            comment.setContent(null);
+            comment.setUpdatedAt(new Date());
+            userTaskInstance.removeComment(comment);
+            return Boolean.TRUE;
+        });
+    }
+
+    @Override
+    public <T extends Model> Optional<Attachment> addAttachment(Process<T> process,
+            String id,
+            String taskId,
+            SecurityPolicy policy,
+            AttachmentInfo attachmentInfo) {
+        return updateUserTaskInstance(process, id, taskId, policy, userTaskInstance -> {
+            Attachment attachment = new Attachment(UUID.randomUUID().toString(), policy.getUser());
+            attachment.setName(attachmentInfo.getName());
+            attachment.setContent(attachmentInfo.getUri());
+            attachment.setUpdatedAt(new Date());
+            userTaskInstance.addAttachment(attachment);
+            return attachment;
+        });
+    }
+
+    @Override
+    public <T extends Model> Optional<Attachment> updateAttachment(Process<T> process,
+            String id,
+            String taskId,
+            String attachmentId,
+            SecurityPolicy policy,
+            AttachmentInfo attachmentInfo) {
+        return updateUserTaskInstance(process, id, taskId, policy, userTaskInstance -> {
+            Attachment attachment = new Attachment(attachmentId, policy.getUser());
+            attachment.setName(attachmentInfo.getName());
+            attachment.setContent(attachmentInfo.getUri());
+            attachment.setUpdatedAt(new Date());
+            userTaskInstance.updateAttachment(attachment);
+            return attachment;
+        });
+    }
+
+    @Override
+    public <T extends Model> Optional<Boolean> deleteAttachment(Process<T> process,
+            String id,
+            String taskId,
+            String attachmentId,
+            SecurityPolicy policy) {
+        return updateUserTaskInstance(process, id, taskId, policy, userTaskInstance -> {
+            Attachment attachment = new Attachment(attachmentId, policy.getUser());
+            userTaskInstance.removeAttachment(attachment);
+            return Boolean.TRUE;
+        });
+    }
+
+    private <R, T> Optional<R> updateUserTaskInstance(Process<T> process,
+            String id,
+            String taskId,
+            SecurityPolicy policy,
+            Function<UserTaskInstance, R> consumer) {
+        return UnitOfWorkExecutor.executeInUnitOfWork(
+                application.unitOfWorkManager(), () -> {
+                    ProcessInstance<T> processInstance = process.instances().findById(id).orElseThrow(() -> new ProcessInstanceNotFoundException(id));
+                    WorkItem wi = processInstance.workItem(taskId);
+                    String referenceId = wi.getExternalReferenceId();
+                    if (referenceId == null) {
+                        return Optional.empty();
+                    }
+                    String[] data = referenceId.split(":");
+                    UserTasks userTasks = application.get(UserTasks.class);
+                    UserTask userTask = userTasks.userTaskById(data[0]);
+                    Optional<UserTaskInstance> instance = userTask.instances().findById(data[0]);
+                    if (instance.isEmpty()) {
+                        return Optional.empty();
+                    }
+                    UserTaskInstance userTaskInstance = instance.get();
+                    R outcome = consumer.apply(userTaskInstance);
+                    userTask.instances().update(userTaskInstance);
+                    return Optional.ofNullable(outcome);
+                });
+    }
+
+    @Override
+    public <T extends Model> Optional<Attachment> getAttachment(Process<T> process,
+            String id,
+            String taskId,
+            String attachmentId,
+            SecurityPolicy policy) {
+        return retrieveUserTaskInstance(process, id, taskId, policy, ut -> ut.findAttachmentById(attachmentId));
+    }
+
+    @Override
+    public <T extends Model> Optional<Collection<Attachment>> getAttachments(Process<T> process,
+            String id,
+            String taskId,
+            SecurityPolicy policy) {
+        return retrieveUserTaskInstance(process, id, taskId, policy, ut -> ut.getAttachments());
+    }
+
+    @Override
+    public <T extends Model> Optional<Comment> getComment(Process<T> process,
+            String id,
+            String taskId,
+            String commentId,
+            SecurityPolicy policy) {
+        return retrieveUserTaskInstance(process, id, taskId, policy, ut -> ut.findCommentById(commentId));
+    }
+
+    @Override
+    public <T extends Model> Optional<Collection<Comment>> getComments(Process<T> process,
+            String id,
+            String taskId,
+            SecurityPolicy policy) {
+        return retrieveUserTaskInstance(process, id, taskId, policy, ut -> ut.getComments());
+    }
+
+    private <R, T> Optional<R> retrieveUserTaskInstance(Process<T> process,
+            String id,
+            String taskId,
+            SecurityPolicy policy,
+            Function<UserTaskInstance, R> consumer) {
+        return UnitOfWorkExecutor.executeInUnitOfWork(
+                application.unitOfWorkManager(), () -> {
+                    ProcessInstance<T> processInstance = process.instances().findById(id).orElseThrow(() -> new ProcessInstanceNotFoundException(id));
+                    WorkItem wi = processInstance.workItem(taskId);
+                    String referenceId = wi.getExternalReferenceId();
+                    if (referenceId == null) {
+                        return Optional.empty();
+                    }
+                    String[] data = referenceId.split(":");
+                    UserTasks userTasks = application.get(UserTasks.class);
+                    UserTask userTask = userTasks.userTaskById(data[0]);
+                    Optional<UserTaskInstance> instance = userTask.instances().findById(data[0]);
+                    if (instance.isEmpty()) {
+                        return Optional.empty();
+                    }
+                    UserTaskInstance userTaskInstance = instance.get();
+                    R outcome = consumer.apply(userTaskInstance);
+                    return Optional.ofNullable(outcome);
+                });
+    }
 }

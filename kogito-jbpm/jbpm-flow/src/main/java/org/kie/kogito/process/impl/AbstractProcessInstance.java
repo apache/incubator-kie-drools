@@ -19,7 +19,6 @@
 package org.kie.kogito.process.impl;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -34,6 +33,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
@@ -55,8 +55,10 @@ import org.kie.kogito.correlation.CorrelationInstance;
 import org.kie.kogito.internal.process.event.KogitoEventListener;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
-import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
-import org.kie.kogito.internal.process.runtime.WorkItemNotFoundException;
+import org.kie.kogito.internal.process.workitem.KogitoWorkItem;
+import org.kie.kogito.internal.process.workitem.Policy;
+import org.kie.kogito.internal.process.workitem.WorkItemNotFoundException;
+import org.kie.kogito.internal.process.workitem.WorkItemTransition;
 import org.kie.kogito.process.EventDescription;
 import org.kie.kogito.process.MutableProcessInstances;
 import org.kie.kogito.process.NodeInstanceNotFoundException;
@@ -69,8 +71,7 @@ import org.kie.kogito.process.Signal;
 import org.kie.kogito.process.WorkItem;
 import org.kie.kogito.process.flexible.AdHocFragment;
 import org.kie.kogito.process.flexible.Milestone;
-import org.kie.kogito.process.workitem.Policy;
-import org.kie.kogito.process.workitem.Transition;
+import org.kie.kogito.process.workitems.InternalKogitoWorkItem;
 import org.kie.kogito.services.uow.ProcessInstanceWorkUnit;
 
 public abstract class AbstractProcessInstance<T extends Model> implements ProcessInstance<T> {
@@ -496,70 +497,84 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
     }
 
     @Override
-    public WorkItem workItem(String workItemId, Policy<?>... policies) {
-        WorkItemNodeInstance workItemInstance = (WorkItemNodeInstance) processInstance().getNodeInstances(true)
-                .stream()
-                .filter(ni -> ni instanceof WorkItemNodeInstance && ((WorkItemNodeInstance) ni).getWorkItemId().equals(workItemId) && ((WorkItemNodeInstance) ni).getWorkItem().enforce(policies))
-                .findFirst()
+    public WorkItem workItem(String workItemId, Policy... policies) {
+        return processInstance().getNodeInstances(true).stream()
+                .filter(WorkItemNodeInstance.class::isInstance)
+                .map(WorkItemNodeInstance.class::cast)
+                .filter(w -> enforceException(w.getWorkItem(), policies))
+                .filter(ni -> ni.getWorkItemId().equals(workItemId))
+                .map(this::toBaseWorkItem)
+                .findAny()
                 .orElseThrow(() -> new WorkItemNotFoundException("Work item with id " + workItemId + " was not found in process instance " + id(), workItemId));
-        return new BaseWorkItem(workItemInstance.getStringId(),
-                workItemInstance.getWorkItem().getStringId(),
-                workItemInstance.getNode().getId(),
-                (String) workItemInstance.getWorkItem().getParameters().getOrDefault("TaskName", workItemInstance.getNodeName()),
-                workItemInstance.getWorkItem().getState(),
-                workItemInstance.getWorkItem().getPhaseId(),
-                workItemInstance.getWorkItem().getPhaseStatus(),
-                workItemInstance.getWorkItem().getParameters(),
-                workItemInstance.getWorkItem().getResults());
+    }
+
+    private boolean enforceException(KogitoWorkItem kogitoWorkItem, Policy... policies) {
+        Stream.of(policies).forEach(p -> p.enforce(kogitoWorkItem));
+        return true;
     }
 
     @Override
-    public List<WorkItem> workItems(Policy<?>... policies) {
+    public List<WorkItem> workItems(Policy... policies) {
         return workItems(WorkItemNodeInstance.class::isInstance, policies);
     }
 
     @Override
-    public List<WorkItem> workItems(Predicate<KogitoNodeInstance> p, Policy<?>... policies) {
-        List<WorkItem> list = new ArrayList<>();
-        for (NodeInstance ni : processInstance().getNodeInstances(true)) {
-            if (p.test(ni) && ((WorkItemNodeInstance) ni).getWorkItem().enforce(policies)) {
-                BaseWorkItem taskName = new BaseWorkItem(ni.getStringId(),
-                        ((WorkItemNodeInstance) ni).getWorkItemId(),
-                        ni.getNode().getId(),
-                        (String) ((WorkItemNodeInstance) ni).getWorkItem().getParameters().getOrDefault("TaskName", ni.getNodeName()),
-                        ((WorkItemNodeInstance) ni).getWorkItem().getState(),
-                        ((WorkItemNodeInstance) ni).getWorkItem().getPhaseId(),
-                        ((WorkItemNodeInstance) ni).getWorkItem().getPhaseStatus(),
-                        ((WorkItemNodeInstance) ni).getWorkItem().getParameters(),
-                        ((WorkItemNodeInstance) ni).getWorkItem().getResults());
-                list.add(taskName);
-            }
+    public List<WorkItem> workItems(Predicate<KogitoNodeInstance> p, Policy... policies) {
+        return processInstance().getNodeInstances(true).stream()
+                .filter(p::test)
+                .filter(WorkItemNodeInstance.class::isInstance)
+                .map(WorkItemNodeInstance.class::cast)
+                .filter(w -> enforce(w.getWorkItem(), policies))
+                .map(this::toBaseWorkItem)
+                .toList();
+    }
+
+    private WorkItem toBaseWorkItem(WorkItemNodeInstance workItemNodeInstance) {
+        InternalKogitoWorkItem workItem = workItemNodeInstance.getWorkItem();
+        return new BaseWorkItem(
+                workItemNodeInstance.getStringId(),
+                workItemNodeInstance.getWorkItemId(),
+                workItemNodeInstance.getNode().getId(),
+                (String) workItem.getParameters().getOrDefault("TaskName", workItemNodeInstance.getNodeName()),
+                workItem.getName(),
+                workItem.getState(),
+                workItem.getPhaseId(),
+                workItem.getPhaseStatus(),
+                workItem.getParameters(),
+                workItem.getResults(),
+                workItem.getParameter(KogitoWorkItem.PARAMETER_UNIQUE_TASK_ID) + ":" + workItem.getExternalReferenceId());
+    }
+
+    private boolean enforce(KogitoWorkItem kogitoWorkItem, Policy... policies) {
+        try {
+            Stream.of(policies).forEach(p -> p.enforce(kogitoWorkItem));
+            return true;
+        } catch (Throwable th) {
+            return false;
         }
-        return list;
     }
 
     @Override
-    public void completeWorkItem(String id, Map<String, Object> variables, Policy<?>... policies) {
+    public void completeWorkItem(String id, Map<String, Object> variables, Policy... policies) {
         getProcessRuntime().getKogitoProcessRuntime().getKogitoWorkItemManager().completeWorkItem(id, variables, policies);
         removeOnFinish();
     }
 
     @Override
-    public <R> R updateWorkItem(String id, Function<KogitoWorkItem, R> updater, Policy<?>... policies) {
-        R result = getProcessRuntime().getKogitoProcessRuntime().getKogitoWorkItemManager().updateWorkItem(id, updater,
-                policies);
+    public <R> R updateWorkItem(String id, Function<KogitoWorkItem, R> updater, Policy... policies) {
+        R result = getProcessRuntime().getKogitoProcessRuntime().getKogitoWorkItemManager().updateWorkItem(id, updater, policies);
         addToUnitOfWork(pi -> ((MutableProcessInstances<T>) process.instances()).update(pi.id(), pi));
         return result;
     }
 
     @Override
-    public void abortWorkItem(String id, Policy<?>... policies) {
+    public void abortWorkItem(String id, Policy... policies) {
         getProcessRuntime().getKogitoProcessRuntime().getKogitoWorkItemManager().abortWorkItem(id, policies);
         removeOnFinish();
     }
 
     @Override
-    public void transitionWorkItem(String id, Transition<?> transition) {
+    public void transitionWorkItem(String id, WorkItemTransition transition) {
         getProcessRuntime().getKogitoProcessRuntime().getKogitoWorkItemManager().transitionWorkItem(id, transition);
         removeOnFinish();
     }

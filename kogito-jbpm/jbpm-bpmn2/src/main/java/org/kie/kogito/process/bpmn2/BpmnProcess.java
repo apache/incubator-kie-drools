@@ -32,6 +32,7 @@ import org.kie.kogito.Model;
 import org.kie.kogito.correlation.CompositeCorrelation;
 import org.kie.kogito.process.ProcessConfig;
 import org.kie.kogito.process.ProcessInstance;
+import org.kie.kogito.process.WorkItemHandlerConfig;
 import org.kie.kogito.process.impl.AbstractProcess;
 import org.kie.kogito.process.impl.DefaultProcessEventListenerConfig;
 import org.kie.kogito.process.impl.DefaultWorkItemHandlerConfig;
@@ -122,8 +123,11 @@ public class BpmnProcess extends AbstractProcess<BpmnVariables> {
     }
 
     public static List<BpmnProcess> from(Resource... resource) {
-        return from(new StaticProcessConfig(new DefaultWorkItemHandlerConfig(), new DefaultProcessEventListenerConfig(), new DefaultUnitOfWorkManager(new CollectingUnitOfWorkFactory())),
-                resource);
+        return from(new DefaultWorkItemHandlerConfig(), resource);
+    }
+
+    public static List<BpmnProcess> from(WorkItemHandlerConfig config, Resource... resource) {
+        return from(new StaticProcessConfig(config, new DefaultProcessEventListenerConfig(), new DefaultUnitOfWorkManager(new CollectingUnitOfWorkFactory())), resource);
     }
 
     public static List<BpmnProcess> from(ProcessConfig config, Resource... resources) {

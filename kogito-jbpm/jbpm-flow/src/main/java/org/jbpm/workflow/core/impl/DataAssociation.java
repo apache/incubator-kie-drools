@@ -65,7 +65,12 @@ public class DataAssociation implements Serializable {
 
     private Assignment buildInterpretedAssignment(Assignment assignment) {
         if (assignment.getDialect() != null) {
-            return assignment;
+            if (assignment.getDialect().toLowerCase().equals("xpath")) {
+                assignment.setMetaData("Action", new XPATHAssignmentAction(assignment, sources, target));
+                return assignment;
+            } else {
+                return assignment;
+            }
         }
         if (isExpr(assignment.getFrom().getExpression())) {
             assignment.setMetaData("Action", new InputExpressionAssignment(assignment.getFrom(), assignment.getTo()));

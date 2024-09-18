@@ -37,7 +37,7 @@ public class ExpressionEventTypeFilter extends EventTypeFilter {
      */
     @Override
     public boolean acceptsEvent(String type, Object event, Function<String, Object> resolver) {
-        return (Boolean) returnValueEvaluator.eval(resolver);
+        return this.type.equals(type) && (Boolean) returnValueEvaluator.eval(resolver);
     }
 
 }

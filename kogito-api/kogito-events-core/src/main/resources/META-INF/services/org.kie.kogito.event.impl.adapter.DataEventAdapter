@@ -1,0 +1,14 @@
+org.kie.kogito.event.impl.adapter.ProcessCompletedEventDataEventAdapter
+org.kie.kogito.event.impl.adapter.ProcessErrorEventDataEventAdapter
+org.kie.kogito.event.impl.adapter.ProcessMigratedEventDataEventAdapter
+org.kie.kogito.event.impl.adapter.ProcessNodeEnteredEventDataEventAdapter
+org.kie.kogito.event.impl.adapter.ProcessNodeLeftEventDataEventAdapter
+org.kie.kogito.event.impl.adapter.ProcessSLAEventDataEventAdapter
+org.kie.kogito.event.impl.adapter.ProcessStartedEventDataEventAdapter
+org.kie.kogito.event.impl.adapter.ProcessVariableEventDataEventAdapter
+org.kie.kogito.event.impl.adapter.UserTaskAssignmentEventDataEventAdapter
+org.kie.kogito.event.impl.adapter.UserTaskCommentEventDataEventAdapter
+org.kie.kogito.event.impl.adapter.UserTaskDeadlineEventDataEventAdapter
+org.kie.kogito.event.impl.adapter.UserTastAttachmentEventDataEventAdapter
+org.kie.kogito.event.impl.adapter.UserTaskVariableEventDataEventAdapter
+org.kie.kogito.event.impl.adapter.UserTaskStateEventDataEventAdapter

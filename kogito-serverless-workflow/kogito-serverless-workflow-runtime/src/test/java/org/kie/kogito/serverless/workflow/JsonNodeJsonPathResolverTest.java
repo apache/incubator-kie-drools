@@ -26,7 +26,7 @@ import org.junit.jupiter.api.Test;
 import org.kie.api.definition.process.Process;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
-import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
+import org.kie.kogito.internal.process.workitem.KogitoWorkItem;
 import org.kie.kogito.jackson.utils.ObjectMapperFactory;
 import org.kie.kogito.serverless.workflow.workitemparams.JsonNodeResolver;
 import org.kie.kogito.serverless.workflow.workitemparams.ObjectResolver;

@@ -34,7 +34,8 @@ import org.jbpm.workflow.instance.node.WorkItemNodeInstance;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
+import org.kie.kogito.internal.process.workitem.KogitoWorkItemManager;
+import org.kie.kogito.internal.process.workitem.WorkItemTransition;
 import org.kie.kogito.jackson.utils.ObjectMapperFactory;
 import org.kie.kogito.process.workitems.impl.KogitoWorkItemImpl;
 import org.kogito.workitem.rest.bodybuilders.DefaultWorkItemHandlerBodyBuilder;
@@ -95,9 +96,6 @@ public class RestWorkItemHandlerTest {
 
     @Mock
     private WorkItemNode node;
-
-    @Captor
-    private ArgumentCaptor<Map<String, Object>> argCaptor;
 
     @Captor
     private ArgumentCaptor<Map<String, Object>> bodyCaptor;
@@ -173,9 +171,10 @@ public class RestWorkItemHandlerTest {
         parameters.put(RestWorkItemHandler.METHOD, "GET");
         parameters.put(RestWorkItemHandler.CONTENT_DATA, workflowData);
 
-        handler.executeWorkItem(workItem, manager);
+        WorkItemTransition transition = handler.startingTransition(parameters);
+        workItem.setPhaseStatus("Activated");
 
-        assertResult(manager, argCaptor);
+        assertResult(handler.activateWorkItemHandler(manager, handler, workItem, transition));
     }
 
     @Test
@@ -186,11 +185,10 @@ public class RestWorkItemHandlerTest {
 
         when(ioSpecification.getOutputMappingBySources()).thenReturn(Collections.singletonMap(RestWorkItemHandler.RESULT, DEFAULT_WORKFLOW_VAR));
 
-        handler.executeWorkItem(workItem, manager);
+        Optional<WorkItemTransition> transition = handler.transitionToPhase(manager, workItem, handler.startingTransition(parameters));
 
-        verify(manager).completeWorkItem(anyString(), argCaptor.capture());
-        Map<String, Object> results = argCaptor.getValue();
-        assertThat(results).hasSize(1);
+        assertThat(transition).isPresent();
+        assertThat(transition.get().data()).hasSize(1);
     }
 
     @Test
@@ -200,14 +198,13 @@ public class RestWorkItemHandlerTest {
         parameters.put(RestWorkItemHandler.METHOD, "POST");
         parameters.put(BODY_BUILDER, new DefaultWorkItemHandlerBodyBuilder());
 
-        handler.executeWorkItem(workItem, manager);
+        assertResult(handler.transitionToPhase(manager, workItem, handler.startingTransition(parameters)));
 
         verify(request).sendJsonAndAwait(bodyCaptor.capture());
         Map<String, Object> bodyMap = bodyCaptor.getValue();
         assertThat(bodyMap).containsEntry("id", 26)
                 .containsEntry("name", "pepe");
 
-        assertResult(manager, argCaptor);
     }
 
     @Test
@@ -216,7 +213,7 @@ public class RestWorkItemHandlerTest {
         parameters.put(BODY_BUILDER, new DefaultWorkItemHandlerBodyBuilder());
         parameters.put(RestWorkItemHandler.CONTENT_DATA, workflowData);
 
-        handler.executeWorkItem(workItem, manager);
+        assertResult(handler.transitionToPhase(manager, workItem, handler.startingTransition(parameters)));
 
         ArgumentCaptor<ObjectNode> bodyCaptor = ArgumentCaptor.forClass(ObjectNode.class);
         verify(request).sendJsonAndAwait(bodyCaptor.capture());
@@ -224,7 +221,6 @@ public class RestWorkItemHandlerTest {
         assertThat(bodyMap.get("id").asInt()).isEqualTo(26);
         assertThat(bodyMap.get("name").asText()).isEqualTo("pepe");
 
-        assertResult(manager, argCaptor);
     }
 
     @Test
@@ -250,7 +246,7 @@ public class RestWorkItemHandlerTest {
         parameters.put(customParameter, workflowData);
         Optional.ofNullable(bodyBuilderClass).ifPresent(builder -> parameters.put(BODY_BUILDER, builder));
 
-        handler.executeWorkItem(workItem, manager);
+        assertResult(handler.transitionToPhase(manager, workItem, handler.startingTransition(parameters)));
 
         verify(request).sendJsonAndAwait(bodyCaptor.capture());
 
@@ -260,7 +256,6 @@ public class RestWorkItemHandlerTest {
                 //assert the evaluated expression with a process variable
                 .containsEntry(customParameter, workflowData);
 
-        assertResult(manager, argCaptor);
     }
 
     @Test
@@ -268,7 +263,7 @@ public class RestWorkItemHandlerTest {
         parameters.put(RestWorkItemHandler.METHOD, "POST");
         parameters.put(RestWorkItemHandler.CONTENT_DATA, workflowData);
 
-        handler.executeWorkItem(workItem, manager);
+        assertResult(handler.transitionToPhase(manager, workItem, handler.startingTransition(parameters)));
 
         ArgumentCaptor<ObjectNode> bodyCaptor = ArgumentCaptor.forClass(ObjectNode.class);
         verify(request).sendJsonAndAwait(bodyCaptor.capture());
@@ -276,14 +271,11 @@ public class RestWorkItemHandlerTest {
         assertThat(bodyMap.get("id").asInt()).isEqualTo(26);
         assertThat(bodyMap.get("name").asText()).isEqualTo("pepe");
 
-        assertResult(manager, argCaptor);
     }
 
-    public void assertResult(KogitoWorkItemManager manager, ArgumentCaptor<Map<String, Object>> argCaptor) {
-        verify(manager).completeWorkItem(anyString(), argCaptor.capture());
-        Map<String, Object> results = argCaptor.getValue();
-        assertThat(results).hasSize(1)
-                .containsKey(RestWorkItemHandler.RESULT);
+    public void assertResult(Optional<WorkItemTransition> transition) {
+        Map<String, Object> results = transition.get().data();
+        assertThat(results).hasSize(1).containsKey(RestWorkItemHandler.RESULT);
         Object result = results.get(RestWorkItemHandler.RESULT);
         assertThat(result).isInstanceOf(ObjectNode.class);
         assertThat(((ObjectNode) result).get("num").asInt()).isOne();

@@ -21,9 +21,10 @@ package org.jbpm.bpmn2.handler;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jbpm.bpmn2.handler.LoggingTaskHandlerDecorator.InputParameter;
 import org.jbpm.bpmn2.subprocess.ExceptionThrowingServiceProcessModel;
 import org.jbpm.bpmn2.subprocess.ExceptionThrowingServiceProcessProcess;
+import org.jbpm.process.workitem.builtin.LoggingTaskHandlerDecorator;
+import org.jbpm.process.workitem.builtin.LoggingTaskHandlerDecorator.InputParameter;
 import org.jbpm.test.utils.ProcessTestHelper;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.Application;

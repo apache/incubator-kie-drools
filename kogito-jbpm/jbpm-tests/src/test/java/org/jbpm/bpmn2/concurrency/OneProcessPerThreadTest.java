@@ -20,6 +20,7 @@ package org.jbpm.bpmn2.concurrency;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -33,9 +34,11 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
-import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
-import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
-import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
+import org.kie.kogito.internal.process.workitem.KogitoWorkItem;
+import org.kie.kogito.internal.process.workitem.KogitoWorkItemHandler;
+import org.kie.kogito.internal.process.workitem.KogitoWorkItemManager;
+import org.kie.kogito.internal.process.workitem.WorkItemTransition;
+import org.kie.kogito.process.workitems.impl.DefaultKogitoWorkItemHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,14 +65,15 @@ public class OneProcessPerThreadTest {
 
             KogitoProcessRuntime kruntime = InternalProcessRuntime.asKogitoProcessRuntime(kbase.newKieSession());
 
-            kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Log", new KogitoWorkItemHandler() {
-                public void executeWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager manager) {
+            kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Log", new DefaultKogitoWorkItemHandler() {
+
+                @Override
+                public Optional<WorkItemTransition> activateWorkItemHandler(KogitoWorkItemManager manager, KogitoWorkItemHandler handler, KogitoWorkItem workItem, WorkItemTransition transition) {
                     Long threadId = (Long) workItem.getParameter("id");
                     workItems.put(workItem.getProcessInstanceStringId(), threadId);
+                    return Optional.empty();
                 }
 
-                public void abortWorkItem(KogitoWorkItem arg0, KogitoWorkItemManager arg1) {
-                }
             });
 
             startThreads(kruntime);

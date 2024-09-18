@@ -31,8 +31,12 @@ import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.process.workitems.InternalKogitoWorkItemManager;
 import org.kie.kogito.process.workitems.impl.KogitoWorkItemImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SignalProcessInstanceAction implements Action, Serializable {
+
+    private static final Logger LOG = LoggerFactory.getLogger(SignalProcessInstanceAction.class);
 
     public static final String DEFAULT_SCOPE = "default";
     public static final String PROCESS_INSTANCE_SCOPE = "processInstance";
@@ -102,6 +106,7 @@ public class SignalProcessInstanceAction implements Action, Serializable {
         String signalName = VariableUtil.resolveVariable(this.signalNameTemplate, context.getNodeInstance());
         context.getKogitoProcessRuntime().getProcessEventSupport()
                 .fireOnSignal(processInstance, nodeInstance, context.getKieRuntime(), signalName, signal);
+        LOG.debug("about to signal {} process {} with scope {}", signalName, processInstance.getId(), scope);
         if (DEFAULT_SCOPE.equals(scope)) {
             context.getKogitoProcessRuntime().signalEvent(signalName, signal);
         } else if (PROCESS_INSTANCE_SCOPE.equals(scope)) {
@@ -112,6 +117,7 @@ public class SignalProcessInstanceAction implements Action, Serializable {
             workItem.setName("External Send Task");
             workItem.setNodeInstanceId(context.getNodeInstance().getStringId());
             workItem.setProcessInstanceId(context.getProcessInstance().getStringId());
+            workItem.setProcessInstance(processInstance);
             workItem.setNodeId(context.getNodeInstance().getNodeId());
 
             workItem.getParameters().putAll(inputSet);

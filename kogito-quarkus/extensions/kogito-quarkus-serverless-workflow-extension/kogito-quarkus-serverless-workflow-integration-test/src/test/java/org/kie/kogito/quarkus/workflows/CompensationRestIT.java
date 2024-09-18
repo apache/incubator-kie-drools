@@ -30,7 +30,7 @@ import static org.hamcrest.CoreMatchers.is;
 public class CompensationRestIT {
 
     @Test
-    public void testErrorRest() {
+    public void testErrorRest1() {
         given()
                 .contentType(ContentType.JSON)
                 .accept(ContentType.JSON)
@@ -39,6 +39,10 @@ public class CompensationRestIT {
                 .then()
                 .statusCode(201)
                 .body("workflowdata.compensated", is(true));
+    }
+
+    @Test
+    public void testErrorRest2() {
         given()
                 .contentType(ContentType.JSON)
                 .accept(ContentType.JSON)
@@ -48,6 +52,11 @@ public class CompensationRestIT {
                 .statusCode(201)
                 .body("workflowdata.compensated", is(true))
                 .body("workflowdata.isEven", is(false));
+
+    }
+
+    @Test
+    public void testErrorRest3() {
         given()
                 .contentType(ContentType.JSON)
                 .accept(ContentType.JSON)

@@ -21,7 +21,7 @@ package org.kie.kogito.addons.quarkus.knative.serving.customfunctions;
 import java.util.Map;
 
 import org.kie.kogito.event.cloudevents.utils.CloudEventUtils;
-import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
+import org.kie.kogito.internal.process.workitem.KogitoWorkItem;
 import org.kogito.workitem.rest.decorators.ParamsDecorator;
 
 import io.vertx.mutiny.ext.web.client.HttpRequest;

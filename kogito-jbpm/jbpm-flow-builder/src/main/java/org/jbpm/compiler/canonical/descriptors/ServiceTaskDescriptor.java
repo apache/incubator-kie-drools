@@ -32,7 +32,7 @@ import org.jbpm.process.core.ParameterDefinition;
 import org.jbpm.util.ContextFactory;
 import org.jbpm.workflow.core.node.WorkItemNode;
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
-import org.kie.kogito.process.workitem.WorkItemExecutionException;
+import org.kie.kogito.internal.process.workitem.WorkItemExecutionException;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.expr.CastExpr;

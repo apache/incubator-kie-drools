@@ -1847,6 +1847,11 @@
       </dependency>
       <dependency>
         <groupId>org.kie.kogito</groupId>
+        <artifactId>jbpm-usertask</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
         <artifactId>jbpm-flow-migration</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>

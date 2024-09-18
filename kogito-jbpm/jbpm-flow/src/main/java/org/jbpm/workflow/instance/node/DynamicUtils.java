@@ -51,7 +51,7 @@ import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.kogito.internal.process.event.KogitoProcessEventSupport;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
-import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
+import org.kie.kogito.internal.process.workitem.KogitoWorkItem;
 import org.kie.kogito.process.workitems.InternalKogitoWorkItemManager;
 import org.kie.kogito.process.workitems.impl.KogitoWorkItemImpl;
 import org.slf4j.Logger;
@@ -98,6 +98,7 @@ public class DynamicUtils {
         workItem.setId(UUID.randomUUID().toString());
         workItem.setState(WorkItem.ACTIVE);
         workItem.setProcessInstanceId(processInstance.getStringId());
+        workItem.setProcessInstance(processInstance);
         workItem.setDeploymentId((String) ksession.getEnvironment().get(EnvironmentName.DEPLOYMENT_ID));
         workItem.setName(workItemName);
         workItem.setParameters(parameters);
@@ -131,6 +132,7 @@ public class DynamicUtils {
         }
 
         final WorkItemNodeInstance workItemNodeInstance = new WorkItemNodeInstance();
+        workItemNodeInstance.setProcessInstance(processInstance);
         workItemNodeInstance.internalSetWorkItem(workItem);
         workItemNodeInstance.setMetaData("NodeType",
                 workItemName);

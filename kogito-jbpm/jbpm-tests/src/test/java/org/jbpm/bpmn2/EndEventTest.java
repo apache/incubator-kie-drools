@@ -45,7 +45,7 @@ import org.jbpm.bpmn2.event.SignalEndEventModel;
 import org.jbpm.bpmn2.event.SignalEndEventProcess;
 import org.jbpm.bpmn2.event.SubprocessWithParallelSplitTerminateModel;
 import org.jbpm.bpmn2.event.SubprocessWithParallelSplitTerminateProcess;
-import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
+import org.jbpm.process.workitem.builtin.SystemOutWorkItemHandler;
 import org.jbpm.test.utils.ProcessTestHelper;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.Application;

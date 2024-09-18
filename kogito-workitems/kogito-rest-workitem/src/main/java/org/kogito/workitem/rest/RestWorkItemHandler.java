@@ -26,6 +26,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
@@ -37,10 +38,12 @@ import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.workflow.core.node.WorkItemNode;
 import org.jbpm.workflow.instance.NodeInstance;
 import org.jbpm.workflow.instance.node.WorkItemNodeInstance;
-import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
-import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
-import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
-import org.kie.kogito.process.workitem.WorkItemExecutionException;
+import org.kie.kogito.internal.process.workitem.KogitoWorkItem;
+import org.kie.kogito.internal.process.workitem.KogitoWorkItemHandler;
+import org.kie.kogito.internal.process.workitem.KogitoWorkItemManager;
+import org.kie.kogito.internal.process.workitem.WorkItemExecutionException;
+import org.kie.kogito.internal.process.workitem.WorkItemTransition;
+import org.kie.kogito.process.workitems.impl.DefaultKogitoWorkItemHandler;
 import org.kogito.workitem.rest.auth.ApiKeyAuthDecorator;
 import org.kogito.workitem.rest.auth.AuthDecorator;
 import org.kogito.workitem.rest.auth.BasicAuthDecorator;
@@ -68,7 +71,7 @@ import static org.kogito.workitem.rest.RestWorkItemHandlerUtils.getClassListPara
 import static org.kogito.workitem.rest.RestWorkItemHandlerUtils.getClassParam;
 import static org.kogito.workitem.rest.RestWorkItemHandlerUtils.getParam;
 
-public class RestWorkItemHandler implements KogitoWorkItemHandler {
+public class RestWorkItemHandler extends DefaultKogitoWorkItemHandler {
 
     public static final String REST_TASK_TYPE = "Rest";
     public static final String PROTOCOL = "Protocol";
@@ -114,7 +117,7 @@ public class RestWorkItemHandler implements KogitoWorkItemHandler {
     }
 
     @Override
-    public void executeWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager manager) {
+    public Optional<WorkItemTransition> activateWorkItemHandler(KogitoWorkItemManager manager, KogitoWorkItemHandler handler, KogitoWorkItem workItem, WorkItemTransition transition) {
         Class<?> targetInfo = getTargetInfo(workItem);
         logger.debug("Using target {}", targetInfo);
         //retrieving parameters
@@ -188,7 +191,8 @@ public class RestWorkItemHandler implements KogitoWorkItemHandler {
         if (statusCode < 200 || statusCode >= 300) {
             throw new WorkItemExecutionException(Integer.toString(statusCode), "Request for endpoint " + endPoint + " failed with message: " + response.statusMessage());
         }
-        manager.completeWorkItem(workItem.getStringId(), Collections.singletonMap(RESULT, resultHandler.apply(response, targetInfo)));
+
+        return Optional.of(this.workItemLifeCycle.newTransition("complete", workItem.getPhaseStatus(), Collections.singletonMap(RESULT, resultHandler.apply(response, targetInfo))));
     }
 
     private static HttpResponse<Buffer> sendJson(HttpRequest<Buffer> request, Object body, Duration requestTimeout) {
@@ -236,8 +240,4 @@ public class RestWorkItemHandler implements KogitoWorkItemHandler {
         return null;
     }
 
-    @Override
-    public void abortWorkItem(KogitoWorkItem workItem, KogitoWorkItemManager manager) {
-        // rest item handler does not support abort
-    }
 }

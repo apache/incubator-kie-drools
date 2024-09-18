@@ -20,7 +20,7 @@ package org.kie.kogito.process;
 
 import java.util.Collection;
 
-import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
+import org.kie.kogito.internal.process.workitem.KogitoWorkItemHandler;
 
 public interface WorkItemHandlerConfig {
 

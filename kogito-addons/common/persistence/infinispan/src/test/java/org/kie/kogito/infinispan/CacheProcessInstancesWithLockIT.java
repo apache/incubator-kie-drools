@@ -33,6 +33,9 @@ import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.bpmn2.BpmnProcess;
 import org.kie.kogito.process.bpmn2.BpmnVariables;
 import org.kie.kogito.process.impl.AbstractProcessInstance;
+import org.kie.kogito.process.impl.DefaultWorkItemHandlerConfig;
+import org.kie.kogito.process.impl.StaticProcessConfig;
+import org.kie.kogito.process.workitems.impl.DefaultKogitoWorkItemHandler;
 import org.kie.kogito.testcontainers.KogitoInfinispanContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -71,7 +74,9 @@ class CacheProcessInstancesWithLockIT {
     }
 
     private BpmnProcess createProcess(String fileName) {
-        BpmnProcess process = BpmnProcess.from(new ClassPathResource(fileName)).get(0);
+        StaticProcessConfig config = new StaticProcessConfig();
+        ((DefaultWorkItemHandlerConfig) config.workItemHandlers()).register("Human Task", new DefaultKogitoWorkItemHandler());
+        BpmnProcess process = BpmnProcess.from(config, new ClassPathResource(fileName)).get(0);
         AbstractProcessInstancesFactory factory = mock(AbstractProcessInstancesFactory.class);
         process.setProcessInstancesFactory(factory);
         process.configure();
@@ -80,6 +85,8 @@ class CacheProcessInstancesWithLockIT {
 
     @Test
     public void testBasic() {
+        StaticProcessConfig config = new StaticProcessConfig();
+        ((DefaultWorkItemHandlerConfig) config.workItemHandlers()).register("Human Task", new DefaultKogitoWorkItemHandler());
         BpmnProcess process = createProcess("BPMN2-UserTask.bpmn2");
 
         CacheProcessInstances pi = new CacheProcessInstances(process, cacheManager, null, true);

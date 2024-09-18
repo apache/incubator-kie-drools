@@ -19,33 +19,33 @@
 package org.kie.kogito.codegen.tests;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jbpm.process.instance.impl.humantask.HumanTaskTransition;
-import org.jbpm.process.instance.impl.workitem.Active;
-import org.jbpm.process.instance.impl.workitem.Complete;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.Application;
 import org.kie.kogito.Model;
-import org.kie.kogito.auth.IdentityProviders;
 import org.kie.kogito.auth.SecurityPolicy;
 import org.kie.kogito.codegen.AbstractCodegenIT;
 import org.kie.kogito.codegen.data.Address;
 import org.kie.kogito.codegen.data.Person;
 import org.kie.kogito.codegen.data.PersonWithAddress;
+import org.kie.kogito.internal.process.workitem.KogitoWorkItemHandler;
+import org.kie.kogito.internal.process.workitem.Policy;
+import org.kie.kogito.internal.process.workitem.WorkItemTransition;
+import org.kie.kogito.jbpm.usertask.handler.UserTaskKogitoWorkItemHandler;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.Processes;
 import org.kie.kogito.process.WorkItem;
-import org.kie.kogito.process.workitem.Policy;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class CallActivityTaskIT extends AbstractCodegenIT {
 
-    private Policy<?> securityPolicy = SecurityPolicy.of(IdentityProviders.of("john"));
+    private Policy securityPolicy = SecurityPolicy.of("john", Collections.emptyList());
 
     @Test
     public void testBasicCallActivityTask() throws Exception {
@@ -151,10 +151,11 @@ public class CallActivityTaskIT extends AbstractCodegenIT {
         assertThat(workItems).hasSize(1);
         WorkItem wi = workItems.get(0);
         assertThat(wi.getName()).isEqualTo("MyTask");
-        assertThat(wi.getPhase()).isEqualTo(Active.ID);
-        assertThat(wi.getPhaseStatus()).isEqualTo(Active.STATUS);
+        assertThat(wi.getPhaseStatus()).isEqualTo(UserTaskKogitoWorkItemHandler.ACTIVATED.getName());
 
-        processInstance.transitionWorkItem(workItems.get(0).getId(), new HumanTaskTransition(Complete.ID, null, securityPolicy));
+        KogitoWorkItemHandler handler = getWorkItemHandler(p, wi);
+        WorkItemTransition transition = handler.completeTransition(workItems.get(0).getPhaseStatus(), parameters, securityPolicy);
+        processInstance.transitionWorkItem(workItems.get(0).getId(), transition);
 
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
@@ -190,11 +191,10 @@ public class CallActivityTaskIT extends AbstractCodegenIT {
         assertThat(workItems).hasSize(1);
         WorkItem wi = workItems.get(0);
         assertThat(wi.getName()).isEqualTo("MyTask");
-        assertThat(wi.getPhase()).isEqualTo(Active.ID);
-        assertThat(wi.getPhaseStatus()).isEqualTo(Active.STATUS);
 
-        processInstance.transitionWorkItem(workItems.get(0).getId(), new HumanTaskTransition(Complete.ID, null, securityPolicy));
-
+        KogitoWorkItemHandler handler = getWorkItemHandler(p, wi);
+        WorkItemTransition transition = handler.completeTransition(workItems.get(0).getPhaseStatus(), parameters, securityPolicy);
+        processInstance.transitionWorkItem(workItems.get(0).getId(), transition);
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
 
@@ -221,4 +221,5 @@ public class CallActivityTaskIT extends AbstractCodegenIT {
                 .containsEntry("y", "new value")
                 .containsEntry("x", "a");
     }
+
 }

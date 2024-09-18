@@ -27,9 +27,11 @@ import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.process.instance.impl.Action;
 import org.jbpm.workflow.instance.NodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DefaultExceptionScopeInstance extends ExceptionScopeInstance {
-
+    private static Logger LOG = LoggerFactory.getLogger(DefaultExceptionScopeInstance.class);
     private static final long serialVersionUID = 510l;
 
     @Override
@@ -38,7 +40,7 @@ public class DefaultExceptionScopeInstance extends ExceptionScopeInstance {
     }
 
     public void handleException(ExceptionHandler handler, String exception, KogitoProcessContext params) {
-
+        LOG.debug("exception handler {}", exception);
         if (handler instanceof ActionExceptionHandler) {
             ActionExceptionHandler exceptionHandler = (ActionExceptionHandler) handler;
             Action action = (Action) exceptionHandler.getAction().getMetaData("Action");

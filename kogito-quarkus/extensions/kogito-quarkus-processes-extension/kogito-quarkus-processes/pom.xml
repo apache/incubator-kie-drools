@@ -53,7 +53,8 @@
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>jbpm-bpmn2</artifactId>
+      <artifactId>jbpm-deps-group-bpmn2-compiler</artifactId>
+      <type>pom</type>
     </dependency>
     <dependency>
       <groupId>org.eclipse.microprofile.openapi</groupId>

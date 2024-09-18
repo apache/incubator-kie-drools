@@ -44,6 +44,9 @@ import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.bpmn2.BpmnProcess;
 import org.kie.kogito.process.bpmn2.BpmnVariables;
 import org.kie.kogito.process.impl.AbstractProcessInstance;
+import org.kie.kogito.process.impl.DefaultWorkItemHandlerConfig;
+import org.kie.kogito.process.impl.StaticProcessConfig;
+import org.kie.kogito.process.workitems.impl.DefaultKogitoWorkItemHandler;
 import org.rocksdb.Options;
 import org.rocksdb.RocksDBException;
 import org.slf4j.Logger;
@@ -88,7 +91,9 @@ class RockDBProcessInstancesTest {
     }
 
     private BpmnProcess createProcess(String fileName) {
-        BpmnProcess process = BpmnProcess.from(new ClassPathResource(fileName)).get(0);
+        StaticProcessConfig config = new StaticProcessConfig();
+        ((DefaultWorkItemHandlerConfig) config.workItemHandlers()).register("Human Task", new DefaultKogitoWorkItemHandler());
+        BpmnProcess process = BpmnProcess.from(config, new ClassPathResource(fileName)).get(0);
         process.setProcessInstancesFactory(factory);
         process.configure();
         return process;

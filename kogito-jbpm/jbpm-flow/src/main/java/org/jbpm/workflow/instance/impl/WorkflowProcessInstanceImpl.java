@@ -52,6 +52,7 @@ import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.process.instance.impl.ProcessInstanceImpl;
 import org.jbpm.ruleflow.core.Metadata;
+import org.jbpm.ruleflow.core.WorkflowElementIdentifierFactory;
 import org.jbpm.util.PatternConstants;
 import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.Node;
@@ -679,11 +680,16 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
                     }
                 }
                 for (org.kie.api.definition.process.Node node : getWorkflowProcess().getNodes()) {
-                    if (node instanceof EventNodeInterface
-                            && ((EventNodeInterface) node).acceptsEvent(type, event, getResolver(node, currentView))) {
-                        if (node instanceof EventNode && ((EventNode) node).getFrom() == null) {
-                            EventNodeInstance eventNodeInstance = (EventNodeInstance) getNodeInstance(node);
-                            eventNodeInstance.signalEvent(type, event, getResolver(node, currentView));
+                    if (node instanceof EventNodeInterface && ((EventNodeInterface) node).acceptsEvent(type, event, getResolver(node, currentView))) {
+                        if (node instanceof BoundaryEventNode boundaryEventNode) {
+                            WorkflowElementIdentifier id = WorkflowElementIdentifierFactory.fromExternalFormat(boundaryEventNode.getAttachedToNodeId());
+                            if (!getNodeInstances(id, currentView).isEmpty()) {
+                                EventNodeInstance eventNodeInstance = (EventNodeInstance) getNodeInstance(node);
+                                eventNodeInstance.signalEvent(type, event, getResolver(node, currentView));
+                            } else if (type.startsWith("Error-") || type.startsWith("Compensation-") || type.startsWith("implicit:compensation")) {
+                                EventNodeInstance eventNodeInstance = (EventNodeInstance) getNodeInstance(node);
+                                eventNodeInstance.signalEvent(type, event, getResolver(node, currentView));
+                            }
                         } else {
                             if (node instanceof EventSubProcessNode && (resolveVariables(((EventSubProcessNode) node).getEvents()).contains(type))) {
                                 EventSubProcessNodeInstance eventNodeInstance = (EventSubProcessNodeInstance) getNodeInstance(node);

@@ -49,7 +49,10 @@
             <groupId>org.kie.kogito</groupId>
             <artifactId>jbpm-flow</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>org.kie.kogito</groupId>
+            <artifactId>process-workitems</artifactId>
+        </dependency>
         <!--tests -->
         <dependency>
             <groupId>org.glassfish.jaxb</groupId>
@@ -136,6 +139,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
+                <version>${version.maven-help-plugin}</version>
                 <executions>
                     <execution>
                         <id>add-test-source</id>
