@@ -91,7 +91,7 @@ public class LogicalTraitTest extends CommonTraitTest {
 
         KieSession ks = kbase.newKieSession();
 
-        List list = new ArrayList(  );
+        List<Object> list = new ArrayList<>(  );
         ks.setGlobal( "list", list );
 
         ks.fireAllRules();
@@ -107,7 +107,7 @@ public class LogicalTraitTest extends CommonTraitTest {
         }
 
         LOGGER.debug( list.toString() );
-        assertThat(list.contains(false)).isFalse();
+        assertThat(list).doesNotContain(Boolean.FALSE);
         assertThat(list).hasSize(8);
     }
 
@@ -562,13 +562,9 @@ public class LogicalTraitTest extends CommonTraitTest {
         knowledgeSession.insert( "x" );
         knowledgeSession.fireAllRules();
 
-        boolean found = false;
-        for ( Object o : knowledgeSession.getObjects( new ClassObjectFilter( Qty.class ) ) ) {
-            assertThat(((Qty) o).getNum()).isEqualTo((Integer) 99);
-            assertThat(((CoreWrapper) o)._getFieldTMS().get("num", Integer.class)).isEqualTo(99);
-            found = true;
-        }
-        assertThat(found).isTrue();
+        Object o  = knowledgeSession.getObjects(new ClassObjectFilter(Qty.class)).iterator().next();
+        assertThat(((Qty) o).getNum()).isEqualTo((Integer) 99);
+        assertThat(((CoreWrapper) o)._getFieldTMS().get("num", Integer.class)).isEqualTo(99);
 
         assertThat(list).containsExactly(42, 99);
         knowledgeSession.dispose();

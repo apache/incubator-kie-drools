@@ -283,13 +283,13 @@ public class ClassBuilderTest {
 
             String result = x.toString();
 
-            assertThat(result.contains(long1Def.getName())).isTrue();
-            assertThat(result.contains(long2Def.getName())).isTrue();
-            assertThat(result.contains(doubleDef.getName())).isTrue();
-            assertThat(result.contains(intDef.getName())).isTrue();
-            assertThat(result.contains(strDef.getName())).isTrue();
-            assertThat(result.contains(dateDef.getName())).isTrue();
-            assertThat(result.contains(str2Def.getName())).isTrue();
+            assertThat(result).contains(long1Def.getName());
+            assertThat(result).contains(long2Def.getName());
+            assertThat(result).contains(doubleDef.getName());
+            assertThat(result).contains(intDef.getName());
+            assertThat(result).contains(strDef.getName());
+            assertThat(result).contains(dateDef.getName());
+            assertThat(result).contains(str2Def.getName());
 
         } catch ( Exception e ) {
             e.printStackTrace();

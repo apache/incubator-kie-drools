@@ -145,8 +145,7 @@ public class TraitMapCoreTest extends CommonTraitTest {
         ksession.insert( map );
         ksession.fireAllRules();
 
-        assertThat(map.containsKey("height")).isTrue();
-        assertThat(184.0).isEqualTo(map.get("height"));
+        assertThat(map).containsEntry("height", 184.0);
 
     }
 

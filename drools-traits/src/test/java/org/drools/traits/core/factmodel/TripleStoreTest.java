@@ -183,31 +183,30 @@ public class TripleStoreTest {
 
         tKey = new TripleImpl( V, "hasCity", V );
         coll = store.getAll(tKey);
-        assertThat(coll.containsAll(Arrays.asList(t3, t4))).isTrue();
         assertThat(coll).hasSize(2);
-
+        assertThat(coll).containsExactlyInAnyOrder(t3, t4);
 
         tKey = new TripleImpl( ind, V, V );
         coll = store.getAll(tKey);
-        assertThat(coll.containsAll(Arrays.asList(t1, t2, t3))).isTrue();
         assertThat(coll).hasSize(3);
+        assertThat(coll).containsExactlyInAnyOrder(t1, t2, t3);
 
 
         tKey = new TripleImpl( ind2, V, "lancia" );
         coll = store.getAll(tKey);
-        assertThat(coll.containsAll(Arrays.asList(t5, t6))).isTrue();
         assertThat(coll).hasSize(2);
+        assertThat(coll).containsExactlyInAnyOrder(t5, t6);
 
 
         tKey = new TripleImpl( V, V, "lancia" );
         coll = store.getAll(tKey);
-        assertThat(coll.containsAll(Arrays.asList(t5, t6))).isTrue();
         assertThat(coll).hasSize(2);
+        assertThat(coll).containsExactlyInAnyOrder(t5, t6);
 
         tKey = new TripleImpl( V, V, V );
         coll = store.getAll(tKey);
-        assertThat(coll.containsAll(Arrays.asList(t1, t2, t3, t4, t5, t6))).isTrue();
         assertThat(coll).hasSize(6);
+        assertThat(coll).containsExactlyInAnyOrder(t1, t2, t3, t4, t5, t6);
 
 
     }
@@ -245,14 +244,13 @@ public class TripleStoreTest {
 
 
         Triple tKey;
-        Triple t;
         Collection<Triple> coll;
 
         tKey = new TripleImpl( ind, "hasName", V );
         coll = store.getAll(tKey);
-        assertThat(coll.containsAll(Arrays.asList(new TripleImpl(ind, "hasName", "oscar"),
+        assertThat(coll).containsExactlyInAnyOrder(new TripleImpl(ind, "hasName", "oscar"),
                 new TripleImpl(ind, "hasName", "mark"),
-                new TripleImpl(ind, "hasName", "daniel")))).isTrue();
+                new TripleImpl(ind, "hasName", "daniel"));
 
         assertThat(store.contains(new TripleImpl(ind, "hasName", "marc"))).isFalse();
         assertThat(store.contains(new TripleImpl(ind, "hasName", "mark"))).isTrue();
@@ -265,8 +263,8 @@ public class TripleStoreTest {
 
         tKey = new TripleImpl( ind, "hasCar", V );
         coll = store.getAll(tKey);
-        assertThat(coll.containsAll(Arrays.asList(new TripleImpl(ind, "hasCar", "mini"),
-                new TripleImpl(ind, "hasCar", "ferrari")))).isTrue();
+        assertThat(coll).containsExactlyInAnyOrder(new TripleImpl(ind, "hasCar", "mini"),
+                new TripleImpl(ind, "hasCar", "ferrari"));
 
         store.remove( new TripleImpl(ind, "hasCar", "mini") );
 
