@@ -67,12 +67,8 @@ public class LogicalTraitTest extends CommonTraitTest {
     public VirtualPropertyMode mode;
 
     @Parameterized.Parameters
-    public static Collection modes() {
-        return Arrays.asList( new VirtualPropertyMode[][]
-                                      {
-                                              { VirtualPropertyMode.MAP },
-                                              { VirtualPropertyMode.TRIPLES }
-                                      } );
+    public static Collection<VirtualPropertyMode> modes() {
+        return List.of(VirtualPropertyMode.MAP, VirtualPropertyMode.TRIPLES);
     }
 
     public LogicalTraitTest( VirtualPropertyMode m ) {
@@ -1178,7 +1174,7 @@ public class LogicalTraitTest extends CommonTraitTest {
         TraitFactoryImpl.setMode(mode, (InternalRuleBase) kbase);
 
         KieSession ks = kbase.newKieSession();
-        ArrayList list = new ArrayList();
+        List list = new ArrayList();
         ks.setGlobal( "list", list );
 
         ks.fireAllRules();
@@ -1350,7 +1346,7 @@ public class LogicalTraitTest extends CommonTraitTest {
         KieSession ksession = loadKnowledgeBaseFromString(drl).newKieSession();
         TraitFactoryImpl.setMode(mode, ksession.getKieBase());
 
-        List list = new ArrayList();
+        List<Object> list = new ArrayList<>();
         ksession.setGlobal("list",list);
         ksession.fireAllRules();
 

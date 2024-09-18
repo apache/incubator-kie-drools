@@ -75,8 +75,8 @@ public class HierarchyTest {
         assertThat(encoder.getCode("E")).isEqualTo(parseBitSet("10000"));
 
         assertThat(encoder.size()).isEqualTo(5);
-        assertThat(encoder.getSortedMembers().size()).isEqualTo(5);
-        assertThat(encoder.getSortedMap().size()).isEqualTo(5);
+        assertThat(encoder.getSortedMembers()).hasSize(5);
+        assertThat(encoder.getSortedMap()).hasSize(5);
 
     }
 

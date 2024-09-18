@@ -184,30 +184,30 @@ public class TripleStoreTest {
         tKey = new TripleImpl( V, "hasCity", V );
         coll = store.getAll(tKey);
         assertThat(coll.containsAll(Arrays.asList(t3, t4))).isTrue();
-        assertThat(coll.size()).isEqualTo(2);
+        assertThat(coll).hasSize(2);
 
 
         tKey = new TripleImpl( ind, V, V );
         coll = store.getAll(tKey);
         assertThat(coll.containsAll(Arrays.asList(t1, t2, t3))).isTrue();
-        assertThat(coll.size()).isEqualTo(3);
+        assertThat(coll).hasSize(3);
 
 
         tKey = new TripleImpl( ind2, V, "lancia" );
         coll = store.getAll(tKey);
         assertThat(coll.containsAll(Arrays.asList(t5, t6))).isTrue();
-        assertThat(coll.size()).isEqualTo(2);
+        assertThat(coll).hasSize(2);
 
 
         tKey = new TripleImpl( V, V, "lancia" );
         coll = store.getAll(tKey);
         assertThat(coll.containsAll(Arrays.asList(t5, t6))).isTrue();
-        assertThat(coll.size()).isEqualTo(2);
+        assertThat(coll).hasSize(2);
 
         tKey = new TripleImpl( V, V, V );
         coll = store.getAll(tKey);
         assertThat(coll.containsAll(Arrays.asList(t1, t2, t3, t4, t5, t6))).isTrue();
-        assertThat(coll.size()).isEqualTo(6);
+        assertThat(coll).hasSize(6);
 
 
     }
@@ -272,13 +272,13 @@ public class TripleStoreTest {
 
         tKey = new TripleImpl( ind, "hasCar", V );
         coll = store.getAll(tKey);
-        assertThat(coll.size()).isEqualTo(1);
+        assertThat(coll).hasSize(1);
 
         store.remove( new TripleImpl(ind, "hasCar", "ferrari") );
 
         tKey = new TripleImpl( ind, "hasCar", V );
         coll = store.getAll(tKey);
-        assertThat(coll.size()).isEqualTo(0);
+        assertThat(coll).isEmpty();
 
     }
 
