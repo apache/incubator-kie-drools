@@ -724,8 +724,8 @@ public class TraitTest extends CommonTraitTest {
 		assertThat(proxy.getFields()).containsValue("john");
 		assertThat(proxy.getFields()).containsValue(0);
 		assertThat(proxy.getFields()).containsValue("xxx");
-		assertThat(proxy.getFields().containsValue("randomString")).isFalse();
-		assertThat(proxy.getFields().containsValue(-96)).isFalse();
+		assertThat(proxy.getFields()).doesNotContainValue("randomString");
+		assertThat(proxy.getFields()).doesNotContainValue(-96);
 
     }
 
@@ -1094,9 +1094,9 @@ public class TraitTest extends CommonTraitTest {
         ks.dispose();
 
         assertThat(trueTraits).contains(1);
-        assertThat(trueTraits.contains(2)).isFalse();
+        assertThat(trueTraits).doesNotContain(2);
         assertThat(untrueTraits).contains(2);
-        assertThat(untrueTraits.contains(1)).isFalse();
+        assertThat(untrueTraits).doesNotContain(1);
     }
 
     @Test
@@ -1115,9 +1115,9 @@ public class TraitTest extends CommonTraitTest {
         session.dispose();
 
         assertThat(trueTraits).contains(1);
-        assertThat(trueTraits.contains(2)).isFalse();
+        assertThat(trueTraits).doesNotContain(2);
         assertThat(untrueTraits).contains(2);
-        assertThat(untrueTraits.contains(1)).isFalse();
+        assertThat(untrueTraits).doesNotContain(1);
     }
 
     @Test
@@ -2640,7 +2640,7 @@ public class TraitTest extends CommonTraitTest {
         ks.fireAllRules();
 
         assertThat(list).hasSize(6);
-        assertThat(list.contains(null)).isFalse();
+        assertThat(list).doesNotContainNull();
 
         List<Integer> hard = (List) list.get(0);
         List<Integer> soft = (List) list.get(1);
@@ -3113,7 +3113,7 @@ public class TraitTest extends CommonTraitTest {
         QueryResults res = ks.getQueryResults("queryA");
         Iterator<QueryResultsRow> iter = res.iterator();
         Object a = iter.next().get("$x");
-        assertThat(iter.hasNext()).isFalse();
+        assertThat(iter).isExhausted();
 
         assertThat(res).hasSize(1);
 
@@ -4046,7 +4046,7 @@ public class TraitTest extends CommonTraitTest {
         ks.insert("go3");
         ks.fireAllRules();
 
-        assertThat(list).isEqualTo(List.of(100));
+        assertThat(list).containsExactly(100);
 
         ks.dispose();
     }
@@ -4407,7 +4407,7 @@ public class TraitTest extends CommonTraitTest {
 
         ksession.fireAllRules();
 
-        assertThat(list).isEqualTo(List.of(0));
+        assertThat(list).containsExactly(0);
 
         assertThat(cwm.getdeletes()).isEqualTo(0);
         assertThat(cwm.getInserts()).isEqualTo(3);
@@ -4548,7 +4548,7 @@ public class TraitTest extends CommonTraitTest {
         knowledgeSession.fireAllRules();
 
         assertThat(list).hasSize(1);
-        assertThat(list).isEqualTo(List.of("test.Mask.test.Core_Proxy"));
+        assertThat(list).containsExactly("test.Mask.test.Core_Proxy");
 
         knowledgeSession.insert("shed");
         knowledgeSession.fireAllRules();
@@ -4624,13 +4624,13 @@ public class TraitTest extends CommonTraitTest {
         knowledgeSession.fireAllRules();
 
         assertThat(list).hasSize(1);
-        assertThat(list).isEqualTo(List.of("test.Mask.test.Core_Proxy"));
+        assertThat(list).containsExactly("test.Mask.test.Core_Proxy");
 
         knowledgeSession.insert("shed1");
         knowledgeSession.fireAllRules();
 
         assertThat(list).hasSize(1);
-        assertThat(list).isEqualTo(List.of("test.Mask.test.Core_Proxy"));
+        assertThat(list).containsExactly("test.Mask.test.Core_Proxy");
 
         knowledgeSession.insert("don2");
         knowledgeSession.fireAllRules();
@@ -4751,7 +4751,7 @@ public class TraitTest extends CommonTraitTest {
 
         knowledgeSession.fireAllRules();
 
-        assertThat(list).isEqualTo(List.of(1));
+        assertThat(list).containsExactly(1);
     }
 
     @Category(ReviseTraitTestWithPRAlwaysCategory.class)
@@ -4809,7 +4809,7 @@ public class TraitTest extends CommonTraitTest {
 
         ksession.fireAllRules();
 
-        assertThat(list).isEqualTo(List.of(1));
+        assertThat(list).containsExactly(1);
 
     }
 
@@ -5409,7 +5409,7 @@ public class TraitTest extends CommonTraitTest {
         knowledgeSession.insert("hello");
 
         assertThat(knowledgeSession.fireAllRules()).isEqualTo(1);
-        assertThat(list).isEqualTo(List.of(1));
+        assertThat(list).containsExactly(1);
     }
 
 
@@ -5441,7 +5441,7 @@ public class TraitTest extends CommonTraitTest {
             Set<BitSet> localNodes = tp.listAssignedOtnTypeCodes();
 
             for (BitSet code : localNodes) {
-                assertThat(otns.contains(code)).isFalse();
+                assertThat(otns).doesNotContain(code);
                 otns.add(code);
             }
         }

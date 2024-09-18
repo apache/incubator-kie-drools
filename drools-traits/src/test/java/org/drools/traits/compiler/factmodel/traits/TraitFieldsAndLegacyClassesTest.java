@@ -47,12 +47,8 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTraitTest {
     public VirtualPropertyMode mode;
 
     @Parameterized.Parameters
-        public static Collection modes() {
-        return Arrays.asList( new VirtualPropertyMode[][]
-                                      {
-                                              { VirtualPropertyMode.MAP },
-                                              { VirtualPropertyMode.TRIPLES }
-                                      } );
+        public static Collection<VirtualPropertyMode> modes() {
+        	return List.of(VirtualPropertyMode.MAP , VirtualPropertyMode.TRIPLES );
     }
 
     public TraitFieldsAndLegacyClassesTest( VirtualPropertyMode m ) {
@@ -114,12 +110,13 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTraitTest {
         TraitFactoryImpl.setMode(mode, kBase );
 
         KieSession knowledgeSession = kBase.newKieSession();
-        List list = new ArrayList();
+        List<String> list = new ArrayList<>();
         knowledgeSession.setGlobal("list", list);
 
         knowledgeSession.fireAllRules();
-        assertThat(list.contains("correct")).isTrue();
-        assertThat(list.size()).isEqualTo(1);
+        
+        assertThat(list).hasSize(1);
+        assertThat(list).contains("correct");
     }
 
 
@@ -202,13 +199,14 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTraitTest {
         TraitFactoryImpl.setMode(mode, kBase );
 
         KieSession knowledgeSession = kBase.newKieSession();
-        List list = new ArrayList();
+        List<String> list = new ArrayList<>();
         knowledgeSession.setGlobal("list", list);
 
 
         knowledgeSession.fireAllRules();
-        assertThat(list.contains("correct")).isTrue();
-        assertThat(list.size()).isEqualTo(1);
+
+        assertThat(list).hasSize(1);
+        assertThat(list).contains("correct");
 
     }
 
@@ -301,13 +299,13 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTraitTest {
         KieSession knowledgeSession = kBase.newKieSession();
         TraitFactoryImpl.setMode(mode, kBase );
 
-        List list = new ArrayList();
+        List<String> list = new ArrayList<>();
         knowledgeSession.setGlobal("list", list);
 
 
         knowledgeSession.fireAllRules();
-        assertThat(list.contains("correct")).isTrue();
-        assertThat(list.size()).isEqualTo(1);
+        assertThat(list).hasSize(1);
+        assertThat(list).contains("correct");
     }
 
     @Test
@@ -396,13 +394,14 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTraitTest {
         KieBase kBase = loadKnowledgeBaseFromString(drl);
         TraitFactoryImpl.setMode(mode, kBase );
         KieSession knowledgeSession = kBase.newKieSession();
-        List list = new ArrayList();
+        List<String> list = new ArrayList<>();
         knowledgeSession.setGlobal("list", list);
 
 
         knowledgeSession.fireAllRules();
-        assertThat(list.contains("correct")).isTrue();
-        assertThat(list.size()).isEqualTo(1);
+
+        assertThat(list).hasSize(1);
+        assertThat(list).contains("correct");
     }
 
     @Category(ReviseTraitTestWithPRAlwaysCategory.class)
@@ -475,13 +474,13 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTraitTest {
         TraitFactoryImpl.setMode(mode, kBase );
 
         KieSession knowledgeSession = kBase.newKieSession();
-        List list = new ArrayList();
+        List<String> list = new ArrayList<>();
         knowledgeSession.setGlobal("list", list);
 
 
         knowledgeSession.fireAllRules();
-        assertThat(list.contains("correct")).isTrue();
-        assertThat(list.size()).isEqualTo(1);
+        assertThat(list).hasSize(1);
+        assertThat(list).contains("correct");
     }
 
     @Test
@@ -559,13 +558,13 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTraitTest {
         TraitFactoryImpl.setMode(mode, kBase );
 
         KieSession knowledgeSession = kBase.newKieSession();
-        List list = new ArrayList();
+        List<String> list = new ArrayList<>();
         knowledgeSession.setGlobal("list", list);
 
 
         knowledgeSession.fireAllRules();
-        assertThat(list.contains("correct")).isTrue();
-        assertThat(list.size()).isEqualTo(1);
+        assertThat(list).hasSize(1);
+        assertThat(list).contains("correct");
     }
 
     @Test
@@ -649,15 +648,14 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTraitTest {
         TraitFactoryImpl.setMode(mode, kBase );
 
         KieSession knowledgeSession = kBase.newKieSession();
-        List list = new ArrayList();
+        List<String> list = new ArrayList<>();
         knowledgeSession.setGlobal("list", list);
 
 
         knowledgeSession.fireAllRules();
 
-        assertThat(list.contains("correct")).isTrue();
-        assertThat(list.contains("correct2")).isTrue();
-        assertThat(list.size()).isEqualTo(2);
+        assertThat(list).hasSize(2);
+        assertThat(list).contains("correct", "correct2");
     }
 
 
@@ -733,13 +731,13 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTraitTest {
         TraitFactoryImpl.setMode(mode, kBase );
 
         KieSession knowledgeSession = kBase.newKieSession();
-        List list = new ArrayList();
+        List<String> list = new ArrayList<>();
         knowledgeSession.setGlobal("list", list);
 
         knowledgeSession.fireAllRules();
 
-        assertThat(list.contains("correct")).isTrue();
-        assertThat(list.size()).isEqualTo(1);
+        assertThat(list).hasSize(1);
+        assertThat(list).contains("correct");
     }
 
 
@@ -818,13 +816,13 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTraitTest {
         TraitFactoryImpl.setMode(mode, kBase );
 
         KieSession knowledgeSession = kBase.newKieSession();
-        List list = new ArrayList();
+        List<String> list = new ArrayList<>();
         knowledgeSession.setGlobal("list", list);
 
 
         knowledgeSession.fireAllRules();
-        assertThat(list.contains("correct")).isTrue();
-        assertThat(list.size()).isEqualTo(1);
+        assertThat(list).hasSize(1);
+        assertThat(list).contains("correct");
     }
 
     @Test
@@ -909,13 +907,13 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTraitTest {
         TraitFactoryImpl.setMode(mode, kBase );
 
         KieSession knowledgeSession = kBase.newKieSession();
-        List list = new ArrayList();
+        List<String> list = new ArrayList<>();
         knowledgeSession.setGlobal("list", list);
 
 
         knowledgeSession.fireAllRules();
-        assertThat(list.contains("correct")).isTrue();
-        assertThat(list.size()).isEqualTo(1);
+        assertThat(list).hasSize(1);
+        assertThat(list).contains("correct");
     }
 
     @Test
@@ -1001,13 +999,13 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTraitTest {
         TraitFactoryImpl.setMode(mode, kBase );
 
         KieSession knowledgeSession = kBase.newKieSession();
-        List list = new ArrayList();
+        List<String> list = new ArrayList<>();
         knowledgeSession.setGlobal("list", list);
 
 
         knowledgeSession.fireAllRules();
-        assertThat(list.contains("correct")).isTrue();
-        assertThat(list.size()).isEqualTo(1);
+        assertThat(list).hasSize(1);
+        assertThat(list).contains("correct");
     }
 
     @Test
@@ -1112,13 +1110,13 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTraitTest {
         TraitFactoryImpl.setMode(mode, kBase );
 
         KieSession knowledgeSession = kBase.newKieSession();
-        List list = new ArrayList();
+        List<String> list = new ArrayList<>();
         knowledgeSession.setGlobal("list", list);
 
 
         knowledgeSession.fireAllRules();
-        assertThat(list.contains("correct")).isTrue();
-        assertThat(list.size()).isEqualTo(1);
+        assertThat(list).hasSize(1);
+        assertThat(list).contains("correct");
     }
 
     @Test @Ignore
@@ -1245,18 +1243,18 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTraitTest {
         TraitFactoryImpl.setMode(mode, kBase );
 
         KieSession kSession = kBase.newKieSession();
-        List list = new ArrayList();
+        List<String> list = new ArrayList<>();
         kSession.setGlobal("list", list);
 
         kSession.fireAllRules();
 
-        assertThat(list.contains("initialized")).isTrue();
-        assertThat(list.contains("student")).isTrue();
-        assertThat(list.contains("IR citizen")).isTrue();
-        assertThat(list.contains("US citizen")).isTrue();
-        assertThat(list.contains("worker")).isTrue();
-        assertThat(list.contains("You are working in US as student worker")).isTrue();
-        assertThat(list.contains("You are studying and working at ASU")).isTrue();
+        assertThat(list).contains("initialized");
+        assertThat(list).contains("student");
+        assertThat(list).contains("IR citizen");
+        assertThat(list).contains("US citizen");
+        assertThat(list).contains("worker");
+        assertThat(list).contains("You are working in US as student worker");
+        assertThat(list).contains("You are studying and working at ASU");
     }
 
 
