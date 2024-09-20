@@ -97,6 +97,8 @@ public class TimerAndCalendarFireUntilHaltTest {
 
     @Test(timeout = 10000)
     public void testTimerRuleFires() throws Exception {
+        System.out.println("### testTimerRuleFires");
+        long start = System.currentTimeMillis();
         final String drl = "// fire once, for a String, create an Integer\n" +
                            "rule TimerRule\n" +
                            "timer(int:0 1000)\n" +
@@ -110,12 +112,16 @@ public class TimerAndCalendarFireUntilHaltTest {
 
         activateRule();
         advanceTimerOneSecond();
-        
+
+        System.out.println("  -- before await : elapsed " + (System.currentTimeMillis() - start) + "ms");
         await().until(ruleHasFired("TimerRule", 1));
+        System.out.println("  -- end : elapsed " + (System.currentTimeMillis() - start) + "ms");
     }
     
     @Test(timeout = 10000)
     public void testTimerRuleHaltStopsFiring() throws Exception {
+        System.out.println("### testTimerRuleHaltStopsFiring");
+        long start = System.currentTimeMillis();
         final String drl = "// fire once, for a String, create an Integer\n" +
                            "rule TimerRule\n" +
                            "timer(int:0 1000)\n" +
@@ -128,16 +134,22 @@ public class TimerAndCalendarFireUntilHaltTest {
         startEngine();
         activateRule();
         advanceTimerOneSecond();
+        System.out.println("  -- before await : elapsed " + (System.currentTimeMillis() - start) + "ms");
         await().until(ruleHasFired("TimerRule", 1));
         
         stopEngine();
 
         advanceTimerOneSecond();
+
+        System.out.println("  -- before 2nd await : elapsed " + (System.currentTimeMillis() - start) + "ms");
         await().during(Duration.ofSeconds(1)).atMost(Duration.ofSeconds(2)).until(ruleHasFired("TimerRule", 1));
+        System.out.println("  -- end : elapsed " + (System.currentTimeMillis() - start) + "ms");
     }
     
     @Test(timeout = 10000)
     public void testTimerRuleRestartsAfterStop() throws Exception {
+        System.out.println("### testTimerRuleRestartsAfterStop");
+        long start = System.currentTimeMillis();
         final String drl = "// fire once, for a String, create an Integer\n" +
                            "rule TimerRule\n" +
                            "timer(int:0 1000)\n" +
@@ -150,17 +162,23 @@ public class TimerAndCalendarFireUntilHaltTest {
         startEngine();
         activateRule();
         advanceTimerOneSecond();
+        System.out.println("  -- before await : elapsed " + (System.currentTimeMillis() - start) + "ms");
         await().until(ruleHasFired("TimerRule", 1));
         
         stopEngine();
         startEngine();
 
         advanceTimerOneSecond();
+
+        System.out.println("  -- before 2nd await : elapsed " + (System.currentTimeMillis() - start) + "ms");
         await().during(Duration.ofSeconds(1)).atMost(Duration.ofSeconds(2)).until(ruleHasFired("TimerRule", 2));
+        System.out.println("  -- end : elapsed " + (System.currentTimeMillis() - start) + "ms");
     }
 
     @Test(timeout = 10000)
     public void testTimerRuleDoesRestartsIfNoLongerHolds() throws Exception {
+        System.out.println("### testTimerRuleDoesRestartsIfNoLongerHolds");
+        long start = System.currentTimeMillis();
         final String drl = "// fire once, for a String, create an Integer\n" +
                            "rule TimerRule\n" +
                            "timer(int:0 1000)\n" +
@@ -173,7 +191,8 @@ public class TimerAndCalendarFireUntilHaltTest {
         startEngine();
         activateRule();
         advanceTimerOneSecond();
-        
+
+        System.out.println("  -- before await : elapsed " + (System.currentTimeMillis() - start) + "ms");
         await().until(ruleHasFired("TimerRule", 1));
         
         stopEngine();
@@ -182,17 +201,22 @@ public class TimerAndCalendarFireUntilHaltTest {
 
         advanceTimerOneSecond();
 
+        System.out.println("  -- before 2nd await : elapsed " + (System.currentTimeMillis() - start) + "ms");
         await().during(Duration.ofSeconds(1)).atMost(Duration.ofSeconds(2)).until(ruleHasFired("TimerRule", 1));
+        System.out.println("  -- end : elapsed " + (System.currentTimeMillis() - start) + "ms");
     }
 
  
     private void setupKSessionFor(final String drl) {
+        System.out.println("  ** exec-model : " + kieBaseTestConfiguration.isExecutableModel());
+        long start = System.currentTimeMillis();
         kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("timer-and-calendar-test", kieBaseTestConfiguration, drl);
         KieSessionConfiguration kieSessionConfiguration = KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration();
         ksession = kbase.newKieSession(kieSessionConfiguration, null);      
         listener = new RecordingRulesListener();
         ksession.addEventListener(listener);
         timeService = ksession.getSessionClock();
+        System.out.println("  setupKSessionFor : " + (System.currentTimeMillis() - start) + "ms");
     }
 
     private void startEngine() throws InterruptedException {
