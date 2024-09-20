@@ -118,11 +118,14 @@ public class TimerAndCalendarFireUntilHaltTest {
         startEngine();
 
         activateRule();
+        await().until(ruleHasFired("TimerRule", 1));
         advanceTimerOneSecond();
 
         LOG.info("  -- before await : elapsed " + (System.currentTimeMillis() - start) + "ms");
-        await().until(ruleHasFired("TimerRule", 1));
+        await().until(ruleHasFired("TimerRule", 2));
         LOG.info("  -- end : elapsed " + (System.currentTimeMillis() - start) + "ms");
+
+        stopEngine();
     }
     
     @Test(timeout = 10000)
@@ -140,16 +143,17 @@ public class TimerAndCalendarFireUntilHaltTest {
         setupKSessionFor(drl);
         startEngine();
         activateRule();
+        await().until(ruleHasFired("TimerRule", 1));
         advanceTimerOneSecond();
         LOG.info("  -- before await : elapsed " + (System.currentTimeMillis() - start) + "ms");
-        await().until(ruleHasFired("TimerRule", 1));
+        await().until(ruleHasFired("TimerRule", 2));
         
         stopEngine();
 
         advanceTimerOneSecond();
 
         LOG.info("  -- before 2nd await : elapsed " + (System.currentTimeMillis() - start) + "ms");
-        await().during(Duration.ofSeconds(1)).atMost(Duration.ofSeconds(2)).until(ruleHasFired("TimerRule", 1));
+        await().during(Duration.ofSeconds(1)).atMost(Duration.ofSeconds(2)).until(ruleHasFired("TimerRule", 2));
         LOG.info("  -- end : elapsed " + (System.currentTimeMillis() - start) + "ms");
     }
     
@@ -168,9 +172,10 @@ public class TimerAndCalendarFireUntilHaltTest {
         setupKSessionFor(drl);
         startEngine();
         activateRule();
+        await().until(ruleHasFired("TimerRule", 1));
         advanceTimerOneSecond();
         LOG.info("  -- before await : elapsed " + (System.currentTimeMillis() - start) + "ms");
-        await().until(ruleHasFired("TimerRule", 1));
+        await().until(ruleHasFired("TimerRule", 2));
         
         stopEngine();
         startEngine();
@@ -178,8 +183,10 @@ public class TimerAndCalendarFireUntilHaltTest {
         advanceTimerOneSecond();
 
         LOG.info("  -- before 2nd await : elapsed " + (System.currentTimeMillis() - start) + "ms");
-        await().during(Duration.ofSeconds(1)).atMost(Duration.ofSeconds(2)).until(ruleHasFired("TimerRule", 2));
+        await().during(Duration.ofSeconds(1)).atMost(Duration.ofSeconds(2)).until(ruleHasFired("TimerRule", 3));
         LOG.info("  -- end : elapsed " + (System.currentTimeMillis() - start) + "ms");
+
+        stopEngine();
     }
 
     @Test(timeout = 10000)
@@ -197,10 +204,11 @@ public class TimerAndCalendarFireUntilHaltTest {
         setupKSessionFor(drl);
         startEngine();
         activateRule();
+        await().until(ruleHasFired("TimerRule", 1));
         advanceTimerOneSecond();
 
         LOG.info("  -- before await : elapsed " + (System.currentTimeMillis() - start) + "ms");
-        await().until(ruleHasFired("TimerRule", 1));
+        await().until(ruleHasFired("TimerRule", 2));
         
         stopEngine();
         disactivateRule();
@@ -209,8 +217,10 @@ public class TimerAndCalendarFireUntilHaltTest {
         advanceTimerOneSecond();
 
         LOG.info("  -- before 2nd await : elapsed " + (System.currentTimeMillis() - start) + "ms");
-        await().during(Duration.ofSeconds(1)).atMost(Duration.ofSeconds(2)).until(ruleHasFired("TimerRule", 1));
+        await().during(Duration.ofSeconds(1)).atMost(Duration.ofSeconds(2)).until(ruleHasFired("TimerRule", 2));
         LOG.info("  -- end : elapsed " + (System.currentTimeMillis() - start) + "ms");
+
+        stopEngine();
     }
 
  
