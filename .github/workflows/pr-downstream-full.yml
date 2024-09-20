@@ -35,7 +35,8 @@ on:
 
 jobs:
   build-chain:
-    if: contains(github.event.pull_request.labels.*.name, 'run_fdb')
+    if: false
+    #if: contains(github.event.pull_request.labels.*.name, 'run_fdb')
     concurrency:
       group: fdb-drools_${{ matrix.os }}_${{ matrix.java-version }}_${{ matrix.maven-version }}_${{ github.head_ref }}
       cancel-in-progress: true

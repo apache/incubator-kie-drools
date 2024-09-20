@@ -27,7 +27,8 @@ env:
 
 jobs:
   compute-targets:
-    if: ${{ github.event.pull_request.state == 'closed' && github.event.pull_request.merged }}
+    if: false
+    #if: ${{ github.event.pull_request.state == 'closed' && github.event.pull_request.merged }}
     runs-on: ubuntu-latest
     outputs:
       target-branches: ${{ steps.set-targets.outputs.targets }}

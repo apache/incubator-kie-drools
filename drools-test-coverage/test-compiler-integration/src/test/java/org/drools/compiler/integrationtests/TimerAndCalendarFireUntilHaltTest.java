@@ -52,6 +52,7 @@ public class TimerAndCalendarFireUntilHaltTest {
          
 
         public int timesRulesHasFired(String ruleName) {
+            System.out.println("    firedRules.get(ruleName) = " + firedRules.get(ruleName));
             if (firedRules.containsKey(ruleName)) {
                 return firedRules.get(ruleName).intValue();
             }
