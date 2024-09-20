@@ -35,6 +35,8 @@
 <!--    <logger name="org.drools.modelcompiler.builder" level="debug"/>-->
 <!--    <logger name="org.drools.ancompiler" level="debug"/>-->
 
+    <logger name="org.drools.compiler.integrationtests" level="info"/>
+
     <root level="warn">
         <appender-ref ref="consoleAppender" />
     </root>
