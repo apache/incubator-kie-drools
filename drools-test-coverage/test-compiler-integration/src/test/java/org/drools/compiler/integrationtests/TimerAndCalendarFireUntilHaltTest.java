@@ -65,7 +65,8 @@ public class TimerAndCalendarFireUntilHaltTest {
 
         @Override
         public void afterMatchFired(AfterMatchFiredEvent event) {
-            LOG.info("    afterMatchFired!");
+            LOG.info("    afterMatchFired! : event.getMatch = " + Integer.toHexString(System.identityHashCode(event.getMatch())));
+            LOG.info("                     : event.getFH = " + event.getMatch().getFactHandles());
             String ruleName = event.getMatch().getRule().getName();
             if (!firedRules.containsKey(ruleName)) {
                 firedRules.put(ruleName, Integer.valueOf(0));
