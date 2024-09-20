@@ -66,7 +66,7 @@
     <version.com.github.victools>4.31.0</version.com.github.victools> <!-- victools should align with Jackson if possible -->
     <version.com.miglayout>3.7.4</version.com.miglayout>
     <version.domino-slf4j-logger>1.0.1</version.domino-slf4j-logger>
-    <version.com.google.protobuf>3.25.0</version.com.google.protobuf>
+    <version.com.google.protobuf>3.25.5</version.com.google.protobuf>
     <version.com.h2database>2.2.220</version.com.h2database>
     <version.com.networknt.json-schema-validator>1.0.86</version.com.networknt.json-schema-validator>
     <version.com.sun.xml.bind>4.0.4</version.com.sun.xml.bind>
