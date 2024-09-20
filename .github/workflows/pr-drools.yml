@@ -60,8 +60,8 @@ jobs:
           maven-version: ${{ matrix.maven-version }}
           cache-key-prefix: ${{ runner.os }}-${{ matrix.java-version }}-maven${{ matrix.maven-version }}
           allow-snapshots: true
-#      - name: Build drools-core
-#        run: mvn -B clean install -Dquickly --file drools-core/pom.xml
+      - name: Build drools-core
+        run: mvn -B clean install -Dquickly --file drools-core/pom.xml
 #      - name: Build drools-compiler
 #        run: mvn -B clean install -Dquickly --file drools-compiler/pom.xml
       - name:  Run loop Linux

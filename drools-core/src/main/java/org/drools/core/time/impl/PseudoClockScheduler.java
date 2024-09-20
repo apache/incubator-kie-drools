@@ -102,6 +102,7 @@ public class PseudoClockScheduler implements TimerService, SessionPseudoClock, E
         TimerJobInstance jobInstance = jobFactoryManager.createTimerJobInstance( job, ctx, trigger, jobHandle, this );
         jobHandle.setTimerJobInstance( jobInstance );
         internalSchedule( jobInstance );
+        logger.info("  scheduleJob : jobHandleId = " + jobHandle.getId() + ", fireTime = " + trigger.hasNextFireTime().getTime() );
         return jobHandle;
     }
 
@@ -150,6 +151,9 @@ public class PseudoClockScheduler implements TimerService, SessionPseudoClock, E
         TimerJobInstance item = peek();
         long fireTime;
         while (item != null && item.getTrigger().hasNextFireTime() != null && (fireTime = item.getTrigger().hasNextFireTime().getTime()) <= endTime) {
+
+            logger.info("  runCallBacksAndIncreaseTimer : jobHandleId = " + item.getJobHandle().getId() + ", fireTime = " + item.getTrigger().hasNextFireTime().getTime() );
+
             // remove the head
             queue.poll();
 

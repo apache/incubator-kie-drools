@@ -249,10 +249,12 @@ public class TimerAndCalendarFireUntilHaltTest {
     }
 
     private void advanceTimerOneSecond() {
+        LOG.info("  -- advanceTimerOneSecond");
         timeService.advanceTime(1, TimeUnit.SECONDS);
     }
 
     private void activateRule() {
+        LOG.info("  -- insert trigger");
         triggerHandle = ksession.insert("trigger");
     }
 

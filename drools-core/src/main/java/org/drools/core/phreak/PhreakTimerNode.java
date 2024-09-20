@@ -279,11 +279,15 @@ public class PhreakTimerNode {
             return;
         }
 
+        log.info("scheduleTimer: trigger.hasNextFireTime() = " + trigger.hasNextFireTime().getTime() + ", timestamp = " + timestamp);
+
         if ( trigger.hasNextFireTime().getTime() <= timestamp ) {
             // first execution is straight away, so void Scheduling
             if ( log.isTraceEnabled() ) {
                 log.trace( "Timer Fire Now {}", leftTuple );
             }
+
+            log.info("  ok, this one fires now");
 
             TupleImpl childLeftTuple = doPropagateChildLeftTuple(sink, trgLeftTuples, stagedLeftTuples, leftTuple );
             if (childLeftTuple.getStagedType() != LeftTuple.NONE) {
@@ -304,6 +308,8 @@ public class PhreakTimerNode {
             // can be null, if the system timestamp has surpassed when this was suppose to fire
             TimerNodeJob job = new TimerNodeJob();
             TimerNodeJobContext jobCtx = new TimerNodeJobContext( timerNode.getId(), trigger, leftTuple, tm, sink, smem.getPathMemories(), reteEvaluator );
+
+            log.info("  then, schedule the next one");
 
             DefaultJobHandle jobHandle = (DefaultJobHandle) timerService.scheduleJob( job, jobCtx, trigger );
             leftTuple.setContextObject( jobHandle );
