@@ -79,10 +79,11 @@ public class DecisionTableProviderImpl
     }
 
     private String compileResource(Resource resource, DecisionTableConfiguration configuration) {
-        String resourcePath = resource.getSourcePath();
-        return resourcePath == null ?
-                internalCompileResource(resource, configuration) :
-                compiledDtablesCache.computeIfAbsent(resourcePath, path -> internalCompileResource(resource, configuration));
+        if (resource.getSourcePath() == null) {
+            return internalCompileResource(resource, configuration);
+        }
+        String resourceKey = resource.getSourcePath() + "?trimCell=" + configuration.isTrimCell() + "&worksheetName=" + configuration.getWorksheetName();
+        return compiledDtablesCache.computeIfAbsent(resourceKey, path -> internalCompileResource(resource, configuration));
     }
 
     private String internalCompileResource(Resource resource, DecisionTableConfiguration configuration) throws UncheckedIOException {
