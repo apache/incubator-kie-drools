@@ -29,13 +29,13 @@ import org.kie.internal.builder.DecisionTableConfiguration;
 
 public interface DecisionTableProvider extends KieService {
 
-    String loadFromResource(Resource resource,
-                            DecisionTableConfiguration configuration);
+    String loadFromResource(Resource resource, DecisionTableConfiguration configuration);
 
-    List<String> loadFromInputStreamWithTemplates(Resource resource,
-                                                  DecisionTableConfiguration configuration);
+    List<String> loadFromInputStreamWithTemplates(Resource resource, DecisionTableConfiguration configuration);
 
     Map<String,List<String[]>> loadPropertiesFromFile(File file, DecisionTableConfiguration configuration);
 
     Map<String,List<String[]>> loadPropertiesFromInputStream(InputStream inputStream, DecisionTableConfiguration configuration);
+
+    void clearCompilerCache();
 }

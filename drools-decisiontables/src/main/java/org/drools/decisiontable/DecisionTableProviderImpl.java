@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.drools.decisiontable.parser.xls.PropertiesSheetListener;
 import org.drools.drl.extensions.DecisionTableProvider;
@@ -42,7 +43,9 @@ public class DecisionTableProviderImpl
     implements
     DecisionTableProvider {
 
-    private static final transient Logger logger = LoggerFactory.getLogger( DecisionTableProviderImpl.class );
+    private static final Logger logger = LoggerFactory.getLogger( DecisionTableProviderImpl.class );
+
+    private Map<String, String> compiledDtablesCache = new ConcurrentHashMap<>();
 
     @Override
     public String loadFromResource(Resource resource,
@@ -50,8 +53,6 @@ public class DecisionTableProviderImpl
 
         try {
             return compileResource( resource, configuration );
-        } catch (IOException e) {
-            throw new UncheckedIOException( e );
         } catch (Exception e) {
             throw new DecisionTableParseException(resource, e);
         }
@@ -78,27 +79,44 @@ public class DecisionTableProviderImpl
         return drls;
     }
 
-    private String compileResource(Resource resource,
-                                   DecisionTableConfiguration configuration) throws IOException {
+    private String compileResource(Resource resource, DecisionTableConfiguration configuration) {
+        if (resource.getSourcePath() == null) {
+            return internalCompileResource(resource, configuration);
+        }
+        String resourceKey = resource.getSourcePath() + "?trimCell=" + configuration.isTrimCell() + "&worksheetName=" + configuration.getWorksheetName();
+        return compiledDtablesCache.computeIfAbsent(resourceKey, path -> internalCompileResource(resource, configuration));
+    }
+
+    private String internalCompileResource(Resource resource, DecisionTableConfiguration configuration) throws UncheckedIOException {
         SpreadsheetCompiler compiler = new SpreadsheetCompiler(configuration.isTrimCell());
 
         switch ( configuration.getInputType() ) {
             case XLS :
             case XLSX :
                 if ( StringUtils.isEmpty( configuration.getWorksheetName() ) ) {
-                    return compiler.compile( resource,
-                                             InputType.XLS );
+                    return compiler.compile( resource, InputType.XLS );
                 } else {
-                    return compiler.compile( resource.getInputStream(),
-                                             configuration.getWorksheetName() );
+                    try {
+                        return compiler.compile( resource.getInputStream(), configuration.getWorksheetName() );
+                    } catch (IOException e) {
+                        throw new UncheckedIOException(e);
+                    }
                 }
             case CSV : {
-                return compiler.compile( resource.getInputStream(),
-                                         InputType.CSV );
+                try {
+                    return compiler.compile( resource.getInputStream(), InputType.CSV );
+                } catch (IOException e) {
+                    throw new UncheckedIOException(e);
+                }
             }
         }
 
         return null;
+    }
+
+    @Override
+    public void clearCompilerCache() {
+        compiledDtablesCache.clear();
     }
 
     @Override
