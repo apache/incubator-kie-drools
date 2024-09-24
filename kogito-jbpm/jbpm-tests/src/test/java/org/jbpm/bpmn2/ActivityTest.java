@@ -363,7 +363,6 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         List<String> list = new ArrayList<>();
         kruntime.getKieSession().setGlobal("list", list);
         KogitoProcessInstance processInstance = kruntime.startProcess("RuleTask");
-        kruntime.getKieSession().setGlobal("list", list);
         assertThat(list).hasSize(1);
         assertProcessInstanceFinished(processInstance, kruntime);
     }
@@ -452,14 +451,16 @@ public class ActivityTest extends JbpmBpmn2TestCase {
 
         params = new HashMap<>();
 
-        processInstance = kruntime.startProcess("RuleTask", params);
+        KogitoProcessRuntime kruntime2 = createKogitoProcessRuntime("BPMN2-RuleTaskWithFact.bpmn2", "BPMN2-RuleTask3.drl");
+        processInstance = kruntime2.startProcess("RuleTask", params);
 
         assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_ERROR);
 
+        KogitoProcessRuntime kruntime3 = createKogitoProcessRuntime("BPMN2-RuleTaskWithFact.bpmn2", "BPMN2-RuleTask3.drl");
         params = new HashMap<>();
         params.put("x", "SomeString");
-        processInstance = kruntime.startProcess("RuleTask", params);
-        assertProcessInstanceFinished(processInstance, kruntime);
+        processInstance = kruntime3.startProcess("RuleTask", params);
+        assertProcessInstanceFinished(processInstance, kruntime3);
     }
 
     @Test
@@ -475,7 +476,6 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         KogitoProcessInstance processInstance2 = kruntime2.startProcess("RuleTask");
         assertProcessInstanceFinished(processInstance1, kruntime);
         assertProcessInstanceFinished(processInstance2, kruntime2);
-        kruntime2.getKieSession().dispose(); // kruntime's session is disposed in the @AfterEach method
     }
 
     @Test
