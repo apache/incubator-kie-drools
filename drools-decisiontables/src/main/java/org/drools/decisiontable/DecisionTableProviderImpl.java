@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.drools.decisiontable.parser.xls.PropertiesSheetListener;
 import org.drools.drl.extensions.DecisionTableProvider;
@@ -44,7 +45,7 @@ public class DecisionTableProviderImpl
 
     private static final Logger logger = LoggerFactory.getLogger( DecisionTableProviderImpl.class );
 
-    private Map<String, String> compiledDtablesCache = new HashMap<>();
+    private Map<String, String> compiledDtablesCache = new ConcurrentHashMap<>();
 
     @Override
     public String loadFromResource(Resource resource,
