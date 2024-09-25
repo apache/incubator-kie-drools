@@ -85,6 +85,7 @@ import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstanceContainer;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
+import org.kie.kogito.internal.process.runtime.MessageException;
 import org.kie.kogito.jobs.DurationExpirationTime;
 import org.kie.kogito.jobs.JobsService;
 import org.kie.kogito.jobs.ProcessInstanceJobDescription;
@@ -1164,7 +1165,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
         this.nodeInstanceIdInError = nodeInstanceInError.getId();
         this.errorCause = Optional.of(e);
         Throwable rootException = getRootException(e);
-        this.errorMessage = rootException.getClass().getCanonicalName() + " - " + rootException.getMessage();
+        this.errorMessage = rootException instanceof MessageException ? rootException.getMessage() : rootException.getClass().getCanonicalName() + " - " + rootException.getMessage();
         setState(STATE_ERROR);
         logger.error("Unexpected error while executing node {} in process instance {}", nodeInstanceInError.getNode().getName(), this.getStringId(), e);
         ((InternalProcessRuntime) getKnowledgeRuntime().getProcessRuntime()).getProcessEventSupport().fireOnError(this, nodeInstanceInError, getKnowledgeRuntime(), e);

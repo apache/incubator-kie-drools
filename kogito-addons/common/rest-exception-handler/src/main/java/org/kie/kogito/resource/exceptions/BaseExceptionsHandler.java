@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import org.kie.kogito.internal.process.runtime.MessageException;
 import org.kie.kogito.internal.process.workitem.InvalidLifeCyclePhaseException;
 import org.kie.kogito.internal.process.workitem.InvalidTransitionException;
 import org.kie.kogito.internal.process.workitem.NotAuthorizedException;
@@ -66,6 +67,7 @@ public abstract class BaseExceptionsHandler<T> {
     }
 
     private final FunctionHolder<T, Exception> defaultHolder = new FunctionHolder<>(ex -> ex, ex -> BaseExceptionsHandler.this::internalError);
+    private final FunctionHolder<T, ?> messageFunctionHolder = new FunctionHolder<>(ex -> Collections.singletonMap(MESSAGE, ex.getMessage()), ex -> BaseExceptionsHandler.this::badRequest);
 
     protected BaseExceptionsHandler() {
         mapper = new HashMap<>();
@@ -144,8 +146,8 @@ public abstract class BaseExceptionsHandler<T> {
         mapper.put(WorkItemExecutionException.class, new FunctionHolder<>(
                 ex -> Map.of(MESSAGE, ex.getMessage()),
                 ex -> fromErrorCode(((WorkItemExecutionException) ex).getErrorCode())));
-
-        mapper.put(IllegalArgumentException.class, new FunctionHolder<>(ex -> Collections.singletonMap(MESSAGE, ex.getMessage()), ex -> BaseExceptionsHandler.this::badRequest));
+        mapper.put(IllegalArgumentException.class, messageFunctionHolder);
+        mapper.put(MessageException.class, messageFunctionHolder);
     }
 
     private <R> Function<R, T> fromErrorCode(String errorCode) {

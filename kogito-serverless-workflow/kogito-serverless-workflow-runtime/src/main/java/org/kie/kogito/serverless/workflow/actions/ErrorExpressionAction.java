@@ -21,6 +21,7 @@ package org.kie.kogito.serverless.workflow.actions;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.workflow.instance.NodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
+import org.kie.kogito.internal.process.runtime.MessageException;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -40,11 +41,11 @@ public class ErrorExpressionAction extends BaseExpressionAction {
                 }
             }
         } else {
-            setError(context, expr.toString());
+            setError(context, "The expression used for generating error message is not a valid one: " + expr.asString());
         }
     }
 
-    private void setError(KogitoProcessContext context, String error) {
-        ((ProcessInstance) context.getProcessInstance()).setErrorState((NodeInstance) context.getNodeInstance(), new IllegalArgumentException(error));
+    private void setError(KogitoProcessContext context, String message) {
+        ((ProcessInstance) context.getProcessInstance()).setErrorState((NodeInstance) context.getNodeInstance(), new MessageException(message));
     }
 }
