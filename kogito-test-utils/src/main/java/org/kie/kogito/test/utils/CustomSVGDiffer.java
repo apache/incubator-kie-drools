@@ -21,6 +21,7 @@ package org.kie.kogito.test.utils;
 import org.xmlunit.builder.DiffBuilder;
 import org.xmlunit.builder.Input;
 import org.xmlunit.diff.ComparisonResult;
+import org.xmlunit.diff.ComparisonType;
 import org.xmlunit.diff.Diff;
 import org.xmlunit.diff.DifferenceEvaluators;
 
@@ -39,6 +40,9 @@ public class CustomSVGDiffer {
                         (comparison, outcome) -> {
                             //this tag may differ from svg processors like batik
                             if (comparison.getControlDetails().getTarget().getNodeName().equals("svg")) {
+                                return ComparisonResult.SIMILAR;
+                            }
+                            if (comparison.getType() == ComparisonType.NAMESPACE_URI) {
                                 return ComparisonResult.SIMILAR;
                             }
                             return outcome;
