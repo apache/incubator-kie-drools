@@ -136,7 +136,11 @@
           <configuration>
             <excludes>
               <exclude>.git-blame-ignore-revs</exclude>
+              <exclude>**/dependency-reduced-pom.xml</exclude>
               <exclude>**/lunr-2.3.9.min.js</exclude>
+              <exclude>**/search-ui.js</exclude>
+              <exclude>**/branch.yaml</exclude>
+              <exclude>**/main.yaml</exclude>
               <exclude>**/mvel.jj</exclude>
               <exclude>**/*.csv</exclude>
               <exclude>**/*.sdo</exclude>
@@ -159,7 +163,6 @@
               <exclude>**/*.log</exclude>
               <exclude>**/*.lst</exclude>
               <exclude>**/checkstyle-cachefile</exclude>
-              <exclude>**/smoke*.drl.txt</exclude>
               <exclude>**/test*.txt</exclude>
               <exclude>**/test*.yml</exclude>
               <exclude>**/drl.ftl</exclude>
