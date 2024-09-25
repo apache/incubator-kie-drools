@@ -205,6 +205,9 @@ public class DroolsAssetsProcessor {
                             case "default":
                                 kieSessionModel.setDefault( config.getValue(propertyName, Boolean.class) );
                                 break;
+                            case "stateless":
+                                kieSessionModel.setType( config.getValue(propertyName, Boolean.class) ? KieSessionModel.KieSessionType.STATELESS : KieSessionModel.KieSessionType.STATEFUL );
+                                break;
                             case "clockType":
                                 kieSessionModel.setClockType( ClockTypeOption.get(config.getValue(propertyName, String.class) ) );
                                 break;
