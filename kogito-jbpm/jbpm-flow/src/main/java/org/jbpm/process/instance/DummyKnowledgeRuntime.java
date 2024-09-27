@@ -29,6 +29,7 @@ import org.drools.core.impl.EnvironmentImpl;
 import org.drools.core.time.TimerService;
 import org.jbpm.workflow.instance.impl.CodegenNodeInstanceFactoryRegistry;
 import org.kie.api.KieBase;
+import org.kie.api.command.Command;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.process.ProcessEventManager;
 import org.kie.api.event.rule.AgendaEventListener;
@@ -121,6 +122,11 @@ class DummyKnowledgeRuntime implements InternalKnowledgeRuntime, KogitoProcessRu
 
     @Override
     public KieRuntime getKieRuntime() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public <T> T execute(Command<T> command) {
         throw new UnsupportedOperationException();
     }
 

@@ -94,6 +94,7 @@ public abstract class AbstractCodegenIT {
                     "import org.kie.api.KieBase;\n" +
                     "import org.kie.api.builder.model.KieBaseModel;\n" +
                     "import org.kie.api.runtime.KieSession;\n" +
+                    "import org.kie.api.runtime.StatelessKieSession;\n" +
                     "import org.drools.modelcompiler.KieBaseBuilder;\n" +
                     "\n" +
                     "\n" +
@@ -118,6 +119,16 @@ public abstract class AbstractCodegenIT {
                     "\n" +
                     "    @Override\n" +
                     "    public KieSession newKieSession(String sessionName) {\n" +
+                    "        return null;\n" +
+                    "    }\n" +
+                    "\n" +
+                    "    @Override\n" +
+                    "    public StatelessKieSession newStatelessKieSession() {\n" +
+                    "        return null;\n" +
+                    "    }\n" +
+                    "\n" +
+                    "    @Override\n" +
+                    "    public StatelessKieSession newStatelessKieSession(String sessionName) {\n" +
                     "        return null;\n" +
                     "    }\n" +
                     "}";
