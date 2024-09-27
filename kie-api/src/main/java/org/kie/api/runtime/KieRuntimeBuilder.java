@@ -27,6 +27,9 @@ public interface KieRuntimeBuilder {
     KieSession newKieSession();
     KieSession newKieSession(String sessionName);
 
+    StatelessKieSession newStatelessKieSession();
+    StatelessKieSession newStatelessKieSession(String sessionName);
+
     default KieSession newKieSession(KieSessionConfiguration conf) {
         return getKieBase().newKieSession(conf, null);
     }

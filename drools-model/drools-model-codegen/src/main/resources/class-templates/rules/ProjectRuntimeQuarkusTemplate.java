@@ -25,6 +25,7 @@ import org.drools.core.SessionConfiguration;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieRuntimeBuilder;
+import org.kie.api.runtime.StatelessKieSession;
 import org.drools.modelcompiler.KieBaseBuilder;
 
 @jakarta.enterprise.context.ApplicationScoped
@@ -63,8 +64,21 @@ public class ProjectRuntime implements KieRuntimeBuilder {
         if (kbase == null) {
             throw new RuntimeException("Unknown KieSession with name '" + sessionName + "'");
         }
-        KieSession ksession = kbase.newKieSession(getConfForSession(sessionName), null);
-        return ksession;
+        return kbase.newKieSession(getConfForSession(sessionName), null);
+    }
+
+    @Override
+    public StatelessKieSession newStatelessKieSession() {
+        return newStatelessKieSession("$defaultStatelessKieSession$");
+    }
+
+    @Override
+    public StatelessKieSession newStatelessKieSession(String sessionName) {
+        KieBase kbase = getKieBaseForSession(sessionName);
+        if (kbase == null) {
+            throw new RuntimeException("Unknown StatelessKieSession with name '" + sessionName + "'");
+        }
+        return kbase.newStatelessKieSession(getConfForSession(sessionName));
     }
 
     private KieBase getKieBaseForSession(String sessionName) {

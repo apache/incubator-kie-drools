@@ -211,6 +211,10 @@ public class ModelSourceClass {
             return defaultKieSessionName;
         }
 
+        public String getDefaultKieStatelessSessionName() {
+            return defaultKieStatelessSessionName;
+        }
+
         public Map<String, BlockStmt> getkSessionConfs() {
             return kSessionConfs;
         }
