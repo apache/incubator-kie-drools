@@ -67,12 +67,12 @@ public class CustomConstraintOperatorTest {
         }
 
         @Override
-        public boolean containsConstraintType() {
+        public boolean hasIndex() {
             return true;
         }
 
         @Override
-        public Index.ConstraintType getConstraintType() {
+        public Index.ConstraintType getIndexType() {
             return Index.ConstraintType.EQUAL;
         }
 
