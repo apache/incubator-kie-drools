@@ -173,9 +173,15 @@ public class PrototypeDSL {
             reactOnFields.addAll(left.getImpactedFields());
             reactOnFields.addAll(right.getImpactedFields());
 
+            // If operator is not Index.ConstraintType, it may contain Index.ConstraintType internally for indexing purposes
+            ConstraintOperator operatorAsConstraintType = operator;
+            if (operator.containsConstraintType()) {
+                operatorAsConstraintType = operator.getConstraintType();
+            }
+
             expr(createExprId(left, operator, right),
                     other, asPredicate2(left.asFunction(prototype), operator, right.asFunction(otherPrototype)),
-                    createBetaIndex(left, operator, right, prototype, otherPrototype),
+                    createBetaIndex(left, operatorAsConstraintType, right, prototype, otherPrototype),
                     reactOn( reactOnFields.toArray(new String[reactOnFields.size()])) );
 
             return this;
