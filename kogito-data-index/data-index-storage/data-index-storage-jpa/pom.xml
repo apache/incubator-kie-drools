@@ -33,6 +33,10 @@
   <name>Kogito Apps :: Data Index Storage JPA compatible DBs</name>
 
   <properties>
+    <path.to.postgresql.storage>../data-index-storage-postgresql</path.to.postgresql.storage>
+    <path.to.script.folder>src/main/resources/kie-flyway/db/</path.to.script.folder>
+    <path.to.migration.scripts.from>${path.to.postgresql.storage}/${path.to.script.folder}/data-index/postgresql</path.to.migration.scripts.from>
+    <path.to.migration.scripts.to>${path.to.script.folder}/data-index/postgresql</path.to.migration.scripts.to>
     <java.module.name>org.kie.kogito.index.jpa</java.module.name>
   </properties>
   
@@ -89,6 +93,11 @@
       <artifactId>kogito-quarkus-test-utils</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-quarkus-flyway</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
@@ -107,6 +116,31 @@
               <goal>integration-test</goal>
               <goal>verify</goal>
             </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <!--  The cleanest way would be to use the maven-dependency-plugin to unpack and copy scripts from the built artifact `kie-addons-persistence-jdbc` but there's a limitation to using this only in the `package` phase whereas we need that into the `generate-sources` phase. See also https://issues.apache.org/jira/browse/MDEP-98 -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-resource-one</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${path.to.migration.scripts.to}</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${path.to.migration.scripts.from}</directory>
+                  <includes>
+                    <include>*.sql</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
           </execution>
         </executions>
       </plugin>

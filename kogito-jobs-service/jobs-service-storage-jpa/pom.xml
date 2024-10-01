@@ -34,6 +34,10 @@
     <description>Jobs Service (Timers and Async Jobs) JPA Storage</description>
 
     <properties>
+        <path.to.postgresql.storage>../jobs-service-postgresql-common</path.to.postgresql.storage>
+        <path.to.script.folder>src/main/resources/db/</path.to.script.folder>
+        <path.to.migration.scripts.from>${path.to.postgresql.storage}/${path.to.script.folder}/jobs-service/postgresql</path.to.migration.scripts.from>
+        <path.to.migration.scripts.to>${path.to.script.folder}/jobs-service/postgresql</path.to.migration.scripts.to>
         <java.module.name>org.kie.kogito.job.service.repository.jpa</java.module.name>
     </properties>
 
@@ -41,6 +45,10 @@
         <dependency>
             <groupId>org.kie.kogito</groupId>
             <artifactId>jobs-service-common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.kie</groupId>
+            <artifactId>kie-addons-quarkus-flyway</artifactId>
         </dependency>
         <dependency>
             <groupId>jakarta.persistence</groupId>
@@ -57,10 +65,6 @@
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-jdbc-h2</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-flyway</artifactId>
         </dependency>
         <dependency>
             <groupId>org.kie.kogito</groupId>
@@ -119,4 +123,34 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <!--  The cleanest way would be to use the maven-dependency-plugin to unpack and copy scripts from the built artifact `kie-addons-persistence-jdbc` but there's a limitation to using this only in the `package` phase whereas we need that into the `generate-sources` phase. See also https://issues.apache.org/jira/browse/MDEP-98 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-resource-one</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${path.to.migration.scripts.to}</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${path.to.migration.scripts.from}</directory>
+                                    <includes>
+                                        <include>*.sql</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>

@@ -78,6 +78,11 @@
       <artifactId>kogito-quarkus-test-utils</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-quarkus-flyway</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
   <build>
     <plugins>

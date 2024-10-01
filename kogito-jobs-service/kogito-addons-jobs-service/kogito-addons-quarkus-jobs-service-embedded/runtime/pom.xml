@@ -48,6 +48,10 @@
       <groupId>io.quarkus.http</groupId>
       <artifactId>quarkus-http-core</artifactId>
     </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-flyway</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>io.quarkiverse.embedded.postgresql</groupId>
@@ -75,6 +79,10 @@
         <exclusion>
           <groupId>org.kie</groupId>
           <artifactId>kogito-addons-quarkus-job-sink-recipient</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.kie</groupId>
+          <artifactId>kie-addons-quarkus-flyway</artifactId>
         </exclusion>
       </exclusions>
     </dependency>

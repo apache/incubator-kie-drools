@@ -46,6 +46,10 @@
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-vertx-graphql</artifactId>
     </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-flyway</artifactId>
+    </dependency>
   </dependencies>
   <build>
     <plugins>

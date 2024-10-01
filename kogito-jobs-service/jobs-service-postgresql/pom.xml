@@ -41,6 +41,12 @@
         <dependency>
             <groupId>org.kie.kogito</groupId>
             <artifactId>jobs-service-postgresql-common</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.kie</groupId>
+                    <artifactId>kie-addons-quarkus-flyway</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.kie.kogito</groupId>
@@ -49,6 +55,10 @@
         <dependency>
             <groupId>org.kie.kogito</groupId>
             <artifactId>jobs-service-messaging-http</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-flyway</artifactId>
         </dependency>
 
         <!-- Testing -->

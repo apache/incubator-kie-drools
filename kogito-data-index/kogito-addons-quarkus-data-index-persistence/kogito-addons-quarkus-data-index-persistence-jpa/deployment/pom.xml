@@ -39,8 +39,8 @@
       <artifactId>kogito-addons-quarkus-data-index-persistence-jpa</artifactId>
     </dependency>
     <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-flyway-deployment</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-quarkus-flyway-deployment</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>

@@ -36,23 +36,64 @@
         </dependencySet>
     </dependencySets>
     <fileSets>
+        <!-- Persistence Commons -->
         <fileSet>
-            <directory>${project.root.dir}/data-index/data-index-storage/data-index-storage-postgresql/src/main/resources/db/migration</directory>
+            <directory>${project.root.dir}/persistence-commons/persistence-commons-jpa/src/main/resources/kie-flyway/db/persistence-commons/ansi</directory>
+            <outputDirectory>h2/persistence-commons</outputDirectory>
+            <includes>
+                <include>*.sql</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>${project.root.dir}/persistence-commons/persistence-commons-postgresql/src/main/resources/kie-flyway/db/persistence-commons/postgresql</directory>
+            <outputDirectory>postgresql/persistence-commons</outputDirectory>
+            <includes>
+                <include>*.sql</include>
+            </includes>
+        </fileSet>
+
+        <!-- Data Index -->
+        <fileSet>
+            <directory>${project.root.dir}/data-index/data-index-storage/data-index-storage-jpa/src/main/resources/kie-flyway/db/data-index/ansi</directory>
+            <outputDirectory>h2/data-index</outputDirectory>
+            <includes>
+                <include>*.sql</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>${project.root.dir}/data-index/data-index-storage/data-index-storage-postgresql/src/main/resources/kie-flyway/db/data-index/postgresql</directory>
             <outputDirectory>postgresql/data-index</outputDirectory>
             <includes>
                 <include>*.sql</include>
             </includes>
         </fileSet>
+
+        <!-- Data Audit -->
         <fileSet>
-            <directory>${project.root.dir}/data-index/data-index-storage/data-index-storage-oracle/src/main/resources/db/migration</directory>
-            <outputDirectory>oracle/data-index</outputDirectory>
+            <directory>${project.root.dir}/data-audit/kogito-addons-data-audit-jpa/kogito-addons-data-audit-jpa-common/src/main/resources/kie-flyway/db/data-audit/h2</directory>
+            <outputDirectory>h2/data-audit</outputDirectory>
             <includes>
                 <include>*.sql</include>
             </includes>
         </fileSet>
-        <!-- Job Service DDLs - Flyway scripts -->
         <fileSet>
-            <directory>${project.root.dir}/jobs-service/jobs-service-postgresql-common/src/main/resources/db/jobs-service</directory>
+            <directory>${project.root.dir}/data-audit/kogito-addons-data-audit-jpa/kogito-addons-data-audit-jpa-common/src/main/resources/kie-flyway/db/data-audit/postgresql</directory>
+            <outputDirectory>postgresql/data-audit</outputDirectory>
+            <includes>
+                <include>*.sql</include>
+            </includes>
+        </fileSet>
+
+        <!-- Job Service -->
+        <fileSet>
+            <directory>${project.root.dir}/jobs-service/jobs-service-storage-jpa/src/main/resources/kie-flyway/db/jobs-service/ansi</directory>
+            <outputDirectory>h2/jobs-service</outputDirectory>
+            <includes>
+                <include>*.sql</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>${project.root.dir}/jobs-service/jobs-service-postgresql-common/src/main/resources/kie-flyway/db/jobs-service/postgresql</directory>
             <outputDirectory>postgresql/jobs-service</outputDirectory>
             <includes>
                 <include>*.sql</include>
