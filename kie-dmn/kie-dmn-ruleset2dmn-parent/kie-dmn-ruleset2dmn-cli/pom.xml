@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.kie</groupId>
     <artifactId>kie-dmn-ruleset2dmn-parent</artifactId>
-    <version>10.0.999-SNAPSHOT</version>
+    <version>10.0.0</version>
   </parent>
   <artifactId>kie-dmn-ruleset2dmn-cli</artifactId>
   
