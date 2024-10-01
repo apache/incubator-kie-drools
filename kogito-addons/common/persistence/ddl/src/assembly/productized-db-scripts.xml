@@ -28,7 +28,7 @@
   <includeBaseDirectory>false</includeBaseDirectory>
   <fileSets>
     <fileSet>
-      <directory>${path.to.persistence.modules}/jdbc/src/main/resources/db/postgresql</directory>
+      <directory>${path.to.persistence.modules}/jdbc/src/main/resources/kie-flyway/db/postgresql</directory>
       <outputDirectory>postgresql</outputDirectory>
       <includes>
         <include>*.sql</include>

@@ -27,6 +27,8 @@ import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.containers.output.OutputFrame;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
+import org.testcontainers.containers.wait.strategy.HostPortWaitStrategy;
+import org.testcontainers.containers.wait.strategy.WaitAllStrategy;
 
 /**
  * PostgreSQL Container for Kogito examples.
@@ -42,6 +44,15 @@ public class KogitoPostgreSqlContainer extends PostgreSQLContainer<KogitoPostgre
         withLogConsumer(getLogger());
         withLogConsumer(new Slf4jLogConsumer(LOGGER));
         withStartupTimeout(Constants.CONTAINER_START_TIMEOUT);
+
+        /*
+         * Overriding default waitStrategy (LogMessageWaitStrategy) added by the parent to also wait for the mapped port to be available. This ensures that the PostgreSQLContainer is running
+         * and the mapped ports are ready before running any test.
+         * This avoids connection issues with the container when using container managers that do the port mapping after the container has started.
+         */
+        this.waitStrategy = new WaitAllStrategy()
+                .withStrategy(this.waitStrategy)
+                .withStrategy(new HostPortWaitStrategy());
     }
 
     private Consumer<OutputFrame> getLogger() {

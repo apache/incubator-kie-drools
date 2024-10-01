@@ -22,10 +22,10 @@ import java.util.Collections;
 import java.util.Optional;
 
 import org.drools.io.ClassPathResource;
-import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.kie.flyway.initializer.KieFlywayInitializer;
 import org.kie.kogito.auth.IdentityProviders;
 import org.kie.kogito.auth.SecurityPolicy;
 import org.kie.kogito.persistence.postgresql.AbstractProcessInstancesFactory;
@@ -41,6 +41,7 @@ import org.kie.kogito.process.impl.DefaultWorkItemHandlerConfig;
 import org.kie.kogito.process.impl.StaticProcessConfig;
 import org.kie.kogito.process.workitems.impl.DefaultKogitoWorkItemHandler;
 import org.kie.kogito.testcontainers.KogitoPostgreSqlContainer;
+import org.postgresql.ds.PGSimpleDataSource;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
@@ -76,9 +77,18 @@ class PostgresqlProcessInstancesIT {
     @BeforeAll
     public static void startContainerAndPublicPortIsAvailable() {
         container.start();
-        Flyway flyway = Flyway.configure().dataSource(container.getJdbcUrl(), container.getUsername(), container.getPassword()).load();
-        flyway.migrate();
+
         client = client();
+
+        PGSimpleDataSource ds = new PGSimpleDataSource();
+        ds.setUrl(container.getJdbcUrl());
+        ds.setUser(container.getUsername());
+        ds.setPassword(container.getPassword());
+
+        KieFlywayInitializer.builder()
+                .withDatasource(ds)
+                .build()
+                .migrate();
     }
 
     @AfterAll

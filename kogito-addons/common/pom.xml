@@ -54,6 +54,7 @@
     <module>tracing</module>
     <module>task-management</module>
     <module>marshallers</module>
+    <module>flyway</module>
   </modules>
 
   <dependencyManagement>

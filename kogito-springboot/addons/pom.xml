@@ -49,6 +49,7 @@
     <module>process-management</module>
     <module>task-management</module>
     <module>kubernetes</module>
+    <module>flyway</module>
     <module>persistence</module>
   </modules>
 

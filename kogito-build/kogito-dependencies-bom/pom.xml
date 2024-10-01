@@ -82,6 +82,7 @@
     <version.io.micrometer>1.12.2</version.io.micrometer>
     <version.org.flywaydb>9.22.3</version.org.flywaydb>
     <version.org.postgresql>42.7.2</version.org.postgresql>
+    <version.com.h2>2.2.220</version.com.h2>
     <version.io.serverlessworkflow>4.0.5.Final</version.io.serverlessworkflow>
     <!-- Aligned with Quarkus 2.7 (LTS) - see https://issues.redhat.com/browse/KOGITO-7971 -->
     <version.io.smallrye-open-api>3.10.0</version.io.smallrye-open-api>
@@ -375,6 +376,11 @@
         <groupId>org.postgresql</groupId>
         <artifactId>postgresql</artifactId>
         <version>${version.org.postgresql}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.h2database</groupId>
+        <artifactId>h2</artifactId>
+        <version>${version.com.h2}</version>
       </dependency>
       <dependency>
         <groupId>io.smallrye</groupId>
@@ -698,6 +704,13 @@
         <groupId>io.swagger.core.v3</groupId>
         <artifactId>swagger-core</artifactId>
         <version>${version.io.swagger.core.v3}</version>
+      </dependency>
+
+      <!-- Flyway -->
+      <dependency>
+        <groupId>org.flywaydb</groupId>
+        <artifactId>flyway-core</artifactId>
+        <version>${version.org.flywaydb}</version>
       </dependency>
 
       <!-- infinispan -->

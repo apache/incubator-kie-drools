@@ -83,9 +83,8 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.flywaydb</groupId>
-      <artifactId>flyway-core</artifactId>
-      <version>${version.org.flywaydb}</version>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-flyway</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>

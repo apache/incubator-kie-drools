@@ -17,4 +17,4 @@
 # under the License.
 ###
 
-src/main/resources/db/migration/*
+/src/main/resources/kie-flyway/db/persistence-postgresql/postgresql/*

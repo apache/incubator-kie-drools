@@ -39,7 +39,7 @@ public class PostgreSqlProcessInstancesIT extends AbstractProcessInstancesIT {
         PG_DATA_SOURCE.setUrl(PG_CONTAINER.getJdbcUrl());
         PG_DATA_SOURCE.setUser(PG_CONTAINER.getUsername());
         PG_DATA_SOURCE.setPassword(PG_CONTAINER.getPassword());
-        initMigration(PG_CONTAINER, "postgresql");
+        initMigration(PG_DATA_SOURCE);
     }
 
     protected DataSource getDataSource() {

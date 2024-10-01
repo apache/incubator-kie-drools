@@ -21,16 +21,17 @@ package org.kie.persistence.jdbc.correlation;
 import java.util.Collections;
 import java.util.Optional;
 
-import org.flywaydb.core.Flyway;
+import javax.sql.DataSource;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.kie.flyway.initializer.KieFlywayInitializer;
 import org.kie.kogito.correlation.CompositeCorrelation;
 import org.kie.kogito.correlation.CorrelationInstance;
 import org.kie.kogito.correlation.SimpleCorrelation;
 import org.kie.kogito.persistence.jdbc.correlation.JDBCCorrelationService;
 import org.kie.kogito.testcontainers.KogitoPostgreSqlContainer;
 import org.postgresql.ds.PGSimpleDataSource;
-import org.testcontainers.containers.JdbcDatabaseContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
@@ -51,17 +52,14 @@ public class JDBCCorrelationServiceIT {
         dataSource.setUser(PG_CONTAINER.getUsername());
         dataSource.setPassword(PG_CONTAINER.getPassword());
         correlationService = new JDBCCorrelationService(dataSource);
-        //create table
-        //        DDLRunner.init(new GenericRepository(dataSource), true);
-        initMigration(PG_CONTAINER, "postgresql");
+        initMigration(dataSource);
     }
 
-    public static void initMigration(JdbcDatabaseContainer container, String dbKind) {
-        Flyway flyway = Flyway.configure().dataSource(container.getJdbcUrl(),
-                container.getUsername(),
-                container.getPassword())
-                .locations("classpath:db/" + dbKind).load();
-        flyway.migrate();
+    public static void initMigration(DataSource dataSource) {
+        KieFlywayInitializer.builder()
+                .withDatasource(dataSource)
+                .build()
+                .migrate();
     }
 
     @Test

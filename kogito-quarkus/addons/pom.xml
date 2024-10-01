@@ -40,6 +40,7 @@
     <module>messaging</module>
     <module>common</module>
     <module>rest-exception-handler</module>
+    <module>flyway</module>
     <module>persistence</module>
     <module>process-management</module>
     <module>source-files</module>
