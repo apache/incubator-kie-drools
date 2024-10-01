@@ -112,21 +112,10 @@
       <artifactId>kie-dmn-core-jsr223-jq</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.openjdk.nashorn</groupId>
+      <artifactId>nashorn-core</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
-  <profiles>
-    <profile>
-      <!-- prepare for JDK15 and JDK17+ -->
-      <id>add-jdk15plus-dependencies</id>
-      <activation>
-        <jdk>[15,)</jdk>
-      </activation>
-      <dependencies>
-        <dependency>
-            <groupId>org.openjdk.nashorn</groupId>
-            <artifactId>nashorn-core</artifactId>
-            <scope>test</scope>
-        </dependency>
-      </dependencies>
-    </profile>
-  </profiles>
 </project>
