@@ -127,16 +127,22 @@ public class PrototypeDSL {
             reactOnFields.addAll(left.getImpactedFields());
             reactOnFields.addAll(right.getImpactedFields());
 
+            // If operator is not Index.ConstraintType, it may contain Index.ConstraintType internally for indexing purposes
+            ConstraintOperator operatorAsIndexType = operator;
+            if (operator.hasIndex()) {
+                operatorAsIndexType = operator.getIndexType();
+            }
+
             expr(createExprId(left, operator, right),
                     asPredicate1(leftExtractor, operator, right.asFunction(prototype)),
-                    createAlphaIndex(left, operator, right, prototype, leftExtractor),
+                    createAlphaIndex(left, operatorAsIndexType, right, prototype, leftExtractor),
                     reactOn( reactOnFields.toArray(new String[reactOnFields.size()])) );
 
             return this;
         }
 
-        private static AlphaIndex createAlphaIndex(PrototypeExpression left, ConstraintOperator operator, PrototypeExpression right, Prototype prototype, Function1<PrototypeFactInstance, Object> leftExtractor) {
-            if (left.getIndexingKey().isPresent() && right instanceof PrototypeExpression.FixedValue && operator instanceof Index.ConstraintType constraintType) {
+        private static AlphaIndex createAlphaIndex(PrototypeExpression left, ConstraintOperator operatorAsIndexType, PrototypeExpression right, Prototype prototype, Function1<PrototypeFactInstance, Object> leftExtractor) {
+            if (left.getIndexingKey().isPresent() && right instanceof PrototypeExpression.FixedValue && operatorAsIndexType instanceof Index.ConstraintType constraintType) {
                 String fieldName = left.getIndexingKey().get();
                 Prototype.Field field = prototype.getField(fieldName);
                 Object value = ((PrototypeExpression.FixedValue) right).getValue();
@@ -167,9 +173,15 @@ public class PrototypeDSL {
             reactOnFields.addAll(left.getImpactedFields());
             reactOnFields.addAll(right.getImpactedFields());
 
+            // If operator is not Index.ConstraintType, it may contain Index.ConstraintType internally for indexing purposes
+            ConstraintOperator operatorAsIndexType = operator;
+            if (operator.hasIndex()) {
+                operatorAsIndexType = operator.getIndexType();
+            }
+
             expr(createExprId(left, operator, right),
                     other, asPredicate2(left.asFunction(prototype), operator, right.asFunction(otherPrototype)),
-                    createBetaIndex(left, operator, right, prototype, otherPrototype),
+                    createBetaIndex(left, operatorAsIndexType, right, prototype, otherPrototype),
                     reactOn( reactOnFields.toArray(new String[reactOnFields.size()])) );
 
             return this;
@@ -181,8 +193,8 @@ public class PrototypeDSL {
             return "expr:" + leftId + ":" + operator + ":" + rightId;
         }
 
-        private BetaIndex createBetaIndex(PrototypeExpression left, ConstraintOperator operator, PrototypeExpression right, Prototype prototype, Prototype otherPrototype) {
-            if (left.getIndexingKey().isPresent() && operator instanceof Index.ConstraintType constraintType && right.getIndexingKey().isPresent()) {
+        private BetaIndex createBetaIndex(PrototypeExpression left, ConstraintOperator operatorAsIndexType, PrototypeExpression right, Prototype prototype, Prototype otherPrototype) {
+            if (left.getIndexingKey().isPresent() && operatorAsIndexType instanceof Index.ConstraintType constraintType && right.getIndexingKey().isPresent()) {
                 String fieldName = left.getIndexingKey().get();
                 Prototype.Field field = prototype.getField(fieldName);
                 Function1<PrototypeFactInstance, Object> extractor = left.asFunction(prototype);

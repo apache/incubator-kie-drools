@@ -22,4 +22,12 @@ import java.util.function.BiPredicate;
 
 public interface ConstraintOperator {
     <T, V> BiPredicate<T, V> asPredicate();
+
+    default boolean hasIndex() {
+        return false;
+    }
+
+    default Index.ConstraintType getIndexType() {
+        throw new UnsupportedOperationException();
+    }
 }
