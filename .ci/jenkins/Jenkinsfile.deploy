@@ -125,7 +125,6 @@ pipeline {
                            .withOptions(env.DROOLS_BUILD_MVN_OPTS ? [ env.DROOLS_BUILD_MVN_OPTS ] : [])
                            .withOptions(env.BUILD_MVN_OPTS_CURRENT ? [ env.BUILD_MVN_OPTS_CURRENT ] : [])
                            .withProperty('maven.test.failure.ignore', true)
-                           .withProperty('only.reproducible')
                            .skipTests(params.SKIP_TESTS)
 
                         def Closure mavenRunClosure = {
@@ -136,7 +135,9 @@ pipeline {
 
                         if (isRelease()) {
                             release.gpgImportKeyFromStringWithoutPassword(getReleaseGpgSignKeyCredsId())
-                            mavenCommand.withProfiles(['apache-release'])
+                            mavenCommand
+                            .withProfiles(['apache-release'])
+                            .withProperty('only.reproducible')
                             mavenRunClosure()
                         } else {
                             mavenRunClosure()
