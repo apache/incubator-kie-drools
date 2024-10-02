@@ -21,3 +21,7 @@ This product also includes the following third-party components:
 * search-ui
   Downloaded from: https://gitlab.com/antora/antora-lunr-extension
   License: Mozilla Public License 2.0
+
+* JavaParser, JavaLexer
+  Downloaded from: https://github.com/antlr/grammars-v4/tree/master/java/java
+  License: BSD License
