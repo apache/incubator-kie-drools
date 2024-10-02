@@ -31,7 +31,16 @@ public interface DroolsModelBuildContext {
 
     String APPLICATION_PROPERTIES_FILE_NAME = "application.properties";
     String DEFAULT_PACKAGE_NAME = "org.kie.kogito.app";
+    /**
+     * (boolean) enable/disable global rest endpoint generation (default true)
+     *
+     * kogito.generate.rest.(engine_name) -> (boolean) enable/disable engine rest endpoint generation (default true)
+     *
+     */
     String KOGITO_GENERATE_REST = "kogito.generate.rest";
+    /**
+     * (boolean) dependency injection is available and enabled (default true)
+     */
     String KOGITO_GENERATE_DI = "kogito.generate.di";
 
     Optional<String> getApplicationProperty(String property);
