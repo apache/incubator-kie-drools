@@ -142,6 +142,8 @@
               <exclude>**/branch.yaml</exclude>
               <exclude>**/main.yaml</exclude>
               <exclude>**/mvel.jj</exclude>
+              <exclude>**/JavaLexer.g4</exclude>
+              <exclude>**/JavaParser.g4</exclude>
               <exclude>**/*.csv</exclude>
               <exclude>**/*.sdo</exclude>
               <exclude>**/*.sdt</exclude>
