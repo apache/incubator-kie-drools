@@ -62,6 +62,7 @@ public class Metadata {
     public static final String LINK_NAME = "LinkName";
     public static final String CONDITION = "Condition";
     public static final String IS_FOR_COMPENSATION = "isForCompensation";
+    public static final String COMPENSATE_WHEN_ABORTED = "compensateIfAborted";
     public static final String CORRELATION_KEY = "CorrelationKey";
     public static final String CUSTOM_ASYNC = "customAsync";
     public static final String CUSTOM_AUTO_START = "customAutoStart";

@@ -1,8 +1,8 @@
 {
   "id": "compensation",
   "version": "1.0",
-  "name": "Workflow Error example",
-  "description": "An example of how compensation works",
+  "name": "Workflow compensation",
+  "description": "Test compensation works",
   "start": "printStatus",
    "errors": [
     {

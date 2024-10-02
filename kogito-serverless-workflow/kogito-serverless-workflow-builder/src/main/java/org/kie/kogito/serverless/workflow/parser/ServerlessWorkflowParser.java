@@ -147,6 +147,7 @@ public class ServerlessWorkflowParser {
         handlers.forEach(StateHandler::handleConnections);
         if (parserContext.isCompensation()) {
             factory.metaData(Metadata.COMPENSATION, true);
+            factory.metaData(Metadata.COMPENSATE_WHEN_ABORTED, true);
             factory.addCompensationContext(workflow.getId());
         }
         TimeoutsDefinition timeouts = workflow.getTimeouts();

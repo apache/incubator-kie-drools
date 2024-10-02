@@ -1,0 +1,59 @@
+{
+  "id": "automatic_compensation",
+  "version": "1.0",
+  "name": "Workflow abortion compensation",
+  "description": "Testing automatic compensation on abort",
+  "start": "double",
+   "functions": [
+    {
+      "name": "double",
+      "type": "expression",
+      "operation": ".value*=2"
+    }, 
+    {
+      "name": "half", 
+      "type": "expression", 
+      "operation": ".value/=2"
+    }],
+    "events": [
+    {
+      "name": "never",
+      "source": "",
+      "type": "never"
+    }
+  ],
+  "states": [
+ 	{
+      "name": "double",
+      "type": "operation",
+      "compensatedBy" : "half",
+      "actions" : [{
+         "functionRef" : "double" 
+      }],
+      "transition": "waitEvent"
+    }, 
+    {
+      "name": "waitEvent",
+      "type": "event",
+       "onEvents": [
+        {
+          "eventRefs": [
+            "never"
+          ],
+          "actions": [ 
+          ]
+        }
+       ], 
+      "end" : true
+    },
+    {
+      "name": "half",
+      "usedForCompensation" : true,
+      "type": "operation",
+      "actions" : [{
+         "functionRef" : "half"
+      }], 
+      "end": true
+   }
+  ]
+}
