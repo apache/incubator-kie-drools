@@ -31,8 +31,17 @@ import org.kie.kogito.rules.RuleUnitConfig;
 public final class NamedRuleUnitConfig {
 
     private static String CONFIG_PREFIX = "kogito.rules.";
+    /**
+     * (string) kind of event processing type for a given rule-unit; possible values: CLOUD, STREAM; default is null
+     */
     private static String CONFIG_EVENT_PROCESSING_TYPE = CONFIG_PREFIX + "\"%s\".event-processing-type";
+    /**
+     * (string) kind of event clock type for a given rule-unit; possible values: PSEUDO, REALTIME; default is null
+     */
     private static String CONFIG_CLOCK_TYPE = CONFIG_PREFIX + "\"%s\".clock-type";
+    /**
+     * (integer) size of session poolfor a given rule-unit; possible values; default is null
+     */
     private static String CONFIG_SESSIONS_POOL = CONFIG_PREFIX + "\"%s\".sessions-pool";
 
     public static List<NamedRuleUnitConfig> fromContext(KogitoBuildContext context) {

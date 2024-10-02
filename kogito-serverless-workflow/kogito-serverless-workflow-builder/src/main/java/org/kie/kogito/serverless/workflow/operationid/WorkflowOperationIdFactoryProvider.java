@@ -25,6 +25,14 @@ import java.util.ServiceLoader;
 
 public class WorkflowOperationIdFactoryProvider {
 
+    /**
+     * (string) strategy for generating the configuration key of open API specifications; possible values are:
+     * file_name: uses the last element of the spec uri
+     * full_uri: uses the full path of the uri
+     * spec_title: uses the spec title
+     * function_name: uses the function name
+     *
+     */
     public static final String PROPERTY_NAME = "kogito.sw.operationIdStrategy";
 
     private static final Map<String, WorkflowOperationIdFactory> operationIds = new HashMap<>();

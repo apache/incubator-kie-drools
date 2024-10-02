@@ -72,8 +72,37 @@ public class DecisionCodegen extends AbstractGenerator {
     public static final Logger LOGGER = LoggerFactory.getLogger(DecisionCodegen.class);
     public static final String GENERATOR_NAME = "decisions";
 
+    /**
+     *  (boolean) generate java classes to support strongly typed input (default false)
+     */
     public static String STRONGLY_TYPED_CONFIGURATION_KEY = "kogito.decisions.stronglytyped";
+    /**
+     * model validation strategy; possible values: ENABLED, DISABLED, IGNORE; (default ENABLED)
+     */
     public static String VALIDATION_CONFIGURATION_KEY = "kogito.decisions.validation";
+
+    /**
+     * (string) kafka bootstrap server address
+     */
+    public static final String KOGITO_ADDON_TRACING_DECISION_KAFKA_BOOTSTRAPADDRESS = "kogito.addon.tracing.decision.kafka.bootstrapAddress";
+    /**
+     * (string) name of the decision topic; default to kogito-tracing-decision
+     */
+    public static final String KOGITO_ADDON_TRACING_DECISION_KAFKA_TOPIC_NAME = "kogito.addon.tracing.decision.kafka.topic.name";
+    /**
+     * (integer) number of decision topic partitions; default to 1
+     */
+    public static final String KOGITO_ADDON_TRACING_DECISION_KAFKA_TOPIC_PARTITIONS = "kogito.addon.tracing.decision.kafka.topic.partitions";
+
+    /**
+     * (integer) number of decision topic replication factor; default to 1
+     */
+    public static final String KOGITO_ADDON_TRACING_DECISION_KAFKA_TOPIC_REPLICATION_FACTOR = "kogito.addon.tracing.decision.kafka.topic.replicationFactor";
+
+    /**
+     * (boolean) enable/disable asynchronous collection of decision events; default to true
+     */
+    public static final String KOGITO_ADDON_TRACING_DECISION_ASYNC_ENABLED = "kogito.addon.tracing.decision.asyncEnabled";
 
     public static DecisionCodegen ofCollectedResources(KogitoBuildContext context, Collection<CollectedResource> resources) {
         OASFactoryResolver.instance(); // manually invoke SPI, o/w Kogito CodeGen Kogito Quarkus extension failure at NewFileHotReloadTest due to java.util.ServiceConfigurationError: org.eclipse.microprofile.openapi.spi.OASFactoryResolver: io.smallrye.openapi.spi.OASFactoryResolverImpl not a subtype

@@ -23,6 +23,9 @@ package org.kie.kogito.codegen.core;
  */
 public class GeneratorConfig {
 
+    /**
+     * the type of generated rest (currently used only by processes); possible values: reactive; (default is empty)
+     */
     public static final String KOGITO_REST_RESOURCE_TYPE_PROP = "kogito.rest.resource.type";
 
     private GeneratorConfig() {

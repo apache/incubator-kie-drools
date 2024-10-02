@@ -42,6 +42,11 @@ import jakarta.enterprise.inject.Produces;
 @ApplicationScoped
 public class KogitoBeanProducer {
 
+    /**
+     * (string) strategy to resolve a Process version to use; possible values: project, workflow; if "project", requires project GAV; default is workflow
+     */
+    public static final String KOGITO_WORKFLOW_VERSION_STRATEGY = "kogito.workflow.version-strategy";
+
     @DefaultBean
     @Produces
     CorrelationService correlationService() {
