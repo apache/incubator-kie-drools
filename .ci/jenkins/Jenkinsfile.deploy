@@ -160,7 +160,9 @@ pipeline {
                         }
                         if (isRelease()) {
                             release.gpgImportKeyFromStringWithoutPassword(getReleaseGpgSignKeyCredsId())
-                            mavenCommand.withProfiles(['apache-release'])
+                            mavenCommand
+                            .withProfiles(['apache-release'])
+                            .withProperty('only.reproducible')
                             mavenRunClosure()
                         } else {
                             mavenRunClosure()

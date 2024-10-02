@@ -20,26 +20,34 @@
 
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-    <modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-build-parent</artifactId>
-        <version>999-SNAPSHOT</version>
-        <relativePath>../kogito-build/kogito-build-parent/pom.xml</relativePath>
+  <parent>
+    <groupId>org.kie.kogito</groupId>
+    <artifactId>kogito-build-parent</artifactId>
+    <version>999-SNAPSHOT</version>
+    <relativePath>../kogito-build/kogito-build-parent/pom.xml</relativePath>
 
-    </parent>
+  </parent>
 
-    <artifactId>jbpm</artifactId>
-    <packaging>pom</packaging>
-    <name>Kogito :: jBPM</name>
-    <description>jBPM: a Business Process Management</description>
-    <url>http://www.jbpm.org</url>
+  <artifactId>jbpm</artifactId>
+  <packaging>pom</packaging>
+  <name>Kogito :: jBPM</name>
+  <description>jBPM: a Business Process Management</description>
+  <url>http://www.jbpm.org</url>
 
-    <modules>
+  <profiles>
+    <profile>
+      <id>allSubmodules</id>
+      <activation>
+        <property>
+          <name>!only.reproducible</name>
+        </property>
+      </activation>
+      <modules>
         <module>jbpm-flow</module>
         <module>jbpm-flow-builder</module>
         <module>jbpm-bpmn2</module>
@@ -50,6 +58,28 @@
         <module>jbpm-tools</module>
         <module>jbpm-tests</module>
         <module>jbpm-deps-groups</module>
-    </modules>
+      </modules>
+    </profile>
+
+    <profile>
+      <id>onlyReproducible</id>
+      <activation>
+        <property>
+          <name>only.reproducible</name>
+        </property>
+      </activation>
+      <modules>
+        <module>jbpm-flow</module>
+        <module>jbpm-flow-builder</module>
+        <module>jbpm-bpmn2</module>
+        <module>jbpm-flow-migration</module>
+        <module>process-serialization-protobuf</module>
+        <module>process-workitems</module>
+        <module>jbpm-usertask</module>
+        <module>jbpm-tools</module>
+        <module>jbpm-deps-groups</module>
+      </modules>
+    </profile>
+  </profiles>
 
 </project>
