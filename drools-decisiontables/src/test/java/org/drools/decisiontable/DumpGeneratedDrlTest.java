@@ -23,9 +23,9 @@ import java.io.FilenameFilter;
 
 import org.apache.commons.io.FileUtils;
 import org.drools.util.IoUtils;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.io.Resource;
@@ -57,7 +57,7 @@ public class DumpGeneratedDrlTest {
     private File dumpDir;
     private String dumpDirPropOrigValue;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         dumpDir = new File("target/drools-dump-dir");
         // delete the dir before test to remove possible leftovers from previous runs
@@ -71,7 +71,7 @@ public class DumpGeneratedDrlTest {
         System.setProperty(DumpDirOption.PROPERTY_NAME, dumpDir.getAbsolutePath());
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         if (dumpDirPropOrigValue != null) {
             System.setProperty(DumpDirOption.PROPERTY_NAME, dumpDirPropOrigValue);

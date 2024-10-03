@@ -29,7 +29,7 @@ import org.drools.ruleunits.api.RuleUnitInstance;
 import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.rule.FactHandle;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @QuarkusTest
 public class RuntimeTest {
@@ -69,7 +69,7 @@ public class RuntimeTest {
 
         instance.fire();
 
-        assertEquals("Hi 1", output.get().getText());
+        assertThat(output.get().getText()).isEqualTo("Hi 1");
     }
 
     @Test
@@ -101,6 +101,6 @@ public class RuntimeTest {
 
         instance.fire();
 
-        assertEquals("Hi 2", output.get().getText());
+        assertThat(output.get().getText()).isEqualTo("Hi 2");
     }
 }

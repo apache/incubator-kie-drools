@@ -90,31 +90,33 @@ public class ProjectRuntimeGenerator {
     }
 
     private void writeGetDefaultKieBaseMethod(ClassOrInterfaceDeclaration clazz) {
-        MethodDeclaration getDefaultKieBaseMethod = clazz.findAll(MethodDeclaration.class).stream()
-                .filter(m -> m.getNameAsString().equals("getKieBase"))
-                .filter(m -> m.getParameters().isEmpty())
-                .findFirst()
-                .orElseThrow(() -> new InvalidTemplateException(generator, "Cannot find getKieBase method"));
-
         if (modelMethod.getDefaultKieBaseName() != null) {
-            getDefaultKieBaseMethod.findFirst(StringLiteralExpr.class)
+            findDefaultKieMethod(clazz, "getKieBase").findFirst(StringLiteralExpr.class)
                     .orElseThrow(() -> new InvalidTemplateException(generator, "Cannot find string inside getKieBase method"))
                     .setString(modelMethod.getDefaultKieBaseName());
         }
     }
 
     private void writeNewDefaultKieSessionMethod(ClassOrInterfaceDeclaration clazz) {
-        MethodDeclaration newDefaultKieSessionMethod = clazz.findAll(MethodDeclaration.class).stream()
-                .filter(m -> m.getNameAsString().equals("newKieSession"))
-                .filter(m -> m.getParameters().isEmpty())
-                .findFirst()
-                .orElseThrow(() -> new InvalidTemplateException(generator, "Cannot find newKieSession method"));
-
         if (modelMethod.getDefaultKieSessionName() != null) {
-            newDefaultKieSessionMethod.findFirst(StringLiteralExpr.class)
+            findDefaultKieMethod(clazz, "newKieSession").findFirst(StringLiteralExpr.class)
                     .orElseThrow(() -> new InvalidTemplateException(generator, "Cannot find string inside newKieSession method"))
                     .setString(modelMethod.getDefaultKieSessionName());
         }
+
+        if (modelMethod.getDefaultKieStatelessSessionName() != null) {
+            findDefaultKieMethod(clazz, "newStatelessKieSession").findFirst(StringLiteralExpr.class)
+                    .orElseThrow(() -> new InvalidTemplateException(generator, "Cannot find string inside newStatelessKieSession method"))
+                    .setString(modelMethod.getDefaultKieStatelessSessionName());
+        }
+    }
+
+    private MethodDeclaration findDefaultKieMethod(ClassOrInterfaceDeclaration clazz, String methodName) {
+        return clazz.findAll(MethodDeclaration.class).stream()
+                .filter(m -> m.getNameAsString().equals(methodName))
+                .filter(m -> m.getParameters().isEmpty())
+                .findFirst()
+                .orElseThrow(() -> new InvalidTemplateException(generator, "Cannot find " + methodName + " method"));
     }
 
     private void writeGetKieBaseForSessionMethod(ClassOrInterfaceDeclaration clazz) {

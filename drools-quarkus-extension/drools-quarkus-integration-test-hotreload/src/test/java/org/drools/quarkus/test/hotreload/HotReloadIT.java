@@ -28,8 +28,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
 import static io.restassured.RestAssured.given;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class HotReloadIT {
 
@@ -50,7 +49,7 @@ public class HotReloadIT {
     public void testServletChange() throws InterruptedException {
         String personsPayload = "[{\"name\":\"Mario\",\"age\":45,\"adult\":false},{\"name\":\"Sofia\",\"age\":17,\"adult\":false}]";
 
-        List names = given()
+        List<String> names = given()
                 .baseUri("http://localhost:" + HTTP_TEST_PORT)
                 .contentType(ContentType.JSON)
                 .accept(ContentType.JSON)
@@ -60,10 +59,9 @@ public class HotReloadIT {
                 .then()
                 .statusCode(200)
                 .extract()
-                .as(List.class);
+                .<List<String>>as(List.class);
 
-        assertEquals(1, names.size());
-        assertEquals("Mario", names.get(0));
+        assertThat(names).hasSize(1).containsExactly("Mario");
 
         test.modifyResourceFile(RESOURCE_FILE, s -> s.replaceAll("18", "16"));
 
@@ -75,10 +73,8 @@ public class HotReloadIT {
                 .post("/find-adult")
                 .then()
                 .statusCode(200)
-                .extract().as(List.class);
+                .extract().<List<String>>as(List.class);
 
-        assertEquals(2, names.size());
-        assertTrue(names.contains("Mario"));
-        assertTrue(names.contains("Sofia"));
+        assertThat(names).hasSize(2).containsExactlyInAnyOrder("Mario", "Sofia");
     }
 }

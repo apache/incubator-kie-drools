@@ -298,6 +298,12 @@ public class KieBuilderImpl
                 kieRepository.addKieModule( kDep );
             }
         }
+
+        clearBuilderCache();
+    }
+
+    private static void clearBuilderCache() {
+        DecisionTableFactory.clearCompilerCache();
     }
 
     private void addKBasesFilesToTrg() {

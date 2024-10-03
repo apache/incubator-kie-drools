@@ -20,6 +20,7 @@ package org.kie.dmn.feel.runtime.functions;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
+import org.kie.dmn.feel.util.XQueryImplUtil;
 
 public class ReplaceFunction
         extends BaseFEELFunction {
@@ -30,12 +31,12 @@ public class ReplaceFunction
         super( "replace" );
     }
 
-    public FEELFnResult<Object> invoke(@ParameterName("input") String input, @ParameterName("pattern") String pattern,
+    public FEELFnResult<String> invoke(@ParameterName("input") String input, @ParameterName("pattern") String pattern,
                                        @ParameterName( "replacement" ) String replacement ) {
         return invoke(input, pattern, replacement, null);
     }
 
-    public FEELFnResult<Object> invoke(@ParameterName("input") String input, @ParameterName("pattern") String pattern,
+    public FEELFnResult<String> invoke(@ParameterName("input") String input, @ParameterName("pattern") String pattern,
                                        @ParameterName( "replacement" ) String replacement, @ParameterName("flags") String flags) {
         if ( input == null ) {
             return FEELFnResult.ofError( new InvalidParametersEvent( Severity.ERROR, "input", "cannot be null" ) );
@@ -47,14 +48,16 @@ public class ReplaceFunction
             return FEELFnResult.ofError( new InvalidParametersEvent( Severity.ERROR, "replacement", "cannot be null" ) );
         }
 
-        final String flagsString;
-        if (flags != null && !flags.isEmpty()) {
-            flagsString = "(?" + flags + ")";
-        } else {
-            flagsString = "";
+        try {
+            return FEELFnResult.ofResult(XQueryImplUtil.executeReplaceFunction(input, pattern, replacement, flags));
+        } catch (Exception e) {
+            String errorMessage = String.format("Provided parameters lead to an error. Input: '%s', Pattern: '%s', Replacement: '%s', Flags: '%s'. ",
+                    input, pattern, replacement, flags);
+            if (e.getMessage() != null && !e.getMessage().isEmpty()) {
+                errorMessage += e.getMessage();
+            }
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, errorMessage, e));
         }
-
-        return FEELFnResult.ofResult( input.replaceAll( flagsString + pattern, replacement ) );
     }
 
 }

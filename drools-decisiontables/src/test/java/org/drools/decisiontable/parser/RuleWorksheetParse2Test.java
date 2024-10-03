@@ -22,7 +22,7 @@ import org.drools.template.model.DRLOutput;
 import org.drools.template.model.Package;
 import org.drools.template.parser.DataListener;
 import org.drools.template.parser.DecisionTableParseException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatException;

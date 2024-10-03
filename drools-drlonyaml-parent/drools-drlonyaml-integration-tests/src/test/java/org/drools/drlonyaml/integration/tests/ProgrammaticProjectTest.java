@@ -18,72 +18,26 @@
  */
 package org.drools.drlonyaml.integration.tests;
 
-import java.io.StringReader;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
-import org.drools.drl.ast.descr.PackageDescr;
-import org.drools.drl.parser.DrlParser;
-import org.drools.drlonyaml.model.DrlPackage;
 import org.drools.model.codegen.ExecutableModelProject;
-import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.utils.KieHelper;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.drools.drlonyaml.model.Utils.getYamlMapper;
 
 public class ProgrammaticProjectTest {
 
-    @Test
-    public void testDrl() {
-        KieSession ksession = new KieHelper()
-                .addContent(getDrlRule(), "org/drools/drlonyaml/integration/tests/rule.drl")
-                .build(ExecutableModelProject.class)
-                .newKieSession();
 
-        checkKieSession(ksession);
-    }
-
-    @Test
-    public void testYaml() {
-        KieSession ksession = new KieHelper()
-                .addContent(getYamlRule(), "org/drools/drlonyaml/integration/tests/rule.drl.yaml")
-                .build(ExecutableModelProject.class)
-                .newKieSession();
-
-        checkKieSession(ksession);
-    }
-
-    private static void checkKieSession(KieSession ksession) {
-        List<String> result = new ArrayList<>();
-        ksession.setGlobal("result", result);
-
-        ksession.insert(new Message("test"));
-        ksession.insert(new Message("Hello World"));
-        ksession.insert(10);
-        ksession.insert(11);
-
-        int count = ksession.fireAllRules();
-        assertThat(count).isEqualTo(1);
-        assertThat(result).hasSize(1);
-        assertThat(result.get(0)).isEqualTo("Hello World");
-    }
-
-    private String drl2yaml(String drl) {
-        try (StringWriter writer = new StringWriter()) {
-            PackageDescr pkgDescr = new DrlParser().parse(new StringReader(drl));
-            DrlPackage model = DrlPackage.from(pkgDescr);
-            getYamlMapper().writeValue(writer, model);
-            return writer.toString();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private String getDrlRule() {
-        return """
+    private static Stream<Arguments> params() {
+    	return Stream.of(
+    			Arguments.of("org/drools/drlonyaml/integration/tests/rule.drl",
+    			"""
                 package org.drools.drlonyaml.integration.tests
 
                 global java.util.List result;
@@ -93,25 +47,49 @@ public class ProgrammaticProjectTest {
                     $m : Message( size == $i )
                 then
                     result.add( $m.getText() );
-                end""";
+                end"""),
+
+    			Arguments.of("org/drools/drlonyaml/integration/tests/rule.drl.yaml", 
+    					"""
+    	                name: org.drools.drlonyaml.integration.tests
+    	                globals:
+    	                - type: java.util.List
+    	                  id: result
+    	                rules:
+    	                - name: R
+    	                  when:
+    	                  - given: Integer
+    	                    as: $i
+    	                  - given: Message
+    	                    as: $m
+    	                    having:
+    	                    - size == $i
+    	                  then: |
+    	                    result.add( $m.getText() );""")
+    			);
+    }
+    
+    @ParameterizedTest
+    @MethodSource("params")
+    public void test1(String name, String content) {
+        KieSession ksession = new KieHelper()
+                .addContent(content, name)
+                .build(ExecutableModelProject.class)
+                .newKieSession();
+
+        List<String> result = new ArrayList<>();
+		ksession.setGlobal("result", result);
+		
+		ksession.insert(new Message("test"));
+		ksession.insert(new Message("Hello World"));
+		ksession.insert(10);
+		ksession.insert(11);
+		
+		int count = ksession.fireAllRules();
+		assertThat(count).isEqualTo(1);
+		assertThat(result).hasSize(1);
+		assertThat(result.get(0)).isEqualTo("Hello World");
     }
 
-    private String getYamlRule() {
-        return """
-                name: org.drools.drlonyaml.integration.tests
-                globals:
-                - type: java.util.List
-                  id: result
-                rules:
-                - name: R
-                  when:
-                  - given: Integer
-                    as: $i
-                  - given: Message
-                    as: $m
-                    having:
-                    - size == $i
-                  then: |
-                    result.add( $m.getText() );""";
-    }
+
 }

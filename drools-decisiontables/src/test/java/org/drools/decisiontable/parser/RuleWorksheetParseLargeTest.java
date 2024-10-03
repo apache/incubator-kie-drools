@@ -21,7 +21,7 @@ package org.drools.decisiontable.parser;
 import java.io.InputStream;
 
 import org.drools.template.model.Package;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

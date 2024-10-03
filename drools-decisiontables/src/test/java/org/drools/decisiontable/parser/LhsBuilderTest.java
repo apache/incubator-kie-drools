@@ -18,7 +18,7 @@
  */
 package org.drools.decisiontable.parser;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.decisiontable.parser.LhsBuilder.FieldType.FORALL_FIELD;

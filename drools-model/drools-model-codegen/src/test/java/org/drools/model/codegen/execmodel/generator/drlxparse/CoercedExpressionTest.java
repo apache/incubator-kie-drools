@@ -127,9 +127,9 @@ public class CoercedExpressionTest {
     @Test
     public void castMaps() {
         final TypedExpression left = expr(THIS_PLACEHOLDER + ".getAge()", Integer.class);
-        final TypedExpression right = expr("$m.get(\"age\")", java.util.Map.class);
+        final TypedExpression right = expr("$m.get(\"age\")", Object.class);
         final CoercedExpression.CoercedExpressionResult coerce = new CoercedExpression(left, right, false).coerce();
-        assertThat(coerce.getCoercedRight()).isEqualTo(expr("(java.lang.Integer)$m.get(\"age\")", Map.class));
+        assertThat(coerce.getCoercedRight()).isEqualTo(expr("$m.get(\"age\")", Object.class));
     }
 
     @Test

@@ -109,9 +109,12 @@ public class TimerAndCalendarFireUntilHaltTest {
         startEngine();
 
         activateRule();
-        advanceTimerOneSecond();
-        
         await().until(ruleHasFired("TimerRule", 1));
+
+        advanceTimerOneSecond();
+        await().until(ruleHasFired("TimerRule", 2));
+
+        stopEngine();
     }
     
     @Test(timeout = 10000)
@@ -126,14 +129,17 @@ public class TimerAndCalendarFireUntilHaltTest {
                            "end";
         setupKSessionFor(drl);
         startEngine();
+
         activateRule();
-        advanceTimerOneSecond();
         await().until(ruleHasFired("TimerRule", 1));
+
+        advanceTimerOneSecond();
+        await().until(ruleHasFired("TimerRule", 2));
         
         stopEngine();
 
         advanceTimerOneSecond();
-        await().during(Duration.ofSeconds(1)).atMost(Duration.ofSeconds(2)).until(ruleHasFired("TimerRule", 1));
+        await().during(Duration.ofSeconds(1)).atMost(Duration.ofSeconds(2)).until(ruleHasFired("TimerRule", 2));
     }
     
     @Test(timeout = 10000)
@@ -148,15 +154,20 @@ public class TimerAndCalendarFireUntilHaltTest {
                            "end";
         setupKSessionFor(drl);
         startEngine();
+
         activateRule();
-        advanceTimerOneSecond();
         await().until(ruleHasFired("TimerRule", 1));
+
+        advanceTimerOneSecond();
+        await().until(ruleHasFired("TimerRule", 2));
         
         stopEngine();
         startEngine();
 
         advanceTimerOneSecond();
-        await().during(Duration.ofSeconds(1)).atMost(Duration.ofSeconds(2)).until(ruleHasFired("TimerRule", 2));
+        await().during(Duration.ofSeconds(1)).atMost(Duration.ofSeconds(2)).until(ruleHasFired("TimerRule", 3));
+
+        stopEngine();
     }
 
     @Test(timeout = 10000)
@@ -171,18 +182,21 @@ public class TimerAndCalendarFireUntilHaltTest {
                            "end";
         setupKSessionFor(drl);
         startEngine();
+
         activateRule();
-        advanceTimerOneSecond();
-        
         await().until(ruleHasFired("TimerRule", 1));
+
+        advanceTimerOneSecond();
+        await().until(ruleHasFired("TimerRule", 2));
         
         stopEngine();
         disactivateRule();
         startEngine();
 
         advanceTimerOneSecond();
+        await().during(Duration.ofSeconds(1)).atMost(Duration.ofSeconds(2)).until(ruleHasFired("TimerRule", 2));
 
-        await().during(Duration.ofSeconds(1)).atMost(Duration.ofSeconds(2)).until(ruleHasFired("TimerRule", 1));
+        stopEngine();
     }
 
  

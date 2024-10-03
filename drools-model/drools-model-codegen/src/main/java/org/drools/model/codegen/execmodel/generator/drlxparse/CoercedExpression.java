@@ -52,6 +52,8 @@ import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.toClass
 import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.toJavaParserType;
 import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.toStringLiteral;
 import static org.drools.util.ClassUtils.toNonPrimitiveType;
+import static org.drools.util.CoercionUtil.areComparisonCompatible;
+import static org.drools.util.CoercionUtil.areEqualityCompatible;
 
 public class CoercedExpression {
 
@@ -151,7 +153,20 @@ public class CoercedExpression {
             coercedLeft = left;
         }
 
+        checkCoercion(coercedLeft, coercedRight, leftClass, rightClass);
         return new CoercedExpressionResult(coercedLeft, coercedRight, rightAsStaticField);
+    }
+
+    private void checkCoercion(TypedExpression coercedLeft, TypedExpression coercedRight, Class<?> leftClass, Class<?> rightClass) {
+        if (equalityExpr) {
+            if (!areEqualityCompatible(coercedLeft.getRawClass(), coercedRight.getRawClass())) {
+                throw new CoercedExpressionException(new InvalidExpressionErrorResult("Equality operation requires compatible types. Found " + leftClass + " and " + rightClass));
+            }
+        } else {
+            if (!areComparisonCompatible(coercedLeft.getRawClass(), coercedRight.getRawClass())) {
+                throw new CoercedExpressionException(new InvalidExpressionErrorResult("Comparison operation requires compatible types. Found " + leftClass + " and " + rightClass));
+            }
+        }
     }
 
     private boolean isBoolean(Class<?> leftClass) {
@@ -163,12 +178,14 @@ public class CoercedExpression {
     }
 
     private boolean canCoerce() {
-        final Class<?> leftClass = left.getRawClass();
+        return canCoerce(left.getRawClass(), right.getRawClass());
+    }
+
+    private static boolean canCoerce(Class<?> leftClass, Class<?> rightClass) {
         if (!leftClass.isPrimitive() || !canCoerceLiteralNumberExpr(leftClass)) {
             return true;
         }
 
-        final Class<?> rightClass = right.getRawClass();
         return rightClass.isPrimitive()
                 || Number.class.isAssignableFrom(rightClass)
                 || Boolean.class == rightClass
