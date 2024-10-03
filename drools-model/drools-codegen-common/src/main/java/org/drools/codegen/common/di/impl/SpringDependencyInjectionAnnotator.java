@@ -18,6 +18,10 @@
  */
 package org.drools.codegen.common.di.impl;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Optional;
+
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.BooleanLiteralExpr;
@@ -35,10 +39,6 @@ import com.github.javaparser.ast.expr.TypeExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithAnnotations;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.codegen.common.di.DependencyInjectionAnnotator;
-
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Optional;
 
 public class SpringDependencyInjectionAnnotator implements DependencyInjectionAnnotator {
 
@@ -179,6 +179,11 @@ public class SpringDependencyInjectionAnnotator implements DependencyInjectionAn
     public <T extends NodeWithAnnotations<?>> T withFactoryClass(T node) {
         node.addAnnotation("org.springframework.context.annotation.Configuration");
         return node;
+    }
+
+    @Override
+    public String getTransactionalAnnotation() {
+        return "org.springframework.transaction.annotation.Transactional";
     }
 
     @Override

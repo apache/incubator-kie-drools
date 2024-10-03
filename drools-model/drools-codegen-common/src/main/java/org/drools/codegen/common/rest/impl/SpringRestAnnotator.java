@@ -29,7 +29,7 @@ public class SpringRestAnnotator implements RestAnnotator {
 
     @Override
     public <T extends NodeWithAnnotations<?>> boolean isRestAnnotated(T node) {
-        return Stream.of("PostMapping", "GetMapping", "PutMapping", "DeleteMapping")
+        return Stream.of("PostMapping", "GetMapping", "PutMapping", "DeleteMapping", "PatchMapping")
                 .map(node::getAnnotationByName)
                 .anyMatch(Optional::isPresent);
     }
