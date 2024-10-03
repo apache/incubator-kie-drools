@@ -25,6 +25,8 @@ import java.util.stream.Stream;
 import org.junit.jupiter.params.provider.Arguments;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.api.context.impl.JavaKogitoBuildContext;
+import org.kie.kogito.codegen.api.context.impl.MockQuarkusKogitoBuildContext;
+import org.kie.kogito.codegen.api.context.impl.MockSpringBootKogitoBuildContext;
 import org.kie.kogito.codegen.api.context.impl.QuarkusKogitoBuildContext;
 import org.kie.kogito.codegen.api.context.impl.SpringBootKogitoBuildContext;
 
@@ -42,6 +44,16 @@ public class KogitoContextTestUtils {
                 Arguments.of(JavaKogitoBuildContext.builder()),
                 Arguments.of(QuarkusKogitoBuildContext.builder()),
                 Arguments.of(SpringBootKogitoBuildContext.builder()));
+    }
+
+    /**
+     *
+     * @return <b>Mocked</b> <code>QuarkusKogitoBuildContext</code> and <code>SpringBootKogitoBuildContext</code> providing <code>hasRest() = true</code>
+     */
+    public static Stream<Arguments> restContextBuilders() {
+        return Stream.of(
+                Arguments.of(MockQuarkusKogitoBuildContext.builder()),
+                Arguments.of(MockSpringBootKogitoBuildContext.builder()));
     }
 
     public static Predicate<String> mockClassAvailabilityResolver(Collection<String> includedClasses, Collection<String> excludedClasses) {

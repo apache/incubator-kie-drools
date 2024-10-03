@@ -49,7 +49,7 @@ public class CodegenMessageStartEventTest {
     private static final Path MESSAGE_START_END_EVENT_SOURCE_FULL_SOURCE = BASE_PATH.resolve(MESSAGE_START_END_EVENT_SOURCE);
 
     @ParameterizedTest
-    @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#contextBuilders")
+    @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#restContextBuilders")
     public void testRESTApiForMessageStartEvent(KogitoBuildContext.Builder contextBuilder) {
 
         KogitoBuildContext context = contextBuilder.build();
@@ -80,7 +80,7 @@ public class CodegenMessageStartEventTest {
     }
 
     @ParameterizedTest
-    @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#contextBuilders")
+    @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#restContextBuilders")
     public void testRESTApiForMessageEndEvent(KogitoBuildContext.Builder contextBuilder) {
 
         KogitoBuildContext context = contextBuilder.build();

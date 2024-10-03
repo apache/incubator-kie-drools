@@ -43,7 +43,7 @@ public class CodegenUserTaskTest {
     private static final Path MESSAGE_USERTASK_SOURCE_FULL_SOURCE = BASE_PATH.resolve(MESSAGE_USERTASK_SOURCE);
 
     @ParameterizedTest
-    @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#contextBuilders")
+    @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#restContextBuilders")
     public void testRESTApiForMessageStartEvent(KogitoBuildContext.Builder contextBuilder) {
 
         KogitoBuildContext context = contextBuilder.build();

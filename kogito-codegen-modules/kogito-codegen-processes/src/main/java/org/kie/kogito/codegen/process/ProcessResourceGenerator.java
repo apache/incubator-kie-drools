@@ -29,6 +29,8 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+import org.drools.codegen.common.di.DependencyInjectionAnnotator;
+import org.drools.codegen.common.rest.RestAnnotator;
 import org.drools.util.StringUtils;
 import org.jbpm.compiler.canonical.ProcessToExecModelGenerator;
 import org.jbpm.compiler.canonical.TriggerMetaData;
@@ -44,6 +46,8 @@ import org.kie.kogito.codegen.core.CodegenUtils;
 import org.kie.kogito.codegen.core.GeneratorConfig;
 import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
 import org.kie.kogito.internal.utils.ConversionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier.Keyword;
@@ -73,6 +77,15 @@ import static org.kie.kogito.internal.utils.ConversionUtils.sanitizeJavaName;
  */
 public class ProcessResourceGenerator {
 
+    /**
+     * Flag used to configure transaction enablement. Default to <code>true</code>
+     */
+    public static final String TRANSACTION_ENABLED = "transactionEnabled";
+
+    static final String INVALID_CONTEXT_TEMPLATE = "ProcessResourceGenerator can't be used for context without Rest %s";
+
+    private static final Logger LOG = LoggerFactory.getLogger(ProcessResourceGenerator.class);
+
     private static final String REST_TEMPLATE_NAME = "RestResource";
     private static final String REACTIVE_REST_TEMPLATE_NAME = "ReactiveRestResource";
     private static final String REST_USER_TASK_TEMPLATE_NAME = "RestResourceUserTask";
@@ -93,6 +106,7 @@ public class ProcessResourceGenerator {
 
     private boolean startable;
     private boolean dynamic;
+    private boolean transactionEnabled;
     private List<TriggerMetaData> triggers;
 
     private List<UserTaskModelMetaData> userTasks;
@@ -106,6 +120,9 @@ public class ProcessResourceGenerator {
             String modelfqcn,
             String processfqcn,
             String appCanonicalName) {
+        if (!context.hasRest()) {
+            throw new IllegalArgumentException(String.format(INVALID_CONTEXT_TEMPLATE, context.name()));
+        }
         this.context = context;
         this.process = process;
         this.processId = process.getId();
@@ -134,6 +151,11 @@ public class ProcessResourceGenerator {
         return this;
     }
 
+    public ProcessResourceGenerator withTransaction(boolean transactionEnabled) {
+        this.transactionEnabled = transactionEnabled;
+        return this;
+    }
+
     public String getTaskModelFactory() {
         return taskModelFactoryUnit.toString();
     }
@@ -149,27 +171,104 @@ public class ProcessResourceGenerator {
     protected String getRestTemplateName() {
         boolean isReactiveGenerator = "reactive".equals(context.getApplicationProperty(GeneratorConfig.KOGITO_REST_RESOURCE_TYPE_PROP)
                 .orElse(""));
-        boolean isQuarkus = context.name().equals(QuarkusKogitoBuildContext.CONTEXT_NAME);
+        return isQuarkus() && isReactiveGenerator ? REACTIVE_REST_TEMPLATE_NAME : REST_TEMPLATE_NAME;
+    }
 
-        return isQuarkus && isReactiveGenerator ? REACTIVE_REST_TEMPLATE_NAME : REST_TEMPLATE_NAME;
+    protected boolean isQuarkus() {
+        return context.name().equals(QuarkusKogitoBuildContext.CONTEXT_NAME);
     }
 
     public String generate() {
-        TemplatedGenerator.Builder templateBuilder = TemplatedGenerator.builder()
-                .withFallbackContext(QuarkusKogitoBuildContext.CONTEXT_NAME);
-        CompilationUnit clazz = templateBuilder.build(context, getRestTemplateName())
-                .compilationUnitOrThrow();
-        clazz.setPackageDeclaration(process.getPackageName());
-        clazz.addImport(modelfqcn);
-        clazz.addImport(modelfqcn + "Output");
-        clazz.addImport(modelfqcn + "Input");
-        ClassOrInterfaceDeclaration template = clazz
+        return getCompilationUnit().toString();
+    }
+
+    protected CompilationUnit getCompilationUnit() {
+        TemplatedGenerator.Builder templateBuilder = createTemplatedGeneratorBuilder();
+        CompilationUnit toReturn = createCompilationUnit(templateBuilder);
+        addPackageAndImports(toReturn);
+        ClassOrInterfaceDeclaration template = toReturn
                 .findFirst(ClassOrInterfaceDeclaration.class)
                 .orElseThrow(() -> new NoSuchElementException("Compilation unit doesn't contain a class or interface declaration!"));
 
         template.setName(resourceClazzName);
         AtomicInteger index = new AtomicInteger(0);
         //Generate signals endpoints
+        generateSignalsEndpoints(templateBuilder, template, index);
+
+        // security must be applied before user tasks are added to make sure that user task
+        // endpoints are not security annotated as they should restrict access based on user assignments
+        securityAnnotated(template);
+
+        Map<String, String> typeInterpolations = new HashMap<>();
+        taskModelFactoryUnit = parse(this.getClass().getResourceAsStream("/class-templates/TaskModelFactoryTemplate" +
+                ".java"));
+        String taskModelFactorySimpleClassName =
+                sanitizeClassName(ProcessToExecModelGenerator.extractProcessId(processId) + "_" + "TaskModelFactory");
+        taskModelFactoryUnit.setPackageDeclaration(process.getPackageName());
+        taskModelFactoryClassName = process.getPackageName() + "." + taskModelFactorySimpleClassName;
+        ClassOrInterfaceDeclaration taskModelFactoryClass =
+                taskModelFactoryUnit.findFirst(ClassOrInterfaceDeclaration.class).orElseThrow(IllegalStateException::new);
+        taskModelFactoryClass.setName(taskModelFactorySimpleClassName);
+        typeInterpolations.put("$TaskModelFactory$", taskModelFactoryClassName);
+
+        manageUserTasks(templateBuilder, template, taskModelFactoryClass, index);
+
+        typeInterpolations.put("$Clazz$", resourceClazzName);
+        typeInterpolations.put("$Type$", dataClazzName);
+        template.findAll(StringLiteralExpr.class).forEach(this::interpolateStrings);
+        template.findAll(ClassOrInterfaceType.class).forEach(cls -> interpolateTypes(cls, typeInterpolations));
+
+        TagResourceGenerator.addTags(toReturn, process, context);
+
+        template.findAll(MethodDeclaration.class).forEach(this::interpolateMethods);
+
+        if (context.hasDI()) {
+            template.findAll(FieldDeclaration.class,
+                    CodegenUtils::isProcessField).forEach(fd -> context.getDependencyInjectionAnnotator().withNamedInjection(fd, processId));
+        } else {
+            template.findAll(FieldDeclaration.class,
+                    CodegenUtils::isProcessField).forEach(this::initializeProcessField);
+        }
+
+        // if triggers are not empty remove createResource method as there is another trigger to start process instances
+        if ((!startable && !dynamic) || !isPublic()) {
+            Optional<MethodDeclaration> createResourceMethod =
+                    template.findFirst(MethodDeclaration.class).filter(md -> md.getNameAsString().equals(
+                            "createResource_" + processName));
+            createResourceMethod.ifPresent(template::remove);
+        }
+
+        if (context.hasDI()) {
+            context.getDependencyInjectionAnnotator().withApplicationComponent(template);
+        }
+
+        enableValidation(template);
+
+        manageTransactional(toReturn);
+
+        template.getMembers().sort(new BodyDeclarationComparator());
+        return toReturn;
+    }
+
+    protected TemplatedGenerator.Builder createTemplatedGeneratorBuilder() {
+        return TemplatedGenerator.builder()
+                .withFallbackContext(QuarkusKogitoBuildContext.CONTEXT_NAME);
+    }
+
+    protected CompilationUnit createCompilationUnit(TemplatedGenerator.Builder templateBuilder) {
+        return templateBuilder.build(context, getRestTemplateName())
+                .compilationUnitOrThrow();
+    }
+
+    protected void addPackageAndImports(CompilationUnit compilationUnit) {
+        compilationUnit.setPackageDeclaration(process.getPackageName());
+        compilationUnit.addImport(modelfqcn);
+        compilationUnit.addImport(modelfqcn + "Output");
+        compilationUnit.addImport(modelfqcn + "Input");
+    }
+
+    protected void generateSignalsEndpoints(TemplatedGenerator.Builder templateBuilder,
+            ClassOrInterfaceDeclaration template, AtomicInteger index) {
         Optional.ofNullable(signals)
                 .ifPresent(signalsMap -> {
                     //using template class to the endpoints generation
@@ -265,20 +364,10 @@ public class ProcessResourceGenerator {
                                 });
                             });
                 });
+    }
 
-        // security must be applied before user tasks are added to make sure that user task
-        // endpoints are not security annotated as they should restrict access based on user assignments
-        securityAnnotated(template);
-
-        Map<String, String> typeInterpolations = new HashMap<>();
-        taskModelFactoryUnit = parse(this.getClass().getResourceAsStream("/class-templates/TaskModelFactoryTemplate.java"));
-        String taskModelFactorySimpleClassName = sanitizeClassName(ProcessToExecModelGenerator.extractProcessId(processId) + "_" + "TaskModelFactory");
-        taskModelFactoryUnit.setPackageDeclaration(process.getPackageName());
-        taskModelFactoryClassName = process.getPackageName() + "." + taskModelFactorySimpleClassName;
-        ClassOrInterfaceDeclaration taskModelFactoryClass = taskModelFactoryUnit.findFirst(ClassOrInterfaceDeclaration.class).orElseThrow(IllegalStateException::new);
-        taskModelFactoryClass.setName(taskModelFactorySimpleClassName);
-        typeInterpolations.put("$TaskModelFactory$", taskModelFactoryClassName);
-
+    protected void manageUserTasks(TemplatedGenerator.Builder templateBuilder, ClassOrInterfaceDeclaration template,
+            ClassOrInterfaceDeclaration taskModelFactoryClass, AtomicInteger index) {
         if (userTasks != null && !userTasks.isEmpty()) {
 
             CompilationUnit userTaskClazz = templateBuilder.build(context, REST_USER_TASK_TEMPLATE_NAME).compilationUnitOrThrow();
@@ -310,44 +399,42 @@ public class ProcessResourceGenerator {
                     template.findAll(MethodDeclaration.class)
                             .stream()
                             .filter(md -> md.getNameAsString().equals(SIGNAL_METHOD_PREFFIX + methodSuffix))
-                            .collect(Collectors.toList()).forEach(template::remove);
+                            .forEach(template::remove);
                 }
                 switchExpr.getEntries().add(0, userTask.getModelSwitchEntry());
             }
 
         }
+    }
 
-        typeInterpolations.put("$Clazz$", resourceClazzName);
-        typeInterpolations.put("$Type$", dataClazzName);
-        template.findAll(StringLiteralExpr.class).forEach(this::interpolateStrings);
-        template.findAll(ClassOrInterfaceType.class).forEach(cls -> interpolateTypes(cls, typeInterpolations));
-
-        TagResourceGenerator.addTags(clazz, process, context);
-
-        template.findAll(MethodDeclaration.class).forEach(this::interpolateMethods);
-
-        if (context.hasDI()) {
-            template.findAll(FieldDeclaration.class,
-                    CodegenUtils::isProcessField).forEach(fd -> context.getDependencyInjectionAnnotator().withNamedInjection(fd, processId));
-        } else {
-            template.findAll(FieldDeclaration.class,
-                    CodegenUtils::isProcessField).forEach(this::initializeProcessField);
+    /**
+     * Conditionally add the <code>Transactional</code> annotation
+     * 
+     * @param compilationUnit
+     *
+     */
+    protected void manageTransactional(CompilationUnit compilationUnit) {
+        if (transactionEnabled && context.hasDI() && !isServerless()) { // disabling transaction for serverless
+            LOG.debug("Transaction is enabled, adding annotations...");
+            DependencyInjectionAnnotator dependencyInjectionAnnotator = context.getDependencyInjectionAnnotator();
+            getRestMethods(compilationUnit)
+                    .forEach(dependencyInjectionAnnotator::withTransactional);
         }
+    }
 
-        // if triggers are not empty remove createResource method as there is another trigger to start process instances
-        if ((!startable && !dynamic) || !isPublic()) {
-            Optional<MethodDeclaration> createResourceMethod = template.findFirst(MethodDeclaration.class).filter(md -> md.getNameAsString().equals("createResource_" + processName));
-            createResourceMethod.ifPresent(template::remove);
-        }
-
-        if (context.hasDI()) {
-            context.getDependencyInjectionAnnotator().withApplicationComponent(template);
-        }
-
-        enableValidation(template);
-
-        template.getMembers().sort(new BodyDeclarationComparator());
-        return clazz.toString();
+    /**
+     * Retrieves all the <b>Rest endpoint</b> <code>MethodDeclaration</code>s from the given
+     * <code>CompilationUnit</code>
+     * 
+     * @param compilationUnit
+     * @return
+     */
+    protected Collection<MethodDeclaration> getRestMethods(CompilationUnit compilationUnit) {
+        RestAnnotator restAnnotator = context.getRestAnnotator();
+        return compilationUnit.findAll(MethodDeclaration.class)
+                .stream()
+                .filter(restAnnotator::isRestAnnotated)
+                .toList();
     }
 
     private void securityAnnotated(ClassOrInterfaceDeclaration template) {
@@ -467,5 +554,9 @@ public class ProcessResourceGenerator {
 
     protected boolean isPublic() {
         return KogitoWorkflowProcess.PUBLIC_VISIBILITY.equalsIgnoreCase(process.getVisibility());
+    }
+
+    protected boolean isServerless() {
+        return KogitoWorkflowProcess.SW_TYPE.equalsIgnoreCase(process.getType());
     }
 }

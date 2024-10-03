@@ -76,6 +76,7 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 
 import static java.lang.String.format;
 import static java.util.stream.Collectors.toList;
+import static org.kie.kogito.codegen.process.ProcessResourceGenerator.TRANSACTION_ENABLED;
 import static org.kie.kogito.grafana.GrafanaConfigurationWriter.buildDashboardName;
 import static org.kie.kogito.grafana.GrafanaConfigurationWriter.generateOperationalDashboard;
 import static org.kie.kogito.internal.utils.ConversionUtils.sanitizeClassName;
@@ -352,20 +353,23 @@ public class ProcessCodegen extends AbstractGenerator {
 
             ProcessMetaData metaData = processIdToMetadata.get(workFlowProcess.getId());
 
-            //Creating and adding the ResourceGenerator
-            ProcessResourceGenerator processResourceGenerator = new ProcessResourceGenerator(
+            //Creating and adding the ResourceGenerator for REST generation
+            if (context().hasRest()) {
+                ProcessResourceGenerator processResourceGenerator = new ProcessResourceGenerator(
                     context(),
                     workFlowProcess,
                     modelClassGenerator.className(),
                     execModelGen.className(),
                     applicationCanonicalName());
 
-            processResourceGenerator
+                processResourceGenerator
                     .withUserTasks(processIdToUserTaskModel.get(workFlowProcess.getId()))
                     .withSignals(metaData.getSignals())
-                    .withTriggers(metaData.isStartable(), metaData.isDynamic(), metaData.getTriggers());
+                    .withTriggers(metaData.isStartable(), metaData.isDynamic(), metaData.getTriggers())
+                    .withTransaction(isTransactionEnabled());
 
-            rgs.add(processResourceGenerator);
+                rgs.add(processResourceGenerator);
+            }
 
             if (metaData.getTriggers() != null) {
 
@@ -468,7 +472,7 @@ public class ProcessCodegen extends AbstractGenerator {
             svgs.keySet().stream().forEach(key -> storeFile(GeneratedFileType.INTERNAL_RESOURCE, "META-INF/processSVG/" + key + ".svg", svgs.get(key)));
         }
 
-        if (context().hasRESTForGenerator(this)) {
+        if (context().hasRest() && context().hasRESTForGenerator(this)) {
             final ProcessCloudEventMetaFactoryGenerator topicsGenerator =
                     new ProcessCloudEventMetaFactoryGenerator(context(), processExecutableModelGenerators);
             storeFile(REST_TYPE, topicsGenerator.generatedFilePath(), topicsGenerator.generate());
@@ -502,6 +506,11 @@ public class ProcessCodegen extends AbstractGenerator {
         }
 
         return generatedFiles;
+    }
+
+    protected boolean isTransactionEnabled() {
+        String processTransactionProperty = String.format("kogito.%s.%s", GENERATOR_NAME, TRANSACTION_ENABLED);
+        return "true".equalsIgnoreCase(context().getApplicationProperty(processTransactionProperty).orElse("true"));
     }
 
     private void storeFile(GeneratedFileType type, String path, String source) {
