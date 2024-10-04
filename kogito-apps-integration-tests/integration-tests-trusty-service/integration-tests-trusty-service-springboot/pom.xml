@@ -77,6 +77,14 @@
   </dependencies>
 
   <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+      </resource>
+      <resource>
+        <directory>${project.basedir}/target/generated-resources</directory>
+      </resource>
+    </resources>
     <plugins>
       <plugin>
         <artifactId>maven-resources-plugin</artifactId>
@@ -87,7 +95,7 @@
               <goal>copy-resources</goal>
             </goals>
             <configuration>
-              <outputDirectory>${project.basedir}/src/main/resources</outputDirectory>
+              <outputDirectory>${project.basedir}/target/generated-resources</outputDirectory>
               <resources>
                 <resource>
                   <directory>${project.parent.basedir}/integration-tests-trusty-service-common/src/main/resources</directory>
@@ -99,19 +107,6 @@
             </configuration>
           </execution>
         </executions>
-      </plugin>
-      <plugin>
-        <artifactId>maven-clean-plugin</artifactId>
-        <configuration>
-          <filesets>
-            <fileset>
-              <directory>${project.basedir}/src/main/resources</directory>
-              <includes>
-                <include>*.dmn</include>
-              </includes>
-            </fileset>
-          </filesets>
-        </configuration>
       </plugin>
       <plugin>
         <groupId>org.kie.kogito</groupId>

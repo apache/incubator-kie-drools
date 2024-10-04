@@ -34,9 +34,10 @@
 
   <properties>
     <path.to.postgresql.storage>../persistence-commons-postgresql</path.to.postgresql.storage>
-    <path.to.script.folder>src/main/resources/kie-flyway/db/</path.to.script.folder>
-    <path.to.migration.scripts.from>${path.to.postgresql.storage}/${path.to.script.folder}/persistence-commons/postgresql</path.to.migration.scripts.from>
-    <path.to.migration.scripts.to>${path.to.script.folder}/persistence-commons/postgresql</path.to.migration.scripts.to>
+    <path.to.flyway.location>kie-flyway/db/persistence-commons/postgresql</path.to.flyway.location>
+    <path.to.script.folder>src/main/resources/${path.to.flyway.location}</path.to.script.folder>
+    <path.to.migration.scripts.source>${path.to.postgresql.storage}/${path.to.script.folder}</path.to.migration.scripts.source>
+    <path.to.migration.scripts.target>target/classes/${path.to.flyway.location}</path.to.migration.scripts.target>
     <java.module.name>org.kie.kogito.persistence.jpa</java.module.name>
   </properties>
 
@@ -77,10 +78,10 @@
               <goal>copy-resources</goal>
             </goals>
             <configuration>
-              <outputDirectory>${path.to.migration.scripts.to}</outputDirectory>
+              <outputDirectory>${path.to.migration.scripts.target}</outputDirectory>
               <resources>
                 <resource>
-                  <directory>${path.to.migration.scripts.from}</directory>
+                  <directory>${path.to.migration.scripts.source}</directory>
                   <includes>
                     <include>*.sql</include>
                   </includes>

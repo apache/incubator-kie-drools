@@ -137,7 +137,7 @@
               <goal>copy-resources</goal>
             </goals>
             <configuration>
-              <outputDirectory>${project.basedir}/src/main/resources</outputDirectory>
+              <outputDirectory>${project.basedir}/target/classes</outputDirectory>
               <resources>
                 <resource>
                   <directory>${project.parent.basedir}/integration-tests-data-index-service-common/src/main/resources</directory>
@@ -155,20 +155,6 @@
             </configuration>
           </execution>
         </executions>
-      </plugin>
-      <plugin>
-        <artifactId>maven-clean-plugin</artifactId>
-        <configuration>
-          <filesets>
-            <fileset>
-              <directory>${project.basedir}/src/main/resources/</directory>
-              <includes>
-                <include>**/*.bpmn</include>
-                <include>*create.sql</include>
-              </includes>
-            </fileset>
-          </filesets>
-        </configuration>
       </plugin>
       <plugin>
         <groupId>io.quarkus</groupId>

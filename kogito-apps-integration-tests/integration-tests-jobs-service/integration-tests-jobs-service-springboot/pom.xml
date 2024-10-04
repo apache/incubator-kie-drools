@@ -109,7 +109,7 @@
               <goal>copy-resources</goal>
             </goals>
             <configuration>
-              <outputDirectory>src/main/resources</outputDirectory>
+              <outputDirectory>${project.basedir}/target/generated-resources</outputDirectory>
               <resources>
                 <resource>
                   <directory>${common.test.resources.dir}</directory>
