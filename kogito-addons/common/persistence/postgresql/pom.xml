@@ -1,4 +1,4 @@
- <!--
+<!--
 
     Licensed to the Apache Software Foundation (ASF) under one
     or more contributor license agreements.  See the NOTICE file
@@ -31,9 +31,10 @@
   <description>PostgreSQL based persistence for KIE</description>
   <properties>
     <path.to.jdbc.addon>../jdbc</path.to.jdbc.addon>
-    <path.to.script.folder>src/main/resources/kie-flyway/db/</path.to.script.folder>
-    <path.to.migration.scripts.from>${path.to.jdbc.addon}/${path.to.script.folder}/persistence-jdbc/postgresql</path.to.migration.scripts.from>
-    <path.to.migration.scripts.to>${path.to.script.folder}/persistence-postgresql/postgresql</path.to.migration.scripts.to>
+    <path.to.flyway.location>kie-flyway/db</path.to.flyway.location>
+    <path.to.script.folder>src/main/resources/${path.to.flyway.location}/persistence-jdbc/postgresql</path.to.script.folder>
+    <path.to.migration.scripts.source>${path.to.jdbc.addon}/${path.to.script.folder}</path.to.migration.scripts.source>
+    <path.to.migration.scripts.target>target/classes/${path.to.flyway.location}/persistence-postgresql/postgresql</path.to.migration.scripts.target>
     <java.module.name>org.kie.kogito.persistence.postgresql</java.module.name>
   </properties>
 
@@ -117,17 +118,7 @@
           </execution>
         </executions>
       </plugin>
-      <plugin>
-        <artifactId>maven-clean-plugin</artifactId>
-        <configuration>
-          <filesets>
-            <fileset>
-              <directory>${path.to.script.folder}</directory>
-            </fileset>
-          </filesets>
-        </configuration>
-      </plugin>
-<!--  The cleanest way would be to use the maven-dependency-plugin to unpack and copy scripts from the built artifact `kie-addons-persistence-jdbc` but there's a limitation to using this only in the `package` phase whereas we need that into the `generate-sources` phase. See also https://issues.apache.org/jira/browse/MDEP-98 -->
+      <!--  The cleanest way would be to use the maven-dependency-plugin to unpack and copy scripts from the built artifact `kie-addons-persistence-jdbc` but there's a limitation to using this only in the `package` phase whereas we need that into the `generate-sources` phase. See also https://issues.apache.org/jira/browse/MDEP-98 -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
@@ -139,10 +130,10 @@
               <goal>copy-resources</goal>
             </goals>
             <configuration>
-              <outputDirectory>${path.to.migration.scripts.to}</outputDirectory>
+              <outputDirectory>${path.to.migration.scripts.target}</outputDirectory>
               <resources>
                 <resource>
-                  <directory>${path.to.migration.scripts.from}</directory>
+                  <directory>${path.to.migration.scripts.source}</directory>
                 </resource>
               </resources>
             </configuration>
