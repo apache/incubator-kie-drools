@@ -20,11 +20,13 @@ package org.kie.kogito.index.service.messaging;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.util.Collection;
 import java.util.function.Supplier;
 
 import org.eclipse.microprofile.reactive.messaging.Message;
 import org.kie.kogito.event.AbstractDataEvent;
 import org.kie.kogito.event.DataEvent;
+import org.kie.kogito.event.process.MultipleProcessInstanceDataEvent;
 import org.kie.kogito.event.process.ProcessDefinitionDataEvent;
 import org.kie.kogito.event.process.ProcessDefinitionEventBody;
 import org.kie.kogito.event.process.ProcessInstanceDataEvent;
@@ -38,6 +40,7 @@ import org.kie.kogito.event.process.ProcessInstanceStateDataEvent;
 import org.kie.kogito.event.process.ProcessInstanceStateEventBody;
 import org.kie.kogito.event.process.ProcessInstanceVariableDataEvent;
 import org.kie.kogito.event.process.ProcessInstanceVariableEventBody;
+import org.kie.kogito.event.usertask.MultipleUserTaskInstanceDataEvent;
 import org.kie.kogito.event.usertask.UserTaskInstanceAssignmentDataEvent;
 import org.kie.kogito.event.usertask.UserTaskInstanceAssignmentEventBody;
 import org.kie.kogito.event.usertask.UserTaskInstanceAttachmentDataEvent;
@@ -57,6 +60,7 @@ import org.kie.kogito.index.service.DataIndexServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.cloudevents.CloudEvent;
@@ -80,6 +84,11 @@ public class KogitoIndexEventConverter implements MessageConverter {
     private static final Logger LOGGER = LoggerFactory.getLogger(KogitoIndexEventConverter.class);
 
     ObjectMapper objectMapper;
+
+    @Override
+    public int getPriority() {
+        return CONVERTER_DEFAULT_PRIORITY - 2;
+    }
 
     @Override
     public boolean canConvert(Message<?> message, Type type) {
@@ -139,6 +148,9 @@ public class KogitoIndexEventConverter implements MessageConverter {
 
     private DataEvent<?> buildProcessInstanceDataEventVariant(CloudEvent cloudEvent) throws IOException {
         switch (cloudEvent.getType()) {
+            case MultipleProcessInstanceDataEvent.TYPE:
+                return buildDataEvent(cloudEvent, objectMapper, MultipleProcessInstanceDataEvent::new, new TypeReference<Collection<ProcessInstanceDataEvent<?>>>() {
+                });
             case "ProcessInstanceErrorDataEvent":
                 return buildDataEvent(cloudEvent, objectMapper, ProcessInstanceErrorDataEvent::new, ProcessInstanceErrorEventBody.class);
             case "ProcessInstanceNodeDataEvent":
@@ -156,6 +168,9 @@ public class KogitoIndexEventConverter implements MessageConverter {
 
     private DataEvent<?> buildUserTaskInstanceDataEvent(CloudEvent cloudEvent) throws IOException {
         switch (cloudEvent.getType()) {
+            case MultipleUserTaskInstanceDataEvent.TYPE:
+                return buildDataEvent(cloudEvent, objectMapper, MultipleUserTaskInstanceDataEvent::new, new TypeReference<Collection<UserTaskInstanceDataEvent<?>>>() {
+                });
             case "UserTaskInstanceAssignmentDataEvent":
                 return buildDataEvent(cloudEvent, objectMapper, UserTaskInstanceAssignmentDataEvent::new, UserTaskInstanceAssignmentEventBody.class);
             case "UserTaskInstanceAttachmentDataEvent":
@@ -188,13 +203,26 @@ public class KogitoIndexEventConverter implements MessageConverter {
         return jobCloudEvent;
     }
 
+    private static <E extends AbstractDataEvent<T>, T> E buildDataEvent(CloudEvent cloudEvent, ObjectMapper objectMapper, Supplier<E> supplier, TypeReference<T> typeReference) throws IOException {
+        E dataEvent = buildEvent(cloudEvent, objectMapper, supplier);
+        if (cloudEvent.getData() != null) {
+            dataEvent.setData(objectMapper.readValue(cloudEvent.getData().toBytes(), typeReference));
+        }
+        return dataEvent;
+    }
+
     private static <E extends AbstractDataEvent<T>, T> E buildDataEvent(CloudEvent cloudEvent, ObjectMapper objectMapper, Supplier<E> supplier, Class<T> clazz) throws IOException {
-        E dataEvent = supplier.get();
-        applyCloudEventAttributes(cloudEvent, dataEvent);
-        applyExtensions(cloudEvent, dataEvent);
+        E dataEvent = buildEvent(cloudEvent, objectMapper, supplier);
         if (cloudEvent.getData() != null) {
             dataEvent.setData(objectMapper.readValue(cloudEvent.getData().toBytes(), clazz));
         }
+        return dataEvent;
+    }
+
+    private static <E extends AbstractDataEvent<?>> E buildEvent(CloudEvent cloudEvent, ObjectMapper objectMapper, Supplier<E> supplier) throws IOException {
+        E dataEvent = supplier.get();
+        applyCloudEventAttributes(cloudEvent, dataEvent);
+        applyExtensions(cloudEvent, dataEvent);
         return dataEvent;
     }
 

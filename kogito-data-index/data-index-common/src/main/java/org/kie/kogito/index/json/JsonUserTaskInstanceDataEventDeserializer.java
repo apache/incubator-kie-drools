@@ -20,6 +20,7 @@ package org.kie.kogito.index.json;
 
 import java.io.IOException;
 
+import org.kie.kogito.event.usertask.MultipleUserTaskInstanceDataEvent;
 import org.kie.kogito.event.usertask.UserTaskInstanceAssignmentDataEvent;
 import org.kie.kogito.event.usertask.UserTaskInstanceAttachmentDataEvent;
 import org.kie.kogito.event.usertask.UserTaskInstanceCommentDataEvent;
@@ -58,6 +59,8 @@ public class JsonUserTaskInstanceDataEventDeserializer extends StdDeserializer<U
         String type = node.get("type").asText();
 
         switch (type) {
+            case MultipleUserTaskInstanceDataEvent.TYPE:
+                return jp.getCodec().treeToValue(node, MultipleUserTaskInstanceDataEvent.class);
             case "UserTaskInstanceAssignmentDataEvent":
                 return (UserTaskInstanceDataEvent<?>) jp.getCodec().treeToValue(node, UserTaskInstanceAssignmentDataEvent.class);
             case "UserTaskInstanceAttachmentDataEvent":

@@ -20,6 +20,7 @@ package org.kie.kogito.app.audit.json;
 
 import java.io.IOException;
 
+import org.kie.kogito.event.process.MultipleProcessInstanceDataEvent;
 import org.kie.kogito.event.process.ProcessInstanceDataEvent;
 import org.kie.kogito.event.process.ProcessInstanceErrorDataEvent;
 import org.kie.kogito.event.process.ProcessInstanceNodeDataEvent;
@@ -57,6 +58,8 @@ public class JsonProcessInstanceDataEventDeserializer extends StdDeserializer<Pr
         String type = node.get("type").asText();
 
         switch (type) {
+            case MultipleProcessInstanceDataEvent.TYPE:
+                return jp.getCodec().treeToValue(node, MultipleProcessInstanceDataEvent.class);
             case "ProcessInstanceErrorDataEvent":
                 return (ProcessInstanceDataEvent<?>) jp.getCodec().treeToValue(node, ProcessInstanceErrorDataEvent.class);
             case "ProcessInstanceNodeDataEvent":

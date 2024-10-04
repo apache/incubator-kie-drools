@@ -121,6 +121,66 @@ public abstract class AbstractMessagingConsumerIT {
                         .body("data.Jobs[0].id", is(jobId)));
     }
 
+    @Test
+    void testProcessInstanceEventCollection() throws Exception {
+        sendProcessInstanceEventCollection();
+
+        String processInstanceId1 = "processId-UUID1";
+        String processInstanceId2 = "processId-UUID2";
+
+        await()
+                .atMost(timeout)
+                .untilAsserted(() -> given().contentType(ContentType.JSON)
+                        .body("{ \"query\" : \"{ ProcessInstances { id, state } }\" }")
+                        .when().post("/graphql")
+                        .then().log().ifValidationFails().statusCode(200)
+                        .body("data.ProcessInstances.size()", is(2))
+                        .body("data.ProcessInstances[0].id", is(processInstanceId1))
+                        .body("data.ProcessInstances[0].state", is("ACTIVE"))
+                        .body("data.ProcessInstances[1].id", is(processInstanceId2))
+                        .body("data.ProcessInstances[1].state", is("ACTIVE")));
+
+    }
+
+    @Test
+    void testUserTaskInstanceEventCollection() throws Exception {
+        sendUserTaskInstanceEventCollection();
+
+        String taskId1 = "taskId-UUID1";
+        String taskId2 = "taskId-UUID2";
+
+        await()
+                .atMost(timeout)
+                .untilAsserted(() -> given().contentType(ContentType.JSON)
+                        .body("{ \"query\" : \"{ UserTaskInstances { id, state } }\" }")
+                        .when().post("/graphql")
+                        .then().log().ifValidationFails().statusCode(200)
+                        .body("data.UserTaskInstances.size()", is(2))
+                        .body("data.UserTaskInstances[0].id", is(taskId1))
+                        .body("data.UserTaskInstances[0].state", is("IN_PROGRESS"))
+                        .body("data.UserTaskInstances[1].id", is(taskId2))
+                        .body("data.UserTaskInstances[1].state", is("COMPLETED")));
+    }
+
+    @Test
+    void testProcessDefinitionEventCollection() throws Exception {
+        sendProcessDefinitionEventCollection();
+
+        String definitionId = "jsongreet";
+
+        await()
+                .atMost(timeout)
+                .untilAsserted(() -> given().contentType(ContentType.JSON)
+                        .body("{ \"query\" : \"{ ProcessDefinitions { id, version } }\" }")
+                        .when().post("/graphql")
+                        .then().log().ifValidationFails().statusCode(200)
+                        .body("data.ProcessDefinitions.size()", is(2))
+                        .body("data.ProcessDefinitions[0].id", is(definitionId))
+                        .body("data.ProcessDefinitions[0].version", is("1.0"))
+                        .body("data.ProcessDefinitions[1].id", is(definitionId))
+                        .body("data.ProcessDefinitions[1].version", is("1.1")));
+    }
+
     protected abstract void sendUserTaskInstanceEvent() throws Exception;
 
     protected abstract void sendProcessInstanceEvent() throws Exception;
@@ -129,4 +189,9 @@ public abstract class AbstractMessagingConsumerIT {
 
     protected abstract void sendJobEvent() throws Exception;
 
+    protected abstract void sendProcessInstanceEventCollection() throws Exception;
+
+    protected abstract void sendUserTaskInstanceEventCollection() throws Exception;
+
+    protected abstract void sendProcessDefinitionEventCollection() throws Exception;
 }

@@ -23,12 +23,14 @@ import java.util.ServiceLoader;
 
 import org.kie.kogito.app.audit.spi.DataAuditStore;
 import org.kie.kogito.event.job.JobInstanceDataEvent;
+import org.kie.kogito.event.process.MultipleProcessInstanceDataEvent;
 import org.kie.kogito.event.process.ProcessInstanceDataEvent;
 import org.kie.kogito.event.process.ProcessInstanceErrorDataEvent;
 import org.kie.kogito.event.process.ProcessInstanceNodeDataEvent;
 import org.kie.kogito.event.process.ProcessInstanceSLADataEvent;
 import org.kie.kogito.event.process.ProcessInstanceStateDataEvent;
 import org.kie.kogito.event.process.ProcessInstanceVariableDataEvent;
+import org.kie.kogito.event.usertask.MultipleUserTaskInstanceDataEvent;
 import org.kie.kogito.event.usertask.UserTaskInstanceAssignmentDataEvent;
 import org.kie.kogito.event.usertask.UserTaskInstanceAttachmentDataEvent;
 import org.kie.kogito.event.usertask.UserTaskInstanceCommentDataEvent;
@@ -52,23 +54,29 @@ public class DataAuditStoreProxyService {
     }
 
     public void storeProcessInstanceDataEvent(DataAuditContext context, ProcessInstanceDataEvent<?> event) {
-
-        typeCheckOf(ProcessInstanceErrorDataEvent.class).ifType(context, event, auditStoreService::storeProcessInstanceDataEvent);
-        typeCheckOf(ProcessInstanceNodeDataEvent.class).ifType(context, event, auditStoreService::storeProcessInstanceDataEvent);
-        typeCheckOf(ProcessInstanceSLADataEvent.class).ifType(context, event, auditStoreService::storeProcessInstanceDataEvent);
-        typeCheckOf(ProcessInstanceStateDataEvent.class).ifType(context, event, auditStoreService::storeProcessInstanceDataEvent);
-        typeCheckOf(ProcessInstanceVariableDataEvent.class).ifType(context, event, auditStoreService::storeProcessInstanceDataEvent);
+        if (event instanceof MultipleProcessInstanceDataEvent) {
+            ((MultipleProcessInstanceDataEvent) event).getData().forEach(e -> storeProcessInstanceDataEvent(context, e));
+        } else {
+            typeCheckOf(ProcessInstanceErrorDataEvent.class).ifType(context, event, auditStoreService::storeProcessInstanceDataEvent);
+            typeCheckOf(ProcessInstanceNodeDataEvent.class).ifType(context, event, auditStoreService::storeProcessInstanceDataEvent);
+            typeCheckOf(ProcessInstanceSLADataEvent.class).ifType(context, event, auditStoreService::storeProcessInstanceDataEvent);
+            typeCheckOf(ProcessInstanceStateDataEvent.class).ifType(context, event, auditStoreService::storeProcessInstanceDataEvent);
+            typeCheckOf(ProcessInstanceVariableDataEvent.class).ifType(context, event, auditStoreService::storeProcessInstanceDataEvent);
+        }
 
     }
 
     public void storeUserTaskInstanceDataEvent(DataAuditContext context, UserTaskInstanceDataEvent<?> event) {
-
-        typeCheckOf(UserTaskInstanceAssignmentDataEvent.class).ifType(context, event, auditStoreService::storeUserTaskInstanceDataEvent);
-        typeCheckOf(UserTaskInstanceAttachmentDataEvent.class).ifType(context, event, auditStoreService::storeUserTaskInstanceDataEvent);
-        typeCheckOf(UserTaskInstanceCommentDataEvent.class).ifType(context, event, auditStoreService::storeUserTaskInstanceDataEvent);
-        typeCheckOf(UserTaskInstanceDeadlineDataEvent.class).ifType(context, event, auditStoreService::storeUserTaskInstanceDataEvent);
-        typeCheckOf(UserTaskInstanceStateDataEvent.class).ifType(context, event, auditStoreService::storeUserTaskInstanceDataEvent);
-        typeCheckOf(UserTaskInstanceVariableDataEvent.class).ifType(context, event, auditStoreService::storeUserTaskInstanceDataEvent);
+        if (event instanceof MultipleUserTaskInstanceDataEvent) {
+            ((MultipleUserTaskInstanceDataEvent) event).getData().forEach(e -> storeUserTaskInstanceDataEvent(context, e));
+        } else {
+            typeCheckOf(UserTaskInstanceAssignmentDataEvent.class).ifType(context, event, auditStoreService::storeUserTaskInstanceDataEvent);
+            typeCheckOf(UserTaskInstanceAttachmentDataEvent.class).ifType(context, event, auditStoreService::storeUserTaskInstanceDataEvent);
+            typeCheckOf(UserTaskInstanceCommentDataEvent.class).ifType(context, event, auditStoreService::storeUserTaskInstanceDataEvent);
+            typeCheckOf(UserTaskInstanceDeadlineDataEvent.class).ifType(context, event, auditStoreService::storeUserTaskInstanceDataEvent);
+            typeCheckOf(UserTaskInstanceStateDataEvent.class).ifType(context, event, auditStoreService::storeUserTaskInstanceDataEvent);
+            typeCheckOf(UserTaskInstanceVariableDataEvent.class).ifType(context, event, auditStoreService::storeUserTaskInstanceDataEvent);
+        }
 
     }
 
