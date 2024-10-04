@@ -73,7 +73,7 @@ public class DecisionCodegen extends AbstractGenerator {
     public static final String GENERATOR_NAME = "decisions";
 
     /**
-     *  (boolean) generate java classes to support strongly typed input (default false)
+     * (boolean) generate java classes to support strongly typed input (default false)
      */
     public static String STRONGLY_TYPED_CONFIGURATION_KEY = "kogito.decisions.stronglytyped";
     /**

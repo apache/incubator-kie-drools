@@ -356,17 +356,17 @@ public class ProcessCodegen extends AbstractGenerator {
             //Creating and adding the ResourceGenerator for REST generation
             if (context().hasRest()) {
                 ProcessResourceGenerator processResourceGenerator = new ProcessResourceGenerator(
-                    context(),
-                    workFlowProcess,
-                    modelClassGenerator.className(),
-                    execModelGen.className(),
-                    applicationCanonicalName());
+                        context(),
+                        workFlowProcess,
+                        modelClassGenerator.className(),
+                        execModelGen.className(),
+                        applicationCanonicalName());
 
                 processResourceGenerator
-                    .withUserTasks(processIdToUserTaskModel.get(workFlowProcess.getId()))
-                    .withSignals(metaData.getSignals())
-                    .withTriggers(metaData.isStartable(), metaData.isDynamic(), metaData.getTriggers())
-                    .withTransaction(isTransactionEnabled());
+                        .withUserTasks(processIdToUserTaskModel.get(workFlowProcess.getId()))
+                        .withSignals(metaData.getSignals())
+                        .withTriggers(metaData.isStartable(), metaData.isDynamic(), metaData.getTriggers())
+                        .withTransaction(isTransactionEnabled());
 
                 rgs.add(processResourceGenerator);
             }
