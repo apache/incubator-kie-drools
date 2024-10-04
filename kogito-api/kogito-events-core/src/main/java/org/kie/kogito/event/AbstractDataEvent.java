@@ -177,6 +177,15 @@ public abstract class AbstractDataEvent<T> implements DataEvent<T> {
     protected AbstractDataEvent() {
     }
 
+    protected AbstractDataEvent(String type, URI source, T body) {
+        this.specVersion = SpecVersion.parse(SPEC_VERSION);
+        this.id = UUID.randomUUID().toString();
+        this.source = source;
+        this.type = type;
+        this.time = ZonedDateTime.now().toOffsetDateTime();
+        this.data = body;
+    }
+
     protected AbstractDataEvent(String type,
             String source,
             T body,
@@ -201,12 +210,7 @@ public abstract class AbstractDataEvent<T> implements DataEvent<T> {
             String subject,
             String dataContentType,
             String dataSchema) {
-        this.specVersion = SpecVersion.parse(SPEC_VERSION);
-        this.id = UUID.randomUUID().toString();
-        this.source = Optional.ofNullable(source).map(URI::create).orElse(null);
-        this.type = type;
-        this.time = ZonedDateTime.now().toOffsetDateTime();
-        this.data = body;
+        this(type, Optional.ofNullable(source).map(URI::create).orElse(null), body);
         setKogitoProcessInstanceId(kogitoProcessInstanceId);
         setKogitoRootProcessInstanceId(kogitoRootProcessInstanceId);
         setKogitoProcessId(kogitoProcessId);

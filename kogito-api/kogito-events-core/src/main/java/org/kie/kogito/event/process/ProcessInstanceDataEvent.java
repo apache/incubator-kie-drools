@@ -18,6 +18,8 @@
  */
 package org.kie.kogito.event.process;
 
+import java.net.URI;
+
 import org.kie.kogito.event.AbstractDataEvent;
 
 public class ProcessInstanceDataEvent<T> extends AbstractDataEvent<T> {
@@ -27,6 +29,10 @@ public class ProcessInstanceDataEvent<T> extends AbstractDataEvent<T> {
 
     public ProcessInstanceDataEvent(T body) {
         setData(body);
+    }
+
+    protected ProcessInstanceDataEvent(String type, URI source, T body) {
+        super(type, source, body);
     }
 
     public ProcessInstanceDataEvent(String type,

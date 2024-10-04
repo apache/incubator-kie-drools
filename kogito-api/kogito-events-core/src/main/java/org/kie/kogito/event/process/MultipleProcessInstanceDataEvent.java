@@ -16,30 +16,19 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.events.process;
+package org.kie.kogito.event.process;
 
+import java.net.URI;
 import java.util.Collection;
 
-import org.kie.kogito.event.DataEvent;
+public class MultipleProcessInstanceDataEvent extends ProcessInstanceDataEvent<Collection<ProcessInstanceDataEvent<?>>> {
 
-import io.quarkus.arc.properties.UnlessBuildProperty;
+    public static final String TYPE = "MultipleProcessInstanceDataEvent";
 
-import jakarta.inject.Singleton;
-
-@Singleton
-@UnlessBuildProperty(name = "kogito.events.grouping", stringValue = "true", enableIfMissing = true)
-public class ReactiveMessagingEventPublisher extends AbstractMessagingEventPublisher {
-
-    @Override
-    public void publish(DataEvent<?> event) {
-        getConsumer(event).ifPresent(emitter -> publishToTopic(emitter, event));
+    public MultipleProcessInstanceDataEvent() {
     }
 
-    @Override
-    public void publish(Collection<DataEvent<?>> events) {
-        for (DataEvent<?> event : events) {
-            publish(event);
-        }
+    public MultipleProcessInstanceDataEvent(URI source, Collection<ProcessInstanceDataEvent<?>> body) {
+        super(TYPE, source, body);
     }
-
 }

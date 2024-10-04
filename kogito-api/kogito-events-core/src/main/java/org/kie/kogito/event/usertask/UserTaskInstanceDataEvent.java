@@ -18,6 +18,7 @@
  */
 package org.kie.kogito.event.usertask;
 
+import java.net.URI;
 import java.util.Set;
 
 import org.kie.kogito.event.AbstractDataEvent;
@@ -46,6 +47,10 @@ public class UserTaskInstanceDataEvent<T> extends AbstractDataEvent<T> {
 
     public UserTaskInstanceDataEvent(T body) {
         setData(body);
+    }
+
+    protected UserTaskInstanceDataEvent(String type, URI source, T body) {
+        super(type, source, body);
     }
 
     public UserTaskInstanceDataEvent(String type,
