@@ -239,6 +239,7 @@ void setupReleaseDeployJob() {
             booleanParam('CREATE_PR', false, 'Should we create a PR with the changes ?')
             stringParam('PROJECT_VERSION', '', 'Optional if not RELEASE. If RELEASE, cannot be empty.')
             stringParam('KOGITO_PR_BRANCH', '', 'PR branch name')
+            stringParam('GIT_TAG_NAME', '', 'Git tag to create. i.e.: 10.0.0-rc1')
 
             booleanParam('SEND_NOTIFICATION', false, 'In case you want the pipeline to send a notification on CI channel for this run.')
         }
@@ -302,7 +303,6 @@ void setupWeeklyDeployJob() {
             stringParam('BUILD_BRANCH_NAME', "${GIT_BRANCH}", 'Set the Git branch to checkout')
 
             booleanParam('SKIP_TESTS', false, 'Skip tests')
-
 
             stringParam('GIT_CHECKOUT_DATETIME', '', 'Git checkout date and time - (Y-m-d H:i)')
 
