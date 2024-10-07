@@ -90,7 +90,7 @@ pipeline {
         }
         stage('Prepare for PR') {
             when {
-                expression { return isRelease() || isCreatePr() }
+                expression { return isCreatePr() }
             }
             steps {
                 script {
@@ -120,7 +120,7 @@ pipeline {
                             'version.org.kie', getDroolsVersion()
                         )
 
-                    // Need artifacts available locally
+                        // Need artifacts available locally
                         getMavenCommand()
                             .withProperty('quickly')
                             .withSettingsXmlFile(MAVEN_SETTINGS_FILE)
@@ -152,22 +152,16 @@ pipeline {
                         if (params.SKIP_TESTS) {
                             mvnCmd.skipTests() // Conflict somehow with Python testing. If `skipTests={anyvalue}` is set, then exec plugin is not executed ...
                         }
-                        def Closure mavenRunClosure = {
-                            configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]) {
-                                mavenCommand.withSettingsXmlFile(MAVEN_SETTINGS_FILE)
-                                    .run("clean $installOrDeploy")
-                            }
-                        }
                         if (isRelease()) {
-                            release.gpgImportKeyFromStringWithoutPassword(getReleaseGpgSignKeyCredsId())
-                            mavenCommand
+                            releaseUtils.gpgImportKeyFromStringWithoutPassword(getReleaseGpgSignKeyCredsId())
+                            mvnCmd
                             .withProfiles(['apache-release'])
                             .withProperty('only.reproducible')
-                            mavenRunClosure()
-                        } else {
-                            mavenRunClosure()
                         }
-
+                        configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]) {
+                            mvnCmd.withSettingsXmlFile(MAVEN_SETTINGS_FILE)
+                                .run("clean $installOrDeploy")
+                        }
                     }
                 }
             }
@@ -182,7 +176,7 @@ pipeline {
         }
         stage('Create PR') {
             when {
-                expression { return isRelease() || isCreatePr() }
+                expression { return isCreatePr() }
             }
             steps {
                 script {
@@ -202,6 +196,26 @@ pipeline {
                         setDeployPropertyIfNeeded("${getRepoName()}.pr.source.ref", getPRBranch())
                         setDeployPropertyIfNeeded("${getRepoName()}.pr.target.uri", "https://github.com/${getGitAuthor()}/${getRepoName()}")
                         setDeployPropertyIfNeeded("${getRepoName()}.pr.target.ref", getBuildBranch())
+                    }
+                }
+            }
+        }
+        stage('Commit and Create Tag') {
+            when {
+                expression { return isRelease() }
+            }
+            steps {
+                script {
+                    dir(getRepoName()) {
+                        if (githubscm.isThereAnyChanges()) {
+                            def commitMsg = "[${getBuildBranch()}] Update version to ${getProjectVersion()}"
+                            githubscm.setUserConfigFromCreds(getGitAuthorPushCredsId())
+                            githubscm.commitChanges(commitMsg, { githubscm.findAndStageNotIgnoredFiles('pom.xml') })
+                        } else {
+                            println '[WARN] no changes to commit'
+                        }
+                        githubscm.tagRepository(getGitTagName())
+                        githubscm.pushRemoteTag('origin', getGitTagName(), getGitAuthorPushCredsId())
                     }
                 }
             }
@@ -325,4 +339,8 @@ String getReleaseGpgSignKeyCredsId() {
 
 String getReleaseGpgSignPassphraseCredsId() {
     return env.RELEASE_GPG_SIGN_PASSPHRASE_CREDS_ID
+}
+
+String getGitTagName() {
+    return params.GIT_TAG_NAME
 }

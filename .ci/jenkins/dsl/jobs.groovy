@@ -214,6 +214,7 @@ void setupReleaseDeployJob() {
             stringParam('PROJECT_VERSION', '', 'Set the project version')
             stringParam('DROOLS_VERSION', '', 'Drools version to set')
             stringParam('KOGITO_PR_BRANCH', '', 'PR branch name')
+            stringParam('GIT_TAG_NAME', '', 'Git tag to create. i.e.: 10.0.0-rc1')
 
             booleanParam('SEND_NOTIFICATION', false, 'In case you want the pipeline to send a notification on CI channel for this run.')
         }
