@@ -26,7 +26,7 @@ deployProperties = [:]
 
 pipeline {
     agent {
-        docker { 
+        docker {
             image env.AGENT_DOCKER_BUILDER_IMAGE
             args env.AGENT_DOCKER_BUILDER_ARGS
             label util.avoidFaultyNodes()
@@ -87,7 +87,7 @@ pipeline {
             steps {
                 script {
                     dir(getRepoName()) {
-                        if (githubscm.isBranchExist('origin',getPRBranch())) {
+                        if (githubscm.isBranchExist('origin', getPRBranch())) {
                             githubscm.removeRemoteBranch('origin', getPRBranch(), getGitAuthorPushCredsId())
                         }
                         githubscm.createBranch(getPRBranch())
@@ -101,7 +101,7 @@ pipeline {
             }
             steps {
                 script {
-                    configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]){
+                    configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]) {
                         maven.mvnVersionsSet(
                             getMavenCommand().withSettingsXmlFile(MAVEN_SETTINGS_FILE),
                             getProjectVersion(),
@@ -127,26 +127,15 @@ pipeline {
                            .withProperty('maven.test.failure.ignore', true)
                            .skipTests(params.SKIP_TESTS)
 
-<<<<<<< HEAD
-                        def Closure mavenRunClosure = {
-                            configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]) {
-                                mavenCommand.withSettingsXmlFile(MAVEN_SETTINGS_FILE).run("clean $installOrDeploy")
-                            }
-=======
                         if (isRelease()) {
                             releaseUtils.gpgImportKeyFromStringWithoutPassword(getReleaseGpgSignKeyCredsId())
-                            mavenCommand.withProfiles(['apache-release'])
->>>>>>> 447a726122 (NO-ISSUE: Fix release configuration keys (#6045))
-                        }
-
-                        if (isRelease()) {
-                            release.gpgImportKeyFromStringWithoutPassword(getReleaseGpgSignKeyCredsId())
                             mavenCommand
                             .withProfiles(['apache-release'])
                             .withProperty('only.reproducible')
-                            mavenRunClosure()
-                        } else {
-                            mavenRunClosure()
+                        }
+
+                        configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]) {
+                            mavenCommand.withSettingsXmlFile(MAVEN_SETTINGS_FILE).run("clean $installOrDeploy")
                         }
                     }
                 }
@@ -312,16 +301,8 @@ MavenCommand getMavenCommand(String directory = '') {
     def mvnCmd = new MavenCommand(this, ['-fae', '-ntp'])
                 .withOptions(env.BUILD_MVN_OPTS ? [ env.BUILD_MVN_OPTS ] : [])
                 .inDirectory(directory)
-    if (!isMainStream()) { // Workaround as enforcer rules may not be fixed on other streams
-        mvnCmd.withProperty('enforcer.skip')
-    } else {
-        mvnCmd.withProperty('full')
-    }
+                .withProperty('full')
     return mvnCmd
-}
-
-boolean isMainStream() {
-    return env.DROOLS_STREAM == 'main'
 }
 
 String getReleaseGpgSignKeyCredsId() {
@@ -330,4 +311,8 @@ String getReleaseGpgSignKeyCredsId() {
 
 String getReleaseGpgSignPassphraseCredsId() {
     return env.RELEASE_GPG_SIGN_PASSPHRASE_CREDS_ID
+}
+
+String getGitTagName() {
+    return params.GIT_TAG_NAME
 }
