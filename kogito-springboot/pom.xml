@@ -34,6 +34,14 @@
   <name>Kogito :: Spring Boot</name>
   <packaging>pom</packaging>
 
+  <modules>
+    <module>bom</module>
+    <module>addons</module>
+    <module>starters</module>
+    <module>archetype</module>
+    <module>test</module>
+  </modules>
+
   <profiles>
     <profile>
       <id>allSubmodules</id>
@@ -43,28 +51,7 @@
         </property>
       </activation>
       <modules>
-        <module>bom</module>
-        <module>addons</module>
-        <module>starters</module>
-        <module>archetype</module>
-        <module>test</module>
         <module>integration-tests</module>
-      </modules>
-    </profile>
-
-    <profile>
-      <id>onlyReproducible</id>
-      <activation>
-        <property>
-          <name>only.reproducible</name>
-        </property>
-      </activation>
-      <modules>
-        <module>bom</module>
-        <module>addons</module>
-        <module>starters</module>
-        <module>archetype</module>
-        <module>test</module>
       </modules>
     </profile>
   </profiles>

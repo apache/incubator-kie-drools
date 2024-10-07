@@ -39,6 +39,18 @@
   <description>jBPM: a Business Process Management</description>
   <url>http://www.jbpm.org</url>
 
+  <modules>
+    <module>jbpm-flow</module>
+    <module>jbpm-flow-builder</module>
+    <module>jbpm-bpmn2</module>
+    <module>jbpm-flow-migration</module>
+    <module>process-serialization-protobuf</module>
+    <module>process-workitems</module>
+    <module>jbpm-usertask</module>
+    <module>jbpm-tools</module>
+    <module>jbpm-deps-groups</module>
+  </modules>
+
   <profiles>
     <profile>
       <id>allSubmodules</id>
@@ -48,36 +60,7 @@
         </property>
       </activation>
       <modules>
-        <module>jbpm-flow</module>
-        <module>jbpm-flow-builder</module>
-        <module>jbpm-bpmn2</module>
-        <module>jbpm-flow-migration</module>
-        <module>process-serialization-protobuf</module>
-        <module>process-workitems</module>
-        <module>jbpm-usertask</module>
-        <module>jbpm-tools</module>
         <module>jbpm-tests</module>
-        <module>jbpm-deps-groups</module>
-      </modules>
-    </profile>
-
-    <profile>
-      <id>onlyReproducible</id>
-      <activation>
-        <property>
-          <name>only.reproducible</name>
-        </property>
-      </activation>
-      <modules>
-        <module>jbpm-flow</module>
-        <module>jbpm-flow-builder</module>
-        <module>jbpm-bpmn2</module>
-        <module>jbpm-flow-migration</module>
-        <module>process-serialization-protobuf</module>
-        <module>process-workitems</module>
-        <module>jbpm-usertask</module>
-        <module>jbpm-tools</module>
-        <module>jbpm-deps-groups</module>
       </modules>
     </profile>
   </profiles>
