@@ -98,7 +98,7 @@ cloud:
 release:
   gpg:
     sign:
-      key-credentials-id: 'GPG_KEY'
+      key-credentials-id: 'GPG_KEY_FILE'
       passphrase-credentials-id: ''
 jenkins:
   email_creds_id: DROOLS_CI_NOTIFICATION_EMAILS

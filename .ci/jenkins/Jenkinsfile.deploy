@@ -26,7 +26,7 @@ deployProperties = [:]
 
 pipeline {
     agent {
-        docker { 
+        docker {
             image env.AGENT_DOCKER_BUILDER_IMAGE
             args env.AGENT_DOCKER_BUILDER_ARGS
             label util.avoidFaultyNodes()
@@ -82,12 +82,12 @@ pipeline {
         }
         stage('Prepare for PR') {
             when {
-                expression { return isRelease() || isCreatePr() }
+                expression { return isCreatePr() }
             }
             steps {
                 script {
                     dir(getRepoName()) {
-                        if (githubscm.isBranchExist('origin',getPRBranch())) {
+                        if (githubscm.isBranchExist('origin', getPRBranch())) {
                             githubscm.removeRemoteBranch('origin', getPRBranch(), getGitAuthorPushCredsId())
                         }
                         githubscm.createBranch(getPRBranch())
@@ -101,7 +101,7 @@ pipeline {
             }
             steps {
                 script {
-                    configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]){
+                    configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]) {
                         maven.mvnVersionsSet(
                             getMavenCommand().withSettingsXmlFile(MAVEN_SETTINGS_FILE),
                             getProjectVersion(),
@@ -127,20 +127,15 @@ pipeline {
                            .withProperty('maven.test.failure.ignore', true)
                            .skipTests(params.SKIP_TESTS)
 
-                        def Closure mavenRunClosure = {
-                            configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]) {
-                                mavenCommand.withSettingsXmlFile(MAVEN_SETTINGS_FILE).run("clean $installOrDeploy")
-                            }
-                        }
-
                         if (isRelease()) {
-                            release.gpgImportKeyFromStringWithoutPassword(getReleaseGpgSignKeyCredsId())
+                            releaseUtils.gpgImportKeyFromStringWithoutPassword(getReleaseGpgSignKeyCredsId())
                             mavenCommand
                             .withProfiles(['apache-release'])
                             .withProperty('only.reproducible')
-                            mavenRunClosure()
-                        } else {
-                            mavenRunClosure()
+                        }
+
+                        configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]) {
+                            mavenCommand.withSettingsXmlFile(MAVEN_SETTINGS_FILE).run("clean $installOrDeploy")
                         }
                     }
                 }
@@ -156,7 +151,7 @@ pipeline {
         }
         stage('Create PR') {
             when {
-                expression { return isRelease() || isCreatePr() }
+                expression { return isCreatePr() }
             }
             steps {
                 script {
@@ -176,6 +171,29 @@ pipeline {
                         setDeployPropertyIfNeeded("${getRepoName()}.pr.source.ref", getPRBranch())
                         setDeployPropertyIfNeeded("${getRepoName()}.pr.target.uri", "https://github.com/${getGitAuthor()}/${getRepoName()}")
                         setDeployPropertyIfNeeded("${getRepoName()}.pr.target.ref", getBuildBranch())
+                    }
+                }
+            }
+        }
+        stage('Commit and Create Tag') {
+            when {
+                expression { return isRelease() }
+            }
+            steps {
+                script {
+                    dir(getRepoName()) {
+                        if (githubscm.isThereAnyChanges()) {
+                            def commitMsg = "[${getBuildBranch()}] Update version to ${getProjectVersion()}"
+                            githubscm.setUserConfigFromCreds(getGitAuthorPushCredsId())
+                            githubscm.commitChanges(commitMsg, {
+                                githubscm.findAndStageNotIgnoredFiles('pom.xml')
+                                githubscm.findAndStageNotIgnoredFiles('antora.yml')
+                            })
+                        } else {
+                            println '[WARN] no changes to commit'
+                        }
+                        githubscm.tagRepository(getGitTagName())
+                        githubscm.pushRemoteTag('origin', getGitTagName(), getGitAuthorPushCredsId())
                     }
                 }
             }
@@ -283,16 +301,8 @@ MavenCommand getMavenCommand(String directory = '') {
     def mvnCmd = new MavenCommand(this, ['-fae', '-ntp'])
                 .withOptions(env.BUILD_MVN_OPTS ? [ env.BUILD_MVN_OPTS ] : [])
                 .inDirectory(directory)
-    if (!isMainStream()) { // Workaround as enforcer rules may not be fixed on other streams
-        mvnCmd.withProperty('enforcer.skip')
-    } else {
-        mvnCmd.withProperty('full')
-    }
+                .withProperty('full')
     return mvnCmd
-}
-
-boolean isMainStream() {
-    return env.DROOLS_STREAM == 'main'
 }
 
 String getReleaseGpgSignKeyCredsId() {
@@ -301,4 +311,8 @@ String getReleaseGpgSignKeyCredsId() {
 
 String getReleaseGpgSignPassphraseCredsId() {
     return env.RELEASE_GPG_SIGN_PASSPHRASE_CREDS_ID
+}
+
+String getGitTagName() {
+    return params.GIT_TAG_NAME
 }
