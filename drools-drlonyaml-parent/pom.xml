@@ -31,6 +31,15 @@
   <name>Drools :: DRL on YAML</name>
   <packaging>pom</packaging>
 
+
+  <modules>
+    <module>drools-drlonyaml-schemagen</module>
+    <module>drools-drlonyaml-model</module>
+    <module>drools-drlonyaml-todrl</module>
+    <module>drools-drlonyaml-cli</module>
+    <module>drools-drlonyaml-cli-tests</module>
+  </modules>
+
   <profiles>
     <profile>
       <id>allSubmodules</id>
@@ -40,28 +49,7 @@
       </property>
       </activation>
       <modules>
-        <module>drools-drlonyaml-schemagen</module>
-        <module>drools-drlonyaml-model</module>
-        <module>drools-drlonyaml-todrl</module>
-        <module>drools-drlonyaml-cli</module>
-        <module>drools-drlonyaml-cli-tests</module>
         <module>drools-drlonyaml-integration-tests</module>
-      </modules>
-    </profile>
-
-    <profile>
-      <id>onlyReproducible</id>
-      <activation>
-        <property>
-          <name>only.reproducible</name>
-        </property>
-      </activation>
-      <modules>
-        <module>drools-drlonyaml-schemagen</module>
-        <module>drools-drlonyaml-model</module>
-        <module>drools-drlonyaml-todrl</module>
-        <module>drools-drlonyaml-cli</module>
-        <module>drools-drlonyaml-cli-tests</module>
       </modules>
     </profile>
   </profiles>
