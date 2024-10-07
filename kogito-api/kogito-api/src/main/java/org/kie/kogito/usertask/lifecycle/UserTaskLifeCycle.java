@@ -19,19 +19,23 @@
 
 package org.kie.kogito.usertask.lifecycle;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.kie.kogito.auth.IdentityProvider;
 import org.kie.kogito.usertask.UserTaskInstance;
 
 public interface UserTaskLifeCycle {
 
-    Optional<UserTaskTransitionToken> transition(UserTaskInstance userTaskInstance, UserTaskTransitionToken transition);
+    Optional<UserTaskTransitionToken> transition(UserTaskInstance userTaskInstance, UserTaskTransitionToken transition, IdentityProvider identity);
 
     UserTaskTransitionToken newTransitionToken(String transitionId, UserTaskInstance userTaskInstance, Map<String, Object> data);
 
     UserTaskTransitionToken newCompleteTransitionToken(UserTaskInstance userTaskInstance, Map<String, Object> emptyMap);
 
     UserTaskTransitionToken newAbortTransitionToken(UserTaskInstance userTaskInstance, Map<String, Object> emptyMap);
+
+    List<UserTaskTransition> allowedTransitions(UserTaskInstance ut);
 
 }

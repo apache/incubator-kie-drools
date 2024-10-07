@@ -46,6 +46,7 @@ import static org.awaitility.Awaitility.await;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.Matchers.emptyOrNullString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -303,19 +304,31 @@ public abstract class PersistenceTest {
                 .extract()
                 .path("id");
 
-        given().contentType(ContentType.JSON)
+        String location = given().contentType(ContentType.JSON)
                 .pathParam("pId", pId)
+                .queryParam("user", "user")
+                .queryParam("group", "agroup")
                 .when()
-                .get("/AdHocProcess/{pId}")
+                .post("/AdHocProcess/{pId}/CloseTask/trigger")
                 .then()
-                .statusCode(200);
+                .log().everything()
+                .statusCode(201)
+                .header("Location", notNullValue())
+                .extract()
+                .header("Location");
 
-        given().contentType(ContentType.JSON)
-                .pathParam("pId", pId)
+        String taskId = location.substring(location.lastIndexOf("/") + 1);
+
+        given()
+                .queryParam("user", "user")
+                .queryParam("group", "agroup")
+                .contentType(ContentType.JSON)
                 .when()
-                .delete("/AdHocProcess/{pId}")
+                .body(Map.of("status", "closed"))
+                .post("/AdHocProcess/{pId}/CloseTask/{taskId}", pId, taskId)
                 .then()
-                .statusCode(200);
+                .statusCode(200)
+                .body("status", equalTo("closed"));
 
         given().contentType(ContentType.JSON)
                 .pathParam("pId", pId)

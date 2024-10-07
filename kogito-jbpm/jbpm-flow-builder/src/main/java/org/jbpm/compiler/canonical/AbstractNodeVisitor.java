@@ -53,7 +53,6 @@ import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
 import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.core.node.Assignment;
-import org.jbpm.workflow.core.node.HumanTaskNode;
 import org.jbpm.workflow.core.node.StartNode;
 import org.jbpm.workflow.core.node.Transformation;
 import org.kie.api.definition.process.Connection;
@@ -117,7 +116,7 @@ public abstract class AbstractNodeVisitor<T extends Node> extends AbstractVisito
 
     public void visitNode(T node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
         visitNode(FACTORY_FIELD_NAME, node, body, variableScope, metadata);
-        if (isAdHocNode(node) && !(node instanceof HumanTaskNode)) {
+        if (isAdHocNode(node)) {
             metadata.addSignal(node.getName(), null);
         }
         if (isExtendedNode(node)) {

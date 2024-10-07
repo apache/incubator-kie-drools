@@ -303,7 +303,7 @@ public abstract class PersistenceTest {
                 .queryParam("user", "user")
                 .queryParam("group", "agroup")
                 .when()
-                .post("/AdHocProcess/{pId}/CloseTask")
+                .post("/AdHocProcess/{pId}/CloseTask/trigger")
                 .then()
                 .log().everything()
                 .statusCode(201)

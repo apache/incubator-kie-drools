@@ -274,7 +274,7 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
         if (workItemNode != null && workItem.getState() == COMPLETED) {
             validateWorkItemResultVariable(getProcessInstance().getProcessName(), workItemNode.getOutAssociations(), workItem);
             Map<String, Object> outputs = new HashMap<>(workItem.getResults());
-            if (workItem.getActualOwner() != null) {
+            if (workItem.getActualOwner() != null && !outputs.containsKey("ActorId")) {
                 outputs.put("ActorId", workItem.getActualOwner());
             }
             NodeIoHelper.processOutputs(this, varRef -> outputs.get(varRef), varName -> this.getVariable(varName));
@@ -284,6 +284,8 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
             setMetaData("NodeType", workItem.getName());
             mapDynamicOutputData(workItem.getResults());
         }
+
+        internalRemoveWorkItem();
         if (isInversionOfControl()) {
             KieRuntime kruntime = getProcessInstance().getKnowledgeRuntime();
             kruntime.update(kruntime.getFactHandle(this), this);

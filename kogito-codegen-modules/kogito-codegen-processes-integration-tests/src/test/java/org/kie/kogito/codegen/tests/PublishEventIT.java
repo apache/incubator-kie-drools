@@ -149,8 +149,11 @@ public class PublishEventIT extends AbstractCodegenIT {
 
     }
 
-    private Optional<UserTaskInstanceStateDataEvent> findUserTaskInstanceEvent(List<DataEvent<?>> events, String status) {
-        return events.stream().filter(UserTaskInstanceStateDataEvent.class::isInstance).map(e -> (UserTaskInstanceStateDataEvent) e).filter(e -> status.equals(e.getData().getState())).findAny();
+    private Optional<UserTaskInstanceStateDataEvent> findUserTaskInstanceEvent(List<DataEvent<?>> events, String taskName, String status) {
+        return events.stream().filter(UserTaskInstanceStateDataEvent.class::isInstance)
+                .map(e -> (UserTaskInstanceStateDataEvent) e)
+                .filter(e -> status.equals(e.getData().getState()) && e.getData().getUserTaskName().equals(taskName))
+                .findAny();
     }
 
     private Optional<DataEvent<?>> findProcessInstanceEvent(List<DataEvent<?>> events, int state) {
@@ -205,7 +208,7 @@ public class PublishEventIT extends AbstractCodegenIT {
         List<ProcessInstanceNodeEventBody> left = findNodeInstanceEvents(events, 2);
         assertThat(left).hasSize(1).extractingResultOf("getNodeType").containsOnly("StartNode");
 
-        Optional<UserTaskInstanceStateDataEvent> userFirstTask = findUserTaskInstanceEvent(events, "Ready");
+        Optional<UserTaskInstanceStateDataEvent> userFirstTask = findUserTaskInstanceEvent(events, "FirstTask", "Ready");
         assertThat(userFirstTask).isPresent();
         assertUserTaskInstanceEvent(userFirstTask.get(), "FirstTask", null, "1", "Ready", "UserTasksProcess", "First Task");
 
@@ -226,11 +229,12 @@ public class PublishEventIT extends AbstractCodegenIT {
         left = findNodeInstanceEvents(events, 1);
         assertThat(left).hasSize(1).extractingResultOf("getNodeType").containsOnly("HumanTaskNode");
 
-        Optional<UserTaskInstanceStateDataEvent> firstUserTaskInstance = findUserTaskInstanceEvent(events, "Ready");
-        Optional<UserTaskInstanceStateDataEvent> secondUserTaskInstance = findUserTaskInstanceEvent(events, "Completed");
+        Optional<UserTaskInstanceStateDataEvent> firstUserTaskInstance = findUserTaskInstanceEvent(events, "SecondTask", "Ready");
+        // we completed through the work item handler so the user task is really obsolete
+        Optional<UserTaskInstanceStateDataEvent> secondUserTaskInstance = findUserTaskInstanceEvent(events, "FirstTask", "Obsolete");
 
         assertUserTaskInstanceEvent(firstUserTaskInstance.get(), "SecondTask", null, "1", "Ready", "UserTasksProcess", "Second Task");
-        assertUserTaskInstanceEvent(secondUserTaskInstance.get(), "FirstTask", null, "1", "Completed", "UserTasksProcess", "First Task");
+        assertUserTaskInstanceEvent(secondUserTaskInstance.get(), "FirstTask", null, "1", "Obsolete", "UserTasksProcess", "First Task");
 
         workItems = processInstance.workItems(securityPolicy);
         assertThat(workItems).hasSize(1);
@@ -252,7 +256,7 @@ public class PublishEventIT extends AbstractCodegenIT {
         left = findNodeInstanceEvents(events, 2);
         assertThat(left).hasSize(2).extractingResultOf("getNodeType").containsOnly("HumanTaskNode", "EndNode");
 
-        assertUserTaskInstanceEvent(events.get(0), "SecondTask", null, "1", "Completed", "UserTasksProcess", "Second Task");
+        assertUserTaskInstanceEvent(events.get(0), "SecondTask", null, "1", "Obsolete", "UserTasksProcess", "Second Task");
     }
 
     @Test
@@ -285,7 +289,7 @@ public class PublishEventIT extends AbstractCodegenIT {
         List<ProcessInstanceNodeEventBody> triggered = findNodeInstanceEvents(events, 1);
         assertThat(triggered).hasSize(2).extractingResultOf("getNodeName").containsOnly("StartProcess", "First Task");
 
-        Optional<UserTaskInstanceStateDataEvent> event = findUserTaskInstanceEvent(events, "Ready");
+        Optional<UserTaskInstanceStateDataEvent> event = findUserTaskInstanceEvent(events, "FirstTask", "Ready");
         assertThat(event).isPresent();
         assertUserTaskInstanceEvent(event.get(), "FirstTask", null, "1", "Ready", "UserTasksProcess", "First Task");
 
@@ -343,7 +347,7 @@ public class PublishEventIT extends AbstractCodegenIT {
         List<ProcessInstanceNodeEventBody> left = findNodeInstanceEvents(events, 2);
         assertThat(left).hasSize(1).extractingResultOf("getNodeType").containsOnly("StartNode");
 
-        Optional<UserTaskInstanceStateDataEvent> userTask = findUserTaskInstanceEvent(events, "Ready");
+        Optional<UserTaskInstanceStateDataEvent> userTask = findUserTaskInstanceEvent(events, "FirstTask", "Ready");
         assertThat(userTask).isPresent();
         assertUserTaskInstanceEvent(userTask.get(), "FirstTask", null, "1", "Ready", "UserTasksProcess", "First Task");
     }

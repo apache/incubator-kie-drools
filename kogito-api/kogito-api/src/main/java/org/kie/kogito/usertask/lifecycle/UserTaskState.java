@@ -19,7 +19,6 @@
 package org.kie.kogito.usertask.lifecycle;
 
 import java.util.Objects;
-import java.util.Optional;
 
 public class UserTaskState {
 
@@ -69,8 +68,8 @@ public class UserTaskState {
         return name;
     }
 
-    public Optional<TerminationType> isTerminate() {
-        return Optional.ofNullable(terminate);
+    public boolean isTerminate() {
+        return terminate != null;
     }
 
     @Override
@@ -91,7 +90,7 @@ public class UserTaskState {
     }
 
     public static UserTaskState initalized() {
-        return of(null);
+        return of("Created");
     }
 
     @Override

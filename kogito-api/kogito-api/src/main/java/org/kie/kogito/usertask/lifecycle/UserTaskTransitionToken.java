@@ -22,7 +22,11 @@ import java.util.Map;
 
 public interface UserTaskTransitionToken {
 
-    UserTaskTransition transition();
+    String transitionId();
+
+    UserTaskState source();
+
+    UserTaskState target();
 
     Map<String, Object> data();
 }

@@ -32,8 +32,13 @@ public class DefaultUserTaskEventListenerConfig implements UserTaskEventListener
         this.listeners = new ArrayList<>();
     }
 
+    public DefaultUserTaskEventListenerConfig(Iterable<UserTaskEventListener> listeners) {
+        this();
+        listeners.forEach(this::addUserTaskEventListener);
+    }
+
     public DefaultUserTaskEventListenerConfig(List<UserTaskEventListener> listeners) {
-        this.listeners = new ArrayList<>(listeners);
+        this((Iterable<UserTaskEventListener>) listeners);
     }
 
     public void addUserTaskEventListener(UserTaskEventListener userTaskEventListener) {

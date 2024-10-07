@@ -1,3 +1,4 @@
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -29,24 +30,30 @@ import org.kie.kogito.uow.UnitOfWorkManager;
 import org.kie.kogito.uow.events.UnitOfWorkEventListener;
 import org.kie.kogito.usertask.impl.DefaultUserTaskConfig;
 import org.kie.kogito.usertask.lifecycle.UserTaskLifeCycle;
+import org.kie.kogito.usertask.UserTaskAssignmentStrategyConfig;
 import org.kie.kogito.usertask.UserTaskEventListenerConfig;
+import org.kie.kogito.usertask.UserTaskInstances;
 
 @org.springframework.stereotype.Component
 public class UserTaskConfig extends DefaultUserTaskConfig {
-    
+
     @org.springframework.beans.factory.annotation.Autowired
     public UserTaskConfig(
             List<UserTaskEventListenerConfig> workItemHandlerConfig,
             List<UnitOfWorkManager> unitOfWorkManager,
             List<JobsService> jobsService,
             List<IdentityProvider> identityProvider,
-            List<UserTaskLifeCycle> userTaskLifeCycle) {
+            List<UserTaskLifeCycle> userTaskLifeCycle,
+            List<UserTaskAssignmentStrategyConfig> userTaskAssignmentStrategyConfigs,
+            List<UserTaskInstances> userTaskInstances) {
 
-        super(workItemHandlerConfig, 
+        super(workItemHandlerConfig,
                 unitOfWorkManager,
                 jobsService,
                 identityProvider,
-                userTaskLifeCycle);
+                userTaskLifeCycle,
+                userTaskAssignmentStrategyConfigs,
+                userTaskInstances);
     }
-    
+
 }

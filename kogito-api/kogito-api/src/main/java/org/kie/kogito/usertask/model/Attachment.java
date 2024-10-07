@@ -27,6 +27,10 @@ public class Attachment extends TaskMetaEntity<String, URI> {
     private static final long serialVersionUID = 1L;
     private String name;
 
+    public Attachment() {
+
+    }
+
     public Attachment(String id, String user) {
         super(id, user);
     }

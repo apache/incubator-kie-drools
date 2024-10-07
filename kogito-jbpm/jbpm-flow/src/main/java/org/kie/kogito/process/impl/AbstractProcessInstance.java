@@ -73,8 +73,12 @@ import org.kie.kogito.process.flexible.AdHocFragment;
 import org.kie.kogito.process.flexible.Milestone;
 import org.kie.kogito.process.workitems.InternalKogitoWorkItem;
 import org.kie.kogito.services.uow.ProcessInstanceWorkUnit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class AbstractProcessInstance<T extends Model> implements ProcessInstance<T> {
+
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractProcessInstance.class);
 
     private static final String KOGITO_PROCESS_INSTANCE = "KogitoProcessInstance";
 
@@ -156,6 +160,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
     }
 
     protected void reconnect() {
+        LOG.debug("reconnect process {}", processInstance.getId());
         //set correlation
         if (correlationInstance.isEmpty()) {
             correlationInstance = process().correlations().findByCorrelatedId(id());
@@ -168,12 +173,6 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
         processInstance.reconnect();
         processInstance.setMetaData(KOGITO_PROCESS_INSTANCE, this);
         addCompletionEventListener();
-
-        for (org.kie.api.runtime.process.NodeInstance nodeInstance : processInstance.getNodeInstances()) {
-            if (nodeInstance instanceof WorkItemNodeInstance) {
-                ((WorkItemNodeInstance) nodeInstance).internalRegisterWorkItem();
-            }
-        }
 
         unbind(variables, processInstance.getVariables());
     }
@@ -193,15 +192,12 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
     }
 
     protected void disconnect() {
+
         if (processInstance == null) {
             return;
         }
 
-        for (org.kie.api.runtime.process.NodeInstance nodeInstance : processInstance.getNodeInstances()) {
-            if (nodeInstance instanceof WorkItemNodeInstance) {
-                ((WorkItemNodeInstance) nodeInstance).internalRemoveWorkItem();
-            }
-        }
+        LOG.debug("disconnect process {}", processInstance.getId());
 
         processInstance.disconnect();
         processInstance.setMetaData(KOGITO_PROCESS_INSTANCE, null);
@@ -248,6 +244,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
         if (processInstance.getKnowledgeRuntime() != null) {
             disconnect();
         }
+
         processInstance = null;
     }
 
@@ -337,7 +334,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
 
     @Override
     public int status() {
-        return this.status;
+        return status;
     }
 
     @Override
@@ -556,12 +553,14 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
 
     @Override
     public void completeWorkItem(String id, Map<String, Object> variables, Policy... policies) {
+        syncWorkItems();
         getProcessRuntime().getKogitoProcessRuntime().getKogitoWorkItemManager().completeWorkItem(id, variables, policies);
         removeOnFinish();
     }
 
     @Override
     public <R> R updateWorkItem(String id, Function<KogitoWorkItem, R> updater, Policy... policies) {
+        syncWorkItems();
         R result = getProcessRuntime().getKogitoProcessRuntime().getKogitoWorkItemManager().updateWorkItem(id, updater, policies);
         addToUnitOfWork(pi -> ((MutableProcessInstances<T>) process.instances()).update(pi.id(), pi));
         return result;
@@ -569,14 +568,24 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
 
     @Override
     public void abortWorkItem(String id, Policy... policies) {
+        syncWorkItems();
         getProcessRuntime().getKogitoProcessRuntime().getKogitoWorkItemManager().abortWorkItem(id, policies);
         removeOnFinish();
     }
 
     @Override
     public void transitionWorkItem(String id, WorkItemTransition transition) {
+        syncWorkItems();
         getProcessRuntime().getKogitoProcessRuntime().getKogitoWorkItemManager().transitionWorkItem(id, transition);
         removeOnFinish();
+    }
+
+    private void syncWorkItems() {
+        for (org.kie.api.runtime.process.NodeInstance nodeInstance : processInstance().getNodeInstances(true)) {
+            if (nodeInstance instanceof WorkItemNodeInstance workItemNodeInstance) {
+                workItemNodeInstance.internalRegisterWorkItem();
+            }
+        }
     }
 
     @Override

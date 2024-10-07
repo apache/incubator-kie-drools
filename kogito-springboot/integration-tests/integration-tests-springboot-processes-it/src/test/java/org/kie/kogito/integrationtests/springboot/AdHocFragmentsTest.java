@@ -58,7 +58,7 @@ class AdHocFragmentsTest extends BaseRestTest {
                 .queryParam("user", "john")
                 .queryParam("group", "manager")
                 .when()
-                .post("/AdHocFragments/{pid}/AdHocTask1", id)
+                .post("/AdHocFragments/{pid}/AdHocTask1/trigger", id)
                 .then()
                 .statusCode(201)
                 .header("Location", not(emptyOrNullString()))

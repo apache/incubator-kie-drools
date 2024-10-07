@@ -18,10 +18,19 @@
  */
 package org.kie.kogito.usertask;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
+import org.kie.kogito.auth.IdentityProvider;
+
 public interface UserTaskInstances {
+
+    void setReconnectUserTaskInstance(Function<UserTaskInstance, UserTaskInstance> reconnectUserTaskInstance);
+
+    void setDisconnectUserTaskInstance(Function<UserTaskInstance, UserTaskInstance> disconnectUserTaskInstance);
+
+    List<UserTaskInstance> findByIdentity(IdentityProvider identityProvider);
 
     Optional<UserTaskInstance> findById(String userTaskInstanceId);
 
@@ -32,9 +41,5 @@ public interface UserTaskInstances {
     UserTaskInstance update(UserTaskInstance userTaskInstance);
 
     UserTaskInstance remove(String userTaskInstanceId);
-
-    void setReconnectUserTaskInstance(Function<UserTaskInstance, UserTaskInstance> reconnectUserTaskInstance);
-
-    void setDisconnectUserTaskInstance(Function<UserTaskInstance, UserTaskInstance> disconnectUserTaskInstance);
 
 }

@@ -20,34 +20,37 @@ package org.kie.kogito.usertask.impl.events;
 
 import org.kie.kogito.usertask.UserTaskInstance;
 import org.kie.kogito.usertask.events.UserTaskStateEvent;
+import org.kie.kogito.usertask.lifecycle.UserTaskState;
 
 public class UserTaskStateEventImpl extends UserTaskEventImpl implements UserTaskStateEvent {
 
     private static final long serialVersionUID = 4556236095420836309L;
-    private String oldStatus;
-    private String newStatus;
+    private UserTaskState oldStatus;
+    private UserTaskState newStatus;
 
-    public UserTaskStateEventImpl(UserTaskInstance userTaskInstance, String oldStatus, String newStatus, String user) {
+    public UserTaskStateEventImpl(UserTaskInstance userTaskInstance, UserTaskState oldStatus, UserTaskState newStatus, String user) {
         super(userTaskInstance, user);
+        this.oldStatus = oldStatus;
+        this.newStatus = newStatus;
     }
 
-    public void setOldStatus(String oldStatus) {
+    public void setOldStatus(UserTaskState oldStatus) {
         this.oldStatus = oldStatus;
 
     }
 
-    public void setNewStatus(String newStatus) {
+    public void setNewStatus(UserTaskState newStatus) {
         this.newStatus = newStatus;
 
     }
 
     @Override
-    public String getNewStatus() {
+    public UserTaskState getNewStatus() {
         return newStatus;
     }
 
     @Override
-    public String getOldStatus() {
+    public UserTaskState getOldStatus() {
         return oldStatus;
     }
 

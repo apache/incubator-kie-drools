@@ -29,7 +29,7 @@ import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.workflow.core.impl.WorkflowProcessImpl;
-import org.jbpm.workflow.core.node.HumanTaskNode;
+import org.jbpm.workflow.core.node.WorkItemNode;
 import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.WorkflowProcess;
 import org.kie.kogito.ProcessInput;
@@ -243,27 +243,26 @@ public class ProcessToExecModelGenerator {
         return sanitizeClassName(extractProcessId(processId) + MODEL_CLASS_SUFFIX);
     }
 
-    public List<UserTaskModelMetaData> generateUserTaskModel(WorkflowProcess process) {
+    public List<WorkItemModelMetaData> generateWorkItemModel(WorkflowProcess process) {
         String packageName = process.getPackageName();
-        List<UserTaskModelMetaData> userTaskModels = new ArrayList<>();
+        List<WorkItemModelMetaData> workItemTaskModels = new ArrayList<>();
 
         VariableScope variableScope = (VariableScope) ((org.jbpm.process.core.Process) process).getDefaultContext(
                 VariableScope.VARIABLE_SCOPE);
 
         for (Node node : ((WorkflowProcessImpl) process).getNodesRecursively()) {
-            if (node instanceof HumanTaskNode) {
-                HumanTaskNode humanTaskNode = (HumanTaskNode) node;
-                VariableScope nodeVariableScope = (VariableScope) ((ContextContainer) humanTaskNode
+            if (node instanceof WorkItemNode workItemNode) {
+                VariableScope nodeVariableScope = (VariableScope) ((ContextContainer) workItemNode
                         .getParentContainer()).getDefaultContext(VariableScope.VARIABLE_SCOPE);
                 if (nodeVariableScope == null) {
                     nodeVariableScope = variableScope;
                 }
-                userTaskModels.add(new UserTaskModelMetaData(packageName, variableScope, nodeVariableScope,
-                        humanTaskNode, process.getId()));
+                workItemTaskModels.add(new WorkItemModelMetaData(packageName, variableScope, nodeVariableScope,
+                        workItemNode, process.getId()));
             }
         }
 
-        return userTaskModels;
+        return workItemTaskModels;
     }
 
     public static String extractProcessId(String processId) {

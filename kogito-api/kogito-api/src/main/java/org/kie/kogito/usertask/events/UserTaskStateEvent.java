@@ -19,10 +19,12 @@
 
 package org.kie.kogito.usertask.events;
 
+import org.kie.kogito.usertask.lifecycle.UserTaskState;
+
 public interface UserTaskStateEvent extends UserTaskEvent {
 
-    String getNewStatus();
+    UserTaskState getNewStatus();
 
-    String getOldStatus();
+    UserTaskState getOldStatus();
 
 }

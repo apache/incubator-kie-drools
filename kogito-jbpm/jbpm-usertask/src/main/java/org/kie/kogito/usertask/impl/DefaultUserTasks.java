@@ -25,13 +25,18 @@ import java.util.List;
 import java.util.Map;
 
 import org.kie.kogito.Application;
+import org.kie.kogito.uow.events.UnitOfWorkUserTaskEventListener;
 import org.kie.kogito.usertask.UserTask;
+import org.kie.kogito.usertask.UserTaskConfig;
+import org.kie.kogito.usertask.UserTaskInstance;
+import org.kie.kogito.usertask.UserTaskInstances;
 import org.kie.kogito.usertask.UserTasks;
 
 public class DefaultUserTasks implements UserTasks {
 
     private Map<String, UserTask> userTasks;
     private Application application;
+    private UserTaskInstances userTaskInstances;
 
     public DefaultUserTasks() {
         this.userTasks = new HashMap<>();
@@ -49,6 +54,9 @@ public class DefaultUserTasks implements UserTasks {
             UserTask userTask = userTaskIterator.next();
             this.userTasks.put(userTask.id(), userTask);
         }
+        userTaskInstances = application.config().get(UserTaskConfig.class).userTaskInstances();
+        userTaskInstances.setDisconnectUserTaskInstance(this::disconnect);
+        userTaskInstances.setReconnectUserTaskInstance(this::connect);
     }
 
     @Override
@@ -61,4 +69,30 @@ public class DefaultUserTasks implements UserTasks {
         return userTasks.keySet();
     }
 
+    @Override
+    public UserTaskInstances instances() {
+        return userTaskInstances;
+    }
+
+    public UserTaskInstance disconnect(UserTaskInstance userTaskInstance) {
+        DefaultUserTaskInstance instance = (DefaultUserTaskInstance) userTaskInstance;
+        instance.setUserTask(null);
+        instance.setUserTaskEventSupport(null);
+        instance.setUserTaskLifeCycle(null);
+        instance.setInstances(null);
+        return instance;
+    }
+
+    public UserTaskInstance connect(UserTaskInstance userTaskInstance) {
+        DefaultUserTaskInstance instance = (DefaultUserTaskInstance) userTaskInstance;
+        UserTaskConfig userTaskConfig = application.config().get(UserTaskConfig.class);
+        KogitoUserTaskEventSupportImpl impl = new KogitoUserTaskEventSupportImpl(userTaskConfig.identityProvider());
+        userTaskConfig.userTaskEventListeners().listeners().forEach(impl::addEventListener);
+        impl.addEventListener(new UnitOfWorkUserTaskEventListener(application.unitOfWorkManager()));
+        instance.setUserTask(application.get(UserTasks.class).userTaskById(instance.getUserTaskId()));
+        instance.setUserTaskEventSupport(impl);
+        instance.setUserTaskLifeCycle(userTaskConfig.userTaskLifeCycle());
+        instance.setInstances(userTaskInstances);
+        return instance;
+    }
 }

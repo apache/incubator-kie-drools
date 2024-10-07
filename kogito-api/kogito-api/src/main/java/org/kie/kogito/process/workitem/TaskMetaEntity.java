@@ -57,6 +57,10 @@ public class TaskMetaEntity<K extends Serializable, T extends Serializable> impl
         return updatedBy;
     }
 
+    public void setId(K id) {
+        this.id = id;
+    }
+
     public K getId() {
         return id;
     }

@@ -20,27 +20,41 @@ package org.kie.kogito.usertask.impl.lifecycle;
 
 import java.util.Map;
 
-import org.kie.kogito.usertask.lifecycle.UserTaskTransition;
+import org.kie.kogito.usertask.lifecycle.UserTaskState;
 import org.kie.kogito.usertask.lifecycle.UserTaskTransitionToken;
 
 public class DefaultUserTaskTransitionToken implements UserTaskTransitionToken {
 
-    private UserTaskTransition transition;
+    private String transition;
     private Map<String, Object> data;
+    private UserTaskState source;
+    private UserTaskState target;
 
-    public DefaultUserTaskTransitionToken(UserTaskTransition transition, Map<String, Object> data) {
+    public DefaultUserTaskTransitionToken(String transition, UserTaskState source, UserTaskState target, Map<String, Object> data) {
         this.transition = transition;
+        this.source = source;
+        this.target = target;
         this.data = data;
     }
 
     @Override
-    public UserTaskTransition transition() {
+    public String transitionId() {
         return transition;
     }
 
     @Override
     public Map<String, Object> data() {
         return data;
+    }
+
+    @Override
+    public UserTaskState source() {
+        return source;
+    }
+
+    @Override
+    public UserTaskState target() {
+        return target;
     }
 
 }

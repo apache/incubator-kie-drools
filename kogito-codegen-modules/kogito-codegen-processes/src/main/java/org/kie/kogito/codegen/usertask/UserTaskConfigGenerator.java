@@ -35,11 +35,9 @@ import com.github.javaparser.ast.body.ConstructorDeclaration;
 
 public class UserTaskConfigGenerator implements ConfigGenerator {
 
-    private List<Work> collectedResources;
     private TemplatedGenerator templateGenerator;
 
     public UserTaskConfigGenerator(KogitoBuildContext context, List<Work> collectedResources) {
-        this.collectedResources = collectedResources;
         templateGenerator = TemplatedGenerator.builder()
                 .withTemplateBasePath("/class-templates/usertask")
                 .build(context, "UserTaskConfig");
@@ -54,7 +52,6 @@ public class UserTaskConfigGenerator implements ConfigGenerator {
     public GeneratedFile generate() {
         CompilationUnit unit = templateGenerator.compilationUnit().get();
         String packageName = unit.getPackageDeclaration().get().getNameAsString();
-        unit.getPackageDeclaration().get().setName(packageName);
 
         ClassOrInterfaceDeclaration clazzDeclaration = unit.findFirst(ClassOrInterfaceDeclaration.class).get();
         clazzDeclaration.setName(configClassName());

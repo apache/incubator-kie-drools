@@ -76,6 +76,7 @@ import org.jbpm.workflow.instance.node.EventNodeInstanceInterface;
 import org.jbpm.workflow.instance.node.EventSubProcessNodeInstance;
 import org.jbpm.workflow.instance.node.FaultNodeInstance;
 import org.jbpm.workflow.instance.node.StateBasedNodeInstance;
+import org.jbpm.workflow.instance.node.WorkItemNodeInstance;
 import org.kie.api.definition.process.NodeContainer;
 import org.kie.api.definition.process.WorkflowElementIdentifier;
 import org.kie.api.runtime.rule.AgendaFilter;
@@ -464,6 +465,11 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
 
     @Override
     public void disconnect() {
+        for (org.kie.api.runtime.process.NodeInstance nodeInstance : getNodeInstances(true)) {
+            if (nodeInstance instanceof WorkItemNodeInstance workItemNodeInstance) {
+                workItemNodeInstance.internalRemoveWorkItem();
+            }
+        }
         removeEventListeners();
         unregisterExternalEventNodeListeners();
 
@@ -478,11 +484,17 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
     @Override
     public void reconnect() {
         super.reconnect();
+        for (org.kie.api.runtime.process.NodeInstance nodeInstance : getNodeInstances(true)) {
+            if (nodeInstance instanceof WorkItemNodeInstance workItemNodeInstance) {
+                workItemNodeInstance.internalRegisterWorkItem();
+            }
+        }
         for (NodeInstance nodeInstance : nodeInstances) {
             if (nodeInstance instanceof EventBasedNodeInstanceInterface) {
                 ((EventBasedNodeInstanceInterface) nodeInstance).addEventListeners();
             }
         }
+
         registerExternalEventNodeListeners();
     }
 

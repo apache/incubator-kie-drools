@@ -42,7 +42,7 @@ import org.jbpm.compiler.canonical.ModelMetaData;
 import org.jbpm.compiler.canonical.ProcessMetaData;
 import org.jbpm.compiler.canonical.ProcessToExecModelGenerator;
 import org.jbpm.compiler.canonical.TriggerMetaData;
-import org.jbpm.compiler.canonical.UserTaskModelMetaData;
+import org.jbpm.compiler.canonical.WorkItemModelMetaData;
 import org.jbpm.compiler.xml.XmlProcessReader;
 import org.jbpm.compiler.xml.core.SemanticModules;
 import org.jbpm.process.core.impl.ProcessImpl;
@@ -288,7 +288,7 @@ public class ProcessCodegen extends AbstractGenerator {
         Map<String, InputModelClassGenerator> processIdToInputModelGenerator = new HashMap<>();
         Map<String, OutputModelClassGenerator> processIdToOutputModelGenerator = new HashMap<>();
 
-        Map<String, List<UserTaskModelMetaData>> processIdToUserTaskModel = new HashMap<>();
+        Map<String, List<WorkItemModelMetaData>> processIdToWorkItemModel = new HashMap<>();
         Map<String, ProcessMetaData> processIdToMetadata = new HashMap<>();
 
         // first we generate all the data classes from variable declarations
@@ -305,10 +305,13 @@ public class ProcessCodegen extends AbstractGenerator {
             }
         }
 
-        // then we generate user task inputs and outputs if any
+        // then we generate work items task inputs and outputs if any
         for (WorkflowProcess workFlowProcess : processes.values()) {
-            UserTasksModelClassGenerator utcg = new UserTasksModelClassGenerator(workFlowProcess);
-            processIdToUserTaskModel.put(workFlowProcess.getId(), utcg.generate());
+            if (KogitoWorkflowProcess.SW_TYPE.equals(workFlowProcess.getType())) {
+                continue;
+            }
+            WorkItemModelClassGenerator utcg = new WorkItemModelClassGenerator(workFlowProcess);
+            processIdToWorkItemModel.put(workFlowProcess.getId(), utcg.generate());
         }
 
         // then we can instantiate the exec model generator
@@ -363,7 +366,7 @@ public class ProcessCodegen extends AbstractGenerator {
                         applicationCanonicalName());
 
                 processResourceGenerator
-                        .withUserTasks(processIdToUserTaskModel.get(workFlowProcess.getId()))
+                        .withWorkItems(processIdToWorkItemModel.get(workFlowProcess.getId()))
                         .withSignals(metaData.getSignals())
                         .withTriggers(metaData.isStartable(), metaData.isDynamic(), metaData.getTriggers())
                         .withTransaction(isTransactionEnabled());
@@ -421,14 +424,14 @@ public class ProcessCodegen extends AbstractGenerator {
                     mmd.generate());
         }
 
-        for (List<UserTaskModelMetaData> utmd : processIdToUserTaskModel.values()) {
+        for (List<WorkItemModelMetaData> utmd : processIdToWorkItemModel.values()) {
 
-            for (UserTaskModelMetaData ut : utmd) {
-                storeFile(MODEL_TYPE, UserTasksModelClassGenerator.generatedFilePath(ut.getInputModelClassName()), ut.generateInput());
+            for (WorkItemModelMetaData ut : utmd) {
+                storeFile(MODEL_TYPE, WorkItemModelClassGenerator.generatedFilePath(ut.getInputModelClassName()), ut.generateInput());
 
-                storeFile(MODEL_TYPE, UserTasksModelClassGenerator.generatedFilePath(ut.getOutputModelClassName()), ut.generateOutput());
+                storeFile(MODEL_TYPE, WorkItemModelClassGenerator.generatedFilePath(ut.getOutputModelClassName()), ut.generateOutput());
 
-                storeFile(MODEL_TYPE, UserTasksModelClassGenerator.generatedFilePath(ut.getTaskModelClassName()), ut.generateModel());
+                storeFile(MODEL_TYPE, WorkItemModelClassGenerator.generatedFilePath(ut.getTaskModelClassName()), ut.generateModel());
             }
         }
 
@@ -442,7 +445,7 @@ public class ProcessCodegen extends AbstractGenerator {
             for (ProcessResourceGenerator resourceGenerator : rgs) {
                 storeFile(REST_TYPE, resourceGenerator.generatedFilePath(),
                         resourceGenerator.generate());
-                storeFile(MODEL_TYPE, UserTasksModelClassGenerator.generatedFilePath(resourceGenerator.getTaskModelFactoryClassName()), resourceGenerator.getTaskModelFactory());
+                storeFile(MODEL_TYPE, WorkItemModelClassGenerator.generatedFilePath(resourceGenerator.getTaskModelFactoryClassName()), resourceGenerator.getTaskModelFactory());
             }
         }
 

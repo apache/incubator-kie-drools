@@ -21,21 +21,21 @@ package org.kie.kogito.codegen.process;
 import java.util.List;
 
 import org.jbpm.compiler.canonical.ProcessToExecModelGenerator;
-import org.jbpm.compiler.canonical.UserTaskModelMetaData;
+import org.jbpm.compiler.canonical.WorkItemModelMetaData;
 import org.kie.api.definition.process.WorkflowProcess;
 
-public class UserTasksModelClassGenerator {
+public class WorkItemModelClassGenerator {
 
     private final WorkflowProcess workFlowProcess;
-    private List<UserTaskModelMetaData> modelMetaData;
+    private List<WorkItemModelMetaData> modelMetaData;
 
-    public UserTasksModelClassGenerator(WorkflowProcess workFlowProcess) {
+    public WorkItemModelClassGenerator(WorkflowProcess workFlowProcess) {
         this.workFlowProcess = workFlowProcess;
     }
 
-    public List<UserTaskModelMetaData> generate() {
+    public List<WorkItemModelMetaData> generate() {
         // create model class for all variables
-        modelMetaData = ProcessToExecModelGenerator.INSTANCE.generateUserTaskModel(workFlowProcess);
+        modelMetaData = ProcessToExecModelGenerator.INSTANCE.generateWorkItemModel(workFlowProcess);
         return modelMetaData;
     }
 

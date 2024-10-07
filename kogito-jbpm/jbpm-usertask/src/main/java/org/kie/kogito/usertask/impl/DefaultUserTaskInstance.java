@@ -19,7 +19,7 @@
 package org.kie.kogito.usertask.impl;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -28,6 +28,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
+import org.kie.kogito.auth.IdentityProvider;
 import org.kie.kogito.internal.usertask.event.KogitoUserTaskEventSupport;
 import org.kie.kogito.internal.usertask.event.KogitoUserTaskEventSupport.AssignmentType;
 import org.kie.kogito.usertask.UserTask;
@@ -35,7 +36,6 @@ import org.kie.kogito.usertask.UserTaskInstance;
 import org.kie.kogito.usertask.UserTaskInstances;
 import org.kie.kogito.usertask.lifecycle.UserTaskLifeCycle;
 import org.kie.kogito.usertask.lifecycle.UserTaskState;
-import org.kie.kogito.usertask.lifecycle.UserTaskTransition;
 import org.kie.kogito.usertask.lifecycle.UserTaskTransitionToken;
 import org.kie.kogito.usertask.model.Attachment;
 import org.kie.kogito.usertask.model.Comment;
@@ -45,6 +45,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class DefaultUserTaskInstance implements UserTaskInstance {
 
     private String id;
+
+    private String userTaskId;
 
     private UserTaskState status;
     private String actualOwner;
@@ -75,20 +77,8 @@ public class DefaultUserTaskInstance implements UserTaskInstance {
     private UserTaskLifeCycle setUserTaskLifeCycle;
 
     public DefaultUserTaskInstance() {
-        this.metadata = new HashMap<>();
-        this.attachments = new ArrayList<>();
-        this.comments = new ArrayList<>();
-        this.potentialUsers = new HashSet<>();
-        this.potentialGroups = new HashSet<>();
-        this.adminUsers = new HashSet<>();
-        this.adminGroups = new HashSet<>();
-        this.excludedUsers = new HashSet<>();
-    }
-
-    public DefaultUserTaskInstance(UserTask userTask) {
-        this.id = UUID.randomUUID().toString();
-        this.userTask = userTask;
-        this.instances = userTask.instances();
+        this.inputs = new HashMap<>();
+        this.outputs = new HashMap<>();
         this.status = UserTaskState.initalized();
         this.metadata = new HashMap<>();
         this.attachments = new ArrayList<>();
@@ -100,13 +90,11 @@ public class DefaultUserTaskInstance implements UserTaskInstance {
         this.excludedUsers = new HashSet<>();
     }
 
-    public void assign() {
-        Set<String> potentialUsers = new HashSet<>(this.getPotentialUsers());
-        potentialUsers.removeAll(getExcludedUsers());
-
-        if (potentialUsers.size() == 1) {
-            this.actualOwner = potentialUsers.iterator().next();
-        }
+    public DefaultUserTaskInstance(UserTask userTask) {
+        this();
+        this.id = UUID.randomUUID().toString();
+        this.userTask = userTask;
+        this.instances = userTask.instances();
     }
 
     public void setUserTaskEventSupport(KogitoUserTaskEventSupport userTaskEventSupport) {
@@ -121,22 +109,17 @@ public class DefaultUserTaskInstance implements UserTaskInstance {
         this.instances = instances;
     }
 
-    @Override
-    public void complete() {
-        UserTaskTransitionToken transition = this.setUserTaskLifeCycle.newCompleteTransitionToken(this, Collections.emptyMap());
-        transition(transition);
-        instances.remove(id);
-    }
-
-    @Override
-    public void abort() {
-        UserTaskTransitionToken transition = this.setUserTaskLifeCycle.newAbortTransitionToken(this, Collections.emptyMap());
-        transition(transition);
-        instances.remove(id);
-    }
-
     public void setId(String id) {
         this.id = id;
+    }
+
+    @Override
+    public String getUserTaskId() {
+        return userTaskId;
+    }
+
+    public void setUserTaskId(String userTaskId) {
+        this.userTaskId = userTaskId;
     }
 
     @Override
@@ -162,8 +145,9 @@ public class DefaultUserTaskInstance implements UserTaskInstance {
     public void setActuaOwner(String actualOwner) {
         this.actualOwner = actualOwner;
         if (this.userTaskEventSupport != null) {
-            this.userTaskEventSupport.fireOneUserTaskStateChange(this, this.status.getName(), this.status.getName());
+            this.userTaskEventSupport.fireOneUserTaskStateChange(this, this.status, this.status);
         }
+        updatePersistence();
     }
 
     @Override
@@ -181,21 +165,29 @@ public class DefaultUserTaskInstance implements UserTaskInstance {
     }
 
     @Override
-    public UserTaskTransitionToken createTransitionToken(String transitionId, Map<String, Object> data) {
-        return this.setUserTaskLifeCycle.newTransitionToken(transitionId, this, data);
+    public void transition(String transitionId, Map<String, Object> data, IdentityProvider identity) {
+        Optional<UserTaskTransitionToken> next = Optional.of(this.setUserTaskLifeCycle.newTransitionToken(transitionId, this, data));
+        while (next.isPresent()) {
+            UserTaskTransitionToken transition = next.get();
+            next = this.setUserTaskLifeCycle.transition(this, transition, identity);
+            this.status = transition.target();
+            this.updatePersistenceOrRemove();
+            this.userTaskEventSupport.fireOneUserTaskStateChange(this, transition.source(), transition.target());
+        }
+
     }
 
-    @Override
-    public void transition(UserTaskTransitionToken token) {
-        Optional<UserTaskTransitionToken> next = Optional.of(token);
-        while (next.isPresent()) {
-            UserTaskTransition transition = next.get().transition();
-            next = this.setUserTaskLifeCycle.transition(this, token);
-            this.status = transition.target();
-            this.userTaskEventSupport.fireOneUserTaskStateChange(this, transition.source().getName(), transition.target().getName());
-            if (this.status.isTerminate().isPresent()) {
-                this.instances.remove(this.id);
-            }
+    private void updatePersistence() {
+        if (this.instances != null) {
+            this.instances.update(this);
+        }
+    }
+
+    private void updatePersistenceOrRemove() {
+        if (this.status.isTerminate()) {
+            this.instances.remove(this.id);
+        } else {
+            this.instances.update(this);
         }
     }
 
@@ -204,7 +196,7 @@ public class DefaultUserTaskInstance implements UserTaskInstance {
         return userTask;
     }
 
-    public void setUserTask(DefaultUserTask userTask) {
+    public void setUserTask(UserTask userTask) {
         this.userTask = userTask;
     }
 
@@ -213,7 +205,7 @@ public class DefaultUserTaskInstance implements UserTaskInstance {
     }
 
     public void setInputs(Map<String, Object> inputs) {
-        this.inputs = inputs;
+        inputs.forEach(this::setInput);
     }
 
     public Map<String, Object> getOutputs() {
@@ -221,7 +213,25 @@ public class DefaultUserTaskInstance implements UserTaskInstance {
     }
 
     public void setOutputs(Map<String, Object> outputs) {
-        this.outputs = outputs;
+        outputs.forEach(this::setOutput);
+    }
+
+    @Override
+    public void setInput(String key, Object newValue) {
+        Object oldValue = this.inputs.put(key, newValue);
+        if (this.userTaskEventSupport != null) {
+            this.userTaskEventSupport.fireOnUserTaskInputVariableChange(this, key, oldValue, newValue);
+        }
+        updatePersistence();
+    }
+
+    @Override
+    public void setOutput(String key, Object newValue) {
+        Object oldValue = this.outputs.put(key, newValue);
+        if (this.userTaskEventSupport != null) {
+            this.userTaskEventSupport.fireOnUserTaskOutputVariableChange(this, key, oldValue, newValue);
+        }
+        updatePersistence();
     }
 
     /**
@@ -237,7 +247,14 @@ public class DefaultUserTaskInstance implements UserTaskInstance {
     public void setTaskName(String taskName) {
         this.taskName = taskName;
         if (this.userTaskEventSupport != null) {
-            this.userTaskEventSupport.fireOneUserTaskStateChange(this, this.status.getName(), this.status.getName());
+            this.userTaskEventSupport.fireOneUserTaskStateChange(this, this.status, this.status);
+        }
+        updatePersistence();
+    }
+
+    public void fireInitialStateChange() {
+        if (this.userTaskEventSupport != null) {
+            this.userTaskEventSupport.fireOneUserTaskStateChange(this, this.status, this.status);
         }
     }
 
@@ -254,8 +271,9 @@ public class DefaultUserTaskInstance implements UserTaskInstance {
     public void setTaskDescription(String taskDescription) {
         this.taskDescription = taskDescription;
         if (this.userTaskEventSupport != null) {
-            this.userTaskEventSupport.fireOneUserTaskStateChange(this, this.status.getName(), this.status.getName());
+            this.userTaskEventSupport.fireOneUserTaskStateChange(this, this.status, this.status);
         }
+        updatePersistence();
     }
 
     /**
@@ -271,8 +289,9 @@ public class DefaultUserTaskInstance implements UserTaskInstance {
     public void setTaskPriority(Integer taskPriority) {
         this.taskPriority = taskPriority;
         if (this.userTaskEventSupport != null) {
-            this.userTaskEventSupport.fireOneUserTaskStateChange(this, this.status.getName(), this.status.getName());
+            this.userTaskEventSupport.fireOneUserTaskStateChange(this, this.status, this.status);
         }
+        updatePersistence();
     }
 
     /**
@@ -291,6 +310,7 @@ public class DefaultUserTaskInstance implements UserTaskInstance {
         if (this.userTaskEventSupport != null) {
             this.userTaskEventSupport.fireOnUserTaskAssignmentChange(this, AssignmentType.USER_OWNERS, oldValues, potentialUsers);
         }
+        updatePersistence();
     }
 
     /**
@@ -309,6 +329,7 @@ public class DefaultUserTaskInstance implements UserTaskInstance {
         if (this.userTaskEventSupport != null) {
             this.userTaskEventSupport.fireOnUserTaskAssignmentChange(this, AssignmentType.USER_GROUPS, oldValues, potentialGroups);
         }
+        updatePersistence();
     }
 
     /**
@@ -327,6 +348,7 @@ public class DefaultUserTaskInstance implements UserTaskInstance {
         if (this.userTaskEventSupport != null) {
             this.userTaskEventSupport.fireOnUserTaskAssignmentChange(this, AssignmentType.ADMIN_USERS, oldValues, adminUsers);
         }
+        updatePersistence();
     }
 
     /**
@@ -345,6 +367,7 @@ public class DefaultUserTaskInstance implements UserTaskInstance {
         if (this.userTaskEventSupport != null) {
             this.userTaskEventSupport.fireOnUserTaskAssignmentChange(this, AssignmentType.ADMIN_GROUPS, oldValues, adminGroups);
         }
+        updatePersistence();
     }
 
     /**
@@ -363,6 +386,7 @@ public class DefaultUserTaskInstance implements UserTaskInstance {
         if (this.userTaskEventSupport != null) {
             this.userTaskEventSupport.fireOnUserTaskAssignmentChange(this, AssignmentType.USERS_EXCLUDED, oldValues, excludedUsers);
         }
+        updatePersistence();
     }
 
     /**
@@ -370,41 +394,64 @@ public class DefaultUserTaskInstance implements UserTaskInstance {
      * 
      * @return A map which key is the attachment id and value the attachment object
      */
+
     public List<Attachment> getAttachments() {
         return attachments;
     }
 
     @Override
-    public void addAttachment(Attachment attachment) {
+    public Attachment addAttachment(Attachment attachment) {
+        attachment.setId(UUID.randomUUID().toString());
+        attachment.setUpdatedAt(new Date());
         this.attachments.add(attachment);
         if (this.userTaskEventSupport != null) {
             this.userTaskEventSupport.fireOnUserTaskAttachmentAdded(this, attachment);
         }
+        updatePersistence();
+        return attachment;
     }
 
     @Override
-    public void updateAttachment(Attachment newAttachment) {
+    public Attachment updateAttachment(Attachment newAttachment) {
         Optional<Attachment> oldAttachment = this.attachments.stream().filter(e -> e.getId().equals(newAttachment.getId())).findFirst();
         if (oldAttachment.isEmpty()) {
-            return;
+            return null;
         }
         this.attachments.remove(oldAttachment.get());
+        if (newAttachment.getName() == null) {
+            String path = newAttachment.getContent().getPath();
+            int idx = path.lastIndexOf("/");
+            if (idx > 0) {
+                path = path.substring(idx + 1);
+            }
+            newAttachment.setName(path);
+        }
+        newAttachment.setUpdatedAt(new Date());
         this.attachments.add(newAttachment);
         if (this.userTaskEventSupport != null) {
             this.userTaskEventSupport.fireOnUserTaskAttachmentChange(this, oldAttachment.get(), newAttachment);
         }
+        updatePersistence();
+        return newAttachment;
     }
 
     @Override
-    public void removeAttachment(Attachment oldAttachment) {
-        this.attachments.remove(oldAttachment);
-        if (this.userTaskEventSupport != null) {
-            this.userTaskEventSupport.fireOnUserTaskAttachmentDeleted(this, oldAttachment);
+    public Attachment removeAttachment(Attachment attachment) {
+        Optional<Attachment> oldAttachment = this.attachments.stream().filter(e -> e.getId().equals(attachment.getId())).findFirst();
+        if (oldAttachment.isEmpty()) {
+            return null;
         }
+        this.attachments.remove(attachment);
+        if (this.userTaskEventSupport != null) {
+            this.userTaskEventSupport.fireOnUserTaskAttachmentDeleted(this, oldAttachment.get());
+        }
+        updatePersistence();
+        return oldAttachment.get();
     }
 
     public void setAttachments(List<Attachment> attachments) {
         this.attachments = attachments;
+        updatePersistence();
 
     }
 
@@ -413,45 +460,61 @@ public class DefaultUserTaskInstance implements UserTaskInstance {
      * 
      * @return A map which key is the comment id and value the comment object
      */
+
     public List<Comment> getComments() {
         return comments;
     }
 
     @Override
-    public void addComment(Comment comment) {
+    public Comment addComment(Comment comment) {
+        comment.setId(UUID.randomUUID().toString());
+        comment.setUpdatedAt(new Date());
         this.comments.add(comment);
         if (this.userTaskEventSupport != null) {
             this.userTaskEventSupport.fireOnUserTaskCommentAdded(this, comment);
         }
+        updatePersistence();
+        return comment;
     }
 
     @Override
-    public void updateComment(Comment newComment) {
+    public Comment updateComment(Comment newComment) {
         Optional<Comment> oldComment = this.comments.stream().filter(e -> e.getId().equals(newComment.getId())).findFirst();
         if (oldComment.isEmpty()) {
-            return;
+            return null;
         }
         this.comments.remove(oldComment.get());
+        newComment.setUpdatedAt(new Date());
         this.comments.add(newComment);
         if (this.userTaskEventSupport != null) {
             this.userTaskEventSupport.fireOnUserTaskCommentChange(this, oldComment.get(), newComment);
         }
+        updatePersistence();
+        return newComment;
     }
 
     @Override
-    public void removeComment(Comment comment) {
+    public Comment removeComment(Comment comment) {
+        Optional<Comment> oldComment = this.comments.stream().filter(e -> e.getId().equals(comment.getId())).findFirst();
+        if (oldComment.isEmpty()) {
+            return null;
+        }
         this.comments.remove(comment);
         if (this.userTaskEventSupport != null) {
-            this.userTaskEventSupport.fireOnUserTaskCommentDeleted(this, comment);
+            this.userTaskEventSupport.fireOnUserTaskCommentDeleted(this, oldComment.get());
         }
+        updatePersistence();
+        return oldComment.get();
     }
 
     public void setComments(List<Comment> comments) {
         this.comments = comments;
+        updatePersistence();
     }
 
     public void setMetadata(String key, Object value) {
         this.metadata.put(key, value);
+        updatePersistence();
     }
 
     public Map<String, Object> getMetadata() {
@@ -460,6 +523,7 @@ public class DefaultUserTaskInstance implements UserTaskInstance {
 
     public void setMetadata(Map<String, Object> metadata) {
         this.metadata = metadata;
+        updatePersistence();
     }
 
     @Override

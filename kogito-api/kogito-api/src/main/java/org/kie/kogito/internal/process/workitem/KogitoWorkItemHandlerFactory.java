@@ -26,7 +26,7 @@ public interface KogitoWorkItemHandlerFactory {
 
     public static List<KogitoWorkItemHandler> findAllKogitoWorkItemHandlersRegistered() {
         List<KogitoWorkItemHandler> handlers = new ArrayList<>();
-        ServiceLoader.load(KogitoWorkItemHandlerFactory.class).stream()
+        ServiceLoader.load(KogitoWorkItemHandlerFactory.class, Thread.currentThread().getContextClassLoader()).stream()
                 .map(ServiceLoader.Provider<KogitoWorkItemHandlerFactory>::get)
                 .map(KogitoWorkItemHandlerFactory::provide)
                 .flatMap(List::stream)

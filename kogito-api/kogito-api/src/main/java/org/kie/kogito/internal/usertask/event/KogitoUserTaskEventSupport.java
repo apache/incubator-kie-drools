@@ -23,6 +23,7 @@ import java.util.Set;
 
 import org.kie.kogito.usertask.UserTaskEventListener;
 import org.kie.kogito.usertask.UserTaskInstance;
+import org.kie.kogito.usertask.lifecycle.UserTaskState;
 import org.kie.kogito.usertask.model.Attachment;
 import org.kie.kogito.usertask.model.Comment;
 
@@ -37,7 +38,7 @@ public interface KogitoUserTaskEventSupport {
 
     void fireOneUserTaskStateChange(
             UserTaskInstance instance,
-            String oldPhaseStatus, String newPhaseStatus);
+            UserTaskState oldPhaseStatus, UserTaskState newPhaseStatus);
 
     void fireOnUserTaskNotStartedDeadline(
             UserTaskInstance instance,

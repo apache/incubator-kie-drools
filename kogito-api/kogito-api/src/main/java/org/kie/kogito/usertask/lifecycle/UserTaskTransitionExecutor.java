@@ -20,10 +20,11 @@ package org.kie.kogito.usertask.lifecycle;
 
 import java.util.Optional;
 
+import org.kie.kogito.auth.IdentityProvider;
 import org.kie.kogito.usertask.UserTaskInstance;
 
 public interface UserTaskTransitionExecutor {
 
-    Optional<UserTaskTransitionToken> execute(UserTaskInstance transition, UserTaskTransitionToken token);
+    Optional<UserTaskTransitionToken> execute(UserTaskInstance transition, UserTaskTransitionToken token, IdentityProvider identity);
 
 }

@@ -74,8 +74,12 @@ public class LightWorkItemManager implements InternalKogitoWorkItemManager {
     }
 
     @Override
-    public InternalKogitoWorkItem getWorkItem(String id) {
-        return workItems.get(id);
+    public InternalKogitoWorkItem getWorkItem(String workItemId) {
+        InternalKogitoWorkItem workItem = workItems.get(workItemId);
+        if (workItem == null) {
+            throw new WorkItemNotFoundException("Work Item (" + workItemId + ") does not exist", workItemId);
+        }
+        return workItem;
     }
 
     @Override
@@ -131,7 +135,6 @@ public class LightWorkItemManager implements InternalKogitoWorkItemManager {
         KogitoWorkItemHandler handler = getWorkItemHandler(workItem);
         WorkItemTransition transition = handler.startingTransition(Collections.emptyMap());
         transitionWorkItem(workItem, transition, true);
-
     }
 
     @Override
@@ -143,7 +146,6 @@ public class LightWorkItemManager implements InternalKogitoWorkItemManager {
         KogitoProcessInstance processInstance = processInstanceManager.getProcessInstance(workItem.getProcessInstanceStringId());
         workItem.setState(KogitoWorkItem.COMPLETED);
         processInstance.signalEvent("workItemCompleted", workItem);
-
     }
 
     @Override
@@ -160,10 +162,7 @@ public class LightWorkItemManager implements InternalKogitoWorkItemManager {
 
     @Override
     public <T> T updateWorkItem(String workItemId, Function<KogitoWorkItem, T> updater, Policy... policies) {
-        InternalKogitoWorkItem workItem = workItems.get(workItemId);
-        if (workItem == null) {
-            throw new WorkItemNotFoundException(workItemId);
-        }
+        InternalKogitoWorkItem workItem = getWorkItem(workItemId);
         Stream.of(policies).forEach(p -> p.enforce(workItem));
         T results = updater.apply(workItem);
         return results;
@@ -178,10 +177,7 @@ public class LightWorkItemManager implements InternalKogitoWorkItemManager {
 
     @Override
     public void transitionWorkItem(String workItemId, WorkItemTransition transition) {
-        InternalKogitoWorkItem workItem = workItems.get(workItemId);
-        if (workItem == null) {
-            throw new WorkItemNotFoundException("Work Item (" + workItemId + ") does not exist", workItemId);
-        }
+        InternalKogitoWorkItem workItem = getWorkItem(workItemId);
         transitionWorkItem(workItem, transition, true);
     }
 
@@ -209,7 +205,7 @@ public class LightWorkItemManager implements InternalKogitoWorkItemManager {
         }
 
         if (lastTransition.termination().isPresent()) {
-            internalRemoveWorkItem(workItem.getStringId());
+
             if (signal) {
                 switch (lastTransition.termination().get()) {
                     case COMPLETE:
@@ -222,6 +218,7 @@ public class LightWorkItemManager implements InternalKogitoWorkItemManager {
                         break;
                 }
             }
+
         }
     }
 

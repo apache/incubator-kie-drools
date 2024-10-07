@@ -28,6 +28,8 @@ public interface UserTaskConfig extends KogitoConfig {
 
     UserTaskEventListenerConfig userTaskEventListeners();
 
+    UserTaskAssignmentStrategyConfig userTaskAssignmentStrategies();
+
     UserTaskLifeCycle userTaskLifeCycle();
 
     UnitOfWorkManager unitOfWorkManager();
@@ -35,5 +37,7 @@ public interface UserTaskConfig extends KogitoConfig {
     JobsService jobsService();
 
     IdentityProvider identityProvider();
+
+    UserTaskInstances userTaskInstances();
 
 }

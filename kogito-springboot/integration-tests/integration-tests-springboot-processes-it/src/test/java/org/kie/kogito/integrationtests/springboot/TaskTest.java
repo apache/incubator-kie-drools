@@ -31,11 +31,11 @@ import java.util.stream.Stream;
 import org.acme.travels.Address;
 import org.acme.travels.Traveller;
 import org.jbpm.util.JsonSchemaUtil;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.kie.kogito.task.management.service.TaskInfo;
 import org.kie.kogito.usertask.model.AttachmentInfo;
+import org.kie.kogito.usertask.model.CommentInfo;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -98,7 +98,7 @@ public class TaskTest extends BaseRestTest {
 
     @Test
     void testJsonSchemaFiles() {
-        long expectedJsonSchemas = 23;
+        long expectedJsonSchemas = 25;
         Path jsonDir = Paths.get("target", "classes").resolve(JsonSchemaUtil.getJsonDir());
         try (Stream<Path> paths = Files.walk(jsonDir)) {
             long generatedJsonSchemas = paths
@@ -111,11 +111,10 @@ public class TaskTest extends BaseRestTest {
     }
 
     @Test
-    @Disabled("Revisited after ht endpoints")
     void testCommentAndAttachment() {
         Traveller traveller = new Traveller("pepe", "rubiales", "pepe.rubiales@gmail.com", "Spanish", null);
 
-        String processId = given()
+        given()
                 .contentType(ContentType.JSON)
                 .when()
                 .body(Collections.singletonMap("traveller", traveller))
@@ -129,37 +128,34 @@ public class TaskTest extends BaseRestTest {
                 .contentType(ContentType.JSON)
                 .queryParam("user", "admin")
                 .queryParam("group", "managers")
-                .pathParam("processId", processId)
                 .when()
-                .get("/approvals/{processId}/tasks")
+                .get("/usertasks/instance")
                 .then()
                 .statusCode(200)
                 .extract()
                 .path("[0].id");
 
-        final String commentId = given().contentType(ContentType.TEXT)
+        final String commentId = given().contentType(ContentType.JSON)
                 .when()
                 .queryParam("user", "admin")
                 .queryParam("group", "managers")
-                .pathParam("processId", processId)
                 .pathParam("taskId", taskId)
-                .body("We need to act")
-                .post("/approvals/{processId}/firstLineApproval/{taskId}/comments")
+                .body(new CommentInfo("We need to act"))
+                .post("/usertasks/instance/{taskId}/comments")
                 .then()
-                .statusCode(201)
+                .statusCode(200)
                 .extract()
                 .path("id");
 
         final String commentText = "We have done everything we can";
-        given().contentType(ContentType.TEXT)
+        given().contentType(ContentType.JSON)
                 .when()
                 .queryParam("user", "admin")
                 .queryParam("group", "managers")
-                .pathParam("processId", processId)
                 .pathParam("taskId", taskId)
                 .pathParam("commentId", commentId)
-                .body(commentText)
-                .put("/approvals/{processId}/firstLineApproval/{taskId}/comments/{commentId}")
+                .body(new CommentInfo(commentText))
+                .put("/usertasks/instance/{taskId}/comments/{commentId}")
                 .then()
                 .statusCode(200);
 
@@ -167,10 +163,9 @@ public class TaskTest extends BaseRestTest {
                 .when()
                 .queryParam("user", "admin")
                 .queryParam("group", "managers")
-                .pathParam("processId", processId)
                 .pathParam("taskId", taskId)
                 .pathParam("commentId", commentId)
-                .get("/approvals/{processId}/firstLineApproval/{taskId}/comments/{commentId}")
+                .get("/usertasks/instance/{taskId}/comments/{commentId}")
                 .then()
                 .statusCode(200).extract().path("content"));
 
@@ -178,10 +173,9 @@ public class TaskTest extends BaseRestTest {
                 .when()
                 .queryParam("user", "admin")
                 .queryParam("group", "managers")
-                .pathParam("processId", processId)
                 .pathParam("taskId", taskId)
                 .pathParam("commentId", commentId)
-                .delete("/approvals/{processId}/firstLineApproval/{taskId}/comments/{commentId}")
+                .delete("/usertasks/instance/{taskId}/comments/{commentId}")
                 .then()
                 .statusCode(200);
 
@@ -189,10 +183,9 @@ public class TaskTest extends BaseRestTest {
                 .when()
                 .queryParam("user", "admin")
                 .queryParam("group", "managers")
-                .pathParam("processId", processId)
                 .pathParam("taskId", taskId)
                 .pathParam("commentId", commentId)
-                .get("/approvals/{processId}/firstLineApproval/{taskId}/comments/{commentId}")
+                .get("/usertasks/instance/{taskId}/comments/{commentId}")
                 .then()
                 .statusCode(404);
 
@@ -200,12 +193,11 @@ public class TaskTest extends BaseRestTest {
                 .when()
                 .queryParam("user", "admin")
                 .queryParam("group", "managers")
-                .pathParam("processId", processId)
                 .pathParam("taskId", taskId)
                 .body(new AttachmentInfo(URI.create("pepito.txt"), "pepito.txt"))
-                .post("/approvals/{processId}/firstLineApproval/{taskId}/attachments")
+                .post("/usertasks/instance/{taskId}/attachments")
                 .then()
-                .statusCode(201)
+                .statusCode(200)
                 .extract()
                 .path("id");
 
@@ -213,11 +205,10 @@ public class TaskTest extends BaseRestTest {
                 .when()
                 .queryParam("user", "admin")
                 .queryParam("group", "managers")
-                .pathParam("processId", processId)
                 .pathParam("taskId", taskId)
                 .pathParam("attachmentId", attachmentId)
                 .body(new AttachmentInfo(URI.create("file:/home/fulanito.txt")))
-                .put("/approvals/{processId}/firstLineApproval/{taskId}/attachments/{attachmentId}")
+                .put("/usertasks/instance/{taskId}/attachments/{attachmentId}")
                 .then()
                 .statusCode(200);
 
@@ -226,10 +217,9 @@ public class TaskTest extends BaseRestTest {
                 .when()
                 .queryParam("user", "admin")
                 .queryParam("group", "managers")
-                .pathParam("processId", processId)
                 .pathParam("taskId", taskId)
                 .pathParam("attachmentId", attachmentId)
-                .get("/approvals/{processId}/firstLineApproval/{taskId}/attachments/{attachmentId}")
+                .get("/usertasks/instance/{taskId}/attachments/{attachmentId}")
                 .then()
                 .statusCode(200).body("name", equalTo("fulanito.txt")).body("content", equalTo(
                         "file:/home/fulanito.txt"));
@@ -238,10 +228,9 @@ public class TaskTest extends BaseRestTest {
                 .when()
                 .queryParam("user", "admin")
                 .queryParam("group", "managers")
-                .pathParam("processId", processId)
                 .pathParam("taskId", taskId)
                 .pathParam("attachmentId", attachmentId)
-                .delete("/approvals/{processId}/firstLineApproval/{taskId}/attachments/{attachmentId}")
+                .delete("/usertasks/instance/{taskId}/attachments/{attachmentId}")
                 .then()
                 .statusCode(200);
 
@@ -249,10 +238,9 @@ public class TaskTest extends BaseRestTest {
                 .when()
                 .queryParam("user", "admin")
                 .queryParam("group", "managers")
-                .pathParam("processId", processId)
                 .pathParam("taskId", taskId)
                 .pathParam("attachmentId", attachmentId)
-                .get("/approvals/{processId}/firstLineApproval/{taskId}/attachments/{attachmentId}")
+                .get("/usertasks/instance/{taskId}/attachments/{attachmentId}")
                 .then()
                 .statusCode(404);
 
@@ -260,10 +248,9 @@ public class TaskTest extends BaseRestTest {
                 .when()
                 .queryParam("user", "admin")
                 .queryParam("group", "managers")
-                .pathParam("processId", processId)
                 .pathParam("taskId", taskId)
                 .pathParam("attachmentId", attachmentId)
-                .delete("/approvals/{processId}/firstLineApproval/{taskId}/attachments/{attachmentId}")
+                .delete("/usertasks/instance/{taskId}/attachments/{attachmentId}")
                 .then()
                 .statusCode(404);
     }

@@ -109,4 +109,6 @@ public interface UserTask {
 
     Collection<DeadlineInfo<Reassignment>> getNotCompletedReassigments();
 
+    UserTaskAssignmentStrategy getAssignmentStrategy();
+
 }

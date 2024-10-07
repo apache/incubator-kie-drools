@@ -45,6 +45,11 @@ public class DefaultKogitoWorkItemHandler implements KogitoWorkItemHandler {
     public static final String TRANSITION_ACTIVATE = "activate";
     public static final String TRANSITION_SKIP = "skip";
 
+    public static final WorkItemPhaseState INITIALIZED = WorkItemPhaseState.initialized();
+    public static final WorkItemPhaseState COMPLETED = WorkItemPhaseState.of("Completed", WorkItemTerminationType.COMPLETE);
+    public static final WorkItemPhaseState ABORTED = WorkItemPhaseState.of("Aborted", WorkItemTerminationType.ABORT);
+    public static final WorkItemPhaseState ACTIVATED = WorkItemPhaseState.of("Activated");
+
     private static Logger LOG = LoggerFactory.getLogger(DefaultKogitoWorkItemHandler.class);
 
     protected Application application;
@@ -60,15 +65,10 @@ public class DefaultKogitoWorkItemHandler implements KogitoWorkItemHandler {
     }
 
     public WorkItemLifeCycle initialize() {
-        WorkItemPhaseState initialized = WorkItemPhaseState.initialized();
-        WorkItemPhaseState completed = WorkItemPhaseState.of("Completed", WorkItemTerminationType.COMPLETE);
-        WorkItemPhaseState aborted = WorkItemPhaseState.of("Aborted", WorkItemTerminationType.ABORT);
-        WorkItemPhaseState activated = WorkItemPhaseState.of("Activated");
-
-        DefaultWorkItemLifeCyclePhase complete = new DefaultWorkItemLifeCyclePhase(TRANSITION_COMPLETE, activated, completed, this::completeWorkItemHandler);
-        DefaultWorkItemLifeCyclePhase abort = new DefaultWorkItemLifeCyclePhase(TRANSITION_ABORT, activated, aborted, this::abortWorkItemHandler);
-        DefaultWorkItemLifeCyclePhase active = new DefaultWorkItemLifeCyclePhase(TRANSITION_ACTIVATE, initialized, activated, this::activateWorkItemHandler);
-        DefaultWorkItemLifeCyclePhase skip = new DefaultWorkItemLifeCyclePhase(TRANSITION_SKIP, activated, completed, this::skipWorkItemHandler);
+        DefaultWorkItemLifeCyclePhase complete = new DefaultWorkItemLifeCyclePhase(TRANSITION_COMPLETE, ACTIVATED, COMPLETED, this::completeWorkItemHandler);
+        DefaultWorkItemLifeCyclePhase abort = new DefaultWorkItemLifeCyclePhase(TRANSITION_ABORT, ACTIVATED, ABORTED, this::abortWorkItemHandler);
+        DefaultWorkItemLifeCyclePhase active = new DefaultWorkItemLifeCyclePhase(TRANSITION_ACTIVATE, INITIALIZED, ACTIVATED, this::activateWorkItemHandler);
+        DefaultWorkItemLifeCyclePhase skip = new DefaultWorkItemLifeCyclePhase(TRANSITION_SKIP, ACTIVATED, COMPLETED, this::skipWorkItemHandler);
         return new DefaultWorkItemLifeCycle(active, skip, abort, complete);
     }
 
@@ -83,17 +83,17 @@ public class DefaultKogitoWorkItemHandler implements KogitoWorkItemHandler {
 
     @Override
     public WorkItemTransition startingTransition(Map<String, Object> data, Policy... policies) {
-        return workItemLifeCycle.newTransition("activate", null, data, policies);
+        return workItemLifeCycle.newTransition(TRANSITION_ACTIVATE, null, data, policies);
     }
 
     @Override
     public WorkItemTransition abortTransition(String phaseStatus, Policy... policies) {
-        return workItemLifeCycle.newTransition("abort", phaseStatus, emptyMap(), policies);
+        return workItemLifeCycle.newTransition(TRANSITION_ABORT, phaseStatus, emptyMap(), policies);
     }
 
     @Override
     public WorkItemTransition completeTransition(String phaseStatus, Map<String, Object> data, Policy... policies) {
-        return workItemLifeCycle.newTransition("complete", phaseStatus, data, policies);
+        return workItemLifeCycle.newTransition(TRANSITION_COMPLETE, phaseStatus, data, policies);
     }
 
     @Override
@@ -121,11 +121,11 @@ public class DefaultKogitoWorkItemHandler implements KogitoWorkItemHandler {
         return Optional.empty();
     }
 
-    public Optional<WorkItemTransition> abortWorkItemHandler(KogitoWorkItemManager manager, KogitoWorkItemHandler handler, KogitoWorkItem workitem, WorkItemTransition transition) {
+    public Optional<WorkItemTransition> completeWorkItemHandler(KogitoWorkItemManager manager, KogitoWorkItemHandler handler, KogitoWorkItem workitem, WorkItemTransition transition) {
         return Optional.empty();
     }
 
-    public Optional<WorkItemTransition> completeWorkItemHandler(KogitoWorkItemManager manager, KogitoWorkItemHandler handler, KogitoWorkItem workitem, WorkItemTransition transition) {
+    public Optional<WorkItemTransition> abortWorkItemHandler(KogitoWorkItemManager manager, KogitoWorkItemHandler handler, KogitoWorkItem workitem, WorkItemTransition transition) {
         return Optional.empty();
     }
 

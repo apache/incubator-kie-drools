@@ -24,6 +24,9 @@ public class Comment extends TaskMetaEntity<String, String> {
 
     private static final long serialVersionUID = -9106249675352498780L;
 
+    public Comment() {
+    }
+
     public Comment(String id, String user) {
         super(id, user);
     }

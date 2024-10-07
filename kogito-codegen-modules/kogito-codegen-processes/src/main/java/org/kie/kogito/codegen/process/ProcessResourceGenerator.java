@@ -34,7 +34,7 @@ import org.drools.codegen.common.rest.RestAnnotator;
 import org.drools.util.StringUtils;
 import org.jbpm.compiler.canonical.ProcessToExecModelGenerator;
 import org.jbpm.compiler.canonical.TriggerMetaData;
-import org.jbpm.compiler.canonical.UserTaskModelMetaData;
+import org.jbpm.compiler.canonical.WorkItemModelMetaData;
 import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.node.StartNode;
@@ -88,7 +88,7 @@ public class ProcessResourceGenerator {
 
     private static final String REST_TEMPLATE_NAME = "RestResource";
     private static final String REACTIVE_REST_TEMPLATE_NAME = "ReactiveRestResource";
-    private static final String REST_USER_TASK_TEMPLATE_NAME = "RestResourceUserTask";
+    private static final String REST_WORK_ITEM_TEMPLATE_NAME = "RestResourceWorkItem";
     private static final String REST_SIGNAL_TEMPLATE_NAME = "RestResourceSignal";
 
     private static final String SIGNAL_METHOD_PREFFIX = "signal_";
@@ -109,7 +109,7 @@ public class ProcessResourceGenerator {
     private boolean transactionEnabled;
     private List<TriggerMetaData> triggers;
 
-    private List<UserTaskModelMetaData> userTasks;
+    private List<WorkItemModelMetaData> workItems;
     private Map<String, String> signals;
     private CompilationUnit taskModelFactoryUnit;
     private String taskModelFactoryClassName;
@@ -134,8 +134,8 @@ public class ProcessResourceGenerator {
         this.processClazzName = processfqcn;
     }
 
-    public ProcessResourceGenerator withUserTasks(List<UserTaskModelMetaData> userTasks) {
-        this.userTasks = userTasks;
+    public ProcessResourceGenerator withWorkItems(List<WorkItemModelMetaData> userTasks) {
+        this.workItems = userTasks;
         return this;
     }
 
@@ -211,7 +211,7 @@ public class ProcessResourceGenerator {
         taskModelFactoryClass.setName(taskModelFactorySimpleClassName);
         typeInterpolations.put("$TaskModelFactory$", taskModelFactoryClassName);
 
-        manageUserTasks(templateBuilder, template, taskModelFactoryClass, index);
+        manageWorkItems(templateBuilder, template, taskModelFactoryClass, index);
 
         typeInterpolations.put("$Clazz$", resourceClazzName);
         typeInterpolations.put("$Type$", dataClazzName);
@@ -366,13 +366,13 @@ public class ProcessResourceGenerator {
                 });
     }
 
-    protected void manageUserTasks(TemplatedGenerator.Builder templateBuilder, ClassOrInterfaceDeclaration template,
+    protected void manageWorkItems(TemplatedGenerator.Builder templateBuilder, ClassOrInterfaceDeclaration template,
             ClassOrInterfaceDeclaration taskModelFactoryClass, AtomicInteger index) {
-        if (userTasks != null && !userTasks.isEmpty()) {
+        if (workItems != null && !workItems.isEmpty()) {
 
-            CompilationUnit userTaskClazz = templateBuilder.build(context, REST_USER_TASK_TEMPLATE_NAME).compilationUnitOrThrow();
+            CompilationUnit workItemClazz = templateBuilder.build(context, REST_WORK_ITEM_TEMPLATE_NAME).compilationUnitOrThrow();
 
-            ClassOrInterfaceDeclaration userTaskTemplate = userTaskClazz
+            ClassOrInterfaceDeclaration userTaskTemplate = workItemClazz
                     .findFirst(ClassOrInterfaceDeclaration.class)
                     .orElseThrow(() -> new NoSuchElementException("Compilation unit doesn't contain a class or interface declaration!"));
 
@@ -381,8 +381,8 @@ public class ProcessResourceGenerator {
                     .orElseThrow(IllegalStateException::new);
             SwitchStmt switchExpr = taskModelFactoryMethod.getBody().map(b -> b.findFirst(SwitchStmt.class).orElseThrow(IllegalStateException::new)).orElseThrow(IllegalStateException::new);
 
-            for (UserTaskModelMetaData userTask : userTasks) {
-                String methodSuffix = sanitizeName(userTask.getName()) + "_" + index.getAndIncrement();
+            for (WorkItemModelMetaData workItem : workItems) {
+                String methodSuffix = sanitizeName(workItem.getName()) + "_" + index.getAndIncrement();
                 userTaskTemplate.findAll(MethodDeclaration.class).forEach(md -> {
                     MethodDeclaration cloned = md.clone();
                     template.addMethod(cloned.getName() + "_" + methodSuffix, Keyword.PUBLIC)
@@ -392,16 +392,16 @@ public class ProcessResourceGenerator {
                             .setAnnotations(cloned.getAnnotations());
                 });
 
-                template.findAll(StringLiteralExpr.class).forEach(s -> interpolateUserTaskStrings(s, userTask));
-                template.findAll(ClassOrInterfaceType.class).forEach(c -> interpolateUserTaskTypes(c, userTask));
-                template.findAll(NameExpr.class).forEach(c -> interpolateUserTaskNameExp(c, userTask));
-                if (!userTask.isAdHoc()) {
+                template.findAll(StringLiteralExpr.class).forEach(s -> interpolateUserTaskStrings(s, workItem));
+                template.findAll(ClassOrInterfaceType.class).forEach(c -> interpolateUserTaskTypes(c, workItem));
+                template.findAll(NameExpr.class).forEach(c -> interpolateUserTaskNameExp(c, workItem));
+                if (!workItem.isAdHoc()) {
                     template.findAll(MethodDeclaration.class)
                             .stream()
                             .filter(md -> md.getNameAsString().equals(SIGNAL_METHOD_PREFFIX + methodSuffix))
                             .forEach(template::remove);
                 }
-                switchExpr.getEntries().add(0, userTask.getModelSwitchEntry());
+                switchExpr.getEntries().add(0, workItem.getModelSwitchEntry());
             }
 
         }
@@ -479,14 +479,14 @@ public class ProcessResourceGenerator {
         vv.setString(interpolated);
     }
 
-    private void interpolateUserTaskStrings(StringLiteralExpr vv, UserTaskModelMetaData userTask) {
+    private void interpolateUserTaskStrings(StringLiteralExpr vv, WorkItemModelMetaData userTask) {
         String s = vv.getValue();
         String interpolated = s.replace("$taskName$", sanitizeName(userTask.getName()));
         interpolated = interpolated.replace("$taskNodeName$", userTask.getNodeName());
         vv.setString(interpolated);
     }
 
-    private void interpolateUserTaskNameExp(NameExpr name, UserTaskModelMetaData userTask) {
+    private void interpolateUserTaskNameExp(NameExpr name, WorkItemModelMetaData userTask) {
         name.setName(userTask.templateReplacement(name.getNameAsString()));
     }
 
@@ -497,7 +497,7 @@ public class ProcessResourceGenerator {
         m.setName(interpolated);
     }
 
-    private void interpolateUserTaskTypes(Type t, UserTaskModelMetaData userTask) {
+    private void interpolateUserTaskTypes(Type t, WorkItemModelMetaData userTask) {
         if (t.isArrayType()) {
             t = t.asArrayType().getElementType();
         }
@@ -508,11 +508,11 @@ public class ProcessResourceGenerator {
         }
     }
 
-    private void interpolateUserTaskTypes(SimpleName returnType, UserTaskModelMetaData userTask) {
+    private void interpolateUserTaskTypes(SimpleName returnType, WorkItemModelMetaData userTask) {
         returnType.setIdentifier(userTask.templateReplacement(returnType.getIdentifier()));
     }
 
-    private void interpolateUserTaskTypeArguments(NodeList<Type> ta, UserTaskModelMetaData userTask) {
+    private void interpolateUserTaskTypeArguments(NodeList<Type> ta, WorkItemModelMetaData userTask) {
         ta.stream().forEach(t -> interpolateUserTaskTypes(t, userTask));
     }
 

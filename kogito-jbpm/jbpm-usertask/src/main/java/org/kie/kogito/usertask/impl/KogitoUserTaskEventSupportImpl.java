@@ -37,6 +37,7 @@ import org.kie.kogito.usertask.impl.events.UserTaskCommentEventImpl;
 import org.kie.kogito.usertask.impl.events.UserTaskDeadlineEventImpl;
 import org.kie.kogito.usertask.impl.events.UserTaskStateEventImpl;
 import org.kie.kogito.usertask.impl.events.UserTaskVariableEventImpl;
+import org.kie.kogito.usertask.lifecycle.UserTaskState;
 import org.kie.kogito.usertask.model.Attachment;
 import org.kie.kogito.usertask.model.Comment;
 
@@ -84,7 +85,7 @@ public class KogitoUserTaskEventSupportImpl implements KogitoUserTaskEventSuppor
     @Override
     public void fireOneUserTaskStateChange(
             UserTaskInstance userTaskInstance,
-            String oldStatus, String newStatus) {
+            UserTaskState oldStatus, UserTaskState newStatus) {
         UserTaskStateEventImpl event = new UserTaskStateEventImpl(userTaskInstance, oldStatus, newStatus, identityProvider.getName());
         event.setOldStatus(oldStatus);
         event.setNewStatus(newStatus);

@@ -18,17 +18,29 @@
  */
 package org.kie.kogito.usertask.impl;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 
+import org.kie.kogito.auth.IdentityProvider;
 import org.kie.kogito.usertask.UserTaskInstance;
 import org.kie.kogito.usertask.UserTaskInstances;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 public class InMemoryUserTaskInstances implements UserTaskInstances {
+
+    private static Logger LOG = LoggerFactory.getLogger(InMemoryUserTaskInstances.class);
 
     private Map<String, byte[]> userTaskInstances;
     private Function<UserTaskInstance, UserTaskInstance> reconnectUserTaskInstance;
@@ -36,10 +48,12 @@ public class InMemoryUserTaskInstances implements UserTaskInstances {
     private ObjectMapper mapper;
 
     public InMemoryUserTaskInstances() {
+        LOG.info("Initializing InMemoryUsertaskInstances");
         this.userTaskInstances = new HashMap<>();
-        this.reconnectUserTaskInstance = Function.identity();
-        this.disconnectUserTaskInstance = Function.identity();
+        this.reconnectUserTaskInstance = null;
+        this.disconnectUserTaskInstance = null;
         this.mapper = new ObjectMapper();
+        this.mapper.registerModule(new JavaTimeModule());
     }
 
     @Override
@@ -55,11 +69,66 @@ public class InMemoryUserTaskInstances implements UserTaskInstances {
     @Override
     public Optional<UserTaskInstance> findById(String userTaskInstanceId) {
         try {
+            if (!userTaskInstances.containsKey(userTaskInstanceId)) {
+                return Optional.empty();
+            }
             UserTaskInstance userTaskInstance = mapper.readValue(userTaskInstances.get(userTaskInstanceId), DefaultUserTaskInstance.class);
             return Optional.ofNullable(reconnectUserTaskInstance.apply(userTaskInstance));
         } catch (Exception e) {
+            LOG.error("during find by Id {}", userTaskInstanceId, e);
             return Optional.empty();
         }
+    }
+
+    @Override
+    public List<UserTaskInstance> findByIdentity(IdentityProvider identity) {
+        try {
+            String user = identity.getName();
+            Collection<String> roles = identity.getRoles();
+            List<UserTaskInstance> users = new ArrayList<>();
+            for (String id : userTaskInstances.keySet()) {
+                UserTaskInstance userTaskInstance = mapper.readValue(userTaskInstances.get(id), DefaultUserTaskInstance.class);
+                if (checkVisibility(userTaskInstance, user, roles)) {
+                    users.add(reconnectUserTaskInstance.apply(userTaskInstance));
+                }
+            }
+            return users;
+        } catch (Exception e) {
+            LOG.error("during find by Identity {}", identity.getName(), e);
+            return Collections.emptyList();
+        }
+    }
+
+    private boolean checkVisibility(UserTaskInstance userTaskInstance, String user, Collection<String> roles) {
+        Set<String> adminUsers = userTaskInstance.getAdminUsers();
+        if (adminUsers.contains(user)) {
+            return true;
+        }
+
+        Set<String> userAdminGroups = new HashSet<>(userTaskInstance.getAdminGroups());
+        userAdminGroups.retainAll(roles);
+        if (!userAdminGroups.isEmpty()) {
+            return true;
+        }
+
+        if (userTaskInstance.getActualOwner() != null && userTaskInstance.getActualOwner().equals(user)) {
+            return true;
+        }
+
+        // there is no user
+        Set<String> users = new HashSet<>(userTaskInstance.getPotentialUsers());
+        users.removeAll(userTaskInstance.getExcludedUsers());
+        if (users.contains(user)) {
+            return true;
+        }
+
+        Set<String> userPotGroups = new HashSet<>(userTaskInstance.getPotentialGroups());
+        userPotGroups.retainAll(roles);
+        if (!userPotGroups.isEmpty()) {
+            return true;
+        }
+
+        return false;
     }
 
     @Override
@@ -74,6 +143,7 @@ public class InMemoryUserTaskInstances implements UserTaskInstances {
             userTaskInstances.put(userTaskInstance.getId(), data);
             return reconnectUserTaskInstance.apply(userTaskInstance);
         } catch (Exception e) {
+            LOG.error("during create {}", userTaskInstance.getId(), e);
             return null;
         }
     }
@@ -85,6 +155,7 @@ public class InMemoryUserTaskInstances implements UserTaskInstances {
             userTaskInstances.put(userTaskInstance.getId(), data);
             return userTaskInstance;
         } catch (Exception e) {
+            LOG.error("during udpate {}", userTaskInstance.getId(), e);
             return null;
         }
     }
@@ -92,8 +163,12 @@ public class InMemoryUserTaskInstances implements UserTaskInstances {
     @Override
     public UserTaskInstance remove(String userTaskInstanceId) {
         try {
+            if (!userTaskInstances.containsKey(userTaskInstanceId)) {
+                return null;
+            }
             return disconnectUserTaskInstance.apply(mapper.readValue(userTaskInstances.remove(userTaskInstanceId), DefaultUserTaskInstance.class));
         } catch (Exception e) {
+            LOG.error("during remove {}", userTaskInstanceId, e);
             return null;
         }
     }

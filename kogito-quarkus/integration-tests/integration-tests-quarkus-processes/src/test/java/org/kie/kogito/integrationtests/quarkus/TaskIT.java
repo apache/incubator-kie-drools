@@ -20,21 +20,20 @@ package org.kie.kogito.integrationtests.quarkus;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
 import org.acme.travels.Traveller;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.task.management.service.TaskInfo;
 import org.kie.kogito.usertask.model.AttachmentInfo;
+import org.kie.kogito.usertask.model.CommentInfo;
 
 import io.quarkus.test.junit.QuarkusIntegrationTest;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-
-import jakarta.ws.rs.core.UriBuilder;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchema;
@@ -160,11 +159,10 @@ class TaskIT {
     }
 
     @Test
-    @Disabled("Revisited after ht endpoints")
     void testCommentAndAttachment() {
-        Traveller traveller = new Traveller("pepe", "rubiales", "pepe.rubiales@gmail.com", "Spanish");
+        Traveller traveller = new Traveller("pepe", "rubiales", "pepe.rubiales@gmail.com", "Spanish", null);
 
-        String processId = given()
+        given()
                 .contentType(ContentType.JSON)
                 .when()
                 .body(Collections.singletonMap("traveller", traveller))
@@ -176,154 +174,131 @@ class TaskIT {
 
         String taskId = given()
                 .contentType(ContentType.JSON)
-                .queryParam("user", "manager")
+                .queryParam("user", "admin")
                 .queryParam("group", "managers")
-                .pathParam("processId", processId)
                 .when()
-                .get("/approvals/{processId}/tasks")
+                .get("/usertasks/instance")
                 .then()
                 .statusCode(200)
                 .extract()
                 .path("[0].id");
 
-        final String commentId = given().contentType(ContentType.TEXT)
+        final String commentId = given().contentType(ContentType.JSON)
                 .when()
-                .queryParam("user", "manager")
+                .queryParam("user", "admin")
                 .queryParam("group", "managers")
-                .pathParam("processId", processId)
                 .pathParam("taskId", taskId)
-                .body("We need to act")
-                .post("/approvals/{processId}/firstLineApproval/{taskId}/comments")
+                .body(new CommentInfo("We need to act"))
+                .post("/usertasks/instance/{taskId}/comments")
                 .then()
-                .statusCode(201)
+                .statusCode(200)
                 .extract()
                 .path("id");
 
         final String commentText = "We have done everything we can";
-        given().contentType(ContentType.TEXT)
+        given().contentType(ContentType.JSON)
                 .when()
-                .queryParam("user", "manager")
+                .queryParam("user", "admin")
                 .queryParam("group", "managers")
-                .pathParam("processId", processId)
                 .pathParam("taskId", taskId)
                 .pathParam("commentId", commentId)
-                .body(commentText)
-                .put("/approvals/{processId}/firstLineApproval/{taskId}/comments/{commentId}")
+                .body(new CommentInfo(commentText))
+                .put("/usertasks/instance/{taskId}/comments/{commentId}")
                 .then()
                 .statusCode(200);
 
         assertEquals(commentText, given().contentType(ContentType.JSON)
                 .when()
-                .queryParam("user", "manager")
+                .queryParam("user", "admin")
                 .queryParam("group", "managers")
-                .pathParam("processId", processId)
                 .pathParam("taskId", taskId)
                 .pathParam("commentId", commentId)
-                .get("/approvals/{processId}/firstLineApproval/{taskId}/comments/{commentId}")
+                .get("/usertasks/instance/{taskId}/comments/{commentId}")
                 .then()
                 .statusCode(200).extract().path("content"));
 
         given().contentType(ContentType.JSON)
                 .when()
-                .queryParam("user", "manager")
+                .queryParam("user", "admin")
                 .queryParam("group", "managers")
-                .pathParam("processId", processId)
                 .pathParam("taskId", taskId)
                 .pathParam("commentId", commentId)
-                .delete("/approvals/{processId}/firstLineApproval/{taskId}/comments/{commentId}")
+                .delete("/usertasks/instance/{taskId}/comments/{commentId}")
                 .then()
                 .statusCode(200);
 
         given().contentType(ContentType.JSON)
                 .when()
-                .queryParam("user", "manager")
+                .queryParam("user", "admin")
                 .queryParam("group", "managers")
-                .pathParam("processId", processId)
                 .pathParam("taskId", taskId)
                 .pathParam("commentId", commentId)
-                .get("/approvals/{processId}/firstLineApproval/{taskId}/comments/{commentId}")
-                .then()
-                .statusCode(404);
-
-        given().contentType(ContentType.JSON)
-                .when()
-                .queryParam("user", "manager")
-                .queryParam("group", "managers")
-                .pathParam("processId", processId)
-                .pathParam("taskId", taskId)
-                .pathParam("commentId", commentId)
-                .delete("/approvals/{processId}/firstLineApproval/{taskId}/comments/{commentId}")
+                .get("/usertasks/instance/{taskId}/comments/{commentId}")
                 .then()
                 .statusCode(404);
 
         final String attachmentId = given().contentType(ContentType.JSON)
                 .when()
-                .queryParam("user", "manager")
+                .queryParam("user", "admin")
                 .queryParam("group", "managers")
-                .pathParam("processId", processId)
                 .pathParam("taskId", taskId)
-                .body(new AttachmentInfo(UriBuilder.fromPath("pepito.txt").scheme("file").build(), "pepito.txt"))
-                .post("/approvals/{processId}/firstLineApproval/{taskId}/attachments")
+                .body(new AttachmentInfo(URI.create("pepito.txt"), "pepito.txt"))
+                .post("/usertasks/instance/{taskId}/attachments")
                 .then()
-                .statusCode(201)
+                .statusCode(200)
                 .extract()
                 .path("id");
 
         given().contentType(ContentType.JSON)
                 .when()
-                .queryParam("user", "manager")
+                .queryParam("user", "admin")
                 .queryParam("group", "managers")
-                .pathParam("processId", processId)
                 .pathParam("taskId", taskId)
                 .pathParam("attachmentId", attachmentId)
-                .body(new AttachmentInfo(UriBuilder.fromPath("/home/fulanito.txt").scheme("file").build()))
-                .put("/approvals/{processId}/firstLineApproval/{taskId}/attachments/{attachmentId}")
+                .body(new AttachmentInfo(URI.create("file:/home/fulanito.txt")))
+                .put("/usertasks/instance/{taskId}/attachments/{attachmentId}")
                 .then()
                 .statusCode(200);
 
         given().contentType(
                 ContentType.JSON)
                 .when()
-                .queryParam("user", "manager")
+                .queryParam("user", "admin")
                 .queryParam("group", "managers")
-                .pathParam("processId", processId)
                 .pathParam("taskId", taskId)
                 .pathParam("attachmentId", attachmentId)
-                .get("/approvals/{processId}/firstLineApproval/{taskId}/attachments/{attachmentId}")
+                .get("/usertasks/instance/{taskId}/attachments/{attachmentId}")
                 .then()
                 .statusCode(200).body("name", equalTo("fulanito.txt")).body("content", equalTo(
                         "file:/home/fulanito.txt"));
 
         given().contentType(ContentType.JSON)
                 .when()
-                .queryParam("user", "manager")
+                .queryParam("user", "admin")
                 .queryParam("group", "managers")
-                .pathParam("processId", processId)
                 .pathParam("taskId", taskId)
                 .pathParam("attachmentId", attachmentId)
-                .delete("/approvals/{processId}/firstLineApproval/{taskId}/attachments/{attachmentId}")
+                .delete("/usertasks/instance/{taskId}/attachments/{attachmentId}")
                 .then()
                 .statusCode(200);
 
         given().contentType(ContentType.JSON)
                 .when()
-                .queryParam("user", "manager")
+                .queryParam("user", "admin")
                 .queryParam("group", "managers")
-                .pathParam("processId", processId)
                 .pathParam("taskId", taskId)
                 .pathParam("attachmentId", attachmentId)
-                .get("/approvals/{processId}/firstLineApproval/{taskId}/attachments/{attachmentId}")
+                .get("/usertasks/instance/{taskId}/attachments/{attachmentId}")
                 .then()
                 .statusCode(404);
 
         given().contentType(ContentType.JSON)
                 .when()
-                .queryParam("user", "manager")
+                .queryParam("user", "admin")
                 .queryParam("group", "managers")
-                .pathParam("processId", processId)
                 .pathParam("taskId", taskId)
                 .pathParam("attachmentId", attachmentId)
-                .delete("/approvals/{processId}/firstLineApproval/{taskId}/attachments/{attachmentId}")
+                .delete("/usertasks/instance/{taskId}/attachments/{attachmentId}")
                 .then()
                 .statusCode(404);
     }

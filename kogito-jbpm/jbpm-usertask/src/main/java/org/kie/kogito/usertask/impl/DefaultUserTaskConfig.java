@@ -27,8 +27,10 @@ import org.kie.kogito.services.identity.NoOpIdentityProvider;
 import org.kie.kogito.services.uow.CollectingUnitOfWorkFactory;
 import org.kie.kogito.services.uow.DefaultUnitOfWorkManager;
 import org.kie.kogito.uow.UnitOfWorkManager;
+import org.kie.kogito.usertask.UserTaskAssignmentStrategyConfig;
 import org.kie.kogito.usertask.UserTaskConfig;
 import org.kie.kogito.usertask.UserTaskEventListenerConfig;
+import org.kie.kogito.usertask.UserTaskInstances;
 import org.kie.kogito.usertask.impl.lifecycle.DefaultUserTaskLifeCycle;
 import org.kie.kogito.usertask.lifecycle.UserTaskLifeCycle;
 
@@ -39,13 +41,17 @@ public class DefaultUserTaskConfig implements UserTaskConfig {
     private JobsService jobService;
     private IdentityProvider identityProvider;
     private UserTaskLifeCycle userTaskLifeCycle;
+    private UserTaskAssignmentStrategyConfig userTaskAssignmentStrategyConfig;
+    private UserTaskInstances userTaskInstances;
 
     public DefaultUserTaskConfig() {
         this(new DefaultUserTaskEventListenerConfig(),
                 new DefaultUnitOfWorkManager(new CollectingUnitOfWorkFactory()),
                 null,
                 new NoOpIdentityProvider(),
-                new DefaultUserTaskLifeCycle());
+                new DefaultUserTaskLifeCycle(),
+                new DefaultUserTaskAssignmentStrategyConfig(),
+                new InMemoryUserTaskInstances());
     }
 
     public DefaultUserTaskConfig(
@@ -53,13 +59,17 @@ public class DefaultUserTaskConfig implements UserTaskConfig {
             Iterable<UnitOfWorkManager> unitOfWorkManager,
             Iterable<JobsService> jobService,
             Iterable<IdentityProvider> identityProvider,
-            Iterable<UserTaskLifeCycle> userTaskLifeCycle) {
+            Iterable<UserTaskLifeCycle> userTaskLifeCycle,
+            Iterable<UserTaskAssignmentStrategyConfig> userTaskAssignmentStrategyConfig,
+            Iterable<UserTaskInstances> userTaskInstances) {
 
         this.userTaskEventListeners = singleton(userTaskEventListenerConfig, DefaultUserTaskEventListenerConfig::new);
         this.unitOfWorkManager = singleton(unitOfWorkManager, () -> new DefaultUnitOfWorkManager(new CollectingUnitOfWorkFactory()));
         this.jobService = singleton(jobService, () -> null);
         this.identityProvider = singleton(identityProvider, NoOpIdentityProvider::new);
         this.userTaskLifeCycle = singleton(userTaskLifeCycle, DefaultUserTaskLifeCycle::new);
+        this.userTaskAssignmentStrategyConfig = singleton(userTaskAssignmentStrategyConfig, DefaultUserTaskAssignmentStrategyConfig::new);
+        this.userTaskInstances = singleton(userTaskInstances, InMemoryUserTaskInstances::new);
 
     }
 
@@ -76,12 +86,16 @@ public class DefaultUserTaskConfig implements UserTaskConfig {
             UnitOfWorkManager unitOfWorkManager,
             JobsService jobService,
             IdentityProvider identityProvider,
-            UserTaskLifeCycle userTaskLifeCycle) {
+            UserTaskLifeCycle userTaskLifeCycle,
+            DefaultUserTaskAssignmentStrategyConfig userTaskAssignmentStrategyConfig,
+            UserTaskInstances userTaskInstances) {
         this.userTaskEventListeners = userTaskEventListenerConfig;
         this.unitOfWorkManager = unitOfWorkManager;
         this.jobService = jobService;
         this.identityProvider = identityProvider;
         this.userTaskLifeCycle = userTaskLifeCycle;
+        this.userTaskAssignmentStrategyConfig = userTaskAssignmentStrategyConfig;
+        this.userTaskInstances = userTaskInstances;
     }
 
     @Override
@@ -107,6 +121,16 @@ public class DefaultUserTaskConfig implements UserTaskConfig {
     @Override
     public UserTaskLifeCycle userTaskLifeCycle() {
         return userTaskLifeCycle;
+    }
+
+    @Override
+    public UserTaskAssignmentStrategyConfig userTaskAssignmentStrategies() {
+        return userTaskAssignmentStrategyConfig;
+    }
+
+    @Override
+    public UserTaskInstances userTaskInstances() {
+        return userTaskInstances;
     }
 
 }

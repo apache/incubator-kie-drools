@@ -22,6 +22,9 @@ import java.util.Set;
 
 import org.kie.kogito.Application;
 import org.kie.kogito.usertask.UserTask;
+import org.kie.kogito.usertask.UserTaskAssignmentStrategy;
+import org.kie.kogito.usertask.UserTaskConfig;
+import org.kie.kogito.usertask.UserTaskInstances;
 import org.kie.kogito.usertask.impl.DefaultUserTask;
 
 public class UserTaskTemplate extends DefaultUserTask {
@@ -32,9 +35,16 @@ public class UserTaskTemplate extends DefaultUserTask {
     public UserTaskTemplate() {
 
     }
+    
+    @Override
+    public UserTaskAssignmentStrategy getAssignmentStrategy() {
+        UserTaskConfig userTaskConfig = application.config().get(UserTaskConfig.class);
+        return userTaskConfig.userTaskAssignmentStrategies().defaultUserTaskAssignmentStrategy();
+    }
 
-    @jakarta.annotation.PostConstruct
-    public void setup() {
-        this.setApplication(application);
+    @Override
+    public UserTaskInstances instances() {
+        UserTaskConfig userTaskConfig = application.config().get(UserTaskConfig.class);
+        return userTaskConfig.userTaskInstances();
     }
 }

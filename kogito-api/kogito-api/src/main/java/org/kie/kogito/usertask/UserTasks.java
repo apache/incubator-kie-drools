@@ -24,6 +24,8 @@ import org.kie.kogito.KogitoEngine;
 
 public interface UserTasks extends KogitoEngine {
 
+    UserTaskInstances instances();
+
     UserTask userTaskById(String userTaskId);
 
     Collection<String> userTaskIds();

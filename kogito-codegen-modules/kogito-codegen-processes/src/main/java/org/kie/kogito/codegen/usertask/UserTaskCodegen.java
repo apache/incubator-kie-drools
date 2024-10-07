@@ -18,10 +18,13 @@
  */
 package org.kie.kogito.codegen.usertask;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -74,6 +77,7 @@ import static java.util.stream.Collectors.toList;
 import static org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils.FAIL_ON_ERROR_PROPERTY;
 
 public class UserTaskCodegen extends AbstractGenerator {
+
     private static final String NODE_NAME = "NodeName";
     private static final String DESCRIPTION = "Description";
     private static final String PRIORITY = "Priority";
@@ -97,6 +101,8 @@ public class UserTaskCodegen extends AbstractGenerator {
 
     TemplatedGenerator templateGenerator;
     private List<Work> descriptors;
+    private TemplatedGenerator producerTemplateGenerator;
+    private TemplatedGenerator restTemplateGenerator;
 
     public UserTaskCodegen(KogitoBuildContext context, List<Work> collectedResources) {
         super(context, "usertasks");
@@ -106,6 +112,16 @@ public class UserTaskCodegen extends AbstractGenerator {
                 .withTemplateBasePath("/class-templates/usertask")
                 .withTargetTypeName(SECTION_CLASS_NAME)
                 .build(context, "UserTask");
+
+        producerTemplateGenerator = TemplatedGenerator.builder()
+                .withTemplateBasePath("/class-templates/usertask")
+                .withTargetTypeName(SECTION_CLASS_NAME)
+                .build(context, "UserTasksServiceProducer");
+
+        restTemplateGenerator = TemplatedGenerator.builder()
+                .withTemplateBasePath("/class-templates/usertask")
+                .withTargetTypeName(SECTION_CLASS_NAME)
+                .build(context, "RestResourceUserTask");
     }
 
     @Override
@@ -125,6 +141,42 @@ public class UserTaskCodegen extends AbstractGenerator {
 
     @Override
     protected Collection<GeneratedFile> internalGenerate() {
+        if (descriptors.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<GeneratedFile> generatedFiles = new ArrayList<>();
+        generatedFiles.addAll(generateUserTask());
+        if (context().hasDI()) {
+            generatedFiles.add(generateProducer());
+        }
+
+        if (context().hasRESTForGenerator(this)) {
+            generatedFiles.add(generateRestEndpiont());
+        }
+
+        return generatedFiles;
+    }
+
+    private GeneratedFile generateRestEndpiont() {
+        String packageName = context().getPackageName();
+        CompilationUnit compilationUnit = producerTemplateGenerator.compilationUnitOrThrow("Not rest endpoints template found for user tasks");
+        compilationUnit.setPackageDeclaration(packageName);
+        String className = compilationUnit.findFirst(ClassOrInterfaceDeclaration.class).get().getNameAsString();
+        String urlBase = packageName.replaceAll("\\.", File.separator);
+        return new GeneratedFile(GeneratedFileType.SOURCE, Path.of(urlBase).resolve(className + ".java"), compilationUnit.toString());
+    }
+
+    private GeneratedFile generateProducer() {
+        String packageName = context().getPackageName();
+        CompilationUnit compilationUnit = restTemplateGenerator.compilationUnitOrThrow("No producer template found for user tasks");
+        compilationUnit.setPackageDeclaration(packageName);
+        String className = compilationUnit.findFirst(ClassOrInterfaceDeclaration.class).get().getNameAsString();
+        String urlBase = packageName.replaceAll("\\.", File.separator);
+        return new GeneratedFile(GeneratedFileType.SOURCE, Path.of(urlBase).resolve(className + ".java"), compilationUnit.toString());
+    }
+
+    private List<GeneratedFile> generateUserTask() {
         List<GeneratedFile> generatedFiles = new ArrayList<>();
         for (Work info : descriptors) {
             CompilationUnit unit = templateGenerator.compilationUnit().get();
@@ -171,7 +223,6 @@ public class UserTaskCodegen extends AbstractGenerator {
 
             generatedFiles.add(new GeneratedFile(GeneratedFileType.SOURCE, UserTaskCodegenHelper.path(info).resolve(className + ".java"), unit.toString()));
         }
-
         return generatedFiles;
     }
 

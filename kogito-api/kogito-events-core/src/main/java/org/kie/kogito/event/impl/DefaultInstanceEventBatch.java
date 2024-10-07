@@ -68,7 +68,7 @@ public class DefaultInstanceEventBatch implements EventBatch {
 
     @Override
     public void append(Object event) {
-        LOG.info("event generated {}", event);
+        LOG.trace("event generated {}", event);
         this.dataEventAdapters.stream().filter(a -> a.accept(event)).map(a -> a.adapt(event)).forEach(this.processedEvents::add);
     }
 

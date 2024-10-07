@@ -30,7 +30,7 @@ import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.core.datatype.DataType;
 import org.jbpm.process.core.datatype.DataTypeResolver;
 import org.jbpm.util.PatternConstants;
-import org.jbpm.workflow.core.node.HumanTaskNode;
+import org.jbpm.workflow.core.node.WorkItemNode;
 import org.kie.api.definition.process.WorkflowElementIdentifier;
 import org.kie.kogito.UserTask;
 import org.kie.kogito.UserTaskParam;
@@ -70,7 +70,7 @@ import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static org.jbpm.ruleflow.core.Metadata.CUSTOM_AUTO_START;
 import static org.kie.kogito.internal.utils.ConversionUtils.sanitizeClassName;
 
-public class UserTaskModelMetaData {
+public class WorkItemModelMetaData {
 
     private static final String TASK_INTPUT_CLASS_SUFFIX = "TaskInput";
     private static final String TASK_OUTTPUT_CLASS_SUFFIX = "TaskOutput";
@@ -86,7 +86,7 @@ public class UserTaskModelMetaData {
 
     private final VariableScope processVariableScope;
     private final VariableScope variableScope;
-    private final HumanTaskNode humanTaskNode;
+    private final WorkItemNode workItemNode;
     private final String processId;
 
     private String inputModelClassName;
@@ -98,20 +98,20 @@ public class UserTaskModelMetaData {
     private String taskModelClassName;
     private String taskModelClassSimpleName;
 
-    public UserTaskModelMetaData(String packageName, VariableScope processVariableScope, VariableScope variableScope, HumanTaskNode humanTaskNode, String processId) {
+    public WorkItemModelMetaData(String packageName, VariableScope processVariableScope, VariableScope variableScope, WorkItemNode workItemNode, String processId) {
         this.packageName = packageName;
         this.processVariableScope = processVariableScope;
         this.variableScope = variableScope;
-        this.humanTaskNode = humanTaskNode;
+        this.workItemNode = workItemNode;
         this.processId = processId;
 
-        this.inputModelClassSimpleName = sanitizeClassName(ProcessToExecModelGenerator.extractProcessId(processId) + "_" + humanTaskNode.getId().toExternalFormat() + "_" + TASK_INTPUT_CLASS_SUFFIX);
+        this.inputModelClassSimpleName = sanitizeClassName(ProcessToExecModelGenerator.extractProcessId(processId) + "_" + workItemNode.getId().toExternalFormat() + "_" + TASK_INTPUT_CLASS_SUFFIX);
         this.inputModelClassName = packageName + '.' + inputModelClassSimpleName;
 
-        this.outputModelClassSimpleName = sanitizeClassName(ProcessToExecModelGenerator.extractProcessId(processId) + "_" + humanTaskNode.getId().toExternalFormat() + "_" + TASK_OUTTPUT_CLASS_SUFFIX);
+        this.outputModelClassSimpleName = sanitizeClassName(ProcessToExecModelGenerator.extractProcessId(processId) + "_" + workItemNode.getId().toExternalFormat() + "_" + TASK_OUTTPUT_CLASS_SUFFIX);
         this.outputModelClassName = packageName + '.' + outputModelClassSimpleName;
 
-        this.taskModelClassSimpleName = sanitizeClassName(ProcessToExecModelGenerator.extractProcessId(processId) + "_" + humanTaskNode.getId().toExternalFormat() + "_" + TASK_MODEL_CLASS_SUFFIX);
+        this.taskModelClassSimpleName = sanitizeClassName(ProcessToExecModelGenerator.extractProcessId(processId) + "_" + workItemNode.getId().toExternalFormat() + "_" + TASK_MODEL_CLASS_SUFFIX);
         this.taskModelClassName = packageName + '.' + taskModelClassSimpleName;
 
     }
@@ -144,21 +144,21 @@ public class UserTaskModelMetaData {
     }
 
     public String getName() {
-        return (String) humanTaskNode.getWork().getParameters().getOrDefault(TASK_NAME, humanTaskNode.getName());
+        return (String) workItemNode.getWork().getParameters().getOrDefault(TASK_NAME, workItemNode.getName());
     }
 
     public String getNodeName() {
-        return humanTaskNode.getName();
+        return workItemNode.getName();
     }
 
     public WorkflowElementIdentifier getId() {
-        return humanTaskNode.getId();
+        return workItemNode.getId();
     }
 
     private void addUserTaskAnnotation(ClassOrInterfaceDeclaration modelClass) {
-        String taskName = (String) humanTaskNode.getWork().getParameter(TASK_NAME);
+        String taskName = (String) workItemNode.getWork().getParameter(TASK_NAME);
         if (taskName == null)
-            taskName = humanTaskNode.getName();
+            taskName = workItemNode.getName();
         modelClass.addAndGetAnnotation(UserTask.class).addPair("taskName", new StringLiteralExpr(taskName)).addPair("processName", new StringLiteralExpr(processId));
     }
 
@@ -190,8 +190,8 @@ public class UserTaskModelMetaData {
         NameExpr item = new NameExpr("item");
 
         // map is task input -> context variable / process variable
-        Map<String, String> inputTypes = humanTaskNode.getIoSpecification().getInputTypes();
-        for (Entry<String, String> entry : humanTaskNode.getIoSpecification().getInputMapping().entrySet()) {
+        Map<String, String> inputTypes = workItemNode.getIoSpecification().getInputTypes();
+        for (Entry<String, String> entry : workItemNode.getIoSpecification().getInputMapping().entrySet()) {
             if (INTERNAL_FIELDS.contains(entry.getKey())) {
                 continue;
             }
@@ -235,7 +235,7 @@ public class UserTaskModelMetaData {
                     AssignExpr.Operator.ASSIGN));
         }
 
-        for (Entry<String, Object> entry : humanTaskNode.getWork().getParameters().entrySet()) {
+        for (Entry<String, Object> entry : workItemNode.getWork().getParameters().entrySet()) {
 
             if (entry.getValue() == null || INTERNAL_FIELDS.contains(entry.getKey())) {
                 continue;
@@ -275,7 +275,6 @@ public class UserTaskModelMetaData {
         return compilationUnit;
     }
 
-    @SuppressWarnings({ "unchecked" })
     private CompilationUnit compilationUnitOutput() {
         CompilationUnit compilationUnit = parse(this.getClass().getResourceAsStream("/class-templates/TaskOutputTemplate.java"));
         compilationUnit.setPackageDeclaration(packageName);
@@ -303,8 +302,8 @@ public class UserTaskModelMetaData {
                 HashMap.class.getSimpleName() + "<>"), NodeList.nodeList()), AssignExpr.Operator.ASSIGN));
 
         // map is task output -> context variable / process variable
-        Map<String, String> outputTypes = humanTaskNode.getIoSpecification().getOutputTypes();
-        for (Entry<String, String> entry : humanTaskNode.getIoSpecification().getOutputMappingBySources().entrySet()) {
+        Map<String, String> outputTypes = workItemNode.getIoSpecification().getOutputTypes();
+        for (Entry<String, String> entry : workItemNode.getIoSpecification().getOutputMappingBySources().entrySet()) {
             if (entry.getValue() == null || INTERNAL_FIELDS.contains(entry.getKey())) {
                 continue;
             }
@@ -382,7 +381,7 @@ public class UserTaskModelMetaData {
     }
 
     private void addComment(CompilationUnit unit, String prefix) {
-        unit.addOrphanComment(new LineComment(prefix + " for user task '" + humanTaskNode.getName() + "' in process '" + processId + "'"));
+        unit.addOrphanComment(new LineComment(prefix + " for user task '" + workItemNode.getName() + "' in process '" + processId + "'"));
     }
 
     private void templateReplacement(NameExpr name) {
@@ -407,13 +406,13 @@ public class UserTaskModelMetaData {
     }
 
     public boolean isAdHoc() {
-        return !Boolean.parseBoolean((String) humanTaskNode.getMetaData(CUSTOM_AUTO_START))
-                && (humanTaskNode.getIncomingConnections() == null || humanTaskNode.getIncomingConnections().isEmpty());
+        return !Boolean.parseBoolean((String) workItemNode.getMetaData(CUSTOM_AUTO_START))
+                && (workItemNode.getIncomingConnections() == null || workItemNode.getIncomingConnections().isEmpty());
     }
 
     public SwitchEntry getModelSwitchEntry() {
         SwitchEntry entry = new SwitchEntry();
-        entry.setLabels(NodeList.nodeList(new StringLiteralExpr(humanTaskNode.getId().toExternalFormat())));
+        entry.setLabels(NodeList.nodeList(new StringLiteralExpr(workItemNode.getId().toExternalFormat())));
         entry.addStatement(new ReturnStmt(new MethodCallExpr(new NameExpr(
                 taskModelClassSimpleName), new SimpleName("from")).addArgument(WORK_ITEM)));
         return entry;

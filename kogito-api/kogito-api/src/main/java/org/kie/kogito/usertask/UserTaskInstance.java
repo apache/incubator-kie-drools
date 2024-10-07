@@ -22,8 +22,8 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
+import org.kie.kogito.auth.IdentityProvider;
 import org.kie.kogito.usertask.lifecycle.UserTaskState;
-import org.kie.kogito.usertask.lifecycle.UserTaskTransitionToken;
 import org.kie.kogito.usertask.model.Attachment;
 import org.kie.kogito.usertask.model.Comment;
 
@@ -35,19 +35,15 @@ public interface UserTaskInstance {
 
     UserTaskState getStatus();
 
+    String getUserTaskId();
+
     boolean hasActualOwner();
 
-    void setActuaOwner(String string);
+    void setActuaOwner(String actualOwner);
 
     String getActualOwner();
 
-    UserTaskTransitionToken createTransitionToken(String transitionId, Map<String, Object> data);
-
-    void transition(UserTaskTransitionToken token);
-
-    void complete();
-
-    void abort();
+    void transition(String transitionId, Map<String, Object> data, IdentityProvider identityProvider);
 
     String getExternalReferenceId();
 
@@ -58,6 +54,14 @@ public interface UserTaskInstance {
     Integer getTaskPriority();
 
     Map<String, Object> getMetadata();
+
+    Map<String, Object> getOutputs();
+
+    Map<String, Object> getInputs();
+
+    void setInput(String key, Object value);
+
+    void setOutput(String key, Object value);
 
     /**
      * Returns potential users that can work on this task
@@ -94,23 +98,24 @@ public interface UserTaskInstance {
      */
     Set<String> getExcludedUsers();
 
-    void addAttachment(Attachment attachment);
+    Attachment findAttachmentById(String attachmentId);
 
-    void updateAttachment(Attachment newAttachment);
+    Attachment addAttachment(Attachment attachment);
 
-    void removeAttachment(Attachment oldAttachment);
+    Attachment updateAttachment(Attachment newAttachment);
 
-    void addComment(Comment comment);
-
-    void updateComment(Comment newComment);
-
-    void removeComment(Comment comment);
-
-    Collection<Comment> getComments();
+    Attachment removeAttachment(Attachment oldAttachment);
 
     Collection<Attachment> getAttachments();
 
-    Attachment findAttachmentById(String attachmentId);
-
     Comment findCommentById(String commentId);
+
+    Comment addComment(Comment comment);
+
+    Comment updateComment(Comment newComment);
+
+    Comment removeComment(Comment comment);
+
+    Collection<Comment> getComments();
+
 }
