@@ -149,19 +149,14 @@ void setupProjectReleaseJob() {
 
         GIT_BRANCH_NAME: "${GIT_BRANCH}",
         GIT_AUTHOR: "${GIT_AUTHOR_NAME}",
-
-        DEFAULT_STAGING_REPOSITORY: "${MAVEN_NEXUS_STAGING_PROFILE_URL}",
-        ARTIFACTS_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
-        OPTAPLANNER_LATEST_STREAM: "${GIT_MAIN_BRANCH}"
     ])
     KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         parameters {
             stringParam('RESTORE_FROM_PREVIOUS_JOB', '', 'URL to a previous stopped release job which needs to be continued')
 
-            stringParam('OPTAPLANNER_VERSION', '', 'Project version of OptaPlanner and its examples to release as Major.minor.micro')
-            stringParam('OPTAPLANNER_RELEASE_BRANCH', '', '(optional) Use to override the release branch name deduced from the OPTAPLANNER_VERSION')
+            stringParam('RELEASE_VERSION', '', 'Project version of OptaPlanner and its examples to release as Major.minor.micro')
 
-            stringParam('DROOLS_VERSION', '', '(optional) Drools version to be set to the project before releasing the artifacts.')
+            stringParam('GIT_TAG_NAME', '', 'Git tag to create. i.e.: 10.0.0-rc1')
 
             booleanParam('SKIP_TESTS', false, 'Skip all tests')
         }
@@ -370,6 +365,8 @@ void setupDeployJob(JobType jobType, String envName = '') {
             stringParam('OPERATOR_IMAGE_REGISTRY_TOKEN_CREDENTIALS_ID', "${CLOUD_IMAGE_REGISTRY_TOKEN_CREDENTIALS_ID}", 'Image registry token credentials id.')
             stringParam('OPERATOR_IMAGE_NAMESPACE', "${CLOUD_IMAGE_NAMESPACE}", 'Operator image namespace to use to deploy image.')
             stringParam('OPERATOR_IMAGE_TAG', '', 'Image tag to use to deploy the operator image. OptaPlanner project version if not set.')
+
+            stringParam('GIT_TAG_NAME', '', 'Optional if not RELEASE. Tag to be created in the repository')
         }
     }
 }
