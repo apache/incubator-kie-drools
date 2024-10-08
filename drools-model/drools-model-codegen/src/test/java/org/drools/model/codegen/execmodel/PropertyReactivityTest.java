@@ -1313,7 +1313,8 @@ public class PropertyReactivityTest extends BaseModelTest {
                 "rule R dialect \"mvel\" when\n" +
                 "    $p : Person( $age : age < 50 ) @watch(!*)\n" +
                 "then\n" +
-                "    modify($p) { age = $age + 1 };\n" +
+                "    $p.setAge($p.getAge() + 1);\n" +  
+                "    update($p);\n" + 
                 "end\n";
 
         KieSession ksession = getKieSession( str );
