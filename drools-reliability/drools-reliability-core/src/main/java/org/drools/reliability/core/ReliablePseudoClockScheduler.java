@@ -29,7 +29,7 @@ import org.drools.core.common.Storage;
 import org.drools.core.phreak.PhreakTimerNode.TimerNodeJob;
 import org.drools.core.reteoo.ObjectTypeNode.ExpireJob;
 import org.drools.core.time.impl.PseudoClockScheduler;
-import org.drools.core.time.impl.TimerJobInstance;
+import org.drools.base.time.impl.TimerJobInstance;
 
 public class ReliablePseudoClockScheduler extends PseudoClockScheduler {
 

@@ -24,6 +24,7 @@ import java.util.List;
 import org.drools.base.base.ObjectType;
 import org.drools.base.common.RuleBasePartitionId;
 import org.drools.base.definitions.rule.impl.RuleImpl;
+import org.drools.base.reteoo.sequencing.Sequence;
 import org.drools.base.rule.Accumulate;
 import org.drools.base.rule.AsyncReceive;
 import org.drools.base.rule.AsyncSend;
@@ -35,7 +36,7 @@ import org.drools.base.rule.GroupElement;
 import org.drools.base.rule.QueryElement;
 import org.drools.base.rule.accessor.DataProvider;
 import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
-import org.drools.base.time.impl.Timer;
+import org.drools.base.time.Timer;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.reteoo.AccumulateNode;
 import org.drools.core.reteoo.AlphaNode;
@@ -55,7 +56,8 @@ import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.QueryElementNode;
 import org.drools.core.reteoo.ReactiveFromNode;
-import org.drools.core.reteoo.RightInputAdapterNode;
+import org.drools.core.reteoo.SequenceNode;
+import org.drools.core.reteoo.TupleToObjectNode;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.TimerNode;
 import org.drools.core.reteoo.WindowNode;
@@ -96,10 +98,15 @@ public interface NodeFactory {
                                      BuildContext context);
 
 
-    RightInputAdapterNode buildRightInputNode( int id,
-                                               LeftTupleSource leftInput,
-                                               LeftTupleSource startTupleSource,
-                                               BuildContext context );
+    SequenceNode buildSequenceNode(int id,
+                                   LeftTupleSource tupleSource,
+                                   Sequence seq,
+                                   BuildContext context);
+
+    TupleToObjectNode buildRightInputNode(int id,
+                                          LeftTupleSource leftInput,
+                                          LeftTupleSource startTupleSource,
+                                          BuildContext context);
 
     JoinNode buildJoinNode( int id,
                             LeftTupleSource leftInput,

@@ -25,7 +25,7 @@ import org.drools.core.impl.WorkingMemoryReteExpireAction;
 import org.drools.core.marshalling.MarshallerWriteContext;
 import org.drools.serialization.protobuf.marshalling.PersisterEnums;
 import org.drools.core.reteoo.ObjectTypeNode.ExpireJobContext;
-import org.drools.core.time.JobContext;
+import org.drools.base.time.JobContext;
 import org.drools.core.time.impl.DefaultJobHandle;
 import org.drools.core.time.impl.PointInTimeTrigger;
 import org.drools.serialization.protobuf.ProtobufMessages;

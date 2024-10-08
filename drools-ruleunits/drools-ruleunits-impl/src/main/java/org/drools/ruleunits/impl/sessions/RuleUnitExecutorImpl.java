@@ -36,7 +36,6 @@ import org.drools.core.base.MapGlobalResolver;
 import org.drools.core.base.NonCloningQueryViewListener;
 import org.drools.core.base.QueryRowWithSubruleIndex;
 import org.drools.core.common.ActivationsManager;
-import org.drools.core.common.BaseNode;
 import org.drools.core.common.ConcurrentNodeMemories;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
@@ -53,7 +52,8 @@ import org.drools.core.event.RuleEventListenerSupport;
 import org.drools.core.event.RuleRuntimeEventSupport;
 import org.drools.core.impl.ActivationsManagerImpl;
 import org.drools.core.impl.InternalRuleBase;
-import org.drools.core.phreak.PropagationEntry;
+import org.drools.base.phreak.PropagationEntry;
+import org.drools.core.phreak.actions.ExecuteQuery;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.RuntimeComponentFactory;
 import org.drools.core.reteoo.TerminalNode;
@@ -61,7 +61,7 @@ import org.drools.core.reteoo.Tuple;
 import org.drools.core.rule.accessor.FactHandleFactory;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.rule.consequence.KnowledgeHelper;
-import org.drools.core.time.TimerService;
+import org.drools.base.time.TimerService;
 import org.drools.util.bitmask.BitMask;
 import org.drools.kiesession.consequence.DefaultKnowledgeHelper;
 import org.drools.kiesession.consequence.StatefulKnowledgeSessionForRHS;
@@ -72,6 +72,7 @@ import org.kie.api.KieBase;
 import org.kie.api.runtime.Calendars;
 import org.kie.api.runtime.Channel;
 import org.kie.api.runtime.KieRuntime;
+import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
@@ -231,6 +232,11 @@ public class RuleUnitExecutorImpl implements ReteEvaluator {
     }
 
     @Override
+    public KieSessionConfiguration getKieSessionConfiguration() {
+        return sessionConfiguration;
+    }
+
+    @Override
     public RuleEventListenerSupport getRuleEventSupport() {
         return ruleEventListenerSupport;
     }
@@ -317,7 +323,7 @@ public class RuleUnitExecutorImpl implements ReteEvaluator {
 
         final PropagationContext pCtx = new PhreakPropagationContext(getNextPropagationIdCounter(), PropagationContext.Type.INSERTION, null, null, handle, getDefaultEntryPointId());
 
-        PropagationEntry.ExecuteQuery executeQuery = new PropagationEntry.ExecuteQuery( queryName, queryObject, handle, pCtx, false);
+        ExecuteQuery executeQuery = new ExecuteQuery(queryName, queryObject, handle, pCtx, false);
         addPropagation( executeQuery );
         TerminalNode[] terminalNodes = executeQuery.getResult();
 

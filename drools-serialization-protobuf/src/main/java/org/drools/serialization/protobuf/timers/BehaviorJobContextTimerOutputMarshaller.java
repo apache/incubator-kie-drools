@@ -25,7 +25,7 @@ import org.drools.core.marshalling.MarshallerWriteContext;
 import org.drools.serialization.protobuf.marshalling.PersisterEnums;
 import org.drools.core.rule.SlidingTimeWindow.BehaviorJobContext;
 import org.drools.core.rule.SlidingTimeWindow.SlidingTimeWindowContext;
-import org.drools.core.time.JobContext;
+import org.drools.base.time.JobContext;
 import org.drools.serialization.protobuf.ProtobufMessages;
 import org.drools.serialization.protobuf.TimersOutputMarshaller;
 

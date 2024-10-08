@@ -29,8 +29,10 @@ import org.drools.base.common.NetworkNode;
 import org.drools.base.common.RuleBasePartitionId;
 import org.drools.base.reteoo.BaseTerminalNode;
 import org.drools.base.reteoo.NodeTypeEnums;
+import org.drools.base.reteoo.ObjectTypeNodeId;
 import org.drools.base.rule.Pattern;
 import org.drools.core.RuleBaseConfiguration;
+import org.drools.core.common.BaseNode;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.Memory;
@@ -44,7 +46,7 @@ import org.drools.core.phreak.DetachedTuple;
 import org.drools.core.phreak.RuntimeSegmentUtilities;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.consequence.InternalMatch;
-import org.drools.core.util.AbstractLinkedListNode;
+import org.drools.base.util.AbstractLinkedListNode;
 import org.drools.util.bitmask.AllSetBitMask;
 import org.drools.util.bitmask.BitMask;
 import org.kie.api.definition.rule.Rule;
@@ -54,7 +56,7 @@ import org.slf4j.LoggerFactory;
 import static org.drools.base.reteoo.PropertySpecificUtil.isPropertyReactive;
 import static org.drools.core.phreak.TupleEvaluationUtil.createLeftTupleTupleSets;
 import static org.drools.core.phreak.TupleEvaluationUtil.findPathToFlush;
-import static org.drools.core.phreak.TupleEvaluationUtil.findPathsToFlushFromRia;
+import static org.drools.core.phreak.TupleEvaluationUtil.findPathsToFlushFromSubnetwork;
 import static org.drools.core.phreak.TupleEvaluationUtil.flushLeftTupleIfNecessary;
 import static org.drools.core.phreak.TupleEvaluationUtil.forceFlushLeftTuple;
 import static org.drools.core.phreak.TupleEvaluationUtil.forceFlushPath;
@@ -102,15 +104,19 @@ public class LeftInputAdapterNode extends LeftTupleSource
         this.setObjectCount(1); // 'lia' start at 1
         this.objectSource = source;
         this.leftTupleMemoryEnabled = context.isTupleMemoryEnabled();
-        ObjectSource current = source;
+        BaseNode current = source;
         while (current.getType() != NodeTypeEnums.ObjectTypeNode) {
-            current = current.getParentObjectSource();
+            current = current.getParent();
         }
 
         setStreamMode( context.isStreamMode() && context.getRootObjectTypeNode().getObjectType().isEvent() );
         sinkMask = calculateSinkMask(context);
 
         hashcode = calculateHashCode();
+    }
+
+    public ObjectSource getParent() {
+        return objectSource;
     }
 
     private BitMask calculateSinkMask(BuildContext context) {
@@ -244,7 +250,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
             if ( linkOrNotify ) {
                 lm.setNodeDirty( reteEvaluator );
             }
-            return findPathsToFlushFromRia(reteEvaluator, pmem);
+            return findPathsToFlushFromSubnetwork(reteEvaluator, pmem);
         }
 
         // mask check is necessary if insert is a result of a modify
@@ -389,13 +395,13 @@ public class LeftInputAdapterNode extends LeftTupleSource
                              final ModifyPreviousTuples modifyPreviousTuples,
                              PropagationContext context,
                              ReteEvaluator reteEvaluator) {
-        ObjectTypeNodeId otnId = this.sink.getFirstLeftTupleSink().getLeftInputOtnId();
+        ObjectTypeNodeId otnId = this.sink.getFirstLeftTupleSink().getInputOtnId();
 
         TupleImpl     leftTuple = processDeletesFromModify(modifyPreviousTuples, context, reteEvaluator, otnId);
         LiaNodeMemory lm        = reteEvaluator.getNodeMemory( this );
 
         LeftTupleSink sink = getSinkPropagator().getFirstLeftTupleSink();
-        BitMask mask = sink.getLeftInferredMask();
+        BitMask mask = sink.getInferredMask();
 
         if ( leftTuple != null && leftTuple.getInputOtnId().equals(otnId) ) {
             modifyPreviousTuples.removeLeftTuple(partitionId);
@@ -617,7 +623,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
         public void assertObject(final InternalFactHandle factHandle,
                                  final PropagationContext context,
                                  final ReteEvaluator reteEvaluator) {
-            ObjectTypeNodeId otnId = liaNode.getSinkPropagator().getFirstLeftTupleSink().getLeftInputOtnId();
+            ObjectTypeNodeId otnId = liaNode.getSinkPropagator().getFirstLeftTupleSink().getInputOtnId();
             TupleImpl detached = factHandle.getLinkedTuples().detachLeftTupleAfter(getPartitionId(), otnId);
             if (detached != null) {
                 detachedTuples.add(new DetachedTuple((DefaultFactHandle) factHandle, detached));

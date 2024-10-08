@@ -37,7 +37,7 @@ import org.drools.core.reteoo.Tuple;
 import org.drools.core.reteoo.TupleImpl;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.rule.consequence.KnowledgeHelper;
-import org.drools.core.util.LinkedList;
+import org.drools.base.util.LinkedList;
 import org.drools.core.util.Queue;
 import org.drools.core.util.QueueFactory;
 import org.drools.core.util.index.TupleList;
@@ -140,7 +140,7 @@ public class RuleExecutor {
             Tuple lastTuple = null;
             for (; tuple != null; lastTuple = tuple, tuple = getNextTuple()) {
 
-                //check if the rule is not effective or
+                // check if the rule is not effective or
                 // if the current Rule is no-loop and the origin rule is the same then return
                 if (cancelAndContinue(reteEvaluator, rtn, tuple, filter)) {
                     continue;

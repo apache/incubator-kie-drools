@@ -18,7 +18,7 @@
  */
 package org.drools.core;
 
-import org.drools.core.time.TimerService;
+import org.drools.base.time.TimerService;
 import org.drools.core.time.impl.JDKTimerService;
 import org.drools.core.time.impl.PseudoClockScheduler;
 

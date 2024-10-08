@@ -35,7 +35,7 @@ import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.runtime.process.InternalProcessRuntime;
 import org.drools.core.time.impl.CommandServiceTimerJobFactoryManager;
-import org.drools.core.time.impl.TimerJobFactoryManager;
+import org.drools.base.time.impl.TimerJobFactoryManager;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.persistence.api.OrderedTransactionSynchronization;

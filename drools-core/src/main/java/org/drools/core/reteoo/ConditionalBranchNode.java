@@ -26,14 +26,12 @@ import java.io.ObjectOutput;
 import org.drools.base.common.NetworkNode;
 import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
-import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.util.AbstractLinkedListNode;
+import org.drools.base.util.AbstractLinkedListNode;
 
 /**
  * Node which allows to follow different paths in the Rete-OO network,
@@ -60,7 +58,7 @@ public class ConditionalBranchNode extends LeftTupleSource implements LeftTupleS
         this.tupleMemoryEnabled = context.isTupleMemoryEnabled();
         this.branchEvaluator = branchEvaluator;
 
-        initMasks(context, tupleSource);
+        initMasks(context);
 
         hashcode = calculateHashCode();
     }
@@ -213,14 +211,14 @@ public class ConditionalBranchNode extends LeftTupleSource implements LeftTupleS
     }
 
     @Override
-    protected void initDeclaredMask(BuildContext context, LeftTupleSource leftInput) {
+    public void initDeclaredMask(BuildContext context) {
         // See LeftTupleSource.initDeclaredMask() should result for the ConditionalBranch to result in ALLSET:
         // at the moment if pattern is null (e.g. for eval node) we cannot calculate the mask, so we leave it to 0
         // 
         // In other words, a conditional branch is analogous to an eval() call - mask ALL SET
         
         // To achieve the result, we highjack the call:
-        super.initDeclaredMask(null, null);
+        super.initDeclaredMask(null);
     }
     
 }

@@ -21,9 +21,9 @@ package org.drools.core.common;
 import org.drools.base.rule.EntryPointId;
 import org.drools.base.time.JobHandle;
 import org.drools.core.WorkingMemoryEntryPoint;
-import org.drools.core.time.TimerService;
+import org.drools.base.time.TimerService;
 import org.drools.core.time.impl.DefaultJobHandle;
-import org.drools.core.util.LinkedList;
+import org.drools.base.util.LinkedList;
 import org.kie.api.runtime.rule.EventHandle;
 
 public class DefaultEventHandle extends DefaultFactHandle implements EventHandle, Comparable<DefaultEventHandle> {

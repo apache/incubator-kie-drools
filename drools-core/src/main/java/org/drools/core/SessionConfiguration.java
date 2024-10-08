@@ -26,8 +26,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import org.drools.core.time.TimerService;
-import org.drools.core.time.impl.TimerJobFactoryManager;
+import org.drools.base.time.TimerService;
+import org.drools.base.time.impl.TimerJobFactoryManager;
 import org.drools.util.StringUtils;
 import org.kie.api.KieBase;
 import org.kie.api.conf.ConfigurationKey;

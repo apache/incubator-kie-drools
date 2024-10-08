@@ -43,7 +43,7 @@ import org.drools.core.phreak.BuildtimeSegmentUtilities;
 import org.drools.core.phreak.StackEntry;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.consequence.InternalMatch;
-import org.drools.core.util.AbstractLinkedListNode;
+import org.drools.base.util.AbstractLinkedListNode;
 import org.kie.api.runtime.rule.FactHandle;
 
 public class QueryElementNode extends LeftTupleSource implements LeftTupleSinkNode, MemoryFactory<QueryElementNode.QueryElementNodeMemory> {
@@ -78,7 +78,7 @@ public class QueryElementNode extends LeftTupleSource implements LeftTupleSinkNo
         this.tupleMemoryEnabled = tupleMemoryEnabled;
         this.openQuery = openQuery;
         this.dataDriven = context != null && context.getRule().isDataDriven();
-        initMasks( context, tupleSource );
+        initMasks( context );
         this.argsTemplate = initArgsTemplate( context );
 
         hashcode = calculateHashCode();

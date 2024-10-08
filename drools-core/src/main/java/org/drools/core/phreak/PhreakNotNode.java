@@ -30,7 +30,7 @@ import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.TupleFactory;
 import org.drools.core.reteoo.TupleImpl;
 import org.drools.core.reteoo.TupleMemory;
-import org.drools.core.util.FastIterator;
+import org.drools.base.util.FastIterator;
 
 import static org.drools.core.phreak.PhreakJoinNode.updateChildLeftTuple;
 
@@ -43,7 +43,7 @@ public class PhreakNotNode {
                        TupleSets trgLeftTuples,
                        TupleSets stagedLeftTuples) {
 
-        if (!notNode.isRightInputIsRiaNode()) {
+        if (!notNode.getRightInput().inputIsTupleToObjectNode()) {
             doNormalNode(notNode, sink, bm, reteEvaluator, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
         } else {
             PhreakSubnetworkNotExistsNode.doSubNetworkNode(notNode, sink, bm,

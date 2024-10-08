@@ -22,22 +22,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.UpdateContext;
-import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSinkNode;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.ReteooBuilder;
 import org.drools.core.reteoo.RuleRemovalContext;
-import org.drools.core.reteoo.Sink;
-import org.drools.core.reteoo.TupleImpl;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.common.PropagationContext;
 
 public class MockLeftTupleSink extends LeftTupleSource
     implements

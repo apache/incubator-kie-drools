@@ -18,6 +18,7 @@
  */
 package org.drools.serialization.protobuf.iterators;
 
+import org.drools.core.common.BaseNode;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.MemoryFactory;
@@ -36,14 +37,13 @@ import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.core.reteoo.NotNode;
-import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.QueryElementNode;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.Tuple;
 import org.drools.core.reteoo.TupleImpl;
-import org.drools.core.util.FastIterator;
-import org.drools.core.util.Iterator;
+import org.drools.base.util.FastIterator;
+import org.drools.base.util.Iterator;
 
 public class LeftTupleIterator
     implements
@@ -149,9 +149,9 @@ public class LeftTupleIterator
             }
             case NodeTypeEnums.LeftInputAdapterNode:
             case NodeTypeEnums.AlphaTerminalNode: {
-                ObjectSource os = ((LeftInputAdapterNode) source).getParentObjectSource();
+                BaseNode os = ((LeftInputAdapterNode) source).getParentObjectSource();
                 while ( !(os instanceof ObjectTypeNode) ) {
-                    os = os.getParentObjectSource();
+                    os = os.getParent();
                 }
 
                 ObjectTypeNode otn = (ObjectTypeNode) os;

@@ -18,7 +18,7 @@
  */
 package org.drools.serialization.protobuf.marshalling;
 
-import org.drools.core.reteoo.Sink;
+import org.drools.base.reteoo.Sink;
 
 public class RightTupleKey {
     private final int  id;

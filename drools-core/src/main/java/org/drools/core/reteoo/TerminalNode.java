@@ -22,13 +22,14 @@ import java.util.function.Consumer;
 
 import org.drools.base.common.NetworkNode;
 import org.drools.base.reteoo.BaseTerminalNode;
+import org.drools.base.reteoo.Sink;
 
 /**
  * A markup interface for terminal nodes
  */
 public interface TerminalNode
     extends
-        BaseTerminalNode, NetworkNode, Sink, PathEndNode {
+    BaseTerminalNode, NetworkNode, Sink, PathEndNode {
 
     LeftTupleSource getLeftTupleSource();
     

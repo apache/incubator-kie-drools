@@ -20,6 +20,7 @@ package org.drools.core.util;
 
 import java.util.Random;
 
+import org.drools.base.util.Iterator;
 import org.drools.core.util.TupleRBTree.Node;
 import org.junit.Test;
 
@@ -38,9 +39,9 @@ public class LeftTupleRBTreeTest {
             tree.insert( key );
         }
 
-        int i = 0;
+        int                     i            = 0;
         Iterator<Node<Integer>> fastIterator = tree.iterator();
-        int lastKey = Integer.MIN_VALUE;
+        int                     lastKey      = Integer.MIN_VALUE;
         for (Node<Integer> node = fastIterator.next(); node != null; node = fastIterator.next()) {
             int currentKey = node.key;
             if (currentKey < lastKey) {

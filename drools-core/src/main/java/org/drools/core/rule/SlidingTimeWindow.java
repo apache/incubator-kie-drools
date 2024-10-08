@@ -25,6 +25,7 @@ import java.io.ObjectOutput;
 import java.util.Collection;
 import java.util.PriorityQueue;
 
+import org.drools.base.base.ValueResolver;
 import org.drools.base.time.JobHandle;
 import org.drools.core.common.DefaultEventHandle;
 import org.drools.core.common.InternalFactHandle;
@@ -33,13 +34,13 @@ import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.marshalling.MarshallerReaderContext;
-import org.drools.core.phreak.PropagationEntry;
+import org.drools.base.phreak.actions.AbstractPropagationEntry;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.WindowNode;
 import org.drools.core.reteoo.WindowNode.WindowMemory;
-import org.drools.core.time.Job;
-import org.drools.core.time.JobContext;
-import org.drools.core.time.TimerService;
+import org.drools.base.time.Job;
+import org.drools.base.time.JobContext;
+import org.drools.base.time.TimerService;
 import org.drools.core.time.impl.PointInTimeTrigger;
 import org.kie.api.runtime.rule.FactHandle;
 
@@ -339,7 +340,7 @@ public class SlidingTimeWindow
         }
 
         @Override
-        public ReteEvaluator getReteEvaluator() {
+        public ValueResolver getValueResolver() {
             return reteEvaluator;
         }
     }
@@ -357,7 +358,7 @@ public class SlidingTimeWindow
     }
 
     public static class BehaviorExpireWMAction
-            extends PropagationEntry.AbstractPropagationEntry
+            extends AbstractPropagationEntry<ReteEvaluator>
             implements WorkingMemoryAction {
         protected BehaviorRuntime behavior;
         protected BehaviorContext context;

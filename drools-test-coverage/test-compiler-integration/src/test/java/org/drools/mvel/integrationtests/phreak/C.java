@@ -18,16 +18,28 @@
  */
 package org.drools.mvel.integrationtests.phreak;
 
+import org.kie.api.definition.type.Expires;
 import org.kie.api.definition.type.Position;
+import org.kie.api.definition.type.Role;
+import org.kie.api.definition.type.Role.Type;
 
+@Expires(value = "5s")
+@Role(value = Type.EVENT)
 public class C {
 
     @Position(0)
     Object object;
 
+    @Position(1)
+    String text;
+
     public C(Object object) {
-        super();
         this.object = object;
+    }
+
+    public C(Object object, String text) {
+        this.object = object;
+        this.text   = text;
     }
 
     public static C c(Object object) {
@@ -49,6 +61,14 @@ public class C {
 
     public void setObject(Object object) {
         this.object = object;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
     }
 
     @Override

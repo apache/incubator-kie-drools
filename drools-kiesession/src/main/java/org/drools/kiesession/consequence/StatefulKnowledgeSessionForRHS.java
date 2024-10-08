@@ -44,13 +44,13 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.event.AgendaEventSupport;
 import org.drools.core.event.RuleEventListenerSupport;
 import org.drools.core.event.RuleRuntimeEventSupport;
-import org.drools.core.phreak.PropagationEntry;
+import org.drools.base.phreak.PropagationEntry;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.accessor.FactHandleFactory;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.core.runtime.process.InternalProcessRuntime;
-import org.drools.core.time.TimerService;
+import org.drools.base.time.TimerService;
 import org.drools.util.bitmask.BitMask;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
@@ -67,6 +67,7 @@ import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.Globals;
 import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.ObjectFilter;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItemManager;
@@ -568,6 +569,11 @@ public class StatefulKnowledgeSessionForRHS
 
     public SessionConfiguration getSessionConfiguration() {
         return delegate.getSessionConfiguration();
+    }
+
+    @Override
+    public KieSessionConfiguration getKieSessionConfiguration() {
+        return delegate.getKieSessionConfiguration();
     }
 
     public Collection<? extends Object> getObjects() {

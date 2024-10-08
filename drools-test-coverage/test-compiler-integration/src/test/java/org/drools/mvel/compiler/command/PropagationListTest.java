@@ -25,9 +25,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.phreak.PropagationList;
 import org.drools.core.phreak.SynchronizedPropagationList;
+import org.drools.base.phreak.actions.AbstractPropagationEntry;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -125,7 +125,7 @@ public class PropagationListTest {
         };
     }
 
-    public static class TestEntry extends PropagationEntry.AbstractPropagationEntry {
+    public static class TestEntry extends AbstractPropagationEntry<ReteEvaluator> {
 
         final Checker checker;
         final int i;

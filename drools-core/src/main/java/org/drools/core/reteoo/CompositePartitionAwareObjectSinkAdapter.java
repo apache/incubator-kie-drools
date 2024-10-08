@@ -35,7 +35,7 @@ import org.drools.core.common.BaseNode;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
-import org.drools.core.phreak.PropagationEntry;
+import org.drools.base.phreak.actions.AbstractPropagationEntry;
 import org.drools.core.reteoo.CompositeObjectSinkAdapter.FieldIndex;
 
 public class CompositePartitionAwareObjectSinkAdapter implements ObjectSinkPropagator {
@@ -128,7 +128,7 @@ public class CompositePartitionAwareObjectSinkAdapter implements ObjectSinkPropa
         }
     }
 
-    public static class Insert extends PropagationEntry.AbstractPropagationEntry {
+    public static class Insert extends AbstractPropagationEntry<ReteEvaluator> {
 
         private final ObjectSinkPropagator propagator;
         private final InternalFactHandle factHandle;
@@ -151,7 +151,7 @@ public class CompositePartitionAwareObjectSinkAdapter implements ObjectSinkPropa
         }
     }
 
-    public static class HashedInsert extends PropagationEntry.AbstractPropagationEntry {
+    public static class HashedInsert extends AbstractPropagationEntry<ReteEvaluator> {
 
         private final AlphaNode sink;
         private final InternalFactHandle factHandle;
@@ -220,14 +220,14 @@ public class CompositePartitionAwareObjectSinkAdapter implements ObjectSinkPropa
     }
 
     @Override
-    public void doLinkRiaNode( ReteEvaluator reteEvaluator ) {
-        throw new UnsupportedOperationException("This sink is only used for OTNs, it cannot be the sink for a RIA");
+    public void doLinkSubnetwork(ReteEvaluator reteEvaluator) {
+        throw new UnsupportedOperationException("This sink is only used for OTNs, it cannot be the sink for a TupleToObjectNode");
 
     }
 
     @Override
-    public void doUnlinkRiaNode( ReteEvaluator reteEvaluator ) {
-        throw new UnsupportedOperationException("This sink is only used for OTNs, it cannot be the sink for a RIA");
+    public void doUnlinkSubnetwork(ReteEvaluator reteEvaluator) {
+        throw new UnsupportedOperationException("This sink is only used for OTNs, it cannot be the sink for a TupleToObjectNode");
 
     }
 

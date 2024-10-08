@@ -21,6 +21,7 @@ package org.drools.core.phreak;
 import java.util.Collections;
 import java.util.Iterator;
 
+import org.drools.base.phreak.PropagationEntry;
 import org.drools.core.common.ReteEvaluator;
 
 public class ThreadUnsafePropagationList implements PropagationList {
@@ -32,7 +33,7 @@ public class ThreadUnsafePropagationList implements PropagationList {
     }
 
     @Override
-    public void addEntry( PropagationEntry propagationEntry ) {
+    public void addEntry( PropagationEntry propagationEntry) {
         propagationEntry.execute( reteEvaluator );
     }
 

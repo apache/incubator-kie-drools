@@ -20,6 +20,7 @@ package org.drools.core.phreak;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.drools.base.phreak.PropagationEntry;
 import org.drools.core.common.ReteEvaluator;
 
 public class SynchronizedBypassPropagationList extends SynchronizedPropagationList {

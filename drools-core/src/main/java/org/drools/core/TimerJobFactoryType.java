@@ -24,7 +24,7 @@ import java.util.Map;
 
 import org.drools.core.time.impl.DefaultTimerJobFactoryManager;
 import org.drools.core.time.impl.ThreadSafeTrackableTimeJobFactoryManager;
-import org.drools.core.time.impl.TimerJobFactoryManager;
+import org.drools.base.time.impl.TimerJobFactoryManager;
 import org.drools.core.time.impl.TrackableTimeJobFactoryManager;
 
 public abstract class TimerJobFactoryType implements Serializable {

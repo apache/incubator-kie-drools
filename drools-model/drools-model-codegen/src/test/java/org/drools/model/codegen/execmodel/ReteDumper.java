@@ -31,7 +31,7 @@ import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.Rete;
-import org.drools.core.reteoo.Sink;
+import org.drools.base.reteoo.Sink;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 

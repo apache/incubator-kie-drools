@@ -18,6 +18,8 @@
  */
 package org.drools.core.reteoo;
 
+import org.drools.base.reteoo.ObjectTypeNodeId;
+import org.drools.base.reteoo.Sink;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
 
@@ -31,7 +33,7 @@ public interface RightTupleSink extends Sink {
                           final PropagationContext context,
                           final ReteEvaluator reteEvaluator);
 
-    default ObjectTypeNodeId getRightInputOtnId() {
+    default ObjectTypeNodeId getInputOtnId() {
         return null;
     }
 

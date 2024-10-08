@@ -24,7 +24,7 @@ import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.reteoo.AgendaComponentFactory;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.PathMemory;
-import org.drools.core.reteoo.Sink;
+import org.drools.base.reteoo.Sink;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.reteoo.TupleImpl;

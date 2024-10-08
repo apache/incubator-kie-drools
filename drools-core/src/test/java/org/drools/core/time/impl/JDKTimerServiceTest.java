@@ -29,6 +29,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Stack;
 
+import org.drools.base.base.ValueResolver;
 import org.drools.base.time.JobHandle;
 import org.drools.base.time.Trigger;
 import org.drools.core.ClockType;
@@ -36,10 +37,10 @@ import org.drools.core.SessionConfiguration;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.impl.RuleBaseFactory;
-import org.drools.core.phreak.PropagationEntry;
-import org.drools.core.time.Job;
-import org.drools.core.time.JobContext;
-import org.drools.core.time.TimerService;
+import org.drools.base.phreak.PropagationEntry;
+import org.drools.base.time.Job;
+import org.drools.base.time.JobContext;
+import org.drools.base.time.TimerService;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -143,7 +144,7 @@ public class JDKTimerServiceTest {
         }
 
         @Override
-        public ReteEvaluator getReteEvaluator() {
+        public ValueResolver getValueResolver() {
             return (ReteEvaluator) Proxy.newProxyInstance( InternalWorkingMemory.class.getClassLoader(),
                                                                    new Class[]{InternalWorkingMemory.class},
                                                                    new InvocationHandler() {

@@ -23,10 +23,9 @@ import java.util.Map;
 import org.drools.base.definitions.rule.impl.QueryImpl;
 import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.base.reteoo.NodeTypeEnums;
+import org.drools.base.reteoo.ObjectTypeNodeId;
 import org.drools.base.rule.Declaration;
 import org.drools.base.rule.GroupElement;
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.PropagationContext;
 import org.drools.core.reteoo.builder.BuildContext;
 
 /**
@@ -100,11 +99,11 @@ public class QueryTerminalNode extends AbstractTerminalNode implements LeftTuple
     }
 
 
-    public ObjectTypeNodeId getLeftInputOtnId() {
+    public ObjectTypeNodeId getInputOtnId() {
         return leftInputOtnId;
     }
 
-    public void setLeftInputOtnId(ObjectTypeNodeId leftInputOtnId) {
+    public void setInputOtnId(ObjectTypeNodeId leftInputOtnId) {
         this.leftInputOtnId = leftInputOtnId;
     }
 
@@ -116,6 +115,6 @@ public class QueryTerminalNode extends AbstractTerminalNode implements LeftTuple
     public void doAttach( BuildContext context ) {
         super.doAttach(context);
         getLeftTupleSource().addTupleSink( this, context );
-        addAssociation( context, context.getRule() );
+        addAssociation(context.getRule(), context);
     }
 }

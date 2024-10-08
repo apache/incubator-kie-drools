@@ -19,6 +19,7 @@
 package org.drools.core.reteoo;
 
 import org.drools.base.reteoo.NodeTypeEnums;
+import org.drools.base.reteoo.Sink;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.PropagationContext;
 
@@ -40,12 +41,13 @@ public class TupleFactory {
             case NodeTypeEnums.ConditionalBranchNode:
             case NodeTypeEnums.EvalConditionNode:
             case NodeTypeEnums.TimerConditionNode:
+            case NodeTypeEnums.SequenceNode:
                 peer = new EvalNodeLeftTuple();
                 break;
             case NodeTypeEnums.ReactiveFromNode:
                 peer = new ReactiveFromNodeLeftTuple();
                 break;
-            case NodeTypeEnums.RightInputAdapterNode:
+            case NodeTypeEnums.TupleToObjectNode:
                 peer = new SubnetworkTuple();
                 break;
             case NodeTypeEnums.QueryTerminalNode:
@@ -78,11 +80,12 @@ public class TupleFactory {
             case NodeTypeEnums.AsyncReceiveNode:
             case NodeTypeEnums.ConditionalBranchNode:
             case NodeTypeEnums.EvalConditionNode:
+            case NodeTypeEnums.SequenceNode:
             case NodeTypeEnums.TimerConditionNode:
                 return new EvalNodeLeftTuple(factHandle, s, leftTupleMemoryEnabled);
             case NodeTypeEnums.ReactiveFromNode:
                 return new ReactiveFromNodeLeftTuple(factHandle, s, leftTupleMemoryEnabled);
-            case NodeTypeEnums.RightInputAdapterNode:
+            case NodeTypeEnums.TupleToObjectNode:
                 return new SubnetworkTuple(factHandle, s, leftTupleMemoryEnabled);
             case NodeTypeEnums.QueryTerminalNode:
             case NodeTypeEnums.RuleTerminalNode:
@@ -109,10 +112,11 @@ public class TupleFactory {
             case NodeTypeEnums.ConditionalBranchNode:
             case NodeTypeEnums.EvalConditionNode:
             case NodeTypeEnums.TimerConditionNode:
+            case NodeTypeEnums.SequenceNode:
                 return new EvalNodeLeftTuple(factHandle, leftTuple, s);
             case NodeTypeEnums.ReactiveFromNode:
                 return new ReactiveFromNodeLeftTuple(factHandle, leftTuple, s);
-            case NodeTypeEnums.RightInputAdapterNode:
+            case NodeTypeEnums.TupleToObjectNode:
                 return new SubnetworkTuple(factHandle, leftTuple, s);
             case NodeTypeEnums.QueryTerminalNode:
             case NodeTypeEnums.RuleTerminalNode:
@@ -140,10 +144,11 @@ public class TupleFactory {
             case NodeTypeEnums.ConditionalBranchNode:
             case NodeTypeEnums.EvalConditionNode:
             case NodeTypeEnums.TimerConditionNode:
+            case NodeTypeEnums.SequenceNode:
                 return new EvalNodeLeftTuple(leftTuple, s, pctx, leftTupleMemoryEnabled);
             case NodeTypeEnums.ReactiveFromNode:
                 throw new IllegalStateException("ReactFromNode does not implement this constructor.");
-            case NodeTypeEnums.RightInputAdapterNode:
+            case NodeTypeEnums.TupleToObjectNode:
                 return new SubnetworkTuple(leftTuple, s, pctx, leftTupleMemoryEnabled);
             case NodeTypeEnums.QueryTerminalNode:
             case NodeTypeEnums.RuleTerminalNode:
@@ -170,10 +175,11 @@ public class TupleFactory {
             case NodeTypeEnums.ConditionalBranchNode:
             case NodeTypeEnums.EvalConditionNode:
             case NodeTypeEnums.TimerConditionNode:
+            case NodeTypeEnums.SequenceNode:
                 return new EvalNodeLeftTuple(leftTuple, rightTuple, s);
             case NodeTypeEnums.ReactiveFromNode:
                 throw new IllegalStateException("ReactFromNode does not implement this constructor.");
-            case NodeTypeEnums.RightInputAdapterNode:
+            case NodeTypeEnums.TupleToObjectNode:
                 return new SubnetworkTuple(leftTuple, rightTuple, s);
             case NodeTypeEnums.QueryTerminalNode:
             case NodeTypeEnums.RuleTerminalNode:
@@ -203,10 +209,11 @@ public class TupleFactory {
             case NodeTypeEnums.ConditionalBranchNode:
             case NodeTypeEnums.EvalConditionNode:
             case NodeTypeEnums.TimerConditionNode:
+            case NodeTypeEnums.SequenceNode:
                 return new EvalNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, s, leftTupleMemoryEnabled);
             case NodeTypeEnums.ReactiveFromNode:
                 return new ReactiveFromNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, s, leftTupleMemoryEnabled);
-            case NodeTypeEnums.RightInputAdapterNode:
+            case NodeTypeEnums.TupleToObjectNode:
                 return new SubnetworkTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, s, leftTupleMemoryEnabled);
             case NodeTypeEnums.QueryTerminalNode:
             case NodeTypeEnums.RuleTerminalNode:

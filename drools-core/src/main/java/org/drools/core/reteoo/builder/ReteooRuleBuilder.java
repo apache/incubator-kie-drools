@@ -25,6 +25,7 @@ import java.util.List;
 import org.drools.base.base.ClassObjectType;
 import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.base.reteoo.NodeTypeEnums;
+import org.drools.base.reteoo.sequencing.Sequence;
 import org.drools.base.rule.Accumulate;
 import org.drools.base.rule.AsyncReceive;
 import org.drools.base.rule.AsyncSend;
@@ -43,7 +44,7 @@ import org.drools.base.rule.QueryElement;
 import org.drools.base.rule.WindowDeclaration;
 import org.drools.base.rule.WindowReference;
 import org.drools.base.rule.constraint.XpathConstraint;
-import org.drools.base.time.impl.Timer;
+import org.drools.base.time.Timer;
 import org.drools.core.ActivationListenerFactory;
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.InternalWorkingMemory;
@@ -51,7 +52,6 @@ import org.drools.core.common.UpdateContext;
 import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.phreak.PhreakBuilder;
 import org.drools.core.reteoo.PathEndNode;
-import org.drools.core.reteoo.RightInputAdapterNode;
 import org.drools.core.reteoo.RuleBuilder;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.WindowNode;
@@ -71,6 +71,8 @@ public class ReteooRuleBuilder implements RuleBuilder {
                                new PatternBuilder() );
         this.utils.addBuilder( EvalCondition.class,
                                new EvalBuilder() );
+        this.utils.addBuilder( Sequence.class,
+                               new SequenceBuilder() );
         this.utils.addBuilder( QueryElement.class,
                                new QueryElementBuilder() );
         this.utils.addBuilder( From.class,
@@ -230,11 +232,11 @@ public class ReteooRuleBuilder implements RuleBuilder {
         for ( int i = 0; i < pathEndNodes.length; i++ ) {
             PathEndNode node = context.getPathEndNodes().get(pathEndNodes.length-1-i);
             pathEndNodes[i] = node;
-            if (node.getType() == NodeTypeEnums.RightInputAdapterNode && node.getPathEndNodes() != null) {
-                PathEndNode[] riaPathEndNodes = new PathEndNode[node.getPathEndNodes().length + i];
-                System.arraycopy( pathEndNodes, 0, riaPathEndNodes, 0, i );
-                System.arraycopy( node.getPathEndNodes(), 0, riaPathEndNodes, i, node.getPathEndNodes().length );
-                node.setPathEndNodes( riaPathEndNodes );
+            if (node.getType() == NodeTypeEnums.TupleToObjectNode && node.getPathEndNodes() != null) {
+                PathEndNode[] SubnetworkNodes = new PathEndNode[node.getPathEndNodes().length + i];
+                System.arraycopy( pathEndNodes, 0, SubnetworkNodes, 0, i );
+                System.arraycopy( node.getPathEndNodes(), 0, SubnetworkNodes, i, node.getPathEndNodes().length );
+                node.setPathEndNodes( SubnetworkNodes );
             } else {
                 node.setPathEndNodes( pathEndNodes );
             }

@@ -30,9 +30,11 @@ import java.util.List;
 import org.drools.base.InitialFact;
 import org.drools.base.base.ClassObjectType;
 import org.drools.base.base.ObjectType;
+import org.drools.base.base.ValueResolver;
 import org.drools.base.common.NetworkNode;
 import org.drools.base.common.RuleBasePartitionId;
 import org.drools.base.reteoo.NodeTypeEnums;
+import org.drools.base.reteoo.ObjectTypeNodeId;
 import org.drools.base.rule.EntryPointId;
 import org.drools.base.rule.Pattern;
 import org.drools.base.time.JobHandle;
@@ -46,8 +48,8 @@ import org.drools.core.common.UpdateContext;
 import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.impl.WorkingMemoryReteExpireAction;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.time.Job;
-import org.drools.core.time.JobContext;
+import org.drools.base.time.Job;
+import org.drools.base.time.JobContext;
 import org.drools.core.time.impl.DefaultJobHandle;
 import org.drools.util.bitmask.BitMask;
 import org.drools.util.bitmask.EmptyBitMask;
@@ -355,11 +357,11 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink {
     protected static void updateTupleSinkId(ObjectTypeNode otn,
                                             ObjectSource source) {
         for (ObjectSink sink : source.sink.getSinks()) {
-            if (NodeTypeEnums.isBetaNode(sink)) {
-                ((BetaNode)sink).setRightInputOtnId(otn.nextOtnId());
+            if (NodeTypeEnums.isBetaRightNode(sink)) {
+                ((RightInputAdapterNode)sink).setInputOtnId(otn.nextOtnId());
             } else if (NodeTypeEnums.isLeftInputAdapterNode(sink)) {
                 for (LeftTupleSink liaChildSink : ((LeftInputAdapterNode) sink).getSinkPropagator().getSinks()) {
-                    liaChildSink.setLeftInputOtnId(otn.nextOtnId());
+                    liaChildSink.setInputOtnId(otn.nextOtnId());
                 }
             } else if (sink.getType() == NodeTypeEnums.WindowNode) {
                 ((WindowNode)sink).setRightInputOtnId(otn.nextOtnId());
@@ -455,7 +457,7 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink {
             JobContext,
             Externalizable {
         public WorkingMemoryReteExpireAction expireAction;
-        public transient ReteEvaluator         reteEvaluator;
+        public transient ReteEvaluator       reteEvaluator;
         public JobHandle                     handle;
 
         public ExpireJobContext() {
@@ -482,12 +484,9 @@ public class ObjectTypeNode extends ObjectSource implements ObjectSink {
             return expireAction;
         }
 
-        public ReteEvaluator getReteEvaluator() {
+        @Override
+        public ValueResolver getValueResolver() {
             return reteEvaluator;
-        }
-
-        public void setReteEvaluator(ReteEvaluator reteEvaluator) {
-            this.reteEvaluator = reteEvaluator;
         }
 
         public JobHandle getHandle() {

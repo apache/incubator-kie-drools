@@ -18,14 +18,7 @@
  */
 package org.drools.core.util.index;
 
-import org.drools.core.common.InternalFactHandle;
 import org.drools.core.reteoo.TupleImpl;
-import org.drools.core.reteoo.TupleMemory;
-import org.drools.core.util.FastIterator;
-import org.drools.core.util.LinkedList;
-import org.drools.core.util.SingleLinkedEntry;
-
-import java.io.Serializable;
 
 public class TupleListWithContext<C> extends TupleList {
 
