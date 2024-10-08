@@ -142,6 +142,8 @@
               <exclude>**/branch.yaml</exclude>
               <exclude>**/main.yaml</exclude>
               <exclude>**/mvel.jj</exclude>
+              <exclude>**/JavaLexer.g4</exclude>
+              <exclude>**/JavaParser.g4</exclude>
               <exclude>**/*.csv</exclude>
               <exclude>**/*.sdo</exclude>
               <exclude>**/*.sdt</exclude>
@@ -306,6 +308,29 @@
                 <version>1.23.0</version>
               </dependency>
             </dependencies>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>enableNewParser</id>
+      <activation>
+        <property>
+          <name>enableNewParser</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+              <systemPropertyVariables>
+                <!-- false by default. Activate this profile when you test the new parser -->
+                <drools.drl.antlr4.parser.enabled>true</drools.drl.antlr4.parser.enabled>
+              </systemPropertyVariables>
+            </configuration>
           </plugin>
         </plugins>
       </build>

@@ -34,7 +34,7 @@ public class DrlParserTest extends ParserTest {
         super(file, kieBaseTestConfiguration);
     }
 
-    @Parameters
+    @Parameters(name = "{index}: {0}, {1}")
     public static Collection<Object[]> getParameters() {
         return getTestParamsFromFiles(getFiles("drl"));
     }
