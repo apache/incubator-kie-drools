@@ -35,6 +35,16 @@ public interface NodeInstanceContainer {
     Collection<NodeInstance> getNodeInstances();
 
     /**
+     * Returns all node instances that are currently active
+     * within this container and are serializable
+     *
+     * @return the list of serializable node instances currently active
+     */
+    default Collection<NodeInstance> getSerializableNodeInstances() {
+        return getNodeInstances(); // defaulting to getNodeInstances to avoid breaking
+    }
+
+    /**
      * Returns the node instance with the given id, or <code>null</code>
      * if the node instance cannot be found.
      *
