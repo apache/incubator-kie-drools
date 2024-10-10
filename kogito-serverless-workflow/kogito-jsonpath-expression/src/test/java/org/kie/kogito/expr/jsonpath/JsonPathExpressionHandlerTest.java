@@ -230,7 +230,7 @@ class JsonPathExpressionHandlerTest {
     @MethodSource("provideMagicWordExpressionsToTest")
     void testMagicWordsExpressions(String expression, String expectedResult, KogitoProcessContext context) {
         Expression parsedExpression = ExpressionHandlerFactory.get("jsonpath", expression);
-        assertThat(parsedExpression.isValid()).isTrue();
+        assertThat(parsedExpression.isValid()).overridingErrorMessage(() -> parsedExpression.validationError().getMessage()).isTrue();
         assertThat(parsedExpression.eval(getObjectNode(), String.class, context)).isEqualTo(expectedResult);
     }
 
@@ -238,6 +238,8 @@ class JsonPathExpressionHandlerTest {
         return Stream.of(
                 Arguments.of("$WORKFLOW.instanceId", "1111-2222-3333", getContext()),
                 Arguments.of("$SECRET.lettersonly", "secretlettersonly", getContext()),
+                Arguments.of("$SECRET.lettersonly$SECRET.lettersonly", "secretlettersonlysecretlettersonly", getContext()),
+                Arguments.of("$.propertyString$.propertyNum", "string12", getContext()),
                 Arguments.of("$SECRET.none", "", getContext()),
                 Arguments.of("$SECRET.dot.secret", "secretdotsecret", getContext()),
                 Arguments.of("$SECRET[\"dot.secret\"]", "secretdotsecret", getContext()),
