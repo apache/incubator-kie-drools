@@ -62,17 +62,4 @@
       </plugin>
     </plugins>
   </build>
-  <profiles>
-    <profile>
-      <id>productized</id>
-      <activation>
-        <property>
-          <name>productized</name>
-        </property>
-      </activation>
-      <properties>
-        <db.scripts.descriptor>src/assembly/productized-db-scripts.xml</db.scripts.descriptor>
-      </properties>
-    </profile>
-  </profiles>
 </project>
