@@ -566,6 +566,7 @@ public class AlphaNetworkCompilerTest extends BaseModelTest {
 
         final List<Person> results = new ArrayList<>();
 
+        // Flakiness detected by nondex
         KieSession ksession = getKieSession(str);
 
         ksession.setGlobal("results", results);
