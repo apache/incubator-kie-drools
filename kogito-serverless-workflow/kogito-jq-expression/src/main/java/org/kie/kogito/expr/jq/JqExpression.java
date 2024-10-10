@@ -34,7 +34,7 @@ import org.kie.kogito.jackson.utils.ObjectMapperFactory;
 import org.kie.kogito.jackson.utils.PrefixJsonNode;
 import org.kie.kogito.process.expr.Expression;
 import org.kie.kogito.serverless.workflow.utils.ExpressionHandlerUtils;
-import org.kie.kogito.serverless.workflow.utils.JsonNodeContext;
+import org.kie.kogito.serverless.workflow.utils.VariablesHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -207,6 +207,7 @@ public class JqExpression implements Expression {
         childScope.setValue(ExpressionHandlerUtils.SECRET_MAGIC, new PrefixJsonNode<>(ExpressionHandlerUtils::getOptionalSecret));
         childScope.setValue(ExpressionHandlerUtils.CONTEXT_MAGIC, new FunctionJsonNode(ExpressionHandlerUtils.getContextFunction(processInfo)));
         childScope.setValue(ExpressionHandlerUtils.CONST_MAGIC, ExpressionHandlerUtils.getConstants(processInfo));
+        VariablesHelper.getAdditionalVariables(processInfo).forEach(childScope::setValue);
         return childScope;
     }
 
@@ -215,8 +216,8 @@ public class JqExpression implements Expression {
             throw new IllegalArgumentException("Unable to evaluate content " + context + " using expr " + expr, validationError);
         }
         TypedOutput output = output(returnClass);
-        try (JsonNodeContext jsonNode = JsonNodeContext.from(context, processInfo)) {
-            internalExpr.apply(getScope(processInfo), jsonNode.getNode(), output);
+        try {
+            internalExpr.apply(getScope(processInfo), context, output);
             return JsonObjectUtils.convertValue(output.getResult(), returnClass);
         } catch (JsonQueryException e) {
             throw new IllegalArgumentException("Unable to evaluate content " + context + " using expr " + expr, e);

@@ -18,21 +18,26 @@
  */
 package org.kie.kogito.expr.jsonpath;
 
+import java.util.Map;
 import java.util.function.Function;
 
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 import org.kie.kogito.jackson.utils.FunctionBaseJsonNode;
 import org.kie.kogito.jackson.utils.PrefixJsonNode;
 import org.kie.kogito.serverless.workflow.utils.ExpressionHandlerUtils;
+import org.kie.kogito.serverless.workflow.utils.VariablesHelper;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.jayway.jsonpath.spi.json.JacksonJsonNodeJsonProvider;
 
 public class WorkflowJacksonJsonNodeJsonProvider extends JacksonJsonNodeJsonProvider {
 
     private KogitoProcessContext context;
+    private Map<String, JsonNode> variables;
 
     public WorkflowJacksonJsonNodeJsonProvider(KogitoProcessContext context) {
         this.context = context;
+        this.variables = VariablesHelper.getAdditionalVariables(context);
     }
 
     @Override
@@ -50,7 +55,7 @@ public class WorkflowJacksonJsonNodeJsonProvider extends JacksonJsonNodeJsonProv
                 case "$" + ExpressionHandlerUtils.CONST_MAGIC:
                     return ExpressionHandlerUtils.getConstants(context);
                 default:
-                    return super.getMapValue(obj, key);
+                    return variables.containsKey(key) ? variables.get(key) : super.getMapValue(obj, key);
             }
         }
     }

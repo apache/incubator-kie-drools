@@ -18,15 +18,17 @@
  */
 package org.kie.kogito.expr.jsonpath;
 
+import java.util.Map;
+
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 import org.kie.kogito.jackson.utils.JsonObjectUtils;
 import org.kie.kogito.process.expr.Expression;
 import org.kie.kogito.serverless.workflow.utils.ExpressionHandlerUtils;
-import org.kie.kogito.serverless.workflow.utils.JsonNodeContext;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.NullNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
@@ -61,24 +63,28 @@ public class JsonPathExpression implements Expression {
                 .build();
     }
 
+    private static boolean isContextAware(JsonNode context, Map<String, JsonNode> additionalVars) {
+        return !additionalVars.isEmpty() && context instanceof ObjectNode;
+    }
+
     private <T> T eval(JsonNode context, Class<T> returnClass, KogitoProcessContext processInfo) {
-        try (JsonNodeContext jsonNode = JsonNodeContext.from(context, processInfo)) {
-            Configuration jsonPathConfig = getConfiguration(processInfo);
-            DocumentContext parsedContext = JsonPath.using(jsonPathConfig).parse(jsonNode.getNode());
-            if (String.class.isAssignableFrom(returnClass)) {
-                StringBuilder sb = new StringBuilder();
-                // valid json path is $. or $[
-                for (String part : expr.split("((?=\\$\\.|\\$\\[))")) {
-                    JsonNode partResult = parsedContext.read(part, JsonNode.class);
-                    sb.append(partResult.isTextual() ? partResult.asText() : partResult.toPrettyString());
-                }
-                return (T) sb.toString();
-            } else {
-                Object result = parsedContext.read(expr);
-                return Boolean.class.isAssignableFrom(returnClass) && result instanceof ArrayNode ? (T) Boolean.valueOf(!((ArrayNode) result).isEmpty())
-                        : JsonObjectUtils.convertValue(jsonPathConfig.mappingProvider().map(result, returnClass, jsonPathConfig), returnClass);
+
+        Configuration jsonPathConfig = getConfiguration(processInfo);
+        DocumentContext parsedContext = JsonPath.using(jsonPathConfig).parse(context);
+        if (String.class.isAssignableFrom(returnClass)) {
+            StringBuilder sb = new StringBuilder();
+            // valid json path is $. or $[
+            for (String part : expr.split("((?=\\$\\.|\\$\\[))")) {
+                JsonNode partResult = parsedContext.read(part, JsonNode.class);
+                sb.append(partResult.isTextual() ? partResult.asText() : partResult.toPrettyString());
             }
+            return (T) sb.toString();
+        } else {
+            Object result = parsedContext.read(expr);
+            return Boolean.class.isAssignableFrom(returnClass) && result instanceof ArrayNode ? (T) Boolean.valueOf(!((ArrayNode) result).isEmpty())
+                    : JsonObjectUtils.convertValue(jsonPathConfig.mappingProvider().map(result, returnClass, jsonPathConfig), returnClass);
         }
+
     }
 
     private void assign(JsonNode context, Object value, KogitoProcessContext processInfo) {

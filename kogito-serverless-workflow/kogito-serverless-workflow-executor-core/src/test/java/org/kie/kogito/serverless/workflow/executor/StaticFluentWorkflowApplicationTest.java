@@ -99,7 +99,7 @@ public class StaticFluentWorkflowApplicationTest {
     void testForEach() {
         final String SQUARE = "square";
         try (StaticWorkflowApplication application = StaticWorkflowApplication.create()) {
-            Workflow subflow = workflow("Square").start(operation().action(call(expr(SQUARE, ".input*.input"))).outputFilter(".response")).end().build();
+            Workflow subflow = workflow("Square").start(operation().action(call(expr(SQUARE, "$input*$input"))).outputFilter(".response")).end().build();
 
             Workflow workflow = workflow("ForEachTest")
                     .start(forEach(".numbers").loopVar("input").outputCollection(".result").action(subprocess(application.process(subflow)))

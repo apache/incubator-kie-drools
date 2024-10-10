@@ -22,7 +22,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -41,14 +40,33 @@ import org.kie.api.runtime.process.NodeInstanceContainer;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 import org.kie.kogito.jackson.utils.JsonObjectUtils;
+import org.kie.kogito.serverless.workflow.SWFConstants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
-public class JsonNodeContext implements AutoCloseable {
+public class VariablesHelper {
 
-    private final JsonNode jsonNode;
-    private final Set<String> keys;
+    private static final Set<String> PREDEFINED_KEYS = Set.of(SWFConstants.DEFAULT_WORKFLOW_VAR, SWFConstants.INPUT_WORKFLOW_VAR);
+    private static final Logger logger = LoggerFactory.getLogger(VariablesHelper.class);
+
+    private VariablesHelper() {
+    }
+
+    public static Map<String, JsonNode> getAdditionalVariables(KogitoProcessContext context) {
+        Map<String, JsonNode> variables = new HashMap<>();
+        KogitoNodeInstance nodeInstance = context.getNodeInstance();
+        if (nodeInstance != null) {
+            NodeInstanceContainer container = nodeInstance instanceof NodeInstanceContainer ? (NodeInstanceContainer) nodeInstance : nodeInstance.getNodeInstanceContainer();
+            while (container instanceof ContextableInstance) {
+                addVariablesFromContext((ContextableInstance) container, variables);
+                container = container instanceof KogitoNodeInstance ? ((KogitoNodeInstance) container).getNodeInstanceContainer() : null;
+            }
+        }
+        logger.debug("Additional variables for expression evaluation are {}", variables);
+        return variables;
+    }
 
     public static Stream<Variable> getEvalVariables(Node node) {
         if (node instanceof ForEachNode) {
@@ -66,55 +84,23 @@ public class JsonNodeContext implements AutoCloseable {
 
     private static Stream<Variable> getEvalVariables(ContextContainer container) {
         VariableScope variableScope = (VariableScope) container.getDefaultContext(VariableScope.VARIABLE_SCOPE);
-        return variableScope.getVariables().stream().filter(v -> v.getMetaData(Metadata.EVAL_VARIABLE) != null);
+        return variableScope.getVariables().stream().filter(VariablesHelper::isEvalVariable);
     }
 
-    public static JsonNodeContext from(JsonNode jsonNode, KogitoProcessContext context) {
-        Map<String, JsonNode> map = new HashMap<>();
-        if (jsonNode.isObject()) {
-            ObjectNode objectNode = (ObjectNode) jsonNode;
-            addVariablesFromContext(objectNode, context, map);
-        }
-        return new JsonNodeContext(jsonNode, map.keySet());
+    private static boolean isEvalVariable(Variable v) {
+        Object isEval = v.getMetaData(Metadata.EVAL_VARIABLE);
+        return isEval instanceof Boolean ? ((Boolean) isEval).booleanValue() : false;
     }
 
-    public JsonNode getNode() {
-        return jsonNode;
-    }
-
-    private JsonNodeContext(JsonNode jsonNode, Set<String> keys) {
-        this.jsonNode = jsonNode;
-        this.keys = keys;
-    }
-
-    private static void addVariablesFromContext(ObjectNode jsonNode, KogitoProcessContext processInfo, Map<String, JsonNode> variables) {
-        KogitoNodeInstance nodeInstance = processInfo.getNodeInstance();
-        if (nodeInstance != null) {
-            NodeInstanceContainer container = nodeInstance instanceof NodeInstanceContainer ? (NodeInstanceContainer) nodeInstance : nodeInstance.getNodeInstanceContainer();
-            while (container instanceof ContextableInstance) {
-                getVariablesFromContext(jsonNode, (ContextableInstance) container, variables);
-                container = container instanceof KogitoNodeInstance ? ((KogitoNodeInstance) container).getNodeInstanceContainer() : null;
-            }
-        }
-        variables.forEach(jsonNode::set);
-    }
-
-    private static void getVariablesFromContext(ObjectNode jsonNode, ContextableInstance node, Map<String, JsonNode> variables) {
+    private static void addVariablesFromContext(ContextableInstance node, Map<String, JsonNode> variables) {
         VariableScopeInstance variableScope = (VariableScopeInstance) node.getContextInstance(VariableScope.VARIABLE_SCOPE);
         if (variableScope != null) {
             Collection<String> evalVariables = getEvalVariables(node).map(Variable::getName).collect(Collectors.toList());
             for (Entry<String, Object> e : variableScope.getVariables().entrySet()) {
-                if (evalVariables.contains(e.getKey()) || node instanceof WorkflowProcessInstance && !Objects.equals(jsonNode, e.getValue())) {
+                if (evalVariables.contains(e.getKey()) || node instanceof WorkflowProcessInstance && !PREDEFINED_KEYS.contains(e.getKey())) {
                     variables.putIfAbsent(e.getKey(), JsonObjectUtils.fromValue(e.getValue()));
                 }
             }
-        }
-    }
-
-    @Override
-    public void close() {
-        if (!keys.isEmpty()) {
-            keys.forEach(((ObjectNode) jsonNode)::remove);
         }
     }
 }

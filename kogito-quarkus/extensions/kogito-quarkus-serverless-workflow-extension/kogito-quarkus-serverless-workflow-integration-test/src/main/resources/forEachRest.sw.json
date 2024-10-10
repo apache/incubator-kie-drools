@@ -22,7 +22,7 @@
           "functionRef": {
             "refName": "division",
             "arguments": {
-              "QUERY_dividend": ".item",
+              "QUERY_dividend": "$item",
               "QUERY_divisor" : ".divisor"
              }
           }, 

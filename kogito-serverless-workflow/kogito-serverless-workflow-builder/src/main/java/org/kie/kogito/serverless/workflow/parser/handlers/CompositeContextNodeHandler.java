@@ -37,7 +37,7 @@ import org.kie.kogito.serverless.workflow.parser.FunctionNamespaceFactory;
 import org.kie.kogito.serverless.workflow.parser.FunctionTypeHandlerFactory;
 import org.kie.kogito.serverless.workflow.parser.ParserContext;
 import org.kie.kogito.serverless.workflow.parser.VariableInfo;
-import org.kie.kogito.serverless.workflow.utils.JsonNodeContext;
+import org.kie.kogito.serverless.workflow.utils.VariablesHelper;
 
 import io.serverlessworkflow.api.Workflow;
 import io.serverlessworkflow.api.actions.Action;
@@ -181,7 +181,7 @@ public abstract class CompositeContextNodeHandler<S extends State> extends State
                 factory.subProcessNode(parserContext.newId()).name(subFlowRef.getWorkflowId()).processId(subFlowRef.getWorkflowId()).waitForCompletion(true),
                 inputVar,
                 outputVar);
-        JsonNodeContext.getEvalVariables(factory.getNode()).forEach(v -> subProcessNode.inMapping(v.getName(), v.getName()));
+        VariablesHelper.getEvalVariables(factory.getNode()).forEach(v -> subProcessNode.inMapping(v.getName(), v.getName()));
         return subProcessNode;
     }
 
