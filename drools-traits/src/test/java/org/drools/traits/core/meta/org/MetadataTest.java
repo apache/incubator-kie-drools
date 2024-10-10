@@ -40,7 +40,7 @@ import org.drools.traits.core.metadata.Identifiable;
 import org.drools.traits.core.metadata.Lit;
 import org.drools.traits.core.metadata.MetadataContainer;
 import org.drools.traits.core.metadata.With;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -103,7 +103,7 @@ public class MetadataTest {
         assertThat(sk.prop.get(ski)).isEqualTo("bye");
 
         LOGGER.debug( ski.map.toString());
-        Map tgt = new HashMap();
+        Map<String, Object> tgt = new HashMap<>();
         tgt.put( "prop", "bye" );
         tgt.put( "subProp", -99 );
         assertThat(ski.map).isEqualTo(tgt);
@@ -183,7 +183,7 @@ public class MetadataTest {
         assertThat(AnotherKlass_.modify(aki).num(33).getUri()).isEqualTo(URI.create(uri.toString() + "/modify?num"));
 
 
-        assertThat(uri.toString().startsWith(aki.get_().getMetaClassInfo().getUri().toString())).isTrue();
+        assertThat(uri.toString()).startsWith(aki.get_().getMetaClassInfo().getUri().toString());
 
         assertThat(SubKlass_.newSubKlass(URI.create("http://www.test.org#SubKlass/123")).getUri()).isEqualTo(URI.create("http://www.test.org#SubKlass/123?create"));
 
@@ -195,7 +195,7 @@ public class MetadataTest {
     public void testNewInstance() {
         Klass klass = Klass_.newKlass( URI.create( "test" ) ).call();
         assertThat(klass).isNotNull();
-        assertThat(klass instanceof KlassImpl).isTrue();
+        assertThat(klass).isInstanceOf(KlassImpl.class);
 
         SubKlass klass2 = SubKlass_.newSubKlass( URI.create( "test2" ) ).subProp( 42 ).prop( "hello" ).call();
 
@@ -215,7 +215,7 @@ public class MetadataTest {
     @Test
     public void testDon() {
         Entity entity = new Entity( "123" );
-        entity._setDynamicProperties( new HashMap(  ) );
+        entity._setDynamicProperties( new HashMap<>(  ) );
         entity._getDynamicProperties().put( "prop", "hello" );
 
         Klass klass = Klass_.donKlass( entity )
@@ -229,7 +229,7 @@ public class MetadataTest {
     @Test
     public void testDonWithAttributes() {
         Entity entity = new Entity( "123" );
-        entity._setDynamicProperties( new HashMap() );
+        entity._setDynamicProperties( new HashMap<>() );
 
         SubKlass klass = SubKlass_.donSubKlass(entity )
                 .setTraitFactory(createStandaloneTraitFactory())
@@ -259,7 +259,7 @@ public class MetadataTest {
         AnotherKlass aki3 = AnotherKlass_.newAnotherKlass( "003" ).call();
         AnotherKlass aki4 = AnotherKlass_.newAnotherKlass( "004" ).call();
 
-        ArrayList<AnotherKlass> initial = new ArrayList( Arrays.asList( aki0, aki1 ) );
+        List<AnotherKlass> initial = new ArrayList<>( List.of( aki0, aki1 ) );
         SubKlass ski = SubKlass_.newSubKlass( URI.create( "123" ) )
                 .links( initial, Lit.SET )
                 .links( aki1, Lit.REMOVE )
@@ -311,14 +311,13 @@ public class MetadataTest {
         assertThat(klass1.getOneAnother()).isSameAs(aki2);
         assertThat(klass2.getOneAnother()).isSameAs(aki);
 
-        assertThat(aki.getManyKlasses().contains(klass1)).isFalse();
-        assertThat(aki2.getManyKlasses().contains(klass1)).isTrue();
-        assertThat(aki.getManyKlasses().contains(klass2)).isTrue();
+        assertThat(aki.getManyKlasses()).doesNotContain(klass1);
+        assertThat(aki2.getManyKlasses()).contains(klass1).doesNotContain(klass2);
 
         AnotherKlass_.modify( aki2 ).manyKlasses( klass1, Lit.REMOVE ).call();
 
         assertThat(klass1.getOneAnother()).isNull();
-        assertThat(aki2.getManyKlasses().contains(klass1)).isFalse();
+        assertThat(aki2.getManyKlasses()).doesNotContain(klass1);
 
     }
 
@@ -362,51 +361,35 @@ public class MetadataTest {
         AnotherKlass_.modify( aki2 ).manyMoreKlasses( klass2, Lit.ADD ).call();
         AnotherKlass_.modify( aki1 ).manyMoreKlasses( klass2, Lit.ADD ).call();
 
-        assertThat(klass1.getManyAnothers().contains(aki1)).isTrue();
-        assertThat(klass1.getManyAnothers().contains(aki2)).isTrue();
-        assertThat(klass2.getManyAnothers().contains(aki1)).isTrue();
-        assertThat(klass2.getManyAnothers().contains(aki2)).isTrue();
+        assertThat(klass1.getManyAnothers()).contains(aki1, aki2);
+        assertThat(klass2.getManyAnothers()).contains(aki1, aki2);
 
-        assertThat(aki1.getManyMoreKlasses().contains(klass1)).isTrue();
-        assertThat(aki1.getManyMoreKlasses().contains(klass2)).isTrue();
-        assertThat(aki2.getManyMoreKlasses().contains(klass1)).isTrue();
-        assertThat(aki2.getManyMoreKlasses().contains(klass2)).isTrue();
+        assertThat(aki1.getManyMoreKlasses()).contains(klass1, klass2);
+        assertThat(aki2.getManyMoreKlasses()).contains(klass1, klass2);
 
         AnotherKlass_.modify( aki2 ).manyMoreKlasses( klass2, Lit.REMOVE ).call();
 
-        assertThat(klass1.getManyAnothers().contains(aki1)).isTrue();
-        assertThat(klass1.getManyAnothers().contains(aki2)).isTrue();
-        assertThat(klass2.getManyAnothers().contains(aki1)).isTrue();
-        assertThat(klass2.getManyAnothers().contains(aki2)).isFalse();
+        assertThat(klass1.getManyAnothers()).contains(aki1, aki2);
+        assertThat(klass2.getManyAnothers()).contains(aki1).doesNotContain(aki2);
 
-        assertThat(aki1.getManyMoreKlasses().contains(klass1)).isTrue();
-        assertThat(aki1.getManyMoreKlasses().contains(klass2)).isTrue();
-        assertThat(aki2.getManyMoreKlasses().contains(klass1)).isTrue();
-        assertThat(aki2.getManyMoreKlasses().contains(klass2)).isFalse();
+        assertThat(aki1.getManyMoreKlasses()).contains(klass1, klass2);
+        assertThat(aki2.getManyMoreKlasses()).contains(klass1).doesNotContain(klass2);
 
         AnotherKlass_.modify( aki2 ).manyMoreKlasses( klass2, Lit.ADD ).call();
 
-        assertThat(klass1.getManyAnothers().contains(aki1)).isTrue();
-        assertThat(klass1.getManyAnothers().contains(aki2)).isTrue();
-        assertThat(klass2.getManyAnothers().contains(aki1)).isTrue();
-        assertThat(klass2.getManyAnothers().contains(aki2)).isTrue();
+        assertThat(klass1.getManyAnothers()).contains(aki1, aki2);
+        assertThat(klass2.getManyAnothers()).contains(aki1, aki2);
 
-        assertThat(aki1.getManyMoreKlasses().contains(klass1)).isTrue();
-        assertThat(aki1.getManyMoreKlasses().contains(klass2)).isTrue();
-        assertThat(aki2.getManyMoreKlasses().contains(klass1)).isTrue();
-        assertThat(aki2.getManyMoreKlasses().contains(klass2)).isTrue();
+        assertThat(aki1.getManyMoreKlasses()).contains(klass1, klass2);
+        assertThat(aki2.getManyMoreKlasses()).contains(klass1, klass2);
 
         AnotherKlass_.modify( aki2 ).manyMoreKlasses( klass2, Lit.SET ).call();
 
-        assertThat(klass1.getManyAnothers().contains(aki1)).isTrue();
-        assertThat(klass1.getManyAnothers().contains(aki2)).isFalse();
-        assertThat(klass2.getManyAnothers().contains(aki1)).isTrue();
-        assertThat(klass2.getManyAnothers().contains(aki2)).isTrue();
+        assertThat(klass1.getManyAnothers()).contains(aki1).doesNotContain(aki2);
+        assertThat(klass2.getManyAnothers()).contains(aki1, aki2);
 
-        assertThat(aki1.getManyMoreKlasses().contains(klass1)).isTrue();
-        assertThat(aki1.getManyMoreKlasses().contains(klass2)).isTrue();
-        assertThat(aki2.getManyMoreKlasses().contains(klass1)).isFalse();
-        assertThat(aki2.getManyMoreKlasses().contains(klass2)).isTrue();
+        assertThat(aki1.getManyMoreKlasses()).contains(klass1, klass2);
+        assertThat(aki2.getManyMoreKlasses()).doesNotContain(klass1).contains(klass2);
 
     }
 

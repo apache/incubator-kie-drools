@@ -19,8 +19,8 @@
 package org.drools.traits;
 
 import org.drools.kiesession.agenda.DefaultAgenda;
+import org.junit.jupiter.api.Test;
 import org.drools.core.reteoo.ReteDumper;
-import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.event.rule.DebugAgendaEventListener;
 import org.kie.api.io.ResourceType;

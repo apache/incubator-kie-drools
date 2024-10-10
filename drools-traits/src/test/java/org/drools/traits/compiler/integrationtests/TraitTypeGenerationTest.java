@@ -30,7 +30,7 @@ import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.traits.compiler.CommonTraitTest;
 import org.drools.traits.compiler.Person;
 import org.drools.traits.core.factmodel.Entity;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -82,7 +82,7 @@ public class TraitTypeGenerationTest extends CommonTraitTest {
         }
     }
 
-    @Test(timeout=10000)
+    @Test
     public void testWithDeclaredTypeAndTraitInDifferentPackages() {
         // DROOLS-91
         final String str1 =
@@ -194,7 +194,7 @@ public class TraitTypeGenerationTest extends CommonTraitTest {
         KieBuilder kbuilder = ks.newKieBuilder(kfs );
 
         kbuilder.buildAll();
-        assertThat(kbuilder.getResults().getMessages().size()).isEqualTo(0);
+        assertThat(kbuilder.getResults().getMessages()).isEmpty();
 
         ks.newKieContainer( kbuilder.getKieModule().getReleaseId() ).getKieBase();
 
@@ -205,7 +205,7 @@ public class TraitTypeGenerationTest extends CommonTraitTest {
         ksession.setGlobal( "students", students );
         ksession.insert( new Person("tom", 20 ) );
         ksession.fireAllRules();
-        assertThat(students.size()).isEqualTo(1);
+        assertThat(students).hasSize(1);
     }
 
     public static interface FooIntf {
@@ -347,7 +347,7 @@ public class TraitTypeGenerationTest extends CommonTraitTest {
         KieHelper kh = new KieHelper();
         kh.addContent( s1, ResourceType.DRL );
 
-        assertThat(kh.verify().getMessages(Message.Level.ERROR).size()).isEqualTo(1);
+        assertThat(kh.verify().getMessages(Message.Level.ERROR)).hasSize(1);
     }
 
     public static class SomeClass {}
@@ -381,7 +381,7 @@ public class TraitTypeGenerationTest extends CommonTraitTest {
         knowledgeBase.addPackages(kBuilder.getKnowledgePackages());
 
         FactType sw = knowledgeBase.getFactType("org.drools.test", "MultiInhPosTrait");
-        assertThat(sw.getFields().size()).isEqualTo(5);
+        assertThat(sw.getFields()).hasSize(5);
         assertThat(sw.getFields().get(0).getName()).isEqualTo("field0");
         assertThat(sw.getFields().get(1).getName()).isEqualTo("field1");
         assertThat(sw.getFields().get(2).getName()).isEqualTo("mfield1");
@@ -417,7 +417,7 @@ public class TraitTypeGenerationTest extends CommonTraitTest {
         knowledgeBase.addPackages(kBuilder.getKnowledgePackages());
 
         FactType sw = knowledgeBase.getFactType("org.drools.test", "MultiInhPosTrait");
-        assertThat(sw.getFields().size()).isEqualTo(5);
+        assertThat(sw.getFields()).hasSize(5);
         assertThat(sw.getFields().get(0).getName()).isEqualTo("mfield0");
         assertThat(sw.getFields().get(1).getName()).isEqualTo("field0");
         assertThat(sw.getFields().get(2).getName()).isEqualTo("mfield1");
@@ -453,7 +453,7 @@ public class TraitTypeGenerationTest extends CommonTraitTest {
         knowledgeBase.addPackages(kBuilder.getKnowledgePackages());
 
         FactType sw = knowledgeBase.getFactType("org.drools.test", "MultiInhPosTrait");
-        assertThat(sw.getFields().size()).isEqualTo(5);
+        assertThat(sw.getFields()).hasSize(5);
         assertThat(sw.getFields().get(0).getName()).isEqualTo("field0");
         assertThat(sw.getFields().get(1).getName()).isEqualTo("field2");
         assertThat(sw.getFields().get(2).getName()).isEqualTo("field1");
@@ -489,7 +489,7 @@ public class TraitTypeGenerationTest extends CommonTraitTest {
         knowledgeBase.addPackages(kBuilder.getKnowledgePackages());
 
         FactType sw = knowledgeBase.getFactType("org.drools.test", "MultiInhPosTrait");
-        assertThat(sw.getFields().size()).isEqualTo(5);
+        assertThat(sw.getFields()).hasSize(5);
         assertThat(sw.getFields().get(0).getName()).isEqualTo("field1");
         assertThat(sw.getFields().get(1).getName()).isEqualTo("field2");
         assertThat(sw.getFields().get(2).getName()).isEqualTo("mfield0");
@@ -525,7 +525,7 @@ public class TraitTypeGenerationTest extends CommonTraitTest {
         knowledgeBase.addPackages(kBuilder.getKnowledgePackages());
 
         FactType sw = knowledgeBase.getFactType("org.drools.test", "MultiInhPosTrait");
-        assertThat(sw.getFields().size()).isEqualTo(5);
+        assertThat(sw.getFields()).hasSize(5);
         assertThat(sw.getFields().get(0).getName()).isEqualTo("field1");
         assertThat(sw.getFields().get(1).getName()).isEqualTo("field0");
         assertThat(sw.getFields().get(2).getName()).isEqualTo("mfield1");
@@ -567,7 +567,7 @@ public class TraitTypeGenerationTest extends CommonTraitTest {
         knowledgeBase.addPackages(kBuilder.getKnowledgePackages());
 
         FactType sw = knowledgeBase.getFactType("org.drools.test", "MultiInhPosTrait");
-        assertThat(sw.getFields().size()).isEqualTo(6);
+        assertThat(sw.getFields()).hasSize(6);
         assertThat(sw.getFields().get(0).getName()).isEqualTo("field0");
         assertThat(sw.getFields().get(1).getName()).isEqualTo("field1");
         assertThat(sw.getFields().get(2).getName()).isEqualTo("field2");
@@ -610,7 +610,7 @@ public class TraitTypeGenerationTest extends CommonTraitTest {
         knowledgeBase.addPackages(kBuilder.getKnowledgePackages());
 
         FactType sw = knowledgeBase.getFactType("org.drools.test", "MultiInhPosTrait");
-        assertThat(sw.getFields().size()).isEqualTo(6);
+        assertThat(sw.getFields()).hasSize(6);
         assertThat(sw.getFields().get(0).getName()).isEqualTo("field0");
         assertThat(sw.getFields().get(1).getName()).isEqualTo("field2");
         assertThat(sw.getFields().get(2).getName()).isEqualTo("mfield0");

@@ -28,8 +28,8 @@ import org.drools.base.factmodel.ClassDefinition;
 import org.drools.base.factmodel.FieldDefinition;
 import org.drools.core.rule.JavaDialectRuntimeData;
 import org.drools.wiring.dynamic.PackageClassLoader;
+import org.junit.jupiter.api.Test;
 import org.drools.wiring.api.classloader.ProjectClassLoader;
-import org.junit.Test;
 
 import static org.drools.util.ClassUtils.convertClassToResourcePath;
 

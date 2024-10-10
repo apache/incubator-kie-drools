@@ -29,7 +29,8 @@ import org.drools.traits.core.factmodel.TraitableMap;
 import org.drools.traits.core.factmodel.TraitFactoryImpl;
 import org.drools.base.factmodel.traits.Traitable;
 import org.drools.traits.core.factmodel.VirtualPropertyMode;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.kie.api.runtime.KieSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +41,8 @@ public class TraitMapCoreTest extends CommonTraitTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TraitMapCoreTest.class);
 
-    @Test(timeout=10000)
+    @Test()
+    @Timeout(value = 10000)
     public void testMapCoreManyTraits(  ) {
         String source = "package org.drools.test;\n" +
                         "\n" +
@@ -98,7 +100,8 @@ public class TraitMapCoreTest extends CommonTraitTest {
         assertThat(map.get("GPA")).isEqualTo(3.0);
     }
 
-    @Test(timeout=10000)
+    @Test()
+    @Timeout(value = 10000)
     public void donMapTest() {
         String source = "package org.drools.traits.test; \n" +
                         "import java.util.*\n;" +
@@ -138,19 +141,19 @@ public class TraitMapCoreTest extends CommonTraitTest {
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
 
-        Map map = new HashMap();
+        Map<String, Object> map = new HashMap<>();
         map.put( "name", "john" );
         map.put( "age", 18 );
 
         ksession.insert( map );
         ksession.fireAllRules();
 
-        assertThat(map.containsKey("height")).isTrue();
-        assertThat(184.0).isEqualTo(map.get("height"));
+        assertThat(map).containsEntry("height", 184.0);
 
     }
 
-    @Test(timeout=10000)
+    @Test()
+    @Timeout(value = 10000)
     public void testMapCore2(  ) {
         String source = "package org.drools.base.factmodel.traits.test;\n" +
                         "\n" +
@@ -262,7 +265,8 @@ public class TraitMapCoreTest extends CommonTraitTest {
 
     }
 
-    @Test(timeout=10000)
+    @Test()
+    @Timeout(value = 10000)
     public void testMapCoreAliasing(  ) {
         String source = "package org.drools.base.factmodel.traits.test;\n" +
                         "\n" +
@@ -325,7 +329,8 @@ public class TraitMapCoreTest extends CommonTraitTest {
 
     }
 
-    @Test(timeout=10000)
+    @Test()
+    @Timeout(value = 10000)
     public void testMapCoreAliasingLogicalTrueWithTypeClash(  ) {
         String source = "package org.drools.base.factmodel.traits.test;\n" +
                         "\n" +
@@ -363,7 +368,7 @@ public class TraitMapCoreTest extends CommonTraitTest {
         KieSession ks = loadKnowledgeBaseFromString( source ).newKieSession();
         TraitFactoryImpl.setMode(VirtualPropertyMode.MAP, ks.getKieBase() );
 
-        List list = new ArrayList();
+        List<Object> list = new ArrayList<>();
         ks.setGlobal( "list", list );
 
         Map<String,Object> map = new HashMap<String, Object>(  );
@@ -373,7 +378,8 @@ public class TraitMapCoreTest extends CommonTraitTest {
 
         ks.fireAllRules();
 
-        assertThat(list.size() == 1 && list.get(0) == null).isTrue();
+        assertThat(list).hasSize(1);
+        assertThat(list.get(0)).isNull();
     }
 
     @Test
@@ -454,13 +460,11 @@ public class TraitMapCoreTest extends CommonTraitTest {
         KieSession ksession = loadKnowledgeBaseFromString(drl).newKieSession();
 
         TraitFactoryImpl.setMode(VirtualPropertyMode.MAP, ksession.getKieBase());
-        List list = new ArrayList();
+        List<String> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
         ksession.fireAllRules();
 
-        assertThat(list.contains("initialized")).isTrue();
-        assertThat(list.contains("student is donned")).isTrue();
-        assertThat(list.contains("worker is donned")).isTrue();
+        assertThat(list).contains("initialized", "student is donned", "worker is donned");
 
     }
 
@@ -541,13 +545,11 @@ public class TraitMapCoreTest extends CommonTraitTest {
         KieSession ksession = loadKnowledgeBaseFromString(drl).newKieSession();
 
         TraitFactoryImpl.setMode(VirtualPropertyMode.MAP, ksession.getKieBase());
-        List list = new ArrayList();
+        List<String> list = new ArrayList<>();
         ksession.setGlobal("list", list);
         ksession.fireAllRules();
 
-        assertThat(list.contains("initialized")).isTrue();
-        assertThat(list.contains("student is donned")).isTrue();
-        assertThat(list.contains("worker is donned")).isTrue();
+        assertThat(list).contains("initialized", "student is donned", "worker is donned");
     }
 
     @Test
@@ -656,15 +658,11 @@ public class TraitMapCoreTest extends CommonTraitTest {
         KieSession ksession = loadKnowledgeBaseFromString(drl).newKieSession();
 
         TraitFactoryImpl.setMode(VirtualPropertyMode.MAP, ksession.getKieBase());
-        List list = new ArrayList();
+        List<String> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
         ksession.fireAllRules();
 
-        assertThat(list.contains("initialized")).isTrue();
-        assertThat(list.contains("student is donned")).isTrue();
-        assertThat(list.contains("worker is donned")).isTrue();
-        assertThat(list.contains("studentworker is donned")).isTrue();
-        assertThat(list.contains("tuitionWaiver is true")).isTrue();
+        assertThat(list).contains("initialized", "student is donned", "worker is donned", "studentworker is donned", "tuitionWaiver is true");
     }
 
     @Test
@@ -758,16 +756,12 @@ public class TraitMapCoreTest extends CommonTraitTest {
         KieSession ksession = loadKnowledgeBaseFromString(drl).newKieSession();
 
         TraitFactoryImpl.setMode(VirtualPropertyMode.MAP, ksession.getKieBase());
-        List list = new ArrayList();
+        List<String> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
         ksession.fireAllRules();
 
-        assertThat(list.contains("initialized")).isTrue();
-        assertThat(list.contains("student is donned")).isTrue();
-        assertThat(list.contains("student has ID and SSN")).isTrue();
-        assertThat(list.contains("student has personID and socialSecurity")).isTrue();
-        assertThat(list.contains("citizen has socialSecurity")).isTrue();
-        assertThat(list.contains("person has personID")).isTrue();
+        assertThat(list).contains("initialized", "student is donned", "student has ID and SSN", 
+        		"student has personID and socialSecurity", "citizen has socialSecurity", "person has personID");
     }
 
     @Test
@@ -827,7 +821,7 @@ public class TraitMapCoreTest extends CommonTraitTest {
         ksession.insert( map );
         ksession.fireAllRules();
 
-        assertThat(list.size()).isEqualTo(2);
+        assertThat(list).hasSize(2);
         assertThat(list.get(0)).isNull();
         assertThat(list.get(1)).isNotNull();
     }
@@ -874,18 +868,18 @@ public class TraitMapCoreTest extends CommonTraitTest {
         KieSession ksession = loadKnowledgeBaseFromString(drl).newKieSession();
         TraitFactoryImpl.setMode(VirtualPropertyMode.MAP, ksession.getKieBase());
 
-        List list = new ArrayList();
+        List<String> list = new ArrayList<>();
         ksession.setGlobal("list",list);
         Map<String,Object> map = new HashMap<String, Object>();
 //        map.put("name", "hulu");
         ksession.insert(map);
         ksession.fireAllRules();
 
-        assertThat(list.contains("correct1")).isTrue();
-        assertThat(list.contains("correct2")).isTrue();
+        assertThat(list).contains("correct1", "correct2");
     }
 
-    @Test(timeout=10000)
+    @Test()
+    @Timeout(value = 10000)
     public void testMapTraitMismatchTypes()
     {
         String drl = "" +
@@ -930,7 +924,7 @@ public class TraitMapCoreTest extends CommonTraitTest {
         ksession.insert(map);
         ksession.fireAllRules();
 
-        assertThat(list.size()).isEqualTo(1);
+        assertThat(list).hasSize(1);
         assertThat(list.get(0)).isEqualTo(null);
     }
 
@@ -995,7 +989,7 @@ public class TraitMapCoreTest extends CommonTraitTest {
         ksession.setGlobal("list",list);
         ksession.fireAllRules();
 
-        assertThat(list.size()).isEqualTo(1);
+        assertThat(list).hasSize(1);
         assertThat(list.get(0)).isNotNull();
     }
 
@@ -1064,7 +1058,7 @@ public class TraitMapCoreTest extends CommonTraitTest {
         ksession.setGlobal("list",list);
         ksession.fireAllRules();
 
-        assertThat(list.size()).isEqualTo(1);
+        assertThat(list).hasSize(1);
         assertThat(list.get(0)).isNotNull();
     }
 
@@ -1133,7 +1127,7 @@ public class TraitMapCoreTest extends CommonTraitTest {
         ksession.setGlobal("list",list);
         ksession.fireAllRules();
 
-        assertThat(list.size()).isEqualTo(1);
+        assertThat(list).hasSize(1);
         assertThat(list.get(0)).isNotNull();
     }
 
@@ -1205,7 +1199,7 @@ public class TraitMapCoreTest extends CommonTraitTest {
         ksession.setGlobal("list",list);
         ksession.fireAllRules();
 
-        assertThat(list.size()).isEqualTo(1);
+        assertThat(list).hasSize(1);
         assertThat(list.get(0)).isNotNull();
     }
 
@@ -1248,18 +1242,17 @@ public class TraitMapCoreTest extends CommonTraitTest {
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
 
-        HashMap map = new DomainMap();
+        Map<String, Object> map = new DomainMap();
         map.put( "name", "john" );
         map.put( "age", 18 );
 
         ksession.insert( map );
         ksession.fireAllRules();
 
-        assertThat(map.containsKey("height")).isTrue();
-        assertThat(184.0).isEqualTo(map.get("height"));
+        assertThat(map).containsEntry("height", 184.0);
 
-        assertThat(ksession.getObjects().size()).isEqualTo(2);
-        assertThat(ksession.getObjects(new ClassObjectFilter( DomainMap.class )).size()).isEqualTo(1);
+        assertThat(ksession.getObjects()).hasSize(2);
+        assertThat(ksession.getObjects(new ClassObjectFilter( DomainMap.class ))).hasSize(1);
 
     }
 
