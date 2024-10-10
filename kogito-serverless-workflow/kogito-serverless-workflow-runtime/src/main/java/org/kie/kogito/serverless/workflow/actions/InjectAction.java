@@ -51,6 +51,6 @@ public class InjectAction implements Action {
 
     @Override
     public void execute(KogitoProcessContext context) throws Exception {
-        context.setVariable(SWFConstants.DEFAULT_WORKFLOW_VAR, MergeUtils.merge(node, getWorkflowData(context)));
+        context.setVariable(SWFConstants.DEFAULT_WORKFLOW_VAR, MergeUtils.merge(node.deepCopy(), getWorkflowData(context)));
     }
 }
