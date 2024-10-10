@@ -33,9 +33,9 @@ import org.drools.base.factmodel.ClassDefinition;
 import org.drools.base.factmodel.FieldDefinition;
 import org.drools.core.rule.JavaDialectRuntimeData;
 import org.drools.wiring.dynamic.PackageClassLoader;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.drools.wiring.api.classloader.ProjectClassLoader;
-import org.junit.Before;
-import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
@@ -47,7 +47,7 @@ public class ClassBuilderTest {
     ClassLoader classLoader;
     JavaDialectRuntimeData data;
     
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         data = new JavaDialectRuntimeData();
     }

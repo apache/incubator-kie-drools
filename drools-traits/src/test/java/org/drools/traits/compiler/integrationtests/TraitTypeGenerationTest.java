@@ -30,7 +30,7 @@ import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.traits.compiler.CommonTraitTest;
 import org.drools.traits.compiler.Person;
 import org.drools.traits.core.factmodel.Entity;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -82,7 +82,7 @@ public class TraitTypeGenerationTest extends CommonTraitTest {
         }
     }
 
-    @Test(timeout=10000)
+    @Test
     public void testWithDeclaredTypeAndTraitInDifferentPackages() {
         // DROOLS-91
         final String str1 =

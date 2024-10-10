@@ -21,7 +21,7 @@ package org.drools.traits.core.util;
 import org.drools.traits.core.factmodel.CodedHierarchy;
 import org.drools.traits.core.factmodel.HierarchyEncoder;
 import org.drools.traits.core.factmodel.IndexedTypeHierarchy;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

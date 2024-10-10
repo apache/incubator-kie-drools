@@ -29,7 +29,8 @@ import org.drools.traits.core.factmodel.TraitableMap;
 import org.drools.traits.core.factmodel.TraitFactoryImpl;
 import org.drools.base.factmodel.traits.Traitable;
 import org.drools.traits.core.factmodel.VirtualPropertyMode;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.kie.api.runtime.KieSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +41,8 @@ public class TraitMapCoreTest extends CommonTraitTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TraitMapCoreTest.class);
 
-    @Test(timeout=10000)
+    @Test()
+    @Timeout(value = 10000)
     public void testMapCoreManyTraits(  ) {
         String source = "package org.drools.test;\n" +
                         "\n" +
@@ -98,7 +100,8 @@ public class TraitMapCoreTest extends CommonTraitTest {
         assertThat(map.get("GPA")).isEqualTo(3.0);
     }
 
-    @Test(timeout=10000)
+    @Test()
+    @Timeout(value = 10000)
     public void donMapTest() {
         String source = "package org.drools.traits.test; \n" +
                         "import java.util.*\n;" +
@@ -149,7 +152,8 @@ public class TraitMapCoreTest extends CommonTraitTest {
 
     }
 
-    @Test(timeout=10000)
+    @Test()
+    @Timeout(value = 10000)
     public void testMapCore2(  ) {
         String source = "package org.drools.base.factmodel.traits.test;\n" +
                         "\n" +
@@ -261,7 +265,8 @@ public class TraitMapCoreTest extends CommonTraitTest {
 
     }
 
-    @Test(timeout=10000)
+    @Test()
+    @Timeout(value = 10000)
     public void testMapCoreAliasing(  ) {
         String source = "package org.drools.base.factmodel.traits.test;\n" +
                         "\n" +
@@ -324,7 +329,8 @@ public class TraitMapCoreTest extends CommonTraitTest {
 
     }
 
-    @Test(timeout=10000)
+    @Test()
+    @Timeout(value = 10000)
     public void testMapCoreAliasingLogicalTrueWithTypeClash(  ) {
         String source = "package org.drools.base.factmodel.traits.test;\n" +
                         "\n" +
@@ -872,7 +878,8 @@ public class TraitMapCoreTest extends CommonTraitTest {
         assertThat(list).contains("correct1", "correct2");
     }
 
-    @Test(timeout=10000)
+    @Test()
+    @Timeout(value = 10000)
     public void testMapTraitMismatchTypes()
     {
         String drl = "" +

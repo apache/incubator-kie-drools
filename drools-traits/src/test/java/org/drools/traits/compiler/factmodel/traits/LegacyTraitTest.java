@@ -30,9 +30,8 @@ import org.drools.traits.compiler.CommonTraitTest;
 import org.drools.traits.core.factmodel.TraitFactoryImpl;
 import org.drools.traits.core.factmodel.VirtualPropertyMode;
 import org.drools.traits.core.util.StandaloneTraitFactory;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.builder.Message;
 import org.kie.api.definition.type.PropertyReactive;
@@ -48,23 +47,13 @@ import org.slf4j.LoggerFactory;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.traits.compiler.factmodel.traits.TraitTestUtils.createStandaloneTraitFactory;
 
-@RunWith(Parameterized.class)
 public class LegacyTraitTest extends CommonTraitTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LegacyTraitTest.class);
 
-    public VirtualPropertyMode mode;
-
-    @Parameterized.Parameters
     public static Collection<VirtualPropertyMode> modes() {
         return List.of(VirtualPropertyMode.MAP, VirtualPropertyMode.TRIPLES);
     }
-
-    public LegacyTraitTest(VirtualPropertyMode m) {
-        this.mode = m;
-    }
-
-
 
     private KieSession getSessionFromString(String drl) {
         KnowledgeBuilder knowledgeBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -143,8 +132,9 @@ public class LegacyTraitTest extends CommonTraitTest {
     }
 
 
-    @Test
-    public void traitWithPojoInterface() {
+    @ParameterizedTest
+    @MethodSource("modes")
+    public void traitWithPojoInterface(VirtualPropertyMode mode) {
         String source = "package org.drools.compiler.test;\n" +
                         "import " + LegacyTraitTest.Procedure.class.getCanonicalName()   + ";\n" +
                         "import " + LegacyTraitTest.class.getCanonicalName() + ";\n" +
@@ -231,8 +221,9 @@ public class LegacyTraitTest extends CommonTraitTest {
     @Trait
     public static interface Foo extends Trunk { }
 
-    @Test
-    public void traitWithMixedInterfacesExtendingEachOther() {
+    @ParameterizedTest
+    @MethodSource("modes")
+    public void traitWithMixedInterfacesExtendingEachOther(VirtualPropertyMode mode) {
         String source = "package org.drools.compiler.test;" +
                         "import " + BarImpl.class.getCanonicalName() + "; " +
                         "import " + Foo.class.getCanonicalName() + "; " +
@@ -295,8 +286,9 @@ public class LegacyTraitTest extends CommonTraitTest {
 
 
 
-    @Test
-    public void testTraitWithNonAccessorMethodShadowing() throws Exception {
+    @ParameterizedTest
+    @MethodSource("modes")
+    public void testTraitWithNonAccessorMethodShadowing(VirtualPropertyMode mode) throws Exception {
         StandaloneTraitFactory factory = createStandaloneTraitFactory();
         SomeInterface r = (SomeInterface) factory.don(new SomeClass(), SomeInterface.class);
 		r.prepare();
@@ -304,8 +296,9 @@ public class LegacyTraitTest extends CommonTraitTest {
 		assertThat(r.doThis("that")).isEqualTo("I did that");
     }
 
-    @Test()
-    public void testPojoExtendInterface() {
+    @ParameterizedTest
+    @MethodSource("modes")
+    public void testPojoExtendInterface(VirtualPropertyMode mode) {
         // DROOLS-697
         // It is now allowed for a declared type to extend an interface
         // The interface itself will be added to the implements part of the generated class

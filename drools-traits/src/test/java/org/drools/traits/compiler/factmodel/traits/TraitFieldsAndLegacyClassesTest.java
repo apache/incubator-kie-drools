@@ -27,11 +27,10 @@ import org.drools.traits.compiler.CommonTraitTest;
 import org.drools.traits.compiler.ReviseTraitTestWithPRAlwaysCategory;
 import org.drools.traits.core.factmodel.TraitFactoryImpl;
 import org.drools.traits.core.factmodel.VirtualPropertyMode;
-import org.junit.Ignore;
-import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.io.ResourceType;
@@ -41,23 +40,18 @@ import org.kie.internal.utils.KieHelper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class TraitFieldsAndLegacyClassesTest extends CommonTraitTest {
 
-    public VirtualPropertyMode mode;
 
-    @Parameterized.Parameters
-        public static Collection<VirtualPropertyMode> modes() {
-        	return List.of(VirtualPropertyMode.MAP , VirtualPropertyMode.TRIPLES );
-    }
-
-    public TraitFieldsAndLegacyClassesTest( VirtualPropertyMode m ) {
-        this.mode = m;
+    public static Collection<VirtualPropertyMode> modes() {
+    	return List.of(VirtualPropertyMode.MAP , VirtualPropertyMode.TRIPLES );
     }
 
 
-    @Test
-    public void testTraitFieldUpdate0() {
+
+    @ParameterizedTest
+    @MethodSource("modes")
+    public void testTraitFieldUpdate0(VirtualPropertyMode mode) {
 
         String drl = "" +
                      "package org.drools.factmodel.traits0;\n" +
@@ -122,8 +116,9 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTraitTest {
 
 
 
-    @Test
-    public void testTraitFieldUpdate1() {
+    @ParameterizedTest
+    @MethodSource("modes")
+    public void testTraitFieldUpdate1(VirtualPropertyMode mode) {
 
         String drl = "" +
                      "package org.drools.factmodel.traits;\n" +
@@ -210,8 +205,9 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTraitTest {
 
     }
 
-    @Test
-    public void testTraitFieldUpdate2() {
+    @ParameterizedTest
+    @MethodSource("modes")
+    public void testTraitFieldUpdate2(VirtualPropertyMode mode) {
 
         String drl = "" +
                      "package org.drools.factmodel.traits2;\n" +
@@ -308,8 +304,9 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTraitTest {
         assertThat(list).contains("correct");
     }
 
-    @Test
-    public void testTraitFieldUpdate3() {
+    @ParameterizedTest
+    @MethodSource("modes")
+    public void testTraitFieldUpdate3(VirtualPropertyMode mode) {
 
         String drl = "" +
                      "package org.drools.factmodel.traits3;\n" +
@@ -405,8 +402,9 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTraitTest {
     }
 
     @Category(ReviseTraitTestWithPRAlwaysCategory.class)
-    @Test
-    public void testTraitFieldUpdate4() {
+    @ParameterizedTest
+    @MethodSource("modes")
+    public void testTraitFieldUpdate4(VirtualPropertyMode mode) {
 
         String drl = "" +
                      "package org.drools.factmodel.traits4;\n" +
@@ -483,8 +481,9 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTraitTest {
         assertThat(list).contains("correct");
     }
 
-    @Test
-    public void testTraitFieldUpdate5() {
+    @ParameterizedTest
+    @MethodSource("modes")
+    public void testTraitFieldUpdate5(VirtualPropertyMode mode) {
 
         String drl = "" +
                      "package org.drools.factmodel.traits5;\n" +
@@ -567,8 +566,9 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTraitTest {
         assertThat(list).contains("correct");
     }
 
-    @Test
-    public void testTraitFieldUpdate6() {
+    @ParameterizedTest
+    @MethodSource("modes")
+    public void testTraitFieldUpdate6(VirtualPropertyMode mode) {
 
         String drl = "" +
                      "package org.drools.factmodel.traits6;\n" +
@@ -659,8 +659,9 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTraitTest {
     }
 
 
-    @Test
-    public void testTraitFieldUpdate7() {
+    @ParameterizedTest
+    @MethodSource("modes")
+    public void testTraitFieldUpdate7(VirtualPropertyMode mode) {
 
         String drl = "" +
                      "package org.drools.factmodel.traits;\n" +
@@ -743,8 +744,9 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTraitTest {
 
 
 
-    @Test
-    public void testTraitFieldUpdate8() {
+    @ParameterizedTest
+    @MethodSource("modes")
+    public void testTraitFieldUpdate8(VirtualPropertyMode mode) {
 
         String drl = "" +
                      "package org.drools.factmodel.traits8;\n" +
@@ -825,8 +827,9 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTraitTest {
         assertThat(list).contains("correct");
     }
 
-    @Test
-    public void testTraitFieldUpdate9() {
+    @ParameterizedTest
+    @MethodSource("modes")
+    public void testTraitFieldUpdate9(VirtualPropertyMode mode) {
 
         String drl = "" +
                      "package org.drools.factmodel.traits9;\n" +
@@ -916,8 +919,9 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTraitTest {
         assertThat(list).contains("correct");
     }
 
-    @Test
-    public void testTraitFieldUpdate10() {
+    @ParameterizedTest
+    @MethodSource("modes")
+    public void testTraitFieldUpdate10(VirtualPropertyMode mode) {
 
         String drl = "" +
                      "package org.drools.factmodel.traits;\n" +
@@ -1008,8 +1012,9 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTraitTest {
         assertThat(list).contains("correct");
     }
 
-    @Test
-    public void testTraitTwoParentOneChild() {
+    @ParameterizedTest
+    @MethodSource("modes")
+    public void testTraitTwoParentOneChild(VirtualPropertyMode mode) {
 
         String drl = "" +
                      "package org.drools.factmodel.traits;\n" +
@@ -1119,8 +1124,10 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTraitTest {
         assertThat(list).contains("correct");
     }
 
-    @Test @Ignore
-    public void testTraitWithPositionArgs(){
+    @ParameterizedTest
+    @Disabled
+    @MethodSource("modes")
+    public void testTraitWithPositionArgs(VirtualPropertyMode mode){
 
         String drl = "" +
                      "package org.drools.traits.test;\n" +
@@ -1258,8 +1265,9 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTraitTest {
     }
 
 
-    @Test
-    public void singlePositionTraitTest(){
+    @ParameterizedTest
+    @MethodSource("modes")
+    public void singlePositionTraitTest(VirtualPropertyMode mode){
 
 
         String drl = "" +
