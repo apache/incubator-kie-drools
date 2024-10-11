@@ -35,6 +35,9 @@ import org.kie.kogito.process.ProcessInstanceDuplicatedException;
 import org.kie.kogito.process.ProcessInstanceExecutionException;
 import org.kie.kogito.process.ProcessInstanceNotFoundException;
 import org.kie.kogito.process.VariableViolationException;
+import org.kie.kogito.usertask.UserTaskInstanceNotAuthorizedException;
+import org.kie.kogito.usertask.UserTaskInstanceNotFoundException;
+import org.kie.kogito.usertask.lifecycle.UserTaskTransitionException;
 
 public abstract class BaseExceptionsHandler<T> {
 
@@ -73,6 +76,15 @@ public abstract class BaseExceptionsHandler<T> {
         mapper = new HashMap<>();
         mapper.put(InvalidLifeCyclePhaseException.class, new FunctionHolder<>(
                 ex -> Collections.singletonMap(MESSAGE, ex.getMessage()), ex -> BaseExceptionsHandler.this::badRequest));
+
+        mapper.put(UserTaskTransitionException.class, new FunctionHolder<>(
+                ex -> Collections.singletonMap(MESSAGE, ex.getMessage()), ex -> BaseExceptionsHandler.this::badRequest));
+
+        mapper.put(UserTaskInstanceNotFoundException.class, new FunctionHolder<>(
+                ex -> Collections.singletonMap(MESSAGE, ex.getMessage()), ex -> BaseExceptionsHandler.this::notFound));
+
+        mapper.put(UserTaskInstanceNotAuthorizedException.class, new FunctionHolder<>(
+                ex -> Collections.singletonMap(MESSAGE, ex.getMessage()), ex -> BaseExceptionsHandler.this::forbidden));
 
         mapper.put(InvalidTransitionException.class, new FunctionHolder<>(
                 ex -> Collections.singletonMap(MESSAGE, ex.getMessage()), ex -> BaseExceptionsHandler.this::badRequest));

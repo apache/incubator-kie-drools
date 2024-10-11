@@ -50,6 +50,7 @@ import org.kie.kogito.process.WorkItem;
 import org.kie.kogito.usertask.UserTask;
 import org.kie.kogito.usertask.UserTaskConfig;
 import org.kie.kogito.usertask.UserTaskInstance;
+import org.kie.kogito.usertask.UserTaskInstanceNotAuthorizedException;
 import org.kie.kogito.usertask.UserTasks;
 import org.kie.kogito.usertask.impl.lifecycle.DefaultUserTaskLifeCycle;
 
@@ -396,7 +397,7 @@ public class UserTaskIT extends AbstractCodegenIT {
         List<UserTaskInstance> userTaskInstances = userTasks.instances().findByIdentity(IdentityProviders.of("john"));
         assertThat(userTaskInstances).isNotNull().hasSize(1);
         UserTaskInstance utInvalid = userTaskInstances.get(0);
-        assertThatExceptionOfType(NotAuthorizedException.class).isThrownBy(() -> utInvalid.transition(CLAIM, emptyMap(), IdentityProviders.of("invalid")));
+        assertThatExceptionOfType(UserTaskInstanceNotAuthorizedException.class).isThrownBy(() -> utInvalid.transition(CLAIM, emptyMap(), IdentityProviders.of("invalid")));
 
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
 

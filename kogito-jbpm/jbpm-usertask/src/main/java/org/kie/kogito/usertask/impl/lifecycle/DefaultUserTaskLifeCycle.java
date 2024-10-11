@@ -26,9 +26,9 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.kie.kogito.auth.IdentityProvider;
-import org.kie.kogito.internal.process.workitem.NotAuthorizedException;
 import org.kie.kogito.usertask.UserTaskAssignmentStrategy;
 import org.kie.kogito.usertask.UserTaskInstance;
+import org.kie.kogito.usertask.UserTaskInstanceNotAuthorizedException;
 import org.kie.kogito.usertask.impl.DefaultUserTaskInstance;
 import org.kie.kogito.usertask.lifecycle.UserTaskLifeCycle;
 import org.kie.kogito.usertask.lifecycle.UserTaskState;
@@ -205,7 +205,7 @@ public class DefaultUserTaskLifeCycle implements UserTaskLifeCycle {
             }
         }
 
-        throw new NotAuthorizedException("user " + user + " with roles " + roles + " not autorized to perform an operation on user task " + userTaskInstance.getId());
+        throw new UserTaskInstanceNotAuthorizedException("user " + user + " with roles " + roles + " not autorized to perform an operation on user task " + userTaskInstance.getId());
     }
 
 }
