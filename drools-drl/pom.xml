@@ -39,6 +39,7 @@
     <module>drools-drl-ast</module>
     <module>drools-drl-extensions</module>
     <module>drools-drl-parser</module>
+    <module>drools-drl-parser-tests</module>
   </modules>
 
 
