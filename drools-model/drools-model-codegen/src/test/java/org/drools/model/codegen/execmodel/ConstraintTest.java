@@ -23,13 +23,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.model.codegen.execmodel.domain.Person;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ConstraintTest extends BaseModelTest {
+public class ConstraintTest extends BaseModelTest2 {
 
     private static final String RULE_STRING = "package constraintexpression\n" +
             "\n" +
@@ -50,41 +52,40 @@ public class ConstraintTest extends BaseModelTest {
 
     private List<BigDecimal> bigDecimalListGlobal;
 
-    public ConstraintTest(RUN_TYPE testRunType) {
-        super(testRunType);
-    }
-
-    @Before
+    @BeforeEach
     public void setup() {
-        ksession = getKieSession(RULE_STRING);
         bigDecimalListGlobal = new ArrayList<>();
-        ksession.setGlobal("bigDecimalListGlobal", bigDecimalListGlobal);
+    }
+    
+    @AfterEach
+    public void tearDown() {
+    	if (ksession != null) {
+    		ksession.dispose();
+    	}
     }
 
-    @Test
-    public void testConstraintWithMoney() {
-        try {
-            BigDecimal money = BigDecimal.valueOf(34.45);
-            Person person = new Person("", money);
-            ksession.insert(person);
-            int rulesFired = ksession.fireAllRules();
-            assertThat(rulesFired).isEqualTo(1);
-            assertThat(bigDecimalListGlobal).isNotEmpty().containsExactly(money);
-        } finally {
-            ksession.dispose();
-        }
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void testConstraintWithMoney(RUN_TYPE runType) {
+        ksession = getKieSession(runType, RULE_STRING);
+		ksession.setGlobal("bigDecimalListGlobal", bigDecimalListGlobal);
+		BigDecimal money = BigDecimal.valueOf(34.45);
+		Person person = new Person("", money);
+		ksession.insert(person);
+		int rulesFired = ksession.fireAllRules();
+		assertThat(rulesFired).isEqualTo(1);
+		assertThat(bigDecimalListGlobal).isNotEmpty().containsExactly(money);
     }
 
-    @Test
-    public void testConstraintWithoutMoney() {
-        try {
-            Person person = new Person();
-            ksession.insert(person);
-            int rulesFired = ksession.fireAllRules();
-            assertThat(rulesFired).isEqualTo(1);
-            assertThat(bigDecimalListGlobal).isNotEmpty().containsExactly(BigDecimal.valueOf(100.0));
-        } finally {
-            ksession.dispose();
-        }
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void testConstraintWithoutMoney(RUN_TYPE runType) {
+        ksession = getKieSession(runType, RULE_STRING);
+		ksession.setGlobal("bigDecimalListGlobal", bigDecimalListGlobal);
+        Person person = new Person();
+		ksession.insert(person);
+		int rulesFired = ksession.fireAllRules();
+		assertThat(rulesFired).isEqualTo(1);
+		assertThat(bigDecimalListGlobal).isNotEmpty().containsExactly(BigDecimal.valueOf(100.0));
     }
 }

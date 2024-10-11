@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.model.codegen.execmodel.domain.Person;
-import org.junit.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.runtime.KieSession;

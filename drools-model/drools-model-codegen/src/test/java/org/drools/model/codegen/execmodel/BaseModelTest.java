@@ -94,9 +94,9 @@ public abstract class BaseModelTest {
         }
     }
 
-    protected final CompilerTest.RUN_TYPE testRunType;
+    protected final RUN_TYPE testRunType;
 
-    public BaseModelTest( CompilerTest.RUN_TYPE testRunType ) {
+    public BaseModelTest(RUN_TYPE testRunType ) {
         this.testRunType = testRunType;
     }
 
