@@ -29,11 +29,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.kie.api.runtime.KieSession;
 
 public class VariablesTest extends BaseModelTest2 {
-
-    public VariablesTest() {
-        super(null);
-    }
-
     
     @ParameterizedTest
     @MethodSource("parameters")
