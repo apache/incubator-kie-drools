@@ -20,20 +20,24 @@ package org.drools.model.codegen.execmodel.variables;
 
 import java.util.Collection;
 
-import org.drools.model.codegen.execmodel.BaseModelTest;
+import org.drools.model.codegen.execmodel.BaseModelTest2;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
-public class VariablesTest extends BaseModelTest {
+public class VariablesTest extends BaseModelTest2 {
 
-    public VariablesTest(RUN_TYPE testRunType) {
-        super(testRunType);
+    public VariablesTest() {
+        super(null);
     }
 
-    @Test
-    public void testThreeVariables() {
+    
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void testThreeVariables(BaseModelTest2.RUN_TYPE testRunType) {
 
         String str = "import " + SimpleObject.class.getCanonicalName() + ";\n" +
                 "import " + Result.class.getCanonicalName() + ";\n" +
@@ -46,7 +50,7 @@ public class VariablesTest extends BaseModelTest {
                 "insert (new Result($id, $v1 + $v2));\n" +
                 "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(testRunType, str);
 
         SimpleObject m1 = new SimpleObject("id", 1);
         SimpleObject m2 = new SimpleObject("id", 2);
@@ -60,8 +64,9 @@ public class VariablesTest extends BaseModelTest {
         assertThat(results.iterator().next().getValue()).isEqualTo(3);
     }
 
-    @Test
-    public void testFourVariables() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void testFourVariables(BaseModelTest2.RUN_TYPE testRunType) {
 
         String str = "import " + SimpleObject.class.getCanonicalName() + ";\n" +
                 "import " + Result.class.getCanonicalName() + ";\n" +
@@ -75,7 +80,7 @@ public class VariablesTest extends BaseModelTest {
                 "insert (new Result($id, $v1 + $v2 + $v3));\n" +
                 "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(testRunType, str);
 
         SimpleObject m1 = new SimpleObject("id", 1);
         SimpleObject m2 = new SimpleObject("id", 2);
@@ -91,8 +96,9 @@ public class VariablesTest extends BaseModelTest {
         assertThat(results.iterator().next().getValue()).isEqualTo(6);
     }
 
-    @Test
-    public void testFiveVariables() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void testFiveVariables(BaseModelTest2.RUN_TYPE testRunType) {
 
         String str = "import " + SimpleObject.class.getCanonicalName() + ";\n" +
                 "import " + Result.class.getCanonicalName() + ";\n" +
@@ -107,7 +113,7 @@ public class VariablesTest extends BaseModelTest {
                 "insert (new Result($id, $v1 + $v2 + $v3 + $v4));\n" +
                 "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(testRunType, str);
 
         SimpleObject m1 = new SimpleObject("id", 1);
         SimpleObject m2 = new SimpleObject("id", 2);
@@ -125,8 +131,9 @@ public class VariablesTest extends BaseModelTest {
         assertThat(results.iterator().next().getValue()).isEqualTo(10);
     }
 
-    @Test
-    public void testSixVariables() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void testSixVariables(BaseModelTest2.RUN_TYPE testRunType) {
 
         String str = "import " + SimpleObject.class.getCanonicalName() + ";\n" +
                 "import " + Result.class.getCanonicalName() + ";\n" +
@@ -142,7 +149,7 @@ public class VariablesTest extends BaseModelTest {
                 "insert (new Result($id, $v1 + $v2 + $v3 + $v4 + $v5));\n" +
                 "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(testRunType, str);
 
         SimpleObject m1 = new SimpleObject("id", 1);
         SimpleObject m2 = new SimpleObject("id", 2);
