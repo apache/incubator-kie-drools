@@ -21,7 +21,7 @@ package org.drools.model.codegen.execmodel;
 import java.util.UUID;
 
 import org.drools.model.codegen.ExecutableModelProject;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
