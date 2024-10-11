@@ -47,6 +47,8 @@ public class UserTaskInstanceStateEventBody {
 
     private String eventType;
 
+    private String externalReferenceId;
+
     public Date getEventDate() {
         return eventDate;
     }
@@ -93,6 +95,10 @@ public class UserTaskInstanceStateEventBody {
 
     public String getEventType() {
         return eventType;
+    }
+
+    public String getExternalReferenceId() {
+        return externalReferenceId;
     }
 
     public Map<String, Object> metaData() {
@@ -191,6 +197,11 @@ public class UserTaskInstanceStateEventBody {
 
         public Builder actualOwner(String userId) {
             this.instance.actualOwner = userId;
+            return this;
+        }
+
+        public Builder externalReferenceId(String externalReferenceId) {
+            this.instance.externalReferenceId = externalReferenceId;
             return this;
         }
 

@@ -108,17 +108,17 @@ public abstract class AbstractDataEventAdapter implements DataEventAdapter {
                 .nodeDefinitionId(event.getNodeInstance().getNode().getUniqueId())
                 .slaDueDate(nodeInstance.getSlaDueDate());
 
+        if (event.getNodeInstance() instanceof KogitoWorkItemNodeInstance workItemNodeInstance && workItemNodeInstance.getWorkItem() != null) {
+            KogitoWorkItem workItem = workItemNodeInstance.getWorkItem();
+            builder.workItemId(workItem.getStringId());
+            builder.data("WorkItemId", workItem.getStringId());
+            builder.data("WorkItemExternalReferenceId", workItem.getExternalReferenceId());
+        }
+
         if (eventType == ProcessInstanceNodeEventBody.EVENT_TYPE_ENTER) {
             builder.connectionNodeDefinitionId((String) nodeInstance.getMetaData().get("IncomingConnection"));
         } else {
             builder.connectionNodeDefinitionId((String) nodeInstance.getMetaData().get("OutgoingConnection"));
-        }
-
-        if (nodeInstance instanceof KogitoWorkItemNodeInstance) {
-            KogitoWorkItem workItem = ((KogitoWorkItemNodeInstance) nodeInstance).getWorkItem();
-            if (workItem != null) {
-                builder.workItemId(workItem.getStringId());
-            }
         }
 
         ProcessInstanceNodeEventBody body = builder.build();

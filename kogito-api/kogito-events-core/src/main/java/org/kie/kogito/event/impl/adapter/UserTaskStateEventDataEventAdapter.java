@@ -54,6 +54,7 @@ public class UserTaskStateEventDataEventAdapter extends AbstractDataEventAdapter
                 .userTaskDescription(event.getUserTaskInstance().getTaskDescription())
                 .userTaskPriority(priorityStr)
                 .userTaskReferenceName(event.getUserTask().getReferenceName())
+                .externalReferenceId(event.getUserTaskInstance().getExternalReferenceId())
                 .state(event.getNewStatus().getName())
                 .actualOwner(event.getUserTaskInstance().getActualOwner())
                 .eventType(isTransition(event) ? event.getNewStatus().getName() : "Modify")

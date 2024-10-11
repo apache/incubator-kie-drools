@@ -18,19 +18,40 @@
  */
 package org.kie.kogito.event.impl.adapter;
 
-import org.kie.api.event.process.ProcessNodeTriggeredEvent;
+import org.kie.api.event.process.ProcessNodeLeftEvent;
 import org.kie.kogito.event.DataEvent;
 import org.kie.kogito.event.process.ProcessInstanceNodeEventBody;
+import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 
 public class ProcessNodeLeftEventDataEventAdapter extends AbstractDataEventAdapter {
 
     public ProcessNodeLeftEventDataEventAdapter() {
-        super(ProcessNodeTriggeredEvent.class);
+        super(ProcessNodeLeftEvent.class);
     }
 
     @Override
     public DataEvent<?> adapt(Object payload) {
-        return toProcessInstanceNodeEvent((ProcessNodeTriggeredEvent) payload, ProcessInstanceNodeEventBody.EVENT_TYPE_ENTER);
+        ProcessNodeLeftEvent event = (ProcessNodeLeftEvent) payload;
+        KogitoNodeInstance nodeInstance = (KogitoNodeInstance) event.getNodeInstance();
+        int eventType = ProcessInstanceNodeEventBody.EVENT_TYPE_EXIT;
+
+        if (nodeInstance.getCancelType() != null) {
+            switch (nodeInstance.getCancelType()) {
+                case ABORTED:
+                    eventType = ProcessInstanceNodeEventBody.EVENT_TYPE_ABORTED;
+                    break;
+                case SKIPPED:
+                    eventType = ProcessInstanceNodeEventBody.EVENT_TYPE_SKIPPED;
+                    break;
+                case OBSOLETE:
+                    eventType = ProcessInstanceNodeEventBody.EVENT_TYPE_OBSOLETE;
+                    break;
+                case ERROR:
+                    eventType = ProcessInstanceNodeEventBody.EVENT_TYPE_ERROR;
+            }
+        }
+
+        return toProcessInstanceNodeEvent((ProcessNodeLeftEvent) payload, eventType);
     }
 
 }
