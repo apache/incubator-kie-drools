@@ -50,10 +50,11 @@ import org.drools.mvel.parser.ast.expr.PointFreeExpr;
 import org.drools.mvel.parser.printer.PrintUtil;
 import org.drools.util.ClassTypeResolver;
 import org.drools.util.TypeResolver;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.THIS_PLACEHOLDER;
 
 public class ExpressionTyperTest {
@@ -65,7 +66,7 @@ public class ExpressionTyperTest {
     private KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
     private RuleDescr ruleDescr = new RuleDescr("testRule");
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         imports = new HashSet<>();
         packageModel = new PackageModel("", "", null, null, new DRLIdGenerator());
@@ -242,9 +243,9 @@ public class ExpressionTyperTest {
         assertThat(toTypedExpression("age < 15 || > 20 && < 30", Person.class).getExpression().toString()).isEqualTo(expected);
     }
 
-    @Test(expected = CannotTypeExpressionException.class)
+    @Test
     public void invalidHalfBinary() {
-        toTypedExpression("> 20 && < 30", Person.class).getExpression();
+    	assertThatExceptionOfType(CannotTypeExpressionException.class).isThrownBy(() ->toTypedExpression("> 20 && < 30", Person.class).getExpression());
     }
 
     @Test
@@ -253,9 +254,9 @@ public class ExpressionTyperTest {
         assertThat(toTypedExpression("name str[startsWith] \"M\" || str[endsWith] \"a\" && str[length] 4", Person.class).getExpression().toString()).isEqualTo(expected);
     }
 
-    @Test(expected = CannotTypeExpressionException.class)
+    @Test
     public void invalidHalfPointFree() {
-        toTypedExpression("str[endsWith] \"a\" && str[length] 4", Person.class).getExpression();
+    	assertThatExceptionOfType(CannotTypeExpressionException.class).isThrownBy(() -> toTypedExpression("str[endsWith] \"a\" && str[length] 4", Person.class).getExpression());
     }
 
     @Test

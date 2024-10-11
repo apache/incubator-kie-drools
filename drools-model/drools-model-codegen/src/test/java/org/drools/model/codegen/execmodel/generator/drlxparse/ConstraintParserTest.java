@@ -31,8 +31,8 @@ import org.drools.model.codegen.execmodel.generator.RuleContext;
 import org.drools.modelcompiler.util.EvaluationUtil;
 import org.drools.util.ClassTypeResolver;
 import org.drools.util.TypeResolver;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -40,7 +40,7 @@ public class ConstraintParserTest {
 
     private ConstraintParser parser;
 
-    @Before
+    @BeforeEach
     public void setup() {
         PackageModel packageModel = new PackageModel("org.kie.test:constraint-parser-test:1.0.0", "org.kie.test", null, null, new DRLIdGenerator());
         Set<String> imports = new HashSet<>();
