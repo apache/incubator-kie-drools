@@ -16,12 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.process.workitem;
+package org.kie.kogito.usertask.model;
 
 import java.io.Serializable;
 import java.util.Date;
 
-public class TaskMetaEntity<K extends Serializable, T extends Serializable> implements Serializable, Cloneable {
+public class UserTaskEntity<K extends Serializable, T extends Serializable> implements Serializable, Cloneable {
 
     private static final long serialVersionUID = 1L;
     private K id;
@@ -29,10 +29,10 @@ public class TaskMetaEntity<K extends Serializable, T extends Serializable> impl
     protected Date updatedAt;
     protected String updatedBy;
 
-    public TaskMetaEntity() {
+    public UserTaskEntity() {
     }
 
-    public TaskMetaEntity(K id, String user) {
+    public UserTaskEntity(K id, String user) {
         this.id = id;
         this.updatedBy = user;
     }
@@ -81,7 +81,7 @@ public class TaskMetaEntity<K extends Serializable, T extends Serializable> impl
             return false;
         if (getClass() != obj.getClass())
             return false;
-        return id.equals(((TaskMetaEntity<K, T>) obj).id);
+        return id.equals(((UserTaskEntity<K, T>) obj).id);
     }
 
     @Override

@@ -18,9 +18,7 @@
  */
 package org.kie.kogito.usertask.model;
 
-import org.kie.kogito.process.workitem.TaskMetaEntity;
-
-public class Comment extends TaskMetaEntity<String, String> {
+public class Comment extends UserTaskEntity<String, String> {
 
     private static final long serialVersionUID = -9106249675352498780L;
 

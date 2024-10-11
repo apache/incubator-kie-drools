@@ -20,9 +20,7 @@ package org.kie.kogito.usertask.model;
 
 import java.net.URI;
 
-import org.kie.kogito.process.workitem.TaskMetaEntity;
-
-public class Attachment extends TaskMetaEntity<String, URI> {
+public class Attachment extends UserTaskEntity<String, URI> {
 
     private static final long serialVersionUID = 1L;
     private String name;
