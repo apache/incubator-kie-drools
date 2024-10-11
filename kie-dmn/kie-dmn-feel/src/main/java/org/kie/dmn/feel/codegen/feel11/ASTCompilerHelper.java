@@ -72,6 +72,7 @@ import org.kie.dmn.feel.lang.ast.PathExpressionNode;
 import org.kie.dmn.feel.lang.ast.QualifiedNameNode;
 import org.kie.dmn.feel.lang.ast.QuantifiedExpressionNode;
 import org.kie.dmn.feel.lang.ast.RangeNode;
+import org.kie.dmn.feel.lang.ast.RangeTypeNode;
 import org.kie.dmn.feel.lang.ast.SignedUnaryNode;
 import org.kie.dmn.feel.lang.ast.StringNode;
 import org.kie.dmn.feel.lang.ast.TemporalConstantNode;
@@ -136,6 +137,7 @@ import static org.kie.dmn.feel.codegen.feel11.DMNCodegenConstants.PATHEXPRESSION
 import static org.kie.dmn.feel.codegen.feel11.DMNCodegenConstants.QUALIFIEDNAMENODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.DMNCodegenConstants.QUANTIFIEDEXPRESSIONNODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.DMNCodegenConstants.RANGENODE_CT;
+import static org.kie.dmn.feel.codegen.feel11.DMNCodegenConstants.RANGETYPENODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.DMNCodegenConstants.SIGNEDUNARYNODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.DMNCodegenConstants.STRINGNODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.DMNCodegenConstants.TEMPORALCONSTANTNODE_CT;
@@ -429,6 +431,12 @@ public class ASTCompilerHelper {
                                                                                        upperBoundExpression,
                                                                                        startExpression,
                                                                                        endExpression), n.getText());
+    }
+
+    public BlockStmt add(RangeTypeNode n) {
+        Expression genTypeNodeExpression = getNodeExpression(n.getGenTypeNode());
+        return addVariableDeclaratorWithObjectCreation(RANGETYPENODE_CT, NodeList.nodeList(genTypeNodeExpression),
+                n.getText());
     }
 
     public BlockStmt add(SignedUnaryNode n) {
