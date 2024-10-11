@@ -33,19 +33,18 @@ import org.drools.model.codegen.execmodel.domain.Address;
 import org.drools.model.codegen.execmodel.domain.Person;
 import org.drools.model.codegen.execmodel.domain.Toy;
 import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ConstraintNormalizationTest extends BaseModelTest {
+public class ConstraintNormalizationTest extends BaseModelTest2 {
 
-    public ConstraintNormalizationTest(RUN_TYPE testRunType) {
-        super(testRunType);
-    }
-
-    @Test
-    public void testNormalizationForPropertyReactivity() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testNormalizationForPropertyReactivity(RUN_TYPE runType) {
         final String str =
                 "package org.drools.test;\n" +
                            "import " + Person.class.getCanonicalName() + ";\n" +
@@ -62,7 +61,7 @@ public class ConstraintNormalizationTest extends BaseModelTest {
                            "then\n" +
                            "end\n";
 
-        final KieSession ksession = getKieSession(str);
+        final KieSession ksession = getKieSession(runType, str);
 
         final Toy t = new Toy("Ball");
         t.setOwner("Toshiya");
@@ -72,8 +71,9 @@ public class ConstraintNormalizationTest extends BaseModelTest {
         assertThat(ksession.fireAllRules(10)).isEqualTo(2); // no infinite loop
     }
 
-    @Test
-    public void testNormalizationForPropertyReactivity2() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testNormalizationForPropertyReactivity2(RUN_TYPE runType) {
         final String str =
                 "package org.drools.test;\n" +
                            "import " + Person.class.getCanonicalName() + ";\n" +
@@ -89,7 +89,7 @@ public class ConstraintNormalizationTest extends BaseModelTest {
                            "then\n" +
                            "end\n";
 
-        final KieSession ksession = getKieSession(str);
+        final KieSession ksession = getKieSession(runType, str);
 
         final Person p = new Person("Toshiya", 45);
         ksession.insert(new Integer(30));
@@ -97,8 +97,9 @@ public class ConstraintNormalizationTest extends BaseModelTest {
         assertThat(ksession.fireAllRules(10)).isEqualTo(2); // no infinite loop
     }
 
-    @Test
-    public void testNormalizationForAlphaIndexing() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testNormalizationForAlphaIndexing(RUN_TYPE runType) {
         final String str =
                 "package org.drools.test;\n" +
                            "import " + Person.class.getCanonicalName() + ";\n" +
@@ -115,7 +116,7 @@ public class ConstraintNormalizationTest extends BaseModelTest {
                            "then\n" +
                            "end\n";
 
-        final KieSession ksession = getKieSession(str);
+        final KieSession ksession = getKieSession(runType, str);
 
         ObjectTypeNode otn = ((NamedEntryPoint) ksession.getEntryPoint("DEFAULT")).getEntryPointNode().getObjectTypeNodes().entrySet()
                                                                                   .stream()
@@ -134,8 +135,9 @@ public class ConstraintNormalizationTest extends BaseModelTest {
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testNormalizationForNodeSharing() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testNormalizationForNodeSharing(RUN_TYPE runType) {
 
         final String str =
                 "package org.drools.test;\n" +
@@ -149,7 +151,7 @@ public class ConstraintNormalizationTest extends BaseModelTest {
                            "then\n" +
                            "end\n";
 
-        final KieSession ksession = getKieSession(str);
+        final KieSession ksession = getKieSession(runType, str);
 
         assertThat(ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count()).isEqualTo(1);
 
@@ -158,8 +160,9 @@ public class ConstraintNormalizationTest extends BaseModelTest {
         assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
-    @Test
-    public void testOperators() throws Exception {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testOperators(RUN_TYPE runType) throws Exception {
 
         final String str =
                 "package org.drools.test;\n" +
@@ -176,7 +179,7 @@ public class ConstraintNormalizationTest extends BaseModelTest {
                            "then\n" +
                            "end";
 
-        final KieSession ksession = getKieSession(str);
+        final KieSession ksession = getKieSession(runType, str);
 
         // Check NodeSharing to verify if normalization works expectedly
         assertThat(ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count()).isEqualTo(4);
@@ -189,8 +192,9 @@ public class ConstraintNormalizationTest extends BaseModelTest {
         assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
-    @Test
-    public void testNestedProperty() throws Exception {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testNestedProperty(RUN_TYPE runType) throws Exception {
         final String str =
                 "package org.drools.test;\n" +
                            "import " + Person.class.getCanonicalName() + ";\n" +
@@ -204,7 +208,7 @@ public class ConstraintNormalizationTest extends BaseModelTest {
                            "then\n" +
                            "end";
 
-        final KieSession ksession = getKieSession(str);
+        final KieSession ksession = getKieSession(runType, str);
 
         // Check NodeSharing to verify if normalization works expectedly
         assertThat(ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count()).isEqualTo(1);
@@ -216,8 +220,9 @@ public class ConstraintNormalizationTest extends BaseModelTest {
         assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
-    @Test
-    public void testComplexMethod() throws Exception {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testComplexMethod(RUN_TYPE runType) throws Exception {
         final String str =
                 "package org.drools.test;\n" +
                            "import " + Person.class.getCanonicalName() + ";\n" +
@@ -232,7 +237,7 @@ public class ConstraintNormalizationTest extends BaseModelTest {
                            "then\n" +
                            "end";
 
-        final KieSession ksession = getKieSession(str);
+        final KieSession ksession = getKieSession(runType, str);
 
         // Check NodeSharing to verify if normalization works expectedly
         assertThat(ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count()).isEqualTo(1);
@@ -244,8 +249,9 @@ public class ConstraintNormalizationTest extends BaseModelTest {
         assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
-    @Test
-    public void testPropsOnBothSide() throws Exception {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testPropsOnBothSide(RUN_TYPE runType) throws Exception {
         final String str =
                 "package org.drools.test;\n" +
                            "import " + Person.class.getCanonicalName() + ";\n" +
@@ -259,7 +265,7 @@ public class ConstraintNormalizationTest extends BaseModelTest {
                            "then\n" +
                            "end";
 
-        final KieSession ksession = getKieSession(str);
+        final KieSession ksession = getKieSession(runType, str);
 
         // Check NodeSharing to verify if normalization works expectedly
         assertThat(ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count()).isEqualTo(1);
@@ -271,8 +277,9 @@ public class ConstraintNormalizationTest extends BaseModelTest {
         assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
-    @Test
-    public void testExtraParentheses() throws Exception {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testExtraParentheses(RUN_TYPE runType) throws Exception {
         final String str =
                 "package org.drools.test;\n" +
                            "import " + Person.class.getCanonicalName() + ";\n" +
@@ -286,7 +293,7 @@ public class ConstraintNormalizationTest extends BaseModelTest {
                            "then\n" +
                            "end";
 
-        final KieSession ksession = getKieSession(str);
+        final KieSession ksession = getKieSession(runType, str);
 
         // Check NodeSharing to verify if normalization works expectedly
         assertThat(ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count()).isEqualTo(1);
@@ -297,8 +304,9 @@ public class ConstraintNormalizationTest extends BaseModelTest {
         assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
-    @Test
-    public void testAnd() throws Exception {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testAnd(RUN_TYPE runType) throws Exception {
         final String str =
                 "package org.drools.test;\n" +
                            "import " + Person.class.getCanonicalName() + ";\n" +
@@ -312,10 +320,10 @@ public class ConstraintNormalizationTest extends BaseModelTest {
                            "then\n" +
                            "end\n";
 
-        final KieSession ksession = getKieSession(str);
+        final KieSession ksession = getKieSession(runType, str);
 
         // Check NodeSharing to verify if normalization works expectedly
-        if (testRunType == RUN_TYPE.STANDARD_FROM_DRL || testRunType == RUN_TYPE.STANDARD_WITH_ALPHA_NETWORK) {
+        if (runType == RUN_TYPE.STANDARD_FROM_DRL || runType == RUN_TYPE.STANDARD_WITH_ALPHA_NETWORK) {
             assertThat(ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count()).isEqualTo(2);
         } else {
             // && is not split in case of executable-model
@@ -329,8 +337,9 @@ public class ConstraintNormalizationTest extends BaseModelTest {
         assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
-    @Test
-    public void testOr() throws Exception {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testOr(RUN_TYPE runType) throws Exception {
         final String str =
                 "package org.drools.test;\n" +
                            "import " + Person.class.getCanonicalName() + ";\n" +
@@ -344,7 +353,7 @@ public class ConstraintNormalizationTest extends BaseModelTest {
                            "then\n" +
                            "end";
 
-        final KieSession ksession = getKieSession(str);
+        final KieSession ksession = getKieSession(runType, str);
 
         // Check NodeSharing to verify if normalization works expectedly
         assertThat(ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count()).isEqualTo(1);
@@ -356,8 +365,9 @@ public class ConstraintNormalizationTest extends BaseModelTest {
         assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
-    @Test
-    public void testNegate() throws Exception {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testNegate(RUN_TYPE runType) throws Exception {
         final String str =
                 "package org.drools.test;\n" +
                            "import " + Person.class.getCanonicalName() + ";\n" +
@@ -371,7 +381,7 @@ public class ConstraintNormalizationTest extends BaseModelTest {
                            "then\n" +
                            "end";
 
-        final KieSession ksession = getKieSession(str);
+        final KieSession ksession = getKieSession(runType, str);
 
         // Check NodeSharing to verify if normalization works expectedly
         assertThat(ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count()).isEqualTo(1);
@@ -382,8 +392,9 @@ public class ConstraintNormalizationTest extends BaseModelTest {
         assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
-    @Test
-    public void testBigDecimal() throws Exception {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testBigDecimal(RUN_TYPE runType) throws Exception {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                      "rule R1 when\n" +
@@ -396,7 +407,7 @@ public class ConstraintNormalizationTest extends BaseModelTest {
                      "then\n" +
                      "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         // Check NodeSharing to verify if normalization works expectedly
         assertThat(ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count()).isEqualTo(1);
@@ -409,8 +420,9 @@ public class ConstraintNormalizationTest extends BaseModelTest {
         assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
-    @Test
-    public void testNegateComplex() throws Exception {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testNegateComplex(RUN_TYPE runType) throws Exception {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                      "global java.util.List list;\n" +
@@ -426,7 +438,7 @@ public class ConstraintNormalizationTest extends BaseModelTest {
                      "  list.add($p.getName());" +
                      "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         // Check NodeSharing to verify if normalization works expectedly
         assertThat(ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count()).isEqualTo(1);
@@ -449,8 +461,9 @@ public class ConstraintNormalizationTest extends BaseModelTest {
         assertThat(list).containsExactlyInAnyOrder("John", "George", "John", "George");
     }
 
-    @Test
-    public void testNegateComplex2() throws Exception {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testNegateComplex2(RUN_TYPE runType) throws Exception {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                      "global java.util.List list;\n" +
@@ -466,7 +479,7 @@ public class ConstraintNormalizationTest extends BaseModelTest {
                      "  list.add($p.getName());" +
                      "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         // Check NodeSharing to verify if normalization works expectedly
         assertThat(ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count()).isEqualTo(1);
@@ -489,8 +502,9 @@ public class ConstraintNormalizationTest extends BaseModelTest {
         assertThat(list).containsExactlyInAnyOrder("John", "George", "John", "George");
     }
 
-    @Test
-    public void testDeclaredType() throws Exception {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testDeclaredType(RUN_TYPE runType) throws Exception {
         final String str =
                 "package org.drools.test;\n" +
                            "declare Person\n" +
@@ -507,7 +521,7 @@ public class ConstraintNormalizationTest extends BaseModelTest {
                            "then\n" +
                            "end";
 
-        final KieSession ksession = getKieSession(str);
+        final KieSession ksession = getKieSession(runType, str);
 
         // Check NodeSharing to verify if normalization works expectedly
         assertThat(ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count()).isEqualTo(2);
@@ -520,8 +534,9 @@ public class ConstraintNormalizationTest extends BaseModelTest {
         assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
-    @Test
-    public void testMapProp() throws Exception {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testMapProp(RUN_TYPE runType) throws Exception {
         final String str =
                 "package org.drools.test;\n" +
                            "import " + Person.class.getCanonicalName() + ";\n" +
@@ -535,7 +550,7 @@ public class ConstraintNormalizationTest extends BaseModelTest {
                            "then\n" +
                            "end";
 
-        final KieSession ksession = getKieSession(str);
+        final KieSession ksession = getKieSession(runType, str);
 
         // Check NodeSharing to verify if normalization works expectedly
         assertThat(ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count()).isEqualTo(1);
@@ -547,8 +562,9 @@ public class ConstraintNormalizationTest extends BaseModelTest {
         assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
-    @Test
-    public void testMapStringProp() throws Exception {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testMapStringProp(RUN_TYPE runType) throws Exception {
         final String str =
                 "package org.drools.test;\n" +
                            "import " + Person.class.getCanonicalName() + ";\n" +
@@ -562,7 +578,7 @@ public class ConstraintNormalizationTest extends BaseModelTest {
                            "then\n" +
                            "end";
 
-        final KieSession ksession = getKieSession(str);
+        final KieSession ksession = getKieSession(runType, str);
 
         // Check NodeSharing to verify if normalization works expectedly
         assertThat(ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count()).isEqualTo(1);
@@ -574,8 +590,9 @@ public class ConstraintNormalizationTest extends BaseModelTest {
         assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
-    @Test
-    public void testMapStringThis() throws Exception {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testMapStringThis(RUN_TYPE runType) throws Exception {
         final String str =
                 "package org.drools.test;\n" +
                            "import " + Map.class.getCanonicalName() + ";\n" +
@@ -589,7 +606,7 @@ public class ConstraintNormalizationTest extends BaseModelTest {
                            "then\n" +
                            "end";
 
-        final KieSession ksession = getKieSession(str);
+        final KieSession ksession = getKieSession(runType, str);
 
         // Check NodeSharing to verify if normalization works expectedly
         assertThat(ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count()).isEqualTo(1);

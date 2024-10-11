@@ -22,20 +22,19 @@ import java.math.BigDecimal;
 
 import org.drools.model.codegen.execmodel.domain.Person;
 import org.drools.model.codegen.execmodel.domain.Result;
-import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.Results;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class CompilationFailuresTest extends BaseModelTest {
+public class CompilationFailuresTest extends BaseModelTest2 {
 
-    public CompilationFailuresTest( RUN_TYPE testRunType ) {
-        super( testRunType );
-    }
 
-    @Test
-    public void testNonQuotedStringComapre() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testNonQuotedStringComapre(RUN_TYPE runType) {
         String drl =
                 "declare Fact\n" +
                 "    field : String\n" +
@@ -45,15 +44,16 @@ public class CompilationFailuresTest extends BaseModelTest {
                 "then\n" +
                 "end\n";
 
-        Results results = getCompilationResults(drl);
+        Results results = getCompilationResults(runType, drl);
         assertThat(results.getMessages(Message.Level.ERROR).isEmpty()).isFalse();
 
         // line = -1 even with STANDARD_FROM_DRL (PredicateDescr)
         assertThat(results.getMessages().get(0).getLine()).isEqualTo(-1);
     }
 
-    @Test
-    public void testUseNotExistingEnum() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testUseNotExistingEnum(RUN_TYPE runType) {
         String drl =
                 "import " + NumberRestriction.class.getCanonicalName() + "\n" +
                 "rule R when\n" +
@@ -61,14 +61,14 @@ public class CompilationFailuresTest extends BaseModelTest {
                 "then\n" +
                 "end\n";
 
-        Results results = getCompilationResults(drl);
+        Results results = getCompilationResults(runType, drl);
         assertThat(results.getMessages(Message.Level.ERROR).isEmpty()).isFalse();
 
         assertThat(results.getMessages().get(0).getLine()).isEqualTo(3);
     }
 
-    private Results getCompilationResults( String drl ) {
-        return createKieBuilder( drl ).getResults();
+    private Results getCompilationResults(RUN_TYPE runType, String drl ) {
+        return createKieBuilder(runType, drl).getResults();
     }
 
     public static class NumberRestriction {
@@ -96,27 +96,31 @@ public class CompilationFailuresTest extends BaseModelTest {
         }
     }
 
-    @Test
-    public void testMaxIntegerResultOnDoublePatternShouldntCompile() {
-        checkCompilationFailureOnMismatchingAccumulate("Integer", "max");
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testMaxIntegerResultOnDoublePatternShouldntCompile(RUN_TYPE runType) {
+        checkCompilationFailureOnMismatchingAccumulate(runType, "Integer", "max");
     }
 
-    @Test
-    public void testMinIntegerResultOnDoublePatternShouldntCompile() {
-        checkCompilationFailureOnMismatchingAccumulate("Integer", "min");
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testMinIntegerResultOnDoublePatternShouldntCompile(RUN_TYPE runType) {
+        checkCompilationFailureOnMismatchingAccumulate(runType, "Integer", "min");
     }
 
-    @Test
-    public void testMaxLongResultOnDoublePatternShouldntCompile() {
-        checkCompilationFailureOnMismatchingAccumulate("Long", "max");
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testMaxLongResultOnDoublePatternShouldntCompile(RUN_TYPE runType) {
+        checkCompilationFailureOnMismatchingAccumulate(runType, "Long", "max");
     }
 
-    @Test
-    public void testMinLongResultOnDoublePatternShouldntCompile() {
-        checkCompilationFailureOnMismatchingAccumulate("Long", "min");
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testMinLongResultOnDoublePatternShouldntCompile(RUN_TYPE runType) {
+        checkCompilationFailureOnMismatchingAccumulate(runType, "Long", "min");
     }
 
-    private void checkCompilationFailureOnMismatchingAccumulate(String type, String accFunc) {
+    private void checkCompilationFailureOnMismatchingAccumulate(RUN_TYPE runType, String type, String accFunc) {
         String drl =
                 "import " + Person.class.getCanonicalName() + ";" +
                 "import " + Result.class.getCanonicalName() + ";" +
@@ -128,7 +132,7 @@ public class CompilationFailuresTest extends BaseModelTest {
                 "  System.out.println($max);\n" +
                 "end";
 
-        Results results = getCompilationResults(drl);
+        Results results = getCompilationResults(runType, drl);
         assertThat(results.getMessages(Message.Level.ERROR).isEmpty()).isFalse();
 
         // line = 1 with STANDARD_FROM_DRL (RuleDescr)
@@ -136,8 +140,9 @@ public class CompilationFailuresTest extends BaseModelTest {
     }
 
 
-    @Test
-    public void modify_factInScope_java() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void modify_factInScope_java(RUN_TYPE runType) {
         // DROOLS-5242, DROOLS-7195
         String drl =
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -148,12 +153,13 @@ public class CompilationFailuresTest extends BaseModelTest {
                 "  modify($p) { $p.setName(\"Mark\") }\n" +
                 "end";
 
-        Results results = getCompilationResults(drl);
+        Results results = getCompilationResults(runType, drl);
         assertThat(results.getMessages(Message.Level.ERROR).isEmpty()).isFalse();
     }
 
-    @Test
-    public void modify_factInScope_mvel() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void modify_factInScope_mvel(RUN_TYPE runType) {
         // DROOLS-5242, DROOLS-7195
         String drl =
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -165,12 +171,13 @@ public class CompilationFailuresTest extends BaseModelTest {
                 "  modify($p) { $p.setName(\"Mark\") }\n" +
                 "end";
 
-        Results results = getCompilationResults(drl);
+        Results results = getCompilationResults(runType, drl);
         assertThat(results.getMessages(Message.Level.ERROR).isEmpty()).isFalse();
     }
 
-    @Test
-    public void modify_factInScope_nestedPropertySetter_java() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void modify_factInScope_nestedPropertySetter_java(RUN_TYPE runType) {
         // DROOLS-5242, DROOLS-7195
         String drl =
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -181,12 +188,13 @@ public class CompilationFailuresTest extends BaseModelTest {
                 "  modify($p) { $p.address.setCity(\"London\") }\n" +
                 "end";
 
-        Results results = getCompilationResults(drl);
+        Results results = getCompilationResults(runType, drl);
         assertThat(results.getMessages(Message.Level.ERROR).isEmpty()).isFalse();
     }
 
-    @Test
-    public void modify_factInScope_nestedPropertySetter_mvel() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void modify_factInScope_nestedPropertySetter_mvel(RUN_TYPE runType) {
         // DROOLS-5242, DROOLS-7195
         String drl =
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -198,12 +206,13 @@ public class CompilationFailuresTest extends BaseModelTest {
                 "  modify($p) { $p.address.setCity(\"London\") }\n" +
                 "end";
 
-        Results results = getCompilationResults(drl);
+        Results results = getCompilationResults(runType, drl);
         assertThat(results.getMessages(Message.Level.ERROR).isEmpty()).isFalse();
     }
 
-    @Test
-    public void modify_factInScope_nestedPropertyAssign_java() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void modify_factInScope_nestedPropertyAssign_java(RUN_TYPE runType) {
         // DROOLS-5242, DROOLS-7195
         String drl =
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -214,12 +223,13 @@ public class CompilationFailuresTest extends BaseModelTest {
                 "  modify($p) { $p.address.city = \"London\" }\n" +
                 "end";
 
-        Results results = getCompilationResults(drl);
+        Results results = getCompilationResults(runType, drl);
         assertThat(results.getMessages(Message.Level.ERROR).isEmpty()).isFalse();
     }
 
-    @Test
-    public void modify_factInScope_nestedPropertyAssign_mvel() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void modify_factInScope_nestedPropertyAssign_mvel(RUN_TYPE runType) {
         // DROOLS-5242, DROOLS-7195
         String drl =
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -231,12 +241,13 @@ public class CompilationFailuresTest extends BaseModelTest {
                 "  modify($p) { $p.address.city = \"London\" }\n" +
                 "end";
 
-        Results results = getCompilationResults(drl);
+        Results results = getCompilationResults(runType, drl);
         assertThat(results.getMessages(Message.Level.ERROR).isEmpty()).isFalse();
     }
 
-    @Test
-    public void testVariableInsideBinding() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testVariableInsideBinding(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                         "import " + NameLengthCount.class.getCanonicalName() + ";" +
@@ -246,13 +257,14 @@ public class CompilationFailuresTest extends BaseModelTest {
                         "then\n" +
                         "end";
 
-        Results results = createKieBuilder(str ).getResults();
+        Results results = createKieBuilder(runType, str).getResults();
         assertThat(results.getMessages(Message.Level.ERROR).stream().map(Message::getText))
                 .contains("Variables can not be used inside bindings. Variable [$nlc] is being used in binding '$nlc.self.getNameLength(name)'");
     }
 
-    @Test
-    public void testVariableInsideBindingInParameter() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testVariableInsideBindingInParameter(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                         "import " + NameLengthCount.class.getCanonicalName() + ";" +
@@ -262,7 +274,7 @@ public class CompilationFailuresTest extends BaseModelTest {
                         "then\n" +
                         "end";
 
-        Results results = createKieBuilder(str ).getResults();
+        Results results = createKieBuilder(runType, str ).getResults();
         assertThat(results.getMessages(Message.Level.ERROR).stream().map(Message::getText))
                 .contains("Variables can not be used inside bindings. Variable [$nlc] is being used in binding 'identityBigDecimal($nlc.fortyTwo)'");
     }
@@ -282,8 +294,9 @@ public class CompilationFailuresTest extends BaseModelTest {
         }
     }
 
-    @Test
-    public void testTypeSafe() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testTypeSafe(RUN_TYPE runType) {
         String str =
                 "import " + Parent.class.getCanonicalName() + ";" +
                      "declare\n" +
@@ -295,8 +308,8 @@ public class CompilationFailuresTest extends BaseModelTest {
                      "then\n" +
                      "end\n";
 
-        Results results = createKieBuilder(str).getResults();
-        if (testRunType.isExecutableModel()) {
+        Results results = createKieBuilder(runType, str).getResults();
+        if (runType.isExecutableModel()) {
             assertThat(results.getMessages(Message.Level.ERROR).get(0).getText().contains("@typesafe(false) is not supported in executable model"));
         } else {
             assertThat(results.getMessages(Message.Level.ERROR).isEmpty()).isTrue();

@@ -95,7 +95,7 @@ public class InTest extends BaseModelTest {
                 "    $a1: Address($street: street, city in (\"Brno\", \"Milan\", \"Bratislava\")) \n" +
                 "    $a2: Address(city in (\"Krakow\", \"Paris\", $a1.city)) \n" +
                 "then \n" +
-                "end\n";
+                "end\n"; 
 
         KieSession ksession = getKieSession(str);
         ksession.insert(new Address("Brno"));
