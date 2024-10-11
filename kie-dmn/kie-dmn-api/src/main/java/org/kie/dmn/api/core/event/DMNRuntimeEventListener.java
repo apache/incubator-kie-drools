@@ -47,4 +47,6 @@ public interface DMNRuntimeEventListener {
     default void beforeEvaluateAll(BeforeEvaluateAllEvent event) {}
 
     default void afterEvaluateAll(AfterEvaluateAllEvent event) {}
+
+    default void afterEvaluateConditional(AfterEvaluateConditionalEvent event) {}
 }

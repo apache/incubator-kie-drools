@@ -28,6 +28,7 @@ import org.kie.dmn.api.core.ast.DecisionNode;
 import org.kie.dmn.api.core.ast.DecisionServiceNode;
 import org.kie.dmn.api.core.event.AfterEvaluateAllEvent;
 import org.kie.dmn.api.core.event.AfterEvaluateBKMEvent;
+import org.kie.dmn.api.core.event.AfterEvaluateConditionalEvent;
 import org.kie.dmn.api.core.event.AfterEvaluateContextEntryEvent;
 import org.kie.dmn.api.core.event.AfterEvaluateDecisionEvent;
 import org.kie.dmn.api.core.event.AfterEvaluateDecisionServiceEvent;
@@ -42,6 +43,7 @@ import org.kie.dmn.api.core.event.BeforeEvaluateDecisionTableEvent;
 import org.kie.dmn.api.core.event.BeforeInvokeBKMEvent;
 import org.kie.dmn.api.core.event.DMNRuntimeEventListener;
 import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
+import org.kie.dmn.api.core.EvaluatorResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -149,6 +151,13 @@ public final class DMNRuntimeEventManagerUtils {
         }
     }
 
+    public static void fireAfterEvaluateConditional(DMNRuntimeEventManager eventManager, EvaluatorResult evaluatorResult) {
+        if( eventManager.hasListeners() ) {
+            AfterEvaluateConditionalEvent event = new AfterEvaluateConditionalEventImpl(evaluatorResult);
+            notifyListeners(eventManager, l -> l.afterEvaluateConditional(event));
+        }
+    }
+
     private static void notifyListeners(DMNRuntimeEventManager eventManager, Consumer<DMNRuntimeEventListener> consumer) {
         for( DMNRuntimeEventListener listener : eventManager.getListeners() ) {
             try {
@@ -158,6 +167,7 @@ public final class DMNRuntimeEventManagerUtils {
             }
         }
     }
+
 
     private DMNRuntimeEventManagerUtils() {
         // Constructing instances is not allowed for this class

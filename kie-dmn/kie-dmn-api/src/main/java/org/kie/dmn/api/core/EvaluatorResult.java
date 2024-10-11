@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.dmn.core.api;
+package org.kie.dmn.api.core;
 
 public interface EvaluatorResult {
     
