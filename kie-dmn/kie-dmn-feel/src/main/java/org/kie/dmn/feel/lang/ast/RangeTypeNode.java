@@ -36,6 +36,11 @@ public class RangeTypeNode extends TypeNode {
         return new GenRangeType(gen);
     }
 
+    @Override
+    public <T> T accept(Visitor<T> v) {
+        return v.visit(this);
+    }
+
     public TypeNode getGenTypeNode() {
         return genTypeNode;
     }
