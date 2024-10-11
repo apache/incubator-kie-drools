@@ -47,6 +47,7 @@
     <module>process-serialization-protobuf</module>
     <module>process-workitems</module>
     <module>jbpm-usertask</module>
+    <module>jbpm-usertask-workitem</module>
     <module>jbpm-tools</module>
     <module>jbpm-deps-groups</module>
   </modules>

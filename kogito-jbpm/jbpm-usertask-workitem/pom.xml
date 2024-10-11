@@ -9,15 +9,15 @@
         <version>999-SNAPSHOT</version>
     </parent>
 
-    <artifactId>jbpm-usertask</artifactId>
+    <artifactId>jbpm-usertask-workitem</artifactId>
 
 
-    <name>Kogito :: jBPM :: User Task</name>
-    <description>jBPM User Task</description>
+    <name>Kogito :: jBPM :: User Task WorkItem</name>
+    <description>jBPM User Task WorkItem Handler</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <java.module.name>org.kie.kogito.jbpm.usertask</java.module.name>
+        <java.module.name>org.kie.kogito.jbpm.usertask.workitem</java.module.name>
     </properties>
 
     <dependencies>
@@ -27,27 +27,11 @@
         </dependency>
         <dependency>
             <groupId>org.kie.kogito</groupId>
-            <artifactId>kogito-services</artifactId>
+            <artifactId>jbpm-usertask</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-params</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.assertj</groupId>
-            <artifactId>assertj-core</artifactId>
-            <scope>test</scope>
+            <groupId>org.kie.kogito</groupId>
+            <artifactId>process-workitems</artifactId>
         </dependency>
     </dependencies>
 
