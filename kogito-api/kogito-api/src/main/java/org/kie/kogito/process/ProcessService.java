@@ -18,7 +18,6 @@
  */
 package org.kie.kogito.process;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -28,12 +27,8 @@ import java.util.function.Function;
 import org.kie.kogito.MapOutput;
 import org.kie.kogito.MappableToModel;
 import org.kie.kogito.Model;
-import org.kie.kogito.auth.SecurityPolicy;
 import org.kie.kogito.correlation.CompositeCorrelation;
 import org.kie.kogito.internal.process.workitem.Policy;
-import org.kie.kogito.usertask.model.Attachment;
-import org.kie.kogito.usertask.model.AttachmentInfo;
-import org.kie.kogito.usertask.model.Comment;
 
 public interface ProcessService {
 
@@ -109,65 +104,5 @@ public interface ProcessService {
             String taskId,
             String taskName,
             Policy policy);
-
-    <T extends Model> Optional<Comment> addComment(Process<T> process,
-            String id,
-            String taskId,
-            SecurityPolicy policy,
-            String commentInfo);
-
-    <T extends Model> Optional<Comment> updateComment(Process<T> process,
-            String id,
-            String taskId,
-            String commentId,
-            SecurityPolicy policy,
-            String commentInfo);
-
-    <T extends Model> Optional<Boolean> deleteComment(Process<T> process,
-            String id,
-            String taskId,
-            String commentId,
-            SecurityPolicy policy);
-
-    <T extends Model> Optional<Attachment> addAttachment(Process<T> process,
-            String id,
-            String taskId,
-            SecurityPolicy policy,
-            AttachmentInfo attachmentInfo);
-
-    <T extends Model> Optional<Attachment> updateAttachment(Process<T> process,
-            String id,
-            String taskId,
-            String attachmentId,
-            SecurityPolicy policy,
-            AttachmentInfo attachment);
-
-    <T extends Model> Optional<Boolean> deleteAttachment(Process<T> process,
-            String id,
-            String taskId,
-            String attachmentId,
-            SecurityPolicy policy);
-
-    <T extends Model> Optional<Attachment> getAttachment(Process<T> process,
-            String id,
-            String taskId,
-            String attachmentId,
-            SecurityPolicy policy);
-
-    <T extends Model> Optional<Collection<Attachment>> getAttachments(Process<T> process,
-            String id,
-            String taskId,
-            SecurityPolicy policy);
-
-    <T extends Model> Optional<Comment> getComment(Process<T> process,
-            String id,
-            String taskId,
-            String commentId,
-            SecurityPolicy policy);
-
-    <T extends Model> Optional<Collection<Comment>> getComments(Process<T> process,
-            String id,
-            String taskId,
-            SecurityPolicy policy);
 
 }

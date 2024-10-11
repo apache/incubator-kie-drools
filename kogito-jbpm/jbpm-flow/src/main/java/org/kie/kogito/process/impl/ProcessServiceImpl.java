@@ -18,12 +18,9 @@
  */
 package org.kie.kogito.process.impl;
 
-import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -36,7 +33,6 @@ import org.kie.kogito.Application;
 import org.kie.kogito.MapOutput;
 import org.kie.kogito.MappableToModel;
 import org.kie.kogito.Model;
-import org.kie.kogito.auth.SecurityPolicy;
 import org.kie.kogito.config.ConfigBean;
 import org.kie.kogito.correlation.CompositeCorrelation;
 import org.kie.kogito.internal.process.runtime.KogitoNode;
@@ -50,12 +46,6 @@ import org.kie.kogito.process.ProcessInstanceReadMode;
 import org.kie.kogito.process.ProcessService;
 import org.kie.kogito.process.WorkItem;
 import org.kie.kogito.services.uow.UnitOfWorkExecutor;
-import org.kie.kogito.usertask.UserTask;
-import org.kie.kogito.usertask.UserTaskInstance;
-import org.kie.kogito.usertask.UserTasks;
-import org.kie.kogito.usertask.model.Attachment;
-import org.kie.kogito.usertask.model.AttachmentInfo;
-import org.kie.kogito.usertask.model.Comment;
 
 import static java.util.Collections.emptyMap;
 
@@ -288,183 +278,4 @@ public class ProcessServiceImpl implements ProcessService {
                 JsonSchemaUtil.load(Thread.currentThread().getContextClassLoader(), process.id(), workItemTaskName));
     }
 
-    @Override
-    public <T extends Model> Optional<Comment> addComment(Process<T> process,
-            String id,
-            String taskId,
-            SecurityPolicy policy,
-            String commentInfo) {
-        return updateUserTaskInstance(process, id, taskId, policy, userTaskInstance -> {
-            Comment comment = new Comment(UUID.randomUUID().toString(), policy.getUser());
-            comment.setContent(commentInfo);
-            comment.setUpdatedAt(new Date());
-            userTaskInstance.addComment(comment);
-            return comment;
-        });
-
-    }
-
-    @Override
-    public <T extends Model> Optional<Comment> updateComment(Process<T> process,
-            String id,
-            String taskId,
-            String commentId,
-            SecurityPolicy policy,
-            String commentInfo) {
-        return updateUserTaskInstance(process, id, taskId, policy, userTaskInstance -> {
-            Comment comment = new Comment(commentId, policy.getUser());
-            comment.setContent(commentInfo);
-            comment.setUpdatedAt(new Date());
-            userTaskInstance.updateComment(comment);
-            return comment;
-        });
-    }
-
-    @Override
-    public <T extends Model> Optional<Boolean> deleteComment(Process<T> process,
-            String id,
-            String taskId,
-            String commentId,
-            SecurityPolicy policy) {
-        return updateUserTaskInstance(process, id, taskId, policy, userTaskInstance -> {
-            Comment comment = new Comment(commentId, policy.getUser());
-            comment.setContent(null);
-            comment.setUpdatedAt(new Date());
-            userTaskInstance.removeComment(comment);
-            return Boolean.TRUE;
-        });
-    }
-
-    @Override
-    public <T extends Model> Optional<Attachment> addAttachment(Process<T> process,
-            String id,
-            String taskId,
-            SecurityPolicy policy,
-            AttachmentInfo attachmentInfo) {
-        return updateUserTaskInstance(process, id, taskId, policy, userTaskInstance -> {
-            Attachment attachment = new Attachment(UUID.randomUUID().toString(), policy.getUser());
-            attachment.setName(attachmentInfo.getName());
-            attachment.setContent(attachmentInfo.getUri());
-            attachment.setUpdatedAt(new Date());
-            userTaskInstance.addAttachment(attachment);
-            return attachment;
-        });
-    }
-
-    @Override
-    public <T extends Model> Optional<Attachment> updateAttachment(Process<T> process,
-            String id,
-            String taskId,
-            String attachmentId,
-            SecurityPolicy policy,
-            AttachmentInfo attachmentInfo) {
-        return updateUserTaskInstance(process, id, taskId, policy, userTaskInstance -> {
-            Attachment attachment = new Attachment(attachmentId, policy.getUser());
-            attachment.setName(attachmentInfo.getName());
-            attachment.setContent(attachmentInfo.getUri());
-            attachment.setUpdatedAt(new Date());
-            userTaskInstance.updateAttachment(attachment);
-            return attachment;
-        });
-    }
-
-    @Override
-    public <T extends Model> Optional<Boolean> deleteAttachment(Process<T> process,
-            String id,
-            String taskId,
-            String attachmentId,
-            SecurityPolicy policy) {
-        return updateUserTaskInstance(process, id, taskId, policy, userTaskInstance -> {
-            Attachment attachment = new Attachment(attachmentId, policy.getUser());
-            userTaskInstance.removeAttachment(attachment);
-            return Boolean.TRUE;
-        });
-    }
-
-    private <R, T> Optional<R> updateUserTaskInstance(Process<T> process,
-            String id,
-            String taskId,
-            SecurityPolicy policy,
-            Function<UserTaskInstance, R> consumer) {
-        return UnitOfWorkExecutor.executeInUnitOfWork(
-                application.unitOfWorkManager(), () -> {
-                    ProcessInstance<T> processInstance = process.instances().findById(id).orElseThrow(() -> new ProcessInstanceNotFoundException(id));
-                    WorkItem wi = processInstance.workItem(taskId);
-                    String referenceId = wi.getExternalReferenceId();
-                    if (referenceId == null) {
-                        return Optional.empty();
-                    }
-                    String[] data = referenceId.split(":");
-                    UserTasks userTasks = application.get(UserTasks.class);
-                    UserTask userTask = userTasks.userTaskById(data[0]);
-                    Optional<UserTaskInstance> instance = userTask.instances().findById(data[0]);
-                    if (instance.isEmpty()) {
-                        return Optional.empty();
-                    }
-                    UserTaskInstance userTaskInstance = instance.get();
-                    R outcome = consumer.apply(userTaskInstance);
-                    userTask.instances().update(userTaskInstance);
-                    return Optional.ofNullable(outcome);
-                });
-    }
-
-    @Override
-    public <T extends Model> Optional<Attachment> getAttachment(Process<T> process,
-            String id,
-            String taskId,
-            String attachmentId,
-            SecurityPolicy policy) {
-        return retrieveUserTaskInstance(process, id, taskId, policy, ut -> ut.findAttachmentById(attachmentId));
-    }
-
-    @Override
-    public <T extends Model> Optional<Collection<Attachment>> getAttachments(Process<T> process,
-            String id,
-            String taskId,
-            SecurityPolicy policy) {
-        return retrieveUserTaskInstance(process, id, taskId, policy, ut -> ut.getAttachments());
-    }
-
-    @Override
-    public <T extends Model> Optional<Comment> getComment(Process<T> process,
-            String id,
-            String taskId,
-            String commentId,
-            SecurityPolicy policy) {
-        return retrieveUserTaskInstance(process, id, taskId, policy, ut -> ut.findCommentById(commentId));
-    }
-
-    @Override
-    public <T extends Model> Optional<Collection<Comment>> getComments(Process<T> process,
-            String id,
-            String taskId,
-            SecurityPolicy policy) {
-        return retrieveUserTaskInstance(process, id, taskId, policy, ut -> ut.getComments());
-    }
-
-    private <R, T> Optional<R> retrieveUserTaskInstance(Process<T> process,
-            String id,
-            String taskId,
-            SecurityPolicy policy,
-            Function<UserTaskInstance, R> consumer) {
-        return UnitOfWorkExecutor.executeInUnitOfWork(
-                application.unitOfWorkManager(), () -> {
-                    ProcessInstance<T> processInstance = process.instances().findById(id).orElseThrow(() -> new ProcessInstanceNotFoundException(id));
-                    WorkItem wi = processInstance.workItem(taskId);
-                    String referenceId = wi.getExternalReferenceId();
-                    if (referenceId == null) {
-                        return Optional.empty();
-                    }
-                    String[] data = referenceId.split(":");
-                    UserTasks userTasks = application.get(UserTasks.class);
-                    UserTask userTask = userTasks.userTaskById(data[0]);
-                    Optional<UserTaskInstance> instance = userTask.instances().findById(data[0]);
-                    if (instance.isEmpty()) {
-                        return Optional.empty();
-                    }
-                    UserTaskInstance userTaskInstance = instance.get();
-                    R outcome = consumer.apply(userTaskInstance);
-                    return Optional.ofNullable(outcome);
-                });
-    }
 }
