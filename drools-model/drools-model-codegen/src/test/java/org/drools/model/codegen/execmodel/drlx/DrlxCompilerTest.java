@@ -39,9 +39,9 @@ import org.drools.model.codegen.execmodel.generator.ModelGenerator;
 import org.drools.mvel.DrlDumper;
 import org.drools.mvel.parser.MvelParser;
 import org.drools.mvel.parser.ParseStart;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.drools.io.InputStreamResource;
-import org.junit.Ignore;
-import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -81,7 +81,7 @@ public class DrlxCompilerTest {
     }
 
     @Test
-    @Ignore("Rule Unit compiler is not available in Drools 8 yet")
+    @Disabled("Rule Unit compiler is not available in Drools 8 yet")
     public void testCompileUnit() throws IOException {
         InputStream p = getClass().getClassLoader().getResourceAsStream("drlx1/Example.drlx");
         InputStreamResource r = new InputStreamResource(p);
@@ -114,7 +114,7 @@ public class DrlxCompilerTest {
     }
 
     @Test
-    @Ignore("Rule Unit Executor is not available in Drools 8 yet")
+    @Disabled("Rule Unit Executor is not available in Drools 8 yet")
     public void testCompileUnitFull() throws IOException {
         String path = "drlx1/Example.drlx";
         InputStream p = getClass().getClassLoader().getResourceAsStream(path);
