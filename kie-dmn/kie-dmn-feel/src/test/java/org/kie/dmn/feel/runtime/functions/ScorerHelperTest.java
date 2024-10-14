@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Random;
 
 import org.junit.jupiter.api.Test;
-import org.kie.dmn.feel.codegen.feel11.CodegenTestUtil;
+import org.kie.dmn.feel.util.EvaluationContextTestUtil;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.impl.NamedParameter;
 
@@ -443,7 +443,7 @@ class ScorerHelperTest {
         retrieved = ScoreHelper.typeIdentityOfParameters.applyAsInt(compares);
         assertThat(retrieved).isEqualTo(500);
 
-        originalInput = new Object[] { CodegenTestUtil.newEmptyEvaluationContext(), "String" };
+        originalInput = new Object[] { EvaluationContextTestUtil.newEmptyEvaluationContext(), "String" };
         adaptedInput = originalInput;
         parameterTypes = new Class<?>[] { EvaluationContext.class, String.class };
         compares = new ScoreHelper.Compares(originalInput, adaptedInput, parameterTypes);
@@ -451,7 +451,7 @@ class ScorerHelperTest {
         assertThat(retrieved).isEqualTo(1000);
 
         originalInput = new Object[] { "String" };
-        adaptedInput =  new Object[] { CodegenTestUtil.newEmptyEvaluationContext(), "String" };
+        adaptedInput =  new Object[] { EvaluationContextTestUtil.newEmptyEvaluationContext(), "String" };
         parameterTypes = new Class<?>[] { EvaluationContext.class, String.class };
         compares = new ScoreHelper.Compares(originalInput, adaptedInput, parameterTypes);
         retrieved = ScoreHelper.typeIdentityOfParameters.applyAsInt(compares);
@@ -465,7 +465,7 @@ class ScorerHelperTest {
         assertThat(retrieved).isEqualTo(0);
 
         originalInput = new Object[] { "String", 34 };
-        adaptedInput = new Object[] { CodegenTestUtil.newEmptyEvaluationContext(), "String", 34 };
+        adaptedInput = new Object[] { EvaluationContextTestUtil.newEmptyEvaluationContext(), "String", 34 };
         parameterTypes = new Class<?>[] { EvaluationContext.class, String.class, Integer.class };
         compares = new ScoreHelper.Compares(originalInput, adaptedInput, parameterTypes);
         retrieved = ScoreHelper.typeIdentityOfParameters.applyAsInt(compares);
@@ -491,7 +491,7 @@ class ScorerHelperTest {
         retrieved = ScoreHelper.typeIdentityOfParameters.applyAsInt(compares);
         assertThat(retrieved).isEqualTo(0);
 
-        originalInput = new Object[] { CodegenTestUtil.newEmptyEvaluationContext(), "String" };
+        originalInput = new Object[] { EvaluationContextTestUtil.newEmptyEvaluationContext(), "String" };
         parameterTypes = new Class<?>[] { EvaluationContext.class, Integer.class };
         compares = new ScoreHelper.Compares(originalInput, null, parameterTypes);
         retrieved = ScoreHelper.typeIdentityOfParameters.applyAsInt(compares);
@@ -531,20 +531,20 @@ class ScorerHelperTest {
         retrieved = ScoreHelper.coercedToVarargs.applyAsInt(compares);
         assertThat(retrieved).isEqualTo(coercedToVarargsScore);
 
-        originalInput = new Object[] { CodegenTestUtil.newEmptyEvaluationContext(), "String", 34 };
+        originalInput = new Object[] { EvaluationContextTestUtil.newEmptyEvaluationContext(), "String", 34 };
         adaptedInput = new Object[] { new Object[] {"String", 34} };
         compares = new ScoreHelper.Compares(originalInput, adaptedInput, null);
         retrieved = ScoreHelper.coercedToVarargs.applyAsInt(compares);
         assertThat(retrieved).isEqualTo(coercedToVarargsScore);
 
         originalInput = new Object[] { "String", 34 };
-        adaptedInput = new Object[] { CodegenTestUtil.newEmptyEvaluationContext(), new Object[] {"String", 34} };
+        adaptedInput = new Object[] { EvaluationContextTestUtil.newEmptyEvaluationContext(), new Object[] {"String", 34} };
         compares = new ScoreHelper.Compares(originalInput, adaptedInput, null);
         retrieved = ScoreHelper.coercedToVarargs.applyAsInt(compares);
         assertThat(retrieved).isEqualTo(coercedToVarargsScore);
 
-        originalInput = new Object[] { CodegenTestUtil.newEmptyEvaluationContext(), "String", 34 };
-        adaptedInput = new Object[] { CodegenTestUtil.newEmptyEvaluationContext(), new Object[] {"String", 34} };
+        originalInput = new Object[] { EvaluationContextTestUtil.newEmptyEvaluationContext(), "String", 34 };
+        adaptedInput = new Object[] { EvaluationContextTestUtil.newEmptyEvaluationContext(), new Object[] {"String", 34} };
         compares = new ScoreHelper.Compares(originalInput, adaptedInput, null);
         retrieved = ScoreHelper.coercedToVarargs.applyAsInt(compares);
         assertThat(retrieved).isEqualTo(coercedToVarargsScore);

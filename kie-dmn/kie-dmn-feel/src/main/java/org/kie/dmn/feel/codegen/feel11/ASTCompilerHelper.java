@@ -434,7 +434,7 @@ public class ASTCompilerHelper {
     }
 
     public BlockStmt add(RangeTypeNode n) {
-        Expression genTypeNodeExpression = getNodeExpression(n.getGenTypeNode());
+        Expression genTypeNodeExpression = getNodeExpression(n.getGenericTypeNode());
         return addVariableDeclaratorWithObjectCreation(RANGETYPENODE_CT, NodeList.nodeList(genTypeNodeExpression),
                 n.getText());
     }

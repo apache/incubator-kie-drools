@@ -18,21 +18,21 @@ import org.kie.dmn.feel.lang.types.GenRangeType;
 
 public class RangeTypeNode extends TypeNode {
 
-    private final TypeNode genTypeNode;
+    private final TypeNode genericTypeNode;
 
     public RangeTypeNode(ParserRuleContext ctx, TypeNode gen) {
         super(ctx);
-        this.genTypeNode = gen;
+        this.genericTypeNode = gen;
     }
 
-    public RangeTypeNode(TypeNode genTypeNode, String text) {
-        this.genTypeNode = genTypeNode;
+    public RangeTypeNode(TypeNode genericTypeNode, String text) {
+        this.genericTypeNode = genericTypeNode;
         this.setText(text);
     }
 
     @Override
     public Type evaluate(EvaluationContext ctx) {
-        Type gen = genTypeNode.evaluate(ctx);
+        Type gen = genericTypeNode.evaluate(ctx);
         return new GenRangeType(gen);
     }
 
@@ -41,8 +41,8 @@ public class RangeTypeNode extends TypeNode {
         return v.visit(this);
     }
 
-    public TypeNode getGenTypeNode() {
-        return genTypeNode;
+    public TypeNode getGenericTypeNode() {
+        return genericTypeNode;
     }
 
 }

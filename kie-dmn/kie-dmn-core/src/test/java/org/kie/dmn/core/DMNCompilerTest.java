@@ -56,7 +56,7 @@ import static org.kie.dmn.api.core.DMNDecisionResult.DecisionEvaluationStatus.SU
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.core.util.DynamicTypeUtils.mapOf;
 import static org.kie.dmn.core.util.DynamicTypeUtils.prototype;
-import static org.kie.dmn.feel.codegen.feel11.CodegenTestUtil.newEmptyEvaluationContext;
+import static org.kie.dmn.feel.util.EvaluationContextTestUtil.newEmptyEvaluationContext;
 
 public class DMNCompilerTest extends BaseVariantTest {
 
