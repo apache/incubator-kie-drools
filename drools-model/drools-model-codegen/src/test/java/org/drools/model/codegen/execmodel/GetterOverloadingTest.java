@@ -20,7 +20,8 @@ package org.drools.model.codegen.execmodel;
 
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.Message.Level;
@@ -29,11 +30,7 @@ import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class GetterOverloadingTest extends BaseModelTest {
-
-    public GetterOverloadingTest(RUN_TYPE testRunType) {
-        super(testRunType);
-    }
+public class GetterOverloadingTest extends BaseModelTest2 {
 
     // NOTE: Drools/Mvel accepts 5 kinds of getters
     // e.g. for "resource" property,
@@ -46,8 +43,9 @@ public class GetterOverloadingTest extends BaseModelTest {
     //
     // If a class has multiple getters of those 5, one getter has to be chosen based on the above priority order
 
-    @Test
-    public void testDuplicateDifferentPropertyInClassHierarchy() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testDuplicateDifferentPropertyInClassHierarchy(RUN_TYPE runType) {
         // ClassA.resource is boolean : isResource()
         // ClassB.resource is String  : getResource()
         // Mvel picks a method from getResource or isResoure depending on the order of Class.getMethods() -> unreliable. So let's make this ERROR
@@ -59,7 +57,7 @@ public class GetterOverloadingTest extends BaseModelTest {
                            "then\n" +
                            "end\n";
 
-        KieBuilder kieBuilder = createKieBuilder(str);
+        KieBuilder kieBuilder = createKieBuilder(runType, str);
         List<org.kie.api.builder.Message> messages = kieBuilder.getResults().getMessages(Level.ERROR);
         assertThat(messages.get(0).getText()).contains("Incompatible Getter overloading detected");
     }
@@ -90,8 +88,9 @@ public class GetterOverloadingTest extends BaseModelTest {
         }
     }
 
-    @Test
-    public void testBooleanAccessorOverload() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testBooleanAccessorOverload(RUN_TYPE runType) {
         // ClassC implements both isResource() and getResource() for boolean (This is acceptable according to Javabeans spec)
         // isResource() has to be prioritized per Javabeans spec.
         // No Warning
@@ -103,7 +102,7 @@ public class GetterOverloadingTest extends BaseModelTest {
                            "then\n" +
                            "end\n";
 
-        KieBuilder kieBuilder = createKieBuilder(str);
+        KieBuilder kieBuilder = createKieBuilder(runType, str);
         List<org.kie.api.builder.Message> messages = kieBuilder.getResults().getMessages();
         assertThat(messages).isEmpty();
 
@@ -135,8 +134,9 @@ public class GetterOverloadingTest extends BaseModelTest {
         }
     }
 
-    @Test
-    public void testAccessorInMultipleInterfaces() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testAccessorInMultipleInterfaces(RUN_TYPE runType) {
         // 2 super interfaces have the same abstract method
         // Valid overriding. No warning.
         final String str =
@@ -147,7 +147,7 @@ public class GetterOverloadingTest extends BaseModelTest {
                            "then\n" +
                            "end\n";
 
-        KieBuilder kieBuilder = createKieBuilder(str);
+        KieBuilder kieBuilder = createKieBuilder(runType, str);
         List<org.kie.api.builder.Message> messages = kieBuilder.getResults().getMessages();
         assertThat(messages).isEmpty();
 
@@ -189,8 +189,9 @@ public class GetterOverloadingTest extends BaseModelTest {
         }
     }
 
-    @Test
-    public void testAccessorInSuperClassAndInterface() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testAccessorInSuperClassAndInterface(RUN_TYPE runType) {
         // Valid overriding from super class and interface. No Warning
         final String str =
                 "import " + ClassF.class.getCanonicalName() + ";" +
@@ -200,7 +201,7 @@ public class GetterOverloadingTest extends BaseModelTest {
                            "then\n" +
                            "end\n";
 
-        KieBuilder kieBuilder = createKieBuilder(str);
+        KieBuilder kieBuilder = createKieBuilder(runType, str);
         List<org.kie.api.builder.Message> messages = kieBuilder.getResults().getMessages();
         assertThat(messages).isEmpty();
 
@@ -240,8 +241,9 @@ public class GetterOverloadingTest extends BaseModelTest {
         }
     }
 
-    @Test
-    public void testAcceptableStringAccessorOverload() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testAcceptableStringAccessorOverload(RUN_TYPE runType) {
         // ClassG implements getName(), getname() and name() for String
         // This is acceptable overloading and getName() has to be prioritized. No Warning.
         final String str =
@@ -252,7 +254,7 @@ public class GetterOverloadingTest extends BaseModelTest {
                            "then\n" +
                            "end\n";
 
-        KieBuilder kieBuilder = createKieBuilder(str);
+        KieBuilder kieBuilder = createKieBuilder(runType, str);
         List<org.kie.api.builder.Message> messages = kieBuilder.getResults().getMessages();
         assertThat(messages).isEmpty();
 
@@ -287,8 +289,9 @@ public class GetterOverloadingTest extends BaseModelTest {
         }
     }
 
-    @Test
-    public void testCovariantOverload() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testCovariantOverload(RUN_TYPE runType) {
         // ClassH : getValue() returns Number
         // ClassI : getValue() returns Integer
         // a more specialized getter (covariant overload) is preferred.
@@ -300,7 +303,7 @@ public class GetterOverloadingTest extends BaseModelTest {
                            "then\n" +
                            "end\n";
 
-        KieBuilder kieBuilder = createKieBuilder(str);
+        KieBuilder kieBuilder = createKieBuilder(runType, str);
         List<org.kie.api.builder.Message> messages = kieBuilder.getResults().getMessages();
         assertThat(messages).isEmpty();
 
@@ -339,8 +342,9 @@ public class GetterOverloadingTest extends BaseModelTest {
         }
     }
 
-    @Test
-    public void testContravariantOverload() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testContravariantOverload(RUN_TYPE runType) {
         // ClassJ : getValue() returns Integer
         // ClassK : getvalue() returns Number
         // a more specialized getter (covariant overload) is preferred regardless of class hierarchy.
@@ -352,7 +356,7 @@ public class GetterOverloadingTest extends BaseModelTest {
                            "then\n" +
                            "end\n";
 
-        KieBuilder kieBuilder = createKieBuilder(str);
+        KieBuilder kieBuilder = createKieBuilder(runType, str);
         List<org.kie.api.builder.Message> messages = kieBuilder.getResults().getMessages();
         assertThat(messages).isEmpty();
 
@@ -390,8 +394,9 @@ public class GetterOverloadingTest extends BaseModelTest {
         }
     }
 
-    @Test
-    public void testPossibleBooleanAccessorOverload() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testPossibleBooleanAccessorOverload(RUN_TYPE runType) {
         // ClassL implements 5 possible getters
         // This is acceptable overloading and isResource() has to be prioritized. No Warning.
         final String str =
@@ -402,7 +407,7 @@ public class GetterOverloadingTest extends BaseModelTest {
                            "then\n" +
                            "end\n";
 
-        KieBuilder kieBuilder = createKieBuilder(str);
+        KieBuilder kieBuilder = createKieBuilder(runType, str);
         List<org.kie.api.builder.Message> messages = kieBuilder.getResults().getMessages();
         assertThat(messages).isEmpty();
 
