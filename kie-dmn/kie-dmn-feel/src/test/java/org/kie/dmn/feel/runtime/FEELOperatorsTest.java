@@ -127,6 +127,8 @@ public class FEELOperatorsTest extends BaseFEELTest {
                 {"(function(a: context<a: string>) {b: \"b\", c: \"c\"}) instance of function<context<a: string, b: string>>->context<b: string>", Boolean.TRUE , null},
                 {"(function(a: context<a: string, b: string>) \"foo\") instance of function<context<a: string>>->string", Boolean.FALSE , null},
                 {"(function(a: context<a: string>, b: context<a: string, b: string>) \"foo\") instance of function<context<a: string, b: string>,context<a: string, b: string, c: string>>->string", Boolean.TRUE , null},
+                {"range(\"[1..3]\") instance of range<number>", Boolean.TRUE , null},
+                {"range(\"[1..3]\") instance of range<string>", Boolean.FALSE , null}
         };
         return addAdditionalParameters(cases, false);
     }

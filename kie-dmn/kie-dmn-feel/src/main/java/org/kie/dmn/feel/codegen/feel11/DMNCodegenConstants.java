@@ -51,6 +51,7 @@ import org.kie.dmn.feel.lang.ast.PathExpressionNode;
 import org.kie.dmn.feel.lang.ast.QualifiedNameNode;
 import org.kie.dmn.feel.lang.ast.QuantifiedExpressionNode;
 import org.kie.dmn.feel.lang.ast.RangeNode;
+import org.kie.dmn.feel.lang.ast.RangeTypeNode;
 import org.kie.dmn.feel.lang.ast.SignedUnaryNode;
 import org.kie.dmn.feel.lang.ast.StringNode;
 import org.kie.dmn.feel.lang.ast.TemporalConstantNode;
@@ -142,6 +143,8 @@ public class DMNCodegenConstants {
     public static final ClassOrInterfaceType LISTNODE_CT = parseClassOrInterfaceType(ListNode.class.getCanonicalName());
     public static final ClassOrInterfaceType LISTTYPENODE_CT =
             parseClassOrInterfaceType(ListTypeNode.class.getCanonicalName());
+    public static final ClassOrInterfaceType RANGETYPENODE_CT =
+            parseClassOrInterfaceType(RangeTypeNode.class.getCanonicalName());
     public static final ClassOrInterfaceType NAMEDEFNODE_CT =
             parseClassOrInterfaceType(NameDefNode.class.getCanonicalName());
     public static final ClassOrInterfaceType NAMEDPARAMETERNODE_CT =
