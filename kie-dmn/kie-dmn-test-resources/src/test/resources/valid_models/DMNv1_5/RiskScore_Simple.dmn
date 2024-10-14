@@ -43,7 +43,7 @@
           <text>DTI</text>
         </inputExpression>
       </input>
-      <output id="_8694B6C1-E07D-49A0-B77B-B8BF99C85B1D" name="Output-1" />
+      <output id="_8694B6C1-E07D-49A0-B77B-B8BF99C85B1D" />
       <annotation name="Annotations" />
       <rule id="_1578BD9E-2BF9-4BFC-8956-1A736959C937">
         <inputEntry id="_57DAA79A-4929-4D0C-A7D1-E7BA81674B8B">
