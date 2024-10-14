@@ -47,7 +47,6 @@ import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.Processes;
 import org.kie.kogito.process.VariableViolationException;
 import org.kie.kogito.process.WorkItem;
-import org.kie.kogito.usertask.UserTask;
 import org.kie.kogito.usertask.UserTaskConfig;
 import org.kie.kogito.usertask.UserTaskInstance;
 import org.kie.kogito.usertask.UserTaskInstanceNotAuthorizedException;
@@ -108,17 +107,16 @@ public class UserTaskIT extends AbstractCodegenIT {
 
         UserTasks userTasks = app.get(UserTasks.class);
 
-        UserTask userTask_1 = userTasks.userTaskById(getUserTaskId(wi_1.getExternalReferenceId()));
-        UserTaskInstance userTaskInstance_1 = userTask_1.instances().findById(getUserTaskInstanceId(wi_1.getExternalReferenceId())).get();
+        UserTaskInstance userTaskInstance_1 = userTasks.instances().findById(wi_1.getExternalReferenceId()).get();
         assertThat(userTaskInstance_1).isNotNull();
 
         List<UserTaskInstance> userTaskList = userTasks.instances().findByIdentity(IdentityProviders.of("mary"));
         assertThat(userTaskList).hasSize(1);
 
-        userTaskList = userTask_1.instances().findByIdentity(IdentityProviders.of("invalid"));
+        userTaskList = userTasks.instances().findByIdentity(IdentityProviders.of("invalid"));
         assertThat(userTaskList).hasSize(0);
 
-        userTaskList = userTask_1.instances().findByIdentity(IdentityProviders.of("john"));
+        userTaskList = userTasks.instances().findByIdentity(IdentityProviders.of("john"));
         assertThat(userTaskList).hasSize(1);
 
         userTaskInstance_1 = userTaskList.get(0);
@@ -132,8 +130,7 @@ public class UserTaskIT extends AbstractCodegenIT {
         assertThat(workItems.get(0).getName()).isEqualTo("SecondTask");
         WorkItem wi_2 = workItems.get(0);
 
-        UserTask userTask_2 = userTasks.userTaskById(getUserTaskId(wi_2.getExternalReferenceId()));
-        UserTaskInstance userTaskInstance_2 = userTask_2.instances().findById(getUserTaskInstanceId(wi_2.getExternalReferenceId())).get();
+        UserTaskInstance userTaskInstance_2 = userTasks.instances().findById(wi_2.getExternalReferenceId()).get();
         assertThat(userTaskInstance_2).isNotNull();
 
         userTaskList = userTasks.instances().findByIdentity(IdentityProviders.of("john"));
@@ -147,12 +144,44 @@ public class UserTaskIT extends AbstractCodegenIT {
         assertThat(workItemTransitionEvents).hasSize(8);
     }
 
-    private String getUserTaskInstanceId(String externalReference) {
-        return externalReference.split(":")[1];
-    }
+    @Test
+    public void testDoubleLinkUserTaskProcesses() throws Exception {
 
-    private String getUserTaskId(String externalReference) {
-        return externalReference.split(":")[0];
+        Application app = generateCodeProcessesOnly("usertask/UserTasksProcess.bpmn2");
+        assertThat(app).isNotNull();
+
+        // we wired user tasks and processes
+        app.config().get(UserTaskConfig.class).userTaskEventListeners().listeners().add(new UserTaskKogitoWorkItemHandlerProcessListener(app.get(Processes.class)));
+
+        Process<? extends Model> p = app.get(Processes.class).processById("UserTasksProcess");
+
+        Model m = p.createModel();
+        Map<String, Object> parameters = new HashMap<>();
+        m.fromMap(parameters);
+
+        ProcessInstance<?> processInstance = p.createInstance(m);
+        processInstance.start();
+
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
+
+        List<WorkItem> workItems = processInstance.workItems();
+        assertThat(workItems).hasSize(1);
+        assertThat(workItems.get(0).getName()).isEqualTo("FirstTask");
+        WorkItem wi_1 = workItems.get(0);
+
+        UserTasks userTasks = app.get(UserTasks.class);
+
+        UserTaskInstance userTaskInstance_1 = userTasks.instances().findById(wi_1.getExternalReferenceId()).get();
+        assertThat(userTaskInstance_1).isNotNull();
+
+        List<UserTaskInstance> userTaskList = userTasks.instances().findByIdentity(IdentityProviders.of("mary"));
+        assertThat(userTaskList).hasSize(1);
+        // now we check the external reference properly sets one to the other
+        Optional<UserTaskInstance> utLinked = userTasks.instances().findById(wi_1.getExternalReferenceId());
+        assertThat(utLinked).isPresent().get().extracting(UserTaskInstance::getExternalReferenceId).isEqualTo(wi_1.getId());
+        assertThat(wi_1.getExternalReferenceId()).isEqualTo(utLinked.get().getId());
+
+        processInstance.abort();
     }
 
     @Test

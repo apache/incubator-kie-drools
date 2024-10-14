@@ -539,7 +539,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
                 workItem.getPhaseStatus(),
                 workItem.getParameters(),
                 workItem.getResults(),
-                workItem.getParameter(KogitoWorkItem.PARAMETER_UNIQUE_TASK_ID) + ":" + workItem.getExternalReferenceId());
+                workItem.getExternalReferenceId());
     }
 
     private boolean enforce(KogitoWorkItem kogitoWorkItem, Policy... policies) {
