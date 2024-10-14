@@ -24,19 +24,18 @@ import org.drools.model.codegen.execmodel.domain.CalcFact;
 import org.drools.model.codegen.execmodel.domain.Overloaded;
 import org.drools.model.codegen.execmodel.domain.Person;
 import org.drools.model.codegen.execmodel.domain.Result;
-import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class EvalTest extends BaseModelTest {
+public class EvalTest extends BaseModelTest2 {
 
-    public EvalTest( RUN_TYPE testRunType ) {
-        super( testRunType );
-    }
 
-    @Test
-    public void testEval() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testEval(RUN_TYPE runType) {
         String str =
                 "import " + Result.class.getCanonicalName() + ";" +
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -47,7 +46,7 @@ public class EvalTest extends BaseModelTest {
                 "  insert(new Result($p.getName()));\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert( new Person( "Mario", 40 ) );
         ksession.insert( new Person( "Mark", 37 ) );
@@ -59,8 +58,9 @@ public class EvalTest extends BaseModelTest {
         assertThat(results.iterator().next().getValue()).isEqualTo("Mario");
     }
 
-    @Test
-    public void testEvalWithMethodInvocation() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testEvalWithMethodInvocation(RUN_TYPE runType) {
         String str =
                 "import " + Result.class.getCanonicalName() + ";" +
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -71,7 +71,7 @@ public class EvalTest extends BaseModelTest {
                 "  insert(new Result($p.getName()));\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert( new Person( "Mario", 40 ) );
         ksession.insert( new Person( "Mark", 37 ) );
@@ -83,56 +83,61 @@ public class EvalTest extends BaseModelTest {
         assertThat(results.iterator().next().getValue()).isEqualTo("Edson");
     }
 
-    @Test
-    public void testEvalTrue() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testEvalTrue(RUN_TYPE runType) {
         String str =
                 "rule R when\n" +
                 "  eval( true )\n" +
                 "then\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testEvalFalse() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testEvalFalse(RUN_TYPE runType) {
         String str =
                 "rule R when\n" +
                 "  eval( false )\n" +
                 "then\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
         assertThat(ksession.fireAllRules()).isEqualTo(0);
     }
 
-    @Test
-    public void testEvalOr() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testEvalOr(RUN_TYPE runType) {
         String str =
                 "rule R when\n" +
                 "  eval( true ) or eval( false )\n" +
                 "then\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testEvalIdentity() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testEvalIdentity(RUN_TYPE runType) {
         String str =
                 "rule R when\n" +
                         "  eval( 1 == 1 )\n" +
                         "then\n" +
                         "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testFunction() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testFunction(RUN_TYPE runType) {
         String str =
                 "import " + Result.class.getCanonicalName() + ";" +
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -146,7 +151,7 @@ public class EvalTest extends BaseModelTest {
                 "  insert(new Result(hello($p.getName())));\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert( new Person( "Mario", 40 ) );
         ksession.insert( new Person( "Mark", 37 ) );
@@ -158,8 +163,9 @@ public class EvalTest extends BaseModelTest {
         assertThat(results.iterator().next().getValue()).isEqualTo("Hello Mario!");
     }
 
-    @Test
-    public void testFunction2() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testFunction2(RUN_TYPE runType) {
         String str =
                 "import " + Result.class.getCanonicalName() + ";" +
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -173,7 +179,7 @@ public class EvalTest extends BaseModelTest {
                 "  insert(new Result($p.getName()));\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert( new Person( "Mario", 40 ) );
         ksession.insert( new Person( "Mark", 37 ) );
@@ -185,8 +191,9 @@ public class EvalTest extends BaseModelTest {
         assertThat(results.iterator().next().getValue()).isEqualTo("Mario");
     }
 
-    @Test
-    public void testEvalWith2Bindings() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testEvalWith2Bindings(RUN_TYPE runType) {
         String str =
                 "import " + Result.class.getCanonicalName() + ";" +
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -198,7 +205,7 @@ public class EvalTest extends BaseModelTest {
                 "  insert(new Result($p1.getName()));\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert( new Person( "Mario", 40 ) );
         ksession.insert( new Person( "Mark", 38 ) );
@@ -210,8 +217,9 @@ public class EvalTest extends BaseModelTest {
         assertThat(results.iterator().next().getValue()).isEqualTo("Mario");
     }
 
-    @Test
-    public void testEvalWith2BindingsInvokingMethod() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testEvalWith2BindingsInvokingMethod(RUN_TYPE runType) {
         String str =
                 "import " + Result.class.getCanonicalName() + ";" +
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -223,7 +231,7 @@ public class EvalTest extends BaseModelTest {
                 "  insert(new Result($p1.getName()));\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert( new Person( "Mario", 40 ) );
         ksession.insert( new Person( "Mario", 38 ) );
@@ -235,8 +243,9 @@ public class EvalTest extends BaseModelTest {
         assertThat(results.iterator().next().getValue()).isEqualTo("Mario");
     }
 
-    @Test
-    public void testEvalWithDeclaration() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testEvalWithDeclaration(RUN_TYPE runType) {
         String str =
                 "import " + Result.class.getCanonicalName() + ";" +
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -247,7 +256,7 @@ public class EvalTest extends BaseModelTest {
                 "  insert(new Result($p1.getName()));\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert( new Person( "Mario", 40 ) );
         ksession.insert( new Person( "Mark", 38 ) );
@@ -259,8 +268,9 @@ public class EvalTest extends BaseModelTest {
         assertThat(results.iterator().next().getValue()).isEqualTo("Mario");
     }
 
-    @Test
-    public void testEvalWith2Declarations() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testEvalWith2Declarations(RUN_TYPE runType) {
         String str =
                 "import " + Result.class.getCanonicalName() + ";" +
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -272,7 +282,7 @@ public class EvalTest extends BaseModelTest {
                 "  insert(new Result($p1.getName()));\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert( new Person( "Mario", 40 ) );
         ksession.insert( new Person( "Mark", 38 ) );
@@ -284,8 +294,9 @@ public class EvalTest extends BaseModelTest {
         assertThat(results.iterator().next().getValue()).isEqualTo("Mario");
     }
 
-    @Test
-    public void testEvalWithBinary() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testEvalWithBinary(RUN_TYPE runType) {
         String str = "import " + Result.class.getCanonicalName() + ";" +
                      "import " + Person.class.getCanonicalName() + ";" +
                      "rule R when\n" +
@@ -295,7 +306,7 @@ public class EvalTest extends BaseModelTest {
                      "  insert(new Result($p.getName()));\n" +
                      "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert(new Person("Mario", 40));
         ksession.insert(new Person("Mark", 37));
@@ -307,8 +318,9 @@ public class EvalTest extends BaseModelTest {
         assertThat(results.iterator().next().getValue()).isEqualTo("Mario");
     }
 
-    @Test
-    public void testEvalInvokingMethod() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testEvalInvokingMethod(RUN_TYPE runType) {
         String str = "import " + Overloaded.class.getCanonicalName() + ";" +
                      "rule OverloadedMethods\n" +
                      "when\n" +
@@ -318,7 +330,7 @@ public class EvalTest extends BaseModelTest {
                      "  insert(\"matched\");\n" +
                      "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert(new Overloaded());
         ksession.fireAllRules();
@@ -327,8 +339,9 @@ public class EvalTest extends BaseModelTest {
         assertThat(results.size()).isEqualTo(1);
     }
 
-    @Test
-    public void testEvalInvokingMethod2() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testEvalInvokingMethod2(RUN_TYPE runType) {
         String str = "import " + Overloaded.class.getCanonicalName() + ";" +
                      "rule OverloadedMethods\n" +
                      "when\n" +
@@ -338,7 +351,7 @@ public class EvalTest extends BaseModelTest {
                      "  insert(\"matched\");\n" +
                      "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert(new Overloaded());
         ksession.fireAllRules();
@@ -348,8 +361,9 @@ public class EvalTest extends BaseModelTest {
     }
 
 
-    @Test
-    public void testEvalInvokingFunction() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testEvalInvokingFunction(RUN_TYPE runType) {
         String str =
                 "function boolean isPositive(int i){\n" +
                 "  return i > 0;\n" +
@@ -361,7 +375,7 @@ public class EvalTest extends BaseModelTest {
                 "  insert(\"matched\");\n" +
                 "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert(42);
         ksession.fireAllRules();
@@ -370,8 +384,9 @@ public class EvalTest extends BaseModelTest {
         assertThat(results.size()).isEqualTo(1);
     }
 
-    @Test
-    public void testEvalWithGlobal() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testEvalWithGlobal(RUN_TYPE runType) {
         final String drl1 =
                 "import " + Result.class.getCanonicalName() + ";\n" +
                         "global java.lang.Integer globalInt\n" +
@@ -381,7 +396,7 @@ public class EvalTest extends BaseModelTest {
                         "  insert(new Result(\"match\"));\n" +
                         "end\n";
 
-        KieSession ksession = getKieSession( drl1 );
+        KieSession ksession = getKieSession(runType, drl1);
 
         ksession.setGlobal("globalInt", 1);
         ksession.insert(1);
@@ -394,8 +409,9 @@ public class EvalTest extends BaseModelTest {
         assertThat(results.iterator().next().getValue().toString()).isEqualTo("match");
     }
 
-    @Test
-    public void testEvalWithGlobal2() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testEvalWithGlobal2(RUN_TYPE runType) {
         final String drl1 =
                 "import " + Result.class.getCanonicalName() + ";\n" +
                         "global java.lang.Integer globalInt\n" +
@@ -405,7 +421,7 @@ public class EvalTest extends BaseModelTest {
                         "  insert(new Result(\"match\"));\n" +
                         "end\n";
 
-        KieSession ksession = getKieSession( drl1 );
+        KieSession ksession = getKieSession(runType, drl1);
 
         ksession.setGlobal("globalInt", 1);
         ksession.insert(1);
@@ -419,8 +435,9 @@ public class EvalTest extends BaseModelTest {
 
     }
 
-    @Test
-    public void testEvalExprWithFunctionCall() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testEvalExprWithFunctionCall(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                         "global " + GlobalFunctions.class.getCanonicalName() + " functions;" +
@@ -430,7 +447,7 @@ public class EvalTest extends BaseModelTest {
                         "then\n" +
                         "end\n";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
         GlobalFunctions gf = new GlobalFunctions();
         ksession.setGlobal("functions", gf);
 
@@ -445,8 +462,9 @@ public class EvalTest extends BaseModelTest {
         }
     }
 
-    @Test
-    public void testEvalCalculationWithParenthesis() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testEvalCalculationWithParenthesis(RUN_TYPE runType) {
         String str =
                 "import " + CalcFact.class.getCanonicalName() + ";" +
                 "rule R when\n" +
@@ -455,7 +473,7 @@ public class EvalTest extends BaseModelTest {
                 "then\n" +
                 "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert(new CalcFact(1.0d, 1.0d));
         // (1.0 / (1.0 * 10) * 10) is 1. So this rule should not fire
@@ -464,8 +482,9 @@ public class EvalTest extends BaseModelTest {
         assertThat(fired).isEqualTo(0);
     }
 
-    @Test
-    public void testParseIntStringConcatenation() throws Exception {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testParseIntStringConcatenation(RUN_TYPE runType) throws Exception {
         String str =
                 "rule R when\n" +
                      "  $s : String()\n" +
@@ -473,7 +492,7 @@ public class EvalTest extends BaseModelTest {
                      "then\n" +
                      "end\n";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
         ksession.insert("5");
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
@@ -502,8 +521,9 @@ public class EvalTest extends BaseModelTest {
         }
     }
 
-    @Test
-    public void testModifyEvalAfterJoin() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testModifyEvalAfterJoin(RUN_TYPE runType) {
         // DROOLS-7255
         String str =
                 "import " + Dt1.class.getCanonicalName() + ";" +
@@ -534,7 +554,7 @@ public class EvalTest extends BaseModelTest {
                 "        }\n" +
                 "end\n";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         Dt1 dt1 = new Dt1();
         dt1.setA(1);
