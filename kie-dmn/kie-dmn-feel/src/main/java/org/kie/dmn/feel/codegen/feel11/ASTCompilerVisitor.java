@@ -50,6 +50,7 @@ import org.kie.dmn.feel.lang.ast.PathExpressionNode;
 import org.kie.dmn.feel.lang.ast.QualifiedNameNode;
 import org.kie.dmn.feel.lang.ast.QuantifiedExpressionNode;
 import org.kie.dmn.feel.lang.ast.RangeNode;
+import org.kie.dmn.feel.lang.ast.RangeTypeNode;
 import org.kie.dmn.feel.lang.ast.SignedUnaryNode;
 import org.kie.dmn.feel.lang.ast.StringNode;
 import org.kie.dmn.feel.lang.ast.TemporalConstantNode;
@@ -249,6 +250,12 @@ public class ASTCompilerVisitor implements Visitor<BlockStmt> {
 
     @Override
     public BlockStmt visit(RangeNode n) {
+        LOGGER.trace("visit {}", n);
+        return compilerHelper.add(n);
+    }
+
+    @Override
+    public BlockStmt visit(RangeTypeNode n) {
         LOGGER.trace("visit {}", n);
         return compilerHelper.add(n);
     }

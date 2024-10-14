@@ -32,7 +32,7 @@ import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
 import org.mockito.ArgumentCaptor;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.kie.dmn.feel.codegen.feel11.CodegenTestUtil.newEmptyEvaluationContext;
+import static org.kie.dmn.feel.util.EvaluationContextTestUtil.newEmptyEvaluationContext;
 import static org.kie.dmn.feel.lang.ast.forexpressioniterators.ForIterationUtils.getForIteration;
 import static org.kie.dmn.feel.lang.ast.forexpressioniterators.ForIterationUtils.validateValues;
 import static org.kie.dmn.feel.lang.ast.forexpressioniterators.ForIterationUtils.valueMustBeValid;
