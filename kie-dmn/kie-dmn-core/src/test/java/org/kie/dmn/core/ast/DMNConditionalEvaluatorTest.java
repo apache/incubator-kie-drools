@@ -48,9 +48,9 @@ import static org.mockito.Mockito.when;
 
 class DMNConditionalEvaluatorTest {
 
-    private static final String IF_EXPRESSION_ID = "IF_EXPRESSION_ID";
-    private static final String THEN_EXPRESSION_ID = "THEN_EXPRESSION_ID";
-    private static final String ELSE_EXPRESSION_ID = "THEN_EXPRESSION_ID";
+    private static final String ID_ELEMENT_ID = "ID_ELEMENT_ID";
+    private static final String THEN_ELEMENT_ID = "THEN_ELEMENT_ID";
+    private static final String ELSE_ELEMENT_ID = "ELSE_ELEMENT_ID";
     private static DMNRuntimeEventManager eventManagerMock;
     private static DMNRuntimeEventListener spiedListener;
     private static EvaluatorResult ifEvaluationMock;
@@ -79,21 +79,14 @@ class DMNConditionalEvaluatorTest {
         when(thenEvaluatorMock.evaluate(eventManagerMock, dmnResultMock)).thenReturn(thenEvaluationMock);
         when(elseEvaluatorMock.evaluate(eventManagerMock, dmnResultMock)).thenReturn(elseEvaluationMock);
 
-
-        Expression ifExpressionMock = mock(Expression.class);
-        when(ifExpressionMock.getId()).thenReturn(IF_EXPRESSION_ID);
         ChildExpression ifMock = mock(ChildExpression.class);
-        when(ifMock.getExpression()).thenReturn(ifExpressionMock);
+        when(ifMock.getId()).thenReturn(ID_ELEMENT_ID);
 
-        Expression thenExpressionMock = mock(Expression.class);
-        when(thenExpressionMock.getId()).thenReturn(THEN_EXPRESSION_ID);
         ChildExpression thenMock = mock(ChildExpression.class);
-        when(thenMock.getExpression()).thenReturn(thenExpressionMock);
+        when(thenMock.getId()).thenReturn(THEN_ELEMENT_ID);
 
-        Expression elseExpressionMock = mock(Expression.class);
-        when(elseExpressionMock.getId()).thenReturn(ELSE_EXPRESSION_ID);
         ChildExpression elseMock = mock(ChildExpression.class);
-        when(elseMock.getExpression()).thenReturn(elseExpressionMock);
+        when(elseMock.getId()).thenReturn(ELSE_ELEMENT_ID);
 
         Conditional conditionalMock = mock(Conditional.class);
         when(conditionalMock.getIf()).thenReturn(ifMock);
@@ -128,7 +121,7 @@ class DMNConditionalEvaluatorTest {
         AfterEvaluateConditionalEvent evaluateConditionalEvent = evaluateConditionalEventArgumentCaptor.getValue();
         assertThat(evaluateConditionalEvent).isNotNull();
         assertThat(evaluateConditionalEvent.getEvaluatorResultResult()).isEqualTo(ifEvaluationMock);
-        assertThat(evaluateConditionalEvent.getExecutedId()).isEqualTo(IF_EXPRESSION_ID);
+        assertThat(evaluateConditionalEvent.getExecutedId()).isEqualTo(ID_ELEMENT_ID);
     }
 
     @Test
@@ -151,7 +144,7 @@ class DMNConditionalEvaluatorTest {
                 afterConditionalEvaluationEventArgumentCaptor.getValue();
         assertThat(conditionalEvaluationEvent).isNotNull();
         assertThat(conditionalEvaluationEvent.getEvaluatorResultResult()).isEqualTo(thenEvaluationMock);
-        assertThat(conditionalEvaluationEvent.getExecutedId()).isEqualTo(THEN_EXPRESSION_ID);
+        assertThat(conditionalEvaluationEvent.getExecutedId()).isEqualTo(THEN_ELEMENT_ID);
     }
 
     @Test
@@ -164,7 +157,7 @@ class DMNConditionalEvaluatorTest {
                 afterConditionalEvaluationEventArgumentCaptor.getValue();
         assertThat(conditionalEvaluationEvent).isNotNull();
         assertThat(conditionalEvaluationEvent.getEvaluatorResultResult()).isEqualTo(elseEvaluationMock);
-        assertThat(conditionalEvaluationEvent.getExecutedId()).isEqualTo(ELSE_EXPRESSION_ID);
+        assertThat(conditionalEvaluationEvent.getExecutedId()).isEqualTo(ELSE_ELEMENT_ID);
     }
 
     @Test
@@ -177,6 +170,6 @@ class DMNConditionalEvaluatorTest {
                 afterConditionalEvaluationEventArgumentCaptor.getValue();
         assertThat(conditionalEvaluationEvent).isNotNull();
         assertThat(conditionalEvaluationEvent.getEvaluatorResultResult()).isEqualTo(elseEvaluationMock);
-        assertThat(conditionalEvaluationEvent.getExecutedId()).isEqualTo(ELSE_EXPRESSION_ID);
+        assertThat(conditionalEvaluationEvent.getExecutedId()).isEqualTo(ELSE_ELEMENT_ID);
     }
 }

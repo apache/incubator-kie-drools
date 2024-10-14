@@ -386,9 +386,9 @@ public class DMNInputRuntimeTest extends BaseInterpretedVsCompiledTest {
     @MethodSource("params")
     void conditionalIfCheck(boolean useExecModelCompiler) {
         init(useExecModelCompiler);
-        final String ifExpressionId = "_CA44F978-C3A3-4D65-BABB-8BDA2FBB1074";
-        final String thenExpressionId = "_000EE7D4-6DAB-4BC1-8A5A-59E1E9E61B21";
-        final String elseExpressionId = "_EDEFF23B-55B9-4D8C-AB04-8E49F642CB22";
+        final String ifElementId = "_3C702CE4-E5A0-4B6F-905D-C2621FFFA387";
+        final String thenElementId = "_6481FF12-61B5-451C-B775-4143D9B6CD6B";
+        final String elseElementId = "_2CD02CB2-6B56-45C4-B461-405E89D45633";
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("valid_models/DMNv1_5/RiskScore_Simple.dmn", this.getClass() );
 
 
@@ -419,8 +419,8 @@ public class DMNInputRuntimeTest extends BaseInterpretedVsCompiledTest {
         final DMNResult dmnResult1 = runtime.evaluateAll( dmnModel, ctx1 );
         assertThat(dmnResult1.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult1.getMessages())).isFalse();
         assertThat( dmnResult1.getContext().get( "Risk Score" )).isEqualTo(BigDecimal.valueOf(50));
-        assertThat(afterEvaluateConditionalEvents).hasSize(1).allMatch(event -> event.getExecutedId().equals(ifExpressionId));
-        assertThat(afterConditionalEvaluationEvents).hasSize(1).allMatch(event -> event.getExecutedId().equals(elseExpressionId));
+        assertThat(afterEvaluateConditionalEvents).hasSize(1).allMatch(event -> event.getExecutedId().equals(ifElementId));
+        assertThat(afterConditionalEvaluationEvents).hasSize(1).allMatch(event -> event.getExecutedId().equals(elseElementId));
 
         //
         afterEvaluateConditionalEvents.clear();
@@ -431,8 +431,8 @@ public class DMNInputRuntimeTest extends BaseInterpretedVsCompiledTest {
         final DMNResult dmnResult2 = runtime.evaluateAll( dmnModel, ctx2 );
         assertThat(dmnResult2.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult1.getMessages())).isFalse();
         assertThat( dmnResult2.getContext().get( "Risk Score" )).isEqualTo(BigDecimal.valueOf(20));
-        assertThat(afterEvaluateConditionalEvents).hasSize(1).allMatch(event -> event.getExecutedId().equals(ifExpressionId));
-        assertThat(afterConditionalEvaluationEvents).hasSize(1).allMatch(event -> event.getExecutedId().equals(thenExpressionId));
+        assertThat(afterEvaluateConditionalEvents).hasSize(1).allMatch(event -> event.getExecutedId().equals(ifElementId));
+        assertThat(afterConditionalEvaluationEvents).hasSize(1).allMatch(event -> event.getExecutedId().equals(thenElementId));
     }
 
     @ParameterizedTest

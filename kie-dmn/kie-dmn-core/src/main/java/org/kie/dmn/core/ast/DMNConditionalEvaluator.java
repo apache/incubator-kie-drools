@@ -58,9 +58,9 @@ public class DMNConditionalEvaluator implements DMNExpressionEvaluator {
                 .map(c -> (Conditional) c)
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Missing Conditional element inside " + node));
-        evaluatorIdMap.put(ifEvaluator, conditional.getIf().getExpression().getId());
-        evaluatorIdMap.put(thenEvaluator, conditional.getThen().getExpression().getId());
-        evaluatorIdMap.put(elseEvaluator, conditional.getElse().getExpression().getId());
+        evaluatorIdMap.put(ifEvaluator, conditional.getIf().getId());
+        evaluatorIdMap.put(thenEvaluator, conditional.getThen().getId());
+        evaluatorIdMap.put(elseEvaluator, conditional.getElse().getId());
     }
 
     @Override
