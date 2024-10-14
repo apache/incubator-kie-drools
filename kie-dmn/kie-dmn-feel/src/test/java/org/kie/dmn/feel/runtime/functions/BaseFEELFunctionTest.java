@@ -31,7 +31,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kie.dmn.feel.codegen.feel11.CodegenTestUtil;
+import org.kie.dmn.feel.util.EvaluationContextTestUtil;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.ast.BaseNode;
 import org.kie.dmn.feel.lang.ast.InfixOpNode;
@@ -51,7 +51,7 @@ class BaseFEELFunctionTest {
 
     @BeforeEach
     public void setUp() {
-        ctx = CodegenTestUtil.newEmptyEvaluationContext();
+        ctx = EvaluationContextTestUtil.newEmptyEvaluationContext();
     }
 
     @Test

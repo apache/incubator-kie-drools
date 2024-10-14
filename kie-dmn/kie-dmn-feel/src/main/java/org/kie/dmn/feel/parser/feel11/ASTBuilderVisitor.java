@@ -49,6 +49,7 @@ import org.kie.dmn.feel.lang.ast.NameRefNode;
 import org.kie.dmn.feel.lang.ast.QualifiedNameNode;
 import org.kie.dmn.feel.lang.ast.QuantifiedExpressionNode;
 import org.kie.dmn.feel.lang.ast.RangeNode;
+import org.kie.dmn.feel.lang.ast.RangeTypeNode;
 import org.kie.dmn.feel.lang.ast.StringNode;
 import org.kie.dmn.feel.lang.ast.TypeNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestListNode;
@@ -584,6 +585,12 @@ public class ASTBuilderVisitor
     public BaseNode visitListType(FEEL_1_1Parser.ListTypeContext ctx) {
         TypeNode type = (TypeNode) visit(ctx.type());
         return new ListTypeNode(ctx, type);
+    }
+
+    @Override
+    public BaseNode visitRangeType(FEEL_1_1Parser.RangeTypeContext ctx) {
+        TypeNode type = (TypeNode) visit(ctx.type());
+        return new RangeTypeNode(ctx, type);
     }
 
     @Override

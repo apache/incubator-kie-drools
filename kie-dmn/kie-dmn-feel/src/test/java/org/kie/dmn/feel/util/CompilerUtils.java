@@ -25,7 +25,6 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.kie.dmn.feel.codegen.feel11.ASTCompilerVisitor;
-import org.kie.dmn.feel.codegen.feel11.CodegenTestUtil;
 import org.kie.dmn.feel.codegen.feel11.CompiledFEELExpression;
 import org.kie.dmn.feel.codegen.feel11.CompilerBytecodeLoader;
 import org.kie.dmn.feel.lang.EvaluationContext;
@@ -100,7 +99,7 @@ public class CompilerUtils {
 
     public static Object evaluate(CompiledFEELExpression compiledExpression) {
         LOG.debug("{}", compiledExpression);
-        EvaluationContext emptyContext = CodegenTestUtil.newEmptyEvaluationContext();
+        EvaluationContext emptyContext = EvaluationContextTestUtil.newEmptyEvaluationContext();
         Object result = compiledExpression.apply(emptyContext);
         LOG.debug("{}", result);
         return result;
