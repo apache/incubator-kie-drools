@@ -18,15 +18,15 @@
  */
 package org.kie.dmn.core.impl;
 
-import org.kie.dmn.api.core.event.AfterEvaluateConditionalEvent;
 import org.kie.dmn.api.core.EvaluatorResult;
+import org.kie.dmn.api.core.event.AfterConditionalEvaluationEvent;
 
-public class AfterEvaluateConditionalEventImpl implements AfterEvaluateConditionalEvent {
+public class AfterConditionalEvaluationEventImpl implements AfterConditionalEvaluationEvent {
 
     private final EvaluatorResult evaluatorResult;
     private final String executedId;
 
-    public AfterEvaluateConditionalEventImpl(EvaluatorResult evaluatorResult, String executedId) {
+    public AfterConditionalEvaluationEventImpl(EvaluatorResult evaluatorResult, String executedId) {
         this.evaluatorResult = evaluatorResult;
         this.executedId = executedId;
     }

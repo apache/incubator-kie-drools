@@ -26,6 +26,7 @@ import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.ast.BusinessKnowledgeModelNode;
 import org.kie.dmn.api.core.ast.DecisionNode;
 import org.kie.dmn.api.core.ast.DecisionServiceNode;
+import org.kie.dmn.api.core.event.AfterConditionalEvaluationEvent;
 import org.kie.dmn.api.core.event.AfterEvaluateAllEvent;
 import org.kie.dmn.api.core.event.AfterEvaluateBKMEvent;
 import org.kie.dmn.api.core.event.AfterEvaluateConditionalEvent;
@@ -151,10 +152,17 @@ public final class DMNRuntimeEventManagerUtils {
         }
     }
 
-    public static void fireAfterEvaluateConditional(DMNRuntimeEventManager eventManager, EvaluatorResult evaluatorResult) {
+    public static void fireAfterEvaluateConditional(DMNRuntimeEventManager eventManager, EvaluatorResult evaluatorResult, String executedId) {
         if( eventManager.hasListeners() ) {
-            AfterEvaluateConditionalEvent event = new AfterEvaluateConditionalEventImpl(evaluatorResult);
+            AfterEvaluateConditionalEvent event = new AfterEvaluateConditionalEventImpl(evaluatorResult, executedId);
             notifyListeners(eventManager, l -> l.afterEvaluateConditional(event));
+        }
+    }
+
+    public static void fireAfterConditionalEvaluation(DMNRuntimeEventManager eventManager, EvaluatorResult evaluatorResult, String idExecuted) {
+        if( eventManager.hasListeners() ) {
+            AfterConditionalEvaluationEvent event = new AfterConditionalEvaluationEventImpl(evaluatorResult, idExecuted);
+            notifyListeners(eventManager, l -> l.afterConditionalEvaluation(event));
         }
     }
 

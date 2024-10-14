@@ -16,28 +16,18 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.dmn.core.impl;
+package org.kie.dmn.api.core.event;
 
-import org.kie.dmn.api.core.event.AfterEvaluateConditionalEvent;
 import org.kie.dmn.api.core.EvaluatorResult;
 
-public class AfterEvaluateConditionalEventImpl implements AfterEvaluateConditionalEvent {
+/**
+ * Event fired after the <b>then/else</b> branches of an <b>if</b> condition are evaluated
+ * @see AfterEvaluateConditionalEvent
+ */
+public interface AfterConditionalEvaluationEvent {
 
-    private final EvaluatorResult evaluatorResult;
-    private final String executedId;
+    EvaluatorResult getEvaluatorResultResult();
 
-    public AfterEvaluateConditionalEventImpl(EvaluatorResult evaluatorResult, String executedId) {
-        this.evaluatorResult = evaluatorResult;
-        this.executedId = executedId;
-    }
+    String getExecutedId();
 
-    @Override
-    public EvaluatorResult getEvaluatorResultResult() {
-        return evaluatorResult;
-    }
-
-    @Override
-    public String getExecutedId() {
-        return executedId;
-    }
 }

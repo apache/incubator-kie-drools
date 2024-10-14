@@ -48,5 +48,15 @@ public interface DMNRuntimeEventListener {
 
     default void afterEvaluateAll(AfterEvaluateAllEvent event) {}
 
+    /**
+     * Fired after the if <b>if</b> conditional is evaluated
+     *
+     */
     default void afterEvaluateConditional(AfterEvaluateConditionalEvent event) {}
+
+    /**
+     * Fired after the <b>then/else</b> branches of an <b>if</b> condition are evaluated
+     *
+     */
+    default void afterConditionalEvaluation(AfterConditionalEvaluationEvent event) {}
 }

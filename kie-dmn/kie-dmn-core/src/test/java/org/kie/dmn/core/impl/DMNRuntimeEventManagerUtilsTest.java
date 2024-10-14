@@ -24,6 +24,7 @@ import java.util.Set;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.EvaluatorResult;
+import org.kie.dmn.api.core.event.AfterConditionalEvaluationEvent;
 import org.kie.dmn.api.core.event.AfterEvaluateConditionalEvent;
 import org.kie.dmn.api.core.event.DMNRuntimeEventListener;
 import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
@@ -52,11 +53,26 @@ class DMNRuntimeEventManagerUtilsTest {
     @Test
     void fireAfterEvaluateConditional() {
         EvaluatorResult evaluatorResult = mock(EvaluatorResult.class);
-        DMNRuntimeEventManagerUtils.fireAfterEvaluateConditional(eventManagerMock, evaluatorResult);
+        String executedId = "EXECUTED_ID";
+        DMNRuntimeEventManagerUtils.fireAfterEvaluateConditional(eventManagerMock, evaluatorResult, executedId);
         ArgumentCaptor<AfterEvaluateConditionalEvent> evaluateConditionalEventArgumentCaptor = ArgumentCaptor.forClass(AfterEvaluateConditionalEvent.class);
         verify(spiedListener).afterEvaluateConditional (evaluateConditionalEventArgumentCaptor.capture());
         AfterEvaluateConditionalEvent evaluateConditionalEvent = evaluateConditionalEventArgumentCaptor.getValue();
         assertThat(evaluateConditionalEvent).isNotNull();
         assertThat(evaluateConditionalEvent.getEvaluatorResultResult()).isEqualTo(evaluatorResult);
+        assertThat(evaluateConditionalEvent.getExecutedId()).isEqualTo(executedId);
+    }
+
+    @Test
+    void fireAfterConditionalEvaluation() {
+        EvaluatorResult evaluatorResult = mock(EvaluatorResult.class);
+        String executedId = "EXECUTED_ID";
+        DMNRuntimeEventManagerUtils.fireAfterConditionalEvaluation(eventManagerMock, evaluatorResult, executedId);
+        ArgumentCaptor<AfterConditionalEvaluationEvent> conditionalEvaluationEventArgumentCaptor = ArgumentCaptor.forClass(AfterConditionalEvaluationEvent.class);
+        verify(spiedListener).afterConditionalEvaluation (conditionalEvaluationEventArgumentCaptor.capture());
+        AfterConditionalEvaluationEvent evaluateConditionalEvent = conditionalEvaluationEventArgumentCaptor.getValue();
+        assertThat(evaluateConditionalEvent).isNotNull();
+        assertThat(evaluateConditionalEvent.getEvaluatorResultResult()).isEqualTo(evaluatorResult);
+        assertThat(evaluateConditionalEvent.getExecutedId()).isEqualTo(executedId);
     }
 }

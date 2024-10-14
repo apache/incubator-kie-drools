@@ -19,6 +19,7 @@
 package org.kie.dmn.core;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -39,7 +40,11 @@ import org.kie.dmn.api.core.ast.DecisionNode;
 import org.kie.dmn.api.core.ast.DecisionServiceNode;
 import org.kie.dmn.api.core.ast.InputDataNode;
 import org.kie.dmn.api.core.ast.ItemDefNode;
+import org.kie.dmn.api.core.event.AfterConditionalEvaluationEvent;
+import org.kie.dmn.api.core.event.AfterEvaluateConditionalEvent;
+import org.kie.dmn.api.core.event.DMNRuntimeEventListener;
 import org.kie.dmn.core.api.DMNFactory;
+import org.kie.dmn.core.api.event.DefaultDMNRuntimeEventListener;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -375,6 +380,59 @@ public class DMNInputRuntimeTest extends BaseInterpretedVsCompiledTest {
         final DMNResult dmnResult3 = runtime.evaluateAll( dmnModel, ctx3 );
         assertThat(dmnResult3.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult3.getMessages())).isTrue();
         assertThat(dmnResult3.getMessages().stream().anyMatch(m -> m.getMessageType().equals(DMNMessageType.ERROR_EVAL_NODE))).isTrue();
+    }
+
+    @ParameterizedTest
+    @MethodSource("params")
+    void conditionalIfCheck(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
+        final String ifExpressionId = "_CA44F978-C3A3-4D65-BABB-8BDA2FBB1074";
+        final String thenExpressionId = "_000EE7D4-6DAB-4BC1-8A5A-59E1E9E61B21";
+        final String elseExpressionId = "_EDEFF23B-55B9-4D8C-AB04-8E49F642CB22";
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("valid_models/DMNv1_5/RiskScore_Simple.dmn", this.getClass() );
+
+
+        final List<AfterEvaluateConditionalEvent> afterEvaluateConditionalEvents = new ArrayList<>();
+        final List<AfterConditionalEvaluationEvent> afterConditionalEvaluationEvents = new ArrayList<>();
+        runtime.addListener(new DefaultDMNRuntimeEventListener() {
+
+            @Override
+            public void afterEvaluateConditional(AfterEvaluateConditionalEvent event) {
+                afterEvaluateConditionalEvents.add(event);
+            }
+
+            @Override
+            public void afterConditionalEvaluation(AfterConditionalEvaluationEvent event) {
+                afterConditionalEvaluationEvents.add(event);
+            }
+
+        });
+        final DMNModel dmnModel = runtime.getModel(
+                "https://kie.org/dmn/_A3317FB1-7BF8-4904-A5F4-2CD63AF3AEC9",
+                "DMN_A77074C1-21FE-4F7E-9753-F84661569AFC" );
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
+
+        final DMNContext ctx1 = runtime.newContext();
+        ctx1.set("Credit Score", "Poor");
+        ctx1.set("DTI", 33);
+        final DMNResult dmnResult1 = runtime.evaluateAll( dmnModel, ctx1 );
+        assertThat(dmnResult1.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult1.getMessages())).isFalse();
+        assertThat( dmnResult1.getContext().get( "Risk Score" )).isEqualTo(BigDecimal.valueOf(50));
+        assertThat(afterEvaluateConditionalEvents).hasSize(1).allMatch(event -> event.getExecutedId().equals(ifExpressionId));
+        assertThat(afterConditionalEvaluationEvents).hasSize(1).allMatch(event -> event.getExecutedId().equals(elseExpressionId));
+
+        //
+        afterEvaluateConditionalEvents.clear();
+        afterConditionalEvaluationEvents.clear();
+        final DMNContext ctx2 = runtime.newContext();
+        ctx2.set("Credit Score", "Excellent");
+        ctx2.set("DTI", 10);
+        final DMNResult dmnResult2 = runtime.evaluateAll( dmnModel, ctx2 );
+        assertThat(dmnResult2.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult1.getMessages())).isFalse();
+        assertThat( dmnResult2.getContext().get( "Risk Score" )).isEqualTo(BigDecimal.valueOf(20));
+        assertThat(afterEvaluateConditionalEvents).hasSize(1).allMatch(event -> event.getExecutedId().equals(ifExpressionId));
+        assertThat(afterConditionalEvaluationEvents).hasSize(1).allMatch(event -> event.getExecutedId().equals(thenExpressionId));
     }
 
     @ParameterizedTest

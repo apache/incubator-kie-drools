@@ -20,8 +20,14 @@ package org.kie.dmn.api.core.event;
 
 import org.kie.dmn.api.core.EvaluatorResult;
 
+/**
+ * Event fired after the if <b>if</b> conditional is evaluated
+ *
+ */
 public interface AfterEvaluateConditionalEvent {
 
     EvaluatorResult getEvaluatorResultResult();
+
+    String getExecutedId();
 
 }
