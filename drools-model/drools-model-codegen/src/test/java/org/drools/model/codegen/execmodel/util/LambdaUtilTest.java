@@ -20,7 +20,8 @@ package org.drools.model.codegen.execmodel.util;
 
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.LambdaExpr;
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
 
 import static com.github.javaparser.StaticJavaParser.parseExpression;
 import static org.assertj.core.api.Assertions.assertThat;

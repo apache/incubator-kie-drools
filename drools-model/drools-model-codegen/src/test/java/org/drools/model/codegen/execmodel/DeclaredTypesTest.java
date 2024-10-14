@@ -35,21 +35,19 @@ import org.drools.base.rule.IndexableConstraint;
 import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
 import org.drools.model.codegen.execmodel.domain.Person;
 import org.drools.model.codegen.execmodel.domain.Result;
-import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class DeclaredTypesTest extends BaseModelTest {
+public class DeclaredTypesTest extends BaseModelTest2 {
 
-    public DeclaredTypesTest(RUN_TYPE testRunType ) {
-        super( testRunType );
-    }
-
-    @Test
-    public void testPojo() throws Exception {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testPojo(RUN_TYPE runType) throws Exception {
         String str =
                 "import " + Result.class.getCanonicalName() + ";" +
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -67,7 +65,7 @@ public class DeclaredTypesTest extends BaseModelTest {
                 "   insert(new Result(p));\n" +
                 "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert(new Person("Mario", 40));
         ksession.insert(new Person("Mark", 37));
@@ -98,8 +96,9 @@ public class DeclaredTypesTest extends BaseModelTest {
         assertThat(luca.toString()).isEqualTo("POJOPerson( name=Luca, surname=null, age=32 )");
     }
 
-    @Test
-    public void testPojoInDifferentPackages() throws Exception {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testPojoInDifferentPackages(RUN_TYPE runType) throws Exception {
         String ruleWithPojo =
                 "package org.drools.pojo.model;" +
                 "\n" +
@@ -128,7 +127,7 @@ public class DeclaredTypesTest extends BaseModelTest {
                 "   insert(new Result($p));\n" +
                 "end\n";
 
-        KieSession ksession = getKieSession(rule, ruleWithPojo);
+        KieSession ksession = getKieSession(runType, rule, ruleWithPojo);
 
         ksession.insert(new Person("Mario", 40));
         ksession.insert(new Person("Mark", 37));
@@ -159,8 +158,9 @@ public class DeclaredTypesTest extends BaseModelTest {
         assertThat(luca.toString()).isEqualTo("POJOPerson( name=Luca, surname=null, age=32 )");
     }
 
-    @Test
-    public void testPojoReferencingEachOthers() throws Exception {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testPojoReferencingEachOthers(RUN_TYPE runType) throws Exception {
         String factA =
                 "package org.kie.test;" +
                         "\n" +
@@ -183,13 +183,14 @@ public class DeclaredTypesTest extends BaseModelTest {
                         "then\n" +
                         "end";
 
-        KieSession ksession = getKieSession(rule, factA, factB);
+        KieSession ksession = getKieSession(runType, rule, factA, factB);
 
         ksession.fireAllRules();
     }
 
-    @Test
-    public void testDeclaredTypeInLhs() throws Exception {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testDeclaredTypeInLhs(RUN_TYPE runType) throws Exception {
         String str =
                 "import " + Result.class.getCanonicalName() + ";" +
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -212,7 +213,7 @@ public class DeclaredTypesTest extends BaseModelTest {
                 "   insert(new Result($p));\n" +
                 "end\n";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert(new Person("Mario", 40));
         ksession.insert(new Person("Mark", 37));
@@ -265,8 +266,9 @@ public class DeclaredTypesTest extends BaseModelTest {
         }
     }
 
-    @Test
-    public void testPojoPredicateIsUsedAsConstraint() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testPojoPredicateIsUsedAsConstraint(RUN_TYPE runType) {
         String str = "import " + MyNumber.class.getCanonicalName() + ";" +
                      "rule R when\n" +
                      "  MyNumber(even, $value : value)" +
@@ -274,7 +276,7 @@ public class DeclaredTypesTest extends BaseModelTest {
                      "  insert($value);\n" +
                      "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert(new MyNumber(2));
         ksession.fireAllRules();
@@ -290,8 +292,9 @@ public class DeclaredTypesTest extends BaseModelTest {
         assertThat(results.contains(1)).isFalse(); // This is because MyNumber(1) would fail for "even" predicate/getter used here in pattern as a constraint.
     }
 
-    @Test
-    public void testPojoPredicateIsUsedAsConstraintOK() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testPojoPredicateIsUsedAsConstraintOK(RUN_TYPE runType) {
         String str = "import " + MyNumber.class.getCanonicalName() + ";" +
                      "rule R when\n" +
                      "  $n : MyNumber(even, $value : value)" +
@@ -299,7 +302,7 @@ public class DeclaredTypesTest extends BaseModelTest {
                      "  insert($value);\n" +
                      "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert(new MyNumber(2));
         ksession.fireAllRules();
@@ -315,8 +318,9 @@ public class DeclaredTypesTest extends BaseModelTest {
         assertThat(results.contains(1)).isFalse(); // This is because MyNumber(1) would fail for "even" predicate/getter used here in pattern as a constraint.
     }
 
-    @Test
-    public void testBindingOfPredicateIsNotUsedAsConstraint() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testBindingOfPredicateIsNotUsedAsConstraint(RUN_TYPE runType) {
         String str = "import " + MyNumber.class.getCanonicalName() + ";" +
                      "rule R when\n" +
                      "  MyNumber($even : even, $value : value)" +
@@ -324,7 +328,7 @@ public class DeclaredTypesTest extends BaseModelTest {
                      "  insert($value);\n" +
                      "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert(new MyNumber(2));
         ksession.fireAllRules();
@@ -340,8 +344,9 @@ public class DeclaredTypesTest extends BaseModelTest {
         assertThat(results.contains(1)).isTrue(); // This is because MyNumber(1) would simply bind for "even" predicate/getter to $even variable, and not used as a constraint.
     }
 
-    @Test
-    public void testDeclaredWithAllPrimitives() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testDeclaredWithAllPrimitives(RUN_TYPE runType) {
         String str = "declare DeclaredAllPrimitives\n" +
                      "    my_byte    : byte    \n" +
                      "    my_short   : short   \n" +
@@ -358,7 +363,7 @@ public class DeclaredTypesTest extends BaseModelTest {
                      "  insert(new DeclaredAllPrimitives((byte) 1, (short) 1, 1, 1L, 1f, 1d, 'x', true));\n" +
                      "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.fireAllRules();
 
@@ -366,8 +371,9 @@ public class DeclaredTypesTest extends BaseModelTest {
         assertThat(results.size()).isEqualTo(1);
     }
 
-    @Test
-    public void testFactType() throws Exception {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testFactType(RUN_TYPE runType) throws Exception {
         // DROOLS-4784
         String str =
                 "package org.test;\n" +
@@ -381,7 +387,7 @@ public class DeclaredTypesTest extends BaseModelTest {
                 "    insert($v);" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         FactType nameType = ksession.getKieBase().getFactType("org.test", "Name");
         Object name = nameType.newInstance();
@@ -408,8 +414,9 @@ public class DeclaredTypesTest extends BaseModelTest {
         assertThat(index >= 0).isTrue();
     }
 
-    @Test
-    public void testFactTypeNotUsedInRule() throws Exception {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testFactTypeNotUsedInRule(RUN_TYPE runType) throws Exception {
         String str =
                 "package org.test;\n" +
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -424,7 +431,7 @@ public class DeclaredTypesTest extends BaseModelTest {
                 "    insert($v);" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         FactType nameType = ksession.getKieBase().getFactType("org.test", "ExtendedName");
         Object name = nameType.newInstance();
@@ -440,8 +447,9 @@ public class DeclaredTypesTest extends BaseModelTest {
         assertThat(results.iterator().next()).isEqualTo("Mario");
     }
 
-    @Test
-    public void testTypeDeclarationsInheritance() throws Exception {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testTypeDeclarationsInheritance(RUN_TYPE runType) throws Exception {
         String str =
                 "declare Person\n" +
                 "    id : int @key\n" +
@@ -463,11 +471,12 @@ public class DeclaredTypesTest extends BaseModelTest {
                 "        Person pe = new Employee();\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
     }
 
-    @Test
-    public void testEnum() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testEnum(RUN_TYPE runType) {
         String str =
                 "import " + Result.class.getCanonicalName() + ";" +
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -485,7 +494,7 @@ public class DeclaredTypesTest extends BaseModelTest {
                 "            insert(new Result($p));\n" +
                 "end\n";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert(new Person("Mario"));
         ksession.fireAllRules();
@@ -496,8 +505,9 @@ public class DeclaredTypesTest extends BaseModelTest {
         assertThat(p.getAge()).isEqualTo(11);
     }
 
-    @Test
-    public void testDeclaredSlidingWindowOnEventInTypeDeclaration() throws Exception {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testDeclaredSlidingWindowOnEventInTypeDeclaration(RUN_TYPE runType) throws Exception {
         String str =
                 "package org.test;\n" +
                 "declare MyPojo\n" +
@@ -505,7 +515,7 @@ public class DeclaredTypesTest extends BaseModelTest {
                 "end\n" +
                 "rule R when then insert(new MyPojo()); end\n";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
         ksession.fireAllRules();
 
         Object pojo = getObjectsIntoList(ksession, Object.class).iterator().next();
@@ -514,8 +524,9 @@ public class DeclaredTypesTest extends BaseModelTest {
         assertThat((long) f.get(pojo)).isEqualTo(42L);
     }
 
-    @Test
-    public void testNestedDateConstraint() throws Exception {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testNestedDateConstraint(RUN_TYPE runType) throws Exception {
         String str =
                 "package org.test;\n" +
                 "declare Fact\n" +
@@ -530,7 +541,7 @@ public class DeclaredTypesTest extends BaseModelTest {
                 "then\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
         KieBase kbase = ksession.getKieBase();
 
         FactType factType = kbase.getFactType("org.test", "Fact");
@@ -548,8 +559,9 @@ public class DeclaredTypesTest extends BaseModelTest {
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testExtendPojo() throws Exception {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testExtendPojo(RUN_TYPE runType) throws Exception {
         String str =
                 "package org.test;\n" +
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -562,7 +574,7 @@ public class DeclaredTypesTest extends BaseModelTest {
                 "then\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
         KieBase kbase = ksession.getKieBase();
 
         FactType factType = kbase.getFactType("org.test", "MyPerson");

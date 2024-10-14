@@ -20,19 +20,17 @@ package org.drools.model.codegen.execmodel;
 
 import java.math.BigDecimal;
 
-import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class DowncastTest extends BaseModelTest {
+public class DowncastTest extends BaseModelTest2 {
 
-    public DowncastTest( RUN_TYPE testRunType ) {
-        super( testRunType );
-    }
-
-    @Test
-    public void testDowncast() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testDowncast(RUN_TYPE runType) {
         // DROOLS-6520
         String str =
                 "import " + Product.class.getCanonicalName() + ";" +
@@ -48,7 +46,7 @@ public class DowncastTest extends BaseModelTest {
                 "    update($lp);\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         Proposal cashProposal = new Proposal(new CashProduct(new BigDecimal(2)));
         Proposal loanProposal = new Proposal(new LoanProduct(new BigDecimal(12)));
