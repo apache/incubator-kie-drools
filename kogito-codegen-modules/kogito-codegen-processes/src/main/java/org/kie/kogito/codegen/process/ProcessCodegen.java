@@ -62,6 +62,7 @@ import org.kie.kogito.codegen.core.DashboardGeneratedFileUtils;
 import org.kie.kogito.codegen.process.config.ProcessConfigGenerator;
 import org.kie.kogito.codegen.process.events.ProcessCloudEventMeta;
 import org.kie.kogito.codegen.process.events.ProcessCloudEventMetaFactoryGenerator;
+import org.kie.kogito.codegen.process.util.CodegenUtil;
 import org.kie.kogito.internal.SupportedExtensions;
 import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
 import org.kie.kogito.process.validation.ValidationException;
@@ -76,7 +77,6 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 
 import static java.lang.String.format;
 import static java.util.stream.Collectors.toList;
-import static org.kie.kogito.codegen.process.ProcessResourceGenerator.TRANSACTION_ENABLED;
 import static org.kie.kogito.grafana.GrafanaConfigurationWriter.buildDashboardName;
 import static org.kie.kogito.grafana.GrafanaConfigurationWriter.generateOperationalDashboard;
 import static org.kie.kogito.internal.utils.ConversionUtils.sanitizeClassName;
@@ -369,7 +369,7 @@ public class ProcessCodegen extends AbstractGenerator {
                         .withWorkItems(processIdToWorkItemModel.get(workFlowProcess.getId()))
                         .withSignals(metaData.getSignals())
                         .withTriggers(metaData.isStartable(), metaData.isDynamic(), metaData.getTriggers())
-                        .withTransaction(isTransactionEnabled());
+                        .withTransaction(CodegenUtil.isTransactionEnabled(this, context()));
 
                 rgs.add(processResourceGenerator);
             }
@@ -509,11 +509,6 @@ public class ProcessCodegen extends AbstractGenerator {
         }
 
         return generatedFiles;
-    }
-
-    protected boolean isTransactionEnabled() {
-        String processTransactionProperty = String.format("kogito.%s.%s", GENERATOR_NAME, TRANSACTION_ENABLED);
-        return "true".equalsIgnoreCase(context().getApplicationProperty(processTransactionProperty).orElse("true"));
     }
 
     private void storeFile(GeneratedFileType type, String path, String source) {

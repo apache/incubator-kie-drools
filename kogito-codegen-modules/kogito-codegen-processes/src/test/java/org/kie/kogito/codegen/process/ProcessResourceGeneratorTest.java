@@ -20,6 +20,7 @@ package org.kie.kogito.codegen.process;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -35,6 +36,8 @@ import org.kie.api.definition.process.Process;
 import org.kie.kogito.codegen.api.AddonsConfig;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.api.context.impl.JavaKogitoBuildContext;
+import org.kie.kogito.codegen.process.util.CodegenUtil;
+import org.kie.kogito.codegen.usertask.UserTaskCodegen;
 import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
 
 import com.github.javaparser.StaticJavaParser;
@@ -207,6 +210,84 @@ class ProcessResourceGeneratorTest {
         processResourceGenerator.manageTransactional(compilationUnit);
         // the annotation is (conditionally) add after processResourceGenerator.manageTransactional
         testTransaction(restEndpoints, kogitoBuildContext, transactionEnabled);
+    }
+
+    @ParameterizedTest
+    @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#restContextBuilders")
+    void testUserTaskManageTransactionalEnabledByDefault(KogitoBuildContext.Builder contextBuilder) {
+        KogitoBuildContext context = contextBuilder.build();
+        UserTaskCodegen userTaskCodegen = new UserTaskCodegen(context, Collections.emptyList());
+        CompilationUnit compilationUnit = StaticJavaParser.parse(new String(userTaskCodegen.generateRestEndpiont().contents()));
+        List<MethodDeclaration> restEndpoints = compilationUnit.findAll(MethodDeclaration.class).stream().filter(MethodDeclaration::isPublic).toList();
+        assertThat(restEndpoints).isNotEmpty();
+        for (MethodDeclaration method : restEndpoints) {
+            assertThat(findAnnotationExpr(method, context.getDependencyInjectionAnnotator().getTransactionalAnnotation())).isPresent();
+        }
+    }
+
+    @ParameterizedTest
+    @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#restContextBuilders")
+    void testUserTaskManageTransactionalDisabled(KogitoBuildContext.Builder contextBuilder) {
+        KogitoBuildContext context = contextBuilder.build();
+        UserTaskCodegen userTaskCodegen = new UserTaskCodegen(context, Collections.emptyList());
+        context.setApplicationProperty(CodegenUtil.generatorProperty(userTaskCodegen, CodegenUtil.TRANSACTION_ENABLED), "false");
+        CompilationUnit compilationUnit = StaticJavaParser.parse(new String(userTaskCodegen.generateRestEndpiont().contents()));
+        List<MethodDeclaration> restEndpoints = compilationUnit.findAll(MethodDeclaration.class).stream().filter(MethodDeclaration::isPublic).toList();
+        assertThat(restEndpoints).isNotEmpty();
+        for (MethodDeclaration method : restEndpoints) {
+            assertThat(findAnnotationExpr(method, context.getDependencyInjectionAnnotator().getTransactionalAnnotation())).isEmpty();
+        }
+    }
+
+    @ParameterizedTest
+    @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#restContextBuilders")
+    void testUserTaskManageTransactionalGeneratorDisabled(KogitoBuildContext.Builder contextBuilder) {
+        KogitoBuildContext context = contextBuilder.build();
+        UserTaskCodegen userTaskCodegen = new UserTaskCodegen(context, Collections.emptyList());
+        context.setApplicationProperty(CodegenUtil.generatorProperty(userTaskCodegen, CodegenUtil.TRANSACTION_ENABLED), "false");
+        CompilationUnit compilationUnit = StaticJavaParser.parse(new String(userTaskCodegen.generateRestEndpiont().contents()));
+        List<MethodDeclaration> restEndpoints = compilationUnit.findAll(MethodDeclaration.class).stream().filter(MethodDeclaration::isPublic).toList();
+        assertThat(restEndpoints).isNotEmpty();
+        for (MethodDeclaration method : restEndpoints) {
+            assertThat(findAnnotationExpr(method, context.getDependencyInjectionAnnotator().getTransactionalAnnotation())).isEmpty();
+        }
+    }
+
+    @ParameterizedTest
+    @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#restContextBuilders")
+    void testUserTaskManageTransactionalEnabled(KogitoBuildContext.Builder contextBuilder) {
+        KogitoBuildContext context = contextBuilder.build();
+        UserTaskCodegen userTaskCodegen = new UserTaskCodegen(context, Collections.emptyList());
+        context.setApplicationProperty(CodegenUtil.generatorProperty(userTaskCodegen, CodegenUtil.TRANSACTION_ENABLED), "true");
+        CompilationUnit compilationUnit = StaticJavaParser.parse(new String(userTaskCodegen.generateRestEndpiont().contents()));
+        List<MethodDeclaration> restEndpoints = compilationUnit.findAll(MethodDeclaration.class).stream().filter(MethodDeclaration::isPublic).toList();
+        assertThat(restEndpoints).isNotEmpty();
+        for (MethodDeclaration method : restEndpoints) {
+            assertThat(findAnnotationExpr(method, context.getDependencyInjectionAnnotator().getTransactionalAnnotation())).isPresent();
+        }
+    }
+
+    @ParameterizedTest
+    @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#restContextBuilders")
+    void testUserTaskManageTransactionalGeneratorEnabled(KogitoBuildContext.Builder contextBuilder) {
+        KogitoBuildContext context = contextBuilder.build();
+        UserTaskCodegen userTaskCodegen = new UserTaskCodegen(context, Collections.emptyList());
+        context.setApplicationProperty(CodegenUtil.generatorProperty(userTaskCodegen, CodegenUtil.TRANSACTION_ENABLED), "true");
+        CompilationUnit compilationUnit = StaticJavaParser.parse(new String(userTaskCodegen.generateRestEndpiont().contents()));
+        List<MethodDeclaration> restEndpoints = compilationUnit.findAll(MethodDeclaration.class).stream().filter(MethodDeclaration::isPublic).toList();
+        assertThat(restEndpoints).isNotEmpty();
+        for (MethodDeclaration method : restEndpoints) {
+            assertThat(findAnnotationExpr(method, context.getDependencyInjectionAnnotator().getTransactionalAnnotation())).isPresent();
+        }
+    }
+
+    Optional<AnnotationExpr> findAnnotationExpr(MethodDeclaration method, String fqn) {
+        for (AnnotationExpr expr : method.getAnnotations()) {
+            if (expr.getNameAsString().equals(fqn)) {
+                return Optional.of(expr);
+            }
+        }
+        return Optional.empty();
     }
 
     void testTransaction(Collection<MethodDeclaration> restEndpoints,

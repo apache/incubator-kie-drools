@@ -77,11 +77,6 @@ import static org.kie.kogito.internal.utils.ConversionUtils.sanitizeJavaName;
  */
 public class ProcessResourceGenerator {
 
-    /**
-     * Flag used to configure transaction enablement. Default to <code>true</code>
-     */
-    public static final String TRANSACTION_ENABLED = "transactionEnabled";
-
     static final String INVALID_CONTEXT_TEMPLATE = "ProcessResourceGenerator can't be used for context without Rest %s";
 
     private static final Logger LOG = LoggerFactory.getLogger(ProcessResourceGenerator.class);
