@@ -23,8 +23,8 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.lang.types.GenRangeType;
 import org.kie.dmn.feel.util.EvaluationContextTestUtil;
-import org.kie.dmn.feel.util.MockVisitor;
 import org.kie.dmn.feel.lang.types.BuiltInType;
+import org.mockito.Mockito;
 
 class RangeTypeNodeTest {
 
@@ -37,9 +37,10 @@ class RangeTypeNodeTest {
 
     @Test
     void accept() {
-        final MockVisitor visitor = new MockVisitor();
+        final Visitor visitor = Mockito.spy(Visitor.class);
         final RangeTypeNode rangeTypeNode = new RangeTypeNode(null, "sometext");
-        Assertions.assertThat(rangeTypeNode.accept(visitor)).isSameAs(rangeTypeNode);
+        rangeTypeNode.accept(visitor);
+        Mockito.verify(visitor).visit(rangeTypeNode);
     }
 
     @Test
