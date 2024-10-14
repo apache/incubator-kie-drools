@@ -32,21 +32,19 @@ import org.drools.base.util.index.ConstraintTypeOperator;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.model.codegen.execmodel.domain.Person;
 import org.drools.util.DateUtils;
-import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class IndexTest extends BaseModelTest {
+public class IndexTest extends BaseModelTest2 {
 
-    public IndexTest( RUN_TYPE testRunType ) {
-        super( testRunType );
-    }
-
-    @Test
-    public void testBetaIndexOnDeclaration() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testBetaIndexOnDeclaration(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                         "rule R1 when\n" +
@@ -55,7 +53,7 @@ public class IndexTest extends BaseModelTest {
                         "then\n" +
                         "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ObjectTypeNode otn = getObjectTypeNodeForClass( ksession, Person.class );
         BetaNode beta = (BetaNode) otn.getObjectSinkPropagator().getSinks()[0];
@@ -68,8 +66,9 @@ public class IndexTest extends BaseModelTest {
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testBetaIndexWithAccessor() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testBetaIndexWithAccessor(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                         "rule R1 when\n" +
@@ -78,7 +77,7 @@ public class IndexTest extends BaseModelTest {
                         "then\n" +
                         "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert( "test" );
         ksession.insert( new Person("Sofia", 4) );
@@ -110,8 +109,9 @@ public class IndexTest extends BaseModelTest {
         }
     }
 
-    @Test
-    public void testBetaIndexWithImplicitDowncast() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testBetaIndexWithImplicitDowncast(RUN_TYPE runType) {
         // DROOLS-5614
         String str =
                 "import " + ObjectWrapper.class.getCanonicalName() + ";" +
@@ -122,7 +122,7 @@ public class IndexTest extends BaseModelTest {
                 "then\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert( new ObjectWrapper( 42 ) );
         ksession.insert( new IntegerWrapper( 42 ) );
@@ -130,8 +130,9 @@ public class IndexTest extends BaseModelTest {
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testAlphaIndexWithDateEqual() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testAlphaIndexWithDateEqual(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                      "rule R1 when\n" +
@@ -147,7 +148,7 @@ public class IndexTest extends BaseModelTest {
                      "then\n" +
                      "end\n";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         assertConstraintType(ksession.getKieBase(), Person.class, "R1", ConstraintTypeOperator.EQUAL);
         assertConstraintType(ksession.getKieBase(), Person.class, "R2", ConstraintTypeOperator.EQUAL);
@@ -160,8 +161,9 @@ public class IndexTest extends BaseModelTest {
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testAlphaIndexWithDateRelation() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testAlphaIndexWithDateRelation(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                      "rule R1 when\n" +
@@ -177,7 +179,7 @@ public class IndexTest extends BaseModelTest {
                      "then\n" +
                      "end\n";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         assertConstraintType(ksession.getKieBase(), Person.class, "R1", ConstraintTypeOperator.GREATER_THAN);
         assertConstraintType(ksession.getKieBase(), Person.class, "R2", ConstraintTypeOperator.LESS_OR_EQUAL);
@@ -207,8 +209,9 @@ public class IndexTest extends BaseModelTest {
         assertThat(asserted).isTrue();
     }
 
-    @Test
-    public void testBetaIndexOn2ValuesOnLeftTuple() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testBetaIndexOn2ValuesOnLeftTuple(RUN_TYPE runType) {
         // DROOLS-5995
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -219,12 +222,12 @@ public class IndexTest extends BaseModelTest {
                 "then\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ObjectTypeNode otn = getObjectTypeNodeForClass( ksession, Person.class );
         BetaNode beta = (BetaNode) otn.getObjectSinkPropagator().getSinks()[0];
         // this beta index is only supported by executable model
-        assertThat(beta.getRawConstraints().isIndexed()).isEqualTo(this.testRunType.isExecutableModel());
+        assertThat(beta.getRawConstraints().isIndexed()).isEqualTo(runType.isExecutableModel());
 
         ksession.insert( 5 );
         ksession.insert( "test" );
@@ -233,8 +236,9 @@ public class IndexTest extends BaseModelTest {
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testNoBetaIndexWithThisPropertyOnRight() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testNoBetaIndexWithThisPropertyOnRight(RUN_TYPE runType) {
         // DROOLS-5995
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -245,7 +249,7 @@ public class IndexTest extends BaseModelTest {
                 "then\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert( 5 );
         ksession.insert( "test" );
@@ -254,8 +258,9 @@ public class IndexTest extends BaseModelTest {
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testNoBetaIndexWithThisOperationOnLeft() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testNoBetaIndexWithThisOperationOnLeft(RUN_TYPE runType) {
         // DROOLS-5995
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -266,7 +271,7 @@ public class IndexTest extends BaseModelTest {
                 "then\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert( 5 );
         ksession.insert( "test" );
@@ -275,8 +280,9 @@ public class IndexTest extends BaseModelTest {
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testNoBetaIndexWithThisOperationOnLeft2() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testNoBetaIndexWithThisOperationOnLeft2(RUN_TYPE runType) {
         // DROOLS-5995
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -287,7 +293,7 @@ public class IndexTest extends BaseModelTest {
                 "then\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert( 5 );
         ksession.insert( "test" );
@@ -296,8 +302,9 @@ public class IndexTest extends BaseModelTest {
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testNoBetaIndexWithThisMethodInvocationOnLeft() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testNoBetaIndexWithThisMethodInvocationOnLeft(RUN_TYPE runType) {
         // DROOLS-5995
         String str =
                 "import " + List.class.getCanonicalName() + ";" +
@@ -307,12 +314,13 @@ public class IndexTest extends BaseModelTest {
                 "then\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
         assertThat(ksession.fireAllRules()).isEqualTo(0);
     }
 
-    @Test
-    public void testBetaIndexOn3ValuesOnLeftTuple() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testBetaIndexOn3ValuesOnLeftTuple(RUN_TYPE runType) {
         // DROOLS-5995
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -324,12 +332,12 @@ public class IndexTest extends BaseModelTest {
                 "then\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ObjectTypeNode otn = getObjectTypeNodeForClass( ksession, Person.class );
         BetaNode beta = (BetaNode) otn.getObjectSinkPropagator().getSinks()[0];
         // this beta index is only supported by executable model
-        assertThat(beta.getRawConstraints().isIndexed()).isEqualTo(this.testRunType.isExecutableModel());
+        assertThat(beta.getRawConstraints().isIndexed()).isEqualTo(runType.isExecutableModel());
 
         ksession.insert( 2L );
         ksession.insert( 3 );
@@ -339,8 +347,9 @@ public class IndexTest extends BaseModelTest {
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testBetaIndexOn4ValuesOnLeftTuple() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testBetaIndexOn4ValuesOnLeftTuple(RUN_TYPE runType) {
         // DROOLS-5995
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -353,12 +362,12 @@ public class IndexTest extends BaseModelTest {
                 "then\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ObjectTypeNode otn = getObjectTypeNodeForClass( ksession, Person.class );
         BetaNode beta = (BetaNode) otn.getObjectSinkPropagator().getSinks()[0];
         // this beta index is only supported by executable model
-        assertThat(beta.getRawConstraints().isIndexed()).isEqualTo(this.testRunType.isExecutableModel());
+        assertThat(beta.getRawConstraints().isIndexed()).isEqualTo(runType.isExecutableModel());
 
         ksession.insert( (short)1 );
         ksession.insert( 1L );
@@ -369,8 +378,9 @@ public class IndexTest extends BaseModelTest {
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testAlphaIndexHashed() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testAlphaIndexHashed(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                      "rule R1 when\n" +
@@ -386,13 +396,14 @@ public class IndexTest extends BaseModelTest {
                      "then\n" +
                      "end\n";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         assertHashIndex(ksession, Person.class, 3);
     }
 
-    @Test
-    public void testAlphaIndexHashedNonGetter() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testAlphaIndexHashedNonGetter(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                      "rule R1 when\n" +
@@ -408,7 +419,7 @@ public class IndexTest extends BaseModelTest {
                      "then\n" +
                      "end\n";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         assertHashIndex(ksession, Person.class, 3);
     }
@@ -422,8 +433,9 @@ public class IndexTest extends BaseModelTest {
         assertThat(compositeObjectSinkAdapter.getHashedSinkMap().size()).isEqualTo(expectedHashedSinkMapSize);
     }
 
-    @Test
-    public void testAlphaIndexHashedPrimitiveWrapper() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testAlphaIndexHashedPrimitiveWrapper(RUN_TYPE runType) {
         String str =
                 "import " + Integer.class.getCanonicalName() + ";\n" +
                      "rule R1 when\n" +
@@ -439,13 +451,14 @@ public class IndexTest extends BaseModelTest {
                      "then\n" +
                      "end\n";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         assertHashIndex(ksession, Integer.class, 3);
     }
 
-    @Test
-    public void testAlphaIndexHashedNumberInterface() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testAlphaIndexHashedNumberInterface(RUN_TYPE runType) {
         String str =
                 "import " + Integer.class.getCanonicalName() + ";\n" +
                      "rule R1 when\n" +
@@ -461,7 +474,7 @@ public class IndexTest extends BaseModelTest {
                      "then\n" +
                      "end\n";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         assertHashIndex(ksession, Number.class, 3);
 
@@ -470,8 +483,9 @@ public class IndexTest extends BaseModelTest {
         assertThat(fired).isEqualTo(1);
     }
 
-    @Test
-    public void testAlphaIndexWithDeclarationInPattern() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testAlphaIndexWithDeclarationInPattern(RUN_TYPE runType) {
         final String str =
                 "package org.drools.mvel.compiler\n" +
                            "import " + Person.class.getCanonicalName() + ";" +
@@ -481,7 +495,7 @@ public class IndexTest extends BaseModelTest {
                            "then\n" +
                            "end\n";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         ObjectTypeNode otn = getObjectTypeNodeForClass(ksession, Person.class);
         ObjectSink sink = otn.getObjectSinkPropagator().getSinks()[0];
@@ -494,8 +508,9 @@ public class IndexTest extends BaseModelTest {
         assertThat(fired).isEqualTo(1);
     }
 
-    @Test
-    public void testAlphaIndexWithDeclarationInPatternWithSameNameProp() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testAlphaIndexWithDeclarationInPatternWithSameNameProp(RUN_TYPE runType) {
         final String str =
                 "package org.drools.mvel.compiler\n" +
                            "import " + Person.class.getCanonicalName() + ";" +
@@ -506,7 +521,7 @@ public class IndexTest extends BaseModelTest {
                            "then\n" +
                            "end\n";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         ObjectTypeNode otn = getObjectTypeNodeForClass(ksession, Person.class);
         ObjectSink sink = otn.getObjectSinkPropagator().getSinks()[0];

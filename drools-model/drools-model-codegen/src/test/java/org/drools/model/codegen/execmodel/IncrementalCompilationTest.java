@@ -24,7 +24,8 @@ import java.util.List;
 
 import org.drools.model.codegen.execmodel.domain.Address;
 import org.drools.model.codegen.execmodel.domain.Person;
-import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieModuleModel;
@@ -34,11 +35,8 @@ import org.kie.internal.builder.conf.AlphaNetworkCompilerOption;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class IncrementalCompilationTest extends BaseModelTest {
+public class IncrementalCompilationTest extends BaseModelTest2 {
 
-    public IncrementalCompilationTest( RUN_TYPE testRunType ) {
-        super( testRunType );
-    }
 
     public class Message implements Serializable {
         private final String value;
@@ -52,8 +50,9 @@ public class IncrementalCompilationTest extends BaseModelTest {
         }
     }
 
-    @Test
-    public void testKJarUpgradeSameAndDifferentSessions() throws Exception {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testKJarUpgradeSameAndDifferentSessions(RUN_TYPE runType) throws Exception {
         String drl1 = "package org.drools.incremental\n" +
                 "import " + Message.class.getCanonicalName() + ";\n" +
                 "rule R1 when\n" +
@@ -80,7 +79,7 @@ public class IncrementalCompilationTest extends BaseModelTest {
 
         // Create an in-memory jar for version 1.0.0
         ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-upgrade", "1.0.0" );
-        createAndDeployJar( ks, releaseId1, drl1, drl2_1 );
+        createAndDeployJar(runType, ks, releaseId1, drl1, drl2_1 );
 
         // Create a session and fire rules
         KieContainer kc = ks.newKieContainer( releaseId1 );
@@ -90,7 +89,7 @@ public class IncrementalCompilationTest extends BaseModelTest {
 
         // Create a new jar for version 1.1.0
         ReleaseId releaseId2 = ks.newReleaseId( "org.kie", "test-upgrade", "1.1.0" );
-        createAndDeployJar( ks, releaseId2, drl1, drl2_2 );
+        createAndDeployJar(runType, ks, releaseId2, drl1, drl2_2 );
 
         // try to update the container to version 1.1.0
         kc.updateToVersion( releaseId2 );
@@ -105,8 +104,9 @@ public class IncrementalCompilationTest extends BaseModelTest {
         assertThat(ksession2.fireAllRules()).isEqualTo(2);
     }
 
-    @Test
-    public void testKJarUpgradeWithDeclaredType() throws Exception {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testKJarUpgradeWithDeclaredType(RUN_TYPE runType) throws Exception {
         String drl1 = "package org.drools.incremental\n" +
                 "declare Message value : String end\n" +
                 "rule Init when then insert(new Message( \"Hello World\" )); end\n" +
@@ -141,10 +141,10 @@ public class IncrementalCompilationTest extends BaseModelTest {
         ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-upgrade", "1.0.0" );
 
         KieModuleModel kieModuleModel = ks.newKieModuleModel();
-        if(this.testRunType.isAlphaNetworkCompiler()) {
+        if(runType.isAlphaNetworkCompiler()) {
             kieModuleModel.setConfigurationProperty("drools.alphaNetworkCompiler", AlphaNetworkCompilerOption.INMEMORY.toString());
         }
-        createAndDeployJar( ks, kieModuleModel, releaseId1, drl1, drl2_1 );
+        createAndDeployJar(runType, ks, kieModuleModel, releaseId1, drl1, drl2_1 );
 
         KieContainer kc = ks.newKieContainer( releaseId1 );
 
@@ -154,7 +154,7 @@ public class IncrementalCompilationTest extends BaseModelTest {
 
         // Create a new jar for version 1.1.0
         ReleaseId releaseId2 = ks.newReleaseId( "org.kie", "test-upgrade", "1.1.0" );
-        createAndDeployJar( ks, kieModuleModel, releaseId2, drl1, drl2_2 );
+        createAndDeployJar(runType, ks, kieModuleModel, releaseId2, drl1, drl2_2 );
 
         // try to update the container to version 1.1.0
         kc.updateToVersion( releaseId2 );
@@ -165,7 +165,7 @@ public class IncrementalCompilationTest extends BaseModelTest {
 
         // Create a new jar for version 1.2.0
         ReleaseId releaseId3 = ks.newReleaseId( "org.kie", "test-upgrade", "1.2.0" );
-        createAndDeployJar( ks, kieModuleModel, releaseId3, drl1, drl2_3 );
+        createAndDeployJar(runType, ks, kieModuleModel, releaseId3, drl1, drl2_3 );
 
         // try to update the container to version 1.2.0
         kc.updateToVersion( releaseId3 );
@@ -178,8 +178,9 @@ public class IncrementalCompilationTest extends BaseModelTest {
         assertThat(list.get(0)).isEqualTo("Hello World");
     }
 
-    @Test
-    public void testKJarUpgradeWithChangedDeclaredType() throws Exception {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testKJarUpgradeWithChangedDeclaredType(RUN_TYPE runType) throws Exception {
         String drl1a = "package org.drools.incremental\n" +
                 "declare Message value : String end\n" +
                 "rule Init when then insert(new Message( \"Hello World\" )); end\n" +
@@ -202,7 +203,7 @@ public class IncrementalCompilationTest extends BaseModelTest {
 
         // Create an in-memory jar for version 1.0.0
         ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-upgrade", "1.0.0" );
-        createAndDeployJar( ks, releaseId1, drl1a );
+        createAndDeployJar(runType, ks, releaseId1, drl1a );
 
         // Create a session and fire rules
         KieContainer kc = ks.newKieContainer( releaseId1 );
@@ -211,7 +212,7 @@ public class IncrementalCompilationTest extends BaseModelTest {
 
         // Create a new jar for version 1.1.0
         ReleaseId releaseId2 = ks.newReleaseId( "org.kie", "test-upgrade", "1.1.0" );
-        createAndDeployJar( ks, releaseId2, drl1b );
+        createAndDeployJar(runType, ks, releaseId2, drl1b );
 
         // try to update the container to version 1.1.0
         kc.updateToVersion( releaseId2 );
@@ -224,8 +225,9 @@ public class IncrementalCompilationTest extends BaseModelTest {
         assertThat(ksession2.fireAllRules()).isEqualTo(2);
     }
 
-    @Test
-    public void testIdenticalConsequenceButImportChange() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testIdenticalConsequenceButImportChange(RUN_TYPE runType) {
         final String drl1 = "package org.drools.test\n" +
                     "import " + Person.class.getCanonicalName() + "\n" +
                     "rule R\n" +
@@ -249,7 +251,7 @@ public class IncrementalCompilationTest extends BaseModelTest {
         final KieServices ks = KieServices.Factory.get();
 
         final ReleaseId releaseId1 = ks.newReleaseId("org.kie", "test-upgrade", "1.0.0");
-        createAndDeployJar(ks, releaseId1, drl1);
+        createAndDeployJar(runType, ks, releaseId1, drl1);
 
         final KieContainer kc = ks.newKieContainer(releaseId1);
         final KieSession kieSession = kc.newKieSession();
@@ -259,7 +261,7 @@ public class IncrementalCompilationTest extends BaseModelTest {
         assertThat(kieSession.fireAllRules()).isEqualTo(1);
 
         final ReleaseId releaseId2 = ks.newReleaseId("org.kie", "test-upgrade", "2.0.0");
-        createAndDeployJar(ks, releaseId2, drl2);
+        createAndDeployJar(runType, ks, releaseId2, drl2);
 
         kc.updateToVersion(releaseId2);
 
@@ -270,8 +272,9 @@ public class IncrementalCompilationTest extends BaseModelTest {
         assertThat(kieSession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testIdenticalPredicateButImportChange() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testIdenticalPredicateButImportChange(RUN_TYPE runType) {
         // This test also verifies LambdaExtractor
         final String drl1 = "package org.drools.test\n" +
                     "import " + Person.class.getCanonicalName() + "\n" +
@@ -296,7 +299,7 @@ public class IncrementalCompilationTest extends BaseModelTest {
         final KieServices ks = KieServices.Factory.get();
 
         final ReleaseId releaseId1 = ks.newReleaseId("org.kie", "test-upgrade", "1.0.0");
-        createAndDeployJar(ks, releaseId1, drl1);
+        createAndDeployJar(runType, ks, releaseId1, drl1);
 
         final KieContainer kc = ks.newKieContainer(releaseId1);
         final KieSession kieSession = kc.newKieSession();
@@ -306,7 +309,7 @@ public class IncrementalCompilationTest extends BaseModelTest {
         assertThat(kieSession.fireAllRules()).isEqualTo(0);
 
         final ReleaseId releaseId2 = ks.newReleaseId("org.kie", "test-upgrade", "2.0.0");
-        createAndDeployJar(ks, releaseId2, drl2);
+        createAndDeployJar(runType, ks, releaseId2, drl2);
 
         kc.updateToVersion(releaseId2);
 
@@ -317,8 +320,9 @@ public class IncrementalCompilationTest extends BaseModelTest {
         assertThat(kieSession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testKJarUpgradeWithChangedFunctionForRHSWithoutExternalizeLambda() throws Exception {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testKJarUpgradeWithChangedFunctionForRHSWithoutExternalizeLambda(RUN_TYPE runType) throws Exception {
 
         String drl1a = "package org.drools.incremental\n" +
                        "import " + Person.class.getCanonicalName() + "\n" +
@@ -346,7 +350,7 @@ public class IncrementalCompilationTest extends BaseModelTest {
         ReleaseId releaseId1 = ks.newReleaseId("org.kie", "test-upgrade", "1.0.0");
         KieModuleModel model1 = ks.newKieModuleModel();
         model1.setConfigurationProperty("drools.externaliseCanonicalModelLambda", Boolean.FALSE.toString());
-        createAndDeployJar(ks, model1, releaseId1, drl1a);
+        createAndDeployJar(runType, ks, model1, releaseId1, drl1a);
 
         // Create a session and fire rules
         KieContainer kc = ks.newKieContainer(releaseId1);
@@ -362,7 +366,7 @@ public class IncrementalCompilationTest extends BaseModelTest {
         ReleaseId releaseId2 = ks.newReleaseId("org.kie", "test-upgrade", "1.1.0");
         KieModuleModel model2 = ks.newKieModuleModel();
         model2.setConfigurationProperty("drools.externaliseCanonicalModelLambda", Boolean.FALSE.toString());
-        createAndDeployJar(ks, model2, releaseId2, drl1b);
+        createAndDeployJar(runType, ks, model2, releaseId2, drl1b);
 
         // try to update the container to version 1.1.0
         kc.updateToVersion(releaseId2);
@@ -382,8 +386,9 @@ public class IncrementalCompilationTest extends BaseModelTest {
         assertThat(list2).containsExactlyInAnyOrder("Good bye George");
     }
 
-    @Test
-    public void testKJarUpgradeWithChangedFunctionForRHSWithExternalizeLambda() throws Exception {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testKJarUpgradeWithChangedFunctionForRHSWithExternalizeLambda(RUN_TYPE runType) throws Exception {
 
         String drl1a = "package org.drools.incremental\n" +
                        "import " + Person.class.getCanonicalName() + "\n" +
@@ -411,7 +416,7 @@ public class IncrementalCompilationTest extends BaseModelTest {
         ReleaseId releaseId1 = ks.newReleaseId("org.kie", "test-upgrade", "1.0.0");
         KieModuleModel model1 = ks.newKieModuleModel();
         model1.setConfigurationProperty("drools.externaliseCanonicalModelLambda", Boolean.TRUE.toString());
-        createAndDeployJar(ks, model1, releaseId1, drl1a);
+        createAndDeployJar(runType, ks, model1, releaseId1, drl1a);
 
         // Create a session and fire rules
         KieContainer kc = ks.newKieContainer(releaseId1);
@@ -427,7 +432,7 @@ public class IncrementalCompilationTest extends BaseModelTest {
         ReleaseId releaseId2 = ks.newReleaseId("org.kie", "test-upgrade", "1.1.0");
         KieModuleModel model2 = ks.newKieModuleModel();
         model2.setConfigurationProperty("drools.externaliseCanonicalModelLambda", Boolean.TRUE.toString());
-        createAndDeployJar(ks, model2, releaseId2, drl1b);
+        createAndDeployJar(runType, ks, model2, releaseId2, drl1b);
 
         // try to update the container to version 1.1.0
         kc.updateToVersion(releaseId2);
@@ -447,8 +452,9 @@ public class IncrementalCompilationTest extends BaseModelTest {
         assertThat(list2).containsExactlyInAnyOrder("Good bye George");
     }
 
-    @Test
-    public void testKJarUpgradeWithChangedJavaFunctionForRHSWithoutExternalizeLambda() throws Exception {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testKJarUpgradeWithChangedJavaFunctionForRHSWithoutExternalizeLambda(RUN_TYPE runType) throws Exception {
 
         String java1 = "package org.drools.test;\n" +
                        "public class MyFunction {\n" +
@@ -480,7 +486,7 @@ public class IncrementalCompilationTest extends BaseModelTest {
         ReleaseId releaseId1 = ks.newReleaseId("org.kie", "test-upgrade", "1.0.0");
         KieModuleModel model1 = ks.newKieModuleModel();
         model1.setConfigurationProperty("drools.externaliseCanonicalModelLambda", Boolean.FALSE.toString());
-        createAndDeployJar(ks, model1, releaseId1,
+        createAndDeployJar(runType, ks, model1, releaseId1,
                            new KieFile("src/main/java/org/drools/test/MyFunction.java", java1),
                            new KieFile("src/main/resources/org/drools/incremental/r1.drl", drl));
 
@@ -498,7 +504,7 @@ public class IncrementalCompilationTest extends BaseModelTest {
         ReleaseId releaseId2 = ks.newReleaseId("org.kie", "test-upgrade", "1.1.0");
         KieModuleModel model2 = ks.newKieModuleModel();
         model2.setConfigurationProperty("drools.externaliseCanonicalModelLambda", Boolean.FALSE.toString());
-        createAndDeployJar(ks, model2, releaseId2,
+        createAndDeployJar(runType, ks, model2, releaseId2,
                            new KieFile("src/main/java/org/drools/test/MyFunction.java", java2),
                            new KieFile("src/main/resources/org/drools/incremental/r1.drl", drl));
         // try to update the container to version 1.1.0
@@ -519,8 +525,9 @@ public class IncrementalCompilationTest extends BaseModelTest {
         assertThat(list2).containsExactlyInAnyOrder("Good bye George");
     }
 
-    @Test
-    public void testKJarUpgradeWithChangedJavaFunctionForRHSWithExternalizeLambda() throws Exception {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testKJarUpgradeWithChangedJavaFunctionForRHSWithExternalizeLambda(RUN_TYPE runType) throws Exception {
 
         String java1 = "package org.drools.test;\n" +
                        "public class MyFunction {\n" +
@@ -552,7 +559,7 @@ public class IncrementalCompilationTest extends BaseModelTest {
         ReleaseId releaseId1 = ks.newReleaseId("org.kie", "test-upgrade", "1.0.0");
         KieModuleModel model1 = ks.newKieModuleModel();
         model1.setConfigurationProperty("drools.externaliseCanonicalModelLambda", Boolean.TRUE.toString());
-        createAndDeployJar(ks, model1, releaseId1,
+        createAndDeployJar(runType, ks, model1, releaseId1,
                            new KieFile("src/main/java/org/drools/test/MyFunction.java", java1),
                            new KieFile("src/main/resources/org/drools/incremental/r1.drl", drl));
 
@@ -570,7 +577,7 @@ public class IncrementalCompilationTest extends BaseModelTest {
         ReleaseId releaseId2 = ks.newReleaseId("org.kie", "test-upgrade", "1.1.0");
         KieModuleModel model2 = ks.newKieModuleModel();
         model2.setConfigurationProperty("drools.externaliseCanonicalModelLambda", Boolean.TRUE.toString());
-        createAndDeployJar(ks, model2, releaseId2,
+        createAndDeployJar(runType, ks, model2, releaseId2,
                            new KieFile("src/main/java/org/drools/test/MyFunction.java", java2),
                            new KieFile("src/main/resources/org/drools/incremental/r1.drl", drl));
 
@@ -592,8 +599,9 @@ public class IncrementalCompilationTest extends BaseModelTest {
         assertThat(list2).containsExactlyInAnyOrder("Good bye George");
     }
 
-    @Test
-    public void testKJarUpgradeWithChangedFunctionForLHSWithoutExternalizeLambda() throws Exception {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testKJarUpgradeWithChangedFunctionForLHSWithoutExternalizeLambda(RUN_TYPE runType) throws Exception {
 
         String drl1a = "package org.drools.incremental\n" +
                        "import " + Person.class.getCanonicalName() + "\n" +
@@ -621,7 +629,7 @@ public class IncrementalCompilationTest extends BaseModelTest {
         ReleaseId releaseId1 = ks.newReleaseId("org.kie", "test-upgrade", "1.0.0");
         KieModuleModel model1 = ks.newKieModuleModel();
         model1.setConfigurationProperty("drools.externaliseCanonicalModelLambda", Boolean.FALSE.toString());
-        createAndDeployJar(ks, model1, releaseId1, drl1a);
+        createAndDeployJar(runType, ks, model1, releaseId1, drl1a);
 
         // Create a session and fire rules
         KieContainer kc = ks.newKieContainer(releaseId1);
@@ -638,7 +646,7 @@ public class IncrementalCompilationTest extends BaseModelTest {
         ReleaseId releaseId2 = ks.newReleaseId("org.kie", "test-upgrade", "1.1.0");
         KieModuleModel model2 = ks.newKieModuleModel();
         model2.setConfigurationProperty("drools.externaliseCanonicalModelLambda", Boolean.FALSE.toString());
-        createAndDeployJar(ks, model2, releaseId2, drl1b);
+        createAndDeployJar(runType, ks, model2, releaseId2, drl1b);
 
         // try to update the container to version 1.1.0
         System.out.println("=== updateToVersion ===");
@@ -660,8 +668,9 @@ public class IncrementalCompilationTest extends BaseModelTest {
         assertThat(list2).containsExactlyInAnyOrder("John");
     }
 
-    @Test
-    public void testKJarUpgradeWithChangedFunctionForLHSWithExternalizeLambda() throws Exception {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testKJarUpgradeWithChangedFunctionForLHSWithExternalizeLambda(RUN_TYPE runType) throws Exception {
 
         String drl1a = "package org.drools.incremental\n" +
                        "import " + Person.class.getCanonicalName() + "\n" +
@@ -689,7 +698,7 @@ public class IncrementalCompilationTest extends BaseModelTest {
         ReleaseId releaseId1 = ks.newReleaseId("org.kie", "test-upgrade", "1.0.0");
         KieModuleModel model1 = ks.newKieModuleModel();
         model1.setConfigurationProperty("drools.externaliseCanonicalModelLambda", Boolean.TRUE.toString());
-        createAndDeployJar(ks, model1, releaseId1, drl1a);
+        createAndDeployJar(runType, ks, model1, releaseId1, drl1a);
 
         // Create a session and fire rules
         KieContainer kc = ks.newKieContainer(releaseId1);
@@ -706,7 +715,7 @@ public class IncrementalCompilationTest extends BaseModelTest {
         ReleaseId releaseId2 = ks.newReleaseId("org.kie", "test-upgrade", "1.1.0");
         KieModuleModel model2 = ks.newKieModuleModel();
         model2.setConfigurationProperty("drools.externaliseCanonicalModelLambda", Boolean.TRUE.toString());
-        createAndDeployJar(ks, model2, releaseId2, drl1b);
+        createAndDeployJar(runType, ks, model2, releaseId2, drl1b);
 
         // try to update the container to version 1.1.0
         System.out.println("=== updateToVersion ===");
@@ -728,8 +737,9 @@ public class IncrementalCompilationTest extends BaseModelTest {
         assertThat(list2).containsExactlyInAnyOrder("John");
     }
 
-    @Test
-    public void testKJarUpgradeWithChangedJavaFunctionForLHSWithoutExternalizeLambda() throws Exception {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testKJarUpgradeWithChangedJavaFunctionForLHSWithoutExternalizeLambda(RUN_TYPE runType) throws Exception {
 
         String java1 = "package org.drools.test;\n" +
                        "public class MyFunction {\n" +
@@ -763,7 +773,7 @@ public class IncrementalCompilationTest extends BaseModelTest {
         ReleaseId releaseId1 = ks.newReleaseId("org.kie", "test-upgrade", "1.0.0");
         KieModuleModel model1 = ks.newKieModuleModel();
         model1.setConfigurationProperty("drools.externaliseCanonicalModelLambda", Boolean.FALSE.toString());
-        createAndDeployJar(ks, model1, releaseId1,
+        createAndDeployJar(runType, ks, model1, releaseId1,
                            new KieFile("src/main/java/org/drools/test/MyFunction.java", java1),
                            new KieFile("src/main/resources/org/drools/incremental/r1.drl", drl));
 
@@ -782,7 +792,7 @@ public class IncrementalCompilationTest extends BaseModelTest {
         ReleaseId releaseId2 = ks.newReleaseId("org.kie", "test-upgrade", "1.1.0");
         KieModuleModel model2 = ks.newKieModuleModel();
         model2.setConfigurationProperty("drools.externaliseCanonicalModelLambda", Boolean.FALSE.toString());
-        createAndDeployJar(ks, model2, releaseId2,
+        createAndDeployJar(runType, ks, model2, releaseId2,
                            new KieFile("src/main/java/org/drools/test/MyFunction.java", java2),
                            new KieFile("src/main/resources/org/drools/incremental/r1.drl", drl));
 
@@ -806,8 +816,9 @@ public class IncrementalCompilationTest extends BaseModelTest {
         assertThat(list2).containsExactlyInAnyOrder("John");
     }
 
-    @Test
-    public void testKJarUpgradeWithChangedJavaFunctionForLHSWithExternalizeLambda() throws Exception {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testKJarUpgradeWithChangedJavaFunctionForLHSWithExternalizeLambda(RUN_TYPE runType) throws Exception {
 
         String java1 = "package org.drools.test;\n" +
                        "public class MyFunction {\n" +
@@ -841,7 +852,7 @@ public class IncrementalCompilationTest extends BaseModelTest {
         ReleaseId releaseId1 = ks.newReleaseId("org.kie", "test-upgrade", "1.0.0");
         KieModuleModel model1 = ks.newKieModuleModel();
         model1.setConfigurationProperty("drools.externaliseCanonicalModelLambda", Boolean.TRUE.toString());
-        createAndDeployJar(ks, model1, releaseId1,
+        createAndDeployJar(runType, ks, model1, releaseId1,
                            new KieFile("src/main/java/org/drools/test/MyFunction.java", java1),
                            new KieFile("src/main/resources/org/drools/incremental/r1.drl", drl));
 
@@ -860,7 +871,7 @@ public class IncrementalCompilationTest extends BaseModelTest {
         ReleaseId releaseId2 = ks.newReleaseId("org.kie", "test-upgrade", "1.1.0");
         KieModuleModel model2 = ks.newKieModuleModel();
         model2.setConfigurationProperty("drools.externaliseCanonicalModelLambda", Boolean.TRUE.toString());
-        createAndDeployJar(ks, model2, releaseId2,
+        createAndDeployJar(runType, ks, model2, releaseId2,
                            new KieFile("src/main/java/org/drools/test/MyFunction.java", java2),
                            new KieFile("src/main/resources/org/drools/incremental/r1.drl", drl));
 
