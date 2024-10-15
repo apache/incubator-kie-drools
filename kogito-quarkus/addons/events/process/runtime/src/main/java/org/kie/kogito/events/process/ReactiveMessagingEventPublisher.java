@@ -22,12 +22,12 @@ import java.util.Collection;
 
 import org.kie.kogito.event.DataEvent;
 
-import io.quarkus.arc.properties.UnlessBuildProperty;
+import io.quarkus.arc.lookup.LookupUnlessProperty;
 
 import jakarta.inject.Singleton;
 
 @Singleton
-@UnlessBuildProperty(name = "kogito.events.grouping", stringValue = "true", enableIfMissing = true)
+@LookupUnlessProperty(name = "kogito.events.grouping", stringValue = "true", lookupIfMissing = true)
 public class ReactiveMessagingEventPublisher extends AbstractMessagingEventPublisher {
 
     @Override

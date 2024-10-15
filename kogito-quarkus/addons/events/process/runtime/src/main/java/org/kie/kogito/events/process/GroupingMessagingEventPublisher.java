@@ -32,12 +32,12 @@ import org.kie.kogito.event.process.ProcessInstanceDataEvent;
 import org.kie.kogito.event.usertask.MultipleUserTaskInstanceDataEvent;
 import org.kie.kogito.event.usertask.UserTaskInstanceDataEvent;
 
-import io.quarkus.arc.properties.IfBuildProperty;
+import io.quarkus.arc.lookup.LookupIfProperty;
 
 import jakarta.inject.Singleton;
 
 @Singleton
-@IfBuildProperty(name = "kogito.events.grouping", stringValue = "true")
+@LookupIfProperty(name = "kogito.events.grouping", stringValue = "true")
 public class GroupingMessagingEventPublisher extends AbstractMessagingEventPublisher {
 
     @Override
