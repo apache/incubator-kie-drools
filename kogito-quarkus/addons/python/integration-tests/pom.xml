@@ -117,6 +117,7 @@
                 <executable>pip</executable>
                 <arguments>
                     <argument>install</argument>
+                    <argument>--break-system-packages</argument>
                     <argument>-r</argument>
                     <argument>${project.basedir}/requirements.txt</argument>
                 </arguments>
@@ -132,6 +133,7 @@
                 <executable>pip</executable>
                 <arguments>
                     <argument>install</argument>
+                    <argument>--break-system-packages</argument>
                     <argument>jep==4.2.0</argument>
                 </arguments>
             </configuration>
