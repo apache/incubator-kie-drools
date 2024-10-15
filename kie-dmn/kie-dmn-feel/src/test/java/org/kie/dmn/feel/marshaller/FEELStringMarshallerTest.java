@@ -97,8 +97,8 @@ public class FEELStringMarshallerTest {
                 { Arrays.asList( Duration.ofDays( 4 ), Duration.ofDays( 2 ), Duration.ofHours( 25 ) ), "[ P4D, P2D, P1DT1H ]" },
                 { Arrays.asList( Arrays.asList( 1, 2 ), Arrays.asList( 3, 4 ) ), "[ [ 1, 2 ], [ 3, 4 ] ]" },
                 // ranges
-                { new RangeImpl( Range.RangeBoundary.CLOSED, "a", "z", Range.RangeBoundary.OPEN ), "[ a .. z )" },
-                { new RangeImpl( Range.RangeBoundary.CLOSED, Duration.ofHours( 30 ), Duration.ofHours( 50 ), Range.RangeBoundary.OPEN ), "[ P1DT6H .. P2DT2H )" },
+                { new RangeImpl( Range.RangeBoundary.CLOSED, "a", "z", Range.RangeBoundary.OPEN, false, false ), "[ a .. z )" },
+                { new RangeImpl( Range.RangeBoundary.CLOSED, Duration.ofHours( 30 ), Duration.ofHours( 50 ), Range.RangeBoundary.OPEN, false, false ), "[ P1DT6H .. P2DT2H )" },
                 // context
                 { new LinkedHashMap() {{ put( "Full Name", "John Doe"); put( "Age", 35 ); put( "Date of Birth", LocalDate.of( 1982, 6, 9 ) ); }},
                   "{ Full Name : John Doe, Age : 35, Date of Birth : 1982-06-09 }" },

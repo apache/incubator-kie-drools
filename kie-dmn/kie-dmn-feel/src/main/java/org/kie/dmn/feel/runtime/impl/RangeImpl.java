@@ -30,16 +30,20 @@ public class RangeImpl
     private RangeBoundary highBoundary;
     private Comparable    lowEndPoint;
     private Comparable    highEndPoint;
-
+    private boolean isLowerBoundaryValueUndefined;
+    private boolean isUpperBoundaryValueUndefined;
 
     public RangeImpl() {
     }
 
-    public RangeImpl(RangeBoundary lowBoundary, Comparable lowEndPoint, Comparable highEndPoint, RangeBoundary highBoundary) {
+    public RangeImpl(RangeBoundary lowBoundary, Comparable lowEndPoint, Comparable highEndPoint, RangeBoundary highBoundary, 
+            boolean isLowerBoundaryValueUndefined, boolean isUpperBoundaryValueUndefined) {
         this.lowBoundary = lowBoundary;
         this.highBoundary = highBoundary;
         this.lowEndPoint = lowEndPoint;
         this.highEndPoint = highEndPoint;
+        this.isLowerBoundaryValueUndefined = isLowerBoundaryValueUndefined;
+        this.isUpperBoundaryValueUndefined = isUpperBoundaryValueUndefined;
     }
 
     @Override
@@ -60,6 +64,16 @@ public class RangeImpl
     @Override
     public RangeBoundary getHighBoundary() {
         return highBoundary;
+    }
+
+    @Override
+    public boolean isLowerBoundaryValueUndefined() {
+        return isLowerBoundaryValueUndefined;
+    }
+
+    @Override
+    public boolean isUpperBoundaryValueUndefined() {
+        return isUpperBoundaryValueUndefined;
     }
 
     @Override

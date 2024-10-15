@@ -43,43 +43,43 @@ class FinishesFunctionTest {
     @Test
     void invokeParamsCantBeCompared() {
         FunctionTestUtil.assertResultError( finishesFunction.invoke(
-                new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED ),
-                new RangeImpl( Range.RangeBoundary.CLOSED,  1, 2, Range.RangeBoundary.CLOSED ) ), InvalidParametersEvent.class );
+                new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED, false, false ),
+                new RangeImpl( Range.RangeBoundary.CLOSED,  1, 2, Range.RangeBoundary.CLOSED, false, false ) ), InvalidParametersEvent.class );
     }
 
     @Test
     void invokeParamSingleAndRange() {
         FunctionTestUtil.assertResult( finishesFunction.invoke( "f",
-                new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED )),
+                new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED, false, false )),
                 Boolean.TRUE );
         FunctionTestUtil.assertResult( finishesFunction.invoke( "a",
-                new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED )),
+                new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED, false, false )),
                 Boolean.FALSE );
         FunctionTestUtil.assertResult( finishesFunction.invoke( "f",
-                new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.OPEN )),
+                new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.OPEN, false, false )),
                 Boolean.FALSE );
         FunctionTestUtil.assertResult( finishesFunction.invoke( "g",
-                new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED )),
+                new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED, false, false )),
                 Boolean.FALSE );
     }
 
     @Test
     void invokeParamRangeAndRange() {
         FunctionTestUtil.assertResult( finishesFunction.invoke(
-                new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED ),
-                new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED ) ),
+                new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED, false, false ),
+                new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED, false, false ) ),
                 Boolean.TRUE );
         FunctionTestUtil.assertResult( finishesFunction.invoke(
-                new RangeImpl( Range.RangeBoundary.CLOSED, "c", "f", Range.RangeBoundary.CLOSED ),
-                new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED ) ),
+                new RangeImpl( Range.RangeBoundary.CLOSED, "c", "f", Range.RangeBoundary.CLOSED, false, false ),
+                new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED, false, false ) ),
                 Boolean.TRUE );
         FunctionTestUtil.assertResult( finishesFunction.invoke(
-                new RangeImpl( Range.RangeBoundary.CLOSED, "c", "f", Range.RangeBoundary.CLOSED ),
-                new RangeImpl( Range.RangeBoundary.CLOSED, "e", "f", Range.RangeBoundary.CLOSED ) ),
+                new RangeImpl( Range.RangeBoundary.CLOSED, "c", "f", Range.RangeBoundary.CLOSED, false, false ),
+                new RangeImpl( Range.RangeBoundary.CLOSED, "e", "f", Range.RangeBoundary.CLOSED, false, false ) ),
                 Boolean.FALSE );
         FunctionTestUtil.assertResult( finishesFunction.invoke(
-                new RangeImpl( Range.RangeBoundary.CLOSED, "c", "f", Range.RangeBoundary.CLOSED ),
-                new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.OPEN ) ),
+                new RangeImpl( Range.RangeBoundary.CLOSED, "c", "f", Range.RangeBoundary.CLOSED, false, false ),
+                new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.OPEN, false, false ) ),
                 Boolean.FALSE );
     }
 

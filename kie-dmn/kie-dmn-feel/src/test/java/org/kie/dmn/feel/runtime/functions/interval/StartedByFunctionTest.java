@@ -43,26 +43,26 @@ class StartedByFunctionTest {
     @Test
     void invokeParamsCantBeCompared() {
         FunctionTestUtil.assertResultError( startedByFunction.invoke(
-                new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED ),
-                new RangeImpl( Range.RangeBoundary.CLOSED,  1, 2, Range.RangeBoundary.CLOSED ) ), InvalidParametersEvent.class );
+                new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED, false, false ),
+                new RangeImpl( Range.RangeBoundary.CLOSED,  1, 2, Range.RangeBoundary.CLOSED, false, false ) ), InvalidParametersEvent.class );
     }
 
     @Test
     void invokeParamRangeAndSingle() {
         FunctionTestUtil.assertResult( startedByFunction.invoke(
-                new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED ),
+                new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED, false, false ),
                 "f" ),
                 Boolean.FALSE );
         FunctionTestUtil.assertResult( startedByFunction.invoke(
-                new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED ),
+                new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED, false, false ),
                 "a"),
                 Boolean.TRUE );
         FunctionTestUtil.assertResult( startedByFunction.invoke(
-                new RangeImpl( Range.RangeBoundary.OPEN, "a", "f", Range.RangeBoundary.OPEN ),
+                new RangeImpl( Range.RangeBoundary.OPEN, "a", "f", Range.RangeBoundary.OPEN, false, false ),
                 "a" ),
                 Boolean.FALSE );
         FunctionTestUtil.assertResult( startedByFunction.invoke(
-                new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED ),
+                new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED, false, false ),
                 "g" ),
                 Boolean.FALSE );
     }
@@ -70,20 +70,20 @@ class StartedByFunctionTest {
     @Test
     void invokeParamRangeAndRange() {
         FunctionTestUtil.assertResult( startedByFunction.invoke(
-                new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED ),
-                new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED ) ),
+                new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED, false, false ),
+                new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED, false, false ) ),
                 Boolean.TRUE );
         FunctionTestUtil.assertResult( startedByFunction.invoke(
-                new RangeImpl( Range.RangeBoundary.CLOSED, "a", "k", Range.RangeBoundary.CLOSED ),
-                new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED ) ),
+                new RangeImpl( Range.RangeBoundary.CLOSED, "a", "k", Range.RangeBoundary.CLOSED, false, false ),
+                new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED, false, false ) ),
                 Boolean.TRUE );
         FunctionTestUtil.assertResult( startedByFunction.invoke(
-                new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED ),
-                new RangeImpl( Range.RangeBoundary.CLOSED, "f", "k", Range.RangeBoundary.CLOSED ) ),
+                new RangeImpl( Range.RangeBoundary.CLOSED, "a", "f", Range.RangeBoundary.CLOSED, false, false ),
+                new RangeImpl( Range.RangeBoundary.CLOSED, "f", "k", Range.RangeBoundary.CLOSED, false, false ) ),
                 Boolean.FALSE );
         FunctionTestUtil.assertResult( startedByFunction.invoke(
-                new RangeImpl( Range.RangeBoundary.CLOSED, "a", "k", Range.RangeBoundary.CLOSED ),
-                new RangeImpl( Range.RangeBoundary.OPEN, "a", "f", Range.RangeBoundary.CLOSED ) ),
+                new RangeImpl( Range.RangeBoundary.CLOSED, "a", "k", Range.RangeBoundary.CLOSED, false, false ),
+                new RangeImpl( Range.RangeBoundary.OPEN, "a", "f", Range.RangeBoundary.CLOSED, false, false ) ),
                 Boolean.FALSE );
     }
 

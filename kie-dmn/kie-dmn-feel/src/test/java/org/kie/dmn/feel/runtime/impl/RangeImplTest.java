@@ -28,34 +28,34 @@ class RangeImplTest {
     @Test
     void getLowBoundary() {
         final Range.RangeBoundary lowBoundary = Range.RangeBoundary.CLOSED;
-        final RangeImpl rangeImpl = new RangeImpl(lowBoundary, 10, 15, Range.RangeBoundary.OPEN);
+        final RangeImpl rangeImpl = new RangeImpl(lowBoundary, 10, 15, Range.RangeBoundary.OPEN, false, false);
         assertThat(rangeImpl.getLowBoundary()).isEqualTo(lowBoundary);
     }
 
     @Test
     void getLowEndPoint() {
         final Integer lowEndPoint = 1;
-        final RangeImpl rangeImpl = new RangeImpl(Range.RangeBoundary.OPEN, lowEndPoint, 15, Range.RangeBoundary.CLOSED);
+        final RangeImpl rangeImpl = new RangeImpl(Range.RangeBoundary.OPEN, lowEndPoint, 15, Range.RangeBoundary.CLOSED, false, false);
         assertThat(rangeImpl.getLowEndPoint()).isEqualTo(lowEndPoint);
     }
 
     @Test
     void getHighEndPoint() {
         final Integer highEndPoint = 15;
-        final RangeImpl rangeImpl = new RangeImpl(Range.RangeBoundary.OPEN, 1, highEndPoint, Range.RangeBoundary.CLOSED);
+        final RangeImpl rangeImpl = new RangeImpl(Range.RangeBoundary.OPEN, 1, highEndPoint, Range.RangeBoundary.CLOSED, false, false);
         assertThat(rangeImpl.getHighEndPoint()).isEqualTo(highEndPoint);
     }
 
     @Test
     void getHighBoundary() {
         final Range.RangeBoundary highBoundary = Range.RangeBoundary.CLOSED;
-        final RangeImpl rangeImpl = new RangeImpl(Range.RangeBoundary.OPEN, 10, 15, highBoundary);
+        final RangeImpl rangeImpl = new RangeImpl(Range.RangeBoundary.OPEN, 10, 15, highBoundary, false, false);
         assertThat(rangeImpl.getHighBoundary()).isEqualTo(highBoundary);
     }
 
     @Test
     void includes() {
-        RangeImpl rangeImpl = new RangeImpl(Range.RangeBoundary.OPEN, 10, 15, Range.RangeBoundary.OPEN);
+        RangeImpl rangeImpl = new RangeImpl(Range.RangeBoundary.OPEN, 10, 15, Range.RangeBoundary.OPEN, false, false);
         assertThat(rangeImpl.includes(-15)).isFalse();
         assertThat(rangeImpl.includes(5)).isFalse();
         assertThat(rangeImpl.includes(10)).isFalse();
@@ -63,17 +63,17 @@ class RangeImplTest {
         assertThat(rangeImpl.includes(15)).isFalse();
         assertThat(rangeImpl.includes(156)).isFalse();
 
-        rangeImpl = new RangeImpl(Range.RangeBoundary.CLOSED, 10, 15, Range.RangeBoundary.OPEN);
+        rangeImpl = new RangeImpl(Range.RangeBoundary.CLOSED, 10, 15, Range.RangeBoundary.OPEN, false, false);
         assertThat(rangeImpl.includes(10)).isTrue();
         assertThat(rangeImpl.includes(12)).isTrue();
         assertThat(rangeImpl.includes(15)).isFalse();
 
-        rangeImpl = new RangeImpl(Range.RangeBoundary.OPEN, 10, 15, Range.RangeBoundary.CLOSED);
+        rangeImpl = new RangeImpl(Range.RangeBoundary.OPEN, 10, 15, Range.RangeBoundary.CLOSED, false, false);
         assertThat(rangeImpl.includes(10)).isFalse();
         assertThat(rangeImpl.includes(12)).isTrue();
         assertThat(rangeImpl.includes(15)).isTrue();
 
-        rangeImpl = new RangeImpl(Range.RangeBoundary.CLOSED, 10, 15, Range.RangeBoundary.CLOSED);
+        rangeImpl = new RangeImpl(Range.RangeBoundary.CLOSED, 10, 15, Range.RangeBoundary.CLOSED, false, false);
         assertThat(rangeImpl.includes(10)).isTrue();
         assertThat(rangeImpl.includes(12)).isTrue();
         assertThat(rangeImpl.includes(15)).isTrue();
@@ -81,21 +81,21 @@ class RangeImplTest {
 
     @Test
     void equals() {
-        RangeImpl rangeImpl = new RangeImpl(Range.RangeBoundary.OPEN, 10, 15, Range.RangeBoundary.OPEN);
+        RangeImpl rangeImpl = new RangeImpl(Range.RangeBoundary.OPEN, 10, 15, Range.RangeBoundary.OPEN, false, false);
         assertThat(rangeImpl).isEqualTo(rangeImpl);
 
-        RangeImpl rangeImpl2 = new RangeImpl(Range.RangeBoundary.OPEN, 10, 15, Range.RangeBoundary.OPEN);
+        RangeImpl rangeImpl2 = new RangeImpl(Range.RangeBoundary.OPEN, 10, 15, Range.RangeBoundary.OPEN, false, false);
         assertThat(rangeImpl2).isEqualTo(rangeImpl);
 
-        rangeImpl2 = new RangeImpl(Range.RangeBoundary.OPEN, 10, 15, Range.RangeBoundary.CLOSED);
+        rangeImpl2 = new RangeImpl(Range.RangeBoundary.OPEN, 10, 15, Range.RangeBoundary.CLOSED, false, false);
         assertThat(rangeImpl2).isNotEqualTo(rangeImpl);
-        rangeImpl2 = new RangeImpl(Range.RangeBoundary.CLOSED, 10, 15, Range.RangeBoundary.OPEN);
+        rangeImpl2 = new RangeImpl(Range.RangeBoundary.CLOSED, 10, 15, Range.RangeBoundary.OPEN, false, false);
         assertThat(rangeImpl2).isNotEqualTo(rangeImpl);
-        rangeImpl2 = new RangeImpl(Range.RangeBoundary.CLOSED, 10, 15, Range.RangeBoundary.CLOSED);
+        rangeImpl2 = new RangeImpl(Range.RangeBoundary.CLOSED, 10, 15, Range.RangeBoundary.CLOSED, false, false);
         assertThat(rangeImpl2).isNotEqualTo(rangeImpl);
-        rangeImpl2 = new RangeImpl(Range.RangeBoundary.CLOSED, 12, 15, Range.RangeBoundary.CLOSED);
+        rangeImpl2 = new RangeImpl(Range.RangeBoundary.CLOSED, 12, 15, Range.RangeBoundary.CLOSED, false, false);
         assertThat(rangeImpl2).isNotEqualTo(rangeImpl);
-        rangeImpl2 = new RangeImpl(Range.RangeBoundary.CLOSED, 12, 17, Range.RangeBoundary.CLOSED);
+        rangeImpl2 = new RangeImpl(Range.RangeBoundary.CLOSED, 12, 17, Range.RangeBoundary.CLOSED, false, false);
         assertThat(rangeImpl2).isNotEqualTo(rangeImpl);
 
         rangeImpl = new RangeImpl();
@@ -104,21 +104,21 @@ class RangeImplTest {
 
     @Test
     void hashCodeTest() {
-        final RangeImpl rangeImpl = new RangeImpl(Range.RangeBoundary.OPEN, 10, 15, Range.RangeBoundary.OPEN);
+        final RangeImpl rangeImpl = new RangeImpl(Range.RangeBoundary.OPEN, 10, 15, Range.RangeBoundary.OPEN, false, false);
         assertThat(rangeImpl.hashCode()).isEqualTo(rangeImpl.hashCode());
 
-        RangeImpl rangeImpl2 = new RangeImpl(Range.RangeBoundary.OPEN, 10, 15, Range.RangeBoundary.OPEN);
+        RangeImpl rangeImpl2 = new RangeImpl(Range.RangeBoundary.OPEN, 10, 15, Range.RangeBoundary.OPEN, false, false);
         assertThat(rangeImpl2.hashCode()).isEqualTo(rangeImpl.hashCode());
 
-        rangeImpl2 = new RangeImpl(Range.RangeBoundary.OPEN, 10, 15, Range.RangeBoundary.CLOSED);
+        rangeImpl2 = new RangeImpl(Range.RangeBoundary.OPEN, 10, 15, Range.RangeBoundary.CLOSED, false, false);
         assertThat(rangeImpl2).doesNotHaveSameHashCodeAs(rangeImpl);
-        rangeImpl2 = new RangeImpl(Range.RangeBoundary.CLOSED, 10, 15, Range.RangeBoundary.OPEN);
+        rangeImpl2 = new RangeImpl(Range.RangeBoundary.CLOSED, 10, 15, Range.RangeBoundary.OPEN, false, false);
         assertThat(rangeImpl2).doesNotHaveSameHashCodeAs(rangeImpl);
-        rangeImpl2 = new RangeImpl(Range.RangeBoundary.CLOSED, 10, 15, Range.RangeBoundary.CLOSED);
+        rangeImpl2 = new RangeImpl(Range.RangeBoundary.CLOSED, 10, 15, Range.RangeBoundary.CLOSED, false, false);
         assertThat(rangeImpl2).doesNotHaveSameHashCodeAs(rangeImpl);
-        rangeImpl2 = new RangeImpl(Range.RangeBoundary.CLOSED, 12, 15, Range.RangeBoundary.CLOSED);
+        rangeImpl2 = new RangeImpl(Range.RangeBoundary.CLOSED, 12, 15, Range.RangeBoundary.CLOSED, false, false);
         assertThat(rangeImpl2).doesNotHaveSameHashCodeAs(rangeImpl);
-        rangeImpl2 = new RangeImpl(Range.RangeBoundary.CLOSED, 12, 17, Range.RangeBoundary.CLOSED);
+        rangeImpl2 = new RangeImpl(Range.RangeBoundary.CLOSED, 12, 17, Range.RangeBoundary.CLOSED, false, false);
         assertThat(rangeImpl2).doesNotHaveSameHashCodeAs(rangeImpl);
     }
 }

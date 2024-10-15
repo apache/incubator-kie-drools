@@ -55,13 +55,29 @@ public class RangeNode
 
     private IntervalBoundary lowerBound;
     private IntervalBoundary upperBound;
+    private boolean isLowerBoundaryValueUndefined;
+    private boolean isUpperBoundaryValueUndefined;
     private BaseNode         start;
     private BaseNode         end;
+
+
+    public RangeNode(ParserRuleContext ctx, IntervalBoundary lowerBound, BaseNode start, BaseNode end, IntervalBoundary upperBound,
+            boolean isLowerBoundUndefined, boolean isUpperBoundUndefined) {
+        super(ctx);
+        this.lowerBound = lowerBound;
+        this.upperBound = upperBound;
+        this.isLowerBoundaryValueUndefined = isLowerBoundUndefined;
+        this.isUpperBoundaryValueUndefined = isUpperBoundUndefined;
+        this.start = start;
+        this.end = end;
+    }
 
     public RangeNode(ParserRuleContext ctx, IntervalBoundary lowerBound, BaseNode start, BaseNode end, IntervalBoundary upperBound) {
         super( ctx );
         this.lowerBound = lowerBound;
         this.upperBound = upperBound;
+        this.isLowerBoundaryValueUndefined = false;
+        this.isUpperBoundaryValueUndefined = false;
         this.start = start;
         this.end = end;
     }
@@ -69,6 +85,8 @@ public class RangeNode
     public RangeNode(IntervalBoundary lowerBound, IntervalBoundary upperBound, BaseNode start, BaseNode end, String text) {
         this.lowerBound = lowerBound;
         this.upperBound = upperBound;
+        this.isLowerBoundaryValueUndefined = false;
+        this.isUpperBoundaryValueUndefined = false;
         this.start = start;
         this.end = end;
         this.setText(text);
@@ -106,6 +124,14 @@ public class RangeNode
         this.end = end;
     }
 
+    public boolean isLowerBoundaryValueUndefined() {
+        return isLowerBoundaryValueUndefined;
+    }
+
+    public boolean isUpperBoundaryValueUndefined() {
+        return isUpperBoundaryValueUndefined;
+    }
+
     @Override
     public Range evaluate(EvaluationContext ctx) {
         Object s = start.evaluate( ctx );
@@ -124,7 +150,9 @@ public class RangeNode
         return new RangeImpl( lowerBound==IntervalBoundary.OPEN ? Range.RangeBoundary.OPEN : Range.RangeBoundary.CLOSED,
                               start,
                               end,
-                              upperBound==IntervalBoundary.OPEN ? Range.RangeBoundary.OPEN : Range.RangeBoundary.CLOSED );
+                              upperBound==IntervalBoundary.OPEN ? Range.RangeBoundary.OPEN : Range.RangeBoundary.CLOSED,
+                              isLowerBoundaryValueUndefined,
+                              isUpperBoundaryValueUndefined);
     }
 
     private Comparable convertToComparable(EvaluationContext ctx, Object s) {
