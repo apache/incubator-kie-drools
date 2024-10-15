@@ -88,6 +88,7 @@ public class FaultNodeInstance extends NodeInstanceImpl {
             if (getNode().getMetaData().get("hidden") != null) {
                 hidden = true;
             }
+            leaveTime = new Date();
             if (!hidden) {
                 InternalKnowledgeRuntime kruntime = getProcessInstance().getKnowledgeRuntime();
                 ((InternalProcessRuntime) kruntime.getProcessRuntime())

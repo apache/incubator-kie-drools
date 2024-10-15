@@ -230,6 +230,7 @@ public class SplitInstance extends NodeInstanceImpl {
                         if (getNode().getMetaData().get("hidden") != null) {
                             hidden = true;
                         }
+                        leaveTime = new Date();
                         InternalKnowledgeRuntime kruntime = getProcessInstance().getKnowledgeRuntime();
                         if (!hidden) {
                             ((InternalProcessRuntime) kruntime.getProcessRuntime())

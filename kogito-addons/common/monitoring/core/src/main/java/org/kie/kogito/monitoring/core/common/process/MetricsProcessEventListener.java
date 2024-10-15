@@ -179,7 +179,7 @@ public class MetricsProcessEventListener extends DefaultKogitoProcessEventListen
     }
 
     private void recordNodeDuration(DistributionSummary summary, KogitoNodeInstance instance, TimeUnit target) {
-        if (instance.getTriggerTime() != null) {
+        if (instance.getTriggerTime() != null && instance.getLeaveTime() != null) {
             double duration = target.convert(instance.getLeaveTime().getTime() - instance.getTriggerTime().getTime(), TimeUnit.MILLISECONDS);
             summary.record(duration);
             LOGGER.debug("Recorded {} {} because of node {} for summary {}", duration, target, instance.getNode().getName(), summary.getId().getName());
