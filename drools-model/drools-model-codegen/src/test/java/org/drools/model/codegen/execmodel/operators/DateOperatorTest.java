@@ -22,9 +22,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 import org.drools.model.codegen.execmodel.BaseModelTest;
-import org.drools.model.codegen.execmodel.domain.Person;
 import org.drools.model.codegen.execmodel.domain.SimpleDateHolder;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 

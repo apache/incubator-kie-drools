@@ -18,8 +18,6 @@
  */
 package org.drools.model.codegen.execmodel.generator.drlxparse;
 
-import java.util.Map;
-
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.util.MethodUtils;
 import org.junit.jupiter.api.Disabled;

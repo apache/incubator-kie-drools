@@ -21,7 +21,6 @@ package org.drools.model.codegen.execmodel;
 import java.util.List;
 
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
-import org.drools.compiler.kie.builder.impl.KieBuilderImpl;
 import org.drools.model.codegen.ExecutableModelProject;
 import org.drools.model.codegen.execmodel.domain.Person;
 import org.junit.jupiter.api.Test;

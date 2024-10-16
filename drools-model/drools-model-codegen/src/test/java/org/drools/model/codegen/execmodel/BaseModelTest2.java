@@ -29,7 +29,6 @@ import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.model.codegen.ExecutableModelProject;
-import org.junit.runner.RunWith;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;

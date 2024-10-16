@@ -18,17 +18,15 @@
  */
 package org.drools.model.codegen.execmodel.fireandalarm;
 
-import org.drools.model.codegen.execmodel.BaseModelTest;
 import org.drools.model.codegen.execmodel.BaseModelTest2;
 import org.drools.model.codegen.execmodel.fireandalarm.model.Alarm;
 import org.drools.model.codegen.execmodel.fireandalarm.model.Fire;
 import org.drools.model.codegen.execmodel.fireandalarm.model.Room;
-import org.drools.model.codegen.execmodel.fireandalarm.model.Sprinkler;
-import org.junit.Test;
+import org.drools.model.codegen.execmodel.fireandalarm.model.Sprinkler; 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.rule.FactHandle;
+import org.kie.api.runtime.rule.FactHandle; 
 
 import static org.assertj.core.api.Assertions.assertThat;
 

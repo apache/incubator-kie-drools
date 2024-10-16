@@ -22,7 +22,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.model.codegen.execmodel.BaseModelTest;
 import org.drools.model.codegen.execmodel.BaseModelTest2;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;

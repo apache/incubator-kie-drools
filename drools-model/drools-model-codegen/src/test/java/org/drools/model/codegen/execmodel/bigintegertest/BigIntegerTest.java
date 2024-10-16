@@ -20,17 +20,14 @@ package org.drools.model.codegen.execmodel.bigintegertest;
 
 import java.math.BigInteger;
 
-import org.drools.model.codegen.execmodel.BaseModelTest;
-import org.junit.Test;
+import org.drools.model.codegen.execmodel.BaseModelTest2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class BigIntegerTest extends BaseModelTest {
-
-    public BigIntegerTest(RUN_TYPE testRunType) {
-        super(testRunType);
-    }
+public class BigIntegerTest extends BaseModelTest2 {
 
     public static class BiHolder {
 
@@ -64,8 +61,9 @@ public class BigIntegerTest extends BaseModelTest {
         }
     }
 
-    @Test
-    public void testBigIntegerLiteralLhsNegative() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testBigIntegerLiteralLhsNegative(RUN_TYPE runType) {
         // DROOLS-6596
         String str =
                 "package org.drools.modelcompiler.bigintegerss\n" +
@@ -75,7 +73,7 @@ public class BigIntegerTest extends BaseModelTest {
                      "then\n" +
                      "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         BiHolder holder = new BiHolder();
         holder.setBi1(new BigInteger("10"));
@@ -85,8 +83,9 @@ public class BigIntegerTest extends BaseModelTest {
         assertThat(fired).isEqualTo(1);
     }
 
-    @Test
-    public void testBigIntegerLiteralRhsNegative() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testBigIntegerLiteralRhsNegative(RUN_TYPE runType) {
         // DROOLS-6596
         String str =
                 "package org.drools.modelcompiler.bigdecimals\n" +
@@ -97,7 +96,7 @@ public class BigIntegerTest extends BaseModelTest {
                      "    $holder.bi1 = -10I;\n" +
                      "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         BiHolder holder = new BiHolder();
         ksession.insert(holder);

@@ -32,7 +32,6 @@ import org.drools.kiesession.entrypoints.NamedEntryPoint;
 import org.drools.model.codegen.execmodel.domain.Address;
 import org.drools.model.codegen.execmodel.domain.Person;
 import org.drools.model.codegen.execmodel.domain.Toy;
-import org.junit.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.definition.type.FactType;
