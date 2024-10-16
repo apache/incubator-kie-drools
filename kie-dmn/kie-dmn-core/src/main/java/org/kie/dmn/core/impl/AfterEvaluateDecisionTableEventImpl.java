@@ -33,14 +33,18 @@ public class AfterEvaluateDecisionTableEventImpl
     private final DMNResult     result;
     private final List<Integer> matches;
     private final List<Integer> fired;
+    private final List<String> matchesIds;
+    private final List<String> firedIds;
 
-    public AfterEvaluateDecisionTableEventImpl(String nodeName, String dtName, String dtId, DMNResult result, List<Integer> matches, List<Integer> fired) {
+    public AfterEvaluateDecisionTableEventImpl(String nodeName, String dtName, String dtId, DMNResult result, List<Integer> matches, List<Integer> fired, List<String> matchesIds, List<String> firedIds) {
         this.nodeName = nodeName;
         this.dtName = dtName;
         this.dtId = dtId;
         this.result = result;
         this.matches = matches;
         this.fired = fired;
+        this.matchesIds = matchesIds;
+        this.firedIds = firedIds;
     }
 
     @Override
@@ -74,8 +78,17 @@ public class AfterEvaluateDecisionTableEventImpl
     }
 
     @Override
+    public List<String> getMatchesIds() {
+        return matchesIds == null ? Collections.emptyList() : matchesIds;
+    }
+
+    @Override
+    public List<String> getSelectedIds() {return firedIds == null ? Collections.emptyList() : firedIds;
+    }
+
+    @Override
     public String toString() {
-        return "AfterEvaluateDecisionTableEvent{ nodeName='"+nodeName+"' decisionTableName='" + dtName + "' matches=" + getMatches() + " fired=" + getSelected() + " }";
+        return "AfterEvaluateDecisionTableEvent{ nodeName='"+nodeName+"' decisionTableName='" + dtName + "' matches=" + getMatches() + " fired=" + getSelected() + "' matchesIds=" + getMatchesIds() + " firedIds=" + getSelectedIds() + " }";
     }
 
 }

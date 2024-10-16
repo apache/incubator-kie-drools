@@ -29,6 +29,7 @@ import java.util.stream.Stream;
 import org.drools.model.functions.Function1;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.runtime.decisiontables.DTDecisionRule;
 import org.kie.dmn.feel.runtime.decisiontables.DecisionTable;
 import org.kie.dmn.feel.runtime.decisiontables.HitPolicy;
 import org.kie.dmn.feel.runtime.decisiontables.Indexed;
@@ -57,8 +58,8 @@ public class Results {
             resultGroupedByRow.clear();
         }
 
-        List<Indexed> matches() {
-            return indexes().map(i -> (Indexed) () -> i).collect(toList());
+        List<DTDecisionRule> matches() {
+            return indexes().map(i -> new DTDecisionRule(i, null)).collect(toList());
         }
 
         private Stream<Integer> indexes() {
@@ -152,14 +153,16 @@ public class Results {
                     Collections.emptyList()));
         }
 
-        List<? extends Indexed> matchIndexes = items.matches();
+        List<DTDecisionRule> matchIndexes = items.matches();
         evaluationContext.notifyEvt( () -> {
                                List<Integer> matchedIndexes = matchIndexes.stream().map( dr -> dr.getIndex() + 1 ).collect(Collectors.toList() );
                                return new DecisionTableRulesMatchedEvent(FEELEvent.Severity.INFO,
                                                                          String.format("Rules matched for decision table '%s': %s", decisionTable.getName(), matchIndexes),
                                                                          decisionTable.getName(),
                                                                          decisionTable.getName(),
-                                                                         matchedIndexes );
+                                                                         matchedIndexes,
+                                                                         // @TODO gcardosi 1543
+                                                                         Collections.emptyList());
                            }
         );
 
