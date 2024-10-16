@@ -21,10 +21,12 @@ package org.kie.kogito.tracing.decision.event.evaluate;
 import org.kie.kogito.tracing.event.trace.TraceExecutionStepType;
 
 public enum EvaluateEventType {
+    AFTER_CONDITIONAL_EVALUATION(false),
     BEFORE_EVALUATE_ALL(true),
     AFTER_EVALUATE_ALL(false),
     BEFORE_EVALUATE_BKM(true),
     AFTER_EVALUATE_BKM(false),
+    AFTER_EVALUATE_CONDITIONAL(false),
     BEFORE_EVALUATE_CONTEXT_ENTRY(true),
     AFTER_EVALUATE_CONTEXT_ENTRY(false),
     BEFORE_EVALUATE_DECISION(true),
@@ -52,6 +54,10 @@ public enum EvaluateEventType {
 
     public TraceExecutionStepType toTraceExecutionStepType() {
         switch (this) {
+            case AFTER_CONDITIONAL_EVALUATION:
+            case AFTER_EVALUATE_CONDITIONAL:
+                return TraceExecutionStepType.DMN_CONDITIONAL_INVOCATION;
+
             case BEFORE_EVALUATE_CONTEXT_ENTRY:
             case AFTER_EVALUATE_CONTEXT_ENTRY:
                 return TraceExecutionStepType.DMN_CONTEXT_ENTRY;

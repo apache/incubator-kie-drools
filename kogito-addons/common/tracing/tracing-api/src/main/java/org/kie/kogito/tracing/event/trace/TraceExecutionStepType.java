@@ -24,6 +24,7 @@ package org.kie.kogito.tracing.event.trace;
 public enum TraceExecutionStepType {
     DMN_BKM_EVALUATION,
     DMN_BKM_INVOCATION,
+    DMN_CONDITIONAL_INVOCATION,
     DMN_CONTEXT_ENTRY,
     DMN_DECISION,
     DMN_DECISION_SERVICE,

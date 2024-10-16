@@ -24,8 +24,10 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
+import org.kie.dmn.api.core.event.AfterConditionalEvaluationEvent;
 import org.kie.dmn.api.core.event.AfterEvaluateAllEvent;
 import org.kie.dmn.api.core.event.AfterEvaluateBKMEvent;
+import org.kie.dmn.api.core.event.AfterEvaluateConditionalEvent;
 import org.kie.dmn.api.core.event.AfterEvaluateContextEntryEvent;
 import org.kie.dmn.api.core.event.AfterEvaluateDecisionEvent;
 import org.kie.dmn.api.core.event.AfterEvaluateDecisionServiceEvent;
@@ -67,6 +69,8 @@ class EvaluateEventTypeTest {
             put(EvaluateEventType.AFTER_EVALUATE_DECISION_TABLE, new Pair<>("afterEvaluateDecisionTable", AfterEvaluateDecisionTableEvent.class));
             put(EvaluateEventType.BEFORE_INVOKE_BKM, new Pair<>("beforeInvokeBKM", BeforeInvokeBKMEvent.class));
             put(EvaluateEventType.AFTER_INVOKE_BKM, new Pair<>("afterInvokeBKM", AfterInvokeBKMEvent.class));
+            put(EvaluateEventType.AFTER_CONDITIONAL_EVALUATION, new Pair<>("afterConditionalEvaluation", AfterConditionalEvaluationEvent.class));
+            put(EvaluateEventType.AFTER_EVALUATE_CONDITIONAL, new Pair<>("afterEvaluateConditional", AfterEvaluateConditionalEvent.class));
         }
     };
     private static final Class<DMNRuntimeEventListener> LISTENER_CLASS = DMNRuntimeEventListener.class;
