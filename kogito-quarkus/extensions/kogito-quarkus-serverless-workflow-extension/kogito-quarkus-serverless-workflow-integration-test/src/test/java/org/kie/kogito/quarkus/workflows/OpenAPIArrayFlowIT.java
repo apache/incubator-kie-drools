@@ -54,4 +54,16 @@ class OpenAPIArrayFlowIT {
                 .body("id", notNullValue())
                 .body("workflowdata.response", is(Arrays.asList(1, 2, 3, 4)));
     }
+
+    @Test
+    void testInt() {
+        given()
+                .contentType(ContentType.JSON)
+                .when()
+                .body(Collections.emptyMap())
+                .post("/long-call")
+                .then()
+                .statusCode(201)
+                .body("id", notNullValue());
+    }
 }

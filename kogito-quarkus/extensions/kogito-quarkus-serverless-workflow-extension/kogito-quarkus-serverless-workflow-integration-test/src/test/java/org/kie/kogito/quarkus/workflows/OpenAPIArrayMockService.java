@@ -19,7 +19,6 @@
 package org.kie.kogito.quarkus.workflows;
 
 import java.util.Map;
-import java.util.function.UnaryOperator;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.MappingBuilder;
@@ -28,6 +27,7 @@ import io.quarkus.test.common.QuarkusTestResourceLifecycleManager;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
@@ -35,11 +35,13 @@ import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options
 public class OpenAPIArrayMockService implements QuarkusTestResourceLifecycleManager {
 
     private static WireMockServer arrayService;
+    private static WireMockServer petService;
 
     @Override
     public Map<String, String> start() {
-        arrayService = startServer("[1,2,3,4]", p -> p);
-        return Map.of("array-service-mock.url", arrayService.baseUrl());
+        arrayService = startServer("[1,2,3,4]", post(urlEqualTo("/testArray")).withRequestBody(equalToJson("[1,2,3,4]")));
+        petService = startServer("{\"name\":\"Maya\", \"photoUrls\":[]}", get(urlEqualTo("/pet/4")));
+        return Map.of("array-service-mock.url", arrayService.baseUrl(), "petstore-service-mock.url", petService.baseUrl());
     }
 
     @Override
@@ -47,12 +49,15 @@ public class OpenAPIArrayMockService implements QuarkusTestResourceLifecycleMana
         if (arrayService != null) {
             arrayService.stop();
         }
+        if (petService != null) {
+            petService.stop();
+        }
     }
 
-    private static WireMockServer startServer(final String response, UnaryOperator<MappingBuilder> function) {
+    private static WireMockServer startServer(final String response, MappingBuilder mappingBuilder) {
         final WireMockServer server = new WireMockServer(options().dynamicPort());
         server.start();
-        server.stubFor(function.apply(post(urlEqualTo("/testArray")).withRequestBody(equalToJson("[1,2,3,4]")))
+        server.stubFor(mappingBuilder
                 .withPort(server.port())
                 .willReturn(aResponse()
                         .withHeader("Content-Type", "application/json")

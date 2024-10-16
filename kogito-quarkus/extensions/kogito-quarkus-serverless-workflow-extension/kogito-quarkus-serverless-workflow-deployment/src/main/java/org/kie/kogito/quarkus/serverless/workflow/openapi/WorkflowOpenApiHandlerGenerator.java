@@ -39,7 +39,6 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier.Keyword;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
-import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.ClassExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
@@ -108,7 +107,8 @@ public class WorkflowOpenApiHandlerGenerator extends ClassAnnotatedWorkflowHandl
             // Using deprecated args method because it is the only way to make it work across Quarkus main and 2.7
             Type param = m.args()[i];
             if (annotation != null) {
-                methodCallExpr.addArgument(new CastExpr(fromClass(param), new MethodCallExpr(parameters, "remove").addArgument(new StringLiteralExpr(annotation.value().asString()))));
+                methodCallExpr.addArgument(new MethodCallExpr("safeCast").addArgument(new MethodCallExpr(parameters, "remove").addArgument(new StringLiteralExpr(annotation.value().asString())))
+                        .addArgument(new ClassExpr(fromClass(param, false))));
             } else {
                 methodCallExpr.addArgument(new MethodCallExpr("buildBody").addArgument(parameters).addArgument(new ClassExpr(fromClass(param, false))));
             }

@@ -48,11 +48,38 @@ public abstract class WorkflowWorkItemHandler extends DefaultKogitoWorkItemHandl
 
     protected abstract Object internalExecute(KogitoWorkItem workItem, Map<String, Object> parameters);
 
+    protected static <C> C safeCast(Object obj, Class<C> clazz) {
+        return obj == null || clazz.isAssignableFrom(obj.getClass()) ? clazz.cast(obj) : tryConvert(obj, clazz);
+    }
+
+    private static <C> C tryConvert(Object obj, Class<C> clazz) {
+        if (Number.class.isAssignableFrom(clazz) && Number.class.isAssignableFrom(obj.getClass())) {
+            Number number = (Number) obj;
+            if (Integer.class.isAssignableFrom(clazz)) {
+                return clazz.cast(number.intValue());
+            } else if (Long.class.isAssignableFrom(clazz)) {
+                return clazz.cast(number.longValue());
+            } else if (Double.class.isAssignableFrom(clazz)) {
+                return clazz.cast(number.doubleValue());
+            } else if (Float.class.isAssignableFrom(clazz)) {
+                return clazz.cast(number.floatValue());
+            } else if (Short.class.isAssignableFrom(clazz)) {
+                return clazz.cast(number.shortValue());
+            } else if (Byte.class.isAssignableFrom(clazz)) {
+                return clazz.cast(number.byteValue());
+            } else {
+                throw new UnsupportedOperationException("Type " + clazz + " is not supported");
+            }
+        } else {
+            throw new ClassCastException("OpenAPI expect type " + clazz + " but argument " + obj + " is of type " + obj.getClass());
+        }
+    }
+
     protected static <V> V buildBody(Map<String, Object> params, Class<V> clazz) {
         for (Object obj : params.values()) {
             if (obj != null && clazz.isAssignableFrom(obj.getClass())) {
                 logger.trace("Invoking workitemhandler with value {}", obj);
-                return clazz.cast(obj);
+                return safeCast(obj, clazz);
             }
         }
         V value = JsonObjectUtils.convertValue(params, clazz);

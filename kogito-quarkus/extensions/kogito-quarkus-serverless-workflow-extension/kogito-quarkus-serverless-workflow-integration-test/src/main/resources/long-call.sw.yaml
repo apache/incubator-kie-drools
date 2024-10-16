@@ -1,0 +1,21 @@
+id: long-call
+version: "1.0"
+specVersion: 0.8.0
+name: Long call
+description: Description
+start: Long call
+functions:
+- name: 'getPetById'
+  operation: 'specs/petstore.openapi.yaml#getPetById'
+  type: rest
+states:
+  - name: Long call
+    type: operation
+    actions:
+      - name: 'Get Pet By Id'
+        functionRef:
+          invoke: sync
+          refName: getPetById
+          arguments:
+            petId: 4
+    end: true
