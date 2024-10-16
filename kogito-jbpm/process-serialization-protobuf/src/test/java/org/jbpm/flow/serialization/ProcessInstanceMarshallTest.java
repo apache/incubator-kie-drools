@@ -67,10 +67,9 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.NullSource;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
+import org.kie.kogito.jackson.utils.ObjectMapperFactory;
 import org.kie.kogito.process.impl.AbstractProcess;
 import org.w3c.dom.Document;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.annotation.XmlRootElement;
@@ -197,8 +196,8 @@ public class ProcessInstanceMarshallTest {
                 Arguments.of(5l),
                 Arguments.of(BigDecimal.valueOf(10l)),
                 Arguments.of(new MarshableObject("henry")),
-                Arguments.of(new ObjectMapper().readTree("{ \"key\" : \"value\" }")),
-                Arguments.of(new ObjectMapper().valueToTree(marshableObject)),
+                Arguments.of(ObjectMapperFactory.listenerAware().readTree("{ \"key\" : \"value\" }")),
+                Arguments.of(ObjectMapperFactory.listenerAware().valueToTree(marshableObject)),
                 Arguments.of(new Date()),
                 Arguments.of(Instant.now()),
                 Arguments.of(OffsetDateTime.now()),

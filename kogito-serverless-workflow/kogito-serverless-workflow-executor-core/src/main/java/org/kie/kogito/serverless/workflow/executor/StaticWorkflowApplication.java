@@ -47,6 +47,8 @@ import org.kie.kogito.StaticApplication;
 import org.kie.kogito.StaticConfig;
 import org.kie.kogito.codegen.api.context.impl.JavaKogitoBuildContext;
 import org.kie.kogito.config.StaticConfigBean;
+import org.kie.kogito.event.EventManager;
+import org.kie.kogito.event.EventPublisher;
 import org.kie.kogito.event.impl.EventFactoryUtils;
 import org.kie.kogito.internal.process.event.DefaultKogitoProcessEventListener;
 import org.kie.kogito.internal.process.event.KogitoProcessEventListener;
@@ -65,6 +67,8 @@ import org.kie.kogito.serverless.workflow.utils.ConfigResolverHolder;
 import org.kie.kogito.serverless.workflow.utils.MultiSourceConfigResolver;
 import org.kie.kogito.services.uow.CollectingUnitOfWorkFactory;
 import org.kie.kogito.services.uow.DefaultUnitOfWorkManager;
+import org.kie.kogito.services.uow.UnitOfWorkExecutor;
+import org.kie.kogito.uow.UnitOfWorkManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -98,6 +102,7 @@ public class StaticWorkflowApplication extends StaticApplication implements Auto
     private Iterable<StaticProcessRegister> processRegisters;
     private final Collection<AutoCloseable> closeables = new ArrayList<>();
     private final Map<String, SynchronousQueue<JsonNodeModel>> queues;
+    private final UnitOfWorkManager manager;
     private ProcessInstancesFactory processInstancesFactory;
 
     private static class StaticCompletionEventListener extends DefaultKogitoProcessEventListener {
@@ -127,7 +132,10 @@ public class StaticWorkflowApplication extends StaticApplication implements Auto
     public static class WorkflowApplicationBuilder {
 
         private Map<String, Object> properties;
+        private String serviceName = "EmbeddedKogito";
         private Collection<KogitoProcessEventListener> listeners = new ArrayList<>();
+        private Optional<UnitOfWorkManager> manager = Optional.empty();
+        private Collection<EventPublisher> publishers = new ArrayList<>();
 
         private WorkflowApplicationBuilder() {
         }
@@ -145,14 +153,36 @@ public class StaticWorkflowApplication extends StaticApplication implements Auto
             return this;
         }
 
+        public WorkflowApplicationBuilder withManager(UnitOfWorkManager manager) {
+            this.manager = Optional.ofNullable(manager);
+            return this;
+        }
+
+        public WorkflowApplicationBuilder withService(String serviceName) {
+            this.serviceName = serviceName;
+            return this;
+        }
+
+        public WorkflowApplicationBuilder withEventPublisher(EventPublisher publisher, EventPublisher... extraPublishers) {
+            publishers.add(publisher);
+            for (EventPublisher extraPublisher : extraPublishers) {
+                publishers.add(extraPublisher);
+            }
+            return this;
+        }
+
         public StaticWorkflowApplication build() {
             if (properties == null) {
                 this.properties = loadApplicationDotProperties();
             }
             Map<String, SynchronousQueue<JsonNodeModel>> queues = new ConcurrentHashMap<>();
             listeners.add(new StaticCompletionEventListener(queues));
-            StaticWorkflowApplication application = new StaticWorkflowApplication(properties, queues, listeners);
+            StaticWorkflowApplication application =
+                    new StaticWorkflowApplication(properties, queues, listeners, manager.orElseGet(() -> new DefaultUnitOfWorkManager(new CollectingUnitOfWorkFactory())));
             application.applicationRegisters.forEach(register -> register.register(application));
+            EventManager eventManager = application.manager.eventManager();
+            eventManager.setService(serviceName);
+            publishers.forEach(p -> eventManager.addPublisher(p));
             return application;
         }
     }
@@ -189,14 +219,15 @@ public class StaticWorkflowApplication extends StaticApplication implements Auto
         return builder().withProperties(properties).build();
     }
 
-    private StaticWorkflowApplication(Map<String, Object> properties, Map<String, SynchronousQueue<JsonNodeModel>> queues, Collection<KogitoProcessEventListener> listeners) {
+    private StaticWorkflowApplication(Map<String, Object> properties, Map<String, SynchronousQueue<JsonNodeModel>> queues, Collection<KogitoProcessEventListener> listeners,
+            UnitOfWorkManager manager) {
         super(new StaticConfig(new Addons(Collections.emptySet()), new StaticProcessConfig(new CachedWorkItemHandlerConfig(),
-                new DefaultProcessEventListenerConfig(listeners),
-                new DefaultUnitOfWorkManager(new CollectingUnitOfWorkFactory())), new StaticConfigBean()));
+                new DefaultProcessEventListenerConfig(listeners), manager), new StaticConfigBean()));
         if (!properties.isEmpty()) {
             ConfigResolverHolder.setConfigResolver(MultiSourceConfigResolver.withSystemProperties(properties));
         }
         this.queues = queues;
+        this.manager = manager;
         applicationRegisters = ServiceLoader.load(StaticApplicationRegister.class);
         workflowRegisters = ServiceLoader.load(StaticWorkflowRegister.class);
         processRegisters = ServiceLoader.load(StaticProcessRegister.class);
@@ -268,8 +299,10 @@ public class StaticWorkflowApplication extends StaticApplication implements Auto
      */
     public JsonNodeModel execute(Process<JsonNodeModel> process, JsonNodeModel model) {
         ProcessInstance<JsonNodeModel> processInstance = process.createInstance(model);
-        processInstance.start();
-        return processInstance.variables();
+        return UnitOfWorkExecutor.executeInUnitOfWork(manager, () -> {
+            processInstance.start();
+            return processInstance.variables();
+        });
     }
 
     /**

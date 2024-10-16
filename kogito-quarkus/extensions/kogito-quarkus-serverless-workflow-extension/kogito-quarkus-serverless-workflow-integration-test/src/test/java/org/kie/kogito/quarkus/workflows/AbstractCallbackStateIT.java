@@ -118,11 +118,8 @@ abstract class AbstractCallbackStateIT {
         assertThat(lastExecutedState).isEqualTo("FinalizeWithError");
 
         JsonPath variableLastExecutedStateEventContent =
-                waitForKogitoProcessInstanceEvent(kafkaClient, ProcessInstanceVariableDataEvent.class, e -> "workflowdata".equals(e.get("data.variableName")), true);
-        Map<Object, Object> lastExecutedStateDataMap = variableLastExecutedStateEventContent.getMap("data.variableValue");
-
-        assertThat(lastExecutedStateDataMap).containsEntry("lastExecutedState", "FinalizeWithError");
-        assertThat(lastExecutedStateDataMap).containsEntry("query", GENERATE_ERROR_QUERY);
+                waitForKogitoProcessInstanceEvent(kafkaClient, ProcessInstanceVariableDataEvent.class, e -> "workflowdata.lastExecutedState".equals(e.get("data.variableName")), true);
+        assertThat(variableLastExecutedStateEventContent.getString("data.variableValue")).isEqualTo("FinalizeWithError");
 
         // the process instance should not be there since an end state was reached.
         assertProcessInstanceNotExists(callbackProcessGetByIdUrl, processInstanceId);

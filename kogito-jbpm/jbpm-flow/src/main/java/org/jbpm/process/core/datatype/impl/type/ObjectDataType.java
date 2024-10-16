@@ -25,6 +25,7 @@ import java.util.Objects;
 
 import org.jbpm.process.core.datatype.DataType;
 import org.jbpm.process.core.datatype.DataTypeUtils;
+import org.jbpm.process.core.datatype.impl.coverter.CloneHelper;
 import org.jbpm.process.core.datatype.impl.coverter.TypeConverterRegistry;
 
 /**
@@ -84,6 +85,10 @@ public class ObjectDataType implements DataType {
     @Override
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject(className);
+    }
+
+    public Object clone(Object value) {
+        return CloneHelper.get().clone(value);
     }
 
     @Override

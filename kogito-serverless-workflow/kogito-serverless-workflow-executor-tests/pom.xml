@@ -77,7 +77,7 @@
       <artifactId>wiremock-jre8</artifactId>
       <scope>test</scope>
     </dependency>
-      <dependency>
+    <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-addons-persistence-rocksdb</artifactId>
       <scope>test</scope>

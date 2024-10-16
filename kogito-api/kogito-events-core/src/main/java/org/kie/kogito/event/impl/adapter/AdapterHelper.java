@@ -69,6 +69,7 @@ public class AdapterHelper {
         if (processId == null) {
             return null;
         } else {
+            processId = processId.replace(" ", "-");
             return service + "/" + (processId.contains(".") ? processId.substring(processId.lastIndexOf('.') + 1) : processId);
         }
     }

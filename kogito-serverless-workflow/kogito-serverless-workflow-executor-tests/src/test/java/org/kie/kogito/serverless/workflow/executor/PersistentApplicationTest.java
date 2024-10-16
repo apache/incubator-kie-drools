@@ -22,17 +22,27 @@ import java.net.URI;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.OffsetDateTime;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeoutException;
+import java.util.stream.Collectors;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.MockConsumer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.kie.api.event.process.ProcessVariableChangedEvent;
+import org.kie.kogito.event.process.ProcessInstanceVariableDataEvent;
+import org.kie.kogito.event.process.ProcessInstanceVariableEventBody;
+import org.kie.kogito.internal.process.event.DefaultKogitoProcessEventListener;
 import org.kie.kogito.persistence.rocksdb.RocksDBProcessInstancesFactory;
+import org.kie.kogito.serverless.workflow.SWFConstants;
 import org.rocksdb.Options;
 import org.rocksdb.RocksDBException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.node.TextNode;
 
@@ -51,21 +61,37 @@ import static org.kie.kogito.serverless.workflow.fluent.WorkflowBuilder.jsonObje
 import static org.kie.kogito.serverless.workflow.fluent.WorkflowBuilder.workflow;
 
 public class PersistentApplicationTest {
+
+    private final static Logger logger = LoggerFactory.getLogger(PersistentApplicationTest.class);
+
     @Test
     void testCallbackSubscriberWithPersistence(@TempDir Path tempDir) throws InterruptedException, TimeoutException, RocksDBException {
         final String eventType = "testSubscribe";
         final String additionalData = "This has been injected by the event";
-        Workflow workflow = workflow("testCallback").start(callback(call(expr("concat", "{slogan:.slogan+\"er Beti\"}")), eventDef(eventType))).end().build();
+
+        final EventPublisherCollector eventCollector = new EventPublisherCollector();
+        Workflow workflow = workflow("testCallback").start(callback(call(expr("concat", "{slogan:.slogan+\"Viva er Beti manque pierda\"}")), eventDef(eventType))).end().build();
         try (StaticWorkflowApplication application =
-                StaticWorkflowApplication.create().processInstancesFactory(new RocksDBProcessInstancesFactory(new Options().setCreateIfMissing(true), tempDir.toString()))) {
-            String id = application.execute(workflow, jsonObject().put("slogan", "Viva ")).getId();
+                StaticWorkflowApplication.builder().withEventListener(new DefaultKogitoProcessEventListener() {
+                    @Override
+                    public void afterVariableChanged(ProcessVariableChangedEvent event) {
+                        logger.info(event.toString());
+
+                    }
+                }).withEventPublisher(eventCollector).build().processInstancesFactory(new RocksDBProcessInstancesFactory(new Options().setCreateIfMissing(true), tempDir.toString()))) {
+            String id = application.execute(workflow, Map.of()).getId();
             assertThat(application.variables(id).orElseThrow().getWorkflowdata()).doesNotContain(new TextNode(additionalData));
             publish(eventType, buildCloudEvent(eventType, id)
                     .withData(JsonCloudEventData.wrap(jsonObject().put("additionalData", additionalData)))
                     .build());
             assertThat(application.waitForFinish(id, Duration.ofSeconds(2000)).orElseThrow().getWorkflowdata())
-                    .isEqualTo(jsonObject().put("additionalData", additionalData).put("slogan", "Viva er Beti"));
+                    .isEqualTo(jsonObject().put("additionalData", additionalData).put("slogan", "Viva er Beti manque pierda"));
             await().atMost(Duration.ofSeconds(1)).pollInterval(Duration.ofMillis(50)).until(() -> application.variables(id).isEmpty());
+            List<ProcessInstanceVariableEventBody> dataChangeEvents = eventCollector.events().stream().filter(ProcessInstanceVariableDataEvent.class::isInstance)
+                    .map(ProcessInstanceVariableDataEvent.class::cast).map(ProcessInstanceVariableDataEvent::getData).collect(Collectors.toList());
+            assertThat(dataChangeEvents).hasSize(2);
+            assertThat(dataChangeEvents.get(0).getVariableName()).isEqualTo(SWFConstants.DEFAULT_WORKFLOW_VAR);
+            assertThat(dataChangeEvents.get(1).getVariableName()).isEqualTo(SWFConstants.DEFAULT_WORKFLOW_VAR + ".additionalData");
         }
     }
 

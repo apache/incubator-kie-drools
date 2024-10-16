@@ -52,7 +52,7 @@ public class ProtobufJsonNodeMessageMarshaller implements ObjectMarshallerStrate
     public Object unmarshall(Any data) {
         try {
             KogitoTypesProtobuf.JsonNode storedValue = data.unpack(KogitoTypesProtobuf.JsonNode.class);
-            return ObjectMapperFactory.get().readTree(storedValue.getContent());
+            return ObjectMapperFactory.listenerAware().readTree(storedValue.getContent());
         } catch (InvalidProtocolBufferException | JsonProcessingException e1) {
             throw new ProcessInstanceMarshallerException("Error trying to unmarshalling a Json Node value", e1);
         }
