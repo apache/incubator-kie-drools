@@ -37,6 +37,7 @@ import org.drools.base.base.EnabledBoolean;
 import org.drools.base.base.SalienceInteger;
 import org.drools.base.base.ValueResolver;
 import org.drools.base.reteoo.BaseTuple;
+import org.drools.base.reteoo.sequencing.Sequence;
 import org.drools.base.rule.ConsequenceMetaData;
 import org.drools.base.rule.Declaration;
 import org.drools.base.rule.Dialectable;
@@ -51,7 +52,7 @@ import org.drools.base.rule.accessor.Enabled;
 import org.drools.base.rule.accessor.Salience;
 import org.drools.base.rule.accessor.Wireable;
 import org.drools.base.rule.consequence.Consequence;
-import org.drools.base.time.impl.Timer;
+import org.drools.base.time.Timer;
 import org.drools.util.StringUtils;
 import org.kie.api.definition.rule.Query;
 import org.kie.api.io.Resource;
@@ -541,6 +542,11 @@ public class RuleImpl implements Externalizable,
      * @throws InvalidRuleException
      */
     public void addPattern(final RuleConditionElement element) {
+        this.dirty = true;
+        this.lhsRoot.addChild( element );
+    }
+
+    public void addSequence(final Sequence element) {
         this.dirty = true;
         this.lhsRoot.addChild( element );
     }

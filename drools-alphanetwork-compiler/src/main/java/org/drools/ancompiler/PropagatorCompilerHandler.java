@@ -61,7 +61,7 @@ import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.ModifyPreviousTuples;
 import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.core.reteoo.Sink;
+import org.drools.base.reteoo.Sink;
 import org.drools.core.reteoo.WindowNode;
 import org.drools.base.rule.IndexableConstraint;
 import org.drools.core.common.PropagationContext;

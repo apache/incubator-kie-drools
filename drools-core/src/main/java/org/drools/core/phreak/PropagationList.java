@@ -18,6 +18,8 @@
  */
 package org.drools.core.phreak;
 
+import org.drools.base.phreak.PropagationEntry;
+
 import java.util.Iterator;
 
 public interface PropagationList {

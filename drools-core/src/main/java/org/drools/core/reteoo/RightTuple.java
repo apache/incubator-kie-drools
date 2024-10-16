@@ -19,6 +19,8 @@
 package org.drools.core.reteoo;
 
 import org.drools.base.reteoo.NodeTypeEnums;
+import org.drools.base.reteoo.ObjectTypeNodeId;
+import org.drools.base.reteoo.Sink;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
@@ -189,7 +191,7 @@ public class RightTuple extends TupleImpl {
         super.setExpired();
         // events expired at firing time should have a chance to produce a join (DROOLS-1329)
         // but shouldn't participate to an accumulate (DROOLS-4393)
-        if (this.getSink().getType() == NodeTypeEnums.AccumulateNode) {
+        if (this.getSink().getType() == NodeTypeEnums.AccumulateRightAdapterNode) {
             retractTuple( pctx, reteEvaluator );
         }
     }

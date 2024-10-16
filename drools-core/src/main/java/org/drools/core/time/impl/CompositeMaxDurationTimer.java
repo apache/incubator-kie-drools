@@ -32,7 +32,7 @@ import org.drools.base.rule.ConditionalElement;
 import org.drools.base.rule.Declaration;
 import org.drools.base.time.JobHandle;
 import org.drools.base.time.Trigger;
-import org.drools.base.time.impl.Timer;
+import org.drools.base.time.Timer;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.kie.api.runtime.Calendars;

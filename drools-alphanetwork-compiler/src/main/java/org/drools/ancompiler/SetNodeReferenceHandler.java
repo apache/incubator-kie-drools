@@ -39,7 +39,7 @@ import com.github.javaparser.ast.type.PrimitiveType;
 import com.github.javaparser.ast.type.VoidType;
 import org.drools.base.common.NetworkNode;
 import org.drools.core.reteoo.AlphaNode;
-import org.drools.core.reteoo.Sink;
+import org.drools.base.reteoo.Sink;
 
 import static com.github.javaparser.StaticJavaParser.parseExpression;
 import static com.github.javaparser.StaticJavaParser.parseStatement;

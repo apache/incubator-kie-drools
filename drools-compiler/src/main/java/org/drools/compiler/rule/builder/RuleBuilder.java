@@ -37,7 +37,7 @@ import org.drools.base.factmodel.AnnotationDefinition;
 import org.drools.base.rule.GroupElement;
 import org.drools.base.rule.accessor.Salience;
 import org.drools.base.time.TimeUtils;
-import org.drools.base.time.impl.Timer;
+import org.drools.base.time.Timer;
 import org.drools.compiler.compiler.DroolsWarning;
 import org.drools.compiler.compiler.RuleBuildError;
 import org.drools.compiler.compiler.RuleBuildWarning;

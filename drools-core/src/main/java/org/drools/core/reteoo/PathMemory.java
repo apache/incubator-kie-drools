@@ -28,7 +28,7 @@ import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.Memory;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.phreak.RuleAgendaItem;
-import org.drools.core.util.AbstractLinkedListNode;
+import org.drools.base.util.AbstractLinkedListNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -102,7 +102,7 @@ public class PathMemory extends AbstractLinkedListNode<Memory>
                 TerminalNode rtn = (TerminalNode) getPathEndNode();
                 log.trace("  LinkSegment smask={} rmask={} name={}", mask, linkedSegmentMask, rtn.getRule().getName());
             } else {
-                log.trace("  LinkSegment smask={} rmask={}", mask, "RiaNode");
+                log.trace("  LinkSegment smask={} rmask={}", mask, "TupleToObjectNode");
             }
         }
         if (isRuleLinked()) {

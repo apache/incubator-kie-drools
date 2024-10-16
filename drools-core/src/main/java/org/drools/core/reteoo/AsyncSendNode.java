@@ -37,7 +37,7 @@ import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.util.AbstractLinkedListNode;
+import org.drools.base.util.AbstractLinkedListNode;
 import org.drools.core.util.index.TupleList;
 
 public class AsyncSendNode<T extends AsyncSendNode.AsyncSendMemory> extends LeftTupleSource
@@ -82,7 +82,7 @@ public class AsyncSendNode<T extends AsyncSendNode.AsyncSendMemory> extends Left
         this.send = send;
         this.messageId = send.getMessageId();
 
-        initMasks(context, tupleSource);
+        initMasks(context);
 
         hashcode = calculateHashCode();
     }

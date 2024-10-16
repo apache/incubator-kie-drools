@@ -29,7 +29,7 @@ import org.drools.base.base.ValueType;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
-import org.drools.core.reteoo.Sink;
+import org.drools.base.reteoo.Sink;
 import org.drools.core.reteoo.WindowNode;
 import org.drools.base.rule.ContextEntry;
 import org.drools.base.rule.IndexableConstraint;

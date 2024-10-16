@@ -18,6 +18,9 @@
  */
 package org.drools.core.time;
 
+import org.drools.base.time.Job;
+import org.drools.base.time.JobContext;
+
 import java.io.Serializable;
 
 public class SelfRemovalJob implements Job, Serializable {

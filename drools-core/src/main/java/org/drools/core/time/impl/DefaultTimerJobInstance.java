@@ -24,9 +24,10 @@ import java.util.concurrent.Callable;
 
 import org.drools.base.time.JobHandle;
 import org.drools.base.time.Trigger;
-import org.drools.core.time.InternalSchedulerService;
-import org.drools.core.time.Job;
-import org.drools.core.time.JobContext;
+import org.drools.base.time.Job;
+import org.drools.base.time.JobContext;
+import org.drools.base.time.impl.InternalSchedulerService;
+import org.drools.base.time.impl.TimerJobInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,7 +42,7 @@ public class DefaultTimerJobInstance implements Callable<Void>, Comparable<Defau
     private final JobContext ctx;
 
     protected transient InternalSchedulerService scheduler;
-    private final JobHandle handle;
+    private final       JobHandle                handle;
 
     private boolean canceled = false;
 
@@ -60,7 +61,7 @@ public class DefaultTimerJobInstance implements Callable<Void>, Comparable<Defau
 
     public Void call() throws Exception {
         try {
-            this.trigger.initialize(this.getJobContext().getReteEvaluator());
+            this.trigger.initialize(this.getJobContext().getValueResolver());
             this.trigger.nextFireTime(); // need to pop
             if ( handle.isCancel() ) {
                 return null;

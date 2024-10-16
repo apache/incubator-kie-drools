@@ -27,6 +27,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.drools.base.definitions.rule.impl.QueryImpl;
 import org.drools.base.definitions.rule.impl.RuleImpl;
+import org.drools.base.util.LinkedList;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.ActivationGroupImpl;
 import org.drools.core.common.ActivationGroupNode;
@@ -49,13 +50,14 @@ import org.drools.core.concurrent.SequentialGroupEvaluator;
 import org.drools.core.event.AgendaEventSupport;
 import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.phreak.ExecutableEntry;
-import org.drools.core.phreak.PropagationEntry;
+import org.drools.base.phreak.PropagationEntry;
 import org.drools.core.phreak.PropagationList;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.phreak.RuleExecutor;
 import org.drools.core.phreak.SynchronizedBypassPropagationList;
 import org.drools.core.phreak.SynchronizedPropagationList;
 import org.drools.core.phreak.ThreadUnsafePropagationList;
+import org.drools.base.phreak.actions.AbstractPropagationEntry;
 import org.drools.core.reteoo.AgendaComponentFactory;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.PathMemory;
@@ -98,7 +100,7 @@ public class DefaultAgenda implements InternalAgenda {
 
     private final Map<String, InternalActivationGroup> activationGroups;
 
-    private final org.drools.core.util.LinkedList<RuleAgendaItem> eager = new org.drools.core.util.LinkedList<>();
+    private final LinkedList<RuleAgendaItem> eager = new LinkedList<>();
 
     private final Map<QueryImpl, RuleAgendaItem> queries = new ConcurrentHashMap<>();
 
@@ -752,7 +754,7 @@ public class DefaultAgenda implements InternalAgenda {
         return executionStateMachine.tryDeactivate();
     }
 
-    static class Halt extends PropagationEntry.AbstractPropagationEntry {
+    static class Halt extends AbstractPropagationEntry<ReteEvaluator> {
 
         private final ExecutionStateMachine executionStateMachine;
 
@@ -772,7 +774,7 @@ public class DefaultAgenda implements InternalAgenda {
         }
     }
 
-    static class ImmediateHalt extends PropagationEntry.AbstractPropagationEntry {
+    static class ImmediateHalt extends AbstractPropagationEntry<ReteEvaluator> {
 
         private final ExecutionStateMachine executionStateMachine;
         private final PropagationList propagationList;

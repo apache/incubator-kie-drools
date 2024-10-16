@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.drools.base.base.ObjectType;
 import org.drools.base.reteoo.NodeTypeEnums;
+import org.drools.base.reteoo.ObjectTypeNodeId;
 import org.drools.base.rule.EntryPointId;
 import org.drools.base.rule.Pattern;
 import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
@@ -197,7 +198,7 @@ public class WindowNode extends ObjectSource
         TupleImpl rightTuple = modifyPreviousTuples.peekRightTuple(partitionId);
 
         // if the peek is for a different OTN we assume that it is after the current one and then this is an assert
-        while ( rightTuple != null && rightTuple.getInputOtnId().before(getRightInputOtnId()) ) {
+        while ( rightTuple != null && rightTuple.getInputOtnId().before(getInputOtnId()) ) {
             modifyPreviousTuples.removeRightTuple(partitionId);
 
             // we skipped this node, due to alpha hashing, so retract now
@@ -206,7 +207,7 @@ public class WindowNode extends ObjectSource
             rightTuple = modifyPreviousTuples.peekRightTuple(partitionId);
         }
 
-        if ( rightTuple != null && rightTuple.getInputOtnId().equals(getRightInputOtnId()) ) {
+        if ( rightTuple != null && rightTuple.getInputOtnId().equals(getInputOtnId()) ) {
             modifyPreviousTuples.removeRightTuple(partitionId);
             rightTuple.reAdd();
             modifyRightTuple( rightTuple, context, reteEvaluator );
@@ -354,7 +355,7 @@ public class WindowNode extends ObjectSource
         }
     }
 
-    public ObjectTypeNodeId getRightInputOtnId() {
+    public ObjectTypeNodeId getInputOtnId() {
         return rightInputOtnId;
     }
 

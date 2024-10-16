@@ -26,6 +26,7 @@ import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.common.ReteEvaluator;
+import org.drools.base.phreak.actions.AbstractPropagationEntry;
 import org.drools.core.reteoo.LeftTupleSinkNode;
 import org.drools.core.reteoo.ReactiveFromNode;
 import org.drools.core.reteoo.ReactiveFromNodeLeftTuple;
@@ -63,7 +64,7 @@ public class ReactiveObjectUtil {
         }
     }
 
-    static class ReactivePropagation extends PropagationEntry.AbstractPropagationEntry {
+    static class ReactivePropagation extends AbstractPropagationEntry<ReteEvaluator> {
 
         private final Object object;
         private final ReactiveFromNodeLeftTuple leftTuple;
