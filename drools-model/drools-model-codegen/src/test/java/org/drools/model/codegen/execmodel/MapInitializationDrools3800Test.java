@@ -21,16 +21,13 @@ package org.drools.model.codegen.execmodel;
 import java.util.Map;
 import java.util.Objects;
 
-import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class MapInitializationDrools3800Test extends BaseModelTest {
-
-    public MapInitializationDrools3800Test(BaseModelTest.RUN_TYPE testRunType) {
-        super(testRunType);
-    }
+public class MapInitializationDrools3800Test extends BaseModelTest2 {
 
     public static boolean calc(Map<String, Object> params) {
         return Objects.equals(params.get("src"), params.get("target"));
@@ -57,8 +54,9 @@ public class MapInitializationDrools3800Test extends BaseModelTest {
         }
     }
 
-    @Test
-    public void testMapInitialization() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testMapInitialization(RUN_TYPE runType) {
         StringBuilder r = new StringBuilder();
         r.append("package ").append(getClass().getPackage().getName()).append("\n");
         r.append("\n");
@@ -76,7 +74,7 @@ public class MapInitializationDrools3800Test extends BaseModelTest {
         r.append("    }").append("\n");
         r.append("end").append("\n");
 
-        KieSession ksession = getKieSession(r.toString() );
+        KieSession ksession = getKieSession(runType, r.toString());
 
 
         Fact fact = new Fact();
@@ -88,8 +86,9 @@ public class MapInitializationDrools3800Test extends BaseModelTest {
         assertThat(fact.getResult()).isEqualTo("OK");
     }
 
-    @Test
-    public void testPropertyReactivityHanging() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testPropertyReactivityHanging(RUN_TYPE runType) {
         // DROOLS-3849
         String rule =
                 "package " + getClass().getPackage().getName() + "\n" +
@@ -107,7 +106,7 @@ public class MapInitializationDrools3800Test extends BaseModelTest {
                 "    }\n" +
                 "end";
 
-        KieSession ksession = getKieSession(rule);
+        KieSession ksession = getKieSession(runType, rule);
 
         Fact fact = new Fact();
         fact.setName("TEST");

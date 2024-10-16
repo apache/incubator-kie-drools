@@ -20,21 +20,19 @@ package org.drools.model.codegen.execmodel;
 
 import java.util.Arrays;
 
-import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class PackagesIsolationTest extends BaseModelTest {
-
-    public PackagesIsolationTest( RUN_TYPE testRunType ) {
-        super( testRunType );
-    }
+public class PackagesIsolationTest extends BaseModelTest2 {
 
     public static class HashSet { }
 
-    @Test
-    public void testDoNotMixImports() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testDoNotMixImports(RUN_TYPE runType) {
         // DROOLS-5390
         String str2 =
                 "package mypkg2\n" +
@@ -47,11 +45,12 @@ public class PackagesIsolationTest extends BaseModelTest {
                 "  list.add(\"R2\");\n" +
                 "end";
 
-        check( str2 );
+        check( runType, str2 );
     }
 
-    @Test
-    public void testImportWildcard() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testImportWildcard(RUN_TYPE runType) {
         String str2 =
                 "package mypkg2\n" +
                 "import mypkg1.*;\n" +
@@ -62,11 +61,12 @@ public class PackagesIsolationTest extends BaseModelTest {
                 "  list.add(\"R2\");\n" +
                 "end";
 
-        check( str2 );
+        check( runType, str2 );
     }
 
-    @Test
-    public void testImportType() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testImportType(RUN_TYPE runType) {
         String str2 =
                 "package mypkg2\n" +
                 "import mypkg1.MyPojo;\n" +
@@ -77,10 +77,10 @@ public class PackagesIsolationTest extends BaseModelTest {
                 "  list.add(\"R2\");\n" +
                 "end";
 
-        check( str2 );
+        check( runType, str2 );
     }
 
-    private void check( String str2 ) {
+    private void check( RUN_TYPE runType, String str2 ) {
         String str1 =
                 "package mypkg1\n" +
                         "global java.util.List list\n" +
@@ -92,7 +92,7 @@ public class PackagesIsolationTest extends BaseModelTest {
                         "  list.add(\"R1\");\n" +
                         "end";
 
-        KieSession ksession = getKieSession( str1, str2 );
+        KieSession ksession = getKieSession(runType, str1, str2);
 
         java.util.List<String> list = new java.util.ArrayList<>();
         ksession.setGlobal( "list", list );

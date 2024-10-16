@@ -21,7 +21,8 @@ package org.drools.model.codegen.execmodel;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.event.rule.ObjectDeletedEvent;
 import org.kie.api.event.rule.ObjectInsertedEvent;
 import org.kie.api.event.rule.ObjectUpdatedEvent;
@@ -30,14 +31,11 @@ import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ListenersTest extends BaseModelTest {
+public class ListenersTest extends BaseModelTest2 {
 
-    public ListenersTest( RUN_TYPE testRunType ) {
-        super( testRunType );
-    }
-
-    @Test
-    public void testInsert() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testInsert(RUN_TYPE runType) {
         String str =
                 "rule R\n" +
                 "when\n" +
@@ -46,7 +44,7 @@ public class ListenersTest extends BaseModelTest {
                 "  insert(\"\" + $i);\n" +
                 "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         List<String> results = new ArrayList<>();
 
