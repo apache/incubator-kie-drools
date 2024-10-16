@@ -18,16 +18,14 @@
  */
 package org.drools.model.codegen.execmodel;
 
-import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class UseClassFieldsInRulesTest extends BaseModelTest {
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
-    public UseClassFieldsInRulesTest( BaseModelTest.RUN_TYPE testRunType ) {
-        super( testRunType );
-    }
+public class UseClassFieldsInRulesTest extends BaseModelTest2 {
 
     public static class ClassWithFields {
         public final int field = 3;
@@ -38,54 +36,63 @@ public class UseClassFieldsInRulesTest extends BaseModelTest {
         }
     }
 
-    @Test
-    public void testUseAccessor() {
-        doCheck(true, "value > 2");
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testUseAccessor(RUN_TYPE runType) {
+        doCheck(runType, true, "value > 2");
     }
 
-    @Test
-    public void testUseField() {
-        doCheck(true, "field > 2");
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testUseField(RUN_TYPE runType) {
+        doCheck(runType, true, "field > 2");
     }
 
-    @Test
-    public void testUseStaticField() {
-        doCheck(true, "STATIC_FIELD > 2");
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testUseStaticField(RUN_TYPE runType) {
+        doCheck(runType, true, "STATIC_FIELD > 2");
     }
 
-    @Test
-    public void testUseAccessorInFunction() {
-        doCheck(true, "greaterThan( value, 2 )");
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testUseAccessorInFunction(RUN_TYPE runType) {
+        doCheck(runType, true, "greaterThan( value, 2 )");
     }
 
-    @Test
-    public void testUseFieldInFunction() {
-        doCheck(true, "greaterThan( field, 2 )");
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testUseFieldInFunction(RUN_TYPE runType) {
+        doCheck(runType, true, "greaterThan( field, 2 )");
     }
 
-    @Test
-    public void testUseStaticFieldInFunction() {
-        doCheck(true, "greaterThan( STATIC_FIELD, 2 )");
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testUseStaticFieldInFunction(RUN_TYPE runType) {
+        doCheck(runType, true, "greaterThan( STATIC_FIELD, 2 )");
     }
 
     public static boolean greaterThanMethod(int i1, int i2) { return i1 > i2; }
 
-    @Test
-    public void testUseAccessorInMethod() {
-        doCheck(false, "greaterThanMethod( value, 2 )");
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testUseAccessorInMethod(RUN_TYPE runType) {
+        doCheck(runType, false, "greaterThanMethod( value, 2 )");
     }
 
-    @Test
-    public void testUseFieldInMethod() {
-        doCheck(false, "greaterThanMethod( field, 2 )");
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testUseFieldInMethod(RUN_TYPE runType) {
+        doCheck(runType, false, "greaterThanMethod( field, 2 )");
     }
 
-    @Test
-    public void testUseStaticFieldInMethod() {
-        doCheck(false, "greaterThanMethod( STATIC_FIELD, 2 )");
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testUseStaticFieldInMethod(RUN_TYPE runType) {
+        doCheck(runType, false, "greaterThanMethod( STATIC_FIELD, 2 )");
     }
 
-    private void doCheck(boolean useFunction, String pattern) {
+    private void doCheck(RUN_TYPE runType, boolean useFunction, String pattern) {
         String str =
                 "import " + ClassWithFields.class.getCanonicalName() + "\n" +
                 (useFunction ?
@@ -96,14 +103,15 @@ public class UseClassFieldsInRulesTest extends BaseModelTest {
                 "then\n" +
                 "end ";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert(new ClassWithFields());
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testMethodInFrom() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testMethodInFrom(RUN_TYPE runType) {
         String str =
                 "import " + ClassWithFields.class.getCanonicalName() + "\n" +
                 "import static " + UseClassFieldsInRulesTest.class.getCanonicalName() + ".*\n" +
@@ -112,12 +120,13 @@ public class UseClassFieldsInRulesTest extends BaseModelTest {
                 "then\n" +
                 "end ";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testMethodInEval() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testMethodInEval(RUN_TYPE runType) {
         String str =
                 "import " + ClassWithFields.class.getCanonicalName() + "\n" +
                 "import static " + UseClassFieldsInRulesTest.class.getCanonicalName() + ".*\n" +
@@ -126,12 +135,13 @@ public class UseClassFieldsInRulesTest extends BaseModelTest {
                 "then\n" +
                 "end ";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testFunctionInFrom() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testFunctionInFrom(RUN_TYPE runType) {
         String str =
                 "import " + ClassWithFields.class.getCanonicalName() + "\n" +
                 "function boolean greaterThan(int i1, int i2) { return i1 > i2; }\n" +
@@ -140,12 +150,13 @@ public class UseClassFieldsInRulesTest extends BaseModelTest {
                 "then\n" +
                 "end ";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testFunctionWithEval() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testFunctionWithEval(RUN_TYPE runType) {
         String str =
                 "import " + ClassWithFields.class.getCanonicalName() + "\n" +
                 "function boolean greaterThan(int i1, int i2) { return i1 > i2; }\n" +
@@ -154,7 +165,7 @@ public class UseClassFieldsInRulesTest extends BaseModelTest {
                 "then\n" +
                 "end ";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 }

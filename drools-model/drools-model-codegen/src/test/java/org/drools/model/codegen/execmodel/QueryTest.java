@@ -31,7 +31,8 @@ import org.drools.model.codegen.execmodel.domain.Relationship;
 import org.drools.model.codegen.execmodel.domain.Result;
 import org.drools.model.codegen.execmodel.oopathdtables.InternationalAddress;
 import org.drools.model.codegen.execmodel.util.TrackingAgendaEventListener;
-import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieServices;
 import org.kie.api.command.Command;
 import org.kie.api.definition.type.FactType;
@@ -44,14 +45,11 @@ import org.kie.api.runtime.rule.Variable;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class QueryTest extends BaseModelTest {
+public class QueryTest extends BaseModelTest2 {
 
-    public QueryTest( RUN_TYPE testRunType ) {
-        super( testRunType );
-    }
-
-    @Test
-    public void testQueryZeroArgs() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testQueryZeroArgs(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                 "global java.lang.Integer ageG;" +
@@ -59,7 +57,7 @@ public class QueryTest extends BaseModelTest {
                 "    $p : Person(age > ageG)\n" +
                 "end ";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.setGlobal("ageG", 40);
 
@@ -75,15 +73,16 @@ public class QueryTest extends BaseModelTest {
 
     }
 
-    @Test
-    public void testQueryOneArgument() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testQueryOneArgument(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                 "query olderThan( int $age )\n" +
                 "    $p : Person(age > $age)\n" +
                 "end ";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert( new Person( "Mark", 39 ) );
         ksession.insert( new Person( "Mario", 41 ) );
@@ -95,15 +94,16 @@ public class QueryTest extends BaseModelTest {
         assertThat(p.getName()).isEqualTo("Mario");
     }
 
-    @Test
-    public void testQueryOneArgumentWithoutType() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testQueryOneArgumentWithoutType(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                 "query olderThan( $age )\n" +
                 "    $p : Person(age > (Integer)$age)\n" +
                 "end ";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert( new Person( "Mark", 39 ) );
         ksession.insert( new Person( "Mario", 41 ) );
@@ -115,8 +115,9 @@ public class QueryTest extends BaseModelTest {
         assertThat(p.getName()).isEqualTo("Mario");
     }
 
-    @Test
-    public void testQueryInRule() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testQueryInRule(RUN_TYPE runType) {
         String str =
                 "import " + Result.class.getCanonicalName() + ";" +
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -129,7 +130,7 @@ public class QueryTest extends BaseModelTest {
                 "    insert(new Result($p.getName()));\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert( new Person( "Mark", 39 ) );
         ksession.insert( new Person( "Mario", 41 ) );
@@ -141,8 +142,9 @@ public class QueryTest extends BaseModelTest {
         assertThat(results.iterator().next().getValue()).isEqualTo("Mario");
     }
 
-    @Test
-    public void testQueryInRuleWithDeclaration() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testQueryInRuleWithDeclaration(RUN_TYPE runType) {
         String str =
                 "import " + Result.class.getCanonicalName() + ";" +
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -156,7 +158,7 @@ public class QueryTest extends BaseModelTest {
                 "    insert(new Result($p.getName()));\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert( new Person( "Mark", 39 ) );
         ksession.insert( new Person( "Mario", 41 ) );
@@ -170,8 +172,9 @@ public class QueryTest extends BaseModelTest {
     }
 
 
-    @Test
-    public void testQueryInvokedWithGlobal() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testQueryInvokedWithGlobal(RUN_TYPE runType) {
         String str =
                 "import " + Result.class.getCanonicalName() + ";" +
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -186,7 +189,7 @@ public class QueryTest extends BaseModelTest {
                 "    insert(new Result($p.getName()));\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.setGlobal("ageG", 40);
 
@@ -201,8 +204,9 @@ public class QueryTest extends BaseModelTest {
         assertThat(results.iterator().next().getValue()).isEqualTo("Mario");
     }
 
-    @Test
-    public void testNonPositionalQuery() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testNonPositionalQuery(RUN_TYPE runType) {
         String str =
                 "import " + Result.class.getCanonicalName() + ";" +
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -210,7 +214,7 @@ public class QueryTest extends BaseModelTest {
                 "    $p : Person(name == $n, age == $a)\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert( new Person( "Mark", 39 ) );
         ksession.insert( new Person( "Mario", 41 ) );
@@ -222,15 +226,16 @@ public class QueryTest extends BaseModelTest {
         assertThat(p.getName()).isEqualTo("Mario");
     }
 
-    @Test
-    public void testPositionalQuery() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testPositionalQuery(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                 "query findPerson( String $n, int $a )\n" +
                 "    $p : Person($n, $a;)\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert( new Person( "Mark", 39 ) );
         ksession.insert( new Person( "Mario", 41 ) );
@@ -242,15 +247,16 @@ public class QueryTest extends BaseModelTest {
         assertThat(p.getName()).isEqualTo("Mario");
     }
 
-    @Test
-    public void testUnificationParameterInPattern() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testUnificationParameterInPattern(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                 "query personsAges(int ages)\n" +
                         "$p : Person(ages := age)\n" +
                 "end\n";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert( new Person( "Mark", 39 ) );
         ksession.insert( new Person( "Mario", 41 ) );
@@ -262,8 +268,9 @@ public class QueryTest extends BaseModelTest {
         assertThat(p.getName()).isEqualTo("Mario");
     }
 
-    @Test
-    public void testQueryCallingQuery() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testQueryCallingQuery(RUN_TYPE runType) {
         String str =
                 "import " + Relationship.class.getCanonicalName() + ";" +
                 "query isRelatedTo(String x, String y)\n" +
@@ -273,7 +280,7 @@ public class QueryTest extends BaseModelTest {
                 "    Relationship(x, y;)\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert( new Relationship( "A", "B" ) );
         ksession.insert( new Relationship( "B", "C" ) );
@@ -286,8 +293,9 @@ public class QueryTest extends BaseModelTest {
 
     }
 
-    @Test
-    public void testQueryWithOOPath() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testQueryWithOOPath(RUN_TYPE runType) {
         String str =
                 "import " + java.util.List.class.getCanonicalName() + ";" +
                 "import " + org.drools.model.codegen.execmodel.oopathdtables.Person.class.getCanonicalName() + ";" +
@@ -297,7 +305,7 @@ public class QueryTest extends BaseModelTest {
                    "$cities : List() from accumulate (Person ( $city: /address#InternationalAddress[state == \"Safecountry\"]/city), collectList($city))\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         org.drools.model.codegen.execmodel.oopathdtables.Person person = new org.drools.model.codegen.execmodel.oopathdtables.Person();
         person.setAddress(new InternationalAddress("", 1, "Milan", "Safecountry"));
@@ -314,8 +322,9 @@ public class QueryTest extends BaseModelTest {
         assertThat(cities.get(0)).isEqualTo("Milan");
     }
 
-    @Test
-    public void testQueryWithOOPathTransformedToFrom() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testQueryWithOOPathTransformedToFrom(RUN_TYPE runType) {
         String str =
                 "import " + java.util.List.class.getCanonicalName() + ";" +
                 "import " + org.drools.model.codegen.execmodel.oopathdtables.Person.class.getCanonicalName() + ";" +
@@ -327,7 +336,7 @@ public class QueryTest extends BaseModelTest {
                     "$cities : List() from accumulate ($city : String() from $a.city, collectList($city))\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         org.drools.model.codegen.execmodel.oopathdtables.Person person = new org.drools.model.codegen.execmodel.oopathdtables.Person();
         person.setAddress(new InternationalAddress("", 1, "Milan", "Safecountry"));
@@ -344,8 +353,9 @@ public class QueryTest extends BaseModelTest {
         assertThat(cities.get(0)).isEqualTo("Milan");
     }
 
-    @Test
-    public void testQueryWithOOPathTransformedToFromInsideAcc() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testQueryWithOOPathTransformedToFromInsideAcc(RUN_TYPE runType) {
         String str =
                 "import " + java.util.List.class.getCanonicalName() + ";" +
                 "import " + org.drools.model.codegen.execmodel.oopathdtables.Person.class.getCanonicalName() + ";" +
@@ -358,7 +368,7 @@ public class QueryTest extends BaseModelTest {
                     "    $city : String() from $a.city, collectList($city))\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         org.drools.model.codegen.execmodel.oopathdtables.Person person2 = new org.drools.model.codegen.execmodel.oopathdtables.Person();
         person2.setAddress(new InternationalAddress("", 1, "Rome", "Unsafecountry"));
@@ -376,8 +386,9 @@ public class QueryTest extends BaseModelTest {
         assertThat(cities.get(0)).isEqualTo("Milan");
     }
 
-    @Test
-    public void testPositionalRecursiveQueryWithUnification() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testPositionalRecursiveQueryWithUnification(RUN_TYPE runType) {
         String str =
                 "import " + Relationship.class.getCanonicalName() + ";" +
                 "query isRelatedTo(String x, String y)\n" +
@@ -386,7 +397,7 @@ public class QueryTest extends BaseModelTest {
                 "    ( Relationship (z, y;) and ?isRelatedTo(x, z;))\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert( new Relationship( "A", "B" ) );
         ksession.insert( new Relationship( "B", "C" ) );
@@ -400,8 +411,9 @@ public class QueryTest extends BaseModelTest {
         assertThat("B".equals(resultDrlx)).isTrue();
     }
 
-    @Test
-    public void testPositionalRecursiveQuery() throws Exception {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testPositionalRecursiveQuery(RUN_TYPE runType) throws Exception {
         String query =
                 "query isContainedIn(String x, String y)\n" +
                 "    Location (x, y;)\n" +
@@ -409,11 +421,12 @@ public class QueryTest extends BaseModelTest {
                 "    ( Location (z, y;) and ?isContainedIn(x, z;))\n" +
                 "end\n";
 
-        checkRecursiveQuery( query );
+        checkRecursiveQuery(runType, query);
     }
 
-    @Test
-    public void testUnificationRecursiveQuery() throws Exception {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testUnificationRecursiveQuery(RUN_TYPE runType) throws Exception {
         String query =
                 "query isContainedIn(String x, String y)\n" +
                 "    Location( x := thing, y := location)\n" +
@@ -421,10 +434,10 @@ public class QueryTest extends BaseModelTest {
                 "    ( Location(z := thing, y := location) and ?isContainedIn( x := x, z := y ) )\n" +
                 "end\n";
 
-        checkRecursiveQuery( query );
+        checkRecursiveQuery(runType, query);
     }
 
-    private void checkRecursiveQuery( String query ) throws InstantiationException, IllegalAccessException {
+    private void checkRecursiveQuery(RUN_TYPE runType , String query) throws InstantiationException, IllegalAccessException {
         String str =
                 "package org.test;\n" +
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -449,7 +462,7 @@ public class QueryTest extends BaseModelTest {
 //                "then\n" +
 //                "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         FactType locationType = ksession.getKieBase().getFactType("org.test", "Location");
 
@@ -501,8 +514,9 @@ public class QueryTest extends BaseModelTest {
         assertThat(listener.isRuleFired("testPushQueryRule")).isFalse();
     }
 
-    @Test
-    public void testRecursiveQueryWithBatchCommand() throws Exception {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testRecursiveQueryWithBatchCommand(RUN_TYPE runType) throws Exception {
         String str =
                 "package org.test;\n" +
                         "import " + Person.class.getCanonicalName() + ";" +
@@ -517,7 +531,7 @@ public class QueryTest extends BaseModelTest {
                         "end";
 
         KieServices kieServices = KieServices.Factory.get();
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         FactType locationType = ksession.getKieBase().getFactType("org.test", "Location");
 
@@ -576,8 +590,9 @@ public class QueryTest extends BaseModelTest {
         assertThat(l.contains("key")).isTrue();
     }
 
-    @Test
-    public void testQueryUnificationUnset() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testQueryUnificationUnset(RUN_TYPE runType) {
         String str = "package drl;\n" +
                 "declare Anon " +
                 "    cld : String @key " +
@@ -618,12 +633,13 @@ public class QueryTest extends BaseModelTest {
                 "then " +
                 "end ";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
         ksession.fireAllRules();
     }
 
-    @Test
-    public void testQueryCalling2Queries() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testQueryCalling2Queries(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                 "query isPersonOlderThan(Person p, int ageFrom)\n" +
@@ -639,7 +655,7 @@ public class QueryTest extends BaseModelTest {
                 "end\n" +
                 "\n";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert( new Person( "Mark", 39 ) );
         ksession.insert( new Person( "Mario", 41 ) );
@@ -651,15 +667,16 @@ public class QueryTest extends BaseModelTest {
         assertThat(p.getName()).isEqualTo("Mario");
     }
 
-    @Test
-    public void testQueriesWithVariableUnification() throws Exception {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testQueriesWithVariableUnification(RUN_TYPE runType) throws Exception {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                 "query peeps( String $name, int $age ) \n" +
                 "    $p : Person( $name := name, $age := age ) \n" +
                 "end\n";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         Person p1 = new Person( "darth", 100 );
         Person p2 = new Person( "yoda", 300 );
@@ -704,8 +721,9 @@ public class QueryTest extends BaseModelTest {
         assertThat(names.contains("darth")).isTrue();
     }
 
-    @Test
-    public void testQueryWithUpdateOnFactHandle() throws Exception {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testQueryWithUpdateOnFactHandle(RUN_TYPE runType) throws Exception {
         String str =
                 "global java.util.List list; " +
                 "query foo( Integer $i ) " +
@@ -727,7 +745,7 @@ public class QueryTest extends BaseModelTest {
                 "end\n" +
                 "\n";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         final List<Integer> list = new ArrayList<>();
         ksession.setGlobal("list", list);
@@ -742,8 +760,9 @@ public class QueryTest extends BaseModelTest {
         assertThat((int) list.get(1)).isEqualTo(22);
     }
 
-    @Test
-    public void testQueryCallWithBindings() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testQueryCallWithBindings(RUN_TYPE runType) {
         String str =
                 "package org.drools.compiler.test  \n" +
                 "import " + Person.class.getCanonicalName() + "\n" +
@@ -760,7 +779,7 @@ public class QueryTest extends BaseModelTest {
                 "    Person( $name := name, $age := age; ) \n" +
                 "end\n";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         final List<String> list = new ArrayList<>();
         ksession.setGlobal("list", list);
@@ -772,8 +791,9 @@ public class QueryTest extends BaseModelTest {
         assertThat(list.get(0)).isEqualTo("Mario : 44");
     }
 
-    @Test
-    public void testQueryCallWithJoinInputAndOutput() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testQueryCallWithJoinInputAndOutput(RUN_TYPE runType) {
         String str =
                 "package org.drools.compiler.test  \n" +
                 "import " + Person.class.getCanonicalName() + "\n" +
@@ -790,7 +810,7 @@ public class QueryTest extends BaseModelTest {
                 "   list.add( $name1 + \" : \" + $age1 );\n" +
                 "end \n";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         final List<String> list = new ArrayList<>();
         ksession.setGlobal("list", list);
@@ -802,8 +822,9 @@ public class QueryTest extends BaseModelTest {
         assertThat(list.get(0)).isEqualTo("Mario : 44");
     }
 
-    @Test
-    public void testQueryWithDyanmicInsert() throws IOException, ClassNotFoundException {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testQueryWithDyanmicInsert(RUN_TYPE runType) throws IOException, ClassNotFoundException {
         String str =
                 "package org.drools.compiler.test  \n" +
                 "import " + Person.class.getCanonicalName() + "\n" +
@@ -820,7 +841,7 @@ public class QueryTest extends BaseModelTest {
                 "   list.add( $p );\n" +
                 "end \n";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         try {
             final List<Person> list = new ArrayList<>();
@@ -837,8 +858,9 @@ public class QueryTest extends BaseModelTest {
         }
     }
 
-    @Test
-    public void testQuerySameNameBinding() throws IOException, ClassNotFoundException {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testQuerySameNameBinding(RUN_TYPE runType) throws IOException, ClassNotFoundException {
         String str =
                 "package org.drools.compiler.test  \n" +
                 "import " + Person.class.getCanonicalName() + "\n" +
@@ -847,7 +869,7 @@ public class QueryTest extends BaseModelTest {
                 "    Person( name := name ) \n" +
                 "end \n";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert( new Person("Mario", 44) );
         ksession.insert( new Person("Mark", 40) );
@@ -870,8 +892,9 @@ public class QueryTest extends BaseModelTest {
         assertThat(list.get(0)).isEqualTo("Mario");
     }
 
-    @Test
-    public void testQuery10Args() throws IOException, ClassNotFoundException {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testQuery10Args(RUN_TYPE runType) throws IOException, ClassNotFoundException {
         String str =
                 "package org.drools.compiler.test  \n" +
                 "import " + Person.class.getCanonicalName() + "\n" +
@@ -880,7 +903,7 @@ public class QueryTest extends BaseModelTest {
                 "    Person( name := name, age := age, ageLong := ageLong, id := id, likes := likes ) \n" +
                 "end \n";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         Person mario = new Person("Mario", 44);
         mario.setAgeLong(44L);
@@ -908,8 +931,9 @@ public class QueryTest extends BaseModelTest {
         assertThat(list.get(0)).isEqualTo("Mario");
     }
 
-    @Test
-    public void testPositionalQueryWithAccumulate() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testPositionalQueryWithAccumulate(RUN_TYPE runType) {
         // DROOLS-6128
         String str =
                 "import " + Result.class.getCanonicalName() + ";" +
@@ -930,7 +954,7 @@ public class QueryTest extends BaseModelTest {
                         "              )                          \n" +
                         "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
         ksession.fireAllRules();
 
         QueryResults results = ksession.getQueryResults( "accAge", "Mark" );
@@ -942,8 +966,9 @@ public class QueryTest extends BaseModelTest {
         assertThat(resultDrlx).isEqualTo(37);
     }
 
-    @Test
-    public void testPositionalQueryWithAmbigousName() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testPositionalQueryWithAmbigousName(RUN_TYPE runType) {
         // DROOLS-6128
         String str =
                 "import " + Result.class.getCanonicalName() + ";" +
@@ -964,7 +989,7 @@ public class QueryTest extends BaseModelTest {
                         "              )                          \n" +
                         "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
         ksession.fireAllRules();
 
         QueryResults results = ksession.getQueryResults( "accAge", "Mark" );
@@ -976,8 +1001,9 @@ public class QueryTest extends BaseModelTest {
         assertThat(resultDrlx).isEqualTo(37);
     }
 
-    @Test
-    public void testQueryWithAccumulateAndUnification() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testQueryWithAccumulateAndUnification(RUN_TYPE runType) {
         // DROOLS-6105
         String str =
                 "import " + Result.class.getCanonicalName() + ";\n" +
@@ -1005,7 +1031,7 @@ public class QueryTest extends BaseModelTest {
                 "    result.add($sum);" +
                 "end\n";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         List<Integer> result = new ArrayList<>();
         ksession.setGlobal( "result", result );
@@ -1017,8 +1043,9 @@ public class QueryTest extends BaseModelTest {
         assertThat((int) result.get(0)).isEqualTo(37);
     }
 
-    @Test
-    public void testQueryWithAccumulateInvokingQuery() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testQueryWithAccumulateInvokingQuery(RUN_TYPE runType) {
         // DROOLS-6105
         String str =
                 "import " + Result.class.getCanonicalName() + ";\n" +
@@ -1049,7 +1076,7 @@ public class QueryTest extends BaseModelTest {
                 "    result.add($sum);" +
                 "end\n";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         List<Integer> result = new ArrayList<>();
         ksession.setGlobal( "result", result );
@@ -1061,8 +1088,9 @@ public class QueryTest extends BaseModelTest {
         assertThat((int) result.get(0)).isEqualTo(37);
     }
 
-    @Test
-    public void testQueryDoubleUnification() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testQueryDoubleUnification(RUN_TYPE runType) {
         // DROOLS-6105
         final String str = "" +
                 "package org.drools.compiler.test  \n" +
@@ -1087,7 +1115,7 @@ public class QueryTest extends BaseModelTest {
                 "end\n" +
                 "";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
         ksession.fireAllRules();
 
         QueryResults results = ksession.getQueryResults("whereFood", Variable.v, "kitchen");
@@ -1096,8 +1124,9 @@ public class QueryTest extends BaseModelTest {
         assertThat(row.get("x")).isEqualTo("crackers");
     }
 
-    @Test
-    public void testQueryWithInheritance() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testQueryWithInheritance(RUN_TYPE runType) {
         // DROOLS-6105
         final String str = "" +
                 "global java.util.List list;\n" +
@@ -1124,7 +1153,7 @@ public class QueryTest extends BaseModelTest {
                 "    list.addAll( $food ); \n" +
                 "end\n";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         List<String> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
