@@ -26,8 +26,7 @@ import java.util.UUID;
 
 import org.drools.compiler.kie.builder.impl.DrlProject;
 import org.drools.model.codegen.ExecutableModelProject;
-import org.drools.model.codegen.execmodel.BaseModelTest;
-import org.drools.model.codegen.execmodel.BaseModelTest.RUN_TYPE;
+import org.drools.model.codegen.execmodel.BaseModelTest2.RUN_TYPE;
 import org.drools.model.codegen.execmodel.KJARUtils;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -42,12 +41,12 @@ import static org.junit.Assert.fail;
 
 public abstract class BaseOperatorsTest {
 
-    protected static final RUN_TYPE[] RUN_TYPES = new BaseModelTest.RUN_TYPE[]{RUN_TYPE.STANDARD_FROM_DRL, RUN_TYPE.PATTERN_DSL};
-    protected static final Class[] TYPES = new Class[]{Integer.class, Long.class, Byte.class, Character.class, Short.class, Float.class, Double.class, BigInteger.class, BigDecimal.class};
-    protected static final String[] EQUALITY_COMPARISON_OPERATORS = new String[]{"==", "!="};
-    protected static final boolean[] NULL_PROPERTY_ON_LEFT = new boolean[]{true, false};
+    protected static final RUN_TYPE[] RUN_TYPES = {RUN_TYPE.STANDARD_FROM_DRL, RUN_TYPE.PATTERN_DSL};
+    protected static final Class[] TYPES = {Integer.class, Long.class, Byte.class, Character.class, Short.class, Float.class, Double.class, BigInteger.class, BigDecimal.class};
+    protected static final String[] EQUALITY_COMPARISON_OPERATORS = {"==", "!="};
+    protected static final boolean[] NULL_PROPERTY_ON_LEFT = {true, false};
 
-    protected KieSession getKieSession(String drl, RUN_TYPE testRunType) {
+    protected KieSession getKieSession(String drl, RUN_TYPE runType) {
         KieServices ks = KieServices.get();
         ReleaseId releaseId = ks.newReleaseId("org.kie", "kjar-test-" + UUID.randomUUID(), "1.0");
 
@@ -60,12 +59,12 @@ public abstract class BaseOperatorsTest {
         kfs.write("src/main/resources/com/sample/Sample1.drl", drl);
 
         KieBuilder kieBuilder;
-        if (testRunType.equals(RUN_TYPE.STANDARD_FROM_DRL)) {
+        if (runType.equals(RUN_TYPE.STANDARD_FROM_DRL)) {
             kieBuilder = ks.newKieBuilder(kfs).buildAll(DrlProject.class);
-        } else if (testRunType.equals(RUN_TYPE.PATTERN_DSL)) {
+        } else if (runType.equals(RUN_TYPE.PATTERN_DSL)) {
             kieBuilder = ks.newKieBuilder(kfs).buildAll(ExecutableModelProject.class);
         } else {
-            throw new UnsupportedOperationException(testRunType + " is not supported");
+            throw new UnsupportedOperationException(runType + " is not supported");
         }
 
         List<Message> messages = kieBuilder.getResults().getMessages();

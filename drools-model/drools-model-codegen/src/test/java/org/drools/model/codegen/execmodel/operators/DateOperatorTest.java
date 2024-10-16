@@ -21,21 +21,19 @@ package org.drools.model.codegen.execmodel.operators;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-import org.drools.model.codegen.execmodel.BaseModelTest;
+import org.drools.model.codegen.execmodel.BaseModelTest2;
 import org.drools.model.codegen.execmodel.domain.SimpleDateHolder;
-import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class DateOperatorTest extends BaseModelTest {
+public class DateOperatorTest extends BaseModelTest2 {
 
-    public DateOperatorTest(RUN_TYPE testRunType) {
-        super(testRunType);
-    }
-
-    @Test
-    public void dateBetweenGlobals() throws ParseException {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void dateBetweenGlobals(RUN_TYPE runType) throws ParseException {
         String str =
                 "import " + SimpleDateHolder.class.getCanonicalName() + ";" +
                         "global java.util.Date $startDate;\n" +
@@ -45,7 +43,7 @@ public class DateOperatorTest extends BaseModelTest {
                         "then\n" +
                         "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
         SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
         ksession.setGlobal("$startDate", sdf.parse("04/01/2019"));
         ksession.setGlobal("$endDate", sdf.parse("05/01/2019"));
@@ -57,8 +55,9 @@ public class DateOperatorTest extends BaseModelTest {
         assertThat(fired).isEqualTo(1);
     }
 
-    @Test
-    public void dateBetweenVariables() throws ParseException {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void dateBetweenVariables(RUN_TYPE runType) throws ParseException {
         String str =
                 "import " + SimpleDateHolder.class.getCanonicalName() + ";" +
                         "rule R when\n" +
@@ -68,7 +67,7 @@ public class DateOperatorTest extends BaseModelTest {
                         "then\n" +
                         "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
         SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
 
         SimpleDateHolder holderA = new SimpleDateHolder("A", sdf.parse("04/01/2019"));

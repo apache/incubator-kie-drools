@@ -19,64 +19,52 @@
 package org.drools.model.codegen.execmodel.operators;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
-import org.drools.model.codegen.execmodel.BaseModelTest.RUN_TYPE;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.drools.model.codegen.execmodel.BaseModelTest2.RUN_TYPE;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.runtime.KieSession;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
-@RunWith(Parameterized.class)
 public class EqualityComparisonTest extends BaseOperatorsTest {
 
-    @Parameters(name = "{0} {1} {2} {3}")
-    public static Collection<Object[]> ruleParams() {
-        List<Object[]> parameterData = new ArrayList<Object[]>();
+    public static Stream<Arguments> ruleParams() {
+        List<Arguments> parameterData = new ArrayList<Arguments>();
         for (RUN_TYPE runType : RUN_TYPES) {
             for (Class type : TYPES) {
                 for (String operator : EQUALITY_COMPARISON_OPERATORS) {
                     for (boolean nullPropertyOnLeft : NULL_PROPERTY_ON_LEFT)
-                        parameterData.add(new Object[]{runType, type, operator, nullPropertyOnLeft});
+                        parameterData.add(arguments(runType, type, operator, nullPropertyOnLeft));
                 }
             }
         }
-        return parameterData;
+        
+        return Stream.of(parameterData.toArray(new Arguments[0]));
     }
 
-    @Parameterized.Parameter(0)
-    public RUN_TYPE testRunType;
-
-    @Parameterized.Parameter(1)
-    public Class type;
-
-    @Parameterized.Parameter(2)
-    public String operator;
-
-    @Parameterized.Parameter(3)
-    public boolean nullPropertyOnLeft;
-
-    @Before
+    @BeforeEach
     public void setUp() {
         org.drools.compiler.rule.builder.util.ConstraintTestUtil.disableNormalizeConstraint();
         org.drools.model.codegen.execmodel.generator.ConstraintTestUtil.disableNormalizeConstraint();
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         org.drools.compiler.rule.builder.util.ConstraintTestUtil.enableNormalizeConstraint();
         org.drools.model.codegen.execmodel.generator.ConstraintTestUtil.enableNormalizeConstraint();
     }
 
-    @Test
-    public void compareWithNullProperty() throws Exception {
+    @ParameterizedTest(name = "{0} {1} {2} {3}")
+	@MethodSource("ruleParams")
+    public void compareWithNullProperty(RUN_TYPE testRunType, Class type, String operator, boolean nullPropertyOnLeft) throws Exception {
         String propertyName = BaseOperatorsTest.getPropertyName(type);
         String instanceValueString = BaseOperatorsTest.getInstanceValueString(type);
         String drl = "import " + type.getCanonicalName() + ";\n" +

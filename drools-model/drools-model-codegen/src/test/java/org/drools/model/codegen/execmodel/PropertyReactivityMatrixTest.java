@@ -19,40 +19,35 @@
 package org.drools.model.codegen.execmodel;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.drools.util.StringUtils;
-import org.junit.Test;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
-public class PropertyReactivityMatrixTest extends BaseModelTest {
+public class PropertyReactivityMatrixTest extends BaseModelTest2 {
 
     enum Dialect {
         JAVA,
         MVEL
     }
 
-    private Dialect dialect;
-
-    @Parameters(name = "{0} {1}")
-    public static Collection<Object[]> parameters() {
-        List<Object[]> parameterData = new ArrayList<Object[]>();
+    public static Stream<Arguments> parametersData() {
+        List<Arguments> parameterData = new ArrayList<Arguments>();
         for (Object runType : PLAIN) {
             for (Dialect dialect : Dialect.values()) {
-                parameterData.add(new Object[]{runType, dialect});
+                parameterData.add(arguments(runType, dialect));
             }
         }
-        return parameterData;
+        return Stream.of(parameterData.toArray(new Arguments[0]));
     }
 
-    public PropertyReactivityMatrixTest(RUN_TYPE testRunType, Dialect testDialect) {
-        super(testRunType);
-        this.dialect = testDialect;
-    }
 
     public static class Fact {
 
@@ -85,7 +80,7 @@ public class PropertyReactivityMatrixTest extends BaseModelTest {
         }
     }
 
-    private String setValueStatement(String property, int value) {
+    private String setValueStatement(Dialect dialect, String property, int value) {
         if (dialect == Dialect.JAVA) {
             return "set" + StringUtils.ucFirst(property) + "(" + value + ");";
         } else {
@@ -93,123 +88,136 @@ public class PropertyReactivityMatrixTest extends BaseModelTest {
         }
     }
 
-    @Test
-    public void modifyInsideIfTrueBlock_shouldTriggerReactivity() {
-        statementInsideBlock_shouldTriggerReactivity("    if (true) {\n" +
+    @ParameterizedTest
+	@MethodSource("parametersData")
+    public void modifyInsideIfTrueBlock_shouldTriggerReactivity(RUN_TYPE runType, Dialect dialect) {
+        statementInsideBlock_shouldTriggerReactivity(runType, dialect, "    if (true) {\n" +
                                                      "      modify($fact) {\n" +
-                                                     "        " + setValueStatement("value1", 2) + "\n" +
+                                                     "        " + setValueStatement(dialect, "value1", 2) + "\n" +
                                                      "      }\n" +
                                                      "    }\n");
     }
 
-    @Test
-    public void modifyInsideForBlock_shouldTriggerReactivity() {
-        statementInsideBlock_shouldTriggerReactivity("    for (int i = 0; i < 1; i++) {\n" +
+    @ParameterizedTest
+	@MethodSource("parametersData")
+    public void modifyInsideForBlock_shouldTriggerReactivity(RUN_TYPE runType, Dialect dialect) {
+        statementInsideBlock_shouldTriggerReactivity(runType, dialect, "    for (int i = 0; i < 1; i++) {\n" +
                                                      "      modify($fact) {\n" +
-                                                     "        " + setValueStatement("value1", 2) + "\n" +
+                                                     "        " + setValueStatement(dialect, "value1", 2) + "\n" +
                                                      "      }\n" +
                                                      "    }\n");
     }
 
-    @Test
-    public void modifyInsideCommentedIfTrueBlock_shouldTriggerReactivity() {
-        statementInsideBlock_shouldTriggerReactivity("    // if (true) {\n" +
+    @ParameterizedTest
+	@MethodSource("parametersData")
+    public void modifyInsideCommentedIfTrueBlock_shouldTriggerReactivity(RUN_TYPE runType, Dialect dialect) {
+        statementInsideBlock_shouldTriggerReactivity(runType, dialect, "    // if (true) {\n" +
                                                      "      modify($fact) {\n" +
-                                                     "        " + setValueStatement("value1", 2) + "\n" +
+                                                     "        " + setValueStatement(dialect, "value1", 2) + "\n" +
                                                      "      }\n" +
                                                      "    // }\n");
     }
 
-    @Test
-    public void modifyInsideIfBlockInsideAndOutsideAssignment_shouldTriggerReactivity() {
-        statementInsideBlock_shouldTriggerReactivity("    $fact." + setValueStatement("value1", 2) + "\n" +
+    @ParameterizedTest
+	@MethodSource("parametersData")
+    public void modifyInsideIfBlockInsideAndOutsideAssignment_shouldTriggerReactivity(RUN_TYPE runType, Dialect dialect) {
+        statementInsideBlock_shouldTriggerReactivity(runType, dialect, "    $fact." + setValueStatement(dialect, "value1", 2) + "\n" +
                                                      "    if (true) {\n" +
                                                      "      modify($fact) {\n" +
-                                                     "        " + setValueStatement("value2", 2) + "\n" +
+                                                     "        " + setValueStatement(dialect, "value2", 2) + "\n" +
                                                      "      }\n" +
                                                      "    }");
     }
 
-    @Test
-    public void updateInsideIfTrueBlock_shouldTriggerReactivity() {
-        statementInsideBlock_shouldTriggerReactivity("    if (true) {\n" +
-                                                     "      $fact." + setValueStatement("value1", 2) + ";\n" +
+    @ParameterizedTest
+	@MethodSource("parametersData")
+    public void updateInsideIfTrueBlock_shouldTriggerReactivity(RUN_TYPE runType, Dialect dialect) {
+        statementInsideBlock_shouldTriggerReactivity(runType, dialect, "    if (true) {\n" +
+                                                     "      $fact." + setValueStatement(dialect, "value1", 2) + ";\n" +
                                                      "      update($fact);\n" +
                                                      "    }\n");
     }
 
-    @Test
-    public void updateInsideForBlock_shouldTriggerReactivity() {
-        statementInsideBlock_shouldTriggerReactivity("    for (int i = 0; i < 1; i++) {\n" +
-                                                     "      $fact." + setValueStatement("value1", 2) + "\n" +
+    @ParameterizedTest
+	@MethodSource("parametersData")
+    public void updateInsideForBlock_shouldTriggerReactivity(RUN_TYPE runType, Dialect dialect) {
+        statementInsideBlock_shouldTriggerReactivity(runType, dialect, "    for (int i = 0; i < 1; i++) {\n" +
+                                                     "      $fact." + setValueStatement(dialect, "value1", 2) + "\n" +
                                                      "      update($fact);\n" +
                                                      "    }\n");
     }
 
-    @Test
-    public void updateInsideCommentedIfTrueBlock_shouldTriggerReactivity() {
-        statementInsideBlock_shouldTriggerReactivity("    // if (true) {\n" +
-                                                     "      $fact." + setValueStatement("value1", 2) + "\n" +
+    @ParameterizedTest
+	@MethodSource("parametersData")
+    public void updateInsideCommentedIfTrueBlock_shouldTriggerReactivity(RUN_TYPE runType, Dialect dialect) {
+        statementInsideBlock_shouldTriggerReactivity(runType, dialect, "    // if (true) {\n" +
+                                                     "      $fact." + setValueStatement(dialect, "value1", 2) + "\n" +
                                                      "      update($fact);\n" +
                                                      "    // }\n");
     }
 
-    @Test
-    public void updateInsideIfBlockInsideAndOutsideAssignment_shouldTriggerReactivity() {
-        statementInsideBlock_shouldTriggerReactivity("    $fact." + setValueStatement("value1", 2) + "\n" +
+    @ParameterizedTest
+	@MethodSource("parametersData")
+    public void updateInsideIfBlockInsideAndOutsideAssignment_shouldTriggerReactivity(RUN_TYPE runType, Dialect dialect) {
+        statementInsideBlock_shouldTriggerReactivity(runType, dialect, "    $fact." + setValueStatement(dialect, "value1", 2) + "\n" +
                                                      "    if (true) {\n" +
-                                                     "      $fact." + setValueStatement("value2", 2) + "\n" +
+                                                     "      $fact." + setValueStatement(dialect, "value2", 2) + "\n" +
                                                      "      update($fact);\n" +
                                                      "    }");
     }
 
-    @Test
-    public void assignmentAfterModify_shouldTriggerReactivity() {
+    @ParameterizedTest
+	@MethodSource("parametersData")
+    public void assignmentAfterModify_shouldTriggerReactivity(RUN_TYPE runType, Dialect dialect) {
         // DROOLS-7497
-        statementInsideBlock_shouldTriggerReactivity("      modify($fact) {\n" +
-                                                     "      " + setValueStatement("value2", 2) + "\n" +
+        statementInsideBlock_shouldTriggerReactivity(runType, dialect, "      modify($fact) {\n" +
+                                                     "      " + setValueStatement(dialect, "value2", 2) + "\n" +
                                                      "      }\n" +
-                                                     "    $fact." + setValueStatement("value1", 2) + "\n");
+                                                     "    $fact." + setValueStatement(dialect, "value1", 2) + "\n");
     }
 
-    @Test
-    public void assignmentBeforeAndAfterModify_shouldTriggerReactivity() {
+    @ParameterizedTest
+	@MethodSource("parametersData")
+    public void assignmentBeforeAndAfterModify_shouldTriggerReactivity(RUN_TYPE runType, Dialect dialect) {
         // DROOLS-7497
-        statementInsideBlock_shouldTriggerReactivity("      $fact." + setValueStatement("value2", 2) + "\n" +
+        statementInsideBlock_shouldTriggerReactivity(runType, dialect, "      $fact." + setValueStatement(dialect, "value2", 2) + "\n" +
                                                      "      modify($fact) {\n" +
                                                      "      }\n" +
-                                                     "    $fact." + setValueStatement("value1", 2) + "\n");
+                                                     "    $fact." + setValueStatement(dialect, "value1", 2) + "\n");
     }
 
-    @Test
-    public void assignmentAfterIfBlockModify_shouldTriggerReactivity() {
+    @ParameterizedTest
+	@MethodSource("parametersData")
+    public void assignmentAfterIfBlockModify_shouldTriggerReactivity(RUN_TYPE runType, Dialect dialect) {
         // DROOLS-7497
-        statementInsideBlock_shouldTriggerReactivity("      if (true) {\n" +
+        statementInsideBlock_shouldTriggerReactivity(runType, dialect, "      if (true) {\n" +
                                                      "      modify($fact) {\n" +
-                                                     "        " + setValueStatement("value2", 2) + "\n" +
+                                                     "        " + setValueStatement(dialect, "value2", 2) + "\n" +
                                                      "      }\n" +
                                                      "    }\n" +
-                                                     "    $fact." + setValueStatement("value1", 2) + "\n");
+                                                     "    $fact." + setValueStatement(dialect, "value1", 2) + "\n");
     }
 
-    @Test
-    public void assignmentBeforeAndAfterUpdate_shouldTriggerReactivity() {
+    @ParameterizedTest
+	@MethodSource("parametersData")
+    public void assignmentBeforeAndAfterUpdate_shouldTriggerReactivity(RUN_TYPE runType, Dialect dialect) {
         // DROOLS-7497
-        statementInsideBlock_shouldTriggerReactivity("      $fact." + setValueStatement("value2", 2) + "\n" +
+        statementInsideBlock_shouldTriggerReactivity(runType, dialect, "      $fact." + setValueStatement(dialect, "value2", 2) + "\n" +
                                                      "      update($fact);\n" +
-                                                     "    $fact." + setValueStatement("value1", 2) + "\n");
+                                                     "    $fact." + setValueStatement(dialect, "value1", 2) + "\n");
     }
 
-    @Test
-    public void assignmentAfterIfBlockUpdate_shouldTriggerReactivity() {
+    @ParameterizedTest
+	@MethodSource("parametersData")
+    public void assignmentAfterIfBlockUpdate_shouldTriggerReactivity(RUN_TYPE runType, Dialect dialect) {
         // DROOLS-7497
-        statementInsideBlock_shouldTriggerReactivity("      if (true) {\n" +
+        statementInsideBlock_shouldTriggerReactivity(runType, dialect, "      if (true) {\n" +
                                                      "      update($fact);\n" +
                                                      "    }\n" +
-                                                     "    $fact." + setValueStatement("value1", 2) + "\n");
+                                                     "    $fact." + setValueStatement(dialect, "value1", 2) + "\n");
     }
 
-    private void statementInsideBlock_shouldTriggerReactivity(String rhs) {
+    private void statementInsideBlock_shouldTriggerReactivity(RUN_TYPE runType, Dialect dialect, String rhs) {
         final String str =
                 "import " + Fact.class.getCanonicalName() + ";\n" +
                            "dialect \"" + dialect.name().toLowerCase() + "\"\n" +
@@ -227,7 +235,7 @@ public class PropertyReactivityMatrixTest extends BaseModelTest {
                            "    results.add(\"R2 fired\");\n" +
                            "end\n";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
         List<String> results = new ArrayList<>();
         ksession.setGlobal("results", results);
 
@@ -239,11 +247,12 @@ public class PropertyReactivityMatrixTest extends BaseModelTest {
                            .containsExactly("R2 fired");
     }
 
-    @Test
-    public void modifyInsideIfFalseAndTrueBlock_shouldTriggerReactivity() {
+    @ParameterizedTest
+	@MethodSource("parametersData")
+    public void modifyInsideIfFalseAndTrueBlock_shouldTriggerReactivity(RUN_TYPE runType, Dialect dialect) {
         // DROOLS-7493
-        statementInsideBlock_shouldTriggerReactivityWithLoop("    if (false) {\n" +
-                                                             "      $fact." + setValueStatement("value1", 2) + "\n" + // this line is not executed, but analyzed as a property reactivity
+        statementInsideBlock_shouldTriggerReactivityWithLoop(runType, dialect, "    if (false) {\n" +
+                                                             "      $fact." + setValueStatement(dialect, "value1", 2) + "\n" + // this line is not executed, but analyzed as a property reactivity
                                                              "    }\n" +
                                                              "    if (true) {\n" +
                                                              "      modify($fact) {\n" +
@@ -251,17 +260,18 @@ public class PropertyReactivityMatrixTest extends BaseModelTest {
                                                              "    }\n");
     }
 
-    @Test
-    public void updateInsideIfFalseAndTrueBlock_shouldTriggerReactivity() {
-        statementInsideBlock_shouldTriggerReactivityWithLoop("    if (false) {\n" +
-                                                             "      $fact." + setValueStatement("value1", 2) + "\n" + // this line is not executed, but analyzed as a property reactivity
+    @ParameterizedTest
+	@MethodSource("parametersData")
+    public void updateInsideIfFalseAndTrueBlock_shouldTriggerReactivity(RUN_TYPE runType, Dialect dialect) {
+        statementInsideBlock_shouldTriggerReactivityWithLoop(runType, dialect, "    if (false) {\n" +
+                                                             "      $fact." + setValueStatement(dialect, "value1", 2) + "\n" + // this line is not executed, but analyzed as a property reactivity
                                                              "    }\n" +
                                                              "    if (true) {\n" +
                                                              "      update($fact);\n" +
                                                              "    }\n");
     }
 
-    private void statementInsideBlock_shouldTriggerReactivityWithLoop(String rhs) {
+    private void statementInsideBlock_shouldTriggerReactivityWithLoop(RUN_TYPE runType, Dialect dialect, String rhs) {
         final String str =
                 "import " + Fact.class.getCanonicalName() + ";\n" +
                            "dialect \"" + dialect.name().toLowerCase() + "\"\n" +
@@ -273,7 +283,7 @@ public class PropertyReactivityMatrixTest extends BaseModelTest {
                            rhs +
                            "end\n";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
         List<String> results = new ArrayList<>();
         ksession.setGlobal("results", results);
 
@@ -285,25 +295,27 @@ public class PropertyReactivityMatrixTest extends BaseModelTest {
                          .isEqualTo(10);
     }
 
-    @Test
-    public void modifyInsideIfFalseBlock_shouldNotTriggerReactivity() {
+    @ParameterizedTest
+	@MethodSource("parametersData")
+    public void modifyInsideIfFalseBlock_shouldNotTriggerReactivity(RUN_TYPE runType, Dialect dialect) {
         // DROOLS-7493
-        statementInsideIfFalseBlock_shouldNotTriggerReactivityNorSelfLoop("    if (false) {\n" +
+        statementInsideIfFalseBlock_shouldNotTriggerReactivityNorSelfLoop(runType, dialect, "    if (false) {\n" +
                                                                           "      modify($fact) {\n" +
-                                                                          "        " + setValueStatement("value1", 2) + "\n" +
+                                                                          "        " + setValueStatement(dialect, "value1", 2) + "\n" +
                                                                           "      }\n" +
                                                                           "    }\n");
     }
 
-    @Test
-    public void updateInsideIfFalseBlock_shouldNotTriggerReactivity() {
-        statementInsideIfFalseBlock_shouldNotTriggerReactivityNorSelfLoop("    if (false) {\n" +
-                                                                          "      $fact." + setValueStatement("value1", 2) + "\n" +
+    @ParameterizedTest
+	@MethodSource("parametersData")
+    public void updateInsideIfFalseBlock_shouldNotTriggerReactivity(RUN_TYPE runType, Dialect dialect) {
+        statementInsideIfFalseBlock_shouldNotTriggerReactivityNorSelfLoop(runType, dialect, "    if (false) {\n" +
+                                                                          "      $fact." + setValueStatement(dialect, "value1", 2) + "\n" +
                                                                           "      update($fact);\n" +
                                                                           "    }\n");
     }
 
-    private void statementInsideIfFalseBlock_shouldNotTriggerReactivityNorSelfLoop(String rhs) {
+    private void statementInsideIfFalseBlock_shouldNotTriggerReactivityNorSelfLoop(RUN_TYPE runType, Dialect dialect, String rhs) {
         final String str =
                 "import " + Fact.class.getCanonicalName() + ";\n" +
                            "dialect \"" + dialect.name().toLowerCase() + "\"\n" +
@@ -321,7 +333,7 @@ public class PropertyReactivityMatrixTest extends BaseModelTest {
                            "    results.add(\"R2 fired\");\n" +
                            "end\n";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
         List<String> results = new ArrayList<>();
         ksession.setGlobal("results", results);
 
