@@ -18,6 +18,7 @@
  */
 package org.kie.kogito.index.storage;
 
+import org.kie.kogito.event.usertask.MultipleUserTaskInstanceDataEvent;
 import org.kie.kogito.event.usertask.UserTaskInstanceAssignmentDataEvent;
 import org.kie.kogito.event.usertask.UserTaskInstanceAttachmentDataEvent;
 import org.kie.kogito.event.usertask.UserTaskInstanceCommentDataEvent;
@@ -40,4 +41,6 @@ public interface UserTaskInstanceStorage extends StorageFetcher<String, UserTask
     void indexComment(UserTaskInstanceCommentDataEvent event);
 
     void indexVariable(UserTaskInstanceVariableDataEvent event);
+
+    void indexGroup(MultipleUserTaskInstanceDataEvent event);
 }

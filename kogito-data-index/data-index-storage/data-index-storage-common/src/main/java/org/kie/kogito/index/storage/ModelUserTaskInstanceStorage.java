@@ -20,6 +20,7 @@ package org.kie.kogito.index.storage;
 
 import java.util.ArrayList;
 
+import org.kie.kogito.event.usertask.MultipleUserTaskInstanceDataEvent;
 import org.kie.kogito.event.usertask.UserTaskInstanceAssignmentDataEvent;
 import org.kie.kogito.event.usertask.UserTaskInstanceAttachmentDataEvent;
 import org.kie.kogito.event.usertask.UserTaskInstanceCommentDataEvent;
@@ -53,7 +54,6 @@ public class ModelUserTaskInstanceStorage extends ModelStorageFetcher<String, Us
     @Override
     public void indexAssignment(UserTaskInstanceAssignmentDataEvent event) {
         index(event, assignmentMerger);
-
     }
 
     @Override
@@ -76,13 +76,30 @@ public class ModelUserTaskInstanceStorage extends ModelStorageFetcher<String, Us
     @Override
     public void indexVariable(UserTaskInstanceVariableDataEvent event) {
         index(event, variableMerger);
-
     }
 
     @Override
     public void indexComment(UserTaskInstanceCommentDataEvent event) {
         index(event, commentMerger);
+    }
 
+    @Override
+    public void indexGroup(MultipleUserTaskInstanceDataEvent events) {
+        for (UserTaskInstanceDataEvent<?> event : events.getData()) {
+            if (event instanceof UserTaskInstanceAssignmentDataEvent) {
+                index((UserTaskInstanceAssignmentDataEvent) event, assignmentMerger);
+            } else if (event instanceof UserTaskInstanceAttachmentDataEvent) {
+                index((UserTaskInstanceAttachmentDataEvent) event, attachmentMerger);
+            } else if (event instanceof UserTaskInstanceDeadlineDataEvent) {
+                index((UserTaskInstanceDeadlineDataEvent) event, deadlineMerger);
+            } else if (event instanceof UserTaskInstanceStateDataEvent) {
+                index((UserTaskInstanceStateDataEvent) event, stateMerger);
+            } else if (event instanceof UserTaskInstanceCommentDataEvent) {
+                index((UserTaskInstanceCommentDataEvent) event, commentMerger);
+            } else if (event instanceof UserTaskInstanceVariableDataEvent) {
+                index((UserTaskInstanceVariableDataEvent) event, variableMerger);
+            }
+        }
     }
 
     private <T extends UserTaskInstanceDataEvent<?>> void index(T event, UserTaskInstanceEventMerger merger) {

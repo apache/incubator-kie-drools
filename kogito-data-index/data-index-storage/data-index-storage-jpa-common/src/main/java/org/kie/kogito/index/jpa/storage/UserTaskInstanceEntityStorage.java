@@ -19,15 +19,19 @@
 package org.kie.kogito.index.jpa.storage;
 
 import java.net.URI;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
+import org.kie.kogito.event.usertask.MultipleUserTaskInstanceDataEvent;
 import org.kie.kogito.event.usertask.UserTaskInstanceAssignmentDataEvent;
 import org.kie.kogito.event.usertask.UserTaskInstanceAssignmentEventBody;
 import org.kie.kogito.event.usertask.UserTaskInstanceAttachmentDataEvent;
 import org.kie.kogito.event.usertask.UserTaskInstanceAttachmentEventBody;
 import org.kie.kogito.event.usertask.UserTaskInstanceCommentDataEvent;
 import org.kie.kogito.event.usertask.UserTaskInstanceCommentEventBody;
+import org.kie.kogito.event.usertask.UserTaskInstanceDataEvent;
 import org.kie.kogito.event.usertask.UserTaskInstanceDeadlineDataEvent;
 import org.kie.kogito.event.usertask.UserTaskInstanceStateDataEvent;
 import org.kie.kogito.event.usertask.UserTaskInstanceStateEventBody;
@@ -66,20 +70,69 @@ public class UserTaskInstanceEntityStorage extends AbstractJPAStorageFetcher<Str
         super(repository, UserTaskInstanceEntity.class, mapper::mapToModel);
     }
 
-    private UserTaskInstanceEntity findOrInit(String taskId) {
-        return repository.findByIdOptional(taskId).orElseGet(() -> {
-            UserTaskInstanceEntity ut = new UserTaskInstanceEntity();
-            ut.setId(taskId);
-            repository.persist(ut);
-            return ut;
-        });
+    @Override
+    @Transactional
+    public void indexGroup(MultipleUserTaskInstanceDataEvent events) {
+        Map<String, UserTaskInstanceEntity> taskMap = new HashMap<>();
+        for (UserTaskInstanceDataEvent<?> event : events.getData()) {
+            indexEvent(taskMap.computeIfAbsent(event.getKogitoUserTaskInstanceId(), id -> findOrInit(id)), event);
+        }
     }
 
     @Override
     @Transactional
     public void indexAssignment(UserTaskInstanceAssignmentDataEvent event) {
+        indexAssignment(findOrInit(event), event);
+    }
+
+    @Override
+    @Transactional
+    public void indexAttachment(UserTaskInstanceAttachmentDataEvent event) {
+        indexAttachment(findOrInit(event), event);
+    }
+
+    @Override
+    @Transactional
+    public void indexDeadline(UserTaskInstanceDeadlineDataEvent event) {
+        indexDeadline(findOrInit(event), event);
+    }
+
+    @Override
+    @Transactional
+    public void indexState(UserTaskInstanceStateDataEvent event) {
+        indexState(findOrInit(event), event);
+    }
+
+    @Override
+    @Transactional
+    public void indexComment(UserTaskInstanceCommentDataEvent event) {
+        indexComment(findOrInit(event), event);
+    }
+
+    @Override
+    @Transactional
+    public void indexVariable(UserTaskInstanceVariableDataEvent event) {
+        indexVariable(findOrInit(event), event);
+    }
+
+    private void indexEvent(UserTaskInstanceEntity task, UserTaskInstanceDataEvent<?> event) {
+        if (event instanceof UserTaskInstanceAssignmentDataEvent) {
+            indexAssignment(task, (UserTaskInstanceAssignmentDataEvent) event);
+        } else if (event instanceof UserTaskInstanceAttachmentDataEvent) {
+            indexAttachment(task, (UserTaskInstanceAttachmentDataEvent) event);
+        } else if (event instanceof UserTaskInstanceDeadlineDataEvent) {
+            indexDeadline(task, (UserTaskInstanceDeadlineDataEvent) event);
+        } else if (event instanceof UserTaskInstanceStateDataEvent) {
+            indexState(task, (UserTaskInstanceStateDataEvent) event);
+        } else if (event instanceof UserTaskInstanceCommentDataEvent) {
+            indexComment(task, (UserTaskInstanceCommentDataEvent) event);
+        } else if (event instanceof UserTaskInstanceVariableDataEvent) {
+            indexVariable(task, (UserTaskInstanceVariableDataEvent) event);
+        }
+    }
+
+    private void indexAssignment(UserTaskInstanceEntity userTaskInstance, UserTaskInstanceAssignmentDataEvent event) {
         UserTaskInstanceAssignmentEventBody body = event.getData();
-        UserTaskInstanceEntity userTaskInstance = findOrInit(event.getKogitoUserTaskInstanceId());
         switch (body.getAssignmentType()) {
             case "USER_OWNERS":
                 userTaskInstance.setPotentialUsers(new HashSet<>(body.getUsers()));
@@ -97,13 +150,9 @@ public class UserTaskInstanceEntityStorage extends AbstractJPAStorageFetcher<Str
                 userTaskInstance.setAdminUsers(new HashSet<>(body.getUsers()));
                 break;
         }
-        repository.flush();
     }
 
-    @Override
-    @Transactional
-    public void indexAttachment(UserTaskInstanceAttachmentDataEvent event) {
-        UserTaskInstanceEntity userTaskInstance = findOrInit(event.getKogitoUserTaskInstanceId());
+    private void indexAttachment(UserTaskInstanceEntity userTaskInstance, UserTaskInstanceAttachmentDataEvent event) {
         UserTaskInstanceAttachmentEventBody body = event.getData();
         List<AttachmentEntity> attachments = userTaskInstance.getAttachments();
         switch (body.getEventType()) {
@@ -127,17 +176,12 @@ public class UserTaskInstanceEntityStorage extends AbstractJPAStorageFetcher<Str
         }
     }
 
-    @Override
-    @Transactional
-    public void indexDeadline(UserTaskInstanceDeadlineDataEvent event) {
-        findOrInit(event.getKogitoUserTaskInstanceId());
+    private void indexDeadline(UserTaskInstanceEntity userTaskInstance, UserTaskInstanceDeadlineDataEvent event) {
+        // deadlines ignored for now
     }
 
-    @Override
-    @Transactional
-    public void indexState(UserTaskInstanceStateDataEvent event) {
+    private void indexState(UserTaskInstanceEntity task, UserTaskInstanceStateDataEvent event) {
         UserTaskInstanceStateEventBody body = event.getData();
-        UserTaskInstanceEntity task = findOrInit(event.getKogitoUserTaskInstanceId());
         task.setProcessInstanceId(body.getProcessInstanceId());
         task.setProcessId(event.getKogitoProcessId());
         task.setRootProcessId(event.getKogitoRootProcessId());
@@ -163,11 +207,8 @@ public class UserTaskInstanceEntityStorage extends AbstractJPAStorageFetcher<Str
         return source.toString() + format("/%s/%s/%s", pId, name, taskId);
     }
 
-    @Override
-    @Transactional
-    public void indexComment(UserTaskInstanceCommentDataEvent event) {
+    private void indexComment(UserTaskInstanceEntity userTaskInstance, UserTaskInstanceCommentDataEvent event) {
         UserTaskInstanceCommentEventBody body = event.getData();
-        UserTaskInstanceEntity userTaskInstance = findOrInit(event.getKogitoUserTaskInstanceId());
         List<CommentEntity> comments = userTaskInstance.getComments();
         switch (body.getEventType()) {
             case UserTaskInstanceCommentEventBody.EVENT_TYPE_ADDED:
@@ -190,10 +231,7 @@ public class UserTaskInstanceEntityStorage extends AbstractJPAStorageFetcher<Str
         }
     }
 
-    @Override
-    @Transactional
-    public void indexVariable(UserTaskInstanceVariableDataEvent event) {
-        UserTaskInstanceEntity userTaskInstance = findOrInit(event.getKogitoUserTaskInstanceId());
+    private void indexVariable(UserTaskInstanceEntity userTaskInstance, UserTaskInstanceVariableDataEvent event) {
         UserTaskInstanceVariableEventBody body = event.getData();
         if (body.getVariableType().equals("INPUT")) {
             ObjectNode objectNode = userTaskInstance.getInputs();
@@ -210,5 +248,18 @@ public class UserTaskInstanceEntityStorage extends AbstractJPAStorageFetcher<Str
             objectNode.set(body.getVariableName(), JsonObjectUtils.fromValue(body.getVariableValue()));
             userTaskInstance.setOutputs(objectNode);
         }
+    }
+
+    private UserTaskInstanceEntity findOrInit(UserTaskInstanceDataEvent<?> event) {
+        return findOrInit(event.getKogitoUserTaskInstanceId());
+    }
+
+    private UserTaskInstanceEntity findOrInit(String taskId) {
+        return repository.findByIdOptional(taskId).orElseGet(() -> {
+            UserTaskInstanceEntity ut = new UserTaskInstanceEntity();
+            ut.setId(taskId);
+            repository.persist(ut);
+            return ut;
+        });
     }
 }

@@ -79,15 +79,8 @@ public class IndexingService {
     public void indexProcessInstanceEvent(ProcessInstanceDataEvent<?> event) {
         ProcessInstanceStorage storage = manager.getProcessInstanceStorage();
         if (event instanceof MultipleProcessInstanceDataEvent) {
-            for (ProcessInstanceDataEvent<?> item : ((MultipleProcessInstanceDataEvent) event).getData())
-                indexProccessInstanceEvent(storage, item);
-        } else {
-            indexProccessInstanceEvent(storage, event);
-        }
-    }
-
-    private void indexProccessInstanceEvent(ProcessInstanceStorage storage, ProcessInstanceDataEvent<?> event) {
-        if (event instanceof ProcessInstanceErrorDataEvent) {
+            storage.indexGroup(((MultipleProcessInstanceDataEvent) event));
+        } else if (event instanceof ProcessInstanceErrorDataEvent) {
             storage.indexError((ProcessInstanceErrorDataEvent) event);
         } else if (event instanceof ProcessInstanceNodeDataEvent) {
             storage.indexNode((ProcessInstanceNodeDataEvent) event);
@@ -112,16 +105,8 @@ public class IndexingService {
     public <T> void indexUserTaskInstanceEvent(UserTaskInstanceDataEvent<T> event) {
         UserTaskInstanceStorage storage = manager.getUserTaskInstanceStorage();
         if (event instanceof MultipleUserTaskInstanceDataEvent) {
-            for (UserTaskInstanceDataEvent<?> item : ((MultipleUserTaskInstanceDataEvent) event).getData()) {
-                indexUserTaskInstanceEvent(storage, item);
-            }
-        } else {
-            indexUserTaskInstanceEvent(storage, event);
-        }
-    }
-
-    private void indexUserTaskInstanceEvent(UserTaskInstanceStorage storage, UserTaskInstanceDataEvent<?> event) {
-        if (event instanceof UserTaskInstanceAssignmentDataEvent) {
+            storage.indexGroup((MultipleUserTaskInstanceDataEvent) event);
+        } else if (event instanceof UserTaskInstanceAssignmentDataEvent) {
             storage.indexAssignment((UserTaskInstanceAssignmentDataEvent) event);
         } else if (event instanceof UserTaskInstanceAttachmentDataEvent) {
             storage.indexAttachment((UserTaskInstanceAttachmentDataEvent) event);

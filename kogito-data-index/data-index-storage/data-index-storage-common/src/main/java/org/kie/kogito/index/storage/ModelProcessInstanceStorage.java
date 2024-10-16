@@ -18,6 +18,7 @@
  */
 package org.kie.kogito.index.storage;
 
+import org.kie.kogito.event.process.MultipleProcessInstanceDataEvent;
 import org.kie.kogito.event.process.ProcessInstanceDataEvent;
 import org.kie.kogito.event.process.ProcessInstanceErrorDataEvent;
 import org.kie.kogito.event.process.ProcessInstanceNodeDataEvent;
@@ -67,6 +68,23 @@ public class ModelProcessInstanceStorage extends ModelStorageFetcher<String, Pro
     @Override
     public void indexVariable(ProcessInstanceVariableDataEvent event) {
         index(event, variableMerger);
+    }
+
+    @Override
+    public void indexGroup(MultipleProcessInstanceDataEvent events) {
+        for (ProcessInstanceDataEvent<?> event : events.getData()) {
+            if (event instanceof ProcessInstanceErrorDataEvent) {
+                index(event, errorMerger);
+            } else if (event instanceof ProcessInstanceNodeDataEvent) {
+                index(event, nodeMerger);
+            } else if (event instanceof ProcessInstanceSLADataEvent) {
+                index(event, slaMerger);
+            } else if (event instanceof ProcessInstanceStateDataEvent) {
+                index(event, stateMerger);
+            } else if (event instanceof ProcessInstanceVariableDataEvent) {
+                index(event, variableMerger);
+            }
+        }
     }
 
     private <T extends ProcessInstanceDataEvent<?>> void index(T event, ProcessInstanceEventMerger merger) {
