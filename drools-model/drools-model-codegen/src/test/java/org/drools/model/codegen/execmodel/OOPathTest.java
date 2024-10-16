@@ -28,19 +28,17 @@ import org.drools.model.codegen.execmodel.domain.InternationalAddress;
 import org.drools.model.codegen.execmodel.domain.Man;
 import org.drools.model.codegen.execmodel.domain.Toy;
 import org.drools.model.codegen.execmodel.domain.Woman;
-import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class OOPathTest extends BaseModelTest {
+public class OOPathTest extends BaseModelTest2 {
 
-    public OOPathTest( RUN_TYPE testRunType ) {
-        super( testRunType );
-    }
-
-    @Test
-    public void testOOPath() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testOOPath(RUN_TYPE runType) {
         final String str =
                 "import org.drools.model.codegen.execmodel.domain.*;\n" +
                 "global java.util.List list\n" +
@@ -51,7 +49,7 @@ public class OOPathTest extends BaseModelTest {
                 "  list.add( $man.getName() );\n" +
                 "end\n";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         final List<String> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
@@ -73,8 +71,9 @@ public class OOPathTest extends BaseModelTest {
         assertThat(list).containsExactlyInAnyOrder("Bob");
     }
 
-    @Test
-    public void testOOPathBinding() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testOOPathBinding(RUN_TYPE runType) {
         final String str =
                 "import org.drools.model.codegen.execmodel.domain.*;\n" +
                 "global java.util.List list\n" +
@@ -85,7 +84,7 @@ public class OOPathTest extends BaseModelTest {
                 "  list.add( $age );\n" +
                 "end\n";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         final List<Integer> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
@@ -102,8 +101,9 @@ public class OOPathTest extends BaseModelTest {
         assertThat(list).containsExactlyInAnyOrder(38);
     }
 
-    @Test
-    public void testReactiveOOPath() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testReactiveOOPath(RUN_TYPE runType) {
         final String str =
                 "import org.drools.model.codegen.execmodel.domain.*;\n" +
                         "global java.util.List list\n" +
@@ -114,7 +114,7 @@ public class OOPathTest extends BaseModelTest {
                         "  list.add( $toy.getName() );\n" +
                         "end\n";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         final List<String> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
@@ -145,8 +145,9 @@ public class OOPathTest extends BaseModelTest {
     }
 
 
-    @Test
-    public void testBackReferenceConstraint() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testBackReferenceConstraint(RUN_TYPE runType) {
         final String str =
                 "import org.drools.model.codegen.execmodel.domain.*;\n" +
                 "global java.util.List list\n" +
@@ -157,7 +158,7 @@ public class OOPathTest extends BaseModelTest {
                 "  list.add( $toy.getName() );\n" +
                 "end\n";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         final List<String> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
@@ -182,8 +183,9 @@ public class OOPathTest extends BaseModelTest {
         assertThat(list).containsExactlyInAnyOrder("ball", "guitar");
     }
 
-    @Test
-    public void testSimpleOOPathCast1() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testSimpleOOPathCast1(RUN_TYPE runType) {
         final String str = "import org.drools.model.codegen.execmodel.domain.*;\n" +
                            "global java.util.List list\n" +
                            "\n" +
@@ -193,7 +195,7 @@ public class OOPathTest extends BaseModelTest {
                            "  list.add( $man.getName() );\n" +
                            "end\n";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         final List<String> list = new ArrayList<>();
         ksession.setGlobal("list", list);
@@ -206,8 +208,9 @@ public class OOPathTest extends BaseModelTest {
         assertThat(list).containsExactlyInAnyOrder("Bob");
     }
 
-    @Test
-    public void testSimpleOOPathCast2() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testSimpleOOPathCast2(RUN_TYPE runType) {
         final String str = "import org.drools.model.codegen.execmodel.domain.*;\n" +
                            "global java.util.List list\n" +
                            "\n" +
@@ -217,7 +220,7 @@ public class OOPathTest extends BaseModelTest {
                            "  list.add( $name );\n" +
                            "end\n";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         final List<String> list = new ArrayList<>();
         ksession.setGlobal("list", list);
@@ -230,8 +233,9 @@ public class OOPathTest extends BaseModelTest {
         assertThat(list).containsExactlyInAnyOrder("Bob");
     }
 
-    @Test
-    public void testSimpleOOPathCast3() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testSimpleOOPathCast3(RUN_TYPE runType) {
         final String str = "import org.drools.model.codegen.execmodel.domain.*;\n" +
                            "global java.util.List list\n" +
                            "\n" +
@@ -241,7 +245,7 @@ public class OOPathTest extends BaseModelTest {
                            "  list.add( $name );\n" +
                            "end\n";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         final List<String> list = new ArrayList<>();
         ksession.setGlobal("list", list);
@@ -254,8 +258,9 @@ public class OOPathTest extends BaseModelTest {
         assertThat(list).containsExactlyInAnyOrder("Bob");
     }
 
-    @Test
-    public void testOOPathMultipleConditions() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testOOPathMultipleConditions(RUN_TYPE runType) {
         final String drl =
                 "import " + Employee.class.getCanonicalName() + ";" +
                 "import " + Address.class.getCanonicalName() + ";" +
@@ -267,7 +272,7 @@ public class OOPathTest extends BaseModelTest {
                 "  list.add( $address.getCity() );\n" +
                 "end\n";
 
-        KieSession kieSession = getKieSession(drl);
+        KieSession kieSession = getKieSession(runType, drl);
 
         List<String> results = new ArrayList<>();
         kieSession.setGlobal("list", results);
@@ -283,8 +288,9 @@ public class OOPathTest extends BaseModelTest {
         assertThat(results).containsExactlyInAnyOrder("Big City");
     }
 
-    @Test
-    public void testOOPathMultipleConditionsWithBinding() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testOOPathMultipleConditionsWithBinding(RUN_TYPE runType) {
         final String drl =
                 "import " + Employee.class.getCanonicalName() + ";" +
                 "import " + Address.class.getCanonicalName() + ";" +
@@ -298,7 +304,7 @@ public class OOPathTest extends BaseModelTest {
                 "  list.add( $employee.getName() );\n" +
                 "end\n";
 
-        KieSession kieSession = getKieSession(drl);
+        KieSession kieSession = getKieSession(runType, drl);
 
         List<String> results = new ArrayList<>();
         kieSession.setGlobal("list", results);
@@ -314,8 +320,9 @@ public class OOPathTest extends BaseModelTest {
         assertThat(results).containsExactlyInAnyOrder("Alice");
     }
 
-    @Test
-    public void testOrConditionalElementNoBinding() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testOrConditionalElementNoBinding(RUN_TYPE runType) {
         final String drl =
                 "import " + Employee.class.getCanonicalName() + ";" +
                 "import " + Address.class.getCanonicalName() + ";" +
@@ -331,7 +338,7 @@ public class OOPathTest extends BaseModelTest {
                 "  list.add( $employee.getName() );\n" +
                 "end\n";
 
-        KieSession kieSession = getKieSession(drl);
+        KieSession kieSession = getKieSession(runType, drl);
 
         List<String> results = new ArrayList<>();
         kieSession.setGlobal("list", results);
@@ -347,8 +354,9 @@ public class OOPathTest extends BaseModelTest {
         assertThat(results).containsExactlyInAnyOrder("Bruno", "Alice");
     }
 
-    @Test
-    public void testOrConditionalElement() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testOrConditionalElement(RUN_TYPE runType) {
         final String drl =
                 "import " + Employee.class.getCanonicalName() + ";" +
                 "import " + Address.class.getCanonicalName() + ";" +
@@ -362,7 +370,7 @@ public class OOPathTest extends BaseModelTest {
                 "  list.add( $address.getCity() );\n" +
                 "end\n";
 
-        KieSession kieSession = getKieSession(drl);
+        KieSession kieSession = getKieSession(runType, drl);
 
         List<String> results = new ArrayList<>();
         kieSession.setGlobal("list", results);
@@ -378,8 +386,9 @@ public class OOPathTest extends BaseModelTest {
         assertThat(results).containsExactlyInAnyOrder("Big City", "Small City");
     }
 
-    @Test
-    public void testOrConstraintNoBinding() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testOrConstraintNoBinding(RUN_TYPE runType) {
         final String drl =
                 "import " + Employee.class.getCanonicalName() + ";" +
                         "import " + Address.class.getCanonicalName() + ";" +
@@ -392,7 +401,7 @@ public class OOPathTest extends BaseModelTest {
                         "  list.add( $emp.getName() );\n" +
                         "end\n";
 
-        KieSession kieSession = getKieSession(drl);
+        KieSession kieSession = getKieSession(runType, drl);
 
         List<String> results = new ArrayList<>();
         kieSession.setGlobal("list", results);
@@ -408,8 +417,9 @@ public class OOPathTest extends BaseModelTest {
         assertThat(results).containsExactlyInAnyOrder("Bruno", "Alice");
     }
 
-    @Test
-    public void testOrConstraintWithJoin() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testOrConstraintWithJoin(RUN_TYPE runType) {
         final String drl =
                 "import " + Employee.class.getCanonicalName() + ";" +
                         "import " + Address.class.getCanonicalName() + ";" +
@@ -422,7 +432,7 @@ public class OOPathTest extends BaseModelTest {
                         "  list.add( $address.getCity() );\n" +
                         "end\n";
 
-        KieSession kieSession = getKieSession(drl);
+        KieSession kieSession = getKieSession(runType, drl);
 
         List<String> results = new ArrayList<>();
         kieSession.setGlobal("list", results);
@@ -438,8 +448,9 @@ public class OOPathTest extends BaseModelTest {
         assertThat(results).containsExactlyInAnyOrder("Big City", "Small City");
     }
 
-    @Test
-    public void testOrConstraint() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testOrConstraint(RUN_TYPE runType) {
         final String drl =
                 "import " + Employee.class.getCanonicalName() + ";" +
                         "import " + Address.class.getCanonicalName() + ";" +
@@ -452,7 +463,7 @@ public class OOPathTest extends BaseModelTest {
                         "  list.add( $address.getCity() );\n" +
                         "end\n";
 
-        KieSession kieSession = getKieSession(drl);
+        KieSession kieSession = getKieSession(runType, drl);
 
         List<String> results = new ArrayList<>();
         kieSession.setGlobal("list", results);

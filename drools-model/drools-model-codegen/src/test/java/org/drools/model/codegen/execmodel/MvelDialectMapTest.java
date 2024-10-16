@@ -22,20 +22,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.model.codegen.execmodel.domain.Person;
-import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class MvelDialectMapTest extends BaseModelTest {
+public class MvelDialectMapTest extends BaseModelTest2 {
 
-    public MvelDialectMapTest(RUN_TYPE testRunType ) {
-        super( testRunType );
-    }
-
-
-    @Test
-    public void testMapAccessorWithBind() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testMapAccessorWithBind(RUN_TYPE runType) {
         final String drl = "" +
                 "import java.util.*;\n" +
                 "import " + Person.class.getCanonicalName() + ";\n" +
@@ -51,7 +48,7 @@ public class MvelDialectMapTest extends BaseModelTest {
                 "   results.add($i.length());" +
                 "end";
 
-        KieSession ksession = getKieSession(drl);
+        KieSession ksession = getKieSession(runType, drl);
 
         List<Integer> results = new ArrayList<>();
         ksession.setGlobal("results", results);
@@ -67,8 +64,9 @@ public class MvelDialectMapTest extends BaseModelTest {
         assertThat(results).containsExactly(5); // item1.length()
     }
 
-    @Test
-    public void testMapAccessorWithBindFieldAccessor() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testMapAccessorWithBindFieldAccessor(RUN_TYPE runType) {
         final String drl = "" +
                 "import java.util.*;\n" +
                 "import " + Person.class.getCanonicalName() + ";\n" +
@@ -84,7 +82,7 @@ public class MvelDialectMapTest extends BaseModelTest {
                 "   results.add($childName.length());" +
                 "end";
 
-        KieSession ksession = getKieSession(drl);
+        KieSession ksession = getKieSession(runType, drl);
 
         List<Integer> results = new ArrayList<>();
         ksession.setGlobal("results", results);

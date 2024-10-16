@@ -26,7 +26,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.drools.model.codegen.execmodel.domain.Cheese;
 import org.drools.model.codegen.execmodel.domain.Person;
 import org.drools.model.codegen.execmodel.domain.Result;
-import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.builder.Message.Level;
 import org.kie.api.builder.Results;
 import org.kie.api.runtime.KieSession;
@@ -35,14 +36,11 @@ import org.kie.api.runtime.rule.FactHandle;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class NamedConsequencesTest extends BaseModelTest {
+public class NamedConsequencesTest extends BaseModelTest2 {
 
-    public NamedConsequencesTest( RUN_TYPE testRunType ) {
-        super( testRunType );
-    }
-
-    @Test
-    public void testNamedConsequence() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testNamedConsequence(RUN_TYPE runType) {
         String str =
                 "import " + Result.class.getCanonicalName() + ";\n" +
                 "import " + Person.class.getCanonicalName() + ";\n" +
@@ -57,7 +55,7 @@ public class NamedConsequencesTest extends BaseModelTest {
                 "  $r.addValue(\"Found \" + $p1.getName());\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
         Result result = new Result();
         ksession.insert( result );
 
@@ -72,8 +70,9 @@ public class NamedConsequencesTest extends BaseModelTest {
         assertThat(results.containsAll(asList("Found Mark", "Mario is older than Mark"))).isTrue();
     }
 
-    @Test
-    public void testBreakingNamedConsequence() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testBreakingNamedConsequence(RUN_TYPE runType) {
         String str =
                 "import " + Result.class.getCanonicalName() + ";\n" +
                 "import " + Person.class.getCanonicalName() + ";\n" +
@@ -94,7 +93,7 @@ public class NamedConsequencesTest extends BaseModelTest {
                 "  $r.addValue(\"Found \" + $p1.getName());\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         Result result = new Result();
         ksession.insert( result );
@@ -110,8 +109,9 @@ public class NamedConsequencesTest extends BaseModelTest {
         assertThat(results.iterator().next()).isEqualTo("Found Mark");
     }
 
-    @Test
-    public void testNonBreakingNamedConsequence() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testNonBreakingNamedConsequence(RUN_TYPE runType) {
         String str =
                 "import " + Result.class.getCanonicalName() + ";\n" +
                 "import " + Person.class.getCanonicalName() + ";\n" +
@@ -132,7 +132,7 @@ public class NamedConsequencesTest extends BaseModelTest {
                 "  $r.addValue(\"Found \" + $p1.getName());\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         Result result = new Result();
         ksession.insert( result );
@@ -148,8 +148,9 @@ public class NamedConsequencesTest extends BaseModelTest {
         assertThat(results.containsAll(asList("Found Mark", "Mario is older than Mark"))).isTrue();
     }
 
-    @Test
-    public void testIfAfterAccumulate() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testIfAfterAccumulate(RUN_TYPE runType) {
         String str =
                 "import " + Result.class.getCanonicalName() + ";\n" +
                 "import " + Person.class.getCanonicalName() + ";\n" +
@@ -166,7 +167,7 @@ public class NamedConsequencesTest extends BaseModelTest {
                 "  $r.addValue(\"greater\");\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
         Result result = new Result();
         ksession.insert( result );
 
@@ -180,8 +181,9 @@ public class NamedConsequencesTest extends BaseModelTest {
         assertThat(results.get(0)).isEqualTo("greater");
     }
 
-    @Test
-    public void testNonCompilingIFAfterOR() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testNonCompilingIFAfterOR(RUN_TYPE runType) {
         String str = "import " + Cheese.class.getCanonicalName() + ";\n " +
                      "global java.util.List results;\n" +
                      "\n" +
@@ -197,12 +199,13 @@ public class NamedConsequencesTest extends BaseModelTest {
                      "    results.add( $a.getType() );\n" +
                      "end\n";
 
-        Results results = createKieBuilder(str).getResults();
+        Results results = createKieBuilder(runType, str).getResults();
         assertThat(results.hasMessages(Level.ERROR)).isTrue();
     }
 
-    @Test
-    public void testIfElseWithMvelAccessor() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testIfElseWithMvelAccessor(RUN_TYPE runType) {
         String str = "import " + Cheese.class.getCanonicalName() + ";\n " +
                      "global java.util.List results;\n" +
                      "\n" +
@@ -218,7 +221,7 @@ public class NamedConsequencesTest extends BaseModelTest {
                      "    results.add( $a.getType().toUpperCase() );\n" +
                      "end\n";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
         List<String> results = new ArrayList<String>();
         ksession.setGlobal("results", results);
 
@@ -237,8 +240,9 @@ public class NamedConsequencesTest extends BaseModelTest {
         assertThat(results.contains("STILTON")).isTrue();
     }
 
-    @Test
-    public void testWrongConsequenceName() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testWrongConsequenceName(RUN_TYPE runType) {
         String str = "import " + Cheese.class.getCanonicalName() + ";\n " +
                      "global java.util.List results;\n" +
                      "\n" +
@@ -252,12 +256,13 @@ public class NamedConsequencesTest extends BaseModelTest {
                      "    results.add( $a.getType().toUpperCase() );\n" +
                      "end\n";
 
-        Results results = createKieBuilder(str).getResults();
+        Results results = createKieBuilder(runType, str).getResults();
         assertThat(results.hasMessages(Level.ERROR)).isTrue();
     }
 
-    @Test
-    public void testMvelInsertWithNamedConsequence() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testMvelInsertWithNamedConsequence(RUN_TYPE runType) {
         String drl =
                 "package org.drools.compiler\n" +
                      "global java.util.concurrent.atomic.AtomicInteger counter\n" +
@@ -283,7 +288,7 @@ public class NamedConsequencesTest extends BaseModelTest {
                      "        counter.incrementAndGet();\n" +
                      "end\n";
 
-        KieSession kSession = getKieSession(drl);
+        KieSession kSession = getKieSession(runType, drl);
 
         AtomicInteger counter = new AtomicInteger(0);
         kSession.setGlobal("counter", counter);
@@ -298,8 +303,9 @@ public class NamedConsequencesTest extends BaseModelTest {
         assertThat(counter.get()).isEqualTo(2);
     }
 
-    @Test
-    public void testMVELBreak() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testMVELBreak(RUN_TYPE runType) {
         String str = "import " + Cheese.class.getCanonicalName() + ";\n " +
                      "global java.util.List results;\n" +
                      "\n" +
@@ -313,7 +319,7 @@ public class NamedConsequencesTest extends BaseModelTest {
                      "    results.add( $a.type.toUpperCase() );\n" +
                      "end\n";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
         List<String> results = new ArrayList<String>();
         ksession.setGlobal("results", results);
 
@@ -331,8 +337,9 @@ public class NamedConsequencesTest extends BaseModelTest {
         assertThat(results.contains("STILTON")).isTrue();
     }
 
-    @Test
-    public void testMVELNoBreak() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testMVELNoBreak(RUN_TYPE runType) {
         String str = "import " + Cheese.class.getCanonicalName() + ";\n " +
                      "global java.util.List results;\n" +
                      "\n" +
@@ -346,7 +353,7 @@ public class NamedConsequencesTest extends BaseModelTest {
                      "    results.add( $a.type.toUpperCase() );\n" +
                      "end\n";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
         List<String> results = new ArrayList<String>();
         ksession.setGlobal("results", results);
 
@@ -365,8 +372,9 @@ public class NamedConsequencesTest extends BaseModelTest {
         assertThat(results.contains("cheddar")).isTrue();
     }
 
-    @Test
-    public void testMultipleIfElseInARow() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testMultipleIfElseInARow(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";\n" +
                      "global java.util.List result;\n" +
@@ -394,7 +402,7 @@ public class NamedConsequencesTest extends BaseModelTest {
                      "  result.add(\"Age100\");\n" +
                      "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
         List<String> result = new ArrayList<>();
         ksession.setGlobal("result", result);
 
@@ -408,8 +416,9 @@ public class NamedConsequencesTest extends BaseModelTest {
         assertThat(result.containsAll(asList("Default", "Mark", "Edson", "Age35", "Age37"))).isTrue();
     }
 
-    @Test
-    public void testMultipleIfElseInARowWithJoin() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testMultipleIfElseInARowWithJoin(RUN_TYPE runType) {
         String str =
                 "import " + Result.class.getCanonicalName() + ";\n" +
                      "import " + Person.class.getCanonicalName() + ";\n" +
@@ -432,7 +441,7 @@ public class NamedConsequencesTest extends BaseModelTest {
                      "  $r.addValue(\"Age37\");\n" +
                      "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         Result result = new Result();
         ksession.insert(result);
@@ -448,8 +457,9 @@ public class NamedConsequencesTest extends BaseModelTest {
         assertThat(results.containsAll(asList("Default", "Mark", "Edson", "Age35", "Age37"))).isTrue();
     }
 
-    @Test
-    public void testMultipleIfElseInARowWithJoin2() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testMultipleIfElseInARowWithJoin2(RUN_TYPE runType) {
         String str =
                 "import " + Result.class.getCanonicalName() + ";\n" +
                      "import " + Person.class.getCanonicalName() + ";\n" +
@@ -473,7 +483,7 @@ public class NamedConsequencesTest extends BaseModelTest {
                      "  $r.addValue(\"Age37\");\n" +
                      "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         Result result = new Result();
         ksession.insert(result);
@@ -490,7 +500,7 @@ public class NamedConsequencesTest extends BaseModelTest {
         assertThat(results.containsAll(asList("DefaultMario", "Mark", "Edson", "Age35", "Age37"))).isTrue();
     }
 
-    public void testModifyInNamedConsequence() {
+    public void testModifyInNamedConsequence(RUN_TYPE runType) {
         String str = "import " + Cheese.class.getCanonicalName() + ";\n " +
                      "global java.util.List results;\n" +
                      "\n" +
@@ -504,7 +514,7 @@ public class NamedConsequencesTest extends BaseModelTest {
                      "    modify( $a ) { setPrice(15) };\n" +
                      "end\n";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
         List<String> results = new ArrayList<String>();
         ksession.setGlobal("results", results);
 
@@ -522,8 +532,9 @@ public class NamedConsequencesTest extends BaseModelTest {
         assertThat(results.contains("stilton")).isTrue();
     }
 
-    @Test
-    public void test2ModifyBlocksInNamedConsequences() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void test2ModifyBlocksInNamedConsequences(RUN_TYPE runType) {
         String str = "import " + Cheese.class.getCanonicalName() + ";\n " +
                      "global java.util.List results;\n" +
                      "\n" +
@@ -538,7 +549,7 @@ public class NamedConsequencesTest extends BaseModelTest {
                      "    results.add( $a.getPrice() );\n" +
                      "end\n";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
         List<Integer> results = new ArrayList<>();
         ksession.setGlobal("results", results);
 
@@ -554,8 +565,9 @@ public class NamedConsequencesTest extends BaseModelTest {
         assertThat(results).containsExactlyInAnyOrder(10, 15);
     }
 
-    @Test
-    public void testMultipleIfAfterEval() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testMultipleIfAfterEval(RUN_TYPE runType) {
         String str = "import " + Cheese.class.getCanonicalName() + ";\n " +
                      "global java.util.List results;\n" +
                      "\n" +
@@ -573,7 +585,7 @@ public class NamedConsequencesTest extends BaseModelTest {
                      "    results.add( $a.getType() );\n" +
                      "end\n";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
         List<Integer> results = new ArrayList<>();
         ksession.setGlobal("results", results);
 
@@ -590,7 +602,7 @@ public class NamedConsequencesTest extends BaseModelTest {
         assertThat(results.contains("stilton")).isTrue();
     }
 
-    public void testIfTrue() {
+    public void testIfTrue(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";\n" +
                      "global java.util.List result;\n" +
@@ -603,7 +615,7 @@ public class NamedConsequencesTest extends BaseModelTest {
                      "  result.add(\"t1\");\n" +
                      "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
         List<String> result = new ArrayList<>();
         ksession.setGlobal("result", result);
 

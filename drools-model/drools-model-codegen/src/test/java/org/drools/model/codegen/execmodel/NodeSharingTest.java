@@ -41,21 +41,19 @@ import org.drools.model.codegen.execmodel.domain.Address;
 import org.drools.model.codegen.execmodel.domain.Person;
 import org.drools.model.codegen.execmodel.domain.Result;
 import org.drools.model.codegen.execmodel.domain.StockTick;
-import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.time.SessionPseudoClock;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class NodeSharingTest extends BaseModelTest {
+public class NodeSharingTest extends BaseModelTest2 {
 
-    public NodeSharingTest( RUN_TYPE testRunType ) {
-        super( testRunType );
-    }
-
-    @Test
-    public void testShareAlpha() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testShareAlpha(RUN_TYPE runType) {
         String str =
                 "import " + Result.class.getCanonicalName() + ";" +
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -69,7 +67,7 @@ public class NodeSharingTest extends BaseModelTest {
                 "  $r.add($p3);\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         Set result = new HashSet<>();
         ksession.insert( result );
@@ -91,8 +89,9 @@ public class NodeSharingTest extends BaseModelTest {
         assertThat(ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count()).isEqualTo(2);
     }
 
-    @Test
-    public void testShareAlphaInDifferentRules() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testShareAlphaInDifferentRules(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                 "rule R1 when\n" +
@@ -104,13 +103,14 @@ public class NodeSharingTest extends BaseModelTest {
                 "then\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         assertThat(ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count()).isEqualTo(1);
     }
 
-    @Test
-    public void testShareAlphaInDifferentPackages() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testShareAlphaInDifferentPackages(RUN_TYPE runType) {
         String str1 =
                 "package org.drools.a\n" +
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -126,13 +126,14 @@ public class NodeSharingTest extends BaseModelTest {
                 "then\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str1, str2 );
+        KieSession ksession = getKieSession(runType,  str1, str2);
 
         assertThat(ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count()).isEqualTo(1);
     }
 
-    @Test
-    public void testShareBetaWithConstraintReordering() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testShareBetaWithConstraintReordering(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                 "rule R1 when\n" +
@@ -146,7 +147,7 @@ public class NodeSharingTest extends BaseModelTest {
                 "then\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         assertThat(ReteDumper.collectNodes(ksession).stream().filter(BetaNode.class::isInstance).count()).isEqualTo(1);
 
@@ -155,8 +156,9 @@ public class NodeSharingTest extends BaseModelTest {
         assertThat(otn.getSinks().length).isEqualTo(1);
     }
 
-    @Test
-    public void testTrimmedConstraint() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testTrimmedConstraint(RUN_TYPE runType) {
 
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -169,13 +171,14 @@ public class NodeSharingTest extends BaseModelTest {
                 "then\n" +
                 "end\n";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         assertThat(ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count()).isEqualTo(1);
     }
 
-    @Test
-    public void testOrWithTrimmedConstraint() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testOrWithTrimmedConstraint(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                 "global java.util.List list\n" +
@@ -193,7 +196,7 @@ public class NodeSharingTest extends BaseModelTest {
                 "  list.add( $p + \" has \" + $age + \" years\");\n" +
                 "end\n";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         assertThat(ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count()).isEqualTo(2);
 
@@ -212,8 +215,9 @@ public class NodeSharingTest extends BaseModelTest {
         assertThat(results.contains("Mario has 40 years")).isTrue();
     }
 
-    @Test
-    public void testShareAlphaHashable() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testShareAlphaHashable(RUN_TYPE runType) {
         String str =
                 "import " + Factor.class.getCanonicalName() + ";\n" +
                      "rule R1 when\n" +
@@ -223,7 +227,7 @@ public class NodeSharingTest extends BaseModelTest {
                      "    Factor( factorAmt == 10.0 )\n" +
                      "then end\n";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert(new Factor(10.0));
         assertThat(ksession.fireAllRules()).isEqualTo(2);
@@ -231,8 +235,9 @@ public class NodeSharingTest extends BaseModelTest {
         assertThat(ReteDumper.collectNodes(ksession).stream().filter(AlphaNode.class::isInstance).count()).isEqualTo(1);
     }
 
-    @Test
-    public void testShareAlphaRangeIndexable() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testShareAlphaRangeIndexable(RUN_TYPE runType) {
         String str =
                 "import " + Factor.class.getCanonicalName() + ";\n" +
                      "rule R1 when\n" +
@@ -242,7 +247,7 @@ public class NodeSharingTest extends BaseModelTest {
                      "    Factor( factorAmt > 10.0 )\n" +
                      "then end\n";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert(new Factor(25.0));
         assertThat(ksession.fireAllRules()).isEqualTo(2);
@@ -263,8 +268,9 @@ public class NodeSharingTest extends BaseModelTest {
         }
     }
 
-    @Test
-    public void testShareEval() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testShareEval(RUN_TYPE runType) {
         final String str = "package myPkg;\n" +
                            "rule R1 when\n" +
                            "  i : Integer()\n" +
@@ -278,7 +284,7 @@ public class NodeSharingTest extends BaseModelTest {
                            "end\n" +
                            "";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
         KieBase kbase = ksession.getKieBase();
 
         EntryPointNode epn = ((InternalKnowledgeBase) kbase).getRete().getEntryPointNodes().values().iterator().next();
@@ -287,7 +293,7 @@ public class NodeSharingTest extends BaseModelTest {
         assertThat(lian.getSinks().length).isEqualTo(1);
     }
 
-    public void testShareFrom() {
+    public void testShareFrom(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";\n" +
                      "import " + Address.class.getCanonicalName() + ";\n" +
@@ -305,7 +311,7 @@ public class NodeSharingTest extends BaseModelTest {
                      "  list.add($a);\n" +
                      "end\n";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         List<Address> list = new ArrayList<>();
         ksession.setGlobal("list", list);
@@ -322,8 +328,9 @@ public class NodeSharingTest extends BaseModelTest {
         assertThat(ReteDumper.collectNodes(ksession).stream().filter(FromNode.class::isInstance).count()).isEqualTo(1);
     }
 
-    @Test
-    public void testShareAccumulate() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testShareAccumulate(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                      "import " + Result.class.getCanonicalName() + ";" +
@@ -342,7 +349,7 @@ public class NodeSharingTest extends BaseModelTest {
                      "  insert(new Result($sum));\n" +
                      "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert(new Person("Mark", 37));
         ksession.insert(new Person("Edson", 35));
@@ -357,8 +364,9 @@ public class NodeSharingTest extends BaseModelTest {
         assertThat(ReteDumper.collectNodes(ksession).stream().filter(AccumulateNode.class::isInstance).count()).isEqualTo(1);
     }
 
-    @Test
-    public void testShareFromAccumulate() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testShareFromAccumulate(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                      "import " + Result.class.getCanonicalName() + ";" +
@@ -377,7 +385,7 @@ public class NodeSharingTest extends BaseModelTest {
                      "  insert(new Result($sum));\n" +
                      "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert(new Person("Mark", 37));
         ksession.insert(new Person("Edson", 35));
@@ -392,8 +400,9 @@ public class NodeSharingTest extends BaseModelTest {
         assertThat(ReteDumper.collectNodes(ksession).stream().filter(AccumulateNode.class::isInstance).count()).isEqualTo(1);
     }
 
-    @Test
-    public void testShareExists() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testShareExists(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                      "import " + Result.class.getCanonicalName() + ";" +
@@ -408,7 +417,7 @@ public class NodeSharingTest extends BaseModelTest {
                      "  insert(new Result(\"ok\"));\n" +
                      "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         Person mario = new Person("Mario", 40);
 
@@ -422,8 +431,9 @@ public class NodeSharingTest extends BaseModelTest {
         assertThat(ReteDumper.collectNodes(ksession).stream().filter(ExistsNode.class::isInstance).count()).isEqualTo(1);
     }
 
-    @Test
-    public void testShareNot() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testShareNot(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                      "import " + Result.class.getCanonicalName() + ";" +
@@ -438,7 +448,7 @@ public class NodeSharingTest extends BaseModelTest {
                      "  insert(new Result(\"ok\"));\n" +
                      "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         Person mario = new Person("Mario", 40);
 
@@ -452,8 +462,9 @@ public class NodeSharingTest extends BaseModelTest {
         assertThat(ReteDumper.collectNodes(ksession).stream().filter(NotNode.class::isInstance).count()).isEqualTo(1);
     }
 
-    @Test
-    public void testShareCombinedConstraintAnd() throws Exception {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testShareCombinedConstraintAnd(RUN_TYPE runType) throws Exception {
         // DROOLS-6330
         // Note: if DROOLS-6329 is resolved, this test may not produce CombinedConstraint
         String str =
@@ -471,7 +482,7 @@ public class NodeSharingTest extends BaseModelTest {
                      "  System.out.println(\"fired\");\n" +
                      "end\n";
 
-        KieSession ksession = getKieSession(CepTest.getCepKieModuleModel(), str);
+        KieSession ksession = getKieSession(runType, CepTest.getCepKieModuleModel(), str);
 
         SessionPseudoClock clock = ksession.getSessionClock();
 
@@ -489,8 +500,9 @@ public class NodeSharingTest extends BaseModelTest {
         assertThat(ReteDumper.collectNodes(ksession).stream().filter(JoinNode.class::isInstance).count()).isEqualTo(1);
     }
 
-    @Test
-    public void testShareCombinedConstraintOr() throws Exception {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testShareCombinedConstraintOr(RUN_TYPE runType) throws Exception {
         // DROOLS-6330
         String str =
                 "import " + StockTick.class.getCanonicalName() + ";" +
@@ -507,7 +519,7 @@ public class NodeSharingTest extends BaseModelTest {
                      "  System.out.println(\"fired\");\n" +
                      "end\n";
 
-        KieSession ksession = getKieSession(CepTest.getCepKieModuleModel(), str);
+        KieSession ksession = getKieSession(runType, CepTest.getCepKieModuleModel(), str);
 
         SessionPseudoClock clock = ksession.getSessionClock();
 

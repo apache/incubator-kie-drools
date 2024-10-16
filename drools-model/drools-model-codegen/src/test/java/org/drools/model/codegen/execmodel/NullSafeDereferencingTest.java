@@ -26,19 +26,17 @@ import org.drools.model.codegen.execmodel.domain.Address;
 import org.drools.model.codegen.execmodel.domain.MysteriousMan;
 import org.drools.model.codegen.execmodel.domain.Person;
 import org.drools.model.codegen.execmodel.domain.Result;
-import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class NullSafeDereferencingTest extends BaseModelTest {
+public class NullSafeDereferencingTest extends BaseModelTest2 {
 
-    public NullSafeDereferencingTest( RUN_TYPE testRunType ) {
-        super( testRunType );
-    }
-
-    @Test
-    public void testNullSafeDereferncing() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testNullSafeDereferncing(RUN_TYPE runType) {
         String str =
                 "import " + Result.class.getCanonicalName() + ";" +
                         "import " + Person.class.getCanonicalName() + ";" +
@@ -49,7 +47,7 @@ public class NullSafeDereferencingTest extends BaseModelTest {
                         "  $r.setValue(\"Found: \" + $p);\n" +
                         "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         Result result = new Result();
         ksession.insert( result );
@@ -115,8 +113,9 @@ public class NullSafeDereferencingTest extends BaseModelTest {
         }
     }
 
-    @Test
-    public void testNullSafeMultiple() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testNullSafeMultiple(RUN_TYPE runType) {
         String str = "import " + NullUnsafeA.class.getCanonicalName() + ";" +
                 "import " + NullUnsafeB.class.getCanonicalName() + ";" +
                 "import " + NullUnsafeD.class.getCanonicalName() + ";" +
@@ -127,7 +126,7 @@ public class NullSafeDereferencingTest extends BaseModelTest {
                 "end";
 
         for (int i = 0; i <= 4; i++) {
-            KieSession ksession = getKieSession(str);
+            KieSession ksession = getKieSession(runType, str);
 
             NullUnsafeA a = new NullUnsafeA();
             NullUnsafeB b = new NullUnsafeB();
@@ -162,8 +161,9 @@ public class NullSafeDereferencingTest extends BaseModelTest {
         }
     }
 
-    @Test
-    public void testNullSafeDereferncingOnFieldWithMethodInvocation() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testNullSafeDereferncingOnFieldWithMethodInvocation(RUN_TYPE runType) {
         String str = "import " + Result.class.getCanonicalName() + ";" +
                 "import " + Person.class.getCanonicalName() + ";" +
                 "rule R when\n" +
@@ -173,7 +173,7 @@ public class NullSafeDereferencingTest extends BaseModelTest {
                 "  insert(r);\n" +
                 "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert(new Person("John1", 41, (Address) null));
         ksession.insert(new Person("John2", 42, new Address("Milan")));
@@ -184,8 +184,9 @@ public class NullSafeDereferencingTest extends BaseModelTest {
         assertThat(results.get(0).getValue()).isEqualTo("John2");
     }
 
-    @Test
-    public void testNullSafeDereferncingOnMethodInvocation() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testNullSafeDereferncingOnMethodInvocation(RUN_TYPE runType) {
         String str = "import " + Result.class.getCanonicalName() + ";" +
                 "import " + Person.class.getCanonicalName() + ";" +
                 "rule R when\n" +
@@ -195,7 +196,7 @@ public class NullSafeDereferencingTest extends BaseModelTest {
                 "  insert(r);\n" +
                 "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert(new Person("John1", 41, new Address(null)));
         ksession.insert(new Person("John2", 42, new Address("Milan")));
@@ -206,8 +207,9 @@ public class NullSafeDereferencingTest extends BaseModelTest {
         assertThat(results.get(0).getValue()).isEqualTo("John2");
     }
 
-    @Test
-    public void testNullSafeDereferncingOnFirstField() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testNullSafeDereferncingOnFirstField(RUN_TYPE runType) {
         String str = "import " + Result.class.getCanonicalName() + ";" +
                 "import " + Person.class.getCanonicalName() + ";" +
                 "rule R when\n" +
@@ -217,7 +219,7 @@ public class NullSafeDereferencingTest extends BaseModelTest {
                 "  insert(r);\n" +
                 "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert(new Person("John1", 41, (Address) null));
         ksession.insert(new Person("John2", 42, new Address("Milan")));
@@ -228,8 +230,9 @@ public class NullSafeDereferencingTest extends BaseModelTest {
         assertThat(results.get(0).getValue()).isEqualTo("John2");
     }
 
-    @Test
-    public void testNullSafeDereferncingOnSecondField() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testNullSafeDereferncingOnSecondField(RUN_TYPE runType) {
         String str = "import " + Result.class.getCanonicalName() + ";" +
                 "import " + Person.class.getCanonicalName() + ";" +
                 "rule R when\n" +
@@ -239,7 +242,7 @@ public class NullSafeDereferencingTest extends BaseModelTest {
                 "  insert(r);\n" +
                 "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert(new Person("John1", 41, new Address(null)));
         ksession.insert(new Person("John2", 42, new Address("Milan")));
@@ -250,8 +253,9 @@ public class NullSafeDereferencingTest extends BaseModelTest {
         assertThat(results.get(0).getValue()).isEqualTo("John2");
     }
 
-    @Test
-    public void testNullSafeDereferncingWithOrHalfBinary() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testNullSafeDereferncingWithOrHalfBinary(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";\n" +
                      "global java.util.List result;\n" +
@@ -262,7 +266,7 @@ public class NullSafeDereferencingTest extends BaseModelTest {
                      "  result.add($p.getName());\n" +
                      "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
         List<String> result = new ArrayList<>();
         ksession.setGlobal("result", result);
 
@@ -274,8 +278,9 @@ public class NullSafeDereferencingTest extends BaseModelTest {
         assertThat(result).containsExactlyInAnyOrder("John", "George");
     }
 
-    @Test
-    public void testNullSafeDereferencingNonPredicate() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testNullSafeDereferencingNonPredicate(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";\n" +
                      "global java.util.List result;\n" +
@@ -285,7 +290,7 @@ public class NullSafeDereferencingTest extends BaseModelTest {
                      "  result.add($cityName);\n" +
                      "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
         List<String> result = new ArrayList<>();
         ksession.setGlobal("result", result);
 
@@ -297,8 +302,9 @@ public class NullSafeDereferencingTest extends BaseModelTest {
         assertThat(result).containsExactlyInAnyOrder("London", "Tokyo");
     }
 
-    @Test
-    public void testMultipleNullSafeDereferencingNonPredicate() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testMultipleNullSafeDereferencingNonPredicate(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";\n" +
                      "global java.util.List result;\n" +
@@ -308,7 +314,7 @@ public class NullSafeDereferencingTest extends BaseModelTest {
                      "  result.add($cityNameLength);\n" +
                      "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
         List<Integer> result = new ArrayList<>();
         ksession.setGlobal("result", result);
 
@@ -320,8 +326,9 @@ public class NullSafeDereferencingTest extends BaseModelTest {
         assertThat(result).containsExactlyInAnyOrder(6);
     }
 
-    @Test
-    public void testNullSafeDereferencingPredicateMethod() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testNullSafeDereferencingPredicateMethod(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";\n" +
                      "global java.util.List result;\n" +
@@ -331,7 +338,7 @@ public class NullSafeDereferencingTest extends BaseModelTest {
                      "  result.add($containsL);\n" +
                      "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
         List<Boolean> result = new ArrayList<>();
         ksession.setGlobal("result", result);
 
@@ -343,8 +350,9 @@ public class NullSafeDereferencingTest extends BaseModelTest {
         assertThat(result).containsExactlyInAnyOrder(true, false);
     }
 
-    @Test
-    public void testNullSafeIndex() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testNullSafeIndex(RUN_TYPE runType) {
         String str = "import " + Person.class.getCanonicalName() + ";\n" +
                      "rule R1 when\n" +
                      " $city : String()\n"+
@@ -352,7 +360,7 @@ public class NullSafeDereferencingTest extends BaseModelTest {
                      "then\n" +
                      "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert(new Person("Mario", 38));
 
@@ -369,8 +377,9 @@ public class NullSafeDereferencingTest extends BaseModelTest {
         ksession.dispose();
     }
 
-    @Test
-    public void testNullSafeDereferncingWithOr() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testNullSafeDereferncingWithOr(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";\n" +
                      "global java.util.List result;\n" +
@@ -381,7 +390,7 @@ public class NullSafeDereferencingTest extends BaseModelTest {
                      "  result.add($p.getName());\n" +
                      "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
         List<String> result = new ArrayList<>();
         ksession.setGlobal("result", result);
 
@@ -400,8 +409,9 @@ public class NullSafeDereferencingTest extends BaseModelTest {
         assertThat(result).containsExactlyInAnyOrder("Bob", "Paul");
     }
 
-    @Test
-    public void testNullSafeDereferncingWithInstanceof() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testNullSafeDereferncingWithInstanceof(RUN_TYPE runType) {
         // instanceof has to be evaluated before null check
         String str =
                 "import " + Person.class.getCanonicalName() + ";\n" +
@@ -414,7 +424,7 @@ public class NullSafeDereferencingTest extends BaseModelTest {
                      "  result.add($p.getName());\n" +
                      "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
         List<String> result = new ArrayList<>();
         ksession.setGlobal("result", result);
 
