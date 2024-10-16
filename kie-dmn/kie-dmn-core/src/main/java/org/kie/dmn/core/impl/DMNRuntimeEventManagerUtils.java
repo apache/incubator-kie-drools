@@ -26,8 +26,10 @@ import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.ast.BusinessKnowledgeModelNode;
 import org.kie.dmn.api.core.ast.DecisionNode;
 import org.kie.dmn.api.core.ast.DecisionServiceNode;
+import org.kie.dmn.api.core.event.AfterConditionalEvaluationEvent;
 import org.kie.dmn.api.core.event.AfterEvaluateAllEvent;
 import org.kie.dmn.api.core.event.AfterEvaluateBKMEvent;
+import org.kie.dmn.api.core.event.AfterEvaluateConditionalEvent;
 import org.kie.dmn.api.core.event.AfterEvaluateContextEntryEvent;
 import org.kie.dmn.api.core.event.AfterEvaluateDecisionEvent;
 import org.kie.dmn.api.core.event.AfterEvaluateDecisionServiceEvent;
@@ -42,6 +44,7 @@ import org.kie.dmn.api.core.event.BeforeEvaluateDecisionTableEvent;
 import org.kie.dmn.api.core.event.BeforeInvokeBKMEvent;
 import org.kie.dmn.api.core.event.DMNRuntimeEventListener;
 import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
+import org.kie.dmn.api.core.EvaluatorResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -149,6 +152,20 @@ public final class DMNRuntimeEventManagerUtils {
         }
     }
 
+    public static void fireAfterEvaluateConditional(DMNRuntimeEventManager eventManager, EvaluatorResult evaluatorResult, String executedId) {
+        if( eventManager.hasListeners() ) {
+            AfterEvaluateConditionalEvent event = new AfterEvaluateConditionalEventImpl(evaluatorResult, executedId);
+            notifyListeners(eventManager, l -> l.afterEvaluateConditional(event));
+        }
+    }
+
+    public static void fireAfterConditionalEvaluation(DMNRuntimeEventManager eventManager, EvaluatorResult evaluatorResult, String idExecuted) {
+        if( eventManager.hasListeners() ) {
+            AfterConditionalEvaluationEvent event = new AfterConditionalEvaluationEventImpl(evaluatorResult, idExecuted);
+            notifyListeners(eventManager, l -> l.afterConditionalEvaluation(event));
+        }
+    }
+
     private static void notifyListeners(DMNRuntimeEventManager eventManager, Consumer<DMNRuntimeEventListener> consumer) {
         for( DMNRuntimeEventListener listener : eventManager.getListeners() ) {
             try {
@@ -158,6 +175,7 @@ public final class DMNRuntimeEventManagerUtils {
             }
         }
     }
+
 
     private DMNRuntimeEventManagerUtils() {
         // Constructing instances is not allowed for this class
