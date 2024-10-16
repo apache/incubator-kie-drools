@@ -41,7 +41,7 @@ import org.kie.api.runtime.rule.FactHandle;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class PropertyReactivityTest extends BaseModelTest2 {
+public class PropertyReactivityTest extends BaseModelTest {
 
     @ParameterizedTest
 	@MethodSource("parameters")

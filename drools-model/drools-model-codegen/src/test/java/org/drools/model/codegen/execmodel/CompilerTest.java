@@ -55,7 +55,7 @@ import org.kie.api.runtime.rule.FactHandle;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-public class CompilerTest extends BaseModelTest2 {
+public class CompilerTest extends BaseModelTest {
 
     @ParameterizedTest
     @MethodSource("parameters")

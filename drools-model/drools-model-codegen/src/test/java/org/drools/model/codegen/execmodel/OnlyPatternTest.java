@@ -18,15 +18,12 @@
  */
 package org.drools.model.codegen.execmodel;
 
-import org.junit.runners.Parameterized;
-
-import static org.drools.model.codegen.execmodel.BaseModelTest2.RUN_TYPE.PATTERN_DSL;
+import static org.drools.model.codegen.execmodel.BaseModelTest.RUN_TYPE.PATTERN_DSL;
 
 import java.util.stream.Stream;
 
-public abstract class OnlyPatternTest extends BaseModelTest2 {
+public abstract class OnlyPatternTest extends BaseModelTest {
 
-    @Parameterized.Parameters(name = "{0}")
     public static Stream<RUN_TYPE> parameters() {
         return Stream.of(RUN_TYPE.STANDARD_FROM_DRL, PATTERN_DSL);
     }

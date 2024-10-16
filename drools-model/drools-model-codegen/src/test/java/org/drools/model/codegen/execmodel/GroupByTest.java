@@ -48,7 +48,7 @@ import java.util.function.Consumer;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-public class GroupByTest extends BaseModelTest2 {
+public class GroupByTest extends BaseModelTest {
 
     public void assertSessionHasProperties(RUN_TYPE testRunType, String ruleString, Consumer<KieSession> kieSessionConsumer) {
         if (testRunType.isExecutableModel()) {

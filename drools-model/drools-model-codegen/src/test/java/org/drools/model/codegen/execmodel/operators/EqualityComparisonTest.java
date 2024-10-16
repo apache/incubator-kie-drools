@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-import org.drools.model.codegen.execmodel.BaseModelTest2.RUN_TYPE;
+import org.drools.model.codegen.execmodel.BaseModelTest.RUN_TYPE;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -30,9 +30,9 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 public class EqualityComparisonTest extends BaseOperatorsTest {
 
@@ -83,11 +83,7 @@ public class EqualityComparisonTest extends BaseOperatorsTest {
         ksession.insert(new ValueHolder());
         try {
             int fired = ksession.fireAllRules();
-            if (operator.equals("==") && fired == 0 || operator.equals("!=") && fired == 1) {
-                assertTrue(true);
-            } else {
-                fail("Wrong result");
-            }
+            assertThat(operator.equals("==") && fired == 0 || operator.equals("!=") && fired == 1).withFailMessage("Wrong result").isTrue();
         } catch (org.drools.mvel.ConstraintEvaluationException | org.drools.modelcompiler.constraints.ConstraintEvaluationException e) {
             throw new RuntimeException("Unexpected Exception", e);
         }

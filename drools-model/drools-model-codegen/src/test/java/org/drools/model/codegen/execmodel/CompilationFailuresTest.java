@@ -29,7 +29,7 @@ import org.kie.api.builder.Results;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class CompilationFailuresTest extends BaseModelTest2 {
+public class CompilationFailuresTest extends BaseModelTest {
 
 
     @ParameterizedTest

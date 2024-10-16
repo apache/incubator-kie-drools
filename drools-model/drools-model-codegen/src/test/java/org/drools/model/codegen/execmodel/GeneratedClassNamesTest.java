@@ -51,7 +51,7 @@ import org.kie.internal.io.ResourceFactory;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
-public class GeneratedClassNamesTest extends BaseModelTest2 {
+public class GeneratedClassNamesTest extends BaseModelTest {
 
     private boolean enableStoreFirstOrig;
 

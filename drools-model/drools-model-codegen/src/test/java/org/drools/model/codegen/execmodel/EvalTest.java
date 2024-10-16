@@ -30,7 +30,7 @@ import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class EvalTest extends BaseModelTest2 {
+public class EvalTest extends BaseModelTest {
 
 
     @ParameterizedTest

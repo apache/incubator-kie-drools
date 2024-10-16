@@ -31,7 +31,7 @@ import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ListenersTest extends BaseModelTest2 {
+public class ListenersTest extends BaseModelTest {
 
     @ParameterizedTest
 	@MethodSource("parameters")

@@ -20,7 +20,7 @@ package org.drools.model.codegen.execmodel.alphaNetworkCompiler;
 
 import java.math.BigDecimal;
 
-import org.drools.model.codegen.execmodel.BaseModelTest2;
+import org.drools.model.codegen.execmodel.BaseModelTest;
 import org.drools.model.codegen.execmodel.domain.ChildFactWithEnum1;
 import org.drools.model.codegen.execmodel.domain.EnumFact1;
 import org.drools.model.codegen.execmodel.domain.Person;
@@ -31,7 +31,7 @@ import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ObjectTypeNodeCompilerTest extends BaseModelTest2 {
+public class ObjectTypeNodeCompilerTest extends BaseModelTest {
 
     @ParameterizedTest
 	@MethodSource("parameters")

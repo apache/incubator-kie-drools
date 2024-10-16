@@ -43,7 +43,7 @@ import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class DeclaredTypesTest extends BaseModelTest2 {
+public class DeclaredTypesTest extends BaseModelTest {
 
     @ParameterizedTest
 	@MethodSource("parameters")

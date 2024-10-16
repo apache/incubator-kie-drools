@@ -20,18 +20,18 @@ package org.drools.model.codegen.execmodel.variables;
 
 import java.util.Collection;
 
-import org.drools.model.codegen.execmodel.BaseModelTest2;
+import org.drools.model.codegen.execmodel.BaseModelTest;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import org.kie.api.runtime.KieSession;
 
-public class VariablesTest extends BaseModelTest2 {
+public class VariablesTest extends BaseModelTest {
     
     @ParameterizedTest
     @MethodSource("parameters")
-    public void testThreeVariables(BaseModelTest2.RUN_TYPE testRunType) {
+    public void testThreeVariables(BaseModelTest.RUN_TYPE testRunType) {
 
         String str = "import " + SimpleObject.class.getCanonicalName() + ";\n" +
                 "import " + Result.class.getCanonicalName() + ";\n" +
@@ -60,7 +60,7 @@ public class VariablesTest extends BaseModelTest2 {
 
     @ParameterizedTest
     @MethodSource("parameters")
-    public void testFourVariables(BaseModelTest2.RUN_TYPE testRunType) {
+    public void testFourVariables(BaseModelTest.RUN_TYPE testRunType) {
 
         String str = "import " + SimpleObject.class.getCanonicalName() + ";\n" +
                 "import " + Result.class.getCanonicalName() + ";\n" +
@@ -92,7 +92,7 @@ public class VariablesTest extends BaseModelTest2 {
 
     @ParameterizedTest
     @MethodSource("parameters")
-    public void testFiveVariables(BaseModelTest2.RUN_TYPE testRunType) {
+    public void testFiveVariables(BaseModelTest.RUN_TYPE testRunType) {
 
         String str = "import " + SimpleObject.class.getCanonicalName() + ";\n" +
                 "import " + Result.class.getCanonicalName() + ";\n" +
@@ -127,7 +127,7 @@ public class VariablesTest extends BaseModelTest2 {
 
     @ParameterizedTest
     @MethodSource("parameters")
-    public void testSixVariables(BaseModelTest2.RUN_TYPE testRunType) {
+    public void testSixVariables(BaseModelTest.RUN_TYPE testRunType) {
 
         String str = "import " + SimpleObject.class.getCanonicalName() + ";\n" +
                 "import " + Result.class.getCanonicalName() + ";\n" +

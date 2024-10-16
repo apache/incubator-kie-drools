@@ -21,7 +21,7 @@ package org.drools.model.codegen.execmodel.inlinecast;
 import java.util.Collection;
 import java.util.List;
 
-import org.drools.model.codegen.execmodel.BaseModelTest2;
+import org.drools.model.codegen.execmodel.BaseModelTest;
 import org.drools.model.codegen.execmodel.domain.InternationalAddress;
 import org.drools.model.codegen.execmodel.domain.Person;
 import org.drools.model.codegen.execmodel.domain.Result;
@@ -32,7 +32,7 @@ import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class InlineCastTest extends BaseModelTest2 {
+public class InlineCastTest extends BaseModelTest {
 
     @ParameterizedTest
 	@MethodSource("parameters")

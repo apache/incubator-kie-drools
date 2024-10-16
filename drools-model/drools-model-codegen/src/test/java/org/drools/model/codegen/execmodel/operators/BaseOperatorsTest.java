@@ -26,7 +26,7 @@ import java.util.UUID;
 
 import org.drools.compiler.kie.builder.impl.DrlProject;
 import org.drools.model.codegen.ExecutableModelProject;
-import org.drools.model.codegen.execmodel.BaseModelTest2.RUN_TYPE;
+import org.drools.model.codegen.execmodel.BaseModelTest.RUN_TYPE;
 import org.drools.model.codegen.execmodel.KJARUtils;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -37,7 +37,7 @@ import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.fail;
 
 public abstract class BaseOperatorsTest {
 

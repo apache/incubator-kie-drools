@@ -29,7 +29,7 @@ import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class HalfBinaryTest extends BaseModelTest2 {
+public class HalfBinaryTest extends BaseModelTest {
 
     @ParameterizedTest
 	@MethodSource("parameters")

@@ -35,7 +35,7 @@ import org.kie.internal.builder.conf.AlphaNetworkCompilerOption;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class IncrementalCompilationTest extends BaseModelTest2 {
+public class IncrementalCompilationTest extends BaseModelTest {
 
 
     public class Message implements Serializable {

@@ -21,9 +21,9 @@ package org.drools.model.codegen.execmodel;
 import java.util.stream.Stream;
 
 
-import static org.drools.model.codegen.execmodel.BaseModelTest2.RUN_TYPE.PATTERN_DSL;
+import static org.drools.model.codegen.execmodel.BaseModelTest.RUN_TYPE.PATTERN_DSL;
 
-public abstract class OnlyExecModelTest extends BaseModelTest2 {
+public abstract class OnlyExecModelTest extends BaseModelTest {
 
     public static Stream<RUN_TYPE> parameters() {
         return Stream.of(PATTERN_DSL);

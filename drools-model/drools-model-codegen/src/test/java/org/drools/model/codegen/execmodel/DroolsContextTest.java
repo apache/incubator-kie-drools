@@ -27,7 +27,7 @@ import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class DroolsContextTest extends BaseModelTest2 {
+public class DroolsContextTest extends BaseModelTest {
 
     @ParameterizedTest
 	@MethodSource("parameters")

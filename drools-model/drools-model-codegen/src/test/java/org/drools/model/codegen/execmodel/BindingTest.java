@@ -28,7 +28,7 @@ import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class BindingTest extends BaseModelTest2 {
+public class BindingTest extends BaseModelTest {
 
     @ParameterizedTest
     @MethodSource("parameters")

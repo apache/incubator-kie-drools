@@ -22,14 +22,14 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.model.codegen.execmodel.BaseModelTest2;
+import org.drools.model.codegen.execmodel.BaseModelTest;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class BigDecimalTest extends BaseModelTest2 {
+public class BigDecimalTest extends BaseModelTest {
 
     @ParameterizedTest
 	@MethodSource("parameters")

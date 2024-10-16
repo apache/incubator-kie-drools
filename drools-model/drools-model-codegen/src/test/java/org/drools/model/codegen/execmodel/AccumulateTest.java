@@ -72,7 +72,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.fail;
 
-public class AccumulateTest extends BaseModelTest2 {
+public class AccumulateTest extends BaseModelTest {
 
     @ParameterizedTest
     @MethodSource("parameters")

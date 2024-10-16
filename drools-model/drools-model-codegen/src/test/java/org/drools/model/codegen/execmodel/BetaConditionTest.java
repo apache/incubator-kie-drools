@@ -29,7 +29,7 @@ import org.kie.api.runtime.KieSession;
 import static org.assertj.core.api.Assertions.assertThat;
 
 // DROOLS-5852
-public class BetaConditionTest extends BaseModelTest2 {
+public class BetaConditionTest extends BaseModelTest {
 
 
     @ParameterizedTest

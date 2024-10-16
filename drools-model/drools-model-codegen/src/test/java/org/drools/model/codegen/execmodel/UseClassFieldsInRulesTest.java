@@ -25,7 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-public class UseClassFieldsInRulesTest extends BaseModelTest2 {
+public class UseClassFieldsInRulesTest extends BaseModelTest {
 
     public static class ClassWithFields {
         public final int field = 3;

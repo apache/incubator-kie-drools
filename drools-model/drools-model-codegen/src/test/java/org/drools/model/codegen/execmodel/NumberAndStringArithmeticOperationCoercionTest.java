@@ -27,7 +27,7 @@ import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class NumberAndStringArithmeticOperationCoercionTest extends BaseModelTest2 {
+public class NumberAndStringArithmeticOperationCoercionTest extends BaseModelTest {
 
 
     // NOTE: For BigDecimal specific issues, use BigDecimalTest

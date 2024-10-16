@@ -18,7 +18,7 @@
  */
 package org.drools.model.codegen.execmodel.fireandalarm;
 
-import org.drools.model.codegen.execmodel.BaseModelTest2;
+import org.drools.model.codegen.execmodel.BaseModelTest;
 import org.drools.model.codegen.execmodel.fireandalarm.model.Alarm;
 import org.drools.model.codegen.execmodel.fireandalarm.model.Fire;
 import org.drools.model.codegen.execmodel.fireandalarm.model.Room;
@@ -30,7 +30,7 @@ import org.kie.api.runtime.rule.FactHandle;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class CompilerTest extends BaseModelTest2 {
+public class CompilerTest extends BaseModelTest {
 
     @ParameterizedTest
 	@MethodSource("parameters")

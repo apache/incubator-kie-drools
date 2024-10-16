@@ -30,7 +30,7 @@ import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class GetterOverloadingTest extends BaseModelTest2 {
+public class GetterOverloadingTest extends BaseModelTest {
 
     // NOTE: Drools/Mvel accepts 5 kinds of getters
     // e.g. for "resource" property,

@@ -26,7 +26,7 @@ import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class PackagesIsolationTest extends BaseModelTest2 {
+public class PackagesIsolationTest extends BaseModelTest {
 
     public static class HashSet { }
 

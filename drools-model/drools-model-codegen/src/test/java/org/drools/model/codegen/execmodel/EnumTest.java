@@ -25,7 +25,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class EnumTest extends BaseModelTest2 {
+public class EnumTest extends BaseModelTest {
 
     @ParameterizedTest
 	@MethodSource("parameters")

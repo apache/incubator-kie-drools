@@ -30,7 +30,7 @@ import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ConditionalExprTest extends BaseModelTest2 {
+public class ConditionalExprTest extends BaseModelTest {
 
     private static final String RULE_STRING = "package constraintexpression\n" +
             "\n" +

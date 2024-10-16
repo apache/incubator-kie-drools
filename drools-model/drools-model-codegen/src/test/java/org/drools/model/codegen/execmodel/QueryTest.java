@@ -45,7 +45,7 @@ import org.kie.api.runtime.rule.Variable;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class QueryTest extends BaseModelTest2 {
+public class QueryTest extends BaseModelTest {
 
     @ParameterizedTest
 	@MethodSource("parameters")

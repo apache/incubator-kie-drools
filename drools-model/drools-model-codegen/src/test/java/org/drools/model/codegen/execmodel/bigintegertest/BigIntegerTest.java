@@ -20,14 +20,14 @@ package org.drools.model.codegen.execmodel.bigintegertest;
 
 import java.math.BigInteger;
 
-import org.drools.model.codegen.execmodel.BaseModelTest2;
+import org.drools.model.codegen.execmodel.BaseModelTest;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class BigIntegerTest extends BaseModelTest2 {
+public class BigIntegerTest extends BaseModelTest {
 
     public static class BiHolder {
 

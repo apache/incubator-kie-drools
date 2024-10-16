@@ -40,7 +40,7 @@ import static org.drools.model.codegen.execmodel.BaseModelTest.RUN_TYPE.PATTERN_
 import static org.drools.model.codegen.execmodel.BaseModelTest.RUN_TYPE.PATTERN_WITH_ALPHA_NETWORK;
 
 // DROOLS-4188
-public class DeclaredTypeDifferentKJarIncludesTest extends BaseModelTest2 {
+public class DeclaredTypeDifferentKJarIncludesTest extends BaseModelTest {
 
     private final String CHILD_KBASE_NAME = "ChildKBase";
     private final String CHILD_KBASE_PACKAGE = "org.childkbase";

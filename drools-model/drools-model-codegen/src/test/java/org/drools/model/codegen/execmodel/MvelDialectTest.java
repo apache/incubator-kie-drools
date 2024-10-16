@@ -50,7 +50,7 @@ import org.slf4j.Logger;
 import static java.math.BigDecimal.valueOf;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class MvelDialectTest extends BaseModelTest2 {
+public class MvelDialectTest extends BaseModelTest {
 
     @ParameterizedTest
 	@MethodSource("parameters")

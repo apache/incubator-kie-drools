@@ -50,7 +50,7 @@ import static org.assertj.core.api.Assertions.fail;
  *
  * Note that other test classes don't throw NonExternalisedLambdaFoundException and proceed with non-externalized lambdas
  */
-public class ExternalisedLambdaTest extends BaseModelTest2 {
+public class ExternalisedLambdaTest extends BaseModelTest {
 
     private boolean checkNonExternalisedLambdaOrig;
 

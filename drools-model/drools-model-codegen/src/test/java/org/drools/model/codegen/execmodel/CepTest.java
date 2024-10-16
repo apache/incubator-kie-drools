@@ -52,7 +52,7 @@ import org.kie.api.time.SessionPseudoClock;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.modelcompiler.util.EvaluationUtil.convertDate;
 
-public class CepTest extends BaseModelTest2 {
+public class CepTest extends BaseModelTest {
 
 
     public static KieModuleModel getCepKieModuleModel() {

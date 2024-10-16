@@ -31,7 +31,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class OrTest extends BaseModelTest2 {
+public class OrTest extends BaseModelTest {
 
     @ParameterizedTest
 	@MethodSource("parameters")

@@ -37,7 +37,7 @@ import org.kie.api.runtime.rule.FactHandle;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class RuleAttributesTest extends BaseModelTest2 {
+public class RuleAttributesTest extends BaseModelTest {
 
     @ParameterizedTest
 	@MethodSource("parameters")

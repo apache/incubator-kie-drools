@@ -33,7 +33,7 @@ import org.kie.api.runtime.KieSession;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class MvelOperatorsTest extends BaseModelTest2 {
+public class MvelOperatorsTest extends BaseModelTest {
 
     @ParameterizedTest
 	@MethodSource("parameters")

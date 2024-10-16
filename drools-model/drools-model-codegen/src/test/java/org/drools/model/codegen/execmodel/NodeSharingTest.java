@@ -49,7 +49,7 @@ import org.kie.api.time.SessionPseudoClock;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class NodeSharingTest extends BaseModelTest2 {
+public class NodeSharingTest extends BaseModelTest {
 
     @ParameterizedTest
 	@MethodSource("parameters")

@@ -28,7 +28,7 @@ import org.kie.memorycompiler.JavaConfiguration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class NativeCompilerTest extends BaseModelTest2 {
+public class NativeCompilerTest extends BaseModelTest {
 
 	@ParameterizedTest
 	@MethodSource("parameters")

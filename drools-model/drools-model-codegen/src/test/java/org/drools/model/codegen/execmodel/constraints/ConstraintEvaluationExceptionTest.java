@@ -23,7 +23,7 @@ import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.io.ByteArrayResource;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
-import org.drools.model.codegen.execmodel.BaseModelTest2;
+import org.drools.model.codegen.execmodel.BaseModelTest;
 import org.drools.model.functions.PredicateInformation;
 import org.drools.modelcompiler.constraints.ConstraintEvaluationException;
 import org.drools.mvel.MVELConstraint;
@@ -35,7 +35,7 @@ import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ConstraintEvaluationExceptionTest extends BaseModelTest2 {
+public class ConstraintEvaluationExceptionTest extends BaseModelTest {
 
     private PredicateInformation predicateInformation; // exec-model
 

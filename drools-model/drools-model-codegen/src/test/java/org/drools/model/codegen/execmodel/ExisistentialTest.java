@@ -37,7 +37,7 @@ import org.kie.internal.event.rule.RuleEventManager;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.model.codegen.execmodel.CepTest.getCepKieModuleModel;
 
-public class ExisistentialTest extends BaseModelTest2 {
+public class ExisistentialTest extends BaseModelTest {
 
     @ParameterizedTest
 	@MethodSource("parameters")

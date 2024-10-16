@@ -30,7 +30,7 @@ import org.kie.api.runtime.KieSession;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-public class TypeObjectCoercionTest extends BaseModelTest2 {
+public class TypeObjectCoercionTest extends BaseModelTest {
 
     private KieSession getKieSessionForJoinObjectToString(RUN_TYPE runType) {
 

@@ -21,7 +21,7 @@ package org.drools.model.codegen.execmodel.operators;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-import org.drools.model.codegen.execmodel.BaseModelTest2;
+import org.drools.model.codegen.execmodel.BaseModelTest;
 import org.drools.model.codegen.execmodel.domain.SimpleDateHolder;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -29,7 +29,7 @@ import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class DateOperatorTest extends BaseModelTest2 {
+public class DateOperatorTest extends BaseModelTest {
 
     @ParameterizedTest
 	@MethodSource("parameters")

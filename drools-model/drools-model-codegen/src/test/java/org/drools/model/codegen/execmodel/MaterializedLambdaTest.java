@@ -28,7 +28,7 @@ import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class MaterializedLambdaTest extends BaseModelTest2 {
+public class MaterializedLambdaTest extends BaseModelTest {
 
     @ParameterizedTest
 	@MethodSource("parameters")

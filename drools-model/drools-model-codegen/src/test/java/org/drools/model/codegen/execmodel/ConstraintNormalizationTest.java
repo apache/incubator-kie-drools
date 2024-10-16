@@ -39,7 +39,7 @@ import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ConstraintNormalizationTest extends BaseModelTest2 {
+public class ConstraintNormalizationTest extends BaseModelTest {
 
     @ParameterizedTest
 	@MethodSource("parameters")

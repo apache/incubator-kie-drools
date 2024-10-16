@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
+import org.drools.model.codegen.execmodel.BaseModelTest.RUN_TYPE;
 import org.drools.util.StringUtils;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -29,15 +30,23 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.drools.model.codegen.execmodel.BaseModelTest.RUN_TYPE.PATTERN_DSL;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
-public class PropertyReactivityMatrixTest extends BaseModelTest2 {
+public class PropertyReactivityMatrixTest extends BaseModelTest {
 
     enum Dialect {
         JAVA,
         MVEL
     }
 
+
+    final static Object[] PLAIN = {
+            RUN_TYPE.STANDARD_FROM_DRL,
+            PATTERN_DSL,
+    };
+
+    
     public static Stream<Arguments> parametersData() {
         List<Arguments> parameterData = new ArrayList<Arguments>();
         for (Object runType : PLAIN) {

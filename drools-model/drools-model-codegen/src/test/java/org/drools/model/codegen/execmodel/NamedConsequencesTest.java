@@ -36,7 +36,7 @@ import org.kie.api.runtime.rule.FactHandle;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class NamedConsequencesTest extends BaseModelTest2 {
+public class NamedConsequencesTest extends BaseModelTest {
 
     @ParameterizedTest
 	@MethodSource("parameters")

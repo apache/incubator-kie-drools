@@ -31,8 +31,6 @@ import org.drools.model.codegen.execmodel.domain.Person;
 import org.drools.modelcompiler.KieBaseBuilder;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.provider.ValueSource;
-import org.junit.runners.Parameterized.Parameters;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
@@ -46,10 +44,9 @@ import org.kie.internal.builder.conf.PropertySpecificOption;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class KieBaseBuilderTest extends BaseModelTest2 {
+public class KieBaseBuilderTest extends BaseModelTest {
 
     // Only exec-model test
-    @Parameters(name = "{0}")
     public static Stream<RUN_TYPE> parameters() {
         return Stream.of(RUN_TYPE.PATTERN_DSL);
     }

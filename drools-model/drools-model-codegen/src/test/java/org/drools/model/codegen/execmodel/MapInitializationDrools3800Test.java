@@ -27,7 +27,7 @@ import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class MapInitializationDrools3800Test extends BaseModelTest2 {
+public class MapInitializationDrools3800Test extends BaseModelTest {
 
     public static boolean calc(Map<String, Object> params) {
         return Objects.equals(params.get("src"), params.get("target"));

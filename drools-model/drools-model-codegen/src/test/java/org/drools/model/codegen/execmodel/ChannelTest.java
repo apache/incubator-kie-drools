@@ -30,7 +30,7 @@ import org.kie.api.runtime.KieSession;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
-public class ChannelTest extends BaseModelTest2 {
+public class ChannelTest extends BaseModelTest {
 
     public void testChannel(RUN_TYPE runType, boolean isMvel) {
         String str =

@@ -46,7 +46,7 @@ import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ComplexRulesTest extends BaseModelTest2 {
+public class ComplexRulesTest extends BaseModelTest {
 
     @ParameterizedTest
     @MethodSource("parameters")

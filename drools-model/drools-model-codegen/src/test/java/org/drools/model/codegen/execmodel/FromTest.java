@@ -54,7 +54,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class FromTest extends BaseModelTest2 {
+public class FromTest extends BaseModelTest {
 
     @ParameterizedTest
 	@MethodSource("parameters")

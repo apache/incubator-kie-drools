@@ -35,7 +35,7 @@ import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class GlobalTest extends BaseModelTest2 {
+public class GlobalTest extends BaseModelTest {
 
     @ParameterizedTest
 	@MethodSource("parameters")
