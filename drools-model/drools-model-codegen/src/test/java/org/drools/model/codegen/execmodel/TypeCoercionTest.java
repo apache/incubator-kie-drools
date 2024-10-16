@@ -28,19 +28,17 @@ import org.drools.model.codegen.execmodel.domain.ChildFactWithObject;
 import org.drools.model.codegen.execmodel.domain.DateTimeHolder;
 import org.drools.model.codegen.execmodel.domain.Person;
 import org.drools.model.codegen.execmodel.domain.Result;
-import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class TypeCoercionTest extends BaseModelTest {
+public class TypeCoercionTest extends BaseModelTest2 {
 
-    public TypeCoercionTest( RUN_TYPE testRunType ) {
-        super( testRunType );
-    }
-
-    @Test
-    public void testEqualCoercion() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testEqualCoercion(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + "\n" +
                 "global java.util.List list\n" +
@@ -50,7 +48,7 @@ public class TypeCoercionTest extends BaseModelTest {
                 "    list.add($name);" +
                 "end ";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         List<String> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
@@ -63,8 +61,9 @@ public class TypeCoercionTest extends BaseModelTest {
         assertThat(list.get(0)).isEqualTo("40");
     }
 
-    @Test
-    public void testComparisonCoercion() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testComparisonCoercion(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + "\n" +
                 "global java.util.List list\n" +
@@ -74,7 +73,7 @@ public class TypeCoercionTest extends BaseModelTest {
                 "    list.add($name);" +
                 "end ";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         List<String> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
@@ -87,8 +86,9 @@ public class TypeCoercionTest extends BaseModelTest {
         assertThat(list.get(0)).isEqualTo("40");
     }
 
-    @Test
-    public void testComparisonCoercion2() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testComparisonCoercion2(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + "\n" +
                 "global java.util.List list\n" +
@@ -98,7 +98,7 @@ public class TypeCoercionTest extends BaseModelTest {
                 "    list.add($name);" +
                 "end ";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         List<String> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
@@ -111,8 +111,9 @@ public class TypeCoercionTest extends BaseModelTest {
         assertThat(list.get(0)).isEqualTo("Mario");
     }
 
-    @Test
-    public void testPrimitiveCoercion() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testPrimitiveCoercion(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + "\n" +
                 "global java.util.List list\n" +
@@ -122,7 +123,7 @@ public class TypeCoercionTest extends BaseModelTest {
                 "    list.add(\"\" + $n);" +
                 "end ";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         List<String> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
@@ -147,8 +148,9 @@ public class TypeCoercionTest extends BaseModelTest {
         }
     }
 
-    @Test
-    public void testDoubleToInt() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testDoubleToInt(RUN_TYPE runType) {
         final String drl1 =
                 "import " + DoubleHolder.class.getCanonicalName() + ";\n" +
                 "rule R when\n" +
@@ -156,14 +158,15 @@ public class TypeCoercionTest extends BaseModelTest {
                 "then\n" +
                 "end\n";
 
-        KieSession ksession = getKieSession( drl1 );
+        KieSession ksession = getKieSession(runType, drl1);
 
         ksession.insert(new DoubleHolder());
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testLongToInt() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testLongToInt(RUN_TYPE runType) {
         final String drl1 =
                 "import " + LongHolder.class.getCanonicalName() + ";\n" +
                 "rule R when\n" +
@@ -171,14 +174,15 @@ public class TypeCoercionTest extends BaseModelTest {
                 "then\n" +
                 "end\n";
 
-        KieSession ksession = getKieSession( drl1 );
+        KieSession ksession = getKieSession(runType, drl1);
 
         ksession.insert(new LongHolder());
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testJoinLongToDouble() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testJoinLongToDouble(RUN_TYPE runType) {
         final String drl1 =
                 "import " + DoubleHolder.class.getCanonicalName() + ";\n" +
                 "import " + LongHolder.class.getCanonicalName() + ";\n" +
@@ -188,15 +192,16 @@ public class TypeCoercionTest extends BaseModelTest {
                 "then\n" +
                 "end\n";
 
-        KieSession ksession = getKieSession( drl1 );
+        KieSession ksession = getKieSession(runType, drl1);
 
         ksession.insert(new LongHolder());
         ksession.insert(new DoubleHolder());
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testJoinDoubleToLong() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testJoinDoubleToLong(RUN_TYPE runType) {
         final String drl1 =
                 "import " + DoubleHolder.class.getCanonicalName() + ";\n" +
                 "import " + LongHolder.class.getCanonicalName() + ";\n" +
@@ -206,15 +211,16 @@ public class TypeCoercionTest extends BaseModelTest {
                 "then\n" +
                 "end\n";
 
-        KieSession ksession = getKieSession( drl1 );
+        KieSession ksession = getKieSession(runType, drl1);
 
         ksession.insert(new LongHolder());
         ksession.insert(new DoubleHolder());
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testStringToDateComparison() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testStringToDateComparison(RUN_TYPE runType) {
         String str =
                 "import " + Date.class.getCanonicalName() + ";\n" +
                 "declare Flight departuretime : java.util.Date end\n" +
@@ -224,13 +230,14 @@ public class TypeCoercionTest extends BaseModelTest {
                 "then\n" +
                 "end\n";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
         ksession.insert( new ChildFactWithObject(5, 1, new Object[0]) );
         assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
-    @Test
-    public void testBetaJoinShortInt() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testBetaJoinShortInt(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                 "rule R when\n" +
@@ -239,12 +246,13 @@ public class TypeCoercionTest extends BaseModelTest {
                 "then\n" +
                 "end\n";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
         assertThat(ksession.fireAllRules()).isEqualTo(0);
     }
 
-    @Test
-    public void testBetaJoinShortIntBoxed() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testBetaJoinShortIntBoxed(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                         "rule R when\n" +
@@ -253,12 +261,13 @@ public class TypeCoercionTest extends BaseModelTest {
                         "then\n" +
                         "end\n";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
         assertThat(ksession.fireAllRules()).isEqualTo(0);
     }
 
-    @Test
-    public void testPrimitivePromotionInLHS() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testPrimitivePromotionInLHS(RUN_TYPE runType) {
         // DROOLS-4717
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -269,7 +278,7 @@ public class TypeCoercionTest extends BaseModelTest {
                 "  insert(new Result($p));\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         final Person luca = new Person("Luca", 35);
         ksession.insert(luca);
@@ -281,8 +290,9 @@ public class TypeCoercionTest extends BaseModelTest {
         assertThat(results.stream().map(Result::getValue)).containsExactlyInAnyOrder(luca);
     }
 
-    @Test
-    public void testIntToObjectCoercion() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testIntToObjectCoercion(RUN_TYPE runType) {
         // DROOLS-5320
         String str =
                 "rule R when\n" +
@@ -291,14 +301,15 @@ public class TypeCoercionTest extends BaseModelTest {
                 "then\n" +
                 "end ";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert( 3 );
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testDoubleNaN() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testDoubleNaN(RUN_TYPE runType) {
         // DROOLS-5692
         String str =
                 "import " + DoubleNaNPojo.class.getCanonicalName() + ";\n" +
@@ -312,7 +323,7 @@ public class TypeCoercionTest extends BaseModelTest {
                 "	update($nanTest);\n" +
                 "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         DoubleNaNPojo nan = new DoubleNaNPojo();
         nan.setTestBoolean(false);
@@ -386,8 +397,9 @@ public class TypeCoercionTest extends BaseModelTest {
         }
     }
 
-    @Test
-    public void testStringToIntCoercion() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testStringToIntCoercion(RUN_TYPE runType) {
         // DROOLS-5939
         String str =
                 "import " + ClassWithIntProperty.class.getCanonicalName() + ";\n" +
@@ -399,7 +411,7 @@ public class TypeCoercionTest extends BaseModelTest {
                 "then\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert( new ClassWithIntProperty( 10 ) );
         ksession.insert( new ClassWithStringProperty( "10" ) );
@@ -407,8 +419,9 @@ public class TypeCoercionTest extends BaseModelTest {
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testIntToStringCoercion() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testIntToStringCoercion(RUN_TYPE runType) {
         // DROOLS-5939
         String str =
                 "import " + ClassWithIntProperty.class.getCanonicalName() + ";\n" +
@@ -420,7 +433,7 @@ public class TypeCoercionTest extends BaseModelTest {
                 "then\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert( new ClassWithIntProperty( 10 ) );
         ksession.insert( new ClassWithStringProperty( "10" ) );
@@ -428,8 +441,9 @@ public class TypeCoercionTest extends BaseModelTest {
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testShortToIntCoercion() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testShortToIntCoercion(RUN_TYPE runType) {
         // DROOLS-5939
         String str =
                 "import " + ClassWithShortProperty.class.getCanonicalName() + ";\n" +
@@ -441,7 +455,7 @@ public class TypeCoercionTest extends BaseModelTest {
                 "then\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert( new ClassWithShortProperty( (short)10 ) );
         ksession.insert( new ClassWithIntProperty( 10 ) );
@@ -449,8 +463,9 @@ public class TypeCoercionTest extends BaseModelTest {
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testIntToShortCoercion() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testIntToShortCoercion(RUN_TYPE runType) {
         // DROOLS-5939
         String str =
                 "import " + ClassWithShortProperty.class.getCanonicalName() + ";\n" +
@@ -462,7 +477,7 @@ public class TypeCoercionTest extends BaseModelTest {
                 "then\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert( new ClassWithShortProperty( (short)10 ) );
         ksession.insert( new ClassWithIntProperty( 10 ) );
@@ -470,8 +485,9 @@ public class TypeCoercionTest extends BaseModelTest {
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testCoercionOnBoundVariable() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testCoercionOnBoundVariable(RUN_TYPE runType) {
         // DROOLS-5945
         String str =
                 "import " + ClassWithIntProperty.class.getCanonicalName() + ";\n" +
@@ -481,15 +497,16 @@ public class TypeCoercionTest extends BaseModelTest {
                 "then\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert( new ClassWithIntProperty( 3 ) );
 
         assertThat(ksession.fireAllRules()).isEqualTo(0);
     }
 
-    @Test
-    public void testCompareDateLiteral() throws Exception {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testCompareDateLiteral(RUN_TYPE runType) throws Exception {
         String str =
                 "import " + DateTimeHolder.class.getCanonicalName() + ";" +
                      "rule R when\n" +
@@ -497,15 +514,16 @@ public class TypeCoercionTest extends BaseModelTest {
                      "then\n" +
                      "end\n";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert(new DateTimeHolder(ZonedDateTime.now()));
 
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testCompareLocalDateLiteral() throws Exception {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testCompareLocalDateLiteral(RUN_TYPE runType) throws Exception {
         String str =
                 "import " + DateTimeHolder.class.getCanonicalName() + ";" +
                      "rule R when\n" +
@@ -513,15 +531,16 @@ public class TypeCoercionTest extends BaseModelTest {
                      "then\n" +
                      "end\n";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert(new DateTimeHolder(ZonedDateTime.now()));
 
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testCompareLocalDateTimeLiteral() throws Exception {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testCompareLocalDateTimeLiteral(RUN_TYPE runType) throws Exception {
         String str =
                 "import " + DateTimeHolder.class.getCanonicalName() + ";" +
                  "rule R when\n" +
@@ -529,15 +548,16 @@ public class TypeCoercionTest extends BaseModelTest {
                  "then\n" +
                  "end\n";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert(new DateTimeHolder(ZonedDateTime.now()));
 
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testCompareLocalDateTimeLiteral2() throws Exception {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testCompareLocalDateTimeLiteral2(RUN_TYPE runType) throws Exception {
         String str =
                 "import " + DateTimeHolder.class.getCanonicalName() + ";" +
                  "rule R when\n" +
@@ -545,21 +565,22 @@ public class TypeCoercionTest extends BaseModelTest {
                  "then\n" +
                  "end\n";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert(new DateTimeHolder(ZonedDateTime.now()));
 
         assertThat(ksession.fireAllRules()).isEqualTo(0);
     }
 
-    @Test
-    public void testPrimitiveDoubleToIntCoercion() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testPrimitiveDoubleToIntCoercion(RUN_TYPE runType) {
         // DROOLS-6491
-        checkDoubleToIntCoercion(true);
-        checkDoubleToIntCoercion(false);
+        checkDoubleToIntCoercion(runType, true);
+        checkDoubleToIntCoercion(runType, false);
     }
 
-    private void checkDoubleToIntCoercion(boolean boxed) {
+    private void checkDoubleToIntCoercion(RUN_TYPE runType, boolean boxed) {
         String str =
                 "import " + Person.class.getCanonicalName() + "\n" +
                 "global java.util.List list\n" +
@@ -569,7 +590,7 @@ public class TypeCoercionTest extends BaseModelTest {
                 "    list.add($name);" +
                 "end ";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         List<String> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
@@ -582,8 +603,9 @@ public class TypeCoercionTest extends BaseModelTest {
         assertThat(list.get(0)).isEqualTo("Mario");
     }
 
-    @Test
-    public void testFloatOperation() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testFloatOperation(RUN_TYPE runType) {
         // DROOLS-7334
         String str =
                 "import " + Person.class.getCanonicalName() + "\n" +
@@ -594,7 +616,7 @@ public class TypeCoercionTest extends BaseModelTest {
                 "    list.add($name);" +
                 "end ";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         List<String> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
@@ -613,8 +635,9 @@ public class TypeCoercionTest extends BaseModelTest {
         assertThat(list.get(0)).isEqualTo("Mario");
     }
 
-    @Test
-    public void testCoerceObjectToString() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testCoerceObjectToString(RUN_TYPE runType) {
         String str = "package constraintexpression\n" +
                 "\n" +
                 "import " + Person.class.getCanonicalName() + "\n" +
@@ -627,7 +650,7 @@ public class TypeCoercionTest extends BaseModelTest {
                 "    System.out.println($p); \n" +
                 "end \n";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
         try {
             Person person = new Person("someName");
             ksession.insert(person);
