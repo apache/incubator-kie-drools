@@ -45,7 +45,7 @@ import org.kie.dmn.api.core.ast.InputDataNode;
 import org.kie.dmn.api.core.event.BeforeEvaluateDecisionEvent;
 import org.kie.dmn.api.core.event.DMNRuntimeEventListener;
 import org.kie.dmn.core.api.DMNFactory;
-import org.kie.dmn.core.api.EvaluatorResult;
+import org.kie.dmn.api.core.EvaluatorResult;
 import org.kie.dmn.core.ast.BusinessKnowledgeModelNodeImpl;
 import org.kie.dmn.core.ast.DMNBaseNode;
 import org.kie.dmn.core.ast.DMNDecisionServiceEvaluator;
