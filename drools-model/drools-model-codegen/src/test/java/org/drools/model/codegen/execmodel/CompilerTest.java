@@ -3275,8 +3275,9 @@ public class CompilerTest extends BaseModelTest {
         assertThat(list.get(0)).isEqualTo("r1");
     }
 
-    @Test
-    public void orWithMethodCall() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void orWithMethodCall(RUN_TYPE runType) {
         final String str =
                 "package org.example\n" +
                         "import " + MyFact.class.getCanonicalName() + ";" +
@@ -3285,15 +3286,16 @@ public class CompilerTest extends BaseModelTest {
                         "then\n" +
                         "end\n";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert(new MyFact(5));
         int fired = ksession.fireAllRules();
         assertThat(fired).isEqualTo(1);
     }
 
-    @Test
-    public void orWithMethodCallWithArg() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void orWithMethodCallWithArg(RUN_TYPE runType) {
         final String str =
                 "package org.example\n" +
                         "import " + MyFact.class.getCanonicalName() + ";" +
@@ -3302,7 +3304,7 @@ public class CompilerTest extends BaseModelTest {
                         "then\n" +
                         "end\n";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert(new MyFact(5));
         int fired = ksession.fireAllRules();
