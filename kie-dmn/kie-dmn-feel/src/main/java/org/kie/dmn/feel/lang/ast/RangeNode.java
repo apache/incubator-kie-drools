@@ -62,31 +62,22 @@ public class RangeNode
 
 
     public RangeNode(ParserRuleContext ctx, IntervalBoundary lowerBound, BaseNode start, BaseNode end, IntervalBoundary upperBound,
-            boolean isLowerBoundUndefined, boolean isUpperBoundUndefined) {
+            boolean isLowerBoundaryValueUndefined, boolean isUpperBoundaryValueUndefined) {
         super(ctx);
         this.lowerBound = lowerBound;
         this.upperBound = upperBound;
-        this.isLowerBoundaryValueUndefined = isLowerBoundUndefined;
-        this.isUpperBoundaryValueUndefined = isUpperBoundUndefined;
+        this.isLowerBoundaryValueUndefined = isLowerBoundaryValueUndefined;
+        this.isUpperBoundaryValueUndefined = isUpperBoundaryValueUndefined;
         this.start = start;
         this.end = end;
     }
 
-    public RangeNode(ParserRuleContext ctx, IntervalBoundary lowerBound, BaseNode start, BaseNode end, IntervalBoundary upperBound) {
-        super( ctx );
+    public RangeNode(IntervalBoundary lowerBound, IntervalBoundary upperBound, BaseNode start, BaseNode end,
+            BooleanNode isLowerBoundaryValueUndefinedNode, BooleanNode isUpperBoundaryValueUndefinedNode, String text) {
         this.lowerBound = lowerBound;
         this.upperBound = upperBound;
-        this.isLowerBoundaryValueUndefined = false;
-        this.isUpperBoundaryValueUndefined = false;
-        this.start = start;
-        this.end = end;
-    }
-
-    public RangeNode(IntervalBoundary lowerBound, IntervalBoundary upperBound, BaseNode start, BaseNode end, String text) {
-        this.lowerBound = lowerBound;
-        this.upperBound = upperBound;
-        this.isLowerBoundaryValueUndefined = false;
-        this.isUpperBoundaryValueUndefined = false;
+        this.isLowerBoundaryValueUndefined = isLowerBoundaryValueUndefinedNode.getValue() != null ? isLowerBoundaryValueUndefinedNode.getValue() : false;
+        this.isUpperBoundaryValueUndefined = isUpperBoundaryValueUndefinedNode.getValue() != null ? isUpperBoundaryValueUndefinedNode.getValue() : false;
         this.start = start;
         this.end = end;
         this.setText(text);
