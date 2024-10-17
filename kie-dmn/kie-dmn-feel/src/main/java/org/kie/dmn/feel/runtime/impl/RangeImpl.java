@@ -84,11 +84,13 @@ public class RangeImpl
         if (lowEndPoint == null) {
             if (highEndPoint == null) {
                 return null;
-            } else {
+            } else if (isLowerBoundaryValueUndefined) {
                 return negInfRangeIncludes(param);
+            } else {
+                return false;
             }
         } else {
-            if (highEndPoint == null) {
+            if (highEndPoint == null && isUpperBoundaryValueUndefined) {
                 return posInfRangeIncludes(param);
             } else {
                 return finiteRangeIncludes(param);
@@ -152,6 +154,8 @@ public class RangeImpl
 
         if ( lowBoundary != range.lowBoundary ) return false;
         if ( highBoundary != range.highBoundary ) return false;
+        if (isLowerBoundaryValueUndefined != range.isLowerBoundaryValueUndefined()) return false;
+        if (isUpperBoundaryValueUndefined != range.isUpperBoundaryValueUndefined()) return false;
         if ( lowEndPoint != null ? !lowEndPoint.equals( range.lowEndPoint ) : range.lowEndPoint != null ) return false;
         return highEndPoint != null ? highEndPoint.equals( range.highEndPoint ) : range.highEndPoint == null;
 
@@ -163,6 +167,8 @@ public class RangeImpl
         result = 31 * result + (highBoundary != null ? highBoundary.hashCode() : 0);
         result = 31 * result + (lowEndPoint != null ? lowEndPoint.hashCode() : 0);
         result = 31 * result + (highEndPoint != null ? highEndPoint.hashCode() : 0);
+        result = 31 * result + (isLowerBoundaryValueUndefined ? 1 : 0);
+        result = 31 * result + (isUpperBoundaryValueUndefined ? 1 : 0);
         return result;
     }
 
