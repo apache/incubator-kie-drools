@@ -40,7 +40,7 @@ import org.drools.mvelcompiler.MvelCompilerException;
 import org.drools.util.ClassTypeResolver;
 import org.drools.util.MethodUtils;
 import org.drools.util.TypeResolver;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static java.util.Optional.of;
 import static org.assertj.core.api.Assertions.assertThat;

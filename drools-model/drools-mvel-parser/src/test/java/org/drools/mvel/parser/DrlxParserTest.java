@@ -21,10 +21,11 @@ package org.drools.mvel.parser;
 import java.io.IOException;
 import java.nio.file.Paths;
 
+import org.junit.jupiter.api.Test;
+
 import com.github.javaparser.ParseResult;
 import com.github.javaparser.ParserConfiguration;
 import com.github.javaparser.ast.CompilationUnit;
-import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.fail;
 import static org.drools.mvel.parser.Providers.provider;

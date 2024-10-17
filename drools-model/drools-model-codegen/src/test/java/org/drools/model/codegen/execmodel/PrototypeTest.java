@@ -49,7 +49,7 @@ import org.drools.model.impl.ModelImpl;
 import org.drools.model.prototype.PrototypeExpression;
 import org.drools.model.prototype.PrototypeVariable;
 import org.drools.modelcompiler.KieBaseBuilder;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.conf.EventProcessingOption;
