@@ -32,7 +32,7 @@ class DateFunctionTest {
 
     @BeforeEach
     void setUp() {
-        dateFunction = new DateFunction();
+        dateFunction = DateFunction.INSTANCE;
     }
 
     @Test
