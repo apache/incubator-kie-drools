@@ -22,19 +22,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.model.codegen.execmodel.domain.Person;
-import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class BindingTest extends BaseModelTest {
 
-    public BindingTest( RUN_TYPE testRunType ) {
-        super( testRunType );
-    }
-
-    @Test
-    public void testBindUnaryBooleanExpression() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void testBindUnaryBooleanExpression(RUN_TYPE runType) {
         // RHDM-1612
         final String str =
                 "global java.util.List result;\n" +
@@ -80,7 +78,7 @@ public class BindingTest extends BaseModelTest {
                 "    result.add(\"R8\");\n" +
                 "end\n";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         List<String> result = new ArrayList<>();
         ksession.setGlobal( "result", result );
@@ -105,8 +103,9 @@ public class BindingTest extends BaseModelTest {
         assertThat(result.contains("R8")).isFalse();
     }
 
-    @Test
-    public void testBindMethodCall() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void testBindMethodCall(RUN_TYPE runType) {
         // DROOLS-6521
         final String str =
                 "import " + Person.class.getCanonicalName() + ";\n" +
@@ -118,7 +117,7 @@ public class BindingTest extends BaseModelTest {
                 "    result.add($value);\n" +
                 "end\n";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         List<Character> result = new ArrayList<>();
         ksession.setGlobal( "result", result );
@@ -130,8 +129,9 @@ public class BindingTest extends BaseModelTest {
         assertThat((char) result.get(0)).isEqualTo('r');
     }
 
-    @Test
-    public void testEnclosedBinding() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void testEnclosedBinding(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                         "global java.util.List result;\n" +
@@ -141,7 +141,7 @@ public class BindingTest extends BaseModelTest {
                         "  result.add($n);\n" +
                         "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
         List<String> result = new ArrayList<>();
         ksession.setGlobal("result", result);
 
@@ -152,8 +152,9 @@ public class BindingTest extends BaseModelTest {
         assertThat(result).containsExactly("Mario");
     }
 
-    @Test
-    public void testComplexEnclosedBinding() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void testComplexEnclosedBinding(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                 "global java.util.List result;\n" +
@@ -163,7 +164,7 @@ public class BindingTest extends BaseModelTest {
                 "  result.add($n);\n" +
                 "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
         List<Object> result = new ArrayList<>();
         ksession.setGlobal("result", result);
 
@@ -174,8 +175,9 @@ public class BindingTest extends BaseModelTest {
         assertThat(result).containsExactly("Mario");
     }
 
-    @Test
-    public void testComplexEnclosedDoubleBinding() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void testComplexEnclosedDoubleBinding(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                 "global java.util.List result;\n" +
@@ -185,7 +187,7 @@ public class BindingTest extends BaseModelTest {
                 "  result.add($n);\n" +
                 "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
         List<Object> result = new ArrayList<>();
         ksession.setGlobal("result", result);
 
@@ -196,8 +198,9 @@ public class BindingTest extends BaseModelTest {
         assertThat(result).containsExactly("Mario");
     }
 
-    @Test
-    public void testBindingOnRight() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void testBindingOnRight(RUN_TYPE runType) {
         // DROOLS-6611
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -208,7 +211,7 @@ public class BindingTest extends BaseModelTest {
                 "  result.add($a);\n" +
                 "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
         List<Object> result = new ArrayList<>();
         ksession.setGlobal("result", result);
 
@@ -219,8 +222,9 @@ public class BindingTest extends BaseModelTest {
         assertThat(result).containsExactly(40);
     }
 
-    @Test
-    public void testBindingOnBoth() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void testBindingOnBoth(RUN_TYPE runType) {
         // DROOLS-6611
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -232,7 +236,7 @@ public class BindingTest extends BaseModelTest {
                 "  result.add($a);\n" +
                 "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
         List<Object> result = new ArrayList<>();
         ksession.setGlobal("result", result);
 
@@ -243,8 +247,9 @@ public class BindingTest extends BaseModelTest {
         assertThat(result).containsExactlyInAnyOrder("Mario", 40);
     }
 
-    @Test
-    public void test3BindingOn3Conditions() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void test3BindingOn3Conditions(RUN_TYPE runType) {
         // DROOLS-6611
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -257,7 +262,7 @@ public class BindingTest extends BaseModelTest {
                 "  result.add($l);\n" +
                 "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
         List<Object> result = new ArrayList<>();
         ksession.setGlobal("result", result);
 
@@ -269,8 +274,9 @@ public class BindingTest extends BaseModelTest {
         assertThat(result).containsExactlyInAnyOrder("Mario", 40, "Cheddar");
     }
 
-    @Test
-    public void test2BindingOn3Conditions() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void test2BindingOn3Conditions(RUN_TYPE runType) {
         // DROOLS-6611
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -282,7 +288,7 @@ public class BindingTest extends BaseModelTest {
                 "  result.add($l);\n" +
                 "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
         List<Object> result = new ArrayList<>();
         ksession.setGlobal("result", result);
 
@@ -294,8 +300,9 @@ public class BindingTest extends BaseModelTest {
         assertThat(result).containsExactlyInAnyOrder(40, "Cheddar");
     }
 
-    @Test
-    public void testBindingOnRightWithOr() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void testBindingOnRightWithOr(RUN_TYPE runType) {
         // DROOLS-6920
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -306,7 +313,7 @@ public class BindingTest extends BaseModelTest {
                         "  result.add($a);\n" +
                         "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
         List<Object> result = new ArrayList<>();
         ksession.setGlobal("result", result);
 
@@ -317,8 +324,9 @@ public class BindingTest extends BaseModelTest {
         assertThat(result).containsExactly(40);
     }
 
-    @Test
-    public void testBindingOnBothWithOr() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void testBindingOnBothWithOr(RUN_TYPE runType) {
         // DROOLS-6920
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -330,7 +338,7 @@ public class BindingTest extends BaseModelTest {
                 "  result.add($a);\n" +
                 "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
         List<Object> result = new ArrayList<>();
         ksession.setGlobal("result", result);
 
@@ -341,8 +349,9 @@ public class BindingTest extends BaseModelTest {
         assertThat(result).containsExactlyInAnyOrder("Toshiya", 40);
     }
 
-    @Test
-    public void test3BindingOn3ConditionsWithOr() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void test3BindingOn3ConditionsWithOr(RUN_TYPE runType) {
         // DROOLS-6920
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -355,7 +364,7 @@ public class BindingTest extends BaseModelTest {
                 "  result.add($l);\n" +
                 "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
         List<Object> result = new ArrayList<>();
         ksession.setGlobal("result", result);
 
@@ -367,8 +376,9 @@ public class BindingTest extends BaseModelTest {
         assertThat(result).containsExactlyInAnyOrder("Toshiya", 10, "Cheddar");
     }
 
-    @Test
-    public void test2BindingOn3ConditionsWithOr() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void test2BindingOn3ConditionsWithOr(RUN_TYPE runType) {
         // DROOLS-6920
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -380,7 +390,7 @@ public class BindingTest extends BaseModelTest {
                 "  result.add($l);\n" +
                 "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
         List<Object> result = new ArrayList<>();
         ksession.setGlobal("result", result);
 
@@ -392,8 +402,9 @@ public class BindingTest extends BaseModelTest {
         assertThat(result).containsExactlyInAnyOrder(10, "Cheddar");
     }
 
-    @Test
-    public void test3BindingOn3ConditionsWithAndOr() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void test3BindingOn3ConditionsWithAndOr(RUN_TYPE runType) {
         // DROOLS-6920
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -406,7 +417,7 @@ public class BindingTest extends BaseModelTest {
                 "  result.add($l);\n" +
                 "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
         List<Object> result = new ArrayList<>();
         ksession.setGlobal("result", result);
 
@@ -434,8 +445,9 @@ public class BindingTest extends BaseModelTest {
         assertThat(result).isEmpty();
     }
 
-    @Test
-    public void test3BindingOn3ConditionsWithOrAnd() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void test3BindingOn3ConditionsWithOrAnd(RUN_TYPE runType) {
         // DROOLS-6920
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -448,7 +460,7 @@ public class BindingTest extends BaseModelTest {
                 "  result.add($l);\n" +
                 "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
         List<Object> result = new ArrayList<>();
         ksession.setGlobal("result", result);
 
@@ -476,8 +488,9 @@ public class BindingTest extends BaseModelTest {
         assertThat(result).isEmpty();
     }
 
-    @Test
-    public void testConstraintExpression() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void testConstraintExpression(RUN_TYPE runType) {
         String str = "package constraintexpression\n" +
                 "\n" +
                 "import " + Person.class.getCanonicalName() + "\n" +
@@ -492,7 +505,7 @@ public class BindingTest extends BaseModelTest {
                 "    booleanListGlobal.add($booleanVariable); \n " +
                 "end \n";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
         try {
             final List<Boolean> booleanListGlobal = new ArrayList<>();
             ksession.setGlobal("booleanListGlobal", booleanListGlobal);
@@ -511,8 +524,9 @@ public class BindingTest extends BaseModelTest {
      * enclosed in parentheses. This is intentional behaviour, agreed in discussions,
      * which may be revised in the future.
      */
-    @Test
-    public void testIgnoreConstraintInParentheses() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void testIgnoreConstraintInParentheses(RUN_TYPE runType) {
         String str = "package constraintexpression\n" +
                 "\n" +
                 "import " + Person.class.getCanonicalName() + "\n" +
@@ -527,7 +541,7 @@ public class BindingTest extends BaseModelTest {
                 "    booleanListGlobal.add($booleanVariable); \n " +
                 "end \n";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
         try {
             final List<Boolean> booleanListGlobal = new ArrayList<>();
             ksession.setGlobal("booleanListGlobal", booleanListGlobal);

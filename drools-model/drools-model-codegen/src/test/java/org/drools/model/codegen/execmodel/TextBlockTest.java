@@ -22,19 +22,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.model.codegen.execmodel.domain.Person;
-import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class TextBlockTest extends OnlyExecModelTest {
 
-    public TextBlockTest(RUN_TYPE testRunType) {
-        super(testRunType);
-    }
-
-    @Test
-    public void testMultiLineStrings() {
+    @ParameterizedTest(name = "{0}")
+	@MethodSource("parameters")
+    public void testMultiLineStrings(RUN_TYPE runType) {
         final String str =
                 "package org.drools.mvel.compiler\n" +
                         "global java.util.List list;\n" +
@@ -53,7 +51,7 @@ public class TextBlockTest extends OnlyExecModelTest {
                         "end\n";
 
 
-        KieSession ksession = getKieSession(str );
+        KieSession ksession = getKieSession(runType, str);
         final List<String> list = new ArrayList<>();
         ksession.setGlobal("list", list);
 

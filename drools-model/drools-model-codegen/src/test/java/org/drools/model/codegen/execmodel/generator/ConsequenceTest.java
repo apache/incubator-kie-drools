@@ -18,7 +18,7 @@
  */
 package org.drools.model.codegen.execmodel.generator;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.model.codegen.execmodel.generator.Consequence.containsWord;

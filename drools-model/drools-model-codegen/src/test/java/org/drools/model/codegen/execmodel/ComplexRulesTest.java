@@ -20,7 +20,6 @@ package org.drools.model.codegen.execmodel;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,19 +40,17 @@ import org.drools.model.codegen.execmodel.domain.ManyPropFact;
 import org.drools.model.codegen.execmodel.domain.Person;
 import org.drools.model.codegen.execmodel.domain.RootFact;
 import org.drools.model.codegen.execmodel.domain.SubFact;
-import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ComplexRulesTest extends BaseModelTest {
 
-    public ComplexRulesTest( RUN_TYPE testRunType ) {
-        super( testRunType );
-    }
-
-    @Test
-    public void test1() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void test1(RUN_TYPE runType) {
         String str =
                 "import " + EnumFact1.class.getCanonicalName() + ";\n" +
                 "import " + EnumFact2.class.getCanonicalName() + ";\n" +
@@ -100,11 +97,12 @@ public class ComplexRulesTest extends BaseModelTest {
                 "    list.add($result);\n" +
                 "end\n";
 
-        testComplexRule(str);
+        testComplexRule(runType, str);
     }
 
-    @Test
-    public void testNotWithEval() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void testNotWithEval(RUN_TYPE runType) {
         String str =
                 "import " + EnumFact1.class.getCanonicalName() + ";\n" +
                 "import " + EnumFact2.class.getCanonicalName() + ";\n" +
@@ -151,11 +149,11 @@ public class ComplexRulesTest extends BaseModelTest {
                 "    list.add($result);\n" +
                 "end\n";
 
-        testComplexRule(str);
+        testComplexRule(runType, str);
     }
 
-    private void testComplexRule(final String rule) {
-        KieSession ksession = getKieSession( rule );
+    private void testComplexRule(RUN_TYPE runType, String rule) {
+        KieSession ksession = getKieSession(runType, rule);
 
         List<Integer> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
@@ -176,8 +174,9 @@ public class ComplexRulesTest extends BaseModelTest {
         assertThat((int) list.get(0)).isEqualTo(1);
     }
 
-    @Test
-    public void test2() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void test2(RUN_TYPE runType) {
         final String drl =
                 " import org.drools.model.codegen.execmodel.domain.*;\n" +
                         " rule \"R1\"\n" +
@@ -200,7 +199,7 @@ public class ComplexRulesTest extends BaseModelTest {
                         "     update($childFact4);\n" +
                         " end\n";
 
-        KieSession ksession = getKieSession( drl );
+        KieSession ksession = getKieSession(runType, drl );
 
         int initialId = 1;
         final RootFact rootFact = new RootFact(initialId);
@@ -220,8 +219,9 @@ public class ComplexRulesTest extends BaseModelTest {
         assertThat(ksession.fireAllRules()).isEqualTo(0);
     }
 
-    @Test
-    public void test3() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void test3(RUN_TYPE runType) {
         String str =
                 "import " + RootFact.class.getCanonicalName() + ";\n" +
                         "import " + ChildFactWithObject.class.getCanonicalName() + ";\n" +
@@ -243,7 +243,7 @@ public class ComplexRulesTest extends BaseModelTest {
                         "    list.add($result);\n" +
                         "end\n";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         List<Integer> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
@@ -258,8 +258,9 @@ public class ComplexRulesTest extends BaseModelTest {
         assertThat((int) list.get(0)).isEqualTo(1);
     }
 
-    @Test
-    public void test4() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void test4(RUN_TYPE runType) {
         String str =
                 "import " + RootFact.class.getCanonicalName() + ";\n" +
                         "import " + ChildFactWithObject.class.getCanonicalName() + ";\n" +
@@ -280,7 +281,7 @@ public class ComplexRulesTest extends BaseModelTest {
                         "    list.add($result);\n" +
                         "end\n";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         List<Integer> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
@@ -294,8 +295,9 @@ public class ComplexRulesTest extends BaseModelTest {
         assertThat((int) list.get(0)).isEqualTo(1);
     }
 
-    @Test
-    public void testEnum() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void testEnum(RUN_TYPE runType) {
         String str =
                 "import " + EnumFact1.class.getCanonicalName() + ";\n" +
                 "import " + ChildFactWithEnum1.class.getCanonicalName() + ";\n" +
@@ -305,13 +307,14 @@ public class ComplexRulesTest extends BaseModelTest {
                 "  then\n" +
                 "end\n";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
         ksession.insert( new ChildFactWithEnum1(1, 3, EnumFact1.FIRST) );
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testNotInEnum() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void testNotInEnum(RUN_TYPE runType) {
         String str =
                 "import " + EnumFact1.class.getCanonicalName() + ";\n" +
                 "import " + ChildFactWithEnum1.class.getCanonicalName() + ";\n" +
@@ -321,13 +324,14 @@ public class ComplexRulesTest extends BaseModelTest {
                 "  then\n" +
                 "end\n";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
         ksession.insert( new ChildFactWithEnum1(1, 3, EnumFact1.SECOND) );
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testNotInInterfaceAsEnum() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void testNotInInterfaceAsEnum(RUN_TYPE runType) {
         String str =
                 "import " + InterfaceAsEnum.class.getCanonicalName() + ";\n" +
                 "import " + ChildFactWithEnum1.class.getCanonicalName() + ";\n" +
@@ -337,13 +341,14 @@ public class ComplexRulesTest extends BaseModelTest {
                 "  then\n" +
                 "end\n";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
         ksession.insert( new ChildFactWithEnum1(1, 3, EnumFact1.SECOND) );
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testConstraintWithFunctionUsingThis() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void testConstraintWithFunctionUsingThis(RUN_TYPE runType) {
         String str =
                 "import " + ChildFactWithObject.class.getCanonicalName() + ";\n" +
                 "import " + BusinessFunctions.class.getCanonicalName() + ";\n" +
@@ -356,14 +361,15 @@ public class ComplexRulesTest extends BaseModelTest {
                 "  then\n" +
                 "end\n";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
         ksession.setGlobal( "functions", new BusinessFunctions() );
         ksession.insert( new ChildFactWithObject(5, 1, new Object[0]) );
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testConstraintWithTernaryOperator() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void testConstraintWithTernaryOperator(RUN_TYPE runType) {
         String str =
                 "import " + ChildFactWithObject.class.getCanonicalName() + ";\n" +
                 "import " + BusinessFunctions.class.getCanonicalName() + ";\n" +
@@ -377,15 +383,16 @@ public class ComplexRulesTest extends BaseModelTest {
                 "  then\n" +
                 "end\n";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
         ksession.setGlobal( "functions", new BusinessFunctions() );
         ksession.insert( "test" );
         ksession.insert( new ChildFactWithObject(5, 1, new Object[0]) );
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testCastInConstraint() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void testCastInConstraint(RUN_TYPE runType) {
         String str =
                 "import " + ChildFactWithObject.class.getCanonicalName() + ";\n" +
                 "import " + BusinessFunctions.class.getCanonicalName() + ";\n" +
@@ -395,14 +402,15 @@ public class ComplexRulesTest extends BaseModelTest {
                 "  then\n" +
                 "end\n";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
         ksession.setGlobal( "functions", new BusinessFunctions() );
         ksession.insert( new ChildFactWithObject(5, 1, new Object[0]) );
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testConstraintWithFunctionAndStringConcatenation() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void testConstraintWithFunctionAndStringConcatenation(RUN_TYPE runType) {
         String str =
                 "import " + ChildFactWithObject.class.getCanonicalName() + ";\n" +
                 "import " + BusinessFunctions.class.getCanonicalName() + ";\n" +
@@ -416,14 +424,15 @@ public class ComplexRulesTest extends BaseModelTest {
                 "  then\n" +
                 "end\n";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
         ksession.setGlobal( "functions", new BusinessFunctions() );
         ksession.insert( new ChildFactWithObject(5, 1, new Object[0]) );
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testEvalWithFunction() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void testEvalWithFunction(RUN_TYPE runType) {
         String str =
                 "import " + ChildFactWithObject.class.getCanonicalName() + ";\n" +
                 "import " + BusinessFunctions.class.getCanonicalName() + ";\n" +
@@ -437,14 +446,15 @@ public class ComplexRulesTest extends BaseModelTest {
                 "  then\n" +
                 "end\n";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
         ksession.setGlobal( "functions", new BusinessFunctions() );
         ksession.insert( new ChildFactWithObject(5, 1, new Object[0]) );
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testEqualOnShortField() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void testEqualOnShortField(RUN_TYPE runType) {
         String str =
                 "import " + ChildFactWithObject.class.getCanonicalName() + ";\n" +
                 "rule R when\n" +
@@ -453,13 +463,14 @@ public class ComplexRulesTest extends BaseModelTest {
                 "  then\n" +
                 "end\n";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
         ksession.insert( new ChildFactWithObject(5, 1, new Object[0]) );
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testGreaterOnShortField() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void testGreaterOnShortField(RUN_TYPE runType) {
         String str =
                 "import " + ChildFactWithObject.class.getCanonicalName() + ";\n" +
                 "rule R when\n" +
@@ -468,13 +479,14 @@ public class ComplexRulesTest extends BaseModelTest {
                 "  then\n" +
                 "end\n";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
         ksession.insert( new ChildFactWithObject(5, 1, new Object[0]) );
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testBooleanField() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void testBooleanField(RUN_TYPE runType) {
         String str =
                 "import " + ChildFactWithObject.class.getCanonicalName() + ";\n" +
                 "rule R when\n" +
@@ -483,13 +495,14 @@ public class ComplexRulesTest extends BaseModelTest {
                 "  then\n" +
                 "end\n";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
         ksession.insert( new ChildFactWithObject(5, 1, new Object[0]) );
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testConsequenceThrowingException() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void testConsequenceThrowingException(RUN_TYPE runType) {
         String str =
                 "import " + ChildFactWithObject.class.getCanonicalName() + ";\n" +
                 "import " + BusinessFunctions.class.getCanonicalName() + ";\n" +
@@ -501,14 +514,15 @@ public class ComplexRulesTest extends BaseModelTest {
                 "    functions.doSomethingRisky($c);" +
                 "end\n";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
         ksession.setGlobal( "functions", new BusinessFunctions() );
         ksession.insert( new ChildFactWithObject(5, 1, new Object[0]) );
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testCompareDate() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void testCompareDate(RUN_TYPE runType) {
         String str =
                 "import " + ChildFactWithObject.class.getCanonicalName() + ";\n" +
                 "rule R when\n" +
@@ -518,14 +532,15 @@ public class ComplexRulesTest extends BaseModelTest {
                 "  then\n" +
                 "end\n";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
         ksession.insert( new ChildFactWithObject(5, 1, new Object[0]) );
         ksession.insert( new ChildFactWithObject(6, 1, new Object[0]) );
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testCompareDateWithString() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void testCompareDateWithString(RUN_TYPE runType) {
         String str =
                 "import " + ChildFactWithObject.class.getCanonicalName() + ";\n" +
                 "rule R when\n" +
@@ -534,13 +549,14 @@ public class ComplexRulesTest extends BaseModelTest {
                 "  then\n" +
                 "end\n";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
         ksession.insert( new ChildFactWithObject(5, 1, new Object[0]) );
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void test2UpperCaseProp() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void test2UpperCaseProp(RUN_TYPE runType) {
         String str =
                 "import " + ChildFactWithObject.class.getCanonicalName() + ";\n" +
                 "rule R when\n" +
@@ -550,7 +566,7 @@ public class ComplexRulesTest extends BaseModelTest {
                 "  then\n" +
                 "end\n";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
         ksession.insert( new ChildFactWithObject(5, 1, new Object[0]) );
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
@@ -571,8 +587,9 @@ public class ComplexRulesTest extends BaseModelTest {
         }
     }
 
-    @Test
-    public void testNameClashBetweenAttributeAndGlobal() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void testNameClashBetweenAttributeAndGlobal(RUN_TYPE runType) {
         String str =
                 "import " + ListContainer.class.getCanonicalName() + ";\n" +
                 "global java.util.List list;\n" +
@@ -582,7 +599,7 @@ public class ComplexRulesTest extends BaseModelTest {
                 "    list.add($l);" +
                 "end\n";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
@@ -598,8 +615,9 @@ public class ComplexRulesTest extends BaseModelTest {
         }
     }
 
-    @Test
-    public void testPrimitiveArray() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void testPrimitiveArray(RUN_TYPE runType) {
         String str =
                 "import " + Primitives.class.getCanonicalName() + ";\n" +
                 "global java.util.List list;\n" +
@@ -609,7 +627,7 @@ public class ComplexRulesTest extends BaseModelTest {
                 "    list.add($c);" +
                 "end\n";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
@@ -619,8 +637,9 @@ public class ComplexRulesTest extends BaseModelTest {
         assertThat(list.size()).isEqualTo(1);
     }
 
-    @Test
-    public void testUseConstructorInConstraint() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void testUseConstructorInConstraint(RUN_TYPE runType) {
         // DROOLS-2990
         String str =
                 "rule R when\n" +
@@ -629,15 +648,16 @@ public class ComplexRulesTest extends BaseModelTest {
                 "then\n" +
                 "end\n";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert( (short) 1 );
         ksession.insert( 2.0 );
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testManyPropFactWithNot() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void testManyPropFactWithNot(RUN_TYPE runType) {
         // DROOLS-4572
         try {
             System.setProperty("drools.propertySpecific", "ALLOWED");
@@ -660,7 +680,7 @@ public class ComplexRulesTest extends BaseModelTest {
                     "        update($subFact);\n" +
                     "end";
 
-            KieSession ksession = getKieSession(str);
+            KieSession ksession = getKieSession(runType, str);
 
             ManyPropFact fact = new ManyPropFact();
             fact.setId(1);
@@ -698,8 +718,9 @@ public class ComplexRulesTest extends BaseModelTest {
         }
     }
 
-    @Test
-    public void testGetOnMapField() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void testGetOnMapField(RUN_TYPE runType) {
         // DROOLS-4999
         String str =
                 "import " + CaseData.class.getCanonicalName() + ";\n" +
@@ -708,15 +729,16 @@ public class ComplexRulesTest extends BaseModelTest {
                 "then\n" +
                 "end\n";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert( new CaseData( 5 ) );
 
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testEqualsOnMapField() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void testEqualsOnMapField(RUN_TYPE runType) {
         // DROOLS-4999
         String str =
                 "import " + CaseData.class.getCanonicalName() + ";\n" +
@@ -725,15 +747,16 @@ public class ComplexRulesTest extends BaseModelTest {
                 "then\n" +
                 "end\n";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert( new CaseData( "OK" ) );
 
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testDoubleNegation() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void testDoubleNegation(RUN_TYPE runType) {
         // DROOLS-5545
         String str =
                 "import " + Person.class.getCanonicalName() + ";\n" +
@@ -742,13 +765,14 @@ public class ComplexRulesTest extends BaseModelTest {
                 "then\n" +
                 "end\n";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
         ksession.insert( new Person( "Mario", 45 ) );
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testGlobalAsFunctionArgument() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void testGlobalAsFunctionArgument(RUN_TYPE runType) {
         // DROOLS-5999
         String str =
                 "import java.util.*;\n"+
@@ -773,7 +797,7 @@ public class ComplexRulesTest extends BaseModelTest {
                 "        result.add(Integer.valueOf(42));\n"+
                 "end\n";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         List<Object> result = new ArrayList<>();
         ksession.setGlobal("result", result);
