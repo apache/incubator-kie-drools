@@ -16,17 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.dmn.feel.codegen.feel11;
+package org.kie.dmn.feel.util;
 
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.FEELDialect;
 import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
 import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
-import org.kie.dmn.feel.util.ClassLoaderUtil;
 
-public class CodegenTestUtil {
+public class EvaluationContextTestUtil {
 
-    private CodegenTestUtil() {
+    private EvaluationContextTestUtil() {
         // only static methods for util class.
     }
 

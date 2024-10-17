@@ -16,16 +16,18 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.dmn.core.api;
+package org.kie.dmn.api.core.event;
 
-public interface EvaluatorResult {
-    
-    enum ResultType {
-        SUCCESS, FAILURE;
-    }
-    
-    ResultType getResultType();
+import org.kie.dmn.api.core.EvaluatorResult;
 
-    Object getResult();
+/**
+ * Event fired after the <b>then/else</b> branches of an <b>if</b> condition are evaluated
+ * @see AfterEvaluateConditionalEvent
+ */
+public interface AfterConditionalEvaluationEvent {
+
+    EvaluatorResult getEvaluatorResultResult();
+
+    String getExecutedId();
 
 }

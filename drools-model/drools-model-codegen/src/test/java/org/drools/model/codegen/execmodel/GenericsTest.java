@@ -24,19 +24,17 @@ import java.util.Objects;
 
 import org.drools.model.codegen.execmodel.domain.Address;
 import org.drools.model.codegen.execmodel.domain.Person;
-import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class GenericsTest extends BaseModelTest {
 
-    public GenericsTest(RUN_TYPE testRunType) {
-        super(testRunType);
-    }
-
-    @Test
-    public void testGenericsAccumulateInlineCode() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testGenericsAccumulateInlineCode(RUN_TYPE runType) {
         // accumulate inline code supports generics
         String str =
                 "import " + Person.class.getCanonicalName() + ";\n" +
@@ -55,7 +53,7 @@ public class GenericsTest extends BaseModelTest {
                         "  results.add($l);\n" +
                         "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
         List<List<String>> results = new ArrayList<>();
         ksession.setGlobal("results", results);
 
@@ -94,8 +92,9 @@ public class GenericsTest extends BaseModelTest {
         }
     }
 
-    @Test
-    public void testClassWithGenericField() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testClassWithGenericField(RUN_TYPE runType) {
         // KIE-1077
         String str =
                 "import " + ClassWithGenericField.class.getCanonicalName() + ";\n " +
@@ -107,7 +106,7 @@ public class GenericsTest extends BaseModelTest {
                 "    results.add($addressStreet);\n " +
                 "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
         List<String> results = new ArrayList<>();
         ksession.setGlobal("results", results);
 
@@ -118,8 +117,9 @@ public class GenericsTest extends BaseModelTest {
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testGenericsOnSuperclass() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testGenericsOnSuperclass(RUN_TYPE runType) {
         // KIE-DROOLS-5925
         String str =
                 "import " + DieselCar.class.getCanonicalName() + ";\n " +
@@ -143,11 +143,12 @@ public class GenericsTest extends BaseModelTest {
                 "        update($v);\n" +
                 "end";
 
-        runTestWithGenerics(str);
+        runTestWithGenerics(runType, str);
     }
 
-    @Test
-    public void testGenericsOnSuperclassWithRedundantVariableDeclaration() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testGenericsOnSuperclassWithRedundantVariableDeclaration(RUN_TYPE runType) {
         // KIE-DROOLS-5925
         String str =
                 "import " + DieselCar.class.getCanonicalName() + ";\n " +
@@ -171,11 +172,11 @@ public class GenericsTest extends BaseModelTest {
                 "        update($v);\n" +
                 "end";
 
-        runTestWithGenerics(str);
+        runTestWithGenerics(runType, str);
     }
 
-    private void runTestWithGenerics(String str) {
-        KieSession ksession = getKieSession(str);
+    private void runTestWithGenerics(RUN_TYPE runType, String str) {
+        KieSession ksession = getKieSession(runType, str);
 
         DieselCar vehicle1 = new DieselCar("Volkswagen", "Passat", 100);
         vehicle1.setFrameMaxTorque(500);
