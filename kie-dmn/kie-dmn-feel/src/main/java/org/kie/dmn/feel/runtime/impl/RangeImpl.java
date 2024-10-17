@@ -92,8 +92,10 @@ public class RangeImpl
         } else {
             if (highEndPoint == null && isUpperBoundaryValueUndefined) {
                 return posInfRangeIncludes(param);
-            } else {
+            } else if (highEndPoint != null) {
                 return finiteRangeIncludes(param);
+            } else {
+                return false;
             }
         }
     }
