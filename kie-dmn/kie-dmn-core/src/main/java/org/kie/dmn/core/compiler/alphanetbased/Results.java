@@ -32,7 +32,6 @@ import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.runtime.decisiontables.DTDecisionRule;
 import org.kie.dmn.feel.runtime.decisiontables.DecisionTable;
 import org.kie.dmn.feel.runtime.decisiontables.HitPolicy;
-import org.kie.dmn.feel.runtime.decisiontables.Indexed;
 import org.kie.dmn.feel.runtime.events.DecisionTableRulesMatchedEvent;
 import org.kie.dmn.feel.runtime.events.HitPolicyViolationEvent;
 
@@ -155,12 +154,12 @@ public class Results {
                     Collections.emptyList()));
         }
 
-        List<DTDecisionRule> matchIndexes = items.matches();
+        List<DTDecisionRule> matchingDecisionRules = items.matches();
         evaluationContext.notifyEvt(() -> {
-                                        List<Integer> matchedIndexes = new ArrayList<>();
+                                        List<Integer> matches = new ArrayList<>();
                                         List<String> matchesId = new ArrayList<>();
-                                        matchIndexes.forEach(dr -> {
-                                            matchedIndexes.add(dr.getIndex() + 1);
+                                        matchingDecisionRules.forEach(dr -> {
+                                            matches.add(dr.getIndex() + 1);
                                             if (dr.getId() != null && !dr.getId().isEmpty()) {
                                                 matchesId.add(dr.getId());
                                             }
@@ -170,17 +169,17 @@ public class Results {
                                                                                                         "decision " +
                                                                                                         "table '%s': " +
                                                                                                         "%s",
-                                                                                                decisionTable.getName(), matchIndexes),
+                                                                                                decisionTable.getName(), matchingDecisionRules),
                                                                                   decisionTable.getName(),
                                                                                   decisionTable.getName(),
-                                                                                  matchedIndexes,
+                                                                                  matches,
                                                                                   matchesId);
                                     }
         );
 
         List<Object> resultObjects = items.evaluateResults(evaluationContext);
 
-        Map<Integer, String> errorMessages = checkResults(decisionTable.getOutputs(), evaluationContext, matchIndexes
+        Map<Integer, String> errorMessages = checkResults(decisionTable.getOutputs(), evaluationContext, matchingDecisionRules
                 , resultObjects);
         if (!errorMessages.isEmpty()) {
             List<Integer> offending = new ArrayList<>(errorMessages.keySet());
@@ -194,6 +193,6 @@ public class Results {
             return null;
         }
 
-        return hitPolicy.getDti().dti(evaluationContext, decisionTable, matchIndexes, resultObjects);
+        return hitPolicy.getDti().dti(evaluationContext, decisionTable, matchingDecisionRules, resultObjects);
     }
 }
