@@ -122,29 +122,29 @@ public class FEELListsTest extends BaseFEELTest {
 
                 // lists of intervals
                 {"[ ( 10 .. 20 ) ]", Collections.singletonList(new RangeImpl(Range.RangeBoundary.OPEN, BigDecimal.valueOf(10),
-                                                                             BigDecimal.valueOf(20), Range.RangeBoundary.OPEN, false, false)), null },
+                                                                             BigDecimal.valueOf(20), Range.RangeBoundary.OPEN)), null },
                 {"[ ] 10 .. 20 [ ]", Collections.singletonList(new RangeImpl(Range.RangeBoundary.OPEN, BigDecimal.valueOf(10),
-                                                                             BigDecimal.valueOf(20), Range.RangeBoundary.OPEN, false, false)), null },
+                                                                             BigDecimal.valueOf(20), Range.RangeBoundary.OPEN)), null },
                 {"[ ( duration(\"P1D\") .. duration(\"P10D\") ) ]", Collections.singletonList(new RangeImpl(Range.RangeBoundary.OPEN, Duration.parse("P1D"),
-                                                                                                            Duration.parse("P10D"), Range.RangeBoundary.OPEN, false, false)), null },
+                                                                                                            Duration.parse("P10D"), Range.RangeBoundary.OPEN)), null },
                 {"[ ( duration(\"P1D\") .. duration(\"P10D\") [ ]", Collections.singletonList(new RangeImpl(Range.RangeBoundary.OPEN, Duration.parse("P1D"),
-                                                                                                            Duration.parse("P10D"), Range.RangeBoundary.OPEN, false, false)), null },
+                                                                                                            Duration.parse("P10D"), Range.RangeBoundary.OPEN)), null },
                 {"[ ( duration(\"P1D\") .. duration(\"P10D\") ] ]", Collections.singletonList(new RangeImpl(Range.RangeBoundary.OPEN, Duration.parse("P1D"),
-                                                                                                            Duration.parse("P10D"), Range.RangeBoundary.CLOSED, false, false)), null },
+                                                                                                            Duration.parse("P10D"), Range.RangeBoundary.CLOSED)), null },
                 {"[ ] duration(\"P1D\") .. duration(\"P10D\") ) ]", Collections.singletonList(new RangeImpl(Range.RangeBoundary.OPEN, Duration.parse("P1D"),
-                                                                                                            Duration.parse("P10D"), Range.RangeBoundary.OPEN, false, false)), null },
+                                                                                                            Duration.parse("P10D"), Range.RangeBoundary.OPEN)), null },
                 {"[ ] duration(\"P1D\") .. duration(\"P10D\") [ ]", Collections.singletonList(new RangeImpl(Range.RangeBoundary.OPEN, Duration.parse("P1D"),
-                                                                                                            Duration.parse("P10D"), Range.RangeBoundary.OPEN, false, false)), null },
+                                                                                                            Duration.parse("P10D"), Range.RangeBoundary.OPEN)), null },
                 {"[ ] duration(\"P1D\") .. duration(\"P10D\") ] ]", Collections.singletonList(new RangeImpl(Range.RangeBoundary.OPEN, Duration.parse("P1D"),
-                                                                                                            Duration.parse("P10D"), Range.RangeBoundary.CLOSED, false, false)), null },
+                                                                                                            Duration.parse("P10D"), Range.RangeBoundary.CLOSED)), null },
                 {"[ [ duration(\"P1D\") .. duration(\"P10D\") ) ]", Collections.singletonList(new RangeImpl(Range.RangeBoundary.CLOSED, Duration.parse("P1D"),
-                                                                                                            Duration.parse("P10D"), Range.RangeBoundary.OPEN, false, false)), null },
+                                                                                                            Duration.parse("P10D"), Range.RangeBoundary.OPEN)), null },
                 {"[ [ duration(\"P1D\") .. duration(\"P10D\") [ ]", Collections.singletonList(new RangeImpl(Range.RangeBoundary.CLOSED, Duration.parse("P1D"),
-                                                                                                            Duration.parse("P10D"), Range.RangeBoundary.OPEN, false, false)), null },
+                                                                                                            Duration.parse("P10D"), Range.RangeBoundary.OPEN)), null },
                 {"[ [ duration(\"P1D\") .. duration(\"P10D\") ] ]", Collections.singletonList(new RangeImpl(Range.RangeBoundary.CLOSED, Duration.parse("P1D"),
-                                                                                                            Duration.parse("P10D"), Range.RangeBoundary.CLOSED, false, false)), null },
+                                                                                                            Duration.parse("P10D"), Range.RangeBoundary.CLOSED)), null },
                 {"[ ( duration(\"P1D\") .. duration(\"P10D\") ), ( duration(\"P2D\") .. duration(\"P10D\") )][1]",
-                        new RangeImpl( Range.RangeBoundary.OPEN, Duration.parse("P1D"), Duration.parse( "P10D" ), Range.RangeBoundary.OPEN, false, false ), null }
+                        new RangeImpl( Range.RangeBoundary.OPEN, Duration.parse("P1D"), Duration.parse( "P10D" ), Range.RangeBoundary.OPEN), null }
         };
         return addAdditionalParameters(cases, false);
     }

@@ -30,6 +30,7 @@ import java.util.stream.Stream;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.Range.RangeBoundary;
 import org.kie.dmn.feel.runtime.impl.RangeImpl;
+import org.kie.dmn.feel.runtime.impl.UndefinedValueComparable;
 import org.kie.dmn.feel.util.Generated;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,7 +76,7 @@ public class Interval {
         this.upperBound = new Bound(end, highBoundary, this);
         this.rule = rule;
         this.col = col;
-        this.asRange = new RangeImpl(lowBoundary, nullIfInfinity(start), nullIfInfinity(end), highBoundary, isValueUndefinedIfInfinity(start), isValueUndefinedIfInfinity(end));
+        this.asRange = new RangeImpl(lowBoundary, nullIfInfinity(start), nullIfInfinity(end), highBoundary);
     }
 
     private Interval(Bound<?> lowerBound, Bound<?> upperBound) {
@@ -88,8 +89,7 @@ public class Interval {
             this.rule = 0;
             this.col = 0;
         }
-        this.asRange = new RangeImpl(lowerBound.getBoundaryType(), nullIfInfinity(lowerBound.getValue()), nullIfInfinity(upperBound.getValue()), upperBound.getBoundaryType(),
-            isValueUndefinedIfInfinity(lowerBound.getValue()), isValueUndefinedIfInfinity(upperBound.getValue()));
+        this.asRange = new RangeImpl(lowerBound.getBoundaryType(), nullIfInfinity(lowerBound.getValue()), nullIfInfinity(upperBound.getValue()), upperBound.getBoundaryType());
     }
 
     public static Interval newFromBounds(Bound<?> lowerBound, Bound<?> upperBound) {
@@ -100,13 +100,13 @@ public class Interval {
         if (input != POS_INF && input != NEG_INF) {
             return input;
         } else {
-            return null;
+            return new UndefinedValueComparable();
         }
     }
 
-    private static boolean isValueUndefinedIfInfinity(Comparable<?> input) {
-        return input == POS_INF || input == NEG_INF;
-    }
+//    private static boolean isValueUndefinedIfInfinity(Comparable<?> input) {
+//        return input == POS_INF || input == NEG_INF;
+//    }
 
     @Override
     public String toString() {

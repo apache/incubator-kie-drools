@@ -76,32 +76,32 @@ class RangeFunctionTest {
         String from = "(..2)";
         FunctionTestUtil.assertResult(rangeFunction.invoke(from),
                                       new RangeImpl(Range.RangeBoundary.OPEN, null, BigDecimal.valueOf(2),
-                                                    Range.RangeBoundary.OPEN, false, false),
+                                                    Range.RangeBoundary.OPEN),
                                       from);
         from = "(..\"z\")";
         FunctionTestUtil.assertResult(rangeFunction.invoke(from),
-                                      new RangeImpl(Range.RangeBoundary.OPEN, null, "z", Range.RangeBoundary.OPEN, false, false),
+                                      new RangeImpl(Range.RangeBoundary.OPEN, null, "z", Range.RangeBoundary.OPEN),
                                       from);
         from = "(..\"yz\")";
         FunctionTestUtil.assertResult(rangeFunction.invoke(from),
-                                      new RangeImpl(Range.RangeBoundary.OPEN, null, "yz", Range.RangeBoundary.OPEN, false, false),
+                                      new RangeImpl(Range.RangeBoundary.OPEN, null, "yz", Range.RangeBoundary.OPEN),
                                       from);
         from = "(..date(\"1978-10-13\"))";
         FunctionTestUtil.assertResult(rangeFunction.invoke(from),
                                       new RangeImpl(Range.RangeBoundary.OPEN, null, LocalDate.of(1978, 10, 13),
-                                                    Range.RangeBoundary.OPEN, false, false),
+                                                    Range.RangeBoundary.OPEN),
                                       from);
         from = "(..duration(\"P3DT20H14M\"))";
         FunctionTestUtil.assertResult(rangeFunction.invoke(from),
                                       new RangeImpl(Range.RangeBoundary.OPEN, null, Duration.parse("P3DT20H14M"),
-                                                    Range.RangeBoundary.OPEN, false, false),
+                                                    Range.RangeBoundary.OPEN),
                                       from);
         from = "(..duration(\"P2Y6M\"))";
         FunctionTestUtil.assertResult(rangeFunction.invoke(from),
                                       new RangeImpl(Range.RangeBoundary.OPEN,
                                                     null,
                                                     new ComparablePeriod(Period.parse("P2Y6M")),
-                                                    Range.RangeBoundary.OPEN, false, false),
+                                                    Range.RangeBoundary.OPEN),
                                       from);
     }
 
@@ -110,32 +110,32 @@ class RangeFunctionTest {
         String from = "(1..)";
         FunctionTestUtil.assertResult(rangeFunction.invoke(from),
                                       new RangeImpl(Range.RangeBoundary.OPEN, BigDecimal.ONE, null,
-                                                    Range.RangeBoundary.OPEN, false, false),
+                                                    Range.RangeBoundary.OPEN),
                                       from);
         from = "(\"a\"..)";
         FunctionTestUtil.assertResult(rangeFunction.invoke(from),
-                                      new RangeImpl(Range.RangeBoundary.OPEN, "a", null, Range.RangeBoundary.OPEN, false, false),
+                                      new RangeImpl(Range.RangeBoundary.OPEN, "a", null, Range.RangeBoundary.OPEN),
                                       from);
         from = "(\"ab\"..)";
         FunctionTestUtil.assertResult(rangeFunction.invoke(from),
-                                      new RangeImpl(Range.RangeBoundary.OPEN, "ab", null, Range.RangeBoundary.OPEN, false, false),
+                                      new RangeImpl(Range.RangeBoundary.OPEN, "ab", null, Range.RangeBoundary.OPEN),
                                       from);
         from = "(date(\"1978-09-12\")..)";
         FunctionTestUtil.assertResult(rangeFunction.invoke(from),
                                       new RangeImpl(Range.RangeBoundary.OPEN, LocalDate.of(1978, 9, 12), null,
-                                                    Range.RangeBoundary.OPEN, false, false),
+                                                    Range.RangeBoundary.OPEN),
                                       from);
         from = "(duration(\"P2DT20H14M\")..)";
         FunctionTestUtil.assertResult(rangeFunction.invoke(from),
                                       new RangeImpl(Range.RangeBoundary.OPEN, Duration.parse("P2DT20H14M"), null,
-                                                    Range.RangeBoundary.OPEN, false, false),
+                                                    Range.RangeBoundary.OPEN),
                                       from);
         from = "(duration(\"P1Y6M\")..)";
         FunctionTestUtil.assertResult(rangeFunction.invoke(from),
                                       new RangeImpl(Range.RangeBoundary.OPEN,
                                                     new ComparablePeriod(Period.parse("P1Y6M")),
                                                     null,
-                                                    Range.RangeBoundary.OPEN, false, false),
+                                                    Range.RangeBoundary.OPEN),
                                       from);
     }
 
@@ -144,32 +144,32 @@ class RangeFunctionTest {
         String from = "(1..2)";
         FunctionTestUtil.assertResult(rangeFunction.invoke(from),
                                       new RangeImpl(Range.RangeBoundary.OPEN, BigDecimal.ONE, BigDecimal.valueOf(2),
-                                                    Range.RangeBoundary.OPEN, false, false),
+                                                    Range.RangeBoundary.OPEN),
                                       from);
         from = "(\"a\"..\"z\")";
         FunctionTestUtil.assertResult(rangeFunction.invoke(from),
-                                      new RangeImpl(Range.RangeBoundary.OPEN, "a", "z", Range.RangeBoundary.OPEN, false, false),
+                                      new RangeImpl(Range.RangeBoundary.OPEN, "a", "z", Range.RangeBoundary.OPEN),
                                       from);
         from = "(\"ab\"..\"yz\")";
         FunctionTestUtil.assertResult(rangeFunction.invoke(from),
-                                      new RangeImpl(Range.RangeBoundary.OPEN, "ab", "yz", Range.RangeBoundary.OPEN, false, false),
+                                      new RangeImpl(Range.RangeBoundary.OPEN, "ab", "yz", Range.RangeBoundary.OPEN),
                                       from);
         from = "(date(\"1978-09-12\")..date(\"1978-10-13\"))";
         FunctionTestUtil.assertResult(rangeFunction.invoke(from),
                                       new RangeImpl(Range.RangeBoundary.OPEN, LocalDate.of(1978, 9, 12),
-                                                    LocalDate.of(1978, 10, 13), Range.RangeBoundary.OPEN, false, false),
+                                                    LocalDate.of(1978, 10, 13), Range.RangeBoundary.OPEN),
                                       from);
         from = "(duration(\"P2DT20H14M\")..duration(\"P3DT20H14M\"))";
         FunctionTestUtil.assertResult(rangeFunction.invoke(from),
                                       new RangeImpl(Range.RangeBoundary.OPEN, Duration.parse("P2DT20H14M"),
-                                                    Duration.parse("P3DT20H14M"), Range.RangeBoundary.OPEN, false, false),
+                                                    Duration.parse("P3DT20H14M"), Range.RangeBoundary.OPEN),
                                       from);
         from = "(duration(\"P1Y6M\")..duration(\"P2Y6M\"))";
         FunctionTestUtil.assertResult(rangeFunction.invoke(from),
                                       new RangeImpl(Range.RangeBoundary.OPEN,
                                                     new ComparablePeriod(Period.parse("P1Y6M")),
                                                     new ComparablePeriod(Period.parse("P2Y6M")),
-                                                    Range.RangeBoundary.OPEN, false, false),
+                                                    Range.RangeBoundary.OPEN),
                                       from);
     }
 
@@ -178,21 +178,21 @@ class RangeFunctionTest {
         String from = "(1..2]";
         FunctionTestUtil.assertResult(rangeFunction.invoke(from),
                                       new RangeImpl(Range.RangeBoundary.OPEN, BigDecimal.ONE, BigDecimal.valueOf(2),
-                                                    Range.RangeBoundary.CLOSED, false, false),
+                                                    Range.RangeBoundary.CLOSED),
                                       from);
         from = "(\"a\"..\"z\"]";
         FunctionTestUtil.assertResult(rangeFunction.invoke(from),
-                                      new RangeImpl(Range.RangeBoundary.OPEN, "a", "z", Range.RangeBoundary.CLOSED, false, false),
+                                      new RangeImpl(Range.RangeBoundary.OPEN, "a", "z", Range.RangeBoundary.CLOSED),
                                       from);
         from = "(date(\"1978-09-12\")..date(\"1978-10-13\")]";
         FunctionTestUtil.assertResult(rangeFunction.invoke(from),
                                       new RangeImpl(Range.RangeBoundary.OPEN, LocalDate.of(1978, 9, 12),
-                                                    LocalDate.of(1978, 10, 13), Range.RangeBoundary.CLOSED, false, false),
+                                                    LocalDate.of(1978, 10, 13), Range.RangeBoundary.CLOSED),
                                       from);
         from = "(duration(\"P2DT20H14M\")..duration(\"P3DT20H14M\")]";
         FunctionTestUtil.assertResult(rangeFunction.invoke(from),
                                       new RangeImpl(Range.RangeBoundary.OPEN, Duration.parse("P2DT20H14M"),
-                                                    Duration.parse("P3DT20H14M"), Range.RangeBoundary.CLOSED, false, false),
+                                                    Duration.parse("P3DT20H14M"), Range.RangeBoundary.CLOSED),
                                       from);
     }
 
@@ -201,21 +201,21 @@ class RangeFunctionTest {
         String from = "[1..2)";
         FunctionTestUtil.assertResult(rangeFunction.invoke(from),
                                       new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.ONE, BigDecimal.valueOf(2)
-                                              , Range.RangeBoundary.OPEN, false, false),
+                                              , Range.RangeBoundary.OPEN),
                                       from);
         from = "[\"a\"..\"z\")";
         FunctionTestUtil.assertResult(rangeFunction.invoke(from),
-                                      new RangeImpl(Range.RangeBoundary.CLOSED, "a", "z", Range.RangeBoundary.OPEN, false, false),
+                                      new RangeImpl(Range.RangeBoundary.CLOSED, "a", "z", Range.RangeBoundary.OPEN),
                                       from);
         from = "[date(\"1978-09-12\")..date(\"1978-10-13\"))";
         FunctionTestUtil.assertResult(rangeFunction.invoke(from),
                                       new RangeImpl(Range.RangeBoundary.CLOSED, LocalDate.of(1978, 9, 12),
-                                                    LocalDate.of(1978, 10, 13), Range.RangeBoundary.OPEN, false, false),
+                                                    LocalDate.of(1978, 10, 13), Range.RangeBoundary.OPEN),
                                       from);
         from = "[duration(\"P2DT20H14M\")..duration(\"P3DT20H14M\"))";
         FunctionTestUtil.assertResult(rangeFunction.invoke("[duration(\"P2DT20H14M\")..duration(\"P3DT20H14M\"))"),
                                       new RangeImpl(Range.RangeBoundary.CLOSED, Duration.parse("P2DT20H14M"),
-                                                    Duration.parse("P3DT20H14M"), Range.RangeBoundary.OPEN, false, false),
+                                                    Duration.parse("P3DT20H14M"), Range.RangeBoundary.OPEN),
                                       from);
     }
 
@@ -224,26 +224,26 @@ class RangeFunctionTest {
         String from = "[1..2)";
         FunctionTestUtil.assertResult(rangeFunction.invoke("[1..2]"),
                                       new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.ONE, BigDecimal.valueOf(2)
-                                              , Range.RangeBoundary.CLOSED, false, false),
+                                              , Range.RangeBoundary.CLOSED),
                                       from);
         from = "[2..1]";
         FunctionTestUtil.assertResult(rangeFunction.invoke(from),
                                       new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.valueOf(2), BigDecimal.ONE
-                                              , Range.RangeBoundary.CLOSED, false, false),
+                                              , Range.RangeBoundary.CLOSED),
                                       from);
         from = "[\"a\"..\"z\"]";
         FunctionTestUtil.assertResult(rangeFunction.invoke(from),
-                                      new RangeImpl(Range.RangeBoundary.CLOSED, "a", "z", Range.RangeBoundary.CLOSED, false, false),
+                                      new RangeImpl(Range.RangeBoundary.CLOSED, "a", "z", Range.RangeBoundary.CLOSED),
                                       from);
         from = "[date(\"1978-09-12\")..date(\"1978-10-13\")]";
         FunctionTestUtil.assertResult(rangeFunction.invoke(from),
                                       new RangeImpl(Range.RangeBoundary.CLOSED, LocalDate.of(1978, 9, 12),
-                                                    LocalDate.of(1978, 10, 13), Range.RangeBoundary.CLOSED, false, false),
+                                                    LocalDate.of(1978, 10, 13), Range.RangeBoundary.CLOSED),
                                       from);
         from = "[duration(\"P2DT20H14M\")..duration(\"P3DT20H14M\")]";
         FunctionTestUtil.assertResult(rangeFunction.invoke(from),
                                       new RangeImpl(Range.RangeBoundary.CLOSED, Duration.parse("P2DT20H14M"),
-                                                    Duration.parse("P3DT20H14M"), Range.RangeBoundary.CLOSED, false, false),
+                                                    Duration.parse("P3DT20H14M"), Range.RangeBoundary.CLOSED),
                                       from);
     }
 
@@ -252,11 +252,11 @@ class RangeFunctionTest {
         String from = "[number(\"1\", \",\", \".\")\"..2]";
         FunctionTestUtil.assertResult(rangeFunction.invoke(from),
                                       new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.ONE, BigDecimal.valueOf(2)
-                                              , Range.RangeBoundary.CLOSED, false, false),
+                                              , Range.RangeBoundary.CLOSED),
                                       from);
         from = "[\"a\"..lower case(\"Z\")]";
         FunctionTestUtil.assertResult(rangeFunction.invoke(from),
-                                      new RangeImpl(Range.RangeBoundary.CLOSED, "a", "z", Range.RangeBoundary.CLOSED, false, false),
+                                      new RangeImpl(Range.RangeBoundary.CLOSED, "a", "z", Range.RangeBoundary.CLOSED),
                                       from);
     }
 

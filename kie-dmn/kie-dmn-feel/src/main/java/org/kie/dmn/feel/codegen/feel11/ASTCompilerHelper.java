@@ -80,6 +80,7 @@ import org.kie.dmn.feel.lang.ast.TemporalConstantNode;
 import org.kie.dmn.feel.lang.ast.TypeNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestListNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestNode;
+import org.kie.dmn.feel.lang.ast.UndefinedValueNode;
 import org.kie.dmn.feel.lang.impl.JavaBackedType;
 import org.kie.dmn.feel.lang.impl.MapBackedType;
 import org.kie.dmn.feel.lang.types.AliasFEELType;
@@ -145,6 +146,7 @@ import static org.kie.dmn.feel.codegen.feel11.DMNCodegenConstants.TEMPORALCONSTA
 import static org.kie.dmn.feel.codegen.feel11.DMNCodegenConstants.TYPE_CT;
 import static org.kie.dmn.feel.codegen.feel11.DMNCodegenConstants.UNARYTESTLISTNODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.DMNCodegenConstants.UNARYTESTNODE_CT;
+import static org.kie.dmn.feel.codegen.feel11.DMNCodegenConstants.UNDEFINEDVALUENODE_CT;
 import static org.kie.dmn.feel.util.CodegenUtils.getEnumExpression;
 import static org.kie.dmn.feel.util.CodegenUtils.getListExpression;
 import static org.kie.dmn.feel.util.CodegenUtils.getStringLiteralExpr;
@@ -428,15 +430,11 @@ public class ASTCompilerHelper {
         Expression upperBoundExpression = getEnumExpression(n.getUpperBound());
         Expression startExpression = getNodeExpression(n.getStart());
         Expression endExpression = getNodeExpression(n.getEnd());
-        Expression isLowerBoundaryValueUndefined = getNodeExpression(new BooleanNode(n.isLowerBoundaryValueUndefined(), String.valueOf(n.isLowerBoundaryValueUndefined())));
-        Expression isUpperBoundaryValueUndefined = getNodeExpression(new BooleanNode(n.isUpperBoundaryValueUndefined(), String.valueOf(n.isUpperBoundaryValueUndefined())));
         return addVariableDeclaratorWithObjectCreation(RANGENODE_CT,
                 NodeList.nodeList(lowerBoundExpression,
                     upperBoundExpression,
                     startExpression,
-                    endExpression,
-                    isLowerBoundaryValueUndefined,
-                    isUpperBoundaryValueUndefined),
+                    endExpression),
                 n.getText());
     }
 
@@ -493,6 +491,10 @@ public class ASTCompilerHelper {
         return addVariableDeclaratorWithObjectCreation(UNARYTESTNODE_CT, NodeList.nodeList(opExpression,
                                                                                            valueExpression),
                                                        n.getText());
+    }
+
+    public BlockStmt add(UndefinedValueNode n) {
+        return addVariableDeclaratorWithObjectCreation(UNDEFINEDVALUENODE_CT, NodeList.nodeList(), n.getText());
     }
 
     public String getLastVariableName() {

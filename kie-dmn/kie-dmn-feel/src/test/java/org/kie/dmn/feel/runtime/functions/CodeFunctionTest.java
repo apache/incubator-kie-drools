@@ -180,28 +180,28 @@ class CodeFunctionTest {
     @Test
     void invokeRangeOpenOpen() {
         FunctionTestUtil.assertResult(
-                codeFunction.invoke(new RangeImpl(Range.RangeBoundary.OPEN, 12, 15, Range.RangeBoundary.OPEN, false, false)),
+                codeFunction.invoke(new RangeImpl(Range.RangeBoundary.OPEN, 12, 15, Range.RangeBoundary.OPEN)),
                 "( 12 .. 15 )");
     }
 
     @Test
     void invokeRangeOpenClosed() {
         FunctionTestUtil.assertResult(
-                codeFunction.invoke(new RangeImpl(Range.RangeBoundary.OPEN, 12, 15, Range.RangeBoundary.CLOSED, false, false)),
+                codeFunction.invoke(new RangeImpl(Range.RangeBoundary.OPEN, 12, 15, Range.RangeBoundary.CLOSED)),
                 "( 12 .. 15 ]");
     }
 
     @Test
     void invokeRangeClosedOpen() {
         FunctionTestUtil.assertResult(
-                codeFunction.invoke(new RangeImpl(Range.RangeBoundary.CLOSED, 12, 15, Range.RangeBoundary.OPEN, false, false)),
+                codeFunction.invoke(new RangeImpl(Range.RangeBoundary.CLOSED, 12, 15, Range.RangeBoundary.OPEN)),
                 "[ 12 .. 15 )");
     }
 
     @Test
     void invokeRangeClosedClosed() {
         FunctionTestUtil.assertResult(
-                codeFunction.invoke(new RangeImpl(Range.RangeBoundary.CLOSED, 12, 15, Range.RangeBoundary.CLOSED, false, false)),
+                codeFunction.invoke(new RangeImpl(Range.RangeBoundary.CLOSED, 12, 15, Range.RangeBoundary.CLOSED)),
                 "[ 12 .. 15 ]");
     }
 

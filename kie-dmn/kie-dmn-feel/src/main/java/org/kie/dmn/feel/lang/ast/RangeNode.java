@@ -28,6 +28,7 @@ import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.impl.RangeImpl;
+import org.kie.dmn.feel.runtime.impl.UndefinedValueComparable;
 import org.kie.dmn.feel.util.Msg;
 
 public class RangeNode
@@ -55,29 +56,21 @@ public class RangeNode
 
     private IntervalBoundary lowerBound;
     private IntervalBoundary upperBound;
-    private boolean isLowerBoundaryValueUndefined;
-    private boolean isUpperBoundaryValueUndefined;
     private BaseNode         start;
     private BaseNode         end;
 
 
-    public RangeNode(ParserRuleContext ctx, IntervalBoundary lowerBound, BaseNode start, BaseNode end, IntervalBoundary upperBound,
-            boolean isLowerBoundaryValueUndefined, boolean isUpperBoundaryValueUndefined) {
+    public RangeNode(ParserRuleContext ctx, IntervalBoundary lowerBound, BaseNode start, BaseNode end, IntervalBoundary upperBound) {
         super(ctx);
         this.lowerBound = lowerBound;
         this.upperBound = upperBound;
-        this.isLowerBoundaryValueUndefined = isLowerBoundaryValueUndefined;
-        this.isUpperBoundaryValueUndefined = isUpperBoundaryValueUndefined;
         this.start = start;
         this.end = end;
     }
 
-    public RangeNode(IntervalBoundary lowerBound, IntervalBoundary upperBound, BaseNode start, BaseNode end,
-            BooleanNode isLowerBoundaryValueUndefinedNode, BooleanNode isUpperBoundaryValueUndefinedNode, String text) {
+    public RangeNode(IntervalBoundary lowerBound, IntervalBoundary upperBound, BaseNode start, BaseNode end, String text) {
         this.lowerBound = lowerBound;
         this.upperBound = upperBound;
-        this.isLowerBoundaryValueUndefined = isLowerBoundaryValueUndefinedNode.getValue() != null ? isLowerBoundaryValueUndefinedNode.getValue() : false;
-        this.isUpperBoundaryValueUndefined = isUpperBoundaryValueUndefinedNode.getValue() != null ? isUpperBoundaryValueUndefinedNode.getValue() : false;
         this.start = start;
         this.end = end;
         this.setText(text);
@@ -115,14 +108,6 @@ public class RangeNode
         this.end = end;
     }
 
-    public boolean isLowerBoundaryValueUndefined() {
-        return isLowerBoundaryValueUndefined;
-    }
-
-    public boolean isUpperBoundaryValueUndefined() {
-        return isUpperBoundaryValueUndefined;
-    }
-
     @Override
     public Range evaluate(EvaluationContext ctx) {
         Object s = start.evaluate( ctx );
@@ -135,15 +120,13 @@ public class RangeNode
             return null;
         }
 
-        Comparable start = convertToComparable( ctx, s );
-        Comparable end = convertToComparable( ctx, e );
+        Comparable start = this.start instanceof UndefinedValueNode ? new UndefinedValueComparable() : convertToComparable(ctx, s );
+        Comparable end = this.end instanceof UndefinedValueNode ? new UndefinedValueComparable() :  convertToComparable( ctx, e );
 
         return new RangeImpl( lowerBound==IntervalBoundary.OPEN ? Range.RangeBoundary.OPEN : Range.RangeBoundary.CLOSED,
                               start,
                               end,
-                              upperBound==IntervalBoundary.OPEN ? Range.RangeBoundary.OPEN : Range.RangeBoundary.CLOSED,
-                              isLowerBoundaryValueUndefined,
-                              isUpperBoundaryValueUndefined);
+                              upperBound==IntervalBoundary.OPEN ? Range.RangeBoundary.OPEN : Range.RangeBoundary.CLOSED);
     }
 
     private Comparable convertToComparable(EvaluationContext ctx, Object s) {

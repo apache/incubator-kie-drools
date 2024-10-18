@@ -32,10 +32,6 @@ public interface Range {
 
     RangeBoundary getHighBoundary();
 
-    boolean isLowerBoundaryValueUndefined();
-
-    boolean isUpperBoundaryValueUndefined();
-
     Boolean includes(Object param);
 
 }

@@ -183,28 +183,28 @@ class StringFunctionTest {
     @Test
     void invokeRangeOpenOpen() {
         FunctionTestUtil.assertResult(
-                stringFunction.invoke(new RangeImpl(Range.RangeBoundary.OPEN, 12, 15, Range.RangeBoundary.OPEN, false, false)),
+                stringFunction.invoke(new RangeImpl(Range.RangeBoundary.OPEN, 12, 15, Range.RangeBoundary.OPEN)),
                 "( 12 .. 15 )");
     }
 
     @Test
     void invokeRangeOpenClosed() {
         FunctionTestUtil.assertResult(
-                stringFunction.invoke(new RangeImpl(Range.RangeBoundary.OPEN, 12, 15, Range.RangeBoundary.CLOSED, false, false)),
+                stringFunction.invoke(new RangeImpl(Range.RangeBoundary.OPEN, 12, 15, Range.RangeBoundary.CLOSED)),
                 "( 12 .. 15 ]");
     }
 
     @Test
     void invokeRangeClosedOpen() {
         FunctionTestUtil.assertResult(
-                stringFunction.invoke(new RangeImpl(Range.RangeBoundary.CLOSED, 12, 15, Range.RangeBoundary.OPEN, false, false)),
+                stringFunction.invoke(new RangeImpl(Range.RangeBoundary.CLOSED, 12, 15, Range.RangeBoundary.OPEN)),
                 "[ 12 .. 15 )");
     }
 
     @Test
     void invokeRangeClosedClosed() {
         FunctionTestUtil.assertResult(
-                stringFunction.invoke(new RangeImpl(Range.RangeBoundary.CLOSED, 12, 15, Range.RangeBoundary.CLOSED, false, false)),
+                stringFunction.invoke(new RangeImpl(Range.RangeBoundary.CLOSED, 12, 15, Range.RangeBoundary.CLOSED)),
                 "[ 12 .. 15 ]");
     }
 

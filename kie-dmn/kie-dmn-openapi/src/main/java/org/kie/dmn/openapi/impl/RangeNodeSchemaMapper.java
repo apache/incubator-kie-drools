@@ -67,7 +67,7 @@ public class RangeNodeSchemaMapper {
                 if (result.getLowEndPoint() == null) {
                     result = new RangeImpl(Range.RangeBoundary.valueOf(r.getLowerBound().name()),
                                            lowValue,
-                                           result.getHighEndPoint(), result.getHighBoundary(), false, result.isUpperBoundaryValueUndefined());
+                                           result.getHighEndPoint(), result.getHighBoundary());
                 } else {
                     consistent = false;
                 }
@@ -82,7 +82,7 @@ public class RangeNodeSchemaMapper {
             if (highValue != null) {
                 if (result.getHighEndPoint() == null) {
                     result = new RangeImpl(result.getLowBoundary(), result.getLowEndPoint(), highValue,
-                                           Range.RangeBoundary.valueOf(r.getUpperBound().name()), result.isLowerBoundaryValueUndefined(), false);
+                                           Range.RangeBoundary.valueOf(r.getUpperBound().name()));
                 } else {
                     consistent = false;
                 }

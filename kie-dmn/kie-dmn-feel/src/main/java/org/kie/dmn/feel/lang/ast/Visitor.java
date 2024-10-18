@@ -18,6 +18,8 @@
  */
 package org.kie.dmn.feel.lang.ast;
 
+import com.github.javaparser.ast.stmt.BlockStmt;
+
 public interface Visitor<T> {
     T visit(ASTNode n);
     T visit(AtLiteralNode n);
@@ -60,4 +62,5 @@ public interface Visitor<T> {
 
     T visit(UnaryTestListNode n);
     T visit(UnaryTestNode n);
+    T visit(UndefinedValueNode n);
 }

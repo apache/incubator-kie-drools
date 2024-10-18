@@ -54,6 +54,7 @@ import org.kie.dmn.feel.lang.ast.SignedUnaryNode;
 import org.kie.dmn.feel.lang.ast.StringNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestListNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestNode;
+import org.kie.dmn.feel.lang.ast.UndefinedValueNode;
 import org.kie.dmn.feel.lang.ast.Visitor;
 
 public abstract class DefaultedVisitor<T> implements Visitor<T> {
@@ -239,5 +240,11 @@ public abstract class DefaultedVisitor<T> implements Visitor<T> {
     public T visit(FunctionTypeNode n) {
         return defaultVisit(n);
     }
+
+    @Override
+    public T visit(UndefinedValueNode n) {
+        return defaultVisit(n);
+    }
+
 
 }

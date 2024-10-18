@@ -172,7 +172,7 @@ public class ASTBuilderVisitor
         BaseNode end = visit( ctx.end );
         RangeNode.IntervalBoundary low = ctx.low.getText().equals( "[" ) ? RangeNode.IntervalBoundary.CLOSED : RangeNode.IntervalBoundary.OPEN;
         RangeNode.IntervalBoundary up = ctx.up.getText().equals( "]" ) ? RangeNode.IntervalBoundary.CLOSED : RangeNode.IntervalBoundary.OPEN;
-        return ASTBuilderFactory.newIntervalNode( ctx, low, start, end, up, false, false);
+        return ASTBuilderFactory.newIntervalNode( ctx, low, start, end, up);
     }
 
     @Override
@@ -188,17 +188,13 @@ public class ASTBuilderVisitor
         String op = ctx.op.getText();
         switch (UnaryOperator.determineOperator(op)) {
             case GT:
-                return ASTBuilderFactory.newIntervalNode(ctx, RangeNode.IntervalBoundary.OPEN, value, ASTBuilderFactory.newNullNode(ctx), RangeNode.IntervalBoundary.OPEN, 
-                    false, true);
+                return ASTBuilderFactory.newIntervalNode(ctx, RangeNode.IntervalBoundary.OPEN, value, ASTBuilderFactory.newUndefinedValueNode(ctx), RangeNode.IntervalBoundary.OPEN);
             case GTE:
-                return ASTBuilderFactory.newIntervalNode(ctx, RangeNode.IntervalBoundary.CLOSED, value, ASTBuilderFactory.newNullNode(ctx), RangeNode.IntervalBoundary.OPEN,
-                false, true);
+                return ASTBuilderFactory.newIntervalNode(ctx, RangeNode.IntervalBoundary.CLOSED, value, ASTBuilderFactory.newUndefinedValueNode(ctx), RangeNode.IntervalBoundary.OPEN);
             case LT:
-                return ASTBuilderFactory.newIntervalNode(ctx, RangeNode.IntervalBoundary.OPEN, ASTBuilderFactory.newNullNode(ctx), value, RangeNode.IntervalBoundary.OPEN,
-                true, false);
+                return ASTBuilderFactory.newIntervalNode(ctx, RangeNode.IntervalBoundary.OPEN, ASTBuilderFactory.newUndefinedValueNode(ctx), value, RangeNode.IntervalBoundary.OPEN);
             case LTE:
-                return ASTBuilderFactory.newIntervalNode(ctx, RangeNode.IntervalBoundary.OPEN, ASTBuilderFactory.newNullNode(ctx), value, RangeNode.IntervalBoundary.CLOSED,
-                true, false);
+                return ASTBuilderFactory.newIntervalNode(ctx, RangeNode.IntervalBoundary.OPEN, ASTBuilderFactory.newUndefinedValueNode(ctx), value, RangeNode.IntervalBoundary.CLOSED);
             default:
                 throw new UnsupportedOperationException("by the parser rule FEEL grammar rule 7.a for range syntax should not have determined the operator " + op);
         }
