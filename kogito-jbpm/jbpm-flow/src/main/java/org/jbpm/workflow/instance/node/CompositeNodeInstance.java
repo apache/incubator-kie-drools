@@ -54,7 +54,7 @@ import static org.kie.kogito.internal.process.runtime.KogitoProcessInstance.STAT
 
 /**
  * Runtime counterpart of a composite node.
- * 
+ *
  */
 public class CompositeNodeInstance extends StateBasedNodeInstance implements NodeInstanceContainer, EventNodeInstanceInterface, EventBasedNodeInstanceInterface {
 
@@ -190,7 +190,7 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
     @Override
     public void addNodeInstance(final NodeInstance nodeInstance) {
         if (nodeInstance.getStringId() == null) {
-            // assign new id only if it does not exist as it might already be set by marshalling 
+            // assign new id only if it does not exist as it might already be set by marshalling
             // it's important to keep same ids of node instances as they might be references e.g. exclusive group
             ((NodeInstanceImpl) nodeInstance).setId(UUID.randomUUID().toString());
         }
@@ -204,7 +204,7 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
 
     @Override
     public Collection<org.kie.api.runtime.process.NodeInstance> getNodeInstances() {
-        return new ArrayList<>(getNodeInstances(false));
+        return Collections.unmodifiableCollection(nodeInstances);
     }
 
     @Override
