@@ -19,17 +19,17 @@
 package org.drools.compiler.integrationtests.operators;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.drools.testcoverage.common.model.MyFact;
 import org.drools.testcoverage.common.model.Person;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
@@ -45,22 +45,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-@RunWith(Parameterized.class)
 public class EnabledTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public EnabledTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
-    }
-
     @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(false).stream();
     }
 
-    @Test
-    public void testEnabledExpression() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testEnabledExpression(KieBaseTestConfiguration kieBaseTestConfiguration) {
 
         final String drl = "package org.drools.compiler.integrationtests.operators;\n" +
                 "import " + Person.class.getCanonicalName() + ";\n" +
@@ -129,8 +123,9 @@ public class EnabledTest {
         }
     }
 
-    @Test
-    public void testEnabledExpression2() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testEnabledExpression2(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "import " + MyFact.class.getName() + ";\n" +
                 "rule R1\n" +
                 "    enabled( rule.name == $f.name )" +
