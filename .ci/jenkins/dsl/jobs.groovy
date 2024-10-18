@@ -75,7 +75,7 @@ void setupProjectDroolsJob(String droolsBranch) {
         JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
         NOTIFICATION_JOB_NAME: 'Drools snapshot check',
         DROOLS_BRANCH: droolsBranch,
-        MAVEN_SETTINGS_CONFIG_FILE_ID: "${MAVEN_SETTINGS_FILE_ID}",
+        MAVEN_SETTINGS_CONFIG_FILE_ID: Utils.getMavenSettingsConfigFileId(this, JobType.NIGHTLY.name),
 
         GIT_AUTHOR_CREDS_ID: "${GIT_AUTHOR_CREDENTIALS_ID}",
     ])
@@ -116,7 +116,7 @@ void setupProjectNightlyJob() {
         GIT_AUTHOR: "${GIT_AUTHOR_NAME}",
         GIT_AUTHOR_CREDS_ID: "${GIT_AUTHOR_CREDENTIALS_ID}",
 
-        MAVEN_SETTINGS_CONFIG_FILE_ID: "${MAVEN_SETTINGS_FILE_ID}",
+        MAVEN_SETTINGS_CONFIG_FILE_ID: Utils.getMavenSettingsConfigFileId(this, JobType.NIGHTLY.name),
         ARTIFACTS_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
         OPTAPLANNER_LATEST_STREAM: "${GIT_MAIN_BRANCH}"
     ])
@@ -174,7 +174,7 @@ void setupProjectPostReleaseJob() {
         GIT_AUTHOR_CREDS_ID: "${GIT_AUTHOR_CREDENTIALS_ID}",
         GIT_AUTHOR_PUSH_CREDS_ID: "${GIT_AUTHOR_PUSH_CREDENTIALS_ID}",
 
-        MAVEN_SETTINGS_CONFIG_FILE_ID: "${MAVEN_SETTINGS_FILE_ID}",
+        MAVEN_SETTINGS_CONFIG_FILE_ID: Utils.getMavenSettingsConfigFileId(this, JobType.RELEASE.name),
         MAVEN_DEPENDENCIES_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
 
         GITHUB_CLI_VERSION: '0.11.1',
@@ -238,7 +238,7 @@ setupSpecificBuildChainNightlyJob('native')
 
 // Release jobs
 setupDeployJob(JobType.RELEASE)
-setupPromoteJob(JobType.RELEASE)
+setupPromoteJob()
 
 // Weekly deploy job
 setupWeeklyDeployJob()
@@ -274,7 +274,7 @@ void createSetupBranchJob() {
         GIT_AUTHOR_CREDS_ID: "${GIT_AUTHOR_CREDENTIALS_ID}",
         GIT_AUTHOR_PUSH_CREDS_ID: "${GIT_AUTHOR_PUSH_CREDENTIALS_ID}",
 
-        MAVEN_SETTINGS_CONFIG_FILE_ID: "${MAVEN_SETTINGS_FILE_ID}",
+        MAVEN_SETTINGS_CONFIG_FILE_ID: Utils.getMavenSettingsConfigFileId(this, JobType.NIGHTLY.name),
 
         IS_MAIN_BRANCH: "${Utils.isMainBranch(this)}",
         OPTAPLANNER_LATEST_STREAM: "${GIT_MAIN_BRANCH}"
@@ -304,7 +304,7 @@ void setupDeployJob(JobType jobType, String envName = '') {
         PROPERTIES_FILE_NAME: 'deployment.properties',
 
         JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
-        MAVEN_SETTINGS_CONFIG_FILE_ID: "${MAVEN_SETTINGS_FILE_ID}",
+        MAVEN_SETTINGS_CONFIG_FILE_ID: Utils.getMavenSettingsConfigFileId(this, jobType.name),
         OPTAPLANNER_LATEST_STREAM: "${GIT_MAIN_BRANCH}",
         DISABLE_DEPLOY: Utils.isDeployDisabled(this),
 
@@ -326,8 +326,8 @@ void setupDeployJob(JobType jobType, String envName = '') {
 
             MAVEN_DEPENDENCIES_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
 
-            MAVEN_DEPLOY_REPOSITORY: "${MAVEN_ARTIFACTS_UPLOAD_REPOSITORY_URL}",
-            MAVEN_REPO_CREDS_ID: "${MAVEN_ARTIFACTS_UPLOAD_REPOSITORY_CREDS_ID}",
+            MAVEN_DEPLOY_REPOSITORY: Utils.getMavenArtifactsUploadRepositoryUrl(this, jobType.name),
+            MAVEN_REPO_CREDS_ID: Utils.getMavenArtifactsUploadRepositoryCredentialsId(this, jobType.name),
 
             OPERATOR_IMAGE_NAME: 'optaplanner-operator',
             MAX_REGISTRY_RETRIES: 3,
@@ -371,8 +371,8 @@ void setupDeployJob(JobType jobType, String envName = '') {
     }
 }
 
-void setupPromoteJob(JobType jobType) {
-    def jobParams = JobParamsUtils.getBasicJobParams(this, 'optaplanner-promote', jobType, "${jenkins_path}/Jenkinsfile.promote", 'Optaplanner Promote')
+void setupPromoteJob() {
+    def jobParams = JobParamsUtils.getBasicJobParams(this, 'optaplanner-promote', JobType.RELEASE, "${jenkins_path}/Jenkinsfile.promote", 'Optaplanner Promote')
     JobParamsUtils.setupJobParamsAgentDockerBuilderImageConfiguration(this, jobParams)
     jobParams.env.putAll([
         JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
@@ -382,7 +382,7 @@ void setupPromoteJob(JobType jobType) {
         GIT_AUTHOR_CREDS_ID: "${GIT_AUTHOR_CREDENTIALS_ID}",
         GIT_AUTHOR_PUSH_CREDS_ID: "${GIT_AUTHOR_PUSH_CREDENTIALS_ID}",
 
-        MAVEN_SETTINGS_CONFIG_FILE_ID: "${MAVEN_SETTINGS_FILE_ID}",
+        MAVEN_SETTINGS_CONFIG_FILE_ID: Utils.getMavenSettingsConfigFileId(this, JobType.RELEASE.name),
         MAVEN_DEPENDENCIES_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
         MAVEN_DEPLOY_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
 
@@ -421,7 +421,7 @@ void setupOptaPlannerTurtleTestsJob(String constraintStreamImplType) {
     jobParams.env.putAll([
             CONSTRAINT_STREAM_IMPL_TYPE: "${constraintStreamImplType}",
             JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
-            MAVEN_SETTINGS_CONFIG_FILE_ID: "${MAVEN_SETTINGS_FILE_ID}",
+            MAVEN_SETTINGS_CONFIG_FILE_ID: Utils.getMavenSettingsConfigFileId(this, JobType.NIGHTLY.name),
     ])
     jobParams.triggers = [ cron : 'H H * * 5' ] // Run every Friday.
     KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
@@ -443,10 +443,10 @@ void setupWeeklyDeployJob() {
         GIT_AUTHOR_CREDS_ID: "${GIT_AUTHOR_CREDENTIALS_ID}",
         GIT_AUTHOR_PUSH_CREDS_ID: "${GIT_AUTHOR_PUSH_CREDENTIALS_ID}",
 
-        MAVEN_SETTINGS_CONFIG_FILE_ID: "${MAVEN_SETTINGS_FILE_ID}",
+        MAVEN_SETTINGS_CONFIG_FILE_ID: Utils.getMavenSettingsConfigFileId(this, JobType.NIGHTLY.name),
         MAVEN_DEPENDENCIES_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
-        MAVEN_DEPLOY_REPOSITORY: "${MAVEN_ARTIFACTS_UPLOAD_REPOSITORY_URL}",
-        MAVEN_REPO_CREDS_ID: "${MAVEN_ARTIFACTS_UPLOAD_REPOSITORY_CREDS_ID}",
+        MAVEN_DEPLOY_REPOSITORY: Utils.getMavenArtifactsUploadRepositoryUrl(this, JobType.NIGHTLY.name),
+        MAVEN_REPO_CREDS_ID: Utils.getMavenArtifactsUploadRepositoryCredentialsId(this, JobType.NIGHTLY.name),
 
         DISABLE_DEPLOY: Utils.isDeployDisabled(this),
     ])
