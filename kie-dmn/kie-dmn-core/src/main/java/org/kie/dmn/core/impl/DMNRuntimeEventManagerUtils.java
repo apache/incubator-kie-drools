@@ -103,9 +103,9 @@ public final class DMNRuntimeEventManagerUtils {
         }
     }
 
-    public static void fireAfterEvaluateDecisionTable( DMNRuntimeEventManager eventManager, String nodeName, String dtName, String dtId, DMNResult result, List<Integer> matches, List<Integer> fired ) {
+    public static void fireAfterEvaluateDecisionTable( DMNRuntimeEventManager eventManager, String nodeName, String dtName, String dtId, DMNResult result, List<Integer> matches, List<Integer> fired, List<String> matchedIds, List<String> firedIds ) {
         if( eventManager.hasListeners() ) {
-            AfterEvaluateDecisionTableEvent event = new AfterEvaluateDecisionTableEventImpl(nodeName, dtName, dtId, result, matches, fired);
+            AfterEvaluateDecisionTableEvent event = new AfterEvaluateDecisionTableEventImpl(nodeName, dtName, dtId, result, matches, fired, matchedIds, firedIds);
             notifyListeners(eventManager, l -> l.afterEvaluateDecisionTable(event));
         }
     }

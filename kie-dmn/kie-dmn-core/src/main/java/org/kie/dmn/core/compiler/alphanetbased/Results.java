@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -29,9 +29,9 @@ import java.util.stream.Stream;
 import org.drools.model.functions.Function1;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.runtime.decisiontables.DTDecisionRule;
 import org.kie.dmn.feel.runtime.decisiontables.DecisionTable;
 import org.kie.dmn.feel.runtime.decisiontables.HitPolicy;
-import org.kie.dmn.feel.runtime.decisiontables.Indexed;
 import org.kie.dmn.feel.runtime.events.DecisionTableRulesMatchedEvent;
 import org.kie.dmn.feel.runtime.events.HitPolicyViolationEvent;
 
@@ -49,7 +49,8 @@ public class Results {
 
         public void addResult(ResultObject resultObject) {
             resultGroupedByRow
-                    .computeIfAbsent(resultObject.row, i -> new ArrayList<>(1)) // 10 (the default for Java) columns output are not that usual
+                    .computeIfAbsent(resultObject.row, i -> new ArrayList<>(1)) // 10 (the default for Java) columns
+                    // output are not that usual
                     .add(resultObject);
         }
 
@@ -57,8 +58,8 @@ public class Results {
             resultGroupedByRow.clear();
         }
 
-        List<Indexed> matches() {
-            return indexes().map(i -> (Indexed) () -> i).collect(toList());
+        List<DTDecisionRule> matches() {
+            return indexes().map(i -> new DTDecisionRule(i, null)).collect(toList());
         }
 
         private Stream<Integer> indexes() {
@@ -147,25 +148,39 @@ public class Results {
             }
             events.add(new HitPolicyViolationEvent(
                     FEELEvent.Severity.WARN,
-                    String.format("No rule matched for decision table '%s' and no default values were defined. Setting result to null.", decisionTable.getName()),
+                    String.format("No rule matched for decision table '%s' and no default values were defined. " +
+                                          "Setting result to null.", decisionTable.getName()),
                     decisionTable.getName(),
                     Collections.emptyList()));
         }
 
-        List<? extends Indexed> matchIndexes = items.matches();
-        evaluationContext.notifyEvt( () -> {
-                               List<Integer> matchedIndexes = matchIndexes.stream().map( dr -> dr.getIndex() + 1 ).collect(Collectors.toList() );
-                               return new DecisionTableRulesMatchedEvent(FEELEvent.Severity.INFO,
-                                                                         String.format("Rules matched for decision table '%s': %s", decisionTable.getName(), matchIndexes),
-                                                                         decisionTable.getName(),
-                                                                         decisionTable.getName(),
-                                                                         matchedIndexes );
-                           }
+        List<DTDecisionRule> matchingDecisionRules = items.matches();
+        evaluationContext.notifyEvt(() -> {
+                                        List<Integer> matches = new ArrayList<>();
+                                        List<String> matchesId = new ArrayList<>();
+                                        matchingDecisionRules.forEach(dr -> {
+                                            matches.add(dr.getIndex() + 1);
+                                            if (dr.getId() != null && !dr.getId().isEmpty()) {
+                                                matchesId.add(dr.getId());
+                                            }
+                                        });
+                                        return new DecisionTableRulesMatchedEvent(FEELEvent.Severity.INFO,
+                                                                                  String.format("Rules matched for " +
+                                                                                                        "decision " +
+                                                                                                        "table '%s': " +
+                                                                                                        "%s",
+                                                                                                decisionTable.getName(), matchingDecisionRules),
+                                                                                  decisionTable.getName(),
+                                                                                  decisionTable.getName(),
+                                                                                  matches,
+                                                                                  matchesId);
+                                    }
         );
 
         List<Object> resultObjects = items.evaluateResults(evaluationContext);
 
-        Map<Integer, String> errorMessages = checkResults(decisionTable.getOutputs(), evaluationContext, matchIndexes, resultObjects );
+        Map<Integer, String> errorMessages = checkResults(decisionTable.getOutputs(), evaluationContext, matchingDecisionRules
+                , resultObjects);
         if (!errorMessages.isEmpty()) {
             List<Integer> offending = new ArrayList<>(errorMessages.keySet());
             events.add(new HitPolicyViolationEvent(
@@ -178,6 +193,6 @@ public class Results {
             return null;
         }
 
-        return hitPolicy.getDti().dti(evaluationContext, decisionTable, matchIndexes, resultObjects);
+        return hitPolicy.getDti().dti(evaluationContext, decisionTable, matchingDecisionRules, resultObjects);
     }
 }

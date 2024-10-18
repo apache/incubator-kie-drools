@@ -52,11 +52,13 @@ th OutputClause.
  */
 public class DTDecisionRule implements Indexed {
     private int                      index;
+    private String                      id;
     private List<UnaryTest>          inputEntry;
     private List<CompiledExpression> outputEntry;
 
-    public DTDecisionRule(int index) {
+    public DTDecisionRule(int index, String id) {
         this.index = index;
+        this.id = id;
     }
 
     /**
@@ -85,5 +87,9 @@ the output components of this DecisionRule.
 
     public int getIndex() {
         return index;
+    }
+
+    public String getId() {
+        return id;
     }
 }
