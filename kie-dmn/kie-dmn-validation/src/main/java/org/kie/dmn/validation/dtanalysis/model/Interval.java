@@ -75,7 +75,7 @@ public class Interval {
         this.upperBound = new Bound(end, highBoundary, this);
         this.rule = rule;
         this.col = col;
-        this.asRange = new RangeImpl(lowBoundary, nullIfInfinity(start), nullIfInfinity(end), highBoundary);
+        this.asRange = new RangeImpl(lowBoundary, nullIfInfinity(start), nullIfInfinity(end), highBoundary, isValueUndefinedIfInfinity(start), isValueUndefinedIfInfinity(end));
     }
 
     private Interval(Bound<?> lowerBound, Bound<?> upperBound) {
@@ -88,7 +88,8 @@ public class Interval {
             this.rule = 0;
             this.col = 0;
         }
-        this.asRange = new RangeImpl(lowerBound.getBoundaryType(), nullIfInfinity(lowerBound.getValue()), nullIfInfinity(upperBound.getValue()), upperBound.getBoundaryType());
+        this.asRange = new RangeImpl(lowerBound.getBoundaryType(), nullIfInfinity(lowerBound.getValue()), nullIfInfinity(upperBound.getValue()), upperBound.getBoundaryType(),
+            isValueUndefinedIfInfinity(lowerBound.getValue()), isValueUndefinedIfInfinity(upperBound.getValue()));
     }
 
     public static Interval newFromBounds(Bound<?> lowerBound, Bound<?> upperBound) {
@@ -101,6 +102,10 @@ public class Interval {
         } else {
             return null;
         }
+    }
+
+    private static boolean isValueUndefinedIfInfinity(Comparable<?> input) {
+        return input == POS_INF || input == NEG_INF;
     }
 
     @Override

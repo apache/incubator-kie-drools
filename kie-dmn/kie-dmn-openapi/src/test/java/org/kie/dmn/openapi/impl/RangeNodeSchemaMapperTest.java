@@ -71,21 +71,21 @@ class RangeNodeSchemaMapperTest {
 
     @Test
     void consolidateRangesForNumberRange() {
-        Range lowRange = new RangeImpl(Range.RangeBoundary.OPEN, BigDecimal.ONE, null, Range.RangeBoundary.OPEN);
-        Range highRange = new RangeImpl(Range.RangeBoundary.OPEN, null, BigDecimal.TEN, Range.RangeBoundary.CLOSED);
+        Range lowRange = new RangeImpl(Range.RangeBoundary.OPEN, BigDecimal.ONE, null, Range.RangeBoundary.OPEN, false, false);
+        Range highRange = new RangeImpl(Range.RangeBoundary.OPEN, null, BigDecimal.TEN, Range.RangeBoundary.CLOSED, false, false);
         List<RangeNode> ranges = getRangeNodes(lowRange, highRange);
         Range retrieved = RangeNodeSchemaMapper.consolidateRanges(ranges);
         assertThat(retrieved).isNotNull().isEqualTo(new RangeImpl(lowRange.getLowBoundary(), lowRange.getLowEndPoint(),
                                                                   highRange.getHighEndPoint(),
-                                                                  highRange.getHighBoundary()));
+                                                                  highRange.getHighBoundary(), false, false));
     }
 
     @Test
     void consolidateRangesForDateRange() {
         List<LocalDate> expectedDates = Arrays.asList(LocalDate.of(2022, 1, 1), LocalDate.of(2024, 1, 1));
-        Range lowRange = new RangeImpl(Range.RangeBoundary.OPEN, expectedDates.get(0), null, Range.RangeBoundary.OPEN);
+        Range lowRange = new RangeImpl(Range.RangeBoundary.OPEN, expectedDates.get(0), null, Range.RangeBoundary.OPEN, false, false);
         Range highRange = new RangeImpl(Range.RangeBoundary.OPEN, null, expectedDates.get(1),
-                                        Range.RangeBoundary.CLOSED);
+                                        Range.RangeBoundary.CLOSED, false, false);
         List<String> formattedDates = expectedDates.stream()
                 .map(toFormat -> String.format("@\"%s-0%s-0%s\"", toFormat.getYear(), toFormat.getMonthValue(),
                                                toFormat.getDayOfMonth()))
@@ -96,13 +96,13 @@ class RangeNodeSchemaMapperTest {
         Range retrieved = RangeNodeSchemaMapper.consolidateRanges(ranges);
         assertThat(retrieved).isNotNull().isEqualTo(new RangeImpl(lowRange.getLowBoundary(), lowRange.getLowEndPoint(),
                                                                   highRange.getHighEndPoint(),
-                                                                  highRange.getHighBoundary()));
+                                                                  highRange.getHighBoundary(), false, false));
     }
 
     @Test
     void consolidateRangesInvalidRepeatedLB() {
-        Range lowRange = new RangeImpl(Range.RangeBoundary.CLOSED, 0, null, Range.RangeBoundary.CLOSED);
-        Range highRange = new RangeImpl(Range.RangeBoundary.CLOSED, 0, 100, Range.RangeBoundary.CLOSED);
+        Range lowRange = new RangeImpl(Range.RangeBoundary.CLOSED, 0, null, Range.RangeBoundary.CLOSED, false, false);
+        Range highRange = new RangeImpl(Range.RangeBoundary.CLOSED, 0, 100, Range.RangeBoundary.CLOSED, false, false);
         List<RangeNode> ranges = getRangeNodes(lowRange, highRange);
         Range result = RangeNodeSchemaMapper.consolidateRanges(ranges);
         assertThat(result).isNull();
@@ -110,8 +110,8 @@ class RangeNodeSchemaMapperTest {
 
     @Test
     void consolidateRangesInvalidRepeatedUB() {
-        Range lowRange = new RangeImpl(Range.RangeBoundary.CLOSED, null, 50, Range.RangeBoundary.CLOSED);
-        Range highRange = new RangeImpl(Range.RangeBoundary.CLOSED, null, 100, Range.RangeBoundary.CLOSED);
+        Range lowRange = new RangeImpl(Range.RangeBoundary.CLOSED, null, 50, Range.RangeBoundary.CLOSED, false, false);
+        Range highRange = new RangeImpl(Range.RangeBoundary.CLOSED, null, 100, Range.RangeBoundary.CLOSED, false, false);
         List<RangeNode> ranges = getRangeNodes(lowRange, highRange);
         Range result = RangeNodeSchemaMapper.consolidateRanges(ranges);
         assertThat(result).isNull();

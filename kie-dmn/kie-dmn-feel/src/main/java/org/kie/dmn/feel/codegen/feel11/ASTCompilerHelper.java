@@ -40,6 +40,7 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.stmt.ThrowStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
+import com.github.javaparser.utils.CodeGenerationUtils;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.ast.AtLiteralNode;
 import org.kie.dmn.feel.lang.ast.BaseNode;
@@ -427,10 +428,16 @@ public class ASTCompilerHelper {
         Expression upperBoundExpression = getEnumExpression(n.getUpperBound());
         Expression startExpression = getNodeExpression(n.getStart());
         Expression endExpression = getNodeExpression(n.getEnd());
-        return addVariableDeclaratorWithObjectCreation(RANGENODE_CT, NodeList.nodeList(lowerBoundExpression,
-                                                                                       upperBoundExpression,
-                                                                                       startExpression,
-                                                                                       endExpression), n.getText());
+        Expression isLowerBoundaryValueUndefined = getNodeExpression(new BooleanNode(n.isLowerBoundaryValueUndefined(), String.valueOf(n.isLowerBoundaryValueUndefined())));
+        Expression isUpperBoundaryValueUndefined = getNodeExpression(new BooleanNode(n.isUpperBoundaryValueUndefined(), String.valueOf(n.isUpperBoundaryValueUndefined())));
+        return addVariableDeclaratorWithObjectCreation(RANGENODE_CT,
+                NodeList.nodeList(lowerBoundExpression,
+                    upperBoundExpression,
+                    startExpression,
+                    endExpression,
+                    isLowerBoundaryValueUndefined,
+                    isUpperBoundaryValueUndefined),
+                n.getText());
     }
 
     public BlockStmt add(RangeTypeNode n) {
