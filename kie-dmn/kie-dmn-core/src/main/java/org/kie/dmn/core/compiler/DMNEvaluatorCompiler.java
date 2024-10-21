@@ -678,7 +678,7 @@ public class DMNEvaluatorCompiler implements DMNDecisionLogicCompiler {
         java.util.List<DTDecisionRule> rules = new ArrayList<>();
         index = 0;
         for ( DecisionRule dr : dt.getRule() ) {
-            DTDecisionRule rule = new DTDecisionRule( index );
+            DTDecisionRule rule = new DTDecisionRule( index, dr.getId() );
             for ( int i = 0; i < dr.getInputEntry().size(); i++ ) {
                 UnaryTests ut = dr.getInputEntry().get(i);
                 final java.util.List<UnaryTest> tests;
