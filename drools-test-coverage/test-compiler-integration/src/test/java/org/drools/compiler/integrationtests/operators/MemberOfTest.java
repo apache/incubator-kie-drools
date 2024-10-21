@@ -38,13 +38,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemberOfTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public MemberOfTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
-    }
-
-    public static Stream<KieBaseTestConfiguration> getParameters() {
+    public static Stream<KieBaseTestConfiguration> parameters() {
         return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
