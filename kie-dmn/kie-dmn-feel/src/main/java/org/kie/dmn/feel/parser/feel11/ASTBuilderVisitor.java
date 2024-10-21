@@ -114,6 +114,11 @@ public class ASTBuilderVisitor
     }
 
     @Override
+    public BaseNode visitUndefinedvalue(FEEL_1_1Parser.UndefinedvalueContext ctx) {
+        return ASTBuilderFactory.newUndefinedValueNode( ctx );
+    }
+
+    @Override
     public BaseNode visitStringLiteral(FEEL_1_1Parser.StringLiteralContext ctx) {
         return ASTBuilderFactory.newStringNode( ctx );
     }

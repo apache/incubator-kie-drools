@@ -36,6 +36,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.impl.RangeImpl;
+import org.kie.dmn.feel.runtime.impl.UndefinedValueComparable;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -98,6 +99,7 @@ public class FEELCodeMarshallerTest {
                 // ranges
                 { new RangeImpl( Range.RangeBoundary.CLOSED, "a", "z", Range.RangeBoundary.OPEN), "[ \"a\" .. \"z\" )" },
                 { new RangeImpl( Range.RangeBoundary.CLOSED, Duration.ofHours( 30 ), Duration.ofHours( 50 ), Range.RangeBoundary.OPEN), "[ duration( \"P1DT6H\" ) .. duration( \"P2DT2H\" ) )" },
+                { new RangeImpl(Range.RangeBoundary.CLOSED, "a", new UndefinedValueComparable(), Range.RangeBoundary.OPEN), "[ \"a\" .. undefinedvalue )" },
                 // context
                 { new LinkedHashMap() {{ put( "Full Name", "John Doe"); put( "Age", 35 ); put( "Date of Birth", LocalDate.of( 1982, 6, 9 ) ); }},
                   "{ Full Name : \"John Doe\", Age : 35, Date of Birth : date( \"1982-06-09\" ) }" },
