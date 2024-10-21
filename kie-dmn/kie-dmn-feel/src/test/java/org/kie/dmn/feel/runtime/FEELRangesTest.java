@@ -43,7 +43,11 @@ public class FEELRangesTest extends BaseFEELTest {
 
     private static Collection<Object[]> data() {
         final Object[][] cases = new Object[][]{
-                 {"(>1)", new RangeImpl(Range.RangeBoundary.OPEN, BigDecimal.ONE, new UndefinedValueComparable(), Range.RangeBoundary.OPEN), null},
+                // when converting from unary tests, boundaries are dictated by comparison
+                {"(>1)", new RangeImpl(Range.RangeBoundary.OPEN, BigDecimal.ONE, new UndefinedValueComparable(), Range.RangeBoundary.OPEN), null},
+                {"(>=1)", new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.ONE, new UndefinedValueComparable(), Range.RangeBoundary.OPEN), null},
+                {"(<1)", new RangeImpl(Range.RangeBoundary.OPEN, new UndefinedValueComparable(), BigDecimal.ONE, Range.RangeBoundary.OPEN), null},
+                {"(<=1)", new RangeImpl(Range.RangeBoundary.OPEN, new UndefinedValueComparable(), BigDecimal.ONE, Range.RangeBoundary.CLOSED), null},
                  {"(null..10)", new RangeImpl(Range.RangeBoundary.OPEN, null, BigDecimal.valueOf(10), Range.RangeBoundary.OPEN), null},
                  {"[1..2]", new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.ONE, BigDecimal.valueOf(2), Range.RangeBoundary.CLOSED), null},
                  {"[2..1]", new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.valueOf(2), BigDecimal.ONE, Range.RangeBoundary.CLOSED), null},

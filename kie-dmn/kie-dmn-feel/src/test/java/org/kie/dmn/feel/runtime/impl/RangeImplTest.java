@@ -22,8 +22,34 @@ import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.runtime.Range;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class RangeImplTest {
+
+    @Test
+    void isWithUndefined() {
+        RangeImpl rangeImpl = new RangeImpl(Range.RangeBoundary.CLOSED, null, null, Range.RangeBoundary.OPEN);
+        assertThat(rangeImpl.isWithUndefined()).isFalse();
+        rangeImpl = new RangeImpl(Range.RangeBoundary.CLOSED, 10, null, Range.RangeBoundary.OPEN);
+        assertThat(rangeImpl.isWithUndefined()).isFalse();
+        rangeImpl = new RangeImpl(Range.RangeBoundary.CLOSED, null, 10, Range.RangeBoundary.OPEN);
+        assertThat(rangeImpl.isWithUndefined()).isFalse();
+        rangeImpl = new RangeImpl(Range.RangeBoundary.CLOSED, null, new UndefinedValueComparable(), Range.RangeBoundary.OPEN);
+        assertThat(rangeImpl.isWithUndefined()).isTrue();
+        rangeImpl = new RangeImpl(Range.RangeBoundary.CLOSED, new UndefinedValueComparable(), null, Range.RangeBoundary.OPEN);
+        assertThat(rangeImpl.isWithUndefined()).isTrue();
+        rangeImpl = new RangeImpl(Range.RangeBoundary.CLOSED, 10, new UndefinedValueComparable(), Range.RangeBoundary.OPEN);
+        assertThat(rangeImpl.isWithUndefined()).isTrue();
+        rangeImpl = new RangeImpl(Range.RangeBoundary.CLOSED, new UndefinedValueComparable(), 10, Range.RangeBoundary.OPEN);
+        assertThat(rangeImpl.isWithUndefined()).isTrue();
+    }
+
+    @Test
+    void constructorException() {
+        assertThatThrownBy(() -> new RangeImpl(Range.RangeBoundary.CLOSED, new UndefinedValueComparable(), new UndefinedValueComparable(), Range.RangeBoundary.OPEN))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Endpoints can't be both undefined");
+    }
 
     @Test
     void getLowBoundary() {
@@ -52,20 +78,6 @@ class RangeImplTest {
         final RangeImpl rangeImpl = new RangeImpl(Range.RangeBoundary.OPEN, 10, 15, highBoundary);
         assertThat(rangeImpl.getHighBoundary()).isEqualTo(highBoundary);
     }
-
-//    //@Test
-//    void isLowerBoundaryValueUndefined() {
-//        final boolean isLowerBoundaryValueUndefined = true;
-//        final RangeImpl rangeImpl = new RangeImpl(Range.RangeBoundary.OPEN, 10, 15, Range.RangeBoundary.OPEN, isLowerBoundaryValueUndefined, false);
-//        assertThat(rangeImpl.isLowerBoundaryValueUndefined()).isEqualTo(isLowerBoundaryValueUndefined);
-//    }
-//
-//    @Test
-//    void isUpperBoundaryValueUndefined() {
-//        final boolean isUpperBoundaryValueUndefined = true;
-//        final RangeImpl rangeImpl = new RangeImpl(Range.RangeBoundary.OPEN, 10, 15, Range.RangeBoundary.OPEN, false, true);
-//        assertThat(rangeImpl.isUpperBoundaryValueUndefined()).isEqualTo(isUpperBoundaryValueUndefined);
-//    }
 
     @Test
     void includes() {
@@ -107,17 +119,10 @@ class RangeImplTest {
         assertThat(rangeImpl.includes(20)).isNull();
         assertThat(rangeImpl.includes(null)).isNull();
 
-        // This seems unrealistic, since a real value - e.g. 15 - is treated as isUpperBoundaryValueUndefined
-//        rangeImpl = new RangeImpl(Range.RangeBoundary.CLOSED, null, 15, Range.RangeBoundary.CLOSED, false, true);
-//        assertThat(rangeImpl.includes(-1456)).isFalse();
-//        assertThat(rangeImpl.includes(20)).isFalse();
-//        assertThat(rangeImpl.includes(null)).isNull();
-//
-        // This seems unrealistic, since a real value - e.g. 15 - is treated as isLowerBoundaryValueUndefined
-//        rangeImpl = new RangeImpl(Range.RangeBoundary.CLOSED, 15, null, Range.RangeBoundary.CLOSED, true, false);
-//        assertThat(rangeImpl.includes(-1456)).isFalse();
-//        assertThat(rangeImpl.includes(20)).isFalse();
-//        assertThat(rangeImpl.includes(null)).isNull();
+        rangeImpl = new RangeImpl(Range.RangeBoundary.CLOSED, new UndefinedValueComparable(), null, Range.RangeBoundary.CLOSED);
+        assertThat(rangeImpl.includes(-1456)).isNull();
+        assertThat(rangeImpl.includes(20)).isNull();
+        assertThat(rangeImpl.includes(null)).isNull();
     }
 
     @Test

@@ -40,7 +40,6 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.stmt.ThrowStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
-import com.github.javaparser.utils.CodeGenerationUtils;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.ast.AtLiteralNode;
 import org.kie.dmn.feel.lang.ast.BaseNode;
@@ -494,7 +493,7 @@ public class ASTCompilerHelper {
     }
 
     public BlockStmt add(UndefinedValueNode n) {
-        return addVariableDeclaratorWithObjectCreation(UNDEFINEDVALUENODE_CT, NodeList.nodeList(), n.getText());
+        return addVariableDeclaratorWithObjectCreation(UNDEFINEDVALUENODE_CT, NodeList.nodeList());
     }
 
     public String getLastVariableName() {

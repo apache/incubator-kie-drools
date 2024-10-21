@@ -62,7 +62,7 @@ public class FEELContextsTest extends BaseFEELTest {
                         new HashMap<String,Object>() {{
                             put( "startdate", LocalDate.of(1978, 9, 12) );
                             put( "enddate", LocalDate.of(1978, 10, 13) );
-                            put( "rangedates", new RangeImpl( Range.RangeBoundary.CLOSED, LocalDate.of(1978, 9, 12), LocalDate.of(1978, 10, 13), Range.RangeBoundary.CLOSED));
+                            put( "rangedates", new RangeImpl( Range.RangeBoundary.CLOSED, LocalDate.of(1978, 9, 12), LocalDate.of(1978, 10, 13), Range.RangeBoundary.CLOSED ) );
                 }}, null },
 
                 // testing the non-breakable space character

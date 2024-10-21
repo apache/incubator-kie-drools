@@ -20,8 +20,14 @@ package org.kie.dmn.feel.runtime.impl;
 
 import java.util.function.BiPredicate;
 
+import org.kie.dmn.feel.lang.ast.UnaryTestNode;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.util.BooleanEvalHelper;
+
+import static org.kie.dmn.feel.lang.ast.UnaryTestNode.UnaryOperator.GT;
+import static org.kie.dmn.feel.lang.ast.UnaryTestNode.UnaryOperator.GTE;
+import static org.kie.dmn.feel.lang.ast.UnaryTestNode.UnaryOperator.LT;
+import static org.kie.dmn.feel.lang.ast.UnaryTestNode.UnaryOperator.LTE;
 
 public class RangeImpl
         implements Range {
@@ -30,6 +36,7 @@ public class RangeImpl
     private RangeBoundary highBoundary;
     private Comparable    lowEndPoint;
     private Comparable    highEndPoint;
+    private boolean withUndefined = false;
 
     public RangeImpl() {
     }
@@ -39,6 +46,10 @@ public class RangeImpl
         this.highBoundary = highBoundary;
         this.lowEndPoint = lowEndPoint;
         this.highEndPoint = highEndPoint;
+        if (lowEndPoint instanceof UndefinedValueComparable && highEndPoint instanceof UndefinedValueComparable) {
+            throw new IllegalArgumentException("Endpoints can't be both undefined");
+        }
+        withUndefined = lowEndPoint instanceof UndefinedValueComparable || highEndPoint instanceof UndefinedValueComparable;
     }
 
     @Override
@@ -67,7 +78,7 @@ public class RangeImpl
             return null;
         }
         if (lowEndPoint == null || lowEndPoint instanceof UndefinedValueComparable) {
-            if (highEndPoint == null) {
+            if (highEndPoint == null || highEndPoint instanceof UndefinedValueComparable) {
                 return null;
             } else if (lowEndPoint != null) { // it means it is UndefinedValueComparable
                 return negInfRangeIncludes(param);
@@ -84,6 +95,15 @@ public class RangeImpl
             }
         }
     }
+
+    @Override
+    public boolean isWithUndefined() {
+        return withUndefined;
+    }
+
+//    boolean nullLowEndpointIncludes(Object param) {
+//        if ()
+//    }
 
     private Boolean finiteRangeIncludes(Object param) {
         if (lowBoundary == RangeBoundary.OPEN && highBoundary == RangeBoundary.OPEN) {
@@ -157,9 +177,36 @@ public class RangeImpl
 
     @Override
     public String toString() {
+        return withUndefined ? withUndefinedtoString() : withoutUndefinedtoString();
+    }
+
+    private String withoutUndefinedtoString() {
         return (lowBoundary == RangeBoundary.OPEN ? "(" : "[") +
-               " " + lowEndPoint +
-               " .. " + highEndPoint +
-               " " + ( highBoundary == RangeBoundary.OPEN ? ")" : "]" );
+                " " + lowEndPoint +
+                " .. " + highEndPoint +
+                " " + ( highBoundary == RangeBoundary.OPEN ? ")" : "]" );
+    }
+
+    private String withUndefinedtoString() {
+        StringBuilder sb = new StringBuilder("( ");
+        if (lowEndPoint instanceof UndefinedValueComparable) {
+            if (highBoundary == RangeBoundary.OPEN) {
+                sb.append(LT.symbol);
+            } else {
+                sb.append(LTE.symbol);
+            }
+            sb.append(" ");
+            sb.append(highEndPoint);
+        } else if (highEndPoint instanceof UndefinedValueComparable) {
+            if (lowBoundary == RangeBoundary.OPEN) {
+                sb.append(GT.symbol);
+            } else {
+                sb.append(GTE.symbol);
+            }
+            sb.append(" ");
+            sb.append(lowEndPoint);
+        }
+        sb.append(" )");
+        return sb.toString();
     }
 }

@@ -18,20 +18,13 @@
  */
 package org.kie.dmn.feel.lang.ast;
 
-import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.runtime.impl.UndefinedValueComparable;
 
 public class UndefinedValueNode
         extends BaseNode {
 
-    public UndefinedValueNode(ParserRuleContext ctx) {
-        super( ctx );
-    }
-
-    public UndefinedValueNode(String text) {
-        this.setText(text);
-    }
+    public UndefinedValueNode() { }
 
     @Override
     public Object evaluate(EvaluationContext ctx) {

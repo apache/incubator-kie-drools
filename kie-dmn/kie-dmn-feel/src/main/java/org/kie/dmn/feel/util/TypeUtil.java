@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -41,6 +41,13 @@ import org.kie.dmn.feel.runtime.custom.ZoneTime;
 import org.kie.dmn.feel.runtime.functions.DateAndTimeFunction;
 import org.kie.dmn.feel.runtime.functions.DateFunction;
 import org.kie.dmn.feel.runtime.functions.TimeFunction;
+import org.kie.dmn.feel.runtime.impl.RangeImpl;
+import org.kie.dmn.feel.runtime.impl.UndefinedValueComparable;
+
+import static org.kie.dmn.feel.lang.ast.UnaryTestNode.UnaryOperator.GT;
+import static org.kie.dmn.feel.lang.ast.UnaryTestNode.UnaryOperator.GTE;
+import static org.kie.dmn.feel.lang.ast.UnaryTestNode.UnaryOperator.LT;
+import static org.kie.dmn.feel.lang.ast.UnaryTestNode.UnaryOperator.LTE;
 
 public final class TypeUtil {
 
@@ -78,7 +85,8 @@ public final class TypeUtil {
         } else if (val instanceof ZoneTime zoneTime) {
             return formatTimeString(zoneTime.format(), wrapForCodeUsage);
         } else if (val instanceof LocalDateTime || val instanceof OffsetDateTime) {
-            return formatDateTimeString(DateAndTimeFunction.FEEL_DATE_TIME.format((TemporalAccessor) val), wrapForCodeUsage);
+            return formatDateTimeString(DateAndTimeFunction.FEEL_DATE_TIME.format((TemporalAccessor) val),
+                                        wrapForCodeUsage);
         } else if (val instanceof ZonedDateTime) {
             TemporalAccessor ta = (TemporalAccessor) val;
             ZoneId zone = ta.query(TemporalQueries.zone());
@@ -86,7 +94,8 @@ public final class TypeUtil {
                 // it is a ZoneRegion
                 return formatDateTimeString(DateAndTimeFunction.REGION_DATETIME_FORMATTER.format((TemporalAccessor) val), wrapForCodeUsage);
             } else {
-                return formatDateTimeString(DateAndTimeFunction.FEEL_DATE_TIME.format((TemporalAccessor) val), wrapForCodeUsage);
+                return formatDateTimeString(DateAndTimeFunction.FEEL_DATE_TIME.format((TemporalAccessor) val),
+                                            wrapForCodeUsage);
             }
         } else if (val instanceof Duration) {
             return formatDuration((Duration) val, wrapForCodeUsage);
@@ -183,11 +192,33 @@ public final class TypeUtil {
 
     public static String formatRange(final Range val, final boolean wrapDateTimeValuesInFunctions) {
         final StringBuilder sb = new StringBuilder();
-        sb.append(val.getLowBoundary() == Range.RangeBoundary.OPEN ? "( " : "[ ");
-        sb.append(formatValue(val.getLowEndPoint(), wrapDateTimeValuesInFunctions));
-        sb.append(" .. ");
-        sb.append(formatValue(val.getHighEndPoint(), wrapDateTimeValuesInFunctions));
-        sb.append(val.getHighBoundary() == Range.RangeBoundary.OPEN ? " )" : " ]");
+        if (val.isWithUndefined()) {
+            sb.append("( ");
+            if (val.getLowEndPoint() instanceof UndefinedValueComparable) {
+                if (val.getHighBoundary() == Range.RangeBoundary.OPEN) {
+                    sb.append(LT.symbol);
+                } else {
+                    sb.append(LTE.symbol);
+                }
+                sb.append(" ");
+                sb.append(formatValue(val.getHighEndPoint(), wrapDateTimeValuesInFunctions));
+            } else if (val.getHighEndPoint() instanceof UndefinedValueComparable) {
+                if (val.getLowBoundary() == Range.RangeBoundary.OPEN) {
+                    sb.append(GT.symbol);
+                } else {
+                    sb.append(GTE.symbol);
+                }
+                sb.append(" ");
+                sb.append(formatValue(val.getLowEndPoint(), wrapDateTimeValuesInFunctions));
+            }
+            sb.append(" )");
+        } else {
+            sb.append(val.getLowBoundary() == Range.RangeBoundary.OPEN ? "( " : "[ ");
+            sb.append(formatValue(val.getLowEndPoint(), wrapDateTimeValuesInFunctions));
+            sb.append(" .. ");
+            sb.append(formatValue(val.getHighEndPoint(), wrapDateTimeValuesInFunctions));
+            sb.append(val.getHighBoundary() == Range.RangeBoundary.OPEN ? " )" : " ]");
+        }
         return sb.toString();
     }
 
@@ -274,7 +305,8 @@ public final class TypeUtil {
         sb.append(timeSegmentChar);
     }
 
-    private static void appendSecondsToDurationString(final StringBuilder sb, final long seconds, final long nanoseconds) {
+    private static void appendSecondsToDurationString(final StringBuilder sb, final long seconds,
+                                                      final long nanoseconds) {
         if (seconds < 0 && nanoseconds > 0) {
             if (seconds == -1) {
                 sb.append("0");

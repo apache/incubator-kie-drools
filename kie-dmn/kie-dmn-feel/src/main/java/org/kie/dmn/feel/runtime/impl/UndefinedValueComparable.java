@@ -20,6 +20,7 @@ package org.kie.dmn.feel.runtime.impl;
 
 public class UndefinedValueComparable implements Comparable<UndefinedValueComparable> {
 
+
     @Override
     public int compareTo(UndefinedValueComparable o) {
         return 0;
@@ -27,7 +28,7 @@ public class UndefinedValueComparable implements Comparable<UndefinedValueCompar
 
     @Override
     public String toString() {
-        return "undefinedvalue";
+        return "undefined";
     }
 
     @Override

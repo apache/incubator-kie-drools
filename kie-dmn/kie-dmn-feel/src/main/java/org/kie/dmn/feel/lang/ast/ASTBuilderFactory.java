@@ -43,8 +43,8 @@ public class ASTBuilderFactory {
         return new NullNode( ctx );
     }
 
-    public static UndefinedValueNode newUndefinedValueNode(ParserRuleContext ctx) {
-        return new UndefinedValueNode( ctx );
+    public static UndefinedValueNode newUndefinedValueNode() {
+        return new UndefinedValueNode();
     }
 
     public static StringNode newStringNode(ParserRuleContext ctx) {
@@ -71,9 +71,8 @@ public class ASTBuilderFactory {
         return new InNode( ctx, value, list );
     }
 
-    public static RangeNode newIntervalNode(ParserRuleContext ctx, RangeNode.IntervalBoundary low, BaseNode start, BaseNode end, 
-            RangeNode.IntervalBoundary up) {
-        return new RangeNode( ctx, low, start, end, up);
+    public static RangeNode newIntervalNode(ParserRuleContext ctx, RangeNode.IntervalBoundary low, BaseNode start, BaseNode end, RangeNode.IntervalBoundary up) {
+        return new RangeNode( ctx, low, start, end, up );
     }
 
     public static UnaryTestNode newUnaryTestNode(ParserRuleContext ctx, String op, BaseNode value) {

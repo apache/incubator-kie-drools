@@ -83,7 +83,8 @@ class FEELParserSeverityTest {
 
     @Test
     void unexistentOperatorInvokeLTLT() {
-        // RHDM-1119 
+        // RHDM-1119
+        // @TODO gcardosi #1546 -
         String inputExpression = "{ m: <<18 }.m(16)";
         ASTNode number = parseSeverity(inputExpression, FEELEvent.Severity.WARN);
 

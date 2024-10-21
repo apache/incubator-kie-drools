@@ -59,9 +59,8 @@ public class RangeNode
     private BaseNode         start;
     private BaseNode         end;
 
-
     public RangeNode(ParserRuleContext ctx, IntervalBoundary lowerBound, BaseNode start, BaseNode end, IntervalBoundary upperBound) {
-        super(ctx);
+        super( ctx );
         this.lowerBound = lowerBound;
         this.upperBound = upperBound;
         this.start = start;
@@ -115,18 +114,22 @@ public class RangeNode
         
         Type sType = BuiltInType.determineTypeFromInstance(s);
         Type eType = BuiltInType.determineTypeFromInstance(e);
-        if (s != null && e != null && sType != eType && !s.getClass().isAssignableFrom(e.getClass())) {
+        boolean withUndefined = s instanceof UndefinedValueComparable || e instanceof UndefinedValueComparable;
+        if (s != null && e != null &&
+                !withUndefined &&
+                sType != eType &&
+                !s.getClass().isAssignableFrom(e.getClass())) {
             ctx.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.X_TYPE_INCOMPATIBLE_WITH_Y_TYPE, "Start", "End")));
             return null;
         }
 
-        Comparable start = this.start instanceof UndefinedValueNode ? new UndefinedValueComparable() : convertToComparable(ctx, s );
-        Comparable end = this.end instanceof UndefinedValueNode ? new UndefinedValueComparable() :  convertToComparable( ctx, e );
+        Comparable start = s instanceof UndefinedValueComparable ? (Comparable) s : convertToComparable(ctx, s );
+        Comparable end = e instanceof UndefinedValueComparable ? (Comparable) e : convertToComparable( ctx, e );
 
         return new RangeImpl( lowerBound==IntervalBoundary.OPEN ? Range.RangeBoundary.OPEN : Range.RangeBoundary.CLOSED,
                               start,
                               end,
-                              upperBound==IntervalBoundary.OPEN ? Range.RangeBoundary.OPEN : Range.RangeBoundary.CLOSED);
+                              upperBound==IntervalBoundary.OPEN ? Range.RangeBoundary.OPEN : Range.RangeBoundary.CLOSED );
     }
 
     private Comparable convertToComparable(EvaluationContext ctx, Object s) {

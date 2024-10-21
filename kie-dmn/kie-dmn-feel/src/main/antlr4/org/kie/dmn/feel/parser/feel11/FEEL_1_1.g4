@@ -325,7 +325,7 @@ literal
     |   atLiteral               #atLiteralLabel
     |	StringLiteral           #stringLiteral
     |	NULL                    #nullLiteral
-    |   UNDEFINEDVALUE          #undefinedvalue
+    |   UNDEFINEDVALUE          #undefined
     ;
     
 atLiteral
@@ -540,7 +540,7 @@ NULL
     ;
 
 UNDEFINEDVALUE
-    : 'undefinedvalue'
+    : 'undefined'
     ;
 
 TRUE
