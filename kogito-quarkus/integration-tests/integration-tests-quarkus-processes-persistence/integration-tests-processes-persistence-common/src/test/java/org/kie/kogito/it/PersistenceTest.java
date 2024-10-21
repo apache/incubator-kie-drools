@@ -32,6 +32,7 @@ import org.kie.kogito.Address;
 import org.kie.kogito.AddressType;
 import org.kie.kogito.Person;
 import org.kie.kogito.Status;
+import org.kie.kogito.usertask.model.TransitionInfo;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -42,11 +43,13 @@ import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.Matchers.emptyOrNullString;
 
 public abstract class PersistenceTest {
+    private static final String USER_TASK_BASE_PATH = "/usertasks/instance";
 
     public static final Duration TIMEOUT = Duration.ofSeconds(10);
     public static final String PROCESS_ID = "hello";
@@ -57,6 +60,71 @@ public abstract class PersistenceTest {
 
     static {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
+    }
+
+    @Test
+    public void testStartApprovalAuthorized() {
+        // start new approval
+        String id = given()
+                .body("{}")
+                .contentType(ContentType.JSON)
+                .when()
+                .post("/AddedTask")
+                .then()
+                .statusCode(201)
+                .body("id", notNullValue()).extract().path("id");
+        // get all active approvals
+        given()
+                .accept(ContentType.JSON)
+                .when()
+                .get("/AddedTask")
+                .then()
+                .statusCode(200)
+                .body("size()", is(1), "[0].id", is(id));
+
+        // get just started approval
+        given()
+                .accept(ContentType.JSON)
+                .when()
+                .get("/AddedTask/" + id)
+                .then()
+                .statusCode(200)
+                .body("id", is(id));
+
+        // tasks assigned in just started approval
+
+        String userTaskId = given()
+                .basePath(USER_TASK_BASE_PATH)
+                .queryParam("user", "mary")
+                .queryParam("group", "managers")
+                .contentType(ContentType.JSON)
+                .when()
+                .get()
+                .then()
+                .statusCode(200)
+                .extract()
+                .body()
+                .path("[0].id");
+
+        given()
+                .contentType(ContentType.JSON)
+                .basePath(USER_TASK_BASE_PATH)
+                .queryParam("user", "mary")
+                .queryParam("group", "managers")
+                .body(new TransitionInfo("complete"))
+                .when()
+                .post("/{userTaskId}/transition", userTaskId)
+                .then()
+                .statusCode(200);
+
+        // get all active approvals
+        given()
+                .accept(ContentType.JSON)
+                .when()
+                .get("/AddedTask")
+                .then()
+                .statusCode(200)
+                .body("size()", is(1));
     }
 
     @Test

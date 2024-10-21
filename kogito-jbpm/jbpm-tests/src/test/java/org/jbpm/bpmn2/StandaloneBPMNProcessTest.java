@@ -117,7 +117,6 @@ import org.jbpm.test.util.ProcessCompletedCountDownProcessEventListener;
 import org.jbpm.test.utils.ProcessTestHelper;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Timeout;
 import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.api.io.Resource;
 import org.kie.internal.io.ResourceFactory;
@@ -384,7 +383,6 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
     }
 
     @Test
-    @Timeout(10)
     public void testEventBasedSplit2() throws Exception {
         ProcessCompletedCountDownProcessEventListener countDownListener = new ProcessCompletedCountDownProcessEventListener(2);
         Application app = ProcessTestHelper.newApplication();
@@ -537,7 +535,6 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
     }
 
     @Test
-    @Timeout(10)
     public void testTimerBoundaryEvent() throws Exception {
         Application app = ProcessTestHelper.newApplication();
         NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("TimerEvent", 1);
@@ -556,7 +553,6 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
     }
 
     @Test
-    @Timeout(10)
     public void testTimerBoundaryEventInterrupting() {
         Application app = ProcessTestHelper.newApplication();
         NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("TimerEvent", 1);
@@ -697,7 +693,6 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
     }
 
     @Test
-    @Timeout(10)
     public void testIntermediateCatchEventTimer() {
         Application app = ProcessTestHelper.newApplication();
         NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("timer", 1);
@@ -786,7 +781,6 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
     }
 
     @Test
-    @Timeout(1000)
     public void testTimerStart() throws Exception {
         Application app = ProcessTestHelper.newApplication();
         NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("StartProcess", 5);

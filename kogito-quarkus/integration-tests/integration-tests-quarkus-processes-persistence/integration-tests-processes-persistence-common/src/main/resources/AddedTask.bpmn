@@ -16,7 +16,7 @@
   <bpmn2:collaboration id="_4DD91E78-A982-46F9-A427-611946D40403" name="Default Collaboration">
     <bpmn2:participant id="_239FEF97-E424-41F3-B3E9-D626D7EC319D" name="Pool Participant" processRef="addedtask"/>
   </bpmn2:collaboration>
-  <bpmn2:process id="AddedTask" drools:packageName="com.example" drools:version="1.0" drools:adHoc="false" name="addedtask" isExecutable="true" processType="Public">
+  <bpmn2:process id="AddedTask" drools:packageName="com.example" drools:version="1.0" drools:adHoc="false" name="AddedTask" isExecutable="true" processType="Public">
     <bpmn2:sequenceFlow id="_D0E6CA53-1ECE-4F8D-AAF0-829B30A2719F" sourceRef="_74EA6719-7F99-48CD-A98E-17D422668B87" targetRef="_1D65864A-96AF-44FC-92CE-2073B9FBA7D0">
       <bpmn2:extensionElements>
         <drools:metaData name="isAutoConnection.target">
