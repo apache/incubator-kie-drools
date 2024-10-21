@@ -19,8 +19,8 @@
 package org.drools.compiler.integrationtests.operators;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.drools.testcoverage.common.model.Cheese;
 import org.drools.testcoverage.common.model.Cheesery;
@@ -28,16 +28,14 @@ import org.drools.testcoverage.common.model.Person;
 import org.drools.testcoverage.common.model.Pet;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class MemberOfTest {
 
     private final KieBaseTestConfiguration kieBaseTestConfiguration;
@@ -46,13 +44,13 @@ public class MemberOfTest {
         this.kieBaseTestConfiguration = kieBaseTestConfiguration;
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+    public static Stream<KieBaseTestConfiguration> getParameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
-    @Test
-    public void testMemberOfAndNotMemberOf() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testMemberOfAndNotMemberOf(KieBaseTestConfiguration kieBaseTestConfiguration) {
 
         final String drl = "package org.drools.compiler.test;\n" +
                 "\n" +
@@ -108,8 +106,9 @@ public class MemberOfTest {
         }
     }
 
-    @Test
-    public void testMemberOfWithOr() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testMemberOfWithOr(KieBaseTestConfiguration kieBaseTestConfiguration) {
 
         final String drl =
             "package org.drools.compiler.integrationtests.operators;\n" +
