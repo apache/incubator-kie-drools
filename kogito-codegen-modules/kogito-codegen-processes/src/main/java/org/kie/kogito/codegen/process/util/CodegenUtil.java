@@ -66,7 +66,7 @@ public final class CodegenUtil {
      */
     public static boolean isTransactionEnabled(Generator generator, KogitoBuildContext context) {
         boolean propertyValue = getProperty(generator, context, TRANSACTION_ENABLED, Boolean::parseBoolean, true);
-        LOG.info("trying to compute property {} for generator {} property with value {}", TRANSACTION_ENABLED, generator.name(), propertyValue);
+        LOG.debug("trying to compute property {} for generator {} property with value {}", TRANSACTION_ENABLED, generator.name(), propertyValue);
         return propertyValue;
     }
 

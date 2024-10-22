@@ -42,8 +42,6 @@ public class UserTaskStateEventDataEventAdapter extends AbstractDataEventAdapter
     public DataEvent<?> adapt(Object payload) {
         UserTaskStateEvent event = (UserTaskStateEvent) payload;
         Map<String, Object> metadata = AdapterHelper.buildUserTaskMetadata(event.getUserTaskInstance());
-        Integer priority = event.getUserTaskInstance().getTaskPriority();
-        String priorityStr = priority != null ? priority.toString() : null;
 
         UserTaskInstanceStateEventBody.Builder builder = UserTaskInstanceStateEventBody.create()
                 .eventDate(new Date())
@@ -52,7 +50,7 @@ public class UserTaskStateEventDataEventAdapter extends AbstractDataEventAdapter
                 .userTaskInstanceId(event.getUserTaskInstance().getId())
                 .userTaskName(event.getUserTaskInstance().getTaskName())
                 .userTaskDescription(event.getUserTaskInstance().getTaskDescription())
-                .userTaskPriority(priorityStr)
+                .userTaskPriority(event.getUserTaskInstance().getTaskPriority())
                 .userTaskReferenceName(event.getUserTask().getReferenceName())
                 .externalReferenceId(event.getUserTaskInstance().getExternalReferenceId())
                 .state(event.getNewStatus().getName())

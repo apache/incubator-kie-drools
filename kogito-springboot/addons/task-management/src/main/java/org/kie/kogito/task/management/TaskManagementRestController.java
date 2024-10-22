@@ -20,12 +20,12 @@ package org.kie.kogito.task.management;
 
 import java.util.List;
 
-import org.kie.kogito.jbpm.usertask.handler.Policies;
 import org.kie.kogito.process.ProcessConfig;
-import org.kie.kogito.process.Processes;
 import org.kie.kogito.task.management.service.TaskInfo;
 import org.kie.kogito.task.management.service.TaskManagementOperations;
 import org.kie.kogito.task.management.service.TaskManagementService;
+import org.kie.kogito.usertask.UserTaskConfig;
+import org.kie.kogito.usertask.UserTasks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,44 +40,41 @@ import org.springframework.web.bind.annotation.RestController;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
-@RequestMapping("/management/processes")
+@RequestMapping("/management/usertasks/")
 public class TaskManagementRestController {
 
     TaskManagementOperations taskService;
 
     @Autowired
-    public TaskManagementRestController(Processes processes, ProcessConfig processConfig) {
-        this.taskService = new TaskManagementService(processes, processConfig);
+    public TaskManagementRestController(UserTasks userTasks, UserTaskConfig userTaskConfig, ProcessConfig processConfig) {
+        this.taskService = new TaskManagementService(userTasks, userTaskConfig, processConfig);
     }
 
-    @PutMapping(value = "{processId}/instances/{processInstanceId}/tasks/{taskId}", produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> updateTask(@PathVariable("processId") String processId,
-            @PathVariable("processInstanceId") String processInstanceId,
+    @PutMapping(value = "{taskId}", produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<Void> updateTask(
             @PathVariable("taskId") String taskId,
             @RequestParam(value = "user", required = false) String user,
             @RequestParam(value = "group", required = false) List<String> groups,
             @RequestBody TaskInfo taskInfo) {
-        taskService.updateTask(processId, processInstanceId, taskId, taskInfo, true, Policies.of(user, groups));
+        taskService.updateTask(taskId, taskInfo, true);
         return ResponseEntity.ok().build();
     }
 
-    @PatchMapping(value = "{processId}/instances/{processInstanceId}/tasks/{taskId}", produces = APPLICATION_JSON_VALUE)
-    public TaskInfo partialUpdateTask(@PathVariable("processId") String processId,
-            @PathVariable("processInstanceId") String processInstanceId,
+    @PatchMapping(value = "{taskId}", produces = APPLICATION_JSON_VALUE)
+    public TaskInfo partialUpdateTask(
             @PathVariable("taskId") String taskId,
             @RequestParam(value = "user", required = false) String user,
             @RequestParam(value = "group", required = false) List<String> groups,
             @RequestBody TaskInfo taskInfo) {
-        return taskService.updateTask(processId, processInstanceId, taskId, taskInfo, false, Policies.of(user, groups));
+        return taskService.updateTask(taskId, taskInfo, false);
 
     }
 
-    @GetMapping(value = "{processId}/instances/{processInstanceId}/tasks/{taskId}", produces = APPLICATION_JSON_VALUE)
-    public TaskInfo getTask(@PathVariable("processId") String processId,
-            @PathVariable("processInstanceId") String processInstanceId,
+    @GetMapping(value = "{taskId}", produces = APPLICATION_JSON_VALUE)
+    public TaskInfo getTask(
             @PathVariable("taskId") String taskId,
             @RequestParam(value = "user", required = false) String user,
             @RequestParam(value = "group", required = false) List<String> groups) {
-        return taskService.getTask(processId, processInstanceId, taskId, Policies.of(user, groups));
+        return taskService.getTask(taskId);
     }
 }

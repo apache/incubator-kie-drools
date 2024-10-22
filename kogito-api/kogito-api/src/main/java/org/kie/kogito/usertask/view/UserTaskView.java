@@ -33,7 +33,7 @@ public class UserTaskView {
 
     private String taskName;
     private String taskDescription;
-    private Integer taskPriority;
+    private String taskPriority;
     private Set<String> potentialUsers;
     private Set<String> potentialGroups;
     private Set<String> adminUsers;
@@ -87,11 +87,11 @@ public class UserTaskView {
         this.taskDescription = taskDescription;
     }
 
-    public Integer getTaskPriority() {
+    public String getTaskPriority() {
         return taskPriority;
     }
 
-    public void setTaskPriority(Integer taskPriority) {
+    public void setTaskPriority(String taskPriority) {
         this.taskPriority = taskPriority;
     }
 

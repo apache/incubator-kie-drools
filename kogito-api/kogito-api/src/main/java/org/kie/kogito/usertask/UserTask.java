@@ -57,7 +57,7 @@ public interface UserTask {
      * 
      * @return task priority if present
      */
-    Integer getTaskPriority();
+    String getTaskPriority();
 
     /**
      * Returns reference name of the task

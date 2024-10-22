@@ -69,19 +69,12 @@ public class UserTaskKogitoWorkItemHandler extends DefaultKogitoWorkItemHandler 
         UserTasks userTasks = handler.getApplication().get(UserTasks.class);
 
         Object priority = workItem.getParameter(PRIORITY);
-        Integer priorityInteger = null;
-        if (priority instanceof String priorityString) {
-            priorityInteger = Integer.parseInt((String) priorityString);
-        } else {
-            priority = (Integer) priority;
-        }
-
         UserTask userTask = userTasks.userTaskById((String) workItem.getParameter(KogitoWorkItem.PARAMETER_UNIQUE_TASK_ID));
 
         DefaultUserTaskInstance instance = (DefaultUserTaskInstance) userTask.createInstance();
         instance.setTaskName((String) workItem.getParameter(TASK_NAME));
         instance.setTaskDescription((String) workItem.getParameter(DESCRIPTION));
-        instance.setTaskPriority(priorityInteger);
+        instance.setTaskPriority(priority != null ? priority.toString() : null);
         instance.setExternalReferenceId(workItem.getStringId());
 
         instance.setMetadata("ProcessId", workItem.getProcessInstance().getProcessId());

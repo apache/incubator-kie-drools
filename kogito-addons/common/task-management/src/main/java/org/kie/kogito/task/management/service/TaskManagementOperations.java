@@ -18,16 +18,9 @@
  */
 package org.kie.kogito.task.management.service;
 
-import org.kie.kogito.internal.process.workitem.Policy;
-
 public interface TaskManagementOperations {
 
-    TaskInfo updateTask(String processId,
-            String processInstanceId,
-            String taskId,
-            TaskInfo taskInfo,
-            boolean replace,
-            Policy... policies);
+    TaskInfo updateTask(String taskId, TaskInfo taskInfo, boolean replace);
 
-    TaskInfo getTask(String processId, String processInstanceId, String taskId, Policy... policies);
+    TaskInfo getTask(String taskId);
 }

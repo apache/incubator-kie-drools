@@ -73,6 +73,7 @@ public class UserTaskServiceImpl implements UserTaskService {
         view.setInputs(instance.getInputs());
         view.setOutputs(instance.getOutputs());
         view.setMetadata(instance.getMetadata());
+        view.setExternalReferenceId(instance.getExternalReferenceId());
         return view;
     }
 

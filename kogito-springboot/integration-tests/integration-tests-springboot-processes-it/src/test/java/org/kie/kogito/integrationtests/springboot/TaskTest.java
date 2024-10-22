@@ -25,6 +25,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -312,7 +313,7 @@ public class TaskTest extends BaseRestTest {
     void testUpdateTaskInfo() {
         Traveller traveller = new Traveller("pepe", "rubiales", "pepe.rubiales@gmail.com", "Spanish", new Address("Alfredo Di Stefano", "Madrid", "28033", "Spain"));
 
-        String processId = given()
+        given()
                 .contentType(ContentType.JSON)
                 .when()
                 .body(Collections.singletonMap("traveller", traveller))
@@ -326,9 +327,8 @@ public class TaskTest extends BaseRestTest {
                 .contentType(ContentType.JSON)
                 .queryParam("user", "admin")
                 .queryParam("group", "managers")
-                .pathParam("processId", processId)
                 .when()
-                .get("/approvals/{processId}/tasks")
+                .get("/usertasks/instance")
                 .then()
                 .statusCode(200)
                 .extract()
@@ -341,10 +341,9 @@ public class TaskTest extends BaseRestTest {
                 .when()
                 .queryParam("user", "admin")
                 .queryParam("group", "managers")
-                .pathParam("processId", processId)
                 .pathParam("taskId", taskId)
                 .body(upTaskInfo)
-                .put("/management/processes/approvals/instances/{processId}/tasks/{taskId}")
+                .put("/management/usertasks/{taskId}")
                 .then()
                 .statusCode(200);
 
@@ -352,13 +351,24 @@ public class TaskTest extends BaseRestTest {
                 .when()
                 .queryParam("user", "admin")
                 .queryParam("group", "managers")
-                .pathParam("processId", processId)
                 .pathParam("taskId", taskId)
-                .get("/management/processes/approvals/instances/{processId}/tasks/{taskId}")
+                .get("/management/usertasks/{taskId}")
                 .then()
                 .statusCode(200)
                 .extract()
                 .as(TaskInfo.class);
+
+        // we are only interested in our inputs
+        Iterator<Map.Entry<String, Object>> iterator = downTaskInfo.getInputParams().entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<String, Object> item = iterator.next();
+            if (!upTaskInfo.getInputParams().keySet().contains(item.getKey())) {
+                iterator.remove();
+            }
+        }
+        // we cannot compare yet because the json it is not properly deserialize
+        assertThat(downTaskInfo).isEqualTo(upTaskInfo);
         assertThat(downTaskInfo.getInputParams()).isNotNull();
+        assertThat(downTaskInfo.getInputParams().get("traveller")).isNull();
     }
 }

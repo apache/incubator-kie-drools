@@ -51,7 +51,7 @@ public interface UserTaskInstance {
 
     String getTaskDescription();
 
-    Integer getTaskPriority();
+    String getTaskPriority();
 
     Map<String, Object> getMetadata();
 

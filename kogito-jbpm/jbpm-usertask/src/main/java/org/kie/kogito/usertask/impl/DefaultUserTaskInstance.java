@@ -52,7 +52,7 @@ public class DefaultUserTaskInstance implements UserTaskInstance {
     private String actualOwner;
     private String taskName;
     private String taskDescription;
-    private Integer taskPriority;
+    private String taskPriority;
     private Set<String> potentialUsers;
     private Set<String> potentialGroups;
     private Set<String> adminUsers;
@@ -282,11 +282,11 @@ public class DefaultUserTaskInstance implements UserTaskInstance {
      * @return task priority if present
      */
     @Override
-    public Integer getTaskPriority() {
+    public String getTaskPriority() {
         return this.taskPriority;
     }
 
-    public void setTaskPriority(Integer taskPriority) {
+    public void setTaskPriority(String taskPriority) {
         this.taskPriority = taskPriority;
         if (this.userTaskEventSupport != null) {
             this.userTaskEventSupport.fireOneUserTaskStateChange(this, this.status, this.status);

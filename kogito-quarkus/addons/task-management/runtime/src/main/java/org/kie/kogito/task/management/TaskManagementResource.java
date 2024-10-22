@@ -20,12 +20,12 @@ package org.kie.kogito.task.management;
 
 import java.util.List;
 
-import org.kie.kogito.auth.SecurityPolicy;
 import org.kie.kogito.process.ProcessConfig;
-import org.kie.kogito.process.Processes;
 import org.kie.kogito.task.management.service.TaskInfo;
 import org.kie.kogito.task.management.service.TaskManagementOperations;
 import org.kie.kogito.task.management.service.TaskManagementService;
+import org.kie.kogito.usertask.UserTaskConfig;
+import org.kie.kogito.usertask.UserTasks;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.inject.Inject;
@@ -40,58 +40,58 @@ import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-@Path("/management/processes")
+@Path("/management/usertasks")
 public class TaskManagementResource {
 
     private TaskManagementOperations taskService;
 
     @Inject
-    private Processes processes;
+    private UserTasks userTasks;
+
+    @Inject
+    private UserTaskConfig userTaskConfig;
 
     @Inject
     private ProcessConfig processConfig;
 
     @PostConstruct
     private void init() {
-        taskService = new TaskManagementService(processes, processConfig);
+        taskService = new TaskManagementService(userTasks, userTaskConfig, processConfig);
     }
 
     @PUT
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path("{processId}/instances/{processInstanceId}/tasks/{taskId}")
-    public Response updateTask(@PathParam("processId") String processId,
-            @PathParam("processInstanceId") String processInstanceId,
+    @Path("{taskId}")
+    public Response updateTask(
             @PathParam("taskId") String taskId,
             @QueryParam("user") final String user,
             @QueryParam("group") final List<String> groups,
             TaskInfo taskInfo) {
-        taskService.updateTask(processId, processInstanceId, taskId, taskInfo, true, SecurityPolicy.of(user, groups));
+        taskService.updateTask(taskId, taskInfo, true);
         return Response.ok().build();
     }
 
     @PATCH
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path("{processId}/instances/{processInstanceId}/tasks/{taskId}")
-    public TaskInfo partialUpdateTask(@PathParam("processId") String processId,
-            @PathParam("processInstanceId") String processInstanceId,
+    @Path("{taskId}")
+    public TaskInfo partialUpdateTask(
             @PathParam("taskId") String taskId,
             @QueryParam("user") final String user,
             @QueryParam("group") final List<String> groups,
             TaskInfo taskInfo) {
-        return taskService.updateTask(processId, processInstanceId, taskId, taskInfo, false, SecurityPolicy.of(user, groups));
+        return taskService.updateTask(taskId, taskInfo, false);
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path("{processId}/instances/{processInstanceId}/tasks/{taskId}")
-    public TaskInfo getTask(@PathParam("processId") String processId,
-            @PathParam("processInstanceId") String processInstanceId,
+    @Path("{taskId}")
+    public TaskInfo getTask(
             @PathParam("taskId") String taskId,
             @QueryParam("user") final String user,
             @QueryParam("group") final List<String> groups) {
-        return taskService.getTask(processId, processInstanceId, taskId, SecurityPolicy.of(user, groups));
+        return taskService.getTask(taskId);
     }
 }

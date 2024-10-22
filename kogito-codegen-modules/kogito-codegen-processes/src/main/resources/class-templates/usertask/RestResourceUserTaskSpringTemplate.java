@@ -144,7 +144,7 @@ public class UserTasksResource {
         return userTaskService.updateComment(taskId, comment, IdentityProviders.of(user, groups)).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
-    @DeleteMapping("/{taskId}/comments/{commentId}")
+    @DeleteMapping(value = "/{taskId}/comments/{commentId}", consumes = MediaType.ALL_VALUE)
     public Comment deleteComment(
             @PathVariable("taskId") String taskId,
             @PathVariable("commentId") String commentId,
@@ -187,7 +187,7 @@ public class UserTasksResource {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
-    @DeleteMapping("/{taskId}/attachments/{attachmentId}")
+    @DeleteMapping(value = "/{taskId}/attachments/{attachmentId}", consumes = MediaType.ALL_VALUE)
     public Attachment deleteAttachment(
             @PathVariable("taskId") String taskId,
             @PathVariable("attachmentId") String attachmentId,

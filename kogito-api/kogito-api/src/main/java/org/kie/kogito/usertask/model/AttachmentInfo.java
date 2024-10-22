@@ -37,6 +37,14 @@ public class AttachmentInfo {
         this.name = name;
     }
 
+    public void setUri(URI uri) {
+        this.uri = uri;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public URI getUri() {
         return uri;
     }
@@ -44,4 +52,5 @@ public class AttachmentInfo {
     public String getName() {
         return name;
     }
+
 }

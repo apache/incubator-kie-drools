@@ -66,7 +66,6 @@ import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.Expression;
-import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
@@ -217,7 +216,7 @@ public class UserTaskCodegen extends AbstractGenerator {
             block.addStatement(new MethodCallExpr(new ThisExpr(), "setExcludedUsers", NodeList.nodeList(toStringExpression(info.getParameter(EXCLUDED_OWNER_ID)))));
 
             block.addStatement(new MethodCallExpr(new ThisExpr(), "setTaskDescription", NodeList.nodeList(toStringExpression(info.getParameter(DESCRIPTION)))));
-            block.addStatement(new MethodCallExpr(new ThisExpr(), "setTaskPriority", NodeList.nodeList(toIntegerExpression(info.getParameter(PRIORITY)))));
+            block.addStatement(new MethodCallExpr(new ThisExpr(), "setTaskPriority", NodeList.nodeList(toStringExpression(info.getParameter(PRIORITY)))));
             block.addStatement(new MethodCallExpr(new ThisExpr(), "setReferenceName", NodeList.nodeList(toStringExpression(info.getParameter(NODE_NAME)))));
             block.addStatement(new MethodCallExpr(new ThisExpr(), "setSkippable", NodeList.nodeList(toStringExpression(info.getParameter("Skippable")))));
 
@@ -229,14 +228,6 @@ public class UserTaskCodegen extends AbstractGenerator {
             generatedFiles.add(new GeneratedFile(GeneratedFileType.SOURCE, UserTaskCodegenHelper.path(info).resolve(className + ".java"), unit.toString()));
         }
         return generatedFiles;
-    }
-
-    private Expression toIntegerExpression(Object value) {
-        if (value == null) {
-            return new CastExpr(StaticJavaParser.parseType(Integer.class.getName()), new NullLiteralExpr());
-        }
-
-        return new IntegerLiteralExpr(value.toString());
     }
 
     private Expression toStringExpression(Object value) {

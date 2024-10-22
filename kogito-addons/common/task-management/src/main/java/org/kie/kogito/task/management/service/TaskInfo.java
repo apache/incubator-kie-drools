@@ -19,6 +19,7 @@
 package org.kie.kogito.task.management.service;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 public class TaskInfo {
@@ -110,6 +111,25 @@ public class TaskInfo {
 
     public void setInputParams(Map<String, Object> inputParams) {
         this.inputParams = inputParams;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(adminGroups, adminUsers, description, excludedUsers, inputParams, potentialGroups, potentialUsers, priority);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        TaskInfo other = (TaskInfo) obj;
+        return Objects.equals(adminGroups, other.adminGroups) && Objects.equals(adminUsers, other.adminUsers) && Objects.equals(description, other.description)
+                && Objects.equals(excludedUsers, other.excludedUsers) && Objects.equals(inputParams, other.inputParams) && Objects.equals(potentialGroups, other.potentialGroups)
+                && Objects.equals(potentialUsers, other.potentialUsers) && Objects.equals(priority, other.priority);
     }
 
     @Override
