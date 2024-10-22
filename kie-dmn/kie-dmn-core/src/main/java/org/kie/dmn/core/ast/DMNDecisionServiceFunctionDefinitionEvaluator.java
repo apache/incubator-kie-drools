@@ -160,7 +160,7 @@ public class DMNDecisionServiceFunctionDefinitionEvaluator implements DMNExpress
                                                            dsFormalParameter.type,
                                                            typeCheck,
                                                            (rx, tx) -> MsgUtil.reportMessage(LOG,
-                                                                                             DMNMessage.Severity.WARN,
+                                                                                             DMNMessage.Severity.ERROR,
                                                                                              null,
                                                                                              resultContext,
                                                                                              null,
@@ -169,7 +169,11 @@ public class DMNDecisionServiceFunctionDefinitionEvaluator implements DMNExpress
                                                                                              dsFormalParameter.name,
                                                                                              tx,
                                                                                              MsgUtil.clipString(rx.toString(), 50)));
-            return result;
+            if (param != null && result == null) {
+                throw new IllegalArgumentException("Parameter " + param + " cannot be assigned to parameter of type " + dsFormalParameter.type + "!");
+            } else {
+                return result;
+            }
         }
 
         @Override
