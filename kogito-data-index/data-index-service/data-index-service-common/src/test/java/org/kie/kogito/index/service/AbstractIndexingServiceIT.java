@@ -477,7 +477,7 @@ public abstract class AbstractIndexingServiceIT extends AbstractIndexingIT {
                         .body("data.UserTaskInstances[0].lastUpdate", anything())
                         .body("data.UserTaskInstances[0].endpoint",
                                 is(event.getSource().toString() + "/" + event.getData().getProcessInstanceId() + "/" + event.getData().getUserTaskName() + "/"
-                                        + event.getData().getUserTaskInstanceId())));
+                                        + event.getData().getExternalReferenceId())));
     }
 
 }

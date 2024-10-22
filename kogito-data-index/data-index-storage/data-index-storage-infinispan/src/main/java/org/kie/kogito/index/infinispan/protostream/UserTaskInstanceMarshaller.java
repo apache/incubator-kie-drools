@@ -57,6 +57,7 @@ public class UserTaskInstanceMarshaller extends AbstractMarshaller implements Me
     protected static final String ENDPOINT = "endpoint";
     protected static final String COMMENTS = "comments";
     protected static final String ATTACHMENTS = "attachments";
+    protected static final String EXTERNAL_REFERENCE_ID = "externalReferenceId";
 
     public UserTaskInstanceMarshaller(ObjectMapper mapper) {
         super(mapper);
@@ -89,6 +90,7 @@ public class UserTaskInstanceMarshaller extends AbstractMarshaller implements Me
         ut.setEndpoint(reader.readString(ENDPOINT));
         ut.setComments(reader.readCollection(COMMENTS, new ArrayList<>(), Comment.class));
         ut.setAttachments(reader.readCollection(ATTACHMENTS, new ArrayList<>(), Attachment.class));
+        ut.setExternalReferenceId(reader.readString(EXTERNAL_REFERENCE_ID));
         return ut;
     }
 
@@ -118,6 +120,7 @@ public class UserTaskInstanceMarshaller extends AbstractMarshaller implements Me
         writer.writeString(ENDPOINT, ut.getEndpoint());
         writer.writeCollection(COMMENTS, ut.getComments(), Comment.class);
         writer.writeCollection(ATTACHMENTS, ut.getAttachments(), Attachment.class);
+        writer.writeString(EXTERNAL_REFERENCE_ID, ut.getExternalReferenceId());
     }
 
     @Override

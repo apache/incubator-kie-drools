@@ -167,9 +167,10 @@ public class ProcessInstanceEntityStorage extends AbstractJPAStorageFetcher<Stri
 
     private NodeInstanceEntity createNode(ProcessInstanceEntity pi, ProcessInstanceNodeEventBody data) {
         NodeInstanceEntity node = new NodeInstanceEntity();
-        pi.getNodes().add(node);
         node.setProcessInstance(pi);
-        return updateNode(node, data);
+        updateNode(node, data);
+        pi.getNodes().add(node);
+        return node;
     }
 
     private NodeInstanceEntity updateNode(NodeInstanceEntity nodeInstance, ProcessInstanceNodeEventBody body) {

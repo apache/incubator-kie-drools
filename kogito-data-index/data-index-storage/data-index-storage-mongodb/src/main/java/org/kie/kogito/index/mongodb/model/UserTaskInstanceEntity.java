@@ -76,6 +76,8 @@ public class UserTaskInstanceEntity {
 
     List<AttachmentEntity> attachments;
 
+    private String externalReferenceId;
+
     public String getId() {
         return id;
     }
@@ -268,6 +270,14 @@ public class UserTaskInstanceEntity {
         this.attachments = attachments;
     }
 
+    public void setExternalReferenceId(String externalReferenceId) {
+        this.externalReferenceId = externalReferenceId;
+    }
+
+    public String getExternalReferenceId() {
+        return externalReferenceId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -435,4 +445,5 @@ public class UserTaskInstanceEntity {
             return Objects.hash(id);
         }
     }
+
 }

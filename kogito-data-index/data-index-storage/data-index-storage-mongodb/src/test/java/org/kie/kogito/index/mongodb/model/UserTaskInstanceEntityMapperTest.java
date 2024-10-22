@@ -64,6 +64,7 @@ class UserTaskInstanceEntityMapperTest {
         String processId = "testProcessId";
         String rootProcessId = "testRootProcessId";
         String rootProcessInstanceId = "testRootProcessInstanceId";
+        String externalReferenceId = "testExternalReferenceId";
         ObjectNode object = MAPPER.createObjectNode();
         object.put("test", "testValue");
         ObjectNode inputs = object;
@@ -114,6 +115,7 @@ class UserTaskInstanceEntityMapperTest {
         userTaskInstance.setOutputs(outputs);
         userTaskInstance.setComments(List.of(comment));
         userTaskInstance.setAttachments(List.of(attachment));
+        userTaskInstance.setExternalReferenceId(externalReferenceId);
 
         userTaskInstanceEntity = new UserTaskInstanceEntity();
         userTaskInstanceEntity.setId(testId);
@@ -139,6 +141,7 @@ class UserTaskInstanceEntityMapperTest {
         userTaskInstanceEntity.setOutputs(jsonNodeToDocument(outputs));
         userTaskInstanceEntity.setComments(List.of(commentEntity));
         userTaskInstanceEntity.setAttachments(List.of(attachmentEntity));
+        userTaskInstanceEntity.setExternalReferenceId(externalReferenceId);
     }
 
     @Test

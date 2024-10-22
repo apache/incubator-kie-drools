@@ -367,6 +367,7 @@ type UserTaskInstance {
     endpoint: String
     comments: [Comment!]
     attachments: [Attachment!]
+    externalReferenceId : String
 }
 
 input UserTaskInstanceArgument {

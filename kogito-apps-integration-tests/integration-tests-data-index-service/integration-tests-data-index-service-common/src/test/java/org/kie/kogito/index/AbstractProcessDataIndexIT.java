@@ -30,7 +30,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.JsonNode;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
@@ -92,7 +91,6 @@ public abstract class AbstractProcessDataIndexIT {
     }
 
     @Test
-    @Disabled
     public void testProcessInstanceEvents() throws IOException {
         String pId = given()
                 .contentType(ContentType.JSON)
@@ -113,13 +111,13 @@ public abstract class AbstractProcessDataIndexIT {
                 .contentType(ContentType.JSON)
                 .queryParam("user", "admin")
                 .queryParam("group", "managers")
-                .pathParam("processId", pId)
                 .when()
-                .get("/approvals/{processId}/tasks")
+                .get("/usertasks/instance")
                 .then()
                 .statusCode(200)
+                .log().body()
                 .body("$.size()", is(1))
-                .body("[0].name", is("firstLineApproval"))
+                .body("[0].taskName", is("firstLineApproval"))
                 .body("[0].id", notNullValue())
                 .extract()
                 .path("[0].id");
@@ -152,7 +150,7 @@ public abstract class AbstractProcessDataIndexIT {
                             .body("data.Approvals[0].metadata.userTasks.size()", is(1))
                             .body("data.Approvals[0].metadata.userTasks[0].id", is(flTaskId))
                             .body("data.Approvals[0].metadata.userTasks[0].name", is("firstLineApproval"))
-                            .body("data.Approvals[0].metadata.userTasks[0].state", is("Ready")));
+                            .body("data.Approvals[0].metadata.userTasks[0].state", is("Reserved")));
         }
 
         await()
@@ -187,7 +185,22 @@ public abstract class AbstractProcessDataIndexIT {
                         .body("data.UserTaskInstances.size()", is(1))
                         .body("data.UserTaskInstances[0].id", is(flTaskId))
                         .body("data.UserTaskInstances[0].name", is("firstLineApproval"))
-                        .body("data.UserTaskInstances[0].state", is("Ready")));
+                        .body("data.UserTaskInstances[0].state", is("Reserved")));
+
+        String workItemId = given()
+                .contentType(ContentType.JSON)
+                .queryParam("user", "admin")
+                .queryParam("group", "managers")
+                .pathParam("processId", pId)
+                .when()
+                .get("/approvals/{processId}/tasks")
+                .then()
+                .statusCode(200)
+                .body("$.size()", is(1))
+                .body("[0].name", is("firstLineApproval"))
+                .body("[0].id", notNullValue())
+                .extract()
+                .path("[0].id");
 
         await()
                 .atMost(TIMEOUT)
@@ -196,7 +209,7 @@ public abstract class AbstractProcessDataIndexIT {
                         .queryParam("user", "admin")
                         .queryParam("group", "managers")
                         .pathParam("processId", pId)
-                        .pathParam("taskId", flTaskId)
+                        .pathParam("taskId", workItemId)
                         .body(singletonMap("approved", true))
                         .post("/approvals/{processId}/firstLineApproval/{taskId}")
                         .then()
@@ -324,6 +337,7 @@ public abstract class AbstractProcessDataIndexIT {
                 .when().post("/graphql")
                 .then()
                 .statusCode(200)
+                .log().body()
                 .body("data.UserTaskInstances[0].description", nullValue())
                 .body("data.UserTaskInstances[0].potentialGroups[0]", equalTo("managers"))
                 .extract().path("data.UserTaskInstances[0].id");
@@ -335,6 +349,7 @@ public abstract class AbstractProcessDataIndexIT {
                 .when().post("/graphql")
                 .then()
                 .statusCode(200)
+                .log().body()
                 .body("errors", nullValue())
                 .extract().path("data.UserTaskInstances[0].schema");
         checkExpectedTaskSchema(taskSchema);
@@ -474,9 +489,8 @@ public abstract class AbstractProcessDataIndexIT {
                         .when()
                         .queryParam("user", "manager")
                         .queryParam("group", "managers")
-                        .pathParam("id", processInstanceId)
                         .pathParam("taskId", taskId)
-                        .get("/approvals/{id}/firstLineApproval/{taskId}/comments")
+                        .get("/usertasks/instance/{taskId}/comments")
                         .then()
                         .statusCode(200)
                         .body("size()", is(1))
@@ -585,9 +599,8 @@ public abstract class AbstractProcessDataIndexIT {
                         .when()
                         .queryParam("user", "manager")
                         .queryParam("group", "managers")
-                        .pathParam("id", processInstanceId)
                         .pathParam("taskId", taskId)
-                        .get("/approvals/{id}/firstLineApproval/{taskId}/attachments")
+                        .get("/usertasks/instance/{taskId}/attachments")
                         .then()
                         .statusCode(200)
                         .body("size()", is(1))
@@ -710,14 +723,13 @@ public abstract class AbstractProcessDataIndexIT {
         assertEquals("object", schemaJsonNode.at("/type").asText());
 
         // Check Schema phases
-        assertEquals(4, schemaJsonNode.at("/phases").size());
+        assertEquals(3, schemaJsonNode.at("/phases").size());
         assertTrue(schemaJsonNode.get("phases").toString().contains("abort"));
-        assertTrue(schemaJsonNode.get("phases").toString().contains("claim"));
         assertTrue(schemaJsonNode.get("phases").toString().contains("skip"));
         assertTrue(schemaJsonNode.get("phases").toString().contains("complete"));
 
         // Check Schema properties
-        assertEquals(2, schemaJsonNode.at("/properties").size());
+        assertEquals(3, schemaJsonNode.at("/properties").size());
 
         assertEquals("true", schemaJsonNode.at("/properties/approved/output").asText());
         assertEquals("boolean", schemaJsonNode.at("/properties/approved/type").asText());

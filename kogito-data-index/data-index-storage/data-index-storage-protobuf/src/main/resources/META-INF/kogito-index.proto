@@ -237,6 +237,7 @@ message UserTaskInstance {
     repeated Comment comments = 23;
     /* @Field(store = Store.YES) */
     repeated Attachment attachments = 24;
+    optional string externalReferenceId = 25;
 }
 
 /* @Indexed */
@@ -275,6 +276,7 @@ message UserTaskInstanceMeta {
     repeated Comment comments = 17;
     /* @Field(store = Store.YES) */
     repeated Attachment attachments = 18;
+    optional string externalReferenceId = 25;
 }
 
 /* @Indexed */

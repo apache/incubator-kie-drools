@@ -91,6 +91,16 @@ public class UserTaskInstanceEntity extends AbstractEntity {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "userTask", orphanRemoval = true, fetch = FetchType.LAZY)
     private List<AttachmentEntity> attachments;
 
+    private String externalReferenceId;
+
+    public String getExternalReferenceId() {
+        return externalReferenceId;
+    }
+
+    public void setExternalReferenceId(String externalReferenceId) {
+        this.externalReferenceId = externalReferenceId;
+    }
+
     @Override
     public String getId() {
         return id;

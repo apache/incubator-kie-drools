@@ -58,9 +58,10 @@ public class UserTaskInstanceStateEventMerger implements UserTaskInstanceEventMe
         }
         task.setActualOwner(event.getData().getActualOwner());
         task.setEndpoint(
-                event.getSource() == null ? null : getEndpoint(event.getSource(), event.getData().getProcessInstanceId(), event.getData().getUserTaskName(), event.getData().getUserTaskInstanceId()));
+                event.getSource() == null ? null : getEndpoint(event.getSource(), event.getData().getProcessInstanceId(), event.getData().getUserTaskName(), event.getData().getExternalReferenceId()));
         task.setLastUpdate(toZonedDateTime(event.getData().getEventDate()));
         task.setReferenceName(event.getData().getUserTaskReferenceName());
+        task.setExternalReferenceId(event.getData().getExternalReferenceId());
         LOGGER.debug("value after merging: {}", task);
         return task;
     }

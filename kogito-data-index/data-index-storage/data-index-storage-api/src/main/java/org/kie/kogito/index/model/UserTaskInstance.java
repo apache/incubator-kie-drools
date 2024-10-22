@@ -28,6 +28,7 @@ public class UserTaskInstance extends UserTaskInstanceMeta {
     private ObjectNode inputs;
     private ObjectNode outputs;
     private String endpoint;
+    private String externalReferenceId;
 
     public String getProcessId() {
         return processId;
@@ -93,5 +94,13 @@ public class UserTaskInstance extends UserTaskInstanceMeta {
 
     public void setOutputs(ObjectNode outputs) {
         this.outputs = outputs;
+    }
+
+    public String getExternalReferenceId() {
+        return externalReferenceId;
+    }
+
+    public void setExternalReferenceId(String externalReferenceId) {
+        this.externalReferenceId = externalReferenceId;
     }
 }

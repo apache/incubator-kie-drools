@@ -47,6 +47,7 @@ import static org.kie.kogito.index.infinispan.protostream.UserTaskInstanceMarsha
 import static org.kie.kogito.index.infinispan.protostream.UserTaskInstanceMarshaller.DESCRIPTION;
 import static org.kie.kogito.index.infinispan.protostream.UserTaskInstanceMarshaller.ENDPOINT;
 import static org.kie.kogito.index.infinispan.protostream.UserTaskInstanceMarshaller.EXCLUDED_USERS;
+import static org.kie.kogito.index.infinispan.protostream.UserTaskInstanceMarshaller.EXTERNAL_REFERENCE_ID;
 import static org.kie.kogito.index.infinispan.protostream.UserTaskInstanceMarshaller.ID;
 import static org.kie.kogito.index.infinispan.protostream.UserTaskInstanceMarshaller.INPUTS;
 import static org.kie.kogito.index.infinispan.protostream.UserTaskInstanceMarshaller.LAST_UPDATE;
@@ -100,6 +101,7 @@ class UserTaskInstanceMarshallerTest {
         TASK.setReferenceName("referenceName");
         TASK.setLastUpdate(ZonedDateTime.now(ZoneOffset.UTC).truncatedTo(ChronoUnit.MILLIS));
         TASK.setEndpoint("endpoint");
+        TASK.setExternalReferenceId("externalReferenceId");
         TASK.setComments(List.of(Comment.builder()
                 .id("attId")
                 .content("Text comment")
@@ -144,6 +146,7 @@ class UserTaskInstanceMarshallerTest {
         when(reader.readString(ENDPOINT)).thenReturn(TASK.getEndpoint());
         when(reader.readCollection(eq(COMMENTS), any(), eq(Comment.class))).thenReturn(TASK.getComments());
         when(reader.readCollection(eq(ATTACHMENTS), any(), eq(Attachment.class))).thenReturn(TASK.getAttachments());
+        when(reader.readString(EXTERNAL_REFERENCE_ID)).thenReturn(TASK.getExternalReferenceId());
 
         UserTaskInstance task = marshaller.readFrom(reader);
 
@@ -174,6 +177,7 @@ class UserTaskInstanceMarshallerTest {
         inOrder.verify(reader).readString(ENDPOINT);
         inOrder.verify(reader).readCollection(COMMENTS, new ArrayList<>(), Comment.class);
         inOrder.verify(reader).readCollection(ATTACHMENTS, new ArrayList<>(), Attachment.class);
+        inOrder.verify(reader).readString(EXTERNAL_REFERENCE_ID);
         verifyNoMoreInteractions(reader);
     }
 
@@ -209,6 +213,7 @@ class UserTaskInstanceMarshallerTest {
         inOrder.verify(writer).writeString(ENDPOINT, TASK.getEndpoint());
         inOrder.verify(writer).writeCollection(COMMENTS, TASK.getComments(), Comment.class);
         inOrder.verify(writer).writeCollection(ATTACHMENTS, TASK.getAttachments(), Attachment.class);
+        inOrder.verify(writer).writeString(EXTERNAL_REFERENCE_ID, TASK.getExternalReferenceId());
         verifyNoMoreInteractions(writer);
     }
 

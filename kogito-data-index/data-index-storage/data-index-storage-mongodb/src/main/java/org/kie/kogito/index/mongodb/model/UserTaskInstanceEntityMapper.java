@@ -79,6 +79,7 @@ public class UserTaskInstanceEntityMapper implements MongoEntityMapper<UserTaskI
         entity.setEndpoint(instance.getEndpoint());
         entity.setComments(Optional.ofNullable(instance.getComments()).map(comments -> comments.stream().map(this::fromComment).collect(toList())).orElse(null));
         entity.setAttachments(Optional.ofNullable(instance.getAttachments()).map(attachments -> attachments.stream().map(this::fromAttachment).collect(toList())).orElse(null));
+        entity.setExternalReferenceId(instance.getExternalReferenceId());
         return entity;
     }
 
@@ -113,6 +114,7 @@ public class UserTaskInstanceEntityMapper implements MongoEntityMapper<UserTaskI
         instance.setEndpoint(entity.getEndpoint());
         instance.setComments(Optional.ofNullable(entity.getComments()).map(comments -> comments.stream().map(this::toComment).collect(toList())).orElse(null));
         instance.setAttachments(Optional.ofNullable(entity.getAttachments()).map(attachments -> attachments.stream().map(this::toAttachment).collect(toList())).orElse(null));
+        instance.setExternalReferenceId(entity.getExternalReferenceId());
         return instance;
     }
 

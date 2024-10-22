@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *  http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -118,8 +118,11 @@ public class KogitoRuntimeCommonClient {
 
     protected void asyncHttpResponseTreatment(AsyncResult<HttpResponse<Buffer>> res, CompletableFuture future, String logMessage) {
         if (res.succeeded() && (res.result().statusCode() == 200 || res.result().statusCode() == 201)) {
-            future.complete(res.result().bodyAsString() != null ? res.result().bodyAsString() : "Successfully performed: " + logMessage);
+            String jsonMessage = res.result().bodyAsString();
+            LOGGER.trace("Result {}", jsonMessage);
+            future.complete(jsonMessage != null ? jsonMessage : "Successfully performed: " + logMessage);
         } else {
+            LOGGER.trace("Error {}", logMessage);
             future.completeExceptionally(new DataIndexServiceException(getErrorMessage(logMessage, res.result())));
         }
     }

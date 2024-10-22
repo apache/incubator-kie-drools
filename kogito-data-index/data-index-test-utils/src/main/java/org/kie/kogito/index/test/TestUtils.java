@@ -286,6 +286,7 @@ public final class TestUtils {
                 .actualOwner(actualOwner)
                 .eventDate(new Date())
                 .processInstanceId(processInstanceId)
+                .externalReferenceId("testExternalReferenceId")
                 .build();
         UserTaskInstanceStateDataEvent event = new UserTaskInstanceStateDataEvent(URI.create("http://localhost:8080/" + processId).toString(), null, null, body.metaData(), body);
         event.setKogitoProcessId(processId);
@@ -422,6 +423,7 @@ public final class TestUtils {
         task.setPotentialGroups(singleton("potentialGroup"));
         task.setComments(List.of(Comment.builder().id("commentId" + taskId).content("Comment 1").updatedBy("kogito").build()));
         task.setAttachments(List.of(Attachment.builder().id("attachmentId" + taskId).content("http://linltodoc.com/1").name("doc1").updatedBy("kogito").build()));
+        task.setExternalReferenceId("testExternalReferenceId");
         return task;
     }
 }

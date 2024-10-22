@@ -71,6 +71,7 @@ public abstract class AbstractUserTaskInstanceEntityMapperIT {
         String processId = "testProcessId";
         String rootProcessId = "testRootProcessId";
         String rootProcessInstanceId = "testRootProcessInstanceId";
+        String externalReferenceId = "testExternalReferenceId";
         Map<String, String> object = new HashMap<>();
         object.put("test", "testValue");
         ObjectNode inputs = jsonMapper.createObjectNode().put("testInput", "testValue");
@@ -124,6 +125,7 @@ public abstract class AbstractUserTaskInstanceEntityMapperIT {
         userTaskInstance.setOutputs(outputs);
         userTaskInstance.setComments(singletonList(comment));
         userTaskInstance.setAttachments(singletonList(attachment));
+        userTaskInstance.setExternalReferenceId(externalReferenceId);
 
         userTaskInstanceEntity.setId(testId);
         userTaskInstanceEntity.setDescription(description);
@@ -148,6 +150,7 @@ public abstract class AbstractUserTaskInstanceEntityMapperIT {
         userTaskInstanceEntity.setOutputs(outputs);
         userTaskInstanceEntity.setComments(singletonList(commentEntity));
         userTaskInstanceEntity.setAttachments(singletonList(attachmentEntity));
+        userTaskInstanceEntity.setExternalReferenceId(externalReferenceId);
     }
 
     @Test
