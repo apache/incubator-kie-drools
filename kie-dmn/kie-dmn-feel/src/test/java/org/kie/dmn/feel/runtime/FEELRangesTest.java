@@ -180,12 +180,14 @@ public class FEELRangesTest extends BaseFEELTest {
                 {"(1..10].end", new BigDecimal(10), null},
                 {"(1..10].end included", Boolean.TRUE, null},
                 {"(<=10).start included", Boolean.FALSE, null},
-                {"(<=10).start", new UndefinedValueComparable(), null},
+                {"(<10).start", null, null},
+                {"(<=10).start", null, null},
                 {"(<=10).end", new BigDecimal(10), null},
                 {"(<=10).end included", Boolean.TRUE, null},
                 {"(>1).start included", Boolean.FALSE, null},
                 {"(>1).start", new BigDecimal(1), null},
-                {"(>1).end", new UndefinedValueComparable(), null},
+                {"(>1).end", null, null},
+                {"(>=1).end", null, null},
                 {"(>1).end included", Boolean.FALSE, null},
         };
         return addAdditionalParameters(cases, false);
