@@ -429,12 +429,10 @@ public class ASTCompilerHelper {
         Expression upperBoundExpression = getEnumExpression(n.getUpperBound());
         Expression startExpression = getNodeExpression(n.getStart());
         Expression endExpression = getNodeExpression(n.getEnd());
-        return addVariableDeclaratorWithObjectCreation(RANGENODE_CT,
-                NodeList.nodeList(lowerBoundExpression,
-                    upperBoundExpression,
-                    startExpression,
-                    endExpression),
-                n.getText());
+        return addVariableDeclaratorWithObjectCreation(RANGENODE_CT, NodeList.nodeList(lowerBoundExpression,
+                                                                                       upperBoundExpression,
+                                                                                       startExpression,
+                                                                                       endExpression), n.getText());
     }
 
     public BlockStmt add(RangeTypeNode n) {

@@ -20,7 +20,6 @@ package org.kie.dmn.feel.runtime.impl;
 
 import java.util.function.BiPredicate;
 
-import org.kie.dmn.feel.lang.ast.UnaryTestNode;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.util.BooleanEvalHelper;
 
@@ -46,9 +45,6 @@ public class RangeImpl
         this.highBoundary = highBoundary;
         this.lowEndPoint = lowEndPoint;
         this.highEndPoint = highEndPoint;
-        if (lowEndPoint instanceof UndefinedValueComparable && highEndPoint instanceof UndefinedValueComparable) {
-            throw new IllegalArgumentException("Endpoints can't be both undefined");
-        }
         withUndefined = lowEndPoint instanceof UndefinedValueComparable || highEndPoint instanceof UndefinedValueComparable;
     }
 
@@ -100,10 +96,6 @@ public class RangeImpl
     public boolean isWithUndefined() {
         return withUndefined;
     }
-
-//    boolean nullLowEndpointIncludes(Object param) {
-//        if ()
-//    }
 
     private Boolean finiteRangeIncludes(Object param) {
         if (lowBoundary == RangeBoundary.OPEN && highBoundary == RangeBoundary.OPEN) {

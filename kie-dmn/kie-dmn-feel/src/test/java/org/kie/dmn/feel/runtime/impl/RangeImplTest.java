@@ -22,7 +22,6 @@ import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.runtime.Range;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class RangeImplTest {
 
@@ -42,13 +41,6 @@ class RangeImplTest {
         assertThat(rangeImpl.isWithUndefined()).isTrue();
         rangeImpl = new RangeImpl(Range.RangeBoundary.CLOSED, new UndefinedValueComparable(), 10, Range.RangeBoundary.OPEN);
         assertThat(rangeImpl.isWithUndefined()).isTrue();
-    }
-
-    @Test
-    void constructorException() {
-        assertThatThrownBy(() -> new RangeImpl(Range.RangeBoundary.CLOSED, new UndefinedValueComparable(), new UndefinedValueComparable(), Range.RangeBoundary.OPEN))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("Endpoints can't be both undefined");
     }
 
     @Test
@@ -144,13 +136,6 @@ class RangeImplTest {
         rangeImpl2 = new RangeImpl(Range.RangeBoundary.CLOSED, 12, 17, Range.RangeBoundary.CLOSED);
         assertThat(rangeImpl2).isNotEqualTo(rangeImpl);
 
-//        rangeImpl2 = new RangeImpl(Range.RangeBoundary.OPEN, 10, 15, Range.RangeBoundary.OPEN, true, false);
-//        assertThat(rangeImpl2).isNotEqualTo(rangeImpl);
-//        rangeImpl2 = new RangeImpl(Range.RangeBoundary.OPEN, 10, 15, Range.RangeBoundary.OPEN, true, true);
-//        assertThat(rangeImpl2).isNotEqualTo(rangeImpl);
-//        rangeImpl2 = new RangeImpl(Range.RangeBoundary.OPEN, 10, 15, Range.RangeBoundary.OPEN, false, true);
-//        assertThat(rangeImpl2).isNotEqualTo(rangeImpl);
-
         rangeImpl = new RangeImpl();
         assertThat(rangeImpl).isEqualTo(rangeImpl);
     }
@@ -173,12 +158,5 @@ class RangeImplTest {
         assertThat(rangeImpl2).doesNotHaveSameHashCodeAs(rangeImpl);
         rangeImpl2 = new RangeImpl(Range.RangeBoundary.CLOSED, 12, 17, Range.RangeBoundary.CLOSED);
         assertThat(rangeImpl2).doesNotHaveSameHashCodeAs(rangeImpl);
-
-//        rangeImpl2 = new RangeImpl(Range.RangeBoundary.OPEN, 10, 15, Range.RangeBoundary.OPEN, true, false);
-//        assertThat(rangeImpl2).doesNotHaveSameHashCodeAs(rangeImpl);
-//        rangeImpl2 = new RangeImpl(Range.RangeBoundary.OPEN, 10, 15, Range.RangeBoundary.OPEN, true, true);
-//        assertThat(rangeImpl2).doesNotHaveSameHashCodeAs(rangeImpl);
-//        rangeImpl2 = new RangeImpl(Range.RangeBoundary.OPEN, 10, 15, Range.RangeBoundary.OPEN, false, true);
-//        assertThat(rangeImpl2).doesNotHaveSameHashCodeAs(rangeImpl);
     }
 }

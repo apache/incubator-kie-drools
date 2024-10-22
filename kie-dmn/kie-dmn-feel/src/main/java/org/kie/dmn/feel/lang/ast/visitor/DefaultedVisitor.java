@@ -246,5 +246,4 @@ public abstract class DefaultedVisitor<T> implements Visitor<T> {
         return defaultVisit(n);
     }
 
-
 }

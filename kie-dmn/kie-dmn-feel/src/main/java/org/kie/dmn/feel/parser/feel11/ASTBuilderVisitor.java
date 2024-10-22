@@ -177,7 +177,7 @@ public class ASTBuilderVisitor
         BaseNode end = visit( ctx.end );
         RangeNode.IntervalBoundary low = ctx.low.getText().equals( "[" ) ? RangeNode.IntervalBoundary.CLOSED : RangeNode.IntervalBoundary.OPEN;
         RangeNode.IntervalBoundary up = ctx.up.getText().equals( "]" ) ? RangeNode.IntervalBoundary.CLOSED : RangeNode.IntervalBoundary.OPEN;
-        return ASTBuilderFactory.newIntervalNode( ctx, low, start, end, up);
+        return ASTBuilderFactory.newIntervalNode( ctx, low, start, end, up );
     }
 
     @Override
