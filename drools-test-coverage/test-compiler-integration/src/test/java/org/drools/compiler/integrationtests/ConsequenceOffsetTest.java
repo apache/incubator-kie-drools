@@ -20,7 +20,7 @@ package org.drools.compiler.integrationtests;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.drl.ast.descr.RuleDescr;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
