@@ -53,7 +53,7 @@ public class InMemoryJobService implements JobsService, AutoCloseable {
     protected ConcurrentHashMap<String, ScheduledFuture<?>> scheduledJobs = new ConcurrentHashMap<>();
     private final Processes processes;
 
-    private static final ConcurrentHashMap<Processes, InMemoryJobService> INSTANCE = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<Integer, InMemoryJobService> INSTANCE = new ConcurrentHashMap<>();
 
     protected InMemoryJobService(Processes processes, UnitOfWorkManager unitOfWorkManager) {
         this(processes, unitOfWorkManager, new ScheduledThreadPoolExecutor(Integer.parseInt(System.getProperty(IN_MEMORY_JOB_SERVICE_POOL_SIZE_PROPERTY, "10"))));
@@ -68,14 +68,14 @@ public class InMemoryJobService implements JobsService, AutoCloseable {
     public static InMemoryJobService get(Processes processes, UnitOfWorkManager unitOfWorkManager) {
         Objects.requireNonNull(processes);
         Objects.requireNonNull(unitOfWorkManager);
-        return INSTANCE.computeIfAbsent(processes, k -> new InMemoryJobService(processes, unitOfWorkManager));
+        return INSTANCE.computeIfAbsent(processes.hashCode() + 7 * unitOfWorkManager.hashCode(), k -> new InMemoryJobService(processes, unitOfWorkManager));
     }
 
     public static InMemoryJobService get(Processes processes, UnitOfWorkManager unitOfWorkManager, ScheduledExecutorService scheduler) {
         Objects.requireNonNull(processes);
         Objects.requireNonNull(unitOfWorkManager);
         Objects.requireNonNull(scheduler);
-        return INSTANCE.computeIfAbsent(processes, k -> new InMemoryJobService(processes, unitOfWorkManager, scheduler));
+        return INSTANCE.computeIfAbsent(processes.hashCode() + 7 * unitOfWorkManager.hashCode(), k -> new InMemoryJobService(processes, unitOfWorkManager, scheduler));
     }
 
     @Override
@@ -107,8 +107,12 @@ public class InMemoryJobService implements JobsService, AutoCloseable {
     }
 
     public Runnable getSignalProcessInstanceCommand(ProcessInstanceJobDescription description, boolean remove, int limit) {
-        return new SignalProcessInstanceOnExpiredTimer(description.id(), description.timerId(), description
-                .processInstanceId(), description.processId(), remove, limit);
+        return new SignalProcessInstanceOnExpiredTimer(
+                description.id(),
+                description.timerId(),
+                description.processInstanceId(),
+                remove,
+                limit);
     }
 
     @Override
@@ -119,7 +123,10 @@ public class InMemoryJobService implements JobsService, AutoCloseable {
     public boolean cancelJob(String id, boolean force) {
         LOGGER.debug("Cancel Job: {}", id);
         if (scheduledJobs.containsKey(id)) {
-            return scheduledJobs.remove(id).cancel(force);
+            ScheduledFuture<?> future = scheduledJobs.remove(id);
+            if (!future.isDone()) {
+                return future.cancel(force);
+            }
         }
         return false;
     }
@@ -147,15 +154,13 @@ public class InMemoryJobService implements JobsService, AutoCloseable {
         private boolean removeAtExecution;
         private String processInstanceId;
         private Integer limit;
-        private String processId;
 
-        private SignalProcessInstanceOnExpiredTimer(String id, String timerId, String processInstanceId, String processId, boolean removeAtExecution, Integer limit) {
+        private SignalProcessInstanceOnExpiredTimer(String id, String timerId, String processInstanceId, boolean removeAtExecution, Integer limit) {
             this.id = id;
             this.timerId = timerId;
             this.processInstanceId = processInstanceId;
             this.removeAtExecution = removeAtExecution;
             this.limit = limit;
-            this.processId = processId;
         }
 
         @Override
@@ -216,12 +221,12 @@ public class InMemoryJobService implements JobsService, AutoCloseable {
                 });
                 limit--;
                 if (limit == 0) {
-                    cancelJob(id, false);
+                    cancelJob(id, true);
                 }
                 LOGGER.debug("Job {} completed", id);
             } finally {
                 if (removeAtExecution) {
-                    cancelJob(id, true);
+                    cancelJob(id, false);
                 }
             }
         }

@@ -482,7 +482,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
 
     @Test
     public void testEventBasedSplit2() {
-        ProcessCompletedCountDownProcessEventListener countDownListener = new ProcessCompletedCountDownProcessEventListener(2);
+        ProcessCompletedCountDownProcessEventListener countDownListener = new ProcessCompletedCountDownProcessEventListener(1);
         Application app = ProcessTestHelper.newApplication();
         ProcessTestHelper.registerProcessEventListener(app, countDownListener);
         ProcessTestHelper.registerHandler(app, "Email1", new SystemOutWorkItemHandler());
@@ -506,6 +506,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
 
         instance.send(Sig.of("Yes", "YesValue"));
         assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
+        countDownListener.reset(1);
 
         instance = processDefinition.createInstance(model);
         instance.start();

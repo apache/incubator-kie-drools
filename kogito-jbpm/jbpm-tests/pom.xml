@@ -177,8 +177,6 @@
                         tests -->
                         <org.jbpm.variable.strict>true</org.jbpm.variable.strict>
                     </systemPropertyVariables>
-                    <forkCount>2</forkCount>
-                    <parallel>all</parallel>
                 </configuration>
             </plugin>
         </plugins>
