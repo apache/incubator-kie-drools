@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,24 +16,28 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.dmn.feel.runtime;
+package org.kie.dmn.feel.runtime.impl;
 
-public interface Range {
+public class UndefinedValueComparable implements Comparable<UndefinedValueComparable> {
 
-    enum RangeBoundary {
-        OPEN, CLOSED;
+
+    @Override
+    public int compareTo(UndefinedValueComparable o) {
+        return 0;
     }
 
-    RangeBoundary getLowBoundary();
+    @Override
+    public String toString() {
+        return "undefined";
+    }
 
-    Comparable getLowEndPoint();
+    @Override
+    public int hashCode() {
+        return 0;
+    }
 
-    Comparable getHighEndPoint();
-
-    RangeBoundary getHighBoundary();
-
-    Boolean includes(Object param);
-
-    boolean isWithUndefined();
-
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof UndefinedValueComparable;
+    }
 }

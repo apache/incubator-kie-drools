@@ -57,6 +57,7 @@ import org.kie.dmn.feel.lang.ast.StringNode;
 import org.kie.dmn.feel.lang.ast.TemporalConstantNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestListNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestNode;
+import org.kie.dmn.feel.lang.ast.UndefinedValueNode;
 import org.kie.dmn.feel.lang.impl.JavaBackedType;
 import org.kie.dmn.feel.lang.impl.MapBackedType;
 import org.kie.dmn.feel.lang.types.AliasFEELType;
@@ -172,6 +173,7 @@ public class DMNCodegenConstants {
             parseClassOrInterfaceType(UnaryTestListNode.class.getCanonicalName());
     public static final ClassOrInterfaceType UNARYTESTNODE_CT =
             parseClassOrInterfaceType(UnaryTestNode.class.getCanonicalName());
+    public static final ClassOrInterfaceType UNDEFINEDVALUENODE_CT = parseClassOrInterfaceType(UndefinedValueNode.class.getCanonicalName());
 
     private DMNCodegenConstants() {
     }

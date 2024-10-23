@@ -324,7 +324,8 @@ literal
     |	BooleanLiteral          #boolLiteral
     |   atLiteral               #atLiteralLabel
     |	StringLiteral           #stringLiteral
-    |	NULL                #nullLiteral
+    |	NULL                    #nullLiteral
+    |   UNDEFINEDVALUE          #undefined
     ;
     
 atLiteral
@@ -339,6 +340,7 @@ BooleanLiteral
     :   TRUE
     |   FALSE
     ;
+
 
 /**************************
  *    OTHER CONSTRUCTS
@@ -463,6 +465,7 @@ reusableKeywords
     | BETWEEN
     | NOT
     | NULL
+    | UNDEFINEDVALUE
     | TRUE
     | FALSE
     ;
@@ -534,6 +537,10 @@ BETWEEN
 
 NULL
     : 'null'
+    ;
+
+UNDEFINEDVALUE
+    : 'undefined'
     ;
 
 TRUE

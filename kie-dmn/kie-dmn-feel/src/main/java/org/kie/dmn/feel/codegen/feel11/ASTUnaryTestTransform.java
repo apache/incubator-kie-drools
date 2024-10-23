@@ -37,6 +37,7 @@ import org.kie.dmn.feel.lang.ast.RangeNode;
 import org.kie.dmn.feel.lang.ast.StringNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestListNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestNode;
+import org.kie.dmn.feel.lang.ast.UndefinedValueNode;
 import org.kie.dmn.feel.lang.ast.visitor.DefaultedVisitor;
 
 public class ASTUnaryTestTransform extends DefaultedVisitor<ASTUnaryTestTransform.UnaryTestSubexpr> {
@@ -134,6 +135,11 @@ public class ASTUnaryTestTransform extends DefaultedVisitor<ASTUnaryTestTransfor
         } else {
             return new SimpleUnaryExpression(n);
         }
+    }
+
+    @Override
+    public UnaryTestSubexpr visit(UndefinedValueNode n) {
+        return new SimpleUnaryExpression(n);
     }
 
     private UnaryTestSubexpr propagateWildcard(ASTNode n) {
