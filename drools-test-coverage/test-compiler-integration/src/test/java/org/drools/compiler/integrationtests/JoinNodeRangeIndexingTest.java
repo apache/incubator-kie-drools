@@ -20,12 +20,12 @@ package org.drools.compiler.integrationtests;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import org.drools.ancompiler.CompiledNetwork;
 import org.drools.core.common.BetaConstraints;
@@ -41,10 +41,9 @@ import org.drools.testcoverage.common.model.Primitives;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.builder.KieModule;
 import org.kie.api.conf.BetaRangeIndexOption;
@@ -52,27 +51,20 @@ import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class JoinNodeRangeIndexingTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public JoinNodeRangeIndexingTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
-    }
-
-    private KieBase getKieBaseWithRangeIndexOption(String drl) {
+    private KieBase getKieBaseWithRangeIndexOption(KieBaseTestConfiguration kieBaseTestConfiguration, String drl) {
         KieModule kieModule = KieUtil.getKieModuleFromDrls("indexing-test", kieBaseTestConfiguration, drl);
         return KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, BetaRangeIndexOption.ENABLED);
     }
 
-    @Test
-    public void testRangeIndexForJoin() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testRangeIndexForJoin(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "import " + Person.class.getCanonicalName() + ";\n" +
                            "import " + Pet.class.getCanonicalName() + ";\n" +
                            "rule R1\n" +
@@ -82,9 +74,9 @@ public class JoinNodeRangeIndexingTest {
                            "then\n" +
                            "end\n";
 
-        final KieBase kbase = getKieBaseWithRangeIndexOption(drl);
+        final KieBase kbase = getKieBaseWithRangeIndexOption(kieBaseTestConfiguration, drl);
 
-        assertIndexedTrue(kbase, Person.class);
+        assertIndexedTrue(kieBaseTestConfiguration, kbase, Person.class);
 
         final KieSession ksession = kbase.newKieSession();
         try {
@@ -97,20 +89,20 @@ public class JoinNodeRangeIndexingTest {
         }
     }
 
-    private void assertIndexedTrue(KieBase kbase, Class<?> factClass) {
-        assertIndexed(kbase, factClass, true);
+    private void assertIndexedTrue(KieBaseTestConfiguration kieBaseTestConfiguration, KieBase kbase, Class<?> factClass) {
+        assertIndexed(kieBaseTestConfiguration, kbase, factClass, true);
     }
 
-    private void assertIndexedFalse(KieBase kbase, Class<?> factClass) {
-        assertIndexed(kbase, factClass, false);
+    private void assertIndexedFalse(KieBaseTestConfiguration kieBaseTestConfiguration, KieBase kbase, Class<?> factClass) {
+        assertIndexed(kieBaseTestConfiguration, kbase, factClass, false);
     }
 
-    private void assertIndexed(KieBase kbase, Class<?> factClass, boolean isIndexed) {
+    private void assertIndexed(KieBaseTestConfiguration kieBaseTestConfiguration, KieBase kbase, Class<?> factClass, boolean isIndexed) {
         final ObjectTypeNode otn = KieUtil.getObjectTypeNode(kbase, factClass);
         assertThat(otn).isNotNull();
 
         ObjectSinkPropagator objectSinkPropagator = otn.getObjectSinkPropagator();
-        if (this.kieBaseTestConfiguration.useAlphaNetworkCompiler()) {
+        if (kieBaseTestConfiguration.useAlphaNetworkCompiler()) {
             objectSinkPropagator = ((CompiledNetwork) objectSinkPropagator).getOriginalSinkPropagator();
         }
 
@@ -128,8 +120,9 @@ public class JoinNodeRangeIndexingTest {
         assertThat(isPassedForJoinNode).isTrue();
     }
 
-    @Test
-    public void testCoercionBigDecimalVsInt() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testCoercionBigDecimalVsInt(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "package org.drools.compiler.integrationtests;\n" +
                            "import " + Cheese.class.getCanonicalName() + ";\n" +
                            "import " + Primitives.class.getCanonicalName() + ";\n" +
@@ -144,9 +137,9 @@ public class JoinNodeRangeIndexingTest {
 
         // Integer is coerced to BigDecimal
 
-        final KieBase kbase = getKieBaseWithRangeIndexOption(drl);
+        final KieBase kbase = getKieBaseWithRangeIndexOption(kieBaseTestConfiguration, drl);
 
-        assertIndexedTrue(kbase, Primitives.class);
+        assertIndexedTrue(kieBaseTestConfiguration, kbase, Primitives.class);
 
         final KieSession ksession = kbase.newKieSession();
         try {
@@ -170,8 +163,9 @@ public class JoinNodeRangeIndexingTest {
         }
     }
 
-    @Test
-    public void testCoercionIntVsBigDecimal() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testCoercionIntVsBigDecimal(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "package org.drools.compiler.integrationtests;\n" +
                            "import " + Person.class.getCanonicalName() + ";\n" +
                            "import " + Primitives.class.getCanonicalName() + ";\n" +
@@ -187,9 +181,9 @@ public class JoinNodeRangeIndexingTest {
 
         // BigDecimal is coerced to Integer
 
-        final KieBase kbase = getKieBaseWithRangeIndexOption(drl);
+        final KieBase kbase = getKieBaseWithRangeIndexOption(kieBaseTestConfiguration, drl);
 
-        assertIndexedTrue(kbase, Primitives.class);
+        assertIndexedTrue(kieBaseTestConfiguration, kbase, Primitives.class);
 
         final KieSession ksession = kbase.newKieSession();
         try {
@@ -215,8 +209,9 @@ public class JoinNodeRangeIndexingTest {
         }
     }
 
-    @Test
-    public void testCoercionStringVsIntWithMap() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testCoercionStringVsIntWithMap(KieBaseTestConfiguration kieBaseTestConfiguration) {
 
         final String drl = "package org.drools.compiler.integrationtests;\n" +
                            "import " + Map.class.getCanonicalName() + ";\n" +
@@ -232,10 +227,10 @@ public class JoinNodeRangeIndexingTest {
 
         // Integer is coerced to String (thus, String comparison)
 
-        final KieBase kbase = getKieBaseWithRangeIndexOption(drl);
+        final KieBase kbase = getKieBaseWithRangeIndexOption(kieBaseTestConfiguration, drl);
 
         // We don't index this case
-        assertIndexedFalse(kbase, Cheese.class);
+        assertIndexedFalse(kieBaseTestConfiguration, kbase, Cheese.class);
 
         final KieSession ksession = kbase.newKieSession();
         try {
@@ -263,8 +258,9 @@ public class JoinNodeRangeIndexingTest {
         }
     }
 
-    @Test
-    public void testCoercionIntVsStringWithMap() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testCoercionIntVsStringWithMap(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // we don't enable range index for this case
         final String drl = "package org.drools.compiler.integrationtests;\n" +
                            "import " + Cheese.class.getCanonicalName() + ";\n" +
@@ -280,10 +276,10 @@ public class JoinNodeRangeIndexingTest {
 
         // String is coerced to Integer (thus, Number comparison)
 
-        final KieBase kbase = getKieBaseWithRangeIndexOption(drl);
+        final KieBase kbase = getKieBaseWithRangeIndexOption(kieBaseTestConfiguration, drl);
 
         // We don't index this case
-        assertIndexedFalse(kbase, MapHolder.class);
+        assertIndexedFalse(kieBaseTestConfiguration, kbase, MapHolder.class);
 
         final KieSession ksession = kbase.newKieSession();
         try {
@@ -327,8 +323,9 @@ public class JoinNodeRangeIndexingTest {
 
     }
 
-    @Test
-    public void testJoinWithGlobal() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testJoinWithGlobal(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "import " + Person.class.getCanonicalName() + ";\n" +
                            "global Integer minAge;\n" +
                            "rule R1\n" +
@@ -339,7 +336,7 @@ public class JoinNodeRangeIndexingTest {
 
         // Actually, [age > minAge] becomes an AlphaNode and doesn't use index.
 
-        final KieBase kbase = getKieBaseWithRangeIndexOption(drl);
+        final KieBase kbase = getKieBaseWithRangeIndexOption(kieBaseTestConfiguration, drl);
         final KieSession ksession = kbase.newKieSession();
 
         try {
@@ -351,8 +348,9 @@ public class JoinNodeRangeIndexingTest {
         }
     }
 
-    @Test
-    public void testInsertUpdateDelete() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testInsertUpdateDelete(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "import " + Person.class.getCanonicalName() + ";\n" +
                            "import " + Pet.class.getCanonicalName() + ";\n" +
                            "global java.util.Set result;\n" +
@@ -388,9 +386,9 @@ public class JoinNodeRangeIndexingTest {
                            "   delete($pet);\n" +
                            "end\n";
 
-        final KieBase kbase = getKieBaseWithRangeIndexOption(drl);
+        final KieBase kbase = getKieBaseWithRangeIndexOption(kieBaseTestConfiguration, drl);
 
-        assertIndexedTrue(kbase, Person.class);
+        assertIndexedTrue(kieBaseTestConfiguration, kbase, Person.class);
 
         final KieSession ksession = kbase.newKieSession();
         try {
@@ -425,8 +423,9 @@ public class JoinNodeRangeIndexingTest {
         }
     }
 
-    @Test
-    public void testBoxed() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testBoxed(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "import " + Person.class.getCanonicalName() + ";\n" +
                            "import " + IntegerHolder.class.getCanonicalName() + ";\n" +
                            "rule R1\n" +
@@ -436,9 +435,9 @@ public class JoinNodeRangeIndexingTest {
                            "then\n" +
                            "end\n";
 
-        final KieBase kbase = getKieBaseWithRangeIndexOption(drl);
+        final KieBase kbase = getKieBaseWithRangeIndexOption(kieBaseTestConfiguration, drl);
 
-        assertIndexedTrue(kbase, Person.class);
+        assertIndexedTrue(kieBaseTestConfiguration, kbase, Person.class);
 
         final KieSession ksession = kbase.newKieSession();
         try {
@@ -451,8 +450,9 @@ public class JoinNodeRangeIndexingTest {
         }
     }
 
-    @Test
-    public void testBoxed2() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testBoxed2(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "import " + Person.class.getCanonicalName() + ";\n" +
                            "import " + IntegerHolder.class.getCanonicalName() + ";\n" +
                            "rule R1\n" +
@@ -462,9 +462,9 @@ public class JoinNodeRangeIndexingTest {
                            "then\n" +
                            "end\n";
 
-        final KieBase kbase = getKieBaseWithRangeIndexOption(drl);
+        final KieBase kbase = getKieBaseWithRangeIndexOption(kieBaseTestConfiguration, drl);
 
-        assertIndexedTrue(kbase, IntegerHolder.class);
+        assertIndexedTrue(kieBaseTestConfiguration, kbase, IntegerHolder.class);
 
         final KieSession ksession = kbase.newKieSession();
         try {
@@ -489,8 +489,9 @@ public class JoinNodeRangeIndexingTest {
         }
     }
 
-    @Test
-    public void testMultipleFacts() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testMultipleFacts(KieBaseTestConfiguration kieBaseTestConfiguration) {
 
         final String drl = "import " + Person.class.getCanonicalName() + ";\n" +
                            "import " + Pet.class.getCanonicalName() + ";\n" +
@@ -503,9 +504,9 @@ public class JoinNodeRangeIndexingTest {
                            "   result.add( $person.getName() + \" > \" + $pet.getName() );\n" +
                            "end\n";
 
-        final KieBase kbase = getKieBaseWithRangeIndexOption(drl);
+        final KieBase kbase = getKieBaseWithRangeIndexOption(kieBaseTestConfiguration, drl);
 
-        assertIndexedTrue(kbase, Person.class);
+        assertIndexedTrue(kieBaseTestConfiguration, kbase, Person.class);
 
         final KieSession ksession = kbase.newKieSession();
         Set<String> result = new HashSet<>();

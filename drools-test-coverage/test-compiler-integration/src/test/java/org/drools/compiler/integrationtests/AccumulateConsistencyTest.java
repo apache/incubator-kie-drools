@@ -23,14 +23,15 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import org.drools.testcoverage.common.model.MyFact;
 import org.drools.testcoverage.common.model.Person;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieSession;
@@ -40,31 +41,25 @@ import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.Variable;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
-@RunWith(Parameterized.class)
 public class AccumulateConsistencyTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-    private final boolean accumulateNullPropagation;
 
-    public AccumulateConsistencyTest(final KieBaseTestConfiguration kieBaseTestConfiguration, boolean accumulateNullPropagation) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
-        this.accumulateNullPropagation = accumulateNullPropagation;
-    }
 
     // accumulateNullPropagation is false by default in drools 7.x
-    @Parameterized.Parameters(name = "KieBase type={0}, accumulateNullPropagation= {1}")
-    public static Collection<Object[]> getParameters() {
-        Collection<Object[]> parameters = new ArrayList<>();
-        parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY, false});
-        parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY_MODEL_PATTERN, false});
-        parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY, true});
-        parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY_MODEL_PATTERN, true});
-        return parameters;
+    public static Stream<Arguments> parameters() {
+        Collection<Arguments> parameters = new ArrayList<>();
+        parameters.add(arguments(KieBaseTestConfiguration.CLOUD_IDENTITY, false));
+        parameters.add(arguments(KieBaseTestConfiguration.CLOUD_IDENTITY_MODEL_PATTERN, false));
+        parameters.add(arguments(KieBaseTestConfiguration.CLOUD_IDENTITY, true));
+        parameters.add(arguments(KieBaseTestConfiguration.CLOUD_IDENTITY_MODEL_PATTERN, true));
+        return parameters.stream();
     }
 
-    @Test
-    public void testMinNoMatch() {
+    @ParameterizedTest(name = "KieBase type={0}, accumulateNullPropagation= {1}")
+    @MethodSource("parameters")
+    public void testMinNoMatch(KieBaseTestConfiguration kieBaseTestConfiguration, boolean accumulateNullPropagation) {
         final String drl =
                 "package org.drools.compiler.integrationtests;\n" +
                            "import " + Person.class.getCanonicalName() + ";\n" +
@@ -93,8 +88,9 @@ public class AccumulateConsistencyTest {
         }
     }
 
-    @Test
-    public void testMaxNoMatch() {
+    @ParameterizedTest(name = "KieBase type={0}, accumulateNullPropagation= {1}")
+	@MethodSource("parameters")
+    public void testMaxNoMatch(KieBaseTestConfiguration kieBaseTestConfiguration, boolean accumulateNullPropagation) {
         final String drl =
                 "package org.drools.compiler.integrationtests;\n" +
                            "import " + Person.class.getCanonicalName() + ";\n" +
@@ -123,8 +119,9 @@ public class AccumulateConsistencyTest {
         }
     }
 
-    @Test
-    public void testAveNoMatch() {
+    @ParameterizedTest(name = "KieBase type={0}, accumulateNullPropagation= {1}")
+	@MethodSource("parameters")
+    public void testAveNoMatch(KieBaseTestConfiguration kieBaseTestConfiguration, boolean accumulateNullPropagation) {
         final String drl =
                 "package org.drools.compiler.integrationtests;\n" +
                            "import " + Person.class.getCanonicalName() + ";\n" +
@@ -153,8 +150,9 @@ public class AccumulateConsistencyTest {
         }
     }
 
-    @Test
-    public void testSumNoMatch() {
+    @ParameterizedTest(name = "KieBase type={0}, accumulateNullPropagation= {1}")
+	@MethodSource("parameters")
+    public void testSumNoMatch(KieBaseTestConfiguration kieBaseTestConfiguration, boolean accumulateNullPropagation) {
         final String drl =
                 "package org.drools.compiler.integrationtests;\n" +
                            "import " + Person.class.getCanonicalName() + ";\n" +
@@ -179,8 +177,9 @@ public class AccumulateConsistencyTest {
         }
     }
 
-    @Test
-    public void testCountNoMatch() {
+    @ParameterizedTest(name = "KieBase type={0}, accumulateNullPropagation= {1}")
+	@MethodSource("parameters")
+    public void testCountNoMatch(KieBaseTestConfiguration kieBaseTestConfiguration, boolean accumulateNullPropagation) {
         final String drl =
                 "package org.drools.compiler.integrationtests;\n" +
                            "import " + Person.class.getCanonicalName() + ";\n" +
@@ -205,8 +204,9 @@ public class AccumulateConsistencyTest {
         }
     }
 
-    @Test
-    public void testMinMaxNoMatch() {
+    @ParameterizedTest(name = "KieBase type={0}, accumulateNullPropagation= {1}")
+	@MethodSource("parameters")
+    public void testMinMaxNoMatch(KieBaseTestConfiguration kieBaseTestConfiguration, boolean accumulateNullPropagation) {
         final String drl =
                 "package org.drools.compiler.integrationtests;\n" +
                            "import " + Person.class.getCanonicalName() + ";\n" +
@@ -232,8 +232,9 @@ public class AccumulateConsistencyTest {
         }
     }
 
-    @Test
-    public void testMinMaxMatch() {
+    @ParameterizedTest(name = "KieBase type={0}, accumulateNullPropagation= {1}")
+	@MethodSource("parameters")
+    public void testMinMaxMatch(KieBaseTestConfiguration kieBaseTestConfiguration, boolean accumulateNullPropagation) {
         final String drl =
                 "package org.drools.compiler.integrationtests;\n" +
                            "import " + Person.class.getCanonicalName() + ";\n" +
@@ -269,8 +270,9 @@ public class AccumulateConsistencyTest {
         }
     }
 
-    @Test
-    public void testMinNoMatchAccFrom() {
+    @ParameterizedTest(name = "KieBase type={0}, accumulateNullPropagation= {1}")
+	@MethodSource("parameters")
+    public void testMinNoMatchAccFrom(KieBaseTestConfiguration kieBaseTestConfiguration, boolean accumulateNullPropagation) {
 
         final String drl =
                 "package org.drools.compiler.integrationtests;\n" +
@@ -300,8 +302,9 @@ public class AccumulateConsistencyTest {
         }
     }
 
-    @Test
-    public void testMinMatchUnification() {
+    @ParameterizedTest(name = "KieBase type={0}, accumulateNullPropagation= {1}")
+	@MethodSource("parameters")
+    public void testMinMatchUnification(KieBaseTestConfiguration kieBaseTestConfiguration, boolean accumulateNullPropagation) {
 
         final String drl =
                 "package org.drools.compiler.integrationtests;\n" +
@@ -330,8 +333,9 @@ public class AccumulateConsistencyTest {
         }
     }
 
-    @Test
-    public void testMinNoMatchUnification() {
+    @ParameterizedTest(name = "KieBase type={0}, accumulateNullPropagation= {1}")
+	@MethodSource("parameters")
+    public void testMinNoMatchUnification(KieBaseTestConfiguration kieBaseTestConfiguration, boolean accumulateNullPropagation) {
         final String drl =
                 "package org.drools.compiler.integrationtests;\n" +
                            "import " + Person.class.getCanonicalName() + ";\n" +
@@ -363,8 +367,9 @@ public class AccumulateConsistencyTest {
         }
     }
 
-    @Test
-    public void testMinMatchUnificationQuery() {
+    @ParameterizedTest(name = "KieBase type={0}, accumulateNullPropagation= {1}")
+	@MethodSource("parameters")
+    public void testMinMatchUnificationQuery(KieBaseTestConfiguration kieBaseTestConfiguration, boolean accumulateNullPropagation) {
 
         final String drl =
                 "package org.drools.compiler.integrationtests;\n" +
