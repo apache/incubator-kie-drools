@@ -18,15 +18,14 @@
  */
 package org.drools.compiler.integrationtests;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.stream.Stream;
 
 import org.drools.testcoverage.common.model.Person;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.ClassObjectFilter;
 import org.kie.api.runtime.KieSession;
@@ -34,25 +33,15 @@ import org.kie.api.runtime.rule.FactHandle;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class ImmutableFactsTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public ImmutableFactsTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+    	return Stream.of(KieBaseTestConfiguration.CLOUD_IDENTITY_IMMUTABLE, KieBaseTestConfiguration.CLOUD_IDENTITY_IMMUTABLE_MODEL_PATTERN);
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        Collection<Object[]> parameters = new ArrayList<>();
-        parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY_IMMUTABLE});
-        parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY_IMMUTABLE_MODEL_PATTERN});
-        return parameters;
-    }
-
-    @Test
-    public void testAlphaConstraint() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testAlphaConstraint(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "package org.drools.compiler\n" +
                 "import " + Person.class.getCanonicalName() + ";\n" +
                 "rule R when\n" +
@@ -95,8 +84,9 @@ public class ImmutableFactsTest {
         }
     }
 
-    @Test
-    public void testBetaConstraint() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testBetaConstraint(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "package org.drools.compiler\n" +
                 "import " + Person.class.getCanonicalName() + ";\n" +
                 "rule R when\n" +

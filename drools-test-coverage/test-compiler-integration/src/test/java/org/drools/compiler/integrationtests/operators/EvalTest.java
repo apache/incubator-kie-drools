@@ -21,8 +21,8 @@ package org.drools.compiler.integrationtests.operators;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.drools.core.reteoo.ReteDumper;
 import org.drools.testcoverage.common.model.Cheese;
@@ -33,10 +33,9 @@ import org.drools.testcoverage.common.model.Person;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieModule;
@@ -47,22 +46,15 @@ import org.kie.api.runtime.rule.FactHandle;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
-@RunWith(Parameterized.class)
 public class EvalTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public EvalTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
-    }
-
-    @Test
-    public void testEvalDefaultCompiler() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testEvalDefaultCompiler(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "package org.drools.compiler.integrationtests.operators;\n" +
                 "import " + Cheese.class.getCanonicalName() + ";\n" +
                 "global java.util.List list;\n" +
@@ -96,8 +88,9 @@ public class EvalTest {
         }
     }
 
-    @Test
-    public void testEvalNoPatterns() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testEvalNoPatterns(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "package org.drools.compiler.integrationtests.operators\n" +
                 "global java.util.List list\n" +
                 "rule \"no patterns1\"\n" +
@@ -145,8 +138,9 @@ public class EvalTest {
         }
     }
 
-    @Test
-    public void testEvalMore() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testEvalMore(KieBaseTestConfiguration kieBaseTestConfiguration) {
 
         final String drl = "package org.drools.compiler.integrationtests.operators\n" +
                 "import " + Cheese.class.getCanonicalName() + ";\n" +
@@ -186,8 +180,9 @@ public class EvalTest {
         }
     }
 
-    @Test
-    public void testEvalCE() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testEvalCE(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "package org.drools.compiler.integrationtests.operators\n" +
                 "import " + Person.class.getCanonicalName() + ";\n" +
                 "rule \"inline eval\"\n" +
@@ -217,8 +212,9 @@ public class EvalTest {
         }
     }
 
-    @Test
-    public void testEvalException() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testEvalException(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "package org.drools.compiler.integrationtests.operators;\n" +
                 "import " + Cheese.class.getCanonicalName() + ";\n" +
                 "function boolean throwException(Object object) {\n" +
@@ -251,8 +247,9 @@ public class EvalTest {
         }
     }
 
-    @Test
-    public void testEvalInline() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testEvalInline(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "package org.drools.compiler.integrationtests.operators;\n" +
                 "import " + Person.class.getCanonicalName() + ";\n" +
                 "rule \"inline eval\"\n" +
@@ -281,8 +278,9 @@ public class EvalTest {
         }
     }
 
-    @Test
-    public void testEvalWithLineBreaks() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testEvalWithLineBreaks(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "package org.drools.compiler.integrationtests.operators;\n" +
                 "\n" +
                 "global java.util.List results\n" +
@@ -317,8 +315,9 @@ public class EvalTest {
         }
     }
 
-    @Test
-    public void testEvalWithBigDecimal() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testEvalWithBigDecimal(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = 
                 "package org.drools.compiler.integrationtests.operators;\n" +
                 "import java.math.BigDecimal; \n" +
@@ -350,8 +349,9 @@ public class EvalTest {
         }
     }
 
-    @Test
-    public void testFieldBiningsAndEvalSharing() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testFieldBiningsAndEvalSharing(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "package org.drools.compiler\n" +
                 "import " + Person.class.getCanonicalName() + ";\n" +
                 "global java.util.List list;\n" +
@@ -373,11 +373,12 @@ public class EvalTest {
                 "    then\n" +
                 "        list.add(\"rule2 fired\");\n" +
                 "end ";
-        evalSharingTest(drl);
+        evalSharingTest(kieBaseTestConfiguration, drl);
     }
 
-    @Test
-    public void testFieldBiningsAndPredicateSharing() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testFieldBiningsAndPredicateSharing(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "package org.drools.compiler.integrationtests.operators;\n" +
                 "import " + Person.class.getCanonicalName() + ";\n" +
                 "global java.util.List list;\n" +
@@ -397,10 +398,10 @@ public class EvalTest {
                 "    then\n" +
                 "        list.add(\"rule2 fired\");\n" +
                 "end";
-        evalSharingTest(drl);
+        evalSharingTest(kieBaseTestConfiguration, drl);
     }
 
-    private void evalSharingTest(final String drl) {
+    private void evalSharingTest(KieBaseTestConfiguration kieBaseTestConfiguration, final String drl) {
         final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("eval-test",
                                                                          kieBaseTestConfiguration,
                                                                          drl);
@@ -423,8 +424,9 @@ public class EvalTest {
         }
     }
 
-    @Test
-    public void testCastingInsideEvals() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testCastingInsideEvals(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "package org.drools.compiler.integrationtests.operators\n" +
                 "\n" +
                 "global java.lang.Integer value;\n" +
@@ -452,8 +454,9 @@ public class EvalTest {
         }
     }
 
-    @Test
-    public void testAlphaEvalWithOrCE() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testAlphaEvalWithOrCE(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "package org.drools.compiler.integrationtests.operators;\n" +
                 "import " + FactA.class.getCanonicalName() + ";\n" +
                 "import " + FactB.class.getCanonicalName() + ";\n" +
@@ -491,8 +494,9 @@ public class EvalTest {
         }
     }
 
-    @Test
-    public void testModifyWithLiaToEval() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testModifyWithLiaToEval(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
             "package org.drools.compiler.integrationtests.operators;\n" +
             "import " + Person.class.getCanonicalName() + "\n" +
@@ -527,8 +531,9 @@ public class EvalTest {
         }
     }
 
-    @Test
-    public void testBigDecimalWithFromAndEval() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testBigDecimalWithFromAndEval(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "package org.drools.compiler.integrationtests.operators;\n" +
             "rule \"Test Rule\"\n" +
             "when\n" +
@@ -548,8 +553,9 @@ public class EvalTest {
         }
     }
 
-    @Test
-    public void testPredicate() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testPredicate(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "package org.drools.compiler.integrationtests.operators;\n" +
                 "import " + Person.class.getCanonicalName() + "\n" +
                 "global java.util.List list;\n" +
@@ -588,8 +594,9 @@ public class EvalTest {
         }
     }
 
-    @Test
-    public void testPredicateException() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testPredicateException(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "package org.drools.compiler.integrationtests.operators;\n" +
                 "import " + Cheese.class.getCanonicalName() + ";\n" +
                 "function boolean throwException(Object object) {\n" +
