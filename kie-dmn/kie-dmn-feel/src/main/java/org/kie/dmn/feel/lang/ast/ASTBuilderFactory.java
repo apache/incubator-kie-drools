@@ -43,6 +43,10 @@ public class ASTBuilderFactory {
         return new NullNode( ctx );
     }
 
+    public static UndefinedValueNode newUndefinedValueNode() {
+        return new UndefinedValueNode();
+    }
+
     public static StringNode newStringNode(ParserRuleContext ctx) {
         return new StringNode( ctx );
     }

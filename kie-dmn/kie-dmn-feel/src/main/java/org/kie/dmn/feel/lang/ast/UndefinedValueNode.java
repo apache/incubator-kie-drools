@@ -16,24 +16,24 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.dmn.feel.runtime;
+package org.kie.dmn.feel.lang.ast;
 
-public interface Range {
+import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.runtime.impl.UndefinedValueComparable;
 
-    enum RangeBoundary {
-        OPEN, CLOSED;
+public class UndefinedValueNode
+        extends BaseNode {
+
+    public UndefinedValueNode() { }
+
+    @Override
+    public Object evaluate(EvaluationContext ctx) {
+        return new UndefinedValueComparable();
     }
 
-    RangeBoundary getLowBoundary();
-
-    Comparable getLowEndPoint();
-
-    Comparable getHighEndPoint();
-
-    RangeBoundary getHighBoundary();
-
-    Boolean includes(Object param);
-
-    boolean isWithUndefined();
+    @Override
+    public <T> T accept(Visitor<T> v) {
+        return v.visit(this);
+    }
 
 }

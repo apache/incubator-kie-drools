@@ -60,4 +60,5 @@ public interface Visitor<T> {
 
     T visit(UnaryTestListNode n);
     T visit(UnaryTestNode n);
+    T visit(UndefinedValueNode n);
 }

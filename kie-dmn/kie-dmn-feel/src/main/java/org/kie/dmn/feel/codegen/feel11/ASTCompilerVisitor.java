@@ -56,6 +56,7 @@ import org.kie.dmn.feel.lang.ast.StringNode;
 import org.kie.dmn.feel.lang.ast.TemporalConstantNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestListNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestNode;
+import org.kie.dmn.feel.lang.ast.UndefinedValueNode;
 import org.kie.dmn.feel.lang.ast.Visitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -286,6 +287,12 @@ public class ASTCompilerVisitor implements Visitor<BlockStmt> {
 
     @Override
     public BlockStmt visit(UnaryTestNode n) {
+        LOGGER.trace("visit {}", n);
+        return compilerHelper.add(n);
+    }
+
+    @Override
+    public BlockStmt visit(UndefinedValueNode n) {
         LOGGER.trace("visit {}", n);
         return compilerHelper.add(n);
     }

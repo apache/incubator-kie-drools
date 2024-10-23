@@ -134,6 +134,7 @@ public class RangeFunction extends BaseFEELFunction {
             return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "from", "endpoints must be of equivalent types"));
         }
 
+        // Boundary values need to be always defined in range string. They can be undefined only in unary test, that represents range, e.g. (<10). 
         return FEELFnResult.ofResult(new RangeImpl(startBoundary, (Comparable) left, (Comparable) right, endBoundary));
     }
 

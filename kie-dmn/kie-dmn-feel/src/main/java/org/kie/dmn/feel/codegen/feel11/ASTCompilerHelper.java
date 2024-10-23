@@ -79,6 +79,7 @@ import org.kie.dmn.feel.lang.ast.TemporalConstantNode;
 import org.kie.dmn.feel.lang.ast.TypeNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestListNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestNode;
+import org.kie.dmn.feel.lang.ast.UndefinedValueNode;
 import org.kie.dmn.feel.lang.impl.JavaBackedType;
 import org.kie.dmn.feel.lang.impl.MapBackedType;
 import org.kie.dmn.feel.lang.types.AliasFEELType;
@@ -144,6 +145,7 @@ import static org.kie.dmn.feel.codegen.feel11.DMNCodegenConstants.TEMPORALCONSTA
 import static org.kie.dmn.feel.codegen.feel11.DMNCodegenConstants.TYPE_CT;
 import static org.kie.dmn.feel.codegen.feel11.DMNCodegenConstants.UNARYTESTLISTNODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.DMNCodegenConstants.UNARYTESTNODE_CT;
+import static org.kie.dmn.feel.codegen.feel11.DMNCodegenConstants.UNDEFINEDVALUENODE_CT;
 import static org.kie.dmn.feel.util.CodegenUtils.getEnumExpression;
 import static org.kie.dmn.feel.util.CodegenUtils.getListExpression;
 import static org.kie.dmn.feel.util.CodegenUtils.getStringLiteralExpr;
@@ -486,6 +488,10 @@ public class ASTCompilerHelper {
         return addVariableDeclaratorWithObjectCreation(UNARYTESTNODE_CT, NodeList.nodeList(opExpression,
                                                                                            valueExpression),
                                                        n.getText());
+    }
+
+    public BlockStmt add(UndefinedValueNode n) {
+        return addVariableDeclaratorWithObjectCreation(UNDEFINEDVALUENODE_CT, NodeList.nodeList());
     }
 
     public String getLastVariableName() {

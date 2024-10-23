@@ -19,16 +19,15 @@
 package org.kie.dmn.feel.lang.ast.visitor;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.lang.ast.ASTNode;
 import org.kie.dmn.feel.lang.ast.InfixOpNode;
-import org.kie.dmn.feel.lang.ast.NullNode;
 import org.kie.dmn.feel.lang.ast.RangeNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestNode;
+import org.kie.dmn.feel.lang.ast.UndefinedValueNode;
 import org.kie.dmn.feel.runtime.events.ASTHeuristicCheckEvent;
 import org.kie.dmn.feel.util.Msg;
 
@@ -63,8 +62,8 @@ public class ASTHeuristicCheckerVisitor extends DefaultedVisitor<List<FEELEvent>
 
     @Override
     public List<FEELEvent> visit(RangeNode n) {
-        if ((n.getStart() instanceof NullNode && n.getEnd() instanceof RangeNode)
-                || (n.getStart() instanceof RangeNode && n.getEnd() instanceof NullNode)) {
+        if ((n.getStart() instanceof UndefinedValueNode && n.getEnd() instanceof RangeNode)
+                || (n.getStart() instanceof RangeNode && n.getEnd() instanceof UndefinedValueNode)) {
             return List.of(new ASTHeuristicCheckEvent(Severity.WARN, Msg.createMessage(Msg.UT_OF_UT, n.getText()), n));
         }
         return defaultVisit(n);
