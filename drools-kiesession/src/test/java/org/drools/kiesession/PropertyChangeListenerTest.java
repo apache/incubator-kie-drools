@@ -29,8 +29,8 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -39,7 +39,7 @@ public class PropertyChangeListenerTest {
     private BuildContext buildContext;
     private EntryPointNode entryPoint;
     
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         this.kBase = KnowledgeBaseFactory.newKnowledgeBase();
         this.buildContext = new BuildContext( kBase, Collections.emptyList() );
