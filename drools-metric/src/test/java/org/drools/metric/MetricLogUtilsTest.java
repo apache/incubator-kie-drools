@@ -29,7 +29,7 @@ import io.micrometer.core.instrument.search.Search;
 import org.drools.metric.util.MetricLogUtils;
 import org.drools.mvel.compiler.Address;
 import org.drools.mvel.compiler.Person;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
