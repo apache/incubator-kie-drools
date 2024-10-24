@@ -29,8 +29,8 @@ import java.util.Map;
 import org.drools.template.parser.Column;
 import org.drools.template.parser.DefaultTemplateContainer;
 import org.drools.template.parser.TemplateContainer;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -83,7 +83,7 @@ public class DataProviderCompilerTest {
 
     private ArrayList<String[]> rows = new ArrayList<String[]>();
 
-    @Before
+    @BeforeEach
     public void setUp() {
         rows.add(new String[]{"1",
                               "STANDARD",
