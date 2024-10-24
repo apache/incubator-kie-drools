@@ -19,14 +19,14 @@
 package org.drools.mvel.compiler.rule.builder.dialect.mvel;
 
 import org.drools.mvel.builder.MVELExprAnalyzer;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class MVELExprAnalyzerTest {
 
     private MVELExprAnalyzer analyzer;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         analyzer = new MVELExprAnalyzer();
     }

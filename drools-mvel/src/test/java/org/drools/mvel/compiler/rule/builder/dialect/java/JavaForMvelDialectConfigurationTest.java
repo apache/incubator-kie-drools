@@ -19,7 +19,7 @@
 package org.drools.mvel.compiler.rule.builder.dialect.java;
 
 import org.drools.mvel.java.JavaForMvelDialectConfiguration;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class JavaForMvelDialectConfigurationTest {
 

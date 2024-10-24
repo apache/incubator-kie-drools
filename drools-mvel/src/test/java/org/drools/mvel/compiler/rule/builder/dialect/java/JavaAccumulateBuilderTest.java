@@ -37,8 +37,8 @@ import org.drools.drl.ast.descr.RuleDescr;
 import org.drools.mvel.java.JavaAccumulateBuilder;
 import org.drools.mvel.java.JavaAnalysisResult;
 import org.drools.mvel.java.JavaExprAnalyzer;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -46,7 +46,7 @@ public class JavaAccumulateBuilderTest {
 
     private JavaAccumulateBuilder builder;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         builder = new JavaAccumulateBuilder();
     }

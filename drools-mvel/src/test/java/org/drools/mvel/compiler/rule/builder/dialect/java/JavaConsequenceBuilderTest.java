@@ -46,7 +46,7 @@ import org.drools.mvel.compiler.Cheese;
 import org.drools.mvel.compiler.Person;
 import org.drools.mvel.java.JavaAnalysisResult;
 import org.drools.mvel.java.JavaExprAnalyzer;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.conf.PropertySpecificOption;
 
