@@ -18,17 +18,17 @@
  */
 package org.drools.example.api.defaultkiesession;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.runtime.KieSession;
 
 import java.io.ByteArrayOutputStream;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
-
-import static org.junit.Assert.assertEquals;
 
 public class DefaultKieSessionFromFSExampleTest {
 
