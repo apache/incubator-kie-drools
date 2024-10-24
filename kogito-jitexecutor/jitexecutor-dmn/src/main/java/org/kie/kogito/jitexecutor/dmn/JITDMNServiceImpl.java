@@ -76,8 +76,7 @@ public class JITDMNServiceImpl implements JITDMNService {
     @Override
     public JITDMNResult evaluateModel(String modelXML, Map<String, Object> context) {
         DMNEvaluator dmnEvaluator = DMNEvaluator.fromXML(modelXML);
-        DMNResult dmnResult = dmnEvaluator.evaluate(context);
-        return new JITDMNResult(dmnEvaluator.getNamespace(), dmnEvaluator.getName(), dmnResult);
+        return dmnEvaluator.evaluate(context);
     }
 
     @Override

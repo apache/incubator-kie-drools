@@ -21,6 +21,7 @@ package org.kie.kogito.jitexecutor.dmn.responses;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,16 +50,23 @@ public class JITDMNResult implements Serializable,
 
     private Map<String, JITDMNDecisionResult> decisionResults = new HashMap<>();
 
+    private List<String> evaluationHitIds;
+
     public JITDMNResult() {
         // Intentionally blank.
     }
 
     public JITDMNResult(String namespace, String modelName, org.kie.dmn.api.core.DMNResult dmnResult) {
+        this(namespace, modelName, dmnResult, Collections.emptyList());
+    }
+
+    public JITDMNResult(String namespace, String modelName, org.kie.dmn.api.core.DMNResult dmnResult, List<String> evaluationHitIds) {
         this.namespace = namespace;
         this.modelName = modelName;
         this.setDmnContext(dmnResult.getContext().getAll());
         this.setMessages(dmnResult.getMessages());
         this.setDecisionResults(dmnResult.getDecisionResults());
+        this.evaluationHitIds = evaluationHitIds;
     }
 
     public String getNamespace() {
@@ -100,6 +108,14 @@ public class JITDMNResult implements Serializable,
         for (DMNDecisionResult dr : decisionResults) {
             this.decisionResults.put(dr.getDecisionId(), JITDMNDecisionResult.of(dr));
         }
+    }
+
+    public List<String> getEvaluationHitIds() {
+        return evaluationHitIds;
+    }
+
+    public void setEvaluationHitIds(List<String> evaluationHitIds) {
+        this.evaluationHitIds = evaluationHitIds;
     }
 
     @JsonIgnore
@@ -151,6 +167,7 @@ public class JITDMNResult implements Serializable,
                 .append(", dmnContext=").append(dmnContext)
                 .append(", messages=").append(messages)
                 .append(", decisionResults=").append(decisionResults)
+                .append(", evaluationHitIds=").append(evaluationHitIds)
                 .append("]").toString();
     }
 }
