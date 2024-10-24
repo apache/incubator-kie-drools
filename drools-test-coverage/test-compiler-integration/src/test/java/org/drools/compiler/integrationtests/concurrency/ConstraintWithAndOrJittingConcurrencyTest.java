@@ -18,28 +18,20 @@
  */
 package org.drools.compiler.integrationtests.concurrency;
 
-import java.util.Collection;
+import java.util.stream.Stream;
 
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
-import org.drools.testcoverage.common.util.TestParametersUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
 import org.junit.experimental.categories.Category;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.test.testcategory.TurtleTestCategory;
 
-@RunWith(Parameterized.class)
 @Category(TurtleTestCategory.class)
 public class ConstraintWithAndOrJittingConcurrencyTest extends BaseConcurrencyTest {
 
-    public ConstraintWithAndOrJittingConcurrencyTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        super(kieBaseTestConfiguration);
-    }
-
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(false); // only for non-exec-model mvel jitting test
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(false).stream(); // only for non-exec-model mvel jitting test
     }
 
     protected String getDrl() {

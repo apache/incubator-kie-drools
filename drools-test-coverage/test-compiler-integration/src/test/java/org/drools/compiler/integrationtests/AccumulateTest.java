@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Stream;
 
 import org.drools.compiler.integrationtests.incrementalcompilation.TestUtil;
 import org.drools.core.RuleSessionConfiguration;
@@ -46,10 +47,10 @@ import org.drools.testcoverage.common.model.StockTick;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -76,22 +77,16 @@ import static org.assertj.core.api.Assertions.within;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-@RunWith(Parameterized.class)
 public class AccumulateTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public AccumulateTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
-    }
-
-    @Test(timeout = 10000)
-    public void testAccumulateModify() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testAccumulateModify(KieBaseTestConfiguration kieBaseTestConfiguration) {
 
         final String drl = "package org.drools.compiler.integrationtests;\n" +
                 "\n" +
@@ -171,8 +166,10 @@ public class AccumulateTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testAccumulate() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testAccumulate(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources("accumulate-test", kieBaseTestConfiguration,
                                                                            "org/drools/compiler/integrationtests/test_Accumulate.drl");
         final KieSession wm = kbase.newKieSession();
@@ -209,8 +206,10 @@ public class AccumulateTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testAccumulateModifyMVEL() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testAccumulateModifyMVEL(KieBaseTestConfiguration kieBaseTestConfiguration) {
 
         final String drl = "package org.drools.compiler.test;\n" +
                 "\n" +
@@ -293,8 +292,9 @@ public class AccumulateTest {
 
     }
 
-    @Test()
-    public void testAccumulateReverseModify() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testAccumulateReverseModify(KieBaseTestConfiguration kieBaseTestConfiguration) {
 
         final String drl = "package org.drools.compiler.test;\n" +
                 "\n" +
@@ -382,8 +382,10 @@ public class AccumulateTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testAccumulateReverseModify2() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testAccumulateReverseModify2(KieBaseTestConfiguration kieBaseTestConfiguration) {
 
         final String drl = "package org.drools.compiler.test;\n" +
                 "\n" +
@@ -471,8 +473,10 @@ public class AccumulateTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testAccumulateReverseModifyInsertLogical2() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testAccumulateReverseModifyInsertLogical2(KieBaseTestConfiguration kieBaseTestConfiguration) {
 
         final KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources("accumulate-test", kieBaseTestConfiguration,
                                                                            "org/drools/compiler/integrationtests/test_AccumulateReverseModifyInsertLogical2.drl");
@@ -517,8 +521,10 @@ public class AccumulateTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testAccumulateReverseModifyMVEL() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testAccumulateReverseModifyMVEL(KieBaseTestConfiguration kieBaseTestConfiguration) {
 
         final String drl = "package org.drools.compiler.test;\n" +
                 "\n" +
@@ -604,8 +610,10 @@ public class AccumulateTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testAccumulateReverseModifyMVEL2() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testAccumulateReverseModifyMVEL2(KieBaseTestConfiguration kieBaseTestConfiguration) {
 
         final String drl = "package org.drools.compiler.test;\n" +
                 "\n" +
@@ -691,8 +699,10 @@ public class AccumulateTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testAccumulateWithFromChaining() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testAccumulateWithFromChaining(KieBaseTestConfiguration kieBaseTestConfiguration) {
 
         final String drl = "package org.drools.compiler\n" +
                 "\n" +
@@ -788,8 +798,10 @@ public class AccumulateTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testAccumulateInnerClass() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testAccumulateInnerClass(KieBaseTestConfiguration kieBaseTestConfiguration) {
 
         final String drl = "package org.drools.compiler\n" +
                 "\n" +
@@ -828,8 +840,10 @@ public class AccumulateTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testAccumulateReturningNull() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testAccumulateReturningNull(KieBaseTestConfiguration kieBaseTestConfiguration) {
 
         final String drl = "package org.drools.compiler\n" +
                 "\n" +
@@ -861,108 +875,150 @@ public class AccumulateTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testAccumulateSumJava() {
-        execTestAccumulateSum("org/drools/compiler/integrationtests/test_AccumulateSum.drl");
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testAccumulateSumJava(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        execTestAccumulateSum(kieBaseTestConfiguration, "org/drools/compiler/integrationtests/test_AccumulateSum.drl");
     }
 
-    @Test(timeout = 10000)
-    public void testAccumulateSumMVEL() {
-        execTestAccumulateSum("org/drools/compiler/integrationtests/test_AccumulateSumMVEL.drl");
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testAccumulateSumMVEL(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        execTestAccumulateSum(kieBaseTestConfiguration, "org/drools/compiler/integrationtests/test_AccumulateSumMVEL.drl");
     }
 
-    @Test(timeout = 10000)
-    public void testAccumulateMultiPatternWithFunctionJava() {
-        execTestAccumulateSum("org/drools/compiler/integrationtests/test_AccumulateMultiPatternFunctionJava.drl");
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testAccumulateMultiPatternWithFunctionJava(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        execTestAccumulateSum(kieBaseTestConfiguration, "org/drools/compiler/integrationtests/test_AccumulateMultiPatternFunctionJava.drl");
     }
 
-    @Test(timeout = 10000)
-    public void testAccumulateMultiPatternWithFunctionMVEL() {
-        execTestAccumulateSum("org/drools/compiler/integrationtests/test_AccumulateMultiPatternFunctionMVEL.drl");
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testAccumulateMultiPatternWithFunctionMVEL(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        execTestAccumulateSum(kieBaseTestConfiguration, "org/drools/compiler/integrationtests/test_AccumulateMultiPatternFunctionMVEL.drl");
     }
 
-    @Test(timeout = 10000)
-    public void testAccumulateCountJava() {
-        execTestAccumulateCount("org/drools/compiler/integrationtests/test_AccumulateCount.drl");
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testAccumulateCountJava(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        execTestAccumulateCount(kieBaseTestConfiguration, "org/drools/compiler/integrationtests/test_AccumulateCount.drl");
     }
 
-    @Test(timeout = 10000)
-    public void testAccumulateCountMVEL() {
-        execTestAccumulateCount("org/drools/compiler/integrationtests/test_AccumulateCountMVEL.drl");
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testAccumulateCountMVEL(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        execTestAccumulateCount(kieBaseTestConfiguration, "org/drools/compiler/integrationtests/test_AccumulateCountMVEL.drl");
     }
 
-    @Test(timeout = 10000)
-    public void testAccumulateAverageJava() {
-        execTestAccumulateAverage("org/drools/compiler/integrationtests/test_AccumulateAverage.drl");
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testAccumulateAverageJava(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        execTestAccumulateAverage(kieBaseTestConfiguration, "org/drools/compiler/integrationtests/test_AccumulateAverage.drl");
     }
 
-    @Test(timeout = 10000)
-    public void testAccumulateAverageMVEL() {
-        execTestAccumulateAverage("org/drools/compiler/integrationtests/test_AccumulateAverageMVEL.drl");
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testAccumulateAverageMVEL(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        execTestAccumulateAverage(kieBaseTestConfiguration, "org/drools/compiler/integrationtests/test_AccumulateAverageMVEL.drl");
     }
 
-    @Test(timeout = 10000)
-    public void testAccumulateMinJava() {
-        execTestAccumulateMin("org/drools/compiler/integrationtests/test_AccumulateMin.drl");
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testAccumulateMinJava(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        execTestAccumulateMin(kieBaseTestConfiguration, "org/drools/compiler/integrationtests/test_AccumulateMin.drl");
     }
 
-    @Test(timeout = 10000)
-    public void testAccumulateMinMVEL() {
-        execTestAccumulateMin("org/drools/compiler/integrationtests/test_AccumulateMinMVEL.drl");
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testAccumulateMinMVEL(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        execTestAccumulateMin(kieBaseTestConfiguration, "org/drools/compiler/integrationtests/test_AccumulateMinMVEL.drl");
     }
 
-    @Test(timeout = 10000)
-    public void testAccumulateMaxJava() {
-        execTestAccumulateMax("org/drools/compiler/integrationtests/test_AccumulateMax.drl");
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testAccumulateMaxJava(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        execTestAccumulateMax(kieBaseTestConfiguration, "org/drools/compiler/integrationtests/test_AccumulateMax.drl");
     }
 
-    @Test(timeout = 10000)
-    public void testAccumulateMaxMVEL() {
-        execTestAccumulateMax("org/drools/compiler/integrationtests/test_AccumulateMaxMVEL.drl");
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testAccumulateMaxMVEL(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        execTestAccumulateMax(kieBaseTestConfiguration, "org/drools/compiler/integrationtests/test_AccumulateMaxMVEL.drl");
     }
 
-    @Test(timeout = 10000)
-    public void testAccumulateMultiPatternJava() {
-        execTestAccumulateReverseModifyMultiPattern("org/drools/compiler/integrationtests/test_AccumulateMultiPattern.drl");
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testAccumulateMultiPatternJava(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        execTestAccumulateReverseModifyMultiPattern(kieBaseTestConfiguration, "org/drools/compiler/integrationtests/test_AccumulateMultiPattern.drl");
     }
 
-    @Test(timeout = 10000)
-    public void testAccumulateMultiPatternMVEL() {
-        execTestAccumulateReverseModifyMultiPattern("org/drools/compiler/integrationtests/test_AccumulateMultiPatternMVEL.drl");
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testAccumulateMultiPatternMVEL(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        execTestAccumulateReverseModifyMultiPattern(kieBaseTestConfiguration, "org/drools/compiler/integrationtests/test_AccumulateMultiPatternMVEL.drl");
     }
 
-    @Test(timeout = 10000)
-    public void testAccumulateCollectListJava() {
-        execTestAccumulateCollectList("org/drools/compiler/integrationtests/test_AccumulateCollectList.drl");
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testAccumulateCollectListJava(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        execTestAccumulateCollectList(kieBaseTestConfiguration, "org/drools/compiler/integrationtests/test_AccumulateCollectList.drl");
     }
 
-    @Test(timeout = 10000)
-    public void testAccumulateCollectListMVEL() {
-        execTestAccumulateCollectList("org/drools/compiler/integrationtests/test_AccumulateCollectListMVEL.drl");
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testAccumulateCollectListMVEL(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        execTestAccumulateCollectList(kieBaseTestConfiguration, "org/drools/compiler/integrationtests/test_AccumulateCollectListMVEL.drl");
     }
 
-    @Test(timeout = 10000)
-    public void testAccumulateCollectSetJava() {
-        execTestAccumulateCollectSet("org/drools/compiler/integrationtests/test_AccumulateCollectSet.drl");
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testAccumulateCollectSetJava(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        execTestAccumulateCollectSet(kieBaseTestConfiguration, "org/drools/compiler/integrationtests/test_AccumulateCollectSet.drl");
     }
 
-    @Test(timeout = 10000)
-    public void testAccumulateCollectSetMVEL() {
-        execTestAccumulateCollectSet("org/drools/compiler/integrationtests/test_AccumulateCollectSetMVEL.drl");
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testAccumulateCollectSetMVEL(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        execTestAccumulateCollectSet(kieBaseTestConfiguration, "org/drools/compiler/integrationtests/test_AccumulateCollectSetMVEL.drl");
     }
 
-    @Test(timeout = 10000)
-    public void testAccumulateMultipleFunctionsJava() {
-        execTestAccumulateMultipleFunctions("org/drools/compiler/integrationtests/test_AccumulateMultipleFunctions.drl");
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testAccumulateMultipleFunctionsJava(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        execTestAccumulateMultipleFunctions(kieBaseTestConfiguration, "org/drools/compiler/integrationtests/test_AccumulateMultipleFunctions.drl");
     }
 
-    @Test(timeout = 10000)
-    public void testAccumulateMultipleFunctionsMVEL() {
-        execTestAccumulateMultipleFunctions("org/drools/compiler/integrationtests/test_AccumulateMultipleFunctionsMVEL.drl");
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testAccumulateMultipleFunctionsMVEL(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        execTestAccumulateMultipleFunctions(kieBaseTestConfiguration, "org/drools/compiler/integrationtests/test_AccumulateMultipleFunctionsMVEL.drl");
     }
 
-    @Test(timeout = 10000)
-    public void testAccumulateMultipleFunctionsConstraint() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testAccumulateMultipleFunctionsConstraint(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources("accumulate-test", kieBaseTestConfiguration,
                                                                            "org/drools/compiler/integrationtests/test_AccumulateMultipleFunctionsConstraint.drl");
         final KieSession ksession = kbase.newKieSession();
@@ -1025,8 +1081,10 @@ public class AccumulateTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testAccumulateWithAndOrCombinations() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testAccumulateWithAndOrCombinations(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // JBRULES-3482
         // once this compils, update it to actually assert on correct outputs.
 
@@ -1055,7 +1113,7 @@ public class AccumulateTest {
         }
     }
 
-    private void execTestAccumulateSum(final String fileName) {
+    private void execTestAccumulateSum(KieBaseTestConfiguration kieBaseTestConfiguration, final String fileName) {
 
         final KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources("accumulate-test", kieBaseTestConfiguration,
                                                                            fileName);
@@ -1137,7 +1195,7 @@ public class AccumulateTest {
         }
     }
 
-    private void execTestAccumulateCount(final String fileName) {
+    private void execTestAccumulateCount(KieBaseTestConfiguration kieBaseTestConfiguration, final String fileName) {
 
         final KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources("accumulate-test", kieBaseTestConfiguration,
                                                                            fileName);
@@ -1202,7 +1260,7 @@ public class AccumulateTest {
         }
     }
 
-    private void execTestAccumulateAverage(final String fileName) {
+    private void execTestAccumulateAverage(KieBaseTestConfiguration kieBaseTestConfiguration, final String fileName) {
 
         final KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources("accumulate-test", kieBaseTestConfiguration,
                                                                            fileName);
@@ -1267,7 +1325,7 @@ public class AccumulateTest {
         }
     }
 
-    private void execTestAccumulateMin(final String fileName) {
+    private void execTestAccumulateMin(KieBaseTestConfiguration kieBaseTestConfiguration, final String fileName) {
 
         final KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources("accumulate-test", kieBaseTestConfiguration,
                                                                            fileName);
@@ -1332,7 +1390,7 @@ public class AccumulateTest {
         }
     }
 
-    private void execTestAccumulateMax(final String fileName) {
+    private void execTestAccumulateMax(KieBaseTestConfiguration kieBaseTestConfiguration, final String fileName) {
 
         final KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources("accumulate-test", kieBaseTestConfiguration,
                                                                            fileName);
@@ -1397,7 +1455,7 @@ public class AccumulateTest {
         }
     }
 
-    private void execTestAccumulateCollectList(final String fileName) {
+    private void execTestAccumulateCollectList(KieBaseTestConfiguration kieBaseTestConfiguration, final String fileName) {
 
         final KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources("accumulate-test", kieBaseTestConfiguration,
                                                                            fileName);
@@ -1448,7 +1506,7 @@ public class AccumulateTest {
         }
     }
 
-    private void execTestAccumulateCollectSet(final String fileName) {
+    private void execTestAccumulateCollectSet(KieBaseTestConfiguration kieBaseTestConfiguration, final String fileName) {
 
         final KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources("accumulate-test", kieBaseTestConfiguration,
                                                                            fileName);
@@ -1505,7 +1563,7 @@ public class AccumulateTest {
         }
     }
 
-    private void execTestAccumulateReverseModifyMultiPattern(final String fileName) {
+    private void execTestAccumulateReverseModifyMultiPattern(KieBaseTestConfiguration kieBaseTestConfiguration, final String fileName) {
 
         final KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources("accumulate-test", kieBaseTestConfiguration,
                                                                            fileName);
@@ -1572,8 +1630,10 @@ public class AccumulateTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testAccumulateWithPreviouslyBoundVariables() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testAccumulateWithPreviouslyBoundVariables(KieBaseTestConfiguration kieBaseTestConfiguration) {
 
         final String drl = "package org.drools.compiler\n" +
                 "\n" +
@@ -1621,8 +1681,10 @@ public class AccumulateTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testAccumulateMVELWithModify() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testAccumulateMVELWithModify(KieBaseTestConfiguration kieBaseTestConfiguration) {
 
         final String drl = "package org.drools.compiler\n" +
                 "\n" +
@@ -1679,8 +1741,10 @@ public class AccumulateTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testAccumulateGlobals() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testAccumulateGlobals(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "package org.drools.compiler\n" +
                 "import " + Cheese.class.getCanonicalName() + ";\n" +
                 "global java.util.List results;\n" +
@@ -1726,8 +1790,10 @@ public class AccumulateTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testAccumulateNonExistingFunction() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testAccumulateNonExistingFunction(KieBaseTestConfiguration kieBaseTestConfiguration) {
 
         final String drl = "package org.drools.compiler\n" +
                 "import " + StockTick.class.getCanonicalName() + ";\n" +
@@ -1759,8 +1825,10 @@ public class AccumulateTest {
                 .anySatisfy(text -> assertThat(text).contains("Unknown accumulate function: 'nonExistingFunction' on rule 'Accumulate non existing function - MVEL'."));
     }
 
-    @Test(timeout = 10000)
-    public void testAccumulateZeroParams() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testAccumulateZeroParams(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "global java.util.List list;\n" +
                 "rule fromIt\n" +
                 "when\n" +
@@ -1789,7 +1857,7 @@ public class AccumulateTest {
         }
     }
 
-    private void execTestAccumulateMultipleFunctions(final String fileName) {
+    private void execTestAccumulateMultipleFunctions(KieBaseTestConfiguration kieBaseTestConfiguration, final String fileName) {
 
         final KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources("accumulate-test", kieBaseTestConfiguration,
                                                                            fileName);
@@ -1879,8 +1947,10 @@ public class AccumulateTest {
         public List<?> results;
     }
 
-    @Test(timeout = 10000)
-    public void testAccumulateMinMax() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testAccumulateMinMax(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "package org.drools.compiler.test \n" +
                 "import " + Cheese.class.getCanonicalName() + ";\n" +
                 "global java.util.List results \n " +
@@ -1919,8 +1989,10 @@ public class AccumulateTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testAccumulateCE() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testAccumulateCE(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "package org.drools.compiler\n" +
                 "import " + Cheese.class.getCanonicalName() + ";\n" +
                 "global java.util.List results\n" +
@@ -1958,8 +2030,10 @@ public class AccumulateTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testAccumulateAndRetract() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testAccumulateAndRetract(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "package org.drools.compiler;\n" +
                 "\n" +
                 "import java.util.ArrayList;\n" +
@@ -2018,8 +2092,10 @@ public class AccumulateTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testAccumulateWithNull() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testAccumulateWithNull(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "rule foo\n" +
                 "when\n" +
                 "Object() from accumulate( Object(),\n" +
@@ -2061,8 +2137,10 @@ public class AccumulateTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testAccumulateWithBoundExpression() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testAccumulateWithBoundExpression(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "package org.drools.compiler;\n" +
                 "import " + MyObj.class.getCanonicalName() + ";\n" +
                 "global java.util.List results\n" +
@@ -2097,8 +2175,10 @@ public class AccumulateTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testInfiniteLoopAddingPkgAfterSession() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testInfiniteLoopAddingPkgAfterSession(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // JBRULES-3488
         final String drl = "package org.drools.compiler.test;\n" +
                 "import " + Triple.class.getCanonicalName() + ";\n" +
@@ -2160,8 +2240,10 @@ public class AccumulateTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testAccumulateWithVarsOutOfHashOrder() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testAccumulateWithVarsOutOfHashOrder(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // JBRULES-3494
         final String drl = "package com.sample;\n" +
                 "\n" +
@@ -2203,8 +2285,10 @@ public class AccumulateTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testAccumulateWithWindow() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testAccumulateWithWindow(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "global java.util.Map map;\n" +
                 " \n" +
                 "declare Double\n" +
@@ -2226,11 +2310,13 @@ public class AccumulateTest {
                 "    System.out.println( \"We have a sum \" + $a );\n" +
                 "end\n";
 
-        testAccumulateEntryPointWindow(drl, null);
+        testAccumulateEntryPointWindow(kieBaseTestConfiguration, drl, null);
     }
 
-    @Test(timeout = 10000)
-    public void testAccumulateWithEntryPoint() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testAccumulateWithEntryPoint(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "global java.util.Map map;\n" +
                 " \n" +
                 "declare Double\n" +
@@ -2248,11 +2334,13 @@ public class AccumulateTest {
                 "    System.out.println( \"We have a sum \" + $a );\n" +
                 "end\n";
 
-        testAccumulateEntryPointWindow(drl, "data");
+        testAccumulateEntryPointWindow(kieBaseTestConfiguration, drl, "data");
     }
 
-    @Test(timeout = 10000)
-    public void testAccumulateWithWindowAndEntryPoint() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testAccumulateWithWindowAndEntryPoint(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "global java.util.Map map;\n" +
                 " \n" +
                 "declare Double\n" +
@@ -2274,10 +2362,10 @@ public class AccumulateTest {
                 "    System.out.println( \"We have a sum \" + $a );\n" +
                 "end\n";
 
-        testAccumulateEntryPointWindow(drl, "data");
+        testAccumulateEntryPointWindow(kieBaseTestConfiguration, drl, "data");
     }
 
-    private void testAccumulateEntryPointWindow(final String drl, final String entryPointName) {
+    private void testAccumulateEntryPointWindow(KieBaseTestConfiguration kieBaseTestConfiguration, final String drl, final String entryPointName) {
         final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("accumulate-test", kieBaseTestConfiguration,
                                                                          drl);
         final KieSession ksession = kbase.newKieSession();
@@ -2299,8 +2387,10 @@ public class AccumulateTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void test2AccumulatesWithOr() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void test2AccumulatesWithOr(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // JBRULES-3538
         final String drl =
                 "import java.util.*;\n" +
@@ -2463,8 +2553,9 @@ public class AccumulateTest {
         }
     }
 
-    @Test
-    public void testAccumulateWithExists() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testAccumulateWithExists(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
                 "import " + Course.class.getCanonicalName() + "\n" +
                         "import " + Lecture.class.getCanonicalName() + "\n" +
@@ -2517,8 +2608,9 @@ public class AccumulateTest {
         }
     }
 
-    @Test
-    public void testImportAccumulateFunction() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testImportAccumulateFunction(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "package org.foo.bar\n"
                 + "import accumulate " + TestFunction.class.getCanonicalName() + " f\n"
                 + "rule X when\n"
@@ -2526,11 +2618,12 @@ public class AccumulateTest {
                 + "                $v : f( $s ) )\n"
                 + "then\n"
                 + "end\n";
-        testImportAccumulateFunction(drl);
+        testImportAccumulateFunction(kieBaseTestConfiguration, drl);
     }
 
-    @Test
-    public void testImportAccumulateFunctionWithDeclaration() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testImportAccumulateFunctionWithDeclaration(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-750
         final String drl = "package org.foo.bar\n"
                 + "import accumulate " + TestFunction.class.getCanonicalName() + " f;\n"
@@ -2544,10 +2637,10 @@ public class AccumulateTest {
                 + "then\n"
                 + "end\n";
 
-        testImportAccumulateFunction(drl);
+        testImportAccumulateFunction(kieBaseTestConfiguration, drl);
     }
 
-    private void testImportAccumulateFunction(final String drl) {
+    private void testImportAccumulateFunction(KieBaseTestConfiguration kieBaseTestConfiguration, final String drl) {
         final ReleaseId releaseId = new ReleaseIdImpl("foo", "bar", "1.0");
         KieUtil.getKieModuleFromDrls(releaseId, kieBaseTestConfiguration, drl);
         final KieContainer kc = KieServices.get().newKieContainer(releaseId);
@@ -2611,8 +2704,9 @@ public class AccumulateTest {
         }
     }
 
-    @Test
-    public void testAccumulateWithSharedNode() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testAccumulateWithSharedNode(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-594
         final String drl =
                 "rule A when" +
@@ -2650,8 +2744,9 @@ public class AccumulateTest {
         }
     }
 
-    @Test
-    public void testEmptyAccumulateInSubnetwork() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testEmptyAccumulateInSubnetwork(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-598
         final String drl =
                 "global java.util.List list;\n" +
@@ -2682,8 +2777,9 @@ public class AccumulateTest {
         }
     }
 
-    @Test
-    public void testEmptyAccumulateInSubnetworkFollwedByPattern() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testEmptyAccumulateInSubnetworkFollwedByPattern(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-627
         final String drl =
                 "global java.util.List list;\n" +
@@ -2716,8 +2812,9 @@ public class AccumulateTest {
         }
     }
 
-    @Test
-    public void testAccumulateWithoutSeparator() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testAccumulateWithoutSeparator(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-602
         final String drl = "package org.drools.compiler\n" +
                 "import " + Person.class.getCanonicalName() + ";\n" +
@@ -2738,8 +2835,9 @@ public class AccumulateTest {
         assertThat(kieBuilder.getResults().getMessages()).isNotEmpty();
     }
 
-    @Test
-    public void testFromAccumulateWithoutSeparator() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testFromAccumulateWithoutSeparator(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-602
         final String drl = "rule R when\n" +
                 "    $count : Number( ) from accumulate (\n" +
@@ -2794,8 +2892,9 @@ public class AccumulateTest {
         }
     }
 
-    @Test
-    public void testReaccumulateForLeftTuple() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testReaccumulateForLeftTuple(KieBaseTestConfiguration kieBaseTestConfiguration) {
 
         final String drl =
                 "import " + ExpectedMessage.class.getCanonicalName() + ";\n"
@@ -2835,8 +2934,9 @@ public class AccumulateTest {
         }
     }
 
-    @Test
-    public void testNoLoopAccumulate() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testNoLoopAccumulate(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-694
         final String drl =
                 "import " + AtomicInteger.class.getCanonicalName() + ";\n" +
@@ -2870,8 +2970,9 @@ public class AccumulateTest {
         }
     }
 
-    @Test
-    public void testAccumulateWithOr() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testAccumulateWithOr(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-839
         final String drl =
                 "import " + Converter.class.getCanonicalName() + ";\n" +
@@ -2887,11 +2988,12 @@ public class AccumulateTest {
                         "    list.add($result);\n" +
                         "end";
 
-        testAccumulateWithOr(drl);
+        testAccumulateWithOr(kieBaseTestConfiguration, drl);
     }
 
-    @Test
-    public void testMvelAccumulateWithOr() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testMvelAccumulateWithOr(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-839
         final String drl =
                 "import " + Converter.class.getCanonicalName() + ";\n" +
@@ -2907,10 +3009,10 @@ public class AccumulateTest {
                         "    list.add($result);\n" +
                         "end";
 
-        testAccumulateWithOr(drl);
+        testAccumulateWithOr(kieBaseTestConfiguration, drl);
     }
 
-    private void testAccumulateWithOr(final String drl) {
+    private void testAccumulateWithOr(KieBaseTestConfiguration kieBaseTestConfiguration, final String drl) {
         final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("accumulate-test", kieBaseTestConfiguration,
                                                                          drl);
         final KieSession ksession = kbase.newKieSession();
@@ -2937,8 +3039,9 @@ public class AccumulateTest {
         }
     }
 
-    @Test
-    public void testNormalizeStagedTuplesInAccumulate() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testNormalizeStagedTuplesInAccumulate(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-998
         final String drl =
                 "global java.util.List list;\n" +
@@ -2968,8 +3071,9 @@ public class AccumulateTest {
         }
     }
 
-    @Test
-    public void testIncompatibleTypeOnAccumulateFunction() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testIncompatibleTypeOnAccumulateFunction(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-1243
         final String drl =
                 "import " + MyPerson.class.getCanonicalName() + ";\n" +
@@ -2986,8 +3090,9 @@ public class AccumulateTest {
         assertThat(kieBuilder.getResults().getMessages()).isNotEmpty();
     }
 
-    @Test
-    public void testIncompatibleListOnAccumulateFunction() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testIncompatibleListOnAccumulateFunction(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-1243
         final String drl =
                 "import " + MyPerson.class.getCanonicalName() + ";\n" +
@@ -3004,8 +3109,9 @@ public class AccumulateTest {
         assertThat(kieBuilder.getResults().getMessages()).isNotEmpty();
     }
 
-    @Test
-    public void testTypedSumOnAccumulate() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testTypedSumOnAccumulate(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-1175
         final String drl =
                 "global java.util.List list;\n" +
@@ -3035,8 +3141,9 @@ public class AccumulateTest {
         }
     }
 
-    @Test
-    public void testSumAccumulateOnNullValue() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testSumAccumulateOnNullValue(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-1242
         final String drl =
                 "import " + PersonWithBoxedAge.class.getCanonicalName() + ";\n" +
@@ -3066,17 +3173,19 @@ public class AccumulateTest {
         }
     }
 
-    @Test
-    public void testMinAccumulateOnComparable() {
-        testMinMaxAccumulateOnComparable("min", "she");
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testMinAccumulateOnComparable(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        testMinMaxAccumulateOnComparable(kieBaseTestConfiguration, "min", "she");
     }
 
-    @Test
-    public void testMaxAccumulateOnComparable() {
-        testMinMaxAccumulateOnComparable("max", "you");
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testMaxAccumulateOnComparable(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        testMinMaxAccumulateOnComparable(kieBaseTestConfiguration, "max", "you");
     }
 
-    private void testMinMaxAccumulateOnComparable(final String minMaxFunction, final String expectedResult) {
+    private void testMinMaxAccumulateOnComparable(KieBaseTestConfiguration kieBaseTestConfiguration, final String minMaxFunction, final String expectedResult) {
 
         final String drl =
                 "import " + PersonWithBoxedAge.class.getCanonicalName() + ";\n" +
@@ -3130,8 +3239,9 @@ public class AccumulateTest {
         }
     }
 
-    @Test
-    public void testTypedMaxOnAccumulate() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testTypedMaxOnAccumulate(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-1175
         final String drl =
                 "global java.util.List list;\n" +
@@ -3161,8 +3271,9 @@ public class AccumulateTest {
         }
     }
 
-    @Test
-    public void testVarianceDouble() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testVarianceDouble(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
                 "import " + Cheese.class.getCanonicalName() + ";\n" +
                         "global java.util.List list;\n" +
@@ -3190,8 +3301,9 @@ public class AccumulateTest {
         assertThat(cheeseInsertsFunction(kieBase, 15, 0, 0, 0, 0)).isCloseTo(36.00, within(0.01));
     }
 
-    @Test
-    public void testStandardDeviationDouble() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testStandardDeviationDouble(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
                 "import " + Cheese.class.getCanonicalName() + ";\n" +
                         "global java.util.List list;\n" +
@@ -3242,8 +3354,9 @@ public class AccumulateTest {
         }
     }
 
-    @Test
-    public void testConcurrentLeftAndRightUpdate() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testConcurrentLeftAndRightUpdate(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-1517
         final String drl = "package P;\n"
                 + "import " + Visit.class.getCanonicalName() + ";\n"
@@ -3347,8 +3460,9 @@ public class AccumulateTest {
         return list.isEmpty();
     }
 
-    @Test
-    public void testDoubleAccumulate() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testDoubleAccumulate(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-1530
         final String drl = "package P;"
                 + "import " + BusStop.class.getCanonicalName() + ";\n"
@@ -3503,8 +3617,9 @@ public class AccumulateTest {
         }
     }
 
-    @Test
-    public void testCompileFailureOnMissingImport() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testCompileFailureOnMissingImport(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-1714
         final String drl = "import " + BusStop.class.getCanonicalName() + ";\n" +
                 "rule \"sample rule\"\n" +
@@ -3524,8 +3639,9 @@ public class AccumulateTest {
         assertThat(kieBuilder.getResults().getMessages()).isNotEmpty();
     }
 
-    @Test
-    public void testAccumulateWithFrom() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testAccumulateWithFrom(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
                 "import " + Person.class.getCanonicalName() + "\n" +
                         "global java.util.List persons;\n" +
@@ -3555,8 +3671,9 @@ public class AccumulateTest {
         }
     }
 
-    @Test
-    public void testAccumulateWith2EntryPoints() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testAccumulateWith2EntryPoints(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
                 "import " + Person.class.getCanonicalName() + "\n" +
                         "global java.util.List list;\n" +
@@ -3587,19 +3704,21 @@ public class AccumulateTest {
         }
     }
 
-    @Test
-    public void testNumericMax() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testNumericMax(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-2519
-        assertThat((int) testMax("age")).isEqualTo(44);
+        assertThat((int) testMax(kieBaseTestConfiguration, "age")).isEqualTo(44);
     }
 
-    @Test
-    public void testComparableMax() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testComparableMax(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-2519
-        assertThat(testMax("name")).isEqualTo("Sofia");
+        assertThat(testMax(kieBaseTestConfiguration, "name")).isEqualTo("Sofia");
     }
 
-    private Object testMax(final String fieldToUse) {
+    private Object testMax(KieBaseTestConfiguration kieBaseTestConfiguration, final String fieldToUse) {
         final String drl =
                 "import " + Person.class.getCanonicalName() + "\n" +
                         "global java.util.List list;\n" +
@@ -3629,8 +3748,9 @@ public class AccumulateTest {
         }
     }
 
-    @Test
-    public void testAccumlateResultCannotBeUsedInFunctions() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testAccumlateResultCannotBeUsedInFunctions(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
                 "import java.util.*;" +
                         "rule \"Rule X\" when\n" +
@@ -3648,8 +3768,9 @@ public class AccumulateTest {
                 .anySatisfy(text -> assertThat(text).contains("openAlarms"));
     }
 
-    @Test
-    public void testAverageWithNoFacts() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testAverageWithNoFacts(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         // DROOLS-2595
         final String drl =
                 "import " + Person.class.getCanonicalName() + "\n" +
@@ -3687,8 +3808,9 @@ public class AccumulateTest {
         }
     }
 
-    @Test
-    public void testAverageFunctionRounding() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testAverageFunctionRounding(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
                 "import java.math.BigDecimal; \n" +
                 "import java.util.List; \n" +
@@ -3719,8 +3841,9 @@ public class AccumulateTest {
         }
     }
 
-    @Test
-    public void testNestedAccumulateWithPrefixAnd() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testNestedAccumulateWithPrefixAnd(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
                 "rule R when\n" +
                 "    String($l: length)\n" +
@@ -3748,8 +3871,9 @@ public class AccumulateTest {
         }
     }
 
-    @Test
-    public void testNestedAccumulateWithInfixAnd() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testNestedAccumulateWithInfixAnd(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
                 "rule R when\n" +
                 "    String($l: length)\n" +
@@ -3786,8 +3910,9 @@ public class AccumulateTest {
         }
     }
 
-    @Test
-    public void testPeerCollectWithEager() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testPeerCollectWithEager(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-6768
         final String drl =
                 "import " + PersonsContainer.class.getCanonicalName() + ";\n" +

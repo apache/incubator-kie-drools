@@ -74,7 +74,7 @@ public class AccumulateCepTest {
         return  TestParametersUtil2.getKieBaseStreamConfigurations(true).stream();
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "KieBase type={0}")
 	@MethodSource("parameters")
     public void testAccumulatesExpireVsCancel(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         // JBRULES-3201
@@ -126,7 +126,7 @@ public class AccumulateCepTest {
         }
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "KieBase type={0}")
 	@MethodSource("parameters")
     public void testManySlidingWindows(KieBaseTestConfiguration kieBaseTestConfiguration) {
 

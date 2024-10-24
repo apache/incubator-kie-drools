@@ -28,7 +28,9 @@ import java.util.concurrent.TimeUnit;
 import org.drools.mvel.expr.MvelEvaluator;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.junit.Test;
+import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
@@ -39,14 +41,11 @@ public abstract class BaseConcurrencyTest {
     protected static int LOOP = 500;
     protected static int THREADS = 32;
     protected static int REQUESTS = 32;
-    protected final KieBaseTestConfiguration kieBaseTestConfiguration;
 
-    public BaseConcurrencyTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
-    }
-
-    @Test(timeout = 300000)
-    public void testConcurrency() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    @Timeout(300000)
+    public void testConcurrency(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = getDrl();
 
         List<Exception> exceptions = new ArrayList<>();

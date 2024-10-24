@@ -37,7 +37,7 @@ public class FromOnlyExecModelTest {
     }
 
     // KOGITO-3771
-    @ParameterizedTest
+    @ParameterizedTest(name = "KieBase type={0}")
 	@MethodSource("parameters")
     public void testFromSharingWithNativeImage(KieBaseTestConfiguration kieBaseTestConfiguration) {
         try {

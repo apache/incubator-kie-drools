@@ -34,7 +34,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public abstract class AbstractBackwardChainingTest {
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "KieBase type={0}")
 	@MethodSource("parameters")
 	@Timeout(10000)
     public void testQueryPositional(KieBaseTestConfiguration kieBaseTestConfiguration) {
@@ -82,7 +82,7 @@ public abstract class AbstractBackwardChainingTest {
         testQuery(kieBaseTestConfiguration, drl);
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "KieBase type={0}")
 	@MethodSource("parameters")
 	@Timeout(10000)
     public void testQueryNamed(KieBaseTestConfiguration kieBaseTestConfiguration) {
@@ -130,7 +130,7 @@ public abstract class AbstractBackwardChainingTest {
         testQuery(kieBaseTestConfiguration, drl);
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "KieBase type={0}")
 	@MethodSource("parameters")
 	@Timeout(10000)
     public void testQueryMixed(KieBaseTestConfiguration kieBaseTestConfiguration) {
