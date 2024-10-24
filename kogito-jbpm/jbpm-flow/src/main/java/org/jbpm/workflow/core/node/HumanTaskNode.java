@@ -33,6 +33,26 @@ public class HumanTaskNode extends WorkItemNode {
 
     private String swimlane;
 
+    public static final Set<String> TASK_PARAMETERS = Set.of(
+            Work.PARAMETER_UNIQUE_TASK_ID,
+            "TaskName",
+            "NodeName",
+            "NotStartedNotify",
+            "NotCompletedNotify",
+            "NotCompletedReassign",
+            "NotStartedReassign",
+            "Description",
+            "Comment",
+            "ActorId",
+            "GroupId",
+            "Priority",
+            "Skippable",
+            "Content",
+            "Locale",
+            "ExcludedOwnerId",
+            "BusinessAdministratorId",
+            "BusinessAdministratorGroupId");
+
     public HumanTaskNode() {
         Work work = new WorkImpl();
         work.setName("Human Task");

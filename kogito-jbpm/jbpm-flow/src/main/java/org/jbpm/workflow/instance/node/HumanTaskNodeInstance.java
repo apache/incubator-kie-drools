@@ -29,18 +29,9 @@ import org.kie.kogito.process.workitems.InternalKogitoWorkItem;
 public class HumanTaskNodeInstance extends WorkItemNodeInstance {
 
     private static final long serialVersionUID = 510l;
-    private static final String NODE_NAME = "NodeName";
-    private static final String DESCRIPTION = "Description";
-    private static final String PRIORITY = "Priority";
-    private static final String TASK_NAME = "TaskName";
     private String separator = System.getProperty("org.jbpm.ht.user.separator", ",");
-
-    private static final String ACTUAL_OWNER = "ActualOwner";
     private static final String ACTOR_ID = "ActorId";
-    private static final String GROUP_ID = "GroupId";
-    private static final String BUSINESSADMINISTRATOR_ID = "BusinessAdministratorId";
-    private static final String BUSINESSADMINISTRATOR_GROUP_ID = "BusinessAdministratorGroupId";
-    private static final String EXCLUDED_OWNER_ID = "ExcludedOwnerId";
+
     private static final String WORK_ITEM_TRANSITION = "workItemTransition";
 
     private transient SwimlaneContextInstance swimlaneContextInstance;

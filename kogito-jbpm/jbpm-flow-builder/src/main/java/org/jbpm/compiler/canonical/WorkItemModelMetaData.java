@@ -18,9 +18,7 @@
  */
 package org.jbpm.compiler.canonical;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
@@ -30,6 +28,7 @@ import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.core.datatype.DataType;
 import org.jbpm.process.core.datatype.DataTypeResolver;
 import org.jbpm.util.PatternConstants;
+import org.jbpm.workflow.core.node.HumanTaskNode;
 import org.jbpm.workflow.core.node.WorkItemNode;
 import org.kie.api.definition.process.WorkflowElementIdentifier;
 import org.kie.kogito.UserTask;
@@ -78,9 +77,6 @@ public class WorkItemModelMetaData {
     private static final String TASK_NAME = "TaskName";
     private static final String WORK_ITEM = "workItem";
     private static final String PARAMS = "params";
-
-    protected static final List<String> INTERNAL_FIELDS = Arrays.asList(TASK_NAME, "NodeName", "ActorId", "GroupId", "Priority", "Comment", "Skippable", "Content", "Locale",
-            "NotStartedNotify", "NotCompletedNotify", "NotCompletedReassign", "NotStartedReassign");
 
     private final String packageName;
 
@@ -192,7 +188,7 @@ public class WorkItemModelMetaData {
         // map is task input -> context variable / process variable
         Map<String, String> inputTypes = workItemNode.getIoSpecification().getInputTypes();
         for (Entry<String, String> entry : workItemNode.getIoSpecification().getInputMapping().entrySet()) {
-            if (INTERNAL_FIELDS.contains(entry.getKey())) {
+            if (HumanTaskNode.TASK_PARAMETERS.contains(entry.getKey())) {
                 continue;
             }
 
@@ -237,7 +233,7 @@ public class WorkItemModelMetaData {
 
         for (Entry<String, Object> entry : workItemNode.getWork().getParameters().entrySet()) {
 
-            if (entry.getValue() == null || INTERNAL_FIELDS.contains(entry.getKey())) {
+            if (entry.getValue() == null || HumanTaskNode.TASK_PARAMETERS.contains(entry.getKey())) {
                 continue;
             }
 
@@ -304,7 +300,7 @@ public class WorkItemModelMetaData {
         // map is task output -> context variable / process variable
         Map<String, String> outputTypes = workItemNode.getIoSpecification().getOutputTypes();
         for (Entry<String, String> entry : workItemNode.getIoSpecification().getOutputMappingBySources().entrySet()) {
-            if (entry.getValue() == null || INTERNAL_FIELDS.contains(entry.getKey())) {
+            if (entry.getValue() == null || HumanTaskNode.TASK_PARAMETERS.contains(entry.getKey())) {
                 continue;
             }
 
