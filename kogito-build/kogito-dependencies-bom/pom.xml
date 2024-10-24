@@ -108,6 +108,8 @@
     <version.org.rocksdb>7.10.2</version.org.rocksdb>
     <!-- consider migrating to 3.x JDK 9: https://jakarta.ee/specifications/restful-ws/ -->
     <version.jakarta.ws.rs>3.1.0</version.jakarta.ws.rs>
+    <version.jakarta.persistence-api>3.1.0</version.jakarta.persistence-api>
+
     <version.org.jboss.resteasy>6.2.7.Final</version.org.jboss.resteasy>
     <version.org.keycloak>24.0.4</version.org.keycloak>
     <!-- It seems that the confluent kafka cannot replace wurstmeister/kafka so easily. See FAI-729 -->
@@ -441,6 +443,12 @@
         <groupId>jakarta.ws.rs</groupId>
         <artifactId>jakarta.ws.rs-api</artifactId>
         <version>${version.jakarta.ws.rs}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>jakarta.persistence</groupId>
+        <artifactId>jakarta.persistence-api</artifactId>
+        <version>${version.jakarta.persistence-api}</version>
       </dependency>
 
       <dependency>

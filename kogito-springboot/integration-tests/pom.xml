@@ -41,6 +41,7 @@
     <module>integration-tests-springboot-norest-it</module>
     <module>integration-tests-springboot-processes-it</module>
     <module>integration-tests-springboot-processes-persistence-it</module>
+    <module>integration-tests-springboot-usertasks-it</module>
   </modules>
 
 

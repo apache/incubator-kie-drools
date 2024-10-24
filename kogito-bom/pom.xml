@@ -781,18 +781,6 @@
         <classifier>sources</classifier>
       </dependency>
 
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-addons-springboot-flyway</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-addons-springboot-flyway</artifactId>
-        <version>${project.version}</version>
-        <classifier>sources</classifier>
-      </dependency>
-
       <!-- Grafana API     -->
       <dependency>
         <groupId>org.kie.kogito</groupId>
@@ -1732,6 +1720,59 @@
         <classifier>sources</classifier>
       </dependency>
 
+      <!-- jBPM User Task Storage JPA -->
+      <dependency>
+        <groupId>org.jbpm</groupId>
+        <artifactId>jbpm-addons-usertask-storage-jpa</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jbpm</groupId>
+        <artifactId>jbpm-addons-usertask-storage-jpa</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.jbpm</groupId>
+        <artifactId>jbpm-addons-usertask-storage-jpa</artifactId>
+        <version>${project.version}</version>
+        <type>test-jar</type>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.jbpm</groupId>
+        <artifactId>jbpm-addons-quarkus-usertask-storage-jpa</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jbpm</groupId>
+        <artifactId>jbpm-addons-quarkus-usertask-storage-jpa</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.jbpm</groupId>
+        <artifactId>jbpm-addons-quarkus-usertask-storage-jpa-deployment</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jbpm</groupId>
+        <artifactId>jbpm-addons-quarkus-usertask-storage-jpa-deployment</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.jbpm</groupId>
+        <artifactId>jbpm-addons-springboot-usertask-storage-jpa</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jbpm</groupId>
+        <artifactId>jbpm-addons-springboot-usertask-storage-jpa</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+
       <!-- Flyway Add-on-->
       <dependency>
         <groupId>org.kie</groupId>
@@ -1766,7 +1807,17 @@
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>
-
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-addons-springboot-flyway</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-addons-springboot-flyway</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
 
       <!-- drools -->
       <dependency>

@@ -59,6 +59,7 @@ public class UserTaskKogitoWorkItemHandlerProcessListener implements UserTaskEve
         processes.processById(processId).instances().findById(processInstanceId).ifPresent(pi -> {
             Map<String, Object> data = new HashMap<>(event.getUserTaskInstance().getOutputs());
             data.put("ActorId", event.getUserTaskInstance().getActualOwner());
+            data.put("Notify", false);
             pi.completeWorkItem(event.getUserTaskInstance().getExternalReferenceId(), data);
         });
 

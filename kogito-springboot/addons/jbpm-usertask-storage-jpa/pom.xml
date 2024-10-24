@@ -1,0 +1,35 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <parent>
+        <artifactId>kogito-addons-springboot-parent</artifactId>
+        <groupId>org.kie</groupId>
+        <version>999-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.jbpm</groupId>
+    <artifactId>jbpm-addons-springboot-usertask-storage-jpa</artifactId>
+    <name>jBPM :: Add-Ons :: Spring Boot :: User Task Storage JPA</name>
+    <description>jBPM Add-On Spring Boot User Task Storage JPA</description>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <java.module.name>org.jbpm.usertask.storage.jpa.springboot</java.module.name>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jbpm</groupId>
+            <artifactId>jbpm-addons-usertask-storage-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.kie</groupId>
+            <artifactId>kie-addons-springboot-flyway</artifactId>
+        </dependency>
+    </dependencies>
+</project>

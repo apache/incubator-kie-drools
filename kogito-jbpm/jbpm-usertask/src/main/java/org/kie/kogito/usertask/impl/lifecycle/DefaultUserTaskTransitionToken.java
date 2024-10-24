@@ -19,6 +19,7 @@
 package org.kie.kogito.usertask.impl.lifecycle;
 
 import java.util.Map;
+import java.util.Objects;
 
 import org.kie.kogito.usertask.lifecycle.UserTaskState;
 import org.kie.kogito.usertask.lifecycle.UserTaskTransitionToken;
@@ -34,7 +35,7 @@ public class DefaultUserTaskTransitionToken implements UserTaskTransitionToken {
         this.transition = transition;
         this.source = source;
         this.target = target;
-        this.data = data;
+        this.data = Objects.isNull(data) ? Map.of() : data;
     }
 
     @Override

@@ -20,6 +20,7 @@ package org.kie.kogito.auth;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 public class IdentityProviders {
 
@@ -52,8 +53,8 @@ public class IdentityProviders {
 
     }
 
-    public static IdentityProvider of(String name) {
-        return new DefaultIdentityProvider(name, Collections.emptyList());
+    public static IdentityProvider of(String name, String... roles) {
+        return new DefaultIdentityProvider(name, List.of(roles));
     }
 
     public static IdentityProvider of(String name, Collection<String> roles) {

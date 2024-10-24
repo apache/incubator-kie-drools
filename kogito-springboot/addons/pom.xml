@@ -51,6 +51,7 @@
     <module>kubernetes</module>
     <module>flyway</module>
     <module>persistence</module>
+    <module>jbpm-usertask-storage-jpa</module>
   </modules>
 
   <dependencyManagement>

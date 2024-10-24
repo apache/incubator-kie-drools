@@ -60,6 +60,7 @@
     <module>marshallers</module>
     <module>process-definitions</module>
     <module>dynamic</module>
+    <module>jbpm-usertask-storage-jpa</module>
   </modules>
 
   <profiles>

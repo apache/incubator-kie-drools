@@ -55,6 +55,7 @@
     <module>task-management</module>
     <module>marshallers</module>
     <module>flyway</module>
+    <module>jbpm-usertask-storage-jpa</module>
   </modules>
 
   <dependencyManagement>

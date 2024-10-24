@@ -73,10 +73,14 @@ public class UserTaskKogitoWorkItemHandler extends DefaultKogitoWorkItemHandler 
         UserTask userTask = userTasks.userTaskById((String) workItem.getParameter(KogitoWorkItem.PARAMETER_UNIQUE_TASK_ID));
 
         DefaultUserTaskInstance instance = (DefaultUserTaskInstance) userTask.createInstance();
+
+        instance.setExternalReferenceId(workItem.getStringId());
+
+        userTask.instances().create(instance);
+
         instance.setTaskName((String) workItem.getParameter(TASK_NAME));
         instance.setTaskDescription((String) workItem.getParameter(DESCRIPTION));
         instance.setTaskPriority(priority != null ? priority.toString() : null);
-        instance.setExternalReferenceId(workItem.getStringId());
 
         instance.setMetadata("ProcessId", workItem.getProcessInstance().getProcessId());
         instance.setMetadata("ProcessType", workItem.getProcessInstance().getProcess().getType());
@@ -87,7 +91,6 @@ public class UserTaskKogitoWorkItemHandler extends DefaultKogitoWorkItemHandler 
         instance.setMetadata("RootProcessInstanceId", workItem.getProcessInstance().getRootProcessInstanceId());
         instance.setMetadata("ParentProcessInstanceId", workItem.getProcessInstance().getParentProcessInstanceId());
 
-        userTask.instances().create(instance);
         instance.fireInitialStateChange();
         workItem.getParameters().entrySet().stream().filter(e -> !HumanTaskNode.TASK_PARAMETERS.contains(e.getKey())).forEach(e -> instance.setInput(e.getKey(), e.getValue()));
 
@@ -109,6 +112,9 @@ public class UserTaskKogitoWorkItemHandler extends DefaultKogitoWorkItemHandler 
 
     @Override
     public Optional<WorkItemTransition> completeWorkItemHandler(KogitoWorkItemManager manager, KogitoWorkItemHandler handler, KogitoWorkItem workItem, WorkItemTransition transition) {
+        if (transition.data().containsKey("Notify")) {
+            return Optional.empty();
+        }
         UserTasks userTasks = handler.getApplication().get(UserTasks.class);
         UserTask userTask = userTasks.userTaskById((String) workItem.getParameter(KogitoWorkItem.PARAMETER_UNIQUE_TASK_ID));
         userTask.instances().findById(workItem.getExternalReferenceId()).ifPresent(ut -> {
@@ -122,6 +128,9 @@ public class UserTaskKogitoWorkItemHandler extends DefaultKogitoWorkItemHandler 
 
     @Override
     public Optional<WorkItemTransition> abortWorkItemHandler(KogitoWorkItemManager manager, KogitoWorkItemHandler handler, KogitoWorkItem workItem, WorkItemTransition transition) {
+        if (transition.data().containsKey("Notify")) {
+            return Optional.empty();
+        }
         UserTasks userTasks = handler.getApplication().get(UserTasks.class);
         UserTask userTask = userTasks.userTaskById((String) workItem.getParameter(KogitoWorkItem.PARAMETER_UNIQUE_TASK_ID));
         userTask.instances().findById(workItem.getExternalReferenceId()).ifPresent(ut -> {

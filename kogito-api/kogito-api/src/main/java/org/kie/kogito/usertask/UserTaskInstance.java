@@ -39,7 +39,7 @@ public interface UserTaskInstance {
 
     boolean hasActualOwner();
 
-    void setActuaOwner(String actualOwner);
+    void setActualOwner(String actualOwner);
 
     String getActualOwner();
 

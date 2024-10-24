@@ -161,14 +161,15 @@ public class InMemoryUserTaskInstances implements UserTaskInstances {
     }
 
     @Override
-    public UserTaskInstance remove(String userTaskInstanceId) {
+    public UserTaskInstance remove(UserTaskInstance userTaskInstance) {
         try {
-            if (!userTaskInstances.containsKey(userTaskInstanceId)) {
+            if (!userTaskInstances.containsKey(userTaskInstance.getId())) {
                 return null;
             }
-            return disconnectUserTaskInstance.apply(mapper.readValue(userTaskInstances.remove(userTaskInstanceId), DefaultUserTaskInstance.class));
+            userTaskInstances.remove(userTaskInstance.getId());
+            return disconnectUserTaskInstance.apply(userTaskInstance);
         } catch (Exception e) {
-            LOG.error("during remove {}", userTaskInstanceId, e);
+            LOG.error("during remove {}", userTaskInstance, e);
             return null;
         }
     }

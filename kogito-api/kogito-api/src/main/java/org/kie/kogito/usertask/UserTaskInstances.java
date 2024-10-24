@@ -40,6 +40,6 @@ public interface UserTaskInstances {
 
     UserTaskInstance update(UserTaskInstance userTaskInstance);
 
-    UserTaskInstance remove(String userTaskInstanceId);
+    UserTaskInstance remove(UserTaskInstance userTaskInstanceId);
 
 }
