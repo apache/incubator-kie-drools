@@ -26,9 +26,9 @@ import java.util.List;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.mvel.CommonTestMethodBase;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.api.command.Command;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.ExecutionResults;
@@ -53,7 +53,7 @@ public class SimpleBatchExecutionTest extends CommonTestMethodBase {
         + "    then\n"
         + "end\n";
 
-    @Before
+    @BeforeEach
     public void createKSession() throws Exception {
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource(ruleString.getBytes()), ResourceType.DRL );
@@ -64,7 +64,7 @@ public class SimpleBatchExecutionTest extends CommonTestMethodBase {
         ksession = createKnowledgeSession(kbase);
     }
     
-    @After
+    @AfterEach
     public void disposeKSession() throws Exception {
         if( ksession != null ) { 
             ksession.dispose();
