@@ -729,7 +729,7 @@ public abstract class AbstractProcessDataIndexIT {
         assertTrue(schemaJsonNode.get("phases").toString().contains("complete"));
 
         // Check Schema properties
-        assertEquals(3, schemaJsonNode.at("/properties").size());
+        assertEquals(2, schemaJsonNode.at("/properties").size());
 
         assertEquals("true", schemaJsonNode.at("/properties/approved/output").asText());
         assertEquals("boolean", schemaJsonNode.at("/properties/approved/type").asText());
