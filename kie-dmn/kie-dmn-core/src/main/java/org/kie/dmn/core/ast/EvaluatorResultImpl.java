@@ -18,7 +18,7 @@
  */
 package org.kie.dmn.core.ast;
 
-import org.kie.dmn.core.api.EvaluatorResult;
+import org.kie.dmn.api.core.EvaluatorResult;
 
 public class EvaluatorResultImpl implements EvaluatorResult {
     private final Object     result;

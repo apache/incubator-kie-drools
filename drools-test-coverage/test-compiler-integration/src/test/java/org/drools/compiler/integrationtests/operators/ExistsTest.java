@@ -20,39 +20,31 @@ package org.drools.compiler.integrationtests.operators;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.drools.testcoverage.common.model.AFact;
 import org.drools.testcoverage.common.model.Cheese;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class ExistsTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public ExistsTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
-    }
-
-    @Test
-    public void testExistsIterativeModifyBug() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testExistsIterativeModifyBug(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // JBRULES-2809
         // This bug occurs when a tuple is modified, the remove/add puts it onto the memory end
         // However before this was done it would attempt to find the next tuple, starting from itself
@@ -113,8 +105,9 @@ public class ExistsTest {
         }
     }
 
-    @Test
-    public void testNodeSharingNotExists() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testNodeSharingNotExists(KieBaseTestConfiguration kieBaseTestConfiguration) {
 
         final String drl = "package org.drools.compiler.integrationtests.operators;\n" +
                 "import " + Cheese.class.getCanonicalName() + ";\n" +
@@ -156,8 +149,9 @@ public class ExistsTest {
         }
     }
 
-    @Test
-    public void testLastMemoryEntryExistsBug() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testLastMemoryEntryExistsBug(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // JBRULES-2809
         // This occurs when a blocker is the last in the node's memory, or if there is only one fact in the node
         // And it gets no opportunity to rematch with itself
@@ -208,8 +202,9 @@ public class ExistsTest {
         }
     }
 
-    @Test
-    public void testExistsWithOrAndSubnetwork() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testExistsWithOrAndSubnetwork(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-6550
         final String drl =
             "package org.drools.compiler.integrationtests.operators;\n" +
@@ -245,8 +240,9 @@ public class ExistsTest {
         }
     }
 
-    @Test
-    public void testSharedExistsWithNot() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testSharedExistsWithNot(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-6710
         final String drl =
             "package org.drools.compiler.integrationtests.operators;\n" +
@@ -289,8 +285,9 @@ public class ExistsTest {
         }
     }
 
-    @Test
-    public void existsAndNotWithSingleCoercion_shouldNotMatchExists() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void existsAndNotWithSingleCoercion_shouldNotMatchExists(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // KIE-766
         final String drl =
                 "package org.drools.compiler.integrationtests.operators;\n" +
@@ -331,8 +328,9 @@ public class ExistsTest {
         }
     }
 
-    @Test
-    public void existsAndNotWithMultipleCoercion_shouldNotMatchExists() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void existsAndNotWithMultipleCoercion_shouldNotMatchExists(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // KIE-766
         final String drl =
                 "package org.drools.compiler.integrationtests.operators;\n" +
@@ -373,8 +371,9 @@ public class ExistsTest {
         }
     }
 
-    @Test
-    public void existsAndNotWithBigDecimals_shouldNotMatchExists() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void existsAndNotWithBigDecimals_shouldNotMatchExists(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // KIE-766
         final String drl =
                 "package org.drools.compiler.integrationtests.operators;\n" +

@@ -50,6 +50,8 @@ import org.apache.commons.math3.util.Pair;
 import org.drools.core.base.accumulators.IntegerMaxAccumulateFunction;
 import org.drools.core.rule.consequence.InternalMatch;
 import org.drools.model.functions.accumulate.GroupKey;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.drools.model.codegen.execmodel.domain.Adult;
 import org.drools.model.codegen.execmodel.domain.Child;
 import org.drools.model.codegen.execmodel.domain.Customer;
@@ -59,7 +61,6 @@ import org.drools.model.codegen.execmodel.domain.Result;
 import org.drools.model.codegen.execmodel.domain.StockTick;
 import org.drools.model.codegen.execmodel.domain.TargetPolicy;
 import org.drools.model.codegen.execmodel.oopathdtables.InternationalAddress;
-import org.junit.Test;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.Results;
 import org.kie.api.definition.type.FactType;
@@ -68,16 +69,14 @@ import org.kie.api.runtime.rule.AccumulateFunction;
 import org.kie.api.runtime.rule.FactHandle;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.fail;
 
 public class AccumulateTest extends BaseModelTest {
 
-    public AccumulateTest( RUN_TYPE testRunType ) {
-        super( testRunType );
-    }
-
-    @Test
-    public void testAccumulate1() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void testAccumulate1(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                         "import " + Result.class.getCanonicalName() + ";" +
@@ -89,7 +88,7 @@ public class AccumulateTest extends BaseModelTest {
                         "  insert(new Result($sum));\n" +
                         "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert(new Person("Mark", 37));
         ksession.insert(new Person("Edson", 35));
@@ -102,8 +101,9 @@ public class AccumulateTest extends BaseModelTest {
         assertThat(results.iterator().next().getValue()).isEqualTo(77);
     }
 
-    @Test
-    public void testFromOnAccumulatedValue() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void testFromOnAccumulatedValue(RUN_TYPE runType) {
         // DROOLS-5635
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -117,7 +117,7 @@ public class AccumulateTest extends BaseModelTest {
                         "  insert(new Result($s));\n" +
                         "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert("test");
         ksession.insert(new Person("Mark", 37));
@@ -131,8 +131,9 @@ public class AccumulateTest extends BaseModelTest {
         assertThat(results.iterator().next().getValue()).isEqualTo("77");
     }
 
-    @Test
-    public void testFromOnAccumulatedValueUsingExists() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void testFromOnAccumulatedValueUsingExists(RUN_TYPE runType) {
         // DROOLS-5635
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -146,7 +147,7 @@ public class AccumulateTest extends BaseModelTest {
                         "  insert(new Result($s));\n" +
                         "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert("test");
         ksession.insert(new Person("Mark", 37));
@@ -160,8 +161,9 @@ public class AccumulateTest extends BaseModelTest {
         assertThat(results.iterator().next().getValue()).isEqualTo("77");
     }
 
-    @Test
-    public void testAccumulateWithoutParameters() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void testAccumulateWithoutParameters(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                         "import " + Result.class.getCanonicalName() + ";" +
@@ -173,7 +175,7 @@ public class AccumulateTest extends BaseModelTest {
                         "  insert(new Result($count));\n" +
                         "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert(new Person("Mark", 37));
         ksession.insert(new Person("Edson", 35));
@@ -186,8 +188,9 @@ public class AccumulateTest extends BaseModelTest {
         assertThat(results.iterator().next().getValue()).isEqualTo(2l);
     }
 
-    @Test
-    public void testAccumulateWithLessParameter() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void testAccumulateWithLessParameter(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                         "import " + Result.class.getCanonicalName() + ";" +
@@ -199,7 +202,7 @@ public class AccumulateTest extends BaseModelTest {
                         "  insert(new Result(\"fired\"));\n" +
                         "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert(new Person("Mark", 37));
         ksession.insert(new Person("Edson", 35));
@@ -214,8 +217,9 @@ public class AccumulateTest extends BaseModelTest {
         assertThat(results.iterator().next().getValue()).isEqualTo("fired");
     }
 
-    @Test
-    public void testAccumulateOverConstant() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void testAccumulateOverConstant(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                         "import " + Result.class.getCanonicalName() + ";" +
@@ -227,7 +231,7 @@ public class AccumulateTest extends BaseModelTest {
                         "  insert(new Result($sum));\n" +
                         "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert(new Person("Mark", 37));
         ksession.insert(new Person("Edson", 35));
@@ -240,8 +244,9 @@ public class AccumulateTest extends BaseModelTest {
         assertThat(results.iterator().next().getValue()).isEqualTo(2);
     }
 
-    @Test
-    public void testAccumulateConstrainingValue() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void testAccumulateConstrainingValue(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                         "import " + Result.class.getCanonicalName() + ";" +
@@ -253,7 +258,7 @@ public class AccumulateTest extends BaseModelTest {
                         "  insert(new Result($sum));\n" +
                         "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert(new Person("Mark", 37));
         ksession.insert(new Person("Edson", 35));
@@ -266,8 +271,9 @@ public class AccumulateTest extends BaseModelTest {
         assertThat(results.iterator().next().getValue()).isEqualTo(77);
     }
 
-    @Test
-    public void testAccumulateConstrainingValue2() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testAccumulateConstrainingValue2(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                         "import " + Result.class.getCanonicalName() + ";" +
@@ -279,7 +285,7 @@ public class AccumulateTest extends BaseModelTest {
                         "  insert(new Result($sum));\n" +
                         "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert(new Person("Mark", 37));
         ksession.insert(new Person("Edson", 35));
@@ -291,8 +297,9 @@ public class AccumulateTest extends BaseModelTest {
         assertThat(results.size()).isEqualTo(0);
     }
 
-    @Test
-    public void testAccumulateConstrainingValueInPattern() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testAccumulateConstrainingValueInPattern(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                         "import " + Result.class.getCanonicalName() + ";" +
@@ -304,7 +311,7 @@ public class AccumulateTest extends BaseModelTest {
                         "  insert(new Result($sum));\n" +
                         "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert(new Person("Mark", 37));
         ksession.insert(new Person("Edson", 35));
@@ -317,8 +324,9 @@ public class AccumulateTest extends BaseModelTest {
         assertThat(results.iterator().next().getValue()).isEqualTo(77);
     }
 
-    @Test
-    public void testAccumulateWithProperty() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testAccumulateWithProperty(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                         "import " + Result.class.getCanonicalName() + ";" +
@@ -330,7 +338,7 @@ public class AccumulateTest extends BaseModelTest {
                         "  insert(new Result($sum));\n" +
                         "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert(new Person("Mark", 37));
         ksession.insert(new Person("Edson", 35));
@@ -343,8 +351,9 @@ public class AccumulateTest extends BaseModelTest {
         assertThat(results.iterator().next().getValue()).isEqualTo(77);
     }
 
-    @Test
-    public void testAccumulate2() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testAccumulate2(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                         "import " + Result.class.getCanonicalName() + ";" +
@@ -358,7 +367,7 @@ public class AccumulateTest extends BaseModelTest {
                         "  insert(new Result($average));\n" +
                         "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert(new Person("Mark", 37));
         ksession.insert(new Person("Edson", 35));
@@ -371,8 +380,9 @@ public class AccumulateTest extends BaseModelTest {
         assertThat(results).contains(new Result(77));
     }
 
-    @Test
-    public void testAccumulateMultipleFunctions() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testAccumulateMultipleFunctions(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                         "import " + Result.class.getCanonicalName() + ";" +
@@ -386,7 +396,7 @@ public class AccumulateTest extends BaseModelTest {
                         "  insert(new Result($average));\n" +
                         "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert(new Person("Mark", 37));
         ksession.insert(new Person("Edson", 35));
@@ -399,8 +409,9 @@ public class AccumulateTest extends BaseModelTest {
         assertThat(results).contains(new Result(77));
     }
 
-    @Test
-    public void testAccumulateMultipleFunctionsConstrainingValues() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testAccumulateMultipleFunctionsConstrainingValues(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                         "import " + Result.class.getCanonicalName() + ";" +
@@ -415,7 +426,7 @@ public class AccumulateTest extends BaseModelTest {
                         "  insert(new Result($min));\n" +
                         "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert(new Person("Mark", 37));
         ksession.insert(new Person("Edson", 35));
@@ -428,8 +439,9 @@ public class AccumulateTest extends BaseModelTest {
         assertThat(results).contains(new Result(77));
     }
 
-    @Test
-    public void testAccumulateWithAnd() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testAccumulateWithAnd(RUN_TYPE runType) {
         String str =
                 "import " + Adult.class.getCanonicalName() + ";\n" +
                 "import " + Child.class.getCanonicalName() + ";\n" +
@@ -440,7 +452,7 @@ public class AccumulateTest extends BaseModelTest {
                 "  insert(new Result($parentAge));\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         Adult a = new Adult( "Mario", 43 );
         Child c = new Child( "Sofia", 6, "Mario" );
@@ -453,8 +465,9 @@ public class AccumulateTest extends BaseModelTest {
         assertThat(results).contains(new Result(43));
     }
 
-    @Test
-    public void testAccumulateWithAnd2() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testAccumulateWithAnd2(RUN_TYPE runType) {
         String str =
                 "import " + Adult.class.getCanonicalName() + ";\n" +
                 "import " + Child.class.getCanonicalName() + ";\n" +
@@ -465,7 +478,7 @@ public class AccumulateTest extends BaseModelTest {
                 "  insert(new Result($parentAge));\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         Adult a = new Adult( "Mario", 43 );
         Child c = new Child( "Sofia", 6, "Mario" );
@@ -479,8 +492,9 @@ public class AccumulateTest extends BaseModelTest {
         assertThat(((Number) results.iterator().next().getValue()).intValue()).isEqualTo(49);
     }
 
-    @Test
-    public void testAccumulateWithAnd3() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testAccumulateWithAnd3(RUN_TYPE runType) {
         String str =
                 "import " + Adult.class.getCanonicalName() + ";\n" +
                 "import " + Child.class.getCanonicalName() + ";\n" +
@@ -491,7 +505,7 @@ public class AccumulateTest extends BaseModelTest {
                 "  insert(new Result($parentAge));\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         Adult a = new Adult( "Mario", 43 );
         Child c = new Child( "Sofia", 6, "Mario" );
@@ -505,8 +519,9 @@ public class AccumulateTest extends BaseModelTest {
         assertThat(((Number) results.iterator().next().getValue()).intValue()).isEqualTo(49);
     }
 
-    @Test
-    public void testAccumulateWithAnd3Binds() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testAccumulateWithAnd3Binds(RUN_TYPE runType) {
         String str =
                 "import " + Adult.class.getCanonicalName() + ";\n" +
                         "import " + Child.class.getCanonicalName() + ";\n" +
@@ -518,7 +533,7 @@ public class AccumulateTest extends BaseModelTest {
                         "  insert(new Result($parentAge));\n" +
                         "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         Adult a = new Adult( "Mario", 43 );
         Child c = new Child( "Sofia", 6, "Mario" );
@@ -533,8 +548,9 @@ public class AccumulateTest extends BaseModelTest {
         assertThat(((Number) results.iterator().next().getValue()).intValue()).isEqualTo(54);
     }
 
-    @Test
-    public void testAccumulateWithAnd4Binds() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testAccumulateWithAnd4Binds(RUN_TYPE runType) {
         String str =
                 "import " + Adult.class.getCanonicalName() + ";\n" +
                         "import " + Child.class.getCanonicalName() + ";\n" +
@@ -546,7 +562,7 @@ public class AccumulateTest extends BaseModelTest {
                         "  insert(new Result($parentAge));\n" +
                         "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         Adult a = new Adult( "Mario", 43 );
         Child c = new Child( "Sofia", 6, "Mario" );
@@ -562,8 +578,9 @@ public class AccumulateTest extends BaseModelTest {
         assertThat(((Number) results.iterator().next().getValue()).intValue()).isEqualTo(59);
     }
 
-    @Test
-    public void testAccumulateWithCustomImport() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testAccumulateWithCustomImport(RUN_TYPE runType) {
         String str =
                 "import accumulate " + TestFunction.class.getCanonicalName() + " f;\n" +
                 "import " + Adult.class.getCanonicalName() + ";\n" +
@@ -575,7 +592,7 @@ public class AccumulateTest extends BaseModelTest {
                 "  insert(new Result($parentAge));\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         Adult a = new Adult( "Mario", 43 );
         Child c = new Child( "Sofia", 6, "Mario" );
@@ -630,8 +647,9 @@ public class AccumulateTest extends BaseModelTest {
         }
     }
 
-    @Test
-    public void testFromAccumulate() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testFromAccumulate(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                 "import " + Result.class.getCanonicalName() + ";" +
@@ -643,7 +661,7 @@ public class AccumulateTest extends BaseModelTest {
                 "  insert(new Result($sum));\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert(new Person("Mark", 37));
         ksession.insert(new Person("Edson", 35));
@@ -656,8 +674,9 @@ public class AccumulateTest extends BaseModelTest {
         assertThat(results.iterator().next().getValue()).isEqualTo(77);
     }
 
-    @Test
-    public void testFromCollect() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void testFromCollect(RUN_TYPE runType) {
         String str =
                 "import " + Customer.class.getCanonicalName() + ";\n" +
                 "import " + TargetPolicy.class.getCanonicalName() + ";\n" +
@@ -671,11 +690,12 @@ public class AccumulateTest extends BaseModelTest {
                 "  update($target);\n" +
                 "end";
 
-        checkCollect( str );
+        checkCollect(runType, str);
     }
 
-    @Test
-    public void testFromCollectWithAccumulate() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void testFromCollectWithAccumulate(RUN_TYPE runType) {
         String str =
                 "import " + Customer.class.getCanonicalName() + ";\n" +
                 "import " + TargetPolicy.class.getCanonicalName() + ";\n" +
@@ -689,11 +709,12 @@ public class AccumulateTest extends BaseModelTest {
                 "  update($target);\n" +
                 "end";
 
-        checkCollect( str );
+        checkCollect(runType, str);
     }
 
-    @Test
-    public void testFromCollectWithExpandedAccumulate() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testFromCollectWithExpandedAccumulate(RUN_TYPE runType) {
         String str =
                 "import " + Customer.class.getCanonicalName() + ";\n" +
                 "import " + TargetPolicy.class.getCanonicalName() + ";\n" +
@@ -712,11 +733,11 @@ public class AccumulateTest extends BaseModelTest {
                 "  update($target);\n" +
                 "end";
 
-        checkCollect( str );
+        checkCollect(runType, str);
     }
 
-    private void checkCollect( String str ) {
-        KieSession ksession = getKieSession(str);
+    private void checkCollect(RUN_TYPE runType, String str ) {
+        KieSession ksession = getKieSession(runType, str);
 
         Customer customer = new Customer();
         customer.setCode("code1");
@@ -744,17 +765,19 @@ public class AccumulateTest extends BaseModelTest {
         assertThat(filtered).isEqualTo(1);
     }
 
-    @Test
-    public void testFromCollectWithExpandedAccumulate2() {
-        testFromCollectWithExpandedAccumulate2(false);
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testFromCollectWithExpandedAccumulate2(RUN_TYPE runType) {
+        testFromCollectWithExpandedAccumulate2(runType, false);
     }
 
-    @Test
-    public void testFromCollectWithExpandedAccumulate2WithReverse() {
-        testFromCollectWithExpandedAccumulate2(true);
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testFromCollectWithExpandedAccumulate2WithReverse(RUN_TYPE runType) {
+        testFromCollectWithExpandedAccumulate2(runType, true);
     }
 
-    public void testFromCollectWithExpandedAccumulate2(boolean performReverse) {
+    public void testFromCollectWithExpandedAccumulate2(RUN_TYPE runType, boolean performReverse) {
         String str = "import " + Person.class.getCanonicalName() + ";\n" +
                      "rule R when\n" +
                      "  $sum : Integer() from accumulate (\n" +
@@ -764,7 +787,7 @@ public class AccumulateTest extends BaseModelTest {
                      "  insert($sum);\n" +
                      "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         FactHandle fh_Mark = ksession.insert(new Person("Mark", 37));
         FactHandle fh_Edson = ksession.insert(new Person("Edson", 35));
@@ -785,8 +808,9 @@ public class AccumulateTest extends BaseModelTest {
         }
     }
 
-    @Test
-    public void testExpandedAccumulateWith2Args() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testExpandedAccumulateWith2Args(RUN_TYPE runType) {
         String str = "import " + Person.class.getCanonicalName() + ";\n" +
                 "rule R when\n" +
                 "  $avg : Integer() from accumulate (\n" +
@@ -799,7 +823,7 @@ public class AccumulateTest extends BaseModelTest {
                 "  insert($avg);\n" +
                 "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         FactHandle fh_Mark = ksession.insert(new Person("Mark", 37));
         FactHandle fh_Edson = ksession.insert(new Person("Edson", 35));
@@ -818,8 +842,9 @@ public class AccumulateTest extends BaseModelTest {
         assertThat(results).contains(36);
     }
 
-    @Test
-    public void testExpandedAccumulateWith2Args2Bindings() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testExpandedAccumulateWith2Args2Bindings(RUN_TYPE runType) {
         String str = "import " + Person.class.getCanonicalName() + ";\n" +
                 "rule R when\n" +
                 "  $avg : Integer() from accumulate (\n" +
@@ -833,7 +858,7 @@ public class AccumulateTest extends BaseModelTest {
                 "  insert($avg);\n" +
                 "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         FactHandle fh_Mark = ksession.insert(new Person("Mark", 37));
         FactHandle fh_Edson = ksession.insert(new Person("Edson", 35));
@@ -853,8 +878,9 @@ public class AccumulateTest extends BaseModelTest {
     }
 
 
-    @Test
-    public void testExpandedAccumulateWith3Args() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testExpandedAccumulateWith3Args(RUN_TYPE runType) {
         String str =
                 "rule \"TestAccumulate2\" when\n" +
                 "    $dx : Number () from accumulate ( $d : Double (),\n" +
@@ -866,7 +892,7 @@ public class AccumulateTest extends BaseModelTest {
                 "   insert($dx.intValue());\n" +
                 "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert(1.0);
         ksession.insert(2.0);
@@ -878,8 +904,9 @@ public class AccumulateTest extends BaseModelTest {
         assertThat(results).contains(8);
     }
 
-    @Test
-    public void testAccumulateFromWithConstraint() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testAccumulateFromWithConstraint(RUN_TYPE runType) {
         String str =
                 "import " + java.util.List.class.getCanonicalName() + ";" +
                 "import " + org.drools.model.codegen.execmodel.oopathdtables.Person.class.getCanonicalName() + ";" +
@@ -892,7 +919,7 @@ public class AccumulateTest extends BaseModelTest {
                 "   insert($cities.get(0));\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert(new InternationalAddress("", 1, "Milan", "Safecountry"));
         ksession.fireAllRules();
@@ -902,8 +929,9 @@ public class AccumulateTest extends BaseModelTest {
         assertThat(results).contains("Milan");
     }
 
-    @Test
-    public void testAccumulateWithThis() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testAccumulateWithThis(RUN_TYPE runType) {
         final String drl1 =
                 "import java.util.*;\n" +
                         "rule B\n" +
@@ -916,7 +944,7 @@ public class AccumulateTest extends BaseModelTest {
                         "then\n" +
                         "   insert($eventCodeDistinctMois);\n" +
                         "end";
-        KieSession ksession = getKieSession( drl1 );
+        KieSession ksession = getKieSession(runType, drl1);
 
         ksession.insert("1");
         ksession.insert("3");
@@ -930,8 +958,9 @@ public class AccumulateTest extends BaseModelTest {
         assertThat(results).contains(4);
     }
 
-    @Test
-    public void testAccumulateWithExternalBind() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testAccumulateWithExternalBind(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                         "import " + Result.class.getCanonicalName() + ";" +
@@ -944,7 +973,7 @@ public class AccumulateTest extends BaseModelTest {
                         "  insert(new Result($sum));\n" +
                         "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert("x");
         ksession.insert(new Person("Mark", 37));
@@ -958,8 +987,9 @@ public class AccumulateTest extends BaseModelTest {
         assertThat(((Number) results.iterator().next().getValue()).intValue()).isEqualTo(77);
     }
 
-    @Test
-    public void testFromCollectWithExpandedAccumulateExternalBindInInit() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testFromCollectWithExpandedAccumulateExternalBindInInit(RUN_TYPE runType) {
         String str = "import " + Person.class.getCanonicalName() + ";\n" +
                 "rule R when\n" +
                 "  String( $l : length )\n" +
@@ -970,7 +1000,7 @@ public class AccumulateTest extends BaseModelTest {
                 "  insert($sum);\n" +
                 "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert("x");
         FactHandle fh_Mark = ksession.insert(new Person("Mark", 37));
@@ -984,8 +1014,9 @@ public class AccumulateTest extends BaseModelTest {
 
     }
 
-    @Test
-    public void testFromCollectWithExpandedAccumulateExternalBindInAction() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testFromCollectWithExpandedAccumulateExternalBindInAction(RUN_TYPE runType) {
         String str = "import " + Person.class.getCanonicalName() + ";\n" +
                 "rule R when\n" +
                 "  String( $l : length )" +
@@ -996,7 +1027,7 @@ public class AccumulateTest extends BaseModelTest {
                 "  insert($sum);\n" +
                 "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert("x");
         FactHandle fh_Mark = ksession.insert(new Person("Mark", 37));
@@ -1010,8 +1041,9 @@ public class AccumulateTest extends BaseModelTest {
 
     }
 
-    @Test
-    public void testUseAccumulateFunctionWithOperationInBinding() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testUseAccumulateFunctionWithOperationInBinding(RUN_TYPE runType) {
 
         String str = "import " + Person.class.getCanonicalName() + ";\n" +
                 "rule R when\n" +
@@ -1022,7 +1054,7 @@ public class AccumulateTest extends BaseModelTest {
                 "  insert($result);\n" +
                 "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert("x");
         FactHandle fh_Mark = ksession.insert(new Person("Mark", 37));
@@ -1036,8 +1068,9 @@ public class AccumulateTest extends BaseModelTest {
 
     }
 
-    @Test
-    public void testUseAccumulateFunctionWithArrayAccessOperation() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testUseAccumulateFunctionWithArrayAccessOperation(RUN_TYPE runType) {
 
         String str = "import " + Adult.class.getCanonicalName() + ";\n" +
                 "rule R when\n" +
@@ -1048,7 +1081,7 @@ public class AccumulateTest extends BaseModelTest {
                 "  insert($result);\n" +
                 "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert("x");
         Adult luca = new Adult("Luca", 33);
@@ -1065,8 +1098,9 @@ public class AccumulateTest extends BaseModelTest {
         assertThat(results.get(0).intValue()).isEqualTo(11);
     }
 
-    @Test
-    public void testUseAccumulateFunctionWithListMvelDialectWithoutBias() throws Exception {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testUseAccumulateFunctionWithListMvelDialectWithoutBias(RUN_TYPE runType) throws Exception {
         String str = "package org.test;" +
                 "import java.util.*; " +
                 "declare Data " +
@@ -1081,7 +1115,7 @@ public class AccumulateTest extends BaseModelTest {
                 "  insert($tot);\n" +
                 "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         FactType dataType = ksession.getKieBase().getFactType("org.test", "Data");
         Object data1 = dataType.newInstance();
@@ -1095,8 +1129,9 @@ public class AccumulateTest extends BaseModelTest {
         assertThat(results.get(0).intValue()).isEqualTo(2);
     }
 
-    @Test
-    public void testUseAccumulateFunctionWithListMvelDialect() throws Exception {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testUseAccumulateFunctionWithListMvelDialect(RUN_TYPE runType) throws Exception {
         String str = "package org.test;" +
                 "import java.util.*; " +
                 "declare Data " +
@@ -1112,7 +1147,7 @@ public class AccumulateTest extends BaseModelTest {
                 "  insert($tot);\n" +
                 "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         FactType dataType = ksession.getKieBase().getFactType("org.test", "Data");
         Object data1 = dataType.newInstance();
@@ -1132,8 +1167,9 @@ public class AccumulateTest extends BaseModelTest {
         assertThat(results.get(0).intValue()).isEqualTo(212);
     }
 
-    @Test
-    public void testTypedResultOnAccumulate() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testTypedResultOnAccumulate(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                 "import " + Result.class.getCanonicalName() + ";" +
@@ -1145,7 +1181,7 @@ public class AccumulateTest extends BaseModelTest {
                 "  insert(new Person(\"test\", $max));\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert("xyz");
 
@@ -1156,8 +1192,9 @@ public class AccumulateTest extends BaseModelTest {
         assertThat(results.iterator().next().getAge()).isEqualTo(3);
     }
 
-    @Test
-    public void testExtractorInPattern() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testExtractorInPattern(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                         "import " + Result.class.getCanonicalName() + ";" +
@@ -1169,7 +1206,7 @@ public class AccumulateTest extends BaseModelTest {
                         "  insert(new Result($max));\n" +
                         "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert(new Person("a", 23));
 
@@ -1181,8 +1218,9 @@ public class AccumulateTest extends BaseModelTest {
     }
 
 
-    @Test
-    public void testThisInPattern() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testThisInPattern(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                         "import " + Result.class.getCanonicalName() + ";" +
@@ -1194,7 +1232,7 @@ public class AccumulateTest extends BaseModelTest {
                         "  insert(new Result($max));\n" +
                         "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert(2);
         ksession.insert(10);
@@ -1208,8 +1246,9 @@ public class AccumulateTest extends BaseModelTest {
 
 
 
-    @Test
-    public void testExtractorInFunction() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testExtractorInFunction(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                 "import " + Result.class.getCanonicalName() + ";" +
@@ -1221,7 +1260,7 @@ public class AccumulateTest extends BaseModelTest {
                 "  insert(new Result($max));\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert(new Person("a", 23));
 
@@ -1232,8 +1271,9 @@ public class AccumulateTest extends BaseModelTest {
         assertThat(results.iterator().next().getValue()).isEqualTo(23);
     }
 
-    @Test
-    public void testBigDecimalOperationsInAccumulateConstraint() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testBigDecimalOperationsInAccumulateConstraint(RUN_TYPE runType) {
         String str = "import " + Person.class.getCanonicalName() + ";\n" +
                 "import " + BigDecimal.class.getCanonicalName() + ";\n" +
                 "global java.util.List results;\n" +
@@ -1246,7 +1286,7 @@ public class AccumulateTest extends BaseModelTest {
                 "    results.add($moneySummed);\n" +
                 "end\n";
 
-        KieSession ksession1 = getKieSession(str);
+        KieSession ksession1 = getKieSession(runType, str);
 
         ArrayList<BigDecimal> results = new ArrayList<>();
         ksession1.setGlobal("results", results);
@@ -1266,8 +1306,9 @@ public class AccumulateTest extends BaseModelTest {
 
 
     // do also the test with two functions
-    @Test
-    public void testAccumulateWithMax() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testAccumulateWithMax(RUN_TYPE runType) {
         String str =
                 "import " + StockTick.class.getCanonicalName() + ";" +
                         "import " + StockTick.class.getCanonicalName() + ";" +
@@ -1279,7 +1320,7 @@ public class AccumulateTest extends BaseModelTest {
                         "then\n" +
                         "end\n";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         StockTick st = new StockTick("RHT");
         st.setTimeField(new Date().getTime());
@@ -1287,8 +1328,9 @@ public class AccumulateTest extends BaseModelTest {
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testAccumulateWithMaxCalendar() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testAccumulateWithMaxCalendar(RUN_TYPE runType) {
         String str =
                 "import " + StockTick.class.getCanonicalName() + ";\n" +
                         "rule AccumulateMaxDate\n" +
@@ -1300,7 +1342,7 @@ public class AccumulateTest extends BaseModelTest {
                         "then\n" +
                         "end\n";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         StockTick st = new StockTick("RHT");
         st.setDueDate(Calendar.getInstance());
@@ -1308,8 +1350,9 @@ public class AccumulateTest extends BaseModelTest {
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testAccumulateWithMaxCalendarAndConstraint() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testAccumulateWithMaxCalendarAndConstraint(RUN_TYPE runType) {
         String str =
                 "import " + Customer.class.getCanonicalName() + ";\n" +
                 "import " + StockTick.class.getCanonicalName() + ";\n" +
@@ -1324,7 +1367,7 @@ public class AccumulateTest extends BaseModelTest {
                         "then\n" +
                         "end\n";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         StockTick st = new StockTick("RHT");
         st.setDueDate(Calendar.getInstance());
@@ -1335,8 +1378,9 @@ public class AccumulateTest extends BaseModelTest {
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testNoBinding() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testNoBinding(RUN_TYPE runType) {
 
         final String str = "rule foo\n" +
                 "when\n" +
@@ -1347,7 +1391,7 @@ public class AccumulateTest extends BaseModelTest {
                 "then\n" +
                 "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
         ksession.insert("xyz");
         ksession.fireAllRules();
     }
@@ -1358,8 +1402,9 @@ public class AccumulateTest extends BaseModelTest {
         }
     }
 
-    @Test
-    public void testImplicitCastInAccumulateFunction() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testImplicitCastInAccumulateFunction(RUN_TYPE runType) {
         String str =
                 "import " + ShortValue.class.getCanonicalName() + ";" +
                 "rule X when\n" +
@@ -1367,15 +1412,16 @@ public class AccumulateTest extends BaseModelTest {
                 "then\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert(new ShortValue());
 
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testAccumulateWithFunctionWithExternalBinding() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testAccumulateWithFunctionWithExternalBinding(RUN_TYPE runType) {
         final String drl =
                 "import " + Converter.class.getCanonicalName() + ";\n" +
                 "global java.util.List list;\n" +
@@ -1387,7 +1433,7 @@ public class AccumulateTest extends BaseModelTest {
                 "    list.add($result);\n" +
                 "end";
 
-        KieSession ksession = getKieSession(drl);
+        KieSession ksession = getKieSession(runType, drl);
 
         final List<Number> list = new ArrayList<>();
         ksession.setGlobal("list", list);
@@ -1408,8 +1454,9 @@ public class AccumulateTest extends BaseModelTest {
         }
     }
 
-    @Test
-    public void testAccumulateWithFunctionWithExternalBindingAndOR() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testAccumulateWithFunctionWithExternalBindingAndOR(RUN_TYPE runType) {
         final String drl =
                 "import " + Converter.class.getCanonicalName() + ";\n" +
                 "global java.util.List list;\n" +
@@ -1424,7 +1471,7 @@ public class AccumulateTest extends BaseModelTest {
                 "    list.add($result);\n" +
                 "end";
 
-        KieSession ksession = getKieSession(drl);
+        KieSession ksession = getKieSession(runType, drl);
 
         final List<Number> list = new ArrayList<>();
         ksession.setGlobal("list", list);
@@ -1438,8 +1485,9 @@ public class AccumulateTest extends BaseModelTest {
         assertThat(list.get(0).intValue()).isEqualTo(5);
     }
 
-    @Test
-    public void testAccumulateWithOR() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testAccumulateWithOR(RUN_TYPE runType) {
         final String drl =
                 "import " + Converter.class.getCanonicalName() + ";\n" +
                 "global java.util.List list;\n" +
@@ -1453,7 +1501,7 @@ public class AccumulateTest extends BaseModelTest {
                 "    list.add($result);\n" +
                 "end";
 
-        KieSession ksession = getKieSession(drl);
+        KieSession ksession = getKieSession(runType, drl);
 
         final List<Number> list = new ArrayList<>();
         ksession.setGlobal("list", list);
@@ -1466,8 +1514,9 @@ public class AccumulateTest extends BaseModelTest {
         assertThat(list.get(0).intValue()).isEqualTo(5);
     }
 
-    @Test
-    public void testPatternMatchingOverNumberWhileAccumulatingShort() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testPatternMatchingOverNumberWhileAccumulatingShort(RUN_TYPE runType) {
         String drl=
                 "import " + AccumulateResult.class.getCanonicalName() + "\n" +
                 "import " + Person.class.getCanonicalName() + "\n" +
@@ -1486,7 +1535,7 @@ public class AccumulateTest extends BaseModelTest {
                 "		update($accumulateResult);\n" +
                 "end";
 
-        KieSession ksession = getKieSession(drl);
+        KieSession ksession = getKieSession(runType, drl);
 
         AccumulateResult result = new AccumulateResult(false);
 
@@ -1538,8 +1587,9 @@ public class AccumulateTest extends BaseModelTest {
     }
 
 
-    @Test
-    public void testAccumulateOverField() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testAccumulateOverField(RUN_TYPE runType) {
         String str =
                 "import java.lang.Number;\n" +
                         "import java.math.BigDecimal;\n" +
@@ -1558,7 +1608,7 @@ public class AccumulateTest extends BaseModelTest {
                         "    }\n" +
                         "end\n";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert(new Person("Mario", BigDecimal.valueOf(1000)));
         ksession.insert(new Person("Luca", BigDecimal.valueOf(2000)));
@@ -1572,8 +1622,9 @@ public class AccumulateTest extends BaseModelTest {
         assertThat(result.getBigDecimalValue()).isEqualTo(BigDecimal.valueOf(3000));
     }
 
-    @Test
-    public void testFromAccumulateBigDecimalMvel() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testFromAccumulateBigDecimalMvel(RUN_TYPE runType) {
         String str = "import " + Person.class.getCanonicalName() + ";\n" +
                      "import " + BigDecimal.class.getCanonicalName() + ";\n" +
                      "global java.util.List list;\n" +
@@ -1590,7 +1641,7 @@ public class AccumulateTest extends BaseModelTest {
                      "  list.add($b);\n" +
                      "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
         final List<Number> list = new ArrayList<>();
         ksession.setGlobal("list", list);
 
@@ -1607,8 +1658,9 @@ public class AccumulateTest extends BaseModelTest {
 
     }
 
-    @Test
-    public void testSemicolonMissingInInit() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testSemicolonMissingInInit(RUN_TYPE runType) {
         String str = "import " + Person.class.getCanonicalName() + ";\n" +
                 "import " + BigDecimal.class.getCanonicalName() + ";\n" +
                 "global java.util.List list;\n" +
@@ -1624,7 +1676,7 @@ public class AccumulateTest extends BaseModelTest {
                 "  list.add($sum);\n" +
                 "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
         final List<Number> list = new ArrayList<>();
         ksession.setGlobal("list", list);
 
@@ -1643,8 +1695,9 @@ public class AccumulateTest extends BaseModelTest {
     }
 
 
-    @Test(expected = AssertionError.class)
-    public void testSemicolonMissingInAction() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void testSemicolonMissingInAction(RUN_TYPE runType) {
         String str = "import " + Person.class.getCanonicalName() + ";\n" +
                 "import " + BigDecimal.class.getCanonicalName() + ";\n" +
                 "global java.util.List list;\n" +
@@ -1660,11 +1713,13 @@ public class AccumulateTest extends BaseModelTest {
                 "  list.add($sum);\n" +
                 "end";
 
-       getKieSession(str);
+       
+        assertThatExceptionOfType(AssertionError.class).isThrownBy(() -> getKieSession(runType, str));
     }
 
-    @Test(expected = AssertionError.class)
-    public void testSemicolonMissingInReverse() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void testSemicolonMissingInReverse(RUN_TYPE runType) {
         String str = "import " + Person.class.getCanonicalName() + ";\n" +
                 "import " + BigDecimal.class.getCanonicalName() + ";\n" +
                 "global java.util.List list;\n" +
@@ -1680,11 +1735,12 @@ public class AccumulateTest extends BaseModelTest {
                 "  list.add($sum);\n" +
                 "end";
 
-        getKieSession(str);
+        assertThatExceptionOfType(AssertionError.class).isThrownBy(() -> getKieSession(runType, str));
     }
 
-    @Test
-    public void testGroupBy() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void testGroupBy(RUN_TYPE runType) {
         // DROOLS-4737
         String str =
                 "import java.util.*;\n" +
@@ -1704,7 +1760,7 @@ public class AccumulateTest extends BaseModelTest {
                 "  System.out.println(\"Sum of ages of person with initial '\" + $initial + \"' is \" + $sumOfAges);\n" +
                 "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert(new Person("Mark", 42));
         ksession.insert(new Person("Edson", 38));
@@ -1765,8 +1821,9 @@ public class AccumulateTest extends BaseModelTest {
         }
     }
 
-    @Test
-    public void testGroupBy2() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void testGroupBy2(RUN_TYPE runType) {
         // DROOLS-4737
         String str =
                 "import java.util.*;\n" +
@@ -1787,7 +1844,7 @@ public class AccumulateTest extends BaseModelTest {
                 "  results.put($initial, $sumOfAges);\n" +
                 "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         Map results = new HashMap();
         ksession.setGlobal( "results", results );
@@ -1822,8 +1879,9 @@ public class AccumulateTest extends BaseModelTest {
         assertThat(results.get("M")).isEqualTo(119);
     }
 
-    @Test
-    public void testGroupBy3() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testGroupBy3(RUN_TYPE runType) {
         // DROOLS-4737
         String str =
                 "import java.util.*;\n" +
@@ -1854,7 +1912,7 @@ public class AccumulateTest extends BaseModelTest {
                 "    results.put($initial, $sumOfAges);\n" +
                 "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         Map results = new HashMap();
         ksession.setGlobal( "results", results );
@@ -1889,8 +1947,9 @@ public class AccumulateTest extends BaseModelTest {
         assertThat(results.get("M")).isEqualTo(119);
     }
 
-    @Test
-    public void testGroupBy3WithExists() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testGroupBy3WithExists(RUN_TYPE runType) {
         String str =
                 "import java.util.*;\n" +
                 "import " + GroupKey.class.getCanonicalName() + ";\n" +
@@ -1921,7 +1980,7 @@ public class AccumulateTest extends BaseModelTest {
                 "    results.put($initial, $sumOfAges);\n" +
                 "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         Map results = new HashMap();
         ksession.setGlobal( "results", results );
@@ -1961,8 +2020,9 @@ public class AccumulateTest extends BaseModelTest {
         assertThat(results.get("M")).isEqualTo(119);
     }
 
-    @Test
-    public void testGroupBy3WithExists2() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testGroupBy3WithExists2(RUN_TYPE runType) {
         String str =
                 "import java.util.*;\n" +
                 "import " + GroupKey.class.getCanonicalName() + ";\n" +
@@ -1994,7 +2054,7 @@ public class AccumulateTest extends BaseModelTest {
                 "    results.add(java.util.Arrays.asList($k, $count));\n" +
                 "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         List results = new ArrayList();
         ksession.setGlobal( "results", results );
@@ -2022,8 +2082,9 @@ public class AccumulateTest extends BaseModelTest {
                 .containsOnly(Arrays.asList(child2, 1L));
     }
 
-    @Test
-    public void testGroupBy3With2VarsKey() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testGroupBy3With2VarsKey(RUN_TYPE runType) {
         String str =
                 "import java.util.*;\n" +
                 "import " + GroupKey.class.getCanonicalName() + ";\n" +
@@ -2057,7 +2118,7 @@ public class AccumulateTest extends BaseModelTest {
                 "    results.put($k, $sumOfAges);\n" +
                 "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         Map results = new HashMap();
         ksession.setGlobal( "results", results );
@@ -2100,8 +2161,9 @@ public class AccumulateTest extends BaseModelTest {
         assertThat(results.get("M5")).isEqualTo(119);
     }
 
-    @Test
-    public void testFromAfterAccumulate() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testFromAfterAccumulate(RUN_TYPE runType) {
         // DROOLS-4737
         String str =
                 "import " + List.class.getCanonicalName() + ";\n" +
@@ -2113,7 +2175,7 @@ public class AccumulateTest extends BaseModelTest {
                 "  System.out.println($name + \"' is \" + $age);\n" +
                 "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert(new Person("Mark", 42));
         ksession.insert(new Person("Edson", 38));
@@ -2121,8 +2183,9 @@ public class AccumulateTest extends BaseModelTest {
         ksession.fireAllRules();
     }
 
-    @Test
-    public void testCoercionInAccumulate() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testCoercionInAccumulate(RUN_TYPE runType) {
         String str =
                         "global java.util.List result;\n" +
                         "rule \"Row 1 moveToBiggerCities\"\n" +
@@ -2136,7 +2199,7 @@ public class AccumulateTest extends BaseModelTest {
 
         List<Long> result = new ArrayList<>();
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
         ksession.setGlobal("result", result);
 
         IntStream.range(1, 7).forEach(ksession::insert);
@@ -2147,8 +2210,9 @@ public class AccumulateTest extends BaseModelTest {
 
     }
 
-    @Test
-    public void testCoercionInAccumulate2() {
+    @ParameterizedTest
+@MethodSource("parameters")
+    public void testCoercionInAccumulate2(RUN_TYPE runType) {
         final String drl =
                 "import " + Person.class.getCanonicalName() + "\n" +
                         "global java.util.List result; \n" +
@@ -2165,7 +2229,7 @@ public class AccumulateTest extends BaseModelTest {
 
         List<Long> result = new ArrayList<>();
 
-        KieSession ksession = getKieSession(drl);
+        KieSession ksession = getKieSession(runType, drl);
         ksession.setGlobal("result", result);
 
         ksession.insert(new Person("Luca", 35));
@@ -2210,8 +2274,9 @@ public class AccumulateTest extends BaseModelTest {
         }
     }
 
-    @Test
-    public void testAccumulateOnStaticMethod() {
+    @ParameterizedTest
+@MethodSource("parameters")
+    public void testAccumulateOnStaticMethod(RUN_TYPE runType) {
         // DROOLS-4979
         final String drl =
                 "import java.time.Duration\n" +
@@ -2230,7 +2295,7 @@ public class AccumulateTest extends BaseModelTest {
 
         List<Long> result = new ArrayList<>();
 
-        KieSession ksession = getKieSession(drl);
+        KieSession ksession = getKieSession(runType, drl);
         ksession.setGlobal("result", result);
 
         ksession.insert(new Interval(
@@ -2244,8 +2309,9 @@ public class AccumulateTest extends BaseModelTest {
 
     }
 
-    @Test
-    public void testAccumulateOfDurationBetweenDateTime() {
+    @ParameterizedTest
+@MethodSource("parameters")
+    public void testAccumulateOfDurationBetweenDateTime(RUN_TYPE runType) {
         // DROOLS-4979
         final String drl =
                 "import java.time.Duration\n" +
@@ -2264,7 +2330,7 @@ public class AccumulateTest extends BaseModelTest {
 
         List<Long> result = new ArrayList<>();
 
-        KieSession ksession = getKieSession(drl);
+        KieSession ksession = getKieSession(runType, drl);
         ksession.setGlobal("result", result);
 
         ksession.insert(new Interval(
@@ -2278,8 +2344,9 @@ public class AccumulateTest extends BaseModelTest {
 
     }
 
-    @Test
-    public void testGroupByRegrouped() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testGroupByRegrouped(RUN_TYPE runType) {
         // DROOLS-5283
         String str =
                 "import java.util.*;\n" +
@@ -2305,7 +2372,7 @@ public class AccumulateTest extends BaseModelTest {
                         "then\n" +
                         "  System.out.println($p.toString());\n" +
                         "end";
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert(new Person("Mark", 42));
         ksession.insert(new Person("Edson", 38));
@@ -2327,8 +2394,9 @@ public class AccumulateTest extends BaseModelTest {
         ksession.fireAllRules();
     }
 
-    @Test
-    public void testAccumulateStaticMethodWithPatternBindVar() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testAccumulateStaticMethodWithPatternBindVar(RUN_TYPE runType) {
         String str = "import " + Person.class.getCanonicalName() + ";\n" +
                 "import " + MyUtil.class.getCanonicalName() + ";\n" +
                 "rule R when\n" +
@@ -2339,7 +2407,7 @@ public class AccumulateTest extends BaseModelTest {
                 "  insert($result);\n" +
                 "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert("x");
         ksession.insert(new Person("Mark", 37));
@@ -2358,8 +2426,9 @@ public class AccumulateTest extends BaseModelTest {
         }
     }
 
-    @Test
-    public void testModifyAccumulatedFactWithNonIndexableConstraint() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testModifyAccumulatedFactWithNonIndexableConstraint(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";\n" +
                 "rule R when\n" +
@@ -2370,7 +2439,7 @@ public class AccumulateTest extends BaseModelTest {
                 "then\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert( "a" );
         ksession.insert( "b" );
@@ -2411,8 +2480,9 @@ public class AccumulateTest extends BaseModelTest {
         assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
-    @Test
-    public void testAccumulateWithManyBindings() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testAccumulateWithManyBindings(RUN_TYPE runType) {
         // DROOLS-5546
         String str =
                 "import " + Person.class.getCanonicalName() + ";\n" +
@@ -2424,7 +2494,7 @@ public class AccumulateTest extends BaseModelTest {
                 "  insert($max);\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert( new Person( "Mario", 40 ) );
         ksession.insert( new Person( "Mark", 40 ) );
@@ -2437,8 +2507,9 @@ public class AccumulateTest extends BaseModelTest {
         assertThat(results.get(0).intValue()).isEqualTo(5);
     }
 
-    @Test
-    public void testFalseNodeSharing() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testFalseNodeSharing(RUN_TYPE runType) {
         // DROOLS-5686
         String str =
                 "import " + Person.class.getCanonicalName() + ";\n" +
@@ -2457,7 +2528,7 @@ public class AccumulateTest extends BaseModelTest {
                 "  insert(\"\" + $sum);\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert( new Person( "Mario", 46 ) );
         ksession.insert( new Person( "Mark", 44 ) );
@@ -2474,8 +2545,9 @@ public class AccumulateTest extends BaseModelTest {
         assertThat(resultsString.get(0)).isEqualTo("13");
     }
 
-    @Test
-    public void testAccumulateWithTwoFunctions1() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testAccumulateWithTwoFunctions1(RUN_TYPE runType) {
         // DROOLS-5752
         String str = "import java.time.Duration;\n" +
                 "import " + Shift.class.getCanonicalName() + ";\n" +
@@ -2492,15 +2564,16 @@ public class AccumulateTest extends BaseModelTest {
                 "        System.out.println($shiftCount + \" \" + $totalMinutes);\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert( new Shift( OffsetDateTime.now()) );
 
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testAccumulateWithTwoFunctions2() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testAccumulateWithTwoFunctions2(RUN_TYPE runType) {
         // DROOLS-5752
         String str = "import java.time.Duration;\n" +
                 "import " + Shift.class.getCanonicalName() + ";\n" +
@@ -2517,7 +2590,7 @@ public class AccumulateTest extends BaseModelTest {
                 "        System.out.println($shiftCount + \" \" + $totalMinutes);\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert( new Shift( OffsetDateTime.now()) );
 
@@ -2577,8 +2650,9 @@ public class AccumulateTest extends BaseModelTest {
         return Duration.between(start, end);
     }
 
-    @Test
-    public void testAccumulateNumberFromSum() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testAccumulateNumberFromSum(RUN_TYPE runType) {
         String str =
                 "import " + Shift.class.getCanonicalName() + ";"
                         + "import " + AccumulateTest.class.getCanonicalName() + ";"
@@ -2600,7 +2674,7 @@ public class AccumulateTest extends BaseModelTest {
 
 
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         Shift shift = new Shift(OffsetDateTime.now());
 
@@ -2625,8 +2699,9 @@ public class AccumulateTest extends BaseModelTest {
         return session.fireAllRules();
     }
 
-    @Test
-    public void testDoubleAccumulateNPE() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testDoubleAccumulateNPE(RUN_TYPE runType) {
         // Prepare reproducing data.
         MrMachine machine2 = new MrMachine();
         MrMachine machine3 = new MrMachine();
@@ -2651,7 +2726,7 @@ public class AccumulateTest extends BaseModelTest {
                 "then\n" +
                 "    result.add($count);\n" +
                 "end;";
-        KieSession kieSession = getKieSession(rule);
+        KieSession kieSession = getKieSession(runType, rule);
         List<Long> result = new ArrayList<>();
         kieSession.setGlobal("result", result);
 
@@ -2731,8 +2806,9 @@ public class AccumulateTest extends BaseModelTest {
 
     }
 
-    @Test
-    public void testInlineAccumulateWithAnd() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testInlineAccumulateWithAnd(RUN_TYPE runType) {
         // RHDM-1549
         String str =
                 "import " + Car.class.getCanonicalName() + ";" +
@@ -2749,7 +2825,7 @@ public class AccumulateTest extends BaseModelTest {
                         "        result.add($total);\n" +
                         "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         List<BigDecimal> result = new ArrayList<>();
         ksession.setGlobal("result", result);
@@ -2780,8 +2856,9 @@ public class AccumulateTest extends BaseModelTest {
         ksession.dispose();
     }
 
-    @Test
-    public void testInlineMvelAccumulateWithAnd() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testInlineMvelAccumulateWithAnd(RUN_TYPE runType) {
         // RHDM-1549
         String str =
                 "import " + Car.class.getCanonicalName() + ";" +
@@ -2799,7 +2876,7 @@ public class AccumulateTest extends BaseModelTest {
                 "        result.add($total);\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         List<BigDecimal> result = new ArrayList<>();
         ksession.setGlobal("result", result);
@@ -2912,8 +2989,9 @@ public class AccumulateTest extends BaseModelTest {
         }
     }
 
-    @Test
-    public void testAccumulateOnPartiallyReversibleFunction() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testAccumulateOnPartiallyReversibleFunction(RUN_TYPE runType) {
         // DROOLS-5930
         String str =
                 "import accumulate " + CountingIntegerMaxAccumulateFunction.class.getCanonicalName() + " countingMax;\n" +
@@ -2925,7 +3003,7 @@ public class AccumulateTest extends BaseModelTest {
                 "  result.add($max);\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         CountingIntegerMaxAccumulateFunction accFunction = CountingIntegerMaxAccumulateFunction.INSTANCE;
 
@@ -2990,8 +3068,9 @@ public class AccumulateTest extends BaseModelTest {
         }
     }
 
-    @Test
-    public void testOneAccumulateOnPattern() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testOneAccumulateOnPattern(RUN_TYPE runType) {
         // DROOLS-5938
         String str =
                 "import " + Person.class.getCanonicalName() + ";\n" +
@@ -3004,7 +3083,7 @@ public class AccumulateTest extends BaseModelTest {
                 "  result.add($acc1.iterator().next());" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         List<Person> result = new ArrayList<>();
         ksession.setGlobal("result", result);
@@ -3019,8 +3098,9 @@ public class AccumulateTest extends BaseModelTest {
         assertThat(result.get(0)).isEqualTo(lukas);
     }
 
-    @Test
-    public void testOneAccumulateOnPatternWithVarBinding() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testOneAccumulateOnPatternWithVarBinding(RUN_TYPE runType) {
         // DROOLS-5938
         String str =
                 "import " + Person.class.getCanonicalName() + ";\n" +
@@ -3033,7 +3113,7 @@ public class AccumulateTest extends BaseModelTest {
                 "  result.add($acc1.iterator().next());" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         List<Person> result = new ArrayList<>();
         ksession.setGlobal("result", result);
@@ -3047,8 +3127,9 @@ public class AccumulateTest extends BaseModelTest {
         assertThat(result.get(0)).isEqualTo(lukas);
     }
 
-    @Test
-    public void testTwoAccumulatesOnPattern() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testTwoAccumulatesOnPattern(RUN_TYPE runType) {
         // DROOLS-5938
         String str =
                 "import " + Person.class.getCanonicalName() + ";\n" +
@@ -3064,7 +3145,7 @@ public class AccumulateTest extends BaseModelTest {
                         "  result.add($acc2.iterator().next());" +
                         "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         List<Pair> result = new ArrayList<>();
         ksession.setGlobal("result", result);
@@ -3076,8 +3157,9 @@ public class AccumulateTest extends BaseModelTest {
         assertThat(result.get(0)).isEqualTo(Pair.create("Lukas", 35));
     }
 
-    @Test
-    public void testTwoAccumulatesOnPatternWithVarBinding() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testTwoAccumulatesOnPatternWithVarBinding(RUN_TYPE runType) {
         // DROOLS-5938
         String str =
                 "import " + Person.class.getCanonicalName() + ";\n" +
@@ -3093,7 +3175,7 @@ public class AccumulateTest extends BaseModelTest {
                 "  result.add($acc2.iterator().next());" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         List<Pair> result = new ArrayList<>();
         ksession.setGlobal("result", result);
@@ -3105,8 +3187,9 @@ public class AccumulateTest extends BaseModelTest {
         assertThat(result.get(0)).isEqualTo(Pair.create("Lukas", 35));
     }
 
-    @Test
-    public void testBindingOrderWithInlineAccumulate() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testBindingOrderWithInlineAccumulate(RUN_TYPE runType) {
         // RHDM-1551
         String str =
                 "import " + Aclass.class.getCanonicalName() + ";\n" +
@@ -3134,7 +3217,7 @@ public class AccumulateTest extends BaseModelTest {
                 "        result.add($eSet.iterator().next());" +
                 "end";
 
-        KieSession kSession = getKieSession( str );
+        KieSession kSession = getKieSession(runType, str);
 
         List<String> result = new ArrayList<>();
         kSession.setGlobal("result", result);
@@ -3151,8 +3234,9 @@ public class AccumulateTest extends BaseModelTest {
         kSession.dispose();
     }
 
-    @Test
-    public void testBindingOrderWithInlineAccumulateAndLists() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testBindingOrderWithInlineAccumulateAndLists(RUN_TYPE runType) {
         // RHDM-1551
         String str =
                 "import " + Aclass.class.getCanonicalName() + ";\n" +
@@ -3180,7 +3264,7 @@ public class AccumulateTest extends BaseModelTest {
                 "        result.add($eSet.iterator().next());" +
                 "end";
 
-        KieSession kSession = getKieSession( str );
+        KieSession kSession = getKieSession(runType, str);
 
         List<String> result = new ArrayList<>();
         kSession.setGlobal("result", result);
@@ -3197,8 +3281,9 @@ public class AccumulateTest extends BaseModelTest {
         kSession.dispose();
     }
 
-    @Test
-    public void testBindingOrderWithInlineAccumulateAndListsAndFrom() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testBindingOrderWithInlineAccumulateAndListsAndFrom(RUN_TYPE runType) {
         // RHDM-1551
         String str =
                 "import " + Aclass.class.getCanonicalName() + ";\n" +
@@ -3227,7 +3312,7 @@ public class AccumulateTest extends BaseModelTest {
                 "        result.add($eSet.iterator().next());" +
                 "end";
 
-        KieSession kSession = getKieSession( str );
+        KieSession kSession = getKieSession(runType, str);
 
         List<String> result = new ArrayList<>();
         kSession.setGlobal("result", result);
@@ -3324,8 +3409,9 @@ public class AccumulateTest extends BaseModelTest {
         }
     }
 
-    @Test
-    public void testMultiAccumulate() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testMultiAccumulate(RUN_TYPE runType) {
         // RHDM-1572
         String str =
                 "global java.util.List result;\n" +
@@ -3340,7 +3426,7 @@ public class AccumulateTest extends BaseModelTest {
                 "        result.addAll($list);\n" +
                 "end";
 
-        KieSession kSession = getKieSession( str );
+        KieSession kSession = getKieSession(runType, str);
 
         List<Object> result = new ArrayList<>();
         kSession.setGlobal( "result", result );
@@ -3360,8 +3446,9 @@ public class AccumulateTest extends BaseModelTest {
         kSession.dispose();
     }
 
-    @Test
-    public void testAccumulateWithExists() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testAccumulateWithExists(RUN_TYPE runType) {
         // RHDM-1571
         String str =
                 "import " + Car.class.getCanonicalName() + ";" +
@@ -3375,7 +3462,7 @@ public class AccumulateTest extends BaseModelTest {
                 "        result.addAll($list);\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         List<Car> result = new ArrayList<>();
         ksession.setGlobal( "result", result );
@@ -3392,8 +3479,9 @@ public class AccumulateTest extends BaseModelTest {
         ksession.dispose();
     }
 
-    @Test
-    public void testAccumulateWithForAll() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testAccumulateWithForAll(RUN_TYPE runType) {
         // DROOLS-6025
         String str =
                 "import " + GrandChild.class.getCanonicalName() + ";\n" +
@@ -3408,7 +3496,7 @@ public class AccumulateTest extends BaseModelTest {
                 "        System.out.println(\"exec \" + $count);\n" +
                 "end\n";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         GrandParent grandParent = new GrandParent();
         GrandChild grandChild = new GrandChild();
@@ -3444,8 +3532,9 @@ public class AccumulateTest extends BaseModelTest {
         }
     }
 
-    @Test
-    public void testAccumulateSubnetworkEval() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testAccumulateSubnetworkEval(RUN_TYPE runType) {
         // DROOLS-6228
         String str =
                 "import java.time.Duration;\n" +
@@ -3462,7 +3551,7 @@ public class AccumulateTest extends BaseModelTest {
                 "        holder.set((int)holder.get() + $sum);\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
         AtomicReference<Integer> holder = new AtomicReference<>(0);
         ksession.setGlobal("holder", holder);
 
@@ -3475,8 +3564,9 @@ public class AccumulateTest extends BaseModelTest {
         assertThat((int) holder.get()).isEqualTo(0);
     }
 
-    @Test
-    public void testInnerClassInAccumulatingFunction() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testInnerClassInAccumulatingFunction(RUN_TYPE runType) {
         // DROOLS-6238
         String str =
                 "import java.util.*;\n" +
@@ -3501,7 +3591,7 @@ public class AccumulateTest extends BaseModelTest {
                         "then\n" +
                         "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert(new Person("Mark", 42));
         ksession.insert(new Person("Edson", 38));
@@ -3553,8 +3643,9 @@ public class AccumulateTest extends BaseModelTest {
         }
     }
 
-    @Test
-    public void testAccumulateWithSameBindingVariable() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testAccumulateWithSameBindingVariable(RUN_TYPE runType) {
         // DROOLS-6102
         String str =
                 "import java.util.*;\n" +
@@ -3568,7 +3659,7 @@ public class AccumulateTest extends BaseModelTest {
                 "  list.add( $tot2.intValue() ); \n" +
                 "end\n";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         List<Integer> list = new ArrayList<>();
         ksession.setGlobal("list", list);
@@ -3583,8 +3674,9 @@ public class AccumulateTest extends BaseModelTest {
         assertThat((int) list.get(1)).isEqualTo(2);
     }
 
-    @Test
-    public void testAccumulateWithMaxCalendarNullDate() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testAccumulateWithMaxCalendarNullDate(RUN_TYPE runType) {
         //DROOLS-4990
         String str =
                 "import " + StockTick.class.getCanonicalName() + ";\n" +
@@ -3597,7 +3689,7 @@ public class AccumulateTest extends BaseModelTest {
                         "then\n" +
                         "end\n";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         StockTick st = new StockTick("RHT");
         ksession.insert(st);
@@ -3607,8 +3699,9 @@ public class AccumulateTest extends BaseModelTest {
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testSubnetworkTuple() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testSubnetworkTuple(RUN_TYPE runType) {
         final String drl =
                 "import java.math.*; " +
                         "import " + InputDataTypes.class.getCanonicalName() + "; " +
@@ -3624,7 +3717,7 @@ public class AccumulateTest extends BaseModelTest {
                         "		result.add($min); " +
                         "end";
 
-        final KieSession ksession = getKieSession(drl);
+        final KieSession ksession = getKieSession(runType, drl);
 
         List<Number> result = new ArrayList<>();
         ksession.setGlobal("result", result);
@@ -3685,8 +3778,9 @@ public class AccumulateTest extends BaseModelTest {
         return GregorianCalendar.from( ZonedDateTime.from( DateTimeFormatter.ISO_DATE_TIME.parse(inputString)));
     }
 
-    @Test
-    public void testAccumulateCountWithExists() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testAccumulateCountWithExists(RUN_TYPE runType) {
 //        The following rule uses an accumulate to count all the name Strings for which at least one Person
 //        of that name exists. Expected behavior:
 //        - A name should be counted exactly once no matter how many Persons with that name exists.
@@ -3704,7 +3798,7 @@ public class AccumulateTest extends BaseModelTest {
                 + "  insert( new Result($count));\n"
                 + "  System.out.println(kcontext.getMatch().getObjects());\n"
                 + "end\n";
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ReteDumper.dumpRete(ksession);
 
@@ -3725,8 +3819,9 @@ public class AccumulateTest extends BaseModelTest {
         assertThat(results.iterator().next().getValue()).isEqualTo(2L);
     }
 
-    @Test
-    public void testAccumulateWithIndirectArgument() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testAccumulateWithIndirectArgument(RUN_TYPE runType) {
         String str =
                 "global java.util.List resultTotal; \n" +
                         "global java.util.List resultPair; \n" +
@@ -3745,7 +3840,7 @@ public class AccumulateTest extends BaseModelTest {
                         "        resultPair.add($pair);\n" +
                         "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         final List<Number> resultTotal = new ArrayList<>();
         ksession.setGlobal("resultTotal", resultTotal);
@@ -3766,8 +3861,9 @@ public class AccumulateTest extends BaseModelTest {
         assertThat(firstPair.getSecond()).isEqualTo("Mario");
     }
 
-    @Test
-    public void testVariableWithMethodCallInAccFunc() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testVariableWithMethodCallInAccFunc(RUN_TYPE runType) {
         final String str = "package org.drools.mvel.compiler\n" +
                 "import " + ControlFact.class.getCanonicalName() + ";" +
                 "import " + Payment.class.getCanonicalName() + ";" +
@@ -3785,7 +3881,7 @@ public class AccumulateTest extends BaseModelTest {
 
         System.out.println(str);
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         final Payment payment = new Payment();
         payment.setDueDate(Calendar.getInstance());
@@ -3799,8 +3895,9 @@ public class AccumulateTest extends BaseModelTest {
         assertThat(rules).isEqualTo(1);
     }
 
-    @Test
-    public void testVariableWithMethodCallInAccFuncSimple() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testVariableWithMethodCallInAccFuncSimple(RUN_TYPE runType) {
         final String str = "package org.drools.mvel.compiler\n" +
                 "import " + FactA.class.getCanonicalName() + ";" +
                 "rule r1\n" +
@@ -3814,7 +3911,7 @@ public class AccumulateTest extends BaseModelTest {
 
         System.out.println(str);
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         final FactA factA = new FactA();
         factA.setValue(1);
@@ -3863,8 +3960,9 @@ public class AccumulateTest extends BaseModelTest {
         }
     }
 
-    @Test
-    public void testAccumulateOnTwoPatterns() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testAccumulateOnTwoPatterns(RUN_TYPE runType) {
         // DROOLS-5738
         String str =
                 "import " + Person.class.getCanonicalName() + ";\n" +
@@ -3876,7 +3974,7 @@ public class AccumulateTest extends BaseModelTest {
                         "  insert($sum);\n" +
                         "end\n";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert( new Person( "Mario", 46 ) );
         ksession.insert( new Person( "Mark", 44 ) );
@@ -3888,8 +3986,9 @@ public class AccumulateTest extends BaseModelTest {
         assertThat(results.get(0)).isEqualTo(90);
     }
   
-    @Test
-    public void testPositionalAccumulate() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testPositionalAccumulate(RUN_TYPE runType) {
         // DROOLS-6128
         String str =
                 "import " + Result.class.getCanonicalName() + ";" +
@@ -3912,7 +4011,7 @@ public class AccumulateTest extends BaseModelTest {
                 "  insert(new Result($sum));\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.fireAllRules();
 
@@ -3921,8 +4020,9 @@ public class AccumulateTest extends BaseModelTest {
         assertThat(results.iterator().next().getValue()).isEqualTo(112);
     }
 
-    @Test
-    public void testAccumulateOnSet() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testAccumulateOnSet(RUN_TYPE runType) {
         String str =
                 "import java.util.*;\n" +
                 "import " + Person.class.getCanonicalName() + ";\n" +
@@ -3933,7 +4033,7 @@ public class AccumulateTest extends BaseModelTest {
                 "  holder.set($size); \n" +
                 "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
         AtomicReference<Integer> holder = new AtomicReference<>(0);
         ksession.setGlobal("holder", holder);
 
@@ -3954,8 +4054,9 @@ public class AccumulateTest extends BaseModelTest {
         assertThat((int) holder.get()).isEqualTo(4);
     }
 
-    @Test
-    public void testNestedAccumulates() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testNestedAccumulates(RUN_TYPE runType) {
         // DROOLS-6202
         String str =
                 "import java.util.*;\n" +
@@ -3970,7 +4071,7 @@ public class AccumulateTest extends BaseModelTest {
                 "  holder.set($max); \n" +
                 "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
         AtomicReference<Integer> holder = new AtomicReference<>(0);
         ksession.setGlobal("holder", holder);
 
@@ -3991,8 +4092,9 @@ public class AccumulateTest extends BaseModelTest {
         assertThat((int) holder.get()).isEqualTo(4);
     }
 
-    @Test
-    public void testIfInInlineAccumulate() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testIfInInlineAccumulate(RUN_TYPE runType) {
         // DROOLS-6429
         String str = "import " + Person.class.getCanonicalName() + ";\n" +
                 "rule R when\n" +
@@ -4006,7 +4108,7 @@ public class AccumulateTest extends BaseModelTest {
                 "  insert($avg);\n" +
                 "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert(new Person("Sofia", 10));
         FactHandle fh_Mark = ksession.insert(new Person("Mark", 37));
@@ -4026,8 +4128,9 @@ public class AccumulateTest extends BaseModelTest {
         assertThat(results).contains(36);
     }
 
-    @Test
-    public void testBindVariableUsedInSubsequentAccumulateString() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testBindVariableUsedInSubsequentAccumulateString(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                      "global java.util.List result;\n" +
@@ -4044,7 +4147,7 @@ public class AccumulateTest extends BaseModelTest {
                      "  result.add($maxAge);\n" +
                      "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
         List<Integer> result = new ArrayList<>();
         ksession.setGlobal("result", result);
 
@@ -4058,8 +4161,9 @@ public class AccumulateTest extends BaseModelTest {
         assertThat(result).containsExactly(50);
     }
 
-    @Test
-    public void testBindVariableUsedInSubsequentAccumulateBigDecimal() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testBindVariableUsedInSubsequentAccumulateBigDecimal(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                      "global java.util.List result;\n" +
@@ -4076,7 +4180,7 @@ public class AccumulateTest extends BaseModelTest {
                      "  result.add($maxAge);\n" +
                      "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
         List<Integer> result = new ArrayList<>();
         ksession.setGlobal("result", result);
 
@@ -4090,8 +4194,9 @@ public class AccumulateTest extends BaseModelTest {
         assertThat(result).containsExactly(50);
     }
 
-    @Test
-    public void testCollectAfterAccumulate() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testCollectAfterAccumulate(RUN_TYPE runType) {
         String str = "import " + Person.class.getCanonicalName() + ";\n" +
                      "import " + BigDecimal.class.getCanonicalName() + ";\n" +
                      "import " + ArrayList.class.getCanonicalName() + ";\n" +
@@ -4109,7 +4214,7 @@ public class AccumulateTest extends BaseModelTest {
                      "  result.addAll($list)\n" +
                      "end";
         try {
-            KieSession ksession = getKieSession(str);
+            KieSession ksession = getKieSession(runType, str);
             List<Person> result = new ArrayList<>();
             ksession.setGlobal("result", result);
 
@@ -4130,8 +4235,9 @@ public class AccumulateTest extends BaseModelTest {
         }
     }
 
-    @Test
-    public void testExistsFromAccumulate() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testExistsFromAccumulate(RUN_TYPE runType) {
         // DROOLS-6959
         String str =
                 "import " + Set.class.getCanonicalName() + ";\n" +
@@ -4140,15 +4246,16 @@ public class AccumulateTest extends BaseModelTest {
                  "then\n" +
                  "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert("String1");
         ksession.insert("String2");
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testAccumulateWithBetaConstraint() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testAccumulateWithBetaConstraint(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                 "import " + Result.class.getCanonicalName() + ";" +
@@ -4161,7 +4268,7 @@ public class AccumulateTest extends BaseModelTest {
                 "  insert(new Result($sum + \":\" + $i));\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert(5);
         ksession.insert(new Person("Mark", 37));
@@ -4175,8 +4282,9 @@ public class AccumulateTest extends BaseModelTest {
         assertThat(results).containsExactly(new Result("75:5"));
     }
 
-    @Test
-    public void testJoinInAccumulate() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testJoinInAccumulate(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                 "import " + Result.class.getCanonicalName() + ";" +
@@ -4188,7 +4296,7 @@ public class AccumulateTest extends BaseModelTest {
                 "  insert(new Result($sum));\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert(new Person("Mark", 37));
         ksession.insert(new Person("Edson", 35));
@@ -4207,8 +4315,9 @@ public class AccumulateTest extends BaseModelTest {
         assertThat(results).containsExactlyInAnyOrder(new Result(0), new Result(75));
     }
 
-    @Test
-    public void testAccumulateSumMultipleParametersExpression() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testAccumulateSumMultipleParametersExpression(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                 "import " + Result.class.getCanonicalName() + ";" +
@@ -4220,8 +4329,8 @@ public class AccumulateTest extends BaseModelTest {
                 "  insert(new Result($sum));\n" +
                 "end";
 
-        Results results = createKieBuilder(str).getResults();
-        if (testRunType.isExecutableModel()) {
+        Results results = createKieBuilder(runType, str).getResults();
+        if (runType.isExecutableModel()) {
             assertThat(results.getMessages(Message.Level.ERROR).get(0).getText().contains(
                     "Function \"sum\" cannot have more than 1 parameter")).isTrue();
         } else {
@@ -4230,8 +4339,9 @@ public class AccumulateTest extends BaseModelTest {
         }
     }
 
-    @Test
-    public void testAccumulateSumUnaryExpression() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testAccumulateSumUnaryExpression(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                 "import " + Result.class.getCanonicalName() + ";" +
@@ -4243,7 +4353,7 @@ public class AccumulateTest extends BaseModelTest {
                 "  insert(new Result($sum));\n" +
                 "end";
 
-        KieSession kieSession = getKieSession( str );
+        KieSession kieSession = getKieSession(runType, str);
 
         kieSession.insert(new Person("Mark", 37));
         kieSession.insert(new Person("Edson", 35));
@@ -4256,8 +4366,9 @@ public class AccumulateTest extends BaseModelTest {
         assertThat(results.iterator().next().getValue()).isEqualTo(-77);
     }
 
-    @Test
-    public void testAccumulateSumBinaryExpWithNestedUnaryExpression() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testAccumulateSumBinaryExpWithNestedUnaryExpression(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                 "import " + Result.class.getCanonicalName() + ";" +
@@ -4269,7 +4380,7 @@ public class AccumulateTest extends BaseModelTest {
                 "  insert(new Result($sum));\n" +
                 "end";
 
-        KieSession kieSession = getKieSession( str );
+        KieSession kieSession = getKieSession(runType, str);
 
         kieSession.insert(new Person("Mark", 37));
         kieSession.insert(new Person("Edson", 35));

@@ -25,7 +25,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
-import org.kie.dmn.feel.codegen.feel11.CodegenTestUtil;
+import org.kie.dmn.feel.util.EvaluationContextTestUtil;
 import org.kie.dmn.feel.codegen.feel11.CompiledFEELExpression;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.FEELProperty;
@@ -226,7 +226,7 @@ public class FEELCompilerTest {
         CompiledFEELExpression nameRef = CompilerUtils.parseInterpreted("[ {x:1, y:2}, {x:2, y:3} ][x]");
         LOG.debug("{}", nameRef);
         
-        EvaluationContext context = CodegenTestUtil.newEmptyEvaluationContext();
+        EvaluationContext context = EvaluationContextTestUtil.newEmptyEvaluationContext();
         context.setValue("x", 2);
         Object result = nameRef.apply(context);
         LOG.debug("{}", result);
@@ -239,7 +239,7 @@ public class FEELCompilerTest {
         CompiledFEELExpression nameRef = CompilerUtils.parseInterpreted("[ {x:1, y:2}, {x:2, y:3} ][x]");
         LOG.debug("{}", nameRef);
 
-        EvaluationContext context = CodegenTestUtil.newEmptyEvaluationContext();
+        EvaluationContext context = EvaluationContextTestUtil.newEmptyEvaluationContext();
         context.setValue("x", false);
         Object result = nameRef.apply(context);
         LOG.debug("{}", result);
@@ -410,7 +410,7 @@ public class FEELCompilerTest {
         CompiledFEELExpression nameRef = parseInterpreted(inputExpression, mapOf(entry("someSimpleName", BuiltInType.STRING) ) );
         LOG.debug("{}", nameRef);
         
-        EvaluationContext context = CodegenTestUtil.newEmptyEvaluationContext();
+        EvaluationContext context = EvaluationContextTestUtil.newEmptyEvaluationContext();
         context.setValue("someSimpleName", 123L);
         Object result = nameRef.apply(context);
         LOG.debug("{}", result);
@@ -425,7 +425,7 @@ public class FEELCompilerTest {
         CompiledFEELExpression qualRef = parseInterpreted(inputExpression, mapOf(entry("My Person", personType) ) );
         LOG.debug("{}", qualRef);
         
-        EvaluationContext context = CodegenTestUtil.newEmptyEvaluationContext();
+        EvaluationContext context = EvaluationContextTestUtil.newEmptyEvaluationContext();
         context.setValue("My Person", mapOf( entry("Full Name", "John Doe"), entry("Age", 47) ));
         Object result = qualRef.apply(context);
         LOG.debug("{}", result);
@@ -456,7 +456,7 @@ public class FEELCompilerTest {
         CompiledFEELExpression qualRef = parseInterpreted(inputExpression, mapOf(entry("My Person", personType) ) );
         LOG.debug("{}", qualRef);
         
-        EvaluationContext context = CodegenTestUtil.newEmptyEvaluationContext();
+        EvaluationContext context = EvaluationContextTestUtil.newEmptyEvaluationContext();
         context.setValue("My Person", new MyPerson());
         Object result = qualRef.apply(context);
         LOG.debug("{}", result);
@@ -471,7 +471,7 @@ public class FEELCompilerTest {
         CompiledFEELExpression qualRef = parseInterpreted(inputExpression, mapOf(entry("a date", dateType)));
         LOG.debug("{}", qualRef);
         
-        EvaluationContext context = CodegenTestUtil.newEmptyEvaluationContext();
+        EvaluationContext context = EvaluationContextTestUtil.newEmptyEvaluationContext();
         context.setValue("a date", LocalDate.of(2016, 8, 2));
         Object result = qualRef.apply(context);
         LOG.debug("{}", result);

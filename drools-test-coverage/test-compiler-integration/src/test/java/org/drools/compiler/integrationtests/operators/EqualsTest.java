@@ -27,30 +27,22 @@ import org.drools.testcoverage.common.model.Primitives;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class EqualsTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public EqualsTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
-    }
-
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
+    public static Collection<Object[]> parameters() {
         return TestParametersUtil.getKieBaseCloudConfigurations(true);
     }
 
-    @Test
-    public void testEqualitySupport() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testEqualitySupport(KieBaseTestConfiguration kieBaseTestConfiguration) {
 
         final String drl = "package org.drools.compiler.integrationtests.operators\n" +
                 "import " + PersonWithSpecificEquals.class.getCanonicalName() + " ;\n" +
@@ -92,8 +84,9 @@ public class EqualsTest {
         }
     }
 
-    @Test
-    public void testNotEqualsOperator() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testNotEqualsOperator(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // JBRULES-3003: restriction evaluation returns 'false' for "trueField != falseField"
 
         final String str = "package org.drools.compiler.integrationtests.operators\n" +
@@ -124,8 +117,9 @@ public class EqualsTest {
         }
     }
 
-    @Test
-    public void testCharComparisons() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testCharComparisons(KieBaseTestConfiguration kieBaseTestConfiguration) {
 
         final String drl = "package org.drools.compiler.integrationtests.operators\n" +
                 "import " + Primitives.class.getCanonicalName() + " ;\n" +

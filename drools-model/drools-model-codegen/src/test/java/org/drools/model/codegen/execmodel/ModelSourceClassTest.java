@@ -24,14 +24,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
-
-import static org.assertj.core.api.Assertions.assertThat;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.util.maven.support.ReleaseIdImpl;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ModelSourceClassTest {
 

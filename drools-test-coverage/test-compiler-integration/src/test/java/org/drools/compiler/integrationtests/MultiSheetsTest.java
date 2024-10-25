@@ -18,16 +18,15 @@
  */
 package org.drools.compiler.integrationtests;
 
-import java.util.Collection;
+import java.util.stream.Stream;
 
 import org.drools.compiler.kie.builder.impl.DrlProject;
 import org.drools.testcoverage.common.model.Person;
 import org.drools.testcoverage.common.model.Result;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -38,41 +37,37 @@ import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class MultiSheetsTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public MultiSheetsTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testNoSheet(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        check(kieBaseTestConfiguration, null, "Mario can drink");
     }
 
-    @Test
-    public void testNoSheet() {
-        check(null, "Mario can drink");
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testSheet1(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        check(kieBaseTestConfiguration, "Sheet1", "Mario can drink");
     }
 
-    @Test
-    public void testSheet1() {
-        check("Sheet1", "Mario can drink");
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testSheet2(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        check(kieBaseTestConfiguration, "Sheet2", "Mario can drive");
     }
 
-    @Test
-    public void testSheet2() {
-        check("Sheet2", "Mario can drive");
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testSheet12(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        check(kieBaseTestConfiguration, "Sheet1,Sheet2", "Mario can drink", "Mario can drive");
     }
 
-    @Test
-    public void testSheet12() {
-        check("Sheet1,Sheet2", "Mario can drink", "Mario can drive");
-    }
-
-    private void check(String sheets, String... results) {
+    private void check(KieBaseTestConfiguration kieBaseTestConfiguration, String sheets, String... results) {
         KieServices ks = KieServices.get();
         KieResources kr = ks.getResources();
 
@@ -89,7 +84,7 @@ public class MultiSheetsTest {
 
         kfs.writeKModuleXML( kproj.toXML() );
 
-        KieBuilder kb = buildDTable( ks, kfs );
+        KieBuilder kb = buildDTable(kieBaseTestConfiguration, ks, kfs);
         KieContainer kc = ks.newKieContainer(kb.getKieModule().getReleaseId());
 
         KieSession sessionDtable = kc.newKieSession( "dtable" );
@@ -102,7 +97,7 @@ public class MultiSheetsTest {
         }
     }
 
-    private KieBuilder buildDTable( KieServices ks, KieFileSystem kfs ) {
+    private KieBuilder buildDTable(KieBaseTestConfiguration kieBaseTestConfiguration, KieServices ks, KieFileSystem kfs) {
         if (kieBaseTestConfiguration.getExecutableModelProjectClass().isPresent()) {
             return ks.newKieBuilder( kfs ).buildAll(kieBaseTestConfiguration.getExecutableModelProjectClass().get());
         } else {

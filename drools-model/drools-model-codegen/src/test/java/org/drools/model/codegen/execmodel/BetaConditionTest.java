@@ -22,7 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.model.codegen.execmodel.domain.Person;
-import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -30,12 +31,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 // DROOLS-5852
 public class BetaConditionTest extends BaseModelTest {
 
-    public BetaConditionTest(RUN_TYPE testRunType ) {
-        super( testRunType );
-    }
 
-    @Test
-    public void betaCheckTwoConditionsExplicit() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void betaCheckTwoConditionsExplicit(RUN_TYPE runType) {
         final String drl =
                 "global java.util.List list\n" +
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -46,11 +45,12 @@ public class BetaConditionTest extends BaseModelTest {
                 "   list.add($p2);" +
                 "end\n";
 
-        verify(drl, 2);
+        verify(runType, drl, 2);
     }
 
-    @Test
-    public void betaCheckTwoConditionsImplicit() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void betaCheckTwoConditionsImplicit(RUN_TYPE runType) {
         final String drl =
                 "global java.util.List list\n" +
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -61,11 +61,12 @@ public class BetaConditionTest extends BaseModelTest {
                 "   list.add($p2);" +
                 "end\n";
 
-        verify(drl, 2);
+        verify(runType, drl, 2);
     }
 
-    @Test
-    public void betaCheckORExplicit() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void betaCheckORExplicit(RUN_TYPE runType) {
         final String drl =
                 "global java.util.List list\n" +
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -76,11 +77,12 @@ public class BetaConditionTest extends BaseModelTest {
                 "   list.add($p2);" +
                 "end\n";
 
-        verify(drl, 3);
+        verify(runType, drl, 3);
     }
 
-    @Test
-    public void betaCheckORImplicit() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void betaCheckORImplicit(RUN_TYPE runType) {
         final String str =
                 "global java.util.List list\n" +
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -91,11 +93,12 @@ public class BetaConditionTest extends BaseModelTest {
                 "   list.add($p2);" +
                 "end\n";
 
-        verify(str, 3);
+        verify(runType, str, 3);
     }
 
-    @Test
-    public void betaCheckExplicit() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void betaCheckExplicit(RUN_TYPE runType) {
         final String drl =
                 "global java.util.List list\n" +
                         "import " + Person.class.getCanonicalName() + ";" +
@@ -106,12 +109,13 @@ public class BetaConditionTest extends BaseModelTest {
                         "   list.add($p2);" +
                         "end\n";
 
-        verify(drl, 2);
+        verify(runType, drl, 2);
     }
 
 
-    @Test
-    public void betaCheckImplicit() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void betaCheckImplicit(RUN_TYPE runType) {
         final String drl =
                 "global java.util.List list\n" +
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -122,11 +126,12 @@ public class BetaConditionTest extends BaseModelTest {
                 "   list.add($p2);" +
                 "end\n";
 
-        verify(drl, 2);
+        verify(runType, drl, 2);
     }
 
-    @Test
-    public void checkBooleanExplicit() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void checkBooleanExplicit(RUN_TYPE runType) {
         final String str =
                 "global java.util.List list\n" +
                         "import " + Person.class.getCanonicalName() + ";" +
@@ -136,12 +141,13 @@ public class BetaConditionTest extends BaseModelTest {
                         "   list.add($p2);" +
                         "end\n";
 
-        verify(str, 1);
+        verify(runType, str, 1);
     }
 
 
-    @Test
-    public void checkBooleanImplicit() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void checkBooleanImplicit(RUN_TYPE runType) {
         final String drl =
                 "global java.util.List list\n" +
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -151,11 +157,11 @@ public class BetaConditionTest extends BaseModelTest {
                 "   list.add($p2);" +
                 "end\n";
 
-        verify(drl, 1);
+        verify(runType, drl, 1);
     }
 
-    private void verify(String str, int numberOfResults) {
-        KieSession ksession = getKieSession(str);
+    private void verify(RUN_TYPE runType,  String str, int numberOfResults) {
+        KieSession ksession = getKieSession(runType, str);
 
         List<Person> results = new ArrayList<>();
         ksession.setGlobal("list", results);

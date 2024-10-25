@@ -20,14 +20,13 @@ package org.drools.model.codegen.execmodel;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.drools.model.codegen.ExecutableModelProject;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -39,9 +38,9 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 // DROOLS-6506
-@RunWith(Parameterized.class)
 public class PrimitiveConversionErrorsTest {
 
     private static final String RULE_TEMPLATE = "" +
@@ -66,63 +65,49 @@ public class PrimitiveConversionErrorsTest {
             "     $values.add($value);\n" +
             "end";
 
-    @Parameterized.Parameters(name = "value{0} != {2}: Method Returns {0}, test against {1}")
-    public static Collection<Object[]> data() {
-        Object[][] data = new Object[][]{
-                {Float.class, Float.class, 4f, 5f, 6f},
-                {Float.class, Double.class, 4d, 5f, 6f},
-                {Float.class, Integer.class, 4, 5f, 6f},
-                {Float.class, Short.class, (short) 4, 5f, 6f},
-                {Float.class, Byte.class, (byte) 4, 5f, 6f},
+    public static Stream<Arguments> data() {
+        return Stream.of(
+                arguments(Float.class, Float.class, 4f, 5f, 6f),
+                arguments(Float.class, Double.class, 4d, 5f, 6f),
+                arguments(Float.class, Integer.class, 4, 5f, 6f),
+                arguments(Float.class, Short.class, (short) 4, 5f, 6f),
+                arguments(Float.class, Byte.class, (byte) 4, 5f, 6f),
 
-                {Double.class, Float.class, 4f, 5d, 6d},
-                {Double.class, Double.class, 4d, 5d, 6d},
-                {Double.class, Integer.class, 4, 5d, 6d},
-                {Double.class, Short.class, (short) 4, 5d, 6d},
-                {Double.class, Byte.class, (byte) 4, 5d, 6d},
+                arguments(Double.class, Float.class, 4f, 5d, 6d),
+                arguments(Double.class, Double.class, 4d, 5d, 6d),
+                arguments(Double.class, Integer.class, 4, 5d, 6d),
+                arguments(Double.class, Short.class, (short) 4, 5d, 6d),
+                arguments(Double.class, Byte.class, (byte) 4, 5d, 6d),
 
-                {Integer.class, Float.class, 4f, 5, 6},
-                {Integer.class, Double.class, 4d, 5, 6},
-                {Integer.class, Integer.class, 4, 5, 6},
-                {Integer.class, Short.class, (short) 4, 5, 6},
-                {Integer.class, Byte.class, (byte) 4, 5, 6},
+                arguments(Integer.class, Float.class, 4f, 5, 6),
+                arguments(Integer.class, Double.class, 4d, 5, 6),
+                arguments(Integer.class, Integer.class, 4, 5, 6),
+                arguments(Integer.class, Short.class, (short) 4, 5, 6),
+                arguments(Integer.class, Byte.class, (byte) 4, 5, 6),
 
-                {Short.class, Float.class, 4f, (short) 5, (short) 6},
-                {Short.class, Double.class, 4d, (short) 5, (short) 6},
-                {Short.class, Integer.class, 4, (short) 5, (short) 6},
-                {Short.class, Short.class, (short) 4, (short) 5, (short) 6},
-                {Short.class, Byte.class, (byte) 4, (short) 5, (short) 6},
+                arguments(Short.class, Float.class, 4f, (short) 5, (short) 6),
+                arguments(Short.class, Double.class, 4d, (short) 5, (short) 6),
+                arguments(Short.class, Integer.class, 4, (short) 5, (short) 6),
+                arguments(Short.class, Short.class, (short) 4, (short) 5, (short) 6),
+                arguments(Short.class, Byte.class, (byte) 4, (short) 5, (short) 6),
 
-                {Byte.class, Float.class, 4f, (byte) 5, (byte) 6},
-                {Byte.class, Double.class, 4d, (byte) 5, (byte) 6},
-                {Byte.class, Integer.class, 4, (byte) 5, (byte) 6},
-                {Byte.class, Short.class, (short) 4, (byte) 5, (byte) 6},
-                {Byte.class, Byte.class, (byte) 4, (byte) 5, (byte) 6},
-        };
-        return Arrays.asList(data);
+                arguments(Byte.class, Float.class, 4f, (byte) 5, (byte) 6),
+                arguments(Byte.class, Double.class, 4d, (byte) 5, (byte) 6),
+                arguments(Byte.class, Integer.class, 4, (byte) 5, (byte) 6),
+                arguments(Byte.class, Short.class, (short) 4, (byte) 5, (byte) 6),
+                arguments(Byte.class, Byte.class, (byte) 4, (byte) 5, (byte) 6));
     }
 
-    private final Object valueCheck;
-    private final Class<?> valueType;
-    private final Object valueA;
-    private final Object valueB;
+    @ParameterizedTest(name="value{0} != {2}: Method Returns {0}, test against {1}")
+    @MethodSource("data")
+    public void withExecutableModel(Class<?> valueType, Class<?> valueCheckType, Object valueCheck, Object valueA, Object valueB) throws IOException {
 
-    public PrimitiveConversionErrorsTest(Class<?> valueType, Class<?> valueCheckType, Object valueCheck, Object valueA, Object valueB) {
-        this.valueCheck = valueCheck;
-        this.valueType = valueType;
-        this.valueA = valueA;
-        this.valueB = valueB;
-    }
-
-    @Test
-    public void withExecutableModel() throws IOException {
-
-        KieBase kbase = loadRules(this.valueType, this.valueCheck, true);
+        KieBase kbase = loadRules(valueType, valueCheck, true);
 
         KieSession session = kbase.newKieSession();
         List<Object> values = new ArrayList<>();
-        ClassWithValue ca = makeClassWithValue(this.valueA);
-        ClassWithValue cb = makeClassWithValue(this.valueB);
+        ClassWithValue ca = makeClassWithValue(valueA);
+        ClassWithValue cb = makeClassWithValue(valueB);
 
         session.insert(values);
         session.insert(ca);
@@ -131,19 +116,20 @@ public class PrimitiveConversionErrorsTest {
         session.fireAllRules();
 
         assertThat(values.size()).isEqualTo(2);
-        assertThat(values.contains(this.valueA)).isTrue();
-        assertThat(values.contains(this.valueB)).isTrue();
+        assertThat(values.contains(valueA)).isTrue();
+        assertThat(values.contains(valueB)).isTrue();
     }
 
-    @Test
-    public void withoutExecutableModel() throws IOException {
+    @ParameterizedTest(name="value{0} != {2}: Method Returns {0}, test against {1}")
+    @MethodSource("data")
+    public void withoutExecutableModel(Class<?> valueType, Class<?> valueCheckType, Object valueCheck, Object valueA, Object valueB) throws IOException {
 
-        KieBase kbase = loadRules(this.valueType, this.valueCheck, false);
+        KieBase kbase = loadRules(valueType, valueCheck, false);
 
         KieSession session = kbase.newKieSession();
         List<Object> values = new ArrayList<>();
-        ClassWithValue ca = makeClassWithValue(this.valueA);
-        ClassWithValue cb = makeClassWithValue(this.valueB);
+        ClassWithValue ca = makeClassWithValue(valueA);
+        ClassWithValue cb = makeClassWithValue(valueB);
 
         session.insert(values);
         session.insert(ca);
@@ -152,8 +138,8 @@ public class PrimitiveConversionErrorsTest {
         session.fireAllRules();
 
         assertThat(values.size()).isEqualTo(2);
-        assertThat(values.contains(this.valueA)).isTrue();
-        assertThat(values.contains(this.valueB)).isTrue();
+        assertThat(values.contains(valueA)).isTrue();
+        assertThat(values.contains(valueB)).isTrue();
     }
 
     private static KieBase loadRules(Class<?> valueType, Object value, boolean useExecutable) throws IOException {

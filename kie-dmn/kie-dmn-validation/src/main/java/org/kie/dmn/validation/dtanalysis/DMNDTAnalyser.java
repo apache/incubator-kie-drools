@@ -55,6 +55,7 @@ import org.kie.dmn.feel.lang.ast.RangeNode.IntervalBoundary;
 import org.kie.dmn.feel.lang.ast.UnaryTestListNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestNode.UnaryOperator;
+import org.kie.dmn.feel.lang.ast.UndefinedValueNode;
 import org.kie.dmn.feel.lang.ast.Visitor;
 import org.kie.dmn.feel.lang.impl.FEELBuilder;
 import org.kie.dmn.feel.lang.impl.InterpretedExecutableExpression;
@@ -289,9 +290,9 @@ public class DMNDTAnalyser implements InternalDMNDTAnalyser {
     }
     
     private Optional<BaseNode> checkForDiamondRange(RangeNode rangeNode) {
-        if ((rangeNode.getStart() instanceof NullNode || rangeNode.getStart() == null) && rangeNode.getUpperBound() == IntervalBoundary.OPEN && rangeNode.getEnd() instanceof RangeNode) {
+        if ((rangeNode.getStart() instanceof NullNode || rangeNode.getStart() instanceof UndefinedValueNode || rangeNode.getStart() == null) && rangeNode.getUpperBound() == IntervalBoundary.OPEN && rangeNode.getEnd() instanceof RangeNode) {
             return Optional.ofNullable(((RangeNode) rangeNode.getEnd()).getStart()); // <> value
-        } else if ((rangeNode.getEnd() instanceof NullNode || rangeNode.getEnd() == null) && rangeNode.getLowerBound() == IntervalBoundary.OPEN && rangeNode.getStart() instanceof RangeNode) {
+        } else if ((rangeNode.getEnd() instanceof NullNode || rangeNode.getEnd() instanceof UndefinedValueNode  || rangeNode.getEnd() == null) && rangeNode.getLowerBound() == IntervalBoundary.OPEN && rangeNode.getStart() instanceof RangeNode) {
             return Optional.ofNullable(((RangeNode) rangeNode.getStart()).getEnd()); // >< value
         } else {
             return Optional.empty();
@@ -751,14 +752,15 @@ public class DMNDTAnalyser implements InternalDMNDTAnalyser {
             return new Interval(RangeBoundary.CLOSED, valueFromNode(ut.getValue()), minMax.getUpperBound().getValue(), minMax.getUpperBound().getBoundaryType(), rule, col);
         } else if (ut.getValue() instanceof RangeNode) {
             RangeNode rangeNode = (RangeNode) ut.getValue();
-            if (!(rangeNode.getStart() instanceof NullNode || rangeNode.getEnd() instanceof NullNode)) {
+            if (!(rangeNode.getStart() instanceof NullNode || rangeNode.getStart() instanceof UndefinedValueNode ||
+                    rangeNode.getEnd() instanceof NullNode || rangeNode.getEnd() instanceof UndefinedValueNode)) {
                 return new Interval(rangeNode.getLowerBound() == IntervalBoundary.OPEN ? RangeBoundary.OPEN : RangeBoundary.CLOSED,
                                     valueFromNode(rangeNode.getStart()),
                                     valueFromNode(rangeNode.getEnd()),
                                     rangeNode.getUpperBound() == IntervalBoundary.OPEN ? RangeBoundary.OPEN : RangeBoundary.CLOSED,
                                     rule,
                                     col);
-            } else if (rangeNode.getStart() instanceof NullNode) {
+            } else if (rangeNode.getStart() instanceof NullNode || rangeNode.getStart() instanceof UndefinedValueNode) {
                 return new Interval(minMax.getLowerBound().getBoundaryType(),
                                     minMax.getLowerBound().getValue(),
                                     valueFromNode(rangeNode.getEnd()),

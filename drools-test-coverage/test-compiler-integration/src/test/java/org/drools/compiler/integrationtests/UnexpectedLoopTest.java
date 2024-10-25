@@ -18,39 +18,32 @@
  */
 package org.drools.compiler.integrationtests;
 
-import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.drools.compiler.integrationtests.model.CalcFact;
 import org.drools.compiler.integrationtests.model.Item;
 import org.drools.compiler.integrationtests.model.RecordFact;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class UnexpectedLoopTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
 
-    public UnexpectedLoopTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
-    }
-
-    @Test
-    public void joinFromFromPeerUpdate_shouldNotLoop() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void joinFromFromPeerUpdate_shouldNotLoop(KieBaseTestConfiguration kieBaseTestConfiguration) {
 
         final KieBase kieBase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration,
                                                                              "org/drools/compiler/integrationtests/joinFromFrom.drl");

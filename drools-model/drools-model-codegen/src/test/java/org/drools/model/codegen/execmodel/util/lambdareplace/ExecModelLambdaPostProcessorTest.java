@@ -22,18 +22,19 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.MethodDeclaration;
-import org.junit.Before;
-import org.junit.Test;
 
 import static com.github.javaparser.StaticJavaParser.parseResource;
 import static org.drools.model.codegen.execmodel.util.lambdareplace.MaterializedLambdaTestUtils.verifyCreatedClass;
 
 public class ExecModelLambdaPostProcessorTest {
 
-    @Before
+    @BeforeEach
     public void configJP() {
         StaticJavaParser.getConfiguration().setCharacterEncoding(Charset.defaultCharset());
     }

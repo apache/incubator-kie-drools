@@ -38,7 +38,7 @@ import org.kie.dmn.api.core.ast.BusinessKnowledgeModelNode;
 import org.kie.dmn.api.core.ast.DMNNode;
 import org.kie.dmn.api.core.ast.DecisionNode;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
-import org.kie.dmn.core.api.EvaluatorResult;
+import org.kie.dmn.api.core.EvaluatorResult;
 import org.kie.dmn.core.ast.DMNBaseNode;
 import org.kie.dmn.core.ast.DMNConditionalEvaluator;
 import org.kie.dmn.core.ast.DMNContextEvaluator;
@@ -678,7 +678,7 @@ public class DMNEvaluatorCompiler implements DMNDecisionLogicCompiler {
         java.util.List<DTDecisionRule> rules = new ArrayList<>();
         index = 0;
         for ( DecisionRule dr : dt.getRule() ) {
-            DTDecisionRule rule = new DTDecisionRule( index );
+            DTDecisionRule rule = new DTDecisionRule( index, dr.getId() );
             for ( int i = 0; i < dr.getInputEntry().size(); i++ ) {
                 UnaryTests ut = dr.getInputEntry().get(i);
                 final java.util.List<UnaryTest> tests;

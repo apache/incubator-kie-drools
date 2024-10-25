@@ -36,7 +36,8 @@ import org.drools.model.codegen.execmodel.domain.Counter;
 import org.drools.model.codegen.execmodel.domain.InternationalAddress;
 import org.drools.model.codegen.execmodel.domain.Person;
 import org.drools.model.codegen.execmodel.domain.ValueHolder;
-import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.Results;
 import org.kie.api.definition.rule.Rule;
@@ -51,12 +52,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class MvelDialectTest extends BaseModelTest {
 
-    public MvelDialectTest( RUN_TYPE testRunType ) {
-        super( testRunType );
-    }
-
-    @Test
-    public void testMVELinsert() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testMVELinsert(RUN_TYPE runType) {
         String str = "rule R\n" +
                 "dialect \"mvel\"\n" +
                 "when\n" +
@@ -66,7 +64,7 @@ public class MvelDialectTest extends BaseModelTest {
                 "  insert(\"Hello World\");\n" +
                 "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         FactHandle fh_47 = ksession.insert(47);
         ksession.fireAllRules();
@@ -75,8 +73,9 @@ public class MvelDialectTest extends BaseModelTest {
         assertThat(results.contains("Hello World")).isTrue();
     }
 
-    @Test
-    public void testMVELMapSyntax() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testMVELMapSyntax(RUN_TYPE runType) {
         final String drl = "" +
                 "import java.util.*;\n" +
                 "import " + Person.class.getCanonicalName() + ";\n" +
@@ -102,7 +101,7 @@ public class MvelDialectTest extends BaseModelTest {
                 "    update(m);\n" +
                 "end";
 
-        KieSession ksession = getKieSession(drl);
+        KieSession ksession = getKieSession(runType, drl);
 
         Person p = new Person("Luca");
 
@@ -115,8 +114,9 @@ public class MvelDialectTest extends BaseModelTest {
         assertThat(itemsString.keySet().size()).isEqualTo(4);
     }
 
-    @Test
-    public void testMVELmodify() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testMVELmodify(RUN_TYPE runType) {
         String str = "import " + Person.class.getCanonicalName() + ";\n" +
                 "rule R\n" +
                 "dialect \"mvel\"\n" +
@@ -126,7 +126,7 @@ public class MvelDialectTest extends BaseModelTest {
                 "  modify($p) { setAge(1); }\n" +
                 "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert(new Person("Matteo", 47));
         ksession.fireAllRules();
@@ -136,8 +136,9 @@ public class MvelDialectTest extends BaseModelTest {
         results.forEach(System.out::println);
     }
 
-    @Test
-    public void testMVELmultiple() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testMVELmultiple(RUN_TYPE runType) {
         String str = "package mypackage;" +
                 "dialect \"mvel\"\n" + // MVEL dialect defined at package level.
                 "import " + Person.class.getCanonicalName() + ";\n" +
@@ -164,7 +165,7 @@ public class MvelDialectTest extends BaseModelTest {
                 "  retract($s)" +
                 "end\n";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         FactHandle fh_47 = ksession.insert(47);
         ksession.fireAllRules();
@@ -175,8 +176,9 @@ public class MvelDialectTest extends BaseModelTest {
         assertThat(results.contains("Modified person age to 1 for: Matteo")).isTrue();
     }
 
-    @Test
-    public void testMVELmultipleStatements() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testMVELmultipleStatements(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getPackage().getName() + ".*;\n" + // keep the package.* in order for Address to be resolvable in the RHS.
                         "rule R\n" +
@@ -188,7 +190,7 @@ public class MvelDialectTest extends BaseModelTest {
                         "  insert(a);\n" +
                         "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert(new Person("Matteo", 47));
         ksession.fireAllRules();
@@ -208,8 +210,9 @@ public class MvelDialectTest extends BaseModelTest {
     public static class TempDecl9 {}
     public static class TempDecl10 {}
 
-    @Test
-    public void testMVEL10declarations() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testMVEL10declarations(RUN_TYPE runType) {
         String str = "\n" +
                      "import " + TempDecl1.class.getCanonicalName() + ";\n" +
                      "import " + TempDecl2.class.getCanonicalName() + ";\n" +
@@ -238,7 +241,7 @@ public class MvelDialectTest extends BaseModelTest {
                      "  insert(\"matched\");\n" +
                      "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert(new TempDecl1());
         ksession.insert(new TempDecl2());
@@ -256,8 +259,9 @@ public class MvelDialectTest extends BaseModelTest {
         assertThat(results.size()).isEqualTo(1);
     }
 
-    @Test
-    public void testMVEL10declarationsBis() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testMVEL10declarationsBis(RUN_TYPE runType) {
         String str = "\n" +
                      "import " + TempDecl1.class.getCanonicalName() + ";\n" +
                      "import " + TempDecl2.class.getCanonicalName() + ";\n" +
@@ -301,7 +305,7 @@ public class MvelDialectTest extends BaseModelTest {
                      "   insert(\"matched\");\n" +
                      "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.fireAllRules();
 
@@ -309,8 +313,9 @@ public class MvelDialectTest extends BaseModelTest {
         assertThat(results.size()).isEqualTo(1);
     }
 
-    @Test
-    public void testMvelFunctionWithClassArg() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testMvelFunctionWithClassArg(RUN_TYPE runType) {
         final String drl =
                 "package org.drools.compiler.integrationtests.drl; \n" +
                 "import " + Person.class.getCanonicalName() + ";\n" +
@@ -333,7 +338,7 @@ public class MvelDialectTest extends BaseModelTest {
                 "   value.append( getFieldValue($bean) ); \n" +
                 "end";
 
-        KieSession ksession = getKieSession(drl);
+        KieSession ksession = getKieSession(runType, drl);
 
         try {
             final StringBuilder sb = new StringBuilder();
@@ -346,8 +351,9 @@ public class MvelDialectTest extends BaseModelTest {
         }
     }
 
-    @Test
-    public void testMvelFunctionWithDeclaredTypeArg() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testMvelFunctionWithDeclaredTypeArg(RUN_TYPE runType) {
         final String drl =
                 "package org.drools.compiler.integrationtests.drl; \n" +
                 "dialect \"mvel\"\n" +
@@ -372,7 +378,7 @@ public class MvelDialectTest extends BaseModelTest {
                 "   value.append( getFieldValue($bean) ); \n" +
                 "end";
 
-        KieSession ksession = getKieSession(drl);
+        KieSession ksession = getKieSession(runType, drl);
 
         try {
             final StringBuilder sb = new StringBuilder();
@@ -385,8 +391,9 @@ public class MvelDialectTest extends BaseModelTest {
         }
     }
 
-    @Test
-    public void testMultiDrlWithSamePackageMvel() throws Exception {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testMultiDrlWithSamePackageMvel(RUN_TYPE runType) throws Exception {
         // DROOLS-3508
         String drl1 = "package org.pkg\n" +
                 "import " + Person.class.getCanonicalName() + "\n" +
@@ -402,7 +409,7 @@ public class MvelDialectTest extends BaseModelTest {
                 "   update($p);\n" +
                 "end\n";
 
-        KieSession ksession = getKieSession(drl1, drl2);
+        KieSession ksession = getKieSession(runType, drl1, drl2);
 
         Person john = new Person("John", 24);
         ksession.insert(john);
@@ -410,8 +417,9 @@ public class MvelDialectTest extends BaseModelTest {
         assertThat(john.getAge()).isEqualTo(1);
     }
 
-    @Test
-    public void testMVELNonExistingMethod() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testMVELNonExistingMethod(RUN_TYPE runType) {
         // DROOLS-3559
         String drl =
                 "import " + Person.class.getCanonicalName() + "\n" +
@@ -423,12 +431,13 @@ public class MvelDialectTest extends BaseModelTest {
                 "  modify($p) {likes = nonExistingMethod()};\n" +
                 "end";
 
-        Results results = createKieBuilder( drl ).getResults();
+        Results results = createKieBuilder(runType, drl).getResults();
         assertThat(results.getMessages(Message.Level.ERROR).isEmpty()).isFalse();
     }
 
-    @Test
-    public void testBinaryOperationOnBigDecimal() throws Exception {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testBinaryOperationOnBigDecimal(RUN_TYPE runType) throws Exception {
         // RHDM-1421
         String drl =
                 "import " + Person.class.getCanonicalName() + "\n" +
@@ -440,7 +449,7 @@ public class MvelDialectTest extends BaseModelTest {
                 "    $p.money = $p.money + 50000;\n" +
                 "end";
 
-        KieSession ksession = getKieSession(drl);
+        KieSession ksession = getKieSession(runType, drl);
 
         Person john = new Person("John", 30);
         john.setMoney( new BigDecimal( 70000 ) );
@@ -450,8 +459,9 @@ public class MvelDialectTest extends BaseModelTest {
         assertThat(john.getMoney()).isEqualTo(new BigDecimal( 120000 ));
     }
 
-    @Test
-    public void testAdditionMultiplication() throws Exception {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testAdditionMultiplication(RUN_TYPE runType) throws Exception {
         // DROOLS-6089
         String drl =
                 "import " + Person.class.getCanonicalName() + "\n" +
@@ -466,7 +476,7 @@ public class MvelDialectTest extends BaseModelTest {
                 "    $p.money = $p.money + (bd1.multiply(bd2));" +
                 "end";
 
-        KieSession ksession = getKieSession(drl);
+        KieSession ksession = getKieSession(runType, drl);
 
         Person john = new Person("John", 30);
         john.setMoney( new BigDecimal( 70000 ) );
@@ -476,8 +486,9 @@ public class MvelDialectTest extends BaseModelTest {
         assertThat(john.getMoney()).isEqualTo(new BigDecimal( 70200 ));
     }
 
-    @Test
-    public void testBigDecimalModuloConsequence() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testBigDecimalModuloConsequence(RUN_TYPE runType) {
         // DROOLS-5959
         String drl =
                 "import " + Person.class.getCanonicalName() + "\n" +
@@ -493,7 +504,7 @@ public class MvelDialectTest extends BaseModelTest {
                 "    results.add(moduloPromotedToBigDecimal);\n" +
                 "end";
 
-        KieSession ksession = getKieSession(drl);
+        KieSession ksession = getKieSession(runType, drl);
 
         List<BigDecimal> results = new ArrayList<>();
         ksession.setGlobal("results", results);
@@ -507,8 +518,9 @@ public class MvelDialectTest extends BaseModelTest {
         assertThat(results).containsExactly(valueOf(1), valueOf(2));
     }
 
-    @Test
-    public void testBigDecimalModulo() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testBigDecimalModulo(RUN_TYPE runType) {
         // DROOLS-5959
         String drl =
                 "import " + Person.class.getCanonicalName() + "\n" +
@@ -521,7 +533,7 @@ public class MvelDialectTest extends BaseModelTest {
                 "    results.add($m);\n" +
                 "end";
 
-        KieSession ksession = getKieSession(drl);
+        KieSession ksession = getKieSession(runType, drl);
 
         List<BigDecimal> results = new ArrayList<>();
         ksession.setGlobal("results", results);
@@ -539,8 +551,9 @@ public class MvelDialectTest extends BaseModelTest {
         assertThat(results.iterator().next()).isEqualTo(new BigDecimal( 70000 ));
     }
 
-    @Test
-    public void testBigDecimalModuloBetweenFields() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testBigDecimalModuloBetweenFields(RUN_TYPE runType) {
         // DROOLS-5959
         String drl =
                 "import " + Person.class.getCanonicalName() + "\n" +
@@ -553,7 +566,7 @@ public class MvelDialectTest extends BaseModelTest {
                 "    results.add($m);\n" +
                 "end";
 
-        KieSession ksession = getKieSession(drl);
+        KieSession ksession = getKieSession(runType, drl);
 
         List<BigDecimal> results = new ArrayList<>();
         ksession.setGlobal("results", results);
@@ -571,8 +584,9 @@ public class MvelDialectTest extends BaseModelTest {
         assertThat(results.iterator().next()).isEqualTo(new BigDecimal( 80 ));
     }
 
-    @Test
-    public void testBigDecimalPatternWithString() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testBigDecimalPatternWithString(RUN_TYPE runType) {
         // DROOLS-6356 // DROOLS-6361
         String drl =
                 "import " + Person.class.getCanonicalName() + "\n" +
@@ -593,7 +607,7 @@ public class MvelDialectTest extends BaseModelTest {
                 "    $p.name = 144B;\n"  +
                 "end";
 
-        KieSession ksession = getKieSession(drl);
+        KieSession ksession = getKieSession(runType, drl);
 
         List<Person> results = new ArrayList<>();
         ksession.setGlobal("results", results);
@@ -612,8 +626,9 @@ public class MvelDialectTest extends BaseModelTest {
         assertThat(results.iterator().next().getName()).isEqualTo("144");
     }
 
-    @Test
-    public void testBigDecimalAccumulate() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testBigDecimalAccumulate(RUN_TYPE runType) {
         // DROOLS-6366
         String drl =
                 "import " + Person.class.getCanonicalName() + "\n" +
@@ -628,7 +643,7 @@ public class MvelDialectTest extends BaseModelTest {
                 "    results.add($john);\n" +
                 "end";
 
-        KieSession ksession = getKieSession(drl);
+        KieSession ksession = getKieSession(runType, drl);
 
         List<Person> results = new ArrayList<>();
         ksession.setGlobal("results", results);
@@ -646,8 +661,9 @@ public class MvelDialectTest extends BaseModelTest {
         assertThat(results).containsExactly(john);
     }
 
-    @Test
-    public void testBigDecimalAccumulateWithFrom() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testBigDecimalAccumulateWithFrom(RUN_TYPE runType) {
         // DROOLS-6366
         String drl =
                 "import " + Person.class.getCanonicalName() + "\n" +
@@ -662,7 +678,7 @@ public class MvelDialectTest extends BaseModelTest {
                 "    results.add($john);\n" +
                 "end";
 
-        KieSession ksession = getKieSession(drl);
+        KieSession ksession = getKieSession(runType, drl);
 
         List<Person> results = new ArrayList<>();
         ksession.setGlobal("results", results);
@@ -680,8 +696,9 @@ public class MvelDialectTest extends BaseModelTest {
         assertThat(results).containsExactly(john);
     }
 
-    @Test
-    public void testCompoundOperatorBigDecimalConstant() throws Exception {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testCompoundOperatorBigDecimalConstant(RUN_TYPE runType) throws Exception {
         // DROOLS-5894
         String drl =
                 "import " + Person.class.getCanonicalName() + "\n" +
@@ -700,7 +717,7 @@ public class MvelDialectTest extends BaseModelTest {
                 "    $p.money = result;" +
                 "end";
 
-        KieSession ksession = getKieSession(drl);
+        KieSession ksession = getKieSession(runType, drl);
 
         Person john = new Person("John", 30);
         john.setMoney( new BigDecimal( 70000 ) );
@@ -710,8 +727,9 @@ public class MvelDialectTest extends BaseModelTest {
         assertThat(john.getMoney()).isEqualTo(new BigDecimal( 400000 ));
     }
 
-    @Test
-    public void testCompoundOperatorBigDecimalConstantWithoutLiterals() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testCompoundOperatorBigDecimalConstantWithoutLiterals(RUN_TYPE runType) {
         // DROOLS-5894 // DROOLS-5901
         String drl =
                 "import " + Person.class.getCanonicalName() + "\n" +
@@ -738,7 +756,7 @@ public class MvelDialectTest extends BaseModelTest {
                 "    $p.money = result;" +
                 "end";
 
-        KieSession ksession = getKieSession(drl);
+        KieSession ksession = getKieSession(runType, drl);
 
         Person john = new Person("John", 30);
         john.setMoney( new BigDecimal( 70000 ) );
@@ -748,8 +766,9 @@ public class MvelDialectTest extends BaseModelTest {
         assertThat(john.getMoney()).isEqualTo(new BigDecimal( 0 ));
     }
 
-    @Test
-    public void testArithmeticOperationsOnBigDecimal() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testArithmeticOperationsOnBigDecimal(RUN_TYPE runType) {
         String drl =
                 "import " + Person.class.getCanonicalName() + "\n" +
                 "import " + BigDecimal.class.getCanonicalName() + "\n" +
@@ -762,7 +781,7 @@ public class MvelDialectTest extends BaseModelTest {
                 "    $p.money = operation;\n" +
                 "end";
 
-        KieSession ksession = getKieSession(drl);
+        KieSession ksession = getKieSession(runType, drl);
 
         Person john = new Person("John", 30);
         john.setMoney( new BigDecimal( 70000 ) );
@@ -773,8 +792,9 @@ public class MvelDialectTest extends BaseModelTest {
         assertThat(john.getMoney()).isEqualTo(new BigDecimal( 7002 ));
     }
 
-    @Test
-    public void testCompoundOperatorOnfield() throws Exception {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testCompoundOperatorOnfield(RUN_TYPE runType) throws Exception {
 
         // DROOLS-5895
         String drl =
@@ -787,7 +807,7 @@ public class MvelDialectTest extends BaseModelTest {
                 "    $p.money += $p.money;\n" +
                 "end";
 
-        KieSession ksession = getKieSession(drl);
+        KieSession ksession = getKieSession(runType, drl);
 
         Person john = new Person("John", 30);
         john.setMoney( new BigDecimal( 70000 ) );
@@ -797,8 +817,9 @@ public class MvelDialectTest extends BaseModelTest {
         assertThat(john.getMoney()).isEqualTo(new BigDecimal( 140000 ));
     }
 
-    @Test
-    public void testModifyOnBigDecimal() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testModifyOnBigDecimal(RUN_TYPE runType) {
         // DROOLS-5889
         String drl =
                 "import " + Person.class.getCanonicalName() + "\n" +
@@ -815,7 +836,7 @@ public class MvelDialectTest extends BaseModelTest {
                 "   list.add(\"after \" + $p + \", money = \" + $p.money);" +
                 "end";
 
-        KieSession ksession = getKieSession(drl);
+        KieSession ksession = getKieSession(runType, drl);
 
         ArrayList<String> logMessages = new ArrayList<>();
         ksession.setGlobal("list", logMessages);
@@ -831,8 +852,9 @@ public class MvelDialectTest extends BaseModelTest {
                 "after John, money = 30000");
     }
 
-    @Test
-    public void testModifyOnBigDecimalWithLiteral() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testModifyOnBigDecimalWithLiteral(RUN_TYPE runType) {
         // DROOLS-5891
         String drl =
                 "import " + Person.class.getCanonicalName() + "\n" +
@@ -846,7 +868,7 @@ public class MvelDialectTest extends BaseModelTest {
                 "   } " +
                 "end";
 
-        KieSession ksession = getKieSession(drl);
+        KieSession ksession = getKieSession(runType, drl);
 
         Person john = new Person("John", 30);
         john.setMoney( new BigDecimal( 70000 ) );
@@ -860,8 +882,9 @@ public class MvelDialectTest extends BaseModelTest {
         assertThat(leonardo.getMoney()).isEqualTo(new BigDecimal( 500 ));
     }
 
-    @Test
-    public void testBinaryOperationOnInteger() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testBinaryOperationOnInteger(RUN_TYPE runType) {
         // RHDM-1421
         String drl =
                 "import " + Person.class.getCanonicalName() + "\n" +
@@ -873,7 +896,7 @@ public class MvelDialectTest extends BaseModelTest {
                 "    $p.salary = $p.salary + 50000;\n" +
                 "end";
 
-        KieSession ksession = getKieSession(drl);
+        KieSession ksession = getKieSession(runType, drl);
 
         Person john = new Person("John", 30);
         john.setSalary( 70000 );
@@ -883,8 +906,9 @@ public class MvelDialectTest extends BaseModelTest {
         assertThat((int) john.getSalary()).isEqualTo(120000);
     }
 
-    @Test
-    public void testSetOnInteger() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testSetOnInteger(RUN_TYPE runType) {
         // RHDM-1421
         String drl =
                 "import " + Person.class.getCanonicalName() + "\n" +
@@ -896,7 +920,7 @@ public class MvelDialectTest extends BaseModelTest {
                 "    $p.salary = 50000;\n" +
                 "end";
 
-        KieSession ksession = getKieSession(drl);
+        KieSession ksession = getKieSession(runType, drl);
 
         Person john = new Person("John", 30);
         john.setSalary( 70000 );
@@ -906,8 +930,9 @@ public class MvelDialectTest extends BaseModelTest {
         assertThat((int) john.getSalary()).isEqualTo(50000);
     }
 
-    @Test
-    public void testCollectSubtypeInConsequence() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testCollectSubtypeInConsequence(RUN_TYPE runType) {
         // DROOLS-5887
         String drl =
                 "import " + Person.class.getCanonicalName() + "\n" +
@@ -923,7 +948,7 @@ public class MvelDialectTest extends BaseModelTest {
                 "    }\n" +
                 "end";
 
-        KieSession ksession = getKieSession(drl);
+        KieSession ksession = getKieSession(runType, drl);
 
         List<String> names = new ArrayList<>();
         ksession.setGlobal("names", names);
@@ -938,8 +963,9 @@ public class MvelDialectTest extends BaseModelTest {
         assertThat(names).containsExactlyInAnyOrder("Mario", "Luca", "Leonardo");
     }
 
-    @Test
-    public void testCollectSubtypeInConsequenceNested() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testCollectSubtypeInConsequenceNested(RUN_TYPE runType) {
         // DROOLS-5887
         String drl =
                 "import " + Person.class.getCanonicalName() + "\n" +
@@ -961,7 +987,7 @@ public class MvelDialectTest extends BaseModelTest {
                 "    }\n" +
                 "end";
 
-        KieSession ksession = getKieSession(drl);
+        KieSession ksession = getKieSession(runType, drl);
 
         List<String> names = new ArrayList<>();
         ksession.setGlobal("names", names);
@@ -984,8 +1010,9 @@ public class MvelDialectTest extends BaseModelTest {
         assertThat(addresses).contains("Milan");
     }
 
-    @Test
-    public void testSetOnMvel() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testSetOnMvel(RUN_TYPE runType) {
         // RHDM-1550
         String drl =
                 "import " + Person.class.getCanonicalName() + "\n" +
@@ -998,7 +1025,7 @@ public class MvelDialectTest extends BaseModelTest {
                 ");\n" +
                 "end";
 
-        KieSession ksession = getKieSession(drl);
+        KieSession ksession = getKieSession(runType, drl);
 
         Person mario = new Person();
         ksession.insert( mario );
@@ -1008,8 +1035,9 @@ public class MvelDialectTest extends BaseModelTest {
         assertThat(mario.getAge()).isEqualTo(46);
     }
 
-    @Test
-    public void testCompoundOperator() throws Exception {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testCompoundOperator(RUN_TYPE runType) throws Exception {
         // DROOLS-5894 // DROOLS-5901 // DROOLS-5897
         String drl =
                 "import " + Person.class.getCanonicalName() + "\n" +
@@ -1040,7 +1068,7 @@ public class MvelDialectTest extends BaseModelTest {
                 "    $p.money -= intVar;\n" + // 0
                 "end";
 
-        KieSession ksession = getKieSession(drl);
+        KieSession ksession = getKieSession(runType, drl);
 
         Person john = new Person("John", 30);
         john.setMoney( new BigDecimal( 70000 ) );
@@ -1050,8 +1078,9 @@ public class MvelDialectTest extends BaseModelTest {
         assertThat(john.getMoney()).isEqualTo(new BigDecimal( 0 ));
     }
 
-    @Test
-    public void testKcontext() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testKcontext(RUN_TYPE runType) {
         String str =
                 "global java.util.List result;" +
                      "rule R\n" +
@@ -1062,7 +1091,7 @@ public class MvelDialectTest extends BaseModelTest {
                      "  result.add(kcontext.getRule().getName());\n" +
                      "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
         List<String> result = new ArrayList<>();
         ksession.setGlobal("result", result);
 
@@ -1072,8 +1101,9 @@ public class MvelDialectTest extends BaseModelTest {
         assertThat(result.contains("R")).isTrue();
     }
 
-    @Test
-    public void testLineBreakAtTheEndOfStatementWithoutSemicolon() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testLineBreakAtTheEndOfStatementWithoutSemicolon(RUN_TYPE runType) {
         final String str =
                 "import " + Person.class.getCanonicalName() + ";\n" +
                            "\n" +
@@ -1087,7 +1117,7 @@ public class MvelDialectTest extends BaseModelTest {
                            "  insert(p2);\n" +
                            "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         Person p = new Person("Mario", 40);
         ksession.insert(p);
@@ -1096,8 +1126,9 @@ public class MvelDialectTest extends BaseModelTest {
         assertThat(fired).isEqualTo(1);
     }
 
-    @Test
-    public void testSetNullInModify() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testSetNullInModify(RUN_TYPE runType) {
         // RHDM-1713
         String str =
                 "dialect \"mvel\"\n" +
@@ -1112,15 +1143,16 @@ public class MvelDialectTest extends BaseModelTest {
                 "then\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         Person me = new Person( "Mario", 47 );
         ksession.insert( me );
         assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
-    @Test
-    public void testSetSubclassInModify() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testSetSubclassInModify(RUN_TYPE runType) {
         // RHDM-1713
         String str =
                 "dialect \"mvel\"\n" +
@@ -1136,15 +1168,16 @@ public class MvelDialectTest extends BaseModelTest {
                 "then\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         Person me = new Person( "Mario", 47 );
         ksession.insert( me );
         assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
-    @Test
-    public void testForEachAccessor() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testForEachAccessor(RUN_TYPE runType) {
         // DROOLS-6298
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -1160,7 +1193,7 @@ public class MvelDialectTest extends BaseModelTest {
                         "}\n" +
                 "end\n";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ArrayList<String> results = new ArrayList<>();
         ksession.setGlobal("results", results);
@@ -1175,8 +1208,9 @@ public class MvelDialectTest extends BaseModelTest {
         assertThat(results).containsOnly("Address");
     }
 
-    @Test
-    public void testBigDecimalPromotionUsedAsArgument() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testBigDecimalPromotionUsedAsArgument(RUN_TYPE runType) {
         // DROOLS-6362
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -1219,7 +1253,7 @@ public class MvelDialectTest extends BaseModelTest {
                         "}\n" +
                 "end\n";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ArrayList<Person> results = new ArrayList<>();
         ksession.setGlobal("results", results);
@@ -1243,8 +1277,9 @@ public class MvelDialectTest extends BaseModelTest {
         return new BigDecimal(bd.toString());
     }
 
-    @Test
-    public void testBigDecimalPromotionWithExternalFunction() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testBigDecimalPromotionWithExternalFunction(RUN_TYPE runType) {
         // DROOLS-6410
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -1266,7 +1301,7 @@ public class MvelDialectTest extends BaseModelTest {
                         "results.add(bigDecimalFunc($bd) * 100 + 12);\n" + // 101212
                 "end\n";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ArrayList<BigDecimal> results = new ArrayList<>();
         ksession.setGlobal("results", results);
@@ -1281,8 +1316,9 @@ public class MvelDialectTest extends BaseModelTest {
         assertThat(results).containsExactly(valueOf(1012), valueOf(1012), valueOf(1012), valueOf(101212));
     }
 
-    @Test
-    public void testBigDecimalPromotionUsingDefinedFunctionAndDeclaredType() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testBigDecimalPromotionUsingDefinedFunctionAndDeclaredType(RUN_TYPE runType) {
         // DROOLS-6362
         String str = "package com.sample\n" +
                 "import " + Person.class.getName() + ";\n" +
@@ -1316,7 +1352,7 @@ public class MvelDialectTest extends BaseModelTest {
                 "end\n";
 
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ArrayList<String> results = new ArrayList<>();
         ksession.setGlobal("results", results);
@@ -1332,8 +1368,9 @@ public class MvelDialectTest extends BaseModelTest {
         assertThat(results).containsExactly("John");
     }
 
-    @Test
-    public void testMVELMapRHSGetAndAssign() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testMVELMapRHSGetAndAssign(RUN_TYPE runType) {
         String str = "package com.example.reproducer\n" +
                      "import " + Person.class.getCanonicalName() + ";\n" +
                      "dialect \"mvel\"\n" +
@@ -1346,7 +1383,7 @@ public class MvelDialectTest extends BaseModelTest {
                      "        result.add(i);\n" +
                      "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
         List<Integer> result = new ArrayList<>();
         ksession.setGlobal("result", result);
 
@@ -1357,8 +1394,9 @@ public class MvelDialectTest extends BaseModelTest {
         assertThat(result).containsExactly(100);
     }
 
-    @Test
-    public void testRHSMapGetAsParam() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testRHSMapGetAsParam(RUN_TYPE runType) {
         String str = "package com.example.reproducer\n" +
                      "import " + Person.class.getCanonicalName() + ";\n" +
                      "dialect \"mvel\"\n" +
@@ -1370,7 +1408,7 @@ public class MvelDialectTest extends BaseModelTest {
                      "        result.add($p.itemsString[$name]);\n" +
                      "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
         List<String> result = new ArrayList<>();
         ksession.setGlobal("result", result);
 
@@ -1381,8 +1419,9 @@ public class MvelDialectTest extends BaseModelTest {
         assertThat(result).containsExactly("OK");
     }
 
-    @Test
-    public void testRHSMapNestedProperty() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testRHSMapNestedProperty(RUN_TYPE runType) {
         String str = "package com.example.reproducer\n" +
                      "import " + Person.class.getCanonicalName() + ";\n" +
                      "dialect \"mvel\"\n" +
@@ -1394,7 +1433,7 @@ public class MvelDialectTest extends BaseModelTest {
                      "        result.add($p.childrenMap[$name].age);\n" +
                      "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
         List<Integer> result = new ArrayList<>();
         ksession.setGlobal("result", result);
 
@@ -1407,8 +1446,9 @@ public class MvelDialectTest extends BaseModelTest {
         assertThat(result).containsExactly(5);
     }
 
-    @Test
-    public void testRHSListNestedProperty() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testRHSListNestedProperty(RUN_TYPE runType) {
         String str = "package com.example.reproducer\n" +
                      "import " + Person.class.getCanonicalName() + ";\n" +
                      "dialect \"mvel\"\n" +
@@ -1420,7 +1460,7 @@ public class MvelDialectTest extends BaseModelTest {
                      "        result.add($p.addresses[$age].city);\n" +
                      "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
         List<String> result = new ArrayList<>();
         ksession.setGlobal("result", result);
 
@@ -1433,8 +1473,9 @@ public class MvelDialectTest extends BaseModelTest {
         assertThat(result).containsExactly("London");
     }
 
-    @Test
-    public void testRHSMapMethod() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testRHSMapMethod(RUN_TYPE runType) {
         String str = "package com.example.reproducer\n" +
                      "import " + Person.class.getCanonicalName() + ";\n" +
                      "dialect \"mvel\"\n" +
@@ -1446,7 +1487,7 @@ public class MvelDialectTest extends BaseModelTest {
                      "        result.add($p.itemsString.size);\n" +
                      "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
         List<Integer> result = new ArrayList<>();
         ksession.setGlobal("result", result);
 
@@ -1457,8 +1498,9 @@ public class MvelDialectTest extends BaseModelTest {
         assertThat(result).containsExactly(1);
     }
 
-    @Test
-    public void testMVELBigIntegerLiteralRHS() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testMVELBigIntegerLiteralRHS(RUN_TYPE runType) {
         String str = "package com.example.reproducer\n" +
                 "import " + Person.class.getCanonicalName() + ";\n" +
                 "rule R\n" +
@@ -1469,7 +1511,7 @@ public class MvelDialectTest extends BaseModelTest {
                 "  $p.setAgeInSeconds(10000I);\n" +
                 "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         Person p = new Person();
         ksession.insert(p);
@@ -1478,8 +1520,9 @@ public class MvelDialectTest extends BaseModelTest {
         assertThat(p.getAgeInSeconds().equals(new BigInteger("10000"))).isTrue();
     }
 
-    @Test
-    public void testMVELBigDecimalLiteralRHS() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testMVELBigDecimalLiteralRHS(RUN_TYPE runType) {
         String str = "package com.example.reproducer\n" +
                 "import " + Person.class.getCanonicalName() + ";\n" +
                 "rule R\n" +
@@ -1490,7 +1533,7 @@ public class MvelDialectTest extends BaseModelTest {
                 "  $p.setMoney(10000B);\n" +
                 "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         Person p = new Person();
         ksession.insert(p);
@@ -1499,8 +1542,9 @@ public class MvelDialectTest extends BaseModelTest {
         assertThat(p.getMoney().equals(new BigDecimal("10000"))).isTrue();
     }
 
-    @Test
-    public void testMVELBigIntegerLiteralLHS() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testMVELBigIntegerLiteralLHS(RUN_TYPE runType) {
         String str = "package com.example.reproducer\n" +
                 "import " + Person.class.getCanonicalName() + ";\n" +
                 "rule R\n" +
@@ -1510,7 +1554,7 @@ public class MvelDialectTest extends BaseModelTest {
                 "then\n" +
                 "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         Person p = new Person();
         p.setAgeInSeconds(new BigInteger("10000"));
@@ -1520,8 +1564,9 @@ public class MvelDialectTest extends BaseModelTest {
         assertThat(fired).isEqualTo(1);
     }
 
-    @Test
-    public void testMVELModifyPropMethodCall() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testMVELModifyPropMethodCall(RUN_TYPE runType) {
         String str = "package com.example.reproducer\n" +
                 "import " + Person.class.getCanonicalName() + ";\n" +
                 "rule R\n" +
@@ -1535,7 +1580,7 @@ public class MvelDialectTest extends BaseModelTest {
                 "  }\n" +
                 "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         Person p = new Person("John");
         List<Address> addresses = new ArrayList<>();
@@ -1549,8 +1594,9 @@ public class MvelDialectTest extends BaseModelTest {
         assertThat(fired).isEqualTo(1);
     }
 
-    @Test
-    public void assign_primitiveBooleanProperty() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void assign_primitiveBooleanProperty(RUN_TYPE runType) {
         // DROOLS-7250
         String str = "package com.example.reproducer\n" +
                      "import " + ValueHolder.class.getCanonicalName() + ";\n" +
@@ -1562,7 +1608,7 @@ public class MvelDialectTest extends BaseModelTest {
                      "  $holder.primitiveBooleanValue = true;\n" +
                      "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         ValueHolder holder = new ValueHolder();
         holder.setPrimitiveBooleanValue(false);
@@ -1572,8 +1618,9 @@ public class MvelDialectTest extends BaseModelTest {
         assertThat(holder.isPrimitiveBooleanValue()).isTrue();
     }
 
-    @Test
-    public void assign_wrapperBooleanProperty() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void assign_wrapperBooleanProperty(RUN_TYPE runType) {
         // DROOLS-7250
         String str = "package com.example.reproducer\n" +
                      "import " + ValueHolder.class.getCanonicalName() + ";\n" +
@@ -1585,7 +1632,7 @@ public class MvelDialectTest extends BaseModelTest {
                      "  $holder.wrapperBooleanValue = true;\n" +
                      "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         ValueHolder holder = new ValueHolder();
         holder.setWrapperBooleanValue(false);
@@ -1595,7 +1642,7 @@ public class MvelDialectTest extends BaseModelTest {
         assertThat(holder.getWrapperBooleanValue()).isTrue();
     }
 
-    public void assign_nestedProperty() {
+    public void assign_nestedProperty(RUN_TYPE runType) {
         // DROOLS-7195
         String str = "package com.example.reproducer\n" +
                 "import " + Person.class.getCanonicalName() + ";\n" +
@@ -1607,7 +1654,7 @@ public class MvelDialectTest extends BaseModelTest {
                 "  $p.address.city = \"Tokyo\";\n" +
                 "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         Person p = new Person("John");
         p.setAddress(new Address("London"));
@@ -1617,8 +1664,9 @@ public class MvelDialectTest extends BaseModelTest {
         assertThat(p.getAddress().getCity()).isEqualTo("Tokyo");
     }
 
-    @Test
-    public void assign_nestedPropertyInModify() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void assign_nestedPropertyInModify(RUN_TYPE runType) {
         // DROOLS-7195
         String str = "package com.example.reproducer\n" +
                 "import " + Person.class.getCanonicalName() + ";\n" +
@@ -1632,7 +1680,7 @@ public class MvelDialectTest extends BaseModelTest {
                 "  }\n" +
                 "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         Person p = new Person("John");
         p.setAddress(new Address("London"));
@@ -1642,8 +1690,9 @@ public class MvelDialectTest extends BaseModelTest {
         assertThat(p.getAddress().getCity()).isEqualTo("Tokyo");
     }
 
-    @Test
-    public void setter_nestedPropertyInModify() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void setter_nestedPropertyInModify(RUN_TYPE runType) {
         // DROOLS-7195
         String str = "package com.example.reproducer\n" +
                 "import " + Person.class.getCanonicalName() + ";\n" +
@@ -1657,7 +1706,7 @@ public class MvelDialectTest extends BaseModelTest {
                 "  }\n" +
                 "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         Person p = new Person("John");
         p.setAddress(new Address("London"));
@@ -1667,8 +1716,9 @@ public class MvelDialectTest extends BaseModelTest {
         assertThat(p.getAddress().getCity()).isEqualTo("Tokyo");
     }
 
-    @Test
-    public void assign_deepNestedPropertyInModify() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void assign_deepNestedPropertyInModify(RUN_TYPE runType) {
         // DROOLS-7195
         String str = "package com.example.reproducer\n" +
                 "import " + Person.class.getCanonicalName() + ";\n" +
@@ -1682,7 +1732,7 @@ public class MvelDialectTest extends BaseModelTest {
                 "  }\n" +
                 "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         Person person = new Person("John");
         Address address = new Address("London");
@@ -1696,8 +1746,9 @@ public class MvelDialectTest extends BaseModelTest {
         assertThat(person.getAddress().getVisitorCounter().getValue()).isEqualTo(1);
     }
 
-    @Test
-    public void setter_deepNestedPropertyInModify() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void setter_deepNestedPropertyInModify(RUN_TYPE runType) {
         // DROOLS-7195
         String str = "package com.example.reproducer\n" +
                 "import " + Person.class.getCanonicalName() + ";\n" +
@@ -1711,7 +1762,7 @@ public class MvelDialectTest extends BaseModelTest {
                 "  }\n" +
                 "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         Person person = new Person("John");
         Address address = new Address("London");
@@ -1725,8 +1776,9 @@ public class MvelDialectTest extends BaseModelTest {
         assertThat(person.getAddress().getVisitorCounter().getValue()).isEqualTo(1);
     }
 
-    @Test
-    public void drools_workingMemory_setGlobal() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void drools_workingMemory_setGlobal(RUN_TYPE runType) {
         // DROOLS-7338
         String str = "package com.example.reproducer\n" +
                      "import " + Logger.class.getCanonicalName() + ";\n" +
@@ -1738,7 +1790,7 @@ public class MvelDialectTest extends BaseModelTest {
                      "    drools.workingMemory.setGlobal(\"logger\", org.slf4j.LoggerFactory.getLogger(getClass()));\n" +
                      "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.fireAllRules();
 
@@ -1746,8 +1798,9 @@ public class MvelDialectTest extends BaseModelTest {
         assertThat(logger).isInstanceOf(Logger.class);
     }
 
-    @Test
-    public void drools_fieldAccess() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void drools_fieldAccess(RUN_TYPE runType) {
         String str = "package com.example.reproducer\n" +
                      "global java.util.Map results;\n" +
                      "rule R\n" +
@@ -1762,7 +1815,7 @@ public class MvelDialectTest extends BaseModelTest {
                      "    results.put(\"kieRuntime\", drools.kieRuntime);\n" +
                      "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
         Map<String, Object> results = new HashMap<>();
         ksession.setGlobal("results", results);
 
@@ -1776,8 +1829,9 @@ public class MvelDialectTest extends BaseModelTest {
         assertThat(results.get("kieRuntime")).isInstanceOf(KieRuntime.class);
     }
 
-    @Test
-    public void integerToBigDecimalBindVariableCoercion_shouldNotCoerceToInteger() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void integerToBigDecimalBindVariableCoercion_shouldNotCoerceToInteger(RUN_TYPE runType) {
         // DROOLS-7540
         String str = "package com.example.reproducer\n" +
                      "import " + Person.class.getCanonicalName() + ";\n" +
@@ -1791,7 +1845,7 @@ public class MvelDialectTest extends BaseModelTest {
                      "    results.add($money);\n" +
                      "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
         List<Object> results = new ArrayList<>();
         ksession.setGlobal("results", results);
 
@@ -1804,8 +1858,9 @@ public class MvelDialectTest extends BaseModelTest {
         assertThat(results).contains(new BigDecimal("5"));
     }
 
-    @Test
-    public void integerToBigDecimalVariableCoercionTwice_shouldNotCoerceToInteger() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void integerToBigDecimalVariableCoercionTwice_shouldNotCoerceToInteger(RUN_TYPE runType) {
         // DROOLS-7540
         String str = "package com.example.reproducer\n" +
                      "import " + Person.class.getCanonicalName() + ";\n" +
@@ -1821,7 +1876,7 @@ public class MvelDialectTest extends BaseModelTest {
                      "    results.add($var1);\n" +
                      "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
         List<Object> results = new ArrayList<>();
         ksession.setGlobal("results", results);
 
@@ -1834,8 +1889,9 @@ public class MvelDialectTest extends BaseModelTest {
         assertThat(results).contains(new BigDecimal("5"));
     }
 
-    @Test
-    public void integerToBigDecimalBindVariableCoercionAndAddition_shouldNotThrowClassCastException() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void integerToBigDecimalBindVariableCoercionAndAddition_shouldNotThrowClassCastException(RUN_TYPE runType) {
         // DROOLS-7540
         String str = "package com.example.reproducer\n" +
                      "import " + Person.class.getCanonicalName() + ";\n" +
@@ -1850,7 +1906,7 @@ public class MvelDialectTest extends BaseModelTest {
                      "    results.add($total);\n" +
                      "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
         List<Object> results = new ArrayList<>();
         ksession.setGlobal("results", results);
 
@@ -1863,8 +1919,9 @@ public class MvelDialectTest extends BaseModelTest {
         assertThat(results).contains(new BigDecimal("15"));
     }
 
-    @Test
-    public void integerToBigDecimalVaribleSetFromBindVariableCoercionAndAddition_shouldNotThrowClassCastException() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void integerToBigDecimalVaribleSetFromBindVariableCoercionAndAddition_shouldNotThrowClassCastException(RUN_TYPE runType) {
         // DROOLS-7540
         String str = "package com.example.reproducer\n" +
                      "import " + Person.class.getCanonicalName() + ";\n" +
@@ -1882,7 +1939,7 @@ public class MvelDialectTest extends BaseModelTest {
                      "    results.add($total);\n" +
                      "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
         List<Object> results = new ArrayList<>();
         ksession.setGlobal("results", results);
 

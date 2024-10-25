@@ -25,7 +25,8 @@ import org.apache.commons.math3.util.Pair;
 import org.assertj.core.api.Assertions;
 import org.drools.model.codegen.execmodel.domain.Person;
 import org.drools.model.codegen.execmodel.domain.Result;
-import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Match;
@@ -38,12 +39,9 @@ import static org.drools.model.codegen.execmodel.CepTest.getCepKieModuleModel;
 
 public class ExisistentialTest extends BaseModelTest {
 
-    public ExisistentialTest( RUN_TYPE testRunType ) {
-        super( testRunType );
-    }
-
-    @Test
-    public void testNot() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testNot(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                 "import " + Result.class.getCanonicalName() + ";" +
@@ -53,7 +51,7 @@ public class ExisistentialTest extends BaseModelTest {
                 "  insert(new Result(\"ok\"));\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         Person mario = new Person( "Mario", 40 );
 
@@ -65,8 +63,9 @@ public class ExisistentialTest extends BaseModelTest {
         assertThat(results.iterator().next().getValue()).isEqualTo("ok");
     }
 
-    @Test
-    public void testNotEmptyPredicate() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testNotEmptyPredicate(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                 "import " + Result.class.getCanonicalName() + ";" +
@@ -76,7 +75,7 @@ public class ExisistentialTest extends BaseModelTest {
                 "  insert(new Result(\"ok\"));\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         Person mario = new Person( "Mario", 40 );
 
@@ -87,8 +86,9 @@ public class ExisistentialTest extends BaseModelTest {
         assertThat(results.size()).isEqualTo(0);
     }
 
-    @Test
-    public void testExists() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testExists(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                         "import " + Result.class.getCanonicalName() + ";" +
@@ -98,7 +98,7 @@ public class ExisistentialTest extends BaseModelTest {
                         "  insert(new Result(\"ok\"));\n" +
                         "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         Person mario = new Person( "Mario", 40 );
 
@@ -110,8 +110,9 @@ public class ExisistentialTest extends BaseModelTest {
         assertThat(results.iterator().next().getValue()).isEqualTo("ok");
     }
 
-    @Test
-    public void testForall() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testForall(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                 "import " + Result.class.getCanonicalName() + ";" +
@@ -122,7 +123,7 @@ public class ExisistentialTest extends BaseModelTest {
                 "  insert(new Result(\"ok\"));\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert( new Person( "Mario", 41 ) );
         ksession.insert( new Person( "Mark", 39 ) );
@@ -134,8 +135,9 @@ public class ExisistentialTest extends BaseModelTest {
         assertThat(results.iterator().next().getValue()).isEqualTo("ok");
     }
 
-    @Test
-    public void testForallInQuery() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testForallInQuery(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                 "query ifAllPersonsAreOlderReturnThem (int pAge)\n" +
@@ -143,7 +145,7 @@ public class ExisistentialTest extends BaseModelTest {
                 "    $person : Person()\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert( new Person( "Mario", 41 ) );
         ksession.insert( new Person( "Mark", 39 ) );
@@ -155,8 +157,9 @@ public class ExisistentialTest extends BaseModelTest {
         assertThat(results.size()).isEqualTo(3);
     }
 
-    @Test
-    public void testForallSingleConstraint() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testForallSingleConstraint(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                      "import " + Result.class.getCanonicalName() + ";" +
@@ -166,7 +169,7 @@ public class ExisistentialTest extends BaseModelTest {
                      "  insert(new Result(\"ok\"));\n" +
                      "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert(new Person("Mario"));
         ksession.insert(new Person("Edson"));
@@ -177,8 +180,9 @@ public class ExisistentialTest extends BaseModelTest {
         assertThat(results.iterator().next().getValue()).isEqualTo("ok");
     }
 
-    @Test
-    public void testForallEmptyConstraint() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testForallEmptyConstraint(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                      "import " + Result.class.getCanonicalName() + ";" +
@@ -188,7 +192,7 @@ public class ExisistentialTest extends BaseModelTest {
                      "  insert(new Result(\"ok\"));\n" +
                      "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert(new Person("Mario"));
         ksession.insert(new Person("Mark"));
@@ -200,8 +204,9 @@ public class ExisistentialTest extends BaseModelTest {
         assertThat(results.iterator().next().getValue()).isEqualTo("ok");
     }
 
-    @Test
-    public void testExistsEmptyPredicate() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testExistsEmptyPredicate(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                 "import " + Result.class.getCanonicalName() + ";" +
@@ -211,7 +216,7 @@ public class ExisistentialTest extends BaseModelTest {
                 "  insert(new Result(\"ok\"));\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         Person mark = new Person( "Mark", 37 );
         Person mario = new Person( "Mario", 40 );
@@ -225,8 +230,9 @@ public class ExisistentialTest extends BaseModelTest {
         assertThat(results.iterator().next().getValue()).isEqualTo("ok");
     }
 
-    @Test
-    public void testComplexNots() throws Exception {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testComplexNots(RUN_TYPE runType) throws Exception {
         String str =
                 "package org.drools.testcoverage.regression;\n" +
                 "\n" +
@@ -270,13 +276,14 @@ public class ExisistentialTest extends BaseModelTest {
                 "end\n" +
                 "";
 
-        KieSession ksession = getKieSession( getCepKieModuleModel(), str );
+        KieSession ksession = getKieSession(runType, getCepKieModuleModel(), str );
         assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
 
-    @Test
-    public void testDuplicateBindingNameInDifferentScope() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testDuplicateBindingNameInDifferentScope(RUN_TYPE runType) {
         final String drl1 =
                 "package org.drools.compiler\n" +
                 "import " + Person.class.getCanonicalName() + ";\n" +
@@ -286,15 +293,16 @@ public class ExisistentialTest extends BaseModelTest {
                 "then\n" +
                 "end\n";
 
-        KieSession ksession = getKieSession( drl1 );
+        KieSession ksession = getKieSession(runType, drl1);
 
         ksession.insert( "test" );
         ksession.insert( new Person("test", 18) );
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testNotWithDereferencingConstraint() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testNotWithDereferencingConstraint(RUN_TYPE runType) {
         final String drl1 =
                 "package org.drools.compiler\n" +
                 "import " + Person.class.getCanonicalName() + ";\n" +
@@ -304,14 +312,15 @@ public class ExisistentialTest extends BaseModelTest {
                 "then\n" +
                 "end\n";
 
-        KieSession ksession = getKieSession( drl1 );
+        KieSession ksession = getKieSession(runType, drl1);
 
         ksession.insert( new Person("test", 18) );
         assertThat(ksession.fireAllRules()).isEqualTo(0);
     }
 
-    @Test
-    public void test2NotsWithAnd() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void test2NotsWithAnd(RUN_TYPE runType) {
         final String drl1 =
                 "package org.drools.compiler\n" +
                 "rule R when\n" +
@@ -326,13 +335,14 @@ public class ExisistentialTest extends BaseModelTest {
                 "then\n" +
                 "end\n";
 
-        KieSession ksession = getKieSession( drl1 );
+        KieSession ksession = getKieSession(runType, drl1);
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
 
-    @Test
-    public void testExistsWithAJoin() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testExistsWithAJoin(RUN_TYPE runType) {
         // DROOLS-7065
         final String drl1 =
                 "package org.drools.compiler\n" +
@@ -344,7 +354,7 @@ public class ExisistentialTest extends BaseModelTest {
                 "then\n" +
                 "end\n";
 
-        KieSession ksession = getKieSession( drl1 );
+        KieSession ksession = getKieSession(runType, drl1);
 
         AtomicInteger matchCount = new AtomicInteger(0); // Atomic only so that I get an effectively-final int.
         ((RuleEventManager) ksession).addEventListener(new RuleEventListener() {

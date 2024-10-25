@@ -23,7 +23,7 @@ import org.drools.base.prototype.PrototypeObjectType;
 import org.drools.base.rule.Declaration;
 import org.drools.base.rule.Pattern;
 import org.drools.base.rule.accessor.ReadAccessor;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.prototype.PrototypeFact;
 import org.kie.api.prototype.PrototypeFactInstance;
 

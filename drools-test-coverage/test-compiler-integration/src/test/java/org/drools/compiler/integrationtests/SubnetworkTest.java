@@ -20,10 +20,10 @@ package org.drools.compiler.integrationtests;
 
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.definition.type.Role;
 import org.kie.api.runtime.KieSession;
@@ -33,25 +33,17 @@ import org.kie.api.runtime.rule.QueryResults;
 
 import java.awt.Dimension;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class SubnetworkTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public SubnetworkTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
-    }
-
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
     @Role(Role.Type.EVENT)
@@ -69,8 +61,10 @@ public class SubnetworkTest {
 
     }
 
-    @Test(timeout = 10000)
-    public void testRightStagingOnSharedSubnetwork() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testRightStagingOnSharedSubnetwork(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // RHBRMS-2624
         final String drl =
                 "import " + AtomicInteger.class.getCanonicalName() + ";\n" +
@@ -107,8 +101,10 @@ public class SubnetworkTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testUpdateOnSharedSubnetwork() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testUpdateOnSharedSubnetwork(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-1360
         final String drl =
                 "import " + AtomicInteger.class.getCanonicalName() + ";\n" +
@@ -154,8 +150,10 @@ public class SubnetworkTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testSubNeworkNotRemoveRightRemove() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testSubNeworkNotRemoveRightRemove(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
               "import " + Dimension.class.getCanonicalName() + ";\n" +
               "global java.util.List list;\n" +
@@ -188,8 +186,10 @@ public class SubnetworkTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testSubNeworkNotRemoveLeftRemove() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testSubNeworkNotRemoveLeftRemove(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
               "import " + Dimension.class.getCanonicalName() + ";\n" +
               "global java.util.List list;\n" +
@@ -226,8 +226,10 @@ public class SubnetworkTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testSubNeworkQueryTest() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testSubNeworkQueryTest(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
               "import " + Dimension.class.getCanonicalName() + ";\n" +
               "global java.util.List list;\n" +
@@ -273,16 +275,20 @@ public class SubnetworkTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testSubNetworks() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testSubNetworks(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final KieBase kieBase = KieBaseUtil.getKieBaseFromClasspathResources("subnetwork-test", kieBaseTestConfiguration,
                                                                              "org/drools/compiler/integrationtests/test_SubNetworks.drl");
         final KieSession session = kieBase.newKieSession();
         session.dispose();
     }
 
-    @Test(timeout = 10000)
-    public void testSubnetworkSharingWith2SinksFromLia() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testSubnetworkSharingWith2SinksFromLia(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-1656
         final String drl =
                 "import " + X.class.getCanonicalName() + "\n" +
@@ -340,8 +346,10 @@ public class SubnetworkTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testSubnetworkSharingWith2SinksAfterLia() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testSubnetworkSharingWith2SinksAfterLia(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-1656
         final String drl =
               "import " + X.class.getCanonicalName() + "\n" +
@@ -460,19 +468,21 @@ public class SubnetworkTest {
         }
     }
 
-    @Test
-    public void subnetworkSharingWith2SinksAndRightTupleDelete_shouldNotThrowNPE() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void subnetworkSharingWith2SinksAndRightTupleDelete_shouldNotThrowNPE(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-7420
-        testFromCollectInSubnetwork(true);
+        testFromCollectInSubnetwork(kieBaseTestConfiguration, true);
     }
 
-    @Test
-    public void subnetworkNoSharingWith2SinksAndRightTupleDelete_shouldNotThrowNPE() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void subnetworkNoSharingWith2SinksAndRightTupleDelete_shouldNotThrowNPE(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-7420
-        testFromCollectInSubnetwork(false);
+        testFromCollectInSubnetwork(kieBaseTestConfiguration, false);
     }
 
-    private void testFromCollectInSubnetwork(boolean nodeSharing) {
+    private void testFromCollectInSubnetwork(KieBaseTestConfiguration kieBaseTestConfiguration, boolean nodeSharing) {
         String accConstraint = nodeSharing ? "" : "size > 0";
         final String drl =
                 "import " + List.class.getCanonicalName() + ";\n" +

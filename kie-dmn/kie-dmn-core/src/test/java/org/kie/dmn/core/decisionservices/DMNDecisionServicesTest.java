@@ -633,8 +633,8 @@ public class DMNDecisionServicesTest extends BaseInterpretedVsCompiledTest {
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, emptyContext);
         LOG.debug("{}", dmnResult);
         dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
-        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
-        assertThat((Map<String, Object>) dmnResult.getDecisionResultByName("my invoke DS1").getResult()).containsEntry("outDS1", true);
+        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isTrue();
+        assertThat((Map<String, Object>) dmnResult.getDecisionResultByName("my invoke DS1").getResult()).isNull();
     }
 
     @ParameterizedTest
