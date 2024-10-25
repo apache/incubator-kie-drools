@@ -40,7 +40,7 @@ public class CommentEntity {
     private Date updatedAt;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "task_id", foreignKey = @ForeignKey(name = "fk_user_task_comment_tid"))
+    @JoinColumn(name = "task_id", foreignKey = @ForeignKey(name = "fk_user_tasks_comments_tid"))
     private UserTaskInstanceEntity taskInstance;
 
     public String getId() {

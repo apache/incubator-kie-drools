@@ -42,7 +42,7 @@ public class AttachmentEntity {
     private Date updatedAt;
 
     @ManyToOne
-    @JoinColumn(name = "task_id", foreignKey = @ForeignKey(name = "fk_user_task_attachment_tid"))
+    @JoinColumn(name = "task_id", foreignKey = @ForeignKey(name = "fk_user_tasks_attachments_tid"))
     private UserTaskInstanceEntity taskInstance;
 
     public String getId() {

@@ -134,16 +134,16 @@ alter table if exists jbpm_user_tasks_excluded_users
 add constraint fk_jbpm_user_tasks_excluded_users_tid foreign key (task_id) references jbpm_user_tasks(id) on delete cascade;
 
 alter table if exists jbpm_user_tasks_attachments
-drop constraint if exists fk_user_task_attachment_tid cascade;
+drop constraint if exists fk_user_tasks_attachments_tid cascade;
 
 alter table if exists jbpm_user_tasks_attachments
-add constraint fk_user_task_attachment_tid foreign key (task_id) references jbpm_user_tasks(id) on delete cascade;
+add constraint fk_user_tasks_attachments_tid foreign key (task_id) references jbpm_user_tasks(id) on delete cascade;
 
 alter table if exists jbpm_user_tasks_comments
-drop constraint if exists fk_user_task_comment_tid cascade;
+drop constraint if exists fk_user_tasks_comments_tid cascade;
 
 alter table if exists jbpm_user_tasks_comments
-add constraint fk_user_task_comment_tid foreign key (task_id) references jbpm_user_tasks(id) on delete cascade;
+add constraint fk_user_tasks_comments_tid foreign key (task_id) references jbpm_user_tasks(id) on delete cascade;
 
 alter table if exists jbpm_user_tasks_inputs
 drop constraint if exists fk_jbpm_user_tasks_inputs_tid cascade;
