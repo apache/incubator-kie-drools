@@ -192,6 +192,11 @@
             </dependency>
             <dependency>
                 <groupId>com.graphql-java</groupId>
+                <artifactId>graphql-java</artifactId>
+                <version>${version.com.graphql-java-extended-scalars}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.graphql-java</groupId>
                 <artifactId>graphql-java-extended-scalars</artifactId>
                 <version>${version.com.graphql-java-extended-scalars}</version>
             </dependency>

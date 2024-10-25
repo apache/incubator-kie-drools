@@ -20,6 +20,7 @@ package org.kie.kogito.index.graphql;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import graphql.execution.instrumentation.InstrumentationState;
 import graphql.execution.instrumentation.SimpleInstrumentation;
 import graphql.execution.instrumentation.parameters.InstrumentationExecutionParameters;
 import graphql.execution.instrumentation.parameters.InstrumentationFieldFetchParameters;
@@ -36,7 +37,7 @@ public class GraphQLInstrumentation extends SimpleInstrumentation {
     GraphQLSchemaManager manager;
 
     @Override
-    public DataFetcher<?> instrumentDataFetcher(DataFetcher<?> dataFetcher, InstrumentationFieldFetchParameters parameters) {
+    public DataFetcher<?> instrumentDataFetcher(DataFetcher<?> dataFetcher, InstrumentationFieldFetchParameters parameters, InstrumentationState instrumentationState) {
         if (parameters.getEnvironment().getSource() instanceof JsonNode && dataFetcher instanceof PropertyDataFetcher) {
             return new JsonPropertyDataFetcher();
         } else {
@@ -45,7 +46,7 @@ public class GraphQLInstrumentation extends SimpleInstrumentation {
     }
 
     @Override
-    public GraphQLSchema instrumentSchema(GraphQLSchema schema, InstrumentationExecutionParameters parameters) {
+    public GraphQLSchema instrumentSchema(GraphQLSchema schema, InstrumentationExecutionParameters parameters, InstrumentationState instrumentationState) {
         return manager.getGraphQLSchema();
     }
 }
