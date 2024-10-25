@@ -19,9 +19,16 @@
 
 package org.kie.kogito.event.process;
 
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
 import java.util.Date;
 
-public class ProcessInstanceErrorEventBody {
+import org.kie.kogito.event.DataEvent;
+
+import static org.kie.kogito.event.process.KogitoEventBodySerializationHelper.*;
+
+public class ProcessInstanceErrorEventBody implements KogitoMarshallEventSupport, CloudEventVisitor {
 
     // common fields for events
     private Date eventDate;
@@ -137,5 +144,28 @@ public class ProcessInstanceErrorEventBody {
         public ProcessInstanceErrorEventBody build() {
             return instance;
         }
+    }
+
+    @Override
+    public void readEvent(DataInput in) throws IOException {
+        nodeDefinitionId = in.readUTF();
+        nodeInstanceId = in.readUTF();
+        errorMessage = in.readUTF();
+    }
+
+    @Override
+    public void writeEvent(DataOutput out) throws IOException {
+        out.writeUTF(nodeDefinitionId);
+        out.writeUTF(nodeInstanceId);
+        out.writeUTF(errorMessage);
+    }
+
+    @Override
+    public void visit(DataEvent<?> dataEvent) {
+        this.processId = dataEvent.getKogitoProcessId();
+        this.processInstanceId = dataEvent.getKogitoProcessInstanceId();
+        this.processVersion = dataEvent.getKogitoProcessInstanceVersion();
+        this.eventDate = toDate(dataEvent.getTime());
+        this.eventUser = dataEvent.getKogitoIdentity();
     }
 }

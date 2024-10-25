@@ -22,11 +22,14 @@ import java.util.Map;
 
 public class ProcessInstanceErrorDataEvent extends ProcessInstanceDataEvent<ProcessInstanceErrorEventBody> {
 
+    public static final String ERROR_TYPE = "ProcessInstanceErrorDataEvent";
+
     public ProcessInstanceErrorDataEvent() {
+        this.setType(ERROR_TYPE);
     }
 
     public ProcessInstanceErrorDataEvent(String source, String addons, String identity, Map<String, Object> metaData, ProcessInstanceErrorEventBody body) {
-        super("ProcessInstanceErrorDataEvent",
+        super(ERROR_TYPE,
                 source,
                 body,
                 (String) metaData.get(ProcessInstanceEventMetadata.PROCESS_INSTANCE_ID_META_DATA),

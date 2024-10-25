@@ -18,9 +18,20 @@
  */
 package org.kie.kogito.event.process;
 
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
 import java.util.Date;
 
-public class ProcessInstanceSLAEventBody {
+import org.kie.kogito.event.DataEvent;
+
+import static org.kie.kogito.event.process.KogitoEventBodySerializationHelper.readDate;
+import static org.kie.kogito.event.process.KogitoEventBodySerializationHelper.readUTF;
+import static org.kie.kogito.event.process.KogitoEventBodySerializationHelper.toDate;
+import static org.kie.kogito.event.process.KogitoEventBodySerializationHelper.writeDate;
+import static org.kie.kogito.event.process.KogitoEventBodySerializationHelper.writeUTF;
+
+public class ProcessInstanceSLAEventBody implements KogitoMarshallEventSupport, CloudEventVisitor {
 
     // common fields for events
     private Date eventDate;
@@ -46,6 +57,34 @@ public class ProcessInstanceSLAEventBody {
     private String nodeType;
 
     private Date slaDueDate;
+
+    @Override
+    public void writeEvent(DataOutput out) throws IOException {
+        out.writeUTF(nodeDefinitionId);
+        writeUTF(out, nodeName);
+        out.writeUTF(nodeType);
+        out.writeUTF(nodeInstanceId);
+        writeDate(out, slaDueDate);
+
+    }
+
+    @Override
+    public void readEvent(DataInput in) throws IOException {
+        nodeDefinitionId = in.readUTF();
+        nodeName = readUTF(in);
+        nodeType = in.readUTF();
+        nodeInstanceId = in.readUTF();
+        slaDueDate = readDate(in);
+    }
+
+    @Override
+    public void visit(DataEvent<?> dataEvent) {
+        this.processId = dataEvent.getKogitoProcessId();
+        this.processInstanceId = dataEvent.getKogitoProcessInstanceId();
+        this.processVersion = dataEvent.getKogitoProcessInstanceVersion();
+        this.eventDate = toDate(dataEvent.getTime());
+        this.eventUser = dataEvent.getKogitoIdentity();
+    }
 
     public Date getSlaDueDate() {
         return slaDueDate;

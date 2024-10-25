@@ -18,12 +18,19 @@
  */
 package org.kie.kogito.event.process;
 
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class ProcessInstanceVariableEventBody {
+import org.kie.kogito.event.DataEvent;
+
+import static org.kie.kogito.event.process.KogitoEventBodySerializationHelper.*;
+
+public class ProcessInstanceVariableEventBody implements KogitoMarshallEventSupport, CloudEventVisitor {
 
     // common fields for events
     private Date eventDate;
@@ -45,6 +52,33 @@ public class ProcessInstanceVariableEventBody {
     private String variableId;
     private String variableName;
     private Object variableValue;
+
+    @Override
+    public void writeEvent(DataOutput out) throws IOException {
+        writeUTF(out, nodeContainerDefinitionId);
+        writeUTF(out, nodeContainerInstanceId);
+        writeUTF(out, variableId);
+        out.writeUTF(variableName);
+        writeObject(out, variableValue);
+    }
+
+    @Override
+    public void readEvent(DataInput in) throws IOException {
+        nodeContainerDefinitionId = readUTF(in);
+        nodeContainerInstanceId = readUTF(in);
+        variableId = readUTF(in);
+        variableName = in.readUTF();
+        variableValue = readObject(in);
+    }
+
+    @Override
+    public void visit(DataEvent<?> dataEvent) {
+        this.processId = dataEvent.getKogitoProcessId();
+        this.processInstanceId = dataEvent.getKogitoProcessInstanceId();
+        this.processVersion = dataEvent.getKogitoProcessInstanceVersion();
+        this.eventDate = toDate(dataEvent.getTime());
+        this.eventUser = dataEvent.getKogitoIdentity();
+    }
 
     public Date getEventDate() {
         return eventDate;
@@ -184,4 +218,5 @@ public class ProcessInstanceVariableEventBody {
             return instance;
         }
     }
+
 }

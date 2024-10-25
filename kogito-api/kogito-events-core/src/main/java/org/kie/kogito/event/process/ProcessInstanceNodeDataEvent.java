@@ -22,11 +22,14 @@ import java.util.Map;
 
 public class ProcessInstanceNodeDataEvent extends ProcessInstanceDataEvent<ProcessInstanceNodeEventBody> {
 
+    public static final String NODE_TYPE = "ProcessInstanceNodeDataEvent";
+
     public ProcessInstanceNodeDataEvent() {
+        this.setType(NODE_TYPE);
     }
 
     public ProcessInstanceNodeDataEvent(String source, String addons, String identity, Map<String, Object> metaData, ProcessInstanceNodeEventBody body) {
-        super("ProcessInstanceNodeDataEvent",
+        super(NODE_TYPE,
                 source,
                 body,
                 (String) metaData.get(ProcessInstanceEventMetadata.PROCESS_INSTANCE_ID_META_DATA),

@@ -18,13 +18,21 @@
  */
 package org.kie.kogito.event.process;
 
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-public class ProcessInstanceStateEventBody {
+import org.kie.kogito.event.DataEvent;
+
+import static org.kie.kogito.event.process.KogitoEventBodySerializationHelper.*;
+
+public class ProcessInstanceStateEventBody implements KogitoMarshallEventSupport, CloudEventVisitor {
 
     public static final int EVENT_TYPE_STARTED = 1;
     public static final int EVENT_TYPE_ENDED = 2;
@@ -64,6 +72,38 @@ public class ProcessInstanceStateEventBody {
     private Set<String> roles;
 
     public Date slaDueDate;
+
+    @Override
+    public void writeEvent(DataOutput out) throws IOException {
+        writeInteger(out, eventType);
+        writeUTF(out, processName);
+        writeInteger(out, state);
+        writeUTFCollection(out, roles);
+        writeDate(out, slaDueDate);
+    }
+
+    @Override
+    public void readEvent(DataInput in) throws IOException {
+        eventType = readInteger(in);
+        processName = readUTF(in);
+        state = readInteger(in);
+        roles = readUTFCollection(in, new LinkedHashSet<>());
+        slaDueDate = readDate(in);
+    }
+
+    @Override
+    public void visit(DataEvent<?> dataEvent) {
+        this.processId = dataEvent.getKogitoProcessId();
+        this.processInstanceId = dataEvent.getKogitoProcessInstanceId();
+        this.processVersion = dataEvent.getKogitoProcessInstanceVersion();
+        this.eventDate = toDate(dataEvent.getTime());
+        this.eventUser = dataEvent.getKogitoIdentity();
+        this.parentInstanceId = dataEvent.getKogitoParentProcessInstanceId();
+        this.rootProcessId = dataEvent.getKogitoRootProcessId();
+        this.rootProcessInstanceId = dataEvent.getKogitoRootProcessInstanceId();
+        this.processType = dataEvent.getKogitoProcessType();
+        this.businessKey = dataEvent.getKogitoBusinessKey();
+    }
 
     public Date getEventDate() {
         return eventDate;
@@ -262,4 +302,5 @@ public class ProcessInstanceStateEventBody {
         }
 
     }
+
 }

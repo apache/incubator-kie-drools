@@ -22,11 +22,14 @@ import java.util.Map;
 
 public class ProcessInstanceSLADataEvent extends ProcessInstanceDataEvent<ProcessInstanceSLAEventBody> {
 
+    public static final String SLA_TYPE = "ProcessInstanceSLADataEvent";
+
     public ProcessInstanceSLADataEvent() {
+        this.setType(SLA_TYPE);
     }
 
     public ProcessInstanceSLADataEvent(String source, String addons, String identity, Map<String, Object> metaData, ProcessInstanceSLAEventBody body) {
-        super("ProcessInstanceSLADataEvent",
+        super(SLA_TYPE,
                 source,
                 body,
                 (String) metaData.get(ProcessInstanceEventMetadata.PROCESS_INSTANCE_ID_META_DATA),

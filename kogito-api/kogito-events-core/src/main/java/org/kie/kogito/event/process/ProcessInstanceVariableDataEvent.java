@@ -32,15 +32,18 @@ public class ProcessInstanceVariableDataEvent extends ProcessInstanceDataEvent<P
 
     private static final Set<String> INTERNAL_EXTENSION_ATTRIBUTES = Collections.singleton(CloudEventExtensionConstants.KOGITO_VARIABLE_NAME);
 
+    public static final String VAR_TYPE = "ProcessInstanceVariableDataEvent";
+
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @JsonProperty(CloudEventExtensionConstants.KOGITO_VARIABLE_NAME)
     private String kogitoVariableName;
 
     public ProcessInstanceVariableDataEvent() {
+        this.setType(VAR_TYPE);
     }
 
     public ProcessInstanceVariableDataEvent(String source, String addons, String identity, Map<String, Object> metaData, ProcessInstanceVariableEventBody body) {
-        super("ProcessInstanceVariableDataEvent",
+        super(VAR_TYPE,
                 source,
                 body,
                 (String) metaData.get(ProcessInstanceEventMetadata.PROCESS_INSTANCE_ID_META_DATA),

@@ -47,10 +47,6 @@
     </dependency>
     
     <!-- CloudEvents -->
-     <dependency>
-      <groupId>io.cloudevents</groupId>
-      <artifactId>cloudevents-core</artifactId>
-    </dependency>
     <!-- Tests -->
     <dependency>
       <groupId>org.junit.jupiter</groupId>
@@ -71,6 +67,10 @@
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-simple</artifactId>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+    	<groupId>org.kie.kogito</groupId>
+    	<artifactId>kogito-jackson-utils</artifactId>
     </dependency>
   </dependencies>
 

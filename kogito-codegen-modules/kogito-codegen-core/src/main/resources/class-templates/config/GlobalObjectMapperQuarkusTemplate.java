@@ -43,6 +43,6 @@ public class GlobalObjectMapper implements ObjectMapperCustomizer {
             mapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
         }
         mapper.setDateFormat(new StdDateFormat().withColonInTimeZone(true).withTimeZone(TimeZone.getDefault()));
-        mapper.registerModule(new JavaTimeModule()).registerModule(JsonFormat.getCloudEventJacksonModule());
+        mapper.registerModule(JsonFormat.getCloudEventJacksonModule()).findAndRegisterModules();
     }
 }

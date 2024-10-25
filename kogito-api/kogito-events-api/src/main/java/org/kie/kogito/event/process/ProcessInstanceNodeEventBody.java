@@ -18,12 +18,19 @@
  */
 package org.kie.kogito.event.process;
 
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class ProcessInstanceNodeEventBody {
+import org.kie.kogito.event.DataEvent;
+
+import static org.kie.kogito.event.process.KogitoEventBodySerializationHelper.*;
+
+public class ProcessInstanceNodeEventBody implements KogitoMarshallEventSupport, CloudEventVisitor {
 
     public static final int EVENT_TYPE_ENTER = 1;
 
@@ -71,7 +78,42 @@ public class ProcessInstanceNodeEventBody {
 
     private Map<String, Object> data;
 
-    private ProcessInstanceNodeEventBody() {
+    @Override
+    public void writeEvent(DataOutput out) throws IOException {
+        writeInteger(out, eventType);
+        writeUTF(out, connectionNodeDefinitionId);
+        out.writeUTF(nodeDefinitionId);
+        writeUTF(out, nodeName);
+        out.writeUTF(nodeType);
+        out.writeUTF(nodeInstanceId);
+        writeUTF(out, workItemId);
+        writeDate(out, slaDueDate);
+        writeObject(out, data);
+    }
+
+    @Override
+    public void readEvent(DataInput in) throws IOException {
+        eventType = readInteger(in);
+        connectionNodeDefinitionId = readUTF(in);
+        nodeDefinitionId = in.readUTF();
+        nodeName = readUTF(in);
+        nodeType = in.readUTF();
+        nodeInstanceId = in.readUTF();
+        workItemId = readUTF(in);
+        slaDueDate = readDate(in);
+        data = (Map<String, Object>) readObject(in);
+    }
+
+    @Override
+    public void visit(DataEvent<?> dataEvent) {
+        this.processId = dataEvent.getKogitoProcessId();
+        this.processInstanceId = dataEvent.getKogitoProcessInstanceId();
+        this.processVersion = dataEvent.getKogitoProcessInstanceVersion();
+        this.eventDate = toDate(dataEvent.getTime());
+        this.eventUser = dataEvent.getKogitoIdentity();
+    }
+
+    public ProcessInstanceNodeEventBody() {
         this.data = new HashMap<>();
     }
 
@@ -246,5 +288,4 @@ public class ProcessInstanceNodeEventBody {
         }
 
     }
-
 }

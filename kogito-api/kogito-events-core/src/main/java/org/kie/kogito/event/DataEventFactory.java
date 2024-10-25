@@ -18,6 +18,7 @@
  */
 package org.kie.kogito.event;
 
+import java.io.IOException;
 import java.net.URI;
 import java.time.OffsetDateTime;
 import java.util.Optional;
@@ -41,6 +42,22 @@ public class DataEventFactory {
 
     public static <T> DataEvent<T> from(CloudEvent event, Converter<CloudEventData, T> dataUnmarshaller) {
         return new CloudEventWrapDataEvent<>(event, dataUnmarshaller);
+    }
+
+    public static <T extends AbstractDataEvent<V>, V> T from(T dataEvent, CloudEvent cloudEvent, Converter<CloudEventData, V> dataUnmarshaller) throws IOException {
+        dataEvent.setSpecVersion(cloudEvent.getSpecVersion());
+        dataEvent.setId(cloudEvent.getId());
+        dataEvent.setType(cloudEvent.getType());
+        dataEvent.setSource(cloudEvent.getSource());
+        dataEvent.setDataContentType(cloudEvent.getDataContentType());
+        dataEvent.setDataSchema(cloudEvent.getDataSchema());
+        dataEvent.setSubject(cloudEvent.getSubject());
+        dataEvent.setTime(cloudEvent.getTime());
+        cloudEvent.getExtensionNames().forEach(extensionName -> dataEvent.addExtensionAttribute(extensionName, cloudEvent.getExtension(extensionName)));
+        if (cloudEvent.getData() != null) {
+            dataEvent.setData(dataUnmarshaller.convert(cloudEvent.getData()));
+        }
+        return dataEvent;
     }
 
     public static <T> DataEvent<T> from(T eventData, String trigger, KogitoProcessInstance pi) {

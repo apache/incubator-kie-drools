@@ -22,11 +22,14 @@ import java.util.Map;
 
 public class ProcessInstanceStateDataEvent extends ProcessInstanceDataEvent<ProcessInstanceStateEventBody> {
 
+    public static final String STATE_TYPE = "ProcessInstanceStateDataEvent";
+
     public ProcessInstanceStateDataEvent() {
+        this.setType(STATE_TYPE);
     }
 
     public ProcessInstanceStateDataEvent(String source, String addons, String identity, Map<String, Object> metaData, ProcessInstanceStateEventBody body) {
-        super("ProcessInstanceStateDataEvent",
+        super(STATE_TYPE,
                 source,
                 body,
                 (String) metaData.get(ProcessInstanceEventMetadata.PROCESS_INSTANCE_ID_META_DATA),
