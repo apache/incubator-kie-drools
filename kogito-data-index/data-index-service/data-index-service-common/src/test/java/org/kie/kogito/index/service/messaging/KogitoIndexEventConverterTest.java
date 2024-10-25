@@ -101,6 +101,7 @@ class KogitoIndexEventConverterTest {
         ObjectMapper objectMapper = JsonUtils.getObjectMapper();
         new ObjectMapperProducer().customize(objectMapper);
         converter.setObjectMapper(objectMapper);
+        converter.init();
     }
 
     @Test

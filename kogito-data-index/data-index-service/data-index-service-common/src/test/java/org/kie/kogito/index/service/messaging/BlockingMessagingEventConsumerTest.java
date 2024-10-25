@@ -28,6 +28,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.kie.kogito.event.DataEvent;
+import org.kie.kogito.event.process.KogitoMarshallEventSupport;
 import org.kie.kogito.event.process.MultipleProcessInstanceDataEvent;
 import org.kie.kogito.event.process.ProcessDefinitionDataEvent;
 import org.kie.kogito.event.process.ProcessInstanceDataEvent;
@@ -70,9 +71,9 @@ class BlockingMessagingEventConsumerTest {
     @Test
     void testOnProcessInstanceEvent() {
         // Arrange
-        ProcessInstanceDataEvent<?> event1 = mock(ProcessInstanceDataEvent.class);
-        ProcessInstanceDataEvent<?> event2 = mock(ProcessInstanceDataEvent.class);
-        Collection<ProcessInstanceDataEvent<?>> events = Arrays.asList(event1, event2);
+        ProcessInstanceDataEvent<? extends KogitoMarshallEventSupport> event1 = mock(ProcessInstanceDataEvent.class);
+        ProcessInstanceDataEvent<? extends KogitoMarshallEventSupport> event2 = mock(ProcessInstanceDataEvent.class);
+        Collection<ProcessInstanceDataEvent<? extends KogitoMarshallEventSupport>> events = Arrays.asList(event1, event2);
         MultipleProcessInstanceDataEvent event = new MultipleProcessInstanceDataEvent(URI.create("dummy"), events);
 
         // Act
@@ -129,8 +130,8 @@ class BlockingMessagingEventConsumerTest {
     @Test
     void testErrorHandlingInOnProcessInstanceEvent() {
         // Arrange
-        ProcessInstanceDataEvent<?> event = mock(ProcessInstanceDataEvent.class);
-        Collection<ProcessInstanceDataEvent<?>> events = Arrays.asList(event);
+        ProcessInstanceDataEvent<? extends KogitoMarshallEventSupport> event = mock(ProcessInstanceDataEvent.class);
+        Collection<ProcessInstanceDataEvent<? extends KogitoMarshallEventSupport>> events = Arrays.asList(event);
         doThrow(new RuntimeException("On purpose! Indexing failed")).when(indexingService).indexProcessInstanceEvent(event);
 
         // Act

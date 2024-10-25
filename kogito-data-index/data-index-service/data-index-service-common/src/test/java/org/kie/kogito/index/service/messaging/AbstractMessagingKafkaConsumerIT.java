@@ -25,6 +25,7 @@ import java.util.List;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.kie.kogito.event.process.KogitoMarshallEventSupport;
 import org.kie.kogito.event.process.MultipleProcessInstanceDataEvent;
 import org.kie.kogito.event.process.ProcessInstanceDataEvent;
 import org.kie.kogito.event.usertask.MultipleUserTaskInstanceDataEvent;
@@ -81,7 +82,7 @@ public abstract class AbstractMessagingKafkaConsumerIT extends AbstractMessaging
 
     @Override
     protected void sendProcessInstanceEventCollection() throws Exception {
-        Collection<ProcessInstanceDataEvent<?>> events = List.of(
+        Collection<ProcessInstanceDataEvent<? extends KogitoMarshallEventSupport>> events = List.of(
                 getProcessCloudEvent("travels", "processId-UUID1", ProcessInstanceState.ACTIVE, null, null, null, "user1"),
                 getProcessCloudEvent("travels", "processId-UUID2", ProcessInstanceState.ACTIVE, null, null, null, "user2"));
         kafkaClient.produce(ObjectMapperFactory.get().writeValueAsString(new MultipleProcessInstanceDataEvent(URI.create("test"), events)), KOGITO_PROCESSINSTANCES_EVENTS);

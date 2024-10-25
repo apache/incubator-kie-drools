@@ -22,6 +22,7 @@ import java.net.URI;
 import java.util.Collection;
 import java.util.List;
 
+import org.kie.kogito.event.process.KogitoMarshallEventSupport;
 import org.kie.kogito.event.process.MultipleProcessInstanceDataEvent;
 import org.kie.kogito.event.process.ProcessDefinitionDataEvent;
 import org.kie.kogito.event.process.ProcessInstanceDataEvent;
@@ -76,7 +77,7 @@ public abstract class AbstractMessagingHttpConsumerIT extends AbstractMessagingC
     }
 
     protected void sendProcessInstanceEventCollection() throws Exception {
-        Collection<ProcessInstanceDataEvent<?>> events = List.of(
+        Collection<ProcessInstanceDataEvent<? extends KogitoMarshallEventSupport>> events = List.of(
                 getProcessCloudEvent("travels", "processId-UUID1", ProcessInstanceState.ACTIVE, null, null, null, "user1"),
                 getProcessCloudEvent("travels", "processId-UUID2", ProcessInstanceState.ACTIVE, null, null, null, "user2"));
         connector.source(KOGITO_PROCESSINSTANCES_EVENTS).send(new MultipleProcessInstanceDataEvent(URI.create("test"), events));

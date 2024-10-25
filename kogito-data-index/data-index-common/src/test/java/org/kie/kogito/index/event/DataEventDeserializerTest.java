@@ -44,8 +44,7 @@ public class DataEventDeserializerTest {
     @BeforeAll
 
     public void beforeAll() {
-        mapper = new ObjectMapper();
-        JsonUtils.configure(mapper);
+        mapper = JsonUtils.configure(new ObjectMapper());
     }
 
     @Test

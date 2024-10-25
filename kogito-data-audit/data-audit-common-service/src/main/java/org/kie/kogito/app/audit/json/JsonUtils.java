@@ -19,13 +19,10 @@
 package org.kie.kogito.app.audit.json;
 
 import org.kie.kogito.event.job.JobInstanceDataEvent;
-import org.kie.kogito.event.process.ProcessInstanceDataEvent;
-import org.kie.kogito.event.usertask.UserTaskInstanceDataEvent;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import io.cloudevents.jackson.JsonFormat;
 
@@ -41,15 +38,7 @@ public final class JsonUtils {
     }
 
     public static ObjectMapper configure(ObjectMapper objectMapper) {
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        objectMapper.registerModule(JsonFormat.getCloudEventJacksonModule());
-        objectMapper.registerModule(new JavaTimeModule());
-
-        SimpleModule module = new SimpleModule("Kogito Cloud Events");
-        module.addDeserializer(ProcessInstanceDataEvent.class, new JsonProcessInstanceDataEventDeserializer());
-        module.addDeserializer(UserTaskInstanceDataEvent.class, new JsonUserTaskInstanceDataEventDeserializer());
-        module.addDeserializer(JobInstanceDataEvent.class, new JsonJobDataEventDeserializer());
-        objectMapper.registerModule(module);
-        return objectMapper;
+        return objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false).registerModule(JsonFormat.getCloudEventJacksonModule())
+                .registerModule(new SimpleModule("Data Audit").addDeserializer(JobInstanceDataEvent.class, new JsonJobDataEventDeserializer())).findAndRegisterModules();
     }
 }

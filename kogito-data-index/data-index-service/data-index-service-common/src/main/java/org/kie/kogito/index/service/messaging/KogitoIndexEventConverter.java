@@ -21,11 +21,13 @@ package org.kie.kogito.index.service.messaging;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.Collection;
-import java.util.function.Supplier;
 
 import org.eclipse.microprofile.reactive.messaging.Message;
-import org.kie.kogito.event.AbstractDataEvent;
+import org.kie.kogito.event.Converter;
 import org.kie.kogito.event.DataEvent;
+import org.kie.kogito.event.DataEventFactory;
+import org.kie.kogito.event.impl.JacksonCloudEventDataConverter;
+import org.kie.kogito.event.impl.JacksonTypeCloudEventDataConverter;
 import org.kie.kogito.event.process.MultipleProcessInstanceDataEvent;
 import org.kie.kogito.event.process.ProcessDefinitionDataEvent;
 import org.kie.kogito.event.process.ProcessDefinitionEventBody;
@@ -40,6 +42,7 @@ import org.kie.kogito.event.process.ProcessInstanceStateDataEvent;
 import org.kie.kogito.event.process.ProcessInstanceStateEventBody;
 import org.kie.kogito.event.process.ProcessInstanceVariableDataEvent;
 import org.kie.kogito.event.process.ProcessInstanceVariableEventBody;
+import org.kie.kogito.event.serializer.MultipleProcessDataInstanceConverterFactory;
 import org.kie.kogito.event.usertask.MultipleUserTaskInstanceDataEvent;
 import org.kie.kogito.event.usertask.UserTaskInstanceAssignmentDataEvent;
 import org.kie.kogito.event.usertask.UserTaskInstanceAssignmentEventBody;
@@ -64,6 +67,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.cloudevents.CloudEvent;
+import io.cloudevents.CloudEventData;
 import io.cloudevents.core.message.MessageReader;
 import io.cloudevents.http.vertx.VertxMessageFactory;
 import io.quarkus.reactivemessaging.http.runtime.IncomingHttpMetadata;
@@ -71,6 +75,7 @@ import io.smallrye.reactive.messaging.MessageConverter;
 import io.vertx.core.MultiMap;
 import io.vertx.core.buffer.Buffer;
 
+import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
@@ -88,6 +93,38 @@ public class KogitoIndexEventConverter implements MessageConverter {
     @Override
     public int getPriority() {
         return CONVERTER_DEFAULT_PRIORITY - 2;
+    }
+
+    private Converter<CloudEventData, ProcessInstanceErrorEventBody> errorConverter;
+    private Converter<CloudEventData, ProcessInstanceNodeEventBody> nodeConverter;
+    private Converter<CloudEventData, ProcessInstanceSLAEventBody> slaConverter;
+    private Converter<CloudEventData, ProcessInstanceVariableEventBody> varConverter;
+    private Converter<CloudEventData, ProcessInstanceStateEventBody> stateConverter;
+    private Converter<CloudEventData, UserTaskInstanceAssignmentEventBody> assignConverter;
+    private Converter<CloudEventData, UserTaskInstanceAttachmentEventBody> attachConverter;
+    private Converter<CloudEventData, UserTaskInstanceCommentEventBody> commentConverter;
+    private Converter<CloudEventData, UserTaskInstanceDeadlineEventBody> deadlineConverter;
+    private Converter<CloudEventData, UserTaskInstanceStateEventBody> taskStateConverter;
+    private Converter<CloudEventData, UserTaskInstanceVariableEventBody> taskVariableConverter;
+    private Converter<CloudEventData, Collection<UserTaskInstanceDataEvent<?>>> taskCollectionConverter;
+    private Converter<CloudEventData, ProcessDefinitionEventBody> definitionConverter;
+
+    @PostConstruct
+    void init() {
+        this.errorConverter = new JacksonCloudEventDataConverter<>(objectMapper, ProcessInstanceErrorEventBody.class);
+        this.nodeConverter = new JacksonCloudEventDataConverter<>(objectMapper, ProcessInstanceNodeEventBody.class);
+        this.slaConverter = new JacksonCloudEventDataConverter<>(objectMapper, ProcessInstanceSLAEventBody.class);
+        this.varConverter = new JacksonCloudEventDataConverter<>(objectMapper, ProcessInstanceVariableEventBody.class);
+        this.stateConverter = new JacksonCloudEventDataConverter<>(objectMapper, ProcessInstanceStateEventBody.class);
+        this.assignConverter = new JacksonCloudEventDataConverter<>(objectMapper, UserTaskInstanceAssignmentEventBody.class);
+        this.attachConverter = new JacksonCloudEventDataConverter<>(objectMapper, UserTaskInstanceAttachmentEventBody.class);
+        this.commentConverter = new JacksonCloudEventDataConverter<>(objectMapper, UserTaskInstanceCommentEventBody.class);
+        this.deadlineConverter = new JacksonCloudEventDataConverter<>(objectMapper, UserTaskInstanceDeadlineEventBody.class);
+        this.taskStateConverter = new JacksonCloudEventDataConverter<>(objectMapper, UserTaskInstanceStateEventBody.class);
+        this.taskVariableConverter = new JacksonCloudEventDataConverter<>(objectMapper, UserTaskInstanceVariableEventBody.class);
+        this.taskCollectionConverter = new JacksonTypeCloudEventDataConverter<>(objectMapper, new TypeReference<Collection<UserTaskInstanceDataEvent<?>>>() {
+        });
+        this.definitionConverter = new JacksonCloudEventDataConverter<>(objectMapper, ProcessDefinitionEventBody.class);
     }
 
     @Override
@@ -133,12 +170,7 @@ public class KogitoIndexEventConverter implements MessageConverter {
     }
 
     private ProcessDefinitionDataEvent buildProcessDefinitionEvent(CloudEvent cloudEvent) throws IOException {
-        ProcessDefinitionDataEvent event = new ProcessDefinitionDataEvent();
-        applyCloudEventAttributes(cloudEvent, event);
-        if (cloudEvent.getData() != null) {
-            event.setData(objectMapper.readValue(cloudEvent.getData().toBytes(), ProcessDefinitionEventBody.class));
-        }
-        return event;
+        return DataEventFactory.from(new ProcessDefinitionDataEvent(), cloudEvent, definitionConverter);
     }
 
     @Inject
@@ -148,19 +180,18 @@ public class KogitoIndexEventConverter implements MessageConverter {
 
     private DataEvent<?> buildProcessInstanceDataEventVariant(CloudEvent cloudEvent) throws IOException {
         switch (cloudEvent.getType()) {
-            case MultipleProcessInstanceDataEvent.TYPE:
-                return buildDataEvent(cloudEvent, objectMapper, MultipleProcessInstanceDataEvent::new, new TypeReference<Collection<ProcessInstanceDataEvent<?>>>() {
-                });
-            case "ProcessInstanceErrorDataEvent":
-                return buildDataEvent(cloudEvent, objectMapper, ProcessInstanceErrorDataEvent::new, ProcessInstanceErrorEventBody.class);
-            case "ProcessInstanceNodeDataEvent":
-                return buildDataEvent(cloudEvent, objectMapper, ProcessInstanceNodeDataEvent::new, ProcessInstanceNodeEventBody.class);
-            case "ProcessInstanceSLADataEvent":
-                return buildDataEvent(cloudEvent, objectMapper, ProcessInstanceSLADataEvent::new, ProcessInstanceSLAEventBody.class);
-            case "ProcessInstanceStateDataEvent":
-                return buildDataEvent(cloudEvent, objectMapper, ProcessInstanceStateDataEvent::new, ProcessInstanceStateEventBody.class);
-            case "ProcessInstanceVariableDataEvent":
-                return buildDataEvent(cloudEvent, objectMapper, ProcessInstanceVariableDataEvent::new, ProcessInstanceVariableEventBody.class);
+            case MultipleProcessInstanceDataEvent.MULTIPLE_TYPE:
+                return DataEventFactory.from(new MultipleProcessInstanceDataEvent(), cloudEvent, MultipleProcessDataInstanceConverterFactory.fromCloudEvent(cloudEvent, objectMapper));
+            case ProcessInstanceErrorDataEvent.ERROR_TYPE:
+                return DataEventFactory.from(new ProcessInstanceErrorDataEvent(), cloudEvent, errorConverter);
+            case ProcessInstanceNodeDataEvent.NODE_TYPE:
+                return DataEventFactory.from(new ProcessInstanceNodeDataEvent(), cloudEvent, nodeConverter);
+            case ProcessInstanceSLADataEvent.SLA_TYPE:
+                return DataEventFactory.from(new ProcessInstanceSLADataEvent(), cloudEvent, slaConverter);
+            case ProcessInstanceStateDataEvent.STATE_TYPE:
+                return DataEventFactory.from(new ProcessInstanceStateDataEvent(), cloudEvent, stateConverter);
+            case ProcessInstanceVariableDataEvent.VAR_TYPE:
+                return DataEventFactory.from(new ProcessInstanceVariableDataEvent(), cloudEvent, varConverter);
             default:
                 throw new IllegalArgumentException("Unknown ProcessInstanceDataEvent variant: " + cloudEvent.getType());
         }
@@ -169,20 +200,19 @@ public class KogitoIndexEventConverter implements MessageConverter {
     private DataEvent<?> buildUserTaskInstanceDataEvent(CloudEvent cloudEvent) throws IOException {
         switch (cloudEvent.getType()) {
             case MultipleUserTaskInstanceDataEvent.TYPE:
-                return buildDataEvent(cloudEvent, objectMapper, MultipleUserTaskInstanceDataEvent::new, new TypeReference<Collection<UserTaskInstanceDataEvent<?>>>() {
-                });
+                return DataEventFactory.from(new MultipleUserTaskInstanceDataEvent(), cloudEvent, taskCollectionConverter);
             case "UserTaskInstanceAssignmentDataEvent":
-                return buildDataEvent(cloudEvent, objectMapper, UserTaskInstanceAssignmentDataEvent::new, UserTaskInstanceAssignmentEventBody.class);
+                return DataEventFactory.from(new UserTaskInstanceAssignmentDataEvent(), cloudEvent, assignConverter);
             case "UserTaskInstanceAttachmentDataEvent":
-                return buildDataEvent(cloudEvent, objectMapper, UserTaskInstanceAttachmentDataEvent::new, UserTaskInstanceAttachmentEventBody.class);
+                return DataEventFactory.from(new UserTaskInstanceAttachmentDataEvent(), cloudEvent, attachConverter);
             case "UserTaskInstanceCommentDataEvent":
-                return buildDataEvent(cloudEvent, objectMapper, UserTaskInstanceCommentDataEvent::new, UserTaskInstanceCommentEventBody.class);
+                return DataEventFactory.from(new UserTaskInstanceCommentDataEvent(), cloudEvent, commentConverter);
             case "UserTaskInstanceDeadlineDataEvent":
-                return buildDataEvent(cloudEvent, objectMapper, UserTaskInstanceDeadlineDataEvent::new, UserTaskInstanceDeadlineEventBody.class);
+                return DataEventFactory.from(new UserTaskInstanceDeadlineDataEvent(), cloudEvent, deadlineConverter);
             case "UserTaskInstanceStateDataEvent":
-                return buildDataEvent(cloudEvent, objectMapper, UserTaskInstanceStateDataEvent::new, UserTaskInstanceStateEventBody.class);
+                return DataEventFactory.from(new UserTaskInstanceStateDataEvent(), cloudEvent, taskStateConverter);
             case "UserTaskInstanceVariableDataEvent":
-                return buildDataEvent(cloudEvent, objectMapper, UserTaskInstanceVariableDataEvent::new, UserTaskInstanceVariableEventBody.class);
+                return DataEventFactory.from(new UserTaskInstanceVariableDataEvent(), cloudEvent, taskVariableConverter);
             default:
                 throw new IllegalArgumentException("Unknown UserTaskInstanceDataEvent variant: " + cloudEvent.getType());
         }
@@ -203,41 +233,4 @@ public class KogitoIndexEventConverter implements MessageConverter {
         return jobCloudEvent;
     }
 
-    private static <E extends AbstractDataEvent<T>, T> E buildDataEvent(CloudEvent cloudEvent, ObjectMapper objectMapper, Supplier<E> supplier, TypeReference<T> typeReference) throws IOException {
-        E dataEvent = buildEvent(cloudEvent, objectMapper, supplier);
-        if (cloudEvent.getData() != null) {
-            dataEvent.setData(objectMapper.readValue(cloudEvent.getData().toBytes(), typeReference));
-        }
-        return dataEvent;
-    }
-
-    private static <E extends AbstractDataEvent<T>, T> E buildDataEvent(CloudEvent cloudEvent, ObjectMapper objectMapper, Supplier<E> supplier, Class<T> clazz) throws IOException {
-        E dataEvent = buildEvent(cloudEvent, objectMapper, supplier);
-        if (cloudEvent.getData() != null) {
-            dataEvent.setData(objectMapper.readValue(cloudEvent.getData().toBytes(), clazz));
-        }
-        return dataEvent;
-    }
-
-    private static <E extends AbstractDataEvent<?>> E buildEvent(CloudEvent cloudEvent, ObjectMapper objectMapper, Supplier<E> supplier) throws IOException {
-        E dataEvent = supplier.get();
-        applyCloudEventAttributes(cloudEvent, dataEvent);
-        applyExtensions(cloudEvent, dataEvent);
-        return dataEvent;
-    }
-
-    private static void applyCloudEventAttributes(CloudEvent cloudEvent, AbstractDataEvent<?> dataEvent) {
-        dataEvent.setSpecVersion(cloudEvent.getSpecVersion());
-        dataEvent.setId(cloudEvent.getId());
-        dataEvent.setType(cloudEvent.getType());
-        dataEvent.setSource(cloudEvent.getSource());
-        dataEvent.setDataContentType(cloudEvent.getDataContentType());
-        dataEvent.setDataSchema(cloudEvent.getDataSchema());
-        dataEvent.setSubject(cloudEvent.getSubject());
-        dataEvent.setTime(cloudEvent.getTime());
-    }
-
-    private static void applyExtensions(CloudEvent cloudEvent, AbstractDataEvent<?> dataEvent) {
-        cloudEvent.getExtensionNames().forEach(extensionName -> dataEvent.addExtensionAttribute(extensionName, cloudEvent.getExtension(extensionName)));
-    }
 }
