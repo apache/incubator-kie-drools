@@ -1,0 +1,2 @@
+Ensure migration scripts are developed to support several executions over the same database without any error.
+This feature will make sure this migration execution would be compatible with other needed flyway migrations without broking the chain.
