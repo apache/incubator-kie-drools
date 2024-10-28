@@ -24,13 +24,16 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import org.drools.wiring.api.classloader.ProjectClassLoader;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
 public class ClassLoaderTest {
 
-    @Test(timeout = 20000)
+    @Test
+    @Timeout(value = 20000, unit = TimeUnit.MILLISECONDS)
     public void testParallelClassLoading() {
 
         final int THREAD_COUNT = 100;

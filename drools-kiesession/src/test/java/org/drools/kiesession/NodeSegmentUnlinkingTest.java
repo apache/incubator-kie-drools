@@ -52,7 +52,7 @@ import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.common.PropagationContext;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

@@ -22,7 +22,7 @@ import org.drools.core.common.EqualityKey;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.reteoo.ReteooFactHandleFactory;
 import org.drools.core.test.model.Cheese;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

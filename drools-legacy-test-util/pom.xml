@@ -78,11 +78,11 @@
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
 
         <!-- Logging -->
         <dependency>
@@ -95,5 +95,4 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
 </project>

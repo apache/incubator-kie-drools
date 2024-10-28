@@ -43,7 +43,7 @@ import org.drools.core.positional.VoidFunctions.VoidFunction3;
 import org.drools.core.test.model.Person;
 import org.drools.core.util.index.IndexSpec;
 import org.drools.kiesession.rulebase.SessionsAwareKnowledgeBase;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.conf.CompositeBaseConfiguration;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -105,9 +105,8 @@ public class BetaConstraintsPositionalIndexingTest {
         };
 
         List<Object[]>           results = new ArrayList<>();
-        VoidFunction1<PositionalConsequence<?>> f2 = (c) -> {
+        VoidFunction1<PositionalConsequence<?>> f2 = (c) ->
             c.setFunction((VoidFunction2<String, Person>) (s, p) -> {results.add(new Object[] {s, p}); System.out.println(p.getName() + " lives in " + s);});
-        };
 
         testBody(null, f1, f2, false);
 
@@ -129,9 +128,8 @@ public class BetaConstraintsPositionalIndexingTest {
         };
 
         List<Object[]>           results = new ArrayList<>();
-        VoidFunction1<PositionalConsequence<?>> f2 = (c) -> {
+        VoidFunction1<PositionalConsequence<?>> f2 = (c) ->
             c.setFunction((VoidFunction3<String, Integer, Person>) (s, i, p) -> {results.add(new Object[] {s, i, p}); System.out.println(p.getName() + " lives in " + s);});
-        };
 
         Person p1 = new Person("yoda", 300);
         p1.setCity("London");
@@ -173,9 +171,8 @@ public class BetaConstraintsPositionalIndexingTest {
         };
 
         List<Object[]>           results = new ArrayList<>();
-        VoidFunction1<PositionalConsequence<?>> f2 = (c) -> {
+        VoidFunction1<PositionalConsequence<?>> f2 = (c) ->
             c.setFunction((VoidFunction2<String, Person>) (s, p) -> {results.add(new Object[] {s, p}); System.out.println(p.getName() + " is younger than " + s);});
-        };
 
         testBody(f0, f1, f2, false);
 
@@ -210,9 +207,8 @@ public class BetaConstraintsPositionalIndexingTest {
         };
 
         List<Object[]>           results = new ArrayList<>();
-        VoidFunction1<PositionalConsequence<?>> f2 = (c) -> {
+        VoidFunction1<PositionalConsequence<?>> f2 = (c) ->
             c.setFunction((VoidFunction3<String, Integer, Person>) (s, i, p) -> {results.add(new Object[] {s, i, p}); System.out.println(p.getName() + " is younger than " + s);});
-        };
 
         testBody(f0, f1, f2, true);
 

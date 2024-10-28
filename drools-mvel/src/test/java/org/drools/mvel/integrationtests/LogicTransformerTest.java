@@ -33,7 +33,7 @@ import org.drools.base.rule.InvalidRuleException;
 import org.drools.base.rule.LogicTransformer;
 import org.drools.base.rule.Pattern;
 import org.drools.core.util.DroolsStreamUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
