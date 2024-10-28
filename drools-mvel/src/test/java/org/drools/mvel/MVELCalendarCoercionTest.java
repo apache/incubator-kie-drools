@@ -24,8 +24,8 @@ import java.util.Date;
 import java.util.Locale;
 
 import org.drools.util.DateUtils;
+import org.junit.jupiter.api.Test;
 import org.drools.mvel.expr.MVELCalendarCoercion;
-import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

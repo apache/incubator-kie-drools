@@ -42,8 +42,8 @@ import org.drools.core.test.model.Person;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
@@ -56,7 +56,7 @@ public class ReteooWorkingMemoryTest {
      * @see JBRULES-356
      */
     @Test
-    @Ignore
+    @Disabled
     public void testBasicWorkingMemoryActions() {
         InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
         StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
@@ -149,7 +149,7 @@ public class ReteooWorkingMemoryTest {
         }
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void testExecuteQueueActions() {
         InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
         StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();

@@ -22,7 +22,7 @@ import java.io.InputStream;
 
 import org.drools.core.util.asm.MethodCompareA;
 import org.drools.core.util.asm.MethodCompareB;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mvel2.asm.ClassReader;
 
 import static org.assertj.core.api.Assertions.assertThat;

@@ -36,8 +36,8 @@ import org.drools.core.rule.consequence.KnowledgeHelper;
 import org.drools.base.base.ObjectType;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -47,7 +47,7 @@ public class CrossProductTest {
     private KieSession    ksession;
     private List          values;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         final ObjectType list1ObjectType = new ClassObjectType( String.class );
         final ObjectType list2ObjectType = new ClassObjectType( String.class );
