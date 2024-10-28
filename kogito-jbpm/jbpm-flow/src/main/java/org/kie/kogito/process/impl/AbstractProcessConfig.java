@@ -28,6 +28,7 @@ import java.util.stream.StreamSupport;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.kogito.Addons;
 import org.kie.kogito.auth.IdentityProvider;
+import org.kie.kogito.calendar.BusinessCalendar;
 import org.kie.kogito.event.EventPublisher;
 import org.kie.kogito.jobs.JobsService;
 import org.kie.kogito.process.ProcessConfig;
@@ -51,6 +52,7 @@ public abstract class AbstractProcessConfig implements ProcessConfig {
     private final JobsService jobsService;
     private final ProcessVersionResolver versionResolver;
     private final IdentityProvider identityProvider;
+    private final BusinessCalendar businessCalendar;
 
     protected AbstractProcessConfig(
             Iterable<WorkItemHandlerConfig> workItemHandlerConfig,
@@ -62,7 +64,8 @@ public abstract class AbstractProcessConfig implements ProcessConfig {
             String kogitoService,
             Iterable<UnitOfWorkEventListener> unitOfWorkListeners,
             Iterable<ProcessVersionResolver> versionResolver,
-            Iterable<IdentityProvider> identityProvider) {
+            Iterable<IdentityProvider> identityProvider,
+            Iterable<BusinessCalendar> businessCalendar) {
 
         this.workItemHandlerConfig = mergeWorkItemHandler(workItemHandlerConfig, DefaultWorkItemHandlerConfig::new);
         this.processEventListenerConfig = merge(processEventListenerConfigs, processEventListeners);
@@ -72,6 +75,7 @@ public abstract class AbstractProcessConfig implements ProcessConfig {
         this.jobsService = orDefault(jobsService, () -> null);
         this.versionResolver = orDefault(versionResolver, () -> null);
         this.identityProvider = orDefault(identityProvider, NoOpIdentityProvider::new);
+        this.businessCalendar = orDefault(businessCalendar, () -> null);
 
         eventPublishers.forEach(publisher -> unitOfWorkManager().eventManager().addPublisher(publisher));
         unitOfWorkListeners.forEach(listener -> unitOfWorkManager().register(listener));
@@ -122,6 +126,11 @@ public abstract class AbstractProcessConfig implements ProcessConfig {
     @Override
     public IdentityProvider identityProvider() {
         return identityProvider;
+    }
+
+    @Override
+    public BusinessCalendar getBusinessCalendar() {
+        return this.businessCalendar;
     }
 
     public org.kie.kogito.Addons addons() {

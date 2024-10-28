@@ -16,29 +16,23 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.process;
+package $Package$;
 
-import org.kie.kogito.KogitoConfig;
-import org.kie.kogito.auth.IdentityProvider;
 import org.kie.kogito.calendar.BusinessCalendar;
-import org.kie.kogito.jobs.JobsService;
-import org.kie.kogito.signal.SignalManagerHub;
-import org.kie.kogito.uow.UnitOfWorkManager;
+import org.jbpm.process.core.timer.BusinessCalendarImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
-public interface ProcessConfig extends KogitoConfig {
-    WorkItemHandlerConfig workItemHandlers();
+@Configuration
+public class BusinessCalendarProducer {
 
-    ProcessEventListenerConfig processEventListeners();
+    private static final Logger logger = LoggerFactory.getLogger(BusinessCalendarProducer.class);
 
-    SignalManagerHub signalManagerHub();
+    @Bean
+    public BusinessCalendar createBusinessCalendar() {
 
-    UnitOfWorkManager unitOfWorkManager();
-
-    JobsService jobsService();
-
-    ProcessVersionResolver versionResolver();
-
-    IdentityProvider identityProvider();
-
-    BusinessCalendar getBusinessCalendar();
+        return new BusinessCalendarImpl();
+    }
 }

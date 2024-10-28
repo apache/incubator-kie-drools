@@ -18,10 +18,9 @@
  */
 package $Package$;
 
-import jakarta.enterprise.inject.Instance;
-
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.kogito.auth.IdentityProvider;
+import org.kie.kogito.calendar.BusinessCalendar;
 import org.kie.kogito.event.EventPublisher;
 import org.kie.kogito.jobs.JobsService;
 import org.kie.kogito.process.ProcessEventListenerConfig;
@@ -29,6 +28,8 @@ import org.kie.kogito.process.ProcessVersionResolver;
 import org.kie.kogito.process.WorkItemHandlerConfig;
 import org.kie.kogito.uow.UnitOfWorkManager;
 import org.kie.kogito.uow.events.UnitOfWorkEventListener;
+
+import jakarta.enterprise.inject.Instance;
 
 @jakarta.inject.Singleton
 public class ProcessConfig extends org.kie.kogito.process.impl.AbstractProcessConfig {
@@ -44,7 +45,8 @@ public class ProcessConfig extends org.kie.kogito.process.impl.AbstractProcessCo
             org.kie.kogito.config.ConfigBean configBean,
             Instance<UnitOfWorkEventListener> unitOfWorkEventListeners,
             Instance<ProcessVersionResolver> versionResolver,
-            Instance<IdentityProvider> identityProvider) {
+            Instance<IdentityProvider> identityProvider,
+            Instance<BusinessCalendar> businessCalendar) {
 
         super(workItemHandlerConfig,
                 processEventListenerConfigs,
@@ -55,7 +57,8 @@ public class ProcessConfig extends org.kie.kogito.process.impl.AbstractProcessCo
                 configBean.getServiceUrl(),
                 unitOfWorkEventListeners,
                 versionResolver,
-                identityProvider);
+                identityProvider,
+                businessCalendar);
     }
 
 }

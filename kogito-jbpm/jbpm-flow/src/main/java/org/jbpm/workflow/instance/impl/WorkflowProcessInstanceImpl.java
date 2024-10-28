@@ -44,7 +44,6 @@ import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.ContextResolver;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
-import org.jbpm.process.core.timer.BusinessCalendar;
 import org.jbpm.process.core.timer.DateTimeUtils;
 import org.jbpm.process.core.timer.Timer;
 import org.jbpm.process.instance.ContextInstance;
@@ -81,6 +80,7 @@ import org.kie.api.definition.process.NodeContainer;
 import org.kie.api.definition.process.WorkflowElementIdentifier;
 import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.internal.process.CorrelationKey;
+import org.kie.kogito.calendar.BusinessCalendar;
 import org.kie.kogito.internal.process.event.KogitoEventListener;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstanceContainer;
@@ -102,6 +102,7 @@ import org.mvel2.integration.VariableResolverFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.jbpm.process.core.constants.CalendarConstants.BUSINESS_CALENDAR_ENVIRONMENT_KEY;
 import static org.jbpm.ruleflow.core.Metadata.COMPENSATION;
 import static org.jbpm.ruleflow.core.Metadata.CONDITION;
 import static org.jbpm.ruleflow.core.Metadata.CORRELATION_KEY;
@@ -565,8 +566,8 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
         logger.debug("SLA due date is set to {}", slaDueDateExpression);
         InternalKnowledgeRuntime kruntime = getKnowledgeRuntime();
         long duration;
-        if (kruntime.getEnvironment().get("jbpm.business.calendar") != null) {
-            BusinessCalendar businessCalendar = (BusinessCalendar) kruntime.getEnvironment().get("jbpm.business.calendar");
+        if (kruntime.getEnvironment().get(BUSINESS_CALENDAR_ENVIRONMENT_KEY) != null) {
+            BusinessCalendar businessCalendar = (BusinessCalendar) kruntime.getEnvironment().get(BUSINESS_CALENDAR_ENVIRONMENT_KEY);
             duration = businessCalendar.calculateBusinessTimeAsDuration(slaDueDateExpression);
         } else {
             duration = DateTimeUtils.parseDuration(slaDueDateExpression);

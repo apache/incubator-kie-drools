@@ -29,7 +29,6 @@ import java.util.Optional;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.rule.consequence.InternalMatch;
-import org.jbpm.process.core.timer.BusinessCalendar;
 import org.jbpm.process.core.timer.DateTimeUtils;
 import org.jbpm.process.core.timer.Timer;
 import org.jbpm.process.instance.InternalProcessRuntime;
@@ -44,6 +43,7 @@ import org.jbpm.workflow.instance.impl.ExtendedNodeInstanceImpl;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.kie.api.event.rule.MatchCreatedEvent;
 import org.kie.api.runtime.KieRuntime;
+import org.kie.kogito.calendar.BusinessCalendar;
 import org.kie.kogito.internal.process.event.KogitoEventListener;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
@@ -60,6 +60,7 @@ import org.kie.kogito.timer.TimerInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.jbpm.process.core.constants.CalendarConstants.BUSINESS_CALENDAR_ENVIRONMENT_KEY;
 import static org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE;
 import static org.jbpm.workflow.instance.node.TimerNodeInstance.TIMER_TRIGGERED_EVENT;
 
@@ -145,8 +146,8 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
     protected ExpirationTime createTimerInstance(Timer timer) {
 
         KieRuntime kruntime = getProcessInstance().getKnowledgeRuntime();
-        if (kruntime != null && kruntime.getEnvironment().get("jbpm.business.calendar") != null) {
-            BusinessCalendar businessCalendar = (BusinessCalendar) kruntime.getEnvironment().get("jbpm.business.calendar");
+        if (kruntime != null && kruntime.getEnvironment().get(BUSINESS_CALENDAR_ENVIRONMENT_KEY) != null) {
+            BusinessCalendar businessCalendar = (BusinessCalendar) kruntime.getEnvironment().get(BUSINESS_CALENDAR_ENVIRONMENT_KEY);
             String delay = null;
             switch (timer.getTimeType()) {
                 case Timer.TIME_CYCLE:
@@ -183,7 +184,7 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
                 case Timer.TIME_DURATION:
                     delay = resolveTimerExpression(timer.getDelay());
 
-                    return DurationExpirationTime.repeat(businessCalendar.calculateBusinessTimeAsDuration(delay));
+                    return DurationExpirationTime.after(businessCalendar.calculateBusinessTimeAsDuration(delay));
                 case Timer.TIME_DATE:
                     // even though calendar is available concrete date was provided so it shall be used
                     return ExactExpirationTime.of(timer.getDate());

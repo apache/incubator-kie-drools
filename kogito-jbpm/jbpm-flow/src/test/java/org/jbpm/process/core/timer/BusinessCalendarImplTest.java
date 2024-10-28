@@ -31,7 +31,7 @@ import org.kie.kogito.timer.SessionPseudoClock;
 import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 public class BusinessCalendarImplTest extends AbstractBaseTest {
 
@@ -327,14 +327,8 @@ public class BusinessCalendarImplTest extends AbstractBaseTest {
     }
 
     @Test
-    public void testMissingConfigurationDualArgConstructor() {
-        SessionPseudoClock clock = new StaticPseudoClock(parseToDateWithTime("2012-05-04 13:45").getTime());
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> new BusinessCalendarImpl(null, clock));
-    }
-
-    @Test
-    public void testMissingConfigurationSingleArgConstructor() {
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> new BusinessCalendarImpl(null));
+    public void testBusinessCalendarWithoutProvidedConfiguration() {
+        assertDoesNotThrow(() -> new BusinessCalendarImpl());
     }
 
     @Test

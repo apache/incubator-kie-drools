@@ -21,6 +21,7 @@ package org.jbpm.process.instance;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Objects;
 
 import org.drools.core.common.EndOperationListener;
 import org.drools.core.common.InternalAgenda;
@@ -53,11 +54,15 @@ import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.ViewChangedEventListener;
 import org.kie.api.time.SessionClock;
 import org.kie.kogito.Application;
+import org.kie.kogito.calendar.BusinessCalendar;
 import org.kie.kogito.internal.process.event.KogitoProcessEventSupport;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.kie.kogito.internal.process.workitem.KogitoWorkItemManager;
 import org.kie.kogito.jobs.JobsService;
+import org.kie.kogito.process.ProcessConfig;
+
+import static org.jbpm.process.core.constants.CalendarConstants.BUSINESS_CALENDAR_ENVIRONMENT_KEY;
 
 /**
  * A severely limited implementation of the WorkingMemory interface.
@@ -72,6 +77,10 @@ class DummyKnowledgeRuntime implements InternalKnowledgeRuntime, KogitoProcessRu
         this.processRuntime = processRuntime;
         this.environment = new EnvironmentImpl();
         // register codegen-based node instances factories
+        BusinessCalendar calendar = processRuntime.getApplication().config().get(ProcessConfig.class).getBusinessCalendar();
+        if (Objects.nonNull(calendar)) {
+            environment.set(BUSINESS_CALENDAR_ENVIRONMENT_KEY, calendar);
+        }
         environment.set("NodeInstanceFactoryRegistry", new CodegenNodeInstanceFactoryRegistry());
     }
 

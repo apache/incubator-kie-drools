@@ -16,29 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.process;
+package org.jbpm.process.core.constants;
 
-import org.kie.kogito.KogitoConfig;
-import org.kie.kogito.auth.IdentityProvider;
-import org.kie.kogito.calendar.BusinessCalendar;
-import org.kie.kogito.jobs.JobsService;
-import org.kie.kogito.signal.SignalManagerHub;
-import org.kie.kogito.uow.UnitOfWorkManager;
-
-public interface ProcessConfig extends KogitoConfig {
-    WorkItemHandlerConfig workItemHandlers();
-
-    ProcessEventListenerConfig processEventListeners();
-
-    SignalManagerHub signalManagerHub();
-
-    UnitOfWorkManager unitOfWorkManager();
-
-    JobsService jobsService();
-
-    ProcessVersionResolver versionResolver();
-
-    IdentityProvider identityProvider();
-
-    BusinessCalendar getBusinessCalendar();
+public class CalendarConstants {
+    public static final String BUSINESS_CALENDAR_PATH = "calendar.properties";
+    public static final String BUSINESS_CALENDAR_ENVIRONMENT_KEY = "jbpm.business.calendar";
 }

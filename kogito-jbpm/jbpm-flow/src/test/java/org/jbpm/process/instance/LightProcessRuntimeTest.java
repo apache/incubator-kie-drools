@@ -26,9 +26,12 @@ import org.jbpm.ruleflow.core.WorkflowElementIdentifierFactory;
 import org.junit.jupiter.api.Test;
 import org.kie.api.definition.process.WorkflowElementIdentifier;
 import org.kie.kogito.Application;
+import org.kie.kogito.Config;
 import org.kie.kogito.process.Processes;
+import org.kie.kogito.process.impl.AbstractProcessConfig;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -66,6 +69,9 @@ class LightProcessRuntimeTest {
         LightProcessRuntimeContext rtc = new LightProcessRuntimeContext(Collections.singletonList(myProcess.process));
 
         Application application = mock(Application.class);
+        Config config = mock(Config.class);
+        when(application.config()).thenReturn(config);
+        when(config.get(any())).thenReturn(mock(AbstractProcessConfig.class));
         when(application.get(Processes.class)).thenReturn(mock(Processes.class));
         LightProcessRuntime rt = new LightProcessRuntime(rtc, services, application);
 

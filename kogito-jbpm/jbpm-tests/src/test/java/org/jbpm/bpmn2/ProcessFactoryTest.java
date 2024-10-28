@@ -41,12 +41,14 @@ import org.kie.api.io.Resource;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.kogito.Application;
+import org.kie.kogito.Config;
 import org.kie.kogito.internal.process.event.DefaultKogitoProcessEventListener;
 import org.kie.kogito.internal.process.event.KogitoProcessEventListener;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.process.Processes;
 import org.kie.kogito.process.bpmn2.BpmnProcess;
 import org.kie.kogito.process.bpmn2.BpmnProcesses;
+import org.kie.kogito.process.impl.AbstractProcessConfig;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.jbpm.ruleflow.core.Metadata.CANCEL_ACTIVITY;
@@ -56,6 +58,7 @@ import static org.jbpm.ruleflow.core.Metadata.EVENT_TYPE_TIMER;
 import static org.jbpm.ruleflow.core.Metadata.HAS_ERROR_EVENT;
 import static org.jbpm.ruleflow.core.Metadata.TIME_CYCLE;
 import static org.jbpm.ruleflow.core.Metadata.TIME_DURATION;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -417,6 +420,9 @@ public class ProcessFactoryTest extends JbpmBpmn2TestCase {
         final RuleFlowProcess process = factory.validate().getProcess();
 
         Application application = mock(Application.class);
+        Config config = mock(Config.class);
+        when(application.config()).thenReturn(config);
+        when(config.get(any())).thenReturn(mock(AbstractProcessConfig.class));
         when(application.get(Processes.class)).thenReturn(new BpmnProcesses().addProcess(new BpmnProcess(process)));
         final LightProcessRuntime processRuntime = LightProcessRuntime.of(application, Collections.singletonList(process), new LightProcessRuntimeServiceProvider());
 

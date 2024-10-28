@@ -24,16 +24,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.base.definitions.rule.impl.RuleImpl;
-import org.drools.base.time.TimeUtils;
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.common.ReteEvaluator;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.phreak.PropagationEntry;
 import org.jbpm.process.core.event.EventFilter;
 import org.jbpm.process.core.event.EventTypeFilter;
-import org.jbpm.process.core.timer.BusinessCalendar;
-import org.jbpm.process.core.timer.DateTimeUtils;
-import org.jbpm.process.core.timer.Timer;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.impl.DataAssociation;
 import org.jbpm.workflow.core.impl.NodeIoHelper;
@@ -54,11 +50,7 @@ import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.kogito.Application;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.workitem.KogitoWorkItemManager;
-import org.kie.kogito.jobs.DurationExpirationTime;
-import org.kie.kogito.jobs.ExactExpirationTime;
-import org.kie.kogito.jobs.ExpirationTime;
 import org.kie.kogito.jobs.JobsService;
-import org.kie.kogito.jobs.ProcessJobDescription;
 import org.kie.kogito.process.Processes;
 import org.kie.kogito.services.jobs.impl.InMemoryJobService;
 import org.kie.kogito.signal.SignalManager;
@@ -71,8 +63,6 @@ public class LightProcessRuntime extends AbstractProcessRuntime {
     private final InternalKnowledgeRuntime knowledgeRuntime;
 
     private ProcessInstanceManager processInstanceManager;
-    private SignalManager signalManager;
-    private JobsService jobService;
     private final KogitoWorkItemManager workItemManager;
     private UnitOfWorkManager unitOfWorkManager;
 
@@ -102,20 +92,7 @@ public class LightProcessRuntime extends AbstractProcessRuntime {
     }
 
     public void initStartTimers() {
-        Collection<Process> processes = runtimeContext.getProcesses();
-        for (Process process : processes) {
-            RuleFlowProcess p = (RuleFlowProcess) process;
-            List<StartNode> startNodes = p.getTimerStart();
-            if (startNodes != null && !startNodes.isEmpty()) {
-                for (StartNode startNode : startNodes) {
-                    if (startNode != null && startNode.getTimer() != null) {
-
-                        jobService.scheduleProcessJob(ProcessJobDescription.of(createTimerInstance(startNode.getTimer(), knowledgeRuntime), p.getId()));
-
-                    }
-                }
-            }
-        }
+        initStartTimers(runtimeContext.getProcesses(), knowledgeRuntime);
     }
 
     @Override
@@ -422,61 +399,6 @@ public class LightProcessRuntime extends AbstractProcessRuntime {
     public boolean isActive() {
         // originally: kruntime.getEnvironment().get("Active")
         return runtimeContext.isActive();
-    }
-
-    protected ExpirationTime createTimerInstance(Timer timer, InternalKnowledgeRuntime kruntime) {
-
-        if (kruntime != null && kruntime.getEnvironment().get("jbpm.business.calendar") != null) {
-            BusinessCalendar businessCalendar = (BusinessCalendar) kruntime.getEnvironment().get("jbpm.business.calendar");
-
-            long delay = businessCalendar.calculateBusinessTimeAsDuration(timer.getDelay());
-
-            if (timer.getPeriod() == null) {
-                return DurationExpirationTime.repeat(delay);
-            } else {
-                long period = businessCalendar.calculateBusinessTimeAsDuration(timer.getPeriod());
-
-                return DurationExpirationTime.repeat(delay, period);
-            }
-        } else {
-            return configureTimerInstance(timer);
-        }
-    }
-
-    private ExpirationTime configureTimerInstance(Timer timer) {
-        long duration = -1;
-        switch (timer.getTimeType()) {
-            case Timer.TIME_CYCLE:
-                // when using ISO date/time period is not set
-                long[] repeatValues = DateTimeUtils.parseRepeatableDateTime(timer.getDelay());
-                if (repeatValues.length == 3) {
-                    return DurationExpirationTime.repeat(repeatValues[1], repeatValues[2]);
-                } else {
-                    long delay = repeatValues[0];
-                    long period = -1;
-                    try {
-                        period = TimeUtils.parseTimeString(timer.getPeriod());
-
-                    } catch (RuntimeException e) {
-                        period = repeatValues[0];
-                    }
-
-                    return DurationExpirationTime.repeat(delay, period);
-                }
-
-            case Timer.TIME_DURATION:
-
-                duration = DateTimeUtils.parseDuration(timer.getDelay());
-                return DurationExpirationTime.repeat(duration);
-
-            case Timer.TIME_DATE:
-
-                return ExactExpirationTime.of(timer.getDate());
-
-            default:
-                throw new UnsupportedOperationException("Not supported timer definition");
-        }
-
     }
 
     public class SignalManagerSignalAction extends PropagationEntry.AbstractPropagationEntry implements WorkingMemoryAction {

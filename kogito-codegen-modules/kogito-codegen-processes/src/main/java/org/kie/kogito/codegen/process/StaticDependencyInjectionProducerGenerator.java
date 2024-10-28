@@ -49,11 +49,19 @@ public class StaticDependencyInjectionProducerGenerator {
      * @return Map with the generated resources
      */
     public Map<String, String> generate() {
+        return generate(producerTemplates);
+    }
+
+    /**
+     * Key is the FilePath, Value is the content
+     *
+     * @return Map with the generated resources
+     */
+    public Map<String, String> generate(List<String> templates) {
         if (!context.hasDI()) {
             return Collections.emptyMap();
         }
-        return producerTemplates.stream()
-                .map(this::buildProducerTemplatedGenerator)
+        return templates.stream().map(this::buildProducerTemplatedGenerator)
                 .collect(Collectors.toMap(TemplatedGenerator::generatedFilePath,
                         generator -> generator.compilationUnitOrThrow().toString()));
     }

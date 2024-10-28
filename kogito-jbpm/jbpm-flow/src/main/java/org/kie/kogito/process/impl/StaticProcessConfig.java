@@ -19,6 +19,7 @@
 package org.kie.kogito.process.impl;
 
 import org.kie.kogito.auth.IdentityProvider;
+import org.kie.kogito.calendar.BusinessCalendar;
 import org.kie.kogito.jobs.JobsService;
 import org.kie.kogito.process.ProcessConfig;
 import org.kie.kogito.process.ProcessEventListenerConfig;
@@ -41,12 +42,13 @@ public class StaticProcessConfig implements ProcessConfig {
     private final ProcessVersionResolver versionResolver;
 
     private final IdentityProvider identityProvider;
+    private final BusinessCalendar businessCalendar;
 
     public StaticProcessConfig(
             WorkItemHandlerConfig workItemHandlerConfig,
             ProcessEventListenerConfig processEventListenerConfig,
             UnitOfWorkManager unitOfWorkManager) {
-        this(workItemHandlerConfig, processEventListenerConfig, unitOfWorkManager, null, null, new NoOpIdentityProvider());
+        this(workItemHandlerConfig, processEventListenerConfig, unitOfWorkManager, null, null, new NoOpIdentityProvider(), null);
     }
 
     public StaticProcessConfig(
@@ -55,7 +57,8 @@ public class StaticProcessConfig implements ProcessConfig {
             UnitOfWorkManager unitOfWorkManager,
             JobsService jobsService,
             ProcessVersionResolver versionResolver,
-            IdentityProvider identityProvider) {
+            IdentityProvider identityProvider,
+            BusinessCalendar calendar) {
         this.unitOfWorkManager = unitOfWorkManager;
         this.workItemHandlerConfig = workItemHandlerConfig;
         this.processEventListenerConfig = processEventListenerConfig;
@@ -63,6 +66,7 @@ public class StaticProcessConfig implements ProcessConfig {
         this.jobsService = jobsService;
         this.versionResolver = versionResolver;
         this.identityProvider = identityProvider;
+        this.businessCalendar = calendar;
     }
 
     public StaticProcessConfig() {
@@ -71,7 +75,8 @@ public class StaticProcessConfig implements ProcessConfig {
                 new DefaultUnitOfWorkManager(new CollectingUnitOfWorkFactory()),
                 null,
                 null,
-                new NoOpIdentityProvider());
+                new NoOpIdentityProvider(),
+                null);
     }
 
     @Override
@@ -107,5 +112,10 @@ public class StaticProcessConfig implements ProcessConfig {
     @Override
     public IdentityProvider identityProvider() {
         return identityProvider;
+    }
+
+    @Override
+    public BusinessCalendar getBusinessCalendar() {
+        return this.businessCalendar;
     }
 }
