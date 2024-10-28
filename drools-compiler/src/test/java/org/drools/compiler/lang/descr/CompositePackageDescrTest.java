@@ -24,8 +24,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.drools.util.StringUtils.generateUUID;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class CompositePackageDescrTest {
 
@@ -53,19 +53,19 @@ public class CompositePackageDescrTest {
 
     @Test
     public void addPackageDescrDifferentPkgUUID() {
-        assertThrows(RuntimeException.class, () -> {
-            String pkgUUID = generateUUID();
-            PackageDescr first = new PackageDescr(NAMESPACE);
-            first.setPreferredPkgUUID(pkgUUID);
-            assertThat(first.getPreferredPkgUUID().isPresent()).isTrue();
-            compositePackageDescr.addPackageDescr(new ByteArrayResource(), first);
-            assertThat(compositePackageDescr.getPreferredPkgUUID().isPresent()).isTrue();
-            assertThat(compositePackageDescr.getPreferredPkgUUID().get()).isEqualTo(pkgUUID);
-            pkgUUID = generateUUID();
-            PackageDescr second = new PackageDescr(NAMESPACE);
-            second.setPreferredPkgUUID(pkgUUID);
-            assertThat(second.getPreferredPkgUUID().isPresent()).isTrue();
-            assertThat(second.getPreferredPkgUUID().get()).isNotEqualTo(first.getPreferredPkgUUID().get());
+        String pkgUUID = generateUUID();
+        PackageDescr first = new PackageDescr(NAMESPACE);
+        first.setPreferredPkgUUID(pkgUUID);
+        assertThat(first.getPreferredPkgUUID().isPresent()).isTrue();
+        compositePackageDescr.addPackageDescr(new ByteArrayResource(), first);
+        assertThat(compositePackageDescr.getPreferredPkgUUID().isPresent()).isTrue();
+        assertThat(compositePackageDescr.getPreferredPkgUUID().get()).isEqualTo(pkgUUID);
+        pkgUUID = generateUUID();
+        PackageDescr second = new PackageDescr(NAMESPACE);
+        second.setPreferredPkgUUID(pkgUUID);
+        assertThat(second.getPreferredPkgUUID().isPresent()).isTrue();
+        assertThat(second.getPreferredPkgUUID().get()).isNotEqualTo(first.getPreferredPkgUUID().get());
+        assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> {
             compositePackageDescr.addPackageDescr(new ByteArrayResource(), second);
         });
     }
