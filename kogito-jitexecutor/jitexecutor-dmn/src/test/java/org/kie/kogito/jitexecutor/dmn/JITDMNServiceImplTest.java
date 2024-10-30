@@ -79,7 +79,8 @@ public class JITDMNServiceImplTest {
         JITDMNResult dmnResult = jitdmnService.evaluateModel(decisionTableModel, context);
 
         Assertions.assertEquals("LoanEligibility", dmnResult.getModelName());
-        Assertions.assertEquals("https://github.com/kiegroup/kogito-examples/dmn-quarkus-listener-example", dmnResult.getNamespace());
+        Assertions.assertEquals("https://github.com/kiegroup/kogito-examples/dmn-quarkus-listener-example",
+                dmnResult.getNamespace());
         Assertions.assertTrue(dmnResult.getMessages().isEmpty());
         Assertions.assertEquals("Yes", dmnResult.getDecisionResultByName("Eligibility").getResult());
     }
@@ -101,12 +102,12 @@ public class JITDMNServiceImplTest {
         Assertions.assertEquals("DMN_A77074C1-21FE-4F7E-9753-F84661569AFC", dmnResult.getModelName());
         Assertions.assertTrue(dmnResult.getMessages().isEmpty());
         Assertions.assertEquals(BigDecimal.valueOf(50), dmnResult.getDecisionResultByName("Risk Score").getResult());
-        List<String> evaluationHitIds = dmnResult.getEvaluationHitIds();
+        Map<String, Integer> evaluationHitIds = dmnResult.getEvaluationHitIds();
         Assertions.assertNotNull(evaluationHitIds);
         Assertions.assertEquals(3, evaluationHitIds.size());
-        Assertions.assertTrue(evaluationHitIds.contains(elseElementId));
-        Assertions.assertTrue(evaluationHitIds.contains(ruleId0));
-        Assertions.assertTrue(evaluationHitIds.contains(ruleId3));
+        Assertions.assertTrue(evaluationHitIds.containsKey(elseElementId));
+        Assertions.assertTrue(evaluationHitIds.containsKey(ruleId0));
+        Assertions.assertTrue(evaluationHitIds.containsKey(ruleId3));
 
         context = new HashMap<>();
         context.put("Credit Score", "Excellent");
@@ -118,9 +119,9 @@ public class JITDMNServiceImplTest {
         evaluationHitIds = dmnResult.getEvaluationHitIds();
         Assertions.assertNotNull(evaluationHitIds);
         Assertions.assertEquals(3, evaluationHitIds.size());
-        Assertions.assertTrue(evaluationHitIds.contains(thenElementId));
-        Assertions.assertTrue(evaluationHitIds.contains(ruleId1));
-        Assertions.assertTrue(evaluationHitIds.contains(ruleId4));
+        Assertions.assertTrue(evaluationHitIds.containsKey(thenElementId));
+        Assertions.assertTrue(evaluationHitIds.containsKey(ruleId1));
+        Assertions.assertTrue(evaluationHitIds.containsKey(ruleId4));
     }
 
     @Test
@@ -141,12 +142,12 @@ public class JITDMNServiceImplTest {
 
         Assertions.assertTrue(dmnResult.getMessages().isEmpty());
         Assertions.assertEquals(BigDecimal.valueOf(50), dmnResult.getDecisionResultByName("Risk Score").getResult());
-        List<String> evaluationHitIds = dmnResult.getEvaluationHitIds();
+        Map<String, Integer> evaluationHitIds = dmnResult.getEvaluationHitIds();
         Assertions.assertNotNull(evaluationHitIds);
         Assertions.assertEquals(3, evaluationHitIds.size());
-        Assertions.assertTrue(evaluationHitIds.contains(thenElementId));
-        Assertions.assertTrue(evaluationHitIds.contains(thenRuleId0));
-        Assertions.assertTrue(evaluationHitIds.contains(thenRuleId4));
+        Assertions.assertTrue(evaluationHitIds.containsKey(thenElementId));
+        Assertions.assertTrue(evaluationHitIds.containsKey(thenRuleId0));
+        Assertions.assertTrue(evaluationHitIds.containsKey(thenRuleId4));
 
         context = new HashMap<>();
         context.put("Credit Score", "Excellent");
@@ -159,9 +160,9 @@ public class JITDMNServiceImplTest {
         evaluationHitIds = dmnResult.getEvaluationHitIds();
         Assertions.assertNotNull(evaluationHitIds);
         Assertions.assertEquals(3, evaluationHitIds.size());
-        Assertions.assertTrue(evaluationHitIds.contains(elseElementId));
-        Assertions.assertTrue(evaluationHitIds.contains(elseRuleId2));
-        Assertions.assertTrue(evaluationHitIds.contains(elseRuleId5));
+        Assertions.assertTrue(evaluationHitIds.containsKey(elseElementId));
+        Assertions.assertTrue(evaluationHitIds.containsKey(elseRuleId2));
+        Assertions.assertTrue(evaluationHitIds.containsKey(elseRuleId5));
     }
 
     @Test
@@ -185,12 +186,12 @@ public class JITDMNServiceImplTest {
         expectedStatistcs.add(BigDecimal.valueOf(1));
         Assertions.assertTrue(dmnResult.getMessages().isEmpty());
         Assertions.assertEquals(expectedStatistcs, dmnResult.getDecisionResultByName("Statistics").getResult());
-        final List<String> evaluationHitIds = dmnResult.getEvaluationHitIds();
+        final Map<String, Integer> evaluationHitIds = dmnResult.getEvaluationHitIds();
         Assertions.assertNotNull(evaluationHitIds);
-        Assertions.assertEquals(6, evaluationHitIds.size());
-        Assertions.assertEquals(3, evaluationHitIds.stream().filter(rule0::equals).count());
-        Assertions.assertEquals(2, evaluationHitIds.stream().filter(rule1::equals).count());
-        Assertions.assertEquals(1, evaluationHitIds.stream().filter(rule2::equals).count());
+        Assertions.assertEquals(3, evaluationHitIds.size());
+        Assertions.assertEquals(3, evaluationHitIds.get(rule0));
+        Assertions.assertEquals(2, evaluationHitIds.get(rule1));
+        Assertions.assertEquals(1, evaluationHitIds.get(rule2));
     }
 
     @Test

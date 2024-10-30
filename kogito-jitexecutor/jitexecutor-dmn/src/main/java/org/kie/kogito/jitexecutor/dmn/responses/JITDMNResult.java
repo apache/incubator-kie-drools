@@ -50,17 +50,17 @@ public class JITDMNResult implements Serializable,
 
     private Map<String, JITDMNDecisionResult> decisionResults = new HashMap<>();
 
-    private List<String> evaluationHitIds;
+    private Map<String, Integer> evaluationHitIds;
 
     public JITDMNResult() {
         // Intentionally blank.
     }
 
     public JITDMNResult(String namespace, String modelName, org.kie.dmn.api.core.DMNResult dmnResult) {
-        this(namespace, modelName, dmnResult, Collections.emptyList());
+        this(namespace, modelName, dmnResult, Collections.emptyMap());
     }
 
-    public JITDMNResult(String namespace, String modelName, org.kie.dmn.api.core.DMNResult dmnResult, List<String> evaluationHitIds) {
+    public JITDMNResult(String namespace, String modelName, org.kie.dmn.api.core.DMNResult dmnResult, Map<String, Integer> evaluationHitIds) {
         this.namespace = namespace;
         this.modelName = modelName;
         this.setDmnContext(dmnResult.getContext().getAll());
@@ -110,11 +110,11 @@ public class JITDMNResult implements Serializable,
         }
     }
 
-    public List<String> getEvaluationHitIds() {
+    public Map<String, Integer> getEvaluationHitIds() {
         return evaluationHitIds;
     }
 
-    public void setEvaluationHitIds(List<String> evaluationHitIds) {
+    public void setEvaluationHitIds(Map<String, Integer> evaluationHitIds) {
         this.evaluationHitIds = evaluationHitIds;
     }
 

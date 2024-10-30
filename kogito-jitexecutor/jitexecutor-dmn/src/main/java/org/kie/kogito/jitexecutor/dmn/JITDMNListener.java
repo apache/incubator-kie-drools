@@ -18,8 +18,8 @@
  */
 package org.kie.kogito.jitexecutor.dmn;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.kie.dmn.api.core.event.AfterConditionalEvaluationEvent;
 import org.kie.dmn.api.core.event.AfterEvaluateAllEvent;
@@ -36,14 +36,14 @@ import org.slf4j.LoggerFactory;
 
 public class JITDMNListener implements DMNRuntimeEventListener {
 
-    private final List<String> evaluationHitIds = new ArrayList<>();
+    private final Map<String, Integer> evaluationHitIds = new HashMap<>();
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JITDMNListener.class);
 
     @Override
     public void afterEvaluateDecisionTable(AfterEvaluateDecisionTableEvent event) {
         logEvent(event);
-        evaluationHitIds.addAll(event.getSelectedIds());
+        event.getSelectedIds().forEach(s -> evaluationHitIds.compute(s, (k, v) -> v == null ? 1 : v + 1));
     }
 
     @Override
@@ -79,10 +79,10 @@ public class JITDMNListener implements DMNRuntimeEventListener {
     @Override
     public void afterConditionalEvaluation(AfterConditionalEvaluationEvent event) {
         logEvent(event);
-        evaluationHitIds.add(event.getExecutedId());
+        evaluationHitIds.compute(event.getExecutedId(), (k, v) -> v == null ? 1 : v + 1);
     }
 
-    public List<String> getEvaluationHitIds() {
+    public Map<String, Integer> getEvaluationHitIds() {
         return evaluationHitIds;
     }
 

@@ -22,7 +22,6 @@ import java.io.StringReader;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -81,12 +80,12 @@ public class DMNEvaluator {
         DMNContext dmnContext =
                 new DynamicDMNContextBuilder(dmnRuntime.newContext(), dmnModel).populateContextWith(context);
         DMNResult dmnResult = dmnRuntime.evaluateAll(dmnModel, dmnContext);
-        Optional<List<String>> evaluationHitIds = dmnRuntime.getListeners().stream()
+        Optional<Map<String, Integer>> evaluationHitIds = dmnRuntime.getListeners().stream()
                 .filter(JITDMNListener.class::isInstance)
                 .findFirst()
                 .map(JITDMNListener.class::cast)
                 .map(JITDMNListener::getEvaluationHitIds);
-        return new JITDMNResult(getNamespace(), getName(), dmnResult, evaluationHitIds.orElse(Collections.emptyList()));
+        return new JITDMNResult(getNamespace(), getName(), dmnResult, evaluationHitIds.orElse(Collections.emptyMap()));
     }
 
     public static DMNEvaluator fromMultiple(MultipleResourcesPayload payload) {
