@@ -198,7 +198,7 @@ public class UserTaskCodegen extends AbstractGenerator {
             ConstructorDeclaration declaration = clazzDeclaration.findFirst(ConstructorDeclaration.class).get();
             declaration.setName(className);
 
-            String taskNodeName = (String) info.getParameter(NODE_NAME);
+            String taskNodeName = (String) info.getParameter("TaskName");
             Expression taskNameExpression = taskNodeName != null ? new StringLiteralExpr(taskNodeName) : new NullLiteralExpr();
 
             BlockStmt block = declaration.getBody();

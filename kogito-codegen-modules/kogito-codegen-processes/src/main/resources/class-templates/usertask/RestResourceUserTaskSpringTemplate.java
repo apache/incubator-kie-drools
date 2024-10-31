@@ -20,6 +20,7 @@ package com.myspace.demo;
 
 import java.util.List;
 import java.util.Map;
+import java.io.IOException;
 import java.util.Collection;
 
 import org.jbpm.util.JsonSchemaUtil;
@@ -30,6 +31,8 @@ import org.kie.kogito.process.WorkItem;
 import org.kie.kogito.process.impl.Sig;
 import org.kie.kogito.services.uow.UnitOfWorkExecutor;
 import org.kie.kogito.usertask.UserTaskService;
+import org.kie.kogito.usertask.impl.json.SimpleDeserializationProblemHandler;
+import org.kie.kogito.usertask.impl.json.SimplePolymorphicTypeValidator;
 import org.kie.kogito.usertask.view.UserTaskTransitionView;
 import org.kie.kogito.usertask.view.UserTaskView;
 import org.springframework.http.HttpStatus;
@@ -47,6 +50,19 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectMapper.DefaultTyping;
+import com.fasterxml.jackson.databind.cfg.MapperConfig;
+import com.fasterxml.jackson.databind.deser.DeserializationProblemHandler;
+import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator;
+import com.fasterxml.jackson.databind.jsontype.TypeIdResolver;
+import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator.Validity;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.kie.kogito.usertask.model.*;
@@ -57,6 +73,20 @@ public class UserTasksResource {
 
     @Autowired
     UserTaskService userTaskService;
+
+    @Autowired
+    ObjectMapper objectMapper;
+
+    ObjectMapper mapper;
+
+    @jakarta.annotation.PostConstruct
+    public void init() {
+        mapper = objectMapper.copy();
+        SimpleModule module = new SimpleModule();
+        mapper.addHandler(new SimpleDeserializationProblemHandler());
+        mapper.registerModule(module);
+        mapper.activateDefaultTypingAsProperty(new SimplePolymorphicTypeValidator(), DefaultTyping.NON_FINAL, "@type");
+    }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List<UserTaskView> list(@RequestParam("user") String user, @RequestParam("group") List<String> groups) {
@@ -72,9 +102,10 @@ public class UserTasksResource {
     public UserTaskView transition(
             @PathVariable("taskId") String taskId,
             @RequestParam("user") String user,
-            @RequestParam("group") List<String> groups, 
+            @RequestParam("group") List<String> groups,
             @RequestBody TransitionInfo transitionInfo) {
-        return userTaskService.transition(taskId, transitionInfo.getTransitionId(), transitionInfo.getData(), IdentityProviders.of(user, groups)).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        return userTaskService.transition(taskId, transitionInfo.getTransitionId(), transitionInfo.getData(), IdentityProviders.of(user, groups))
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
     @GetMapping(value = "/{taskId}/transition", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -84,22 +115,24 @@ public class UserTasksResource {
             @RequestParam("group") List<String> groups) {
         return userTaskService.allowedTransitions(taskId, IdentityProviders.of(user, groups));
     }
-    
+
     @PutMapping("/{taskId}/outputs")
     public UserTaskView setOutput(
             @PathVariable("taskId") String taskId,
             @RequestParam("user") String user,
             @RequestParam("group") List<String> groups,
-            @RequestBody Map<String, Object> data) {
+            @RequestBody String body) throws Exception {
+        Map<String, Object> data = mapper.readValue(body, Map.class);
         return userTaskService.setOutputs(taskId, data, IdentityProviders.of(user, groups)).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
     @PutMapping("/{taskId}/inputs")
-    public UserTaskView setOutput(@PathVariable("id") String id,
+    public UserTaskView setInputs(
             @PathVariable("taskId") String taskId,
             @RequestParam("user") String user,
             @RequestParam("group") List<String> groups,
-            @RequestBody Map<String, Object> data) {
+            @RequestBody String body) throws Exception {
+        Map<String, Object> data = mapper.readValue(body, Map.class);
         return userTaskService.setInputs(taskId, data, IdentityProviders.of(user, groups)).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 

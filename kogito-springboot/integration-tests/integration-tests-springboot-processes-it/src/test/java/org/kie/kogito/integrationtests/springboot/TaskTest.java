@@ -40,12 +40,17 @@ import org.kie.kogito.usertask.model.CommentInfo;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectMapper.DefaultTyping;
+import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
+
 import io.restassured.http.ContentType;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(SpringExtension.class)
@@ -109,6 +114,66 @@ public class TaskTest extends BaseRestTest {
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
+    }
+
+    @Test
+    public void testInputOutputsViaJsonTypeProperty() throws Exception {
+        Traveller traveller = new Traveller("pepe", "rubiales", "pepe.rubiales@gmail.com", "Spanish", null);
+
+        given()
+                .contentType(ContentType.JSON)
+                .when()
+                .body(Collections.singletonMap("traveller", traveller))
+                .post("/approvals")
+                .then()
+                .statusCode(201)
+                .extract()
+                .path("id");
+
+        String taskId = given()
+                .contentType(ContentType.JSON)
+                .queryParam("user", "admin")
+                .queryParam("group", "managers")
+                .when()
+                .get("/usertasks/instance")
+                .then()
+                .statusCode(200)
+                .extract()
+                .path("[0].id");
+
+        traveller = new Traveller("pepe2", "rubiales2", "pepe.rubiales@gmail.com", "Spanish2", null);
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.activateDefaultTypingAsProperty(BasicPolymorphicTypeValidator.builder().build(), DefaultTyping.NON_FINAL, "@type");
+        String jsonBody = mapper.writeValueAsString(Map.of("traveller", traveller));
+        given().contentType(ContentType.JSON)
+                .when()
+                .queryParam("user", "admin")
+                .queryParam("group", "managers")
+                .pathParam("taskId", taskId)
+                .body(jsonBody)
+                .put("/usertasks/instance/{taskId}/inputs")
+                .then()
+                .log().body()
+                .statusCode(200)
+                .body("inputs.traveller.firstName", is(traveller.getFirstName()))
+                .body("inputs.traveller.lastName", is(traveller.getLastName()))
+                .body("inputs.traveller.email", is(traveller.getEmail()))
+                .body("inputs.traveller.nationality", is(traveller.getNationality()));
+
+        given().contentType(ContentType.JSON)
+                .when()
+                .queryParam("user", "admin")
+                .queryParam("group", "managers")
+                .pathParam("taskId", taskId)
+                .body(jsonBody)
+                .put("/usertasks/instance/{taskId}/outputs")
+                .then()
+                .log().body()
+                .statusCode(200)
+                .body("outputs.traveller.firstName", is(traveller.getFirstName()))
+                .body("outputs.traveller.lastName", is(traveller.getLastName()))
+                .body("outputs.traveller.email", is(traveller.getEmail()))
+                .body("outputs.traveller.nationality", is(traveller.getNationality()));
     }
 
     @Test
@@ -371,4 +436,5 @@ public class TaskTest extends BaseRestTest {
         assertThat(downTaskInfo.getInputParams()).isNotNull();
         assertThat(downTaskInfo.getInputParams().get("traveller")).isNull();
     }
+
 }

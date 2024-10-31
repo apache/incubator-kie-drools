@@ -20,7 +20,10 @@ package com.myspace.demo;
 
 import java.util.Map;
 import java.util.List;
+import java.io.IOException;
 import java.util.Collection;
+
+import jakarta.inject.Inject;
 
 import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.core.Context;
@@ -47,18 +50,44 @@ import org.kie.kogito.process.impl.Sig;
 import org.kie.kogito.services.uow.UnitOfWorkExecutor;
 import org.kie.kogito.usertask.UserTaskInstanceNotFoundException;
 import org.kie.kogito.usertask.UserTaskService;
+import org.kie.kogito.usertask.impl.json.SimpleDeserializationProblemHandler;
+import org.kie.kogito.usertask.impl.json.SimplePolymorphicTypeValidator;
 import org.kie.kogito.usertask.view.UserTaskView;
 import org.kie.kogito.usertask.view.UserTaskTransitionView;
 
 import org.kie.kogito.usertask.model.*;
 
-import jakarta.inject.Inject;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectMapper.DefaultTyping;
+import com.fasterxml.jackson.databind.cfg.MapperConfig;
+import com.fasterxml.jackson.databind.deser.DeserializationProblemHandler;
+import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator;
+import com.fasterxml.jackson.databind.jsontype.TypeIdResolver;
+import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator.Validity;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 
 @Path("/usertasks/instance")
 public class UserTasksResource {
 
     @Inject
     UserTaskService userTaskService;
+
+    @Inject
+    ObjectMapper objectMapper;
+
+    ObjectMapper mapper;
+
+    @jakarta.annotation.PostConstruct
+    public void init() {
+        mapper = objectMapper.copy();
+        SimpleModule module = new SimpleModule();
+        mapper.addHandler(new SimpleDeserializationProblemHandler());
+        mapper.registerModule(module);
+        mapper.activateDefaultTypingAsProperty(new SimplePolymorphicTypeValidator(), DefaultTyping.NON_FINAL, "@type");
+    }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -80,7 +109,7 @@ public class UserTasksResource {
     public UserTaskView transition(
             @PathParam("taskId") String taskId,
             @QueryParam("user") String user,
-            @QueryParam("group") List<String> groups, 
+            @QueryParam("group") List<String> groups,
             TransitionInfo transitionInfo) {
         return userTaskService.transition(taskId, transitionInfo.getTransitionId(), transitionInfo.getData(), IdentityProviders.of(user, groups)).orElseThrow(UserTaskInstanceNotFoundException::new);
     }
@@ -102,18 +131,20 @@ public class UserTasksResource {
             @PathParam("taskId") String taskId,
             @QueryParam("user") String user,
             @QueryParam("group") List<String> groups,
-            Map<String, Object> data) {
+            String body) throws Exception {
+        Map<String, Object> data = mapper.readValue(body, Map.class);
         return userTaskService.setOutputs(taskId, data, IdentityProviders.of(user, groups)).orElseThrow(UserTaskInstanceNotFoundException::new);
     }
 
     @PUT
     @Path("/{taskId}/inputs")
     @Consumes(MediaType.APPLICATION_JSON)
-    public UserTaskView setOutput(@PathParam("id") String id,
+    public UserTaskView setInputs(
             @PathParam("taskId") String taskId,
             @QueryParam("user") String user,
             @QueryParam("group") List<String> groups,
-            Map<String, Object> data) {
+            String body) throws Exception {
+        Map<String, Object> data = mapper.readValue(body, Map.class);
         return userTaskService.setInputs(taskId, data, IdentityProviders.of(user, groups)).orElseThrow(UserTaskInstanceNotFoundException::new);
     }
 
