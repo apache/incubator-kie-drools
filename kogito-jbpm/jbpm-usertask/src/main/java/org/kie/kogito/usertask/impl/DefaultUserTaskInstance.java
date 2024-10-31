@@ -210,7 +210,7 @@ public class DefaultUserTaskInstance implements UserTaskInstance {
     public void setInput(String key, Object newValue) {
         Object oldValue = this.inputs.put(key, newValue);
         if (this.userTaskEventSupport != null) {
-            this.userTaskEventSupport.fireOnUserTaskInputVariableChange(this, key, oldValue, newValue);
+            this.userTaskEventSupport.fireOnUserTaskInputVariableChange(this, key, newValue, oldValue);
         }
         updatePersistence();
     }
@@ -219,7 +219,7 @@ public class DefaultUserTaskInstance implements UserTaskInstance {
     public void setOutput(String key, Object newValue) {
         Object oldValue = this.outputs.put(key, newValue);
         if (this.userTaskEventSupport != null) {
-            this.userTaskEventSupport.fireOnUserTaskOutputVariableChange(this, key, oldValue, newValue);
+            this.userTaskEventSupport.fireOnUserTaskOutputVariableChange(this, key, newValue, oldValue);
         }
         updatePersistence();
     }
