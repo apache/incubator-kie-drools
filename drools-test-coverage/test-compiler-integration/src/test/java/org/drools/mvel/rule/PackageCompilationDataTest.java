@@ -34,8 +34,8 @@ import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.base.rule.Declaration;
 import org.drools.base.rule.EvalCondition;
 import org.drools.core.rule.JavaDialectRuntimeData;
+import org.junit.jupiter.api.Test;
 import org.drools.base.rule.accessor.EvalExpression;
-import org.junit.Test;
 import org.kie.internal.conf.CompositeBaseConfiguration;
 
 import static org.assertj.core.api.Assertions.assertThat;

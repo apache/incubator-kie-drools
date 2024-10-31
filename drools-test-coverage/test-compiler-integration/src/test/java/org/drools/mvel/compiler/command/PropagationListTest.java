@@ -28,12 +28,13 @@ import org.drools.core.common.ReteEvaluator;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.phreak.PropagationList;
 import org.drools.core.phreak.SynchronizedPropagationList;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 public class PropagationListTest {
 
-    @Test @Ignore
+    @Test 
+    @Disabled
     public void test() {
         final int OBJECT_NR = 1000000;
         final int THREAD_NR = 8;

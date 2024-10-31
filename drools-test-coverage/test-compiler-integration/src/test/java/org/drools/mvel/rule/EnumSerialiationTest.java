@@ -19,8 +19,8 @@
 package org.drools.mvel.rule;
 
 import org.drools.base.rule.TypeDeclaration;
-import org.junit.Test;
 import org.drools.core.integrationtests.SerializationHelper;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
