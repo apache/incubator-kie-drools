@@ -20,11 +20,11 @@ package org.drools.mvel.compiler.beliefsystem.abductive;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import org.drools.commands.runtime.FlatQueryResults;
 import org.drools.core.BeliefSystemType;
@@ -36,15 +36,14 @@ import org.drools.core.impl.RuleBaseFactory;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
 import org.drools.tms.TruthMaintenanceSystemEqualityKey;
 import org.drools.tms.beliefsystem.BeliefSet;
 import org.drools.tms.beliefsystem.abductive.Abducible;
 import org.drools.tms.beliefsystem.defeasible.Defeasible;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieModule;
@@ -62,22 +61,14 @@ import org.kie.api.runtime.rule.Variable;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class AbductionTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public AbductionTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
-    }
-
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
+    public static Stream<KieBaseTestConfiguration> parameters() {
         // Abduction is experimental. And not supported for exec-model
-        return TestParametersUtil.getKieBaseCloudConfigurations(false, true);
+        return TestParametersUtil2.getKieBaseCloudConfigurations(false, true).stream();
     }
 
-    protected KieSession getSessionFromString( String drlString, KieBaseOption... options ) {
+    protected KieSession getSessionFromString(KieBaseTestConfiguration kieBaseTestConfiguration, String drlString, KieBaseOption... options) {
         KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, drlString);
         KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, options);
 
@@ -86,8 +77,9 @@ public class AbductionTest {
         return kbase.newKieSession( ksConf, null );
     }
 
-    @Test
-    public void testAbductiveLogicWithConstructorArgs() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testAbductiveLogicWithConstructorArgs(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String droolsSource =
                 "package org.drools.abductive.test; \n" +
                 "" +
@@ -148,7 +140,7 @@ public class AbductionTest {
                 "";
         /////////////////////////////////////
 
-        KieSession session = getSessionFromString( droolsSource );
+        KieSession session = getSessionFromString(kieBaseTestConfiguration, droolsSource );
         List list = new ArrayList();
         session.setGlobal( "list", list );
 
@@ -164,8 +156,9 @@ public class AbductionTest {
     }
 
 
-    @Test
-    public void testAbductiveLogicWithSelectiveConstructorArgs() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testAbductiveLogicWithSelectiveConstructorArgs(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String droolsSource =
                 "package org.drools.abductive.test; \n" +
                 "" +
@@ -194,7 +187,7 @@ public class AbductionTest {
                 "";
         /////////////////////////////////////
 
-        KieSession session = getSessionFromString( droolsSource );
+        KieSession session = getSessionFromString(kieBaseTestConfiguration, droolsSource );
         List list = new ArrayList();
         session.setGlobal( "list", list );
 
@@ -211,8 +204,9 @@ public class AbductionTest {
         System.err.println( list );
     }
 
-    @Test
-    public void testAbductiveLogicWithNonExistingArgsMapping() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testAbductiveLogicWithNonExistingArgsMapping(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String droolsSource =
                 "package org.drools.abductive.test; \n" +
                 "" +
@@ -238,8 +232,9 @@ public class AbductionTest {
         assertThat(res.getMessages(Message.Level.ERROR).size()).isEqualTo(1);
     }
 
-    @Test
-    public void testAbductiveLogicWithWrongTypeArgsMapping() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testAbductiveLogicWithWrongTypeArgsMapping(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String droolsSource =
                 "package org.drools.abductive.test; \n" +
                 "" +
@@ -272,8 +267,9 @@ public class AbductionTest {
         assertThat(res.getMessages(Message.Level.ERROR).size()).isEqualTo(1);
     }
 
-    @Test
-    public void testBindNonAbductiveQueryError() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testBindNonAbductiveQueryError(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String droolsSource =
                 "package org.drools.abductive.test; \n" +
                 "" +                "" +
@@ -297,8 +293,9 @@ public class AbductionTest {
 
 
 
-    @Test
-    public void testAbducedReturnBinding() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testAbducedReturnBinding(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String droolsSource =
                 "package org.drools.abductive.test; \n" +
                 "" +
@@ -325,7 +322,7 @@ public class AbductionTest {
                 "";
         /////////////////////////////////////
 
-        KieSession session = getSessionFromString( droolsSource );
+        KieSession session = getSessionFromString(kieBaseTestConfiguration, droolsSource );
         Map map = new HashMap();
         session.setGlobal( "map", map );
 
@@ -392,8 +389,9 @@ public class AbductionTest {
     }
 
 
-    @Test
-    public void testAbducedKnownClass() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testAbducedKnownClass(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String droolsSource =
                 "package org.drools.abductive.test; \n" +
                 "" +
@@ -416,7 +414,7 @@ public class AbductionTest {
                 "";
         /////////////////////////////////////
 
-        KieSession session = getSessionFromString( droolsSource );
+        KieSession session = getSessionFromString(kieBaseTestConfiguration, droolsSource );
         Map map = new HashMap();
         session.setGlobal( "map", map );
 
@@ -432,8 +430,9 @@ public class AbductionTest {
 
 
 
-    @Test
-    public void testAbducedWithStatus() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testAbducedWithStatus(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String droolsSource =
                 "package org.drools.abductive.test; \n" +
                 "" +
@@ -456,7 +455,7 @@ public class AbductionTest {
                 "";
         /////////////////////////////////////
 
-        KieSession session = getSessionFromString( droolsSource );
+        KieSession session = getSessionFromString(kieBaseTestConfiguration, droolsSource );
         Map map = new HashMap();
         session.setGlobal( "map", map );
 
@@ -481,8 +480,9 @@ public class AbductionTest {
 
     }
 
-    @Test
-    public void testAbductiveLogicUnlinking() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testAbductiveLogicUnlinking(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String droolsSource =
                 "package org.drools.abductive.test; \n" +
                 "" +
@@ -518,7 +518,7 @@ public class AbductionTest {
                 "";
         /////////////////////////////////////
 
-        KieSession session = getSessionFromString( droolsSource );
+        KieSession session = getSessionFromString(kieBaseTestConfiguration, droolsSource );
         List list = new ArrayList();
         session.setGlobal( "list", list );
 
@@ -534,8 +534,9 @@ public class AbductionTest {
     }
 
 
-    @Test
-    public void testAbductiveLogicNoConstructorFoundError() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testAbductiveLogicNoConstructorFoundError(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String droolsSource =
                 "package org.drools.abductive.test; \n" +
                 "" +
@@ -567,8 +568,9 @@ public class AbductionTest {
         assertThat(res.getMessages(Message.Level.ERROR).size()).isEqualTo(1);
     }
 
-    @Test
-    public void testQueryTwice() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testQueryTwice(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String droolsSource =
                 "package org.drools.abductive.test; \n" +
                 "" +
@@ -600,7 +602,7 @@ public class AbductionTest {
                 "";
         /////////////////////////////////////
 
-        KieSession session = getSessionFromString( droolsSource );
+        KieSession session = getSessionFromString(kieBaseTestConfiguration, droolsSource );
         List list = new ArrayList();
         session.setGlobal( "list", list );
 
@@ -615,8 +617,9 @@ public class AbductionTest {
 
 
 
-    @Test
-    public void testAbductiveLogicSprinklerAndRainExample() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testAbductiveLogicSprinklerAndRainExample(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // Sprinkler & Rain, abductive version
         String droolsSource =
                 "package org.drools.abductive.test; \n" +
@@ -694,7 +697,7 @@ public class AbductionTest {
         KieSession session;
         try {
             System.setProperty("drools.negatable", "on");
-            session = getSessionFromString( droolsSource );
+            session = getSessionFromString(kieBaseTestConfiguration, droolsSource );
         } finally {
             System.setProperty("drools.negatable", "off");
         }
@@ -721,8 +724,9 @@ public class AbductionTest {
         assertThat(i).isEqualTo(3);
     }
 
-    @Test
-    public void testAbductiveFactory() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testAbductiveFactory(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String droolsSource =
                 "package org.drools.abductive.test; \n" +
                 "" +
@@ -766,7 +770,7 @@ public class AbductionTest {
                 "";
         /////////////////////////////////////
 
-        KieSession session = getSessionFromString( droolsSource );
+        KieSession session = getSessionFromString(kieBaseTestConfiguration, droolsSource );
         List list = new ArrayList();
         session.setGlobal( "list", list );
 
@@ -779,8 +783,9 @@ public class AbductionTest {
     }
 
 
-    @Test
-    public void testQueryAPIs() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testQueryAPIs(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String droolsSource =
                 "package org.drools.abductive.test; \n" +
                 "import " + Abducible.class.getName() + "; \n" +
@@ -814,7 +819,7 @@ public class AbductionTest {
 
         /////////////////////////////////////
 
-        KieSession session = getSessionFromString( droolsSource );
+        KieSession session = getSessionFromString(kieBaseTestConfiguration, droolsSource );
 
         session.insert( "faa" );
         session.fireAllRules();
@@ -856,8 +861,9 @@ public class AbductionTest {
 
 
 
-    @Test
-    public void testCitizenshipExample() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testCitizenshipExample(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // from wikipedia, abductive reasoning example
         String droolsSource =
                 "package org.drools.abductive.test; \n" +
@@ -915,7 +921,7 @@ public class AbductionTest {
 
         /////////////////////////////////////
 
-        KieSession session = getSessionFromString( droolsSource );
+        KieSession session = getSessionFromString(kieBaseTestConfiguration, droolsSource );
 
         session.fireAllRules();
 
@@ -939,9 +945,10 @@ public class AbductionTest {
 
     }
 
-    @Test
-    @Ignore( "Not implemented yet" )
-    public void testGenesExplanationBackTracking() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    @Disabled( "Not implemented yet" )
+    public void testGenesExplanationBackTracking(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // from wikipedia, abductive reasoning example
 
         /*
@@ -1008,7 +1015,7 @@ public class AbductionTest {
 
         /////////////////////////////////////
 
-        KieSession session = getSessionFromString( droolsSource, DeclarativeAgendaOption.ENABLED );
+        KieSession session = getSessionFromString(kieBaseTestConfiguration, droolsSource, DeclarativeAgendaOption.ENABLED );
 
         session.fireAllRules();
 
@@ -1020,9 +1027,10 @@ public class AbductionTest {
 
 
 
-    @Test
-    @Ignore( "Not implemented yet" )
-    public void testBacktracking() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    @Disabled( "Not implemented yet" )
+    public void testBacktracking(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String droolsSource =
                 "package org.drools.abductive.test; \n" +
                 "import org.kie.api.runtime.rule.Match;\n" +
@@ -1063,7 +1071,7 @@ public class AbductionTest {
 
         /////////////////////////////////////
 
-        KieSession session = getSessionFromString( droolsSource, DeclarativeAgendaOption.ENABLED );
+        KieSession session = getSessionFromString(kieBaseTestConfiguration, droolsSource, DeclarativeAgendaOption.ENABLED );
 
         session.fireAllRules();
 
@@ -1073,8 +1081,9 @@ public class AbductionTest {
     }
 
 
-    @Test
-    public void testCheckForItemsExample() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testCheckForItemsExample(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String droolsSource =
                 "package org.drools.abductive.test; " +
                 "import " + Abducible.class.getName() + "; " +
@@ -1146,7 +1155,7 @@ public class AbductionTest {
 
         /////////////////////////////////////
 
-        KieSession session = getSessionFromString( droolsSource );
+        KieSession session = getSessionFromString(kieBaseTestConfiguration, droolsSource );
         List list = new ArrayList(  );
         session.setGlobal( "list", list );
 

@@ -27,7 +27,7 @@ import org.drools.drl.parser.lang.dsl.DSLMappingEntry;
 import org.drools.drl.parser.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.drl.parser.lang.dsl.DefaultDSLMapping;
 import org.drools.drl.parser.lang.dsl.DefaultExpander;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
