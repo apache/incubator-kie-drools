@@ -19,36 +19,29 @@
 package org.drools.mvel.compiler.test;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.stream.Stream;
 
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class PositionalTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public PositionalTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
-    }
-
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
+	public static Stream<KieBaseTestConfiguration> parameters() {
      // TODO: EM failed with ttestPositional. File JIRAs
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
-    @Test
-    public void testPositional() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testPositional(KieBaseTestConfiguration kieBaseTestConfiguration) {
 
         String drl =
                 "import " + Man.class.getCanonicalName() + ";\n" +
@@ -78,8 +71,10 @@ public class PositionalTest {
     }
 
 
-    @Test(timeout = 5000)
-    public void testPositionalWithNull() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    @Timeout(5000)
+    public void testPositionalWithNull(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-51
         String str =
                 "declare Bean\n" +
