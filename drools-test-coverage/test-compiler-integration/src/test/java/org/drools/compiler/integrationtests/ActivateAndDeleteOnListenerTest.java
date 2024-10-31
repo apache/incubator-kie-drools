@@ -21,6 +21,7 @@ package org.drools.compiler.integrationtests;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.drools.core.event.DefaultAgendaEventListener;
 import org.drools.core.impl.RuleBaseFactory;
@@ -29,10 +30,10 @@ import org.drools.testcoverage.common.model.Person;
 import org.drools.testcoverage.common.model.Sensor;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.MatchCancelledEvent;
@@ -49,23 +50,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * see JBPM-4764
  */
-@RunWith(Parameterized.class)
 public class ActivateAndDeleteOnListenerTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public ActivateAndDeleteOnListenerTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
-    }
-
-    @Test
-    public void testActivateOnMatchAndDelete() {
-        testActivateOnMatch(new DefaultAgendaEventListener(){
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testActivateOnMatchAndDelete(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        testActivateOnMatch(kieBaseTestConfiguration, new DefaultAgendaEventListener(){
             @Override
             public void matchCreated(final MatchCreatedEvent event) {
                 final Collection<? extends FactHandle> alarms = event.getKieRuntime().getFactHandles(new ClassObjectFilter(Alarm.class));
@@ -76,9 +70,10 @@ public class ActivateAndDeleteOnListenerTest {
         });
     }
 
-    @Test
-    public void testActivateOnMatchAndUpdate() {
-        testActivateOnMatch(new DefaultAgendaEventListener(){
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testActivateOnMatchAndUpdate(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        testActivateOnMatch(kieBaseTestConfiguration, new DefaultAgendaEventListener(){
             @Override
             public void matchCreated(final MatchCreatedEvent event) {
                 final Collection<? extends FactHandle> alarms = event.getKieRuntime().getFactHandles(new ClassObjectFilter(Alarm.class));
@@ -89,7 +84,7 @@ public class ActivateAndDeleteOnListenerTest {
         });
     }
 
-    private void testActivateOnMatch(final AgendaEventListener listener) {
+    private void testActivateOnMatch(KieBaseTestConfiguration kieBaseTestConfiguration, final AgendaEventListener listener) {
         final String drl =
                 "package org.drools.compiler.integrationtests \n" +
                         "import " + Alarm.class.getCanonicalName() + " \n" +
@@ -101,7 +96,7 @@ public class ActivateAndDeleteOnListenerTest {
                         " then \n" +
                         "end \n";
 
-        final KieSession ksession = getSessionWithEagerActivation(drl);
+        final KieSession ksession = getSessionWithEagerActivation(kieBaseTestConfiguration, drl);
         try {
             ksession.addEventListener(listener);
 
@@ -122,8 +117,9 @@ public class ActivateAndDeleteOnListenerTest {
         }
     }
 
-    @Test
-    public void testEagerEvaluationWith2Paths() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testEagerEvaluationWith2Paths(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
                 "package org.simple \n" +
                 "rule xxx \n" +
@@ -139,7 +135,7 @@ public class ActivateAndDeleteOnListenerTest {
                 "then \n" +
                 "end  \n";
 
-        final KieSession ksession = getSessionWithEagerActivation(drl);
+        final KieSession ksession = getSessionWithEagerActivation(kieBaseTestConfiguration, drl);
         try {
             final List<String> list = new ArrayList<>();
 
@@ -174,8 +170,9 @@ public class ActivateAndDeleteOnListenerTest {
         }
     }
 
-    @Test
-    public void testEagerEvaluationWith2SubPaths() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testEagerEvaluationWith2SubPaths(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
                 "package org.simple \n" +
                 "rule xxx \n" +
@@ -191,7 +188,7 @@ public class ActivateAndDeleteOnListenerTest {
                 "then \n" +
                 "end  \n";
 
-        final KieSession ksession = getSessionWithEagerActivation(drl);
+        final KieSession ksession = getSessionWithEagerActivation(kieBaseTestConfiguration, drl);
         try {
             final List<String> list = new ArrayList<>();
 
@@ -212,8 +209,9 @@ public class ActivateAndDeleteOnListenerTest {
         }
     }
 
-    @Test
-    public void testOneLinkedAndOneUnlinkedPath() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testOneLinkedAndOneUnlinkedPath(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
                 "package org.simple \n" +
                 "rule xxx \n" +
@@ -231,7 +229,7 @@ public class ActivateAndDeleteOnListenerTest {
                 "then \n" +
                 "end  \n";
 
-        final KieSession ksession = getSessionWithEagerActivation(drl);
+        final KieSession ksession = getSessionWithEagerActivation(kieBaseTestConfiguration, drl);
         try {
             final List<String> list = new ArrayList<>();
 
@@ -256,8 +254,9 @@ public class ActivateAndDeleteOnListenerTest {
         }
     }
 
-    @Test
-    public void testOneLazyAndOneImmediateSubPathFromLia() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testOneLazyAndOneImmediateSubPathFromLia(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
                 "package org.simple \n" +
                 "rule xxx \n" +
@@ -330,8 +329,9 @@ public class ActivateAndDeleteOnListenerTest {
         }
     }
 
-    @Test
-    public void testOneLazyAndOneImmediateSubPathAfterLia() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testOneLazyAndOneImmediateSubPathAfterLia(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
               "package org.simple \n" +
               "global java.util.List list; \n" +
@@ -413,8 +413,9 @@ public class ActivateAndDeleteOnListenerTest {
         }
     }
 
-    @Test
-    public void testOrPropagatesThroughSubnetwork() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testOrPropagatesThroughSubnetwork(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
               "package org.simple \n" +
               "global java.util.List list; \n" +
@@ -504,8 +505,9 @@ public class ActivateAndDeleteOnListenerTest {
         }
     }
 
-    @Test
-    public void testEagerEvaluationWithSubSubPath() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testEagerEvaluationWithSubSubPath(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
                 "package org.simple \n" +
                 "rule xxx \n" +
@@ -515,7 +517,7 @@ public class ActivateAndDeleteOnListenerTest {
                 "then \n" +
                 "end  \n";
 
-        final KieSession ksession = getSessionWithEagerActivation(drl);
+        final KieSession ksession = getSessionWithEagerActivation(kieBaseTestConfiguration, drl);
         try {
             final List<String> list = new ArrayList<>();
 
@@ -539,8 +541,10 @@ public class ActivateAndDeleteOnListenerTest {
         }
     }
 
-    @Test(timeout = 10000L)
-    public void testSegMemInitializationWithForceEagerActivation() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    @Timeout(10000)
+    public void testSegMemInitializationWithForceEagerActivation(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-1247
         final String drl = "global java.util.List list\n" +
                      "declare  SimpleFact end\n" +
@@ -571,7 +575,7 @@ public class ActivateAndDeleteOnListenerTest {
                      "    list.add(\"2\");\n" +
                      "end";
 
-        final KieSession ksession = getSessionWithEagerActivation(drl);
+        final KieSession ksession = getSessionWithEagerActivation(kieBaseTestConfiguration, drl);
         try {
             final List<String> list = new ArrayList<>();
             ksession.setGlobal( "list", list );
@@ -586,8 +590,10 @@ public class ActivateAndDeleteOnListenerTest {
         }
     }
 
-    @Test(timeout = 10000L)
-    public void testSegMemInitializationWithForceEagerActivationAndAcc() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    @Timeout(10000)
+    public void testSegMemInitializationWithForceEagerActivationAndAcc(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-1247
         final String drl = "global java.util.List list\n" +
                      "declare  SimpleFact end\n" +
@@ -618,7 +624,7 @@ public class ActivateAndDeleteOnListenerTest {
                      "    list.add(\"2\");\n" +
                      "end";
 
-        final KieSession ksession = getSessionWithEagerActivation(drl);
+        final KieSession ksession = getSessionWithEagerActivation(kieBaseTestConfiguration, drl);
         try {
             final List<String> list = new ArrayList<>();
             ksession.setGlobal( "list", list );
@@ -633,8 +639,10 @@ public class ActivateAndDeleteOnListenerTest {
         }
     }
 
-    @Test(timeout = 10000L)
-    public void testSegMemInitializationWithForceEagerActivationAndExistsWithNots() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    @Timeout(10000)
+    public void testSegMemInitializationWithForceEagerActivationAndExistsWithNots(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-1247
         final String drl = "global java.util.List list\n" +
                      "declare  SimpleFact end\n" +
@@ -665,7 +673,7 @@ public class ActivateAndDeleteOnListenerTest {
                      "    list.add(\"2\");\n" +
                      "end";
 
-        final KieSession ksession = getSessionWithEagerActivation(drl);
+        final KieSession ksession = getSessionWithEagerActivation(kieBaseTestConfiguration, drl);
         try {
             final List<String> list = new ArrayList<>();
             ksession.setGlobal( "list", list );
@@ -680,8 +688,10 @@ public class ActivateAndDeleteOnListenerTest {
         }
     }
 
-    @Test(timeout = 10000L)
-    public void testNoLoopWithForceEagerActivation() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    @Timeout(10000)
+    public void testNoLoopWithForceEagerActivation(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-1349
         final String drl = "import " + Person.class.getCanonicalName() + "\n" +
                      "\n" +
@@ -691,7 +701,7 @@ public class ActivateAndDeleteOnListenerTest {
                      "    modify($p) { setAge($p.getAge()+1) };\n" +
                      "end";
 
-        final KieSession ksession = getSessionWithEagerActivation(drl);
+        final KieSession ksession = getSessionWithEagerActivation(kieBaseTestConfiguration, drl);
         try {
             final Person mario = new Person("mario", 42);
 
@@ -704,7 +714,7 @@ public class ActivateAndDeleteOnListenerTest {
         }
     }
 
-    private KieSession getSessionWithEagerActivation(final String drl) {
+    private KieSession getSessionWithEagerActivation(KieBaseTestConfiguration kieBaseTestConfiguration, final String drl) {
         final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("activate-delete-test", kieBaseTestConfiguration, drl);
         final KieSessionConfiguration conf = RuleBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption( ForceEagerActivationOption.YES );

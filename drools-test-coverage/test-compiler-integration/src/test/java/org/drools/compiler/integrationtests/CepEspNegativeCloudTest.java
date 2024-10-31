@@ -45,7 +45,7 @@ public class CepEspNegativeCloudTest {
         return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "KieBase type={0}")
 	@MethodSource("parameters")
 	@Timeout(10000)
     public void testCloudModeExpiration(KieBaseTestConfiguration kieBaseTestConfiguration) throws InstantiationException, IllegalAccessException, InterruptedException {
@@ -99,7 +99,7 @@ public class CepEspNegativeCloudTest {
         }
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "KieBase type={0}")
 	@MethodSource("parameters")
     public void testThrowsWhenCreatingKieBaseUsingWindowsInCloudMode(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
@@ -121,7 +121,7 @@ public class CepEspNegativeCloudTest {
         }
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "KieBase type={0}")
 	@MethodSource("parameters")
     public void testTemporalQuery(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // BZ-967441

@@ -19,22 +19,22 @@
 package org.drools.compiler.integrationtests;
 
 import java.time.Duration;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
 
 import org.drools.core.time.impl.PseudoClockScheduler;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieSessionTestConfiguration;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.After;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.event.rule.DefaultAgendaEventListener;
@@ -44,7 +44,6 @@ import org.kie.api.runtime.rule.FactHandle;
 
 import static org.awaitility.Awaitility.await;
 
-@RunWith(Parameterized.class)
 public class TimerAndCalendarFireUntilHaltTest {
 
     private final class RecordingRulesListener extends  DefaultAgendaEventListener {
@@ -70,7 +69,6 @@ public class TimerAndCalendarFireUntilHaltTest {
         }
     }
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
     private KieSession ksession;
     private KieBase kbase;
     private CountDownLatch stoppedLatch;
@@ -79,24 +77,21 @@ public class TimerAndCalendarFireUntilHaltTest {
     private CountDownLatch startingLatch;
     private FactHandle triggerHandle;
 
-    public TimerAndCalendarFireUntilHaltTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
-    }
-
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseStreamConfigurations(true);
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseStreamConfigurations(true).stream();
     }
     
-    @After
+    @AfterEach
     public void after() throws Exception {
         if (ksession != null) {
             ksession.dispose();
         }
     }
 
-    @Test(timeout = 10000)
-    public void testTimerRuleFires() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    @Timeout(10000)
+    public void testTimerRuleFires(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         final String drl = "// fire once, for a String, create an Integer\n" +
                            "rule TimerRule\n" +
                            "timer(int:0 1000)\n" +
@@ -105,7 +100,7 @@ public class TimerAndCalendarFireUntilHaltTest {
                            "then\n" +
                            "    insert( new Integer(1) );\n" +
                            "end";
-        setupKSessionFor(drl);
+        setupKSessionFor(kieBaseTestConfiguration, drl);
         startEngine();
 
         activateRule();
@@ -117,8 +112,10 @@ public class TimerAndCalendarFireUntilHaltTest {
         stopEngine();
     }
     
-    @Test(timeout = 10000)
-    public void testTimerRuleHaltStopsFiring() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    @Timeout(10000)
+    public void testTimerRuleHaltStopsFiring(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         final String drl = "// fire once, for a String, create an Integer\n" +
                            "rule TimerRule\n" +
                            "timer(int:0 1000)\n" +
@@ -127,7 +124,7 @@ public class TimerAndCalendarFireUntilHaltTest {
                            "then\n" +
                            "    insert( new Integer(1) );\n" +
                            "end";
-        setupKSessionFor(drl);
+        setupKSessionFor(kieBaseTestConfiguration, drl);
         startEngine();
 
         activateRule();
@@ -142,8 +139,10 @@ public class TimerAndCalendarFireUntilHaltTest {
         await().during(Duration.ofSeconds(1)).atMost(Duration.ofSeconds(2)).until(ruleHasFired("TimerRule", 2));
     }
     
-    @Test(timeout = 10000)
-    public void testTimerRuleRestartsAfterStop() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    @Timeout(10000)
+    public void testTimerRuleRestartsAfterStop(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         final String drl = "// fire once, for a String, create an Integer\n" +
                            "rule TimerRule\n" +
                            "timer(int:0 1000)\n" +
@@ -152,7 +151,7 @@ public class TimerAndCalendarFireUntilHaltTest {
                            "then\n" +
                            "    insert( new Integer(1) );\n" +
                            "end";
-        setupKSessionFor(drl);
+        setupKSessionFor(kieBaseTestConfiguration, drl);
         startEngine();
 
         activateRule();
@@ -170,8 +169,10 @@ public class TimerAndCalendarFireUntilHaltTest {
         stopEngine();
     }
 
-    @Test(timeout = 10000)
-    public void testTimerRuleDoesRestartsIfNoLongerHolds() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    @Timeout(10000)
+    public void testTimerRuleDoesRestartsIfNoLongerHolds(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         final String drl = "// fire once, for a String, create an Integer\n" +
                            "rule TimerRule\n" +
                            "timer(int:0 1000)\n" +
@@ -180,7 +181,7 @@ public class TimerAndCalendarFireUntilHaltTest {
                            "then\n" +
                            "    insert( new Integer(1) );\n" +
                            "end";
-        setupKSessionFor(drl);
+        setupKSessionFor(kieBaseTestConfiguration, drl);
         startEngine();
 
         activateRule();
@@ -200,7 +201,7 @@ public class TimerAndCalendarFireUntilHaltTest {
     }
 
  
-    private void setupKSessionFor(final String drl) {
+    private void setupKSessionFor(KieBaseTestConfiguration kieBaseTestConfiguration, final String drl) {
         kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("timer-and-calendar-test", kieBaseTestConfiguration, drl);
         KieSessionConfiguration kieSessionConfiguration = KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration();
         ksession = kbase.newKieSession(kieSessionConfiguration, null);      

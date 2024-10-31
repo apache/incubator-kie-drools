@@ -29,6 +29,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import org.drools.compiler.integrationtests.incrementalcompilation.TestUtil;
 import org.drools.base.InitialFact;
@@ -54,10 +55,10 @@ import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieSessionTestConfiguration;
 import org.drools.testcoverage.common.util.KieUtil;
 import org.drools.testcoverage.common.util.SerializationHelper;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieModule;
@@ -81,20 +82,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 import static org.kie.api.runtime.rule.Variable.v;
 
-@RunWith(Parameterized.class)
 public class BackwardChainingTest extends AbstractBackwardChainingTest {
 
-    public BackwardChainingTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        super(kieBaseTestConfiguration);
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
-    }
-
-    @Test(timeout = 10000)
-    public void testQueryPatternBindingAsResult() throws IOException, ClassNotFoundException {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testQueryPatternBindingAsResult(KieBaseTestConfiguration kieBaseTestConfiguration) throws IOException, ClassNotFoundException {
         String str = "" +
                      "package org.drools.compiler.test  \n" +
                      "import " + Person.class.getCanonicalName() + "\n" +
@@ -172,8 +169,10 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testQueriesWithNestedAccessorsAllOutputs() throws IOException, ClassNotFoundException {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testQueriesWithNestedAccessorsAllOutputs(KieBaseTestConfiguration kieBaseTestConfiguration) throws IOException, ClassNotFoundException {
         String drl = "" +
                 "package org.drools.compiler.test  \n" +
                 "import " + Person.class.getCanonicalName() + "\n" +
@@ -221,8 +220,10 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testQueriesWithNestedAcecssorsMixedArgs() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testQueriesWithNestedAcecssorsMixedArgs(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String drl = "" +
                 "package org.drools.compiler.test  \n" +
                 "import " + Person.class.getCanonicalName() + "\n" +
@@ -274,8 +275,10 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testQueryWithDynamicData() throws IOException, ClassNotFoundException {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testQueryWithDynamicData(KieBaseTestConfiguration kieBaseTestConfiguration) throws IOException, ClassNotFoundException {
         String drl = "" +
                 "package org.drools.compiler.test  \n" +
                 "import " + Person.class.getCanonicalName() + "\n" +
@@ -326,8 +329,10 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testQueryWithDyanmicInsert() throws IOException, ClassNotFoundException {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testQueryWithDyanmicInsert(KieBaseTestConfiguration kieBaseTestConfiguration) throws IOException, ClassNotFoundException {
         String drl = "" +
                 "package org.drools.compiler.test  \n" +
                 "import " + Person.class.getCanonicalName() + "\n" +
@@ -376,8 +381,10 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testQueryWithOr() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testQueryWithOr(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "" +
                 "package org.drools.compiler.test  \n" +
 
@@ -494,8 +501,10 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testGeneology() throws IOException, ClassNotFoundException {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testGeneology(KieBaseTestConfiguration kieBaseTestConfiguration) throws IOException, ClassNotFoundException {
         // from http://kti.mff.cuni.cz/~bartak/prolog/genealogy.html
 
         final String drl = "" +
@@ -795,8 +804,10 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testDynamicRulesWithSharing() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testDynamicRulesWithSharing(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String drl = "" +
                 "package org.drools.compiler.test1  \n" +
                 "\n" +
@@ -942,8 +953,10 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testOpenBackwardChain() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testOpenBackwardChain(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // http://www.amzi.com/AdventureInProlog/advtop.php
 
         final String drl = "" +
@@ -1124,8 +1137,10 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testCompile() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testCompile(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "declare Location\n"
                 + "thing : String\n"
                 + "location : String\n"
@@ -1139,8 +1154,10 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
         KieBaseUtil.getKieBaseFromKieModuleFromDrl("backward-chaining-test", kieBaseTestConfiguration, drl);
     }
 
-    @Test(timeout = 10000)
-    public void testInsertionOrder() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testInsertionOrder(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "" +
                 "package org.drools.compiler.integrationtests  \n" +
 
@@ -1245,15 +1262,17 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testQueryFindAll() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testQueryFindAll(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final Object[] objects = new Object[]{42, "a String", 100};
         final int oCount = objects.length;
 
         final List<Object> queryList = new ArrayList<>();
         final List<Object> ruleList = new ArrayList<>();
         // expect all inserted objects + InitialFact
-        runTestQueryFindAll(0, queryList, ruleList, objects);
+        runTestQueryFindAll(kieBaseTestConfiguration, 0, queryList, ruleList, objects);
 
         assertThat(queryList.size()).isEqualTo(oCount);
         assertContains(objects, queryList);
@@ -1261,16 +1280,17 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
         // expect inserted objects + InitialFact
         queryList.clear();
         ruleList.clear();
-        runTestQueryFindAll(1, queryList, ruleList, objects);
+        runTestQueryFindAll(kieBaseTestConfiguration, 1, queryList, ruleList, objects);
         assertThat(queryList.size()).isEqualTo(oCount * oCount);
 
         queryList.clear();
         ruleList.clear();
-        runTestQueryFindAll(2, queryList, ruleList, objects);
+        runTestQueryFindAll(kieBaseTestConfiguration, 2, queryList, ruleList, objects);
         assertThat(queryList.size()).isEqualTo(oCount * oCount);
     }
 
-    private void runTestQueryFindAll(final int iCase,
+    private void runTestQueryFindAll(KieBaseTestConfiguration kieBaseTestConfiguration,
+    		final int iCase,
                                      final List<Object> queryList,
                                      final List<Object> ruleList,
                                      final Object[] objects) {
@@ -1326,8 +1346,10 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testQueryWithObject() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testQueryWithObject(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "" +
                 "package org.drools.compiler.test  \n" +
 
@@ -1653,8 +1675,10 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testQueryWithClassLiterals() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testQueryWithClassLiterals(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "" +
                 "package org.drools.test \n" +
 
@@ -1701,8 +1725,10 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testQueryIndexingWithUnification() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testQueryIndexingWithUnification(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "" +
                 "package org.drools.test \n" +
 
@@ -1753,8 +1779,10 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testQueryWithEvents() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testQueryWithEvents(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "global java.util.List list; " +
                 "" +
                 "declare Inner\n" +
@@ -1792,8 +1820,10 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testNpeOnQuery() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testNpeOnQuery(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
                 "global java.util.List list; " +
                         "query foo( Integer $i ) " +
@@ -1844,8 +1874,9 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
         }
     }
 
-    @Test
-    public void testQueryWithEvalAndTypeBoxingUnboxing() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testQueryWithEvalAndTypeBoxingUnboxing(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "package org.drools.test;\n" +
                 "\n" +
                 "global java.util.List list \n;" +
@@ -1908,18 +1939,20 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
             ksession.dispose();
         }
     }
-    @Test
-    public void testNaniSearchsNoPropReactivity() throws IOException, ClassNotFoundException {
-        testNaniSearchs( PropertySpecificOption.ALLOWED);
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testNaniSearchsNoPropReactivity(KieBaseTestConfiguration kieBaseTestConfiguration) throws IOException, ClassNotFoundException {
+        testNaniSearchs(kieBaseTestConfiguration, PropertySpecificOption.ALLOWED);
     }
 
-    @Test
-    public void testNaniSearchsWithPropReactivity() throws IOException, ClassNotFoundException {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testNaniSearchsWithPropReactivity(KieBaseTestConfiguration kieBaseTestConfiguration) throws IOException, ClassNotFoundException {
         // DROOLS-1453
-        testNaniSearchs(PropertySpecificOption.ALWAYS);
+        testNaniSearchs(kieBaseTestConfiguration, PropertySpecificOption.ALWAYS);
     }
 
-    private void testNaniSearchs(final PropertySpecificOption propertySpecificOption) throws IOException, ClassNotFoundException {
+    private void testNaniSearchs(KieBaseTestConfiguration kieBaseTestConfiguration, final PropertySpecificOption propertySpecificOption) throws IOException, ClassNotFoundException {
         // http://www.amzi.com/AdventureInProlog/advtop.php
 
         final String drl = "" +
@@ -2168,8 +2201,9 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
         }
     }
 
-    @Test //(timeout = 10000)
-    public void testSubNetworksAndQueries() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testSubNetworksAndQueries(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "" +
                 "package org.drools.compiler.test  \n" +
 
@@ -2358,8 +2392,10 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testInsertionOrderTwo() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testInsertionOrderTwo(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final StringBuilder drlBuilder = new StringBuilder("" +
                 "package org.drools.compiler.test \n" +
                 "import java.util.List \n" +

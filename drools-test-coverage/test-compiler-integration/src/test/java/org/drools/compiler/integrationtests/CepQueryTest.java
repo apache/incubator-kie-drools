@@ -18,18 +18,16 @@
  */
 package org.drools.compiler.integrationtests;
 
-import java.util.Collection;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
 
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieSessionTestConfiguration;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.EntryPoint;
@@ -41,15 +39,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * Tests queries using temporal operators on events from two entry points.
  */
-@RunWith(Parameterized.class)
 public class CepQueryTest {
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseStreamConfigurations(true);
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseStreamConfigurations(true).stream();
     }
-    
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
     
     private KieSession ksession;
 
@@ -57,12 +51,16 @@ public class CepQueryTest {
     
     private EntryPoint firstEntryPoint, secondEntryPoint;
     
-    public CepQueryTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
-    }
     
-    @Before
-    public void prepare() {
+
+    @AfterEach
+    public void cleanup() {
+        if (ksession != null) {
+            ksession.dispose();
+        }
+    }
+
+    private void prepare(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "package org.drools.compiler.integrationtests\n" + 
                 "import " + CepQueryTest.TestEvent.class.getCanonicalName() + ";\n" + 
                 "declare TestEvent\n" + 
@@ -81,13 +79,7 @@ public class CepQueryTest {
         secondEntryPoint = ksession.getEntryPoint("SecondStream");        
     }
 
-    @After
-    public void cleanup() {
-        if (ksession != null) {
-            ksession.dispose();
-        }
-    }
-
+    
     private void eventsInitialization() {
         secondEntryPoint.insert(new TestEvent("minusOne"));
         clock.advanceTime(5, TimeUnit.SECONDS);
@@ -99,9 +91,11 @@ public class CepQueryTest {
     /**
      * Tests query using temporal operator 'after' on events from two entry points.
      */
-    @Test
-    public void testQueryWithAfter() {
-        this.eventsInitialization();
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testQueryWithAfter(KieBaseTestConfiguration kieBaseTestConfiguration) {
+    	prepare(kieBaseTestConfiguration);
+        eventsInitialization();
         final QueryResults results = ksession.getQueryResults("EventsAfterZeroToNineSeconds");
 
         assertThat(results.size()).as("Unexpected query result length").isEqualTo(1);
