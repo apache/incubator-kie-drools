@@ -18,7 +18,6 @@
  */
 package org.drools.compiler.integrationtests;
 
-import java.util.Collection;
 import java.util.stream.Stream;
 
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;

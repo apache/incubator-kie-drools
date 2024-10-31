@@ -26,7 +26,9 @@ import org.drools.testcoverage.common.model.StockTick;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieSessionTestConfiguration;
-import org.junit.Test;
+import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.event.rule.AgendaEventListener;
@@ -43,14 +45,10 @@ import static org.mockito.Mockito.verify;
 
 public abstract class AbstractCepEspTest {
 
-    protected final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public AbstractCepEspTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
-    }
-
-    @Test(timeout = 10000)
-    public void testAssertBehaviorOnEntryPoints() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    @Timeout(10000)
+    public void testAssertBehaviorOnEntryPoints(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources("cep-esp-test", kieBaseTestConfiguration,
                                                                            "org/drools/compiler/integrationtests/test_CEP_AssertBehaviorOnEntryPoints.drl");
         final KieSession ksession = kbase.newKieSession();
@@ -91,8 +89,10 @@ public abstract class AbstractCepEspTest {
         }
     }
 
-    @Test(timeout = 10000L)
-    public void testDuplicateFiring2() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    @Timeout(10000)
+    public void testDuplicateFiring2(KieBaseTestConfiguration kieBaseTestConfiguration) {
 
         final String drl = "package org.test;\n" +
                      "import " + StockTick.class.getCanonicalName() + ";\n " +

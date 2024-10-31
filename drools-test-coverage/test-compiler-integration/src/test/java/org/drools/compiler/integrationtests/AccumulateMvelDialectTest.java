@@ -19,11 +19,11 @@
 package org.drools.compiler.integrationtests;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import org.drools.core.reteoo.JoinNode;
 import org.drools.core.reteoo.LeftTupleSink;
@@ -36,10 +36,10 @@ import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieSessionTestConfiguration;
 import org.drools.testcoverage.common.util.KieUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieModule;
@@ -51,23 +51,17 @@ import org.kie.internal.builder.conf.PropertySpecificOption;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class AccumulateMvelDialectTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public AccumulateMvelDialectTest( final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
-    }
-
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
     // See https://issues.jboss.org/browse/DROOLS-2733
-    @Test(timeout = 10000)
-    public void testMVELAccumulate() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    @Timeout(10000)
+    public void testMVELAccumulate(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources("accumulate-test", kieBaseTestConfiguration,
                                                                            "org/drools/compiler/integrationtests/test_AccumulateMVEL.drl");
         final KieSession wm = kbase.newKieSession();
@@ -101,8 +95,10 @@ public class AccumulateMvelDialectTest {
     }
 
     // See https://issues.jboss.org/browse/DROOLS-2733
-    @Test(timeout = 10000)
-    public void testMVELAccumulate2WM() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    @Timeout(10000)
+    public void testMVELAccumulate2WM(KieBaseTestConfiguration kieBaseTestConfiguration) {
 
         final KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources("accumulate-test", kieBaseTestConfiguration,
                                                                            "org/drools/compiler/integrationtests/test_AccumulateMVEL.drl");
@@ -167,20 +163,22 @@ public class AccumulateMvelDialectTest {
     }
 
 
-    @Test
-    public void testAccFunctionOpaqueJoins() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testAccFunctionOpaqueJoins(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-661
-        testAccFunctionOpaqueJoins(PropertySpecificOption.ALLOWED);
+        testAccFunctionOpaqueJoins(kieBaseTestConfiguration, PropertySpecificOption.ALLOWED);
     }
 
-    @Test
-    public void testAccFunctionOpaqueJoinsWithPropertyReactivity() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testAccFunctionOpaqueJoinsWithPropertyReactivity(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-1445
-        testAccFunctionOpaqueJoins(PropertySpecificOption.ALWAYS);
+        testAccFunctionOpaqueJoins(kieBaseTestConfiguration, PropertySpecificOption.ALWAYS);
     }
 
     // This is unsupported as the declared type Data is loosely typed
-    private void testAccFunctionOpaqueJoins(final PropertySpecificOption propertySpecificOption) {
+    private void testAccFunctionOpaqueJoins(KieBaseTestConfiguration kieBaseTestConfiguration, final PropertySpecificOption propertySpecificOption) {
         final String drl = "package org.test; " +
                 "import java.util.*; " +
                 "global List list; " +
@@ -273,8 +271,9 @@ public class AccumulateMvelDialectTest {
         }
     }
 
-    @Test
-    public void testAccumulateWithSameSubnetwork() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testAccumulateWithSameSubnetwork(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "package org.drools.compiler.test;\n" +
                 "import " + Cheese.class.getCanonicalName() + ";\n" +
                 "import " + Person.class.getCanonicalName() + ";\n" +

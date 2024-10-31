@@ -20,9 +20,10 @@ package org.drools.compiler.integrationtests;
 
 import org.drools.testcoverage.common.model.A;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
-import org.junit.Ignore;
-import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.io.ResourceType;
@@ -41,7 +42,8 @@ import static org.assertj.core.api.Assertions.fail;
 @Category(TurtleTestCategory.class)
 public class CompositeAgendaTest {
 
-    @Test @Ignore
+    @Test 
+    @Disabled
     public void testInALoop() {
         for (int i = 0; i < 100; i++) {
             testCreateHaltDisposeAgenda();
@@ -49,7 +51,8 @@ public class CompositeAgendaTest {
         }
     }
 
-    @Test(timeout = 600_000)
+    @Test
+    @Timeout(600000)
     public void testCreateHaltDisposeAgenda() {
         final String drl = " import " + A.class.getCanonicalName() + ";\n" +
                 " declare A @role( event ) end\n" +

@@ -18,16 +18,16 @@
  */
 package org.drools.compiler.integrationtests;
 
-import java.util.Collection;
+import java.util.stream.Stream;
 
 import org.drools.core.base.UndefinedCalendarExcption;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.runtime.KieSession;
@@ -35,46 +35,48 @@ import org.kie.api.runtime.KieSession;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
-@RunWith(Parameterized.class)
 public class TimerAndCalendarExceptionTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public TimerAndCalendarExceptionTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseStreamConfigurations(true).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseStreamConfigurations(true);
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testUnknownProtocol(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        wrongTimerExpression(kieBaseTestConfiguration, "xyz:30");
     }
 
-    @Test(timeout = 10000)
-    public void testUnknownProtocol() {
-        wrongTimerExpression("xyz:30");
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testMissingColon(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        wrongTimerExpression(kieBaseTestConfiguration, "int 30");
     }
 
-    @Test(timeout = 10000)
-    public void testMissingColon() {
-        wrongTimerExpression("int 30");
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testMalformedExpression(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        wrongTimerExpression(kieBaseTestConfiguration, "30s s30");
     }
 
-    @Test(timeout = 10000)
-    public void testMalformedExpression() {
-        wrongTimerExpression("30s s30");
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testMalformedIntExpression(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        wrongTimerExpression(kieBaseTestConfiguration, "int 30s");
     }
 
-    @Test(timeout = 10000)
-    public void testMalformedIntExpression() {
-        wrongTimerExpression("int 30s");
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testMalformedCronExpression(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        wrongTimerExpression(kieBaseTestConfiguration, "cron: 0/30 * * * * *");
     }
 
-    @Test(timeout = 10000)
-    public void testMalformedCronExpression() {
-        wrongTimerExpression("cron: 0/30 * * * * *");
-    }
-
-    private void wrongTimerExpression(final String timer) {
+    private void wrongTimerExpression(KieBaseTestConfiguration kieBaseTestConfiguration, final String timer) {
         final String drl =
                 "package org.simple \n" +
                            "rule xxx \n" +
@@ -91,8 +93,9 @@ public class TimerAndCalendarExceptionTest {
         assertThat(kieBuilder.getResults().getMessages()).isNotEmpty();
     }
 
-    @Test
-    public void testUndefinedCalendar() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testUndefinedCalendar(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
                 "rule xxx \n" +
                            "  calendars \"cal1\"\n" +
