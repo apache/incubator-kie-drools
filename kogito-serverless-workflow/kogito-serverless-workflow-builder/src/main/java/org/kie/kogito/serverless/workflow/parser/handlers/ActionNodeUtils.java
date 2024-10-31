@@ -34,16 +34,21 @@ public class ActionNodeUtils {
         return embeddedSubProcess.actionNode(context.newId()).name(functionDef.getName());
     }
 
-    public static void checkArgs(FunctionRef functionRef, String... requiredArgs) {
+    public static boolean checkArgs(ParserContext context, FunctionRef functionRef, String... requiredArgs) {
         JsonNode args = functionRef.getArguments();
+        boolean isOk = true;
         if (args == null) {
-            throw new IllegalArgumentException("Arguments cannot be null for function " + functionRef.getRefName());
-        }
-        for (String arg : requiredArgs) {
-            if (!args.has(arg)) {
-                throw new IllegalArgumentException("Missing mandatory " + arg + " argument for function " + functionRef.getRefName());
+            context.addValidationError("Arguments cannot be null for function " + functionRef.getRefName());
+            isOk = false;
+        } else {
+            for (String arg : requiredArgs) {
+                if (!args.has(arg)) {
+                    context.addValidationError("Missing mandatory " + arg + " argument for function " + functionRef.getRefName());
+                    isOk = false;
+                }
             }
         }
+        return isOk;
     }
 
     private ActionNodeUtils() {

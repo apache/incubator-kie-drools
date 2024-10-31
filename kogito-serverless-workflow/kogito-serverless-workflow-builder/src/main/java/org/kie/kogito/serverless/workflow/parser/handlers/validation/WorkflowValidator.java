@@ -18,6 +18,8 @@
  */
 package org.kie.kogito.serverless.workflow.parser.handlers.validation;
 
+import org.kie.kogito.serverless.workflow.parser.ParserContext;
+
 import io.serverlessworkflow.api.Workflow;
 
 import static org.kie.kogito.internal.utils.ConversionUtils.isEmpty;
@@ -27,9 +29,9 @@ public class WorkflowValidator {
     private WorkflowValidator() {
     }
 
-    public static void validateStart(Workflow workflow) {
+    public static void validateStart(Workflow workflow, ParserContext context) {
         if (workflow.getStart() == null || isEmpty(workflow.getStart().getStateName())) {
-            throw new IllegalArgumentException("Workflow does not define a starting state");
+            context.addValidationError("Workflow does not define a starting state");
         }
     }
 }

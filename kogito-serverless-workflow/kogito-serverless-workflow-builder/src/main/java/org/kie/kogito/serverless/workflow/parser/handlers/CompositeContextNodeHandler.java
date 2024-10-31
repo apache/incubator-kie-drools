@@ -165,7 +165,7 @@ public abstract class CompositeContextNodeHandler<S extends State> extends State
             return filterAndMergeNode(embeddedSubProcess, collectVar, fromExpr, resultExpr, toExpr, useData, shouldMerge,
                     (factory, inputVar, outputVar) -> addActionMetadata(getActionNode(factory, action.getSubFlowRef(), inputVar, outputVar), action));
         } else {
-            throw new IllegalArgumentException("Action node " + action.getName() + " of state " + state.getName() + " does not have function or event defined");
+            return faultyNodeResult(embeddedSubProcess, "Action node " + action.getName() + " of state " + state.getName() + " does not have function or event defined");
         }
     }
 
@@ -199,7 +199,7 @@ public abstract class CompositeContextNodeHandler<S extends State> extends State
                 .findFirst()
                 .map(functionDef -> fromFunctionDefinition(embeddedSubProcess, functionDef, functionRef, varInfo))
                 .or(() -> fromPredefinedFunction(embeddedSubProcess, functionRef, varInfo))
-                .orElseThrow(() -> new IllegalArgumentException("Cannot find function " + functionName));
+                .orElseGet(() -> faultyNode(embeddedSubProcess, "Cannot find function " + functionName));
     }
 
     private Stream<FunctionDefinition> getFunctionDefStream() {

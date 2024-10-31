@@ -18,6 +18,8 @@
  */
 package org.kie.kogito.serverless.workflow.executor;
 
+import java.util.Optional;
+
 import org.kie.kogito.serverless.workflow.parser.handlers.ActionResource;
 import org.kie.kogito.serverless.workflow.parser.handlers.ActionResourceFactory;
 import org.kie.kogito.serverless.workflow.utils.RPCWorkflowUtils;
@@ -36,7 +38,7 @@ public class StaticRPCRegister implements StaticWorkflowRegister {
     }
 
     private void registerHandler(StaticWorkflowApplication application, FunctionDefinition function) {
-        ActionResource actionResource = ActionResourceFactory.getActionResource(function);
+        ActionResource actionResource = ActionResourceFactory.getActionResource(function, Optional.empty());
         application.registerHandler(new StaticRPCWorkItemHandler(RPCWorkflowUtils.getRPCClassName(actionResource.getService())));
     }
 }

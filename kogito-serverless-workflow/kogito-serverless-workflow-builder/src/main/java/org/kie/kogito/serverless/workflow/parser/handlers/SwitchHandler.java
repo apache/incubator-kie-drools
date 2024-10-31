@@ -58,7 +58,7 @@ public class SwitchHandler extends StateHandler<SwitchState> {
 
     @Override
     public MakeNodeResult makeNode(RuleFlowNodeContainerFactory<?, ?> factory) {
-        validateConditions(state, workflow);
+        validateConditions(state, workflow, parserContext);
         SplitFactory<?> splitNode = factory.splitNode(parserContext.newId());
         splitNode = isDataBased() ? exclusiveSplitNode(splitNode) : eventBasedExclusiveSplitNode(splitNode);
         return new MakeNodeResult(splitNode.name(state.getName()));

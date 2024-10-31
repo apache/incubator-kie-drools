@@ -43,8 +43,9 @@ public class ParserContext {
     private final NodeIdGenerator idGenerator;
     private final WorkflowOperationIdFactory operationIdFactory;
     private final KogitoBuildContext context;
-    private final Collection<GeneratedFile> generatedFiles;
+    private final Collection<GeneratedFile> generatedFiles = new ArrayList<>();
     private final AsyncInfoResolver asyncInfoResolver;
+    private final Collection<String> validationErrors = new ArrayList<>();
 
     public static final String ASYNC_CONVERTER_KEY = "asyncInfoConverter";
 
@@ -60,7 +61,6 @@ public class ParserContext {
         this.context = context;
         this.operationIdFactory = operationIdFactory;
         this.asyncInfoResolver = asyncInfoResolver;
-        this.generatedFiles = new ArrayList<>();
     }
 
     public void add(StateHandler<?> stateHandler) {
@@ -113,5 +113,13 @@ public class ParserContext {
 
     public KogitoBuildContext getContext() {
         return context;
+    }
+
+    public void addValidationError(String message) {
+        validationErrors.add(message);
+    }
+
+    public Collection<String> validationErrors() {
+        return validationErrors;
     }
 }

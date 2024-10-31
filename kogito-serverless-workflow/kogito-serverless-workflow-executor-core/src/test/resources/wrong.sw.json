@@ -1,0 +1,57 @@
+{
+  "id": "hello",
+  "version": "1.0",
+  "name": "Hello Workflow",
+  "description": "Inject Hello World",
+  "start": "Hello",
+  "functions": [
+    {
+      "name": "getIP",
+      "type": "custom",
+      "operation": "rest:get:https://ipinfo.io/json"
+    },
+    {
+      "name": "pushData",
+      "type": "custom",
+      "operation": "rest:post:https://httpbin.org/post"
+    },
+    {
+      "name": "logInfo",
+      "type": "custom",
+      "operation": "sysout:INFO"
+    }
+  ],
+  "errors":[],
+  "states": [
+    {
+      "name": "Hello",
+      "type": "inject",
+      "data": {
+        "greeting": "Hello World",
+        "mantra": "Serverless Workflow is awesome!"
+      },
+      "end": true
+    },
+    {
+      "name": "Get public IP",
+      "type": "operation",
+      "actions": [
+        {
+          "functionRef": {
+            "refName": "getIPO"
+          },
+          "actionDataFilter": {
+            "toStateData": ".ip_info"
+          }
+        }
+      ],
+      "onErrors": [
+        {
+          "errorRef": "notAvailable",
+          "transition": "logError"
+        }
+      ],
+      "transition": "push_host_data"
+    }
+  ]
+}

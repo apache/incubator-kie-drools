@@ -115,9 +115,7 @@ public class RuleFlowProcessValidator implements ProcessValidator {
         return INSTANCE;
     }
 
-    public ProcessValidationError[] validateProcess(final RuleFlowProcess process) {
-        final List<ProcessValidationError> errors = new ArrayList<>();
-
+    public List<ProcessValidationError> validateProcess(final RuleFlowProcess process, List<ProcessValidationError> errors) {
         if (process.getName() == null) {
             errors.add(new ProcessValidationErrorImpl(process,
                     "Process has no name."));
@@ -151,6 +149,12 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                 errors,
                 process);
 
+        return errors;
+
+    }
+
+    public ProcessValidationError[] validateProcess(final RuleFlowProcess process) {
+        final List<ProcessValidationError> errors = validateProcess(process, new ArrayList<>());
         return errors.toArray(new ProcessValidationError[errors.size()]);
     }
 

@@ -20,24 +20,28 @@ package org.kie.kogito.serverless.workflow.parser;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.io.UncheckedIOException;
 import java.net.URI;
 import java.net.URL;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
+import org.jbpm.process.core.validation.ProcessValidationError;
+import org.jbpm.process.core.validation.impl.ProcessValidationErrorImpl;
 import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.ruleflow.core.RuleFlowProcessFactory;
+import org.jbpm.ruleflow.core.validation.RuleFlowProcessValidator;
 import org.jbpm.workflow.core.WorkflowModelValidator;
 import org.kie.kogito.codegen.api.GeneratedInfo;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
 import org.kie.kogito.internal.utils.ConversionUtils;
 import org.kie.kogito.jackson.utils.ObjectMapperFactory;
+import org.kie.kogito.process.validation.ValidationException;
 import org.kie.kogito.serverless.workflow.SWFConstants;
 import org.kie.kogito.serverless.workflow.extensions.OutputSchema;
 import org.kie.kogito.serverless.workflow.operationid.WorkflowOperationIdFactoryProvider;
@@ -121,7 +125,7 @@ public class ServerlessWorkflowParser {
     }
 
     private GeneratedInfo<KogitoWorkflowProcess> parseProcess() {
-        WorkflowValidator.validateStart(workflow);
+
         RuleFlowProcessFactory factory = RuleFlowProcessFactory.createProcess(workflow.getId(), !workflow.isKeepActive())
                 .name(workflow.getName() == null ? DEFAULT_NAME : workflow.getName())
                 .version(workflow.getVersion() == null ? DEFAULT_VERSION : workflow.getVersion())
@@ -134,6 +138,7 @@ public class ServerlessWorkflowParser {
                 .type(KogitoWorkflowProcess.SW_TYPE);
         ParserContext parserContext =
                 new ParserContext(idGenerator, factory, context, WorkflowOperationIdFactoryProvider.getFactory(context.getApplicationProperty(WorkflowOperationIdFactoryProvider.PROPERTY_NAME)));
+        WorkflowValidator.validateStart(workflow, parserContext);
         modelValidator(parserContext, Optional.ofNullable(workflow.getDataInputSchema())).ifPresent(factory::inputValidator);
         modelValidator(parserContext, ServerlessWorkflowUtils.getExtension(workflow, OutputSchema.class).map(OutputSchema::getOutputSchema)).ifPresent(factory::outputValidator);
         loadConstants(factory, parserContext);
@@ -145,6 +150,7 @@ public class ServerlessWorkflowParser {
         handlers.forEach(StateHandler::handleState);
         handlers.forEach(StateHandler::handleTransitions);
         handlers.forEach(StateHandler::handleConnections);
+
         if (parserContext.isCompensation()) {
             factory.metaData(Metadata.COMPENSATION, true);
             factory.metaData(Metadata.COMPENSATE_WHEN_ABORTED, true);
@@ -170,8 +176,13 @@ public class ServerlessWorkflowParser {
         if (!annotations.isEmpty()) {
             factory.metaData(Metadata.ANNOTATIONS, annotations);
         }
-
-        return new GeneratedInfo<>(factory.validate().getProcess(), parserContext.generatedFiles());
+        factory.link();
+        List<ProcessValidationError> errors = RuleFlowProcessValidator.getInstance().validateProcess(factory.getProcess(), new ArrayList<>());
+        parserContext.validationErrors().forEach(m -> errors.add(new ProcessValidationErrorImpl(factory.getProcess(), m)));
+        if (!errors.isEmpty()) {
+            throw new ValidationException(factory.getProcess().getId(), errors);
+        }
+        return new GeneratedInfo<>(factory.getProcess(), parserContext.generatedFiles());
     }
 
     private Optional<WorkflowModelValidator> modelValidator(ParserContext parserContext, Optional<DataInputSchema> schema) {
@@ -194,7 +205,8 @@ public class ServerlessWorkflowParser {
                 try {
                     constants.setConstantsDef(ObjectMapperFactory.get().readValue(readBytes(constants.getRefValue(), workflow, parserContext), JsonNode.class));
                 } catch (IOException e) {
-                    throw new UncheckedIOException("Invalid file " + constants.getRefValue(), e);
+                    parserContext.addValidationError("Invalid file " + constants.getRefValue() + e);
+                    return;
                 }
             }
             factory.metaData(Metadata.CONSTANTS, constants.getConstantsDef());

@@ -29,6 +29,7 @@ import org.junit.jupiter.api.Test;
 import org.kie.api.event.process.ProcessCompletedEvent;
 import org.kie.kogito.internal.process.event.DefaultKogitoProcessEventListener;
 import org.kie.kogito.process.Process;
+import org.kie.kogito.process.validation.ValidationException;
 import org.kie.kogito.serverless.workflow.actions.SysoutAction;
 import org.kie.kogito.serverless.workflow.actions.WorkflowLogLevel;
 import org.kie.kogito.serverless.workflow.fluent.FunctionBuilder;
@@ -260,7 +261,7 @@ public class StaticFluentWorkflowApplicationTest {
         try (StaticWorkflowApplication application = StaticWorkflowApplication.create()) {
             Workflow workflow = workflow("Testing logs").function(FunctionBuilder.def(funcName, Type.CUSTOM, SysOutTypeHandler.SYSOUT_TYPE)).start(operation().action(
                     call(funcName))).end().build();
-            assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> application.process(workflow)).withMessageContaining("message");
+            assertThatExceptionOfType(ValidationException.class).isThrownBy(() -> application.process(workflow)).withMessageContaining("message");
         }
     }
 
@@ -270,7 +271,7 @@ public class StaticFluentWorkflowApplicationTest {
         try (StaticWorkflowApplication application = StaticWorkflowApplication.create()) {
             Workflow workflow = workflow("Testing logs").function(FunctionBuilder.def(funcName, Type.CUSTOM, SysOutTypeHandler.SYSOUT_TYPE)).start(operation().action(
                     call(funcName, null))).end().build();
-            assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> application.process(workflow)).withMessageContaining("Arguments cannot be null");
+            assertThatExceptionOfType(ValidationException.class).isThrownBy(() -> application.process(workflow)).withMessageContaining("Arguments cannot be null");
         }
     }
 

@@ -48,7 +48,9 @@ public class ScriptTypeHandler extends WorkItemBuilder implements FunctionTypeHa
     public NodeFactory<?, ?> getActionNode(Workflow workflow, ParserContext context,
             RuleFlowNodeContainerFactory<?, ?> embeddedSubProcess, FunctionDefinition functionDef,
             FunctionRef functionRef, VariableInfo varInfo) {
-        checkArgs(functionRef, SCRIPT);
+        if (!checkArgs(context, functionRef, SCRIPT)) {
+            return embeddedSubProcess.actionNode(context.newId());
+        }
         String lang = trimCustomOperation(functionDef);
         if (PYTHON.equalsIgnoreCase(lang)) {
             return addFunctionArgs(workflow,

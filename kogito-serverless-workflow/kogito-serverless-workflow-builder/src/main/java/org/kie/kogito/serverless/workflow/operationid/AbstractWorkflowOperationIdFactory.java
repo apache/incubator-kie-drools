@@ -44,7 +44,7 @@ public abstract class AbstractWorkflowOperationIdFactory implements WorkflowOper
 
     @Override
     public WorkflowOperationId from(Workflow workflow, FunctionDefinition function, Optional<ParserContext> context) {
-        ActionResource actionResource = ActionResourceFactory.getActionResource(function);
+        ActionResource actionResource = ActionResourceFactory.getActionResource(function, context);
         Optional<String> convertedUri = convertURI(workflow, context, actionResource.getUri());
         final String fileName;
         final String uri;
@@ -56,14 +56,19 @@ public abstract class AbstractWorkflowOperationIdFactory implements WorkflowOper
             fileName = getFileName(workflow, function, context, uri, actionResource.getOperation(), actionResource.getService());
         }
         if (fileName == null || fileName.isBlank()) {
-            throw new IllegalArgumentException(
-                    format("Empty file name for function '%s', please review uri '%s' or consider using a different strategy defined in the kogito.sw.operationIdStrategy property",
-                            function.getName(), uri));
+            String msg = format("Empty file name for function '%s', please review uri '%s' or consider using a different strategy defined in the kogito.sw.operationIdStrategy property",
+                    function.getName(), uri);
+            context.ifPresentOrElse(c -> c.addValidationError(msg), () -> {
+                throw new IllegalArgumentException(msg);
+            });
         }
         String packageName = onlyChars(removeExt(fileName.toLowerCase()));
         if (packageName.isBlank()) {
-            throw new IllegalArgumentException(
-                    format("Empty package for file '%s'. A file name should contain at least one letter which is not part of the extension", fileName));
+            String msg =
+                    format("Empty package for file '%s'. A file name should contain at least one letter which is not part of the extension", fileName);
+            context.ifPresentOrElse(c -> c.addValidationError(msg), () -> {
+                throw new IllegalArgumentException(msg);
+            });
         }
         return new WorkflowOperationId(uri, actionResource.getOperation(), actionResource.getService(), fileName, packageName);
     }
@@ -80,7 +85,9 @@ public abstract class AbstractWorkflowOperationIdFactory implements WorkflowOper
             try {
                 definitions = uri == null ? NullNode.instance : ObjectMapperFactory.get().readTree(readBytes(uri, workflow, context));
             } catch (IOException e) {
-                throw new UncheckedIOException(e);
+                context.ifPresentOrElse(c -> c.addValidationError(e.getMessage()), () -> {
+                    throw new UncheckedIOException(e);
+                });
             }
             uriDefinitions.setDefinitions(definitions);
         }

@@ -50,12 +50,11 @@ public class SwitchValidator {
     private SwitchValidator() {
     }
 
-    public static void validateConditions(SwitchState state, Workflow workflow) {
+    public static void validateConditions(SwitchState state, Workflow workflow, ParserContext context) {
         if (state.getDataConditions().isEmpty() && state.getEventConditions().isEmpty()) {
-            throw new IllegalArgumentException(String.format(CONDITIONS_NOT_FOUND_ERROR, state.getName(), workflow.getName()));
-        }
-        if (!state.getDataConditions().isEmpty() && !state.getEventConditions().isEmpty()) {
-            throw new IllegalArgumentException(String.format(DATA_CONDITIONS_AND_EVENT_CONDITIONS_FOUND_ERROR, state.getName(), workflow.getName()));
+            context.addValidationError(String.format(CONDITIONS_NOT_FOUND_ERROR, state.getName(), workflow.getName()));
+        } else if (!state.getDataConditions().isEmpty() && !state.getEventConditions().isEmpty()) {
+            context.addValidationError(String.format(DATA_CONDITIONS_AND_EVENT_CONDITIONS_FOUND_ERROR, state.getName(), workflow.getName()));
         }
     }
 
@@ -67,18 +66,17 @@ public class SwitchValidator {
         if (transition != null) {
             String nextState = transition.getNextState();
             if (nextState == null || nextState.isEmpty()) {
-                throw new IllegalArgumentException(String.format(NEXT_STATE_REQUIRED_FOR_DEFAULT_CONDITION_ERROR, state.getName(), workflow.getName()));
-            }
-            if (parserContext.getStateHandler(nextState) == null) {
-                throw new IllegalArgumentException(String.format(NEXT_STATE_NOT_FOUND_FOR_DEFAULT_CONDITION_ERROR, nextState, state.getName(), workflow.getName()));
+                parserContext.addValidationError(String.format(NEXT_STATE_REQUIRED_FOR_DEFAULT_CONDITION_ERROR, state.getName(), workflow.getName()));
+            } else if (parserContext.getStateHandler(nextState) == null) {
+                parserContext.addValidationError(String.format(NEXT_STATE_NOT_FOUND_FOR_DEFAULT_CONDITION_ERROR, nextState, state.getName(), workflow.getName()));
             }
         } else if (defaultCondition.getEnd() == null) {
-            throw new IllegalArgumentException(String.format(TRANSITION_OR_END_MUST_BE_CONFIGURED_FOR_DEFAULT_CONDITION_ERROR, state.getName(), workflow.getName()));
+            parserContext.addValidationError(String.format(TRANSITION_OR_END_MUST_BE_CONFIGURED_FOR_DEFAULT_CONDITION_ERROR, state.getName(), workflow.getName()));
         }
         if (!state.getEventConditions().isEmpty()) {
             String eventTimeout = resolveEventTimeout(state, workflow);
             if (eventTimeout == null) {
-                throw new IllegalArgumentException(String.format(EVENT_TIMEOUT_REQUIRED_ERROR, state.getName(), workflow.getName()));
+                parserContext.addValidationError(String.format(EVENT_TIMEOUT_REQUIRED_ERROR, state.getName(), workflow.getName()));
             }
         }
     }

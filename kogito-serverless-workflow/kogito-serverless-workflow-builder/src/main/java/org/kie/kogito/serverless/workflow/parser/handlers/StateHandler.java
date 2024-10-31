@@ -21,6 +21,7 @@ package org.kie.kogito.serverless.workflow.parser.handlers;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
@@ -148,7 +149,7 @@ public abstract class StateHandler<S extends State> {
     private void handleCompensation(RuleFlowNodeContainerFactory<?, ?> factory) {
         StateHandler<?> compensation = parserContext.getStateHandler(state.getCompensatedBy());
         if (compensation == null) {
-            throw new IllegalArgumentException("State " + getState().getName() + " refers to a compensation " + state.getCompensatedBy() + " which cannot be found");
+            parserContext.addValidationError("State " + getState().getName() + " refers to a compensation " + state.getCompensatedBy() + " which cannot be found");
         }
         parserContext.setCompensation();
         WorkflowElementIdentifier eventCompensationId = parserContext.newId();
@@ -164,7 +165,7 @@ public abstract class StateHandler<S extends State> {
         compensation = parserContext.getStateHandler(compensation);
         while (compensation != null) {
             if (!compensation.usedForCompensation()) {
-                throw new IllegalArgumentException(
+                parserContext.addValidationError(
                         "Compensation state can only have transition to other compensation state. State " + compensation.getState().getName() + " is not used for compensation");
             }
             lastNodeId = handleCompensation(embeddedSubProcess, compensation);
@@ -177,7 +178,7 @@ public abstract class StateHandler<S extends State> {
     private WorkflowElementIdentifier handleCompensation(RuleFlowNodeContainerFactory<?, ?> embeddedSubProcess,
             StateHandler<?> compensation) {
         if (compensation.getState().getCompensatedBy() != null) {
-            throw new IllegalArgumentException("Serverless workflow specification forbids nested compensations, hence state " + compensation.getState().getName() + " is not valid");
+            parserContext.addValidationError("Serverless workflow specification forbids nested compensations, hence state " + compensation.getState().getName() + " is not valid");
         }
         compensation.handleState(embeddedSubProcess);
         Transition transition = compensation.getState().getTransition();
@@ -256,11 +257,13 @@ public abstract class StateHandler<S extends State> {
     protected final Collection<ErrorDefinition> getErrorDefinitions(Error error) {
         Errors errors = workflow.getErrors();
         if (errors == null) {
-            throw new IllegalArgumentException("workflow should contain errors property");
+            parserContext.addValidationError("workflow should contain errors property");
+            return Collections.emptyList();
         }
         List<ErrorDefinition> errorDefs = errors.getErrorDefs();
         if (errorDefs == null) {
-            throw new IllegalArgumentException("workflow errors property must contain errorDefs property");
+            parserContext.addValidationError("workflow errors property must contain errorDefs property");
+            return Collections.emptyList();
         }
 
         if (error.getErrorRef() != null) {
@@ -268,15 +271,16 @@ public abstract class StateHandler<S extends State> {
         } else if (error.getErrorRefs() != null) {
             return getErrorsDefinitions(errorDefs, error.getErrorRefs());
         } else {
-            throw new IllegalArgumentException("state errors should contain either errorRef or errorRefs property");
+            parserContext.addValidationError("state errors should contain either errorRef or errorRefs property");
+            return Collections.emptyList();
         }
     }
 
     private Collection<ErrorDefinition> getErrorsDefinitions(List<ErrorDefinition> errorDefs, List<String> errorRefs) {
         Collection<ErrorDefinition> result = new ArrayList<>();
         for (String errorRef : errorRefs) {
-            result.add(errorDefs.stream().filter(errorDef -> errorDef.getName().equals(errorRef) && hasCode(errorDef)).findAny()
-                    .orElseThrow(() -> new IllegalArgumentException("Cannot find any error definition for errorRef" + errorRef)));
+            errorDefs.stream().filter(errorDef -> errorDef.getName().equals(errorRef) && hasCode(errorDef)).findAny().ifPresentOrElse(result::add,
+                    () -> parserContext.addValidationError("Cannot find any error definition for errorRef" + errorRef));
         }
         return result;
     }
@@ -382,7 +386,12 @@ public abstract class StateHandler<S extends State> {
                 targetState.connectSource(actionNode);
             }
         } else {
-            callback.ifPresent(HandleTransitionCallBack::onEmptyTarget);
+            callback.ifPresentOrElse(HandleTransitionCallBack::onEmptyTarget,
+                    () -> {
+                        if (transition != null) {
+                            parserContext.addValidationError(String.format("There is no state for transition %s originated in %s", transition.getNextState(), state.getName()));
+                        }
+                    });
         }
     }
 
@@ -581,5 +590,14 @@ public abstract class StateHandler<S extends State> {
 
     protected static WorkflowElementIdentifier concatId(WorkflowElementIdentifier start, WorkflowElementIdentifier end) {
         return WorkflowElementIdentifierFactory.fromExternalFormat(start.toSanitizeString() + "_" + end.toSanitizeString());
+    }
+
+    public MakeNodeResult faultyNodeResult(RuleFlowNodeContainerFactory<?, ?> embeddedSubProcess, String message) {
+        return new MakeNodeResult(faultyNode(embeddedSubProcess, message));
+    }
+
+    public NodeFactory<?, ?> faultyNode(RuleFlowNodeContainerFactory<?, ?> embeddedSubProcess, String message) {
+        parserContext.addValidationError(message);
+        return embeddedSubProcess.actionNode(parserContext.newId());
     }
 }
