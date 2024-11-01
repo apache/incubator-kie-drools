@@ -19,7 +19,6 @@
 package org.drools.mvel.integrationtests;
 
 import java.io.Serializable;
-import java.io.StringReader;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -43,28 +42,24 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.drools.base.base.ValueResolver;
-import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
-import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.kie.api.runtime.ClassObjectFilter;
 import org.drools.base.InitialFact;
 import org.drools.base.base.ClassObjectType;
+import org.drools.base.base.ValueResolver;
+import org.drools.base.definitions.rule.impl.RuleImpl;
+import org.drools.base.rule.accessor.Salience;
+import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.NodeMemories;
-import org.drools.base.definitions.InternalKnowledgePackage;
-import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalRuleBase;
-import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.ObjectTypeNodeId;
 import org.drools.core.reteoo.Rete;
 import org.drools.core.reteoo.SegmentMemory;
-import org.drools.base.rule.accessor.Salience;
 import org.drools.core.reteoo.TupleImpl;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.ast.descr.PatternDescr;
@@ -113,6 +108,7 @@ import org.kie.api.event.rule.DefaultAgendaEventListener;
 import org.kie.api.event.rule.MatchCancelledEvent;
 import org.kie.api.event.rule.MatchCreatedEvent;
 import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.ClassObjectFilter;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
@@ -8836,7 +8832,7 @@ public class Misc2Test {
                         "import " + Person.class.getCanonicalName() + ";\n" +
                         "rule R when\n" +
                         "    $alice : Person(name == \"Alice\")\n" +
-                        "    $bob : Person(name == \"Bob\", addresses supersetOf $alice.addresses)\n" +
+                        "    $bob : Person(name == \"Bob\", addresses ##supersetOf $alice.addresses)\n" +
                         "then\n" +
                         "end\n";
 

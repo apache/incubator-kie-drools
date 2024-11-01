@@ -26,6 +26,7 @@ import java.util.stream.Stream;
 import org.drools.base.base.ValueResolver;
 import org.drools.base.base.ValueType;
 import org.drools.compiler.rule.builder.EvaluatorDefinition;
+import org.drools.drl.parser.DrlParser;
 import org.drools.drl.parser.impl.Operator;
 import org.drools.base.rule.accessor.Evaluator;
 import org.drools.base.rule.accessor.FieldValue;
@@ -74,7 +75,7 @@ public class CustomOperatorOnlyDrlTest {
                         "when\n" +
                         "   gnId : GN()\n" +
                         "   la : t547147( )\n" +
-                        "   v1717 : Tra48( gnId.gNo == gNo, name F_str[startsWith] la.c547148 || postCode F_str[contains] la.c547149 )\n" +
+                        "   v1717 : Tra48( gnId.gNo == gNo, name ##F_str[startsWith] la.c547148 || postCode ##F_str[contains] la.c547149 )\n" +
                         "then\n" +
                         "end\n";
 

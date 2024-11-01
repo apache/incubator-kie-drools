@@ -36,6 +36,8 @@
 <!--    <logger name="org.drools.ancompiler" level="debug"/>-->
 <!--    <logger name="org.drools.drl.parser.DrlParser" level="debug"/>-->
 
+<!--    <logger name="org.drools.model" level="debug"/>-->
+
     <root level="warn">
         <appender-ref ref="consoleAppender" />
     </root>
