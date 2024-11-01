@@ -18,8 +18,6 @@
  */
 package com.myspace.demo;
 
-import java.net.URI;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -28,16 +26,10 @@ import java.util.stream.Collectors;
 import org.jbpm.util.JsonSchemaUtil;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
-import org.kie.kogito.process.WorkItem;
 import org.kie.kogito.process.ProcessService;
 import org.kie.kogito.process.workitem.TaskModel;
-import org.kie.kogito.auth.IdentityProvider;
-import org.kie.kogito.auth.IdentityProviders;
+import org.kie.kogito.auth.IdentityProviderFactory;
 import org.kie.kogito.auth.SecurityPolicy;
-
-import org.kie.kogito.usertask.model.Attachment;
-import org.kie.kogito.usertask.model.AttachmentInfo;
-import org.kie.kogito.usertask.model.Comment;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -69,6 +61,9 @@ public class $Type$Resource {
 
     @Autowired
     ProcessService processService;
+
+    @Autowired
+    IdentityProviderFactory identityProviderFactory;
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "$documentation$", description = "$processInstanceDescription$")
@@ -128,7 +123,7 @@ public class $Type$Resource {
     public List<TaskModel> getTasks_$name$(@PathVariable("id") String id,
                                            @RequestParam(value = "user", required = false) final String user,
                                            @RequestParam(value = "group", required = false) final List<String> groups) {
-        return processService.getWorkItems(process, id, SecurityPolicy.of(IdentityProviders.of(user, groups)))
+        return processService.getWorkItems(process, id, SecurityPolicy.of(identityProviderFactory.getOrImpersonateIdentity(user, groups)))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND))
                 .stream()
                 .map($TaskModelFactory$::from)

@@ -18,7 +18,6 @@
  */
 package com.myspace.demo;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -50,16 +49,10 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.jbpm.util.JsonSchemaUtil;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
-import org.kie.kogito.process.WorkItem;
 import org.kie.kogito.process.ProcessService;
 import org.kie.kogito.process.workitem.TaskModel;
-import org.kie.kogito.auth.IdentityProvider;
-import org.kie.kogito.auth.IdentityProviders;
+import org.kie.kogito.auth.IdentityProviderFactory;
 import org.kie.kogito.auth.SecurityPolicy;
-
-import org.kie.kogito.usertask.model.Attachment;
-import org.kie.kogito.usertask.model.AttachmentInfo;
-import org.kie.kogito.usertask.model.Comment;
 
 @Path("/$name$")
 public class $Type$Resource {
@@ -68,6 +61,9 @@ public class $Type$Resource {
 
     @Inject
     ProcessService processService;
+
+    @Inject
+    IdentityProviderFactory identityProviderFactory;
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
@@ -144,7 +140,7 @@ public class $Type$Resource {
     public List<TaskModel> getTasks_$name$(@PathParam("id") String id,
                                           @QueryParam("user") final String user,
                                           @QueryParam("group") final List<String> groups) {
-        return processService.getWorkItems(process, id, SecurityPolicy.of(IdentityProviders.of(user, groups)))
+        return processService.getWorkItems(process, id, SecurityPolicy.of(identityProviderFactory.getOrImpersonateIdentity(user, groups)))
                 .orElseThrow(NotFoundException::new)
                 .stream()
                 .map($TaskModelFactory$::from)

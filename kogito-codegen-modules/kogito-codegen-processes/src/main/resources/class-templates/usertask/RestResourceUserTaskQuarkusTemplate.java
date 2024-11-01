@@ -40,14 +40,7 @@ import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.Consumes;
 
-import org.kie.kogito.auth.IdentityProviders;
-import org.kie.kogito.auth.SecurityPolicy;
-import org.kie.kogito.process.Process;
-import org.kie.kogito.process.ProcessInstance;
-import org.kie.kogito.process.ProcessInstanceReadMode;
-import org.kie.kogito.process.WorkItem;
-import org.kie.kogito.process.impl.Sig;
-import org.kie.kogito.services.uow.UnitOfWorkExecutor;
+import org.kie.kogito.auth.IdentityProviderFactory;
 import org.kie.kogito.usertask.UserTaskInstanceNotFoundException;
 import org.kie.kogito.usertask.UserTaskService;
 import org.kie.kogito.usertask.impl.json.SimpleDeserializationProblemHandler;
@@ -76,6 +69,9 @@ public class UserTasksResource {
     UserTaskService userTaskService;
 
     @Inject
+    IdentityProviderFactory identityProviderFactory;
+
+    @Inject
     ObjectMapper objectMapper;
 
     ObjectMapper mapper;
@@ -92,14 +88,14 @@ public class UserTasksResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public List<UserTaskView> list(@QueryParam("user") String user, @QueryParam("group") List<String> groups) {
-        return userTaskService.list(IdentityProviders.of(user, groups));
+        return userTaskService.list(identityProviderFactory.getOrImpersonateIdentity(user, groups));
     }
 
     @GET
     @Path("/{taskId}")
     @Produces(MediaType.APPLICATION_JSON)
     public UserTaskView find(@PathParam("taskId") String taskId, @QueryParam("user") String user, @QueryParam("group") List<String> groups) {
-        return userTaskService.getUserTaskInstance(taskId, IdentityProviders.of(user, groups)).orElseThrow(UserTaskInstanceNotFoundException::new);
+        return userTaskService.getUserTaskInstance(taskId, identityProviderFactory.getOrImpersonateIdentity(user, groups)).orElseThrow(UserTaskInstanceNotFoundException::new);
     }
 
     @POST
@@ -111,7 +107,7 @@ public class UserTasksResource {
             @QueryParam("user") String user,
             @QueryParam("group") List<String> groups,
             TransitionInfo transitionInfo) {
-        return userTaskService.transition(taskId, transitionInfo.getTransitionId(), transitionInfo.getData(), IdentityProviders.of(user, groups)).orElseThrow(UserTaskInstanceNotFoundException::new);
+        return userTaskService.transition(taskId, transitionInfo.getTransitionId(), transitionInfo.getData(), identityProviderFactory.getOrImpersonateIdentity(user, groups)).orElseThrow(UserTaskInstanceNotFoundException::new);
     }
 
     @GET
@@ -121,7 +117,7 @@ public class UserTasksResource {
             @PathParam("taskId") String taskId,
             @QueryParam("user") String user,
             @QueryParam("group") List<String> groups) {
-        return userTaskService.allowedTransitions(taskId, IdentityProviders.of(user, groups));
+        return userTaskService.allowedTransitions(taskId, identityProviderFactory.getOrImpersonateIdentity(user, groups));
     }
 
     @PUT
@@ -133,7 +129,7 @@ public class UserTasksResource {
             @QueryParam("group") List<String> groups,
             String body) throws Exception {
         Map<String, Object> data = mapper.readValue(body, Map.class);
-        return userTaskService.setOutputs(taskId, data, IdentityProviders.of(user, groups)).orElseThrow(UserTaskInstanceNotFoundException::new);
+        return userTaskService.setOutputs(taskId, data, identityProviderFactory.getOrImpersonateIdentity(user, groups)).orElseThrow(UserTaskInstanceNotFoundException::new);
     }
 
     @PUT
@@ -145,7 +141,7 @@ public class UserTasksResource {
             @QueryParam("group") List<String> groups,
             String body) throws Exception {
         Map<String, Object> data = mapper.readValue(body, Map.class);
-        return userTaskService.setInputs(taskId, data, IdentityProviders.of(user, groups)).orElseThrow(UserTaskInstanceNotFoundException::new);
+        return userTaskService.setInputs(taskId, data, identityProviderFactory.getOrImpersonateIdentity(user, groups)).orElseThrow(UserTaskInstanceNotFoundException::new);
     }
 
     @GET
@@ -155,7 +151,7 @@ public class UserTasksResource {
             @PathParam("taskId") String taskId,
             @QueryParam("user") String user,
             @QueryParam("group") List<String> groups) {
-        return userTaskService.getComments(taskId, IdentityProviders.of(user, groups));
+        return userTaskService.getComments(taskId, identityProviderFactory.getOrImpersonateIdentity(user, groups));
     }
 
     @POST
@@ -169,7 +165,7 @@ public class UserTasksResource {
             CommentInfo commentInfo) {
         Comment comment = new Comment(null, user);
         comment.setContent(commentInfo.getComment());
-        return userTaskService.addComment(taskId, comment, IdentityProviders.of(user, groups)).orElseThrow(UserTaskInstanceNotFoundException::new);
+        return userTaskService.addComment(taskId, comment, identityProviderFactory.getOrImpersonateIdentity(user, groups)).orElseThrow(UserTaskInstanceNotFoundException::new);
     }
 
     @GET
@@ -180,7 +176,7 @@ public class UserTasksResource {
             @PathParam("commentId") String commentId,
             @QueryParam("user") String user,
             @QueryParam("group") List<String> groups) {
-        return userTaskService.getComment(taskId, commentId, IdentityProviders.of(user, groups))
+        return userTaskService.getComment(taskId, commentId, identityProviderFactory.getOrImpersonateIdentity(user, groups))
                 .orElseThrow(() -> new UserTaskInstanceNotFoundException("Comment " + commentId + " not found"));
     }
 
@@ -196,7 +192,7 @@ public class UserTasksResource {
             CommentInfo commentInfo) {
         Comment comment = new Comment(commentId, user);
         comment.setContent(commentInfo.getComment());
-        return userTaskService.updateComment(taskId, comment, IdentityProviders.of(user, groups))
+        return userTaskService.updateComment(taskId, comment, identityProviderFactory.getOrImpersonateIdentity(user, groups))
                 .orElseThrow(UserTaskInstanceNotFoundException::new);
     }
 
@@ -207,7 +203,7 @@ public class UserTasksResource {
             @PathParam("commentId") String commentId,
             @QueryParam("user") String user,
             @QueryParam("group") List<String> groups) {
-        return userTaskService.removeComment(taskId, commentId, IdentityProviders.of(user, groups))
+        return userTaskService.removeComment(taskId, commentId, identityProviderFactory.getOrImpersonateIdentity(user, groups))
                 .orElseThrow(UserTaskInstanceNotFoundException::new);
     }
 
@@ -218,7 +214,7 @@ public class UserTasksResource {
             @PathParam("taskId") String taskId,
             @QueryParam("user") String user,
             @QueryParam("group") List<String> groups) {
-        return userTaskService.getAttachments(taskId, IdentityProviders.of(user, groups));
+        return userTaskService.getAttachments(taskId, identityProviderFactory.getOrImpersonateIdentity(user, groups));
     }
 
     @POST
@@ -233,7 +229,7 @@ public class UserTasksResource {
         Attachment attachment = new Attachment(null, user);
         attachment.setName(attachmentInfo.getName());
         attachment.setContent(attachmentInfo.getUri());
-        return userTaskService.addAttachment(taskId, attachment, IdentityProviders.of(user, groups))
+        return userTaskService.addAttachment(taskId, attachment, identityProviderFactory.getOrImpersonateIdentity(user, groups))
                 .orElseThrow(UserTaskInstanceNotFoundException::new);
     }
 
@@ -250,7 +246,7 @@ public class UserTasksResource {
         Attachment attachment = new Attachment(attachmentId, user);
         attachment.setName(attachmentInfo.getName());
         attachment.setContent(attachmentInfo.getUri());
-        return userTaskService.updateAttachment(taskId, attachment, IdentityProviders.of(user, groups))
+        return userTaskService.updateAttachment(taskId, attachment, identityProviderFactory.getOrImpersonateIdentity(user, groups))
                 .orElseThrow(UserTaskInstanceNotFoundException::new);
     }
 
@@ -261,7 +257,7 @@ public class UserTasksResource {
             @PathParam("attachmentId") String attachmentId,
             @QueryParam("user") String user,
             @QueryParam("group") List<String> groups) {
-        return userTaskService.removeAttachment(taskId, attachmentId, IdentityProviders.of(user, groups))
+        return userTaskService.removeAttachment(taskId, attachmentId, identityProviderFactory.getOrImpersonateIdentity(user, groups))
                 .orElseThrow(UserTaskInstanceNotFoundException::new);
     }
 
@@ -273,7 +269,7 @@ public class UserTasksResource {
             @PathParam("attachmentId") String attachmentId,
             @QueryParam("user") String user,
             @QueryParam("group") List<String> groups) {
-        return userTaskService.getAttachment(taskId, attachmentId, IdentityProviders.of(user, groups))
+        return userTaskService.getAttachment(taskId, attachmentId, identityProviderFactory.getOrImpersonateIdentity(user, groups))
                 .orElseThrow(() -> new UserTaskInstanceNotFoundException("Attachment " + attachmentId + " not found"));
     }
 

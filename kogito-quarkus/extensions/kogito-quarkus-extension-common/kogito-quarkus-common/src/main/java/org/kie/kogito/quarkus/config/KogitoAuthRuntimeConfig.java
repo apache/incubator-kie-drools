@@ -16,39 +16,26 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 package org.kie.kogito.quarkus.config;
 
 import java.util.Optional;
 
+import io.quarkus.runtime.annotations.ConfigGroup;
 import io.quarkus.runtime.annotations.ConfigItem;
-import io.quarkus.runtime.annotations.ConfigPhase;
-import io.quarkus.runtime.annotations.ConfigRoot;
 
-@ConfigRoot(name = "", phase = ConfigPhase.RUN_TIME, prefix = "kogito")
-public class KogitoRuntimeConfig {
+@ConfigGroup
+public class KogitoAuthRuntimeConfig {
 
     /**
-     * The service URL needed to connect to the runtime endpoint from outside the service.
-     * <p>
+     * Enables using the application security context when resolving current User Identity.
      */
-    @ConfigItem(name = "service.url")
-    public Optional<String> serviceUrl;
+    @ConfigItem(name = "enabled", defaultValue = "false")
+    public boolean enabled;
 
     /**
-     * Eventing runtime configuration
+     * Comma-separated list of roles that allow identity impersonation when resolving the actual User Identity.
      */
-    @ConfigItem(name = "quarkus.events")
-    public KogitoEventingRuntimeConfig eventingConfig;
-
-    /**
-     * Maximum number of process instance to be returned by GET api
-     */
-    @ConfigItem(name = "process.instances.limit", defaultValue = "1000")
-    public short processInstanceLimit;
-
-    /**
-     * Auth Configuration
-     */
-    @ConfigItem(name = "security.auth")
-    public KogitoAuthRuntimeConfig authConfig;
+    @ConfigItem(name = "impersonation.allowed-for-roles")
+    public Optional<String> rolesThatAllowImpersonation;
 }

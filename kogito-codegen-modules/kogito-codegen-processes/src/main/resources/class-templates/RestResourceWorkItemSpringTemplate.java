@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.jbpm.util.JsonSchemaUtil;
-import org.kie.kogito.auth.IdentityProviders;
 import org.kie.kogito.auth.SecurityPolicy;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.WorkItem;
@@ -52,7 +51,7 @@ public class $Type$Resource {
             @RequestParam("group") final List<String> groups,
             final UriComponentsBuilder uriComponentsBuilder) {
 
-        return processService.signalWorkItem(process, id, "$taskName$", SecurityPolicy.of(user, groups))
+        return processService.signalWorkItem(process, id, "$taskName$", SecurityPolicy.of(identityProviderFactory.getOrImpersonateIdentity(user, groups)))
                 .map(task -> ResponseEntity
                         .created(uriComponentsBuilder
                                 .path("/$name$/{id}/$taskName$/{taskId}")
@@ -69,7 +68,7 @@ public class $Type$Resource {
             @RequestParam("user") final String user,
             @RequestParam("group") final List<String> groups,
             @RequestBody(required = false) final $TaskOutput$ model) {
-        return processService.transitionWorkItem(process, id, taskId, phase, SecurityPolicy.of(user, groups), model)
+        return processService.transitionWorkItem(process, id, taskId, phase, SecurityPolicy.of(identityProviderFactory.getOrImpersonateIdentity(user, groups)), model)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
@@ -79,7 +78,7 @@ public class $Type$Resource {
             @RequestParam(value = "user", required = false) final String user,
             @RequestParam(value = "group", required = false) final List<String> groups,
             @RequestBody(required = false) final $TaskOutput$ model) {
-        return processService.setWorkItemOutput(process, id, taskId, SecurityPolicy.of(user, groups), model, $TaskOutput$::fromMap)
+        return processService.setWorkItemOutput(process, id, taskId, SecurityPolicy.of(identityProviderFactory.getOrImpersonateIdentity(user, groups)), model, $TaskOutput$::fromMap)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
@@ -94,7 +93,7 @@ public class $Type$Resource {
             @RequestParam(value = "group",
                     required = false) final List<String> groups,
             @RequestBody(required = false) final $TaskOutput$ model) {
-        return processService.transitionWorkItem(process, id, taskId, phase, SecurityPolicy.of(user, groups), model)
+        return processService.transitionWorkItem(process, id, taskId, phase, SecurityPolicy.of(identityProviderFactory.getOrImpersonateIdentity(user, groups)), model)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
@@ -104,7 +103,7 @@ public class $Type$Resource {
             @RequestParam(value = "user", required = false) final String user,
             @RequestParam(value = "group",
                     required = false) final List<String> groups) {
-        return processService.getWorkItem(process, id, taskId, SecurityPolicy.of(user, groups), $TaskModel$::from)
+        return processService.getWorkItem(process, id, taskId, SecurityPolicy.of(identityProviderFactory.getOrImpersonateIdentity(user, groups)), $TaskModel$::from)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
@@ -116,7 +115,7 @@ public class $Type$Resource {
             @RequestParam(value = "user", required = false) final String user,
             @RequestParam(value = "group",
                     required = false) final List<String> groups) {
-        return processService.transitionWorkItem(process, id, taskId, phase, SecurityPolicy.of(user, groups), null)
+        return processService.transitionWorkItem(process, id, taskId, phase, SecurityPolicy.of(identityProviderFactory.getOrImpersonateIdentity(user, groups)), null)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
@@ -131,7 +130,7 @@ public class $Type$Resource {
             @RequestParam(value = "user", required = false) final String user,
             @RequestParam(value = "group",
                     required = false) final List<String> groups) {
-        return processService.getWorkItemSchemaAndPhases(process, id, taskId, "$taskName$", SecurityPolicy.of(user, groups));
+        return processService.getWorkItemSchemaAndPhases(process, id, taskId, "$taskName$", SecurityPolicy.of(identityProviderFactory.getOrImpersonateIdentity(user, groups)));
     }
 
 }

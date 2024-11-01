@@ -16,35 +16,26 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.auth;
+
+package org.kie.kogito.auth.impl;
 
 import java.util.Collection;
 
-/**
- * Delivers security information about given identity that includes name and assigned roles.
- *
- */
-public interface IdentityProvider {
+public class KogitoAuthConfig {
 
-    /**
-     * Returns name assigned to the current context, usually refers to the username
-     * 
-     * @return assigned name taken from security context
-     */
-    String getName();
+    private final boolean enabled;
+    private final Collection<String> rolesThatAllowImpersonation;
 
-    /**
-     * Returns roles assigned to the current context if any
-     * 
-     * @return Collection of assigned roles or empty one
-     */
-    Collection<String> getRoles();
+    public KogitoAuthConfig(boolean enabled, Collection<String> rolesThatAllowImpersonation) {
+        this.enabled = enabled;
+        this.rolesThatAllowImpersonation = rolesThatAllowImpersonation;
+    }
 
-    /**
-     * Checks if given role is assigned to current context
-     * 
-     * @param role role to be checked
-     * @return true if the role is found otherwise null
-     */
-    boolean hasRole(String role);
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public Collection<String> getRolesThatAllowImpersonation() {
+        return rolesThatAllowImpersonation;
+    }
 }

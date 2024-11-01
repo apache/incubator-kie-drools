@@ -25,7 +25,6 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
 
-import org.kie.kogito.auth.IdentityProviders;
 import org.kie.kogito.auth.SecurityPolicy;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
@@ -47,7 +46,7 @@ public class $Type$Resource {
             @QueryParam("user") final String user,
             @QueryParam("group") final List<String> groups,
             @Context UriInfo uriInfo) {
-        return processService.signalWorkItem(process, id, "$taskName$", SecurityPolicy.of(user, groups))
+        return processService.signalWorkItem(process, id, "$taskName$", SecurityPolicy.of(identityProviderFactory.getOrImpersonateIdentity(user, groups)))
                 .map(task -> Response
                         .created(uriInfo.getAbsolutePathBuilder().path(task.getId()).build())
                         .entity(task.getResults())
@@ -65,7 +64,7 @@ public class $Type$Resource {
             @QueryParam("user") final String user,
             @QueryParam("group") final List<String> groups,
             final $TaskOutput$ model) {
-        return processService.transitionWorkItem(process, id, taskId, phase, SecurityPolicy.of(user, groups), model)
+        return processService.transitionWorkItem(process, id, taskId, phase, SecurityPolicy.of(identityProviderFactory.getOrImpersonateIdentity(user, groups)), model)
                 .orElseThrow(NotFoundException::new);
     }
 
@@ -77,7 +76,7 @@ public class $Type$Resource {
             @QueryParam("user") final String user,
             @QueryParam("group") final List<String> groups,
             final $TaskOutput$ model) {
-        return processService.setWorkItemOutput(process, id, taskId, SecurityPolicy.of(user, groups), model, $TaskOutput$::fromMap)
+        return processService.setWorkItemOutput(process, id, taskId, SecurityPolicy.of(identityProviderFactory.getOrImpersonateIdentity(user, groups)), model, $TaskOutput$::fromMap)
                 .orElseThrow(NotFoundException::new);
     }
 
@@ -92,7 +91,7 @@ public class $Type$Resource {
             @QueryParam("user") final String user,
             @QueryParam("group") final List<String> groups,
             final $TaskOutput$ model) {
-        return processService.transitionWorkItem(process, id, taskId, phase, SecurityPolicy.of(user, groups), model)
+        return processService.transitionWorkItem(process, id, taskId, phase, SecurityPolicy.of(identityProviderFactory.getOrImpersonateIdentity(user, groups)), model)
                 .orElseThrow(NotFoundException::new);
     }
 
@@ -103,7 +102,7 @@ public class $Type$Resource {
             @PathParam("taskId") String taskId,
             @QueryParam("user") final String user,
             @QueryParam("group") final List<String> groups) {
-        return processService.getWorkItem(process, id, taskId, SecurityPolicy.of(user, groups), $TaskModel$::from)
+        return processService.getWorkItem(process, id, taskId, SecurityPolicy.of(identityProviderFactory.getOrImpersonateIdentity(user, groups)), $TaskModel$::from)
                 .orElseThrow(NotFoundException::new);
     }
 
@@ -115,7 +114,7 @@ public class $Type$Resource {
             @QueryParam("phase") @DefaultValue("abort") final String phase,
             @QueryParam("user") final String user,
             @QueryParam("group") final List<String> groups) {
-        return processService.transitionWorkItem(process, id, taskId, phase, SecurityPolicy.of(user, groups), null)
+        return processService.transitionWorkItem(process, id, taskId, phase, SecurityPolicy.of(identityProviderFactory.getOrImpersonateIdentity(user, groups)), null)
                 .orElseThrow(NotFoundException::new);
     }
 
@@ -133,7 +132,7 @@ public class $Type$Resource {
             @PathParam("taskId") final String taskId,
             @QueryParam("user") final String user,
             @QueryParam("group") final List<String> groups) {
-        return processService.getWorkItemSchemaAndPhases(process, id, taskId, "$taskName$", SecurityPolicy.of(user, groups));
+        return processService.getWorkItemSchemaAndPhases(process, id, taskId, "$taskName$", SecurityPolicy.of(identityProviderFactory.getOrImpersonateIdentity(user, groups)));
     }
 
 }
