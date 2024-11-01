@@ -107,6 +107,8 @@ import org.slf4j.LoggerFactory;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
+import static org.jbpm.workflow.instance.WorkflowProcessParameters.WORKFLOW_PARAM_MULTIPLE_CONNECTIONS;
+
 public class ProcessHandler extends BaseAbstractHandler implements Handler {
 
     private static final Logger logger = LoggerFactory.getLogger(ProcessHandler.class);
@@ -412,7 +414,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
                 result.setMetaData("bendpoints", connection.getBendpoints());
                 result.setMetaData(Metadata.UNIQUE_ID, connection.getId());
 
-                if (source instanceof NodeImpl nodeImpl && Boolean.parseBoolean((String) process.getMetaData().get("jbpm.enable.multi.con"))) {
+                if (source instanceof NodeImpl nodeImpl && WORKFLOW_PARAM_MULTIPLE_CONNECTIONS.get(process)) {
                     Constraint constraint = buildConstraint(connection, nodeImpl);
                     if (constraint != null) {
                         nodeImpl.addConstraint(new ConnectionRef(connection.getId(), target.getId(), org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE),

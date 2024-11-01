@@ -58,14 +58,14 @@ class SourceFilesResourceTest {
     }
 
     @Test
-    void getEmptySourceFileByProcessIdTest() {
+    void getEmptySourceFileByProcessIdTest() throws Exception {
         when(mockSourceFileProvider.getProcessSourceFile(PROCESS_ID)).thenReturn(Optional.empty());
         assertThat(sourceFilesTestResource.getSourceFileByProcessId(PROCESS_ID).getStatus()).isEqualTo(Response.Status.NOT_FOUND.getStatusCode());
         verify(mockSourceFileProvider).getProcessSourceFile(PROCESS_ID);
     }
 
     @Test
-    void getValidSourceFileByProcessIdTest() {
+    void getValidSourceFileByProcessIdTest() throws Exception {
         when(mockSourceFileProvider.getProcessSourceFile(PROCESS_ID)).thenReturn(Optional.of(new SourceFile("petstore.sw.json")));
         assertThat(sourceFilesTestResource.getSourceFileByProcessId(PROCESS_ID).getStatus()).isEqualTo(Response.Status.OK.getStatusCode());
         verify(mockSourceFileProvider).getProcessSourceFile(PROCESS_ID);

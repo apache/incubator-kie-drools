@@ -20,11 +20,15 @@ package org.kie.kogito.resource.exceptions;
 
 import org.kie.kogito.process.NodeInstanceNotFoundException;
 
+import jakarta.inject.Inject;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.Provider;
 
 @Provider
 public class NodeInstanceNotFoundExceptionMapper extends BaseExceptionMapper<NodeInstanceNotFoundException> {
+
+    @Inject
+    ExceptionsHandler exceptionsHandler;
 
     @Override
     public Response toResponse(NodeInstanceNotFoundException exception) {

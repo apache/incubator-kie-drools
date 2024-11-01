@@ -27,6 +27,8 @@ import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
 import org.kie.api.definition.process.Connection;
 
+import static org.jbpm.workflow.instance.WorkflowProcessParameters.WORKFLOW_PARAM_MULTIPLE_CONNECTIONS;
+
 /**
  * Default implementation of a start node.
  * 
@@ -92,7 +94,7 @@ public class StartNode extends ExtendedNodeImpl {
             throw new IllegalArgumentException(
                     "A start node [" + this.getUniqueId() + ", " + this.getName() + "] only accepts default outgoing connection type!");
         }
-        if (getTo() != null && !Boolean.parseBoolean((String) getProcess().getMetaData().get("jbpm.enable.multi.con"))) {
+        if (getTo() != null && !WORKFLOW_PARAM_MULTIPLE_CONNECTIONS.get(getProcess())) {
             throw new IllegalArgumentException(
                     "A start node [" + this.getUniqueId() + ", " + this.getName() + "] cannot have more than one outgoing connection!");
         }

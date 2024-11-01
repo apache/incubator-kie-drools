@@ -19,11 +19,10 @@
 package org.kie.kogito.addon.source.files;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
+import java.util.Optional;
 
-import org.kie.kogito.resource.exceptions.ExceptionsHandler;
 import org.kie.kogito.source.files.SourceFile;
 import org.kie.kogito.source.files.SourceFilesProvider;
 
@@ -41,24 +40,24 @@ import jakarta.ws.rs.core.Response;
 @Path("/management/processes/")
 public final class SourceFilesResource {
 
-    private static final ExceptionsHandler EXCEPTIONS_HANDLER = new ExceptionsHandler();
-
     SourceFilesProvider sourceFilesProvider;
 
     @GET
     @Path("sources")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
-    public Response getSourceFileByUri(@QueryParam("uri") String uri) {
-        return sourceFilesProvider.getSourceFilesByUri(uri)
-                .map(sourceFile -> {
-                    try (InputStream file = new ByteArrayInputStream(sourceFile.readContents())) {
-                        return Response.ok(file, MediaType.APPLICATION_OCTET_STREAM)
-                                .header("Content-Disposition", "inline; filename=\"" + java.nio.file.Path.of(sourceFile.getUri()).getFileName() + "\"")
-                                .build();
-                    } catch (Exception e) {
-                        return EXCEPTIONS_HANDLER.mapException(e);
-                    }
-                }).orElseGet(() -> Response.status(Response.Status.NOT_FOUND).build());
+    public Response getSourceFileByUri(@QueryParam("uri") String uri) throws Exception {
+        Optional<SourceFile> sourceFile = sourceFilesProvider.getSourceFilesByUri(uri);
+
+        if (sourceFile.isEmpty()) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+
+        try (InputStream file = new ByteArrayInputStream(sourceFile.get().readContents())) {
+            return Response.ok(file, MediaType.APPLICATION_OCTET_STREAM)
+                    .header("Content-Disposition", "inline; filename=\"" + java.nio.file.Path.of(sourceFile.get().getUri()).getFileName() + "\"")
+                    .build();
+        }
+
     }
 
     @GET
@@ -71,15 +70,15 @@ public final class SourceFilesResource {
     @GET
     @Path("{processId}/source")
     @Produces(MediaType.TEXT_PLAIN)
-    public Response getSourceFileByProcessId(@PathParam("processId") String processId) {
-        return sourceFilesProvider.getProcessSourceFile(processId)
-                .map(sourceFile -> {
-                    try {
-                        return Response.ok(sourceFile.readContents()).build();
-                    } catch (IOException e) {
-                        return EXCEPTIONS_HANDLER.mapException(e);
-                    }
-                }).orElseGet(() -> Response.status(Response.Status.NOT_FOUND).build());
+    public Response getSourceFileByProcessId(@PathParam("processId") String processId) throws Exception {
+        Optional<SourceFile> sourceFile = sourceFilesProvider.getProcessSourceFile(processId);
+
+        if (sourceFile.isEmpty()) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+
+        return Response.ok(sourceFile.get().readContents()).build();
+
     }
 
     @Inject

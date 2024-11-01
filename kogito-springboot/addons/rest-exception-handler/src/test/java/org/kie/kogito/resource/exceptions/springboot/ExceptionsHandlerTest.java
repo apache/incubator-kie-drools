@@ -18,6 +18,9 @@
  */
 package org.kie.kogito.resource.exceptions.springboot;
 
+import java.util.ArrayList;
+import java.util.Map;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,6 +32,7 @@ import org.kie.kogito.process.ProcessInstanceDuplicatedException;
 import org.kie.kogito.process.ProcessInstanceExecutionException;
 import org.kie.kogito.process.ProcessInstanceNotFoundException;
 import org.kie.kogito.process.VariableViolationException;
+import org.kie.kogito.resource.exceptions.ExceptionBodyMessage;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
@@ -44,45 +48,45 @@ class ExceptionsHandlerTest {
     private ExceptionsHandler tested;
 
     @Mock
-    private Object body;
+    private ExceptionBodyMessage body;
 
     @BeforeEach
     void setUp() {
-        tested = spy(new ExceptionsHandler());
+        tested = spy(new ExceptionsHandler(new ArrayList<>()));
     }
 
     @Test
     void testBadRequest() {
-        ResponseEntity responseEntity = tested.badRequest(body);
+        ResponseEntity<Map<String, String>> responseEntity = tested.badRequest(body);
         assertResponse(responseEntity, HttpStatus.BAD_REQUEST);
     }
 
-    private void assertResponse(ResponseEntity responseEntity, HttpStatus status) {
+    private void assertResponse(ResponseEntity<Map<String, String>> responseEntity, HttpStatus status) {
         assertThat(responseEntity.getStatusCode()).isEqualTo(status);
-        assertThat(responseEntity.getBody()).isEqualTo(body);
+        assertThat(responseEntity.getBody()).isEqualTo(body.getBody());
     }
 
     @Test
     void testConflict() {
-        ResponseEntity responseEntity = tested.conflict(body);
+        ResponseEntity<Map<String, String>> responseEntity = tested.conflict(body);
         assertResponse(responseEntity, HttpStatus.CONFLICT);
     }
 
     @Test
     void testIternalError() {
-        ResponseEntity responseEntity = tested.internalError(body);
+        ResponseEntity<Map<String, String>> responseEntity = tested.internalError(body);
         assertResponse(responseEntity, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @Test
     void testNotFound() {
-        ResponseEntity responseEntity = tested.badRequest(body);
+        ResponseEntity<Map<String, String>> responseEntity = tested.badRequest(body);
         assertResponse(responseEntity, HttpStatus.BAD_REQUEST);
     }
 
     @Test
     void testForbidden() {
-        ResponseEntity responseEntity = tested.forbidden(body);
+        ResponseEntity<Map<String, String>> responseEntity = tested.forbidden(body);
         assertResponse(responseEntity, HttpStatus.FORBIDDEN);
     }
 

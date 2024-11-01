@@ -23,6 +23,8 @@ import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
 import org.kie.api.definition.process.Connection;
 
+import static org.jbpm.workflow.instance.WorkflowProcessParameters.WORKFLOW_PARAM_MULTIPLE_CONNECTIONS;
+
 public class TimerNode extends ExtendedNodeImpl {
 
     private static final long serialVersionUID = 510l;
@@ -45,7 +47,7 @@ public class TimerNode extends ExtendedNodeImpl {
                     "This type of node [" + connection.getTo().getUniqueId() + ", " + connection.getTo().getName()
                             + "] only accepts default incoming connection type!");
         }
-        if (getFrom() != null && !Boolean.parseBoolean((String) getProcess().getMetaData().get("jbpm.enable.multi.con"))) {
+        if (getFrom() != null && !WORKFLOW_PARAM_MULTIPLE_CONNECTIONS.get(getProcess())) {
             throw new IllegalArgumentException(
                     "This type of node [" + connection.getTo().getUniqueId() + ", " + connection.getTo().getName()
                             + "] cannot have more than one incoming connection!");
@@ -60,7 +62,7 @@ public class TimerNode extends ExtendedNodeImpl {
                     "This type of node [" + connection.getFrom().getUniqueId() + ", " + connection.getFrom().getName()
                             + "] only accepts default outgoing connection type!");
         }
-        if (getTo() != null && !Boolean.parseBoolean((String) getProcess().getMetaData().get("jbpm.enable.multi.con"))) {
+        if (getTo() != null && !WORKFLOW_PARAM_MULTIPLE_CONNECTIONS.get(getProcess())) {
             throw new IllegalArgumentException(
                     "This type of node [" + connection.getFrom().getUniqueId() + ", " + connection.getFrom().getName()
                             + "] cannot have more than one outgoing connection!");

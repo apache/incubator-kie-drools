@@ -20,11 +20,15 @@ package org.kie.kogito.resource.exceptions;
 
 import org.kie.kogito.process.ProcessInstanceExecutionException;
 
+import jakarta.inject.Inject;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.Provider;
 
 @Provider
 public class ProcessInstanceExecutionExceptionMapper extends BaseExceptionMapper<ProcessInstanceExecutionException> {
+
+    @Inject
+    ExceptionsHandler exceptionsHandler;
 
     @Override
     public Response toResponse(ProcessInstanceExecutionException exception) {

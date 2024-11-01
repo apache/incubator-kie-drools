@@ -20,11 +20,15 @@ package org.kie.kogito.resource.exceptions;
 
 import org.kie.kogito.process.ProcessInstanceDuplicatedException;
 
+import jakarta.inject.Inject;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.Provider;
 
 @Provider
 public class ProcessInstanceDuplicatedExceptionMapper extends BaseExceptionMapper<ProcessInstanceDuplicatedException> {
+
+    @Inject
+    ExceptionsHandler exceptionsHandler;
 
     @Override
     public Response toResponse(ProcessInstanceDuplicatedException exception) {

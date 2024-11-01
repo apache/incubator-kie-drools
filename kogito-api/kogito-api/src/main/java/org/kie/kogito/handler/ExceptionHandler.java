@@ -16,22 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.resource.exceptions;
+package org.kie.kogito.handler;
 
-import org.kie.kogito.internal.process.workitem.WorkItemNotFoundException;
+public interface ExceptionHandler {
 
-import jakarta.inject.Inject;
-import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.ext.Provider;
+    void handle(Exception th);
 
-@Provider
-public class WorkItemNotFoundExceptionMapper extends BaseExceptionMapper<WorkItemNotFoundException> {
-
-    @Inject
-    ExceptionsHandler exceptionsHandler;
-
-    @Override
-    public Response toResponse(WorkItemNotFoundException exception) {
-        return exceptionsHandler.mapException(exception);
-    }
 }

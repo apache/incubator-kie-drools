@@ -61,12 +61,15 @@ import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstanceContainer;
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
+import org.kie.kogito.process.ProcessInstanceExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.jbpm.ruleflow.core.Metadata.HIDDEN;
 import static org.jbpm.ruleflow.core.Metadata.INCOMING_CONNECTION;
 import static org.jbpm.ruleflow.core.Metadata.OUTGOING_CONNECTION;
+import static org.jbpm.workflow.instance.WorkflowProcessParameters.WORKFLOW_PARAM_MULTIPLE_CONNECTIONS;
+import static org.jbpm.workflow.instance.WorkflowProcessParameters.WORKFLOW_PARAM_TRANSACTIONS;
 import static org.kie.kogito.internal.process.runtime.KogitoProcessInstance.STATE_ACTIVE;
 
 /**
@@ -248,10 +251,15 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
         try {
             internalTrigger(from, type);
         } catch (Exception e) {
-            logger.debug("Node instance causing process instance error in id {}", this.getStringId(), e);
-            captureError(e);
+            if (!WORKFLOW_PARAM_TRANSACTIONS.get(getProcessInstance().getProcess())) {
+                logger.error("Node instance causing process instance error in id {} in a non transactional environment", this.getStringId());
+                captureError(e);
+                return;
+            } else {
+                logger.error("Node instance causing process instance error in id {} in a transactional environment (Wrapping)", this.getStringId());
+                throw new ProcessInstanceExecutionException(this.getProcessInstance().getId(), this.getNodeDefinitionId(), e.getMessage(), e);
+            }
             // stop after capturing error
-            return;
         }
         if (!hidden) {
             ((InternalProcessRuntime) kruntime.getProcessRuntime())
@@ -260,8 +268,6 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
     }
 
     protected void captureError(Exception e) {
-        logger.error("capture error", e);
-        e.printStackTrace();
         getProcessInstance().setErrorState(this, e);
     }
 
@@ -317,7 +323,7 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
 
         List<Connection> connections = null;
         if (node != null) {
-            if (Boolean.parseBoolean((String) getProcessInstance().getProcess().getMetaData().get("jbpm.enable.multi.con")) && !((NodeImpl) node).getConstraints().isEmpty()) {
+            if (WORKFLOW_PARAM_MULTIPLE_CONNECTIONS.get(getProcessInstance().getProcess()) && !((NodeImpl) node).getConstraints().isEmpty()) {
                 int priority;
                 connections = ((NodeImpl) node).getDefaultOutgoingConnections();
                 boolean found = false;

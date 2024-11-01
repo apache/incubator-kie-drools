@@ -40,7 +40,7 @@ import static org.mockito.Mockito.spy;
 @ExtendWith(MockitoExtension.class)
 class BaseExceptionHandlerTest {
 
-    private BaseExceptionsHandler tested;
+    private AbstractExceptionsHandler<Object> tested;
 
     @Mock
     private Object badRequestResponse;
@@ -59,29 +59,29 @@ class BaseExceptionHandlerTest {
 
     @BeforeEach
     void setUp() {
-        tested = spy(new BaseExceptionsHandler() {
+        tested = spy(new AbstractExceptionsHandler<Object>() {
             @Override
-            protected Object badRequest(Object body) {
+            protected Object badRequest(ExceptionBodyMessage body) {
                 return badRequestResponse;
             }
 
             @Override
-            protected Object conflict(Object body) {
+            protected Object conflict(ExceptionBodyMessage body) {
                 return conflictResponse;
             }
 
             @Override
-            protected Object internalError(Object body) {
+            protected Object internalError(ExceptionBodyMessage body) {
                 return internalErrorResponse;
             }
 
             @Override
-            protected Object notFound(Object body) {
+            protected Object notFound(ExceptionBodyMessage body) {
                 return notFoundResponse;
             }
 
             @Override
-            protected Object forbidden(Object body) {
+            protected Object forbidden(ExceptionBodyMessage body) {
                 return forbiddenResponse;
             }
         });

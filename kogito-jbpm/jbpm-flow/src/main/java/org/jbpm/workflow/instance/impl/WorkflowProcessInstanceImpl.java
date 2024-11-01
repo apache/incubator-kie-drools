@@ -100,6 +100,7 @@ import org.kie.kogito.process.BaseEventDescription;
 import org.kie.kogito.process.EventDescription;
 import org.kie.kogito.process.NamedDataType;
 import org.kie.kogito.process.ProcessInstance;
+import org.kie.kogito.process.ProcessInstanceExecutionException;
 import org.kie.kogito.process.flexible.AdHocFragment;
 import org.kie.kogito.process.flexible.ItemDescription;
 import org.kie.kogito.process.flexible.Milestone;
@@ -1314,6 +1315,15 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
     public void internalSetErrorMessage(String errorMessage) {
         this.errorMessage = errorMessage;
         this.errorCause = Optional.empty();
+    }
+
+    public void internalSetError(ProcessInstanceExecutionException e) {
+        this.nodeIdInError = e.getFailedNodeId();
+        Throwable rootException = getRootException(e);
+        this.errorMessage = rootException instanceof MessageException ? rootException.getMessage() : rootException.getClass().getCanonicalName() + " - " + rootException.getMessage();
+        this.errorCause = Optional.of(e);
+        setState(STATE_ERROR);
+        ((InternalProcessRuntime) getKnowledgeRuntime().getProcessRuntime()).getProcessEventSupport().fireOnError(this, null, getKnowledgeRuntime(), e);
     }
 
     @Override

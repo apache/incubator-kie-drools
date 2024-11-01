@@ -26,6 +26,8 @@ import org.jbpm.workflow.core.impl.ConnectionRef;
 import org.jbpm.workflow.core.impl.NodeImpl;
 import org.kie.api.definition.process.Connection;
 
+import static org.jbpm.workflow.instance.WorkflowProcessParameters.WORKFLOW_PARAM_MULTIPLE_CONNECTIONS;
+
 /**
  * Default implementation of a split node.
  * 
@@ -143,7 +145,7 @@ public class Split extends NodeImpl implements Constrainable {
                             + "] only accepts default incoming connection type!");
         }
 
-        if (!getIncomingConnections(Node.CONNECTION_DEFAULT_TYPE).isEmpty() && !Boolean.parseBoolean((String) getProcess().getMetaData().get("jbpm.enable.multi.con"))) {
+        if (!getIncomingConnections(Node.CONNECTION_DEFAULT_TYPE).isEmpty() && !WORKFLOW_PARAM_MULTIPLE_CONNECTIONS.get(getProcess())) {
             throw new IllegalArgumentException(
                     "This type of node [" + connection.getTo().getUniqueId() + ", " + connection.getTo().getName()
                             + "] cannot have more than one incoming connection!");

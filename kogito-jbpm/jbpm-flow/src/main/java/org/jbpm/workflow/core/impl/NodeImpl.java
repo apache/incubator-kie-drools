@@ -40,6 +40,8 @@ import org.kie.api.definition.process.Connection;
 import org.kie.api.definition.process.NodeContainer;
 import org.kie.api.definition.process.WorkflowElementIdentifier;
 
+import static org.jbpm.workflow.instance.WorkflowProcessParameters.WORKFLOW_PARAM_MULTIPLE_CONNECTIONS;
+
 /**
  * Default implementation of a node.
  */
@@ -297,7 +299,7 @@ public abstract class NodeImpl implements Node, ContextResolver, Mappable {
         if (list.size() == 1) {
             return list.get(0);
         }
-        if (Boolean.parseBoolean((String) getProcess().getMetaData().get("jbpm.enable.multi.con"))) {
+        if (WORKFLOW_PARAM_MULTIPLE_CONNECTIONS.get(getProcess())) {
             return list.get(0);
         } else {
             throw new IllegalArgumentException(
@@ -317,7 +319,7 @@ public abstract class NodeImpl implements Node, ContextResolver, Mappable {
         if (list.size() == 1) {
             return list.get(0);
         }
-        if (Boolean.parseBoolean((String) getProcess().getMetaData().get("jbpm.enable.multi.con"))) {
+        if (WORKFLOW_PARAM_MULTIPLE_CONNECTIONS.get(getProcess())) {
             return list.get(0);
         } else {
             throw new IllegalArgumentException(

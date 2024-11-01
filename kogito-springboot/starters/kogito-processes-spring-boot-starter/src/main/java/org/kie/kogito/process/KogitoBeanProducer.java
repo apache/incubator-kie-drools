@@ -22,6 +22,9 @@ import org.kie.kogito.config.ConfigBean;
 import org.kie.kogito.correlation.CorrelationService;
 import org.kie.kogito.event.correlation.DefaultCorrelationService;
 import org.kie.kogito.process.version.ProjectVersionProcessVersionResolver;
+import org.kie.kogito.services.uow.CollectingUnitOfWorkFactory;
+import org.kie.kogito.services.uow.DefaultUnitOfWorkManager;
+import org.kie.kogito.uow.UnitOfWorkManager;
 import org.kogito.workitem.rest.RestWorkItemHandlerUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -51,6 +54,12 @@ public class KogitoBeanProducer {
     @ConditionalOnProperty(value = "kogito.workflow.version-strategy", havingValue = "project")
     ProcessVersionResolver projectVersionResolver() {
         return new ProjectVersionProcessVersionResolver(configBean.getGav().orElseThrow(() -> new RuntimeException("Unable to use kogito.workflow.version-strategy without a project GAV")));
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(UnitOfWorkManager.class)
+    UnitOfWorkManager unitOfWorkManager() {
+        return new DefaultUnitOfWorkManager(new CollectingUnitOfWorkFactory());
     }
 
     @Bean

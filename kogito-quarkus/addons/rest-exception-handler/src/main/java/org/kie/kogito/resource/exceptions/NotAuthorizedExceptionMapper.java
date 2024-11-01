@@ -20,11 +20,15 @@ package org.kie.kogito.resource.exceptions;
 
 import org.kie.kogito.internal.process.workitem.NotAuthorizedException;
 
+import jakarta.inject.Inject;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.Provider;
 
 @Provider
 public class NotAuthorizedExceptionMapper extends BaseExceptionMapper<NotAuthorizedException> {
+
+    @Inject
+    ExceptionsHandler exceptionsHandler;
 
     @Override
     public Response toResponse(NotAuthorizedException exception) {

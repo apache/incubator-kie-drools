@@ -34,6 +34,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiConsumer;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -82,6 +83,7 @@ import static org.jbpm.ruleflow.core.Metadata.TRIGGER_REF;
 import static org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE;
 import static org.jbpm.workflow.core.impl.ExtendedNodeImpl.EVENT_NODE_ENTER;
 import static org.jbpm.workflow.core.impl.ExtendedNodeImpl.EVENT_NODE_EXIT;
+import static org.jbpm.workflow.instance.WorkflowProcessParameters.WORKFLOW_PARAM_TRANSACTIONS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
@@ -108,7 +110,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class ProcessGenerationIT extends AbstractCodegenIT {
 
     private static final Collection<String> IGNORED_PROCESS_META =
-            Arrays.asList("Definitions", "BPMN.Connections", "BPMN.Associations", "ItemDefinitions");
+            Arrays.asList("Definitions", "BPMN.Connections", "BPMN.Associations", "ItemDefinitions", WORKFLOW_PARAM_TRANSACTIONS.getName());
     private static final Path BASE_PATH = Paths.get("src/test/resources");
 
     static Stream<String> processesProvider() throws IOException {
@@ -405,13 +407,15 @@ public class ProcessGenerationIT extends AbstractCodegenIT {
             return;
         }
         expected.remove("CorrelationSubscriptions");
-        assertThat(current).hasSize((int) expected.keySet()
-                .stream()
-                .filter(k -> ignoredKeys == null || !ignoredKeys.contains(k))
-                .count());
+        Predicate<String> precicateIgnoredKeys = Predicate.not(ignoredKeys::contains);
+
+        List<String> currentKeys = current.keySet().stream().filter(precicateIgnoredKeys).toList();
+        List<String> expectedKeys = expected.keySet().stream().filter(precicateIgnoredKeys).toList();
+        assertThat(currentKeys).containsExactlyElementsOf(expectedKeys);
+
         expected.keySet()
                 .stream()
-                .filter(k -> ignoredKeys == null || !ignoredKeys.contains(k))
+                .filter(precicateIgnoredKeys)
                 .forEach(k -> assertThat(current).as("Metadata " + k).containsEntry(k, expected.get(k)));
     }
 

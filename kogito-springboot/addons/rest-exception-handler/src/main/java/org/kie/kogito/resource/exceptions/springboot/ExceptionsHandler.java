@@ -18,6 +18,9 @@
  */
 package org.kie.kogito.resource.exceptions.springboot;
 
+import java.util.List;
+import java.util.Map;
+
 import org.kie.kogito.internal.process.workitem.InvalidLifeCyclePhaseException;
 import org.kie.kogito.internal.process.workitem.InvalidTransitionException;
 import org.kie.kogito.internal.process.workitem.NotAuthorizedException;
@@ -29,7 +32,9 @@ import org.kie.kogito.process.ProcessInstanceDuplicatedException;
 import org.kie.kogito.process.ProcessInstanceExecutionException;
 import org.kie.kogito.process.ProcessInstanceNotFoundException;
 import org.kie.kogito.process.VariableViolationException;
-import org.kie.kogito.resource.exceptions.BaseExceptionsHandler;
+import org.kie.kogito.resource.exceptions.AbstractExceptionsHandler;
+import org.kie.kogito.resource.exceptions.ExceptionBodyMessage;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -37,105 +42,111 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
-public class ExceptionsHandler extends BaseExceptionsHandler<ResponseEntity> {
+public class ExceptionsHandler extends AbstractExceptionsHandler<ResponseEntity<Map<String, String>>> {
+
+    @Autowired
+    public ExceptionsHandler(List<org.kie.kogito.handler.ExceptionHandler> handlers) {
+        super(handlers);
+    }
 
     @Override
-    protected <R> ResponseEntity badRequest(R body) {
+    protected ResponseEntity<Map<String, String>> badRequest(ExceptionBodyMessage body) {
         return ResponseEntity
                 .badRequest()
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(body);
+                .body(body.getBody());
     }
 
     @Override
-    protected <R> ResponseEntity conflict(R body) {
+    protected ResponseEntity<Map<String, String>> conflict(ExceptionBodyMessage body) {
         return ResponseEntity
                 .status(HttpStatus.CONFLICT)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(body);
+                .body(body.getBody());
     }
 
     @Override
-    protected <R> ResponseEntity internalError(R body) {
+    protected ResponseEntity<Map<String, String>> internalError(ExceptionBodyMessage body) {
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(body);
+                .body(body.getBody());
     }
 
     @Override
-    protected <R> ResponseEntity notFound(R body) {
+    protected ResponseEntity<Map<String, String>> notFound(ExceptionBodyMessage body) {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(body);
+                .body(body.getBody());
     }
 
     @Override
-    protected <R> ResponseEntity forbidden(R body) {
+    protected ResponseEntity<Map<String, String>> forbidden(ExceptionBodyMessage body) {
         return ResponseEntity
                 .status(HttpStatus.FORBIDDEN)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(body);
+                .body(body.getBody());
     }
 
     @ExceptionHandler(InvalidLifeCyclePhaseException.class)
-    public ResponseEntity toResponse(InvalidLifeCyclePhaseException exception) {
+    public ResponseEntity<Map<String, String>> toResponse(InvalidLifeCyclePhaseException exception) {
         return mapException(exception);
     }
 
     @ExceptionHandler(InvalidTransitionException.class)
-    public ResponseEntity toResponse(InvalidTransitionException exception) {
+    public ResponseEntity<Map<String, String>> toResponse(InvalidTransitionException exception) {
         return mapException(exception);
     }
 
     @ExceptionHandler(NodeInstanceNotFoundException.class)
-    public ResponseEntity toResponse(NodeInstanceNotFoundException exception) {
+    public ResponseEntity<Map<String, String>> toResponse(NodeInstanceNotFoundException exception) {
         return mapException(exception);
     }
 
     @ExceptionHandler(NodeNotFoundException.class)
-    public ResponseEntity toResponse(NodeNotFoundException exception) {
+    public ResponseEntity<Map<String, String>> toResponse(NodeNotFoundException exception) {
         return mapException(exception);
     }
 
     @ExceptionHandler(NotAuthorizedException.class)
-    public ResponseEntity toResponse(NotAuthorizedException exception) {
+    public ResponseEntity<Map<String, String>> toResponse(NotAuthorizedException exception) {
         return mapException(exception);
     }
 
     @ExceptionHandler(ProcessInstanceDuplicatedException.class)
-    public ResponseEntity<Object> toResponse(ProcessInstanceDuplicatedException exception) {
+    public ResponseEntity<Map<String, String>> toResponse(ProcessInstanceDuplicatedException exception) {
         return mapException(exception);
     }
 
     @ExceptionHandler(ProcessInstanceExecutionException.class)
-    public ResponseEntity toResponse(ProcessInstanceExecutionException exception) {
+    public ResponseEntity<Map<String, String>> toResponse(ProcessInstanceExecutionException exception) {
         return mapException(exception);
     }
 
     @ExceptionHandler(ProcessInstanceNotFoundException.class)
-    public ResponseEntity toResponse(ProcessInstanceNotFoundException exception) {
+    public ResponseEntity<Map<String, String>> toResponse(ProcessInstanceNotFoundException exception) {
         return mapException(exception);
     }
 
     @ExceptionHandler(WorkItemNotFoundException.class)
-    public ResponseEntity toResponse(WorkItemNotFoundException exception) {
+    public ResponseEntity<Map<String, String>> toResponse(WorkItemNotFoundException exception) {
         return mapException(exception);
     }
 
     @ExceptionHandler(WorkItemExecutionException.class)
-    public ResponseEntity toResponse(WorkItemExecutionException exception) {
+    public ResponseEntity<Map<String, String>> toResponse(WorkItemExecutionException exception) {
         return mapException(exception);
     }
 
     @ExceptionHandler(VariableViolationException.class)
-    public ResponseEntity toResponse(VariableViolationException exception) {
+    public ResponseEntity<Map<String, String>> toResponse(VariableViolationException exception) {
         return mapException(exception);
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity toResponse(IllegalArgumentException exception) {
+    public ResponseEntity<Map<String, String>> toResponse(IllegalArgumentException exception) {
         return mapException(exception);
     }
+
 }

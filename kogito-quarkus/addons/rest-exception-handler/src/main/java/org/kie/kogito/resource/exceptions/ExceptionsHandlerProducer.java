@@ -18,20 +18,15 @@
  */
 package org.kie.kogito.resource.exceptions;
 
-import org.kie.kogito.internal.process.workitem.WorkItemNotFoundException;
+import org.kie.kogito.handler.ExceptionHandler;
 
-import jakarta.inject.Inject;
-import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.ext.Provider;
+import jakarta.enterprise.inject.Instance;
+import jakarta.enterprise.inject.Produces;
 
-@Provider
-public class WorkItemNotFoundExceptionMapper extends BaseExceptionMapper<WorkItemNotFoundException> {
+public class ExceptionsHandlerProducer {
 
-    @Inject
-    ExceptionsHandler exceptionsHandler;
-
-    @Override
-    public Response toResponse(WorkItemNotFoundException exception) {
-        return exceptionsHandler.mapException(exception);
+    @Produces
+    public ExceptionsHandler newExceptionsHandler(Instance<ExceptionHandler> handlers) {
+        return new ExceptionsHandler(handlers);
     }
 }

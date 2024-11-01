@@ -18,11 +18,15 @@
  */
 package org.kie.kogito.resource.exceptions;
 
+import jakarta.inject.Inject;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.Provider;
 
 @Provider
 public class IllegalArgumentExceptionMapper extends BaseExceptionMapper<IllegalArgumentException> {
+
+    @Inject
+    ExceptionsHandler exceptionsHandler;
 
     @Override
     public Response toResponse(IllegalArgumentException e) {

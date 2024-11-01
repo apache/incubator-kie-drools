@@ -27,6 +27,8 @@ import org.jbpm.workflow.core.impl.DataAssociation;
 import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
 import org.kie.api.definition.process.Connection;
 
+import static org.jbpm.workflow.instance.WorkflowProcessParameters.WORKFLOW_PARAM_MULTIPLE_CONNECTIONS;
+
 /**
  * Default implementation of an action node.
  * 
@@ -53,7 +55,7 @@ public class ActionNode extends ExtendedNodeImpl {
                     "This type of node [" + connection.getTo().getUniqueId() + ", " + connection.getTo().getName()
                             + "] only accepts default incoming connection type!");
         }
-        if (getFrom() != null && !Boolean.parseBoolean((String) getProcess().getMetaData().get("jbpm.enable.multi.con"))) {
+        if (getFrom() != null && !WORKFLOW_PARAM_MULTIPLE_CONNECTIONS.get(getProcess())) {
             throw new IllegalArgumentException(
                     "This type of node [" + connection.getTo().getUniqueId() + ", " + connection.getTo().getName()
                             + "] cannot have more than one incoming connection!");
@@ -68,7 +70,7 @@ public class ActionNode extends ExtendedNodeImpl {
                     "This type of node [" + connection.getFrom().getUniqueId() + ", " + connection.getFrom().getName()
                             + "] only accepts default outgoing connection type!");
         }
-        if (getTo() != null && !Boolean.parseBoolean((String) getProcess().getMetaData().get("jbpm.enable.multi.con"))) {
+        if (getTo() != null && !WORKFLOW_PARAM_MULTIPLE_CONNECTIONS.get(getProcess())) {
             throw new IllegalArgumentException(
                     "This type of node [" + connection.getFrom().getUniqueId() + ", " + connection.getFrom().getName()
                             + "] cannot have more than one outgoing connection!");

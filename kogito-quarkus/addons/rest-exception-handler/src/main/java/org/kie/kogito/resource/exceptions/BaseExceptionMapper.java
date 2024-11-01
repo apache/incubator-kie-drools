@@ -23,13 +23,6 @@ import jakarta.ws.rs.ext.ExceptionMapper;
 
 public abstract class BaseExceptionMapper<E extends Throwable> implements ExceptionMapper<E> {
 
-    protected ExceptionsHandler exceptionsHandler;
-
-    protected BaseExceptionMapper() {
-        this.exceptionsHandler = new ExceptionsHandler();
-    }
-
     @Override
-    @SuppressWarnings("squid:S3038")
     public abstract Response toResponse(E e);
 }

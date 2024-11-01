@@ -54,6 +54,8 @@ import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.mvel2.integration.VariableResolver;
 import org.mvel2.integration.impl.SimpleValueResolver;
 
+import static org.jbpm.workflow.instance.WorkflowProcessParameters.WORKFLOW_PARAM_MULTIPLE_CONNECTIONS;
+
 /**
  * Runtime counterpart of a for each node.
  */
@@ -297,7 +299,7 @@ public class ForEachNodeInstance extends CompositeContextNodeInstance {
                 ((NodeInstanceContainer) getNodeInstanceContainer()).removeNodeInstance(this);
 
                 if (getForEachNode().isWaitForCompletion()) {
-                    if (!Boolean.parseBoolean((String) getForEachNode().getProcess().getMetaData().get("jbpm.enable.multi.con"))) {
+                    if (!WORKFLOW_PARAM_MULTIPLE_CONNECTIONS.get(getProcessInstance().getProcess())) {
                         triggerConnection(getForEachJoinNode().getTo());
                     } else {
                         List<Connection> connections = getForEachJoinNode().getOutgoingConnections(Node.CONNECTION_DEFAULT_TYPE);

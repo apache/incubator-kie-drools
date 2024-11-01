@@ -24,6 +24,8 @@ import org.jbpm.workflow.core.Node;
 import org.kie.api.definition.process.Connection;
 import org.kie.api.runtime.process.ProcessContext;
 
+import static org.jbpm.workflow.instance.WorkflowProcessParameters.WORKFLOW_PARAM_MULTIPLE_CONNECTIONS;
+
 /**
  * Default implementation of a milestone node.
  */
@@ -59,7 +61,7 @@ public class MilestoneNode extends StateBasedNode implements Constrainable {
         if (!Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
             throwValidationException(connection, "only accepts default incoming connection type!");
         }
-        if (getFrom() != null && !Boolean.parseBoolean((String) getProcess().getMetaData().get("jbpm.enable.multi.con"))) {
+        if (getFrom() != null && !WORKFLOW_PARAM_MULTIPLE_CONNECTIONS.get(getProcess())) {
             throwValidationException(connection, "cannot have more than one incoming connection!");
         }
     }
@@ -70,7 +72,7 @@ public class MilestoneNode extends StateBasedNode implements Constrainable {
         if (!Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
             throwValidationException(connection, "only accepts default outgoing connection type!");
         }
-        if (getTo() != null && !Boolean.parseBoolean((String) getProcess().getMetaData().get("jbpm.enable.multi.con"))) {
+        if (getTo() != null && !WORKFLOW_PARAM_MULTIPLE_CONNECTIONS.get(getProcess())) {
             throwValidationException(connection, "cannot have more than one outgoing connection!");
         }
     }
