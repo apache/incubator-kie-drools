@@ -18,20 +18,18 @@
  */
 package org.drools.mvel.compiler.simulation;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.drools.commands.fluent.ExecutableBuilderImpl;
 import org.drools.mvel.compiler.Message;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieSessionTestConfiguration;
 import org.drools.testcoverage.common.util.KieUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.io.Resource;
@@ -45,10 +43,7 @@ import org.kie.internal.builder.fluent.Scope;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
-@RunWith(Parameterized.class)
 public class BatchRunFluentTest {
-
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
 
     String header = "package org.drools.mvel.compiler\n" +
             "import " + Message.class.getCanonicalName() + "\n";
@@ -74,24 +69,20 @@ public class BatchRunFluentTest {
     String id = "org.kie";
     ReleaseId releaseId;
 
-    public BatchRunFluentTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseStreamConfigurations(true, true).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseStreamConfigurations(true, true);
-    }
-
-    @Before
-    public void setUp() {
+    public void setUp(KieBaseTestConfiguration kieBaseTestConfiguration) {
         releaseId = KieUtil.generateReleaseId(id);
         final List<Resource> resources = KieUtil.getResourcesFromDrls(header + drl1);
         KieUtil.getKieModuleFromResources(releaseId, kieBaseTestConfiguration, KieSessionTestConfiguration.STATEFUL_PSEUDO, new HashMap<>(), resources.toArray(new Resource[]{}));
     }
 
-    @Test
-    public void testOutName() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testOutName(KieBaseTestConfiguration kieBaseTestConfiguration) {
+    	setUp(kieBaseTestConfiguration);
         ExecutableBuilder f = ExecutableBuilder.create();
 
         f.newApplicationContext("app1")
@@ -106,8 +97,10 @@ public class BatchRunFluentTest {
         assertThat(requestContext.getOutputs().get("outS")).isEqualTo("h1");
     }
 
-    @Test
-    public void testOutWithPriorSetAndNoName() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testOutWithPriorSetAndNoName(KieBaseTestConfiguration kieBaseTestConfiguration) {
+    	setUp(kieBaseTestConfiguration);
         ExecutableBuilder f = ExecutableBuilder.create();
 
         f.newApplicationContext("app1")
@@ -123,8 +116,10 @@ public class BatchRunFluentTest {
         assertThat(requestContext.get("outS")).isEqualTo("h1");
     }
 
-    @Test
-    public void testSetAndOutBehaviour() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testSetAndOutBehaviour(KieBaseTestConfiguration kieBaseTestConfiguration) {
+    	setUp(kieBaseTestConfiguration);
         ExecutableBuilder f = ExecutableBuilder.create();
 
         f.newApplicationContext("app1")
@@ -145,9 +140,11 @@ public class BatchRunFluentTest {
         assertThat(requestContext.get("outS1")).isEqualTo(requestContext.get("outS"));
     }
 
-    @Test
-    public void testOutWithoutPriorSetAndNoName() {
-        ExecutableBuilder f = ExecutableBuilder.create();
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testOutWithoutPriorSetAndNoName(KieBaseTestConfiguration kieBaseTestConfiguration) {
+    	setUp(kieBaseTestConfiguration);
+    	ExecutableBuilder f = ExecutableBuilder.create();
 
         f.newApplicationContext("app1")
                 .getKieContainer(releaseId).newSession()
@@ -166,8 +163,10 @@ public class BatchRunFluentTest {
         }
     }
 
-    @Test
-    public void testSetAndGetWithCommandRegisterWithEnds() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testSetAndGetWithCommandRegisterWithEnds(KieBaseTestConfiguration kieBaseTestConfiguration) {
+    	setUp(kieBaseTestConfiguration);
         ExecutableBuilder f = ExecutableBuilder.create();
 
         f.newApplicationContext("app1")
@@ -196,8 +195,10 @@ public class BatchRunFluentTest {
         assertThat(requestContext.getOutputs().get("outS2")).isEqualTo("h2");
     }
 
-    @Test
-    public void testSetAndGetWithCommandRegisterWithoutEnds() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testSetAndGetWithCommandRegisterWithoutEnds(KieBaseTestConfiguration kieBaseTestConfiguration) {
+    	setUp(kieBaseTestConfiguration);
         ExecutableBuilder f = ExecutableBuilder.create();
 
         f.newApplicationContext("app1")
@@ -226,8 +227,10 @@ public class BatchRunFluentTest {
         assertThat(requestContext.getOutputs().get("outS2")).isEqualTo("h2");
     }
 
-    @Test
-    public void testDifferentConversationIds() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testDifferentConversationIds(KieBaseTestConfiguration kieBaseTestConfiguration) {
+    	setUp(kieBaseTestConfiguration);
         ExecutableRunner<RequestContext> runner = ExecutableRunner.create();
         RequestContext requestContext = runner.createContext();
 
@@ -248,8 +251,10 @@ public class BatchRunFluentTest {
         assertThat(requestContext.getConversationContext().getName()).isNotEqualTo(conversationId);
     }
 
-    @Test
-    public void testRequestScope() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testRequestScope(KieBaseTestConfiguration kieBaseTestConfiguration) {
+    	setUp(kieBaseTestConfiguration);
         ExecutableBuilder f = ExecutableBuilder.create();
 
         f.newApplicationContext("app1")
@@ -269,8 +274,10 @@ public class BatchRunFluentTest {
         assertThat(requestContext.get("outS1")).isEqualTo("h1");
     }
 
-    @Test
-    public void testApplicationScope() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testApplicationScope(KieBaseTestConfiguration kieBaseTestConfiguration) {
+    	setUp(kieBaseTestConfiguration);
         ExecutableRunner<RequestContext> runner = ExecutableRunner.create();
 
         ExecutableBuilder f = ExecutableBuilder.create();
@@ -303,8 +310,10 @@ public class BatchRunFluentTest {
         assertThat(requestContext.getApplicationContext().get("outS2")).isEqualTo("h2");
     }
 
-    @Test
-    public void testConversationScope() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testConversationScope(KieBaseTestConfiguration kieBaseTestConfiguration) {
+    	setUp(kieBaseTestConfiguration);
         ExecutableRunner<RequestContext> runner = ExecutableRunner.create();
 
         ExecutableBuilder f = ExecutableBuilder.create();
@@ -348,8 +357,10 @@ public class BatchRunFluentTest {
         assertThat(requestContext.getConversationContext()).isNull();
     }
 
-    @Test
-    public void testContextScopeSearching() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testContextScopeSearching(KieBaseTestConfiguration kieBaseTestConfiguration) {
+    	setUp(kieBaseTestConfiguration);
         ExecutableRunner<RequestContext> runner = ExecutableRunner.create();
 
         ExecutableBuilder f = ExecutableBuilder.create();
@@ -403,8 +414,10 @@ public class BatchRunFluentTest {
         assertThat(requestContext.get("outS1")).isEqualTo("h3");
     }
 
-    @Test
-    public void testAfter() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testAfter(KieBaseTestConfiguration kieBaseTestConfiguration) {
+    	setUp(kieBaseTestConfiguration);
         ExecutableRunner<RequestContext> runner = ExecutableRunner.create(0L);
 
         ExecutableBuilder f = ExecutableBuilder.create();
@@ -431,8 +444,10 @@ public class BatchRunFluentTest {
         assertThat(requestContext.getOutputs().get("timeNow2")).isEqualTo(2000l);
     }
 
-    @Test
-    public void testSetKieContainerTest() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testSetKieContainerTest(KieBaseTestConfiguration kieBaseTestConfiguration) {
+    	setUp(kieBaseTestConfiguration);
         KieServices kieServices = KieServices.Factory.get();
         KieContainer kieContainer = kieServices.newKieContainer(releaseId);
 
@@ -453,8 +468,10 @@ public class BatchRunFluentTest {
         assertThat(requestContext.getOutputs().get("outS1")).isEqualTo("h1");
     }
 
-    @Test
-    public void testKieSessionCustomizationTest() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testKieSessionCustomizationTest(KieBaseTestConfiguration kieBaseTestConfiguration) {
+    	setUp(kieBaseTestConfiguration);
         ExecutableRunner<RequestContext> runner = ExecutableRunner.create(0L);
 
         ExecutableBuilder f = ExecutableBuilder.create();
@@ -472,8 +489,10 @@ public class BatchRunFluentTest {
         assertThat(requestContext.getOutputs().get("outS1")).isEqualTo("h1");
     }
 
-    @Test
-    public void testKieSessionByName() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testKieSessionByName(KieBaseTestConfiguration kieBaseTestConfiguration) {
+    	setUp(kieBaseTestConfiguration);
         ExecutableRunner<RequestContext> runner = ExecutableRunner.create(0L);
 
         ExecutableBuilder f = ExecutableBuilder.create();
@@ -491,8 +510,10 @@ public class BatchRunFluentTest {
         assertThat(requestContext.getOutputs().get("outS1")).isEqualTo("h1");
     }
 
-    @Test
-    public void testAgendaGroup() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testAgendaGroup(KieBaseTestConfiguration kieBaseTestConfiguration) {
+    	setUp(kieBaseTestConfiguration);
         ExecutableRunner<RequestContext> runner = ExecutableRunner.create(0L);
 
         ExecutableBuilder f = ExecutableBuilder.create();

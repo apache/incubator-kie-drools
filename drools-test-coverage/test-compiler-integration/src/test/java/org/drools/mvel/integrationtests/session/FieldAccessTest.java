@@ -18,7 +18,7 @@
  */
 package org.drools.mvel.integrationtests.session;
 
-import java.util.Collection;
+import java.util.stream.Stream;
 
 import org.drools.mvel.compiler.Address;
 import org.drools.mvel.compiler.Cat;
@@ -27,34 +27,26 @@ import org.drools.mvel.compiler.Person;
 import org.drools.mvel.compiler.Primitives;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class FieldAccessTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public FieldAccessTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        // TODO: EM failed with some tests. File JIRAs
+        return TestParametersUtil2.getKieBaseCloudConfigurations(false).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-     // TODO: EM failed with some tests. File JIRAs
-        return TestParametersUtil.getKieBaseCloudConfigurations(false);
-    }
-
-    @Test
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
     // this isn't possible, we can only narrow with type safety, not widen.
     // unless typesafe=false is used
-    public void testAccessFieldsFromSubClass() throws Exception {
+    public void testAccessFieldsFromSubClass(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String rule = "";
         rule += "package org.drools.compiler;\n";
         rule += "import org.drools.mvel.compiler.Person;\n";
@@ -79,8 +71,9 @@ public class FieldAccessTest {
         session.fireAllRules();
     }
 
-    @Test
-    public void testAccessClassTypeField() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testAccessClassTypeField(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String str = "package org.drools.mvel.compiler\n" +
                 "rule r1\n" +
                 "when\n" +
@@ -96,8 +89,9 @@ public class FieldAccessTest {
         assertThat(rules).isEqualTo(1);
     }
 
-    @Test
-    public void testGenericsOption() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testGenericsOption(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         // JBRULES-3579
         final String str = "import org.drools.mvel.compiler.*;\n" +
                 "rule R1 when\n" +

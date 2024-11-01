@@ -18,7 +18,7 @@
  */
 package org.drools.mvel.integrationtests.session;
 
-import java.util.Collection;
+import java.util.stream.Stream;
 
 import org.drools.core.base.RuleNameEndsWithAgendaFilter;
 import org.drools.core.base.RuleNameEqualsAgendaFilter;
@@ -26,10 +26,9 @@ import org.drools.core.base.RuleNameMatchesAgendaFilter;
 import org.drools.core.base.RuleNameStartsWithAgendaFilter;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.Environment;
@@ -44,41 +43,37 @@ import static org.assertj.core.api.Assertions.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-@RunWith(Parameterized.class)
 public class AgendaFilterTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public AgendaFilterTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+	public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testAgendaFilterRuleNameStartsWith(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        testAgendaFilter(kieBaseTestConfiguration, new RuleNameStartsWithAgendaFilter("B"), "Bbb");
     }
 
-    @Test
-    public void testAgendaFilterRuleNameStartsWith() {
-        testAgendaFilter(new RuleNameStartsWithAgendaFilter("B"), "Bbb");
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testAgendaFilterRuleNameEndsWith(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        testAgendaFilter(kieBaseTestConfiguration, new RuleNameEndsWithAgendaFilter("a"), "Aaa");
     }
 
-    @Test
-    public void testAgendaFilterRuleNameEndsWith() {
-        testAgendaFilter(new RuleNameEndsWithAgendaFilter("a"), "Aaa");
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testAgendaFilterRuleNameMatches(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        testAgendaFilter(kieBaseTestConfiguration, new RuleNameMatchesAgendaFilter(".*b."), "Bbb");
     }
 
-    @Test
-    public void testAgendaFilterRuleNameMatches() {
-        testAgendaFilter(new RuleNameMatchesAgendaFilter(".*b."), "Bbb");
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testAgendaFilterRuleNameEquals(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        testAgendaFilter(kieBaseTestConfiguration, new RuleNameEqualsAgendaFilter("Aaa"), "Aaa");
     }
 
-    @Test
-    public void testAgendaFilterRuleNameEquals() {
-        testAgendaFilter(new RuleNameEqualsAgendaFilter("Aaa"), "Aaa");
-    }
-
-    private void testAgendaFilter(final AgendaFilter agendaFilter, final String expectedMatchingRuleName) {
+    private void testAgendaFilter(KieBaseTestConfiguration kieBaseTestConfiguration, final AgendaFilter agendaFilter, final String expectedMatchingRuleName) {
         final String str = "package org.drools.compiler\n" +
                 "rule Aaa when then end\n" +
                 "rule Bbb when then end\n";
@@ -97,8 +92,9 @@ public class AgendaFilterTest {
         assertThat(arg.getValue().getMatch().getRule().getName()).isEqualTo(expectedMatchingRuleName);
     }
 
-    @Test
-    public void testDirectFiringIgnoresAgendaFilter() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testDirectFiringIgnoresAgendaFilter(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-6510
         String str =
                 "rule R when\n" +

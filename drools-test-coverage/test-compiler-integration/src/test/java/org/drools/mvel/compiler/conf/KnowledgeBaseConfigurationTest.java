@@ -19,8 +19,8 @@
 package org.drools.mvel.compiler.conf;
 
 import org.drools.core.runtime.rule.impl.DefaultConsequenceExceptionHandler;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
 import org.kie.api.conf.BetaRangeIndexOption;
@@ -52,7 +52,7 @@ public class KnowledgeBaseConfigurationTest {
     /* (non-Javadoc)
      * @see junit.framework.TestCase#setUp()
      */
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         config = KieServices.Factory.get().newKieBaseConfiguration();
     }

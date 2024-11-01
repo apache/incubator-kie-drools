@@ -19,8 +19,8 @@
 package org.drools.mvel.integrationtests.session;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.drools.mvel.compiler.Move;
 import org.drools.mvel.compiler.Person;
@@ -29,31 +29,23 @@ import org.drools.mvel.compiler.Pet;
 import org.drools.mvel.compiler.Win;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class InsertTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public InsertTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
-    }
-
-    @Test
-    public void testInsert() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testInsert(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String drl = "";
         drl += "package test\n";
         drl += "import org.drools.mvel.compiler.Person\n";
@@ -88,8 +80,9 @@ public class InsertTest {
         assertThat(list.get(0)).isSameAs(p);
     }
 
-    @Test
-    public void testInsertionOrder() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testInsertionOrder(KieBaseTestConfiguration kieBaseTestConfiguration) {
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_InsertionOrder.drl");
         KieSession ksession = kbase.newKieSession();
         List<String> results = new ArrayList<>();
@@ -119,8 +112,9 @@ public class InsertTest {
         assertThat(results.contains(win3)).isTrue();
     }
 
-    @Test
-    public void testInsertFinalClassInstance() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testInsertFinalClassInstance(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_FinalClass.drl");
         KieSession ksession = kbase.newKieSession();
 
