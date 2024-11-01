@@ -19,10 +19,19 @@
 package org.jbpm.process.core.event;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
+import java.util.regex.Matcher;
 
 import org.jbpm.process.core.correlation.CorrelationInstance;
 import org.jbpm.process.core.correlation.CorrelationManager;
+import org.jbpm.util.PatternConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,37 +64,106 @@ public class EventTypeFilter implements EventFilter, Serializable {
         this.type = type;
     }
 
+    public void setMessageRef(String messageRef) {
+        this.messageRef = messageRef;
+    }
+
     public String toString() {
         return "Event filter: [" + this.type + "]";
     }
 
     @Override
     public boolean acceptsEvent(String type, Object event, Function<String, Object> resolver) {
-        logger.debug("This event is subscribed to a message type {} with payload {}", type, event);
+        if (this.type == null) {
+            return false;
+        }
+
         if (resolver == null) {
-            return this.type != null && this.type.equals(type);
+            return this.type.equals(type);
         }
 
-        if (this.type != null && this.type.equals(type)) {
-            if (correlationManager != null && correlationManager.isSubscribe(messageRef)) {
-                if (event == null) {
-                    logger.debug("This event is subscribed to a message ref {}", type);
-                    return false;
-                }
-                CorrelationInstance messageCorrelation = correlationManager.computeCorrelationInstance(messageRef, event);
-                CorrelationInstance processCorrelation = correlationManager.computeSubscription(messageRef, resolver);
-                logger.debug("The event type {} is correlated, computing correlations. Message correlation is {}; process correlation is: {} ", type, messageCorrelation, processCorrelation);
-                return messageCorrelation.equals(processCorrelation);
+        if (this.type.equals(type) && correlationManager != null && correlationManager.isSubscribe(messageRef)) {
+            logger.debug("This event is subscribed to a message type {} with payload {}", type, event);
+            if (event == null) {
+                logger.debug("Cannot compute subscription for messageref {} and type {}", messageRef, type);
+                return false;
             }
-            return true;
+            CorrelationInstance messageCorrelation = correlationManager.computeCorrelationInstance(messageRef, event);
+            CorrelationInstance processCorrelation = correlationManager.computeSubscription(messageRef, resolver);
+            logger.debug("The event type {} is correlated, computing correlations. Message correlation is {}; process correlation is: {} ", type, messageCorrelation, processCorrelation);
+            return messageCorrelation.equals(processCorrelation);
         }
 
-        String resolvedType = (String) resolver.apply(this.type);
-        return resolvedType != null && resolvedType.equals(type);
+        return isAccepted(type, resolver);
 
     }
 
-    public void setMessageRef(String messageRef) {
-        this.messageRef = messageRef;
+    public boolean isAccepted(String type, Function<String, Object> resolver) {
+        return resolveVariable(this.type, resolver).contains(type);
     }
+
+    private List<String> resolveVariable(String varExpression, Function<String, Object> resolver) {
+        if (varExpression == null) {
+            return Collections.emptyList();
+        }
+        Map<String, Object[]> replacements = new HashMap<>();
+        Matcher matcher = PatternConstants.PARAMETER_MATCHER.matcher(varExpression);
+        while (matcher.find()) {
+            String paramName = matcher.group(1);
+            Object value = resolver.apply(paramName);
+            if (value == null) {
+                logger.warn("expression {} in dynamic signal {} not resolved", paramName, varExpression);
+                continue;
+            } else if (value instanceof Object[]) {
+                replacements.put(paramName, (Object[]) value);
+            } else {
+                replacements.put(paramName, new Object[] { value });
+            }
+        }
+        List<String> acceptedTypes = new ArrayList<>();
+        List<Map<String, String>> data = generateCombinations(replacements.keySet(), replacements);
+        for (Map<String, String> combination : data) {
+            String tmp = varExpression;
+            for (Map.Entry<String, String> replacement : combination.entrySet()) {
+                tmp = tmp.replace("#{" + replacement.getKey() + "}", replacement.getValue());
+            }
+            acceptedTypes.add(tmp);
+        }
+        if (acceptedTypes.isEmpty()) {
+            acceptedTypes.add(varExpression);
+        }
+        return acceptedTypes;
+    }
+
+    private List<Map<String, String>> generateCombinations(Set<String> keys, Map<String, Object[]> data) {
+        List<Map<String, String>> combinations = new ArrayList<>();
+        for (String key : keys) {
+            Set<String> remaining = new HashSet<>(keys);
+            remaining.remove(key);
+            List<Map<String, String>> subCombinations = generateCombinations(remaining, data);
+            if (subCombinations.isEmpty()) {
+                for (Object value : data.get(key)) {
+                    Map<String, String> combination = new HashMap<>();
+                    combination.put(key, value.toString());
+                    if (!combinations.contains(combination)) {
+                        combinations.add(combination);
+                    }
+                }
+            } else {
+                for (Map<String, String> subCombination : subCombinations) {
+                    for (Object value : data.get(key)) {
+                        Map<String, String> combination = new HashMap<>();
+                        combination.putAll(subCombination);
+                        combination.put(key, value.toString());
+                        if (!combinations.contains(combination)) {
+                            combinations.add(combination);
+                        }
+                    }
+                }
+            }
+        }
+
+        return combinations;
+    }
+
 }

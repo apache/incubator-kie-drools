@@ -23,7 +23,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -91,7 +90,7 @@ public class TimerNodeInstance extends StateBasedNodeInstance implements EventLi
                                     .rootProcessInstanceId(getProcessInstance().getRootProcessInstanceId())
                                     .processId(getProcessInstance().getProcessId())
                                     .rootProcessId(getProcessInstance().getRootProcessId())
-                                    .nodeInstanceId(Optional.ofNullable(from).map(KogitoNodeInstance::getStringId).orElse(null))
+                                    .nodeInstanceId(this.getId())
                                     .build();
                     JobsService jobService = processRuntime.getJobsService();
                     String jobId = jobService.scheduleProcessInstanceJob(jobDescription);

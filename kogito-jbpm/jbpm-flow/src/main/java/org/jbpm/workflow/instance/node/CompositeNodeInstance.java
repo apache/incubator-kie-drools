@@ -41,6 +41,7 @@ import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.jbpm.workflow.instance.impl.NodeInstanceFactory;
 import org.jbpm.workflow.instance.impl.NodeInstanceFactoryRegistry;
 import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
+import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.kie.api.definition.process.Connection;
 import org.kie.api.definition.process.NodeContainer;
 import org.kie.api.definition.process.WorkflowElementIdentifier;
@@ -305,19 +306,19 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
 
     @Override
     public void signalEvent(String type, Object event, Function<String, Object> varResolver) {
-        List<NodeInstance> currentView = new ArrayList<>(this.nodeInstances);
+        List<org.kie.api.runtime.process.NodeInstance> currentView = new ArrayList<>(this.nodeInstances);
         super.signalEvent(type, event);
 
         for (org.kie.api.definition.process.Node node : getCompositeNode().internalGetNodes()) {
             if (node instanceof EventNodeInterface
-                    && ((EventNodeInterface) node).acceptsEvent(type, event, varName -> this.getVariable(varName))) {
+                    && ((EventNodeInterface) node).acceptsEvent(type, event, ((WorkflowProcessInstanceImpl) this.getProcessInstance()).getEventFilterResolver(this, node, currentView))) {
                 if (node instanceof EventNode && ((EventNode) node).getFrom() == null || node instanceof EventSubProcessNode) {
                     EventNodeInstanceInterface eventNodeInstance = (EventNodeInstanceInterface) getNodeInstance(node);
                     eventNodeInstance.signalEvent(type, event, varResolver);
                 } else {
-                    List<NodeInstance> nodeInstances = getNodeInstances(node.getId(), currentView);
+                    List<org.kie.api.runtime.process.NodeInstance> nodeInstances = getNodeInstances(node.getId(), currentView);
                     if (nodeInstances != null && !nodeInstances.isEmpty()) {
-                        for (NodeInstance nodeInstance : nodeInstances) {
+                        for (org.kie.api.runtime.process.NodeInstance nodeInstance : nodeInstances) {
                             ((EventNodeInstanceInterface) nodeInstance).signalEvent(type, event, varResolver);
                         }
                     }
@@ -354,9 +355,9 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
         return result;
     }
 
-    public List<NodeInstance> getNodeInstances(WorkflowElementIdentifier nodeId, List<NodeInstance> currentView) {
-        List<NodeInstance> result = new ArrayList<>();
-        for (final NodeInstance nodeInstance : currentView) {
+    public List<org.kie.api.runtime.process.NodeInstance> getNodeInstances(WorkflowElementIdentifier nodeId, List<org.kie.api.runtime.process.NodeInstance> currentView) {
+        List<org.kie.api.runtime.process.NodeInstance> result = new ArrayList<>();
+        for (org.kie.api.runtime.process.NodeInstance nodeInstance : currentView) {
             if (nodeInstance.getNodeId().equals(nodeId)) {
                 result.add(nodeInstance);
             }

@@ -34,11 +34,13 @@ import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.drools.core.common.InternalKnowledgeRuntime;
+import org.drools.mvel.MVELSafeHelper;
 import org.drools.mvel.util.MVELEvaluator;
 import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.ContextResolver;
@@ -57,16 +59,19 @@ import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.core.node.BoundaryEventNode;
+import org.jbpm.workflow.core.node.CompositeContextNode;
 import org.jbpm.workflow.core.node.CompositeNode;
 import org.jbpm.workflow.core.node.DynamicNode;
 import org.jbpm.workflow.core.node.EventNode;
 import org.jbpm.workflow.core.node.EventNodeInterface;
 import org.jbpm.workflow.core.node.EventSubProcessNode;
+import org.jbpm.workflow.core.node.ForEachNode;
 import org.jbpm.workflow.core.node.MilestoneNode;
 import org.jbpm.workflow.core.node.StartNode;
 import org.jbpm.workflow.core.node.StateNode;
 import org.jbpm.workflow.instance.NodeInstance;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
+import org.jbpm.workflow.instance.node.CompositeContextNodeInstance;
 import org.jbpm.workflow.instance.node.CompositeNodeInstance;
 import org.jbpm.workflow.instance.node.EndNodeInstance;
 import org.jbpm.workflow.instance.node.EventBasedNodeInstanceInterface;
@@ -74,6 +79,7 @@ import org.jbpm.workflow.instance.node.EventNodeInstance;
 import org.jbpm.workflow.instance.node.EventNodeInstanceInterface;
 import org.jbpm.workflow.instance.node.EventSubProcessNodeInstance;
 import org.jbpm.workflow.instance.node.FaultNodeInstance;
+import org.jbpm.workflow.instance.node.ForEachNodeInstance;
 import org.jbpm.workflow.instance.node.StateBasedNodeInstance;
 import org.jbpm.workflow.instance.node.WorkItemNodeInstance;
 import org.kie.api.definition.process.NodeContainer;
@@ -99,6 +105,7 @@ import org.kie.kogito.process.flexible.ItemDescription;
 import org.kie.kogito.process.flexible.Milestone;
 import org.kie.kogito.timer.TimerInstance;
 import org.mvel2.integration.VariableResolverFactory;
+import org.mvel2.integration.impl.ImmutableDefaultFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -291,12 +298,12 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
         return result;
     }
 
-    public List<NodeInstance> getNodeInstances(WorkflowElementIdentifier nodeId, final List<NodeInstance> currentView) {
+    public List<org.kie.api.runtime.process.NodeInstance> getNodeInstances(WorkflowElementIdentifier nodeId, final List<org.kie.api.runtime.process.NodeInstance> currentView) {
         if (nodeId == null) {
             return Collections.emptyList();
         }
-        List<NodeInstance> result = new ArrayList<>();
-        for (final NodeInstance nodeInstance : currentView) {
+        List<org.kie.api.runtime.process.NodeInstance> result = new ArrayList<>();
+        for (org.kie.api.runtime.process.NodeInstance nodeInstance : currentView) {
             if (nodeId.equals(nodeInstance.getNodeId())) {
                 result.add(nodeInstance);
             }
@@ -677,8 +684,6 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
                 return;
             }
 
-            List<NodeInstance> currentView = new ArrayList<>(this.nodeInstances);
-
             try {
                 this.activatingNodeIds = new ArrayList<>();
                 List<KogitoEventListener> listeners = eventListeners.get(type);
@@ -693,32 +698,8 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
                         listener.signalEvent(type, event);
                     }
                 }
-                for (org.kie.api.definition.process.Node node : getWorkflowProcess().getNodes()) {
-                    if (node instanceof EventNodeInterface && ((EventNodeInterface) node).acceptsEvent(type, event, getResolver(node, currentView))) {
-                        if (node instanceof BoundaryEventNode boundaryEventNode) {
-                            WorkflowElementIdentifier id = WorkflowElementIdentifierFactory.fromExternalFormat(boundaryEventNode.getAttachedToNodeId());
-                            if (!getNodeInstances(id, currentView).isEmpty()) {
-                                EventNodeInstance eventNodeInstance = (EventNodeInstance) getNodeInstance(node);
-                                eventNodeInstance.signalEvent(type, event, getResolver(node, currentView));
-                            } else if (type.startsWith("Error-") || type.startsWith("Compensation-") || type.startsWith("implicit:compensation")) {
-                                EventNodeInstance eventNodeInstance = (EventNodeInstance) getNodeInstance(node);
-                                eventNodeInstance.signalEvent(type, event, getResolver(node, currentView));
-                            }
-                        } else {
-                            if (node instanceof EventSubProcessNode && (resolveVariables(((EventSubProcessNode) node).getEvents()).contains(type))) {
-                                EventSubProcessNodeInstance eventNodeInstance = (EventSubProcessNodeInstance) getNodeInstance(node);
-                                eventNodeInstance.signalEvent(type, event);
-                            } else {
-                                List<NodeInstance> nodeInstances = getNodeInstances(node.getId(), currentView);
-                                if (nodeInstances != null && !nodeInstances.isEmpty()) {
-                                    for (NodeInstance nodeInstance : nodeInstances) {
-                                        ((EventNodeInstanceInterface) nodeInstance).signalEvent(type, event, getResolver(node, currentView));
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+
+                signal(this, (node) -> this.getNodeInstance(node), () -> this.getWorkflowProcess().getNodes(), type, event);
 
                 if (((org.jbpm.workflow.core.WorkflowProcess) getWorkflowProcess()).isDynamic()) {
                     for (org.kie.api.definition.process.Node node : getWorkflowProcess().getNodes()) {
@@ -749,26 +730,166 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
         }
     }
 
-    private Function<String, Object> getResolver(org.kie.api.definition.process.Node node, List<NodeInstance> currentView) {
+    private void signal(org.kie.api.runtime.process.NodeInstanceContainer container, Function<org.kie.api.definition.process.Node, org.kie.api.runtime.process.NodeInstance> nodeInstanceSupplier,
+            Supplier<org.kie.api.definition.process.Node[]> resolveNodes, String type, Object event) {
+
+        List<org.kie.api.runtime.process.NodeInstance> currentView = container.getNodeInstances().stream().map(NodeInstance.class::cast).collect(Collectors.toList());
+        for (org.kie.api.definition.process.Node node : resolveNodes.get()) {
+            if (node instanceof EventNodeInterface && ((EventNodeInterface) node).acceptsEvent(type, event, getEventFilterResolver(container, node, currentView))) {
+                if (node instanceof BoundaryEventNode boundaryEventNode) {
+                    WorkflowElementIdentifier id = WorkflowElementIdentifierFactory.fromExternalFormat(boundaryEventNode.getAttachedToNodeId());
+                    if (!getNodeInstances(id, currentView).isEmpty()) {
+                        EventNodeInstance eventNodeInstance = (EventNodeInstance) nodeInstanceSupplier.apply(node);
+                        eventNodeInstance.signalEvent(type, event, getEventFilterResolver(container, node, currentView));
+                    } else if (type.startsWith("Error-") || type.startsWith("Compensation-") || type.startsWith("implicit:compensation")) {
+                        EventNodeInstance eventNodeInstance = (EventNodeInstance) nodeInstanceSupplier.apply(node);
+                        eventNodeInstance.signalEvent(type, event, getEventFilterResolver(container, node, currentView));
+                    }
+                } else {
+                    if (node instanceof EventSubProcessNode && (resolveVariables(((EventSubProcessNode) node).getEvents()).contains(type))) {
+                        EventSubProcessNodeInstance eventNodeInstance = (EventSubProcessNodeInstance) getNodeInstance(node);
+                        eventNodeInstance.signalEvent(type, event);
+                    } else {
+                        List<org.kie.api.runtime.process.NodeInstance> nodeInstances = getNodeInstances(node.getId(), currentView);
+                        if (nodeInstances != null && !nodeInstances.isEmpty()) {
+                            for (org.kie.api.runtime.process.NodeInstance nodeInstance : nodeInstances) {
+                                ((EventNodeInstanceInterface) nodeInstance).signalEvent(type, event, getEventFilterResolver(container, node, currentView));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public Function<String, Object> getEventFilterResolver(org.kie.api.runtime.process.NodeInstanceContainer container, org.kie.api.definition.process.Node node,
+            List<org.kie.api.runtime.process.NodeInstance> currentView) {
         if (node instanceof DynamicNode) {
             // special handling for dynamic node to allow to resolve variables from individual node instances of the dynamic node
             // instead of just relying on process instance's variables
-            return e -> {
-                List<NodeInstance> nodeInstances = getNodeInstances(node.getId(), currentView);
+            return (varExpresion) -> {
+                List<org.kie.api.runtime.process.NodeInstance> nodeInstances = getNodeInstances(node.getId(), currentView);
                 if (nodeInstances != null && !nodeInstances.isEmpty()) {
                     StringBuilder st = new StringBuilder();
-                    for (NodeInstance ni : nodeInstances) {
-                        Object result = resolveVariable(e, new NodeInstanceResolverFactory(ni));
+                    for (org.kie.api.runtime.process.NodeInstance ni : nodeInstances) {
+                        Object result = resolveExpressionVariable(varExpresion, new NodeInstanceResolverFactory((NodeInstance) ni));
                         st.append(result).append("###");
                     }
                     return st.toString();
                 } else {
-                    return resolveVariable(e);
+                    NodeInstanceImpl instance = (NodeInstanceImpl) getNodeInstance(node.getId().toExternalFormat(), true);
+                    if (instance != null) {
+                        return instance.getVariable(varExpresion);
+                    }
+                    return null;
                 }
             };
+        } else if (node instanceof BoundaryEventNode) {
+            return (varExpresion) -> {
+                Function<String, Object> getScopedVariable;
+                if (container instanceof CompositeContextNodeInstance) {
+                    getScopedVariable = (name) -> getVariable(name, ((CompositeContextNodeInstance) container).getContextInstances(VariableScope.VARIABLE_SCOPE));
+                } else if (container instanceof WorkflowProcessInstanceImpl) {
+                    getScopedVariable = (name) -> ((WorkflowProcessInstanceImpl) container).getVariable(name);
+                } else {
+                    getScopedVariable = null;
+                }
+                Object value = getScopedVariable.apply(varExpresion);
+                if (value != null) {
+                    return value;
+                }
+                VariableResolverFactory resolverFactory = new ImmutableDefaultFactory() {
+                    @Override
+                    public boolean isResolveable(String varName) {
+                        return getScopedVariable.apply(varName) != null;
+                    }
+
+                    @Override
+                    public org.mvel2.integration.VariableResolver getVariableResolver(String varName) {
+                        return new org.mvel2.integration.impl.SimpleValueResolver(getScopedVariable.apply(varName));
+                    }
+                };
+                return resolveExpressionVariable(varExpresion, resolverFactory).orElse(null);
+            };
+        } else if (node instanceof ForEachNode) {
+            return (varExpression) -> {
+                try {
+                    // for each can have multiple outcomes 1 per item of the list so it should be computed like that
+                    ForEachNodeInstance forEachNodeInstance = (ForEachNodeInstance) getNodeInstanceByNodeId(node.getId(), true);
+                    if (forEachNodeInstance == null) {
+                        return new Object[0];
+                    }
+                    List<CompositeContextNodeInstance> data = forEachNodeInstance.getNodeInstances().stream().filter(e -> e instanceof CompositeContextNodeInstance)
+                            .map(e -> (CompositeContextNodeInstance) e).collect(Collectors.toList());
+                    List<Object> outcome = new ArrayList<>();
+                    for (CompositeContextNodeInstance nodeInstance : data) {
+                        Object resolvedValue = resolveExpressionVariable(varExpression, new NodeInstanceResolverFactory(nodeInstance)).orElse(null);
+                        if (resolvedValue != null) {
+                            outcome.add(resolvedValue);
+                        }
+                    }
+                    return outcome.toArray();
+                } catch (Throwable t) {
+                    return new Object[0];
+                }
+            };
+        } else if (node instanceof EventSubProcessNode || node instanceof StateNode) {
+            return (varName) -> {
+                return resolveExpressionVariable(varName, new ProcessInstanceResolverFactory(this)).orElse(null);
+            };
+        } else if (node instanceof CompositeContextNode) {
+            return (varExpression) -> {
+                List<org.kie.api.runtime.process.NodeInstance> nodeInstances = getNodeInstances(node.getId(), currentView);
+                List<Object> outcome = new ArrayList<>();
+                if (nodeInstances != null && !nodeInstances.isEmpty()) {
+                    for (org.kie.api.runtime.process.NodeInstance nodeInstance : nodeInstances) {
+                        Object resolvedValue = resolveExpressionVariable(varExpression, new NodeInstanceResolverFactory((NodeInstance) nodeInstance)).orElse(null);
+                        if (resolvedValue != null) {
+                            outcome.add(resolvedValue);
+                        }
+                    }
+                }
+                return outcome.toArray();
+            };
         } else {
-            return this::resolveVariable;
+            return (varName) -> {
+                return resolveExpressionVariable(varName, new ProcessInstanceResolverFactory(this)).orElse(null);
+            };
         }
+    }
+
+    public Object getVariable(String name, List<ContextInstance> variableScopeInstances) {
+        if (variableScopeInstances != null) {
+            for (ContextInstance contextInstance : variableScopeInstances) {
+                Object value = ((VariableScopeInstance) contextInstance).getVariable(name);
+                if (value != null) {
+                    return value;
+                }
+            }
+        }
+        return null;
+    }
+
+    private Optional<Object> resolveExpressionVariable(String paramName, VariableResolverFactory factory) {
+        try {
+            // just in case is not an expression
+            if (factory.isResolveable(paramName)) {
+                return Optional.of(factory.getVariableResolver(paramName).getValue());
+            }
+            return Optional.ofNullable(MVELSafeHelper.getEvaluator().eval(paramName, factory));
+        } catch (Throwable t) {
+            logger.error("Could not find variable scope for variable {}", paramName);
+            return Optional.empty();
+        }
+    }
+
+    public NodeInstance getNodeInstanceByNodeId(WorkflowElementIdentifier nodeId, boolean recursive) {
+        for (NodeInstance nodeInstance : getNodeInstances(recursive)) {
+            if (nodeInstance.getNodeId().equals(nodeId)) {
+                return nodeInstance;
+            }
+        }
+        return null;
     }
 
     protected List<String> resolveVariables(List<String> events) {

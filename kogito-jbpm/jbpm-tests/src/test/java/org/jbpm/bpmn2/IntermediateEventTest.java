@@ -111,6 +111,8 @@ import org.jbpm.bpmn2.loop.MultiInstanceLoopCharacteristicsTaskSequentialModel;
 import org.jbpm.bpmn2.loop.MultiInstanceLoopCharacteristicsTaskSequentialProcess;
 import org.jbpm.bpmn2.loop.MultiInstanceLoopCharacteristicsTaskWithOutputCmpCondSequentialModel;
 import org.jbpm.bpmn2.loop.MultiInstanceLoopCharacteristicsTaskWithOutputCmpCondSequentialProcess;
+import org.jbpm.bpmn2.loop.MultiInstanceLoopSubprocessBoundaryTimerModel;
+import org.jbpm.bpmn2.loop.MultiInstanceLoopSubprocessBoundaryTimerProcess;
 import org.jbpm.bpmn2.objects.Person;
 import org.jbpm.bpmn2.objects.TestUserTaskWorkItemHandler;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
@@ -144,6 +146,7 @@ import org.jbpm.test.utils.ProcessTestHelper;
 import org.jbpm.test.utils.ProcessTestHelper.CompletionKogitoEventListener;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.event.process.ProcessCompletedEvent;
 import org.kie.api.event.process.ProcessNodeLeftEvent;
@@ -481,6 +484,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
     }
 
     @Test
+    @Timeout(10000L)
     public void testEventBasedSplit2() {
         ProcessCompletedCountDownProcessEventListener countDownListener = new ProcessCompletedCountDownProcessEventListener(1);
         Application app = ProcessTestHelper.newApplication();
@@ -511,7 +515,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         instance = processDefinition.createInstance(model);
         instance.start();
         assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_ACTIVE);
-        countDownListener.waitTillCompleted();
+        countDownListener.await();
         assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
     }
 
@@ -2034,6 +2038,34 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         ProcessTestHelper.completeWorkItem(instance, "mary", Collections.emptyMap());
         ProcessTestHelper.completeWorkItem(instance, "krisv", Collections.emptyMap());
 
+        assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
+    }
+
+    @Test
+    @Timeout(10000L)
+    public void testMultiInstanceLoopSubprocessBoundaryTimer() throws Exception {
+        Application app = ProcessTestHelper.newApplication();
+        NodeLeftCountDownProcessEventListener countDownListener = new NodeLeftCountDownProcessEventListener("Script2", 1);
+        ProcessTestHelper.registerProcessEventListener(app, countDownListener);
+        TestUserTaskWorkItemHandler handler = new TestUserTaskWorkItemHandler();
+        ProcessTestHelper.registerHandler(app, "Human Task", handler);
+
+        org.kie.kogito.process.Process<MultiInstanceLoopSubprocessBoundaryTimerModel> definition = MultiInstanceLoopSubprocessBoundaryTimerProcess.newProcess(app);
+        MultiInstanceLoopSubprocessBoundaryTimerModel model = definition.createModel();
+        model.setMi_input(List.of("PT1S", "PT2S", "PT3S"));
+        org.kie.kogito.process.ProcessInstance<MultiInstanceLoopSubprocessBoundaryTimerModel> instance = definition.createInstance(model);
+        instance.start();
+
+        countDownListener.reset(1);
+        assertThat(countDownListener.await()).isTrue();
+        assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_ACTIVE);
+
+        countDownListener.reset(1);
+        assertThat(countDownListener.await()).isTrue();
+        assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_ACTIVE);
+
+        countDownListener.reset(1);
+        assertThat(countDownListener.await()).isTrue();
         assertThat(instance.status()).isEqualTo(org.kie.kogito.process.ProcessInstance.STATE_COMPLETED);
     }
 

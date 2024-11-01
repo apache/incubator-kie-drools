@@ -42,6 +42,7 @@ import org.jbpm.process.instance.impl.Action;
 import org.jbpm.process.instance.impl.ReturnValueEvaluator;
 import org.jbpm.process.instance.impl.actions.CancelNodeInstanceAction;
 import org.jbpm.process.instance.impl.actions.SignalProcessInstanceAction;
+import org.jbpm.process.instance.impl.util.VariableUtil;
 import org.jbpm.ruleflow.core.validation.RuleFlowProcessValidator;
 import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.WorkflowModelValidator;
@@ -412,8 +413,10 @@ public class RuleFlowProcessFactory extends RuleFlowNodeContainerFactory<RuleFlo
 
     protected DroolsAction timerAction(String type) {
         DroolsAction signal = new DroolsAction();
-
-        Action action = kcontext -> kcontext.getProcessInstance().signalEvent(type, kcontext.getNodeInstance().getStringId());
+        Action action = kcontext -> {
+            String eventType = VariableUtil.resolveVariable(type, kcontext.getNodeInstance());
+            kcontext.getProcessInstance().signalEvent(eventType, kcontext.getNodeInstance().getStringId());
+        };
         signal.wire(action);
 
         return signal;

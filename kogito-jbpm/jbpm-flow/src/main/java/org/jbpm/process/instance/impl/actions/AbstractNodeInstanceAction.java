@@ -24,7 +24,7 @@ import java.util.Collection;
 import org.jbpm.process.instance.impl.Action;
 import org.jbpm.workflow.instance.node.CompositeNodeInstance;
 import org.kie.api.runtime.process.NodeInstance;
-import org.kie.api.runtime.process.WorkflowProcessInstance;
+import org.kie.api.runtime.process.NodeInstanceContainer;
 import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 
 public abstract class AbstractNodeInstanceAction implements Action, Serializable {
@@ -39,7 +39,7 @@ public abstract class AbstractNodeInstanceAction implements Action, Serializable
 
     @Override
     public void execute(KogitoProcessContext context) throws Exception {
-        WorkflowProcessInstance pi = context.getNodeInstance().getProcessInstance();
+        NodeInstanceContainer pi = context.getNodeInstance().getNodeInstanceContainer();
         NodeInstance nodeInstance = findNodeByUniqueId(pi.getNodeInstances(), attachedToNodeId);
         if (nodeInstance != null) {
             execute(nodeInstance);

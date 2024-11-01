@@ -24,7 +24,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.ReteEvaluator;
@@ -100,11 +99,11 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
                                 .generateId()
                                 .timerId(Long.toString(timer.getId()))
                                 .expirationTime(createTimerInstance(timer))
-                                .processInstanceId(getProcessInstance().getStringId())
+                                .rootProcessId(getProcessInstance().getRootProcessId())
                                 .rootProcessInstanceId(getProcessInstance().getRootProcessInstanceId())
                                 .processId(getProcessInstance().getProcessId())
-                                .rootProcessId(getProcessInstance().getRootProcessId())
-                                .nodeInstanceId(Optional.ofNullable(from).map(KogitoNodeInstance::getStringId).orElse(null))
+                                .processInstanceId(getProcessInstance().getStringId())
+                                .nodeInstanceId(this.getId())
                                 .build();
                 String jobId = jobService.scheduleProcessInstanceJob(jobDescription);
                 timerInstances.add(jobId);
