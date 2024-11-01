@@ -56,7 +56,15 @@ public class EmbeddedJobExecutor implements JobExecutor {
         InVMRecipient recipient = (InVMRecipient) recipientModel.getRecipient();
         String timerId = recipient.getPayload().getData().timerId();
         String processInstanceId = recipient.getPayload().getData().processInstanceId();
-        Optional<Process<? extends Model>> process = processes.processByProcessInstanceId(processInstanceId);
+        Optional<Process<? extends Model>> process;
+        try {
+            process = processes.processByProcessInstanceId(processInstanceId);
+        } catch (Exception ex) {
+            return Uni.createFrom().failure(
+                    new JobExecutionException(jobDetails.getId(),
+                            "Unexpected error when executing Embedded request for job: " + jobDetails.getId() + ". " + ex.getMessage(),
+                            ex));
+        }
         if (process.isEmpty()) {
             return Uni.createFrom().item(
                     JobExecutionResponse.builder()

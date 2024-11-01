@@ -118,6 +118,9 @@ public class JobSchedulerManager {
     }
 
     private void startJobsLoadingFromRepositoryTask() {
+        LOGGER.info(
+                "Starting with configuration: schedulerChunkInMinutes={}, loadJobIntervalInMinutes={}, loadJobFromCurrentTimeIntervalInMinutes={}, loadJobRetries={}, loadJobErrorStrategy={}",
+                schedulerChunkInMinutes, loadJobIntervalInMinutes, loadJobFromCurrentTimeIntervalInMinutes, loadJobRetries, loadJobErrorStrategy);
         //guarantee it starts the task just in case it is not already active
         initialLoading.set(true);
         if (periodicTimerIdForLoadJobs.get() < 0) {
@@ -128,6 +131,13 @@ public class JobSchedulerManager {
                         schedulerChunkInMinutes,
                         schedulerChunkInMinutes);
                 loadJobIntervalInMinutes = schedulerChunkInMinutes;
+            }
+            if (loadJobFromCurrentTimeIntervalInMinutes < loadJobIntervalInMinutes) {
+                LOGGER.warn("The loadJobFromCurrentTimeIntervalInMinutes value ({}) is smaller than loadJobIntervalInMinutes ({}). " +
+                        "This can potentially lead to overdue timers not getting rescheduled during the periodic job loading.",
+                        loadJobFromCurrentTimeIntervalInMinutes,
+                        loadJobIntervalInMinutes);
+
             }
             //first execution
             vertx.runOnContext(this::loadJobDetails);
@@ -198,6 +208,15 @@ public class JobSchedulerManager {
         Date triggerFireTime = jobDetails.getTrigger().hasNextFireTime();
         ZonedDateTime nextFireTime = triggerFireTime != null ? DateUtil.instantToZonedDateTime(triggerFireTime.toInstant()) : null;
         boolean scheduled = scheduler.scheduled(jobDetails.getId()).isPresent();
+        // cancel an overdue timer to have it rescheduled
+        if (!initialLoading.get() && nextFireTime != null && nextFireTime.isBefore(DateUtil.now())) {
+            LOGGER.debug("Job found, id: {}, nextFireTime: {}, created: {}, status: {} is overdue and will be rescheduled", jobDetails.getId(),
+                    nextFireTime,
+                    jobDetails.getCreated(),
+                    jobDetails.getStatus());
+            scheduler.cancel(jobDetails.getId());
+            return true;
+        }
         LOGGER.debug("Job found, id: {}, nextFireTime: {}, created: {}, status: {}, already scheduled: {}", jobDetails.getId(),
                 nextFireTime,
                 jobDetails.getCreated(),

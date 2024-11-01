@@ -343,7 +343,8 @@ public abstract class BaseTimerJobScheduler implements ReactiveJobScheduler {
                                 .build())
                         .map(jobRepository::save)
                         .flatMapCompletionStage(p -> p))
-                .peek(job -> LOGGER.debug("Retry executed {}", job));
+                .peek(job -> LOGGER.debug("Retry executed {}", job))
+                .onError(errorHandler -> LOGGER.error("Failed to retrieve job due to {}", errorHandler.getMessage()));
     }
 
     private PointInTimeTrigger getRetryTrigger() {
