@@ -39,6 +39,7 @@ import org.drools.testcoverage.common.util.TestConstants;
 import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -529,6 +530,7 @@ public class MBeansMonitoringTest {
      * Copied from KieRepositoryTest to test JMX monitoring
      */
     @Test
+    @Ignore("ignored due use of binary resource, which is not allowed in Apache source release.")
     public void testLoadKjarFromClasspath() {
         // DROOLS-1335
         ClassLoader cl = Thread.currentThread().getContextClassLoader();

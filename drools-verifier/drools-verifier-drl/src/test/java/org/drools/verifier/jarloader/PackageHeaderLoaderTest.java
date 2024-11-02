@@ -28,12 +28,13 @@ import java.util.jar.JarInputStream;
 import org.drools.verifier.Verifier;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
-
+@Disabled("disabled due use of binary resource, which is not allowed in Apache source release.")
 public class PackageHeaderLoaderTest {
 
     private ArrayList<JarInputStream> jarInputStreams;

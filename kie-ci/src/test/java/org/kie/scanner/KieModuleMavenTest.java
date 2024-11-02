@@ -34,6 +34,7 @@ import org.drools.compiler.kie.builder.impl.KieServicesImpl;
 import org.drools.base.factmodel.ClassDefinition;
 import org.drools.base.factmodel.FieldDefinition;
 import org.drools.mvel.asm.DefaultBeanClassBuilder;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
@@ -212,6 +213,7 @@ public class KieModuleMavenTest extends AbstractKieCiTest {
     }
 
     @Test
+    @Ignore ("ignored due use of binary resource, which is not allowed in Apache source release.")
     public void testKieContainerBeforeAndAfterDeployOfSnapshot() throws Exception {
         // BZ-1007977
         KieServices ks = KieServices.Factory.get();

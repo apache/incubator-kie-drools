@@ -875,6 +875,7 @@ public class MarshallingTest extends CommonTestMethodBase {
      * In this case we are dealing with facts which are not on the systems classpath.
      */
     @Test
+    @Ignore ("ignored due use of binary resource, which is not allowed in Apache source release.")
     public void testSerializabilityWithJarFacts() throws Exception {
         MapBackedClassLoader loader = new MapBackedClassLoader( this.getClass().getClassLoader() );
 
