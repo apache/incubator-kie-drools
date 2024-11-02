@@ -50,7 +50,6 @@
     <module>integration-tests-quarkus-processes-persistence</module>
     <module>integration-tests-quarkus-usertasks</module>
     <module>integration-tests-quarkus-source-files</module>
-    <module>integration-tests-quarkus-gradle</module>
   </modules>
 
 </project>
