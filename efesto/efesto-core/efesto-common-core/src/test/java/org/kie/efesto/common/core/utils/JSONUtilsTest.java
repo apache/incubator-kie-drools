@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.Optional;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.efesto.common.api.identifiers.LocalUri;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
@@ -153,6 +154,7 @@ class JSONUtilsTest {
     }
 
     @Test
+    @Disabled("disabled due use of binary resource, which is not allowed in Apache source release.")
     void getGeneratedResourcesObjectFromJar() throws Exception {
         ClassLoader originalClassLoader = addJarToClassLoader();
         Optional<File> optionalIndexFile = getFileFromFileName("IndexFile.testb_json");

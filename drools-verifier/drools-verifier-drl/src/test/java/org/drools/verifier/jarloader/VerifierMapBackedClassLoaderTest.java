@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.jar.JarInputStream;
 
 import org.drools.verifier.Verifier;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -33,6 +34,7 @@ import static org.mockito.Mockito.when;
 public class VerifierMapBackedClassLoaderTest {
 
     @Test
+    @Disabled("disabled due use of binary resource, which is not allowed in Apache source release.")
     void testCheckResources() throws Exception {
         ArrayList<JarInputStream> jarInputStreams = new ArrayList<JarInputStream>();
         jarInputStreams.add(new JarInputStream(Verifier.class.getResourceAsStream("model.jar")));

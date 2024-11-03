@@ -25,6 +25,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Optional;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.efesto.common.api.io.MemoryFile;
 
@@ -57,6 +58,7 @@ class MemoryFileUtilsTest {
     }
 
     @Test
+    @Disabled("disabled due use of binary resource, which is not allowed in Apache source release.")
     void getFileFromURL() throws IOException {
         URL url = getJarUrl();
         assertThat(url).isNotNull();
@@ -74,6 +76,7 @@ class MemoryFileUtilsTest {
     }
 
     @Test
+    @Disabled("disabled due use of binary resource, which is not allowed in Apache source release.")
     void getOptionalFileFromJar() throws IOException {
         URL jarUrl = getJarUrl();
         assertThat(jarUrl).isNotNull();
@@ -111,6 +114,7 @@ class MemoryFileUtilsTest {
     }
 
     @Test
+    @Disabled("disabled due use of binary resource, which is not allowed in Apache source release.")
     void getFileFromJar() throws URISyntaxException, IOException {
         URL jarUrl = getJarUrl();
         assertThat(jarUrl).isNotNull();

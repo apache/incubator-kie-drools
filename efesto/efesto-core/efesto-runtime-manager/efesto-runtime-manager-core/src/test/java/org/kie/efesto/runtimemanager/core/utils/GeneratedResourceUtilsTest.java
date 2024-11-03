@@ -22,6 +22,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Optional;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.efesto.common.api.identifiers.LocalUri;
 import org.kie.efesto.common.api.identifiers.ModelLocalUriId;
@@ -58,6 +59,7 @@ class GeneratedResourceUtilsTest {
     }
 
     @Test
+    @Disabled("disabled due use of binary resource, which is not allowed in Apache source release.")
     void getGeneratedRedirectResourceFromJar() {
         ClassLoader originalClassLoader = addJarToClassLoader();
         ModelLocalUriId modelLocalUriId = new ModelLocalUriId(LocalUri.parse("/testb/redirecttestmod"));

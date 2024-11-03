@@ -6993,6 +6993,7 @@ public class Misc2Test {
     }
 
     @Test
+    @Ignore ("ignored due use of binary resource, which is not allowed in Apache source release.")
     public void testKieBuilderWithClassLoader() {
         // DROOLS-763
         String drl =

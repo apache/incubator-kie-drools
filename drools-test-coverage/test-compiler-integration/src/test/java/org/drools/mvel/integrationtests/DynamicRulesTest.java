@@ -899,6 +899,7 @@ public class DynamicRulesTest {
     }
 
     @Test(timeout=10000)
+    @Ignore ("ignored due use of binary resource, which is not allowed in Apache source release.")
     public void testIsolatedClassLoaderWithEnumsPkgBuilder() throws Exception {
         try {
             // Creates first class loader and use it to load fact classes
@@ -948,6 +949,7 @@ public class DynamicRulesTest {
     }
 
     @Test(timeout=10000)
+    @Ignore ("ignored due use of binary resource, which is not allowed in Apache source release.")
     public void testIsolatedClassLoaderWithEnumsContextClassloader() throws Exception {
         try {
             // Creates first class loader and use it to load fact classes

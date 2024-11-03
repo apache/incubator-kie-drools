@@ -31,6 +31,7 @@ import org.drools.verifier.components.VerifierComponentType;
 import org.drools.verifier.data.VerifierReport;
 import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.VerifierMessageBase;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.api.io.ResourceType;
 
@@ -69,6 +70,7 @@ public class VerifierTest {
     }
 
     @Test
+    @Disabled("disabled due use of binary resource, which is not allowed in Apache source release.")
     void testFactTypesFromJar() {
         VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();
 
@@ -114,6 +116,7 @@ public class VerifierTest {
     }
 
     @Test
+    @Disabled("disabled due use of binary resource, which is not allowed in Apache source release.")
     void testFactTypesFromJarAndDeclarations() {
         VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();
 

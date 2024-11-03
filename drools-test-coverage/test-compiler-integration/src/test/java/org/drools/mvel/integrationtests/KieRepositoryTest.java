@@ -21,6 +21,7 @@ package org.drools.mvel.integrationtests;
 import java.net.URL;
 import java.net.URLClassLoader;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieModule;
@@ -29,6 +30,7 @@ import org.kie.api.builder.ReleaseId;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Ignore("ignored due use of binary resource, which is not allowed in Apache source release.")
 public class KieRepositoryTest {
 
     @Test
