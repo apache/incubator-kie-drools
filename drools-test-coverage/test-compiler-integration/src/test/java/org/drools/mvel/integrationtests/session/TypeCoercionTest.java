@@ -45,7 +45,7 @@ public class TypeCoercionTest {
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
-	@MethodSource("parameters")
+    @MethodSource("parameters")
     public void testRuntimeTypeCoercion(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_RuntimeTypeCoercion.drl");
         KieSession ksession = kbase.newKieSession();
@@ -75,7 +75,7 @@ public class TypeCoercionTest {
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
-	@MethodSource("parameters")
+    @MethodSource("parameters")
     public void testRuntimeTypeCoercion2(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_RuntimeTypeCoercion2.drl");
         KieSession ksession = kbase.newKieSession();
@@ -116,7 +116,7 @@ public class TypeCoercionTest {
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
-	@MethodSource("parameters")
+    @MethodSource("parameters")
     public void testUnwantedCoersion(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         final String rule = "package org.drools.compiler\n" +
                 "import " + InnerBean.class.getCanonicalName() + ";\n" +
@@ -201,7 +201,7 @@ public class TypeCoercionTest {
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
-	@MethodSource("parameters")
+    @MethodSource("parameters")
     public void testCoercionOfStringValueWithoutQuotes(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         // JBRULES-3080
         final String str = "package org.drools.mvel.compiler.test; \n" +
@@ -225,7 +225,7 @@ public class TypeCoercionTest {
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
-	@MethodSource("parameters")
+    @MethodSource("parameters")
     public void testPrimitiveToBoxedCoercionInMethodArgument(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         final String str = "package org.drools.mvel.compiler.test;\n" +
                 "import " + TypeCoercionTest.class.getName() + "\n" +
@@ -249,7 +249,7 @@ public class TypeCoercionTest {
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
-	@MethodSource("parameters")
+    @MethodSource("parameters")
     public void testStringCoercion(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-1688
         final String drl = "package org.drools.mvel.compiler.test;\n" +
@@ -272,7 +272,7 @@ public class TypeCoercionTest {
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
-	@MethodSource("parameters")
+    @MethodSource("parameters")
     public void testIntCoercion(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-1688
         final String drl = "package org.drools.mvel.compiler.test;\n" +
@@ -295,7 +295,7 @@ public class TypeCoercionTest {
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
-	@MethodSource("parameters")
+    @MethodSource("parameters")
     public void testCoercionInJoin(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-2695
         final String drl =
@@ -313,7 +313,7 @@ public class TypeCoercionTest {
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
-	@MethodSource("parameters")
+    @MethodSource("parameters")
     public void testCoercionInJoinOnField(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-2695
         final String drl =

@@ -39,7 +39,7 @@ public class EntryPointTest {
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
-	@MethodSource("parameters")
+    @MethodSource("parameters")
     public void testEntryPointWithVarIN(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String str = "package org.drools.mvel.compiler.test;\n" +
                 "\n" +

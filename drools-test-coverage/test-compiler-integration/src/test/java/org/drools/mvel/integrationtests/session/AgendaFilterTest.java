@@ -45,30 +45,30 @@ import static org.mockito.Mockito.verify;
 
 public class AgendaFilterTest {
 
-	public static Stream<KieBaseTestConfiguration> parameters() {
+    public static Stream<KieBaseTestConfiguration> parameters() {
         return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
-	@MethodSource("parameters")
+    @MethodSource("parameters")
     public void testAgendaFilterRuleNameStartsWith(KieBaseTestConfiguration kieBaseTestConfiguration) {
         testAgendaFilter(kieBaseTestConfiguration, new RuleNameStartsWithAgendaFilter("B"), "Bbb");
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
-	@MethodSource("parameters")
+    @MethodSource("parameters")
     public void testAgendaFilterRuleNameEndsWith(KieBaseTestConfiguration kieBaseTestConfiguration) {
         testAgendaFilter(kieBaseTestConfiguration, new RuleNameEndsWithAgendaFilter("a"), "Aaa");
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
-	@MethodSource("parameters")
+    @MethodSource("parameters")
     public void testAgendaFilterRuleNameMatches(KieBaseTestConfiguration kieBaseTestConfiguration) {
         testAgendaFilter(kieBaseTestConfiguration, new RuleNameMatchesAgendaFilter(".*b."), "Bbb");
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
-	@MethodSource("parameters")
+    @MethodSource("parameters")
     public void testAgendaFilterRuleNameEquals(KieBaseTestConfiguration kieBaseTestConfiguration) {
         testAgendaFilter(kieBaseTestConfiguration, new RuleNameEqualsAgendaFilter("Aaa"), "Aaa");
     }
@@ -93,7 +93,7 @@ public class AgendaFilterTest {
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
-	@MethodSource("parameters")
+    @MethodSource("parameters")
     public void testDirectFiringIgnoresAgendaFilter(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-6510
         String str =

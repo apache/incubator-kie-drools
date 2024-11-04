@@ -50,7 +50,7 @@ public class StatefulSessionTest {
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
-	@MethodSource("parameters")
+    @MethodSource("parameters")
     public void testDispose(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         final StringBuilder rule = new StringBuilder();
         rule.append("package org.drools.mvel.compiler\n");
@@ -81,7 +81,7 @@ public class StatefulSessionTest {
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
-	@MethodSource("parameters")
+    @MethodSource("parameters")
     public void testGetStatefulKnowledgeSessions(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "../empty.drl");
         KieSession ksession_1 = kbase.newKieSession();
@@ -111,7 +111,7 @@ public class StatefulSessionTest {
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
-	@MethodSource("parameters")
+    @MethodSource("parameters")
     public void testGetFactHandle(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "../empty.drl");
         KieSession ksession = kbase.newKieSession();
@@ -127,7 +127,7 @@ public class StatefulSessionTest {
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
-	@MethodSource("parameters")
+    @MethodSource("parameters")
     public void testGetFactHandleEqualityBehavior(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         KieBaseTestConfiguration equalityConfig = TestParametersUtil.getEqualityInstanceOf(kieBaseTestConfiguration);
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", equalityConfig);
@@ -140,7 +140,7 @@ public class StatefulSessionTest {
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
-	@MethodSource("parameters")
+    @MethodSource("parameters")
     public void testGetFactHandleIdentityBehavior(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         KieBaseTestConfiguration identityConfig = TestParametersUtil.getIdentityInstanceOf(kieBaseTestConfiguration);
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", identityConfig);
@@ -155,7 +155,7 @@ public class StatefulSessionTest {
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
-	@MethodSource("parameters")
+    @MethodSource("parameters")
     public void testDisconnectedFactHandle(KieBaseTestConfiguration kieBaseTestConfiguration) {
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration);
         KieSession ksession = kbase.newKieSession();
@@ -170,7 +170,7 @@ public class StatefulSessionTest {
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
-	@MethodSource("parameters")
+    @MethodSource("parameters")
     public void testIterateObjects(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_IterateObjects.drl");
         KieSession ksession = kbase.newKieSession();

@@ -44,7 +44,7 @@ public class InsertTest {
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
-	@MethodSource("parameters")
+    @MethodSource("parameters")
     public void testInsert(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String drl = "";
         drl += "package test\n";
@@ -81,7 +81,7 @@ public class InsertTest {
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
-	@MethodSource("parameters")
+    @MethodSource("parameters")
     public void testInsertionOrder(KieBaseTestConfiguration kieBaseTestConfiguration) {
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_InsertionOrder.drl");
         KieSession ksession = kbase.newKieSession();
@@ -113,7 +113,7 @@ public class InsertTest {
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
-	@MethodSource("parameters")
+    @MethodSource("parameters")
     public void testInsertFinalClassInstance(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_FinalClass.drl");
         KieSession ksession = kbase.newKieSession();

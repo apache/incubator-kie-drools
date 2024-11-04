@@ -42,7 +42,7 @@ public class LocaleTest {
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
-	@MethodSource("parameters")
+    @MethodSource("parameters")
     public void testLatinLocale(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         final Locale defaultLoc = Locale.getDefault();
 

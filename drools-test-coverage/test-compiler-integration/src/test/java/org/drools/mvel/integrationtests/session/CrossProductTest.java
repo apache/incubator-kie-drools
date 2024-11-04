@@ -42,7 +42,7 @@ public class CrossProductTest {
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
-	@MethodSource("parameters")
+    @MethodSource("parameters")
     public void testCrossProductRemovingIdentityEquals(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_CrossProductRemovingIdentityEquals.drl");
         KieSession session = kbase.newKieSession();

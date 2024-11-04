@@ -59,7 +59,7 @@ public class StatelessSessionTest {
     final Cheesery cheesery = new Cheesery();
 
     @ParameterizedTest(name = "KieBase type={0}")
-	@MethodSource("parameters")
+    @MethodSource("parameters")
     public void testSingleObjectAssert(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         final StatelessKieSession session = getSession2(kieBaseTestConfiguration, "statelessSessionTest.drl" );
 
@@ -72,7 +72,7 @@ public class StatelessSessionTest {
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
-	@MethodSource("parameters")
+    @MethodSource("parameters")
     public void testArrayObjectAssert(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         final StatelessKieSession session = getSession2(kieBaseTestConfiguration, "statelessSessionTest.drl" );
 
@@ -85,7 +85,7 @@ public class StatelessSessionTest {
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
-	@MethodSource("parameters")
+    @MethodSource("parameters")
     public void testCollectionObjectAssert(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         final StatelessKieSession session = getSession2(kieBaseTestConfiguration, "statelessSessionTest.drl" );
 
@@ -100,7 +100,7 @@ public class StatelessSessionTest {
     }
     
     @ParameterizedTest(name = "KieBase type={0}")
-	@MethodSource("parameters")
+    @MethodSource("parameters")
     public void testInsertObject(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String str = "";
         str += "package org.kie \n";
@@ -125,7 +125,7 @@ public class StatelessSessionTest {
     }
     
     @ParameterizedTest(name = "KieBase type={0}")
-	@MethodSource("parameters")
+    @MethodSource("parameters")
     public void testSetGlobal(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String str = "";
         str += "package org.kie \n";
@@ -179,7 +179,7 @@ public class StatelessSessionTest {
     }
     
     @ParameterizedTest(name = "KieBase type={0}")
-	@MethodSource("parameters")
+    @MethodSource("parameters")
     public void testQuery(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String str = "";
         str += "package org.kie.test  \n";
@@ -241,7 +241,7 @@ public class StatelessSessionTest {
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
-	@MethodSource("parameters")
+    @MethodSource("parameters")
     public void testNotInStatelessSession(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         final KieModule kieModule = KieUtil.getKieModuleFromClasspathResources("test", getClass(), kieBaseTestConfiguration, "test_NotInStatelessSession.drl");
         final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, SequentialOption.YES);
@@ -254,7 +254,7 @@ public class StatelessSessionTest {
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
-	@MethodSource("parameters")
+    @MethodSource("parameters")
     public void testChannels(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String str = "";
         str += "package org.kie \n";

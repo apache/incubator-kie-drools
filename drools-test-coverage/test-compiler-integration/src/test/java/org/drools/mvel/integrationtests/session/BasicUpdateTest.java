@@ -61,9 +61,9 @@ public class BasicUpdateTest {
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
-	@MethodSource("parameters")
+    @MethodSource("parameters")
     public void updateTheOnlyFactTest(KieBaseTestConfiguration kieBaseTestConfiguration) {
-    	setUp(kieBaseTestConfiguration);
+        setUp(kieBaseTestConfiguration);
         final Person person = new Person("George", 18);
         final FactHandle factPerson = ksession.insert(person);
         assertThat(ksession.getObjects()).hasSize(1);
@@ -80,9 +80,9 @@ public class BasicUpdateTest {
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
-	@MethodSource("parameters")
+    @MethodSource("parameters")
     public void updateWithNullTest(KieBaseTestConfiguration kieBaseTestConfiguration) {
-    	setUp(kieBaseTestConfiguration);
+        setUp(kieBaseTestConfiguration);
         final Person person = new Person("George", 18);
         final FactHandle factPerson = ksession.insert(person);
         verifyFactsPresentInSession(1, Person.class);
@@ -91,9 +91,9 @@ public class BasicUpdateTest {
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
-	@MethodSource("parameters")
+    @MethodSource("parameters")
     public void updateWithDifferentClassGetQueryResultsTest(KieBaseTestConfiguration kieBaseTestConfiguration) {
-    	setUp(kieBaseTestConfiguration);
+        setUp(kieBaseTestConfiguration);
         final Person person = new Person("George", 18);
         final FactHandle fact = ksession.insert(person);
 
@@ -114,9 +114,9 @@ public class BasicUpdateTest {
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
-	@MethodSource("parameters")
+    @MethodSource("parameters")
     public void updateWithDifferentClassGetObjectsTest(KieBaseTestConfiguration kieBaseTestConfiguration) {
-    	setUp(kieBaseTestConfiguration);
+        setUp(kieBaseTestConfiguration);
         final Person person = new Person("George", 18);
         final FactHandle factPerson = ksession.insert(person);
         final Person personToBeVerified = verifyFactsPresentInSession(1, Person.class).get(0);
@@ -131,9 +131,9 @@ public class BasicUpdateTest {
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
-	@MethodSource("parameters")
+    @MethodSource("parameters")
     public void updateFireRulesTest(KieBaseTestConfiguration kieBaseTestConfiguration) {
-    	setUp(kieBaseTestConfiguration);
+        setUp(kieBaseTestConfiguration);
         final Person george = new Person("George", 17);
         final Person henry = new Person("Henry", 25);
         final FactHandle georgeFact = ksession.insert(george);
@@ -158,9 +158,9 @@ public class BasicUpdateTest {
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
-	@MethodSource("parameters")
+    @MethodSource("parameters")
     public void updateFactOnRuleFireTest(KieBaseTestConfiguration kieBaseTestConfiguration) {
-    	setUp(kieBaseTestConfiguration);
+        setUp(kieBaseTestConfiguration);
         final Cheese camembert = new Cheese("Camembert", 19);
         final Cheese cheddar = new Cheese("Cheddar", 45);
 

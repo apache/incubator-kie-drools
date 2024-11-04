@@ -43,7 +43,7 @@ public class FieldAccessTest {
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
-	@MethodSource("parameters")
+    @MethodSource("parameters")
     // this isn't possible, we can only narrow with type safety, not widen.
     // unless typesafe=false is used
     public void testAccessFieldsFromSubClass(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
@@ -72,7 +72,7 @@ public class FieldAccessTest {
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
-	@MethodSource("parameters")
+    @MethodSource("parameters")
     public void testAccessClassTypeField(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String str = "package org.drools.mvel.compiler\n" +
                 "rule r1\n" +
@@ -90,7 +90,7 @@ public class FieldAccessTest {
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
-	@MethodSource("parameters")
+    @MethodSource("parameters")
     public void testGenericsOption(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         // JBRULES-3579
         final String str = "import org.drools.mvel.compiler.*;\n" +

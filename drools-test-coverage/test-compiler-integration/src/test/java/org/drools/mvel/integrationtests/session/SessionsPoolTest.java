@@ -66,7 +66,7 @@ public class SessionsPoolTest {
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
-	@MethodSource("parameters")
+    @MethodSource("parameters")
     public void testKieSessionsPool(KieBaseTestConfiguration kieBaseTestConfiguration) {
         KieContainerSessionsPool pool = getKieContainer(kieBaseTestConfiguration).newKieSessionsPool( 1 );
 
@@ -103,7 +103,7 @@ public class SessionsPoolTest {
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
-	@MethodSource("parameters")
+    @MethodSource("parameters")
     public void testPooledKieBase(KieBaseTestConfiguration kieBaseTestConfiguration) {
         KieBaseConfiguration kbConf = KieServices.get().newKieBaseConfiguration();
         kbConf.setOption(SessionsPoolOption.get(1));
@@ -130,7 +130,7 @@ public class SessionsPoolTest {
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
-	@MethodSource("parameters")
+    @MethodSource("parameters")
     public void testKieSessionsPoolInMultithreadEnv(KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException, ExecutionException {
         KieContainerSessionsPool pool = getKieContainer(kieBaseTestConfiguration).newKieSessionsPool( 4 );
 
@@ -175,7 +175,7 @@ public class SessionsPoolTest {
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
-	@MethodSource("parameters")
+    @MethodSource("parameters")
     public void testStatelessKieSessionsPool(KieBaseTestConfiguration kieBaseTestConfiguration) {
         KieContainerSessionsPool pool = getKieContainer(kieBaseTestConfiguration).newKieSessionsPool( 1 );
         StatelessKieSession session = pool.newStatelessKieSession();
@@ -191,7 +191,7 @@ public class SessionsPoolTest {
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
-	@MethodSource("parameters")
+    @MethodSource("parameters")
     public void testStatelessKieSessionsPoolWithConf(KieBaseTestConfiguration kieBaseTestConfiguration) {
         KieServices kieServices = KieServices.get();
 
@@ -229,7 +229,7 @@ public class SessionsPoolTest {
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
-	@MethodSource("parameters")
+    @MethodSource("parameters")
     public void testSegmentMemoriesReset(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-3228
         String drl =
@@ -289,7 +289,7 @@ public class SessionsPoolTest {
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
-	@MethodSource("parameters")
+    @MethodSource("parameters")
     public void testSegmentMemoriesResetWithNotNodeInTheMiddle(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String drl =
                 "import " + FactA.class.getCanonicalName() + ";\n" +
@@ -342,7 +342,7 @@ public class SessionsPoolTest {
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
-	@MethodSource("parameters")
+    @MethodSource("parameters")
     public void testSegmentMemoriesResetWithNotNodeInTheMiddle2(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // FactB constrains in R1 and R2 are different from testSegmentMemoriesResetWithNotNodeInTheMiddle()
         String drl =
@@ -411,7 +411,7 @@ public class SessionsPoolTest {
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
-	@MethodSource("parameters")
+    @MethodSource("parameters")
     public void testStatelessSequential(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-3228
         String drl =
@@ -451,7 +451,7 @@ public class SessionsPoolTest {
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
-	@MethodSource("parameters")
+    @MethodSource("parameters")
     public void testListenersReset(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final KieContainerSessionsPool pool = getKieContainer(kieBaseTestConfiguration).newKieSessionsPool( 1 );
         KieSession ksession = pool.newKieSession();

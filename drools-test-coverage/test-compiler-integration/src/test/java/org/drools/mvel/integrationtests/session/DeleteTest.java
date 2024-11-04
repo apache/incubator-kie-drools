@@ -68,15 +68,15 @@ public class DeleteTest {
 
     @AfterEach
     public void tearDown() {
-    	if (ksession != null) {
-    		ksession.dispose();
-    	}
+        if (ksession != null) {
+            ksession.dispose();
+        }
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
-	@MethodSource("parameters")
+    @MethodSource("parameters")
     public void deleteFactTest(KieBaseTestConfiguration kieBaseTestConfiguration) {
-    	setUp(kieBaseTestConfiguration);
+        setUp(kieBaseTestConfiguration);
         ksession.insert(new Person("Petr", 25));
 
         FactHandle george = ksession.insert(new Person("George", 19));
@@ -91,9 +91,9 @@ public class DeleteTest {
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
-	@MethodSource("parameters")
+    @MethodSource("parameters")
     public void deleteFactTwiceTest(KieBaseTestConfiguration kieBaseTestConfiguration) {
-    	setUp(kieBaseTestConfiguration);
+        setUp(kieBaseTestConfiguration);
         FactHandle george = ksession.insert(new Person("George", 19));
         QueryResults results = ksession.getQueryResults("countPerson");
         assertThat(results).isNotEmpty();
@@ -110,16 +110,16 @@ public class DeleteTest {
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
-	@MethodSource("parameters")
+    @MethodSource("parameters")
     public void deleteNullFactTest(KieBaseTestConfiguration kieBaseTestConfiguration) {
-    	setUp(kieBaseTestConfiguration);
+        setUp(kieBaseTestConfiguration);
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() ->ksession.delete(null));
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
-	@MethodSource("parameters")
+    @MethodSource("parameters")
     public void deleteUpdatedFactTest(KieBaseTestConfiguration kieBaseTestConfiguration) {
-    	setUp(kieBaseTestConfiguration);
+        setUp(kieBaseTestConfiguration);
         FactHandle person = ksession.insert(new Person("George", 18));
 
         ksession.update(person, new Person("John", 21));
@@ -135,9 +135,9 @@ public class DeleteTest {
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
-	@MethodSource("parameters")
+    @MethodSource("parameters")
     public void deleteUpdatedFactDifferentClassTest(KieBaseTestConfiguration kieBaseTestConfiguration) {
-    	setUp(kieBaseTestConfiguration);
+        setUp(kieBaseTestConfiguration);
         FactHandle fact = ksession.insert(new Person("George", 18));
 
         assertThat(ksession.getObjects()).hasSize(1);
@@ -154,7 +154,7 @@ public class DeleteTest {
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
-	@MethodSource("parameters")
+    @MethodSource("parameters")
     public void testRetractLeftTuple(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         // JBRULES-3420
         final String str =
@@ -194,7 +194,7 @@ public class DeleteTest {
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
-	@MethodSource("parameters")
+    @MethodSource("parameters")
     public void testAssertRetract(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         // postponed while I sort out KnowledgeHelperFixer
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "assert_retract.drl");
@@ -222,7 +222,7 @@ public class DeleteTest {
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
-	@MethodSource("parameters")
+    @MethodSource("parameters")
     public void testEmptyAfterRetractInIndexedMemory(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str = "";
         str += "package org.simple \n";
@@ -252,7 +252,7 @@ public class DeleteTest {
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
-	@MethodSource("parameters")
+    @MethodSource("parameters")
     public void testModifyRetractAndModifyInsert(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_ModifyRetractInsert.drl");
         KieSession ksession = kbase.newKieSession();
@@ -272,7 +272,7 @@ public class DeleteTest {
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
-	@MethodSource("parameters")
+    @MethodSource("parameters")
     public void testModifyRetractWithFunction(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_RetractModifyWithFunction.drl");
         KieSession ksession = kbase.newKieSession();
