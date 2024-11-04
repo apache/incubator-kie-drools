@@ -18,32 +18,23 @@
  */
 package org.drools.compiler.integrationtests;
 
-import java.util.Collection;
+import java.util.stream.Stream;
 
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class ConditionLimitTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public ConditionLimitTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
-    }
-
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseStreamConfigurations(true);
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseStreamConfigurations(true).stream();
     }
 
     public static class FieldObject {
@@ -69,8 +60,9 @@ public class ConditionLimitTest {
         }
     }
 
-    @Test
-    public void testEvalErrorHandling() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testEvalErrorHandling(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-6856
         final int INPUT_COUNT = 65;
 

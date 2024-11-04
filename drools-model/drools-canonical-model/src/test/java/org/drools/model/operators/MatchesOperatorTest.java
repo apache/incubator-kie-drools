@@ -18,11 +18,11 @@
  */
 package org.drools.model.operators;
 
-import org.junit.After;
-import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
 public class MatchesOperatorTest {
 
@@ -60,7 +60,7 @@ public class MatchesOperatorTest {
         assertThat(instance.mapSize()).isEqualTo(0);
     }
 
-    @After
+    @AfterEach
     public void resetCache() {
         MatchesOperator instance = MatchesOperator.INSTANCE;
         instance.reInitialize();

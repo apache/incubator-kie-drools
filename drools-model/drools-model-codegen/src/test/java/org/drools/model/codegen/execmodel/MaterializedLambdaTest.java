@@ -22,19 +22,17 @@ import java.time.Instant;
 import java.util.Date;
 
 import org.drools.model.codegen.execmodel.domain.Result;
-import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MaterializedLambdaTest extends BaseModelTest {
 
-    public MaterializedLambdaTest(RUN_TYPE testRunType) {
-        super(testRunType);
-    }
-
-    @Test
-    public void testMaterializeLambda() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testMaterializeLambda(RUN_TYPE runType) {
         String str =
 
                 "import " + DataType.class.getCanonicalName() + ";\n" +
@@ -57,7 +55,7 @@ public class MaterializedLambdaTest extends BaseModelTest {
                 "    result.setValue(0);\n" +
                 "end\n";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         DataType st = new DataType("FF", "BBB");
         DataType st2 = new DataType("FF", "CCC");
@@ -81,8 +79,9 @@ public class MaterializedLambdaTest extends BaseModelTest {
     }
 
     // DROOLS-4858
-    @Test
-    public void testMaterializeLambdaWithNested() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testMaterializeLambdaWithNested(RUN_TYPE runType) {
         String str =
                 "import " + Executor.class.getCanonicalName() + ";\n" +
                 "import " + Result.class.getCanonicalName() + ";\n" +
@@ -97,7 +96,7 @@ public class MaterializedLambdaTest extends BaseModelTest {
                 "    });" +
                 "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert(42);
 

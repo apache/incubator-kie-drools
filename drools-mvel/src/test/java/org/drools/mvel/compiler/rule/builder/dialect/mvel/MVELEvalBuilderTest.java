@@ -50,8 +50,8 @@ import org.drools.mvel.builder.MVELDialect;
 import org.drools.mvel.builder.MVELEvalBuilder;
 import org.drools.mvel.compiler.Cheese;
 import org.drools.mvel.expr.MVELEvalExpression;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -59,7 +59,7 @@ public class MVELEvalBuilderTest {
 
     ClassFieldAccessorStore store = new ClassFieldAccessorStore();
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         store.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
         store.setEagerWire( true );

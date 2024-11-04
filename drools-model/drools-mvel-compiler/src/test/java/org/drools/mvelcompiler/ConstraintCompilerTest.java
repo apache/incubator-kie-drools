@@ -27,8 +27,8 @@ import org.drools.Gender;
 import org.drools.Person;
 import org.drools.util.ClassTypeResolver;
 import org.drools.util.TypeResolver;
+import org.junit.jupiter.api.Test;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
-import org.junit.Test;
 
 public class ConstraintCompilerTest implements CompilerTest {
 

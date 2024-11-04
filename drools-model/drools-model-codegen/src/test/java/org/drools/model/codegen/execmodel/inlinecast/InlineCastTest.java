@@ -25,20 +25,18 @@ import org.drools.model.codegen.execmodel.BaseModelTest;
 import org.drools.model.codegen.execmodel.domain.InternationalAddress;
 import org.drools.model.codegen.execmodel.domain.Person;
 import org.drools.model.codegen.execmodel.domain.Result;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class InlineCastTest extends BaseModelTest {
 
-    public InlineCastTest(RUN_TYPE testRunType ) {
-        super( testRunType );
-    }
-
-    @Test
-    public void testInlineCastThis() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testInlineCastThis(RUN_TYPE runType) {
         String str =
                 "import " + Result.class.getCanonicalName() + ";" +
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -49,7 +47,7 @@ public class InlineCastTest extends BaseModelTest {
                 "  $r.setValue(\"Found: \" + $o);\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         Result result = new Result();
         ksession.insert( result );
@@ -62,8 +60,9 @@ public class InlineCastTest extends BaseModelTest {
         assertThat(result.getValue()).isEqualTo("Found: Mark");
     }
 
-    @Test
-    public void testInlineCastProjectionThis() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testInlineCastProjectionThis(RUN_TYPE runType) {
         String str =
                 "import " + Result.class.getCanonicalName() + ";" +
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -74,7 +73,7 @@ public class InlineCastTest extends BaseModelTest {
                 "  $r.setValue(\"Found: \" + $name + \" $p class: \" + $p.getClass().getCanonicalName());\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         Result result = new Result();
         ksession.insert( result );
@@ -86,8 +85,9 @@ public class InlineCastTest extends BaseModelTest {
         assertThat(result.getValue()).isEqualTo("Found: Mark $p class: " + Person.class.getCanonicalName());
     }
 
-    @Test
-    public void testInlineCastProjectionThisExplicit() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testInlineCastProjectionThisExplicit(RUN_TYPE runType) {
         String str =
                 "import " + Result.class.getCanonicalName() + ";" +
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -98,7 +98,7 @@ public class InlineCastTest extends BaseModelTest {
                 "  $r.setValue(\"Found: \" + $name + \" $p class: \" + $p.getClass().getCanonicalName());\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         Result result = new Result();
         ksession.insert( result );
@@ -131,9 +131,10 @@ public class InlineCastTest extends BaseModelTest {
         DMNModelInstrumentedBase getParent();
     }
     
-    @Ignore("This test is not testing anything")
-    @Test
-    public void testExplicitCast() {
+    @Disabled("This test is not testing anything")
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testExplicitCast(RUN_TYPE runType) {
         String str =
                 "import " + OutputClause.class.getCanonicalName() + "\n;" +
                         "import " + DecisionTable.class.getCanonicalName() + "\n;" +
@@ -143,13 +144,14 @@ public class InlineCastTest extends BaseModelTest {
                         "then\n" +
                         "end\n";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
         ksession.fireAllRules();
     }
 
-    @Ignore("This test is not testing anything")
-    @Test
-    public void testInlineCastParent() {
+    @Disabled("This test is not testing anything")
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testInlineCastParent(RUN_TYPE runType) {
         String str =
                 "import " + OutputClause.class.getCanonicalName() + "\n;" +
                         "import " + DecisionTable.class.getCanonicalName() + "\n;" +
@@ -159,12 +161,13 @@ public class InlineCastTest extends BaseModelTest {
                         "then\n" +
                         "end\n";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
         ksession.fireAllRules();
     }
 
-    @Test
-    public void testInlineCastProjection() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testInlineCastProjection(RUN_TYPE runType) {
         String str = "import " + Person.class.getCanonicalName() + ";" +
                 "import " + InternationalAddress.class.getCanonicalName() + ";" +
                 "rule R when\n" +
@@ -173,7 +176,7 @@ public class InlineCastTest extends BaseModelTest {
                 "  insert($a);\n" +
                 "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         Person john = new Person("John", 47);
         InternationalAddress a = new InternationalAddress("address", "Italy");
@@ -186,8 +189,9 @@ public class InlineCastTest extends BaseModelTest {
         assertThat(results.iterator().next()).isEqualTo("Italy");
     }
 
-    @Test
-    public void testInlineCastProjectionOnMethod() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testInlineCastProjectionOnMethod(RUN_TYPE runType) {
         String str = "import " + Person.class.getCanonicalName() + ";" +
                 "import " + InternationalAddress.class.getCanonicalName() + ";" +
                 "rule R when\n" +
@@ -196,7 +200,7 @@ public class InlineCastTest extends BaseModelTest {
                 "  insert($a);\n" +
                 "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         Person john = new Person("John", 47);
         InternationalAddress a = new InternationalAddress("address", "Italy");
@@ -210,8 +214,9 @@ public class InlineCastTest extends BaseModelTest {
     }
 
 
-    @Test
-    public void testInlineCastForAField() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testInlineCastForAField(RUN_TYPE runType) {
         String str = "import " + Person.class.getCanonicalName() + ";" +
                      "import " + InternationalAddress.class.getCanonicalName() + ";" +
                      "rule R when\n" +
@@ -220,7 +225,7 @@ public class InlineCastTest extends BaseModelTest {
                      "  insert(\"matched\");\n" +
                      "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         Person john = new Person("John", 47);
         InternationalAddress a = new InternationalAddress("address", "Italy");
@@ -233,8 +238,9 @@ public class InlineCastTest extends BaseModelTest {
         assertThat(results.size()).isEqualTo(1);
     }
 
-    @Test
-    public void testInlineCastForAFieldWithFQN() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testInlineCastForAFieldWithFQN(RUN_TYPE runType) {
         String str = "import " + Person.class.getCanonicalName() + ";" +
                      "rule R when\n" +
                      "  $p : Person( address#" + InternationalAddress.class.getCanonicalName() + ".state.length == 5 )\n" +
@@ -242,7 +248,7 @@ public class InlineCastTest extends BaseModelTest {
                      "  insert(\"matched\");\n" +
                      "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         Person john = new Person("John", 47);
         InternationalAddress a = new InternationalAddress("address", "Italy");
@@ -255,8 +261,9 @@ public class InlineCastTest extends BaseModelTest {
         assertThat(results.size()).isEqualTo(1);
     }
 
-    @Test
-    public void testInlineCastForAFieldAndMixMethodCall() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testInlineCastForAFieldAndMixMethodCall(RUN_TYPE runType) {
         String str = "import " + Person.class.getCanonicalName() + ";" +
                      "import " + InternationalAddress.class.getCanonicalName() + ";" +
                      "rule R when\n" +
@@ -265,7 +272,7 @@ public class InlineCastTest extends BaseModelTest {
                      "  insert(\"matched\");\n" +
                      "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         Person john = new Person("John", 47);
         InternationalAddress a = new InternationalAddress("address", "Italy");
@@ -278,8 +285,9 @@ public class InlineCastTest extends BaseModelTest {
         assertThat(results.size()).isEqualTo(1);
     }
 
-    @Test
-    public void testInlineCastSingle() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testInlineCastSingle(RUN_TYPE runType) {
         String str = "import " + ICAbstractA.class.getCanonicalName() + ";" +
                 "import " + ICAbstractB.class.getCanonicalName() + ";" +
                 "import " + ICAbstractC.class.getCanonicalName() + ";" +
@@ -292,7 +300,7 @@ public class InlineCastTest extends BaseModelTest {
                 "  insert(\"matched\");\n" +
                 "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         ICA a = new ICA();
         ICB b = new ICB();
@@ -307,8 +315,9 @@ public class InlineCastTest extends BaseModelTest {
         assertThat(results.size()).isEqualTo(1);
     }
 
-    @Test
-    public void testInlineCastMultiple() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testInlineCastMultiple(RUN_TYPE runType) {
         String str = "import " + ICAbstractA.class.getCanonicalName() + ";" +
                      "import " + ICAbstractB.class.getCanonicalName() + ";" +
                      "import " + ICAbstractC.class.getCanonicalName() + ";" +
@@ -321,7 +330,7 @@ public class InlineCastTest extends BaseModelTest {
                      "  insert(\"matched\");\n" +
                      "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         ICA a = new ICA();
         ICB b = new ICB();

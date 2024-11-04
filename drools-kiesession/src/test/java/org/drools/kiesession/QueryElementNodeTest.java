@@ -32,8 +32,8 @@ import org.drools.base.rule.QueryElement;
 import org.drools.core.common.PropagationContext;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -43,7 +43,7 @@ public class QueryElementNodeTest {
     private InternalKnowledgeBase kBase;
     private BuildContext        buildContext;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         this.kBase = KnowledgeBaseFactory.newKnowledgeBase();
         this.buildContext = new BuildContext( kBase, Collections.emptyList() );

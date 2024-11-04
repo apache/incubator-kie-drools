@@ -19,6 +19,7 @@
 package org.kie.dmn.core.api;
 
 import org.kie.dmn.api.core.DMNResult;
+import org.kie.dmn.api.core.EvaluatorResult;
 import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
 
 /**

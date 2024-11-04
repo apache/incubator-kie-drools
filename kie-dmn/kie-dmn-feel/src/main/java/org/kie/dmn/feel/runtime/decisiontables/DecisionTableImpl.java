@@ -257,12 +257,20 @@ public class DecisionTableImpl implements DecisionTable {
             }
         }
         ctx.notifyEvt( () -> {
-            List<Integer> matches = matchingDecisionRules.stream().map( dr -> dr.getIndex() + 1 ).collect( Collectors.toList() );
+            List<Integer> matches = new ArrayList<>();
+            List<String> matchesId = new ArrayList<>();
+            matchingDecisionRules.forEach(dr -> {
+                matches.add( dr.getIndex() + 1 );
+                if (dr.getId() != null && !dr.getId().isEmpty()) {
+                    matchesId.add(dr.getId());
+                }
+            });
             return new DecisionTableRulesMatchedEvent(FEELEvent.Severity.INFO,
-                                                      "Rules matched for decision table '" + getName() + "': " + matches.toString(),
+                                                      "Rules matched for decision table '" + getName() + "': " + matches,
                                                       getName(),
                                                       getName(),
-                                                      matches );
+                                                      matches,
+                                                      matchesId);
             }
         );
         return matchingDecisionRules;

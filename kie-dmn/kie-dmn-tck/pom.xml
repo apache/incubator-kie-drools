@@ -52,7 +52,6 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-scm-plugin</artifactId>
-            <version>1.11.1</version>
             <executions>
               <execution>
                 <id>run-tck-suite</id>

@@ -24,21 +24,18 @@ import java.util.List;
 import org.drools.testcoverage.common.model.Person;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public abstract class AbstractDeclareTest {
-    protected final KieBaseTestConfiguration kieBaseTestConfiguration;
 
-    public AbstractDeclareTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
-    }
-
-    @Test
-    public void testDeclaresWithArrayFields() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testDeclaresWithArrayFields(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "package org.drools.compiler.integrationtests.drl; \n" +
                 "import " + Person.class.getName() + ";\n" +
                 "\n" +

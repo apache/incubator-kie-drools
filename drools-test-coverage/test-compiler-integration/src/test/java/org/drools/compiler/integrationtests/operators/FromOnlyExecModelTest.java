@@ -18,34 +18,28 @@
  */
 package org.drools.compiler.integrationtests.operators;
 
-import java.util.Collection;
 import java.util.HashMap;
+import java.util.stream.Stream;
 
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.model.functions.NativeImageTestUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import static org.drools.compiler.integrationtests.operators.FromTest.testFromSharingCommon;
 
-@RunWith(Parameterized.class)
 public class FromOnlyExecModelTest {
 
-    protected final KieBaseTestConfiguration kieBaseTestConfiguration;
 
-    public FromOnlyExecModelTest(KieBaseTestConfiguration kieBaseTestConfiguration1) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration1;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudOnlyExecModelConfiguration().stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudOnlyExecModelConfiguration();
-    }
-
-    @Test // KOGITO-3771
-    public void testFromSharingWithNativeImage() {
+    // KOGITO-3771
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testFromSharingWithNativeImage(KieBaseTestConfiguration kieBaseTestConfiguration) {
         try {
             NativeImageTestUtil.setNativeImage();
             testFromSharingCommon(kieBaseTestConfiguration, new HashMap<>(), 2, 2);
@@ -55,8 +49,9 @@ public class FromOnlyExecModelTest {
     }
 
     // This test that the node sharing isn't working without lambda externalisation
-    @Test
-    public void testFromSharingWithNativeImageWithoutLambdaExternalisation() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testFromSharingWithNativeImageWithoutLambdaExternalisation(KieBaseTestConfiguration kieBaseTestConfiguration) {
         try {
             NativeImageTestUtil.setNativeImage();
             HashMap<String, String> properties = new HashMap<>();

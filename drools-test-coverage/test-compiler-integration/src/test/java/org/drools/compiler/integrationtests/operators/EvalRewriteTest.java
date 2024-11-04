@@ -19,38 +19,30 @@
 package org.drools.compiler.integrationtests.operators;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.drools.testcoverage.common.model.Order;
 import org.drools.testcoverage.common.model.OrderItem;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class EvalRewriteTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public EvalRewriteTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
-    }
-
-    @Test
-    public void testEvalRewrite() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testEvalRewrite(KieBaseTestConfiguration kieBaseTestConfiguration) {
 
         final String drl = "package org.drools.compiler.integrationtests.operators\n" +
                 "import " + OrderItem.class.getCanonicalName() + " ;\n" +
@@ -147,8 +139,9 @@ public class EvalRewriteTest {
         }
     }
 
-    @Test
-    public void testEvalRewriteMatches() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testEvalRewriteMatches(KieBaseTestConfiguration kieBaseTestConfiguration) {
 
         final String drl = "package org.drools.compiler.integrationtests.operators;\n" +
                 "import " + OrderItem.class.getCanonicalName() + " ;\n" +
@@ -199,8 +192,9 @@ public class EvalRewriteTest {
         }
     }
 
-    @Test
-    public void testEvalRewriteWithSpecialOperators() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testEvalRewriteWithSpecialOperators(KieBaseTestConfiguration kieBaseTestConfiguration) {
 
         final String drl = "package org.drools.compiler\n" +
                 "import " + OrderItem.class.getCanonicalName() + " ;\n" +

@@ -26,7 +26,7 @@ import java.util.Locale;
 
 import org.drools.base.base.ValueType;
 import org.drools.base.rule.accessor.FieldValue;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

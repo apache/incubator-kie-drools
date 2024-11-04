@@ -18,34 +18,26 @@
  */
 package org.drools.compiler.integrationtests.drl;
 
-import java.util.Collection;
+import java.util.stream.Stream;
 
 import org.drools.testcoverage.common.model.Person;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
-@RunWith(Parameterized.class)
 public class CommentTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public CommentTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
-    }
-
-    @Test
-    public void testCommentDelimiterInString() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testCommentDelimiterInString(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // JBRULES-3401
         final String drl = "rule x\n" +
                 "dialect \"mvel\"\n" +
@@ -59,8 +51,9 @@ public class CommentTest {
         ksession.dispose();
     }
 
-    @Test
-    public void testCommentWithCommaInRHS() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testCommentWithCommaInRHS(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // JBRULES-3648
         final String drl = "import " + Person.class.getCanonicalName() + ";\n" +
                 "rule R1 when\n" +

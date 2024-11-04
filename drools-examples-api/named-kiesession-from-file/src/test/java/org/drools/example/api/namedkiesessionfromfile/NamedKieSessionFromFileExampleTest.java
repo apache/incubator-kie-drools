@@ -18,12 +18,12 @@
  */
 package org.drools.example.api.namedkiesessionfromfile;
 
-import org.junit.Test;
-
 import java.io.ByteArrayOutputStream;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.io.PrintStream;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.jupiter.api.Test;
 
 public class NamedKieSessionFromFileExampleTest {
     private static final String NL = System.getProperty("line.separator");

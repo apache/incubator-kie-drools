@@ -24,8 +24,8 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.within;
@@ -43,7 +43,7 @@ import static org.drools.mvel.MVEL.executeExpression;
 
 public class ArithmeticTest {
 	
-  @Ignore("DROOLS-6572 - Generates wrong code for promotion")
+  @Disabled("DROOLS-6572 - Generates wrong code for promotion")
   @Test
   public void testMath() {
     String expression = "pi * hour";
@@ -57,7 +57,7 @@ public class ArithmeticTest {
     assertThat(executeExpressionWithDefaultVariables("foo.number-1")).isEqualTo(3);
   }
 
-  @Ignore("DROOLS-6572 - Rounding error")
+  @Disabled("DROOLS-6572 - Rounding error")
   @Test
   public void testMath3() {
     String expression = "(10 * 5) * 2 / 3";
@@ -66,7 +66,7 @@ public class ArithmeticTest {
     assertThat(executeExpressionWithDefaultVariables(expression)).isEqualTo(result);
   }
 
-  @Ignore("DROOLS-6572 - Rounding error")
+  @Disabled("DROOLS-6572 - Rounding error")
   @Test
   public void testMath4() {
 	String expression = "(100 % 3) * 2 - 1 / 1 + 8 + (5 * 2)";
@@ -75,7 +75,7 @@ public class ArithmeticTest {
     assertThat(executeExpressionWithDefaultVariables(expression)).isEqualTo(result);
   }
 
-  @Ignore("DROOLS-6572 - Rounding error")
+  @Disabled("DROOLS-6572 - Rounding error")
   @Test
   public void testMath4a() {
     String expression = "(100 % 90) * 20 - 15 / 16 + 80 + (50 * 21)";
@@ -100,7 +100,7 @@ public class ArithmeticTest {
     assertThat(executeExpressionWithDefaultVariables(expression)).isEqualTo(result);
   }
 
-  @Ignore("DROOLS-6572 - Rounding error")
+  @Disabled("DROOLS-6572 - Rounding error")
   @Test
   public void testMath6() {
     String expression = "(300 * five + 1) + (100 / 2 * 2)";
@@ -109,7 +109,7 @@ public class ArithmeticTest {
     assertThat(executeExpressionWithDefaultVariables(expression)).isEqualTo(result);
   }
 
-  @Ignore("DROOLS-6572 - Rounding error")
+  @Disabled("DROOLS-6572 - Rounding error")
   @Test
   public void testMath7() {
 	String expression = "(100 % 3) * 2 - 1 / 1 + 8 + (5 * 2)";
@@ -126,13 +126,13 @@ public class ArithmeticTest {
     assertThat(executeExpressionWithDefaultVariables(expression)).isEqualTo(result);
   }
 
-  @Ignore("DROOLS-6572 - Unable to parse **")
+  @Disabled("DROOLS-6572 - Unable to parse **")
   @Test
   public void testPowerOf() {
     assertThat(executeExpressionWithDefaultVariables("5 ** 2")).isEqualTo(25);
   }
 
-  @Ignore("DROOLS-6572 - Unable to parse")
+  @Disabled("DROOLS-6572 - Unable to parse")
   @Test
   public void testSignOperator() {
     String expr = "int x = 15; -x";
@@ -173,7 +173,7 @@ public class ArithmeticTest {
     assertThat(executeExpressionWithDefaultVariables(expression)).isEqualTo(result);
   }
 
-  @Ignore("DROOLS-6572 - Unable to parse multiple assignements")
+  @Disabled("DROOLS-6572 - Unable to parse multiple assignements")
   @Test
   public void testMath18() {
     String expression = "a = 100d; b = 50d; c = 20d; d = 30d; e = 2d; (a * b) * c / d * e";
@@ -182,7 +182,7 @@ public class ArithmeticTest {
     assertThat(executeExpression(expression, Collections.emptyMap())).isEqualTo(result);
   }
 
-  @Ignore("DROOLS-6572 - Unable to parse multiple assignments")
+  @Disabled("DROOLS-6572 - Unable to parse multiple assignments")
   @Test
   public void testMath19() {
     String expression = "a = 100; b = 500; c = 200; d = 150; e = 500; f = 800; g = 400; a-b*c*d + e*f-g";
@@ -190,7 +190,7 @@ public class ArithmeticTest {
     assertThat(executeExpression(expression, Collections.emptyMap())).isEqualTo(result);
   }
 
-  @Ignore("DROOLS-6572 - Unable to parse")
+  @Disabled("DROOLS-6572 - Unable to parse")
   @Test
   public void testMath32() {
     String expression = "x = 20; y = 10; z = 5; x-y-z";
@@ -199,7 +199,7 @@ public class ArithmeticTest {
     assertThat(executeExpression(expression, Collections.emptyMap())).isEqualTo(result);
   }
 
-  @Ignore("DROOLS-6572 - Unable to parse")
+  @Disabled("DROOLS-6572 - Unable to parse")
   @Test
   public void testMath33() {
     String expression = "x = 20; y = 2; z = 2; x/y/z";
@@ -224,7 +224,7 @@ public class ArithmeticTest {
     assertThat(executeExpressionWithDefaultVariables(expression)).isEqualTo(expected);
   }
 
-  @Ignore("DROOLS-6572 - Unable to parse **")
+  @Disabled("DROOLS-6572 - Unable to parse **")
   @Test
   public void testMath22() {
     String expression = "(100-50)*70-30*(20-9)**3";
@@ -233,7 +233,7 @@ public class ArithmeticTest {
     assertThat(executeExpressionWithDefaultVariables(expression)).isEqualTo(result);
   }
 
-  @Ignore("DROOLS-6572 - Unable to parse **")
+  @Disabled("DROOLS-6572 - Unable to parse **")
   @Test
   public void testMath22b() {
     String expression = "a = 100; b = 50; c = 70; d = 30; e = 20; f = 9; g = 3; (a-b)*c-d*(e-f)**g";
@@ -242,7 +242,7 @@ public class ArithmeticTest {
     assertThat(executeExpression(expression, Collections.emptyMap())).isEqualTo(result);
   }
 
-  @Ignore("DROOLS-6572 - Unable to parse **")
+  @Disabled("DROOLS-6572 - Unable to parse **")
   @Test
   public void testMath23() {
     String expression = "10 ** (3)*10**3";
@@ -251,7 +251,7 @@ public class ArithmeticTest {
     assertThat(executeExpressionWithDefaultVariables(expression)).isEqualTo(result);
   }
 
-  @Ignore("DROOLS-6572 - Rounding error")
+  @Disabled("DROOLS-6572 - Rounding error")
   @Test
   public void testMath24() {
     String expression = "51 * 52 * 33 / 24 / 15 + 45 * 66 * 47 * 28 + 19";
@@ -260,7 +260,7 @@ public class ArithmeticTest {
     assertThat(executeExpressionWithDefaultVariables(expression)).isEqualTo(result);
   }
 
-  @Ignore("DROOLS-6572 - Calculation error")
+  @Disabled("DROOLS-6572 - Calculation error")
   @Test
   public void testMath25() {
     String expression = "51 * (40 - 1000 * 50) + 100 + 50 * 20 / 10 + 11 + 12 - 80";
@@ -269,7 +269,7 @@ public class ArithmeticTest {
     assertThat(executeExpressionWithDefaultVariables(expression)).isEqualTo(result);
   }
 
-  @Ignore("DROOLS-6572 - Unable to parse **")
+  @Disabled("DROOLS-6572 - Unable to parse **")
   @Test
   public void testMath26() {
     String expression = "5 + 3 * 8 * 2 ** 2";
@@ -278,7 +278,7 @@ public class ArithmeticTest {
     assertThat(executeExpressionWithDefaultVariables(expression)).isEqualTo(result);
   }
 
-  @Ignore("DROOLS-6572 - Unable to parse **")
+  @Disabled("DROOLS-6572 - Unable to parse **")
   @Test
   public void testMath27() {
     String expression = "50 + 30 * 80 * 20 ** 3 * 51";
@@ -287,7 +287,7 @@ public class ArithmeticTest {
     assertThat(executeExpressionWithDefaultVariables(expression)).isEqualTo((int) result);
   }
 
-  @Ignore("DROOLS-6572 - Unable to parse **")
+  @Disabled("DROOLS-6572 - Unable to parse **")
   @Test
   public void testMath28() {
     String expression = "50 + 30 + 80 + 11 ** 2 ** 2 * 51";
@@ -296,7 +296,7 @@ public class ArithmeticTest {
     assertThat(executeExpressionWithDefaultVariables(expression)).isEqualTo((int) result);
   }
 
-  @Ignore("DROOLS-6572 - Rounding error")
+  @Disabled("DROOLS-6572 - Rounding error")
   @Test
   public void testMath29() {
     String expression = "10 + 20 / 4 / 4";
@@ -305,7 +305,7 @@ public class ArithmeticTest {
     assertThat(executeExpressionWithDefaultVariables(expression)).isEqualTo(result);
   }
 
-  @Ignore("DROOLS-6572 - Rounding error")
+  @Disabled("DROOLS-6572 - Rounding error")
   @Test
   public void testMath30() {
     String expression = "40 / 20 + 10 + 60 / 21";
@@ -314,7 +314,7 @@ public class ArithmeticTest {
     assertThat(executeExpressionWithDefaultVariables(expression)).isEqualTo(result);
   }
 
-  @Ignore("DROOLS-6572 - Unable to parse **")
+  @Disabled("DROOLS-6572 - Unable to parse **")
   @Test
   public void testMath31() {
     String expression = "40 / 20 + 5 - 4 + 8 / 2 * 2 * 6 ** 2 + 6 - 8";
@@ -323,7 +323,7 @@ public class ArithmeticTest {
     assertThat(executeExpressionWithDefaultVariables(expression)).isEqualTo(result);
   }
 
-  @Ignore("DROOLS-6572 - Rounding error")
+  @Disabled("DROOLS-6572 - Rounding error")
   @Test
   public void testMath34() {
     String expression = "a+b-c*d*x/y-z+10";
@@ -341,7 +341,7 @@ public class ArithmeticTest {
     assertThat(executeExpression(expression, map)).isEqualTo(result);
   }
 
-  @Ignore("DROOLS-6572 - Rounding error")
+  @Disabled("DROOLS-6572 - Rounding error")
   @Test
   public void testMath34_Interpreted() {
     String expression = "a+b-c*x/y-z";
@@ -358,7 +358,7 @@ public class ArithmeticTest {
     assertThat(executeExpression(expression, map)).isEqualTo(result);
   }
 
-  @Ignore("DROOLS-6572 - Rounding error")
+  @Disabled("DROOLS-6572 - Rounding error")
   @Test
   public void testMath35() {
     String expression = "b/x/b/b*y+a";
@@ -376,7 +376,7 @@ public class ArithmeticTest {
   }
 
 
-  @Ignore("DROOLS-6572 - Rounding error")
+  @Disabled("DROOLS-6572 - Rounding error")
   @Test
   public void testMath35_Interpreted() {
     String expression = "b/x/b/b*y+a";
@@ -393,7 +393,7 @@ public class ArithmeticTest {
     assertThat(executeExpression(expression, map)).isEqualTo(result);
   }
 
-  @Ignore("DROOLS-6572 - Rounding error")
+  @Disabled("DROOLS-6572 - Rounding error")
   @Test
   public void testMath36() {
     String expression = "b/x*z/a+x-b+x-b/z+y";
@@ -410,7 +410,7 @@ public class ArithmeticTest {
     assertThat(executeExpression(expression, map)).isEqualTo(result);
   }
 
-  @Ignore("DROOLS-6572 - Rounding error")
+  @Disabled("DROOLS-6572 - Rounding error")
   @Test
   public void testMath37() {
     String expression = "x+a*a*c/x*b*z+x/y-b";
@@ -427,7 +427,7 @@ public class ArithmeticTest {
     assertThat(executeExpression(expression, map)).isEqualTo(result);
   }
 
-  @Ignore("DROOLS-6572 - Rounding error")
+  @Disabled("DROOLS-6572 - Rounding error")
   @Test
   public void testMath38() {
     String expression = "100 + 200 - 300 + 400 - 500 + 105 / 205 - 405 + 305 * 206";
@@ -436,7 +436,7 @@ public class ArithmeticTest {
     assertThat(executeExpressionWithDefaultVariables(expression)).isEqualTo(result);
   }
 
-  @Ignore("DROOLS-6572 - Rounding error")
+  @Disabled("DROOLS-6572 - Rounding error")
   @Test
   public void testMath39() {
     String expression = "147 + 60 / 167 % 448 + 36 * 23 / 166";
@@ -445,7 +445,7 @@ public class ArithmeticTest {
     assertThat(executeExpressionWithDefaultVariables(expression)).isEqualTo(result);
   }
 
-  @Ignore("DROOLS-6572 - Rounding error")
+  @Disabled("DROOLS-6572 - Rounding error")
   @Test
   public void testMath40() {
     String expression = "228 - 338 % 375 - 103 + 260 + 412 * 177 + 121";
@@ -507,21 +507,21 @@ public class ArithmeticTest {
     assertThat(executeExpression(expression, vars)).isEqualTo(result);
   }
 
-  @Ignore("DROOLS-6572 - Unable to parse")
+  @Disabled("DROOLS-6572 - Unable to parse")
   @Test
   public void testOperatorPrecedence() {
     String expression = "_x_001 = 500.2; _x_002 = 200.8; _r_001 = 701; _r_001 == _x_001 + _x_002 || _x_001 == 500 + 0.1";
     assertThat(executeExpressionWithDefaultVariables(expression)).isEqualTo(true);
   }
 
-  @Ignore("DROOLS-6572 - Unable to parse")
+  @Disabled("DROOLS-6572 - Unable to parse")
   @Test
   public void testOperatorPrecedence2() {
     String expression = "_x_001 = 500.2; _x_002 = 200.8; _r_001 = 701; _r_001 == _x_001 + _x_002 && _x_001 == 500 + 0.2";
     assertThat(executeExpressionWithDefaultVariables(expression)).isEqualTo(true);
   }
 
-  @Ignore("DROOLS-6572 - Unable to parse")
+  @Disabled("DROOLS-6572 - Unable to parse")
   @Test
   public void testOperatorPrecedence3() {
     String expression = "_x_001 = 500.2; _x_002 = 200.9; _r_001 = 701; _r_001 == _x_001 + _x_002 && _x_001 == 500 + 0.2";
@@ -529,7 +529,7 @@ public class ArithmeticTest {
     assertThat(executeExpressionWithDefaultVariables(expression)).isEqualTo(false);
   }
 
-  @Ignore("DROOLS-6572 - Unable to parse")
+  @Disabled("DROOLS-6572 - Unable to parse")
   @Test
   public void testOperatorPrecedence4() {
     String expression = "_x_001 = 500.2; _x_002 = 200.9; _r_001 = 701; _r_001 == _x_001 + _x_002 || _x_001 == 500 + 0.2";
@@ -558,13 +558,13 @@ public class ArithmeticTest {
     assertThat(executeExpressionWithDefaultVariables("2|4")).isEqualTo(6);
   }
 
-  @Ignore("DROOLS-6572 - Considers second element a boolean")
+  @Disabled("DROOLS-6572 - Considers second element a boolean")
   @Test
   public void testBitwiseOr2() {
     assertThat(executeExpressionWithDefaultVariables("(2 | 1) > 0")).isEqualTo(true);
   }
 
-  @Ignore("DROOLS-6572 - Considers second element a boolean")
+  @Disabled("DROOLS-6572 - Considers second element a boolean")
   @Test
   public void testBitwiseOr3() {
     assertThat(executeExpressionWithDefaultVariables("(2|1) == 3")).isEqualTo(true);
@@ -595,7 +595,7 @@ public class ArithmeticTest {
     assertThat(executeExpressionWithDefaultVariables("five << 1")).isEqualTo(5 << 1);
   }
 
-  @Ignore("DROOLS-6572 - Generates wrong code - unable to parse <<<")
+  @Disabled("DROOLS-6572 - Generates wrong code - unable to parse <<<")
   @Test
   public void testUnsignedShiftLeft() {
     assertThat(executeExpressionWithDefaultVariables("-2 <<< 0")).isEqualTo(2);
@@ -631,7 +631,7 @@ public class ArithmeticTest {
     assertThat(executeExpressionWithDefaultVariables("_yYy = 10; _yYy <<= 2")).isEqualTo(10 << 2);
   }
 
-  @Ignore("DROOLS-6572 - Unable to parse")
+  @Disabled("DROOLS-6572 - Unable to parse")
   @Test
   public void testUnsignedShiftRightAssign() {
     String expression = "_xXx = -5; _xXx >>>= 2";
@@ -669,7 +669,7 @@ public class ArithmeticTest {
     assertThat(executeExpressionWithDefaultVariables("foo.countTest+ 10")).isEqualTo(10);
   }
 
-  @Ignore("DROOLS-6572 - Generates wrong code")
+  @Disabled("DROOLS-6572 - Generates wrong code")
   @Test
   public void testDeepAssignmentIncrement() {
     String expression = "foo.countTest += 5; if (foo.countTest == 5) { foo.countTest = 0; return true; }" +
@@ -681,7 +681,7 @@ public class ArithmeticTest {
               " else { foo.countTest = 0; return false; }")).isEqualTo(true);
   }
 
-  @Ignore("DROOLS-6572 - Generates wrong code - check for statements")
+  @Disabled("DROOLS-6572 - Generates wrong code - check for statements")
   @Test
   public void testDeepAssignmentWithBlock() {
     String expression = "with (foo) { countTest += 5 }; if (foo.countTest == 5) { foo.countTest = 0; return true; }" +
@@ -723,19 +723,19 @@ public class ArithmeticTest {
     assertThat(executeExpressionWithDefaultVariables("int val = -5; val >>>= 2; val")).isEqualTo(val >>>= 2);
   }
 
-  @Ignore("DROOLS-6572 - Unable to parse")
+  @Disabled("DROOLS-6572 - Unable to parse")
   @Test
   public void testAssignPlus() {
     assertThat(executeExpressionWithDefaultVariables("xx0 = 5; xx0 += 4; xx0 + 1")).isEqualTo(10);
   }
 
-  @Ignore("DROOLS-6572 - Unable to parse")
+  @Disabled("DROOLS-6572 - Unable to parse")
   @Test
   public void testAssignPlus2() {
     assertThat(executeExpressionWithDefaultVariables("xx0 = 5; xx0 =+ 4; xx0 + 1")).isEqualTo(10);
   }
 
-  @Ignore("DROOLS-6572 - Rounding error")
+  @Disabled("DROOLS-6572 - Rounding error")
   @Test
   public void testAssignDiv() {
     assertThat(executeExpressionWithDefaultVariables("xx0 = 20; xx0 /= 10; xx0")).isEqualTo(2.0);
@@ -750,7 +750,7 @@ public class ArithmeticTest {
     assertThat(executeExpressionWithDefaultVariables("xx0 = 15; xx0 -= 4; xx0")).isEqualTo(11);
   }
 
-  @Ignore("DROOLS-6572 - Calculation error")
+  @Disabled("DROOLS-6572 - Calculation error")
   @Test
   public void testAssignSub2() {
     assertThat(executeExpressionWithDefaultVariables("xx0 = 5; xx0 =- 100")).isEqualTo(-95);
@@ -762,7 +762,7 @@ public class ArithmeticTest {
   }
 
   
-  @Ignore("DROOLS-6572 - Unable to parse")
+  @Disabled("DROOLS-6572 - Unable to parse")
   @Test
   public void testStringAppend() {
     String expression = "c + 'bar'";
@@ -784,7 +784,7 @@ public class ArithmeticTest {
   }
 
   
-  @Ignore("DROOLS-6572 - Rounding error")
+  @Disabled("DROOLS-6572 - Rounding error")
   @Test
   public void testJIRA158() {
     String expression = "(float) (4/2 + Math.sin(1))";
@@ -822,7 +822,7 @@ public class ArithmeticTest {
     assertThat(executeExpression(expression, vars)).isEqualTo(result);
   }
 
-  @Ignore("DROOLS-6572 - Wrong value calculated")
+  @Disabled("DROOLS-6572 - Wrong value calculated")
   @Test
   public void testJIRA164() {
     String expression = "1 / (var1 + var1) * var1";
@@ -837,7 +837,7 @@ public class ArithmeticTest {
 
   }
 
-  @Ignore("DROOLS-6572 - Wrong value calculated")
+  @Disabled("DROOLS-6572 - Wrong value calculated")
   @Test
   public void testJIRA164b() {
     String expression = "1 + 1 / (var1 + var1) * var1";
@@ -850,7 +850,7 @@ public class ArithmeticTest {
     assertThat(executeExpression(expression, vars)).isEqualTo(result);
   }
 
-  @Ignore("DROOLS-6572 - Wrong value calculated")
+  @Disabled("DROOLS-6572 - Wrong value calculated")
   @Test
   public void testJIRA164c() {
 	double var1 = 1d;
@@ -864,7 +864,7 @@ public class ArithmeticTest {
     assertThat(executeExpression(expression, vars)).isEqualTo(result);
   }
 
-  @Ignore("DROOLS-6572 - Wrong value calculated")
+  @Disabled("DROOLS-6572 - Wrong value calculated")
   @Test
   public void testJIRA164d() {
 	double var1 = 1d;
@@ -877,7 +877,7 @@ public class ArithmeticTest {
     assertThat(executeExpression(expression, vars)).isEqualTo(result);
   }
 
-  @Ignore("DROOLS-6572 - Wrong value calculated")
+  @Disabled("DROOLS-6572 - Wrong value calculated")
   @Test
   public void testJIRA164e() {
     String expression = "10 + 11 + 12 / (var1 + var1 + 51 + 71) * var1 + 13 + 14";
@@ -889,7 +889,7 @@ public class ArithmeticTest {
     assertThat(((Double) executeExpression(expression, vars)).floatValue()).isCloseTo((float) (10 + 11 + 12 / (var1 + var1 + 51 + 71) * var1 + 13 + 14), within(0.01f));
   }
 
-  @Ignore("DROOLS-6572 - Wrong value calculated")
+  @Disabled("DROOLS-6572 - Wrong value calculated")
   @Test
   public void testJIRA164f() {
     String expression = "10 + 11 + 12 / (var1 + 1 + var1 + 51 + 71) * var1 + 13 + 14";
@@ -995,7 +995,7 @@ public class ArithmeticTest {
     }
   }
 
-  @Ignore("DROOLS-6572 - Generates wrong code - missing symbol")
+  @Disabled("DROOLS-6572 - Generates wrong code - missing symbol")
   @Test
   public void testMathDec30() {
     Map<String, Object> params = new HashMap<>();
@@ -1027,7 +1027,7 @@ public class ArithmeticTest {
     assertThat(executeExpression("x - y - z", map)).isEqualTo(20 - 10 - 5);
   }
 
-  @Ignore("DROOLS-6572 - Too many iterations - why")
+  @Disabled("DROOLS-6572 - Too many iterations - why")
   @Test
   public void testModExpr() {
     String str = "$y % 4 == 0 && $y % 100 != 0 || $y % 400 == 0 ";
@@ -1054,7 +1054,7 @@ public class ArithmeticTest {
     assertThat(result).isTrue();
   }
 
-  @Ignore("DROOLS-6572 - Wrong result")
+  @Disabled("DROOLS-6572 - Wrong result")
   @Test
   public void testMathCeil() {
     String expression = "Math.ceil( x/3 ) == 2";
@@ -1065,7 +1065,7 @@ public class ArithmeticTest {
     assertThat(result).isTrue();
   }
   
-  @Ignore("DROOLS-6572 - Generates wrong code")
+  @Disabled("DROOLS-6572 - Generates wrong code")
   @Test
   public void testStaticMathCeil() {      
     int x = 4;
@@ -1078,7 +1078,7 @@ public class ArithmeticTest {
     assertThat(executeExpression(expression, vars)).isEqualTo(Integer.valueOf(2));
   }  
 
-  @Ignore("DROOLS-6572 - Calculates wrong result")
+  @Disabled("DROOLS-6572 - Calculates wrong result")
   @Test
   public void testStaticMathCeilWithJavaClassStyleLiterals() {            
 	String expression = "java.lang.Math.ceil( x/3 )";

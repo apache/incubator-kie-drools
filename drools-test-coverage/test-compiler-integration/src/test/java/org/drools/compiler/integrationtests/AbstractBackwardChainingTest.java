@@ -24,7 +24,9 @@ import java.util.List;
 import org.drools.testcoverage.common.model.Person;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.junit.Test;
+import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
@@ -32,14 +34,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public abstract class AbstractBackwardChainingTest {
 
-    protected final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public AbstractBackwardChainingTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
-    }
-
-    @Test(timeout = 10000)
-    public void testQueryPositional() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testQueryPositional(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String drl = getQueryHeader();
 
         drl += "rule x1\n" +
@@ -81,11 +79,13 @@ public abstract class AbstractBackwardChainingTest {
                 "   list.add( $name1 + \" : \" + $age1 );\n" +
                 "end \n";
 
-        testQuery(drl);
+        testQuery(kieBaseTestConfiguration, drl);
     }
 
-    @Test(timeout = 10000)
-    public void testQueryNamed() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testQueryNamed(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String drl = getQueryHeader();
 
         drl += "rule x1\n" +
@@ -127,11 +127,13 @@ public abstract class AbstractBackwardChainingTest {
                 "   list.add( $name1 + \" : \" + $age1 );\n" +
                 "end \n";
 
-        testQuery(drl);
+        testQuery(kieBaseTestConfiguration, drl);
     }
 
-    @Test(timeout = 10000)
-    public void testQueryMixed() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testQueryMixed(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String drl = getQueryHeader();
 
         drl += "rule x1\n" +
@@ -173,10 +175,10 @@ public abstract class AbstractBackwardChainingTest {
                 "   list.add( $name1 + \" : \" + $age1 );\n" +
                 "end \n";
 
-        testQuery(drl);
+        testQuery(kieBaseTestConfiguration, drl);
     }
 
-    private void testQuery(final String drl) {
+    private void testQuery(KieBaseTestConfiguration kieBaseTestConfiguration, final String drl) {
         final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("backward-chaining-test", kieBaseTestConfiguration, drl);
         final KieSession ksession = kbase.newKieSession();
         try {

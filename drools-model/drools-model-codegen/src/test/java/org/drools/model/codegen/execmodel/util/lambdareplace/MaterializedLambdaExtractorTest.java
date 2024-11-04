@@ -20,7 +20,7 @@ package org.drools.model.codegen.execmodel.util.lambdareplace;
 
 import java.util.ArrayList;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.drools.model.codegen.execmodel.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.model.codegen.execmodel.util.lambdareplace.MaterializedLambdaTestUtils.verifyCreatedClass;

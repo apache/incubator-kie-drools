@@ -22,14 +22,15 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kie.builder.impl.KieBuilderImpl;
 import org.drools.model.Model;
 import org.drools.model.codegen.execmodel.domain.Person;
 import org.drools.modelcompiler.KieBaseBuilder;
-import org.junit.Test;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
@@ -46,17 +47,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class KieBaseBuilderTest extends BaseModelTest {
 
     // Only exec-model test
-    @Parameters(name = "{0}")
-    public static Object[] params() {
-        return new Object[]{RUN_TYPE.PATTERN_DSL};
+    public static Stream<RUN_TYPE> parameters() {
+        return Stream.of(RUN_TYPE.PATTERN_DSL);
     }
 
-    public KieBaseBuilderTest(RUN_TYPE testRunType) {
-        super(testRunType);
-    }
-
-    @Test
-    public void createKieBaseWithKnowledgeBuilderConfiguration() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void createKieBaseWithKnowledgeBuilderConfiguration(RUN_TYPE runType) {
         // DROOLS-7239
         final String str =
                 "import " + Person.class.getCanonicalName() + ";\n" +
@@ -73,7 +70,7 @@ public class KieBaseBuilderTest extends BaseModelTest {
         ReleaseId releaseId = ks.newReleaseId("org.kie", "kjar-test-" + UUID.randomUUID(), "1.0");
         KieModuleModel model = ks.newKieModuleModel();
         model.setConfigurationProperty(option.getPropertyName(), option.name());
-        KieBuilder kieBuilder = createKieBuilder(ks, model, releaseId, toKieFiles(new String[]{str}));
+        KieBuilder kieBuilder = createKieBuilder(runType, ks, model, releaseId, toKieFiles(new String[]{str}));
 
         // 2nd round: Create a kbase with generated classes and PropertySpecificOption.DISABLED
         KnowledgeBuilderConfiguration knowledgeBuilderConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
