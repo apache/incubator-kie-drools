@@ -317,7 +317,7 @@ public class JBRULESTest {
         // An internal specific test case so not enhanced for executable-model
         final MapBackedClassLoader loader = new MapBackedClassLoader( this.getClass().getClassLoader() );
 
-        final JarInputStream jis = new JarInputStream( this.getClass().getResourceAsStream( "/primespoc.jar" ) );
+        final JarInputStream jis = new JarInputStream( this.getClass().getResourceAsStream( "/test-compiler-integration-jars-setter-overload.jar" ) );
 
         JarEntry entry;
         final byte[] buf = new byte[1024];
@@ -341,7 +341,7 @@ public class JBRULESTest {
         final KnowledgeBuilderConfiguration conf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration(null, loader);
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(conf);
 
-        final String header = "import fr.gouv.agriculture.dag.agorha.business.primes.SousPeriodePrimeAgent\n";
+        final String header = "import org.drools.compiler.integrationtests.setter.overload.SetterOverload\n";
 
         kbuilder.add(ResourceFactory.newByteArrayResource(header.getBytes()), ResourceType.DRL);
         assertThat(kbuilder.hasErrors()).isFalse();
@@ -349,14 +349,14 @@ public class JBRULESTest {
         final String passingRule = "rule \"rule1\"\n"
                 + "dialect \"mvel\"\n"
                 + "when\n"
-                + "SousPeriodePrimeAgent( echelle == \"abc\" )"
+                + "SetterOverload( echelle == \"abc\" )"
                 + "then\n"
                 + "end\n";
 
         final String failingRule = "rule \"rule2\"\n"
                 + "dialect \"mvel\"\n"
                 + "when\n"
-                + "SousPeriodePrimeAgent( quotiteRemuneration == 123 , echelle == \"abc\" )"
+                + "SetterOverload( quotiteRemuneration == 123 , echelle == \"abc\" )"
                 + "then\n"
                 + "end\n";
 

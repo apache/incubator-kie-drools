@@ -39,6 +39,16 @@
     <surefire.forkCount>2</surefire.forkCount>
   </properties>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.drools.testcoverage</groupId>
+        <artifactId>test-compiler-integration-jars-setter-overload</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
     <dependency>
       <groupId>org.drools</groupId>
@@ -93,6 +103,12 @@
       <groupId>org.drools.testcoverage</groupId>
       <artifactId>drools-test-suite</artifactId>
       <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.drools.testcoverage</groupId>
+      <artifactId>test-compiler-integration-jars-setter-overload</artifactId>
       <scope>test</scope>
     </dependency>
 

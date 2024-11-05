@@ -19,33 +19,22 @@
     under the License.
 
 -->
+
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
-  <modelVersion>4.0.0</modelVersion>
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
-    <groupId>org.kie</groupId>
-    <artifactId>drools-build-parent</artifactId>
+    <artifactId>drools-test-coverage-parent</artifactId>
+    <groupId>org.drools.testcoverage</groupId>
     <version>999-SNAPSHOT</version>
-    <relativePath>../build-parent/pom.xml</relativePath>
   </parent>
+  <modelVersion>4.0.0</modelVersion>
 
-  <groupId>org.drools.testcoverage</groupId>
-  <artifactId>drools-test-coverage-parent</artifactId>
+  <artifactId>test-compiler-integration-jars</artifactId>
   <packaging>pom</packaging>
-
-  <name>Drools :: Test Coverage</name>
+  <name>Drools :: Test Coverage :: Jars for Compiler integration tests</name>
 
   <modules>
-    <module>standalone</module>
-    <module>test-suite</module>
-    <module>test-compiler-integration-jars</module>
-    <module>test-compiler-integration</module>
-    <module>test-integration-nomvel</module>
-    <module>test-integration-notms</module>
-    <module>test-integration-noxml</module>
-    <module>test-integration-ruleunits</module>
+    <module>test-compiler-integration-jars-setter-overload</module>
   </modules>
-
 </project>
