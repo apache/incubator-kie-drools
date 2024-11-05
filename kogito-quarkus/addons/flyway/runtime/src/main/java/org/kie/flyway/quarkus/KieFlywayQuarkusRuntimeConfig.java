@@ -35,7 +35,7 @@ public class KieFlywayQuarkusRuntimeConfig implements KieFlywayConfiguration<Kie
     /**
      * Enables the execution of the Flyway initializer during the application startup
      */
-    @ConfigItem(name = "enabled", defaultValue = "true")
+    @ConfigItem(name = "enabled", defaultValue = "false")
     boolean enabled;
 
     /**
