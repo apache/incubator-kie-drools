@@ -29,6 +29,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.mvel.accessors.ClassFieldReader;
@@ -36,8 +37,6 @@ import org.drools.base.base.ClassObjectType;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
-import org.drools.mvel.compiler.PersonHolder;
-import org.drools.mvel.integrationtests.facts.FactWithList;
 import org.drools.util.DateUtils;
 import org.drools.mvel.MVELConstraint;
 import org.drools.mvel.compiler.Address;
@@ -51,10 +50,9 @@ import org.drools.mvel.extractors.MVELObjectClassFieldReader;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.Message;
@@ -67,23 +65,16 @@ import org.mvel2.ParserContext;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
-@RunWith(Parameterized.class)
 public class MVELTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public MVELTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        // TODO: EM failed with some tests. File JIRAs
+        return TestParametersUtil2.getKieBaseCloudConfigurations(false).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-     // TODO: EM failed with some tests. File JIRAs
-        return TestParametersUtil.getKieBaseCloudConfigurations(false);
-    }
-
-    @Test
-    public void testHelloWorld() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testHelloWorld(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // read in the source
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_mvel.drl");
         final KieSession ksession = kbase.newKieSession();
@@ -107,8 +98,9 @@ public class MVELTest {
         assertThat(c.getUsedBy()).isEqualTo(dt);
     }
 
-    @Test
-    public void testIncrementOperator() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testIncrementOperator(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str = "";
         str += "package org.kie \n";
         str += "global java.util.List list \n";
@@ -134,8 +126,9 @@ public class MVELTest {
         assertThat(list.get(0)).isEqualTo(10);
     }
 
-    @Test
-    public void testEvalWithBigDecimal() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testEvalWithBigDecimal(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str = "";
         str += "package org.kie \n";
         str += "import java.math.BigDecimal; \n";
@@ -161,8 +154,9 @@ public class MVELTest {
         assertThat(list.get(0)).isEqualTo(new BigDecimal(1.5));
     }
 
-    @Test
-    public void testLocalVariableMVELConsequence() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testLocalVariableMVELConsequence(KieBaseTestConfiguration kieBaseTestConfiguration) {
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_LocalVariableMVELConsequence.drl");
         final KieSession ksession = kbase.newKieSession();
 
@@ -182,8 +176,9 @@ public class MVELTest {
 
     }
 
-    @Test
-    public void testMVELUsingGlobalsInDebugMode() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testMVELUsingGlobalsInDebugMode(KieBaseTestConfiguration kieBaseTestConfiguration) {
         MVELDebugHandler.setDebugMode(true);
         try {
             KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_MVELGlobalDebug.drl");
@@ -199,15 +194,17 @@ public class MVELTest {
 
     }
 
-    @Test
-    public void testDuplicateLocalVariableMVELConsequence() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testDuplicateLocalVariableMVELConsequence(KieBaseTestConfiguration kieBaseTestConfiguration) {
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromClasspathResources(kieBaseTestConfiguration, getClass(), false, "test_DuplicateLocalVariableMVELConsequence.drl");
         List<org.kie.api.builder.Message> errors = kieBuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR);
         assertThat(errors.isEmpty()).as("Should have an error").isFalse();
     }
 
-    @Test
-    public void testArrays() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testArrays(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String text = "package test_mvel;\n";
         text += "import " + TestObject.class.getCanonicalName() + ";\n";
         text += "import function " + TestObject.class.getCanonicalName() + ".array;\n";
@@ -238,8 +235,9 @@ public class MVELTest {
                 "TestObject.applyValueAddPromo: 1|2|3|4|java"))).isTrue();
     }
     
-    @Test
-    public void testPackageImports() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testPackageImports(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str = "";
         str += "package org.kie \n";
         str += "dialect \"mvel\"\n";
@@ -263,8 +261,9 @@ public class MVELTest {
         assertThat(insertedObjects.size()).isEqualTo(3);
     }
     
-    @Test
-    public void testSizeCheckInObject() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testSizeCheckInObject(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String str = ""+
         "package org.drools.mvel.compiler.test \n" +
         "import " + Triangle.class.getCanonicalName() + "\n" +
@@ -282,8 +281,9 @@ public class MVELTest {
     }
     
     
-    @Test
-    public void testNestedEnum() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testNestedEnum(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String str = ""+
            "package org.drools.mvel.compiler.test \n" +
            "import " + Triangle.class.getCanonicalName() + "\n" +
@@ -305,8 +305,9 @@ public class MVELTest {
         assertThat(list.get(0)).isEqualTo(Triangle.Type.ACUTE);
     }
     
-    @Test
-    public void testNestedEnumWithMap() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testNestedEnumWithMap(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String str = ""+
            "package org.drools.mvel.compiler.test \n" +
            "import " + DMap.class.getCanonicalName() + " \n" +
@@ -332,8 +333,9 @@ public class MVELTest {
         assertThat(list.get(0)).isEqualTo("r1");
     } 
     
-    @Test
-    public void testNewConstructor() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testNewConstructor(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String str = ""+
            "package org.drools.mvel.compiler.test \n" +
            "import " + Person.class.getCanonicalName() + "\n" +
@@ -376,8 +378,9 @@ public class MVELTest {
         }
     }         
     
-    @Test
-    public void testArrayAccessorWithGenerics() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testArrayAccessorWithGenerics(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String str = ""+
            "package org.drools.mvel.compiler.test \n" +
            "import " + Person.class.getCanonicalName() + "\n" +
@@ -427,8 +430,9 @@ public class MVELTest {
         }
     }    
     
-    @Test
-    public void testArrayAccessorWithStaticFieldAccess() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testArrayAccessorWithStaticFieldAccess(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String str = ""+
            "package org.drools.mvel.compiler.test \n" +
            "import " + Person.class.getCanonicalName() + "\n" +
@@ -478,8 +482,9 @@ public class MVELTest {
         }
     }       
     
-    @Test
-    public void testMapAccessorWithStaticFieldAccess() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testMapAccessorWithStaticFieldAccess(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String str = ""+
            "package org.drools.mvel.compiler.test \n" +
            "import " + Person.class.getCanonicalName() + "\n" +
@@ -532,8 +537,9 @@ public class MVELTest {
         }
     }     
     
-    @Test
-    public void testArrayAccessorWithoutGenerics() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testArrayAccessorWithoutGenerics(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String str = ""+
            "package org.drools.mvel.compiler.test \n" +
            "import " + Person.class.getCanonicalName() + "\n" +
@@ -595,8 +601,9 @@ public class MVELTest {
                                        new HashMap() );
     }
 
-    @Test
-    public void test1() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void test1(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final ParserContext pc = new ParserContext();
         pc.addInput("x", String.class);
         pc.setStrongTyping(true);
@@ -607,8 +614,9 @@ public class MVELTest {
         System.out.println(o);
     }
 
-    @Test
-    public void testTokensInString(){
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testTokensInString(KieBaseTestConfiguration kieBaseTestConfiguration) {
         //should query antldr DFA63 class but don't know how
         final String [] operators = {"," ,"=" , "|=", "*"};
         //test various in consequence
@@ -632,8 +640,9 @@ public class MVELTest {
         }
     }
 
-    @Test
-    public void testGeneratedBeansMVEL() throws IllegalAccessException, InstantiationException {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testGeneratedBeansMVEL(KieBaseTestConfiguration kieBaseTestConfiguration) throws IllegalAccessException, InstantiationException {
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_GeneratedBeansMVEL.drl");
 
         // Retrieve the generated fact type
@@ -651,8 +660,9 @@ public class MVELTest {
         ksession.fireAllRules();
     }
 
-    @Test
-    public void testMVELClassReferences() throws InstantiationException, IllegalAccessException {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testMVELClassReferences(KieBaseTestConfiguration kieBaseTestConfiguration) throws InstantiationException, IllegalAccessException {
         final String str = "package org.drools.compiler\n" +
                 "declare Assignment\n" +
                 "    source : Class\n" +
@@ -685,8 +695,9 @@ public class MVELTest {
         assertThat(rules).isEqualTo(2);
     }
 
-    @Test
-    public void testMVELConstraintsWithFloatingPointNumbersInScientificNotation() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testMVELConstraintsWithFloatingPointNumbersInScientificNotation(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String rule = "package test; \n" +
                 "dialect \"mvel\"\n" +
                 "global java.util.List list;" +
@@ -719,8 +730,9 @@ public class MVELTest {
         assertThat(list.size()).isEqualTo(1);
     }
 
-    @Test
-    public void testMvelDoubleInvocation() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testMvelDoubleInvocation(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String rule = "package org.drools.compiler\n" +
                 "import " + TestUtility.class.getCanonicalName() + ";\n" +
                 "import " + TestFact.class.getCanonicalName() + ";\n" +
@@ -798,8 +810,9 @@ public class MVELTest {
         }
     }
 
-    @Test
-    public void testMVELSoundex() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testMVELSoundex(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         // read in the source
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "MVEL_soundex.drl");
         KieSession ksession = kbase.newKieSession();
@@ -813,8 +826,9 @@ public class MVELTest {
         assertThat(c.getPrice()).isEqualTo(42);
     }
 
-    @Test
-    public void testMVELSoundexNoCharParam() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testMVELSoundexNoCharParam(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         // read in the source
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "MVEL_soundexNPE2500.drl");
         KieSession ksession = kbase.newKieSession();
@@ -834,8 +848,9 @@ public class MVELTest {
         assertThat(starCheese.getPrice()).isEqualTo(2);
     }
 
-    @Test
-    public void testMVELRewrite() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testMVELRewrite(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         // read in the source
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_MVELrewrite.drl");
         KieSession ksession = kbase.newKieSession();
@@ -857,8 +872,9 @@ public class MVELTest {
         assertThat(results.get(0)).isEqualTo(cheesery);
     }
 
-    @Test
-    public void testMVELTypeCoercion() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testMVELTypeCoercion(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String str = "package org.drools.mvel.compiler.test; \n" +
                 "\n" +
                 "global java.util.List list;" +
@@ -883,7 +899,7 @@ public class MVELTest {
                 "  list.add( \"OK\" ); \n" +
                 "end";
 
-        KieBaseTestConfiguration equalityConfig = TestParametersUtil.getEqualityInstanceOf(kieBaseTestConfiguration);
+        KieBaseTestConfiguration equalityConfig = TestParametersUtil2.getEqualityInstanceOf(kieBaseTestConfiguration);
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", equalityConfig, str);
         KieSession ksession = kbase.newKieSession();
 
@@ -896,8 +912,9 @@ public class MVELTest {
         ksession.dispose();
     }
 
-    @Test
-    public void testNoMvelSyntaxInFunctions() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testNoMvelSyntaxInFunctions(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // JBRULES-3433
         final String str = "import java.util.*;\n" +
                 "dialect \"mvel\"\n" +
@@ -912,8 +929,9 @@ public class MVELTest {
         assertThat(errors.isEmpty()).as("Should have an error").isFalse();
     }
 
-    @Test
-    public void testModifyObjectWithMutableHashCodeInEqualityMode() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testModifyObjectWithMutableHashCodeInEqualityMode(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-2828
         String str = "package com.sample\n" +
                 "import " + Human.class.getCanonicalName() + ";\n" +
@@ -928,7 +946,7 @@ public class MVELTest {
                 "    }\n" +
                 "end";
 
-        KieBaseTestConfiguration equalityConfig = TestParametersUtil.getEqualityInstanceOf(kieBaseTestConfiguration);
+        KieBaseTestConfiguration equalityConfig = TestParametersUtil2.getEqualityInstanceOf(kieBaseTestConfiguration);
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", equalityConfig, str);
         KieSession ksession = kbase.newKieSession();
         Human h = new Human(2);
@@ -937,8 +955,9 @@ public class MVELTest {
         assertThat(h.getAge()).isEqualTo(10);
     }
 
-    @Test
-    public void testModifyObjectWithMutableHashCodeInEqualityMode2() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testModifyObjectWithMutableHashCodeInEqualityMode2(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-2828
         String str = "package com.sample\n" +
                 "import " + Human.class.getCanonicalName() + ";\n" +
@@ -954,7 +973,7 @@ public class MVELTest {
                 "    }\n" +
                 "end";
 
-        KieBaseTestConfiguration equalityConfig = TestParametersUtil.getEqualityInstanceOf(kieBaseTestConfiguration);
+        KieBaseTestConfiguration equalityConfig = TestParametersUtil2.getEqualityInstanceOf(kieBaseTestConfiguration);
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", equalityConfig, str);
         KieSession ksession = kbase.newKieSession();
         Human h = new Human(2);
@@ -999,8 +1018,9 @@ public class MVELTest {
         }
     }
 
-    @Test
-    public void test2ndDashInMvelConsequnence() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void test2ndDashInMvelConsequnence(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-3678
         String str = "package com.sample\n" +
                 "import " + Fact.class.getCanonicalName() + ";\n" +
@@ -1014,7 +1034,7 @@ public class MVELTest {
                 "        System.out.println( $fact );\n" +
                 "end";
 
-        KieBaseTestConfiguration equalityConfig = TestParametersUtil.getEqualityInstanceOf(kieBaseTestConfiguration);
+        KieBaseTestConfiguration equalityConfig = TestParametersUtil2.getEqualityInstanceOf(kieBaseTestConfiguration);
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", equalityConfig, str);
         KieSession ksession = kbase.newKieSession();
 
@@ -1044,8 +1064,9 @@ public class MVELTest {
         }
     }
 
-    @Test
-    public void testTypeCoercionLongDivByInt() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testTypeCoercionLongDivByInt(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-5051
         String str = "package com.sample\n" +
                      "import " + Person.class.getCanonicalName() + ";\n" +
@@ -1066,8 +1087,9 @@ public class MVELTest {
         assertThat(p.getBigDecimal().round(MathContext.DECIMAL32)).isEqualTo(new BigDecimal(7.35d, MathContext.DECIMAL32));
     }
 
-    @Test
-    public void testTypeCoercionIntCompareToDouble() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testTypeCoercionIntCompareToDouble(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-2391
         String str = "package com.sample\n" +
                      "import " + IntFact.class.getCanonicalName() + ";\n" +
@@ -1109,8 +1131,9 @@ public class MVELTest {
         }
     }
 
-    @Test
-    public void testTypeCoercionFloatCompareToDouble() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testTypeCoercionFloatCompareToDouble(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str = "package com.sample\n" +
                      "import " + FactA.class.getCanonicalName() + ";\n" +
                      "rule R1\n" +

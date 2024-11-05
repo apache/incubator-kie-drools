@@ -37,7 +37,8 @@ import org.drools.core.util.index.TupleIndexHashTable;
 import org.drools.core.util.index.TupleIndexHashTable.FieldIndexHashTableFullIterator;
 import org.drools.core.util.index.TupleList;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
-import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
@@ -45,12 +46,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class LeftTupleIndexHashTableIteratorTest extends AbstractTupleIndexHashTableIteratorTest {
 
-    public LeftTupleIndexHashTableIteratorTest(boolean useLambdaConstraint) {
-        this.useLambdaConstraint = useLambdaConstraint;
-    }
-
-    @Test
-    public void test1() {
+    @ParameterizedTest(name = "useLambdaConstraint={0}")
+    @MethodSource("parameters")
+    public void test1(boolean useLambdaConstraint) {
         BetaConstraint constraint0 = createFooThisEqualsDBetaConstraint(useLambdaConstraint);
 
         BetaConstraint[] constraints = new BetaConstraint[]{constraint0};
@@ -114,8 +112,9 @@ public class LeftTupleIndexHashTableIteratorTest extends AbstractTupleIndexHashT
         assertThat(resultList.size()).isEqualTo(13);
     }
 
-    @Test
-    public void testLastBucketInTheTable() {
+    @ParameterizedTest(name = "useLambdaConstraint={0}")
+    @MethodSource("parameters")
+    public void testLastBucketInTheTable(boolean useLambdaConstraint) {
         // JBRULES-2574
         // setup the entry array with an element in the first bucket, one 
         // in the middle and one in the last bucket

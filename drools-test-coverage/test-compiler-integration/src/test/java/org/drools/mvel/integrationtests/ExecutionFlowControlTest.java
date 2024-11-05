@@ -34,10 +34,10 @@ import org.drools.mvel.compiler.PersonInterface;
 import org.drools.mvel.compiler.Pet;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.event.rule.AgendaEventListener;
@@ -48,28 +48,22 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class ExecutionFlowControlTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public ExecutionFlowControlTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
-    }
-
-    @Test(timeout = 10000)
-    public void testSalienceIntegerAndLoadOrder() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(10000)
+    public void testSalienceIntegerAndLoadOrder(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(this.getClass(), kieBaseTestConfiguration, "test_salienceIntegerRule.drl");
         KieSession ksession = null;
         try {
@@ -93,8 +87,9 @@ public class ExecutionFlowControlTest {
         }
     }
 
-    @Test
-    public void testSalienceExpression() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testSalienceExpression(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(this.getClass(), kieBaseTestConfiguration, "test_salienceExpressionRule.drl");
 
         KieSession ksession = kbase.newKieSession();
@@ -115,8 +110,9 @@ public class ExecutionFlowControlTest {
         assertThat(list.get(1)).as("Rule 2 should have been fired second").isEqualTo("Rule 2");
     }
     
-    @Test
-    public void testSalienceExpressionWithOr() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testSalienceExpressionWithOr(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String text = "package org.kie.test\n"
                       + "global java.util.List list\n"
                       + "import " + FactA.class.getCanonicalName() + "\n"
@@ -164,8 +160,9 @@ public class ExecutionFlowControlTest {
         assertThat(list.get(2)).isEqualTo(fact1);     
     }
 
-    @Test
-    public void testSalienceMinInteger() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testSalienceMinInteger(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String text = "package org.kie.test\n"
                       + "global java.util.List list\n"
                       + "rule a\n"
@@ -193,8 +190,9 @@ public class ExecutionFlowControlTest {
         assertThat(list.get(2)).isEqualTo("b");
     }
 
-    @Test
-    public void testLoadOrderConflictResolver() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testLoadOrderConflictResolver(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String text = "package org.kie.test\n"
                       + "global java.util.List list\n"
                       + "rule a\n"
@@ -262,8 +260,9 @@ public class ExecutionFlowControlTest {
 
 
     
-    @Test
-    public void testEnabledExpressionWithOr() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testEnabledExpressionWithOr(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String text = "package org.kie.test\n"
                       + "global java.util.List list\n"
                       + "import " + FactA.class.getCanonicalName() + "\n"
@@ -310,8 +309,9 @@ public class ExecutionFlowControlTest {
         assertThat(list.get(1)).isEqualTo(fact3);   
     }    
 
-    @Test
-    public void testNoLoop() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testNoLoop(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(this.getClass(), kieBaseTestConfiguration, "no-loop.drl");
         KieSession ksession = kbase.newKieSession();;
 
@@ -327,8 +327,9 @@ public class ExecutionFlowControlTest {
 
     }
 
-    @Test
-    public void testNoLoopWithModify() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testNoLoopWithModify(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(this.getClass(), kieBaseTestConfiguration, "no-loop_with_modify.drl");
 
         KieSession ksession =  kbase.newKieSession();
@@ -346,8 +347,9 @@ public class ExecutionFlowControlTest {
 
     }
 
-    @Test
-    public void testLockOnActive() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testLockOnActive(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(this.getClass(), kieBaseTestConfiguration, "test_LockOnActive.drl");
 
         KieSession ksession = kbase.newKieSession();
@@ -380,8 +382,9 @@ public class ExecutionFlowControlTest {
         assertThat(group2.size()).isEqualTo(1);
     }
 
-    @Test
-    public void testLockOnActiveForMain() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testLockOnActiveForMain(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str = "";
         str += "package org.kie \n";
         str += "global java.util.List list \n";
@@ -413,8 +416,9 @@ public class ExecutionFlowControlTest {
         assertThat(list.size()).isEqualTo(6);
     }
 
-    @Test
-    public void testLockOnActiveForMainWithHalt() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testLockOnActiveForMainWithHalt(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str = "";
         str += "package org.kie \n";
         str += "global java.util.List list \n";
@@ -449,8 +453,9 @@ public class ExecutionFlowControlTest {
         assertThat(list.size()).isEqualTo(3);
     }
 
-    @Test
-    public void testLockOnActiveWithModify() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testLockOnActiveWithModify(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(this.getClass(), kieBaseTestConfiguration, "test_LockOnActiveWithUpdate.drl");
         KieSession ksession =  kbase.newKieSession();
 
@@ -509,8 +514,9 @@ public class ExecutionFlowControlTest {
         assertThat(ruleItem2.getRuleExecutor().getActiveMatches().size()).isEqualTo(2);
     }
 
-    @Test
-    public void testLockOnActiveWithModify2() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testLockOnActiveWithModify2(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(this.getClass(), kieBaseTestConfiguration, "test_LockOnActiveWithModify.drl");
         KieSession ksession = kbase.newKieSession();
 
@@ -643,8 +649,9 @@ public class ExecutionFlowControlTest {
         }
     }
 
-    @Test
-    public void testAgendaGroups() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testAgendaGroups(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(this.getClass(), kieBaseTestConfiguration, "test_AgendaGroups.drl");
         KieSession ksession = kbase.newKieSession();
 
@@ -673,8 +680,9 @@ public class ExecutionFlowControlTest {
         assertThat(list.get(7)).isEqualTo("group2");
     }
 
-    @Test
-    public void testActivationGroups() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testActivationGroups(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(this.getClass(), kieBaseTestConfiguration, "test_ActivationGroups.drl");
         KieSession ksession = kbase.newKieSession();
 
@@ -717,10 +725,11 @@ public class ExecutionFlowControlTest {
         }
     }
 
-    @Test
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
     // JBRULES-2398
     public void
-    testActivationGroupWithTroubledSyntax() {
+    testActivationGroupWithTroubledSyntax(KieBaseTestConfiguration kieBaseTestConfiguration) {
     String str = "package BROKEN_TEST;\n" + "import "
                  + Holder.class.getCanonicalName() + ";\n"
                  + "rule \"_12\"\n"
@@ -783,8 +792,9 @@ public class ExecutionFlowControlTest {
         assertThat(inrec.getOutcome()).isEqualTo("setting 0");
     }
 
-    @Test
-    public void testInsertRetractNoloop() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testInsertRetractNoloop(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         // read in the source
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(this.getClass(), kieBaseTestConfiguration, "test_Insert_Retract_Noloop.drl");
         KieSession ksession = kbase.newKieSession();
@@ -795,8 +805,9 @@ public class ExecutionFlowControlTest {
         assertThat(ksession.getObjects().size()).isEqualTo(0);
     }
 
-    @Test
-    public void testUpdateNoLoop() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testUpdateNoLoop(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         // JBRULES-780, throws a NullPointer or infinite loop if there is an
         // issue
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(this.getClass(), kieBaseTestConfiguration, "test_UpdateNoloop.drl");
@@ -811,8 +822,9 @@ public class ExecutionFlowControlTest {
         assertThat(cheese.getPrice()).isEqualTo(14);
     }
 
-    @Test
-    public void testUpdateActivationCreationNoLoop() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testUpdateActivationCreationNoLoop(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         // JBRULES-787, no-loop blocks all dependant tuples for update
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(this.getClass(), kieBaseTestConfiguration, "test_UpdateActivationCreationNoLoop.drl");
 
@@ -862,8 +874,9 @@ public class ExecutionFlowControlTest {
         assertThat(cancelled.size()).isEqualTo(0);
     }
 
-    @Test
-    public void testRuleFlowGroup() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testRuleFlowGroup(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(this.getClass(), kieBaseTestConfiguration, "ruleflowgroup.drl");
         KieSession ksession = kbase.newKieSession();
 
@@ -880,8 +893,9 @@ public class ExecutionFlowControlTest {
         assertThat(list.size()).isEqualTo(1);
     }
 
-    @Test
-    public void testRuleFlowGroupDeactivate() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testRuleFlowGroupDeactivate(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         // need to make eager, for cancel to work, (mdp)
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(this.getClass(), kieBaseTestConfiguration, "ruleflowgroup2.drl");
 
@@ -902,8 +916,10 @@ public class ExecutionFlowControlTest {
         assertThat(list.size()).isEqualTo(0);
     }
 
-    @Test(timeout=10000)
-    public void testRuleFlowGroupInActiveMode() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(10000)
+    public void testRuleFlowGroupInActiveMode(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(this.getClass(), kieBaseTestConfiguration, "ruleflowgroup.drl");
 
         final KieSession ksession = kbase.newKieSession();
@@ -943,8 +959,9 @@ public class ExecutionFlowControlTest {
         }
     }
 
-    @Test
-    public void testDateEffective() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testDateEffective(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         // read in the source
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(this.getClass(), kieBaseTestConfiguration, "test_EffectiveDate.drl");
 
@@ -961,21 +978,22 @@ public class ExecutionFlowControlTest {
         assertThat(message.isFired()).isFalse();
     }
 
-    @Test
-    public void testNullPointerOnModifyWithLockOnActive() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testNullPointerOnModifyWithLockOnActive(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // JBRULES-3234
 
         String str = "package org.kie.test \n"
                      + "import org.drools.mvel.compiler.Person; \n"
-                     + "rule 'Rule 1' agenda-group 'g1' lock-on-active	when \n"
-                     + "		$p : Person( age != 35 ) \n"
-                     + "	then \n"
-                     + "		modify( $p ) { setAge( 35 ) };	\n"
+                     + "rule 'Rule 1' agenda-group 'g1' lock-on-active    when \n"
+                     + "        $p : Person( age != 35 ) \n"
+                     + "    then \n"
+                     + "        modify( $p ) { setAge( 35 ) };    \n"
                      + "end \n"
                      + "rule 'Rule 2' agenda-group 'g1' no-loop when \n"
-                     + "		$p:  Person( age == 35) \n"
-                     + "	then \n"
-                     + "		modify( $p ) { setAge( 36 ) }; \n"
+                     + "        $p:  Person( age == 35) \n"
+                     + "    then \n"
+                     + "        modify( $p ) { setAge( 36 ) }; \n"
                      + "end \n";
 
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
@@ -994,8 +1012,9 @@ public class ExecutionFlowControlTest {
     }
 
 
-    @Test
-    public void testAgendaGroupGivewaySequence() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testAgendaGroupGivewaySequence(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // BZ-999360
         String str =
                 "global java.util.List ruleList\n" +
@@ -1059,8 +1078,9 @@ public class ExecutionFlowControlTest {
         assertThat(ruleList.get(7)).isEqualTo(3);
     }
 
-    @Test
-    public void testActivationGroupWithNots() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testActivationGroupWithNots(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // BZ-1318052
         String drl =
                 "global java.util.List list;\n" +

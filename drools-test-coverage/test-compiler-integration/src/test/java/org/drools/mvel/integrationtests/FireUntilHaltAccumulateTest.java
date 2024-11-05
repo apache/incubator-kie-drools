@@ -18,22 +18,20 @@
  */
 package org.drools.mvel.integrationtests;
 
-import java.util.Collection;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
 
 import org.drools.core.ClockType;
 import org.drools.core.impl.RuleBaseFactory;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.runtime.KieSession;
@@ -47,18 +45,10 @@ import org.kie.api.time.SessionPseudoClock;
  * fed into the engine by thread A while the engine had been started by
  * fireUntilHalt by thread B.
  */
-@RunWith(Parameterized.class)
 public class FireUntilHaltAccumulateTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public FireUntilHaltAccumulateTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
-    }
-
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseStreamConfigurations(true);
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
     private KieSession statefulSession;
@@ -84,8 +74,7 @@ public class FireUntilHaltAccumulateTest {
                                 "then\n" +
                                 "end";
 
-    @Before
-    public void setUp() {
+    public void setUp(KieBaseTestConfiguration kieBaseTestConfiguration) {
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
 
         final KieSessionConfiguration sessionConfig =
@@ -96,7 +85,7 @@ public class FireUntilHaltAccumulateTest {
         this.stockFactory = new StockFactory(kbase);
     }
 
-    @After
+    @AfterEach
     public void cleanUp() {
         if (this.statefulSession != null) {
             this.statefulSession.dispose();
@@ -109,9 +98,12 @@ public class FireUntilHaltAccumulateTest {
      * <p/>
      * The engine runs in fireUntilHalt mode started in a separate thread.
      * Events may expire during the evaluation of accumulate.
+     * @param kieBaseTestConfiguration 
      */
-    @Test
-    public void testFireUntilHaltWithAccumulateAndExpires() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testFireUntilHaltWithAccumulateAndExpires(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
+        setUp(kieBaseTestConfiguration);
         // thread for firing until halt
         final ExecutorService executor = Executors.newSingleThreadExecutor();
         final Future sessionFuture = executor.submit((Runnable) statefulSession::fireUntilHalt);
