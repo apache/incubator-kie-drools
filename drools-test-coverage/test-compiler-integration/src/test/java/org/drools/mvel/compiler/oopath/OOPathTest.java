@@ -20,11 +20,11 @@ package org.drools.mvel.compiler.oopath;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import org.drools.core.phreak.AbstractReactiveObject;
 import org.drools.core.phreak.ReactiveSet;
@@ -42,10 +42,9 @@ import org.drools.mvel.compiler.oopath.model.Woman;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.Message;
@@ -58,22 +57,15 @@ import org.kie.api.runtime.KieSession;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.mvel.compiler.TestUtil.assertDrlHasCompilationError;
 
-@RunWith(Parameterized.class)
 public class OOPathTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public OOPathTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
-    }
-
-    @Test
-    public void testInvalidOOPath() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testInvalidOOPath(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
                 "import org.drools.mvel.compiler.oopath.model.*;\n" +
                         "global java.util.List list\n" +
@@ -84,11 +76,12 @@ public class OOPathTest {
                         "  list.add( $toy.getName() );\n" +
                         "end\n";
 
-        testInvalid(drl);
+        testInvalid(kieBaseTestConfiguration, drl);
     }
 
-    @Test
-    public void testInvalidOOPathProperty() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testInvalidOOPathProperty(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
                 "import org.drools.mvel.compiler.oopath.model.*;\n" +
                         "global java.util.List list\n" +
@@ -99,16 +92,17 @@ public class OOPathTest {
                         "  list.add( $toy.getName() );\n" +
                         "end\n";
 
-        testInvalid(drl);
+        testInvalid(kieBaseTestConfiguration, drl);
     }
 
-    private void testInvalid(final String drl) {
+    private void testInvalid(KieBaseTestConfiguration kieBaseTestConfiguration, final String drl) {
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
         assertThat(kieBuilder.getResults().hasMessages(Message.Level.ERROR)).isTrue();
     }
 
-    @Test
-    public void testIndexedAccess() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testIndexedAccess(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
                 "import org.drools.mvel.compiler.oopath.model.*;\n" +
                 "global java.util.List list\n" +
@@ -144,8 +138,9 @@ public class OOPathTest {
         assertThat(list).containsExactlyInAnyOrder("ball");
     }
 
-    @Test
-    public void testBackReferenceConstraint() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testBackReferenceConstraint(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
                 "import org.drools.mvel.compiler.oopath.model.*;\n" +
                 "global java.util.List list\n" +
@@ -182,8 +177,9 @@ public class OOPathTest {
         assertThat(list).containsExactlyInAnyOrder("ball", "guitar");
     }
 
-    @Test
-    public void testPrimitives() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testPrimitives(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-1266
         final String drl =
                 "import org.drools.mvel.compiler.oopath.model.*;\n" +
@@ -219,8 +215,9 @@ public class OOPathTest {
         assertThat(list).isEqualTo(Arrays.asList("t2:12:t2", "t1:12:t1", "t4:8:t4", "t3:8:t3"));
     }
     
-    @Test   
-    public void testDoubleAdd() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testDoubleAdd(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-1376
         final String drl =
                 "import org.drools.mvel.compiler.oopath.model.*;\n" +
@@ -267,8 +264,9 @@ public class OOPathTest {
         assertThat(factsCollection(ksession).contains("Y.Bea")).isFalse();
     }
     
-    @Test
-    public void testDoubleRemove() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testDoubleRemove(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-1376
         final String drl =
                 "import org.drools.mvel.compiler.oopath.model.*;\n" +
@@ -309,8 +307,9 @@ public class OOPathTest {
         assertThat(factsCollection(ksession).contains("Y.Bea")).isFalse();
     }
 
-    @Test
-    public void testAddAllRemoveIdx() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testAddAllRemoveIdx(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
                 "import org.drools.mvel.compiler.oopath.model.*;\n" +
                 "\n" +
@@ -360,8 +359,9 @@ public class OOPathTest {
         assertThat(factsCollection(ksession).contains("Y.Bea")).isFalse();
     }
     
-    @Test
-    public void testMiscListMethods() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testMiscListMethods(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
                 "import org.drools.mvel.compiler.oopath.model.*;\n" +
                 "\n" +
@@ -440,8 +440,9 @@ public class OOPathTest {
         assertThat(factsCollection(ksession).contains("Y.File2")).isTrue();
     }
     
-    @Test
-    public void testCollectionIteratorRemove() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testCollectionIteratorRemove(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
                 "import org.drools.mvel.compiler.oopath.model.*;\n" +
                 "\n" +
@@ -506,8 +507,9 @@ public class OOPathTest {
         assertThat(iterator.hasNext()).isFalse();
     }
     
-    @Test
-    public void testListIteratorRemove() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testListIteratorRemove(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
                 "import org.drools.mvel.compiler.oopath.model.*;\n" +
                 "\n" +
@@ -611,8 +613,9 @@ public class OOPathTest {
         assertThat(yIterator.hasPrevious()).isFalse();
     }
     
-    @Test
-    public void testListIteratorMisc() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testListIteratorMisc(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
                 "import org.drools.mvel.compiler.oopath.model.*;\n" +
                 "\n" +
@@ -712,8 +715,9 @@ public class OOPathTest {
         assertThat(factsCollection(ksession).contains("Y.File0R")).isTrue();
     }
     
-    @Test
-    public void testRemoveIfSupport() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testRemoveIfSupport(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
                 "import org.drools.mvel.compiler.oopath.model.*;\n" +
                 "\n" +
@@ -781,8 +785,9 @@ public class OOPathTest {
         assertThat(factsCollection(ksession).contains("Y.File2")).isTrue();
     }
     
-    @Test
-    public void testMiscSetMethods() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testMiscSetMethods(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
                 "import org.drools.mvel.compiler.oopath.model.*;\n" +
                 "\n" +
@@ -850,8 +855,9 @@ public class OOPathTest {
         assertThat(factsCollection(ksession).contains("Y.File2")).isTrue();
     }
 
-    @Test
-    public void testDeclarationOutsideOOPath() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testDeclarationOutsideOOPath(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-1411
         final String drl =
                 "import org.drools.mvel.compiler.oopath.model.*;\n" +
@@ -883,8 +889,9 @@ public class OOPathTest {
         assertThat(duplicateNames.contains("File1")).isFalse();
     }
 
-    @Test
-    public void testDereferencedDeclarationOutsideOOPath() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testDereferencedDeclarationOutsideOOPath(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-1411
         final String drl =
                 "import org.drools.mvel.compiler.oopath.model.*;\n" +
@@ -916,8 +923,9 @@ public class OOPathTest {
         assertThat(duplicateNames.contains("File1")).isFalse();
     }
 
-    @Test
-    public void testDeclarationInsideOOPath() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testDeclarationInsideOOPath(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-1411
         final String drl =
                 "import org.drools.mvel.compiler.oopath.model.*;\n" +
@@ -949,8 +957,9 @@ public class OOPathTest {
         assertThat(duplicateNames.contains("File1")).isFalse();
     }
 
-    @Test
-    public void testCompileErrorOnDoubleOOPathInPattern() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testCompileErrorOnDoubleOOPathInPattern(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-1411
         final String drl =
                 "import org.drools.mvel.compiler.oopath.model.*;\n" +
@@ -965,8 +974,9 @@ public class OOPathTest {
         assertDrlHasCompilationError( drl, 1, kieBaseTestConfiguration );
     }
 
-    @Test
-    public void testOOPathWithLocalDeclaration() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testOOPathWithLocalDeclaration(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-1411
         final String drl =
                 "import org.drools.mvel.compiler.oopath.model.*;\n" +
@@ -1015,8 +1025,9 @@ public class OOPathTest {
         }
     }
 
-    @Test
-    public void testOOPathWithLocalInnerDeclaration() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testOOPathWithLocalInnerDeclaration(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-1411
         final String drl =
                 "import org.drools.mvel.compiler.oopath.model.*;\n" +
@@ -1058,8 +1069,9 @@ public class OOPathTest {
         return res;
     }
 
-    @Test
-    public void testWith2Peers() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testWith2Peers(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-1589
         String header =
                 "import org.drools.mvel.compiler.oopath.model.*;\n" +
@@ -1121,8 +1133,9 @@ public class OOPathTest {
         assertThat(list.size()).isEqualTo(0);
     }
 
-    @Test
-    public void testWithExists() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testWithExists(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String header =
                 "import org.drools.mvel.compiler.oopath.model.*;\n" +
                 "global java.util.List list\n\n";
@@ -1151,8 +1164,9 @@ public class OOPathTest {
         list.clear();
     }
 
-    @Test
-    public void testNotReactivePeer() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testNotReactivePeer(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-1727
         String drl1 =
                 "import org.drools.mvel.compiler.oopath.model.*;\n" +
@@ -1187,8 +1201,9 @@ public class OOPathTest {
         assertThat(list.size()).isEqualTo(1);
     }
 
-    @Test
-    public void testConstraintExternalToOopath() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testConstraintExternalToOopath(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-2135
         final String drl =
                 "import "+ Parent.class.getCanonicalName() +";\n" +
@@ -1246,8 +1261,9 @@ public class OOPathTest {
         }
     }
 
-    @Test
-    public void testOopathAfterNot() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testOopathAfterNot(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-6541
         final String drl =
                 "import "+ Pojo1.class.getCanonicalName() +";\n" +

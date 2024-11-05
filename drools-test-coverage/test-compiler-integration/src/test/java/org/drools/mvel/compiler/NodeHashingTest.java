@@ -20,35 +20,27 @@ package org.drools.mvel.compiler;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Collection;
+import java.util.stream.Stream;
 
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class NodeHashingTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public NodeHashingTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
-    }
-
-    @Test
-    public void testNodeHashTypeMismatch() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testNodeHashTypeMismatch(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         // BZ-1328380
 
         // 2 rules -- Mvel coercion
@@ -103,8 +95,9 @@ public class NodeHashingTest {
         ksession2.dispose();
     }
 
-    @Test
-    public void testNodeHashTypeMismatchWithBigInteger() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testNodeHashTypeMismatchWithBigInteger(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         // BZ-1328380
 
         // 2 rules -- Mvel coercion
@@ -159,8 +152,9 @@ public class NodeHashingTest {
         ksession2.dispose();
     }
 
-    @Test
-    public void testNodeHashTypeMismatchWithBigDecimal() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testNodeHashTypeMismatchWithBigDecimal(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         // BZ-1328380
 
         // 2 rules -- Mvel coercion
@@ -215,8 +209,9 @@ public class NodeHashingTest {
         ksession2.dispose();
     }
 
-    @Test
-    public void testNodeHashTypeMismatchFromBigDecimal() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testNodeHashTypeMismatchFromBigDecimal(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         // BZ-1328380
 
         // 2 rules -- Mvel coercion
@@ -273,8 +268,9 @@ public class NodeHashingTest {
         ksession2.dispose();
     }
 
-    @Test
-    public void testNodeHashTypeMismatchWithPrimitiveDouble() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testNodeHashTypeMismatchWithPrimitiveDouble(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         // BZ-1328380
 
         // 2 rules -- Mvel coercion
@@ -331,8 +327,9 @@ public class NodeHashingTest {
         ksession2.dispose();
     }
 
-    @Test
-    public void testNodeHashTypeMismatchWithBigIntegerAndDecimal() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testNodeHashTypeMismatchWithBigIntegerAndDecimal(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         // BZ-1328380
 
         // 2 rules -- Mvel coercion
@@ -401,8 +398,9 @@ public class NodeHashingTest {
         }
     }
 
-    @Test
-    public void testNodeHashTypeMismatchWithDouble() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testNodeHashTypeMismatchWithDouble(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         // BZ-1328380
 
         // 2 rules -- Mvel coercion
@@ -453,8 +451,9 @@ public class NodeHashingTest {
         ksession2.dispose();
     }
 
-    @Test
-    public void testHashingOnClassConstraint() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testHashingOnClassConstraint(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String drl =
                 "import " + A.class.getCanonicalName() + "\n" +
                 "rule R1 when\n" +

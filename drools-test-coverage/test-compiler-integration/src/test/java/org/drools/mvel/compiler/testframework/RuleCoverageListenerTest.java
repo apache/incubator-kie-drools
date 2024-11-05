@@ -31,12 +31,11 @@ import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.core.event.rule.impl.AfterActivationFiredEventImpl;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.reteoo.TerminalNode;
-import org.drools.core.reteoo.Tuple;
 import org.drools.core.reteoo.TupleImpl;
 import org.drools.core.rule.consequence.InternalMatch;
+import org.junit.jupiter.api.Test;
 import org.drools.base.rule.consequence.Consequence;
 import org.drools.core.common.PropagationContext;
-import org.junit.Test;
 import org.kie.api.runtime.rule.FactHandle;
 
 import static org.assertj.core.api.Assertions.assertThat;

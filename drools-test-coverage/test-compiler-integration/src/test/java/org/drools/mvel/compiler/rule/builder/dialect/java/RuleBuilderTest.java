@@ -43,8 +43,8 @@ import org.drools.base.time.TimeUtils;
 import org.drools.core.time.impl.IntervalTimer;
 import org.drools.drl.parser.DroolsParserException;
 import org.drools.util.DateUtils;
+import org.junit.jupiter.api.Test;
 import org.drools.mvel.MVELConstraint;
-import org.junit.Test;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 
 import static org.assertj.core.api.Assertions.assertThat;

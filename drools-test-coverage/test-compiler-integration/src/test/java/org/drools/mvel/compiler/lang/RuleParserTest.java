@@ -63,9 +63,9 @@ import org.drools.drl.parser.DrlParser;
 import org.drools.drl.parser.lang.DRL6Lexer;
 import org.drools.drl.parser.lang.DRL6Parser;
 import org.drools.drl.parser.lang.DRLParser;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -77,13 +77,13 @@ public class RuleParserTest {
 
     private DRLParser parser;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         // initializes pluggable operators
         new EvaluatorRegistry();
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
     }
 

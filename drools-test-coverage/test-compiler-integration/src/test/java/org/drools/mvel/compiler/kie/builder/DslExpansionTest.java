@@ -18,15 +18,14 @@
  */
 package org.drools.mvel.compiler.kie.builder;
 
-import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -40,22 +39,15 @@ import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.generatePomXml
 /**
  * Test for DSL expansion with KieBuilder
  */
-@RunWith(Parameterized.class)
 public class DslExpansionTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public DslExpansionTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
-    }
-
-    @Test
-    public void testDSLExpansion_MessageImplNPE() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testDSLExpansion_MessageImplNPE(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         final KieServices ks = KieServices.Factory.get();
         final ReleaseId releaseId = ks.newReleaseId( "org.kie", "dsl-test", "1.0" );
         final KieModuleModel kproj = ks.newKieModuleModel();
@@ -76,8 +68,9 @@ public class DslExpansionTest {
         assertThat(messages.isEmpty()).isTrue();
     }
 
-    @Test
-    public void testDSLExpansion_NoExpansion() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testDSLExpansion_NoExpansion(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         final KieServices ks = KieServices.Factory.get();
         final ReleaseId releaseId = ks.newReleaseId( "org.kie", "dsl-test", "1.0" );
         final KieModuleModel kproj = ks.newKieModuleModel();

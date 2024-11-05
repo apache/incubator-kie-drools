@@ -19,36 +19,29 @@
 package org.drools.mvel.compiler.kie.builder.impl;
 
 import java.net.URL;
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.stream.Stream;
 
 import org.drools.compiler.kie.builder.impl.ClasspathKieProject;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
-@RunWith(Parameterized.class)
 public class ClasspathKieProjectTransformUrlToFileSystemPathTest {
 
-    @Parameterized.Parameters(name = "URL={0}, expectedPath={1}")
-    public static Collection<Object[]> data() throws Exception {
-        return Arrays.asList(new Object[][] {
-                { new URL("file:/some-path-to-the-module/target/test-classes"), "/some-path-to-the-module/target/test-classes" },
-                { new URL("file:/some-path-to-the-module/target/test-classes/META-INF/kmodule.xml"), "/some-path-to-the-module/target/test-classes" },
-                { new URL("jar:file:/C:/proj/parser/jar/parser.jar!/test.xml"), "/C:/proj/parser/jar/parser.jar" }
-        });
+    public static Stream<Arguments> parameters() throws Exception {
+    	
+    	return Stream.of(arguments(new URL("file:/some-path-to-the-module/target/test-classes"), "/some-path-to-the-module/target/test-classes"),
+    			arguments(new URL("file:/some-path-to-the-module/target/test-classes/META-INF/kmodule.xml"), "/some-path-to-the-module/target/test-classes"),
+    			arguments(new URL("jar:file:/C:/proj/parser/jar/parser.jar!/test.xml"), "/C:/proj/parser/jar/parser.jar"));
     }
-    @Parameterized.Parameter(0)
-    public URL url;
-
-    @Parameterized.Parameter(1)
-    public String expectedPath;
 
 
-    @Test
-    public void testTransformUrl() {
+    @ParameterizedTest(name = "URL={0}, expectedPath={1}")
+    @MethodSource("parameters")
+    public void testTransformUrl(URL url, String expectedPath) {
         String actualPath = ClasspathKieProject.fixURLFromKProjectPath(url);
         assertThat(actualPath).isEqualTo(expectedPath);
     }

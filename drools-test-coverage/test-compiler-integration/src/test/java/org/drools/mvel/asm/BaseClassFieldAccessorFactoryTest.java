@@ -27,8 +27,8 @@ import org.drools.core.util.asm.TestAbstract;
 import org.drools.core.util.asm.TestAbstractImpl;
 import org.drools.core.util.asm.TestInterface;
 import org.drools.core.util.asm.TestInterfaceImpl;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -36,7 +36,7 @@ public class BaseClassFieldAccessorFactoryTest {
 
     ClassFieldAccessorStore store = new ClassFieldAccessorStore();
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         store.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
         store.setEagerWire( true );
