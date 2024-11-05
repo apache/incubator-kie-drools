@@ -24,7 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.drools.drl.parser.lang.XpathAnalysis;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

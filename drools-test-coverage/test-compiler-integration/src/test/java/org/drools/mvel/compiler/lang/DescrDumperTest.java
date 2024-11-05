@@ -27,9 +27,9 @@ import org.drools.drl.ast.descr.ConstraintConnectiveDescr;
 import org.drools.drl.parser.DrlExprParserFactory;
 import org.drools.mvel.evaluators.MatchesEvaluatorsDefinition;
 import org.drools.mvel.evaluators.SetEvaluatorsDefinition;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -38,7 +38,7 @@ public class DescrDumperTest {
 
     private DescrDumper dumper;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         // configure operators
         new SetEvaluatorsDefinition();
@@ -135,7 +135,8 @@ public class DescrDumperTest {
         assertThat(result).isEqualTo(expected);
     }
 
-    @Test @Ignore
+    @Test 
+    @Disabled
     public void testDumpWithDateAttr() throws Exception {
         String input = "son.birthDate == \"01-jan-2000\"";
         String expected = "son.birthDate == org.drools.util.DateUtils.parseDate( \"01-jan-2000\" )";

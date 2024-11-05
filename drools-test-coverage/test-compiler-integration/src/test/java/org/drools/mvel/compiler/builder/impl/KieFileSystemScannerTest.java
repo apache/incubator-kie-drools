@@ -29,7 +29,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;

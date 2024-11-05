@@ -18,18 +18,17 @@
  */
 package org.drools.mvel.compiler.kie.builder.impl;
 
-import java.util.Collection;
+import java.util.stream.Stream;
 
 import org.drools.compiler.kie.builder.impl.KieBuilderImpl;
 import org.drools.compiler.kie.builder.impl.KieBuilderSetImpl;
 import org.drools.mvel.CommonTestMethodBase;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -39,28 +38,21 @@ import org.kie.internal.io.ResourceFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class KieBuilderSetImplTest extends CommonTestMethodBase {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public KieBuilderSetImplTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
-    }
-
-    @Test
-    public void testBuild() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testBuild(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         final KieServices ks = KieServices.Factory.get();
         final KieFileSystem kfs = ks.newKieFileSystem();
 
         kfs.write( "src/main/resources/rule%201.drl", ruleContent() );
 
-        final KieBuilderSetImpl kieBuilderSet = new KieBuilderSetImpl( kieBuilder( ks, kfs ) );
+        final KieBuilderSetImpl kieBuilderSet = new KieBuilderSetImpl( kieBuilder( kieBaseTestConfiguration, ks, kfs ) );
 
         kieBuilderSet.setFiles( new String[]{ "src/main/resources/rule%201.drl" } );
 
@@ -70,16 +62,17 @@ public class KieBuilderSetImplTest extends CommonTestMethodBase {
         assertThat(build.getRemovedMessages().size()).isEqualTo(0);
     }
 
-    @Test
-    @Ignore("RHPAM-1184, RHDM-601")
-    public void testBuildPercentageAndWhiteSpaceInName() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    @Disabled("RHPAM-1184, RHDM-601")
+    public void testBuildPercentageAndWhiteSpaceInName(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         final KieServices ks = KieServices.Factory.get();
         final KieFileSystem kfs = ks.newKieFileSystem();
 
         kfs.write("src/main/resources/my rule 100% okay.rdrl",
                   ResourceFactory.newInputStreamResource(this.getClass().getResourceAsStream("my rule 100% okay.rdrl")));
 
-        final KieBuilderSetImpl kieBuilderSet = new KieBuilderSetImpl(kieBuilder(ks, kfs));
+        final KieBuilderSetImpl kieBuilderSet = new KieBuilderSetImpl(kieBuilder(kieBaseTestConfiguration, ks, kfs));
 
         kieBuilderSet.setFiles(new String[]{"src/main/resources/my rule 100% okay.rdrl"});
 
@@ -89,7 +82,8 @@ public class KieBuilderSetImplTest extends CommonTestMethodBase {
         assertThat(build.getRemovedMessages().size()).isEqualTo(0);
     }
 
-    @Test
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
     public void testDummyResourceWithAnEncodedFileName() {
         final Resource dummyResource = new KieBuilderSetImpl.DummyResource( "Dummy%20Resource" );
         final Resource testResource = new KieBuilderSetImpl.DummyResource( "Dummy Resource" );
@@ -97,14 +91,16 @@ public class KieBuilderSetImplTest extends CommonTestMethodBase {
         assertThat(dummyResource).isEqualTo(testResource);
     }
 
-    @Test
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
     public void testDummyResourceWithWrongEncodedFileName() {
         final Resource dummyResource = new KieBuilderSetImpl.DummyResource("Dummy 100%");
         assertThat("Dummy 100%").isEqualTo(dummyResource.getSourcePath());
     }
 
-    private KieBuilderImpl kieBuilder( final KieServices ks,
-                                       final KieFileSystem kfs ) {
+    private KieBuilderImpl kieBuilder(KieBaseTestConfiguration kieBaseTestConfiguration,
+    									final KieServices ks,
+    									final KieFileSystem kfs) {
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, true);
         return (KieBuilderImpl) kieBuilder;
     }

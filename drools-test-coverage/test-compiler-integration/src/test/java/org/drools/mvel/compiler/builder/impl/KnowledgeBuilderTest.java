@@ -44,7 +44,6 @@ import org.drools.base.definitions.InternalKnowledgePackage;
 import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.builder.BuildContext;
@@ -91,9 +90,9 @@ import org.drools.mvel.compiler.Primitives;
 import org.drools.mvel.compiler.StockTick;
 import org.drools.mvel.integrationtests.SerializationHelper;
 import org.drools.mvel.java.JavaForMvelDialectConfiguration;
-import org.junit.After;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.kie.api.definition.type.FactField;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.definition.type.Role;
@@ -109,7 +108,7 @@ import static org.assertj.core.api.Assertions.fail;
 
 public class KnowledgeBuilderTest {
     
-    @After
+    @AfterEach
     public void tearDown() {
         System.getProperties().remove( "drools.warning.filters" );
         System.getProperties().remove( "drools.kbuilder.severity." + DuplicateFunction.KEY);
@@ -283,7 +282,7 @@ public class KnowledgeBuilderTest {
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void testNoPackageName() throws Exception {
         final KnowledgeBuilderImpl builder = new KnowledgeBuilderImpl();
         try {
@@ -900,7 +899,8 @@ public class KnowledgeBuilderTest {
         return packageDescr;
     }
 
-    @Test @Ignore // TODO we now allow bindings on declarations, so update the test for this
+    @Test 
+    @Disabled // TODO we now allow bindings on declarations, so update the test for this
     public void testDuplicateDeclaration() {
         final KnowledgeBuilderImpl builder = new KnowledgeBuilderImpl();
 

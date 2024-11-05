@@ -19,8 +19,8 @@
 package org.drools.mvel.compiler.oopath;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.drools.mvel.compiler.oopath.model.Child;
 import org.drools.mvel.compiler.oopath.model.Man;
@@ -28,31 +28,23 @@ import org.drools.mvel.compiler.oopath.model.Toy;
 import org.drools.mvel.compiler.oopath.model.Woman;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class OOPathMultilevelTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public OOPathMultilevelTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
-    }
-
-    @Test
-    public void testClassTwoLevelPath() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testClassTwoLevelPath(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
                 "import org.drools.mvel.compiler.oopath.model.*;\n" +
                         "global java.util.List list\n" +
@@ -88,8 +80,9 @@ public class OOPathMultilevelTest {
         assertThat(list).containsExactlyInAnyOrder("car", "ball", "doll");
     }
 
-    @Test
-    public void testClassThreeLevelPath() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testClassThreeLevelPath(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
                 "import org.drools.mvel.compiler.oopath.model.*;\n" +
                         "global java.util.List list\n" +
@@ -122,8 +115,9 @@ public class OOPathMultilevelTest {
         assertThat(list).containsExactlyInAnyOrder("car", "ball");
     }
 
-    @Test
-    public void testClassTwoLevelPathWithAlphaConstraint() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testClassTwoLevelPathWithAlphaConstraint(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
                 "import org.drools.mvel.compiler.oopath.model.*;\n" +
                         "global java.util.List list\n" +
@@ -134,11 +128,12 @@ public class OOPathMultilevelTest {
                         "  list.add( $toy.getName() );\n" +
                         "end\n";
 
-        testScenarioTwoLevelPathWithConstraint(drl);
+        testScenarioTwoLevelPathWithConstraint(kieBaseTestConfiguration, drl);
     }
 
-    @Test
-    public void testClassTwoLevelPathWithBetaConstraint() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testClassTwoLevelPathWithBetaConstraint(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
                 "import org.drools.mvel.compiler.oopath.model.*;\n" +
                         "global java.util.List list\n" +
@@ -149,10 +144,10 @@ public class OOPathMultilevelTest {
                         "then\n" +
                         "  list.add( $toy.getName() );\n" +
                         "end\n";
-        testScenarioTwoLevelPathWithConstraint(drl);
+        testScenarioTwoLevelPathWithConstraint(kieBaseTestConfiguration, drl);
     }
 
-    private void testScenarioTwoLevelPathWithConstraint(final String drl) {
+    private void testScenarioTwoLevelPathWithConstraint(KieBaseTestConfiguration kieBaseTestConfiguration,final String drl) {
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KieSession ksession = kbase.newKieSession();
 

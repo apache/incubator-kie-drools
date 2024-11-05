@@ -59,11 +59,11 @@ import org.drools.drl.ast.descr.ProcessDescr;
 import org.drools.drl.ast.descr.RuleDescr;
 import org.drools.mvel.java.JavaForMvelDialectConfiguration;
 import org.drools.util.TypeResolver;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.KnowledgeBuilderResult;
@@ -83,13 +83,13 @@ public class PackageBuilderConfigurationTest {
     private static String droolsDialectJavaCompilerOrig;
     private static String droolsDialectDefaultOrig;
 
-    @BeforeClass
+    @BeforeAll
     public static void backupPropertyValues() {
         droolsDialectJavaCompilerOrig = System.getProperty( JavaForMvelDialectConfiguration.JAVA_COMPILER_PROPERTY);
         droolsDialectDefaultOrig = System.getProperty(DefaultDialectOption.PROPERTY_NAME);
     }
 
-    @AfterClass
+    @AfterAll
     public static void restorePropertyValues() {
         if (droolsDialectJavaCompilerOrig != null) {
             System.setProperty( JavaForMvelDialectConfiguration.JAVA_COMPILER_PROPERTY, droolsDialectJavaCompilerOrig);
@@ -99,13 +99,13 @@ public class PackageBuilderConfigurationTest {
         }
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         System.getProperties().remove("drools.dialect.java.compiler");
         System.getProperties().remove("drools.dialect.default");
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         System.getProperties().remove("drools.dialect.java.compiler");
         System.getProperties().remove("drools.dialect.default");

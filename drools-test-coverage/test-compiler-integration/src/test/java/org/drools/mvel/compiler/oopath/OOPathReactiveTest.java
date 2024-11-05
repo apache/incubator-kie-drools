@@ -19,8 +19,8 @@
 package org.drools.mvel.compiler.oopath;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.drools.base.base.ClassObjectType;
 import org.drools.core.common.InternalWorkingMemory;
@@ -29,11 +29,9 @@ import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.ReactiveFromNode;
-import org.drools.core.reteoo.Tuple;
 import org.drools.core.reteoo.TupleImpl;
 import org.drools.core.reteoo.TupleMemory;
 import org.drools.core.util.FastIterator;
-import org.drools.core.util.Iterator;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.mvel.compiler.oopath.model.Adult;
 import org.drools.mvel.compiler.oopath.model.Child;
@@ -47,10 +45,9 @@ import org.drools.mvel.integrationtests.SerializationHelper;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.Message;
@@ -61,22 +58,15 @@ import static org.assertj.core.api.Assertions.fail;
 import static org.drools.mvel.compiler.oopath.model.BodyMeasurement.CHEST;
 import static org.drools.mvel.compiler.oopath.model.BodyMeasurement.RIGHT_FOREARM;
 
-@RunWith(Parameterized.class)
 public class OOPathReactiveTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public OOPathReactiveTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
-    }
-
-    @Test
-    public void testReactiveOnLia() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testReactiveOnLia(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
                 "import org.drools.mvel.compiler.oopath.model.*;\n" +
                         "global java.util.List list\n" +
@@ -118,8 +108,9 @@ public class OOPathReactiveTest {
         assertThat(list).containsExactlyInAnyOrder("doll");
     }
 
-    @Test
-    public void testReactiveDeleteOnLia() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testReactiveDeleteOnLia(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
                 "import org.drools.mvel.compiler.oopath.model.*;\n" +
                         "global java.util.List list\n" +
@@ -184,8 +175,9 @@ public class OOPathReactiveTest {
         }
     }
 
-    @Test
-    public void testRemoveFromReactiveListBasic() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testRemoveFromReactiveListBasic(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
                 "import org.drools.mvel.compiler.oopath.model.*;\n" +
                         "\n" +
@@ -230,8 +222,9 @@ public class OOPathReactiveTest {
         assertThat(ksession.getObjects().contains(debbie)).isFalse();
     }
 
-    @Test
-    public void testRemoveFromReactiveListExtended() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testRemoveFromReactiveListExtended(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
                 "import org.drools.mvel.compiler.oopath.model.*;\n" +
                         "\n" +
@@ -278,8 +271,9 @@ public class OOPathReactiveTest {
         assertThat(factsCollection(ksession).contains("Y.Bea")).isFalse();
     }
 
-    @Test
-    public void testRemoveFromAndAddToReactiveSet() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testRemoveFromAndAddToReactiveSet(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
                 "import org.drools.mvel.compiler.oopath.model.*;\n" +
                         "\n" +
@@ -348,8 +342,9 @@ public class OOPathReactiveTest {
     /**
      * Same test as above but with serialization.
      */
-    @Test
-    public void testRemoveFromReactiveListExtendedWithSerialization() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testRemoveFromReactiveListExtendedWithSerialization(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
                 "import org.drools.mvel.compiler.oopath.model.*;\n" +
                         "\n" +
@@ -403,8 +398,9 @@ public class OOPathReactiveTest {
         assertThat(factsCollection(ksession).contains("Y.Bea")).isFalse();
     }
 
-    @Test
-    public void testReactiveOnBeta() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testReactiveOnBeta(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
                 "import org.drools.mvel.compiler.oopath.model.*;\n" +
                         "global java.util.List list\n" +
@@ -448,8 +444,9 @@ public class OOPathReactiveTest {
         assertThat(list).containsExactlyInAnyOrder("doll");
     }
 
-    @Test
-    public void testReactive2Rules() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testReactive2Rules(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
                 "import org.drools.mvel.compiler.oopath.model.*;\n" +
                         "global java.util.List toyList\n" +
@@ -508,8 +505,9 @@ public class OOPathReactiveTest {
         assertThat(teenagers).containsExactlyInAnyOrder("Charles", "Debbie");
     }
 
-    @Test
-    public void testReactiveList() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testReactiveList(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
                 "import org.drools.mvel.compiler.oopath.model.*;\n" +
                         "global java.util.List list\n" +
@@ -551,8 +549,9 @@ public class OOPathReactiveTest {
         assertThat(list).containsExactlyInAnyOrder("gun");
     }
 
-    @Test
-    public void testReactiveSet() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testReactiveSet(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
                 "import org.drools.mvel.compiler.oopath.model.*;\n" +
                         "global java.util.List list\n" +
@@ -592,8 +591,9 @@ public class OOPathReactiveTest {
         assertThat(list).containsExactlyInAnyOrder("epilepsy");
     }
 
-    @Test
-    public void testReactiveMap() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testReactiveMap(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
                 "import org.drools.mvel.compiler.oopath.model.*;\n" +
                         "global java.util.List list\n" +
@@ -625,8 +625,9 @@ public class OOPathReactiveTest {
         assertThat(list).containsExactlyInAnyOrder(38, 80);
     }
 
-    @Test
-    public void testNonReactivePart() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testNonReactivePart(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
                 "import org.drools.mvel.compiler.oopath.model.*;\n" +
                         "global java.util.List list\n" +
@@ -668,8 +669,9 @@ public class OOPathReactiveTest {
         assertThat(list).isEmpty();
     }
 
-    @Test
-    public void testAllNonReactiveAfterNonReactivePart() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testAllNonReactiveAfterNonReactivePart(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
                 "import org.drools.mvel.compiler.oopath.model.*;\n" +
                         "global java.util.List list\n" +
@@ -711,8 +713,9 @@ public class OOPathReactiveTest {
         assertThat(list).isEmpty();
     }
 
-    @Test
-    public void testInvalidDoubleNonReactivePart() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testInvalidDoubleNonReactivePart(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
                 "import org.drools.mvel.compiler.oopath.model.*;\n" +
                         "global java.util.List list\n" +
@@ -727,8 +730,9 @@ public class OOPathReactiveTest {
         assertThat(kieBuilder.getResults().hasMessages(Message.Level.ERROR)).isTrue();
     }
 
-    @Test
-    public void testSingleFireOnReactiveChange() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testSingleFireOnReactiveChange(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-1302
         final String drl =
                 "import org.drools.mvel.compiler.oopath.model.*;\n" +
@@ -771,8 +775,9 @@ public class OOPathReactiveTest {
         assertThat(list).hasSize(1);
     }
 
-    @Test
-    public void testReactivitySettingAttributeInDrl() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testReactivitySettingAttributeInDrl(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
                 "import org.drools.mvel.compiler.oopath.model.*;\n" +
                         "\n" +
