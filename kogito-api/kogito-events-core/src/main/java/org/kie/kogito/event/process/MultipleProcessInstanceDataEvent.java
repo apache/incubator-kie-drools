@@ -35,8 +35,16 @@ public class MultipleProcessInstanceDataEvent extends ProcessInstanceDataEvent<C
     }
 
     public boolean isCompressed() {
-        Object extension = getExtension(MultipleProcessInstanceDataEvent.COMPRESS_DATA);
-        return extension instanceof Boolean ? ((Boolean) extension).booleanValue() : false;
+        return isCompressed(getExtension(MultipleProcessInstanceDataEvent.COMPRESS_DATA));
+    }
+
+    public static boolean isCompressed(Object extension) {
+        if (extension instanceof Boolean) {
+            return ((Boolean) extension).booleanValue();
+        } else if (extension instanceof String) {
+            return Boolean.parseBoolean((String) extension);
+        }
+        return false;
     }
 
     public void setCompressed(boolean compressed) {

@@ -33,10 +33,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.cloudevents.CloudEvent;
 import io.cloudevents.CloudEventData;
+import io.cloudevents.core.data.PojoCloudEventData.ToBytes;
 
 public class MultipleProcessDataInstanceConverterFactory {
-
     private MultipleProcessDataInstanceConverterFactory() {
+    }
+
+    public static ToBytes<Collection<ProcessInstanceDataEvent<? extends KogitoMarshallEventSupport>>> toCloudEvent(MultipleProcessInstanceDataEvent event, ObjectMapper objectMapper) {
+        if (MultipleProcessInstanceDataEvent.BINARY_CONTENT_TYPE.equals(event.getDataContentType())) {
+            return event.isCompressed() ? compressedToBytes : binaryToBytes;
+        } else {
+            return objectMapper::writeValueAsBytes;
+        }
     }
 
     public static Converter<CloudEventData, Collection<ProcessInstanceDataEvent<? extends KogitoMarshallEventSupport>>> fromCloudEvent(CloudEvent cloudEvent, ObjectMapper objectMapper) {
@@ -49,9 +57,12 @@ public class MultipleProcessDataInstanceConverterFactory {
     }
 
     private static boolean isCompressed(CloudEvent event) {
-        Object value = event.getExtension(MultipleProcessInstanceDataEvent.COMPRESS_DATA);
-        return value instanceof Boolean ? ((Boolean) value).booleanValue() : false;
+        return MultipleProcessInstanceDataEvent.isCompressed(event.getExtension(MultipleProcessInstanceDataEvent.COMPRESS_DATA));
     }
+
+    private static ToBytes<Collection<ProcessInstanceDataEvent<? extends KogitoMarshallEventSupport>>> compressedToBytes = data -> serialize(data, true);
+
+    private static ToBytes<Collection<ProcessInstanceDataEvent<? extends KogitoMarshallEventSupport>>> binaryToBytes = data -> serialize(data, false);
 
     private static Converter<CloudEventData, Collection<ProcessInstanceDataEvent<? extends KogitoMarshallEventSupport>>> binaryConverter =
             data -> deserialize(data, false);
@@ -61,5 +72,10 @@ public class MultipleProcessDataInstanceConverterFactory {
 
     private static Collection<ProcessInstanceDataEvent<? extends KogitoMarshallEventSupport>> deserialize(CloudEventData data, boolean compress) throws IOException {
         return MultipleProcessInstanceDataEventDeserializer.readFromBytes(Base64.getDecoder().decode(data.toBytes()), compress);
+    }
+
+    private static byte[] serialize(Collection<ProcessInstanceDataEvent<? extends KogitoMarshallEventSupport>> data,
+            boolean compress) throws IOException {
+        return Base64.getEncoder().encode(MultipleProcessInstanceDataEventSerializer.dataAsBytes(data, compress));
     }
 }

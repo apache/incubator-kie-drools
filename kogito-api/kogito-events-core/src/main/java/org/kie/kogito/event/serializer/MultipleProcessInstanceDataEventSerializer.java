@@ -62,14 +62,14 @@ public class MultipleProcessInstanceDataEventSerializer extends JsonSerializer<M
             if (compress) {
                 gen.writeBooleanField(MultipleProcessInstanceDataEvent.COMPRESS_DATA, true);
             }
-            gen.writeBinaryField("data", dataAsBytes(gen, value.getData(), compress));
+            gen.writeBinaryField("data", dataAsBytes(value.getData(), compress));
             gen.writeEndObject();
         } else {
             defaultSerializer.serialize(value, gen, serializers);
         }
     }
 
-    private byte[] dataAsBytes(JsonGenerator gen, Collection<ProcessInstanceDataEvent<? extends KogitoMarshallEventSupport>> data, boolean compress) throws IOException {
+    static byte[] dataAsBytes(Collection<ProcessInstanceDataEvent<? extends KogitoMarshallEventSupport>> data, boolean compress) throws IOException {
         ByteArrayOutputStream bytesOut = new ByteArrayOutputStream();
         try (DataOutputStream out = new DataOutputStream(compress ? new GZIPOutputStream(bytesOut) : bytesOut)) {
             logger.trace("Writing size {}", data.size());
