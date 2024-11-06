@@ -31,18 +31,35 @@
   <groupId>org.drools.testcoverage</groupId>
   <artifactId>test-compiler-integration-jars-with-invoker</artifactId>
 
-  <name>test-compiler-integration-jars-with-invoker</name>
+  <name>Drools :: Test Coverage :: Jars for Compiler integration tests built by invoker</name>
 
   <!-- This project is to build kjars using maven-invoker-plugin when we want to
        use the project version kie-maven-plugin
        and specify a fixed version (e.g. 1.0.0) for the kjar -->
 
   <properties>
-    <java.module.name>org.drools.compiler.integrationtests.kie.project.simple</java.module.name>
+    <java.module.name>org.drools.compiler.integrationtests.jars.with.invoker</java.module.name>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.deploy.skip>true</maven.deploy.skip>
     <org.kie.version>${project.version}</org.kie.version>
   </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-maven-plugin</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-maven-plugin</artifactId>
+    </dependency>
+  </dependencies>
 
   <build>
     <plugins>

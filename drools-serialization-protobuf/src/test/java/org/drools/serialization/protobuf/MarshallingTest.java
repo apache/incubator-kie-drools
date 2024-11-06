@@ -871,48 +871,6 @@ public class MarshallingTest extends CommonTestMethodBase {
         KeyStoreHelper.reInit();
     }
 
-    /**
-     * In this case we are dealing with facts which are not on the systems classpath.
-     */
-    @Test
-    public void testSerializabilityWithJarFacts() throws Exception {
-        MapBackedClassLoader loader = new MapBackedClassLoader( this.getClass().getClassLoader() );
-
-        JarInputStream jis = new JarInputStream( this.getClass().getResourceAsStream( "/billasurf.jar" ) );
-
-        JarEntry entry = null;
-        byte[] buf = new byte[1024];
-        int len = 0;
-        while ( (entry = jis.getNextJarEntry()) != null ) {
-            if ( !entry.isDirectory() ) {
-                ByteArrayOutputStream out = new ByteArrayOutputStream();
-                while ( (len = jis.read( buf )) >= 0 ) {
-                    out.write( buf,
-                               0,
-                               len );
-                }
-                loader.addResource( entry.getName(),
-                                    out.toByteArray() );
-            }
-        }
-
-        String drl = "package foo.bar \n" +
-                     "import com.billasurf.Board\n" +
-                     "rule 'MyGoodRule' \n dialect 'mvel' \n when " +
-                     "   Board() " +
-                     "then \n" +
-                     " System.err.println(42); \n" +
-                     "end\n";
-
-
-        KnowledgeBuilderConfiguration kbuilderConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration(null, loader);
-
-        Collection<KiePackage>  kpkgs = loadKnowledgePackagesFromString(kbuilderConf, drl);
-
-        kpkgs = SerializationHelper.serializeObject( kpkgs, loader );
-
-    }
-
     @Test
     public void testEmptyRule() throws Exception {
         String rule = "package org.drools.compiler.test;\n";

@@ -39,6 +39,7 @@
   </properties>
 
   <modules>
+    <module>surf</module>
     <module>only-jar-pojo-not-kjar-no-kmodule</module>
     <module>test-compiler-integration-jars-setter-overload</module>
     <module>test-compiler-integration-jars-with-invoker</module>

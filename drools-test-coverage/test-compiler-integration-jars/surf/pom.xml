@@ -24,14 +24,14 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.drools.testcoverage</groupId>
-  <artifactId>only-jar-pojo-not-kjar-no-kmodule</artifactId>
+  <artifactId>surf</artifactId>
   <version>1.0.0</version>
   <packaging>jar</packaging>
 
-  <name>Drools :: Test Coverage :: Jar without kmodule.xml</name>
+  <name>Drools :: Test Coverage :: Jar with simple pojo</name>
 
   <properties>
-    <java.module.name>org.drools.compiler.integrationtests.only.jar.pojo.not.kjar.no.kmodule</java.module.name>
+    <java.module.name>org.drools.compiler.integrationtests.surf</java.module.name>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.deploy.skip>true</maven.deploy.skip>
     <maven.compiler.release>17</maven.compiler.release>
@@ -60,7 +60,7 @@
             </goals>
             <configuration>
               <sourceFile>${project.build.directory}/${project.build.finalName}.jar</sourceFile>
-              <destinationFile>${project.build.directory}/../../../test-compiler-integration/src/test/resources/${project.artifactId}-${project.version}.jar</destinationFile>
+              <destinationFile>${project.build.directory}/../../../test-compiler-integration/src/test/resources/${project.artifactId}.jar</destinationFile>
             </configuration>
           </execution>
         </executions>

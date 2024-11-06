@@ -35,6 +35,7 @@
     <java.module.name>org.drools.compiler.integrationtests.kie.project.simple</java.module.name>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.deploy.skip>true</maven.deploy.skip>
+    <maven.compiler.release>17</maven.compiler.release>
   </properties>
 
   <build>
