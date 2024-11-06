@@ -18,14 +18,15 @@
  */
 package org.kie.kogito.index.jdbc.storage;
 
-import org.kie.kogito.index.jpa.storage.AbstractProcessDefinitionStorageIT;
+import org.kie.kogito.index.jdbc.H2QuarkusTestProfile;
+import org.kie.kogito.index.jpa.storage.AbstractProcessInstanceStorageIT;
 
-import io.quarkus.test.common.QuarkusTestResource;
-import io.quarkus.test.h2.H2DatabaseTestResource;
+import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.TestProfile;
 
 @QuarkusTest
-@QuarkusTestResource(H2DatabaseTestResource.class)
-class ProcessDefinitionStorageIT extends AbstractProcessDefinitionStorageIT {
-
+@TestTransaction
+@TestProfile(H2QuarkusTestProfile.class)
+public class H2ProcessInstanceStorageIT extends AbstractProcessInstanceStorageIT {
 }

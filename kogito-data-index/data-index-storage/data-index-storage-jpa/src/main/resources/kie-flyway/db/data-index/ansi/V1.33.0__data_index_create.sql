@@ -98,7 +98,7 @@ create table processes
     root_process_instance_id   varchar(255),
     start_time                 timestamp,
     state                      integer,
-    variables                  varbinary(max),
+    variables                  varchar(max),
     CONSTRAINT processes_pk PRIMARY KEY (id),
     CONSTRAINT processes_variables_json CHECK (variables IS JSON)
 );
@@ -124,10 +124,10 @@ create table tasks
     completed                timestamp,
     description              varchar(255),
     endpoint                 varchar(255),
-    inputs                   varbinary(max),
+    inputs                   varchar(max),
     last_update              timestamp,
     name                     varchar(255),
-    outputs                  varbinary(max),
+    outputs                  varchar(max),
     priority                 varchar(255),
     process_id               varchar(255),
     process_instance_id      varchar(255),

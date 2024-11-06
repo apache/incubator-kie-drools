@@ -16,17 +16,15 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.index.postgresql.storage;
 
-import org.kie.kogito.index.jpa.storage.AbstractProcessInstanceStorageIT;
-import org.kie.kogito.testcontainers.quarkus.PostgreSqlQuarkusTestResource;
+package org.kie.kogito.index.jdbc;
 
-import io.quarkus.test.TestTransaction;
-import io.quarkus.test.common.QuarkusTestResource;
-import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.QuarkusTestProfile;
 
-@QuarkusTest
-@TestTransaction
-@QuarkusTestResource(PostgreSqlQuarkusTestResource.class)
-public class ProcessInstanceStorageIT extends AbstractProcessInstanceStorageIT {
+public class H2QuarkusTestProfile implements QuarkusTestProfile {
+
+    @Override
+    public String getConfigProfile() {
+        return "test-h2";
+    }
 }

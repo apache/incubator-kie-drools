@@ -16,16 +16,18 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.index.jdbc.query;
+package org.kie.kogito.index.jdbc.storage;
 
-import org.kie.kogito.index.jpa.query.AbstractUserTaskInstanceEntityQueryIT;
+import org.kie.kogito.index.jdbc.H2QuarkusTestProfile;
+import org.kie.kogito.index.jpa.storage.AbstractJobStorageIT;
 
-import io.quarkus.test.common.QuarkusTestResource;
-import io.quarkus.test.h2.H2DatabaseTestResource;
+import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.TestProfile;
 
 @QuarkusTest
-@QuarkusTestResource(H2DatabaseTestResource.class)
-class UserTaskInstanceEntityQueryIT extends AbstractUserTaskInstanceEntityQueryIT {
+@TestTransaction
+@TestProfile(H2QuarkusTestProfile.class)
+public class H2JobStorageIT extends AbstractJobStorageIT {
 
 }

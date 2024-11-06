@@ -27,19 +27,19 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import jakarta.persistence.AttributeConverter;
 
-public class JsonBinaryConverter implements AttributeConverter<ObjectNode, byte[]> {
+public class JsonBinaryConverter implements AttributeConverter<ObjectNode, String> {
 
     @Override
-    public byte[] convertToDatabaseColumn(ObjectNode attribute) {
+    public String convertToDatabaseColumn(ObjectNode attribute) {
         try {
-            return attribute == null ? null : ObjectMapperFactory.get().writeValueAsBytes(attribute);
+            return attribute == null ? null : ObjectMapperFactory.get().writeValueAsString(attribute);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
     }
 
     @Override
-    public ObjectNode convertToEntityAttribute(byte[] dbData) {
+    public ObjectNode convertToEntityAttribute(String dbData) {
         try {
             return dbData == null ? null : ObjectMapperFactory.get().readValue(dbData, ObjectNode.class);
         } catch (IOException e) {

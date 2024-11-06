@@ -38,7 +38,7 @@
     <path.to.script.folder>src/main/resources/${path.to.flyway.location}</path.to.script.folder>
     <path.to.migration.scripts.source>${path.to.postgresql.storage}/${path.to.script.folder}</path.to.migration.scripts.source>
     <path.to.migration.scripts.target>target/classes/${path.to.flyway.location}</path.to.migration.scripts.target>
-    <java.module.name>org.kie.kogito.index.jpa</java.module.name>
+   <java.module.name>org.kie.kogito.index.jpa</java.module.name>
   </properties>
 
   <dependencies>
@@ -58,6 +58,11 @@
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-test-h2</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-jdbc-postgresql</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>

@@ -19,18 +19,18 @@
 
 create table definitions_annotations
 (
-    value           varchar2(255) not null,
-    process_id      varchar2(255) not null,
-    process_version varchar2(255) not null,
+    value           varchar(255) not null,
+    process_id      varchar(255) not null,
+    process_version varchar(255) not null,
     primary key (value, process_id, process_version)
 );
 
 create table definitions_metadata
 (
-    process_id      varchar2(255) not null,
-    process_version varchar2(255) not null,
-    value           varchar2(255),
-    key             varchar2(255) not null,
+    process_id      varchar(255) not null,
+    process_version varchar(255) not null,
+    value           varchar(255),
+    key             varchar(255) not null,
     primary key (process_id, process_version, key)
 );
 
