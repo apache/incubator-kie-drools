@@ -15,4 +15,6 @@
 # specific language governing permissions and limitations
 # under the License.
 
+kie-project-simple-1.0.0.jar
+only-jar-pojo-not-kjar-no-kmodule-1.0.0.jar
 test-compiler-integration-jars-setter-overload.jar

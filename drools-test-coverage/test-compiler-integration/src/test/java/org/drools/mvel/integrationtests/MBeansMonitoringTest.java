@@ -541,7 +541,7 @@ public class MBeansMonitoringTest {
         try {
             KieServices ks = KieServices.Factory.get();
             KieRepository kieRepository = ks.getRepository();
-            ReleaseId releaseId = ks.newReleaseId( "org.test", "kie-project-simple", "1.0.0" );
+            ReleaseId releaseId = ks.newReleaseId( "org.drools.testcoverage", "kie-project-simple", "1.0.0" );
             KieModule kieModule = kieRepository.getKieModule( releaseId );
             assertThat(kieModule).isNotNull();
             assertThat(kieModule.getReleaseId()).isEqualTo(releaseId);

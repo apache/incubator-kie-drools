@@ -34,7 +34,13 @@
   <packaging>pom</packaging>
   <name>Drools :: Test Coverage :: Jars for Compiler integration tests</name>
 
+  <properties>
+    <parent.project.version>${project.version}</parent.project.version>
+  </properties>
+
   <modules>
+    <module>only-jar-pojo-not-kjar-no-kmodule</module>
     <module>test-compiler-integration-jars-setter-overload</module>
+    <module>test-compiler-integration-jars-with-invoker</module>
   </modules>
 </project>

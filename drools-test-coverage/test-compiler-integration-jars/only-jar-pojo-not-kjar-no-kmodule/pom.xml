@@ -19,29 +19,34 @@
     under the License.
 
 -->
-
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <parent>
-    <artifactId>test-compiler-integration-jars</artifactId>
-    <groupId>org.drools.testcoverage</groupId>
-    <version>999-SNAPSHOT</version>
-  </parent>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>test-compiler-integration-jars-setter-overload</artifactId>
-  <name>Drools :: Test Coverage :: Jar with setter overload for Compiler integration tests</name>
+  <groupId>org.drools.testcoverage</groupId>
+  <artifactId>only-jar-pojo-not-kjar-no-kmodule</artifactId>
+  <version>1.0.0</version>
+  <packaging>jar</packaging>
+
+  <name>only-jar-pojo-not-kjar-no-kmodule</name>
+  <url>http://maven.apache.org</url>
 
   <properties>
-    <java.module.name>org.drools.compiler.integrationtests.setter.overload</java.module.name>
+    <java.module.name>org.drools.compiler.integrationtests.only.jar.pojo.not.kjar.no.kmodule</java.module.name>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.deploy.skip>true</maven.deploy.skip>
   </properties>
 
-  <dependencies>
-  </dependencies>
-
   <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>com.coderplus.maven.plugins</groupId>
+          <artifactId>copy-rename-maven-plugin</artifactId>
+          <version>1.0</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
     <plugins>
       <plugin>
         <groupId>com.coderplus.maven.plugins</groupId>
@@ -55,12 +60,11 @@
             </goals>
             <configuration>
               <sourceFile>${project.build.directory}/${project.build.finalName}.jar</sourceFile>
-              <destinationFile>${project.build.directory}/../../../test-compiler-integration/src/test/resources/${project.artifactId}.jar</destinationFile>
+              <destinationFile>${project.build.directory}/../../../test-compiler-integration/src/test/resources/${project.artifactId}-${project.version}.jar</destinationFile>
             </configuration>
           </execution>
         </executions>
       </plugin>
     </plugins>
   </build>
-
 </project>

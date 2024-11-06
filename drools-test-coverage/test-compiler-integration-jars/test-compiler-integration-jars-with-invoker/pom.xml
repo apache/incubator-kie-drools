@@ -19,10 +19,8 @@
     under the License.
 
 -->
-
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
     <artifactId>test-compiler-integration-jars</artifactId>
     <groupId>org.drools.testcoverage</groupId>
@@ -30,37 +28,44 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>test-compiler-integration-jars-setter-overload</artifactId>
-  <name>Drools :: Test Coverage :: Jar with setter overload for Compiler integration tests</name>
+  <groupId>org.drools.testcoverage</groupId>
+  <artifactId>test-compiler-integration-jars-with-invoker</artifactId>
+
+  <name>test-compiler-integration-jars-with-invoker</name>
+
+  <!-- This project is to build kjars using maven-invoker-plugin when we want to
+       use the project version kie-maven-plugin
+       and specify a fixed version (e.g. 1.0.0) for the kjar -->
 
   <properties>
-    <java.module.name>org.drools.compiler.integrationtests.setter.overload</java.module.name>
+    <java.module.name>org.drools.compiler.integrationtests.kie.project.simple</java.module.name>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.deploy.skip>true</maven.deploy.skip>
+    <org.kie.version>${project.version}</org.kie.version>
   </properties>
-
-  <dependencies>
-  </dependencies>
 
   <build>
     <plugins>
+
       <plugin>
-        <groupId>com.coderplus.maven.plugins</groupId>
-        <artifactId>copy-rename-maven-plugin</artifactId>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-invoker-plugin</artifactId>
+        <configuration>
+          <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
+          <streamLogs>true</streamLogs>
+          <goal>clean</goal>
+          <goal>package</goal>
+        </configuration>
         <executions>
           <execution>
-            <id>rename-file</id>
-            <phase>package</phase>
+            <id>integration-test</id>
             <goals>
-              <goal>copy</goal>
+              <goal>run</goal>
             </goals>
-            <configuration>
-              <sourceFile>${project.build.directory}/${project.build.finalName}.jar</sourceFile>
-              <destinationFile>${project.build.directory}/../../../test-compiler-integration/src/test/resources/${project.artifactId}.jar</destinationFile>
-            </configuration>
           </execution>
         </executions>
       </plugin>
+
     </plugins>
   </build>
-
 </project>

@@ -46,6 +46,11 @@
         <artifactId>test-compiler-integration-jars-setter-overload</artifactId>
         <version>${project.version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.drools.testcoverage</groupId>
+        <artifactId>only-jar-pojo-not-kjar-no-kmodule</artifactId>
+        <version>1.0.0</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -109,6 +114,11 @@
     <dependency>
       <groupId>org.drools.testcoverage</groupId>
       <artifactId>test-compiler-integration-jars-setter-overload</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.drools.testcoverage</groupId>
+      <artifactId>only-jar-pojo-not-kjar-no-kmodule</artifactId>
       <scope>test</scope>
     </dependency>
 
@@ -200,6 +210,21 @@
       </exclusions>
     </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <!-- With this configuration, this project excludes the dependencies to test purpose jars while still being built after building and copying those jars -->
+          <!-- , because we want to use those jars as external jars and the test environment is not affected by the projects  -->
+          <classpathDependencyExcludes>org.drools.testcoverage:only-jar-pojo-not-kjar-no-kmodule</classpathDependencyExcludes>
+          <classpathDependencyExcludes>org.drools.testcoverage:test-compiler-integration-jars-setter-overload</classpathDependencyExcludes>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 
   <profiles>
     <profile>

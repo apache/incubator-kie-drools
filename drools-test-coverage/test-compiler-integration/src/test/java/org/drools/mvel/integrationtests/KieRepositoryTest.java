@@ -21,6 +21,7 @@ package org.drools.mvel.integrationtests;
 import java.net.URL;
 import java.net.URLClassLoader;
 
+import org.drools.base.util.Drools;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieModule;
@@ -42,7 +43,7 @@ public class KieRepositoryTest {
         try {
             KieServices ks = KieServices.Factory.get();
             KieRepository kieRepository = ks.getRepository();
-            ReleaseId releaseId = ks.newReleaseId( "org.test", "kie-project-simple", "1.0.0" );
+            ReleaseId releaseId = ks.newReleaseId( "org.drools.testcoverage", "kie-project-simple", "1.0.0" );
             KieModule kieModule = kieRepository.getKieModule( releaseId );
             assertThat(kieModule).isNotNull();
             assertThat(kieModule.getReleaseId()).isEqualTo(releaseId);
@@ -62,7 +63,7 @@ public class KieRepositoryTest {
         try {
             KieServices ks = KieServices.Factory.get();
             KieRepository kieRepository = ks.getRepository();
-            ReleaseId releaseId = ks.newReleaseId( "org.test", "kie-project-simple", "1.0.1" );
+            ReleaseId releaseId = ks.newReleaseId( "org.drools.testcoverage", "kie-project-simple", "1.0.1" );
             KieModule kieModule = kieRepository.getKieModule( releaseId );
             assertThat(kieModule).isNull();
         } finally {
@@ -81,7 +82,7 @@ public class KieRepositoryTest {
         try {
             KieServices ks = KieServices.Factory.get();
             KieRepository kieRepository = ks.getRepository();
-            ReleaseId releaseId = ks.newReleaseId( "org.test", "only-jar-pojo-not-kjar-no-kmodule", "1.0.0" );
+            ReleaseId releaseId = ks.newReleaseId( "org.drools.testcoverage", "only-jar-pojo-not-kjar-no-kmodule", "1.0.0" );
             KieModule kieModule = kieRepository.getKieModule( releaseId );
             assertThat(kieModule).isNull();
         } finally {
