@@ -40,6 +40,17 @@
     <excludedGroups>org.kie.test.testcategory.TurtleTestCategory</excludedGroups>
   </properties>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.drools.testcoverage</groupId>
+        <artifactId>drools-test-coverage-jars</artifactId>
+        <type>pom</type>
+        <version>${project.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
     <!-- Internal dependencies -->
     <dependency>
@@ -130,6 +141,13 @@
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-test-util</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.drools.testcoverage</groupId>
+      <artifactId>drools-test-coverage-jars</artifactId>
+      <type>pom</type>
       <scope>test</scope>
     </dependency>
 
