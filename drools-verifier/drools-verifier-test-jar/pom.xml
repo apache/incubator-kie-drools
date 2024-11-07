@@ -23,15 +23,15 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>org.drools.testcoverage</groupId>
-  <artifactId>testEnum</artifactId>
+  <groupId>org.drools</groupId>
+  <artifactId>drools-verifier-test-jar</artifactId>
   <version>1.0.0</version>
   <packaging>jar</packaging>
 
-  <name>Drools :: Test Coverage :: Jar with enum</name>
+  <name>Drools :: Verifier :: jar for test</name>
 
   <properties>
-    <java.module.name>org.drools.compiler.integrationtests.testEnum</java.module.name>
+    <java.module.name>org.drools.verifier.test.jar</java.module.name>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.deploy.skip>true</maven.deploy.skip>
     <maven.compiler.release>17</maven.compiler.release>
@@ -64,7 +64,7 @@
             </goals>
             <configuration>
               <sourceFile>${project.build.directory}/${project.build.finalName}.jar</sourceFile>
-              <destinationFile>${project.build.directory}/../../../test-compiler-integration/src/test/resources/${project.artifactId}.jar</destinationFile>
+              <destinationFile>${project.build.directory}/../../drools-verifier-drl/src/test/resources/org/drools/verifier/model.jar</destinationFile>
             </configuration>
           </execution>
         </executions>

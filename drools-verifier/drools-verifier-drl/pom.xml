@@ -45,6 +45,11 @@
         <artifactId>pdfbox</artifactId>
         <version>${version.org.apache.pdfbox}</version>
       </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-verifier-test-jar</artifactId>
+        <version>1.0.0</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -118,6 +123,12 @@
       <artifactId>junit-jupiter-params</artifactId>
       <scope>test</scope>
    </dependency>
+
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-verifier-test-jar</artifactId>
+      <scope>test</scope>
+    </dependency>
 
     <dependency>
       <groupId>org.mockito</groupId>

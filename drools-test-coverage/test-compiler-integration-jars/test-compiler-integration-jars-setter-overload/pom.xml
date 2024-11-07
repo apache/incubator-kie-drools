@@ -36,7 +36,6 @@
   <properties>
     <java.module.name>org.drools.compiler.integrationtests.setter.overload</java.module.name>
     <maven.deploy.skip>true</maven.deploy.skip>
-    <maven.compiler.release>17</maven.compiler.release>
   </properties>
 
   <dependencies>
