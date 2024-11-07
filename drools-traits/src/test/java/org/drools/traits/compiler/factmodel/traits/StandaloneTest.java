@@ -25,8 +25,8 @@ import org.drools.traits.core.factmodel.LogicalTypeInconsistencyException;
 import org.drools.base.factmodel.traits.Thing;
 import org.drools.traits.core.util.StandaloneTraitFactory;
 import org.drools.wiring.api.classloader.ProjectClassLoader;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,7 +39,7 @@ public class StandaloneTest {
 
     private StandaloneTraitFactory factory;
 
-    @Before
+    @BeforeEach
     public void init() {
         ProjectClassLoader loader = ProjectClassLoader.createProjectClassLoader();
         factory = createStandaloneTraitFactory();
@@ -100,7 +100,7 @@ public class StandaloneTest {
         LOGGER.debug( "Is foo instance of Thing? : " + (foo instanceof Thing) );
 
         assertThat(foo.getName()).isEqualTo("john doe");
-        assertThat(foo instanceof Thing).isTrue();
+        assertThat(foo).isInstanceOf(Thing.class);
     }
 
 

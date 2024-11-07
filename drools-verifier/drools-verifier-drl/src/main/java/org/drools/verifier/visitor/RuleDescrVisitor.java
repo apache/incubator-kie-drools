@@ -200,6 +200,10 @@ public class RuleDescrVisitor extends ConditionalElementDescrVisitor {
          * Strip all comments out of the code.
          */
         StringBuilder buffer = new StringBuilder(text);
+
+        // Make sure there is a '\n' at the end of a comment even if it's the last line of the consequence.
+        buffer.append('\n');
+
         int commentIndex = buffer.indexOf("//");
 
         while (commentIndex != -1) {

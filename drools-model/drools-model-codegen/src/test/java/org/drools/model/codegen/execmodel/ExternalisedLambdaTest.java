@@ -30,9 +30,10 @@ import org.drools.model.codegen.execmodel.domain.Result;
 import org.drools.model.codegen.execmodel.domain.StockTick;
 import org.drools.model.codegen.execmodel.domain.Woman;
 import org.drools.model.codegen.execmodel.util.lambdareplace.NonExternalisedLambdaFoundException;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieServices;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.conf.EventProcessingOption;
@@ -53,23 +54,20 @@ public class ExternalisedLambdaTest extends BaseModelTest {
 
     private boolean checkNonExternalisedLambdaOrig;
 
-    public ExternalisedLambdaTest(RUN_TYPE testRunType) {
-        super(testRunType);
-    }
-
-    @Before
+    @BeforeEach
     public void init() {
         checkNonExternalisedLambdaOrig = RuleWriter.isCheckNonExternalisedLambda();
         RuleWriter.setCheckNonExternalisedLambda(true);
     }
 
-    @After
+    @AfterEach
     public void clear() {
         RuleWriter.setCheckNonExternalisedLambda(checkNonExternalisedLambdaOrig);
     }
 
-    @Test
-    public void testConsequenceNoVariable() throws Exception {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testConsequenceNoVariable(RUN_TYPE runType) {
         // DROOLS-4924
         String str =
                 "package defaultpkg;\n" +
@@ -82,7 +80,7 @@ public class ExternalisedLambdaTest extends BaseModelTest {
 
         KieSession ksession = null;
         try {
-            ksession = getKieSession(str);
+            ksession = getKieSession(runType, str);
         } catch (NonExternalisedLambdaFoundException e) {
             fail(e.getMessage());
         }
@@ -93,8 +91,9 @@ public class ExternalisedLambdaTest extends BaseModelTest {
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testExternalizeBindingVariableLambda() throws Exception {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testExternalizeBindingVariableLambda(RUN_TYPE runType) {
         String str =
                 "package defaultpkg;\n" +
                      "import " + Person.class.getCanonicalName() + ";" +
@@ -107,7 +106,7 @@ public class ExternalisedLambdaTest extends BaseModelTest {
 
         KieSession ksession = null;
         try {
-            ksession = getKieSession(str);
+            ksession = getKieSession(runType, str);
         } catch (NonExternalisedLambdaFoundException e) {
             fail(e.getMessage());
         }
@@ -122,8 +121,9 @@ public class ExternalisedLambdaTest extends BaseModelTest {
         assertThat(list).containsExactlyInAnyOrder("Mario");
     }
 
-    @Test
-    public void testExternalizeLambdaPredicate() throws Exception {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testExternalizeLambdaPredicate(RUN_TYPE runType) {
         String str =
                 "package defaultpkg;\n" +
                      "import " + Person.class.getCanonicalName() + ";" +
@@ -136,7 +136,7 @@ public class ExternalisedLambdaTest extends BaseModelTest {
 
         KieSession ksession = null;
         try {
-            ksession = getKieSession(str);
+            ksession = getKieSession(runType, str);
         } catch (NonExternalisedLambdaFoundException e) {
             fail(e.getMessage());
         }
@@ -151,8 +151,9 @@ public class ExternalisedLambdaTest extends BaseModelTest {
         assertThat(list).containsExactlyInAnyOrder("Mario");
     }
 
-    @Test
-    public void testExternalizeLambdaUsingVariable() throws Exception {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testExternalizeLambdaUsingVariable(RUN_TYPE runType) {
         String str =
                 "package defaultpkg;\n" +
                      "import " + Person.class.getCanonicalName() + ";\n" +
@@ -166,7 +167,7 @@ public class ExternalisedLambdaTest extends BaseModelTest {
 
         KieSession ksession = null;
         try {
-            ksession = getKieSession(str);
+            ksession = getKieSession(runType, str);
         } catch (NonExternalisedLambdaFoundException e) {
             fail(e.getMessage());
         }
@@ -181,8 +182,9 @@ public class ExternalisedLambdaTest extends BaseModelTest {
         assertThat(list).containsExactlyInAnyOrder(43);
     }
 
-    @Test
-    public void testEval() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testEval(RUN_TYPE runType) {
         String str =
                 "import " + Result.class.getCanonicalName() + ";" +
                      "import " + Person.class.getCanonicalName() + ";" +
@@ -195,7 +197,7 @@ public class ExternalisedLambdaTest extends BaseModelTest {
 
         KieSession ksession = null;
         try {
-            ksession = getKieSession(str);
+            ksession = getKieSession(runType, str);
         } catch (NonExternalisedLambdaFoundException e) {
             fail(e.getMessage());
         }
@@ -210,8 +212,9 @@ public class ExternalisedLambdaTest extends BaseModelTest {
         assertThat(results.iterator().next().getValue()).isEqualTo("Mario");
     }
 
-    @Test
-    public void testFromExpression() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testFromExpression(RUN_TYPE runType) {
         final String str =
                "import org.drools.model.codegen.execmodel.domain.*;\n" +
                "global java.util.List list\n" +
@@ -225,7 +228,7 @@ public class ExternalisedLambdaTest extends BaseModelTest {
 
         KieSession ksession = null;
         try {
-            ksession = getKieSession(str);
+            ksession = getKieSession(runType, str);
         } catch (NonExternalisedLambdaFoundException e) {
             fail(e.getMessage());
         }
@@ -248,8 +251,9 @@ public class ExternalisedLambdaTest extends BaseModelTest {
         assertThat(list).containsExactlyInAnyOrder("Charles");
     }
 
-    @Test
-    public void testAccumulateWithBinaryExpr() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testAccumulateWithBinaryExpr(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                      "import " + Result.class.getCanonicalName() + ";" +
@@ -264,7 +268,7 @@ public class ExternalisedLambdaTest extends BaseModelTest {
 
         KieSession ksession = null;
         try {
-            ksession = getKieSession(str);
+            ksession = getKieSession(runType, str);
         } catch (NonExternalisedLambdaFoundException e) {
             fail(e.getMessage());
         }
@@ -281,8 +285,9 @@ public class ExternalisedLambdaTest extends BaseModelTest {
         assertThat(((Number) results.iterator().next().getValue()).intValue()).isEqualTo(77);
     }
 
-    @Test
-    public void testOOPath() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testOOPath(RUN_TYPE runType) {
         final String str =
                 "import org.drools.model.codegen.execmodel.domain.*;\n" +
                 "global java.util.List list\n" +
@@ -295,7 +300,7 @@ public class ExternalisedLambdaTest extends BaseModelTest {
 
         KieSession ksession = null;
         try {
-            ksession = getKieSession(str);
+            ksession = getKieSession(runType, str);
         } catch (NonExternalisedLambdaFoundException e) {
             fail(e.getMessage());
         }
@@ -320,8 +325,9 @@ public class ExternalisedLambdaTest extends BaseModelTest {
         assertThat(list).containsExactlyInAnyOrder("Bob");
     }
 
-    @Test
-    public void testCep() throws Exception {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testCep(RUN_TYPE runType) {
         String str =
                 "import " + StockTick.class.getCanonicalName() + ";" +
                 "rule R when\n" +
@@ -339,7 +345,7 @@ public class ExternalisedLambdaTest extends BaseModelTest {
                 .setDefault( true ).setClockType( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
         KieSession ksession = null;
         try {
-            ksession = getKieSession(kmodel, str);
+            ksession = getKieSession(runType, kmodel, str);
         } catch (NonExternalisedLambdaFoundException e) {
             fail(e.getMessage());
         }

@@ -31,6 +31,7 @@ import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.lang.FEELDialect;
 import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.dmn.feel.runtime.impl.RangeImpl;
+import org.kie.dmn.feel.runtime.impl.UndefinedValueComparable;
 
 public class FEELRangesTest extends BaseFEELTest {
 
@@ -42,6 +43,13 @@ public class FEELRangesTest extends BaseFEELTest {
 
     private static Collection<Object[]> data() {
         final Object[][] cases = new Object[][]{
+                // when converting from unary tests, boundaries are dictated by comparison
+                {"(>1)", new RangeImpl(Range.RangeBoundary.OPEN, BigDecimal.ONE, new UndefinedValueComparable(), Range.RangeBoundary.OPEN), null},
+                {"(>=1)", new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.ONE, new UndefinedValueComparable(), Range.RangeBoundary.OPEN), null},
+                {"(<1)", new RangeImpl(Range.RangeBoundary.OPEN, new UndefinedValueComparable(), BigDecimal.ONE, Range.RangeBoundary.OPEN), null},
+                {"(<=1)", new RangeImpl(Range.RangeBoundary.OPEN, new UndefinedValueComparable(), BigDecimal.ONE, Range.RangeBoundary.CLOSED), null},
+                {"(null..10)", new RangeImpl(Range.RangeBoundary.OPEN, null, BigDecimal.valueOf(10), Range.RangeBoundary.OPEN), null},
+
                 {"[1..2]", new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.ONE, BigDecimal.valueOf(2), Range.RangeBoundary.CLOSED), null},
                 {"[2..1]", new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.valueOf(2), BigDecimal.ONE, Range.RangeBoundary.CLOSED), null},
                 {"[1..2)", new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.ONE, BigDecimal.valueOf(2), Range.RangeBoundary.OPEN), null},
@@ -161,7 +169,7 @@ public class FEELRangesTest extends BaseFEELTest {
                             put("enddate", LocalDate.of(1978, 10, 13));
                             put("rangedates", new RangeImpl(Range.RangeBoundary.CLOSED, LocalDate.of(1978, 9, 12), LocalDate.of(1978, 10, 13), Range.RangeBoundary.CLOSED));
                         }}, null},
-                
+
                 // Table 42:
                 {"[1..10].start included", Boolean.TRUE, null},
                 {"[1..10].start", new BigDecimal(1), null},
@@ -172,12 +180,14 @@ public class FEELRangesTest extends BaseFEELTest {
                 {"(1..10].end", new BigDecimal(10), null},
                 {"(1..10].end included", Boolean.TRUE, null},
                 {"(<=10).start included", Boolean.FALSE, null},
+                {"(<10).start", null, null},
                 {"(<=10).start", null, null},
                 {"(<=10).end", new BigDecimal(10), null},
                 {"(<=10).end included", Boolean.TRUE, null},
                 {"(>1).start included", Boolean.FALSE, null},
                 {"(>1).start", new BigDecimal(1), null},
                 {"(>1).end", null, null},
+                {"(>=1).end", null, null},
                 {"(>1).end included", Boolean.FALSE, null},
         };
         return addAdditionalParameters(cases, false);

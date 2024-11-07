@@ -144,6 +144,11 @@
       <artifactId>drools-wiring-dynamic</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
 
     <dependency>
       <groupId>org.kie</groupId>

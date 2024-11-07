@@ -44,9 +44,9 @@ import org.drools.core.common.PropagationContext;
 import org.drools.core.test.model.Cheese;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.conf.CompositeConfiguration;
 import org.kie.internal.utils.ChainedProperties;
@@ -59,7 +59,7 @@ public class ReteTest {
     private BuildContext   buildContext;
     private EntryPointNode entryPoint;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         this.kBase = KnowledgeBaseFactory.newKnowledgeBase();
 
@@ -234,7 +234,7 @@ public class ReteTest {
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void testHierarchy() {
         StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
 
@@ -400,7 +400,7 @@ public class ReteTest {
         final Object[] results = (Object[]) sink1.getAsserted().get(0);
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void testNotShadowed() {
 
         Properties properties = new Properties();

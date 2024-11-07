@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
-import org.kie.dmn.feel.codegen.feel11.CodegenTestUtil;
+import org.kie.dmn.feel.util.EvaluationContextTestUtil;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 
@@ -39,7 +39,7 @@ class ForExpressionNodeTest {
         IterationContextNode x = getIterationContextNode("x", getListNode("[ 1, 2, 3, 4 ]", Arrays.asList("1", "2", "3", "4")), "x in [ 1, 2, 3, 4 ]");
         IterationContextNode y = getIterationContextNode("y", getNameRefNode(BuiltInType.UNKNOWN, "x"), "y in x");
         ForExpressionNode forExpressionNode = new ForExpressionNode(Arrays.asList(x, y), getNameRefNode(BuiltInType.UNKNOWN, "y"), "for x in [ 1, 2, 3, 4 ], y in x return y");
-        Object retrieved = forExpressionNode.evaluate(CodegenTestUtil.newEmptyEvaluationContext());
+        Object retrieved = forExpressionNode.evaluate(EvaluationContextTestUtil.newEmptyEvaluationContext());
         assertThat(retrieved).isInstanceOf(List.class).asList().
                 containsExactly(BigDecimal.ONE, BigDecimal.valueOf(2), BigDecimal.valueOf(3), BigDecimal.valueOf(4));
     }
@@ -52,7 +52,7 @@ class ForExpressionNodeTest {
         IterationContextNode x = getIterationContextNode("x", getNestedListNode("[ [1, 2], [3, 4] ]", firstIterationContext), "x in [ [1, 2], [3, 4] ]");
         IterationContextNode y = getIterationContextNode("y", getNameRefNode(BuiltInType.UNKNOWN, "x"), "y in x");
         ForExpressionNode forExpressionNode = new ForExpressionNode(Arrays.asList(x, y), getNameRefNode(BuiltInType.UNKNOWN, "y"), "for x in [ [1, 2], [3, 4] ], y in x return y");
-        Object retrieved = forExpressionNode.evaluate(CodegenTestUtil.newEmptyEvaluationContext());
+        Object retrieved = forExpressionNode.evaluate(EvaluationContextTestUtil.newEmptyEvaluationContext());
         assertThat(retrieved).isInstanceOf(List.class).asList().
                 containsExactly(BigDecimal.ONE, BigDecimal.valueOf(2), BigDecimal.valueOf(3), BigDecimal.valueOf(4));
 

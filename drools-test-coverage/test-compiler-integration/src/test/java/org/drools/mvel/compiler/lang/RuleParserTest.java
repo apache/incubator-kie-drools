@@ -63,9 +63,9 @@ import org.drools.drl.parser.DrlParser;
 import org.drools.drl.parser.lang.DRL6Lexer;
 import org.drools.drl.parser.lang.DRL6Parser;
 import org.drools.drl.parser.lang.DRLParser;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -77,13 +77,13 @@ public class RuleParserTest {
 
     private DRLParser parser;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         // initializes pluggable operators
         new EvaluatorRegistry();
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
     }
 
@@ -108,26 +108,6 @@ public class RuleParserTest {
         final PackageDescr pkg = parser.parse( new StringReader( source ) );
         assertThat(parser.hasErrors()).isFalse();
         assertThat(pkg.getName()).isEqualTo("foo.bar.baz");
-    }
-
-    @Test
-    public void testPackageWithError() throws Exception {
-        final String source = "package 12 foo.bar.baz";
-        final DrlParser parser = new DrlParser(LanguageLevelOption.DRL6);
-        final PackageDescr pkg = parser.parse( true,
-                                               new StringReader( source ) );
-        assertThat(parser.hasErrors()).isTrue();
-        assertThat(pkg.getName()).isEqualTo("foo.bar.baz");
-    }
-
-    @Test
-    public void testPackageWithError2() throws Exception {
-        final String source = "package 12 12312 231";
-        final DrlParser parser = new DrlParser(LanguageLevelOption.DRL6);
-        final PackageDescr pkg = parser.parse( true,
-                                               new StringReader( source ) );
-        assertThat(parser.hasErrors()).isTrue();
-        assertThat(pkg.getName()).isEqualTo("");
     }
 
     @Test

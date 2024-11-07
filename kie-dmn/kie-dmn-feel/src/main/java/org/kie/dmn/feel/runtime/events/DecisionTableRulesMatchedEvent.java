@@ -32,12 +32,14 @@ public class DecisionTableRulesMatchedEvent
     private final String        nodeName;
     private final String        dtName;
     private final List<Integer> matches;
+    private final List<String> matchesIds;
 
-    public DecisionTableRulesMatchedEvent(Severity severity, String msg, String nodeName, String dtName, List<Integer> matches) {
+    public DecisionTableRulesMatchedEvent(Severity severity, String msg, String nodeName, String dtName, List<Integer> matches, List<String> matchesIds) {
         super( severity, msg, null );
         this.nodeName = nodeName;
         this.dtName = dtName;
         this.matches = matches;
+        this.matchesIds = matchesIds;
     }
 
     public String getNodeName() {
@@ -52,6 +54,10 @@ public class DecisionTableRulesMatchedEvent
         return matches;
     }
 
+    public List<String> getMatchesIds() {
+        return matchesIds;
+    }
+
     @Override
     public String toString() {
         return "DecisionTableRulesMatchedEvent{" +
@@ -60,6 +66,7 @@ public class DecisionTableRulesMatchedEvent
                ", nodeName='" + nodeName + '\'' +
                ", dtName='" + dtName + '\'' +
                ", matches='" + matches + '\'' +
+               ", matchesIds='" + matchesIds + '\'' +
                '}';
     }
 }

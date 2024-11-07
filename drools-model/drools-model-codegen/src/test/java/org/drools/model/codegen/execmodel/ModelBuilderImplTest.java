@@ -24,8 +24,8 @@ import org.drools.base.definitions.InternalKnowledgePackage;
 import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.drl.ast.descr.GlobalDescr;
 import org.drools.drl.ast.descr.PackageDescr;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.api.builder.ReleaseId;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.util.maven.support.ReleaseIdImpl;
@@ -42,7 +42,7 @@ public class ModelBuilderImplTest {
     private PackageRegistry packageRegistry;
     private ModelBuilderImpl<PackageSources> modelBuilder;
 
-    @Before
+    @BeforeEach
     public void setup() {
         internalKnowledgePackage = CoreComponentFactory.get().createKnowledgePackage("apackage");
         modelBuilder = new ModelBuilderImpl<>(PackageSources::dumpSources, CONFIGURATION, RELEASE_ID, false);

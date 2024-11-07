@@ -24,8 +24,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.command.Command;
 import org.kie.api.event.process.ProcessEventListener;
@@ -54,7 +54,7 @@ public class ExternalSheetListenerTest {
 
     private List<Row> assertedRows = new ArrayList<>();
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         esl = new TemplateDataListener(2, 2, new TestTemplateContainer(), new TestGenerator());
     }

@@ -30,6 +30,7 @@ import java.util.stream.Stream;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.Range.RangeBoundary;
 import org.kie.dmn.feel.runtime.impl.RangeImpl;
+import org.kie.dmn.feel.runtime.impl.UndefinedValueComparable;
 import org.kie.dmn.feel.util.Generated;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -99,7 +100,7 @@ public class Interval {
         if (input != POS_INF && input != NEG_INF) {
             return input;
         } else {
-            return null;
+            return new UndefinedValueComparable();
         }
     }
 

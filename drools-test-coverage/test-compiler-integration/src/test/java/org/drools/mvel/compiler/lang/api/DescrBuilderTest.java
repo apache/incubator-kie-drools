@@ -41,7 +41,7 @@ import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.mvel.DrlDumper;
 import org.drools.mvel.compiler.Cheese;
 import org.drools.mvel.compiler.StockTick;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.event.rule.AfterMatchFiredEvent;

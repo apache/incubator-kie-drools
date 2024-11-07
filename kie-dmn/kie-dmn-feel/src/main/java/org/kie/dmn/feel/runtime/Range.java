@@ -34,4 +34,6 @@ public interface Range {
 
     Boolean includes(Object param);
 
+    boolean isWithUndefined();
+
 }

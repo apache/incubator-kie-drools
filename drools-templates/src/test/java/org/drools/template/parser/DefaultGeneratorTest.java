@@ -18,8 +18,8 @@
  */
 package org.drools.template.parser;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,7 +29,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class DefaultGeneratorTest {
     private DefaultGenerator g;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         Map<String, RuleTemplate> t = new HashMap<String, RuleTemplate>();
         TemplateContainer tc = new TemplateContainer() {

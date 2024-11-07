@@ -26,7 +26,7 @@ import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.model.codegen.ExecutableModelProject;
 import org.drools.modelcompiler.constraints.LambdaConstraint;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;

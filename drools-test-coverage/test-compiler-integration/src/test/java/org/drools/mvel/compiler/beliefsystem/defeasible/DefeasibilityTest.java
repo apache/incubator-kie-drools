@@ -19,8 +19,8 @@
 package org.drools.mvel.compiler.beliefsystem.defeasible;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.drools.core.BeliefSystemType;
 import org.kie.api.runtime.ClassObjectFilter;
@@ -35,14 +35,15 @@ import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
 import org.drools.tms.TruthMaintenanceSystemEqualityKey;
 import org.drools.tms.beliefsystem.BeliefSet;
 import org.drools.tms.beliefsystem.defeasible.DefeasibilityStatus;
 import org.drools.tms.beliefsystem.defeasible.DefeasibleBeliefSet;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.runtime.KieSession;
@@ -52,22 +53,14 @@ import org.kie.api.runtime.rule.FactHandle;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
-@RunWith(Parameterized.class)
 public class DefeasibilityTest {
-
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public DefeasibilityTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
-    }
-
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
+	
+    public static Stream<KieBaseTestConfiguration> parameters() {
      // TODO: EM failed with some tests. File JIRAs (maybe unsupported)
-        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+        return TestParametersUtil2.getKieBaseCloudConfigurations(false).stream();
     }
 
-    protected KieSession getSessionFromString( String drlString) {
+    protected KieSession getSessionFromString( KieBaseTestConfiguration kieBaseTestConfiguration, String drlString) {
         KieBase kBase;
 
         try {
@@ -86,7 +79,7 @@ public class DefeasibilityTest {
     }
 
 
-    protected KieSession getSession( String ruleFile ) {
+    protected KieSession getSession( KieBaseTestConfiguration kieBaseTestConfiguration, String ruleFile ) {
         KieBase kBase;
 
         try {
@@ -117,9 +110,11 @@ public class DefeasibilityTest {
 
 
 
-    @Test(timeout = 10000 )
-    public void testStrictEntailment() {
-        KieSession kSession = getSession( "org/drools/mvel/compiler/beliefsystem/defeasible/strict.drl" );
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    @Timeout(10000)
+    public void testStrictEntailment(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        KieSession kSession = getSession( kieBaseTestConfiguration, "org/drools/mvel/compiler/beliefsystem/defeasible/strict.drl" );
         kSession.fireAllRules();
 
         TruthMaintenanceSystem tms = TruthMaintenanceSystemFactory.get().getOrCreateTruthMaintenanceSystem( (ReteEvaluator) kSession );
@@ -142,9 +137,11 @@ public class DefeasibilityTest {
 
 
 
-    @Test(timeout = 10000 )
-    public void testDefeasibleEntailmentWithStrictOverride() {
-        KieSession kSession = getSession( "org/drools/mvel/compiler/beliefsystem/defeasible/strictOverride.drl" );
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    @Timeout(10000)
+    public void testDefeasibleEntailmentWithStrictOverride(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        KieSession kSession = getSession( kieBaseTestConfiguration, "org/drools/mvel/compiler/beliefsystem/defeasible/strictOverride.drl" );
         kSession.fireAllRules();
 
         TruthMaintenanceSystem tms = TruthMaintenanceSystemFactory.get().getOrCreateTruthMaintenanceSystem( (ReteEvaluator) kSession );
@@ -168,9 +165,11 @@ public class DefeasibilityTest {
 
 
 
-    @Test(timeout = 10000 )
-    public void defeasibleEntailmentMultiActivation() {
-        KieSession kSession = getSession( "org/drools/mvel/compiler/beliefsystem/defeasible/defeat.drl" );
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    @Timeout(10000)
+    public void defeasibleEntailmentMultiActivation(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        KieSession kSession = getSession( kieBaseTestConfiguration, "org/drools/mvel/compiler/beliefsystem/defeasible/defeat.drl" );
         kSession.fireAllRules();
 
         TruthMaintenanceSystem tms = TruthMaintenanceSystemFactory.get().getOrCreateTruthMaintenanceSystem( (ReteEvaluator) kSession );
@@ -188,9 +187,11 @@ public class DefeasibilityTest {
         assertThat(kSession.getObjects().size()).isEqualTo(3);
     }
 
-    @Test(timeout = 10000 )
-    public void testDefeaterNeutrality() {
-        KieSession kSession = getSession( "org/drools/mvel/compiler/beliefsystem/defeasible/defeaterOnly.drl" );
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    @Timeout(10000)
+    public void testDefeaterNeutrality(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        KieSession kSession = getSession( kieBaseTestConfiguration, "org/drools/mvel/compiler/beliefsystem/defeasible/defeaterOnly.drl" );
         ArrayList list = new ArrayList();
         kSession.setGlobal( "list", list );
         kSession.fireAllRules();
@@ -215,9 +216,11 @@ public class DefeasibilityTest {
     }
 
 
-    @Test(timeout = 10000 )
-    public void testMultipleDefeats() {
-        KieSession kSession = getSession( "org/drools/mvel/compiler/beliefsystem/defeasible/multiDefeat.drl" );
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    @Timeout(10000)
+    public void testMultipleDefeats(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        KieSession kSession = getSession( kieBaseTestConfiguration, "org/drools/mvel/compiler/beliefsystem/defeasible/multiDefeat.drl" );
         kSession.fireAllRules();
 
         TruthMaintenanceSystem tms = TruthMaintenanceSystemFactory.get().getOrCreateTruthMaintenanceSystem( (ReteEvaluator) kSession );
@@ -242,9 +245,11 @@ public class DefeasibilityTest {
     }
 
 
-    @Test(timeout = 10000 )
-    public void testRemoveDefiniteJustifier() {
-        KieSession kSession = getSession( "org/drools/mvel/compiler/beliefsystem/defeasible/strictRetract.drl" );
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    @Timeout(10000)
+    public void testRemoveDefiniteJustifier(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        KieSession kSession = getSession( kieBaseTestConfiguration, "org/drools/mvel/compiler/beliefsystem/defeasible/strictRetract.drl" );
 
         FactHandle h = kSession.insert( "go" );
         kSession.fireAllRules();
@@ -278,9 +283,11 @@ public class DefeasibilityTest {
 
     }
 
-    @Test(timeout = 10000 )
-    public void testRemoveDefeasibleJustifier() {
-        KieSession kSession = getSession( "org/drools/mvel/compiler/beliefsystem/defeasible/defeaterRetract.drl" );
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    @Timeout(10000)
+    public void testRemoveDefeasibleJustifier(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        KieSession kSession = getSession( kieBaseTestConfiguration, "org/drools/mvel/compiler/beliefsystem/defeasible/defeaterRetract.drl" );
 
         FactHandle h = kSession.insert( "go" );
         kSession.fireAllRules();
@@ -316,9 +323,12 @@ public class DefeasibilityTest {
 
 
 
-    @Test(timeout = 10000 ) @Ignore
-    public void testRemoveDefeasibleEntailmentMultiActivationWithDefeat() {
-        KieSession kSession = getSession( "org/drools/mvel/compiler/beliefsystem/defeasible/defeatDefeaterRetract.drl" );
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    @Timeout(10000) 
+    @Disabled
+    public void testRemoveDefeasibleEntailmentMultiActivationWithDefeat(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        KieSession kSession = getSession( kieBaseTestConfiguration, "org/drools/mvel/compiler/beliefsystem/defeasible/defeatDefeaterRetract.drl" );
         ArrayList list = new ArrayList();
 
         kSession.setGlobal( "list", list );
@@ -386,9 +396,11 @@ public class DefeasibilityTest {
 
 
 
-    @Test(timeout = 10000 )
-    public void testDefeaterPositiveVsNegative() {
-        KieSession kSession = getSession( "org/drools/mvel/compiler/beliefsystem/defeasible/defeatersPosNeg.drl" );
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    @Timeout(10000)
+    public void testDefeaterPositiveVsNegative(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        KieSession kSession = getSession( kieBaseTestConfiguration, "org/drools/mvel/compiler/beliefsystem/defeasible/defeatersPosNeg.drl" );
         ArrayList list = new ArrayList();
         kSession.setGlobal( "list", list );
         kSession.fireAllRules();
@@ -429,10 +441,12 @@ public class DefeasibilityTest {
         assertThat(getNegativeObjects(kSession).size()).isEqualTo(1);
     }
 
-    @Test(timeout = 10000 )
-    public void testDefeatOutcomePosNeg() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    @Timeout(10000)
+    public void testDefeatOutcomePosNeg(KieBaseTestConfiguration kieBaseTestConfiguration) {
 
-        KieSession kSession = getSession( "org/drools/mvel/compiler/beliefsystem/defeasible/negDefeatPos.drl" );
+        KieSession kSession = getSession( kieBaseTestConfiguration, "org/drools/mvel/compiler/beliefsystem/defeasible/negDefeatPos.drl" );
         ArrayList list = new ArrayList();
         kSession.setGlobal( "list", list );
         kSession.fireAllRules();
@@ -457,8 +471,10 @@ public class DefeasibilityTest {
     }
 
 
-    @Test(timeout = 10000 )
-    public void testPrimeJustificationWithEqualityMode() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    @Timeout(10000)
+    public void testPrimeJustificationWithEqualityMode(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String droolsSource =
                 "package org.drools.tms.test; \n" +
                 "declare Bar end \n" +
@@ -487,7 +503,7 @@ public class DefeasibilityTest {
                 " System.out.println( $b );  \n" +
                 "end \n" ;
 
-        KieSession session = getSessionFromString( droolsSource );
+        KieSession session = getSessionFromString( kieBaseTestConfiguration, droolsSource );
 
         FactHandle handle1 = session.insert( 10 );
         FactHandle handle2 = session.insert( 20 );
@@ -500,8 +516,10 @@ public class DefeasibilityTest {
 
 
 
-    @Test(timeout = 10000 )
-    public void testWMStatusOnNegativeDefeat() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    @Timeout(10000)
+    public void testWMStatusOnNegativeDefeat(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String droolsSource =
                 "package org.drools.tms.test; " +
                 "global java.util.List posList;" +
@@ -553,7 +571,7 @@ public class DefeasibilityTest {
 
                 "";
 
-        KieSession session = getSessionFromString( droolsSource );
+        KieSession session = getSessionFromString( kieBaseTestConfiguration, droolsSource );
         List posList = new ArrayList();
         List negList = new ArrayList();
         session.setGlobal( "posList", posList );
@@ -600,8 +618,9 @@ public class DefeasibilityTest {
 
 
 
-    @Test
-    public void testSelfDefeatWithRebuttal() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testSelfDefeatWithRebuttal(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String droolsSource =
                 "package org.drools.tms.test; " +
                 "global java.util.List posList;" +
@@ -648,7 +667,7 @@ public class DefeasibilityTest {
                 "   System.out.println( ' ---- ' + $b ); " +
                 "end " ;
 
-        KieSession session = getSessionFromString( droolsSource );
+        KieSession session = getSessionFromString( kieBaseTestConfiguration, droolsSource );
         List posList = new ArrayList();
         List negList = new ArrayList();
         session.setGlobal( "posList", posList );
@@ -666,8 +685,9 @@ public class DefeasibilityTest {
     }
 
 
-    @Test
-    public void testDefeatersAndDefeasibles() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testDefeatersAndDefeasibles(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String droolsSource =
                 "package org.drools.tms.test; " +
                 "global java.util.List posList;" +
@@ -699,7 +719,7 @@ public class DefeasibilityTest {
                 "   System.out.println( ' ++++ ' + $b ); " +
                 "end " ;
 
-        KieSession session = getSessionFromString( droolsSource );
+        KieSession session = getSessionFromString( kieBaseTestConfiguration, droolsSource );
         List posList = new ArrayList();
         session.setGlobal( "posList", posList );
 
@@ -710,8 +730,10 @@ public class DefeasibilityTest {
     }
 
 
-    @Test(timeout = 10000 )
-    public void testManyDefeasibles() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    @Timeout(10000)
+    public void testManyDefeasibles(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String drl = "package org.drools.defeasible; " +
                      "declare Fact " +
                      "     fact: String @key " +
@@ -754,7 +776,7 @@ public class DefeasibilityTest {
                      "         insertLogical( new Fact( \"wibble\"), \"neg\" ); " +
                      "end";
 
-        KieSession session = getSessionFromString( drl );
+        KieSession session = getSessionFromString( kieBaseTestConfiguration, drl );
         session.fireAllRules();
 
         FactType factType = session.getKieBase().getFactType( "org.drools.defeasible", "Fact" );
@@ -771,8 +793,10 @@ public class DefeasibilityTest {
     }
 
 
-    @Test(timeout = 10000 )
-    public void testRetractNegativeDefeaters() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    @Timeout(10000)
+    public void testRetractNegativeDefeaters(KieBaseTestConfiguration kieBaseTestConfiguration) {
 
         String drl = "declare Foo end " +
 
@@ -783,7 +807,7 @@ public class DefeasibilityTest {
                      "then " +
                      "  insertLogical( new Foo(), 'neg' ); " +
                      "end ";
-        KieSession session = getSessionFromString( drl );
+        KieSession session = getSessionFromString( kieBaseTestConfiguration, drl );
 
         FactHandle h = session.insert( "foo" );
 

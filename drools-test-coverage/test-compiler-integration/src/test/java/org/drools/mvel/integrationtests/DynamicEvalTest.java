@@ -23,9 +23,9 @@ import java.util.Collection;
 import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.impl.RuleBaseFactory;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.conf.EventProcessingOption;
@@ -57,7 +57,7 @@ public class DynamicEvalTest {
     KieBaseConfiguration baseConfig;
     KieSessionConfiguration sessionConfig;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
 
         baseConfig = RuleBaseFactory.newKnowledgeBaseConfiguration();
@@ -91,7 +91,7 @@ public class DynamicEvalTest {
 
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         if (session != null) {
             session.dispose();

@@ -33,4 +33,8 @@ public interface AfterEvaluateDecisionTableEvent extends DMNEvent {
     List<Integer> getMatches();
 
     List<Integer> getSelected();
+
+    List<String> getMatchesIds();
+
+    List<String> getSelectedIds();
 }

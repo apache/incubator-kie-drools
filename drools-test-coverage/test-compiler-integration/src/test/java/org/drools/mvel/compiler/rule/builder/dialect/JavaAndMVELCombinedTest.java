@@ -18,47 +18,41 @@
  */
 package org.drools.mvel.compiler.rule.builder.dialect;
 
-import java.util.Collection;
+import java.util.stream.Stream;
 
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 
-@RunWith(Parameterized.class)
 public class JavaAndMVELCombinedTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public JavaAndMVELCombinedTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
-    }
-
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
     private final static String FN1 = "mveljavarules.drl";
     private final static String FN2 = "mvelonly.drl";
     private final static String FN3 = "javaonly.drl";
 
-    @Test
-    public void testMixed() {
-        timing( FN1, "mveljava: ");
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testMixed(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        timing(kieBaseTestConfiguration, FN1, "mveljava: ");
     }
     
-    @Test
-    public void testMVEL() {
-        timing( FN2, "    mvel: ");
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testMVEL(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        timing(kieBaseTestConfiguration, FN2, "    mvel: ");
     }
     
-    @Test
-    public void testJAVA() {
-        timing( FN3, "    java: ");
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testJAVA(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        timing(kieBaseTestConfiguration, FN3, "    java: ");
     }
     
 //    public void testJavaMVELCombination() throws Exception {
@@ -84,14 +78,14 @@ public class JavaAndMVELCombinedTest {
 //        
 //    }
 
-    private void timing( String name, String msg ) {
+    private void timing( KieBaseTestConfiguration kieBaseTestConfiguration, String name, String msg ) {
         long start = System.currentTimeMillis();
-        readDRL( name );
+        readDRL(kieBaseTestConfiguration, name);
         long time = System.currentTimeMillis()-start;
         System.out.println(msg+time/1000.);
     }
 
-    private void readDRL(String fn) {
+    private void readDRL(KieBaseTestConfiguration kieBaseTestConfiguration, String fn) {
         try {
             KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(this.getClass(), kieBaseTestConfiguration, fn);
         } catch ( Throwable t ) {

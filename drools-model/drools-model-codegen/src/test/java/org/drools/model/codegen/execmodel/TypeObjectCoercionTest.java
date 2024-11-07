@@ -23,7 +23,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -31,11 +32,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class TypeObjectCoercionTest extends BaseModelTest {
 
-    public TypeObjectCoercionTest(RUN_TYPE testRunType) {
-        super(testRunType);
-    }
-
-    private KieSession getKieSessionForJoinObjectToString() {
+    private KieSession getKieSessionForJoinObjectToString(RUN_TYPE runType) {
 
         // NOTE: If we write a test with IntegerHolder instead of ObjectHolder, standard-drl fails with a compilation error
         //    text=Unable to Analyse Expression value >= $i:
@@ -51,13 +48,14 @@ public class TypeObjectCoercionTest extends BaseModelTest {
                             "then\n" +
                             "end\n";
 
-        return getKieSession(drl1);
+        return getKieSession(runType, drl1);
     }
 
-    @Test
-    public void testJoinObjectToString1() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testJoinObjectToString1(RUN_TYPE runType) {
 
-        KieSession ksession = getKieSessionForJoinObjectToString();
+        KieSession ksession = getKieSessionForJoinObjectToString(runType);
 
         // String "10" > Integer 5
         ksession.insert(new ObjectHolder(Integer.valueOf(5)));
@@ -65,10 +63,11 @@ public class TypeObjectCoercionTest extends BaseModelTest {
         assertThat(ksession.fireAllRules()).isEqualTo(1); // standard-drl : 10 > 5  (Number comparison)
     }
 
-    @Test
-    public void testJoinObjectToString2() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testJoinObjectToString2(RUN_TYPE runType) {
 
-        KieSession ksession = getKieSessionForJoinObjectToString();
+        KieSession ksession = getKieSessionForJoinObjectToString(runType);
 
         // String "10" > String "5"
         ksession.insert(new ObjectHolder("5"));
@@ -76,10 +75,11 @@ public class TypeObjectCoercionTest extends BaseModelTest {
         assertThat(ksession.fireAllRules()).isEqualTo(0); // standard-drl : "10" < "5"  (String comparison)
     }
 
-    @Test
-    public void testJoinObjectToString3() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testJoinObjectToString3(RUN_TYPE runType) {
 
-        KieSession ksession = getKieSessionForJoinObjectToString();
+        KieSession ksession = getKieSessionForJoinObjectToString(runType);
 
         // String "ABC" > Integer 5
         ksession.insert(new ObjectHolder(Integer.valueOf(5)));
@@ -88,10 +88,11 @@ public class TypeObjectCoercionTest extends BaseModelTest {
         assertThatThrownBy(()->ksession.fireAllRules()).isInstanceOf(RuntimeException.class); // standard-drl : ClassCastException: java.lang.Integer cannot be cast to java.lang.String
     }
 
-    @Test
-    public void testJoinObjectToString4() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testJoinObjectToString4(RUN_TYPE runType) {
 
-        KieSession ksession = getKieSessionForJoinObjectToString();
+        KieSession ksession = getKieSessionForJoinObjectToString(runType);
 
         // String "10" > String "ABC"
         ksession.insert(new ObjectHolder("ABC"));
@@ -100,10 +101,11 @@ public class TypeObjectCoercionTest extends BaseModelTest {
         ksession.dispose();
     }
 
-    @Test
-    public void testJoinObjectToString5() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testJoinObjectToString5(RUN_TYPE runType) {
 
-        KieSession ksession = getKieSessionForJoinObjectToString();
+        KieSession ksession = getKieSessionForJoinObjectToString(runType);
 
         // String "ABC" > String "DEF"
         ksession.insert(new ObjectHolder("DEF"));
@@ -112,10 +114,11 @@ public class TypeObjectCoercionTest extends BaseModelTest {
         ksession.dispose();
     }
 
-    @Test
-    public void testJoinObjectToStringNonComparable() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testJoinObjectToStringNonComparable(RUN_TYPE runType) {
 
-        KieSession ksession = getKieSessionForJoinObjectToString();
+        KieSession ksession = getKieSessionForJoinObjectToString(runType);
 
         // String "10" > Object
         ksession.insert(new ObjectHolder(new Object())); // not Comparable
@@ -126,7 +129,7 @@ public class TypeObjectCoercionTest extends BaseModelTest {
         
     }
 
-    private KieSession getKieSessionForJoinStringToObject() {
+    private KieSession getKieSessionForJoinStringToObject(RUN_TYPE runType) {
 
         final String drl1 =
                 "import " + ObjectHolder.class.getCanonicalName() + ";\n" +
@@ -137,13 +140,14 @@ public class TypeObjectCoercionTest extends BaseModelTest {
                             "then\n" +
                             "end\n";
 
-        return getKieSession(drl1);
+        return getKieSession(runType, drl1);
     }
 
-    @Test
-    public void testJoinStringToObject1() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testJoinStringToObject1(RUN_TYPE runType) {
 
-        KieSession ksession = getKieSessionForJoinStringToObject();
+        KieSession ksession = getKieSessionForJoinStringToObject(runType);
 
         // Integer 5 > String "10"
         ksession.insert(new StringHolder("10"));
@@ -151,10 +155,11 @@ public class TypeObjectCoercionTest extends BaseModelTest {
         assertThat(ksession.fireAllRules()).isEqualTo(0); // standard-drl : 5 < 10  (Number comparison)
     }
 
-    @Test
-    public void testJoinStringToObject2() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testJoinStringToObject2(RUN_TYPE runType) {
 
-        KieSession ksession = getKieSessionForJoinStringToObject();
+        KieSession ksession = getKieSessionForJoinStringToObject(runType);
 
         // String "5" > String "10"
         ksession.insert(new StringHolder("10"));
@@ -162,10 +167,11 @@ public class TypeObjectCoercionTest extends BaseModelTest {
         assertThat(ksession.fireAllRules()).isEqualTo(1); // standard-drl : "5" > "10"  (String comparison)
     }
 
-    @Test
-    public void testJoinStringToObject3() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testJoinStringToObject3(RUN_TYPE runType) {
 
-        KieSession ksession = getKieSessionForJoinStringToObject();
+        KieSession ksession = getKieSessionForJoinStringToObject(runType);
 
         // Integer 5 > String "ABC"
         ksession.insert(new StringHolder("ABC"));
@@ -176,10 +182,11 @@ public class TypeObjectCoercionTest extends BaseModelTest {
 
     }
 
-    @Test
-    public void testJoinStringToObject4() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testJoinStringToObject4(RUN_TYPE runType) {
 
-        KieSession ksession = getKieSessionForJoinStringToObject();
+        KieSession ksession = getKieSessionForJoinStringToObject(runType);
 
         // String "ABC" > String "10"
         ksession.insert(new StringHolder("10"));
@@ -188,10 +195,11 @@ public class TypeObjectCoercionTest extends BaseModelTest {
         ksession.dispose();
     }
 
-    @Test
-    public void testJoinStringToObject5() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testJoinStringToObject5(RUN_TYPE runType) {
 
-        KieSession ksession = getKieSessionForJoinStringToObject();
+        KieSession ksession = getKieSessionForJoinStringToObject(runType);
 
         // String "DEF" > String "ABC"
         ksession.insert(new StringHolder("ABC"));
@@ -200,7 +208,7 @@ public class TypeObjectCoercionTest extends BaseModelTest {
         ksession.dispose();
     }
 
-    private KieSession getKieSessionForJoinIntegerToObject() {
+    private KieSession getKieSessionForJoinIntegerToObject(RUN_TYPE runType) {
 
         final String drl1 =
                 "import " + ObjectHolder.class.getCanonicalName() + ";\n" +
@@ -211,13 +219,14 @@ public class TypeObjectCoercionTest extends BaseModelTest {
                             "then\n" +
                             "end\n";
 
-        return getKieSession(drl1);
+        return getKieSession(runType, drl1);
     }
 
-    @Test
-    public void testJoinIntegerToObject1() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testJoinIntegerToObject1(RUN_TYPE runType) {
 
-        KieSession ksession = getKieSessionForJoinIntegerToObject();
+        KieSession ksession = getKieSessionForJoinIntegerToObject(runType);
 
         // Integer 10 > Integer 5
         ksession.insert(new IntegerHolder(Integer.valueOf(5)));
@@ -225,10 +234,11 @@ public class TypeObjectCoercionTest extends BaseModelTest {
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testJoinIntegerToObject2() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testJoinIntegerToObject2(RUN_TYPE runType) {
 
-        KieSession ksession = getKieSessionForJoinIntegerToObject();
+        KieSession ksession = getKieSessionForJoinIntegerToObject(runType);
 
         // String "10" > Integer 5
         ksession.insert(new IntegerHolder(Integer.valueOf(5)));
@@ -236,10 +246,11 @@ public class TypeObjectCoercionTest extends BaseModelTest {
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testJoinIntegerToObject3() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testJoinIntegerToObject3(RUN_TYPE runType) {
 
-        KieSession ksession = getKieSessionForJoinIntegerToObject();
+        KieSession ksession = getKieSessionForJoinIntegerToObject(runType);
 
         // String "ABC" > Integer 5
         ksession.insert(new IntegerHolder(Integer.valueOf(5)));
@@ -248,10 +259,11 @@ public class TypeObjectCoercionTest extends BaseModelTest {
     	assertThatThrownBy(()->ksession.fireAllRules()).isInstanceOf(RuntimeException.class);  // standard-drl : Caused by ClassCastException: java.lang.String cannot be cast to java.lang.Integer
     }
 
-    @Test
-    public void testJoinIntegerToObjectNonComparable() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testJoinIntegerToObjectNonComparable(RUN_TYPE runType) {
 
-        KieSession ksession = getKieSessionForJoinIntegerToObject();
+        KieSession ksession = getKieSessionForJoinIntegerToObject(runType);
 
         // Object > Integer 5
         ksession.insert(new IntegerHolder(Integer.valueOf(5)));
@@ -259,7 +271,7 @@ public class TypeObjectCoercionTest extends BaseModelTest {
         assertThat(ksession.fireAllRules()).isEqualTo(0); // in case of standard-drl, MathProcessor.doOperationNonNumeric() returns false when the left operand is not Comparable
     }
 
-    private KieSession getKieSessionForJoinObjectToInteger() {
+    private KieSession getKieSessionForJoinObjectToInteger(RUN_TYPE runType) {
 
         final String drl1 =
                 "import " + ObjectHolder.class.getCanonicalName() + ";\n" +
@@ -270,13 +282,14 @@ public class TypeObjectCoercionTest extends BaseModelTest {
                             "then\n" +
                             "end\n";
 
-        return getKieSession(drl1);
+        return getKieSession(runType, drl1);
     }
 
-    @Test
-    public void testJoinObjectToInteger1() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testJoinObjectToInteger1(RUN_TYPE runType) {
 
-        KieSession ksession = getKieSessionForJoinObjectToInteger();
+        KieSession ksession = getKieSessionForJoinObjectToInteger(runType);
 
         // Integer 10 > Integer 5
         ksession.insert(new ObjectHolder(Integer.valueOf(5)));
@@ -284,10 +297,11 @@ public class TypeObjectCoercionTest extends BaseModelTest {
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testJoinObjectToInteger2() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testJoinObjectToInteger2(RUN_TYPE runType) {
 
-        KieSession ksession = getKieSessionForJoinObjectToInteger();
+        KieSession ksession = getKieSessionForJoinObjectToInteger(runType);
 
         // Integer 10 > String "5"
         ksession.insert(new ObjectHolder(new String("5")));
@@ -295,10 +309,11 @@ public class TypeObjectCoercionTest extends BaseModelTest {
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testJoinObjectToInteger3() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testJoinObjectToInteger3(RUN_TYPE runType) {
 
-        KieSession ksession = getKieSessionForJoinObjectToInteger();
+        KieSession ksession = getKieSessionForJoinObjectToInteger(runType);
 
         // Integer 10 > String "ABC"
         ksession.insert(new ObjectHolder(new String("ABC")));
@@ -307,10 +322,11 @@ public class TypeObjectCoercionTest extends BaseModelTest {
         assertThatThrownBy(()->ksession.fireAllRules()).isInstanceOf(RuntimeException.class); // standard-drl : Caused by ClassCastException: java.lang.String cannot be cast to java.lang.Integer
     }
 
-    @Test
-    public void testJoinObjectToIntegerNonComparable() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testJoinObjectToIntegerNonComparable(RUN_TYPE runType) {
 
-        KieSession ksession = getKieSessionForJoinObjectToInteger();
+        KieSession ksession = getKieSessionForJoinObjectToInteger(runType);
 
         // Integer 10 > Object
         ksession.insert(new ObjectHolder(new Object())); // not Comparable
@@ -359,8 +375,9 @@ public class TypeObjectCoercionTest extends BaseModelTest {
         }
     }
 
-    @Test
-    public void testJoinObjectToStringWithMap() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testJoinObjectToStringWithMap(RUN_TYPE runType) {
 
         // This rule mimics JittingTest#testJitMapCoercion()
 
@@ -373,7 +390,7 @@ public class TypeObjectCoercionTest extends BaseModelTest {
                             "then\n" +
                             "end\n";
 
-        KieSession ksession = getKieSession(drl1);
+        KieSession ksession = getKieSession(runType, drl1);
 
         Map<String, Object> map = new HashMap<>();
         map.put("key", 5);
@@ -382,8 +399,9 @@ public class TypeObjectCoercionTest extends BaseModelTest {
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testCoercionStringVsObjectIntegerWithMap() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testCoercionStringVsObjectIntegerWithMap(RUN_TYPE runType) {
         final String drl = "package org.drools.compiler.integrationtests;\n" +
                            "import " + Map.class.getCanonicalName() + ";\n" +
                            "import " + StringHolder.class.getCanonicalName() + ";\n" +
@@ -398,7 +416,7 @@ public class TypeObjectCoercionTest extends BaseModelTest {
 
         // String is coerced to Integer (thus, Number comparison)
 
-        KieSession ksession = getKieSession(drl);
+        KieSession ksession =getKieSession(runType, drl);
         try {
             final List<StringHolder> list = new ArrayList<>();
             ksession.setGlobal("list", list);
@@ -424,8 +442,9 @@ public class TypeObjectCoercionTest extends BaseModelTest {
         }
     }
 
-    @Test
-    public void testCoercionStringVsExplicitIntegerWithMap() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testCoercionStringVsExplicitIntegerWithMap(RUN_TYPE runType) {
         final String drl = "package org.drools.compiler.integrationtests;\n" +
                            "import " + Map.class.getCanonicalName() + ";\n" +
                            "import " + StringHolder.class.getCanonicalName() + ";\n" +
@@ -440,7 +459,7 @@ public class TypeObjectCoercionTest extends BaseModelTest {
 
         // String is coerced to Integer (thus, Number comparison)
 
-        KieSession ksession = getKieSession(drl);
+        KieSession ksession =getKieSession(runType, drl);
         try {
             final List<StringHolder> list = new ArrayList<>();
             ksession.setGlobal("list", list);

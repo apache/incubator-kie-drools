@@ -23,7 +23,7 @@ import java.util.function.Consumer;
 
 import org.drools.Person;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

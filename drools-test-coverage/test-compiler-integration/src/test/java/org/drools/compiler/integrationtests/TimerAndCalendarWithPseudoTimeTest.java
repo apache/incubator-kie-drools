@@ -21,13 +21,13 @@ package org.drools.compiler.integrationtests;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Stream;
 
 import org.drools.core.base.UndefinedCalendarExcption;
 import org.drools.core.time.impl.PseudoClockScheduler;
@@ -40,12 +40,12 @@ import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieSessionTestConfiguration;
 import org.drools.testcoverage.common.util.KieUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
 import org.drools.util.DateUtils;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.event.rule.AgendaEventListener;
@@ -63,22 +63,16 @@ import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
-@RunWith(Parameterized.class)
 public class TimerAndCalendarWithPseudoTimeTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public TimerAndCalendarWithPseudoTimeTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseStreamConfigurations(true).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseStreamConfigurations(true);
-    }
-
-    @Test(timeout = 10000)
-    public void testDurationMemoryLeakonRepeatedUpdate() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testDurationMemoryLeakonRepeatedUpdate(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
                 "package org.drools.compiler.test\n" +
                            "import " + Alarm.class.getCanonicalName() + "\n" +
@@ -118,17 +112,21 @@ public class TimerAndCalendarWithPseudoTimeTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testNoProtocolIntervalTimer() {
-        testIntervalTimer(true);
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testNoProtocolIntervalTimer(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        testIntervalTimer(kieBaseTestConfiguration, true);
     }
 
-    @Test(timeout = 10000)
-    public void testIntervalTimer() {
-        testIntervalTimer(false);
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testIntervalTimer(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        testIntervalTimer(kieBaseTestConfiguration, false);
     }
 
-    private void testIntervalTimer(final boolean noProtocol) {
+    private void testIntervalTimer(KieBaseTestConfiguration kieBaseTestConfiguration, final boolean noProtocol) {
         final String drl =
                 "package org.simple \n" +
                            "global java.util.List list \n" +
@@ -177,8 +175,10 @@ public class TimerAndCalendarWithPseudoTimeTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testIntervalTimerWithoutFire() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testIntervalTimerWithoutFire(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
                 "package org.simple \n" +
                            "global java.util.List list \n" +
@@ -219,8 +219,10 @@ public class TimerAndCalendarWithPseudoTimeTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testExprIntervalTimerRaceCondition() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testExprIntervalTimerRaceCondition(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
                 "package org.simple \n" +
                            "global java.util.List list \n" +
@@ -261,32 +263,42 @@ public class TimerAndCalendarWithPseudoTimeTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testUnknownProtocol() {
-        wrongTimerExpression("xyz:30");
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testUnknownProtocol(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        wrongTimerExpression(kieBaseTestConfiguration, "xyz:30");
     }
 
-    @Test(timeout = 10000)
-    public void testMissingColon() {
-        wrongTimerExpression("int 30");
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testMissingColon(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        wrongTimerExpression(kieBaseTestConfiguration, "int 30");
     }
 
-    @Test(timeout = 10000)
-    public void testMalformedExpression() {
-        wrongTimerExpression("30s s30");
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testMalformedExpression(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        wrongTimerExpression(kieBaseTestConfiguration, "30s s30");
     }
 
-    @Test(timeout = 10000)
-    public void testMalformedIntExpression() {
-        wrongTimerExpression("int 30s");
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testMalformedIntExpression(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        wrongTimerExpression(kieBaseTestConfiguration, "int 30s");
     }
 
-    @Test(timeout = 10000)
-    public void testMalformedCronExpression() {
-        wrongTimerExpression("cron: 0/30 * * * * *");
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testMalformedCronExpression(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        wrongTimerExpression(kieBaseTestConfiguration, "cron: 0/30 * * * * *");
     }
 
-    private void wrongTimerExpression(final String timer) {
+    private void wrongTimerExpression(KieBaseTestConfiguration kieBaseTestConfiguration, final String timer) {
         final String drl =
                 "package org.simple \n" +
                            "rule xxx \n" +
@@ -303,8 +315,10 @@ public class TimerAndCalendarWithPseudoTimeTest {
         assertThat(kieBuilder.getResults().getMessages()).isNotEmpty();
     }
 
-    @Test(timeout = 10000)
-    public void testCronTimer() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testCronTimer(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         final String drl =
                 "package org.simple \n" +
                            "global java.util.List list \n" +
@@ -352,8 +366,10 @@ public class TimerAndCalendarWithPseudoTimeTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testCalendarNormalRuleSingleCalendar() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testCalendarNormalRuleSingleCalendar(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         final String drl =
                 "package org.simple \n" +
                            "global java.util.List list \n" +
@@ -407,8 +423,9 @@ public class TimerAndCalendarWithPseudoTimeTest {
         }
     }
 
-    @Test
-    public void testUndefinedCalendar() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testUndefinedCalendar(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
                 "rule xxx \n" +
                            "  calendars \"cal1\"\n" +
@@ -430,8 +447,10 @@ public class TimerAndCalendarWithPseudoTimeTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testCalendarNormalRuleMultipleCalendars() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testCalendarNormalRuleMultipleCalendars(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         final String drl =
                 "package org.simple \n" +
                            "global java.util.List list \n" +
@@ -489,8 +508,10 @@ public class TimerAndCalendarWithPseudoTimeTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testCalendarsWithCron() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testCalendarsWithCron(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         final String drl =
                 "package org.simple \n" +
                            "global java.util.List list \n" +
@@ -571,8 +592,10 @@ public class TimerAndCalendarWithPseudoTimeTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testCalendarsWithIntervals() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testCalendarsWithIntervals(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         final String drl =
                 "package org.simple \n" +
                            "global java.util.List list \n" +
@@ -653,8 +676,10 @@ public class TimerAndCalendarWithPseudoTimeTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testCalendarsWithIntervalsAndStartAndEnd() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testCalendarsWithIntervalsAndStartAndEnd(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         final String drl =
                 "package org.simple \n" +
                            "global java.util.List list \n" +
@@ -710,8 +735,10 @@ public class TimerAndCalendarWithPseudoTimeTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testCalendarsWithIntervalsAndStartAndLimit() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testCalendarsWithIntervalsAndStartAndLimit(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         final String drl =
                 "package org.simple \n" +
                            "global java.util.List list \n" +
@@ -767,8 +794,10 @@ public class TimerAndCalendarWithPseudoTimeTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testCalendarsWithCronAndStartAndEnd() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testCalendarsWithCronAndStartAndEnd(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         final Locale defaultLoc = Locale.getDefault();
         try {
             Locale.setDefault(Locale.UK); // Because of the date strings in the DRL, fixable with JBRULES-3444
@@ -832,8 +861,10 @@ public class TimerAndCalendarWithPseudoTimeTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testCalendarsWithCronAndStartAndLimit() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testCalendarsWithCronAndStartAndLimit(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         final Locale defaultLoc = Locale.getDefault();
         try {
             Locale.setDefault(Locale.UK); // Because of the date strings in the DRL, fixable with JBRULES-3444
@@ -898,8 +929,10 @@ public class TimerAndCalendarWithPseudoTimeTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testIntervalTimerWithLongExpressions() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testIntervalTimerWithLongExpressions(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "package org.simple;\n" +
                            "global java.util.List list;\n" +
                            "\n" +
@@ -962,8 +995,10 @@ public class TimerAndCalendarWithPseudoTimeTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testIntervalTimerAfterEnd() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testIntervalTimerAfterEnd(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-5908
         final String drl = "package org.simple;\n" +
                            "global java.util.List list;\n" +
@@ -1007,27 +1042,35 @@ public class TimerAndCalendarWithPseudoTimeTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testIntervalTimerWithStringExpressions() {
-        checkIntervalTimerWithStringExpressions(false, "3-JAN-2010");
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testIntervalTimerWithStringExpressions(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        checkIntervalTimerWithStringExpressions(kieBaseTestConfiguration, false, "3-JAN-2010");
     }
 
-    @Test(timeout = 10000)
-    public void testIntervalTimerWithAllExpressions() {
-        checkIntervalTimerWithStringExpressions(true, "3-JAN-2010");
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testIntervalTimerWithAllExpressions(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        checkIntervalTimerWithStringExpressions(kieBaseTestConfiguration, true, "3-JAN-2010");
     }
 
-    @Test(timeout = 10000)
-    public void testIntervalTimerWithStringExpressionsAfterStart() {
-        checkIntervalTimerWithStringExpressions(false, "3-FEB-2010");
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testIntervalTimerWithStringExpressionsAfterStart(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        checkIntervalTimerWithStringExpressions(kieBaseTestConfiguration, false, "3-FEB-2010");
     }
 
-    @Test(timeout = 10000)
-    public void testIntervalTimerWithAllExpressionsAfterStart() {
-        checkIntervalTimerWithStringExpressions(true, "3-FEB-2010");
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testIntervalTimerWithAllExpressionsAfterStart(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        checkIntervalTimerWithStringExpressions(kieBaseTestConfiguration, true, "3-FEB-2010");
     }
 
-    private void checkIntervalTimerWithStringExpressions(final boolean useExprForStart, final String startTime) {
+    private void checkIntervalTimerWithStringExpressions(KieBaseTestConfiguration kieBaseTestConfiguration, final boolean useExprForStart, final String startTime) {
         final String drl = "package org.simple;\n" +
                            "global java.util.List list;\n" +
                            "\n" +
@@ -1115,8 +1158,10 @@ public class TimerAndCalendarWithPseudoTimeTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testIntervalTimerExpressionWithOr() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testIntervalTimerExpressionWithOr(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "package org.kie.test\n" + "global java.util.List list\n" + "import " +
                            FactA.class.getCanonicalName() + "\n" + "import " + FactB.class.getCanonicalName() + "\n" +
                            "import " + Pet.class.getCanonicalName() + "\n" +
@@ -1184,8 +1229,10 @@ public class TimerAndCalendarWithPseudoTimeTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testExprTimeRescheduled() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testExprTimeRescheduled(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "package org.kie.test\n" + "global java.util.List list\n" + "import " +
                            FactA.class.getCanonicalName() + "\n" + "rule r1 timer (expr: f1.field2, f1.field4)\n" +
                            "when\n" + "    f1 : FactA() \n" + "then\n" + "    list.add( f1 );\n" + "end\n" + "\n";
@@ -1258,8 +1305,9 @@ public class TimerAndCalendarWithPseudoTimeTest {
         }
     }
 
-    @Test
-    public void testExpiredPropagations() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testExpiredPropagations(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-244
         final String drl = "package org.drools.test;\n" +
                            "\n" +
@@ -1342,8 +1390,9 @@ public class TimerAndCalendarWithPseudoTimeTest {
         }
     }
 
-    @Test
-    public void testCronFire() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testCronFire(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // BZ-1059372
         final String drl = "package test.drools\n" +
                            "rule TestRule " +
@@ -1370,9 +1419,11 @@ public class TimerAndCalendarWithPseudoTimeTest {
         }
     }
 
-    @Test(timeout = 10000)
-    @Ignore("the listener callback holds some locks so blocking in it is not safe")
-    public void testRaceConditionWithTimedRuleExectionOption() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    @Disabled("the listener callback holds some locks so blocking in it is not safe")
+    public void testRaceConditionWithTimedRuleExectionOption(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         // BZ-1073880
         final String drl = "package org.simple \n" +
                            "global java.util.List list \n" +

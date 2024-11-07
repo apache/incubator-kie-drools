@@ -135,6 +135,7 @@ type
     helper.popScope();
 }
     : {_input.LT(1).getText().equals("list")}? sk=Identifier LT type GT                                                        #listType
+    | {_input.LT(1).getText().equals("range")}? sk=Identifier LT type GT                                                        #rangeType
     | {_input.LT(1).getText().equals("context")}? sk=Identifier LT Identifier COLON type ( COMMA Identifier COLON type )* GT   #contextType
     | FUNCTION                                                                                                        #qnType
     | FUNCTION LT (type ( COMMA type )*)? GT RARROW type                                                              #functionType
@@ -323,7 +324,8 @@ literal
     |	BooleanLiteral          #boolLiteral
     |   atLiteral               #atLiteralLabel
     |	StringLiteral           #stringLiteral
-    |	NULL                #nullLiteral
+    |	NULL                    #nullLiteral
+    |   UNDEFINEDVALUE          #undefined
     ;
     
 atLiteral
@@ -338,6 +340,7 @@ BooleanLiteral
     :   TRUE
     |   FALSE
     ;
+
 
 /**************************
  *    OTHER CONSTRUCTS
@@ -462,6 +465,7 @@ reusableKeywords
     | BETWEEN
     | NOT
     | NULL
+    | UNDEFINEDVALUE
     | TRUE
     | FALSE
     ;
@@ -533,6 +537,10 @@ BETWEEN
 
 NULL
     : 'null'
+    ;
+
+UNDEFINEDVALUE
+    : 'undefined'
     ;
 
 TRUE

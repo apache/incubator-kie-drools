@@ -21,7 +21,7 @@ package org.drools.traits.compiler;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.traits.core.base.evaluators.IsAEvaluatorDefinition;
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.BeforeAll;
 import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.KnowledgeBuilder;
@@ -33,7 +33,7 @@ import static org.assertj.core.api.Assertions.fail;
 
 public class CommonTraitTest {
 
-    @BeforeClass
+    @BeforeAll
     public static void beforeClass() {
         System.setProperty(EvaluatorOption.PROPERTY_NAME + "isA", IsAEvaluatorDefinition.class.getName());
     }

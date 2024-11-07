@@ -28,6 +28,7 @@ import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.impl.RangeImpl;
+import org.kie.dmn.feel.runtime.impl.UndefinedValueComparable;
 import org.kie.dmn.feel.util.Msg;
 
 public class RangeNode
@@ -113,13 +114,17 @@ public class RangeNode
         
         Type sType = BuiltInType.determineTypeFromInstance(s);
         Type eType = BuiltInType.determineTypeFromInstance(e);
-        if (s != null && e != null && sType != eType && !s.getClass().isAssignableFrom(e.getClass())) {
+        boolean withUndefined = s instanceof UndefinedValueComparable || e instanceof UndefinedValueComparable;
+        if (s != null && e != null &&
+                !withUndefined &&
+                sType != eType &&
+                !s.getClass().isAssignableFrom(e.getClass())) {
             ctx.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.X_TYPE_INCOMPATIBLE_WITH_Y_TYPE, "Start", "End")));
             return null;
         }
 
-        Comparable start = convertToComparable( ctx, s );
-        Comparable end = convertToComparable( ctx, e );
+        Comparable start = s instanceof UndefinedValueComparable ? (Comparable) s : convertToComparable(ctx, s );
+        Comparable end = e instanceof UndefinedValueComparable ? (Comparable) e : convertToComparable( ctx, e );
 
         return new RangeImpl( lowerBound==IntervalBoundary.OPEN ? Range.RangeBoundary.OPEN : Range.RangeBoundary.CLOSED,
                               start,

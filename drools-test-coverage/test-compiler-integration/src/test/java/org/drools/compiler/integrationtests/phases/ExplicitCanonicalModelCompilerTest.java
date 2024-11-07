@@ -28,7 +28,7 @@ import org.drools.drl.parser.DroolsParserException;
 import org.drools.io.ClassPathResource;
 import org.drools.model.codegen.execmodel.PackageSources;
 import org.drools.model.codegen.tool.ExplicitCanonicalModelCompiler;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 

@@ -18,40 +18,31 @@
  */
 package org.drools.compiler.integrationtests.operators;
 
-import java.util.Collection;
 import java.util.stream.Stream;
 
 import org.drools.testcoverage.common.model.Person;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class SoundsLikeTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public SoundsLikeTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
-    }
-
-    @Test
-    public void testSoundsLike() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testSoundsLike(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // JBRULES-2991: Operator soundslike is broken
 
-        testFiredRules("package org.drools.compiler.integrationtests.operators;\n" +
+        testFiredRules(kieBaseTestConfiguration, "package org.drools.compiler.integrationtests.operators;\n" +
                             "import " + Person.class.getCanonicalName() + ";\n" +
                                "rule SoundsLike\n" +
                                "when\n" +
@@ -63,11 +54,12 @@ public class SoundsLikeTest {
                        "Bob");
     }
 
-    @Test
-    public void testSoundsLikeNegativeCase() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testSoundsLikeNegativeCase(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // JBRULES-2991: Operator soundslike is broken
 
-        testFiredRules("package org.drools.compiler.integrationtests.operators;\n" +
+        testFiredRules(kieBaseTestConfiguration, "package org.drools.compiler.integrationtests.operators;\n" +
                                "import " + Person.class.getCanonicalName() + ";\n" +
                                "rule SoundsLike\n" +
                                "when\n" +
@@ -78,11 +70,12 @@ public class SoundsLikeTest {
                        "Mark");
     }
 
-    @Test
-    public void testNotSoundsLike() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testNotSoundsLike(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // JBRULES-2991: Operator soundslike is broken
 
-        testFiredRules("package org.drools.compiler.integrationtests.operators;\n" +
+        testFiredRules(kieBaseTestConfiguration, "package org.drools.compiler.integrationtests.operators;\n" +
                                "import " + Person.class.getCanonicalName() + ";\n" +
                                "rule NotSoundsLike\n" +
                                "when\n" +
@@ -93,11 +86,12 @@ public class SoundsLikeTest {
                        "John");
     }
 
-    @Test
-    public void testNotSoundsLikeNegativeCase() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testNotSoundsLikeNegativeCase(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // JBRULES-2991: Operator soundslike is broken
 
-        testFiredRules("package org.drools.compiler.integrationtests.operators;\n" +
+        testFiredRules(kieBaseTestConfiguration, "package org.drools.compiler.integrationtests.operators;\n" +
                                "import " + Person.class.getCanonicalName() + ";\n" +
                                "rule NotSoundsLike\n" +
                                "when\n" +
@@ -108,7 +102,8 @@ public class SoundsLikeTest {
                        "Bob");
     }
 
-    private void testFiredRules(final String rule,
+    private void testFiredRules(KieBaseTestConfiguration kieBaseTestConfiguration, 
+    							final String rule,
                                 final int firedRulesCount,
                                 final String... persons) {
         final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("sounds-like-test",

@@ -44,9 +44,10 @@ import org.drools.base.definitions.InternalKnowledgePackage;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.io.InternalResource;
 import org.drools.wiring.api.ResourceProvider;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.KieRepository;
@@ -88,7 +89,7 @@ public class KieModuleRepoTest {
     private Field maxSizeGaCacheField;
     private Field maxSizeGaVersionsCacheField;
 
-    @Before
+    @BeforeEach
     public void before() throws Exception {
         kieModuleRepo = new KieModuleRepo(new ReentrantLock());
 
@@ -99,7 +100,7 @@ public class KieModuleRepoTest {
         maxSizeGaVersionsCacheField = KieModuleRepo.class.getDeclaredField("MAX_SIZE_GA_VERSIONS_CACHE");
     }
 
-    @After
+    @AfterEach
     public void after() throws Exception {
         setCacheSize(maxSizeGaCacheField, null, maxSizeGaCacheOrig);
         setCacheSize(maxSizeGaVersionsCacheField, null, maxSizeGaVersionsCacheOrig);
@@ -176,7 +177,8 @@ public class KieModuleRepoTest {
 
     // simultaneous requests to deploy two new deployments (different versions)
     // for an empty/new GA artifactMap
-    @Test(timeout=5000)
+    @Test
+    @Timeout(5000)
     public void testDeployTwoArtifactVersionsSameTime() throws Exception {
         final String groupId = "org";
         final String artifactId = "one";
@@ -231,7 +233,8 @@ public class KieModuleRepoTest {
 
     // remove request followed by a store request on a high load system
     // * remove does not completely finish before store starts
-    @Test(timeout=5000)
+    @Test
+    @Timeout(5000)
     public void removeStoreArtifactMapTest() throws Exception {
         // actual test
         final ReleaseIdImpl releaseId = new ReleaseIdImpl("org", "redeploy", "2.0");
@@ -446,7 +449,8 @@ public class KieModuleRepoTest {
     // 2. simultaneous deploy requests
     // - multitenant UI
     // - duplicate REST requests
-    @Test(timeout=5000)
+    @Test
+    @Timeout(5000)
     public void newerVersionDeployOverwritesTest() throws Exception {
 
         // setup

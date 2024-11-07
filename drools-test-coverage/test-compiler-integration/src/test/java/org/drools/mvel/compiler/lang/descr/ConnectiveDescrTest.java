@@ -20,7 +20,7 @@ package org.drools.mvel.compiler.lang.descr;
 
 import org.drools.drl.ast.descr.ConnectiveDescr;
 import org.drools.drl.ast.descr.ConnectiveDescr.RestrictionConnectiveType;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

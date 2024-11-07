@@ -25,7 +25,8 @@ import org.drools.model.codegen.execmodel.domain.Child;
 import org.drools.model.codegen.execmodel.domain.Parent;
 import org.drools.model.codegen.execmodel.domain.Person;
 import org.drools.model.functions.accumulate.GroupKey;
-import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Match;
@@ -49,28 +50,25 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class GroupByTest extends BaseModelTest {
 
-    public GroupByTest( RUN_TYPE testRunType ) {
-        super( testRunType );
-    }
-
-    public void assertSessionHasProperties(String ruleString, Consumer<KieSession> kieSessionConsumer) {
+    public void assertSessionHasProperties(RUN_TYPE testRunType, String ruleString, Consumer<KieSession> kieSessionConsumer) {
         if (testRunType.isExecutableModel()) {
-            KieSession ksession = getKieSession( ruleString );
+            KieSession ksession = getKieSession(testRunType, ruleString);
             kieSessionConsumer.accept(ksession);
         } else {
             assertAll(() -> {
-                        KieSession ksession = getKieSession( "dialect \"java\";\n" + ruleString);
+                        KieSession ksession = getKieSession(testRunType, "dialect \"java\";\n" + ruleString);
                         kieSessionConsumer.accept(ksession);
                     },
                     () -> {
-                        KieSession ksession = getKieSession( "dialect \"mvel\";\n" + ruleString);
+                        KieSession ksession = getKieSession(testRunType, "dialect \"mvel\";\n" + ruleString);
                         kieSessionConsumer.accept(ksession);
                     });
         }
     }
 
-    @Test
-    public void providedInstance() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void providedInstance(RUN_TYPE runType) {
         String str = "import " + Person.class.getCanonicalName() + ";\n" +
                 "import " + Map.class.getCanonicalName() + ";\n" +
                 "global Map results;\n" +
@@ -83,7 +81,7 @@ public class GroupByTest extends BaseModelTest {
                 "  results.put($key, $sumOfAges);\n" +
                 "end";
 
-        assertSessionHasProperties(str, ksession -> {
+        assertSessionHasProperties(runType, str, ksession -> {
             Map results = new HashMap();
             ksession.setGlobal( "results", results );
 
@@ -117,8 +115,9 @@ public class GroupByTest extends BaseModelTest {
         });
     }
 
-    @Test
-    public void testSumPersonAgeGroupByInitialWithAcc() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testSumPersonAgeGroupByInitialWithAcc(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                 "import " + GroupKey.class.getCanonicalName() + ";" +
@@ -146,7 +145,7 @@ public class GroupByTest extends BaseModelTest {
                 "    results.put($key, $sumOfAges);\n" +
                 "end";
 
-        assertSessionHasProperties(str, ksession -> {
+        assertSessionHasProperties(runType, str, ksession -> {
             Map results = new HashMap();
             ksession.setGlobal( "results", results );
 
@@ -181,8 +180,9 @@ public class GroupByTest extends BaseModelTest {
         });
     }
 
-    @Test
-    public void testGroupPersonsInitial() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testGroupPersonsInitial(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                 "import " + List.class.getCanonicalName() + ";" +
@@ -194,7 +194,7 @@ public class GroupByTest extends BaseModelTest {
                 "    results.add($key);\n" +
                 "end";
 
-        assertSessionHasProperties(str, ksession -> {
+        assertSessionHasProperties(runType, str, ksession -> {
             List<String> results = new ArrayList<>();
             ksession.setGlobal( "results", results );
     
@@ -229,8 +229,9 @@ public class GroupByTest extends BaseModelTest {
         });
     }
 
-    @Test
-    public void testSumPersonAgeGroupByInitial() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testSumPersonAgeGroupByInitial(RUN_TYPE runType) {
         // Note: this appears to be a duplicate of providedInstance
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -244,7 +245,7 @@ public class GroupByTest extends BaseModelTest {
                 "then\n" +
                 "  results.put($key, $sumOfAges);\n" +
                 "end";
-        assertSessionHasProperties(str, ksession -> {
+        assertSessionHasProperties(runType, str, ksession -> {
 
         Map results = new HashMap();
         ksession.setGlobal( "results", results );
@@ -279,8 +280,9 @@ public class GroupByTest extends BaseModelTest {
         });
     }
 
-    @Test
-    public void testSumPersonAgeGroupByInitialWithBetaFilter() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testSumPersonAgeGroupByInitialWithBetaFilter(RUN_TYPE runType) {
         // TODO: For some reason, the compiled class expression thinks $p should be an integer?
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -295,7 +297,7 @@ public class GroupByTest extends BaseModelTest {
                 "  results.put($key, $sum);\n" +
                 "end";
 
-        assertSessionHasProperties(str, ksession -> {
+        assertSessionHasProperties(runType, str, ksession -> {
 
             Map results = new HashMap();
             ksession.setGlobal("results", results);
@@ -331,8 +333,9 @@ public class GroupByTest extends BaseModelTest {
         });
     }
 
-    @Test
-    public void testSumPersonAgeGroupByInitialWithExists() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testSumPersonAgeGroupByInitialWithExists(RUN_TYPE runType) {
         // TODO: For some reason, the compiled class expression thinks $p should be an integer?
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -348,7 +351,7 @@ public class GroupByTest extends BaseModelTest {
                 "  results.put($key, $sum);\n" +
                 "end";
 
-        assertSessionHasProperties(str, ksession -> {
+        assertSessionHasProperties(runType, str, ksession -> {
 
             Map results = new HashMap();
             ksession.setGlobal("results", results);
@@ -405,8 +408,9 @@ public class GroupByTest extends BaseModelTest {
         }
     }
 
-    @Test
-    public void testWithNull() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testWithNull(RUN_TYPE runType) {
         String str =
                 "import " + MyType.class.getCanonicalName() + ";" +
                 "import " + List.class.getCanonicalName() + ";" +
@@ -421,7 +425,7 @@ public class GroupByTest extends BaseModelTest {
                 "  result.add($key);\n" +
                 "end";
 
-        assertSessionHasProperties(str, ksession -> {
+        assertSessionHasProperties(runType, str, ksession -> {
             AtomicInteger mappingFunctionCallCounter = new AtomicInteger();
             List<Object> result = new ArrayList<>();
             ksession.setGlobal("mappingFunctionCallCounter", mappingFunctionCallCounter);
@@ -440,8 +444,9 @@ public class GroupByTest extends BaseModelTest {
         });
     }
 
-    @Test
-    public void testWithGroupByAfterExists() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testWithGroupByAfterExists(RUN_TYPE runType) {
         String str =
                 "import " + Map.class.getCanonicalName() + ";" +
                 "import " + Math.class.getCanonicalName() + ";" +
@@ -454,7 +459,7 @@ public class GroupByTest extends BaseModelTest {
                 "  glob.put($key, $count.intValue());\n" +
                 "end";
 
-        assertSessionHasProperties(str, session -> {
+        assertSessionHasProperties(runType, str, session -> {
             Map<Integer, Integer> global = new HashMap<>();
             session.setGlobal("glob", global);
 
@@ -470,8 +475,9 @@ public class GroupByTest extends BaseModelTest {
         });
     }
 
-    @Test
-    public void testWithGroupByAfterExistsWithFrom() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testWithGroupByAfterExistsWithFrom(RUN_TYPE runType) {
         // Note: this looks exactly the same as testWithGroupByAfterExists
         String str =
                 "import " + Map.class.getCanonicalName() + ";" +
@@ -485,7 +491,7 @@ public class GroupByTest extends BaseModelTest {
                 "  glob.put($key, $count.intValue());\n" +
                 "end";
 
-        assertSessionHasProperties(str, session -> {
+        assertSessionHasProperties(runType, str, session -> {
             Map<Integer, Integer> global = new HashMap<>();
             session.setGlobal("glob", global);
 
@@ -501,8 +507,9 @@ public class GroupByTest extends BaseModelTest {
         });
     }
 
-    @Test
-    public void testGroupBy2Vars() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testGroupBy2Vars(RUN_TYPE runType) {
         // TODO: For some reason, the compiled class expression thinks $p should be an integer?
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -516,7 +523,7 @@ public class GroupByTest extends BaseModelTest {
                 "  results.put($key, $sum);\n" +
                 "end";
 
-        assertSessionHasProperties(str, ksession -> {
+        assertSessionHasProperties(runType, str, ksession -> {
 
             Map results = new HashMap();
             ksession.setGlobal("results", results);
@@ -560,8 +567,9 @@ public class GroupByTest extends BaseModelTest {
         });
     }
 
-    @Test
-    public void testUnexpectedRuleMatch() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testUnexpectedRuleMatch(RUN_TYPE runType) {
         String str =
                 "import " + Parent.class.getCanonicalName() + ";" +
                 "import " + Child.class.getCanonicalName() + ";" +
@@ -578,7 +586,7 @@ public class GroupByTest extends BaseModelTest {
                 "  results.add(Arrays.asList($child, $count));\n" +
                 "end";
 
-        assertSessionHasProperties(str, ksession -> {
+        assertSessionHasProperties(runType, str, ksession -> {
 
             List results = new ArrayList();
             ksession.setGlobal("results", results);
@@ -603,8 +611,9 @@ public class GroupByTest extends BaseModelTest {
         });
     }
 
-    @Test
-    public void testCompositeKey() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testCompositeKey(RUN_TYPE runType) {
         // TODO: For some reason, the compiled class expression thinks $p should be an integer?
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -623,7 +632,7 @@ public class GroupByTest extends BaseModelTest {
                 "  results.put($key1, $sum);\n" +
                 "end";
 
-        assertSessionHasProperties(str, ksession -> {
+        assertSessionHasProperties(runType, str, ksession -> {
             Map results = new HashMap();
             ksession.setGlobal("results", results);
 
@@ -698,8 +707,9 @@ public class GroupByTest extends BaseModelTest {
         }
     }
 
-    @Test
-    public void testTwoExpressionsOnSecondPattern() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testTwoExpressionsOnSecondPattern(RUN_TYPE runType) {
         // DROOLS-5704
         // TODO: For some reason, the compiled class expression thinks $p should be an integer?
         String str =
@@ -716,7 +726,7 @@ public class GroupByTest extends BaseModelTest {
                 "  results.add($key);\n" +
                 "end";
 
-        assertSessionHasProperties(str, ksession -> {
+        assertSessionHasProperties(runType, str, ksession -> {
 
             Set<Integer> results = new LinkedHashSet<>();
             ksession.setGlobal("results", results);
@@ -730,8 +740,9 @@ public class GroupByTest extends BaseModelTest {
         });
     }
 
-    @Test
-    public void testFromAfterGroupBy() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testFromAfterGroupBy(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                 "import " + Set.class.getCanonicalName() + ";" +
@@ -750,7 +761,7 @@ public class GroupByTest extends BaseModelTest {
                 "    typeChecker.accept($remappedKey);\n" +
                 "end";
 
-        assertSessionHasProperties(str, ksession -> {
+        assertSessionHasProperties(runType, str, ksession -> {
 
             Set<Integer> results = new LinkedHashSet<>();
             ksession.setGlobal("results", results);
@@ -768,8 +779,9 @@ public class GroupByTest extends BaseModelTest {
         });
     }
 
-    @Test
-    public void testBindingRemappedAfterGroupBy() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testBindingRemappedAfterGroupBy(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                 "import " + Set.class.getCanonicalName() + ";" +
@@ -788,7 +800,7 @@ public class GroupByTest extends BaseModelTest {
                 "    typeChecker.accept($remappedKey);\n" +
                 "end";
 
-        assertSessionHasProperties(str, ksession -> {
+        assertSessionHasProperties(runType, str, ksession -> {
 
             Set<Integer> results = new LinkedHashSet<>();
             ksession.setGlobal("results", results);
@@ -806,8 +818,9 @@ public class GroupByTest extends BaseModelTest {
         });
     }
 
-    @Test
-    public void testGroupByUpdatingKey() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testGroupByUpdatingKey(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                 "import " + Map.class.getCanonicalName() + ";" +
@@ -823,7 +836,7 @@ public class GroupByTest extends BaseModelTest {
                 "    results.put($key, $sumOfAges + $countOfPersons.intValue());" +
                 "end";
 
-        assertSessionHasProperties(str, ksession -> {
+        assertSessionHasProperties(runType, str, ksession -> {
             Map results = new HashMap();
             ksession.setGlobal("results", results);
 
@@ -851,8 +864,9 @@ public class GroupByTest extends BaseModelTest {
         });
     }
 
-    @Test
-    public void doesNotRemoveProperly() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void doesNotRemoveProperly(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                 "import " + Set.class.getCanonicalName() + ";" +
@@ -867,7 +881,7 @@ public class GroupByTest extends BaseModelTest {
                 "    results.add($key);" +
                 "end";
 
-        assertSessionHasProperties(str, ksession -> {
+        assertSessionHasProperties(runType, str, ksession -> {
 
             Set<Integer> results = new LinkedHashSet<>();
 
@@ -911,8 +925,9 @@ public class GroupByTest extends BaseModelTest {
         });
     }
 
-    @Test
-    public void testTwoGroupBy() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testTwoGroupBy(RUN_TYPE runType) {
         // DROOLS-5697
         // TODO: For some reason, the compiled class expression thinks $p should be an integer?
         String str =
@@ -936,7 +951,7 @@ public class GroupByTest extends BaseModelTest {
                 "    results.put($key, $maxOfValues);\n" +
                 "end";
 
-        assertSessionHasProperties(str, ksession -> {
+        assertSessionHasProperties(runType, str, ksession -> {
 
             Map results = new HashMap();
             ksession.setGlobal("results", results);
@@ -991,8 +1006,9 @@ public class GroupByTest extends BaseModelTest {
         });
     }
 
-    @Test
-    public void testTwoGroupByUsingBindings() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testTwoGroupByUsingBindings(RUN_TYPE runType) {
         // DROOLS-5697
         // TODO: For some reason, the compiled class expression thinks $p should be an integer?
         String str =
@@ -1016,7 +1032,7 @@ public class GroupByTest extends BaseModelTest {
                 "    results.put($key, $maxOfValues);\n" +
                 "end";
 
-        assertSessionHasProperties(str, ksession -> {
+        assertSessionHasProperties(runType, str, ksession -> {
 
             Map results = new HashMap();
             ksession.setGlobal("results", results);
@@ -1089,8 +1105,9 @@ public class GroupByTest extends BaseModelTest {
         }
     }
 
-    @Test
-    public void testEmptyPatternOnGroupByKey() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testEmptyPatternOnGroupByKey(RUN_TYPE runType) {
         // DROOLS-6031
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -1107,7 +1124,7 @@ public class GroupByTest extends BaseModelTest {
                 "    results.add($key);" +
                 "end";
 
-        assertSessionHasProperties(str, ksession -> {
+        assertSessionHasProperties(runType, str, ksession -> {
 
             List<String> results = new ArrayList<String>();
             ksession.setGlobal("results", results);
@@ -1122,8 +1139,9 @@ public class GroupByTest extends BaseModelTest {
         });
     }
 
-    @Test
-    public void testFilterOnGroupByKey() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testFilterOnGroupByKey(RUN_TYPE runType) {
         // DROOLS-6031
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -1141,7 +1159,7 @@ public class GroupByTest extends BaseModelTest {
                 "    results.add($key);" +
                 "end";
 
-        assertSessionHasProperties(str, ksession -> {
+        assertSessionHasProperties(runType, str, ksession -> {
 
             List<String> results = new ArrayList<String>();
             ksession.setGlobal("results", results);
@@ -1156,8 +1174,9 @@ public class GroupByTest extends BaseModelTest {
         });
     }
 
-    @Test
-    public void testDecomposedGroupByKey() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testDecomposedGroupByKey(RUN_TYPE runType) {
         // DROOLS-6031
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -1177,7 +1196,7 @@ public class GroupByTest extends BaseModelTest {
                 "    results.add($subkeyB);" +
                 "end";
 
-        assertSessionHasProperties(str, ksession -> {
+        assertSessionHasProperties(runType, str, ksession -> {
 
             final List<String> results = new ArrayList<>();
             ksession.setGlobal("results", results);
@@ -1192,8 +1211,9 @@ public class GroupByTest extends BaseModelTest {
         });
     }
 
-    @Test
-    public void testDecomposedGroupByKeyAndAccumulate() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testDecomposedGroupByKeyAndAccumulate(RUN_TYPE runType) {
         // DROOLS-6031
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -1215,7 +1235,7 @@ public class GroupByTest extends BaseModelTest {
                 "    results.add($accresult);\n" +
                 "end";
 
-        assertSessionHasProperties(str, ksession -> {
+        assertSessionHasProperties(runType, str, ksession -> {
 
             final List<Object> results = new ArrayList<>();
             ksession.setGlobal("results", results);
@@ -1231,8 +1251,9 @@ public class GroupByTest extends BaseModelTest {
         });
     }
 
-    @Test
-    public void testDecomposedGroupByKeyAnd2Accumulates() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testDecomposedGroupByKeyAnd2Accumulates(RUN_TYPE runType) {
         // DROOLS-6031
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -1254,7 +1275,7 @@ public class GroupByTest extends BaseModelTest {
                 "    results.add($accresult);\n" +
                 "end";
 
-        assertSessionHasProperties(str, ksession -> {
+        assertSessionHasProperties(runType, str, ksession -> {
 
             final List<Object> results = new ArrayList<>();
             ksession.setGlobal("results", results);
@@ -1269,8 +1290,9 @@ public class GroupByTest extends BaseModelTest {
         });
     }
 
-    @Test
-    public void testDecomposedGroupByKeyAnd2AccumulatesInConsequence() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testDecomposedGroupByKeyAnd2AccumulatesInConsequence(RUN_TYPE runType) {
         // DROOLS-6031
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -1288,7 +1310,7 @@ public class GroupByTest extends BaseModelTest {
                 "    results.add($key);\n" +
                 "end";
 
-        assertSessionHasProperties(str, ksession -> {
+        assertSessionHasProperties(runType, str, ksession -> {
 
             final List<Object> results = new ArrayList<>();
             ksession.setGlobal("results", results);
@@ -1301,8 +1323,9 @@ public class GroupByTest extends BaseModelTest {
         });
     }
 
-    @Test
-    public void testNestedGroupBy1a() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testNestedGroupBy1a(RUN_TYPE runType) {
         // DROOLS-6045
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -1317,7 +1340,7 @@ public class GroupByTest extends BaseModelTest {
                 "    results.add($accresult);\n" +
                 "end";
 
-        assertSessionHasProperties(str, ksession -> {
+        assertSessionHasProperties(runType, str, ksession -> {
 
             final List<Object> results = new ArrayList<>();
             ksession.setGlobal("results", results);
@@ -1329,8 +1352,9 @@ public class GroupByTest extends BaseModelTest {
         });
     }
 
-    @Test
-    public void testNestedGroupBy1b() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testNestedGroupBy1b(RUN_TYPE runType) {
         // DROOLS-6045
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -1345,7 +1369,7 @@ public class GroupByTest extends BaseModelTest {
                 "    results.add($accresult);\n" +
                 "end";
 
-        assertSessionHasProperties(str, ksession -> {
+        assertSessionHasProperties(runType, str, ksession -> {
 
             final List<Object> results = new ArrayList<>();
             ksession.setGlobal("results", results);
@@ -1356,8 +1380,9 @@ public class GroupByTest extends BaseModelTest {
         });
     }
 
-    @Test
-    public void testNestedGroupBy2() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testNestedGroupBy2(RUN_TYPE runType) {
         // DROOLS-6045
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -1374,7 +1399,7 @@ public class GroupByTest extends BaseModelTest {
                 "then\n" +
                 "    results.add($accresult);\n" +
                 "end";
-        assertSessionHasProperties(str, ksession -> {
+        assertSessionHasProperties(runType, str, ksession -> {
 
             final List<Object> results = new ArrayList<>();
             ksession.setGlobal("results", results);
@@ -1386,8 +1411,9 @@ public class GroupByTest extends BaseModelTest {
         });
     }
 
-    @Test
-    public void testNestedGroupBy3() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testNestedGroupBy3(RUN_TYPE runType) {
         // DROOLS-6045
         // TODO: For some reason, the compiled class expression thinks $p should be an integer?
         String str =
@@ -1404,7 +1430,7 @@ public class GroupByTest extends BaseModelTest {
                 "then\n" +
                 "    results.add($keyOuter);\n" +
                 "end";
-        assertSessionHasProperties(str, ksession -> {
+        assertSessionHasProperties(runType, str, ksession -> {
 
             final List<Object> results = new ArrayList<>();
             ksession.setGlobal("results", results);
@@ -1417,8 +1443,9 @@ public class GroupByTest extends BaseModelTest {
         });
     }
 
-    @Test
-    public void testFilterOnAccumulateResultWithDecomposedGroupByKey() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testFilterOnAccumulateResultWithDecomposedGroupByKey(RUN_TYPE runType) {
         // DROOLS-6045
         // TODO: For some reason, the compiled class expression thinks $p should be an integer?
         String str =
@@ -1441,7 +1468,7 @@ public class GroupByTest extends BaseModelTest {
                 "    results.add($accresult);\n" +
                 "end";
 
-        assertSessionHasProperties(str, ksession -> {
+        assertSessionHasProperties(runType, str, ksession -> {
 
             final List<Object> results = new ArrayList<>();
             ksession.setGlobal("results", results);
@@ -1524,8 +1551,9 @@ public class GroupByTest extends BaseModelTest {
 //        }
 //    }
 
-    @Test
-    public void testNestedRewrite() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testNestedRewrite(RUN_TYPE runType) {
         // DROOLS-5697
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -1544,7 +1572,7 @@ public class GroupByTest extends BaseModelTest {
                 "    results.add($maxOfValues);\n" +
                 "end";
 
-        assertSessionHasProperties(str, ksession -> {
+        assertSessionHasProperties(runType, str, ksession -> {
 
             List results = new ArrayList();
             ksession.setGlobal("results", results);

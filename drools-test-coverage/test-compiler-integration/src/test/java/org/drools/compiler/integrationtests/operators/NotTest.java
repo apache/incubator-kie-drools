@@ -20,8 +20,8 @@ package org.drools.compiler.integrationtests.operators;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.drools.base.base.ClassObjectType;
 import org.drools.core.common.InternalFactHandle;
@@ -40,10 +40,9 @@ import org.drools.testcoverage.common.model.Cheese;
 import org.drools.testcoverage.common.model.Person;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
@@ -51,22 +50,15 @@ import org.kie.api.runtime.rule.FactHandle;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
-@RunWith(Parameterized.class)
 public class NotTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public NotTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
-    }
-
-    @Test
-    public void testLastMemoryEntryNotBug() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testLastMemoryEntryNotBug(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // JBRULES-2809
         // This occurs when a blocker is the last in the node's memory, or if there is only one fact in the node
         // And it gets no opportunity to rematch with itself
@@ -117,8 +109,9 @@ public class NotTest {
         }
     }
 
-    @Test
-    public void testNegatedConstaintInNot() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testNegatedConstaintInNot(KieBaseTestConfiguration kieBaseTestConfiguration) {
 
         final String drl =
                 "package org.drools.compiler.integrationtests.operators;\n" +
@@ -140,8 +133,9 @@ public class NotTest {
         }
     }
 
-    @Test
-    public void testMissingRootBlockerEquality() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testMissingRootBlockerEquality(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-6636
         final String drl =
                 "package org.drools.compiler.integrationtests.operators;\n" +
@@ -270,8 +264,9 @@ public class NotTest {
         }
     }
 
-    @Test
-    public void testNotWithInnerJoin() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testNotWithInnerJoin(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-6652
         final String drl =
                 "package org.drools.compiler.integrationtests.operators;\n" +
@@ -312,8 +307,9 @@ public class NotTest {
         assertThat(results.get(0)).isEqualTo("Paris");
     }
 
-    @Test
-    public void testNotWithUnification() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testNotWithUnification(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-7629
         final String drl =
                 "package org.drools.compiler.integrationtests.operators;\n" +

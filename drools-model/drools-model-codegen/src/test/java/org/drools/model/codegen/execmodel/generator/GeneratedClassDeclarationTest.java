@@ -26,7 +26,7 @@ import org.drools.model.codegen.execmodel.generator.declaredtype.api.FieldDefini
 import org.drools.model.codegen.execmodel.generator.declaredtype.api.MethodDefinition;
 import org.drools.model.codegen.execmodel.generator.declaredtype.api.TypeDefinition;
 import org.drools.model.codegen.execmodel.generator.declaredtype.generator.GeneratedClassDeclaration;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

@@ -19,7 +19,7 @@
 package org.drools.mvel.compiler.rule.builder.dialect.asm;
 
 import org.drools.mvel.asm.ClassGenerator;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mvel2.asm.MethodVisitor;
 
 import static org.assertj.core.api.Assertions.assertThat;

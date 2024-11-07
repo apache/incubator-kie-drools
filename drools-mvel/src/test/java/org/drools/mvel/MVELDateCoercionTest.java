@@ -27,8 +27,8 @@ import java.util.Objects;
 
 import org.drools.mvel.MVELConstraintBuilder.StringCoercionCompatibilityEvaluator;
 import org.drools.util.DateUtils;
+import org.junit.jupiter.api.Test;
 import org.drools.mvel.expr.MVELDateCoercion;
-import org.junit.Test;
 import org.mvel2.DataConversion;
 import org.mvel2.MVEL;
 import org.mvel2.ParserContext;

@@ -39,25 +39,24 @@ import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.mvel.accessors.ClassFieldAccessorStore;
 import org.drools.mvel.model.Cheese;
 import org.drools.mvel.model.MockObjectSource;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.runtime.rule.FactHandle;
 
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.fail;
 
-@RunWith(Parameterized.class)
 public class CompositeObjectSinkAdapterTest {
     private InternalKnowledgeBase kBase;
     private BuildContext                 buildContext;
@@ -66,21 +65,11 @@ public class CompositeObjectSinkAdapterTest {
 
     ClassFieldAccessorStore store = new ClassFieldAccessorStore();
 
-    private final boolean useLambdaConstraint;
-
-    public CompositeObjectSinkAdapterTest(boolean useLambdaConstraint) {
-        this.useLambdaConstraint = useLambdaConstraint;
+    public static Stream<Boolean> parameters() {
+    	return Stream.of(false, true);
     }
 
-    @Parameterized.Parameters(name = "useLambdaConstraint={0}")
-    public static Collection<Object[]> getParameters() {
-        Collection<Object[]> parameters = new ArrayList<>();
-        parameters.add(new Object[]{false});
-        parameters.add(new Object[]{true});
-        return parameters;
-    }
-
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         store.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
         store.setEagerWire( true );
@@ -92,7 +81,6 @@ public class CompositeObjectSinkAdapterTest {
     }
 
 
-    @Test
     public void testAddBeta() {
         final MockBetaNode beta = createBetaNode();
         
@@ -105,7 +93,6 @@ public class CompositeObjectSinkAdapterTest {
         hashedSinkMapIsEmpty();
     }
     
-    @Test
     public void testAddBetaRemoveBeta() {
         final MockBetaNode beta = createBetaNode();
         ad.addObjectSink( beta );
@@ -117,7 +104,6 @@ public class CompositeObjectSinkAdapterTest {
     }
 
 
-    @Test
     public void testAddOneAlphaNotHashable() {
         final AlphaNode al = createAlphaNode(new AlphaNodeFieldConstraintMock());
         ad.addObjectSink( al );
@@ -126,7 +112,8 @@ public class CompositeObjectSinkAdapterTest {
         otherSinksAre(al);
     }
     
-    @Test
+    @ParameterizedTest(name = "useLambdaConstraint={0}")
+	@MethodSource("parameters")
     public void testAddOneAlphaNotHashableRemoveOneAlpha() {
         final AlphaNode al = createAlphaNode(new AlphaNodeFieldConstraintMock());
         ad.addObjectSink( al );
@@ -137,10 +124,11 @@ public class CompositeObjectSinkAdapterTest {
         otherSinksAreEmpty();
     }
 
-    @Test
-    public void testAddOneAlpha() {
+    @ParameterizedTest(name = "useLambdaConstraint={0}")
+	@MethodSource("parameters")
+    public void testAddOneAlpha(boolean useLambdaConstraint) {
         extractor = store.getReader( Cheese.class, "type" );
-        final AlphaNode al = createAlphaNode(cheeseTypeEqualsTo("stilton"));
+        final AlphaNode al = createAlphaNode(cheeseTypeEqualsTo(useLambdaConstraint, "stilton"));
 
         ad.addObjectSink( al );
 
@@ -150,10 +138,11 @@ public class CompositeObjectSinkAdapterTest {
         hashableSinksAre(al);
     }
     
-    @Test
-    public void testAddOneAlphaRemoveOneAlpha() {
+    @ParameterizedTest(name = "useLambdaConstraint={0}")
+	@MethodSource("parameters")
+    public void testAddOneAlphaRemoveOneAlpha(boolean useLambdaConstraint) {
         extractor = store.getReader( Cheese.class, "type" );
-        final AlphaNode al = createAlphaNode(cheeseTypeEqualsTo("stilton"));
+        final AlphaNode al = createAlphaNode(cheeseTypeEqualsTo(useLambdaConstraint, "stilton"));
         ad.addObjectSink( al );
  
         ad.removeObjectSink( al );
@@ -162,12 +151,13 @@ public class CompositeObjectSinkAdapterTest {
         hashableSinksAreEmpty();
     }
     
-    @Test
-    public void testAddTwoAlphas() {
+    @ParameterizedTest(name = "useLambdaConstraint={0}")
+	@MethodSource("parameters")
+    public void testAddTwoAlphas(boolean useLambdaConstraint) {
         extractor = store.getReader( Cheese.class, "type" );
-        final AlphaNode al = createAlphaNode(cheeseTypeEqualsTo("stilton"));
+        final AlphaNode al = createAlphaNode(cheeseTypeEqualsTo(useLambdaConstraint, "stilton"));
         ad.addObjectSink( al );
-        final AlphaNode al2 = createAlphaNode(cheeseTypeEqualsTo("cheddar"));
+        final AlphaNode al2 = createAlphaNode(cheeseTypeEqualsTo(useLambdaConstraint, "cheddar"));
 
         ad.addObjectSink( al2 );
 
@@ -176,12 +166,13 @@ public class CompositeObjectSinkAdapterTest {
         hashableSinksAre(al, al2);
     }
     
-    @Test
-    public void testAddTwoAlphasAddOneBeta() {
+    @ParameterizedTest(name = "useLambdaConstraint={0}")
+	@MethodSource("parameters")
+    public void testAddTwoAlphasAddOneBeta(boolean useLambdaConstraint) {
         extractor = store.getReader( Cheese.class, "type" );
-        final AlphaNode al = createAlphaNode(cheeseTypeEqualsTo("stilton"));
+        final AlphaNode al = createAlphaNode(cheeseTypeEqualsTo(useLambdaConstraint, "stilton"));
         ad.addObjectSink( al );
-        final AlphaNode al2 = createAlphaNode(cheeseTypeEqualsTo("cheddar"));
+        final AlphaNode al2 = createAlphaNode(cheeseTypeEqualsTo(useLambdaConstraint, "cheddar"));
         ad.addObjectSink( al2 );
         final BetaNode beta = createBetaNode();
         
@@ -191,12 +182,13 @@ public class CompositeObjectSinkAdapterTest {
         hashableSinksAre(al, al2);
     }
     
-    @Test
-    public void testAddTwoAlphasAddOneBetaRemoveOneBeta() {
+    @ParameterizedTest(name = "useLambdaConstraint={0}")
+	@MethodSource("parameters")
+    public void testAddTwoAlphasAddOneBetaRemoveOneBeta(boolean useLambdaConstraint) {
         extractor = store.getReader( Cheese.class, "type" );
-        final AlphaNode al = createAlphaNode(cheeseTypeEqualsTo("stilton"));
+        final AlphaNode al = createAlphaNode(cheeseTypeEqualsTo(useLambdaConstraint, "stilton"));
         ad.addObjectSink( al );
-        final AlphaNode al2 = createAlphaNode(cheeseTypeEqualsTo("cheddar"));
+        final AlphaNode al2 = createAlphaNode(cheeseTypeEqualsTo(useLambdaConstraint, "cheddar"));
         ad.addObjectSink( al2 );
         final BetaNode beta = createBetaNode();
         ad.addObjectSink( beta );
@@ -207,14 +199,15 @@ public class CompositeObjectSinkAdapterTest {
         hashableSinksAre(al, al2);
     }
 
-    @Test
-    public void testAddThreeAlphas() {
+    @ParameterizedTest(name = "useLambdaConstraint={0}")
+	@MethodSource("parameters")
+    public void testAddThreeAlphas(boolean useLambdaConstraint) {
         extractor = store.getReader( Cheese.class, "type" );
-        final AlphaNode al = createAlphaNode(cheeseTypeEqualsTo("stilton"));
+        final AlphaNode al = createAlphaNode(cheeseTypeEqualsTo(useLambdaConstraint, "stilton"));
         ad.addObjectSink( al );
-        final AlphaNode al2 = createAlphaNode(cheeseTypeEqualsTo("cheddar"));
+        final AlphaNode al2 = createAlphaNode(cheeseTypeEqualsTo(useLambdaConstraint, "cheddar"));
         ad.addObjectSink( al2 );
-        final AlphaNode al3 = createAlphaNode(cheeseTypeEqualsTo("stinky"));
+        final AlphaNode al3 = createAlphaNode(cheeseTypeEqualsTo(useLambdaConstraint, "stinky"));
 
         ad.addObjectSink( al3 );
 
@@ -223,14 +216,15 @@ public class CompositeObjectSinkAdapterTest {
         hashedSinkMapIs(al, al2, al3);
     }
     
-    @Test
-    public void testAddThreeAlphasRemoveOneAlpha() {
+    @ParameterizedTest(name = "useLambdaConstraint={0}")
+	@MethodSource("parameters")
+    public void testAddThreeAlphasRemoveOneAlpha(boolean useLambdaConstraint) {
         extractor = store.getReader( Cheese.class, "type" );
-        final AlphaNode al = createAlphaNode(cheeseTypeEqualsTo("stilton"));
+        final AlphaNode al = createAlphaNode(cheeseTypeEqualsTo(useLambdaConstraint, "stilton"));
         ad.addObjectSink( al );
-        final AlphaNode al2 = createAlphaNode(cheeseTypeEqualsTo("cheddar"));
+        final AlphaNode al2 = createAlphaNode(cheeseTypeEqualsTo(useLambdaConstraint, "cheddar"));
         ad.addObjectSink( al2 );
-        final AlphaNode al3 = createAlphaNode(cheeseTypeEqualsTo("stinky"));
+        final AlphaNode al3 = createAlphaNode(cheeseTypeEqualsTo(useLambdaConstraint, "stinky"));
         ad.addObjectSink( al3 );
 
         ad.removeObjectSink( al2 );
@@ -240,14 +234,15 @@ public class CompositeObjectSinkAdapterTest {
     }
     
 
-    @Test
-    public void testTripleAlphaCharacterConstraint() {
+    @ParameterizedTest(name = "useLambdaConstraint={0}")
+	@MethodSource("parameters")
+    public void testTripleAlphaCharacterConstraint(boolean useLambdaConstraint) {
         extractor = store.getReader( Cheese.class, "charType" );
-        final AlphaNode al = createAlphaNode(cheeseCharTypeEqualsTo(65));
+        final AlphaNode al = createAlphaNode(cheeseCharTypeEqualsTo(useLambdaConstraint, 65));
         ad.addObjectSink( al );
-        final AlphaNode al2 = createAlphaNode(cheeseCharTypeEqualsTo(66));
+        final AlphaNode al2 = createAlphaNode(cheeseCharTypeEqualsTo(useLambdaConstraint, 66));
         ad.addObjectSink( al2 );
-        final AlphaNode al3 = createAlphaNode(cheeseCharTypeEqualsTo(67));
+        final AlphaNode al3 = createAlphaNode(cheeseCharTypeEqualsTo(useLambdaConstraint, 67));
         ad.addObjectSink( al3 );
 
         assertThat(ad.getHashedSinkMap().get(keyForCheeseCharType('B'))).isSameAs(al2);
@@ -255,24 +250,26 @@ public class CompositeObjectSinkAdapterTest {
     }
 
  
-    @Test
-    public void testTripleAlphaObjectCharacterConstraint() {
+    @ParameterizedTest(name = "useLambdaConstraint={0}")
+	@MethodSource("parameters")
+    public void testTripleAlphaObjectCharacterConstraint(boolean useLambdaConstraint) {
     	extractor = store.getReader( Cheese.class, "charObjectType" );
-        final AlphaNode al = createAlphaNode(cheeseCharObjectTypeEqualsTo(65));
+        final AlphaNode al = createAlphaNode(cheeseCharObjectTypeEqualsTo(useLambdaConstraint, 65));
         ad.addObjectSink( al );
-        final AlphaNode al2 = createAlphaNode(cheeseCharObjectTypeEqualsTo(66));
+        final AlphaNode al2 = createAlphaNode(cheeseCharObjectTypeEqualsTo(useLambdaConstraint, 66));
         ad.addObjectSink( al2 );
-        final AlphaNode al3 = createAlphaNode(cheeseCharObjectTypeEqualsTo(67));
+        final AlphaNode al3 = createAlphaNode(cheeseCharObjectTypeEqualsTo(useLambdaConstraint, 67));
         ad.addObjectSink( al3 );
 
         assertThat(ad.getHashedSinkMap().get(keyForCheeseCharObjectType('B'))).isSameAs(al2);
         assertThat(ad.getHashedSinkMap().get(keyForCheeseCharObjectType('X'))).isNull();
     }
 
-    @Test
-    public void testAddOneAlphaForRanges() {
+    @ParameterizedTest(name = "useLambdaConstraint={0}")
+	@MethodSource("parameters")
+    public void testAddOneAlphaForRanges(boolean useLambdaConstraint) {
         extractor = store.getReader( Cheese.class, "price" );
-        final AlphaNode al1 = createAlphaNode(cheesePriceGreaterThan(10));
+        final AlphaNode al1 = createAlphaNode(cheesePriceGreaterThan(useLambdaConstraint, 10));
 
         ad.addObjectSink( al1 );
 
@@ -283,12 +280,13 @@ public class CompositeObjectSinkAdapterTest {
     }
  
     
-    @Test
-    public void testTwoAlphasForRanges() {
+    @ParameterizedTest(name = "useLambdaConstraint={0}")
+	@MethodSource("parameters")
+    public void testTwoAlphasForRanges(boolean useLambdaConstraint) {
         extractor = store.getReader( Cheese.class, "price" );
-        final AlphaNode al1 = createAlphaNode(cheesePriceGreaterThan(10));
+        final AlphaNode al1 = createAlphaNode(cheesePriceGreaterThan(useLambdaConstraint, 10));
         ad.addObjectSink( al1 );
-        final AlphaNode al2 = createAlphaNode(cheesePriceGreaterThan(20));
+        final AlphaNode al2 = createAlphaNode(cheesePriceGreaterThan(useLambdaConstraint, 20));
 
         ad.addObjectSink( al2 );
 
@@ -297,14 +295,15 @@ public class CompositeObjectSinkAdapterTest {
     }
 
 
-    @Test
-    public void testThreeAlphasForRanges() {
+    @ParameterizedTest(name = "useLambdaConstraint={0}")
+	@MethodSource("parameters")
+    public void testThreeAlphasForRanges(boolean useLambdaConstraint) {
         extractor = store.getReader( Cheese.class, "price" );
-        final AlphaNode al1 = createAlphaNode(cheesePriceGreaterThan(10));
+        final AlphaNode al1 = createAlphaNode(cheesePriceGreaterThan(useLambdaConstraint, 10));
         ad.addObjectSink( al1 );
-        final AlphaNode al2 = createAlphaNode(cheesePriceGreaterThan(20));
+        final AlphaNode al2 = createAlphaNode(cheesePriceGreaterThan(useLambdaConstraint, 20));
         ad.addObjectSink( al2 );
-        final AlphaNode al3 = createAlphaNode(cheesePriceGreaterThan(30));
+        final AlphaNode al3 = createAlphaNode(cheesePriceGreaterThan(useLambdaConstraint, 30));
 
         ad.addObjectSink( al3 );
 
@@ -314,14 +313,15 @@ public class CompositeObjectSinkAdapterTest {
     }    
     
     
-    @Test
-    public void testAddThreeAlphasRemoveOneAlphaForRanges() {
+    @ParameterizedTest(name = "useLambdaConstraint={0}")
+	@MethodSource("parameters")
+    public void testAddThreeAlphasRemoveOneAlphaForRanges(boolean useLambdaConstraint) {
         extractor = store.getReader( Cheese.class, "price" );
-        final AlphaNode al1 = createAlphaNode(cheesePriceGreaterThan(10));
+        final AlphaNode al1 = createAlphaNode(cheesePriceGreaterThan(useLambdaConstraint, 10));
         ad.addObjectSink( al1 );
-        final AlphaNode al2 = createAlphaNode(cheesePriceGreaterThan(20));
+        final AlphaNode al2 = createAlphaNode(cheesePriceGreaterThan(useLambdaConstraint, 20));
         ad.addObjectSink( al2 );
-        final AlphaNode al3 = createAlphaNode(cheesePriceGreaterThan(30));
+        final AlphaNode al3 = createAlphaNode(cheesePriceGreaterThan(useLambdaConstraint, 30));
         ad.addObjectSink( al3 );
 
         ad.removeObjectSink( al2 );
@@ -331,14 +331,15 @@ public class CompositeObjectSinkAdapterTest {
     }
     
     
-    @Test
-    public void testAddThreeAlphasVerifyRangeQuery() {
+    @ParameterizedTest(name = "useLambdaConstraint={0}")
+	@MethodSource("parameters")
+    public void testAddThreeAlphasVerifyRangeQuery(boolean useLambdaConstraint) {
         extractor = store.getReader( Cheese.class, "price" );
-        final AlphaNode al1 = createAlphaNode(cheesePriceGreaterThan(10));
+        final AlphaNode al1 = createAlphaNode(cheesePriceGreaterThan(useLambdaConstraint, 10));
         ad.addObjectSink( al1 );
-        final AlphaNode al2 = createAlphaNode(cheesePriceGreaterThan(20));
+        final AlphaNode al2 = createAlphaNode(cheesePriceGreaterThan(useLambdaConstraint, 20));
         ad.addObjectSink( al2 );
-        final AlphaNode al3 = createAlphaNode(cheesePriceGreaterThan(30));
+        final AlphaNode al3 = createAlphaNode(cheesePriceGreaterThan(useLambdaConstraint, 30));
         ad.addObjectSink( al3 );
 
         // test propagation
@@ -361,27 +362,29 @@ public class CompositeObjectSinkAdapterTest {
 
     
 
-    @Test(expected = IllegalStateException.class)
-    public void testRangeIndexConflictKey() {
+    @ParameterizedTest(name = "useLambdaConstraint={0}")
+	@MethodSource("parameters")
+    public void testRangeIndexConflictKey(boolean useLambdaConstraint) {
         extractor = store.getReader( Cheese.class, "price" );
-        final AlphaNode al1 = createAlphaNode(cheesePriceGreaterThan(10));
+        final AlphaNode al1 = createAlphaNode(cheesePriceGreaterThan(useLambdaConstraint, 10));
         ad.addObjectSink( al1 );
-        final AlphaNode al2 = createAlphaNode(cheesePriceGreaterThan(20));
+        final AlphaNode al2 = createAlphaNode(cheesePriceGreaterThan(useLambdaConstraint, 20));
         ad.addObjectSink( al2 );
-        final AlphaNode al3 = createAlphaNode(cheesePriceGreaterThan(30));
+        final AlphaNode al3 = createAlphaNode(cheesePriceGreaterThan(useLambdaConstraint, 30));
         ad.addObjectSink( al3 );
-        final AlphaNode al4 = createAlphaNode(cheesePriceGreaterThan(30));
+        final AlphaNode al4 = createAlphaNode(cheesePriceGreaterThan(useLambdaConstraint, 30));
 
-        ad.addObjectSink( al4 ); // throws IllegalStateException
+        assertThatExceptionOfType(IllegalStateException.class).isThrownBy(() -> ad.addObjectSink( al4 )); // throws IllegalStateException
     }
 
-    @Test
-    public void testPropagationWithNullValue() {
+    @ParameterizedTest(name = "useLambdaConstraint={0}")
+	@MethodSource("parameters")
+    public void testPropagationWithNullValue(boolean useLambdaConstraint) {
         extractor = store.getReader( Cheese.class, "type" );
 
-        final AlphaNode al1 = createAlphaNode(cheeseTypeEqualsTo("stilton"));
-        final AlphaNode al2 = createAlphaNode(cheeseTypeEqualsTo("brie"));
-        final AlphaNode al3 = createAlphaNode(cheeseTypeEqualsTo("muzzarela"));
+        final AlphaNode al1 = createAlphaNode(cheeseTypeEqualsTo(useLambdaConstraint, "stilton"));
+        final AlphaNode al2 = createAlphaNode(cheeseTypeEqualsTo(useLambdaConstraint, "brie"));
+        final AlphaNode al3 = createAlphaNode(cheeseTypeEqualsTo(useLambdaConstraint, "muzzarela"));
 
         ad.addObjectSink( al1 );
         ad.addObjectSink( al2 );
@@ -401,19 +404,19 @@ public class CompositeObjectSinkAdapterTest {
 
     }
 
-	private AlphaNodeFieldConstraint cheeseTypeEqualsTo(String value) {
+	private AlphaNodeFieldConstraint cheeseTypeEqualsTo(boolean useLambdaConstraint, String value) {
 		return ConstraintTestUtil.createCheeseTypeEqualsConstraint(extractor, value, useLambdaConstraint);
 	}
     
-	private AlphaNodeFieldConstraint cheeseCharTypeEqualsTo(int value) {
+	private AlphaNodeFieldConstraint cheeseCharTypeEqualsTo(boolean useLambdaConstraint, int value) {
 		return ConstraintTestUtil.createCheeseCharTypeEqualsConstraint(extractor, value, useLambdaConstraint);
 	}
 	
-	private AlphaNodeFieldConstraint cheeseCharObjectTypeEqualsTo(int value) {
+	private AlphaNodeFieldConstraint cheeseCharObjectTypeEqualsTo(boolean useLambdaConstraint, int value) {
 		return ConstraintTestUtil.createCheeseCharObjectTypeEqualsConstraint(extractor, value, useLambdaConstraint);
 	}
 	
-	private AlphaNodeFieldConstraint cheesePriceGreaterThan(int value) {
+	private AlphaNodeFieldConstraint cheesePriceGreaterThan(boolean useLambdaConstraint, int value) {
 		return ConstraintTestUtil.createCheesePriceGreaterConstraint(extractor, value, useLambdaConstraint);
 	}
 

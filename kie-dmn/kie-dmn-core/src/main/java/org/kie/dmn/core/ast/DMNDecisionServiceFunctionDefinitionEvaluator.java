@@ -31,8 +31,8 @@ import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.ast.DecisionServiceNode;
 import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
-import org.kie.dmn.core.api.EvaluatorResult;
-import org.kie.dmn.core.api.EvaluatorResult.ResultType;
+import org.kie.dmn.api.core.EvaluatorResult;
+import org.kie.dmn.api.core.EvaluatorResult.ResultType;
 import org.kie.dmn.core.ast.DMNFunctionDefinitionEvaluator.FormalParameter;
 import org.kie.dmn.core.impl.DMNResultImpl;
 import org.kie.dmn.core.impl.DMNRuntimeImpl;
@@ -160,7 +160,7 @@ public class DMNDecisionServiceFunctionDefinitionEvaluator implements DMNExpress
                                                            dsFormalParameter.type,
                                                            typeCheck,
                                                            (rx, tx) -> MsgUtil.reportMessage(LOG,
-                                                                                             DMNMessage.Severity.WARN,
+                                                                                             DMNMessage.Severity.ERROR,
                                                                                              null,
                                                                                              resultContext,
                                                                                              null,
@@ -169,7 +169,11 @@ public class DMNDecisionServiceFunctionDefinitionEvaluator implements DMNExpress
                                                                                              dsFormalParameter.name,
                                                                                              tx,
                                                                                              MsgUtil.clipString(rx.toString(), 50)));
-            return result;
+            if (param != null && result == null) {
+                throw new IllegalArgumentException("Parameter " + param + " cannot be assigned to parameter of type " + dsFormalParameter.type + "!");
+            } else {
+                return result;
+            }
         }
 
         @Override

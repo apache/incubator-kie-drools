@@ -31,7 +31,7 @@ import org.drools.model.functions.Function1;
 import org.drools.model.functions.Predicate1;
 import org.drools.model.functions.Predicate2;
 import org.drools.model.view.ExprViewItem;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.rule.AccumulateFunction;
 
 import static org.assertj.core.api.Assertions.assertThat;

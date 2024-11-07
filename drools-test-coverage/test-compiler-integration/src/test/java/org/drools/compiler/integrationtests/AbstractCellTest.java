@@ -28,7 +28,8 @@ import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieSessionTestConfiguration;
 import org.drools.testcoverage.common.util.SerializationHelper;
-import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.runtime.Environment;
@@ -39,14 +40,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public abstract class AbstractCellTest {
 
-    protected final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public AbstractCellTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
-    }
-
-    @Test
-    public void testCell() throws IOException, ClassNotFoundException {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testCell(KieBaseTestConfiguration kieBaseTestConfiguration) throws IOException, ClassNotFoundException {
 
         final String drl = "package evalmodify;\n" +
                 "\n" +

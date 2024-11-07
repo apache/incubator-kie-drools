@@ -26,7 +26,7 @@ import org.drools.drl.parser.DroolsParserException;
 import org.drools.drl.parser.lang.DRLParser;
 import org.drools.drl.parser.lang.Expander;
 import org.drools.drl.parser.lang.dsl.DefaultExpander;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 
 import static org.assertj.core.api.Assertions.assertThat;

@@ -19,8 +19,8 @@
 package org.drools.mvel.compiler.conf;
 
 import org.drools.core.BeliefSystemType;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.conf.AccumulateNullPropagationOption;
 import org.kie.api.runtime.conf.BeliefSystemTypeOption;
@@ -37,7 +37,7 @@ public class KnowledgeSessionConfigurationTest {
     /* (non-Javadoc)
      * @see junit.framework.TestCase#setUp()
      */
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         config = KieServices.Factory.get().newKieSessionConfiguration();
     }

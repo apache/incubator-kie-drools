@@ -153,7 +153,7 @@ public class DecisionTableFunction
      */
     private static DTDecisionRule toDecisionRule(EvaluationContext mainCtx, FEEL embeddedFEEL, int index, List<?> rule, int inputSize) {
         // TODO should be check indeed block of inputSize n inputs, followed by block of outputs.
-        DTDecisionRule dr = new DTDecisionRule( index );
+        DTDecisionRule dr = new DTDecisionRule( index, null );
         for ( int i = 0; i < rule.size(); i++ ) {
             Object o = rule.get( i );
             if ( i < inputSize ) {

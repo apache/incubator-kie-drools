@@ -18,19 +18,18 @@
  */
 package org.drools.model.codegen.execmodel;
 
-import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+
 public class HierarchyRulesTest extends BaseModelTest {
 
-    public HierarchyRulesTest(RUN_TYPE testRunType ) {
-        super( testRunType );
-    }
-
-    @Test
-    public void test() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void test(RUN_TYPE runType) {
         // DROOLS-7470
         String str =
                 "rule R1 when \n" +
@@ -105,7 +104,7 @@ public class HierarchyRulesTest extends BaseModelTest {
                 "then\n" +
                 "end\n";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
         assertThat( ksession.fireAllRules() ).isEqualTo(4);
     }
 }

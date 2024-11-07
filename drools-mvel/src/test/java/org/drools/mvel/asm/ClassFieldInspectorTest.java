@@ -28,7 +28,7 @@ import org.drools.core.util.asm.InterfaceChild;
 import org.drools.core.util.asm.InterfaceChildImpl;
 import org.drools.core.util.asm.TestAbstract;
 import org.drools.core.util.asm.TestInterface;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
