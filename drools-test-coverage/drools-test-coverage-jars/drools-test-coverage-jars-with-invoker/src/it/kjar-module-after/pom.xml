@@ -19,30 +19,40 @@
     under the License.
 
 -->
-
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <parent>
-    <artifactId>test-compiler-integration-jars</artifactId>
-    <groupId>org.drools.testcoverage</groupId>
-    <version>999-SNAPSHOT</version>
-  </parent>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>test-compiler-integration-jars-setter-overload</artifactId>
-  <name>Drools :: Test Coverage :: Jar with setter overload for Compiler integration tests</name>
+  <groupId>org.kie.test</groupId>
+  <artifactId>test-module</artifactId>
+  <version>1.2.0-SNAPSHOT</version>
+  <packaging>kjar</packaging>
 
   <properties>
-    <java.module.name>org.drools.compiler.integrationtests.setter.overload</java.module.name>
+    <java.module.name>org.drools.compiler.integrationtests.kjar.module.before</java.module.name>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.deploy.skip>true</maven.deploy.skip>
+    <maven.compiler.release>17</maven.compiler.release>
   </properties>
 
-  <dependencies>
-  </dependencies>
-
   <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.kie</groupId>
+          <artifactId>kie-maven-plugin</artifactId>
+          <version>@org.kie.version@</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+
     <plugins>
+      <plugin>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-maven-plugin</artifactId>
+        <extensions>true</extensions>
+      </plugin>
+
       <plugin>
         <groupId>com.coderplus.maven.plugins</groupId>
         <artifactId>copy-rename-maven-plugin</artifactId>
@@ -55,12 +65,12 @@
             </goals>
             <configuration>
               <sourceFile>${project.build.directory}/${project.build.finalName}.jar</sourceFile>
-              <destinationFile>${project.build.directory}/../../../test-compiler-integration/src/test/resources/${project.artifactId}.jar</destinationFile>
+              <!-- copy to test-suite/src/test/resources -->
+              <destinationFile>${project.build.directory}/../../../../../../test-suite/src/test/resources/kjar/kjar-module-after.jar</destinationFile>
             </configuration>
           </execution>
         </executions>
       </plugin>
     </plugins>
   </build>
-
 </project>

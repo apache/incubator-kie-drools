@@ -317,7 +317,7 @@ public class JBRULESTest {
         // An internal specific test case so not enhanced for executable-model
         final MapBackedClassLoader loader = new MapBackedClassLoader( this.getClass().getClassLoader() );
 
-        final JarInputStream jis = new JarInputStream( this.getClass().getResourceAsStream( "/test-compiler-integration-jars-setter-overload.jar" ) );
+        final JarInputStream jis = new JarInputStream( this.getClass().getResourceAsStream( "/setter-overload.jar" ) );
 
         JarEntry entry;
         final byte[] buf = new byte[1024];

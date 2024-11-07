@@ -15,8 +15,5 @@
 # specific language governing permissions and limitations
 # under the License.
 
-surf.jar
-testEnum.jar
-kie-project-simple-1.0.0.jar
-only-jar-pojo-not-kjar-no-kmodule-1.0.0.jar
-setter-overload.jar
+kjar-module-after.jar
+kjar-module-before.jar

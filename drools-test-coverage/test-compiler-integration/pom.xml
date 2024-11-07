@@ -43,7 +43,7 @@
     <dependencies>
       <dependency>
         <groupId>org.drools.testcoverage</groupId>
-        <artifactId>test-compiler-integration-jars-setter-overload</artifactId>
+        <artifactId>setter-overload</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
@@ -118,7 +118,7 @@
 
     <dependency>
       <groupId>org.drools.testcoverage</groupId>
-      <artifactId>test-compiler-integration-jars-setter-overload</artifactId>
+      <artifactId>setter-overload</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>

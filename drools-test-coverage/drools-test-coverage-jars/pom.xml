@@ -30,9 +30,9 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>test-compiler-integration-jars</artifactId>
+  <artifactId>drools-test-coverage-jars</artifactId>
   <packaging>pom</packaging>
-  <name>Drools :: Test Coverage :: Jars for Compiler integration tests</name>
+  <name>Drools :: Test Coverage :: Jars for tests</name>
 
   <properties>
     <parent.project.version>${project.version}</parent.project.version>
@@ -42,7 +42,7 @@
     <module>surf</module>
     <module>testEnum</module>
     <module>only-jar-pojo-not-kjar-no-kmodule</module>
-    <module>test-compiler-integration-jars-setter-overload</module>
-    <module>test-compiler-integration-jars-with-invoker</module>
+    <module>setter-overload</module>
+    <module>drools-test-coverage-jars-with-invoker</module>
   </modules>
 </project>

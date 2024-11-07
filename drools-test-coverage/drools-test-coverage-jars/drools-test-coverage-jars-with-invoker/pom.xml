@@ -22,20 +22,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
-    <artifactId>test-compiler-integration-jars</artifactId>
+    <artifactId>drools-test-coverage-jars</artifactId>
     <groupId>org.drools.testcoverage</groupId>
     <version>999-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>org.drools.testcoverage</groupId>
-  <artifactId>test-compiler-integration-jars-with-invoker</artifactId>
+  <artifactId>drools-test-coverage-jars-with-invoker</artifactId>
 
-  <name>Drools :: Test Coverage :: Jars for Compiler integration tests built by invoker</name>
-
-  <!-- This project is to build kjars using maven-invoker-plugin when we want to
-       use the project version kie-maven-plugin
-       and specify a fixed version (e.g. 1.0.0) for the kjar -->
+  <name>Drools :: Test Coverage :: Jars for tests built by invoker</name>
 
   <properties>
     <java.module.name>org.drools.compiler.integrationtests.jars.with.invoker</java.module.name>

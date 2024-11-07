@@ -16,10 +16,24 @@
  * specific language governing permissions and limitations
  * under the License.
  */
- package org.mypackage
 
-rule "rule 1" when
-    $s: String()
-then
-    System.out.println("123 " + $s);
+package org.drools.test
+
+
+rule "Your First Rule"
+
+    when
+        //conditions
+    then
+        //actions
+
+end
+
+rule "Your Second Rule"
+    //include attributes such as "salience" here...
+    when
+        //conditions
+    then
+        //actions
+
 end
