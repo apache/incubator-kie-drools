@@ -58,6 +58,12 @@
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-maven-plugin</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.maven.resolver</groupId>
+          <artifactId>maven-resolver-util</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
   </dependencies>
 
