@@ -26,8 +26,8 @@ import org.drools.core.test.model.Address;
 import org.drools.core.test.model.Person;
 import org.drools.mvel.MVELDialectRuntimeData;
 import org.drools.wiring.api.classloader.ProjectClassLoader;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
@@ -40,7 +40,7 @@ public class MVELClassFieldExtractorTest {
     private final Address[] business = new Address[2];
     private final Address[] home     = new Address[2];
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         store.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
         store.setEagerWire( true );

@@ -19,18 +19,17 @@
 package org.drools.mvel.integrationtests.session;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.drools.mvel.compiler.Person;
 import org.drools.mvel.compiler.PolymorphicFact;
 import org.drools.mvel.compiler.Primitives;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.runtime.KieSession;
@@ -38,23 +37,16 @@ import org.kie.api.runtime.rule.FactHandle;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class TypeCoercionTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public TypeCoercionTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        // TODO: EM failed with some tests. File JIRAs
+        return TestParametersUtil2.getKieBaseCloudConfigurations(false).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-     // TODO: EM failed with some tests. File JIRAs
-        return TestParametersUtil.getKieBaseCloudConfigurations(false);
-    }
-
-    @Test
-    public void testRuntimeTypeCoercion() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testRuntimeTypeCoercion(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_RuntimeTypeCoercion.drl");
         KieSession ksession = kbase.newKieSession();
 
@@ -82,8 +74,9 @@ public class TypeCoercionTest {
         assertThat(list.size()).isEqualTo(2);
     }
 
-    @Test
-    public void testRuntimeTypeCoercion2() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testRuntimeTypeCoercion2(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_RuntimeTypeCoercion2.drl");
         KieSession ksession = kbase.newKieSession();
 
@@ -122,8 +115,9 @@ public class TypeCoercionTest {
         assertThat(list.get(index)).isEqualTo("null object");
     }
 
-    @Test
-    public void testUnwantedCoersion() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testUnwantedCoersion(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         final String rule = "package org.drools.compiler\n" +
                 "import " + InnerBean.class.getCanonicalName() + ";\n" +
                 "import " + OuterBean.class.getCanonicalName() + ";\n" +
@@ -206,8 +200,9 @@ public class TypeCoercionTest {
         }
     }
 
-    @Test
-    public void testCoercionOfStringValueWithoutQuotes() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testCoercionOfStringValueWithoutQuotes(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         // JBRULES-3080
         final String str = "package org.drools.mvel.compiler.test; \n" +
                 "declare A\n" +
@@ -229,8 +224,9 @@ public class TypeCoercionTest {
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testPrimitiveToBoxedCoercionInMethodArgument() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testPrimitiveToBoxedCoercionInMethodArgument(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         final String str = "package org.drools.mvel.compiler.test;\n" +
                 "import " + TypeCoercionTest.class.getName() + "\n" +
                 "import org.drools.mvel.compiler.*\n" +
@@ -252,8 +248,9 @@ public class TypeCoercionTest {
         return "" + value;
     }
 
-    @Test
-    public void testStringCoercion() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testStringCoercion(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-1688
         final String drl = "package org.drools.mvel.compiler.test;\n" +
                            "import " + Person.class.getCanonicalName() + "\n" +
@@ -274,8 +271,9 @@ public class TypeCoercionTest {
         assertThat(kieSession.fireAllRules()).isEqualTo(2);
     }
 
-    @Test
-    public void testIntCoercion() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testIntCoercion(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-1688
         final String drl = "package org.drools.mvel.compiler.test;\n" +
                            "import " + Person.class.getCanonicalName() + "\n" +
@@ -296,8 +294,9 @@ public class TypeCoercionTest {
         assertThat(kieSession.fireAllRules()).isEqualTo(2);
     }
 
-    @Test
-    public void testCoercionInJoin() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testCoercionInJoin(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-2695
         final String drl =
                 " rule R1 when\n" +
@@ -313,8 +312,9 @@ public class TypeCoercionTest {
         assertThat(kieSession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testCoercionInJoinOnField() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testCoercionInJoinOnField(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-2695
         final String drl =
                 "import " + Person.class.getCanonicalName() + "\n" +

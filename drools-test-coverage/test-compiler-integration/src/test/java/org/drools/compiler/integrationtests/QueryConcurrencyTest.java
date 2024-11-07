@@ -20,7 +20,6 @@ package org.drools.compiler.integrationtests;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -29,22 +28,22 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
 
 import org.drools.mvel.expr.MvelEvaluator;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
 import org.junit.experimental.categories.Category;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.test.testcategory.TurtleTestCategory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 @Category(TurtleTestCategory.class)
 public class QueryConcurrencyTest {
 
@@ -53,19 +52,14 @@ public class QueryConcurrencyTest {
     private static int THREADS = 32;
     private static int REQUESTS = 32;
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public QueryConcurrencyTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(false).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(false);
-    }
-
-    @Test(timeout = 300000)
-    public void testConstraintConcurrency() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    @Timeout(300000)
+    public void testConstraintConcurrency(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
                 "package com.example.reproducer\n" +
                         "import " + Bus.class.getCanonicalName() + ";\n" +

@@ -27,6 +27,8 @@ import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.reteoo.MockLeftTupleSink;
 import org.drools.core.util.index.IndexSpec;
 import org.drools.mvel.accessors.ClassFieldAccessorStore;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.drools.base.base.ClassObjectType;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalFactHandle;
@@ -43,8 +45,6 @@ import org.drools.base.util.IndexedValueReader;
 import org.drools.core.util.SingleLinkedEntry;
 import org.drools.core.util.index.TupleIndexHashTable;
 import org.drools.core.util.index.TupleList;
-import org.junit.Before;
-import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -52,7 +52,7 @@ public class RightTupleIndexHashTableTest {
 
     ClassFieldAccessorStore      store  = new ClassFieldAccessorStore();
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         store.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
         store.setEagerWire( true );

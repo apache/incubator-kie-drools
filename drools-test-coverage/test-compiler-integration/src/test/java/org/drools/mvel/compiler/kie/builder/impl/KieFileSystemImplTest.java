@@ -22,10 +22,10 @@ import java.util.Collection;
 
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kie.builder.impl.KieFileSystemImpl;
-import org.junit.Before;
-import org.junit.Test;
 import org.kie.api.builder.KieFileSystem;
 import org.drools.util.PortablePath;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -33,7 +33,7 @@ public class KieFileSystemImplTest {
 
     KieFileSystemImpl kieFileSystem;
 
-    @Before
+    @BeforeEach
     public void setup() {
         kieFileSystem = new KieFileSystemImpl();
     }

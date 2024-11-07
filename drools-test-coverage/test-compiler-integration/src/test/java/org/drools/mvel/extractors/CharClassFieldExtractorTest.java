@@ -22,8 +22,8 @@ import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.TestBean;
 import org.drools.base.rule.accessor.ReadAccessor;
 import org.drools.mvel.accessors.ClassFieldAccessorStore;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
@@ -32,7 +32,7 @@ public class CharClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
     ReadAccessor reader;
     TestBean  bean      = new TestBean();
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         ClassFieldAccessorStore store = new ClassFieldAccessorStore();
         store.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );

@@ -18,9 +18,9 @@
  */
 package org.drools.mvel;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.stream.Stream;
 
 import org.drools.core.base.ClassFieldAccessorCache;
 
@@ -40,38 +40,27 @@ import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.mvel.model.Cheese;
 import org.drools.mvel.model.MockObjectSource;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
-@RunWith(Parameterized.class)
 public class AlphaNodeTest {
     
     ClassFieldAccessorStore store = new ClassFieldAccessorStore();
 
-    private final boolean useLambdaConstraint;
-
-    public AlphaNodeTest(boolean useLambdaConstraint) {
-        this.useLambdaConstraint = useLambdaConstraint;
+    public static Stream<Boolean> parameters() {
+    	return Stream.of(false, true);
     }
 
-    @Parameterized.Parameters(name = "useLambdaConstraint={0}")
-    public static Collection<Object[]> getParameters() {
-        Collection<Object[]> parameters = new ArrayList<>();
-        parameters.add(new Object[]{false});
-        parameters.add(new Object[]{true});
-        return parameters;
-    }
-
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         store.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
         store.setEagerWire( true );
     }
 
-    @Test
-    public void testLiteralConstraintAssertObjectWithoutMemory() throws Exception {
+    @ParameterizedTest(name = "useLambdaConstraint={0}")
+	@MethodSource("parameters")
+    public void testLiteralConstraintAssertObjectWithoutMemory(boolean useLambdaConstraint) throws Exception {
         InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
         BuildContext buildContext = new BuildContext( kBase, Collections.emptyList() );
         buildContext.setRule(new RuleImpl("test"));
@@ -131,8 +120,9 @@ public class AlphaNodeTest {
     /*
      *  This just test AlphaNode With a different Constraint type.
      */
-    @Test
-    public void testReturnValueConstraintAssertObject() throws Exception {
+    @ParameterizedTest(name = "useLambdaConstraint={0}")
+	@MethodSource("parameters")
+    public void testReturnValueConstraintAssertObject(boolean useLambdaConstraint) throws Exception {
         InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
         BuildContext buildContext = new BuildContext( kBase, Collections.emptyList() );
         buildContext.setRule(new RuleImpl("test"));
@@ -184,8 +174,9 @@ public class AlphaNodeTest {
         assertThat((Collection) sink.getAsserted()).hasSize(0);
     }
 
-    @Test
-    public void testUpdateSinkWithoutMemory() {
+    @ParameterizedTest(name = "useLambdaConstraint={0}")
+	@MethodSource("parameters")
+    public void testUpdateSinkWithoutMemory(boolean useLambdaConstraint) {
         // An AlphaNode should try and repropagate from its source
         InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
         BuildContext buildContext = new BuildContext( kBase, Collections.emptyList() );

@@ -25,7 +25,7 @@ import java.util.List;
 import org.drools.core.event.RuleRuntimeEventSupport;
 import org.drools.core.test.model.Cheese;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.event.rule.ObjectDeletedEvent;
 import org.kie.api.event.rule.ObjectInsertedEvent;

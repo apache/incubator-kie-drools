@@ -30,8 +30,8 @@ import org.drools.core.test.model.StockTick;
 import org.drools.base.time.Interval;
 import org.drools.core.time.TemporalDependencyMatrix;
 import org.drools.mvel.evaluators.AfterEvaluatorDefinition;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.base.time.Interval.MAX;
@@ -41,7 +41,7 @@ public class BuildUtilsTest {
     
     private BuildUtils utils;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         utils = new BuildUtils();
     }

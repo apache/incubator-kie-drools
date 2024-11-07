@@ -28,8 +28,8 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import org.drools.testcoverage.common.util.TimeUtil;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.model.KieBaseModel;
@@ -45,7 +45,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Tests proper timer firing using accumulate and fireUntilHalt() mode.
  * BZ-981270
  */
-@Ignore
+@Disabled
 public class CepFireUntilHaltTimerTest {
 
     private KieSession ksession;

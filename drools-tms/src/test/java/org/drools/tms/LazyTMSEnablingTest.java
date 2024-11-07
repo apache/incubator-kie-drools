@@ -24,8 +24,8 @@ import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -46,7 +46,7 @@ public class LazyTMSEnablingTest {
     private StatefulKnowledgeSessionImpl ksession;
     private TruthMaintenanceSystem tms;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
         ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();

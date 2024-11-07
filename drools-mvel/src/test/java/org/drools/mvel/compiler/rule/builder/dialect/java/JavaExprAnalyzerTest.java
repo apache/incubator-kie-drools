@@ -25,7 +25,7 @@ import org.antlr.runtime.RecognitionException;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.mvel.java.JavaAnalysisResult;
 import org.drools.mvel.java.JavaExprAnalyzer;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;

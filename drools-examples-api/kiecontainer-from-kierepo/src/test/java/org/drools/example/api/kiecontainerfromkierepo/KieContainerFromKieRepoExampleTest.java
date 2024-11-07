@@ -18,12 +18,12 @@
  */
 package org.drools.example.api.kiecontainerfromkierepo;
 
-import org.junit.Test;
-
 import java.io.ByteArrayOutputStream;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.io.PrintStream;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.jupiter.api.Test;
 
 public class KieContainerFromKieRepoExampleTest {
 

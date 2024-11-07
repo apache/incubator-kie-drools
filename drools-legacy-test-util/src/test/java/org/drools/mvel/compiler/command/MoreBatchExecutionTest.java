@@ -25,8 +25,8 @@ import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.mvel.CommonTestMethodBase;
 import org.drools.mvel.compiler.Cheese;
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 import org.kie.api.command.Command;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.ExecutionResults;
@@ -44,7 +44,7 @@ public class MoreBatchExecutionTest extends CommonTestMethodBase {
 
     private KieSession ksession = null;
     
-    @After
+    @AfterEach
     public void disposeKSession() {
         if( ksession != null ) { 
             ksession.dispose();

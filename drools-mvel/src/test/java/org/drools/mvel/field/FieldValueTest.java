@@ -19,8 +19,8 @@
 package org.drools.mvel.field;
 
 import org.drools.base.rule.accessor.FieldValue;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -31,7 +31,7 @@ public class FieldValueTest {
     FieldValue field4;
     FieldValue field5;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         this.field1 = FieldFactory.getInstance().getFieldValue( null );
         this.field2 = FieldFactory.getInstance().getFieldValue( null );

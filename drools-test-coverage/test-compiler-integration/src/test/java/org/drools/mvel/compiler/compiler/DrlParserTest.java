@@ -19,8 +19,8 @@
 package org.drools.mvel.compiler.compiler;
 
 import java.io.StringReader;
-import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.ast.descr.TypeDeclarationDescr;
@@ -32,34 +32,26 @@ import org.drools.drl.parser.lang.dsl.DefaultExpander;
 import org.drools.drl.parser.lang.dsl.DefaultExpanderResolver;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.Message;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class DrlParserTest {
 
     private static final String NL = System.getProperty("line.separator");
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public DrlParserTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
-    }
-
-    @Test
-    public void testExpandDRL() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testExpandDRL(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String dsl = "[condition]Something=Something()" + NL + "[then]another=another();";
         String drl = "rule 'foo' " + NL + " when " + NL + " Something " + NL + " then " + NL + " another " + NL + "end";
         
@@ -69,8 +61,9 @@ public class DrlParserTest {
                   .isEqualToIgnoringWhitespace(result);
     }
     
-    @Test
-    public void testExpandDRLUsingInjectedExpander() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testExpandDRLUsingInjectedExpander(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String dsl = "[condition]Something=Something()" + NL + "[then]another=another();";
         String drl = "rule 'foo' " + NL + " when " + NL + " Something " + NL + " then " + NL + " another " + NL + "end";
         
@@ -93,8 +86,9 @@ public class DrlParserTest {
                   .isEqualToIgnoringWhitespace(result);
     }
     
-    @Test
-    public void testDeclaredSuperType() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testDeclaredSuperType(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String drl = "package foo \n"
                      + "declare Bean1 \n"
                      + "age: int \n"
@@ -113,8 +107,9 @@ public class DrlParserTest {
         assertThat(bean2Type.getSuperTypeName()).isEqualTo("Bean1");
     }
     
-    @Test
-    public void testBigDecimalWithZeroValue() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testBigDecimalWithZeroValue(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String drl = "package foo \n"
                      + "declare Bean1 \n"
                      + "field1: java.math.BigDecimal \n"
@@ -125,11 +120,12 @@ public class DrlParserTest {
                      + "then \n"
                      + "end";
 
-        createKBuilderAddDrlAndAssertHasNoErrors( drl );
+        createKBuilderAddDrlAndAssertHasNoErrors( kieBaseTestConfiguration, drl );
     }
 
-    @Test
-    public void testBigDecimalWithZeroDecimalPointValue() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testBigDecimalWithZeroDecimalPointValue(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String drl = "package foo \n"
                      + "declare Bean1 \n"
                      + "field1: java.math.BigDecimal \n"
@@ -140,11 +136,12 @@ public class DrlParserTest {
                      + "then \n"
                      + "end";
 
-        createKBuilderAddDrlAndAssertHasNoErrors( drl );
+        createKBuilderAddDrlAndAssertHasNoErrors( kieBaseTestConfiguration, drl );
     }
 
-    @Test
-    public void testBigDecimalWithNonZeroValue() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testBigDecimalWithNonZeroValue(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String drl = "package foo \n"
                      + "declare Bean1 \n"
                      + "field1: java.math.BigDecimal \n"
@@ -155,11 +152,12 @@ public class DrlParserTest {
                      + "then \n"
                      + "end";
 
-        createKBuilderAddDrlAndAssertHasNoErrors( drl );
+        createKBuilderAddDrlAndAssertHasNoErrors( kieBaseTestConfiguration, drl );
     }
 
-    @Test
-    public void testBigDecimalWithNonZeroDecimalPointValue() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testBigDecimalWithNonZeroDecimalPointValue(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String drl = "package foo \n"
                      + "declare Bean1 \n"
                      + "field1: java.math.BigDecimal \n"
@@ -170,11 +168,12 @@ public class DrlParserTest {
                      + "then \n"
                      + "end";
 
-        createKBuilderAddDrlAndAssertHasNoErrors( drl );
+        createKBuilderAddDrlAndAssertHasNoErrors( kieBaseTestConfiguration, drl );
     }
 
-    @Test
-    public void testBigIntegerWithZeroValue() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testBigIntegerWithZeroValue(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String drl = "package foo \n"
                      + "declare Bean1 \n"
                      + "field1: java.math.BigInteger \n"
@@ -185,11 +184,12 @@ public class DrlParserTest {
                      + "then \n"
                      + "end";
 
-        createKBuilderAddDrlAndAssertHasNoErrors( drl );
+        createKBuilderAddDrlAndAssertHasNoErrors( kieBaseTestConfiguration, drl );
     }
 
-    @Test
-    public void testBigIntegerWithNonZeroValue() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testBigIntegerWithNonZeroValue(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String drl = "package foo \n"
                      + "declare Bean1 \n"
                      + "field1: java.math.BigInteger \n"
@@ -200,11 +200,12 @@ public class DrlParserTest {
                      + "then \n"
                      + "end";
 
-        createKBuilderAddDrlAndAssertHasNoErrors( drl );
+        createKBuilderAddDrlAndAssertHasNoErrors( kieBaseTestConfiguration, drl );
     }
 
-    @Test
-    public void testParseConsequenceWithSingleQuoteInsideDoubleQuotesFollowedByUpdate() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testParseConsequenceWithSingleQuoteInsideDoubleQuotesFollowedByUpdate(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String drl = "declare Person\n" +
                 "    name: String\n" +
                 "end\n" +
@@ -217,11 +218,12 @@ public class DrlParserTest {
                 "    update($p);\n" +
                 "end";
 
-        createKBuilderAddDrlAndAssertHasNoErrors( drl );
+        createKBuilderAddDrlAndAssertHasNoErrors( kieBaseTestConfiguration, drl );
     }
 
-    @Test
-    public void testParseConsequenceWithEscapedDoubleQuoteInsideDoubleQuotesFollowedByUpdate() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testParseConsequenceWithEscapedDoubleQuoteInsideDoubleQuotesFollowedByUpdate(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String drl = "declare Person\n" +
                 "    name: String\n" +
                 "end\n" +
@@ -234,11 +236,12 @@ public class DrlParserTest {
                 "    update($p);\n" +
                 "end";
 
-        createKBuilderAddDrlAndAssertHasNoErrors( drl );
+        createKBuilderAddDrlAndAssertHasNoErrors( kieBaseTestConfiguration, drl );
     }
 
-    @Test
-    public void testIfAfterPattern() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testIfAfterPattern(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str =
                 "rule R when\n" +
                         "  $sum : Integer()\n" +
@@ -247,12 +250,13 @@ public class DrlParserTest {
                         "then[greater]\n" +
                         "end";
 
-        createKBuilderAddDrlAndAssertHasNoErrors( str );
+        createKBuilderAddDrlAndAssertHasNoErrors( kieBaseTestConfiguration, str );
     }
 
 
-    @Test
-    public void testIfAfterAccumulate() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testIfAfterAccumulate(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str =
                 "rule R when\n" +
                         "  accumulate ( $p: Object(); \n" +
@@ -263,10 +267,10 @@ public class DrlParserTest {
                         "then[greater]\n" +
                         "end";
 
-        createKBuilderAddDrlAndAssertHasNoErrors( str );
+        createKBuilderAddDrlAndAssertHasNoErrors( kieBaseTestConfiguration, str );
     }
 
-    private void createKBuilderAddDrlAndAssertHasNoErrors(String drl) {
+    private void createKBuilderAddDrlAndAssertHasNoErrors(KieBaseTestConfiguration kieBaseTestConfiguration, String drl) {
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
         List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
         assertThat(errors.size()).as("Expected no build errors, but got: " + errors.toString()).isEqualTo(0);

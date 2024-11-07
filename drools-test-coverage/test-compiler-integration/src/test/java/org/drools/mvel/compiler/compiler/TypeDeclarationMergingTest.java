@@ -19,9 +19,9 @@
 package org.drools.mvel.compiler.compiler;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.junit.jupiter.api.Test;
 import org.drools.base.rule.TypeDeclaration;
 import org.drools.base.rule.TypeDeclaration.Format;
-import org.junit.Test;
 import org.kie.api.definition.type.Position;
 import org.kie.api.definition.type.Role;
 import org.kie.api.io.ResourceType;

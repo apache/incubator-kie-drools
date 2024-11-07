@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
@@ -38,10 +39,9 @@ import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
 import org.drools.testcoverage.common.util.TestConstants;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -67,24 +67,18 @@ import org.kie.internal.io.ResourceFactory;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.fail;
 
-@RunWith(Parameterized.class)
 public class TypeDeclarationTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public TypeDeclarationTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
-    }
-
-    @Test
-    public void testClassNameClashing() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testClassNameClashing(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str = "";
         str += "package org.kie \n" +
         		"declare org.kie.Character \n" +
@@ -96,7 +90,8 @@ public class TypeDeclarationTest {
         assertThat(errors.isEmpty()).as(errors.toString()).isTrue();
     }
 
-    @Test
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
     public void testAnnotationReDefinition(){
         String str1 = "";
         str1 += "package org.kie \n" +
@@ -154,7 +149,8 @@ public class TypeDeclarationTest {
 
     }
 
-    @Test
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
     public void testNoAnnotationUpdateIfError(){
         String str1 = "";
         str1 += "package org.drools.mvel.compiler \n" +
@@ -208,8 +204,9 @@ public class TypeDeclarationTest {
      * The same resource (containing a type declaration) is added twice in the
      * kbuilder.
      */
-    @Test
-    public void testDuplicatedTypeDeclarationWith2FieldsInSameResource() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testDuplicatedTypeDeclarationWith2FieldsInSameResource(KieBaseTestConfiguration kieBaseTestConfiguration) {
         //same package, different resources
         String str1 = "";
         str1 += "package org.drools.mvel.compiler \n" +
@@ -231,8 +228,9 @@ public class TypeDeclarationTest {
      * kbuilder.
      * The expectation here is to silently discard the second type declaration.
      */
-    @Test
-    public void testDuplicatedTypeDeclarationInDifferentResources() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testDuplicatedTypeDeclarationInDifferentResources(KieBaseTestConfiguration kieBaseTestConfiguration) {
         //same package, different resources
         String str1 = "";
         str1 += "package org.drools.mvel.compiler \n" +
@@ -257,8 +255,9 @@ public class TypeDeclarationTest {
      * The expectation here is that compilation fails because we are changing
      * the type of a field
      */
-    @Test
-    public void testClashingTypeDeclarationInDifferentResources() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testClashingTypeDeclarationInDifferentResources(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // Note: Didn't applied new APIs because KieUtil.getKieBuilderFromResources() didn't reproduce the issue.
         // TODO: File a JIRA to revisit and write a valid test for new APIs and exec-model
 
@@ -298,8 +297,9 @@ public class TypeDeclarationTest {
      * UPDATE : any use of the full-arg constructor in the second DRL will fail,
      * so we generate an error anyway
      */
-    @Test
-    public void testNotSoHarmlessTypeReDeclaration() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testNotSoHarmlessTypeReDeclaration(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // Note: Didn't applied new APIs because KieUtil.getKieBuilderFromResources() didn't reproduce the issue.
         // TODO: File a JIRA to revisit and write a valid test for new APIs and exec-model
 
@@ -357,8 +357,9 @@ public class TypeDeclarationTest {
      * The expectation here is that the compilation fails because we are
      * adding a new field to the declared Type
      */
-    @Test
-    public void testTypeReDeclarationWithExtraField() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testTypeReDeclarationWithExtraField(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // Note: Didn't applied new APIs because KieUtil.getKieBuilderFromResources() didn't reproduce the issue.
         // TODO: File a JIRA to revisit and write a valid test for new APIs and exec-model
 
@@ -397,8 +398,9 @@ public class TypeDeclarationTest {
      * trying to add an incompatible re-definition of the declared type:
      * it introduces a new field 'lastName'
      */
-    @Test
-    public void testTypeReDeclarationWithExtraField2() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testTypeReDeclarationWithExtraField2(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // Note: Didn't applied new APIs because KieUtil.getKieBuilderFromResources() didn't reproduce the issue.
         // TODO: File a JIRA to revisit and write a valid test for new APIs and exec-model
 
@@ -432,8 +434,9 @@ public class TypeDeclarationTest {
 
 
 
-    @Test
-    public void testDuplicateDeclaration() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testDuplicateDeclaration(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str = "";
         str += "package org.drools.mvel.compiler \n" +
                 "declare Bean \n" +
@@ -462,8 +465,9 @@ public class TypeDeclarationTest {
         String prop();
     }
 
-    @Test
-    public void testTypeDeclarationMetadata() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testTypeDeclarationMetadata(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str = "";
         str += "package org.drools.mvel.compiler.test; \n" +
                 "import org.drools.mvel.compiler.compiler.TypeDeclarationTest.KlassAnnotation; \n" +
@@ -512,8 +516,9 @@ public class TypeDeclarationTest {
         }
     }
 
-    @Test
-    public void testTypeDeclarationWithInnerClasses() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testTypeDeclarationWithInnerClasses(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-150
         String str = "";
         str += "package org.drools.mvel.compiler;\n" +
@@ -534,8 +539,9 @@ public class TypeDeclarationTest {
 
     }
 
-    @Test
-    public void testTypeDeclarationWithInnerClassesImport() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testTypeDeclarationWithInnerClassesImport(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-150
         String str = "";
         str += "package org.drools.mvel.compiler;\n" +
@@ -578,7 +584,8 @@ public class TypeDeclarationTest {
         }
     }
 
-    @Test
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
     public void testMultipleTypeReDeclaration() {
         // Note: Didn't applied new APIs because KieUtil.getKieBuilderFromResources() didn't reproduce the issue.
         // TODO: File a JIRA to revisit and write a valid test for new APIs and exec-model
@@ -611,8 +618,9 @@ public class TypeDeclarationTest {
         }
     }
 
-    @Test
-    public void testDeclareFieldArray() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testDeclareFieldArray(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str1 = "" +
                       "package org.drools " +
 
@@ -660,8 +668,9 @@ public class TypeDeclarationTest {
         }
     }
 
-    @Test( expected = UnsupportedOperationException.class )
-    public void testPreventReflectionAPIsOnJavaClasses() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testPreventReflectionAPIsOnJavaClasses(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String drl = "package org.test; " +
 
                      // existing java class
@@ -671,17 +680,18 @@ public class TypeDeclarationTest {
 
                      "";
 
-        KieBuilder kieBuilder = build(drl);
+        KieBuilder kieBuilder = build(kieBaseTestConfiguration, drl);
 
         assertThat(kieBuilder.getResults().hasMessages(Message.Level.ERROR)).isFalse();
         KieBase kieBase = KieServices.Factory.get().newKieContainer( kieBuilder.getKieModule().getReleaseId() ).getKieBase();
 
-        FactType type = kieBase.getFactType( "org.drools.mvel.compiler", "Person" );
+        assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> kieBase.getFactType( "org.drools.mvel.compiler", "Person" ));
 
     }
 
-    @Test
-    public void testCrossPackageDeclares() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testCrossPackageDeclares(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // TODO: enable exec-model
 
         String pkg1 =
@@ -753,15 +763,16 @@ public class TypeDeclarationTest {
     }
 
 
-    @Test
-    public void testUnknownField() throws InstantiationException, IllegalAccessException {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testUnknownField(KieBaseTestConfiguration kieBaseTestConfiguration) throws InstantiationException, IllegalAccessException {
         // DROOLS-546
         String drl = "package org.test; " +
                      "declare Pet" +
                      " " +
                      "end \n";
 
-        KieBuilder kieBuilder = build(drl);
+        KieBuilder kieBuilder = build(kieBaseTestConfiguration, drl);
 
         assertThat(kieBuilder.getResults().hasMessages(Message.Level.ERROR)).isFalse();
         KieBase kieBase = KieServices.Factory.get().newKieContainer( kieBuilder.getKieModule().getReleaseId() ).getKieBase();
@@ -772,8 +783,9 @@ public class TypeDeclarationTest {
         factType.set(instance, "unknownField", "myValue");
     }
 
-    @Test
-    public void testPositionalArguments() throws InstantiationException, IllegalAccessException {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testPositionalArguments(KieBaseTestConfiguration kieBaseTestConfiguration) throws InstantiationException, IllegalAccessException {
         String drl = "package org.test;\n" +
                      "global java.util.List names;\n" +
                      "declare Person\n" +
@@ -786,7 +798,7 @@ public class TypeDeclarationTest {
                      "    names.add( $p.getName() );\n" +
                      "end\n";
 
-        KieBuilder kieBuilder = build(drl);
+        KieBuilder kieBuilder = build(kieBaseTestConfiguration, drl);
 
         assertThat(kieBuilder.getResults().hasMessages(Message.Level.ERROR)).isFalse();
         KieBase kieBase = KieServices.Factory.get().newKieContainer( kieBuilder.getKieModule().getReleaseId() ).getKieBase();
@@ -807,8 +819,9 @@ public class TypeDeclarationTest {
         assertThat(names.get(0)).isEqualTo("Mark");
     }
 
-    @Test
-    public void testExplictPositionalArguments() throws InstantiationException, IllegalAccessException {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testExplictPositionalArguments(KieBaseTestConfiguration kieBaseTestConfiguration) throws InstantiationException, IllegalAccessException {
         String drl = "package org.test;\n" +
                      "global java.util.List names;\n" +
                      "declare Person\n" +
@@ -821,7 +834,7 @@ public class TypeDeclarationTest {
                      "    names.add( $p.getName() );\n" +
                      "end\n";
 
-        KieBuilder kieBuilder = build(drl);
+        KieBuilder kieBuilder = build(kieBaseTestConfiguration, drl);
 
         assertThat(kieBuilder.getResults().hasMessages(Message.Level.ERROR)).isFalse();
         KieBase kieBase = KieServices.Factory.get().newKieContainer( kieBuilder.getKieModule().getReleaseId() ).getKieBase();
@@ -842,8 +855,9 @@ public class TypeDeclarationTest {
         assertThat(names.get(0)).isEqualTo("Mark");
     }
 
-    @Test
-    public void testTooManyPositionalArguments() throws InstantiationException, IllegalAccessException {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testTooManyPositionalArguments(KieBaseTestConfiguration kieBaseTestConfiguration) throws InstantiationException, IllegalAccessException {
         // DROOLS-559
         String drl = "package org.test;\n" +
                      "global java.util.List names;\n" +
@@ -857,13 +871,14 @@ public class TypeDeclarationTest {
                      "    names.add( $p.getName() );\n" +
                      "end\n";
 
-        KieBuilder kieBuilder = build(drl);
+        KieBuilder kieBuilder = build(kieBaseTestConfiguration, drl);
 
         assertThat(kieBuilder.getResults().hasMessages(Message.Level.ERROR)).isTrue();
     }
 
-    @Test
-    public void testOutOfRangePositions() throws InstantiationException, IllegalAccessException {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testOutOfRangePositions(KieBaseTestConfiguration kieBaseTestConfiguration) throws InstantiationException, IllegalAccessException {
         // DROOLS-559
         String drl = "package org.test;\n" +
                      "global java.util.List names;\n" +
@@ -877,13 +892,14 @@ public class TypeDeclarationTest {
                      "    names.add( $p.getName() );\n" +
                      "end\n";
 
-        KieBuilder kieBuilder = build(drl);
+        KieBuilder kieBuilder = build(kieBaseTestConfiguration, drl);
 
         assertThat(kieBuilder.getResults().hasMessages(Message.Level.ERROR)).isTrue();
     }
 
-    @Test
-    public void testDuplicatedPositions() throws InstantiationException, IllegalAccessException {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testDuplicatedPositions(KieBaseTestConfiguration kieBaseTestConfiguration) throws InstantiationException, IllegalAccessException {
         // DROOLS-559
         String drl = "package org.test;\n" +
                      "global java.util.List names;\n" +
@@ -897,17 +913,18 @@ public class TypeDeclarationTest {
                      "    names.add( $p.getName() );\n" +
                      "end\n";
 
-        KieBuilder kieBuilder = build(drl);
+        KieBuilder kieBuilder = build(kieBaseTestConfiguration, drl);
 
         assertThat(kieBuilder.getResults().hasMessages(Message.Level.ERROR)).isTrue();
     }
 
-    private KieBuilder build(String drl) {
+    private KieBuilder build(KieBaseTestConfiguration kieBaseTestConfiguration, String drl) {
         return KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
     }
 
-    @Test
-    public void testMultipleAnnotationDeclarations() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testMultipleAnnotationDeclarations(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str1 = "";
         str1 += "package org.kie1 " +
                 "" +
@@ -970,8 +987,9 @@ public class TypeDeclarationTest {
         public void setFld( String s );
     }
 
-    @Test
-    public void testDeclareWithExtensionAndOverride() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testDeclareWithExtensionAndOverride(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String s1 = "package test; " +
                           "global java.util.List list; " +
 
@@ -1037,8 +1055,9 @@ public class TypeDeclarationTest {
         public void setFooAsString( String x ) { foo = Integer.parseInt( x ); }
     }
 
-    @Test
-    public void testDeclarationOfClassWithNonStandardSetter() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testDeclarationOfClassWithNonStandardSetter(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String s1 = "package test; " +
                           "import " + BeanishClass.class.getCanonicalName() + "; " +
 
@@ -1051,8 +1070,9 @@ public class TypeDeclarationTest {
         assertThat(errors.isEmpty()).as(errors.toString()).isTrue();
     }
 
-    @Test
-    public void testDeclarationOfClassWithNonStandardSetterAndCanonicalName() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testDeclarationOfClassWithNonStandardSetterAndCanonicalName(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-815
         final String s1 = "package test; " +
                           "import " + BeanishClass.class.getCanonicalName() + "; " +
@@ -1066,8 +1086,9 @@ public class TypeDeclarationTest {
         assertThat(errors.isEmpty()).as(errors.toString()).isTrue();
     }
 
-    @Test
-    public void testDeclarationOfClassWithNonStandardSetterAndFulllName() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testDeclarationOfClassWithNonStandardSetterAndFulllName(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String s1 = "package test; " +
                           "import " + BeanishClass.class.getCanonicalName() + "; " +
 
