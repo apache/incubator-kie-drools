@@ -18,14 +18,13 @@
  */
 package org.drools.mvel.integrationtests;
 
-import java.util.Collection;
+import java.util.stream.Stream;
 
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.Message.Level;
 
@@ -36,18 +35,10 @@ import static org.assertj.core.api.Assertions.fail;
  * Tests an error appearing when DLR does not contain a new line at the end of
  * the file.
  */
-@RunWith(Parameterized.class)
 public class NewLineAtEoFTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public NewLineAtEoFTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
-    }
-
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
     private static final String drl =
@@ -58,16 +49,18 @@ public class NewLineAtEoFTest {
                     + "        System.out.println(\"Hello world!\");\n"
                     + "end\n";
 
-    @Test
-    public void testNoNewlineAtTheEnd() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testNoNewlineAtTheEnd(KieBaseTestConfiguration kieBaseTestConfiguration) {
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl + "//test");
         if (kieBuilder.getResults().hasMessages(Level.ERROR)) {
             fail(kieBuilder.getResults().getMessages(Level.ERROR).toString());
         }
     }
 
-    @Test
-    public void testNewlineAtTheEnd() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testNewlineAtTheEnd(KieBaseTestConfiguration kieBaseTestConfiguration) {
         KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
         assertThat(kieBuilder.getResults().hasMessages(Level.ERROR)).isFalse();
     }

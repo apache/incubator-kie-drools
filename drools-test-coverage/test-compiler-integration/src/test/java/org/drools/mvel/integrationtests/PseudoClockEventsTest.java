@@ -18,8 +18,8 @@
  */
 package org.drools.mvel.integrationtests;
 
-import java.util.Collection;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
 
 import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.time.impl.PseudoClockScheduler;
@@ -27,17 +27,16 @@ import org.drools.mvel.compiler.StockTick;
 import org.drools.mvel.compiler.StockTickInterface;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
-import org.kie.api.time.SessionClock;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -47,18 +46,10 @@ import static org.mockito.Mockito.verify;
 /**
  * Tests related to the pseudo session clock
  */
-@RunWith(Parameterized.class)
 public class PseudoClockEventsTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public PseudoClockEventsTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
-    }
-
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseStreamConfigurations(true);
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseStreamConfigurations(true).stream();
     }
 
     private static final String evalFirePseudoClockDeclaration =
@@ -72,8 +63,8 @@ public class PseudoClockEventsTest {
     private static final String evalFirePseudoClockRuleA       =
             "rule A\n" +
             "when\n" +
-            "	$a: StockTick( $priceA: price )\n" +
-            "	$b: StockTick( $priceA < price )\n" +
+            "    $a: StockTick( $priceA: price )\n" +
+            "    $b: StockTick( $priceA < price )\n" +
             "then \n" +
             "    System.out.println(\"Rule A fired by thread \" + Thread.currentThread().getName() + \": \" + $a + \", \" + $b);\n" +
             "end\n" +
@@ -81,20 +72,22 @@ public class PseudoClockEventsTest {
     private static final String evalFirePseudoClockRuleB       =
             "rule B\n" +
             "when\n" +
-            "	$a: StockTick()\n" +
-            "	not( StockTick( this after[1,10s] $a ) )\n" +
+            "    $a: StockTick()\n" +
+            "    not( StockTick( this after[1,10s] $a ) )\n" +
             "then \n" +
             "    System.out.println(\"Rule B fired by thread \" + Thread.currentThread().getName());\n" +
             "end\n" +
             "";
     int evalFirePseudoClockStockCount = 5;
 
-    @Test(timeout = 10000)
-    public void testEvenFirePseudoClockRuleA() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(10000)
+    public void testEvenFirePseudoClockRuleA(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
 
         AgendaEventListener ael = mock(AgendaEventListener.class);
 
-        processStocks(evalFirePseudoClockStockCount, ael,
+        processStocks(kieBaseTestConfiguration, evalFirePseudoClockStockCount, ael,
                       evalFirePseudoClockDeclaration + evalFirePseudoClockRuleA);
 
         verify(ael,
@@ -102,12 +95,14 @@ public class PseudoClockEventsTest {
                 any(AfterMatchFiredEvent.class));
     }
 
-    @Test(timeout = 10000)
-    public void testEvenFirePseudoClockRuleB() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(10000)
+    public void testEvenFirePseudoClockRuleB(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
 
         AgendaEventListener ael = mock(AgendaEventListener.class);
 
-        processStocks(evalFirePseudoClockStockCount, ael,
+        processStocks(kieBaseTestConfiguration, evalFirePseudoClockStockCount, ael,
                       evalFirePseudoClockDeclaration + evalFirePseudoClockRuleB);
 
         verify(ael,
@@ -115,12 +110,14 @@ public class PseudoClockEventsTest {
                 any(AfterMatchFiredEvent.class));
     }
 
-    @Test(timeout = 60000)
-    public void testEvenFirePseudoClockRulesAB() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(60000)
+    public void testEvenFirePseudoClockRulesAB(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
 
         AgendaEventListener ael = mock(AgendaEventListener.class);
 
-        processStocks(evalFirePseudoClockStockCount, ael,
+        processStocks(kieBaseTestConfiguration, evalFirePseudoClockStockCount, ael,
                       evalFirePseudoClockDeclaration + evalFirePseudoClockRuleA + evalFirePseudoClockRuleB);
 
         final int expectedActivationCount = evalFirePseudoClockStockCount * (evalFirePseudoClockStockCount - 1) / 2
@@ -130,7 +127,7 @@ public class PseudoClockEventsTest {
                 any(AfterMatchFiredEvent.class));
     }
 
-    private int processStocks(int stockCount, AgendaEventListener agendaEventListener, String drlContentString)
+    private int processStocks(KieBaseTestConfiguration kieBaseTestConfiguration, int stockCount, AgendaEventListener agendaEventListener, String drlContentString)
             throws Exception {
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drlContentString);
 
