@@ -19,8 +19,8 @@
 package org.drools.mvel;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.ClassFieldAccessorCache;
@@ -47,27 +47,19 @@ import org.drools.core.util.index.TupleList;
 import org.drools.model.functions.Predicate1;
 import org.drools.modelcompiler.util.EvaluationUtil;
 import org.drools.mvel.model.Cheese;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public abstract class BaseBetaConstraintsTest {
 
     public static EvaluatorRegistry registry = new EvaluatorRegistry();
 
-    protected boolean useLambdaConstraint;
 
-    @Parameterized.Parameters(name = "useLambdaConstraint={0}")
-    public static Collection<Object[]> getParameters() {
-        Collection<Object[]> parameters = new ArrayList<>();
-        parameters.add(new Object[]{false});
-        parameters.add(new Object[]{true});
-        return parameters;
+    public static Stream<Boolean> parameters() {
+        return Stream.of(false, true);
     }
 
-    protected BetaConstraint getCheeseTypeConstraint(final String identifier,
+    protected BetaConstraint getCheeseTypeConstraint(boolean useLambdaConstraint, final String identifier,
                                                      Operator operator) {
         if (useLambdaConstraint) {
             Pattern pattern = new Pattern(0, new ClassObjectType(Cheese.class));

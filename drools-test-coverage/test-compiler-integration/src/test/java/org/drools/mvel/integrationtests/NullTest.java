@@ -20,8 +20,8 @@ package org.drools.mvel.integrationtests;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.drools.mvel.compiler.Attribute;
 import org.drools.mvel.compiler.Cheese;
@@ -32,31 +32,24 @@ import org.drools.mvel.compiler.Primitives;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class NullTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public NullTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        // TODO: EM failed with some tests. File JIRAs
+        return TestParametersUtil2.getKieBaseCloudConfigurations(false).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-     // TODO: EM failed with some tests. File JIRAs
-        return TestParametersUtil.getKieBaseCloudConfigurations(false);
-    }
-
-    @Test
-    public void testNullValuesIndexing() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testNullValuesIndexing(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_NullValuesIndexing.drl");
         KieSession ksession = kbase.newKieSession();
 
@@ -74,8 +67,9 @@ public class NullTest {
         assertThat(pete.getStatus()).as("Indexing with null values is not working correctly.").isEqualTo("OK");
     }
 
-    @Test
-    public void testNullBehaviour() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testNullBehaviour(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "null_behaviour.drl");
         KieSession session = kbase.newKieSession();
 
@@ -88,8 +82,9 @@ public class NullTest {
         session.fireAllRules();
     }
 
-    @Test
-    public void testNullConstraint() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testNullConstraint(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "null_constraint.drl");
         KieSession session = kbase.newKieSession();
 
@@ -108,8 +103,9 @@ public class NullTest {
         assertThat(((List) session.getGlobal("messages")).size()).isEqualTo(2);
     }
 
-    @Test
-    public void testNullBinding() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testNullBinding(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_nullBindings.drl");
         KieSession ksession = kbase.newKieSession();
 
@@ -126,8 +122,9 @@ public class NullTest {
         assertThat(list.get(0)).isEqualTo("OK");
     }
 
-    @Test
-    public void testNullConstantLeft() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testNullConstantLeft(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // JBRULES-3627
         final String str = "import org.drools.mvel.compiler.*;\n" +
                 "rule R1 when\n" +
@@ -145,8 +142,9 @@ public class NullTest {
         ksession.dispose();
     }
 
-    @Test
-    public void testNullFieldOnCompositeSink() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testNullFieldOnCompositeSink(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_NullFieldOnCompositeSink.drl");
         KieSession ksession = kbase.newKieSession();
 
@@ -162,8 +160,9 @@ public class NullTest {
         assertThat(((List) ksession.getGlobal("list")).get(0)).isEqualTo("X");
     }
 
-    @Test
-    public void testNullHandling() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testNullHandling(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_NullHandling.drl");
         KieSession session = kbase.newKieSession();
 
@@ -194,8 +193,9 @@ public class NullTest {
         assertThat(((List) session.getGlobal("list")).size()).isEqualTo(4);
     }
 
-    @Test
-    public void testNullHashing() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testNullHashing(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_NullHashing.drl");
         KieSession ksession = kbase.newKieSession();
 
@@ -211,8 +211,9 @@ public class NullTest {
         assertThat(results.size()).isEqualTo(3);
     }
 
-    @Test
-    public void testBindingToNullFieldWithEquality() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testBindingToNullFieldWithEquality(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // JBRULES-3396
         final String str = "package org.drools.mvel.compiler.test; \n" +
                 "\n" +
@@ -251,8 +252,9 @@ public class NullTest {
         ksession.dispose();
     }
 
-    @Test
-    public void testArithmeticExpressionWithNull() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testArithmeticExpressionWithNull(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // JBRULES-3568
         final String str = "import " + PrimitiveBean.class.getCanonicalName() + ";\n" +
                 "rule R when\n" +

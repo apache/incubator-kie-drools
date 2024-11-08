@@ -344,7 +344,11 @@
       <artifactId>sisu-inject-plexus</artifactId>
       <scope>test</scope>
     </dependency>
-
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-dependencies</artifactId>
+      <scope>test</scope>
+    </dependency>
 
     <dependency>
       <groupId>org.mockito</groupId>

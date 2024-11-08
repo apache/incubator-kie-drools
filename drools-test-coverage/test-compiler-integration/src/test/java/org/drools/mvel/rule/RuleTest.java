@@ -33,7 +33,7 @@ import org.drools.base.rule.accessor.Salience;
 import org.drools.core.time.impl.PseudoClockScheduler;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.mvel.expr.MVELSalienceExpression;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieServices;
 
 import static org.assertj.core.api.Assertions.assertThat;

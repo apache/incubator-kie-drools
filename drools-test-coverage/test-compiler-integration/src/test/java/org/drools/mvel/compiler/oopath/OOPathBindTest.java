@@ -19,12 +19,12 @@
 package org.drools.mvel.compiler.oopath;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.stream.Stream;
 
 import org.drools.mvel.compiler.oopath.model.Child;
 import org.drools.mvel.compiler.oopath.model.Man;
@@ -32,40 +32,35 @@ import org.drools.mvel.compiler.oopath.model.Toy;
 import org.drools.mvel.compiler.oopath.model.Woman;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class OOPathBindTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public OOPathBindTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testBindIntegerFireAllRules(KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException, ExecutionException {
+        testBindInteger(kieBaseTestConfiguration, false);
     }
 
-    @Test
-    public void testBindIntegerFireAllRules() throws InterruptedException, ExecutionException {
-        testBindInteger(false);
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    @Timeout(1000)
+    public void testBindIntegerFireUntilHalt(KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException, ExecutionException {
+        testBindInteger(kieBaseTestConfiguration, true);
     }
 
-    @Test(timeout = 1000)
-    public void testBindIntegerFireUntilHalt() throws InterruptedException, ExecutionException {
-        testBindInteger(true);
-    }
-
-    public void testBindInteger(final boolean fireUntilHalt) throws InterruptedException, ExecutionException {
+    public void testBindInteger(KieBaseTestConfiguration kieBaseTestConfiguration, final boolean fireUntilHalt) throws InterruptedException, ExecutionException {
         final String drl =
                 "import org.drools.mvel.compiler.oopath.model.*;\n" +
                         "global java.util.List list\n" +
@@ -117,8 +112,9 @@ public class OOPathBindTest {
         }
     }
 
-    @Test
-    public void testBindString() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testBindString(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
                 "import org.drools.mvel.compiler.oopath.model.*;\n" +
                         "global java.util.List list\n" +
@@ -129,11 +125,12 @@ public class OOPathBindTest {
                         "  list.add( $name );\n" +
                         "end\n";
 
-        testScenarioBindString(drl, "Bob", "Alice");
+        testScenarioBindString(kieBaseTestConfiguration, drl, "Bob", "Alice");
     }
 
-    @Test
-    public void testBindStringWithConstraint() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testBindStringWithConstraint(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
                 "import org.drools.mvel.compiler.oopath.model.*;\n" +
                         "global java.util.List list\n" +
@@ -144,11 +141,12 @@ public class OOPathBindTest {
                         "  list.add( $name );\n" +
                         "end\n";
 
-        testScenarioBindString(drl, "Bob");
+        testScenarioBindString(kieBaseTestConfiguration, drl, "Bob");
     }
 
-    @Test
-    public void testBindStringWithAlphaConstraint() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testBindStringWithAlphaConstraint(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
                 "import org.drools.mvel.compiler.oopath.model.*;\n" +
                         "global java.util.List list\n" +
@@ -159,11 +157,12 @@ public class OOPathBindTest {
                         "  list.add( $name );\n" +
                         "end\n";
 
-        testScenarioBindString(drl, "Bob");
+        testScenarioBindString(kieBaseTestConfiguration, drl, "Bob");
     }
 
-    @Test
-    public void testBindStringWithBetaConstraint() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testBindStringWithBetaConstraint(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
                 "import org.drools.mvel.compiler.oopath.model.*;\n" +
                         "global java.util.List list\n" +
@@ -175,10 +174,10 @@ public class OOPathBindTest {
                         "  list.add( $name );\n" +
                         "end\n";
 
-        testScenarioBindString(drl, "Bob");
+        testScenarioBindString(kieBaseTestConfiguration, drl, "Bob");
     }
 
-    private void testScenarioBindString(final String drl, final String... expectedResults) {
+    private void testScenarioBindString(KieBaseTestConfiguration kieBaseTestConfiguration, final String drl, final String... expectedResults) {
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KieSession ksession = kbase.newKieSession();
 
@@ -195,8 +194,9 @@ public class OOPathBindTest {
         assertThat(list).containsExactlyInAnyOrder(expectedResults);
     }
 
-    @Test
-    public void testBindObjectFromList() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testBindObjectFromList(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
                 "import org.drools.mvel.compiler.oopath.model.*;\n" +
                         "global java.util.List list\n" +
@@ -223,8 +223,9 @@ public class OOPathBindTest {
         assertThat(list).containsExactlyInAnyOrder("Charles", "Debbie");
     }
 
-    @Test
-    public void testBindList() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testBindList(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
                 "import org.drools.mvel.compiler.oopath.model.*;\n" +
                         "global java.util.List list\n" +
@@ -260,8 +261,9 @@ public class OOPathBindTest {
         assertThat(list).containsExactlyInAnyOrder(1, 2);
     }
 
-    @Test
-    public void testBindListWithConstraint() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testBindListWithConstraint(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
                 "import org.drools.mvel.compiler.oopath.model.*;\n" +
                         "global java.util.List list\n" +

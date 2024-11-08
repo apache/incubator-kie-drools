@@ -28,8 +28,9 @@ import org.drools.drl.parser.lang.ExpanderException;
 import org.drools.drl.parser.lang.dsl.DSLMappingFile;
 import org.drools.drl.parser.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.drl.parser.lang.dsl.DefaultExpander;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -41,7 +42,7 @@ public class DefaultExpanderTest {
     private DSLTokenizedMappingFile tokenizedFile = null;
     private DefaultExpander expander      = null;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         final String filename = "test_metainfo.dsl";
         final Reader reader = new InputStreamReader(this.getClass().getResourceAsStream(filename));
@@ -440,7 +441,8 @@ public class DefaultExpanderTest {
         assertThat(drl).isEqualTo(expected);
     }
 
-    @Test(timeout = 1000)
+    @Test
+    @Timeout(1000)
     public void testExpandInfiniteLoop() throws Exception {
         // DROOLS-73
         DSLMappingFile file = new DSLTokenizedMappingFile();

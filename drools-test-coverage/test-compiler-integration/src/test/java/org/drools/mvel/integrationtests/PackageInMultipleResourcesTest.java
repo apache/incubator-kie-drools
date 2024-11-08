@@ -18,37 +18,29 @@
  */
 package org.drools.mvel.integrationtests;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.definition.KiePackage;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class PackageInMultipleResourcesTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public PackageInMultipleResourcesTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
-    }
-
-    @Test
-    public void testSamePackageRulesInDRLAndRF() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testSamePackageRulesInDRLAndRF(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-6785
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(this.getClass(), kieBaseTestConfiguration, "rf_test_rules.drl", "rf_test_rueflow.rf");
 
@@ -59,8 +51,9 @@ public class PackageInMultipleResourcesTest {
         assertThat(ruleNames).contains("RuleFlow-Split-example-xxx-DROOLS_DEFAULT", "Left Rule", "Right Rule");
     }
 
-    @Test
-    public void testDifferentPackagesRulesInDRLAndRF() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testDifferentPackagesRulesInDRLAndRF(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-6797
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(this.getClass(), kieBaseTestConfiguration, "rf_test_rules_different_pkg.drl", "rf_test_rueflow.rf");
 

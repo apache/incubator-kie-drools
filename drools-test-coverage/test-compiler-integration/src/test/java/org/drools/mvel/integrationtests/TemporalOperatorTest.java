@@ -25,62 +25,58 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Stream;
 
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class TemporalOperatorTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public TemporalOperatorTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testAfterWithLocalDateTime(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        checkTemporalConstraint(kieBaseTestConfiguration, "localDateTime after $t1.localDateTime" );
     }
 
-    @Test
-    public void testAfterWithLocalDateTime() {
-        checkTemporalConstraint( "localDateTime after $t1.localDateTime" );
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testAfterWithZonedDateTime(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        checkTemporalConstraint(kieBaseTestConfiguration, "zonedDateTime after $t1.zonedDateTime" );
     }
 
-    @Test
-    public void testAfterWithZonedDateTime() {
-        checkTemporalConstraint( "zonedDateTime after $t1.zonedDateTime" );
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testAfterWithDate(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        checkTemporalConstraint(kieBaseTestConfiguration, "date after $t1.date" );
     }
 
-    @Test
-    public void testAfterWithDate() {
-        checkTemporalConstraint( "date after $t1.date" );
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testAfterWithDateUsingOr(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        checkTemporalConstraint(kieBaseTestConfiguration, "date == null || date after $t1.date" );
     }
 
-    @Test
-    public void testAfterWithDateUsingOr() {
-        checkTemporalConstraint( "date == null || date after $t1.date" );
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testAfterMixDateAndLocaldateTime(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        checkTemporalConstraint(kieBaseTestConfiguration, "date after $t1.localDateTime" );
     }
 
-    @Test
-    public void testAfterMixDateAndLocaldateTime() {
-        checkTemporalConstraint( "date after $t1.localDateTime" );
-    }
-
-    public void checkTemporalConstraint(String constraint) {
+    public void checkTemporalConstraint(KieBaseTestConfiguration kieBaseTestConfiguration, String constraint) {
         String str = "import " + TimestampedObject.class.getCanonicalName() + ";\n" +
                      "global java.util.List list;\n" +
                      "rule R when\n" +
@@ -109,31 +105,35 @@ public class TemporalOperatorTest {
         }
     }
 
-    @Test
-    public void testCompareMaxLocalDates() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testCompareMaxLocalDates(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-6431
-        checkMaxDate( "localDate == LocalDate.MAX" );
+        checkMaxDate(kieBaseTestConfiguration, "localDate == LocalDate.MAX" );
     }
 
-    @Test
-    public void testCompareTimeAndMaxLocalDates() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testCompareTimeAndMaxLocalDates(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-6431
-        checkMaxDate( "localDateTime == LocalDate.MAX" );
+        checkMaxDate(kieBaseTestConfiguration, "localDateTime == LocalDate.MAX" );
     }
 
-    @Test
-    public void testCompareLocalDatesAndMaxTime() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testCompareLocalDatesAndMaxTime(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-6431
-        checkMaxDate( "localDate == LocalDateTime.MAX" );
+        checkMaxDate(kieBaseTestConfiguration, "localDate == LocalDateTime.MAX" );
     }
 
-    @Test
-    public void testCompareMaxLocalDateTimes() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testCompareMaxLocalDateTimes(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-6431
-        checkMaxDate( "localDateTime == LocalDateTime.MAX" );
+        checkMaxDate(kieBaseTestConfiguration, "localDateTime == LocalDateTime.MAX" );
     }
 
-    private void checkMaxDate(String constraint) {
+    private void checkMaxDate(KieBaseTestConfiguration kieBaseTestConfiguration, String constraint) {
         String str =
                 "import " + TimestampedObject.class.getCanonicalName() + ";\n" +
                 "import " + LocalDate.class.getCanonicalName() + ";\n" +
@@ -185,60 +185,70 @@ public class TemporalOperatorTest {
         }
     }
 
-    @Test
-    public void testAfterWithConstant() {
-        checkConstantTemporalConstraint( "date after \"01-Jan-1970\"" );
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testAfterWithConstant(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        checkConstantTemporalConstraint(kieBaseTestConfiguration, "date after \"01-Jan-1970\"" );
     }
 
-    @Test
-    public void testAfterWithConstantUsingOR() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testAfterWithConstantUsingOR(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // RHBRMS-2799
-        checkConstantTemporalConstraint( "date == null || date after \"01-Jan-1970\"" );
+        checkConstantTemporalConstraint(kieBaseTestConfiguration, "date == null || date after \"01-Jan-1970\"" );
     }
 
-    @Test
-    public void testAfterWithLocalDateTimeUsingOr() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testAfterWithLocalDateTimeUsingOr(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // RHBRMS-2799
-        checkConstantTemporalConstraint( "localDateTime == null || localDateTime after \"01-Jan-1970\"" );
+        checkConstantTemporalConstraint(kieBaseTestConfiguration, "localDateTime == null || localDateTime after \"01-Jan-1970\"" );
     }
 
-    @Test
-    public void testAfterWithLocalDateTimeWithLiteral() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testAfterWithLocalDateTimeWithLiteral(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // RHBRMS-2799
-        checkConstantTemporalConstraint( "localDateTime after \"01-Jan-1970\"" );
+        checkConstantTemporalConstraint(kieBaseTestConfiguration, "localDateTime after \"01-Jan-1970\"" );
     }
 
-    @Test
-    public void testDateAfterWithLiteral() {
-        checkConstantTemporalConstraint( "date after \"01-Jan-1970\"" );
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testDateAfterWithLiteral(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        checkConstantTemporalConstraint(kieBaseTestConfiguration, "date after \"01-Jan-1970\"" );
     }
 
-    @Test
-    public void testAfterWithLocalDateWithLiteral() {
-        checkConstantTemporalConstraint( "localDate after \"01-Jan-1970\"" );
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testAfterWithLocalDateWithLiteral(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        checkConstantTemporalConstraint(kieBaseTestConfiguration, "localDate after \"01-Jan-1970\"" );
     }
 
-    @Test
-    public void testComparisonWithLocalDateTimeAndLiteral() {
-        checkConstantTemporalConstraint( "localDate > \"01-Jan-1970\"" );
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testComparisonWithLocalDateTimeAndLiteral(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        checkConstantTemporalConstraint(kieBaseTestConfiguration, "localDate > \"01-Jan-1970\"" );
     }
 
-    @Test
-    public void testComparisonWithLocalDate() {
-        checkConstantTemporalConstraint( "localDate > org.drools.mvel.integrationtests.TemporalOperatorTest.parseDateAsLocal(\"01-Jan-1970\")" );
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testComparisonWithLocalDate(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        checkConstantTemporalConstraint(kieBaseTestConfiguration, "localDate > org.drools.mvel.integrationtests.TemporalOperatorTest.parseDateAsLocal(\"01-Jan-1970\")" );
     }
 
-    @Test
-    public void testComparisonWithLocalDateAndLiteral() {
-        checkConstantTemporalConstraint( "localDateTime > \"01-Jan-1970\"" );
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testComparisonWithLocalDateAndLiteral(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        checkConstantTemporalConstraint(kieBaseTestConfiguration, "localDateTime > \"01-Jan-1970\"" );
     }
 
-    @Test
-    public void testComparisonWithLocalDateTime() {
-        checkConstantTemporalConstraint( "localDateTime > org.drools.mvel.integrationtests.TemporalOperatorTest.parseTimeAsLocal(\"01-Jan-1970\")" );
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testComparisonWithLocalDateTime(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        checkConstantTemporalConstraint(kieBaseTestConfiguration, "localDateTime > org.drools.mvel.integrationtests.TemporalOperatorTest.parseTimeAsLocal(\"01-Jan-1970\")" );
     }
 
-    public void checkConstantTemporalConstraint(String constraint) {
+    public void checkConstantTemporalConstraint(KieBaseTestConfiguration kieBaseTestConfiguration, String constraint) {
         String str = "import " + TimestampedObject.class.getCanonicalName() + ";\n" +
                      "global java.util.List list;\n" +
                      "rule R when\n" +

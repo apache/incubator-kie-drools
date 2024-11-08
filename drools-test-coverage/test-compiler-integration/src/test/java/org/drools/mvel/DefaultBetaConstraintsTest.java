@@ -21,122 +21,126 @@ package org.drools.mvel;
 import org.drools.drl.parser.impl.Operator;
 import org.drools.core.common.DefaultBetaConstraints;
 import org.drools.base.rule.constraint.BetaConstraint;
-import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 public class DefaultBetaConstraintsTest extends BaseBetaConstraintsTest {
 
-    public DefaultBetaConstraintsTest(boolean useLambdaConstraint) {
-        this.useLambdaConstraint = useLambdaConstraint;
-    }
 
-    @Test
-    public void testNoIndexConstraints() {
-        BetaConstraint   constraint0 = getCheeseTypeConstraint("cheeseType0", Operator.BuiltInOperator.NOT_EQUAL.getOperator());
+    @ParameterizedTest(name = "useLambdaConstraint={0}")
+    @MethodSource("parameters")
+    public void testNoIndexConstraints(boolean useLambdaConstraint) {
+        BetaConstraint   constraint0 = getCheeseTypeConstraint(useLambdaConstraint, "cheeseType0", Operator.BuiltInOperator.NOT_EQUAL.getOperator());
         BetaConstraint[] constraints = new BetaConstraint[] {constraint0 };
         checkBetaConstraints( constraints, DefaultBetaConstraints.class );
 
-        BetaConstraint constraint1 = getCheeseTypeConstraint("cheeseType1", Operator.BuiltInOperator.NOT_EQUAL.getOperator());
+        BetaConstraint constraint1 = getCheeseTypeConstraint(useLambdaConstraint, "cheeseType1", Operator.BuiltInOperator.NOT_EQUAL.getOperator());
         constraints = new BetaConstraint[] {constraint0, constraint1 };
         checkBetaConstraints( constraints, DefaultBetaConstraints.class );
 
-        BetaConstraint constraint2 = getCheeseTypeConstraint("cheeseType2", Operator.BuiltInOperator.NOT_EQUAL.getOperator());
+        BetaConstraint constraint2 = getCheeseTypeConstraint(useLambdaConstraint, "cheeseType2", Operator.BuiltInOperator.NOT_EQUAL.getOperator());
         constraints = new BetaConstraint[] {constraint0, constraint1, constraint2 };
         checkBetaConstraints( constraints, DefaultBetaConstraints.class );
 
-        BetaConstraint constraint3 = getCheeseTypeConstraint("cheeseType3", Operator.BuiltInOperator.NOT_EQUAL.getOperator());
+        BetaConstraint constraint3 = getCheeseTypeConstraint(useLambdaConstraint, "cheeseType3", Operator.BuiltInOperator.NOT_EQUAL.getOperator());
         constraints = new BetaConstraint[] {constraint0, constraint1, constraint2, constraint3 };
         checkBetaConstraints( constraints, DefaultBetaConstraints.class );
 
-        BetaConstraint constraint4 = getCheeseTypeConstraint("cheeseType4", Operator.BuiltInOperator.NOT_EQUAL.getOperator());
+        BetaConstraint constraint4 = getCheeseTypeConstraint(useLambdaConstraint, "cheeseType4", Operator.BuiltInOperator.NOT_EQUAL.getOperator());
         constraints = new BetaConstraint[] {constraint0, constraint1, constraint2, constraint3, constraint4 };
         checkBetaConstraints( constraints, DefaultBetaConstraints.class );
 
-        BetaConstraint constraint5 = getCheeseTypeConstraint("cheeseType5", Operator.BuiltInOperator.NOT_EQUAL.getOperator());
+        BetaConstraint constraint5 = getCheeseTypeConstraint(useLambdaConstraint, "cheeseType5", Operator.BuiltInOperator.NOT_EQUAL.getOperator());
         constraints = new BetaConstraint[] {constraint0, constraint1, constraint2, constraint3, constraint5 };
         checkBetaConstraints( constraints, DefaultBetaConstraints.class );
 
-        BetaConstraint constraint6 = getCheeseTypeConstraint("cheeseType6", Operator.BuiltInOperator.NOT_EQUAL.getOperator());
+        BetaConstraint constraint6 = getCheeseTypeConstraint(useLambdaConstraint, "cheeseType6", Operator.BuiltInOperator.NOT_EQUAL.getOperator());
         constraints = new BetaConstraint[] {constraint0, constraint1, constraint2, constraint3, constraint4, constraint5, constraint6 };
         checkBetaConstraints( constraints, DefaultBetaConstraints.class );
     }
     
-    @Test
-    public void testIndexedConstraint() {
-        BetaConstraint   constraint0 = getCheeseTypeConstraint("cheeseType0", Operator.BuiltInOperator.EQUAL.getOperator());
+    @ParameterizedTest(name = "useLambdaConstraint={0}")
+    @MethodSource("parameters")
+    public void testIndexedConstraint(boolean useLambdaConstraint) {
+        BetaConstraint   constraint0 = getCheeseTypeConstraint(useLambdaConstraint, "cheeseType0", Operator.BuiltInOperator.EQUAL.getOperator());
         BetaConstraint[] constraints = new BetaConstraint[] {constraint0 };
         checkBetaConstraints( constraints, DefaultBetaConstraints.class );
         
-        BetaConstraint constraint1 = getCheeseTypeConstraint("cheeseType1", Operator.BuiltInOperator.EQUAL.getOperator());
+        BetaConstraint constraint1 = getCheeseTypeConstraint(useLambdaConstraint, "cheeseType1", Operator.BuiltInOperator.EQUAL.getOperator());
         constraints = new BetaConstraint[] {constraint0, constraint1 };
         checkBetaConstraints( constraints, DefaultBetaConstraints.class );
         
-        BetaConstraint constraint2 = getCheeseTypeConstraint("cheeseType2", Operator.BuiltInOperator.EQUAL.getOperator());
+        BetaConstraint constraint2 = getCheeseTypeConstraint(useLambdaConstraint, "cheeseType2", Operator.BuiltInOperator.EQUAL.getOperator());
         constraints = new BetaConstraint[] {constraint0, constraint1, constraint2 };
         checkBetaConstraints( constraints, DefaultBetaConstraints.class );
         
-        BetaConstraint constraint3 = getCheeseTypeConstraint("cheeseType3", Operator.BuiltInOperator.EQUAL.getOperator());
+        BetaConstraint constraint3 = getCheeseTypeConstraint(useLambdaConstraint, "cheeseType3", Operator.BuiltInOperator.EQUAL.getOperator());
         constraints = new BetaConstraint[] {constraint0, constraint1, constraint2, constraint3 };
         checkBetaConstraints( constraints, DefaultBetaConstraints.class );
         
-        BetaConstraint constraint4 = getCheeseTypeConstraint("cheeseType4", Operator.BuiltInOperator.EQUAL.getOperator());
+        BetaConstraint constraint4 = getCheeseTypeConstraint(useLambdaConstraint, "cheeseType4", Operator.BuiltInOperator.EQUAL.getOperator());
         constraints = new BetaConstraint[] {constraint0, constraint1, constraint2, constraint3, constraint4 };
         checkBetaConstraints( constraints, DefaultBetaConstraints.class );
         
-        BetaConstraint constraint5 = getCheeseTypeConstraint("cheeseType5", Operator.BuiltInOperator.EQUAL.getOperator());
+        BetaConstraint constraint5 = getCheeseTypeConstraint(useLambdaConstraint, "cheeseType5", Operator.BuiltInOperator.EQUAL.getOperator());
         constraints = new BetaConstraint[] {constraint0, constraint1, constraint2, constraint3, constraint4, constraint5 };
         checkBetaConstraints( constraints, DefaultBetaConstraints.class );
         
-        BetaConstraint constraint6 = getCheeseTypeConstraint("cheeseType6", Operator.BuiltInOperator.EQUAL.getOperator());
+        BetaConstraint constraint6 = getCheeseTypeConstraint(useLambdaConstraint, "cheeseType6", Operator.BuiltInOperator.EQUAL.getOperator());
         constraints = new BetaConstraint[] {constraint0, constraint1, constraint2, constraint3, constraint4, constraint5, constraint6 };
         checkBetaConstraints( constraints, DefaultBetaConstraints.class );
     }
     
     
-    @Test
-    public void testSingleIndex() {
-        BetaConstraint constraint0 = getCheeseTypeConstraint("cheeseType1", Operator.BuiltInOperator.EQUAL.getOperator());
-        BetaConstraint constraint1 = getCheeseTypeConstraint("cheeseType2", Operator.BuiltInOperator.NOT_EQUAL.getOperator());
-        BetaConstraint constraint2 = getCheeseTypeConstraint("cheeseType3", Operator.BuiltInOperator.NOT_EQUAL.getOperator());
-        BetaConstraint constraint3 = getCheeseTypeConstraint("cheeseType4", Operator.BuiltInOperator.NOT_EQUAL.getOperator());
-        BetaConstraint constraint4 = getCheeseTypeConstraint("cheeseType5", Operator.BuiltInOperator.NOT_EQUAL.getOperator());
+    @ParameterizedTest(name = "useLambdaConstraint={0}")
+    @MethodSource("parameters")
+    public void testSingleIndex(boolean useLambdaConstraint) {
+        BetaConstraint constraint0 = getCheeseTypeConstraint(useLambdaConstraint, "cheeseType1", Operator.BuiltInOperator.EQUAL.getOperator());
+        BetaConstraint constraint1 = getCheeseTypeConstraint(useLambdaConstraint, "cheeseType2", Operator.BuiltInOperator.NOT_EQUAL.getOperator());
+        BetaConstraint constraint2 = getCheeseTypeConstraint(useLambdaConstraint, "cheeseType3", Operator.BuiltInOperator.NOT_EQUAL.getOperator());
+        BetaConstraint constraint3 = getCheeseTypeConstraint(useLambdaConstraint, "cheeseType4", Operator.BuiltInOperator.NOT_EQUAL.getOperator());
+        BetaConstraint constraint4 = getCheeseTypeConstraint(useLambdaConstraint, "cheeseType5", Operator.BuiltInOperator.NOT_EQUAL.getOperator());
         
         BetaConstraint[] constraints = new BetaConstraint[] {constraint0, constraint1, constraint2, constraint3, constraint4 };
         checkBetaConstraints( constraints, DefaultBetaConstraints.class );
     }
     
-    @Test
-    public void testSingleIndexNotFirst() {
-        BetaConstraint constraint0 = getCheeseTypeConstraint("cheeseType1", Operator.BuiltInOperator.NOT_EQUAL.getOperator());
-        BetaConstraint constraint1 = getCheeseTypeConstraint("cheeseType2", Operator.BuiltInOperator.NOT_EQUAL.getOperator());
-        BetaConstraint constraint2 = getCheeseTypeConstraint("cheeseType3", Operator.BuiltInOperator.NOT_EQUAL.getOperator());
-        BetaConstraint constraint3 = getCheeseTypeConstraint("cheeseType4", Operator.BuiltInOperator.NOT_EQUAL.getOperator());
-        BetaConstraint constraint4 = getCheeseTypeConstraint("cheeseType5", Operator.BuiltInOperator.EQUAL.getOperator());
-        
-        BetaConstraint[] constraints = new BetaConstraint[] {constraint0, constraint1, constraint2, constraint3, constraint4 };
-        
-        checkBetaConstraints( constraints, DefaultBetaConstraints.class );
-    }
-    
-    @Test
-    public void testDoubleIndex() {
-        BetaConstraint constraint0 = getCheeseTypeConstraint("cheeseType1", Operator.BuiltInOperator.EQUAL.getOperator());
-        BetaConstraint constraint1 = getCheeseTypeConstraint("cheeseType2", Operator.BuiltInOperator.NOT_EQUAL.getOperator());
-        BetaConstraint constraint2 = getCheeseTypeConstraint("cheeseType3", Operator.BuiltInOperator.NOT_EQUAL.getOperator());
-        BetaConstraint constraint3 = getCheeseTypeConstraint("cheeseType4", Operator.BuiltInOperator.EQUAL.getOperator());
-        BetaConstraint constraint4 = getCheeseTypeConstraint("cheeseType5", Operator.BuiltInOperator.NOT_EQUAL.getOperator());
+    @ParameterizedTest(name = "useLambdaConstraint={0}")
+    @MethodSource("parameters")
+    public void testSingleIndexNotFirst(boolean useLambdaConstraint) {
+        BetaConstraint constraint0 = getCheeseTypeConstraint(useLambdaConstraint, "cheeseType1", Operator.BuiltInOperator.NOT_EQUAL.getOperator());
+        BetaConstraint constraint1 = getCheeseTypeConstraint(useLambdaConstraint, "cheeseType2", Operator.BuiltInOperator.NOT_EQUAL.getOperator());
+        BetaConstraint constraint2 = getCheeseTypeConstraint(useLambdaConstraint, "cheeseType3", Operator.BuiltInOperator.NOT_EQUAL.getOperator());
+        BetaConstraint constraint3 = getCheeseTypeConstraint(useLambdaConstraint, "cheeseType4", Operator.BuiltInOperator.NOT_EQUAL.getOperator());
+        BetaConstraint constraint4 = getCheeseTypeConstraint(useLambdaConstraint, "cheeseType5", Operator.BuiltInOperator.EQUAL.getOperator());
         
         BetaConstraint[] constraints = new BetaConstraint[] {constraint0, constraint1, constraint2, constraint3, constraint4 };
         
         checkBetaConstraints( constraints, DefaultBetaConstraints.class );
     }
     
-    @Test
-    public void testDoubleIndexNotFirst() {
-        BetaConstraint constraint0 = getCheeseTypeConstraint("cheeseType1", Operator.BuiltInOperator.NOT_EQUAL.getOperator());
-        BetaConstraint constraint1 = getCheeseTypeConstraint("cheeseType2", Operator.BuiltInOperator.NOT_EQUAL.getOperator());
-        BetaConstraint constraint2 = getCheeseTypeConstraint("cheeseType3", Operator.BuiltInOperator.NOT_EQUAL.getOperator());
-        BetaConstraint constraint3 = getCheeseTypeConstraint("cheeseType4", Operator.BuiltInOperator.EQUAL.getOperator());
-        BetaConstraint constraint4 = getCheeseTypeConstraint("cheeseType5", Operator.BuiltInOperator.EQUAL.getOperator());
+    @ParameterizedTest(name = "useLambdaConstraint={0}")
+    @MethodSource("parameters")
+    public void testDoubleIndex(boolean useLambdaConstraint) {
+        BetaConstraint constraint0 = getCheeseTypeConstraint(useLambdaConstraint, "cheeseType1", Operator.BuiltInOperator.EQUAL.getOperator());
+        BetaConstraint constraint1 = getCheeseTypeConstraint(useLambdaConstraint, "cheeseType2", Operator.BuiltInOperator.NOT_EQUAL.getOperator());
+        BetaConstraint constraint2 = getCheeseTypeConstraint(useLambdaConstraint, "cheeseType3", Operator.BuiltInOperator.NOT_EQUAL.getOperator());
+        BetaConstraint constraint3 = getCheeseTypeConstraint(useLambdaConstraint, "cheeseType4", Operator.BuiltInOperator.EQUAL.getOperator());
+        BetaConstraint constraint4 = getCheeseTypeConstraint(useLambdaConstraint, "cheeseType5", Operator.BuiltInOperator.NOT_EQUAL.getOperator());
+        
+        BetaConstraint[] constraints = new BetaConstraint[] {constraint0, constraint1, constraint2, constraint3, constraint4 };
+        
+        checkBetaConstraints( constraints, DefaultBetaConstraints.class );
+    }
+    
+    @ParameterizedTest(name = "useLambdaConstraint={0}")
+    @MethodSource("parameters")
+    public void testDoubleIndexNotFirst(boolean useLambdaConstraint) {
+        BetaConstraint constraint0 = getCheeseTypeConstraint(useLambdaConstraint, "cheeseType1", Operator.BuiltInOperator.NOT_EQUAL.getOperator());
+        BetaConstraint constraint1 = getCheeseTypeConstraint(useLambdaConstraint, "cheeseType2", Operator.BuiltInOperator.NOT_EQUAL.getOperator());
+        BetaConstraint constraint2 = getCheeseTypeConstraint(useLambdaConstraint, "cheeseType3", Operator.BuiltInOperator.NOT_EQUAL.getOperator());
+        BetaConstraint constraint3 = getCheeseTypeConstraint(useLambdaConstraint, "cheeseType4", Operator.BuiltInOperator.EQUAL.getOperator());
+        BetaConstraint constraint4 = getCheeseTypeConstraint(useLambdaConstraint, "cheeseType5", Operator.BuiltInOperator.EQUAL.getOperator());
         
         BetaConstraint[] constraints = new BetaConstraint[] {constraint0, constraint1, constraint2, constraint3, constraint4 };
         
@@ -144,26 +148,28 @@ public class DefaultBetaConstraintsTest extends BaseBetaConstraintsTest {
     }
     
     
-    @Test
-    public void testTripleIndex() {
-        BetaConstraint constraint0 = getCheeseTypeConstraint("cheeseType1", Operator.BuiltInOperator.EQUAL.getOperator());
-        BetaConstraint constraint1 = getCheeseTypeConstraint("cheeseType2", Operator.BuiltInOperator.NOT_EQUAL.getOperator());
-        BetaConstraint constraint2 = getCheeseTypeConstraint("cheeseType3", Operator.BuiltInOperator.NOT_EQUAL.getOperator());
-        BetaConstraint constraint3 = getCheeseTypeConstraint("cheeseType4", Operator.BuiltInOperator.EQUAL.getOperator());
-        BetaConstraint constraint4 = getCheeseTypeConstraint("cheeseType5", Operator.BuiltInOperator.EQUAL.getOperator());
+    @ParameterizedTest(name = "useLambdaConstraint={0}")
+    @MethodSource("parameters")
+    public void testTripleIndex(boolean useLambdaConstraint) {
+        BetaConstraint constraint0 = getCheeseTypeConstraint(useLambdaConstraint, "cheeseType1", Operator.BuiltInOperator.EQUAL.getOperator());
+        BetaConstraint constraint1 = getCheeseTypeConstraint(useLambdaConstraint, "cheeseType2", Operator.BuiltInOperator.NOT_EQUAL.getOperator());
+        BetaConstraint constraint2 = getCheeseTypeConstraint(useLambdaConstraint, "cheeseType3", Operator.BuiltInOperator.NOT_EQUAL.getOperator());
+        BetaConstraint constraint3 = getCheeseTypeConstraint(useLambdaConstraint, "cheeseType4", Operator.BuiltInOperator.EQUAL.getOperator());
+        BetaConstraint constraint4 = getCheeseTypeConstraint(useLambdaConstraint, "cheeseType5", Operator.BuiltInOperator.EQUAL.getOperator());
         
         BetaConstraint[] constraints = new BetaConstraint[] {constraint0, constraint1, constraint2, constraint3, constraint4 };
         
         checkBetaConstraints( constraints, DefaultBetaConstraints.class );
     }
     
-    @Test
-    public void testTripleIndexNotFirst() {
-        BetaConstraint constraint0 = getCheeseTypeConstraint("cheeseType1", Operator.BuiltInOperator.NOT_EQUAL.getOperator());
-        BetaConstraint constraint1 = getCheeseTypeConstraint("cheeseType2", Operator.BuiltInOperator.EQUAL.getOperator());
-        BetaConstraint constraint2 = getCheeseTypeConstraint("cheeseType3", Operator.BuiltInOperator.NOT_EQUAL.getOperator());
-        BetaConstraint constraint3 = getCheeseTypeConstraint("cheeseType4", Operator.BuiltInOperator.EQUAL.getOperator());
-        BetaConstraint constraint4 = getCheeseTypeConstraint("cheeseType5", Operator.BuiltInOperator.EQUAL.getOperator());
+    @ParameterizedTest(name = "useLambdaConstraint={0}")
+    @MethodSource("parameters")
+    public void testTripleIndexNotFirst(boolean useLambdaConstraint) {
+        BetaConstraint constraint0 = getCheeseTypeConstraint(useLambdaConstraint, "cheeseType1", Operator.BuiltInOperator.NOT_EQUAL.getOperator());
+        BetaConstraint constraint1 = getCheeseTypeConstraint(useLambdaConstraint, "cheeseType2", Operator.BuiltInOperator.EQUAL.getOperator());
+        BetaConstraint constraint2 = getCheeseTypeConstraint(useLambdaConstraint, "cheeseType3", Operator.BuiltInOperator.NOT_EQUAL.getOperator());
+        BetaConstraint constraint3 = getCheeseTypeConstraint(useLambdaConstraint, "cheeseType4", Operator.BuiltInOperator.EQUAL.getOperator());
+        BetaConstraint constraint4 = getCheeseTypeConstraint(useLambdaConstraint, "cheeseType5", Operator.BuiltInOperator.EQUAL.getOperator());
         
         BetaConstraint[] constraints = new BetaConstraint[] {constraint0, constraint1, constraint2, constraint3, constraint4 };
         

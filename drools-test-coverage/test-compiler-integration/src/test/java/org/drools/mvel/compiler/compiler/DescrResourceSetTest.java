@@ -29,12 +29,11 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.drl.parser.DrlParser;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.io.InputStreamResource;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.conf.LanguageLevelOption;

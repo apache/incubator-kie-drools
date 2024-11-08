@@ -19,70 +19,69 @@
 package org.drools.mvel.compiler.oopath;
 
 import java.util.Collection;
+import java.util.stream.Stream;
 
 import org.drools.mvel.compiler.oopath.model.Child;
 import org.drools.mvel.compiler.oopath.model.Man;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class OOPathAccumulateTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public OOPathAccumulateTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+	public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testAccumulateAverage(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        testAccumulate(kieBaseTestConfiguration, "average", 10);
     }
 
-    @Test
-    public void testAccumulateAverage() {
-        testAccumulate("average", 10);
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testAccumulateMin(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        testAccumulate(kieBaseTestConfiguration, "min", 8);
     }
 
-    @Test
-    public void testAccumulateMin() {
-        testAccumulate("min", 8);
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testAccumulateMax(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        testAccumulate(kieBaseTestConfiguration, "max", 12);
     }
 
-    @Test
-    public void testAccumulateMax() {
-        testAccumulate("max", 12);
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testAccumulateCount(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        testAccumulate(kieBaseTestConfiguration, "count", 2);
     }
 
-    @Test
-    public void testAccumulateCount() {
-        testAccumulate("count", 2);
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testAccumulateSum(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        testAccumulate(kieBaseTestConfiguration, "sum", 20);
     }
 
-    @Test
-    public void testAccumulateSum() {
-        testAccumulate("sum", 20);
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testAccumulateCollectList(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        testAccumulateCollection(kieBaseTestConfiguration, "collectList", 12, 8);
     }
 
-    @Test
-    public void testAccumulateCollectList() {
-        testAccumulateCollection("collectList", 12, 8);
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testAccumulateCollectSet(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        testAccumulateCollection(kieBaseTestConfiguration, "collectSet", 12, 8);
     }
 
-    @Test
-    public void testAccumulateCollectSet() {
-        testAccumulateCollection("collectSet", 12, 8);
-    }
-
-    private void testAccumulate(final String accumulateFunction, final Number expectedResult) {
+    private void testAccumulate(KieBaseTestConfiguration kieBaseTestConfiguration, final String accumulateFunction, final Number expectedResult) {
         // DROOLS-1265
         final String drl =
                 "import org.drools.mvel.compiler.oopath.model.*;\n" +
@@ -112,7 +111,7 @@ public class OOPathAccumulateTest {
         }
     }
 
-    private void testAccumulateCollection(final String accumulateFunction, final Integer... expectedResults) {
+    private void testAccumulateCollection(KieBaseTestConfiguration kieBaseTestConfiguration, String accumulateFunction, final Integer... expectedResults) {
         final String drl =
                 "import org.drools.mvel.compiler.oopath.model.*;\n" +
                         "global java.util.Collection<Integer> globalVar\n" +

@@ -19,16 +19,15 @@
 package org.drools.mvel.integrationtests;
 
 import java.lang.reflect.Field;
-import java.util.Collection;
+import java.util.stream.Stream;
 
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.mvel.compiler.Message;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.KieModule;
@@ -41,18 +40,10 @@ import org.kie.internal.io.ResourceFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class DynamicRuleLoadTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public DynamicRuleLoadTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
-    }
-
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
     private final String drl1 =
@@ -128,8 +119,12 @@ public class DynamicRuleLoadTest {
 
     private boolean done = false;
 
-    @Test
-    public void testKJarUpgrade() throws Exception {
+    private KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testKJarUpgrade(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
+    	this.kieBaseTestConfiguration = kieBaseTestConfiguration;
         // DROOLS-919
         KieServices ks = KieServices.Factory.get();
 
@@ -147,9 +142,10 @@ public class DynamicRuleLoadTest {
 
         assertThat(done).isTrue();
     }
-
-    @Test
-    public void testKJarUpgradeWithJavaClass() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testKJarUpgradeWithJavaClass(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
 
         KieServices ks = KieServices.Factory.get();
 

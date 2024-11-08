@@ -19,16 +19,15 @@
 package org.drools.mvel.compiler;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.drools.mvel.CommonTestMethodBase;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.runtime.KieSession;
@@ -39,22 +38,15 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-@RunWith(Parameterized.class)
 public class NestedAccessorsTest extends CommonTestMethodBase {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public NestedAccessorsTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
-    }
-
-    @Test
-    public void testNestedAccessor() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testNestedAccessor(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         final String str = "import org.drools.mvel.compiler.*;\n" +
                 "rule R1 when\n" +
                 "   Person( name == \"mark\", cheese.(type == \"gorgonzola\", price == 10) )\n" +
@@ -72,8 +64,9 @@ public class NestedAccessorsTest extends CommonTestMethodBase {
         ksession.dispose();
     }
 
-    @Test
-    public void testNestedAccessorWithBinding() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testNestedAccessorWithBinding(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         final String str = "import org.drools.mvel.compiler.*;\n" +
                 "global StringBuilder sb\n" +
                 "rule R1 when\n" +
@@ -97,8 +90,9 @@ public class NestedAccessorsTest extends CommonTestMethodBase {
         ksession.dispose();
     }
 
-    @Test
-    public void testDoubleNestedAccessor() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testDoubleNestedAccessor(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         final String str = "import org.drools.mvel.compiler.*;\n" +
                 "rule R1 when\n" +
                 "   Person( name == \"mark\", cheese.(price == 10, type.(length == 10) ) )\n" +
@@ -116,8 +110,9 @@ public class NestedAccessorsTest extends CommonTestMethodBase {
         ksession.dispose();
     }
 
-    @Test
-    public void testNestedAccessorWithInlineCast() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testNestedAccessorWithInlineCast(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         final String str = "import org.drools.mvel.compiler.*;\n" +
                 "rule R1 when\n" +
                 "   Person( name == \"mark\", address#LongAddress.(country == \"uk\", suburb == \"suburb\") )\n" +
@@ -142,8 +137,9 @@ public class NestedAccessorsTest extends CommonTestMethodBase {
         ksession.dispose();
     }
 
-    @Test
-    public void testNestedAccessors() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testNestedAccessors(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(this.getClass(), kieBaseTestConfiguration, "test_NestedAccessors.drl");
         final KieSession ksession = createKnowledgeSession(kbase);
 
@@ -184,8 +180,9 @@ public class NestedAccessorsTest extends CommonTestMethodBase {
         assertThat(list.get(1)).isSameAs(item22);
     }
 
-    @Test
-    public void testNestedAccessors2() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testNestedAccessors2(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         final String rule = "package org.drools.mvel.compiler\n" +
                 "rule 'rule1'" +
                 "    salience 10\n" +

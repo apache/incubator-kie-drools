@@ -19,8 +19,8 @@
 package org.drools.mvel.integrationtests;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
@@ -32,10 +32,9 @@ import org.drools.core.reteoo.QueryElementNode;
 import org.drools.core.reteoo.Rete;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
@@ -43,22 +42,15 @@ import org.kie.api.runtime.rule.FactHandle;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class PassiveQueryTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public PassiveQueryTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
-    }
-
-    @Test
-    public void testPassiveQuery() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testPassiveQuery(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String str =
                 "global java.util.List list\n" +
                 "query Q (Integer i)\n" +
@@ -93,8 +85,9 @@ public class PassiveQueryTest {
         assertThat((int) list.get(0)).isEqualTo(2);
     }
 
-    @Test
-    public void testPassiveQueryNoDataDriven() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testPassiveQueryNoDataDriven(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String str =
                 "global java.util.List list\n" +
                 "query Q (Integer i)\n" +
@@ -119,8 +112,9 @@ public class PassiveQueryTest {
         assertThat(list.size()).isEqualTo(1);
     }
 
-    @Test
-    public void testPassiveQueryDataDriven() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testPassiveQueryDataDriven(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String str =
                 "global java.util.List list\n" +
                 "query Q (Integer i)\n" +
@@ -145,8 +139,9 @@ public class PassiveQueryTest {
         assertThat(list.size()).isEqualTo(0);
     }
 
-    @Test
-    public void testReactiveQueryDataDriven() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testReactiveQueryDataDriven(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String str =
                 "global java.util.List list\n" +
                 "query Q (Integer i)\n" +
@@ -171,8 +166,9 @@ public class PassiveQueryTest {
         assertThat(list.size()).isEqualTo(1);
     }
 
-    @Test
-    public void testPassiveQueryDataDrivenWithBeta() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testPassiveQueryDataDrivenWithBeta(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String str =
                 "global java.util.List list\n" +
                 "query Q (Integer i)\n" +
@@ -199,8 +195,9 @@ public class PassiveQueryTest {
         assertThat(list.size()).isEqualTo(0);
     }
 
-    @Test
-    public void testPassiveQueryNodeSharing() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testPassiveQueryNodeSharing(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String str =
                 "global java.util.List list\n" +
                 "query Q (Integer i)\n" +
@@ -232,8 +229,9 @@ public class PassiveQueryTest {
         assertThat(list.get(0)).isEqualTo("R2");
     }
 
-    @Test
-    public void testPassiveQueryNodeSharing2() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testPassiveQueryNodeSharing2(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String str =
                 "global java.util.List list\n" +
                 "query Q (Integer i)\n" +
@@ -278,8 +276,9 @@ public class PassiveQueryTest {
         assertThat(list.containsAll(asList("R2a", "R2b"))).isTrue();
     }
 
-    @Test
-    public void testPassiveQueryUsingSegmentPropagator() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testPassiveQueryUsingSegmentPropagator(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String str =
                 "global java.util.List list\n" +
                 "query Q (Integer i)\n" +

@@ -29,11 +29,11 @@ import org.drools.base.base.ClassObjectType;
 import org.drools.base.rule.Declaration;
 import org.drools.base.rule.accessor.PatternExtractor;
 import org.drools.util.StringUtils;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.drools.mvel.compiler.Cheese;
 import org.drools.mvel.compiler.Person;
 import org.drools.mvel.java.JavaRuleBuilderHelper;
-import org.junit.Before;
-import org.junit.Test;
 import org.mvel2.integration.impl.MapVariableResolverFactory;
 import org.mvel2.templates.CompiledTemplate;
 import org.mvel2.templates.SimpleTemplateRegistry;
@@ -46,7 +46,7 @@ public class AccumulateTemplateTest {
 
     ClassFieldAccessorStore store = new ClassFieldAccessorStore();
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         store.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
         store.setEagerWire( true );

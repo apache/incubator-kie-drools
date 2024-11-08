@@ -19,30 +19,22 @@
 package org.drools.mvel.integrationtests;
 
 import java.io.Serializable;
-import java.util.Collection;
+import java.util.stream.Stream;
 
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
-@RunWith(Parameterized.class)
 public class DroolsTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public DroolsTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
-    }
     private final static int NUM_FACTS = 20;
 
     private static int       counter;
@@ -71,8 +63,9 @@ public class DroolsTest {
         }
     }
 
-    @Test
-    public void test1() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void test1(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String str = "package org.drools.mvel.integrationtests;\n";
         str += "import " + DroolsTest.class.getName() + ";\n";
         str += "import " + DroolsTest.class.getName() + ".Foo;\n";

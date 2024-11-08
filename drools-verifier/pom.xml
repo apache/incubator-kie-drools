@@ -39,6 +39,7 @@
 
 
   <modules>
+    <module>drools-verifier-test-jar</module>
     <module>drools-verifier-drl</module>
     <module>drools-verifier-api</module>
     <module>drools-verifier-core</module>

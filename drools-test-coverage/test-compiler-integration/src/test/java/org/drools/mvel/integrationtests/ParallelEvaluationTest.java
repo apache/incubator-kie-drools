@@ -22,35 +22,25 @@ import org.drools.mvel.compiler.util.debug.DebugList;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.builder.KieModule;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.conf.ParallelExecutionOption;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class ParallelEvaluationTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public ParallelEvaluationTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
-    }
-
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
     private String getRule(int i, String rhs) {
@@ -76,8 +66,9 @@ public class ParallelEvaluationTest {
                 "end\n";
     }
 
-    @Test
-    public void testSalience() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testSalience(KieBaseTestConfiguration kieBaseTestConfiguration) {
         int ruleNr = 20;
         StringBuilder sb = new StringBuilder( 400 );
         sb.append( "global java.util.List list;\n" );
@@ -106,8 +97,9 @@ public class ParallelEvaluationTest {
         assertThat(list).isEqualTo(expected);
     }
 
-    @Test
-    public void testSalienceWithInserts() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testSalienceWithInserts(KieBaseTestConfiguration kieBaseTestConfiguration) {
         int ruleNr = 20;
         StringBuilder sb = new StringBuilder( 400 );
         sb.append( "global java.util.List list;\n" );

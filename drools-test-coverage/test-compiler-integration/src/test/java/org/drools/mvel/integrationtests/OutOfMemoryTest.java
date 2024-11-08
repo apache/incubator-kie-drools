@@ -19,8 +19,8 @@
 package org.drools.mvel.integrationtests;
 
 import java.io.FileWriter;
-import java.util.Collection;
 import java.util.HashMap;
+import java.util.stream.Stream;
 
 import org.drools.core.SessionConfiguration;
 import org.drools.kiesession.debug.SessionInspector;
@@ -29,15 +29,13 @@ import org.drools.mvel.compiler.Cheese;
 import org.drools.mvel.compiler.Person;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.conf.KeepReferenceOption;
 import org.kie.api.runtime.rule.FactHandle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,18 +43,10 @@ import org.slf4j.LoggerFactory;
 import static org.assertj.core.api.Assertions.fail;
 
 /** Run all the tests with the ReteOO engine implementation */
-@RunWith(Parameterized.class)
 public class OutOfMemoryTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public OutOfMemoryTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
-    }
-
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
     private static Logger logger = LoggerFactory.getLogger(OutOfMemoryTest.class);
@@ -65,9 +55,10 @@ public class OutOfMemoryTest {
      * This test can take a while (> 1 minute).
      * @throws Exception
      */
-    @Test
-    @Ignore
-    public void testStatefulSessionsCreation() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Disabled
+    public void testStatefulSessionsCreation(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_OutOfMemoryError.drl");
 
         int i = 0;
@@ -87,9 +78,10 @@ public class OutOfMemoryTest {
 
     }
 
-    @Test
-    @Ignore
-    public void testAgendaLoop() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Disabled
+    public void testAgendaLoop(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_OutOfMemoryError.drl");
 
         KieSession ksession = kbase.newKieSession();
@@ -103,9 +95,10 @@ public class OutOfMemoryTest {
         //Thread.currentThread().wait();
     }
     
-    @Test
-    @Ignore("dump_tuples.mvel no longer seems to work")
-    public void testMemoryLeak() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Disabled("dump_tuples.mvel no longer seems to work")
+    public void testMemoryLeak(KieBaseTestConfiguration kieBaseTestConfiguration) {
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_MemoryLeak.drl");
         KieSession ksession = kbase.newKieSession();
 

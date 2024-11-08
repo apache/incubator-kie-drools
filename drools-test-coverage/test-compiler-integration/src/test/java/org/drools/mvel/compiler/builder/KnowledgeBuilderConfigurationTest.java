@@ -31,8 +31,8 @@ import org.drools.core.base.accumulators.AverageAccumulateFunction;
 import org.drools.core.base.accumulators.MaxAccumulateFunction;
 import org.drools.mvel.evaluators.AfterEvaluatorDefinition;
 import org.drools.mvel.evaluators.BeforeEvaluatorDefinition;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.rule.AccumulateFunction;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
@@ -53,7 +53,7 @@ public class KnowledgeBuilderConfigurationTest {
     /* (non-Javadoc)
      * @see junit.framework.TestCase#setUp()
      */
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         config = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
     }
