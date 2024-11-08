@@ -142,6 +142,8 @@ public class KieContainerTest {
         ReleaseId releaseId = ks.newReleaseId(group, artifact, version);
 
         File kjar = new File("src/test/resources/kjar/kjar-module-before.jar");
+        assertThat(kjar).as("Make sure to build drools-test-coverage-jars first")
+                .exists();
         File pom = new File("src/test/resources/kjar/pom-kjar.xml");
         MavenRepository repository = MavenRepository.getMavenRepository();
         repository.installArtifact(releaseId, kjar, pom);
@@ -159,6 +161,8 @@ public class KieContainerTest {
 
         // deploy new version
         File kjar1 = new File("src/test/resources/kjar/kjar-module-after.jar");
+        assertThat(kjar1).as("Make sure to build drools-test-coverage-jars first")
+                .exists();
         File pom1 = new File("src/test/resources/kjar/pom-kjar.xml");
 
         repository.installArtifact(releaseId, kjar1, pom1);

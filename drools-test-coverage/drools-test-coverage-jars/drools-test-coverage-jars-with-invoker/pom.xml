@@ -35,7 +35,6 @@
   <properties>
     <java.module.name>org.drools.compiler.integrationtests.jars.with.invoker</java.module.name>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.deploy.skip>true</maven.deploy.skip>
     <org.kie.version>${project.version}</org.kie.version>
   </properties>
 

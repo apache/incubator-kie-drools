@@ -532,8 +532,11 @@ public class MBeansMonitoringTest {
     public void testLoadKjarFromClasspath() {
         // DROOLS-1335
         ClassLoader cl = Thread.currentThread().getContextClassLoader();
-    
-        URLClassLoader urlClassLoader = new URLClassLoader( new URL[]{this.getClass().getResource( "/kie-project-simple-1.0.0.jar" )} );
+
+        URL simpleKjar = this.getClass().getResource("/kie-project-simple-1.0.0.jar");
+        assertThat(simpleKjar).as("Make sure to build drools-test-coverage-jars first")
+                .isNotNull();
+        URLClassLoader urlClassLoader = new URLClassLoader( new URL[]{simpleKjar} );
         Thread.currentThread().setContextClassLoader( urlClassLoader );
         
         MBeanServer mbserver = ManagementFactory.getPlatformMBeanServer();

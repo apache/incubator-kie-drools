@@ -19,6 +19,7 @@
 package org.drools.mvel.integrationtests;
 
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
@@ -44,7 +45,10 @@ class MarshallingTest {
     void testSerializabilityWithJarFacts() throws Exception {
         MapBackedClassLoader loader = new MapBackedClassLoader(this.getClass().getClassLoader());
 
-        JarInputStream jis = new JarInputStream(this.getClass().getResourceAsStream("/surf.jar"));
+        InputStream is = this.getClass().getResourceAsStream("/surf.jar");
+        assertThat(is).as("Make sure to build drools-test-coverage-jars first")
+                .isNotNull();
+        JarInputStream jis = new JarInputStream(is);
 
         JarEntry entry = null;
         byte[] buf = new byte[1024];

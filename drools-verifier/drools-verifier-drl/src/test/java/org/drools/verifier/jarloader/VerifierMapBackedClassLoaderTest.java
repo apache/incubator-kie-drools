@@ -19,6 +19,7 @@
 package org.drools.verifier.jarloader;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.jar.JarInputStream;
 
@@ -34,8 +35,11 @@ public class VerifierMapBackedClassLoaderTest {
 
     @Test
     void testCheckResources() throws Exception {
+        InputStream is = this.getClass().getResourceAsStream("/model.jar");
+        assertThat(is).as("Make sure to build drools-verifier-test-jar first")
+                .isNotNull();
         ArrayList<JarInputStream> jarInputStreams = new ArrayList<JarInputStream>();
-        jarInputStreams.add(new JarInputStream(Verifier.class.getResourceAsStream("model.jar")));
+        jarInputStreams.add(new JarInputStream(is));
 
         VerifierMapBackedClassLoader verifierMapBackedClassLoader = new VerifierMapBackedClassLoader(jarInputStreams);
 

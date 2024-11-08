@@ -19,6 +19,7 @@
 package org.drools.mvel.integrationtests;
 
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -317,7 +318,10 @@ public class JBRULESTest {
         // An internal specific test case so not enhanced for executable-model
         final MapBackedClassLoader loader = new MapBackedClassLoader( this.getClass().getClassLoader() );
 
-        final JarInputStream jis = new JarInputStream( this.getClass().getResourceAsStream( "/setter-overload.jar" ) );
+        InputStream is = this.getClass().getResourceAsStream("/setter-overload.jar");
+        assertThat(is).as("Make sure to build drools-test-coverage-jars first")
+                .isNotNull();
+        final JarInputStream jis = new JarInputStream(is);
 
         JarEntry entry;
         final byte[] buf = new byte[1024];
