@@ -527,8 +527,11 @@ public class MBeansMonitoringTest {
     public void testLoadKjarFromClasspath(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-1335
         ClassLoader cl = Thread.currentThread().getContextClassLoader();
-    
-        URLClassLoader urlClassLoader = new URLClassLoader( new URL[]{this.getClass().getResource( "/kie-project-simple-1.0.0.jar" )} );
+
+        URL simpleKjar = this.getClass().getResource("/kie-project-simple-1.0.0.jar");
+        assertThat(simpleKjar).as("Make sure to build drools-test-coverage-jars first")
+                .isNotNull();
+        URLClassLoader urlClassLoader = new URLClassLoader( new URL[]{simpleKjar} );
         Thread.currentThread().setContextClassLoader( urlClassLoader );
         
         MBeanServer mbserver = ManagementFactory.getPlatformMBeanServer();
@@ -536,7 +539,7 @@ public class MBeansMonitoringTest {
         try {
             KieServices ks = KieServices.Factory.get();
             KieRepository kieRepository = ks.getRepository();
-            ReleaseId releaseId = ks.newReleaseId( "org.test", "kie-project-simple", "1.0.0" );
+            ReleaseId releaseId = ks.newReleaseId( "org.drools.testcoverage", "kie-project-simple", "1.0.0" );
             KieModule kieModule = kieRepository.getKieModule( releaseId );
             assertThat(kieModule).isNotNull();
             assertThat(kieModule.getReleaseId()).isEqualTo(releaseId);

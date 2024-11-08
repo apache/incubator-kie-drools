@@ -39,6 +39,7 @@
 
   <modules>
     <module>standalone</module>
+    <module>drools-test-coverage-jars</module>
     <module>test-suite</module>
     <module>test-compiler-integration</module>
     <module>test-integration-nomvel</module>

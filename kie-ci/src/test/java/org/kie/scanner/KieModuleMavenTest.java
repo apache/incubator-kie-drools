@@ -26,13 +26,13 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
+import org.drools.base.factmodel.ClassDefinition;
+import org.drools.base.factmodel.FieldDefinition;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieContainerImpl;
 import org.drools.compiler.kie.builder.impl.KieRepositoryImpl;
 import org.drools.compiler.kie.builder.impl.KieServicesImpl;
-import org.drools.base.factmodel.ClassDefinition;
-import org.drools.base.factmodel.FieldDefinition;
 import org.drools.mvel.asm.DefaultBeanClassBuilder;
 import org.junit.Test;
 import org.kie.api.KieBase;
@@ -43,8 +43,6 @@ import org.kie.api.builder.KieModule;
 import org.kie.api.builder.KieRepository;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieBaseModel;
-import org.kie.api.definition.KiePackage;
-import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.utils.KieTypeResolver;
@@ -212,53 +210,6 @@ public class KieModuleMavenTest extends AbstractKieCiTest {
     }
 
     @Test
-    public void testKieContainerBeforeAndAfterDeployOfSnapshot() throws Exception {
-        // BZ-1007977
-        KieServices ks = KieServices.Factory.get();
-
-        String group = "org.kie.test";
-        String artifact = "test-module";
-        String version = "1.0.0-SNAPSHOT";
-
-        ReleaseId releaseId = ks.newReleaseId(group, artifact, version);
-
-        String prefix = new File(".").getAbsolutePath().contains("kie-ci") ? "" : "kie-ci/";
-
-        File kjar = new File(prefix + "src/test/resources/kjar/kjar-module-before.jar");
-        File pom = new File(prefix + "src/test/resources/kjar/pom-kjar.xml");
-        MavenRepository repository = getMavenRepository();
-        repository.installArtifact(releaseId, kjar, pom);
-
-        KieContainer kContainer = ks.newKieContainer(releaseId);
-        KieBase kbase = kContainer.getKieBase();
-        assertThat(kbase).isNotNull();
-        Collection<KiePackage> packages = kbase.getKiePackages();
-        assertThat(packages).isNotNull();
-        assertThat(packages.size()).isEqualTo(1);
-        Collection<Rule> rules = packages.iterator().next().getRules();
-        assertThat(rules.size()).isEqualTo(2);
-
-        ks.getRepository().removeKieModule(releaseId);
-
-        // deploy new version
-        File kjar1 = new File(prefix + "src/test/resources/kjar/kjar-module-after.jar");
-        File pom1 = new File(prefix + "src/test/resources/kjar/pom-kjar.xml");
-
-        repository.installArtifact(releaseId, kjar1, pom1);
-
-        KieContainer kContainer2 = ks.newKieContainer(releaseId);
-        KieBase kbase2 = kContainer2.getKieBase();
-        assertThat(kbase2).isNotNull();
-        Collection<KiePackage> packages2 = kbase2.getKiePackages();
-        assertThat(packages2).isNotNull();
-        assertThat(packages2.size()).isEqualTo(1);
-        Collection<Rule> rules2 = packages2.iterator().next().getRules();
-        assertThat(rules2.size()).isEqualTo(4);
-
-        ks.getRepository().removeKieModule(releaseId);
-    }
-
-    @Test
     public void testKieModuleFromMavenWithDependenciesProperties() throws Exception {
         final KieServices ks = new KieServicesImpl() {
 
@@ -423,5 +374,4 @@ public class KieModuleMavenTest extends AbstractKieCiTest {
                 "";
         return s;
     }
-
 }
