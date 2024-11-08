@@ -7165,7 +7165,7 @@ public class Misc2Test {
     public void testKieBuilderWithClassLoader(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-763
         String drl =
-                "import com.billasurf.Person\n" +
+                "import org.example.surf.Person\n" +
                 "\n" +
                 "global java.util.List list\n" +
                 "\n" +
@@ -7183,7 +7183,10 @@ public class Misc2Test {
                 "    list.add($p.getAge());\n" +
                 "end\n";
 
-        URLClassLoader urlClassLoader = new URLClassLoader( new URL[]{this.getClass().getResource( "/billasurf.jar" )} );
+        URL simplejar = this.getClass().getResource("/surf.jar");
+        assertThat(simplejar).as("Make sure to build drools-test-coverage-jars first")
+                .isNotNull();
+        URLClassLoader urlClassLoader = new URLClassLoader( new URL[]{simplejar} );
 
         InternalKnowledgeBase kbase = (InternalKnowledgeBase)KieBaseUtil.getKieBaseFromDrlWithClassLoaderForKieBuilder("test", urlClassLoader, kieBaseTestConfiguration, drl);
         KieSession ksession = kbase.newKieSession();
