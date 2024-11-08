@@ -41,7 +41,7 @@ public class PackageHeaderLoaderTest {
 
     @BeforeEach
     public void setUp() throws Exception {
-        InputStream is = this.getClass().getResourceAsStream("/model.jar");
+        InputStream is = Verifier.class.getResourceAsStream("model.jar");
         assertThat(is).as("Make sure to build drools-verifier-test-jar first")
                 .isNotNull();
         jarInputStreams = new ArrayList<JarInputStream>();

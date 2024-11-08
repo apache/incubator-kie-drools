@@ -35,7 +35,7 @@ public class VerifierMapBackedClassLoaderTest {
 
     @Test
     void testCheckResources() throws Exception {
-        InputStream is = this.getClass().getResourceAsStream("/model.jar");
+        InputStream is = Verifier.class.getResourceAsStream("model.jar");
         assertThat(is).as("Make sure to build drools-verifier-test-jar first")
                 .isNotNull();
         ArrayList<JarInputStream> jarInputStreams = new ArrayList<JarInputStream>();

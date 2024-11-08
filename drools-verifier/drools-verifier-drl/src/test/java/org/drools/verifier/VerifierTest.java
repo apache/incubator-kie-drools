@@ -80,7 +80,7 @@ public class VerifierTest {
         Verifier verifier = vBuilder.newVerifier();
 
         try {
-            InputStream is = this.getClass().getResourceAsStream("/model.jar");
+            InputStream is = this.getClass().getResourceAsStream("model.jar");
             assertThat(is).as("Make sure to build drools-verifier-test-jar first")
                     .isNotNull();
             JarInputStream jar = new JarInputStream( is );
@@ -128,7 +128,7 @@ public class VerifierTest {
 
         try {
 
-            InputStream is = this.getClass().getResourceAsStream("/model.jar");
+            InputStream is = this.getClass().getResourceAsStream("model.jar");
             assertThat(is).as("Make sure to build drools-verifier-test-jar first")
                     .isNotNull();
             JarInputStream jar = new JarInputStream( is );
