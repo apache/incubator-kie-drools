@@ -28,40 +28,33 @@ import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.builder.KieModule;
 import org.kie.internal.conf.ParallelExecutionOption;
 
-import java.util.Collection;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class NodesPartitioningTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public NodesPartitioningTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
-    }
-
-    @Test
-    public void test2Partitions() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void test2Partitions(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String drl = ruleA(1) + ruleB(2) + ruleC(2) + ruleD(1) +
                      ruleD(2) + ruleC(1) + ruleA(2) + ruleB(1);
-        checkDrl( drl );
+        checkDrl(kieBaseTestConfiguration,  drl);
     }
 
-    @Test
-    public void testPartitioningWithSharedNodes() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testPartitioningWithSharedNodes(KieBaseTestConfiguration kieBaseTestConfiguration) {
         StringBuilder sb = new StringBuilder( 400 );
         for (int i = 1; i < 4; i++) {
             sb.append( getRule( i ) );
@@ -69,10 +62,10 @@ public class NodesPartitioningTest {
         for (int i = 1; i < 4; i++) {
             sb.append( getNotRule( i ) );
         }
-        checkDrl( sb.toString() );
+        checkDrl(kieBaseTestConfiguration, sb.toString() );
     }
 
-    private void checkDrl(String drl) {
+    private void checkDrl(KieBaseTestConfiguration kieBaseTestConfiguration, String drl) {
         final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, drl);
         final InternalKnowledgeBase kbase = (InternalKnowledgeBase)KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, ParallelExecutionOption.FULLY_PARALLEL);
         Rete rete = kbase.getRete();
@@ -213,8 +206,9 @@ public class NodesPartitioningTest {
         }
     }
 
-    @Test
-    public void testChangePartitionOfAlphaSourceOfAlpha() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testChangePartitionOfAlphaSourceOfAlpha(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-1487
         String drl =
                 "import " + Account.class.getCanonicalName() + ";\n" +
@@ -233,6 +227,6 @@ public class NodesPartitioningTest {
                 "then\n" +
                 "end";
 
-        checkDrl( drl );
+        checkDrl(kieBaseTestConfiguration, drl);
     }
 }
