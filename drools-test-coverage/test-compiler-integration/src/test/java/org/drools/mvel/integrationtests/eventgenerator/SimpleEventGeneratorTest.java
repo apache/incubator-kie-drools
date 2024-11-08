@@ -19,39 +19,31 @@
 package org.drools.mvel.integrationtests.eventgenerator;
 
 import java.io.IOException;
-import java.util.Collection;
+import java.util.stream.Stream;
 
 import org.drools.drl.parser.DroolsParserException;
 import org.drools.mvel.integrationtests.eventgenerator.Event.EventType;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class SimpleEventGeneratorTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public SimpleEventGeneratorTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
-    }
-
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
     private final static String TEST_RULE_FILE = "test_eventGenerator.drl";
 
-    @Test
-    public void testEventGenerationMaxItems() throws DroolsParserException, IOException, Exception{
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testEventGenerationMaxItems(KieBaseTestConfiguration kieBaseTestConfiguration) throws DroolsParserException, IOException, Exception{
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, TEST_RULE_FILE);
         KieSession ksession = kbase.newKieSession();
 
@@ -63,8 +55,9 @@ public class SimpleEventGeneratorTest {
         assertThat(10).isEqualTo(ksession.getQueryResults("all inserted events").size());
     }
 
-    @Test
-    public void testEventGenerationMaxTime() throws DroolsParserException, IOException, Exception{
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testEventGenerationMaxTime(KieBaseTestConfiguration kieBaseTestConfiguration) throws DroolsParserException, IOException, Exception{
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, TEST_RULE_FILE);
         KieSession ksession = kbase.newKieSession();
 
@@ -76,8 +69,9 @@ public class SimpleEventGeneratorTest {
         assertThat(ksession.getQueryResults("all inserted events with generation time < 1 min").size()).isEqualTo(ksession.getQueryResults("all inserted events").size());
     }
 
-    @Test
-    public void testEventGenerationMaxTimeAndMaxItems() throws DroolsParserException, IOException, Exception{
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testEventGenerationMaxTimeAndMaxItems(KieBaseTestConfiguration kieBaseTestConfiguration) throws DroolsParserException, IOException, Exception{
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, TEST_RULE_FILE);
         KieSession ksession = kbase.newKieSession();
 
@@ -90,8 +84,9 @@ public class SimpleEventGeneratorTest {
         assertThat(ksession.getQueryResults("all inserted events with generation time < 1 min").size() <= 10).isTrue();
     }
 
-    @Test
-    public void testEventGenerationDelayedMaxItems() throws DroolsParserException, IOException, Exception{
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testEventGenerationDelayedMaxItems(KieBaseTestConfiguration kieBaseTestConfiguration) throws DroolsParserException, IOException, Exception{
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, TEST_RULE_FILE);
         KieSession ksession = kbase.newKieSession();
 
@@ -103,8 +98,9 @@ public class SimpleEventGeneratorTest {
         assertThat(10).isEqualTo(ksession.getQueryResults("all inserted events").size());
     }
 
-    @Test
-    public void testEventGenerationDelayedMaxTime() throws DroolsParserException, IOException, Exception{
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testEventGenerationDelayedMaxTime(KieBaseTestConfiguration kieBaseTestConfiguration) throws DroolsParserException, IOException, Exception{
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, TEST_RULE_FILE);
         KieSession ksession = kbase.newKieSession();
 
@@ -116,8 +112,9 @@ public class SimpleEventGeneratorTest {
         assertThat(ksession.getQueryResults("all inserted events with 2 min < generation time < 3 min").size()).isEqualTo(ksession.getQueryResults("all inserted events").size());
     }
 
-    @Test
-    public void testEventGenerationDelayedMaxTimeAndMaxItems() throws DroolsParserException, IOException, Exception{
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testEventGenerationDelayedMaxTimeAndMaxItems(KieBaseTestConfiguration kieBaseTestConfiguration) throws DroolsParserException, IOException, Exception{
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, TEST_RULE_FILE);
         KieSession ksession = kbase.newKieSession();
 
@@ -130,8 +127,9 @@ public class SimpleEventGeneratorTest {
         assertThat(ksession.getQueryResults("all inserted events with 2 min < generation time < 3 min").size() <= 10).isTrue();
     }
 
-    @Test
-    public void testEventGenerationGlobalMaxTime() throws DroolsParserException, IOException, Exception{
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testEventGenerationGlobalMaxTime(KieBaseTestConfiguration kieBaseTestConfiguration) throws DroolsParserException, IOException, Exception{
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, TEST_RULE_FILE);
         KieSession ksession = kbase.newKieSession();
 
@@ -144,8 +142,9 @@ public class SimpleEventGeneratorTest {
         assertThat(ksession.getQueryResults("all inserted events with generation time < 1 min").size()).isEqualTo(ksession.getQueryResults("all inserted events").size());
     }
 
-    @Test
-    public void testEventGenerationMultipleSources() throws DroolsParserException, IOException, Exception{
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testEventGenerationMultipleSources(KieBaseTestConfiguration kieBaseTestConfiguration) throws DroolsParserException, IOException, Exception{
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, TEST_RULE_FILE);
         KieSession ksession = kbase.newKieSession();
 

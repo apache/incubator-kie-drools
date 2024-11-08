@@ -19,21 +19,19 @@
 package org.drools.mvel.integrationtests;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
 
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -52,24 +50,15 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * BZ-967599
  */
-@RunWith(Parameterized.class)
 public class MTEntryPointsTest {
 
     private KieSession kieSession;
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public MTEntryPointsTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseStreamConfigurations(true).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseStreamConfigurations(true);
-    }
-
-    @Before
-    public void initSession() {
+    public void initSession(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str = "package org.jboss.brms\n" +
                      "\n" +
                      "import org.drools.mvel.integrationtests.MTEntryPointsTest.MessageEvent\n" +
@@ -122,7 +111,7 @@ public class MTEntryPointsTest {
                                                .getDefaultReleaseId()).newKieSession();
     }
 
-    @After
+    @AfterEach
     public void cleanup() {
         if (this.kieSession != null) {
             this.kieSession.dispose();
@@ -133,8 +122,10 @@ public class MTEntryPointsTest {
      * Inserts events using multiple threads into one EntryPoint. The insert
      * operation is synchronized on corresponding SessionEntryPoint instance.
      */
-    @Test
-    public void testOneEntryPoint() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testOneEntryPoint(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
+        initSession(kieBaseTestConfiguration); 
         final EntryPoint firstThreadEntryPoint = kieSession.getEntryPoint("FirstStream");
 
         final int numInsertersInEachEntryPoint = 10;
@@ -161,9 +152,10 @@ public class MTEntryPointsTest {
      * Inserts events using multiple threads into two EntryPoints. The insert
      * operation is synchronized on corresponding SessionEntryPoint instance.
      */
-    @Test
-    public void testTwoEntryPoints() throws Exception {
-
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testTwoEntryPoints(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
+        initSession(kieBaseTestConfiguration); 
         final EntryPoint firstThreadEntryPoint = kieSession.getEntryPoint("FirstStream");
         final EntryPoint secondThreadEntryPoint = kieSession.getEntryPoint("SecondStream");
 

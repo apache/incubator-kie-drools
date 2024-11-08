@@ -20,16 +20,16 @@ package org.drools.mvel.integrationtests;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.mvel.compiler.Triangle;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.Message;
@@ -41,22 +41,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * Test for declared Enums
  */
-@RunWith(Parameterized.class)
 public class EnumTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public EnumTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
-    }
-
-    @Test
-    public void testEnums() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testEnums(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_Enums.drl");
         KieSession ksession = kbase.newKieSession();
         final java.util.List list = new java.util.ArrayList();
@@ -71,8 +64,9 @@ public class EnumTest {
         ksession.dispose();
     }
 
-    @Test
-    public void testEnumsWithCompositeBuildingProcess() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testEnumsWithCompositeBuildingProcess(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         final String drl = "package org.test; " +
                      "" +
                      "declare enum DaysOfWeek " +
@@ -88,8 +82,9 @@ public class EnumTest {
         assertThat(errors.isEmpty()).as(errors.toString()).isTrue();
     }
 
-    @Test
-    public void testQueryEnum() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testQueryEnum(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String str = "package org.kie.test;\n" +
                 "\n" +
                 "declare enum Ennumm\n" +
@@ -138,8 +133,9 @@ public class EnumTest {
         ksession.dispose();
     }
 
-    @Test
-    public void testInnerEnum() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testInnerEnum(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         final StringBuilder rule = new StringBuilder();
         rule.append( "package org.drools.mvel.compiler\n" );
         rule.append( "rule X\n" );

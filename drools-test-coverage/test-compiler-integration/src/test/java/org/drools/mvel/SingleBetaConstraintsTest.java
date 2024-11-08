@@ -22,38 +22,39 @@ import org.drools.drl.parser.impl.Operator;
 import org.drools.core.common.SingleBetaConstraints;
 import org.drools.base.reteoo.NodeTypeEnums;
 import org.drools.base.rule.constraint.BetaConstraint;
-import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 public class SingleBetaConstraintsTest extends BaseBetaConstraintsTest {
 
-    public SingleBetaConstraintsTest(boolean useLambdaConstraint) {
-        this.useLambdaConstraint = useLambdaConstraint;
-    }
-
-    @Test
-    public void testIndexed() {
-        BetaConstraint   constraint0 = getCheeseTypeConstraint("cheeseType0", Operator.BuiltInOperator.EQUAL.getOperator());
+    @ParameterizedTest(name = "useLambdaConstraint={0}")
+    @MethodSource("parameters")
+    public void testIndexed(boolean useLambdaConstraint) { 
+        BetaConstraint   constraint0 = getCheeseTypeConstraint(useLambdaConstraint, "cheeseType0", Operator.BuiltInOperator.EQUAL.getOperator());
         BetaConstraint[] constraints = new BetaConstraint[] {constraint0 };
         checkBetaConstraints( constraints, SingleBetaConstraints.class );
     }
 
-    @Test
-    public void testNotIndexed() {
-        BetaConstraint   constraint0 = getCheeseTypeConstraint("cheeseType0", Operator.BuiltInOperator.NOT_EQUAL.getOperator());
+    @ParameterizedTest(name = "useLambdaConstraint={0}")
+    @MethodSource("parameters")
+    public void testNotIndexed(boolean useLambdaConstraint) { 
+        BetaConstraint   constraint0 = getCheeseTypeConstraint(useLambdaConstraint, "cheeseType0", Operator.BuiltInOperator.NOT_EQUAL.getOperator());
         BetaConstraint[] constraints = new BetaConstraint[] {constraint0 };
         checkBetaConstraints( constraints, SingleBetaConstraints.class );
     }
 
-    @Test
-    public void testIndexedForComparison() {
-        BetaConstraint   constraint0 = getCheeseTypeConstraint("cheeseType0", Operator.BuiltInOperator.LESS.getOperator());
+    @ParameterizedTest(name = "useLambdaConstraint={0}")
+    @MethodSource("parameters")
+    public void testIndexedForComparison(boolean useLambdaConstraint) { 
+        BetaConstraint   constraint0 = getCheeseTypeConstraint(useLambdaConstraint, "cheeseType0", Operator.BuiltInOperator.LESS.getOperator());
         BetaConstraint[] constraints = new BetaConstraint[] {constraint0 };
         checkBetaConstraints( constraints, SingleBetaConstraints.class, NodeTypeEnums.ExistsNode );
     }
 
-    @Test
-    public void testNotIndexedForComparison() {
-        BetaConstraint   constraint0 = getCheeseTypeConstraint("cheeseType0", Operator.BuiltInOperator.LESS.getOperator());
+    @ParameterizedTest(name = "useLambdaConstraint={0}")
+    @MethodSource("parameters")
+    public void testNotIndexedForComparison(boolean useLambdaConstraint) { 
+        BetaConstraint   constraint0 = getCheeseTypeConstraint(useLambdaConstraint, "cheeseType0", Operator.BuiltInOperator.LESS.getOperator());
         BetaConstraint[] constraints = new BetaConstraint[] {constraint0 };
         checkBetaConstraints( constraints, SingleBetaConstraints.class, NodeTypeEnums.JoinNode );
     }

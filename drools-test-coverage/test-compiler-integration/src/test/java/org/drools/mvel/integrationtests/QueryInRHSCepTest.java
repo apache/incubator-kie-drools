@@ -19,7 +19,6 @@
 package org.drools.mvel.integrationtests;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletionService;
@@ -27,14 +26,15 @@ import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
 
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -50,32 +50,25 @@ import org.kie.internal.io.ResourceFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class QueryInRHSCepTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public QueryInRHSCepTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseStreamConfigurations(true).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseStreamConfigurations(true);
-    }
-	private KieSession ksession;
+    private KieSession ksession;
     private SessionPseudoClock clock;
-	private List<?> myGlobal;
-	
+    private List<?> myGlobal;
+    
     public static class QueryItemPojo {
-    	// empty pojo.
-	}
+        // empty pojo.
+    }
 
-	public static class SolicitFirePojo {
-    	// empty pojo.
-	}
-	
-    private void prepare1() {
+    public static class SolicitFirePojo {
+        // empty pojo.
+    }
+    
+    private void prepare1(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String drl = "package org.drools.mvel.integrationtests\n" +
                 "import " + SolicitFirePojo.class.getCanonicalName() + "\n" +
                 "import " + QueryItemPojo.class.getCanonicalName() + "\n" +
@@ -84,7 +77,7 @@ public class QueryInRHSCepTest {
                 "    @role( event )\n" + 
                 "end\n" + 
                 "query \"myQuery\"\n" + 
-                "    $r : QueryItemPojo()\n" + 	
+                "    $r : QueryItemPojo()\n" +     
                 "end\n" + 
                 "rule \"drools-usage/WLHxG8S\"\n" +
                 " no-loop\n" +
@@ -117,10 +110,11 @@ public class QueryInRHSCepTest {
         ksession.setGlobal("myGlobal", myGlobal);
     }
 
-    @Test
-    public void withResultOfSize1Test() {
-    	prepare1();
-    	clock.advanceTime(1, TimeUnit.SECONDS);
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void withResultOfSize1Test(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        prepare1(kieBaseTestConfiguration);
+        clock.advanceTime(1, TimeUnit.SECONDS);
         ksession.insert(new QueryItemPojo());
         ksession.insert(new SolicitFirePojo());
         int fired = ksession.fireAllRules();
@@ -128,10 +122,11 @@ public class QueryInRHSCepTest {
         assertThat(myGlobal.size()).isEqualTo(1);
         assertThat(((QueryResults) myGlobal.get(0)).size()).isEqualTo(1);
     }
-    @Test
-    public void withResultOfSize1AnotherTest() {
-    	prepare1();
-    	clock.advanceTime(1, TimeUnit.SECONDS);
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void withResultOfSize1AnotherTest(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        prepare1(kieBaseTestConfiguration);
+        clock.advanceTime(1, TimeUnit.SECONDS);
         ksession.insert(new SolicitFirePojo());
         ksession.insert(new QueryItemPojo());
         int fired = ksession.fireAllRules();
@@ -139,10 +134,11 @@ public class QueryInRHSCepTest {
         assertThat(myGlobal.size()).isEqualTo(1);
         assertThat(((QueryResults) myGlobal.get(0)).size()).isEqualTo(1);
     }
-    @Test
-    public void withResultOfSize0Test() {
-    	prepare1();
-    	clock.advanceTime(1, TimeUnit.SECONDS);
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void withResultOfSize0Test(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        prepare1(kieBaseTestConfiguration);
+        clock.advanceTime(1, TimeUnit.SECONDS);
         ksession.insert(new SolicitFirePojo());
         int fired = ksession.fireAllRules();
         assertThat(fired).isEqualTo(1);
@@ -150,14 +146,15 @@ public class QueryInRHSCepTest {
         assertThat(((QueryResults) myGlobal.get(0)).size()).isEqualTo(0);
     }
     
-    @Test
-    public void withInsertBeforeQueryCloudTest() {
-    	String drl = "package org.drools.mvel.integrationtests\n" +
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void withInsertBeforeQueryCloudTest(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        String drl = "package org.drools.mvel.integrationtests\n" +
                 "import " + SolicitFirePojo.class.getCanonicalName() + "\n" +
                 "import " + QueryItemPojo.class.getCanonicalName() + "\n" +
                 "global java.util.List myGlobal \n"+
                 "query \"myQuery\"\n" + 
-                "    $r : QueryItemPojo()\n" + 	
+                "    $r : QueryItemPojo()\n" +     
                 "end\n" + 
                 "rule \"drools-usage/WLHxG8S\"\n" +
                 " no-loop\n" +
@@ -198,8 +195,10 @@ public class QueryInRHSCepTest {
         assertThat(((QueryResults) myGlobal.get(0)).size()).isEqualTo(2); // notice 1 is manually inserted, 1 get inserted from rule's RHS, for a total of 2.
     }
 
-    @Test(timeout = 10000L)
-    public void testParallelQueryCallFromRuleAndAPI() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    @Timeout(10000)
+    public void testParallelQueryCallFromRuleAndAPI(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String drl =
                 "global java.util.List myGlobal \n"+
                 "query \"myQuery\"\n" +
@@ -212,7 +211,7 @@ public class QueryInRHSCepTest {
                 "  myGlobal.add(drools.getKieRuntime().getQueryResults(\"myQuery\"));\n"+
                 "end\n";
 
-        KieBaseTestConfiguration cloudConfig = TestParametersUtil.getCloudInstanceOf(kieBaseTestConfiguration);
+        KieBaseTestConfiguration cloudConfig = TestParametersUtil2.getCloudInstanceOf(kieBaseTestConfiguration);
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", cloudConfig, drl);
         KieSession kSession = kbase.newKieSession();
 

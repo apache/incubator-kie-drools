@@ -19,24 +19,22 @@
 package org.drools.mvel.integrationtests;
 
 import java.time.Duration;
-import java.util.Collection;
 import java.util.Date;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Stream;
 
 import org.kie.api.runtime.ClassObjectFilter;
 import org.drools.core.ClockType;
-import org.drools.core.SessionConfiguration;
 import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.time.impl.PseudoClockScheduler;
 import org.drools.mvel.integrationtests.facts.BasicEvent;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.definition.type.Expires;
@@ -48,22 +46,15 @@ import org.kie.api.runtime.conf.ClockTypeOption;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.api.definition.type.Expires.Policy.TIME_SOFT;
 
-@RunWith(Parameterized.class)
 public class ExpirationTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public ExpirationTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseStreamConfigurations(true).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseStreamConfigurations(true);
-    }
-
-    @Test
-    public void testAlpha() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testAlpha(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String drl = "import " + A.class.getCanonicalName() + "\n" +
                      "declare A @role( event ) @expires(11ms) end\n" +
                      "global java.util.concurrent.atomic.AtomicInteger counter;\n" +
@@ -96,8 +87,9 @@ public class ExpirationTest {
         assertThat(counter.get()).isEqualTo(2);
     }
 
-    @Test
-    public void testBeta() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testBeta(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-1329
         String drl = "import " + A.class.getCanonicalName() + "\n" +
                      "import " + B.class.getCanonicalName() + "\n" +
@@ -136,8 +128,9 @@ public class ExpirationTest {
         assertThat(counter.get()).isEqualTo(2);
     }
 
-    @Test
-    public void testBetaRightExpired() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testBetaRightExpired(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-1329
         String drl = "import " + A.class.getCanonicalName() + "\n" +
                      "import " + B.class.getCanonicalName() + "\n" +
@@ -172,8 +165,9 @@ public class ExpirationTest {
         assertThat(counter.get()).isEqualTo(0);
     }
 
-    @Test
-    public void testBetaLeftExpired() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testBetaLeftExpired(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-1329
         String drl = "import " + A.class.getCanonicalName() + "\n" +
                      "import " + B.class.getCanonicalName() + "\n" +
@@ -208,8 +202,9 @@ public class ExpirationTest {
         assertThat(counter.get()).isEqualTo(0);
     }
 
-    @Test
-    public void testBetaLeftExpired2() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testBetaLeftExpired2(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-1329
         String drl = "import " + A.class.getCanonicalName() + "\n" +
                      "import " + B.class.getCanonicalName() + "\n" +
@@ -312,8 +307,9 @@ public class ExpirationTest {
     @Expires( value = "30s", policy = TIME_SOFT )
     public static class ExpiringEventC { }
 
-    @Test
-    public void testSoftExpiration() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testSoftExpiration(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-1483
         String drl = "import " + ExpiringEventA.class.getCanonicalName() + "\n" +
                      "import " + ExpiringEventB.class.getCanonicalName() + "\n" +
@@ -373,8 +369,9 @@ public class ExpirationTest {
         assertThat(ksession.getObjects(new ClassObjectFilter( ExpiringEventC.class )).size()).isEqualTo(0);
     }
 
-    @Test
-    public void testSoftExpirationWithDeclaration() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testSoftExpirationWithDeclaration(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-1483
         String drl = "import " + A.class.getCanonicalName() + "\n" +
                      "import " + B.class.getCanonicalName() + "\n" +
@@ -437,8 +434,9 @@ public class ExpirationTest {
         assertThat(ksession.getObjects(new ClassObjectFilter( C.class )).size()).isEqualTo(0);
     }
 
-    @Test
-    public void testEventsExpiredInThePast() throws InterruptedException {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testEventsExpiredInThePast(KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException {
         final String drl =
                 " package org.drools.mvel.integrationtests;\n" +
                 " import " + BasicEvent.class.getCanonicalName() + ";\n" +
@@ -455,11 +453,12 @@ public class ExpirationTest {
                 " then \n" +
                 " end\n";
 
-        testEventsExpiredInThePast(drl);
+        testEventsExpiredInThePast(kieBaseTestConfiguration, drl);
     }
 
-    @Test
-    public void testEventsExpiredInThePastTemporalConstraint() throws InterruptedException {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testEventsExpiredInThePastTemporalConstraint(KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException {
         final String drl =
                 " package org.drools.mvel.integrationtests;\n" +
                 " import " + BasicEvent.class.getCanonicalName() + ";\n" +
@@ -476,10 +475,10 @@ public class ExpirationTest {
                 " then \n" +
                 " end\n";
 
-        testEventsExpiredInThePast(drl);
+        testEventsExpiredInThePast(kieBaseTestConfiguration, drl);
     }
 
-    private void testEventsExpiredInThePast(final String drl) {
+    private void testEventsExpiredInThePast(KieBaseTestConfiguration kieBaseTestConfiguration, final String drl) {
         final KieSessionConfiguration sessionConfig = RuleBaseFactory.newKnowledgeSessionConfiguration();
         sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
 
@@ -503,28 +502,32 @@ public class ExpirationTest {
         assertThat(kieSession.getObjects()).isEmpty();
     }
 
-    @Test
-    public void testExpiredEventWithIdConstraint() throws InterruptedException {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testExpiredEventWithIdConstraint(KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException {
         // DROOLS-4577
-        testEventExpiredContraint(true, true);
+        testEventExpiredContraint(kieBaseTestConfiguration, true, true);
     }
 
-    @Test
-    public void testExpiredEventWithoutIdConstraint() throws InterruptedException {
-        testEventExpiredContraint(true, false);
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testExpiredEventWithoutIdConstraint(KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException {
+        testEventExpiredContraint(kieBaseTestConfiguration, true, false);
     }
 
-    @Test
-    public void testNotExpiredEventWithIdConstraint() throws InterruptedException {
-        testEventExpiredContraint(false, true);
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testNotExpiredEventWithIdConstraint(KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException {
+        testEventExpiredContraint(kieBaseTestConfiguration, false, true);
     }
 
-    @Test
-    public void testNotExpiredEventWithoutIdConstraint() throws InterruptedException {
-        testEventExpiredContraint(false, false);
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testNotExpiredEventWithoutIdConstraint(KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException {
+        testEventExpiredContraint(kieBaseTestConfiguration, false, false);
     }
 
-    private void testEventExpiredContraint(boolean expired, boolean constraint) throws InterruptedException {
+    private void testEventExpiredContraint(KieBaseTestConfiguration kieBaseTestConfiguration, boolean expired, boolean constraint) throws InterruptedException {
         final String drl =
                 " package org.drools.mvel.integrationtests;\n" +
                 " import " + DummyEvent.class.getCanonicalName() + ";\n" +
@@ -701,8 +704,9 @@ public class ExpirationTest {
         }
     }
 
-    @Test
-    public void testEventSameContraint() throws InterruptedException {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testEventSameContraint(KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException {
         // DROOLS-4580
         final String drl =
                 " package org.drools.mvel.integrationtests;\n" +
@@ -741,18 +745,20 @@ public class ExpirationTest {
         assertThat(kieSession.fireAllRules()).isEqualTo(2);
     }
 
-    @Test
-    public void testCollectWithExpiredEvent() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testCollectWithExpiredEvent(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-4626
-        testCollectExpiredEvent(true);
+        testCollectExpiredEvent(kieBaseTestConfiguration, true);
     }
 
-    @Test
-    public void testCollectWithoutExpiredEvent() {
-        testCollectExpiredEvent(false);
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testCollectWithoutExpiredEvent(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        testCollectExpiredEvent(kieBaseTestConfiguration, false);
     }
 
-    private void testCollectExpiredEvent(boolean expired) {
+    private void testCollectExpiredEvent(KieBaseTestConfiguration kieBaseTestConfiguration, boolean expired) {
 
         final String drl =
                 " package org.drools.mvel.integrationtests;\n" +
@@ -766,13 +772,13 @@ public class ExpirationTest {
                 " rule R when\n" +
                 "     $listEvent: Collection(size >= 2) from collect (DummyEvent())" +
                 " then \n" +
-                "	  System.out.println(\"R is fired\");  \n" +
+                "      System.out.println(\"R is fired\");  \n" +
                 " end\n";
 
         final KieSessionConfiguration sessionConfig = KieServices.get().newKieSessionConfiguration();
         sessionConfig.setOption(ClockTypeOption.get(ClockType.PSEUDO_CLOCK.getId()));
 
-        KieBaseTestConfiguration equalityConfig = TestParametersUtil.getEqualityInstanceOf(kieBaseTestConfiguration);
+        KieBaseTestConfiguration equalityConfig = TestParametersUtil2.getEqualityInstanceOf(kieBaseTestConfiguration);
         KieBase kieBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", equalityConfig, drl);
         final KieSession kieSession = kieBase.newKieSession(sessionConfig, null);
 
@@ -789,7 +795,7 @@ public class ExpirationTest {
         long timestamp = currentTime;
 
         if (expired) {
-            timestamp = currentTime - Duration.ofDays(8).toMillis();	//8 days in the past...
+            timestamp = currentTime - Duration.ofDays(8).toMillis();    //8 days in the past...
         }
 
         final DummyEvent event2 = new DummyEvent(2, timestamp);
@@ -800,39 +806,45 @@ public class ExpirationTest {
         assertThat(kieSession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testSameConstraintAllExpired() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testSameConstraintAllExpired(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-4656
-        testMultipleExpiredEvent(2, false);
+        testMultipleExpiredEvent(kieBaseTestConfiguration, 2, false);
     }
 
-    @Test
-    public void testSameConstraintOneExpired() {
-        testMultipleExpiredEvent(1, false);
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testSameConstraintOneExpired(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        testMultipleExpiredEvent(kieBaseTestConfiguration, 1, false);
     }
 
-    @Test
-    public void testSameConstraintNoExpiration() {
-        testMultipleExpiredEvent(0, false);
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testSameConstraintNoExpiration(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        testMultipleExpiredEvent(kieBaseTestConfiguration, 0, false);
     }
 
-     @Test
-    public void testDifferentConstraintAllExpired() {
+     @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testDifferentConstraintAllExpired(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-4656
-         testMultipleExpiredEvent(2, true);
+         testMultipleExpiredEvent(kieBaseTestConfiguration, 2, true);
     }
 
-    @Test
-    public void testDifferentConstraintOneExpired() {
-        testMultipleExpiredEvent(1, true);
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testDifferentConstraintOneExpired(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        testMultipleExpiredEvent(kieBaseTestConfiguration, 1, true);
     }
 
-    @Test
-    public void testDifferentConstraintNoExpiration() {
-        testMultipleExpiredEvent(0, true);
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testDifferentConstraintNoExpiration(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        testMultipleExpiredEvent(kieBaseTestConfiguration, 0, true);
     }
 
-    private void testMultipleExpiredEvent(int expiredNumber, boolean differentConstraint) {
+    private void testMultipleExpiredEvent(KieBaseTestConfiguration kieBaseTestConfiguration, int expiredNumber, boolean differentConstraint) {
 
         final String drl =
                 " package org.drools.mvel.integrationtests;\n" +
@@ -840,7 +852,7 @@ public class ExpirationTest {
                 " declare DummyEvent\n" +
                 "     @role( event )\n" +
                 "     @timestamp( eventTimestamp )\n" +
-                "	  @expires( 2h )\n" +
+                "      @expires( 2h )\n" +
                 " end\n" +
                 " rule R1 when\n" +
                 "     $dummyEvent : DummyEvent()\n" +
@@ -876,7 +888,7 @@ public class ExpirationTest {
 
         switch (expiredNumber){
             case 2:
-                timeStampEvent1 = currentTime - Duration.ofHours(9).toMillis();	// oldest, expired
+                timeStampEvent1 = currentTime - Duration.ofHours(9).toMillis();    // oldest, expired
                 timeStampEvent2 = currentTime - Duration.ofHours(8).toMillis(); // expired
                 break;
             case 1:
@@ -898,29 +910,33 @@ public class ExpirationTest {
         assertThat(kieSession.getObjects().size()).isEqualTo(2 - expiredNumber);
     }
 
-    @Test
-    public void testInstanceofExpired() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testInstanceofExpired(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-4660
-        testEvalExpiredEvent(true, false);
+        testEvalExpiredEvent(kieBaseTestConfiguration, true, false);
     }
 
-    @Test
-    public void testInstanceofNotExpired() {
-        testEvalExpiredEvent(false, false);
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testInstanceofNotExpired(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        testEvalExpiredEvent(kieBaseTestConfiguration, false, false);
     }
 
-    @Test
-    public void testEvalExpired() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testEvalExpired(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-4660
-        testEvalExpiredEvent(true, true);
+        testEvalExpiredEvent(kieBaseTestConfiguration, true, true);
     }
 
-    @Test
-    public void testEvalNotExpired() {
-        testEvalExpiredEvent(false, true);
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testEvalNotExpired(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        testEvalExpiredEvent(kieBaseTestConfiguration, false, true);
     }
 
-    private void testEvalExpiredEvent(boolean isExpired, boolean useEval) {
+    private void testEvalExpiredEvent(KieBaseTestConfiguration kieBaseTestConfiguration, boolean isExpired, boolean useEval) {
 
         final String drl =
                 " package org.drools.mvel.integrationtests;\n" +
@@ -969,7 +985,7 @@ public class ExpirationTest {
 
         //facts inserts
         if(isExpired){
-            timestamp = currentTime - Duration.ofDays(8).toMillis();	//8 days in the past...
+            timestamp = currentTime - Duration.ofDays(8).toMillis();    //8 days in the past...
         }
 
         final DummyEvent dummyEvent = new DummyEvent(1, timestamp);
@@ -982,8 +998,9 @@ public class ExpirationTest {
         assertThat(kieSession.getObjects().size()).isEqualTo(isExpired ? 0 : 2);
     }
 
-    @Test
-    public void testPolymorphicAlphaExpired() throws InterruptedException {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testPolymorphicAlphaExpired(KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException {
         // DROOLS-5050
         final String drl =
                 " package org.drools.mvel.integrationtests;\n" +
@@ -1021,8 +1038,9 @@ public class ExpirationTest {
         assertThat(kieSession.fireAllRules()).isEqualTo(0);
     }
 
-    @Test
-    public void testAvoidAlreadyExpiredFactsToForeverRemainInWM() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testAvoidAlreadyExpiredFactsToForeverRemainInWM(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-6680
         String drl =
                 " import " + DummyEvent.class.getCanonicalName() + ";\n" +
@@ -1049,7 +1067,7 @@ public class ExpirationTest {
                 "then\n" +
                 "end";
 
-        KieBaseTestConfiguration equalityConfig = TestParametersUtil.getEqualityInstanceOf(kieBaseTestConfiguration);
+        KieBaseTestConfiguration equalityConfig = TestParametersUtil2.getEqualityInstanceOf(kieBaseTestConfiguration);
         KieBase kieBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", equalityConfig, drl);
 
         final KieSessionConfiguration sessionConfig = RuleBaseFactory.newKnowledgeSessionConfiguration();

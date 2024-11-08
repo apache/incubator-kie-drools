@@ -20,11 +20,11 @@ package org.drools.mvel.integrationtests;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
+import java.util.stream.Stream;
 
 import org.drools.base.rule.MapBackedClassLoader;
 import org.drools.mvel.compiler.Bar;
@@ -38,10 +38,9 @@ import org.drools.mvel.compiler.Primitives;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.Message.Level;
@@ -62,22 +61,15 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 
-@RunWith(Parameterized.class)
 public class JBRULESTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public JBRULESTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
-    }
-
-    @Test
-    public void testJBRules2055() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testJBRules2055(KieBaseTestConfiguration kieBaseTestConfiguration) {
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(this.getClass(), kieBaseTestConfiguration, "test_JBRules2055.drl");
         KieSession ksession = kbase.newKieSession();
         final List<String> results = new ArrayList<String>();
@@ -93,8 +85,9 @@ public class JBRULESTest {
 
     }
 
-    @Test
-    public void testJBRules2369() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testJBRules2369(KieBaseTestConfiguration kieBaseTestConfiguration) {
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(this.getClass(), kieBaseTestConfiguration, "test_JBRules2369.drl");
         KieSession ksession = kbase.newKieSession();
         final List<String> results = new ArrayList<String>();
@@ -116,8 +109,9 @@ public class JBRULESTest {
         assertThat(results.size()).isEqualTo(2);
     }
 
-    @Test
-    public void testJBRules2140() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testJBRules2140(KieBaseTestConfiguration kieBaseTestConfiguration) {
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(this.getClass(), kieBaseTestConfiguration, "test_JBRules2140.drl");
         KieSession ksession = kbase.newKieSession();
         final List<String> results = new ArrayList<String>();
@@ -128,8 +122,9 @@ public class JBRULESTest {
         assertThat(results.contains("mvel")).isTrue();
     }
 
-    @Test
-    public void testJBRULES_2995() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testJBRULES_2995(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String str = "package org.drools.mvel.compiler\n" +
                 "rule r1\n" +
                 "when\n" +
@@ -148,8 +143,9 @@ public class JBRULESTest {
         assertThat(rules).isEqualTo(1);
     }
 
-    @Test
-    public void testJBRULES2872() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testJBRULES2872(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String str = "package org.drools.mvel.compiler.test\n" +
                 "import org.drools.mvel.compiler.FactA\n" +
                 "rule X\n" +
@@ -165,8 +161,9 @@ public class JBRULESTest {
         assertThat(error.getLine()).isEqualTo(5);
     }
 
-    @Test
-    public void testJBRULES3030() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testJBRULES3030(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String str = "package org.drools.mvel.compiler\n" +
                 "rule X\n" +
                 "when\n" +
@@ -180,8 +177,9 @@ public class JBRULESTest {
         assertThat(!errors.isEmpty()).isFalse();
     }
 
-    @Test
-    public void testJBRULES3111() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testJBRULES3111(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String str = "package org.drools.compiler\n" +
                 "declare Bool123\n" +
                 "    bool1 : boolean\n" +
@@ -237,8 +235,9 @@ public class JBRULESTest {
         assertThat(name).isEqualTo("one");
     }
 
-    @Test
-    public void testJBRULES3323() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testJBRULES3323(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
 
         //adding rules. it is important to add both since they reciprocate
         final StringBuilder rule = new StringBuilder();
@@ -293,8 +292,9 @@ public class JBRULESTest {
         ksession.dispose();
     }
 
-    @Test
-    public void testJBRULES3326() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testJBRULES3326(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         final StringBuilder rule = new StringBuilder();
         rule.append("package org.drools.mvel.compiler\n");
         rule.append("rule X\n");
@@ -312,8 +312,9 @@ public class JBRULESTest {
         ksession.dispose();
     }
 
-    @Test
-    public void testGUVNOR578_2() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testGUVNOR578_2(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         // An internal specific test case so not enhanced for executable-model
         final MapBackedClassLoader loader = new MapBackedClassLoader( this.getClass().getClassLoader() );
 
