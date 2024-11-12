@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.drools.drl.parser.DroolsParserException;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
@@ -34,10 +35,10 @@ import org.drools.mvel.integrationtests.phreak.A;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieModule;
@@ -62,22 +63,15 @@ import org.kie.internal.command.CommandFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class SequentialTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public SequentialTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
-    }
-
-    @Test
-    public void testSequentialPlusPhreakOperationComplex() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testSequentialPlusPhreakOperationComplex(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String str = "";
         str += "package org.drools.mvel.compiler.test\n";
         str +="import " + A.class.getCanonicalName() + "\n";
@@ -180,8 +174,9 @@ public class SequentialTest {
         assertThat(list.get(5)).isEqualTo("r9");
     }
 
-    @Test
-    public void testSequentialPlusPhreakRevisitOriginallyEmptyGroup() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testSequentialPlusPhreakRevisitOriginallyEmptyGroup(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String str = "";
         str += "package org.drools.mvel.compiler.test\n";
         str +="import " + A.class.getCanonicalName() + "\n";
@@ -226,8 +221,9 @@ public class SequentialTest {
         assertThat(list.get(0)).isEqualTo("r9");
     }
 
-    @Test
-    public void testBasicOperation() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testBasicOperation(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         final KieModule kieModule = KieUtil.getKieModuleFromClasspathResources("test", getClass(), kieBaseTestConfiguration, "simpleSequential.drl");
         final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, SequentialOption.YES);
         StatelessKieSession ksession = kbase.newStatelessKieSession();
@@ -253,8 +249,9 @@ public class SequentialTest {
         assertThat(list.size()).isEqualTo(3);
     }
 
-    @Test
-    public void testSalience() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testSalience(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         final KieModule kieModule = KieUtil.getKieModuleFromClasspathResources("test", getClass(), kieBaseTestConfiguration, "simpleSalience.drl");
         final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, SequentialOption.YES);
         StatelessKieSession ksession = kbase.newStatelessKieSession();
@@ -272,8 +269,9 @@ public class SequentialTest {
         assertThat(list.get(2)).isEqualTo("rule 1");
     }
 
-    @Test
-    public void testKnowledgeRuntimeAccess() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testKnowledgeRuntimeAccess(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String str = "";
         str += "package org.drools.mvel.compiler.test\n";
         str +="import org.drools.mvel.compiler.Message\n";
@@ -291,8 +289,9 @@ public class SequentialTest {
         ksession.execute( new Message( "help" ) );
     }
 
-    @Test
-    public void testEvents() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testEvents(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String str = "";
         str += "package org.drools.mvel.compiler.test\n";
         str +="import org.drools.mvel.compiler.Message\n";
@@ -389,8 +388,9 @@ public class SequentialTest {
 
 
     // JBRULES-1567 - ArrayIndexOutOfBoundsException in sequential execution after calling RuleBase.addPackage(..)
-    @Test
-    public void testSequentialWithRulebaseUpdate() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testSequentialWithRulebaseUpdate(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         final KieModule kieModule = KieUtil.getKieModuleFromClasspathResources("test", getClass(), kieBaseTestConfiguration, "simpleSalience.drl");
         final InternalKnowledgeBase kbase = (InternalKnowledgeBase) KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, SequentialOption.YES);
         StatelessKieSession ksession = kbase.newStatelessKieSession();
@@ -419,60 +419,66 @@ public class SequentialTest {
         assertThat(list.get(6)).isEqualTo(person);
     }
 
-    @Test
-    public void testProfileSequential() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testProfileSequential(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
 
-        runTestProfileManyRulesAndFacts( true, "Sequential mode", 0, "sequentialProfile.drl"  );
-        runTestProfileManyRulesAndFacts( true, "Sequential mode", 0, "sequentialProfile.drl"  );
-
-        System.gc();
-        Thread.sleep( 100 );
-    }
-
-    @Test
-    public void testProfileRETE() throws Exception {
-        runTestProfileManyRulesAndFacts( false, "Normal RETE mode", 0, "sequentialProfile.drl"  );
-        runTestProfileManyRulesAndFacts( false, "Normal RETE mode", 0, "sequentialProfile.drl"  );
+        runTestProfileManyRulesAndFacts(kieBaseTestConfiguration, true, "Sequential mode", 0, "sequentialProfile.drl"  );
+        runTestProfileManyRulesAndFacts(kieBaseTestConfiguration, true, "Sequential mode", 0, "sequentialProfile.drl"  );
 
         System.gc();
         Thread.sleep( 100 );
     }
 
-    @Test
-    public void testNumberofIterationsSeq() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testProfileRETE(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
+        runTestProfileManyRulesAndFacts(kieBaseTestConfiguration, false, "Normal RETE mode", 0, "sequentialProfile.drl"  );
+        runTestProfileManyRulesAndFacts(kieBaseTestConfiguration, false, "Normal RETE mode", 0, "sequentialProfile.drl"  );
+
+        System.gc();
+        Thread.sleep( 100 );
+    }
+
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testNumberofIterationsSeq(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         //test throughput
-        runTestProfileManyRulesAndFacts( true,
+        runTestProfileManyRulesAndFacts(kieBaseTestConfiguration, true,
                                          "SEQUENTIAL",
                                          2000, "sequentialProfile.drl" );
     }
 
-    @Test
-    public void testNumberofIterationsRETE() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testNumberofIterationsRETE(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         //test throughput
-        runTestProfileManyRulesAndFacts( false,
+        runTestProfileManyRulesAndFacts(kieBaseTestConfiguration, false,
                                          "RETE",
                                          2000, "sequentialProfile.drl"  );
 
     }
 
-    @Test
-    public void testPerfJDT() throws Exception {
-        runTestProfileManyRulesAndFacts( true,
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testPerfJDT(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
+        runTestProfileManyRulesAndFacts(kieBaseTestConfiguration, true,
                                          "JDT",
                                          2000, "sequentialProfile.drl"  );
 
     }
 
-    @Test
-    public void testPerfMVEL() throws Exception {
-        runTestProfileManyRulesAndFacts( true,
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testPerfMVEL(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
+        runTestProfileManyRulesAndFacts(kieBaseTestConfiguration, true,
                                          "MVEL",
                                          2000, "sequentialProfileMVEL.drl"  );
 
     }
 
 
-    private void runTestProfileManyRulesAndFacts(boolean sequentialMode,
+    private void runTestProfileManyRulesAndFacts(KieBaseTestConfiguration kieBaseTestConfiguration, boolean sequentialMode,
                                                  String message,
                                                  int timetoMeasureIterations,
                                                  String file) throws DroolsParserException, IOException, Exception {
@@ -532,8 +538,10 @@ public class SequentialTest {
 
     }
 
-    @Test(timeout = 10000L)
-    public void testSequentialWithNoLoop() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(10000)
+    public void testSequentialWithNoLoop(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         // BZ-1228098
         String str =
                 "package org.drools.mvel.compiler.test\n" +
@@ -559,8 +567,9 @@ public class SequentialTest {
         assertThat(result.size()).isEqualTo(2);
     }
 
-    @Test
-    public void testSharedSegment() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testSharedSegment(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         // BZ-1228313
         String str =
                 "package org.drools.mvel.compiler.test\n" +

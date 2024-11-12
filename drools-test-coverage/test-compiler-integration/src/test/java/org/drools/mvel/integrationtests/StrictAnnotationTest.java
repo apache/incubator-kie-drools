@@ -24,11 +24,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.stream.Stream;
 
 import org.drools.core.common.DefaultEventHandle;
 import org.drools.core.impl.RuleBaseFactory;
@@ -36,12 +36,11 @@ import org.drools.drl.parser.DrlParser;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Assume;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -58,29 +57,22 @@ import org.kie.internal.runtime.conf.ForceEagerActivationOption;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class StrictAnnotationTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public StrictAnnotationTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        // TODO: EM failed with some tests. File JIRAs
+        return TestParametersUtil2.getKieBaseCloudConfigurations(false).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-     // TODO: EM failed with some tests. File JIRAs
-        return TestParametersUtil.getKieBaseCloudConfigurations(false);
-    }
-
-    @BeforeClass
+    @BeforeAll
     public static void checkSkip() {
         // if new antlr4 parser is enabled, skip this test, because DRL6_STRICT is not supported
-        Assume.assumeFalse(DrlParser.ANTLR4_PARSER_ENABLED);
+        Assumptions.assumeFalse(DrlParser.ANTLR4_PARSER_ENABLED);
     }
 
-    @Test
-    public void testUnknownAnnotation() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testUnknownAnnotation(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str =
                 "package org.simple \n" +
                 "@Xyz rule yyy \n" +
@@ -101,8 +93,9 @@ public class StrictAnnotationTest {
         assertThat(results.getMessages().size()).isEqualTo(1);
     }
 
-    @Test
-    public void testImportedAnnotation() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testImportedAnnotation(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str =
                 "package org.simple \n" +
                 "import " + Xyz.class.getCanonicalName() + " \n" +
@@ -124,8 +117,9 @@ public class StrictAnnotationTest {
         assertThat(results.getMessages().size()).isEqualTo(0);
     }
 
-    @Test
-    public void testEagerEvaluation() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testEagerEvaluation(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str =
                 "package org.simple \n" +
                 "@Propagation(EAGER) rule xxx \n" +
@@ -163,8 +157,9 @@ public class StrictAnnotationTest {
         }
     }
 
-    @Test
-    public void testWatch() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testWatch(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str =
                 "package com.sample;\n" +
                 "import " + MyClass.class.getCanonicalName() + ";\n" +
@@ -188,8 +183,9 @@ public class StrictAnnotationTest {
         }
     }
 
-    @Test
-    public void testStirctWatchWithoutQuotes() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testStirctWatchWithoutQuotes(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str =
                 "package com.sample;\n" +
                 "import " + MyClass.class.getCanonicalName() + ";\n" +
@@ -211,8 +207,9 @@ public class StrictAnnotationTest {
         assertThat(results.getMessages().size()).isEqualTo(1);
     }
 
-    @Test
-    public void testExplictPositionalArguments() throws InstantiationException, IllegalAccessException {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testExplictPositionalArguments(KieBaseTestConfiguration kieBaseTestConfiguration) throws InstantiationException, IllegalAccessException {
         String str = "package org.test;\n" +
                      "global java.util.List names;\n" +
                      "declare Person\n" +
@@ -249,8 +246,9 @@ public class StrictAnnotationTest {
         }
     }
 
-    @Test
-    public void testJavaSqlTimestamp() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testJavaSqlTimestamp(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str =
                 "package " + Message.class.getPackage().getName() + "\n" +
                 "@Role( Role.Type.EVENT ) @Timestamp( \"startTime\" ) @Duration( \"duration\" )\n" +

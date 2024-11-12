@@ -23,8 +23,8 @@ import java.io.StringReader;
 import java.lang.reflect.Constructor;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.apache.commons.io.IOUtils;
 import org.drools.base.definitions.InternalKnowledgePackage;
@@ -36,10 +36,10 @@ import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.core.impl.InternalKieContainer;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieModule;
@@ -57,23 +57,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.core.util.DroolsAssert.assertEnumerationSize;
 import static org.drools.core.util.DroolsAssert.assertUrlEnumerationContainsMatch;
 
-@RunWith(Parameterized.class)
 public class KieContainerTest {
-
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public KieContainerTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        // TODO: EM failed with some tests. File JIRAs
+        return TestParametersUtil2.getKieBaseCloudConfigurations(false).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-     // TODO: EM failed with some tests. File JIRAs
-        return TestParametersUtil.getKieBaseCloudConfigurations(false);
-    }
-
-    @Test
-    public void testMainKieModule() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testMainKieModule(KieBaseTestConfiguration kieBaseTestConfiguration) {
         KieServices ks = KieServices.Factory.get();
         // Create an in-memory jar for version 1.0.0
         ReleaseId releaseId = ks.newReleaseId("org.kie", "test-delete", "1.0.0");
@@ -84,8 +77,9 @@ public class KieContainerTest {
         assertThat(kmodule.getReleaseId()).isEqualTo(releaseId);
     }
 
-    @Test
-    public void testUpdateToNonExistingRelease() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testUpdateToNonExistingRelease(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-1562
         KieServices ks = KieServices.Factory.get();
         ReleaseId releaseId = ks.newReleaseId("org.kie", "test-release", "1.0.0");
@@ -98,8 +92,9 @@ public class KieContainerTest {
         assertThat(((InternalKieContainer) kieContainer).getContainerReleaseId().getVersion()).isEqualTo("1.0.0");
     }
     
-    @Test
-    public void testReleaseIdGetters() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testReleaseIdGetters(KieBaseTestConfiguration kieBaseTestConfiguration) {
         KieServices ks = KieServices.Factory.get();
         ReleaseId releaseId = ks.newReleaseId("org.kie", "test-delete-v", "1.0.1");
         ReleaseId newReleaseId = ks.newReleaseId("org.kie", "test-delete-v", "1.0.2");
@@ -110,7 +105,7 @@ public class KieContainerTest {
         KieUtil.getKieModuleFromDrls(releaseId, kieBaseTestConfiguration, createDRL("ruleA"));
 
         ReleaseId configuredReleaseId = ks.newReleaseId("org.kie", "test-delete-v", "RELEASE");
-		KieContainer kieContainer = ks.newKieContainer(configuredReleaseId);
+        KieContainer kieContainer = ks.newKieContainer(configuredReleaseId);
 
         InternalKieContainer iKieContainer = (InternalKieContainer) kieContainer;
         assertThat(iKieContainer.getConfiguredReleaseId()).isEqualTo(configuredReleaseId);
@@ -129,8 +124,9 @@ public class KieContainerTest {
         assertThat(iKieContainer.getContainerReleaseId()).isEqualTo(newReleaseId);
     }
 
-    @Test
-    public void testSharedTypeDeclarationsUsingClassLoader() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testSharedTypeDeclarationsUsingClassLoader(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String type = "package org.drools.test\n" +
                       "declare Message\n" +
                       "   message : String\n" +
@@ -181,8 +177,9 @@ public class KieContainerTest {
 //        assertNotSame(cls1, cls2);
     }
 
-    @Test
-    public void testSharedTypeDeclarationsUsingFactTypes() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testSharedTypeDeclarationsUsingFactTypes(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String type = "package org.drools.test\n" +
                       "declare Message\n" +
                       "   message : String\n" +
@@ -252,8 +249,10 @@ public class KieContainerTest {
     }
 
 
-    @Test(timeout = 20000)
-    public void testIncrementalCompilationSynchronization() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    @Timeout(20000)
+    public void testIncrementalCompilationSynchronization(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final KieServices kieServices = KieServices.Factory.get();
 
         ReleaseId releaseId = kieServices.newReleaseId("org.kie.test", "sync-scanner-test", "1.0.0");
@@ -309,8 +308,9 @@ public class KieContainerTest {
         return rule != null;
     }
 
-    @Test
-    public void testMemoryFileSystemFolderUniqueness() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testMemoryFileSystemFolderUniqueness(KieBaseTestConfiguration kieBaseTestConfiguration) {
         KieServices kieServices = KieServices.Factory.get();
         String drl = "package org.drools.test\n" +
                      "rule R1 when\n" +
@@ -342,8 +342,9 @@ public class KieContainerTest {
         assertThat(secondFolder.getParent()).isEqualTo(firstFolder.getParent());
     }
 
-    @Test
-    public void testClassLoaderGetResources() throws IOException {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testClassLoaderGetResources(KieBaseTestConfiguration kieBaseTestConfiguration) throws IOException {
         KieServices kieServices = KieServices.Factory.get();
         String drl1 = "package org.drools.testdrl;\n" +
                      "rule R1 when\n" +
@@ -392,8 +393,9 @@ public class KieContainerTest {
         assertUrlEnumerationContainsMatch("^mfs\\:/$", classLoader.getResources(""));
     }
 
-    @Test
-    public void testGetDefaultKieSessionModel() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testGetDefaultKieSessionModel(KieBaseTestConfiguration kieBaseTestConfiguration) {
         KieServices kieServices = KieServices.Factory.get();
         String drl = "package org.drools.test\n" +
                 "rule R1 when\n" +
@@ -420,8 +422,9 @@ public class KieContainerTest {
         assertThat(sessionModel.getName()).isEqualTo("testKsession");
     }
 
-    @Test
-    public void testGetDefaultKieSessionModelEmptyKmodule() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testGetDefaultKieSessionModelEmptyKmodule(KieBaseTestConfiguration kieBaseTestConfiguration) {
         KieServices kieServices = KieServices.Factory.get();
         String drl = "package org.drools.test\n" +
                 "rule R1 when\n" +
