@@ -49,11 +49,6 @@
           <artifactId>copy-rename-maven-plugin</artifactId>
           <version>1.0</version>
         </plugin>
-        <plugin>
-          <groupId>org.apache.rat</groupId>
-          <artifactId>apache-rat-plugin</artifactId>
-          <version>0.16.1</version>
-        </plugin>
       </plugins>
     </pluginManagement>
     <plugins>
@@ -73,10 +68,6 @@
             </configuration>
           </execution>
         </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.rat</groupId>
-        <artifactId>apache-rat-plugin</artifactId>
       </plugin>
     </plugins>
   </build>
