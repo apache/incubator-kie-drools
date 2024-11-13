@@ -64,7 +64,7 @@ public class ImportDMNResolverUtil {
                         importerDMNName, importerDMNNamespace, importNamespace, importName, importLocationURI, importModelName);
                 return Either.ofRight(located);
             } else {
-                LOGGER.error("DMN Model with name={} and namespace={} can't import a DMN with namespace={}, name={}, modelName={}, " +
+                LOGGER.debug("DMN Model with name={} and namespace={} can't import a DMN with namespace={}, name={}, modelName={}, " +
                                 "located within namespace only {} but does not match for the actual modelName",
                         importerDMNName, importerDMNNamespace, importNamespace, importName, importModelName, idExtractor.apply(located));
                 return Either.ofLeft(String.format(
