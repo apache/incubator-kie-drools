@@ -58,6 +58,7 @@ public abstract class StateBuilder<T extends StateBuilder<T, S>, S extends Defau
     protected final S state;
     protected final Collection<FunctionBuilder> functionDefinitions = new HashSet<>();
     protected final Collection<EventDefBuilder> eventDefinitions = new HashSet<>();
+    private short buildCount;
 
     Collection<FunctionBuilder> getFunctions() {
         return functionDefinitions;
@@ -115,7 +116,12 @@ public abstract class StateBuilder<T extends StateBuilder<T, S>, S extends Defau
     }
 
     public S build() {
+        buildCount++;
         return ensureName(state);
+    }
+
+    short buildCount() {
+        return buildCount;
     }
 
     private static int counter;

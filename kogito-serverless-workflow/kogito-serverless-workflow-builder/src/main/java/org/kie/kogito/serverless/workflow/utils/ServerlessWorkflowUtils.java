@@ -27,8 +27,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -250,5 +255,20 @@ public class ServerlessWorkflowUtils {
     private static ModelMetaData getModelMetadata(WorkflowProcess process, Class<?> modelClass) {
         return new ModelMetaData(process.getId(), modelClass.getPackage().getName(), modelClass.getSimpleName(), KogitoWorkflowProcess.PUBLIC_VISIBILITY,
                 VariableDeclarations.of(Collections.emptyMap()), false);
+    }
+
+    public static <T, V> Map<V, Integer> findDuplicates(List<T> items, Function<T, V> converter) {
+        if (items == null) {
+            return Map.of();
+        }
+        Map<V, Integer> duplicates = new LinkedHashMap<>();
+        Set<V> helper = new HashSet<>();
+        items.forEach(item -> {
+            V toAdd = converter.apply(item);
+            if (!helper.add(toAdd)) {
+                duplicates.compute(toAdd, (k, v) -> v == null ? 2 : ++v);
+            }
+        });
+        return duplicates;
     }
 }

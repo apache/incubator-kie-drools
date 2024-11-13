@@ -19,7 +19,9 @@
 package org.kie.kogito.serverless.workflow.utils;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -50,5 +52,10 @@ public class WorkflowUtilsTest {
         FunctionDefinition function = new FunctionDefinition().withName("testfunction1").withMetadata(Collections.singletonMap("testprop1", "customtestprop1val"));
         assertThat(resolveFunctionMetadata(function, "testprop1", context)).isNotNull().isEqualTo("customtestprop1val");
         assertThat(resolveFunctionMetadata(function, "testprop2", context)).isNotNull().isEqualTo("testprop2val");
+    }
+
+    @Test
+    void findDuplicates() {
+        assertThat(ServerlessWorkflowUtils.findDuplicates(Arrays.asList(1, 3, 3, 2, 2, 1, 8, 7, 3), v -> v)).isEqualTo(Map.of(3, 3, 2, 2, 1, 2));
     }
 }

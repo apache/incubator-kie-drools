@@ -43,8 +43,10 @@ public class TransitionBuilder<T> {
 
     public TransitionBuilder<T> next(StateBuilder<?, ?> stateBuilder) {
         DefaultState state = stateBuilder.build();
-        workflow.addFunctions(stateBuilder.getFunctions());
-        workflow.addEvents(stateBuilder.getEvents());
+        if (stateBuilder.buildCount() == 1) {
+            workflow.addFunctions(stateBuilder.getFunctions());
+            workflow.addEvents(stateBuilder.getEvents());
+        }
         next(state);
         lastState = state;
         return this;

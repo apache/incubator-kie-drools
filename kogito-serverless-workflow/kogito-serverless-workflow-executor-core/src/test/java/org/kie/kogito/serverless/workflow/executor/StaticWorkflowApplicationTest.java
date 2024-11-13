@@ -115,8 +115,9 @@ class StaticWorkflowApplicationTest {
                 StaticWorkflowApplication application = StaticWorkflowApplication.create()) {
             Workflow workflow = getWorkflow(reader, WorkflowFormat.JSON);
             ValidationException validationException = catchThrowableOfType(() -> application.process(workflow), ValidationException.class);
-            assertThat(validationException.getErrors()).hasSizeGreaterThanOrEqualTo(4);
-            assertThat(validationException).hasMessageContaining("error").hasMessageContaining("function").hasMessageContaining("connect").hasMessageContaining("transition");
+            assertThat(validationException.getErrors()).hasSizeGreaterThanOrEqualTo(5);
+            assertThat(validationException).hasMessageContaining("error").hasMessageContaining("function").hasMessageContaining("connect").hasMessageContaining("transition")
+                    .hasMessageContaining("duplicated");
         }
     }
 

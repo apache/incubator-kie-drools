@@ -19,6 +19,11 @@
       "name": "logInfo",
       "type": "custom",
       "operation": "sysout:INFO"
+    },
+    {
+      "name": "pushData",
+      "type": "custom",
+      "operation": "script:python:print('javierito')"
     }
   ],
   "errors":[],
