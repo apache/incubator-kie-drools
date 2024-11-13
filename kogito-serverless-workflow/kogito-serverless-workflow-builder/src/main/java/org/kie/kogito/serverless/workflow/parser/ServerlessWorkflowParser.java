@@ -68,7 +68,6 @@ public class ServerlessWorkflowParser {
 
     public static final String NODE_START_NAME = "Start";
     public static final String NODE_END_NAME = "End";
-    public static final String DEFAULT_NAME = "workflow";
     public static final String DEFAULT_PACKAGE = "org.kie.kogito.serverless";
     public static final String DEFAULT_VERSION = "1.0";
 
@@ -127,7 +126,7 @@ public class ServerlessWorkflowParser {
     private GeneratedInfo<KogitoWorkflowProcess> parseProcess() {
 
         RuleFlowProcessFactory factory = RuleFlowProcessFactory.createProcess(workflow.getId(), !workflow.isKeepActive())
-                .name(workflow.getName() == null ? DEFAULT_NAME : workflow.getName())
+                .name(workflow.getName() == null ? workflow.getId() : workflow.getName())
                 .version(workflow.getVersion() == null ? DEFAULT_VERSION : workflow.getVersion())
                 .packageName(workflow.getMetadata() != null ? workflow.getMetadata().getOrDefault("package",
                         DEFAULT_PACKAGE) : DEFAULT_PACKAGE)

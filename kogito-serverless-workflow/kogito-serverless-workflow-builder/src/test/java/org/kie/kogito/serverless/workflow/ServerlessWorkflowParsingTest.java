@@ -642,7 +642,7 @@ public class ServerlessWorkflowParsingTest extends AbstractServerlessWorkflowPar
         ServerlessWorkflowParser parser = ServerlessWorkflowParser.of(workflow, JavaKogitoBuildContext.builder().build());
         Process process = parser.getProcessInfo().info();
         assertThat(parser.getProcessInfo().info()).isSameAs(process);
-        assertThat(process.getName()).isEqualTo(ServerlessWorkflowParser.DEFAULT_NAME);
+        assertThat(process.getName()).isEqualTo(workflow.getId());
         assertThat(process.getVersion()).isEqualTo(ServerlessWorkflowParser.DEFAULT_VERSION);
         assertThat(process.getPackageName()).isEqualTo(ServerlessWorkflowParser.DEFAULT_PACKAGE);
     }
