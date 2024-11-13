@@ -38,6 +38,7 @@ public class ObjectMapperFactory {
                 .setSerializationInclusion(JsonInclude.Include.NON_NULL)
                 .setTypeFactory(TypeFactory.defaultInstance().withClassLoader(Thread.currentThread().getContextClassLoader()))
                 .registerModule(JsonFormat.getCloudEventJacksonModule())
+                .registerModule(new CommonObjectModule())
                 .findAndRegisterModules();
     }
 
