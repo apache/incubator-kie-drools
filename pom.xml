@@ -135,6 +135,10 @@
           <version>${version.apache-rat-plugin}</version>
           <configuration>
             <excludes>
+              <exclude>.rat-excludes</exclude>
+              <exclude>.gitignore</exclude>
+              <exclude>DISCLAIMER-WIP</exclude>
+              <exclude>**/ui-bundle.zip</exclude>
               <exclude>.git-blame-ignore-revs</exclude>
               <exclude>**/dependency-reduced-pom.xml</exclude>
               <exclude>**/lunr-2.3.9.min.js</exclude>
