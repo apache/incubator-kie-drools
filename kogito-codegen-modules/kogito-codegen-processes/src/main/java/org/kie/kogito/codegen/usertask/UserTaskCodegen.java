@@ -18,7 +18,6 @@
  */
 package org.kie.kogito.codegen.usertask;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Path;
@@ -167,8 +166,8 @@ public class UserTaskCodegen extends AbstractGenerator {
             compilationUnit.findAll(MethodDeclaration.class).stream().filter(MethodDeclaration::isPublic).forEach(context().getDependencyInjectionAnnotator()::withTransactional);
         }
         String className = compilationUnit.findFirst(ClassOrInterfaceDeclaration.class).get().getNameAsString();
-        String urlBase = packageName.replaceAll("\\.", File.separator);
-        return new GeneratedFile(GeneratedFileType.REST, Path.of(urlBase).resolve(className + ".java"), compilationUnit.toString());
+        Path basePath = UserTaskCodegenHelper.path(packageName);
+        return new GeneratedFile(GeneratedFileType.REST, basePath.resolve(className + ".java"), compilationUnit.toString());
     }
 
     public GeneratedFile generateProducer() {
@@ -176,8 +175,8 @@ public class UserTaskCodegen extends AbstractGenerator {
         CompilationUnit compilationUnit = producerTemplateGenerator.compilationUnitOrThrow("No producer template found for user tasks");
         compilationUnit.setPackageDeclaration(packageName);
         String className = compilationUnit.findFirst(ClassOrInterfaceDeclaration.class).get().getNameAsString();
-        String urlBase = packageName.replaceAll("\\.", File.separator);
-        return new GeneratedFile(GeneratedFileType.SOURCE, Path.of(urlBase).resolve(className + ".java"), compilationUnit.toString());
+        Path basePath = UserTaskCodegenHelper.path(packageName);
+        return new GeneratedFile(GeneratedFileType.SOURCE, basePath.resolve(className + ".java"), compilationUnit.toString());
     }
 
     public List<GeneratedFile> generateUserTask() {

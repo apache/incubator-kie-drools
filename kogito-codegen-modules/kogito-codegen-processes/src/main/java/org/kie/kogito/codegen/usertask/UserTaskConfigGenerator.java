@@ -18,7 +18,6 @@
  */
 package org.kie.kogito.codegen.usertask;
 
-import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
 
@@ -58,8 +57,9 @@ public class UserTaskConfigGenerator implements ConfigGenerator {
 
         ConstructorDeclaration declaration = clazzDeclaration.findFirst(ConstructorDeclaration.class).get();
         declaration.setName(configClassName());
+        Path basePath = UserTaskCodegenHelper.path(packageName);
 
-        return new GeneratedFile(GeneratedFileType.SOURCE, Path.of(packageName.replaceAll("\\.", File.separator), configClassName() + ".java"), unit.toString());
+        return new GeneratedFile(GeneratedFileType.SOURCE, basePath.resolve(configClassName() + ".java"), unit.toString());
     }
 
 }

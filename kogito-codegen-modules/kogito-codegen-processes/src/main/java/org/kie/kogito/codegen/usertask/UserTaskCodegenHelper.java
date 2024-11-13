@@ -19,8 +19,8 @@
 
 package org.kie.kogito.codegen.usertask;
 
-import java.io.File;
 import java.nio.file.Path;
+import java.util.Arrays;
 
 import org.jbpm.process.core.Work;
 import org.kie.kogito.internal.utils.ConversionUtils;
@@ -44,7 +44,17 @@ public final class UserTaskCodegenHelper {
     }
 
     public static Path path(Work descriptor) {
-        return Path.of(((String) descriptor.getParameter("PackageName")).replaceAll("\\.", File.separator));
+        return path(packageName(descriptor));
+    }
+
+    public static Path path(String packageName) {
+        String[] pathFragments = packageName.split("\\.");
+
+        if (pathFragments.length == 1) {
+            return Path.of(pathFragments[0]);
+        }
+        String[] children = Arrays.copyOfRange(pathFragments, 1, pathFragments.length);
+        return Path.of(pathFragments[0], children);
     }
 
     public static String fqnClassName(Work descriptor) {
