@@ -1,3 +1,4 @@
+#
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -14,24 +15,26 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+#
 
-target/
-local/
+name: Run Apache RAT check
 
-# Eclipse, Netbeans and IntelliJ files
-.*
-!.gitignore
-!.github
-!.git-blame-ignore-revs
-!.openrewrite
-!.rat-excludes
-nbproject
-*.ipr
-*.iws
-*.iml
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
 
-# generated files
-dependency-reduced-pom.xml
+jobs:
+  apache-rat-check:
+    runs-on: ubuntu-latest
 
-#CI
-!.ci
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Download Apache RAT
+        run: |
+          curl -LO https://repo1.maven.org/maven2/org/apache/rat/apache-rat/0.16.1/apache-rat-0.16.1.jar
+
+      - name: Run Apache RAT
+        run: |
+          java -jar apache-rat-0.16.1.jar -d . -E .rat-excludes | grep "== File:" && echo "The files listed above are missing license headers." && exit 1 || echo "All files have license headers."
