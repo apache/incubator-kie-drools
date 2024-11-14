@@ -21,16 +21,13 @@ package org.kie.flyway.quarkus;
 
 import java.util.Map;
 
-import org.kie.flyway.integration.KieFlywayConfiguration;
-import org.kie.flyway.integration.KieFlywayNamedModule;
-
 import io.quarkus.runtime.annotations.*;
 
 /**
  * Configuration for the Kie Flyway initializer
  */
 @ConfigRoot(prefix = "kie", name = "flyway", phase = ConfigPhase.RUN_TIME)
-public class KieFlywayQuarkusRuntimeConfig implements KieFlywayConfiguration<KieFlywayQuarkusRuntimeConfig.KieQuarkusFlywayNamedModule> {
+public class KieFlywayQuarkusRuntimeConfig {
 
     /**
      * Enables the execution of the Flyway initializer during the application startup
@@ -44,28 +41,13 @@ public class KieFlywayQuarkusRuntimeConfig implements KieFlywayConfiguration<Kie
     @ConfigItem(name = "modules")
     Map<String, KieQuarkusFlywayNamedModule> modules;
 
-    @Override
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    @Override
-    public Map<String, KieQuarkusFlywayNamedModule> getModules() {
-        return modules;
-    }
-
     @ConfigGroup
-    public static class KieQuarkusFlywayNamedModule implements KieFlywayNamedModule {
+    public static class KieQuarkusFlywayNamedModule {
 
         /**
          * Enables the execution of the Flyway initializer for a specific Kie module
          */
         @ConfigItem(name = "enabled", defaultValue = "true")
         boolean enabled;
-
-        @Override
-        public boolean isEnabled() {
-            return enabled;
-        }
     }
 }

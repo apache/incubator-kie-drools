@@ -19,9 +19,13 @@
 
 package org.kie.flyway.quarkus;
 
+import java.util.Collection;
+
 import javax.sql.DataSource;
 
+import org.kie.flyway.integration.KieFlywayNamedModule;
 import org.kie.flyway.integration.KieFlywayRunner;
+import org.kie.flyway.integration.KieFlywayRunnerConfiguration;
 
 import io.quarkus.agroal.runtime.DataSources;
 import io.quarkus.arc.Arc;
@@ -42,7 +46,15 @@ public class KieFlywayQuarkusRecorder {
         DataSources agroalDatasourceS = Arc.container().select(DataSources.class).get();
         DataSource dataSource = agroalDatasourceS.getDataSource(defaultDSName);
 
-        KieFlywayRunner.get(config.getValue())
+        KieFlywayQuarkusRuntimeConfig runtimeConfig = config.getValue();
+
+        Collection<KieFlywayNamedModule> kieFlywayNamedModules = runtimeConfig.modules.entrySet()
+                .stream()
+                .map(entry -> new KieFlywayNamedModule(entry.getKey(), entry.getValue().enabled))
+                .toList();
+
+        KieFlywayRunnerConfiguration kieFlywayConfig = new KieFlywayRunnerConfiguration(runtimeConfig.enabled, kieFlywayNamedModules);
+        KieFlywayRunner.get(kieFlywayConfig)
                 .runFlyway(dataSource);
     }
 }

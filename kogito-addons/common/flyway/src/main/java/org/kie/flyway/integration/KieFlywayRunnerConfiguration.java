@@ -19,29 +19,23 @@
 
 package org.kie.flyway.integration;
 
-import java.util.Map;
+import java.util.Collection;
 
-public class TestKieFlywayConfiguration implements KieFlywayConfiguration<TestKieFlywayNamedModule> {
+public class KieFlywayRunnerConfiguration {
 
-    private boolean enabled;
-    private Map<String, TestKieFlywayNamedModule> modules;
+    private final boolean enabled;
+    private final Collection<KieFlywayNamedModule> modules;
 
-    public TestKieFlywayConfiguration(boolean enabled, Map<String, TestKieFlywayNamedModule> modules) {
+    public KieFlywayRunnerConfiguration(boolean enabled, Collection<KieFlywayNamedModule> modules) {
         this.enabled = enabled;
         this.modules = modules;
     }
 
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
-
-    @Override
     public boolean isEnabled() {
         return enabled;
     }
 
-    @Override
-    public Map<String, TestKieFlywayNamedModule> getModules() {
+    public Collection<KieFlywayNamedModule> getModules() {
         return modules;
     }
 }

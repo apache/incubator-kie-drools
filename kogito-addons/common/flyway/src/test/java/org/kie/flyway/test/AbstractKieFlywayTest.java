@@ -24,13 +24,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Collection;
 
-import org.assertj.core.api.Assertions;
 import org.kie.flyway.initializer.KieFlywayInitializerTest;
 import org.kie.flyway.test.dataSources.TestDataSource;
 import org.kie.flyway.test.models.Customer;
 import org.kie.flyway.test.models.Guitar;
 import org.kie.flyway.test.models.KieFlywayMigration;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.flyway.test.models.TestModels.EXPECTED_GUITARS;
 
 public abstract class AbstractKieFlywayTest {
@@ -48,15 +48,15 @@ public abstract class AbstractKieFlywayTest {
                 PreparedStatement stmt = con.prepareStatement(KieFlywayInitializerTest.MODULE_MIGRATIONS_QUERY_TEMPLATE.formatted(moduleName));) {
             stmt.setString(1, migration.version());
             try (ResultSet rs = stmt.executeQuery()) {
-                Assertions.assertThat(rs.next())
+                assertThat(rs.next())
                         .isTrue();
-                Assertions.assertThat(rs.getString("version"))
+                assertThat(rs.getString("version"))
                         .isEqualTo(migration.version());
-                Assertions.assertThat(rs.getString("description"))
+                assertThat(rs.getString("description"))
                         .isEqualTo(migration.description().formatted(dataSource.getDbType()));
-                Assertions.assertThat(rs.getBoolean("success"))
+                assertThat(rs.getBoolean("success"))
                         .isEqualTo(true);
-                Assertions.assertThat(rs.next())
+                assertThat(rs.next())
                         .isFalse();
             }
         } catch (Exception ex) {
@@ -70,18 +70,18 @@ public abstract class AbstractKieFlywayTest {
                 ResultSet rs = stmt.executeQuery()) {
 
             for (Customer customer : expectedCustomers) {
-                Assertions.assertThat(rs.next())
+                assertThat(rs.next())
                         .isTrue();
-                Assertions.assertThat(rs.getInt("id"))
+                assertThat(rs.getInt("id"))
                         .isEqualTo(customer.id());
-                Assertions.assertThat(rs.getString("name"))
+                assertThat(rs.getString("name"))
                         .isEqualTo(customer.name());
-                Assertions.assertThat(rs.getString("last_name"))
+                assertThat(rs.getString("last_name"))
                         .isEqualTo(customer.lastName());
-                Assertions.assertThat(rs.getString("email"))
+                assertThat(rs.getString("email"))
                         .isEqualTo(customer.email());
             }
-            Assertions.assertThat(rs.next())
+            assertThat(rs.next())
                     .isFalse();
         } catch (Exception ex) {
             throw new RuntimeException(ex);
@@ -94,19 +94,19 @@ public abstract class AbstractKieFlywayTest {
                 ResultSet rs = stmt.executeQuery()) {
 
             for (Guitar guitar : EXPECTED_GUITARS) {
-                Assertions.assertThat(rs.next())
+                assertThat(rs.next())
                         .isTrue();
-                Assertions.assertThat(rs.getInt("id"))
+                assertThat(rs.getInt("id"))
                         .isEqualTo(guitar.id());
-                Assertions.assertThat(rs.getString("brand"))
+                assertThat(rs.getString("brand"))
                         .isEqualTo(guitar.brand());
-                Assertions.assertThat(rs.getString("model"))
+                assertThat(rs.getString("model"))
                         .isEqualTo(guitar.model());
-                Assertions.assertThat(rs.getInt("rating"))
+                assertThat(rs.getInt("rating"))
                         .isEqualTo(guitar.rating());
             }
 
-            Assertions.assertThat(rs.next())
+            assertThat(rs.next())
                     .isFalse();
         } catch (Exception ex) {
             throw new RuntimeException(ex);
@@ -118,8 +118,8 @@ public abstract class AbstractKieFlywayTest {
                 PreparedStatement stmt = con.prepareStatement(QUERY_QUERY_TABLE_EXISTS);) {
             stmt.setString(1, tableName);
             try (ResultSet rs = stmt.executeQuery()) {
-                Assertions.assertThat(rs.next()).isTrue();
-                Assertions.assertThat(rs.getInt("count")).isEqualTo(0);
+                assertThat(rs.next()).isTrue();
+                assertThat(rs.getInt("count")).isEqualTo(0);
             }
         } catch (Exception ex) {
             throw new RuntimeException(ex);

@@ -19,9 +19,13 @@
 
 package org.kie.flyway.springboot;
 
+import java.util.Collection;
+
 import javax.sql.DataSource;
 
+import org.kie.flyway.integration.KieFlywayNamedModule;
 import org.kie.flyway.integration.KieFlywayRunner;
+import org.kie.flyway.integration.KieFlywayRunnerConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -40,7 +44,13 @@ public class KieFlywaySpringbootInitializer implements InitializingBean, Ordered
 
     @Override
     public void afterPropertiesSet() {
-        KieFlywayRunner.get(properties)
+
+        Collection<KieFlywayNamedModule> kieFlywayNamedModules = properties.getModules().entrySet()
+                .stream()
+                .map(entry -> new KieFlywayNamedModule(entry.getKey(), entry.getValue().isEnabled()))
+                .toList();
+
+        KieFlywayRunner.get(new KieFlywayRunnerConfiguration(properties.isEnabled(), kieFlywayNamedModules))
                 .runFlyway(dataSource);
     }
 

@@ -21,12 +21,14 @@ package org.kie.flyway.initializer.impl;
 
 import java.util.Collection;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.flyway.KieFlywayException;
 import org.kie.flyway.model.KieFlywayModuleConfig;
 import org.kie.flyway.test.utils.TestClassLoader;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class DefaultKieModuleFlywayConfigLoaderTest {
 
@@ -48,10 +50,10 @@ public class DefaultKieModuleFlywayConfigLoaderTest {
 
         Collection<KieFlywayModuleConfig> configs = flywayConfigLoader.loadModuleConfigs();
 
-        Assertions.assertThat(configs)
+        assertThat(configs)
                 .hasSize(1);
 
-        Assertions.assertThat(configs.iterator().next())
+        assertThat(configs.iterator().next())
                 .isNotNull()
                 .hasFieldOrPropertyWithValue("module", "test")
                 .returns(H2_LOCATIONS, kieFlywayModuleConfig -> kieFlywayModuleConfig.getDBScriptLocations("h2")[0])
@@ -63,7 +65,7 @@ public class DefaultKieModuleFlywayConfigLoaderTest {
     public void testEmptyConfigFile() {
         testClassLoader.addKieFlywayModule("initializers/kie-flyway.empty.properties");
 
-        Assertions.assertThatThrownBy(() -> flywayConfigLoader.loadModuleConfigs())
+        assertThatThrownBy(() -> flywayConfigLoader.loadModuleConfigs())
                 .isInstanceOf(KieFlywayException.class)
                 .hasMessage("Could not load ModuleFlywayConfig")
                 .cause()
@@ -75,7 +77,7 @@ public class DefaultKieModuleFlywayConfigLoaderTest {
     public void testWrongLocationsFormat() {
         testClassLoader.addKieFlywayModule("initializers/kie-flyway.wrong.format.properties");
 
-        Assertions.assertThatThrownBy(() -> flywayConfigLoader.loadModuleConfigs())
+        assertThatThrownBy(() -> flywayConfigLoader.loadModuleConfigs())
                 .isInstanceOf(KieFlywayException.class)
                 .hasMessage("Could not load ModuleFlywayConfig")
                 .cause()
@@ -87,7 +89,7 @@ public class DefaultKieModuleFlywayConfigLoaderTest {
     public void testWrongResourceFile() {
         testClassLoader.addKieFlywayModule("wrong content");
 
-        Assertions.assertThatThrownBy(() -> flywayConfigLoader.loadModuleConfigs())
+        assertThatThrownBy(() -> flywayConfigLoader.loadModuleConfigs())
                 .isInstanceOf(KieFlywayException.class)
                 .hasMessage("Could not load ModuleFlywayConfig");
     }

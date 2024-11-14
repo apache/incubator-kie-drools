@@ -19,11 +19,11 @@
 
 package org.kie.flyway.integration;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.sql.DataSource;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
 import org.kie.flyway.KieFlywayException;
 import org.kie.flyway.test.AbstractKieFlywayTest;
@@ -31,6 +31,7 @@ import org.kie.flyway.test.dataSources.H2TestDataSource;
 import org.kie.flyway.test.dataSources.TestDataSource;
 import org.kie.flyway.test.utils.TestClassLoader;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.kie.flyway.test.models.TestModels.*;
 import static org.mockito.Mockito.mock;
 
@@ -44,27 +45,27 @@ public class KieFlywayRunnerTest extends AbstractKieFlywayTest {
     }
 
     private TestClassLoader testClassLoader;
-    private TestKieFlywayConfiguration testConfiguration;
 
     @BeforeEach
     public void init() {
         testClassLoader = new TestClassLoader(this.getClass().getClassLoader());
-        testConfiguration = new TestKieFlywayConfiguration(true, new HashMap<>());
     }
 
     @Test
     public void testValidations() {
-        Assertions.assertThatThrownBy(() -> KieFlywayRunner.get(null).runFlyway(null))
+        assertThatThrownBy(() -> KieFlywayRunner.get(null).runFlyway(null))
                 .isInstanceOf(KieFlywayException.class)
                 .hasMessage("Kie Flyway: Cannot run Kie Flyway migration configuration is null.");
 
-        Assertions.assertThatThrownBy(() -> KieFlywayRunner.get(testConfiguration).runFlyway(null)).isInstanceOf(KieFlywayException.class)
+        KieFlywayRunnerConfiguration config = new KieFlywayRunnerConfiguration(true, new ArrayList<>());
+
+        assertThatThrownBy(() -> KieFlywayRunner.get(config).runFlyway(null)).isInstanceOf(KieFlywayException.class)
                 .hasMessage("Kie Flyway: Cannot run Kie Flyway migration default datasource is null");
 
         // Mocking DataSource to make sure we cannot resolve dbType.
         DataSource mockedDS = mock(DataSource.class);
 
-        Assertions.assertThatThrownBy(() -> KieFlywayRunner.get(testConfiguration).runFlyway(mockedDS))
+        assertThatThrownBy(() -> KieFlywayRunner.get(config).runFlyway(mockedDS))
                 .isInstanceOf(KieFlywayException.class)
                 .hasMessage("Kie Flyway: Couldn't extract database product name from datasource.");
     }
@@ -75,9 +76,9 @@ public class KieFlywayRunnerTest extends AbstractKieFlywayTest {
         testClassLoader.addKieFlywayModule("initializers/kie-flyway.customers.properties");
         testClassLoader.addKieFlywayModule("initializers/kie-flyway.guitars.properties");
 
-        testConfiguration.setEnabled(false);
+        KieFlywayRunnerConfiguration config = new KieFlywayRunnerConfiguration(false, new ArrayList<>());
 
-        TestKieFlywayRunner.get(testConfiguration, testClassLoader)
+        TestKieFlywayRunner.get(config, testClassLoader)
                 .runFlyway(TEST_DATA_SOURCE.getDataSource());
 
         verifyTableDoesntExist("customers", TEST_DATA_SOURCE);
@@ -89,13 +90,12 @@ public class KieFlywayRunnerTest extends AbstractKieFlywayTest {
     @Test
     @Order(1)
     public void testFlywayMigrationsWithExclusions() {
-
-        testConfiguration.getModules().put("guitars", new TestKieFlywayNamedModule(false));
-
         testClassLoader.addKieFlywayModule("initializers/kie-flyway.customers.properties");
         testClassLoader.addKieFlywayModule("initializers/kie-flyway.guitars.properties");
 
-        TestKieFlywayRunner.get(testConfiguration, testClassLoader)
+        KieFlywayRunnerConfiguration config = new KieFlywayRunnerConfiguration(true, List.of(new KieFlywayNamedModule("guitars", false)));
+
+        TestKieFlywayRunner.get(config, testClassLoader)
                 .runFlyway(TEST_DATA_SOURCE.getDataSource());
 
         validateKieFlywayIndex("customers", EXPECTED_CUSTOMERS_MIGRATIONS.stream().limit(3).toList(), TEST_DATA_SOURCE);
@@ -113,7 +113,9 @@ public class KieFlywayRunnerTest extends AbstractKieFlywayTest {
         testClassLoader.addKieFlywayModule("initializers/kie-flyway.customers2.properties");
         testClassLoader.addKieFlywayModule("initializers/kie-flyway.guitars.properties");
 
-        TestKieFlywayRunner.get(testConfiguration, testClassLoader)
+        KieFlywayRunnerConfiguration config = new KieFlywayRunnerConfiguration(true, new ArrayList<>());
+
+        TestKieFlywayRunner.get(config, testClassLoader)
                 .runFlyway(TEST_DATA_SOURCE.getDataSource());
 
         validateKieFlywayIndex("customers", EXPECTED_CUSTOMERS_MIGRATIONS, TEST_DATA_SOURCE);
@@ -130,11 +132,11 @@ public class KieFlywayRunnerTest extends AbstractKieFlywayTest {
 
     public static class TestKieFlywayRunner extends KieFlywayRunner {
 
-        protected TestKieFlywayRunner(KieFlywayConfiguration<? extends KieFlywayNamedModule> configuration, ClassLoader classLoader) {
+        protected TestKieFlywayRunner(KieFlywayRunnerConfiguration configuration, ClassLoader classLoader) {
             super(configuration, classLoader);
         }
 
-        public static KieFlywayRunner get(TestKieFlywayConfiguration configuration, ClassLoader classLoader) {
+        public static KieFlywayRunner get(KieFlywayRunnerConfiguration configuration, ClassLoader classLoader) {
             return new TestKieFlywayRunner(configuration, classLoader);
         }
     }

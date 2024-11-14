@@ -19,7 +19,21 @@
 
 package org.kie.flyway.integration;
 
-public interface KieFlywayNamedModule {
+public class KieFlywayNamedModule {
 
-    boolean isEnabled();
+    private final String name;
+    private final boolean enabled;
+
+    public KieFlywayNamedModule(String name, boolean enabled) {
+        this.name = name;
+        this.enabled = enabled;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
 }

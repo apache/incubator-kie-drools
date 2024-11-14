@@ -19,7 +19,6 @@
 
 package org.kie.flyway.initializer.impl;
 
-import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.*;
@@ -33,9 +32,7 @@ import org.slf4j.LoggerFactory;
 
 public class DefaultKieModuleFlywayConfigLoader implements KieModuleFlywayConfigLoader {
 
-    public static String KIE_FLYWAY_DESCRIPTOR_FILE_NAME = "kie-flyway.properties";
-
-    public static String KIE_FLYWAY_DESCRIPTOR_FILE_LOCATION = "META-INF" + File.separator + KIE_FLYWAY_DESCRIPTOR_FILE_NAME;
+    public static String KIE_FLYWAY_DESCRIPTOR_FILE_LOCATION = "META-INF/kie-flyway.properties";
 
     public static final String MODULE_PREFIX = "module.";
     public static final String MODULE_NAME_KEY = MODULE_PREFIX + "name";

@@ -22,7 +22,6 @@ package org.kie.flyway.initializer;
 import java.util.*;
 import java.util.stream.Stream;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -37,6 +36,7 @@ import org.kie.kogito.testcontainers.KogitoPostgreSqlContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.kie.flyway.test.models.TestModels.*;
 
 @Testcontainers
@@ -71,17 +71,17 @@ public class KieFlywayInitializerTest extends AbstractKieFlywayTest {
     @ParameterizedTest
     @MethodSource("getDataSources")
     public void testTestKieFlywayInitializerBuilderValidations(TestDataSource dataSource) {
-        Assertions.assertThatThrownBy(() -> KieFlywayInitializer.builder()
+        assertThatThrownBy(() -> KieFlywayInitializer.builder()
                 .build()).isInstanceOf(KieFlywayException.class)
-                .hasMessage("Cannot create KieFlywayInitializer migration, dataSource is null.");
+                        .hasMessage("Cannot create KieFlywayInitializer migration, dataSource is null.");
 
         classLoader.addKieFlywayModule("initializers/kie-flyway.no.locations.properties");
 
-        Assertions.assertThatThrownBy(() -> KieFlywayInitializer.builder()
+        assertThatThrownBy(() -> KieFlywayInitializer.builder()
                 .withDatasource(dataSource.getDataSource())
                 .withClassLoader(classLoader).build().migrate())
-                .isInstanceOf(KieFlywayException.class)
-                .hasMessageContaining("Cannot run Flyway migration for module `no-locations`, cannot find SQL Script locations for db");
+                        .isInstanceOf(KieFlywayException.class)
+                        .hasMessageContaining("Cannot run Flyway migration for module `no-locations`, cannot find SQL Script locations for db");
     }
 
     @ParameterizedTest
@@ -92,7 +92,7 @@ public class KieFlywayInitializerTest extends AbstractKieFlywayTest {
         classLoader.addKieFlywayModule("initializers/kie-flyway.duplicated2.properties");
         classLoader.addKieFlywayModule("initializers/kie-flyway.duplicated2.properties");
 
-        Assertions.assertThatThrownBy(() -> {
+        assertThatThrownBy(() -> {
             KieFlywayInitializer.builder()
                     .withDatasource(dataSource.getDataSource())
                     .withClassLoader(classLoader)

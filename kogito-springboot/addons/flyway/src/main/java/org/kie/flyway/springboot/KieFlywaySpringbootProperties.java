@@ -22,13 +22,11 @@ package org.kie.flyway.springboot;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.kie.flyway.integration.KieFlywayConfiguration;
-import org.kie.flyway.integration.KieFlywayNamedModule;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties(prefix = "kie.flyway")
-public class KieFlywaySpringbootProperties implements KieFlywayConfiguration<KieFlywaySpringbootProperties.KieFlywaySpringbootNamedModule> {
-    private boolean enabled = true;
+public class KieFlywaySpringbootProperties {
+    private boolean enabled = false;
 
     private Map<String, KieFlywaySpringbootNamedModule> modules = new HashMap<>();
 
@@ -48,7 +46,7 @@ public class KieFlywaySpringbootProperties implements KieFlywayConfiguration<Kie
         this.modules = modules;
     }
 
-    public static class KieFlywaySpringbootNamedModule implements KieFlywayNamedModule {
+    public static class KieFlywaySpringbootNamedModule {
 
         private boolean enabled = true;
 

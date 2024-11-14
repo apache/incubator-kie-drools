@@ -20,7 +20,6 @@
 package org.kie.flyway.integration;
 
 import java.util.Collection;
-import java.util.Map;
 import java.util.Objects;
 
 import javax.sql.DataSource;
@@ -34,18 +33,18 @@ public class KieFlywayRunner {
     private static final Logger LOGGER = LoggerFactory.getLogger(KieFlywayRunner.class);
 
     private final ClassLoader classLoader;
-    private final KieFlywayConfiguration<? extends KieFlywayNamedModule> configuration;
+    private final KieFlywayRunnerConfiguration configuration;
 
-    private KieFlywayRunner(KieFlywayConfiguration<? extends KieFlywayNamedModule> configuration) {
+    private KieFlywayRunner(KieFlywayRunnerConfiguration configuration) {
         this(configuration, Thread.currentThread().getContextClassLoader());
     }
 
-    protected KieFlywayRunner(KieFlywayConfiguration<? extends KieFlywayNamedModule> configuration, ClassLoader classLoader) {
+    protected KieFlywayRunner(KieFlywayRunnerConfiguration configuration, ClassLoader classLoader) {
         this.configuration = configuration;
         this.classLoader = classLoader;
     }
 
-    public static KieFlywayRunner get(KieFlywayConfiguration<? extends KieFlywayNamedModule> configuration) {
+    public static KieFlywayRunner get(KieFlywayRunnerConfiguration configuration) {
         return new KieFlywayRunner(configuration);
     }
 
@@ -60,9 +59,9 @@ public class KieFlywayRunner {
         assertValue(dataSource, "Kie Flyway: Cannot run Kie Flyway migration default datasource is null");
 
         Collection<String> excludedModules = configuration.getModules()
-                .entrySet()
-                .stream().filter(entry -> !entry.getValue().isEnabled())
-                .map(Map.Entry::getKey)
+                .stream()
+                .filter(module -> !module.isEnabled())
+                .map(KieFlywayNamedModule::getName)
                 .toList();
 
         KieFlywayInitializer.builder()
