@@ -714,9 +714,8 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
                             Object variableValue = MVELProcessHelper.evaluator().eval(paramName, new NodeInstanceResolverFactory(this));
                             replacements.put(paramName, variableValue);
                         } catch (Exception t) {
-                            logger.error("Could not find variable scope for variable {}", paramName);
-                            logger.error("when trying to replace variable in processId for node {}", getNodeName());
-                            logger.error("Continuing without setting process id.");
+                            logger.error("MVEL failed to replace variable {} in process {} for node {}. Continuing without setting process id", paramName, processInstance.getProcessId(),
+                                    getNodeName(), t);
                         }
                     }
                 }
