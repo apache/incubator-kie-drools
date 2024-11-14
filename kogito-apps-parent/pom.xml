@@ -90,7 +90,6 @@
 
   <properties>
     <project.build.outputTimestamp>2024-01-16T00:00:00Z</project.build.outputTimestamp>
-    <version.maven.artifact.plugin>3.4.1</version.maven.artifact.plugin>
   </properties>
 
   <build>
@@ -99,9 +98,10 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-artifact-plugin</artifactId>
-          <version>${version.maven.artifact.plugin}</version>
           <configuration>
             <outputTimestamp>${project.build.outputTimestamp}</outputTimestamp>
+            <!-- Generated images in zip format are not reproducible-->
+            <ignore>image-build.zip</ignore>
           </configuration>
         </plugin>
       </plugins>
@@ -131,10 +131,20 @@
     <module>explainability</module>
     <module>trusty</module>
     <module>jitexecutor</module>
-    <module>apps-integration-tests</module>
   </modules>
 
   <profiles>
+    <profile>
+      <id>allSubmodules</id>
+      <activation>
+        <property>
+          <name>!only.reproducible</name>
+        </property>
+      </activation>
+      <modules>
+        <module>apps-integration-tests</module>
+      </modules>
+    </profile>
     <profile>
       <id>optaplanner-downstream</id>
       <activation>
