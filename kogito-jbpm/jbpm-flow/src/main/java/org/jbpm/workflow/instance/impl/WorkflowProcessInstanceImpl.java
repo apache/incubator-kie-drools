@@ -442,8 +442,6 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
 
             removeEventListeners();
             processRuntime.getProcessInstanceManager().removeProcessInstance(this);
-            processRuntime.getProcessEventSupport().fireAfterProcessCompleted(this, kruntime);
-
             if (isSignalCompletion()) {
 
                 List<KogitoEventListener> listeners = eventListeners.get("processInstanceCompleted:" + getStringId());
@@ -455,6 +453,8 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
 
                 processRuntime.getSignalManager().signalEvent("processInstanceCompleted:" + getStringId(), this);
             }
+            processRuntime.getProcessEventSupport().fireAfterProcessCompleted(this, kruntime);
+
         } else {
             super.setState(state, outcome);
         }
