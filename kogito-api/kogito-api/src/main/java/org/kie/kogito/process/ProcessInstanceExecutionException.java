@@ -36,7 +36,7 @@ public class ProcessInstanceExecutionException extends RuntimeException {
     }
 
     public ProcessInstanceExecutionException(String processInstanceId, String failedNodeId, String errorMessage, Throwable rootCause) {
-        super("Process instance with id " + processInstanceId + " failed becuase of " + errorMessage, rootCause);
+        super("Process instance with id " + processInstanceId + " failed because of " + errorMessage, rootCause);
         this.processInstanceId = processInstanceId;
         this.failedNodeId = failedNodeId;
         this.errorMessage = errorMessage;
