@@ -21,6 +21,7 @@ package org.kie.kogito.jitexecutor.dmn.api;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.Supplier;
 
 import org.kie.dmn.core.internal.utils.MarshallingStubUtils;
 import org.kie.kogito.jitexecutor.dmn.JITDMNService;
@@ -56,12 +57,15 @@ public class JITDMNResource {
         LOGGER.debug("jitdmn/");
         LOGGER.debug(payload.toString());
         LOGGER.debug(LINEBREAK);
-        JITDMNResult evaluateAll = payload.getModel() != null ? jitdmnService.evaluateModel(payload.getModel(), payload.getContext()) : jitdmnService.evaluateModel(payload, payload.getContext());
-        Map<String, Object> restResulk = new HashMap<>();
-        for (Entry<String, Object> kv : evaluateAll.getContext().getAll().entrySet()) {
-            restResulk.put(kv.getKey(), MarshallingStubUtils.stubDMNResult(kv.getValue(), String::valueOf));
-        }
-        return Response.ok(restResulk).build();
+        Supplier<Response> supplier = () -> {
+            JITDMNResult evaluateAll = payload.getModel() != null ? jitdmnService.evaluateModel(payload.getModel(), payload.getContext()) : jitdmnService.evaluateModel(payload, payload.getContext());
+            Map<String, Object> restResulk = new HashMap<>();
+            for (Entry<String, Object> kv : evaluateAll.getContext().getAll().entrySet()) {
+                restResulk.put(kv.getKey(), MarshallingStubUtils.stubDMNResult(kv.getValue(), String::valueOf));
+            }
+            return Response.ok(restResulk).build();
+        };
+        return DMNResourceHelper.manageResponse(supplier);
     }
 
     @POST
@@ -73,8 +77,11 @@ public class JITDMNResource {
         LOGGER.debug("jitdmn/dmnresult");
         LOGGER.debug(payload.toString());
         LOGGER.debug(LINEBREAK);
-        JITDMNResult dmnResult = payload.getModel() != null ? jitdmnService.evaluateModel(payload.getModel(), payload.getContext()) : jitdmnService.evaluateModel(payload, payload.getContext());
-        return Response.ok(dmnResult).build();
+        Supplier<Response> supplier = () -> {
+            JITDMNResult dmnResult = payload.getModel() != null ? jitdmnService.evaluateModel(payload.getModel(), payload.getContext()) : jitdmnService.evaluateModel(payload, payload.getContext());
+            return Response.ok(dmnResult).build();
+        };
+        return DMNResourceHelper.manageResponse(supplier);
     }
 
     @POST
@@ -86,9 +93,12 @@ public class JITDMNResource {
         LOGGER.debug("jitdmn/evaluateAndExplain");
         LOGGER.debug(payload.toString());
         LOGGER.debug(LINEBREAK);
-        DMNResultWithExplanation response =
-                payload.getModel() != null ? jitdmnService.evaluateModelAndExplain(payload.getModel(), payload.getContext()) : jitdmnService.evaluateModelAndExplain(payload, payload.getContext());
-        return Response.ok(response).build();
+        Supplier<Response> supplier = () -> {
+            DMNResultWithExplanation response =
+                    payload.getModel() != null ? jitdmnService.evaluateModelAndExplain(payload.getModel(), payload.getContext()) : jitdmnService.evaluateModelAndExplain(payload, payload.getContext());
+            return Response.ok(response).build();
+        };
+        return DMNResourceHelper.manageResponse(supplier);
     }
 
 }

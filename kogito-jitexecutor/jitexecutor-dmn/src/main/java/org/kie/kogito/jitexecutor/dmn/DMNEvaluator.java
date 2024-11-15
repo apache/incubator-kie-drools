@@ -22,11 +22,15 @@ import java.io.StringReader;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+import org.kie.api.builder.Message;
 import org.kie.api.io.Resource;
 import org.kie.dmn.api.core.DMNContext;
+import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
@@ -51,7 +55,43 @@ public class DMNEvaluator {
                 .fromResources(Collections.singletonList(modelResource)).getOrElseThrow(RuntimeException::new);
         dmnRuntime.addListener(new JITDMNListener());
         DMNModel dmnModel = dmnRuntime.getModels().get(0);
-        return new DMNEvaluator(dmnModel, dmnRuntime);
+        return validateForErrors(dmnModel, dmnRuntime);
+    }
+
+    public static DMNEvaluator fromMultiple(MultipleResourcesPayload payload) {
+        Map<String, Resource> resources = new HashMap<>();
+        for (ResourceWithURI r : payload.getResources()) {
+            Resource readerResource = ResourceFactory.newReaderResource(new StringReader(r.getContent()), "UTF-8");
+            readerResource.setSourcePath(r.getURI());
+            resources.put(r.getURI(), readerResource);
+        }
+        ResolveByKey rbk = new ResolveByKey(resources);
+        DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults()
+                .setRelativeImportResolver((x, y, locationURI) -> rbk.readerByKey(locationURI))
+                .buildConfiguration()
+                .fromResources(resources.values())
+                .getOrElseThrow(RuntimeException::new);
+        DMNModel mainModel = null;
+        for (DMNModel m : dmnRuntime.getModels()) {
+            if (m.getResource().getSourcePath().equals(payload.getMainURI())) {
+                mainModel = m;
+                break;
+            }
+        }
+        if (mainModel == null) {
+            throw new IllegalStateException("Was not able to identify main model from MultipleResourcesPayload contents.");
+        }
+        return validateForErrors(mainModel, dmnRuntime);
+    }
+
+    static DMNEvaluator validateForErrors(DMNModel dmnModel, DMNRuntime dmnRuntime) {
+        if (dmnModel.hasErrors()) {
+            List<DMNMessage> messages = dmnModel.getMessages(DMNMessage.Severity.ERROR);
+            String errorMessage = messages.stream().map(Message::getText).collect(Collectors.joining(", "));
+            throw new IllegalStateException(errorMessage);
+        } else {
+            return new DMNEvaluator(dmnModel, dmnRuntime);
+        }
     }
 
     private DMNEvaluator(DMNModel dmnModel, DMNRuntime dmnRuntime) {
@@ -88,29 +128,4 @@ public class DMNEvaluator {
         return new JITDMNResult(getNamespace(), getName(), dmnResult, evaluationHitIds.orElse(Collections.emptyMap()));
     }
 
-    public static DMNEvaluator fromMultiple(MultipleResourcesPayload payload) {
-        Map<String, Resource> resources = new HashMap<>();
-        for (ResourceWithURI r : payload.getResources()) {
-            Resource readerResource = ResourceFactory.newReaderResource(new StringReader(r.getContent()), "UTF-8");
-            readerResource.setSourcePath(r.getURI());
-            resources.put(r.getURI(), readerResource);
-        }
-        ResolveByKey rbk = new ResolveByKey(resources);
-        DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults()
-                .setRelativeImportResolver((x, y, locationURI) -> rbk.readerByKey(locationURI))
-                .buildConfiguration()
-                .fromResources(resources.values())
-                .getOrElseThrow(RuntimeException::new);
-        DMNModel mainModel = null;
-        for (DMNModel m : dmnRuntime.getModels()) {
-            if (m.getResource().getSourcePath().equals(payload.getMainURI())) {
-                mainModel = m;
-                break;
-            }
-        }
-        if (mainModel == null) {
-            throw new IllegalStateException("Was not able to identify main model from MultipleResourcesPayload contents.");
-        }
-        return new DMNEvaluator(mainModel, dmnRuntime);
-    }
 }

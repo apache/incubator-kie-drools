@@ -43,4 +43,17 @@ public class SchemaResourceTest {
                 .statusCode(200)
                 .body(containsString("InputSet"), containsString("x-dmn-type"));
     }
+
+    @Test
+    public void testJitDmnValidate() throws IOException {
+        final String MODEL = getModelFromIoUtils("invalid_models/DMNv1_5/DMN-Invalid.dmn");
+        given()
+                .contentType(ContentType.XML)
+                .body(MODEL)
+                .when().post("/jitdmn/schema")
+                .then()
+                .statusCode(400)
+                .body(containsString("Error compiling FEEL expression 'Person Age >= 18' for name 'Can Drive?' on node 'Can Drive?': syntax error near 'Age'"));
+
+    }
 }
