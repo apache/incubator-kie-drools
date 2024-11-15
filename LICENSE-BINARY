@@ -200,3 +200,13 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
+
+------------------------------------------------------------------------------------
+This product bundles various third-party components under other open source licenses.
+This section summarizes those components and their licenses. See licenses-binary/
+for text of these licenses.
+
+Mozilla Public License 2.0
+-----------
+
+drools-docs/ui-bundle/ui-bundle.zip

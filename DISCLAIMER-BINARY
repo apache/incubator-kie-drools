@@ -31,4 +31,4 @@ These files are used to validate the functionality and reliability of Apache KIE
 
 The following binaries are included in this project, but don't contain compiled resources.
 
-drools-docs/ui-bundle/ui-bundle.zip : antora ui-bundle resources. For example, js and svg. See NOTICE file
+drools-docs/ui-bundle/ui-bundle.zip : antora ui-bundle resources. For example, js and svg. See LICENSE-BINARY file
