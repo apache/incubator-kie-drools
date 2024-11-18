@@ -42,8 +42,9 @@ import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.mvel.CommonTestMethodBase;
 import org.drools.mvel.compiler.StockTick;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.EntryPoint;
@@ -53,7 +54,7 @@ import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
-@Ignore
+@Disabled
 public class PhreakConcurrencyTest extends CommonTestMethodBase {
 
     // This test already fails with standard-drl (probably not maintained) so not enhanced for exec-model
@@ -159,7 +160,8 @@ public class PhreakConcurrencyTest extends CommonTestMethodBase {
         }
     }
 
-    @Test(timeout = 10000)
+    @Test
+    @Timeout(10000)
     public void testMultipleConcurrentEPs2() {
         String str = "global java.util.List results\n" +
                      "\n" +

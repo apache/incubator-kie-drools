@@ -18,14 +18,13 @@
  */
 package org.drools.mvel.integrationtests;
 
-import java.util.Collection;
+import java.util.stream.Stream;
 
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -38,23 +37,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * Tests for MessageImpl
  */
-@RunWith(Parameterized.class)
 public class MessageImplTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public MessageImplTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
-    }
-
-    @Test
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
     //See DROOLS-193 (KnowledgeBuilderResult does not always contain a Resource)
-    public void testMessageFromInvalidDSL() throws Exception {
+    public void testMessageFromInvalidDSL(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         //Some suitably duff DSL
         String dsl = "bananna\n";
 
@@ -78,8 +70,9 @@ public class MessageImplTest {
         assertThat(results.getMessages().size()).isEqualTo(3);
     }
 
-    @Test
-    public void testMessageWithIncrementalBuild() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testMessageWithIncrementalBuild(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         //Some suitably duff DSL to generate errors
         String dsl1 = "bananna\n";
 

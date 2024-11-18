@@ -20,15 +20,14 @@ package org.drools.mvel.integrationtests;
 
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Stream;
 
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -51,18 +50,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * Tests stateful/stateless KieSession listeners registration - DROOLS-818.
  */
-@RunWith(Parameterized.class)
 public class ListenersTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public ListenersTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
-    }
-
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
     private static final ReleaseId RELEASE_ID = KieServices.Factory.get()
@@ -82,16 +73,15 @@ public class ListenersTest {
     private KieSession kieSession;
     private StatelessKieSession statelessKieSession;
 
-    @Before
-    public void init() {
-        ReleaseId kieModuleId = prepareKieModule();
+    public void init(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        ReleaseId kieModuleId = prepareKieModule(kieBaseTestConfiguration);
 
         final KieContainer kieContainer = ks.newKieContainer(kieModuleId);
         this.kieSession = kieContainer.newKieSession();
         this.statelessKieSession = kieContainer.newStatelessKieSession();
     }
 
-    @After
+    @AfterEach
     public void cleanup() {
         if (this.kieSession != null) {
             this.kieSession.dispose();
@@ -99,28 +89,36 @@ public class ListenersTest {
         this.statelessKieSession = null;
     }
 
-    @Test
-    public void testRegisterAgendaEventListenerStateful() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testRegisterAgendaEventListenerStateful(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
+        init(kieBaseTestConfiguration);
         kieSession.insert("test");
         kieSession.fireAllRules();
         checkThatListenerFired(kieSession.getAgendaEventListeners());
     }
 
-    @Test
-    public void testRegisterRuleRuntimeEventListenerStateful() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testRegisterRuleRuntimeEventListenerStateful(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
+        init(kieBaseTestConfiguration);
         kieSession.insert("test");
         kieSession.fireAllRules();
         checkThatListenerFired(kieSession.getRuleRuntimeEventListeners());
     }
 
-    @Test
-    public void testRegisterAgendaEventListenerStateless() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testRegisterAgendaEventListenerStateless(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
+        init(kieBaseTestConfiguration);
         statelessKieSession.execute(KieServices.Factory.get().getCommands().newInsert("test"));
         checkThatListenerFired(statelessKieSession.getAgendaEventListeners());
     }
 
-    @Test
-    public void testRegisterRuleEventListenerStateless() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testRegisterRuleEventListenerStateless(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
+        init(kieBaseTestConfiguration);
         statelessKieSession.execute(KieServices.Factory.get().getCommands().newInsert("test"));
         checkThatListenerFired(statelessKieSession.getRuleRuntimeEventListeners());
     }
@@ -143,10 +141,11 @@ public class ListenersTest {
     /**
      * Inserts a new KieModule containing single KieBase and a stateful and stateless KieSessions with listeners
      * into KieRepository.
+     * @param kieBaseTestConfiguration 
      *
      * @return created KIE module ReleaseId
      */
-    private ReleaseId prepareKieModule() {
+    private ReleaseId prepareKieModule(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final KieServices ks = KieServices.Factory.get();
 
         KieModuleModel module = ks.newKieModuleModel();

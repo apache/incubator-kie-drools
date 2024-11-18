@@ -18,14 +18,13 @@
  */
 package org.drools.mvel.integrationtests;
 
-import java.util.Collection;
+import java.util.stream.Stream;
 
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
@@ -33,18 +32,10 @@ import org.kie.api.runtime.rule.FactHandle;
 import static org.assertj.core.api.Assertions.assertThat;
 
 // DROOLS-4295
-@RunWith(Parameterized.class)
 public class NullCheckOnExistentialNodeTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public NullCheckOnExistentialNodeTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
-    }
-
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
     public static class A {
@@ -71,7 +62,7 @@ public class NullCheckOnExistentialNodeTest {
         }
     }
 
-    private void check( String drl, int fire1, int fire2 ) {
+    private void check( KieBaseTestConfiguration kieBaseTestConfiguration, String drl, int fire1, int fire2 ) {
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KieSession kieSession = kbase.newKieSession();
 
@@ -93,8 +84,9 @@ public class NullCheckOnExistentialNodeTest {
         assertThat(kieSession.fireAllRules()).isEqualTo(fire2);
     }
 
-    @Test
-    public void testNot() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testNot(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String drl =
                 "import " + A.class.getCanonicalName() + ";\n" +
                 "import " + B.class.getCanonicalName() + ";\n" +
@@ -106,11 +98,12 @@ public class NullCheckOnExistentialNodeTest {
                 "  then\n" +
                 "end";
 
-        check( drl, 0, 1 );
+        check(kieBaseTestConfiguration, drl, 0, 1 );
     }
 
-    @Test
-    public void testExists() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testExists(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String drl =
                 "import " + A.class.getCanonicalName() + ";\n" +
                 "import " + B.class.getCanonicalName() + ";\n" +
@@ -122,11 +115,12 @@ public class NullCheckOnExistentialNodeTest {
                 "  then\n" +
                 "end";
 
-        check( drl, 1, 0 );
+        check( kieBaseTestConfiguration, drl, 1, 0 );
     }
 
-    @Test
-    public void testNotIndexable() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testNotIndexable(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String drl =
                 "import " + NullCheckOnExistentialNodeTest.class.getCanonicalName() + ";\n" +
                 "import " + A.class.getCanonicalName() + ";\n" +
@@ -139,7 +133,7 @@ public class NullCheckOnExistentialNodeTest {
                 "  then\n" +
                 "end";
 
-        check( drl, 0, 1 );
+        check( kieBaseTestConfiguration, drl, 0, 1 );
     }
 
     public static boolean myPredicate(String s1, String s2) {

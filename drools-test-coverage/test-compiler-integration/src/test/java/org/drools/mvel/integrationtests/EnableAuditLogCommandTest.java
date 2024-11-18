@@ -20,17 +20,16 @@ package org.drools.mvel.integrationtests;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.drools.mvel.compiler.Cheese;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.After;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.command.Command;
 import org.kie.api.runtime.KieSession;
@@ -38,24 +37,16 @@ import org.kie.internal.command.CommandFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class EnableAuditLogCommandTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public EnableAuditLogCommandTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
-    }
-
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
     private String auditFileDir = "target";
     private String auditFileName = "EnableAuditLogCommandTest";
 
-    @After
+    @AfterEach
     public void cleanUp() {
         File file = new File( auditFileDir + File.separator + auditFileName + ".log" );
         if ( file.exists() ) {
@@ -63,8 +54,9 @@ public class EnableAuditLogCommandTest {
         }
     }
 
-    @Test
-    public void testEnableAuditLogCommand() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testEnableAuditLogCommand(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
 
         String str = "";
         str += "package org.drools.mvel.integrationtests \n";

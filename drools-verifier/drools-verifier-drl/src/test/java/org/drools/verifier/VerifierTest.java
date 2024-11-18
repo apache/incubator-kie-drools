@@ -19,6 +19,7 @@
 package org.drools.verifier;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.jar.JarInputStream;
 
@@ -79,8 +80,10 @@ public class VerifierTest {
         Verifier verifier = vBuilder.newVerifier();
 
         try {
-
-            JarInputStream jar = new JarInputStream( this.getClass().getResourceAsStream("model.jar") );
+            InputStream is = this.getClass().getResourceAsStream("model.jar");
+            assertThat(is).as("Make sure to build drools-verifier-test-jar first")
+                    .isNotNull();
+            JarInputStream jar = new JarInputStream( is );
 
             verifier.addObjectModel(jar);
 
@@ -125,7 +128,10 @@ public class VerifierTest {
 
         try {
 
-            JarInputStream jar = new JarInputStream( this.getClass().getResourceAsStream("model.jar") );
+            InputStream is = this.getClass().getResourceAsStream("model.jar");
+            assertThat(is).as("Make sure to build drools-verifier-test-jar first")
+                    .isNotNull();
+            JarInputStream jar = new JarInputStream( is );
 
             verifier.addObjectModel(jar);
 

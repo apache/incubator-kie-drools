@@ -45,6 +45,11 @@
         <artifactId>pdfbox</artifactId>
         <version>${version.org.apache.pdfbox}</version>
       </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-verifier-test-jar</artifactId>
+        <version>1.0.0</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -120,6 +125,12 @@
    </dependency>
 
     <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-verifier-test-jar</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
       <scope>test</scope>
@@ -131,4 +142,42 @@
     </dependency>    
   </dependencies>
 
+  <profiles>
+    <!-- drools-verifier-drl requires test jars built by drools-verifier-test-jar -->
+    <!-- This profile makes sure that drools-verifier-test-jar is executed if not-->
+    <!-- See: https://github.com/apache/incubator-kie-drools/pull/6144 -->
+    <profile>
+      <id>missing-test-jar-file</id>
+      <activation>
+        <file>
+          <missing>src/test/resources/org/drools/verifier/model.jar</missing>
+        </file>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-invoker-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>build-drools-verifier-test-jar</id>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <phase>generate-test-resources</phase>
+                <configuration>
+                  <projectsDirectory>${basedir}/../drools-verifier-test-jar</projectsDirectory>
+                  <goals>
+                    <goal>clean</goal>
+                    <goal>install</goal>
+                  </goals>
+                  <pomIncludes>pom.xml</pomIncludes> <!-- required to build the immediate pom -->
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>

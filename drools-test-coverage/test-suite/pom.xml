@@ -40,6 +40,17 @@
     <excludedGroups>org.kie.test.testcategory.TurtleTestCategory</excludedGroups>
   </properties>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.drools.testcoverage</groupId>
+        <artifactId>drools-test-coverage-jars</artifactId>
+        <type>pom</type>
+        <version>${project.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
     <!-- Internal dependencies -->
     <dependency>
@@ -133,6 +144,13 @@
       <scope>test</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.drools.testcoverage</groupId>
+      <artifactId>drools-test-coverage-jars</artifactId>
+      <type>pom</type>
+      <scope>test</scope>
+    </dependency>
+
     <!-- External dependencies -->
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -174,6 +192,42 @@
       <properties>
         <excludedGroups/>
       </properties>
+    </profile>
+
+    <!-- drools-test-suite requires test jars built by drools-test-coverage-jars -->
+    <!-- This profile makes sure that drools-test-coverage-jars is executed if not-->
+    <!-- See: https://github.com/apache/incubator-kie-drools/pull/6144 -->
+    <profile>
+      <id>missing-test-jar-file</id>
+      <activation>
+        <file>
+          <missing>src/test/resources/kjar/kjar-module-before.jar</missing>
+        </file>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-invoker-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>build-drools-test-coverage-jars</id>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <phase>generate-test-resources</phase>
+                <configuration>
+                  <projectsDirectory>${basedir}/../drools-test-coverage-jars</projectsDirectory>
+                  <goals>
+                    <goal>clean</goal>
+                    <goal>install</goal>
+                  </goals>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
     </profile>
   </profiles>
 

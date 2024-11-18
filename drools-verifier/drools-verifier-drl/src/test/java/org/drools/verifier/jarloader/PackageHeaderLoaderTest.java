@@ -19,6 +19,7 @@
 package org.drools.verifier.jarloader;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -40,8 +41,11 @@ public class PackageHeaderLoaderTest {
 
     @BeforeEach
     public void setUp() throws Exception {
+        InputStream is = Verifier.class.getResourceAsStream("model.jar");
+        assertThat(is).as("Make sure to build drools-verifier-test-jar first")
+                .isNotNull();
         jarInputStreams = new ArrayList<JarInputStream>();
-        jarInputStreams.add(new JarInputStream(Verifier.class.getResourceAsStream("model.jar")));
+        jarInputStreams.add(new JarInputStream(is));
     }
 
     @AfterEach
