@@ -47,6 +47,7 @@ public class GlobalObjectMapper {
                 if (!configBean.failOnEmptyBean()) {
                     builder.featuresToDisable (SerializationFeature.FAIL_ON_EMPTY_BEANS);
                 }
+                builder.featuresToDisable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
                 builder.dateFormat(new StdDateFormat().withColonInTimeZone(true).withTimeZone(TimeZone.getDefault()));
                 builder.modulesToInstall(new JavaTimeModule());
             }
