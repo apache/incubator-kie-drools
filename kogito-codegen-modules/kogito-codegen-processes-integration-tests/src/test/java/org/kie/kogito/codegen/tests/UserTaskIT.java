@@ -20,11 +20,14 @@ package org.kie.kogito.codegen.tests;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.Application;
@@ -48,9 +51,13 @@ import org.kie.kogito.process.Processes;
 import org.kie.kogito.process.VariableViolationException;
 import org.kie.kogito.process.WorkItem;
 import org.kie.kogito.usertask.UserTaskConfig;
+import org.kie.kogito.usertask.UserTaskEventListener;
 import org.kie.kogito.usertask.UserTaskInstance;
 import org.kie.kogito.usertask.UserTaskInstanceNotAuthorizedException;
 import org.kie.kogito.usertask.UserTasks;
+import org.kie.kogito.usertask.events.UserTaskAssignmentEvent;
+import org.kie.kogito.usertask.events.UserTaskDeadlineEvent;
+import org.kie.kogito.usertask.events.UserTaskDeadlineEvent.DeadlineType;
 import org.kie.kogito.usertask.impl.lifecycle.DefaultUserTaskLifeCycle;
 
 import static java.util.Collections.emptyList;
@@ -59,6 +66,7 @@ import static java.util.Collections.singletonList;
 import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.kie.kogito.usertask.impl.lifecycle.DefaultUserTaskLifeCycle.CLAIM;
 import static org.kie.kogito.usertask.impl.lifecycle.DefaultUserTaskLifeCycle.COMPLETE;
 import static org.kie.kogito.usertask.impl.lifecycle.DefaultUserTaskLifeCycle.RELEASE;
@@ -952,5 +960,358 @@ public class UserTaskIT extends AbstractCodegenIT {
         ProcessInstance<? extends Model> otherProcessInstance = p.createInstance(businessKey, m);
         assertThat(otherProcessInstance.id()).isNotEqualTo(processInstance.id());
         assertThat(otherProcessInstance.businessKey()).isEqualTo(processInstance.businessKey()).isEqualTo(businessKey);
+    }
+
+    @Test
+    public void testUserTaskNotStartedDeadlineWithExpressionReplacement() throws Exception {
+        CountDownLatch latch = new CountDownLatch(2);
+        Application app = generateCodeProcessesOnly("usertask/UserTasksNotStartedDeadline.bpmn2");
+        assertThat(app).isNotNull();
+        List<String> subjects = new ArrayList<>();
+        List<String> bodies = new ArrayList<>();
+        List<UserTaskDeadlineEvent.DeadlineType> types = new ArrayList<>();
+
+        app.config().get(UserTaskConfig.class).userTaskEventListeners().listeners().add(new UserTaskEventListener() {
+            @Override
+            public void onUserTaskDeadline(UserTaskDeadlineEvent event) {
+                subjects.add((String) event.getNotification().get("subject"));
+                bodies.add((String) event.getNotification().get("body"));
+                types.add(event.getType());
+                latch.countDown();
+            }
+
+        });
+        Process<? extends Model> p = app.get(Processes.class).processById("UserTasksDeadline");
+
+        Model m = p.createModel();
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("subject", "this is my subject");
+        parameters.put("body", "this is my body");
+        m.fromMap(parameters);
+
+        // assign custom business key for process instance
+        String businessKey = "business key";
+        ProcessInstance<?> processInstance = p.createInstance(businessKey, m);
+        processInstance.start();
+
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
+        // verify that custom business key is assigned properly
+        assertThat(processInstance.businessKey()).isEqualTo(businessKey);
+
+        // start another process instance with assigned duplicated business key of already active instance
+        ProcessInstance<? extends Model> otherProcessInstance = p.createInstance(businessKey, m);
+        assertThat(otherProcessInstance.id()).isNotEqualTo(processInstance.id());
+        assertThat(otherProcessInstance.businessKey()).isEqualTo(processInstance.businessKey()).isEqualTo(businessKey);
+        latch.await(5L, TimeUnit.SECONDS);
+        String subject = "Task is ready for ${owners[0].id}";
+        String body = "<html>\n"
+                + "                    <body>\n"
+                + "                    Reason this is my subject<br/>\n"
+                + "                    body of notification this is my body\n"
+                + "                    </body>\n"
+                + "                  </html>";
+        assertThat(subjects).containsExactly(subject, subject);
+        assertThat(bodies).containsExactly(body, body);
+        assertThat(types).containsExactly(DeadlineType.Started, DeadlineType.Started);
+    }
+
+    @Test
+    public void testUserTaskNotStartedDeadlineWithExpressionReplacementStopTimer() throws Exception {
+        CountDownLatch latch = new CountDownLatch(2);
+        Application app = generateCodeProcessesOnly("usertask/UserTasksNotStartedDeadline.bpmn2");
+        assertThat(app).isNotNull();
+
+        app.config().get(UserTaskConfig.class).userTaskEventListeners().listeners().add(new UserTaskEventListener() {
+            @Override
+            public void onUserTaskDeadline(UserTaskDeadlineEvent event) {
+                latch.countDown();
+            }
+
+        });
+        Process<? extends Model> p = app.get(Processes.class).processById("UserTasksDeadline");
+
+        Model m = p.createModel();
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("subject", "this is my subject");
+        parameters.put("body", "this is my body");
+        m.fromMap(parameters);
+
+        // assign custom business key for process instance
+        String businessKey = "business key";
+        ProcessInstance<?> processInstance = p.createInstance(businessKey, m);
+        processInstance.start();
+
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
+        // verify that custom business key is assigned properly
+        assertThat(processInstance.businessKey()).isEqualTo(businessKey);
+        IdentityProvider mary = IdentityProviders.of("mary");
+        List<UserTaskInstance> userTaskInstances = app.get(UserTasks.class).instances().findByIdentity(mary);
+        userTaskInstances.forEach(e -> e.transition(DefaultUserTaskLifeCycle.CLAIM, Collections.emptyMap(), mary));
+
+        // start another process instance with assigned duplicated business key of already active instance
+        ProcessInstance<? extends Model> otherProcessInstance = p.createInstance(businessKey, m);
+        assertThat(otherProcessInstance.id()).isNotEqualTo(processInstance.id());
+        assertThat(otherProcessInstance.businessKey()).isEqualTo(processInstance.businessKey()).isEqualTo(businessKey);
+        assertThat(latch.await(5L, TimeUnit.SECONDS)).isFalse();
+
+    }
+
+    @Test
+    public void testUserTaskNotStartedReassign() throws Exception {
+        CountDownLatch latch = new CountDownLatch(1);
+        Application app = generateCodeProcessesOnly("usertask/UserTasksNotStartedReasssign.bpmn2");
+        assertThat(app).isNotNull();
+
+        app.config().get(UserTaskConfig.class).userTaskEventListeners().listeners().add(new UserTaskEventListener() {
+            @Override
+            public void onUserTaskAssignment(UserTaskAssignmentEvent event) {
+                List<String> users = Arrays.asList(event.getNewUsersId());
+                if (users.size() == 1 && users.contains("mike")) {
+                    latch.countDown();
+                }
+            }
+        });
+        Process<? extends Model> p = app.get(Processes.class).processById("UserTasksDeadline");
+
+        Model m = p.createModel();
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("subject", "this is my subject");
+        parameters.put("body", "this is my body");
+        m.fromMap(parameters);
+
+        // assign custom business key for process instance
+        String businessKey = "business key";
+        ProcessInstance<?> processInstance = p.createInstance(businessKey, m);
+        processInstance.start();
+
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
+        // verify that custom business key is assigned properly
+        assertThat(processInstance.businessKey()).isEqualTo(businessKey);
+
+        // start another process instance with assigned duplicated business key of already active instance
+        ProcessInstance<? extends Model> otherProcessInstance = p.createInstance(businessKey, m);
+        assertThat(otherProcessInstance.id()).isNotEqualTo(processInstance.id());
+        assertThat(otherProcessInstance.businessKey()).isEqualTo(processInstance.businessKey()).isEqualTo(businessKey);
+        assertThat(latch.await(5L, TimeUnit.SECONDS)).isTrue();
+    }
+
+    @Test
+    public void testUserTaskNotStartedReassignStopTimers() throws Exception {
+        CountDownLatch latch = new CountDownLatch(1);
+        Application app = generateCodeProcessesOnly("usertask/UserTasksNotStartedReasssign.bpmn2");
+        assertThat(app).isNotNull();
+
+        app.config().get(UserTaskConfig.class).userTaskEventListeners().listeners().add(new UserTaskEventListener() {
+            @Override
+            public void onUserTaskAssignment(UserTaskAssignmentEvent event) {
+                List<String> users = Arrays.asList(event.getNewUsersId());
+                if (users.size() == 1 && users.contains("mike")) {
+                    latch.countDown();
+                }
+            }
+        });
+        Process<? extends Model> p = app.get(Processes.class).processById("UserTasksDeadline");
+
+        Model m = p.createModel();
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("subject", "this is my subject");
+        parameters.put("body", "this is my body");
+        m.fromMap(parameters);
+
+        // assign custom business key for process instance
+        String businessKey = "business key";
+        ProcessInstance<?> processInstance = p.createInstance(businessKey, m);
+        processInstance.start();
+
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
+
+        // verify that custom business key is assigned properly
+        assertThat(processInstance.businessKey()).isEqualTo(businessKey);
+        IdentityProvider mary = IdentityProviders.of("mary");
+        List<UserTaskInstance> userTaskInstances = app.get(UserTasks.class).instances().findByIdentity(mary);
+        userTaskInstances.forEach(e -> e.transition(DefaultUserTaskLifeCycle.CLAIM, Collections.emptyMap(), mary));
+
+        // start another process instance with assigned duplicated business key of already active instance
+        ProcessInstance<? extends Model> otherProcessInstance = p.createInstance(businessKey, m);
+        assertThat(otherProcessInstance.id()).isNotEqualTo(processInstance.id());
+        assertThat(otherProcessInstance.businessKey()).isEqualTo(processInstance.businessKey()).isEqualTo(businessKey);
+        assertThat(latch.await(2L, TimeUnit.SECONDS)).isFalse();
+    }
+
+    @Test
+    public void testUserTaskNotCompletedDeadlineWithReplacement() throws Exception {
+        CountDownLatch latch = new CountDownLatch(1);
+        Application app = generateCodeProcessesOnly("usertask/UserTasksNotCompletedDeadline.bpmn2");
+        assertThat(app).isNotNull();
+
+        List<String> subjects = new ArrayList<>();
+        List<String> bodies = new ArrayList<>();
+        List<UserTaskDeadlineEvent.DeadlineType> types = new ArrayList<>();
+        app.config().get(UserTaskConfig.class).userTaskEventListeners().listeners().add(new UserTaskEventListener() {
+            @Override
+            public void onUserTaskDeadline(UserTaskDeadlineEvent event) {
+                subjects.add((String) event.getNotification().get("subject"));
+                bodies.add((String) event.getNotification().get("body"));
+                types.add(event.getType());
+                latch.countDown();
+            }
+        });
+        Process<? extends Model> p = app.get(Processes.class).processById("UserTasksDeadline");
+
+        Model m = p.createModel();
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("body", "my body!!!");
+        m.fromMap(parameters);
+
+        // assign custom business key for process instance
+        String businessKey = "business key";
+        ProcessInstance<?> processInstance = p.createInstance(businessKey, m);
+        processInstance.start();
+
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
+        // verify that custom business key is assigned properly
+        assertThat(processInstance.businessKey()).isEqualTo(businessKey);
+
+        // start another process instance with assigned duplicated business key of already active instance
+        ProcessInstance<? extends Model> otherProcessInstance = p.createInstance(businessKey, m);
+        assertThat(otherProcessInstance.id()).isNotEqualTo(processInstance.id());
+        assertThat(otherProcessInstance.businessKey()).isEqualTo(processInstance.businessKey()).isEqualTo(businessKey);
+        assertTrue(latch.await(5L, TimeUnit.SECONDS));
+        latch.await(5L, TimeUnit.SECONDS);
+        String subject = "Not completedTask is ready for ${owners[0].id}";
+        String body = "my body!!!";
+        assertThat(subjects).containsExactly(subject);
+        assertThat(bodies).containsExactly(body);
+        assertThat(types).containsExactly(DeadlineType.Completed);
+    }
+
+    @Test
+    public void testUserTaskNotCompletedDeadlineWithReplacementStopTimer() throws Exception {
+        CountDownLatch latch = new CountDownLatch(2);
+        Application app = generateCodeProcessesOnly("usertask/UserTasksNotCompletedDeadline.bpmn2");
+        assertThat(app).isNotNull();
+
+        app.config().get(UserTaskConfig.class).userTaskEventListeners().listeners().add(new UserTaskEventListener() {
+            @Override
+            public void onUserTaskDeadline(UserTaskDeadlineEvent event) {
+                latch.countDown();
+            }
+
+        });
+        Process<? extends Model> p = app.get(Processes.class).processById("UserTasksDeadline");
+
+        Model m = p.createModel();
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("subject", "this is my subject");
+        parameters.put("body", "this is my body");
+        m.fromMap(parameters);
+
+        // assign custom business key for process instance
+        String businessKey = "business key";
+        ProcessInstance<?> processInstance = p.createInstance(businessKey, m);
+        processInstance.start();
+
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
+        // verify that custom business key is assigned properly
+        assertThat(processInstance.businessKey()).isEqualTo(businessKey);
+        IdentityProvider mary = IdentityProviders.of("mary");
+        List<UserTaskInstance> userTaskInstances = app.get(UserTasks.class).instances().findByIdentity(mary);
+        userTaskInstances.forEach(e -> {
+            e.transition(DefaultUserTaskLifeCycle.CLAIM, emptyMap(), mary);
+            e.transition(DefaultUserTaskLifeCycle.COMPLETE, emptyMap(), mary);
+        });
+
+        // start another process instance with assigned duplicated business key of already active instance
+        ProcessInstance<? extends Model> otherProcessInstance = p.createInstance(businessKey, m);
+        assertThat(otherProcessInstance.id()).isNotEqualTo(processInstance.id());
+        assertThat(otherProcessInstance.businessKey()).isEqualTo(processInstance.businessKey()).isEqualTo(businessKey);
+        assertThat(latch.await(5L, TimeUnit.SECONDS)).isFalse();
+
+    }
+
+    @Test
+    public void testUserTaskNotCompletedReassign() throws Exception {
+        CountDownLatch latch = new CountDownLatch(1);
+        Application app = generateCodeProcessesOnly("usertask/UserTasksNotCompletedReassign.bpmn2");
+        assertThat(app).isNotNull();
+
+        app.config().get(UserTaskConfig.class).userTaskEventListeners().listeners().add(new UserTaskEventListener() {
+            @Override
+            public void onUserTaskAssignment(UserTaskAssignmentEvent event) {
+                List<String> users = Arrays.asList(event.getNewUsersId());
+                if (users.size() == 1 && users.contains("mike")) {
+                    latch.countDown();
+                }
+            }
+        });
+        Process<? extends Model> p = app.get(Processes.class).processById("UserTasksDeadline");
+
+        Model m = p.createModel();
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("body", "my body!!!");
+        m.fromMap(parameters);
+
+        // assign custom business key for process instance
+        String businessKey = "business key";
+        ProcessInstance<?> processInstance = p.createInstance(businessKey, m);
+        processInstance.start();
+
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
+        // verify that custom business key is assigned properly
+        assertThat(processInstance.businessKey()).isEqualTo(businessKey);
+
+        // start another process instance with assigned duplicated business key of already active instance
+        ProcessInstance<? extends Model> otherProcessInstance = p.createInstance(businessKey, m);
+        assertThat(otherProcessInstance.id()).isNotEqualTo(processInstance.id());
+        assertThat(otherProcessInstance.businessKey()).isEqualTo(processInstance.businessKey()).isEqualTo(businessKey);
+        assertTrue(latch.await(5L, TimeUnit.SECONDS));
+
+    }
+
+    @Test
+    public void testUserTaskNotCompletedReassignStopTimer() throws Exception {
+        CountDownLatch latch = new CountDownLatch(1);
+        Application app = generateCodeProcessesOnly("usertask/UserTasksNotCompletedReassign.bpmn2");
+        assertThat(app).isNotNull();
+
+        app.config().get(UserTaskConfig.class).userTaskEventListeners().listeners().add(new UserTaskEventListener() {
+            @Override
+            public void onUserTaskAssignment(UserTaskAssignmentEvent event) {
+                List<String> users = Arrays.asList(event.getNewUsersId());
+                if (users.size() == 1 && users.contains("mike")) {
+                    latch.countDown();
+                }
+            }
+
+        });
+        Process<? extends Model> p = app.get(Processes.class).processById("UserTasksDeadline");
+
+        Model m = p.createModel();
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("subject", "this is my subject");
+        parameters.put("body", "this is my body");
+        m.fromMap(parameters);
+
+        // assign custom business key for process instance
+        String businessKey = "business key";
+        ProcessInstance<?> processInstance = p.createInstance(businessKey, m);
+        processInstance.start();
+
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
+        // verify that custom business key is assigned properly
+        assertThat(processInstance.businessKey()).isEqualTo(businessKey);
+        IdentityProvider mary = IdentityProviders.of("mary");
+        List<UserTaskInstance> userTaskInstances = app.get(UserTasks.class).instances().findByIdentity(mary);
+        userTaskInstances.forEach(e -> {
+            e.transition(DefaultUserTaskLifeCycle.CLAIM, emptyMap(), mary);
+            e.transition(DefaultUserTaskLifeCycle.COMPLETE, emptyMap(), mary);
+        });
+
+        // start another process instance with assigned duplicated business key of already active instance
+        ProcessInstance<? extends Model> otherProcessInstance = p.createInstance(businessKey, m);
+        assertThat(otherProcessInstance.id()).isNotEqualTo(processInstance.id());
+        assertThat(otherProcessInstance.businessKey()).isEqualTo(processInstance.businessKey()).isEqualTo(businessKey);
+        assertThat(latch.await(2L, TimeUnit.SECONDS)).isFalse();
+
     }
 }

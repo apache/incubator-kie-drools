@@ -51,8 +51,6 @@ import org.kie.kogito.Application;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.workitem.KogitoWorkItemManager;
 import org.kie.kogito.jobs.JobsService;
-import org.kie.kogito.process.Processes;
-import org.kie.kogito.services.jobs.impl.InMemoryJobService;
 import org.kie.kogito.signal.SignalManager;
 import org.kie.kogito.uow.UnitOfWorkManager;
 
@@ -81,7 +79,7 @@ public class LightProcessRuntime extends AbstractProcessRuntime {
         this.runtimeContext = runtimeContext;
         this.processInstanceManager = services.getProcessInstanceManager();
         this.signalManager = services.getSignalManager();
-        this.jobService = services.getJobsService() == null ? InMemoryJobService.get(application.get(Processes.class), this.unitOfWorkManager) : services.getJobsService();
+        this.jobService = services.getJobsService();
         this.processEventSupport = services.getEventSupport();
         this.workItemManager = services.getKogitoWorkItemManager();
         if (isActive()) {
@@ -144,9 +142,7 @@ public class LightProcessRuntime extends AbstractProcessRuntime {
     @Override
     public KogitoProcessInstance createProcessInstance(String processId, CorrelationKey correlationKey, Map<String, Object> parameters) {
         return createProcessInstance(
-                runtimeContext.findProcess(processId)
-                        .orElseThrow(() -> new IllegalArgumentException(
-                                "Unknown process ID: " + processId)),
+                runtimeContext.findProcess(processId).orElseThrow(() -> new IllegalArgumentException("Unknown process ID: " + processId)),
                 correlationKey, parameters);
     }
 

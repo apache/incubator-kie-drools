@@ -20,8 +20,8 @@ package org.kie.kogito.jobs.management.quarkus;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.kie.kogito.jobs.ProcessInstanceJobDescription;
 import org.kie.kogito.jobs.api.JobCallbackPayload;
+import org.kie.kogito.jobs.descriptors.ProcessInstanceJobDescription;
 import org.kie.kogito.jobs.management.RestJobsServiceTest;
 import org.kie.kogito.jobs.service.api.Job;
 import org.mockito.ArgumentCaptor;
@@ -87,7 +87,7 @@ class VertxJobsServiceTest extends RestJobsServiceTest<VertxJobsService> {
         when(webClient.post(anyString())).thenReturn(request);
         when(objectMapper.valueToTree(any(JobCallbackPayload.class))).thenReturn(JSON_PAYLOAD);
         ProcessInstanceJobDescription processInstanceJobDescription = buildProcessInstanceJobDescription();
-        tested.scheduleProcessInstanceJob(processInstanceJobDescription);
+        tested.scheduleJob(processInstanceJobDescription);
         verify(webClient).post("/v2/jobs");
         ArgumentCaptor<Job> jobArgumentCaptor = forClass(Job.class);
         verify(request).sendJson(jobArgumentCaptor.capture(), any(Handler.class));

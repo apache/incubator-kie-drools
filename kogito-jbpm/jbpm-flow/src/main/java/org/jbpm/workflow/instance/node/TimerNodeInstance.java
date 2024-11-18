@@ -36,7 +36,7 @@ import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.kie.kogito.internal.process.workitem.WorkItemExecutionException;
 import org.kie.kogito.jobs.ExpirationTime;
 import org.kie.kogito.jobs.JobsService;
-import org.kie.kogito.jobs.ProcessInstanceJobDescription;
+import org.kie.kogito.jobs.descriptors.ProcessInstanceJobDescription;
 import org.kie.kogito.process.BaseEventDescription;
 import org.kie.kogito.process.EventDescription;
 import org.kie.kogito.services.uow.BaseWorkUnit;
@@ -82,7 +82,7 @@ public class TimerNodeInstance extends StateBasedNodeInstance implements EventLi
         processRuntime.getUnitOfWorkManager().currentUnitOfWork().intercept(
                 new BaseWorkUnit<>(this, instance -> {
                     ProcessInstanceJobDescription jobDescription =
-                            ProcessInstanceJobDescription.builder()
+                            ProcessInstanceJobDescription.newProcessInstanceJobDescriptionBuilder()
                                     .id(getTimerId())
                                     .timerId("-1")
                                     .expirationTime(expirationTime)
@@ -93,7 +93,7 @@ public class TimerNodeInstance extends StateBasedNodeInstance implements EventLi
                                     .nodeInstanceId(this.getId())
                                     .build();
                     JobsService jobService = processRuntime.getJobsService();
-                    String jobId = jobService.scheduleProcessInstanceJob(jobDescription);
+                    String jobId = jobService.scheduleJob(jobDescription);
                     internalSetTimerId(jobId);
                 }, i -> {
                 }, WorkUnit.LOW_PRIORITY));

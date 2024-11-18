@@ -29,19 +29,11 @@ public interface JobsService {
      * Schedules process job that is responsible for starting new process instances
      * based on the given description.
      * 
+     * @param context of the job
      * @param description defines what kind of process should be started upon expiration time
      * @return returns unique id of the job
      */
-    String scheduleProcessJob(ProcessJobDescription description);
-
-    /**
-     * Schedules process instance related job that will signal exact same process instance
-     * upon expiration time.
-     * 
-     * @param description defines the context of the process instance that should be signaled
-     * @return returns unique id of the job
-     */
-    String scheduleProcessInstanceJob(ProcessInstanceJobDescription description);
+    String scheduleJob(JobDescription description);
 
     /**
      * Cancels given job

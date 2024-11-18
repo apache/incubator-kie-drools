@@ -18,22 +18,33 @@
  */
 package org.kie.kogito;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import static java.util.Arrays.asList;
+
 public class StaticConfig implements Config {
 
-    private final Addons addons;
-    private final Map<Class<? extends KogitoConfig>, KogitoConfig> configMap = new HashMap<>();
+    private Addons addons;
+    private Map<Class<? extends KogitoConfig>, KogitoConfig> configMap = new HashMap<>();
 
-    public StaticConfig(Addons addons,
-            KogitoConfig... configs) {
-        this(addons, Arrays.asList(configs));
+    public StaticConfig() {
+        addons = Addons.EMTPY;
     }
 
-    protected StaticConfig(Addons addons,
-            Iterable<KogitoConfig> configs) {
+    public StaticConfig(Addons addons, KogitoConfig... configs) {
+        init(addons, configs);
+    }
+
+    protected StaticConfig(Addons addons, Iterable<KogitoConfig> configs) {
+        init(addons, configs);
+    }
+
+    protected void init(Addons addons, KogitoConfig... configs) {
+        init(addons, asList(configs));
+    }
+
+    protected void init(Addons addons, Iterable<KogitoConfig> configs) {
         this.addons = addons;
         configs.forEach(this::loadConfig);
     }

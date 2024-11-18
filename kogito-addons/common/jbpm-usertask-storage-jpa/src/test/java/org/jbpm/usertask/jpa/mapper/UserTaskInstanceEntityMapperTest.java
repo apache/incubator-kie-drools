@@ -19,6 +19,8 @@
 
 package org.jbpm.usertask.jpa.mapper;
 
+import java.util.List;
+
 import org.jbpm.usertask.jpa.mapper.utils.TestUtils;
 import org.jbpm.usertask.jpa.model.UserTaskInstanceEntity;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,7 +30,9 @@ import org.kie.kogito.usertask.UserTaskInstance;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.same;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class UserTaskInstanceEntityMapperTest {
@@ -48,7 +52,7 @@ public class UserTaskInstanceEntityMapperTest {
 
     @BeforeEach
     public void setUp() {
-        this.userTaskInstanceEntityMapper = new UserTaskInstanceEntityMapper(attachmentsEntityMapper, commentsEntityMapper, metadataEntityMapper, inputsEntityMapper, outputsEntityMapper);
+        this.userTaskInstanceEntityMapper = new UserTaskInstanceEntityMapper(List.of(attachmentsEntityMapper, commentsEntityMapper, metadataEntityMapper, inputsEntityMapper, outputsEntityMapper));
     }
 
     @Test

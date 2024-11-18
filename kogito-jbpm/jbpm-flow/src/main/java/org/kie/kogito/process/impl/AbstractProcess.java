@@ -57,7 +57,7 @@ import org.kie.kogito.internal.utils.ConversionUtils;
 import org.kie.kogito.jobs.DurationExpirationTime;
 import org.kie.kogito.jobs.ExactExpirationTime;
 import org.kie.kogito.jobs.ExpirationTime;
-import org.kie.kogito.jobs.ProcessJobDescription;
+import org.kie.kogito.jobs.descriptors.ProcessJobDescription;
 import org.kie.kogito.process.MutableProcessInstances;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessConfig;
@@ -227,7 +227,7 @@ public abstract class AbstractProcess<T extends Model> implements Process<T>, Pr
         if (startNodes != null && !startNodes.isEmpty()) {
             for (StartNode startNode : startNodes) {
                 if (startNode != null && startNode.getTimer() != null) {
-                    String timerId = processRuntime.getJobsService().scheduleProcessJob(ProcessJobDescription.of(configureTimerInstance(startNode.getTimer()), this));
+                    String timerId = processRuntime.getJobsService().scheduleJob(ProcessJobDescription.of(configureTimerInstance(startNode.getTimer()), this));
                     startTimerInstances.add(timerId);
                 }
             }

@@ -34,11 +34,12 @@ import org.kie.kogito.codegen.api.template.TemplatedGenerator;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
-import com.github.javaparser.ast.stmt.ExplicitConstructorInvocationStmt;
+import com.github.javaparser.ast.stmt.BlockStmt;
 
 import static org.kie.kogito.codegen.core.CodegenUtils.newObject;
 
@@ -102,7 +103,7 @@ public class ApplicationConfigGenerator {
                             templatedGenerator,
                             "Compilation unit doesn't contain a class or interface declaration!"));
 
-            initConfigs(getSuperStatement(cls), configClassNames);
+            initConfigs(getInitStatement(cls), configClassNames);
         }
 
         return new GeneratedFile(ConfigGenerator.APPLICATION_CONFIG_TYPE,
@@ -138,8 +139,8 @@ public class ApplicationConfigGenerator {
         this.addons = addons;
     }
 
-    private ExplicitConstructorInvocationStmt getSuperStatement(ClassOrInterfaceDeclaration cls) {
-        return cls.findFirst(ExplicitConstructorInvocationStmt.class)
+    private BlockStmt getInitStatement(ClassOrInterfaceDeclaration cls) {
+        return cls.findFirst(ConstructorDeclaration.class).map(ConstructorDeclaration::getBody)
                 .orElseThrow(() -> new InvalidTemplateException(
                         templatedGenerator,
                         "Impossible to find super invocation"));
@@ -154,10 +155,13 @@ public class ApplicationConfigGenerator {
      * @param superInvocation
      * @param configClassNames
      */
-    private void initConfigs(ExplicitConstructorInvocationStmt superInvocation, Collection<String> configClassNames) {
-        configClassNames.stream()
-                .map(config -> new ObjectCreationExpr()
-                        .setType(config))
-                .forEach(superInvocation::addArgument);
+    private void initConfigs(BlockStmt initInvocation, Collection<String> configClassNames) {
+        initInvocation.findFirst(MethodCallExpr.class).ifPresent(call -> {
+            configClassNames
+                    .stream()
+                    .map(config -> new ObjectCreationExpr().setType(config))
+                    .forEach(call::addArgument);
+        });
+
     }
 }

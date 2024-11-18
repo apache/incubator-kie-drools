@@ -24,8 +24,10 @@ import java.util.function.Supplier;
 import org.kie.kogito.auth.IdentityProvider;
 import org.kie.kogito.jobs.JobsService;
 import org.kie.kogito.services.identity.NoOpIdentityProvider;
+import org.kie.kogito.services.jobs.impl.StaticJobService;
 import org.kie.kogito.services.uow.CollectingUnitOfWorkFactory;
 import org.kie.kogito.services.uow.DefaultUnitOfWorkManager;
+import org.kie.kogito.services.uow.StaticUnitOfWorkManger;
 import org.kie.kogito.uow.UnitOfWorkManager;
 import org.kie.kogito.usertask.UserTaskAssignmentStrategyConfig;
 import org.kie.kogito.usertask.UserTaskConfig;
@@ -33,8 +35,14 @@ import org.kie.kogito.usertask.UserTaskEventListenerConfig;
 import org.kie.kogito.usertask.UserTaskInstances;
 import org.kie.kogito.usertask.impl.lifecycle.DefaultUserTaskLifeCycle;
 import org.kie.kogito.usertask.lifecycle.UserTaskLifeCycle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import static org.kie.kogito.services.jobs.impl.StaticJobService.staticJobService;
 
 public class DefaultUserTaskConfig implements UserTaskConfig {
+
+    private static final Logger LOG = LoggerFactory.getLogger(DefaultUserTaskConfig.class);
 
     private UserTaskEventListenerConfig userTaskEventListeners;
     private UnitOfWorkManager unitOfWorkManager;
@@ -47,7 +55,7 @@ public class DefaultUserTaskConfig implements UserTaskConfig {
     public DefaultUserTaskConfig() {
         this(new DefaultUserTaskEventListenerConfig(),
                 new DefaultUnitOfWorkManager(new CollectingUnitOfWorkFactory()),
-                null,
+                staticJobService(),
                 new NoOpIdentityProvider(),
                 new DefaultUserTaskLifeCycle(),
                 new DefaultUserTaskAssignmentStrategyConfig(),
@@ -64,8 +72,8 @@ public class DefaultUserTaskConfig implements UserTaskConfig {
             Iterable<UserTaskInstances> userTaskInstances) {
 
         this.userTaskEventListeners = singleton(userTaskEventListenerConfig, DefaultUserTaskEventListenerConfig::new);
-        this.unitOfWorkManager = singleton(unitOfWorkManager, () -> new DefaultUnitOfWorkManager(new CollectingUnitOfWorkFactory()));
-        this.jobService = singleton(jobService, () -> null);
+        this.unitOfWorkManager = singleton(unitOfWorkManager, StaticUnitOfWorkManger::staticUnitOfWorkManager);
+        this.jobService = singleton(jobService, StaticJobService::staticJobService);
         this.identityProvider = singleton(identityProvider, NoOpIdentityProvider::new);
         this.userTaskLifeCycle = singleton(userTaskLifeCycle, DefaultUserTaskLifeCycle::new);
         this.userTaskAssignmentStrategyConfig = singleton(userTaskAssignmentStrategyConfig, DefaultUserTaskAssignmentStrategyConfig::new);
@@ -73,12 +81,16 @@ public class DefaultUserTaskConfig implements UserTaskConfig {
 
     }
 
-    private <T> T singleton(Iterable<T> value, Supplier<T> defaultValue) {
-        Iterator<T> iterator = value.iterator();
+    private <T> T singleton(Iterable<T> values, Supplier<T> defaultValue) {
+        Iterator<T> iterator = values.iterator();
+        T value = null;
         if (iterator.hasNext()) {
-            return iterator.next();
+            value = iterator.next();
+        } else {
+            value = defaultValue.get();
         }
-        return defaultValue.get();
+        LOG.debug("UserTask config element {}", value);
+        return value;
     }
 
     public DefaultUserTaskConfig(

@@ -23,7 +23,7 @@ import java.net.URI;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.jobs.ExactExpirationTime;
 import org.kie.kogito.jobs.ExpirationTime;
-import org.kie.kogito.jobs.ProcessInstanceJobDescription;
+import org.kie.kogito.jobs.descriptors.ProcessInstanceJobDescription;
 import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipient;
 import org.kie.kogito.jobs.service.api.schedule.timer.TimerSchedule;
 import org.kie.kogito.jobs.service.api.serlialization.SerializationUtils;
@@ -91,7 +91,7 @@ class JobCallbackResourceDefTest {
     }
 
     private ProcessInstanceJobDescription mockProcessInstanceJobDescription() {
-        return ProcessInstanceJobDescription.builder()
+        return ProcessInstanceJobDescription.newProcessInstanceJobDescriptionBuilder()
                 .id(JOB_ID)
                 .timerId(TIMER_ID)
                 .expirationTime(EXPIRATION_TIME)

@@ -27,10 +27,11 @@ import org.kie.kogito.process.ProcessVersionResolver;
 import org.kie.kogito.process.WorkItemHandlerConfig;
 import org.kie.kogito.services.identity.NoOpIdentityProvider;
 import org.kie.kogito.services.signal.DefaultSignalManagerHub;
-import org.kie.kogito.services.uow.CollectingUnitOfWorkFactory;
-import org.kie.kogito.services.uow.DefaultUnitOfWorkManager;
 import org.kie.kogito.signal.SignalManagerHub;
 import org.kie.kogito.uow.UnitOfWorkManager;
+
+import static org.kie.kogito.services.jobs.impl.StaticJobService.staticJobService;
+import static org.kie.kogito.services.uow.StaticUnitOfWorkManger.staticUnitOfWorkManager;
 
 public class StaticProcessConfig implements ProcessConfig {
 
@@ -44,11 +45,21 @@ public class StaticProcessConfig implements ProcessConfig {
     private final IdentityProvider identityProvider;
     private final BusinessCalendar businessCalendar;
 
+    public StaticProcessConfig(JobsService jobService) {
+        this(new DefaultWorkItemHandlerConfig(),
+                new DefaultProcessEventListenerConfig(),
+                staticUnitOfWorkManager(),
+                jobService,
+                null,
+                new NoOpIdentityProvider(),
+                null);
+    }
+
     public StaticProcessConfig(
             WorkItemHandlerConfig workItemHandlerConfig,
             ProcessEventListenerConfig processEventListenerConfig,
             UnitOfWorkManager unitOfWorkManager) {
-        this(workItemHandlerConfig, processEventListenerConfig, unitOfWorkManager, null, null, new NoOpIdentityProvider(), null);
+        this(workItemHandlerConfig, processEventListenerConfig, unitOfWorkManager, staticJobService(), null, new NoOpIdentityProvider(), null);
     }
 
     public StaticProcessConfig(
@@ -72,8 +83,8 @@ public class StaticProcessConfig implements ProcessConfig {
     public StaticProcessConfig() {
         this(new DefaultWorkItemHandlerConfig(),
                 new DefaultProcessEventListenerConfig(),
-                new DefaultUnitOfWorkManager(new CollectingUnitOfWorkFactory()),
-                null,
+                staticUnitOfWorkManager(),
+                staticJobService(),
                 null,
                 new NoOpIdentityProvider(),
                 null);

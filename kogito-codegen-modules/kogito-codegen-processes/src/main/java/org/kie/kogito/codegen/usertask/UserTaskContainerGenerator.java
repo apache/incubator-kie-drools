@@ -62,17 +62,15 @@ public class UserTaskContainerGenerator extends AbstractApplicationSection {
         ClassOrInterfaceDeclaration clazzUnit = unit.findFirst(ClassOrInterfaceDeclaration.class).get();
 
         ConstructorDeclaration constructor = clazzUnit.findFirst(ConstructorDeclaration.class).get();
-
-        BlockStmt block = new BlockStmt();
+        BlockStmt block = constructor.getBody();
         NodeList<Expression> arguments = new NodeList<>();
         arguments.add(new NameExpr("application"));
         for (Work descriptor : descriptors) {
             String fqn = UserTaskCodegenHelper.fqnClassName(descriptor);
             arguments.add(new ObjectCreationExpr().setType(StaticJavaParser.parseClassOrInterfaceType(fqn)).setArguments(nodeList(new NameExpr("application"))));
         }
-        block.addStatement(new ExplicitConstructorInvocationStmt().setThis(false).setArguments(arguments));
+        block.findFirst(ExplicitConstructorInvocationStmt.class).ifPresent(e -> e.setArguments(arguments));
         constructor.setBody(block);
-
         return unit;
     }
 

@@ -19,10 +19,10 @@
 
 package org.jbpm.usertask.jpa.repository;
 
-import org.jbpm.usertask.jpa.model.TaskDataEntityPK;
+import org.jbpm.usertask.jpa.model.TaskNamedDataEntityPK;
 import org.jbpm.usertask.jpa.model.TaskOutputEntity;
 
-public class TaskOutputRepository extends BaseRepository<TaskOutputEntity, TaskDataEntityPK> {
+public class TaskOutputRepository extends BaseRepository<TaskOutputEntity, TaskNamedDataEntityPK> {
 
     public TaskOutputRepository(UserTaskJPAContext context) {
         super(context);

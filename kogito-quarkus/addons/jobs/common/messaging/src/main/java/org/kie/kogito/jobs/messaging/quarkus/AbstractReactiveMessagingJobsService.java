@@ -23,10 +23,9 @@ import java.util.concurrent.CompletableFuture;
 
 import org.eclipse.microprofile.reactive.messaging.Emitter;
 import org.eclipse.microprofile.reactive.messaging.Message;
+import org.kie.kogito.jobs.JobDescription;
 import org.kie.kogito.jobs.JobsService;
 import org.kie.kogito.jobs.JobsServiceException;
-import org.kie.kogito.jobs.ProcessInstanceJobDescription;
-import org.kie.kogito.jobs.ProcessJobDescription;
 import org.kie.kogito.jobs.service.api.Job;
 import org.kie.kogito.jobs.service.api.JobLookupId;
 import org.kie.kogito.jobs.service.api.event.CreateJobEvent;
@@ -73,12 +72,7 @@ public abstract class AbstractReactiveMessagingJobsService implements JobsServic
     }
 
     @Override
-    public String scheduleProcessJob(ProcessJobDescription description) {
-        throw new UnsupportedOperationException("Scheduling for process jobs is not yet implemented");
-    }
-
-    @Override
-    public String scheduleProcessInstanceJob(ProcessInstanceJobDescription description) {
+    public String scheduleJob(JobDescription description) {
         Job job = buildCallbackPatternJob(description, buildCallbackURI(description, serviceUrl.toString()), objectMapper);
         LOGGER.debug("scheduleProcessInstanceJob job: {}", job);
         CreateJobEvent event = CreateJobEvent.builder()

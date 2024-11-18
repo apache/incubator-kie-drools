@@ -52,7 +52,7 @@ import org.kie.kogito.jobs.DurationExpirationTime;
 import org.kie.kogito.jobs.ExactExpirationTime;
 import org.kie.kogito.jobs.ExpirationTime;
 import org.kie.kogito.jobs.JobsService;
-import org.kie.kogito.jobs.ProcessInstanceJobDescription;
+import org.kie.kogito.jobs.descriptors.ProcessInstanceJobDescription;
 import org.kie.kogito.process.expr.Expression;
 import org.kie.kogito.process.expr.ExpressionHandlerFactory;
 import org.kie.kogito.timer.TimerInstance;
@@ -95,7 +95,7 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
             JobsService jobService = ((KogitoProcessRuntime.Provider) getProcessInstance().getKnowledgeRuntime().getProcessRuntime()).getKogitoProcessRuntime().getJobsService();
             for (Timer timer : timers.keySet()) {
                 ProcessInstanceJobDescription jobDescription =
-                        ProcessInstanceJobDescription.builder()
+                        ProcessInstanceJobDescription.newProcessInstanceJobDescriptionBuilder()
                                 .generateId()
                                 .timerId(Long.toString(timer.getId()))
                                 .expirationTime(createTimerInstance(timer))
@@ -105,7 +105,7 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
                                 .processInstanceId(getProcessInstance().getStringId())
                                 .nodeInstanceId(this.getId())
                                 .build();
-                String jobId = jobService.scheduleProcessInstanceJob(jobDescription);
+                String jobId = jobService.scheduleJob(jobDescription);
                 timerInstances.add(jobId);
                 timerInstancesReference.put(jobId, Long.toString(timer.getId()));
             }

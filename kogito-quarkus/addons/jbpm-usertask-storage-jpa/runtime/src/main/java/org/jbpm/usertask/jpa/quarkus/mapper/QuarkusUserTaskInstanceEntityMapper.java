@@ -19,21 +19,24 @@
 
 package org.jbpm.usertask.jpa.quarkus.mapper;
 
-import org.jbpm.usertask.jpa.mapper.*;
+import java.util.Collections;
+
+import org.jbpm.usertask.jpa.mapper.EntityMapper;
+import org.jbpm.usertask.jpa.mapper.UserTaskInstanceEntityMapper;
 
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
 
 @ApplicationScoped
 public class QuarkusUserTaskInstanceEntityMapper extends UserTaskInstanceEntityMapper {
 
     QuarkusUserTaskInstanceEntityMapper() {
-        this(null, null, null, null, null);
+        super(Collections.emptyList());
     }
 
     @Inject
-    public QuarkusUserTaskInstanceEntityMapper(AttachmentsEntityMapper attachmentsMapper, CommentsEntityMapper commentsMapper, TaskMetadataEntityMapper taskMetadataEntityMapper,
-            TaskInputsEntityMapper taskInputsEntityMapper, TaskOutputsEntityMapper taskOutputsEntityMapper) {
-        super(attachmentsMapper, commentsMapper, taskMetadataEntityMapper, taskInputsEntityMapper, taskOutputsEntityMapper);
+    public QuarkusUserTaskInstanceEntityMapper(Instance<EntityMapper> mappers) {
+        super(mappers);
     }
 }

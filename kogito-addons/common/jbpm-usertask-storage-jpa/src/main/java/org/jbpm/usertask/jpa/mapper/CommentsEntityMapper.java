@@ -32,7 +32,7 @@ import org.kie.kogito.usertask.model.Comment;
 
 import static java.util.stream.Collectors.toCollection;
 
-public class CommentsEntityMapper {
+public class CommentsEntityMapper implements EntityMapper {
 
     private final CommentRepository repository;
 
@@ -40,6 +40,7 @@ public class CommentsEntityMapper {
         this.repository = repository;
     }
 
+    @Override
     public void mapInstanceToEntity(UserTaskInstance userTaskInstance, UserTaskInstanceEntity userTaskInstanceEntity) {
         Collection<CommentEntity> toRemove = userTaskInstanceEntity.getComments()
                 .stream()
@@ -64,6 +65,7 @@ public class CommentsEntityMapper {
         });
     }
 
+    @Override
     public void mapEntityToInstance(UserTaskInstanceEntity userTaskInstanceEntity, UserTaskInstance userTaskInstance) {
         List<Comment> comments = userTaskInstanceEntity.getComments().stream().map(commentEntity -> {
             Comment comment = new Comment(commentEntity.getId(), commentEntity.getUpdatedBy());

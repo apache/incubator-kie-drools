@@ -22,7 +22,7 @@ import java.net.URI;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.kie.kogito.jobs.ProcessInstanceJobDescription;
+import org.kie.kogito.jobs.descriptors.ProcessInstanceJobDescription;
 import org.kie.kogito.jobs.management.RestJobsServiceTest;
 import org.kie.kogito.jobs.service.api.Job;
 import org.mockito.ArgumentCaptor;
@@ -63,7 +63,7 @@ class SpringRestJobsServiceTest extends RestJobsServiceTest<SpringRestJobsServic
     void scheduleProcessInstanceJob() throws Exception {
         when(restTemplate.postForEntity(any(URI.class), any(HttpEntity.class), eq(String.class))).thenReturn(ResponseEntity.ok().build());
         ProcessInstanceJobDescription processInstanceJobDescription = buildProcessInstanceJobDescription();
-        tested.scheduleProcessInstanceJob(processInstanceJobDescription);
+        tested.scheduleJob(processInstanceJobDescription);
         ArgumentCaptor<HttpEntity<String>> jobArgumentCaptor = forClass(HttpEntity.class);
         verify(restTemplate).postForEntity(eq(tested.getJobsServiceUri()),
                 jobArgumentCaptor.capture(),

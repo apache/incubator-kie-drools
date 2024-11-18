@@ -24,8 +24,7 @@ import jakarta.enterprise.inject.Instance;
 public class ApplicationConfig extends org.kie.kogito.StaticConfig {
 
     @jakarta.inject.Inject
-    public ApplicationConfig(
-            Instance<org.kie.kogito.KogitoConfig> configs) {
-        super($Addons$, configs);
+    public ApplicationConfig(Instance<org.kie.kogito.KogitoConfig> configs) {
+        init($Addons$, configs);
     }
 }

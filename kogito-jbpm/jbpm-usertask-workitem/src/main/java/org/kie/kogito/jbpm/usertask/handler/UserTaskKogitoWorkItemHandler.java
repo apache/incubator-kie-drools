@@ -35,6 +35,7 @@ import org.kie.kogito.usertask.UserTask;
 import org.kie.kogito.usertask.UserTasks;
 import org.kie.kogito.usertask.impl.DefaultUserTaskInstance;
 import org.kie.kogito.usertask.impl.lifecycle.DefaultUserTaskLifeCycle;
+import org.kie.kogito.usertask.impl.model.DeadlineHelper;
 
 import static java.util.Collections.emptyMap;
 import static java.util.Optional.ofNullable;
@@ -51,11 +52,17 @@ public class UserTaskKogitoWorkItemHandler extends DefaultKogitoWorkItemHandler 
     private static final String DESCRIPTION = "Description";
     private static final String PRIORITY = "Priority";
     private static final String TASK_NAME = "TaskName";
+    private static final String NODE_NAME = "NodeName";
     private static final String ACTOR_ID = "ActorId";
     private static final String GROUP_ID = "GroupId";
     private static final String BUSINESSADMINISTRATOR_ID = "BusinessAdministratorId";
     private static final String BUSINESSADMINISTRATOR_GROUP_ID = "BusinessAdministratorGroupId";
     private static final String EXCLUDED_OWNER_ID = "ExcludedOwnerId";
+
+    private static final String NOT_STARTED_NOTIFY = "NotStartedNotify";
+    private static final String NOT_STARTED_REASSIGN = "NotStartedReassign";
+    private static final String NOT_COMPLETED_NOTIFY = "NotCompletedNotify";
+    private static final String NOT_COMPLETED_REASSIGN = "NotCompletedReassign";
 
     public UserTaskKogitoWorkItemHandler() {
         super();
@@ -78,7 +85,7 @@ public class UserTaskKogitoWorkItemHandler extends DefaultKogitoWorkItemHandler 
 
         userTask.instances().create(instance);
 
-        instance.setTaskName((String) workItem.getParameter(TASK_NAME));
+        instance.setTaskName(ofNullable((String) workItem.getParameter(TASK_NAME)).orElse((String) workItem.getParameter(NODE_NAME)));
         instance.setTaskDescription((String) workItem.getParameter(DESCRIPTION));
         instance.setTaskPriority(priority != null ? priority.toString() : null);
 
@@ -100,7 +107,12 @@ public class UserTaskKogitoWorkItemHandler extends DefaultKogitoWorkItemHandler 
         ofNullable(workItem.getParameters().get(BUSINESSADMINISTRATOR_GROUP_ID)).map(String.class::cast).map(this::toSet).ifPresent(instance::setAdminGroups);
         ofNullable(workItem.getParameters().get(EXCLUDED_OWNER_ID)).map(String.class::cast).map(this::toSet).ifPresent(instance::setExcludedUsers);
 
-        instance.transition(DefaultUserTaskLifeCycle.ACTIVATE, emptyMap(), IdentityProviders.of(WORKFLOW_ENGINE_USER));
+        ofNullable(workItem.getParameters().get(NOT_STARTED_NOTIFY)).map(String.class::cast).map(DeadlineHelper::parseDeadlines).ifPresent(instance::setNotStartedDeadlines);
+        ofNullable(workItem.getParameters().get(NOT_STARTED_REASSIGN)).map(String.class::cast).map(DeadlineHelper::parseReassignments).ifPresent(instance::setNotStartedReassignments);
+        ofNullable(workItem.getParameters().get(NOT_COMPLETED_NOTIFY)).map(String.class::cast).map(DeadlineHelper::parseDeadlines).ifPresent(instance::setNotCompletedDeadlines);
+        ofNullable(workItem.getParameters().get(NOT_COMPLETED_REASSIGN)).map(String.class::cast).map(DeadlineHelper::parseReassignments).ifPresent(instance::setNotCompletedReassignments);
+
+        instance.initialize(emptyMap(), IdentityProviders.of(WORKFLOW_ENGINE_USER));
 
         if (workItem instanceof InternalKogitoWorkItem ikw) {
             ikw.setExternalReferenceId(instance.getId());

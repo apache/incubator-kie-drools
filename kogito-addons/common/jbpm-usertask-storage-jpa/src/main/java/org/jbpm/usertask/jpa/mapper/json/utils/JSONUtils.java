@@ -22,8 +22,11 @@ package org.jbpm.usertask.jpa.mapper.json.utils;
 import java.util.Objects;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+
+import static java.lang.Thread.currentThread;
 
 public class JSONUtils {
 
@@ -31,6 +34,10 @@ public class JSONUtils {
 
     static {
         OBJECT_MAPPER.registerModule(new JavaTimeModule());
+    }
+
+    public static JavaType buildJavaType(Class<?> clazz, Class<?> parameter) {
+        return OBJECT_MAPPER.getTypeFactory().constructParametricType(clazz, parameter);
     }
 
     public static String valueToString(Object value) {
@@ -46,7 +53,18 @@ public class JSONUtils {
             if (Objects.isNull(value) || Objects.isNull(javaType)) {
                 return null;
             }
-            return OBJECT_MAPPER.readValue(value, Class.forName(javaType));
+            return OBJECT_MAPPER.readValue(value, currentThread().getContextClassLoader().loadClass(javaType));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static Object stringTreeToValue(String value, JavaType javaType) {
+        try {
+            if (Objects.isNull(value) || Objects.isNull(javaType)) {
+                return null;
+            }
+            return OBJECT_MAPPER.readValue(value, javaType);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

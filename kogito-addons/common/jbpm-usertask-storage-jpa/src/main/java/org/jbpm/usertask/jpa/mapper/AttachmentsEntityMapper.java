@@ -33,13 +33,14 @@ import org.kie.kogito.usertask.model.Attachment;
 
 import static java.util.stream.Collectors.toCollection;
 
-public class AttachmentsEntityMapper {
+public class AttachmentsEntityMapper implements EntityMapper {
     private final AttachmentRepository repository;
 
     public AttachmentsEntityMapper(AttachmentRepository repository) {
         this.repository = repository;
     }
 
+    @Override
     public void mapInstanceToEntity(UserTaskInstance userTaskInstance, UserTaskInstanceEntity userTaskInstanceEntity) {
         Collection<AttachmentEntity> toRemove = userTaskInstanceEntity.getAttachments()
                 .stream()
@@ -65,6 +66,7 @@ public class AttachmentsEntityMapper {
         });
     }
 
+    @Override
     public void mapEntityToInstance(UserTaskInstanceEntity userTaskInstanceEntity, UserTaskInstance userTaskInstance) {
 
         List<Attachment> attachments = userTaskInstanceEntity.getAttachments().stream().map(attachmentEntity -> {

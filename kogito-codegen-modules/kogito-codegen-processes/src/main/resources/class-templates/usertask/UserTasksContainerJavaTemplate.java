@@ -18,12 +18,25 @@
  */
 package org.kie.kogito.usertask.impl;
 
+import org.kie.kogito.jobs.JobsService;
+import org.kie.kogito.usertask.UserTaskConfig;
+import org.kie.kogito.services.jobs.impl.InMemoryJobContext;
+import org.kie.kogito.services.jobs.impl.InMemoryJobService;
+import org.kie.kogito.services.jobs.impl.InMemoryUserTaskJobExecutorFactory;
+import org.kie.kogito.uow.UnitOfWorkManager;
 import org.kie.kogito.usertask.impl.DefaultUserTasks;
 
 public class UserTasks extends DefaultUserTasks {
 
     public UserTasks(Application application) {
         super(application);
+        JobsService jobsService = application.config().get(UserTaskConfig.class).jobsService();
+        UnitOfWorkManager unitOfWorkManager = application.config().get(UserTaskConfig.class).unitOfWorkManager();
+        if (jobsService instanceof InMemoryJobService) {
+            InMemoryJobService inMemoryJobService = (InMemoryJobService) jobsService;
+            InMemoryJobContext context = new InMemoryJobContext(null, unitOfWorkManager, null, this);
+            inMemoryJobService.registerJobExecutorFactory(new InMemoryUserTaskJobExecutorFactory(context));
+        }
     }
 
 }

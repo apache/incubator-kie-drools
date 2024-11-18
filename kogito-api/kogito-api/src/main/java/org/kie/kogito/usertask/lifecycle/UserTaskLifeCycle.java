@@ -28,13 +28,23 @@ import org.kie.kogito.usertask.UserTaskInstance;
 
 public interface UserTaskLifeCycle {
 
+    final String ACTIVATE = "activate";
+
+    default String startTransition() {
+        return ACTIVATE;
+    }
+
     Optional<UserTaskTransitionToken> transition(UserTaskInstance userTaskInstance, UserTaskTransitionToken transition, IdentityProvider identity);
 
     UserTaskTransitionToken newTransitionToken(String transitionId, UserTaskInstance userTaskInstance, Map<String, Object> data);
 
-    UserTaskTransitionToken newCompleteTransitionToken(UserTaskInstance userTaskInstance, Map<String, Object> emptyMap);
+    default Optional<UserTaskTransitionToken> newReassignmentTransitionToken(UserTaskInstance defaultUserTaskInstance, Map<String, Object> data) {
+        return Optional.empty();
+    }
 
-    UserTaskTransitionToken newAbortTransitionToken(UserTaskInstance userTaskInstance, Map<String, Object> emptyMap);
+    UserTaskTransitionToken newCompleteTransitionToken(UserTaskInstance userTaskInstance, Map<String, Object> data);
+
+    UserTaskTransitionToken newAbortTransitionToken(UserTaskInstance userTaskInstance, Map<String, Object> data);
 
     List<UserTaskTransition> allowedTransitions(UserTaskInstance ut);
 

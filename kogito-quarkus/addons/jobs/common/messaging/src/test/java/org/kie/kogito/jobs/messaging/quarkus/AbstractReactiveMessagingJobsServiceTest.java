@@ -29,10 +29,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.kie.kogito.jobs.ExactExpirationTime;
 import org.kie.kogito.jobs.ExpirationTime;
+import org.kie.kogito.jobs.JobDescription;
 import org.kie.kogito.jobs.JobsServiceException;
-import org.kie.kogito.jobs.ProcessInstanceJobDescription;
-import org.kie.kogito.jobs.ProcessJobDescription;
 import org.kie.kogito.jobs.api.JobCallbackPayload;
+import org.kie.kogito.jobs.descriptors.ProcessInstanceJobDescription;
 import org.kie.kogito.jobs.service.api.Job;
 import org.kie.kogito.jobs.service.api.JobLookupId;
 import org.kie.kogito.jobs.service.api.TemporalUnit;
@@ -105,12 +105,12 @@ public abstract class AbstractReactiveMessagingJobsServiceTest<T extends Abstrac
 
     @Test
     protected void scheduleProcessInstanceJobSuccessful() throws Exception {
-        ProcessInstanceJobDescription description = mockProcessInstanceJobDescription();
+        JobDescription description = mockProcessInstanceJobDescription();
         CreateJobEvent expectedEvent = mockExpectedCreateJobEvent();
         doReturn(SERIALIZED_EVENT).when(objectMapper).writeValueAsString(any(CreateJobEvent.class));
         doReturn(JSON_PAYLOAD).when(objectMapper).valueToTree(any(JobCallbackPayload.class));
 
-        jobsService.scheduleProcessInstanceJob(description);
+        jobsService.scheduleJob(description);
 
         verifyCreateJobEventWasCreated(1, expectedEvent);
         verifyEmitterWasInvoked(1, SERIALIZED_EVENT);
@@ -137,7 +137,7 @@ public abstract class AbstractReactiveMessagingJobsServiceTest<T extends Abstrac
         // Clear the errors and produce a second execution that must work fine.
         eventsEmitter.clearErrors();
         doReturn(SERIALIZED_SECOND_EVENT).when(objectMapper).writeValueAsString(any(CreateJobEvent.class));
-        jobsService.scheduleProcessInstanceJob(description);
+        jobsService.scheduleJob(description);
 
         verifyCreateJobEventWasCreated(2, expectedEvent, expectedEvent);
         verifyEmitterWasInvoked(2, SERIALIZED_EVENT, SERIALIZED_SECOND_EVENT);
@@ -148,7 +148,7 @@ public abstract class AbstractReactiveMessagingJobsServiceTest<T extends Abstrac
         RuntimeException nackError = new RuntimeException(ERROR);
         eventsEmitter.setNackError(nackError);
         // ensure the execution failed as programmed
-        assertThatThrownBy(() -> jobsService.scheduleProcessInstanceJob(description))
+        assertThatThrownBy(() -> jobsService.scheduleJob(description))
                 .isInstanceOf(JobsServiceException.class)
                 .hasMessageContaining("Error while emitting JobCloudEvent")
                 .hasCause(nackError);
@@ -175,7 +175,7 @@ public abstract class AbstractReactiveMessagingJobsServiceTest<T extends Abstrac
         // Clear the errors and produce a second execution that must work fine.
         eventsEmitter.clearErrors();
         doReturn(SERIALIZED_SECOND_EVENT).when(objectMapper).writeValueAsString(any(CreateJobEvent.class));
-        jobsService.scheduleProcessInstanceJob(description);
+        jobsService.scheduleJob(description);
 
         verifyCreateJobEventWasCreated(2, expectedEvent, expectedEvent);
         verifyEmitterWasInvoked(2, SERIALIZED_EVENT, SERIALIZED_SECOND_EVENT);
@@ -186,7 +186,7 @@ public abstract class AbstractReactiveMessagingJobsServiceTest<T extends Abstrac
         RuntimeException fatalError = new RuntimeException(FATAL_ERROR);
         eventsEmitter.setFatalError(fatalError);
         // ensure the execution failed as programmed
-        assertThatThrownBy(() -> jobsService.scheduleProcessInstanceJob(description))
+        assertThatThrownBy(() -> jobsService.scheduleJob(description))
                 .isInstanceOf(JobsServiceException.class)
                 .hasMessageContaining("Error while emitting JobCloudEvent")
                 .hasCause(fatalError);
@@ -275,15 +275,8 @@ public abstract class AbstractReactiveMessagingJobsServiceTest<T extends Abstrac
                 .hasCause(fatalError);
     }
 
-    @Test
-    protected void scheduleProcessJob() {
-        ProcessJobDescription description = ProcessJobDescription.of(EXPIRATION_TIME, PROCESS_ID);
-        assertThatThrownBy(() -> jobsService.scheduleProcessJob(description))
-                .isInstanceOf(UnsupportedOperationException.class);
-    }
-
     protected ProcessInstanceJobDescription mockProcessInstanceJobDescription() {
-        return ProcessInstanceJobDescription.builder()
+        return ProcessInstanceJobDescription.newProcessInstanceJobDescriptionBuilder()
                 .id(JOB_ID)
                 .timerId(TIMER_ID)
                 .expirationTime(EXPIRATION_TIME)

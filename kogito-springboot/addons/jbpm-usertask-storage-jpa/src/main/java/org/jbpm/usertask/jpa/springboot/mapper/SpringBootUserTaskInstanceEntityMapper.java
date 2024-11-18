@@ -19,7 +19,10 @@
 
 package org.jbpm.usertask.jpa.springboot.mapper;
 
-import org.jbpm.usertask.jpa.mapper.*;
+import java.util.List;
+
+import org.jbpm.usertask.jpa.mapper.EntityMapper;
+import org.jbpm.usertask.jpa.mapper.UserTaskInstanceEntityMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -27,8 +30,8 @@ import org.springframework.stereotype.Component;
 public class SpringBootUserTaskInstanceEntityMapper extends UserTaskInstanceEntityMapper {
 
     @Autowired
-    public SpringBootUserTaskInstanceEntityMapper(AttachmentsEntityMapper attachmentsMapper, CommentsEntityMapper commentsMapper, TaskMetadataEntityMapper taskMetadataEntityMapper,
-            TaskInputsEntityMapper taskInputsEntityMapper, TaskOutputsEntityMapper taskOutputsEntityMapper) {
-        super(attachmentsMapper, commentsMapper, taskMetadataEntityMapper, taskInputsEntityMapper, taskOutputsEntityMapper);
+    public SpringBootUserTaskInstanceEntityMapper(List<EntityMapper> mappers) {
+        super(mappers);
     }
+
 }

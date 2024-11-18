@@ -27,10 +27,13 @@ import org.kie.kogito.jobs.JobsService;
 import org.kie.kogito.process.ProcessVersionResolver;
 import org.kie.kogito.process.Processes;
 import org.kie.kogito.process.version.ProjectVersionProcessVersionResolver;
+import org.kie.kogito.services.jobs.impl.InMemoryJobContext;
 import org.kie.kogito.services.jobs.impl.InMemoryJobService;
+import org.kie.kogito.services.jobs.impl.InMemoryProcessJobExecutorFactory;
 import org.kie.kogito.services.uow.CollectingUnitOfWorkFactory;
 import org.kie.kogito.services.uow.DefaultUnitOfWorkManager;
 import org.kie.kogito.uow.UnitOfWorkManager;
+import org.kie.kogito.usertask.UserTasks;
 
 import io.quarkus.arc.DefaultBean;
 import io.quarkus.arc.properties.IfBuildProperty;
@@ -61,8 +64,11 @@ public class KogitoBeanProducer {
 
     @DefaultBean
     @Produces
-    JobsService jobsService(Instance<Processes> processes, UnitOfWorkManager uowm, ScheduledExecutorService executor) {
-        return InMemoryJobService.get(processes.isResolvable() ? processes.get() : null, uowm, executor);
+    JobsService jobsService(Instance<Processes> processes, Instance<UserTasks> userTasks, UnitOfWorkManager uowm, ScheduledExecutorService executor) {
+        InMemoryJobContext context = new InMemoryJobContext(null, uowm, processes.isResolvable() ? processes.get() : null, userTasks.isResolvable() ? userTasks.get() : null);
+        InMemoryJobService inMemoryJobService = new InMemoryJobService(executor);
+        inMemoryJobService.registerJobExecutorFactory(new InMemoryProcessJobExecutorFactory(context));
+        return inMemoryJobService;
     }
 
     @Produces

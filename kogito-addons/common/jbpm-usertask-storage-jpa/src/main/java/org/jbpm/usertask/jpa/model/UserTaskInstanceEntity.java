@@ -19,9 +19,25 @@
 
 package org.jbpm.usertask.jpa.model;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.ForeignKey;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.NamedQuery;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 
 @Entity
 @NamedQuery(name = UserTaskInstanceEntity.GET_INSTANCES_BY_IDENTITY,
@@ -104,6 +120,18 @@ public class UserTaskInstanceEntity {
 
     @OneToMany(mappedBy = "taskInstance", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<TaskMetadataEntity> metadata = new ArrayList<>();
+
+    @OneToMany(mappedBy = "taskInstance", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<TaskDeadlineEntity> deadlines;
+
+    @OneToMany(mappedBy = "taskInstance", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<TaskDeadlineTimerEntity> deadlineTimers;
+
+    @OneToMany(mappedBy = "taskInstance", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<TaskReassignmentEntity> reassignments;
+
+    @OneToMany(mappedBy = "taskInstance", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<TaskReassignmentTimerEntity> reassignmentTimers;
 
     public String getId() {
         return id;
@@ -331,4 +359,62 @@ public class UserTaskInstanceEntity {
     public String getTerminationType() {
         return terminationType;
     }
+
+    public List<TaskDeadlineEntity> getDeadlines() {
+        return deadlines;
+    }
+
+    public void setDeadlines(List<TaskDeadlineEntity> deadlines) {
+        this.deadlines = deadlines;
+    }
+
+    public List<TaskReassignmentEntity> getReassignments() {
+        return reassignments;
+    }
+
+    public void setReassignments(List<TaskReassignmentEntity> reassignments) {
+        this.reassignments = reassignments;
+    }
+
+    public List<TaskDeadlineTimerEntity> getDeadlineTimers() {
+        return deadlineTimers;
+    }
+
+    public void setDeadlineTimers(List<TaskDeadlineTimerEntity> deadlineTimers) {
+        this.deadlineTimers = deadlineTimers;
+    }
+
+    public List<TaskReassignmentTimerEntity> getReassignmentTimers() {
+        return reassignmentTimers;
+    }
+
+    public void setReassignmentTimers(List<TaskReassignmentTimerEntity> reassignmentTimers) {
+        this.reassignmentTimers = reassignmentTimers;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(actualOwner, adminGroups, adminUsers, attachments, comments, deadlineTimers, deadlines, excludedUsers, externalReferenceId, id, inputs, metadata, outputs, potentialGroups,
+                potentialUsers, reassignmentTimers, reassignments, status, taskDescription, taskName, taskPriority, terminationType, userTaskId);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        UserTaskInstanceEntity other = (UserTaskInstanceEntity) obj;
+        return Objects.equals(actualOwner, other.actualOwner) && Objects.equals(adminGroups, other.adminGroups) && Objects.equals(adminUsers, other.adminUsers)
+                && Objects.equals(attachments, other.attachments) && Objects.equals(comments, other.comments) && Objects.equals(deadlineTimers, other.deadlineTimers)
+                && Objects.equals(deadlines, other.deadlines) && Objects.equals(excludedUsers, other.excludedUsers) && Objects.equals(externalReferenceId, other.externalReferenceId)
+                && Objects.equals(id, other.id) && Objects.equals(inputs, other.inputs) && Objects.equals(metadata, other.metadata) && Objects.equals(outputs, other.outputs)
+                && Objects.equals(potentialGroups, other.potentialGroups) && Objects.equals(potentialUsers, other.potentialUsers) && Objects.equals(reassignmentTimers, other.reassignmentTimers)
+                && Objects.equals(reassignments, other.reassignments) && Objects.equals(status, other.status) && Objects.equals(taskDescription, other.taskDescription)
+                && Objects.equals(taskName, other.taskName) && Objects.equals(taskPriority, other.taskPriority) && Objects.equals(terminationType, other.terminationType)
+                && Objects.equals(userTaskId, other.userTaskId);
+    }
+
 }

@@ -19,7 +19,13 @@
 
 package org.jbpm.usertask.jpa.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.AssociationOverride;
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.AttributeOverrides;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.ForeignKey;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "jbpm_user_tasks_inputs")
@@ -28,7 +34,6 @@ import jakarta.persistence.*;
         @AttributeOverride(name = "value", column = @Column(name = "input_value"))
 })
 @AssociationOverride(name = "taskInstance", foreignKey = @ForeignKey(name = "jbpm_user_tasks_inputs_tid"))
-@IdClass(TaskDataEntityPK.class)
-public class TaskInputEntity extends TaskDataEntity<byte[]> {
+public class TaskInputEntity extends TaskNamedDataEntity<byte[]> {
 
 }

@@ -19,10 +19,10 @@
 
 package org.jbpm.usertask.jpa.repository;
 
-import org.jbpm.usertask.jpa.model.TaskDataEntityPK;
 import org.jbpm.usertask.jpa.model.TaskMetadataEntity;
+import org.jbpm.usertask.jpa.model.TaskNamedDataEntityPK;
 
-public class TaskMetadataRepository extends BaseRepository<TaskMetadataEntity, TaskDataEntityPK> {
+public class TaskMetadataRepository extends BaseRepository<TaskMetadataEntity, TaskNamedDataEntityPK> {
 
     public TaskMetadataRepository(UserTaskJPAContext context) {
         super(context);

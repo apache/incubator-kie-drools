@@ -139,6 +139,7 @@ public class InMemoryUserTaskInstances implements UserTaskInstances {
     @Override
     public UserTaskInstance create(UserTaskInstance userTaskInstance) {
         try {
+            LOG.trace("create {}", userTaskInstance);
             byte[] data = mapper.writeValueAsBytes(userTaskInstance);
             userTaskInstances.put(userTaskInstance.getId(), data);
             return reconnectUserTaskInstance.apply(userTaskInstance);
@@ -151,6 +152,7 @@ public class InMemoryUserTaskInstances implements UserTaskInstances {
     @Override
     public UserTaskInstance update(UserTaskInstance userTaskInstance) {
         try {
+            LOG.trace("update {}", userTaskInstance);
             byte[] data = mapper.writeValueAsBytes(userTaskInstance);
             userTaskInstances.put(userTaskInstance.getId(), data);
             return userTaskInstance;
@@ -166,6 +168,7 @@ public class InMemoryUserTaskInstances implements UserTaskInstances {
             if (!userTaskInstances.containsKey(userTaskInstance.getId())) {
                 return null;
             }
+            LOG.trace("remove {}", userTaskInstance);
             userTaskInstances.remove(userTaskInstance.getId());
             return disconnectUserTaskInstance.apply(userTaskInstance);
         } catch (Exception e) {

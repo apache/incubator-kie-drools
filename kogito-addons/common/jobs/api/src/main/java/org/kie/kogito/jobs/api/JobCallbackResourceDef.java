@@ -20,7 +20,8 @@ package org.kie.kogito.jobs.api;
 
 import java.time.temporal.ChronoUnit;
 
-import org.kie.kogito.jobs.ProcessInstanceJobDescription;
+import org.kie.kogito.jobs.JobDescription;
+import org.kie.kogito.jobs.descriptors.ProcessInstanceJobDescription;
 import org.kie.kogito.jobs.service.api.TemporalUnit;
 import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipient;
 import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipientJsonPayloadData;
@@ -53,25 +54,16 @@ public class JobCallbackResourceDef {
 
     public static final String LIMIT_DEFAULT_VALUE = "0";
 
-    public static final String JOBS_CALLBACK_URI = "/management/jobs";
-
     public static final String JOBS_CALLBACK_POST_URI = "{" + PROCESS_ID + "}/instances/{" + PROCESS_INSTANCE_ID + "}/timers/{" + TIMER_ID + "}";
 
     private JobCallbackResourceDef() {
     }
 
-    public static String buildCallbackURI(ProcessInstanceJobDescription description, String jobsCallbackEndpoint) {
-        return URIBuilder.toURI(jobsCallbackEndpoint
-                + JOBS_CALLBACK_URI + "/"
-                + description.processId()
-                + "/instances/"
-                + description.processInstanceId()
-                + "/timers/"
-                + description.timerId())
-                .toString();
+    public static String buildCallbackURI(JobDescription description, String jobsCallbackEndpoint) {
+        return URIBuilder.toURI(jobsCallbackEndpoint + description.path()).toString();
     }
 
-    public static org.kie.kogito.jobs.service.api.Job buildCallbackPatternJob(ProcessInstanceJobDescription description,
+    public static org.kie.kogito.jobs.service.api.Job buildCallbackPatternJob(JobDescription description,
             String callback, ObjectMapper objectMapper) {
         return org.kie.kogito.jobs.service.api.Job.builder()
                 .id(description.id())
@@ -81,25 +73,28 @@ public class JobCallbackResourceDef {
                 .build();
     }
 
-    private static HttpRecipient<HttpRecipientJsonPayloadData> buildRecipient(ProcessInstanceJobDescription description, String callback, ObjectMapper objectMapper) {
-        return HttpRecipient.builder()
+    private static HttpRecipient<HttpRecipientJsonPayloadData> buildRecipient(JobDescription description, String callback, ObjectMapper objectMapper) {
+        HttpRecipient.Builder<HttpRecipientJsonPayloadData> selector = HttpRecipient.builder()
                 .forJsonPayload()
                 .payload(HttpRecipientJsonPayloadData.from(buildPayload(description, objectMapper)))
                 .url(callback)
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
-                .header(PROCESS_ID, description.processId())
-                .header(PROCESS_INSTANCE_ID, description.processInstanceId())
-                .header(ROOT_PROCESS_ID, description.rootProcessId())
-                .header(ROOT_PROCESS_INSTANCE_ID, description.rootProcessInstanceId())
-                .header(NODE_INSTANCE_ID, description.nodeInstanceId())
-                .build();
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
+
+        if (description instanceof ProcessInstanceJobDescription processInstanceJobDescription) {
+            selector.header(PROCESS_ID, processInstanceJobDescription.processId())
+                    .header(PROCESS_INSTANCE_ID, processInstanceJobDescription.processInstanceId())
+                    .header(ROOT_PROCESS_ID, processInstanceJobDescription.rootProcessId())
+                    .header(ROOT_PROCESS_INSTANCE_ID, processInstanceJobDescription.rootProcessInstanceId())
+                    .header(NODE_INSTANCE_ID, processInstanceJobDescription.nodeInstanceId());
+        }
+        return selector.build();
     }
 
-    private static JsonNode buildPayload(ProcessInstanceJobDescription description, ObjectMapper objectMapper) {
+    private static JsonNode buildPayload(JobDescription description, ObjectMapper objectMapper) {
         return objectMapper.valueToTree(new JobCallbackPayload(description.id()));
     }
 
-    public static TimerSchedule buildSchedule(ProcessInstanceJobDescription description) {
+    public static TimerSchedule buildSchedule(JobDescription description) {
         return TimerSchedule.builder()
                 .startTime(description.expirationTime().get().toOffsetDateTime().truncatedTo(ChronoUnit.MILLIS))
                 .repeatCount(translateLimit(description.expirationTime().repeatLimit()))

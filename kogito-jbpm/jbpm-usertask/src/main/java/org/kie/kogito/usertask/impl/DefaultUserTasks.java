@@ -80,6 +80,7 @@ public class DefaultUserTasks implements UserTasks {
         instance.setUserTaskEventSupport(null);
         instance.setUserTaskLifeCycle(null);
         instance.setInstances(null);
+        instance.setJobsService(null);
         return instance;
     }
 
@@ -93,6 +94,7 @@ public class DefaultUserTasks implements UserTasks {
         instance.setUserTaskEventSupport(impl);
         instance.setUserTaskLifeCycle(userTaskConfig.userTaskLifeCycle());
         instance.setInstances(userTaskInstances);
+        instance.setJobsService(userTaskConfig.jobsService());
         return instance;
     }
 }

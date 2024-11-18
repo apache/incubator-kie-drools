@@ -23,9 +23,13 @@ import java.util.Map;
 import java.util.Set;
 
 import org.kie.kogito.auth.IdentityProvider;
+import org.kie.kogito.jobs.descriptors.UserTaskInstanceJobDescription;
 import org.kie.kogito.usertask.lifecycle.UserTaskState;
 import org.kie.kogito.usertask.model.Attachment;
 import org.kie.kogito.usertask.model.Comment;
+import org.kie.kogito.usertask.model.DeadlineInfo;
+import org.kie.kogito.usertask.model.Notification;
+import org.kie.kogito.usertask.model.Reassignment;
 
 public interface UserTaskInstance {
 
@@ -42,6 +46,8 @@ public interface UserTaskInstance {
     void setActualOwner(String actualOwner);
 
     String getActualOwner();
+
+    void initialize(Map<String, Object> data, IdentityProvider identity);
 
     void transition(String transitionId, Map<String, Object> data, IdentityProvider identityProvider);
 
@@ -117,5 +123,31 @@ public interface UserTaskInstance {
     Comment removeComment(Comment comment);
 
     Collection<Comment> getComments();
+
+    void trigger(UserTaskInstanceJobDescription userTaskInstanceJobDescription);
+
+    Collection<DeadlineInfo<Notification>> getNotStartedDeadlines();
+
+    Collection<DeadlineInfo<Notification>> getNotCompletedDeadlines();
+
+    Collection<DeadlineInfo<Reassignment>> getNotStartedReassignments();
+
+    Collection<DeadlineInfo<Reassignment>> getNotCompletedReassignments();
+
+    void startNotStartedDeadlines();
+
+    void startNotCompletedDeadlines();
+
+    void startNotStartedReassignments();
+
+    void startNotCompletedReassignments();
+
+    void stopNotStartedDeadlines();
+
+    void stopNotStartedReassignments();
+
+    void stopNotCompletedDeadlines();
+
+    void stopNotCompletedReassignments();
 
 }

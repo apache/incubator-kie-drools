@@ -18,6 +18,14 @@
  */
 package $Package$;
 
+import org.kie.kogito.jobs.JobsService;
+import org.kie.kogito.process.ProcessConfig;
+import org.kie.kogito.process.impl.StaticProcessConfig;
+import org.kie.kogito.services.jobs.impl.InMemoryProcessJobExecutorFactory;
+import org.kie.kogito.services.jobs.impl.InMemoryJobService;
+import org.kie.kogito.services.jobs.impl.InMemoryJobContext;
+import org.kie.kogito.uow.UnitOfWorkManager;
+
 public class Processes implements org.kie.kogito.process.Processes {
 
     private final Application application;
@@ -25,6 +33,13 @@ public class Processes implements org.kie.kogito.process.Processes {
 
     public Processes(Application application) {
         this.application = application;
+        JobsService jobsService = this.application.config().get(ProcessConfig.class).jobsService();
+        UnitOfWorkManager unitOfWorkManager = this.application.config().get(ProcessConfig.class).unitOfWorkManager();
+        if (jobsService instanceof InMemoryJobService) {
+            InMemoryJobService inMemoryJobService = (InMemoryJobService) jobsService;
+            InMemoryJobContext context = new InMemoryJobContext(null, unitOfWorkManager, this, null);
+            inMemoryJobService.registerJobExecutorFactory(new InMemoryProcessJobExecutorFactory(context));
+        }
     }
 
     public org.kie.kogito.process.Process<? extends org.kie.kogito.Model> processById(String processId) {

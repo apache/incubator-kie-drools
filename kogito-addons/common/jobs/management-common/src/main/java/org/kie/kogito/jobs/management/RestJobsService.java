@@ -21,8 +21,8 @@ package org.kie.kogito.jobs.management;
 import java.net.URI;
 import java.util.Objects;
 
+import org.kie.kogito.jobs.JobDescription;
 import org.kie.kogito.jobs.JobsService;
-import org.kie.kogito.jobs.ProcessInstanceJobDescription;
 import org.kie.kogito.jobs.api.URIBuilder;
 import org.kie.kogito.jobs.service.api.Job;
 
@@ -46,7 +46,7 @@ public abstract class RestJobsService implements JobsService {
         this.objectMapper = objectMapper;
     }
 
-    public String getCallbackEndpoint(ProcessInstanceJobDescription description) {
+    public String getCallbackEndpoint(JobDescription description) {
         return buildCallbackURI(description, callbackEndpoint);
     }
 
@@ -58,7 +58,7 @@ public abstract class RestJobsService implements JobsService {
         return jobsServiceUri;
     }
 
-    public Job buildJob(ProcessInstanceJobDescription description, String callback) {
+    public Job buildJob(JobDescription description, String callback) {
         return buildCallbackPatternJob(description, callback, objectMapper);
     }
 }

@@ -25,9 +25,8 @@ import java.time.temporal.ChronoUnit;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.jobs.ExactExpirationTime;
-import org.kie.kogito.jobs.ProcessInstanceJobDescription;
-import org.kie.kogito.jobs.ProcessJobDescription;
 import org.kie.kogito.jobs.api.JobCallbackPayload;
+import org.kie.kogito.jobs.descriptors.ProcessInstanceJobDescription;
 import org.kie.kogito.jobs.service.api.Job;
 import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipient;
 import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipientJsonPayloadData;
@@ -37,7 +36,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public abstract class RestJobsServiceTest<T extends RestJobsService> {
 
@@ -64,7 +62,7 @@ public abstract class RestJobsServiceTest<T extends RestJobsService> {
 
     @Test
     void testGetCallbackEndpoint() {
-        ProcessInstanceJobDescription description = ProcessInstanceJobDescription.builder()
+        ProcessInstanceJobDescription description = ProcessInstanceJobDescription.newProcessInstanceJobDescriptionBuilder()
                 .id(JOB_ID)
                 .timerId(TIMER_ID)
                 .expirationTime(ExactExpirationTime.now())
@@ -86,17 +84,8 @@ public abstract class RestJobsServiceTest<T extends RestJobsService> {
         assertThat(jobsServiceUri).hasToString(JOB_SERVICE_URL + "/v2/jobs");
     }
 
-    @Test
-    void testScheduleProcessJob() {
-        ProcessJobDescription processJobDescription = ProcessJobDescription.of(ExactExpirationTime.of(EXPIRATION_TIME),
-                1,
-                PROCESS_ID);
-        assertThatThrownBy(() -> tested.scheduleProcessJob(processJobDescription))
-                .isInstanceOf(UnsupportedOperationException.class);
-    }
-
     protected ProcessInstanceJobDescription buildProcessInstanceJobDescription() {
-        return ProcessInstanceJobDescription.builder()
+        return ProcessInstanceJobDescription.newProcessInstanceJobDescriptionBuilder()
                 .id(JOB_ID)
                 .timerId(TIMER_ID)
                 .expirationTime(ExactExpirationTime.of(EXPIRATION_TIME))

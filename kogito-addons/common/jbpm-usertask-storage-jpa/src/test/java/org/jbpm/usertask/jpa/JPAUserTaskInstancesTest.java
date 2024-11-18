@@ -24,7 +24,12 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import org.assertj.core.api.Assertions;
-import org.jbpm.usertask.jpa.mapper.*;
+import org.jbpm.usertask.jpa.mapper.CommentsEntityMapper;
+import org.jbpm.usertask.jpa.mapper.EntityMapper;
+import org.jbpm.usertask.jpa.mapper.TaskInputsEntityMapper;
+import org.jbpm.usertask.jpa.mapper.TaskMetadataEntityMapper;
+import org.jbpm.usertask.jpa.mapper.TaskOutputsEntityMapper;
+import org.jbpm.usertask.jpa.mapper.UserTaskInstanceEntityMapper;
 import org.jbpm.usertask.jpa.mapper.utils.TestUtils;
 import org.jbpm.usertask.jpa.model.UserTaskInstanceEntity;
 import org.jbpm.usertask.jpa.repository.UserTaskInstanceRepository;
@@ -37,7 +42,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class JPAUserTaskInstancesTest {
@@ -46,7 +55,7 @@ public class JPAUserTaskInstancesTest {
     private UserTaskInstanceRepository userTaskInstanceRepository;
 
     @Mock
-    private AttachmentsEntityMapper attachmentsEntityMapper;
+    private EntityMapper attachmentsEntityMapper;
     @Mock
     private CommentsEntityMapper commentsEntityMapper;
     @Mock
@@ -66,7 +75,7 @@ public class JPAUserTaskInstancesTest {
 
     @BeforeEach
     public void setup() {
-        userTaskInstanceEntityMapper = spy(new UserTaskInstanceEntityMapper(attachmentsEntityMapper, commentsEntityMapper, metadataEntityMapper, inputsEntityMapper, outputsEntityMapper));
+        userTaskInstanceEntityMapper = spy(new UserTaskInstanceEntityMapper(List.of(attachmentsEntityMapper, commentsEntityMapper, metadataEntityMapper, inputsEntityMapper, outputsEntityMapper)));
         jpaUserTaskInstances = new JPAUserTaskInstances(userTaskInstanceRepository, userTaskInstanceEntityMapper);
         jpaUserTaskInstances.setReconnectUserTaskInstance(reconnectUserTaskInstance);
         jpaUserTaskInstances.setDisconnectUserTaskInstance(disconnectUserTaskInstance);

@@ -16,10 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.jobs;
+package org.kie.kogito.jobs.descriptors;
 
 import java.util.UUID;
 
+import org.kie.kogito.jobs.ExpirationTime;
+import org.kie.kogito.jobs.JobDescription;
 import org.kie.kogito.process.Process;
 
 import static java.util.Objects.requireNonNull;
@@ -86,5 +88,10 @@ public class ProcessJobDescription implements JobDescription {
 
     public Process<?> process() {
         return process;
+    }
+
+    @Override
+    public String path() {
+        return "";
     }
 }

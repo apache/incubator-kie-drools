@@ -18,13 +18,20 @@
  */
 package org.kie.kogito.process;
 
+import java.util.List;
+
 import org.kie.kogito.config.ConfigBean;
 import org.kie.kogito.correlation.CorrelationService;
 import org.kie.kogito.event.correlation.DefaultCorrelationService;
+import org.kie.kogito.jobs.JobsService;
 import org.kie.kogito.process.version.ProjectVersionProcessVersionResolver;
+import org.kie.kogito.services.jobs.impl.InMemoryJobContext;
+import org.kie.kogito.services.jobs.impl.InMemoryJobService;
+import org.kie.kogito.services.jobs.impl.InMemoryProcessJobExecutorFactory;
 import org.kie.kogito.services.uow.CollectingUnitOfWorkFactory;
 import org.kie.kogito.services.uow.DefaultUnitOfWorkManager;
 import org.kie.kogito.uow.UnitOfWorkManager;
+import org.kie.kogito.usertask.UserTasks;
 import org.kogito.workitem.rest.RestWorkItemHandlerUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -48,6 +55,15 @@ public class KogitoBeanProducer {
     @Bean
     CorrelationService correlationService() {
         return new DefaultCorrelationService();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(JobsService.class)
+    JobsService jobsService(List<Processes> processes, List<UserTasks> userTasks, UnitOfWorkManager uowm) {
+        InMemoryJobContext context = new InMemoryJobContext(null, uowm, !processes.isEmpty() ? processes.get(0) : null, !userTasks.isEmpty() ? userTasks.get(0) : null);
+        InMemoryJobService inMemoryJobService = new InMemoryJobService();
+        inMemoryJobService.registerJobExecutorFactory(new InMemoryProcessJobExecutorFactory(context));
+        return inMemoryJobService;
     }
 
     @Bean

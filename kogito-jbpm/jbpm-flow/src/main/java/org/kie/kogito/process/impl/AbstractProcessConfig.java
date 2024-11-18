@@ -36,6 +36,7 @@ import org.kie.kogito.process.ProcessEventListenerConfig;
 import org.kie.kogito.process.ProcessVersionResolver;
 import org.kie.kogito.process.WorkItemHandlerConfig;
 import org.kie.kogito.services.identity.NoOpIdentityProvider;
+import org.kie.kogito.services.jobs.impl.StaticJobService;
 import org.kie.kogito.services.signal.DefaultSignalManagerHub;
 import org.kie.kogito.services.uow.CollectingUnitOfWorkFactory;
 import org.kie.kogito.services.uow.DefaultUnitOfWorkManager;
@@ -69,10 +70,8 @@ public abstract class AbstractProcessConfig implements ProcessConfig {
 
         this.workItemHandlerConfig = mergeWorkItemHandler(workItemHandlerConfig, DefaultWorkItemHandlerConfig::new);
         this.processEventListenerConfig = merge(processEventListenerConfigs, processEventListeners);
-        this.unitOfWorkManager = orDefault(unitOfWorkManager,
-                () -> new DefaultUnitOfWorkManager(
-                        new CollectingUnitOfWorkFactory()));
-        this.jobsService = orDefault(jobsService, () -> null);
+        this.unitOfWorkManager = orDefault(unitOfWorkManager, () -> new DefaultUnitOfWorkManager(new CollectingUnitOfWorkFactory()));
+        this.jobsService = orDefault(jobsService, StaticJobService::staticJobService);
         this.versionResolver = orDefault(versionResolver, () -> null);
         this.identityProvider = orDefault(identityProvider, NoOpIdentityProvider::new);
         this.businessCalendar = orDefault(businessCalendar, () -> null);

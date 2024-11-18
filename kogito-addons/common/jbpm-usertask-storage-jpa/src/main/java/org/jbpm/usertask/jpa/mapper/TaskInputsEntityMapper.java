@@ -32,7 +32,7 @@ import org.jbpm.usertask.jpa.repository.TaskInputRepository;
 import org.kie.kogito.usertask.UserTaskInstance;
 import org.kie.kogito.usertask.impl.DefaultUserTaskInstance;
 
-public class TaskInputsEntityMapper {
+public class TaskInputsEntityMapper implements EntityMapper {
 
     private TaskInputRepository repository;
 
@@ -40,6 +40,7 @@ public class TaskInputsEntityMapper {
         this.repository = repository;
     }
 
+    @Override
     public void mapInstanceToEntity(UserTaskInstance userTaskInstance, UserTaskInstanceEntity userTaskInstanceEntity) {
         Collection<TaskInputEntity> toRemove = userTaskInstanceEntity.getInputs()
                 .stream()
@@ -66,6 +67,7 @@ public class TaskInputsEntityMapper {
         });
     }
 
+    @Override
     public void mapEntityToInstance(UserTaskInstanceEntity userTaskInstanceEntity, UserTaskInstance userTaskInstance) {
         Map<String, Object> inputs = new HashMap<>();
         userTaskInstanceEntity.getInputs().forEach(taskInputEntity -> {

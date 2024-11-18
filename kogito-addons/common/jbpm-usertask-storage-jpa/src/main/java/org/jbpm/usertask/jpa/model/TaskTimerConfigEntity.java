@@ -21,32 +21,30 @@ package org.jbpm.usertask.jpa.model;
 
 import java.util.Objects;
 
-import jakarta.persistence.*;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.MappedSuperclass;
 
 @MappedSuperclass
-public abstract class TaskDataEntity<T> {
+public abstract class TaskTimerConfigEntity<T> extends AbstractTaskEntity<T> {
 
     @Id
-    @Column(name = "name")
-    protected String name;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    protected Integer id;
 
-    @Id
     @ManyToOne(optional = false)
     @JoinColumn(name = "task_id")
     protected UserTaskInstanceEntity taskInstance;
 
-    @Column(name = "value")
-    protected T value;
-
-    @Column(name = "java_type")
-    protected String javaType;
-
-    public String getName() {
-        return name;
+    public Integer getId() {
+        return id;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public UserTaskInstanceEntity getTaskInstance() {
@@ -57,35 +55,21 @@ public abstract class TaskDataEntity<T> {
         this.taskInstance = taskInstance;
     }
 
-    public T getValue() {
-        return value;
-    }
-
-    public void setValue(T value) {
-        this.value = value;
-    }
-
-    public String getJavaType() {
-        return javaType;
-    }
-
-    public void setJavaType(String javaType) {
-        this.javaType = javaType;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
-        TaskDataEntity<?> that = (TaskDataEntity<?>) o;
-        return Objects.equals(getName(), that.getName()) && Objects.equals(getTaskInstance(), that.getTaskInstance()) && Objects.equals(getValue(),
-                that.getValue()) && Objects.equals(getJavaType(), that.getJavaType());
-    }
-
     @Override
     public int hashCode() {
-        return Objects.hash(getName(), getTaskInstance(), getValue(), getJavaType());
+        return Objects.hash(value, javaType, id, taskInstance.getId());
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (!super.equals(obj))
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        TaskTimerConfigEntity other = (TaskTimerConfigEntity) obj;
+        return super.equals(obj) && Objects.equals(id, other.id) && Objects.equals(taskInstance.getId(), other.taskInstance.getId());
+    }
+
 }

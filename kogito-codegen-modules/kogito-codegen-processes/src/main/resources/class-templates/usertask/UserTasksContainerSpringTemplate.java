@@ -24,6 +24,11 @@ import java.util.Map;
 import java.util.List;
 
 import org.kie.kogito.Application;
+import org.kie.kogito.jobs.JobsService;
+import org.kie.kogito.services.jobs.impl.InMemoryJobContext;
+import org.kie.kogito.services.jobs.impl.InMemoryJobService;
+import org.kie.kogito.services.jobs.impl.InMemoryUserTaskJobExecutorFactory;
+import org.kie.kogito.uow.UnitOfWorkManager;
 import org.kie.kogito.uow.events.UnitOfWorkUserTaskEventListener;
 import org.kie.kogito.usertask.impl.DefaultUserTaskInstance;
 import org.kie.kogito.usertask.impl.KogitoUserTaskEventSupportImpl;
@@ -58,6 +63,13 @@ public class UserTasks implements org.kie.kogito.usertask.UserTasks {
             mappedUserTask.put(userTask.id(), userTask);
             LOG.info("Registering user task {} with task name {}", userTask.id(), userTask.getTaskName());
         }
+        JobsService jobsService = application.config().get(UserTaskConfig.class).jobsService();
+        UnitOfWorkManager unitOfWorkManager = application.config().get(UserTaskConfig.class).unitOfWorkManager();
+        if (jobsService instanceof InMemoryJobService) {
+            InMemoryJobService inMemoryJobService = (InMemoryJobService) jobsService;
+            InMemoryJobContext context = new InMemoryJobContext(null, unitOfWorkManager, null, this);
+            inMemoryJobService.registerJobExecutorFactory(new InMemoryUserTaskJobExecutorFactory(context));
+        }
     }
 
     public UserTask userTaskById(String userTaskId) {
@@ -79,6 +91,7 @@ public class UserTasks implements org.kie.kogito.usertask.UserTasks {
         instance.setUserTaskEventSupport(null);
         instance.setUserTaskLifeCycle(null);
         instance.setInstances(null);
+        instance.setJobsService(null);
         return instance;
     }
 
@@ -92,6 +105,7 @@ public class UserTasks implements org.kie.kogito.usertask.UserTasks {
         instance.setUserTaskEventSupport(impl);
         instance.setUserTaskLifeCycle(userTaskConfig.userTaskLifeCycle());
         instance.setInstances(application.config().get(UserTaskConfig.class).userTaskInstances());
+        instance.setJobsService(userTaskConfig.jobsService());
         return instance;
     }
 }

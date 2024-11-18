@@ -18,23 +18,52 @@
  */
 package org.kie.kogito.usertask.impl;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
+import java.util.function.Consumer;
 
 import org.kie.kogito.auth.IdentityProvider;
+import org.kie.kogito.auth.IdentityProviders;
 import org.kie.kogito.internal.usertask.event.KogitoUserTaskEventSupport;
 import org.kie.kogito.internal.usertask.event.KogitoUserTaskEventSupport.AssignmentType;
+import org.kie.kogito.jobs.ExpirationTime;
+import org.kie.kogito.jobs.JobDescription;
+import org.kie.kogito.jobs.JobsService;
+import org.kie.kogito.jobs.descriptors.UserTaskInstanceJobDescription;
 import org.kie.kogito.usertask.UserTask;
 import org.kie.kogito.usertask.UserTaskInstance;
 import org.kie.kogito.usertask.UserTaskInstances;
+import org.kie.kogito.usertask.impl.model.DeadlineHelper;
 import org.kie.kogito.usertask.lifecycle.UserTaskLifeCycle;
 import org.kie.kogito.usertask.lifecycle.UserTaskState;
 import org.kie.kogito.usertask.lifecycle.UserTaskTransitionToken;
 import org.kie.kogito.usertask.model.Attachment;
 import org.kie.kogito.usertask.model.Comment;
+import org.kie.kogito.usertask.model.DeadlineInfo;
+import org.kie.kogito.usertask.model.Notification;
+import org.kie.kogito.usertask.model.Reassignment;
+import org.kie.kogito.usertask.model.ScheduleInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import static java.util.Collections.emptyMap;
+import static org.kie.kogito.jobs.descriptors.UserTaskInstanceJobDescription.newUserTaskInstanceJobDescriptionBuilder;
+import static org.kie.kogito.usertask.impl.lifecycle.DefaultUserTaskLifeCycle.WORKFLOW_ENGINE_USER;
+
 public class DefaultUserTaskInstance implements UserTaskInstance {
+
+    private static Logger LOG = LoggerFactory.getLogger(DefaultUserTaskInstance.class);
 
     private String id;
 
@@ -67,6 +96,24 @@ public class DefaultUserTaskInstance implements UserTaskInstance {
     private KogitoUserTaskEventSupport userTaskEventSupport;
     @JsonIgnore
     private UserTaskLifeCycle userTaskLifeCycle;
+    @JsonIgnore
+    private JobsService jobsService;
+
+    private Collection<DeadlineInfo<Notification>> notStartedDeadlines;
+
+    private Collection<DeadlineInfo<Notification>> notCompletedDeadlines;
+
+    private Collection<DeadlineInfo<Reassignment>> notStartedReassignments;
+
+    private Collection<DeadlineInfo<Reassignment>> notCompletedReassigments;
+
+    private Map<String, Notification> notStartedDeadlinesTimers;
+
+    private Map<String, Notification> notCompletedDeadlinesTimers;
+
+    private Map<String, Reassignment> notStartedReassignmentsTimers;
+
+    private Map<String, Reassignment> notCompletedReassignmentsTimers;
 
     public DefaultUserTaskInstance() {
         this.inputs = new HashMap<>();
@@ -80,6 +127,10 @@ public class DefaultUserTaskInstance implements UserTaskInstance {
         this.adminUsers = new HashSet<>();
         this.adminGroups = new HashSet<>();
         this.excludedUsers = new HashSet<>();
+        this.notStartedDeadlinesTimers = new HashMap<>();
+        this.notCompletedDeadlinesTimers = new HashMap<>();
+        this.notStartedReassignmentsTimers = new HashMap<>();
+        this.notCompletedReassignmentsTimers = new HashMap<>();
     }
 
     public DefaultUserTaskInstance(UserTask userTask) {
@@ -88,12 +139,48 @@ public class DefaultUserTaskInstance implements UserTaskInstance {
         this.userTask = userTask;
     }
 
+    public Map<String, Notification> getNotCompletedDeadlinesTimers() {
+        return notCompletedDeadlinesTimers;
+    }
+
+    public void setNotCompletedDeadlinesTimers(Map<String, Notification> notCompletedDeadlinesTimers) {
+        this.notCompletedDeadlinesTimers = notCompletedDeadlinesTimers;
+    }
+
+    public Map<String, Reassignment> getNotCompletedReassignmentsTimers() {
+        return notCompletedReassignmentsTimers;
+    }
+
+    public void setNotCompletedReassignmentsTimers(Map<String, Reassignment> notCompletedReassignmentsTimers) {
+        this.notCompletedReassignmentsTimers = notCompletedReassignmentsTimers;
+    }
+
+    public Map<String, Notification> getNotStartedDeadlinesTimers() {
+        return notStartedDeadlinesTimers;
+    }
+
+    public void setNotStartedDeadlinesTimers(Map<String, Notification> notStartedDeadlinesTimers) {
+        this.notStartedDeadlinesTimers = notStartedDeadlinesTimers;
+    }
+
+    public Map<String, Reassignment> getNotStartedReassignmentsTimers() {
+        return notStartedReassignmentsTimers;
+    }
+
+    public void setNotStartedReassignmentsTimers(Map<String, Reassignment> notStartedReassignmentsTimers) {
+        this.notStartedReassignmentsTimers = notStartedReassignmentsTimers;
+    }
+
     public void setUserTaskEventSupport(KogitoUserTaskEventSupport userTaskEventSupport) {
         this.userTaskEventSupport = userTaskEventSupport;
     }
 
     public void setUserTaskLifeCycle(UserTaskLifeCycle userTaskLifeCycle) {
         this.userTaskLifeCycle = userTaskLifeCycle;
+    }
+
+    public UserTaskLifeCycle getUserTaskLifeCycle() {
+        return userTaskLifeCycle;
     }
 
     public void setInstances(UserTaskInstances instances) {
@@ -153,6 +240,11 @@ public class DefaultUserTaskInstance implements UserTaskInstance {
 
     public void setExternalReferenceId(String externalReferenceId) {
         this.externalReferenceId = externalReferenceId;
+    }
+
+    @Override
+    public void initialize(Map<String, Object> data, IdentityProvider identity) {
+        transition(this.userTaskLifeCycle.startTransition(), data, identity);
     }
 
     @Override
@@ -520,6 +612,171 @@ public class DefaultUserTaskInstance implements UserTaskInstance {
     @Override
     public Comment findCommentById(String commentId) {
         return this.comments.stream().filter(e -> e.getId().equals(commentId)).findAny().orElse(null);
+    }
+
+    @Override
+    public Collection<DeadlineInfo<Notification>> getNotStartedDeadlines() {
+        return notStartedDeadlines;
+    }
+
+    public void setNotStartedDeadlines(Collection<DeadlineInfo<Notification>> notStartedDeadlines) {
+        this.notStartedDeadlines = notStartedDeadlines;
+    }
+
+    @Override
+    public Collection<DeadlineInfo<Notification>> getNotCompletedDeadlines() {
+        return notCompletedDeadlines;
+    }
+
+    public void setNotCompletedDeadlines(Collection<DeadlineInfo<Notification>> notCompletedDeadlines) {
+        this.notCompletedDeadlines = notCompletedDeadlines;
+    }
+
+    @Override
+    public Collection<DeadlineInfo<Reassignment>> getNotStartedReassignments() {
+        return notStartedReassignments;
+    }
+
+    public void setNotStartedReassignments(Collection<DeadlineInfo<Reassignment>> notStartedReassignments) {
+        this.notStartedReassignments = notStartedReassignments;
+    }
+
+    @Override
+    public Collection<DeadlineInfo<Reassignment>> getNotCompletedReassignments() {
+        return notCompletedReassigments;
+    }
+
+    public void setNotCompletedReassignments(Collection<DeadlineInfo<Reassignment>> notCompletedReassigments) {
+        this.notCompletedReassigments = notCompletedReassigments;
+    }
+
+    public void setJobsService(JobsService jobsService) {
+        this.jobsService = jobsService;
+    }
+
+    private <T> void initTimers(Map<String, T> timers, Collection<DeadlineInfo<T>> deadlines) {
+        for (DeadlineInfo<T> deadline : deadlines) {
+            for (JobDescription jobDescription : toJobDescription(deadline)) {
+                timers.put(jobDescription.id(), deadline.getNotification());
+                this.jobsService.scheduleJob(jobDescription);
+            }
+        }
+        this.updatePersistence();
+    }
+
+    private <T> void stopTimers(Map<String, T> timers) {
+        timers.keySet().stream().filter(Objects::nonNull).forEach(this.jobsService::cancelJob);
+        timers.clear();
+        this.updatePersistence();
+    }
+
+    private List<JobDescription> toJobDescription(DeadlineInfo<?> deadline) {
+        List<JobDescription> jobs = new ArrayList<>();
+        for (ScheduleInfo info : deadline.getScheduleInfo()) {
+            ExpirationTime expirationTime = DeadlineHelper.getExpirationTime(info);
+            jobs.add(newUserTaskInstanceJobDescriptionBuilder()
+                    .generateId()
+                    .expirationTime(expirationTime)
+                    .userTaskInstanceId(this.id)
+                    .build());
+        }
+        return jobs;
+    }
+
+    @Override
+    public void startNotStartedDeadlines() {
+        initTimers(this.notStartedDeadlinesTimers, getNotStartedDeadlines());
+    }
+
+    @Override
+    public void startNotStartedReassignments() {
+        initTimers(this.notStartedReassignmentsTimers, getNotStartedReassignments());
+    }
+
+    @Override
+    public void startNotCompletedDeadlines() {
+        initTimers(this.notCompletedDeadlinesTimers, getNotCompletedDeadlines());
+    }
+
+    @Override
+    public void startNotCompletedReassignments() {
+        initTimers(this.notCompletedReassignmentsTimers, getNotCompletedReassignments());
+    }
+
+    @Override
+    public void stopNotStartedDeadlines() {
+        stopTimers(this.notStartedDeadlinesTimers);
+    }
+
+    @Override
+    public void stopNotStartedReassignments() {
+        stopTimers(this.notStartedReassignmentsTimers);
+    }
+
+    @Override
+    public void stopNotCompletedDeadlines() {
+        stopTimers(this.notCompletedDeadlinesTimers);
+    }
+
+    @Override
+    public void stopNotCompletedReassignments() {
+        stopTimers(this.notCompletedReassignmentsTimers);
+    }
+
+    public void trigger(UserTaskInstanceJobDescription jobDescription) {
+        LOG.trace("trigger timer in user tasks {} and job {}", this, jobDescription);
+        checkAndSendNotitication(jobDescription, notStartedDeadlinesTimers, this::startNotification);
+        checkAndSendNotitication(jobDescription, notCompletedDeadlinesTimers, this::endNotification);
+        checkAndReassign(jobDescription, notStartedReassignmentsTimers);
+        checkAndReassign(jobDescription, notCompletedReassignmentsTimers);
+        this.updatePersistence();
+    }
+
+    private void checkAndSendNotitication(UserTaskInstanceJobDescription timerInstance, Map<String, Notification> timers, Consumer<Notification> publisher) {
+        Notification notification = timers.get(timerInstance.id());
+        if (notification == null) {
+            return;
+        }
+
+        if (timerInstance.expirationTime().repeatLimit() <= 0) {
+            timers.remove(timerInstance.id());
+        }
+        publisher.accept(notification);
+
+    }
+
+    private void startNotification(Notification notification) {
+        if (this.userTaskEventSupport != null) {
+            this.userTaskEventSupport.fireOnUserTaskNotStartedDeadline(this, notification.getData());
+        }
+    }
+
+    private void endNotification(Notification notification) {
+        if (this.userTaskEventSupport != null) {
+            this.userTaskEventSupport.fireOnUserTaskNotCompletedDeadline(this, notification.getData());
+        }
+    }
+
+    private void checkAndReassign(UserTaskInstanceJobDescription timerInstance, Map<String, Reassignment> timers) {
+        Reassignment reassignment = timers.remove(timerInstance.id());
+
+        if (reassignment == null) {
+            return;
+        }
+        reassign(reassignment);
+    }
+
+    private void reassign(Reassignment reassignment) {
+        if (!reassignment.getPotentialUsers().isEmpty()) {
+            setPotentialUsers(reassignment.getPotentialUsers());
+        }
+        if (!reassignment.getPotentialGroups().isEmpty()) {
+            setPotentialGroups(reassignment.getPotentialGroups());
+        }
+
+        this.userTaskLifeCycle.newReassignmentTransitionToken(this, emptyMap()).ifPresent(token -> {
+            this.userTaskLifeCycle.transition(this, token, IdentityProviders.of(WORKFLOW_ENGINE_USER));
+        });
     }
 
     @Override

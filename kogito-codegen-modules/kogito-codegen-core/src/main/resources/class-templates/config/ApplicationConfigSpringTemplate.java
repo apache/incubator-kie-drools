@@ -24,8 +24,7 @@ import java.util.Collection;
 public class ApplicationConfig extends org.kie.kogito.StaticConfig {
 
     @org.springframework.beans.factory.annotation.Autowired
-    public ApplicationConfig(
-            Collection<org.kie.kogito.KogitoConfig> configs) {
-        super($Addons$, configs);
+    public ApplicationConfig(Collection<org.kie.kogito.KogitoConfig> configs) {
+        init($Addons$, configs);
     }
 }

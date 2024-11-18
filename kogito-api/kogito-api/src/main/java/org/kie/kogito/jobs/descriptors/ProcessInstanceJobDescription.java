@@ -16,7 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.jobs;
+package org.kie.kogito.jobs.descriptors;
+
+import org.kie.kogito.jobs.ExpirationTime;
+import org.kie.kogito.jobs.JobDescription;
 
 import static java.util.Objects.requireNonNull;
 
@@ -93,8 +96,19 @@ public class ProcessInstanceJobDescription implements JobDescription {
         return nodeInstanceId;
     }
 
-    public static ProcessInstanceJobDescriptionBuilder builder() {
+    public static ProcessInstanceJobDescriptionBuilder newProcessInstanceJobDescriptionBuilder() {
         return new ProcessInstanceJobDescriptionBuilder();
+    }
+
+    @Override
+    public String path() {
+        return JOBS_CALLBACK_URI + "/"
+                + processId()
+                + "/instances/"
+                + processInstanceId()
+                + "/timers/"
+                + timerId();
+
     }
 
     @Override

@@ -28,7 +28,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.junit.jupiter.api.Test;
 import org.kie.api.event.process.ProcessCompletedEvent;
 import org.kie.kogito.internal.process.event.DefaultKogitoProcessEventListener;
+import org.kie.kogito.jobs.JobsService;
 import org.kie.kogito.process.Process;
+import org.kie.kogito.process.ProcessConfig;
+import org.kie.kogito.process.Processes;
 import org.kie.kogito.process.validation.ValidationException;
 import org.kie.kogito.serverless.workflow.actions.SysoutAction;
 import org.kie.kogito.serverless.workflow.actions.WorkflowLogLevel;
@@ -38,6 +41,10 @@ import org.kie.kogito.serverless.workflow.models.JsonNodeModel;
 import org.kie.kogito.serverless.workflow.parser.types.SysOutTypeHandler;
 import org.kie.kogito.serverless.workflow.utils.ExpressionHandlerUtils;
 import org.kie.kogito.serverless.workflow.utils.KogitoProcessContextResolver;
+import org.kie.kogito.services.jobs.impl.InMemoryJobContext;
+import org.kie.kogito.services.jobs.impl.InMemoryJobService;
+import org.kie.kogito.services.jobs.impl.InMemoryProcessJobExecutorFactory;
+import org.kie.kogito.uow.UnitOfWorkManager;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -141,6 +148,13 @@ public class StaticFluentWorkflowApplicationTest {
         OperationStateBuilder sleepState = operation().action(call(expr("inc", ".count=.count+1")).sleepAfter(Duration.ofSeconds(1)));
 
         try (StaticWorkflowApplication application = StaticWorkflowApplication.create()) {
+            ProcessConfig processConfig = application.config().get(ProcessConfig.class);
+            JobsService jobService = processConfig.jobsService();
+            Processes processes = application.get(Processes.class);
+            UnitOfWorkManager unitOfWorkManager = processConfig.unitOfWorkManager();
+            if (jobService instanceof InMemoryJobService inMemoryJobService) {
+                inMemoryJobService.registerJobExecutorFactory(new InMemoryProcessJobExecutorFactory(new InMemoryJobContext(null, unitOfWorkManager, processes, null)));
+            }
             Workflow workflow = workflow("Polling").start(startTask)
                     .next(sleepState)
                     .next(pollTask)

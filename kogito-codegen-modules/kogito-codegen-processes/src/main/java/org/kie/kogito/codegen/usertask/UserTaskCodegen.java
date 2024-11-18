@@ -55,6 +55,9 @@ import org.kie.kogito.internal.SupportedExtensions;
 import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
 import org.kie.kogito.process.validation.ValidationException;
 import org.kie.kogito.process.validation.ValidationLogDecorator;
+import org.kie.kogito.usertask.impl.model.DeadlineHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
 import com.github.javaparser.StaticJavaParser;
@@ -77,6 +80,8 @@ import static java.util.stream.Collectors.toList;
 import static org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils.FAIL_ON_ERROR_PROPERTY;
 
 public class UserTaskCodegen extends AbstractGenerator {
+
+    private static Logger LOG = LoggerFactory.getLogger(UserTaskCodegen.class);
 
     private static final String NODE_NAME = "NodeName";
     private static final String DESCRIPTION = "Description";
@@ -219,14 +224,26 @@ public class UserTaskCodegen extends AbstractGenerator {
             block.addStatement(new MethodCallExpr(new ThisExpr(), "setReferenceName", NodeList.nodeList(toStringExpression(info.getParameter(NODE_NAME)))));
             block.addStatement(new MethodCallExpr(new ThisExpr(), "setSkippable", NodeList.nodeList(toStringExpression(info.getParameter("Skippable")))));
 
-            block.addStatement(new MethodCallExpr(new ThisExpr(), "setNotStartedDeadLines", NodeList.nodeList(toStringExpression(info.getParameter("NotStartedNotify")))));
-            block.addStatement(new MethodCallExpr(new ThisExpr(), "setNotCompletedDeadlines", NodeList.nodeList(toStringExpression(info.getParameter("NotCompletedNotify")))));
-            block.addStatement(new MethodCallExpr(new ThisExpr(), "setNotStartedReassignments", NodeList.nodeList(toStringExpression(info.getParameter("NotCompletedReassign")))));
-            block.addStatement(new MethodCallExpr(new ThisExpr(), "setNotCompletedReassigments", NodeList.nodeList(toStringExpression(info.getParameter("NotStartedReassign")))));
+            block.addStatement(new MethodCallExpr(new ThisExpr(), "setNotStartedDeadLines", NodeList.nodeList(toDeadlineExpression(info.getParameter("NotStartedNotify")))));
+            block.addStatement(new MethodCallExpr(new ThisExpr(), "setNotCompletedDeadlines", NodeList.nodeList(toDeadlineExpression(info.getParameter("NotCompletedNotify")))));
+            block.addStatement(new MethodCallExpr(new ThisExpr(), "setNotStartedReassignments", NodeList.nodeList(toDeadlineExpression(info.getParameter("NotStartedReassign")))));
+            block.addStatement(new MethodCallExpr(new ThisExpr(), "setNotCompletedReassigments", NodeList.nodeList(toDeadlineExpression(info.getParameter("NotCompletedReassign")))));
 
             generatedFiles.add(new GeneratedFile(GeneratedFileType.SOURCE, UserTaskCodegenHelper.path(info).resolve(className + ".java"), unit.toString()));
         }
         return generatedFiles;
+    }
+
+    private Expression toDeadlineExpression(Object parameter) {
+        if (parameter instanceof String stringParam) {
+            try {
+                DeadlineHelper.parseDeadlines(stringParam);
+                return toStringExpression(stringParam);
+            } catch (Exception e) {
+                LOG.debug("to deadline calculation failure. {} it is not a proper expression");
+            }
+        }
+        return new CastExpr(StaticJavaParser.parseType(String.class.getName()), new NullLiteralExpr());
     }
 
     private Expression toStringExpression(Object value) {

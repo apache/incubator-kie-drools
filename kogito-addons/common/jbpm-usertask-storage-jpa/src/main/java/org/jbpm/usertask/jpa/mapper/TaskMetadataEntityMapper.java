@@ -31,7 +31,7 @@ import org.jbpm.usertask.jpa.repository.TaskMetadataRepository;
 import org.kie.kogito.usertask.UserTaskInstance;
 import org.kie.kogito.usertask.impl.DefaultUserTaskInstance;
 
-public class TaskMetadataEntityMapper {
+public class TaskMetadataEntityMapper implements EntityMapper {
 
     private final TaskMetadataRepository repository;
 
@@ -39,6 +39,7 @@ public class TaskMetadataEntityMapper {
         this.repository = repository;
     }
 
+    @Override
     public void mapInstanceToEntity(UserTaskInstance userTaskInstance, UserTaskInstanceEntity userTaskInstanceEntity) {
         Collection<TaskMetadataEntity> toRemove = userTaskInstanceEntity.getMetadata()
                 .stream()
@@ -64,6 +65,7 @@ public class TaskMetadataEntityMapper {
         });
     }
 
+    @Override
     public void mapEntityToInstance(UserTaskInstanceEntity userTaskInstanceEntity, UserTaskInstance userTaskInstance) {
         Map<String, Object> metadata = new HashMap<>();
         userTaskInstanceEntity.getMetadata().forEach(metadataEntry -> {

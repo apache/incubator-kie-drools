@@ -22,15 +22,17 @@ package org.jbpm.usertask.jpa.model;
 import java.io.Serializable;
 import java.util.Objects;
 
-public class TaskDataEntityPK implements Serializable {
+public class TaskNamedDataEntityPK implements Serializable {
+
+    private static final long serialVersionUID = 5506586793841760884L;
 
     private String name;
     private UserTaskInstanceEntity taskInstance;
 
-    public TaskDataEntityPK() {
+    public TaskNamedDataEntityPK() {
     }
 
-    public TaskDataEntityPK(String inputName, UserTaskInstanceEntity taskInstance) {
+    public TaskNamedDataEntityPK(String inputName, UserTaskInstanceEntity taskInstance) {
         this.taskInstance = taskInstance;
         this.name = inputName;
     }
@@ -57,8 +59,8 @@ public class TaskDataEntityPK implements Serializable {
             return true;
         if (o == null || getClass() != o.getClass())
             return false;
-        TaskDataEntityPK that = (TaskDataEntityPK) o;
-        return Objects.equals(getName(), that.getName()) && Objects.equals(getTaskInstance(), that.getTaskInstance());
+        TaskNamedDataEntityPK that = (TaskNamedDataEntityPK) o;
+        return Objects.equals(getName(), that.getName()) && Objects.equals(getTaskInstance().getId(), that.getTaskInstance().getId());
     }
 
     @Override
@@ -68,8 +70,8 @@ public class TaskDataEntityPK implements Serializable {
 
     @Override
     public String toString() {
-        return "TaskInputEntityId{" +
-                "taskInstance='" + taskInstance + '\'' +
+        return "TaskNamedDataEntityId {" +
+                "taskInstance='" + taskInstance.getId() + '\'' +
                 ", name='" + name + '\'' +
                 '}';
     }

@@ -19,7 +19,14 @@
 
 package org.jbpm.usertask.jpa.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.AssociationOverride;
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.AttributeOverrides;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.ForeignKey;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "jbpm_user_tasks_metadata")
@@ -29,7 +36,6 @@ import jakarta.persistence.*;
 })
 @AssociationOverride(name = "taskInstance",
         joinColumns = @JoinColumn(name = "task_id", foreignKey = @ForeignKey(name = "jbpm_user_tasks_metadata_tid")))
-@IdClass(TaskDataEntityPK.class)
-public class TaskMetadataEntity extends TaskDataEntity<String> {
+public class TaskMetadataEntity extends TaskNamedDataEntity<String> {
 
 }

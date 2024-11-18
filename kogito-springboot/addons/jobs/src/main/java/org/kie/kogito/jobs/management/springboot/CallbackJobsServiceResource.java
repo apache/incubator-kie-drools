@@ -39,8 +39,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import static org.kie.kogito.jobs.JobDescription.JOBS_CALLBACK_URI;
 import static org.kie.kogito.jobs.api.JobCallbackResourceDef.JOBS_CALLBACK_POST_URI;
-import static org.kie.kogito.jobs.api.JobCallbackResourceDef.JOBS_CALLBACK_URI;
 import static org.kie.kogito.jobs.api.JobCallbackResourceDef.LIMIT;
 import static org.kie.kogito.jobs.api.JobCallbackResourceDef.LIMIT_DEFAULT_VALUE;
 import static org.kie.kogito.jobs.api.JobCallbackResourceDef.PROCESS_ID;

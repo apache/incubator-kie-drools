@@ -32,12 +32,8 @@ import org.jbpm.test.utils.ProcessTestHelper;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.Application;
-import org.kie.kogito.StaticApplication;
-import org.kie.kogito.StaticConfig;
 import org.kie.kogito.calendar.BusinessCalendar;
-import org.kie.kogito.process.ProcessConfig;
 import org.kie.kogito.process.ProcessInstance;
-import org.kie.kogito.process.bpmn2.BpmnProcesses;
 import org.kie.kogito.process.impl.AbstractProcessConfig;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -55,9 +51,7 @@ public class BusinessCalendarTest {
 
     @Test
     public void testTimerWithWorkingDayCalendar() throws InterruptedException {
-        BpmnProcesses bpmnProcesses = new BpmnProcesses();
-        ProcessConfig config = new MockProcessConfig(workingDayCalendar);
-        Application app = new StaticApplication(new StaticConfig(null, config), bpmnProcesses);
+        Application app = ProcessTestHelper.newApplication(new MockProcessConfig(workingDayCalendar));
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         ProcessTestHelper.registerHandler(app, "Human Task", workItemHandler);
         org.kie.kogito.process.Process<BusinessCalendarTimerModel> processDefinition = BusinessCalendarTimerProcess.newProcess(app);
@@ -71,9 +65,7 @@ public class BusinessCalendarTest {
 
     @Test
     public void testTimerWithNotWorkingDayCalendar() throws InterruptedException {
-        BpmnProcesses bpmnProcesses = new BpmnProcesses();
-        ProcessConfig config = new MockProcessConfig(notWorkingDayCalendar);
-        Application app = new StaticApplication(new StaticConfig(null, config), bpmnProcesses);
+        Application app = ProcessTestHelper.newApplication(new MockProcessConfig(notWorkingDayCalendar));
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         ProcessTestHelper.registerHandler(app, "Human Task", workItemHandler);
         org.kie.kogito.process.Process<BusinessCalendarTimerModel> processDefinition = BusinessCalendarTimerProcess.newProcess(app);

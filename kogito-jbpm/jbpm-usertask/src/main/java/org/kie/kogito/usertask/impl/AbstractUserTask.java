@@ -20,13 +20,13 @@ package org.kie.kogito.usertask.impl;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import org.kie.kogito.usertask.UserTask;
 import org.kie.kogito.usertask.UserTaskInstance;
 import org.kie.kogito.usertask.impl.model.DeadlineHelper;
 import org.kie.kogito.usertask.model.DeadlineInfo;
+import org.kie.kogito.usertask.model.Notification;
 import org.kie.kogito.usertask.model.Reassignment;
 
 public abstract class AbstractUserTask implements UserTask {
@@ -44,10 +44,10 @@ public abstract class AbstractUserTask implements UserTask {
     private Set<String> adminUsers;
     private Set<String> adminGroups;
     private Set<String> excludedUsers;
-    private Collection<DeadlineInfo<Map<String, Object>>> startDeadlines;
-    private Collection<DeadlineInfo<Map<String, Object>>> endDeadlines;
+    private Collection<DeadlineInfo<Notification>> startDeadlines;
+    private Collection<DeadlineInfo<Notification>> endDeadlines;
     private Collection<DeadlineInfo<Reassignment>> startReassigments;
-    private Collection<DeadlineInfo<Reassignment>> endReassigments;
+    private Collection<DeadlineInfo<Reassignment>> endReassignments;
 
     public AbstractUserTask(String id, String name) {
         this.id = id;
@@ -61,7 +61,7 @@ public abstract class AbstractUserTask implements UserTask {
         this.startDeadlines = new HashSet<>();
         this.endDeadlines = new HashSet<>();
         this.startReassigments = new HashSet<>();
-        this.endReassigments = new HashSet<>();
+        this.endReassignments = new HashSet<>();
     }
 
     @Override
@@ -77,6 +77,10 @@ public abstract class AbstractUserTask implements UserTask {
         instance.setAdminGroups(getAdminGroups());
         instance.setExcludedUsers(getExcludedUsers());
         instance.setInstances(this.instances());
+        instance.setNotCompletedDeadlines(this.getNotCompletedDeadlines());
+        instance.setNotCompletedReassignments(this.getNotCompletedReassignments());
+        instance.setNotStartedDeadlines(this.getNotStartedDeadlines());
+        instance.setNotStartedReassignments(this.getNotStartedReassignments());
         return instance;
     }
 
@@ -200,7 +204,7 @@ public abstract class AbstractUserTask implements UserTask {
     }
 
     @Override
-    public Collection<DeadlineInfo<Map<String, Object>>> getNotStartedDeadlines() {
+    public Collection<DeadlineInfo<Notification>> getNotStartedDeadlines() {
         return startDeadlines;
     }
 
@@ -209,7 +213,7 @@ public abstract class AbstractUserTask implements UserTask {
     }
 
     @Override
-    public Collection<DeadlineInfo<Map<String, Object>>> getNotCompletedDeadlines() {
+    public Collection<DeadlineInfo<Notification>> getNotCompletedDeadlines() {
         return endDeadlines;
     }
 
@@ -227,12 +231,12 @@ public abstract class AbstractUserTask implements UserTask {
     }
 
     @Override
-    public Collection<DeadlineInfo<Reassignment>> getNotCompletedReassigments() {
-        return endReassigments;
+    public Collection<DeadlineInfo<Reassignment>> getNotCompletedReassignments() {
+        return endReassignments;
     }
 
     public void setNotCompletedReassigments(String reassignments) {
-        this.endReassigments = DeadlineHelper.parseReassignments(reassignments);
+        this.endReassignments = DeadlineHelper.parseReassignments(reassignments);
     }
 
     protected Set<String> toSet(String value) {

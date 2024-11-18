@@ -22,6 +22,7 @@ import java.util.Optional;
 
 import org.kie.kogito.Application;
 import org.kie.kogito.Model;
+import org.kie.kogito.jobs.JobDescription;
 import org.kie.kogito.jobs.api.JobCallbackPayload;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.Processes;
@@ -42,14 +43,13 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 
 import static org.kie.kogito.jobs.api.JobCallbackResourceDef.JOBS_CALLBACK_POST_URI;
-import static org.kie.kogito.jobs.api.JobCallbackResourceDef.JOBS_CALLBACK_URI;
 import static org.kie.kogito.jobs.api.JobCallbackResourceDef.LIMIT;
 import static org.kie.kogito.jobs.api.JobCallbackResourceDef.LIMIT_DEFAULT_VALUE;
 import static org.kie.kogito.jobs.api.JobCallbackResourceDef.PROCESS_ID;
 import static org.kie.kogito.jobs.api.JobCallbackResourceDef.PROCESS_INSTANCE_ID;
 import static org.kie.kogito.jobs.api.JobCallbackResourceDef.TIMER_ID;
 
-@Path(JOBS_CALLBACK_URI)
+@Path(JobDescription.JOBS_CALLBACK_URI)
 public class CallbackJobsServiceResource {
 
     @Inject

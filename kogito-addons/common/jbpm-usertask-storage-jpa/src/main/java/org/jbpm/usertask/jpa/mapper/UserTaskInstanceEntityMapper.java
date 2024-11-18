@@ -19,6 +19,8 @@
 
 package org.jbpm.usertask.jpa.mapper;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import org.jbpm.usertask.jpa.model.UserTaskInstanceEntity;
@@ -28,19 +30,11 @@ import org.kie.kogito.usertask.lifecycle.UserTaskState;
 
 public class UserTaskInstanceEntityMapper {
 
-    private final AttachmentsEntityMapper attachmentsMapper;
-    private final CommentsEntityMapper commentMapper;
-    private final TaskInputsEntityMapper taskInputsMapper;
-    private final TaskOutputsEntityMapper taskOutputsMapper;
-    private final TaskMetadataEntityMapper taskMetadataMapper;
+    private List<EntityMapper> mappers;
 
-    public UserTaskInstanceEntityMapper(AttachmentsEntityMapper attachmentsMapper, CommentsEntityMapper commentsMapper, TaskMetadataEntityMapper taskMetadataMapper,
-            TaskInputsEntityMapper taskInputsMapper, TaskOutputsEntityMapper taskOutputMapper) {
-        this.attachmentsMapper = attachmentsMapper;
-        this.commentMapper = commentsMapper;
-        this.taskMetadataMapper = taskMetadataMapper;
-        this.taskInputsMapper = taskInputsMapper;
-        this.taskOutputsMapper = taskOutputMapper;
+    public UserTaskInstanceEntityMapper(Iterable<EntityMapper> mappers) {
+        this.mappers = new ArrayList<>();
+        mappers.forEach(this.mappers::add);
     }
 
     public UserTaskInstanceEntity mapTaskInstanceToEntity(UserTaskInstance userTaskInstance, UserTaskInstanceEntity entity) {
@@ -60,11 +54,7 @@ public class UserTaskInstanceEntityMapper {
         entity.setAdminGroups(Set.copyOf(userTaskInstance.getAdminGroups()));
         entity.setExcludedUsers(Set.copyOf(userTaskInstance.getExcludedUsers()));
 
-        attachmentsMapper.mapInstanceToEntity(userTaskInstance, entity);
-        commentMapper.mapInstanceToEntity(userTaskInstance, entity);
-        taskInputsMapper.mapInstanceToEntity(userTaskInstance, entity);
-        taskOutputsMapper.mapInstanceToEntity(userTaskInstance, entity);
-        taskMetadataMapper.mapInstanceToEntity(userTaskInstance, entity);
+        mappers.forEach(e -> e.mapInstanceToEntity(userTaskInstance, entity));
 
         return entity;
     }
@@ -90,11 +80,7 @@ public class UserTaskInstanceEntityMapper {
         instance.setAdminGroups(Set.copyOf(entity.getAdminGroups()));
         instance.setExcludedUsers(Set.copyOf(entity.getExcludedUsers()));
 
-        attachmentsMapper.mapEntityToInstance(entity, instance);
-        commentMapper.mapEntityToInstance(entity, instance);
-        taskInputsMapper.mapEntityToInstance(entity, instance);
-        taskOutputsMapper.mapEntityToInstance(entity, instance);
-        taskMetadataMapper.mapEntityToInstance(entity, instance);
+        mappers.forEach(e -> e.mapEntityToInstance(entity, instance));
 
         return instance;
     }

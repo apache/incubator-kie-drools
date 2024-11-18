@@ -634,6 +634,10 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
     }
 
     private String cleanUp(String expression) {
+        // this is for user task expressions (they should be set as it is)
+        if (expression.startsWith("[")) {
+            return expression;
+        }
         Matcher matcher = PatternConstants.PARAMETER_MATCHER.matcher(expression);
         String temp = expression;
         if (matcher.find()) {

@@ -49,6 +49,7 @@ public class DefaultUserTaskLifeCycle implements UserTaskLifeCycle {
     public static final String COMPLETE = "complete";
     public static final String SKIP = "skip";
     public static final String FAIL = "fail";
+    public static final String REASSIGN = "reassign";
 
     public static final UserTaskState INACTIVE = UserTaskState.initalized();
     public static final UserTaskState ACTIVE = UserTaskState.of("Ready");
@@ -66,6 +67,9 @@ public class DefaultUserTaskLifeCycle implements UserTaskLifeCycle {
     private final UserTaskTransition T_RESERVED_SKIPPED = new DefaultUserTransition(SKIP, RESERVED, OBSOLETE, this::skip);
     private final UserTaskTransition T_RESERVED_ERROR = new DefaultUserTransition(FAIL, RESERVED, ERROR, this::fail);
 
+    private final UserTaskTransition T_RESERVED_ACTIVE_R = new DefaultUserTransition(REASSIGN, RESERVED, ACTIVE, this::reassign);
+    private final UserTaskTransition T_ACTIVE_ACTIVE_R = new DefaultUserTransition(REASSIGN, ACTIVE, ACTIVE, this::reassign);
+
     private List<UserTaskTransition> transitions;
 
     public DefaultUserTaskLifeCycle() {
@@ -77,7 +81,9 @@ public class DefaultUserTaskLifeCycle implements UserTaskLifeCycle {
                 T_RESERVED_ACTIVE,
                 T_RESERVED_COMPLETED,
                 T_RESERVED_SKIPPED,
-                T_RESERVED_ERROR);
+                T_RESERVED_ERROR,
+                T_RESERVED_ACTIVE_R,
+                T_ACTIVE_ACTIVE_R);
     }
 
     @Override
@@ -93,6 +99,15 @@ public class DefaultUserTaskLifeCycle implements UserTaskLifeCycle {
                 .findFirst()
                 .orElseThrow(() -> new UserTaskTransitionException("Invalid transition from " + userTaskInstance.getStatus()));
         return transition.executor().execute(userTaskInstance, userTaskTransitionToken, identityProvider);
+    }
+
+    @Override
+    public Optional<UserTaskTransitionToken> newReassignmentTransitionToken(UserTaskInstance userTaskInstance, Map<String, Object> data) {
+        try {
+            return Optional.of(newTransitionToken(REASSIGN, userTaskInstance.getStatus(), data));
+        } catch (UserTaskTransitionException e) {
+            return Optional.empty();
+        }
     }
 
     @Override
@@ -116,11 +131,35 @@ public class DefaultUserTaskLifeCycle implements UserTaskLifeCycle {
         return new DefaultUserTaskTransitionToken(transition.id(), transition.source(), transition.target(), data);
     }
 
-    public Optional<UserTaskTransitionToken> activate(UserTaskInstance userTaskInstance, UserTaskTransitionToken token, IdentityProvider identityProvider) {
+    public Optional<UserTaskTransitionToken> reassign(UserTaskInstance userTaskInstance, UserTaskTransitionToken token, IdentityProvider identityProvider) {
+        userTaskInstance.stopNotStartedDeadlines();
+        userTaskInstance.stopNotStartedReassignments();
+        userTaskInstance.stopNotCompletedDeadlines();
+        userTaskInstance.stopNotCompletedReassignments();
+
+        // restart the timers
+        userTaskInstance.startNotCompletedDeadlines();
+        userTaskInstance.startNotCompletedReassignments();
+
         String user = assignStrategy(userTaskInstance, identityProvider);
         if (user != null) {
             return Optional.of(newTransitionToken(CLAIM, ACTIVE, Map.of(PARAMETER_USER, user)));
         }
+        userTaskInstance.startNotStartedDeadlines();
+        userTaskInstance.startNotStartedReassignments();
+        return Optional.empty();
+    }
+
+    public Optional<UserTaskTransitionToken> activate(UserTaskInstance userTaskInstance, UserTaskTransitionToken token, IdentityProvider identityProvider) {
+        userTaskInstance.startNotCompletedDeadlines();
+        userTaskInstance.startNotCompletedReassignments();
+
+        String user = assignStrategy(userTaskInstance, identityProvider);
+        if (user != null) {
+            return Optional.of(newTransitionToken(CLAIM, ACTIVE, Map.of(PARAMETER_USER, user)));
+        }
+        userTaskInstance.startNotStartedDeadlines();
+        userTaskInstance.startNotStartedReassignments();
         return Optional.empty();
     }
 
@@ -132,6 +171,8 @@ public class DefaultUserTaskLifeCycle implements UserTaskLifeCycle {
                 defaultUserTaskInstance.setActualOwner(identityProvider.getName());
             }
         }
+        userTaskInstance.stopNotStartedDeadlines();
+        userTaskInstance.stopNotStartedReassignments();
         return Optional.empty();
     }
 
@@ -144,6 +185,10 @@ public class DefaultUserTaskLifeCycle implements UserTaskLifeCycle {
 
     public Optional<UserTaskTransitionToken> complete(UserTaskInstance userTaskInstance, UserTaskTransitionToken token, IdentityProvider identityProvider) {
         token.data().forEach(userTaskInstance::setOutput);
+        userTaskInstance.stopNotStartedDeadlines();
+        userTaskInstance.stopNotStartedReassignments();
+        userTaskInstance.stopNotCompletedDeadlines();
+        userTaskInstance.stopNotCompletedReassignments();
         return Optional.empty();
     }
 
@@ -151,6 +196,10 @@ public class DefaultUserTaskLifeCycle implements UserTaskLifeCycle {
         if (token.data().containsKey(PARAMETER_NOTIFY)) {
             userTaskInstance.getMetadata().put(PARAMETER_NOTIFY, token.data().get(PARAMETER_NOTIFY));
         }
+        userTaskInstance.stopNotStartedDeadlines();
+        userTaskInstance.stopNotStartedReassignments();
+        userTaskInstance.stopNotCompletedDeadlines();
+        userTaskInstance.stopNotCompletedReassignments();
         return Optional.empty();
     }
 
@@ -158,6 +207,10 @@ public class DefaultUserTaskLifeCycle implements UserTaskLifeCycle {
         if (token.data().containsKey(PARAMETER_NOTIFY)) {
             userTaskInstance.getMetadata().put(PARAMETER_NOTIFY, token.data().get(PARAMETER_NOTIFY));
         }
+        userTaskInstance.stopNotStartedDeadlines();
+        userTaskInstance.stopNotStartedReassignments();
+        userTaskInstance.stopNotCompletedDeadlines();
+        userTaskInstance.stopNotCompletedReassignments();
         return Optional.empty();
     }
 

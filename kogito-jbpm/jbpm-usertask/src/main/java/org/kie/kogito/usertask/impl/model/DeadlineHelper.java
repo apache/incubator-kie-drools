@@ -38,6 +38,7 @@ import org.kie.kogito.jobs.DurationExpirationTime;
 import org.kie.kogito.jobs.ExactExpirationTime;
 import org.kie.kogito.jobs.ExpirationTime;
 import org.kie.kogito.usertask.model.DeadlineInfo;
+import org.kie.kogito.usertask.model.Notification;
 import org.kie.kogito.usertask.model.Reassignment;
 import org.kie.kogito.usertask.model.ScheduleInfo;
 import org.slf4j.Logger;
@@ -89,11 +90,17 @@ public class DeadlineHelper {
     }
 
     public static Collection<DeadlineInfo<Reassignment>> parseReassignments(Object text) {
+        if (text instanceof String textString && textString.isBlank()) {
+            return Collections.emptyList();
+        }
         return parseDeadlines(text, DeadlineHelper::parseReassigment, DeadlineHelper::getReassignmentSchedule);
     }
 
-    public static Collection<DeadlineInfo<Map<String, Object>>> parseDeadlines(Object text) {
-        return parseDeadlines(text, DeadlineHelper::asMap, DeadlineHelper::getSchedulesInfo);
+    public static Collection<DeadlineInfo<Notification>> parseDeadlines(Object text) {
+        if (text instanceof String textString && textString.isBlank()) {
+            return Collections.emptyList();
+        }
+        return parseDeadlines(text, DeadlineHelper::asNotification, DeadlineHelper::getSchedulesInfo);
     }
 
     private static <T> Collection<DeadlineInfo<T>> parseDeadlines(Object text,
@@ -116,7 +123,7 @@ public class DeadlineHelper {
             deadline.setScheduleInfo(scheduleFunction.apply(text.substring(indexOf + 3, text.length() - 1).trim()));
             return deadline;
         }
-        throw new IllegalArgumentException("Invalid formar for dead line expression " + text);
+        throw new IllegalArgumentException("Invalid format for dead line expression " + text);
     }
 
     private static Collection<ScheduleInfo> getReassignmentSchedule(String timeStr) {
@@ -196,6 +203,10 @@ public class DeadlineHelper {
 
     private static int numRepetitions(String repetitionStr) {
         return repetitionStr.length() > 1 ? Integer.parseInt(repetitionStr.substring(1)) : -1;
+    }
+
+    private static Notification asNotification(String text) {
+        return new Notification(asMap(text));
     }
 
     private static Map<String, Object> asMap(String text) {

@@ -18,8 +18,7 @@
  */
 package org.kie.kogito.jobs.management.springboot;
 
-import org.kie.kogito.jobs.ProcessInstanceJobDescription;
-import org.kie.kogito.jobs.ProcessJobDescription;
+import org.kie.kogito.jobs.JobDescription;
 import org.kie.kogito.jobs.management.RestJobsService;
 import org.kie.kogito.jobs.service.api.Job;
 import org.slf4j.Logger;
@@ -73,13 +72,7 @@ public class SpringRestJobsService extends RestJobsService {
     }
 
     @Override
-    public String scheduleProcessJob(ProcessJobDescription description) {
-
-        throw new UnsupportedOperationException("Scheduling for process jobs is not yet implemented");
-    }
-
-    @Override
-    public String scheduleProcessInstanceJob(ProcessInstanceJobDescription description) {
+    public String scheduleJob(JobDescription description) {
         String callback = getCallbackEndpoint(description);
         LOGGER.debug("Job to be scheduled {} with callback URL {}", description, callback);
         final Job job = buildJob(description, callback);

@@ -30,6 +30,7 @@ import org.jbpm.bpmn2.intermediate.IntermediateCatchEventTimerDurationWithErrorP
 import org.kie.api.event.process.ProcessNodeEvent;
 import org.kie.api.event.process.ProcessNodeLeftEvent;
 import org.kie.api.event.process.ProcessNodeTriggeredEvent;
+import org.kie.kogito.Addons;
 import org.kie.kogito.Application;
 import org.kie.kogito.Model;
 import org.kie.kogito.StaticApplication;
@@ -45,22 +46,29 @@ import org.kie.kogito.process.bpmn2.BpmnProcesses;
 import org.kie.kogito.process.impl.DefaultProcessEventListenerConfig;
 import org.kie.kogito.process.impl.DefaultWorkItemHandlerConfig;
 import org.kie.kogito.process.impl.StaticProcessConfig;
-import org.kie.kogito.services.uow.CollectingUnitOfWorkFactory;
-import org.kie.kogito.services.uow.DefaultUnitOfWorkManager;
+import org.kie.kogito.services.jobs.impl.InMemoryJobContext;
+import org.kie.kogito.services.jobs.impl.InMemoryProcessJobExecutorFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static java.util.Collections.emptyList;
+import static org.kie.kogito.services.jobs.impl.StaticJobService.staticJobService;
+import static org.kie.kogito.services.uow.StaticUnitOfWorkManger.staticUnitOfWorkManager;
 
 public class ProcessTestHelper {
 
     private static Logger LOGGER = LoggerFactory.getLogger(ProcessTestHelper.class);
 
     public static Application newApplication() {
+        return newApplication(new StaticProcessConfig());
+    }
+
+    public static Application newApplication(ProcessConfig staticConfig) {
         BpmnProcesses bpmnProcesses = new BpmnProcesses();
-        StaticProcessConfig staticConfig =
-                new StaticProcessConfig(new DefaultWorkItemHandlerConfig(), new DefaultProcessEventListenerConfig(), new DefaultUnitOfWorkManager(new CollectingUnitOfWorkFactory()));
-        return new StaticApplication(new StaticConfig(null, staticConfig), bpmnProcesses);
+        InMemoryJobContext context = new InMemoryJobContext(null, staticUnitOfWorkManager(), bpmnProcesses, null);
+        staticJobService().clearJobExecutorFactories();
+        staticJobService().registerJobExecutorFactory(new InMemoryProcessJobExecutorFactory(context));
+        return new StaticApplication(new StaticConfig(Addons.EMTPY, staticConfig), bpmnProcesses);
     }
 
     public static void registerProcessEventListener(Application app, KogitoProcessEventListener kogitoProcessEventListener) {

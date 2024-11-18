@@ -37,8 +37,8 @@ import org.kie.kogito.process.impl.AbstractProcess;
 import org.kie.kogito.process.impl.DefaultProcessEventListenerConfig;
 import org.kie.kogito.process.impl.DefaultWorkItemHandlerConfig;
 import org.kie.kogito.process.impl.StaticProcessConfig;
-import org.kie.kogito.services.uow.CollectingUnitOfWorkFactory;
-import org.kie.kogito.services.uow.DefaultUnitOfWorkManager;
+
+import static org.kie.kogito.services.uow.StaticUnitOfWorkManger.staticUnitOfWorkManager;
 
 public class BpmnProcess extends AbstractProcess<BpmnVariables> {
 
@@ -127,7 +127,7 @@ public class BpmnProcess extends AbstractProcess<BpmnVariables> {
     }
 
     public static List<BpmnProcess> from(WorkItemHandlerConfig config, Resource... resource) {
-        return from(new StaticProcessConfig(config, new DefaultProcessEventListenerConfig(), new DefaultUnitOfWorkManager(new CollectingUnitOfWorkFactory())), resource);
+        return from(new StaticProcessConfig(config, new DefaultProcessEventListenerConfig(), staticUnitOfWorkManager()), resource);
     }
 
     public static List<BpmnProcess> from(ProcessConfig config, Resource... resources) {

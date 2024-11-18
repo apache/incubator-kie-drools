@@ -42,7 +42,7 @@ public class AttachmentsEntityMapperTest {
 
     @Mock
     private AttachmentRepository repository;
-    private AttachmentsEntityMapper mapper;
+    private EntityMapper mapper;
 
     @BeforeEach
     public void setup() {

@@ -42,7 +42,7 @@ import org.kie.kogito.jobs.DurationExpirationTime;
 import org.kie.kogito.jobs.ExactExpirationTime;
 import org.kie.kogito.jobs.ExpirationTime;
 import org.kie.kogito.jobs.JobsService;
-import org.kie.kogito.jobs.ProcessJobDescription;
+import org.kie.kogito.jobs.descriptors.ProcessJobDescription;
 import org.kie.kogito.signal.SignalManager;
 
 import static org.jbpm.process.core.constants.CalendarConstants.BUSINESS_CALENDAR_ENVIRONMENT_KEY;
@@ -100,7 +100,7 @@ public abstract class AbstractProcessRuntime implements InternalProcessRuntime {
             if (startNodes != null && !startNodes.isEmpty()) {
                 for (StartNode startNode : startNodes) {
                     if (startNode != null && startNode.getTimer() != null) {
-                        jobService.scheduleProcessJob(ProcessJobDescription.of(createTimerInstance(startNode.getTimer(), kruntime), p.getId()));
+                        jobService.scheduleJob(ProcessJobDescription.of(createTimerInstance(startNode.getTimer(), kruntime), p.getId()));
                     }
                 }
             }
