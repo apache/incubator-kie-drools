@@ -634,3 +634,14 @@ for drools-drl/drools-drl-parser/src/main/antlr4/org/drools/drl/parser/antlr4/Ja
  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+ ------------------------------------------------------------------------------------
+ for drools-decisiontables/src/main/java/org/drools/decisiontable/parser/csv/CsvLineParser.java
+
+ Inner logic adapted from a C++ original that was Copyright (C) 1999
+ Lucent Technologies Excerpted from 'The Practice of Programming' by Brian
+ Kernighan and Rob Pike.
+
+ Included by permission of the http://tpop.awl.com/ web site, which says:
+ "You may use this code for any purpose, as long as you leave the
+ copyright notice and book citation attached."

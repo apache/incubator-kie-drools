@@ -41,3 +41,4 @@ goal\.txt
 adult\.txt
 antora\.yml
 .*\.iml
+CsvLineParser\.java
