@@ -54,7 +54,8 @@ public class SerializationUtils {
         ObjectMapper objectMapper = new ObjectMapper()
                 .registerModule(new JavaTimeModule())
                 .registerModule(JsonFormat.getCloudEventJacksonModule())
-                .disable(com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+                .disable(com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+                .disable(com.fasterxml.jackson.databind.DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE);
         registerDescriptors(objectMapper);
         return objectMapper;
     }

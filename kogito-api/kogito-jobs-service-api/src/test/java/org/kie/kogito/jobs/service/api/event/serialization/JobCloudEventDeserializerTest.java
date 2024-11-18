@@ -150,7 +150,7 @@ class JobCloudEventDeserializerTest {
 
         assertThat(job.getSchedule()).isInstanceOf(TimerSchedule.class);
         TimerSchedule schedule = (TimerSchedule) job.getSchedule();
-        assertThat(schedule.getStartTime()).isEqualTo(SCHEDULE_START_TIME);
+        assertThat(schedule.getStartTime()).hasToString(SCHEDULE_START_TIME.toString());
         assertThat(schedule.getRepeatCount()).isEqualTo(SCHEDULE_REPEAT_COUNT);
         assertThat(schedule.getDelay()).isEqualTo(SCHEDULE_DELAY);
         assertThat(schedule.getDelayUnit()).isEqualTo(SCHEDULE_DELAY_UNIT);
