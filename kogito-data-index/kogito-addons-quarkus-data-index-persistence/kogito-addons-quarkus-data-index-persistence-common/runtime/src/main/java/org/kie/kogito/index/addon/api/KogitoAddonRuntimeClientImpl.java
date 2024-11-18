@@ -130,7 +130,8 @@ public class KogitoAddonRuntimeClientImpl extends KogitoRuntimeCommonClient impl
         if (processSvgService == null) {
             return CompletableFuture.completedFuture(null);
         } else {
-            return CompletableFuture.supplyAsync(() -> processSvgService.getProcessInstanceSvg(processInstance.getProcessId(), processInstance.getId(), null).orElse(null), managedExecutor);
+            return CompletableFuture.supplyAsync(() -> processSvgService.getProcessInstanceSvg(processInstance.getProcessId(), processInstance.getId(), this.getAuthHeader()).orElse(null),
+                    managedExecutor);
         }
     }
 
