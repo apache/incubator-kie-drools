@@ -28,7 +28,7 @@ import org.kie.kogito.event.DataEvent;
 import org.kie.kogito.event.job.JobInstanceDataEvent;
 import org.kie.kogito.jobs.DurationExpirationTime;
 import org.kie.kogito.jobs.JobsService;
-import org.kie.kogito.jobs.ProcessInstanceJobDescription;
+import org.kie.kogito.jobs.descriptors.ProcessInstanceJobDescription;
 
 import io.quarkus.test.junit.QuarkusTest;
 
@@ -58,7 +58,7 @@ public class EmbeddedJobsServiceTest {
         CountDownLatch latch = new CountDownLatch(8);
         publisher.setLatch(latch);
 
-        ProcessInstanceJobDescription description = ProcessInstanceJobDescription.builder()
+        ProcessInstanceJobDescription description = ProcessInstanceJobDescription.newProcessInstanceJobDescriptionBuilder()
                 .generateId()
                 .timerId("-1")
                 .expirationTime(DurationExpirationTime.now())
@@ -68,9 +68,9 @@ public class EmbeddedJobsServiceTest {
                 .rootProcessId(null)
                 .nodeInstanceId(NODE_INSTANCE_ID)
                 .build();
-        jobService.scheduleProcessInstanceJob(description);
+        jobService.scheduleJob(description);
 
-        ProcessInstanceJobDescription descriptionWRootProcess = ProcessInstanceJobDescription.builder()
+        ProcessInstanceJobDescription descriptionWRootProcess = ProcessInstanceJobDescription.newProcessInstanceJobDescriptionBuilder()
                 .generateId()
                 .timerId("-1")
                 .expirationTime(DurationExpirationTime.now())
@@ -80,7 +80,7 @@ public class EmbeddedJobsServiceTest {
                 .rootProcessId(ROOT_PROCESS_ID)
                 .nodeInstanceId(NODE_INSTANCE_ID)
                 .build();
-        jobService.scheduleProcessInstanceJob(descriptionWRootProcess);
+        jobService.scheduleJob(descriptionWRootProcess);
 
         latch.await();
 

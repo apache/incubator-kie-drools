@@ -20,7 +20,7 @@ package org.kie.kogito.jobs.service.json;
 
 import org.kie.kogito.jobs.DurationExpirationTime;
 import org.kie.kogito.jobs.ExactExpirationTime;
-import org.kie.kogito.jobs.ProcessInstanceJobDescription;
+import org.kie.kogito.jobs.JobDescription;
 import org.kie.kogito.jobs.service.api.serlialization.SerializationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,8 +46,8 @@ public class JacksonConfiguration {
         return objectMapper -> {
             LOGGER.debug("Jackson customization initialized.");
             SimpleModule kogitoCustomModule = new SimpleModule();
-            kogitoCustomModule.addSerializer(ProcessInstanceJobDescription.class, new ProcessInstanceJobDescriptionSerializer());
-            kogitoCustomModule.addDeserializer(ProcessInstanceJobDescription.class, new ProcessInstanceJobDescriptionDeserializer());
+            kogitoCustomModule.addSerializer(JobDescription.class, new JobDescriptionSerializer());
+            kogitoCustomModule.addDeserializer(JobDescription.class, new JobDescriptionDeserializer());
             kogitoCustomModule.addSerializer(DurationExpirationTime.class, new DurationExpirationTimeSerializer());
             kogitoCustomModule.addDeserializer(DurationExpirationTime.class, new DurationExpirationTimeDeserializer());
             kogitoCustomModule.addSerializer(ExactExpirationTime.class, new ExactExpirationTimeSerializer());

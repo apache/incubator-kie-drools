@@ -20,9 +20,8 @@ package org.kie.kogito.jobs.embedded;
 
 import java.util.concurrent.ExecutionException;
 
+import org.kie.kogito.jobs.JobDescription;
 import org.kie.kogito.jobs.JobsService;
-import org.kie.kogito.jobs.ProcessInstanceJobDescription;
-import org.kie.kogito.jobs.ProcessJobDescription;
 import org.kie.kogito.jobs.api.JobCallbackResourceDef;
 import org.kie.kogito.jobs.service.adapter.JobDetailsAdapter;
 import org.kie.kogito.jobs.service.api.Job;
@@ -54,13 +53,7 @@ public class EmbeddedJobsService implements JobsService {
     }
 
     @Override
-    public String scheduleProcessJob(ProcessJobDescription description) {
-        LOGGER.debug("ScheduleProcessJob: {} not supported", description);
-        return null;
-    }
-
-    @Override
-    public String scheduleProcessInstanceJob(ProcessInstanceJobDescription description) {
+    public String scheduleJob(JobDescription description) {
         try {
             Job job = Job.builder()
                     .id(description.id())

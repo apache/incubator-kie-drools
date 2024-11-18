@@ -18,31 +18,31 @@
  */
 package org.kie.kogito.jobs.embedded;
 
-import org.kie.kogito.jobs.ProcessInstanceJobDescription;
+import org.kie.kogito.jobs.JobDescription;
 import org.kie.kogito.jobs.service.api.PayloadData;
 
-public class InVMPayloadData extends PayloadData<ProcessInstanceJobDescription> {
+public class InVMPayloadData extends PayloadData<JobDescription> {
 
-    private ProcessInstanceJobDescription jobDescription;
+    private JobDescription jobDescription;
 
     public InVMPayloadData() {
         // do nothing
     }
 
-    public void setJobDescription(ProcessInstanceJobDescription jobDescription) {
+    public void setJobDescription(JobDescription jobDescription) {
         this.jobDescription = jobDescription;
     }
 
-    public ProcessInstanceJobDescription getJobDescription() {
+    public JobDescription getJobDescription() {
         return jobDescription;
     }
 
     @Override
-    public ProcessInstanceJobDescription getData() {
+    public JobDescription getData() {
         return jobDescription;
     }
 
-    public InVMPayloadData(ProcessInstanceJobDescription data) {
+    public InVMPayloadData(JobDescription data) {
         this.jobDescription = data;
     }
 
