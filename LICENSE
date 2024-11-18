@@ -200,3 +200,14 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
+
+ ------------------------------------------------------------------------------------
+ for drools-decisiontables/src/main/java/org/drools/decisiontable/parser/csv/CsvLineParser.java
+
+ Inner logic adapted from a C++ original that was Copyright (C) 1999
+ Lucent Technologies Excerpted from 'The Practice of Programming' by Brian
+ Kernighan and Rob Pike.
+
+ Included by permission of the http://tpop.awl.com/ web site, which says:
+ "You may use this code for any purpose, as long as you leave the
+ copyright notice and book citation attached."

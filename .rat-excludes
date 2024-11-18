@@ -1,6 +1,7 @@
 \.rat-excludes
 \.gitignore
 DISCLAIMER-WIP
+LICENSE-.*\.txt
 ui-bundle\.zip
 \.git-blame-ignore-revs
 dependency-reduced-pom\.xml
@@ -39,3 +40,4 @@ goal\.txt
 adult\.txt
 antora\.yml
 .*\.iml
+CsvLineParser\.java
