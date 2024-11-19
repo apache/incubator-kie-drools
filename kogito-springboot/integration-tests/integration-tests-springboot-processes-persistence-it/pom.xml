@@ -196,7 +196,6 @@
                   <directory>${project.parent.basedir}/integration-tests-springboot-processes-persistence-common/src/main/resources</directory>
                   <includes>
                     <include>**/*.bpmn</include>
-                    <include>**/*.wid</include>
                   </includes>
                 </resource>
               </resources>

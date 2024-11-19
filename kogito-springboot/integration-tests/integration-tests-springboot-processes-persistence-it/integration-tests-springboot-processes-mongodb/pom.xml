@@ -104,7 +104,6 @@
               <directory>${project.basedir}/src/main/resources</directory>
               <includes>
                 <include>**/*.bpmn</include>
-                <include>**/*.wid</include>
               </includes>
             </fileset>
           </filesets>
