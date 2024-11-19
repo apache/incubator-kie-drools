@@ -56,6 +56,7 @@ public class FixedPatternTest {
 
     /**
      * Tests fixed pattern without constraint in Decision table (BZ 1150308).
+     * @param kieBaseTestConfiguration 
      */
     @ParameterizedTest(name = "KieBase type={0}")
     @MethodSource("parameters")
