@@ -52,7 +52,7 @@ public class Reassignment {
 
     @Override
     public String toString() {
-        return "Reassigment [potentialUsers=" + potentialUsers + ", potentialGroups=" + potentialGroups + "]";
+        return "Reassignment [potentialUsers=" + potentialUsers + ", potentialGroups=" + potentialGroups + "]";
     }
 
     @Override

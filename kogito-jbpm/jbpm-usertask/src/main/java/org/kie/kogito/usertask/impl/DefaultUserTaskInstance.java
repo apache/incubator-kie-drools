@@ -105,7 +105,7 @@ public class DefaultUserTaskInstance implements UserTaskInstance {
 
     private Collection<DeadlineInfo<Reassignment>> notStartedReassignments;
 
-    private Collection<DeadlineInfo<Reassignment>> notCompletedReassigments;
+    private Collection<DeadlineInfo<Reassignment>> notCompletedReassignments;
 
     private Map<String, Notification> notStartedDeadlinesTimers;
 
@@ -643,11 +643,11 @@ public class DefaultUserTaskInstance implements UserTaskInstance {
 
     @Override
     public Collection<DeadlineInfo<Reassignment>> getNotCompletedReassignments() {
-        return notCompletedReassigments;
+        return notCompletedReassignments;
     }
 
-    public void setNotCompletedReassignments(Collection<DeadlineInfo<Reassignment>> notCompletedReassigments) {
-        this.notCompletedReassigments = notCompletedReassigments;
+    public void setNotCompletedReassignments(Collection<DeadlineInfo<Reassignment>> notCompletedReassignments) {
+        this.notCompletedReassignments = notCompletedReassignments;
     }
 
     public void setJobsService(JobsService jobsService) {

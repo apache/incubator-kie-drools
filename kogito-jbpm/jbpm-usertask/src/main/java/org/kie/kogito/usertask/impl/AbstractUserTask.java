@@ -46,7 +46,7 @@ public abstract class AbstractUserTask implements UserTask {
     private Set<String> excludedUsers;
     private Collection<DeadlineInfo<Notification>> startDeadlines;
     private Collection<DeadlineInfo<Notification>> endDeadlines;
-    private Collection<DeadlineInfo<Reassignment>> startReassigments;
+    private Collection<DeadlineInfo<Reassignment>> startReassignments;
     private Collection<DeadlineInfo<Reassignment>> endReassignments;
 
     public AbstractUserTask(String id, String name) {
@@ -60,7 +60,7 @@ public abstract class AbstractUserTask implements UserTask {
         this.excludedUsers = new HashSet<>();
         this.startDeadlines = new HashSet<>();
         this.endDeadlines = new HashSet<>();
-        this.startReassigments = new HashSet<>();
+        this.startReassignments = new HashSet<>();
         this.endReassignments = new HashSet<>();
     }
 
@@ -223,11 +223,11 @@ public abstract class AbstractUserTask implements UserTask {
 
     @Override
     public Collection<DeadlineInfo<Reassignment>> getNotStartedReassignments() {
-        return startReassigments;
+        return startReassignments;
     }
 
     public void setNotStartedReassignments(String reassignments) {
-        this.startReassigments = DeadlineHelper.parseReassignments(reassignments);
+        this.startReassignments = DeadlineHelper.parseReassignments(reassignments);
     }
 
     @Override
@@ -235,7 +235,7 @@ public abstract class AbstractUserTask implements UserTask {
         return endReassignments;
     }
 
-    public void setNotCompletedReassigments(String reassignments) {
+    public void setNotCompletedReassignments(String reassignments) {
         this.endReassignments = DeadlineHelper.parseReassignments(reassignments);
     }
 

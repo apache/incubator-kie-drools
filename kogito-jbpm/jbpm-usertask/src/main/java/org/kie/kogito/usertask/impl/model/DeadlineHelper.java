@@ -93,7 +93,7 @@ public class DeadlineHelper {
         if (text instanceof String textString && textString.isBlank()) {
             return Collections.emptyList();
         }
-        return parseDeadlines(text, DeadlineHelper::parseReassigment, DeadlineHelper::getReassignmentSchedule);
+        return parseDeadlines(text, DeadlineHelper::parseReassignment, DeadlineHelper::getReassignmentSchedule);
     }
 
     public static Collection<DeadlineInfo<Notification>> parseDeadlines(Object text) {
@@ -221,7 +221,7 @@ public class DeadlineHelper {
         return result;
     }
 
-    private static Reassignment parseReassigment(String text) {
+    private static Reassignment parseReassignment(String text) {
         Map<String, Object> map = asMap(text);
         return new Reassignment(parseSet(map.get("users")), parseSet(map.get("groups")));
     }

@@ -239,10 +239,10 @@ public class DeadlineHelperTest {
 
     @Test
     public void testReassignment() {
-        Collection<DeadlineInfo<Reassignment>> reassigments = DeadlineHelper.parseReassignments(
+        Collection<DeadlineInfo<Reassignment>> reassignments = DeadlineHelper.parseReassignments(
                 "[users:Pepe,Pepa|groups:Admin,Managers]@[1m]");
-        assertThat(reassigments).hasSize(1);
-        DeadlineInfo<Reassignment> reassignment = reassigments.iterator().next();
+        assertThat(reassignments).hasSize(1);
+        DeadlineInfo<Reassignment> reassignment = reassignments.iterator().next();
         assertThat(reassignment.getNotification().getPotentialUsers()).containsExactlyInAnyOrder("Pepe", "Pepa");
         assertThat(reassignment.getNotification().getPotentialGroups()).containsExactlyInAnyOrder("Admin", "Managers");
         assertThat(reassignment.getScheduleInfo().iterator().next().getDuration()).isEqualTo(Duration.ofMinutes(1));

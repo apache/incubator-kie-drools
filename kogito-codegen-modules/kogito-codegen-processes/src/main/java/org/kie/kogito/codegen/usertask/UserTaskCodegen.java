@@ -227,7 +227,7 @@ public class UserTaskCodegen extends AbstractGenerator {
             block.addStatement(new MethodCallExpr(new ThisExpr(), "setNotStartedDeadLines", NodeList.nodeList(toDeadlineExpression(info.getParameter("NotStartedNotify")))));
             block.addStatement(new MethodCallExpr(new ThisExpr(), "setNotCompletedDeadlines", NodeList.nodeList(toDeadlineExpression(info.getParameter("NotCompletedNotify")))));
             block.addStatement(new MethodCallExpr(new ThisExpr(), "setNotStartedReassignments", NodeList.nodeList(toDeadlineExpression(info.getParameter("NotStartedReassign")))));
-            block.addStatement(new MethodCallExpr(new ThisExpr(), "setNotCompletedReassigments", NodeList.nodeList(toDeadlineExpression(info.getParameter("NotCompletedReassign")))));
+            block.addStatement(new MethodCallExpr(new ThisExpr(), "setNotCompletedReassignments", NodeList.nodeList(toDeadlineExpression(info.getParameter("NotCompletedReassign")))));
 
             generatedFiles.add(new GeneratedFile(GeneratedFileType.SOURCE, UserTaskCodegenHelper.path(info).resolve(className + ".java"), unit.toString()));
         }
@@ -240,7 +240,7 @@ public class UserTaskCodegen extends AbstractGenerator {
                 DeadlineHelper.parseDeadlines(stringParam);
                 return toStringExpression(stringParam);
             } catch (Exception e) {
-                LOG.debug("to deadline calculation failure. {} it is not a proper expression");
+                LOG.debug("to deadline calculation failure. {} it is not a proper expression", stringParam);
             }
         }
         return new CastExpr(StaticJavaParser.parseType(String.class.getName()), new NullLiteralExpr());

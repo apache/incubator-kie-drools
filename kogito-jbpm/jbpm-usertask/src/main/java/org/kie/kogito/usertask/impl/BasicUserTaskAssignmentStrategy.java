@@ -34,7 +34,7 @@ public class BasicUserTaskAssignmentStrategy implements UserTaskAssignmentStrate
     }
 
     @Override
-    public Optional<String> computeAssigment(UserTaskInstance userTaskInstance, IdentityProvider identityProvider) {
+    public Optional<String> computeAssignment(UserTaskInstance userTaskInstance, IdentityProvider identityProvider) {
         Set<String> users = new HashSet<>(userTaskInstance.getPotentialUsers());
         users.removeAll(userTaskInstance.getExcludedUsers());
         if (users.size() == 1) {

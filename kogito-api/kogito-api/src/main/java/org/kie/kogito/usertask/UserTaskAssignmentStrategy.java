@@ -30,6 +30,6 @@ public interface UserTaskAssignmentStrategy {
         return getClass().getName();
     }
 
-    Optional<String> computeAssigment(UserTaskInstance userTaskInstance, IdentityProvider identityProvider);
+    Optional<String> computeAssignment(UserTaskInstance userTaskInstance, IdentityProvider identityProvider);
 
 }
