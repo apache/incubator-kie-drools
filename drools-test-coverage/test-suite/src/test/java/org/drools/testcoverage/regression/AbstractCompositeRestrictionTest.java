@@ -18,15 +18,14 @@
  */
 package org.drools.testcoverage.regression;
 
-import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.Message;
@@ -37,22 +36,15 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Bugfix test for bz#724655 'NPE in AbstractCompositionRestriction when using
  * unbound variables'
  */
-@RunWith(Parameterized.class)
 public class AbstractCompositeRestrictionTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public AbstractCompositeRestrictionTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseConfigurations().stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseConfigurations();
-    }
-
-    @Test
-    public void test() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void test(KieBaseTestConfiguration kieBaseTestConfiguration) {
 
         final KieBuilder builder = KieUtil.getKieBuilderFromResources(kieBaseTestConfiguration, false,
                 KieServices.Factory.get().getResources().newClassPathResource("abstractCompositeRestrictionTest.drl", getClass()));

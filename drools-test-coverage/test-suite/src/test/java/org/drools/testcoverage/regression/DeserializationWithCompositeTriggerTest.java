@@ -18,18 +18,16 @@
  */
 package org.drools.testcoverage.regression;
 
-import java.util.Collection;
+import java.util.stream.Stream;
 
 import org.drools.mvel.compiler.StockTick;
 import org.drools.mvel.integrationtests.SerializationHelper;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
@@ -45,7 +43,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * Verifies that serialization and de-serialization of a composite trigger succeeds (BZ 1142914).
  */
-@RunWith(Parameterized.class)
 public class DeserializationWithCompositeTriggerTest {
 
     private static final String DRL =
@@ -68,19 +65,12 @@ public class DeserializationWithCompositeTriggerTest {
 
     private KieSession ksession;
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public DeserializationWithCompositeTriggerTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseConfigurations().stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseConfigurations();
-    }
 
-    @Before
-    public void prepare() {
+    public void prepare(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final KieBuilder kbuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, true, DRL);
         final KieContainer kcontainer = KieServices.Factory.get().newKieContainer(kbuilder.getKieModule().getReleaseId());
 
@@ -94,7 +84,7 @@ public class DeserializationWithCompositeTriggerTest {
         this.ksession = kbase.newKieSession(kieSessionConfiguration, null);
     }
 
-    @After
+    @AfterEach
     public void cleanup() {
         if (this.ksession != null) {
             this.ksession.dispose();
@@ -104,9 +94,12 @@ public class DeserializationWithCompositeTriggerTest {
     /**
      * Verifies that serialization of a rule with composite trigger does not fail on
      * org.drools.core.time.impl.CompositeMaxDurationTrigger class serialization.
+     * @param kieBaseTestConfiguration 
      */
-    @Test
-    public void testSerializationAndDeserialization() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testSerializationAndDeserialization(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
+        prepare(kieBaseTestConfiguration);
         this.ksession.insert(new StockTick(2, "AAA", 1.0, 0));
 
         this.ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true, false);

@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit;
 import org.drools.core.ClockType;
 import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.time.impl.PseudoClockScheduler;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.conf.EventProcessingOption;
