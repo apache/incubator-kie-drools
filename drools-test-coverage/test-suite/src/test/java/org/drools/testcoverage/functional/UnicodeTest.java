@@ -20,18 +20,17 @@ package org.drools.testcoverage.functional;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.ResourceUtil;
 import org.drools.testcoverage.common.util.TestConstants;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.command.Command;
@@ -52,22 +51,15 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Tests Drools engine capabilities regarding Unicode characters
  * 
  */
-@RunWith(Parameterized.class)
 public class UnicodeTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public UnicodeTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseConfigurations().stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseConfigurations();
-    }
-
-    @Test
-    public void testJapanese() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testJapanese(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final KieServices kieServices = KieServices.Factory.get();
         final Resource resource = kieServices.getResources().newClassPathResource("unicode.drl", getClass());
         final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration,
@@ -94,8 +86,9 @@ public class UnicodeTest {
         assertThat(一覧.iterator().next().getの名前()).isEqualTo("横綱");
     }
 
-    @Test
-    public void testCzech() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testCzech(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final KieServices kieServices = KieServices.Factory.get();
         final Resource resource = kieServices.getResources().newClassPathResource("unicode.drl", getClass());
         final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, resource);
@@ -122,8 +115,9 @@ public class UnicodeTest {
         assertThat(lidé.get(1).getJméno()).isEqualTo("Oldřiška");
     }
 
-    @Test
-    public void testCzechDomainSpecificLanguage() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testCzechDomainSpecificLanguage(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final KieServices kieServices = KieServices.Factory.get();
         final Resource dsl = kieServices.getResources().newClassPathResource("unicode.dsl", getClass());
         final Resource dslr = kieServices.getResources().newClassPathResource("unicode.dslr", getClass());
@@ -146,8 +140,9 @@ public class UnicodeTest {
         assertThat(dospělí.iterator().next().getJméno()).isEqualTo("Řehoř");
     }
 
-    @Test
-    public void testCzechXLSDecisionTable() throws FileNotFoundException {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testCzechXLSDecisionTable(KieBaseTestConfiguration kieBaseTestConfiguration) throws FileNotFoundException {
         final KieServices kieServices = KieServices.Factory.get();
         final Resource resource = kieServices.getResources().newClassPathResource("unicode.drl.xls", getClass());
         final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, resource);
@@ -169,8 +164,9 @@ public class UnicodeTest {
         assertThat(dospělí.iterator().next().getJméno()).isEqualTo("Řehoř");
     }
 
-    @Test
-    public void testCzechCSVDecisionTable() throws FileNotFoundException {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testCzechCSVDecisionTable(KieBaseTestConfiguration kieBaseTestConfiguration) throws FileNotFoundException {
         final KieServices kieServices = KieServices.Factory.get();
 
         final Resource decisionTable =
@@ -196,8 +192,9 @@ public class UnicodeTest {
     }
 
     // test queries in Czech language
-    @Test
-    public void testQueryCallFromJava() throws InstantiationException, IllegalAccessException {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testQueryCallFromJava(KieBaseTestConfiguration kieBaseTestConfiguration) throws InstantiationException, IllegalAccessException {
         final KieServices kieServices = KieServices.Factory.get();
         final Resource resource = kieServices.getResources().newClassPathResource("unicode.drl", getClass());
         final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, resource);
@@ -318,7 +315,8 @@ public class UnicodeTest {
         }
     }
 
-    @Test
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
     public void testMutibyteJavaDialect() {
         // DROOLS-1200
         final String drl =

@@ -19,17 +19,16 @@
 package org.drools.testcoverage.functional;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.stream.Stream;
 
 import org.drools.testcoverage.common.model.Person;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.Row;
@@ -40,32 +39,25 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 /**
  * Tests bad using and accessing to livequeries.
  */
-@RunWith(Parameterized.class)
 public class LiveQueriesBadResultTest {
 
     private ArrayList<Object> inserted, updated, deleted;
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public LiveQueriesBadResultTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseConfigurations().stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseConfigurations();
-    }
-
-    @Before
+    @BeforeEach
     public void initialize() {
         inserted = new ArrayList<>();
         updated = new ArrayList<>();
         deleted = new ArrayList<>();
     }
 
-    @Ignore("TODO - check correct exception in this test when DROOLS-2186 is fixed.")
-    @Test
-    public void testCallingLiveQueryWithoutParametersButItHasParams() {
+    @Disabled("TODO - check correct exception in this test when DROOLS-2186 is fixed.")
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testCallingLiveQueryWithoutParametersButItHasParams(KieBaseTestConfiguration kieBaseTestConfiguration) {
 
         final ViewChangedEventListener listener = new ViewChangedEventListener() {
 
@@ -93,8 +85,9 @@ public class LiveQueriesBadResultTest {
         ksession.openLiveQuery("queryWithParams", new Object[] {}, listener);
     }
 
-    @Test
-    public void testAccessToNotExistingVariable() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testAccessToNotExistingVariable(KieBaseTestConfiguration kieBaseTestConfiguration) {
 
         ViewChangedEventListener listener = new ViewChangedEventListener() {
 
@@ -125,9 +118,10 @@ public class LiveQueriesBadResultTest {
                 .hasMessage("The identifier 'bad' does not exist as a bound variable for this query");
     }
 
-    @Ignore("TODO - check correct exception in this test when DROOLS-2187 is fixed.")
-    @Test
-    public void testOfBadParameters() {
+    @Disabled("TODO - check correct exception in this test when DROOLS-2187 is fixed.")
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testOfBadParameters(KieBaseTestConfiguration kieBaseTestConfiguration) {
 
         ViewChangedEventListener listener = new ViewChangedEventListener() {
 

@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.drools.template.parser.DecisionTableParseException;
 import org.drools.testcoverage.common.listener.OrderListener;
@@ -34,11 +35,10 @@ import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
 import org.drools.testcoverage.common.util.ResourceUtil;
 import org.drools.testcoverage.common.util.TestConstants;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.type.FactType;
@@ -48,22 +48,15 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.builder.DecisionTableInputType;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 /**
  * Tests all features which can be used in decision tables.
  */
-@RunWith(Parameterized.class)
 public class DecisionTableTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public DecisionTableTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
-    }
-
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseConfigurations();
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseConfigurations().stream();
     }
 
     private static Resource sampleXlsDecisionTable;
@@ -92,7 +85,7 @@ public class DecisionTableTest {
 
     private static Resource sampleDateXLSXDecisionTable;
 
-    @BeforeClass
+    @BeforeAll
     public static void loadDecisionTablesToAvoidLoadingThemForEachKieBaseConfiguration() {
         sampleXlsDecisionTable = ResourceUtil.getDecisionTableResourceFromClasspath("sample.drl.xls",
                                                                                     DecisionTableTest.class,
@@ -148,17 +141,19 @@ public class DecisionTableTest {
 
     }
 
-    @Test
-    public void testSimpleXLS() {
-        testSimpleDecisionTable(sampleXlsDecisionTable);
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testSimpleXLS(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        testSimpleDecisionTable(kieBaseTestConfiguration, sampleXlsDecisionTable);
     }
 
-    @Test
-    public void testSimpleCSV() {
-        testSimpleDecisionTable(sampleCsvDecisionTable);
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testSimpleCSV(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        testSimpleDecisionTable(kieBaseTestConfiguration, sampleCsvDecisionTable);
     }
 
-    private void testSimpleDecisionTable(final Resource decisionTable) {
+    private void testSimpleDecisionTable(KieBaseTestConfiguration kieBaseTestConfiguration, final Resource decisionTable) {
         final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, decisionTable);
 
         final KieSession session = kbase.newKieSession();
@@ -177,8 +172,9 @@ public class DecisionTableTest {
         session.dispose();
     }
 
-    @Test
-    public void testMultipleTableXLS() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testMultipleTableXLS(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, multipleTablesDecisionTable);
 
         assertThat(2).isEqualTo(kbase.getKiePackages().size());
@@ -214,8 +210,9 @@ public class DecisionTableTest {
      * test for various evaluations, file sample_eval_dt.xls need to rewrite xls
      * table and maybe add some classes to be able to do the test
      */
-    @Test
-    public void testEvalTable() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testEvalTable(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, evalDecisionTable);
 
         assertThat(2).isEqualTo(kbase.getKiePackages().size());
@@ -316,8 +313,9 @@ public class DecisionTableTest {
      * covers also bugfix for Bug724257 (agenda group not added from dtable to
      * .drl)
      */
-    @Test
-    public void testAdvancedTable() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testAdvancedTable(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, advancedDecisionTable);
         KieSession session = kbase.newKieSession();
 
@@ -343,8 +341,9 @@ public class DecisionTableTest {
         session.dispose();
     }
 
-    @Test
-    public void testPushQueryWithFactDeclaration() throws IllegalAccessException, InstantiationException {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testPushQueryWithFactDeclaration(KieBaseTestConfiguration kieBaseTestConfiguration) throws IllegalAccessException, InstantiationException {
         final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, queriesDecisionTable);
 
         final FactType locationType = kbase.getFactType(TestConstants.PACKAGE_FUNCTIONAL, "Location");
@@ -401,8 +400,9 @@ public class DecisionTableTest {
         ksession.dispose();
     }
 
-    @Test
-    public void testPullQueryWithFactDeclaration() throws IllegalAccessException, InstantiationException {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testPullQueryWithFactDeclaration(KieBaseTestConfiguration kieBaseTestConfiguration) throws IllegalAccessException, InstantiationException {
         final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, queriesDecisionTable);
 
         final FactType locationType = kbase.getFactType(TestConstants.PACKAGE_FUNCTIONAL, "Location");
@@ -462,8 +462,9 @@ public class DecisionTableTest {
     /**
      * Test sequential turned on, it overrides all user defined saliences.
      */
-    @Test
-    public void testSequential() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testSequential(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, sequentialDecisionTable);
 
         final KieSession ksession = kbase.newKieSession();
@@ -479,8 +480,9 @@ public class DecisionTableTest {
         ksession.dispose();
     }
 
-    @Test
-    public void testLockOnActive() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testLockOnActive(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, agendaGroupDecisionTable);
         final KieSession ksession = kbase.newKieSession();
         final OrderListener listener = new OrderListener();
@@ -499,8 +501,9 @@ public class DecisionTableTest {
      * Agenda group rule with auto focus can fire a give focus to agenda group
      * without focus set on whole agenda group.
      */
-    @Test
-    public void testAutoFocus() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testAutoFocus(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, agendaGroupDecisionTable);
         final KieSession ksession = kbase.newKieSession();
         final OrderListener listener = new OrderListener();
@@ -527,8 +530,9 @@ public class DecisionTableTest {
         ksession.dispose();
     }
 
-    @Test
-    public void testActivationGroup() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testActivationGroup(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, agendaGroupDecisionTable);
         final KieSession ksession = kbase.newKieSession();
         final TrackingAgendaEventListener listener = new TrackingAgendaEventListener();
@@ -543,27 +547,33 @@ public class DecisionTableTest {
         ksession.dispose();
     }
 
-    @Test(expected = DecisionTableParseException.class)
-    public void testEmptyConditionInXLS() {
-        KieUtil.getKieBuilderFromResources(kieBaseTestConfiguration, true, emptyConditionDecisionTable);
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testEmptyConditionInXLS(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        assertThatExceptionOfType(DecisionTableParseException.class).isThrownBy(() -> 
+        KieUtil.getKieBuilderFromResources(kieBaseTestConfiguration, true, emptyConditionDecisionTable));
     }
 
-    @Test(expected = DecisionTableParseException.class)
-    public void testEmptyActionInCSV() {
-        KieUtil.getKieBuilderFromResources(kieBaseTestConfiguration, true, emptyActionDecisionTable);
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testEmptyActionInCSV(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        assertThatExceptionOfType(DecisionTableParseException.class).isThrownBy(() -> 
+        KieUtil.getKieBuilderFromResources(kieBaseTestConfiguration, true, emptyActionDecisionTable));
     }
 
-    @Test
-    public void testCSVWithDateAttributes() {
-        testDecisionTableWithDateAttributes(sampleDatesCsvDecisionTable);
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testCSVWithDateAttributes(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        testDecisionTableWithDateAttributes(kieBaseTestConfiguration, sampleDatesCsvDecisionTable);
     }
 
-    @Test
-    public void testXLSWithDateAttributes() {
-        testDecisionTableWithDateAttributes(sampleDatesXlsDecisionTable);
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testXLSWithDateAttributes(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        testDecisionTableWithDateAttributes(kieBaseTestConfiguration, sampleDatesXlsDecisionTable);
     }
 
-    private void testDecisionTableWithDateAttributes(final Resource decisionTable) {
+    private void testDecisionTableWithDateAttributes(KieBaseTestConfiguration kieBaseTestConfiguration, final Resource decisionTable) {
         final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, decisionTable);
 
         final ArrayList<String> names = new ArrayList<>();
@@ -595,8 +605,9 @@ public class DecisionTableTest {
     }
 
 
-    @Test
-    public void testXLSXComparingDates() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testXLSXComparingDates(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-6820
         KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, sampleDateXLSXDecisionTable);
         KieSession ksession = kbase.newKieSession();

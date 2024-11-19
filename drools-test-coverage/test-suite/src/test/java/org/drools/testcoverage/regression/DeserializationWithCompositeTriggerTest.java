@@ -94,7 +94,6 @@ public class DeserializationWithCompositeTriggerTest {
     /**
      * Verifies that serialization of a rule with composite trigger does not fail on
      * org.drools.core.time.impl.CompositeMaxDurationTrigger class serialization.
-     * @param kieBaseTestConfiguration 
      */
     @ParameterizedTest(name = "KieBase type={0}")
     @MethodSource("parameters")
