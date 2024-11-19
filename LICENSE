@@ -256,9 +256,7 @@ for drools-drl/drools-drl-parser/src/main/antlr4/org/drools/drl/parser/antlr4/Ja
      kie-dmn/kie-dmn-backend/src/test/resources/DMNDI12.xsd
      kie-dmn/kie-dmn-backend/src/test/resources/DMNDI13.xsd
      kie-dmn/kie-dmn-backend/src/test/resources/DMNDI15.xsd
-     kie-dmn/kie-dmn-feel/src/main/antlr4/org/kie/dmn/feel/parser/feel11/FEEL_1_1.g4
      kie-dmn/kie-dmn-feel/src/main/resources/dmn.xsd
-     kie-dmn/kie-dmn-trisotech/src/main/resources/org/kie/dmn/trisotech/validation/extension/TrisotechDMN13.xsd
      kie-dmn/kie-dmn-trisotech/src/test/resources/DC.xsd
      kie-dmn/kie-dmn-trisotech/src/test/resources/DI.xsd
      kie-dmn/kie-dmn-trisotech/src/test/resources/DMN13.xsd
