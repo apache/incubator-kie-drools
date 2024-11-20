@@ -1,0 +1,23 @@
+### general excludes
+**/target/**
+**/.*
+*README*
+*readme*
+DISCLAIMER-WIP
+**/src/test/resources/**
+**/src/test/filtered-resources/**
+**/*integration-test*/src/main/resources/**
+**/**example**/**/resources/**
+**/META-INF/services/**
+**/META-INF/beans.xml
+
+### optaplanner specific excludes
+**/optaplanner-docs/src/modules/ROOT/images/website/jquery/jquery.min.js
+**/optaplanner-docs/src/modules/ROOT/images/website/jstree/**
+**/optaplanner-examples/data/**/import/**
+**/eclipse.importorder
+**/src/main/resources/org/optaplanner/benchmark/impl/report/twitterbootstrap/css/**
+**/src/main/resources/org/optaplanner/benchmark/impl/report/twitterbootstrap/img/**
+**/src/main/resources/org/optaplanner/benchmark/impl/report/twitterbootstrap/js/**
+**/benchmark.xsd
+**/solver.xsd

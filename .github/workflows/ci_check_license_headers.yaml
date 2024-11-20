@@ -1,0 +1,42 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+#
+
+name: "CI :: Check license headers"
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+jobs:
+  check-license-headers:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Download Apache RAT
+        run: |
+          curl -LO https://repository.apache.org/content/repositories/snapshots/org/apache/rat/apache-rat/0.17-SNAPSHOT/apache-rat-0.17-20241115.065104-374.jar
+
+      - name: Run Apache RAT
+        run: |
+          java -jar apache-rat-0.17-20241115.065104-374.jar --input-exclude-file .rat-excludes -- . > .tmp-rat-check-output
+          cat .tmp-rat-check-output
+          grep "Files with unapproved licenses:" .tmp-rat-check-output && rm .tmp-rat-check-output && echo "There are files with missing or unapproved license headers." && exit 1 || rm .tmp-rat-check-output && echo "All files have correct license headers."

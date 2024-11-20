@@ -200,3 +200,97 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
+
+------------------------------------------------------------------------------------------------------------------
+for optaplanner-benchmark/src/main/resources/org/optaplanner/benchmark/impl/report/twitterbootstrap/css/bootstrap*
+    optaplanner-benchmark/src/main/resources/org/optaplanner/benchmark/impl/report/twitterbootstrap/img/**
+    optaplanner-benchmark/src/main/resources/org/optaplanner/benchmark/impl/report/twitterbootstrap/js/bootstrap*
+
+    (https://github.com/twbs/bootstrap/)
+    The MIT License (MIT)
+
+    Copyright (c) 2011-2019 Twitter, Inc.
+    Copyright (c) 2011-2019 The Bootstrap Authors
+
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the "Software"), to deal
+    in the Software without restriction, including without limitation the rights
+    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in
+    all copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+    THE SOFTWARE.
+
+--------------------------------------------------------------------------------------------------------------
+for optaplanner-docs/src/modules/ROOT/images/website/jquery/jquery.min.js
+    optaplanner-benchmark/src/main/resources/org/optaplanner/benchmark/impl/report/twitterbootstrap/js/jquery*
+
+    (https://github.com/jquery/jquery)
+    Copyright OpenJS Foundation and other contributors, https://openjsf.org/
+
+    Permission is hereby granted, free of charge, to any person obtaining
+    a copy of this software and associated documentation files (the
+    "Software"), to deal in the Software without restriction, including
+    without limitation the rights to use, copy, modify, merge, publish,
+    distribute, sublicense, and/or sell copies of the Software, and to
+    permit persons to whom the Software is furnished to do so, subject to
+    the following conditions:
+
+    The above copyright notice and this permission notice shall be
+    included in all copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+    MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+    NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+    LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+    OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+    WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+--------------------------------------------------------------------------------------------------------------------
+for optaplanner-benchmark/src/main/resources/org/optaplanner/benchmark/impl/report/twitterbootstrap/css/prettify.css
+    optaplanner-benchmark/src/main/resources/org/optaplanner/benchmark/impl/report/twitterbootstrap/js/prettify.js
+
+    (https://github.com/googlearchive/code-prettify)
+    http://www.apache.org/licenses/LICENSE-2.0
+
+-------------------------------------------------------------------------
+for optaplanner-docs/src/modules/ROOT/images/website/jstree/32px.png
+    optaplanner-docs/src/modules/ROOT/images/website/jstree/40px.png
+    optaplanner-docs/src/modules/ROOT/images/website/jstree/jstree.js
+    optaplanner-docs/src/modules/ROOT/images/website/jstree/jstree.min.js
+    optaplanner-docs/src/modules/ROOT/images/website/jstree/style.css
+    optaplanner-docs/src/modules/ROOT/images/website/jstree/throbber.gif
+
+    (https://github.com/vakata/jstree)
+    Copyright (c) 2014 Ivan Bozhanov
+
+    Permission is hereby granted, free of charge, to any person
+    obtaining a copy of this software and associated documentation
+    files (the "Software"), to deal in the Software without
+    restriction, including without limitation the rights to use,
+    copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the
+    Software is furnished to do so, subject to the following
+    conditions:
+
+    The above copyright notice and this permission notice shall be
+    included in all copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+    OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+    NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+    OTHER DEALINGS IN THE SOFTWARE.

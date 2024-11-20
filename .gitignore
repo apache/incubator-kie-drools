@@ -32,3 +32,6 @@
 
 # Repository wide ignore mac DS_Store files
 .DS_Store
+
+# Apache RAT check excludes file
+!.rat-excludes
