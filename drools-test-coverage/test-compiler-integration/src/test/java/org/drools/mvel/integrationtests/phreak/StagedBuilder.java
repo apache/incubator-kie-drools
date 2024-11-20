@@ -19,7 +19,6 @@
 package org.drools.mvel.integrationtests.phreak;
 
 import org.drools.core.common.TupleSetsImpl;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.SegmentMemory;
 
 public class StagedBuilder extends BaseLeftTuplesBuilder<StagedBuilder> {

@@ -18,40 +18,32 @@
  */
 package org.drools.mvel.integrationtests;
 
-import java.util.Collection;
+import java.util.stream.Stream;
 
 import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalRuleBase;
 import org.drools.base.rule.ConsequenceMetaData;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class RuleMetadataTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public RuleMetadataTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        // TODO: EM failed with some tests. File JIRAs. This test may not be necessary for exec-model
+        return TestParametersUtil2.getKieBaseCloudConfigurations(false).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-     // TODO: EM failed with some tests. File JIRAs. This test may not be necessary for exec-model
-        return TestParametersUtil.getKieBaseCloudConfigurations(false);
-    }
-
-    @Test
-    public void testModify() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testModify(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String rule1 = "modify( $a ) { setA( 20 ), setB( $bb ) }";
-        KieBase kbase = getKnowledgeBase(rule1);
+        KieBase kbase = getKnowledgeBase(kieBaseTestConfiguration, rule1);
         RuleImpl rule = getRule(kbase, "R0");
 
         ConsequenceMetaData consequenceMetaData = rule.getConsequenceMetaData();
@@ -71,10 +63,11 @@ public class RuleMetadataTest {
         assertThat(field2.isLiteral()).isFalse();
     }
 
-    @Test
-    public void testModify2() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testModify2(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String rule1 = "modify( $a ) { setC( $bc ) };\n modify( $b ) { c = \"Hello\" };";
-        KieBase kbase = getKnowledgeBase(rule1);
+        KieBase kbase = getKnowledgeBase(kieBaseTestConfiguration, rule1);
         RuleImpl rule = getRule(kbase, "R0");
 
         ConsequenceMetaData consequenceMetaData = rule.getConsequenceMetaData();
@@ -99,10 +92,11 @@ public class RuleMetadataTest {
         assertThat(field2.isLiteral()).isTrue();
     }
 
-    @Test
-    public void testRetract() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testRetract(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String rule1 = "retract( $b );";
-        KieBase kbase = getKnowledgeBase(rule1);
+        KieBase kbase = getKnowledgeBase(kieBaseTestConfiguration, rule1);
         RuleImpl rule = getRule(kbase, "R0");
 
         ConsequenceMetaData consequenceMetaData = rule.getConsequenceMetaData();
@@ -113,10 +107,11 @@ public class RuleMetadataTest {
         assertThat(statment.getFactClassName()).isEqualTo(RuleMetadataTest.B.class.getName());
     }
 
-    @Test
-    public void testRetractWithFunction() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testRetractWithFunction(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String rule1 = "retract( getA($a) );";
-        KieBase kbase = getKnowledgeBase(rule1);
+        KieBase kbase = getKnowledgeBase(kieBaseTestConfiguration, rule1);
         RuleImpl rule = getRule(kbase, "R0");
 
         ConsequenceMetaData consequenceMetaData = rule.getConsequenceMetaData();
@@ -127,10 +122,11 @@ public class RuleMetadataTest {
         assertThat(statment.getFactClassName()).isEqualTo("org.drools.A");
     }
 
-    @Test
-    public void testUpdate() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testUpdate(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String rule1 = "$a.setA( 20 );\n $a.setB( $bb );\n update( $a );";
-        KieBase kbase = getKnowledgeBase(rule1);
+        KieBase kbase = getKnowledgeBase(kieBaseTestConfiguration, rule1);
         RuleImpl rule = getRule(kbase, "R0");
 
         ConsequenceMetaData consequenceMetaData = rule.getConsequenceMetaData();
@@ -150,10 +146,11 @@ public class RuleMetadataTest {
         assertThat(field2.isLiteral()).isFalse();
     }
 
-    @Test
-    public void testUpdate2() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testUpdate2(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String rule1 = "$a.setC( $bc );\n $b.c = \"Hello\";\n update( $a );\n update( $b );";
-        KieBase kbase = getKnowledgeBase(rule1);
+        KieBase kbase = getKnowledgeBase(kieBaseTestConfiguration, rule1);
         RuleImpl rule = getRule(kbase, "R0");
 
         ConsequenceMetaData consequenceMetaData = rule.getConsequenceMetaData();
@@ -178,10 +175,11 @@ public class RuleMetadataTest {
         assertThat(field2.isLiteral()).isTrue();
     }
 
-    @Test
-    public void testInsert() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testInsert(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String rule1 = "insert( new A(1, $bb, \"3\") );";
-        KieBase kbase = getKnowledgeBase(rule1);
+        KieBase kbase = getKnowledgeBase(kieBaseTestConfiguration, rule1);
         RuleImpl rule = getRule(kbase, "R0");
 
         ConsequenceMetaData consequenceMetaData = rule.getConsequenceMetaData();
@@ -205,10 +203,11 @@ public class RuleMetadataTest {
         assertThat(field3.isLiteral()).isTrue();
     }
 
-    @Test
-    public void testInsert2() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testInsert2(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String rule1 = "insert( new B(1, $ab) );";
-        KieBase kbase = getKnowledgeBase(rule1);
+        KieBase kbase = getKnowledgeBase(kieBaseTestConfiguration, rule1);
         RuleImpl rule = getRule(kbase, "R0");
 
         ConsequenceMetaData consequenceMetaData = rule.getConsequenceMetaData();
@@ -218,7 +217,7 @@ public class RuleMetadataTest {
         assertThat(statment.getFactClassName()).isEqualTo(RuleMetadataTest.B.class.getName());
     }
 
-    private KieBase getKnowledgeBase(String... consequences) {
+    private KieBase getKnowledgeBase(KieBaseTestConfiguration kieBaseTestConfiguration, String... consequences) {
         String rule = "package org.drools\n" +
                 "import " + RuleMetadataTest.B.class.getCanonicalName() + "\n" +
                 "global java.util.List list;\n" +

@@ -18,33 +18,27 @@
  */
 package org.drools.mvel.integrationtests.concurrency;
 
-import java.util.Collection;
 import java.util.concurrent.Callable;
+import java.util.stream.Stream;
 
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
-@RunWith(Parameterized.class)
 public class BasicConcurrentInsertionsTest extends AbstractConcurrentInsertionsTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public BasicConcurrentInsertionsTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
-    }
-
-    @Test(timeout = 20000)
-    public void testConcurrentInsertionsFewObjectsManyThreads() throws InterruptedException {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(20000)
+    public void testConcurrentInsertionsFewObjectsManyThreads(KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException {
         final String drl = "import " + Bean.class.getCanonicalName() + ";\n" +
                 "\n" +
                 "rule \"R\"\n" +
@@ -55,8 +49,10 @@ public class BasicConcurrentInsertionsTest extends AbstractConcurrentInsertionsT
         testConcurrentInsertions(drl, 1, 1000, false, false, kieBaseTestConfiguration);
     }
 
-    @Test(timeout = 20000)
-    public void testConcurrentInsertionsManyObjectsFewThreads() throws InterruptedException {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(20000)
+    public void testConcurrentInsertionsManyObjectsFewThreads(KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException {
         final String drl = "import " + Bean.class.getCanonicalName() + ";\n" +
                 "\n" +
                 "rule \"R\"\n" +
@@ -67,8 +63,10 @@ public class BasicConcurrentInsertionsTest extends AbstractConcurrentInsertionsT
         testConcurrentInsertions(drl, 1000, 4, false, false, kieBaseTestConfiguration);
     }
 
-    @Test(timeout = 20000)
-    public void testConcurrentInsertionsNewSessionEachThreadUpdateFacts() throws InterruptedException {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(20000)
+    public void testConcurrentInsertionsNewSessionEachThreadUpdateFacts(KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException {
         // This tests also ObjectTypeNode concurrency
         final String drl = "import " + Bean.class.getCanonicalName() + ";\n" +
                 " query existsBeanSeed5More() \n" +
@@ -89,8 +87,10 @@ public class BasicConcurrentInsertionsTest extends AbstractConcurrentInsertionsT
         testConcurrentInsertions(drl, 10, 1000, true, true, kieBaseTestConfiguration);
     }
 
-    @Test(timeout = 20000)
-    public void testConcurrentInsertionsNewSessionEachThread() throws InterruptedException {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(20000)
+    public void testConcurrentInsertionsNewSessionEachThread(KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException {
         final String drl = "import " + Bean.class.getCanonicalName() + ";\n" +
                 " query existsBeanSeed5More() \n" +
                 "     Bean( seed > 5 ) \n" +
