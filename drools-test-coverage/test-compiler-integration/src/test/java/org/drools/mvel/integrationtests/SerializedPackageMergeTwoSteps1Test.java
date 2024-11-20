@@ -23,8 +23,8 @@ import java.io.FileOutputStream;
 import java.util.Collection;
 
 import org.drools.base.common.DroolsObjectOutputStream;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.KnowledgeBuilder;
@@ -38,7 +38,8 @@ public class SerializedPackageMergeTwoSteps1Test {
 	public static final String[] BINPKG = { System.getProperty( "java.io.tmpdir" ) + File.separator + "SerializedPackageMergeTwoSteps_1.bin", 
 			System.getProperty( "java.io.tmpdir" ) + File.separator + "SerializedPackageMergeTwoSteps_2.bin" };
 
-	@Test @Ignore("DROOLS-5620 - test failed randomly and it doesn't reproduce the original issue (DROOLS-2224) scenario on CI."+
+	@Test 
+	@Disabled("DROOLS-5620 - test failed randomly and it doesn't reproduce the original issue (DROOLS-2224) scenario on CI."+
 			      "It can be tested manually")
 	public void testBuildAndSerializePackagesInTwoSteps1() {
 		String str1 =

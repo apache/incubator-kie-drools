@@ -380,3 +380,7 @@ software was based on this specification, but may not claim compliance or confor
 event that testing suites are implemented or approved by Object Management Group, Inc., software developed using this
 specification may claim compliance or conformance with the specification only if the software satisfactorily completes
 the testing suites.
+
+ ------------------------------------------------------------------------------------
+ for drools-model/drools-mvel-parser/src/main/javacc/mvel.jj
+     JavaParser is dual licensed under LGPL license and Apache License Version 2.0 license. We choose the Apache License Version 2.0.

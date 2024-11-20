@@ -24,8 +24,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.drools.compiler.kie.builder.impl.KieContainerImpl;
 import org.drools.compiler.kie.builder.impl.KieProject;
@@ -33,11 +33,10 @@ import org.drools.compiler.kie.builder.impl.ResultsImpl;
 import org.drools.mvel.compiler.Message;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
 import org.drools.wiring.api.classloader.ProjectClassLoader;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -62,23 +61,16 @@ import static org.assertj.core.api.Assertions.fail;
 /**
  * This is a sample class to launch a rule.
  */
-@RunWith(Parameterized.class)
 public class KieHelloWorldTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public KieHelloWorldTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        // TODO: EM failed with some tests. File JIRAs
+        return TestParametersUtil2.getKieBaseCloudConfigurations(false).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-     // TODO: EM failed with some tests. File JIRAs
-        return TestParametersUtil.getKieBaseCloudConfigurations(false);
-    }
-
-    @Test
-    public void testHelloWorld() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testHelloWorld(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         KieServices ks = KieServices.Factory.get();
 
         KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", createDrl( "R1" ) );
@@ -92,8 +84,9 @@ public class KieHelloWorldTest {
         assertThat(count).isEqualTo(1);
     }
 
-    @Test
-    public void testClassLoaderStore() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testClassLoaderStore(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         // DROOLS-1766
         String drl = "package org; declare Person name : String end";
         KieServices ks = KieServices.Factory.get();
@@ -112,8 +105,9 @@ public class KieHelloWorldTest {
         assertThat(pcl.getStore().get("org/Person.class")).isNotNull();
     }
 
-    @Test
-    public void testHelloWorldWithResource() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testHelloWorldWithResource(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         // DROOLS-351
         KieServices ks = KieServices.Factory.get();
 
@@ -132,8 +126,9 @@ public class KieHelloWorldTest {
         assertThat(count).isEqualTo(1);
     }
 
-    @Test
-    public void testHelloWorldWithEmptyFile() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testHelloWorldWithEmptyFile(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String drl = createDrl("R1");
 
         KieServices ks = KieServices.Factory.get();
@@ -151,8 +146,9 @@ public class KieHelloWorldTest {
         assertThat(count).isEqualTo(1);
     }
 
-    @Test
-    public void testFailingHelloWorld() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testFailingHelloWorld(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String drl = "package org.drools.mvel.integrationtests\n" +
                 "import " + Message.class.getCanonicalName() + "\n" +
                 "rule R1 when\n" +
@@ -169,8 +165,9 @@ public class KieHelloWorldTest {
         assertThat(kb.getResults().getMessages().size()).isEqualTo(1);
     }
 
-    @Test
-    public void testHelloWorldWithKBaseInclude() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testHelloWorldWithKBaseInclude(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String drl = "package org.drools.mvel.integrationtests\n" +
                      "declare CancelFact\n" +
                      " cancel : boolean = true\n" +
@@ -214,8 +211,9 @@ public class KieHelloWorldTest {
         assertThat(count).isEqualTo(1);
     }
 
-    @Test
-    public void testHelloWorldWithPackages() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testHelloWorldWithPackages(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         KieServices ks = KieServices.Factory.get();
         ReleaseId releaseId = ks.newReleaseId("org.kie", "hello-world", "1.0");
 
@@ -234,8 +232,9 @@ public class KieHelloWorldTest {
         assertThat(count).isEqualTo(1);
     }
 
-    @Test
-    public void testHelloWorldUsingPackages() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testHelloWorldUsingPackages(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String drlDef = "package org.pkg1\n" +
                         "import " + Message.class.getCanonicalName() + "\n" +
                         "rule R_def when\n" +
@@ -261,8 +260,9 @@ public class KieHelloWorldTest {
         assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
-    @Test
-    public void testHelloWorldUsingFolders() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testHelloWorldUsingFolders(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String drlDef = "package org.drools.mvel.integrationtests\n" +
                 "import " + Message.class.getCanonicalName() + "\n" +
                 "rule R_def when\n" +
@@ -290,8 +290,9 @@ public class KieHelloWorldTest {
         assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
-    @Test
-    public void testHelloWorldWithWildcardPackages() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testHelloWorldWithWildcardPackages(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         KieServices ks = KieServices.Factory.get();
         ReleaseId releaseId = ks.newReleaseId("org.kie", "hello-world", "1.0");
 
@@ -312,8 +313,9 @@ public class KieHelloWorldTest {
         assertThat(list.get(0)).isEqualTo("R1");
     }
 
-    @Test
-    public void testHelloWorldWithWildcardPackagesComplex() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testHelloWorldWithWildcardPackagesComplex(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         // BZ-1174563
         KieServices ks = KieServices.Factory.get();
         ReleaseId releaseId = ks.newReleaseId("org.kie", "hello-world", "1.0");
@@ -384,13 +386,14 @@ public class KieHelloWorldTest {
         return kproj;
     }
 
-    @Test
-    public void testHelloWorldOnVersionRange() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testHelloWorldOnVersionRange(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         KieServices ks = KieServices.Factory.get();
 
-        buildVersion(ks, "Hello World", "1.0");
-        buildVersion(ks, "Aloha Earth", "1.1");
-        buildVersion(ks, "Hi Universe", "1.2");
+        buildVersion(kieBaseTestConfiguration, ks, "Hello World", "1.0");
+        buildVersion(kieBaseTestConfiguration, ks, "Aloha Earth", "1.1");
+        buildVersion(kieBaseTestConfiguration, ks, "Hi Universe", "1.2");
 
         ReleaseId latestReleaseId = ks.newReleaseId("org.kie", "hello-world", "LATEST");
 
@@ -423,12 +426,13 @@ public class KieHelloWorldTest {
         assertThat(ksession.fireAllRules()).isEqualTo(0);
     }
 
-    @Test
-    public void testGetDefaultKieSessionWithNullName() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testGetDefaultKieSessionWithNullName(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         // DROOLS-1276
         KieServices ks = KieServices.Factory.get();
 
-        buildVersion(ks, "Hello World", "1.0");
+        buildVersion(kieBaseTestConfiguration, ks, "Hello World", "1.0");
 
         ReleaseId releaseId1 = ks.newReleaseId("org.kie", "hello-world", "1.0");
 
@@ -437,7 +441,7 @@ public class KieHelloWorldTest {
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    private void buildVersion(KieServices ks, String message, String version) {
+    private void buildVersion(KieBaseTestConfiguration kieBaseTestConfiguration, KieServices ks, String message, String version) {
         String drl = "package org.drools.mvel.integrationtests\n" +
                 "import " + Message.class.getCanonicalName() + "\n" +
                 "rule R1 when\n" +
@@ -454,8 +458,9 @@ public class KieHelloWorldTest {
         KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
     }
 
-    @Test
-    public void testHelloWorldWithPackagesAnd2KieBases() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testHelloWorldWithPackagesAnd2KieBases(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String drl1 = "package org.pkg1\n" +
                 "import " + Message.class.getCanonicalName() + "\n" +
                 "rule R11 when\n" +
@@ -532,8 +537,9 @@ public class KieHelloWorldTest {
         return kproj;
     }
 
-    @Test
-    public void testImport() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testImport(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         // DROOLS-859
         String drl1 = "package rules\n" +
                       "import " + Message.class.getCanonicalName() + "\n" +
@@ -582,8 +588,9 @@ public class KieHelloWorldTest {
         assertThat(results.get(0)).isEqualTo("ok");
     }
 
-    @Test
-    public void testErrorReportingWithWrongKmodule() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testErrorReportingWithWrongKmodule(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         // RHDM-69
         String kmodule =
                 "<kmodule xmlns=\"http://jboss.org/kie/6.0.0/kmodule\">\n" +
@@ -602,8 +609,9 @@ public class KieHelloWorldTest {
         assertThat(kb.getResults().getMessages().get(0).toString().contains("ABC")).isTrue();
     }
 
-    @Test
-    public void testHelloWorldWithSpace() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testHelloWorldWithSpace(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         // DROOLS-2338
         final KieServices kieServices = KieServices.get();
 
@@ -632,8 +640,9 @@ public class KieHelloWorldTest {
         assertThat(count).isEqualTo(1);
     }
 
-    @Test
-    public void testVeyifyNotExistingKieBase() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testVeyifyNotExistingKieBase(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         // DROOLS-2757
         KieServices ks = KieServices.Factory.get();
 
@@ -649,8 +658,9 @@ public class KieHelloWorldTest {
         }
     }
 
-    @Test
-    public void testDeclarativeCalendars() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testDeclarativeCalendars(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String weekendCalendarSource =
                 "package org.mypackage;\n" +
                 "\n" +
