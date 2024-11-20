@@ -87,7 +87,6 @@
       possible to measure cross-module test coverage -->
     <jacoco.exec.file>${project.root.dir}/target/jacoco.exec</jacoco.exec.file>
     <!--suppress UnresolvedMavenProperty -->
-    <project.root.dir>${maven.multiModuleProjectDirectory}</project.root.dir>
     <quarkus.logging.manager>org.jboss.logmanager.LogManager</quarkus.logging.manager>
     <tests.surefire.include>**/*Test.java</tests.surefire.include>
     <tests.failsafe.include>**/*IT.java</tests.failsafe.include>
@@ -671,10 +670,31 @@
             <legacyMode>true</legacyMode>
           </configuration>
         </plugin>
+        <plugin>
+          <groupId>org.commonjava.maven.plugins</groupId>
+          <artifactId>directory-maven-plugin</artifactId>
+          <version>1.0</version>
+          <executions>
+            <execution>
+              <id>directories</id>
+              <goals>
+                <goal>highest-basedir</goal>
+               </goals>
+              <phase>validate</phase>
+              <configuration>
+                <property>project.root.dir</property>
+               </configuration>
+             </execution>
+          </executions>
+        </plugin>
       </plugins>
     </pluginManagement>
 
     <plugins>
+       <plugin>
+        <groupId>org.commonjava.maven.plugins</groupId>
+        <artifactId>directory-maven-plugin</artifactId>
+       </plugin>
       <plugin>
         <groupId>net.revelc.code.formatter</groupId>
         <artifactId>formatter-maven-plugin</artifactId>

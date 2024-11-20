@@ -87,7 +87,7 @@
         <directory>src/main/resources</directory>
       </resource>
       <resource>
-        <directory>${project.root.dir}/quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow-integration-test/src/main/resources</directory>
+        <directory>../kogito-quarkus-serverless-workflow-integration-test/src/main/resources</directory>
         <includes>
           <include>expression.sw.json</include>
           <include>schema/expressionInput.json</include>
