@@ -23,7 +23,7 @@ import java.io.FileOutputStream;
 import java.util.List;
 import java.util.UUID;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.builder.helper.KieModuleDeploymentHelperImpl.KJarResource;
 
 import static org.assertj.core.api.Assertions.assertThat;

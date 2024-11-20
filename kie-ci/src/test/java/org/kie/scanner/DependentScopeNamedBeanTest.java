@@ -20,7 +20,7 @@ package org.kie.scanner;
 
 import java.io.InputStream;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.maven.integration.MavenPomModelGenerator;
 import org.kie.util.maven.support.PomModel;
 import org.kie.util.maven.support.PomModelGenerator;

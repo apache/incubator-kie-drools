@@ -23,10 +23,10 @@ import java.io.IOException;
 
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.core.util.FileManager;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.ReleaseId;
@@ -48,13 +48,13 @@ import static org.kie.scanner.KieMavenRepository.getKieMavenRepository;
  * 3. Note that this test uses 'http://localhost:8081' as nexus target, with the default nexus user name 'admin' and password 'admin123'
  *
  */
-@Ignore("ignored because it needs a running nexus server")
+@Disabled("ignored because it needs a running nexus server")
 public class KieRepositoryScannerNexusTest extends AbstractKieCiTest {
     private static final Logger LOG = LoggerFactory.getLogger(KieRepositoryScannerNexusTest.class);
 
     private FileManager fileManager;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         System.setProperty("kie.maven.settings.custom", new File("target/test-classes/org/kie/scanner/settings_nexus.xml").getAbsolutePath());
         this.fileManager = new FileManager();
@@ -62,7 +62,7 @@ public class KieRepositoryScannerNexusTest extends AbstractKieCiTest {
         ReleaseId releaseId = KieServices.Factory.get().newReleaseId("org.kie", "scanner-test", "1.0-SNAPSHOT");
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         this.fileManager.tearDown();
     }
