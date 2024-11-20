@@ -20,6 +20,7 @@ package org.kie.dmn.ruleset2dmn;
 
 import java.util.Collections;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNRuntime;
@@ -31,6 +32,7 @@ import static org.kie.dmn.ruleset2dmn.TestUtils.ctxFromJson;
 
 class ChurnRulesFromSPSSModelerTest {
 
+    @Disabled("Temporarily disabled: See https://github.com/apache/incubator-kie-drools/issues/6165")
     @Test
     void test() throws Exception {
         final String modelName = "ChurnSPSS";

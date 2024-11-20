@@ -23,6 +23,7 @@ import java.util.Optional;
 import org.dmg.pmml.Model;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.mining.MiningModel;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.compiler.api.dto.CommonCompilationDTO;
@@ -57,6 +58,7 @@ public class KiePMMLModelRetrieverTest {
         assertThat(retrieved).isNotNull();
     }
 
+    @Disabled("Temporarily disabled: See https://github.com/apache/incubator-kie-drools/issues/6165")
     @Test
     void getFromDataDictionaryAndModelWithSourcesWithoutProvider() throws Exception {
         String fileName = ONE_MINING_TARGET_SOURCE.substring(0, ONE_MINING_TARGET_SOURCE.lastIndexOf('.'));

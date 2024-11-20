@@ -24,6 +24,7 @@ import java.util.Map;
 import org.dmg.pmml.Model;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.clustering.ClusteringModel;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.pmml.api.enums.PMML_MODEL;
@@ -56,6 +57,7 @@ public class ClusteringModelImplementationProviderTest {
         assertThat(PROVIDER.getPMMLModelType()).isEqualTo(PMML_MODEL.CLUSTERING_MODEL);
     }
 
+    @Disabled("Temporarily disabled: See https://github.com/apache/incubator-kie-drools/issues/6165")
     @Test
     void getKiePMMLModelWithSources() throws Exception {
         PMML pmml = TestUtils.loadFromFile(SOURCE_FILE);

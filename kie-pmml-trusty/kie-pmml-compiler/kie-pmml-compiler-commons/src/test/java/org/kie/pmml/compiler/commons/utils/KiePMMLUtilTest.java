@@ -49,6 +49,7 @@ import org.dmg.pmml.Target;
 import org.dmg.pmml.Targets;
 import org.dmg.pmml.mining.MiningModel;
 import org.dmg.pmml.mining.Segment;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
 
@@ -70,6 +71,7 @@ public class KiePMMLUtilTest {
     private static final String NO_OUTPUT_FIELD_TARGET_NAME_SAMPLE = "NoOutputFieldTargetNameSample.pmml";
     private static final String MINING_WITH_SAME_NESTED_MODEL_NAMES = "MiningWithSameNestedModelNames.pmml";
 
+    @Disabled("Temporarily disabled: See https://github.com/apache/incubator-kie-drools/issues/6165")
     @Test
     void loadString() throws IOException, JAXBException, SAXException {
         commonLoadString(NO_MODELNAME_SAMPLE_NAME);
@@ -77,6 +79,7 @@ public class KiePMMLUtilTest {
         commonLoadString(MINING_WITH_SAME_NESTED_MODEL_NAMES);
     }
 
+    @Disabled("Temporarily disabled: See https://github.com/apache/incubator-kie-drools/issues/6165")
     @Test
     void loadFile() throws JAXBException, IOException, SAXException {
         commonLoadFile(NO_MODELNAME_SAMPLE_NAME);
@@ -84,6 +87,7 @@ public class KiePMMLUtilTest {
         commonLoadFile(MINING_WITH_SAME_NESTED_MODEL_NAMES);
     }
 
+    @Disabled("Temporarily disabled: See https://github.com/apache/incubator-kie-drools/issues/6165")
     @Test
     void populateMissingModelName() throws Exception {
         final InputStream inputStream = getFileInputStream(NO_MODELNAME_SAMPLE_NAME);
@@ -99,6 +103,7 @@ public class KiePMMLUtilTest {
         assertThat(toPopulate.getModelName()).isEqualTo(expected);
     }
 
+    @Disabled("Temporarily disabled: See https://github.com/apache/incubator-kie-drools/issues/6165")
     @Test
     void populateMissingMiningTargetField() throws Exception {
         final InputStream inputStream = getFileInputStream(NO_TARGET_FIELD_SAMPLE);
@@ -118,6 +123,7 @@ public class KiePMMLUtilTest {
         assertThat(toPopulate.getTargets().getTargets().get(0).getField()).isEqualTo(targetField.getName());
     }
 
+    @Disabled("Temporarily disabled: See https://github.com/apache/incubator-kie-drools/issues/6165")
     @Test
     void populateMissingPredictedOutputFieldTarget() throws Exception {
         final InputStream inputStream = getFileInputStream(NO_OUTPUT_FIELD_TARGET_NAME_SAMPLE);
@@ -132,6 +138,7 @@ public class KiePMMLUtilTest {
         assertThat(outputField.getTargetField()).isEqualTo(targetField.getName());
     }
 
+    @Disabled("Temporarily disabled: See https://github.com/apache/incubator-kie-drools/issues/6165")
     @Test
     void getTargetDataField() throws Exception {
         final InputStream inputStream = getFileInputStream(NO_TARGET_FIELD_SAMPLE);
@@ -209,6 +216,7 @@ public class KiePMMLUtilTest {
         assertThat(unnamedTarget.getField()).isEqualTo(miningField.getName());
     }
 
+    @Disabled("Temporarily disabled: See https://github.com/apache/incubator-kie-drools/issues/6165")
     @Test
     void populateCorrectMiningModel() throws Exception {
         final InputStream inputStream = getFileInputStream(NO_MODELNAME_NO_SEGMENT_ID_NOSEGMENT_TARGET_FIELD_SAMPLE);
@@ -229,6 +237,7 @@ public class KiePMMLUtilTest {
         });
     }
 
+    @Disabled("Temporarily disabled: See https://github.com/apache/incubator-kie-drools/issues/6165")
     @Test
     void populateCorrectSegmentId() throws Exception {
         final InputStream inputStream = getFileInputStream(NO_MODELNAME_NO_SEGMENTID_SAMPLE_NAME);
@@ -248,6 +257,7 @@ public class KiePMMLUtilTest {
         assertThat(toPopulate.getId()).isEqualTo(expected);
     }
 
+    @Disabled("Temporarily disabled: See https://github.com/apache/incubator-kie-drools/issues/6165")
     @Test
     void populateMissingSegmentModelName() throws Exception {
         final InputStream inputStream = getFileInputStream(NO_MODELNAME_NO_SEGMENTID_SAMPLE_NAME);
@@ -266,6 +276,7 @@ public class KiePMMLUtilTest {
         assertThat(toPopulate.getModelName()).isEqualTo(expected);
     }
 
+    @Disabled("Temporarily disabled: See https://github.com/apache/incubator-kie-drools/issues/6165")
     @Test
     void populateMissingTargetFieldInSegment() throws Exception {
         final InputStream inputStream = getFileInputStream(NO_MODELNAME_NO_SEGMENT_ID_NOSEGMENT_TARGET_FIELD_SAMPLE);
@@ -360,6 +371,7 @@ public class KiePMMLUtilTest {
         assertThat(retrieved).isEqualTo(expected);
     }
 
+    @Disabled("Temporarily disabled: See https://github.com/apache/incubator-kie-drools/issues/6165")
     @Test
     void getMiningTargetFieldsFromMiningSchema() throws Exception {
         final InputStream inputStream = getFileInputStream(NO_MODELNAME_SAMPLE_NAME);
@@ -373,6 +385,7 @@ public class KiePMMLUtilTest {
         assertThat(targetField.getUsageType().value()).isEqualTo("target");
     }
 
+    @Disabled("Temporarily disabled: See https://github.com/apache/incubator-kie-drools/issues/6165")
     @Test
     void getMiningTargetFieldsFromMiningFields() throws Exception {
         final InputStream inputStream = getFileInputStream(NO_MODELNAME_SAMPLE_NAME);

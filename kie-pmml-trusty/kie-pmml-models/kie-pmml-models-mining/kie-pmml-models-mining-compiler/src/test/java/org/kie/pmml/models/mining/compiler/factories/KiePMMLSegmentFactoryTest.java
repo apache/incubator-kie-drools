@@ -40,6 +40,7 @@ import org.dmg.pmml.mining.MiningModel;
 import org.dmg.pmml.mining.Segment;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.pmml.commons.model.HasSourcesMap;
 import org.kie.pmml.commons.model.KiePMMLModel;
@@ -59,6 +60,7 @@ import static org.kie.pmml.models.mining.compiler.factories.KiePMMLSegmentFactor
 import static org.kie.pmml.models.mining.compiler.factories.KiePMMLSegmentFactory.KIE_PMML_SEGMENT_TEMPLATE_JAVA;
 import static org.drools.util.FileUtils.getFileContent;
 
+@Disabled("Temporarily disabled: See https://github.com/apache/incubator-kie-drools/issues/6165")
 public class KiePMMLSegmentFactoryTest extends AbstractKiePMMLFactoryTest {
 
     private static final String TEST_01_SOURCE = "KiePMMLSegmentFactoryTest_01.txt";

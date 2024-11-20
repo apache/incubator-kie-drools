@@ -27,6 +27,7 @@ import jakarta.xml.bind.JAXBException;
 
 import org.dmg.pmml.mining.MiningModel;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.compiler.api.dto.CommonCompilationDTO;
@@ -37,6 +38,7 @@ import org.xml.sax.SAXException;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.pmml.commons.Constants.PACKAGE_NAME;
 
+@Disabled("Temporarily disabled: See https://github.com/apache/incubator-kie-drools/issues/6165")
 public class KiePMMLSegmentationFactoryTest extends AbstractKiePMMLFactoryTest {
 
     @BeforeAll

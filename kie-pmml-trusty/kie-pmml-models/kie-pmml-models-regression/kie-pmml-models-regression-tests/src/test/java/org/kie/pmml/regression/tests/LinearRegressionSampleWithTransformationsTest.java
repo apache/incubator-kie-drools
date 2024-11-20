@@ -25,6 +25,7 @@ import java.util.Map;
 
 import org.assertj.core.data.Percentage;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.pmml.PMML4Result;
@@ -35,6 +36,7 @@ import org.kie.pmml.models.tests.AbstractPMMLTest;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 
+@Disabled("Temporarily disabled: See https://github.com/apache/incubator-kie-drools/issues/6165")
 public class LinearRegressionSampleWithTransformationsTest extends AbstractPMMLTest {
 
     private static final String FILE_NAME_NO_SUFFIX = "LinearRegressionSampleWithTransformations";

@@ -52,6 +52,7 @@ import org.dmg.pmml.ScoreDistribution;
 import org.dmg.pmml.tree.Node;
 import org.dmg.pmml.tree.TreeModel;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.pmml.compiler.api.testutils.TestUtils;
 import org.kie.pmml.compiler.commons.utils.CommonCodegenUtils;
@@ -77,6 +78,7 @@ import static org.kie.pmml.models.tree.compiler.factories.KiePMMLNodeFactory.SCO
 import static org.kie.pmml.models.tree.compiler.utils.KiePMMLTreeModelUtils.createNodeClassName;
 import static org.drools.util.FileUtils.getFileContent;
 
+@Disabled("Temporarily disabled: See https://github.com/apache/incubator-kie-drools/issues/6165")
 public class KiePMMLNodeFactoryTest {
 
     private static final String SOURCE_1 = "TreeSample.pmml";

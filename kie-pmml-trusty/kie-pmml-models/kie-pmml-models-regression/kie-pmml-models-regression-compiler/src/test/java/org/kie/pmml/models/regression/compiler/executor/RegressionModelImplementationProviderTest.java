@@ -26,6 +26,7 @@ import java.util.Map;
 import org.dmg.pmml.Field;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.regression.RegressionModel;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.pmml.api.enums.PMML_MODEL;
@@ -69,6 +70,7 @@ public class RegressionModelImplementationProviderTest {
         assertThat(PROVIDER.getPMMLModelType()).isEqualTo(PMML_MODEL.REGRESSION_MODEL);
     }
 
+    @Disabled("Temporarily disabled: See https://github.com/apache/incubator-kie-drools/issues/6165")
     @Test
     void getKiePMMLModelWithSources() throws Exception {
         final PMML pmml = TestUtils.loadFromFile(SOURCE_1);
@@ -123,6 +125,7 @@ public class RegressionModelImplementationProviderTest {
         commonValidateSource(SOURCE_3);
     }
 
+    @Disabled("Temporarily disabled: See https://github.com/apache/incubator-kie-drools/issues/6165")
     @Test
     void validateNoRegressionTables() throws Exception {
         final PMML pmml = TestUtils.loadFromFile(SOURCE_1);

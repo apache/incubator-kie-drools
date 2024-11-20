@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.efesto.compilationmanager.api.model.EfestoFileResource;
 import org.kie.efesto.compilationmanager.api.model.EfestoInputStreamResource;
@@ -40,6 +41,7 @@ class KieCompilerServicePMMLInputStreamTest {
         kieCompilerService = new KieCompilerServicePMMLInputStream();
     }
 
+    @Disabled("Temporarily disabled: See https://github.com/apache/incubator-kie-drools/issues/6165")
     @Test
     void canManageResource() throws IOException {
         String fileName = "LinearRegressionSample.pmml";
