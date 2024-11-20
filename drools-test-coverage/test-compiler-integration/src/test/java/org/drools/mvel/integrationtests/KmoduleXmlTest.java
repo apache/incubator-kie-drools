@@ -18,15 +18,14 @@
  */
 package org.drools.mvel.integrationtests;
 
-import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -34,58 +33,54 @@ import org.kie.api.builder.Message;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class KmoduleXmlTest {
 
     enum Element {
         KBASE,
         KSESSION
     }
-
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public KmoduleXmlTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
-    }
-
-    @Test
-    public void kbaseEmptyName() throws Exception {
-        List<Message> errors = buildKmoduleWithEmptyValue("name", Element.KBASE);
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void kbaseEmptyName(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
+        List<Message> errors = buildKmoduleWithEmptyValue(kieBaseTestConfiguration, "name", Element.KBASE);
 
         assertThat(errors).isNotEmpty();
         assertThat(errors.get(0).getText()).contains("kbase name is empty in kmodule.xml");
     }
 
-    @Test
-    public void kbaseEmptyIncludes() throws Exception {
-        List<Message> errors = buildKmoduleWithEmptyValue("includes", Element.KBASE);
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void kbaseEmptyIncludes(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
+        List<Message> errors = buildKmoduleWithEmptyValue(kieBaseTestConfiguration, "includes", Element.KBASE);
 
         assertThat(errors).as("Empty includes is fine. It's ignored")
                           .isEmpty();
     }
 
-    @Test
-    public void kbaseEmptyPackages() throws Exception {
-        List<Message> errors = buildKmoduleWithEmptyValue("packages", Element.KBASE);
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void kbaseEmptyPackages(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
+        List<Message> errors = buildKmoduleWithEmptyValue(kieBaseTestConfiguration, "packages", Element.KBASE);
 
         assertThat(errors).as("Empty packages is fine. It means the default package")
                           .isEmpty();
     }
 
-    @Test
-    public void ksessionEmptyName() throws Exception {
-        List<Message> errors = buildKmoduleWithEmptyValue("name", Element.KSESSION);
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void ksessionEmptyName(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
+        List<Message> errors = buildKmoduleWithEmptyValue(kieBaseTestConfiguration, "name", Element.KSESSION);
 
         assertThat(errors).isNotEmpty();
         assertThat(errors.get(0).getText()).contains("ksession name is empty in kmodule.xml");
     }
 
-    private List<Message> buildKmoduleWithEmptyValue(String emptyAttribute, Element element) throws Exception {
+    private List<Message> buildKmoduleWithEmptyValue(KieBaseTestConfiguration kieBaseTestConfiguration, String emptyAttribute, Element element) throws Exception {
         String drl =
                 "package org.example\n" +
                      "rule R1 when\n" +

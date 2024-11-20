@@ -19,16 +19,15 @@
 package org.drools.mvel.integrationtests;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.drools.mvel.compiler.Person;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
@@ -36,23 +35,16 @@ import org.kie.api.runtime.rule.FactHandle;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class RuleExecutionTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public RuleExecutionTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        // TODO: EM failed with testAllWithBeforeAndAfter, testOnDeleteMatchConsequence. File JIRAs
+        return TestParametersUtil2.getKieBaseCloudConfigurations(false).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-     // TODO: EM failed with testAllWithBeforeAndAfter, testOnDeleteMatchConsequence. File JIRAs
-        return TestParametersUtil.getKieBaseCloudConfigurations(false);
-    }
-
-    @Test
-    public void testNoAll() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testNoAll(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String str =
                 "global java.util.List list\n" +
                 "rule R1 when\n" +
@@ -87,8 +79,9 @@ public class RuleExecutionTest {
         assertThat(list).isEqualTo(asList(-1, 1, -2, 2, -3, 3));
     }
 
-    @Test
-    public void testAll() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testAll(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String str =
                 "global java.util.List list\n" +
                 "rule R1 when\n" +
@@ -123,8 +116,9 @@ public class RuleExecutionTest {
         assertThat(list).isEqualTo(asList(-1, -2, -3, 1, 2, 3));
     }
 
-    @Test
-    public void testAllWithBeforeAndAfter() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testAllWithBeforeAndAfter(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String str =
                 "global java.util.List list\n" +
                 "rule R1 when\n" +
@@ -167,8 +161,9 @@ public class RuleExecutionTest {
         ));
     }
 
-    @Test
-    public void testOnDeleteMatchConsequence() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testOnDeleteMatchConsequence(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String str =
                 "import " + Person.class.getCanonicalName() + ";\n" +
                 "rule R1 when\n" +

@@ -20,18 +20,17 @@ package org.drools.mvel.integrationtests;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.drools.mvel.compiler.Person;
 import org.drools.mvel.integrationtests.facts.VarargsFact;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.Message.Level;
@@ -43,22 +42,15 @@ import static org.assertj.core.api.Assertions.assertThat;
  * This is a place where known behavior differences between exec-model and non-exec-model.
  * They are not treated as a bug and should be documented in "Migration from non-executable model to executable model" section
  */
-@RunWith(Parameterized.class)
 public class KnownExecModelDifferenceTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public KnownExecModelDifferenceTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
-    }
-
-    @Test
-    public void setter_intToWrapperLongCoercion() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void setter_intToWrapperLongCoercion(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-7196
         // Java doesn't coerce int to Long
         String str = "package com.example.reproducer\n" +
@@ -85,8 +77,9 @@ public class KnownExecModelDifferenceTest {
         }
     }
 
-    @Test
-    public void setter_intToPrimitiveLongCoercion() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void setter_intToPrimitiveLongCoercion(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-7196
         // Java coerces int to long
         String str = "package com.example.reproducer\n" +
@@ -109,8 +102,9 @@ public class KnownExecModelDifferenceTest {
         assertThat(fact.getValueList()).containsExactly(10L); // Coerced with both cases
     }
 
-    @Test
-    public void setter_intToWrapperLongCoercionVarargs() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void setter_intToWrapperLongCoercionVarargs(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-7196
         // Java doesn't coerce int to Long. Same for varargs
         String str = "package com.example.reproducer\n" +
@@ -138,8 +132,9 @@ public class KnownExecModelDifferenceTest {
         }
     }
 
-    @Test
-    public void setter_intToPrimitiveLongCoercionVarargs() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void setter_intToPrimitiveLongCoercionVarargs(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-7196
         // Java coerces int to long. Same for varargs
         String str = "package com.example.reproducer\n" +
@@ -162,8 +157,9 @@ public class KnownExecModelDifferenceTest {
         assertThat(fact.getValueList()).containsExactly(10L, 20L); // Coerced with both cases
     }
 
-    @Test
-    public void invalid_cast_intToString() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void invalid_cast_intToString(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-7198
         // Cast from int to String : It's invalid in Java
         // Non-exec-model is tolerant to accept the invalid cast.
@@ -194,8 +190,9 @@ public class KnownExecModelDifferenceTest {
         }
     }
 
-    @Test
-    public void generics_addStringToBigDecimalList() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void generics_addStringToBigDecimalList(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-7218
         // Add String to List<BigDecimal> : It's invalid in Java
         // Non-exec-model is tolerant to accept the addition (No compile-time check. Possible to add at runtime due to type erasure)
