@@ -247,4 +247,4 @@ for drools-drl/drools-drl-parser/src/main/antlr4/org/drools/drl/parser/antlr4/Ja
 
  ------------------------------------------------------------------------------------
  for drools-model/drools-mvel-parser/src/main/javacc/mvel.jj
-     JavaParser is dual licensed under LGPL license. and Apache License Version 2.0 license. We choose the Apache License Version 2.0.
+     JavaParser is dual licensed under LGPL license and Apache License Version 2.0 license. We choose the Apache License Version 2.0.
