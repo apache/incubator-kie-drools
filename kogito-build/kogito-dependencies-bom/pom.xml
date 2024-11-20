@@ -155,6 +155,9 @@
     <version.com.google.collections>1.0</version.com.google.collections>
     <version.com.google.guava>33.0.0-jre</version.com.google.guava>
     <version.apache.commons.commons-compress>1.26.1</version.apache.commons.commons-compress>
+    <!-- Temporary declaring xstream dependency, a version (1.4.20) is transitively imported by Quarkus 3.8 affected by CVE
+     When upgrading Quarkus (> 3.15.x) to a new version, please evaluate if this exclusion can be removed   -->
+    <version.com.thoughtworks.xstream>1.4.21</version.com.thoughtworks.xstream>
   </properties>
 
   <dependencyManagement>
@@ -449,6 +452,14 @@
         <groupId>jakarta.persistence</groupId>
         <artifactId>jakarta.persistence-api</artifactId>
         <version>${version.jakarta.persistence-api}</version>
+      </dependency>
+
+      <!-- Temporary declaring xstream dependency, a version (1.4.20) is transitively imported by Quarkus 3.8 affected by CVE
+           When upgrading Quarkus (> 3.15.x) to a new version, please evaluate if this exclusion can be removed   -->
+      <dependency>
+        <groupId>com.thoughtworks.xstream</groupId>
+        <artifactId>xstream</artifactId>
+        <version>${version.com.thoughtworks.xstream}</version>
       </dependency>
 
       <dependency>
