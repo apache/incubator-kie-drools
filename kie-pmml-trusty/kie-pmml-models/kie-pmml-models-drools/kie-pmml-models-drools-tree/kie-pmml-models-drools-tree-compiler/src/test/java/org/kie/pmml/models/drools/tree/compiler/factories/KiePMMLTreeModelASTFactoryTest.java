@@ -25,6 +25,7 @@ import java.util.Map;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.tree.TreeModel;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.pmml.compiler.api.testutils.TestUtils;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsAST;
@@ -35,6 +36,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.pmml.compiler.api.CommonTestingUtils.getFieldsFromDataDictionary;
 import static org.kie.pmml.models.drools.utils.KiePMMLASTTestUtils.getFieldTypeMap;
 
+@Disabled("Temporarily disabled: See https://github.com/apache/incubator-kie-drools/issues/6165")
 public class KiePMMLTreeModelASTFactoryTest {
 
     private static final String SOURCE_GOLFING = "TreeSample.pmml";

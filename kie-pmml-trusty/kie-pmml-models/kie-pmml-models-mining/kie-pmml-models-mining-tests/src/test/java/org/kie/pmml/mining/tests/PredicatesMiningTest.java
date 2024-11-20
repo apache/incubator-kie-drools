@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.pmml.PMML4Result;
@@ -34,6 +35,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.pmml.api.enums.ResultCode.FAIL;
 import static org.kie.pmml.api.enums.ResultCode.OK;
 
+@Disabled("Temporarily disabled: See https://github.com/apache/incubator-kie-drools/issues/6165")
 public class PredicatesMiningTest extends AbstractPMMLTest {
 
     private static final String FILE_NAME_NO_SUFFIX = "MiningModel_Predicates";

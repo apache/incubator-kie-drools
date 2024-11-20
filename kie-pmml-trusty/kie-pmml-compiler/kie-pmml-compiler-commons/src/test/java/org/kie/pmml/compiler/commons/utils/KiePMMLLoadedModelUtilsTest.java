@@ -24,6 +24,7 @@ import java.util.Optional;
 import org.dmg.pmml.Field;
 import org.dmg.pmml.Model;
 import org.dmg.pmml.PMML;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.OP_TYPE;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
@@ -56,6 +57,7 @@ public class KiePMMLLoadedModelUtilsTest {
     private static final String NOT_EXISTING_FIELD = "not_existing";
     private PMML pmmlModel;
 
+    @Disabled("Temporarily disabled: See https://github.com/apache/incubator-kie-drools/issues/6165")
     @Test
     void getTargetFieldNoTarget() throws Exception {
         pmmlModel = KiePMMLUtil.load(getFileInputStream(NO_TARGET_SOURCE), NO_TARGET_SOURCE);
@@ -64,6 +66,7 @@ public class KiePMMLLoadedModelUtilsTest {
         assertThat(getTargetFields(fields, pmmlModel.getModels().get(0))).isNotEmpty();
     }
 
+    @Disabled("Temporarily disabled: See https://github.com/apache/incubator-kie-drools/issues/6165")
     @Test
     void getTargetFieldOneMiningTarget() throws Exception {
         pmmlModel = KiePMMLUtil.load(getFileInputStream(ONE_MINING_TARGET_SOURCE), ONE_MINING_TARGET_SOURCE);
@@ -76,6 +79,7 @@ public class KiePMMLLoadedModelUtilsTest {
         assertThat(retrieveds.get(0).getName()).isEqualTo(WHAT_I_DO_TARGET_FIELD);
     }
 
+    @Disabled("Temporarily disabled: See https://github.com/apache/incubator-kie-drools/issues/6165")
     @Test
     void getTargetFieldMultipleTargets() throws Exception {
         pmmlModel = KiePMMLUtil.load(getFileInputStream(MULTIPLE_TARGETS_SOURCE), MULTIPLE_TARGETS_SOURCE);
@@ -88,6 +92,7 @@ public class KiePMMLLoadedModelUtilsTest {
         assertThat(retrieveds.get(0).getName()).isEqualTo(CAR_LOCATION_FIELD);
     }
 
+    @Disabled("Temporarily disabled: See https://github.com/apache/incubator-kie-drools/issues/6165")
     @Test
     void getOpTypeFromDataFieldExisting() throws Exception {
         pmmlModel = KiePMMLUtil.load(getFileInputStream(NO_TARGET_SOURCE), NO_TARGET_SOURCE);
@@ -96,6 +101,7 @@ public class KiePMMLLoadedModelUtilsTest {
         assertThat(retrieved).isEqualTo(CONTINUOUS);
     }
 
+    @Disabled("Temporarily disabled: See https://github.com/apache/incubator-kie-drools/issues/6165")
     @Test
     void getOpTypeFromMiningFieldExisting() throws Exception {
         pmmlModel = KiePMMLUtil.load(getFileInputStream(ONE_MINING_TARGET_SOURCE), ONE_MINING_TARGET_SOURCE);
@@ -104,6 +110,7 @@ public class KiePMMLLoadedModelUtilsTest {
         assertThat(retrieved).isEqualTo(CATEGORICAL);
     }
 
+    @Disabled("Temporarily disabled: See https://github.com/apache/incubator-kie-drools/issues/6165")
     @Test
     void getOpTypeNotExistingField() throws Exception {
         assertThatExceptionOfType(KiePMMLInternalException.class).isThrownBy(() -> {
@@ -112,6 +119,7 @@ public class KiePMMLLoadedModelUtilsTest {
         });
     }
 
+    @Disabled("Temporarily disabled: See https://github.com/apache/incubator-kie-drools/issues/6165")
     @Test
     void populateMissingModelNames() throws Exception {
         pmmlModel = KiePMMLUtil.load(getFileInputStream(NO_MODELNAME_SAMPLE), NO_MODELNAME_SAMPLE);

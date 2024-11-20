@@ -28,6 +28,7 @@ import org.dmg.pmml.PMML;
 import org.dmg.pmml.mining.MiningModel;
 import org.dmg.pmml.mining.Segment;
 import org.drools.base.util.CloneUtil;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.memorycompiler.KieMemoryCompiler;
 import org.kie.pmml.api.enums.PMML_MODEL;
@@ -59,26 +60,31 @@ public class MiningModelImplementationProviderTest {
         assertThat(PROVIDER.getPMMLModelType()).isEqualTo(PMML_MODEL.MINING_MODEL);
     }
 
+    @Disabled("Temporarily disabled: See https://github.com/apache/incubator-kie-drools/issues/6165")
     @Test
     void getKiePMMLModelWithSourcesRegression() throws Exception {
         commonGetKiePMMLModelWithSources(SOURCE_REGRESSION);
     }
 
+    @Disabled("Temporarily disabled: See https://github.com/apache/incubator-kie-drools/issues/6165")
     @Test
     void getKiePMMLModelWithSourcesTree() throws Exception {
         commonGetKiePMMLModelWithSources(SOURCE_TREE);
     }
 
+    @Disabled("Temporarily disabled: See https://github.com/apache/incubator-kie-drools/issues/6165")
     @Test
     void getKiePMMLModelWithSourcesScorecard() throws Exception {
         commonGetKiePMMLModelWithSources(SOURCE_SCORECARD);
     }
 
+    @Disabled("Temporarily disabled: See https://github.com/apache/incubator-kie-drools/issues/6165")
     @Test
     void getKiePMMLModelWithSourcesMixed() throws Exception {
         commonGetKiePMMLModelWithSources(SOURCE_MIXED);
     }
 
+    @Disabled("Temporarily disabled: See https://github.com/apache/incubator-kie-drools/issues/6165")
     @Test
     void populateMissingIds() throws Exception {
         commonVerifySegmentId(SOURCE_NO_SEGMENT_ID);

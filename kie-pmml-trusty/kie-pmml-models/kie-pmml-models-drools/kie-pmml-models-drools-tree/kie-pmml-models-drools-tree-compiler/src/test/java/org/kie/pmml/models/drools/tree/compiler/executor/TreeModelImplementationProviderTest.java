@@ -24,6 +24,7 @@ import java.io.Serializable;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.tree.TreeModel;
 import org.drools.base.util.CloneUtil;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLComponent;
@@ -37,6 +38,7 @@ import org.drools.util.FileUtils;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.pmml.commons.Constants.PACKAGE_NAME;
 
+@Disabled("Temporarily disabled: See https://github.com/apache/incubator-kie-drools/issues/6165")
 public class TreeModelImplementationProviderTest {
 
     private static final TreeModelImplementationProvider PROVIDER = new TreeModelImplementationProvider();

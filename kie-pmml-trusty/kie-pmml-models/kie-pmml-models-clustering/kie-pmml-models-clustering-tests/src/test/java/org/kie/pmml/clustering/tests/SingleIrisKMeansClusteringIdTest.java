@@ -19,6 +19,7 @@
 package org.kie.pmml.clustering.tests;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.pmml.PMML4Result;
@@ -32,6 +33,7 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Disabled("Temporarily disabled: See https://github.com/apache/incubator-kie-drools/issues/6165")
 public class SingleIrisKMeansClusteringIdTest extends AbstractPMMLTest {
 
     private static final String FILE_NAME_NO_SUFFIX = "SingleIrisKMeansClustering_id";

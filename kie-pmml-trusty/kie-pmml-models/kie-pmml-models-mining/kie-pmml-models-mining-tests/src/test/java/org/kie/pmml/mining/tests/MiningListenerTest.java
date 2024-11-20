@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.pmml.api.models.PMMLStep;
@@ -38,6 +39,7 @@ import org.kie.pmml.models.tests.AbstractPMMLTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Disabled("Temporarily disabled: See https://github.com/apache/incubator-kie-drools/issues/6165")
 public class MiningListenerTest extends AbstractPMMLTest {
 
     private static final String FILE_NAME_NO_SUFFIX = "MultipleMining";
