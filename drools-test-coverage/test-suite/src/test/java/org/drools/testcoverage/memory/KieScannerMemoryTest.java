@@ -28,38 +28,35 @@ import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieUtil;
 import org.drools.testcoverage.common.util.MavenUtil;
 import org.drools.testcoverage.common.util.TestConstants;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.junit.Ignore;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.KieScanner;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.KieContainer;
 import org.kie.scanner.KieMavenRepository;
-import org.kie.test.testcategory.TurtleTestCategory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Ignore("DROOLS-3628 Ignoring, because it can be useful when run locally, however due to unpredictable GC behaviour, unstable in automation.")
-@Category(TurtleTestCategory.class)
+@Disabled("DROOLS-3628 Ignoring, because it can be useful when run locally, however due to unpredictable GC behaviour, unstable in automation.")
 public class KieScannerMemoryTest {
 
     private static final Logger logger = LoggerFactory.getLogger(KieScannerMemoryTest.class);
 
     private FileManager fileManager;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         this.fileManager = new FileManager();
         this.fileManager.setUp();
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         this.fileManager.tearDown();
     }

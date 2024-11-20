@@ -23,18 +23,18 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Collection;
+import java.util.stream.Stream;
 
 import org.drools.testcoverage.common.KieSessionTest;
 import org.drools.testcoverage.common.model.Promotion;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieSessionTestConfiguration;
 import org.drools.testcoverage.common.util.KieUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TestName;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.io.Resource;
 import org.kie.api.marshalling.Marshaller;
@@ -47,23 +47,20 @@ public class LogicalInsertionsSerializationTest extends KieSessionTest {
 
     private static final String DRL_FILE = "logical-insertion.drl";
 
-    public LogicalInsertionsSerializationTest(final KieBaseTestConfiguration kieBaseTestConfiguration,
-                                              final KieSessionTestConfiguration kieSessionTestConfiguration) {
-        super(kieBaseTestConfiguration, kieSessionTestConfiguration);
+    @TempDir
+    public File name;
+
+    public static Stream<Arguments> parameters() {
+        return TestParametersUtil2.getKieBaseAndStatefulKieSessionConfigurations().stream();
     }
 
-    @Rule
-    public TestName name = new TestName();
-
-    @Parameterized.Parameters(name = "{1}" + " (from " + "{0}" + ")")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseAndStatefulKieSessionConfigurations();
-    }
-
-    @Test
-    public void testSerializeAndDeserializeSession() throws Exception {
+    @ParameterizedTest(name = "{1}" + " (from " + "{0}" + ")")
+	@MethodSource("parameters")
+    public void testSerializeAndDeserializeSession(KieBaseTestConfiguration kieBaseTestConfiguration,
+            KieSessionTestConfiguration kieSessionTestConfiguration)  throws Exception {
+    	createKieSession(kieBaseTestConfiguration, kieSessionTestConfiguration);
         KieSession ksession = session.getStateful();
-        File tempFile = File.createTempFile(name.getMethodName(), null);
+        File tempFile = File.createTempFile("Junit5", "serializeAndDeserializeSession", name);
 
         ksession.fireAllRules();
 

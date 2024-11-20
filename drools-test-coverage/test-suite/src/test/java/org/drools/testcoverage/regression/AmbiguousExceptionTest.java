@@ -19,8 +19,6 @@
 package org.drools.testcoverage.regression;
 
 import java.io.StringReader;
-
-import java.util.Collection;
 import java.util.stream.Stream;
 
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
