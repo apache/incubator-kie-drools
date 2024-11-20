@@ -21,7 +21,8 @@ TestingEmptyFile\.txt
 .*\.pmml_json
 .*\.drl_json
 .*\.dslr
-DMN.*\.xsd
+.*DMN.*\.xsd
+dmn.xsd
 DC\.xsd
 DI\.xsd
 KiePMML.*\.txt
