@@ -88,18 +88,39 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.basedir}/src/main/resources/shared</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${common.test.resources.dir}</directory>
+                  <includes>
+                    <include>**/*.bpmn</include>
+                    <include>**/*.sw.json</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-clean-plugin</artifactId>
+        <configuration>
+          <filesets>
+            <fileset>
+              <directory>${project.basedir}/src/main/resources/shared</directory>
+            </fileset>
+          </filesets>
+        </configuration>
+      </plugin>
     </plugins>
-    <resources>
-      <resource>
-        <directory>src/main/resources</directory>
-      </resource>
-      <resource>
-        <directory>${common.test.resources.dir}</directory>
-        <includes>
-          <include>**/*.bpmn</include>
-          <include>**/*.sw.json</include>
-        </includes>
-      </resource>
-    </resources>
   </build>
 </project>
