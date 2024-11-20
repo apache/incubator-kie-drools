@@ -19,28 +19,28 @@
 package org.drools.testcoverage.functional.parser;
 
 import java.io.File;
-import java.util.Collection;
+import java.util.stream.Stream;
 
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieUtil;
-import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.runners.Parameterized.Parameters;
 import org.kie.api.KieServices;
 import org.kie.api.io.Resource;
 
 public class DrlParserTest extends ParserTest {
 
-    public DrlParserTest(final File file, final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        super(file, kieBaseTestConfiguration);
-    }
 
     @Parameters(name = "{index}: {0}, {1}")
-    public static Collection<Object[]> getParameters() {
-        return getTestParamsFromFiles(getFiles("drl"));
+    public static Stream<Arguments> parameters() {
+        return getTestParamsFromFiles(getFiles("drl")).stream();
     }
 
-    @Test
-    public void testParserSmoke() {
+    @ParameterizedTest(name = "{index}: {0}, {1}")
+    @MethodSource("parameters")
+    public void testParserSmoke(File file, KieBaseTestConfiguration kieBaseTestConfiguration) {
         final Resource fileResource = KieServices.Factory.get().getResources().newFileSystemResource(file);
         KieUtil.getKieBuilderFromResources(kieBaseTestConfiguration, true, fileResource);
     }
