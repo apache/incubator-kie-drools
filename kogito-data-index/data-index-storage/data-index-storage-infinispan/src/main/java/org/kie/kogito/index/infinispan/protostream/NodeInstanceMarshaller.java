@@ -42,6 +42,7 @@ public class NodeInstanceMarshaller extends AbstractMarshaller implements Messag
         node.setExit(dateToZonedDateTime(reader.readDate("exit")));
         node.setDefinitionId(reader.readString("definitionId"));
         node.setNodeId(reader.readString("nodeId"));
+        node.setSlaDueDate(dateToZonedDateTime(reader.readDate("slaDueDate")));
         return node;
     }
 
@@ -54,6 +55,7 @@ public class NodeInstanceMarshaller extends AbstractMarshaller implements Messag
         writer.writeDate("exit", zonedDateTimeToDate(node.getExit()));
         writer.writeString("definitionId", node.getDefinitionId());
         writer.writeString("nodeId", node.getNodeId());
+        writer.writeDate("slaDueDate", zonedDateTimeToDate(node.getSlaDueDate()));
     }
 
     @Override

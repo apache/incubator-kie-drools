@@ -38,6 +38,8 @@ public class NodeInstance {
     @JsonProperty("leaveTime")
     private ZonedDateTime exit;
 
+    private ZonedDateTime slaDueDate;
+
     @JsonProperty("nodeDefinitionId")
     private String definitionId;
 
@@ -97,6 +99,14 @@ public class NodeInstance {
         this.name = name;
     }
 
+    public ZonedDateTime getSlaDueDate() {
+        return slaDueDate;
+    }
+
+    public void setSlaDueDate(ZonedDateTime slaDueDate) {
+        this.slaDueDate = slaDueDate;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -125,6 +135,7 @@ public class NodeInstance {
                 ", type='" + type + '\'' +
                 ", enter=" + enter +
                 ", exit=" + exit +
+                ", slaDueDate=" + slaDueDate +
                 ", definitionId='" + definitionId + '\'' +
                 '}';
     }

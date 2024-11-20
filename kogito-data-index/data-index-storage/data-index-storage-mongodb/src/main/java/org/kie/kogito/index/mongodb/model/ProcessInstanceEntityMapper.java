@@ -77,6 +77,7 @@ public class ProcessInstanceEntityMapper implements MongoEntityMapper<ProcessIns
         entity.setVersion(instance.getVersion());
         entity.setCreatedBy(instance.getCreatedBy());
         entity.setUpdatedBy(instance.getUpdatedBy());
+        entity.setSlaDueDate(zonedDateTimeToInstant(instance.getSlaDueDate()));
         return entity;
     }
 
@@ -108,6 +109,7 @@ public class ProcessInstanceEntityMapper implements MongoEntityMapper<ProcessIns
         instance.setVersion(entity.getVersion());
         instance.setCreatedBy(entity.getCreatedBy());
         instance.setUpdatedBy(entity.getCreatedBy());
+        instance.setSlaDueDate(instantToZonedDateTime(entity.getSlaDueDate()));
         return instance;
     }
 
@@ -146,6 +148,7 @@ public class ProcessInstanceEntityMapper implements MongoEntityMapper<ProcessIns
         instance.setEnter(instantToZonedDateTime(entity.getEnter()));
         instance.setExit(instantToZonedDateTime(entity.getExit()));
         instance.setDefinitionId(entity.getDefinitionId());
+        instance.setSlaDueDate(instantToZonedDateTime(entity.getSlaDueDate()));
         return instance;
     }
 
@@ -162,6 +165,7 @@ public class ProcessInstanceEntityMapper implements MongoEntityMapper<ProcessIns
         entity.setEnter(zonedDateTimeToInstant(instance.getEnter()));
         entity.setExit(zonedDateTimeToInstant(instance.getExit()));
         entity.setDefinitionId(instance.getDefinitionId());
+        entity.setSlaDueDate(zonedDateTimeToInstant(instance.getSlaDueDate()));
         return entity;
     }
 

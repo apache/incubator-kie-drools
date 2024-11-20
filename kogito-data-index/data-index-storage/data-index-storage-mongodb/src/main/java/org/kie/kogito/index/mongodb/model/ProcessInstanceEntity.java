@@ -70,6 +70,8 @@ public class ProcessInstanceEntity {
 
     String updatedBy;
 
+    Long slaDueDate;
+
     public String getId() {
         return id;
     }
@@ -238,6 +240,14 @@ public class ProcessInstanceEntity {
         this.updatedBy = updatedBy;
     }
 
+    public Long getSlaDueDate() {
+        return slaDueDate;
+    }
+
+    public void setSlaDueDate(Long slaDueDate) {
+        this.slaDueDate = slaDueDate;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -270,6 +280,8 @@ public class ProcessInstanceEntity {
         Long exit;
 
         String definitionId;
+
+        Long slaDueDate;
 
         public String getId() {
             return id;
@@ -325,6 +337,14 @@ public class ProcessInstanceEntity {
 
         public void setDefinitionId(String definitionId) {
             this.definitionId = definitionId;
+        }
+
+        public Long getSlaDueDate() {
+            return slaDueDate;
+        }
+
+        public void setSlaDueDate(Long slaDueDate) {
+            this.slaDueDate = slaDueDate;
         }
 
         @Override

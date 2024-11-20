@@ -179,6 +179,7 @@ public class ProcessInstanceEntityStorage extends AbstractJPAStorageFetcher<Stri
         nodeInstance.setNodeId(body.getNodeDefinitionId());
         nodeInstance.setName(body.getNodeName());
         nodeInstance.setType(body.getNodeType());
+        nodeInstance.setSlaDueDate(toZonedDateTime(body.getSlaDueDate()));
         ZonedDateTime eventDate = toZonedDateTime(body.getEventDate());
         switch (body.getEventType()) {
             case EVENT_TYPE_ENTER:
@@ -219,6 +220,7 @@ public class ProcessInstanceEntityStorage extends AbstractJPAStorageFetcher<Stri
         pi.setLastUpdate(toZonedDateTime(data.getEventDate()));
         pi.setAddons(addons);
         pi.setEndpoint(endpoint);
+        pi.setSlaDueDate(toZonedDateTime(data.getSlaDueDate()));
     }
 
     private void indexVariable(ProcessInstanceEntity pi, ProcessInstanceVariableEventBody data) {

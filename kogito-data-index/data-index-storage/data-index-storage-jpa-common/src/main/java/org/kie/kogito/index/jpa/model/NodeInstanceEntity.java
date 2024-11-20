@@ -43,6 +43,7 @@ public class NodeInstanceEntity extends AbstractEntity {
     private String type;
     private ZonedDateTime enter;
     private ZonedDateTime exit;
+    private ZonedDateTime slaDueDate;
     private String definitionId;
     @ManyToOne(cascade = CascadeType.ALL, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -104,6 +105,14 @@ public class NodeInstanceEntity extends AbstractEntity {
 
     public void setExit(ZonedDateTime exit) {
         this.exit = exit;
+    }
+
+    public ZonedDateTime getSlaDueDate() {
+        return slaDueDate;
+    }
+
+    public void setSlaDueDate(ZonedDateTime slaDueDate) {
+        this.slaDueDate = slaDueDate;
     }
 
     public ProcessInstanceEntity getProcessInstance() {

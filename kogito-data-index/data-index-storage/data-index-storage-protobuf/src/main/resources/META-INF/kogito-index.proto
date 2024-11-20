@@ -153,6 +153,7 @@ message ProcessInstance {
     optional string createdBy = 20;
     /* @Field(store = Store.YES) */
     optional string updatedBy = 21;
+    optional int64 slaDueDate = 22;
 }
 
 /* @Indexed */
@@ -177,6 +178,7 @@ message NodeInstance {
     optional string definitionId = 6;
     /* @Field(store = Store.YES) */
     optional string nodeId = 7;
+    optional int64 slaDueDate = 8;
 }
 
 /* @Indexed */

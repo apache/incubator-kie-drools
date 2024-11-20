@@ -55,6 +55,7 @@ public class ProcessInstanceMarshaller extends AbstractMarshaller implements Mes
     protected static final String MILESTONES = "milestones";
     protected static final String CREATED_BY = "createdBy";
     protected static final String UPDATED_BY = "updatedBy";
+    protected static final String SLA_DUE_DATE = "slaDueDate";
 
     public ProcessInstanceMarshaller(ObjectMapper mapper) {
         super(mapper);
@@ -84,6 +85,7 @@ public class ProcessInstanceMarshaller extends AbstractMarshaller implements Mes
         pi.setVersion(reader.readString(VERSION));
         pi.setCreatedBy(reader.readString(CREATED_BY));
         pi.setUpdatedBy(reader.readString(UPDATED_BY));
+        pi.setSlaDueDate(dateToZonedDateTime(reader.readDate(SLA_DUE_DATE)));
         return pi;
     }
 
@@ -110,6 +112,7 @@ public class ProcessInstanceMarshaller extends AbstractMarshaller implements Mes
         writer.writeString(VERSION, pi.getVersion());
         writer.writeString(CREATED_BY, pi.getCreatedBy());
         writer.writeString(UPDATED_BY, pi.getCreatedBy());
+        writer.writeDate(SLA_DUE_DATE, zonedDateTimeToDate(pi.getSlaDueDate()));
     }
 
     @Override

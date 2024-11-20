@@ -49,6 +49,7 @@ public class ProcessInstanceMeta {
     @JsonProperty("updatedBy")
     private String updatedBy;
     private ZonedDateTime lastUpdate;
+    private ZonedDateTime slaDueDate;
 
     public String getId() {
         return id;
@@ -184,6 +185,14 @@ public class ProcessInstanceMeta {
 
     public void setUpdatedBy(String updatedBy) {
         this.updatedBy = updatedBy;
+    }
+
+    public ZonedDateTime getSlaDueDate() {
+        return slaDueDate;
+    }
+
+    public void setSlaDueDate(ZonedDateTime slaDueDate) {
+        this.slaDueDate = slaDueDate;
     }
 
     @Override

@@ -96,6 +96,7 @@ type ProcessInstance {
     identity: String
     createdBy: String
     updatedBy: String
+    slaDueDate: DateTime
 }
 
 type ProcessInstanceError {
@@ -135,6 +136,7 @@ type NodeInstance {
     exit: DateTime
     definitionId: String!
     nodeId: String!
+    slaDueDate: DateTime
 }
 
 enum MilestoneStatus {
