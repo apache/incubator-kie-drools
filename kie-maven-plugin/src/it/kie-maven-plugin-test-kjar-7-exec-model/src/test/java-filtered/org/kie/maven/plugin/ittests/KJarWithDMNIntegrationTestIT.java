@@ -27,8 +27,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.assertj.core.api.Assertions;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;

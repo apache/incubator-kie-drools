@@ -28,8 +28,9 @@ import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-import org.assertj.core.api.Assertions;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class BuildPMMLTrustyTestIT {
 
@@ -54,9 +55,9 @@ public class BuildPMMLTrustyTestIT {
             jarContent.add(entryName);
         }
 
-        Assertions.assertThat(jarContent).isNotEmpty();
-        Assertions.assertThat(jarContent).contains(PMML_FILE_NAME);
-        Assertions.assertThat(jarContent).contains(INDEX_FILE_NAME);
-        EXAMPLE_PMML_CLASSES.forEach(examplePMMLClass ->  Assertions.assertThat(jarContent).contains(examplePMMLClass));
+        assertThat(jarContent).isNotEmpty();
+        assertThat(jarContent).contains(PMML_FILE_NAME);
+        assertThat(jarContent).contains(INDEX_FILE_NAME);
+        EXAMPLE_PMML_CLASSES.forEach(examplePMMLClass ->  assertThat(jarContent).contains(examplePMMLClass));
     }
 }
