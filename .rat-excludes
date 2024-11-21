@@ -7,6 +7,7 @@ ui-bundle\.zip
 dependency-reduced-pom\.xml
 lunr-2\.3\.9\.min\.js
 search-ui\.js
+search\.css
 branch\.yaml
 main\.yaml
 mvel\.jj
@@ -42,3 +43,4 @@ adult\.txt
 antora\.yml
 .*\.iml
 CsvLineParser\.java
+target/*
