@@ -20,23 +20,21 @@ package org.drools.ancompiler;
 
 import java.util.ArrayList;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MixedConstraintsTest extends BaseModelTest {
 
-    public MixedConstraintsTest(RUN_TYPE testRunType) {
-        super(testRunType);
-    }
-
     // When we have the startsWith constraint before the indexed constraint age == index the compiled alpha network
     // generation is wrong see DROOLS-5948
-    @Test
-    @Ignore
-    public void testMixedConstraints() {
+    @Disabled
+    @ParameterizedTest(name = "{0}")
+	@MethodSource("parameters")
+    public void testMixedConstraints(RUN_TYPE testRunType) {
         final StringBuilder rule =
                 new StringBuilder("global java.util.List results;\n" +
                                           "import " + Person.class.getCanonicalName() + ";\n");
@@ -46,7 +44,7 @@ public class MixedConstraintsTest extends BaseModelTest {
             rule.append(ruleWithIndex(i));
         }
 
-        try (KieSession ksession = getKieSession(rule.toString())) {
+        try (KieSession ksession = getKieSession(testRunType, rule.toString())) {
             ArrayList<Object> results = new ArrayList<>();
             ksession.setGlobal("results", results);
             Person a = new Person("a", 1);
