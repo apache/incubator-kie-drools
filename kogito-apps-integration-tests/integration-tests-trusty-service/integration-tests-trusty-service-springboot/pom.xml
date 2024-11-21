@@ -33,7 +33,7 @@
   <properties>
     <container.image.kogito-service>org.kie.kogito/integration-tests-trusty-service-springboot:${project.version}</container.image.kogito-service>
     <sonar.exclusions>**/KogitoApplication.java</sonar.exclusions>
-    <version.jib-maven-plugin>3.3.1</version.jib-maven-plugin>
+    <version.jib-maven-plugin>3.4.4</version.jib-maven-plugin>
     <jib-maven-plugin.container.image>eclipse-temurin:17-jre</jib-maven-plugin.container.image>
   </properties>
 
