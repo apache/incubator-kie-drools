@@ -26,7 +26,7 @@ import org.drools.base.time.JobHandle;
 import org.drools.base.time.Trigger;
 import org.drools.core.time.Job;
 import org.drools.core.time.JobContext;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.atLeast;
@@ -48,7 +48,8 @@ public class PseudoClockSchedulerTest {
 
     private PseudoClockScheduler scheduler = new PseudoClockScheduler();
 
-    @Test public void removeExistingJob() {
+    @Test 
+    public void removeExistingJob() {
         final Date triggerTime = new Date(1000);
         when( mockTrigger_1.hasNextFireTime() ).thenReturn(triggerTime);
 
@@ -62,7 +63,8 @@ public class PseudoClockSchedulerTest {
     }
 
 
-    @Test public void removeExistingJobWhenMultipleQueued() {
+    @Test 
+    public void removeExistingJobWhenMultipleQueued() {
         final Date triggerTime_1 = new Date(1000);
         final Date triggerTime_2 = new Date(2000);
         when( mockTrigger_1.hasNextFireTime() ).thenReturn(triggerTime_1);
@@ -82,7 +84,8 @@ public class PseudoClockSchedulerTest {
         verify( mockTrigger_2, atLeastOnce()).hasNextFireTime();
     }
 
-    @Test public void timerIsSetToJobTriggerTimeForExecution() {
+    @Test 
+    public void timerIsSetToJobTriggerTimeForExecution() {
         final Date triggerTime = new Date(1000);
         when( mockTrigger_1.hasNextFireTime() ).thenReturn(triggerTime, triggerTime, triggerTime, null);
         when( mockTrigger_1.nextFireTime() ).thenReturn(triggerTime);
@@ -107,7 +110,8 @@ public class PseudoClockSchedulerTest {
         verify( mockTrigger_1, times(1) ).nextFireTime();
     }
 
-    @Test public void timerIsResetWhenJobThrowsExceptions() {
+    @Test 
+    public void timerIsResetWhenJobThrowsExceptions() {
         final Date triggerTime = new Date(1000);
         when( mockTrigger_1.hasNextFireTime() ).thenReturn(triggerTime, triggerTime, triggerTime, null);
         when( mockTrigger_1.nextFireTime() ).thenReturn(triggerTime);

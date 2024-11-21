@@ -20,7 +20,7 @@ package org.drools.core.reteoo;
 
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.DisconnectedFactHandle;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

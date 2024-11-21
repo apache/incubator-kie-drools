@@ -22,10 +22,9 @@ import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.MockLeftTupleSink;
-import org.drools.core.reteoo.MockObjectSink;
 import org.drools.core.test.model.Cheese;
 import org.drools.core.util.index.TupleList;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

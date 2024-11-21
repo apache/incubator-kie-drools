@@ -21,7 +21,7 @@ package org.drools.core.time.impl;
 import java.text.ParseException;
 import java.util.Set;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.fail;
 
