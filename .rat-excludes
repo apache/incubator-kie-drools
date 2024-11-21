@@ -1,7 +1,6 @@
 \.rat-excludes
 \.gitignore
 DISCLAIMER-WIP
-LICENSE-.*\.txt
 ui-bundle\.zip
 \.git-blame-ignore-revs
 dependency-reduced-pom\.xml
@@ -11,8 +10,6 @@ search\.css
 branch\.yaml
 main\.yaml
 mvel\.jj
-JavaLexer\.g4
-JavaParser\.g4
 .*\.csv
 .*\.sdo
 .*\.sdt
