@@ -22,22 +22,24 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.drools.mvel.integrationtests.facts.Product;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
-@RunWith(Parameterized.class)
+import static org.junit.jupiter.params.provider.Arguments.arguments;
+
 public class SubnetworkConcurrentSessionsTest extends AbstractConcurrentTest {
 
     private static final Integer NUMBER_OF_THREADS = 10;
     private static final Integer NUMBER_OF_REPETITIONS = 1;
 
-    @Parameterized.Parameters(name = "Enforced jitting={0}, Share KieBase={1}, KieBase type={2}")
-    public static List<Object[]> getTestParameters() {
+    public static Stream<Arguments> parameters() {
         List<Boolean[]> baseParams = Arrays.asList(
                 new Boolean[]{false, false},
                 new Boolean[]{true, false},
@@ -45,28 +47,26 @@ public class SubnetworkConcurrentSessionsTest extends AbstractConcurrentTest {
                 new Boolean[]{true, true}
                 );
 
-        Collection<Object[]> kbParams = TestParametersUtil.getKieBaseCloudConfigurations(true);
+        Collection<KieBaseTestConfiguration> kbParams = TestParametersUtil2.getKieBaseCloudConfigurations(true);
         // combine
-        List<Object[]> params = new ArrayList<>();
+        List<Arguments> params = new ArrayList<>();
         for (Boolean[] baseParam : baseParams) {
-            for (Object[] kbParam : kbParams) {
-                if (baseParam[0] == true && ((KieBaseTestConfiguration) kbParam[0]).isExecutableModel()) {
+            for (KieBaseTestConfiguration kbParam : kbParams) {
+                if (baseParam[0] && kbParam.isExecutableModel()) {
                     // jitting & exec-model test is not required
                 } else {
-                    params.add(new Object[] {baseParam[0], baseParam[1], kbParam[0]});
+                    params.add(arguments(baseParam[0], baseParam[1], kbParam));
                 }
             }
         }
-        return params;
+        return params.stream();
     }
 
-    public SubnetworkConcurrentSessionsTest(final boolean enforcedJitting,
-                                            final boolean sharedKieBase,  final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        super(enforcedJitting, false, sharedKieBase, false, kieBaseTestConfiguration);
-    }
-
-    @Test(timeout = 80000)
-    public void test1() throws InterruptedException {
+    @ParameterizedTest(name = "Enforced jitting={0}, Share KieBase={1}, KieBase type={2}")
+    @MethodSource("parameters")
+    @Timeout(80000)
+    public void test1(boolean enforcedJitting, boolean isKieBaseShared, KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException {
+        initTest(enforcedJitting, false, isKieBaseShared, false, kieBaseTestConfiguration);
         final String drl = "rule R when String() then end";
 
         parallelTest(NUMBER_OF_REPETITIONS, NUMBER_OF_THREADS, (kieSession, counter) -> {
@@ -75,14 +75,20 @@ public class SubnetworkConcurrentSessionsTest extends AbstractConcurrentTest {
         }, null, null, drl );
     }
 
-    @Test(timeout = 80000)
-    public void test2NoSubnetwork() throws InterruptedException {
+    @ParameterizedTest(name = "Enforced jitting={0}, Share KieBase={1}, KieBase type={2}")
+    @MethodSource("parameters")
+    @Timeout(80000)
+    public void test2NoSubnetwork(boolean enforcedJitting, boolean isKieBaseShared, KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException {
+        initTest(enforcedJitting, false, isKieBaseShared, false, kieBaseTestConfiguration);
         test2(getRule("R1", "this == \"odd\"", false, false, "Number( intValue > 0 )"),
                 getRule("R2", "this == \"pair\"", false, false, "Number( intValue < 10000 )"));
     }
 
-    @Test(timeout = 80000)
-    public void test2WithSubnetwork() throws InterruptedException {
+    @ParameterizedTest(name = "Enforced jitting={0}, Share KieBase={1}, KieBase type={2}")
+    @MethodSource("parameters")
+    @Timeout(80000)
+    public void test2WithSubnetwork(boolean enforcedJitting, boolean isKieBaseShared, KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException {
+        initTest(enforcedJitting, false, isKieBaseShared, false, kieBaseTestConfiguration);
         test2(getRule("R1", "this == \"odd\"", false, true, "Number( intValue > 0 )"),
                 getRule("R2", "this == \"pair\"", false, true, "Number( intValue < 10000 )"));
     }
@@ -111,20 +117,29 @@ public class SubnetworkConcurrentSessionsTest extends AbstractConcurrentTest {
         }, null, null, drls );
     }
 
-    @Test(timeout = 80000)
-    public void test3NoSubnetwork() throws InterruptedException {
+    @ParameterizedTest(name = "Enforced jitting={0}, Share KieBase={1}, KieBase type={2}")
+    @MethodSource("parameters")
+    @Timeout(80000)
+    public void test3NoSubnetwork(boolean enforcedJitting, boolean isKieBaseShared, KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException {
+        initTest(enforcedJitting, false, isKieBaseShared, false, kieBaseTestConfiguration);
         test3(getRule("R1", "this == \"odd\"", false, false, "Number( intValue > 0 )"),
                 getRule("R2", "this == \"pair\"", false, false, "Number( intValue < 10000 )"));
     }
 
-    @Test(timeout = 80000)
-    public void test3WithSubnetwork() throws InterruptedException {
+    @ParameterizedTest(name = "Enforced jitting={0}, Share KieBase={1}, KieBase type={2}")
+    @MethodSource("parameters")
+    @Timeout(80000)
+    public void test3WithSubnetwork(boolean enforcedJitting, boolean isKieBaseShared, KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException {
+        initTest(enforcedJitting, false, isKieBaseShared, false, kieBaseTestConfiguration);
         test3(getRule("R1", "this == \"odd\"", false, true, "Number( intValue > 0 )"),
                 getRule("R2", "this == \"pair\"", false, true, "Number( intValue < 10000 )"));
     }
 
-    @Test(timeout = 80000)
-    public void test3WithSharedSubnetwork() throws InterruptedException {
+    @ParameterizedTest(name = "Enforced jitting={0}, Share KieBase={1}, KieBase type={2}")
+    @MethodSource("parameters")
+    @Timeout(80000)
+    public void test3WithSharedSubnetwork(boolean enforcedJitting, boolean isKieBaseShared, KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException {
+        initTest(enforcedJitting, false, isKieBaseShared, false, kieBaseTestConfiguration);
         final String ruleTemplate = "import " + Product.class.getCanonicalName() + ";\n" +
                 "rule ${ruleName} when\n" +
                 "  $s : String()\n" +
@@ -185,14 +200,20 @@ public class SubnetworkConcurrentSessionsTest extends AbstractConcurrentTest {
         }, null, null, drls );
     }
 
-    @Test(timeout = 20000)
-    public void test4NoSharing() throws InterruptedException {
+    @ParameterizedTest(name = "Enforced jitting={0}, Share KieBase={1}, KieBase type={2}")
+    @MethodSource("parameters")
+    @Timeout(20000)
+    public void test4NoSharing(boolean enforcedJitting, boolean isKieBaseShared, KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException {
+        initTest(enforcedJitting, false, isKieBaseShared, false, kieBaseTestConfiguration);
         test4(getRule("R1", "", false, true, "Number( intValue > 5 )"),
                 getRule("R2", "", false, true, "Number( intValue < 5 )"));
     }
 
-    @Test(timeout = 20000)
-    public void test4WithSharing() throws InterruptedException {
+    @ParameterizedTest(name = "Enforced jitting={0}, Share KieBase={1}, KieBase type={2}")
+    @MethodSource("parameters")
+    @Timeout(20000)
+    public void test4WithSharing(boolean enforcedJitting, boolean isKieBaseShared, KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException {
+        initTest(enforcedJitting, false, isKieBaseShared, false, kieBaseTestConfiguration);
         test4(getRule("R1", "", true, true, "Number( intValue > 5 )"),
                 getRule("R2", "", true, true, "Number( intValue < 5 )"));
     }

@@ -19,16 +19,15 @@
 package org.drools.testcoverage.regression;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.runtime.KieSession;
 
@@ -37,7 +36,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * Tests handling a variable binding in LHS with OR (BZ 1136424).
  */
-@RunWith(Parameterized.class)
 public class DeclarationWithOrTest {
 
     private static final String FACT = "working";
@@ -52,22 +50,16 @@ public class DeclarationWithOrTest {
         " list.add(\"" + FACT + "\");\n" +
         "end";
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public DeclarationWithOrTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
-    }
-
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseConfigurations();
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseConfigurations().stream();
     }
 
     /**
      * Verifies that the rule with binding and OR in LHS compiles and works as expected.
      */
-    @Test
-    public void testBindingWithOrInLHS() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testBindingWithOrInLHS(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final KieBuilder kbuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, true, DRL);
         final KieSession ksession = KieBaseUtil.getDefaultKieBaseFromKieBuilder(kbuilder).newKieSession();
 

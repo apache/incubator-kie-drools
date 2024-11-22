@@ -45,20 +45,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public abstract class AbstractConcurrentTest {
 
-    protected final boolean enforcedJitting;
-    protected final boolean serializeKieBase;
-    protected final boolean sharedKieBase;
-    protected final boolean sharedKieSession;
-    protected final KieBaseTestConfiguration kieBaseTestConfiguration;
+    protected boolean enforcedJitting;
+    protected boolean isKieBaseSerialized;
+    protected boolean isKieBaseShared;
+    protected boolean isKieSessionShared;
+    protected KieBaseTestConfiguration kieBaseTestConfiguration;
 
-    public AbstractConcurrentTest(final boolean enforcedJitting, final boolean serializeKieBase,
-                                  final boolean sharedKieBase, final boolean sharedKieSession, KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.enforcedJitting = enforcedJitting;
-        this.serializeKieBase = serializeKieBase;
-        this.sharedKieBase = sharedKieBase;
-        this.sharedKieSession = sharedKieSession;
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
-    }
 
     interface TestWithSessionExecutor {
         boolean execute(KieSession kieSession, int counter);
@@ -66,6 +58,15 @@ public abstract class AbstractConcurrentTest {
 
     interface TestExecutor {
         boolean execute(int counter);
+    }
+    
+    protected void initTest(boolean enforcedJitting, boolean isKieBaseSerialized,
+            boolean isKieBaseShared, boolean isKieSessionShared, KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.enforcedJitting = enforcedJitting;
+        this.isKieBaseSerialized = isKieBaseSerialized;
+        this.isKieBaseShared = isKieBaseShared;
+        this.isKieSessionShared = isKieSessionShared;
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
     }
 
     protected void parallelTest(final int threadCount, final TestExecutor testExecutor) throws InterruptedException {
@@ -96,8 +97,8 @@ public abstract class AbstractConcurrentTest {
                 for (int i = 0; i < threadCount; i++) {
                     final int counter = i;
                     tasks.add(() -> {
-                        final KieBase kieBaseForTest = this.sharedKieBase ? sharedKieBase : getKieBase(drls);
-                        if (this.sharedKieSession) {
+                        final KieBase kieBaseForTest = this.isKieBaseShared ? sharedKieBase : getKieBase(drls);
+                        if (this.isKieSessionShared) {
                             return testExecutor.execute(sharedKieSession, counter);
                         } else {
                             return executeInSeparateSession(testExecutor, kieBaseForTest, globalName, global, counter);

@@ -22,51 +22,51 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.drools.mvel.integrationtests.facts.CategoryTypeEnum;
 import org.drools.mvel.integrationtests.facts.Product;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
-@RunWith(Parameterized.class)
+import static org.junit.jupiter.params.provider.Arguments.arguments;
+
 public class EnumEvaluationConcurrentSessionsTest extends AbstractConcurrentTest {
 
     private static final Integer NUMBER_OF_THREADS = 10;
     private static final Integer NUMBER_OF_REPETITIONS = 1;
 
-    @Parameterized.Parameters(name = "Enforced jitting={0}, Share KieBase={1}, KieBase type={2}")
-    public static List<Object[]> getTestParameters() {
+    public static Stream<Arguments> parameters() {
         List<Boolean[]> baseParams = Arrays.asList(
                                                    new Boolean[]{false, false},
                                                    new Boolean[]{true, false},
                                                    new Boolean[]{false, true},
                                                    new Boolean[]{true, true});
 
-        Collection<Object[]> kbParams = TestParametersUtil.getKieBaseCloudConfigurations(true);
+        Collection<KieBaseTestConfiguration> kbParams = TestParametersUtil2.getKieBaseCloudConfigurations(true);
         // combine
-        List<Object[]> params = new ArrayList<>();
+        List<Arguments> params = new ArrayList<>();
         for (Boolean[] baseParam : baseParams) {
-            for (Object[] kbParam : kbParams) {
-                if (baseParam[0] == true && ((KieBaseTestConfiguration) kbParam[0]).isExecutableModel()) {
+            for (KieBaseTestConfiguration kbParam : kbParams) {
+                if (baseParam[0] == true && kbParam.isExecutableModel()) {
                     // jitting & exec-model test is not required
                 } else {
-                    params.add(new Object[]{baseParam[0], baseParam[1], kbParam[0]});
+                    params.add(arguments(baseParam[0], baseParam[1], kbParam));
                 }
             }
         }
-        return params;
+        return params.stream();
     }
 
-    public EnumEvaluationConcurrentSessionsTest(final boolean enforcedJitting,
-                                                final boolean sharedKieBase, final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        super(enforcedJitting, false, sharedKieBase, false, kieBaseTestConfiguration);
-    }
-
-    @Test(timeout = 40000)
-    public void testEnum2() throws InterruptedException {
+    @ParameterizedTest(name = "Enforced jitting={0}, Share KieBase={1}, KieBase type={2}")
+    @MethodSource("parameters")
+    @Timeout(40000)
+    public void testEnum2(boolean enforcedJitting, boolean isKieBaseShared, KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException {
+        initTest(enforcedJitting, false, isKieBaseShared, false, kieBaseTestConfiguration);
         final String drl1 =
                 "import " + Product.class.getCanonicalName() + ";\n" +
                         "import " + CategoryTypeEnum.class.getCanonicalName() + ";\n" +

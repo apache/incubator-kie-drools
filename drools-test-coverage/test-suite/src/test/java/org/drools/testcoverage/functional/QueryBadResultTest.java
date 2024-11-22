@@ -18,16 +18,15 @@
  */
 package org.drools.testcoverage.functional;
 
-import java.util.Collection;
+import java.util.stream.Stream;
 
 import org.drools.testcoverage.common.model.Person;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.Message.Level;
@@ -35,34 +34,29 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.QueryResults;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.fail;
 
 /**
  * Tests bad using and accessing to queries.
  */
-@RunWith(Parameterized.class)
 public class QueryBadResultTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public QueryBadResultTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseConfigurations().stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseConfigurations();
-    }
-
-    @Test
-    public void testQueriesWithSameNameInOneFile() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testQueriesWithSameNameInOneFile(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final KieBuilder kieBuilder =
                 KieUtil.getKieBuilderFromClasspathResources(kieBaseTestConfiguration, getClass(), false, "query-two-same-names.drl");
         assertThat(kieBuilder.getResults().getMessages(Level.ERROR).isEmpty()).isFalse();
     }
 
-    @Test
-    public void testQueriesWithSameNameInTwoFiles() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testQueriesWithSameNameInTwoFiles(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final KieBuilder kieBuilder =
                 KieUtil.getKieBuilderFromClasspathResources(
                         kieBaseTestConfiguration,
@@ -74,15 +68,17 @@ public class QueryBadResultTest {
         assertThat(kieBuilder.getResults().getMessages(Level.ERROR).isEmpty()).isFalse();
     }
 
-    @Test
-    public void testQueryWithoutName() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testQueryWithoutName(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final KieBuilder kieBuilder =
                 KieUtil.getKieBuilderFromClasspathResources(kieBaseTestConfiguration, getClass(), false, "query-without-name.drl");
         assertThat(kieBuilder.getResults().getMessages(Level.ERROR).isEmpty()).isFalse();
     }
 
-    @Test
-    public void testQueryCalledWithoutParamsButItHasParams() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testQueryCalledWithoutParamsButItHasParams(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final KieBase kieBase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "query.drl");
         final KieSession ksession = kieBase.newKieSession();
         ksession.insert(new Person("Petr"));
@@ -95,13 +91,14 @@ public class QueryBadResultTest {
         }
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testAccessToNotExistingVariable() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testAccessToNotExistingVariable(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final KieBase kieBase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration,"query.drl");
         final KieSession ksession = kieBase.newKieSession();
         ksession.insert(new Person("Petr"));
 
         final QueryResults results = ksession.getQueryResults("simple query with no parameters");
-        results.iterator().next().get("bad");
+        assertThatIllegalArgumentException().isThrownBy(() -> results.iterator().next().get("bad"));
     }
 }

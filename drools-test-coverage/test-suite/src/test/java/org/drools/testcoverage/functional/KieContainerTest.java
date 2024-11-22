@@ -23,8 +23,8 @@ import java.io.IOException;
 import java.util.Collection;
 
 import org.drools.testcoverage.common.util.TestConstants;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
@@ -58,7 +58,7 @@ public class KieContainerTest {
 
     private KieServices kieServices;
 
-    @Before
+    @BeforeEach
     public void initialize() throws IOException {
         kieServices = KieServices.Factory.get();
     }

@@ -23,56 +23,55 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Stream;
 
 import org.drools.mvel.integrationtests.facts.BeanA;
 import org.drools.mvel.integrationtests.facts.BeanB;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.QueryResultsRow;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
+
 
 /**
  * Test each thread having it's own separate KieBase and KieSession.
  */
-@RunWith(Parameterized.class)
 public class ConcurrentBasesParallelTest extends AbstractConcurrentTest {
 
-    @Parameterized.Parameters(name = "Enforced jitting={0}, KieBase type={1}")
-    public static List<Object[]> getTestParameters() {
-        List<Boolean[]> baseParams = Arrays.asList(
-                                                   new Boolean[]{false},
-                                                   new Boolean[]{true});
+    public static Stream<Arguments> parameters() {
+        List<Boolean> baseParams = Arrays.asList(false, true);
 
-        Collection<Object[]> kbParams = TestParametersUtil.getKieBaseCloudConfigurations(true);
+        Collection<KieBaseTestConfiguration> kbParams = TestParametersUtil2.getKieBaseCloudConfigurations(true);
         // combine
-        List<Object[]> params = new ArrayList<>();
-        for (Boolean[] baseParam : baseParams) {
-            for (Object[] kbParam : kbParams) {
-                if (baseParam[0] == true && ((KieBaseTestConfiguration) kbParam[0]).isExecutableModel()) {
+        List<Arguments> params = new ArrayList<>();
+        for (Boolean baseParam : baseParams) {
+            for (KieBaseTestConfiguration kbParam : kbParams) {
+                if (baseParam && kbParam.isExecutableModel()) {
                     // jitting & exec-model test is not required
                 } else {
-                    params.add(new Object[]{baseParam[0], kbParam[0]});
+                    params.add(arguments(baseParam, kbParam));
                 }
             }
         }
-        return params;
+        return params.stream();
     }
 
     private static final Integer NUMBER_OF_THREADS = 10;
 
-    public ConcurrentBasesParallelTest(final boolean enforcedJitting, final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        super(enforcedJitting, false, false, false, kieBaseTestConfiguration);
-    };
-
-    @Test(timeout = 40000)
-    public void testOneOfAllFactsMatches() throws InterruptedException {
+    @ParameterizedTest(name = "Enforced jitting={0}, KieBase type={1}")
+    @MethodSource("parameters")
+    @Timeout(40000)
+    public void testOneOfAllFactsMatches(boolean enforcedJitting, KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException {
+        initTest(enforcedJitting, false, false, false, kieBaseTestConfiguration);
         final int numberOfObjects = 100;
 
         final TestExecutor exec = counter -> {
@@ -99,8 +98,11 @@ public class ConcurrentBasesParallelTest extends AbstractConcurrentTest {
         parallelTest(NUMBER_OF_THREADS, exec);
     }
 
-    @Test(timeout = 40000)
-    public void testNoFactMatches() throws InterruptedException {
+    @ParameterizedTest(name = "Enforced jitting={0}, KieBase type={1}")
+    @MethodSource("parameters")
+    @Timeout(40000)
+    public void testNoFactMatches(boolean enforcedJitting, KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException {
+        initTest(enforcedJitting, false, false, false, kieBaseTestConfiguration);
         final TestExecutor exec = counter -> {
             final String rule = "import " + BeanA.class.getCanonicalName() + ";\n" +
                 "rule Rule_" + counter + " " +
@@ -128,8 +130,11 @@ public class ConcurrentBasesParallelTest extends AbstractConcurrentTest {
         parallelTest(NUMBER_OF_THREADS, exec);
     }
 
-    @Test(timeout = 40000)
-    public void testFireAndGlobalSeparation() throws InterruptedException {
+    @ParameterizedTest(name = "Enforced jitting={0}, KieBase type={1}")
+    @MethodSource("parameters")
+    @Timeout(40000)
+    public void testFireAndGlobalSeparation(boolean enforcedJitting, KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException {
+        initTest(enforcedJitting, false, false, false, kieBaseTestConfiguration);
         final TestExecutor exec = counter -> {
             final String rule = "import " + BeanA.class.getCanonicalName() + ";\n" +
                 "global " + AtomicInteger.class.getCanonicalName() + " result;\n" +
@@ -158,8 +163,11 @@ public class ConcurrentBasesParallelTest extends AbstractConcurrentTest {
         parallelTest(NUMBER_OF_THREADS, exec);
     }
 
-    @Test(timeout = 40000)
-    public void testFireAndGlobalSeparation2() throws InterruptedException {
+    @ParameterizedTest(name = "Enforced jitting={0}, KieBase type={1}")
+    @MethodSource("parameters")
+    @Timeout(40000)
+    public void testFireAndGlobalSeparation2(boolean enforcedJitting, KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException {
+        initTest(enforcedJitting, false, false, false, kieBaseTestConfiguration);
         final String ruleTemplate = "import " + BeanA.class.getCanonicalName() + ";\n" +
             "import " + BeanB.class.getCanonicalName() + ";\n" +
             "global java.util.List list;\n" +
@@ -197,8 +205,11 @@ public class ConcurrentBasesParallelTest extends AbstractConcurrentTest {
         parallelTest(NUMBER_OF_THREADS, exec);
     }
 
-    @Test(timeout = 40000)
-    public void testNonMatchingFact() throws InterruptedException {
+    @ParameterizedTest(name = "Enforced jitting={0}, KieBase type={1}")
+    @MethodSource("parameters")
+    @Timeout(40000)
+    public void testNonMatchingFact(boolean enforcedJitting, KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException {
+        initTest(enforcedJitting, false, false, false, kieBaseTestConfiguration);
         final String ruleTemplate = "import " + BeanA.class.getCanonicalName() + ";\n" +
             "import " + BeanB.class.getCanonicalName() + ";\n" +
             "rule ${ruleName} " +
@@ -231,8 +242,11 @@ public class ConcurrentBasesParallelTest extends AbstractConcurrentTest {
         parallelTest(NUMBER_OF_THREADS, exec);
     }
 
-    @Test(timeout = 40000)
-    public void testMatchingFact() throws InterruptedException {
+    @ParameterizedTest(name = "Enforced jitting={0}, KieBase type={1}")
+    @MethodSource("parameters")
+    @Timeout(40000)
+    public void testMatchingFact(boolean enforcedJitting, KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException {
+        initTest(enforcedJitting, false, false, false, kieBaseTestConfiguration);
         final String ruleTemplate = "import " + BeanA.class.getCanonicalName() + ";\n" +
             "import " + BeanB.class.getCanonicalName() + ";\n" +
             "rule ${ruleName} " +
@@ -265,8 +279,11 @@ public class ConcurrentBasesParallelTest extends AbstractConcurrentTest {
         parallelTest(NUMBER_OF_THREADS, exec);
     }
 
-    @Test(timeout = 40000)
-    public void testNot() throws InterruptedException {
+    @ParameterizedTest(name = "Enforced jitting={0}, KieBase type={1}")
+    @MethodSource("parameters")
+    @Timeout(40000)
+    public void testNot(boolean enforcedJitting, KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException {
+        initTest(enforcedJitting, false, false, false, kieBaseTestConfiguration);
         final String ruleTemplate = "import " + BeanA.class.getCanonicalName() + ";\n" +
             "import " + BeanB.class.getCanonicalName() + ";\n" +
             "rule ${ruleName} " +
@@ -300,8 +317,11 @@ public class ConcurrentBasesParallelTest extends AbstractConcurrentTest {
         parallelTest(NUMBER_OF_THREADS, exec);
     }
 
-    @Test(timeout = 40000)
-    public void testExists() throws InterruptedException {
+    @ParameterizedTest(name = "Enforced jitting={0}, KieBase type={1}")
+    @MethodSource("parameters")
+    @Timeout(40000)
+    public void testExists(boolean enforcedJitting, KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException {
+        initTest(enforcedJitting, false, false, false, kieBaseTestConfiguration);
         final String ruleTemplate = "import " + BeanA.class.getCanonicalName() + ";\n" +
             "import " + BeanB.class.getCanonicalName() + ";\n" +
             "rule ${ruleName} " +
@@ -336,8 +356,11 @@ public class ConcurrentBasesParallelTest extends AbstractConcurrentTest {
         parallelTest(NUMBER_OF_THREADS, exec);
     }
 
-    @Test(timeout = 40000)
-    public void testSubnetwork() throws InterruptedException {
+    @ParameterizedTest(name = "Enforced jitting={0}, KieBase type={1}")
+    @MethodSource("parameters")
+    @Timeout(40000)
+    public void testSubnetwork(boolean enforcedJitting, KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException {
+        initTest(enforcedJitting, false, false, false, kieBaseTestConfiguration);
         final String ruleTemplate = "import " + BeanA.class.getCanonicalName() + ";\n" +
             "import " + BeanB.class.getCanonicalName() + ";\n" +
             "rule ${ruleName} " +
@@ -383,8 +406,11 @@ public class ConcurrentBasesParallelTest extends AbstractConcurrentTest {
         parallelTest(NUMBER_OF_THREADS, exec);
     }
 
-    @Test(timeout = 40000)
-    public void testAccumulatesMatchOnlyBeanA() throws InterruptedException {
+    @ParameterizedTest(name = "Enforced jitting={0}, KieBase type={1}")
+    @MethodSource("parameters")
+    @Timeout(40000)
+    public void testAccumulatesMatchOnlyBeanA(boolean enforcedJitting, KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException {
+        initTest(enforcedJitting, false, false, false, kieBaseTestConfiguration);
         final String ruleA = "import " + BeanA.class.getCanonicalName() + ";\n" +
             "rule RuleA " +
             "when " +
@@ -421,8 +447,11 @@ public class ConcurrentBasesParallelTest extends AbstractConcurrentTest {
         parallelTest(NUMBER_OF_THREADS, exec);
     }
 
-    @Test(timeout = 40000)
-    public void testAccumulatesMatchBoth() throws InterruptedException {
+    @ParameterizedTest(name = "Enforced jitting={0}, KieBase type={1}")
+    @MethodSource("parameters")
+    @Timeout(40000)
+    public void testAccumulatesMatchBoth(boolean enforcedJitting, KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException {
+        initTest(enforcedJitting, false, false, false, kieBaseTestConfiguration);
         final String ruleA = "import " + BeanA.class.getCanonicalName() + ";\n" +
             "rule RuleA " +
             "when " +
@@ -454,8 +483,11 @@ public class ConcurrentBasesParallelTest extends AbstractConcurrentTest {
         parallelTest(NUMBER_OF_THREADS, exec);
     }
 
-    @Test(timeout = 40000)
-    public void testAccumulatesMatchOnlyOne() throws InterruptedException {
+    @ParameterizedTest(name = "Enforced jitting={0}, KieBase type={1}")
+    @MethodSource("parameters")
+    @Timeout(40000)
+    public void testAccumulatesMatchOnlyOne(boolean enforcedJitting, KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException {
+        initTest(enforcedJitting, false, false, false, kieBaseTestConfiguration);
         final String ruleA = "import " + BeanA.class.getCanonicalName() + ";\n" +
             "rule RuleA " +
             "when " +
@@ -491,8 +523,11 @@ public class ConcurrentBasesParallelTest extends AbstractConcurrentTest {
         parallelTest(NUMBER_OF_THREADS, exec);
     }
 
-    @Test(timeout = 40000)
-    public void testNotsMatchOnlyOne() throws InterruptedException {
+    @ParameterizedTest(name = "Enforced jitting={0}, KieBase type={1}")
+    @MethodSource("parameters")
+    @Timeout(40000)
+    public void testNotsMatchOnlyOne(boolean enforcedJitting, KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException {
+        initTest(enforcedJitting, false, false, false, kieBaseTestConfiguration);
         final String ruleA = "import " + BeanA.class.getCanonicalName() + ";\n" +
             "rule RuleNotA " +
             "when " +
@@ -528,8 +563,11 @@ public class ConcurrentBasesParallelTest extends AbstractConcurrentTest {
         parallelTest(NUMBER_OF_THREADS, exec);
     }
 
-    @Test(timeout = 40000)
-    public void testNotsMatchBoth() throws InterruptedException {
+    @ParameterizedTest(name = "Enforced jitting={0}, KieBase type={1}")
+    @MethodSource("parameters")
+    @Timeout(40000)
+    public void testNotsMatchBoth(boolean enforcedJitting, KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException {
+        initTest(enforcedJitting, false, false, false, kieBaseTestConfiguration);
         final String ruleA = "import " + BeanA.class.getCanonicalName() + ";\n" +
             "rule RuleNotA " +
             "when " +
@@ -565,8 +603,11 @@ public class ConcurrentBasesParallelTest extends AbstractConcurrentTest {
         parallelTest(NUMBER_OF_THREADS, exec);
     }
 
-    @Test(timeout = 40000)
-    public void testFunctions() throws InterruptedException {
+    @ParameterizedTest(name = "Enforced jitting={0}, KieBase type={1}")
+    @MethodSource("parameters")
+    @Timeout(40000)
+    public void testFunctions(boolean enforcedJitting, KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException {
+        initTest(enforcedJitting, false, false, false, kieBaseTestConfiguration);
         final String rule = "import " + BeanA.class.getCanonicalName() + ";\n" +
             "global java.util.List list;" +
             "rule Rule " +
@@ -602,8 +643,11 @@ public class ConcurrentBasesParallelTest extends AbstractConcurrentTest {
         parallelTest(NUMBER_OF_THREADS, exec);
     }
 
-    @Test(timeout = 40000)
-    public void testFunctions2() throws InterruptedException {
+    @ParameterizedTest(name = "Enforced jitting={0}, KieBase type={1}")
+    @MethodSource("parameters")
+    @Timeout(40000)
+    public void testFunctions2(boolean enforcedJitting, KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException {
+        initTest(enforcedJitting, false, false, false, kieBaseTestConfiguration);
         final int objectCount = 100;
 
         final String rule = "import " + BeanA.class.getCanonicalName() + ";\n" +
@@ -651,8 +695,11 @@ public class ConcurrentBasesParallelTest extends AbstractConcurrentTest {
         parallelTest(NUMBER_OF_THREADS, exec);
     }
 
-    @Test(timeout = 40000)
-    public void testQueries() throws InterruptedException {
+    @ParameterizedTest(name = "Enforced jitting={0}, KieBase type={1}")
+    @MethodSource("parameters")
+    @Timeout(40000)
+    public void testQueries(boolean enforcedJitting, KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException {
+        initTest(enforcedJitting, false, false, false, kieBaseTestConfiguration);
         final int numberOfObjects = 100;
 
         final TestExecutor exec = counter -> {
@@ -686,8 +733,11 @@ public class ConcurrentBasesParallelTest extends AbstractConcurrentTest {
         parallelTest(NUMBER_OF_THREADS, exec);
     }
 
-    @Test(timeout = 40000)
-    public void testQueries2() throws InterruptedException {
+    @ParameterizedTest(name = "Enforced jitting={0}, KieBase type={1}")
+    @MethodSource("parameters")
+    @Timeout(40000)
+    public void testQueries2(boolean enforcedJitting, KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException {
+        initTest(enforcedJitting, false, false, false, kieBaseTestConfiguration);
         final int numberOfObjects = 100;
 
         final String queryTemplate = "import " + BeanA.class.getCanonicalName() + ";\n" +

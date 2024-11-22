@@ -18,15 +18,16 @@
  */
 package org.drools.testcoverage.regression;
 
-import java.util.Collection;
+import java.util.stream.Stream;
 
 import org.drools.testcoverage.common.KieSessionTest;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieSessionTestConfiguration;
 import org.drools.testcoverage.common.util.KieUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
@@ -56,18 +57,15 @@ public class EqualityKeyOverrideTest extends KieSessionTest {
             "        insertLogical(new Superclass());\n" +
             "end\n";
 
-    public EqualityKeyOverrideTest(final KieBaseTestConfiguration kieBaseTestConfiguration,
-                                   final KieSessionTestConfiguration kieSessionTestConfiguration) {
-        super(kieBaseTestConfiguration, kieSessionTestConfiguration);
+    public static Stream<Arguments> parameters() {
+        return TestParametersUtil2.getKieBaseAndStatefulKieSessionConfigurations().stream();
     }
 
-    @Parameterized.Parameters(name = "{1}" + " (from " + "{0}" + ")")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseAndStatefulKieSessionConfigurations();
-    }
-
-    @Test
-    public void testEqualityOverride() {
+    @ParameterizedTest(name = "{1}" + " (from " + "{0}" + ")")
+	@MethodSource("parameters")
+    public void testEqualityOverride(KieBaseTestConfiguration kieBaseTestConfiguration,
+            KieSessionTestConfiguration kieSessionTestConfiguration) {
+    	createKieSession(kieBaseTestConfiguration, kieSessionTestConfiguration);
         KieSession ksession =  session.getStateful();
 
         FactHandle string = ksession.insert("testString");
