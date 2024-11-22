@@ -44,8 +44,6 @@ test1.drl.txt
 drl.ftl
 # drools-examples/src/main/resources/org/drools/examples/sudoku/Sample.sdo
 Sample.sdo
-# drools-examples/src/main/resources/org/drools/examples/troubleticketWithDSL/TroubleTicketWithDSL.dslr
-TroubleTicketWithDSL.dslr
 # drools-impact-analysis/drools-impact-analysis-graph/drools-impact-analysis-graph-graphviz/src/test/resources/org/drools/impact/analysis/graph/graphviz/simple.dot
 simple.dot
 # drools-model/drools-mvel-parser/src/main/javacc/mvel.jj
@@ -54,26 +52,6 @@ mvel.jj
 adult.txt
 # drools-scenario-simulation/drools-scenario-simulation-backend/src/test/resources/folderToTest/testFile.txt
 testFile.txt
-# drools-test-coverage/test-compiler-integration/src/test/resources/org/drools/mvel/compiler/lang/expander_line_errors.dslr
-expander_line_errors.dslr
-# drools-test-coverage/test-compiler-integration/src/test/resources/org/drools/mvel/compiler/lang/expander_multiple_constraints.dslr
-expander_multiple_constraints.dslr
-# drools-test-coverage/test-compiler-integration/src/test/resources/org/drools/mvel/compiler/lang/expander_multiple_constraints_flush.dslr
-expander_multiple_constraints_flush.dslr
-# drools-test-coverage/test-compiler-integration/src/test/resources/org/drools/mvel/compiler/lang/expander_post_errors.dslr
-expander_post_errors.dslr
-# drools-test-coverage/test-compiler-integration/src/test/resources/org/drools/mvel/compiler/lang/expander_spread_lines.dslr
-expander_spread_lines.dslr
-# drools-test-coverage/test-compiler-integration/src/test/resources/org/drools/mvel/compiler/lang/dsl/test_expansion.dslr
-test_expansion.dslr
-# drools-test-coverage/test-compiler-integration/src/test/resources/org/drools/mvel/integrationtests/rule_with_expander_dsl.dslr
-rule_with_expander_dsl.dslr
-# drools-test-coverage/test-compiler-integration/src/test/resources/org/drools/mvel/integrationtests/rule_with_expander_dsl_more.dslr
-rule_with_expander_dsl_more.dslr
-# drools-test-coverage/test-compiler-integration/src/test/resources/org/drools/mvel/integrationtests/rule_with_expander_multiline.dslr
-rule_with_expander_multiline.dslr
-# drools-test-coverage/test-compiler-integration/src/test/resources/org/drools/mvel/integrationtests/test_dslWithIndividualConstraints.dslr
-test_dslWithIndividualConstraints.dslr
 # drools-test-coverage/test-suite/src/test/resources/org/drools/testcoverage/functional/agenda-group.drl.csv
 agenda-group.drl.csv
 # drools-test-coverage/test-suite/src/test/resources/org/drools/testcoverage/functional/emptyAction.drl.csv
@@ -294,8 +272,6 @@ KiePMMLTruePredicateFactoryTest_01.txt
 TargetFieldFactoryTest_01.txt
 # kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/TargetValueFactoryTest_01.txt
 TargetValueFactoryTest_01.txt
-# kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-core/PMMLCompiler.uml
-PMMLCompiler.uml
 # kie-pmml-trusty/kie-pmml-evaluator/kie-pmml-evaluator-core/src/test/resources/IndexFile.pmml_json
 IndexFile.pmml_json
 # kie-pmml-trusty/kie-pmml-models/kie-pmml-models-clustering/kie-pmml-models-clustering-compiler/src/test/resources/KiePMMLClusteringModelFactoryTest_01.txt

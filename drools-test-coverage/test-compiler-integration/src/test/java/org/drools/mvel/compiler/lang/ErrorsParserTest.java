@@ -48,14 +48,14 @@ public class ErrorsParserTest {
         String name = "expander_post_errors.dslr";
         Expander expander = new DefaultExpander();
         String expanded = expander.expand( this.getReader( name ) );
-        
+        System.out.println(expanded);
         DRLParser parser = parse( name, expanded );
         parser.compilationUnit();
         assertThat(parser.hasErrors()).isTrue();
 
         assertThat(parser.getErrors().size()).isEqualTo(1);
         DroolsParserException err = parser.getErrors().get(0);
-        assertThat(err.getLineNumber()).isEqualTo(6);
+        assertThat(err.getLineNumber()).isEqualTo(7);
     }
 
     @Test
