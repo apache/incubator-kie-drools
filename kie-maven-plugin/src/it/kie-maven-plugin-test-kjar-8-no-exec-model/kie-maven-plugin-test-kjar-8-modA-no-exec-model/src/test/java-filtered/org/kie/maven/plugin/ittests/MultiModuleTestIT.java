@@ -26,9 +26,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.assertj.core.api.Assertions;
 import org.drools.compiler.kie.builder.impl.KieContainerImpl;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieServices;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.type.FactType;
@@ -36,7 +35,7 @@ import org.kie.api.runtime.KieContainer;
 
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class MultiModuleTestIT {
 

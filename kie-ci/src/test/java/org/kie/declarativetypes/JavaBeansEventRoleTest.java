@@ -20,7 +20,7 @@ package org.kie.declarativetypes;
 
 import org.drools.base.rule.TypeMetaInfo;
 import org.drools.mvel.CommonTestMethodBase;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
