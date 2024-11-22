@@ -24,7 +24,6 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.keycloak.representations.AccessTokenResponse;
 import org.kie.kogito.jobs.api.Job;
 import org.kie.kogito.jobs.api.JobBuilder;
 import org.kie.kogito.jobs.service.model.JobStatus;
@@ -234,6 +233,6 @@ public abstract class BaseKeycloakJobServiceTest {
                 .param("client_secret", KogitoKeycloakContainer.CLIENT_SECRET)
                 .when()
                 .post(keycloakURL + "/protocol/openid-connect/token")
-                .as(AccessTokenResponse.class).getToken();
+                .jsonPath().get("access_token");
     }
 }

@@ -20,7 +20,6 @@ package org.kie.kogito.index.service;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.junit.jupiter.api.Test;
-import org.keycloak.representations.AccessTokenResponse;
 import org.kie.kogito.testcontainers.KogitoKeycloakContainer;
 import org.kie.kogito.testcontainers.quarkus.KeycloakQuarkusTestResource;
 
@@ -97,6 +96,6 @@ public abstract class AbstractKeycloakIntegrationIndexingServiceIT {
                 .param("client_secret", KogitoKeycloakContainer.CLIENT_SECRET)
                 .when()
                 .post(keycloakURL + "/protocol/openid-connect/token")
-                .as(AccessTokenResponse.class).getToken();
+                .jsonPath().get("access_token");
     }
 }

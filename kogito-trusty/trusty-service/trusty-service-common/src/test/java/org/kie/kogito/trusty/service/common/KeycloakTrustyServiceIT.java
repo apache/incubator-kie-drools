@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import org.keycloak.representations.AccessTokenResponse;
 import org.kie.kogito.test.quarkus.QuarkusTestProperty;
 import org.kie.kogito.testcontainers.KogitoKeycloakContainer;
 import org.kie.kogito.testcontainers.quarkus.KeycloakQuarkusTestResource;
@@ -77,6 +76,6 @@ class KeycloakTrustyServiceIT {
                 .param("client_secret", KogitoKeycloakContainer.CLIENT_SECRET)
                 .when()
                 .post(keycloakURL + "/protocol/openid-connect/token")
-                .as(AccessTokenResponse.class).getToken();
+                .jsonPath().get("access_token");
     }
 }

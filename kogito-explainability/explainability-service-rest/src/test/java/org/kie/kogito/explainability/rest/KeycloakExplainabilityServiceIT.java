@@ -20,7 +20,6 @@ package org.kie.kogito.explainability.rest;
 
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Test;
-import org.keycloak.representations.AccessTokenResponse;
 import org.kie.kogito.test.quarkus.QuarkusTestProperty;
 import org.kie.kogito.testcontainers.KogitoKeycloakContainer;
 import org.kie.kogito.testcontainers.quarkus.KeycloakQuarkusTestResource;
@@ -65,6 +64,6 @@ class KeycloakExplainabilityServiceIT {
                 .param("client_secret", KogitoKeycloakContainer.CLIENT_SECRET)
                 .when()
                 .post(keycloakURL + "/protocol/openid-connect/token")
-                .as(AccessTokenResponse.class).getToken();
+                .jsonPath().get("access_token");
     }
 }

@@ -29,7 +29,6 @@ import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
-import org.keycloak.representations.AccessTokenResponse;
 import org.kie.kogito.explainability.api.CounterfactualSearchDomain;
 import org.kie.kogito.explainability.api.CounterfactualSearchDomainCollectionValue;
 import org.kie.kogito.explainability.api.CounterfactualSearchDomainStructureValue;
@@ -183,7 +182,7 @@ public abstract class AbstractTrustyExplainabilityEnd2EndIT {
                     .param(KEYCLOAK_CLIENT_SECRET_PARAM_NAME, KEYCLOAK_CLIENT_SECRET_PARAM_VALUE)
                     .when()
                     .post(KEYCLOAK_ACCESS_TOKEN_PATH)
-                    .as(AccessTokenResponse.class).getToken();
+                    .jsonPath().get("access_token");
 
             assertNotNull(accessToken);
 

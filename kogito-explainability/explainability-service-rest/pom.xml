@@ -86,11 +86,6 @@
       <artifactId>kogito-quarkus-test-utils</artifactId>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.keycloak</groupId>
-      <artifactId>keycloak-core</artifactId>
-      <scope>test</scope>
-    </dependency>
   </dependencies>
 
   <build>
