@@ -48,7 +48,7 @@ public class ErrorsParserTest {
         String name = "expander_post_errors.dslr";
         Expander expander = new DefaultExpander();
         String expanded = expander.expand( this.getReader( name ) );
-        System.out.println(expanded);
+
         DRLParser parser = parse( name, expanded );
         parser.compilationUnit();
         assertThat(parser.hasErrors()).isTrue();
