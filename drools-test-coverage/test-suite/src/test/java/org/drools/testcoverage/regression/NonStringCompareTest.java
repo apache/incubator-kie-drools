@@ -18,16 +18,15 @@
  */
 package org.drools.testcoverage.regression;
 
-import java.util.Collection;
+import java.util.stream.Stream;
 
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
 import org.drools.testcoverage.common.util.TestConstants;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.Message.Level;
@@ -36,7 +35,6 @@ import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class NonStringCompareTest {
 
     private static final String genericDrl =
@@ -51,37 +49,33 @@ public class NonStringCompareTest {
             + "       // consequence\n"
             + "end\n";
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public NonStringCompareTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseConfigurations().stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseConfigurations();
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testStringCompare(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
+        testScenario(kieBaseTestConfiguration, "\"someString\"", "someString");
     }
 
-    @Test
-    public void testStringCompare() throws Exception {
-        testScenario("\"someString\"", "someString");
-    }
-
-    @Test
-    public void testNonQuotedStringComapre() {
-        final KieBuilder kbuilder = build("someString");
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testNonQuotedStringComapre(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        final KieBuilder kbuilder = build(kieBaseTestConfiguration, "someString");
         assertThat(kbuilder.getResults().getMessages(Level.ERROR).size()).isEqualTo(1);
     }
 
-    @Test
-    public void testIntCompare() throws Exception {
-        testScenario("13", "13");
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testIntCompare(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
+        testScenario(kieBaseTestConfiguration, "13", "13");
     }
 
-    private void testScenario(final String factFieldValueForDrl, final String factFieldValueForTest)
+    private void testScenario(KieBaseTestConfiguration kieBaseTestConfiguration, final String factFieldValueForDrl, final String factFieldValueForTest)
             throws IllegalAccessException, InstantiationException {
 
-        final KieBuilder kbuilder = build(factFieldValueForDrl);
+        final KieBuilder kbuilder = build(kieBaseTestConfiguration, factFieldValueForDrl);
         assertThat(kbuilder.getResults().getMessages(Level.ERROR)).isEmpty();
 
         final KieBase kbase = KieBaseUtil.getDefaultKieBaseFromKieBuilder(kbuilder);
@@ -100,7 +94,7 @@ public class NonStringCompareTest {
         }
     }
 
-    private KieBuilder build(final String replacement) {
+    private KieBuilder build(KieBaseTestConfiguration kieBaseTestConfiguration, final String replacement) {
         final String drl = String.format(genericDrl, replacement);
         return KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
     }

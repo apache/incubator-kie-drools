@@ -21,8 +21,8 @@ package org.drools.testcoverage.functional;
 import java.io.IOException;
 
 import org.drools.testcoverage.common.util.TestConstants;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -45,7 +45,7 @@ public class KieRepositoryTest {
 
     private static final String DRL = "package defaultKBase;\n rule testRule when then end\n";
 
-    @Before
+    @BeforeEach
     public void initialize() throws IOException {
         kieServices = KieServices.Factory.get();
     }

@@ -19,7 +19,7 @@
 package org.drools.testcoverage.regression;
 
 import org.drools.testcoverage.common.model.MyFact;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;

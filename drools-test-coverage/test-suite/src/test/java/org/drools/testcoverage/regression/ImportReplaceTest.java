@@ -20,18 +20,17 @@ package org.drools.testcoverage.regression;
 
 import java.io.StringReader;
 
-import java.util.Collection;
+import java.util.stream.Stream;
+
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieUtil;
 import org.drools.testcoverage.common.util.TestConstants;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieServices;
 import org.kie.api.io.Resource;
 
-@RunWith(Parameterized.class)
 public class ImportReplaceTest {
 
     private static final String declares =
@@ -59,19 +58,13 @@ public class ImportReplaceTest {
             + "        insert(new Holder(person));\n"
             + "end\n";
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public ImportReplaceTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseConfigurations().stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseConfigurations();
-    }
-
-    @Test
-    public void test() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void test(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final Resource declaresResource =
                 KieServices.Factory.get().getResources().newReaderResource(new StringReader(declares));
         declaresResource.setTargetPath("src/main/resources/declares.drl");

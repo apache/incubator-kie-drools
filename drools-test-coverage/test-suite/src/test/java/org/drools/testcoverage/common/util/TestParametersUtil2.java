@@ -27,6 +27,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.drools.model.codegen.ExecutableModelProject;
+import org.junit.jupiter.params.provider.Arguments;
+
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 /**
  * Utility class that holds default tests parameters.
@@ -229,13 +232,13 @@ public final class TestParametersUtil2 {
      * Use only stateful kie sessions.
      * @return Collection of combinations for parameterized tests.
      */
-    public static Collection<Object[]> getKieBaseAndStatefulKieSessionConfigurations() {
-        final Collection<Object[]> parameters = new ArrayList<>();
+    public static Collection<Arguments> getKieBaseAndStatefulKieSessionConfigurations() {
+        final Collection<Arguments> parameters = new ArrayList<>();
         final Collection<KieBaseTestConfiguration> kieBaseConfigurations = getKieBaseConfigurations();
         for (final KieBaseTestConfiguration kieBaseConfigWrapped : kieBaseConfigurations) {
-            parameters.add(new Object[]{kieBaseConfigWrapped, KieSessionTestConfiguration.STATEFUL_REALTIME});
+            parameters.add(arguments(kieBaseConfigWrapped, KieSessionTestConfiguration.STATEFUL_REALTIME));
             if ((kieBaseConfigWrapped).isStreamMode()) {
-                parameters.add(new Object[]{kieBaseConfigWrapped, KieSessionTestConfiguration.STATEFUL_PSEUDO});
+                parameters.add(arguments(kieBaseConfigWrapped, KieSessionTestConfiguration.STATEFUL_PSEUDO));
             }
         }
 
@@ -247,12 +250,12 @@ public final class TestParametersUtil2 {
      * Use only stream kie bases and stateful kie sessions.
      * @return Collection of combinations for parameterized tests.
      */
-    public static Collection<Object[]> getStreamKieBaseAndStatefulKieSessionConfigurations() {
-        final Collection<Object[]> parameters = new ArrayList<>();
+    public static Collection<Arguments> getStreamKieBaseAndStatefulKieSessionConfigurations() {
+        final Collection<Arguments> parameters = new ArrayList<>();
         final Collection<KieBaseTestConfiguration> kieBaseConfigurations = getKieBaseStreamConfigurations(true);
         for (final KieBaseTestConfiguration kieBaseConfigWrapped : kieBaseConfigurations) {
-            parameters.add(new Object[]{kieBaseConfigWrapped, KieSessionTestConfiguration.STATEFUL_REALTIME});
-            parameters.add(new Object[]{kieBaseConfigWrapped, KieSessionTestConfiguration.STATEFUL_PSEUDO});
+            parameters.add(arguments(kieBaseConfigWrapped, KieSessionTestConfiguration.STATEFUL_REALTIME));
+            parameters.add(arguments(kieBaseConfigWrapped, KieSessionTestConfiguration.STATEFUL_PSEUDO));
         }
 
         return parameters;

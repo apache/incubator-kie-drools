@@ -22,10 +22,9 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -40,7 +39,6 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.time.SessionPseudoClock;
-import org.kie.test.testcategory.TurtleTestCategory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,7 +64,7 @@ public class DroolsGcCausesNPETest {
     private SessionPseudoClock clock;
     private FactType eventFactType;
 
-    @BeforeClass
+    @BeforeAll
     public static void beforeClass() throws Exception {
 
         final KieModuleModel module = SERVICES.newKieModuleModel();
@@ -88,7 +86,7 @@ public class DroolsGcCausesNPETest {
         SERVICES.getRepository().addKieModule(builder.getKieModule());
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         final KieSessionConfiguration conf = SERVICES.newKieSessionConfiguration();
         conf.setOption(ClockTypeOption.PSEUDO);
@@ -105,7 +103,6 @@ public class DroolsGcCausesNPETest {
      * BZ 1181584
      */
     @Test
-    @Category(TurtleTestCategory.class)
     public void testMoreTimesRepeated() throws Exception {
         final Random r = new Random(1);
         int i = 0;
