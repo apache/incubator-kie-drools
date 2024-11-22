@@ -22,20 +22,18 @@ import java.lang.reflect.Constructor;
 import java.net.URL;
 import java.util.List;
 
-import org.assertj.core.api.Assertions;
 import org.drools.ancompiler.CompiledNetwork;
 import org.drools.ancompiler.ObjectTypeNodeCompiler;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.reteoo.ObjectSinkPropagator;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.Rete;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class AlphaNetworkCompilerTestIT {
 
@@ -48,12 +46,12 @@ public class AlphaNetworkCompilerTestIT {
         final URL targetLocation = AlphaNetworkCompilerTestIT.class.getProtectionDomain().getCodeSource().getLocation();
         final KieContainer kieContainer = ITTestsUtils.getKieContainer(targetLocation, GAV_ARTIFACT_ID, GAV_VERSION);
         final KieBase kieBase = kieContainer.getKieBase(KBASE_NAME);
-        Assertions.assertThat(kieBase).isNotNull();
+        assertThat(kieBase).isNotNull();
         KieSession kSession = null;
         try {
 
             kSession = kieBase.newKieSession();
-            Assertions.assertThat(kSession).isNotNull();
+            assertThat(kSession).isNotNull();
 
             ClassLoader classLoader = kieContainer.getClassLoader();
             Class<?> aClass = Class.forName("org.compiledalphanetwork.Person", true, classLoader);
@@ -64,7 +62,7 @@ public class AlphaNetworkCompilerTestIT {
             int rulesFired = kSession.fireAllRules();
             kSession.dispose();
 
-            assertEquals(1, rulesFired);
+            assertThat(rulesFired).isEqualTo(1);
 
             assertReteIsAlphaNetworkCompiled(kSession);
 
@@ -79,7 +77,7 @@ public class AlphaNetworkCompilerTestIT {
         for(ObjectTypeNode otn : objectTypeNodes) {
             ObjectSinkPropagator objectSinkPropagator = otn.getObjectSinkPropagator();
             System.out.println(objectSinkPropagator.getClass().getCanonicalName());
-            assertTrue(objectSinkPropagator instanceof CompiledNetwork);
+            assertThat(objectSinkPropagator).isInstanceOf(CompiledNetwork.class);
         }
     }
 }

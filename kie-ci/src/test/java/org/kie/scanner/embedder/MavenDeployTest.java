@@ -25,7 +25,7 @@ import java.nio.file.Path;
 
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.eclipse.aether.repository.RemoteRepository;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieScanner;
 import org.kie.api.builder.ReleaseId;
