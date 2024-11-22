@@ -184,7 +184,7 @@ public abstract class StateHandler<S extends State> {
         Transition transition = compensation.getState().getTransition();
         compensation.handleTransitions(embeddedSubProcess, transition, compensation.getNode());
         compensation.handleConnections(embeddedSubProcess);
-        return compensation.getNode().getNode().getId();
+        return compensation.getOutgoingNode().getNode().getId();
     }
 
     public void handleState() {
@@ -333,6 +333,10 @@ public abstract class StateHandler<S extends State> {
 
     public final NodeFactory<?, ?> getNode() {
         return node;
+    }
+
+    public final NodeFactory<?, ?> getOutgoingNode() {
+        return outgoingNode;
     }
 
     public S getState() {

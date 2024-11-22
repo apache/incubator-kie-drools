@@ -70,7 +70,18 @@
           "errorRef": "OddException",
           "transition": "OddHandler"
        }
-       ]
+       ],
+      "transition": "compensating_even_more"
+    },
+    {
+      "name": "compensating_even_more",
+      "usedForCompensation" : true,
+      "type": "parallel",
+      "branches": [
+         {"name": "branch1", "actions" :[]},
+         {"name": "branch2", "actions" :[]}
+        
+      ]
     },
     { "name": "OddHandler",
        "type":"inject",
