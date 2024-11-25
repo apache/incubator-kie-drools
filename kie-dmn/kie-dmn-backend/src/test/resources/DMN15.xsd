@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <xsd:schema elementFormDefault="qualified" xmlns="https://www.omg.org/spec/DMN/20230324/MODEL/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/" targetNamespace="https://www.omg.org/spec/DMN/20230324/MODEL/">
 
 	<xsd:import namespace="https://www.omg.org/spec/DMN/20230324/DMNDI/" schemaLocation="DMNDI15.xsd">
