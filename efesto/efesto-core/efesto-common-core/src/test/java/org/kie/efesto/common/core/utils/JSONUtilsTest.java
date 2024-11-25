@@ -201,7 +201,7 @@ class JSONUtilsTest {
     private ClassLoader addJarToClassLoader() {
         ClassLoader originalClassLoader = Thread.currentThread().getContextClassLoader();
         URL jarUrl = Thread.currentThread().getContextClassLoader().getResource("TestJar.jar");
-        assertThat(jarUrl).isNotNull();
+        assertThat(jarUrl).as("Run `mvn test` to build TestJar.jar").isNotNull();
         URL fileUrl = Thread.currentThread().getContextClassLoader().getResource("IndexFile.testb_json");
         assertThat(fileUrl).isNull();
         URL[] urls = {jarUrl};

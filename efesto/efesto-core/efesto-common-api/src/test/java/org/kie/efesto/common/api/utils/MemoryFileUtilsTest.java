@@ -128,7 +128,7 @@ class MemoryFileUtilsTest {
 
     private static URL getJarUrl() throws MalformedURLException {
         URL retrieved = Thread.currentThread().getContextClassLoader().getResource("TestJar.jar");
-        assertThat(retrieved).isNotNull();
+        assertThat(retrieved).as("Run `mvn test` to build TestJar.jar").isNotNull();
         String newString = "jar:" + retrieved + "!/IndexFile.testb_json";
         return new URL(newString);
     }

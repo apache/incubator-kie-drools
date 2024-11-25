@@ -84,16 +84,22 @@ CompositeKnowledgeBuilderImpl_build.sdt
 PMMLAssemblerService_addResourceAfterRules_withoutConfigurations.sdt
 # efesto/documentation/sdt/PMMLAssemblerService_addResourcesAfterRules_withConfigurations.sdt
 PMMLAssemblerService_addResourcesAfterRules_withConfigurations.sdt
+# efesto/efesto-core/efesto-common-api/src/test/custom-resources/IndexFile.testb_json
+IndexFile.testb_json
 # efesto/efesto-core/efesto-common-api/src/test/resources/IndexFile.test_json
 IndexFile.test_json
 # efesto/efesto-core/efesto-common-api/src/test/resources/TestingEmptyFile.txt
 TestingEmptyFile.txt
+# efesto/efesto-core/efesto-common-core/src/test/custom-resources/IndexFile.testb_json
+IndexFile.testb_json
 # efesto/efesto-core/efesto-common-core/src/test/resources/IndexFile.test_json
 IndexFile.test_json
 # efesto/efesto-core/efesto-common-core/src/test/resources/TestingEmptyFile.txt
 TestingEmptyFile.txt
 # efesto/efesto-core/efesto-compilation-manager/efesto-compilation-manager-core/src/test/resources/IndexFile.test_json
 IndexFile.test_json
+# efesto/efesto-core/efesto-runtime-manager/efesto-runtime-manager-core/src/test/custom-resources/IndexFile.testb_json
+IndexFile.testb_json
 # efesto/efesto-core/efesto-runtime-manager/efesto-runtime-manager-core/src/test/resources/IndexFile.test_json
 IndexFile.test_json
 # kie-archetypes/kie-drools-dmn-archetype/src/test/resources/projects/integrationtestDefaults/goal.txt
