@@ -26,6 +26,7 @@ import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
 import org.eclipse.microprofile.reactive.messaging.Message;
 import org.eclipse.microprofile.reactive.messaging.OnOverflow;
+import org.kie.kogito.jobs.service.events.JobDataEvent;
 import org.kie.kogito.jobs.service.model.JobDetails;
 import org.kie.kogito.jobs.service.stream.AbstractJobStreams;
 import org.slf4j.Logger;
@@ -45,6 +46,7 @@ public class HttpJobStreams extends AbstractJobStreams {
 
     public static final String PUBLISH_EVENTS_CONFIG_KEY = "kogito.jobs-service.http.job-status-change-events";
     public static final String JOB_STATUS_CHANGE_EVENTS_HTTP = "kogito-job-service-job-status-events-http";
+    public static final String PARTITION_KEY_EXTENSION = "partitionkey";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HttpJobStreams.class);
 
@@ -70,7 +72,16 @@ public class HttpJobStreams extends AbstractJobStreams {
     }
 
     @Override
-    protected Message<String> decorate(Message<String> message) {
+    protected JobDataEvent buildEvent(JobDetails job) {
+        JobDataEvent event = super.buildEvent(job);
+        // use the well-known extension https://github.com/cloudevents/spec/blob/main/cloudevents/extensions/partitioning.md
+        // to instruct potential http driven Brokers like, Knative Eventing Kafka Broker, to process accordingly.
+        event.addExtensionAttribute(PARTITION_KEY_EXTENSION, event.getData().getId());
+        return event;
+    }
+
+    @Override
+    protected Message<String> decorate(Message<String> message, JobDataEvent event) {
         return message.addMetadata(OUTGOING_HTTP_METADATA.get());
     }
 }

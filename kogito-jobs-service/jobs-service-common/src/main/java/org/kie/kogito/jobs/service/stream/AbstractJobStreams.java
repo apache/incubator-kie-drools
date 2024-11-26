@@ -65,21 +65,25 @@ public abstract class AbstractJobStreams implements JobStreams {
     public void jobStatusChange(JobDetails job) {
         if (isEnabled()) {
             try {
-                JobDataEvent event = JobDataEvent
-                        .builder()
-                        .source(url + RestApiConstants.JOBS_PATH)
-                        .data(ScheduledJobAdapter.of(job))//this should support jobs crated with V1 and V2
-                        .build();
+                JobDataEvent event = buildEvent(job);
                 LOGGER.debug("emit jobStatusChange, hasRequests: {}, eventId: {}, jobDetails: {}", emitter.hasRequests(), event.getId(), job);
                 String json = objectMapper.writeValueAsString(event);
                 emitter.send(decorate(ContextAwareMessage.of(json)
                         .withAck(() -> onAck(event.getId(), job))
-                        .withNack(reason -> onNack(reason, job))));
+                        .withNack(reason -> onNack(reason, job)), event));
             } catch (Exception e) {
                 String msg = String.format("An unexpected error was produced while processing a Job status change for the job: %s", job);
                 LOGGER.error(msg, e);
             }
         }
+    }
+
+    protected JobDataEvent buildEvent(JobDetails job) {
+        return JobDataEvent
+                .builder()
+                .source(url + RestApiConstants.JOBS_PATH)
+                .data(ScheduledJobAdapter.of(job))//this should support jobs crated with V1 and V2
+                .build();
     }
 
     protected CompletionStage<Void> onAck(String eventId, JobDetails job) {
@@ -93,7 +97,7 @@ public abstract class AbstractJobStreams implements JobStreams {
         return CompletableFuture.completedFuture(null);
     }
 
-    protected Message<String> decorate(Message<String> message) {
+    protected Message<String> decorate(Message<String> message, JobDataEvent event) {
         return message;
     }
 }

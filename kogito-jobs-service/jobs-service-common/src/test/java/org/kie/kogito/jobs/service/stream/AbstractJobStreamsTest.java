@@ -58,7 +58,7 @@ public abstract class AbstractJobStreamsTest<T extends AbstractJobStreams> {
     protected static final String URL = "http://localhost:8180";
     private static final String SERIALIZED_MESSAGE = "SERIALIZED_MESSAGE";
 
-    private static final String JOB_ID = "JOB_ID";
+    protected static final String JOB_ID = "JOB_ID";
     private static final String CORRELATION_ID = "CORRELATION_ID";
     private static final JobStatus STATUS = JobStatus.SCHEDULED;
     private static final ZonedDateTime LAST_UPDATE = ZonedDateTime.parse("2022-08-03T18:00:15.001+01:00");
@@ -170,7 +170,7 @@ public abstract class AbstractJobStreamsTest<T extends AbstractJobStreams> {
 
     }
 
-    private void assertExpectedEvent(JobDataEvent event) {
+    protected void assertExpectedEvent(JobDataEvent event) {
         assertThat(event.getId()).isNotNull();
         assertThat(event.getType()).isEqualTo(JobDataEvent.JOB_EVENT_TYPE);
         assertThat(event.getSource()).hasToString(URL + "/jobs");

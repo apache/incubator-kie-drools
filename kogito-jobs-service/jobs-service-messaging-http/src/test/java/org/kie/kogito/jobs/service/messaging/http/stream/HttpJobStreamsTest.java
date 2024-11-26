@@ -21,6 +21,7 @@ package org.kie.kogito.jobs.service.messaging.http.stream;
 import java.util.Optional;
 
 import org.eclipse.microprofile.reactive.messaging.Message;
+import org.kie.kogito.jobs.service.events.JobDataEvent;
 import org.kie.kogito.jobs.service.stream.AbstractJobStreamsTest;
 
 import io.cloudevents.jackson.JsonFormat;
@@ -29,6 +30,7 @@ import io.quarkus.reactivemessaging.http.runtime.OutgoingHttpMetadata;
 import jakarta.ws.rs.core.HttpHeaders;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.kie.kogito.jobs.service.messaging.http.stream.HttpJobStreams.PARTITION_KEY_EXTENSION;
 
 class HttpJobStreamsTest extends AbstractJobStreamsTest<HttpJobStreams> {
 
@@ -43,5 +45,13 @@ class HttpJobStreamsTest extends AbstractJobStreamsTest<HttpJobStreams> {
         assertThat(metadata).isNotNull();
         assertThat(metadata.getHeaders()).hasSize(1);
         assertThat(metadata.getHeaders().get(HttpHeaders.CONTENT_TYPE)).containsExactlyInAnyOrder(JsonFormat.CONTENT_TYPE);
+    }
+
+    @Override
+    protected void assertExpectedEvent(JobDataEvent event) {
+        super.assertExpectedEvent(event);
+        assertThat(event.getExtension(PARTITION_KEY_EXTENSION))
+                .isNotNull()
+                .isEqualTo(JOB_ID);
     }
 }

@@ -23,7 +23,9 @@ import java.util.Optional;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
+import org.eclipse.microprofile.reactive.messaging.Message;
 import org.eclipse.microprofile.reactive.messaging.OnOverflow;
+import org.kie.kogito.jobs.service.events.JobDataEvent;
 import org.kie.kogito.jobs.service.model.JobDetails;
 import org.kie.kogito.jobs.service.stream.AbstractJobStreams;
 import org.kie.kogito.jobs.service.stream.AvailableStreams;
@@ -31,6 +33,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.smallrye.reactive.messaging.kafka.api.OutgoingKafkaRecordMetadata;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -53,5 +57,11 @@ public class KafkaJobStreams extends AbstractJobStreams {
     public void jobStatusChange(JobDetails job) {
         LOGGER.debug("jobStatusChange call received, enabled: {}, job: {}", enabled, job);
         super.jobStatusChange(job);
+    }
+
+    @Override
+    protected Message<String> decorate(Message<String> message, JobDataEvent event) {
+        // regular kafka partitioning.
+        return message.addMetadata(OutgoingKafkaRecordMetadata.builder().withKey(event.getData().getId()).build());
     }
 }

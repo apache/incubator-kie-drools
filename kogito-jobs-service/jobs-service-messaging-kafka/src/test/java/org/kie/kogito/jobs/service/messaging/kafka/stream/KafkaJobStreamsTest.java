@@ -20,12 +20,24 @@ package org.kie.kogito.jobs.service.messaging.kafka.stream;
 
 import java.util.Optional;
 
+import org.eclipse.microprofile.reactive.messaging.Message;
 import org.kie.kogito.jobs.service.stream.AbstractJobStreamsTest;
+
+import io.smallrye.reactive.messaging.kafka.api.OutgoingKafkaRecordMetadata;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 class KafkaJobStreamsTest extends AbstractJobStreamsTest<KafkaJobStreams> {
 
     @Override
     protected KafkaJobStreams createJobStreams() {
         return new KafkaJobStreams(objectMapper, Optional.of(true), emitter, URL);
+    }
+
+    @Override
+    protected void assertExpectedMetadata(Message<String> message) {
+        OutgoingKafkaRecordMetadata<?> metadata = message.getMetadata(OutgoingKafkaRecordMetadata.class).orElse(null);
+        assertThat(metadata).isNotNull();
+        assertThat(metadata.getKey()).isEqualTo(JOB_ID);
     }
 }
