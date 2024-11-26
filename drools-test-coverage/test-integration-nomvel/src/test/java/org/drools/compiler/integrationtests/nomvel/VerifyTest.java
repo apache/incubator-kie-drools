@@ -19,7 +19,7 @@
 package org.drools.compiler.integrationtests.nomvel;
 
 import org.drools.testcoverage.common.model.Person;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.builder.Results;
 import org.kie.api.runtime.KieContainer;
 

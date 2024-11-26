@@ -18,7 +18,7 @@
  */
 package org.drools.mvel.integrationtests;
 
-import java.util.Collection;
+import java.util.stream.Stream;
 
 import org.drools.compiler.compiler.io.File;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
@@ -27,10 +27,9 @@ import org.drools.compiler.kie.builder.impl.KieBuilderImpl;
 import org.drools.mvel.compiler.Message;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -51,22 +50,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * This is a sample class to launch a rule.
  */
-@RunWith(Parameterized.class)
 public class KieCompilationCacheTest {
-
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public KieCompilationCacheTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
-    }
-
-    @Test
-    public void testCompilationCache() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testCompilationCache(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String drl = "package org.drools.compiler\n" +
                 "declare type X\n" +
                 "    foo : String\n" +
@@ -106,8 +98,9 @@ public class KieCompilationCacheTest {
         assertThat(count).isEqualTo(1);
     }
 
-    @Test
-    public void testHelloWorldWithPackagesAnd2KieBases() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testHelloWorldWithPackagesAnd2KieBases(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String drl1 = "package org.pkg1\n" +
                 "import " + Message.class.getCanonicalName() + "\n" +
                 "rule R11 when\n" +
@@ -178,8 +171,9 @@ public class KieCompilationCacheTest {
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testCacheWigAccumulate() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testCacheWigAccumulate(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String drl1 = "package org.pkg1\n" +
                 "rule R11 when\n" +
                 "   Number() from accumulate(String(), \n" +

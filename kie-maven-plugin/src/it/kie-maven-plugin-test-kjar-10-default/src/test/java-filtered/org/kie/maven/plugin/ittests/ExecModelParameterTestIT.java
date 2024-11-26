@@ -20,16 +20,13 @@ package org.kie.maven.plugin.ittests;
 
 import java.net.URL;
 
-import org.assertj.core.api.Assertions;
 import org.drools.compiler.kie.builder.impl.KieContainerImpl;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.builder.KieModule;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 
 public class ExecModelParameterTestIT {
 
@@ -43,7 +40,7 @@ public class ExecModelParameterTestIT {
     public void testWithoutDroolsModelCompilerOnClassPathDoNotRunExecModel() throws Exception {
         KieModule kieModule = fireRule();
         assertThat(kieModule).isNotNull();
-        assertFalse(kieModule.getClass().getCanonicalName().equals(CANONICAL_KIE_MODULE));
+        assertThat(kieModule.getClass().getCanonicalName()).isNotEqualTo(CANONICAL_KIE_MODULE);
     }
 
     private KieModule fireRule() throws Exception {

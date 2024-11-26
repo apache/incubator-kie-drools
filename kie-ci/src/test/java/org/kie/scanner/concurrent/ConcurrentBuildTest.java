@@ -25,10 +25,11 @@ import java.util.concurrent.TimeUnit;
 
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.core.util.FileManager;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
 import org.kie.scanner.AbstractKieCiTest;
@@ -46,20 +47,21 @@ public class ConcurrentBuildTest extends AbstractKieCiTest {
 
     private FileManager fileManager;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         this.fileManager = new FileManager();
         this.fileManager.setUp();
         ReleaseId releaseId = KieServices.Factory.get().newReleaseId("org.kie", "scanner-test", "1.0-SNAPSHOT");
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         this.fileManager.tearDown();
     }
 
     // This is TurtleTest. You can run this test with -PrunTurtleTests
-    @Test(timeout=600000)
+    @Test
+    @Timeout(600000)
     public void concurrentBuildWithDependency() throws Exception {
         KieServices ks = KieServices.Factory.get();
         KieMavenRepository repository = getKieMavenRepository();

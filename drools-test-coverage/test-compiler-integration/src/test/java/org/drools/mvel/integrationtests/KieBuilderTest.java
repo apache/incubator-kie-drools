@@ -18,19 +18,18 @@
  */
 package org.drools.mvel.integrationtests;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.mvel.compiler.Message;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -55,23 +54,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.fail;
 
-@RunWith(Parameterized.class)
 public class KieBuilderTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public KieBuilderTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        // TODO: EM failed with some tests. File JIRAs
+        return TestParametersUtil2.getKieBaseCloudConfigurations(false).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-     // TODO: EM failed with some tests. File JIRAs
-        return TestParametersUtil.getKieBaseCloudConfigurations(false);
-    }
-
-    @Test
-    public void testResourceInclusion() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testResourceInclusion(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl1 = "package org.drools.mvel.compiler\n" +
                 "rule R1 when\n" +
                 "   $m : Message()\n" +
@@ -128,8 +120,9 @@ public class KieBuilderTest {
         ksession.dispose();
     }
 
-    @Test
-    public void testValidXsdTargetNamespace() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testValidXsdTargetNamespace(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl1 = "package org.drools.mvel.compiler\n" +
                 "rule R1 when\n" +
                 "   $m : Message()\n" +
@@ -153,8 +146,9 @@ public class KieBuilderTest {
         ks.newKieContainer( km.getReleaseId() );
     }
 
-    @Test
-    public void testInvalidXsdTargetNamespace() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testInvalidXsdTargetNamespace(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl1 = "package org.drools.compiler\n" +
                 "rule R1 when\n" +
                 "   $m : Message()\n" +
@@ -179,8 +173,9 @@ public class KieBuilderTest {
         .hasMessageContaining("XSD validation failed");
     }
 
-    @Test
-    public void testOldXsdTargetNamespace() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testOldXsdTargetNamespace(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl1 = "package org.drools.mvel.compiler\n" +
                 "rule R1 when\n" +
                 "   $m : Message()\n" +
@@ -205,8 +200,9 @@ public class KieBuilderTest {
         ks.newKieContainer( km.getReleaseId() );
     }
 
-    @Test
-    public void testGetKieBaseAfterKieSessionCreation() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testGetKieBaseAfterKieSessionCreation(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String KBASE_NAME = "kieBase";
         final String KSESSION_NAME = "kieSession";
 
@@ -244,8 +240,9 @@ public class KieBuilderTest {
         assertThat(kieBase).isNotNull();
     }
 
-    @Test
-    public void testReportKBuilderErrorWhenUsingAJavaClassWithNoPkg() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testReportKBuilderErrorWhenUsingAJavaClassWithNoPkg(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // BZ-995018
         final String java = "public class JavaClass { }\n";
         final KieServices ks = KieServices.Factory.get();
@@ -261,8 +258,9 @@ public class KieBuilderTest {
         assertThat(results.getMessages().size()).isEqualTo(1);
     }
 
-    @Test
-    public void testJavaSourceFileAndDrlDeploy() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testJavaSourceFileAndDrlDeploy(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String java = "package org.drools.mvel.compiler;\n" +
                 "public class JavaSourceMessage { }\n";
         final String drl = "package org.drools.mvel.compiler;\n" +
@@ -298,8 +296,9 @@ public class KieBuilderTest {
         }
     }
 
-    @Test
-    public void testJavaSourceFileAndDrlDeployWithClassFilter() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testJavaSourceFileAndDrlDeployWithClassFilter(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String allowedJava = "package org.drools.mvel.compiler;\n" +
                 "public class JavaSourceMessage { }\n";
         final String filteredJava = "package org.drools.mvel.compiler;\n" +
@@ -355,8 +354,9 @@ public class KieBuilderTest {
         }
     }
 
-    @Test
-    public void testKieBuilderWithDotFiles() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testKieBuilderWithDotFiles(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // BZ-1044409
         final String KBASE_NAME = "kieBase";
         final String KSESSION_NAME = "kieSession";
@@ -398,8 +398,9 @@ public class KieBuilderTest {
         assertThat(kieBase).isNotNull();
     }
 
-    @Test
-    public void testMultipleKBaseWithDrlError() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testMultipleKBaseWithDrlError(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // RHBRMS-2651
         final String drl = "package org.drools.compiler;\n" +
                      "rule \"test\"\n" +
@@ -433,8 +434,9 @@ public class KieBuilderTest {
         assertThat(messages.get(3).toString().contains("kbase2")).isTrue();
     }
 
-    @Test
-    public void testBuildWithKBaseAndKSessionWithIdenticalNames() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testBuildWithKBaseAndKSessionWithIdenticalNames(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // RHBRMS-2689
         final String kmodule = "<kmodule xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" \n" +
                          "         xmlns=\"http://www.drools.org/xsd/kmodule\">\n" +
@@ -443,11 +445,12 @@ public class KieBuilderTest {
                          "  </kbase>\n" +
                          "</kmodule>";
 
-        checkKModule( kmodule, 0 );
+        checkKModule( kieBaseTestConfiguration, kmodule, 0 );
     }
 
-    @Test
-    public void testBuildWithDuplicatedKSessionNames() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testBuildWithDuplicatedKSessionNames(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // RHBRMS-2689
         final String kmodule = "<kmodule xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" \n" +
                          "         xmlns=\"http://www.drools.org/xsd/kmodule\">\n" +
@@ -459,11 +462,12 @@ public class KieBuilderTest {
                          "  </kbase>\n" +
                          "</kmodule>";
 
-        checkKModule( kmodule, 1 );
+        checkKModule( kieBaseTestConfiguration, kmodule, 1 );
     }
 
-    @Test
-    public void testBuildWithDuplicatedKBaseNames() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testBuildWithDuplicatedKBaseNames(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // RHBRMS-2689
         final String kmodule = "<kmodule xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" \n" +
                          "         xmlns=\"http://www.drools.org/xsd/kmodule\">\n" +
@@ -475,10 +479,10 @@ public class KieBuilderTest {
                          "  </kbase>\n" +
                          "</kmodule>";
 
-        checkKModule( kmodule, 1 );
+        checkKModule( kieBaseTestConfiguration, kmodule, 1 );
     }
 
-    private void checkKModule( final String kmodule, final int expectedErrors ) {
+    private void checkKModule(KieBaseTestConfiguration kieBaseTestConfiguration , final String kmodule, final int expectedErrors) {
         final KieServices ks = KieServices.Factory.get();
         final ReleaseId releaseId = ks.newReleaseId( "org.kie", "test-kie-builder", "1.0.0" );
         final KieFileSystem kfs = ks.newKieFileSystem().generateAndWritePomXML( releaseId ).writeKModuleXML( kmodule );
@@ -488,8 +492,9 @@ public class KieBuilderTest {
         assertThat(((InternalKieBuilder) kieBuilder ).getKieModuleIgnoringErrors()).isNotNull();
     }
 
-    @Test
-    public void testAddMissingResourceToPackageBuilder() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testAddMissingResourceToPackageBuilder(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
         assertThatThrownBy(() -> kbuilder.add(ResourceFactory.newClassPathResource("some.rf"), ResourceType.DRL))
@@ -499,8 +504,9 @@ public class KieBuilderTest {
                 .isInstanceOf(RuntimeException.class);
     }
 
-    @Test
-    public void testDeclarativeChannelRegistration() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testDeclarativeChannelRegistration(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl1 = "package org.drools.mvel.compiler\n" +
                 "rule R1 when\n" +
                 "   $m : Message()\n" +
@@ -532,8 +538,9 @@ public class KieBuilderTest {
         assertThat(kieSession.getChannels().containsKey("testChannel")).isTrue();
     }
     
-    @Test
-    public void testStatelessSessionDeclarativeChannelRegistration() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testStatelessSessionDeclarativeChannelRegistration(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl1 = "package org.drools.mvel.compiler\n" +
                 "rule R1 when\n" +
                 "   $m : Message()\n" +
@@ -567,11 +574,11 @@ public class KieBuilderTest {
     
     public static class MockChannel implements Channel {
 
-		@Override
-		public void send(Object object) {
-			//NO=OP
-		}
-    	
+        @Override
+        public void send(Object object) {
+            //NO=OP
+        }
+        
     }
 
 }

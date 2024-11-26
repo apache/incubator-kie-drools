@@ -19,19 +19,17 @@
 package org.drools.testcoverage.regression;
 
 import java.io.StringReader;
+import java.util.stream.Stream;
 
-import java.util.Collection;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieUtil;
 import org.drools.testcoverage.common.util.TestConstants;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieFileSystem;
 
-@RunWith(Parameterized.class)
 public class AmbiguousExceptionTest {
     private static final String DRL =
             "   package " + TestConstants.PACKAGE_REGRESSION + "\n\n "
@@ -41,19 +39,13 @@ public class AmbiguousExceptionTest {
             + "    then\n"
             + " end\n";
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public AmbiguousExceptionTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseConfigurations().stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseConfigurations();
-    }
-
-    @Test
-    public void testCompilation() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testCompilation(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final KieFileSystem fileSystem = KieServices.Factory.get().newKieFileSystem();
         fileSystem.write(
                 TestConstants.DRL_TEST_TARGET_PATH,
