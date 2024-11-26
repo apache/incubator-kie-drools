@@ -82,13 +82,13 @@ public class ImportDMNResolverUtil {
                         importerDMNName, importerDMNNamespace, importNamespace, importName, importLocationURI, importModelName);
                 return Either.ofRight(usingNSandName.get(0));
             } else if (usingNSandName.isEmpty()) {
-                LOGGER.error("DMN Model with name={} and namespace={} failed to import a DMN with namespace={} name={} locationURI={}, modelName={}.",
+                LOGGER.debug("DMN Model with name={} and namespace={} failed to import a DMN with namespace={} name={} locationURI={}, modelName={}.",
                         importerDMNName, importerDMNNamespace, importNamespace, importName, importLocationURI, importModelName);
                 return Either.ofLeft(String.format(
                         "DMN Model with name=%s and namespace=%s failed to import a DMN with namespace=%s name=%s locationURI=%s, modelName=%s. ",
                         importerDMNName, importerDMNNamespace, importNamespace, importName, importLocationURI, importModelName));
             } else {
-                LOGGER.error("DMN Model with name={} and namespace={} detected a collision ({} elements) trying to import a DMN with namespace={} name={} locationURI={}, modelName={}",
+                LOGGER.debug("DMN Model with name={} and namespace={} detected a collision ({} elements) trying to import a DMN with namespace={} name={} locationURI={}, modelName={}",
                         importerDMNName, importerDMNNamespace, usingNSandName.size(), importNamespace, importName, importLocationURI, importModelName);
                 return Either.ofLeft(String.format(
                         "DMN Model with name=%s and namespace=%s detected a collision trying to import a DMN with %s namespace, " +
