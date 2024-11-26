@@ -52,6 +52,10 @@ public class ImportDMNResolverUtil {
                         "Importing a DMN model with namespace={} name={} locationURI={}, modelName={}",
                 importerDMNName, importerDMNNamespace, importNamespace, importName, importLocationURI, importModelName);
 
+        if (dmns.isEmpty()) {
+            return Either.ofLeft("Impossible to resolve an import against an empty DMN collection");
+        }
+
         List<T> matchingDMNList = dmns.stream()
                 .filter(m -> idExtractor.apply(m).getNamespaceURI().equals(importNamespace))
                 .toList();
@@ -64,7 +68,7 @@ public class ImportDMNResolverUtil {
                         importerDMNName, importerDMNNamespace, importNamespace, importName, importLocationURI, importModelName);
                 return Either.ofRight(located);
             } else {
-                LOGGER.debug("DMN Model with name={} and namespace={} can't import a DMN with namespace={}, name={}, modelName={}, " +
+                LOGGER.error("DMN Model with name={} and namespace={} can't import a DMN with namespace={}, name={}, modelName={}, " +
                                 "located within namespace only {} but does not match for the actual modelName",
                         importerDMNName, importerDMNNamespace, importNamespace, importName, importModelName, idExtractor.apply(located));
                 return Either.ofLeft(String.format(
@@ -82,13 +86,13 @@ public class ImportDMNResolverUtil {
                         importerDMNName, importerDMNNamespace, importNamespace, importName, importLocationURI, importModelName);
                 return Either.ofRight(usingNSandName.get(0));
             } else if (usingNSandName.isEmpty()) {
-                LOGGER.debug("DMN Model with name={} and namespace={} failed to import a DMN with namespace={} name={} locationURI={}, modelName={}.",
+                LOGGER.error("DMN Model with name={} and namespace={} failed to import a DMN with namespace={} name={} locationURI={}, modelName={}.",
                         importerDMNName, importerDMNNamespace, importNamespace, importName, importLocationURI, importModelName);
                 return Either.ofLeft(String.format(
                         "DMN Model with name=%s and namespace=%s failed to import a DMN with namespace=%s name=%s locationURI=%s, modelName=%s. ",
                         importerDMNName, importerDMNNamespace, importNamespace, importName, importLocationURI, importModelName));
             } else {
-                LOGGER.debug("DMN Model with name={} and namespace={} detected a collision ({} elements) trying to import a DMN with namespace={} name={} locationURI={}, modelName={}",
+                LOGGER.error("DMN Model with name={} and namespace={} detected a collision ({} elements) trying to import a DMN with namespace={} name={} locationURI={}, modelName={}",
                         importerDMNName, importerDMNNamespace, usingNSandName.size(), importNamespace, importName, importLocationURI, importModelName);
                 return Either.ofLeft(String.format(
                         "DMN Model with name=%s and namespace=%s detected a collision trying to import a DMN with %s namespace, " +
