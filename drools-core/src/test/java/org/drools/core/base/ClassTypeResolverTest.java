@@ -25,7 +25,7 @@ import org.drools.core.test.model.FirstClass;
 import org.drools.core.test.model.SecondClass;
 import org.drools.util.ClassTypeResolver;
 import org.drools.util.TypeResolver;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;

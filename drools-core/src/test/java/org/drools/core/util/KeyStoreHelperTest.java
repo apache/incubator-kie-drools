@@ -36,8 +36,8 @@ import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
 
-import org.junit.AfterClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
@@ -54,7 +54,7 @@ public class KeyStoreHelperTest {
     private static final String KEY_PASSWORD = "keypwd";
     private static final String KEY_PHRASE = "secretkey";
 
-    @AfterClass
+    @AfterAll
     public static void cleanup() {
         try {
             new File(KEYSTORE_JCEKS_FILENAME).delete();

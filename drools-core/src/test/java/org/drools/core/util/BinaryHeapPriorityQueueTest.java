@@ -24,9 +24,10 @@ import java.util.List;
 import java.util.Random;
 
 import org.drools.core.util.Queue.QueueEntry;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class BinaryHeapPriorityQueueTest {
+	
     @Test
     public void testOptimised() {
         final Random random = new Random();

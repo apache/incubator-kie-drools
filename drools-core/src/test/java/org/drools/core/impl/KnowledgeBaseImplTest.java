@@ -22,7 +22,7 @@ import java.util.Collections;
 
 import org.drools.base.definitions.InternalKnowledgePackage;
 import org.drools.core.reteoo.CoreComponentFactory;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.internal.conf.CompositeBaseConfiguration;
 
 import static org.assertj.core.api.Assertions.assertThat;
