@@ -659,5 +659,6 @@ OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 ------------------------------------------------------------------------------------
 for drools-util/src/main/java/org/drools/util/StringUtils.java
+    Borrowed from Spring
 
 Licensed under the Apache License, Version 2.0 (the "License");
