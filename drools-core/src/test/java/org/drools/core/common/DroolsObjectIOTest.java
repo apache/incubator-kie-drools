@@ -39,7 +39,7 @@ import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.base.rule.GroupElement;
 import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.util.DroolsStreamUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

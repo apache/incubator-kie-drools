@@ -33,11 +33,10 @@ import org.drools.core.common.InternalRuleFlowGroup;
 import org.drools.core.common.PropagationContext;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.reteoo.TerminalNode;
-import org.drools.core.reteoo.Tuple;
 import org.drools.core.reteoo.TupleImpl;
 import org.drools.core.rule.consequence.InternalMatch;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.rule.FactHandle;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -115,7 +114,7 @@ public class BinaryHeapQueueTest {
         System.out.println("time:" + (System.currentTimeMillis() - time));
     }
 
-    @Before
+    @BeforeEach
     public void setup() {
         System.out.println( "Running setup" );
         Integer[] a = new Integer[max];

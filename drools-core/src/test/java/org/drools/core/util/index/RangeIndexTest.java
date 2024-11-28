@@ -19,7 +19,7 @@
 package org.drools.core.util.index;
 
 import org.drools.core.test.model.Person;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

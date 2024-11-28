@@ -24,7 +24,7 @@ import org.drools.core.common.EmptyBetaConstraints;
 import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
