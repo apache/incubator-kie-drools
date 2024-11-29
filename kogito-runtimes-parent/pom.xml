@@ -100,7 +100,6 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.build.outputTimestamp>2024-01-16T00:00:00Z</project.build.outputTimestamp>
     <version.maven.artifact.plugin>3.4.1</version.maven.artifact.plugin>
-    <version.apache-rat-plugin>0.16.1</version.apache-rat-plugin>
     <version.maven-javadoc-plugin>3.6.2</version.maven-javadoc-plugin>
   </properties>
 
@@ -113,35 +112,6 @@
           <version>${version.maven.artifact.plugin}</version>
           <configuration>
             <outputTimestamp>${project.build.outputTimestamp}</outputTimestamp>
-          </configuration>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.rat</groupId>
-          <artifactId>apache-rat-plugin</artifactId>
-          <version>${version.apache-rat-plugin}</version>
-          <configuration>
-            <excludes>
-              <exclude>.mvn/maven.config</exclude>
-              <exclude>**/simple_invalid_migration.invalid</exclude>
-              <exclude>**/*.mpf</exclude>
-              <exclude>**/src/test/**/*.txt</exclude>
-              <exclude>**/.gitkeep</exclude>
-              <exclude>**/checkstyle-cachefile</exclude>
-              <exclude>**/*.log</exclude>
-              <exclude>**/*.lst</exclude>
-              <exclude>**/requirements.txt</exclude>
-              <exclude>**/*.addon</exclude>
-              <exclude>**/*.avsc</exclude>
-              <exclude>**/LoanUnit.xls.properties.test</exclude>
-              <exclude>**/src_test_resources_application.yml</exclude>
-              <exclude>**/BPMN*.xsd</exclude>
-              <exclude>**/bpsim.xsd</exclude>
-              <exclude>**/DC.xsd</exclude>
-              <exclude>**/DI.xsd</exclude>
-              <exclude>**/DiagramDefinition.xsd</exclude>
-              <exclude>**/DiagramInterchange.xsd</exclude>
-              <exclude>**/Semantic.xsd</exclude>
-            </excludes>
           </configuration>
         </plugin>
       </plugins>

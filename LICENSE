@@ -199,3 +199,113 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
+
+
+------------------------------------------------------------------------------------
+for jbpm/jbpm-bpmn2/src/main/resources/META-INF/BPMN20.xsd
+    jbpm/jbpm-bpmn2/src/main/resources/META-INF/BPMNDI.xsd
+    jbpm/jbpm-bpmn2/src/main/resources/META-INF/DC.xsd
+    jbpm/jbpm-bpmn2/src/main/resources/META-INF/DI.xsd
+    jbpm/jbpm-bpmn2/src/main/resources/META-INF/DiagramDefinition.xsd
+    jbpm/jbpm-bpmn2/src/main/resources/META-INF/DiagramInterchange.xsd
+    jbpm/jbpm-bpmn2/src/main/resources/META-INF/Semantic.xsd
+    jbpm/jbpm-bpmn2/src/main/resources/META-INF/bpsim.xsd
+    jbpm/jbpm-bpmn2/src/main/xsd/BPMN20.xsd
+    jbpm/jbpm-bpmn2/src/main/xsd/BPMNDI.xsd
+    jbpm/jbpm-bpmn2/src/main/xsd/DC.xsd
+    jbpm/jbpm-bpmn2/src/main/xsd/DI.xsd
+    jbpm/jbpm-bpmn2/src/main/xsd/DiagramDefinition.xsd
+    jbpm/jbpm-bpmn2/src/main/xsd/DiagramInterchange.xsd
+    jbpm/jbpm-bpmn2/src/main/xsd/Semantic.xsd
+    jbpm/jbpm-bpmn2/src/main/xsd/bpsim.xsd
+
+Copyright © 2010, Axway
+Copyright © 2010, BizAgi
+Copyright © 2010, Bruce Silver Associates
+Copyright © 2010, IDS Scheer
+Copyright © 2010, IBM Corp.
+Copyright © 2010, MEGA International
+Copyright © 2010, Model Driven Solutions
+Copyright © 2010, Object Management Group
+Copyright © 2010, Oracle
+Copyright © 2010, SAP AG
+Copyright © 2010, Software AG
+Copyright © 2010, TIBCO Software
+Copyright © 2010, Unisys
+
+USE OF SPECIFICATION - TERMS, CONDITIONS & NOTICES
+The material in this document details an Object Management Group specification in accordance with the terms,
+conditions and notices set forth below. This document does not represent a commitment to implement any portion of this
+specification in any company's products. The information contained in this document is subject to change without notice.
+
+LICENSES
+The companies listed above have granted to the Object Management Group, Inc. (OMG) a nonexclusive, royalty-free,
+paid up, worldwide license to copy and distribute this document and to modify this document and distribute copies of the
+modified version. Each of the copyright holders listed above has agreed that no person shall be deemed to have infringed
+the copyright in the included material of any such copyright holder by reason of having used the specification set forth
+herein or having conformed any computer software to the specification.
+Subject to all of the terms and conditions below, the owners of the copyright in this specification hereby grant you a fullypaid up, non-exclusive, nontransferable, perpetual, worldwide license (without the right to sublicense), to use this
+specification to create and distribute software and special purpose specifications that are based upon this specification,
+and to use, copy, and distribute this specification as provided under the Copyright Act; provided that: (1) both the
+copyright notice identified above and this permission notice appear on any copies of this specification; (2) the use of the
+specifications is for informational purposes and will not be copied or posted on any network computer or broadcast in any
+media and will not be otherwise resold or transferred for commercial purposes; and (3) no modifications are made to this
+specification. This limited permission automatically terminates without notice if you breach any of these terms or
+conditions. Upon termination, you will destroy immediately any copies of the specifications in your possession or control.
+
+PATENTS
+The attention of adopters is directed to the possibility that compliance with or adoption of OMG specifications may
+require use of an invention covered by patent rights. OMG shall not be responsible for identifying patents for which a
+license may be required by any OMG specification, or for conducting legal inquiries into the legal validity or scope of
+those patents that are brought to its attention. OMG specifications are prospective and advisory only. Prospective users are
+responsible for protecting themselves against liability for infringement of patents.
+
+GENERAL USE RESTRICTIONS
+Any unauthorized use of this specification may violate copyright laws, trademark laws, and communications regulations
+and statutes. This document contains information which is protected by copyright. All Rights Reserved. No part of this
+work covered by copyright herein may be reproduced or used in any form or by any means--graphic, electronic, or
+mechanical, including photocopying, recording, taping, or information storage and retrieval systems--without permission
+of the copyright owner.
+
+DISCLAIMER OF WARRANTY
+WHILE THIS PUBLICATION IS BELIEVED TO BE ACCURATE, IT IS PROVIDED "AS IS" AND MAY CONTAIN
+ERRORS OR MISPRINTS. THE OBJECT MANAGEMENT GROUP AND THE COMPANIES LISTED ABOVE
+MAKE NO WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, WITH REGARD TO THIS PUBLICATION,
+INCLUDING BUT NOT LIMITED TO ANY WARRANTY OF TITLE OR OWNERSHIP, IMPLIED WARRANTY OF
+MERCHANTABILITY OR WARRANTY OF FITNESS FOR A PARTICULAR PURPOSE OR USE.
+IN NO EVENT SHALL THE OBJECT MANAGEMENT GROUP OR ANY OF THE COMPANIES LISTED ABOVE
+BE LIABLE FOR ERRORS CONTAINED HEREIN OR FOR DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+CONSEQUENTIAL, RELIANCE OR COVER DAMAGES, INCLUDING LOSS OF PROFITS, REVENUE, DATA OR
+USE, INCURRED BY ANY USER OR ANY THIRD PARTY IN CONNECTION WITH THE FURNISHING,
+PERFORMANCE, OR USE OF THIS MATERIAL, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
+DAMAGES.
+The entire risk as to the quality and performance of software developed using this specification is borne by you. This
+disclaimer of warranty constitutes an essential part of the license granted to you to use this specification.
+
+RESTRICTED RIGHTS LEGEND
+Use, duplication or disclosure by the U.S. Government is subject to the restrictions set forth in subparagraph (c) (1) (ii) of
+The Rights in Technical Data and Computer Software Clause at DFARS 252.227-7013 or in subparagraph (c)(1) and (2)
+of the Commercial Computer Software - Restricted Rights clauses at 48 C.F.R. 52.227-19 or as specified in 48 C.F.R. 227-
+7202-2 of the DoD F.A.R. Supplement and its successors, or as specified in 48 C.F.R. 12.212 of the Federal Acquisition
+Regulations and its successors, as applicable. The specification copyright owners are as indicated above and may be
+contacted through the Object Management Group, 140 Kendrick Street, Needham, MA 02494, U.S.A.
+
+TRADEMARKS
+MDA®, Model Driven Architecture®, UML®, UML Cube logo®, OMG Logo®, CORBA® and XMI® are registered
+trademarks of the Object Management Group, Inc., and Object Management Group™, OMG™ , Unified Modeling
+Language™, Model Driven Architecture Logo™, Model Driven Architecture Diagram™, CORBA logos™, XMI
+Logo™, CWM™, CWM Logo™, IIOP™ , IMM™ , MOF™ , OMG Interface Definition Language (IDL)™ , and OMG
+Systems Modeling Language (OMG SysML)™ are trademarks of the Object Management Group. All other products or
+company names mentioned are used for identification purposes only, and may be trademarks of their respective owners.
+
+COMPLIANCE
+The copyright holders listed above acknowledge that the Object Management Group (acting itself or through its
+designees) is and shall at all times be the sole entity that may authorize developers, suppliers and sellers of computer
+software to use certification marks, trademarks or other special designations to indicate compliance with these materials.
+Software developed under the terms of this license may claim compliance or conformance with this specification if and
+only if the software compliance is of a nature fully matching the applicable compliance points as stated in the
+specification. Software developed only partially matching the applicable compliance points may claim only that the
+software was based on this specification, but may not claim compliance or conformance with this specification. In the
+event that testing suites are implemented or approved by Object Management Group, Inc., software developed using this
+specification may claim compliance or conformance with the specification only if the software satisfactorily completes
+the testing suites.

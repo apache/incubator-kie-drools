@@ -1,3 +1,4 @@
+#
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -5,14 +6,35 @@
 # to you under the Apache License, Version 2.0 (the
 # "License"); you may not use this file except in compliance
 # with the License.  You may obtain a copy of the License at
-# 
+#
 #   http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 # Unless required by applicable law or agreed to in writing,
 # software distributed under the License is distributed on an
 # "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+#
 
-quarkus.native.auto-service-loader-registration=true
+name: "CI :: License headers"
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Download Apache RAT
+        run: |
+          curl -LO https://repo1.maven.org/maven2/org/apache/rat/apache-rat/0.16.1/apache-rat-0.16.1.jar
+
+      - name: Run Apache RAT
+        run: |
+          java -jar apache-rat-0.16.1.jar -d . -E .rat-excludes | grep "== File:" && echo "The files listed above are missing license headers." && exit 1 || echo "All files have license headers."
