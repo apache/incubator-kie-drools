@@ -1,0 +1,100 @@
+# .rat-excludes
+.rat-excludes
+# DISCLAIMER-WIP
+DISCLAIMER-WIP
+# apps-integration-tests/integration-tests-data-index-service/integration-tests-data-index-service-common/src/main/resources/approval.bpmn
+approval.bpmn
+# apps-integration-tests/integration-tests-data-index-service/integration-tests-data-index-service-quarkus/src/main/resources/META-INF/processSVG/approvals.svg
+approvals.svg
+# apps-integration-tests/integration-tests-data-index-service/integration-tests-data-index-service-quarkus/src/test/resources/approval.bpmn
+approval.bpmn
+# apps-integration-tests/integration-tests-jobs-service/integration-tests-jobs-service-common/src/main/resources/org/acme/processes/MultipleTimerInstancesBoundaryTimerEvent.bpmn
+MultipleTimerInstancesBoundaryTimerEvent.bpmn
+# apps-integration-tests/integration-tests-jobs-service/integration-tests-jobs-service-common/src/main/resources/org/acme/processes/MultipleTimerInstancesTimerEvent.bpmn
+MultipleTimerInstancesTimerEvent.bpmn
+# apps-integration-tests/integration-tests-jobs-service/integration-tests-jobs-service-common/src/main/resources/org/acme/travels/async.bpmn
+async.bpmn
+# apps-integration-tests/integration-tests-jobs-service/integration-tests-jobs-service-common/src/main/resources/org/acme/travels/timer-on-task.bpmn
+timer-on-task.bpmn
+# apps-integration-tests/integration-tests-jobs-service/integration-tests-jobs-service-common/src/main/resources/org/acme/travels/timers.bpmn
+timers.bpmn
+# apps-integration-tests/integration-tests-jobs-service/integration-tests-jobs-service-common/src/main/resources/org/acme/travels/timersCycle.bpmn
+timersCycle.bpmn
+# apps-integration-tests/integration-tests-trusty-service/integration-tests-trusty-service-common/src/main/resources/TrafficViolation.dmn
+TrafficViolation.dmn
+# data-audit/data-audit-common/src/main/resources/META-INF/data-audit-job-query.graphqls
+data-audit-job-query.graphqls
+# data-audit/data-audit-common/src/main/resources/META-INF/data-audit-process-query.graphqls
+data-audit-process-query.graphqls
+# data-audit/data-audit-common/src/main/resources/META-INF/data-audit-types.graphqls
+data-audit-types.graphqls
+# data-audit/data-audit-common/src/main/resources/META-INF/data-audit-usertask-query.graphqls
+data-audit-usertask-query.graphqls
+# data-audit/kogito-addons-data-audit-jpa/kogito-addons-data-audit-jpa-common/src/main/resources/META-INF/data-audit-orm.xml
+data-audit-orm.xml
+# data-audit/kogito-addons-data-audit-jpa/kogito-addons-data-audit-jpa-common/src/main/resources/META-INF/services/org.kie.kogito.app.audit.spi.DataAuditStore
+org.kie.kogito.app.audit.spi.DataAuditStore
+# data-audit/kogito-addons-data-audit-jpa/kogito-addons-data-audit-jpa-common/src/main/resources/META-INF/services/org.kie.kogito.app.audit.spi.GraphQLSchemaQueryProvider
+org.kie.kogito.app.audit.spi.GraphQLSchemaQueryProvider
+# data-audit/kogito-addons-data-audit-springboot/src/test/resources/application.properties
+application.properties
+# data-index/data-index-graphql/src/main/resources/basic.schema.graphqls
+basic.schema.graphqls
+# data-index/data-index-service/data-index-service-common/src/main/resources/domain.schema.graphqls
+domain.schema.graphqls
+# data-index/kogito-addons-quarkus-data-index/kogito-addons-quarkus-data-index-infinispan/integration-tests-process/src/main/resources/hello.bpmn
+hello.bpmn
+# data-index/kogito-addons-quarkus-data-index/kogito-addons-quarkus-data-index-infinispan/integration-tests-process/src/main/resources/META-INF/processSVG/hello.svg
+hello.svg
+# data-index/kogito-addons-quarkus-data-index/kogito-addons-quarkus-data-index-inmemory/integration-tests-process/src/main/resources/hello.bpmn
+hello.bpmn
+# data-index/kogito-addons-quarkus-data-index/kogito-addons-quarkus-data-index-inmemory/integration-tests-process/src/main/resources/META-INF/processSVG/hello.svg
+hello.svg
+# data-index/kogito-addons-quarkus-data-index/kogito-addons-quarkus-data-index-jpa/integration-tests-process/src/main/resources/hello.bpmn
+hello.bpmn
+# data-index/kogito-addons-quarkus-data-index/kogito-addons-quarkus-data-index-jpa/integration-tests-process/src/main/resources/META-INF/processSVG/hello.svg
+hello.svg
+# data-index/kogito-addons-quarkus-data-index/kogito-addons-quarkus-data-index-mongodb/integration-tests-process/src/main/resources/hello.bpmn
+hello.bpmn
+# data-index/kogito-addons-quarkus-data-index/kogito-addons-quarkus-data-index-mongodb/integration-tests-process/src/main/resources/META-INF/processSVG/hello.svg
+hello.svg
+# data-index/kogito-addons-quarkus-data-index/kogito-addons-quarkus-data-index-postgresql/integration-tests-process/src/main/resources/hello.bpmn
+hello.bpmn
+# data-index/kogito-addons-quarkus-data-index/kogito-addons-quarkus-data-index-postgresql/integration-tests-process/src/main/resources/META-INF/processSVG/hello.svg
+hello.svg
+# data-index/kogito-addons-quarkus-data-index-persistence/kogito-addons-quarkus-data-index-persistence-infinispan/integration-tests-process/src/main/resources/hello.bpmn
+hello.bpmn
+# data-index/kogito-addons-quarkus-data-index-persistence/kogito-addons-quarkus-data-index-persistence-jpa/integration-tests-process/src/main/resources/hello.bpmn
+hello.bpmn
+# data-index/kogito-addons-quarkus-data-index-persistence/kogito-addons-quarkus-data-index-persistence-jpa/integration-tests-process/src/main/resources/META-INF/processSVG/hello.svg
+hello.svg
+# data-index/kogito-addons-quarkus-data-index-persistence/kogito-addons-quarkus-data-index-persistence-mongodb/integration-tests-process/src/main/resources/hello.bpmn
+hello.bpmn
+# data-index/kogito-addons-quarkus-data-index-persistence/kogito-addons-quarkus-data-index-persistence-postgresql/integration-tests-process/src/main/resources/hello.bpmn
+hello.bpmn
+# explainability/explainability-service/src/test/resources/mockito-extensions/org.mockito.plugins.MockMaker
+org.mockito.plugins.MockMaker
+# jitexecutor/jitexecutor-bpmn/src/test/resources/MultipleInvalidModel.bpmn2
+MultipleInvalidModel.bpmn2
+# jitexecutor/jitexecutor-bpmn/src/test/resources/MultipleProcess.bpmn2
+MultipleProcess.bpmn2
+# jitexecutor/jitexecutor-bpmn/src/test/resources/SingleInvalidModel.bpmn2
+SingleInvalidModel.bpmn2
+# jitexecutor/jitexecutor-bpmn/src/test/resources/SingleProcess.bpmn
+SingleProcess.bpmn
+# jitexecutor/jitexecutor-bpmn/src/test/resources/SingleProcess.bpmn2
+SingleProcess.bpmn2
+# jitexecutor/jitexecutor-bpmn/src/test/resources/SingleUnparsableModel.bpmn2
+SingleUnparsableModel.bpmn2
+# jitexecutor/jitexecutor-bpmn/src/test/resources/UnparsableModel.bpmn2
+UnparsableModel.bpmn2
+# jitexecutor/jitexecutor-bpmn/src/test/resources/ValidModel.bpmn
+ValidModel.bpmn
+# jitexecutor/jitexecutor-dmn/src/main/resources/META-INF/resources/bundle.js
+bundle.js
+# jobs-service/kogito-addons-jobs-service/kogito-addons-quarkus-jobs/src/test/resources/application.properties
+application.properties
+# jobs-service/kogito-addons-jobs-service/kogito-addons-quarkus-jobs-service-embedded/runtime/src/main/resources/META-INF/services/org.eclipse.microprofile.config.spi.ConfigSource
+org.eclipse.microprofile.config.spi.ConfigSource
+# trusty/trusty-service/trusty-service-common/src/test/resources/mockito-extensions/org.mockito.plugins.MockMaker
+org.mockito.plugins.MockMaker

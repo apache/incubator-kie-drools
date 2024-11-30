@@ -1,3 +1,4 @@
+#
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -14,44 +15,26 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+#
 
-node_modules/
-dist/
-dist-it/
-node/
-coverage/
-target/
-out/
-.idea
-**/.DS_Store
-*.log*
-**/stats.json
-**/junit.xml
-package-lock.json
+name: "CI :: License headers"
 
-# Eclipse, Netbeans and IntelliJ files
-/.*
-!.github
-!.gitignore
-!.ci
-!.mvn
-/nbproject
-/*.ipr
-/*.iws
-**/*.iml
-.classpath
-.project
-.settings
-.vscode
-!.husky
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
 
-# Cypress - runtime artifacts and undesired dirs
-**/cypress/screenshots
-**/cypress/videos
-/packages/cypress*
-/cypress*
+jobs:
+  check:
+    runs-on: ubuntu-latest
 
-.factorypath
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-# Apache RAT check excludes file
-!.rat-excludes
+      - name: Download Apache RAT
+        run: |
+          curl -LO https://repo1.maven.org/maven2/org/apache/rat/apache-rat/0.16.1/apache-rat-0.16.1.jar
+
+      - name: Run Apache RAT
+        run: |
+          java -jar apache-rat-0.16.1.jar -d . -E .rat-excludes | grep "== File:" && echo "The files listed above are missing license headers." && exit 1 || echo "All files have license headers."
