@@ -18,13 +18,22 @@
  */
 package org.kie.dmn.core.internal.utils;
 
+import java.io.File;
 import java.util.Collections;
 
+import org.drools.util.FileUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kie.api.io.Resource;
+import org.kie.dmn.api.core.DMNContext;
+import org.kie.dmn.api.core.DMNModel;
+import org.kie.dmn.api.core.DMNRuntime;
+import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.impl.DMNRuntimeImpl;
+import org.kie.internal.io.ResourceFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class DMNRuntimeBuilderTest {
 
@@ -43,4 +52,24 @@ class DMNRuntimeBuilderTest {
                 .fromResources(Collections.emptyList()).getOrElseThrow(RuntimeException::new);
         assertThat(retrieved).isNotNull();
     }
+
+    @Test
+    void fromDefaultsMultipleDecisionWithoutInputDataReference() {
+        File modelFile = FileUtils.getFile("Invalid_decisions_model.dmn");
+        assertThat(modelFile).isNotNull().exists();
+        Resource modelResource = ResourceFactory.newFileResource(modelFile);
+        DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults().buildConfiguration()
+                .fromResources(Collections.singletonList(modelResource)).getOrElseThrow(RuntimeException::new);
+        assertThat(dmnRuntime).isNotNull();
+        String nameSpace = "https://kie.org/dmn/_BDC29BCF-B5DC-4AD7-8A5F-43DC08780F97";
+
+        final DMNModel dmnModel = dmnRuntime.getModel(
+                nameSpace,
+                "DMN_1A4BD262-7672-4887-9F25-986EE5277D16");
+        assertThat(dmnModel).isNotNull();
+        DMNContext context = DMNFactory.newContext();
+        context.set( "Person Age", 24 );
+        assertThatThrownBy(() -> dmnRuntime.evaluateAll(dmnModel, context))
+                .isInstanceOf(IllegalStateException.class);
+        }
 }

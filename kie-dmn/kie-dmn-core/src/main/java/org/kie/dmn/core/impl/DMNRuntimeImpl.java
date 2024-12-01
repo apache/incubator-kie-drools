@@ -30,6 +30,7 @@ import java.util.stream.Collectors;
 import javax.xml.namespace.QName;
 
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
+import org.kie.api.builder.Message;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNDecisionResult;
 import org.kie.dmn.api.core.DMNMessage;
@@ -111,16 +112,22 @@ public class DMNRuntimeImpl
         Objects.requireNonNull(model, () -> MsgUtil.createMessage(Msg.PARAM_CANNOT_BE_NULL, "model"));
         Objects.requireNonNull(context, () -> MsgUtil.createMessage(Msg.PARAM_CANNOT_BE_NULL, "context"));
         boolean performRuntimeTypeCheck = performRuntimeTypeCheck(model);
-        DMNResultImpl result = createResult( model, context );
-        DMNRuntimeEventManagerUtils.fireBeforeEvaluateAll( eventManager, model, result );
-        // the engine should evaluate all Decisions belonging to the "local" model namespace, not imported decision explicitly.
-        Set<DecisionNode> decisions = model.getDecisions().stream().filter(d -> d.getModelNamespace().equals(model.getNamespace())).collect(Collectors.toSet());
-        for( DecisionNode decision : decisions ) {
-            evaluateDecision(context, result, decision, performRuntimeTypeCheck);
+        if (model.hasErrors()) {
+            List<DMNMessage> messages = model.getMessages(DMNMessage.Severity.ERROR);
+            String errorMessage = messages.stream().map(Message::getText).collect(Collectors.joining(", "));
+            throw new IllegalStateException(errorMessage);
+        } else {
+            DMNResultImpl result = createResult( model, context );
+            DMNRuntimeEventManagerUtils.fireBeforeEvaluateAll( eventManager, model, result );
+            // the engine should evaluate all Decisions belonging to the "local" model namespace, not imported decision explicitly.
+            Set<DecisionNode> decisions = model.getDecisions().stream().filter(d -> d.getModelNamespace().equals(model.getNamespace())).collect(Collectors.toSet());
+            for( DecisionNode decision : decisions ) {
+                evaluateDecision(context, result, decision, performRuntimeTypeCheck);
+            }
+            DMNRuntimeEventManagerUtils.fireAfterEvaluateAll( eventManager, model, result );
+            return result;
+            }
         }
-        DMNRuntimeEventManagerUtils.fireAfterEvaluateAll( eventManager, model, result );
-        return result;
-    }
 
     @Override
     @Deprecated
