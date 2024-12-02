@@ -309,3 +309,49 @@ software was based on this specification, but may not claim compliance or confor
 event that testing suites are implemented or approved by Object Management Group, Inc., software developed using this
 specification may claim compliance or conformance with the specification only if the software satisfactorily completes
 the testing suites.
+
+-------------------------------------------------------------------------------------------------------
+for kogito-codegen-modules/kogito-codegen-predictions/src/test/resources/prediction/test_multiplemodels.pmml
+    kogito-codegen-modules/kogito-codegen-predictions/src/test/resources/prediction/test_scorecard.pmml
+    kogito-codegen-modules/kogito-codegen-predictions/src/test/resources/prediction/test_regression.pmml
+    kogito-codegen-modules/kogito-codegen-predictions/src/test/resources/prediction/test_miningmodel.pmml
+    quarkus/extensions/kogito-quarkus-predictions-extension/kogito-quarkus-predictions-integration-test/src/main/resources/PMMLRegression.pmml
+    quarkus/integration-tests/integration-tests-quarkus-norest/src/main/resources/PMMLRegression.pmml
+    quarkus/integration-tests/integration-tests-quarkus-predictions/src/main/resources/PMMLTree.pmml
+    quarkus/integration-tests/integration-tests-quarkus-predictions/src/main/resources/PMMLRegression.pmml
+    drools/kogito-pmml/src/test/resources/org/kie/kogito/pmml/test_tree.pmml
+    drools/kogito-pmml/src/test/resources/org/kie/kogito/pmml/test_regression.pmml
+    drools/kogito-scenario-simulation/src/test/resources/dmnPmml/test_tree.pmml
+    drools/kogito-scenario-simulation/src/test/resources/dmnPmml/test_regression.pmml
+    springboot/integration-tests/integration-tests-springboot-decisions-it/src/main/resources/PMMLTree.pmml
+    springboot/integration-tests/integration-tests-springboot-decisions-it/src/main/resources/PMMLRegression.pmml
+    springboot/integration-tests/integration-tests-springboot-norest-it/src/main/resources/PMMLRegression.pmml
+
+Copyright (c) 2008-2016,  The Data Mining Group
+All rights reserved. 
+This notice and license applies the.pmml
+notice and license is selected by the working group developing the release and is approved 
+by the DMG Chair.
+
+Redistribution and use in source and binary forms, with or without modification, are 
+permitted provided that the following conditions are met: 
+* Redistributions of source code must include the copyright notice below, this list of 
+conditions and the following disclaimer. 
+* Redistributions in binary form must reproduce the copyright notice below, this list 
+of conditions and the following disclaimer in the documentation and/or other 
+materials provided with the distribution 
+* Neither the name of the Data Mining Group nor the names of its members or 
+contributors may be used to endorse or promote products derived from a release
+without specific prior written permission. 
+
+THIS STANDARD IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS 
+IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
+CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
+PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; 
+OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR 
+OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS RELEASE, EVEN IF ADVISED 
+OF THE POSSIBILITY OF SUCH DAMAGE. 

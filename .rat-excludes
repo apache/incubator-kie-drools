@@ -28,6 +28,14 @@ kogito.addon
 com.fasterxml.jackson.databind.Module
 # api/kogito-events-core/src/main/resources/META-INF/services/org.kie.kogito.event.impl.adapter.DataEventAdapter
 org.kie.kogito.event.impl.adapter.DataEventAdapter
+# drools/kogito-pmml/src/test/resources/org/kie/kogito/pmml/test_tree.pmml
+test_tree.pmml
+# drools/kogito-pmml/src/test/resources/org/kie/kogito/pmml/test_regression.pmml
+test_regression.pmml
+# drools/kogito-scenario-simulation/src/test/resources/dmnPmml/test_tree.pmml
+test_tree.pmml
+# drools/kogito-scenario-simulation/src/test/resources/dmnPmml/test_regression.pmml
+test_regression.pmml
 # jbpm/jbpm-bpmn2/src/main/resources/META-INF/BPMN20.xsd
 BPMN20.xsd
 # jbpm/jbpm-bpmn2/src/main/resources/META-INF/BPMNDI.xsd
@@ -86,6 +94,14 @@ org.kie.kogito.internal.process.workitem.KogitoWorkItemHandlerFactory
 org.kie.kogito.internal.process.workitem.KogitoWorkItemHandlerFactory
 # kogito-codegen-modules/kogito-codegen-core/src/test/resources/.a-hidden-file.txt
 .a-hidden-file.txt
+# kogito-codegen-modules/kogito-codegen-predictions/src/test/resources/prediction/test_multiplemodels.pmml
+test_multiplemodels.pmml
+# kogito-codegen-modules/kogito-codegen-predictions/src/test/resources/prediction/test_scorecard.pmml
+test_scorecard.pmml
+# kogito-codegen-modules/kogito-codegen-predictions/src/test/resources/prediction/test_regression.pmml
+test_regression.pmml
+# kogito-codegen-modules/kogito-codegen-predictions/src/test/resources/prediction/test_miningmodel.pmml
+test_miningmodel.pmml
 # kogito-codegen-modules/kogito-codegen-processes-integration-tests/src/test/resources/META-INF/kogito.addon
 kogito.addon
 # kogito-codegen-modules/kogito-codegen-processes-integration-tests/src/test/resources/org/kie/kogito/codegen/process/process-generation-test.skip.txt
@@ -162,6 +178,8 @@ kogito.addon
 TrafficViolation.txt
 # quarkus/extensions/kogito-quarkus-decisions-extension/kogito-quarkus-decisions-integration-test-hot-reload/src/test/resources/adult.txt
 adult.txt
+# quarkus/extensions/kogito-quarkus-predictions-extension/kogito-quarkus-predictions-integration-test/src/main/resources/PMMLRegression.pmml
+PMMLRegression.pmml   
 # quarkus/extensions/kogito-quarkus-rules-extension/kogito-quarkus-rules-integration-test-hot-reload/src/test/resources/adult.txt
 adult.txt
 # quarkus/extensions/kogito-quarkus-rules-extension/kogito-quarkus-rules-integration-test-hot-reload/src/test/resources/drl1.txt
@@ -170,6 +188,12 @@ drl1.txt
 long-call.sw.yaml
 # quarkus/extensions/kogito-quarkus-serverless-workflow-extension/kogito-quarkus-serverless-workflow-integration-test/src/test/resources/__snapshots__/ServerlessWorkflowCodestartTest/testContent/src_test_resources_application.yml
 src_test_resources_application.yml
+# quarkus/integration-tests/integration-tests-quarkus-norest/src/main/resources/PMMLRegression.pmml
+PMMLRegression.pmml
+# quarkus/integration-tests/integration-tests-quarkus-predictions/src/main/resources/PMMLTree.pmml
+PMMLTree.pmml
+# quarkus/integration-tests/integration-tests-quarkus-predictions/src/main/resources/PMMLRegression.pmml
+PMMLRegression.pmml
 # quarkus/integration-tests/integration-tests-quarkus-rules/src/test/resources/LoanUnit.xls.properties.test
 LoanUnit.xls.properties.test
 # springboot/addons/events/decisions/src/main/resources/META-INF/kogito.addon
@@ -212,8 +236,14 @@ goal.txt
 goal.txt
 # springboot/archetype/src/test/resources/projects/it-custom-process/goal.txt
 goal.txt
+# springboot/integration-tests/integration-tests-springboot-decisions-it/src/main/resources/PMMLTree.pmml
+PMMLTree.pmml
+# springboot/integration-tests/integration-tests-springboot-decisions-it/src/main/resources/PMMLRegression.pmml
+PMMLRegression.pmml   
 # springboot/integration-tests/integration-tests-springboot-kafka-it/.gitignore
 .gitignore
+# springboot/integration-tests/integration-tests-springboot-norest-it/src/main/resources/PMMLRegression.pmml
+PMMLRegression.pmml
 # springboot/integration-tests/integration-tests-springboot-processes-it/.gitignore
 .gitignore
 # springboot/integration-tests/integration-tests-springboot-processes-persistence-it/integration-tests-springboot-processes-persistence-common/.gitignore
