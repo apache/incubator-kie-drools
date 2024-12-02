@@ -294,3 +294,9 @@ for optaplanner-docs/src/modules/ROOT/images/website/jstree/32px.png
     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
     OTHER DEALINGS IN THE SOFTWARE.
+
+----------------------------------------------------------------------------------------------------------
+for core/optaplanner-core-impl/src/main/java/org/optaplanner/core/impl/domain/common/ReflectionHelper.java
+
+Copyright Red Hat Inc. and Hibernate Authors
+Licensed under the Apache License, Version 2.0
