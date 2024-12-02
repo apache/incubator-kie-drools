@@ -135,17 +135,9 @@
         <version>${project.version}</version> <!-- Needed, otherwise it would use the latest release found on Maven central -->
         <executions>
           <execution>
-            <id>kogito-generate-model</id>
-            <phase>process-resources</phase> <!-- Temporary hack -->
+            <phase>compile</phase>
             <goals>
               <goal>generateModel</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>kogito-process-model-classes</id>
-            <phase>process-classes</phase> <!-- Temporary hack -->
-            <goals>
-              <goal>process-model-classes</goal>
             </goals>
           </execution>
         </executions>

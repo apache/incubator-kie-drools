@@ -119,8 +119,6 @@ public class PersistenceGenerator extends AbstractGenerator {
 
     @Override
     protected Collection<GeneratedFile> internalGenerate() {
-        Collection<GeneratedFile> generatedFiles = new ArrayList<>();
-
         switch (persistenceType()) {
             case INFINISPAN_PERSISTENCE_TYPE:
             case FILESYSTEM_PERSISTENCE_TYPE:
@@ -128,15 +126,10 @@ public class PersistenceGenerator extends AbstractGenerator {
             case JDBC_PERSISTENCE_TYPE:
             case KAFKA_PERSISTENCE_TYPE:
             case POSTGRESQL_PERSISTENCE_TYPE:
-                break;
+                return generateFiles();
             default:
                 throw new IllegalArgumentException("Unknown persistenceType " + persistenceType());
         }
-
-        generatedFiles.addAll(generateProtoMarshaller());
-        generatedFiles.addAll(generateProtoForDataIndex());
-
-        return generatedFiles;
     }
 
     @Override
@@ -147,6 +140,13 @@ public class PersistenceGenerator extends AbstractGenerator {
 
     public String persistenceType() {
         return context().getApplicationProperty(KOGITO_PERSISTENCE_TYPE).orElse(PersistenceGenerator.DEFAULT_PERSISTENCE_TYPE);
+    }
+
+    protected Collection<GeneratedFile> generateFiles() {
+        Collection<GeneratedFile> toReturn = new ArrayList<>();
+        toReturn.addAll(generateProtoMarshaller());
+        toReturn.addAll(generateProtoForDataIndex());
+        return toReturn;
     }
 
     protected Collection<GeneratedFile> generateProtoMarshaller() {

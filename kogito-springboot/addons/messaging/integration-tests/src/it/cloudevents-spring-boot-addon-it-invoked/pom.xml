@@ -86,9 +86,15 @@
       <plugin>
         <groupId>org.kie.kogito</groupId>
         <artifactId>kogito-maven-plugin</artifactId>
-        <version>${project.version}
-        </version> <!-- Needed, otherwise it would use the latest release found on Maven central -->
-        <extensions>true</extensions>
+        <version>${project.version}</version> <!-- Needed, otherwise it would use the latest release found on Maven central -->
+        <executions>
+          <execution>
+            <phase>compile</phase>
+            <goals>
+              <goal>generateModel</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <groupId>org.springframework.boot</groupId>

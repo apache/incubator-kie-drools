@@ -128,6 +128,14 @@ public abstract class AbstractKieMojo extends AbstractMojo {
         return reflections;
     }
 
+    protected Reflections getReflections(ClassLoader toAdd) throws MojoExecutionException {
+        URLClassLoader classLoader = (URLClassLoader) projectClassLoader();
+        ConfigurationBuilder builder = new ConfigurationBuilder();
+        builder.addUrls(classLoader.getURLs());
+        builder.addClassLoaders(classLoader, toAdd);
+        return new Reflections(builder);
+    }
+
     protected Predicate<Class<?>> classSubTypeAvailabilityResolver() {
         return clazz -> {
             try {

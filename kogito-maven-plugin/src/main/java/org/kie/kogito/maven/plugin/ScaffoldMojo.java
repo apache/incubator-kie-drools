@@ -24,6 +24,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 
 @Mojo(name = "scaffold",
         requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME,
@@ -40,7 +41,9 @@ public class ScaffoldMojo extends GenerateModelMojo {
     @Override
     public void execute() throws MojoExecutionException {
         addCompileSourceRoots();
-        generateModel();
+        ClassLoader projectClassLoader = projectClassLoader();
+        KogitoBuildContext kogitoBuildContext = discoverKogitoRuntimeContext(projectClassLoader);
+        generateModel(kogitoBuildContext);
     }
 
     @Override

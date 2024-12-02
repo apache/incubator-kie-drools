@@ -133,6 +133,7 @@
     <module>kogito-serverless-workflow</module>
     <module>kogito-maven-plugin</module>
     <module>springboot</module>
+    <module>kogito-maven-plugin-test</module>
   </modules>
 
 </project>

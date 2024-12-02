@@ -107,7 +107,14 @@
           <groupId>org.kie.kogito</groupId>
           <artifactId>kogito-maven-plugin</artifactId>
           <version>${project.version}</version>
-          <extensions>true</extensions>
+          <executions>
+            <execution>
+              <phase>compile</phase>
+              <goals>
+                <goal>generateModel</goal>
+              </goals>
+            </execution>
+          </executions>
         </plugin>
       </plugins>
     </pluginManagement>
