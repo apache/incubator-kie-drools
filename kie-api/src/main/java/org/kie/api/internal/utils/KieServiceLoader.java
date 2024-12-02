@@ -42,7 +42,9 @@ public class KieServiceLoader {
             return (T) serviceCache.get(serviceKey);
         }
         T loadedService = load(serviceClass, tag);
-        serviceCache.put(serviceKey, load(serviceClass, tag));
+        if (loadedService != null) {
+            serviceCache.put(serviceKey, loadedService);
+        }
         return loadedService;
     }
 
