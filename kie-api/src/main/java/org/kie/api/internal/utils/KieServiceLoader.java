@@ -18,9 +18,9 @@
  */
 package org.kie.api.internal.utils;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.ServiceLoader;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static org.kie.api.internal.utils.KieService.UNDEFINED;
 
@@ -28,7 +28,7 @@ public class KieServiceLoader {
 
     static final KieServiceLoader INSTANCE = new KieServiceLoader();
 
-    private final Map<String, KieService> serviceCache = new HashMap<>();
+    private final Map<String, KieService> serviceCache = new ConcurrentHashMap<>();
 
     private KieServiceLoader() {}
 
