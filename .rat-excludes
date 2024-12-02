@@ -36,14 +36,6 @@ lunr-2.3.9.min.js
 JavaLexer.g4
 # drools-drl/drools-drl-parser/src/main/antlr4/org/drools/drl/parser/antlr4/JavaParser.g4
 JavaParser.g4
-# drools-drl/drools-drl-parser-tests/src/test/resources/org/drools/drl/parser/antlr4/expander_multiple_constraints.dslr
-expander_multiple_constraints.dslr
-# drools-drl/drools-drl-parser-tests/src/test/resources/org/drools/drl/parser/antlr4/expander_multiple_constraints_flush.dslr
-expander_multiple_constraints_flush.dslr
-# drools-drl/drools-drl-parser-tests/src/test/resources/org/drools/drl/parser/antlr4/expander_spread_lines.dslr
-expander_spread_lines.dslr
-# drools-drlonyaml-parent/drools-drlonyaml-cli-tests/src/test/resources/batch_drl_files/.gitignore
-.gitignore
 # drools-drlonyaml-parent/drools-drlonyaml-cli-tests/src/test/resources/expected/test1.yml
 test1.yml
 # drools-drlonyaml-parent/drools-drlonyaml-cli-tests/src/test/resources/expected/test2.drl.txt
@@ -56,6 +48,8 @@ drl.ftl
 Sample.sdo
 # drools-impact-analysis/drools-impact-analysis-graph/drools-impact-analysis-graph-graphviz/src/test/resources/org/drools/impact/analysis/graph/graphviz/simple.dot
 simple.dot
+# drools-model/drools-canonical-model/src/main/java/org/drools/model/bitmask/OpenBitSet.java
+OpenBitSet.java
 # drools-model/drools-mvel-parser/src/main/javacc/mvel.jj
 mvel.jj
 # drools-quarkus-extension/drools-quarkus-integration-test-hotreload/src/main/resources/org/drools/hotreload/adult.txt
@@ -78,6 +72,8 @@ unicode.drl.csv
 PhoneNumberCategory.drl.csv
 # drools-test-coverage/test-suite/src/test/resources/org/drools/testcoverage/functional/oopath/oopath.drl.csv
 oopath.drl.csv
+# drools-util/src/main/java/org/drools/util/bitmask/OpenBitSet.java
+OpenBitSet.java
 # efesto/documentation/sdt/CompositeKnowledgeBuilderImpl_build.sdt
 CompositeKnowledgeBuilderImpl_build.sdt
 # efesto/documentation/sdt/PMMLAssemblerService_addResourceAfterRules_withoutConfigurations.sdt
