@@ -82,10 +82,10 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-test-util</artifactId>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
       <scope>test</scope>
-    </dependency>
+    </dependency>        
     <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>

@@ -21,7 +21,7 @@ package org.drools.core.time.impl;
 import java.util.Date;
 
 import org.drools.base.time.Trigger;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

@@ -23,7 +23,7 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Base class for unit tests that wish to verify 

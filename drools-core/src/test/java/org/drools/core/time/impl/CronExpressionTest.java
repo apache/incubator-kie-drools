@@ -27,8 +27,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
@@ -183,7 +183,8 @@ public class CronExpressionTest extends SerializationTestSupport {
         }
     }
     
-    @Test @Ignore
+    @Test 
+    @Disabled
     public void testSerialization() {
         // TODO as we don't want to worry about this for now
     }

@@ -19,7 +19,7 @@
 package org.drools.core.base.evaluators;
 
 import org.drools.base.util.TimeIntervalParser;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

@@ -20,22 +20,20 @@ package org.drools.ancompiler;
 
 import java.util.ArrayList;
 
-import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MultipleIndexableConstraintsTest extends BaseModelTest {
 
-    public MultipleIndexableConstraintsTest(RUN_TYPE testRunType) {
-        super(testRunType);
-    }
-
     /* Currently we don't support multiple indexable constraints in the ANC, so this test will pass because
         it disables the switch generation and the inlining. See DROOLS-5947
      */
-    @Test
-    public void testMultipleIndexedConstraintTest() {
+    @ParameterizedTest(name = "{0}")
+	@MethodSource("parameters")
+    public void testMultipleIndexedConstraintTest(RUN_TYPE testRunType) {
         final StringBuilder rule =
                 new StringBuilder("global java.util.List results;\n" +
                                           "import " + Person.class.getCanonicalName() + ";\n");
@@ -45,7 +43,7 @@ public class MultipleIndexableConstraintsTest extends BaseModelTest {
             rule.append(ruleWithIndex(i));
         }
 
-        try (KieSession ksession = getKieSession(rule.toString())) {
+        try (KieSession ksession = getKieSession(testRunType, rule.toString())) {
             ArrayList<Object> results = new ArrayList<>();
             ksession.setGlobal("results", results);
             Person a = new Person("a", 1);
