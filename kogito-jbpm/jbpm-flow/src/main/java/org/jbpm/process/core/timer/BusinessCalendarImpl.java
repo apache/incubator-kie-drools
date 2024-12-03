@@ -193,7 +193,9 @@ public class BusinessCalendarImpl implements BusinessCalendar {
 
         Date calculatedDate = calculateBusinessTimeAsDate(timeExpression);
 
-        return (calculatedDate.getTime() - getCurrentTime());
+        long calculatedDurationInMs = (calculatedDate.getTime() - getCurrentTime());
+        logger.debug("calculateBusinessTimeAsDuration for expression {} returns {} seconds", timeExpression, (calculatedDurationInMs / 1000));
+        return calculatedDurationInMs;
     }
 
     public Date calculateBusinessTimeAsDate(String timeExpression) {
@@ -251,7 +253,9 @@ public class BusinessCalendarImpl implements BusinessCalendar {
             c.set(Calendar.MINUTE, 0);
             c.set(Calendar.SECOND, 0);
         } else if (currentCalHour < startHour) {
-            c.add(Calendar.HOUR_OF_DAY, startHour);
+            c.add(Calendar.HOUR_OF_DAY, startHour - currentCalHour);
+            c.set(Calendar.MINUTE, 0);
+            c.set(Calendar.SECOND, 0);
         }
 
         // calculate remaining hours
@@ -267,7 +271,9 @@ public class BusinessCalendarImpl implements BusinessCalendar {
             c.set(Calendar.HOUR_OF_DAY, startHour);
             c.add(Calendar.HOUR_OF_DAY, currentCalHour - endHour);
         } else if (currentCalHour < startHour) {
-            c.add(Calendar.HOUR_OF_DAY, startHour);
+            c.add(Calendar.HOUR_OF_DAY, startHour - currentCalHour);
+            c.set(Calendar.MINUTE, 0);
+            c.set(Calendar.SECOND, 0);
         }
 
         // calculate minutes
@@ -293,7 +299,9 @@ public class BusinessCalendarImpl implements BusinessCalendar {
             c.set(Calendar.HOUR_OF_DAY, startHour);
             c.add(Calendar.HOUR_OF_DAY, currentCalHour - endHour);
         } else if (currentCalHour < startHour) {
-            c.add(Calendar.HOUR_OF_DAY, startHour);
+            c.add(Calendar.HOUR_OF_DAY, startHour - currentCalHour);
+            c.set(Calendar.MINUTE, 0);
+            c.set(Calendar.SECOND, 0);
         }
         // take under consideration weekend
         handleWeekend(c, false);
