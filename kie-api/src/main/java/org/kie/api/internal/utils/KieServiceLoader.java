@@ -28,6 +28,8 @@ public class KieServiceLoader {
 
     static final KieServiceLoader INSTANCE = new KieServiceLoader();
 
+    private static final KieService DUMMY_SERIVCE = new KieService() {};
+
     private final Map<String, KieService> serviceCache = new ConcurrentHashMap<>();
 
     private KieServiceLoader() {}
@@ -38,13 +40,14 @@ public class KieServiceLoader {
 
     <T extends KieService> T lookup(Class<T> serviceClass, String tag) {
         String serviceKey = serviceClass.getName() + ":" + tag;
-        if (serviceCache.containsKey(serviceKey)) {
-            return (T) serviceCache.get(serviceKey);
+
+        T cachedService = (T) serviceCache.get(serviceKey);
+        if (cachedService != null) {
+            return cachedService == DUMMY_SERIVCE ? null : cachedService;
         }
+
         T loadedService = load(serviceClass, tag);
-        if (loadedService != null) {
-            serviceCache.put(serviceKey, loadedService);
-        }
+        serviceCache.put(serviceKey, loadedService == null ? DUMMY_SERIVCE : loadedService);
         return loadedService;
     }
 
