@@ -38,3 +38,9 @@ jobs:
       - name: Run Apache RAT
         run: |
           java -jar apache-rat-0.16.1.jar -d . -E .rat-excludes | grep "== File:" && echo "The files listed above are missing license headers." && exit 1 || echo "All files have license headers."
+
+      - name: Check NOTICE Copyright year
+        run: |
+          (grep "Copyright $(date +%Y) The Apache Software Foundation" NOTICE && echo "NOTICE Copyright year is up to date") || echo "NOTICE Copyright year is outdated" && exit 1
+
+
