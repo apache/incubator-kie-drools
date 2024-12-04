@@ -41,6 +41,6 @@ jobs:
 
       - name: Check NOTICE Copyright year
         run: |
-          (grep "Copyright $(date +%Y) The Apache Software Foundation" NOTICE && echo "NOTICE Copyright year is up to date") || echo "NOTICE Copyright year is outdated" && exit 1
+          (grep "Copyright $(date +%Y) The Apache Software Foundation" NOTICE && echo "NOTICE Copyright year is up to date") || (echo "NOTICE Copyright year is outdated" && exit 1)
 
 
