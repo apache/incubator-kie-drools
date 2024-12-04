@@ -565,6 +565,10 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
     }
 
     public TimerInstance configureSLATimer(String slaDueDateExpression) {
+        return configureSLATimer(slaDueDateExpression, null);
+    }
+
+    public TimerInstance configureSLATimer(String slaDueDateExpression, String nodeInstanceId) {
         // setup SLA if provided
         slaDueDateExpression = resolveVariable(slaDueDateExpression).toString();
         if (slaDueDateExpression == null || slaDueDateExpression.trim().isEmpty()) {
@@ -583,7 +587,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
 
         TimerInstance timerInstance = createDurationTimer(duration);
         if (useTimerSLATracking()) {
-            registerTimer(timerInstance);
+            registerTimer(timerInstance, nodeInstanceId);
         }
         return timerInstance;
     }
@@ -598,6 +602,10 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
     }
 
     private TimerInstance registerTimer(TimerInstance timerInstance) {
+        return registerTimer(timerInstance, null);
+    }
+
+    private TimerInstance registerTimer(TimerInstance timerInstance, String nodeInstanceId) {
         ProcessInstanceJobDescription description =
                 ProcessInstanceJobDescription.newProcessInstanceJobDescriptionBuilder()
                         .id(timerInstance.getId())
@@ -605,6 +613,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
                         .expirationTime(DurationExpirationTime.after(timerInstance.getDelay()))
                         .processInstanceId(getStringId())
                         .processId(getProcessId())
+                        .nodeInstanceId(nodeInstanceId)
                         .build();
         JobsService jobsService = InternalProcessRuntime.asKogitoProcessRuntime(getKnowledgeRuntime().getProcessRuntime()).getJobsService();
         jobsService.scheduleJob(description);
