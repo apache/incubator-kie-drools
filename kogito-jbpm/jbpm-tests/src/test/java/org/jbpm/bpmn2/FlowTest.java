@@ -27,6 +27,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -82,6 +83,8 @@ import org.jbpm.bpmn2.flow.MultiConnEnabledModel;
 import org.jbpm.bpmn2.flow.MultiConnEnabledProcess;
 import org.jbpm.bpmn2.flow.MultiInstanceLoopCharacteristicsProcessModel;
 import org.jbpm.bpmn2.flow.MultiInstanceLoopCharacteristicsProcessProcess;
+import org.jbpm.bpmn2.flow.MultiInstanceLoopCharacteristicsProcessWithORgatewayModel;
+import org.jbpm.bpmn2.flow.MultiInstanceLoopCharacteristicsProcessWithORgatewayProcess;
 import org.jbpm.bpmn2.flow.MultiInstanceLoopCharacteristicsProcessWithOutputCmpCondModel;
 import org.jbpm.bpmn2.flow.MultiInstanceLoopCharacteristicsProcessWithOutputCmpCondProcess;
 import org.jbpm.bpmn2.flow.MultiInstanceLoopCharacteristicsProcessWithOutputModel;
@@ -104,10 +107,8 @@ import org.jbpm.test.util.NodeLeftCountDownProcessEventListener;
 import org.jbpm.test.utils.EventTrackerProcessListener;
 import org.jbpm.test.utils.ProcessTestHelper;
 import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
-import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.jbpm.workflow.instance.node.CompositeContextNodeInstance;
 import org.jbpm.workflow.instance.node.ForEachNodeInstance;
-import org.jbpm.workflow.instance.node.ForEachNodeInstance.ForEachJoinNodeInstance;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
@@ -122,6 +123,7 @@ import org.kie.api.runtime.process.NodeInstance;
 import org.kie.internal.command.RegistryContext;
 import org.kie.kogito.Application;
 import org.kie.kogito.internal.process.event.DefaultKogitoProcessEventListener;
+import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.kie.kogito.internal.process.workitem.KogitoWorkItem;
@@ -896,69 +898,50 @@ public class FlowTest extends JbpmBpmn2TestCase {
     }
 
     @Test
-    public void testMultiInstanceLoopCharacteristicsProcessWithORGateway()
-            throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/flow/BPMN2-MultiInstanceLoopCharacteristicsProcessWithORgateway.bpmn2");
-
+    public void testMultiInstanceLoopCharacteristicsProcessWithORGateway() {
+        Application app = ProcessTestHelper.newApplication();
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task",
-                workItemHandler);
-        Map<String, Object> params = new HashMap<>();
+        ProcessTestHelper.registerHandler(app, "Human Task", workItemHandler);
+        org.kie.kogito.process.Process<MultiInstanceLoopCharacteristicsProcessWithORgatewayModel> definition = MultiInstanceLoopCharacteristicsProcessWithORgatewayProcess.newProcess(app);
+        MultiInstanceLoopCharacteristicsProcessWithORgatewayModel model = definition.createModel();
         List<Integer> myList = new ArrayList<>();
         myList.add(12);
         myList.add(15);
-        params.put("list", myList);
-        KogitoProcessInstance processInstance = kruntime.startProcess(
-                "MultiInstanceLoopCharacteristicsProcessWithORgateway", params);
-
+        model.setList(myList);
+        ProcessInstance<MultiInstanceLoopCharacteristicsProcessWithORgatewayModel> processInstance = definition.createInstance(model);
+        processInstance.start();
         List<KogitoWorkItem> workItems = workItemHandler.getWorkItems();
         assertThat(workItems).hasSize(4);
-
-        Collection<NodeInstance> nodeInstances = ((WorkflowProcessInstanceImpl) processInstance)
-                .getNodeInstances();
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
+        Collection<KogitoNodeInstance> nodeInstances = processInstance.findNodes(node -> node instanceof ForEachNodeInstance);
         assertThat(nodeInstances).hasSize(1);
-        NodeInstance nodeInstance = nodeInstances.iterator().next();
+        KogitoNodeInstance nodeInstance = nodeInstances.iterator().next();
         assertThat(nodeInstance).isInstanceOf(ForEachNodeInstance.class);
-
-        Collection<NodeInstance> nodeInstancesChild = ((ForEachNodeInstance) nodeInstance)
-                .getNodeInstances();
+        Collection<KogitoNodeInstance> nodeInstancesChild = ((ForEachNodeInstance) nodeInstance).getNodeInstances().stream()
+                .map(n -> (KogitoNodeInstance) n)
+                .collect(Collectors.toList());
         assertThat(nodeInstancesChild).hasSize(2);
-
-        for (NodeInstance child : nodeInstancesChild) {
+        for (KogitoNodeInstance child : nodeInstancesChild) {
             assertThat(child).isInstanceOf(CompositeContextNodeInstance.class);
-            assertThat(((CompositeContextNodeInstance) child)
-                    .getNodeInstances()).hasSize(2);
+            assertThat(((CompositeContextNodeInstance) child).getNodeInstances()).hasSize(2);
         }
 
-        kruntime.getKogitoWorkItemManager().completeWorkItem(
-                workItems.get(0).getStringId(), null);
-        kruntime.getKogitoWorkItemManager().completeWorkItem(
-                workItems.get(1).getStringId(), null);
-
-        processInstance = kruntime.getProcessInstance(processInstance.getStringId());
-        nodeInstances = ((WorkflowProcessInstanceImpl) processInstance)
-                .getNodeInstances();
+        processInstance.completeWorkItem(workItems.get(0).getStringId(), null);
+        processInstance.completeWorkItem(workItems.get(1).getStringId(), null);
+        nodeInstances = processInstance.findNodes(node -> node instanceof ForEachNodeInstance);
         assertThat(nodeInstances).hasSize(1);
         nodeInstance = nodeInstances.iterator().next();
         assertThat(nodeInstance).isInstanceOf(ForEachNodeInstance.class);
-
-        nodeInstancesChild = ((ForEachNodeInstance) nodeInstance)
-                .getNodeInstances();
+        nodeInstancesChild = ((ForEachNodeInstance) nodeInstance).getNodeInstances().stream()
+                .map(n -> (KogitoNodeInstance) n)
+                .collect(Collectors.toList());
         assertThat(nodeInstancesChild).hasSize(2);
-
-        Iterator<NodeInstance> childIterator = nodeInstancesChild
-                .iterator();
-
+        Iterator<KogitoNodeInstance> childIterator = nodeInstancesChild.iterator();
         assertThat(childIterator.next()).isInstanceOf(CompositeContextNodeInstance.class);
-        assertThat(childIterator.next()).isInstanceOf(ForEachJoinNodeInstance.class);
-
-        kruntime.getKogitoWorkItemManager().completeWorkItem(
-                workItems.get(2).getStringId(), null);
-        kruntime.getKogitoWorkItemManager().completeWorkItem(
-                workItems.get(3).getStringId(), null);
-
-        assertProcessInstanceFinished(processInstance, kruntime);
-
+        assertThat(childIterator.next()).isInstanceOf(ForEachNodeInstance.ForEachJoinNodeInstance.class);
+        processInstance.completeWorkItem(workItems.get(2).getStringId(), null);
+        processInstance.completeWorkItem(workItems.get(3).getStringId(), null);
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
 
     @Test

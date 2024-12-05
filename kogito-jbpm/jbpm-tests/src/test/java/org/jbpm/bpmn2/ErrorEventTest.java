@@ -37,6 +37,8 @@ import org.jbpm.bpmn2.error.EndErrorModel;
 import org.jbpm.bpmn2.error.EndErrorProcess;
 import org.jbpm.bpmn2.error.EndErrorWithEventSubprocessModel;
 import org.jbpm.bpmn2.error.EndErrorWithEventSubprocessProcess;
+import org.jbpm.bpmn2.error.ErrorBoundaryEventInterruptingModel;
+import org.jbpm.bpmn2.error.ErrorBoundaryEventInterruptingProcess;
 import org.jbpm.bpmn2.error.ErrorBoundaryEventOnServiceTaskModel;
 import org.jbpm.bpmn2.error.ErrorBoundaryEventOnServiceTaskProcess;
 import org.jbpm.bpmn2.error.ErrorVariableModel;
@@ -64,6 +66,7 @@ import org.jbpm.bpmn2.service.ExceptionServiceProcessErrorSignallingProcess;
 import org.jbpm.bpmn2.subprocess.ExceptionServiceProcessSignallingModel;
 import org.jbpm.bpmn2.subprocess.ExceptionServiceProcessSignallingProcess;
 import org.jbpm.process.instance.event.listeners.RuleAwareProcessEventListener;
+import org.jbpm.process.workitem.builtin.DoNothingWorkItemHandler;
 import org.jbpm.process.workitem.builtin.SignallingTaskHandlerDecorator;
 import org.jbpm.process.workitem.builtin.SystemOutWorkItemHandler;
 import org.jbpm.test.utils.EventTrackerProcessListener;
@@ -89,6 +92,7 @@ import org.kie.kogito.internal.process.workitem.KogitoWorkItemHandler;
 import org.kie.kogito.internal.process.workitem.KogitoWorkItemManager;
 import org.kie.kogito.internal.process.workitem.WorkItemExecutionException;
 import org.kie.kogito.internal.process.workitem.WorkItemTransition;
+import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.workitems.impl.DefaultKogitoWorkItemHandler;
 
@@ -229,6 +233,17 @@ public class ErrorEventTest extends JbpmBpmn2TestCase {
         assertProcessVarValue(processInstance, "CapturedException", "java.lang.RuntimeException: XXX");
         assertThat(executednodes).hasSize(1);
 
+    }
+
+    @Test
+    public void testErrorBoundaryEvent() {
+        Application application = ProcessTestHelper.newApplication();
+        ProcessTestHelper.registerHandler(application, "MyTask",
+                new DoNothingWorkItemHandler());
+        Process<ErrorBoundaryEventInterruptingModel> process = ErrorBoundaryEventInterruptingProcess.newProcess(application);
+        ProcessInstance<ErrorBoundaryEventInterruptingModel> instance = process.createInstance(process.createModel());
+        instance.start();
+        assertThat(instance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
 
     @Test
