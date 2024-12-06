@@ -340,16 +340,6 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
         }
     }
 
-    /**
-     * Add a ruleflow (.rfm) asset to this package.
-     */
-    public void addRuleFlow(Reader processSource) {
-        addKnowledgeResource(
-                new ReaderResource(processSource, ResourceType.DRF),
-                ResourceType.DRF,
-                null);
-    }
-
     @Deprecated
     public void addProcessFromXml(Resource resource) {
         addKnowledgeResource(
@@ -360,11 +350,6 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
 
     public ProcessBuilder getProcessBuilder() {
         return processBuilder;
-    }
-
-    @Deprecated
-    public void addProcessFromXml( Reader processSource) {
-        addProcessFromXml(new ReaderResource(processSource, ResourceType.DRF));
     }
 
     public void addKnowledgeResource(Resource resource,
