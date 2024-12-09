@@ -662,3 +662,81 @@ for drools-util/src/main/java/org/drools/util/StringUtils.java
     Borrowed from Spring
 
 Licensed under the Apache License, Version 2.0 (the "License");
+
+------------------------------------------------------------------------------------
+for kie-dmn/kie-dmn-pmml-tests-parent/kie-dmn-pmml-tests/src/test/resources/org/kie/dmn/pmml/test_naive_bayes.pmml
+    kie-dmn/kie-dmn-ruleset2dmn-parent/kie-dmn-ruleset2dmn/src/test/resources/Churn Rules from SPSS Modeler.xml
+    kie-dmn/kie-dmn-ruleset2dmn-parent/kie-dmn-ruleset2dmn/src/test/resources/adult.pmml
+    kie-dmn/kie-dmn-ruleset2dmn-parent/kie-dmn-ruleset2dmn/src/test/resources/churn.pmml
+    kie-dmn/kie-dmn-ruleset2dmn-parent/kie-dmn-ruleset2dmn/src/test/resources/iris.pmml
+    kie-dmn/kie-dmn-ruleset2dmn-parent/kie-dmn-ruleset2dmn/src/test/resources/miniloan.pmml
+    kie-dmn/kie-dmn-ruleset2dmn-parent/kie-dmn-ruleset2dmn/src/test/resources/toto.pmml
+    kie-dmn/kie-dmn-ruleset2dmn-parent/kie-dmn-ruleset2dmn/src/test/resources/wifi.pmml
+    kie-maven-plugin/src/it/kie-maven-plugin-test-kjar-12/src/main/resources/singleiriskmeansclustering/SingleIrisKMeansClustering.pmml
+    kie-maven-plugin/src/test/resources/unit/pmml/resources/singleiriskmeansclustering/SingleIrisKMeansClustering.pmml
+    kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/MultipleTargetsFieldSample.pmml
+    kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/NoModelNameNoSegmentIdNoSegmentTargetFieldSample.pmml
+    kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/NoModelNameNoSegmentIdSample.pmml
+    kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/NoModelNameSample.pmml
+    kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/NoOutputFieldTargetNameSample.pmml
+    kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/NoTargetFieldSample.pmml
+    kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/OneMiningTargetFieldSample.pmml
+    kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-commons/src/test/resources/TreeSample.pmml
+    kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-core/src/test/resources/LinearRegressionSample.pmml
+    kie-pmml-trusty/kie-pmml-compiler/kie-pmml-compiler-core/src/test/resources/LinearRegressionSample.xml
+    kie-pmml-trusty/kie-pmml-models/kie-pmml-models-clustering/kie-pmml-models-clustering-compiler/src/test/resources/SingleIrisKMeansClustering.pmml
+    kie-pmml-trusty/kie-pmml-models/kie-pmml-models-clustering/kie-pmml-models-clustering-tests/src/main/resources/clusterwithtransformations/ClusterWithTransformations.pmml
+    kie-pmml-trusty/kie-pmml-models/kie-pmml-models-clustering/kie-pmml-models-clustering-tests/src/main/resources/singleiriskmeansclustering/SingleIrisKMeansClustering.pmml
+    kie-pmml-trusty/kie-pmml-models/kie-pmml-models-clustering/kie-pmml-models-clustering-tests/src/main/resources/singleiriskmeansclustering/SingleIrisKMeansClustering_id.pmml
+    kie-pmml-trusty/kie-pmml-models/kie-pmml-models-drools/kie-pmml-models-drools-tree/kie-pmml-models-drools-tree-compiler/src/test/resources/TreeSample.pmml
+    kie-pmml-trusty/kie-pmml-models/kie-pmml-models-drools/kie-pmml-models-drools-tree/kie-pmml-models-drools-tree-evaluator/src/test/resources/TreeSample.pmml
+    kie-pmml-trusty/kie-pmml-models/kie-pmml-models-mining/kie-pmml-models-mining-compiler/src/test/resources/MiningModel_Mixed.pmml
+    kie-pmml-trusty/kie-pmml-models/kie-pmml-models-mining/kie-pmml-models-mining-compiler/src/test/resources/MiningModel_NoSegmentId.pmml
+    kie-pmml-trusty/kie-pmml-models/kie-pmml-models-mining/kie-pmml-models-mining-compiler/src/test/resources/MiningModel_Regression.pmml
+    kie-pmml-trusty/kie-pmml-models/kie-pmml-models-mining/kie-pmml-models-mining-compiler/src/test/resources/MiningModel_Scorecard.pmml
+    kie-pmml-trusty/kie-pmml-models/kie-pmml-models-mining/kie-pmml-models-mining-compiler/src/test/resources/MiningModel_SegmentId.pmml
+    kie-pmml-trusty/kie-pmml-models/kie-pmml-models-mining/kie-pmml-models-mining-compiler/src/test/resources/MiningModel_TreeModel.pmml
+    kie-pmml-trusty/kie-pmml-models/kie-pmml-models-mining/kie-pmml-models-mining-tests/src/main/resources/mixedmining/MiningModel_Mixed.pmml
+    kie-pmml-trusty/kie-pmml-models/kie-pmml-models-mining/kie-pmml-models-mining-tests/src/main/resources/multiplemining/MultipleMining.pmml
+    kie-pmml-trusty/kie-pmml-models/kie-pmml-models-mining/kie-pmml-models-mining-tests/src/main/resources/predicatesmining/MiningModel_Predicates.pmml
+    kie-pmml-trusty/kie-pmml-models/kie-pmml-models-mining/kie-pmml-models-mining-tests/src/main/resources/randomforestclassifiermining/RandomForestClassifier.pmml
+    kie-pmml-trusty/kie-pmml-models/kie-pmml-models-regression/kie-pmml-models-regression-compiler/src/test/resources/LinearRegressionSample.pmml
+    kie-pmml-trusty/kie-pmml-models/kie-pmml-models-regression/kie-pmml-models-regression-tests/src/main/resources/linearregressionsamplewithtransformations/LinearRegressionSampleWithTransformations.pmml
+    kie-pmml-trusty/kie-pmml-models/kie-pmml-models-tests/src/test/resources/MiningModel_Mixed.pmml
+    kie-pmml-trusty/kie-pmml-models/kie-pmml-models-tree/kie-pmml-models-tree-compiler/src/test/resources/TreeSample.pmml
+    kie-pmml-trusty/kie-pmml-models/kie-pmml-models-tree/kie-pmml-models-tree-compiler/src/test/resources/TreeSimplified.pmml
+
+Copyright (c) 2020 jovyan
+(C) Copyright IBM Corp. 1994, 2021
+Copyright IBM Corp, exported to PMML by Nyoka (c) 2022 Software AG
+copyright KNIME
+Copyright (c) 2018 Software AG
+
+Copyright (c) 2008-2016,  The Data Mining Group
+All rights reserved.
+This notice and license applies the.pmml
+notice and license is selected by the working group developing the release and is approved
+by the DMG Chair.
+
+Redistribution and use in source and binary forms, with or without modification, are
+permitted provided that the following conditions are met:
+* Redistributions of source code must include the copyright notice below, this list of
+conditions and the following disclaimer.
+* Redistributions in binary form must reproduce the copyright notice below, this list
+of conditions and the following disclaimer in the documentation and/or other
+materials provided with the distribution
+* Neither the name of the Data Mining Group nor the names of its members or
+contributors may be used to endorse or promote products derived from a release
+without specific prior written permission.
+
+THIS STANDARD IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS 
+IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS RELEASE, EVEN IF ADVISED
+OF THE POSSIBILITY OF SUCH DAMAGE.
