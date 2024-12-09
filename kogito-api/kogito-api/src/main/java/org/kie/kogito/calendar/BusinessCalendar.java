@@ -27,18 +27,21 @@ import java.util.Date;
 public interface BusinessCalendar {
 
     /**
-     * Calculates given time expression into duration in milliseconds based on calendar configuration.
-     * 
+     * Returns the difference, in milliseconds, between the <b>business date</b> that matches the given
+     * <code>timeExpression</code>, and the current time.
+     * See {@link #calculateBusinessTimeAsDate} for <b>business date</b> calculation
+     *
      * @param timeExpression time expression that is supported by business calendar implementation.
      * @return duration expressed in milliseconds
      */
-    public long calculateBusinessTimeAsDuration(String timeExpression);
+    long calculateBusinessTimeAsDuration(String timeExpression);
 
     /**
-     * Calculates given time expression into target date based on calendar configuration.
+     * Returns the first <code>Date</code> that matches the given <code>timeExpression</code> and falls
+     * into the business calendar working hours.
      * 
      * @param timeExpression time expression that is supported by business calendar implementation.
      * @return date when given time expression will match in the future
      */
-    public Date calculateBusinessTimeAsDate(String timeExpression);
+    Date calculateBusinessTimeAsDate(String timeExpression);
 }

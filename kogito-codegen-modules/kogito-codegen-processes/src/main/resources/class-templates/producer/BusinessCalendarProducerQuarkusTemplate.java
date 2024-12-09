@@ -31,6 +31,6 @@ public class BusinessCalendarProducer {
 
     @Produces
     public BusinessCalendar createBusinessCalendar() {
-        return new BusinessCalendarImpl();
+        return BusinessCalendarImpl.builder().build();
     }
 }

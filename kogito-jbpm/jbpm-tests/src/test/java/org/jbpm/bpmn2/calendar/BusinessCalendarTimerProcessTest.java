@@ -28,6 +28,7 @@ import java.util.Properties;
 
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.jbpm.process.core.timer.BusinessCalendarImpl;
+import org.jbpm.process.core.timer.CalendarBean;
 import org.jbpm.test.utils.ProcessTestHelper;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -38,19 +39,20 @@ import org.kie.kogito.process.impl.AbstractProcessConfig;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class BusinessCalendarTest {
+public class BusinessCalendarTimerProcessTest {
 
-    private static BusinessCalendar workingDayCalendar;
-    private static BusinessCalendar notWorkingDayCalendar;
+    private static Properties notWorkingDayCalendarConfiguration;
+    private static Properties workingDayCalendarConfiguration;
 
     @BeforeAll
     public static void createCalendars() {
-        workingDayCalendar = configureBusinessCalendar(true);
-        notWorkingDayCalendar = configureBusinessCalendar(false);
+        workingDayCalendarConfiguration = configureBusinessCalendar(true);
+        notWorkingDayCalendarConfiguration = configureBusinessCalendar(false);
     }
 
     @Test
     public void testTimerWithWorkingDayCalendar() throws InterruptedException {
+        BusinessCalendar workingDayCalendar = BusinessCalendarImpl.builder().withCalendarBean(new CalendarBean(workingDayCalendarConfiguration)).build();
         Application app = ProcessTestHelper.newApplication(new MockProcessConfig(workingDayCalendar));
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         ProcessTestHelper.registerHandler(app, "Human Task", workItemHandler);
@@ -65,6 +67,7 @@ public class BusinessCalendarTest {
 
     @Test
     public void testTimerWithNotWorkingDayCalendar() throws InterruptedException {
+        BusinessCalendar notWorkingDayCalendar = BusinessCalendarImpl.builder().withCalendarBean(new CalendarBean(notWorkingDayCalendarConfiguration)).build();
         Application app = ProcessTestHelper.newApplication(new MockProcessConfig(notWorkingDayCalendar));
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         ProcessTestHelper.registerHandler(app, "Human Task", workItemHandler);
@@ -77,14 +80,12 @@ public class BusinessCalendarTest {
         assertThat(instance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
     }
 
-    private static BusinessCalendar configureBusinessCalendar(boolean isWorkingDayCalendar) {
+    private static Properties configureBusinessCalendar(boolean isWorkingDayCalendar) {
         Properties businessCalendarConfiguration = new Properties();
         if (isWorkingDayCalendar) {
             businessCalendarConfiguration.setProperty(BusinessCalendarImpl.START_HOUR, "0");
             businessCalendarConfiguration.setProperty(BusinessCalendarImpl.END_HOUR, "24");
-            businessCalendarConfiguration.setProperty(BusinessCalendarImpl.HOURS_PER_DAY, "24");
-            businessCalendarConfiguration.setProperty(BusinessCalendarImpl.DAYS_PER_WEEK, "7");
-            businessCalendarConfiguration.setProperty(BusinessCalendarImpl.WEEKEND_DAYS, "8,9");
+            businessCalendarConfiguration.setProperty(BusinessCalendarImpl.WEEKEND_DAYS, "0");
         } else {
             Calendar currentCalendar = Calendar.getInstance();
             Date today = new Date();
@@ -92,10 +93,13 @@ public class BusinessCalendarTest {
             Date tomorrow = currentCalendar.getTime();
             String dateFormat = "yyyy-MM-dd";
             SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
+            businessCalendarConfiguration.setProperty(BusinessCalendarImpl.START_HOUR, "9");
+            businessCalendarConfiguration.setProperty(BusinessCalendarImpl.END_HOUR, "17");
             businessCalendarConfiguration.setProperty(BusinessCalendarImpl.HOLIDAYS, sdf.format(today) + "," + sdf.format(tomorrow));
+            businessCalendarConfiguration.setProperty(BusinessCalendarImpl.WEEKEND_DAYS, "1,2,3,4,5");
             businessCalendarConfiguration.setProperty(BusinessCalendarImpl.HOLIDAY_DATE_FORMAT, dateFormat);
         }
-        return new BusinessCalendarImpl(businessCalendarConfiguration);
+        return businessCalendarConfiguration;
     }
 
     private static class MockProcessConfig extends AbstractProcessConfig {

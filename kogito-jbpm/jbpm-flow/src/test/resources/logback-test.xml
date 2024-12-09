@@ -29,6 +29,7 @@
   </appender>
 
   <logger name="org.jbpm" level="info"/>
+  <logger name="org.jbpm.process.core.timer" level="info"/>
   <logger name="com.arjuna" level="error"/>
   <logger name="org.hibernate" level="warn"/>
  

@@ -33,6 +33,6 @@ public class BusinessCalendarProducer {
     @Bean
     public BusinessCalendar createBusinessCalendar() {
 
-        return new BusinessCalendarImpl();
+        return BusinessCalendarImpl.builder().build();
     }
 }
