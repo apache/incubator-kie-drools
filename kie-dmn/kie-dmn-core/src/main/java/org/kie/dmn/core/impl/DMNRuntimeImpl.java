@@ -18,6 +18,7 @@
  */
 package org.kie.dmn.core.impl;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -112,22 +113,19 @@ public class DMNRuntimeImpl
         Objects.requireNonNull(model, () -> MsgUtil.createMessage(Msg.PARAM_CANNOT_BE_NULL, "model"));
         Objects.requireNonNull(context, () -> MsgUtil.createMessage(Msg.PARAM_CANNOT_BE_NULL, "context"));
         boolean performRuntimeTypeCheck = performRuntimeTypeCheck(model);
-        if (model.hasErrors()) {
-            List<DMNMessage> messages = model.getMessages(DMNMessage.Severity.ERROR);
-            String errorMessage = messages.stream().map(Message::getText).collect(Collectors.joining(", "));
-            throw new IllegalStateException(errorMessage);
-        } else {
-            DMNResultImpl result = createResult( model, context );
-            DMNRuntimeEventManagerUtils.fireBeforeEvaluateAll( eventManager, model, result );
-            // the engine should evaluate all Decisions belonging to the "local" model namespace, not imported decision explicitly.
-            Set<DecisionNode> decisions = model.getDecisions().stream().filter(d -> d.getModelNamespace().equals(model.getNamespace())).collect(Collectors.toSet());
-            for( DecisionNode decision : decisions ) {
-                evaluateDecision(context, result, decision, performRuntimeTypeCheck);
-            }
-            DMNRuntimeEventManagerUtils.fireAfterEvaluateAll( eventManager, model, result );
-            return result;
-            }
+        if (model.hasErrors()){
+            handleModelErrors(model);
         }
+        DMNResultImpl result = createResult( model, context );
+        DMNRuntimeEventManagerUtils.fireBeforeEvaluateAll( eventManager, model, result );
+        // the engine should evaluate all Decisions belonging to the "local" model namespace, not imported decision explicitly.
+        Set<DecisionNode> decisions = model.getDecisions().stream().filter(d -> d.getModelNamespace().equals(model.getNamespace())).collect(Collectors.toSet());
+        for( DecisionNode decision : decisions ) {
+            evaluateDecision(context, result, decision, performRuntimeTypeCheck);
+        }
+        DMNRuntimeEventManagerUtils.fireAfterEvaluateAll( eventManager, model, result );
+        return result;
+    }
 
     @Override
     @Deprecated
@@ -155,6 +153,13 @@ public class DMNRuntimeImpl
         if (decisionNames.length == 0) {
             throw new IllegalArgumentException(MsgUtil.createMessage(Msg.PARAM_CANNOT_BE_EMPTY, "decisionNames"));
         }
+        List<DMNMessage> errorMessages = model.getMessages(DMNMessage.Severity.ERROR);
+        errorMessages.stream().filter(message -> Arrays.stream(decisionNames).anyMatch(decision -> message.getText().contains(decision)))
+                .findAny().ifPresent(message -> {
+                    throw new IllegalStateException(message.getText());
+                });
+
+        System.out.println(errorMessages);
         final DMNResultImpl result = createResult( model, context );
         for (String name : decisionNames) {
             evaluateByNameInternal( model, context, result, name );
@@ -759,6 +764,12 @@ public class DMNRuntimeImpl
             return prefix + "." + getIdentifier(node);
         }
 
+    }
+
+    private static void handleModelErrors(DMNModel model) {
+        List<DMNMessage> messages = model.getMessages(DMNMessage.Severity.ERROR);
+        String errorMessage = messages.stream().map(Message::getText).collect(Collectors.joining(", "));
+        throw new IllegalStateException(errorMessage);
     }
 
     public boolean performRuntimeTypeCheck(DMNModel model) {

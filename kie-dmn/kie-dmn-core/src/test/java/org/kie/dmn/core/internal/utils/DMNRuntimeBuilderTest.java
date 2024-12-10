@@ -27,6 +27,7 @@ import org.junit.jupiter.api.Test;
 import org.kie.api.io.Resource;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
+import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.impl.DMNRuntimeImpl;
@@ -72,4 +73,44 @@ class DMNRuntimeBuilderTest {
         assertThatThrownBy(() -> dmnRuntime.evaluateAll(dmnModel, context))
                 .isInstanceOf(IllegalStateException.class);
         }
+
+    @Test
+    void multipleDecisionWithoutInputDataReferencesEvaluateWrongDecision() {
+        File modelFile = FileUtils.getFile("Invalid_decisions_model.dmn");
+        assertThat(modelFile).isNotNull().exists();
+        Resource modelResource = ResourceFactory.newFileResource(modelFile);
+        DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults().buildConfiguration()
+                .fromResources(Collections.singletonList(modelResource)).getOrElseThrow(RuntimeException::new);
+        assertThat(dmnRuntime).isNotNull();
+        String nameSpace = "https://kie.org/dmn/_BDC29BCF-B5DC-4AD7-8A5F-43DC08780F97";
+
+        final DMNModel dmnModel = dmnRuntime.getModel(
+                nameSpace,
+                "DMN_1A4BD262-7672-4887-9F25-986EE5277D16");
+        assertThat(dmnModel).isNotNull();
+        DMNContext context = DMNFactory.newContext();
+        context.set( "Person Age", 24 );
+        assertThatThrownBy(() -> dmnRuntime.evaluateByName(dmnModel, context, "Can Drive?"))
+                .isInstanceOf(IllegalStateException.class);
+    }
+
+    @Test
+    void multipleDecisionWithoutInputDataReferencesValuateCorrectDecision() {
+        File modelFile = FileUtils.getFile("Invalid_decisions_model.dmn");
+        assertThat(modelFile).isNotNull().exists();
+        Resource modelResource = ResourceFactory.newFileResource(modelFile);
+        DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults().buildConfiguration()
+                .fromResources(Collections.singletonList(modelResource)).getOrElseThrow(RuntimeException::new);
+        assertThat(dmnRuntime).isNotNull();
+        String nameSpace = "https://kie.org/dmn/_BDC29BCF-B5DC-4AD7-8A5F-43DC08780F97";
+
+        final DMNModel dmnModel = dmnRuntime.getModel(
+                nameSpace,
+                "DMN_1A4BD262-7672-4887-9F25-986EE5277D16");
+        assertThat(dmnModel).isNotNull();
+        DMNContext context = DMNFactory.newContext();
+        context.set( "Person Age", 24 );
+        DMNResult dmnResult = dmnRuntime.evaluateByName(dmnModel, context, "Can Vote?");
+        assertThat(dmnResult).isNotNull();
+    }
 }
