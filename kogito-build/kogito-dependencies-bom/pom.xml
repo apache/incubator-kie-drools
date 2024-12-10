@@ -47,6 +47,7 @@
     <version.com.fasterxml.jackson>2.17.2</version.com.fasterxml.jackson>
     <version.com.fasterxml.jackson.databind>2.17.2</version.com.fasterxml.jackson.databind>
     <version.com.jayway.jsonpath>2.9.0</version.com.jayway.jsonpath>
+    <version.com.ongres.scram>2.1</version.com.ongres.scram>
     <version.net.minidev.jsonsmart>2.4.10</version.net.minidev.jsonsmart>
     <version.net.thisptr.jackson-jq>1.0.0-preview.20240207</version.net.thisptr.jackson-jq>
     <version.io.quarkiverse.jackson-jq>2.0.2</version.io.quarkiverse.jackson-jq>
@@ -118,7 +119,7 @@
     <version.org.mongo-image>4.4.14</version.org.mongo-image>
     <version.org.mozilla.rhino>1.7.13</version.org.mozilla.rhino>
     <version.org.redis>2.0.4</version.org.redis>
-    <version.org.postgres>13.4-alpine3.14</version.org.postgres>
+    <version.org.postgres>15.9-alpine3.20</version.org.postgres>
     <!-- we align to version used by quarkus -->
     <version.org.apache.avro>1.11.4</version.org.apache.avro>
     <version.org.assertj>3.24.2</version.org.assertj>
@@ -593,6 +594,12 @@
         <groupId>com.github.tomakehurst</groupId>
         <artifactId>wiremock-jre8-standalone</artifactId>
         <version>${version.com.github.tomakehurst.wiremock}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>com.ongres.scram</groupId>
+        <artifactId>client</artifactId>
+        <version>${version.com.ongres.scram}</version>
         <scope>test</scope>
       </dependency>
 

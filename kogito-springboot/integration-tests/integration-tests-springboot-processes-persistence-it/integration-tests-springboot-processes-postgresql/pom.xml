@@ -97,6 +97,16 @@
       <artifactId>awaitility</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+       <groupId>io.vertx</groupId>
+       <artifactId>vertx-pg-client</artifactId>
+       <scope>test</scope>
+    </dependency>
+    <dependency>
+       <groupId>com.ongres.scram</groupId>
+       <artifactId>client</artifactId>
+       <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
