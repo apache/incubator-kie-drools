@@ -3954,15 +3954,13 @@ public class AccumulateTest {
                         "    accumulate(Primitives($bd : bigDecimal), $min : min($bd))\n" +
                         "then\n" +
                         "    results.add($min);\n" +
-                        // to confirm if $min is BigDecimal at build time (Not Comparable)
-                        // The return value isn't important to assert
-                        "    System.out.println($min.scale());\n" +
+                        "    results.add($min.scale());\n" + // BigDecimal method
                         "end";
 
         final KieBase kieBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("accumulate-test", kieBaseTestConfiguration, drl);
         final KieSession kieSession = kieBase.newKieSession();
         try {
-            List<BigDecimal> results = new ArrayList<>();
+            List<Number> results = new ArrayList<>();
             kieSession.setGlobal("results", results);
             Primitives p1 = new Primitives();
             p1.setBigDecimal(new BigDecimal("2024043020240501130000"));
@@ -3975,8 +3973,9 @@ public class AccumulateTest {
             kieSession.insert(p2_smallest);
             kieSession.insert(p3);
             kieSession.fireAllRules();
-            assertThat(results).hasSize(1);
+            assertThat(results).hasSize(2);
             assertThat(results.get(0)).isEqualTo(p2_smallest.getBigDecimal());
+            assertThat(results.get(1)).isEqualTo(0);
         } finally {
             kieSession.dispose();
         }
@@ -3992,15 +3991,13 @@ public class AccumulateTest {
                         "    accumulate(Primitives($bi : bigInteger), $min : min($bi))\n" +
                         "then\n" +
                         "    results.add($min);\n" +
-                        // to confirm if $min is BigInteger at build time (Not Comparable)
-                        // The return value isn't important to assert
-                        "    System.out.println($min.nextProbablePrime());\n" +
+                        "    results.add($min.nextProbablePrime());\n" + // BigInteger method
                         "end";
 
         final KieBase kieBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("accumulate-test", kieBaseTestConfiguration, drl);
         final KieSession kieSession = kieBase.newKieSession();
         try {
-            List<BigInteger> results = new ArrayList<>();
+            List<Number> results = new ArrayList<>();
             kieSession.setGlobal("results", results);
             Primitives p1 = new Primitives();
             p1.setBigInteger(new BigInteger("2024043020240501130000"));
@@ -4013,8 +4010,12 @@ public class AccumulateTest {
             kieSession.insert(p2_smallest);
             kieSession.insert(p3);
             kieSession.fireAllRules();
-            assertThat(results).hasSize(1);
+            assertThat(results).hasSize(2);
             assertThat(results.get(0)).isEqualTo(p2_smallest.getBigInteger());
+
+            // nextProbablePrime value is not important.
+            // Just to make sure it doesn't raise a compilation error.
+            assertThat(results.get(1)).isNotNull();
         } finally {
             kieSession.dispose();
         }
@@ -4030,15 +4031,13 @@ public class AccumulateTest {
                         "    accumulate(Primitives($bd : bigDecimal), $max : max($bd))\n" +
                         "then\n" +
                         "    results.add($max);\n" +
-                        // to confirm if $max is BigDecimal at build time (Not Comparable)
-                        // The return value isn't important to assert
-                        "    System.out.println($max.scale());\n" +
+                        "    results.add($max.scale());\n" + // BigDecimal method
                         "end";
 
         final KieBase kieBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("accumulate-test", kieBaseTestConfiguration, drl);
         final KieSession kieSession = kieBase.newKieSession();
         try {
-            List<BigDecimal> results = new ArrayList<>();
+            List<Number> results = new ArrayList<>();
             kieSession.setGlobal("results", results);
             Primitives p1 = new Primitives();
             p1.setBigDecimal(new BigDecimal("2024043020240501130000"));
@@ -4051,8 +4050,9 @@ public class AccumulateTest {
             kieSession.insert(p2_largest);
             kieSession.insert(p3);
             kieSession.fireAllRules();
-            assertThat(results).hasSize(1);
+            assertThat(results).hasSize(2);
             assertThat(results.get(0)).isEqualTo(p2_largest.getBigDecimal());
+            assertThat(results.get(1)).isEqualTo(0);
         } finally {
             kieSession.dispose();
         }
@@ -4068,15 +4068,13 @@ public class AccumulateTest {
                         "    accumulate(Primitives($bi : bigInteger), $max : max($bi))\n" +
                         "then\n" +
                         "    results.add($max);\n" +
-                        // to confirm if $max is BigInteger at build time (Not Comparable)
-                        // The return value isn't important to assert
-                        "    System.out.println($max.nextProbablePrime());\n" +
+                        "    results.add($max.nextProbablePrime());\n" + // BigInteger method
                         "end";
 
         final KieBase kieBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("accumulate-test", kieBaseTestConfiguration, drl);
         final KieSession kieSession = kieBase.newKieSession();
         try {
-            List<BigInteger> results = new ArrayList<>();
+            List<Number> results = new ArrayList<>();
             kieSession.setGlobal("results", results);
             Primitives p1 = new Primitives();
             p1.setBigInteger(new BigInteger("2024043020240501130000"));
@@ -4089,8 +4087,12 @@ public class AccumulateTest {
             kieSession.insert(p2_largest);
             kieSession.insert(p3);
             kieSession.fireAllRules();
-            assertThat(results).hasSize(1);
+            assertThat(results).hasSize(2);
             assertThat(results.get(0)).isEqualTo(p2_largest.getBigInteger());
+
+            // nextProbablePrime value is not important.
+            // Just to make sure it doesn't raise a compilation error.
+            assertThat(results.get(1)).isNotNull();
         } finally {
             kieSession.dispose();
         }
