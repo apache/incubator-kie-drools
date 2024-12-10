@@ -4663,7 +4663,7 @@ public class IncrementalCompilationTest {
 
     @ParameterizedTest(name = "KieBase type={0}")
 	@MethodSource("parameters")
-    @Disabled("This test fails, see issue")
+    @Disabled("It fails. See issue #6190")
     public void testDecisionTable(KieBaseTestConfiguration kieBaseTestConfiguration) {
         KieServices ks = KieServices.get();
         KieResources kr = ks.getResources();

@@ -22,7 +22,7 @@ import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Disabled;
 
-@Disabled("TODO: Open issue. It gets stuck")
+@Disabled("It gets stuck. See issue #6190")
 public class AddRemoveGenerated2RulesStringIntegerTest extends AbstractAddRemoveGenerated2RulesTest {
 
     public static Stream<ConstraintsPair> parameters() {
