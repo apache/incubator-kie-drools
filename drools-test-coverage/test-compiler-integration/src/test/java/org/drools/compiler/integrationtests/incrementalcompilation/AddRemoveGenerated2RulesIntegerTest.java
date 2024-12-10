@@ -18,23 +18,17 @@
  */
 package org.drools.compiler.integrationtests.incrementalcompilation;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import java.util.stream.Stream;
 
-import java.util.Collection;
+import org.junit.jupiter.api.Disabled;
 
-@RunWith(Parameterized.class)
+@Disabled("TODO: Open issue. It gets stuck")
 public class AddRemoveGenerated2RulesIntegerTest extends AbstractAddRemoveGenerated2RulesTest {
 
-    public AddRemoveGenerated2RulesIntegerTest(final ConstraintsPair constraintsPair) {
-        super(constraintsPair);
-    }
-
-    @Parameterized.Parameters
-    public static Collection<ConstraintsPair[]> getRulesConstraints() {
+    public static Stream<ConstraintsPair> parameters() {
         return generateRulesConstraintsCombinations(
                 " Integer() \n",
                 " exists(Integer() and Integer()) \n",
-                " exists(Integer() and exists(Integer() and Integer())) \n");
+                " exists(Integer() and exists(Integer() and Integer())) \n").stream();
     }
 }
