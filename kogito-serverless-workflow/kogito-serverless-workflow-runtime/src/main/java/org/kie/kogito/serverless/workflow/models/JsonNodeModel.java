@@ -50,7 +50,15 @@ public class JsonNodeModel implements Model, MapInput, MapInputId, MapOutput, Ma
         this(null, workflowdata);
     }
 
+    public JsonNodeModel(Object workflowdata, Map<String, Object> additionalProperties) {
+        this(null, workflowdata, additionalProperties);
+    }
+
     public JsonNodeModel(String id, Object workflowdata) {
+        this(id, workflowdata, Collections.emptyMap());
+    }
+
+    public JsonNodeModel(String id, Object workflowdata, Map<String, Object> additionalProperties) {
         this.id = id;
         if (workflowdata instanceof JsonNode) {
             this.workflowdata = (JsonNode) workflowdata;
@@ -59,6 +67,7 @@ public class JsonNodeModel implements Model, MapInput, MapInputId, MapOutput, Ma
             this.workflowdata = workflowdata == null ? mapper.createObjectNode() : mapper.convertValue(workflowdata, JsonNode.class);
         }
         this.input = this.workflowdata.deepCopy();
+        this.additionalProperties = additionalProperties == null ? Collections.emptyMap() : additionalProperties;
     }
 
     public String getId() {

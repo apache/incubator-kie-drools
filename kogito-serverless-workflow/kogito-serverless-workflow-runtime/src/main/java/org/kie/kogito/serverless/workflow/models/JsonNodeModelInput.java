@@ -18,20 +18,23 @@
  */
 package org.kie.kogito.serverless.workflow.models;
 
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import org.kie.kogito.MapInput;
 import org.kie.kogito.MapInputId;
 import org.kie.kogito.MapOutput;
 import org.kie.kogito.MappableToModel;
 import org.kie.kogito.Model;
-import org.kie.kogito.jackson.utils.ObjectMapperFactory;
 
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class JsonNodeModelInput implements Model, MapInput, MapInputId, MapOutput, MappableToModel<JsonNodeModel> {
 
     private Object workflowdata;
+    private Map<String, Object> additionalProperties;
 
     public Object getWorkflowdata() {
         return workflowdata;
@@ -39,16 +42,18 @@ public class JsonNodeModelInput implements Model, MapInput, MapInputId, MapOutpu
 
     @JsonAnySetter
     public void setData(String key, JsonNode value) {
-        if (workflowdata == null) {
-            workflowdata = ObjectMapperFactory.listenerAware().createObjectNode();
+        if (additionalProperties == null) {
+            additionalProperties = new LinkedHashMap<>();
         }
-        if (workflowdata instanceof ObjectNode) {
-            ((ObjectNode) workflowdata).set(key, value);
-        }
+        additionalProperties.put(key, value);
     }
 
     @Override
     public JsonNodeModel toModel() {
-        return new JsonNodeModel(workflowdata);
+        if (workflowdata == null) {
+            workflowdata = additionalProperties;
+            additionalProperties = Collections.emptyMap();
+        }
+        return new JsonNodeModel(workflowdata, additionalProperties);
     }
 }

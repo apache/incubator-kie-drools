@@ -38,7 +38,7 @@ class ExpressionRestIT {
                 .contentType(ContentType.JSON)
                 .accept(ContentType.JSON)
                 .header("pepe", "pepa")
-                .body("{\"workflowdata\":{\"numbers\":[{\"x\":2, \"y\": 1},{\"x\":4, \"y\": 3}]}}").when()
+                .body("{\"workflowdata\":{\"numbers\":[{\"x\":2, \"y\": 1},{\"x\":4, \"y\": 3}]}, \"randomAdditionalProperty\":\"Im ignored in runtimes but will be visible on data index\"}").when()
                 .post("/expression")
                 .then()
                 .statusCode(201)
