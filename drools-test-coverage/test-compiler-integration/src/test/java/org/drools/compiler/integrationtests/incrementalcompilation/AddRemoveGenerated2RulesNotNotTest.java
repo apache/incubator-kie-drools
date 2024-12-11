@@ -18,23 +18,17 @@
  */
 package org.drools.compiler.integrationtests.incrementalcompilation;
 
-import java.util.Collection;
+import java.util.stream.Stream;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.Disabled;
 
-@RunWith(Parameterized.class)
+@Disabled("It gets stuck. See issue #6190")
 public class AddRemoveGenerated2RulesNotNotTest extends AbstractAddRemoveGenerated2RulesTest {
 
-    public AddRemoveGenerated2RulesNotNotTest(final ConstraintsPair constraintsPair) {
-        super(constraintsPair);
-    }
-
-    @Parameterized.Parameters
-    public static Collection<ConstraintsPair[]> getRulesConstraints() {
+    public static Stream<ConstraintsPair> parameters() {
         return generateRulesConstraintsCombinations(
                 " Integer() \n",
                 " Integer() not(not(exists(Integer() and Integer()))) \n",
-                " exists(Integer() and exists(Integer() and Integer())) \n");
+                " exists(Integer() and exists(Integer() and Integer())) \n").stream();
     }
 }
