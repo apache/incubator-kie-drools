@@ -507,30 +507,6 @@ public class DefaultFactHandle extends AbstractLinkedListNode<DefaultFactHandle>
             lastLeftTuple = leftTuple;
         }
 
-        private void addLastTuple(TupleImpl tuple, boolean left) {
-            if (left) {
-                addLastLeftTuple(tuple);
-            } else {
-                addLastRightTuple(tuple);
-            }
-        }
-
-        private void setFirstTuple(TupleImpl tuple, boolean left) {
-            if (left) {
-                firstLeftTuple = tuple;
-            } else {
-                firstRightTuple = tuple;
-            }
-        }
-
-        private void setLastTuple(TupleImpl tuple, boolean left) {
-            if (left) {
-                lastLeftTuple = tuple;
-            } else {
-                lastRightTuple = tuple;
-            }
-        }
-
         @Override
         public void removeLeftTuple( TupleImpl leftTuple ) {
             TupleImpl previous = leftTuple.getHandlePrevious();
@@ -681,21 +657,8 @@ public class DefaultFactHandle extends AbstractLinkedListNode<DefaultFactHandle>
             }
 
             if (detached != null) {
-                if (firstLeftTuple == detached) {
-                    firstLeftTuple = null;
-                }
-
-                if (lastLeftTuple == detached) {
-                    lastLeftTuple = null;
-                }
-
-                if (detached.getHandlePrevious() != null) {
-                    lastLeftTuple = detached.getHandlePrevious();
-                    detached.setHandlePrevious(null);
-                    lastLeftTuple.setHandleNext(null);
-                }
+                removeLeftTuple(detached);
             }
-
             return detached;
         }
 
@@ -709,21 +672,8 @@ public class DefaultFactHandle extends AbstractLinkedListNode<DefaultFactHandle>
             }
 
             if (detached != null) {
-                if (firstRightTuple == detached) {
-                    firstRightTuple = null;
-                }
-
-                if (lastRightTuple == detached) {
-                    lastRightTuple = null;
-                }
-
-                if (detached.getHandlePrevious() != null) {
-                    lastRightTuple = detached.getHandlePrevious();
-                    detached.setHandlePrevious(null);
-                    lastRightTuple.setHandleNext(null);
-                }
+                removeRightTuple(detached);
             }
-
             return detached;
         }
 
