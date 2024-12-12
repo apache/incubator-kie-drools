@@ -22,7 +22,6 @@ import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Disabled;
 
-@Disabled("It gets stuck. See issue #6190")
 public class AddRemoveGenerated2RulesIntegerTest extends AbstractAddRemoveGenerated2RulesTest {
 
     public static Stream<ConstraintsPair> parameters() {
