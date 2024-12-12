@@ -196,6 +196,11 @@ public class DMNRuntimeImpl
         if (decisionIds.length == 0) {
             throw new IllegalArgumentException(MsgUtil.createMessage(Msg.PARAM_CANNOT_BE_EMPTY, "decisionIds"));
         }
+        List<DMNMessage> errorMessages = model.getMessages(DMNMessage.Severity.ERROR);
+        errorMessages.stream().filter(message -> Arrays.stream(decisionIds).anyMatch(decision -> message.getText().contains(decision)))
+                .findAny().ifPresent(message -> {
+                    throw new IllegalStateException(message.getText());
+                });
         final DMNResultImpl result = createResult( model, context );
         for ( String id : decisionIds ) {
             evaluateByIdInternal( model, context, result, id );
