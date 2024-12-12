@@ -52,4 +52,36 @@ public class CasesFromGeneratedRulesTest {
 
         AddRemoveTestCases.insertFactsFireRulesRemoveRulesReinsertRules1(rule1, rule2, TestUtil.RULE1_NAME, TestUtil.RULE2_NAME, null, 1, 2);
     }
+
+    @Test
+    @Timeout(40000)
+    public void testInsertFactsRemoveRulesFireRulesRemoveRules() {
+        String rule1 = """
+                package com.rules;
+                global java.util.List list
+                rule R1
+                 when
+                  exists(Integer())
+                  not(Double() and Double())
+                  Integer() not(Double() and Double())
+                 then
+                 list.add('R1');
+                end
+                """;
+
+        String rule2 = """
+                package com.rules;
+                global java.util.List list
+                rule R2
+                 when
+                  exists(Integer())
+                  not(Double() and Double())
+                  exists(Integer())
+                 then
+                 list.add('R2');
+                end
+                """;
+
+        AddRemoveTestCases.insertFactsRemoveRulesFireRulesRemoveRules2(rule1, rule2, TestUtil.RULE1_NAME, TestUtil.RULE2_NAME, null, 1);
+    }
 }
