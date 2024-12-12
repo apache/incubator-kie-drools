@@ -657,7 +657,20 @@ public class DefaultFactHandle extends AbstractLinkedListNode<DefaultFactHandle>
             }
 
             if (detached != null) {
-                removeLeftTuple(detached);
+                if (firstLeftTuple == detached) {
+                    firstLeftTuple = null;
+                    lastLeftTuple = null;
+                }
+
+                if (lastLeftTuple == detached) {
+                    lastLeftTuple = null;
+                }
+
+                if (detached.getHandlePrevious() != null) {
+                    lastLeftTuple = detached.getHandlePrevious();
+                    detached.setHandlePrevious(null);
+                    lastLeftTuple.setHandleNext(null);
+                }
             }
             return detached;
         }
@@ -672,7 +685,20 @@ public class DefaultFactHandle extends AbstractLinkedListNode<DefaultFactHandle>
             }
 
             if (detached != null) {
-                removeRightTuple(detached);
+                if (firstRightTuple == detached) {
+                    firstRightTuple = null;
+                    lastRightTuple = null;
+                }
+
+                if (lastRightTuple == detached) {
+                    lastRightTuple = null;
+                }
+
+                if (detached.getHandlePrevious() != null) {
+                    lastRightTuple = detached.getHandlePrevious();
+                    detached.setHandlePrevious(null);
+                    lastRightTuple.setHandleNext(null);
+                }
             }
             return detached;
         }
