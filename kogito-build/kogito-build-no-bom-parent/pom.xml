@@ -50,7 +50,7 @@
     <!-- container images for testing -->
     <container.image.infinispan>infinispan/server:${version.org.infinispan}</container.image.infinispan>
     <container.image.keycloak>quay.io/keycloak/keycloak:${version.org.keycloak}</container.image.keycloak>
-    <container.image.kafka>vectorized/redpanda:v21.11.8</container.image.kafka>
+    <container.image.kafka>redpandadata/redpanda:v24.3.1</container.image.kafka>
     <container.image.wurstmeister.kafka>wurstmeister/kafka:${version.wurstmeister.kafka}</container.image.wurstmeister.kafka>
     <container.image.mongodb>library/mongo:${version.org.mongo-image}</container.image.mongodb>
     <container.image.redis>redislabs/redisearch:${version.org.redis}</container.image.redis>
