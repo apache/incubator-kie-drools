@@ -4,8 +4,6 @@
 .rat-excludes
 # DISCLAIMER-WIP
 DISCLAIMER-WIP
-# drools-decisiontables/src/main/java/org/drools/decisiontable/parser/csv/CsvLineParser.java
-CsvLineParser.java
 # drools-decisiontables/src/test/resources/data/ComplexWorkbook.drl.csv
 ComplexWorkbook.drl.csv
 # drools-decisiontables/src/test/resources/data/TestCsv.drl.csv

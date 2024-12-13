@@ -19,30 +19,15 @@
 package org.drools.decisiontable.parser.csv;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
  * A simple parser for CSV (Comma-Separated Values) format.
- * Supports quoted fields, escaped quotes, and custom delimiters.
+ * Supports quoted fields and escaped quotes.
  */
 public class CsvLineParser {
-    private final char delimiter;
-
-    /**
-     * Creates a CSV parser with comma as the default delimiter.
-     */
-    public CsvLineParser() {
-        this(',');
-    }
-
-    /**
-     * Creates a CSV parser with a custom delimiter.
-     *
-     * @param delimiter The character to use as field delimiter
-     */
-    public CsvLineParser(char delimiter) {
-        this.delimiter = delimiter;
-    }
+    private static final char DELIMITER = ',';
 
     /**
      * Parses a line of CSV text into a list of fields.
@@ -55,8 +40,7 @@ public class CsvLineParser {
         List<String> fields = new ArrayList<>();
 
         if (line.isEmpty()) {
-            fields.add("");
-            return fields;
+            return Collections.singletonList("");
         }
 
         StringBuilder currentField = new StringBuilder();
@@ -76,7 +60,7 @@ public class CsvLineParser {
                 continue;
             }
 
-            if (currentChar == delimiter && !insideQuotes) {
+            if (currentChar == DELIMITER && !insideQuotes) {
                 fields.add(currentField.toString());
                 currentField.setLength(0);
                 continue;
