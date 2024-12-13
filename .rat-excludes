@@ -12,16 +12,10 @@ ComplexWorkbook.drl.csv
 TestCsv.drl.csv
 # drools-decisiontables/src/test/resources/org/drools/decisiontable/DeclaresWorkbook.drl.csv
 DeclaresWorkbook.drl.csv
-# drools-decisiontables/src/test/resources/org/drools/decisiontable/changeSetTestCSV.drl.csv
-changeSetTestCSV.drl.csv
-# drools-decisiontables/src/test/resources/org/drools/decisiontable/changeSetTestCSV2.drl.csv
-changeSetTestCSV2.drl.csv
 # drools-decisiontables/src/test/resources/org/drools/decisiontable/columnReplaceTest.drl.csv
 columnReplaceTest.drl.csv
 # drools-decisiontables/src/test/resources/org/drools/decisiontable/emptyAction.drl.csv
 emptyAction.drl.csv
-# drools-decisiontables/src/test/resources/org/drools/decisiontable/scannerChangeSetTestCSV.drl.csv
-scannerChangeSetTestCSV.drl.csv
 # drools-decisiontables/src/test/resources/org/drools/decisiontable/unicode.drl.csv
 unicode.drl.csv
 # drools-decisiontables/src/test/resources/org/drools/decisiontable/integrationtests/csv/kmoduleCSVTest.dtable.drl.csv
