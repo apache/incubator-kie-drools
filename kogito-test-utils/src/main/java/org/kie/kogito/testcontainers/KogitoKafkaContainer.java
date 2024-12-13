@@ -47,6 +47,7 @@ public class KogitoKafkaContainer extends KogitoGenericContainer<KogitoKafkaCont
         withExposedPorts(KAFKA_PORT);
         withCreateContainerCmdModifier(cmd -> cmd.withEntrypoint("sh"));
         withCommand("-c", "while [ ! -f " + STARTER_SCRIPT + " ]; do sleep 0.1; done; " + STARTER_SCRIPT);
+        withNetworkAliases("kafka");
         waitingFor(Wait.forLogMessage(".*Started Kafka API server.*", 1).withStartupTimeout(Constants.CONTAINER_START_TIMEOUT));
     }
 
