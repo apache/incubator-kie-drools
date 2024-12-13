@@ -21,6 +21,7 @@ package org.kie.kogito.index.json;
 import org.kie.kogito.jackson.utils.JsonObjectUtils;
 import org.kie.kogito.jackson.utils.MergeUtils;
 import org.kie.kogito.jackson.utils.ObjectMapperFactory;
+import org.kie.kogito.persistence.api.query.AttributeFilter;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -57,5 +58,12 @@ public final class JsonUtils {
             result.set(name, createObjectNode(variableName.substring(indexOf + 1), variableValue));
         }
         return result;
+    }
+
+    public static <T> AttributeFilter<T> jsonFilter(AttributeFilter<T> filter) {
+        if (filter != null) {
+            filter.setJson(true);
+        }
+        return filter;
     }
 }

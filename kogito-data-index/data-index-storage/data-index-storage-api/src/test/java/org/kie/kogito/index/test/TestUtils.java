@@ -42,7 +42,9 @@ import org.kie.kogito.index.model.UserTaskInstance;
 import org.kie.kogito.jackson.utils.ObjectMapperFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.TextNode;
 
 import static java.util.Collections.singleton;
 import static java.util.Collections.singletonList;
@@ -80,6 +82,20 @@ public class TestUtils {
         event.setKogitoProcessInstanceId(processInstance);
         event.setData(ProcessInstanceVariableEventBody.create().processId(processId).processInstanceId(processInstance)
                 .variableName("traveller").variableValue(ObjectMapperFactory.get().createObjectNode().put("firstName", firstName).put("lastName", lastName)).build());
+        return event;
+    }
+
+    public static ProcessInstanceVariableDataEvent createProcessInstanceVariableEvent(String processInstance,
+            String processId, String name, int age, boolean isMartian, List<String> aliases) {
+        ProcessInstanceVariableDataEvent event = new ProcessInstanceVariableDataEvent();
+        event.setKogitoProcessId(processId);
+        event.setKogitoProcessInstanceId(processInstance);
+        ArrayNode node = ObjectMapperFactory.get().createArrayNode();
+        aliases.forEach(s -> node.add(new TextNode(s)));
+        event.setData(ProcessInstanceVariableEventBody.create().processId(processId).processInstanceId(processInstance)
+                .variableName("traveller").variableValue(ObjectMapperFactory.get().createObjectNode().put("name", name).put("age", age).put("isMartian", isMartian)
+                        .set("aliases", node))
+                .build());
         return event;
     }
 

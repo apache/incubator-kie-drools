@@ -48,6 +48,8 @@ import org.kie.kogito.index.model.MilestoneStatus;
 import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.storage.ProcessInstanceStorage;
 
+import io.quarkus.arc.DefaultBean;
+
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -57,6 +59,7 @@ import static org.kie.kogito.event.process.ProcessInstanceNodeEventBody.EVENT_TY
 import static org.kie.kogito.index.DateTimeUtils.toZonedDateTime;
 
 @ApplicationScoped
+@DefaultBean
 public class ProcessInstanceEntityStorage extends AbstractJPAStorageFetcher<String, ProcessInstanceEntity, ProcessInstance> implements ProcessInstanceStorage {
 
     protected ProcessInstanceEntityStorage() {

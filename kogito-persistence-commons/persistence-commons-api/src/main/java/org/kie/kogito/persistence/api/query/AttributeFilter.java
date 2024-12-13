@@ -26,6 +26,8 @@ public class AttributeFilter<T> {
 
     private T value;
 
+    private transient boolean jsonFilter;
+
     protected AttributeFilter(String attribute, FilterCondition condition, T value) {
         this.attribute = attribute;
         this.condition = condition;
@@ -54,6 +56,14 @@ public class AttributeFilter<T> {
 
     public void setValue(T value) {
         this.value = value;
+    }
+
+    public void setJson(boolean jsonFilter) {
+        this.jsonFilter = jsonFilter;
+    }
+
+    public boolean isJson() {
+        return jsonFilter;
     }
 
     @Override

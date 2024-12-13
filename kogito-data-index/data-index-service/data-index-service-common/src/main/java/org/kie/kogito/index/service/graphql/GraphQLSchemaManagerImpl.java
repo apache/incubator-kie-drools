@@ -76,6 +76,7 @@ public class GraphQLSchemaManagerImpl extends AbstractGraphQLSchemaManager {
         typeDefinitionRegistry.merge(loadSchemaDefinitionFile("domain.schema.graphqls"));
 
         RuntimeWiring runtimeWiring = RuntimeWiring.newRuntimeWiring()
+                .scalar(ExtendedScalars.Json)
                 .type("Query", builder -> {
                     builder.dataFetcher("ProcessDefinitions", this::getProcessDefinitionsValues);
                     builder.dataFetcher("ProcessInstances", this::getProcessInstancesValues);

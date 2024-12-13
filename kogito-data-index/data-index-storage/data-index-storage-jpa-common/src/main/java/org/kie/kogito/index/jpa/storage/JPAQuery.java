@@ -43,13 +43,13 @@ import static java.util.stream.Collectors.toList;
 
 public class JPAQuery<K, E extends AbstractEntity, T> implements Query<T> {
 
-    private PanacheRepositoryBase<E, K> repository;
+    protected final PanacheRepositoryBase<E, K> repository;
     private Integer limit;
     private Integer offset;
     private List<AttributeFilter<?>> filters;
     private List<AttributeSort> sortBy;
-    private Class<E> entityClass;
-    private Function<E, T> mapper;
+    protected final Class<E> entityClass;
+    protected final Function<E, T> mapper;
 
     public JPAQuery(PanacheRepositoryBase<E, K> repository, Function<E, T> mapper, Class<E> entityClass) {
         this.repository = repository;
@@ -113,57 +113,60 @@ public class JPAQuery<K, E extends AbstractEntity, T> implements Query<T> {
         return filters.stream().map(filterPredicateFunction(root, builder)).collect(toList());
     }
 
-    private Function<AttributeFilter<?>, Predicate> filterPredicateFunction(Root<E> root, CriteriaBuilder builder) {
-        return filter -> {
-            switch (filter.getCondition()) {
-                case CONTAINS:
-                    return builder.isMember(filter.getValue(), getAttributePath(root, filter.getAttribute()));
-                case CONTAINS_ALL:
-                    List<Predicate> predicatesAll = (List<Predicate>) ((List) filter.getValue()).stream()
-                            .map(o -> builder.isMember(o, getAttributePath(root, filter.getAttribute()))).collect(toList());
-                    return builder.and(predicatesAll.toArray(new Predicate[] {}));
-                case CONTAINS_ANY:
-                    List<Predicate> predicatesAny = (List<Predicate>) ((List) filter.getValue()).stream()
-                            .map(o -> builder.isMember(o, getAttributePath(root, filter.getAttribute()))).collect(toList());
-                    return builder.or(predicatesAny.toArray(new Predicate[] {}));
-                case IN:
-                    return getAttributePath(root, filter.getAttribute()).in((Collection<?>) filter.getValue());
-                case LIKE:
-                    return builder.like(getAttributePath(root, filter.getAttribute()),
-                            filter.getValue().toString().replaceAll("\\*", "%"));
-                case EQUAL:
-                    return builder.equal(getAttributePath(root, filter.getAttribute()), filter.getValue());
-                case IS_NULL:
-                    Path pathNull = getAttributePath(root, filter.getAttribute());
-                    return isPluralAttribute(filter.getAttribute()) ? builder.isEmpty(pathNull) : builder.isNull(pathNull);
-                case NOT_NULL:
-                    Path pathNotNull = getAttributePath(root, filter.getAttribute());
-                    return isPluralAttribute(filter.getAttribute()) ? builder.isNotEmpty(pathNotNull) : builder.isNotNull(pathNotNull);
-                case BETWEEN:
-                    List<Object> value = (List<Object>) filter.getValue();
-                    return builder
-                            .between(getAttributePath(root, filter.getAttribute()), (Comparable) value.get(0),
-                                    (Comparable) value.get(1));
-                case GT:
-                    return builder.greaterThan(getAttributePath(root, filter.getAttribute()), (Comparable) filter.getValue());
-                case GTE:
-                    return builder.greaterThanOrEqualTo(getAttributePath(root, filter.getAttribute()),
-                            (Comparable) filter.getValue());
-                case LT:
-                    return builder.lessThan(getAttributePath(root, filter.getAttribute()), (Comparable) filter.getValue());
-                case LTE:
-                    return builder
-                            .lessThanOrEqualTo(getAttributePath(root, filter.getAttribute()), (Comparable) filter.getValue());
-                case OR:
-                    return builder.or(getRecursivePredicate(filter, root, builder).toArray(new Predicate[] {}));
-                case AND:
-                    return builder.and(getRecursivePredicate(filter, root, builder).toArray(new Predicate[] {}));
-                case NOT:
-                    return builder.not(filterPredicateFunction(root, builder).apply((AttributeFilter<?>) filter.getValue()));
-                default:
-                    return null;
-            }
-        };
+    protected Function<AttributeFilter<?>, Predicate> filterPredicateFunction(Root<E> root, CriteriaBuilder builder) {
+        return filter -> buildPredicateFunction(filter, root, builder);
+    }
+
+    protected final Predicate buildPredicateFunction(AttributeFilter filter, Root<E> root, CriteriaBuilder builder) {
+        switch (filter.getCondition()) {
+            case CONTAINS:
+                return builder.isMember(filter.getValue(), getAttributePath(root, filter.getAttribute()));
+            case CONTAINS_ALL:
+                List<Predicate> predicatesAll = (List<Predicate>) ((List) filter.getValue()).stream()
+                        .map(o -> builder.isMember(o, getAttributePath(root, filter.getAttribute()))).collect(toList());
+                return builder.and(predicatesAll.toArray(new Predicate[] {}));
+            case CONTAINS_ANY:
+                List<Predicate> predicatesAny = (List<Predicate>) ((List) filter.getValue()).stream()
+                        .map(o -> builder.isMember(o, getAttributePath(root, filter.getAttribute()))).collect(toList());
+                return builder.or(predicatesAny.toArray(new Predicate[] {}));
+            case IN:
+                return getAttributePath(root, filter.getAttribute()).in((Collection<?>) filter.getValue());
+            case LIKE:
+                return builder.like(getAttributePath(root, filter.getAttribute()),
+                        filter.getValue().toString().replaceAll("\\*", "%"));
+            case EQUAL:
+                return builder.equal(getAttributePath(root, filter.getAttribute()), filter.getValue());
+            case IS_NULL:
+                Path pathNull = getAttributePath(root, filter.getAttribute());
+                return isPluralAttribute(filter.getAttribute()) ? builder.isEmpty(pathNull) : builder.isNull(pathNull);
+            case NOT_NULL:
+                Path pathNotNull = getAttributePath(root, filter.getAttribute());
+                return isPluralAttribute(filter.getAttribute()) ? builder.isNotEmpty(pathNotNull) : builder.isNotNull(pathNotNull);
+            case BETWEEN:
+                List<Object> value = (List<Object>) filter.getValue();
+                return builder
+                        .between(getAttributePath(root, filter.getAttribute()), (Comparable) value.get(0),
+                                (Comparable) value.get(1));
+            case GT:
+                return builder.greaterThan(getAttributePath(root, filter.getAttribute()), (Comparable) filter.getValue());
+            case GTE:
+                return builder.greaterThanOrEqualTo(getAttributePath(root, filter.getAttribute()),
+                        (Comparable) filter.getValue());
+            case LT:
+                return builder.lessThan(getAttributePath(root, filter.getAttribute()), (Comparable) filter.getValue());
+            case LTE:
+                return builder
+                        .lessThanOrEqualTo(getAttributePath(root, filter.getAttribute()), (Comparable) filter.getValue());
+            case OR:
+                return builder.or(getRecursivePredicate(filter, root, builder).toArray(new Predicate[] {}));
+            case AND:
+                return builder.and(getRecursivePredicate(filter, root, builder).toArray(new Predicate[] {}));
+            case NOT:
+                return builder.not(filterPredicateFunction(root, builder).apply((AttributeFilter<?>) filter.getValue()));
+            default:
+                return null;
+        }
+
     }
 
     private Path getAttributePath(Root<E> root, String attribute) {

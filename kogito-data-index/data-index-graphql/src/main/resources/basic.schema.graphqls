@@ -177,6 +177,7 @@ input ProcessInstanceArgument {
     id: IdArgument
     processId: StringArgument
     processName: StringArgument
+    variables: JSON
     parentProcessInstanceId: IdArgument
     rootProcessInstanceId: IdArgument
     rootProcessId: StringArgument

@@ -50,4 +50,9 @@ public class QueryTestUtils {
     public static BiConsumer<List<ObjectNode>, String[]> assertWithObjectNode() {
         return (instances, ids) -> assertThat(instances).hasSize(ids == null ? 0 : ids.length).extracting(n -> n.get("id").asText()).containsExactlyInAnyOrder(ids);
     }
+
+    public static <V> BiConsumer<List<V>, String[]> assertNotId() {
+        return (instances, ids) -> assertThat(instances).extracting("id").doesNotContainAnyElementsOf(List.of(ids));
+    }
+
 }

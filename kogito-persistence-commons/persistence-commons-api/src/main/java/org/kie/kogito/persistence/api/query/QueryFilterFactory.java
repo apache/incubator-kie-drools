@@ -34,7 +34,7 @@ public final class QueryFilterFactory {
         return new AttributeFilter<>(attribute, FilterCondition.LIKE, value);
     }
 
-    public static AttributeFilter<String> contains(String attribute, String value) {
+    public static <T> AttributeFilter<T> contains(String attribute, T value) {
         return new AttributeFilter<>(attribute, FilterCondition.CONTAINS, value);
     }
 

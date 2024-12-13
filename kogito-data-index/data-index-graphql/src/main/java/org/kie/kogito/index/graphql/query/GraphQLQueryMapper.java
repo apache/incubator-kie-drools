@@ -40,6 +40,7 @@ import static graphql.schema.GraphQLTypeUtil.simplePrint;
 import static graphql.schema.GraphQLTypeUtil.unwrapNonNull;
 import static graphql.schema.GraphQLTypeUtil.unwrapOne;
 import static java.util.stream.Collectors.toList;
+import static org.kie.kogito.index.json.JsonUtils.jsonFilter;
 import static org.kie.kogito.persistence.api.query.FilterCondition.NOT;
 import static org.kie.kogito.persistence.api.query.QueryFilterFactory.and;
 import static org.kie.kogito.persistence.api.query.QueryFilterFactory.between;
@@ -110,13 +111,63 @@ public class GraphQLQueryMapper implements Function<GraphQLInputObjectType, Grap
                             case "KogitoMetadataArgument":
                                 parser.mapAttribute(field.getName(), mapSubEntityArgument(field.getName(), GraphQLQueryParserRegistry.get().getParser("KogitoMetadataArgument")));
                                 break;
+                            case "JSON":
+                                parser.mapAttribute(field.getName(), mapJsonArgument(field.getName()));
+                                break;
                             default:
-                                parser.mapAttribute(field.getName(), mapSubEntityArgument(field.getName(), new GraphQLQueryMapper().apply((GraphQLInputObjectType) field.getType())));
+                                if (field.getType() instanceof GraphQLInputObjectType) {
+                                    parser.mapAttribute(field.getName(), mapSubEntityArgument(field.getName(), new GraphQLQueryMapper().apply((GraphQLInputObjectType) field.getType())));
+                                }
                         }
                     }
                 });
-
         return parser;
+    }
+
+    Function<Object, Stream<AttributeFilter<?>>> mapJsonArgument(String attribute) {
+        return argument -> ((Map<String, Object>) argument).entrySet().stream().map(e -> mapJsonArgument(attribute, e.getKey(), e.getValue()));
+    }
+
+    private AttributeFilter<?> mapJsonArgument(String attribute, String key, Object value) {
+        StringBuilder sb = new StringBuilder(attribute);
+        FilterCondition condition = FilterCondition.fromLabel(key);
+        while (condition == null && value instanceof Map) {
+            sb.append('.').append(key);
+            Map.Entry<String, Object> entry = ((Map<String, Object>) value).entrySet().iterator().next();
+            key = entry.getKey();
+            value = entry.getValue();
+            condition = FilterCondition.fromLabel(key);
+        }
+        if (condition != null) {
+            switch (condition) {
+                case GT:
+                    return jsonFilter(greaterThan(sb.toString(), value));
+                case GTE:
+                    return jsonFilter(greaterThanEqual(sb.toString(), value));
+                case LT:
+                    return jsonFilter(lessThan(sb.toString(), value));
+                case LTE:
+                    return jsonFilter(lessThanEqual(sb.toString(), value));
+                case BETWEEN:
+                    return jsonFilter(filterValueMap(value, val -> between(sb.toString(), val.get("from"), val.get("to"))));
+                case IN:
+                    return jsonFilter(filterValueList(value, val -> in(sb.toString(), val)));
+                case IS_NULL:
+                    return jsonFilter(Boolean.TRUE.equals(value) ? isNull(sb.toString()) : notNull(sb.toString()));
+                case CONTAINS:
+                    return jsonFilter(contains(sb.toString(), value));
+                case LIKE:
+                    return jsonFilter(like(sb.toString(), value.toString()));
+                case CONTAINS_ALL:
+                    return filterValueList(value, val -> containsAll(sb.toString(), val));
+                case CONTAINS_ANY:
+                    return filterValueList(value, val -> containsAny(sb.toString(), val));
+                case EQUAL:
+                default:
+                    return jsonFilter(equalTo(sb.toString(), value));
+            }
+        }
+        return null;
     }
 
     private boolean isListOfType(GraphQLInputType source, String type) {
