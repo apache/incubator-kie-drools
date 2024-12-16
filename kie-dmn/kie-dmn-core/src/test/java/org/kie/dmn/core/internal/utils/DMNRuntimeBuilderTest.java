@@ -34,8 +34,7 @@ import org.kie.dmn.core.impl.DMNRuntimeImpl;
 import org.kie.internal.io.ResourceFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 class DMNRuntimeBuilderTest {
 
@@ -72,11 +71,10 @@ class DMNRuntimeBuilderTest {
         DMNContext context = DMNFactory.newContext();
         context.set( "Person Age", 24 );
         String errorMessage = "DMN: Error compiling FEEL expression 'Person Age >= 18' for name 'Can Drive?' on node 'Can Drive?': syntax error near 'Age' (DMN id: _563E78C7-EFD1-4109-9F30-B14922EF68DF, Error compiling the referenced FEEL expression) ";
-        IllegalStateException exception = assertThrows(IllegalStateException.class, () -> {
-            dmnRuntime.evaluateAll(dmnModel, context);
-        });
-        assertEquals(errorMessage, exception.getMessage());
-        }
+        assertThatThrownBy(() -> dmnRuntime.evaluateAll(dmnModel, context))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage(errorMessage);
+    }
 
     @Test
     void evaluateWrongDecisionWithoutInputDataReferencesByName() {
@@ -95,10 +93,9 @@ class DMNRuntimeBuilderTest {
         DMNContext context = DMNFactory.newContext();
         context.set( "Person Age", 24 );
         String errorMessage = "DMN: Error compiling FEEL expression 'Person Age >= 18' for name 'Can Drive?' on node 'Can Drive?': syntax error near 'Age' (DMN id: _563E78C7-EFD1-4109-9F30-B14922EF68DF, Error compiling the referenced FEEL expression) ";
-        IllegalStateException exception = assertThrows(IllegalStateException.class, () -> {
-            dmnRuntime.evaluateByName(dmnModel, context, "Can Drive");
-        });
-        assertEquals(errorMessage, exception.getMessage());
+        assertThatThrownBy(() -> dmnRuntime.evaluateByName(dmnModel, context, "Can Drive"))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage(errorMessage);
     }
 
     @Test
@@ -138,10 +135,9 @@ class DMNRuntimeBuilderTest {
         DMNContext context = DMNFactory.newContext();
         context.set( "Person Age", 24 );
         String errorMessage = "DMN: Error compiling FEEL expression 'Person Age >= 18' for name 'Can Drive?' on node 'Can Drive?': syntax error near 'Age' (DMN id: _563E78C7-EFD1-4109-9F30-B14922EF68DF, Error compiling the referenced FEEL expression) ";
-        IllegalStateException exception = assertThrows(IllegalStateException.class, () -> {
-            dmnRuntime.evaluateById(dmnModel, context, "_563E78C7-EFD1-4109-9F30-B14922EF68DF");
-        });
-        assertEquals(errorMessage, exception.getMessage());
+        assertThatThrownBy(() -> dmnRuntime.evaluateById(dmnModel, context, "_563E78C7-EFD1-4109-9F30-B14922EF68DF"))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage(errorMessage);
     }
 
     @Test
@@ -179,12 +175,34 @@ class DMNRuntimeBuilderTest {
                 "DMN_33900B8B-73DD-4D1E-87E9-F6C3FE534B43");
         assertThat(dmnModel).isNotNull();
         DMNContext context = DMNFactory.newContext();
-        context.set( "Person Age", 24 );
+        context.set("Person Age", 24);
         String errorMessage = "DMN: Error compiling FEEL expression 'Person Age >?= 18' for name 'Can Drive' on node 'Can Drive': Unknown variable '?' (DMN id: _F477B6E0-C617-4087-9648-DE25A711C5F9, Error compiling the referenced FEEL expression) ";
-        IllegalStateException exception = assertThrows(IllegalStateException.class, () -> {
-            dmnRuntime.evaluateByName(dmnModel, context, "Can Drive");
-        });
-        assertEquals(errorMessage, exception.getMessage());
+        assertThatThrownBy(() -> dmnRuntime.evaluateByName(dmnModel, context, "Can Drive"))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage(errorMessage);
+
+    }
+
+    @Test
+    void evaluateMultipleErrorDecision() {
+        File modelFile = FileUtils.getFile("MultipleErrorDecision.dmn");
+        assertThat(modelFile).isNotNull().exists();
+        Resource modelResource = ResourceFactory.newFileResource(modelFile);
+        DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults().buildConfiguration()
+                .fromResources(Collections.singletonList(modelResource)).getOrElseThrow(RuntimeException::new);
+        assertThat(dmnRuntime).isNotNull();
+        String nameSpace = "https://kie.org/dmn/_36ADF828-4BE5-41E1-8808-6245D13C6AB4";
+
+        final DMNModel dmnModel = dmnRuntime.getModel(
+                nameSpace,
+                "DMN_45A15AF7-9910-4EAD-B249-8AE218B3BF43");
+        assertThat(dmnModel).isNotNull();
+        DMNContext context = DMNFactory.newContext();
+        context.set( "Person Age", 24 );
+        String errorMessage = "DMN: Error compiling FEEL expression 'Age + 20.?>' for name 'ContextEntry-1' on node 'Can Vote?': syntax error near '+' (DMN id: _B7D17199-0568-40EE-94D0-FDFAB0E97868, Error compiling the referenced FEEL expression) , DMN: Error compiling FEEL expression 'if Age > 25 \"YES\" elsesss \"NO\"' for name 'Can Vote?' on node 'Can Vote?': syntax error near '\"YES\"' (DMN id: _59E71393-14B3-405D-A0B4-3C1E6562823F, Error compiling the referenced FEEL expression) ";
+        assertThatThrownBy(() -> dmnRuntime.evaluateByName(dmnModel, context, "Can Vote"))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage(errorMessage);
     }
 
 }

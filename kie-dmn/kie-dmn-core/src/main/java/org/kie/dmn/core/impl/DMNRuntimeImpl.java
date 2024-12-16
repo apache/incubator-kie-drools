@@ -153,13 +153,7 @@ public class DMNRuntimeImpl
         if (decisionNames.length == 0) {
             throw new IllegalArgumentException(MsgUtil.createMessage(Msg.PARAM_CANNOT_BE_EMPTY, "decisionNames"));
         }
-        List<DMNMessage> errorMessages = model.getMessages(DMNMessage.Severity.ERROR);
-        errorMessages.stream().filter(message -> Arrays.stream(decisionNames).anyMatch(decision -> message.getText().contains(decision)))
-                .findAny().ifPresent(message -> {
-                    throw new IllegalStateException(message.getText());
-                });
-
-        System.out.println(errorMessages);
+        identifyDecisionErrors(model, decisionNames);
         final DMNResultImpl result = createResult( model, context );
         for (String name : decisionNames) {
             evaluateByNameInternal( model, context, result, name );
@@ -196,11 +190,7 @@ public class DMNRuntimeImpl
         if (decisionIds.length == 0) {
             throw new IllegalArgumentException(MsgUtil.createMessage(Msg.PARAM_CANNOT_BE_EMPTY, "decisionIds"));
         }
-        List<DMNMessage> errorMessages = model.getMessages(DMNMessage.Severity.ERROR);
-        errorMessages.stream().filter(message -> Arrays.stream(decisionIds).anyMatch(decision -> message.getText().contains(decision)))
-                .findAny().ifPresent(message -> {
-                    throw new IllegalStateException(message.getText());
-                });
+        identifyDecisionErrors(model, decisionIds);
         final DMNResultImpl result = createResult( model, context );
         for ( String id : decisionIds ) {
             evaluateByIdInternal( model, context, result, id );
@@ -775,6 +765,16 @@ public class DMNRuntimeImpl
         List<DMNMessage> messages = model.getMessages(DMNMessage.Severity.ERROR);
         String errorMessage = messages.stream().map(Message::getText).collect(Collectors.joining(", "));
         throw new IllegalStateException(errorMessage);
+    }
+
+    private static void identifyDecisionErrors(DMNModel model, String... decisions) {
+        List<DMNMessage> errorMessages = model.getMessages(DMNMessage.Severity.ERROR);
+        List<String> identifiedErrors = errorMessages.stream()
+                .filter(message -> Arrays.stream(decisions).anyMatch(decision -> message.getText().contains(decision)))
+                .map(Message::getText).collect(Collectors.toList());
+        if (!identifiedErrors.isEmpty()) {
+            throw new IllegalStateException(String.join(", ", identifiedErrors));
+        }
     }
 
     public boolean performRuntimeTypeCheck(DMNModel model) {
