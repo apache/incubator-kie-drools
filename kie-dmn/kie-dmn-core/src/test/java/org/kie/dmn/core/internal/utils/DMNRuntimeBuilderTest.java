@@ -77,6 +77,26 @@ class DMNRuntimeBuilderTest {
     }
 
     @Test
+    void evaluateMultipleDecisionModel() {
+        File modelFile = FileUtils.getFile("MultipleDecision.dmn");
+        assertThat(modelFile).isNotNull().exists();
+        Resource modelResource = ResourceFactory.newFileResource(modelFile);
+        DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults().buildConfiguration()
+                .fromResources(Collections.singletonList(modelResource)).getOrElseThrow(RuntimeException::new);
+        assertThat(dmnRuntime).isNotNull();
+        String nameSpace = "https://kie.org/dmn/_CADD03FC-4ABD-46D2-B631-E7FDE384D6D7";
+
+        final DMNModel dmnModel = dmnRuntime.getModel(
+                nameSpace,
+                "DMN_54AA2CFA-2374-4FCE-8F16-B594DFF87EBE");
+        assertThat(dmnModel).isNotNull();
+        DMNContext context = DMNFactory.newContext();
+        context.set( "Person Age", 24 );
+        DMNResult dmnResult = dmnRuntime.evaluateAll(dmnModel, context);
+        assertThat(dmnResult).isNotNull();
+    }
+
+    @Test
     void evaluateWrongDecisionWithoutInputDataReferencesByName() {
         File modelFile = FileUtils.getFile("Invalid_decisions_model.dmn");
         assertThat(modelFile).isNotNull().exists();
@@ -201,6 +221,28 @@ class DMNRuntimeBuilderTest {
         context.set( "Person Age", 24 );
         String errorMessage = "DMN: Error compiling FEEL expression 'Age + 20.?>' for name 'ContextEntry-1' on node 'Can Vote?': syntax error near '+' (DMN id: _B7D17199-0568-40EE-94D0-FDFAB0E97868, Error compiling the referenced FEEL expression) , DMN: Error compiling FEEL expression 'if Age > 25 \"YES\" elsesss \"NO\"' for name 'Can Vote?' on node 'Can Vote?': syntax error near '\"YES\"' (DMN id: _59E71393-14B3-405D-A0B4-3C1E6562823F, Error compiling the referenced FEEL expression) ";
         assertThatThrownBy(() -> dmnRuntime.evaluateByName(dmnModel, context, "Can Vote"))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage(errorMessage);
+    }
+
+    @Test
+    void evaluateMultipleErrorModel() {
+        File modelFile = FileUtils.getFile("MultipleError.dmn");
+        assertThat(modelFile).isNotNull().exists();
+        Resource modelResource = ResourceFactory.newFileResource(modelFile);
+        DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults().buildConfiguration()
+                .fromResources(Collections.singletonList(modelResource)).getOrElseThrow(RuntimeException::new);
+        assertThat(dmnRuntime).isNotNull();
+        String nameSpace = "https://kie.org/dmn/_231A34DE-33C6-4787-A51F-228C910D5EAF";
+
+        final DMNModel dmnModel = dmnRuntime.getModel(
+                nameSpace,
+                "DMN_DC99A8C4-4524-407D-B3D1-577442AED995");
+        assertThat(dmnModel).isNotNull();
+        DMNContext context = DMNFactory.newContext();
+        context.set( "Person Age", 24 );
+        String errorMessage = "DMN: Error compiling FEEL expression 'Person Age >= 18' for name 'Can Vote?' on node 'Can Vote?': syntax error near 'Age' (DMN id: _E3EF0CCA-0F1E-42B1-8C65-124D77C07E38, Error compiling the referenced FEEL expression) , DMN: Error compiling FEEL expression 'Person Age >=18' for name 'Can Drive?' on node 'Can Drive?': syntax error near 'Age' (DMN id: _B2F31CDD-29D1-4C20-93B8-8FB8E11E1FFC, Error compiling the referenced FEEL expression) ";
+        assertThatThrownBy(() -> dmnRuntime.evaluateByName(dmnModel, context, "Can Vote?", "Can Drive?"))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage(errorMessage);
     }

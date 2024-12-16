@@ -20,6 +20,7 @@ package org.kie.dmn.core.impl;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -113,9 +114,7 @@ public class DMNRuntimeImpl
         Objects.requireNonNull(model, () -> MsgUtil.createMessage(Msg.PARAM_CANNOT_BE_NULL, "model"));
         Objects.requireNonNull(context, () -> MsgUtil.createMessage(Msg.PARAM_CANNOT_BE_NULL, "context"));
         boolean performRuntimeTypeCheck = performRuntimeTypeCheck(model);
-        if (model.hasErrors()){
-            handleModelErrors(model);
-        }
+        identifyDecisionErrors(model);
         DMNResultImpl result = createResult( model, context );
         DMNRuntimeEventManagerUtils.fireBeforeEvaluateAll( eventManager, model, result );
         // the engine should evaluate all Decisions belonging to the "local" model namespace, not imported decision explicitly.
@@ -761,17 +760,10 @@ public class DMNRuntimeImpl
 
     }
 
-    private static void handleModelErrors(DMNModel model) {
-        List<DMNMessage> messages = model.getMessages(DMNMessage.Severity.ERROR);
-        String errorMessage = messages.stream().map(Message::getText).collect(Collectors.joining(", "));
-        throw new IllegalStateException(errorMessage);
-    }
-
     private static void identifyDecisionErrors(DMNModel model, String... decisions) {
         List<DMNMessage> errorMessages = model.getMessages(DMNMessage.Severity.ERROR);
-        List<String> identifiedErrors = errorMessages.stream()
-                .filter(message -> Arrays.stream(decisions).anyMatch(decision -> message.getText().contains(decision)))
-                .map(Message::getText).collect(Collectors.toList());
+        List<String> identifiedErrors = errorMessages.stream().map(Message::getText)
+                .filter(messages -> decisions.length == 0 || Arrays.stream(decisions).anyMatch(messages::contains)).collect(Collectors.toList());
         if (!identifiedErrors.isEmpty()) {
             throw new IllegalStateException(String.join(", ", identifiedErrors));
         }
