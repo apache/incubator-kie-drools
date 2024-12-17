@@ -111,10 +111,17 @@ class ProcessInstanceEntityQueryIT extends AbstractProcessInstanceEntityQueryIT 
                 processInstanceId);
         queryAndAssert(assertWithId(), storage, singletonList(or(List.of(jsonFilter(notNull("variables.traveller.aliases")), jsonFilter(lessThan("variables.traveller.age", 22))))), null, null, null,
                 processInstanceId);
-        // TODO add support for json contains (requires writing dialect extension on hibernate)
-        //queryAndAssert(assertWithId(), storage, singletonList(jsonFilter(contains("variables.traveller.aliases", "TheRealThing"))), null, null, null,
-        //       processInstanceId);
-        //queryAndAssert(assertEmpty(), storage, singletonList(jsonFilter(contains("variables.traveller.aliases", "TheDummyThing"))), null, null, null,
-        //        processInstanceId);
+        queryAndAssert(assertWithId(), storage, singletonList(jsonFilter(contains("variables.traveller.aliases", "TheRealThing"))), null, null, null,
+                processInstanceId);
+        queryAndAssert(assertNotId(), storage, singletonList(jsonFilter(contains("variables.traveller.aliases", "TheDummyThing"))), null, null, null,
+                processInstanceId);
+        queryAndAssert(assertWithId(), storage, singletonList(jsonFilter(containsAny("variables.traveller.aliases", List.of("TheRealThing", "TheDummyThing")))), null, null, null,
+                processInstanceId);
+        queryAndAssert(assertNotId(), storage, singletonList(jsonFilter(containsAny("variables.traveller.aliases", List.of("TheRedPandaThing", "TheDummyThing")))), null, null, null,
+                processInstanceId);
+        queryAndAssert(assertWithId(), storage, singletonList(jsonFilter(containsAll("variables.traveller.aliases", List.of("Super", "Astonishing", "TheRealThing")))), null, null, null,
+                processInstanceId);
+        queryAndAssert(assertNotId(), storage, singletonList(jsonFilter(containsAll("variables.traveller.aliases", List.of("Super", "TheDummyThing")))), null, null, null,
+                processInstanceId);
     }
 }

@@ -87,6 +87,18 @@ public class GraphQLQueryMapperTest {
     }
 
     @Test
+    void testJsonMapperContainsAny() {
+        assertThat(mapper.mapJsonArgument("variables").apply(Map.of("workflowdata", Map.of("number", Map.of("containsAny", List.of(1, 2, 3)))))).containsExactly(
+                jsonFilter(containsAny("variables.workflowdata.number", List.of(1, 2, 3))));
+    }
+
+    @Test
+    void testJsonMapperContainsAll() {
+        assertThat(mapper.mapJsonArgument("variables").apply(Map.of("workflowdata", Map.of("number", Map.of("containsAll", List.of(1, 2, 3)))))).containsExactly(
+                jsonFilter(containsAll("variables.workflowdata.number", List.of(1, 2, 3))));
+    }
+
+    @Test
     void testJsonMapperLike() {
         assertThat(mapper.mapJsonArgument("variables").apply(Map.of("workflowdata", Map.of("number", Map.of("like", "kk"))))).containsExactly(
                 jsonFilter(like("variables.workflowdata.number", "kk")));

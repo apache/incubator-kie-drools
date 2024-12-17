@@ -159,9 +159,9 @@ public class GraphQLQueryMapper implements Function<GraphQLInputObjectType, Grap
                 case LIKE:
                     return jsonFilter(like(sb.toString(), value.toString()));
                 case CONTAINS_ALL:
-                    return filterValueList(value, val -> containsAll(sb.toString(), val));
+                    return jsonFilter(filterValueList(value, val -> containsAll(sb.toString(), val)));
                 case CONTAINS_ANY:
-                    return filterValueList(value, val -> containsAny(sb.toString(), val));
+                    return jsonFilter(filterValueList(value, val -> containsAny(sb.toString(), val)));
                 case EQUAL:
                 default:
                     return jsonFilter(equalTo(sb.toString(), value));

@@ -20,6 +20,7 @@ package org.kie.kogito.index.postgresql;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.kie.kogito.persistence.api.query.AttributeFilter;
 
@@ -72,8 +73,22 @@ public class PostgresqlJsonHelper {
                 values = (List<Object>) filter.getValue();
                 isString = values.get(0) instanceof String;
                 return buildPathExpression(builder, root, filter.getAttribute(), isString).in(values.stream().map(o -> buildObjectExpression(builder, o, isString)).collect(Collectors.toList()));
+            case CONTAINS:
+                return builder.isTrue(
+                        builder.function(ContainsSQLFunction.CONTAINS_NAME, Boolean.class, buildPathExpression(builder, root, filter.getAttribute(), false), builder.literal(filter.getValue())));
+            case CONTAINS_ANY:
+                return containsPredicate(filter, root, builder, ContainsSQLFunction.CONTAINS_ANY_NAME);
+            case CONTAINS_ALL:
+                return containsPredicate(filter, root, builder, ContainsSQLFunction.CONTAINS_ALL_NAME);
         }
         throw new UnsupportedOperationException("Filter " + filter + " is not supported");
+    }
+
+    private static Predicate containsPredicate(AttributeFilter<?> filter, Root<?> root, CriteriaBuilder builder, String name) {
+        return builder.isTrue(
+                builder.function(name, Boolean.class,
+                        Stream.concat(Stream.of(buildPathExpression(builder, root, filter.getAttribute(), false)), ((List<?>) filter.getValue()).stream().map(o -> builder.literal(o)))
+                                .toArray(Expression[]::new)));
     }
 
     private static Expression buildObjectExpression(CriteriaBuilder builder, Object value, boolean isString) {
