@@ -19,6 +19,7 @@
 package org.kie.kogito.usertask;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 
@@ -64,6 +65,8 @@ public interface UserTaskInstance {
     Map<String, Object> getOutputs();
 
     Map<String, Object> getInputs();
+
+    Date getSlaDueDate();
 
     void setInput(String key, Object value);
 

@@ -49,6 +49,8 @@ public class UserTaskInstanceStateEventBody {
 
     private String externalReferenceId;
 
+    private Date slaDueDate;
+
     public Date getEventDate() {
         return eventDate;
     }
@@ -101,6 +103,10 @@ public class UserTaskInstanceStateEventBody {
         return externalReferenceId;
     }
 
+    public Date getSlaDueDate() {
+        return slaDueDate;
+    }
+
     public Map<String, Object> metaData() {
         Map<String, Object> metadata = new HashMap<>();
         metadata.put(UserTaskInstanceEventMetadata.USER_TASK_INSTANCE_ID_META_DATA, userTaskInstanceId);
@@ -114,7 +120,7 @@ public class UserTaskInstanceStateEventBody {
         return "UserTaskInstanceStateEventBody [eventDate=" + eventDate + ", eventUser=" + eventUser + ", userTaskDefinitionId=" + userTaskDefinitionId + ", userTaskInstanceId=" + userTaskInstanceId
                 + ", userTaskName=" + userTaskName + ", userTaskDescription=" + userTaskDescription + ", userTaskPriority=" + userTaskPriority + ", userTaskReferenceName="
                 + userTaskReferenceName
-                + ", state=" + state + ", actualOwner=" + actualOwner + ", processInstanceId=" + processInstanceId + "]";
+                + ", state=" + state + ", actualOwner=" + actualOwner + ", processInstanceId=" + processInstanceId + ", slaDueDate=" + slaDueDate + "]";
     }
 
     public Builder update() {
@@ -212,6 +218,11 @@ public class UserTaskInstanceStateEventBody {
 
         public Builder processInstanceId(String processInstanceId) {
             this.instance.processInstanceId = processInstanceId;
+            return this;
+        }
+
+        public Builder slaDueDate(Date slaDueDate) {
+            this.instance.slaDueDate = slaDueDate;
             return this;
         }
 

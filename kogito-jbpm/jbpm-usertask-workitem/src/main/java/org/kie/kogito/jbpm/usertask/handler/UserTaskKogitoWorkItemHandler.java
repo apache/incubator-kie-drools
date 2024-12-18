@@ -88,6 +88,7 @@ public class UserTaskKogitoWorkItemHandler extends DefaultKogitoWorkItemHandler 
         instance.setTaskName(ofNullable((String) workItem.getParameter(TASK_NAME)).orElse((String) workItem.getParameter(NODE_NAME)));
         instance.setTaskDescription((String) workItem.getParameter(DESCRIPTION));
         instance.setTaskPriority(priority != null ? priority.toString() : null);
+        instance.setSlaDueDate(workItem.getNodeInstance().getSlaDueDate());
 
         instance.setMetadata("ProcessId", workItem.getProcessInstance().getProcessId());
         instance.setMetadata("ProcessType", workItem.getProcessInstance().getProcess().getType());

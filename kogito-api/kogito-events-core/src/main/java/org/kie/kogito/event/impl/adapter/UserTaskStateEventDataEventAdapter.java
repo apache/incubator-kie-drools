@@ -42,7 +42,6 @@ public class UserTaskStateEventDataEventAdapter extends AbstractDataEventAdapter
     public DataEvent<?> adapt(Object payload) {
         UserTaskStateEvent event = (UserTaskStateEvent) payload;
         Map<String, Object> metadata = AdapterHelper.buildUserTaskMetadata(event.getUserTaskInstance());
-
         UserTaskInstanceStateEventBody.Builder builder = UserTaskInstanceStateEventBody.create()
                 .eventDate(new Date())
                 .eventUser(event.getEventUser())
@@ -56,7 +55,8 @@ public class UserTaskStateEventDataEventAdapter extends AbstractDataEventAdapter
                 .state(event.getNewStatus().getName())
                 .actualOwner(event.getUserTaskInstance().getActualOwner())
                 .eventType(isTransition(event) ? event.getNewStatus().getName() : "Modify")
-                .processInstanceId((String) event.getUserTaskInstance().getMetadata().get("ProcessInstanceId"));
+                .processInstanceId((String) event.getUserTaskInstance().getMetadata().get("ProcessInstanceId"))
+                .slaDueDate(event.getUserTaskInstance().getSlaDueDate());
 
         UserTaskInstanceStateEventBody body = builder.build();
         UserTaskInstanceStateDataEvent utEvent =

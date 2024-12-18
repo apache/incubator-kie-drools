@@ -82,6 +82,7 @@ public class DefaultUserTaskInstance implements UserTaskInstance {
     private List<Attachment> attachments;
     private List<Comment> comments;
     private String externalReferenceId;
+    private Date slaDueDate;
 
     private Map<String, Object> inputs;
     private Map<String, Object> outputs;
@@ -240,6 +241,15 @@ public class DefaultUserTaskInstance implements UserTaskInstance {
 
     public void setExternalReferenceId(String externalReferenceId) {
         this.externalReferenceId = externalReferenceId;
+    }
+
+    @Override
+    public Date getSlaDueDate() {
+        return slaDueDate;
+    }
+
+    public void setSlaDueDate(Date slaDueDate) {
+        this.slaDueDate = slaDueDate;
     }
 
     @Override
@@ -782,7 +792,7 @@ public class DefaultUserTaskInstance implements UserTaskInstance {
     @Override
     public String toString() {
         return "DefaultUserTaskInstance [id=" + id + ", status=" + status + ", actualOwner=" + actualOwner + ", taskName=" + taskName + ", taskDescription=" + taskDescription + ", taskPriority="
-                + taskPriority + "]";
+                + taskPriority + ", slaDueDate=" + slaDueDate + "]";
     }
 
 }
