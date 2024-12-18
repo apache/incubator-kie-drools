@@ -78,6 +78,8 @@ public class UserTaskInstanceEntity {
 
     private String externalReferenceId;
 
+    private Long slaDueDate;
+
     public String getId() {
         return id;
     }
@@ -278,6 +280,14 @@ public class UserTaskInstanceEntity {
         return externalReferenceId;
     }
 
+    public Long getSlaDueDate() {
+        return slaDueDate;
+    }
+
+    public void setSlaDueDate(Long slaDueDate) {
+        this.slaDueDate = slaDueDate;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -322,6 +332,7 @@ public class UserTaskInstanceEntity {
                 ", endpoint='" + endpoint + '\'' +
                 ", comments='" + comments + '\'' +
                 ", attachments='" + attachments + '\'' +
+                ", slaDueDate=" + slaDueDate +
                 '}';
     }
 

@@ -201,6 +201,7 @@ public class UserTaskInstanceEntityStorage extends AbstractJPAStorageFetcher<Str
         task.setLastUpdate(toZonedDateTime(event.getData().getEventDate()));
         task.setReferenceName(event.getData().getUserTaskReferenceName());
         task.setExternalReferenceId(body.getExternalReferenceId());
+        task.setSlaDueDate(toZonedDateTime(body.getSlaDueDate()));
     }
 
     private String getEndpoint(URI source, String pId, String taskName, String taskId) {

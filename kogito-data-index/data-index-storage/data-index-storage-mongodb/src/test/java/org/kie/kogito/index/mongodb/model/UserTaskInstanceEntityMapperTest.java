@@ -116,6 +116,7 @@ class UserTaskInstanceEntityMapperTest {
         userTaskInstance.setComments(List.of(comment));
         userTaskInstance.setAttachments(List.of(attachment));
         userTaskInstance.setExternalReferenceId(externalReferenceId);
+        userTaskInstance.setSlaDueDate(time);
 
         userTaskInstanceEntity = new UserTaskInstanceEntity();
         userTaskInstanceEntity.setId(testId);
@@ -142,6 +143,7 @@ class UserTaskInstanceEntityMapperTest {
         userTaskInstanceEntity.setComments(List.of(commentEntity));
         userTaskInstanceEntity.setAttachments(List.of(attachmentEntity));
         userTaskInstanceEntity.setExternalReferenceId(externalReferenceId);
+        userTaskInstanceEntity.setSlaDueDate(zonedDateTimeToInstant(time));
     }
 
     @Test

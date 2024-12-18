@@ -90,8 +90,8 @@ public class UserTaskInstanceEntity extends AbstractEntity {
     private List<CommentEntity> comments;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "userTask", orphanRemoval = true, fetch = FetchType.LAZY)
     private List<AttachmentEntity> attachments;
-
     private String externalReferenceId;
+    private ZonedDateTime slaDueDate;
 
     public String getExternalReferenceId() {
         return externalReferenceId;
@@ -294,6 +294,14 @@ public class UserTaskInstanceEntity extends AbstractEntity {
         this.attachments = attachments;
     }
 
+    public ZonedDateTime getSlaDueDate() {
+        return slaDueDate;
+    }
+
+    public void setSlaDueDate(ZonedDateTime slaDueDate) {
+        this.slaDueDate = slaDueDate;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -338,6 +346,7 @@ public class UserTaskInstanceEntity extends AbstractEntity {
                 ", endpoint='" + endpoint + '\'' +
                 ", comments='" + comments + '\'' +
                 ", attachments='" + attachments + '\'' +
+                ", slaDueDate=" + slaDueDate +
                 '}';
     }
 }

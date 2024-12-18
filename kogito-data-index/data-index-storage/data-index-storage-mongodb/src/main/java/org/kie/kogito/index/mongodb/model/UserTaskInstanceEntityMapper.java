@@ -80,6 +80,7 @@ public class UserTaskInstanceEntityMapper implements MongoEntityMapper<UserTaskI
         entity.setComments(Optional.ofNullable(instance.getComments()).map(comments -> comments.stream().map(this::fromComment).collect(toList())).orElse(null));
         entity.setAttachments(Optional.ofNullable(instance.getAttachments()).map(attachments -> attachments.stream().map(this::fromAttachment).collect(toList())).orElse(null));
         entity.setExternalReferenceId(instance.getExternalReferenceId());
+        entity.setSlaDueDate(zonedDateTimeToInstant(instance.getSlaDueDate()));
         return entity;
     }
 
@@ -115,6 +116,7 @@ public class UserTaskInstanceEntityMapper implements MongoEntityMapper<UserTaskI
         instance.setComments(Optional.ofNullable(entity.getComments()).map(comments -> comments.stream().map(this::toComment).collect(toList())).orElse(null));
         instance.setAttachments(Optional.ofNullable(entity.getAttachments()).map(attachments -> attachments.stream().map(this::toAttachment).collect(toList())).orElse(null));
         instance.setExternalReferenceId(entity.getExternalReferenceId());
+        instance.setSlaDueDate(instantToZonedDateTime(entity.getSlaDueDate()));
         return instance;
     }
 

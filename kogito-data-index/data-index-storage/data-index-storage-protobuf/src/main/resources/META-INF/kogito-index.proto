@@ -240,6 +240,7 @@ message UserTaskInstance {
     /* @Field(store = Store.YES) */
     repeated Attachment attachments = 24;
     optional string externalReferenceId = 25;
+    optional int64 slaDueDate = 26;
 }
 
 /* @Indexed */
@@ -279,6 +280,7 @@ message UserTaskInstanceMeta {
     /* @Field(store = Store.YES) */
     repeated Attachment attachments = 18;
     optional string externalReferenceId = 25;
+    optional int64 slaDueDate = 26;
 }
 
 /* @Indexed */

@@ -18,6 +18,8 @@
  */
 package org.kie.kogito.index.model;
 
+import java.time.ZonedDateTime;
+
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class UserTaskInstance extends UserTaskInstanceMeta {
@@ -29,6 +31,7 @@ public class UserTaskInstance extends UserTaskInstanceMeta {
     private ObjectNode outputs;
     private String endpoint;
     private String externalReferenceId;
+    private ZonedDateTime slaDueDate;
 
     public String getProcessId() {
         return processId;
@@ -67,6 +70,7 @@ public class UserTaskInstance extends UserTaskInstanceMeta {
                 ", inputs=" + inputs +
                 ", outputs=" + outputs +
                 ", endpoint='" + endpoint + '\'' +
+                ", slaDueDate=" + slaDueDate +
                 "} " + super.toString();
     }
 
@@ -102,5 +106,13 @@ public class UserTaskInstance extends UserTaskInstanceMeta {
 
     public void setExternalReferenceId(String externalReferenceId) {
         this.externalReferenceId = externalReferenceId;
+    }
+
+    public ZonedDateTime getSlaDueDate() {
+        return slaDueDate;
+    }
+
+    public void setSlaDueDate(ZonedDateTime slaDueDate) {
+        this.slaDueDate = slaDueDate;
     }
 }

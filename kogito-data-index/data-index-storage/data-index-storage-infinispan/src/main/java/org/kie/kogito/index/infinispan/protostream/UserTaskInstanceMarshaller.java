@@ -58,6 +58,7 @@ public class UserTaskInstanceMarshaller extends AbstractMarshaller implements Me
     protected static final String COMMENTS = "comments";
     protected static final String ATTACHMENTS = "attachments";
     protected static final String EXTERNAL_REFERENCE_ID = "externalReferenceId";
+    protected static final String SLA_DUE_DATE = "slaDueDate";
 
     public UserTaskInstanceMarshaller(ObjectMapper mapper) {
         super(mapper);
@@ -91,6 +92,7 @@ public class UserTaskInstanceMarshaller extends AbstractMarshaller implements Me
         ut.setComments(reader.readCollection(COMMENTS, new ArrayList<>(), Comment.class));
         ut.setAttachments(reader.readCollection(ATTACHMENTS, new ArrayList<>(), Attachment.class));
         ut.setExternalReferenceId(reader.readString(EXTERNAL_REFERENCE_ID));
+        ut.setSlaDueDate(dateToZonedDateTime(reader.readDate(SLA_DUE_DATE)));
         return ut;
     }
 
@@ -121,6 +123,7 @@ public class UserTaskInstanceMarshaller extends AbstractMarshaller implements Me
         writer.writeCollection(COMMENTS, ut.getComments(), Comment.class);
         writer.writeCollection(ATTACHMENTS, ut.getAttachments(), Attachment.class);
         writer.writeString(EXTERNAL_REFERENCE_ID, ut.getExternalReferenceId());
+        writer.writeDate(SLA_DUE_DATE, zonedDateTimeToDate(ut.getSlaDueDate()));
     }
 
     @Override

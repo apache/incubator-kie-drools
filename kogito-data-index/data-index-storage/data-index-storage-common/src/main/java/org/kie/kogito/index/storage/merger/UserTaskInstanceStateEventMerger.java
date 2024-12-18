@@ -62,6 +62,7 @@ public class UserTaskInstanceStateEventMerger implements UserTaskInstanceEventMe
         task.setLastUpdate(toZonedDateTime(event.getData().getEventDate()));
         task.setReferenceName(event.getData().getUserTaskReferenceName());
         task.setExternalReferenceId(event.getData().getExternalReferenceId());
+        task.setSlaDueDate(toZonedDateTime(event.getData().getSlaDueDate()));
         LOGGER.debug("value after merging: {}", task);
         return task;
     }
