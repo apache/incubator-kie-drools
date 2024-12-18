@@ -49,9 +49,9 @@ class BasicTypeMappingIT {
     private static final String CACHE_NAME = "BasicType";
 
     private static final String SQL = "SELECT " +
-            "ROW_NUMBER() OVER (ORDER BY name, key) as id, " +
-            "name, " +
-            "key, " +
+            "ROW_NUMBER() OVER (ORDER BY cache_name, var_name) as id, " +
+            "cache_name, " +
+            "var_name, " +
             "field1MappedField, " +
             "field2MappedField " +
             "FROM " +
@@ -174,8 +174,8 @@ class BasicTypeMappingIT {
                     @EntityResult(
                             entityClass = BasicTypeExtractRow.class,
                             fields = { @FieldResult(name = "id", column = "id"),
-                                    @FieldResult(name = "key", column = "key"),
-                                    @FieldResult(name = "name", column = "name"),
+                                    @FieldResult(name = "key", column = "var_name"),
+                                    @FieldResult(name = "name", column = "cache_name"),
                                     @FieldResult(name = "field1MappedField", column = "field1MappedField"),
                                     @FieldResult(name = "field2MappedField", column = "field2MappedField") })
             })

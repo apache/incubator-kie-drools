@@ -114,8 +114,8 @@ The following limitations apply:
 All examples assume the following schema:
 ```postgresql
 create table kogito_data_cache (
-   key varchar(255) not null,
-   name varchar(255) not null,
+   var_name varchar(255) not null,
+   cache_name varchar(255) not null,
    json_value jsonb,
    primary key (key, name)
 );
@@ -130,13 +130,13 @@ entities through JPA. There are code examples in `org.kie.kogito:persistence-com
   "sourceTableJsonFieldName": "json_value",
   "sourceTableIdentityFields": [
     {
-      "fieldName":"key",
+      "fieldName":"var_name",
       "fieldType": "STRING"
     }
   ],
   "sourceTablePartitionFields": [
     {
-      "fieldName": "name",
+      "fieldName": "cache_name",
       "fieldType": "STRING",
       "fieldValue": "BasicType"
     }
@@ -186,13 +186,13 @@ Result
   "sourceTableJsonFieldName": "json_value",
   "sourceTableIdentityFields": [
     {
-      "fieldName":"key",
+      "fieldName":"var_name",
       "fieldType": "STRING"
     }
   ],
   "sourceTablePartitionFields": [
     {
-      "fieldName": "name",
+      "fieldName": "cache_name",
       "fieldType": "STRING",
       "fieldValue": "HierarchicalType"
     }
@@ -265,13 +265,13 @@ Result
   "sourceTableJsonFieldName": "json_value",
   "sourceTableIdentityFields": [
     {
-      "fieldName":"key",
+      "fieldName":"var_name",
       "fieldType": "STRING"
     }
   ],
   "sourceTablePartitionFields": [
     {
-      "fieldName": "name",
+      "fieldName": "cache_name",
       "fieldType": "STRING",
       "fieldValue": "ComplexHierarchicalType"
     }

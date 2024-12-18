@@ -117,7 +117,7 @@ public class PostgresQuery<T> implements Query<T> {
 
         // Build the query to retrieve the filtered data from the temporary table above.
         StringBuilder queryString = new StringBuilder("SELECT * FROM kogito_data_cache")
-                .append(" WHERE name = '")
+                .append(" WHERE cache_name = '")
                 .append(name)
                 .append("'");
         if (filters != null && !filters.isEmpty()) {

@@ -53,8 +53,8 @@ public class NodeEntity extends AbstractEntity {
     @CollectionTable(name = "definitions_nodes_metadata", joinColumns = { @JoinColumn(name = "node_id", referencedColumnName = "id"),
             @JoinColumn(name = "process_id", referencedColumnName = "process_id"), @JoinColumn(name = "process_version", referencedColumnName = "process_version") },
             foreignKey = @ForeignKey(name = "fk_definitions_nodes_metadata_definitions_nodes"))
-    @MapKeyColumn(name = "key")
-    @Column(name = "value")
+    @MapKeyColumn(name = "name")
+    @Column(name = "meta_value")
     private Map<String, String> metadata;
 
     @Id

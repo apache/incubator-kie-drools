@@ -35,16 +35,16 @@ import jakarta.persistence.UniqueConstraint;
 
 @Entity
 @IdClass(CacheId.class)
-@Table(name = "kogito_data_cache", uniqueConstraints = @UniqueConstraint(columnNames = { "name",
-        "key" }), indexes = @Index(columnList = "name,key", unique = true))
+@Table(name = "kogito_data_cache", uniqueConstraints = @UniqueConstraint(columnNames = { "cache_name",
+        "var_name" }), indexes = @Index(columnList = "cache_name,var_name", unique = true))
 public class CacheEntity {
 
     @Id
-    @Column(nullable = false)
+    @Column(name = "cache_name", nullable = false)
     private String name;
 
     @Id
-    @Column(nullable = false)
+    @Column(name = "var_name", nullable = false)
     private String key;
 
     @Convert(converter = JsonBinaryConverter.class)

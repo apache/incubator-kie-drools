@@ -55,9 +55,9 @@ class PostgresApplyMappingSqlBuilderIT {
     private static final String CACHE_NAME = "DynamicType";
 
     private static final String SQL = "SELECT " +
-            "ROW_NUMBER() OVER (ORDER BY name, key) as id, " +
-            "name, " +
-            "key, " +
+            "ROW_NUMBER() OVER (ORDER BY cache_name, var_name) as id, " +
+            "cache_name, " +
+            "var_name, " +
             "field1MappedField, " +
             "field2MappedField " +
             "FROM " +
@@ -89,8 +89,8 @@ class PostgresApplyMappingSqlBuilderIT {
         databaseManager.createArtifacts(new PostgresMappingDefinition("dynamicMappingId",
                 "kogito_data_cache",
                 "json_value",
-                List.of(new PostgresField("key")),
-                List.of(new PostgresPartitionField("name", CACHE_NAME)),
+                List.of(new PostgresField("var_name")),
+                List.of(new PostgresPartitionField("cache_name", CACHE_NAME)),
                 "DynamicTypeExtract",
                 List.of(new PostgresMapping("field1",
                         new PostgresJsonField("field1MappedField", JsonType.STRING)),
@@ -120,8 +120,8 @@ class PostgresApplyMappingSqlBuilderIT {
                     @EntityResult(
                             entityClass = DynamicTypeExtractRow.class,
                             fields = { @FieldResult(name = "id", column = "id"),
-                                    @FieldResult(name = "key", column = "key"),
-                                    @FieldResult(name = "name", column = "name"),
+                                    @FieldResult(name = "key", column = "var_name"),
+                                    @FieldResult(name = "name", column = "cache_name"),
                                     @FieldResult(name = "field1MappedField", column = "field1MappedField"),
                                     @FieldResult(name = "field2MappedField", column = "field2MappedField") })
             })

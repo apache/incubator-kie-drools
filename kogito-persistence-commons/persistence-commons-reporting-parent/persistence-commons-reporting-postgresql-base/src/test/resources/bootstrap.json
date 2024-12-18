@@ -6,13 +6,13 @@
       "sourceTableJsonFieldName": "json_value",
       "sourceTableIdentityFields": [
         {
-          "fieldName":"key",
+          "fieldName":"var_name",
           "fieldType": "STRING"
         }
       ],
       "sourceTablePartitionFields": [
         {
-          "fieldName": "name",
+          "fieldName": "cache_name",
           "fieldType": "STRING",
           "fieldValue": "BasicType"
         }
@@ -41,13 +41,13 @@
       "sourceTableJsonFieldName": "json_value",
       "sourceTableIdentityFields": [
         {
-          "fieldName":"key",
+          "fieldName":"var_name",
           "fieldType": "STRING"
         }
       ],
       "sourceTablePartitionFields": [
         {
-          "fieldName": "name",
+          "fieldName": "cache_name",
           "fieldType": "STRING",
           "fieldValue": "HierarchicalType"
         }
@@ -83,13 +83,13 @@
       "sourceTableJsonFieldName": "json_value",
       "sourceTableIdentityFields": [
         {
-          "fieldName":"key",
+          "fieldName":"var_name",
           "fieldType": "STRING"
         }
       ],
       "sourceTablePartitionFields": [
         {
-          "fieldName": "name",
+          "fieldName": "cache_name",
           "fieldType": "STRING",
           "fieldValue": "ComplexHierarchicalType"
         }

@@ -6,12 +6,12 @@
       "sourceTableJsonFieldName": "json_value",
       "sourceTableIdentityFields": [
         {
-          "fieldName": "key"
+          "fieldName": "var_name"
         }
       ],
       "sourceTablePartitionFields": [
         {
-          "fieldName": "name",
+          "fieldName": "cache_name",
           "fieldValue": "BasicType"
         }
       ],
@@ -39,12 +39,12 @@
       "sourceTableJsonFieldName": "json_value",
       "sourceTableIdentityFields": [
         {
-          "fieldName": "key"
+          "fieldName": "var_name"
         }
       ],
       "sourceTablePartitionFields": [
         {
-          "fieldName": "name",
+          "fieldName": "cache_name",
           "fieldValue": "HierarchicalType"
         }
       ],
@@ -79,12 +79,12 @@
       "sourceTableJsonFieldName": "json_value",
       "sourceTableIdentityFields": [
         {
-          "fieldName": "key"
+          "fieldName": "var_name"
         }
       ],
       "sourceTablePartitionFields": [
         {
-          "fieldName": "name",
+          "fieldName": "cache_name",
           "fieldValue": "ComplexHierarchicalType"
         }
       ],

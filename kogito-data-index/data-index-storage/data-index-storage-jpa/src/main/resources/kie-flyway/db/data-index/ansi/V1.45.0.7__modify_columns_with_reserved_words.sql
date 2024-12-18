@@ -17,11 +17,8 @@
  * under the License.
  */
 
-
-create table if not exists kogito_data_cache (
-                                   var_name varchar(255) not null,
-                                   cache_name varchar(255) not null,
-                                   json_value jsonb,
-                                   primary key (var_name, cache_name)
-);
-
+alter table definitions_nodes_metadata alter column key rename to name;
+alter table definitions_nodes_metadata alter column value rename to meta_value;
+alter table definitions_metadata alter column key rename to name;
+alter table definitions_metadata alter column value rename to meta_value;
+alter table definitions_annotations alter column value rename to annotation;

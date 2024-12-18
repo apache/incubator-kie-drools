@@ -17,11 +17,5 @@
  * under the License.
  */
 
-
-create table if not exists kogito_data_cache (
-                                   var_name varchar(255) not null,
-                                   cache_name varchar(255) not null,
-                                   json_value jsonb,
-                                   primary key (var_name, cache_name)
-);
-
+alter table kogito_data_cache rename column name to cache_name;
+alter table kogito_data_cache rename column key to var_name;
