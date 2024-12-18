@@ -18,6 +18,8 @@ emptyAction.drl.csv
 unicode.drl.csv
 # drools-decisiontables/src/test/resources/org/drools/decisiontable/integrationtests/csv/kmoduleCSVTest.dtable.drl.csv
 kmoduleCSVTest.dtable.drl.csv
+# drools-distribution/notice-for-distribution
+notice-for-distribution
 # drools-docs/supplemental-ui/css/search.css
 search.css
 # drools-docs/supplemental-ui/js/search-ui.js
