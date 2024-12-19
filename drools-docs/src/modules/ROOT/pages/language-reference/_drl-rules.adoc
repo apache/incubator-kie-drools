@@ -2717,7 +2717,7 @@ In addition to the standard rule action methods, the {RULE_ENGINE} supports meth
 
 You can use the `drools` variable to call methods from the `org.kie.api.runtime.rule.RuleContext` class in your {PRODUCT} distribution, which is also the class that the standard rule action methods are based on. For all `drools` rule action options,
 
-see the {PRODUCT} https://github.com/kiegroup/drools/blob/main/kie-api/src/main/java/org/kie/api/runtime/rule/RuleContext.java[RuleContext.java] page in GitHub.
+see the {PRODUCT} https://github.com/apache/incubator-kie-drools/blob/main/kie-api/src/main/java/org/kie/api/runtime/rule/RuleContext.java[RuleContext.java] page in GitHub.
 
 The `drools` variable contains methods that provide information about the firing rule and the set of facts that activated the firing rule:
 
