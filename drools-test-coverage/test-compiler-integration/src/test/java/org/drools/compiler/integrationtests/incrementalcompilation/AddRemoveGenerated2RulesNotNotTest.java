@@ -20,8 +20,6 @@ package org.drools.compiler.integrationtests.incrementalcompilation;
 
 import java.util.stream.Stream;
 
-import org.junit.jupiter.api.Disabled;
-
 public class AddRemoveGenerated2RulesNotNotTest extends AbstractAddRemoveGenerated2RulesTest {
 
     public static Stream<ConstraintsPair> parameters() {

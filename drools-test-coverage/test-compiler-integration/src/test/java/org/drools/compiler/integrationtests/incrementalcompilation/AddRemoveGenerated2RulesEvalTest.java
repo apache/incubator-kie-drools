@@ -20,7 +20,6 @@ package org.drools.compiler.integrationtests.incrementalcompilation;
 
 import java.util.stream.Stream;
 
-import org.junit.jupiter.api.Disabled;
 
 public class AddRemoveGenerated2RulesEvalTest extends AbstractAddRemoveGenerated2RulesTest {
 

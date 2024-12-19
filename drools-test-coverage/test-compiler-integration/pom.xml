@@ -185,9 +185,23 @@
           <name>runTurtleTests</name>
         </property>
       </activation>
-      <properties>
-        <excludedGroups/>
-      </properties>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <artifactId>maven-surefire-plugin</artifactId>
+		    <configuration>
+		        <systemProperties>
+		            <property>
+		                <name>runTurtleTests</name>
+		                <value>true</value>
+		            </property>
+		        </systemProperties>
+    		</configuration>            
+    		</plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
     </profile>
 
     <!-- test-compiler-integration requires test jars built by drools-test-coverage-jars -->
