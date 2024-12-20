@@ -59,6 +59,10 @@ import org.jbpm.bpmn2.loop.MultiInstanceLoopSubprocessBoundaryTimerProcess;
 import org.jbpm.bpmn2.objects.Person;
 import org.jbpm.bpmn2.objects.TestUserTaskWorkItemHandler;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
+import org.jbpm.bpmn2.subprocess.DynamicSignalChildModel;
+import org.jbpm.bpmn2.subprocess.DynamicSignalChildProcess;
+import org.jbpm.bpmn2.subprocess.DynamicSignalParentModel;
+import org.jbpm.bpmn2.subprocess.DynamicSignalParentProcess;
 import org.jbpm.bpmn2.subprocess.EventSubprocessConditionalModel;
 import org.jbpm.bpmn2.subprocess.EventSubprocessConditionalProcess;
 import org.jbpm.bpmn2.subprocess.EventSubprocessMessageModel;
@@ -2686,45 +2690,23 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
     }
 
     @Test
-    @Disabled("On Exit not supported, see https://issues.redhat.com/browse/KOGITO-2067")
-    public void testDynamicCatchEventSignal() throws Exception {
-        kruntime = createKogitoProcessRuntime("subprocess/dynamic-signal-parent.bpmn2",
-                "subprocess/dynamic-signal-child.bpmn2");
-        TestWorkItemHandler handler = new TestWorkItemHandler();
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task", handler);
-        final List<String> instances = new ArrayList<>();
-
-        kruntime.getProcessEventManager().addEventListener(new DefaultKogitoProcessEventListener() {
-
-            @Override
-            public void beforeProcessStarted(ProcessStartedEvent event) {
-                instances.add(((KogitoProcessInstance) event.getProcessInstance()).getStringId());
-            }
-
-        });
-
-        KogitoProcessInstance processInstance = kruntime.startProcess("src.father");
-        assertProcessInstanceActive(processInstance);
-        assertThat(instances).hasSize(4);
-
-        // remove the parent process instance
-        instances.remove(processInstance.getStringId());
-
-        for (String id : instances) {
-            KogitoProcessInstance child = kruntime.getProcessInstance(id);
-            assertProcessInstanceActive(child);
-        }
-
-        // now complete user task to signal all child instances to stop
-        KogitoWorkItem workItem = handler.getWorkItem();
+    void testDynamicCatchEventSignal() {
+        Application app = ProcessTestHelper.newApplication();
+        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        ProcessTestHelper.registerHandler(app, "Human Task", workItemHandler);
+        org.kie.kogito.process.Process<DynamicSignalParentModel> processDefinition = DynamicSignalParentProcess.newProcess(app);
+        DynamicSignalParentModel model = processDefinition.createModel();
+        ProcessInstance<DynamicSignalParentModel> processInstance = processDefinition.createInstance(model);
+        org.kie.kogito.process.Process<DynamicSignalChildModel> childProcessDefinition = DynamicSignalChildProcess.newProcess(app);
+        processInstance.start();
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
+        List<ProcessInstance<DynamicSignalChildModel>> childInstances = childProcessDefinition.instances().stream().toList();
+        assertThat(childInstances).hasSize(3);
+        childInstances.forEach(instance -> assertThat(instance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE));
+        KogitoWorkItem workItem = workItemHandler.getWorkItem();
         assertThat(workItem).isNotNull();
-
-        kruntime.getKogitoWorkItemManager().completeWorkItem(workItem.getStringId(), null);
-        assertProcessInstanceFinished(processInstance, kruntime);
-
-        for (String id : instances) {
-            assertThat(kruntime.getProcessInstance(id)).as("Child process instance has not been finished.").isNull();
-        }
+        processInstance.completeWorkItem(workItem.getStringId(), Collections.emptyMap());
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
     }
 
     @Test

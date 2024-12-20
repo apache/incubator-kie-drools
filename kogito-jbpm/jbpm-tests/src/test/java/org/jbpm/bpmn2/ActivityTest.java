@@ -31,6 +31,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.drools.compiler.rule.builder.PackageBuildContext;
+import org.jbpm.bpmn2.activity.ScriptTaskFEELModel;
+import org.jbpm.bpmn2.activity.ScriptTaskFEELProcess;
 import org.jbpm.bpmn2.activity.ScriptTaskModel;
 import org.jbpm.bpmn2.activity.ScriptTaskProcess;
 import org.jbpm.bpmn2.activity.ScriptTaskWithIOModel;
@@ -1815,28 +1817,27 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     }
 
     @Test
-    @Disabled("On Exit not supported, see https://issues.redhat.com/browse/KOGITO-2067")
-    public void testScriptTaskFEEL() throws Exception {
-        kruntime = createKogitoProcessRuntime("BPMN2-ScriptTaskFEEL.bpmn2");
-
-        TestWorkItemHandler handler = new TestWorkItemHandler();
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task", handler);
-
-        Map<String, Object> params = new HashMap<>();
-        params.put("name", "krisv");
+    public void testScriptTaskFEEL() {
+        Application app = ProcessTestHelper.newApplication();
+        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        EventTrackerProcessListener tracker = new EventTrackerProcessListener();
+        ProcessTestHelper.registerHandler(app, "Human Task", workItemHandler);
+        ProcessTestHelper.registerProcessEventListener(app, tracker);
+        org.kie.kogito.process.Process<ScriptTaskFEELModel> processDefinition = ScriptTaskFEELProcess.newProcess(app);
+        ScriptTaskFEELModel model = processDefinition.createModel();
+        model.setName("krisv");
         Person person = new Person();
         person.setName("krisv");
-        params.put("person", person);
-
-        KogitoProcessInstance processInstance = kruntime.startProcess("ScriptTask", params);
-        assertThat(((org.jbpm.workflow.instance.WorkflowProcessInstance) processInstance).getVariable("x")).isEqualTo("Entry");
-        assertThat(((org.jbpm.workflow.instance.WorkflowProcessInstance) processInstance).getVariable("y")).isNull();
-
-        kruntime.getKogitoWorkItemManager().completeWorkItem(handler.getWorkItem().getStringId(), null);
-        assertThat(getProcessVarValue(processInstance, "y")).isEqualTo("Exit");
-        assertThat(((org.jbpm.workflow.instance.WorkflowProcessInstance) processInstance).getVariable("surname")).isEqualTo("tester");
-
-        assertNodeTriggered(processInstance.getStringId(), "Script1");
+        model.setPerson(person);
+        ProcessInstance<ScriptTaskFEELModel> processInstance = processDefinition.createInstance(model);
+        processInstance.start();
+        assertThat(processInstance.variables().getX()).isEqualTo("Entry");
+        assertThat(processInstance.variables().getY()).isNull();
+        ProcessTestHelper.completeWorkItem(processInstance, Collections.emptyMap());
+        assertThat(processInstance.variables().getY()).isEqualTo("Exit");
+        assertThat(processInstance.variables().getSurname()).isEqualTo("tester");
+        Set<String> nodes = tracker.tracked().stream().map(event -> event.getNodeInstance().getNodeName()).collect(Collectors.toSet());
+        assertThat(nodes.contains("Script1")).isTrue();
     }
 
     @Test

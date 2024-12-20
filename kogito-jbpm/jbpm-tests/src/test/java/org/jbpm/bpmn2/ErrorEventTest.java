@@ -25,6 +25,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.jbpm.bpmn2.error.BoundaryErrorEventCatchingOnEntryExceptionModel;
+import org.jbpm.bpmn2.error.BoundaryErrorEventCatchingOnEntryExceptionProcess;
+import org.jbpm.bpmn2.error.BoundaryErrorEventCatchingOnExitExceptionModel;
+import org.jbpm.bpmn2.error.BoundaryErrorEventCatchingOnExitExceptionProcess;
 import org.jbpm.bpmn2.error.BoundaryErrorEventDefaultHandlerByErrorCodeModel;
 import org.jbpm.bpmn2.error.BoundaryErrorEventDefaultHandlerByErrorCodeProcess;
 import org.jbpm.bpmn2.error.BoundaryErrorEventDefaultHandlerWithErrorCodeWithStructureRefModel;
@@ -71,7 +75,6 @@ import org.jbpm.process.workitem.builtin.SignallingTaskHandlerDecorator;
 import org.jbpm.process.workitem.builtin.SystemOutWorkItemHandler;
 import org.jbpm.test.utils.EventTrackerProcessListener;
 import org.jbpm.test.utils.ProcessTestHelper;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.api.event.process.DefaultProcessEventListener;
 import org.kie.api.event.process.ProcessNodeLeftEvent;
@@ -445,31 +448,31 @@ public class ErrorEventTest extends JbpmBpmn2TestCase {
     }
 
     @Test
-    @Disabled("On Exit not supported, see https://issues.redhat.com/browse/KOGITO-2067")
-    public void testErrorBoundaryEventOnEntry() throws Exception {
-        kruntime = createKogitoProcessRuntime("BPMN2-BoundaryErrorEventCatchingOnEntryException.bpmn2");
-        TestWorkItemHandler handler = new TestWorkItemHandler();
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task", handler);
-
-        KogitoProcessInstance processInstance = kruntime.startProcess("BoundaryErrorEventOnEntry");
-
-        assertProcessInstanceActive(processInstance.getStringId(), kruntime);
-        assertThat(handler.getWorkItems()).hasSize(1);
+    public void testErrorBoundaryEventOnEntry() {
+        Application app = ProcessTestHelper.newApplication();
+        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        ProcessTestHelper.registerHandler(app, "Human Task", workItemHandler);
+        org.kie.kogito.process.Process<BoundaryErrorEventCatchingOnEntryExceptionModel> processDefinition = BoundaryErrorEventCatchingOnEntryExceptionProcess.newProcess(app);
+        BoundaryErrorEventCatchingOnEntryExceptionModel model = processDefinition.createModel();
+        ProcessInstance<BoundaryErrorEventCatchingOnEntryExceptionModel> processInstance = processDefinition.createInstance(model);
+        processInstance.start();
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
+        assertThat(workItemHandler.getWorkItems()).hasSize(1);
     }
 
     @Test
-    @Disabled("On Exit not supported, see https://issues.redhat.com/browse/KOGITO-2067")
-    public void testErrorBoundaryEventOnExit() throws Exception {
-        kruntime = createKogitoProcessRuntime("BPMN2-BoundaryErrorEventCatchingOnExitException.bpmn2");
-        TestWorkItemHandler handler = new TestWorkItemHandler();
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("Human Task", handler);
-
-        KogitoProcessInstance processInstance = kruntime.startProcess("BoundaryErrorEventOnExit");
-
-        assertProcessInstanceActive(processInstance.getStringId(), kruntime);
-        KogitoWorkItem workItem = handler.getWorkItem();
-        kruntime.getKogitoWorkItemManager().completeWorkItem(workItem.getStringId(), null);
-        assertThat(handler.getWorkItems()).hasSize(1);
+    public void testErrorBoundaryEventOnExit() {
+        Application app = ProcessTestHelper.newApplication();
+        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        ProcessTestHelper.registerHandler(app, "Human Task", workItemHandler);
+        org.kie.kogito.process.Process<BoundaryErrorEventCatchingOnExitExceptionModel> processDefinition = BoundaryErrorEventCatchingOnExitExceptionProcess.newProcess(app);
+        BoundaryErrorEventCatchingOnExitExceptionModel model = processDefinition.createModel();
+        ProcessInstance<BoundaryErrorEventCatchingOnExitExceptionModel> processInstance = processDefinition.createInstance(model);
+        processInstance.start();
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
+        KogitoWorkItem workItem = workItemHandler.getWorkItem();
+        processInstance.completeWorkItem(workItem.getStringId(), Collections.emptyMap());
+        assertThat(workItemHandler.getWorkItems()).hasSize(1);
     }
 
     @Test
