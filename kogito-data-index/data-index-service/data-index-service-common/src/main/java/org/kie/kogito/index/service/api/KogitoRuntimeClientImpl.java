@@ -22,9 +22,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
+import org.kie.kogito.index.CommonUtils;
+import org.kie.kogito.index.api.ExecuteArgs;
 import org.kie.kogito.index.api.KogitoRuntimeClient;
 import org.kie.kogito.index.api.KogitoRuntimeCommonClient;
 import org.kie.kogito.index.model.Node;
+import org.kie.kogito.index.model.ProcessDefinition;
 import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.model.UserTaskInstance;
 import org.kie.kogito.index.service.DataIndexServiceException;
@@ -71,6 +74,17 @@ class KogitoRuntimeClientImpl extends KogitoRuntimeCommonClient implements Kogit
     public static final String DELETE_USER_TASK_INSTANCE_ATTACHMENT_PATH = "/usertasks/instance/%s/attachments/%s";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KogitoRuntimeClientImpl.class);
+
+    @Override
+    public CompletableFuture<String> executeProcessIntance(ProcessDefinition definition, ExecuteArgs args) {
+        CompletableFuture<String> future = new CompletableFuture<>();
+        HttpRequest<Buffer> request = getWebClient(CommonUtils.getServiceUrl(definition.getEndpoint(), definition.getId())).post("/" + definition.getId());
+        if (args.businessKey() != null) {
+            request.addQueryParam("businessKey", args.businessKey());
+        }
+        request.sendJson(args.input(), res -> asyncHttpResponseTreatment(res, future, "START ProcessInstance of type " + definition.getId()));
+        return future;
+    }
 
     @Override
     public CompletableFuture<String> abortProcessInstance(String serviceURL, ProcessInstance processInstance) {
@@ -282,5 +296,4 @@ class KogitoRuntimeClientImpl extends KogitoRuntimeCommonClient implements Kogit
             future.completeExceptionally(new DataIndexServiceException(getErrorMessage(logMessage, res.result()), res.cause()));
         }
     }
-
 }

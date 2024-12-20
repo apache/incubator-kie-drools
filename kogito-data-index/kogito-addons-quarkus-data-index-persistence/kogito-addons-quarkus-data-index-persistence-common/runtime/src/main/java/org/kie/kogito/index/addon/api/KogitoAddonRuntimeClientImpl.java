@@ -29,13 +29,17 @@ import java.util.stream.Collectors;
 
 import org.eclipse.microprofile.context.ManagedExecutor;
 import org.kie.kogito.Application;
+import org.kie.kogito.Model;
+import org.kie.kogito.index.api.ExecuteArgs;
 import org.kie.kogito.index.api.KogitoRuntimeClient;
 import org.kie.kogito.index.api.KogitoRuntimeCommonClient;
 import org.kie.kogito.index.model.Node;
+import org.kie.kogito.index.model.ProcessDefinition;
 import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.model.UserTaskInstance;
 import org.kie.kogito.index.service.DataIndexServiceException;
 import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
+import org.kie.kogito.jackson.utils.JsonObjectUtils;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstanceExecutionException;
 import org.kie.kogito.process.Processes;
@@ -272,5 +276,19 @@ public class KogitoAddonRuntimeClientImpl extends KogitoRuntimeCommonClient impl
                 throw new DataIndexServiceException(String.format("Process instance with id %s doesn't allow the operation requested", processInstanceId));
             }
         });
+    }
+
+    @Override
+    public CompletableFuture<String> executeProcessIntance(ProcessDefinition definition, ExecuteArgs args) {
+        Process<?> process = processes != null ? processes.processById(definition.getId()) : null;
+        if (process == null) {
+            throw new DataIndexServiceException(String.format("Unable to find Process  with id %s to perform the operation requested", definition.getId()));
+        }
+        Model m = (Model) process.createModel();
+        m.update(JsonObjectUtils.convertValue(args.input(), Map.class));
+        org.kie.kogito.process.ProcessInstance<? extends Model> pi = process.createInstance(m);
+        pi.start();
+        return CompletableFuture.completedFuture(
+                String.format(SUCCESSFULLY_OPERATION_MESSAGE, "Started Process Instance with id: " + pi.id()));
     }
 }

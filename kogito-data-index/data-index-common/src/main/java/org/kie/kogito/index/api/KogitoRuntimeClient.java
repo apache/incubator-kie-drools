@@ -24,10 +24,13 @@ import java.util.concurrent.CompletableFuture;
 
 import org.kie.kogito.index.model.Job;
 import org.kie.kogito.index.model.Node;
+import org.kie.kogito.index.model.ProcessDefinition;
 import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.model.UserTaskInstance;
 
 public interface KogitoRuntimeClient {
+
+    CompletableFuture<String> executeProcessIntance(ProcessDefinition definition, ExecuteArgs args);
 
     CompletableFuture<String> abortProcessInstance(String serviceURL, ProcessInstance processInstance);
 

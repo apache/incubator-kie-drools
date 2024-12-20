@@ -29,16 +29,21 @@ import java.util.concurrent.CompletableFuture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.kie.kogito.index.api.ExecuteArgs;
 import org.kie.kogito.index.api.KogitoRuntimeCommonClient;
 import org.kie.kogito.index.model.Job;
+import org.kie.kogito.index.model.ProcessDefinition;
 import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.model.UserTaskInstance;
 import org.kie.kogito.index.service.DataIndexServiceException;
 import org.kie.kogito.index.test.TestUtils;
+import org.kie.kogito.jackson.utils.ObjectMapperFactory;
 import org.kie.kogito.usertask.model.CommentInfo;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 import io.quarkus.security.credential.TokenCredential;
 import io.quarkus.security.identity.SecurityIdentity;
@@ -115,6 +120,20 @@ public class KogitoRuntimeClientTest {
         client.addServiceWebClient(SERVICE_URL, webClientMock);
         client.setVertx(vertx);
         client.setIdentity(identityMock);
+    }
+
+    @Test
+    public void textExecuteAfter() {
+        when(webClientMock.post(anyString())).thenReturn(httpRequestMock);
+        final String processId = "infra";
+        ProcessDefinition definition = TestUtils.getProcessDefinition(processId);
+        definition.setEndpoint(SERVICE_URL + "/" + processId);
+        JsonNode body = ObjectMapperFactory.get().createObjectNode().put("name", "javierito");
+        client.executeProcessIntance(definition, ExecuteArgs.of(body));
+        verify(webClientMock).post("/" + processId);
+        ArgumentCaptor<Object> jsonCaptor = ArgumentCaptor.forClass(Object.class);
+        verify(httpRequestMock).sendJson(jsonCaptor.capture(), any());
+        assertThat(jsonCaptor.getValue()).isEqualTo(body);
     }
 
     @Test

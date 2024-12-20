@@ -27,17 +27,23 @@ import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.kie.kogito.event.process.ProcessDefinitionDataEvent;
 import org.kie.kogito.event.process.ProcessInstanceStateDataEvent;
+import org.kie.kogito.event.process.ProcessInstanceVariableDataEvent;
+import org.kie.kogito.event.process.ProcessInstanceVariableEventBody;
 import org.kie.kogito.event.usertask.UserTaskInstanceAttachmentDataEvent;
 import org.kie.kogito.event.usertask.UserTaskInstanceAttachmentEventBody;
 import org.kie.kogito.event.usertask.UserTaskInstanceCommentDataEvent;
 import org.kie.kogito.event.usertask.UserTaskInstanceCommentEventBody;
 import org.kie.kogito.event.usertask.UserTaskInstanceStateDataEvent;
+import org.kie.kogito.index.api.ExecuteArgs;
 import org.kie.kogito.index.api.KogitoRuntimeClient;
 import org.kie.kogito.index.event.KogitoJobCloudEvent;
 import org.kie.kogito.index.model.UserTaskInstance;
 import org.kie.kogito.index.service.AbstractIndexingIT;
 import org.kie.kogito.index.service.graphql.GraphQLSchemaManagerImpl;
+import org.kie.kogito.index.test.TestUtils;
+import org.kie.kogito.jackson.utils.ObjectMapperFactory;
 import org.kie.kogito.persistence.protobuf.ProtobufService;
 import org.mockito.ArgumentCaptor;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -94,6 +100,35 @@ public abstract class AbstractGraphQLRuntimesQueriesIT extends AbstractIndexingI
 
         verify(dataIndexApiClient).abortProcessInstance(eq("http://localhost:8080"),
                 eq(getProcessInstance(processId, processInstanceId, 1, null, null)));
+    }
+
+    @Test
+    void testProcessExecuteInstance() {
+        String assesmentInstanceId = UUID.randomUUID().toString();
+        ProcessInstanceStateDataEvent assesmentEvent = getProcessCloudEvent(processId, assesmentInstanceId, ACTIVE, null, null, null, "currentUser");
+        indexProcessCloudEvent(assesmentEvent);
+        final String assesmentVarName = "assesmentVar";
+        final String assesmentVarValue = "assesmentValue";
+        final String infraVarName = "clientVar";
+        final String infraVarValue = "clientValue";
+        ProcessInstanceVariableDataEvent variableEvent = new ProcessInstanceVariableDataEvent();
+        variableEvent.setKogitoProcessId(processId);
+        variableEvent.setKogitoProcessInstanceId(assesmentInstanceId);
+        variableEvent.setData(ProcessInstanceVariableEventBody.create().processId(processId).processInstanceId(assesmentInstanceId)
+                .variableName(assesmentVarName).variableValue(assesmentVarValue).build());
+        indexProcessCloudEvent(variableEvent);
+        final String infraProcessId = "infra";
+        ProcessDefinitionDataEvent definitionEvent = TestUtils.getProcessDefinitionDataEvent(infraProcessId);
+        indexProcessCloudEvent(definitionEvent);
+        checkOkResponse("{ \"query\" : \"mutation{ ExecuteAfter ( " + fragment("completedInstanceId", assesmentInstanceId) + "," + fragment("processId", infraProcessId) +
+                "," + fragment("processVersion", TestUtils.PROCESS_VERSION) + "," + "input: {" + fragment(infraVarName, infraVarValue) + "})}\"}");
+        verify(dataIndexApiClient).executeProcessIntance(TestUtils.getProcessDefinition(infraProcessId),
+                ExecuteArgs.of(ObjectMapperFactory.get().createObjectNode().put(assesmentVarName, assesmentVarValue)
+                        .put(infraVarName, infraVarValue)));
+    }
+
+    private String fragment(String name, String value) {
+        return name + ": \\\"" + value + "\\\"";
     }
 
     @Test

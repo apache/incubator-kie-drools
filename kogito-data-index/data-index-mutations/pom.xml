@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <!--
 
     Licensed to the Apache Software Foundation (ASF) under one
@@ -19,30 +18,16 @@
     under the License.
 
 -->
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.kie.kogito</groupId>
-    <artifactId>kogito-apps-build-parent</artifactId>
+    <artifactId>data-index</artifactId>
     <version>999-SNAPSHOT</version>
-    <relativePath>../kogito-apps-build-parent/pom.xml</relativePath>
   </parent>
-  <modelVersion>4.0.0</modelVersion>
-
-  <artifactId>data-index</artifactId>
+  <artifactId>data-index-mutations</artifactId>
   <packaging>pom</packaging>
-  <name>Kogito Apps :: Data Index</name>
-
   <modules>
-    <module>data-index-storage</module>
-    <module>data-index-common</module>
-    <module>data-index-test-utils</module>
-    <module>data-index-graphql</module>
-    <module>data-index-service</module>
-    <module>kogito-addons-quarkus-data-index-persistence</module>
-    <module>kogito-addons-quarkus-data-index</module>
-    <module>data-index-mutations</module>
+   <module>data-index-shared-output-mutation</module>
   </modules>
-
 </project>

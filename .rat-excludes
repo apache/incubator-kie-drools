@@ -42,6 +42,8 @@ application.properties
 basic.schema.graphqls
 # data-index/data-index-service/data-index-service-common/src/main/resources/domain.schema.graphqls
 domain.schema.graphqls
+# /data-index/data-index-mutations/data-index-shared-output-mutation/src/main/resources/mutation.schema.graphqls
+mutation.schema.graphqls
 # data-index/kogito-addons-quarkus-data-index/kogito-addons-quarkus-data-index-infinispan/integration-tests-process/src/main/resources/hello.bpmn
 hello.bpmn
 # data-index/kogito-addons-quarkus-data-index/kogito-addons-quarkus-data-index-infinispan/integration-tests-process/src/main/resources/META-INF/processSVG/hello.svg

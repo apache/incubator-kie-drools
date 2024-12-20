@@ -19,16 +19,21 @@
 package org.kie.kogito.index.addon.api;
 
 import java.nio.Buffer;
+import java.util.Map;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.kie.kogito.Application;
+import org.kie.kogito.Model;
+import org.kie.kogito.index.api.ExecuteArgs;
 import org.kie.kogito.index.api.KogitoRuntimeCommonClient;
 import org.kie.kogito.index.model.Job;
+import org.kie.kogito.index.model.ProcessDefinition;
 import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.test.TestUtils;
+import org.kie.kogito.jackson.utils.ObjectMapperFactory;
 import org.kie.kogito.process.ProcessError;
 import org.kie.kogito.process.ProcessInstanceExecutionException;
 import org.kie.kogito.process.ProcessInstances;
@@ -41,6 +46,8 @@ import org.kie.kogito.svg.ProcessSvgService;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 import io.quarkus.security.credential.TokenCredential;
 import io.quarkus.security.identity.SecurityIdentity;
@@ -124,6 +131,9 @@ public class KogitoAddonRuntimeClientImplTest {
     Instance<Application> applicationInstance;
 
     @Mock
+    Model model;
+
+    @Mock
     private Application application;
 
     @BeforeEach
@@ -133,6 +143,8 @@ public class KogitoAddonRuntimeClientImplTest {
         lenient().when(processesInstance.isResolvable()).thenReturn(true);
         lenient().when(processesInstance.get()).thenReturn(processes);
         lenient().when(processes.processById(anyString())).thenReturn(process);
+        lenient().when(process.createModel()).thenReturn(model);
+        lenient().when(process.createInstance(model)).thenReturn(processInstance);
         lenient().when(process.instances()).thenReturn(instances);
         lenient().when(instances.findById(anyString())).thenReturn(Optional.of(processInstance));
         lenient().when(processInstance.error()).thenReturn(Optional.of(error));
@@ -171,6 +183,16 @@ public class KogitoAddonRuntimeClientImplTest {
             when(processInstance.status()).thenReturn(org.kie.kogito.process.ProcessInstance.STATE_ACTIVE);
             return null;
         }).when(error);
+    }
+
+    @Test
+    void testExecuteAfterSuccess() {
+        ProcessDefinition definition = new ProcessDefinition();
+        definition.setId("infra");
+        JsonNode body = ObjectMapperFactory.get().createObjectNode().put("name", "javierito");
+        client.executeProcessIntance(definition, ExecuteArgs.of(body));
+        verify(model).update(Map.of("name", "javierito"));
+        verify(processInstance).start();
     }
 
     @Test

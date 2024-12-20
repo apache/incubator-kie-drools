@@ -59,6 +59,7 @@ import org.kie.kogito.index.model.Job;
 import org.kie.kogito.index.model.Milestone;
 import org.kie.kogito.index.model.MilestoneStatus;
 import org.kie.kogito.index.model.NodeInstance;
+import org.kie.kogito.index.model.ProcessDefinition;
 import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.model.ProcessInstanceError;
 import org.kie.kogito.index.model.ProcessInstanceState;
@@ -119,6 +120,13 @@ public final class TestUtils {
                 .build();
 
         return new ProcessDefinitionDataEvent(body);
+    }
+
+    public static ProcessDefinition getProcessDefinition(String processId) {
+        ProcessDefinition def = new ProcessDefinition();
+        def.setId(processId);
+        def.setVersion(TestUtils.PROCESS_VERSION);
+        return def;
     }
 
     public static ProcessInstanceStateDataEvent getProcessCloudEvent(String processId, String processInstanceId, ProcessInstanceState status, String rootProcessInstanceId, String rootProcessId,
