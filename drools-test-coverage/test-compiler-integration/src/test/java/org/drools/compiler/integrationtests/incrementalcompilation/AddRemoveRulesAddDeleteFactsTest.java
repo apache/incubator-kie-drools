@@ -34,7 +34,7 @@ import org.kie.api.runtime.rule.FactHandle;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-//@EnabledIfSystemProperty(named = "runTurtleTests", matches = "true")
+@EnabledIfSystemProperty(named = "runTurtleTests", matches = "true")
 public class AddRemoveRulesAddDeleteFactsTest {
 
     public static Stream<StringPermutation> parameters() {
