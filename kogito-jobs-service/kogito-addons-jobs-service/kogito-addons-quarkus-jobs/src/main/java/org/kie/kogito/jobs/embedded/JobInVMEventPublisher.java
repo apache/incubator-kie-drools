@@ -20,6 +20,7 @@
 package org.kie.kogito.jobs.embedded;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.kie.kogito.event.EventPublisher;
@@ -80,9 +81,9 @@ public class JobInVMEventPublisher implements JobEventPublisher {
                 return jobDetails;
             }
 
-            bus.fireAsync(new EmbeddedJobServiceEvent(jobDetails));
+            bus.fireAsync(new EmbeddedJobServiceEvent(jobDetails)).toCompletableFuture().get();
             return jobDetails;
-        } catch (Exception e) {
+        } catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException(e);
         }
     }
