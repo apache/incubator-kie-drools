@@ -27,11 +27,9 @@ import java.util.Map;
 import java.util.Set;
 
 import org.junit.jupiter.api.Timeout;
-import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-@EnabledIfSystemProperty(named = "runTurtleTests", matches = "true")
 public abstract class AbstractAddRemoveGenerated2RulesTest {
 
     private String rule1;
