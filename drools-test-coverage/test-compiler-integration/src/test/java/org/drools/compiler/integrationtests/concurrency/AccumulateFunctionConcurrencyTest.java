@@ -22,9 +22,9 @@ import java.util.stream.Stream;
 
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.TestParametersUtil2;
-import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 
-@EnabledIfEnvironmentVariable(named = "runTurtleTests", matches = "*")
+@EnabledIfSystemProperty(named = "runTurtleTests", matches = "true")
 public class AccumulateFunctionConcurrencyTest extends BaseConcurrencyTest {
 
     public static Stream<KieBaseTestConfiguration> parameters() {

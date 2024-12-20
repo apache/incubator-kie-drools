@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.runtime.KieSession;
@@ -34,7 +34,7 @@ import org.kie.api.runtime.rule.FactHandle;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@EnabledIfEnvironmentVariable(named = "runTurtleTests", matches = "*")
+@EnabledIfSystemProperty(named = "runTurtleTests", matches = "true")
 public class AddRemoveRulesAddDeleteFactsTest {
 
     public static Stream<StringPermutation> parameters() {
