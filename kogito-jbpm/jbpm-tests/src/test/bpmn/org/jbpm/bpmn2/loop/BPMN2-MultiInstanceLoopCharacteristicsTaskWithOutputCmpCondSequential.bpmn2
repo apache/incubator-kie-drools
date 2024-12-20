@@ -45,8 +45,8 @@
     <startEvent id="_1" name="StartProcess" />
     <userTask id="_2" name="Hello" tns:taskName="Human Task">
       <extensionElements>
-        <tns:onEntry-script>
-          <tns:script>System.out.println("Hello");context.setVariable("itemOut", "test");</tns:script>
+        <tns:onEntry-script scriptFormat="http://www.java.com/java">
+          <tns:script>System.out.println("Hello");kcontext.setVariable("itemOut", "test");</tns:script>
         </tns:onEntry-script>
       </extensionElements>
       <ioSpecification>

@@ -114,8 +114,8 @@ public abstract class AbstractNodeVisitor<T extends Node> extends AbstractVisito
         return returnValueEvaluatorBuilderService;
     }
 
-    public void visitNode(T node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
-        visitNode(FACTORY_FIELD_NAME, node, body, variableScope, metadata);
+    public void visitNodeEntryPoint(String factoryName, T node, BlockStmt body, VariableScope variableScope, ProcessMetaData metadata) {
+        visitNode((factoryName != null ? factoryName : FACTORY_FIELD_NAME), node, body, variableScope, metadata);
         if (isAdHocNode(node)) {
             metadata.addSignal(node.getName(), null);
         }

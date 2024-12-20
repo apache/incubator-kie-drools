@@ -57,6 +57,8 @@ import org.jbpm.bpmn2.flow.InclusiveGatewayWithHumanTasksProcessModel;
 import org.jbpm.bpmn2.flow.InclusiveGatewayWithHumanTasksProcessProcess;
 import org.jbpm.bpmn2.flow.InclusiveGatewayWithLoopInsideModel;
 import org.jbpm.bpmn2.flow.InclusiveGatewayWithLoopInsideProcess;
+import org.jbpm.bpmn2.flow.InclusiveGatewayWithLoopInsideSubprocessModel;
+import org.jbpm.bpmn2.flow.InclusiveGatewayWithLoopInsideSubprocessProcess;
 import org.jbpm.bpmn2.flow.InclusiveNestedInParallelNestedInExclusiveModel;
 import org.jbpm.bpmn2.flow.InclusiveNestedInParallelNestedInExclusiveProcess;
 import org.jbpm.bpmn2.flow.InclusiveSplitAndJoinEmbeddedModel;
@@ -846,12 +848,10 @@ public class FlowTest extends JbpmBpmn2TestCase {
     }
 
     @Test
-    @Disabled("On Exit not supported, see https://issues.redhat.com/browse/KOGITO-2067")
     public void testInclusiveSplitWithLoopInsideSubprocess() throws Exception {
-        kruntime = createKogitoProcessRuntime("org/jbpm/bpmn2/flow/BPMN2-InclusiveGatewayWithLoopInsideSubprocess.bpmn2");
-
+        Application app = ProcessTestHelper.newApplication();
         final Map<String, Integer> nodeInstanceExecutionCounter = new HashMap<>();
-        kruntime.getProcessEventManager().addEventListener(new DefaultKogitoProcessEventListener() {
+        ProcessTestHelper.registerProcessEventListener(app, new DefaultKogitoProcessEventListener() {
 
             @Override
             public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {
@@ -866,30 +866,32 @@ public class FlowTest extends JbpmBpmn2TestCase {
             }
 
         });
+
         TestWorkItemHandler handler = new TestWorkItemHandler();
         TestWorkItemHandler handler2 = new TestWorkItemHandler();
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("testWI", handler);
-        kruntime.getKogitoWorkItemManager().registerWorkItemHandler("testWI2", handler2);
-        Map<String, Object> params = new HashMap<>();
-        params.put("x", -1);
-        KogitoProcessInstance processInstance = kruntime.startProcess("InclusiveGatewayWithLoopInsideSubprocess", params);
+        ProcessTestHelper.registerHandler(app, "testWI", handler);
+        ProcessTestHelper.registerHandler(app, "testWI2", handler2);
 
-        assertProcessInstanceActive(processInstance);
+        Process<InclusiveGatewayWithLoopInsideSubprocessModel> process = InclusiveGatewayWithLoopInsideSubprocessProcess.newProcess(app);
+        InclusiveGatewayWithLoopInsideSubprocessModel model = process.createModel();
+        model.setX(-1);
+        ProcessInstance<InclusiveGatewayWithLoopInsideSubprocessModel> instance = process.createInstance(model);
+        instance.start();
+
+        assertThat(instance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
         List<KogitoWorkItem> workItems = handler.getWorkItems();
         assertThat(workItems).isNotNull().hasSize(2);
-
         for (KogitoWorkItem wi : workItems) {
-            assertProcessInstanceActive(processInstance);
-            kruntime.getKogitoWorkItemManager().completeWorkItem(wi.getStringId(), null);
+            assertThat(instance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
+            instance.completeWorkItem(wi.getStringId(), null);
         }
-
-        assertProcessInstanceActive(processInstance);
-        kruntime.getKogitoWorkItemManager().completeWorkItem(handler2.getWorkItem().getStringId(), null);
-        assertProcessInstanceActive(processInstance);
-        kruntime.getKogitoWorkItemManager().completeWorkItem(handler2.getWorkItem().getStringId(), null);
-        assertProcessInstanceActive(processInstance);
-        kruntime.getKogitoWorkItemManager().completeWorkItem(handler.getWorkItem().getStringId(), null);
-        assertProcessInstanceCompleted(processInstance);
+        assertThat(instance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
+        instance.completeWorkItem(handler2.getWorkItem().getStringId(), null);
+        assertThat(instance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
+        instance.completeWorkItem(handler2.getWorkItem().getStringId(), null);
+        assertThat(instance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
+        instance.completeWorkItem(handler.getWorkItem().getStringId(), null);
+        assertThat(instance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
         assertThat(nodeInstanceExecutionCounter).hasSize(13);
         assertThat((int) nodeInstanceExecutionCounter.get("Start")).isEqualTo(1);
         assertThat((int) nodeInstanceExecutionCounter.get("Sub Process 1")).isEqualTo(1);

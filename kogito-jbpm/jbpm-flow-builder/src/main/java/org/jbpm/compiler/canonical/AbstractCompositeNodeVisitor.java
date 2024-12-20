@@ -40,7 +40,7 @@ public abstract class AbstractCompositeNodeVisitor<T extends CompositeContextNod
             if (visitor == null) {
                 continue;
             }
-            visitor.visitNode(factoryField, node, body, variableScope, metadata);
+            visitor.visitNodeEntryPoint(factoryField, node, body, variableScope, metadata);
         }
     }
 

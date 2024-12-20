@@ -230,7 +230,7 @@ public class ProcessVisitor extends AbstractVisitor {
             if (visitor == null) {
                 throw new IllegalStateException("No visitor found for node " + node.getClass().getName());
             }
-            visitor.visitNode(node, body, variableScope, metadata);
+            visitor.visitNodeEntryPoint(null, node, body, variableScope, metadata);
         }
     }
 
