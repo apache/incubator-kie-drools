@@ -27,7 +27,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
-import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -35,7 +35,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * Tests adding and removing rules with advanced operators.
  */
-@EnabledIfEnvironmentVariable(named = "runTurtleTests", matches = "*")
+@EnabledIfSystemProperty(named = "runTurtleTests", matches = "true")
 public class AddRemoveRulesAdvOperatorsTest {
 
     @Test
