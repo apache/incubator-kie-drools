@@ -25,6 +25,7 @@ import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.ast.forexpressioniterators.ForIteration;
 import org.kie.dmn.feel.lang.types.BuiltInType;
+import org.kie.dmn.feel.runtime.Range;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -132,8 +133,7 @@ public class ForExpressionNode
         Object result = iterationContextNode.evaluate(ctx);
         Object rangeEnd = iterationContextNode.evaluateRangeEnd(ctx);
         if (rangeEnd == null) {
-            Iterable values = result instanceof Iterable iterable? iterable : Collections.singletonList(result);
-            toReturn = new ForIteration(name, values);
+            toReturn = (result instanceof Iterable iterable) ? new ForIteration(name, iterable) : getForIteration(ctx, name, ((Range) result).getLowEndPoint(), ((Range) result).getHighEndPoint());
         } else {
             toReturn = getForIteration(ctx, name, result, rangeEnd);
         }
