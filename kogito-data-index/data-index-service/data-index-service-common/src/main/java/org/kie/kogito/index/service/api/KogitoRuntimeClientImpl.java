@@ -76,7 +76,7 @@ class KogitoRuntimeClientImpl extends KogitoRuntimeCommonClient implements Kogit
     private static final Logger LOGGER = LoggerFactory.getLogger(KogitoRuntimeClientImpl.class);
 
     @Override
-    public CompletableFuture<String> executeProcessIntance(ProcessDefinition definition, ExecuteArgs args) {
+    public CompletableFuture<String> executeProcessInstance(ProcessDefinition definition, ExecuteArgs args) {
         CompletableFuture<String> future = new CompletableFuture<>();
         HttpRequest<Buffer> request = getWebClient(CommonUtils.getServiceUrl(definition.getEndpoint(), definition.getId())).post("/" + definition.getId());
         if (args.businessKey() != null) {

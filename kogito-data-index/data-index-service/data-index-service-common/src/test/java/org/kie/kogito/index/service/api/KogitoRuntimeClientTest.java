@@ -129,7 +129,7 @@ public class KogitoRuntimeClientTest {
         ProcessDefinition definition = TestUtils.getProcessDefinition(processId);
         definition.setEndpoint(SERVICE_URL + "/" + processId);
         JsonNode body = ObjectMapperFactory.get().createObjectNode().put("name", "javierito");
-        client.executeProcessIntance(definition, ExecuteArgs.of(body));
+        client.executeProcessInstance(definition, ExecuteArgs.of(body));
         verify(webClientMock).post("/" + processId);
         ArgumentCaptor<Object> jsonCaptor = ArgumentCaptor.forClass(Object.class);
         verify(httpRequestMock).sendJson(jsonCaptor.capture(), any());

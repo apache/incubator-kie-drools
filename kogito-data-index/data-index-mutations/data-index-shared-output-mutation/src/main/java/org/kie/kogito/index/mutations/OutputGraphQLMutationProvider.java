@@ -19,6 +19,7 @@
 package org.kie.kogito.index.mutations;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 import org.kie.kogito.index.CommonUtils;
@@ -62,14 +63,14 @@ public class OutputGraphQLMutationProvider implements GraphQLMutationsProvider {
         if (completedInstanceId != null) {
             ProcessInstance processInstance = cacheService.getProcessInstanceStorage().get(completedInstanceId);
             if (processInstance != null) {
-                input = MergeUtils.merge(input, processInstance.getVariables());
+                input = MergeUtils.merge(input, processInstance.getVariables().remove(env.getArgumentOrDefault("excludeProperties", Set.of("workflowdatainput"))));
             } else {
                 logger.warn("Completed Instance Id {} cannot be found, using user input as it is", completedInstanceId);
             }
         } else {
             logger.warn("Missing " + COMPLETED_INSTANCE_ID + " parameter, using user input as it is");
         }
-        return schemaManager.getDataIndexApiExecutor().executeProcessIntance(processDefinition, ExecuteArgs.of(input));
+        return schemaManager.getDataIndexApiExecutor().executeProcessInstance(processDefinition, ExecuteArgs.of(input));
     }
 
     private static <T> T mandatoryArgument(DataFetchingEnvironment env, String name) {

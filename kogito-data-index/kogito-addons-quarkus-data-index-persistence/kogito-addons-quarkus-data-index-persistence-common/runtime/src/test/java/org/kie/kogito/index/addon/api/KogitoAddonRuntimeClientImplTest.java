@@ -190,7 +190,7 @@ public class KogitoAddonRuntimeClientImplTest {
         ProcessDefinition definition = new ProcessDefinition();
         definition.setId("infra");
         JsonNode body = ObjectMapperFactory.get().createObjectNode().put("name", "javierito");
-        client.executeProcessIntance(definition, ExecuteArgs.of(body));
+        client.executeProcessInstance(definition, ExecuteArgs.of(body));
         verify(model).update(Map.of("name", "javierito"));
         verify(processInstance).start();
     }

@@ -111,20 +111,28 @@ public abstract class AbstractGraphQLRuntimesQueriesIT extends AbstractIndexingI
         final String assesmentVarValue = "assesmentValue";
         final String infraVarName = "clientVar";
         final String infraVarValue = "clientValue";
-        ProcessInstanceVariableDataEvent variableEvent = new ProcessInstanceVariableDataEvent();
-        variableEvent.setKogitoProcessId(processId);
-        variableEvent.setKogitoProcessInstanceId(assesmentInstanceId);
-        variableEvent.setData(ProcessInstanceVariableEventBody.create().processId(processId).processInstanceId(assesmentInstanceId)
-                .variableName(assesmentVarName).variableValue(assesmentVarValue).build());
-        indexProcessCloudEvent(variableEvent);
+        final String excludedKey = "notUsedKey";
+        final String excludedValue = "irrelevant";
+        indexProcessCloudEvent(buildVariableEvent(assesmentInstanceId, assesmentVarName, assesmentVarValue));
+        indexProcessCloudEvent(buildVariableEvent(assesmentInstanceId, excludedKey, excludedValue));
         final String infraProcessId = "infra";
         ProcessDefinitionDataEvent definitionEvent = TestUtils.getProcessDefinitionDataEvent(infraProcessId);
         indexProcessCloudEvent(definitionEvent);
         checkOkResponse("{ \"query\" : \"mutation{ ExecuteAfter ( " + fragment("completedInstanceId", assesmentInstanceId) + "," + fragment("processId", infraProcessId) +
+                ",excludeProperties: [\\\"" + excludedKey + "\\\"]" +
                 "," + fragment("processVersion", TestUtils.PROCESS_VERSION) + "," + "input: {" + fragment(infraVarName, infraVarValue) + "})}\"}");
-        verify(dataIndexApiClient).executeProcessIntance(TestUtils.getProcessDefinition(infraProcessId),
+        verify(dataIndexApiClient).executeProcessInstance(TestUtils.getProcessDefinition(infraProcessId),
                 ExecuteArgs.of(ObjectMapperFactory.get().createObjectNode().put(assesmentVarName, assesmentVarValue)
                         .put(infraVarName, infraVarValue)));
+    }
+
+    private ProcessInstanceVariableDataEvent buildVariableEvent(String processInstanceId, String key, String name) {
+        ProcessInstanceVariableDataEvent variableEvent = new ProcessInstanceVariableDataEvent();
+        variableEvent.setKogitoProcessId(processId);
+        variableEvent.setKogitoProcessInstanceId(processInstanceId);
+        variableEvent.setData(ProcessInstanceVariableEventBody.create().processId(processId).processInstanceId(processInstanceId)
+                .variableName(key).variableValue(name).build());
+        return variableEvent;
     }
 
     private String fragment(String name, String value) {

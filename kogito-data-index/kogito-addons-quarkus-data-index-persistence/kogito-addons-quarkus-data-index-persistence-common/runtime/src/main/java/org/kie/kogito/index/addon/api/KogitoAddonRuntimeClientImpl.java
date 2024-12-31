@@ -279,7 +279,7 @@ public class KogitoAddonRuntimeClientImpl extends KogitoRuntimeCommonClient impl
     }
 
     @Override
-    public CompletableFuture<String> executeProcessIntance(ProcessDefinition definition, ExecuteArgs args) {
+    public CompletableFuture<String> executeProcessInstance(ProcessDefinition definition, ExecuteArgs args) {
         Process<?> process = processes != null ? processes.processById(definition.getId()) : null;
         if (process == null) {
             throw new DataIndexServiceException(String.format("Unable to find Process  with id %s to perform the operation requested", definition.getId()));

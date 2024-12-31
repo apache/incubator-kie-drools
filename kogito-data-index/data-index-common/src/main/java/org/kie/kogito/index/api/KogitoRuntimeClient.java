@@ -30,7 +30,7 @@ import org.kie.kogito.index.model.UserTaskInstance;
 
 public interface KogitoRuntimeClient {
 
-    CompletableFuture<String> executeProcessIntance(ProcessDefinition definition, ExecuteArgs args);
+    CompletableFuture<String> executeProcessInstance(ProcessDefinition definition, ExecuteArgs args);
 
     CompletableFuture<String> abortProcessInstance(String serviceURL, ProcessInstance processInstance);
 
