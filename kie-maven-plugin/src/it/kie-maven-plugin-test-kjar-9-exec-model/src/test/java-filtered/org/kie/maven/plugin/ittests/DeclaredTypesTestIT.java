@@ -25,15 +25,13 @@ import java.net.URLClassLoader;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
-
-import org.assertj.core.api.Assertions;
-import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class DeclaredTypesTestIT {
 
@@ -48,12 +46,12 @@ public class DeclaredTypesTestIT {
         final URL targetLocation = DeclaredTypesTestIT.class.getProtectionDomain().getCodeSource().getLocation();
         final KieContainer kieContainer = ITTestsUtils.getKieContainer(targetLocation, GAV_ARTIFACT_ID, GAV_VERSION);
         final KieBase kieBase = kieContainer.getKieBase(KBASE_NAME);
-        Assertions.assertThat(kieBase).isNotNull();
+        assertThat(kieBase).isNotNull();
         KieSession kSession = null;
         try {
 
             kSession = kieBase.newKieSession();
-            Assertions.assertThat(kSession).isNotNull();
+            assertThat(kSession).isNotNull();
 
             ClassLoader classLoader = kieContainer.getClassLoader();
             Class<?> aClass = Class.forName("org.declaredtype.FactA", true, classLoader);
@@ -64,7 +62,7 @@ public class DeclaredTypesTestIT {
             int rulesFired = kSession.fireAllRules();
             kSession.dispose();
 
-            assertEquals(1, rulesFired);
+            assertThat(rulesFired).isEqualTo(1);
         } finally {
             kSession.dispose();
         }

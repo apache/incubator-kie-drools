@@ -20,7 +20,7 @@ package org.drools.testcoverage.functional.oopath;
 
 import org.drools.testcoverage.common.model.InternationalAddress;
 import org.drools.testcoverage.common.model.Person;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.utils.KieHelper;

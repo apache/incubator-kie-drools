@@ -43,7 +43,7 @@ import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.util.AbstractHashTable.DoubleCompositeIndex;
 import org.drools.core.util.AbstractHashTable.Index;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.conf.CompositeConfiguration;

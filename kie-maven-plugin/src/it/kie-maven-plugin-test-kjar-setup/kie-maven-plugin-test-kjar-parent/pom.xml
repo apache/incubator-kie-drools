@@ -35,6 +35,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.release>11</maven.compiler.release>
     <junit.version>4.13.1</junit.version>
+    <junit.jupiter.version>5.10.2</junit.jupiter.version>
     <assertj.version>3.14.0</assertj.version>
     <compiler.plugin.version>3.11.0</compiler.plugin.version>
     <surefire.plugin.version>3.1.0</surefire.plugin.version>
@@ -48,11 +49,11 @@
       <version>${org.kie.version}</version>
     </dependency>
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>${junit.version}</version>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <version>${junit.jupiter.version}</version>
       <scope>test</scope>
-    </dependency>
+    </dependency>    
     <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>

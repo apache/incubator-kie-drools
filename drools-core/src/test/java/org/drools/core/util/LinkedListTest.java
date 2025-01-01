@@ -18,11 +18,12 @@
  */
 package org.drools.core.util;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
+
 
 public class LinkedListTest {
 
@@ -31,7 +32,7 @@ public class LinkedListTest {
     DoubleLinkedEntry node2 = null;
     DoubleLinkedEntry node3 = null;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         this.list = new LinkedList();
         this.node1 = new AbstractBaseLinkedListNodeMock();

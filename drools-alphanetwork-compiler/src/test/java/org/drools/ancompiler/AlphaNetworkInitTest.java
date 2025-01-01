@@ -20,41 +20,37 @@ package org.drools.ancompiler;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
-import org.junit.Test;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class AlphaNetworkInitTest extends BaseModelTest {
 
-    public AlphaNetworkInitTest(RUN_TYPE testRunType) {
-        super(testRunType);
-    }
-
     // ANC is assembled manually
-    final static Object[] STANDARD = {
-            RUN_TYPE.STANDARD_FROM_DRL,
-    };
-
-    @Parameterized.Parameters(name = "{0}")
-    public static Object[] params() {
-        return STANDARD;
+    public static Stream<RUN_TYPE> parameters() {
+        return Stream.of(RUN_TYPE.STANDARD_FROM_DRL);
     }
 
-    @Test // DROOLS-6336
-    public void testGenerateAndSetInMemoryANC() {
+    // DROOLS-6336
+    @ParameterizedTest(name = "{0}")
+	@MethodSource("parameters")
+    public void testGenerateAndSetInMemoryANC(RUN_TYPE testRunType) {
         final List<Person> results = new ArrayList<>();
-        KieSession kSession = setupKieSession();
+        KieSession kSession = setupKieSession(testRunType);
         KieBaseUpdaterANC.generateAndSetInMemoryANC(kSession.getKieBase());
         assertResult(results, kSession);
     }
 
-    @Test // DROOLS-6336
-    public void testGenerateAndSetInMemoryANCCalledTwice() {
+    // DROOLS-6336
+    @ParameterizedTest(name = "{0}")
+	@MethodSource("parameters")
+    public void testGenerateAndSetInMemoryANCCalledTwice(RUN_TYPE testRunType) {
         final List<Person> results = new ArrayList<>();
-        KieSession kSession = setupKieSession();
+        KieSession kSession = setupKieSession(testRunType);
         KieBaseUpdaterANC.generateAndSetInMemoryANC(kSession.getKieBase());
         KieBaseUpdaterANC.generateAndSetInMemoryANC(kSession.getKieBase());
         assertResult(results, kSession);
@@ -69,7 +65,7 @@ public class AlphaNetworkInitTest extends BaseModelTest {
         assertThat(results).containsExactly(jamesBond);
     }
 
-    private KieSession setupKieSession() {
+    private KieSession setupKieSession(RUN_TYPE testRunType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                         "global java.util.List results;\n" +
@@ -80,7 +76,7 @@ public class AlphaNetworkInitTest extends BaseModelTest {
                         "        results.add($p);\n" +
                         "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(testRunType, str);
         return ksession;
     }
 }

@@ -23,10 +23,10 @@ import java.util.Map;
 
 import org.drools.ruleunits.api.RuleUnitInstance;
 import org.drools.ruleunits.api.RuleUnitProvider;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static java.util.stream.Collectors.toList;
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class LoanTest {
 
@@ -43,8 +43,8 @@ public class LoanTest {
 
         List<LoanApplication> results = instance.executeQuery("FindApproved").toList("$l");
 
-        assertEquals(1, results.size());
-        assertEquals("ABC10001", results.get(0).getId());
-        assertEquals("John", results.get(0).getApplicant().getName());
+        assertThat(results).hasSize(1);
+        assertThat(results.get(0).getId()).isEqualTo("ABC10001");
+        assertThat(results.get(0).getApplicant().getName()).isEqualTo("John");
     }
 }

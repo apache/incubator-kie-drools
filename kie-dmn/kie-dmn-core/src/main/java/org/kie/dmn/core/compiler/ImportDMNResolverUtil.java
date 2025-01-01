@@ -52,6 +52,10 @@ public class ImportDMNResolverUtil {
                         "Importing a DMN model with namespace={} name={} locationURI={}, modelName={}",
                 importerDMNName, importerDMNNamespace, importNamespace, importName, importLocationURI, importModelName);
 
+        if (dmns.isEmpty()) {
+            return Either.ofLeft("Impossible to resolve an import against an empty DMN collection");
+        }
+
         List<T> matchingDMNList = dmns.stream()
                 .filter(m -> idExtractor.apply(m).getNamespaceURI().equals(importNamespace))
                 .toList();

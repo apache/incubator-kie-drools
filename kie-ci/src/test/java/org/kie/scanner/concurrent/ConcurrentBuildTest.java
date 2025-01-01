@@ -25,41 +25,42 @@ import java.util.concurrent.TimeUnit;
 
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.core.util.FileManager;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
 import org.kie.scanner.AbstractKieCiTest;
 import org.kie.scanner.KieMavenRepository;
-import org.kie.test.testcategory.TurtleTestCategory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.scanner.KieMavenRepository.getKieMavenRepository;
 
-@Category(TurtleTestCategory.class)
+@EnabledIfSystemProperty(named = "runTurtleTests", matches = "true")
 public class ConcurrentBuildTest extends AbstractKieCiTest {
     private static final Logger LOG = LoggerFactory.getLogger(ConcurrentBuildTest.class);
 
     private FileManager fileManager;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         this.fileManager = new FileManager();
         this.fileManager.setUp();
         ReleaseId releaseId = KieServices.Factory.get().newReleaseId("org.kie", "scanner-test", "1.0-SNAPSHOT");
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         this.fileManager.tearDown();
     }
 
     // This is TurtleTest. You can run this test with -PrunTurtleTests
-    @Test(timeout=600000)
+    @Test
+    @Timeout(600000)
     public void concurrentBuildWithDependency() throws Exception {
         KieServices ks = KieServices.Factory.get();
         KieMavenRepository repository = getKieMavenRepository();
@@ -113,6 +114,6 @@ public class ConcurrentBuildTest extends AbstractKieCiTest {
             KieServices.Factory.get().getRepository().removeKieModule(releaseIdDepA);
             KieServices.Factory.get().getRepository().removeKieModule(releaseIdDepB);
         }
-        assertTrue(true); // no deadlock
+        assertThat(true).isTrue(); // no deadlock
     }
 }

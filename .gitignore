@@ -24,6 +24,7 @@ local/
 !.github
 !.git-blame-ignore-revs
 !.openrewrite
+!.rat-excludes
 nbproject
 *.ipr
 *.iws

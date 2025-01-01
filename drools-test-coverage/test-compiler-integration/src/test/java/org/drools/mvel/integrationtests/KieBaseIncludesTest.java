@@ -21,13 +21,13 @@ package org.drools.mvel.integrationtests;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -42,18 +42,10 @@ import org.kie.api.runtime.KieSession;
 import static org.assertj.core.api.Assertions.assertThat;
 
 // DROOLS-1044
-@RunWith(Parameterized.class)
 public class KieBaseIncludesTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public KieBaseIncludesTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
-    }
-
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
     /**
@@ -61,8 +53,9 @@ public class KieBaseIncludesTest {
      * <p/>
      * The 2 KieBases use different package names for the rules (i.e. "rules" and "rules2").
      */
-    @Test
-    public void testKieBaseIncludesCrossKJarDifferentPackageNames() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testKieBaseIncludesCrossKJarDifferentPackageNames(KieBaseTestConfiguration kieBaseTestConfiguration) {
 
         // @formatter:off
         String pomContent1 = "<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n" +
@@ -148,8 +141,9 @@ public class KieBaseIncludesTest {
      * <p/>
      * The 2 KieBases use the same package names for the rules (i.e. "rules").
      */
-    @Test
-    public void testKieBaseIncludesCrossKJarSamePackageNames() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testKieBaseIncludesCrossKJarSamePackageNames(KieBaseTestConfiguration kieBaseTestConfiguration) {
 
         // @formatter:off
         String pomContent1 = "<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n" +
@@ -254,8 +248,9 @@ public class KieBaseIncludesTest {
      * <p/>
      * The 2 KieBases use the duplicate rule names, so an error should be reported
      */
-    @Test
-    public void kieBaseIncludesCrossKJarDuplicateRuleNames_shouldReportError() throws IOException {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void kieBaseIncludesCrossKJarDuplicateRuleNames_shouldReportError(KieBaseTestConfiguration kieBaseTestConfiguration) throws IOException {
 
         String pomContentMain = "<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n" +
                 "<modelVersion>4.0.0</modelVersion>\n" +
@@ -328,8 +323,9 @@ public class KieBaseIncludesTest {
     /**
      * One KieBase that includes another KieBase from the same KJAR. Not duplicate names.
      */
-    @Test
-    public void kieBaseIncludesSameKJar() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void kieBaseIncludesSameKJar(KieBaseTestConfiguration kieBaseTestConfiguration) {
 
         String pomContent = "<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n" +
                 "<modelVersion>4.0.0</modelVersion>\n" +
@@ -387,8 +383,9 @@ public class KieBaseIncludesTest {
     /**
      * One KieBase that includes another KieBase from the same KJAR. Duplicate rule names.
      */
-    @Test
-    public void kieBaseIncludesSameKJarDuplicateRuleNames_shouldReportError() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void kieBaseIncludesSameKJarDuplicateRuleNames_shouldReportError(KieBaseTestConfiguration kieBaseTestConfiguration) {
 
         String pomContent = "<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n" +
                 "<modelVersion>4.0.0</modelVersion>\n" +

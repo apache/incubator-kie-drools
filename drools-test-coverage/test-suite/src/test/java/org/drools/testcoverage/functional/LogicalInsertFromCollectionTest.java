@@ -20,16 +20,15 @@ package org.drools.testcoverage.functional;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.stream.Stream;
 
 import org.drools.testcoverage.common.model.SimplePerson;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.TestConstants;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.io.Resource;
@@ -43,23 +42,16 @@ import static org.assertj.core.api.Assertions.assertThat;
  * its elements, than changes the collection in program and checks the correct
  * changes.
  */
-@RunWith(Parameterized.class)
 public class LogicalInsertFromCollectionTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public LogicalInsertFromCollectionTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseConfigurations().stream();
     }
 
-    @Parameters
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseConfigurations();
-    }
-
-    @Test
-    public void testRemoveElement() {
-        final KieSession ksession = getKieBaseForTest().newKieSession();
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testRemoveElement(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        final KieSession ksession = getKieBaseForTest(kieBaseTestConfiguration).newKieSession();
         final Collection<Integer> collection = new ArrayList<Integer>();
 
         for (int i = 0; i < 4; i++) {
@@ -83,9 +75,10 @@ public class LogicalInsertFromCollectionTest {
 
     }
 
-    @Test
-    public void testAddElement() {
-        final KieSession ksession = getKieBaseForTest().newKieSession();
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testAddElement(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        final KieSession ksession = getKieBaseForTest(kieBaseTestConfiguration).newKieSession();
 
         final Collection<Integer> collection = new ArrayList<Integer>();
 
@@ -107,9 +100,10 @@ public class LogicalInsertFromCollectionTest {
         assertThat(ksession.getFactCount()).isEqualTo(6);
     }
 
-    @Test
-    public void testChangeElement() {
-        final KieSession ksession = getKieBaseForTest().newKieSession();
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testChangeElement(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        final KieSession ksession = getKieBaseForTest(kieBaseTestConfiguration).newKieSession();
 
         final Collection<SimplePerson> collection = new ArrayList<>();
 
@@ -138,7 +132,7 @@ public class LogicalInsertFromCollectionTest {
 
     }
 
-    private KieBase getKieBaseForTest() {
+    private KieBase getKieBaseForTest(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final Resource drlResource =
                 KieServices.Factory.get().getResources().newClassPathResource("logicalInsertFromCollectionTest.drl", getClass());
         return KieBaseUtil.getKieBaseFromKieModuleFromResources(TestConstants.PACKAGE_REGRESSION,

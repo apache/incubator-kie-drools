@@ -21,6 +21,7 @@ package org.drools.ancompiler;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.drools.compiler.kie.builder.impl.DrlProject;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
@@ -28,9 +29,6 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.Rete;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.model.codegen.ExecutableModelProject;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -46,7 +44,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
 // Copied from org.drools.modelcompiler.BaseModelTest. To be removed after https://issues.redhat.com/browse/DROOLS-5485
-@RunWith(Parameterized.class)
 public abstract class BaseModelTest {
     public enum RUN_TYPE {
         PATTERN_DSL( false ),
@@ -66,61 +63,59 @@ public abstract class BaseModelTest {
     }
 
 
-    final static Object[] WITH_ALPHA_NETWORK = {
+    final static RUN_TYPE[] WITH_ALPHA_NETWORK = {
             RUN_TYPE.STANDARD_FROM_DRL,
             RUN_TYPE.PATTERN_DSL,
             RUN_TYPE.STANDARD_WITH_ALPHA_NETWORK,
             RUN_TYPE.PATTERN_WITH_ALPHA_NETWORK,
     };
 
-    @Parameters(name = "{0}")
     public static Object[] params() {
         return WITH_ALPHA_NETWORK;
     }
-
-    protected final RUN_TYPE testRunType;
-
-    public BaseModelTest(RUN_TYPE testRunType ) {
-        this.testRunType = testRunType;
+    
+    public static Stream<RUN_TYPE> parameters() {
+    	return Stream.of(WITH_ALPHA_NETWORK);
     }
 
-    protected KieSession getKieSession(String... rules) {
+
+    protected KieSession getKieSession(RUN_TYPE testRunType, String... rules) {
         KieModuleModel model = testRunType.isAlphaNetworkCompiler() ? getKieModuleModelWithAlphaNetworkCompiler() : null;
-        return getKieSession(model, rules);
+        return getKieSession(testRunType, model, rules);
     }
 
-    protected KieSession getKieSession(KieModuleModel model, String... stringRules) {
-        return getKieContainer( model, stringRules ).newKieSession();
+    protected KieSession getKieSession(RUN_TYPE testRunType, KieModuleModel model, String... stringRules) {
+        return getKieContainer(testRunType, model, stringRules ).newKieSession();
     }
 
-    protected KieContainer getKieContainer( String... stringRules ) {
+    protected KieContainer getKieContainer(RUN_TYPE testRunType, String... stringRules ) {
         KieModuleModel model = testRunType.isAlphaNetworkCompiler() ? getKieModuleModelWithAlphaNetworkCompiler() : null;
-        return getKieContainer( model, toKieFiles( stringRules ) );
+        return getKieContainer(testRunType, model, toKieFiles( stringRules ) );
     }
 
-    protected KieContainer getKieContainer( KieModuleModel model, String... stringRules ) {
-        return getKieContainer( model, toKieFiles( stringRules ) );
+    protected KieContainer getKieContainer(RUN_TYPE testRunType, KieModuleModel model, String... stringRules ) {
+        return getKieContainer(testRunType, model, toKieFiles( stringRules ) );
     }
 
-    protected KieContainer getKieContainer( KieModuleModel model, KieFile... stringRules ) {
+    protected KieContainer getKieContainer(RUN_TYPE testRunType, KieModuleModel model, KieFile... stringRules ) {
         KieServices ks = KieServices.get();
         ReleaseId releaseId = ks.newReleaseId( "org.kie", "kjar-test-" + UUID.randomUUID(), "1.0" );
 
-        KieBuilder kieBuilder = createKieBuilder( ks, model, releaseId, stringRules );
+        KieBuilder kieBuilder = createKieBuilder(testRunType, ks, model, releaseId, stringRules );
         return ks.newKieContainer( releaseId );
     }
 
-    protected KieBuilder createKieBuilder( String... stringRules ) {
+    protected KieBuilder createKieBuilder(RUN_TYPE testRunType, String... stringRules ) {
         KieServices ks = KieServices.get();
         ReleaseId releaseId = ks.newReleaseId( "org.kie", "kjar-test-" + UUID.randomUUID(), "1.0" );
-        return createKieBuilder( ks, null, releaseId, false, toKieFiles( stringRules ) );
+        return createKieBuilder(testRunType, ks, null, releaseId, false, toKieFiles( stringRules ) );
     }
 
-    protected KieBuilder createKieBuilder( KieServices ks, KieModuleModel model, ReleaseId releaseId, KieFile... stringRules ) {
-        return createKieBuilder( ks, model, releaseId, true, stringRules );
+    protected KieBuilder createKieBuilder(RUN_TYPE testRunType, KieServices ks, KieModuleModel model, ReleaseId releaseId, KieFile... stringRules ) {
+        return createKieBuilder(testRunType, ks, model, releaseId, true, stringRules );
     }
 
-    protected KieBuilder createKieBuilder( KieServices ks, KieModuleModel model, ReleaseId releaseId, boolean failIfBuildError, KieFile... stringRules ) {
+    protected KieBuilder createKieBuilder(RUN_TYPE testRunType, KieServices ks, KieModuleModel model, ReleaseId releaseId, boolean failIfBuildError, KieFile... stringRules ) {
         ks.getRepository().removeKieModule( releaseId );
 
         KieFileSystem kfs = ks.newKieFileSystem();
@@ -159,20 +154,20 @@ public abstract class BaseModelTest {
         return ksession.getInstancesOf(clazz).stream().collect(Collectors.toList());
     }
 
-    protected void createAndDeployJar( KieServices ks, ReleaseId releaseId, String... drls ) {
-        createAndDeployJar( ks, null, releaseId, drls );
+    protected void createAndDeployJar(RUN_TYPE testRunType, KieServices ks, ReleaseId releaseId, String... drls ) {
+        createAndDeployJar(testRunType, ks, null, releaseId, drls );
     }
 
-    protected void createAndDeployJar( KieServices ks, ReleaseId releaseId, KieFile... ruleFiles ) {
-        createAndDeployJar( ks, null, releaseId, ruleFiles );
+    protected void createAndDeployJar(RUN_TYPE testRunType, KieServices ks, ReleaseId releaseId, KieFile... ruleFiles ) {
+        createAndDeployJar(testRunType, ks, null, releaseId, ruleFiles );
     }
 
-    protected void createAndDeployJar( KieServices ks, KieModuleModel model, ReleaseId releaseId, String... drls ) {
-        createAndDeployJar( ks, model, releaseId, toKieFiles( drls ) );
+    protected void createAndDeployJar(RUN_TYPE testRunType, KieServices ks, KieModuleModel model, ReleaseId releaseId, String... drls ) {
+        createAndDeployJar(testRunType, ks, model, releaseId, toKieFiles( drls ) );
     }
 
-    protected void createAndDeployJar( KieServices ks, KieModuleModel model, ReleaseId releaseId, KieFile... ruleFiles ) {
-        KieBuilder kieBuilder = createKieBuilder( ks, model, releaseId, ruleFiles );
+    protected void createAndDeployJar(RUN_TYPE testRunType, KieServices ks, KieModuleModel model, ReleaseId releaseId, KieFile... ruleFiles ) {
+        KieBuilder kieBuilder = createKieBuilder(testRunType, ks, model, releaseId, ruleFiles );
         InternalKieModule kieModule = (InternalKieModule) kieBuilder.getKieModule();
         ks.getRepository().addKieModule( kieModule );
     }

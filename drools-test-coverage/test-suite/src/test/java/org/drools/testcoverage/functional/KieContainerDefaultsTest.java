@@ -22,8 +22,8 @@ import java.io.IOException;
 
 import org.drools.core.impl.InternalKieContainer;
 import org.drools.testcoverage.common.util.TestConstants;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -53,7 +53,7 @@ public class KieContainerDefaultsTest {
 
     private KieServices kieServices;
 
-    @Before
+    @BeforeEach
     public void initialize() throws IOException {
         kieServices = KieServices.Factory.get();
     }

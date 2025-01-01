@@ -20,8 +20,8 @@ package org.drools.testcoverage.regression;
 
 import org.assertj.core.api.SoftAssertions;
 import org.drools.core.common.DefaultFactHandle;
+import org.junit.jupiter.api.Test;
 import org.drools.core.common.DefaultEventHandle;
-import org.junit.Test;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;

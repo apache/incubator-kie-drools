@@ -36,7 +36,6 @@
 
   <properties>
     <java.module.name>org.kie.ci</java.module.name>
-    <excludedGroups>org.kie.test.testcategory.TurtleTestCategory</excludedGroups>
   </properties>
 
   <dependencies>
@@ -150,19 +149,14 @@
     </dependency>
 
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
       <scope>test</scope>
-    </dependency>
+    </dependency>    
 
     <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-test-util</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -249,9 +243,23 @@
           <name>runTurtleTests</name>
         </property>
       </activation>
-      <properties>
-        <excludedGroups/>
-      </properties>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <artifactId>maven-surefire-plugin</artifactId>
+		    <configuration>
+		        <systemProperties>
+		            <property>
+		                <name>runTurtleTests</name>
+		                <value>true</value>
+		            </property>
+		        </systemProperties>
+    		</configuration>            
+    		</plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
     </profile>
   </profiles>
 </project>

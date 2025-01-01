@@ -19,6 +19,7 @@
 package org.kie.dmn.core.compiler;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -156,12 +157,18 @@ class ImportDMNResolverUtilTest {
 
     @Test
     void locateInNSAliasedBadScenario() {
-        // this is a BAD scenario are in namespace `nsA` there are 2 models with the same name.
         final Import i = makeImport("nsA", "aliased", "mA");
         final List<QName> available = Arrays.asList(new QName("nsA", "mA"),
                                                     new QName("nsA", "mA"),
                                                     new QName("nsB", "m3"));
         final Either<String, QName> result = ImportDMNResolverUtil.resolveImportDMN(i, available, Function.identity());
+        assertThat(result.isLeft()).isTrue();
+    }
+
+    @Test
+    void emptyDMNCollection() {
+        final Import i = makeImport("nsA", "aliased", "mA");
+        final Either<String, QName> result = ImportDMNResolverUtil.resolveImportDMN(i, Collections.emptyList(), Function.identity());
         assertThat(result.isLeft()).isTrue();
     }
 

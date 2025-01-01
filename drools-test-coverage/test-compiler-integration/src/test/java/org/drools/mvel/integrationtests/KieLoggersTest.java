@@ -19,15 +19,14 @@
 package org.drools.mvel.integrationtests;
 
 import java.io.File;
-import java.util.Collection;
+import java.util.stream.Stream;
 
 import org.drools.mvel.compiler.Message;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -48,34 +47,27 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-@RunWith(Parameterized.class)
 public class KieLoggersTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public KieLoggersTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
-    }
-
-    @Test
-    public void testKieConsoleLogger() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testKieConsoleLogger(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String drl = "package org.drools.integrationtests\n" + 
-        		"import org.drools.mvel.compiler.Message;\n" +
-        		"rule \"Hello World\"\n" + 
-        		"    when\n" + 
-        		"        m : Message( myMessage : message )\n" + 
-        		"    then\n" + 
-        		"end";
+                "import org.drools.mvel.compiler.Message;\n" +
+                "rule \"Hello World\"\n" + 
+                "    when\n" + 
+                "        m : Message( myMessage : message )\n" + 
+                "    then\n" + 
+                "end";
         // get the resource
         Resource dt = ResourceFactory.newByteArrayResource( drl.getBytes() ).setTargetPath( "org/drools/integrationtests/hello.drl" );
         
         // create the builder
-        KieSession ksession = getKieSession( dt );
+        KieSession ksession = getKieSession(kieBaseTestConfiguration, dt );
         KieRuntimeLogger logger = KieServices.Factory.get().getLoggers().newConsoleLogger( ksession );
 
         ksession.insert( new Message("Hello World") );
@@ -85,8 +77,9 @@ public class KieLoggersTest {
         logger.close();
     }
 
-    @Test
-    public void testDeclarativeKieConsoleLogger() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testDeclarativeKieConsoleLogger(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String drl = "package org.drools.integrationtests\n" +
                      "import org.drools.mvel.compiler.Message;\n" +
                      "rule \"Hello World\"\n" +
@@ -118,8 +111,9 @@ public class KieLoggersTest {
         logger.close();
     }
 
-    @Test
-    public void testKieConsoleLoggerStateless() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testKieConsoleLoggerStateless(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String drl = "package org.drools.integrationtests\n" + 
                 "import org.drools.mvel.compiler.Message;\n" +
                 "rule \"Hello World\"\n" + 
@@ -131,7 +125,7 @@ public class KieLoggersTest {
         Resource dt = ResourceFactory.newByteArrayResource( drl.getBytes() ).setTargetPath("org/drools/integrationtests/hello.drl");
         
         // create the builder
-        StatelessKieSession ksession = getStatelessKieSession(dt);
+        StatelessKieSession ksession = getStatelessKieSession(kieBaseTestConfiguration, dt);
         KieRuntimeLogger logger = KieServices.Factory.get().getLoggers().newConsoleLogger( ksession );
 
         AgendaEventListener ael = mock( AgendaEventListener.class );
@@ -144,8 +138,9 @@ public class KieLoggersTest {
         logger.close();
     }
 
-    @Test
-    public void testDeclarativeKieConsoleLoggerStateless() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testDeclarativeKieConsoleLoggerStateless(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String drl = "package org.drools.integrationtests\n" +
                      "import org.drools.mvel.compiler.Message;\n" +
                      "rule \"Hello World\"\n" +
@@ -178,8 +173,9 @@ public class KieLoggersTest {
         logger.close();
     }
 
-    @Test
-    public void testKieFileLogger() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testKieFileLogger(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String drl = "package org.drools.integrationtests\n" +
                      "import org.drools.mvel.compiler.Message;\n" +
                      "rule \"Hello World\"\n" +
@@ -191,7 +187,7 @@ public class KieLoggersTest {
         Resource dt = ResourceFactory.newByteArrayResource(drl.getBytes()).setTargetPath( "org/drools/integrationtests/hello.drl" );
 
         // create the builder
-        KieSession ksession = getKieSession(dt);
+        KieSession ksession = getKieSession(kieBaseTestConfiguration, dt);
 
         String fileName = "target/testKieFileLogger";
         File file = new File(fileName + ".log");
@@ -213,8 +209,9 @@ public class KieLoggersTest {
         file.delete();
     }
 
-    @Test
-    public void testKieFileLoggerWithImmediateFlushing() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testKieFileLoggerWithImmediateFlushing(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         // DROOLS-991
         String drl = "package org.drools.integrationtests\n" +
                      "import org.drools.mvel.compiler.Message;\n" +
@@ -227,7 +224,7 @@ public class KieLoggersTest {
         Resource dt = ResourceFactory.newByteArrayResource(drl.getBytes()).setTargetPath( "org/drools/integrationtests/hello.drl" );
 
         // create the builder
-        KieSession ksession = getKieSession(dt);
+        KieSession ksession = getKieSession(kieBaseTestConfiguration, dt);
 
         String fileName = "target/testKieFileLogger";
         File file = new File(fileName + ".log");
@@ -251,8 +248,9 @@ public class KieLoggersTest {
         file.delete();
     }
 
-    @Test
-    public void testDeclarativeKieFileLogger() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testDeclarativeKieFileLogger(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String drl = "package org.drools.integrationtests\n" + 
                 "import org.drools.mvel.compiler.Message;\n" +
                 "rule \"Hello World\"\n" + 
@@ -294,23 +292,23 @@ public class KieLoggersTest {
         file.delete();
     }
 
-    private KieSession getKieSession(Resource dt) {
-        KieServices ks = populateKieFileSystem( dt );
+    private KieSession getKieSession(KieBaseTestConfiguration kieBaseTestConfiguration, Resource dt) {
+        KieServices ks = populateKieFileSystem(kieBaseTestConfiguration, dt );
 
         // get the session
         KieSession ksession = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).newKieSession();
         return ksession;
     }
 
-    private StatelessKieSession getStatelessKieSession(Resource dt) {
-        KieServices ks = populateKieFileSystem( dt );
+    private StatelessKieSession getStatelessKieSession(KieBaseTestConfiguration kieBaseTestConfiguration, Resource dt) {
+        KieServices ks = populateKieFileSystem(kieBaseTestConfiguration, dt );
 
         // get the session
         StatelessKieSession ksession = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).newStatelessKieSession();
         return ksession;
     }
 
-    private KieServices populateKieFileSystem(Resource dt) {
+    private KieServices populateKieFileSystem(KieBaseTestConfiguration kieBaseTestConfiguration, Resource dt) {
         KieServices ks = KieServices.Factory.get();
 
         KieFileSystem kfs = ks.newKieFileSystem().write( dt );
