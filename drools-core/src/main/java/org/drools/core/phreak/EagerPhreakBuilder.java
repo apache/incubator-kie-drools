@@ -1361,7 +1361,7 @@ public class EagerPhreakBuilder implements PhreakBuilder {
             } else {
                 // is the LT for the LIAN, if so we need to process the FH too
                 fh.removeLeftTuple(removingLt);
-                if (leftPrevious == null) {
+                if (leftPrevious == null && nextPeerLt.getSink().getAssociatedTerminalsSize() > 0) {
                     // The removed tuple was first in linked list, add the peer at its original position
                     fh.addFirstLeftTuple( nextPeerLt );
                 }
