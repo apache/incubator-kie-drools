@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.ForkJoinWorkerThread;
 import java.util.function.Supplier;
 
 import org.drools.base.RuleBase;
@@ -500,9 +501,10 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder, TypeDecla
     }
 
     public static class ForkJoinPoolHolder {
-        public static final ForkJoinPool COMPILER_POOL = new ForkJoinPool(); // avoid common pool
+        public static final ForkJoinPool COMPILER_POOL = new ForkJoinPool(Math.min(32767, Runtime.getRuntime().availableProcessors()), pool -> new ForkJoinWorkerThread(pool) {{
+            setContextClassLoader(Thread.currentThread().getContextClassLoader());
+        }}, null, false); // avoid common pool
     }
-
 
     public boolean filterAccepts(ResourceChange.Type type, String namespace, String name) {
         return assetFilter == null || !AssetFilter.Action.DO_NOTHING.equals(assetFilter.accept(type, namespace, name));
