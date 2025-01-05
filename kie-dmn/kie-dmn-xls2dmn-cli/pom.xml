@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.kie</groupId>
     <artifactId>kie-dmn</artifactId>
-    <version>999-SNAPSHOT</version>
+    <version>999-20250105-SNAPSHOT</version>
   </parent>
   <artifactId>kie-dmn-xls2dmn-cli</artifactId>
   <packaging>jar</packaging>
