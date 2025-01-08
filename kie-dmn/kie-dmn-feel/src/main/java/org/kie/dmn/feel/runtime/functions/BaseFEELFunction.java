@@ -84,7 +84,7 @@ public abstract class BaseFEELFunction
                     if (cm.actualParams != null) {
                         for (int i = 0; i < cm.actualParams.length; i++) {
                             if (cm.actualParams[i] instanceof List list) {
-                                cm.actualParams[i] =  getFEELDialectFixedList(ctx, list);
+                                cm.actualParams[i] =  getFEELDialectAdaptedList(ctx, list);
                             }
                         }
                     }
@@ -139,7 +139,7 @@ public abstract class BaseFEELFunction
             ctx.notifyEvt(() -> new FEELEventBase(Severity.ERROR, "Error trying to call function " + getName() + ".",
                                                   e));
         }
-        return getFEELDialectFixedObject(ctx, null);
+        return getFEELDialectAdaptedObject(ctx, null);
     }
 
     @Override
@@ -226,7 +226,7 @@ public abstract class BaseFEELFunction
     private Object getEitherResult(EvaluationContext ctx, Either<FEELEvent, Object> source,
                                    Supplier<List<String>> parameterNamesSupplier,
                                    Supplier<List<Object>> parameterValuesSupplier) {
-        source = getFEELDialectFixedEither(ctx, source);
+        source = getFEELDialectAdaptedEither(ctx, source);
         return source.cata((left) -> {
             ctx.notifyEvt(() -> {
                               if (left instanceof InvalidParametersEvent invalidParametersEvent) {
@@ -241,7 +241,15 @@ public abstract class BaseFEELFunction
         }, Function.identity());
     }
 
-    private Either<FEELEvent, Object> getFEELDialectFixedEither(EvaluationContext ctx, Either<FEELEvent, Object> source) {
+    /**
+     * Adapt the given <code>Either&lt;FEELEvent, Object&gt;</code> to contain FEEL-Dialect-specific value, if needed
+     *
+     * @see FEELFunction#defaultValue()
+     * @param ctx
+     * @param source
+     * @return
+     */
+    private Either<FEELEvent, Object> getFEELDialectAdaptedEither(EvaluationContext ctx, Either<FEELEvent, Object> source) {
         if (ctx.getFEELDialect().equals(FEELDialect.BFEEL)
                 && source.getOrElse(null) == null) {
             return Either.ofRight(defaultValue());
@@ -250,7 +258,15 @@ public abstract class BaseFEELFunction
         }
     }
 
-    private Object getFEELDialectFixedObject(EvaluationContext ctx, Object source) {
+    /**
+     * Adapt the given <code>Object</code> to FEEL-Dialect-specific value, if needed
+     *
+     * @see FEELFunction#defaultValue()
+     * @param ctx
+     * @param source
+     * @return
+     */
+    private Object getFEELDialectAdaptedObject(EvaluationContext ctx, Object source) {
         if (ctx.getFEELDialect().equals(FEELDialect.BFEEL)
                 && source == null) {
             return defaultValue();
@@ -259,10 +275,18 @@ public abstract class BaseFEELFunction
         }
     }
 
-    private List getFEELDialectFixedList(EvaluationContext ctx, List source) {
+    /**
+     * Adapt the given <code>List</code> to FEEL-Dialect-specific values, if needed
+     *
+     * @see FEELFunction#feelDialectAdaptedInputList(List)
+     * @param ctx
+     * @param source
+     * @return
+     */
+    private List getFEELDialectAdaptedList(EvaluationContext ctx, List source) {
         if (ctx.getFEELDialect().equals(FEELDialect.BFEEL)
                 && source != null) {
-            return emendedList(source);
+            return feelDialectAdaptedInputList(source);
         } else {
             return source;
         }

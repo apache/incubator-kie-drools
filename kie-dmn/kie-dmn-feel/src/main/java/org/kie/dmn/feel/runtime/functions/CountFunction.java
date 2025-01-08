@@ -52,7 +52,8 @@ public class CountFunction
     }
 
     @Override
-    public List emendedList(List toEmend) {
-        return toEmend;
+    public List feelDialectAdaptedInputList(List toAdapt) {
+        return toAdapt;
     }
+
 }

@@ -29,7 +29,7 @@ public interface FEELNumberFunction extends FEELFunction {
     }
 
     @Override
-    default List emendedList(List toEmend) {
-        return  toEmend.stream().filter(element -> (element instanceof Number)).toList();
+    default List feelDialectAdaptedInputList(List toAdapt) {
+        return  toAdapt.stream().filter(element -> (element instanceof Number)).toList();
     }
 }

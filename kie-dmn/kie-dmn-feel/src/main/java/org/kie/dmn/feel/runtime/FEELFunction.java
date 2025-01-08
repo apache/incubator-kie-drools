@@ -71,7 +71,7 @@ public interface FEELFunction {
     Object invokeReflectively(EvaluationContext ctx, Object[] params);
 
     /**
-     * The default value to return instead of <code>null</code>, to be used with the B-FEEL syntax
+     * The default value to return instead of <code>null</code>, to be used with the B-FEEL (and other different dialects) syntax
      * @return
      */
     default Object defaultValue() {
@@ -83,9 +83,9 @@ public interface FEELFunction {
      * The list to use as input, instead of the original one; to be used with the B-FEEL syntax
      * @return
      */
-    default List emendedList(List toEmend) {
+    default List feelDialectAdaptedInputList(List toAdapt) {
         // To be overridden by specific classes for B-FEEL compliance
-        return toEmend;
+        return toAdapt;
     }
 
     class Param {

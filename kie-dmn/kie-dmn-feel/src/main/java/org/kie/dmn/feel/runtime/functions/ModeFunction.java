@@ -70,7 +70,7 @@ public class ModeFunction
     }
 
     @Override
-    public List emendedList(List toEmend) {
-        return  toEmend.stream().filter(element -> (element instanceof Number)).toList();
+    public List feelDialectAdaptedInputList(List toAdapt) {
+        return  toAdapt.stream().filter(element -> (element instanceof Number)).toList();
     }
 }
