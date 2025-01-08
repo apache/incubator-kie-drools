@@ -18,16 +18,15 @@
  */
 package org.drools.mvel.integrationtests;
 
-import java.util.Collection;
+import java.util.stream.Stream;
 
 import org.drools.mvel.integrationtests.facts.vehicles.DieselCar;
 import org.drools.mvel.integrationtests.facts.vehicles.ElectricCar;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
@@ -37,22 +36,15 @@ import static org.assertj.core.api.Assertions.assertThat;
  * This is a place where known behavior differences between exec-model and non-exec-model.
  * They are not treated as a bug and should be documented in "Migration from non-executable model to executable model" section
  */
-@RunWith(Parameterized.class)
 public class GenericsTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public GenericsTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
-    }
-
-    @Test
-    public void property_subClassMethod_genericsReturnType() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void property_subClassMethod_genericsReturnType(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-7197
         String str = "package com.example.reproducer\n" +
                      "import " + DieselCar.class.getCanonicalName() + ";\n" +
@@ -75,8 +67,9 @@ public class GenericsTest {
         assertThat(dieselCar.getScore()).isEqualTo(5);
     }
 
-    @Test
-    public void property_subClassMethod_explicitReturnType() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void property_subClassMethod_explicitReturnType(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-7197
         String str = "package com.example.reproducer\n" +
                      "import " + ElectricCar.class.getCanonicalName() + ";\n" +

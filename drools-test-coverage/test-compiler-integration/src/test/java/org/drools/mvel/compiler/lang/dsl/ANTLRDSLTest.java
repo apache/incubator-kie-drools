@@ -25,7 +25,7 @@ import java.util.Iterator;
 import org.drools.drl.parser.lang.dsl.DSLMappingEntry;
 import org.drools.drl.parser.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.drl.parser.lang.dsl.DefaultExpander;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ANTLRDSLTest {
 

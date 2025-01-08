@@ -19,37 +19,32 @@
 package org.drools.mvel.integrationtests;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.KieUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
+import org.kie.api.builder.KieBuilder;
+import org.kie.api.builder.Message;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class DateCoercionTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public DateCoercionTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
-    }
-
-    @Test
-    public void testDateCoercionWithOr() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testDateCoercionWithOr(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-296
         String drl = "import java.util.Date\n" +
                      "global java.util.List list\n" +
@@ -79,8 +74,9 @@ public class DateCoercionTest {
         assertThat(list.get(0)).isEqualTo("working");
     }
 
-    @Test
-    public void testDateCoercionWithVariable() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testDateCoercionWithVariable(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-970
         String drl = "import java.util.Date\n" +
                      "global java.util.List list\n" +
@@ -110,8 +106,9 @@ public class DateCoercionTest {
         assertThat(list.get(0)).isEqualTo("working");
     }
 
-    @Test
-    public void testDateCoercionWithInstanceVariable() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testDateCoercionWithInstanceVariable(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-970
         String drl = "import " + DateContainer.class.getCanonicalName() + "\n" +
                      "import java.util.Date\n" +
@@ -146,8 +143,9 @@ public class DateCoercionTest {
         }
     }
 
-    @Test
-    public void testDateCoercionWithNestedOr() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testDateCoercionWithNestedOr(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // BZ-1253575
         String drl = "import java.util.Date\n" +
                      "global java.util.List list\n" +
@@ -175,5 +173,39 @@ public class DateCoercionTest {
         ksession.fireAllRules();
         assertThat(list.size()).isEqualTo(1);
         assertThat(list.get(0)).isEqualTo("working");
+    }
+
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testLocalDateTimeCoercion(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        // DROOLS-7631
+        String drl = "import java.util.Date\n" +
+                     "import java.time.LocalDateTime\n" +
+                     "global java.util.List list\n" +
+                     "declare DateContainer\n" +
+                     "     date: Date\n" +
+                     "end\n" +
+                     "declare LocalDateTimeContainer\n" +
+                     "     date: LocalDateTime\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule Init when\n" +
+                     "then\n" +
+                     "    insert(new DateContainer(new Date( 1439882189744L )));" +
+                     "    insert(new LocalDateTimeContainer( LocalDateTime.now() ));" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"Test rule\"\n" +
+                     "when\n" +
+                     "    DateContainer( $date: date )\n" +
+                     "    LocalDateTimeContainer( date > $date )\n" +
+                     "then\n" +
+                     "    list.add(\"working\");\n" +
+                     "end\n";
+
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
+        List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
+        assertThat(errors).hasSize(1);
+        assertThat(errors.get(0).getText()).contains("Comparison operation requires compatible types");
     }
 }

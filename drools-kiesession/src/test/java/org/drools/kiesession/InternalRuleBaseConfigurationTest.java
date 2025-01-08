@@ -25,7 +25,7 @@ import org.drools.core.RuleBaseConfiguration.AssertBehaviour;
 import org.drools.core.RuleBaseConfiguration.SequentialAgenda;
 import org.drools.core.common.PriorityQueueAgendaGroupFactory;
 import org.drools.core.reteoo.RuntimeComponentFactory;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.internal.conf.CompositeConfiguration;
 import org.kie.internal.utils.ChainedProperties;
 

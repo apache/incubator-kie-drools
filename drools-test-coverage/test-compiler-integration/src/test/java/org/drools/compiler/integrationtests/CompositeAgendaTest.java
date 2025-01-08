@@ -20,16 +20,16 @@ package org.drools.compiler.integrationtests;
 
 import org.drools.testcoverage.common.model.A;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.conf.ParallelExecutionOption;
 import org.kie.internal.utils.KieHelper;
-import org.kie.test.testcategory.TurtleTestCategory;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -38,10 +38,11 @@ import java.util.concurrent.atomic.LongAdder;
 
 import static org.assertj.core.api.Assertions.fail;
 
-@Category(TurtleTestCategory.class)
+@EnabledIfSystemProperty(named = "runTurtleTests", matches = "true")
 public class CompositeAgendaTest {
 
-    @Test @Ignore
+    @Test 
+    @Disabled
     public void testInALoop() {
         for (int i = 0; i < 100; i++) {
             testCreateHaltDisposeAgenda();
@@ -49,7 +50,8 @@ public class CompositeAgendaTest {
         }
     }
 
-    @Test(timeout = 600_000)
+    @Test
+    @Timeout(600000)
     public void testCreateHaltDisposeAgenda() {
         final String drl = " import " + A.class.getCanonicalName() + ";\n" +
                 " declare A @role( event ) end\n" +

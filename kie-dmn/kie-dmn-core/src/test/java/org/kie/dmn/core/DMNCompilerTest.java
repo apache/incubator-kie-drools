@@ -20,6 +20,7 @@ package org.kie.dmn.core;
 
 import java.util.Arrays;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -30,6 +31,7 @@ import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.FEELPropertyAccessible;
+import org.kie.dmn.api.core.ast.DecisionNode;
 import org.kie.dmn.api.core.ast.ItemDefNode;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.compiler.DMNTypeRegistry;
@@ -42,15 +44,19 @@ import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.types.AliasFEELType;
 import org.kie.dmn.feel.lang.types.BuiltInType;
+import org.kie.dmn.model.api.Decision;
+import org.kie.dmn.model.api.InformationRequirement;
+import org.kie.dmn.model.api.KnowledgeRequirement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
+import static org.kie.dmn.api.core.DMNDecisionResult.DecisionEvaluationStatus.SUCCEEDED;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.core.util.DynamicTypeUtils.mapOf;
 import static org.kie.dmn.core.util.DynamicTypeUtils.prototype;
-import static org.kie.dmn.feel.codegen.feel11.CodegenTestUtil.newEmptyEvaluationContext;
+import static org.kie.dmn.feel.util.EvaluationContextTestUtil.newEmptyEvaluationContext;
 
 public class DMNCompilerTest extends BaseVariantTest {
 
@@ -164,7 +170,7 @@ public class DMNCompilerTest extends BaseVariantTest {
         final ItemDefNode itemDef = dmnModel.getItemDefinitionByName("tEmploymentStatus" );
 
         assertThat(itemDef.getName()).isEqualTo("tEmploymentStatus");
-        assertThat(itemDef.getId()).isNull();
+        assertThat(itemDef.getId()).isNotNull();
 
         final DMNType type = itemDef.getType();
 
@@ -288,6 +294,57 @@ public class DMNCompilerTest extends BaseVariantTest {
 
     @ParameterizedTest
     @MethodSource("params")
+    void testNestedImports(VariantTestConf conf) {
+        testConfig = conf;
+        final DMNRuntime runtime = createRuntimeWithAdditionalResources("0089-nested-inputdata-imports.dmn",
+                                                                        this.getClass(),
+                                                                        "Model_B.dmn",
+                                                                        "Model_B2.dmn",
+                                                                        "Say_hello_1ID1D.dmn");
+
+        final DMNModel importedModelB = runtime.getModel("http://www.trisotech.com/definitions/_2a1d771a-a899-4fef-abd6-fc894332337c",
+                                                        "Model B");
+        assertThat(importedModelB).isNotNull();
+        for (final DMNMessage message : importedModelB.getMessages()) {
+            LOG.debug("{}", message);
+        }
+
+        final DMNModel importedModelB2 = runtime.getModel("http://www.trisotech.com/definitions/_9d46ece4-a96c-4cb0-abc0-0ca121ac3768",
+                                                         "Model B2");
+        assertThat(importedModelB2).isNotNull();
+        for (final DMNMessage message : importedModelB2.getMessages()) {
+            LOG.debug("{}", message);
+        }
+
+        final DMNModel importedModelA= runtime.getModel("http://www.trisotech.com/definitions/_ae5b3c17-1ac3-4e1d-b4f9-2cf861aec6d9",
+                                                         "Say hello 1ID1D");
+        assertThat(importedModelA).isNotNull();
+        for (final DMNMessage message : importedModelA.getMessages()) {
+            LOG.debug("{}", message);
+        }
+
+        final DMNModel modelC = runtime.getModel("http://www.trisotech.com/definitions/_10435dcd-8774-4575-a338-49dd554a0928",
+                                                   "Model C");
+        assertThat(modelC).isNotNull();
+        for (final DMNMessage message : modelC.getMessages()) {
+            LOG.debug("{}", message);
+        }
+
+        final DMNContext context = runtime.newContext();
+        context.set("Model B", mapOf(entry("modelA", mapOf(entry("Person name", "B.A.John")))));
+        context.set("Model B2", mapOf(entry("modelA", mapOf(entry("Person name", "B2.A.John2")))));
+
+        final DMNResult evaluateModelCDecision = runtime.evaluateByName(modelC, context, "Model C Decision based on Bs");
+        for (final DMNMessage message : evaluateModelCDecision.getMessages()) {
+            LOG.debug("{}", message);
+        }
+        LOG.debug("{}", evaluateModelCDecision);
+        assertThat(evaluateModelCDecision.getDecisionResults()).hasSize(3);
+        assertThat(evaluateModelCDecision.getDecisionResults()).allMatch(dmnDecisionResult -> dmnDecisionResult.getEvaluationStatus().equals(SUCCEEDED));
+    }
+
+    @ParameterizedTest
+    @MethodSource("params")
     void emptyNamedModelImportWithHrefNamespace(VariantTestConf conf) {
         testConfig = conf;
         commonValidateUnnamedImport("valid_models/DMNv1_5/Importing_EmptyNamed_Model_With_Href_Namespace.dmn", "valid_models/DMNv1_5/Imported_Model_Unamed.dmn");
@@ -358,13 +415,11 @@ public class DMNCompilerTest extends BaseVariantTest {
         assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
         assertThat(dmnModel.getMessages()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).hasSize(4);
         assertThat(dmnModel.getMessages(DMNMessage.Severity.WARN)).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).hasSize(4);
-        assertThat(dmnModel.getMessages(DMNMessage.Severity.WARN)
-                           .stream()
-                           .filter(m -> m.getSourceId().equals("_d72d6fab-1e67-4fe7-9c12-54800d6fe294") ||
+        assertThat(dmnModel.getMessages(DMNMessage.Severity.WARN)).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()))
+                           .filteredOn(m -> m.getSourceId().equals("_d72d6fab-1e67-4fe7-9c12-54800d6fe294") ||
                                         m.getSourceId().equals("_2390dd99-094d-4f97-aecc-9cccb697ce05") ||
                                         m.getSourceId().equals("_0c292d34-498e-4b08-ae99-3c694197b69f") ||
-                                        m.getSourceId().equals("_21c7d800-b806-4b2e-9a10-00828de7f2d2"))
-                           .count()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isEqualTo(4L);
+                                        m.getSourceId().equals("_21c7d800-b806-4b2e-9a10-00828de7f2d2")).hasSize(4);
     }
 
     @ParameterizedTest
@@ -412,6 +467,32 @@ public class DMNCompilerTest extends BaseVariantTest {
         assertThat(dmnAdultBobPerson.isAssignableValue(instanceAdultJoe)).isFalse();
         final Map<String, Object> instanceYoungJoe = prototype(entry("name", "Joe"), entry("age", 12));
         assertThat(dmnAdultBobPerson.isAssignableValue(instanceYoungJoe)).isFalse();
+    }
+
+    @ParameterizedTest
+    @MethodSource("params")
+    void localHrefs(VariantTestConf conf) {
+        testConfig = conf;
+        String nameSpace = "http://www.montera.com.au/spec/DMN/local-hrefs";
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("valid_models/DMNv1_5/LocalHrefs.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel(
+                nameSpace,
+                "LocalHrefs");
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
+        DecisionNode retrievedDecisionNode = dmnModel.getDecisionByName("decision_002");
+        assertThat(retrievedDecisionNode).isNotNull();
+        Decision retrievedDecision = retrievedDecisionNode.getDecision();
+        assertThat(retrievedDecision).isNotNull();
+        assertThat(retrievedDecision.getInformationRequirement())
+                .isNotNull()
+                .isNotEmpty()
+                .allSatisfy((Consumer<InformationRequirement>) informationRequirement -> assertThat(informationRequirement).isNotNull());
+        assertThat(retrievedDecision.getKnowledgeRequirement())
+                .isNotNull()
+                .isNotEmpty()
+                .allSatisfy((Consumer<KnowledgeRequirement>) knowledgeRequirement -> assertThat(knowledgeRequirement).isNotNull());
+
     }
 
     private void commonValidateUnnamedImport(String importingModelRef, String importedModelRef) {

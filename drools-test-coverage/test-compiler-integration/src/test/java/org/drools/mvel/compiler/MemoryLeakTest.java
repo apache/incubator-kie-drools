@@ -27,6 +27,7 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
@@ -45,12 +46,12 @@ import org.drools.core.reteoo.TupleImpl;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
 import org.drools.tms.TruthMaintenanceSystemFactoryImpl;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
@@ -61,22 +62,15 @@ import org.kie.api.runtime.rule.FactHandle;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class MemoryLeakTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public MemoryLeakTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
-    }
-
-    @Test
-    public void testStagedTupleLeak() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testStagedTupleLeak(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         // BZ-1056599
         String str =
                 "rule R1 when\n" +
@@ -130,8 +124,9 @@ public class MemoryLeakTest {
         assertThat(tms.getEntryPointsMapSize()).isEqualTo(0);
     }
 
-    @Test
-    public void testStagedLeftTupleLeak() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testStagedLeftTupleLeak(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         // BZ-1058874
         String str =
                 "rule R1 when\n" +
@@ -169,8 +164,9 @@ public class MemoryLeakTest {
         assertThat(stagedLeftTuples.getInsertFirst()).isNull();
     }
 
-    @Test
-    public void testBetaMemoryLeakOnFactDelete() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testBetaMemoryLeakOnFactDelete(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-913
         String drl =
                 "rule R1 when\n" +
@@ -216,10 +212,12 @@ public class MemoryLeakTest {
         }
     }
 
-    @Test(timeout = 5000)
-    @Ignore("The checkReachability method is not totally reliable and can fall in an endless loop." +
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    @Timeout(5000)
+    @Disabled("The checkReachability method is not totally reliable and can fall in an endless loop." +
             "We need to find a better way to check this.")
-    public void testLeakAfterSessionDispose() {
+    public void testLeakAfterSessionDispose(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-1655
         String drl =
                 "import " + Person.class.getCanonicalName() + "\n" +

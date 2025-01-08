@@ -19,7 +19,7 @@
 package org.drools.template.parser;
 
 import org.drools.util.StringUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Map;

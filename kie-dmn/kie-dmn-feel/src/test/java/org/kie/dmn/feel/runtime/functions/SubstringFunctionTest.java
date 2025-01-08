@@ -18,18 +18,12 @@
  */
 package org.kie.dmn.feel.runtime.functions;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
 class SubstringFunctionTest {
 
-    private SubstringFunction substringFunction;
-
-    @BeforeEach
-    void setUp() {
-        substringFunction = new SubstringFunction();
-    }
+    private static final SubstringFunction substringFunction = SubstringFunction.INSTANCE;
 
     @Test
     void invokeNull2ParamsMethod() {

@@ -29,7 +29,7 @@ public class CDIRestAnnotator implements RestAnnotator {
 
     @Override
     public <T extends NodeWithAnnotations<?>> boolean isRestAnnotated(T node) {
-        return Stream.of("POST", "GET", "PUT", "DELETE")
+        return Stream.of("POST", "GET", "PUT", "DELETE", "PATCH")
                 .map(node::getAnnotationByName)
                 .anyMatch(Optional::isPresent);
     }

@@ -25,7 +25,8 @@ import org.drools.testcoverage.common.listener.OrderListener;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieUtil;
 import org.drools.testcoverage.common.util.TestConstants;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
@@ -46,7 +47,8 @@ public class DeclarativeAgendaTest {
 
     // rule activation is blocked and after several iterations (fireAllRules) it
     // is unblocked and the rule fires
-    @Test(timeout = 10000L)
+    @Test
+    @Timeout(10000L)
     public void testSimpleActivationBlock() {
         final KieBase kbase = buildKieBase("declarative-agenda-simple-block.drl");
         final KieSession ksession = kbase.newKieSession();
@@ -107,7 +109,8 @@ public class DeclarativeAgendaTest {
 
     // test activation block together with agenda group
     // BZ 999360
-    @Test(timeout = 10000L)
+    @Test
+    @Timeout(10000L)
     public void testActivationBlock() {
         final KieBase kbase = buildKieBase("declarative-agenda-block.drl");
         final KieSession ksession = kbase.newKieSession();
@@ -144,7 +147,8 @@ public class DeclarativeAgendaTest {
     }
 
     // test activation count, test case from doc
-    @Test(timeout = 10000L)
+    @Test
+    @Timeout(10000L)
     public void testActivationCount() {
         final KieBase kbase = buildKieBase("declarative-agenda-count.drl");
         final KieSession ksession = kbase.newKieSession();
@@ -171,7 +175,8 @@ public class DeclarativeAgendaTest {
     }
 
     // testing unblockall command
-    @Test(timeout = 10000L)
+    @Test
+    @Timeout(10000L)
     public void testUnblockAll() {
         final KieBase kbase = buildKieBase("declarative-agenda-unblockall.drl");
         final KieSession ksession = kbase.newKieSession();
@@ -202,7 +207,8 @@ public class DeclarativeAgendaTest {
         ksession.dispose();
     }
 
-    @Test(timeout = 10000L)
+    @Test
+    @Timeout(10000L)
     public void testSimpleCancel() {
         final KieBase kbase = buildKieBase("declarative-agenda-cancel.drl");
         final KieSession ksession = kbase.newKieSession();
@@ -229,7 +235,8 @@ public class DeclarativeAgendaTest {
     // working memory
     // but activationListener('direct') annotation should guarantee priority to
     // fire
-    @Test(timeout = 10000L)
+    @Test
+    @Timeout(10000L)
     public void testCancelWithUpdatingFacts() {
         final KieBase kbase = buildKieBase("declarative-agenda-cancel.drl");
         final KieSession ksession = kbase.newKieSession();

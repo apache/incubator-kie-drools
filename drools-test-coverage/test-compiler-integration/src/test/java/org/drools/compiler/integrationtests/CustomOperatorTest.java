@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Collection;
+import java.util.stream.Stream;
 
 import org.drools.base.base.ValueResolver;
 import org.drools.base.base.ValueType;
@@ -36,10 +37,9 @@ import org.drools.testcoverage.common.model.Address;
 import org.drools.testcoverage.common.model.Person;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
@@ -47,50 +47,45 @@ import org.kie.internal.builder.conf.EvaluatorOption;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class CustomOperatorTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public CustomOperatorTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
-    }
-
-    @Test
-    public void testCustomOperatorUsingCollections() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testCustomOperatorUsingCollections(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String constraints =
                 "    $alice : Person(name == \"Alice\")\n" +
                 "    $bob : Person(name == \"Bob\", addresses supersetOf $alice.addresses)\n";
-        customOperatorUsingCollections(constraints);
+        customOperatorUsingCollections(kieBaseTestConfiguration, constraints);
     }
 
-    @Test
-    public void testNoOperatorInstancesCreatedAtRuntime() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testNoOperatorInstancesCreatedAtRuntime(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String constraints =
                 "    $alice : Person(name == \"Alice\")\n" +
                 "    $bob : Person(name == \"Bob\", addresses supersetOf $alice.addresses)\n" +
                 "    Person(name == \"Bob\", addresses supersetOf $alice.addresses)\n";
 
-        customOperatorUsingCollections(constraints);
+        customOperatorUsingCollections(kieBaseTestConfiguration, constraints);
 
         assertThat(SupersetOfEvaluatorDefinition.INSTANCES_COUNTER).isEqualTo(0);
     }
 
-    @Test
-    public void testCustomOperatorUsingCollectionsInverted() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testCustomOperatorUsingCollectionsInverted(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-6983
         String constraints =
                 "    $bob : Person(name == \"Bob\")\n" +
                 "    $alice : Person(name == \"Alice\", $bob.addresses supersetOf this.addresses)\n";
-        customOperatorUsingCollections(constraints);
+        customOperatorUsingCollections(kieBaseTestConfiguration, constraints);
     }
 
-    private void customOperatorUsingCollections(String constraints) {
+    private void customOperatorUsingCollections(KieBaseTestConfiguration kieBaseTestConfiguration, String constraints) {
         final String drl =
                 "import " + Address.class.getCanonicalName() + ";\n" +
                         "import " + Person.class.getCanonicalName() + ";\n" +
@@ -210,8 +205,9 @@ public class CustomOperatorTest {
         }
     }
 
-    @Test
-    public void testCustomOperatorOnKieModule() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testCustomOperatorOnKieModule(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "import " + Address.class.getCanonicalName() + ";\n" +
                 "import " + Person.class.getCanonicalName() + ";\n" +
                 "rule R when\n" +

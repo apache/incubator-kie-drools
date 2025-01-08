@@ -22,18 +22,12 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
 class ReverseFunctionTest {
 
-    private ReverseFunction reverseFunction;
-
-    @BeforeEach
-    void setUp() {
-        reverseFunction = new ReverseFunction();
-    }
+    private static final ReverseFunction reverseFunction = ReverseFunction.INSTANCE;
 
     @Test
     void invokeNull() {

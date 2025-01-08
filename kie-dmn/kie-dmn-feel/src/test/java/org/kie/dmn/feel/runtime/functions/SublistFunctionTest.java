@@ -23,59 +23,67 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
 class SublistFunctionTest {
 
-    private SublistFunction sublistFunction;
-
-    @BeforeEach
-    void setUp() {
-        sublistFunction = new SublistFunction();
-    }
+    private static final SublistFunction sublistFunction = SublistFunction.INSTANCE;
 
     @Test
     void invokeNull() {
         FunctionTestUtil.assertResultError(sublistFunction.invoke((List) null, null), InvalidParametersEvent.class);
         FunctionTestUtil.assertResultError(sublistFunction.invoke(null, BigDecimal.ONE), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(sublistFunction.invoke(Collections.emptyList(), null), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(sublistFunction.invoke(Collections.emptyList(), null),
+                                           InvalidParametersEvent.class);
     }
 
     @Test
     void invokeStartZero() {
-        FunctionTestUtil.assertResultError(sublistFunction.invoke(Arrays.asList(1, 2), BigDecimal.ZERO), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(sublistFunction.invoke(Arrays.asList(1, 2), BigDecimal.ZERO),
+                                           InvalidParametersEvent.class);
     }
 
     @Test
     void invokeStartOutOfListBounds() {
-        FunctionTestUtil.assertResultError(sublistFunction.invoke(Arrays.asList(1, 2), BigDecimal.TEN), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(sublistFunction.invoke(Arrays.asList(1, 2), BigDecimal.valueOf(-10)), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(sublistFunction.invoke(Arrays.asList(1, 2), BigDecimal.TEN),
+                                           InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(sublistFunction.invoke(Arrays.asList(1, 2), BigDecimal.valueOf(-10)),
+                                           InvalidParametersEvent.class);
     }
 
     @Test
     void invokeLengthNegative() {
-        FunctionTestUtil.assertResultError(sublistFunction.invoke(Arrays.asList(1, 2), BigDecimal.valueOf(1), BigDecimal.valueOf(-3)), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(sublistFunction.invoke(Arrays.asList(1, 2), BigDecimal.valueOf(1),
+                                                                  BigDecimal.valueOf(-3)),
+                                           InvalidParametersEvent.class);
     }
 
     @Test
     void invokeLengthOutOfListBounds() {
-        FunctionTestUtil.assertResultError(sublistFunction.invoke(Arrays.asList(1, 2), BigDecimal.ONE, BigDecimal.valueOf(3)), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(sublistFunction.invoke(Arrays.asList(1, 2), BigDecimal.valueOf(-1), BigDecimal.valueOf(3)), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(sublistFunction.invoke(Arrays.asList(1, 2), BigDecimal.ONE,
+                                                                  BigDecimal.valueOf(3)), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(sublistFunction.invoke(Arrays.asList(1, 2), BigDecimal.valueOf(-1),
+                                                                  BigDecimal.valueOf(3)), InvalidParametersEvent.class);
     }
 
     @Test
     void invokeStartPositive() {
-        FunctionTestUtil.assertResult(sublistFunction.invoke(Arrays.asList(1, 2, 3), BigDecimal.valueOf(2)), Arrays.asList(2, 3));
-        FunctionTestUtil.assertResult(sublistFunction.invoke(Arrays.asList(1, "test", 3), BigDecimal.valueOf(2)), Arrays.asList("test", 3));
-        FunctionTestUtil.assertResult(sublistFunction.invoke(Arrays.asList(1, "test", 3), BigDecimal.valueOf(2), BigDecimal.ONE), Collections.singletonList("test"));
+        FunctionTestUtil.assertResult(sublistFunction.invoke(Arrays.asList(1, 2, 3), BigDecimal.valueOf(2)),
+                                      Arrays.asList(2, 3));
+        FunctionTestUtil.assertResult(sublistFunction.invoke(Arrays.asList(1, "test", 3), BigDecimal.valueOf(2)),
+                                      Arrays.asList("test", 3));
+        FunctionTestUtil.assertResult(sublistFunction.invoke(Arrays.asList(1, "test", 3), BigDecimal.valueOf(2),
+                                                             BigDecimal.ONE), Collections.singletonList("test"));
     }
 
     @Test
     void invokeStartNegative() {
-        FunctionTestUtil.assertResult(sublistFunction.invoke(Arrays.asList(1, 2, 3), BigDecimal.valueOf(-2)), Arrays.asList(2, 3));
-        FunctionTestUtil.assertResult(sublistFunction.invoke(Arrays.asList(1, "test", 3), BigDecimal.valueOf(-2)), Arrays.asList("test", 3));
-        FunctionTestUtil.assertResult(sublistFunction.invoke(Arrays.asList(1, "test", 3), BigDecimal.valueOf(-2), BigDecimal.ONE), Collections.singletonList("test"));
+        FunctionTestUtil.assertResult(sublistFunction.invoke(Arrays.asList(1, 2, 3), BigDecimal.valueOf(-2)),
+                                      Arrays.asList(2, 3));
+        FunctionTestUtil.assertResult(sublistFunction.invoke(Arrays.asList(1, "test", 3), BigDecimal.valueOf(-2)),
+                                      Arrays.asList("test", 3));
+        FunctionTestUtil.assertResult(sublistFunction.invoke(Arrays.asList(1, "test", 3), BigDecimal.valueOf(-2),
+                                                             BigDecimal.ONE), Collections.singletonList("test"));
     }
 }

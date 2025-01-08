@@ -21,9 +21,9 @@ package org.drools.mvel.integrationtests;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.utils.KieHelper;
@@ -37,7 +37,7 @@ public class KieSessionIterationTest {
 
     private KieBase kieBase;
 
-    @Before
+    @BeforeEach
     public void setup() {
         this.kieBase = new KieHelper().build();
         // create several KieSessions
@@ -46,7 +46,7 @@ public class KieSessionIterationTest {
         this.kieBase.newKieSession();
     }
 
-    @After
+    @AfterEach
     public void cleanup() {
         if (this.kieBase != null) {
             // copying the KieSession collection is also workaround for ConcurrentModificationException in the test

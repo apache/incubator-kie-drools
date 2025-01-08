@@ -36,7 +36,7 @@ public class YearsAndMonthsFunction
 
     public static final YearsAndMonthsFunction INSTANCE = new YearsAndMonthsFunction();
 
-    public YearsAndMonthsFunction() {
+    private YearsAndMonthsFunction() {
         super(FEELConversionFunctionNames.YEARS_AND_MONTHS_DURATION);
     }
 

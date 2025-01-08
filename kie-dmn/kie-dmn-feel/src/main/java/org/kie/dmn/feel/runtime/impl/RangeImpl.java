@@ -20,9 +20,13 @@ package org.kie.dmn.feel.runtime.impl;
 
 import java.util.function.BiPredicate;
 
-import org.kie.dmn.feel.lang.FEELDialect;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.util.BooleanEvalHelper;
+
+import static org.kie.dmn.feel.lang.ast.UnaryTestNode.UnaryOperator.GT;
+import static org.kie.dmn.feel.lang.ast.UnaryTestNode.UnaryOperator.GTE;
+import static org.kie.dmn.feel.lang.ast.UnaryTestNode.UnaryOperator.LT;
+import static org.kie.dmn.feel.lang.ast.UnaryTestNode.UnaryOperator.LTE;
 
 public class RangeImpl
         implements Range {
@@ -31,7 +35,7 @@ public class RangeImpl
     private RangeBoundary highBoundary;
     private Comparable    lowEndPoint;
     private Comparable    highEndPoint;
-
+    private boolean withUndefined = false;
 
     public RangeImpl() {
     }
@@ -41,6 +45,7 @@ public class RangeImpl
         this.highBoundary = highBoundary;
         this.lowEndPoint = lowEndPoint;
         this.highEndPoint = highEndPoint;
+        withUndefined = lowEndPoint instanceof UndefinedValueComparable || highEndPoint instanceof UndefinedValueComparable;
     }
 
     @Override
@@ -68,19 +73,28 @@ public class RangeImpl
         if (param == null) {
             return null;
         }
-        if (lowEndPoint == null) {
-            if (highEndPoint == null) {
+        if (lowEndPoint == null || lowEndPoint instanceof UndefinedValueComparable) {
+            if (highEndPoint == null || highEndPoint instanceof UndefinedValueComparable) {
                 return null;
-            } else {
+            } else if (lowEndPoint != null) { // it means it is UndefinedValueComparable
                 return negInfRangeIncludes(feelDialect, param);
+            } else {
+                return false;
             }
         } else {
-            if (highEndPoint == null) {
+            if (highEndPoint instanceof UndefinedValueComparable) {
                 return posInfRangeIncludes(feelDialect, param);
-            } else {
+            } else if (highEndPoint != null) {
                 return finiteRangeIncludes(feelDialect, param);
+            } else {
+                return false;
             }
         }
+    }
+
+    @Override
+    public boolean isWithUndefined() {
+        return withUndefined;
     }
 
     private Boolean finiteRangeIncludes(FEELDialect feelDialect, Object param) {
@@ -156,9 +170,36 @@ public class RangeImpl
 
     @Override
     public String toString() {
+        return withUndefined ? withUndefinedtoString() : withoutUndefinedtoString();
+    }
+
+    private String withoutUndefinedtoString() {
         return (lowBoundary == RangeBoundary.OPEN ? "(" : "[") +
-               " " + lowEndPoint +
-               " .. " + highEndPoint +
-               " " + ( highBoundary == RangeBoundary.OPEN ? ")" : "]" );
+                " " + lowEndPoint +
+                " .. " + highEndPoint +
+                " " + ( highBoundary == RangeBoundary.OPEN ? ")" : "]" );
+    }
+
+    private String withUndefinedtoString() {
+        StringBuilder sb = new StringBuilder("( ");
+        if (lowEndPoint instanceof UndefinedValueComparable) {
+            if (highBoundary == RangeBoundary.OPEN) {
+                sb.append(LT.symbol);
+            } else {
+                sb.append(LTE.symbol);
+            }
+            sb.append(" ");
+            sb.append(highEndPoint);
+        } else if (highEndPoint instanceof UndefinedValueComparable) {
+            if (lowBoundary == RangeBoundary.OPEN) {
+                sb.append(GT.symbol);
+            } else {
+                sb.append(GTE.symbol);
+            }
+            sb.append(" ");
+            sb.append(lowEndPoint);
+        }
+        sb.append(" )");
+        return sb.toString();
     }
 }

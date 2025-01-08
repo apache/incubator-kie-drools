@@ -19,17 +19,16 @@
 package org.drools.mvel.integrationtests;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.drools.commands.runtime.rule.FireAllRulesCommand;
 import org.drools.mvel.compiler.Cheese;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.command.Command;
 import org.kie.api.runtime.ExecutionResults;
@@ -38,21 +37,15 @@ import org.kie.internal.command.CommandFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class FireAllRulesCommandTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public FireAllRulesCommandTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
-    }
-    @Test
-    public void oneRuleFiredTest() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void oneRuleFiredTest(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str = "";
         str += "package org.drools.mvel.integrationtests \n";
         str += "import " + Cheese.class.getCanonicalName() + " \n";
@@ -63,7 +56,7 @@ public class FireAllRulesCommandTest {
         str += " System.out.println($c); \n";
         str += "end \n";
 
-        StatelessKieSession ksession = getSession(str);
+        StatelessKieSession ksession = getSession(kieBaseTestConfiguration, str);
 
         List<Command<?>> commands = new ArrayList<Command<?>>();
         commands.add(CommandFactory.newInsert(new Cheese("stilton")));
@@ -75,8 +68,9 @@ public class FireAllRulesCommandTest {
         assertThat(fired).isEqualTo(1);
     }
 
-    @Test
-    public void fiveRulesFiredTest() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void fiveRulesFiredTest(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str = "";
         str += "package org.drools.mvel.integrationtests \n";
         str += "import " + Cheese.class.getCanonicalName() + " \n";
@@ -87,7 +81,7 @@ public class FireAllRulesCommandTest {
         str += " System.out.println($c); \n";
         str += "end \n";
 
-        StatelessKieSession ksession = getSession(str);
+        StatelessKieSession ksession = getSession(kieBaseTestConfiguration, str);
 
         List<Command<?>> commands = new ArrayList<Command<?>>();
         commands.add(CommandFactory.newInsert(new Cheese("stilton")));
@@ -103,8 +97,9 @@ public class FireAllRulesCommandTest {
         assertThat(fired).isEqualTo(5);
     }
 
-    @Test
-    public void zeroRulesFiredTest() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void zeroRulesFiredTest(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str = "";
         str += "package org.drools.mvel.integrationtests \n";
         str += "import " + Cheese.class.getCanonicalName() + " \n";
@@ -115,7 +110,7 @@ public class FireAllRulesCommandTest {
         str += " System.out.println($c); \n";
         str += "end \n";
 
-        StatelessKieSession ksession = getSession(str);
+        StatelessKieSession ksession = getSession(kieBaseTestConfiguration, str);
 
         List<Command<?>> commands = new ArrayList<Command<?>>();
         commands.add(CommandFactory.newInsert("not cheese"));
@@ -127,8 +122,9 @@ public class FireAllRulesCommandTest {
         assertThat(fired).isEqualTo(0);
     }
 
-    @Test
-    public void oneRuleFiredWithDefinedMaxTest() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void oneRuleFiredWithDefinedMaxTest(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str = "";
         str += "package org.drools.mvel.integrationtests \n";
         str += "import " + Cheese.class.getCanonicalName() + " \n";
@@ -139,7 +135,7 @@ public class FireAllRulesCommandTest {
         str += " System.out.println($c); \n";
         str += "end \n";
 
-        StatelessKieSession ksession = getSession(str);
+        StatelessKieSession ksession = getSession(kieBaseTestConfiguration, str);
 
         List<Command<?>> commands = new ArrayList<Command<?>>();
         commands.add(CommandFactory.newInsert(new Cheese("stilton")));
@@ -153,8 +149,9 @@ public class FireAllRulesCommandTest {
         assertThat(fired).isEqualTo(1);
     }
 
-    @Test
-    public void infiniteLoopTerminatesAtMaxTest() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void infiniteLoopTerminatesAtMaxTest(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str = "";
         str += "package org.drools.mvel.integrationtests \n";
         str += "import " + Cheese.class.getCanonicalName() + " \n";
@@ -165,7 +162,7 @@ public class FireAllRulesCommandTest {
         str += " update($c); \n";
         str += "end \n";
 
-        StatelessKieSession ksession = getSession(str);
+        StatelessKieSession ksession = getSession(kieBaseTestConfiguration, str);
 
         List<Command<?>> commands = new ArrayList<Command<?>>();
         commands.add(CommandFactory.newInsert(new Cheese("stilton")));
@@ -179,7 +176,7 @@ public class FireAllRulesCommandTest {
         assertThat(fired).isEqualTo(10);
     }
 
-    private StatelessKieSession getSession(String drl) {
+    private StatelessKieSession getSession(KieBaseTestConfiguration kieBaseTestConfiguration, String drl) {
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         return kbase.newStatelessKieSession();
     }

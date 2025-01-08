@@ -20,6 +20,7 @@ package org.kie.dmn.feel.runtime.functions;
 
 import java.util.Arrays;
 import java.util.List;
+
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.FEELBooleanFunction;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
@@ -29,7 +30,7 @@ public class AnyFunction
 
     public static final AnyFunction INSTANCE = new AnyFunction();
 
-    public AnyFunction() {
+    private AnyFunction() {
         super( "any" );
     }
 
@@ -56,10 +57,6 @@ public class AnyFunction
         } else {
             return FEELFnResult.ofResult( result );
         }
-    }
-
-    public FEELFnResult<Boolean> invoke(@ParameterName( "list" ) Boolean single) {
-        return FEELFnResult.ofResult( single );
     }
 
     public FEELFnResult<Boolean> invoke(@ParameterName( "b" ) Object[] list) {

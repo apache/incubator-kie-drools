@@ -26,9 +26,10 @@ import java.util.stream.IntStream;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Timer;
 import io.micrometer.core.instrument.search.Search;
+import org.drools.metric.util.MetricLogUtils;
 import org.drools.mvel.compiler.Address;
 import org.drools.mvel.compiler.Person;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
@@ -39,6 +40,24 @@ public class MetricLogUtilsTest extends AbstractMetricTest {
     @Test
     public void testJoin() {
 
+        runJoinRules();
+
+        // 2 nodes expected
+        Collection<Timer> timers = Search.in(registry)
+                .name("org.drools.metric.elapsed.time.per.evaluation")
+                .timers();
+        assertThat(timers).hasSize(2);
+        Collection<Timer> timers2 = Search.in(registry)
+                .name("org.drools.metric.elapsed.time")
+                .timers();
+        assertThat(timers2).hasSize(2);
+        Collection<Counter> counters = Search.in(registry)
+                .name("org.drools.metric.evaluation.count")
+                .counters();
+        assertThat(counters).hasSize(2);
+    }
+
+    private void runJoinRules() {
         String str =
                 "import " + Address.class.getCanonicalName() + "\n" +
                         "import " + Person.class.getCanonicalName() + "\n" +
@@ -67,20 +86,26 @@ public class MetricLogUtilsTest extends AbstractMetricTest {
         int fired = ksession.fireAllRules();
         ksession.dispose();
         assertThat(fired).isEqualTo(36);
+    }
 
-        // 2 nodes expected
-        Collection<Timer> timers = Search.in(registry)
-                .name("org.drools.metric.elapsed.time.per.evaluation")
-                .timers();
-        assertThat(timers).hasSize(2);
-        Collection<Timer> timers2 = Search.in(registry)
-                .name("org.drools.metric.elapsed.time")
-                .timers();
-        assertThat(timers2).hasSize(2);
-        Collection<Counter> counters = Search.in(registry)
-                .name("org.drools.metric.evaluation.count")
-                .counters();
-        assertThat(counters).hasSize(2);
+    @Test
+    public void micrometerDisabled() {
+
+        try {
+            System.setProperty(MetricLogUtils.METRIC_MICROMETER_DISABLED, "true");
+            MetricLogUtils.recreateInstance();
+
+            runJoinRules();
+
+            // Micrometer is disabled
+            Collection<Timer> timers = Search.in(registry)
+                    .name("org.drools.metric.elapsed.time.per.evaluation")
+                    .timers();
+            assertThat(timers).isEmpty();
+        } finally {
+            System.clearProperty(MetricLogUtils.METRIC_MICROMETER_DISABLED); // default is false
+            MetricLogUtils.recreateInstance();
+        }
     }
 
     @Test

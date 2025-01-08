@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Stream;
 
 import org.drools.mvel.integrationtests.facts.AnEnum;
 import org.drools.mvel.integrationtests.facts.FactWithBigDecimal;
@@ -38,21 +39,21 @@ import org.drools.mvel.integrationtests.facts.FactWithLong;
 import org.drools.mvel.integrationtests.facts.FactWithShort;
 import org.drools.mvel.integrationtests.facts.FactWithString;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
-@RunWith(Parameterized.class)
 public class DataTypeEvaluationConcurrentSessionsTest extends AbstractConcurrentTest {
 
     private static final Integer NUMBER_OF_THREADS = 10;
     private static final Integer NUMBER_OF_REPETITIONS = 1;
 
-    @Parameterized.Parameters(name = "Enforced jitting={0}, Share KieBase={1}, Share KieSession={2}, KieBase type={3}")
-    public static List<Object[]> getTestParameters() {
+    public static Stream<Arguments> parameters() {
         List<Boolean[]> baseParams = Arrays.asList(
                                                    new Boolean[]{false, false, false},
                                                    new Boolean[]{true, false, false},
@@ -64,118 +65,170 @@ public class DataTypeEvaluationConcurrentSessionsTest extends AbstractConcurrent
                                                    new Boolean[]{false, true, true},
                                                    new Boolean[]{true, true, true});
         // TODO: EM failed with some tests. File JIRAs
-        Collection<Object[]> kbParams = TestParametersUtil.getKieBaseCloudConfigurations(false);
+        Collection<KieBaseTestConfiguration> kbParams = TestParametersUtil2.getKieBaseCloudConfigurations(false);
         // combine
-        List<Object[]> params = new ArrayList<>();
+        List<Arguments> params = new ArrayList<>();
         for (Boolean[] baseParam : baseParams) {
-            for (Object[] kbParam : kbParams) {
-                if (baseParam[0] == true && ((KieBaseTestConfiguration) kbParam[0]).isExecutableModel()) {
+            for (KieBaseTestConfiguration kbParam : kbParams) {
+                if (baseParam[0] && kbParam.isExecutableModel()) {
                     // jitting & exec-model test is not required
                 } else {
-                    params.add(new Object[]{baseParam[0], baseParam[1], baseParam[2], kbParam[0]});
+                    params.add(arguments(baseParam[0], baseParam[1], baseParam[2], kbParam));
                 }
             }
         }
-        return params;
+        return params.stream();
     }
 
-    public DataTypeEvaluationConcurrentSessionsTest(final boolean enforcedJitting,
-                                                       final boolean sharedKieBase, final boolean sharedKieSession, final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        super(enforcedJitting, false, sharedKieBase, sharedKieSession, kieBaseTestConfiguration);
+    @ParameterizedTest(name = "Enforced jitting={0}, Share KieBase={1}, Share KieSession={2}, KieBase type={3}")
+    @MethodSource("parameters")
+    @Timeout(40000)
+    public void testBooleanPrimitive(boolean enforcedJitting, boolean isKieBaseShared, boolean isKieSessionShared, KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException {
+        initTest(enforcedJitting, false, isKieBaseShared, isKieSessionShared, kieBaseTestConfiguration);
+    	testFactAttributeType("    $factWithBoolean: FactWithBoolean(booleanValue == false) \n", new FactWithBoolean(false));
     }
 
-    @Test(timeout = 40000)
-    public void testBooleanPrimitive() throws InterruptedException {
-        testFactAttributeType("    $factWithBoolean: FactWithBoolean(booleanValue == false) \n", new FactWithBoolean(false));
-    }
-
-    @Test(timeout = 40000)
-    public void testBoolean() throws InterruptedException {
+    @ParameterizedTest(name = "Enforced jitting={0}, Share KieBase={1}, Share KieSession={2}, KieBase type={3}")
+    @MethodSource("parameters")
+    @Timeout(40000)
+    public void testBoolean(boolean enforcedJitting, boolean isKieBaseShared, boolean isKieSessionShared, KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException {
+        initTest(enforcedJitting, false, isKieBaseShared, isKieSessionShared, kieBaseTestConfiguration);
         testFactAttributeType("    $factWithBoolean: FactWithBoolean(booleanObjectValue == false) \n", new FactWithBoolean(false));
     }
 
-    @Test(timeout = 40000)
-    public void testBytePrimitive() throws InterruptedException {
+    @ParameterizedTest(name = "Enforced jitting={0}, Share KieBase={1}, Share KieSession={2}, KieBase type={3}")
+    @MethodSource("parameters")
+    @Timeout(40000)
+    public void testBytePrimitive(boolean enforcedJitting, boolean isKieBaseShared, boolean isKieSessionShared, KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException {
+        initTest(enforcedJitting, false, isKieBaseShared, isKieSessionShared, kieBaseTestConfiguration);
         testFactAttributeType("    $factWithByte: FactWithByte(byteValue == 15) \n", new FactWithByte((byte) 15));
     }
 
-    @Test(timeout = 40000)
-    public void testByte() throws InterruptedException {
+    @ParameterizedTest(name = "Enforced jitting={0}, Share KieBase={1}, Share KieSession={2}, KieBase type={3}")
+    @MethodSource("parameters")
+    @Timeout(40000)
+    public void testByte(boolean enforcedJitting, boolean isKieBaseShared, boolean isKieSessionShared, KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException {
+        initTest(enforcedJitting, false, isKieBaseShared, isKieSessionShared, kieBaseTestConfiguration);
         testFactAttributeType("    $factWithByte: FactWithByte(byteObjectValue == 15) \n", new FactWithByte((byte) 15));
     }
 
-    @Test(timeout = 40000)
-    public void testShortPrimitive() throws InterruptedException {
+    @ParameterizedTest(name = "Enforced jitting={0}, Share KieBase={1}, Share KieSession={2}, KieBase type={3}")
+    @MethodSource("parameters")
+    @Timeout(40000)
+    public void testShortPrimitive(boolean enforcedJitting, boolean isKieBaseShared, boolean isKieSessionShared, KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException {
+        initTest(enforcedJitting, false, isKieBaseShared, isKieSessionShared, kieBaseTestConfiguration);
         testFactAttributeType("    $factWithShort: FactWithShort(shortValue == 15) \n", new FactWithShort((short) 15));
     }
 
-    @Test(timeout = 40000)
-    public void testShort() throws InterruptedException {
+    @ParameterizedTest(name = "Enforced jitting={0}, Share KieBase={1}, Share KieSession={2}, KieBase type={3}")
+    @MethodSource("parameters")
+    @Timeout(40000)
+    public void testShort(boolean enforcedJitting, boolean isKieBaseShared, boolean isKieSessionShared, KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException {
+        initTest(enforcedJitting, false, isKieBaseShared, isKieSessionShared, kieBaseTestConfiguration);
         testFactAttributeType("    $factWithShort: FactWithShort(shortObjectValue == 15) \n", new FactWithShort((short) 15));
     }
 
-    @Test(timeout = 40000)
-    public void testIntPrimitive() throws InterruptedException {
+    @ParameterizedTest(name = "Enforced jitting={0}, Share KieBase={1}, Share KieSession={2}, KieBase type={3}")
+    @MethodSource("parameters")
+    @Timeout(40000)
+    public void testIntPrimitive(boolean enforcedJitting, boolean isKieBaseShared, boolean isKieSessionShared, KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException {
+        initTest(enforcedJitting, false, isKieBaseShared, isKieSessionShared, kieBaseTestConfiguration);
         testFactAttributeType("    $factWithInt: FactWithInteger(intValue == 15) \n", new FactWithInteger(15));
     }
 
-    @Test(timeout = 40000)
-    public void testInteger() throws InterruptedException {
+    @ParameterizedTest(name = "Enforced jitting={0}, Share KieBase={1}, Share KieSession={2}, KieBase type={3}")
+    @MethodSource("parameters")
+    @Timeout(40000)
+    public void testInteger(boolean enforcedJitting, boolean isKieBaseShared, boolean isKieSessionShared, KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException {
+        initTest(enforcedJitting, false, isKieBaseShared, isKieSessionShared, kieBaseTestConfiguration);
         testFactAttributeType("    $factWithInteger: FactWithInteger(integerValue == 15) \n", new FactWithInteger(15));
     }
 
-    @Test(timeout = 40000)
-    public void testLongPrimitive() throws InterruptedException {
+    @ParameterizedTest(name = "Enforced jitting={0}, Share KieBase={1}, Share KieSession={2}, KieBase type={3}")
+    @MethodSource("parameters")
+    @Timeout(40000)
+    public void testLongPrimitive(boolean enforcedJitting, boolean isKieBaseShared, boolean isKieSessionShared, KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException {
+        initTest(enforcedJitting, false, isKieBaseShared, isKieSessionShared, kieBaseTestConfiguration);
         testFactAttributeType("    $factWithLong: FactWithLong(longValue == 15) \n", new FactWithLong(15));
     }
 
-    @Test(timeout = 40000)
-    public void testLong() throws InterruptedException {
+    @ParameterizedTest(name = "Enforced jitting={0}, Share KieBase={1}, Share KieSession={2}, KieBase type={3}")
+    @MethodSource("parameters")
+    @Timeout(40000)
+    public void testLong(boolean enforcedJitting, boolean isKieBaseShared, boolean isKieSessionShared, KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException {
+        initTest(enforcedJitting, false, isKieBaseShared, isKieSessionShared, kieBaseTestConfiguration);
         testFactAttributeType("    $factWithLong: FactWithLong(longObjectValue == 15) \n", new FactWithLong(15));
     }
 
-    @Test(timeout = 40000)
-    public void testFloatPrimitive() throws InterruptedException {
+    @ParameterizedTest(name = "Enforced jitting={0}, Share KieBase={1}, Share KieSession={2}, KieBase type={3}")
+    @MethodSource("parameters")
+    @Timeout(40000)
+    public void testFloatPrimitive(boolean enforcedJitting, boolean isKieBaseShared, boolean isKieSessionShared, KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException {
+        initTest(enforcedJitting, false, isKieBaseShared, isKieSessionShared, kieBaseTestConfiguration);
         testFactAttributeType("    $factWithFloat: FactWithFloat(floatValue == 15.1) \n", new FactWithFloat(15.1f));
     }
 
-    @Test(timeout = 40000)
-    public void testFloat() throws InterruptedException {
+    @ParameterizedTest(name = "Enforced jitting={0}, Share KieBase={1}, Share KieSession={2}, KieBase type={3}")
+    @MethodSource("parameters")
+    @Timeout(40000)
+    public void testFloat(boolean enforcedJitting, boolean isKieBaseShared, boolean isKieSessionShared, KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException {
+        initTest(enforcedJitting, false, isKieBaseShared, isKieSessionShared, kieBaseTestConfiguration);
         testFactAttributeType("    $factWithFloat: FactWithFloat(floatObjectValue == 15.1) \n", new FactWithFloat(15.1f));
     }
 
-    @Test(timeout = 40000)
-    public void testDoublePrimitive() throws InterruptedException {
+    @ParameterizedTest(name = "Enforced jitting={0}, Share KieBase={1}, Share KieSession={2}, KieBase type={3}")
+    @MethodSource("parameters")
+    @Timeout(40000)
+    public void testDoublePrimitive(boolean enforcedJitting, boolean isKieBaseShared, boolean isKieSessionShared, KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException {
+        initTest(enforcedJitting, false, isKieBaseShared, isKieSessionShared, kieBaseTestConfiguration);
         testFactAttributeType("    $factWithDouble: FactWithDouble(doubleValue == 15.1) \n", new FactWithDouble(15.1d));
     }
 
-    @Test(timeout = 40000)
-    public void testDouble() throws InterruptedException {
+    @ParameterizedTest(name = "Enforced jitting={0}, Share KieBase={1}, Share KieSession={2}, KieBase type={3}")
+    @MethodSource("parameters")
+    @Timeout(40000)
+    public void testDouble(boolean enforcedJitting, boolean isKieBaseShared, boolean isKieSessionShared, KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException {
+        initTest(enforcedJitting, false, isKieBaseShared, isKieSessionShared, kieBaseTestConfiguration);
         testFactAttributeType("    $factWithDouble: FactWithDouble(doubleObjectValue == 15.1) \n", new FactWithDouble(15.1d));
     }
 
-    @Test(timeout = 40000)
-    public void testBigDecimal() throws InterruptedException {
+    @ParameterizedTest(name = "Enforced jitting={0}, Share KieBase={1}, Share KieSession={2}, KieBase type={3}")
+    @MethodSource("parameters")
+    @Timeout(40000)
+    public void testBigDecimal(boolean enforcedJitting, boolean isKieBaseShared, boolean isKieSessionShared, KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException {
+        initTest(enforcedJitting, false, isKieBaseShared, isKieSessionShared, kieBaseTestConfiguration);
         testFactAttributeType("    $factWithBigDecimal: FactWithBigDecimal(bigDecimalValue == 10) \n", new FactWithBigDecimal(BigDecimal.TEN));
     }
 
-    @Test(timeout = 40000)
-    public void testCharPrimitive() throws InterruptedException {
+    @ParameterizedTest(name = "Enforced jitting={0}, Share KieBase={1}, Share KieSession={2}, KieBase type={3}")
+    @MethodSource("parameters")
+    @Timeout(40000)
+    public void testCharPrimitive(boolean enforcedJitting, boolean isKieBaseShared, boolean isKieSessionShared, KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException {
+        initTest(enforcedJitting, false, isKieBaseShared, isKieSessionShared, kieBaseTestConfiguration);
         testFactAttributeType("    $factWithChar: FactWithCharacter(charValue == 'a') \n", new FactWithCharacter('a'));
     }
 
-    @Test(timeout = 40000)
-    public void testCharacter() throws InterruptedException {
+    @ParameterizedTest(name = "Enforced jitting={0}, Share KieBase={1}, Share KieSession={2}, KieBase type={3}")
+    @MethodSource("parameters")
+    @Timeout(40000)
+    public void testCharacter(boolean enforcedJitting, boolean isKieBaseShared, boolean isKieSessionShared, KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException {
+        initTest(enforcedJitting, false, isKieBaseShared, isKieSessionShared, kieBaseTestConfiguration);
         testFactAttributeType("    $factWithChar: FactWithCharacter(characterValue == 'a') \n", new FactWithCharacter('a'));
     }
 
-    @Test(timeout = 40000)
-    public void testString() throws InterruptedException {
+    @ParameterizedTest(name = "Enforced jitting={0}, Share KieBase={1}, Share KieSession={2}, KieBase type={3}")
+    @MethodSource("parameters")
+    @Timeout(40000)
+    public void testString(boolean enforcedJitting, boolean isKieBaseShared, boolean isKieSessionShared, KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException {
+        initTest(enforcedJitting, false, isKieBaseShared, isKieSessionShared, kieBaseTestConfiguration);
         testFactAttributeType("    $factWithString: FactWithString(stringValue == \"test\") \n", new FactWithString("test"));
     }
 
-    @Test(timeout = 40000)
-    public void testEnum() throws InterruptedException {
+    @ParameterizedTest(name = "Enforced jitting={0}, Share KieBase={1}, Share KieSession={2}, KieBase type={3}")
+    @MethodSource("parameters")
+    @Timeout(40000)
+    public void testEnum(boolean enforcedJitting, boolean isKieBaseShared, boolean isKieSessionShared, KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException {
+        initTest(enforcedJitting, false, isKieBaseShared, isKieSessionShared, kieBaseTestConfiguration);
         testFactAttributeType("    $factWithEnum: FactWithEnum(enumValue == AnEnum.FIRST) \n", new FactWithEnum(AnEnum.FIRST));
     }
 
@@ -195,10 +248,10 @@ public class DataTypeEvaluationConcurrentSessionsTest extends AbstractConcurrent
         parallelTest(NUMBER_OF_REPETITIONS, NUMBER_OF_THREADS, (kieSession, counter) -> {
             kieSession.insert(factInserted);
             final int rulesFired = kieSession.fireAllRules();
-            return sharedKieSession || rulesFired == 1;
+            return isKieSessionShared || rulesFired == 1;
         }, "numberOfFirings", numberOfFirings, drl);
 
-        if (sharedKieSession) {
+        if (isKieSessionShared) {
             // This is 1 because engine doesn't insert an already existing object twice, so when sharing a session
             // the object should be present just once in the session. When not sharing a session, there is N separate
             // sessions, so each one should fire.

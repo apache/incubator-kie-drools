@@ -19,10 +19,14 @@
 
 package org.drools.util;
 
+import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.chrono.ChronoLocalDateTime;
+import java.time.temporal.Temporal;
+import java.util.Objects;
 
-import org.drools.util.MathUtils;
+import static org.drools.util.ClassUtils.convertFromPrimitiveType;
 
 public class CoercionUtil {
 
@@ -193,5 +197,50 @@ public class CoercionUtil {
             }
         }
         return ret;
+    }
+
+    public static boolean areEqualityCompatible(Class<?> c1, Class<?> c2) {
+        if (c1 == MethodUtils.NullType.class || c2 == MethodUtils.NullType.class) {
+            return true;
+        }
+        if (c1 == String.class || c2 == String.class) {
+            return true;
+        }
+        if (Temporal.class.isAssignableFrom(c1) && Temporal.class.isAssignableFrom(c2)) {
+            return true;
+        }
+        Class<?> boxed1 = convertFromPrimitiveType(c1);
+        Class<?> boxed2 = convertFromPrimitiveType(c2);
+        if (boxed1.isAssignableFrom(boxed2) || boxed2.isAssignableFrom(boxed1)) {
+            return true;
+        }
+        if (Number.class.isAssignableFrom(boxed1) && Number.class.isAssignableFrom(boxed2)) {
+            return true;
+        }
+        if (areEqualityCompatibleEnums(boxed1, boxed2)) {
+            return true;
+        }
+        return !Modifier.isFinal(c1.getModifiers()) && !Modifier.isFinal(c2.getModifiers());
+    }
+
+    protected static boolean areEqualityCompatibleEnums(Class<?> boxed1, Class<?> boxed2) {
+        return boxed1.isEnum() && boxed2.isEnum() && boxed1.getName().equals(boxed2.getName())
+                && equalEnumConstants(boxed1.getEnumConstants(), boxed2.getEnumConstants());
+    }
+
+    private static boolean equalEnumConstants(Object[] aa, Object[] bb) {
+        if (aa.length != bb.length) {
+            return false;
+        }
+        for (int i = 0; i < aa.length; i++) {
+            if (!Objects.equals(aa[i].getClass().getName(), bb[i].getClass().getName())) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static boolean areComparisonCompatible(Class<?> c1, Class<?> c2) {
+        return areEqualityCompatible(c1, c2);
     }
 }

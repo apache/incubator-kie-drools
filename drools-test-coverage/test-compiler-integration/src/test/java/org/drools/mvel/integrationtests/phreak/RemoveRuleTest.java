@@ -36,10 +36,9 @@ import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.runtime.rule.Match;
@@ -47,26 +46,20 @@ import org.kie.api.runtime.rule.Match;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.core.phreak.PhreakBuilder.isEagerSegmentCreation;
 
-@RunWith(Parameterized.class)
 public class RemoveRuleTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public RemoveRuleTest(KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
-    }
-
-    @Test
-    public void testPopulatedSingleRuleNoSharing() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testPopulatedSingleRuleNoSharing(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
 
@@ -80,7 +73,7 @@ public class RemoveRuleTest {
         wm.fireAllRules();
 
 
-        kbase.addPackages( buildKnowledgePackage("r1", "   A() B() C(object == 2) X() E()\n") );
+        kbase.addPackages( buildKnowledgePackage(kieBaseTestConfiguration, "r1", "   A() B() C(object == 2) X() E()\n") );
         List list = new ArrayList();
         wm.setGlobal("list", list);
 
@@ -114,8 +107,9 @@ public class RemoveRuleTest {
         assertThat(countNodeMemories(nms)).isEqualTo(0);
     }
 
-    @Test
-    public void testPopulatedSingleRuleNoSharingWithSubnetworkAtStart() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testPopulatedSingleRuleNoSharingWithSubnetworkAtStart(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
 
@@ -128,7 +122,7 @@ public class RemoveRuleTest {
         wm.fireAllRules();
 
 
-        kbase.addPackages( buildKnowledgePackage("r1", "   A() not( B() and C() ) X() E()\n") );
+        kbase.addPackages( buildKnowledgePackage(kieBaseTestConfiguration, "r1", "   A() not( B() and C() ) X() E()\n") );
         List list = new ArrayList();
         wm.setGlobal("list", list);
 
@@ -154,9 +148,10 @@ public class RemoveRuleTest {
         return count;
     }
 
-    @Test
-    public void testPopulatedRuleMidwayShare() throws Exception {
-        InternalKnowledgeBase kbase1 = buildKnowledgeBase("r1", "   A() B() C(1;) X() E()\n");
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testPopulatedRuleMidwayShare(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
+        InternalKnowledgeBase kbase1 = buildKnowledgeBase(kieBaseTestConfiguration, "r1", "   A() B() C(1;) X() E()\n");
 
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase1.newKieSession());
         List list = new ArrayList();
@@ -174,7 +169,7 @@ public class RemoveRuleTest {
 
         assertThat(countNodeMemories(wm.getNodeMemories())).isEqualTo(6);
 
-        kbase1.addPackages( buildKnowledgePackage("r2", "   a : A() B() C(2;) X() E()\n") );
+        kbase1.addPackages( buildKnowledgePackage(kieBaseTestConfiguration, "r2", "   a : A() B() C(2;) X() E()\n") );
         wm.fireAllRules();
 
         ObjectTypeNode aotn = getObjectTypeNode(kbase1, A.class );
@@ -214,9 +209,10 @@ public class RemoveRuleTest {
         assertThat(list.size()).isEqualTo(7); // only one more added, as second rule as removed
     }
 
-    @Test
-    public void testPopulatedRuleWithEvals() throws Exception {
-        InternalKnowledgeBase kbase1 = buildKnowledgeBase("r1", "   a:A() B() eval(1==1) eval(1==1) C(1;) \n");
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testPopulatedRuleWithEvals(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
+        InternalKnowledgeBase kbase1 = buildKnowledgeBase(kieBaseTestConfiguration, "r1", "   a:A() B() eval(1==1) eval(1==1) C(1;) \n");
 
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase1.newKieSession());
         List list = new ArrayList();
@@ -234,7 +230,7 @@ public class RemoveRuleTest {
 
         assertThat(countNodeMemories(wm.getNodeMemories())).isEqualTo(6);
 
-        kbase1.addPackages( buildKnowledgePackage("r2", "   a:A() B() eval(1==1) eval(1==1) C(2;) \n") );
+        kbase1.addPackages( buildKnowledgePackage(kieBaseTestConfiguration, "r2", "   a:A() B() eval(1==1) eval(1==1) C(2;) \n") );
         wm.fireAllRules();
 
         ObjectTypeNode aotn = getObjectTypeNode(kbase1, A.class );
@@ -277,9 +273,10 @@ public class RemoveRuleTest {
         assertThat(list.size()).isEqualTo(7); // only one more added, as second rule as removed
     }
 
-    @Test
-    public void testPopulatedSharedLiaNode() throws Exception {
-        InternalKnowledgeBase kbase1 = buildKnowledgeBase("r1", "   A() B(1;) C() X() E()\n");
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testPopulatedSharedLiaNode(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
+        InternalKnowledgeBase kbase1 = buildKnowledgeBase(kieBaseTestConfiguration, "r1", "   A() B(1;) C() X() E()\n");
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase1.newKieSession());
         List list = new ArrayList();
         wm.setGlobal("list", list);
@@ -297,7 +294,7 @@ public class RemoveRuleTest {
         assertThat(list.size()).isEqualTo(3);
         assertThat(countNodeMemories(wm.getNodeMemories())).isEqualTo(6);
 
-        kbase1.addPackages( buildKnowledgePackage("r2", "   a : A() B(2;) C() X() E()\n") );
+        kbase1.addPackages( buildKnowledgePackage(kieBaseTestConfiguration, "r2", "   a : A() B(2;) C() X() E()\n") );
         wm.fireAllRules();
         assertThat(countNodeMemories(wm.getNodeMemories())).isEqualTo(11);
 
@@ -349,9 +346,10 @@ public class RemoveRuleTest {
         assertThat(list.size()).isEqualTo(7); // only one more added, as second rule as removed
     }
 
-    @Test
-    public void testPopulatedSharedLiaNodeNoBeta() throws Exception {
-        InternalKnowledgeBase kbase1 = buildKnowledgeBase("r1", "   A()\n");
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testPopulatedSharedLiaNodeNoBeta(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
+        InternalKnowledgeBase kbase1 = buildKnowledgeBase(kieBaseTestConfiguration, "r1", "   A()\n");
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase1.newKieSession());
         List list = new ArrayList();
         wm.setGlobal("list", list);
@@ -364,7 +362,7 @@ public class RemoveRuleTest {
         wm.fireAllRules();
         assertThat(list.size()).isEqualTo(2);
 
-        kbase1.addPackages( buildKnowledgePackage("r2", "   a : A()\n") );
+        kbase1.addPackages( buildKnowledgePackage(kieBaseTestConfiguration, "r2", "   a : A()\n") );
         wm.fireAllRules();
         assertThat(list.size()).isEqualTo(4);
 
@@ -381,10 +379,11 @@ public class RemoveRuleTest {
         assertThat(list.size()).isEqualTo(0);
     }
 
-    @Test
-    public void testAlphaTerminalNodesDontShareWithLian() throws Exception {
-        InternalKnowledgeBase kbase1 = buildKnowledgeBase("r1", " A(1;)\n");
-        kbase1.addPackages( buildKnowledgePackage("r2", "   A(1;) B(1;) C(1;)\n") );
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testAlphaTerminalNodesDontShareWithLian(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
+        InternalKnowledgeBase kbase1 = buildKnowledgeBase(kieBaseTestConfiguration, "r1", " A(1;)\n");
+        kbase1.addPackages( buildKnowledgePackage(kieBaseTestConfiguration, "r2", "   A(1;) B(1;) C(1;)\n") );
 
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase1.newKieSession());
 
@@ -399,9 +398,10 @@ public class RemoveRuleTest {
         }
     }
 
-    @Test
-    public void testPopulatedSharedToRtn() throws Exception {
-        InternalKnowledgeBase kbase1 = buildKnowledgeBase("r1", "   A() B() C() X() E()\n");
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testPopulatedSharedToRtn(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
+        InternalKnowledgeBase kbase1 = buildKnowledgeBase(kieBaseTestConfiguration, "r1", "   A() B() C() X() E()\n");
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase1.newKieSession());
         List list = new ArrayList();
         wm.setGlobal("list", list);
@@ -417,7 +417,7 @@ public class RemoveRuleTest {
         assertThat(list.size()).isEqualTo(2);
         assertThat(countNodeMemories(wm.getNodeMemories())).isEqualTo(6);
 
-        kbase1.addPackages( buildKnowledgePackage("r2", "   A() B() C() X() E()\n") );
+        kbase1.addPackages( buildKnowledgePackage(kieBaseTestConfiguration, "r2", "   A() B() C() X() E()\n") );
         wm.fireAllRules();
         assertThat(countNodeMemories(wm.getNodeMemories())).isEqualTo(7);
         assertThat(list.size()).isEqualTo(4);
@@ -461,9 +461,10 @@ public class RemoveRuleTest {
 
     }
 
-    @Test
-         public void testPopulatedMultipleSharesRemoveFirst() throws Exception {
-        InternalKnowledgeBase kbase1 = buildKnowledgeBase("r1", "   A(1;)  A(2;) B(1;) B(2;) C(1;) X() E()\n");
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+         public void testPopulatedMultipleSharesRemoveFirst(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
+        InternalKnowledgeBase kbase1 = buildKnowledgeBase(kieBaseTestConfiguration, "r1", "   A(1;)  A(2;) B(1;) B(2;) C(1;) X() E()\n");
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase1.newKieSession());
         List list = new ArrayList();
         wm.setGlobal("list", list);
@@ -482,8 +483,8 @@ public class RemoveRuleTest {
         wm.fireAllRules();
         assertThat(list.size()).isEqualTo(2);
 
-        kbase1.addPackages( buildKnowledgePackage("r2", "   A(1;)  A(2;) B(1;) B(2;) C(2;) X() E()\n") );
-        kbase1.addPackages( buildKnowledgePackage("r3", "   A(1;)  A(3;) B(1;) B(2;) C(2;) X() E()\n") );
+        kbase1.addPackages( buildKnowledgePackage(kieBaseTestConfiguration, "r2", "   A(1;)  A(2;) B(1;) B(2;) C(2;) X() E()\n") );
+        kbase1.addPackages( buildKnowledgePackage(kieBaseTestConfiguration, "r3", "   A(1;)  A(3;) B(1;) B(2;) C(2;) X() E()\n") );
 
         wm.fireAllRules();
         assertThat(list.size()).isEqualTo(5);
@@ -498,9 +499,10 @@ public class RemoveRuleTest {
         assertThat(list.size()).isEqualTo(3);
     }
 
-    @Test
-    public void testPopulatedMultipleSharesRemoveMid() throws Exception {
-        InternalKnowledgeBase kbase1 = buildKnowledgeBase("r1", "   A(1;)  A(2;) B(1;) B(2;) C(1;) X() E()\n");
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testPopulatedMultipleSharesRemoveMid(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
+        InternalKnowledgeBase kbase1 = buildKnowledgeBase(kieBaseTestConfiguration, "r1", "   A(1;)  A(2;) B(1;) B(2;) C(1;) X() E()\n");
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase1.newKieSession());
         List list = new ArrayList();
         wm.setGlobal("list", list);
@@ -519,8 +521,8 @@ public class RemoveRuleTest {
         wm.fireAllRules();
         assertThat(list.size()).isEqualTo(2);
 
-        kbase1.addPackages( buildKnowledgePackage("r2", "   A(1;)  A(2;) B(1;) B(2;) C(2;) X() E()\n") );
-        kbase1.addPackages( buildKnowledgePackage("r3", "   A(1;)  A(3;) B(1;) B(2;) C(2;) X() E()\n") );
+        kbase1.addPackages( buildKnowledgePackage(kieBaseTestConfiguration, "r2", "   A(1;)  A(2;) B(1;) B(2;) C(2;) X() E()\n") );
+        kbase1.addPackages( buildKnowledgePackage(kieBaseTestConfiguration, "r3", "   A(1;)  A(3;) B(1;) B(2;) C(2;) X() E()\n") );
 
         wm.fireAllRules();
         assertThat(list.size()).isEqualTo(5);
@@ -535,9 +537,10 @@ public class RemoveRuleTest {
         assertThat(list.size()).isEqualTo(3);
     }
 
-    @Test
-    public void testPopulatedMultipleSharesRemoveLast() throws Exception {
-        InternalKnowledgeBase kbase1 = buildKnowledgeBase("r1", "   A(1;)  A(2;) B(1;) B(2;) C(1;) X() E()\n");
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testPopulatedMultipleSharesRemoveLast(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
+        InternalKnowledgeBase kbase1 = buildKnowledgeBase(kieBaseTestConfiguration, "r1", "   A(1;)  A(2;) B(1;) B(2;) C(1;) X() E()\n");
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase1.newKieSession());
         List list = new ArrayList();
         wm.setGlobal("list", list);
@@ -561,7 +564,7 @@ public class RemoveRuleTest {
         assertThat(pmem1.getSegmentMemories().length).isEqualTo(1);
         assertSegmentMemory(pmem1, 0, 127, 127, 127);
 
-        kbase1.addPackages( buildKnowledgePackage("r2", "   A(1;)  A(2;) B(1;) B(2;) C(2;) X() E()\n") );
+        kbase1.addPackages( buildKnowledgePackage(kieBaseTestConfiguration, "r2", "   A(1;)  A(2;) B(1;) B(2;) C(2;) X() E()\n") );
 
         list.clear();
         update10Facts(wm, fh1, fh2, fh3, fh4, fh5, fh6, fh7, fh8, fh9, fh10);
@@ -579,7 +582,7 @@ public class RemoveRuleTest {
         assertSegmentMemory(pmem2, 0, 15, 15, 15);
         assertSegmentMemory(pmem2, 1, 7, 7, 7);
 
-        kbase1.addPackages( buildKnowledgePackage("r3", "   A(1;)  A(3;) B(1;) B(2;) C(2;) X() E()\n") );
+        kbase1.addPackages( buildKnowledgePackage(kieBaseTestConfiguration, "r3", "   A(1;)  A(3;) B(1;) B(2;) C(2;) X() E()\n") );
 
         list.clear();
         update10Facts(wm, fh1, fh2, fh3, fh4, fh5, fh6, fh7, fh8, fh9, fh10);
@@ -641,11 +644,12 @@ public class RemoveRuleTest {
         wm.update(fh10, fh10.getObject());
     }
 
-    @Test
-    public void testPathMemorySizeAfterSegmentMerge() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testPathMemorySizeAfterSegmentMerge(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         // The two A(1;) are not actually shared, as r2 creates an AlphaTerminalNode
-        InternalKnowledgeBase kbase1 = buildKnowledgeBase("r1", "   A(1;) B(1;)\n");
-        kbase1.addPackages( buildKnowledgePackage("r2", "   A(1;)\n") );
+        InternalKnowledgeBase kbase1 = buildKnowledgeBase(kieBaseTestConfiguration, "r1", "   A(1;) B(1;)\n");
+        kbase1.addPackages( buildKnowledgePackage(kieBaseTestConfiguration, "r2", "   A(1;)\n") );
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase1.newKieSession());
         List list = new ArrayList();
         wm.setGlobal("list", list);
@@ -665,10 +669,11 @@ public class RemoveRuleTest {
         assertThat(wm.getNodeMemory(rtn1).getSegmentMemories().length).isEqualTo(1);
     }
 
-    @Test
-    public void testPathMemorySizeAfterSegmentMergeNonInitialized() throws Exception {
-        InternalKnowledgeBase kbase1 = buildKnowledgeBase("r1", "   A(1;) B(1;)\n");
-        kbase1.addPackages( buildKnowledgePackage("r2", "   A(1;)\n") );
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testPathMemorySizeAfterSegmentMergeNonInitialized(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
+        InternalKnowledgeBase kbase1 = buildKnowledgeBase(kieBaseTestConfiguration, "r1", "   A(1;) B(1;)\n");
+        kbase1.addPackages( buildKnowledgePackage(kieBaseTestConfiguration, "r2", "   A(1;)\n") );
 
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase1.newKieSession());
 
@@ -682,12 +687,13 @@ public class RemoveRuleTest {
         assertThat(wm.getNodeMemory(rtn1).getSegmentMemories().length).isEqualTo(1);
     }
 
-    @Test
-    public void testSplitTwoBeforeCreatedSegment() throws Exception {
-        InternalKnowledgeBase kbase1 =          buildKnowledgeBase("r1", "   A(1;)  A(2;) B(1;) B(2;) C(1;) C(2;) X(1;) X(2;) E(1;) E(2;)\n");
-        kbase1.addPackages( buildKnowledgePackage("r2", "   A(1;)  A(2;) B(1;) B(2;) C(1;) C(2;) X(1;) X(2;) E(1;) E(2;)\n") );
-        kbase1.addPackages( buildKnowledgePackage("r3", "   A(1;)  A(2;) B(1;) B(2;) C(1;) C(2;) X(1;) X(2;)\n") );
-        kbase1.addPackages( buildKnowledgePackage("r4", "   A(1;)  A(2;) B(1;) B(2;) C(1;) C(2;) \n") );
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testSplitTwoBeforeCreatedSegment(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
+        InternalKnowledgeBase kbase1 =          buildKnowledgeBase(kieBaseTestConfiguration, "r1", "   A(1;)  A(2;) B(1;) B(2;) C(1;) C(2;) X(1;) X(2;) E(1;) E(2;)\n");
+        kbase1.addPackages( buildKnowledgePackage(kieBaseTestConfiguration, "r2", "   A(1;)  A(2;) B(1;) B(2;) C(1;) C(2;) X(1;) X(2;) E(1;) E(2;)\n") );
+        kbase1.addPackages( buildKnowledgePackage(kieBaseTestConfiguration, "r3", "   A(1;)  A(2;) B(1;) B(2;) C(1;) C(2;) X(1;) X(2;)\n") );
+        kbase1.addPackages( buildKnowledgePackage(kieBaseTestConfiguration, "r4", "   A(1;)  A(2;) B(1;) B(2;) C(1;) C(2;) \n") );
 
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase1.newKieSession());
         List list = new ArrayList();
@@ -713,7 +719,7 @@ public class RemoveRuleTest {
         assertThat(sm.getSegmentPosMaskBit()).isEqualTo(4);
         assertThat(pm1.getLinkedSegmentMask()).isEqualTo(4);
 
-        kbase1.addPackages( buildKnowledgePackage("r5",  "   A(1;)  A(2;) B(1;) B(2;) \n") );
+        kbase1.addPackages( buildKnowledgePackage(kieBaseTestConfiguration, "r5",  "   A(1;)  A(2;) B(1;) B(2;) \n") );
 
         smems = pm1.getSegmentMemories();
         assertThat(smems.length).isEqualTo(5);
@@ -769,11 +775,11 @@ public class RemoveRuleTest {
         return str;
     }
 
-    private InternalKnowledgeBase buildKnowledgeBase(String ruleName, String rule) {
+    private InternalKnowledgeBase buildKnowledgeBase(KieBaseTestConfiguration kieBaseTestConfiguration, String ruleName, String rule) {
         return (InternalKnowledgeBase)KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, buildKnowledgePackageDrl(ruleName, rule));
     }
 
-    private Collection<KiePackage> buildKnowledgePackage(String ruleName, String rule) {
+    private Collection<KiePackage> buildKnowledgePackage(KieBaseTestConfiguration kieBaseTestConfiguration, String ruleName, String rule) {
         return KieBaseUtil.getKieBaseFromKieModuleFromDrl("tmp", kieBaseTestConfiguration, buildKnowledgePackageDrl(ruleName, rule)).getKiePackages();
     }
 

@@ -27,7 +27,6 @@ import java.time.format.SignStyle;
 import java.time.temporal.TemporalAccessor;
 import java.util.regex.Pattern;
 
-import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
@@ -52,7 +51,7 @@ public class DateFunction
                                                   .withResolverStyle(ResolverStyle.STRICT);
     }
 
-    public DateFunction() {
+    protected DateFunction() {
         super(FEELConversionFunctionNames.DATE);
     }
 
@@ -70,11 +69,6 @@ public class DateFunction
             return manageDateTimeException(e, val);
         }
     }
-
-    public FEELFnResult<TemporalAccessor> manageDateTimeException(DateTimeException e, String val) {
-        return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "date", e));
-    }
-
 
     public FEELFnResult<TemporalAccessor> invoke(@ParameterName( "year" ) Number year, @ParameterName( "month" ) Number month, @ParameterName( "day" ) Number day) {
         if ( year == null ) {
@@ -106,8 +100,7 @@ public class DateFunction
         }
     }
 
-    @Override
-    public Object defaultValue() {
-        return LocalDate.of(1970, 1, 1);
+    protected FEELFnResult<TemporalAccessor> manageDateTimeException(DateTimeException e, String val) {
+        return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "date", e));
     }
 }

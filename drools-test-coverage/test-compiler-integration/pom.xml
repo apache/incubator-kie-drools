@@ -35,9 +35,19 @@
 
   <properties>
     <java.module.name>org.drools.compiler.integrationtests</java.module.name>
-    <excludedGroups>org.kie.test.testcategory.TurtleTestCategory</excludedGroups>
     <surefire.forkCount>2</surefire.forkCount>
   </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.drools.testcoverage</groupId>
+        <artifactId>drools-test-coverage-jars</artifactId>
+        <type>pom</type>
+        <version>${project.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
   <dependencies>
     <dependency>
@@ -97,11 +107,22 @@
     </dependency>
 
     <dependency>
+      <groupId>org.drools.testcoverage</groupId>
+      <artifactId>drools-test-coverage-jars</artifactId>
+      <type>pom</type>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
       <groupId>com.thoughtworks.xstream</groupId>
       <artifactId>xstream</artifactId>
       <scope>test</scope>
     </dependency>
-
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
@@ -153,17 +174,6 @@
       <artifactId>mockito-core</artifactId>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>org.hamcrest</groupId>
-          <artifactId>hamcrest-core</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
   </dependencies>
 
   <profiles>
@@ -174,9 +184,59 @@
           <name>runTurtleTests</name>
         </property>
       </activation>
-      <properties>
-        <excludedGroups/>
-      </properties>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <artifactId>maven-surefire-plugin</artifactId>
+		    <configuration>
+		        <systemProperties>
+		            <property>
+		                <name>runTurtleTests</name>
+		                <value>true</value>
+		            </property>
+		        </systemProperties>
+    		</configuration>            
+    		</plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
+    </profile>
+
+    <!-- test-compiler-integration requires test jars built by drools-test-coverage-jars -->
+    <!-- This profile makes sure that drools-test-coverage-jars is executed if not-->
+    <!-- See: https://github.com/apache/incubator-kie-drools/pull/6144 -->
+    <profile>
+      <id>missing-test-jar-file</id>
+      <activation>
+        <file>
+          <missing>src/test/resources/surf.jar</missing>
+        </file>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-invoker-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>build-drools-test-coverage-jars</id>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <phase>generate-test-resources</phase>
+                <configuration>
+                  <projectsDirectory>${basedir}/../drools-test-coverage-jars</projectsDirectory>
+                  <goals>
+                    <goal>clean</goal>
+                    <goal>install</goal>
+                  </goals>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
     </profile>
   </profiles>
 

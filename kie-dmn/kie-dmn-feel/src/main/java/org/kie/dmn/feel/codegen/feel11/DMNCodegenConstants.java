@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -51,11 +51,13 @@ import org.kie.dmn.feel.lang.ast.PathExpressionNode;
 import org.kie.dmn.feel.lang.ast.QualifiedNameNode;
 import org.kie.dmn.feel.lang.ast.QuantifiedExpressionNode;
 import org.kie.dmn.feel.lang.ast.RangeNode;
+import org.kie.dmn.feel.lang.ast.RangeTypeNode;
 import org.kie.dmn.feel.lang.ast.SignedUnaryNode;
 import org.kie.dmn.feel.lang.ast.StringNode;
 import org.kie.dmn.feel.lang.ast.TemporalConstantNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestListNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestNode;
+import org.kie.dmn.feel.lang.ast.UndefinedValueNode;
 import org.kie.dmn.feel.lang.impl.JavaBackedType;
 import org.kie.dmn.feel.lang.impl.MapBackedType;
 import org.kie.dmn.feel.lang.types.AliasFEELType;
@@ -142,6 +144,8 @@ public class DMNCodegenConstants {
     public static final ClassOrInterfaceType LISTNODE_CT = parseClassOrInterfaceType(ListNode.class.getCanonicalName());
     public static final ClassOrInterfaceType LISTTYPENODE_CT =
             parseClassOrInterfaceType(ListTypeNode.class.getCanonicalName());
+    public static final ClassOrInterfaceType RANGETYPENODE_CT =
+            parseClassOrInterfaceType(RangeTypeNode.class.getCanonicalName());
     public static final ClassOrInterfaceType NAMEDEFNODE_CT =
             parseClassOrInterfaceType(NameDefNode.class.getCanonicalName());
     public static final ClassOrInterfaceType NAMEDPARAMETERNODE_CT =
@@ -169,6 +173,7 @@ public class DMNCodegenConstants {
             parseClassOrInterfaceType(UnaryTestListNode.class.getCanonicalName());
     public static final ClassOrInterfaceType UNARYTESTNODE_CT =
             parseClassOrInterfaceType(UnaryTestNode.class.getCanonicalName());
+    public static final ClassOrInterfaceType UNDEFINEDVALUENODE_CT = parseClassOrInterfaceType(UndefinedValueNode.class.getCanonicalName());
 
     private DMNCodegenConstants() {
     }

@@ -18,7 +18,6 @@
  */
 package org.drools.decisiontable.integrationtests;
 
-import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieFileSystem;
@@ -26,6 +25,8 @@ import org.kie.api.builder.Results;
 import org.kie.api.runtime.KieContainer;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * Basic tests for creation of a KieBase from CSV and XLS resources.

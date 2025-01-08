@@ -29,7 +29,7 @@ public class CeilingFunction
 
     public static final CeilingFunction INSTANCE = new CeilingFunction();
 
-    public CeilingFunction() {
+    private CeilingFunction() {
         super( "ceiling" );
     }
 

@@ -83,7 +83,7 @@ import org.drools.mvel.builder.MVELDialect;
 import org.drools.mvel.compiler.Cheese;
 import org.drools.mvel.expr.MVELConsequence;
 import org.drools.mvel.expr.MVELDebugHandler;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 import org.mvel2.ParserContext;

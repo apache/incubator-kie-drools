@@ -27,7 +27,7 @@ import org.kie.dmn.feel.util.BooleanEvalHelper;
 public class IsFunction extends BaseFEELFunction {
     public static final IsFunction INSTANCE = new IsFunction();
 
-    IsFunction() {
+    private IsFunction() {
         super("is");
     }
 

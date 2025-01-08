@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+  <!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+<definitions xmlns="https://www.omg.org/spec/DMN/20230324/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="https://kie.org/dmn/extensions/1.0" expressionLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/" namespace="https://kie.org/dmn/_A3317FB1-7BF8-4904-A5F4-2CD63AF3AFD0" id="_49F637EB-0176-4A4A-9E4A-CBE3A969732F" name="Risk Score Conditional">
+  <itemDefinition id="_0AB24AFF-A3D9-4BA5-82BC-F7850560A7E7" name="Region" isCollection="false" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/">
+    <typeRef>string</typeRef>
+    <typeConstraint id="_A4CA99DD-162A-4AAB-9840-68EA098B9313" kie:constraintType="enumeration">
+      <text>&quot;Asia&quot;, &quot;Europe&quot;</text>
+    </typeConstraint>
+  </itemDefinition>
+  <itemDefinition id="_77090217-FF01-45CD-A561-C96D420D407A" name="Credit Score Rating" isCollection="false" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/">
+    <typeRef>string</typeRef>
+    <typeConstraint id="_9DB25671-9A5B-44E4-ABE6-449C844D0001" kie:constraintType="enumeration">
+      <text>&quot;Poor&quot;, &quot;Fair&quot;, &quot;Excellent&quot;</text>
+    </typeConstraint>
+  </itemDefinition>
+  <itemDefinition id="_22017A5D-692E-4DB4-BAE2-E99E88B4572F" name="Risk Level" isCollection="false" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/">
+    <typeRef>string</typeRef>
+    <typeConstraint id="_03B1B44C-3CEA-479E-BA26-8B07F3A68FB9" kie:constraintType="enumeration">
+      <text>&quot;High&quot;, &quot;Medium&quot;, &quot;Low&quot;</text>
+    </typeConstraint>
+  </itemDefinition>
+  <itemDefinition id="_21DBC185-4698-4F3C-9F25-5822307020EC" name="Loan Pre-Qualification" isCollection="false" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/">
+    <typeRef>string</typeRef>
+    <typeConstraint id="_AD5868E3-2107-438F-B5A2-CFD92F03F195" kie:constraintType="enumeration">
+      <text>&quot;Qualified&quot;, &quot;Not Qualified&quot;</text>
+    </typeConstraint>
+  </itemDefinition>
+  <inputData name="Credit Score" id="_D2C418A0-2BF8-4984-83C9-E53B9EF4EBA7">
+    <variable name="Credit Score" id="_BE4CFC54-DF9A-43B5-BB55-D5AED6674702" typeRef="Credit Score Rating" />
+  </inputData>
+  <inputData name="DTI" id="_7570C90B-8161-4F3B-B663-BDD72CEA6F69">
+    <variable name="DTI" id="_65E61476-DD45-4273-BC21-9CAD344B2506" typeRef="number" />
+  </inputData>
+  <decision name="Risk Score" id="_A1236581-4334-43F1-82A0-72CE204F07F9">
+    <variable name="Risk Score" id="_5144C9A3-5B8F-45F0-9197-85AC4A9101FF" typeRef="number" />
+    <informationRequirement id="_C77AE1D1-3A37-4598-9B3F-9B2E7C7AEC9A">
+      <requiredInput href="#_185E48A8-82B7-4E37-B1B8-EDE4A3665369" />
+    </informationRequirement>
+    <informationRequirement id="_CE869C44-D297-459D-89EA-85E1081E20AE">
+      <requiredInput href="#_7570C90B-8161-4F3B-B663-BDD72CEA6F69" />
+    </informationRequirement>
+    <informationRequirement id="_322FD01A-A6F3-45F9-99E5-953D5FEFC105">
+      <requiredInput href="#_D2C418A0-2BF8-4984-83C9-E53B9EF4EBA7" />
+    </informationRequirement>
+    <conditional id="_A80832EF-8F9C-4638-B5FB-047210860DF2" label="Risk Score" typeRef="number">
+      <if id="_3C702CE4-E5A0-4B6F-905D-C2621FFFA387">
+        <literalExpression id="_CA44F978-C3A3-4D65-BABB-8BDA2FBB1074" label="Expression Name">
+          <text>World Region = &quot;Asia&quot;</text>
+        </literalExpression>
+      </if>
+      <then id="_6481FF12-61B5-451C-B775-4143D9B6CD6B">
+        <decisionTable id="_F0C607C4-3F4C-4DA8-977C-779D42CEEE40" hitPolicy="COLLECT" label="Risk Score" aggregation="SUM" typeRef="number">
+          <input id="_B12F7FA8-9907-48A2-9B01-7595E9C8D43A">
+            <inputExpression id="_50BFCAF6-AEE0-402C-91D3-A9546CD4BC81" typeRef="Credit Score Rating">
+              <text>Credit Score</text>
+            </inputExpression>
+          </input>
+          <input id="_1F3AE4C3-D3C2-424C-B132-D9501143A089">
+            <inputExpression id="_FFEA1DEB-D31A-48A8-8451-491A8C1E2DD0" typeRef="number">
+              <text>DTI</text>
+            </inputExpression>
+          </input>
+          <output id="_8D34C459-12A1-4B1A-8591-AB6C8EC8E9E1" />
+          <annotation name="Annotations" />
+          <rule id="_D1753442-03F0-414B-94F8-6A86182DF6EB">
+            <inputEntry id="_0D26008B-C8D4-400B-936E-648D1DFB7CA9">
+              <text>&quot;Poor&quot;</text>
+            </inputEntry>
+            <inputEntry id="_06D3CE4B-671B-46AF-84C2-29670038B406">
+              <text>-</text>
+            </inputEntry>
+            <outputEntry id="_0E6C7E14-E362-44B2-A831-0C380BD7654A">
+              <text>30</text>
+            </outputEntry>
+            <annotationEntry>
+              <text>// Your annotations here</text>
+            </annotationEntry>
+          </rule>
+          <rule id="_F759D8D7-2AFA-4872-90EE-CE6C2C2ECCE7">
+            <inputEntry id="_875471C5-6743-45DD-AFBA-42893FB37740">
+              <text>&quot;Fair&quot;</text>
+            </inputEntry>
+            <inputEntry id="_C5FE1FA0-7D2A-4251-BB99-B43E35B8C1A4">
+              <text>-</text>
+            </inputEntry>
+            <outputEntry id="_D4F64CB7-B3F1-4550-AFC4-C14BC2240B6B">
+              <text>20</text>
+            </outputEntry>
+            <annotationEntry>
+              <text></text>
+            </annotationEntry>
+          </rule>
+          <rule id="_F80DB1EF-3360-451D-99A7-B1A44F953816">
+            <inputEntry id="_CFA144C6-2228-4228-84BD-B7C87BCC6337">
+              <text>&quot;Excellent&quot;</text>
+            </inputEntry>
+            <inputEntry id="_7914A8AD-BEF7-42F0-ACB2-C12CCCCBEF3C">
+              <text>-</text>
+            </inputEntry>
+            <outputEntry id="_517FB94A-5B3D-47F5-9761-F75FE7E3163D">
+              <text>10</text>
+            </outputEntry>
+            <annotationEntry>
+              <text></text>
+            </annotationEntry>
+          </rule>
+          <rule id="_0E219A89-961B-45D9-A902-35376C5BFBCF">
+            <inputEntry id="_B56E1E09-9663-42F4-9E2D-074533454F93">
+              <text>-</text>
+            </inputEntry>
+            <inputEntry id="_D40E86EF-AC12-49D9-BCAA-EAC367864C81">
+              <text>&gt; 40</text>
+            </inputEntry>
+            <outputEntry id="_280B8F10-F7B3-4CBC-BE97-D5B04476679B">
+              <text>30</text>
+            </outputEntry>
+            <annotationEntry>
+              <text></text>
+            </annotationEntry>
+          </rule>
+          <rule id="_E787BA51-E31D-449B-A432-50BE7466A15E">
+            <inputEntry id="_F88460EB-CA53-4B2D-84AC-D7D28598B6BF">
+              <text>-</text>
+            </inputEntry>
+            <inputEntry id="_8BD2109B-C099-4B45-9E5B-493ABD0452EB">
+              <text>[20..40]</text>
+            </inputEntry>
+            <outputEntry id="_02694584-2554-4190-B72A-7FA834383D6D">
+              <text>20</text>
+            </outputEntry>
+            <annotationEntry>
+              <text></text>
+            </annotationEntry>
+          </rule>
+          <rule id="_DBBFEAEE-870A-4106-A2AA-12ABF2E31235">
+            <inputEntry id="_68D7E5C9-7196-47D2-A75C-73C482F85066">
+              <text>-</text>
+            </inputEntry>
+            <inputEntry id="_7DE509BF-AA65-47F2-A71A-25464B9A7084">
+              <text>&lt; 20</text>
+            </inputEntry>
+            <outputEntry id="_6ADFA54C-91DD-47A2-8AA1-648B6A245393">
+              <text>10</text>
+            </outputEntry>
+            <annotationEntry>
+              <text></text>
+            </annotationEntry>
+          </rule>
+        </decisionTable>
+      </then>
+      <else id="_2CD02CB2-6B56-45C4-B461-405E89D45633">
+        <decisionTable id="_90551B34-27B5-4242-A806-6D29AFB6946A" hitPolicy="COLLECT" label="Risk Score" aggregation="SUM" typeRef="number">
+          <input id="_4C0C8F1D-18D1-40FD-ACD1-2D7A53234400">
+            <inputExpression id="_2225BD43-C9C3-44EB-8E6C-4DD2696FCEDA" typeRef="Credit Score Rating">
+              <text>Credit Score</text>
+            </inputExpression>
+          </input>
+          <input id="_90F143B7-C50D-4AEF-8290-984FE57C14F6">
+            <inputExpression id="_8E5C645B-838F-40F4-8DFF-07409F664F20" typeRef="number">
+              <text>DTI</text>
+            </inputExpression>
+          </input>
+          <output id="_D2D55686-7196-4B0F-8F24-AEB4EB3A8604" />
+          <annotation name="Annotations" />
+          <rule id="_9ACB96CD-73B2-4523-BD3B-F0C44C296CA8">
+            <inputEntry id="_19587616-E067-4DFF-99BA-59A7D173AB4C">
+              <text>&quot;Poor&quot;</text>
+            </inputEntry>
+            <inputEntry id="_B0FA4A09-34CC-4A1B-A01C-7EA2F477F33D">
+              <text>-</text>
+            </inputEntry>
+            <outputEntry id="_F4B0CBC7-6A4C-4A1C-8082-DCA86E4F2BBE">
+              <text>35</text>
+            </outputEntry>
+            <annotationEntry>
+              <text>// Your annotations here</text>
+            </annotationEntry>
+          </rule>
+          <rule id="_7D6AD529-585D-4B6F-B855-4E6DB2D4BD02">
+            <inputEntry id="_FF5E3A89-D947-4CB1-A15E-03E81557AE5A">
+              <text>&quot;Fair&quot;</text>
+            </inputEntry>
+            <inputEntry id="_2B21631A-FD6D-458F-9929-E91D8DEF3906">
+              <text>-</text>
+            </inputEntry>
+            <outputEntry id="_4AAC6D2A-F451-4CAA-AAE3-6BCECF569E79">
+              <text>25</text>
+            </outputEntry>
+            <annotationEntry>
+              <text></text>
+            </annotationEntry>
+          </rule>
+          <rule id="_945A5471-9F91-4751-9D96-74978F6FB12B">
+            <inputEntry id="_769B0DEC-9F09-4F8F-8333-8A09EB2A929F">
+              <text>&quot;Excellent&quot;</text>
+            </inputEntry>
+            <inputEntry id="_CF1D6265-14B3-4ABE-B262-5D8C7DC23ADB">
+              <text>-</text>
+            </inputEntry>
+            <outputEntry id="_6CFCB810-3A62-432D-BCCB-F2E1EC28602E">
+              <text>15</text>
+            </outputEntry>
+            <annotationEntry>
+              <text></text>
+            </annotationEntry>
+          </rule>
+          <rule id="_B5F84A2E-C0E0-4519-B4D2-B189EE5199F6">
+            <inputEntry id="_0A60CB1B-B641-4105-8941-87A41F61082C">
+              <text>-</text>
+            </inputEntry>
+            <inputEntry id="_C6A8F9A2-857F-48A7-AB70-F738A8FD0A75">
+              <text>&gt; 40</text>
+            </inputEntry>
+            <outputEntry id="_6D54764F-FAAC-4EA5-9AFA-E62149B4AD7B">
+              <text>35</text>
+            </outputEntry>
+            <annotationEntry>
+              <text></text>
+            </annotationEntry>
+          </rule>
+          <rule id="_72D20020-52A8-4F54-AFDC-9523546F2D6D">
+            <inputEntry id="_E8ACAA23-08E2-41F5-A2BB-E64DAF66EC00">
+              <text>-</text>
+            </inputEntry>
+            <inputEntry id="_EB4325E6-8887-4354-9826-F74F11F1E577">
+              <text>[20..40]</text>
+            </inputEntry>
+            <outputEntry id="_B88E036E-2B7D-4E49-AAEB-D1CA7D347897">
+              <text>25</text>
+            </outputEntry>
+            <annotationEntry>
+              <text></text>
+            </annotationEntry>
+          </rule>
+          <rule id="_654BBFBC-9B84-4BD8-9D0B-13E8DD1B9F5D">
+            <inputEntry id="_DCE17872-8248-482D-96D2-C20AB938ABAE">
+              <text>-</text>
+            </inputEntry>
+            <inputEntry id="_8F4B74F2-C84B-4B8E-A135-245474551E07">
+              <text>&lt; 20</text>
+            </inputEntry>
+            <outputEntry id="_1D97266B-E9F3-4488-920E-AA6622996A16">
+              <text>15
+</text>
+            </outputEntry>
+            <annotationEntry>
+              <text></text>
+            </annotationEntry>
+          </rule>
+        </decisionTable>
+      </else>
+    </conditional>
+  </decision>
+  <inputData name="World Region" id="_185E48A8-82B7-4E37-B1B8-EDE4A3665369">
+    <variable name="World Region" id="_030AB24B-B960-4BE0-B4A8-6B128D337656" typeRef="Region" />
+  </inputData>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_5E59BB13-A55B-4CCD-A809-5AF1453F9497" name="Default DRD" useAlternativeInputDataShape="false">
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_6296756B-FA04-4FF7-A57A-544032479953">
+            <kie:width>60</kie:width>
+            <kie:width>145</kie:width>
+            <kie:width>118</kie:width>
+            <kie:width>118</kie:width>
+            <kie:width>240</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_27AD330E-AE19-4C6A-957F-BEA0298BE91B">
+            <kie:width>120</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_9F210198-9DE3-4187-919C-0C0438B0329D">
+            <kie:width>60</kie:width>
+            <kie:width>145</kie:width>
+            <kie:width>118</kie:width>
+            <kie:width>118</kie:width>
+            <kie:width>240</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_61B65CB0-E875-402F-8523-D0B96842D149">
+            <kie:width>190</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_21462997-F64F-4B7F-ABC8-9E590D24792F">
+            <kie:width>190</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_CA44F978-C3A3-4D65-BABB-8BDA2FBB1074">
+            <kie:width>232</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_F0C607C4-3F4C-4DA8-977C-779D42CEEE40">
+            <kie:width>60</kie:width>
+            <kie:width>145</kie:width>
+            <kie:width>118</kie:width>
+            <kie:width>118</kie:width>
+            <kie:width>240</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_90551B34-27B5-4242-A806-6D29AFB6946A">
+            <kie:width>60</kie:width>
+            <kie:width>145</kie:width>
+            <kie:width>118</kie:width>
+            <kie:width>118</kie:width>
+            <kie:width>240</kie:width>
+          </kie:ComponentWidths>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="_A81B6612-69E6-4F16-9757-BF7B4F303F31" dmnElementRef="_D2C418A0-2BF8-4984-83C9-E53B9EF4EBA7" isCollapsed="false" isListedInputData="false">
+        <dc:Bounds x="100" y="340" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="_B56A8877-2ED9-4EC8-8892-85AC3E43EAFC" dmnElementRef="_7570C90B-8161-4F3B-B663-BDD72CEA6F69" isCollapsed="false" isListedInputData="false">
+        <dc:Bounds x="300" y="340" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="_AE60ECB8-640A-4386-9D92-C5050242BA46" dmnElementRef="_A1236581-4334-43F1-82A0-72CE204F07F9" isCollapsed="false" isListedInputData="false">
+        <dc:Bounds x="300" y="120" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="_9228E0BA-1798-4E1C-A6EA-D7E940BC3E4F" dmnElementRef="_185E48A8-82B7-4E37-B1B8-EDE4A3665369" isCollapsed="false" isListedInputData="false">
+        <dc:Bounds x="520" y="340" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="_FE8225AF-4FB3-422D-9E8F-2DBD28D699AE" dmnElementRef="_C77AE1D1-3A37-4598-9B3F-9B2E7C7AEC9A" sourceElement="_9228E0BA-1798-4E1C-A6EA-D7E940BC3E4F" targetElement="_AE60ECB8-640A-4386-9D92-C5050242BA46">
+        <di:waypoint x="600" y="380" />
+        <di:waypoint x="380" y="160" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="_B9D8954C-7C07-49D5-89C7-D5198C6307B8" dmnElementRef="_CE869C44-D297-459D-89EA-85E1081E20AE" sourceElement="_B56A8877-2ED9-4EC8-8892-85AC3E43EAFC" targetElement="_AE60ECB8-640A-4386-9D92-C5050242BA46">
+        <di:waypoint x="380" y="380" />
+        <di:waypoint x="380" y="160" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="_0FD7E7D3-3EDA-4C22-8C10-691C93CC2064" dmnElementRef="_322FD01A-A6F3-45F9-99E5-953D5FEFC105" sourceElement="_A81B6612-69E6-4F16-9757-BF7B4F303F31" targetElement="_AE60ECB8-640A-4386-9D92-C5050242BA46">
+        <di:waypoint x="180" y="380" />
+        <di:waypoint x="380" y="160" />
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>

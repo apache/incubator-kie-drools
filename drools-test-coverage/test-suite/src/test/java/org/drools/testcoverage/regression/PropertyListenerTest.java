@@ -23,15 +23,14 @@ import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.TestConstants;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.command.Command;
@@ -47,23 +46,16 @@ import static org.assertj.core.api.Assertions.assertThat;
  * https://bugzilla.redhat.com/show_bug.cgi?id=746887
  * https://issues.jboss.org/browse/JBRULES-3256
  */
-@RunWith(Parameterized.class)
 public class PropertyListenerTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(PropertyListenerTest.class);
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public PropertyListenerTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseConfigurations().stream();
     }
 
-    @Parameters
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseConfigurations();
-    }
-
-    @Test
-    public void runTest() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void runTest(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final KieServices kieServices = KieServices.Factory.get();
         final Resource drlResource = kieServices.getResources().newClassPathResource("propertyListenerTest.drl", getClass());
         final KieBase kieBase = KieBaseUtil.getKieBaseFromKieModuleFromResources(TestConstants.PACKAGE_REGRESSION,

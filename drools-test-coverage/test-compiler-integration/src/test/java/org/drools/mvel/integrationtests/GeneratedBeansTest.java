@@ -20,38 +20,30 @@ package org.drools.mvel.integrationtests;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class GeneratedBeansTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public GeneratedBeansTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
-    }
-
-    @Test
-    public void testGeneratedBeans1() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testGeneratedBeans1(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(this.getClass(), kieBaseTestConfiguration, "test_GeneratedBeans.drl");
 
         final FactType cheeseFact = kbase.getFactType("org.drools.generatedbeans", "Cheese");
@@ -92,8 +84,9 @@ public class GeneratedBeansTest {
         assertThat(result.get(1)).isEqualTo(person);
     }
 
-    @Test
-    public void testGeneratedBeans2() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testGeneratedBeans2(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(this.getClass(), kieBaseTestConfiguration, "test_GeneratedBeans2.drl");
         final FactType cheeseFact = kbase.getFactType("org.drools.generatedbeans", "Cheese");
         final Object cheese = cheeseFact.newInstance();
@@ -141,8 +134,9 @@ public class GeneratedBeansTest {
         assertThat(result.get(1)).isEqualTo(person);
     }
 
-    @Test
-    public void testGeneratedBeansSerializable() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testGeneratedBeansSerializable(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(this.getClass(), kieBaseTestConfiguration, "test_GeneratedBeansSerializable.drl");
 
         final FactType cheeseFact = kbase.getFactType("org.drools.generatedbeans", "Cheese");

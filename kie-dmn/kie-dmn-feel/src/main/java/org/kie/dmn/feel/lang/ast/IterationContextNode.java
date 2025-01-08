@@ -20,9 +20,13 @@ package org.kie.dmn.feel.lang.ast;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class IterationContextNode
         extends BaseNode {
+
+    private static final Logger LOG = LoggerFactory.getLogger(IterationContextNode.class);
 
     private NameDefNode name;
     private BaseNode    expression;
@@ -69,15 +73,18 @@ public class IterationContextNode
     }
 
     public String evaluateName(EvaluationContext ctx) {
+        LOG.trace("evaluateName {}", name);
         return this.name.evaluate(ctx);
     }
 
     @Override
     public Object evaluate(EvaluationContext ctx) {
+        LOG.trace("evaluate {}", expression);
         return expression != null ? expression.evaluate( ctx ) : null;
     }
 
     public Object evaluateRangeEnd(EvaluationContext ctx) {
+        LOG.trace("evaluateRangeEnd {}", rangeEndExpr);
         return rangeEndExpr != null ? rangeEndExpr.evaluate(ctx) : null;
     }
 

@@ -23,19 +23,13 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 import org.kie.dmn.feel.runtime.functions.FunctionTestUtil;
 
 class MeanFunctionTest {
 
-    private NNMeanFunction meanFunction;
-
-    @BeforeEach
-    void setUp() {
-        meanFunction = new NNMeanFunction();
-    }
+    private static final NNMeanFunction meanFunction = NNMeanFunction.INSTANCE;
 
     @Test
     void invokeNumberNull() {
@@ -91,7 +85,8 @@ class MeanFunctionTest {
 
     @Test
     void invokeListParamSupportedTypesWithNull() {
-        FunctionTestUtil.assertResult(meanFunction.invoke(Arrays.asList(20, 30, null, (long) 40, null, BigDecimal.TEN)), BigDecimal.valueOf(25));
+        FunctionTestUtil.assertResult(meanFunction.invoke(Arrays.asList(20, 30, null, (long) 40, null,
+                                                                        BigDecimal.TEN)), BigDecimal.valueOf(25));
     }
 
     @Test
@@ -104,7 +99,8 @@ class MeanFunctionTest {
     @Test
     void invokeListWithDoubles() {
         FunctionTestUtil.assertResult(meanFunction.invoke(Arrays.asList(10.0d, 20.0d, 30.0d)), BigDecimal.valueOf(20));
-        FunctionTestUtil.assertResult(meanFunction.invoke(Arrays.asList(10.2d, 20.2d, 30.2d)), BigDecimal.valueOf(20.2));
+        FunctionTestUtil.assertResult(meanFunction.invoke(Arrays.asList(10.2d, 20.2d, 30.2d)),
+                                      BigDecimal.valueOf(20.2));
     }
 
     @Test
@@ -139,5 +135,4 @@ class MeanFunctionTest {
     void invokeArrayParamSupportedTypesWithNull() {
         FunctionTestUtil.assertResult(meanFunction.invoke(new Object[]{20, 30, null, (long) 40, null, BigDecimal.TEN}), BigDecimal.valueOf(25));
     }
-
 }

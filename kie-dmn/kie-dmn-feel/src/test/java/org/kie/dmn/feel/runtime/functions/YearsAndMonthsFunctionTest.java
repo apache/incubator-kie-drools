@@ -25,19 +25,13 @@ import java.time.Year;
 import java.time.YearMonth;
 import java.time.temporal.Temporal;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
 class YearsAndMonthsFunctionTest {
 
-    private YearsAndMonthsFunction yamFunction;
-
-    @BeforeEach
-    void setUp() {
-        yamFunction = new YearsAndMonthsFunction();
-    }
+    private static final YearsAndMonthsFunction yamFunction = YearsAndMonthsFunction.INSTANCE;
 
     @Test
     void invokeNull() {
@@ -48,8 +42,10 @@ class YearsAndMonthsFunctionTest {
 
     @Test
     void invokeUnsupportedTemporal() {
-        FunctionTestUtil.assertResultError(yamFunction.invoke(Instant.EPOCH, Instant.EPOCH), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(yamFunction.invoke(LocalDate.of(2017, 1, 1), Instant.EPOCH), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(yamFunction.invoke(Instant.EPOCH, Instant.EPOCH),
+                                           InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(yamFunction.invoke(LocalDate.of(2017, 1, 1), Instant.EPOCH),
+                                           InvalidParametersEvent.class);
     }
 
     @Test

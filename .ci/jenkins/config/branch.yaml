@@ -77,7 +77,11 @@ buildchain_config:
     file_path: .ci/pull-request-config.yaml
     token_credentials_id: kie-ci3-token
 maven:
-  settings_file_id: kie-release-settings
+  settings:
+    nightly:
+      config_file_id: kie-nightly-settings
+    release:
+      config_file_id: kie-release-settings
   nexus:
     release_url: TO_DEFINE
     release_repository: TO_DEFINE
@@ -86,20 +90,30 @@ maven:
     build_promotion_profile_id: TO_DEFINE
   artifacts_repository: ''
   artifacts_upload_repository:
-    url: https://repository.apache.org/content/repositories/snapshots
-    creds_id: apache-nexus-kie-deploy-credentials
+    nightly:
+      url: https://repository.apache.org/content/repositories/snapshots
+      creds_id: apache-nexus-kie-deploy-credentials
+    release:
+      url: https://repository.apache.org/service/local/staging/deploy/maven2
+      creds_id: jenkins-deploy-to-nexus-staging
 cloud:
   image:
-    registry_credentials: tradisso_registry_token # TODO set to `kogito-quay-token`
-    registry: quay.io
-    namespace: tradisso
+    registry_user_credentials_id: DOCKERHUB_USER
+    registry_token_credentials_id: DOCKERHUB_TOKEN
+    registry: docker.io
+    namespace: apache
     latest_git_branch: main
+release:
+  gpg:
+    sign:
+      key-credentials-id: 'GPG_KEY_FILE'
+      passphrase-credentials-id: ''
 jenkins:
   email_creds_id: DROOLS_CI_NOTIFICATION_EMAILS
   agent:
     docker:
       builder:
-        image: quay.io/kiegroup/kogito-ci-build:main-latest
+        image: docker.io/apache/incubator-kie-kogito-ci-build:main-latest
         args: --privileged --group-add docker
   default_tools:
     jdk: jdk_17_latest

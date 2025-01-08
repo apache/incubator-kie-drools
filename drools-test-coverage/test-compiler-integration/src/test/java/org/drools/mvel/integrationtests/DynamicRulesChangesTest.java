@@ -28,6 +28,7 @@ import java.util.concurrent.CompletionService;
 import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.Stream;
 
 import org.kie.api.definition.rule.Rule;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
@@ -35,12 +36,11 @@ import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.command.Command;
 import org.kie.api.definition.KiePackage;
@@ -50,23 +50,16 @@ import org.kie.internal.command.CommandFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class DynamicRulesChangesTest {
 
     // Note: If PARALLEL_THREADS is set to 2 or larger, this test fails with the below Exception even before modifying this test to cover exec-model
     //   Exception in thread pool-7-thread-1: Exception executing consequence for rule "Raise the alarm when we have one or more fires" in defaultpkg:
     //   java.lang.IllegalArgumentException: Rule name 'Raise the alarm when we have one or more fires' does not exist in the Package 'defaultpkg'.
     
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
     private static KieBaseTestConfiguration staticKieBaseTestConfiguration;
 
-    public DynamicRulesChangesTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
-    }
-
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
     private static final int PARALLEL_THREADS = 1;
@@ -74,26 +67,31 @@ public class DynamicRulesChangesTest {
     private static InternalKnowledgeBase kbase;
     private ExecutorService executor;
 
-    @Before
-    public void setUp() throws Exception {
+    public void setUp(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         staticKieBaseTestConfiguration = kieBaseTestConfiguration;
         executor = Executors.newFixedThreadPool(PARALLEL_THREADS);
         kbase = KnowledgeBaseFactory.newKnowledgeBase();
         addRule("raiseAlarm");
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         executor.shutdownNow();
     }
 
-    @Test(timeout=10000)
-    public void testConcurrentRuleAdditions() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(10000)
+    public void testConcurrentRuleAdditions(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
+        setUp(kieBaseTestConfiguration);
         parallelExecute(RulesExecutor.getSolvers());
     }
 
-    @Test(timeout=10000)
-    public void testBatchRuleAdditions() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(10000)
+    public void testBatchRuleAdditions(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
+        setUp(kieBaseTestConfiguration);
         parallelExecute(BatchRulesExecutor.getSolvers());
     }
 

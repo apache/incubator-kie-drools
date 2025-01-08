@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -30,12 +30,11 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalAmount;
 import java.time.temporal.TemporalQueries;
-import java.util.Arrays;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.feel.runtime.custom.ZoneTime.ZONED_OFFSET_WITH_SECONDS;
 import static org.kie.dmn.feel.runtime.custom.ZoneTime.ZONED_OFFSET_WITHOUT_SECONDS;
 
@@ -59,29 +58,29 @@ class ZoneTimeTest {
     @Test
     void of() {
         ZoneTime retrieved = ZoneTime.of(localTime, zoneId, true);
-        assertNotNull(retrieved);
-        assertEquals(offsetTime, retrieved.getOffsetTime());
-        assertEquals(zoneId, retrieved.getZoneId());
+        assertThat(retrieved).isNotNull();
+        assertThat(retrieved.getOffsetTime()).isEqualTo(offsetTime);
+        assertThat(retrieved.getZoneId()).isEqualTo(zoneId);
     }
 
 
     @Test
     void getTimezone() {
-        assertEquals(REFERENCED_ZONE, zoneTime.getTimezone());
+        assertThat(zoneTime.getTimezone()).isEqualTo(REFERENCED_ZONE);
     }
 
     @Test
     void compareTo() {
         ZoneTime toCompare = ZoneTime.of(DateTimeFormatter.ISO_TIME.parse("09:34:31", LocalTime::from), zoneId, false);
         OffsetTime comparison = toCompare.getOffsetTime();
-        assertEquals(offsetTime.compareTo(comparison), zoneTime.compareTo(toCompare));
+        assertThat(zoneTime.compareTo(toCompare)).isEqualTo(offsetTime.compareTo(comparison));
 
     }
 
     @Test
     void withTemporalField() {
         ZoneTime expected = new ZoneTime(offsetTime.with(ChronoField.HOUR_OF_DAY, 3), zoneId, false);
-        assertEquals(expected, zoneTime.with(ChronoField.HOUR_OF_DAY, 3));
+        assertThat(zoneTime.with(ChronoField.HOUR_OF_DAY, 3)).isEqualTo(expected);
     }
 
     @Test
@@ -89,37 +88,37 @@ class ZoneTimeTest {
         TemporalAdjuster adjuster = ZoneTime.of(DateTimeFormatter.ISO_TIME.parse("09:34:31", LocalTime::from), zoneId
                 , false);
         ZoneTime expected = new ZoneTime(offsetTime.with(adjuster), zoneId, false);
-        assertEquals(expected, zoneTime.with(adjuster));
+        assertThat(zoneTime.with(adjuster)).isEqualTo(expected);
         adjuster = DateTimeFormatter.ISO_TIME.parse("09:34:31", LocalTime::from );
         expected = new ZoneTime(offsetTime.with(adjuster), zoneId, false);
-        assertEquals(expected, zoneTime.with(adjuster));
+        assertThat(zoneTime.with(adjuster)).isEqualTo(expected);
     }
 
 
     @Test
     void plusLong() {
         ZoneTime expected = new ZoneTime(offsetTime.plus(3, ChronoUnit.HOURS), zoneId, false);
-        assertEquals(expected, zoneTime.plus(3, ChronoUnit.HOURS));
+        assertThat(zoneTime.plus(3, ChronoUnit.HOURS)).isEqualTo(expected);
     }
 
     @Test
     void plusTemporalAmount() {
         TemporalAmount amount = Duration.of(23, ChronoUnit.MINUTES);
         ZoneTime expected = new ZoneTime(offsetTime.plus(amount), zoneId, false);
-        assertEquals(expected, zoneTime.plus(amount));
+        assertThat(zoneTime.plus(amount)).isEqualTo(expected);
     }
 
     @Test
     void minusLong() {
         ZoneTime expected = new ZoneTime(offsetTime.minus(3, ChronoUnit.HOURS), zoneId, false);
-        assertEquals(expected, zoneTime.minus(3, ChronoUnit.HOURS));
+        assertThat(zoneTime.minus(3, ChronoUnit.HOURS)).isEqualTo(expected);
     }
 
     @Test
     void minusTemporalAmount() {
         TemporalAmount amount = Duration.of(23, ChronoUnit.MINUTES);
         ZoneTime expected = new ZoneTime(offsetTime.minus(amount), zoneId, false);
-        assertEquals(expected, zoneTime.minus(amount));
+        assertThat(zoneTime.minus(amount)).isEqualTo(expected);
     }
 
     @Test
@@ -128,63 +127,59 @@ class ZoneTimeTest {
                                             false);
         long expected = offsetTime.until(endExclusive, ChronoUnit.SECONDS);
         long retrieved = zoneTime.until(endExclusive, ChronoUnit.SECONDS);
-        assertEquals(expected, retrieved);
+        assertThat(retrieved).isEqualTo(expected);
     }
 
     @Test
     void isSupportedTemporalUnit() {
-        for (ChronoUnit unit : ChronoUnit.values()) {
-            assertEquals(offsetTime.isSupported(unit), zoneTime.isSupported(unit));
-        }
+    	assertThat(ChronoUnit.values()).allMatch(unit -> zoneTime.isSupported(unit) == offsetTime.isSupported(unit));
     }
 
     @Test
     void isSupportedTemporalField() {
-        for (ChronoField field : ChronoField.values()) {
-            assertEquals(offsetTime.isSupported(field), zoneTime.isSupported(field));
-        }
+    	assertThat(ChronoField.values()).allMatch(field -> zoneTime.isSupported(field) == offsetTime.isSupported(field));
     }
 
     @Test
     void getLong() {
-        Arrays.stream(ChronoField.values()).filter(offsetTime::isSupported)
-                .forEach(field -> assertEquals(offsetTime.getLong(field), zoneTime.getLong(field)));
+        assertThat(ChronoField.values()).filteredOn(offsetTime::isSupported)
+                .allMatch(field -> offsetTime.getLong(field) == (zoneTime.getLong(field)));
     }
 
     @Test
     void adjustInto() {
         ZoneTime temporal = ZoneTime.of(DateTimeFormatter.ISO_TIME.parse("09:34:31", LocalTime::from), zoneId, false);
-        assertEquals(offsetTime.adjustInto(temporal), zoneTime.adjustInto(temporal));
+        assertThat(zoneTime.adjustInto(temporal)).isEqualTo(offsetTime.adjustInto(temporal));
     }
 
     @Test
     void query() {
-        assertEquals(zoneId, zoneTime.query(TemporalQueries.zoneId()));
-        assertEquals(zoneId, zoneTime.query(TemporalQueries.zone()));
-        assertEquals(offsetTime.query(TemporalQueries.localTime()), zoneTime.query(TemporalQueries.localTime()));
-        assertEquals(offsetTime.query(TemporalQueries.offset()), zoneTime.query(TemporalQueries.offset()));
+        assertThat(zoneTime.query(TemporalQueries.zoneId())).isEqualTo(zoneId);
+        assertThat(zoneTime.query(TemporalQueries.zone())).isEqualTo(zoneId);
+        assertThat(zoneTime.query(TemporalQueries.localTime())).isEqualTo(offsetTime.query(TemporalQueries.localTime()));
+        assertThat(zoneTime.query(TemporalQueries.offset())).isEqualTo(offsetTime.query(TemporalQueries.offset()));
     }
 
     @Test
     void range() {
-        Arrays.stream(ChronoField.values()).filter(offsetTime::isSupported)
-                .forEach(field -> assertEquals(offsetTime.range(field), zoneTime.range(field)));
+        assertThat(ChronoField.values()).filteredOn(offsetTime::isSupported)
+                .allMatch(field -> offsetTime.range(field).equals(zoneTime.range(field)));
     }
 
     @Test
     void get() {
-        Arrays.stream(ChronoField.values())
-                .filter(offsetTime::isSupported)
-                .filter(field -> field != ChronoField.NANO_OF_DAY && field != ChronoField.MICRO_OF_DAY) // Unsupported by offsettime.get()
-                .forEach(field -> assertEquals(offsetTime.get(field), zoneTime.get(field)));
+    	assertThat(ChronoField.values())
+                .filteredOn(offsetTime::isSupported)
+                .filteredOn(field -> field != ChronoField.NANO_OF_DAY && field != ChronoField.MICRO_OF_DAY) // Unsupported by offsettime.get()
+                .allMatch(field -> offsetTime.get(field) == zoneTime.get(field));
     }
 
     @Test
     void testEquals() {
         ZoneTime toCompare = ZoneTime.of(DateTimeFormatter.ISO_TIME.parse("09:34:31", LocalTime::from), zoneId, false);
-        assertFalse(zoneTime.equals(toCompare));
+        assertThat(toCompare).isNotEqualTo(zoneTime);
         toCompare = ZoneTime.of(localTime, zoneId, false);
-        assertTrue(zoneTime.equals(toCompare));
+        assertThat(toCompare).isEqualTo(zoneTime);
     }
 
     @Test
@@ -192,7 +187,7 @@ class ZoneTimeTest {
         String timeString = "09:34";
         ZoneTime toFormat = ZoneTime.of(DateTimeFormatter.ISO_TIME.parse(timeString, LocalTime::from), zoneId, false);
         String expected = String.format("%s@%s", timeString, REFERENCED_ZONE);
-        assertEquals(expected, ZONED_OFFSET_WITHOUT_SECONDS.format(toFormat));
+        assertThat(ZONED_OFFSET_WITHOUT_SECONDS.format(toFormat)).isEqualTo(expected);
     }
 
     @Test
@@ -200,12 +195,12 @@ class ZoneTimeTest {
         String timeString = "09:34:34";
         ZoneTime toFormat = ZoneTime.of(DateTimeFormatter.ISO_TIME.parse(timeString, LocalTime::from), zoneId, true);
         String expected = String.format("%s@%s", timeString, REFERENCED_ZONE);
-        assertEquals(expected, ZONED_OFFSET_WITH_SECONDS.format(toFormat));
+        assertThat(ZONED_OFFSET_WITH_SECONDS.format(toFormat)).isEqualTo(expected);
 
         timeString = "09:34:00";
         toFormat = ZoneTime.of(DateTimeFormatter.ISO_TIME.parse(timeString, LocalTime::from), zoneId, true);
         expected = String.format("%s@%s", timeString, REFERENCED_ZONE);
-        assertEquals(expected, ZONED_OFFSET_WITH_SECONDS.format(toFormat));
+        assertThat(ZONED_OFFSET_WITH_SECONDS.format(toFormat)).isEqualTo(expected);
     }
 
     @Test
@@ -213,7 +208,7 @@ class ZoneTimeTest {
         String timeString = "09:34";
         ZoneTime toFormat = ZoneTime.of(DateTimeFormatter.ISO_TIME.parse(timeString, LocalTime::from), zoneId, false);
         String expected = String.format("%s@%s", timeString, REFERENCED_ZONE);
-        assertEquals(expected, toFormat.format());
+        assertThat(toFormat.format()).isEqualTo(expected);
     }
 
     @Test
@@ -221,12 +216,12 @@ class ZoneTimeTest {
         String timeString = "09:34:00";
         ZoneTime toFormat = ZoneTime.of(DateTimeFormatter.ISO_TIME.parse(timeString, LocalTime::from), zoneId, true);
         String expected = String.format("%s@%s", timeString, REFERENCED_ZONE);
-        assertEquals(expected, toFormat.format());
+        assertThat(toFormat.format()).isEqualTo(expected);
 
         timeString = "09:34:34";
         toFormat = ZoneTime.of(DateTimeFormatter.ISO_TIME.parse(timeString, LocalTime::from), zoneId, true);
         expected = String.format("%s@%s", timeString, REFERENCED_ZONE);
-        assertEquals(expected, toFormat.format());
+        assertThat(toFormat.format()).isEqualTo(expected);
     }
 
     private static OffsetTime getCorrectOffsetTime() {

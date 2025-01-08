@@ -70,7 +70,7 @@ public class TimeFunction
     private static final BigDecimal NANO_MULT = BigDecimal.valueOf( 1000000000 );
 
 
-    public TimeFunction() {
+    protected TimeFunction() {
         super(FEELConversionFunctionNames.TIME);
     }
 
@@ -100,10 +100,6 @@ public class TimeFunction
         } catch (DateTimeException e) {
             return manageDateTimeException(e, val);
         }
-    }
-
-    public FEELFnResult<TemporalAccessor> manageDateTimeException(DateTimeException e, String val) {
-        return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "from", e));
     }
 
     public FEELFnResult<TemporalAccessor> invoke(
@@ -174,9 +170,8 @@ public class TimeFunction
         }
     }
 
-    @Override
-    public Object defaultValue() {
-        return OffsetTime.of(0, 0, 0, 0, ZoneOffset.ofHoursMinutes(0, 0));
+    protected FEELFnResult<TemporalAccessor> manageDateTimeException(DateTimeException e, String val) {
+        return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "from", e));
     }
 
 }

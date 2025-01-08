@@ -26,7 +26,7 @@ import java.io.ObjectOutputStream;
 import java.nio.charset.StandardCharsets;
 
 import org.drools.io.ByteArrayResource;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

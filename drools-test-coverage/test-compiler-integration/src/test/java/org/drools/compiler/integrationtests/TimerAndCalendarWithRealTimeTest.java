@@ -19,11 +19,11 @@
 package org.drools.compiler.integrationtests;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
 
 import org.drools.kiesession.agenda.DefaultAgenda;
 import org.drools.testcoverage.common.model.Alarm;
@@ -32,11 +32,11 @@ import org.drools.testcoverage.common.model.Person;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieSessionTestConfiguration;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.After;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
@@ -45,31 +45,26 @@ import org.kie.api.runtime.conf.TimedRuleExecutionOption;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 
-@RunWith(Parameterized.class)
 public class TimerAndCalendarWithRealTimeTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
     private KieSession ksession;
     private KieBase kbase;
 
-    public TimerAndCalendarWithRealTimeTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseStreamConfigurations(true).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseStreamConfigurations(true);
-    }
-
-    @After
+    @AfterEach
     public void after() throws Exception {
         if (ksession != null) {
             ksession.dispose();
         }
     }
 
-    @Test(timeout = 15000)
-    public void testDuration() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    @Timeout(10000)
+    public void testDuration(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         final String drl = "package org.drools.compiler.test;\n" +
                            "\n" +
                            "import " + Cheese.class.getCanonicalName() + ";\n" +
@@ -103,8 +98,10 @@ public class TimerAndCalendarWithRealTimeTest {
         assertThat(list.size()).isEqualTo(1);
     }
 
-    @Test(timeout = 10000)
-    public void testDurationWithNoLoop() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    @Timeout(10000)
+    public void testDurationWithNoLoop(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         final String drl = "package org.drools.compiler.test;\n" +
                            "\n" +
                            "import " + Cheese.class.getCanonicalName() + ";\n" +
@@ -141,8 +138,10 @@ public class TimerAndCalendarWithRealTimeTest {
         assertThat(list.size()).isEqualTo(1);
     }
 
-    @Test(timeout = 10000)
-    public void testFireRuleAfterDuration() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    @Timeout(10000)
+    public void testFireRuleAfterDuration(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         final String drl = "package org.drools.compiler.test;\n" +
                            "import " + Cheese.class.getCanonicalName() + ";\n" +
                            "global java.util.List list;\n" +
@@ -184,8 +183,10 @@ public class TimerAndCalendarWithRealTimeTest {
         assertThat(list.size()).isEqualTo(2);
     }
 
-    @Test(timeout = 10000)
-    public void testTimerWithNot() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    @Timeout(10000)
+    public void testTimerWithNot(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
 
         final KieBase kbase = KieBaseUtil
             .getKieBaseFromClasspathResources(
@@ -199,8 +200,10 @@ public class TimerAndCalendarWithRealTimeTest {
         assertThat(ksession.getFactCount()).isEqualTo(2);
     }
 
-    @Test(timeout = 10000)
-    public void testTimerRemoval() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    @Timeout(10000)
+    public void testTimerRemoval(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "package org.drools.compiler.test\n" +
                            "import " + TimeUnit.class.getName() + "\n" +
                            "global java.util.List list \n" +
@@ -231,8 +234,9 @@ public class TimerAndCalendarWithRealTimeTest {
         await().until(ruleIsRemoved());
     }
 
-    @Test
-    public void testIntervalRuleInsertion() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testIntervalRuleInsertion(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         // DROOLS-620
         // Does not fail when using pseudo clock due to the subsequent call to fireAllRules
         final String drl =

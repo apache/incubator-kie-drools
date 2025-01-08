@@ -25,11 +25,11 @@ import java.nio.file.Paths;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator.Feature;
-import org.assertj.core.api.Assertions;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.parser.DrlParser;
 import org.drools.drlonyaml.model.DrlPackage;
-import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,77 +46,30 @@ public class YAMLtoDRLTest {
         mapper = new ObjectMapper(yamlFactory);
     }
     
-    private void assertDumpingYAMLtoDRLisValid(String filename) {
-        try {
-            final String yamlText = Files.readString(Paths.get(YAMLtoDRLTest.class.getResource(filename).toURI()));
-            assertThat(yamlText).as("Failed to read test resource").isNotNull();
-            
-            DrlPackage readValue = mapper.readValue(yamlText, DrlPackage.class);
-            assertThat(readValue).as("Failed to parse YAML as model").isNotNull();
-            
-            final String drlText = YAMLtoDrlDumper.dumpDRL(readValue);
-            LOG.debug(drlText);
-            assertThat(drlText).as("result of DRL dumper shall not be null or empty").isNotNull().isNotEmpty();
-            
-            PackageDescr parseResult = drlParser.parse(new StringReader(drlText));
-            assertThat(parseResult).as("The result of DRL dumper must be syntactically valid DRL").isNotNull();
-        } catch (Exception e) {
-            Assertions.fail("Failed to generate a valid DRL while processing YAML", e);
-        }
+    @ParameterizedTest
+    @ValueSource(strings = {"/smoketests/yaml2.yml",
+            "/smoketests/yaml3.yml",
+            "/smoketests/yaml4.yml",
+            "/smoketests/yaml5.yml",
+            "/smoketests/yaml6.yml",
+            "/smoketests/yaml7.yml",
+            "/smoketests/yaml8.yml",
+            "/smoketests/yaml9.yml",
+            "/smoketests/yaml10.yml",
+            "/smoketests/yaml11.yml",
+            "/smoketests/ruleunit.yml"})
+    public void smokeTestFromYAML2(String filename) throws Exception {
+        final String yamlText = Files.readString(Paths.get(YAMLtoDRLTest.class.getResource(filename).toURI()));
+        assertThat(yamlText).as("Failed to read test resource").isNotNull();
+        
+        DrlPackage readValue = mapper.readValue(yamlText, DrlPackage.class);
+        assertThat(readValue).as("Failed to parse YAML as model").isNotNull();
+        
+        final String drlText = YAMLtoDrlDumper.dumpDRL(readValue);
+        LOG.debug(drlText);
+        assertThat(drlText).as("result of DRL dumper shall not be null or empty").isNotNull().isNotEmpty();
+        
+        PackageDescr parseResult = drlParser.parse(new StringReader(drlText));
+        assertThat(parseResult).as("The result of DRL dumper must be syntactically valid DRL").isNotNull();
     }
-    
-    @Test
-    public void smokeTestFromYAML2() {
-        assertDumpingYAMLtoDRLisValid("/smoketests/yaml2.yml");
-    }
-    
-    @Test
-    public void smokeTestFromYAML3() {
-        assertDumpingYAMLtoDRLisValid("/smoketests/yaml3.yml");
-    }    
-    
-    @Test
-    public void smokeTestFromYAML4() {
-        assertDumpingYAMLtoDRLisValid("/smoketests/yaml4.yml");
-    }
-    
-    @Test
-    public void smokeTestFromYAML5() {
-        assertDumpingYAMLtoDRLisValid("/smoketests/yaml5.yml");
-    }
-    
-    @Test
-    public void smokeTestFromYAML6() {
-        assertDumpingYAMLtoDRLisValid("/smoketests/yaml6.yml");
-    }
-    
-    @Test
-    public void smokeTestFromYAML7() {
-        assertDumpingYAMLtoDRLisValid("/smoketests/yaml7.yml");
-    }
-    
-    @Test
-    public void smokeTestFromYAML8() {
-        assertDumpingYAMLtoDRLisValid("/smoketests/yaml8.yml");
-    }
-    
-    @Test
-    public void smokeTestFromYAML9() {
-        assertDumpingYAMLtoDRLisValid("/smoketests/yaml9.yml");
-    }
-    
-    @Test
-    public void smokeTestFromYAML10() {
-        assertDumpingYAMLtoDRLisValid("/smoketests/yaml10.yml");
-    }
-    
-    @Test
-    public void smokeTestFromYAML11() {
-        assertDumpingYAMLtoDRLisValid("/smoketests/yaml11.yml");
-    }
-
-    @Test
-    public void smokeTestRuleUnit() {
-        assertDumpingYAMLtoDRLisValid("/smoketests/ruleunit.yml");
-    }
-}
+ }

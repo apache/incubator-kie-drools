@@ -25,7 +25,7 @@ import org.drools.commands.fluent.Batch;
 import org.drools.commands.fluent.BatchImpl;
 import org.drools.commands.fluent.InternalExecutable;
 import org.drools.commands.impl.NotTransactionalCommand;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
 

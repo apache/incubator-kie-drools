@@ -32,7 +32,7 @@ public class ListContainsFunction
 
     public static final ListContainsFunction INSTANCE = new ListContainsFunction();
 
-    public ListContainsFunction() {
+    private ListContainsFunction() {
         super( "list contains" );
     }
 

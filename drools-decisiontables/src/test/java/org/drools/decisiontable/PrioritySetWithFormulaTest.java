@@ -19,8 +19,8 @@
 package org.drools.decisiontable;
 
 import org.drools.base.definitions.rule.impl.RuleImpl;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -33,7 +33,7 @@ public class PrioritySetWithFormulaTest {
 
     private KieBase kieBase;
 
-    @Before
+    @BeforeEach
     public void init() {
 
         final KieServices ks = KieServices.Factory.get();

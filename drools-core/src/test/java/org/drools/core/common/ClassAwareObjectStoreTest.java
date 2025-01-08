@@ -26,46 +26,49 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.stream.Stream;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class ClassAwareObjectStoreTest {
 
-    private final ClassAwareObjectStore underTest;
 
-    @Test
-    public void iterateObjectsReturnsObjectsOfAllTypes() throws Exception {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void iterateObjectsReturnsObjectsOfAllTypes(ClassAwareObjectStore underTest) throws Exception {
         String aStringValue = "a string";
         BigDecimal bigDecimalValue = new BigDecimal("1");
 
-        insertObjectWithFactHandle(aStringValue);
-        insertObjectWithFactHandle(bigDecimalValue);
+        underTest.addHandle(handleFor(aStringValue), aStringValue);
+        underTest.addHandle(handleFor(bigDecimalValue), bigDecimalValue);
 
         Collection<Object> result = collect(underTest.iterateObjects());
         assertThat(result).hasSize(2);
     }
 
-    @Test
-    public void iterateByClassFiltersByClass() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void iterateByClassFiltersByClass(ClassAwareObjectStore underTest) {
         SimpleClass object = new SimpleClass();
 
-        insertObjectWithFactHandle("some string");
-        insertObjectWithFactHandle(object);
+        underTest.addHandle(handleFor("some string"), "some string");
+        underTest.addHandle(handleFor(object), object);
         Collection<Object> results = collect(underTest.iterateObjects(SimpleClass.class));
 
         assertThat(results).hasSize(1);
         assertThat(results).contains(object);
     }
 
-    @Test
-    public void queryBySuperTypeFindsSubType() throws Exception {
-        insertObjectWithFactHandle(new SubClass());
-        insertObjectWithFactHandle(new SuperClass());
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void queryBySuperTypeFindsSubType(ClassAwareObjectStore underTest) throws Exception {
+        Object objectToInsert = new SubClass();
+		underTest.addHandle(handleFor(objectToInsert), objectToInsert);
+		Object objectToInsert1 = new SuperClass();
+        underTest.addHandle(handleFor(objectToInsert1), objectToInsert1);
 
         Collection<Object> result = collect(underTest.iterateObjects(SuperClass.class));
 
@@ -74,10 +77,13 @@ public class ClassAwareObjectStoreTest {
         assertThat(result).hasAtLeastOneElementOfType(SuperClass.class);
     }
 
-    @Test
-    public void queryBySubtypeDoesNotReturnSuperType() throws Exception {
-        insertObjectWithFactHandle(new SubClass());
-        insertObjectWithFactHandle(new SuperClass());
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void queryBySubtypeDoesNotReturnSuperType(ClassAwareObjectStore underTest) throws Exception {
+        Object objectToInsert = new SubClass();
+		underTest.addHandle(handleFor(objectToInsert), objectToInsert);
+		Object objectToInsert1 = new SuperClass();
+        underTest.addHandle(handleFor(objectToInsert1), objectToInsert1);
 
         Collection<Object> result = collect(underTest.iterateObjects(SubClass.class));
 
@@ -88,11 +94,14 @@ public class ClassAwareObjectStoreTest {
     /**
      * Should have identical results to {@link #queryBySuperTypeFindsSubType()}
      */
-    @Test
-    public void queryBySubTypeDoesNotPreventInsertionsBeingPropogatedToSuperTypeQueries() throws Exception {
-        insertObjectWithFactHandle(new SuperClass());
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void queryBySubTypeDoesNotPreventInsertionsBeingPropogatedToSuperTypeQueries(ClassAwareObjectStore underTest) throws Exception {
+        Object objectToInsert = new SuperClass();
+		underTest.addHandle(handleFor(objectToInsert), objectToInsert);
         collect(underTest.iterateObjects(SubClass.class));
-        insertObjectWithFactHandle(new SubClass());
+		Object objectToInsert1 = new SubClass();
+        underTest.addHandle(handleFor(objectToInsert1), objectToInsert1);
 
         Collection<Object> result = collect(underTest.iterateObjects(SuperClass.class));
 
@@ -101,9 +110,11 @@ public class ClassAwareObjectStoreTest {
         assertThat(result).hasAtLeastOneElementOfType(SuperClass.class);
     }
 
-    @Test
-    public void queryBySuperTypeCanFindSubTypeWhenNoSuperTypeInstancesAreInStore() throws Exception {
-        insertObjectWithFactHandle(new SubClass());
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void queryBySuperTypeCanFindSubTypeWhenNoSuperTypeInstancesAreInStore(ClassAwareObjectStore underTest) throws Exception {
+        Object objectToInsert = new SubClass();
+		underTest.addHandle(handleFor(objectToInsert), objectToInsert);
 
         Collection<Object> result = collect(underTest.iterateObjects(SuperClass.class));
 
@@ -111,10 +122,13 @@ public class ClassAwareObjectStoreTest {
         assertThat(result).hasAtLeastOneElementOfType(SubClass.class);
     }
 
-    @Test
-    public void isOkayToReinsertSameTypeThenQuery() throws Exception {
-        insertObjectWithFactHandle(new SubClass());
-        insertObjectWithFactHandle(new SubClass());
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void isOkayToReinsertSameTypeThenQuery(ClassAwareObjectStore underTest) throws Exception {
+        Object objectToInsert = new SubClass();
+		underTest.addHandle(handleFor(objectToInsert), objectToInsert);
+		Object objectToInsert1 = new SubClass();
+        underTest.addHandle(handleFor(objectToInsert1), objectToInsert1);
 
 
         Collection<Object> result = collect(underTest.iterateObjects(SuperClass.class));
@@ -124,12 +138,15 @@ public class ClassAwareObjectStoreTest {
         assertThat(new HashSet<Object>(result)).hasSize(2);
     }
 
-    @Test
-    public void onceSuperClassIsSetUpForReadingItCanBecomeSetUpForWritingWithoutGettingDuplicateQueryReturns() throws Exception {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void onceSuperClassIsSetUpForReadingItCanBecomeSetUpForWritingWithoutGettingDuplicateQueryReturns(ClassAwareObjectStore underTest) throws Exception {
         assertThat(collect(underTest.iterateObjects(SuperClass.class)).isEmpty()).isTrue();
+		Object objectToInsert = new SubClass();
 
-        insertObjectWithFactHandle(new SubClass());
-        insertObjectWithFactHandle(new SuperClass());
+        underTest.addHandle(handleFor(objectToInsert), objectToInsert);
+		Object objectToInsert1 = new SuperClass();
+        underTest.addHandle(handleFor(objectToInsert1), objectToInsert1);
 
 
         Collection<Object> result = collect(underTest.iterateObjects(SuperClass.class));
@@ -139,9 +156,11 @@ public class ClassAwareObjectStoreTest {
         assertThat(new HashSet<Object>(result)).hasSize(2);
     }
 
-    @Test
-    public void clearRemovesInsertedObjects() throws Exception {
-        insertObjectWithFactHandle(new SimpleClass());
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void clearRemovesInsertedObjects(ClassAwareObjectStore underTest) throws Exception {
+        Object objectToInsert = new SimpleClass();
+		underTest.addHandle(handleFor(objectToInsert), objectToInsert);
         assertThat(collect(underTest.iterateObjects())).hasSize(1);
 
         underTest.clear();
@@ -149,10 +168,13 @@ public class ClassAwareObjectStoreTest {
         assertThat(collect(underTest.iterateObjects())).hasSize(0);
     }
 
-    @Test
-    public void canIterateOverObjectsUsingCustomFilter() throws Exception {
-        insertObjectWithFactHandle(new SuperClass());
-        insertObjectWithFactHandle(new SubClass());
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void canIterateOverObjectsUsingCustomFilter(ClassAwareObjectStore underTest) throws Exception {
+        Object objectToInsert = new SuperClass();
+		underTest.addHandle(handleFor(objectToInsert), objectToInsert);
+		Object objectToInsert1 = new SubClass();
+        underTest.addHandle(handleFor(objectToInsert1), objectToInsert1);
 
         Collection<Object> result = collect(underTest.iterateObjects(SubClass.class::isInstance));
 
@@ -160,23 +182,18 @@ public class ClassAwareObjectStoreTest {
         assertThat(result).hasAtLeastOneElementOfType(SubClass.class);
     }
 
-    @Test
-    public void iteratingOverFactHandlesHasSameNumberOfResultsAsIteratingOverObjects() throws Exception {
-        insertObjectWithFactHandle(new SuperClass());
-        insertObjectWithFactHandle(new SubClass());
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void iteratingOverFactHandlesHasSameNumberOfResultsAsIteratingOverObjects(ClassAwareObjectStore underTest) throws Exception {
+        Object objectToInsert = new SuperClass();
+		underTest.addHandle(handleFor(objectToInsert), objectToInsert);
+		Object objectToInsert1 = new SubClass();
+        underTest.addHandle(handleFor(objectToInsert1), objectToInsert1);
 
         assertThat(collect(underTest.iterateFactHandles(SubClass.class))).hasSize(1);
         assertThat(collect(underTest.iterateFactHandles(SuperClass.class))).hasSize(2);
     }
 
-
-    private void insertObjectWithFactHandle(Object objectToInsert) {
-        underTest.addHandle(handleFor(objectToInsert), objectToInsert);
-    }
-
-    public ClassAwareObjectStore getUnderTest() {
-        return underTest;
-    }
 
     private static <T> Collection<T> collect(Iterator<T> objects) {
         List<T> result = new ArrayList<T>();
@@ -185,17 +202,10 @@ public class ClassAwareObjectStoreTest {
         }
         return result;
     }
-
-    public ClassAwareObjectStoreTest(boolean isEqualityBehaviour) {
-        underTest = new ClassAwareObjectStore(isEqualityBehaviour, new ReentrantLock());
-    }
-
-    @Parameterized.Parameters
-    public static Collection<Object[]> ruleBaseConfigurations() {
-        List<Object[]> configurations = new ArrayList<Object[]>(2);
-        configurations.add(new Object[]{true});
-        configurations.add(new Object[]{false});
-        return configurations;
+    
+    public static Stream<ClassAwareObjectStore> parameters() {
+    	return Stream.of(new ClassAwareObjectStore(true, new ReentrantLock()), 
+    			new ClassAwareObjectStore(false, new ReentrantLock()));
     }
 
     private static final AtomicInteger factCounter = new AtomicInteger(0);

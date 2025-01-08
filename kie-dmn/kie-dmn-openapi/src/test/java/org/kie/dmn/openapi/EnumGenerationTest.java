@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -60,7 +60,8 @@ class EnumGenerationTest extends BaseDMNOASTest {
         ArrayNode arrayNode = (ArrayNode) node.get("enum");
         assertThat(arrayNode).isNotNull();
         List<BigDecimal> expected = Arrays.asList(BigDecimal.ZERO, BigDecimal.ONE, BigDecimal.valueOf(2));
-        arrayNode.iterator().forEachRemaining(e -> {
+        
+        assertThat(arrayNode).allSatisfy(e -> {
             assertThat(e).isInstanceOf(DecimalNode.class);
             assertThat(expected).contains(e.decimalValue());
         });
@@ -75,7 +76,7 @@ class EnumGenerationTest extends BaseDMNOASTest {
         ArrayNode arrayNode = (ArrayNode) node.get("enum");
         assertThat(arrayNode).isNotNull();
         List<String> expected = Arrays.asList("a", "b", "c");
-        arrayNode.iterator().forEachRemaining(e -> {
+        assertThat(arrayNode).allSatisfy(e -> {
             assertThat(e).isInstanceOf(TextNode.class);
             assertThat(expected).contains(e.textValue());
         });
@@ -90,7 +91,7 @@ class EnumGenerationTest extends BaseDMNOASTest {
         ArrayNode arrayNode = (ArrayNode) node.get("enum");
         assertThat(arrayNode).isNotNull();
         List<String> expected = Arrays.asList("a", "b", "c", null);
-        arrayNode.iterator().forEachRemaining(e -> {
+        assertThat(arrayNode).allSatisfy(e -> {
             assertThat(expected).contains(e.textValue());
         });
         assertThat(node.get("nullable")).isNotNull().isInstanceOf(BooleanNode.class);
@@ -104,7 +105,7 @@ class EnumGenerationTest extends BaseDMNOASTest {
         ArrayNode arrayNode = (ArrayNode) node.get("enum");
         assertThat(arrayNode).isNotNull();
         List<BigDecimal> expected = Arrays.asList(BigDecimal.ZERO, BigDecimal.ONE, BigDecimal.valueOf(2));
-        arrayNode.iterator().forEachRemaining(e -> {
+        assertThat(arrayNode).allSatisfy(e -> {
             assertThat(e).isInstanceOf(DecimalNode.class);
             assertThat(expected).contains(e.decimalValue());
         });
@@ -119,7 +120,7 @@ class EnumGenerationTest extends BaseDMNOASTest {
         ArrayNode arrayNode = (ArrayNode) node.get("enum");
         assertThat(arrayNode).isNotNull();
         List<String> expected = Arrays.asList("a", "b", "c");
-        arrayNode.iterator().forEachRemaining(e -> {
+        assertThat(arrayNode).allSatisfy(e -> {
             assertThat(e).isInstanceOf(TextNode.class);
             assertThat(expected).contains(e.textValue());
         });
@@ -133,10 +134,9 @@ class EnumGenerationTest extends BaseDMNOASTest {
         assertThat(node).isNotNull();
         ArrayNode arrayNode = (ArrayNode) node.get("enum");
         assertThat(arrayNode).isNotNull();
-        List<String> expected = Arrays.asList("a", "b", "c", null);
-        arrayNode.iterator().forEachRemaining(e -> {
-            assertThat(expected).contains(e.textValue());
-        });
+        
+        assertThat(arrayNode).extracting(node1 -> node1.textValue()).containsExactlyInAnyOrder("a", "b", "c", null);
+
         assertThat(node.get("nullable")).isNotNull().isInstanceOf(BooleanNode.class);
         assertThat(node.get("nullable").asBoolean()).isTrue();
     }

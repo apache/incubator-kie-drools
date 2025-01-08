@@ -18,9 +18,10 @@
  */
 package org.drools.util;
 
-import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.jupiter.api.Test;
 
 public class JarUtilsTest {
 
@@ -28,5 +29,17 @@ public class JarUtilsTest {
     public void normalizeSpringBootResourceUrlPath() {
         String normalized = JarUtils.normalizeSpringBootResourceUrlPath("BOOT-INF/classes!/org/example/MyClass.class");
         assertThat(normalized).isEqualTo("BOOT-INF/classes/org/example/MyClass.class");
+    }
+
+    @Test
+    public void replaceNestedPathForSpringBoot32_shouldNotAffectOldPath() {
+        String result = JarUtils.replaceNestedPathForSpringBoot32("/dir/myapp.jar!/BOOT-INF/lib/mykjar.jar");
+        assertThat(result).isEqualTo("/dir/myapp.jar!/BOOT-INF/lib/mykjar.jar");
+    }
+
+    @Test
+    public void replaceNestedPathForSpringBoot32_shouldReplaceNewPath() {
+        String result = JarUtils.replaceNestedPathForSpringBoot32("/dir/myapp.jar/!BOOT-INF/lib/mykjar.jar");
+        assertThat(result).isEqualTo("/dir/myapp.jar!/BOOT-INF/lib/mykjar.jar");
     }
 }

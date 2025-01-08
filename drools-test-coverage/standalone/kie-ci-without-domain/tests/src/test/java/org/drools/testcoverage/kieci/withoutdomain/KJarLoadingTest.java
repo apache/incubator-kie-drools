@@ -19,9 +19,9 @@
 package org.drools.testcoverage.kieci.withoutdomain;
 
 import org.drools.testcoverage.kieci.withoutdomain.util.KJarLoadUtils;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.KieContainer;
@@ -42,13 +42,13 @@ public class KJarLoadingTest {
 
     private KieSession kieSession;
 
-    @Before
+    @BeforeEach
     public void init() {
         final KieContainer container = KS.newKieContainer(KJAR_RELEASE_ID);
         this.kieSession = container.newKieSession();
     }
 
-    @After
+    @AfterEach
     public void dispose() {
         if (this.kieSession != null) {
             this.kieSession.dispose();

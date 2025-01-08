@@ -30,7 +30,7 @@
   <logger name="org.kie" level="warn"/>
   <logger name="org.drools" level="warn"/>
 
-<!--   <logger name="org.drools.metric.util.MetricLogUtils" level="trace"/> -->
+  <logger name="org.drools.metric.util.MetricLogUtils" level="trace"/>
 
   <root level="warn">
     <appender-ref ref="consoleAppender" />

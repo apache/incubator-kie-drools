@@ -18,10 +18,10 @@
  */
 package org.kie.dmn.feel.runtime.functions;
 
+import java.math.BigDecimal;
+
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
-
-import java.math.BigDecimal;
 
 public class EvenFunction 
         extends BaseFEELFunction {
@@ -29,7 +29,7 @@ public class EvenFunction
 
     private static final BigDecimal TWO = BigDecimal.valueOf(2);
 
-    EvenFunction() {
+    private EvenFunction() {
         super("even");
     }
 

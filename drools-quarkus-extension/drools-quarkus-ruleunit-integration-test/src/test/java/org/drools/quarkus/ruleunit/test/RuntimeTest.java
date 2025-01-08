@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Test;
 
 import jakarta.inject.Inject;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @QuarkusTest
 public class RuntimeTest {
@@ -42,7 +42,6 @@ public class RuntimeTest {
             instance.fire();
         }
 
-        assertEquals(1, unit.getResults().size());
-        assertEquals("Hello Mario", unit.getResults().get(0));
+        assertThat(unit.getResults()).hasSize(1).containsExactly("Hello Mario");
     }
 }

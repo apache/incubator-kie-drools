@@ -27,8 +27,8 @@ import org.drools.drl.parser.lang.dsl.DSLMappingEntry;
 import org.drools.drl.parser.lang.dsl.DSLMappingFile;
 import org.drools.drl.parser.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.drl.parser.lang.dsl.DefaultExpander;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
@@ -198,7 +198,8 @@ public class DSLMappingFileTest {
 
     }
 
-    @Test @Ignore
+    @Test 
+    @Disabled
     public void testParseFileWithEscaptedEquals() {
         String file = "[when][]something:\\={value}=Attribute( something == \"{value}\" )";
         try {

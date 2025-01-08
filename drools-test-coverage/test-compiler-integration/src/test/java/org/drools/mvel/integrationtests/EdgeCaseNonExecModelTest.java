@@ -19,16 +19,15 @@
 package org.drools.mvel.integrationtests;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.drools.mvel.compiler.Cheese;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
@@ -38,24 +37,17 @@ import static org.assertj.core.api.Assertions.assertThat;
  * This is a place where minor edge cases which fail with exec-model can be temporarily moved from test-compiler-integration test classes.
  * When fixed, you should move them back to the original test class (or remove @Ignore from the test method).
  */
-@RunWith(Parameterized.class)
 public class EdgeCaseNonExecModelTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public EdgeCaseNonExecModelTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
-    }
-
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(false).stream();
     }
 
     // Moved from NamedConsequencesTest
     // DROOLS-6290
-    @Test
-    public void testNamedConsequencesInsideOR1() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testNamedConsequencesInsideOR1(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str = "import org.drools.mvel.compiler.Cheese;\n " +
                      "global java.util.List results;\n" +
                      "\n" +
@@ -70,7 +62,7 @@ public class EdgeCaseNonExecModelTest {
                      "    results.add( $a.getType() );\n" +
                      "end\n";
 
-        List<String> results = executeTestWithDRL(str);
+        List<String> results = executeTestWithDRL(kieBaseTestConfiguration, str);
 
         assertThat(results.size()).isEqualTo(2);
         assertThat(results.contains("cheddar")).isTrue();
@@ -79,8 +71,9 @@ public class EdgeCaseNonExecModelTest {
 
     // Moved from NamedConsequencesTest
     // DROOLS-6290
-    @Test
-    public void testNamedConsequencesInsideOR2() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testNamedConsequencesInsideOR2(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str = "import org.drools.mvel.compiler.Cheese;\n " +
                      "global java.util.List results;\n" +
                      "\n" +
@@ -95,13 +88,13 @@ public class EdgeCaseNonExecModelTest {
                      "    results.add( $b.getType() );\n" +
                      "end\n";
 
-        List<String> results = executeTestWithDRL(str);
+        List<String> results = executeTestWithDRL(kieBaseTestConfiguration, str);
 
         assertThat(results.size()).isEqualTo(1);
         assertThat(results.contains("cheddar")).isTrue();
     }
 
-    private List<String> executeTestWithDRL(String drl) {
+    private List<String> executeTestWithDRL(KieBaseTestConfiguration kieBaseTestConfiguration, String drl) {
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KieSession ksession = kbase.newKieSession();
 

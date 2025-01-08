@@ -33,8 +33,8 @@ import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.ast.DMNNode;
 import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
-import org.kie.dmn.core.api.EvaluatorResult;
-import org.kie.dmn.core.api.EvaluatorResult.ResultType;
+import org.kie.dmn.api.core.EvaluatorResult;
+import org.kie.dmn.api.core.EvaluatorResult.ResultType;
 import org.kie.dmn.core.ast.DMNBaseNode;
 import org.kie.dmn.core.ast.DecisionNodeImpl;
 import org.kie.dmn.core.ast.EvaluatorResultImpl;
@@ -55,6 +55,8 @@ import org.kie.dmn.feel.runtime.functions.MinFunction;
 import org.kie.dmn.feel.runtime.functions.SumFunction;
 import org.kie.dmn.feel.util.NumberEvalHelper;
 import org.kie.dmn.model.api.DMNElement.ExtensionElements;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static java.util.Collections.emptySet;
 import static java.util.Collections.singleton;
@@ -62,6 +64,8 @@ import static java.util.stream.Collectors.toSet;
 
 @XStreamAlias("MultiInstanceDecisionLogic")
 public class MultiInstanceDecisionLogic {
+
+    private static Logger logger = LoggerFactory.getLogger(MultiInstanceDecisionLogic.class);
 
     @XStreamAlias("iterationExpression")
     private String iterationExpression;
@@ -132,6 +136,12 @@ public class MultiInstanceDecisionLogic {
             di.setEvaluator(miEvaluator);
             
             compiler.addCallback((cCompiler, cCtx, cModel) -> {
+                if (cModel != model) {
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Skipping MID processing for imported model: {}", cModel.getName());
+                    }
+                    return;
+                }
                 MIDDependenciesProcessor processor = new MIDDependenciesProcessor(midl, cModel);
                 addRequiredDecisions(miEvaluator, processor);
                 removeChildElementsFromIndex(cModel, processor);
@@ -280,25 +290,25 @@ public class MultiInstanceDecisionLogic {
             FEELFnResult<?> r;
             switch (mi.aggregationFunction) {
                 case "SUM":
-                    r = new SumFunction().invoke(invokationResults);
+                    r = SumFunction.INSTANCE.invoke(invokationResults);
                     break;
                 case "MIN":
-                    r = new MinFunction().invoke(invokationResults);
+                    r = MinFunction.INSTANCE.invoke(invokationResults);
                     break;
                 case "MAX":
-                    r = new MaxFunction().invoke(invokationResults);
+                    r = MaxFunction.INSTANCE.invoke(invokationResults);
                     break;
                 case "COUNT":
                     r = FEELFnResult.ofResult(NumberEvalHelper.getBigDecimalOrNull(invokationResults.size()));
                     break;
                 case "ALLTRUE":
-                    r = new AllFunction().invoke(invokationResults);
+                    r = AllFunction.INSTANCE.invoke(invokationResults);
                     break;
                 case "ANYTRUE":
-                    r = new AnyFunction().invoke(invokationResults);
+                    r = AnyFunction.INSTANCE.invoke(invokationResults);
                     break;
                 case "ALLFALSE":
-                    FEELFnResult<Boolean> anyResult = new AnyFunction().invoke(invokationResults);
+                    FEELFnResult<Boolean> anyResult = AnyFunction.INSTANCE.invoke(invokationResults);
                     r = anyResult.map(b -> !b);
                     break;
                 case "COLLECT":

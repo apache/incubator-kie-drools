@@ -36,7 +36,7 @@ public class ModeFunction
         extends BaseFEELFunction implements FEELCollectionFunction {
     public static final ModeFunction INSTANCE = new ModeFunction();
 
-    ModeFunction() {
+    private ModeFunction() {
         super("mode");
     }
 

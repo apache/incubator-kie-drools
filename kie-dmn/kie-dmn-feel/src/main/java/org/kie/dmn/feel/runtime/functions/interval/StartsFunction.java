@@ -31,7 +31,7 @@ public class StartsFunction
 
     public static final StartsFunction INSTANCE = new StartsFunction();
 
-    public StartsFunction() {
+    private StartsFunction() {
         super( "starts" );
     }
 

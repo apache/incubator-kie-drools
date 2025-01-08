@@ -19,7 +19,7 @@
 package org.drools.testcoverage.functional.decisiontable;
 
 import org.drools.testcoverage.common.model.Record;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;

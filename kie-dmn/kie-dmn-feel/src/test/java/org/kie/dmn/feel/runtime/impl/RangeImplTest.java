@@ -27,6 +27,24 @@ import static org.assertj.core.api.Assertions.assertThat;
 class RangeImplTest {
 
     @Test
+    void isWithUndefined() {
+        RangeImpl rangeImpl = new RangeImpl(Range.RangeBoundary.CLOSED, null, null, Range.RangeBoundary.OPEN);
+        assertThat(rangeImpl.isWithUndefined()).isFalse();
+        rangeImpl = new RangeImpl(Range.RangeBoundary.CLOSED, 10, null, Range.RangeBoundary.OPEN);
+        assertThat(rangeImpl.isWithUndefined()).isFalse();
+        rangeImpl = new RangeImpl(Range.RangeBoundary.CLOSED, null, 10, Range.RangeBoundary.OPEN);
+        assertThat(rangeImpl.isWithUndefined()).isFalse();
+        rangeImpl = new RangeImpl(Range.RangeBoundary.CLOSED, null, new UndefinedValueComparable(), Range.RangeBoundary.OPEN);
+        assertThat(rangeImpl.isWithUndefined()).isTrue();
+        rangeImpl = new RangeImpl(Range.RangeBoundary.CLOSED, new UndefinedValueComparable(), null, Range.RangeBoundary.OPEN);
+        assertThat(rangeImpl.isWithUndefined()).isTrue();
+        rangeImpl = new RangeImpl(Range.RangeBoundary.CLOSED, 10, new UndefinedValueComparable(), Range.RangeBoundary.OPEN);
+        assertThat(rangeImpl.isWithUndefined()).isTrue();
+        rangeImpl = new RangeImpl(Range.RangeBoundary.CLOSED, new UndefinedValueComparable(), 10, Range.RangeBoundary.OPEN);
+        assertThat(rangeImpl.isWithUndefined()).isTrue();
+    }
+
+    @Test
     void getLowBoundary() {
         final Range.RangeBoundary lowBoundary = Range.RangeBoundary.CLOSED;
         final RangeImpl rangeImpl = new RangeImpl(lowBoundary, 10, 15, Range.RangeBoundary.OPEN);
@@ -78,6 +96,27 @@ class RangeImplTest {
         assertThat(rangeImpl.includes(FEELDialect.FEEL, 10)).isTrue();
         assertThat(rangeImpl.includes(FEELDialect.FEEL, 12)).isTrue();
         assertThat(rangeImpl.includes(FEELDialect.FEEL, 15)).isTrue();
+
+        rangeImpl = new RangeImpl(Range.RangeBoundary.CLOSED, new UndefinedValueComparable(), 15, Range.RangeBoundary.CLOSED);
+        assertThat(rangeImpl.includes(-1456)).isTrue();
+        assertThat(rangeImpl.includes(20)).isFalse();
+        assertThat(rangeImpl.includes(null)).isNull();
+
+        rangeImpl = new RangeImpl(Range.RangeBoundary.CLOSED, 15, new UndefinedValueComparable(), Range.RangeBoundary.CLOSED);
+        assertThat(rangeImpl.includes(-1456)).isFalse();
+        assertThat(rangeImpl.includes(20)).isTrue();
+        assertThat(rangeImpl.includes(null)).isNull();
+
+        rangeImpl = new RangeImpl(Range.RangeBoundary.CLOSED, null, new UndefinedValueComparable(), Range.RangeBoundary.CLOSED);
+        assertThat(rangeImpl.includes(-1456)).isNull();
+        assertThat(rangeImpl.includes(20)).isNull();
+        assertThat(rangeImpl.includes(null)).isNull();
+
+        rangeImpl = new RangeImpl(Range.RangeBoundary.CLOSED, new UndefinedValueComparable(), null, Range.RangeBoundary.CLOSED);
+        assertThat(rangeImpl.includes(-1456)).isNull();
+        assertThat(rangeImpl.includes(20)).isNull();
+        assertThat(rangeImpl.includes(null)).isNull();
+
     }
 
     @Test

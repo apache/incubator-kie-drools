@@ -38,7 +38,18 @@
     <java.module.name>org.kie.dmn.feel</java.module.name>
     <surefire.forkCount>2</surefire.forkCount>
     <enforcer.skip>true</enforcer.skip>
+    <version.net.sf.saxon.Saxon-HE>12.5</version.net.sf.saxon.Saxon-HE>
   </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>net.sf.saxon</groupId>
+        <artifactId>Saxon-HE</artifactId>
+        <version>${version.net.sf.saxon.Saxon-HE}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
   <dependencies>
     <!-- Internal dependencies -->
@@ -52,6 +63,10 @@
     </dependency>
 
     <!-- External dependencies -->
+    <dependency>
+      <groupId>net.sf.saxon</groupId>
+      <artifactId>Saxon-HE</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.antlr</groupId>
       <artifactId>antlr4-runtime</artifactId>
@@ -144,7 +159,7 @@
           <directory>${project.basedir}/src/test/resources</directory>
       </testResource>
       <testResource>
-        <directory>${project.basedir}/../</directory>
+        <directory>${project.basedir}/</directory>
         <includes>
           <include>ref-dmn-feel-builtin-functions.adoc</include>
         </includes>

@@ -19,19 +19,18 @@
 package org.drools.compiler.integrationtests;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
 
 import org.drools.compiler.integrationtests.incrementalcompilation.TestUtil;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.core.impl.RuleBaseFactory;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.runtime.KieSession;
@@ -42,7 +41,6 @@ import org.kie.api.time.SessionPseudoClock;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class AccumulateCepTest {
 
     public static final String TEST_MANY_SLIDING_WINDOWS_DRL = "package com.sample;\n" +
@@ -72,19 +70,13 @@ public class AccumulateCepTest {
                 "end\n" +
                 "\n";
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public AccumulateCepTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return  TestParametersUtil2.getKieBaseStreamConfigurations(true).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseStreamConfigurations(true);
-    }
-
-    @Test
-    public void testAccumulatesExpireVsCancel() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testAccumulatesExpireVsCancel(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         // JBRULES-3201
         final String drl = "package com.sample;\n" +
                 "\n" +
@@ -134,8 +126,9 @@ public class AccumulateCepTest {
         }
     }
 
-    @Test
-    public void testManySlidingWindows() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testManySlidingWindows(KieBaseTestConfiguration kieBaseTestConfiguration) {
 
         final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("accumulate-test", kieBaseTestConfiguration,
                                                                          TEST_MANY_SLIDING_WINDOWS_DRL);

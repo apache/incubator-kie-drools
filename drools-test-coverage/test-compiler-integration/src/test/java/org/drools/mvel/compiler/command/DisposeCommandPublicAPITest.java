@@ -27,7 +27,7 @@ import org.drools.base.rule.consequence.Consequence;
 import org.drools.core.rule.consequence.KnowledgeHelper;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieServices;
 import org.kie.api.command.Command;
 import org.kie.api.runtime.KieSession;
@@ -35,6 +35,7 @@ import org.kie.api.runtime.KieSession;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class DisposeCommandPublicAPITest {
+	
     @Test
     public void testDisposeCommand() {
 

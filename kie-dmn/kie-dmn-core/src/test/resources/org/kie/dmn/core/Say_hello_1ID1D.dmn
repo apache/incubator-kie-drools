@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<definitions xmlns:semantic="https://www.omg.org/spec/DMN/20211108/MODEL/"
+                      xmlns:dmn11="http://www.omg.org/spec/DMN/20151101/dmn.xsd" 
+                      xmlns:rss="http://purl.org/rss/2.0/" 
+                      xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" 
+                      xmlns:trisofeed="http://trisotech.com/feed" 
+                      xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" 
+                      xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" 
+                      xmlns:triso="http://www.trisotech.com/2015/triso/modeling" 
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+                      xmlns:feel="https://www.omg.org/spec/DMN/20211108/FEEL/"           
+                      xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn"  
+                      xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"  
+                      xmlns:drools="http://www.drools.org/kie/dmn/1.1"  
+                      xmlns="https://www.omg.org/spec/DMN/20211108/MODEL/" 
+                      id="_ae5b3c17-1ac3-4e1d-b4f9-2cf861aec6d9" name="Say hello 1ID1D" 
+                      namespace="http://www.trisotech.com/definitions/_ae5b3c17-1ac3-4e1d-b4f9-2cf861aec6d9" exporter="DMN Modeler" exporterVersion="6.2.4.2" triso:logoChoice="Default">
+    <inputData id="_4f6c136c-8512-4d71-8bbf-7c9eb6e74063" name="Person name">
+        <variable name="Person name" id="_46b6677b-4a26-4bca-9532-9a57dd55b8ec" typeRef="string"/>
+    </inputData>
+    <decision id="_f7fdaec4-d669-4797-b3b4-12b860de2eb5" name="Greet the Person" triso:useOutputTypeAsAnswer="false">
+        <variable name="Greet the Person" id="_85193e88-cb32-41da-9181-fb8e5450753a" typeRef="string"/>
+        <informationRequirement id="b1507384-44a9-4da7-8223-fa49ffa65410">
+            <requiredInput href="#_4f6c136c-8512-4d71-8bbf-7c9eb6e74063"/>
+        </informationRequirement>
+        <literalExpression typeRef="string" id="_429b0c63-31e0-4f79-b457-32f565167702" triso:expressionId="_28c34a9a-ebce-4ae4-ae8e-7eb062aa35d3">
+            <text>"Hello, "+Person name</text>
+        </literalExpression>
+    </decision>
+</definitions>

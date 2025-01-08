@@ -22,18 +22,12 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
 class ConcatenateFunctionTest {
 
-    private ConcatenateFunction concatenateFunction;
-
-    @BeforeEach
-    void setUp() {
-        concatenateFunction = new ConcatenateFunction();
-    }
+    private static final ConcatenateFunction concatenateFunction = ConcatenateFunction.INSTANCE;
 
     @Test
     void invokeNull() {
@@ -47,18 +41,21 @@ class ConcatenateFunctionTest {
 
     @Test
     void invokeArrayWithNull() {
-        FunctionTestUtil.assertResultError(concatenateFunction.invoke(new Object[]{null}), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(concatenateFunction.invoke(new Object[]{1, null}), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(concatenateFunction.invoke(new Object[]{null}),
+                                           InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(concatenateFunction.invoke(new Object[]{1, null}),
+                                           InvalidParametersEvent.class);
     }
 
     @Test
     void invokeArrayWithList() {
-        FunctionTestUtil.assertResultList(concatenateFunction.invoke(new Object[]{"test", 2, Arrays.asList(2, 3)}), Arrays.asList("test", 2, 2, 3));
+        FunctionTestUtil.assertResultList(concatenateFunction.invoke(new Object[]{"test", 2, Arrays.asList(2, 3)}),
+                                          Arrays.asList("test", 2, 2, 3));
     }
 
     @Test
     void invokeArrayWithoutList() {
-        FunctionTestUtil.assertResultList(concatenateFunction.invoke(new Object[]{"test", 2, BigDecimal.valueOf(25.3)}), Arrays.asList("test", 2, BigDecimal.valueOf(25.3)));
+        FunctionTestUtil.assertResultList(concatenateFunction.invoke(new Object[]{"test", 2,
+                BigDecimal.valueOf(25.3)}), Arrays.asList("test", 2, BigDecimal.valueOf(25.3)));
     }
-
 }

@@ -27,9 +27,9 @@ import org.drools.base.rule.consequence.Consequence;
 import org.drools.core.rule.consequence.KnowledgeHelper;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -44,7 +44,7 @@ public class ReteooRuleBaseMultiThreadedTest {
     RuleImpl rule;
     InternalKnowledgePackage pkg;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         this.kBase = KnowledgeBaseFactory.newKnowledgeBase();
 
@@ -72,7 +72,7 @@ public class ReteooRuleBaseMultiThreadedTest {
         kBase.addPackage(pkg);
     }
 
-    @Test @Ignore
+    @Test @Disabled
     public void testNewSessionWhileModifyingRuleBase() throws InterruptedException {
         PackageModifier modifier = new PackageModifier();
         SessionCreator creator = new SessionCreator();

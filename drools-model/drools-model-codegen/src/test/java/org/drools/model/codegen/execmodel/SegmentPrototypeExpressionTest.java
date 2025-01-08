@@ -19,7 +19,7 @@
 package org.drools.model.codegen.execmodel;
 
 import org.drools.model.prototype.PrototypeExpression;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.prototype.PrototypeFact;
 import org.kie.api.prototype.PrototypeFactInstance;
 

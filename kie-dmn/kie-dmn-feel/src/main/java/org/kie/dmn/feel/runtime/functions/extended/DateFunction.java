@@ -19,7 +19,6 @@
 package org.kie.dmn.feel.runtime.functions.extended;
 
 import java.time.DateTimeException;
-import java.time.LocalDate;
 import java.time.temporal.TemporalAccessor;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
@@ -29,14 +28,32 @@ import org.kie.dmn.feel.runtime.functions.DateAndTimeFunction;
 import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 import org.kie.dmn.feel.runtime.functions.ParameterName;
 
+/**
+ * This class overrides parent methods due to BaseFEELFunction#getCandidateMethod implementation
+ */
 public class DateFunction extends org.kie.dmn.feel.runtime.functions.DateFunction {
     public static final DateFunction INSTANCE = new DateFunction();
 
-    DateFunction() {
+    private DateFunction() {
     }
 
     @Override
-    public FEELFnResult<TemporalAccessor> manageDateTimeException(DateTimeException e, String val) {
+    public FEELFnResult<TemporalAccessor> invoke(@ParameterName("from") String val) {
+        return super.invoke(val);
+    }
+
+    @Override
+    public FEELFnResult<TemporalAccessor> invoke(@ParameterName( "year" ) Number year, @ParameterName( "month" ) Number month, @ParameterName( "day" ) Number day) {
+        return super.invoke(year, month, day);
+    }
+
+    @Override
+    public FEELFnResult<TemporalAccessor> invoke(@ParameterName( "from" ) TemporalAccessor date) {
+        return super.invoke(date);
+    }
+
+    @Override
+    protected FEELFnResult<TemporalAccessor> manageDateTimeException(DateTimeException e, String val) {
         // try to parse it as a date time and extract the date component
         // NOTE: this is an extension to the standard
         return BuiltInFunctions.getFunction(DateAndTimeFunction.class).invoke(val)

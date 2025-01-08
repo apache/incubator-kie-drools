@@ -33,8 +33,8 @@ import org.drools.base.rule.accessor.TupleValueExtractor;
 import org.drools.core.util.FastIterator;
 import org.drools.base.util.IndexedValueReader;
 import org.drools.fastutil.FastUtilTreeMemory.TreeFastIterator;
+import org.junit.jupiter.api.Test;
 import org.drools.base.util.index.ConstraintTypeOperator;
-import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

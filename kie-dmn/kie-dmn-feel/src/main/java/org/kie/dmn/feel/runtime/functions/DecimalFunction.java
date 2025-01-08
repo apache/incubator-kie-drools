@@ -30,7 +30,7 @@ public class DecimalFunction
 
     public static final DecimalFunction INSTANCE = new DecimalFunction();
 
-    public DecimalFunction() {
+    private DecimalFunction() {
         super( "decimal" );
     }
 

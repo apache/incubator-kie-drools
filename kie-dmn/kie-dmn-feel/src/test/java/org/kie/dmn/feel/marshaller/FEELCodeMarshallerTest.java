@@ -36,6 +36,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.impl.RangeImpl;
+import org.kie.dmn.feel.runtime.impl.UndefinedValueComparable;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -96,13 +97,18 @@ public class FEELCodeMarshallerTest {
                 { Arrays.asList( Duration.ofDays( 4 ), Duration.ofDays( 2 ), Duration.ofHours( 25 ) ), "[ duration( \"P4D\" ), duration( \"P2D\" ), duration( \"P1DT1H\" ) ]" },
                 { Arrays.asList( Arrays.asList( 1, 2 ), Arrays.asList( 3, 4 ) ), "[ [ 1, 2 ], [ 3, 4 ] ]" },
                 // ranges
-                { new RangeImpl( Range.RangeBoundary.CLOSED, "a", "z", Range.RangeBoundary.OPEN ), "[ \"a\" .. \"z\" )" },
-                { new RangeImpl( Range.RangeBoundary.CLOSED, Duration.ofHours( 30 ), Duration.ofHours( 50 ), Range.RangeBoundary.OPEN ), "[ duration( \"P1DT6H\" ) .. duration( \"P2DT2H\" ) )" },
+                { new RangeImpl( Range.RangeBoundary.CLOSED, "a", "z", Range.RangeBoundary.OPEN), "[ \"a\" .. \"z\" )" },
+                { new RangeImpl( Range.RangeBoundary.CLOSED, Duration.ofHours( 30 ), Duration.ofHours( 50 ), Range.RangeBoundary.OPEN), "[ duration( \"P1DT6H\" ) .. duration( \"P2DT2H\" ) )" },
+                { new RangeImpl(Range.RangeBoundary.OPEN, BigDecimal.ONE, new UndefinedValueComparable(), Range.RangeBoundary.OPEN), "( > 1 )" },
+                { new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.ONE, new UndefinedValueComparable(), Range.RangeBoundary.OPEN), "( >= 1 )" },
+                { new RangeImpl(Range.RangeBoundary.OPEN, new UndefinedValueComparable(), BigDecimal.ONE, Range.RangeBoundary.OPEN), "( < 1 )" },
+                { new RangeImpl(Range.RangeBoundary.OPEN, new UndefinedValueComparable(), BigDecimal.ONE, Range.RangeBoundary.CLOSED), "( <= 1 )" },
                 // context
                 { new LinkedHashMap() {{ put( "Full Name", "John Doe"); put( "Age", 35 ); put( "Date of Birth", LocalDate.of( 1982, 6, 9 ) ); }},
                   "{ Full Name : \"John Doe\", Age : 35, Date of Birth : date( \"1982-06-09\" ) }" },
                 // null
-                { null, "null" }
+                { null, "null" },
+                { new UndefinedValueComparable(), "undefined"}
         };
         return Arrays.asList( cases );
     }

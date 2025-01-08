@@ -236,7 +236,7 @@ public class BooleanEvalHelper {
         while( li.hasNext() && ri.hasNext() ) {
             Object l = li.next();
             Object r = ri.next();
-            if ( !isEqual(l, r ) ) return false;
+            if ( !isEqualObject(l, r ) ) return false;
         }
         return li.hasNext() == ri.hasNext();
     }
@@ -248,12 +248,12 @@ public class BooleanEvalHelper {
         for( Map.Entry le : left.entrySet() ) {
             Object l = le.getValue();
             Object r = right.get( le.getKey() );
-            if ( !isEqual( l, r ) ) return false;
+            if ( !isEqualObject( l, r ) ) return false;
         }
         return true;
     }
 
-    public static Boolean isEqual(Object l, Object r) {
+    static Boolean isEqualObject(Object l, Object r) {
         if( l instanceof Iterable && r instanceof Iterable && !isEqual( (Iterable) l, (Iterable) r ) ) {
             return false;
         } else if( l instanceof Map && r instanceof Map && !isEqual( (Map) l, (Map) r ) ) {

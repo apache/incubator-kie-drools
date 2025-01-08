@@ -40,6 +40,11 @@ public interface DroolsModelApplicationPropertyProvider {
             public void setApplicationProperty(String key, String value) {
                 properties.put(key, value);
             }
+
+            @Override
+            public void removeApplicationProperty(String key) {
+                properties.remove(key);
+            }
         };
     }
 
@@ -48,4 +53,6 @@ public interface DroolsModelApplicationPropertyProvider {
     Collection<String> getApplicationProperties();
 
     void setApplicationProperty(String key, String value);
+
+    void removeApplicationProperty(String key);
 }

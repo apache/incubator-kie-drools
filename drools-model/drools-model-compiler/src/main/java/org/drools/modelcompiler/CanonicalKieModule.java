@@ -371,7 +371,7 @@ public class CanonicalKieModule implements InternalKieModule {
             List<Resource> processResources = kieModule.getFileNames().stream()
                     .filter(fileName -> {
                         ResourceType resourceType = determineResourceType(fileName);
-                        return resourceType == ResourceType.DRF || resourceType == ResourceType.BPMN2;
+                        return resourceType == ResourceType.BPMN2;
                     })
                     .map(fileName -> {
                         final Resource processResource = kieModule.getResource(fileName);
@@ -466,7 +466,7 @@ public class CanonicalKieModule implements InternalKieModule {
         return ruleClassesNames;
     }
 
-    private Collection<Model> getModelForKBase(KieBaseModelImpl kBaseModel) {
+    public Collection<Model> getModelForKBase(KieBaseModelImpl kBaseModel) {
         Map<String, Model> modelsMap = getModels();
         if (kBaseModel.getPackages().isEmpty()) {
             return modelsMap.values();
@@ -482,6 +482,11 @@ public class CanonicalKieModule implements InternalKieModule {
             }
         }
         return models;
+    }
+
+    // This method indicates if the kjar was already compiled with the executable model
+    public boolean hasModelFile() {
+        return resourceFileExists(getModelFileWithGAV(internalKieModule.getReleaseId()));
     }
 
     private Collection<String> findRuleClassesNames() {

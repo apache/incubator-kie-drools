@@ -22,7 +22,7 @@ import java.util.List;
 
 public interface DMNElement extends DMNModelInstrumentedBase {
 
-    public static interface ExtensionElements {
+    interface ExtensionElements {
 
         List<Object> getAny();
 

@@ -32,8 +32,12 @@ import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.FEELDialect;
 import org.kie.dmn.feel.util.NumberEvalHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class EvaluationContextImpl implements EvaluationContext {
+
+    private static final Logger LOG = LoggerFactory.getLogger(EvaluationContextImpl.class);
 
     private final FEELEventListenersManager eventsManager;
     private ArrayDeque<ExecutionFrame> stack;
@@ -102,6 +106,7 @@ public class EvaluationContextImpl implements EvaluationContext {
 
     @Override
     public void enterFrame() {
+        LOG.trace("Creating new head element in stack");
         push( new ExecutionFrameImpl( peek() /*, symbols, scope*/ ) );
     }
 
@@ -111,11 +116,13 @@ public class EvaluationContextImpl implements EvaluationContext {
 
     @Override
     public void exitFrame() {
+        LOG.trace("Removing head element from stack");
         pop();
     }
 
     @Override
     public void setValue(String name, Object value) {
+        LOG.trace("put {} -> {} in head stack element", name, value);
         peek().setValue(name, NumberEvalHelper.coerceNumber(value ) );
     }
     

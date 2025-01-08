@@ -21,12 +21,12 @@ package org.drools.mvel.integrationtests;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Stream;
 
 import org.drools.base.base.ClassObjectType;
 import org.drools.core.common.InternalWorkingMemory;
@@ -45,10 +45,10 @@ import org.drools.mvel.compiler.Person;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.Message.Level;
@@ -57,22 +57,16 @@ import org.kie.api.definition.type.Modifies;
 import org.kie.api.definition.type.PropertyReactive;
 import org.kie.api.runtime.KieSession;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.within;
 import static org.drools.base.reteoo.PropertySpecificUtil.calculateNegativeMask;
 import static org.drools.base.reteoo.PropertySpecificUtil.calculatePositiveMask;
 
-@RunWith(Parameterized.class)
 public class PropertySpecificTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public PropertySpecificTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
-    }
-
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
     public static List<String> getSettableProperties(InternalWorkingMemory workingMemory, ObjectTypeNode objectTypeNode) {
@@ -88,8 +82,9 @@ public class PropertySpecificTest {
         return objectType instanceof ClassObjectType ? ((ClassObjectType)objectType).getClassType() : null;
     }
 
-    @Test
-    public void testRTNodeEmptyLHS() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testRTNodeEmptyLHS(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String rule = "package org.drools.mvel.integrationtests\n" +
                       "rule r1\n" +
                         "when\n" +
@@ -108,8 +103,9 @@ public class PropertySpecificTest {
         assertThat(rtNode.getInferredMask()).isEqualTo(AllSetBitMask.get());
     }   
     
-    @Test
-    public void testRTNodeNoConstraintsNoPropertySpecific() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testRTNodeNoConstraintsNoPropertySpecific(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String rule = "package org.drools.mvel.integrationtests\n" +
                       "import " + Person.class.getCanonicalName() + "\n" +
                       "rule r1\n" +
@@ -134,8 +130,9 @@ public class PropertySpecificTest {
         assertThat(rtNode.getInferredMask()).isEqualTo(AllSetBitMask.get());
     }   
     
-    @Test
-    public void testRTNodeWithConstraintsNoPropertySpecific() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testRTNodeWithConstraintsNoPropertySpecific(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String rule = "package org.drools.mvel.integrationtests\n" +
                       "import " + Person.class.getCanonicalName() + "\n" +
                       "rule r1\n" +
@@ -165,8 +162,9 @@ public class PropertySpecificTest {
         assertThat(rtNode.getInferredMask()).isEqualTo(AllSetBitMask.get());
     }  
     
-    @Test
-    public void testBetaNodeNoConstraintsNoPropertySpecific() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testBetaNodeNoConstraintsNoPropertySpecific(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String rule = "package org.drools.mvel.integrationtests\n" +
                       "import " + Person.class.getCanonicalName() + "\n" +
                       "import " + Cheese.class.getCanonicalName() + "\n" +
@@ -192,8 +190,9 @@ public class PropertySpecificTest {
         assertThat(betaNode.getRightInferredMask()).isEqualTo(AllSetBitMask.get());
     }    
     
-    @Test
-    public void testBetaNodeWithConstraintsNoPropertySpecific() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testBetaNodeWithConstraintsNoPropertySpecific(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String rule = "package org.drools.mvel.integrationtests\n" +
                       "import " + Person.class.getCanonicalName() + "\n" +
                       "import " + Cheese.class.getCanonicalName() + "\n" +
@@ -223,8 +222,9 @@ public class PropertySpecificTest {
         assertThat(betaNode.getRightInferredMask()).isEqualTo(AllSetBitMask.get());
     }  
     
-    @Test
-    public void testInitialFactBetaNodeWithRightInputAdapter() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testInitialFactBetaNodeWithRightInputAdapter(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String rule = "package org.drools.mvel.integrationtests\n" +
                       "import " + Person.class.getCanonicalName() + "\n" +
                       "import " + Cheese.class.getCanonicalName() + "\n" +
@@ -248,8 +248,9 @@ public class PropertySpecificTest {
         assertThat(betaNode.getRightInferredMask()).isEqualTo(AllSetBitMask.get());
     }  
     
-    @Test
-    public void testPersonFactBetaNodeWithRightInputAdapter() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testPersonFactBetaNodeWithRightInputAdapter(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String rule = "package org.drools.mvel.integrationtests\n" +
                       "import " + Person.class.getCanonicalName() + "\n" +
                       "import " + Cheese.class.getCanonicalName() + "\n" +
@@ -281,8 +282,9 @@ public class PropertySpecificTest {
         assertThat(betaNode.getRightInferredMask()).isEqualTo(AllSetBitMask.get());
     }    
     
-    @Test
-    public void testSharedAlphanodeWithBetaNodeConstraintsNoPropertySpecific() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testSharedAlphanodeWithBetaNodeConstraintsNoPropertySpecific(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String rule = "package org.drools.mvel.integrationtests\n" +
                       "import " + Person.class.getCanonicalName() + "\n" +
                       "import " + Cheese.class.getCanonicalName() + "\n" +
@@ -336,7 +338,7 @@ public class PropertySpecificTest {
     }       
     
 
-    private KieBase getKnowledgeBase(String... rules) {
+    private KieBase getKnowledgeBase(KieBaseTestConfiguration kieBaseTestConfiguration, String... rules) {
         String rule = "package org.drools.mvel.integrationtests\n" +
                 "global java.util.List list;\n" +
                 "declare A\n" +
@@ -379,10 +381,11 @@ public class PropertySpecificTest {
         return kbase;
     }
     
-    @Test
-    public void testRtnNoConstraintsNoWatches() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testRtnNoConstraintsNoWatches(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String rule1 = "A()";
-        KieBase kbase = getKnowledgeBase(rule1);
+        KieBase kbase = getKnowledgeBase(kieBaseTestConfiguration,rule1);
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
 
         ObjectTypeNode otn = getObjectTypeNode(kbase, "A" );
@@ -395,10 +398,11 @@ public class PropertySpecificTest {
         assertThat(rtNode.getInferredMask()).isEqualTo(EmptyBitMask.get());
     }   
     
-    @Test
-    public void testRtnNoConstraintsWithWatches() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testRtnNoConstraintsWithWatches(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String rule1 = "A() @watch(a)";
-        KieBase kbase = getKnowledgeBase(rule1);
+        KieBase kbase = getKnowledgeBase(kieBaseTestConfiguration, rule1);
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
 
         ObjectTypeNode otn = getObjectTypeNode(kbase, "A" );
@@ -413,10 +417,11 @@ public class PropertySpecificTest {
         assertThat(rtNode.getInferredMask()).isEqualTo(calculatePositiveMask(otn.getObjectType(), list("a"), sp));        
     }       
     
-    @Test
-    public void testRtnWithConstraintsNoWatches() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testRtnWithConstraintsNoWatches(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String rule1 = "A( a == 10 )";
-        KieBase kbase = getKnowledgeBase(rule1);
+        KieBase kbase = getKnowledgeBase(kieBaseTestConfiguration, rule1);
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
         
         ObjectTypeNode otn = getObjectTypeNode(kbase, "A" );
@@ -435,10 +440,11 @@ public class PropertySpecificTest {
         assertThat(rtNode.getInferredMask()).isEqualTo(calculatePositiveMask(otn.getObjectType(), list("a"), sp)); // rtn infers from alpha 
     }  
     
-    @Test
-    public void testRtnWithConstraintsWithWatches() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testRtnWithConstraintsWithWatches(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String rule1 = "A( a == 10 ) @watch(b)";
-        KieBase kbase = getKnowledgeBase(rule1);
+        KieBase kbase = getKnowledgeBase(kieBaseTestConfiguration, rule1);
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
         
         ObjectTypeNode otn = getObjectTypeNode(kbase, "A" );
@@ -457,11 +463,12 @@ public class PropertySpecificTest {
         assertThat(rtNode.getInferredMask()).isEqualTo(calculatePositiveMask(otn.getObjectType(), list("a", "b"), sp));         
     }      
     
-    @Test
-    public void testRtnSharedAlphaNoWatches() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testRtnSharedAlphaNoWatches(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String rule1 = "A( a == 10, b == 15 )";
         String rule2 = "A( a == 10, i == 20 )";
-        KieBase kbase = getKnowledgeBase(rule1, rule2);
+        KieBase kbase = getKnowledgeBase(kieBaseTestConfiguration, rule1, rule2);
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
         
         ObjectTypeNode otn = getObjectTypeNode(kbase, "A" );
@@ -508,7 +515,7 @@ public class PropertySpecificTest {
         assertThat(rtNode2.getInferredMask()).isEqualTo(calculatePositiveMask(otn.getObjectType(), list("a", "i"), sp));
         
         // have to rebuild to remove r1
-        kbase = getKnowledgeBase(rule1, rule2);
+        kbase = getKnowledgeBase(kieBaseTestConfiguration, rule1, rule2);
         
         kbase.removeRule( "org.drools.mvel.integrationtests", "r1" );
         otn = getObjectTypeNode(kbase, "A" );
@@ -527,11 +534,12 @@ public class PropertySpecificTest {
         assertThat(rtNode1.getInferredMask()).isEqualTo(calculatePositiveMask(otn.getObjectType(), list("a", "b"), sp));         
     }      
     
-    @Test
-    public void testRtnSharedAlphaWithWatches() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testRtnSharedAlphaWithWatches(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String rule1 = "A( a == 10, b == 15 ) @watch(c, !a)";
         String rule2 = "A( a == 10, i == 20 ) @watch(s, !i)";
-        KieBase kbase = getKnowledgeBase(rule1, rule2);
+        KieBase kbase = getKnowledgeBase(kieBaseTestConfiguration, rule1, rule2);
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
         
         ObjectTypeNode otn = getObjectTypeNode(kbase, "A" );
@@ -580,7 +588,7 @@ public class PropertySpecificTest {
         assertThat(rtNode2.getNegativeMask()).isEqualTo(calculateNegativeMask(otn.getObjectType(), list("!i"), sp));
 
         // have to rebuild to remove r1
-        kbase = getKnowledgeBase(rule1, rule2);
+        kbase = getKnowledgeBase(kieBaseTestConfiguration, rule1, rule2);
         
         kbase.removeRule( "org.drools.mvel.integrationtests", "r1" );
         otn = getObjectTypeNode(kbase, "A" );
@@ -600,10 +608,11 @@ public class PropertySpecificTest {
         assertThat(rtNode1.getNegativeMask()).isEqualTo(calculateNegativeMask(otn.getObjectType(), list("!a"), sp));
     }
 
-    @Test
-    public void testBetaNoConstraintsNoWatches() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testBetaNoConstraintsNoWatches(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String rule1 = "B() A()";
-        KieBase kbase = getKnowledgeBase(rule1);
+        KieBase kbase = getKnowledgeBase(kieBaseTestConfiguration, rule1);
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
 
         ObjectTypeNode otn = getObjectTypeNode(kbase, "A" );
@@ -617,10 +626,11 @@ public class PropertySpecificTest {
         assertThat(betaNode.getLeftInferredMask()).isEqualTo(EmptyBitMask.get());
     }     
     
-    @Test
-    public void testBetaNoConstraintsWithWatches() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testBetaNoConstraintsWithWatches(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String rule1 = "B() @watch(a) A() @watch(a)";
-        KieBase kbase = getKnowledgeBase(rule1);
+        KieBase kbase = getKnowledgeBase(kieBaseTestConfiguration, rule1);
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
 
         ObjectTypeNode otn = getObjectTypeNode(kbase, "A" );
@@ -635,10 +645,11 @@ public class PropertySpecificTest {
         assertThat(betaNode.getLeftInferredMask()).isEqualTo(calculatePositiveMask(otn.getObjectType(), list("a"), sp));        
     }  
     
-    @Test
-    public void testBetaWithConstraintsNoWatches() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testBetaWithConstraintsNoWatches(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String rule1 = "$b : B(a == 15) A( a == 10, b == $b.b )";
-        KieBase kbase = getKnowledgeBase(rule1);
+        KieBase kbase = getKnowledgeBase(kieBaseTestConfiguration, rule1);
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
         
         ObjectTypeNode otn = getObjectTypeNode(kbase, "A" );
@@ -663,10 +674,11 @@ public class PropertySpecificTest {
         assertThat(betaNode.getLeftInferredMask()).isEqualTo(calculatePositiveMask(otn.getObjectType(), list("a", "b"), sp));
     }    
     
-    @Test
-    public void testBetaWithConstraintsWithWatches() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testBetaWithConstraintsWithWatches(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String rule1 = "$b : B( a == 15) @watch(c) A( a == 10, b == $b.b ) @watch(s)";
-        KieBase kbase = getKnowledgeBase(rule1);
+        KieBase kbase = getKnowledgeBase(kieBaseTestConfiguration, rule1);
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
         
         ObjectTypeNode otn = getObjectTypeNode(kbase, "A" );
@@ -693,10 +705,11 @@ public class PropertySpecificTest {
         assertThat(betaNode.getLeftInferredMask()).isEqualTo(calculatePositiveMask(otn.getObjectType(), list("a", "b", "c"), sp));
     }
 
-    @Test
-    public void testBetaWithConstraintsWithNegativeWatches() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testBetaWithConstraintsWithNegativeWatches(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String rule1 = "$b : B( a == 15) @watch(c, !a) A( a == 10, b == $b.b ) @watch(s, !a, !b)";
-        KieBase kbase = getKnowledgeBase(rule1);
+        KieBase kbase = getKnowledgeBase(kieBaseTestConfiguration, rule1);
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
 
         ObjectTypeNode otn = getObjectTypeNode(kbase, "A" );
@@ -723,11 +736,12 @@ public class PropertySpecificTest {
         assertThat(betaNode.getLeftNegativeMask()).isEqualTo(calculateNegativeMask(otn.getObjectType(), list("!a"), sp));
     }
 
-    @Test
-    public void testBetaSharedAlphaNoWatches() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testBetaSharedAlphaNoWatches(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String rule1 = "$b : B( a == 15) @watch(c, !a) A( a == 10, s == 15, b == $b.b  )";
         String rule2 = "$b : B( a == 15) @watch(j, !i) A( a == 10, i == 20, b == $b.b  )";
-        KieBase kbase = getKnowledgeBase(rule1, rule2);
+        KieBase kbase = getKnowledgeBase(kieBaseTestConfiguration, rule1, rule2);
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
         
         ObjectTypeNode otn = getObjectTypeNode(kbase, "A" );
@@ -781,7 +795,7 @@ public class PropertySpecificTest {
         assertThat(betaNode1.getLeftNegativeMask()).isEqualTo(calculateNegativeMask(otn.getObjectType(), list("!a"), sp));
 
         // have to rebuild to remove r1
-        kbase = getKnowledgeBase(rule1, rule2);
+        kbase = getKnowledgeBase(kieBaseTestConfiguration, rule1, rule2);
         
         kbase.removeRule( "org.drools.mvel.integrationtests", "r1" );
         otn = getObjectTypeNode(kbase, "A" );
@@ -803,11 +817,12 @@ public class PropertySpecificTest {
         assertThat(betaNode2.getLeftNegativeMask()).isEqualTo(calculateNegativeMask(otn.getObjectType(), list("!i"), sp));
     }
     
-    @Test
-    public void testBetaSharedAlphaWithWatches() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testBetaSharedAlphaWithWatches(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String rule1 = "$b : B( a == 15) @watch(c, !a) A( a == 10, b == 15, b == $b.b  ) @watch(c, !b)";
         String rule2 = "$b : B( a == 15) @watch(j) A( a == 10, i == 20, b == $b.b ) @watch(s, !a)";
-        KieBase kbase = getKnowledgeBase(rule1, rule2);
+        KieBase kbase = getKnowledgeBase(kieBaseTestConfiguration, rule1, rule2);
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
         
         ObjectTypeNode otn = getObjectTypeNode(kbase, "A" );
@@ -866,7 +881,7 @@ public class PropertySpecificTest {
         assertThat(betaNode2.getLeftNegativeMask()).isEqualTo(EmptyBitMask.get());
 
         // have to rebuild to remove r1
-        kbase = getKnowledgeBase(rule1, rule2);
+        kbase = getKnowledgeBase(kieBaseTestConfiguration, rule1, rule2);
         
         kbase.removeRule( "org.drools.mvel.integrationtests", "r1" );
         otn = getObjectTypeNode(kbase, "A" );
@@ -889,12 +904,13 @@ public class PropertySpecificTest {
         assertThat(betaNode1.getLeftNegativeMask()).isEqualTo(calculateNegativeMask(otn.getObjectType(), list("!a"), sp));
     }
     
-    @Test
-    public void testComplexBetaSharedAlphaWithWatches() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testComplexBetaSharedAlphaWithWatches(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String rule1 = "$b : B( b == 15) @watch(i) A( a == 10, b == 15 ) @watch(c)";
         String rule2 = "$b : B( b == 15) @watch(j) A( a == 10, i == 20 ) @watch(s)";
         String rule3 = "$b : B( c == 15) @watch(k) A( a == 10, i == 20, b == 10 ) @watch(j)";
-        KieBase kbase = getKnowledgeBase(rule1, rule2, rule3);
+        KieBase kbase = getKnowledgeBase(kieBaseTestConfiguration, rule1, rule2, rule3);
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
         
         ObjectTypeNode otn = getObjectTypeNode(kbase, "A" );
@@ -945,12 +961,13 @@ public class PropertySpecificTest {
         assertThat(betaNode3.getLeftInferredMask()).isEqualTo(calculatePositiveMask(otn.getObjectType(), list("c", "k"), sp));        
     }   
     
-    @Test
-    public void testComplexBetaSharedAlphaWithWatchesRemoveR1() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testComplexBetaSharedAlphaWithWatchesRemoveR1(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String rule1 = "$b : B( b == 15) @watch(i) A( a == 10, b == 15 ) @watch(c)";
         String rule2 = "$b : B( b == 15) @watch(j) A( a == 10, i == 20 ) @watch(s)";
         String rule3 = "$b : B( c == 15) @watch(k) A( a == 10, i == 20, b == 10 ) @watch(j)";
-        KieBase kbase = getKnowledgeBase(rule1, rule2, rule3);
+        KieBase kbase = getKnowledgeBase(kieBaseTestConfiguration, rule1, rule2, rule3);
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
         
         kbase.removeRule( "org.drools.mvel.integrationtests", "r0" );
@@ -989,12 +1006,13 @@ public class PropertySpecificTest {
         assertThat(betaNode3.getLeftInferredMask()).isEqualTo(calculatePositiveMask(otn.getObjectType(), list("c", "k"), sp));
     }       
     
-    @Test
-    public void testComplexBetaSharedAlphaWithWatchesRemoveR2() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testComplexBetaSharedAlphaWithWatchesRemoveR2(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String rule1 = "$b : B( b == 15) @watch(i) A( a == 10, b == 15 ) @watch(c)";
         String rule2 = "$b : B( b == 15) @watch(j) A( a == 10, i == 20 ) @watch(s)";
         String rule3 = "$b : B( c == 15) @watch(k) A( a == 10, i == 20, b == 10 ) @watch(j)";
-        KieBase kbase = getKnowledgeBase(rule1, rule2, rule3);
+        KieBase kbase = getKnowledgeBase(kieBaseTestConfiguration, rule1, rule2, rule3);
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
         
         kbase.removeRule( "org.drools.mvel.integrationtests", "r1" );
@@ -1039,12 +1057,13 @@ public class PropertySpecificTest {
            
     }         
     
-    @Test
-    public void testComplexBetaSharedAlphaWithWatchesRemoveR3() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testComplexBetaSharedAlphaWithWatchesRemoveR3(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String rule1 = "$b : B( b == 15) @watch(i) A( a == 10, b == 15 ) @watch(c)";
         String rule2 = "$b : B( b == 15) @watch(j) A( a == 10, i == 20 ) @watch(s)";
         String rule3 = "$b : B( c == 15) @watch(k) A( a == 10, i == 20, b == 10 ) @watch(j)";
-        KieBase kbase = getKnowledgeBase(rule1, rule2, rule3);
+        KieBase kbase = getKnowledgeBase(kieBaseTestConfiguration, rule1, rule2, rule3);
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
         
         kbase.removeRule( "org.drools.mvel.integrationtests", "r2" );
@@ -1085,8 +1104,9 @@ public class PropertySpecificTest {
         assertThat(betaNode2.getLeftInferredMask()).isEqualTo(calculatePositiveMask(otn.getObjectType(), list("b", "j"), sp));
     }    
 
-    @Test
-    public void testPropertySpecificSimplified() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testPropertySpecificSimplified(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String rule = "package org.drools.mvel.integrationtests\n" +
                 "dialect \"mvel\"\n" +
                 "declare A\n" +
@@ -1133,8 +1153,9 @@ public class PropertySpecificTest {
         ksession.dispose();
     }
 
-    @Test
-    public void testWatchNothing() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testWatchNothing(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String rule = "package org.drools.mvel.integrationtests\n" +
                 "dialect \"mvel\"\n" +
                 "declare A\n" +
@@ -1181,8 +1202,9 @@ public class PropertySpecificTest {
         ksession.dispose();
     }
 
-    @Test
-    public void testWrongPropertyNameInWatchAnnotation() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testWrongPropertyNameInWatchAnnotation(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String rule = "package org.drools.mvel.integrationtests\n" +
                 "dialect \"mvel\"\n" +
                 "declare A\n" +
@@ -1211,8 +1233,9 @@ public class PropertySpecificTest {
         assertThat(kieBuilder.getResults().hasMessages(Level.ERROR)).isTrue();
     }
 
-    @Test
-    public void testDuplicatePropertyNamesInWatchAnnotation() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testDuplicatePropertyNamesInWatchAnnotation(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String rule = "package org.drools.mvel.integrationtests\n" +
                 "dialect \"mvel\"\n" +
                 "declare A\n" +
@@ -1241,8 +1264,9 @@ public class PropertySpecificTest {
         assertThat(kieBuilder.getResults().hasMessages(Level.ERROR)).isTrue();
     }
 
-    @Test
-    public void testWrongUasgeOfWatchAnnotationOnNonPropertySpecificClass() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testWrongUasgeOfWatchAnnotationOnNonPropertySpecificClass(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String rule = "package org.drools.mvel.integrationtests\n" +
                 "dialect \"mvel\"\n" +
                 "declare A\n" +
@@ -1277,8 +1301,9 @@ public class PropertySpecificTest {
         assertThat(kieBuilder.getResults().hasMessages(Level.ERROR)).isTrue();
     }
 
-    @Test
-    public void testPropertySpecificJavaBean() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testPropertySpecificJavaBean(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String rule = "package org.drools.mvel.integrationtests\n" +
                 "import " + PropertySpecificTest.C.class.getCanonicalName() + "\n" +
                 "declare A\n" +
@@ -1319,8 +1344,10 @@ public class PropertySpecificTest {
         ksession.dispose();
     }
 
-    @Test(timeout = 5000)
-    public void testPropertySpecificOnAlphaNode() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(5000)
+    public void testPropertySpecificOnAlphaNode(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String rule = "package org.drools.mvel.integrationtests\n" +
                 "import " + PropertySpecificTest.C.class.getCanonicalName() + "\n" +
                 "rule R1\n" +
@@ -1344,8 +1371,10 @@ public class PropertySpecificTest {
         ksession.dispose();
     }
 
-    @Test(timeout = 5000)
-    public void testPropertySpecificWithUpdate() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(5000)
+    public void testPropertySpecificWithUpdate(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String rule = "package org.drools.mvel.integrationtests\n" +
                 "import " + PropertySpecificTest.C.class.getCanonicalName() + "\n" +
                 "rule R1\n" +
@@ -1370,8 +1399,9 @@ public class PropertySpecificTest {
         ksession.dispose();
     }
 
-    @Test
-    public void testInfiniteLoop() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testInfiniteLoop(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String rule = "package org.drools.mvel.integrationtests\n" +
                 "import " + PropertySpecificTest.C.class.getCanonicalName() + "\n" +
                 "global java.util.concurrent.atomic.AtomicInteger counter\n" +
@@ -1399,8 +1429,9 @@ public class PropertySpecificTest {
                 .hasMessageContaining("Exception executing consequence for rule \"R1\"");
     }
 
-    @Test
-    public void testClassReactive() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testClassReactive(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String rule = "package org.drools.mvel.integrationtests\n" +
                 "global java.util.concurrent.atomic.AtomicInteger counter\n" +
                 "declare B\n" +
@@ -1437,8 +1468,10 @@ public class PropertySpecificTest {
                 .hasMessageContaining("Exception executing consequence for rule \"R1\"");
     }
 
-    @Test(timeout = 5000)
-    public void testSharedWatchAnnotation() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(5000)
+    public void testSharedWatchAnnotation(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String rule = "package org.drools.mvel.integrationtests\n" +
                 "declare A\n" +
                 "    @propertyReactive\n" +
@@ -1515,8 +1548,9 @@ public class PropertySpecificTest {
         }
     }
 
-    @Test
-    public void testBetaNodePropagation() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testBetaNodePropagation(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String rule = "package org.drools.mvel.integrationtests\n" +
                 "import " + PropertySpecificTest.Hero.class.getCanonicalName() + "\n" +
                 "import " + PropertySpecificTest.MoveCommand.class.getCanonicalName() + "\n" +
@@ -1551,8 +1585,10 @@ public class PropertySpecificTest {
         assertThat(hero.getPosition()).isEqualTo(2);
     }
 
-    @Test(timeout = 5000)
-    public void testPropSpecOnPatternWithThis() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(5000)
+    public void testPropSpecOnPatternWithThis(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String rule = "package org.drools.mvel.integrationtests\n" +
                 "declare A\n" +
                 "    @propertyReactive\n" +
@@ -1587,8 +1623,9 @@ public class PropertySpecificTest {
         assertThat(rules).isEqualTo(1);
     }
 
-    @Test
-    public void testPropSpecOnBetaNode() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testPropSpecOnBetaNode(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String rule = "package org.drools.mvel.integrationtests\n" +
                 "declare A\n" +
                 "    @propertyReactive\n" +
@@ -1630,8 +1667,10 @@ public class PropertySpecificTest {
         assertThat(rules).isEqualTo(3);
     }
 
-    @Test(timeout = 5000)
-    public void testConfig() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(5000)
+    public void testConfig(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String rule = "package org.drools.mvel.integrationtests\n" +
                 "declare A\n" +
                 "    i : int\n" +
@@ -1660,8 +1699,9 @@ public class PropertySpecificTest {
         assertThat(rules).isEqualTo(1);
     }
 
-    @Test
-    public void testEmptyBetaConstraint() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testEmptyBetaConstraint(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String rule = "package org.drools.mvel.integrationtests\n" +
                 "import " + PropertySpecificTest.Hero.class.getCanonicalName() + "\n" +
                 "import " + PropertySpecificTest.Cell.class.getCanonicalName() + "\n" +
@@ -1710,8 +1750,10 @@ public class PropertySpecificTest {
         assertThat(rules).isEqualTo(2);
     }
 
-    @Test (timeout = 5000)
-    public void testNoConstraint() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(5000)
+    public void testNoConstraint(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String rule = "package org.drools.mvel.integrationtests\n" +
                 "import " + PropertySpecificTest.Cell.class.getCanonicalName() + "\n" +
                 "rule R1 when\n" +
@@ -1729,8 +1771,10 @@ public class PropertySpecificTest {
         assertThat(rules).isEqualTo(1);
     }
 
-    @Test(timeout = 5000)
-    public void testNodeSharing() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(5000)
+    public void testNodeSharing(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String rule = "package org.drools.mvel.integrationtests\n" +
                 "import " + PropertySpecificTest.Cell.class.getCanonicalName() + "\n" +
                 "rule R1 when\n" +
@@ -1890,8 +1934,10 @@ public class PropertySpecificTest {
         return null;
     }
     
-    @Test(timeout = 5000)
-    public void testNoConstraint2() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(5000)
+    public void testNoConstraint2(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String rule = "package org.drools.mvel.integrationtests\n" +
                       "import " + PropertySpecificTest.Order.class.getCanonicalName() + "\n" +
                       "import " + PropertySpecificTest.OrderItem.class.getCanonicalName() + "\n" +
@@ -1920,8 +1966,10 @@ public class PropertySpecificTest {
         assertThat(order1.isDiscounted()).isTrue();
     }
 
-    @Test(timeout = 5000)
-    public void testFrom() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(5000)
+    public void testFrom(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String rule = "package org.drools.mvel.integrationtests\n" +
                       "import " + PropertySpecificTest.Order.class.getCanonicalName() + "\n" +
                       "import " + PropertySpecificTest.OrderItem.class.getCanonicalName() + "\n" +
@@ -1954,8 +2002,10 @@ public class PropertySpecificTest {
         assertThat(order1.isDiscounted()).isTrue();
     }
 
-    @Test(timeout = 5000)
-    public void testAccumulate() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(5000)
+    public void testAccumulate(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String rule = "package org.drools.mvel.integrationtests\n" +
                       "import " + PropertySpecificTest.Order.class.getCanonicalName() + "\n" +
                       "import " + PropertySpecificTest.OrderItem.class.getCanonicalName() + "\n" +
@@ -2055,10 +2105,11 @@ public class PropertySpecificTest {
         }
     }
 
-    @Test
-    public void testBetaWithWatchAfterBeta() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testBetaWithWatchAfterBeta(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String rule1 = "$b : B(a == 15) @watch(k) C() A(i == $b.j) @watch(b, c)";
-        KieBase kbase = getKnowledgeBase(rule1);
+        KieBase kbase = getKnowledgeBase(kieBaseTestConfiguration, rule1);
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
 
         ObjectTypeNode otnA = getObjectTypeNode(kbase, "A" );
@@ -2078,10 +2129,11 @@ public class PropertySpecificTest {
         assertThat(betaNodeC.getLeftInferredMask()).isEqualTo(calculatePositiveMask(otnC.getObjectType(), list("a", "j", "k"), sp));
     }
 
-    @Test
-    public void testBetaAfterBetaWithWatch() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testBetaAfterBetaWithWatch(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String rule1 = "$b : B(a == 15) @watch(k) A(i == $b.j) @watch(b, c) C()";
-        KieBase kbase = getKnowledgeBase(rule1);
+        KieBase kbase = getKnowledgeBase(kieBaseTestConfiguration, rule1);
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
 
         ObjectTypeNode otnA = getObjectTypeNode(kbase, "A" );
@@ -2101,11 +2153,12 @@ public class PropertySpecificTest {
         assertThat(betaNodeC.getLeftInferredMask()).isEqualTo(AllSetBitMask.get());
     }
 
-    @Test
-    public void test2DifferentAlphaWatchBeforeSameBeta() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void test2DifferentAlphaWatchBeforeSameBeta(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String rule1 = "B(a == 15) @watch(b) C()";
         String rule2 = "B(a == 15) @watch(c) C()";
-        KieBase kbase = getKnowledgeBase(rule1, rule2);
+        KieBase kbase = getKnowledgeBase(kieBaseTestConfiguration, rule1, rule2);
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
 
         ObjectTypeNode otn = getObjectTypeNode(kbase, "B" );
@@ -2147,11 +2200,12 @@ public class PropertySpecificTest {
         assertThat(betaNodeC2.getLeftInferredMask()).isEqualTo(calculatePositiveMask(otn.getObjectType(), list("a", "c"), sp));
     }
 
-    @Test
-    public void testSameBetasWith2RTNSinks() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testSameBetasWith2RTNSinks(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String rule1 = "B(a == 15) C() A()";
         String rule2 = "B(a == 15) C() A() @watch(b, c)";
-        KieBase kbase = getKnowledgeBase(rule1, rule2);
+        KieBase kbase = getKnowledgeBase(kieBaseTestConfiguration, rule1, rule2);
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
 
         ObjectTypeNode otnA = getObjectTypeNode(kbase, "A" );
@@ -2185,11 +2239,12 @@ public class PropertySpecificTest {
         assertThat(betaNodeC.getSinkPropagator().getSinks().length).isEqualTo(1);
     }
 
-    @Test
-    public void testBetaWith2BetaSinks() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testBetaWith2BetaSinks(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String rule1 = "B(a == 15) @watch(b) A() @watch(i) C()";
         String rule2 = "B(a == 15) @watch(c) A() @watch(j) D()";
-        KieBase kbase = getKnowledgeBase(rule1, rule2);
+        KieBase kbase = getKnowledgeBase(kieBaseTestConfiguration, rule1, rule2);
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
 
         ObjectTypeNode otnB = getObjectTypeNode(kbase, "B" );
@@ -2234,19 +2289,22 @@ public class PropertySpecificTest {
         assertThat(alphaNode.getInferredMask()).isEqualTo(calculatePositiveMask(otnB.getObjectType(), list("a", "b"), sp));
     }
 
-    @Test(timeout = 5000)
-    public void testBetaWith2RTNSinksExecNoLoop() throws Exception {
-        testBetaWith2RTNSinksExec(false);
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(5000)
+    public void testBetaWith2RTNSinksExecNoLoop(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
+        testBetaWith2RTNSinksExec(kieBaseTestConfiguration, false);
     }
 
-    @Test
-    public void testBetaWith2RTNSinksExecInfiniteLoop() throws Exception {
-        assertThatThrownBy(() -> testBetaWith2RTNSinksExec(true))
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testBetaWith2RTNSinksExecInfiniteLoop(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
+        assertThatThrownBy(() -> testBetaWith2RTNSinksExec(kieBaseTestConfiguration, true))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessageContaining("Exception executing consequence for rule \"R1\"");
     }
 
-    private void testBetaWith2RTNSinksExec(boolean addInfiniteLoopWatch) throws Exception {
+    private void testBetaWith2RTNSinksExec(KieBaseTestConfiguration kieBaseTestConfiguration, boolean addInfiniteLoopWatch) throws Exception {
         String rule = "package org.drools.mvel.integrationtests\n" +
                 "global java.util.concurrent.atomic.AtomicInteger counter\n" +
                 "declare A\n" +
@@ -2312,19 +2370,22 @@ public class PropertySpecificTest {
         }
     }
 
-    @Test(timeout = 5000)
-    public void testBetaWith2BetaSinksExecNoLoop() throws Exception {
-        testBetaWith2BetaSinksExec(false);
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(5000)
+    public void testBetaWith2BetaSinksExecNoLoop(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
+        testBetaWith2BetaSinksExec(kieBaseTestConfiguration, false);
     }
 
-    @Test
-    public void testBetaWith2BetaSinksExecInfiniteLoop() throws Exception {
-        assertThatThrownBy(() -> testBetaWith2BetaSinksExec(true))
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testBetaWith2BetaSinksExecInfiniteLoop(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
+        assertThatThrownBy(() -> testBetaWith2BetaSinksExec(kieBaseTestConfiguration, true))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessageContaining("Exception executing consequence for rule \"R1\"");
     }
 
-    private void testBetaWith2BetaSinksExec(boolean addInfiniteLoopWatch) throws Exception {
+    private void testBetaWith2BetaSinksExec(KieBaseTestConfiguration kieBaseTestConfiguration, boolean addInfiniteLoopWatch) throws Exception {
         String rule = "package org.drools.mvel.integrationtests\n" +
                 "global java.util.concurrent.atomic.AtomicInteger counter\n" +
                 "declare A\n" +
@@ -2397,8 +2458,10 @@ public class PropertySpecificTest {
         }
     }
 
-    @Test(timeout = 5000)
-    public void testTypeDeclarationInitializationForPropertyReactive() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(5000)
+    public void testTypeDeclarationInitializationForPropertyReactive(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // JBRULES-3686
         String rule = "package org.drools.mvel.integrationtests\n" +
                 "import java.util.Map;\n" +
@@ -2527,8 +2590,9 @@ public class PropertySpecificTest {
         PARAM_A, PARAM_B
     }
 
-    @Test
-    public void testRemovedPendingActivation() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testRemovedPendingActivation(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String rule = "declare Person\n" +
                 "@propertyReactive\n" +
                 "   name   : String\n" +
@@ -2580,8 +2644,8 @@ public class PropertySpecificTest {
 
     public static class LongFact {
 
-        private Long	longVal;
-        private Long	longDiff;
+        private Long    longVal;
+        private Long    longDiff;
 
         public LongFact( int i) {
             this.longVal = new Long(i);
@@ -2630,8 +2694,9 @@ public class PropertySpecificTest {
         }
     }
 
-    @Test
-    public void testAccLong() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testAccLong(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String rule =
                 "package com.sample.rules\n" +
                 "import " + LongFact.class.getCanonicalName() + "\n" +
@@ -2667,8 +2732,9 @@ public class PropertySpecificTest {
         assertThat(cnt).isEqualTo(NUM-1);
     }
 
-    @Test
-    public void testAccBigDecimal() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testAccBigDecimal(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-4896
         String rule =
                 "package com.sample.rules\n" +

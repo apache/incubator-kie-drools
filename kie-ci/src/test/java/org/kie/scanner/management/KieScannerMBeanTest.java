@@ -25,9 +25,9 @@ import javax.management.ObjectName;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.InternalKieScanner;
 import org.drools.core.util.FileManager;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.KieContainer;
@@ -43,7 +43,7 @@ public class KieScannerMBeanTest extends AbstractKieCiTest {
     
     private FileManager fileManager;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         MBeanUtils.setMBeanEnabled(true);
         System.setProperty(MBeanUtils.MBEANS_PROPERTY, "enabled");
@@ -51,7 +51,7 @@ public class KieScannerMBeanTest extends AbstractKieCiTest {
         this.fileManager.setUp();
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         this.fileManager.tearDown();
         System.setProperty(MBeanUtils.MBEANS_PROPERTY, "");

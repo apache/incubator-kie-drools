@@ -50,6 +50,7 @@ public interface Visitor<T> {
     T visit(QualifiedNameNode n);
     T visit(QuantifiedExpressionNode n);
     T visit(RangeNode n);
+    T visit(RangeTypeNode n);
     T visit(SignedUnaryNode n);
     T visit(StringNode n);
 
@@ -59,4 +60,5 @@ public interface Visitor<T> {
 
     T visit(UnaryTestListNode n);
     T visit(UnaryTestNode n);
+    T visit(UndefinedValueNode n);
 }

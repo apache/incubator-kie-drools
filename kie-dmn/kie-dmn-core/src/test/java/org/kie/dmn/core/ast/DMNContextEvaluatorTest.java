@@ -31,15 +31,13 @@ import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.api.core.ast.DecisionNode;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
 import org.kie.dmn.core.api.DMNFactory;
-import org.kie.dmn.core.api.EvaluatorResult;
+import org.kie.dmn.api.core.EvaluatorResult;
 import org.kie.dmn.core.impl.DMNDecisionResultImpl;
 import org.kie.dmn.core.impl.DMNResultImpl;
 import org.kie.dmn.core.impl.DMNResultImplFactory;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class DMNContextEvaluatorTest {
 
@@ -74,8 +72,8 @@ class DMNContextEvaluatorTest {
         DMNResultImpl result = createResult(dmnModel, context );
         DMNExpressionEvaluator evaluator = ed.getEvaluator();
         EvaluatorResult evaluated = evaluator.evaluate(runtime, result);
-        assertNotNull(evaluated);
-        assertEquals(EvaluatorResult.ResultType.SUCCESS, evaluated.getResultType());
+        assertThat(evaluated).isNotNull();
+        assertThat(evaluated.getResultType()).isEqualTo(EvaluatorResult.ResultType.SUCCESS);
     }
 
     private DMNResultImpl createResult(DMNModel model, DMNContext context) {

@@ -26,7 +26,6 @@ import java.util.List;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.runtime.FEELNumberFunction;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
-import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.dmn.feel.util.NumberEvalHelper;
 
 // based on the examples of calculations, stddev is supposed to return sample standard deviation, not population standard deviation
@@ -34,7 +33,7 @@ public class StddevFunction
         extends BaseFEELFunction implements FEELNumberFunction {
     public static final StddevFunction INSTANCE = new StddevFunction();
 
-    StddevFunction() {
+    private StddevFunction() {
         super("stddev");
     }
 
@@ -70,18 +69,6 @@ public class StddevFunction
         mean = total.divide( BigDecimal.valueOf( n - 1L ), MathContext.DECIMAL128 );
         return FEELFnResult.ofResult( SqrtFunction.sqrt( mean ) );
     }
-
-    public FEELFnResult<BigDecimal> invoke(@ParameterName("list") Object sole) {
-        if ( sole == null ) {
-            // Arrays.asList does not accept null as parameter
-            return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "list", "the single value list cannot be null"));
-        } else if (NumberEvalHelper.getBigDecimalOrNull(sole) == null) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "list",
-                                                                   "the value can not be converted to a number"));
-        }
-        return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "list",
-                                                               "sample standard deviation of a single sample is undefined"));
-        }
 
     public FEELFnResult<BigDecimal> invoke(@ParameterName("n") Object[] list) {
         if ( list == null ) {

@@ -132,6 +132,9 @@ public class GlobalExtractor extends BaseObjectClassFieldReader
             return false;
         }
         final GlobalExtractor other = (GlobalExtractor) obj;
+        if (!(this.identifier.equals(other.identifier))) {
+            return false;
+        }
         return this.objectType.equals( other.objectType );
     }
 

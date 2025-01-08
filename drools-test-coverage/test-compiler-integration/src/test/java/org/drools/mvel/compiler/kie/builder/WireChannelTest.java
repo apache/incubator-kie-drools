@@ -20,15 +20,14 @@ package org.drools.mvel.compiler.kie.builder;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -42,30 +41,23 @@ import org.kie.api.runtime.KieSession;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.generatePomXml;
 
-@RunWith(Parameterized.class)
 public class WireChannelTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public WireChannelTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
-    }
-
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
     private static final List<Object> channelMessages = new ArrayList<Object>();
     
-    @Test
-    public void testWireChannel() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testWireChannel(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         channelMessages.clear();
 
         KieServices ks = KieServices.Factory.get();
 
         ReleaseId releaseId = ks.newReleaseId("org.kie", "listener-test", "1.0");
-        build(ks, releaseId);
+        build(kieBaseTestConfiguration, ks, releaseId);
         KieContainer kieContainer = ks.newKieContainer(releaseId);
 
         KieSession ksession = kieContainer.newKieSession();
@@ -75,7 +67,7 @@ public class WireChannelTest {
         assertThat(channelMessages.get(0)).isEqualTo("Test Message");
     }
 
-    private void build(KieServices ks, ReleaseId releaseId) throws IOException {
+    private void build(KieBaseTestConfiguration kieBaseTestConfiguration, KieServices ks, ReleaseId releaseId) throws IOException {
         KieModuleModel kproj = ks.newKieModuleModel();
 
         KieSessionModel ksession1 = kproj.newKieBaseModel("KBase1").newKieSessionModel("KSession1").setDefault(true);

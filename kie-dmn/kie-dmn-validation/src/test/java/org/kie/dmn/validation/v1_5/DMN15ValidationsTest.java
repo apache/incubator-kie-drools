@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -39,8 +39,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.core.util.DynamicTypeUtils.prototype;
 
@@ -132,6 +130,12 @@ public class DMN15ValidationsTest {
         evaluate(modelNamespace, modelName, modelFileName, inputData);
     }
 
+    @Test
+    void localHrefsValidation() {
+        String modelFileName = "valid_models/DMNv1_5/LocalHrefs.dmn";
+        validate(modelFileName);
+    }
+
     private void commonUnnamedImportValidation(String importingModelRef, String importedModelRef) {
         String modelName = "Importing empty-named Model";
         String modelNamespace = "http://www.trisotech.com/dmn/definitions/_f79aa7a4-f9a3-410a-ac95-bea496edabgc";
@@ -149,9 +153,9 @@ public class DMN15ValidationsTest {
                                                        this.getClass()))
                 .toArray(value -> new Resource[allModelsFileNames.size()]);
         List<DMNMessage> dmnMessages = validatorBuilder.theseModels(resources);
-        assertNotNull(dmnMessages);
+        assertThat(dmnMessages).isNotNull();
         dmnMessages.forEach(dmnMessage -> LOG.error(dmnMessage.toString()));
-        assertTrue(dmnMessages.isEmpty());
+        assertThat(dmnMessages).isEmpty();
     }
 
     private void evaluate(String modelNamespace, String modelName, String modelFileName,

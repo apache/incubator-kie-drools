@@ -21,9 +21,9 @@ package org.drools.testcoverage.regression;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
 import org.kie.api.marshalling.Marshaller;
@@ -50,13 +50,13 @@ public class SerializationWithCollectTest {
     private KieBase kbase;
     private KieSession ksession;
 
-    @Before
+    @BeforeEach
     public void setup() {
         this.kbase = new KieHelper().addContent(DRL, ResourceType.DRL).build();
         this.ksession = kbase.newKieSession();
     }
 
-    @After
+    @AfterEach
     public void cleanup() {
         if (this.ksession != null) {
             this.ksession.dispose();

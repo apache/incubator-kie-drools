@@ -19,6 +19,7 @@
 package org.kie.dmn.core.compiler;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,10 +29,12 @@ import javax.xml.namespace.QName;
 
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.util.Either;
+import org.kie.dmn.model.api.Definitions;
 import org.kie.dmn.model.api.Import;
 import org.kie.dmn.model.v1_1.TImport;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 
 class ImportDMNResolverUtilTest {
 
@@ -154,12 +157,18 @@ class ImportDMNResolverUtilTest {
 
     @Test
     void locateInNSAliasedBadScenario() {
-        // this is a BAD scenario are in namespace `nsA` there are 2 models with the same name.
         final Import i = makeImport("nsA", "aliased", "mA");
         final List<QName> available = Arrays.asList(new QName("nsA", "mA"),
                                                     new QName("nsA", "mA"),
                                                     new QName("nsB", "m3"));
         final Either<String, QName> result = ImportDMNResolverUtil.resolveImportDMN(i, available, Function.identity());
+        assertThat(result.isLeft()).isTrue();
+    }
+
+    @Test
+    void emptyDMNCollection() {
+        final Import i = makeImport("nsA", "aliased", "mA");
+        final Either<String, QName> result = ImportDMNResolverUtil.resolveImportDMN(i, Collections.emptyList(), Function.identity());
         assertThat(result.isLeft()).isTrue();
     }
 
@@ -174,6 +183,10 @@ class ImportDMNResolverUtilTest {
             addAttributes.put(TImport.MODELNAME_QNAME, modelName);
         }
         i.setAdditionalAttributes(addAttributes);
+        final Definitions definitions = mock(Definitions.class);
+        definitions.setNamespace("ParentDMNNamespace");
+        definitions.setName("ParentDMN");
+        i.setParent(definitions);
         return i;
     }
 

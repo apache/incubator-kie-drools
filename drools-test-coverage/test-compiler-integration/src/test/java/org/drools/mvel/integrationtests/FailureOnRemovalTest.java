@@ -20,6 +20,7 @@ package org.drools.mvel.integrationtests;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.stream.Stream;
 
 import org.drools.drl.parser.DroolsParserException;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
@@ -27,10 +28,9 @@ import org.drools.core.impl.RuleBaseFactory;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.builder.KieModule;
@@ -45,7 +45,6 @@ import org.kie.internal.conf.ShareBetaNodesOption;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class FailureOnRemovalTest {
 
     private static final String  LS                   = System.getProperty( "line.separator" );
@@ -56,34 +55,29 @@ public class FailureOnRemovalTest {
     private static final boolean SHARE_BETA_NODES     = true;
     private static final boolean NOT_SHARE_BETA_NODES = false;
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public FailureOnRemovalTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testWithBetaNodeSharing(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
+        runTest(kieBaseTestConfiguration, SHARE_BETA_NODES );
     }
 
-    @Test
-    public void testWithBetaNodeSharing() throws Exception {
-        runTest( SHARE_BETA_NODES );
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testWithoutBetaNodeSharing(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
+        runTest(kieBaseTestConfiguration, NOT_SHARE_BETA_NODES );
     }
 
-    @Test
-    public void testWithoutBetaNodeSharing() throws Exception {
-        runTest( NOT_SHARE_BETA_NODES );
-    }
-
-    private void runTest(boolean shareBetaNodes) throws Exception {
-        InternalKnowledgeBase kbase = (InternalKnowledgeBase) createKnowledgeBase(shareBetaNodes);
-        Collection<KiePackage> rule1 = compileRule( RULE_1 );
+    private void runTest(KieBaseTestConfiguration kieBaseTestConfiguration, boolean shareBetaNodes) throws Exception {
+        InternalKnowledgeBase kbase = (InternalKnowledgeBase) createKnowledgeBase(kieBaseTestConfiguration, shareBetaNodes);
+        Collection<KiePackage> rule1 = compileRule(kieBaseTestConfiguration, RULE_1 );
         kbase.addPackages( rule1 );
 
         // we need to add at least two rules. Test will not fail with only one rule.
-        Collection<KiePackage> rule2 = compileRule( RULE_2 );
+        Collection<KiePackage> rule2 = compileRule(kieBaseTestConfiguration, RULE_2 );
         kbase.addPackages( rule2 );
 
         kbase.removeRule( PACKAGE,
@@ -95,11 +89,11 @@ public class FailureOnRemovalTest {
 
         assertThat(fired).isEqualTo(1);
 
-        Collection<KiePackage> rule3 = compileRule( RULE_3 );
+        Collection<KiePackage> rule3 = compileRule(kieBaseTestConfiguration, RULE_3 );
         kbase.addPackages( rule3 );
     }
 
-    private Collection<KiePackage> compileRule(String name) throws DroolsParserException,
+    private Collection<KiePackage> compileRule(KieBaseTestConfiguration kieBaseTestConfiguration, String name) throws DroolsParserException,
                                                                  IOException {
         String drl = getDrl( name );
         System.out.println(drl);
@@ -112,7 +106,7 @@ public class FailureOnRemovalTest {
         return kconf;
     }
 
-    private KieBase createKnowledgeBase(boolean shareBetaNodes) {
+    private KieBase createKnowledgeBase(KieBaseTestConfiguration kieBaseTestConfiguration, boolean shareBetaNodes) {
         KieBaseConfiguration ruleBaseConfiguration = createKnowledgeBaseConfiguration( shareBetaNodes );
         final KieModule kieModule = KieUtil.getKieModuleFromResources("test", kieBaseTestConfiguration);
         return KieBaseUtil.newKieBaseFromReleaseId(kieModule.getReleaseId(), ruleBaseConfiguration);

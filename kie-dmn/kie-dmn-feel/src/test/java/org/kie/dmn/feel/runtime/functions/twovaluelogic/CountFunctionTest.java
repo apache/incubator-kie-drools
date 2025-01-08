@@ -23,18 +23,12 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.runtime.functions.FunctionTestUtil;
 
 class CountFunctionTest {
 
-    private NNCountFunction countFunction;
-
-    @BeforeEach
-    void setUp() {
-        countFunction = new NNCountFunction();
-    }
+    private static final NNCountFunction countFunction = NNCountFunction.INSTANCE;
 
     @Test
     void invokeParamListNull() {

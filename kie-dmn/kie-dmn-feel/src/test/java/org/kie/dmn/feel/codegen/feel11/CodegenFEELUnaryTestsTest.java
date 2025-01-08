@@ -34,6 +34,7 @@ import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
 import org.kie.dmn.feel.parser.feel11.ASTBuilderVisitor;
 import org.kie.dmn.feel.parser.feel11.FEELParser;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser;
+import org.kie.dmn.feel.util.EvaluationContextTestUtil;
 import org.kie.dmn.feel.util.NumberEvalHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -98,7 +99,7 @@ public class CodegenFEELUnaryTestsTest {
         FEELEventListenersManager mgr = new FEELEventListenersManager();
         SyntaxErrorListener listener = new SyntaxErrorListener();
         mgr.addListener(listener);
-        EvaluationContext emptyContext = CodegenTestUtil.newEmptyEvaluationContext(mgr);
+        EvaluationContext emptyContext = EvaluationContextTestUtil.newEmptyEvaluationContext(mgr);
         CompiledFEELUnaryTests compiledUnaryTests = parse(feelLiteralExpression, mgr, listener);
         LOG.debug("{}", compiledUnaryTests);
         List<Boolean> result = compiledUnaryTests.getUnaryTests()

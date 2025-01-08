@@ -42,6 +42,12 @@ public class DecisionTableFactory {
         return getDecisionTableProvider().loadFromInputStreamWithTemplates( resource, configuration );
     }
 
+    public static void clearCompilerCache() {
+        if (provider != null) {
+            provider.clearCompilerCache();
+        }
+    }
+
     public static synchronized void setDecisionTableProvider(DecisionTableProvider provider) {
         DecisionTableFactory.provider = provider;
     }

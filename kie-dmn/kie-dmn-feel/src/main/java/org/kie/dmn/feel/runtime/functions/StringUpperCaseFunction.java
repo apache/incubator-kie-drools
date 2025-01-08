@@ -27,7 +27,7 @@ public class StringUpperCaseFunction
 
     public static final StringUpperCaseFunction INSTANCE = new StringUpperCaseFunction();
 
-    public StringUpperCaseFunction() {
+    private StringUpperCaseFunction() {
         super( "upper case" );
     }
 

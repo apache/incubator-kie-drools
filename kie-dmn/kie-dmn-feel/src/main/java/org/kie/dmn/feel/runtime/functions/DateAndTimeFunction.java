@@ -57,7 +57,7 @@ public class DateAndTimeFunction
                                                                  .toFormatter();
     }
 
-    public DateAndTimeFunction() {
+    private DateAndTimeFunction() {
         super(FEELConversionFunctionNames.DATE_AND_TIME);
     }
 

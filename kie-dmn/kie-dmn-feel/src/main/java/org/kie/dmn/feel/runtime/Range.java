@@ -36,4 +36,6 @@ public interface Range {
 
     Boolean includes(FEELDialect feelDialect, Object param);
 
+    boolean isWithUndefined();
+
 }

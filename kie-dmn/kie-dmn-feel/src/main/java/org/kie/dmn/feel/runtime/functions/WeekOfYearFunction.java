@@ -29,7 +29,7 @@ import org.kie.dmn.feel.util.NumberEvalHelper;
 public class WeekOfYearFunction extends BaseFEELFunction {
     public static final WeekOfYearFunction INSTANCE = new WeekOfYearFunction();
 
-    WeekOfYearFunction() {
+    private WeekOfYearFunction() {
         super("week of year");
     }
 

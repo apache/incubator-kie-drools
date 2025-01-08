@@ -37,7 +37,7 @@ public class NNStddevFunction
         extends BaseFEELFunction {
     public static final NNStddevFunction INSTANCE = new NNStddevFunction();
 
-    NNStddevFunction() {
+    private NNStddevFunction() {
         super("nn stddev");
     }
 

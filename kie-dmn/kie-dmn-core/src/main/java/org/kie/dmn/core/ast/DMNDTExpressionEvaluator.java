@@ -19,7 +19,6 @@
 package org.kie.dmn.core.ast;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -32,8 +31,8 @@ import org.kie.dmn.api.core.ast.DMNNode;
 import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
-import org.kie.dmn.core.api.EvaluatorResult;
-import org.kie.dmn.core.api.EvaluatorResult.ResultType;
+import org.kie.dmn.api.core.EvaluatorResult;
+import org.kie.dmn.api.core.EvaluatorResult.ResultType;
 import org.kie.dmn.core.impl.DMNResultImpl;
 import org.kie.dmn.core.impl.DMNRuntimeEventManagerUtils;
 import org.kie.dmn.core.impl.DMNRuntimeImpl;
@@ -104,7 +103,11 @@ public class DMNDTExpressionEvaluator
             r = processEvents( events, dmrem, result, node );
             return new EvaluatorResultImpl( dtr, r.hasErrors ? ResultType.FAILURE : ResultType.SUCCESS );
         } finally {
-            DMNRuntimeEventManagerUtils.fireAfterEvaluateDecisionTable( dmrem, node.getName(), dt.getName(), dtNodeId, result, (r != null ? r.matchedRules : null), (r != null ? r.fired : null) );
+            DMNRuntimeEventManagerUtils.fireAfterEvaluateDecisionTable( dmrem, node.getName(), dt.getName(), dtNodeId, result,
+                                                                        (r != null ? r.matchedRules : null),
+                                                                        (r != null ? r.fired : null),
+                                                                        (r != null ? r.matchedIds : null),
+                                                                        (r != null ? r.firedIds : null));
         }
     }
 
@@ -113,8 +116,10 @@ public class DMNDTExpressionEvaluator
         for ( FEELEvent e : events ) {
             if ( e instanceof DecisionTableRulesMatchedEvent ) {
                 r.matchedRules = ((DecisionTableRulesMatchedEvent) e).getMatches();
+                r.matchedIds = ((DecisionTableRulesMatchedEvent) e).getMatchesIds();
             } else if ( e instanceof DecisionTableRulesSelectedEvent ) {
                 r.fired = ((DecisionTableRulesSelectedEvent) e).getFired();
+                r.firedIds = ((DecisionTableRulesSelectedEvent) e).getFiredIds();
             } else if ( e.getSeverity() == FEELEvent.Severity.ERROR ) {
                 MsgUtil.reportMessage( logger,
                                        DMNMessage.Severity.ERROR,
@@ -144,6 +149,8 @@ public class DMNDTExpressionEvaluator
         public boolean hasErrors = false;
         public List<Integer> matchedRules;
         public List<Integer> fired;
+        public List<String> matchedIds;
+        public List<String> firedIds;
     }
     
 

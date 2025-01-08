@@ -30,7 +30,7 @@ import org.kie.dmn.feel.util.NumberEvalHelper;
 public class DayOfYearFunction extends BaseFEELFunction implements FEELNumberFunction {
     public static final DayOfYearFunction INSTANCE = new DayOfYearFunction();
 
-    DayOfYearFunction() {
+    private DayOfYearFunction() {
         super("day of year");
     }
 

@@ -25,11 +25,12 @@ import org.drools.core.SessionConfiguration;
 import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.time.impl.JDKTimerServiceTest.HelloWorldJob;
 import org.drools.core.time.impl.JDKTimerServiceTest.HelloWorldJobContext;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class CronJobTest {
+	
     @Test
     public void testCronTriggerJob() throws Exception {
         SessionConfiguration config = RuleBaseFactory.newKnowledgeSessionConfiguration().as(SessionConfiguration.KEY);

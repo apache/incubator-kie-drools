@@ -39,12 +39,11 @@ import org.drools.mvel.compiler.oopath.model.Thing;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.rules.TestName;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.Message;
@@ -73,30 +72,20 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class QueryTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public QueryTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
-    }
-
-    @org.junit.Rule
-    public TestName testName = new TestName();
-
-    @Before
-    public void before() {
-       System.out.println( "] " + testName.getMethodName());
+    @BeforeEach
+    public void before(TestInfo info) {
+       System.out.println( "] " + info.getTestMethod().get().getName());
     }
 
     private static QueryResults getQueryResults(KieSession session, String queryName, Object... arguments ) throws Exception {
@@ -172,8 +161,9 @@ public class QueryTest {
         return JAXBContext.newInstance(jaxbClasses);
     }
 
-    @Test
-    public void testQuery2() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testQuery2(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_Query.drl");
         KieSession session = kbase.newKieSession();
 
@@ -184,8 +174,9 @@ public class QueryTest {
         assertThat(results.iterator().next().get("assertedobj")).isEqualTo(new InsertedObject("value1" ));
     }
 
-    @Test
-    public void testQueryWithParams() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testQueryWithParams(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_QueryWithParams.drl");
         KieSession session = kbase.newKieSession();
 
@@ -215,8 +206,9 @@ public class QueryTest {
         assertThat(results.iterator().next().get("assertedobj")).isEqualTo(new InsertedObject( "value2" ));
     }
 
-    @Test
-    public void testQueryWithMultipleResultsOnKnowledgeApi() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testQueryWithMultipleResultsOnKnowledgeApi(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String str = "";
         str += "package org.drools.mvel.compiler.test  \n";
         str += "import org.drools.mvel.compiler.Cheese \n";
@@ -284,8 +276,9 @@ public class QueryTest {
         assertThat(newSet).isEqualTo(set);
     }
 
-    @Test
-    public void testTwoQuerries() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testTwoQuerries(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         // @see JBRULES-410 More than one Query definition causes an incorrect
         // Rete network to be built.
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_TwoQuerries.drl");
@@ -311,8 +304,9 @@ public class QueryTest {
         assertThat(results.size()).isEqualTo(1);
     }
 
-    @Test
-    public void testDoubleQueryWithExists() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testDoubleQueryWithExists(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_DoubleQueryWithExists.drl");
         KieSession session = kbase.newKieSession();
 
@@ -385,8 +379,9 @@ public class QueryTest {
         assertThat(results.size()).isEqualTo(2);
     }
 
-    @Test
-    public void testQueryWithCollect() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testQueryWithCollect(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_Query.drl");
         KieSession session = kbase.newKieSession();
         session.fireAllRules();
@@ -400,8 +395,9 @@ public class QueryTest {
         assertThat(list.size()).isEqualTo(2);
     }
 
-    @Test
-    public void testDroolsQueryCleanup() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testDroolsQueryCleanup(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_QueryMemoryLeak.drl");
 
         KieSession ksession = kbase.newKieSession();
@@ -444,8 +440,9 @@ public class QueryTest {
         assertThat(it.hasNext()).isFalse();
     }
 
-    @Test
-    public void testQueriesWithVariableUnification() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testQueriesWithVariableUnification(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String str = "";
         str += "package org.drools.mvel.compiler.test  \n";
         str += "import org.drools.mvel.compiler.Person \n";
@@ -528,8 +525,9 @@ public class QueryTest {
         assertThat(names.contains("darth")).isTrue();
     }
 
-    @Test
-    public void testQueriesWithVariableUnificationOnPatterns() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testQueriesWithVariableUnificationOnPatterns(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String str = "";
         str += "package org.drools.mvel.compiler.test  \n";
         str += "import org.drools.mvel.compiler.Person \n";
@@ -582,8 +580,9 @@ public class QueryTest {
         assertThat(names.contains("darth")).isTrue();
     }
 
-    @Test
-    public void testQueriesWithVariableUnificationOnNestedFields() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testQueriesWithVariableUnificationOnNestedFields(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String str = "";
         str += "package org.drools.mvel.compiler.test  \n";
         str += "import org.drools.mvel.compiler.Person \n";
@@ -625,8 +624,9 @@ public class QueryTest {
         assertThat(names.contains("darth")).isTrue();
     }
 
-    @Test
-    public void testOpenQuery() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testOpenQuery(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String str = "";
         str += "package org.drools.mvel.compiler.test  \n";
         str += "import org.drools.mvel.compiler.Cheese \n";
@@ -788,17 +788,19 @@ public class QueryTest {
         assertThat(updated.size()).isEqualTo(1);
     }
 
-    @Test
-    public void testStandardQueryListener() throws IOException, ClassNotFoundException {
-        runQueryListenerTest( QueryListenerOption.STANDARD );
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testStandardQueryListener(KieBaseTestConfiguration kieBaseTestConfiguration) throws IOException, ClassNotFoundException {
+        runQueryListenerTest(kieBaseTestConfiguration, QueryListenerOption.STANDARD );
     }
 
-    @Test
-    public void testNonCloningQueryListener() throws IOException, ClassNotFoundException {
-        runQueryListenerTest( QueryListenerOption.LIGHTWEIGHT );
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testNonCloningQueryListener(KieBaseTestConfiguration kieBaseTestConfiguration) throws IOException, ClassNotFoundException {
+        runQueryListenerTest(kieBaseTestConfiguration, QueryListenerOption.LIGHTWEIGHT );
     }
 
-    public void runQueryListenerTest( QueryListenerOption option ) throws IOException, ClassNotFoundException {
+    public void runQueryListenerTest(KieBaseTestConfiguration kieBaseTestConfiguration , QueryListenerOption option) throws IOException, ClassNotFoundException {
         String str = "";
         str += "package org.drools.mvel.integrationtests\n";
         str += "import " + Cheese.class.getCanonicalName() + " \n";
@@ -828,8 +830,9 @@ public class QueryTest {
         }
     }
 
-    @Test
-    public void testQueryWithEval() throws IOException, ClassNotFoundException {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testQueryWithEval(KieBaseTestConfiguration kieBaseTestConfiguration) throws IOException, ClassNotFoundException {
         // [Regression in 5.2.0.M2]: NPE during rule evaluation on MVELPredicateExpression.evaluate(MVELPredicateExpression.java:82)
 
         String str = "package org.drools.mvel.integrationtests\n" +
@@ -860,8 +863,9 @@ public class QueryTest {
         ksession.dispose();
     }
 
-    @Test
-    public void testQueryWithIncompatibleArgs() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testQueryWithIncompatibleArgs(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String drl = "global java.util.List list; " +
                      "" +
                      "query foo( String $s, String $s, String $s ) end " +
@@ -878,8 +882,9 @@ public class QueryTest {
         assertThat(errors.size()).isEqualTo(2);
     }
 
-    @Test
-    public void testQueryWithSyntaxError() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testQueryWithSyntaxError(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String drl = "global java.util.List list; " +
                      "" +
                      "query foo( Integer $i ) end " +
@@ -896,8 +901,9 @@ public class QueryTest {
         assertThat(errors.size()).isEqualTo(1);
     }
 
-    @Test
-    public void testQueryWithWrongParamNumber() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testQueryWithWrongParamNumber(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String drl = "global java.util.List list; " +
                      "" +
                      "query foo( Integer $i ) end " +
@@ -917,8 +923,9 @@ public class QueryTest {
 
 
 
-    @Test
-    public void testGlobalsInQueries() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testGlobalsInQueries(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String drl = "\n" +
                      "package com.sample\n" +
                      "\n" +
@@ -962,8 +969,9 @@ public class QueryTest {
     }
 
 
-    @Test
-    public void testQueryWithClassArg() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testQueryWithClassArg(KieBaseTestConfiguration kieBaseTestConfiguration) {
         //DROOLS-590
         String drl = "global java.util.List list; " +
                      "" +
@@ -1001,8 +1009,9 @@ public class QueryTest {
         assertThat(list).isEqualTo(Arrays.asList("aa", "bb"));
     }
 
-    @Test
-    public void testPassGlobalToNestedQuery() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testPassGlobalToNestedQuery(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-851
         String drl = "global java.util.List list;\n" +
                      "global Integer number;\n" +
@@ -1035,8 +1044,9 @@ public class QueryTest {
         assertThat(list).isEqualTo(List.of("Bye"));
     }
 
-    @Test
-    public void testQueryWithAccessorAsArgument() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testQueryWithAccessorAsArgument(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         // DROOLS-414
         String str =
                 "import org.drools.mvel.compiler.Person\n" +
@@ -1073,8 +1083,9 @@ public class QueryTest {
         }
     }
 
-    @Test
-    public void testQueryWithExpressionAsArgument() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testQueryWithExpressionAsArgument(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         // DROOLS-414
         String str =
                 "import org.drools.mvel.compiler.Person\n" +
@@ -1114,8 +1125,9 @@ public class QueryTest {
         }
     }
 
-    @Test
-    public void testNotExistingDeclarationInQuery() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testNotExistingDeclarationInQuery(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-414
         String drl =
                 "import org.drools.compiler.Person\n" +
@@ -1138,8 +1150,9 @@ public class QueryTest {
         assertThat(errors.isEmpty()).as("Should have an error").isFalse();
     }
 
-    @Test
-    public void testQueryInSubnetwork() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testQueryInSubnetwork(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-1386
         String str = "query myquery(Integer $i)\n" +
                      "   $i := Integer()\n" +
@@ -1168,8 +1181,9 @@ public class QueryTest {
         ksession.fireAllRules();
     }
 
-    @Test
-    public void testOpenQueryNoParams() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testOpenQueryNoParams(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         // RHDM-717
         String str = "";
         str += "package org.drools.mvel.compiler.test  \n";
@@ -1295,8 +1309,9 @@ public class QueryTest {
         }
     }
 
-    @Test
-    public void testQueryWithOptionalOr() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testQueryWithOptionalOr(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-1386
         String str =
                 "package org.test\n" +
@@ -1325,8 +1340,9 @@ public class QueryTest {
         assertThat(row.get("$visible")).isSameAs(questionVisible);
     }
 
-    @Test
-    public void testQueryWithFrom() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testQueryWithFrom(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
                 "import org.drools.mvel.compiler.oopath.model.Thing;\n" +
                 "query isContainedIn( Thing $x, Thing $y )\n" +

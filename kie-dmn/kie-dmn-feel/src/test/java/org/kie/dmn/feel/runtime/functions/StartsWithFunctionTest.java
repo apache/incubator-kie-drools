@@ -18,22 +18,17 @@
  */
 package org.kie.dmn.feel.runtime.functions;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
 class StartsWithFunctionTest {
 
-    private StartsWithFunction startsWithFunction;
-
-    @BeforeEach
-    void setUp() {
-        startsWithFunction = new StartsWithFunction();
-    }
+    private static final StartsWithFunction startsWithFunction = StartsWithFunction.INSTANCE;
 
     @Test
     void invokeNull() {
-        FunctionTestUtil.assertResultError(startsWithFunction.invoke((String) null, null), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(startsWithFunction.invoke((String) null, null),
+                                           InvalidParametersEvent.class);
         FunctionTestUtil.assertResultError(startsWithFunction.invoke(null, "test"), InvalidParametersEvent.class);
         FunctionTestUtil.assertResultError(startsWithFunction.invoke("test", null), InvalidParametersEvent.class);
     }

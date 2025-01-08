@@ -20,7 +20,7 @@ package org.drools.util;
 
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.util.StringUtils.getPkgUUID;
@@ -237,6 +237,111 @@ public class StringUtilsTest {
         String retrieved = getPkgUUID(gav, packageName);
         String expected = md5Hash(gav+packageName);
         assertThat(retrieved).isEqualTo(expected);
+    }
+
+    @Test
+    public void testExtractFirstIdentifierWithStringBuilder() {
+        // Not-quoted string, interpreted as identifier
+        String string = "IDENTIFIER";
+        String expected = string;
+        StringBuilder builder = new StringBuilder();
+        int start = 0;
+        int retrieved = StringUtils.extractFirstIdentifier(string, builder, start);
+        assertThat(retrieved).isEqualTo(string.length()); // retrieved size is equals to the length of given string
+        assertThat(builder.toString()).isEqualTo(expected);
+
+        // Quoted string, not interpreted as identifier
+        string = "\"IDENTIFIER\"";
+        expected = "";
+        builder = new StringBuilder();
+        retrieved = StringUtils.extractFirstIdentifier(string, builder, start);
+        assertThat(retrieved).isEqualTo(string.length());
+        assertThat(builder.toString()).isEqualTo(expected);
+
+        // Only the not-quoted string, and its size, is returned
+        string = "IDENTIFIER \"";
+        expected = "IDENTIFIER";
+        builder = new StringBuilder();
+        retrieved = StringUtils.extractFirstIdentifier(string, builder, start);
+        assertThat(retrieved).isEqualTo(expected.length()); // it returns the index where the identifier ends
+        assertThat(builder.toString()).isEqualTo(expected);
+
+        string = "IDENTIFIER \"the_identifier";
+        expected = "IDENTIFIER";
+        builder = new StringBuilder();
+        retrieved = StringUtils.extractFirstIdentifier(string, builder, start);
+        assertThat(retrieved).isEqualTo(expected.length()); // it returns the index where the identifier ends
+        assertThat(builder.toString()).isEqualTo(expected);
+
+        string = "\"the_identifier\" IDENTIFIER";
+        expected = "IDENTIFIER";
+        builder = new StringBuilder();
+        retrieved = StringUtils.extractFirstIdentifier(string, builder, start);
+        assertThat(retrieved).isEqualTo(string.length()); // it returns the index where the identifier ends
+        assertThat(builder.toString()).isEqualTo(expected);
+
+        // Quoted string, not interpreted as identifier, starting at arbitrary position
+        string = "THIS IS BEFORE \"IDENTIFIER\"";
+        expected = "";
+        builder = new StringBuilder();
+        start = 14;
+        retrieved = StringUtils.extractFirstIdentifier(string, builder, start);
+        assertThat(retrieved).isEqualTo(string.length());
+        assertThat(builder.toString()).isEqualTo(expected);
+
+        // Only the not-quoted string, and its size, is returned, starting at arbitrary position
+        string = "THIS IS BEFORE IDENTIFIER \"";
+        expected = "IDENTIFIER";
+        builder = new StringBuilder();
+        retrieved = StringUtils.extractFirstIdentifier(string, builder, start);
+        assertThat(retrieved).isEqualTo(25); // it returns the index where the identifier ends
+        assertThat(builder.toString()).isEqualTo(expected);
+
+        string = "IDENTIFIER \"the_identifier";
+        expected = "";
+        builder = new StringBuilder();
+        start = 10;
+        retrieved = StringUtils.extractFirstIdentifier(string, builder, start);
+        assertThat(retrieved).isEqualTo(string.length()); // it returns the index where the identifier ends
+        assertThat(builder.toString()).isEqualTo(expected);
+
+        string = "IDENTIFIER \"the_identifier";
+        expected = "";
+        builder = new StringBuilder();
+        start = 10;
+        retrieved = StringUtils.extractFirstIdentifier(string, builder, start);
+        assertThat(retrieved).isEqualTo(string.length()); // it returns the index where the identifier ends
+        assertThat(builder.toString()).isEqualTo(expected);
+
+        string = "\"not an ' identifier\"";
+        expected = "";
+        builder = new StringBuilder();
+        start = 0;
+        retrieved = StringUtils.extractFirstIdentifier(string, builder, start);
+        assertThat(retrieved).isEqualTo(string.length()); // it returns the whole string length
+        assertThat(builder.toString()).isEqualTo(expected);
+
+        string = "'not an \" identifier'";
+        expected = "";
+        builder = new StringBuilder();
+        retrieved = StringUtils.extractFirstIdentifier(string, builder, start);
+        assertThat(retrieved).isEqualTo(string.length()); // it returns the whole string length
+        assertThat(builder.toString()).isEqualTo(expected);
+
+        string = "'not an \" identifier\"'";
+        expected = "";
+        builder = new StringBuilder();
+        retrieved = StringUtils.extractFirstIdentifier(string, builder, start);
+        assertThat(retrieved).isEqualTo(string.length()); // it returns the whole string length
+        assertThat(builder.toString()).isEqualTo(expected);
+
+        string = "\"an \" IDENTIFIER";
+        expected = "IDENTIFIER";
+        builder = new StringBuilder();
+        retrieved = StringUtils.extractFirstIdentifier(string, builder, start);
+        assertThat(retrieved).isEqualTo(string.length()); // it returns the index where the identifier ends
+        assertThat(builder.toString()).isEqualTo(expected);
+
     }
 
     @Test

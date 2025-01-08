@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+<definitions xmlns="https://www.omg.org/spec/DMN/20230324/MODEL/" expressionLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/" namespace="https://kie.org/dmn/_C41C5BB7-C6D3-44AC-AA11-8C6669A1067C" id="_69D088B2-80FE-4F9B-9F30-E7AB04CBE95D" name="DMN_9A35369C-E843-446F-A720-2A41B827FB8D" xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="https://kie.org/dmn/extensions/1.0">
+  <inputData name="Person Age" id="_143F7897-5935-45CF-94FF-2A660AF9D575">
+    <variable name="Person Age" id="_8F1725BA-E882-4FD8-A0A2-D79BD7BE8A3B" typeRef="number" />
+  </inputData>
+  <decision name="Can Drive?" id="_629A673D-F07E-4920-959A-A399778A2FB1">
+    <variable id="_3F802AED-D9CF-487B-BF74-6E6D3DF01F3D" typeRef="boolean" name="Can Drive?" />
+    <literalExpression id="_69D8D9DE-7FC5-4790-9A97-FD88D753967F" typeRef="boolean" label="Can Drive?">
+      <text>Person Age &gt;= 18</text>
+    </literalExpression>
+  </decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_05D2BE82-1F20-4DAF-B53D-FB62B69D565D" name="Default DRD" useAlternativeInputDataShape="false">
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_69D8D9DE-7FC5-4790-9A97-FD88D753967F">
+            <kie:width>190</kie:width>
+          </kie:ComponentWidths>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="_1311B49F-C640-44F9-A4AC-BE98616A5E94" dmnElementRef="_143F7897-5935-45CF-94FF-2A660AF9D575" isCollapsed="false" isListedInputData="false">
+        <dc:Bounds x="100" y="300" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="_FC1B72CB-64CA-4DCE-A7CF-CC96125EE8FE" dmnElementRef="_629A673D-F07E-4920-959A-A399778A2FB1" isCollapsed="false" isListedInputData="false">
+        <dc:Bounds x="100" y="100" width="160" height="80" />
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>

@@ -30,7 +30,7 @@ public class SplitFunction
         extends BaseFEELFunction implements FEELCollectionFunction {
     public static final SplitFunction INSTANCE = new SplitFunction();
 
-    SplitFunction() {
+    private SplitFunction() {
         super( "split" );
     }
 

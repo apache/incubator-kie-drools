@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -72,12 +72,14 @@ import org.kie.dmn.feel.lang.ast.PathExpressionNode;
 import org.kie.dmn.feel.lang.ast.QualifiedNameNode;
 import org.kie.dmn.feel.lang.ast.QuantifiedExpressionNode;
 import org.kie.dmn.feel.lang.ast.RangeNode;
+import org.kie.dmn.feel.lang.ast.RangeTypeNode;
 import org.kie.dmn.feel.lang.ast.SignedUnaryNode;
 import org.kie.dmn.feel.lang.ast.StringNode;
 import org.kie.dmn.feel.lang.ast.TemporalConstantNode;
 import org.kie.dmn.feel.lang.ast.TypeNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestListNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestNode;
+import org.kie.dmn.feel.lang.ast.UndefinedValueNode;
 import org.kie.dmn.feel.lang.impl.JavaBackedType;
 import org.kie.dmn.feel.lang.impl.MapBackedType;
 import org.kie.dmn.feel.lang.types.AliasFEELType;
@@ -136,12 +138,14 @@ import static org.kie.dmn.feel.codegen.feel11.DMNCodegenConstants.PATHEXPRESSION
 import static org.kie.dmn.feel.codegen.feel11.DMNCodegenConstants.QUALIFIEDNAMENODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.DMNCodegenConstants.QUANTIFIEDEXPRESSIONNODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.DMNCodegenConstants.RANGENODE_CT;
+import static org.kie.dmn.feel.codegen.feel11.DMNCodegenConstants.RANGETYPENODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.DMNCodegenConstants.SIGNEDUNARYNODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.DMNCodegenConstants.STRINGNODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.DMNCodegenConstants.TEMPORALCONSTANTNODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.DMNCodegenConstants.TYPE_CT;
 import static org.kie.dmn.feel.codegen.feel11.DMNCodegenConstants.UNARYTESTLISTNODE_CT;
 import static org.kie.dmn.feel.codegen.feel11.DMNCodegenConstants.UNARYTESTNODE_CT;
+import static org.kie.dmn.feel.codegen.feel11.DMNCodegenConstants.UNDEFINEDVALUENODE_CT;
 import static org.kie.dmn.feel.util.CodegenUtils.getEnumExpression;
 import static org.kie.dmn.feel.util.CodegenUtils.getListExpression;
 import static org.kie.dmn.feel.util.CodegenUtils.getStringLiteralExpr;
@@ -431,6 +435,12 @@ public class ASTCompilerHelper {
                                                                                        endExpression), n.getText());
     }
 
+    public BlockStmt add(RangeTypeNode n) {
+        Expression genTypeNodeExpression = getNodeExpression(n.getGenericTypeNode());
+        return addVariableDeclaratorWithObjectCreation(RANGETYPENODE_CT, NodeList.nodeList(genTypeNodeExpression),
+                n.getText());
+    }
+
     public BlockStmt add(SignedUnaryNode n) {
         Expression signExpression = getEnumExpression(n.getSign());
         Expression expressionExpression = getNodeExpression(n.getExpression());
@@ -452,12 +462,7 @@ public class ASTCompilerHelper {
             Class fnClass = fn.getClass();
             ClassOrInterfaceType fn_CT = parseClassOrInterfaceType(fnClass.getCanonicalName());
             Expression fn_N = new NameExpr(fnClass.getCanonicalName());
-            if (fnClass.getPackageName().equals(EXTENDED_FUNCTION_PACKAGE)) {
-                addVariableDeclaratorWithWithFieldAccess(fn_CT, INSTANCE_S, fn_N);
-            } else {
-                addVariableDeclaratorWithObjectCreation(fn_CT,
-                                                        NodeList.nodeList());
-            }
+            addVariableDeclaratorWithWithFieldAccess(fn_CT, INSTANCE_S, fn_N);
             fnVariableNameExpression = new NameExpr(lastVariableName.get());
         } else {
             fnVariableNameExpression = new NullLiteralExpr();
@@ -483,6 +488,10 @@ public class ASTCompilerHelper {
         return addVariableDeclaratorWithObjectCreation(UNARYTESTNODE_CT, NodeList.nodeList(opExpression,
                                                                                            valueExpression),
                                                        n.getText());
+    }
+
+    public BlockStmt add(UndefinedValueNode n) {
+        return addVariableDeclaratorWithObjectCreation(UNDEFINEDVALUENODE_CT, NodeList.nodeList());
     }
 
     public String getLastVariableName() {

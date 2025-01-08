@@ -149,16 +149,16 @@
     </dependency>
 
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
       <scope>test</scope>
-    </dependency>
+    </dependency>    
 
     <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
       <scope>test</scope>
-    </dependency>    
+    </dependency>
   </dependencies>
 
   <build>
@@ -235,4 +235,31 @@
     </plugins>
   </build>
 
+  <profiles>
+    <profile>
+      <id>runTurtleTests</id>
+      <activation>
+        <property>
+          <name>runTurtleTests</name>
+        </property>
+      </activation>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <artifactId>maven-surefire-plugin</artifactId>
+		    <configuration>
+		        <systemProperties>
+		            <property>
+		                <name>runTurtleTests</name>
+		                <value>true</value>
+		            </property>
+		        </systemProperties>
+    		</configuration>            
+    		</plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
+    </profile>
+  </profiles>
 </project>

@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -29,7 +29,7 @@ import org.kie.dmn.feel.lang.ast.InfixOperator;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.runtime.functions.CountFunction;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.openapi.impl.SchemaMapperTestUtils.FEEL_NUMBER;
 import static org.kie.dmn.openapi.impl.SchemaMapperTestUtils.getSchemaForSimpleType;
 
@@ -55,8 +55,8 @@ class FEELFunctionSchemaMapperTest {
                     expectedMaximum = rightValue;
                 }
             }
-            assertEquals(expectedMinimum, toPopulate.getMinItems());
-            assertEquals(expectedMaximum, toPopulate.getMaxItems());
+            assertThat(toPopulate.getMinItems()).isEqualTo(expectedMinimum);
+            assertThat(toPopulate.getMaxItems()).isEqualTo(expectedMaximum);
         });
     }
 }

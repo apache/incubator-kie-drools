@@ -19,18 +19,17 @@
 package org.drools.mvel.integrationtests;
 
 import java.io.File;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import org.drools.mvel.compiler.Message;
 import org.drools.mvel.expr.MVELDebugHandler;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.logger.KieRuntimeLogger;
 import org.kie.api.runtime.KieSession;
@@ -44,25 +43,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * This is a sample class to launch a rule.
  */
-@RunWith(Parameterized.class)
 public class HelloWorldTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public HelloWorldTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
-    }
-
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
+    public static Stream<KieBaseTestConfiguration> parameters() {
         // not for exec-model
-        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+        return TestParametersUtil2.getKieBaseCloudConfigurations(false).stream();
     }
 
-    @Test
-    public void testHelloWorld() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testHelloWorld(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         // load up the knowledge base
-        KieBase kbase = readKnowledgeBase();
+        KieBase kbase = readKnowledgeBase(kieBaseTestConfiguration);
         KieSession ksession = kbase.newKieSession();
         File testTmpDir = new File("target/test-tmp/");
         testTmpDir.mkdirs();
@@ -77,8 +69,9 @@ public class HelloWorldTest {
         logger.close();
     }
 
-    @Test
-    public void testHelloWorldDebug() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testHelloWorldDebug(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         final Set<String> knownVariables = new HashSet<String>();
         MVELRuntime.resetDebugger();
         MVELDebugHandler.setDebugMode(true);
@@ -92,7 +85,7 @@ public class HelloWorldTest {
         String source = "org.drools.integrationtests.Rule_Hello_World";
         MVELRuntime.registerBreakpoint(source, 1);
         // load up the knowledge base
-        KieBase kbase = readKnowledgeBase();
+        KieBase kbase = readKnowledgeBase(kieBaseTestConfiguration);
         KieSession ksession = kbase.newKieSession();
         File testTmpDir = new File("target/test-tmp/");
         testTmpDir.mkdirs();
@@ -114,7 +107,7 @@ public class HelloWorldTest {
         assertThat(knownVariables.contains("myMessage")).isTrue();
     }
 
-    private KieBase readKnowledgeBase() throws Exception {
+    private KieBase readKnowledgeBase(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         return KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "Sample.drl");
     }
 

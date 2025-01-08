@@ -31,7 +31,7 @@ public class MaxFunction
 
     public static final MaxFunction INSTANCE = new MaxFunction();
 
-    public MaxFunction() {
+    private MaxFunction() {
         super( "max" );
     }
 

@@ -23,8 +23,8 @@ import java.util.List;
 
 import org.drools.core.time.impl.JDKTimerService;
 import org.drools.core.time.impl.PseudoClockScheduler;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.runtime.KieContainer;
@@ -33,8 +33,8 @@ import org.kie.api.runtime.conf.ClockTypeOption;
 
 import static java.util.Arrays.asList;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class MultipleKbasesExampleTest {
 
@@ -110,15 +110,15 @@ public class MultipleKbasesExampleTest {
         ClockTypeOption clockType = kieSessionModel.getClockType();
 
         // clockType realtime
-        Assert.assertNotEquals(clockType, pseudoClock);
+        Assertions.assertNotEquals(clockType, pseudoClock);
 
         // change model to pseudo
         kieSessionModel.setClockType(pseudoClock);
-        Assert.assertEquals(kieSessionModel.getClockType(), pseudoClock);
+        Assertions.assertEquals(kieSessionModel.getClockType(), pseudoClock);
 
         // new pseudo session
         KieSession kSession = kContainer.newKieSession(name);
-        Assert.assertEquals(kSession.getSessionClock().getClass(), PseudoClockScheduler.class);
+        Assertions.assertEquals(kSession.getSessionClock().getClass(), PseudoClockScheduler.class);
     }
 
     @Test
@@ -132,18 +132,18 @@ public class MultipleKbasesExampleTest {
         ClockTypeOption clockType = kieSessionModel.getClockType();
 
         // clockType realtime
-        Assert.assertEquals(clockType, ClockTypeOption.REALTIME);
-        Assert.assertNotEquals(clockType, pseudoClock);
+        Assertions.assertEquals(clockType, ClockTypeOption.REALTIME);
+        Assertions.assertNotEquals(clockType, pseudoClock);
 
         // session is realtime
         KieSession kSession = kContainer.newKieSession(name);
-        Assert.assertEquals(kSession.getSessionClock().getClass(), JDKTimerService.class);
+        Assertions.assertEquals(kSession.getSessionClock().getClass(), JDKTimerService.class);
 
         // change model to pseudo
         kieSessionModel.setClockType(pseudoClock);
 
         // new session still realtime
         KieSession kSessionPseudo = kContainer.newKieSession(name);
-        Assert.assertEquals(kSessionPseudo.getSessionClock().getClass(), PseudoClockScheduler.class);
+        Assertions.assertEquals(kSessionPseudo.getSessionClock().getClass(), PseudoClockScheduler.class);
     }
 }

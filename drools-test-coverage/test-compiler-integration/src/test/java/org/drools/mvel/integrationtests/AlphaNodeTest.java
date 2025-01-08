@@ -18,36 +18,29 @@
  */
 package org.drools.mvel.integrationtests;
 
-import java.util.Collection;
+import java.util.stream.Stream;
 
 import org.drools.mvel.compiler.Person;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class AlphaNodeTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public AlphaNodeTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
-    }
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testAlpha(KieBaseTestConfiguration kieBaseTestConfiguration) {
 
-    @Test
-    public void testAlpha() {
         String str =
                 "import " + Person.class.getCanonicalName() + "\n" +
                 "rule R1 when\n" +
@@ -62,8 +55,9 @@ public class AlphaNodeTest {
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testSharedAlpha() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testSharedAlpha(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str =
                 "import " + Person.class.getCanonicalName() + "\n" +
                 "rule R1 when\n" +
@@ -82,8 +76,9 @@ public class AlphaNodeTest {
         assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
-    @Test
-    public void testBeta() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testBeta(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str =
                 "import " + Person.class.getCanonicalName() + "\n" +
                 "rule R1 when\n" +
@@ -100,8 +95,9 @@ public class AlphaNodeTest {
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testSharedAlphaWithBeta() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testSharedAlphaWithBeta(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str =
                 "import " + Person.class.getCanonicalName() + "\n" +
                 "rule R1 when\n" +
@@ -122,8 +118,9 @@ public class AlphaNodeTest {
         assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
-    @Test
-    public void testAlphaModify() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testAlphaModify(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str =
                 "import " + Person.class.getCanonicalName() + "\n" +
                 "rule R1 when\n" +
@@ -139,8 +136,9 @@ public class AlphaNodeTest {
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testAlphaDelete() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testAlphaDelete(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str =
                 "import " + Person.class.getCanonicalName() + "\n" +
                 "rule R1 when\n" +
@@ -161,8 +159,9 @@ public class AlphaNodeTest {
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testAlphaModifyDelete() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testAlphaModifyDelete(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str =
                 "import " + Person.class.getCanonicalName() + "\n" +
                 "rule R1 when\n" +
@@ -187,8 +186,9 @@ public class AlphaNodeTest {
         assertThat(ksession.fireAllRules()).isEqualTo(3);
     }
 
-    @Test
-    public void testBetaModifyWithAlpha() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testBetaModifyWithAlpha(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str =
                 "import " + Person.class.getCanonicalName() + "\n" +
                 "rule R1 when\n" +
@@ -210,8 +210,9 @@ public class AlphaNodeTest {
         assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
-    @Test
-    public void testAlphaModifyWithBeta() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testAlphaModifyWithBeta(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str =
                 "import " + Person.class.getCanonicalName() + "\n" +
                 "rule R1 when\n" +
@@ -233,8 +234,9 @@ public class AlphaNodeTest {
         assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
-    @Test
-    public void test3Alpha() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void test3Alpha(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str =
                 "import " + Person.class.getCanonicalName() + "\n" +
                 "rule R1 when\n" +

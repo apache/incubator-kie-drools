@@ -19,40 +19,32 @@
 package org.drools.compiler.integrationtests.drl;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import org.drools.core.base.MapGlobalResolver;
 import org.drools.testcoverage.common.model.Cheese;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.StatelessKieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class GlobalTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public GlobalTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
-    }
-
-    @Test
-    public void testReturnValueAndGlobal() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testReturnValueAndGlobal(KieBaseTestConfiguration kieBaseTestConfiguration) {
 
         final String drl = "package org.drools.compiler.integrationtests.drl;\n" +
                 "import " + Cheese.class.getCanonicalName() + ";\n" +
@@ -109,8 +101,9 @@ public class GlobalTest {
         }
     }
 
-    @Test
-    public void testGlobalAccess() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testGlobalAccess(KieBaseTestConfiguration kieBaseTestConfiguration) {
 
         final String drl = "import org.drools.core.base.MapGlobalResolver;\n" +
                 "global java.lang.String myGlobal;\n" +
@@ -145,8 +138,9 @@ public class GlobalTest {
         assertThat(session2.getGlobals().getGlobalKeys().contains("myGlobal")).isTrue();
     }
 
-    @Test
-    public void testEvalNullGlobal() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testEvalNullGlobal(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // RHBPMS-4649
         final String drl =
                 "import " + Cheese.class.getCanonicalName() + "\n" +

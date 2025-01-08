@@ -19,8 +19,8 @@
 package org.kie.scanner;
 
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
+import org.junit.jupiter.api.Test;
 import org.drools.base.rule.TypeMetaInfo;
-import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
