@@ -222,20 +222,41 @@ class BusinessCalendarImplTest extends AbstractBaseTest {
     }
 
     @Test
-    void rollCalendarAfterHolidays() {
-        Instant now = Instant.now();
-        int holidayLeft = 4;
-        Instant startHolidayInstant = now.minus(2, DAYS);
-        Instant endHolidayInstant = now.plus(holidayLeft, DAYS);
-        Date startHoliday = Date.from(startHolidayInstant);
-        Date endHoliday = Date.from(endHolidayInstant);
-        List<BusinessCalendarImpl.TimePeriod> holidays = Collections.singletonList(new BusinessCalendarImpl.TimePeriod(startHoliday, endHoliday));
-        List<Integer> weekendDays = Collections.emptyList();
+    void rollCalendarAfterHolidaysWithoutYearRollover() {
         Calendar calendar = Calendar.getInstance();
-        int currentDayOfYear = calendar.get(Calendar.DAY_OF_YEAR);
+        calendar.set(Calendar.DAY_OF_YEAR, 360);
+        calendar.set(Calendar.YEAR, 2025);
+        Instant currentInstant = calendar.toInstant();
+
+        Instant startHolidayInstant = currentInstant.minus(2, DAYS);
+        Instant endHolidayInstant = currentInstant.plus(4, DAYS);
+        List<BusinessCalendarImpl.TimePeriod> holidays = Collections.singletonList(
+                new BusinessCalendarImpl.TimePeriod(Date.from(startHolidayInstant), Date.from(endHolidayInstant)));
+        List<Integer> weekendDays = Collections.emptyList();
+
         BusinessCalendarImpl.rollCalendarAfterHolidays(calendar, holidays, weekendDays, false);
-        int expected = currentDayOfYear + holidayLeft + 1;
-        assertThat(calendar.get(Calendar.DAY_OF_YEAR)).isEqualTo(expected);
+
+        int expectedDayOfYear = 360 + 4 + 1; //last day of the year, as it is not leap year
+        assertThat(calendar.get(Calendar.DAY_OF_YEAR)).isEqualTo(expectedDayOfYear);
+    }
+
+    @Test
+    void rollCalendarAfterHolidaysWithYearRollover() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DAY_OF_YEAR, 361);
+        calendar.set(Calendar.YEAR, 2025);
+        Instant currentInstant = calendar.toInstant();
+
+        Instant startHolidayInstant = currentInstant.minus(2, DAYS);
+        Instant endHolidayInstant = currentInstant.plus(4, DAYS);
+        List<BusinessCalendarImpl.TimePeriod> holidays = Collections.singletonList(
+                new BusinessCalendarImpl.TimePeriod(Date.from(startHolidayInstant), Date.from(endHolidayInstant)));
+        List<Integer> weekendDays = Collections.emptyList();
+
+        BusinessCalendarImpl.rollCalendarAfterHolidays(calendar, holidays, weekendDays, false);
+
+        int expectedDayOfYear = 1; //since 2025 is not leap year
+        assertThat(calendar.get(Calendar.DAY_OF_YEAR)).isEqualTo(expectedDayOfYear);
     }
 
     @Test
