@@ -63,5 +63,4 @@ public class SubstringFunction
         StringBuilder result = stream.mapToObj(Character::toChars).collect(StringBuilder::new, StringBuilder::append, StringBuilder::append);
         return FEELFnResult.ofResult(result.toString());
     }
-
 }

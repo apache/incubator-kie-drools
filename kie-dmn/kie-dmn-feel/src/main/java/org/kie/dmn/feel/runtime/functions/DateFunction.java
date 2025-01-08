@@ -51,6 +51,8 @@ public class DateFunction
                                                   .withResolverStyle(ResolverStyle.STRICT);
     }
 
+    private static final TemporalAccessor DEFAULT_VALUE = LocalDate.of(1970, 1, 1);
+
     protected DateFunction() {
         super(FEELConversionFunctionNames.DATE);
     }
@@ -98,6 +100,11 @@ public class DateFunction
         } catch (DateTimeException e) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "from", "date-parsing exception", e));
         }
+    }
+
+    @Override
+    public Object defaultValue() {
+        return DEFAULT_VALUE;
     }
 
     protected FEELFnResult<TemporalAccessor> manageDateTimeException(DateTimeException e, String val) {

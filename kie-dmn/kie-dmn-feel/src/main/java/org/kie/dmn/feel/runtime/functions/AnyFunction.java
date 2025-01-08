@@ -67,5 +67,4 @@ public class AnyFunction
         
         return invoke( Arrays.asList( list ) );
     }
-
 }

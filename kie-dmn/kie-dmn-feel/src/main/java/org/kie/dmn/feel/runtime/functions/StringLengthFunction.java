@@ -41,5 +41,4 @@ public class StringLengthFunction
             return FEELFnResult.ofResult(NumberEvalHelper.getBigDecimalOrNull(string.codePointCount(0, string.length())));
         }
     }
-
 }

@@ -20,6 +20,7 @@ package org.kie.dmn.feel.runtime.impl;
 
 import java.util.function.BiPredicate;
 
+import org.kie.dmn.feel.lang.FEELDialect;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.util.BooleanEvalHelper;
 

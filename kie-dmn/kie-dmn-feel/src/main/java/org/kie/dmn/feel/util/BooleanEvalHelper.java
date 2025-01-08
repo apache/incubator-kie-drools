@@ -126,15 +126,15 @@ public class BooleanEvalHelper {
             // periods have special compare semantics in FEEL as it ignores "days". Only months and years are compared
             Long l = ComparablePeriod.toTotalMonths((ChronoPeriod) left);
             Long r = ComparablePeriod.toTotalMonths((ChronoPeriod) right);
-            return isEqual(l, r);
+            return isEqual(l, r, feelDialect);
         } else if (left instanceof TemporalAccessor && right instanceof TemporalAccessor) {
             // Handle specific cases when both time / datetime
             TemporalAccessor l = (TemporalAccessor) left;
             TemporalAccessor r = (TemporalAccessor) right;
             if (BuiltInType.determineTypeFromInstance(left) == BuiltInType.TIME && BuiltInType.determineTypeFromInstance(right) == BuiltInType.TIME) {
-                return isEqual(DateTimeEvalHelper.valuet(l), DateTimeEvalHelper.valuet(r));
+                return isEqual(DateTimeEvalHelper.valuet(l), DateTimeEvalHelper.valuet(r), feelDialect);
             } else if (BuiltInType.determineTypeFromInstance(left) == BuiltInType.DATE_TIME && BuiltInType.determineTypeFromInstance(right) == BuiltInType.DATE_TIME) {
-                return isEqual(DateTimeEvalHelper.valuedt(l, r.query(TemporalQueries.zone())), DateTimeEvalHelper.valuedt(r, l.query(TemporalQueries.zone())));
+                return isEqual(DateTimeEvalHelper.valuedt(l, r.query(TemporalQueries.zone())), DateTimeEvalHelper.valuedt(r, l.query(TemporalQueries.zone())), feelDialect);
             } // fallback; continue:
         }
         return compare( left, right, feelDialect, (l, r) -> l.compareTo( r ) == 0  );

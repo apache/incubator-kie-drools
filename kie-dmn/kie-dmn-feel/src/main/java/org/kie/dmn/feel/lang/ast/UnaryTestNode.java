@@ -158,7 +158,7 @@ public class UnaryTestNode
             return ((Collection) right).contains(left);
         } else {
             // evaluate single entity
-            return BooleanEvalHelper.isEqual(left, right);
+            return BooleanEvalHelper.isEqual(left, right, FEELDialect.FEEL);
         }
     }
 
