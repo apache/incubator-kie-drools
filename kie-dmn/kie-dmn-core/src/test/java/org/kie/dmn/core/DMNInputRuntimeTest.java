@@ -46,7 +46,9 @@ import org.kie.dmn.api.core.event.AfterEvaluateDecisionTableEvent;
 import org.kie.dmn.api.core.event.DMNRuntimeEventListener;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.api.event.DefaultDMNRuntimeEventListener;
+import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
+import org.kie.dmn.feel.lang.FEELDialect;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
@@ -363,6 +365,52 @@ public class DMNInputRuntimeTest extends BaseInterpretedVsCompiledTest {
                 "TypeConstraintsChecks" );
         assertThat(dmnModel).isNotNull();
         assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
+
+        final DMNContext ctx1 = runtime.newContext();
+        ctx1.set("p1", prototype(entry("Name", "P1"), entry("Interests", Collections.singletonList("Golf"))));
+        final DMNResult dmnResult1 = runtime.evaluateAll( dmnModel, ctx1 );
+        assertThat(dmnResult1.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult1.getMessages())).isFalse();
+        assertThat( dmnResult1.getContext().get( "MyDecision" )).isEqualTo("The Person P1 likes 1 thing(s)." );
+
+        final DMNContext ctx2 = runtime.newContext();
+        ctx2.set("p1", prototype(entry("Name", "P2"), entry("Interests", Collections.singletonList("x"))));
+        final DMNResult dmnResult2 = runtime.evaluateAll( dmnModel, ctx2 );
+        assertThat(dmnResult2.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult2.getMessages())).isFalse();
+        assertThat( dmnResult2.getContext().get( "MyDecision" )).isEqualTo("The Person P2 likes 1 thing(s)." );
+
+        final DMNContext ctx3 = runtime.newContext();
+        ctx3.set("p1", prototype(entry("Name", "P3"), entry("Interests", Arrays.asList("Golf", "Computer"))));
+        final DMNResult dmnResult3 = runtime.evaluateAll( dmnModel, ctx3 );
+        assertThat(dmnResult3.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult3.getMessages())).isTrue();
+        assertThat(dmnResult3.getMessages().stream().anyMatch(m -> m.getMessageType().equals(DMNMessageType.ERROR_EVAL_NODE))).isTrue();
+    }
+
+    @ParameterizedTest
+    @MethodSource("params")
+    void constraintsChecksBFEEL(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("valid_models/DMNv1_5/B-FEEL/ConstraintsChecksBFeel.dmn", this.getClass() );
+        final DMNModel dmnModel = runtime.getModel(
+                "http://www.trisotech.com/definitions/_238bd96d-47cd-4746-831b-504f3e77b442",
+                "ConstraintsChecksBFEEL" );
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
+        assertThat(dmnModel).isInstanceOf(DMNModelImpl.class);
+        assertThat(((DMNModelImpl)dmnModel).getFeelDialect()).isEqualTo(FEELDialect.BFEEL);
+    }
+
+    @ParameterizedTest
+    @MethodSource("params")
+    void typeConstraintsChecksBFEEL(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("valid_models/DMNv1_5/B-FEEL/BFeelChecks.dmn", this.getClass() );
+        final DMNModel dmnModel = runtime.getModel(
+                "http://www.trisotech.com/definitions/_238bd96d-47cd-4746-831b-504f3e77b442",
+                "BFEELChecks" );
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
+        assertThat(dmnModel).isInstanceOf(DMNModelImpl.class);
+        assertThat(((DMNModelImpl)dmnModel).getFeelDialect()).isEqualTo(FEELDialect.BFEEL);
 
         final DMNContext ctx1 = runtime.newContext();
         ctx1.set("p1", prototype(entry("Name", "P1"), entry("Interests", Collections.singletonList("Golf"))));

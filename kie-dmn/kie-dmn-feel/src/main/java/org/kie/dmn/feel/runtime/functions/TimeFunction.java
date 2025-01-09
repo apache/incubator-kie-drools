@@ -49,6 +49,8 @@ public class TimeFunction
     private static final String timePatternString = "[0-9]{2}[:]{1}[0-9]{2}[:]{1}[0-9]{2}";
     private static final Pattern timePattern = Pattern.compile(timePatternString);
 
+    private static final TemporalAccessor DEFAULT_VALUE = OffsetTime.of(0, 0, 0, 0, ZoneOffset.ofHoursMinutes(0, 0));
+
     static {
         FEEL_TIME = new DateTimeFormatterBuilder().parseCaseInsensitive()
                                                   .append(DateTimeFormatter.ISO_LOCAL_TIME)
@@ -168,6 +170,11 @@ public class TimeFunction
         } catch (DateTimeException e) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "from", "time-parsing exception", e));
         }
+    }
+
+    @Override
+    public Object defaultValue() {
+        return DEFAULT_VALUE;
     }
 
     protected FEELFnResult<TemporalAccessor> manageDateTimeException(DateTimeException e, String val) {

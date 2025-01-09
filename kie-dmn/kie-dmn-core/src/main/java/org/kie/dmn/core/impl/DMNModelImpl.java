@@ -68,6 +68,7 @@ import org.kie.dmn.core.compiler.DMNTypeRegistryV14;
 import org.kie.dmn.core.compiler.DMNTypeRegistryV15;
 import org.kie.dmn.core.pmml.DMNImportPMMLInfo;
 import org.kie.dmn.core.util.DefaultDMNMessagesManager;
+import org.kie.dmn.feel.lang.FEELDialect;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.Definitions;
 
@@ -107,6 +108,8 @@ public class DMNModelImpl
 
     private ImportChain importChain;
 
+    private FEELDialect feelDialect;
+
     public DMNModelImpl() {
         // needed because Externalizable.
     }
@@ -116,12 +119,23 @@ public class DMNModelImpl
         wireTypeRegistry(definitions);
         importChain = new ImportChain(this);
         messages = new DefaultDMNMessagesManager(null);
+        String feelUri = definitions.getNsContext().get("feel");
+        try {
+            feelDialect = FEELDialect.fromNamespace(feelUri);
+        } catch (IllegalArgumentException e) {
+            // TODO gcardosi 1742
+            feelDialect = FEELDialect.FEEL;
+        }
     }
 
     public DMNModelImpl(Definitions dmndefs, Resource resource) {
         this(dmndefs);
         this.setResource(resource);
         messages = new DefaultDMNMessagesManager(resource);
+    }
+
+    public FEELDialect getFeelDialect() {
+        return feelDialect;
     }
 
     private void wireTypeRegistry(Definitions definitions) {

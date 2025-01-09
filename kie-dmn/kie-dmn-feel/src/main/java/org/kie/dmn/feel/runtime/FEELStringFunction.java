@@ -16,26 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.dmn.feel.runtime.functions;
+package org.kie.dmn.feel.runtime;
 
-import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
-import org.kie.dmn.feel.runtime.FEELStringFunction;
-import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
+public interface FEELStringFunction extends FEELFunction {
 
-public class StringUpperCaseFunction
-        extends BaseFEELFunction implements FEELStringFunction {
-
-    public static final StringUpperCaseFunction INSTANCE = new StringUpperCaseFunction();
-
-    private StringUpperCaseFunction() {
-        super( "upper case" );
-    }
-
-    public FEELFnResult<String> invoke(@ParameterName("string") String string) {
-        if ( string == null ) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "string", "cannot be null"));
-        } else {
-            return FEELFnResult.ofResult( string.toUpperCase() );
-        }
+    @Override
+    default Object defaultValue() {
+        return "";
     }
 }

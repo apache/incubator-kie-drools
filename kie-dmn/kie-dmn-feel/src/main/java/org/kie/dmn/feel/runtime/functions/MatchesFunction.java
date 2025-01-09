@@ -57,4 +57,9 @@ public class MatchesFunction
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, errorMessage, e));
         }
     }
+
+    @Override
+    public Object defaultValue() {
+        return false;
+    }
 }
