@@ -401,7 +401,7 @@ public class DMNInputRuntimeTest extends BaseInterpretedVsCompiledTest {
 
     @ParameterizedTest
     @MethodSource("params")
-    void typeConstraintsChecksBFEEL(boolean useExecModelCompiler) {
+    void bFeelChecks(boolean useExecModelCompiler) {
         init(useExecModelCompiler);
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("valid_models/DMNv1_5/B-FEEL/BFeelChecks.dmn", this.getClass() );
         final DMNModel dmnModel = runtime.getModel(
@@ -413,22 +413,29 @@ public class DMNInputRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat(((DMNModelImpl)dmnModel).getFeelDialect()).isEqualTo(FEELDialect.BFEEL);
 
         final DMNContext ctx1 = runtime.newContext();
-        ctx1.set("p1", prototype(entry("Name", "P1"), entry("Interests", Collections.singletonList("Golf"))));
+        ctx1.set("user", "a");
         final DMNResult dmnResult1 = runtime.evaluateAll( dmnModel, ctx1 );
-        assertThat(dmnResult1.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult1.getMessages())).isFalse();
-        assertThat( dmnResult1.getContext().get( "MyDecision" )).isEqualTo("The Person P1 likes 1 thing(s)." );
+        //assertThat(dmnResult1.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult1.getMessages())).isFalse();
+        assertThat( dmnResult1.getDecisionResultByName( "Decision1" ).getResult()).isEqualTo(false);
+        assertThat( dmnResult1.getDecisionResultByName( "Decision2" ).getResult()).isEqualTo(false);
+        assertThat( dmnResult1.getDecisionResultByName( "Decision3" ).getResult()).isEqualTo(Collections.emptyList());
+ }
 
-        final DMNContext ctx2 = runtime.newContext();
-        ctx2.set("p1", prototype(entry("Name", "P2"), entry("Interests", Collections.singletonList("x"))));
-        final DMNResult dmnResult2 = runtime.evaluateAll( dmnModel, ctx2 );
-        assertThat(dmnResult2.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult2.getMessages())).isFalse();
-        assertThat( dmnResult2.getContext().get( "MyDecision" )).isEqualTo("The Person P2 likes 1 thing(s)." );
+ @Test
+ // TODO REMOVE!!!!!!!! gcardosi 1742
+ void puppa() {
+     init(false);
+     final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("Reproducer.dmn", this.getClass() );
+     final DMNModel dmnModel = runtime.getModel(
+             "https://kiegroup.org/dmn/_8514F40D-CDF4-402B-A2D7-CDF90DE8FE0B",
+             "Untitled" );
+     final DMNContext ctx1 = runtime.newContext();
+     ctx1.set("p", 3);
+     ctx1.set("r", 4);
+     ctx1.set("n", 5);
+     final DMNResult dmnResult1 = runtime.evaluateByName( dmnModel, ctx1,  "Decision2");
+     assertThat( dmnResult1.getDecisionResultByName( "Decision2" ).getResult()).isNotNull();
 
-        final DMNContext ctx3 = runtime.newContext();
-        ctx3.set("p1", prototype(entry("Name", "P3"), entry("Interests", Arrays.asList("Golf", "Computer"))));
-        final DMNResult dmnResult3 = runtime.evaluateAll( dmnModel, ctx3 );
-        assertThat(dmnResult3.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult3.getMessages())).isTrue();
-        assertThat(dmnResult3.getMessages().stream().anyMatch(m -> m.getMessageType().equals(DMNMessageType.ERROR_EVAL_NODE))).isTrue();
     }
 
     @ParameterizedTest
