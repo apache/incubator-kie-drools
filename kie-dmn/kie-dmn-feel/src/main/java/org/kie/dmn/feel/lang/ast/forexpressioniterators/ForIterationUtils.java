@@ -18,15 +18,17 @@
  */
 package org.kie.dmn.feel.lang.ast.forexpressioniterators;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.exceptions.EndpointOfRangeNotValidTypeException;
 import org.kie.dmn.feel.exceptions.EndpointOfRangeOfDifferentTypeException;
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.ast.RangeNode;
+import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.events.ASTEventBase;
 import org.kie.dmn.feel.util.Msg;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
 
 public class ForIterationUtils {
 
@@ -63,4 +65,33 @@ public class ForIterationUtils {
         }
     }
 
+    public static ForIteration computeResultForRange(Range result, String name, EvaluationContext ctx, ForIteration toReturn) {
+        validateValues(ctx, result.getLowEndPoint(), result.getHighEndPoint());
+        if (result.getLowEndPoint() instanceof BigDecimal && result.getHighEndPoint() instanceof BigDecimal) {
+            BigDecimal start = (BigDecimal) result.getLowEndPoint();
+            BigDecimal end = (BigDecimal) result.getHighEndPoint();
+            if (result.getLowEndPoint() == RangeNode.IntervalBoundary.OPEN) {
+                start = start.add(BigDecimal.ONE);
+            }
+            if (result.getHighEndPoint() == RangeNode.IntervalBoundary.OPEN) {
+                end = end.subtract(BigDecimal.ONE);
+            }
+            toReturn = getForIteration(ctx, name, start, end);
+        } else if (result.getLowEndPoint() instanceof LocalDate && result.getHighEndPoint() instanceof LocalDate) {
+            LocalDate start = (LocalDate) result.getLowEndPoint();
+            LocalDate end = (LocalDate) result.getHighEndPoint();
+            if (result.getLowEndPoint() == RangeNode.IntervalBoundary.OPEN) {
+                start = start.plusDays(1);
+            }
+            if (result.getHighEndPoint() == RangeNode.IntervalBoundary.OPEN) {
+                end = end.minusDays(1);
+            }
+            toReturn = getForIteration(ctx, name, start, end);
+        } else {
+            toReturn = getForIteration(ctx, name, result.getLowEndPoint(), result.getHighEndPoint());
+        }
+        return toReturn;
+    }
 }
+
+

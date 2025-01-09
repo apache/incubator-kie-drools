@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static org.kie.dmn.feel.lang.ast.forexpressioniterators.ForIterationUtils.computeResultForRange;
 import static org.kie.dmn.feel.lang.ast.forexpressioniterators.ForIterationUtils.getForIteration;
 
 public class ForExpressionNode
@@ -128,12 +129,18 @@ public class ForExpressionNode
 
     private ForIteration createForIteration(EvaluationContext ctx, IterationContextNode iterationContextNode) {
         LOG.trace("Creating ForIteration for {}", iterationContextNode);
-        ForIteration toReturn;
+        ForIteration toReturn = null;
         String name = iterationContextNode.evaluateName(ctx);
         Object result = iterationContextNode.evaluate(ctx);
         Object rangeEnd = iterationContextNode.evaluateRangeEnd(ctx);
         if (rangeEnd == null) {
-            toReturn = (result instanceof Iterable iterable) ? new ForIteration(name, iterable) : getForIteration(ctx, name, ((Range) result).getLowEndPoint(), ((Range) result).getHighEndPoint());
+            if (result instanceof Iterable iterable) {
+                new ForIteration(name, iterable);
+            } else if (result instanceof Range) {
+                toReturn = computeResultForRange(((Range) result), name, ctx, toReturn);
+            } else {
+                toReturn = new ForIteration(name, Collections.singletonList(result));
+            }
         } else {
             toReturn = getForIteration(ctx, name, result, rangeEnd);
         }
