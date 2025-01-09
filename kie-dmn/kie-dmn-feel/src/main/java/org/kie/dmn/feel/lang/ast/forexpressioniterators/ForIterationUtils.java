@@ -80,10 +80,10 @@ public class ForIterationUtils {
         } else if (result.getLowEndPoint() instanceof LocalDate && result.getHighEndPoint() instanceof LocalDate) {
             LocalDate start = (LocalDate) result.getLowEndPoint();
             LocalDate end = (LocalDate) result.getHighEndPoint();
-            if (result.getLowEndPoint() == RangeNode.IntervalBoundary.OPEN) {
+            if (result.getLowBoundary() == Range.RangeBoundary.OPEN) {
                 start = start.plusDays(1);
             }
-            if (result.getHighEndPoint() == RangeNode.IntervalBoundary.OPEN) {
+            if (result.getHighBoundary() == Range.RangeBoundary.OPEN) {
                 end = end.minusDays(1);
             }
             toReturn = getForIteration(ctx, name, start, end);

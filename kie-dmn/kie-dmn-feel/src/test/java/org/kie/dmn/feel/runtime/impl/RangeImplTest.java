@@ -19,7 +19,11 @@
 package org.kie.dmn.feel.runtime.impl;
 
 import org.junit.jupiter.api.Test;
+import org.kie.dmn.feel.FEEL;
+import org.kie.dmn.feel.lang.impl.FEELBuilder;
 import org.kie.dmn.feel.runtime.Range;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -159,4 +163,12 @@ class RangeImplTest {
         rangeImpl2 = new RangeImpl(Range.RangeBoundary.CLOSED, 12, 17, Range.RangeBoundary.CLOSED);
         assertThat(rangeImpl2).doesNotHaveSameHashCodeAs(rangeImpl);
     }
+
+    @Test
+    void testRangeExpansion() {
+        FEEL feel = FEELBuilder.builder().build();
+        Object result = feel.evaluate("for i in @\"1980-01-01\"..@\"1980-01-03\" return i");
+        assertThat(result.toString()).isEqualTo(List.of("1980-01-01", "1980-01-02", "1980-01-03"));
+    }
+
 }

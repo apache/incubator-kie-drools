@@ -75,6 +75,27 @@ public class DMNInputRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat( result.get( "Greeting Message" )).isEqualTo("Hello John Doe" );
     }
 
+
+    @ParameterizedTest
+    @MethodSource("params")
+    void evaluateRange(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "0084-feel-for-loops.dmn", this.getClass() );
+        final DMNModel dmnModel = runtime.getModel( "http://www.montera.com.au/spec/DMN/0084-feel-for-loops", "0084-feel-for-loops" );
+        assertThat(dmnModel).isNotNull();
+
+        final DMNContext context = DMNFactory.newContext();
+        context.set( "Full Name", "John Doe" );
+
+        final DMNResult dmnResult = runtime.evaluateByName( dmnModel, context, "decision_024" );
+
+        assertThat( dmnResult.getDecisionResults()).hasSize(1);
+        assertThat( dmnResult.getDecisionResultByName( "Greeting Message" ).getResult()).isEqualTo("Hello John Doe" );
+
+        final DMNContext result = dmnResult.getContext();
+
+        assertThat( result.get( "Greeting Message" )).isEqualTo("Hello John Doe" );
+    }
     @ParameterizedTest
     @MethodSource("params")
     void inputStringEvaluateDecisionByName(boolean useExecModelCompiler) {
