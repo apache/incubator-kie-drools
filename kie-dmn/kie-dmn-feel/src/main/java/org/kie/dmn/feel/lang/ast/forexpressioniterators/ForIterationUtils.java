@@ -22,7 +22,6 @@ import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.exceptions.EndpointOfRangeNotValidTypeException;
 import org.kie.dmn.feel.exceptions.EndpointOfRangeOfDifferentTypeException;
 import org.kie.dmn.feel.lang.EvaluationContext;
-import org.kie.dmn.feel.lang.ast.RangeNode;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.events.ASTEventBase;
 import org.kie.dmn.feel.util.Msg;
@@ -48,6 +47,17 @@ public class ForIterationUtils {
         throw new EndpointOfRangeOfDifferentTypeException();
     }
 
+    public static ForIteration computeResultForRange(Range result, String name, EvaluationContext ctx) {
+        validateValues(ctx, result.getLowEndPoint(), result.getHighEndPoint());
+        if (result.getLowEndPoint() instanceof BigDecimal && result.getHighEndPoint() instanceof BigDecimal) {
+            return computeResultForBigDecimalRange(result,name,ctx);
+        }
+        if (result.getLowEndPoint() instanceof LocalDate && result.getHighEndPoint() instanceof LocalDate) {
+            return computeResultForLocalDateRange(result, name, ctx);
+        }
+        return null;
+    }
+
     static void validateValues(EvaluationContext ctx, Object start, Object end) {
         if (start.getClass() != end.getClass()) {
             ctx.notifyEvt(() -> new ASTEventBase(FEELEvent.Severity.ERROR,
@@ -65,32 +75,28 @@ public class ForIterationUtils {
         }
     }
 
-    public static ForIteration computeResultForRange(Range result, String name, EvaluationContext ctx, ForIteration toReturn) {
-        validateValues(ctx, result.getLowEndPoint(), result.getHighEndPoint());
-        if (result.getLowEndPoint() instanceof BigDecimal && result.getHighEndPoint() instanceof BigDecimal) {
-            BigDecimal start = (BigDecimal) result.getLowEndPoint();
-            BigDecimal end = (BigDecimal) result.getHighEndPoint();
-            if (result.getLowEndPoint() == RangeNode.IntervalBoundary.OPEN) {
-                start = start.add(BigDecimal.ONE);
-            }
-            if (result.getHighEndPoint() == RangeNode.IntervalBoundary.OPEN) {
-                end = end.subtract(BigDecimal.ONE);
-            }
-            toReturn = getForIteration(ctx, name, start, end);
-        } else if (result.getLowEndPoint() instanceof LocalDate && result.getHighEndPoint() instanceof LocalDate) {
-            LocalDate start = (LocalDate) result.getLowEndPoint();
-            LocalDate end = (LocalDate) result.getHighEndPoint();
-            if (result.getLowBoundary() == Range.RangeBoundary.OPEN) {
-                start = start.plusDays(1);
-            }
-            if (result.getHighBoundary() == Range.RangeBoundary.OPEN) {
-                end = end.minusDays(1);
-            }
-            toReturn = getForIteration(ctx, name, start, end);
-        } else {
-            toReturn = getForIteration(ctx, name, result.getLowEndPoint(), result.getHighEndPoint());
+    static ForIteration computeResultForBigDecimalRange(Range result, String name, EvaluationContext ctx) {
+        BigDecimal start = (BigDecimal) result.getLowEndPoint();
+        BigDecimal end = (BigDecimal) result.getHighEndPoint();
+        if (result.getLowBoundary() == Range.RangeBoundary.OPEN) {
+            start = start.add(BigDecimal.ONE);
         }
-        return toReturn;
+        if (result.getHighBoundary() == Range.RangeBoundary.OPEN) {
+            end = end.subtract(BigDecimal.ONE);
+        }
+        return getForIteration(ctx, name, start, end);
+    }
+
+    static ForIteration computeResultForLocalDateRange(Range result, String name, EvaluationContext ctx) {
+        LocalDate start = (LocalDate) result.getLowEndPoint();
+        LocalDate end = (LocalDate) result.getHighEndPoint();
+        if (result.getLowBoundary() == Range.RangeBoundary.OPEN) {
+            start = start.plusDays(1);
+        }
+        if (result.getHighBoundary() == Range.RangeBoundary.OPEN) {
+            end = end.minusDays(1);
+        }
+        return getForIteration(ctx, name, start, end);
     }
 }
 

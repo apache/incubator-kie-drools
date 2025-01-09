@@ -137,7 +137,7 @@ public class ForExpressionNode
             if (result instanceof Iterable iterable) {
                 new ForIteration(name, iterable);
             } else if (result instanceof Range) {
-                toReturn = computeResultForRange(((Range) result), name, ctx, toReturn);
+                toReturn = computeResultForRange(((Range) result), name, ctx);
             } else {
                 toReturn = new ForIteration(name, Collections.singletonList(result));
             }

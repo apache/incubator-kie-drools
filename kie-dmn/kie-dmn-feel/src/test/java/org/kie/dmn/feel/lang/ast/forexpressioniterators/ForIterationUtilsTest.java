@@ -29,9 +29,13 @@ import org.kie.dmn.feel.exceptions.EndpointOfRangeNotValidTypeException;
 import org.kie.dmn.feel.exceptions.EndpointOfRangeOfDifferentTypeException;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
+import org.kie.dmn.feel.runtime.Range;
 import org.mockito.ArgumentCaptor;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.kie.dmn.feel.lang.ast.forexpressioniterators.ForIterationUtils.computeResultForBigDecimalRange;
+import static org.kie.dmn.feel.lang.ast.forexpressioniterators.ForIterationUtils.computeResultForLocalDateRange;
+import static org.kie.dmn.feel.lang.ast.forexpressioniterators.ForIterationUtils.computeResultForRange;
 import static org.kie.dmn.feel.util.EvaluationContextTestUtil.newEmptyEvaluationContext;
 import static org.kie.dmn.feel.lang.ast.forexpressioniterators.ForIterationUtils.getForIteration;
 import static org.kie.dmn.feel.lang.ast.forexpressioniterators.ForIterationUtils.validateValues;
@@ -42,6 +46,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 class ForIterationUtilsTest {
 
@@ -147,5 +152,66 @@ class ForIterationUtilsTest {
             verify(listener, times(1)).onEvent(captor.capture());
             reset(listener);
         }
+    }
+
+    @Test
+    void testComputeResultForRange() {
+        Range range = mock(Range.class);
+        EvaluationContext ctx = mock(EvaluationContext.class);
+
+        when(range.getLowBoundary()).thenReturn(Range.RangeBoundary.CLOSED);
+        when(range.getHighBoundary()).thenReturn(Range.RangeBoundary.OPEN);
+        when(range.getLowEndPoint()).thenReturn(new BigDecimal("10.0"));
+        when(range.getHighEndPoint()).thenReturn(new BigDecimal("20.0"));
+        ForIteration result = computeResultForRange(range, "rangeTest", ctx);
+        assertThat(result).isNotNull();
+    }
+
+    @Test
+    void testComputeResultForBigDecimalRangeOpenBoundary() {
+        Range range = mock(Range.class);
+        when(range.getLowBoundary()).thenReturn(Range.RangeBoundary.OPEN);
+        when(range.getHighBoundary()).thenReturn(Range.RangeBoundary.OPEN);
+        when(range.getLowEndPoint()).thenReturn(new BigDecimal("10.0"));
+        when(range.getHighEndPoint()).thenReturn(new BigDecimal("20.0"));
+
+        ForIteration result = computeResultForBigDecimalRange(range, "BigDecimalRange", ctx);
+        assertThat(result).isNotNull();
+    }
+
+    @Test
+    void testComputeResultForBigDecimalRangeClosedBoundary() {
+        Range range = mock(Range.class);
+        when(range.getLowBoundary()).thenReturn(Range.RangeBoundary.CLOSED);
+        when(range.getHighBoundary()).thenReturn(Range.RangeBoundary.CLOSED);
+        when(range.getLowEndPoint()).thenReturn(new BigDecimal("10.0"));
+        when(range.getHighEndPoint()).thenReturn(new BigDecimal("20.0"));
+
+        ForIteration result = computeResultForBigDecimalRange(range, "BigDecimalRange", ctx);
+        assertThat(result).isNotNull();
+    }
+
+    @Test
+    void testComputeResultForLocalDateRangeOpenBoundary() {
+        Range range = mock(Range.class);
+        when(range.getLowBoundary()).thenReturn(Range.RangeBoundary.OPEN);
+        when(range.getHighBoundary()).thenReturn(Range.RangeBoundary.OPEN);
+        when(range.getLowEndPoint()).thenReturn(LocalDate.of(2025, 1, 1));
+        when(range.getHighEndPoint()).thenReturn(LocalDate.of(2025, 1, 7));
+
+        ForIteration result = computeResultForLocalDateRange(range, "dateRange", ctx);
+        assertThat(result).isNotNull();
+    }
+
+    @Test
+    void testComputeResultForLocalDateRangeClosedBoundary() {
+        Range range = mock(Range.class);
+        when(range.getLowBoundary()).thenReturn(Range.RangeBoundary.CLOSED);
+        when(range.getHighBoundary()).thenReturn(Range.RangeBoundary.CLOSED);
+        when(range.getLowEndPoint()).thenReturn(LocalDate.of(2025, 1, 1));
+        when(range.getHighEndPoint()).thenReturn(LocalDate.of(2025, 1, 7));
+
+        ForIteration result = computeResultForLocalDateRange(range, "dateRange", ctx);
+        assertThat(result).isNotNull();
     }
 }
