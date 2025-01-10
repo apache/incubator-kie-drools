@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.dmn.api.core.DMNContext;
@@ -42,6 +43,7 @@ import org.kie.dmn.api.core.ast.ItemDefNode;
 import org.kie.dmn.api.core.event.AfterConditionalEvaluationEvent;
 import org.kie.dmn.api.core.event.AfterEvaluateConditionalEvent;
 import org.kie.dmn.api.core.event.AfterEvaluateDecisionTableEvent;
+import org.kie.dmn.api.core.event.DMNRuntimeEventListener;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.api.event.DefaultDMNRuntimeEventListener;
 import org.kie.dmn.core.util.DMNRuntimeUtil;

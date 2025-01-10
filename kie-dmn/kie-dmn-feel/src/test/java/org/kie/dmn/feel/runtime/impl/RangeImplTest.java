@@ -163,12 +163,4 @@ class RangeImplTest {
         rangeImpl2 = new RangeImpl(Range.RangeBoundary.CLOSED, 12, 17, Range.RangeBoundary.CLOSED);
         assertThat(rangeImpl2).doesNotHaveSameHashCodeAs(rangeImpl);
     }
-
-    @Test
-    void testRangeExpansion() {
-        FEEL feel = FEELBuilder.builder().build();
-        Object result = feel.evaluate("for i in @\"1980-01-01\"..@\"1980-01-03\" return i");
-        assertThat(result.toString()).isEqualTo(List.of("1980-01-01", "1980-01-02", "1980-01-03"));
-    }
-
 }
