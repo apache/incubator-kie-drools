@@ -135,7 +135,7 @@ public class ForExpressionNode
         Object rangeEnd = iterationContextNode.evaluateRangeEnd(ctx);
         if (rangeEnd == null) {
             if (result instanceof Iterable iterable) {
-                new ForIteration(name, iterable);
+                toReturn = new ForIteration(name, iterable);
             } else if (result instanceof Range) {
                 toReturn = computeResultForRange(((Range) result), name, ctx);
             } else {

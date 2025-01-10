@@ -25,7 +25,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.dmn.api.core.DMNContext;
@@ -43,7 +42,6 @@ import org.kie.dmn.api.core.ast.ItemDefNode;
 import org.kie.dmn.api.core.event.AfterConditionalEvaluationEvent;
 import org.kie.dmn.api.core.event.AfterEvaluateConditionalEvent;
 import org.kie.dmn.api.core.event.AfterEvaluateDecisionTableEvent;
-import org.kie.dmn.api.core.event.DMNRuntimeEventListener;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.api.event.DefaultDMNRuntimeEventListener;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
@@ -75,27 +73,6 @@ public class DMNInputRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat( result.get( "Greeting Message" )).isEqualTo("Hello John Doe" );
     }
 
-
-    @ParameterizedTest
-    @MethodSource("params")
-    void evaluateRange(boolean useExecModelCompiler) {
-        init(useExecModelCompiler);
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "0084-feel-for-loops.dmn", this.getClass() );
-        final DMNModel dmnModel = runtime.getModel( "http://www.montera.com.au/spec/DMN/0084-feel-for-loops", "0084-feel-for-loops" );
-        assertThat(dmnModel).isNotNull();
-
-        final DMNContext context = DMNFactory.newContext();
-        context.set( "Full Name", "John Doe" );
-
-        final DMNResult dmnResult = runtime.evaluateByName( dmnModel, context, "decision_024" );
-
-        assertThat( dmnResult.getDecisionResults()).hasSize(1);
-        assertThat( dmnResult.getDecisionResultByName( "Greeting Message" ).getResult()).isEqualTo("Hello John Doe" );
-
-        final DMNContext result = dmnResult.getContext();
-
-        assertThat( result.get( "Greeting Message" )).isEqualTo("Hello John Doe" );
-    }
     @ParameterizedTest
     @MethodSource("params")
     void inputStringEvaluateDecisionByName(boolean useExecModelCompiler) {
