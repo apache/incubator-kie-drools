@@ -19,11 +19,7 @@
 package org.kie.dmn.feel.runtime.impl;
 
 import org.junit.jupiter.api.Test;
-import org.kie.dmn.feel.FEEL;
-import org.kie.dmn.feel.lang.impl.FEELBuilder;
 import org.kie.dmn.feel.runtime.Range;
-
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

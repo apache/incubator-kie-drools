@@ -27,6 +27,7 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.util.EvaluationContextTestUtil;
+import org.kie.dmn.feel.lang.ast.RangeNode.IntervalBoundary;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 
@@ -58,6 +59,15 @@ class ForExpressionNodeTest {
 
     }
 
+    @Test
+    void evaluateRange() {
+        IterationContextNode x = getIterationContextNode("x", getRangeNode("[1..5]", BigDecimal.ONE, BigDecimal.valueOf(5), RangeNode.IntervalBoundary.CLOSED, RangeNode.IntervalBoundary.CLOSED ), "x in [1..5]");
+        ForExpressionNode forExpressionNode = new ForExpressionNode(Collections.singletonList(x), getNameRefNode(BuiltInType.NUMBER, "x"), "for x in [1..5] return x");
+        Object retrieved = forExpressionNode.evaluate(EvaluationContextTestUtil.newEmptyEvaluationContext());
+        assertThat(retrieved).isInstanceOf(List.class).asList().containsExactly(
+                BigDecimal.valueOf(1), BigDecimal.valueOf(2), BigDecimal.valueOf(3), BigDecimal.valueOf(4), BigDecimal.valueOf(5));
+    }
+
     private IterationContextNode getIterationContextNode(String variableName, BaseNode expression, String text) {
         return new IterationContextNode(getNameDefNode(variableName), expression, null, text);
     }
@@ -86,4 +96,11 @@ class ForExpressionNodeTest {
                 .toList();
         return new ListNode(elements, text);
     }
+
+    private RangeNode getRangeNode(String text, BigDecimal start, BigDecimal end, IntervalBoundary lowerBound, IntervalBoundary upperBound) {
+        BaseNode startNode = new NumberNode(start, start.toString());
+        BaseNode endNode = new NumberNode(end, end.toString());
+        return new RangeNode(lowerBound, upperBound, startNode, endNode, text);
+    }
+
 }
