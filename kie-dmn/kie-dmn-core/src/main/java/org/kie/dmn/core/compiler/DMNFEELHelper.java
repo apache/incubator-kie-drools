@@ -104,6 +104,19 @@ public class DMNFEELHelper {
                 .build();
     }
 
+    /**
+     * Return a FEEL instance to be used in invokers/impls, which is however configured correctly accordingly to profiles
+     * but overrides the used FEELDialect
+     * This FEEL instance is potentially not the same shared by the compiler during the compilation phase.
+     *
+     */
+    public FEEL newFEELInstance(FEELDialect overridingFeelDialect) {
+        return FEELBuilder.builder().withClassloader(classLoader)
+                .withProfiles(feelProfiles)
+                .withFEELDialect(overridingFeelDialect)
+                .build();
+    }
+
     public static boolean valueMatchesInUnaryTests(List<UnaryTest> unaryTests, Object value, DMNContext dmnContext) {
         FEELEventListenersManager manager = new FEELEventListenersManager();
         FEELEventsListenerImpl listener = new FEELEventsListenerImpl();

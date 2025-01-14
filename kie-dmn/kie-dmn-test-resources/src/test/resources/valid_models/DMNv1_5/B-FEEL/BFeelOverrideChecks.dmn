@@ -28,8 +28,7 @@
                       exporter="DMN Modeler"
                       exporterVersion="5.1.10.201705011622"
                       id="_238bd96d-47cd-4746-831b-504f3e77b442"
-                      name="BFEELChecks"
-                      expressionLanguage="https://www.omg.org/spec/DMN/20240513/B-FEEL/"
+                      name="BFEELOverrideChecks"
                       namespace="http://www.trisotech.com/definitions/_238bd96d-47cd-4746-831b-504f3e77b442">
    <dmn:itemDefinition id="_7EC734D9-5C1C-4135-AD0C-859B5D6ABE07" name="user" isCollection="false">
       <dmn:typeRef>string</dmn:typeRef>
@@ -47,7 +46,7 @@
       <dmn:informationRequirement id="_B3961DA9-EB27-41E0-AAF2-386084E9E5FF">
          <dmn:requiredInput href="#_DBC698E3-45FC-4D92-A1EC-B8C34629C259"/>
       </dmn:informationRequirement>
-      <dmn:literalExpression id="_4B499A2E-513E-4938-8C74-C06E7DF47C72">
+      <dmn:literalExpression id="_4B499A2E-513E-4938-8C74-C06E7DF47C72" expressionLanguage="https://www.omg.org/spec/DMN/20240513/B-FEEL/">
          <dmn:text>user = 1</dmn:text>
       </dmn:literalExpression>
    </dmn:decision>
@@ -57,7 +56,7 @@
       <dmn:informationRequirement id="_B3961DA9-EB27-41E0-AAF2-386084E9E600">
          <dmn:requiredInput href="#_DBC698E3-45FC-4D92-A1EC-B8C34629C259"/>
       </dmn:informationRequirement>
-      <dmn:literalExpression id="_4B499A2E-513E-4938-8C74-C06E7DF47C73">
+      <dmn:literalExpression id="_4B499A2E-513E-4938-8C74-C06E7DF47C73" >
          <dmn:text>user = 1</dmn:text>
       </dmn:literalExpression>
    </dmn:decision>
@@ -67,7 +66,7 @@
       <dmn:informationRequirement id="_B3961DA9-EB27-41E0-AAF2-386084E9E601">
          <dmn:requiredInput href="#_DBC698E3-45FC-4D92-A1EC-B8C34629C259"/>
       </dmn:informationRequirement>
-      <dmn:literalExpression id="_4B499A2E-513E-4938-8C74-C06E7DF47C74">
+      <dmn:literalExpression id="_4B499A2E-513E-4938-8C74-C06E7DF47C74"  expressionLanguage="https://www.omg.org/spec/DMN/20240513/B-FEEL/">
          <dmn:text>split(user, 22)</dmn:text>
       </dmn:literalExpression>
    </dmn:decision>

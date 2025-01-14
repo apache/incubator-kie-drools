@@ -29,6 +29,7 @@
                       exporterVersion="5.1.10.201705011622"
                       id="_238bd96d-47cd-4746-831b-504f3e77b442"
                       name="ConstraintsChecksBFEEL"
+                      expressionLanguage="https://www.omg.org/spec/DMN/20240513/B-FEEL/"
                       namespace="http://www.trisotech.com/definitions/_238bd96d-47cd-4746-831b-504f3e77b442">
   <dmn:itemDefinition id="_EAEC2502-48C1-464D-8FAC-7A1BA334EE47" name="numberAllowedValues">
     <dmn:typeRef>number</dmn:typeRef>

@@ -74,7 +74,6 @@ import org.kie.dmn.model.api.Definitions;
 
 import static org.kie.dmn.core.compiler.UnnamedImportUtils.isInUnnamedImport;
 import static org.kie.dmn.core.impl.TupleIdentifier.createTupleIdentifier;
-import static org.kie.dmn.core.impl.TupleIdentifier.createTupleIdentifierById;
 import static org.kie.dmn.core.impl.TupleIdentifier.createTupleIdentifierByName;
 
 public class DMNModelImpl
@@ -119,11 +118,10 @@ public class DMNModelImpl
         wireTypeRegistry(definitions);
         importChain = new ImportChain(this);
         messages = new DefaultDMNMessagesManager(null);
-        String feelUri = definitions.getNsContext().get("feel");
+        String expressionLanguage = definitions.getExpressionLanguage() != null ? definitions.getExpressionLanguage() : "";
         try {
-            feelDialect = FEELDialect.fromNamespace(feelUri);
+            feelDialect = FEELDialect.fromNamespace(expressionLanguage);
         } catch (IllegalArgumentException e) {
-            // TODO gcardosi 1742
             feelDialect = FEELDialect.FEEL;
         }
     }
