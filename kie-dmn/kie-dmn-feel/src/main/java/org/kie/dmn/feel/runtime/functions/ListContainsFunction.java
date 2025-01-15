@@ -23,12 +23,13 @@ import java.util.ListIterator;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.lang.FEELDialect;
+import org.kie.dmn.feel.runtime.FEELBooleanFunction;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 import org.kie.dmn.feel.util.BooleanEvalHelper;
 import org.kie.dmn.feel.util.NumberEvalHelper;
 
 public class ListContainsFunction
-        extends BaseFEELFunction {
+        extends BaseFEELFunction implements FEELBooleanFunction {
 
     public static final ListContainsFunction INSTANCE = new ListContainsFunction();
 
@@ -48,19 +49,9 @@ public class ListContainsFunction
         ListIterator<?> it = list.listIterator();
         while (it.hasNext() && !found) {
             Object next = NumberEvalHelper.coerceNumber(it.next());
-            found = itemEqualsSC(e, next);
+            found = BooleanEvalHelper.isEqualsStringCompare(e, next);
         }
         return FEELFnResult.ofResult(found);
-    }
-
-    public static boolean itemEqualsSC(Object value, Object itemFromList) {
-        if (value instanceof String) {
-            return value.equals(itemFromList);
-        } else {
-            // Defaulting FEELDialect to FEEL
-            Boolean dmnEqual = BooleanEvalHelper.isEqual(value, itemFromList, FEELDialect.FEEL);
-            return dmnEqual != null && dmnEqual;
-        }
     }
 
 }

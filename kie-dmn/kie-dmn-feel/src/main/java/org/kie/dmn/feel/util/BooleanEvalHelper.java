@@ -181,6 +181,24 @@ public class BooleanEvalHelper {
     }
 
     /**
+     * This method consider if the <code>value</code> object is a <code>String</code>
+     * In that case, return the <code>String.equal</code> result
+     * Otherwise, default to the <code>isEqual</code>
+     * @param value
+     * @param itemFromList
+     * @return
+     */
+    public static boolean isEqualsStringCompare(Object value, Object itemFromList) {
+        if (value instanceof String) {
+            return value.equals(itemFromList);
+        } else {
+            // Defaulting FEELDialect to FEEL
+            Boolean dmnEqual = isEqual(value, itemFromList, FEELDialect.FEEL);
+            return dmnEqual != null && dmnEqual;
+        }
+    }
+
+    /**
      * Return the original object or, depending on the FEELDialect, a default value
      * @param rawReturn
      * @param feelDialect
