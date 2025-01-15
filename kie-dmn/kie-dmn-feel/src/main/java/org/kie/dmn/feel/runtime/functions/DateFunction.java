@@ -28,6 +28,7 @@ import java.time.temporal.TemporalAccessor;
 import java.util.regex.Pattern;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
+import org.kie.dmn.feel.runtime.FEELDateFunction;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
 import static java.time.temporal.ChronoField.DAY_OF_MONTH;
@@ -35,7 +36,7 @@ import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
 import static java.time.temporal.ChronoField.YEAR;
 
 public class DateFunction
-        extends BaseFEELFunction {
+        extends BaseFEELFunction implements FEELDateFunction {
 
     public static final DateFunction INSTANCE = new DateFunction();
 
@@ -51,7 +52,6 @@ public class DateFunction
                                                   .withResolverStyle(ResolverStyle.STRICT);
     }
 
-    private static final TemporalAccessor DEFAULT_VALUE = LocalDate.of(1970, 1, 1);
 
     protected DateFunction() {
         super(FEELConversionFunctionNames.DATE);
@@ -100,11 +100,6 @@ public class DateFunction
         } catch (DateTimeException e) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "from", "date-parsing exception", e));
         }
-    }
-
-    @Override
-    public Object defaultValue() {
-        return DEFAULT_VALUE;
     }
 
     protected FEELFnResult<TemporalAccessor> manageDateTimeException(DateTimeException e, String val) {

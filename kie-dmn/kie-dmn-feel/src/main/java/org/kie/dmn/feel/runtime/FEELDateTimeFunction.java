@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,24 +16,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.dmn.feel.runtime.functions.interval;
+package org.kie.dmn.feel.runtime;
 
-import org.kie.dmn.feel.runtime.FEELBooleanFunction;
-import org.kie.dmn.feel.runtime.Range;
-import org.kie.dmn.feel.runtime.functions.BaseFEELFunction;
-import org.kie.dmn.feel.runtime.functions.FEELFnResult;
-import org.kie.dmn.feel.runtime.functions.ParameterName;
+import java.time.LocalDateTime;
+import java.time.temporal.TemporalAccessor;
 
-public class OverlapsAfterFunction
-        extends BaseFEELFunction implements FEELBooleanFunction {
+public interface FEELDateTimeFunction extends FEELFunction {
 
-    public static final OverlapsAfterFunction INSTANCE = new OverlapsAfterFunction();
+    TemporalAccessor DEFAULT_VALUE = LocalDateTime.of(1970, 1, 1, 0, 0, 0);
 
-    private OverlapsAfterFunction() {
-        super("overlaps after");
-    }
-
-    public FEELFnResult<Boolean> invoke(@ParameterName( "range1" ) Range range1, @ParameterName( "range2" ) Range range2) {
-        return OverlapsBeforeFunction.INSTANCE.invoke(range2, range1);
+    @Override
+    default Object defaultValue() {
+        return DEFAULT_VALUE;
     }
 }
