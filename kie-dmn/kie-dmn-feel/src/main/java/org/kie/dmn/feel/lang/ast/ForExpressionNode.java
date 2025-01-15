@@ -33,8 +33,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static org.kie.dmn.feel.lang.ast.forexpressioniterators.ForIterationUtils.computeResultForRange;
 import static org.kie.dmn.feel.lang.ast.forexpressioniterators.ForIterationUtils.getForIteration;
+import static org.kie.dmn.feel.lang.ast.forexpressioniterators.ForIterationUtils.getForIterationRangeValues;
 
 public class ForExpressionNode
         extends BaseNode {
@@ -137,7 +137,7 @@ public class ForExpressionNode
             if (result instanceof Iterable iterable) {
                 toReturn = new ForIteration(name, iterable);
             } else if (result instanceof Range) {
-                toReturn = computeResultForRange(((Range) result), name, ctx);
+                toReturn = getForIterationRangeValues(((Range) result), name, ctx);
             } else {
                 toReturn = new ForIteration(name, Collections.singletonList(result));
             }

@@ -47,13 +47,13 @@ public class ForIterationUtils {
         throw new EndpointOfRangeOfDifferentTypeException();
     }
 
-    public static ForIteration computeResultForRange(Range result, String name, EvaluationContext ctx) {
+    public static ForIteration getForIterationRangeValues(Range result, String name, EvaluationContext ctx) {
         validateValues(ctx, result.getLowEndPoint(), result.getHighEndPoint());
         if (result.getLowEndPoint() instanceof BigDecimal && result.getHighEndPoint() instanceof BigDecimal) {
-            return computeResultForBigDecimalRange(result,name,ctx);
+            return getForIterationBigDecimalRange(result,name,ctx);
         }
         if (result.getLowEndPoint() instanceof LocalDate && result.getHighEndPoint() instanceof LocalDate) {
-            return computeResultForLocalDateRange(result, name, ctx);
+            return getForIterationLocalDateRange(result, name, ctx);
         }
         return null;
     }
@@ -75,7 +75,7 @@ public class ForIterationUtils {
         }
     }
 
-    static ForIteration computeResultForBigDecimalRange(Range result, String name, EvaluationContext ctx) {
+    static ForIteration getForIterationBigDecimalRange(Range result, String name, EvaluationContext ctx) {
         BigDecimal start = (BigDecimal) result.getLowEndPoint();
         BigDecimal end = (BigDecimal) result.getHighEndPoint();
         if (result.getLowBoundary() == Range.RangeBoundary.OPEN) {
@@ -87,7 +87,7 @@ public class ForIterationUtils {
         return getForIteration(ctx, name, start, end);
     }
 
-    static ForIteration computeResultForLocalDateRange(Range result, String name, EvaluationContext ctx) {
+    static ForIteration getForIterationLocalDateRange(Range result, String name, EvaluationContext ctx) {
         LocalDate start = (LocalDate) result.getLowEndPoint();
         LocalDate end = (LocalDate) result.getHighEndPoint();
         if (result.getLowBoundary() == Range.RangeBoundary.OPEN) {
