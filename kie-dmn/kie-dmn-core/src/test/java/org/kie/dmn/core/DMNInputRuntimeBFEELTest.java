@@ -67,8 +67,7 @@ public class DMNInputRuntimeBFEELTest extends BaseInterpretedVsCompiledTest {
         ctx1.set("user", "a");
         final DMNResult dmnResult1 = runtime.evaluateAll(dmnModel, ctx1);
         assertThat(dmnResult1.getDecisionResultByName("Decision1").getResult()).isEqualTo(false);
-        assertThat(dmnResult1.getDecisionResultByName("Decision2").getResult()).isEqualTo(false);
-        assertThat(dmnResult1.getDecisionResultByName("Decision3").getResult()).isEqualTo(Collections.emptyList());
+        assertThat(dmnResult1.getDecisionResultByName("Decision2").getResult()).isEqualTo(Collections.emptyList());
     }
 
     @ParameterizedTest

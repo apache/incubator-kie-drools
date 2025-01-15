@@ -51,19 +51,9 @@
          <dmn:text>user = 1</dmn:text>
       </dmn:literalExpression>
    </dmn:decision>
-   <dmn:decision id="_F8CA8F98-EE6D-4D56-BCA0-1C716FAC2057" name="Decision2">
+   <dmn:decision id="_F8CA8F98-EE6D-4D56-BCA0-1C716FAC2058" name="Decision2">
       <dmn:extensionElements/>
-      <dmn:variable id="_C932A158-30E0-438B-8930-5704002CEA97" name="Decision2" typeRef="boolean"/>
-      <dmn:informationRequirement id="_B3961DA9-EB27-41E0-AAF2-386084E9E600">
-         <dmn:requiredInput href="#_DBC698E3-45FC-4D92-A1EC-B8C34629C259"/>
-      </dmn:informationRequirement>
-      <dmn:literalExpression id="_4B499A2E-513E-4938-8C74-C06E7DF47C73">
-         <dmn:text>user = 1</dmn:text>
-      </dmn:literalExpression>
-   </dmn:decision>
-   <dmn:decision id="_F8CA8F98-EE6D-4D56-BCA0-1C716FAC2058" name="Decision3">
-      <dmn:extensionElements/>
-      <dmn:variable id="_C932A158-30E0-438B-8930-5704002CEA98" name="Decision3" typeRef="splitteduser"/>
+      <dmn:variable id="_C932A158-30E0-438B-8930-5704002CEA98" name="Decision2" typeRef="splitteduser"/>
       <dmn:informationRequirement id="_B3961DA9-EB27-41E0-AAF2-386084E9E601">
          <dmn:requiredInput href="#_DBC698E3-45FC-4D92-A1EC-B8C34629C259"/>
       </dmn:informationRequirement>
