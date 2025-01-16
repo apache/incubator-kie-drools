@@ -26,9 +26,14 @@ import java.time.ZoneOffset;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Stream;
 
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Named;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.dmn.feel.runtime.FEELBooleanFunction;
 import org.kie.dmn.feel.runtime.FEELCollectionFunction;
@@ -61,17 +66,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class BFEELValueFunctionTest {
 
-    private static Set<FEELBooleanFunction> FEEL_BOOLEAN_FUNCTIONS;
-    private static Set<FEELCollectionFunction> FEEL_COLLECTION_FUNCTIONS;
-    private static Set<FEELDateFunction> FEEL_DATE_FUNCTIONS;
-    private static Set<FEELDateTimeFunction> FEEL_DATE_TIME_FUNCTIONS;
-    private static Set<FEELDurationFunction> FEEL_DURATION_FUNCTIONS;
-    private static Set<FEELStringFunction> FEEL_STRING_FUNCTIONS;
-    private static Set<FEELTimeFunction> FEEL_TIME_FUNCTIONS;
-    private static Set<FEELNumberFunction> FEEL_NUMBER_FUNCTIONS;
+    private static final Set<FEELBooleanFunction> FEEL_BOOLEAN_FUNCTIONS;
+    private static final Set<FEELCollectionFunction> FEEL_COLLECTION_FUNCTIONS;
+    private static final Set<FEELDateFunction> FEEL_DATE_FUNCTIONS;
+    private static final Set<FEELDateTimeFunction> FEEL_DATE_TIME_FUNCTIONS;
+    private static final Set<FEELDurationFunction> FEEL_DURATION_FUNCTIONS;
+    private static final Set<FEELStringFunction> FEEL_STRING_FUNCTIONS;
+    private static final Set<FEELTimeFunction> FEEL_TIME_FUNCTIONS;
+    private static final Set<FEELNumberFunction> FEEL_NUMBER_FUNCTIONS;
 
-    @BeforeAll
-    public static void setup() {
+    static {
         // The functions have been manually copied from BuiltInFunctions.class,
         // and sorted accordingly their returned value
         FEEL_BOOLEAN_FUNCTIONS = new HashSet<>();
@@ -172,34 +176,17 @@ public class BFEELValueFunctionTest {
         FEEL_TIME_FUNCTIONS.add(TimeFunction.INSTANCE);
     }
 
-    @Test
-    void testBooleanFunctions() {
-        commonTest(FEEL_BOOLEAN_FUNCTIONS, false);
-    }
-
-    @Test
-    void testCollectionFunctions() {
-        commonTest(FEEL_COLLECTION_FUNCTIONS, Collections.emptyList());
-    }
-
-    @Test
-    void testDateFunctions() {
-        commonTest(FEEL_DATE_FUNCTIONS, LocalDate.of(1970, 1, 1));
-    }
-
-    @Test
-    void testDateTimeFunctions() {
-        commonTest(FEEL_DATE_TIME_FUNCTIONS, LocalDateTime.of(1970, 1, 1, 0, 0, 0));
-    }
-
-    @Test
-    void testDurationFunctions() {
-        commonTest(FEEL_DURATION_FUNCTIONS, ComparablePeriod.parse("P0M"));
-    }
-
-    @Test
-    void testNumberFunctions() {
-        commonTest(FEEL_NUMBER_FUNCTIONS, BigDecimal.ZERO);
+    @DisplayName("Testing functions execution")
+    @ParameterizedTest
+    @MethodSource("namedData")
+    void testFunctionsNamed(TestingTuple functionsAndDefault) {
+        Set<? extends FEELFunction> functions = functionsAndDefault.functions;
+        Object expected = functionsAndDefault.defaultValue;
+        functions.forEach((function) -> {
+            String description = String.format("Evaluating: '%s'", function.getClass().getSimpleName());
+            Object retrieved = function.defaultValue();
+            assertThat(retrieved).as(description).isEqualTo(expected);
+        });
     }
 
     @Test
@@ -207,26 +194,32 @@ public class BFEELValueFunctionTest {
         Object retrievedObj = RangeFunction.INSTANCE.defaultValue();
         assertThat(retrievedObj).isNotNull().isInstanceOf(Range.class);
         Range retrieved = (Range) retrievedObj;
+        assertThat(retrieved).as("Verify functions ").isNotNull();
         assertThat(retrieved.getLowBoundary()).isEqualTo(Range.RangeBoundary.OPEN);
         assertThat(retrieved.getHighBoundary()).isEqualTo(Range.RangeBoundary.OPEN);
         assertThat(retrieved.getLowEndPoint()).isEqualTo(BigDecimal.ZERO);
         assertThat(retrieved.getHighEndPoint()).isEqualTo(BigDecimal.ZERO);
     }
 
-    @Test
-    void testStringFunctions() {
-        commonTest(FEEL_STRING_FUNCTIONS, "");
+    private static Stream<Arguments> namedData() {
+        return Stream.of(
+                Arguments.of(Named.of("FEEL_BOOLEAN_FUNCTIONS", new TestingTuple(FEEL_BOOLEAN_FUNCTIONS, false))),
+                Arguments.of(Named.of("FEEL_COLLECTION_FUNCTIONS", new TestingTuple(FEEL_COLLECTION_FUNCTIONS, Collections.emptyList()))),
+                Arguments.of(Named.of("FEEL_DATE_FUNCTIONS", new TestingTuple(FEEL_DATE_FUNCTIONS, LocalDate.of(1970, 1, 1)))),
+                Arguments.of(Named.of("FEEL_DATE_TIME_FUNCTIONS", new TestingTuple(FEEL_DATE_TIME_FUNCTIONS, LocalDateTime.of(1970, 1, 1, 0, 0, 0)))),
+                Arguments.of(Named.of("FEEL_DURATION_FUNCTIONS", new TestingTuple(FEEL_DURATION_FUNCTIONS, ComparablePeriod.parse("P0M")))),
+                Arguments.of(Named.of("FEEL_NUMBER_FUNCTIONS", new TestingTuple(FEEL_NUMBER_FUNCTIONS, BigDecimal.ZERO))),
+                Arguments.of(Named.of("FEEL_STRING_FUNCTIONS", new TestingTuple(FEEL_STRING_FUNCTIONS, ""))),
+                Arguments.of(Named.of("FEEL_TIME_FUNCTIONS", new TestingTuple(FEEL_TIME_FUNCTIONS, OffsetTime.of(0, 0, 0, 0, ZoneOffset.ofHoursMinutes(0, 0))))));
     }
 
-    @Test
-    void testTimeFunctions() {
-        commonTest(FEEL_TIME_FUNCTIONS, OffsetTime.of(0, 0, 0, 0, ZoneOffset.ofHoursMinutes(0, 0)));
+    private static final class TestingTuple {
+        final Set<? extends FEELFunction> functions;
+        final Object defaultValue;
+
+        public TestingTuple(Set<? extends FEELFunction> functions, Object defaultValue) {
+            this.functions = functions;
+            this.defaultValue = defaultValue;
+        }
     }
-
-    private void commonTest(Set<? extends FEELFunction> functions, Object expected) {
-        functions.forEach((function) ->
-                                                 assertThat(function.defaultValue()).isEqualTo(expected));
-    }
-
-
 }
