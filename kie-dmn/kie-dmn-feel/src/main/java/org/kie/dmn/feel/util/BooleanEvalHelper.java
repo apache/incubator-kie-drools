@@ -30,7 +30,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiPredicate;
 
-import org.kie.api.io.Resource;
 import org.kie.dmn.feel.lang.FEELDialect;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
