@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiPredicate;
 
+import org.kie.api.io.Resource;
 import org.kie.dmn.feel.lang.FEELDialect;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
@@ -182,8 +183,8 @@ public class BooleanEvalHelper {
 
     /**
      * This method consider if the <code>value</code> object is a <code>String</code>
-     * In that case, return the <code>String.equal</code> result
-     * Otherwise, default to the <code>isEqual</code>
+     * In that case, return the {@link String#equals(Object)} result
+     * Otherwise, default to the {@link #isEqual(Object, Object, FEELDialect)}
      * @param value
      * @param itemFromList
      * @return
