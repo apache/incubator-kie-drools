@@ -28,6 +28,14 @@
 
     <repositories>
         <repository>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <id>central</id>
+            <name>Central Repository</name>
+            <url>https://repo.maven.apache.org/maven2</url>
+        </repository>
+        <repository>
             <id>apache-public-repository-group</id>
             <name>Apache Public Repository Group</name>
             <url>https://repository.apache.org/content/groups/public/</url>
