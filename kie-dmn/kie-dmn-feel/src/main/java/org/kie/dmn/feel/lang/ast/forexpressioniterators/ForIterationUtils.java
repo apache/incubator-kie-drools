@@ -47,7 +47,7 @@ public class ForIterationUtils {
         throw new EndpointOfRangeOfDifferentTypeException();
     }
 
-    public static ForIteration getForIterationRangeValues(Range result, String name, EvaluationContext ctx) {
+    public static ForIteration getForIteration(Range result, String name, EvaluationContext ctx) {
         validateValues(ctx, result.getLowEndPoint(), result.getHighEndPoint());
         if (result.getLowEndPoint() instanceof BigDecimal && result.getHighEndPoint() instanceof BigDecimal) {
             return getForIterationBigDecimalRange(result,name,ctx);

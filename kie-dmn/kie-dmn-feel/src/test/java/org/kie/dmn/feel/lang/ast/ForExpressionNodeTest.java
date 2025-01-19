@@ -31,11 +31,11 @@ import org.kie.dmn.feel.util.EvaluationContextTestUtil;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.kie.dmn.feel.util.ForExpressionNodeUtils.getIterationContextNode;
-import static org.kie.dmn.feel.util.ForExpressionNodeUtils.getListNode;
-import static org.kie.dmn.feel.util.ForExpressionNodeUtils.getNameRefNode;
-import static org.kie.dmn.feel.util.ForExpressionNodeUtils.getNestedListNode;
-import static org.kie.dmn.feel.util.ForExpressionNodeUtils.getRangeNode;
+import static org.kie.dmn.feel.util.ExpressionNodeFactoryUtils.getIterationContextNode;
+import static org.kie.dmn.feel.util.ExpressionNodeFactoryUtils.getListNode;
+import static org.kie.dmn.feel.util.ExpressionNodeFactoryUtils.getNameRefNode;
+import static org.kie.dmn.feel.util.ExpressionNodeFactoryUtils.getNestedListNode;
+import static org.kie.dmn.feel.util.ExpressionNodeFactoryUtils.getRangeNode;
 
 class ForExpressionNodeTest {
 
@@ -66,7 +66,7 @@ class ForExpressionNodeTest {
     @Test
     void evaluateRange() {
         IterationContextNode x = getIterationContextNode("x", getRangeNode("[1980-01-01 .. 1980-01-03]", LocalDate.of(1980, 1, 1), LocalDate.of(1980, 1, 3), RangeNode.IntervalBoundary.CLOSED, RangeNode.IntervalBoundary.CLOSED ), "x in [1980-01-01 .. 1980-01-03]");
-        ForExpressionNode forExpressionNode = new ForExpressionNode(Collections.singletonList(x), getNameRefNode(BuiltInType.NUMBER, "x"), "for x in [1980-01-01 .. 1980-01-03] return x");
+        ForExpressionNode forExpressionNode = new ForExpressionNode(Collections.singletonList(x), getNameRefNode(BuiltInType.DATE, "x"), "for x in [1980-01-01 .. 1980-01-03] return x");
         Object retrieved = forExpressionNode.evaluate(EvaluationContextTestUtil.newEmptyEvaluationContext());
         assertThat(retrieved).isInstanceOf(List.class).asList().containsExactly(LocalDate.of(1980, 1, 1),
                 LocalDate.of(1980, 1, 2), LocalDate.of(1980, 1, 3));
