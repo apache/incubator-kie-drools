@@ -18,6 +18,9 @@
  */
 package org.kie.dmn.feel.runtime;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
 public interface Range {
 
     enum RangeBoundary {
@@ -36,4 +39,30 @@ public interface Range {
 
     boolean isWithUndefined();
 
+
+    static Comparable getStart(Range result) {
+        if(result.getLowEndPoint() instanceof BigDecimal) {
+            BigDecimal start = (BigDecimal) result.getLowEndPoint();
+            start = result.getLowBoundary() == Range.RangeBoundary.OPEN ? start.add(BigDecimal.ONE) : start;
+            return start;
+        } else if (result.getLowEndPoint() instanceof LocalDate) {
+            LocalDate start = (LocalDate) result.getLowEndPoint();
+            start = result.getLowBoundary() == Range.RangeBoundary.OPEN ? start.plusDays(1) : start;
+            return start;
+        }
+        return result.getLowEndPoint();
+    }
+
+    static Comparable getEnd(Range result) {
+        if (result.getHighEndPoint() instanceof BigDecimal) {
+            BigDecimal end = (BigDecimal) result.getHighEndPoint();
+            end = result.getHighBoundary() == Range.RangeBoundary.OPEN ? end.subtract(BigDecimal.ONE) : end;
+            return end;
+        } else if (result.getHighEndPoint() instanceof LocalDate) {
+            LocalDate end = (LocalDate) result.getHighEndPoint();
+            end = result.getHighBoundary() == Range.RangeBoundary.OPEN ? end.minusDays(1) : end;
+            return end;
+        }
+        return result.getHighEndPoint();
+    }
 }

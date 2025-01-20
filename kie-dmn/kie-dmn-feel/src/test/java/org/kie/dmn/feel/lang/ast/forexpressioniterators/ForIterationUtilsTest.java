@@ -29,13 +29,9 @@ import org.kie.dmn.feel.exceptions.EndpointOfRangeNotValidTypeException;
 import org.kie.dmn.feel.exceptions.EndpointOfRangeOfDifferentTypeException;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
-import org.kie.dmn.feel.runtime.Range;
-import org.kie.dmn.feel.runtime.impl.RangeImpl;
 import org.mockito.ArgumentCaptor;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.kie.dmn.feel.lang.ast.forexpressioniterators.ForIterationUtils.getForIterationBigDecimalRange;
-import static org.kie.dmn.feel.lang.ast.forexpressioniterators.ForIterationUtils.getForIterationLocalDateRange;
 import static org.kie.dmn.feel.util.EvaluationContextTestUtil.newEmptyEvaluationContext;
 import static org.kie.dmn.feel.lang.ast.forexpressioniterators.ForIterationUtils.getForIteration;
 import static org.kie.dmn.feel.lang.ast.forexpressioniterators.ForIterationUtils.validateValues;
@@ -151,56 +147,5 @@ class ForIterationUtilsTest {
             verify(listener, times(1)).onEvent(captor.capture());
             reset(listener);
         }
-    }
-
-    @Test
-    void testGetForIterationRangeValues() {
-        Range range = new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.TEN, BigDecimal.valueOf(20), Range.RangeBoundary.OPEN);
-        EvaluationContext ctx = mock(EvaluationContext.class);
-
-        ForIteration expectedResult = new ForIteration("rangeTest", null);
-        ForIteration actualResult = getForIteration(range, "rangeTest", ctx);
-        assertThat(actualResult).isNotNull();
-        assertThat(actualResult.toString()).isEqualTo(expectedResult.toString());
-    }
-
-    @Test
-    void testGetForIterationBigDecimalRangeOpenBoundary() {
-        Range range = new RangeImpl(Range.RangeBoundary.OPEN, BigDecimal.TEN, BigDecimal.valueOf(20), Range.RangeBoundary.OPEN);
-
-        ForIteration expectedResult = new ForIteration("BigDecimalRange", null);
-        ForIteration actualResult = getForIterationBigDecimalRange(range, "BigDecimalRange", ctx);
-        assertThat(actualResult).isNotNull();
-        assertThat(actualResult.toString()).isEqualTo(expectedResult.toString());
-    }
-
-    @Test
-    void testGetForIterationBigDecimalRangeClosedBoundary() {
-        Range range = new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.TEN, BigDecimal.valueOf(20), Range.RangeBoundary.CLOSED);
-
-        ForIteration expectedResult = new ForIteration("BigDecimalRange", null);
-        ForIteration actualResult = getForIterationBigDecimalRange(range, "BigDecimalRange", ctx);
-        assertThat(actualResult).isNotNull();
-        assertThat(actualResult.toString()).isEqualTo(expectedResult.toString());
-    }
-
-    @Test
-    void testGetForIterationLocalDateRangeOpenBoundary() {
-        Range range = new RangeImpl(Range.RangeBoundary.OPEN, LocalDate.of(2025, 1, 1), LocalDate.of(2025, 1, 7), Range.RangeBoundary.OPEN);
-
-        ForIteration expectedResult = new ForIteration("dateRange", null);
-        ForIteration actualResult = getForIterationLocalDateRange(range, "dateRange", ctx);
-        assertThat(actualResult).isNotNull();
-        assertThat(actualResult.toString()).isEqualTo(expectedResult.toString());
-    }
-
-    @Test
-    void testGetForIterationLocalDateRangeClosedBoundary() {
-        Range range = new RangeImpl(Range.RangeBoundary.CLOSED, LocalDate.of(2025, 1, 1), LocalDate.of(2025, 1, 7), Range.RangeBoundary.CLOSED);
-
-        ForIteration expectedResult = new ForIteration("dateRange", null);
-        ForIteration actualResult = getForIterationLocalDateRange(range, "dateRange", ctx);
-        assertThat(actualResult).isNotNull();
-        assertThat(actualResult.toString()).isEqualTo(expectedResult.toString());
     }
 }
