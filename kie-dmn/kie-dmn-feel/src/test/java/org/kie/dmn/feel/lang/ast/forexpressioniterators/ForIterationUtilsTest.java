@@ -34,7 +34,6 @@ import org.kie.dmn.feel.runtime.impl.RangeImpl;
 import org.mockito.ArgumentCaptor;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.kie.dmn.feel.lang.ast.forexpressioniterators.ForIterationUtils.getForIterationBigDecimalRange;
 import static org.kie.dmn.feel.lang.ast.forexpressioniterators.ForIterationUtils.getForIterationLocalDateRange;
 import static org.kie.dmn.feel.util.EvaluationContextTestUtil.newEmptyEvaluationContext;
@@ -162,7 +161,7 @@ class ForIterationUtilsTest {
         ForIteration expectedResult = new ForIteration("rangeTest", null);
         ForIteration actualResult = getForIteration(range, "rangeTest", ctx);
         assertThat(actualResult).isNotNull();
-        assertEquals(actualResult.toString(), expectedResult.toString());
+        assertThat(actualResult.toString()).isEqualTo(expectedResult.toString());
     }
 
     @Test
@@ -172,7 +171,7 @@ class ForIterationUtilsTest {
         ForIteration expectedResult = new ForIteration("BigDecimalRange", null);
         ForIteration actualResult = getForIterationBigDecimalRange(range, "BigDecimalRange", ctx);
         assertThat(actualResult).isNotNull();
-        assertEquals(actualResult.toString(), expectedResult.toString());
+        assertThat(actualResult.toString()).isEqualTo(expectedResult.toString());
     }
 
     @Test
@@ -182,7 +181,7 @@ class ForIterationUtilsTest {
         ForIteration expectedResult = new ForIteration("BigDecimalRange", null);
         ForIteration actualResult = getForIterationBigDecimalRange(range, "BigDecimalRange", ctx);
         assertThat(actualResult).isNotNull();
-        assertEquals(actualResult.toString(), expectedResult.toString());
+        assertThat(actualResult.toString()).isEqualTo(expectedResult.toString());
     }
 
     @Test
@@ -192,7 +191,7 @@ class ForIterationUtilsTest {
         ForIteration expectedResult = new ForIteration("dateRange", null);
         ForIteration actualResult = getForIterationLocalDateRange(range, "dateRange", ctx);
         assertThat(actualResult).isNotNull();
-        assertEquals(actualResult.toString(), expectedResult.toString());
+        assertThat(actualResult.toString()).isEqualTo(expectedResult.toString());
     }
 
     @Test
@@ -202,6 +201,6 @@ class ForIterationUtilsTest {
         ForIteration expectedResult = new ForIteration("dateRange", null);
         ForIteration actualResult = getForIterationLocalDateRange(range, "dateRange", ctx);
         assertThat(actualResult).isNotNull();
-        assertEquals(actualResult.toString(), expectedResult.toString());
+        assertThat(actualResult.toString()).isEqualTo(expectedResult.toString());
     }
 }
