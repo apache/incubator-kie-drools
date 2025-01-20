@@ -19,8 +19,8 @@
 package org.kie.dmn.feel.lang.ast;
 
 import org.antlr.v4.runtime.ParserRuleContext;
-import org.kie.dmn.feel.exceptions.EndpointOfRangeNotValidTypeException;
-import org.kie.dmn.feel.exceptions.EndpointOfRangeOfDifferentTypeException;
+import org.kie.dmn.feel.exceptions.EndpointOfForIterationNotValidTypeException;
+import org.kie.dmn.feel.exceptions.EndpointOfForIterationDifferentTypeException;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.ast.forexpressioniterators.ForIteration;
@@ -83,7 +83,7 @@ public class ForExpressionNode
             populateToReturn(0, ctx, toReturn);
             LOG.trace("returning {}", toReturn);
             return toReturn;
-        } catch (EndpointOfRangeNotValidTypeException | EndpointOfRangeOfDifferentTypeException e) {
+        } catch (EndpointOfForIterationNotValidTypeException | EndpointOfForIterationDifferentTypeException e) {
             // ast error already reported
             return null;
         } finally {
