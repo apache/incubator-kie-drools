@@ -34,8 +34,6 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.kie.dmn.feel.lang.ast.forexpressioniterators.ForIterationUtils.getForIteration;
-import static org.kie.dmn.feel.runtime.Range.getEnd;
-import static org.kie.dmn.feel.runtime.Range.getStart;
 
 public class ForExpressionNode
         extends BaseNode {
@@ -138,7 +136,7 @@ public class ForExpressionNode
             if (result instanceof Iterable iterable) {
                 toReturn = new ForIteration(name, iterable);
             } else if (result instanceof Range) {
-                toReturn = getForIteration(ctx, name, getStart((Range) result), getEnd((Range) result));
+                toReturn = getForIteration(ctx, name, ((Range) result).getStart(), ((Range) result).getEnd());
             } else {
                 toReturn = new ForIteration(name, Collections.singletonList(result));
             }
