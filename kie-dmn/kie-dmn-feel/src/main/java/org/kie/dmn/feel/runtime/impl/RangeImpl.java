@@ -99,7 +99,6 @@ public class RangeImpl
     }
 
     private Boolean finiteRangeIncludes(FEELDialect feelDialect, Object param) {
-        // Defaulting FEELDialect to FEEL
         if (lowBoundary == RangeBoundary.OPEN && highBoundary == RangeBoundary.OPEN) {
             return bothOrThrow(compare(feelDialect, lowEndPoint, param, (l, r) -> l.compareTo(r) < 0) , compare(feelDialect, highEndPoint, param,  (l, r) -> l.compareTo(r) > 0), param);
         } else if (lowBoundary == RangeBoundary.OPEN && highBoundary == RangeBoundary.CLOSED) {

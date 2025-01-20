@@ -52,7 +52,6 @@ public class DateFunction
                                                   .withResolverStyle(ResolverStyle.STRICT);
     }
 
-
     protected DateFunction() {
         super(FEELConversionFunctionNames.DATE);
     }
