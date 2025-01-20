@@ -100,7 +100,6 @@ public class RangeImpl
         return withUndefined;
     }
 
-    private Boolean finiteRangeIncludes(FEELDialect feelDialect, Object param) {
     @Override
     public Comparable getStart() {
         if(lowEndPoint instanceof BigDecimal) {
@@ -129,7 +128,7 @@ public class RangeImpl
         return highEndPoint;
     }
 
-    private Boolean finiteRangeIncludes(Object param) {
+    private Boolean finiteRangeIncludes(FEELDialect feelDialect, Object param) {
         if (lowBoundary == RangeBoundary.OPEN && highBoundary == RangeBoundary.OPEN) {
             return bothOrThrow(compare(feelDialect, lowEndPoint, param, (l, r) -> l.compareTo(r) < 0) , compare(feelDialect, highEndPoint, param,  (l, r) -> l.compareTo(r) > 0), param);
         } else if (lowBoundary == RangeBoundary.OPEN && highBoundary == RangeBoundary.CLOSED) {
