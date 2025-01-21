@@ -18,6 +18,8 @@
  */
 package org.kie.dmn.feel.runtime.impl;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.function.BiPredicate;
 
 import org.kie.dmn.feel.lang.FEELDialect;
@@ -96,6 +98,34 @@ public class RangeImpl
     @Override
     public boolean isWithUndefined() {
         return withUndefined;
+    }
+
+    @Override
+    public Comparable getStart() {
+        if(lowEndPoint instanceof BigDecimal) {
+            BigDecimal start = (BigDecimal) lowEndPoint;
+            start = lowBoundary == Range.RangeBoundary.OPEN ? start.add(BigDecimal.ONE) : start;
+            return start;
+        } else if (lowEndPoint instanceof LocalDate) {
+            LocalDate start = (LocalDate) lowEndPoint;
+            start = lowBoundary == Range.RangeBoundary.OPEN ? start.plusDays(1) : start;
+            return start;
+        }
+        return lowEndPoint;
+    }
+
+    @Override
+    public Comparable getEnd() {
+        if (highEndPoint instanceof BigDecimal) {
+            BigDecimal end = (BigDecimal) highEndPoint;
+            end = highBoundary == Range.RangeBoundary.OPEN ? end.subtract(BigDecimal.ONE) : end;
+            return end;
+        } else if (highEndPoint instanceof LocalDate) {
+            LocalDate end = (LocalDate) highEndPoint;
+            end = highBoundary == Range.RangeBoundary.OPEN ? end.minusDays(1) : end;
+            return end;
+        }
+        return highEndPoint;
     }
 
     private Boolean finiteRangeIncludes(FEELDialect feelDialect, Object param) {

@@ -19,12 +19,13 @@
 package org.kie.dmn.feel.lang.ast;
 
 import org.antlr.v4.runtime.ParserRuleContext;
-import org.kie.dmn.feel.exceptions.EndpointOfRangeNotValidTypeException;
-import org.kie.dmn.feel.exceptions.EndpointOfRangeOfDifferentTypeException;
+import org.kie.dmn.feel.exceptions.EndpointOfForIterationNotValidTypeException;
+import org.kie.dmn.feel.exceptions.EndpointOfForIterationDifferentTypeException;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.ast.forexpressioniterators.ForIteration;
 import org.kie.dmn.feel.lang.types.BuiltInType;
+import org.kie.dmn.feel.runtime.Range;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -82,7 +83,7 @@ public class ForExpressionNode
             populateToReturn(0, ctx, toReturn);
             LOG.trace("returning {}", toReturn);
             return toReturn;
-        } catch (EndpointOfRangeNotValidTypeException | EndpointOfRangeOfDifferentTypeException e) {
+        } catch (EndpointOfForIterationNotValidTypeException | EndpointOfForIterationDifferentTypeException e) {
             // ast error already reported
             return null;
         } finally {
@@ -127,13 +128,18 @@ public class ForExpressionNode
 
     private ForIteration createForIteration(EvaluationContext ctx, IterationContextNode iterationContextNode) {
         LOG.trace("Creating ForIteration for {}", iterationContextNode);
-        ForIteration toReturn;
+        ForIteration toReturn = null;
         String name = iterationContextNode.evaluateName(ctx);
         Object result = iterationContextNode.evaluate(ctx);
         Object rangeEnd = iterationContextNode.evaluateRangeEnd(ctx);
         if (rangeEnd == null) {
-            Iterable values = result instanceof Iterable iterable? iterable : Collections.singletonList(result);
-            toReturn = new ForIteration(name, values);
+            if (result instanceof Iterable iterable) {
+                toReturn = new ForIteration(name, iterable);
+            } else if (result instanceof Range) {
+                toReturn = getForIteration(ctx, name, ((Range) result).getStart(), ((Range) result).getEnd());
+            } else {
+                toReturn = new ForIteration(name, Collections.singletonList(result));
+            }
         } else {
             toReturn = getForIteration(ctx, name, result, rangeEnd);
         }

@@ -18,6 +18,6 @@
  */
 package org.kie.dmn.feel.exceptions;
 
-public class EndpointOfRangeOfDifferentTypeException extends RuntimeException {
+public class EndpointOfForIterationDifferentTypeException extends RuntimeException {
     private static final long serialVersionUID = 1L;
 }
