@@ -22,6 +22,10 @@ import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.lang.FEELDialect;
 import org.kie.dmn.feel.runtime.Range;
 
+import java.math.BigDecimal;
+import java.time.Duration;
+import java.time.LocalDate;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 class RangeImplTest {
@@ -159,5 +163,117 @@ class RangeImplTest {
         assertThat(rangeImpl2).doesNotHaveSameHashCodeAs(rangeImpl);
         rangeImpl2 = new RangeImpl(Range.RangeBoundary.CLOSED, 12, 17, Range.RangeBoundary.CLOSED);
         assertThat(rangeImpl2).doesNotHaveSameHashCodeAs(rangeImpl);
+    }
+
+    @Test
+    void getStartForBigDecimalRangeOpenBoundary() {
+        RangeImpl rangeImpl = new RangeImpl(Range.RangeBoundary.OPEN, BigDecimal.TEN, BigDecimal.valueOf(20), Range.RangeBoundary.OPEN);
+
+        Comparable expectedResult = BigDecimal.valueOf(11);
+        Comparable actualResult = rangeImpl.getStart();
+        assertThat(actualResult).isEqualTo(expectedResult);
+    }
+
+    @Test
+    void getStartForBigDecimalRangeClosedBoundary() {
+        RangeImpl rangeImpl = new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.TEN, BigDecimal.valueOf(20), Range.RangeBoundary.OPEN);
+
+        Comparable expectedResult = BigDecimal.TEN;
+        Comparable actualResult = rangeImpl.getStart();
+        assertThat(actualResult).isEqualTo(expectedResult);
+    }
+
+    @Test
+    void getEndForBigDecimalRangeOpenBoundary() {
+        RangeImpl rangeImpl = new RangeImpl(Range.RangeBoundary.OPEN, BigDecimal.TEN, BigDecimal.valueOf(20), Range.RangeBoundary.OPEN);
+
+        Comparable expectedResult = BigDecimal.valueOf(19);
+        Comparable actualResult = rangeImpl.getEnd();
+        assertThat(actualResult).isEqualTo(expectedResult);
+    }
+
+    @Test
+    void getEndForBigDecimalRangeClosedBoundary() {
+        RangeImpl rangeImpl = new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.TEN, BigDecimal.valueOf(20), Range.RangeBoundary.CLOSED);
+
+        Comparable expectedResult = BigDecimal.valueOf(20);
+        Comparable actualResult = rangeImpl.getEnd();
+        assertThat(actualResult).isEqualTo(expectedResult);
+    }
+
+    @Test
+    void getStartForLocalDateRangeOpenBoundary() {
+        RangeImpl rangeImpl = new RangeImpl(Range.RangeBoundary.OPEN, LocalDate.of(2025, 1, 1), LocalDate.of(2025, 1, 7), Range.RangeBoundary.OPEN);
+
+        Comparable expectedResult = LocalDate.of(2025, 1, 2);
+        Comparable actualResult = rangeImpl.getStart();
+        assertThat(actualResult).isEqualTo(expectedResult);
+    }
+
+    @Test
+    void getStartForLocalDateRangeClosedBoundary() {
+        RangeImpl rangeImpl = new RangeImpl(Range.RangeBoundary.CLOSED, LocalDate.of(2025, 1, 1), LocalDate.of(2025, 1, 7), Range.RangeBoundary.OPEN);
+
+        Comparable expectedResult = LocalDate.of(2025, 1, 1);
+        Comparable actualResult = rangeImpl.getStart();
+        assertThat(actualResult).isEqualTo(expectedResult);
+    }
+
+    @Test
+    void getEndForLocalDateRangeOpenBoundary() {
+        RangeImpl rangeImpl = new RangeImpl(Range.RangeBoundary.OPEN, LocalDate.of(2025, 1, 1), LocalDate.of(2025, 1, 7), Range.RangeBoundary.OPEN);
+
+        Comparable expectedResult = LocalDate.of(2025, 1, 6);
+        Comparable actualResult = rangeImpl.getEnd();
+        assertThat(actualResult).isEqualTo(expectedResult);
+    }
+
+    @Test
+    void getEndForLocalDateRangeClosedBoundary() {
+        RangeImpl rangeImpl = new RangeImpl(Range.RangeBoundary.CLOSED, LocalDate.of(2025, 1, 1), LocalDate.of(2025, 1, 7), Range.RangeBoundary.CLOSED);
+
+        Comparable expectedResult = LocalDate.of(2025, 1, 7);
+        Comparable actualResult = rangeImpl.getEnd();
+        assertThat(actualResult).isEqualTo(expectedResult);
+    }
+
+    @Test
+    void getStartForStringRangeClosedBoundary() {
+        RangeImpl rangeImpl = new RangeImpl(Range.RangeBoundary.CLOSED, "a", "z", Range.RangeBoundary.OPEN);
+
+        Comparable expectedResult = "a";
+        Comparable actualResult = rangeImpl.getStart();
+        assertThat(actualResult).isEqualTo(expectedResult);
+
+    }
+
+    @Test
+    void getEndForStringRangeOpenBoundary() {
+        RangeImpl rangeImpl = new RangeImpl(Range.RangeBoundary.CLOSED, "a", "z", Range.RangeBoundary.OPEN);
+
+        Comparable expectedResult = "z";
+        Comparable actualResult = rangeImpl.getEnd();
+        assertThat(actualResult).isEqualTo(expectedResult);
+
+    }
+
+    @Test
+    void getStartForDurationRangeOpenBoundary() {
+        RangeImpl rangeImpl = new RangeImpl(Range.RangeBoundary.OPEN, Duration.parse("P2DT20H14M"), Duration.parse("P3DT20H14M"), Range.RangeBoundary.CLOSED);
+
+        Comparable expectedResult = Duration.parse("P2DT20H14M");
+        Comparable actualResult = rangeImpl.getStart();
+        assertThat(actualResult).isEqualTo(expectedResult);
+
+    }
+
+    @Test
+    void getEndForDurationRangeClosedBoundary() {
+        RangeImpl rangeImpl = new RangeImpl(Range.RangeBoundary.CLOSED, Duration.parse("P2DT20H14M"), Duration.parse("P3DT20H14M"), Range.RangeBoundary.CLOSED);
+
+        Comparable expectedResult = Duration.parse("P3DT20H14M");
+        Comparable actualResult = rangeImpl.getEnd();
+        assertThat(actualResult).isEqualTo(expectedResult);
+
     }
 }

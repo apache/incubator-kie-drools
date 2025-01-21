@@ -18,5 +18,6 @@
  */
 package org.kie.dmn.feel.exceptions;
 
-public class EndpointOfRangeNotOfNumberException extends RuntimeException {
+public class EndpointOfForIterationNotValidTypeException extends RuntimeException {
+    private static final long serialVersionUID = 1L;
 }
