@@ -18,11 +18,8 @@
  */
 package org.kie.kogito.codegen.decision;
 
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Set;
 
 import org.kie.kogito.KogitoGAV;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
@@ -134,16 +131,12 @@ public class DecisionModelResourcesProviderGenerator {
     }
 
     private String extractModelVersion(DMNResource resource) {
-        Set<String> definitions = new HashSet<>(resource.getDmnModel().getDefinitions().getNsContext().values());
-        definitions.retainAll(Arrays.asList(org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase.URI_DMN,
-                org.kie.dmn.model.v1_2.KieDMNModelInstrumentedBase.URI_DMN,
-                org.kie.dmn.model.v1_3.KieDMNModelInstrumentedBase.URI_DMN));
-
-        if (definitions.size() != 1) {
+        String toReturn = resource.getDmnModel().getDefinitions().getTypeLanguage();
+        if (toReturn == null || toReturn.isEmpty()) {
             LOGGER.error("Could not extract DMN version from DMN model {}", resource.getDmnModel().getName());
             throw new IllegalStateException("The DMN model does not contain a unique model version in the metadata.");
         }
-        return definitions.iterator().next();
+        return toReturn;
     }
 
 }
