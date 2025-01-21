@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-lexer grammar DRLLexer;
+lexer grammar DRL10Lexer;
 
 import JavaLexer;
 

@@ -16,11 +16,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
- parser grammar DRLParser;
+ parser grammar DRL10Parser;
 
-options { tokenVocab=DRLLexer; }
+options { tokenVocab=DRL10Lexer; }
 
-import DRL6Expressions, JavaParser;
+import DRL10Expressions, JavaParser;
 
     /*
      * statement := importStatement

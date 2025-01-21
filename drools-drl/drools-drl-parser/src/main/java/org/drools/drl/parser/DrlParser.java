@@ -19,7 +19,7 @@
 package org.drools.drl.parser;
 
 import org.drools.drl.parser.antlr4.DRLParserError;
-import org.drools.drl.parser.antlr4.DRLParserWrapper;
+import org.drools.drl.parser.antlr4.DRL10ParserWrapper;
 import org.drools.io.InternalResource;
 import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.drl.parser.lang.DRLLexer;
@@ -53,7 +53,7 @@ public class DrlParser {
 
     // TODO: REMOVE THIS GENERIC MESSAGE ASAP
     private static final String     GENERIC_ERROR_MESSAGE = "Unexpected exception raised while parsing. This is a bug. Please contact the Development team :\n";
-    private static final String     DEBUG_PARSER_LOG = "parse : ANTLR4_PARSER_ENABLED = {}";
+    private static final String     DEBUG_PARSER_LOG = "parse : ANTLR4_PARSER_ENABLED = {}, languageLevel = {}";
     private final List<DroolsError> results               = new ArrayList<>();
     private List<DroolsSentence>    editorSentences       = null;
     private Location                location              = new Location( Location.LOCATION_UNKNOWN );
@@ -65,7 +65,7 @@ public class DrlParser {
     // temporarily removed 'final' for testing purposes. This should be final when the feature gets stable
     public static boolean ANTLR4_PARSER_ENABLED = Boolean.parseBoolean(System.getProperty(ANTLR4_PARSER_ENABLED_PROPERTY, "false")); // default is false
 
-    public static final LanguageLevelOption DEFAULT_LANGUAGE_LEVEL = LanguageLevelOption.DRL6;
+    public static final LanguageLevelOption DEFAULT_LANGUAGE_LEVEL = ANTLR4_PARSER_ENABLED ? LanguageLevelOption.DRL10 : LanguageLevelOption.DRL6;
     private final LanguageLevelOption languageLevel;
 
     public DrlParser() {
@@ -84,9 +84,9 @@ public class DrlParser {
 
     public PackageDescr parse(final boolean isEditor,
                               final String text) throws DroolsParserException {
-        LOG.debug(DEBUG_PARSER_LOG, ANTLR4_PARSER_ENABLED);
-        if (ANTLR4_PARSER_ENABLED) {
-            // new parser based on antlr4
+        LOG.debug(DEBUG_PARSER_LOG, ANTLR4_PARSER_ENABLED, languageLevel);
+        if (languageLevel == LanguageLevelOption.DRL10) {
+            // DRL10 is handled by the new antlr4 parser
             return compileWithAntlr4Parser(parser -> parser.parse(new StringReader(text)));
         } else {
             lexer = DRLFactory.buildLexer(text, languageLevel);
@@ -97,9 +97,9 @@ public class DrlParser {
 
     public PackageDescr parse(final boolean isEditor,
                               final Reader reader) throws DroolsParserException {
-        LOG.debug(DEBUG_PARSER_LOG, ANTLR4_PARSER_ENABLED);
-        if (ANTLR4_PARSER_ENABLED) {
-            // new parser based on antlr4
+        LOG.debug(DEBUG_PARSER_LOG, ANTLR4_PARSER_ENABLED, languageLevel);
+        if (languageLevel == LanguageLevelOption.DRL10) {
+            // DRL10 is handled by the new antlr4 parser
             return compileWithAntlr4Parser(parser -> parser.parse(reader));
         } else {
             lexer = DRLFactory.buildLexer(reader, languageLevel);
@@ -186,9 +186,9 @@ public class DrlParser {
                               final InputStream is) throws DroolsParserException, IOException {
         this.resource = resource;
         String encoding = resource instanceof InternalResource ? ((InternalResource) resource).getEncoding() : null;
-        LOG.debug(DEBUG_PARSER_LOG, ANTLR4_PARSER_ENABLED);
-        if (ANTLR4_PARSER_ENABLED) {
-            // new parser based on antlr4
+        LOG.debug(DEBUG_PARSER_LOG, ANTLR4_PARSER_ENABLED, languageLevel);
+        if (languageLevel == LanguageLevelOption.DRL10) {
+            // DRL10 is handled by the new antlr4 parser
             return compileWithAntlr4Parser(parser -> parser.parse(is, encoding));
         } else {
             // old parsers based on antlr3
@@ -198,10 +198,10 @@ public class DrlParser {
         }
     }
 
-    private PackageDescr compileWithAntlr4Parser(Function<DRLParserWrapper, PackageDescr> packageDescrFunction) throws DroolsParserException {
+    private PackageDescr compileWithAntlr4Parser(Function<DRL10ParserWrapper, PackageDescr> packageDescrFunction) throws DroolsParserException {
         try {
-            // we don't use languageLevel here, assuming DRL6 compatible
-            DRLParserWrapper parser = new DRLParserWrapper(resource);
+            // When DRL11 or higher is developed, languageLevel would be used to determine the parser to be used.
+            DRL10ParserWrapper parser = new DRL10ParserWrapper(resource);
             PackageDescr packageDescr = packageDescrFunction.apply(parser);
             for (final DRLParserError drlParserError : parser.getErrors()) {
                 final ParserError err = new ParserError(resource,

@@ -52,7 +52,7 @@ class DRLExprParserTest {
 
     @BeforeEach
     void setUp() {
-        this.parser = DrlExprParserFactory.getDrlExprParser(LanguageLevelOption.DRL6);
+        this.parser = ParserTestUtils.getExprParser();
     }
 
     @AfterEach
