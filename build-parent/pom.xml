@@ -74,7 +74,7 @@
     <version.guru.nidi>0.18.0</version.guru.nidi>
     <version.info.picocli>4.7.5</version.info.picocli>
     <version.io.micrometer>1.12.2</version.io.micrometer>
-    <version.io.quarkus>3.15.2</version.io.quarkus>
+    <version.io.quarkus>3.15.3</version.io.quarkus>
     <version.io.smallrye.openapi.core>3.10.0</version.io.smallrye.openapi.core>
     <version.it.unimi.dsi.fastutil>8.5.11</version.it.unimi.dsi.fastutil>
     <version.junit>4.13.1</version.junit>
@@ -86,7 +86,7 @@
     <version.org.apache.commons.lang3>3.14.0</version.org.apache.commons.lang3>
     <version.org.apache.commons.math3>3.4.1</version.org.apache.commons.math3>
     <version.org.apache.httpcomponents.httpcore>4.4.16</version.org.apache.httpcomponents.httpcore>
-    <version.org.apache.maven>3.8.6</version.org.apache.maven>
+    <version.org.apache.maven>3.9.6</version.org.apache.maven>
     <version.org.apache.maven.resolver>1.7.3</version.org.apache.maven.resolver>
     <version.org.apache.maven.wagon>3.5.3</version.org.apache.maven.wagon>
     <version.org.apache.pdfbox>2.0.28</version.org.apache.pdfbox>
@@ -99,7 +99,7 @@
     <!--This needs to be in sync with JUnit-->
     <version.org.hamcrest>2.2</version.org.hamcrest>
     <version.org.hsqldb>2.3.0</version.org.hsqldb>
-    <version.org.infinispan>15.0.8.Final</version.org.infinispan>
+    <version.org.infinispan>15.0.11.Final</version.org.infinispan>
     <version.org.infinispan.protostream>5.0.8.Final</version.org.infinispan.protostream>
     <version.org.javassist>3.26.0-GA</version.org.javassist>
     <version.org.jboss.narayana.tomcat>7.0.2.Final</version.org.jboss.narayana.tomcat>
@@ -187,7 +187,7 @@
     <!-- property for productisation to know the last released version -->
     <latestReleasedVersionFromThisBranch>notYetReleased</latestReleasedVersionFromThisBranch>
 
-    <version.compiler.plugin>3.8.1</version.compiler.plugin>
+    <version.compiler.plugin>3.13.0</version.compiler.plugin>
     <version.shade.plugin>3.3.0</version.shade.plugin>
 
     <version.net.byte-buddy>1.14.11</version.net.byte-buddy>
@@ -195,7 +195,7 @@
     <version.org.postgresql>42.7.4</version.org.postgresql>
 
     <version.ch.obermuhlner>2.0.1</version.ch.obermuhlner>
-    <version.io.smallrye.jandex>3.2.2</version.io.smallrye.jandex>
+    <version.io.smallrye.jandex>3.2.3</version.io.smallrye.jandex>
     <version.org.eclipse.yasson>3.0.3</version.org.eclipse.yasson>
 
     <version.com.github.javaparser>3.25.8</version.com.github.javaparser>
@@ -1194,7 +1194,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-enforcer-plugin</artifactId>
-          <version>3.0.0-M2</version>
+          <version>3.3.0</version>
           <dependencies>
             <dependency>
               <groupId>de.is24.maven.enforcer.rules</groupId>
