@@ -16,8 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.dmn.feel.exceptions;
+package org.kie.dmn.feel.runtime;
 
-public class EndpointOfRangeOfDifferentTypeException extends RuntimeException {
-    private static final long serialVersionUID = 1L;
+import java.util.Collections;
+
+public interface FEELCollectionFunction extends FEELFunction {
+
+    @Override
+    default Object defaultValue() {
+        return Collections.emptyList();
+    }
 }
