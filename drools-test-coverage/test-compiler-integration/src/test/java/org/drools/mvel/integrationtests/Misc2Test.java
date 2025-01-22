@@ -9050,6 +9050,8 @@ public class Misc2Test {
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
+    private static final String SUPERSET_OF = DrlParser.ANTLR4_PARSER_ENABLED ? "##supersetOf" : "supersetOf";
+
     @ParameterizedTest(name = "KieBase type={0}")
     @MethodSource("parameters")
     public void testKieHelperKieModuleModel(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
@@ -9060,7 +9062,7 @@ public class Misc2Test {
                         "import " + Person.class.getCanonicalName() + ";\n" +
                         "rule R when\n" +
                         "    $alice : Person(name == \"Alice\")\n" +
-                        "    $bob : Person(name == \"Bob\", addresses supersetOf $alice.addresses)\n" +
+                        "    $bob : Person(name == \"Bob\", addresses " + SUPERSET_OF + " $alice.addresses)\n" +
                         "then\n" +
                         "end\n";
 
