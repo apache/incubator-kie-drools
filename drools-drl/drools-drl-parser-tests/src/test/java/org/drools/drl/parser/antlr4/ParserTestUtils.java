@@ -66,13 +66,6 @@ public class ParserTestUtils {
         }
     }
 
-    /**
-     * Enables the old parser. Just for quick testing purposes.
-     */
-    public static void enableOldParser() {
-        DrlParser.ANTLR4_PARSER_ENABLED = false;
-    }
-
     public static List<String> javaKeywords() {
         return javaKeywords;
     }

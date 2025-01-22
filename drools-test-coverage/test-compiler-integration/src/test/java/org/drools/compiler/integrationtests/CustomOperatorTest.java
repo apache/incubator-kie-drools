@@ -27,6 +27,7 @@ import java.util.stream.Stream;
 import org.drools.base.base.ValueResolver;
 import org.drools.base.base.ValueType;
 import org.drools.compiler.rule.builder.EvaluatorDefinition;
+import org.drools.drl.parser.DrlParser;
 import org.drools.drl.parser.impl.Operator;
 import org.drools.base.rule.accessor.Evaluator;
 import org.drools.base.rule.accessor.FieldValue;
@@ -49,6 +50,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class CustomOperatorTest {
 
+    private static final String SUPERSET_OF = DrlParser.ANTLR4_PARSER_ENABLED ? "##supersetOf" : "supersetOf";
+
     public static Stream<KieBaseTestConfiguration> parameters() {
         return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
@@ -58,7 +61,16 @@ public class CustomOperatorTest {
     public void testCustomOperatorUsingCollections(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String constraints =
                 "    $alice : Person(name == \"Alice\")\n" +
-                "    $bob : Person(name == \"Bob\", addresses supersetOf $alice.addresses)\n";
+                "    $bob : Person(name == \"Bob\", addresses " + SUPERSET_OF + " $alice.addresses)\n";
+        customOperatorUsingCollections(kieBaseTestConfiguration, constraints);
+    }
+
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testCustomOperatorUsingCollectionsWithNot(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        String constraints =
+                "    $alice : Person(name == \"Alice\")\n" +
+                        "    $bob : Person(name == \"Bob\", $alice.addresses not " + SUPERSET_OF + " this.addresses)\n";
         customOperatorUsingCollections(kieBaseTestConfiguration, constraints);
     }
 
@@ -67,8 +79,8 @@ public class CustomOperatorTest {
     public void testNoOperatorInstancesCreatedAtRuntime(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String constraints =
                 "    $alice : Person(name == \"Alice\")\n" +
-                "    $bob : Person(name == \"Bob\", addresses supersetOf $alice.addresses)\n" +
-                "    Person(name == \"Bob\", addresses supersetOf $alice.addresses)\n";
+                "    $bob : Person(name == \"Bob\", addresses " + SUPERSET_OF + " $alice.addresses)\n" +
+                "    Person(name == \"Bob\", addresses " + SUPERSET_OF + " $alice.addresses)\n";
 
         customOperatorUsingCollections(kieBaseTestConfiguration, constraints);
 
@@ -81,7 +93,7 @@ public class CustomOperatorTest {
         // DROOLS-6983
         String constraints =
                 "    $bob : Person(name == \"Bob\")\n" +
-                "    $alice : Person(name == \"Alice\", $bob.addresses supersetOf this.addresses)\n";
+                "    $alice : Person(name == \"Alice\", $bob.addresses " + SUPERSET_OF + " this.addresses)\n";
         customOperatorUsingCollections(kieBaseTestConfiguration, constraints);
     }
 
@@ -201,7 +213,7 @@ public class CustomOperatorTest {
         }
 
         public boolean evaluateAll(final Collection leftCollection, final Collection rightCollection) {
-            return rightCollection.containsAll(leftCollection);
+            return getOperator().isNegated() ^ rightCollection.containsAll(leftCollection);
         }
     }
 
@@ -212,7 +224,7 @@ public class CustomOperatorTest {
                 "import " + Person.class.getCanonicalName() + ";\n" +
                 "rule R when\n" +
                 "    $alice : Person(name == \"Alice\")\n" +
-                "    $bob : Person(name == \"Bob\", addresses supersetOf $alice.addresses)\n" +
+                "    $bob : Person(name == \"Bob\", addresses " + SUPERSET_OF + " $alice.addresses)\n" +
                 "then\n" +
                 "end\n";
 
