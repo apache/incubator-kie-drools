@@ -8902,7 +8902,7 @@ public class Misc2Test {
                 "rule rule1 \n" +
                 "    when\n" +
                 "        (PersonHolder($addresses : person.addresses))\n" +
-                "            &&\n" +
+                "            and\n" +
                 "        (Address (street == \"AAA\") from $addresses)\n" +
                 "    then\n" +
                 "end";
