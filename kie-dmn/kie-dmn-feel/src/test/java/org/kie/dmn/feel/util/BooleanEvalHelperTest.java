@@ -28,6 +28,8 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.kie.dmn.feel.util.BooleanEvalHelper.getBooleanOrDialectDefault;
+import static org.kie.dmn.feel.util.BooleanEvalHelper.getFalseOrDialectDefault;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 
@@ -48,6 +50,38 @@ class BooleanEvalHelperTest {
         assertThat(BooleanEvalHelper.compare(BigInteger.valueOf(1), BigInteger.valueOf(2), FEELDialect.FEEL, (l, r) -> l.compareTo(r) == 0)).isFalse();
         assertThat(BooleanEvalHelper.compare(BigInteger.valueOf(1), 2, FEELDialect.FEEL, (l, r) -> l.compareTo(r) < 0)).isTrue();
         assertThat(BooleanEvalHelper.compare(BigInteger.valueOf(1), 2.3,  FEELDialect.FEEL,(l, r) -> l.compareTo(r) == 0)).isFalse();
+    }
+
+    @Test
+    void getBooleanOrDialectDefaultFEEL() {
+        assertThat(getBooleanOrDialectDefault(false, FEELDialect.FEEL)).isEqualTo(Boolean.FALSE);
+        assertThat(getBooleanOrDialectDefault(true, FEELDialect.FEEL)).isEqualTo(Boolean.TRUE);
+        assertThat(getBooleanOrDialectDefault("true", FEELDialect.FEEL)).isNull();
+        assertThat(getBooleanOrDialectDefault(null, FEELDialect.FEEL)).isNull();
+    }
+
+    @Test
+    void getBooleanOrDialectDefaultBFEEL() {
+        assertThat(getBooleanOrDialectDefault(false, FEELDialect.BFEEL)).isEqualTo(Boolean.FALSE);
+        assertThat(getBooleanOrDialectDefault(true, FEELDialect.BFEEL)).isEqualTo(Boolean.TRUE);
+        assertThat(getBooleanOrDialectDefault("true", FEELDialect.BFEEL)).isEqualTo(Boolean.FALSE);
+        assertThat(getBooleanOrDialectDefault(null, FEELDialect.BFEEL)).isEqualTo(Boolean.FALSE);
+    }
+
+    @Test
+    void getFalseOrDialectDefaultFEEL() {
+        assertThat(getFalseOrDialectDefault(false, FEELDialect.FEEL)).isEqualTo(Boolean.FALSE);
+        assertThat(getFalseOrDialectDefault(true, FEELDialect.FEEL)).isNull();
+        assertThat(getFalseOrDialectDefault("true", FEELDialect.FEEL)).isNull();
+        assertThat(getFalseOrDialectDefault(null, FEELDialect.FEEL)).isNull();
+    }
+
+    @Test
+    void getFalseOrDialectDefaultBFEEL() {
+        assertThat(getFalseOrDialectDefault(false, FEELDialect.BFEEL)).isEqualTo(Boolean.FALSE);
+        assertThat(getFalseOrDialectDefault(true, FEELDialect.BFEEL)).isEqualTo(Boolean.FALSE);
+        assertThat(getFalseOrDialectDefault("true", FEELDialect.BFEEL)).isEqualTo(Boolean.FALSE);
+        assertThat(getFalseOrDialectDefault(null, FEELDialect.BFEEL)).isEqualTo(Boolean.FALSE);
     }
 
     @Test
