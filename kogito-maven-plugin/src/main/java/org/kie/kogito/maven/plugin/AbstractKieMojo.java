@@ -73,19 +73,19 @@ public abstract class AbstractKieMojo extends AbstractMojo {
     @Parameter(required = true, defaultValue = "${project.basedir}")
     protected File baseDir;
 
-    @Parameter(property = "kogito.codegen.persistence", defaultValue = "true")
+    @Parameter(property = "kogito.codegen.persistence")
     protected boolean persistence;
 
-    @Parameter(property = "kogito.codegen.rules", defaultValue = "true")
+    @Parameter(property = "kogito.codegen.rules")
     protected String generateRules;
 
-    @Parameter(property = "kogito.codegen.processes", defaultValue = "true")
+    @Parameter(property = "kogito.codegen.processes")
     protected String generateProcesses;
 
-    @Parameter(property = "kogito.codegen.decisions", defaultValue = "true")
+    @Parameter(property = "kogito.codegen.decisions")
     protected String generateDecisions;
 
-    @Parameter(property = "kogito.codegen.predictions", defaultValue = "true")
+    @Parameter(property = "kogito.codegen.predictions")
     protected String generatePredictions;
 
     private Reflections reflections;
@@ -174,11 +174,21 @@ public abstract class AbstractKieMojo extends AbstractMojo {
             }
         });
 
-        context.setApplicationProperty(Generator.CONFIG_PREFIX + RuleCodegen.GENERATOR_NAME, generateRules);
-        context.setApplicationProperty(Generator.CONFIG_PREFIX + ProcessCodegen.GENERATOR_NAME, generateProcesses);
-        context.setApplicationProperty(Generator.CONFIG_PREFIX + PredictionCodegen.GENERATOR_NAME, generatePredictions);
-        context.setApplicationProperty(Generator.CONFIG_PREFIX + DecisionCodegen.GENERATOR_NAME, generateDecisions);
-        context.setApplicationProperty(Generator.CONFIG_PREFIX + PersistenceGenerator.GENERATOR_NAME, Boolean.toString(persistence));
+        overwritePropertiesIfNeeded(context);
+    }
+
+    void overwritePropertiesIfNeeded(KogitoBuildContext context) {
+        overwritePropertyIfNeeded(context, RuleCodegen.GENERATOR_NAME, generateRules);
+        overwritePropertyIfNeeded(context, ProcessCodegen.GENERATOR_NAME, generateProcesses);
+        overwritePropertyIfNeeded(context, PredictionCodegen.GENERATOR_NAME, generatePredictions);
+        overwritePropertyIfNeeded(context, DecisionCodegen.GENERATOR_NAME, generateDecisions);
+        overwritePropertyIfNeeded(context, PersistenceGenerator.GENERATOR_NAME, Boolean.toString(persistence));
+    }
+
+    static void overwritePropertyIfNeeded(KogitoBuildContext context, String generatorName, String propertyValue) {
+        if (propertyValue != null && !propertyValue.isEmpty()) {
+            context.setApplicationProperty(Generator.CONFIG_PREFIX + generatorName, propertyValue);
+        }
     }
 
     private KogitoBuildContext.Builder contextBuilder() {
