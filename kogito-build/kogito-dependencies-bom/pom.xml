@@ -137,7 +137,7 @@
 
     <version.net.byte-buddy>1.14.11</version.net.byte-buddy>
 
-    <version.org.mvel>2.5.0.Final</version.org.mvel>
+    <version.org.mvel>2.5.2.Final</version.org.mvel>
     <version.org.reactivestreams>1.0.4</version.org.reactivestreams>
     <version.org.reflections>0.10.2</version.org.reflections>
     <version.org.slf4j>2.0.6</version.org.slf4j>
