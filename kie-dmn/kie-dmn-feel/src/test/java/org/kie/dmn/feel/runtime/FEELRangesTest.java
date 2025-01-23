@@ -44,6 +44,7 @@ public class FEELRangesTest extends BaseFEELTest {
     private static Collection<Object[]> data() {
         final Object[][] cases = new Object[][]{
                 // when converting from unary tests, boundaries are dictated by comparison
+                {"(=1)", new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.ONE, BigDecimal.ONE, Range.RangeBoundary.CLOSED), null},
                 {"(>1)", new RangeImpl(Range.RangeBoundary.OPEN, BigDecimal.ONE, new UndefinedValueComparable(), Range.RangeBoundary.OPEN), null},
                 {"(>=1)", new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.ONE, new UndefinedValueComparable(), Range.RangeBoundary.OPEN), null},
                 {"(<1)", new RangeImpl(Range.RangeBoundary.OPEN, new UndefinedValueComparable(), BigDecimal.ONE, Range.RangeBoundary.OPEN), null},
