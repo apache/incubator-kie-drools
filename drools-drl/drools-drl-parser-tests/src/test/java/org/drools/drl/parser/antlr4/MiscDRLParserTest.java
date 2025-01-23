@@ -4057,6 +4057,7 @@ class MiscDRLParserTest {
         assertThat(annotationDescr.getSingleValueAsString()).isEqualTo("!*, age");
     }
 
+    @DisabledIfSystemProperty(named = "drools.drl.antlr4.parser.enabled", matches = "true")
     @Test
     void prefixAndDescrAnnotation() {
         final String text =
@@ -4078,6 +4079,7 @@ class MiscDRLParserTest {
         assertThat(andDescr.getDescrs()).hasSize(2);
     }
 
+    @DisabledIfSystemProperty(named = "drools.drl.antlr4.parser.enabled", matches = "true")
     @Test
     void prefixOrDescrAnnotation() {
         final String text =
@@ -4100,6 +4102,7 @@ class MiscDRLParserTest {
         assertThat(orDescr.getDescrs()).hasSize(2);
     }
 
+    @DisabledIfSystemProperty(named = "drools.drl.antlr4.parser.enabled", matches = "true")
     @Test
     void infixAndDescrAnnotation() {
         final String text =
@@ -4120,6 +4123,7 @@ class MiscDRLParserTest {
         assertThat(andDescr.getDescrs()).hasSize(3);
     }
 
+    @DisabledIfSystemProperty(named = "drools.drl.antlr4.parser.enabled", matches = "true")
     @Test
     void infixOrDescrAnnotation() {
         final String text =

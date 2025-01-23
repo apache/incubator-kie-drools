@@ -122,10 +122,10 @@ lhs : DRL_WHEN lhsExpression* ;
 queryLhs : lhsExpression* ;
 
 lhsExpression : LPAREN lhsExpression RPAREN                             #lhsExpressionEnclosed
-              | DRL_OR drlAnnotation* lhsExpression+                                   #lhsOr
-              | lhsExpression ((DRL_OR) drlAnnotation* lhsExpression)+              #lhsOr
-              | DRL_AND drlAnnotation* lhsExpression+                                  #lhsAnd
-              | lhsExpression ((DRL_AND) drlAnnotation* lhsExpression)+            #lhsAnd
+              | DRL_OR lhsExpression+                                   #lhsOr
+              | lhsExpression ((DRL_OR) lhsExpression)+              #lhsOr
+              | DRL_AND lhsExpression+                                  #lhsAnd
+              | lhsExpression ((DRL_AND) lhsExpression)+            #lhsAnd
               | lhsUnary                                                               #lhsUnarySingle
               ;
 
