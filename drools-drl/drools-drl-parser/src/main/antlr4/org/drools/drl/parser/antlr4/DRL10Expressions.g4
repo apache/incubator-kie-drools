@@ -571,7 +571,7 @@ locals [ BaseDescr lsd ]
           $relationalExpression::lsd = $result;
       }
     }
-  ( right=orRestriction
+  ( right=singleRestriction
          { if( buildDescr  ) {
                $result = $right.result;
                // TODO access lsd directly instead of through dynamic context here
@@ -579,36 +579,6 @@ locals [ BaseDescr lsd ]
            }
          }
   )*
-  ;
-
-orRestriction returns [BaseDescr result]
-  : left=andRestriction { if( buildDescr  ) { $result = $left.result; } }
-    ( lop=OR args=fullAnnotation[null]? right=andRestriction
-         { if( buildDescr ) {
-               ConstraintConnectiveDescr descr = ConstraintConnectiveDescr.newOr();
-               descr.addOrMerge( $result );
-               descr.addOrMerge( $right.result );
-               if ( $ctx.args != null ) { descr.addAnnotation( $args.result ); }
-               $result = descr;
-           }
-         }
-   )*? EOF?
-  ;
-
-andRestriction returns [BaseDescr result]
-  : left=singleRestriction { if( buildDescr  ) { $result = $left.result; } }
-  ( lop=AND
-  	    { if ( isNotEOF() ) helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR ); }
-        args=fullAnnotation[null]?right=singleRestriction
-         { if( buildDescr  ) {
-               ConstraintConnectiveDescr descr = ConstraintConnectiveDescr.newAnd();
-               descr.addOrMerge( $result );
-               descr.addOrMerge( $right.result );
-               if ( $ctx.args != null ) { descr.addAnnotation( $args.result ); }
-               $result = descr;
-           }
-         }
-  )*?
   ;
 
 singleRestriction returns [BaseDescr result]
@@ -630,7 +600,6 @@ singleRestriction returns [BaseDescr result]
            }
            helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_END );
          }
-  |  LPAREN or=orRestriction RPAREN  { $result = $or.result; }
   ;
 
 
