@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -205,15 +205,13 @@ public class BooleanEvalHelper {
      * @return
      */
     public static Boolean getBooleanOrDialectDefault(Object rawReturn, FEELDialect feelDialect) {
-        if (feelDialect.equals(FEELDialect.BFEEL)) {
-            if (rawReturn instanceof Boolean bool) {
-                return bool;
-            } else {
-                return false;
-            }
-        } else {
-            return (Boolean) rawReturn;
+        Boolean toReturn = null;
+        if (rawReturn instanceof Boolean bool) {
+            toReturn = bool;
+        } else if (feelDialect.equals(FEELDialect.BFEEL)) {
+            toReturn = false;
         }
+        return toReturn;
     }
 
     /**
