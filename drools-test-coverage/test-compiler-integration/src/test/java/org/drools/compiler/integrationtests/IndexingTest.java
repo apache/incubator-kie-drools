@@ -616,7 +616,7 @@ public class IndexingTest {
                 "import " + Person.class.getCanonicalName() + ";\n" +
                 "rule R1 salience 10 when\n" +
                 "   Person( $age : age, $doubleAge : doubleAge )\n" +
-                "   not Cheese( price > $age && < $doubleAge )\n" +
+                "   not Cheese( price > $age && price < $doubleAge )\n" +
                 "then\n" +
                 "end\n" +
                 "rule R3 salience 5 when\n" +
@@ -654,7 +654,7 @@ public class IndexingTest {
                 "rule R1 when\n" +
                 "   A( $a : a )\n" +
                 "   B( $b : b )\n" +
-                "   exists C( c > $a && < $b )\n" +
+                "   exists C( c > $a && c < $b )\n" +
                 "then\n" +
                 "end";
 

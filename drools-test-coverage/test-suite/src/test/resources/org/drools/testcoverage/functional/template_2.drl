@@ -36,7 +36,7 @@ template "appropriateToBuy"
 
 rule "is appropriate @{row.rowNumber}"
     when
-        Vegetable( $name : name == "@{name}", $field : @{field} >= @{fieldLower} && <= @{fieldUpper}, $price : price <= @{price}, $taste : taste @{tastes} )
+        Vegetable( $name : name == "@{name}", $field : @{field} >= @{fieldLower} && @{field} <= @{fieldUpper}, $price : price <= @{price}, $taste : taste @{tastes} )
     then
         list.add( $name );
 end
@@ -114,7 +114,7 @@ template "goodPriceAndSize"
 
 rule "is of good price and size @{row.rowNumber}"
     when
-        Vegetable( $name : name == "@{name}", $field : @{field} >= @{fieldLower} && <= @{fieldUpper}, $price : price <= @{price} )
+        Vegetable( $name : name == "@{name}", $field : @{field} >= @{fieldLower} && @{field} <= @{fieldUpper}, $price : price <= @{price} )
     then
         list.add( $name );
 end
@@ -136,7 +136,7 @@ end template
 
 rule "is of right size and taste @{row.rowNumber}"
     when
-        Vegetable( $name : name == "@{name}", $field : @{field} >= @{fieldLower} && <= @{fieldUpper}, $taste : taste @{tastes} )
+        Vegetable( $name : name == "@{name}", $field : @{field} >= @{fieldLower} && @{field} <= @{fieldUpper}, $taste : taste @{tastes} )
     then
         list.add( $name );
 end

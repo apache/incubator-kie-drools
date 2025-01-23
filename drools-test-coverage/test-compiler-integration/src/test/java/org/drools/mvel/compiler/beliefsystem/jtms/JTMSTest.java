@@ -113,7 +113,7 @@ public class JTMSTest {
                    "\n" +
                    "rule \"Positive\"\n" +
                    "when\n" +
-                   "    $n : String( this != 'go1' || == 'go2' ) \n" +
+                   "    $n : String( this != 'go1' || this == 'go2' ) \n" +
                    "then\n" +
                    "    final String s = '+' + $n;" +
                    "    final List l = list;" +
@@ -121,7 +121,7 @@ public class JTMSTest {
                    "end\n" +
                    "rule \"Negative\"\n" +
                    "when\n" +
-                   "    $n : String(   _.neg, this != 'go1' || == 'go2' ) \n" +
+                   "    $n : String(   _.neg, this != 'go1' || this == 'go2' ) \n" +
                    "then\n" +
                    "    final String s = '-' + $n; \n" +
                    "    final List l = list; \n" +

@@ -75,7 +75,8 @@ import org.drools.drl.parser.DroolsParserException;
 import org.drools.drl.parser.impl.Operator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.EnabledIf;
+import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -93,14 +94,6 @@ class MiscDRLParserTest {
     @BeforeEach
     void setUp() {
         parser = ParserTestUtils.getParser();
-    }
-
-    private static boolean isNewParser() {
-        return DrlParser.ANTLR4_PARSER_ENABLED;
-    }
-
-    private static boolean isOldParser() {
-        return !DrlParser.ANTLR4_PARSER_ENABLED;
     }
 
     private String readResource(final String filename) {
@@ -881,6 +874,7 @@ class MiscDRLParserTest {
         assertThat((String) rule.getConsequence()).isEqualToIgnoringWhitespace("if ( a == b ) { " + "  assert( foo3 );" + "} else {" + "  retract( foo4 );" + "}" + "  System.out.println( a4 );");
     }
 
+    @DisabledIfSystemProperty(named = "drools.drl.antlr4.parser.enabled", matches = "true")
     @Test
     void multipleRestrictionsConstraint() {
         RuleDescr rule = parseAndGetFirstRuleDescrFromFile("restrictions_test.drl");
@@ -2452,7 +2446,7 @@ class MiscDRLParserTest {
         assertThat(pattern.getConstraint().getDescrs()).hasSize(1);
 
         ExprConstraintDescr fld = (ExprConstraintDescr) pattern.getConstraint().getDescrs().get(0);
-        assertThat(fld.getExpression()).isEqualTo("age > 30 && < 40");
+        assertThat(fld.getExpression()).isEqualTo("age > 30 && age < 40");
 
         // the second col, with 2 fields, the first with 2 restrictions, the
         // second field with one
@@ -2486,7 +2480,7 @@ class MiscDRLParserTest {
         assertThat(pattern.getConstraint().getDescrs()).hasSize(1);
 
         ExprConstraintDescr fld = (ExprConstraintDescr) pattern.getConstraint().getDescrs().get(0);
-        assertThat(fld.getExpression()).isEqualTo("age > 30 && < 40");
+        assertThat(fld.getExpression()).isEqualTo("age > 30 && age < 40");
 
         // the second col, with 2 fields, the first with 2 restrictions, the
         // second field with one
@@ -2536,6 +2530,7 @@ class MiscDRLParserTest {
         assertThat(fcd.getExpression()).isEqualToIgnoringWhitespace("age < 42 || location==\"atlanta\"");
     }
 
+    @DisabledIfSystemProperty(named = "drools.drl.antlr4.parser.enabled", matches = "true")
     @Test
     void restrictions() {
         final String text = "rule X when Foo( bar > 1 || == 1 ) then end\n";
@@ -2987,7 +2982,7 @@ class MiscDRLParserTest {
         assertThat(eventE.getConstraint().getDescrs()).hasSize(1);
 
         ExprConstraintDescr fcdE = (ExprConstraintDescr) eventE.getConstraint().getDescrs().get(0);
-        assertThat(fcdE.getExpression()).isEqualTo("this not before[1, 10] $b || after[1, 10] $c && this after[1, 5] $d");
+        assertThat(fcdE.getExpression()).isEqualTo("this not before[1, 10] $b || this after[1, 10] $c && this after[1, 5] $d");
     }
 
     @Test
@@ -3896,6 +3891,7 @@ class MiscDRLParserTest {
         assertThat(exprConstraintDescr.getExpression()).isEqualToIgnoringWhitespace(constraint);
     }
 
+    @DisabledIfSystemProperty(named = "drools.drl.antlr4.parser.enabled", matches = "true")
     @ParameterizedTest
     @ValueSource(strings = {
             "country matches \"[a-z]*\" || matches \"[A-Z]*\"",
@@ -4419,7 +4415,7 @@ class MiscDRLParserTest {
                 .containsExactlyInAnyOrder("com.sample.ParentTrait", "UncleTrait", "org.test.GrandParentTrait");
     }
 
-    @EnabledIf("isOldParser")
+    @DisabledIfSystemProperty(named = "drools.drl.antlr4.parser.enabled", matches = "true")
     @Test
     void pluggableEvaluatorOldParser() {
         final String source = "package org.drools\n" +
@@ -4440,7 +4436,7 @@ class MiscDRLParserTest {
                 .containsExactly("$c : core", "this not isA t.x.E.class", "this isA t.x.D.class");
     }
 
-    @EnabledIf("isNewParser")
+    @EnabledIfSystemProperty(named = "drools.drl.antlr4.parser.enabled", matches = "true")
     @Test
     void pluggableEvaluatorNewParser() {
         final String source = "package org.drools\n" +
