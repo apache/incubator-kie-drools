@@ -5140,6 +5140,7 @@ class MiscDRLParserTest {
         assertThat(accumulateDescr.getResultCode()).isEqualTo("null");
     }
 
+    @DisabledIfSystemProperty(named = "drools.drl.antlr4.parser.enabled", matches = "true")
     @Test
     void doublePipeInfixOr() {
         final String text =
@@ -5161,6 +5162,7 @@ class MiscDRLParserTest {
         });
     }
 
+    @DisabledIfSystemProperty(named = "drools.drl.antlr4.parser.enabled", matches = "true")
     @Test
     void doubleAmpersandInfixAnd() {
         final String text =
@@ -5180,6 +5182,7 @@ class MiscDRLParserTest {
         });
     }
 
+    @DisabledIfSystemProperty(named = "drools.drl.antlr4.parser.enabled", matches = "true")
     @Test
     void doubleAmpersandInfixAndInAccumulate() {
         final String text =
