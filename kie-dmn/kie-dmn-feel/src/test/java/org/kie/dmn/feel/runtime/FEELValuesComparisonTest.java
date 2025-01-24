@@ -64,13 +64,14 @@ public class FEELValuesComparisonTest extends BaseFEELTest {
                 { "false != false", Boolean.FALSE , null},
                 { "false != true", Boolean.TRUE , null},
                 { "true != false", Boolean.TRUE , null},
-                
+
                 // other comparisons
                 { "duration(\"P1Y\") < duration(\"P2Y\")", Boolean.TRUE , null},
                 { "duration(\"P1Y\") > duration(\"P2Y\")", Boolean.FALSE , null},
 
                 // other types of equalities
                 { "[ 1..3 ] = [ 1..3 ]", Boolean.TRUE , null},
+                { "(=10) = (=10)", Boolean.TRUE , null},
                 { "[ \"1\"..\"3\" ] = [ \"1\"..\"3\" ]", Boolean.TRUE , null},
                 { "[\"1978-09-12\"..\"1978-10-12\"] = [\"1978-09-12\"..\"1978-10-12\"]", Boolean.TRUE, null},
                 { "[ 1, 2, 3] = [1, 2, 3]", Boolean.TRUE , null},
@@ -107,12 +108,12 @@ public class FEELValuesComparisonTest extends BaseFEELTest {
                 { "null = null", Boolean.TRUE , null},
                 { "null != null", Boolean.FALSE , null},
 
-                // RHDM-1119 
+                // RHDM-1119
                 { "{ m: <18 }.m(16)", true, null}, // Working expression, for the expr raising compilation Warn test have been moved.
                 { "{list : 1, r: list < 3}.r", Boolean.TRUE , null}, // strange name for a number literal, intended this way.
-                { "{list : 1, r: list< 3}.r", Boolean.TRUE , null}, 
+                { "{list : 1, r: list< 3}.r", Boolean.TRUE , null},
                 { "{context : 1, r: context < 3}.r", Boolean.TRUE , null}, // strange name for a number literal, intended this way.
-                { "{context : 1, r: context< 3}.r", Boolean.TRUE , null}, 
+                { "{context : 1, r: context< 3}.r", Boolean.TRUE , null},
         };
         return addAdditionalParameters(cases, false);
     }
