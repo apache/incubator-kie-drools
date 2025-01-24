@@ -36,6 +36,7 @@
   <properties>
     <java.module.name>org.drools.reliability.infinispan</java.module.name>
     <version.testcontainers>1.17.2</version.testcontainers>
+    <version.com.squareup.okhttp3>4.9.2</version.com.squareup.okhttp3>
   </properties>
 
   <dependencyManagement>
@@ -139,6 +140,11 @@
           <artifactId>log4j-slf4j-impl</artifactId>
         </exclusion>
       </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>com.squareup.okhttp3</groupId>
+      <artifactId>okhttp</artifactId>
+      <version>${version.com.squareup.okhttp3}</version>
     </dependency>
     <dependency>
       <groupId>org.infinispan</groupId>
