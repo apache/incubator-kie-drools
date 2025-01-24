@@ -24,13 +24,12 @@ import org.drools.drl.ast.descr.AtomicExprDescr;
 import org.drools.drl.ast.descr.BindingDescr;
 import org.drools.drl.ast.descr.ConstraintConnectiveDescr;
 import org.drools.drl.parser.DrlExprParser;
-import org.drools.drl.parser.DrlExprParserFactory;
 import org.drools.mvel.evaluators.MatchesEvaluatorsDefinition;
 import org.drools.mvel.evaluators.SetEvaluatorsDefinition;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.kie.internal.builder.conf.LanguageLevelOption;
+import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -47,6 +46,7 @@ public class DescrDumperTest {
         dumper = new DescrDumper();
     }
 
+    @DisabledIfSystemProperty(named = "drools.drl.antlr4.parser.enabled", matches = "true")
     @Test
     void dump() {
         String input = "price > 10 && < 20 || == $val || == 30";
@@ -147,6 +147,7 @@ public class DescrDumperTest {
         assertThat(result).isEqualTo(expected);
     }
 
+    @DisabledIfSystemProperty(named = "drools.drl.antlr4.parser.enabled", matches = "true")
     @Test
     void dumpComplex() {
         String input = "a ( > 60 && < 70 ) || ( > 50 && < 55 ) && a3 == \"black\" || a == 40 && a3 == \"pink\" || a == 12 && a3 == \"yellow\" || a3 == \"blue\"";
@@ -220,6 +221,7 @@ public class DescrDumperTest {
         assertThat(result).isEqualTo(expected);
     }
 
+    @DisabledIfSystemProperty(named = "drools.drl.antlr4.parser.enabled", matches = "true")
     @Test
     void dumpBindingsWithRestriction() {
         String input = "$x : age > 10 && < 20 || > 30";
@@ -360,7 +362,7 @@ public class DescrDumperTest {
     }
 
     public ConstraintConnectiveDescr parse(final String constraint) {
-        DrlExprParser parser = DrlExprParserFactory.getDrlExprParser(LanguageLevelOption.DRL6);
+        DrlExprParser parser = ParserTestUtils.getExprParser();
         ConstraintConnectiveDescr result = parser.parse(constraint);
         assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
 

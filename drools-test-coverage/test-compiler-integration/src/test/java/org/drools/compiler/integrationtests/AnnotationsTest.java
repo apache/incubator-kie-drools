@@ -30,6 +30,7 @@ import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
@@ -273,6 +274,7 @@ public class AnnotationsTest {
         int[] numbers();
     }
 
+    @DisabledIfSystemProperty(named = "drools.drl.antlr4.parser.enabled", matches = "true")
     @ParameterizedTest(name = "KieBase type={0}")
 	@MethodSource("parameters")
     public void testAnnotationOnLHSAndMerging(KieBaseTestConfiguration kieBaseTestConfiguration) {

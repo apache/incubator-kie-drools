@@ -16,11 +16,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
- parser grammar DRLParser;
+ parser grammar DRL10Parser;
 
-options { tokenVocab=DRLLexer; }
+options { tokenVocab=DRL10Lexer; }
 
-import DRL6Expressions, JavaParser;
+import DRL10Expressions, JavaParser;
 
     /*
      * statement := importStatement
@@ -122,16 +122,16 @@ lhs : DRL_WHEN lhsExpression* ;
 queryLhs : lhsExpression* ;
 
 lhsExpression : LPAREN lhsExpression RPAREN                             #lhsExpressionEnclosed
-              | DRL_OR drlAnnotation* lhsExpression+                                   #lhsOr
-              | lhsExpression ((DRL_OR|OR) drlAnnotation* lhsExpression)+              #lhsOr
-              | DRL_AND drlAnnotation* lhsExpression+                                  #lhsAnd
-              | lhsExpression ((DRL_AND|AND) drlAnnotation* lhsExpression)+            #lhsAnd
+              | DRL_OR lhsExpression+                                   #lhsOr
+              | lhsExpression ((DRL_OR) lhsExpression)+              #lhsOr
+              | DRL_AND lhsExpression+                                  #lhsAnd
+              | lhsExpression ((DRL_AND) lhsExpression)+            #lhsAnd
               | lhsUnary                                                               #lhsUnarySingle
               ;
 
 // lhsAnd is used as a label in lhsExpression rule. But some other rules explicitly use the def, so lhsAndDef is declared.
 lhsAndDef : LPAREN lhsAndDef RPAREN
-          | lhsUnary ((DRL_AND|AND) lhsUnary)*
+          | lhsUnary ((DRL_AND) lhsUnary)*
           | LPAREN DRL_AND lhsUnary+ RPAREN
           ;
 

@@ -74,8 +74,9 @@ import org.drools.drl.parser.DroolsError;
 import org.drools.drl.parser.DroolsParserException;
 import org.drools.drl.parser.impl.Operator;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -873,6 +874,7 @@ class MiscDRLParserTest {
         assertThat((String) rule.getConsequence()).isEqualToIgnoringWhitespace("if ( a == b ) { " + "  assert( foo3 );" + "} else {" + "  retract( foo4 );" + "}" + "  System.out.println( a4 );");
     }
 
+    @DisabledIfSystemProperty(named = "drools.drl.antlr4.parser.enabled", matches = "true")
     @Test
     void multipleRestrictionsConstraint() {
         RuleDescr rule = parseAndGetFirstRuleDescrFromFile("restrictions_test.drl");
@@ -2444,7 +2446,7 @@ class MiscDRLParserTest {
         assertThat(pattern.getConstraint().getDescrs()).hasSize(1);
 
         ExprConstraintDescr fld = (ExprConstraintDescr) pattern.getConstraint().getDescrs().get(0);
-        assertThat(fld.getExpression()).isEqualTo("age > 30 && < 40");
+        assertThat(fld.getExpression()).isEqualTo("age > 30 && age < 40");
 
         // the second col, with 2 fields, the first with 2 restrictions, the
         // second field with one
@@ -2478,7 +2480,7 @@ class MiscDRLParserTest {
         assertThat(pattern.getConstraint().getDescrs()).hasSize(1);
 
         ExprConstraintDescr fld = (ExprConstraintDescr) pattern.getConstraint().getDescrs().get(0);
-        assertThat(fld.getExpression()).isEqualTo("age > 30 && < 40");
+        assertThat(fld.getExpression()).isEqualTo("age > 30 && age < 40");
 
         // the second col, with 2 fields, the first with 2 restrictions, the
         // second field with one
@@ -2528,6 +2530,7 @@ class MiscDRLParserTest {
         assertThat(fcd.getExpression()).isEqualToIgnoringWhitespace("age < 42 || location==\"atlanta\"");
     }
 
+    @DisabledIfSystemProperty(named = "drools.drl.antlr4.parser.enabled", matches = "true")
     @Test
     void restrictions() {
         final String text = "rule X when Foo( bar > 1 || == 1 ) then end\n";
@@ -2979,7 +2982,7 @@ class MiscDRLParserTest {
         assertThat(eventE.getConstraint().getDescrs()).hasSize(1);
 
         ExprConstraintDescr fcdE = (ExprConstraintDescr) eventE.getConstraint().getDescrs().get(0);
-        assertThat(fcdE.getExpression()).isEqualTo("this not before[1, 10] $b || after[1, 10] $c && this after[1, 5] $d");
+        assertThat(fcdE.getExpression()).isEqualTo("this not before[1, 10] $b || this after[1, 10] $c && this after[1, 5] $d");
     }
 
     @Test
@@ -3888,6 +3891,7 @@ class MiscDRLParserTest {
         assertThat(exprConstraintDescr.getExpression()).isEqualToIgnoringWhitespace(constraint);
     }
 
+    @DisabledIfSystemProperty(named = "drools.drl.antlr4.parser.enabled", matches = "true")
     @ParameterizedTest
     @ValueSource(strings = {
             "country matches \"[a-z]*\" || matches \"[A-Z]*\"",
@@ -4053,6 +4057,7 @@ class MiscDRLParserTest {
         assertThat(annotationDescr.getSingleValueAsString()).isEqualTo("!*, age");
     }
 
+    @DisabledIfSystemProperty(named = "drools.drl.antlr4.parser.enabled", matches = "true")
     @Test
     void prefixAndDescrAnnotation() {
         final String text =
@@ -4074,6 +4079,7 @@ class MiscDRLParserTest {
         assertThat(andDescr.getDescrs()).hasSize(2);
     }
 
+    @DisabledIfSystemProperty(named = "drools.drl.antlr4.parser.enabled", matches = "true")
     @Test
     void prefixOrDescrAnnotation() {
         final String text =
@@ -4096,6 +4102,7 @@ class MiscDRLParserTest {
         assertThat(orDescr.getDescrs()).hasSize(2);
     }
 
+    @DisabledIfSystemProperty(named = "drools.drl.antlr4.parser.enabled", matches = "true")
     @Test
     void infixAndDescrAnnotation() {
         final String text =
@@ -4116,6 +4123,7 @@ class MiscDRLParserTest {
         assertThat(andDescr.getDescrs()).hasSize(3);
     }
 
+    @DisabledIfSystemProperty(named = "drools.drl.antlr4.parser.enabled", matches = "true")
     @Test
     void infixOrDescrAnnotation() {
         final String text =
@@ -4411,8 +4419,9 @@ class MiscDRLParserTest {
                 .containsExactlyInAnyOrder("com.sample.ParentTrait", "UncleTrait", "org.test.GrandParentTrait");
     }
 
+    @DisabledIfSystemProperty(named = "drools.drl.antlr4.parser.enabled", matches = "true")
     @Test
-    void pluggableEvaluator() {
+    void pluggableEvaluatorOldParser() {
         final String source = "package org.drools\n" +
                 "rule R\n" +
                 "when\n" +
@@ -4429,6 +4438,27 @@ class MiscDRLParserTest {
         assertThat(pattern.getConstraint().getDescrs())
                 .extracting(Object::toString)
                 .containsExactly("$c : core", "this not isA t.x.E.class", "this isA t.x.D.class");
+    }
+
+    @EnabledIfSystemProperty(named = "drools.drl.antlr4.parser.enabled", matches = "true")
+    @Test
+    void pluggableEvaluatorNewParser() {
+        final String source = "package org.drools\n" +
+                "rule R\n" +
+                "when\n" +
+                "   $t : Thing( $c : core, this not ##isA t.x.E.class, this ##isA t.x.D.class )\n" +
+                "then\n" +
+                "   list.add( \"E\" ); \n" +
+                "   don( $t, E.class ); \n" +
+                "end\n";
+
+        Operator.addOperatorToRegistry("isA", false);
+        Operator.addOperatorToRegistry("isA", true);
+
+        PatternDescr pattern = (PatternDescr) parseAndGetFirstRuleDescr(source).getLhs().getDescrs().get(0);
+        assertThat(pattern.getConstraint().getDescrs())
+                .extracting(Object::toString)
+                .containsExactly("$c : core", "this not ##isA t.x.E.class", "this ##isA t.x.D.class");
     }
 
     @Test
@@ -5114,6 +5144,7 @@ class MiscDRLParserTest {
         assertThat(accumulateDescr.getResultCode()).isEqualTo("null");
     }
 
+    @DisabledIfSystemProperty(named = "drools.drl.antlr4.parser.enabled", matches = "true")
     @Test
     void doublePipeInfixOr() {
         final String text =
@@ -5135,6 +5166,7 @@ class MiscDRLParserTest {
         });
     }
 
+    @DisabledIfSystemProperty(named = "drools.drl.antlr4.parser.enabled", matches = "true")
     @Test
     void doubleAmpersandInfixAnd() {
         final String text =
@@ -5154,6 +5186,7 @@ class MiscDRLParserTest {
         });
     }
 
+    @DisabledIfSystemProperty(named = "drools.drl.antlr4.parser.enabled", matches = "true")
     @Test
     void doubleAmpersandInfixAndInAccumulate() {
         final String text =
