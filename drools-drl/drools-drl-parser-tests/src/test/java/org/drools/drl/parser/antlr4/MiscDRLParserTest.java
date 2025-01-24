@@ -3590,6 +3590,22 @@ class MiscDRLParserTest {
     }
 
     @Test
+    void endTokenWithSemiInRhs() {
+        final String text = "package org.drools\n" +
+                "rule X\n" +
+                "when\n" +
+                "    $s : String()\n" +
+                "then\n" +
+                "    int end = 10;" +
+                "    int a = end;\n" +
+                "end;\n";
+        PackageDescr packageDescr = parseAndGetPackageDescr(text);
+
+        RuleDescr ruleDescr = packageDescr.getRules().get(0);
+        assertThat(ruleDescr.getConsequence().toString()).isEqualToIgnoringWhitespace("int end = 10; int a = end;");
+    }
+
+    @Test
     void ruleTokenInRhs() {
         final String text = "package org.drools\n" +
                 "rule X\n" +
