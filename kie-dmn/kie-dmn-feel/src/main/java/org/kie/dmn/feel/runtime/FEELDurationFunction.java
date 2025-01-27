@@ -16,7 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.dmn.feel.exceptions;
+package org.kie.dmn.feel.runtime;
 
-public class EndpointOfRangeNotOfNumberException extends RuntimeException {
+import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
+
+public interface FEELDurationFunction extends FEELFunction {
+
+    @Override
+    default Object defaultValue() {
+        return ComparablePeriod.parse("P0M");
+    }
 }

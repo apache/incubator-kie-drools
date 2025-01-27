@@ -19,6 +19,7 @@
 package org.kie.dmn.feel.lang.ast;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -27,10 +28,14 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.util.EvaluationContextTestUtil;
-import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.kie.dmn.feel.util.ExpressionNodeFactoryUtils.getIterationContextNode;
+import static org.kie.dmn.feel.util.ExpressionNodeFactoryUtils.getListNode;
+import static org.kie.dmn.feel.util.ExpressionNodeFactoryUtils.getNameRefNode;
+import static org.kie.dmn.feel.util.ExpressionNodeFactoryUtils.getNestedListNode;
+import static org.kie.dmn.feel.util.ExpressionNodeFactoryUtils.getRangeNode;
 
 class ForExpressionNodeTest {
 
@@ -58,32 +63,12 @@ class ForExpressionNodeTest {
 
     }
 
-    private IterationContextNode getIterationContextNode(String variableName, BaseNode expression, String text) {
-        return new IterationContextNode(getNameDefNode(variableName), expression, null, text);
-    }
-
-    private NameDefNode getNameDefNode(String text) {
-       return  new NameDefNode(Collections.singletonList(text), null, text);
-    }
-
-    private NameRefNode getNameRefNode(Type type, String text) {
-        return  new NameRefNode(type, text);
-    }
-
-    private ListNode getNestedListNode(String text,  Map<String, List<String>> values) {
-        List<BaseNode> elements = values.entrySet()
-                .stream()
-                .map(entry -> getListNode(entry.getKey(), entry.getValue()))
-                .map(BaseNode.class::cast)
-                .toList();
-        return new ListNode(elements, text);
-    }
-
-    private ListNode getListNode(String text, List<String> values) {
-        List<BaseNode> elements = values.stream()
-                .map(value -> new NumberNode(new BigDecimal(value), value))
-                .map(BaseNode.class::cast)
-                .toList();
-        return new ListNode(elements, text);
+    @Test
+    void evaluateRange() {
+        IterationContextNode x = getIterationContextNode("x", getRangeNode("[1980-01-01 .. 1980-01-03]", LocalDate.of(1980, 1, 1), LocalDate.of(1980, 1, 3), RangeNode.IntervalBoundary.CLOSED, RangeNode.IntervalBoundary.CLOSED ), "x in [1980-01-01 .. 1980-01-03]");
+        ForExpressionNode forExpressionNode = new ForExpressionNode(Collections.singletonList(x), getNameRefNode(BuiltInType.DATE, "x"), "for x in [1980-01-01 .. 1980-01-03] return x");
+        Object retrieved = forExpressionNode.evaluate(EvaluationContextTestUtil.newEmptyEvaluationContext());
+        assertThat(retrieved).isInstanceOf(List.class).asList().containsExactly(LocalDate.of(1980, 1, 1),
+                LocalDate.of(1980, 1, 2), LocalDate.of(1980, 1, 3));
     }
 }
