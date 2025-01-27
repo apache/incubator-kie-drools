@@ -73,58 +73,68 @@ public abstract class PersistenceTest {
                 .then()
                 .statusCode(201)
                 .body("id", notNullValue()).extract().path("id");
-        // get all active approvals
-        given()
-                .accept(ContentType.JSON)
-                .when()
-                .get("/AddedTask")
-                .then()
-                .statusCode(200)
-                .body("size()", is(1), "[0].id", is(id));
 
-        // get just started approval
-        given()
-                .accept(ContentType.JSON)
-                .when()
-                .get("/AddedTask/" + id)
-                .then()
-                .statusCode(200)
-                .body("id", is(id));
+        try {
+            // get all active approvals
+            given()
+                    .accept(ContentType.JSON)
+                    .when()
+                    .get("/AddedTask")
+                    .then()
+                    .statusCode(200)
+                    .body("size()", is(1), "[0].id", is(id));
 
-        // tasks assigned in just started approval
+            // get just started approval
+            given()
+                    .accept(ContentType.JSON)
+                    .when()
+                    .get("/AddedTask/" + id)
+                    .then()
+                    .statusCode(200)
+                    .body("id", is(id));
 
-        String userTaskId = given()
-                .basePath(USER_TASK_BASE_PATH)
-                .queryParam("user", "mary")
-                .queryParam("group", "managers")
-                .contentType(ContentType.JSON)
-                .when()
-                .get()
-                .then()
-                .statusCode(200)
-                .extract()
-                .body()
-                .path("[0].id");
+            // tasks assigned in just started approval
 
-        given()
-                .contentType(ContentType.JSON)
-                .basePath(USER_TASK_BASE_PATH)
-                .queryParam("user", "mary")
-                .queryParam("group", "managers")
-                .body(new TransitionInfo("complete"))
-                .when()
-                .post("/{userTaskId}/transition", userTaskId)
-                .then()
-                .statusCode(200);
+            String userTaskId = given()
+                    .basePath(USER_TASK_BASE_PATH)
+                    .queryParam("user", "mary")
+                    .queryParam("group", "managers")
+                    .contentType(ContentType.JSON)
+                    .when()
+                    .get()
+                    .then()
+                    .statusCode(200)
+                    .extract()
+                    .body()
+                    .path("[0].id");
 
-        // get all active approvals
-        given()
-                .accept(ContentType.JSON)
-                .when()
-                .get("/AddedTask")
-                .then()
-                .statusCode(200)
-                .body("size()", is(1));
+            given()
+                    .contentType(ContentType.JSON)
+                    .basePath(USER_TASK_BASE_PATH)
+                    .queryParam("user", "mary")
+                    .queryParam("group", "managers")
+                    .body(new TransitionInfo("complete"))
+                    .when()
+                    .post("/{userTaskId}/transition", userTaskId)
+                    .then()
+                    .statusCode(200);
+
+            // get all active approvals
+            given()
+                    .accept(ContentType.JSON)
+                    .when()
+                    .get("/AddedTask")
+                    .then()
+                    .statusCode(200)
+                    .body("size()", is(1));
+        } finally {
+            // Cleanup: Remove the AddedTask
+            given()
+                    .when()
+                    .delete("/AddedTask/" + id)
+                    .then()
+                    .statusCode(200);
+        }
     }
 
     @Test

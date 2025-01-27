@@ -60,7 +60,8 @@ class MongoDBSpringBootTestResourceTest {
     @Test
     void shouldGetDockerImageName() {
         givenResource();
-        assertEquals(System.getProperty(Constants.CONTAINER_NAME_PREFIX + KogitoMongoDBContainer.NAME), resource.getTestResource().getDockerImageName());
+        assertEquals(System.getenv("TESTCONTAINERS_HUB_IMAGE_NAME_PREFIX") + System.getProperty(Constants.CONTAINER_NAME_PREFIX + KogitoMongoDBContainer.NAME),
+                resource.getTestResource().getDockerImageName());
     }
 
     private void givenConditionalResource() {

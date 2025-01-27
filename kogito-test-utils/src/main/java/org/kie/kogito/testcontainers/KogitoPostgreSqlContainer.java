@@ -29,6 +29,9 @@ import org.testcontainers.containers.output.OutputFrame;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
 import org.testcontainers.containers.wait.strategy.HostPortWaitStrategy;
 import org.testcontainers.containers.wait.strategy.WaitAllStrategy;
+import org.testcontainers.utility.DockerImageName;
+
+import static org.kie.kogito.testcontainers.KogitoGenericContainer.getImageName;
 
 /**
  * PostgreSQL Container for Kogito examples.
@@ -40,7 +43,7 @@ public class KogitoPostgreSqlContainer extends PostgreSQLContainer<KogitoPostgre
     private static final Logger LOGGER = LoggerFactory.getLogger(KogitoPostgreSqlContainer.class);
 
     public KogitoPostgreSqlContainer() {
-        super(KogitoGenericContainer.getImageName(NAME));
+        super(DockerImageName.parse(getImageName(NAME)).asCompatibleSubstituteFor("postgres"));
         withLogConsumer(getLogger());
         withLogConsumer(new Slf4jLogConsumer(LOGGER));
         withStartupTimeout(Constants.CONTAINER_START_TIMEOUT);

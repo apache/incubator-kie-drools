@@ -330,6 +330,10 @@
               <maven.repo.local>${session.request.localRepositoryPath.path}</maven.repo.local>
               <maven.settings>${session.request.userSettingsFile.path}</maven.settings>
             </systemPropertyVariables>
+            <environmentVariables>
+               <TESTCONTAINERS_HUB_IMAGE_NAME_PREFIX>mirror.gcr.io/</TESTCONTAINERS_HUB_IMAGE_NAME_PREFIX>
+               <TESTCONTAINERS_REUSE_ENABLE>true</TESTCONTAINERS_REUSE_ENABLE>
+            </environmentVariables>
             <parallel>all</parallel>
           </configuration>
         </plugin>
@@ -354,6 +358,10 @@
               <maven.settings>${session.request.userSettingsFile.path}</maven.settings>
               <forkedProcessTimeoutInSeconds>1800</forkedProcessTimeoutInSeconds>
             </systemPropertyVariables>
+            <environmentVariables>
+               <TESTCONTAINERS_HUB_IMAGE_NAME_PREFIX>mirror.gcr.io/</TESTCONTAINERS_HUB_IMAGE_NAME_PREFIX>
+               <TESTCONTAINERS_REUSE_ENABLE>true</TESTCONTAINERS_REUSE_ENABLE>
+            </environmentVariables>
             <parallel>all</parallel>
           </configuration>
         </plugin>

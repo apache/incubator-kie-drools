@@ -54,6 +54,6 @@ class KogitoMongoDBContainerTest {
     @Test
     void shouldGetDockerImageName() {
         assumeTrue(DockerClientFactory.instance().isDockerAvailable(), "Aborting test: docker env not found");
-        assertThat(container.getDockerImageName()).isEqualTo(System.getProperty(Constants.CONTAINER_NAME_PREFIX + KogitoMongoDBContainer.NAME));
+        assertThat(container.getDockerImageName()).isEqualTo(System.getenv("TESTCONTAINERS_HUB_IMAGE_NAME_PREFIX") + System.getProperty(Constants.CONTAINER_NAME_PREFIX + KogitoMongoDBContainer.NAME));
     }
 }
