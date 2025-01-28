@@ -51,4 +51,90 @@ public class CommonUtilsTest {
         Map<String, Object> target = Map.of("nested", nestedTarget);
         assertThat(CommonUtils.mergeMap(src, target)).isEqualTo(Map.of("nested", Map.of("name", "Javierito", "other", "remain", "different", "remain")));
     }
+
+    @Test
+    void testMergeWithEmptySource() {
+        Map<String, String> target = Map.of("name", "Fulanito");
+        assertThat(CommonUtils.mergeMap(Map.of(), target)).isEqualTo(target);
+    }
+
+    @Test
+    void testMergeWithEmptyTarget() {
+        Map<String, String> source = Map.of("name", "Javierito");
+        assertThat(CommonUtils.mergeMap(source, Map.of())).isEqualTo(source);
+    }
+
+    @Test
+    void testMergeWithNullSource() {
+        Map<String, String> target = Map.of("name", "Gonzalito");
+        assertThat(CommonUtils.mergeMap(null, target)).isEqualTo(target);
+    }
+
+    @Test
+    void testMergeWithNullTarget() {
+        Map<String, String> source = Map.of("name", "Francisquito");
+        assertThat(CommonUtils.mergeMap(source, null)).isEqualTo(source);
+    }
+
+    @Test
+    void testMergeWithNonMapNestedValueInSource() {
+        Map<String, Object> src = Map.of("nested", "newValue");
+        Map<String, Object> target = Map.of("nested", Map.of("key", "value"));
+        assertThat(CommonUtils.mergeMap(src, target)).isEqualTo(Map.of("nested", "newValue"));
+    }
+
+    @Test
+    void testMergeWithNonMapNestedValueInTarget() {
+        Map<String, Object> src = Map.of("nested", Map.of("key", "newValue"));
+        Map<String, Object> target = Map.of("nested", "oldValue");
+        assertThat(CommonUtils.mergeMap(src, target)).isEqualTo(Map.of("nested", Map.of("key", "newValue")));
+    }
+
+    @Test
+    void testMergeWithConflictingNonMapNestedValues() {
+        Map<String, Object> src = Map.of("key", "newValue");
+        Map<String, Object> target = Map.of("key", Map.of("nestedKey", "oldValue"));
+        assertThat(CommonUtils.mergeMap(src, target)).isEqualTo(Map.of("key", "newValue"));
+    }
+
+    @Test
+    void testMergeWithDeeplyNestedMaps() {
+        Map<String, Object> src = Map.of("nested", Map.of("deepKey", Map.of("key1", "value1")));
+        Map<String, Object> target = Map.of("nested", Map.of("deepKey", Map.of("key2", "value2")));
+        assertThat(CommonUtils.mergeMap(src, target)).isEqualTo(
+                Map.of("nested", Map.of("deepKey", Map.of("key1", "value1", "key2", "value2"))));
+    }
+
+    @Test
+    void testMergeWithEmptyNestedMaps() {
+        Map<String, Object> src = Map.of("nested", Map.of());
+        Map<String, Object> target = Map.of("nested", Map.of("key", "value"));
+        assertThat(CommonUtils.mergeMap(src, target)).isEqualTo(Map.of("nested", Map.of("key", "value")));
+    }
+
+    @Test
+    void testMergeWithMixedKeyTypes() {
+        Map<Object, String> src = Map.of(1, "value1", "key", "value2");
+        Map<Object, String> target = Map.of(1, "value3", "otherKey", "value4");
+        assertThat(CommonUtils.mergeMap(src, target)).isEqualTo(Map.of(1, "value1", "key", "value2", "otherKey", "value4"));
+    }
+
+    @Test
+    void testMergeWithNullKey() {
+        Map<Object, String> src = new HashMap<>();
+        src.put(null, "value1");
+        src.put("key", "value2");
+
+        Map<Object, String> target = new HashMap<>();
+        target.put(null, "value3");
+        target.put("otherKey", "value4");
+
+        Map<Object, String> expectedResult = new HashMap<>();
+        expectedResult.put(null, "value1");
+        expectedResult.put("key", "value2");
+        expectedResult.put("otherKey", "value4");
+
+        assertThat(CommonUtils.mergeMap(src, target)).isEqualTo(expectedResult);
+    }
+
 }
