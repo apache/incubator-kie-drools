@@ -71,7 +71,7 @@
     <!-- Required by OAuth2 use cases -->
     <dependency>
       <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-oidc-client-filter</artifactId>
+      <artifactId>quarkus-resteasy-client-oidc-filter</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>

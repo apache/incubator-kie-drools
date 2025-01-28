@@ -369,7 +369,7 @@ public abstract class AbstractProtoGeneratorTest<T> {
         assertThat(field.getType()).isEqualTo("kogito.Serializable");
         assertThat(field.getApplicability()).isEqualTo("optional");
         assertThat(field.getComment()).isEqualTo("@Field(index = Index.YES, store = Store.YES) @SortableField");
-        assertThat(field.getOption()).isEqualTo("[(kogito_java_class) = \"java.math.BigDecimal\"]");
+        assertThat(field.getOption()).isEqualTo("[kogito_java_class = \"java.math.BigDecimal\"]");
 
         field = person.getFields().get(index++);
         assertThat(field).isNotNull();
@@ -391,7 +391,7 @@ public abstract class AbstractProtoGeneratorTest<T> {
         assertThat(field.getType()).isEqualTo("kogito.Serializable");
         assertThat(field.getApplicability()).isEqualTo("optional");
         assertThat(field.getComment()).isEqualTo("@Field(index = Index.YES, store = Store.YES) @SortableField");
-        assertThat(field.getOption()).isEqualTo("[(kogito_java_class) = \"java.time.Duration\"]");
+        assertThat(field.getOption()).isEqualTo("[kogito_java_class = \"java.time.Duration\"]");
 
         field = person.getFields().get(index++);
         assertThat(field).isNotNull();
@@ -399,7 +399,7 @@ public abstract class AbstractProtoGeneratorTest<T> {
         assertThat(field.getType()).isEqualTo("kogito.Serializable");
         assertThat(field.getApplicability()).isEqualTo("repeated");
         assertThat(field.getComment()).isEqualTo("@Field(index = Index.YES, store = Store.YES) @SortableField");
-        assertThat(field.getOption()).isEqualTo("[(kogito_java_class) = \"org.kie.kogito.codegen.data.Money[]\"]");
+        assertThat(field.getOption()).isEqualTo("[kogito_java_class = \"org.kie.kogito.codegen.data.Money[]\"]");
 
         field = person.getFields().get(index++);
         assertThat(field).isNotNull();
@@ -407,7 +407,7 @@ public abstract class AbstractProtoGeneratorTest<T> {
         assertThat(field.getType()).isEqualTo("kogito.Serializable");
         assertThat(field.getApplicability()).isEqualTo("repeated");
         assertThat(field.getComment()).isEqualTo("@Field(index = Index.YES, store = Store.YES) @SortableField");
-        assertThat(field.getOption()).isEqualTo("[(kogito_java_class) = \"java.util.List\"]");
+        assertThat(field.getOption()).isEqualTo("[kogito_java_class = \"java.util.List\"]");
 
         field = person.getFields().get(index++);
         assertThat(field).isNotNull();
@@ -429,7 +429,7 @@ public abstract class AbstractProtoGeneratorTest<T> {
         assertThat(field.getType()).isEqualTo("kogito.Serializable");
         assertThat(field.getApplicability()).isEqualTo("optional");
         assertThat(field.getComment()).isEqualTo("@Field(index = Index.YES, store = Store.YES) @SortableField");
-        assertThat(field.getOption()).isEqualTo("[(kogito_java_class) = \"java.time.LocalDate\"]");
+        assertThat(field.getOption()).isEqualTo("[kogito_java_class = \"java.time.LocalDate\"]");
 
         field = person.getFields().get(index++);
         assertThat(field).isNotNull();
@@ -437,7 +437,7 @@ public abstract class AbstractProtoGeneratorTest<T> {
         assertThat(field.getType()).isEqualTo("kogito.Serializable");
         assertThat(field.getApplicability()).isEqualTo("optional");
         assertThat(field.getComment()).isEqualTo("@Field(index = Index.YES, store = Store.YES) @SortableField");
-        assertThat(field.getOption()).isEqualTo("[(kogito_java_class) = \"java.time.LocalDateTime\"]");
+        assertThat(field.getOption()).isEqualTo("[kogito_java_class = \"java.time.LocalDateTime\"]");
 
         field = person.getFields().get(index++);
         assertThat(field).isNotNull();
@@ -452,7 +452,7 @@ public abstract class AbstractProtoGeneratorTest<T> {
         assertThat(field.getType()).isEqualTo("kogito.Serializable");
         assertThat(field.getApplicability()).isEqualTo("optional");
         assertThat(field.getComment()).isEqualTo("@Field(index = Index.YES, store = Store.YES) @SortableField");
-        assertThat(field.getOption()).isEqualTo("[(kogito_java_class) = \"java.time.OffsetDateTime\"]");
+        assertThat(field.getOption()).isEqualTo("[kogito_java_class = \"java.time.OffsetDateTime\"]");
 
         field = person.getFields().get(index++);
         assertThat(field).isNotNull();
@@ -474,7 +474,7 @@ public abstract class AbstractProtoGeneratorTest<T> {
         assertThat(field.getType()).isEqualTo("kogito.Serializable");
         assertThat(field.getApplicability()).isEqualTo("optional");
         assertThat(field.getComment()).isEqualTo("@Field(index = Index.YES, store = Store.YES) @SortableField");
-        assertThat(field.getOption()).isEqualTo("[(kogito_java_class) = \"org.kie.kogito.codegen.data.Money\"]");
+        assertThat(field.getOption()).isEqualTo("[kogito_java_class = \"org.kie.kogito.codegen.data.Money\"]");
 
         field = person.getFields().get(index++);
         assertThat(field).isNotNull();
@@ -482,7 +482,7 @@ public abstract class AbstractProtoGeneratorTest<T> {
         assertThat(field.getType()).isEqualTo("kogito.Serializable");
         assertThat(field.getApplicability()).isEqualTo("optional");
         assertThat(field.getComment()).isEqualTo("@Field(index = Index.YES, store = Store.YES) @SortableField");
-        assertThat(field.getOption()).isEqualTo("[(kogito_java_class) = \"java.time.ZonedDateTime\"]");
+        assertThat(field.getOption()).isEqualTo("[kogito_java_class = \"java.time.ZonedDateTime\"]");
     }
 
     @Test

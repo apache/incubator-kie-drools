@@ -40,7 +40,7 @@ public class ConfigBean extends StaticConfigBean {
     Instance<KogitoBuildTimeConfig> buildTimeConfig;
 
     @Inject
-    KogitoGAV gav;
+    Instance<KogitoGAV> gav;
 
     @Override
     public String getServiceUrl() {
@@ -54,7 +54,7 @@ public class ConfigBean extends StaticConfigBean {
 
     @Override
     public Optional<KogitoGAV> getGav() {
-        return Optional.ofNullable(gav);
+        return Optional.ofNullable(gav.get());
     }
 
     @Override

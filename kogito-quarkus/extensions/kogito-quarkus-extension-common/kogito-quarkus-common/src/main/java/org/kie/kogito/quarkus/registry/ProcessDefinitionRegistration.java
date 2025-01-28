@@ -21,6 +21,7 @@ package org.kie.kogito.quarkus.registry;
 import java.util.Optional;
 
 import org.kie.kogito.Application;
+import org.kie.kogito.StaticApplication;
 import org.kie.kogito.process.Processes;
 import org.kie.kogito.quarkus.config.KogitoRuntimeConfig;
 import org.kie.kogito.services.registry.ProcessDefinitionEventRegistry;
@@ -40,10 +41,11 @@ public class ProcessDefinitionRegistration {
     ProcessDefinitionEventRegistry processDefinitionRegistry;
 
     @Inject
-    public ProcessDefinitionRegistration(Application application, KogitoRuntimeConfig runtimeConfig, Instance<Processes> processes, Instance<SourceFilesProvider> sourceFilesProvider) {
+    public ProcessDefinitionRegistration(Instance<Application> application, KogitoRuntimeConfig runtimeConfig, Instance<Processes> processes, Instance<SourceFilesProvider> sourceFilesProvider) {
         this.processes = processes;
         this.processDefinitionRegistry =
-                new ProcessDefinitionEventRegistry(application, runtimeConfig.serviceUrl.orElse(null), sourceFilesProvider.isResolvable() ? Optional.of(sourceFilesProvider.get()) : Optional.empty());
+                new ProcessDefinitionEventRegistry(application.isResolvable() ? application.get() : (new StaticApplication()), runtimeConfig.serviceUrl.orElse(null),
+                        sourceFilesProvider.isResolvable() ? Optional.of(sourceFilesProvider.get()) : Optional.empty());
     }
 
     void onStartUp(@Observes StartupEvent startupEvent) {

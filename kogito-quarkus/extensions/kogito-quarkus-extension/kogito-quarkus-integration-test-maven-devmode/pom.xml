@@ -30,7 +30,7 @@
     <version>999-SNAPSHOT</version>
   </parent>
 
-  <artifactId>jbpm-sith-drools-quarkus-integration-test-maven-devmode</artifactId>
+  <artifactId>jbpm-with-drools-quarkus-integration-test-maven-devmode</artifactId>
   <name>jBPM with Drools :: Quarkus Extension :: Integration Tests (Maven devmode)</name>
 
   <properties>

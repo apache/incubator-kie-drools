@@ -35,7 +35,7 @@
 
   <properties>
     <!-- this version property is used in plugins but also in dependencies too -->
-    <version.io.quarkus>3.8.6</version.io.quarkus>
+    <version.io.quarkus>3.15.3</version.io.quarkus>
     <version.io.quarkus.quarkus-test>${version.io.quarkus}</version.io.quarkus.quarkus-test>
     <version.org.springframework.boot>3.2.6</version.org.springframework.boot>
     <version.org.apache.kafka>3.7.1</version.org.apache.kafka>
@@ -51,20 +51,20 @@
     <version.net.minidev.jsonsmart>2.4.10</version.net.minidev.jsonsmart>
     <version.net.thisptr.jackson-jq>1.0.0-preview.20240207</version.net.thisptr.jackson-jq>
     <version.io.quarkiverse.jackson-jq>2.0.2</version.io.quarkiverse.jackson-jq>
-    <version.io.quarkiverse.openapi.generator>2.4.1</version.io.quarkiverse.openapi.generator>
+    <version.io.quarkiverse.openapi.generator>2.8.0-lts</version.io.quarkiverse.openapi.generator>
     <version.io.quarkiverse.asyncapi>0.3.0</version.io.quarkiverse.asyncapi>
     <version.io.quarkiverse.reactivemessaging.http>2.4.1</version.io.quarkiverse.reactivemessaging.http>
-    <version.io.quarkiverse.embedded.postgresql>0.2.3</version.io.quarkiverse.embedded.postgresql>
+    <version.io.quarkiverse.embedded.postgresql>0.3.0</version.io.quarkiverse.embedded.postgresql>
     <version.com.github.haifengl.smile>1.5.2</version.com.github.haifengl.smile>
-    <version.com.github.javaparser>3.25.8</version.com.github.javaparser>
+    <version.com.github.javaparser>3.26.1</version.com.github.javaparser>
     <version.com.fasterxml.jackson.datatype>2.17.2</version.com.fasterxml.jackson.datatype>
     <version.com.github.victools>4.31.0</version.com.github.victools>
-    <version.com.github.tomakehurst.wiremock>2.35.1</version.com.github.tomakehurst.wiremock>
+    <version.com.github.tomakehurst.wiremock>2.35.2</version.com.github.tomakehurst.wiremock>
     <version.com.google.protobuf>3.25.5</version.com.google.protobuf>
     <!-- We don't use gson directly. This is just to align versions of transitive dependencies -->
     <version.com.google.gson>2.10.1</version.com.google.gson>
     <!-- currently required for integration test only -->
-    <version.com.sun.xml.bind.core>4.0.4</version.com.sun.xml.bind.core>
+    <version.com.sun.xml.bind.core>4.0.5</version.com.sun.xml.bind.core>
     <version.com.sun.activation>2.0.1</version.com.sun.activation>
     <version.javax.inject>2.0.1</version.javax.inject>
     <version.org.eclipse.microprofile.openapi>3.1.1</version.org.eclipse.microprofile.openapi>
@@ -79,22 +79,21 @@
     Don't add as a management dependency because it will break SpringBoot and Quarkus
     Kubernetes addons since they use a different version.
     -->
-    <version.io.fabric8.kubernetes-client>6.10.0</version.io.fabric8.kubernetes-client>
+    <version.io.fabric8.kubernetes-client>6.13.3</version.io.fabric8.kubernetes-client>
     <version.io.micrometer>1.12.2</version.io.micrometer>
-    <version.org.flywaydb>9.22.3</version.org.flywaydb>
-    <version.org.postgresql>42.7.2</version.org.postgresql>
-    <version.com.h2>2.2.220</version.com.h2>
+    <version.org.flywaydb>10.17.3</version.org.flywaydb>
+    <version.org.postgresql>42.7.4</version.org.postgresql>
+    <version.com.h2>2.3.232</version.com.h2> <!-- Overriding version 2.3.230 to fix https://github.com/h2database/h2database/issues/4079 -->
     <version.io.serverlessworkflow>4.0.5.Final</version.io.serverlessworkflow>
-    <!-- Aligned with Quarkus 2.7 (LTS) - see https://issues.redhat.com/browse/KOGITO-7971 -->
     <version.io.smallrye-open-api>3.10.0</version.io.smallrye-open-api>
     <version.org.awaitility>4.2.0</version.org.awaitility>
 
     <version.io.smallrye.reactive.mutiny-vertx-web-client>3.11.0</version.io.smallrye.reactive.mutiny-vertx-web-client>
 
-    <version.io.vertx>4.5.7</version.io.vertx>
-    <version.io.grpc>1.59.1</version.io.grpc>
+    <version.io.vertx>4.5.11</version.io.vertx>
+    <version.io.grpc>1.65.1</version.io.grpc>
 
-    <version.io.quarkus.camel>3.9.0</version.io.quarkus.camel> <!-- TODO: quarkus version mismatch -->
+    <version.io.quarkus.camel>3.15.1</version.io.quarkus.camel> <!-- TODO: quarkus version mismatch -->
 
     <version.io.swagger.parser.v3>2.1.19</version.io.swagger.parser.v3>
     <version.io.swagger.core.v3>2.2.19</version.io.swagger.core.v3>
@@ -103,8 +102,8 @@
 
     <version.org.graalvm.nativeimage>23.1.2</version.org.graalvm.nativeimage>
 
-    <version.org.infinispan>14.0.27.Final</version.org.infinispan>
-    <version.org.infinispan.protostream>4.6.5.Final</version.org.infinispan.protostream>
+    <version.org.infinispan>15.0.11.Final</version.org.infinispan>
+    <version.org.infinispan.protostream>5.0.8.Final</version.org.infinispan.protostream>
 
     <version.org.rocksdb>7.10.2</version.org.rocksdb>
     <!-- consider migrating to 3.x JDK 9: https://jakarta.ee/specifications/restful-ws/ -->
@@ -112,7 +111,7 @@
     <version.jakarta.persistence-api>3.1.0</version.jakarta.persistence-api>
 
     <version.org.jboss.resteasy>6.2.7.Final</version.org.jboss.resteasy>
-    <version.org.keycloak>24.0.4</version.org.keycloak>
+    <version.org.keycloak>25.0.6</version.org.keycloak>
     <!-- It seems that the confluent kafka cannot replace wurstmeister/kafka so easily. See FAI-729 -->
     <version.wurstmeister.kafka>2.12-2.2.1</version.wurstmeister.kafka>
     <version.org.mongo>4.11.1</version.org.mongo>
@@ -121,7 +120,7 @@
     <version.org.redis>2.0.4</version.org.redis>
     <version.org.postgres>15.9-alpine3.20</version.org.postgres>
     <!-- we align to version used by quarkus -->
-    <version.org.apache.avro>1.11.4</version.org.apache.avro>
+    <version.org.apache.avro>1.12.0</version.org.apache.avro>
     <version.org.assertj>3.24.2</version.org.assertj>
     <version.org.glassfish.jaxb>4.0.4</version.org.glassfish.jaxb>
     <version.org.json-unit-assertj>2.9.0</version.org.json-unit-assertj>
@@ -131,11 +130,11 @@
     <version.org.junit.vintage>5.10.2</version.org.junit.vintage>
     <version.org.junit.platform>1.10.2</version.org.junit.platform> <!-- otherwise Quarkus brings its own, silently disabling some tests -->
     <version.org.mockito>5.8.0</version.org.mockito>
-    <version.org.testcontainers>1.19.6</version.org.testcontainers>
+    <version.org.testcontainers>1.20.1</version.org.testcontainers>
     <version.org.xmlunit-core>2.10.0</version.org.xmlunit-core>
-    <version.io.rest-assured>5.4.0</version.io.rest-assured>
+    <version.io.rest-assured>5.5.0</version.io.rest-assured>
 
-    <version.net.byte-buddy>1.14.11</version.net.byte-buddy>
+    <version.net.byte-buddy>1.14.18</version.net.byte-buddy>
 
     <version.org.mvel>2.5.2.Final</version.org.mvel>
     <version.org.reactivestreams>1.0.4</version.org.reactivestreams>
@@ -156,9 +155,6 @@
     <version.com.google.collections>1.0</version.com.google.collections>
     <version.com.google.guava>33.0.0-jre</version.com.google.guava>
     <version.apache.commons.commons-compress>1.26.1</version.apache.commons.commons-compress>
-    <!-- Temporary declaring xstream dependency, a version (1.4.20) is transitively imported by Quarkus 3.8 affected by CVE
-     When upgrading Quarkus (> 3.15.x) to a new version, please evaluate if this exclusion can be removed   -->
-    <version.com.thoughtworks.xstream>1.4.21</version.com.thoughtworks.xstream>
   </properties>
 
   <dependencyManagement>
@@ -455,14 +451,6 @@
         <version>${version.jakarta.persistence-api}</version>
       </dependency>
 
-      <!-- Temporary declaring xstream dependency, a version (1.4.20) is transitively imported by Quarkus 3.8 affected by CVE
-           When upgrading Quarkus (> 3.15.x) to a new version, please evaluate if this exclusion can be removed   -->
-      <dependency>
-        <groupId>com.thoughtworks.xstream</groupId>
-        <artifactId>xstream</artifactId>
-        <version>${version.com.thoughtworks.xstream}</version>
-      </dependency>
-
       <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-api</artifactId>
@@ -738,7 +726,11 @@
         <artifactId>flyway-core</artifactId>
         <version>${version.org.flywaydb}</version>
       </dependency>
-
+      <dependency>
+        <groupId>org.flywaydb</groupId>
+        <artifactId>flyway-database-postgresql</artifactId>
+        <version>${version.org.flywaydb}</version>
+      </dependency>
       <!-- infinispan -->
       <dependency>
         <groupId>org.infinispan</groupId>
@@ -747,7 +739,7 @@
       </dependency>
       <dependency>
         <groupId>org.infinispan</groupId>
-        <artifactId>infinispan-client-hotrod-jakarta</artifactId>
+        <artifactId>infinispan-client-hotrod</artifactId>
         <version>${version.org.infinispan}</version>
       </dependency>
       <dependency>
@@ -765,7 +757,11 @@
         <artifactId>protostream</artifactId>
         <version>${version.org.infinispan.protostream}</version>
       </dependency>
-
+      <dependency>
+        <groupId>org.infinispan.protostream</groupId>
+        <artifactId>protostream-processor</artifactId>
+        <version>${version.org.infinispan.protostream}</version>
+      </dependency>
       <!--rockdb-->
       <dependency>
         <groupId>org.rocksdb</groupId>

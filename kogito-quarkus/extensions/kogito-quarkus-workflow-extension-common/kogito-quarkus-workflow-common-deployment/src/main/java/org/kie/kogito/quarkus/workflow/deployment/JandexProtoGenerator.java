@@ -174,7 +174,7 @@ public class JandexProtoGenerator extends AbstractProtoGenerator<ClassInfo> {
             ProtoField protoField = message.addField(computeCardinalityModifier(fieldTypeString), protoType, pd.name());
             protoField.setComment(completeFieldComment);
             if (KOGITO_SERIALIZABLE.equals(protoType)) {
-                protoField.setOption(format("[(%s) = \"%s\"]", KOGITO_JAVA_CLASS_OPTION, fieldTypeString.equals(ARRAY) ? pd.type().toString() : pd.type().name().toString()));
+                protoField.setOption(format("[%s = \"%s\"]", KOGITO_JAVA_CLASS_OPTION, fieldTypeString.equals(ARRAY) ? pd.type().toString() : pd.type().name().toString()));
             }
         }
         message.setComment(messageComment);

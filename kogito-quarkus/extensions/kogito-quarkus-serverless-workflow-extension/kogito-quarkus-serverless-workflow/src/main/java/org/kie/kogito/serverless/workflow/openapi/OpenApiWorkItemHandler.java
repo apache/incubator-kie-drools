@@ -45,7 +45,7 @@ public abstract class OpenApiWorkItemHandler<T> extends WorkflowWorkItemHandler 
     @Override
     protected Object internalExecute(KogitoWorkItem workItem, Map<String, Object> parameters) {
         Class<T> clazz = getRestClass();
-        T ref = RestClientBuilderFactory.build(clazz, calculatedConfigKey(workItem, parameters)).register(new ClientRequestFilter() {
+        T ref = RestClientBuilderFactory.build(clazz, calculatedConfigKey(workItem)).register(new ClientRequestFilter() {
             @Override
             public void filter(ClientRequestContext requestContext) throws IOException {
                 ProcessMeta.fromKogitoWorkItem(workItem).asMap().forEach((k, v) -> requestContext.getHeaders().put(k, Collections.singletonList(v)));
@@ -58,7 +58,7 @@ public abstract class OpenApiWorkItemHandler<T> extends WorkflowWorkItemHandler 
         }
     }
 
-    private Optional<String> calculatedConfigKey(KogitoWorkItem workItem, Map<String, Object> parameters) {
+    private Optional<String> calculatedConfigKey(KogitoWorkItem workItem) {
         String configKeyExpr = (String) workItem.getNodeInstance().getNode().getMetaData().get("configKey");
         if (configKeyExpr == null) {
             return Optional.empty();

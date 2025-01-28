@@ -228,7 +228,7 @@ public abstract class AbstractMarshallerGenerator<T> implements MarshallerGenera
                         }
 
                         if (customTypeName.equals(Serializable.class.getName())) {
-                            String fieldClazz = (String) field.getOptionByName(KOGITO_JAVA_CLASS_OPTION);
+                            String fieldClazz = (String) field.getOptionByName(KOGITO_JAVA_CLASS_OPTION).getValue();
                             if (fieldClazz == null) {
                                 throw new IllegalArgumentException(format("Serializable proto field '%s' is missing value for option %s", field.getName(), KOGITO_JAVA_CLASS_OPTION));
                             } else {
@@ -317,7 +317,11 @@ public abstract class AbstractMarshallerGenerator<T> implements MarshallerGenera
     }
 
     protected String packageFromOption(FileDescriptor d, Descriptor msg) {
-        return packageFromOption(d, msg.getOption(JAVA_PACKAGE_OPTION));
+        Option option = msg.getOptions().stream()
+                .filter(o -> JAVA_PACKAGE_OPTION.equals(o.getName()))
+                .findAny()
+                .orElse(null);
+        return packageFromOption(d, option);
     }
 
     protected String packageFromOption(FileDescriptor d, EnumDescriptor msg) {

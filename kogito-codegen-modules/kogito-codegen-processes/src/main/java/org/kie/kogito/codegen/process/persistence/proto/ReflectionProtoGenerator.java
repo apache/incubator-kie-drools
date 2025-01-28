@@ -120,7 +120,7 @@ public class ReflectionProtoGenerator extends AbstractProtoGenerator<Class<?>> {
             ProtoField protoField = message.addField(computeCardinalityModifier(fieldTypeString), protoType, pd.getName());
             protoField.setComment(completeFieldComment);
             if (KOGITO_SERIALIZABLE.equals(protoType)) {
-                protoField.setOption(format("[(%s) = \"%s\"]", KOGITO_JAVA_CLASS_OPTION, pd.getPropertyType().getCanonicalName()));
+                protoField.setOption(format("[%s = \"%s\"]", KOGITO_JAVA_CLASS_OPTION, pd.getPropertyType().getCanonicalName()));
             }
         }
         message.setComment(messageComment);

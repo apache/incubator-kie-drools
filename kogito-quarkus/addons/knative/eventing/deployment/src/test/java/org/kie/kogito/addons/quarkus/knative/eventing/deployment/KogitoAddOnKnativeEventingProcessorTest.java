@@ -179,7 +179,7 @@ class KogitoAddOnKnativeEventingProcessorTest {
 
         KogitoAddOnKnativeEventingProcessor eventingProcessor = new KogitoAddOnKnativeEventingProcessor();
         eventingProcessor.checkProcessEvents(buildProducer, combinedIndex);
-        verify(buildProducer, never()).produce(any());
+        verify(buildProducer, never()).produce(any(SystemPropertyBuildItem.class));
     }
 
     @Test

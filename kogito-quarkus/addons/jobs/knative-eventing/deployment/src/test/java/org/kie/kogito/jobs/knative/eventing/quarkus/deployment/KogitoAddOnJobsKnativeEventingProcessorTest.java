@@ -161,7 +161,7 @@ class KogitoAddOnJobsKnativeEventingProcessorTest {
 
         KogitoAddOnJobsKnativeEventingProcessor processor = new KogitoAddOnJobsKnativeEventingProcessor();
         processor.buildCloudEventsMetadata(singletonList(kogitoProcessContainerGeneratorBuildItem), buildItemProducer);
-        verify(buildItemProducer, never()).produce(any());
+        verify(buildItemProducer, never()).produce(any(KogitoCloudEventsBuildItem.class));
     }
 
     @Test

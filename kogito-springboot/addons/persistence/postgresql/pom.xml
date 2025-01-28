@@ -54,6 +54,13 @@
       <groupId>org.flywaydb</groupId>
       <artifactId>flyway-core</artifactId>
     </dependency>
+    <!--
+      Temporary fix: Adding flyway-database-postgresql since Flyway pgsql support has been moved out from flyway-core module
+    -->
+    <dependency>
+      <groupId>org.flywaydb</groupId>
+      <artifactId>flyway-database-postgresql</artifactId>
+    </dependency>
   </dependencies>
 
 </project>

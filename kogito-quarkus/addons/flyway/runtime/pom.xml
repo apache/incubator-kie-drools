@@ -53,6 +53,10 @@
             <groupId>org.kie</groupId>
             <artifactId>kie-addons-flyway</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-flyway</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
@@ -86,6 +90,9 @@
                             <version>${version.io.quarkus}</version>
                         </path>
                     </annotationProcessorPaths>
+                    <compilerArgs>
+                        <arg>-AlegacyConfigRoot=true</arg>
+                    </compilerArgs>
                 </configuration>
             </plugin>
         </plugins>

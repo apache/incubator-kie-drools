@@ -183,7 +183,7 @@ public class ProtostreamProtobufAdapterTypeProvider implements ProtobufTypeProvi
             }
         }
         fieldBuilder.setLabel(descriptor.getLabel() == Label.ONE_OF ? FieldDescriptorProto.Label.LABEL_OPTIONAL : FieldDescriptorProto.Label.valueOf("LABEL_" + descriptor.getLabel().name()));
-        fieldBuilder.setProto3Optional(!descriptor.isRequired());
+        fieldBuilder.setProto3Optional(descriptor.getLabel() != Label.REQUIRED);
         return fieldBuilder.build();
     }
 

@@ -68,7 +68,7 @@ class ApiWithSecurityContextIT {
         // verify if the headers were correctly sent
         authWithApiKeyServer2
                 .verify(postRequestedFor(urlEqualTo(AuthSecurityMockService.SEC_20.getPath()))
-                        .withHeader("X-Client-Id", matching("Basic amF2aWVyaXRvOmZ1bGFuaXRv"))
+                        .withHeader("X-Client-Id", matching("12345"))
                         .withHeader("Authorization", matching("Basic amF2aWVyaXRvOmZ1bGFuaXRv")));
     }
 
@@ -108,7 +108,7 @@ class ApiWithSecurityContextIT {
 
         authWithApiKeyServer3
                 .verify(postRequestedFor(urlEqualTo(AuthSecurityMockService.SEC_30.getPath()))
-                        .withHeader("X-Client-Id", matching("Bearer mytoken,Bearer mytoken"))
+                        .withHeader("X-Client-Id", matching("12345"))
                         .withHeader("Authorization", matching("Bearer mytoken")));
     }
 

@@ -37,7 +37,7 @@
   <dependencies>
     <dependency>
       <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-smallrye-reactive-messaging-kafka-deployment</artifactId>
+      <artifactId>quarkus-messaging-kafka-deployment</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>

@@ -50,7 +50,7 @@
   <dependencies>
     <!--~~(No version provided)~~>--><dependency>
       <groupId>org.infinispan</groupId>
-      <artifactId>infinispan-client-hotrod-jakarta</artifactId>
+      <artifactId>infinispan-client-hotrod</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>

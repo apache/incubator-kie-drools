@@ -50,6 +50,10 @@
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-agroal-deployment</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-flyway-deployment</artifactId>
+        </dependency>
 
         <!-- Test dependencies -->
         <dependency>
@@ -75,6 +79,9 @@
                             <version>${version.io.quarkus}</version>
                         </path>
                     </annotationProcessorPaths>
+                    <compilerArgs>
+                        <arg>-AlegacyConfigRoot=true</arg>
+                    </compilerArgs>
                 </configuration>
             </plugin>
         </plugins>

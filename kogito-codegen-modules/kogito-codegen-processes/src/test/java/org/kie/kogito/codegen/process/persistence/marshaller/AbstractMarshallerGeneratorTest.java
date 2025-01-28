@@ -81,7 +81,6 @@ public abstract class AbstractMarshallerGeneratorTest<T> {
         assertThat(proto.getMessages()).hasSize(1);
 
         MarshallerGenerator marshallerGenerator = withGenerator(Person.class);
-
         List<CompilationUnit> classes = marshallerGenerator.generate(proto.serialize());
         assertThat(classes).isNotNull().hasSize(1);
 
