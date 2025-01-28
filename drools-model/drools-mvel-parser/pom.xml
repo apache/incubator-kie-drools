@@ -87,6 +87,7 @@
             <arg>-parameters</arg>
           </compilerArgs>
         </configuration>
+
       </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
