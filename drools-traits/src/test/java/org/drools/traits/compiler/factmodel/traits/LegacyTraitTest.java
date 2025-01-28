@@ -56,18 +56,7 @@ public class LegacyTraitTest extends CommonTraitTest {
     }
 
     private KieSession getSessionFromString(String drl) {
-        KnowledgeBuilder knowledgeBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        knowledgeBuilder.add(ResourceFactory.newByteArrayResource(drl.getBytes()),
-                              ResourceType.DRL);
-        if (knowledgeBuilder.hasErrors()) {
-            throw new RuntimeException(knowledgeBuilder.getErrors().toString());
-        }
-
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages(knowledgeBuilder.getKnowledgePackages());
-
-        KieSession session = kbase.newKieSession();
-        return session;
+        return loadKnowledgeBaseFromString(drl).newKieSession();
     }
 
     // Getters and setters are both needed. They should refer to an attribute with the same name
