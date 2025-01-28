@@ -96,6 +96,9 @@
               <version>${version.io.quarkus}</version>
             </path>
           </annotationProcessorPaths>
+          <compilerArgs>
+            <arg>-AlegacyConfigRoot=true</arg>
+          </compilerArgs>
         </configuration>
       </plugin>
       <plugin>
