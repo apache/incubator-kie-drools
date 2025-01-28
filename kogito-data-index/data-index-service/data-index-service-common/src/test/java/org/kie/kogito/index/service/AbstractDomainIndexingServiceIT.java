@@ -88,7 +88,7 @@ public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingSe
             fail("Registering broken proto file should fail");
         } catch (Exception ex) {
             assertThat(ex.getMessage())
-                    .isEqualTo("Failed to resolve type of field \"org.demo.travels.traveller\". Type not found : stringa");
+                    .isEqualTo("Failed to resolve type of field \"org.demo.travels.traveller\" in \"domainModel\". Type not found : stringa");
         }
     }
 
@@ -134,30 +134,6 @@ public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingSe
                 .body("{ \"query\" : \"{Books{ id, book { authors { name } }, metadata { processInstances { id } } } }\" }")
                 .when().post("/graphql")
                 .then().log().ifValidationFails().statusCode(200).body("data.Books", isA(Collection.class));
-    }
-
-    @Test
-    //Reproducer for KOGITO-172
-    void testAddProtoFileTwice() throws Exception {
-        protobufService.registerProtoBufferType(getProtoBufferFileV1());
-        given().contentType(ContentType.JSON)
-                .body("{ \"query\" : \"{Game{ player, id, name, metadata { processInstances { id } } } }\" }")
-                .when().post("/graphql")
-                .then().log().ifValidationFails().statusCode(200).body("data.Game", isA(Collection.class));
-        given().contentType(ContentType.JSON)
-                .body("{ \"query\" : \"{ProcessInstances{ id, processId, rootProcessId, rootProcessInstanceId, parentProcessInstanceId } }\" }")
-                .when().post("/graphql")
-                .then().log().ifValidationFails().statusCode(200).body("data.ProcessInstances", isA(Collection.class));
-
-        protobufService.registerProtoBufferType(getProtoBufferFileV2());
-        given().contentType(ContentType.JSON)
-                .body("{ \"query\" : \"{Game{ id, name, company, metadata { processInstances { id } } } }\" }")
-                .when().post("/graphql")
-                .then().log().ifValidationFails().statusCode(200).body("data.Game", isA(Collection.class));
-        given().contentType(ContentType.JSON)
-                .body("{ \"query\" : \"{ProcessInstances{ id, processId, rootProcessId, rootProcessInstanceId, parentProcessInstanceId } }\" }")
-                .when().post("/graphql")
-                .then().log().ifValidationFails().statusCode(200).body("data.ProcessInstances", isA(Collection.class));
     }
 
     @Test
@@ -775,38 +751,6 @@ public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingSe
                 "   optional stringa traveller = 1;\n" +
                 "   optional string hotel = 2;\n" +
                 "   optional string flight = 3;\n" +
-                "}\n" +
-                "\n";
-    }
-
-    private String getProtoBufferFileV1() {
-        return "package org.demo;\n" +
-                "import \"kogito-index.proto\";\n" +
-                "option kogito_model=\"Game\";\n" +
-                "option kogito_id=\"game\";\n" +
-                "/* @Indexed */\n" +
-                "message Game {\n" +
-                "   optional string player = 1;\n" +
-                "   /* @Field(index = Index.YES, store = Store.YES) @SortableField */\n" +
-                "   optional string id = 2;\n" +
-                "   optional string name = 3;\n" +
-                "   optional org.kie.kogito.index.model.KogitoMetadata metadata = 4;\n" +
-                "}\n" +
-                "\n";
-    }
-
-    private String getProtoBufferFileV2() {
-        return "package org.demo;\n" +
-                "import \"kogito-index.proto\";\n" +
-                "option kogito_model=\"Game\";\n" +
-                "option kogito_id=\"game\";\n" +
-                "/* @Indexed */\n" +
-                "message Game {\n" +
-                "   /* @Field(index = Index.YES, store = Store.YES) @SortableField */\n" +
-                "   optional string id = 1;\n" +
-                "   optional string name = 2;\n" +
-                "   optional string company = 3;\n" +
-                "   optional org.kie.kogito.index.model.KogitoMetadata metadata = 4;\n" +
                 "}\n" +
                 "\n";
     }

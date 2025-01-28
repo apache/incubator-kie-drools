@@ -21,30 +21,18 @@ package org.kie.kogito.jobs.service.repository.jpa;
 import java.time.OffsetDateTime;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.jobs.service.model.JobServiceManagementInfo;
 import org.kie.kogito.jobs.service.repository.JobServiceManagementRepository;
 import org.kie.kogito.jobs.service.utils.DateUtil;
 
-import io.quarkus.test.common.QuarkusTestResource;
-import io.quarkus.test.h2.H2DatabaseTestResource;
-import io.quarkus.test.junit.QuarkusTest;
-
 import jakarta.inject.Inject;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@QuarkusTest
-@QuarkusTestResource(H2DatabaseTestResource.class)
-class JPAReactiveJobServiceManagementRepositoryTest {
-
+public abstract class BaseJPAReactiveJobServiceManagementRepositoryTest {
     @Inject
     JobServiceManagementRepository tested;
-
-    @BeforeEach
-    void setUp() {
-    }
 
     @Test
     void testGetAndUpdate() {

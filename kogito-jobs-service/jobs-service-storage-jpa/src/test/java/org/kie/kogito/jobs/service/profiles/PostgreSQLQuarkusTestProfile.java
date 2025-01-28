@@ -16,18 +16,15 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.jobs.service.resource;
 
-import org.kie.kogito.jobs.service.profiles.H2QuarkusTestProfile;
+package org.kie.kogito.jobs.service.profiles;
 
-import io.quarkus.test.common.QuarkusTestResource;
-import io.quarkus.test.h2.H2DatabaseTestResource;
-import io.quarkus.test.junit.QuarkusTest;
-import io.quarkus.test.junit.TestProfile;
+import io.quarkus.test.junit.QuarkusTestProfile;
 
-@QuarkusTest
-@QuarkusTestResource(value = H2DatabaseTestResource.class, restrictToAnnotatedClass = true)
-@TestProfile(H2QuarkusTestProfile.class)
-public class JPAJobResourceTest extends BaseJobResourceTest {
+public class PostgreSQLQuarkusTestProfile implements QuarkusTestProfile {
 
+    @Override
+    public String getConfigProfile() {
+        return "test-postgresql";
+    }
 }

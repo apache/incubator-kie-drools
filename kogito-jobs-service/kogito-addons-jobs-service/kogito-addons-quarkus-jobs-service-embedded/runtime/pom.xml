@@ -64,11 +64,11 @@
         <!-- excluding resteasy-reactive since kogito runtimes uses the classic -->
         <exclusion>
           <groupId>io.quarkus</groupId>
-          <artifactId>quarkus-resteasy-reactive</artifactId>
+          <artifactId>quarkus-rest</artifactId>
         </exclusion>
         <exclusion>
           <groupId>io.quarkus</groupId>
-          <artifactId>quarkus-resteasy-reactive-jackson</artifactId>
+          <artifactId>quarkus-rest-jackson</artifactId>
         </exclusion>
         <exclusion>
           <groupId>io.quarkus</groupId>
@@ -138,6 +138,9 @@
               <version>${version.io.quarkus}</version>
             </path>
           </annotationProcessorPaths>
+          <compilerArgs>
+            <arg>-AlegacyConfigRoot=true</arg>
+          </compilerArgs>
         </configuration>
       </plugin>
     </plugins>

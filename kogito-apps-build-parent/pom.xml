@@ -62,7 +62,7 @@
         <!-- OptaPlanner version -->
         <version.org.optaplanner>${project.version}</version.org.optaplanner>
 
-        <version.org.hibernate>6.4.8.Final</version.org.hibernate>
+        <version.org.hibernate>6.6.3.Final</version.org.hibernate>
         <version.org.apache.opennlp>2.3.2</version.org.apache.opennlp>
         <version.org.apache.commons.csv>1.10.0</version.org.apache.commons.csv>
         <version.org.jredisearch>2.2.0</version.org.jredisearch>

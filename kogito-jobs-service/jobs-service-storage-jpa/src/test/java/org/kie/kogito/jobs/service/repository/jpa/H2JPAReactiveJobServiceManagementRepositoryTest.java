@@ -18,31 +18,16 @@
  */
 package org.kie.kogito.jobs.service.repository.jpa;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.kie.kogito.jobs.service.repository.ReactiveJobRepository;
-import org.kie.kogito.jobs.service.repository.impl.BaseJobRepositoryTest;
+import org.kie.kogito.jobs.service.profiles.H2QuarkusTestProfile;
 
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.h2.H2DatabaseTestResource;
 import io.quarkus.test.junit.QuarkusTest;
-
-import jakarta.inject.Inject;
+import io.quarkus.test.junit.TestProfile;
 
 @QuarkusTest
-@QuarkusTestResource(H2DatabaseTestResource.class)
-public class JPAReactiveJobRepositoryTest extends BaseJobRepositoryTest {
+@QuarkusTestResource(value = H2DatabaseTestResource.class, restrictToAnnotatedClass = true)
+@TestProfile(H2QuarkusTestProfile.class)
+class H2JPAReactiveJobServiceManagementRepositoryTest extends BaseJPAReactiveJobServiceManagementRepositoryTest {
 
-    @Inject
-    JPAReactiveJobRepository tested;
-
-    @BeforeEach
-    public void setUp() throws Exception {
-
-        super.setUp();
-    }
-
-    @Override
-    public ReactiveJobRepository tested() {
-        return tested;
-    }
 }

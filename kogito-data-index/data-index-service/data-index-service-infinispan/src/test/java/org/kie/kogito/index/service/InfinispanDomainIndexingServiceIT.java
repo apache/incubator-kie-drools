@@ -18,15 +18,29 @@
  */
 package org.kie.kogito.index.service;
 
+import java.util.Collection;
+
+import org.junit.jupiter.api.Test;
 import org.kie.kogito.index.service.test.InMemoryMessageTestProfile;
 import org.kie.kogito.index.test.TestUtils;
+import org.kie.kogito.persistence.protobuf.ProtobufService;
 
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.TestProfile;
+import io.restassured.http.ContentType;
+
+import jakarta.inject.Inject;
+
+import static io.restassured.RestAssured.given;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.isA;
 
 @QuarkusTest
 @TestProfile(InMemoryMessageTestProfile.class)
 class InfinispanDomainIndexingServiceIT extends AbstractDomainIndexingServiceIT {
+
+    @Inject
+    ProtobufService protobufService;
 
     @Override
     protected String getProcessProtobufFileContent() throws Exception {
@@ -36,5 +50,58 @@ class InfinispanDomainIndexingServiceIT extends AbstractDomainIndexingServiceIT 
     @Override
     protected String getUserTaskProtobufFileContent() throws Exception {
         return TestUtils.getDealsProtoBufferFile();
+    }
+
+    @Test
+    // Schema compatibility checks introduced in ISPN-15974
+    void testAddProtoFileTwice() throws Exception {
+        protobufService.registerProtoBufferType(getProtoBufferFileV1());
+        given().contentType(ContentType.JSON)
+                .body("{ \"query\" : \"{Game{ player, id, name, metadata { processInstances { id } } } }\" }")
+                .when().post("/graphql")
+                .then().log().ifValidationFails().statusCode(200).body("data.Game", isA(Collection.class));
+        given().contentType(ContentType.JSON)
+                .body("{ \"query\" : \"{ProcessInstances{ id, processId, rootProcessId, rootProcessInstanceId, parentProcessInstanceId } }\" }")
+                .when().post("/graphql")
+                .then().log().ifValidationFails().statusCode(200).body("data.ProcessInstances", isA(Collection.class));
+
+        try {
+            protobufService.registerProtoBufferType(getProtoBufferFileV2());
+        } catch (Exception ex) {
+            assertThat(ex.getMessage())
+                    .contains("Incompatible schema changes");
+        }
+    }
+
+    private String getProtoBufferFileV1() {
+        return "package org.demo;\n" +
+                "import \"kogito-index.proto\";\n" +
+                "option kogito_model=\"Game\";\n" +
+                "option kogito_id=\"game\";\n" +
+                "/* @Indexed */\n" +
+                "message Game {\n" +
+                "   optional string player = 1;\n" +
+                "   /* @Field(index = Index.YES, store = Store.YES) @SortableField */\n" +
+                "   optional string id = 2;\n" +
+                "   optional string name = 3;\n" +
+                "   optional org.kie.kogito.index.model.KogitoMetadata metadata = 4;\n" +
+                "}\n" +
+                "\n";
+    }
+
+    private String getProtoBufferFileV2() {
+        return "package org.demo;\n" +
+                "import \"kogito-index.proto\";\n" +
+                "option kogito_model=\"Game\";\n" +
+                "option kogito_id=\"game\";\n" +
+                "/* @Indexed */\n" +
+                "message Game {\n" +
+                "   /* @Field(index = Index.YES, store = Store.YES) @SortableField */\n" +
+                "   optional string id = 1;\n" +
+                "   optional string name = 2;\n" +
+                "   optional string company = 3;\n" +
+                "   optional org.kie.kogito.index.model.KogitoMetadata metadata = 4;\n" +
+                "}\n" +
+                "\n";
     }
 }

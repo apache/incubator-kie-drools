@@ -35,7 +35,7 @@
   <properties>
     <java.module.name>org.kie.kogito.jitexecutor.runner</java.module.name>
     <jitexecutor.native.skip>true</jitexecutor.native.skip>
-    <quarkus.package.type>native</quarkus.package.type>
+    <quarkus.native.enabled>true</quarkus.native.enabled>
   </properties>
 
   <build>

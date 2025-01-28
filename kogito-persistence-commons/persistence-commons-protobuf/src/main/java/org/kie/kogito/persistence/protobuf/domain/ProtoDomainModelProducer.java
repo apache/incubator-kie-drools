@@ -25,6 +25,7 @@ import java.util.function.Function;
 import org.infinispan.protostream.descriptors.Descriptor;
 import org.infinispan.protostream.descriptors.FieldDescriptor;
 import org.infinispan.protostream.descriptors.FileDescriptor;
+import org.infinispan.protostream.descriptors.Option;
 import org.infinispan.protostream.impl.AnnotatedDescriptorImpl;
 import org.kie.kogito.persistence.api.proto.AttributeDescriptor;
 import org.kie.kogito.persistence.api.proto.DomainDescriptor;
@@ -101,8 +102,11 @@ public class ProtoDomainModelProducer {
                 case BOOLEAN:
                     return Boolean.class.getName();
                 case MESSAGE:
-                    if (fd.getOption("kogito_java_class") != null) {
-                        return fd.getOption("kogito_java_class").getValue().toString();
+                    Option option = fd.getOptions().stream()
+                            .filter(o -> "kogito_java_class".equals(o.getName()))
+                            .findAny().orElse(null);
+                    if (option != null) {
+                        return option.getValue().toString();
                     }
                     return fd.getMessageType().getFullName();
                 default:

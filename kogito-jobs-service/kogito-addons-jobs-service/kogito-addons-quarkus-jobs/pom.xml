@@ -65,11 +65,11 @@
             <exclusions>
                 <exclusion>
                     <groupId>io.quarkus</groupId>
-                    <artifactId>quarkus-resteasy-reactive</artifactId>
+                    <artifactId>quarkus-rest</artifactId>
                 </exclusion>
                 <exclusion>
                     <groupId>io.quarkus</groupId>
-                    <artifactId>quarkus-resteasy-reactive-jackson</artifactId>
+                    <artifactId>quarkus-rest-jackson</artifactId>
                 </exclusion>
                 <exclusion>
                     <groupId>io.quarkus</groupId>

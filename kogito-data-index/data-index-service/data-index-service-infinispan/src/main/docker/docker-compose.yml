@@ -22,7 +22,7 @@ version: '2.1'
 services:
 
   infinispan:
-    image: infinispan/server:14.0.4.Final
+    image: infinispan/server:15.0.11.Final
     container_name: infinispan
     ports:
         - 11222:11222

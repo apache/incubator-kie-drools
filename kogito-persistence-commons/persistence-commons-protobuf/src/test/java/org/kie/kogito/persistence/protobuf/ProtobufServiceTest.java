@@ -95,7 +95,7 @@ class ProtobufServiceTest {
             exceptionMessage = e.getMessage();
         }
 
-        assertTrue(exceptionMessage.contains("java.lang.IllegalStateException"));
+        assertTrue(exceptionMessage.contains("Syntax error in test"));
 
         verify(schemaEvent, never()).fire(any(SchemaRegisteredEvent.class));
         verify(domainModelEvent, never()).fire(any(FileDescriptorRegisteredEvent.class));

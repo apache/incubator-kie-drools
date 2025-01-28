@@ -16,18 +16,36 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.jobs.service.resource;
+package org.kie.kogito.jobs.service.repository.jpa;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.kie.kogito.jobs.service.profiles.H2QuarkusTestProfile;
+import org.kie.kogito.jobs.service.repository.ReactiveJobRepository;
+import org.kie.kogito.jobs.service.repository.impl.BaseJobRepositoryTest;
 
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.h2.H2DatabaseTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.TestProfile;
 
+import jakarta.inject.Inject;
+
 @QuarkusTest
 @QuarkusTestResource(value = H2DatabaseTestResource.class, restrictToAnnotatedClass = true)
 @TestProfile(H2QuarkusTestProfile.class)
-public class JPAJobResourceTest extends BaseJobResourceTest {
+public class H2JPAReactiveJobRepositoryTest extends BaseJobRepositoryTest {
 
+    @Inject
+    JPAReactiveJobRepository tested;
+
+    @BeforeEach
+    public void setUp() throws Exception {
+
+        super.setUp();
+    }
+
+    @Override
+    public ReactiveJobRepository tested() {
+        return tested;
+    }
 }
