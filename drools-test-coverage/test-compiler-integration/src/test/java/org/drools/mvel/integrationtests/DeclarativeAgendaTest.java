@@ -919,7 +919,6 @@ public class DeclarativeAgendaTest {
                 "end\n";
 
         final KieServices ks = KieServices.Factory.get();
-        KieFileSystem kfs = ks.newKieFileSystem();
         KieModuleModel kmodule = ks.newKieModuleModel();
 
         KieBaseModel baseModel = kmodule.newKieBaseModel("defaultKBase")
@@ -928,10 +927,7 @@ public class DeclarativeAgendaTest {
         baseModel.newKieSessionModel("defaultKSession")
                  .setDefault(true);
 
-        kfs.writeKModuleXML(kmodule.toXML());
-        kfs.write("src/main/resources/block_rule.drl", drl);
-        final KieBuilder kieBuilder = KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
-        assertThat(kieBuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR).size()).isEqualTo(0);
+        KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, kmodule, true, drl);
 
         KieSession ksession = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).newKieSession();
 

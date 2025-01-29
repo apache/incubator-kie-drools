@@ -37,6 +37,7 @@ import org.drools.commands.impl.LoggingInterceptor;
 import org.drools.core.FlowSessionConfiguration;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.impl.RuleBaseFactory;
+import org.drools.mvel.CommonTestMethodBase;
 import org.drools.mvel.compiler.Address;
 import org.drools.mvel.compiler.Person;
 import org.drools.persistence.PersistableRunner;
@@ -361,7 +362,7 @@ public class JpaPersistentStatefulSessionTest {
     }
 
     private void testFocus(final boolean withOOPath) {
-        final String str = "package org.kie.test\n" +
+        String str = "package org.kie.test\n" +
                 "global java.util.List list\n" +
                 "rule rule1\n" +
                 "agenda-group \"badfocus\"" +
@@ -371,6 +372,8 @@ public class JpaPersistentStatefulSessionTest {
                 "  list.add( 1 );\n" +
                 "end\n" +
                 "\n";
+
+        str = CommonTestMethodBase.replaceAgendaGroupIfRequired(str);
 
         final KieBase kbase = new KieHelper().addContent(str, ResourceType.DRL).build();
 

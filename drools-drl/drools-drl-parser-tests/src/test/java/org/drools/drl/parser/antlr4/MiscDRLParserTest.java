@@ -1765,8 +1765,8 @@ class MiscDRLParserTest {
         assertThat(at.getName()).isEqualTo("salience");
         assertThat(at.getValue()).isEqualTo("42");
 
-        at = (AttributeDescr) attrs.get("agenda-group");
-        assertThat(at.getName()).isEqualTo("agenda-group");
+        at = (AttributeDescr) attrs.get("ruleflow-group");
+        assertThat(at.getName()).isEqualTo("ruleflow-group");
         assertThat(at.getValue()).isEqualTo("my_group");
 
         at = (AttributeDescr) attrs.get("no-loop");
@@ -1801,8 +1801,8 @@ class MiscDRLParserTest {
         AttributeDescr at = (AttributeDescr) attrs.get("salience");
         assertThat(at.getName()).isEqualTo("salience");
         assertThat(at.getValue()).isEqualTo("(42)");
-        at = (AttributeDescr) attrs.get("agenda-group");
-        assertThat(at.getName()).isEqualTo("agenda-group");
+        at = (AttributeDescr) attrs.get("ruleflow-group");
+        assertThat(at.getName()).isEqualTo("ruleflow-group");
         assertThat(at.getValue()).isEqualTo("my_group");
 
         rule = rules.get(1);
@@ -1957,8 +1957,8 @@ class MiscDRLParserTest {
         assertThat(at.getName()).isEqualTo("salience");
         assertThat(at.getValue()).isEqualTo("42");
 
-        at = attrs.get("agenda-group");
-        assertThat(at.getName()).isEqualTo("agenda-group");
+        at = attrs.get("ruleflow-group");
+        assertThat(at.getName()).isEqualTo("ruleflow-group");
         assertThat(at.getValue()).isEqualTo("my_group");
 
         at = attrs.get("no-loop");
@@ -2015,7 +2015,7 @@ class MiscDRLParserTest {
                 "package_attributes.drl");
 
         AttributeDescr at = (AttributeDescr) pkg.getAttributes().get(0);
-        assertThat(at.getName()).isEqualTo("agenda-group");
+        assertThat(at.getName()).isEqualTo("ruleflow-group");
         assertThat(at.getValue()).isEqualTo("x");
         at = (AttributeDescr) pkg.getAttributes().get(1);
         assertThat(at.getName()).isEqualTo("dialect");
@@ -2027,8 +2027,8 @@ class MiscDRLParserTest {
 
         RuleDescr rule = (RuleDescr) pkg.getRules().get(0);
         assertThat(rule.getName()).isEqualTo("bar");
-        at = (AttributeDescr) rule.getAttributes().get("agenda-group");
-        assertThat(at.getName()).isEqualTo("agenda-group");
+        at = (AttributeDescr) rule.getAttributes().get("ruleflow-group");
+        assertThat(at.getName()).isEqualTo("ruleflow-group");
         assertThat(at.getValue()).isEqualTo("x");
         at = (AttributeDescr) rule.getAttributes().get("dialect");
         assertThat(at.getName()).isEqualTo("dialect");
@@ -2039,8 +2039,8 @@ class MiscDRLParserTest {
         at = (AttributeDescr) rule.getAttributes().get("dialect");
         assertThat(at.getName()).isEqualTo("dialect");
         assertThat(at.getValue()).isEqualTo("mvel");
-        at = (AttributeDescr) rule.getAttributes().get("agenda-group");
-        assertThat(at.getName()).isEqualTo("agenda-group");
+        at = (AttributeDescr) rule.getAttributes().get("ruleflow-group");
+        assertThat(at.getName()).isEqualTo("ruleflow-group");
         assertThat(at.getValue()).isEqualTo("x");
     }
 

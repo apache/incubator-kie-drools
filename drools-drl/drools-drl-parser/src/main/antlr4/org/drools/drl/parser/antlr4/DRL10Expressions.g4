@@ -290,7 +290,6 @@ drlKeywords returns [Token token]
     | DRL_LOCK_ON_ACTIVE
     | DRL_REFRACT
     | DRL_DIRECT
-    | DRL_AGENDA_GROUP
     | DRL_ACTIVATION_GROUP
     | DRL_RULEFLOW_GROUP
     | DRL_DATE_EFFECTIVE
