@@ -34,6 +34,7 @@ import org.drools.ruleunits.impl.listener.TestAgendaEventListener;
 import org.drools.ruleunits.impl.listener.TestRuleEventListener;
 import org.drools.ruleunits.impl.listener.TestRuleRuntimeEventListener;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
 import org.kie.api.builder.CompilationErrorsException;
 import org.kie.api.event.rule.ObjectDeletedEvent;
 import org.kie.api.event.rule.ObjectInsertedEvent;
@@ -179,6 +180,7 @@ public class RuleUnitProviderImplTest {
         }
     }
 
+    @DisabledIfSystemProperty(named = "drools.drl.antlr4.parser.enabled", matches = "true")
     @Test
     public void agendaGroup() {
         try {

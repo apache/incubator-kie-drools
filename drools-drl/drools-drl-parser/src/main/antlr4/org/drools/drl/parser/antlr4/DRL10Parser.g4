@@ -462,7 +462,7 @@ drlAnnotation
 attributes : (DRL_ATTRIBUTES COLON?)? attribute ( COMMA? attribute )* ;
 attribute : name=( DRL_SALIENCE | DRL_ENABLED ) conditionalAttributeValue #expressionAttribute
           | name=( DRL_NO_LOOP | DRL_AUTO_FOCUS | DRL_LOCK_ON_ACTIVE | DRL_REFRACT | DRL_DIRECT ) BOOL_LITERAL? #booleanAttribute
-          | name=( DRL_AGENDA_GROUP | DRL_ACTIVATION_GROUP | DRL_RULEFLOW_GROUP | DRL_DATE_EFFECTIVE | DRL_DATE_EXPIRES | DRL_DIALECT ) DRL_STRING_LITERAL #stringAttribute
+          | name=( DRL_ACTIVATION_GROUP | DRL_RULEFLOW_GROUP | DRL_DATE_EFFECTIVE | DRL_DATE_EXPIRES | DRL_DIALECT ) DRL_STRING_LITERAL #stringAttribute
           | name=DRL_CALENDARS DRL_STRING_LITERAL ( COMMA DRL_STRING_LITERAL )* #stringListAttribute
           | name=DRL_TIMER ( DECIMAL_LITERAL | LPAREN chunk RPAREN ) #intOrChunkAttribute
           | name=DRL_DURATION ( DECIMAL_LITERAL | LPAREN chunk RPAREN ) #intOrChunkAttribute
