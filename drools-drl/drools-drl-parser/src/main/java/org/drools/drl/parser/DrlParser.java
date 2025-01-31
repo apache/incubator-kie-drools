@@ -74,6 +74,11 @@ public class DrlParser {
 
     public DrlParser(LanguageLevelOption languageLevel) {
         this.languageLevel = languageLevel;
+
+        if (languageLevel == LanguageLevelOption.DRL5 || languageLevel == LanguageLevelOption.DRL6_STRICT) {
+            LOG.warn("{} is deprecated and will be removed in future versions. Please use the default {} or newly introduced {} instead.",
+                     languageLevel, LanguageLevelOption.DRL6, LanguageLevelOption.DRL10);
+        }
     }
 
     /** Parse a rule from text */
