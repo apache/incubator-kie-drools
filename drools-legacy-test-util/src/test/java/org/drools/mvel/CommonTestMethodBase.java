@@ -28,6 +28,7 @@ import org.drools.drl.ast.descr.PackageDescr;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.impl.RuleBaseFactory;
 import org.drools.core.integrationtests.SerializationHelper;
+import org.drools.drl.parser.DrlParser;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.kie.api.KieBase;
@@ -126,6 +127,7 @@ public class CommonTestMethodBase {
     protected KieBase loadKnowledgeBaseFromString( KnowledgeBuilderConfiguration config, KieBaseConfiguration kBaseConfig, String... drlContentStrings) {
         KnowledgeBuilder kbuilder = config == null ? KnowledgeBuilderFactory.newKnowledgeBuilder() : KnowledgeBuilderFactory.newKnowledgeBuilder(config);
         for (String drlContentString : drlContentStrings) {
+            drlContentString = replaceAgendaGroupIfRequired(drlContentString);
             kbuilder.add(ResourceFactory.newByteArrayResource(drlContentString
                     .getBytes()), ResourceType.DRL);
         }
@@ -139,6 +141,14 @@ public class CommonTestMethodBase {
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kBaseConfig == null ? RuleBaseFactory.newRuleBase() : RuleBaseFactory.newRuleBase(kBaseConfig));
         kbase.addPackages( kbuilder.getKnowledgePackages());
         return kbase;
+    }
+
+    public static String replaceAgendaGroupIfRequired(String drl) {
+        if (DrlParser.ANTLR4_PARSER_ENABLED) {
+            // new parser (DRL10) supports only ruleflow-group, dropping agenda-group
+            return drl.replaceAll("agenda-group", "ruleflow-group");
+        }
+        return drl;
     }
 
     protected KieBase loadKnowledgeBase(KnowledgeBuilderConfiguration kbuilderConf, KieBaseConfiguration kbaseConf, String... classPathResources) {

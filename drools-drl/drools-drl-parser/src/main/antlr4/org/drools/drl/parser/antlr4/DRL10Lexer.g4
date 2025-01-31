@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-lexer grammar DRLLexer;
+lexer grammar DRL10Lexer;
 
 import JavaLexer;
 
@@ -115,7 +115,6 @@ DRL_AUTO_FOCUS : 'auto-focus';
 DRL_LOCK_ON_ACTIVE : 'lock-on-active';
 DRL_REFRACT : 'refract';
 DRL_DIRECT : 'direct';
-DRL_AGENDA_GROUP : 'agenda-group';
 DRL_ACTIVATION_GROUP : 'activation-group';
 DRL_RULEFLOW_GROUP : 'ruleflow-group';
 DRL_DATE_EFFECTIVE : 'date-effective';
@@ -124,6 +123,8 @@ DRL_DIALECT : 'dialect';
 DRL_CALENDARS : 'calendars';
 DRL_TIMER : 'timer';
 DRL_DURATION : 'duration';
+
+DRL_CUSTOM_OPERATOR_PREFIX : '##' ;
 
 /////////////////
 // LEXER

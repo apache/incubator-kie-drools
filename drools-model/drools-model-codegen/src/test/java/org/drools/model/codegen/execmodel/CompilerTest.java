@@ -45,6 +45,7 @@ import org.drools.model.codegen.execmodel.domain.Toy;
 import org.drools.model.codegen.execmodel.domain.Woman;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.definition.type.FactType;
@@ -145,6 +146,7 @@ public class CompilerTest extends BaseModelTest {
         assertThat(results.iterator().next().getValue()).isEqualTo("Mario");
     }
 
+    @DisabledIfSystemProperty(named = "drools.drl.antlr4.parser.enabled", matches = "true")
     @ParameterizedTest
     @MethodSource("parameters")
     public void testOrWithFixedLeftOperand(RUN_TYPE runType) {
@@ -2095,6 +2097,7 @@ public class CompilerTest extends BaseModelTest {
 
     }
 
+    @DisabledIfSystemProperty(named = "drools.drl.antlr4.parser.enabled", matches = "true")
     @ParameterizedTest
     @MethodSource("parameters")
     public void testMapAbbreviatedComparison(RUN_TYPE runType) {
