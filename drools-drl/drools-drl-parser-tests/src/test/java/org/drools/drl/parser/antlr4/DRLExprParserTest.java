@@ -576,4 +576,48 @@ class DRLExprParserTest {
         assertThat(bind.getVariable()).isEqualTo("$bd");
         assertThat(bind.getExpression()).isEqualTo("new BigDecimal(30)");
     }
+
+    @Test
+    void halfConstraintAnd() {
+        String source = "age > 10 && < 20";
+        parser.parse(source);
+
+        if (DrlParser.ANTLR4_PARSER_ENABLED) {
+            // half constraint is dropped in DRL10
+            assertThat(parser.hasErrors()).isTrue();
+        } else {
+            assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
+        }
+    }
+
+    @Test
+    void halfConstraintOr() {
+        String source = "name == \"John\" || == \"Paul\"";
+        parser.parse(source);
+
+        if (DrlParser.ANTLR4_PARSER_ENABLED) {
+            // half constraint is dropped in DRL10
+            assertThat(parser.hasErrors()).isTrue();
+        } else {
+            assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
+        }
+    }
+
+    @Test
+    void customOperator() {
+        Operator.addOperatorToRegistry("supersetOf", false);
+        // prefix '##' is required for custom operators in DRL10
+        String source = DrlParser.ANTLR4_PARSER_ENABLED ? "this ##supersetOf $list" : "this supersetOf $list";
+        ConstraintConnectiveDescr result = parser.parse(source);
+        assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
+
+        RelationalExprDescr rel = (RelationalExprDescr) result.getDescrs().get(0);
+        assertThat(rel.getOperator()).isEqualTo("supersetOf");
+
+        AtomicExprDescr left = (AtomicExprDescr) rel.getLeft();
+        assertThat(left.getExpression()).isEqualTo("this");
+
+        AtomicExprDescr right = (AtomicExprDescr) rel.getRight();
+        assertThat(right.getExpression()).isEqualTo("$list");
+    }
 }

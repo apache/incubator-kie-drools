@@ -5320,4 +5320,24 @@ class MiscDRLParserTest {
         TypeFieldDescr typeFieldDescr = typeDeclarationDescr.getFields().get("id");
         assertThat(typeFieldDescr.getPattern().getObjectType()).isEqualTo("int");
     }
+
+    @Test
+    void agendaGroup() {
+        final String drl = "rule R1\n" +
+                "  agenda-group \"group1\"\n" +
+                "  when\n" +
+                "  then\n" +
+                "end";
+        PackageDescr pkg = parseAndGetPackageDescrWithoutErrorCheck(drl);
+        if (DrlParser.ANTLR4_PARSER_ENABLED) {
+            // agenda-group is dropped in DRL10
+            assertThat(parser.hasErrors()).isTrue();
+        } else {
+            RuleDescr rule = pkg.getRules().get(0);
+            assertThat(rule).isNotNull();
+            final AttributeDescr att = rule.getAttributes().get("agenda-group");
+            assertThat(att.getValue()).isEqualTo("group1");
+            assertThat(att.getName()).isEqualTo("agenda-group");
+        }
+    }
 }
