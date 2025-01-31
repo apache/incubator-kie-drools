@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
+import org.drools.drl.parser.DrlParser;
 import org.drools.mvel.compiler.Address;
 import org.drools.mvel.compiler.Asset;
 import org.drools.mvel.compiler.AssetCard;
@@ -46,6 +47,7 @@ import org.kie.api.builder.Message;
 import org.kie.api.command.Setter;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
+import org.kie.internal.builder.conf.LanguageLevelOption;
 import org.kie.internal.command.CommandFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;

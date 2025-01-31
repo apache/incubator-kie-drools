@@ -20,7 +20,7 @@ package foo.bar
 
 rule rule1 
         salience (42)
-        agenda-group "my_group"
+        ruleflow-group "my_group"
     when
         Foo()
     then

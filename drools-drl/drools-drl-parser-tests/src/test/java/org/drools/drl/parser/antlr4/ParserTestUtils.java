@@ -21,7 +21,10 @@ package org.drools.drl.parser.antlr4;
 import java.util.Arrays;
 import java.util.List;
 
+import org.drools.drl.parser.DrlExprParser;
+import org.drools.drl.parser.DrlExprParserFactory;
 import org.drools.drl.parser.DrlParser;
+import org.kie.internal.builder.conf.LanguageLevelOption;
 
 public class ParserTestUtils {
 
@@ -45,14 +48,22 @@ public class ParserTestUtils {
      * Returns a DrlParser which encapsulates an old or new parser depending on system property
      */
     public static DrlParser getParser() {
-        return new DrlParser();
+        if (DrlParser.ANTLR4_PARSER_ENABLED) {
+            return new DrlParser(LanguageLevelOption.DRL10);
+        } else {
+            return new DrlParser(LanguageLevelOption.DRL6);
+        }
     }
 
     /**
-     * Enables the old parser. Just for quick testing purposes.
+     * Returns a DrlExprParser which encapsulates an old or new parser depending on system property
      */
-    public static void enableOldParser() {
-        DrlParser.ANTLR4_PARSER_ENABLED = false;
+    public static DrlExprParser getExprParser() {
+        if (DrlParser.ANTLR4_PARSER_ENABLED) {
+            return DrlExprParserFactory.getDrlExprParser(LanguageLevelOption.DRL10);
+        } else {
+            return DrlExprParserFactory.getDrlExprParser(LanguageLevelOption.DRL6);
+        }
     }
 
     public static List<String> javaKeywords() {

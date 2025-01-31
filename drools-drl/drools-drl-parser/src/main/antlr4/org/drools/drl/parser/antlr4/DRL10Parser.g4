@@ -16,11 +16,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
- parser grammar DRLParser;
+ parser grammar DRL10Parser;
 
-options { tokenVocab=DRLLexer; }
+options { tokenVocab=DRL10Lexer; }
 
-import DRL6Expressions, JavaParser;
+import DRL10Expressions, JavaParser;
 
     /*
      * statement := importStatement
@@ -122,16 +122,16 @@ lhs : DRL_WHEN lhsExpression* ;
 queryLhs : lhsExpression* ;
 
 lhsExpression : LPAREN lhsExpression RPAREN                             #lhsExpressionEnclosed
-              | DRL_OR drlAnnotation* lhsExpression+                                   #lhsOr
-              | lhsExpression ((DRL_OR|OR) drlAnnotation* lhsExpression)+              #lhsOr
-              | DRL_AND drlAnnotation* lhsExpression+                                  #lhsAnd
-              | lhsExpression ((DRL_AND|AND) drlAnnotation* lhsExpression)+            #lhsAnd
+              | DRL_OR lhsExpression+                                   #lhsOr
+              | lhsExpression ((DRL_OR) lhsExpression)+              #lhsOr
+              | DRL_AND lhsExpression+                                  #lhsAnd
+              | lhsExpression ((DRL_AND) lhsExpression)+            #lhsAnd
               | lhsUnary                                                               #lhsUnarySingle
               ;
 
 // lhsAnd is used as a label in lhsExpression rule. But some other rules explicitly use the def, so lhsAndDef is declared.
 lhsAndDef : LPAREN lhsAndDef RPAREN
-          | lhsUnary ((DRL_AND|AND) lhsUnary)*
+          | lhsUnary ((DRL_AND) lhsUnary)*
           | LPAREN DRL_AND lhsUnary+ RPAREN
           ;
 
@@ -462,7 +462,7 @@ drlAnnotation
 attributes : (DRL_ATTRIBUTES COLON?)? attribute ( COMMA? attribute )* ;
 attribute : name=( DRL_SALIENCE | DRL_ENABLED ) conditionalAttributeValue #expressionAttribute
           | name=( DRL_NO_LOOP | DRL_AUTO_FOCUS | DRL_LOCK_ON_ACTIVE | DRL_REFRACT | DRL_DIRECT ) BOOL_LITERAL? #booleanAttribute
-          | name=( DRL_AGENDA_GROUP | DRL_ACTIVATION_GROUP | DRL_RULEFLOW_GROUP | DRL_DATE_EFFECTIVE | DRL_DATE_EXPIRES | DRL_DIALECT ) DRL_STRING_LITERAL #stringAttribute
+          | name=( DRL_ACTIVATION_GROUP | DRL_RULEFLOW_GROUP | DRL_DATE_EFFECTIVE | DRL_DATE_EXPIRES | DRL_DIALECT ) DRL_STRING_LITERAL #stringAttribute
           | name=DRL_CALENDARS DRL_STRING_LITERAL ( COMMA DRL_STRING_LITERAL )* #stringListAttribute
           | name=DRL_TIMER ( DECIMAL_LITERAL | LPAREN chunk RPAREN ) #intOrChunkAttribute
           | name=DRL_DURATION ( DECIMAL_LITERAL | LPAREN chunk RPAREN ) #intOrChunkAttribute

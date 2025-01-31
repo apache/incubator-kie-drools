@@ -37,28 +37,28 @@ import org.kie.api.io.Resource;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 
 /**
- * Collection of static helper methods for DRLParser
+ * Collection of static helper methods for DRL10Parser
  */
-public class DRLParserHelper {
+public class DRL10ParserHelper {
 
-    private DRLParserHelper() {
+    private DRL10ParserHelper() {
     }
 
     /**
      * Entry point for parsing DRL.
-     * Unlike DRLParserWrapper.parse(), this method does not collect errors.
+     * Unlike DRL10ParserWrapper.parse(), this method does not collect errors.
      */
     public static PackageDescr parse(String drl) {
-        DRLParser drlParser = createDrlParser(drl);
+        DRL10Parser drlParser = createDrlParser(drl);
         return compilationUnitContext2PackageDescr(drlParser.compilationUnit(), drlParser.getTokenStream(), null);
     }
 
-    public static DRLParser createDrlParser(String drl) {
+    public static DRL10Parser createDrlParser(String drl) {
         CharStream charStream = CharStreams.fromString(drl);
         return createDrlParser(charStream);
     }
 
-    public static DRLParser createDrlParser(InputStream is, String encoding) {
+    public static DRL10Parser createDrlParser(InputStream is, String encoding) {
         try {
             CharStream charStream = encoding != null
                     ? CharStreams.fromStream(is, Charset.forName(encoding))
@@ -69,7 +69,7 @@ public class DRLParserHelper {
         }
     }
 
-    public static DRLParser createDrlParser(Reader reader) {
+    public static DRL10Parser createDrlParser(Reader reader) {
         try {
             CharStream charStream = CharStreams.fromReader(reader);
             return createDrlParser(charStream);
@@ -78,11 +78,11 @@ public class DRLParserHelper {
         }
     }
 
-    private static DRLParser createDrlParser(CharStream charStream) {
-        DRLLexer drlLexer = new DRLLexer(charStream);
+    private static DRL10Parser createDrlParser(CharStream charStream) {
+        DRL10Lexer drlLexer = new DRL10Lexer(charStream);
         CommonTokenStream commonTokenStream = new CommonTokenStream(drlLexer);
-        DRLParser parser = new DRLParser(commonTokenStream);
-        ParserHelper helper = new ParserHelper(commonTokenStream, LanguageLevelOption.DRL6);
+        DRL10Parser parser = new DRL10Parser(commonTokenStream);
+        ParserHelper helper = new ParserHelper(commonTokenStream, LanguageLevelOption.DRL10);
         parser.setHelper(helper);
         return parser;
     }
@@ -90,7 +90,7 @@ public class DRLParserHelper {
     /**
      * DRLVisitorImpl visits a parse tree and creates a PackageDescr
      */
-    public static PackageDescr compilationUnitContext2PackageDescr(DRLParser.CompilationUnitContext ctx, TokenStream tokenStream, Resource resource) {
+    public static PackageDescr compilationUnitContext2PackageDescr(DRL10Parser.CompilationUnitContext ctx, TokenStream tokenStream, Resource resource) {
         DRLVisitorImpl visitor = new DRLVisitorImpl(tokenStream, resource);
         Object descr = visitor.visit(ctx);
         if (descr instanceof PackageDescr) {
@@ -103,7 +103,7 @@ public class DRLParserHelper {
     /**
      * Given a row and column of the input DRL, return the index of the matched token
      */
-    public static Integer computeTokenIndex(DRLParser parser, int row, int col) {
+    public static Integer computeTokenIndex(DRL10Parser parser, int row, int col) {
         for (int i = 0; i < parser.getInputStream().size(); i++) {
             Token token = parser.getInputStream().get(i);
             int start = token.getCharPositionInLine();

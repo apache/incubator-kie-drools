@@ -24,7 +24,7 @@ import org.drools.testcoverage.common.model.Message
 
 rule "Name"
     when
-        $p : Person ( name == "" || == null )
+        $p : Person ( name == "" || name == null )
     then
         modify ($p) {
             setName("Aquaman");
@@ -34,7 +34,7 @@ end
 rule "Message"
     no-loop
     when
-        $m : Message ( message == "" || == null )
+        $m : Message ( message == "" || message == null )
     then
         modify ($m) {
             setMessage("Hello world");
@@ -53,7 +53,7 @@ end
 rule "Message from"
     salience -10
     when
-        $p : Person ( name != "" && != null && id != 0)
+        $p : Person ( name != "" && name != null && id != 0)
         $m : Message ( message == "Hello world" )
     then
         modify ($m) {

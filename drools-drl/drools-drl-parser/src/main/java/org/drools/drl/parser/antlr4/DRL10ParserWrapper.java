@@ -29,20 +29,20 @@ import org.kie.api.io.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.drools.drl.parser.antlr4.DRLParserHelper.compilationUnitContext2PackageDescr;
+import static org.drools.drl.parser.antlr4.DRL10ParserHelper.compilationUnitContext2PackageDescr;
 
 /**
  * Wrapper for DRLParser. Somewhat duplicated from DRLParserHelper, but this class is instantiated and holds errors.
  */
-public class DRLParserWrapper {
+public class DRL10ParserWrapper {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DRLParserWrapper.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DRL10ParserWrapper.class);
 
     private final List<DRLParserError> errors = new ArrayList<>();
 
     private final Resource resource;
 
-    public DRLParserWrapper(Resource resource) {
+    public DRL10ParserWrapper(Resource resource) {
         this.resource = resource;
     }
 
@@ -50,7 +50,7 @@ public class DRLParserWrapper {
      * Main entry point for parsing DRL
      */
     public PackageDescr parse(String drl) {
-        DRLParser drlParser = DRLParserHelper.createDrlParser(drl);
+        DRL10Parser drlParser = DRL10ParserHelper.createDrlParser(drl);
         return parse(drlParser);
     }
 
@@ -58,7 +58,7 @@ public class DRLParserWrapper {
      * Main entry point for parsing DRL
      */
     public PackageDescr parse(InputStream is, String encoding) {
-        DRLParser drlParser = DRLParserHelper.createDrlParser(is, encoding);
+        DRL10Parser drlParser = DRL10ParserHelper.createDrlParser(is, encoding);
         return parse(drlParser);
     }
 
@@ -66,15 +66,15 @@ public class DRLParserWrapper {
      * Main entry point for parsing DRL
      */
     public PackageDescr parse(Reader reader) {
-        DRLParser drlParser = DRLParserHelper.createDrlParser(reader);
+        DRL10Parser drlParser = DRL10ParserHelper.createDrlParser(reader);
         return parse(drlParser);
     }
 
-    private PackageDescr parse(DRLParser drlParser) {
+    private PackageDescr parse(DRL10Parser drlParser) {
         DRLErrorListener errorListener = new DRLErrorListener();
         drlParser.addErrorListener(errorListener);
 
-        DRLParser.CompilationUnitContext cxt = drlParser.compilationUnit();
+        DRL10Parser.CompilationUnitContext cxt = drlParser.compilationUnit();
 
         errors.addAll(errorListener.getErrors());
 

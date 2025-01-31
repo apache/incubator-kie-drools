@@ -298,7 +298,7 @@ public class TraitMapCoreTest extends CommonTraitTest {
                         "\n" +
                         "rule Log  \n" +
                         "when  \n" +
-                        "   $p : PersonMap( name == \"john\", age > 10 && < 35 )\n" +
+                        "   $p : PersonMap( name == \"john\", age > 10 && age < 35 )\n" +
                         "then  \n" +
                         "   modify ( $p ) {  \n" +
                         "       setHeight( 184.0 ), \n" +
