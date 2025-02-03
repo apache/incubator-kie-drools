@@ -26,6 +26,8 @@ import org.kie.dmn.api.core.EvaluatorResult;
  */
 public interface AfterConditionalEvaluationEvent {
 
+    String getNodeName();
+
     EvaluatorResult getEvaluatorResultResult();
 
     String getExecutedId();

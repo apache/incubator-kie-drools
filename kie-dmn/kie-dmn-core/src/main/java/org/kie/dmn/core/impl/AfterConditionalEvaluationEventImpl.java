@@ -23,12 +23,19 @@ import org.kie.dmn.api.core.event.AfterConditionalEvaluationEvent;
 
 public class AfterConditionalEvaluationEventImpl implements AfterConditionalEvaluationEvent {
 
+    private final String nodeName;
     private final EvaluatorResult evaluatorResult;
     private final String executedId;
 
-    public AfterConditionalEvaluationEventImpl(EvaluatorResult evaluatorResult, String executedId) {
+    public AfterConditionalEvaluationEventImpl(String nodeName, EvaluatorResult evaluatorResult, String executedId) {
+        this.nodeName = nodeName;
         this.evaluatorResult = evaluatorResult;
         this.executedId = executedId;
+    }
+
+    @Override
+    public String getNodeName() {
+        return nodeName;
     }
 
     @Override
