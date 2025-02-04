@@ -309,9 +309,9 @@ public class FEELFunctionsTest extends BaseFEELTest {
                 {"list replace ( [2, 4, 7, 8], function(item, newItem) item < newItem, 5)", Arrays.asList(BigDecimal.valueOf(5), BigDecimal.valueOf(5), BigDecimal.valueOf(7), BigDecimal.valueOf(8)), null},
 
                 // ranges
-                {"range(\"[null..null]\")", null, null},
-
-
+                {"range(\"[null..null]\")", null, FEELEvent.Severity.ERROR},
+                {"range(\"[null..2]\")", null, FEELEvent.Severity.ERROR},
+                {"range(\"[1..null]\")", null, FEELEvent.Severity.ERROR},
         };
         return addAdditionalParameters(cases, false);
     }
