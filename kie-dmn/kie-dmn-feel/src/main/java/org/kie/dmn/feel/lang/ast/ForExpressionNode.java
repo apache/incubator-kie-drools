@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,6 +21,7 @@ package org.kie.dmn.feel.lang.ast;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.feel.exceptions.EndpointOfForIterationNotValidTypeException;
 import org.kie.dmn.feel.exceptions.EndpointOfForIterationDifferentTypeException;
+import org.kie.dmn.feel.exceptions.NullContentInsideForIterationException;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.ast.forexpressioniterators.ForIteration;
@@ -83,7 +84,7 @@ public class ForExpressionNode
             populateToReturn(0, ctx, toReturn);
             LOG.trace("returning {}", toReturn);
             return toReturn;
-        } catch (EndpointOfForIterationNotValidTypeException | EndpointOfForIterationDifferentTypeException e) {
+        } catch (EndpointOfForIterationNotValidTypeException | EndpointOfForIterationDifferentTypeException | NullContentInsideForIterationException e) {
             // ast error already reported
             return null;
         } finally {
@@ -126,14 +127,16 @@ public class ForExpressionNode
         return BuiltInType.LIST;
     }
 
-    private ForIteration createForIteration(EvaluationContext ctx, IterationContextNode iterationContextNode) {
+    private ForIteration createForIteration(EvaluationContext ctx, IterationContextNode iterationContextNode) throws NullContentInsideForIterationException {
         LOG.trace("Creating ForIteration for {}", iterationContextNode);
         ForIteration toReturn = null;
         String name = iterationContextNode.evaluateName(ctx);
         Object result = iterationContextNode.evaluate(ctx);
         Object rangeEnd = iterationContextNode.evaluateRangeEnd(ctx);
         if (rangeEnd == null) {
-            if (result instanceof Iterable iterable) {
+            if (result == null) {
+                throw new NullContentInsideForIterationException();
+            } else if (result instanceof Iterable iterable) {
                 toReturn = new ForIteration(name, iterable);
             } else if (result instanceof Range) {
                 toReturn = getForIteration(ctx, name, ((Range) result).getStart(), ((Range) result).getEnd());

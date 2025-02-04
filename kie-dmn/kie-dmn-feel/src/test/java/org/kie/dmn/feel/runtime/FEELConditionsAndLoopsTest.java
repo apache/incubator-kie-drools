@@ -51,6 +51,8 @@ public class FEELConditionsAndLoopsTest extends BaseFEELTest {
                 {"for x in [ 10, 20, 30 ], y in [ 1, 2, 3 ] return x * y",
                         Stream.of(10, 20, 30, 20, 40, 60, 30, 60, 90 ).map(BigDecimal::valueOf).collect(Collectors.toList() ),
                  null },
+                {"for i in [@\"1980-01-03T00:00:00\"..@\"1980-01-01T00:00:00\"] return i", null,
+                        null },
                 {"count( for x in [1, 2, 3] return x+1 )", BigDecimal.valueOf( 3 ), null},
 
                 // quantified
