@@ -135,14 +135,19 @@ public class RangeFunction extends BaseFEELFunction {
         if (!nodesReturnsSameType(left, right)) {
             return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "from", "endpoints must be of equivalent types"));
         }
-
+        Range toReturn = getReturnedValue(left, right, startBoundary, endBoundary);
         // Boundary values need to be always defined in range string. They can be undefined only in unary test, that represents range, e.g. (<10).
-        return FEELFnResult.ofResult(new RangeImpl(startBoundary, (Comparable) left, (Comparable) right, endBoundary));
+        return FEELFnResult.ofResult(toReturn);
     }
 
     @Override
     public Object defaultValue() {
         return DEFAULT_VALUE;
+    }
+
+    static Range getReturnedValue(Object left, Object right, Range.RangeBoundary startBoundary, Range.RangeBoundary endBoundary) {
+        return (left == null && right == null) ? null :
+                new RangeImpl(startBoundary, (Comparable) left, (Comparable) right, endBoundary);
     }
 
     protected boolean nodeIsAllowed(BaseNode node) {

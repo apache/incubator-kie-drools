@@ -111,6 +111,9 @@ public class RangeNode
     public Range evaluate(EvaluationContext ctx) {
         Object s = start.evaluate( ctx );
         Object e = end.evaluate( ctx );
+        if (s == null && e == null) {
+            return null;
+        }
         
         Type sType = BuiltInType.determineTypeFromInstance(s);
         Type eType = BuiltInType.determineTypeFromInstance(e);

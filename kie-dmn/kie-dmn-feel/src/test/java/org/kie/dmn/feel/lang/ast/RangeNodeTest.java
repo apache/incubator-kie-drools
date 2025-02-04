@@ -71,6 +71,16 @@ class RangeNodeTest {
         assertThat(isDescendingRange(BigDecimal.TEN, BigDecimal.ONE)).isTrue();
     }
 
+    @Test
+    void isNullNullRangeTest() {
+        BaseNode startNode = new NullNode("null");
+        BaseNode endNode = new NullNode("null");
+        RangeNode rangeNode = new RangeNode(RangeNode.IntervalBoundary.CLOSED, RangeNode.IntervalBoundary.CLOSED,
+                                            startNode, endNode, "[null..null]");
+        assertThat(rangeNode).isNotNull();
+        assertThat(rangeNode.evaluate(EvaluationContextTestUtil.newEmptyEvaluationContext())).isNull();
+    }
+
     private static Collection<RangeNode> ascendingRanges() {
         return Arrays.asList(
                 getNumericRangeNode("[1..3]", BigDecimal.ONE, BigDecimal.valueOf(3), RangeNode.IntervalBoundary.CLOSED, RangeNode.IntervalBoundary.CLOSED),
@@ -92,6 +102,4 @@ class RangeNodeTest {
                 getAtLiteralRangeNode("[@\"02:00:00\"..@\"01:00:00\"]", "02:00:00", "01:00:00", RangeNode.IntervalBoundary.CLOSED, RangeNode.IntervalBoundary.CLOSED)
         );
     }
-
-
 }

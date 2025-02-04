@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -306,7 +306,12 @@ public class FEELFunctionsTest extends BaseFEELTest {
                 {"list replace ( [2, 4, 7, 8], -3, 6)", Arrays.asList(BigDecimal.valueOf(2), BigDecimal.valueOf(6), BigDecimal.valueOf(7), BigDecimal.valueOf(8)), null},
                 {"list replace ( [2, 4, 7, 8], function(item, newItem) item + newItem, 6)", null , FEELEvent.Severity.ERROR},
                 {"list replace ( [\"El-1\", \"El-2\", \"El-3\", \"El-4\"], function(item, newItem) item = \"El-2\", null)", Arrays.asList("El-1", null, "El-3", "El-4"), null},
-                {"list replace ( [2, 4, 7, 8], function(item, newItem) item < newItem, 5)", Arrays.asList(BigDecimal.valueOf(5), BigDecimal.valueOf(5), BigDecimal.valueOf(7), BigDecimal.valueOf(8)), null}
+                {"list replace ( [2, 4, 7, 8], function(item, newItem) item < newItem, 5)", Arrays.asList(BigDecimal.valueOf(5), BigDecimal.valueOf(5), BigDecimal.valueOf(7), BigDecimal.valueOf(8)), null},
+
+                // ranges
+                {"range(\"[null..null]\")", null, null},
+
+
         };
         return addAdditionalParameters(cases, false);
     }
