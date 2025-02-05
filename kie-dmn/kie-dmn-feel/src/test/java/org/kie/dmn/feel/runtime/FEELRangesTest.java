@@ -51,13 +51,15 @@ public class FEELRangesTest extends BaseFEELTest {
                 {"(<=1)", new RangeImpl(Range.RangeBoundary.OPEN, new UndefinedValueComparable(), BigDecimal.ONE, Range.RangeBoundary.CLOSED), null},
                 {"(null..10)", new RangeImpl(Range.RangeBoundary.OPEN, null, BigDecimal.valueOf(10), Range.RangeBoundary.OPEN), null},
 
+                {"[null..null]", null, null},
                 {"[1..2]", new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.ONE, BigDecimal.valueOf(2), Range.RangeBoundary.CLOSED), null},
-                {"[2..1]", new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.valueOf(2), BigDecimal.ONE, Range.RangeBoundary.CLOSED), null},
+                {"[2..1]", null, null},
                 {"[1..2)", new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.ONE, BigDecimal.valueOf(2), Range.RangeBoundary.OPEN), null},
                 {"(1..2]", new RangeImpl(Range.RangeBoundary.OPEN, BigDecimal.ONE, BigDecimal.valueOf(2), Range.RangeBoundary.CLOSED), null},
                 {"(1..2)", new RangeImpl(Range.RangeBoundary.OPEN, BigDecimal.ONE, BigDecimal.valueOf(2), Range.RangeBoundary.OPEN), null},
 
                 {"[\"a\"..\"z\"]", new RangeImpl(Range.RangeBoundary.CLOSED, "a", "z", Range.RangeBoundary.CLOSED), null},
+                {"[\"z\"..\"a\"]", null, null},
                 {"[\"a\"..\"z\")", new RangeImpl(Range.RangeBoundary.CLOSED, "a", "z", Range.RangeBoundary.OPEN), null},
                 {"(\"a\"..\"z\"]", new RangeImpl(Range.RangeBoundary.OPEN, "a", "z", Range.RangeBoundary.CLOSED), null},
                 {"(\"a\"..\"z\")", new RangeImpl(Range.RangeBoundary.OPEN, "a", "z", Range.RangeBoundary.OPEN), null},

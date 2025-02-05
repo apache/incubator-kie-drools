@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -79,33 +79,33 @@ public class RangeFunction extends BaseFEELFunction {
             object -> object instanceof OffsetTime,
             object -> object instanceof LocalTime);
 
-
     private RangeFunction() {
         super("range");
     }
 
     public FEELFnResult<Range> invoke(@ParameterName("from") String from) {
-        if (from == null || from.isEmpty() || from.isBlank()) {
+        if (from == null || from.isBlank()) {
             return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "from", "cannot be null"));
         }
+        String fromToUse = from.trim();
         Range.RangeBoundary startBoundary;
-        if (from.startsWith("(") || from.startsWith("]")) {
+        if (fromToUse.startsWith("(") || fromToUse.startsWith("]")) {
             startBoundary = RangeBoundary.OPEN;
-        } else if (from.startsWith("[")) {
+        } else if (fromToUse.startsWith("[")) {
             startBoundary = RangeBoundary.CLOSED;
         } else {
             return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "from", "does not start with a valid character"));
         }
         Range.RangeBoundary endBoundary;
-        if (from.endsWith(")") || from.endsWith("[")) {
+        if (fromToUse.endsWith(")") || fromToUse.endsWith("[")) {
             endBoundary = RangeBoundary.OPEN;
-        } else if (from.endsWith("]")) {
+        } else if (fromToUse.endsWith("]")) {
             endBoundary = RangeBoundary.CLOSED;
         } else {
             return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "from", "does not end with a valid character"));
         }
 
-        String[] split = from.split("\\.\\.");
+        String[] split = fromToUse.split("\\.\\.");
         if (split.length != 2) {
             return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "from", "does not include two literals separated by `..` two dots characters"));
         }
@@ -115,11 +115,11 @@ public class RangeFunction extends BaseFEELFunction {
             return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "from", "at least one endpoint must not be null"));
         }
         BaseNode leftNode = parse(leftString);
-        if (!nodeIsAllowed(leftNode)) {
+        if (!nodeIsAllowed(leftNode, startBoundary)) {
             return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "from", "left endpoint is not a recognised valid literal"));
         }
         BaseNode rightNode = parse(rightString);
-        if (!nodeIsAllowed(rightNode)) {
+        if (!nodeIsAllowed(rightNode, endBoundary)) {
             return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "from", "right endpoint is not a recognised valid literal"));
         }
         Object left = leftNode.evaluate(getStubbed());
@@ -135,9 +135,10 @@ public class RangeFunction extends BaseFEELFunction {
         if (!nodesReturnsSameType(left, right)) {
             return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "from", "endpoints must be of equivalent types"));
         }
-
-        // Boundary values need to be always defined in range string. They can be undefined only in unary test, that represents range, e.g. (<10).
-        return FEELFnResult.ofResult(new RangeImpl(startBoundary, (Comparable) left, (Comparable) right, endBoundary));
+        Range toReturn = getReturnedValue(left, right, startBoundary, endBoundary);
+        // Boundary values need to be always defined in range string. They can be undefined only in unary test, that
+        // represents range, e.g. (<10).
+        return FEELFnResult.ofResult(toReturn);
     }
 
     @Override
@@ -145,8 +146,18 @@ public class RangeFunction extends BaseFEELFunction {
         return DEFAULT_VALUE;
     }
 
-    protected boolean nodeIsAllowed(BaseNode node) {
-        return ALLOWED_NODES.stream().anyMatch(baseNodePredicate -> baseNodePredicate.test(node));
+    static Range getReturnedValue(Object left, Object right, Range.RangeBoundary startBoundary,
+                                  Range.RangeBoundary endBoundary) {
+        return (left == null && right == null) ? null :
+                new RangeImpl(startBoundary, (Comparable) left, (Comparable) right, endBoundary);
+    }
+
+    protected boolean nodeIsAllowed(BaseNode node, RangeBoundary boundary) {
+        if (node instanceof NullNode && boundary.equals(RangeBoundary.CLOSED)) {
+            return false;
+        } else {
+            return ALLOWED_NODES.stream().anyMatch(baseNodePredicate -> baseNodePredicate.test(node));
+        }
     }
 
     protected boolean nodeValueIsAllowed(Object value) {
@@ -171,7 +182,7 @@ public class RangeFunction extends BaseFEELFunction {
     }
 
     protected BaseNode parse(String input) {
-       return input.isEmpty() || input.isBlank() ? getNullNode() : parseNotEmptyInput(input);
+        return input.isEmpty() || input.isBlank() ? getNullNode() : parseNotEmptyInput(input);
     }
 
     protected BaseNode getNullNode() {
@@ -194,5 +205,4 @@ public class RangeFunction extends BaseFEELFunction {
         }
         return STUBBED;
     }
-
 }
