@@ -84,27 +84,28 @@ public class RangeFunction extends BaseFEELFunction {
     }
 
     public FEELFnResult<Range> invoke(@ParameterName("from") String from) {
-        if (from == null || from.isEmpty() || from.isBlank()) {
+        if (from == null || from.isBlank()) {
             return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "from", "cannot be null"));
         }
+        String fromToUse = from.trim();
         Range.RangeBoundary startBoundary;
-        if (from.startsWith("(") || from.startsWith("]")) {
+        if (fromToUse.startsWith("(") || fromToUse.startsWith("]")) {
             startBoundary = RangeBoundary.OPEN;
-        } else if (from.startsWith("[")) {
+        } else if (fromToUse.startsWith("[")) {
             startBoundary = RangeBoundary.CLOSED;
         } else {
             return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "from", "does not start with a valid character"));
         }
         Range.RangeBoundary endBoundary;
-        if (from.endsWith(")") || from.endsWith("[")) {
+        if (fromToUse.endsWith(")") || fromToUse.endsWith("[")) {
             endBoundary = RangeBoundary.OPEN;
-        } else if (from.endsWith("]")) {
+        } else if (fromToUse.endsWith("]")) {
             endBoundary = RangeBoundary.CLOSED;
         } else {
             return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "from", "does not end with a valid character"));
         }
 
-        String[] split = from.split("\\.\\.");
+        String[] split = fromToUse.split("\\.\\.");
         if (split.length != 2) {
             return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "from", "does not include two literals separated by `..` two dots characters"));
         }

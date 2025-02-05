@@ -269,6 +269,18 @@ class RangeFunctionTest {
     }
 
     @Test
+    void invoke_WithWhiteSpaces() {
+        String from = "[ 1 .. 3 ]";
+        FunctionTestUtil.assertResult(rangeFunction.invoke(from),
+                                      new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.ONE, BigDecimal.valueOf(3), Range.RangeBoundary.CLOSED),
+                                      from);
+        from = " [ 1 .. 3 ] ";
+        FunctionTestUtil.assertResult(rangeFunction.invoke(from),
+                                      new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.ONE, BigDecimal.valueOf(3), Range.RangeBoundary.CLOSED),
+                                      from);
+    }
+
+    @Test
     void nodeIsAllowed_True() {
         BaseNode node = rangeFunction.getNullNode();
         assertThat(rangeFunction.nodeIsAllowed(node, Range.RangeBoundary.OPEN)).withFailMessage(node.getText()).isTrue();

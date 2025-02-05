@@ -30,6 +30,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.lang.FEELDialect;
 import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
+import org.kie.dmn.feel.runtime.impl.RangeImpl;
 
 public class FEELFunctionsTest extends BaseFEELTest {
 
@@ -309,6 +310,7 @@ public class FEELFunctionsTest extends BaseFEELTest {
                 {"list replace ( [2, 4, 7, 8], function(item, newItem) item < newItem, 5)", Arrays.asList(BigDecimal.valueOf(5), BigDecimal.valueOf(5), BigDecimal.valueOf(7), BigDecimal.valueOf(8)), null},
 
                 // ranges
+                {"range( \"[ 1 .. 3 ]\" )", new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.ONE, BigDecimal.valueOf(3), Range.RangeBoundary.CLOSED), null},
                 {"range(\"[null..null]\")", null, FEELEvent.Severity.ERROR},
                 {"range(\"[null..2]\")", null, FEELEvent.Severity.ERROR},
                 {"range(\"[1..null]\")", null, FEELEvent.Severity.ERROR},
