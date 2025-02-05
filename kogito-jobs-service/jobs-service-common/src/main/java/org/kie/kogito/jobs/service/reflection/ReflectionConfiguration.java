@@ -18,6 +18,33 @@
  */
 package org.kie.kogito.jobs.service.reflection;
 
+import org.kie.kogito.event.AbstractDataEvent;
+import org.kie.kogito.event.cloudevents.SpecVersionDeserializer;
+import org.kie.kogito.event.cloudevents.SpecVersionSerializer;
+import org.kie.kogito.jobs.api.event.CancelJobRequestEvent;
+import org.kie.kogito.jobs.service.adapter.ScheduledJobAdapter;
+import org.kie.kogito.jobs.service.api.Job;
+import org.kie.kogito.jobs.service.api.JobLookupId;
+import org.kie.kogito.jobs.service.api.Recipient;
+import org.kie.kogito.jobs.service.api.Schedule;
+import org.kie.kogito.jobs.service.api.event.CreateJobEvent;
+import org.kie.kogito.jobs.service.api.event.DeleteJobEvent;
+import org.kie.kogito.jobs.service.api.event.JobCloudEvent;
+import org.kie.kogito.jobs.service.api.event.serialization.JobCloudEventDeserializer;
+import org.kie.kogito.jobs.service.api.event.serialization.JobCloudEventSerializer;
+import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipient;
+import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipientBinaryPayloadData;
+import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipientJsonPayloadData;
+import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipientStringPayloadData;
+import org.kie.kogito.jobs.service.api.recipient.sink.SinkRecipient;
+import org.kie.kogito.jobs.service.api.recipient.sink.SinkRecipientBinaryPayloadData;
+import org.kie.kogito.jobs.service.api.recipient.sink.SinkRecipientJsonPayloadData;
+import org.kie.kogito.jobs.service.api.schedule.cron.CronSchedule;
+import org.kie.kogito.jobs.service.api.schedule.timer.TimerSchedule;
+import org.kie.kogito.jobs.service.events.JobDataEvent;
+import org.kie.kogito.jobs.service.repository.marshaller.TriggerMarshaller;
+import org.kie.kogito.jobs.service.resource.error.ErrorResponse;
+
 import io.quarkus.runtime.annotations.RegisterForReflection;
 
 /**
@@ -25,35 +52,37 @@ import io.quarkus.runtime.annotations.RegisterForReflection;
  * them individually.
  */
 @RegisterForReflection(
-        classNames = {
-                "org.kie.kogito.event.cloudevents.SpecVersionSerializer",
-                "org.kie.kogito.event.AbstractDataEvent",
-                "org.kie.kogito.jobs.service.events.JobDataEvent",
-                "org.kie.kogito.jobs.service.repository.marshaller.RecipientMarshaller$HTTPRecipientAccessor",
-                "org.kie.kogito.jobs.service.job.model.ScheduledJobAdapter$ProcessPayload",
-                "org.kie.kogito.jobs.service.repository.marshaller.TriggerMarshaller$PointInTimeTriggerAccessor",
-                "org.kie.kogito.jobs.service.repository.marshaller.TriggerMarshaller$IntervalTriggerAccessor",
-                "org.kie.kogito.jobs.service.repository.marshaller.TriggerMarshaller$SimpleTimerTriggerAccessor",
-                "org.kie.kogito.jobs.api.event.CancelJobRequestEvent$JobId",
-                "org.kie.kogito.jobs.service.api.event.serialization.SpecVersionSerializer",
-                "org.kie.kogito.jobs.service.api.event.serialization.SpecVersionDeserializer",
-                "org.kie.kogito.jobs.service.api.Job",
-                "org.kie.kogito.jobs.service.api.JobLookupId",
-                "org.kie.kogito.jobs.service.api.Recipient",
-                "org.kie.kogito.jobs.service.api.recipient.http.HttpRecipient",
-                "org.kie.kogito.jobs.service.api.recipient.http.HttpRecipientStringPayloadData",
-                "org.kie.kogito.jobs.service.api.recipient.http.HttpRecipientBinaryPayloadData",
-                "org.kie.kogito.jobs.service.api.recipient.http.HttpRecipientJsonPayloadData",
-                "org.kie.kogito.jobs.service.api.recipient.sink.SinkRecipient",
-                "org.kie.kogito.jobs.service.api.recipient.sink.SinkRecipientBinaryPayloadData",
-                "org.kie.kogito.jobs.service.api.recipient.sink.SinkRecipientJsonPayloadData",
-                "org.kie.kogito.jobs.service.api.Schedule",
-                "org.kie.kogito.jobs.service.api.schedule.timer.TimerSchedule",
-                "org.kie.kogito.jobs.service.api.schedule.cron.CronSchedule",
-                "org.kie.kogito.jobs.service.api.event.JobCloudEvent",
-                "org.kie.kogito.jobs.service.api.event.CreateJobEvent",
-                "org.kie.kogito.jobs.service.api.event.DeleteJobEvent",
-                "org.kie.kogito.jobs.service.resource.error.ErrorResponse"
+        targets = {
+                SpecVersionSerializer.class,
+                SpecVersionDeserializer.class,
+                AbstractDataEvent.class,
+                JobDataEvent.class,
+                ScheduledJobAdapter.ProcessPayload.class,
+                TriggerMarshaller.PointInTimeTriggerAccessor.class,
+                TriggerMarshaller.IntervalTriggerAccessor.class,
+                TriggerMarshaller.SimpleTimerTriggerAccessor.class,
+                CancelJobRequestEvent.JobId.class,
+                org.kie.kogito.jobs.service.api.serialization.SpecVersionSerializer.class,
+                org.kie.kogito.jobs.service.api.serialization.SpecVersionDeserializer.class,
+                Job.class,
+                JobLookupId.class,
+                Recipient.class,
+                HttpRecipient.class,
+                HttpRecipientStringPayloadData.class,
+                HttpRecipientBinaryPayloadData.class,
+                HttpRecipientJsonPayloadData.class,
+                SinkRecipient.class,
+                SinkRecipientBinaryPayloadData.class,
+                SinkRecipientJsonPayloadData.class,
+                Schedule.class,
+                TimerSchedule.class,
+                CronSchedule.class,
+                JobCloudEvent.class,
+                CreateJobEvent.class,
+                DeleteJobEvent.class,
+                JobCloudEventSerializer.class,
+                JobCloudEventDeserializer.class,
+                ErrorResponse.class
         })
 public class ReflectionConfiguration {
 }

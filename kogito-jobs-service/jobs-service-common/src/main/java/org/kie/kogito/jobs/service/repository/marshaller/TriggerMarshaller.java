@@ -68,7 +68,7 @@ public class TriggerMarshaller implements Marshaller<Trigger, JsonObject> {
         return null;
     }
 
-    private static class PointInTimeTriggerAccessor {
+    public static class PointInTimeTriggerAccessor {
 
         private Long nextFireTime;
 
@@ -98,7 +98,7 @@ public class TriggerMarshaller implements Marshaller<Trigger, JsonObject> {
         return Optional.ofNullable(time).map(Date::new).orElse(null);
     }
 
-    private static class IntervalTriggerAccessor {
+    public static class IntervalTriggerAccessor {
 
         private Long startTime;
         private Long endTime;
@@ -155,7 +155,7 @@ public class TriggerMarshaller implements Marshaller<Trigger, JsonObject> {
         }
     }
 
-    private static class SimpleTimerTriggerAccessor {
+    public static class SimpleTimerTriggerAccessor {
 
         private Long startTime;
         private long period;

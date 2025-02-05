@@ -25,7 +25,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.kie.kogito.jobs.service.api.Recipient;
-import org.kie.kogito.jobs.service.api.serlialization.SerializationUtils;
+import org.kie.kogito.jobs.service.api.serialization.SerializationUtils;
 import org.kie.kogito.jobs.service.model.JobDetails;
 import org.kie.kogito.jobs.service.model.JobExecutionResponse;
 import org.mockito.ArgumentCaptor;
