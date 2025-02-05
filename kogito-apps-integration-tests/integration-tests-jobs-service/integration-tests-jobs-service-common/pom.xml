@@ -52,10 +52,6 @@
       <scope>compile</scope>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-quarkus-test-utils</artifactId>
-    </dependency>
-    <dependency>
       <groupId>io.rest-assured</groupId>
       <artifactId>rest-assured</artifactId>
       <scope>compile</scope>
@@ -84,17 +80,6 @@
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-test-utils</artifactId>
       <scope>compile</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>org.testcontainers</groupId>
-          <artifactId>oracle-xe</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>com.oracle.database.jdbc</groupId>
-          <artifactId>ojdbc11</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
   </dependencies>
-
 </project>

@@ -18,6 +18,10 @@
  */
 package org.kie.kogito.it.jobs;
 
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
+
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,7 +30,7 @@ import org.kie.kogito.testcontainers.quarkus.KafkaQuarkusTestResource;
 
 import io.restassured.path.json.JsonPath;
 
-import static org.kie.kogito.test.TestUtils.waitForEvent;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class KafkaBaseSwitchStateTimeoutsIT extends BaseSwitchStateTimeoutsIT {
 
@@ -42,6 +46,18 @@ public class KafkaBaseSwitchStateTimeoutsIT extends BaseSwitchStateTimeoutsIT {
     @AfterEach
     void cleanUp() {
         kafkaClient.shutdown();
+    }
+
+    private static JsonPath waitForEvent(KafkaTestClient kafkaClient, String topic, long seconds) throws Exception {
+        final CountDownLatch countDownLatch = new CountDownLatch(1);
+        final AtomicReference<String> cloudEvent = new AtomicReference<>();
+        kafkaClient.consume(topic, rawCloudEvent -> {
+            cloudEvent.set(rawCloudEvent);
+            countDownLatch.countDown();
+        });
+        // give some time to consume the event.
+        assertThat(countDownLatch.await(seconds, TimeUnit.SECONDS)).isTrue();
+        return new JsonPath(cloudEvent.get());
     }
 
     @Override
