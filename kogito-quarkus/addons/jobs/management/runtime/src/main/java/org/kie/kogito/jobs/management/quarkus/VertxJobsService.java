@@ -41,7 +41,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
 
-import static org.kie.kogito.jobs.service.api.serlialization.SerializationUtils.registerDescriptors;
+import static org.kie.kogito.jobs.service.api.serialization.SerializationUtils.registerDescriptors;
 
 @ApplicationScoped
 public class VertxJobsService extends RestJobsService {

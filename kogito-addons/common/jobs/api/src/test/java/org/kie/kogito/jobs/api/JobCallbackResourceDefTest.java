@@ -26,7 +26,7 @@ import org.kie.kogito.jobs.ExpirationTime;
 import org.kie.kogito.jobs.descriptors.ProcessInstanceJobDescription;
 import org.kie.kogito.jobs.service.api.recipient.http.HttpRecipient;
 import org.kie.kogito.jobs.service.api.schedule.timer.TimerSchedule;
-import org.kie.kogito.jobs.service.api.serlialization.SerializationUtils;
+import org.kie.kogito.jobs.service.api.serialization.SerializationUtils;
 
 import com.fasterxml.jackson.databind.JsonNode;
 

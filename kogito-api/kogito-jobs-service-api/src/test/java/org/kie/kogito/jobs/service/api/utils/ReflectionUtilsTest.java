@@ -37,8 +37,8 @@ import org.kie.kogito.jobs.service.api.recipient.sink.serialization.ContentModeD
 import org.kie.kogito.jobs.service.api.recipient.sink.serialization.ContentModeSerializer;
 import org.kie.kogito.jobs.service.api.schedule.cron.CronSchedule;
 import org.kie.kogito.jobs.service.api.schedule.timer.TimerSchedule;
-import org.kie.kogito.jobs.service.api.serlialization.SpecVersionDeserializer;
-import org.kie.kogito.jobs.service.api.serlialization.SpecVersionSerializer;
+import org.kie.kogito.jobs.service.api.serialization.SpecVersionDeserializer;
+import org.kie.kogito.jobs.service.api.serialization.SpecVersionSerializer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

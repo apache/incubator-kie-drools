@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.jobs.service.api.serlialization;
+package org.kie.kogito.jobs.service.api.serialization;
 
 import org.kie.kogito.jobs.service.api.RecipientDescriptor;
 import org.kie.kogito.jobs.service.api.RecipientDescriptorRegistry;

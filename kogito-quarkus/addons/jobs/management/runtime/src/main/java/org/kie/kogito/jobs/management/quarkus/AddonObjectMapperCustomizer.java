@@ -24,7 +24,7 @@ import io.quarkus.jackson.ObjectMapperCustomizer;
 
 import jakarta.enterprise.context.ApplicationScoped;
 
-import static org.kie.kogito.jobs.service.api.serlialization.SerializationUtils.registerDescriptors;
+import static org.kie.kogito.jobs.service.api.serialization.SerializationUtils.registerDescriptors;
 
 @ApplicationScoped
 public class AddonObjectMapperCustomizer implements ObjectMapperCustomizer {

@@ -26,15 +26,15 @@ import org.kie.kogito.jobs.service.api.JobLookupId;
 import org.kie.kogito.jobs.service.api.event.CreateJobEvent;
 import org.kie.kogito.jobs.service.api.event.DeleteJobEvent;
 import org.kie.kogito.jobs.service.api.event.JobCloudEvent;
-import org.kie.kogito.jobs.service.api.serlialization.DeserializationException;
+import org.kie.kogito.jobs.service.api.serialization.DeserializationException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.cloudevents.CloudEvent;
 import io.cloudevents.CloudEventData;
 
-import static org.kie.kogito.jobs.service.api.serlialization.SerializationUtils.DEFAULT_OBJECT_MAPPER;
-import static org.kie.kogito.jobs.service.api.serlialization.SerializationUtils.registerDescriptors;
+import static org.kie.kogito.jobs.service.api.serialization.SerializationUtils.DEFAULT_OBJECT_MAPPER;
+import static org.kie.kogito.jobs.service.api.serialization.SerializationUtils.registerDescriptors;
 
 public class JobCloudEventDeserializer {
 

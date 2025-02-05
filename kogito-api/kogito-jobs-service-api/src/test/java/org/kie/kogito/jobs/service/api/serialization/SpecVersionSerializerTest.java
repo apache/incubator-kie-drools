@@ -22,7 +22,6 @@ import java.io.IOException;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.kie.kogito.jobs.service.api.serlialization.SpecVersionSerializer;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 

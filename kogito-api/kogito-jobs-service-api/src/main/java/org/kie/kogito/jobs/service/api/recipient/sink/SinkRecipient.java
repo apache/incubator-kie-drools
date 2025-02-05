@@ -26,8 +26,8 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.kie.kogito.jobs.service.api.Recipient;
 import org.kie.kogito.jobs.service.api.recipient.sink.serialization.ContentModeDeserializer;
 import org.kie.kogito.jobs.service.api.recipient.sink.serialization.ContentModeSerializer;
-import org.kie.kogito.jobs.service.api.serlialization.SpecVersionDeserializer;
-import org.kie.kogito.jobs.service.api.serlialization.SpecVersionSerializer;
+import org.kie.kogito.jobs.service.api.serialization.SpecVersionDeserializer;
+import org.kie.kogito.jobs.service.api.serialization.SpecVersionSerializer;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;

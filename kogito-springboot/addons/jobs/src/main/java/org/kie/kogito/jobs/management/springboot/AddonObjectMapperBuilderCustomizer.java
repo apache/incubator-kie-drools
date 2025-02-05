@@ -18,7 +18,7 @@
  */
 package org.kie.kogito.jobs.management.springboot;
 
-import org.kie.kogito.jobs.service.api.serlialization.SerializationUtils;
+import org.kie.kogito.jobs.service.api.serialization.SerializationUtils;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

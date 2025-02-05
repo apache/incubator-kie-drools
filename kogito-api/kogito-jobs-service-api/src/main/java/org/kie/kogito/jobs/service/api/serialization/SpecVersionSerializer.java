@@ -16,15 +16,20 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.jobs.service.api.serlialization;
+package org.kie.kogito.jobs.service.api.serialization;
 
-public class DeserializationException extends RuntimeException {
+import java.io.IOException;
 
-    public DeserializationException(String message) {
-        super(message);
-    }
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
 
-    public DeserializationException(String message, Throwable cause) {
-        super(message, cause);
+import io.cloudevents.SpecVersion;
+
+public class SpecVersionSerializer extends JsonSerializer<SpecVersion> {
+
+    @Override
+    public void serialize(SpecVersion specVersion, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
+        jsonGenerator.writeString(specVersion.toString());
     }
 }
