@@ -159,9 +159,9 @@ public final class DMNRuntimeEventManagerUtils {
         }
     }
 
-    public static void fireAfterConditionalEvaluation(DMNRuntimeEventManager eventManager, EvaluatorResult evaluatorResult, String idExecuted) {
+    public static void fireAfterConditionalEvaluation(DMNRuntimeEventManager eventManager, String nodeName, EvaluatorResult evaluatorResult, String idExecuted) {
         if( eventManager.hasListeners() ) {
-            AfterConditionalEvaluationEvent event = new AfterConditionalEvaluationEventImpl(evaluatorResult, idExecuted);
+            AfterConditionalEvaluationEvent event = new AfterConditionalEvaluationEventImpl(nodeName, evaluatorResult, idExecuted);
             notifyListeners(eventManager, l -> l.afterConditionalEvaluation(event));
         }
     }

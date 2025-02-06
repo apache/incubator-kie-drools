@@ -66,12 +66,14 @@ class DMNRuntimeEventManagerUtilsTest {
     @Test
     void fireAfterConditionalEvaluation() {
         EvaluatorResult evaluatorResult = mock(EvaluatorResult.class);
+        String name = "NAME";
         String executedId = "EXECUTED_ID";
-        DMNRuntimeEventManagerUtils.fireAfterConditionalEvaluation(eventManagerMock, evaluatorResult, executedId);
+        DMNRuntimeEventManagerUtils.fireAfterConditionalEvaluation(eventManagerMock, name, evaluatorResult, executedId);
         ArgumentCaptor<AfterConditionalEvaluationEvent> conditionalEvaluationEventArgumentCaptor = ArgumentCaptor.forClass(AfterConditionalEvaluationEvent.class);
         verify(spiedListener).afterConditionalEvaluation (conditionalEvaluationEventArgumentCaptor.capture());
         AfterConditionalEvaluationEvent evaluateConditionalEvent = conditionalEvaluationEventArgumentCaptor.getValue();
         assertThat(evaluateConditionalEvent).isNotNull();
+        assertThat(evaluateConditionalEvent.getNodeName()).isEqualTo(name);
         assertThat(evaluateConditionalEvent.getEvaluatorResultResult()).isEqualTo(evaluatorResult);
         assertThat(evaluateConditionalEvent.getExecutedId()).isEqualTo(executedId);
     }
