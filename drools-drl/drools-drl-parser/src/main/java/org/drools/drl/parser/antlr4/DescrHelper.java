@@ -81,7 +81,7 @@ public class DescrHelper {
     /**
      * PatternDescr requires special handling for properties, because it should be updated with PatternBindContext. e.g. label
      */
-    public static PatternDescr refreshPatternDescrProperties(PatternDescr descr, DRLParser.LhsPatternBindContext ctx) {
+    public static PatternDescr refreshPatternDescrProperties(PatternDescr descr, DRL10Parser.LhsPatternBindContext ctx) {
         return populateCommonProperties(descr, ctx);
     }
 }
