@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -34,10 +36,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
+import io.restassured.response.Response;
+import io.restassured.response.ResponseBody;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.containsString;
@@ -80,6 +85,62 @@ public class JITDMNResourceTest {
     }
 
     @Test
+    void testjitSampleEndpoint() throws IOException {
+        final String ruleId0 = "_1FA12B9F-288C-42E8-B77F-BE2D3702B7B6";
+        final String ruleId1 = "_C8FA33B1-AF6E-4A59-B7B9-6FDF1F495C44";
+        String sampleModel = getModelFromIoUtils("valid_models/DMNv1_5/Sample.dmn");
+        Map<String, Object> context = new HashMap<>();
+        context.put("Credit Score", Map.of("FICO", 700));
+
+        Map<String, Object> monthly = new HashMap<>();
+        monthly.put("Income", 121233);
+        monthly.put("Repayments", 33);
+        monthly.put("Expenses", 123);
+        monthly.put("Tax", 32);
+        monthly.put("Insurance", 55);
+        Map<String, Object> applicantData = new HashMap<>();
+        applicantData.put("Age", 32);
+        applicantData.put("Marital Status", "S");
+        applicantData.put("Employment Status", "Employed");
+        applicantData.put("Monthly", monthly);
+        context.put("Applicant Data", applicantData);
+
+        Map<String, Object> requestedProduct = new HashMap<>();
+        requestedProduct.put("Type", "Special Loan");
+        requestedProduct.put("Rate", 1);
+        requestedProduct.put("Term", 2);
+        requestedProduct.put("Amount", 333);
+        context.put("Requested Product", requestedProduct);
+
+        context.put("id", "_0A185BAC-7692-45FA-B722-7C86C626BD51");
+        JITDMNPayload jitdmnpayload = new JITDMNPayload(sampleModel, context);
+
+        Response response = given()
+                .contentType(ContentType.JSON)
+                .body(jitdmnpayload)
+                .when().post("/jitdmn/dmnresult");
+
+        ResponseBody body = response.getBody();
+        String responseString = body.asString();
+        JsonNode retrieved = MAPPER.readTree(responseString);
+        ArrayNode decisionResultsNode = (ArrayNode) retrieved.get("decisionResults");
+        Iterable<JsonNode> iterable = () -> decisionResultsNode.elements();
+        Stream<JsonNode> targetStream = StreamSupport.stream(iterable.spliterator(), false);
+        ObjectNode decisionNode = (ObjectNode) targetStream.filter(node -> node.get("decisionName").asText().equals("Credit Score Rating")).findFirst().get();
+        ObjectNode evaluationHitIdsNode = (ObjectNode) decisionNode.get(EVALUATION_HIT_IDS_FIELD_NAME);
+        Assertions.assertThat(evaluationHitIdsNode).hasSize(1);
+        Map<String, Integer> expectedEvaluationHitIds0 = Map.of(ruleId0, 1);
+        evaluationHitIdsNode.fields().forEachRemaining(entry -> Assertions.assertThat(expectedEvaluationHitIds0).containsEntry(entry.getKey(), entry.getValue().asInt()));
+
+        targetStream = StreamSupport.stream(iterable.spliterator(), false);
+        decisionNode = (ObjectNode) targetStream.filter(node -> node.get("decisionName").asText().equals("Loan Pre-Qualification")).findFirst().get();
+        evaluationHitIdsNode = (ObjectNode) decisionNode.get(EVALUATION_HIT_IDS_FIELD_NAME);
+        Assertions.assertThat(evaluationHitIdsNode).hasSize(1);
+        Map<String, Integer> expectedEvaluationHitIds1 = Map.of(ruleId1, 1);
+        evaluationHitIdsNode.fields().forEachRemaining(entry -> Assertions.assertThat(expectedEvaluationHitIds1).containsEntry(entry.getKey(), entry.getValue().asInt()));
+    }
+
+    @Test
     void testjitdmnResultEndpoint() {
         JITDMNPayload jitdmnpayload = new JITDMNPayload(modelWithMultipleEvaluationHitIds, buildMultipleHitContext());
         given()
@@ -110,8 +171,11 @@ public class JITDMNResourceTest {
                 .extract()
                 .asString();
         JsonNode retrieved = MAPPER.readTree(response);
-        ObjectNode evaluationHitIdsNode = (ObjectNode) retrieved.get(EVALUATION_HIT_IDS_FIELD_NAME);
+        ArrayNode decisionResultsNode = (ArrayNode) retrieved.get("decisionResults");
+        ObjectNode decisionNode = (ObjectNode) decisionResultsNode.get(0);
+        ObjectNode evaluationHitIdsNode = (ObjectNode) decisionNode.get(EVALUATION_HIT_IDS_FIELD_NAME);
         Assertions.assertThat(evaluationHitIdsNode).hasSize(3);
+
         final Map<String, Integer> expectedEvaluationHitIds = Map.of(rule0, 3, rule1, 2, rule2, 1);
         evaluationHitIdsNode.fields().forEachRemaining(entry -> Assertions.assertThat(expectedEvaluationHitIds).containsEntry(entry.getKey(), entry.getValue().asInt()));
     }

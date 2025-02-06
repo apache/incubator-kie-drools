@@ -18,6 +18,8 @@
  */
 package org.kie.kogito.jitexecutor.dmn;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,14 +38,14 @@ import org.slf4j.LoggerFactory;
 
 public class JITDMNListener implements DMNRuntimeEventListener {
 
-    private final Map<String, Integer> evaluationHitIds = new HashMap<>();
+    private final Map<String, Map<String, Integer>> decisionEvaluationHitIdsMap = new HashMap<>();
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JITDMNListener.class);
 
     @Override
     public void afterEvaluateDecisionTable(AfterEvaluateDecisionTableEvent event) {
         logEvent(event);
-        event.getSelectedIds().forEach(s -> evaluationHitIds.compute(s, (k, v) -> v == null ? 1 : v + 1));
+        populateDecisionAndEvaluationHitIdMaps(event.getNodeName(), event.getSelectedIds());
     }
 
     @Override
@@ -79,11 +81,22 @@ public class JITDMNListener implements DMNRuntimeEventListener {
     @Override
     public void afterConditionalEvaluation(AfterConditionalEvaluationEvent event) {
         logEvent(event);
-        evaluationHitIds.compute(event.getExecutedId(), (k, v) -> v == null ? 1 : v + 1);
+        populateDecisionAndEvaluationHitIdMaps(event.getNodeName(), Collections.singleton(event.getExecutedId()));
     }
 
-    public Map<String, Integer> getEvaluationHitIds() {
-        return evaluationHitIds;
+    public Map<String, Map<String, Integer>> getDecisionEvaluationHitIdsMap() {
+        return decisionEvaluationHitIdsMap;
+    }
+
+    private void populateDecisionAndEvaluationHitIdMaps(String decisionName, Collection<String> idsToStore) {
+        Map<String, Integer> evaluationHitIds;
+        if (decisionEvaluationHitIdsMap.containsKey(decisionName)) {
+            evaluationHitIds = decisionEvaluationHitIdsMap.get(decisionName);
+        } else {
+            evaluationHitIds = new HashMap<>();
+            decisionEvaluationHitIdsMap.put(decisionName, evaluationHitIds);
+        }
+        idsToStore.forEach(s -> evaluationHitIds.compute(s, (k, v) -> v == null ? 1 : v + 1));
     }
 
     private void logEvent(DMNEvent toLog) {

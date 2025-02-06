@@ -50,8 +50,6 @@ public class JITDMNResult implements Serializable,
 
     private Map<String, JITDMNDecisionResult> decisionResults = new HashMap<>();
 
-    private Map<String, Integer> evaluationHitIds;
-
     public JITDMNResult() {
         // Intentionally blank.
     }
@@ -60,13 +58,12 @@ public class JITDMNResult implements Serializable,
         this(namespace, modelName, dmnResult, Collections.emptyMap());
     }
 
-    public JITDMNResult(String namespace, String modelName, org.kie.dmn.api.core.DMNResult dmnResult, Map<String, Integer> evaluationHitIds) {
+    public JITDMNResult(String namespace, String modelName, org.kie.dmn.api.core.DMNResult dmnResult, Map<String, Map<String, Integer>> decisionEvaluationHitIdsMap) {
         this.namespace = namespace;
         this.modelName = modelName;
         this.setDmnContext(dmnResult.getContext().getAll());
         this.setMessages(dmnResult.getMessages());
-        this.setDecisionResults(dmnResult.getDecisionResults());
-        this.evaluationHitIds = evaluationHitIds;
+        this.internalSetDecisionResults(dmnResult.getDecisionResults(), decisionEvaluationHitIdsMap);
     }
 
     public String getNamespace() {
@@ -108,14 +105,6 @@ public class JITDMNResult implements Serializable,
         for (DMNDecisionResult dr : decisionResults) {
             this.decisionResults.put(dr.getDecisionId(), JITDMNDecisionResult.of(dr));
         }
-    }
-
-    public Map<String, Integer> getEvaluationHitIds() {
-        return evaluationHitIds;
-    }
-
-    public void setEvaluationHitIds(Map<String, Integer> evaluationHitIds) {
-        this.evaluationHitIds = evaluationHitIds;
     }
 
     @JsonIgnore
@@ -167,7 +156,13 @@ public class JITDMNResult implements Serializable,
                 .append(", dmnContext=").append(dmnContext)
                 .append(", messages=").append(messages)
                 .append(", decisionResults=").append(decisionResults)
-                .append(", evaluationHitIds=").append(evaluationHitIds)
                 .append("]").toString();
+    }
+
+    private void internalSetDecisionResults(List<? extends DMNDecisionResult> decisionResults, Map<String, Map<String, Integer>> decisionEvaluationHitIdsMap) {
+        this.decisionResults = new HashMap<>();
+        for (DMNDecisionResult dr : decisionResults) {
+            this.decisionResults.put(dr.getDecisionId(), JITDMNDecisionResult.of(dr, decisionEvaluationHitIdsMap.getOrDefault(dr.getDecisionName(), Collections.emptyMap())));
+        }
     }
 }

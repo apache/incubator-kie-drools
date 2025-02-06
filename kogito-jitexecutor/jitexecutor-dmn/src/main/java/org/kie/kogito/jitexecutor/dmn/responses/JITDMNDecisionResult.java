@@ -20,7 +20,9 @@ package org.kie.kogito.jitexecutor.dmn.responses;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.kie.dmn.api.core.DMNDecisionResult;
 import org.kie.dmn.api.core.DMNMessage;
@@ -39,17 +41,24 @@ public class JITDMNDecisionResult implements Serializable,
 
     private DecisionEvaluationStatus status;
 
+    private Map<String, Integer> evaluationHitIds;
+
     public JITDMNDecisionResult() {
         // Intentionally blank.
     }
 
     public static JITDMNDecisionResult of(DMNDecisionResult value) {
+        return of(value, Collections.emptyMap());
+    }
+
+    public static JITDMNDecisionResult of(DMNDecisionResult value, Map<String, Integer> decisionEvaluationHitIdsMap) {
         JITDMNDecisionResult res = new JITDMNDecisionResult();
         res.decisionId = value.getDecisionId();
         res.decisionName = value.getDecisionName();
         res.setResult(value.getResult());
         res.setMessages(value.getMessages());
         res.status = value.getEvaluationStatus();
+        res.evaluationHitIds = decisionEvaluationHitIdsMap;
         return res;
     }
 
@@ -98,6 +107,14 @@ public class JITDMNDecisionResult implements Serializable,
         for (DMNMessage m : messages) {
             this.messages.add(JITDMNMessage.of(m));
         }
+    }
+
+    public Map<String, Integer> getEvaluationHitIds() {
+        return evaluationHitIds;
+    }
+
+    public void setEvaluationHitIds(Map<String, Integer> evaluationHitIds) {
+        this.evaluationHitIds = evaluationHitIds;
     }
 
     @Override
