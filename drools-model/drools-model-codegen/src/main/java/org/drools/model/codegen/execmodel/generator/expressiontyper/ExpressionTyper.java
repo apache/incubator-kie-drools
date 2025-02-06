@@ -242,7 +242,7 @@ public class ExpressionTyper {
         }
 
         if (drlxExpr instanceof HalfBinaryExpr) {
-            final Expression binaryExpr = trasformHalfBinaryToBinary(drlxExpr);
+            final Expression binaryExpr = trasformHalfBinaryToBinary(drlxExpr, Optional.of(ruleContext));
             if (binaryExpr instanceof BinaryExpr && ((BinaryExpr)binaryExpr).getLeft() == drlxExpr) {
                 throw new CannotTypeExpressionException("left leaf is the same : drlxExpr = " + drlxExpr + ", originalExpression = " + context.getOriginalExpression());
             }

@@ -26,7 +26,7 @@ global java.util.List results;
 rule "1. && operator"
     salience 10
     when
-        $person : Person( age > 30 && < 40 && hair == "red" )
+        $person : Person( age > 30 && age < 40 && hair == "red" )
     then
         results.add( $person );
 end    
@@ -34,7 +34,7 @@ end
 rule "2. || operator"
     salience 8
     when
-        $person : Person( age > 70 && < 90 || hair == "green" )
+        $person : Person( age > 70 && age < 90 || hair == "green" )
     then
         results.add( $person );
 end    
