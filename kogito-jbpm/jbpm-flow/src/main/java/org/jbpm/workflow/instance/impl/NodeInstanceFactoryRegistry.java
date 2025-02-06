@@ -59,7 +59,7 @@ public class NodeInstanceFactoryRegistry {
     }
 
     private void register(NodeInstanceFactory nodeInstanceFactory) {
-        LOGGER.debug("registering new node instance factory for {} set by {}", nodeInstanceFactory.forClass(), nodeInstanceFactory.getClass().getCanonicalName());
+        LOGGER.trace("registering new node instance factory for {} set by {}", nodeInstanceFactory.forClass(), nodeInstanceFactory.getClass().getCanonicalName());
         this.registry.put(nodeInstanceFactory.forClass(), nodeInstanceFactory);
     }
 
