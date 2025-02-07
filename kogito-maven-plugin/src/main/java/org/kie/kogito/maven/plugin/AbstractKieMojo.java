@@ -23,7 +23,6 @@ import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Path;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
@@ -37,7 +36,6 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.drools.codegen.common.AppPaths;
 import org.drools.codegen.common.DroolsModelBuildContext;
-import org.drools.codegen.common.GeneratedFile;
 import org.drools.codegen.common.GeneratedFileWriter;
 import org.kie.kogito.KogitoGAV;
 import org.kie.kogito.codegen.api.Generator;
@@ -266,20 +264,6 @@ public abstract class AbstractKieMojo extends AbstractMojo {
         } catch (Exception e) {
             return false;
         }
-    }
-
-    protected void writeGeneratedFiles(Collection<GeneratedFile> generatedFiles) {
-        GeneratedFileWriter writer = getGeneratedFileWriter();
-        generatedFiles.forEach(generatedFile -> writeGeneratedFile(generatedFile, writer));
-    }
-
-    protected void writeGeneratedFile(GeneratedFile generatedFile) {
-        writeGeneratedFile(generatedFile, getGeneratedFileWriter());
-    }
-
-    protected void writeGeneratedFile(GeneratedFile generatedFile, GeneratedFileWriter writer) {
-        getLog().info("Generating: " + generatedFile.relativePath());
-        writer.write(generatedFile);
     }
 
     protected File getSourcesPath() {

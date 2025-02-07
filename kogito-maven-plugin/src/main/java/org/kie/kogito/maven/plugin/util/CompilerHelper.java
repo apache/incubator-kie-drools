@@ -58,16 +58,20 @@ public class CompilerHelper {
                 File pathFile = new File(path);
                 settings.addClasspath(pathFile);
             }
-            // Compile and write persistence files
             compileAndWriteClasses(generatedSources, classLoader, settings, getGeneratedFileWriter(baseDir), log);
+            writeFiles(generatedSources, baseDir, log);
         } catch (Exception e) {
             throw new MojoExecutionException("Error during processing model classes", e);
         }
     }
 
-    public static void dumpResources(Collection<GeneratedFile> generatedFiles, File baseDir, Log log) {
+    public static void dumpResources(Collection<GeneratedFile> resources, File baseDir, Log log) {
+        writeFiles(resources, baseDir, log);
+    }
+
+    static void writeFiles(Collection<GeneratedFile> toWrite, File baseDir, Log log) {
         GeneratedFileWriter writer = getGeneratedFileWriter(baseDir);
-        generatedFiles.forEach(generatedFile -> writeGeneratedFile(generatedFile, writer, log));
+        toWrite.forEach(generatedFile -> writeGeneratedFile(generatedFile, writer, log));
     }
 
     static void writeGeneratedFile(GeneratedFile generatedFile, GeneratedFileWriter writer, Log log) {
