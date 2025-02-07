@@ -1,0 +1,134 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='rule-base-configuration-con_{context}']
+
+= Rule base configuration
+
+{PRODUCT} contains a `RuleBaseConfiguration.java` object that you can use to configure exception handler settings, multithreaded execution, and sequential mode in the {RULE_ENGINE}.
+
+For the rule base configuration options,
+ifdef::DM,PAM[]
+download the *{PRODUCT} {PRODUCT_VERSION_LONG} Source Distribution* ZIP file from the https://access.redhat.com/jbossnetwork/restricted/listSoftware.html[Red Hat Customer Portal] and navigate to `~/{PRODUCT_FILE}-sources/src/drools-$VERSION/drools-core/src/main/java/org/drools/core/RuleBaseConfiguration.java`.
+endif::[]
+ifdef::DROOLS,JBPM,OP[]
+see the {PRODUCT} https://github.com/kiegroup/drools/blob/{COMMUNITY_VERSION_BRANCH}/drools-core/src/main/java/org/drools/core/RuleBaseConfiguration.java[RuleBaseConfiguration.java] page in GitHub.
+endif::[]
+
+The following rule base configuration options are available for the {RULE_ENGINE}:
+
+drools.consequenceExceptionHandler::
+When configured, this system property defines the class that manages the exceptions thrown by rule consequences. You can use this property to specify a custom exception handler for rule evaluation in the {RULE_ENGINE}.
++
+--
+Default value: `org.drools.core.runtime.rule.impl.DefaultConsequenceExceptionHandler`
+
+You can specify the custom exception handler using one of the following options:
+
+* Specify the exception handler in a system property:
++
+[source]
+----
+drools.consequenceExceptionHandler=org.drools.core.runtime.rule.impl.MyCustomConsequenceExceptionHandler
+----
+
+* Specify the exception handler while creating the KIE base programmatically:
++
+[source,java]
+----
+KieServices ks = KieServices.Factory.get();
+KieBaseConfiguration kieBaseConf = ks.newKieBaseConfiguration(); kieBaseConf.setOption(ConsequenceExceptionHandlerOption.get(MyCustomConsequenceExceptionHandler.class));
+KieBase kieBase = kieContainer.newKieBase(kieBaseConf);
+----
+--
+
+drools.parallelExecution::
+When in use, this system property allows the {RULE_ENGINE} to only evaluate or both evaluate and execute rules in parallel by dividing the Phreak rule network into independent partitions. You can use this property to increase the speed of rule evaluation for specific rule bases. This option has 3 possible values:
+
+* `sequential` : evaluates and executes all rules sequentially
+* `parallel_evaluation` : evaluates rules in parallel but fires consequence sequentially respecting the semantic imposed by salience and agenda-groups.
+* `fully_parallel` : evaluates and executes everything in parallel
+
++
+--
+Default value: `sequential`
+
+You can enable parallel evaluation using one of the following options:
+
+* Enable the parallel evaluation system property:
++
+[source]
+----
+drools.parallelExecution=fully_parallel
+----
+
+* Enable parallel evaluation while creating the KIE base programmatically:
++
+[source,java]
+----
+KieServices ks = KieServices.Factory.get();
+KieBaseConfiguration kieBaseConf = ks.newKieBaseConfiguration();
+kieBaseConf.setOption(ParallelExecutionOption.FULLY_PARALLEL);
+KieBase kieBase = kieContainer.newKieBase(kieBaseConf);
+----
+
+[WARNING]
+====
+In `fully_parallel` mode rules that use queries, salience, or agenda groups are currently not supported by the parallel {RULE_ENGINE}. If these rule elements are present in the KIE base, the compiler emits a warning and automatically switches back to a single-threaded evaluation. However, in some cases, the {RULE_ENGINE} might not detect the unsupported rule elements and rules might be evaluated incorrectly. For example, the {RULE_ENGINE} might not detect when rules rely on implicit salience given by rule ordering inside the DRL file, resulting in incorrect evaluation due to the unsupported salience attribute.
+====
+--
+
+drools.sequential::
+When enabled, this system property enables sequential mode in the {RULE_ENGINE}. In sequential mode, the {RULE_ENGINE} evaluates rules one time in the order that they are listed in the {RULE_ENGINE} agenda without regard to changes in the working memory. This means that the {RULE_ENGINE} ignores any `insert`, `modify`, or `update` statements in rules and executes rules in a single sequence. As a result, rule execution may be faster in sequential mode, but important updates may not be applied to your rules. You can use this property if you use stateless KIE sessions and you do not want the execution of rules to influence subsequent rules in the agenda. Sequential mode applies to stateless KIE sessions only.
++
+--
+Default value: `false`
+
+You can enable sequential mode using one of the following options:
+
+* Enable the sequential mode system property:
++
+[source]
+----
+drools.sequential=true
+----
+
+* Enable sequential mode while creating the KIE base programmatically:
++
+[source,java]
+----
+KieServices ks = KieServices.Factory.get();
+KieBaseConfiguration kieBaseConf = ks.newKieBaseConfiguration();
+kieBaseConf.setOption(SequentialOption.YES);
+KieBase kieBase = kieContainer.newKieBase(kieBaseConf);
+----
+
+* Enable sequential mode in the KIE module descriptor file (`kmodule.xml`) for a specific {PRODUCT} project:
++
+[source,xml]
+----
+<kmodule>
+  ...
+  <kbase name="KBase2" default="false" sequential="true" packages="org.domain.pkg2, org.domain.pkg3" includes="KBase1">
+    ...
+  </kbase>
+  ...
+</kmodule>
+----
+--

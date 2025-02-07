@@ -1,0 +1,804 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='drl-rules-WHEN-elements-ref_{context}']
+
+= Supported rule condition elements in DRL (keywords)
+
+DRL supports the following rule condition elements (keywords) that you can use with the patterns that you define in DRL rule conditions:
+
+`and`::
+Use this to group conditional components into a logical conjunction. Infix and prefix `and` are supported. You can group patterns explicitly with parentheses `()`. By default, all listed patterns are combined with `and` when no conjunction is specified.
++
+--
+ifdef::DROOLS,JBPM,OP[]
+.infixAnd
+image::language-reference/infixAnd.png[align="center"]
+
+.prefixAnd
+image::language-reference/prefixAnd.png[align="center"]
+endif::[]
+
+.Example patterns with `and`
+[source]
+----
+//Infix `and`:
+Color( colorType : type ) and Person( favoriteColor == colorType )
+
+//Infix `and` with grouping:
+(Color( colorType : type ) and (Person( favoriteColor == colorType ) or Person( favoriteColor == colorType ))
+
+// Prefix `and`:
+(and Color( colorType : type ) Person( favoriteColor == colorType ))
+
+// Default implicit `and`:
+Color( colorType : type )
+Person( favoriteColor == colorType )
+----
+
+[NOTE]
+====
+Do not use a leading declaration binding with the `and` keyword (as you can with `or`, for example). A declaration can only reference a single fact at a time, and if you use a declaration binding with `and`, then when `and` is satisfied, it matches both facts and results in an error.
+
+.Example misuse of `and`
+[source]
+----
+// Causes compile error:
+$person : (Person( name == "Romeo" ) and Person( name == "Juliet"))
+----
+====
+--
+
+`or`::
+Use this to group conditional components into a logical disjunction. Infix and prefix `or` are supported. You can group patterns explicitly with parentheses `()`. You can also use pattern binding with `or`, but each pattern must be bound separately.
++
+--
+ifdef::DROOLS,JBPM,OP[]
+.infixOr
+image::language-reference/infixOr.png[align="center"]
+
+.prefixOr
+image::language-reference/prefixOr.png[align="center"]
+endif::[]
+
+.Example patterns with `or`
+[source]
+----
+//Infix `or`:
+Color( colorType : type ) or Person( favoriteColor == colorType )
+
+//Infix `or` with grouping:
+(Color( colorType : type ) or (Person( favoriteColor == colorType ) and Person( favoriteColor == colorType ))
+
+// Prefix `or`:
+(or Color( colorType : type ) Person( favoriteColor == colorType ))
+----
+
+.Example patterns with `or` and pattern binding
+[source]
+----
+pensioner : (Person( sex == "f", age > 60 ) or Person( sex == "m", age > 65 ))
+
+(or pensioner : Person( sex == "f", age > 60 )
+    pensioner : Person( sex == "m", age > 65 ))
+----
+
+The {RULE_ENGINE} does not directly interpret the `or` element but uses logical transformations to rewrite a rule with `or` as a number of sub-rules. This process ultimately results in a rule that has a single `or` as the root node and one sub-rule for each of its condition elements. Each sub-rule is activated and executed like any normal rule, with no special behavior or interaction between the sub-rules.
+
+Therefore, consider the `or` condition element a shortcut for generating two or more similar rules that, in turn, can create multiple activations when two or more terms of the disjunction are true.
+--
+
+`exists`::
+Use this to specify facts and constraints that must exist. This option is triggered on only the first match, not subsequent matches. If you use this element with multiple patterns, enclose the patterns with parentheses `()`.
++
+--
+ifdef::DROOLS,JBPM,OP[]
+.Exists
+image::language-reference/exists.png[align="center"]
+endif::[]
+
+.Example patterns with `exists`
+[source]
+----
+exists Person( firstName == "John")
+
+exists (Person( firstName == "John", age == 42 ))
+
+exists (Person( firstName == "John" ) and
+        Person( lastName == "Doe" ))
+----
+--
+
+`not`::
+Use this to specify facts and constraints that must not exist. If you use this element with multiple patterns, enclose the patterns with parentheses `()`.
++
+--
+ifdef::DROOLS,JBPM,OP[]
+.Not
+image::language-reference/not.png[align="center"]
+endif::[]
+
+.Example patterns with `not`
+[source]
+----
+not Person( firstName == "John")
+
+not (Person( firstName == "John", age == 42 ))
+
+not (Person( firstName == "John" ) and
+     Person( lastName == "Doe" ))
+----
+--
+
+`forall`::
+Use this to verify whether all facts that match the first pattern match all the remaining patterns. When a `forall` construct is satisfied, the rule evaluates to `true`. This element is a scope delimiter, so it can use any previously bound variable, but no variable bound inside of it is available for use outside of it.
++
+--
+ifdef::DROOLS,JBPM,OP[]
+.Forall
+image::language-reference/forall.png[align="center"]
+endif::[]
+
+.Example rule with `forall`
+[source]
+----
+rule "All full-time employees have red ID badges"
+  when
+    forall( $emp : Employee( type == "fulltime" )
+                   Employee( this == $emp, badgeColor = "red" ) )
+  then
+    // True, all full-time employees have red ID badges.
+end
+----
+
+In this example, the rule selects all `Employee` objects whose type is `"fulltime"`. For each fact that matches this pattern, the rule evaluates the patterns that follow (badge color) and if they match, the rule evaluates to `true`.
+
+To state that all facts of a given type in the working memory of the {RULE_ENGINE} must match a set of constraints, you can use `forall` with a single pattern for simplicity.
+
+.Example rule with `forall` and a single pattern
+[source]
+----
+rule "All full-time employees have red ID badges"
+  when
+    forall( Employee( badgeColor = "red" ) )
+  then
+    // True, all full-time employees have red ID badges.
+end
+----
+
+You can use `forall` constructs with multiple patterns or nest them with other condition elements, such as inside a `not` element construct.
+
+.Example rule with `forall` and multiple patterns
+[source]
+----
+rule "All employees have health and dental care programs"
+  when
+    forall( $emp : Employee()
+            HealthCare( employee == $emp )
+            DentalCare( employee == $emp )
+          )
+  then
+    // True, all employees have health and dental care.
+end
+----
+
+.Example rule with `forall` and `not`
+[source]
+----
+rule "Not all employees have health and dental care"
+  when
+    not ( forall( $emp : Employee()
+                  HealthCare( employee == $emp )
+                  DentalCare( employee == $emp ) )
+        )
+  then
+    // True, not all employees have health and dental care.
+end
+----
+
+NOTE: The format `forall( p1 p2 p3 ...)` is equivalent to `not( p1 and not( and p2 p3 ... ) )`.
+
+--
+
+`from`::
+Use this to specify a data source for a pattern. This enables the {RULE_ENGINE} to reason over data that is not in the working memory. The data source can be a sub-field on a bound variable or the result of a method call. The expression used to define the object source is any expression that follows regular MVEL syntax. Therefore, the `from` element enables you to easily use object property navigation, execute method calls, and access maps and collection elements.
++
+--
+ifdef::DROOLS,JBPM,OP[]
+.from
+image::language-reference/from.png[align="center"]
+endif::[]
+
+.Example rule with `from` and pattern binding
+[source]
+----
+rule "Validate zipcode"
+  when
+    Person( $personAddress : address )
+    Address( zipcode == "23920W" ) from $personAddress
+  then
+    // Zip code is okay.
+end
+----
+
+.Example rule with `from` and a graph notation
+[source]
+----
+rule "Validate zipcode"
+  when
+    $p : Person()
+    $a : Address( zipcode == "23920W" ) from $p.address
+  then
+    // Zip code is okay.
+end
+----
+
+.Example rule with `from` to iterate over all objects
+[source]
+----
+rule "Apply 10% discount to all items over US$ 100 in an order"
+  when
+    $order : Order()
+    $item  : OrderItem( value > 100 ) from $order.items
+  then
+    // Apply discount to `$item`.
+end
+----
+
+[NOTE]
+====
+For large collections of objects, instead of adding an object with a large graph that the {RULE_ENGINE} must iterate over frequently, add the collection directly to the KIE session and then join the collection in the condition, as shown in the following example:
+
+[source]
+----
+when
+  $order : Order()
+  OrderItem( value > 100, order == $order )
+----
+====
+
+.Example rule with `from` and `lock-on-active` rule attribute
+[source]
+----
+rule "Assign people in North Carolina (NC) to sales region 1"
+  ruleflow-group "test"
+  lock-on-active true
+  when
+    $p : Person()
+    $a : Address( state == "NC" ) from $p.address
+  then
+    modify ($p) {} // Assign the person to sales region 1.
+end
+
+rule "Apply a discount to people in the city of Raleigh"
+  ruleflow-group "test"
+  lock-on-active true
+  when
+    $p : Person()
+    $a : Address( city == "Raleigh" ) from $p.address
+  then
+    modify ($p) {} // Apply discount to the person.
+end
+----
+
+[IMPORTANT]
+====
+Using `from` with `lock-on-active` rule attribute can result in rules not being executed. You can address this issue in one of the following ways:
+
+* Avoid using the `from` element when you can insert all facts into the working memory of the {RULE_ENGINE} or use nested object references in your constraint expressions.
+* Place the variable used in the `modify()` block as the last sentence in your rule condition.
+* Avoid using the `lock-on-active` rule attribute when you can explicitly manage how rules within the same ruleflow group place activations on one another.
+====
+
+The pattern that contains a `from` clause cannot be followed by another pattern starting with a parenthesis. The reason for this restriction is that the DRL parser reads the `from` expression as `"from $l (String() or Number())"` and it cannot differentiate this expression from a function call. The simplest workaround to this is to wrap the `from` clause in parentheses, as shown in the following example:
+
+.Example rules with `from` used incorrectly and correctly
+[source]
+----
+// Do not use `from` in this way:
+rule R
+  when
+    $l : List()
+    String() from $l
+    (String() or Number())
+  then
+    // Actions
+end
+
+// Use `from` in this way instead:
+rule R
+  when
+    $l : List()
+    (String() from $l)
+    (String() or Number())
+  then
+    // Actions
+end
+----
+--
+
+`entry-point`::
+Use this to define an entry point, or _event stream_, corresponding to a data source for the pattern. This element is typically used with the `from` condition element. You can declare an entry point for events so that the {RULE_ENGINE} uses data from only that entry point to evaluate the rules. You can declare an entry point either implicitly by referencing it in DRL rules or explicitly in your Java application.
++
+--
+.Example rule with `from entry-point`
+[source]
+----
+rule "Authorize withdrawal"
+  when
+    WithdrawRequest( $ai : accountId, $am : amount ) from entry-point "ATM Stream"
+    CheckingAccount( accountId == $ai, balance > $am )
+  then
+    // Authorize withdrawal.
+end
+----
+
+.Example Java application code with EntryPoint object and inserted facts
+[source,java]
+----
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.EntryPoint;
+
+// Create your KIE base and KIE session as usual:
+KieSession session = ...
+
+// Create a reference to the entry point:
+EntryPoint atmStream = session.getEntryPoint("ATM Stream");
+
+// Start inserting your facts into the entry point:
+atmStream.insert(aWithdrawRequest);
+----
+--
+
+`collect`::
+Use this to define a collection of objects that the rule can use as part of the condition. The rule obtains the collection either from a specified source or from the working memory of the {RULE_ENGINE}. The result pattern of the `collect` element can be any concrete class that implements the `java.util.Collection` interface and provides a default no-arg public constructor. You can use Java collections like `List`, `LinkedList`, and `HashSet`, or your own class. If variables are bound before the `collect` element in a condition, you can use the variables to constrain both your source and result patterns. However, any binding made inside the `collect` element is not available for use outside of it.
++
+--
+ifdef::DROOLS,JBPM,OP[]
+.Collect
+image::language-reference/collect.png[align="center"]
+endif::[]
+
+.Example rule with `collect`
+[source]
+----
+import java.util.List
+
+rule "Raise priority when system has more than three pending alarms"
+  when
+    $system : System()
+    $alarms : List( size >= 3 )
+              from collect( Alarm( system == $system, status == 'pending' ) )
+  then
+    // Raise priority because `$system` has three or more `$alarms` pending.
+end
+----
+
+In this example, the rule assesses all pending alarms in the working memory of the {RULE_ENGINE} for each given system and groups them in a `List`. If three or more alarms are found for a given system, the rule is executed.
+
+You can also use the `collect` element with nested `from` elements, as shown in the following example:
+
+.Example rule with `collect` and nested `from`
+[source]
+----
+import java.util.LinkedList;
+
+rule "Send a message to all parents"
+  when
+    $town : Town( name == 'Paris' )
+    $mothers : LinkedList()
+               from collect( Person( children > 0 )
+                             from $town.getPeople()
+                           )
+  then
+    // Send a message to all parents.
+end
+----
+--
+
+`accumulate`::
+Use this to iterate over a collection of objects, execute custom actions for each of the elements, and return one or more result objects (if the constraints evaluate to `true`). This element is a more flexible and powerful form of the `collect` condition element. You can use predefined functions in your `accumulate` conditions or implement custom functions as needed. You can also use the abbreviation `acc` for `accumulate` in rule conditions.
++
+--
+Use the following format to define `accumulate` conditions in rules:
+
+.Preferred format for `accumulate`
+[source]
+----
+accumulate( <source pattern>; <functions> [;<constraints>] )
+----
+
+ifdef::DROOLS,JBPM,OP[]
+.Accumulate
+image::language-reference/accumulate.png[align="center"]
+endif::[]
+
+NOTE: Although the {RULE_ENGINE} supports alternate formats for the `accumulate` element for backward compatibility, this format is preferred for optimal performance in rules and applications.
+
+The {RULE_ENGINE} supports the following predefined `accumulate` functions. These functions accept any expression as input.
+
+* `average`
+* `min`
+* `max`
+* `count`
+* `sum`
+* `collectList`
+* `collectSet`
+
+In the following example rule, `min`, `max`, and `average` are `accumulate` functions that calculate the minimum, maximum, and average temperature values over all the readings for each sensor:
+
+.Example rule with `accumulate` to calculate temperature values
+[source]
+----
+rule "Raise alarm"
+  when
+    $s : Sensor()
+    accumulate( Reading( sensor == $s, $temp : temperature );
+                $min : min( $temp ),
+                $max : max( $temp ),
+                $avg : average( $temp );
+                $min < 20, $avg > 70 )
+  then
+    // Raise the alarm.
+end
+----
+
+The following example rule uses the `average` function with `accumulate` to calculate the average profit for all items in an order:
+
+.Example rule with `accumulate` to calculate average profit
+[source]
+----
+rule "Average profit"
+  when
+    $order : Order()
+    accumulate( OrderItem( order == $order, $cost : cost, $price : price );
+                $avgProfit : average( 1 - $cost / $price ) )
+  then
+    // Average profit for `$order` is `$avgProfit`.
+end
+----
+
+To use custom, domain-specific functions in `accumulate` conditions, create a Java class that implements the `org.kie.api.runtime.rule.AccumulateFunction` interface. For example, the following Java class defines a custom implementation of an `AverageData` function:
+
+.Example Java class with custom implementation of `average` function
+[source,java]
+----
+// An implementation of an accumulator capable of calculating average values
+
+public class AverageAccumulateFunction implements org.kie.api.runtime.rule.AccumulateFunction<AverageAccumulateFunction.AverageData> {
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+
+    }
+
+    public static class AverageData implements Externalizable {
+        public int    count = 0;
+        public double total = 0;
+
+        public AverageData() {}
+
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            count   = in.readInt();
+            total   = in.readDouble();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeInt(count);
+            out.writeDouble(total);
+        }
+
+    }
+
+    /* (non-Javadoc)
+     * @see org.kie.api.runtime.rule.AccumulateFunction#createContext()
+     */
+    public AverageData createContext() {
+        return new AverageData();
+    }
+
+    /* (non-Javadoc)
+     * @see org.kie.api.runtime.rule.AccumulateFunction#init(java.io.Serializable)
+     */
+    public void init(AverageData context) {
+        context.count = 0;
+        context.total = 0;
+    }
+
+    /* (non-Javadoc)
+     * @see org.kie.api.runtime.rule.AccumulateFunction#accumulate(java.io.Serializable, java.lang.Object)
+     */
+    public void accumulate(AverageData context,
+                           Object value) {
+        context.count++;
+        context.total += ((Number) value).doubleValue();
+    }
+
+    /* (non-Javadoc)
+     * @see org.kie.api.runtime.rule.AccumulateFunction#reverse(java.io.Serializable, java.lang.Object)
+     */
+    public void reverse(AverageData context, Object value) {
+        context.count--;
+        context.total -= ((Number) value).doubleValue();
+    }
+
+    /* (non-Javadoc)
+     * @see org.kie.api.runtime.rule.AccumulateFunction#getResult(java.io.Serializable)
+     */
+    public Object getResult(AverageData context) {
+        return new Double( context.count == 0 ? 0 : context.total / context.count );
+    }
+
+    /* (non-Javadoc)
+     * @see org.kie.api.runtime.rule.AccumulateFunction#supportsReverse()
+     */
+    public boolean supportsReverse() {
+        return true;
+    }
+
+    /* (non-Javadoc)
+     * @see org.kie.api.runtime.rule.AccumulateFunction#getResultType()
+     */
+    public Class< ? > getResultType() {
+        return Number.class;
+    }
+
+}
+----
+
+To use the custom function in a DRL rule, import the function using the `import accumulate` statement:
+
+.Format to import a custom function
+[source]
+----
+import accumulate <class_name> <function_name>
+----
+
+.Example rule with the imported `average` function
+[source]
+----
+import accumulate AverageAccumulateFunction.AverageData average
+
+rule "Average profit"
+  when
+    $order : Order()
+    accumulate( OrderItem( order == $order, $cost : cost, $price : price );
+                $avgProfit : average( 1 - $cost / $price ) )
+  then
+    // Average profit for `$order` is `$avgProfit`.
+end
+----
+
+ifdef::DROOLS,JBPM,OP[]
+[NOTE]
+====
+For backward compatibility, the {RULE_ENGINE} also supports the configuration of `accumulate` functions through configuration files and system properties, but this is a deprecated method. To configure the `average` function from the previous example using the configuration file or system property, set a property as shown in the following example:
+
+[source]
+----
+drools.accumulate.function.average = AverageAccumulateFunction.AverageData
+----
+
+Note that `drools.accumulate.function` is a required prefix, `average` is how the function is used in the DRL files, and `AverageAccumulateFunction.AverageData` is the fully qualified name of the class that implements the function behavior.
+====
+endif::[]
+--
+
+ifdef::DROOLS,JBPM,OP[]
+`accumulate` alternate syntax for a single function with return type::
+The accumulate syntax evolved over time with the goal of becoming more compact and expressive.
+Nevertheless, {PRODUCT} still supports previous syntaxes for backward compatibility purposes.
++
+--
+In case the rule is using a single accumulate function on a given accumulate, the author may add a pattern for the result object and use the "from" keyword to link it to the accumulate result.
+
+Example: a rule to apply a 10% discount on orders over $100 could be written in the following way:
+
+[source]
+----
+rule "Apply 10% discount to orders over US$ 100,00"
+when
+    $order : Order()
+    $total : Number( doubleValue > 100 )
+             from accumulate( OrderItem( order == $order, $value : value ),
+                              sum( $value ) )
+then
+    // apply discount to $order
+end
+----
+
+In the previous example, the accumulate element is using only one function (sum), and so, the rules author opted to explicitly write a pattern for the result type of the accumulate function (Number) and write the constraints inside it.
+There are no problems in using this syntax over the compact syntax presented before, except that is is a bit more verbose.
+Also note that it is not allowed to use both the return type and the functions binding in the same accumulate statement.
+
+Compile-time checks are performed in order to ensure the pattern used with the $$"$$``from``$$"$$ keyword is  assignable from the result of the accumulate function used.
+
+[NOTE]
+====
+With this syntax, the $$"$$``from``$$"$$ binds to the single result returned by the accumulate function, and it does not iterate.
+====
+
+In the previous example, $$"$$``$total``$$"$$ is bound to the result returned by the accumulate sum() function.
+
+As another example however, if the result of the accumulate function is a collection, $$"$$``from``$$"$$ still binds to the single result and it does not iterate:
+
+[source]
+----
+rule "Person names"
+when
+  $x : Object() from accumulate(MyPerson( $val : name );
+                                collectList( $val ) )
+then
+  // $x is a List
+end
+----
+
+The bound $$"$$``$x : Object()``$$"$$ is the List itself, returned by the collectList accumulate function used.
+
+This is an important distinction to highlight, as the $$"$$``from``$$"$$ keyword can also be used separately of accumulate, to iterate over the elements of a collection:
+
+[source]
+----
+rule "Iterate the numbers"
+when
+    $xs : List()
+    $x : Integer() from $xs
+then
+  // $x matches and binds to each Integer in the collection
+end
+----
+
+While this syntax is still supported for backward compatibility purposes, for this and other reasons we encourage rule authors to make use instead of the preferred `accumulate` syntax (described previously), to avoid any potential pitfalls.
+--
+
+`accumulate` with inline custom code::
+Another possible syntax for the `accumulate` is to define inline custom code, instead of using accumulate functions.
++
+--
+[WARNING]
+====
+The use of accumulate with inline custom code is not a good practice for several reasons, including difficulties on maintaining and testing rules that use them, as well as the inability of reusing that code.
+Implementing your own accumulate functions is very simple and straightforward, they are easy to unit test and to use.
+This form of accumulate is supported for backward compatibility only.
+
+Only limited support for inline accumulate is provided while using the executable model.
+For example, you cannot use an external binding in the code while using the MVEL dialect:
+
+[source]
+----
+rule R
+dialect "mvel"
+when
+    String( $l : length )
+    $sum : Integer() from accumulate (
+                           Person( age > 18, $age : age ),
+                           init( int sum = 0 * $l; ),
+                           action( sum += $age; ),
+                           reverse( sum -= $age; ),
+                           result( sum )
+                     )
+----
+====
+
+The general syntax of the `accumulate` CE with inline custom code is:
+
+[source]
+----
+<result pattern> from accumulate( <source pattern>,
+                                  init( <init code> ),
+                                  action( <action code> ),
+                                  reverse( <reverse code> ),
+                                  result( <result expression> ) )
+----
+
+
+The meaning of each of the elements is the following:
+
+* __<source pattern>__: the source pattern is a regular pattern that the {RULE_ENGINE} will try to match against each of the source objects.
+* __<init code>__: this is a semantic block of code in the selected dialect that will be executed once for each tuple, before iterating over the source objects.
+* __<action code>__: this is a semantic block of code in the selected dialect that will be executed for each of the source objects.
+* __<reverse code>__: this is an optional semantic block of code in the selected dialect that if present will be executed for each source object that no longer matches the source pattern. The objective of this code block is to undo any calculation done in the _<action code>_ block, so that the {RULE_ENGINE} can do decremental calculation when a source object is modified or deleted, hugely improving performance of these operations.
+* __<result expression>__: this is a semantic expression in the selected dialect that is executed after all source objects are iterated.
+* __<result pattern>__: this is a regular pattern that the {RULE_ENGINE} tries to match against the object returned from the __<result expression>__. If it matches, the `accumulate` conditional element evaluates to _true_ and the {RULE_ENGINE} proceeds with the evaluation of the next CE in the rule. If it does not matches, the `accumulate` CE evaluates to _false_ and the {RULE_ENGINE} stops evaluating CEs for that rule.
+
+It is easier to understand if we look at an example:
+
+[source]
+----
+rule "Apply 10% discount to orders over US$ 100,00"
+when
+    $order : Order()
+    $total : Number( doubleValue > 100 )
+             from accumulate( OrderItem( order == $order, $value : value ),
+                              init( double total = 0; ),
+                              action( total += $value; ),
+                              reverse( total -= $value; ),
+                              result( total ) )
+then
+    // apply discount to $order
+end
+----
+
+In the previous example, for each `Order` in the Working Memory, the {RULE_ENGINE} will execute the _init
+          code_ initializing the total variable to zero.
+Then it will iterate over all `OrderItem` objects for that order, executing the _action_ for each one (in the example, it will sum the value of all items into the total variable). After iterating over all `OrderItem` objects, it will return the value corresponding to the _result
+          expression_ (in the previous example, the value of variable ``total``). Finally, the {RULE_ENGINE} will try to match the result with the `Number` pattern, and if the double value is greater than 100, the rule will fire.
+
+The example used Java as the semantic dialect, and as such, note that the usage of the semicolon as statement delimiter is mandatory in the init, action and reverse code blocks.
+The result is an expression and, as such, it does not admit ';'. If the user uses any other dialect, he must comply to that dialect's specific syntax.
+
+As mentioned before, the _reverse code_ is optional, but it is strongly recommended that the user writes it in order to benefit from the __improved performance on update
+          and delete__.
+
+The `accumulate` CE can be used to execute any action on source objects.
+The following example instantiates and populates a custom object:
+
+[source]
+----
+rule "Accumulate using custom objects"
+when
+    $person   : Person( $likes : likes )
+    $cheesery : Cheesery( totalAmount > 100 )
+                from accumulate( $cheese : Cheese( type == $likes ),
+                                 init( Cheesery cheesery = new Cheesery(); ),
+                                 action( cheesery.addCheese( $cheese ); ),
+                                 reverse( cheesery.removeCheese( $cheese ); ),
+                                 result( cheesery ) );
+then
+    // do something
+end
+----
+--
+
+`eval`::
+The conditional element `eval` is essentially a catch-all which allows any semantic code (that returns a primitive boolean) to be executed.
+This code can refer to variables that were bound in the conditions of the rule and functions in the rule package.
+Overuse of `eval` reduces the declarativeness of your rules and can result in a poorly performing {RULE_ENGINE}.
+While `eval` can be used anywhere in the patterns, it is typically added as the last conditional element in the conditions of a rule.
++
+--
+.Eval
+image::language-reference/eval.png[align="center"]
+
+Instances of `eval` cannot be indexed and thus are not as efficient as Field Constraints.
+However this makes them ideal for being used when functions return values that change over time, which is not allowed within Field Constraints.
+
+For those who are familiar with {PRODUCT} 2.x lineage, the old {PRODUCT} parameter and condition tags are equivalent to binding a variable to an appropriate type, and then using it in an `eval` node.
+
+[source]
+----
+p1 : Parameter()
+p2 : Parameter()
+eval( p1.getList().containsKey( p2.getItem() ) )
+----
+
+{empty}
+
+[source]
+----
+p1 : Parameter()
+p2 : Parameter()
+// call function isValid in the LHS
+eval( isValid( p1, p2 ) )
+----
+--
+endif::[]

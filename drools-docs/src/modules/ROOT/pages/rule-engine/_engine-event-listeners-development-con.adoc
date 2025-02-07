@@ -1,0 +1,31 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='engine-event-listeners-development-con_{context}']
+= Practices for development of event listeners
+
+The {RULE_ENGINE} calls event listeners during rule processing. The calls block the execution of the {RULE_ENGINE}. Therefore, the event listener can affect the performance of the {RULE_ENGINE}.
+
+To ensure minimal disruption, follow the following guidelines:
+
+* Any action must be as short as possible.
+* A listener class must not have a state. The {RULE_ENGINE} can destroy and re-create a listener class at any time.
+* Do not use logic that relies on the order of execution of different event listeners.
+* Do not include interactions with different entities outside the {RULE_ENGINE} within a listener. For example, do not include REST calls for notification of events. An exception is the output of logging information; however, a logging listener must be as simple as possible.
+* You can use a listener to modify the state of the {RULE_ENGINE}, for example, to change the values of variables.

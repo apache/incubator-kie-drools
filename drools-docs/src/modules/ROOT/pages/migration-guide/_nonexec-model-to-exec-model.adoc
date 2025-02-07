@@ -1,0 +1,176 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='nonexec-model-to-exec-model_{context}']
+== Migration from non-executable model to executable model
+The `drools-engine-classic` and `drools-mvel` execute rules with `non executable model`. `drools-engine` executes rules with `executable model`. For more details about the executable model, see xref:KIE/index.adoc#executable-model-con_packaging-deploying[Executable rule models].
+
+As mentioned, `drools-engine-classic` and `drools-mvel` are deprecated, it is recommended to migrate from a `non-executable model` to an `executable model` by changing dependencies.
+
+In general, from an external perspective, rule evaluation and rule consequence execution results can be expected to be the same using either the `non-executable` model or the `executable model`. You may however encounter a few edge cases during compile time or runtime. If you find any issues, please report them to the {PRODUCT} community. We have already identified some small known differences, reported below.
+
+=== Invalid cast
+When you specify `dialect "mvel"` in a rule, the `non-executable model` is tolerant of invalid type cast, because of type coercion behavior in MVEL. For example,
+[source]
+----
+global MyUtils myUtils;
+
+rule Rule1
+dialect "mvel"
+when
+  $p : Person()
+then
+  myUtils.doWork((String) $p.age )));
+end
+----
+This rule can be built with  `non-executable model` even if `$p.age` is `int` which is not acceptable in Java syntax.
+
+With `executable model`, the rule fails with a build error.
+----
+Cannot cast from int to String
+----
+
+In this case, the rule can be easily fixed by using valid Java syntax. For example,
+----
+ ...
+then
+  myUtils.doWork(java.util.Objects.toString( $p.age ));
+end
+----
+
+=== Generics support
+`non-executable model` is tolerant of generics type. For example,
+[source]
+----
+rule Rule1
+  no-loop true
+  when
+    $fact : Fact( str == "ADD", $val : "100")
+  then
+    modify($fact) {
+      bdList.add($val);
+    }
+end
+----
+`non-executable model` allows to add a `String` object to `bdList` even if `Fact.bdList` is `List<BigDecimal>` which is not acceptable in Java syntax.
+
+With `executable model`, the rule fails with a build error.
+----
+The method add(BigDecimal) in the type List<BigDecimal> is not applicable for the arguments (String)
+----
+
+In this case, the rule can be easily fixed by using valid Java syntax. For example,
+----
+ ...
+then
+  modify($fact) {
+    bdList.add(new BigDecimal($val));
+  }
+end
+----
+
+=== Invalid coercion
+For example, Java allows coercion from `int` to `long`. However, Java doesn't allow coercion from `int` to `Long`. If you have the rule to call the `setWrapperLong` method which accepts `Long`.
+
+[source]
+----
+rule Rule1
+dialect "mvel"
+when
+  $f : Fact()
+then
+  $f.setWrapperLong(10);
+end
+----
+
+`non-executable model` coerces `10` to `Long`, so it doesn't throw an Exception. However, the `executable model` throws a build error.
+----
+The method setWrapperLong(Long) in the type Fact is not applicable for the arguments (int)
+----
+
+In this case, the rule can be easily fixed by using valid Java syntax. For example,
+----
+ ...
+then
+  $f.setWrapperLong(10L);
+end
+----
+
+=== Generics return type resolution
+Assuming you have classes below:
+
+.parent class
+[source,java]
+----
+public abstract class Vehicle<TEngine extends Engine> {
+        // ...
+
+	public abstract TEngine getEngine();
+
+	public TEngine getMotor() {
+		return getEngine();
+	}
+----
+
+.sub class
+[source,java]
+----
+public class DieselCar extends Vehicle<DieselEngine> {
+	private final DieselEngine engine;
+
+	public DieselCar(String maker, String model, int kw, boolean adBlueRequired) {
+		super(maker, model);
+		this.engine = new DieselEngine(kw, adBlueRequired);
+	}
+
+	@Override
+	public DieselEngine getEngine() {
+		return engine;
+	}
+}
+----
+
+[source,java]
+----
+public class DieselEngine extends Engine {
+
+	private final boolean adBlueRequired;
+----
+
+.rule
+----
+rule Rule1
+	when
+		$v : DieselCar(motor.adBlueRequired == true)
+	then
+		// do something
+end
+----
+
+`non-executable model` can dynamically resolve that `motor` is `DieselEngine` so the rule works. However, the `executable model` resolves  `motor` to `TEngine`, so a build error is thrown.
+
+----
+Unknown field adBlueRequired on TEngine
+----
+
+In this case, the rule can be fixed by specifying the subtype with the `#` operator. For example,
+----
+	when
+		$v : DieselCar(motor#DieselEngine.adBlueRequired == true)
+----

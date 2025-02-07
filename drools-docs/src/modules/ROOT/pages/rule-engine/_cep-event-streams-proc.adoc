@@ -1,0 +1,79 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='cep-event-streams-proc_{context}']
+
+= Declaring entry points for rule data
+
+You can declare an entry point (event stream) for events so that the {RULE_ENGINE} uses data from only that entry point to evaluate the rules. You can declare an entry point either implicitly by referencing it in DRL rules or explicitly in your Java application.
+
+.Procedure
+Use one of the following methods to declare the entry point:
+
+* In the DRL rule file, specify `from entry-point "<name>"` for the inserted fact:
++
+--
+.Authorize withdrawal rule with "ATM Stream" entry point
+[source]
+----
+rule "Authorize withdrawal"
+when
+  WithdrawRequest($ai : accountId, $am : amount) from entry-point "ATM Stream"
+  CheckingAccount(accountId == $ai, balance > $am)
+then
+  // Authorize withdrawal.
+end
+----
+
+.Apply fee rule with "Branch Stream" entry point
+[source]
+----
+rule "Apply fee on withdraws on branches"
+when
+  WithdrawRequest($ai : accountId, processed == true) from entry-point "Branch Stream"
+  CheckingAccount(accountId == $ai)
+then
+  // Apply a $2 fee on the account.
+end
+----
+
+Both example DRL rules from a banking application insert the event `WithdrawalRequest` with the fact `CheckingAccount`, but from different entry points. At run time, the {RULE_ENGINE} evaluates the `Authorize withdrawal` rule using data from only the `"ATM Stream"` entry point, and evaluates the `Apply fee` rule using data from only the `"Branch Stream"` entry point. Any events inserted into the `"ATM Stream"` can never match patterns for the `"Apply fee"` rule, and any events inserted into the `"Branch Stream"` can never match patterns for the `"Authorize withdrawal rule"`.
+--
+
+* In the Java application code, use the `getEntryPoint()` method to specify and obtain an `EntryPoint` object and insert facts into that entry point accordingly:
++
+--
+.Java application code with EntryPoint object and inserted facts
+[source,java]
+----
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.EntryPoint;
+
+// Create your KIE base and KIE session as usual.
+KieSession session = ...
+
+// Create a reference to the entry point.
+EntryPoint atmStream = session.getEntryPoint("ATM Stream");
+
+// Start inserting your facts into the entry point.
+atmStream.insert(aWithdrawRequest);
+----
+
+Any DRL rules that specify `from entry-point "ATM Stream"` are then evaluated based on the data in this entry point only.
+--

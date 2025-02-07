@@ -1,0 +1,226 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='drl-rules-errors-ref_{context}']
+
+= Error messages for DRL troubleshooting
+
+{PRODUCT} provides standardized messages for DRL errors to help you troubleshoot and resolve problems in your DRL files. The error messages use the following format:
+
+.Error message format for DRL file problems
+image::language-reference/error_message.png[align="center"]
+
+* *1st Block:* Error code
+* *2nd Block:* Line and column in the DRL source where the error occurred
+* *3rd Block:* Description of the problem
+* *4th Block:* Component in the DRL source (rule, function, query) where the error occurred
+* *5th Block:* Pattern in the DRL source where the error occurred (if applicable)
+
+{PRODUCT} supports the following standardized error messages:
+
+101: no viable alternative::
+Indicates that the parser reached a decision point but could not identify an alternative.
++
+--
+.Example rule with incorrect spelling
+[source]
+----
+1: rule "simple rule"
+2:   when
+3:     exists Person()
+4:     exits Student()  // Must be `exists`
+5:   then
+6: end
+----
+
+.Error message
+[source]
+----
+[ERR 101] Line 4:4 no viable alternative at input 'exits' in rule "simple rule"
+----
+
+.Example rule without a rule name
+[source]
+----
+1: package org.drools.examples;
+2: rule    // Must be `rule "rule name"` (or `rule rule_name` if no spacing)
+3:   when
+4:     Object()
+5:   then
+6:     System.out.println("A RHS");
+7: end
+----
+
+.Error message
+[source]
+----
+[ERR 101] Line 3:2 no viable alternative at input 'when'
+----
+
+In this example, the parser encountered the keyword `when` but expected the rule name, so it flags `when` as the incorrect expected token.
+
+.Example rule with incorrect syntax
+[source]
+----
+1: rule "simple rule"
+2:   when
+3:     Student( name == "Andy )  // Must be `"Andy"`
+4:   then
+5: end
+----
+
+.Error message
+[source]
+----
+[ERR 101] Line 0:-1 no viable alternative at input '<eof>' in rule "simple rule" in pattern Student
+----
+
+NOTE: A line and column value of `0:-1` means the parser reached the end of the source file (`<eof>`) but encountered incomplete constructs, usually due to missing quotation marks `"..."`, apostrophes `'...'`, or parentheses `(...)`.
+
+--
+
+102: mismatched input::
+Indicates that the parser expected a particular symbol that is missing at the current input position.
++
+--
+.Example rule with an incomplete rule statement
+[source]
+----
+1: rule simple_rule
+2:   when
+3:     $p : Person(
+        // Must be a complete rule statement
+----
+
+.Error message
+[source]
+----
+[ERR 102] Line 0:-1 mismatched input '<eof>' expecting ')' in rule "simple rule" in pattern Person
+----
+
+NOTE: A line and column value of `0:-1` means the parser reached the end of the source file (`<eof>`) but encountered incomplete constructs, usually due to missing quotation marks `"..."`, apostrophes `'...'`, or parentheses `(...)`.
+
+.Example rule with incorrect syntax
+[source]
+----
+1: package org.drools.examples;
+2:
+3: rule "Wrong syntax"
+4:   when
+5:     not( Car( ( type == "tesla", price == 10000 ) || ( type == "kia", price == 1000 ) ) from $carList )
+       // Must use `&&` operators instead of commas `,`
+6:   then
+7:     System.out.println("OK");
+8: end
+----
+
+.Error messages
+[source]
+----
+[ERR 102] Line 5:36 mismatched input ',' expecting ')' in rule "Wrong syntax" in pattern Car
+[ERR 101] Line 5:57 no viable alternative at input 'type' in rule "Wrong syntax"
+[ERR 102] Line 5:106 mismatched input ')' expecting 'then' in rule "Wrong syntax"
+----
+
+In this example, the syntactic problem results in multiple error messages related to each other. The single solution of replacing the commas `,` with `&&` operators resolves all errors. If you encounter multiple errors, resolve one at a time in case errors are consequences of previous errors.
+--
+
+103: failed predicate::
+Indicates that a validating semantic predicate evaluated to `false`. These semantic predicates are typically used to identify component keywords in DRL files, such as `declare`, `rule`, `exists`, `not`, and others.
++
+--
+.Example rule with an invalid keyword
+[source]
+----
+ 1: package nesting;
+ 2:
+ 3: import org.drools.compiler.Person
+ 4: import org.drools.compiler.Address
+ 5:
+ 6: Some text  // Must be a valid DRL keyword
+ 7:
+ 8: rule "test something"
+ 9:   when
+10:     $p: Person( name=="Michael" )
+11:   then
+12:     $p.name = "other";
+13:     System.out.println(p.name);
+14: end
+----
+
+.Error message
+[source]
+----
+[ERR 103] Line 6:0 rule 'rule_key' failed predicate: {(validateIdentifierKey(DroolsSoftKeywords.RULE))}? in rule
+----
+
+The `Some text` line is invalid because it does not begin with or is not a part of a DRL keyword construct, so the parser fails to validate the rest of the DRL file.
+
+NOTE: This error is similar to `102: mismatched input`, but usually involves DRL keywords.
+
+--
+
+104: trailing semi-colon not allowed::
+Indicates that an `eval()` clause in a rule condition uses a semicolon `;` but must not use one.
++
+--
+.Example rule with `eval()` and trailing semicolon
+[source]
+----
+1: rule "simple rule"
+2:   when
+3:     eval( abc(); )  // Must not use semicolon `;`
+4:   then
+5: end
+----
+
+.Error message
+[source]
+----
+[ERR 104] Line 3:4 trailing semi-colon not allowed in rule "simple rule"
+----
+--
+
+105: did not match anything::
+Indicates that the parser reached a sub-rule in the grammar that must match an alternative at least once, but the sub-rule did not match anything. The parser has entered a branch with no way out.
++
+--
+.Example rule with invalid text in an empty condition
+[source]
+----
+1: rule "empty condition"
+2:   when
+3:     None  // Must remove `None` if condition is empty
+4:   then
+5:      insert( new Person() );
+6: end
+----
+
+.Error message
+[source]
+----
+[ERR 105] Line 2:2 required (...)+ loop did not match anything at input 'WHEN' in rule "empty condition"
+----
+
+In this example, the condition is intended to be empty but the word `None` is used. This error is resolved by removing `None`, which is not a valid DRL keyword, data type, or pattern construct.
+--
+
+ifdef::DM,PAM[]
+NOTE: If you encounter other DRL error messages that you cannot resolve, contact your Red Hat Technical Account Manager.
+endif::[]

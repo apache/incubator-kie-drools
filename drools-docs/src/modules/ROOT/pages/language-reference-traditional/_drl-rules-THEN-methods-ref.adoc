@@ -1,0 +1,147 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='drl-rules-THEN-methods-ref_{context}']
+= Supported rule action methods in DRL
+
+DRL supports the following rule action methods that you can use in DRL rule actions. You can use these methods to modify the working memory of the {RULE_ENGINE} without having to first reference a working memory instance. These methods act as shortcuts to the methods provided by the `RuleContext` class in your {PRODUCT} distribution.
+
+For all rule action methods,
+ifdef::DM,PAM[]
+download the *{PRODUCT_PAM} {PRODUCT_VERSION_LONG} Source Distribution* ZIP file from the https://access.redhat.com/jbossnetwork/restricted/listSoftware.html[Red Hat Customer Portal] and navigate to `~/{PRODUCT_FILE}-sources/src/kie-api-parent-$VERSION/kie-api/src/main/java/org/kie/api/runtime/rule/RuleContext.java`.
+endif::[]
+ifdef::DROOLS,JBPM,OP[]
+see the {PRODUCT} https://github.com/kiegroup/droolsjbpm-knowledge/blob/{COMMUNITY_VERSION_BRANCH}/kie-api/src/main/java/org/kie/api/runtime/rule/RuleContext.java[RuleContext.java] page in GitHub.
+endif::[]
+
+`set`::
+Use this to set the value of a field.
++
+--
+[source,subs="attributes+"]
+----
+set<field> ( <value> )
+----
+
+.Example rule action to set the values of a loan application approval
+[source]
+----
+$application.setApproved ( false );
+$application.setExplanation( "has been bankrupt" );
+----
+--
+
+`modify`::
+Use this to specify fields to be modified for a fact and to notify the {RULE_ENGINE} of the change. This method provides a structured approach to fact updates. It combines the `update` operation with setter calls to change object fields.
++
+--
+[source]
+----
+modify ( <fact-expression> ) {
+    <expression>,
+    <expression>,
+    ...
+}
+----
+
+.Example rule action to modify a loan application amount and approval
+[source]
+----
+modify( LoanApplication ) {
+        setAmount( 100 ),
+        setApproved ( true )
+}
+----
+--
+
+`update`::
+Use this to specify fields and the entire related fact to be updated and to notify the {RULE_ENGINE} of the change. After a fact has changed, you must call `update` before changing another fact that might be affected by the updated values. To avoid this added step, use the `modify` method instead.
++
+--
+[source,subs="attributes+"]
+----
+update ( <object, <handle> )  // Informs the {RULE_ENGINE} that an object has changed
+
+update ( <object> )  // Causes `KieSession` to search for a fact handle of the object
+----
+
+.Example rule action to update a loan application amount and approval
+[source]
+----
+LoanApplication.setAmount( 100 );
+update( LoanApplication );
+----
+
+NOTE: If you provide property-change listeners, you do not need to call this method when an object changes. For more information about property-change listeners, see
+ifdef::DM,PAM[]
+{URL_DEVELOPING_DECISION_SERVICES}#property-change-listeners-con_decision-engine[_{RULE_ENGINE_DOC}_].
+endif::[]
+ifdef::DROOLS,JBPM,OP[]
+xref:property-change-listeners-con_decision-engine[].
+endif::[]
+
+--
+
+`insert`::
+Use this to insert a `new` fact into the working memory of the {RULE_ENGINE} and to define resulting fields and values as needed for the fact.
++
+--
+[source,subs="attributes+"]
+----
+insert( new <object> );
+----
+
+.Example rule action to insert a new loan applicant object
+[source]
+----
+insert( new Applicant() );
+----
+--
+
+`insertLogical`::
+Use this to insert a `new` fact logically into the {RULE_ENGINE}. The {RULE_ENGINE} is responsible for logical decisions on insertions and retractions of facts. After regular or stated insertions, facts must be retracted explicitly. After logical insertions, the facts that were inserted are automatically retracted when the conditions in the rules that inserted the facts are no longer true.
++
+--
+[source]
+----
+insertLogical( new <object> );
+----
+
+.Example rule action to logically insert a new loan applicant object
+[source]
+----
+insertLogical( new Applicant() );
+----
+--
+
+`delete`::
+Use this to remove an object from the {RULE_ENGINE}. The keyword `retract` is also supported in DRL and executes the same action, but `delete` is typically preferred in DRL code for consistency with the keyword `insert`.
++
+--
+[source]
+----
+delete( <object> );
+----
+
+.Example rule action to delete a loan applicant object
+[source]
+----
+delete( Applicant );
+----
+--

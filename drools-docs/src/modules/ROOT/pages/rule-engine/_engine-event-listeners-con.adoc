@@ -1,0 +1,96 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='engine-event-listeners-con_{context}']
+
+= {RULE_ENGINE} event listeners and debug logging
+
+The {RULE_ENGINE} generates events when performing activities such as fact insertions and rule executions. If you register event listeners, the {RULE_ENGINE} calls every listener when an activity is performed.
+
+Event listeners have methods that correspond to different types of activities. The {RULE_ENGINE} passes an event object to each method; this object contains information about the specific activity.
+
+Your code can implement custom event listeners and you can also add and remove registered event listeners. In this way, your code can be notified of {RULE_ENGINE} activity, and you can separate logging and auditing work from the core of your application.
+
+The {RULE_ENGINE} supports the following event listeners with the following methods:
+
+.Agenda event listener
+[source,java]
+----
+public interface AgendaEventListener
+    extends
+    EventListener {
+    void matchCreated(MatchCreatedEvent event);
+    void matchCancelled(MatchCancelledEvent event);
+    void beforeMatchFired(BeforeMatchFiredEvent event);
+    void afterMatchFired(AfterMatchFiredEvent event);
+    void agendaGroupPopped(AgendaGroupPoppedEvent event);
+    void agendaGroupPushed(AgendaGroupPushedEvent event);
+    void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event);
+    void afterRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event);
+    void beforeRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event);
+    void afterRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event);
+}
+----
+
+.Rule runtime event listener
+[source,java]
+----
+public interface RuleRuntimeEventListener extends EventListener {
+    void objectInserted(ObjectInsertedEvent event);
+    void objectUpdated(ObjectUpdatedEvent event);
+    void objectDeleted(ObjectDeletedEvent event);
+}
+----
+
+For the definitions of event classes, see the https://github.com/kiegroup/drools/tree/{COMMUNITY_VERSION_FINAL}/drools-core/src/main/java/org/drools/core/event[GitHub repository].
+
+//ifdef::DROOLS,JBPM,OP[]
+//.WorkingMemoryEventManager
+//image::UserGuide/WorkingMemoryEventManager.png[align="center"]
+//endif::[]
+
+{PRODUCT} includes default implementations of these listeners: `DefaultAgendaEventListener` and `DefaultRuleRuntimeEventListener`. You can extend each of these implementations to monitor specific events.
+
+For example, the following code extends `DefaultAgendaEventListener` to monitor the  `AfterMatchFiredEvent` event and attaches this listener to a KIE session. The code prints pattern matches when rules are executed (fired):
+
+.Example code to monitor and print `AfterMatchFiredEvent` events in the agenda
+[source,java]
+----
+ksession.addEventListener( new DefaultAgendaEventListener() {
+   public void afterMatchFired(AfterMatchFiredEvent event) {
+       super.afterMatchFired( event );
+       System.out.println( event );
+   }
+});
+----
+
+{PRODUCT} also includes the following {RULE_ENGINE} agenda and rule runtime event listeners for debug logging:
+
+* `DebugAgendaEventListener`
+* `DebugRuleRuntimeEventListener`
+
+These event listeners implement the same supported event-listener methods and include a debug print statement by default. You can add additional monitoring code for a specific supported event.
+
+For example, the following code uses the `DebugRuleRuntimeEventListener` event listener to monitor and print all working memory (rule runtime) events:
+
+.Example code to monitor and print all working memory events
+[source,java]
+----
+ksession.addEventListener( new DebugRuleRuntimeEventListener() );
+----

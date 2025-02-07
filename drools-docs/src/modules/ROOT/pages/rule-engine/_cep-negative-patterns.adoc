@@ -1,0 +1,66 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='cep-negative-patterns_{context}']
+
+= Negative patterns in {RULE_ENGINE} stream mode
+
+A negative pattern is a pattern for conditions that are not met. For example, the following DRL rule activates a fire alarm if a fire is detected and the sprinkler is not activated:
+
+.Fire alarm rule with a negative pattern
+[source]
+----
+rule "Sound the alarm"
+when
+  $f : FireDetected()
+  not(SprinklerActivated())
+then
+  // Sound the alarm.
+end
+----
+
+In cloud mode, the {RULE_ENGINE} assumes all facts (regular facts and events) are known in advance and evaluates negative patterns immediately. In stream mode, the {RULE_ENGINE} can support temporal constraints on facts to wait for a set time before activating a rule.
+
+The same example rule in stream mode activates the fire alarm as usual, but applies a 10-second delay.
+
+.Fire alarm rule with a negative pattern and time delay (stream mode only)
+[source]
+----
+rule "Sound the alarm"
+when
+  $f : FireDetected()
+  not(SprinklerActivated(this after[0s,10s] $f))
+then
+  // Sound the alarm.
+end
+----
+
+The following modified fire alarm rule expects one `Heartbeat` event to occur every 10 seconds. If the expected event does not occur, the rule is executed. This rule uses the same type of object in both the first pattern and in the negative pattern. The negative pattern has the temporal constraint to wait 0 to 10 seconds before executing and excludes the `Heartbeat` event bound to `$h` so that the rule can be executed. The bound event `$h` must be explicitly excluded in order for the rule to be executed because the temporal constraint `[0s, ...]` does not inherently exclude that event from being matched again.
+
+.Fire alarm rule excluding a bound event in a negative pattern (stream mode only)
+[source]
+----
+rule "Sound the alarm"
+when
+  $h: Heartbeat() from entry-point "MonitoringStream"
+  not(Heartbeat(this != $h, this after[0s,10s] $h) from entry-point "MonitoringStream")
+then
+  // Sound the alarm.
+end
+----

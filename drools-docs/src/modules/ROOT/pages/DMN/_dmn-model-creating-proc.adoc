@@ -1,0 +1,142 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='dmn-model-creating-proc_{context}']
+= Creating and editing DMN models in {DMN_EDITOR}
+
+You can use the {DMN_EDITOR} to design DMN decision requirements diagrams (DRDs) and define decision logic for a complete and functional DMN decision model. {PRODUCT} provides design support for DMN 1.2 models at conformance level 3, and includes enhancements and fixes to FEEL and DMN model components to optimize the experience of implementing DMN decision services with {PRODUCT}. {DMN_ENGINE} also provides runtime support for DMN 1.1, 1.2, 1.3, and 1.4 models at conformance level 3, but any DMN 1.1 and 1.3 models (do not contain DMN 1.3 features) that you import or open into {DMN_EDITOR} and save are converted to DMN 1.2 models
+
+.Procedure
+. Create or import a DMN file in your {DMN_EDITOR}.
++
+--
+To create a DMN file, follow the instruction on the {DMN_EDITOR} online, or create a new `.dmn` file in VSCode.
+
+To import an existing DMN file, follow the instruction on the {DMN_EDITOR} online, or double click to open a `.dmn` file in VSCode.
+
+[NOTE]
+====
+If you imported a DMN file that does not contain layout information, the imported decision requirements diagram (DRD) is formatted automatically in the DMN designer. Click *Save* in the DMN designer to save the DRD layout.
+
+If an imported DRD is not automatically formatted, you can select the *Perform automatic layout* icon in the upper-right toolbar in the DMN designer to format the DRD.
+====
+
+--
+. Begin adding components to your new or imported DMN decision requirements diagram (DRD) by clicking and dragging one of the DMN nodes from the left toolbar:
++
+--
+.Adding DRD components
+image::dmn/dmn-drag-decision-node.png[]
+
+The following DRD components are available:
+
+* *Decision*: Use this node for a DMN decision, where one or more input elements determine an output based on defined decision logic.
+* *Business knowledge model*: Use this node for reusable functions with one or more decision elements. Decisions that have the same logic but depend on different sub-input data or sub-decisions use business knowledge models to determine which procedure to follow.
+* *Knowledge source*: Use this node for external authorities, documents, committees, or policies that regulate a decision or business knowledge model. Knowledge sources are references to real-world factors rather than executable business rules.
+* *Input data*: Use this node for information used in a decision node or a business knowledge model. Input data usually includes business-level concepts or objects relevant to the business, such as loan applicant data used in a lending strategy.
+* *Text annotation*: Use this node for explanatory notes associated with an input data node, decision node, business knowledge model, or knowledge source.
+* *Decision service*: Use this node to enclose a set of reusable decisions implemented as a decision service for invocation. A decision service can be used in other DMN models and can be invoked from an external application or a BPMN business process.
+
+--
+. In the DMN designer canvas, double-click the new DRD node to enter an informative node name.
+. If the node is a decision or business knowledge model, select the node to display the node options and click the *Edit* icon to open the DMN boxed expression designer to define the decision logic for the node:
++
+--
+.Opening a new decision node boxed expression
+image::dmn/dmn-decision-edit.png[]
+
+.Opening a new business knowledge model boxed expression
+image::dmn/dmn-bkm-edit.png[]
+
+By default, all business knowledge models are defined as boxed function expressions containing a literal FEEL expression, a nested context expression of an external JAVA or PMML function, or a nested boxed expression of any type.
+
+For decision nodes, you click the undefined table to select the type of boxed expression you want to use, such as a boxed literal expression, boxed context expression, decision table, or other DMN boxed expression.
+
+.Selecting the logic type for a decision node
+image::dmn/dmn-decision-boxed-expression-options.png[]
+
+For business knowledge models, you click the top-left function cell to select the function type, or right-click the function value cell, select *Clear*, and select a boxed expression of another type.
+
+.Selecting the function or other logic type for a business knowledge model
+image::dmn/dmn-bkm-define.png[]
+--
+. In the selected boxed expression designer for either a decision node (any expression type) or business knowledge model (function expression), click the applicable table cells to define the table name, variable data types, variable names and values, function parameters and bindings, or FEEL expressions to include in the decision logic.
++
+--
+You can right-click cells for additional actions where applicable, such as inserting or removing table rows and columns or clearing table contents.
+
+The following is an example decision table for a decision node that determines credit score ratings based on a defined range of a loan applicant's credit score:
+
+.Decision node decision table for credit score rating
+image::dmn/dmn-decision-table-example1a.png[]
+
+The following is an example boxed function expression for a business knowledge model that calculates mortgage payments based on principal, interest, taxes, and insurance (PITI) as a literal expression:
+
+.Business knowledge model function for PITI calculation
+image::dmn/dmn-function-expression-example4.png[]
+////
+NOTE: This PITI calculation logic can also be expressed as a boxed literal expression outside of a business knowledge model, but because business knowledge models are defined as function expressions, this expression becomes a function in this case. This requirement applies to any expression types that you use in business knowledge models.
+
+For more details about the types of boxed expressions, see xref:dmn-boxed-expressions-con_dmn-models[].
+
+For more details about defining decision logic in boxed expressions, see xref:dmn-defining-logic-proc_dmn-models[].
+////
+--
+. After you define the decision logic for the selected node, click *Back to "<MODEL_NAME>"* to return to the DRD view.
+. For the selected DRD node, use the available connection options to create and connect to the next node in the DRD, or click and drag a new node onto the DRD canvas from the left toolbar.
++
+--
+The node type determines which connection options are supported. For example, an *Input data* node can connect to a decision node, knowledge source, or text annotation using the applicable connection type, whereas a *Knowledge source* node can connect to any DRD element. A *Decision* node can connect only to another decision or a text annotation.
+
+The following connection types are available, depending on the node type:
+
+* *Information requirement*: Use this connection from an input data node or decision node to another decision node that requires the information.
+* *Knowledge requirement*: Use this connection from a business knowledge model to a decision node or to another business knowledge model that invokes the decision logic.
+* *Authority requirement*: Use this connection from an input data node or a decision node to a dependent knowledge source or from a knowledge source to a decision node, business knowledge model, or another knowledge source.
+* *Association*: Use this connection from an input data node, decision node, business knowledge model, or knowledge source to a text annotation.
+////
+For more details about DRD components and connector rules, see xref:dmn-drd-components-ref_dmn-models[].
+////
+
+.Connecting credit score input to the credit score rating decision
+image::dmn/dmn-input-connection-example.png[]
+
+image::dmn/dmn-input-connection-example2.png[]
+--
+. Continue adding and defining the remaining DRD components of your decision model. Periodically click *Save* in the DMN designer to save your work.
++
+NOTE: As you periodically save a DRD, the DMN designer performs a static validation of the DMN model and might produce error messages until the model is defined completely. After you finish defining the DMN model completely, if any errors remain, troubleshoot the specified problems accordingly.
+
+. After you add and define all components of the DRD, click *Save* to save and validate the completed DRD.
++
+--
+To adjust the DRD layout, you can select the *Perform automatic layout* icon in the upper-right toolbar of the DMN designer.
+
+The following is an example DRD for a loan prequalification decision model:
+
+.Completed DRD for loan prequalification
+image::dmn/dmn-example-drd.png[]
+
+The following is an example DRD for a phone call handling decision model using a reusable decision service:
+
+.Completed DRD for phone call handling with a decision service
+image::dmn/dmn-example-drd3.png[width=90%]
+
+In a DMN decision service node, the decision nodes in the bottom segment incorporate input data from outside of the decision service to arrive at a final decision in the top segment of the decision service node. The resulting top-level decisions from the decision service are then implemented in any subsequent decisions or business knowledge requirements of the DMN model. You can reuse DMN decision services in other DMN models to apply the same decision logic with different input data and different outgoing connections.
+--

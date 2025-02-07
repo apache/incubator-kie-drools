@@ -1,0 +1,256 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+:context: decision-tables
+
+include::_decision-tables-con.adoc[]
+
+include::_decision-tables-use-case-con.adoc[leveloffset=+1]
+
+include::_decision-tables-defining-proc.adoc[leveloffset=+1]
+
+include::_decision-tables-rule-set-entries-ref.adoc[leveloffset=+2]
+
+include::_decision-tables-rule-table-entries-ref.adoc[leveloffset=+2]
+
+include::_decision-tables-attributes-ref.adoc[leveloffset=+2]
+
+=== Examples of decision table data interpolation
+
+
+The various interpolations of data in decision tables are illustrated in the following example.
+
+.Interpolating cell data
+====
+If the template is `Foo(bar == $param)` and the cell is ``42``, then the result is ``Foo(bar == 42)``.
+
+If the template is `Foo(bar < $1, baz == $2)` and the cell contains ``42,43``, the result will be ``Foo(bar < 42, baz ==43)``.
+
+The template `forall(&&){bar != $}` with a cell containing `42,43` results in ``bar != 42 && bar != 43``.
+====
+
+
+The next example demonstrates the joint effect of a cell defining the pattern type and the code snippet below it.
+
+
+[.center,cols="2*^",width=40%]
+|===
+2+|RuleTable Cheese fans
+
+|CONDITION{set:cellbgcolor:#fcedcd}
+|CONDITION
+
+2+|Person
+
+|age
+|type
+
+|Persons age
+{set:cellbgcolor:#c0edf7}|Cheese type
+
+
+|42
+{set:cellbgcolor!}|stilton
+
+|21
+|cheddar
+|===
+
+This spreadsheet section shows how the `Person` type declaration spans 2 columns, and thus both constraints will appear as ``Person(age == ..., type == ...)``.
+Since only the field names are present in the snippet, they imply an equality test.
+
+In the following example the marker symbol `$param` is used.
+
+[.center,cols="^",width=40%]
+|===
+
+|CONDITION{set:cellbgcolor:#fcedcd}
+
+|Person
+
+|age == $param
+
+|Persons age
+
+{set:cellbgcolor:#c0edf7}
+|42
+{set:cellbgcolor!}
+
+|===
+
+The result of this column is the pattern ``Person(age == 42))``.
+You may have noticed that the marker and the operator "==" are redundant.
+
+The next example illustrates that a trailing insertion marker can be omitted.
+
+[.center,cols="^",width=40%]
+|===
+
+|CONDITION{set:cellbgcolor:#fcedcd}
+
+|Person
+
+|age <
+
+|Persons age
+
+{set:cellbgcolor:#c0edf7}
+|42
+{set:cellbgcolor!}
+
+|===
+
+Here, appending the value from the cell is implied, resulting in `Person(age < 42)).`
+
+You can provide the definition of a binding variable, as in the example below.
+
+[.center,cols="^",width=40%]
+|===
+
+|CONDITION{set:cellbgcolor:#fcedcd}
+
+|c : Cheese
+
+|type
+
+|Cheese type
+
+{set:cellbgcolor:#c0edf7}
+|stilton
+{set:cellbgcolor!}
+
+|===
+
+Here, the result is `c: Cheese(type == "stilton").` Note that the quotes are provided automatically.
+Actually, anything can be placed in the object type row.
+Apart from the definition of a binding variable, it could also be an additional pattern that is to be inserted literally.
+
+A simple construction of an action statement with the insertion of a single value is shown below.
+
+[.center,cols="^",width=40%]
+|===
+
+|ACTION{set:cellbgcolor:#fcedcd}
+
+|
+
+|list.add("$param");
+
+|Log
+
+{set:cellbgcolor:#c0edf7}
+|Old man stilton
+{set:cellbgcolor!}
+
+|===
+
+The cell below the ACTION header is left blank.
+Using this style, anything can be placed in the consequence, not just a single method call.
+(The same technique is applicable within a CONDITION column as well.)
+
+Below is a comprehensive example, showing the use of various column headers.
+It is not an error to have no value below a column header (as in the NO-LOOP column): here, the attribute will not be applied in any of the rules.
+
+.Example usage of keywords for imports, headers, etc.
+image::language-reference/Key.png[align="center"]
+
+And, finally, here is an example of Import and Functions.
+
+.Example of functions for computing price and discount claim.
+[.center,cols="<1,<3",width="80%"]
+|===
+
+|[white]#RuleSet#{set:cellbgcolor:#000000}
+|[white]#Cheese Price#
+
+|Import{set:cellbgcolor:#fcedcd}
+|com.sample.Cheese, com.sample.Person
+
+|Functions
+a|
+----
+function int computePrice(Cheese cheese) {
+    if (cheese.getType() == "cheddar") {
+        return 10;
+    } else if (cheese.getType() == "stilton") {
+        return 15;
+    } else {
+        return 20;
+    }
+}
+
+function boolean hasDiscount(Person person) {
+    if (person.getAge() > 60) {
+        return true;
+    } else {
+        return false;
+    }
+}
+----
+|===
+
+Multiple package names within the same cell must be separated by a comma.
+Also, the pairs of type and variable names must be comma-separated.
+Functions, however, must be written as they appear in a DRL file.
+This should appear in the same column as the "RuleSet" keyword; it could be above, between, or below all the rule rows.
+
+[NOTE]
+====
+It may be more convenient to use Import, Variables, Functions and Queries repeatedly rather than packing several definitions into a single cell.
+====
+
+== Creating and integrating spreadsheet decision tables
+
+The API to use spreadsheet decision tables is in the `drools-decisiontables` module.
+
+TIP: When including `drools-decisiontables` in your project, you might encounter the following error: `ERROR StatusLogger Log4j2 could not find a logging implementation`; this happens because the underlying library to process spreadsheet files Apache POI uses the Log4j API (link:https://poi.apache.org/components/logging.html#POI+5.1.0+and+above:~:text=Apache%20POI%20only%20depends%20on%20log4j%2Dapi[reference]). To avoid that error, you must include either the link:https://logging.apache.org/log4j/log4j-2.2/log4j-to-slf4j/index.html[SLF4J adapter] or the link:https://logging.apache.org/log4j/log4j-2.2/log4j-slf4j-impl/index.html[Log4j 2 SLF4J Binding], depending on whether your project is using Log4j as a logging backend.
+
+There is only one class to look at: ``SpreadsheetCompiler``.
+This class will take spreadsheets in various formats, and generate rules in DRL (which you can then use in the normal way). The `SpreadsheetCompiler` can just be used to generate partial rule files if it is wished and assemble them into a complete rule package after the fact (this allows the separation of technical and non-technical aspects of the rules if needed).
+
+== Decision table workflow and collaboration
+
+
+Spreadsheets are well-established business tools (in use for over 25 years). Decision tables lend themselves to close collaboration between IT and domain experts while making the business rules clear to business analysts, it is an ideal separation of concerns.
+
+Typically, the whole process of authoring rules (coming up with a new decision table) would be something like:
+
+. A business analyst takes a template decision table (from a repository, or IT)
+. Decision table business language descriptions are entered in the table(s)
+. Decision table rules (rows) are entered (roughly)
+. A decision table is handed to a technical resource, who maps the business language (descriptions) to scripts (this may involve software development of course if it is a new application or data model)
+. The technical person hands back and reviews the modifications with the business analyst.
+. The business analyst can continue editing the rule rows as needed (moving columns around is also fine etc).
+. In parallel, the technical person can develop test cases for the rules (liaising with business analysts) as these test cases can be used to verify rules and rule changes once the system is running.
+
+
+== Using spreadsheet features
+
+Features of applications like Excel can be used to provide assistance in entering data into spreadsheets, such as validating fields.
+Lists that are stored in other worksheets can be used to provide valid lists of values for cells, like in the following diagram.
+
+image::language-reference/lists.png[align="center"]
+
+Some applications provide a limited ability to keep a history of changes, but it is recommended to use an alternative means of revision control.
+When changes are being made to rules over time, older versions are archived (many open source solutions exist for this, such as Subversion or Git).
+
+[WARNING]
+====
+DRT (Drools Rule Template) is deprecated. Please consider this decision table capability or third party templating features if needed.
+====

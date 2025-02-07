@@ -1,0 +1,95 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='dmn-properties-ref_{context}']
+= Configurable DMN properties in {DMN_ENGINE}
+
+{DMN_ENGINE} provides the following DMN properties that you can configure when you execute your DMN models on your client application.
+You can configure some of these properties using the `kmodule.xml` file in your {PRODUCT} project (preferred method also for the previous traditional {KIE_SERVER} deployment).
+
+org.kie.dmn.strictConformance::
+When enabled, this property disables by default any extensions or profiles provided beyond the DMN standard, such as some helper functions or enhanced features of DMN 1.2 backported into DMN 1.1. You can use this property to configure the {DMN_ENGINE} to support only pure DMN features, such as when running the https://dmn-tck.github.io/tck/[DMN Technology Compatibility Kit] (TCK).
++
+--
+Default value: `false`
+
+[source]
+----
+-Dorg.kie.dmn.strictConformance=true
+----
+--
+
+org.kie.dmn.runtime.typecheck::
+When enabled, this property enables verification of actual values conforming to their declared types in the DMN model, as input or output of DRD elements. You can use this property to verify whether data supplied to the DMN model or produced by the DMN model is compliant with what is specified in the model.
++
+--
+Default value: `false`
+
+[source]
+----
+-Dorg.kie.dmn.runtime.typecheck=true
+----
+--
+
+org.kie.dmn.decisionservice.coercesingleton::
+By default, this property makes the result of a decision service defining a single output decision be the single value of the output decision value. When disabled, this property makes the result of a decision service defining a single output decision be a `context` with the single entry for that decision. You can use this property to adjust your decision service outputs according to your project requirements.
++
+--
+Default value: `true`
+
+[source]
+----
+-Dorg.kie.dmn.decisionservice.coercesingleton=false
+----
+--
+
+org.kie.dmn.profiles.$PROFILE_NAME::
+When valorized with a Java fully qualified name, this property loads a DMN profile onto the {DMN_ENGINE} at start time. You can use this property to implement a predefined DMN profile with supported features different from or beyond the DMN standard. For example, if you are creating DMN models using the Signavio DMN modeller, use this property to implement features from the Signavio DMN profile into your DMN decision service.
++
+--
+[source]
+----
+-Dorg.kie.dmn.profiles.signavio=org.kie.dmn.signavio.KieDMNSignavioProfile
+----
+--
+
+org.kie.dmn.runtime.listeners.$LISTENER_NAME::
+When valorized with a Java fully qualified name, this property loads and registers a DMN Runtime Listener onto the {DMN_ENGINE} at start time.
+You can use this property to register a DMN listener in order to be notified of several events during DMN model evaluations.
++
+--
+To configure this property, modify this property in the `kmodule.xml` file of your project
+(preferred method also for the previous traditional {KIE_SERVER} deployment).
+
+[source,xml]
+----
+<kmodule xmlns="http://www.drools.org/xsd/kmodule">
+  <configuration>
+    <property key="org.kie.dmn.runtime.listeners.mylistener" value="org.acme.MyDMNListener"/>
+  </configuration>
+</kmodule>
+----
+
+Alternatively, you can configure this property globally for your {PRODUCT} environment; modify this property using a command terminal or any other global application configuration mechanism. 
+
+[source]
+----
+-Dorg.kie.dmn.runtime.listeners.mylistener=org.acme.MyDMNListener
+----
+--

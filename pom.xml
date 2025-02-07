@@ -195,6 +195,7 @@
         </property>
       </activation>
       <modules>
+        <module>drools-docs</module>
         <module>drools-distribution</module>
       </modules>
     </profile>

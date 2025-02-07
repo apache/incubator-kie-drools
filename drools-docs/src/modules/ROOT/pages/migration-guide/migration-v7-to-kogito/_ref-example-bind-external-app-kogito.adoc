@@ -1,0 +1,34 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id="ref-example-bind-external-app-kogito_{context}"]
+= Example of binding an external application to a {KOGITO} deployment
+
+After deploying the {KOGITO} microservice, you need to bind your external application to the {KOGITO} microservice deployment.
+
+Binding your external application includes re-routing the external application and binding the application to a new base URL of the server that is associated with the {KOGITO} application. For more information, see the following example:
+
+.Example `/discount` REST endpoint of KJAR on {KIE_SERVER}
+image::kogito-microservices/kogito-dmn-endpointon-kie-server.png[Example of a DMN model specific REST endpoint of KJAR on KIE Server]
+
+.Example `/discount` REST endpoint on local {KOGITO}
+image::kogito-microservices/kogito-local-running-API.png[Example of a DMN model specific REST endpoint running on local Kogito application]
+
+.Example `/discount` REST endpoint bound to new base URL of {KOGITO}
+image::kogito-microservices/kogito-binded-endpoint.png[Example of a DMN model specific REST endpoint with new base URL]

@@ -1,0 +1,97 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='performance-tuning-rule-engine-ref_{context}']
+
+= Performance tuning considerations with the {RULE_ENGINE}
+
+The following key concepts or suggested practices can help you optimize {RULE_ENGINE} performance. These concepts are summarized in this section as a convenience and are explained in more detail in the cross-referenced documentation, where applicable. This section will expand or change as needed with new releases of {PRODUCT}.
+
+Use sequential mode for stateless KIE sessions that do not require important {RULE_ENGINE} updates::
+Sequential mode is an advanced rule base configuration in the {RULE_ENGINE} that enables the {RULE_ENGINE} to evaluate rules one time in the order that they are listed in the {RULE_ENGINE} agenda without regard to changes in the working memory. As a result, rule execution may be faster in sequential mode, but important updates may not be applied to your rules. Sequential mode applies to stateless KIE sessions only.
++
+--
+To enable sequential mode, set the system property `drools.sequential` to `true`.
+
+For more information about sequential mode or other options for enabling it, see xref:phreak-sequential-mode-con_rule-engine[].
+--
+
+Use simple operations with event listeners::
+Limit the number of event listeners and the type of operations they perform. Use event listeners for simple operations, such as debug logging and setting properties. Complicated operations, such as network calls, in listeners can impede rule execution. After you finish working with a KIE session, remove the attached event listeners so that the session can be cleaned, as shown in the following example:
++
+--
+.Example event listener removed after use
+[source,java]
+----
+Listener listener = ...;
+StatelessKnowledgeSession ksession = createSession();
+try {
+    ksession.insert(fact);
+    ksession.fireAllRules();
+    ...
+} finally {
+    if (session != null) {
+        ksession.detachListener(listener);
+        ksession.dispose();
+    }
+}
+----
+
+For information about built-in event listeners and debug logging in the {RULE_ENGINE}, see xref:#engine-event-listeners-con_rule-engine[{RULE_ENGINE} event listeners and debug logging].
+--
+
+
+Configure `LambdaIntrospector` cache size for an executable model build::
+You can configure the size of `LambdaIntrospector.methodFingerprintsMap` cache, which is used in an executable model build. The default size of the cache is `32`. When you configure smaller value for the cache size, it reduces memory usage. For example, you can configure system property `drools.lambda.introspector.cache.size` to `0` for minimum memory usage. Note that smaller cache size also slows down the build performance.
+
+
+Use lambda externalization for executable model::
+Enable lambda externalization to optimize the memory consumption during runtime. It rewrites lambdas that are generated and used in the executable model. This enables you to reuse the same lambda multiple times with all the patterns and the same constraint. When the rete or phreak is instantiated, the executable model becomes garbage collectible.
++
+--
+To enable lambda externalization for the executable model, include the following property:
+
+[source]
+----
+-Ddrools.externaliseCanonicalModelLambda=true
+----
+--
+
+
+Configure alpha node range index threshold::
+Alpha node range index is used to evaluate the rule constraint. You can configure the threshold of the alpha node range index using the `drools.alphaNodeRangeIndexThreshold` system property. The default value of the threshold is `9`, indicating that the alpha node range index is enabled when a precedent node contains more than nine alpha nodes with inequality constraints. For example, when you have nine rules similar to `Person(age > 10)`, `Person(age > 20)`, ..., `Person(age > 90)`, then you can have similar nine alpha nodes.
++
+The default value of the threshold is based on the related advantages and overhead. However, if you configure a smaller value for the threshold, then the performance can be improved depending on your rules. For example, you can configure the `drools.alphaNodeRangeIndexThreshold` value to `6`, enabling the alpha node range index when you have more than six alpha nodes for a precedent node. You can set a suitable value for the threshold based on the performance test results of your rules.
+
+Enable join node range index::
+The join node range index feature improves the performance only when there is a large number of facts to be joined, for example, 256*16 combinations. When your application inserts a large number of facts, you can enable the join node range index and evaluate the performance improvement. By default, the join node range index is disabled. 
++
+--
+.Example `kmodule.xml` file
+[source,xml]
+----
+<kbase name="KBase1" betaRangeIndex="enabled">
+----
+
+.System property for `BetaRangeIndexOption`
+[source,java]
+----
+drools.betaNodeRangeIndexEnabled=true
+----
+--

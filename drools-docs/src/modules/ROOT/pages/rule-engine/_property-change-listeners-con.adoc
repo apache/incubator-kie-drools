@@ -1,0 +1,150 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='property-change-listeners-con_{context}']
+= Property-change settings and listeners for fact types
+
+By default, the {RULE_ENGINE} does not re-evaluate all fact patterns for fact types each time a rule is triggered, but instead reacts only to modified properties that are constrained or bound inside a given pattern. For example, if a rule calls `modify()` as part of the rule actions but the action does not generate new data in the KIE base, the {RULE_ENGINE} does not automatically re-evaluate all fact patterns because no data was modified. This property reactivity behavior prevents unwanted recursions in the KIE base and results in more efficient rule evaluation. This behavior also means that you do not always need to use the `no-loop` rule attribute to avoid infinite recursion.
+
+You can modify or disable this property reactivity behavior with the following `KnowledgeBuilderConfiguration` options, and then use a property-change setting in your Java class or DRL files to fine-tune property reactivity as needed:
+
+* `ALWAYS`: (Default) All types are property reactive, but you can disable property reactivity for a specific type by using the `@classReactive` property-change setting.
+* `ALLOWED`: No types are property reactive, but you can enable property reactivity for a specific type by using the `@propertyReactive` property-change setting.
+* `DISABLED`: No types are property reactive. All property-change listeners are ignored.
+
+.Example property reactivity setting in KnowledgeBuilderConfiguration
+[source]
+----
+KnowledgeBuilderConfiguration config = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
+config.setOption(PropertySpecificOption.ALLOWED);
+KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(config);
+----
+
+Alternatively, you can update the `drools.propertySpecific` system property in the `standalone.xml` file of your {PRODUCT} distribution:
+
+.Example property reactivity setting in system properties
+[source,xml]
+----
+<system-properties>
+  ...
+  <property name="drools.propertySpecific" value="ALLOWED"/>
+  ...
+</system-properties>
+----
+
+The {RULE_ENGINE} supports the following property-change settings and listeners for fact classes or declared DRL fact types:
+
+@classReactive::
+If property reactivity is set to `ALWAYS` in the {RULE_ENGINE} (all types are property reactive), this tag disables the default property reactivity behavior for a specific Java class or a declared DRL fact type. You can use this tag if you want the {RULE_ENGINE} to re-evaluate all fact patterns for the specified fact type each time the rule is triggered, instead of reacting only to modified properties that are constrained or bound inside a given pattern.
++
+--
+.Example: Disable default property reactivity in a DRL type declaration
+[source]
+----
+declare Person
+  @classReactive
+    firstName : String
+    lastName : String
+end
+----
+
+.Example: Disable default property reactivity in a Java class
+[source,java]
+----
+@classReactive
+public static class Person {
+    private String firstName;
+    private String lastName;
+}
+----
+--
+
+@propertyReactive::
+If property reactivity is set to `ALLOWED` in the {RULE_ENGINE} (no types are property reactive unless specified), this tag enables property reactivity for a specific Java class or a declared DRL fact type. You can use this tag if you want the {RULE_ENGINE} to react only to modified properties that are constrained or bound inside a given pattern for the specified fact type, instead of re-evaluating all fact patterns for the fact each time the rule is triggered.
++
+--
+.Example: Enable property reactivity in a DRL type declaration (when reactivity is disabled globally)
+[source]
+----
+declare Person
+  @propertyReactive
+    firstName : String
+    lastName : String
+end
+----
+
+.Example: Enable property reactivity in a Java class (when reactivity is disabled globally)
+[source,java]
+----
+@propertyReactive
+public static class Person {
+    private String firstName;
+    private String lastName;
+}
+----
+--
+
+@watch::
+This tag enables property reactivity for additional properties that you specify in-line in fact patterns in DRL rules. This tag is supported only if property reactivity is set to `ALWAYS` in the {RULE_ENGINE}, or if property reactivity is set to `ALLOWED` and the relevant fact type uses the `@propertyReactive` tag. You can use this tag in DRL rules to add or exclude specific properties in fact property reactivity logic.
++
+--
+Default parameter: None
+
+Supported parameters: Property name, `\*` (all), `!` (not), `!*` (no properties)
+
+[source]
+----
+<factPattern> @watch ( <property> )
+----
+
+.Example: Enable or disable property reactivity in fact patterns
+[source]
+----
+// Listens for changes in both `firstName` (inferred) and `lastName`:
+Person(firstName == $expectedFirstName) @watch( lastName )
+
+// Listens for changes in all properties of the `Person` fact:
+Person(firstName == $expectedFirstName) @watch( * )
+
+// Listens for changes in `lastName` and explicitly excludes changes in `firstName`:
+Person(firstName == $expectedFirstName) @watch( lastName, !firstName )
+
+// Listens for changes in all properties of the `Person` fact except `age`:
+Person(firstName == $expectedFirstName) @watch( *, !age )
+
+// Excludes changes in all properties of the `Person` fact (equivalent to using `@classReactivity` tag):
+Person(firstName == $expectedFirstName) @watch( !* )
+----
+
+The {RULE_ENGINE} generates a compilation error if you use the `@watch` tag for properties in a fact type that uses the `@classReactive` tag (disables property reactivity) or when property reactivity is set to `ALLOWED` in the {RULE_ENGINE} and the relevant fact type does not use the `@propertyReactive` tag. Compilation errors also arise if you duplicate properties in listener annotations, such as `@watch( firstName, ! firstName )`.
+--
+
+
+@propertyChangeSupport::
+For facts that implement support for property changes as defined in the https://download.oracle.com/otndocs/jcp/7224-javabeans-1.01-fr-spec-oth-JSpec/[JavaBeans Specification], this tag enables the {RULE_ENGINE} to monitor changes in the fact properties.
++
+--
+.Example: Declare property change support in JavaBeans object
+[source]
+----
+declare Person
+    @propertyChangeSupport
+end
+----
+--

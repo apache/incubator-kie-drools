@@ -1,0 +1,170 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id="proc-kogito-migrate-drl-implement-ruleunits_{context}"]
+= Implementing rule units and automatic REST endpoint generation
+
+[role="_abstract"]
+After migrating rule units to a {KOGITO} microservice, you can implement the rule units and automatic generation of the REST endpoint.
+
+In {KOGITO}, a rule unit contains a set of rules and the facts, against which the rules are matched. Rule units in {KOGITO} also come with data sources. A rule unit data source is a source of the data processed by a given rule unit and represents the entry point, which is used to evaluate the rule unit. Rule units use two types of data sources:
+
+* `DataStream`: This is an append-only data source. In `DataStream`, subscribers receive new and past messages, stream can be hot or cold in the reactive streams. Also, the facts added into the `DataStream` cannot be updated or removed.
+* `DataStore`: This data source is for modifiable data. You can update or remove an object using the `FactHandle` that is returned when the object is added into the `DataStore`.
+
+Overall, a rule unit contains two parts: the definition of the fact to be evaluated and the set of rules evaluating the facts.
+
+.Procedure
+. Implement a fact definition using POJO:
++
+--
+.Example implementation of a fact definition using POJO
+[source,java]
+----
+package org.kie.kogito.queries;
+
+import org.kie.kogito.rules.DataSource;
+import org.kie.kogito.rules.DataStore;
+import org.kie.kogito.rules.RuleUnitData;
+
+public class LoanUnit implements RuleUnitData {
+
+   private int maxAmount;
+   private DataStore<LoanApplication> loanApplications;
+
+   public LoanUnit() {
+   	this(DataSource.createStore(), 0);
+   }
+
+   public LoanUnit(DataStore<LoanApplication> loanApplications, int maxAmount) {
+   	this.loanApplications = loanApplications;
+   	this.maxAmount = maxAmount;
+   }
+
+   public DataStore<LoanApplication> getLoanApplications() { return loanApplications; }
+
+   public void setLoanApplications(DataStore<LoanApplication> loanApplications) {
+   	this.loanApplications = loanApplications;
+   }
+
+   public int getMaxAmount() { return maxAmount; }
+   public void setMaxAmount(int maxAmount) { this.maxAmount = maxAmount; }
+}
+----
+
+In the previous example, instead of using `LoanAppDto` the `LoanUnit` class is bound directly. `LoanAppDto` is used to marshall or unmarshall JSON requests. Also, the previous example implements the `org.kie.kogito.rules.RuleUnitData` interface and uses a `DataStore` to contain the loan applications to be approved.
+
+The `org.kie.kogito.rules.RuleUnitData` is a marker interface to notify the {RULE_ENGINE} that `LoanUnit` class is part of a rule unit definition. In addition, the `DataStore` is responsible to allow the rule engine to react on the changes by firing new rules and triggering other rules.
+
+Additionally, the consequences of the rules modify the `approved` property in the previous example. On the contrary, the `maxAmount` value is considered as a configuration parameter for the rule unit, which is not modified. The `maxAmount` is processed automatically during the rules evaluation and automatically set from the value passed in the JSON requests.
+--
+
+. Implement a DRL file:
++
+--
+.Example implementation of a DRL file
+[source]
+----
+package org.kie.kogito.queries;
+unit LoanUnit; // no need to using globals, all variables and facts are stored in the rule unit
+
+rule LargeDepositApprove when
+   $l: /loanApplications[ applicant.age >= 20, deposit >= 1000, amount <= maxAmount ] // oopath style
+then
+   modify($l) { setApproved(true) };
+end
+
+rule LargeDepositReject when
+   $l: /loanApplications[ applicant.age >= 20, deposit >= 1000, amount > maxAmount ]
+then
+   modify($l) { setApproved(false) };
+end
+
+// ... more loans approval/rejections business rules ...
+
+// approved loan applications are now retrieved through a query
+query FindApproved
+   $l: /loanApplications[ approved ]
+end
+----
+
+The DRL file that you create must declare the same package as fact definition implementation and a unit with the same name of the Java class. The Java class implements the `RuleUnitData` interface to state that the interface belongs to the same rule unit.
+
+Also, the DRL file in the previous example is rewritten using the OOPath expressions. In the DRL file, the data source acts as an entry point and the OOPath expression contains the data source name as root. However, the constraints are added in square brackets as follows:
+
+`$l: /loanApplications[ applicant.age >= 20, deposit >= 1000, amount <= maxAmount ]`
+
+Alternatively, you can use the standard DRL syntax, in which you can specify the data source name as an entry point. However, you need to specify the type of the matched object again as shown in the following example, even if the {RULE_ENGINE} can infer the type from the data source:
+
+`$l: LoanApplication( applicant.age >= 20, deposit >= 1000, amount <= maxAmount ) from entry-point loanApplications`
+
+In the previous example, the last rule that collects all the approved loan applications is replaced by a query that retrieves the list. A rule unit defines the facts to be passed in input to evaluate the rules, and the query defines the expected output from the rule evaluation. Using this approach, {KOGITO} can automatically generate a class that executes the query and returns the output as shown in the following example:
+
+.Example `LoanUnitQueryFindApproved` class
+[source,java]
+----
+public class LoanUnitQueryFindApproved implements org.kie.kogito.rules.RuleUnitQuery<List<org.kie.kogito.queries.LoanApplication>> {
+
+   private final RuleUnitInstance<org.kie.kogito.queries.LoanUnit> instance;
+
+   public LoanUnitQueryFindApproved(RuleUnitInstance<org.kie.kogito.queries.LoanUnit> instance) {
+   	this.instance = instance;
+   }
+
+   @Override
+   public List<org.kie.kogito.queries.LoanApplication> execute() {
+   	return instance.executeQuery("FindApproved").stream().map(this::toResult).collect(toList());
+   }
+
+   private org.kie.kogito.queries.LoanApplication toResult(Map<String, Object> tuple) {
+   	return (org.kie.kogito.queries.LoanApplication) tuple.get("$l");
+   }
+}
+----
+
+The following is an example of a REST endpoint that takes a rule unit as input and passing the input to a query executor to return the output:
+
+.Example `LoanUnitQueryFindApprovedEndpoint` endpoint
+[source,java]
+----
+@Path("/find-approved")
+public class LoanUnitQueryFindApprovedEndpoint {
+
+   @jakarta.inject.Inject
+   RuleUnit<org.kie.kogito.queries.LoanUnit> ruleUnit;
+
+   public LoanUnitQueryFindApprovedEndpoint() {
+   }
+
+   public LoanUnitQueryFindApprovedEndpoint(RuleUnit<org.kie.kogito.queries.LoanUnit> ruleUnit) {
+   	this.ruleUnit = ruleUnit;
+   }
+
+   @POST()
+   @Produces(MediaType.APPLICATION_JSON)
+   @Consumes(MediaType.APPLICATION_JSON)
+   public List<org.kie.kogito.queries.LoanApplication> executeQuery(org.kie.kogito.queries.LoanUnit unit) {
+   	RuleUnitInstance<org.kie.kogito.queries.LoanUnit> instance = ruleUnit.createInstance(unit);
+   	return instance.executeQuery(LoanUnitQueryFindApproved.class);
+   }
+}
+----
+
+NOTE: You can also add multiple queries and for each query, a different REST endpoint is generated. For example, the `FindApproved` REST endpoint is generated for find-approved.
+--

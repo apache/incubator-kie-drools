@@ -1,0 +1,557 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[[_kierunningsection]]
+= Running
+
+
+
+== KieBase
+
+
+The `KieBase` is a repository of all the application's knowledge definitions.
+It will contain rules, processes, functions, and type models.
+The `KieBase` itself does not contain data; instead, sessions are created from the `KieBase` into which data can be inserted and from which process instances may be started.
+The `KieBase` can be obtained from the `KieContainer` containing the `KieModule` where the `KieBase` has been defined.
+
+.Getting a KieBase from a KieContainer
+====
+[source,java]
+----
+KieBase kBase = kContainer.getKieBase();
+----
+====
+
+== KieSession
+
+
+The `KieSession` stores and executes on the runtime data.
+It is created from the ``KieBase``.
+
+.KieSession
+image::KIE/BuildDeployUtilizeAndRun/KieSession.png[align="center"]
+
+
+.Create a KieSession from a KieBase
+====
+[source,java]
+----
+KieSession ksession = kbase.newKieSession();
+----
+====
+
+== KieRuntime
+
+=== KieRuntime
+
+
+The `KieRuntime` provides methods that are applicable to both rules and processes, such as setting globals and registering channels.
+("Exit point" is an obsolete synonym for "channel".)
+
+.KieRuntime
+image::KIE/BuildDeployUtilizeAndRun/KieRuntime.png[align="center"]
+
+
+==== Globals
+
+
+Globals are named objects that are made visible to the {RULE_ENGINE}, but in a way that is fundamentally different from the one for facts: changes in the object backing a global do not trigger reevaluation of rules.
+Still, globals are useful for providing static information, as an object offering services that are used in the RHS of a rule, or as a means to return objects from the {RULE_ENGINE}.
+When you use a global on the LHS of a rule, make sure it is immutable, or, at least, don't expect changes to have any effect on the behavior of your rules.
+
+A global must be declared in a rules file, and then it needs to be backed up with a Java object.
+
+[source]
+----
+global java.util.List list
+----
+
+
+With the KIE base now aware of the global identifier and its type, it is now possible to call `ksession.setGlobal()` with the global's name and an object, for any session, to associate the object with the global.
+Failure to declare the global type and identifier in DRL code will result in an exception being thrown from this call.
+
+[source,java]
+----
+List<String> list = new ArrayList<>();
+ksession.setGlobal("list", list);
+----
+
+
+Make sure to set any global before it is used in the evaluation of a rule.
+Failure to do so results in a ``NullPointerException``.
+
+== Event Model
+
+
+The event package provides means to be notified of {RULE_ENGINE} events, including rules firing, objects being asserted, etc.
+This allows separation of logging and auditing activities from the main part of your application (and the rules).
+
+The `KieRuntimeEventManager` interface is implemented by the `KieRuntime` which provides two interfaces, `RuleRuntimeEventManager` and ``ProcessEventManager``.
+We will only cover the `RuleRuntimeEventManager` here.
+
+.KieRuntimeEventManager
+image::KIE/BuildDeployUtilizeAndRun/KieRuntimeEventManager.png[align="center"]
+
+
+The `RuleRuntimeEventManager` allows for listeners to be added and removed, so that events for the working memory and the agenda can be listened to.
+
+.RuleRuntimeEventManager
+image::KIE/BuildDeployUtilizeAndRun/RuleRuntimeEventManager.png[align="center"]
+
+
+The following code snippet shows how a simple agenda listener is declared and attached to a session.
+It will print matches after they have fired.
+
+.Adding an AgendaEventListener
+====
+[source,java]
+----
+ksession.addEventListener( new DefaultAgendaEventListener() {
+    public void afterMatchFired(AfterMatchFiredEvent event) {
+        super.afterMatchFired( event );
+        System.out.println( event );
+    }
+});
+----
+====
+
+
+Drools also provides `DebugRuleRuntimeEventListener` and `DebugAgendaEventListener` which implement each method with a debug print statement.
+To print all Working Memory events, you add a listener like this:
+
+.Adding a DebugRuleRuntimeEventListener
+====
+[source,java]
+----
+ksession.addEventListener( new DebugRuleRuntimeEventListener() );
+----
+====
+
+
+All emitted events implement the `KieRuntimeEvent` interface which can be used to retrieve the actual `KnowlegeRuntime` the event originated from.
+
+.KieRuntimeEvent
+image::KIE/BuildDeployUtilizeAndRun/KieRuntimeEvent.png[align="center"]
+
+
+The events currently supported are:
+
+* MatchCreatedEvent
+* MatchCancelledEvent
+* BeforeMatchFiredEvent
+* AfterMatchFiredEvent
+* AgendaGroupPushedEvent
+* AgendaGroupPoppedEvent
+* ObjectInsertEvent
+* ObjectDeletedEvent
+* ObjectUpdatedEvent
+* ProcessCompletedEvent
+* ProcessNodeLeftEvent
+* ProcessNodeTriggeredEvent
+* ProcessStartEvent
+
+
+== KieRuntimeLogger
+
+
+The KieRuntimeLogger uses the comprehensive event system in Drools to create an audit log that can be used to log the execution of an application for later inspection, using tools such as the Eclipse audit viewer.
+
+.KieLoggers
+image::KIE/BuildDeployUtilizeAndRun/KieLoggers.png[align="center"]
+
+
+.FileLogger
+====
+[source,java]
+----
+KieRuntimeLogger logger =
+  KieServices.Factory.get().getLoggers().newFileLogger(ksession, "logdir/mylogfile");
+...
+logger.close();
+----
+====
+
+== Commands and the CommandExecutor
+
+
+KIE has the concept of stateful or stateless sessions.
+Stateful sessions have already been covered, which use the standard KieRuntime, and can be worked with iteratively over time.
+Stateless is a one-off execution of a KieRuntime with a provided data set.
+It may return some results, with the session being disposed at the end, prohibiting further iterative interactions.
+You can think of stateless as treating an engine like a function call with optional return results.
+
+The foundation for this is the `CommandExecutor` interface, which both the stateful and stateless interfaces extend.
+This returns an ``ExecutionResults``:
+
+.CommandExecutor
+image::KIE/BuildDeployUtilizeAndRun/CommandExecutor.png[align="center"]
+
+
+.ExecutionResults
+image::KIE/BuildDeployUtilizeAndRun/ExecutionResults.png[align="center"]
+
+
+The `CommandExecutor` allows for commands to be executed on those sessions, the only difference being that the StatelessKieSession executes `fireAllRules()` at the end before disposing the session.
+The commands can be created using the `CommandExecutor` .The Javadocs provide the full list of the allowed commands using the ``CommandExecutor``.
+
+setGlobal and getGlobal are two commands relevant to both Drools and jBPM.
+
+Set Global calls setGlobal underneath.
+The optional boolean indicates whether the command should return the global's value as part of the ``ExecutionResults``.
+If true it uses the same name as the global name.
+A String can be used instead of the boolean, if an alternative name is desired.
+
+
+
+.Set Global Command
+====
+[source,java]
+----
+StatelessKieSession ksession = kbase.newStatelessKieSession();
+ExecutionResults bresults =
+    ksession.execute( CommandFactory.newSetGlobal( "stilton", new Cheese( "stilton" ), true);
+Cheese stilton = bresults.getValue( "stilton" );
+----
+====
+
+Allows an existing global to be returned.
+The second optional String argument allows for an alternative return name.
+
+.Get Global Command
+====
+[source,java]
+----
+StatelessKieSession ksession = kbase.newStatelessKieSession();
+ExecutionResults bresults =
+    ksession.execute( CommandFactory.getGlobal( "stilton" );
+Cheese stilton = bresults.getValue( "stilton" );
+----
+====
+
+
+All the previous examples execute single commands.
+The `BatchExecution` represents a composite command, created from a list of commands.
+It will iterate over the list and execute each command in turn.
+This means you can insert some objects, start a process, call fireAllRules and execute a query, all in a single `execute(...)` call, which is quite powerful.
+
+The StatelessKieSession will execute `fireAllRules()` automatically at the end.
+However the keen-eyed reader probably has already noticed the `FireAllRules` command and wondered how that works with a StatelessKieSession.
+The `FireAllRules` command is allowed, and using it will disable the automatic execution at the end; think of using it as a sort of manual override function.
+
+Any command, in the batch, that has an out identifier set will add its results to the returned `ExecutionResults` instance.
+Let's look at a simple example to see how this works.
+The example presented includes command from the Drools and jBPM, for the sake of illustration.
+They are covered in more detail in the Drool and jBPM specific sections.
+
+.BatchExecution Command
+====
+[source,java]
+----
+StatelessKieSession ksession = kbase.newStatelessKieSession();
+
+List cmds = new ArrayList();
+cmds.add( CommandFactory.newInsertObject( new Cheese( "stilton", 1), "stilton") );
+cmds.add( CommandFactory.newStartProcess( "process cheeses" ) );
+cmds.add( CommandFactory.newQuery( "cheeses" ) );
+ExecutionResults bresults = ksession.execute( CommandFactory.newBatchExecution( cmds ) );
+Cheese stilton = ( Cheese ) bresults.getValue( "stilton" );
+QueryResults qresults = ( QueryResults ) bresults.getValue( "cheeses" );
+----
+====
+
+
+In the previous example multiple commands are executed, two of which populate the ``ExecutionResults``.
+The query command defaults to use the same identifier as the query name, but it can also be mapped to a different identifier.
+
+// All commands support XML and JSON marshalling using XStream, as well as JAXB marshalling.
+// This is covered in <<_ch.commands>>.
+
+== StatelessKieSession
+
+
+The `StatelessKieSession` wraps the ``KieSession``, instead of extending it.
+Its main focus is on the decision service type scenarios.
+It avoids the need to call ``dispose()``.
+Stateless sessions do not support iterative insertions and the method call `fireAllRules()` from Java code; the act of calling `execute()` is a single-shot method that will internally instantiate a ``KieSession``, add all the user data and execute user commands, call ``fireAllRules()``, and then call ``dispose()``.
+While the main way to work with this class is via the `BatchExecution` (a subinterface of ``Command``) as supported by the `CommandExecutor` interface, two convenience methods are provided for when simple object insertion is all that's required.
+The `CommandExecutor` and `BatchExecution` are talked about in detail in their own section.
+
+.StatelessKieSession
+image::KIE/BuildDeployUtilizeAndRun/StatelessKieSession.png[align="center"]
+
+
+Our simple example shows a stateless session executing a given collection of Java objects using the convenience API.
+It will iterate the collection, inserting each element in turn.
+
+.Simple StatelessKieSession execution with a Collection
+====
+[source,java]
+----
+StatelessKieSession ksession = kbase.newStatelessKieSession();
+ksession.execute( collection );
+----
+====
+
+
+If this was done as a single Command it would be as follows:
+
+.Simple StatelessKieSession execution with InsertElements Command
+====
+[source,java]
+----
+ksession.execute( CommandFactory.newInsertElements( collection ) );
+----
+====
+
+
+If you wanted to insert the collection itself, and the collection's individual elements, then `CommandFactory.newInsert(collection)` would do the job.
+
+Methods of the `CommandFactory` create the supported commands, all of which can be marshalled using XStream and the ``BatchExecutionHelper``. `BatchExecutionHelper` provides details on the XML format as well as how to use Drools Pipeline to automate the marshalling of `BatchExecution` and ``ExecutionResults``.
+
+`StatelessKieSession` supports globals, scoped in a number of ways.
+We cover the non-command way first, as commands are scoped to a specific execution call.
+Globals can be resolved in three ways.
+
+* The StatelessKieSession method `getGlobals()` returns a Globals instance which provides access to the session's globals. These are used for _all_ execution calls. Exercise caution regarding mutable globals because execution calls can be executing simultaneously in different threads.
++
+
+.Session scoped global
+====
+[source,java]
+----
+StatelessKieSession ksession = kbase.newStatelessKieSession();
+// Set a global hbnSession, that can be used for DB interactions in the rules.
+ksession.setGlobal( "hbnSession", hibernateSession );
+// Execute while being able to resolve the "hbnSession" identifier.
+ksession.execute( collection );
+----
+====
+* Using a delegate is another way of global resolution. Assigning a value to a global (with ``setGlobal(String, Object)``) results in the value being stored in an internal collection mapping identifiers to values. Identifiers in this internal collection will have priority over any supplied delegate. Only if an identifier cannot be found in this internal collection, the delegate global (if any) will be used.
+* The third way of resolving globals is to have execution scoped globals. Here, a `Command` to set a global is passed to the ``CommandExecutor``.
+
+
+The `CommandExecutor` interface also offers the ability to export data via "out" parameters.
+Inserted facts, globals and query results can all be returned.
+
+.Out identifiers
+====
+[source,java]
+----
+// Set up a list of commands
+List cmds = new ArrayList();
+cmds.add( CommandFactory.newSetGlobal( "list1", new ArrayList(), true ) );
+cmds.add( CommandFactory.newInsert( new Person( "jon", 102 ), "person" ) );
+cmds.add( CommandFactory.newQuery( "Get People", "getPeople" ) );
+
+// Execute the list
+ExecutionResults results =
+  ksession.execute( CommandFactory.newBatchExecution( cmds ) );
+
+// Retrieve the ArrayList
+results.getValue( "list1" );
+// Retrieve the inserted Person fact
+results.getValue( "person" );
+// Retrieve the query as a QueryResults instance.
+results.getValue( "Get People" );
+----
+====
+
+== Marshalling
+
+
+The `KieMarshallers` are used to marshal and unmarshal KieSessions.
+
+.KieMarshallers
+image::KIE/BuildDeployUtilizeAndRun/KieMarshallers.png[align="center"]
+
+
+An instance of the `KieMarshallers` can be retrieved from the ``KieServices``.
+A simple example is shown below:
+
+.Simple Marshaller Example
+====
+[source,java]
+----
+// ksession is the KieSession
+// kbase is the KieBase
+ByteArrayOutputStream baos = new ByteArrayOutputStream();
+Marshaller marshaller = KieServices.Factory.get().getMarshallers().newMarshaller( kbase );
+marshaller.marshall( baos, ksession );
+baos.close();
+----
+====
+
+
+However, with marshalling, you will need more flexibility when dealing with referenced user data.
+To achieve this use the `ObjectMarshallingStrategy` interface.
+Two implementations are provided, but users can implement their own.
+The two supplied strategies are `IdentityMarshallingStrategy` and ``SerializeMarshallingStrategy``. `SerializeMarshallingStrategy` is the default, as shown in the example above, and it just calls the `Serializable` or `Externalizable` methods on a user instance. `IdentityMarshallingStrategy` creates an integer id for each user object and stores them in a Map, while the id is written to the stream.
+When unmarshalling it accesses the `IdentityMarshallingStrategy` map to retrieve the instance.
+This means that if you use the ``IdentityMarshallingStrategy``, it is stateful for the life of the Marshaller instance and will create ids and keep references to all objects that it attempts to marshal.
+Below is the code to use an Identity Marshalling Strategy.
+
+.IdentityMarshallingStrategy
+====
+[source,java]
+----
+ByteArrayOutputStream baos = new ByteArrayOutputStream();
+KieMarshallers kMarshallers = KieServices.Factory.get().getMarshallers()
+ObjectMarshallingStrategy oms = kMarshallers.newIdentityMarshallingStrategy()
+Marshaller marshaller =
+        kMarshallers.newMarshaller( kbase, new ObjectMarshallingStrategy[]{ oms } );
+marshaller.marshall( baos, ksession );
+baos.close();
+----
+====
+
+
+In most cases, a single strategy is insufficient.
+For added flexibility, the `ObjectMarshallingStrategyAcceptor` interface can be used.
+This Marshaller has a chain of strategies, and while reading or writing a user object it iterates the strategies asking if they accept responsibility for marshalling the user object.
+One of the provided implementations is ``ClassFilterAcceptor``.
+This allows strings and wild cards to be used to match class names.
+The default is "*.*", so in the previous example the Identity Marshalling Strategy is used which has a default "*.*" acceptor.
+
+Assuming that we want to serialize all classes except for one given package, where we will use identity lookup, we could do the following:
+
+.IdentityMarshallingStrategy with Acceptor
+====
+[source,java]
+----
+ByteArrayOutputStream baos = new ByteArrayOutputStream();
+KieMarshallers kMarshallers = KieServices.Factory.get().getMarshallers()
+ObjectMarshallingStrategyAcceptor identityAcceptor =
+        kMarshallers.newClassFilterAcceptor( new String[] { "org.domain.pkg1.*" } );
+ObjectMarshallingStrategy identityStrategy =
+        kMarshallers.newIdentityMarshallingStrategy( identityAcceptor );
+ObjectMarshallingStrategy sms = kMarshallers.newSerializeMarshallingStrategy();
+Marshaller marshaller =
+        kMarshallers.newMarshaller( kbase,
+                                    new ObjectMarshallingStrategy[]{ identityStrategy, sms } );
+marshaller.marshall( baos, ksession );
+baos.close();
+----
+====
+
+
+Note that the acceptance checking order is in the natural order of the supplied elements.
+
+== Persistence and Transactions
+
+
+Longterm out of the box persistence with Java Persistence API (JPA) is possible with Drools.
+It is necessary to have some implementation of the Java Transaction API (JTA) installed.
+For development purposes the Bitronix Transaction Manager is suggested, as it's simple to set up and works embedded, but for production use JBoss Transactions is recommended.
+
+.Simple example using transactions
+====
+[source,java]
+----
+KieServices kieServices = KieServices.Factory.get();
+Environment env = kieServices.newEnvironment();
+env.set( EnvironmentName.ENTITY_MANAGER_FACTORY,
+         Persistence.createEntityManagerFactory( "emf-name" ) );
+env.set( EnvironmentName.TRANSACTION_MANAGER,
+         TransactionManagerServices.getTransactionManager() );
+
+// KieSessionConfiguration may be null, and a default will be used
+KieSession ksession =
+        kieServices.getStoreServices().newKieSession( kbase, null, env );
+int sessionId = ksession.getId();
+
+UserTransaction ut =
+  (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
+ut.begin();
+ksession.insert( data1 );
+ksession.insert( data2 );
+ksession.startProcess( "process1" );
+ut.commit();
+----
+====
+
+
+To use a JPA, the Environment must be set with both the `EntityManagerFactory` and the ``TransactionManager``.
+If rollback occurs the ksession state is also rolled back, hence it is possible to continue to use it after a rollback.
+To load a previously persisted KieSession you'll need the id, as shown below:
+
+.Loading a KieSession
+====
+[source,java]
+----
+KieSession ksession =
+        kieServices.getStoreServices().loadKieSession( sessionId, kbase, null, env );
+----
+====
+
+
+To enable persistence several classes must be added to your persistence.xml, as in the example below:
+
+.Configuring JPA
+====
+[source,xml]
+----
+<persistence-unit name="org.drools.persistence.jpa" transaction-type="JTA">
+   <provider>org.hibernate.ejb.HibernatePersistence</provider>
+   <jta-data-source>jdbc/BitronixJTADataSource</jta-data-source>
+   <class>org.drools.persistence.info.SessionInfo</class>
+   <class>org.drools.persistence.info.WorkItemInfo</class>
+   <properties>
+         <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
+         <property name="hibernate.max_fetch_depth" value="3"/>
+         <property name="hibernate.hbm2ddl.auto" value="update" />
+         <property name="hibernate.show_sql" value="true" />
+         <property name="hibernate.transaction.manager_lookup_class"
+                      value="org.hibernate.transaction.BTMTransactionManagerLookup" />
+   </properties>
+</persistence-unit>
+----
+====
+
+
+The jdbc JTA data source would have to be configured first.
+Bitronix provides a number of ways of doing this, and its documentation should be consulted for details.
+For a quick start, here is the programmatic approach:
+
+.Configuring JTA DataSource
+====
+[source,java]
+----
+PoolingDataSource fs = new PoolingDataSource();
+fs.setUniqueName( "jdbc/BitronixJTADataSource" );
+fs.setClassName( "org.h2.jdbcx.JdbcDataSource" );
+fs.setMaxPoolSize( 3 );
+fs.setAllowLocalTransactions( true );
+fs.getDriverProperties().put( "user", "sa" );
+fs.getDriverProperties().put( "password", "sasa" );
+fs.getDriverProperties().put( "URL", "jdbc:h2:mem:mydb" );
+fs.init();
+----
+====
+
+
+Bitronix also provides a simple embedded JNDI service, ideal for testing.
+To use it, add a jndi.properties file to your META-INF folder and add the following line to it:
+
+.JNDI properties
+====
+[source]
+----
+java.naming.factory.initial=bitronix.tm.jndi.BitronixInitialContextFactory
+----
+====

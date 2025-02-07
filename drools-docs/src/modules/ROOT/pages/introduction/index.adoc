@@ -1,0 +1,42 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+:DROOLS:
+include::../_artifacts/document-attributes.adoc[]
+
+[[introduction]]
+
+:context: introduction
+
+[id='{context}']
+= Introduction
+
+link:https://www.drools.org/[{PRODUCT}] is a set of projects focusing on intelligent automation and decision management, most notably providing a forward-chaining and backward-chaining inference-based **rule engine**, DMN decisions engine and other projects. A rule engine is a fundamental building block to create an expert system which, in artificial intelligence, is a computer system that emulates the decision-making ability of a human expert.
+
+{PRODUCT} is part of KIE (Knowledge Is Everything) open source community, which consists of various related projects, or groups of projects, that complete a portfolio of solutions for business automation and management. The most important other KIE projects or groups of projects are:
+
+1. link:https://kogito.kie.org/[Kogito] is a cloud-native business automation for building intelligent applications, backed by battle-tested capabilities. It consists of multiple components, including {PRODUCT}, UI modelling tools, like VS Code editors extensions, etc.
+2. link:https://www.optaplanner.org/[OptaPlanner] is a fast, easy-to-use, open source AI constraint solver for software developers. It is a lightweight, embeddable planning engine.
+3. link:https://www.jbpm.org/[jBPM] is a toolkit for building business applications to help automate business processes and decisions.
+
+== Additional resources
+link:https://github.com/kiegroup/drools/[{PRODUCT} source code]
+
+include::_intro-getting-involved.adoc[leveloffset=+1]
+include::_intro-building-the-source.adoc[leveloffset=+1]

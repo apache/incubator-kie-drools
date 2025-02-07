@@ -1,0 +1,117 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='phreak-rule-evaluation-con_{context}']
+
+= Rule evaluation in Phreak
+
+When the {RULE_ENGINE} starts, all rules are considered to be _unlinked_ from pattern-matching data that can trigger the rules. At this stage, the Phreak algorithm in the {RULE_ENGINE} does not evaluate the rules. The `insert`, `update`, and `delete` actions are queued, and Phreak uses a heuristic, based on the rule most likely to result in execution, to calculate and select the next rule for evaluation. When all the required input values are populated for a rule, the rule is considered to be _linked_ to the relevant pattern-matching data. Phreak then creates a goal that represents this rule and places the goal into a priority queue that is ordered by rule salience. Only the rule for which the goal was created is evaluated, and other potential rule evaluations are delayed. While individual rules are evaluated, node sharing is still achieved through the process of segmentation.
+
+Unlike the tuple-oriented Rete, the Phreak propagation is collection oriented. For the rule that is being evaluated, the {RULE_ENGINE} accesses the first node and processes all queued insert, update, and delete actions. The results are added to a set, and the set is propagated to the child node. In the child node, all queued insert, update, and delete actions are processed, adding the results to the same set. The set is then propagated to the next child node and the same process repeats until it reaches the terminal node. This cycle creates a batch process effect that can provide performance advantages for certain rule constructs.
+
+The linking and unlinking of rules happens through a layered bit-mask system, based on network segmentation. When the rule network is built, segments are created for rule network nodes that are shared by the same set of rules. A rule is composed of a path of segments. In case a rule does not share any node with any other rule, it becomes a single segment.
+
+A bit-mask offset is assigned to each node in the segment. Another bit mask is assigned to each segment in the path of the rule according to these requirements:
+
+* If at least one input for a node exists, the node bit is set to the `on` state.
+* If each node in a segment has the bit set to the `on` state, the segment bit is also set to the `on` state.
+* If any node bit is set to the `off` state, the segment is also set to the `off` state.
+* If each segment in the path of the rule is set to the `on` state, the rule is considered linked, and a goal is created to schedule the rule for evaluation.
+
+The same bit-mask technique is used to track modified nodes, segments, and rules. This tracking ability enables an already linked rule to be unscheduled from evaluation if it has been modified since the evaluation goal for it was created. As a result, no rules can ever evaluate partial matches.
+
+This process of rule evaluation is possible in Phreak because, as opposed to a single unit of memory in Rete, Phreak has three layers of contextual memory with node, segment, and rule memory types. This layering enables much more contextual understanding during the evaluation of a rule.
+
+.Phreak three-layered memory system
+ifdef::DROOLS,JBPM,OP[]
+image::rule-engine/LayeredMemory.png[align="center"]
+endif::[]
+ifdef::DM,PAM[]
+image::rule-engine/LayeredMemory_enterprise.png[align="center"]
+endif::[]
+
+The following examples illustrate how rules are organized and evaluated in this three-layered memory system in Phreak.
+
+*Example 1:* A single rule (R1) with three patterns: A, B and C. The rule forms a single segment, with bits 1, 2, and 4 for the nodes. The single segment has a bit offset of 1.
+
+.Example 1: Single rule
+ifdef::DROOLS,JBPM,OP[]
+image::rule-engine/segment1.png[align="center"]
+endif::[]
+ifdef::DM,PAM[]
+image::rule-engine/segment1_enterprise.png[align="center"]
+endif::[]
+
+*Example 2:* Rule R2 is added and shares pattern A.
+
+.Example 2: Two rules with pattern sharing
+ifdef::DROOLS,JBPM,OP[]
+image::rule-engine/segment2.png[align="center"]
+endif::[]
+ifdef::DM,PAM[]
+image::rule-engine/segment2_enterprise.png[align="center"]
+endif::[]
+
+Pattern A is placed in its own segment, resulting in two segments for each rule. Those two segments form a path for their respective rules. The first segment is shared by both paths. When pattern A is linked, the segment becomes linked. The segment then iterates over each path that the segment is shared by, setting the bit 1 to `on`. If patterns B and C are later turned on, the second segment for path R1 is linked, and this causes bit 2 to be turned on for R1. With bit 1 and bit 2 turned on for R1, the rule is now linked and a goal is created to schedule the rule for later evaluation and execution.
+
+When a rule is evaluated, the segments enable the results of the matching to be shared. Each segment has a staging memory to queue all inserts, updates, and deletes for that segment. When R1 is evaluated, the rule processes pattern A, and this results in a set of tuples. The algorithm detects a segmentation split, creates peered tuples for each insert, update, and delete in the set, and adds them to the R2 staging memory. Those tuples are then merged with any existing staged tuples and are executed when R2 is eventually evaluated.
+
+*Example 3:* Rules R3 and R4 are added and share patterns A and B.
+
+.Example 3: Three rules with pattern sharing
+ifdef::DROOLS,JBPM,OP[]
+image::rule-engine/segment3.png[align="center"]
+endif::[]
+ifdef::DM,PAM[]
+image::rule-engine/segment3_enterprise.png[align="center"]
+endif::[]
+
+Rules R3 and R4 have three segments and R1 has two segments. Patterns A and B are shared by R1, R3, and R4, while pattern D is shared by R3 and R4.
+
+*Example 4:* A single rule (R1) with a subnetwork and no pattern sharing.
+
+.Example 4: Single rule with a subnetwork and no pattern sharing
+ifdef::DROOLS,JBPM,OP[]
+image::rule-engine/segment4.png[align="center"]
+endif::[]
+ifdef::DM,PAM[]
+image::rule-engine/segment4_enterprise.png[align="center"]
+endif::[]
+
+Subnetworks are formed when a `Not`, `Exists`, or `Accumulate` node contains more than one element. In this example, the element `B not( C )` forms the subnetwork. The element `not( C )` is a single element that does not require a subnetwork and is therefore merged inside of the `Not` node. The subnetwork uses a dedicated segment. Rule R1 still has a path of two segments and the subnetwork forms another inner path. When the subnetwork is linked, it is also linked in the outer segment.
+
+*Example 5:* Rule R1 with a subnetwork that is shared by rule R2.
+
+.Example 5: Two rules, one with a subnetwork and pattern sharing
+ifdef::DROOLS,JBPM,OP[]
+image::rule-engine/segment5.png[align="center"]
+endif::[]
+ifdef::DM,PAM[]
+image::rule-engine/segment5_enterprise.png[align="center"]
+endif::[]
+
+The subnetwork nodes in a rule can be shared by another rule that does not have a subnetwork. This sharing causes the subnetwork segment to be split into two segments.
+
+Constrained `Not` nodes and `Accumulate` nodes can never unlink a segment, and are always considered to have their bits turned on.
+
+The Phreak evaluation algorithm is stack based instead of method-recursion based. Rule evaluation can be paused and resumed at any time when a `StackEntry` is used to represent the node currently being evaluated.
+
+When a rule evaluation reaches a subnetwork, a `StackEntry` object is created for the outer path segment and the subnetwork segment. The subnetwork segment is evaluated first, and when the set reaches the end of the subnetwork path, the segment is merged into a staging list for the outer node that the segment feeds into. The previous `StackEntry` object is then resumed and can now process the results of the subnetwork. This process has the added benefit, especially for `Accumulate` nodes, that all work is completed in a batch, before propagating to the child node.
+
+The same stack system is used for efficient backward chaining. When a rule evaluation reaches a query node, the evaluation is paused and the query is added to the stack. The query is then evaluated to produce a result set, which is saved in a memory location for the resumed `StackEntry` object to pick up and propagate to the child node. If the query itself called other queries, the process repeats, while the current query is paused and a new evaluation is set up for the current query node.

@@ -1,0 +1,65 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='assembly-getting-started-decision-services']
+= Getting started with decision services in {PRODUCT}
+// Context attribute is assembly specific and enables module reuse between assemblies.
+:context: getting-started-decision-services
+
+// Purpose statement for the assembly
+As a business rules developer, you can use {PRODUCT} to design a variety of decision services. This document describes how to create and test an example traffic violation project based on the *Traffic_Violation* sample project available from the https://github.com/kiegroup/kogito-examples/tree/stable/kogito-quarkus-examples/dmn-quarkus-example[Kogito Examples GitHub repository]. This sample project uses a Decision Model and Notation (DMN) model to define driver penalty and suspension rules in a traffic violation decision service. You can follow the steps in this document to create the project and the assets it contains, or open and review the existing *Traffic_Violation* sample project. Alternatively, you may directly skip to the project evaluation by checking out locally the ready-made *Traffic_Violation* sample project from the link above, and jumping to the xref:#gs-evaluating-dmn_{context}[Evaluating the traffic violations DMN model with {PRODUCT}] section.
+
+For more information about the DMN components and implementation in {PRODUCT}, see xref:#dmn-con_dmn-models[DMN Engine in Drools section].
+
+.Prerequisites
+* Having identified the target deployment platform, such as using {PRODUCT} as an embedded Java library or {KOGITO} for cloud-native platform
+* Having satisfied prerequisites of the target deployment platform
+* Considering deployment procedures of the target deployment platform while following this tutorial
+
+// Modules - concepts, procedures, refs, etc.
+
+include::../DMN/_dmn-gs-new-project-creating-proc.adoc[leveloffset=+1]
+
+// content re-placed to be [discrete] and not appear in TOC
+[id='dmn_{context}']
+[discrete]
+== Decision Model and Notation (DMN)
+Decision Model and Notation (DMN) is a standard established by the Object Management Group (OMG) for describing and modeling operational decisions. DMN defines an XML schema that enables DMN models to be shared between DMN-compliant platforms and across organizations so that business analysts and business rules developers can collaborate in designing and implementing DMN decision services. The DMN standard is similar to and can be used together with the Business Process Model and Notation (BPMN) standard for designing and modeling business processes.
+
+For general information about the background and applications of DMN, see the https://www.drools.org/learn/dmn.html[Drools DMN landing page].
+
+include::../DMN/_dmn-gs-creating-drd-proc.adoc[leveloffset=+2]
+include::../DMN/_dmn-gs-creating-custom-datatypes-proc.adoc[leveloffset=+2]
+include::../DMN/_dmn-gs-assigning-custom-datatypes-proc.adoc[leveloffset=+2]
+include::../DMN/_dmn-gs-defining-decision-logic-proc.adoc[leveloffset=+2]
+
+// content re-placed to be [discrete] and not appear in TOC
+[id='test-scenarios-intro-con_{context}']
+[discrete]
+== Test scenarios
+
+Test scenarios in {PRODUCT} enable you to validate the functionality of business rules and business rule data (for rules-based test scenarios) or of DMN models (for DMN-based test scenarios) before deploying them into a production environment. With a test scenario, you use data from your project to set given conditions and expected results based on one or more defined business rules. When you run the scenario, the expected results and actual results of the rule instance are compared. If the expected results match the actual results, the test is successful. If the expected results do not match the actual results, then the test fails.
+
+You can run the defined test scenarios in a number of ways, for example, you can run available test scenarios at the project level or inside a specific test scenario asset. Test scenarios are independent and cannot affect or modify other test scenarios. You can run test scenarios at any time during project development in {PRODUCT}. 
+
+You can import data objects from different packages to the same project package as the test scenario. Assets in the same package are imported by default. After you create the necessary data objects and the test scenario, you can use the *Data Objects* tab of the test scenarios designer to verify that all required data objects are listed or to import other existing data objects by adding a *New item*.
+
+include::../DMN/_dmn-gs-testing-test-scenario-proc.adoc[leveloffset=+2]
+
+include::../DMN/_dmn-gs-evaluating-proc.adoc[leveloffset=+1]

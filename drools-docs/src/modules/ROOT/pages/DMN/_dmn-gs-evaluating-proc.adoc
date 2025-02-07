@@ -1,0 +1,239 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='gs-evaluating-dmn_{context}']
+= Evaluating the traffic violations DMN model with {PRODUCT}
+
+The instructions to follow to evaluate the traffic violation DMN model depends on the chosen target deployment platform from the prerequisite.
+
+For more details about available options to evaluate DMN models depending on the target deployment platform, make reference to:
+<<dmn-execution-con_dmn-models>>.
+
+[id='evaluating-dmn-example-archetype_{context}']
+== Example: {DMN_ENGINE} as an embedded library use
+
+The following examples assumes {DMN_ENGINE} is used as an embedded library in a given deployment platform.
+
+The source code and unit test code for the *Traffic_Violation* DMN model is available when generating the Maven Archetype.
+
+Create a project with the following command.
+
+[source,shell,subs=attributes+]
+----
+mvn archetype:generate -DarchetypeGroupId=org.kie -DarchetypeArtifactId=kie-drools-dmn-archetype -DarchetypeVersion={drools-version}
+----
+
+During the command execution, input property values interactively. 
+[source,subs=attributes+]
+----
+Define value for property 'groupId': org.example
+Define value for property 'artifactId': my-project
+Define value for property 'version' 1.0-SNAPSHOT: : 
+Define value for property 'package' org.example: : 
+...
+ Y: : Y
+...
+[INFO] BUILD SUCCESS
+----
+
+Now your first rule project is created. Let's look into the project.
+
+Firstly, `pom.xml`.
+[source,xml]
+----
+<dependency>
+    <groupId>org.kie</groupId>
+    <artifactId>kie-dmn-core</artifactId>
+</dependency>
+<dependency>
+    <groupId>org.drools</groupId>
+    <artifactId>drools-xml-support</artifactId>
+</dependency>
+<dependency>
+    <groupId>org.drools</groupId>
+    <artifactId>drools-model-compiler</artifactId>
+</dependency>
+----
+They are required dependencies for using {DMN_ENGINE} as an embedded library.
+
+The archetype contains the DMN file as an example `src/main/resources/Traffic Violation.dmn`, which was described at length in the previous sections.
+
+Finally, `src/test/java/org/example/TrafficViolationTest.java` is the test case that evaluate the DMN model.
+You can learn the basic API usage that is used in your own applications.
+
+[source,java]
+----
+Map<String, ?> driver = of("Points", 2);
+Map<String, ?> violation = of("Type", "speed", "Actual Speed", 120, "Speed Limit", 100);
+
+DMNContext dmnContext = dmnRuntime.newContext();
+dmnContext.set("Driver", driver);
+dmnContext.set("Violation", violation);
+----
+Create a `DMNContext` with some example test data for `Driver` and `Violation` InputData nodes in the DMN model; alternatively, you can supply your own Pojos.
+
+[source,java]
+----
+LOG.info("Evaluating DMN model");
+DMNResult dmnResult = dmnRuntime.evaluateAll(dmnModelUT, dmnContext);
+----
+Evaluate the *Traffic_Violation* DMN model using the actual test data in the `DMNContext`.
+
+[source,java]
+----
+LOG.info("Checking results: {}", dmnResult);
+assertFalse(dmnResult.hasErrors());
+----
+Check no error was reported while evaluating the *Traffic_Violation* DMN model.
+
+[source,java]
+----
+assertEquals(DecisionEvaluationStatus.SUCCEEDED, dmnResult.getDecisionResultByName("Should the driver be suspended?").getEvaluationStatus());
+assertEquals("No", dmnResult.getDecisionResultByName("Should the driver be suspended?").getResult());
+----
+Check the result of the final decision `Should the driver be suspended?` is valorised as the string `No`.
+
+Let's run the test with `mvn clean verify`.
+----
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running org.example.TrafficViolationTest
+2022-08-29 16:11:44,539 [main] INFO  Evaluating DMN model
+2022-08-29 16:11:44,540 [main] INFO  Checking results: DMNResultImpl{context={
+    Driver: {
+        Points: 2
+    }
+    Violation: {
+        Type: speed
+        Speed Limit: 100
+        Actual Speed: 120
+    }
+    Fine: {
+        Points: 3
+        Amount: 500
+    }
+    Should the driver be suspended?: No
+}
+, messages=org.kie.dmn.core.util.DefaultDMNMessagesManager@4f89331f}
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 s - in org.example.TrafficViolationTest
+----
+
+Feel free to use this archetype-generate project as a basis by modifying the existing DMN model or creating brand new DMN models!
+The archetype also contain more advanced test cases, using the SceSim tool.
+
+[id='evaluating-dmn-example-kogito_{context}']
+== Example: Kogito as the target deployment platform
+
+The following examples assumes {KOGITO} is the chosen target deployment platform.
+
+The source code and detailed runtime instructions for the *Traffic_Violation* sample project are readily made available for {KOGITO} from the https://github.com/kiegroup/kogito-examples/tree/stable/kogito-quarkus-examples/dmn-quarkus-example[Kogito Examples GitHub repository].
+
+.Procedure
+. Determine the base URL for accessing the REST API endpoints. This requires knowing the following values (with the default local deployment values as an example):
++
+--
+* Host (`localhost`)
+* Port (`8080`)
+* REST path (none specific)
+
+Example base URL in local deployment for the traffic violations project:
+
+`\http://localhost:8080/Traffic Violation`
+
+--
+. Determine user authentication requirements.
++
+If users and roles are configured on the Kogito on Quarkus application, HTTP Basic authentication may be required with user name and password. Successful requests require that the user have the configured role.
++
+The following example demonstrates how to add credentials to a curl request:
++
+[source,sh]
+----
+curl -u username:password <request>
+----
++
+If the Kogito on Quarkus application is configured with {RH-SSO}, the request must include a bearer token:
++
+[source,java]
+----
+curl -H "Authorization: bearer $TOKEN" <request>
+----
+
+. Execute the DMN model:
++
+--
+*[POST]* `Traffic%20Violation`
+
+Example curl request:
+
+[source]
+----
+curl -L -X POST 'localhost:8080/Traffic Violation' \
+-H 'Content-Type: application/json' \
+-H 'Accept: application/json' \
+--data-raw '{
+    "Driver": {
+        "Points": 2
+    },
+    "Violation": {
+        "Type": "speed",
+        "Actual Speed": 120,
+        "Speed Limit": 100
+    }
+}'
+----
+
+Example JSON request:
+
+[source,json]
+----
+{
+    "Driver": {
+        "Points": 2
+    },
+    "Violation": {
+        "Type": "speed",
+        "Actual Speed": 120,
+        "Speed Limit": 100
+    }
+}
+----
+
+Example JSON response:
+
+[source,json]
+----
+{
+    "Driver": {
+        "Points": 2
+    },
+    "Violation": {
+        "Type": "speed",
+        "Actual Speed": 120,
+        "Speed Limit": 100
+    },
+    "Fine": {
+        "Points": 3,
+        "Amount": 500
+    },
+    "Should the driver be suspended?": "No"
+}
+----
+--

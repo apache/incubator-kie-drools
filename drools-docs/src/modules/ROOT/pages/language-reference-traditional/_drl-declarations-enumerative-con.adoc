@@ -1,0 +1,42 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='drl-declarations-enumerative-con_{context}']
+= Enumerative type declarations in DRL
+
+DRL supports the declaration of enumerative types in the format `declare enum <factType>`, followed by a comma-separated list of values ending with a semicolon. You can then use the enumerative list in the rules in the DRL file.
+
+For example, the following enumerative type declaration defines days of the week for an employee scheduling rule:
+
+.Example enumerative type declaration with a scheduling rule
+[source]
+----
+declare enum DaysOfWeek
+   SUN("Sunday"),MON("Monday"),TUE("Tuesday"),WED("Wednesday"),THU("Thursday"),FRI("Friday"),SAT("Saturday");
+
+   fullName : String
+end
+
+rule "Using a declared Enum"
+when
+   $emp : Employee( dayOff == DaysOfWeek.MON )
+then
+   ...
+end
+----

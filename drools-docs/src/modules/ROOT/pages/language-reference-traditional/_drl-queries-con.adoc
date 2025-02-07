@@ -1,0 +1,181 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='drl-queries-con_{context}']
+= Queries in DRL
+
+ifdef::DROOLS,JBPM,OP[]
+.Query
+image::language-reference/query.png[align="center"]
+endif::[]
+
+Queries in DRL files search the working memory of the {RULE_ENGINE} for facts related to the rules in the DRL file. You add the query definitions in DRL files and then obtain the matching results in your application code. Queries search for a set of defined conditions and do not require `when` or `then` specifications. Query names are global to the KIE base and therefore must be unique among all other rule queries in the project. To return the results of a query, you construct a `QueryResults` definition using `ksession.getQueryResults("name")`, where `"name"` is the query name. This returns a list of query results, which enable you to retrieve the objects that matched the query. You define the query and query results parameters above the rules in the DRL file.
+
+The following example is a query definition in a DRL file for underage applicants in a mortgage application decision service, with the accompanying application code:
+
+.Example query definition in a DRL file
+[source]
+----
+query "people under the age of 21"
+    $person : Person( age < 21 )
+end
+----
+
+.Example application code to obtain query results
+[source,java]
+----
+QueryResults results = ksession.getQueryResults( "people under the age of 21" );
+System.out.println( "we have " + results.size() + " people under the age  of 21" );
+----
+
+You can also iterate over the returned `QueryResults` using a standard `for` loop. Each element is a `QueryResultsRow` that you can use to access each of the columns in the tuple.
+
+.Example application code to obtain and iterate over query results
+[source,java]
+----
+QueryResults results = ksession.getQueryResults( "people under the age of 21" );
+System.out.println( "we have " + results.size() + " people under the age of 21" );
+
+System.out.println( "These people are under the age of 21:" );
+
+for ( QueryResultsRow row : results ) {
+    Person person = ( Person ) row.get( "person" );
+    System.out.println( person.getName() + "\n" );
+}
+----
+
+ifdef::DROOLS,JBPM,OP[]
+Support for positional syntax has been added for more compact code.
+By default the declared type order in the type declaration matches the argument position.
+But it possible to override these using the @position annotation.
+This allows patterns to be used with positional arguments, instead of the more verbose named arguments.
+
+[source]
+----
+declare Cheese
+    name : String @position(1)
+    shop : String @position(2)
+    price : int @position(0)
+end
+----
+
+
+The @Position annotation, in the org.drools.definition.type package, can be used to annotate original pojos on the classpath.
+Currently only fields on classes can be annotated.
+Inheritance of classes is supported, but not interfaces or methods.
+The isContainedIn query below demonstrates the use of positional arguments in a pattern; `Location(x, y;)` instead of `Location( thing == x, location == y).`
+
+Queries can now call other queries, this combined with optional query arguments provides derivation query style backward chaining.
+Positional and named syntax is supported for arguments.
+It is also possible to mix both positional and named, but positional must come first, separated by a semi colon.
+Literal expressions can be passed as query arguments, but at this stage you cannot mix expressions with variables.
+Here is an example of a query that calls another query.
+Note that 'z' here will always be an 'out' variable.
+The '?' symbol means the query is pull only, once the results are returned you will not receive further results as the underlying data changes.
+
+[source]
+----
+declare Location
+    thing : String
+    location : String
+end
+
+query isContainedIn( String x, String y )
+    Location(x, y;)
+    or
+    ( Location(z, y;) and ?isContainedIn(x, z;) )
+end
+----
+
+
+As previously mentioned you can use live "open" queries to reactively receive changes over time from the query results, as the underlying data it queries against changes.
+Notice the "look" rule calls the query without using '?'.
+
+[source]
+----
+query isContainedIn( String x, String y )
+    Location(x, y;)
+    or
+    ( Location(z, y;) and isContainedIn(x, z;) )
+end
+
+rule look when
+    Person( $l : likes )
+    isContainedIn( $l, 'office'; )
+then
+   insertLogical( $l 'is in the office' );
+end
+----
+
+
+Drools supports unification for derivation queries, in short this means that arguments are optional.
+It is possible to call queries from Java leaving arguments unspecified using the static field org.drools.core.runtime.rule.Variable.v - note you must use 'v' and not an alternative instance of Variable.
+These are referred to as 'out' arguments.
+Note that the query itself does not declare at compile time whether an argument is in or an out, this can be defined purely at runtime on each use.
+The following example will return all objects contained in the office.
+
+[source]
+----
+results = ksession.getQueryResults( "isContainedIn", new Object[] {  Variable.v, "office" } );
+l = new ArrayList<List<String>>();
+for ( QueryResultsRow r : results ) {
+    l.add( Arrays.asList( new String[] { (String) r.get( "x" ), (String) r.get( "y" ) } ) );
+}
+----
+
+
+The algorithm uses stacks to handle recursion, so the method stack will not blow up.
+
+It is also possible to use as input argument for a query both the field of a fact as in:
+
+[source]
+----
+query contains(String $s, String $c)
+    $s := String( this.contains( $c ) )
+end
+
+rule PersonNamesWithA when
+    $p : Person()
+    contains( $p.name, "a"; )
+then
+end
+----
+
+and more in general any kind of valid expression like in:
+
+[source]
+----
+query checkLength(String $s, int $l)
+    $s := String( length == $l )
+end
+
+rule CheckPersonNameLength when
+    $i : Integer()
+    $p : Person()
+    checkLength( $p.name, 1 + $i + $p.age; )
+then
+end
+----
+
+
+The following is not yet supported:
+
+* List and Map unification
+* Expression unification - pred( X, X + 1, X * Y / 7 )
+endif::[]

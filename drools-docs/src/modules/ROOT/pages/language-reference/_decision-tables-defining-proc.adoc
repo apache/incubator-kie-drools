@@ -1,0 +1,85 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='decision-tables-defining-proc']
+= Defining spreadsheet decision tables
+
+Spreadsheet decision tables (XLS or XLSX) require two key areas that define rule data: a `RuleSet` area and a `RuleTable` area. The `RuleSet` area of the spreadsheet defines elements that you want to apply globally to all rules in the same package (not only the spreadsheet), such as a rule set name or universal rule attributes. The `RuleTable` area defines the actual rules (rows) and the conditions, actions, and other rule attributes (columns) that constitute that rule table within the specified rule set. A spreadsheet of decision tables can contain multiple `RuleTable` areas, but only one `RuleSet` area.
+
+TIP: Starting with Drools v8, file extension must end in either `.drl.xls`, `.drl.xlsx`, or `.drl.csv` as mentioned in the Release Notes.
+
+IMPORTANT: You should typically write only one spreadsheet of decision tables, containing all necessary `RuleTable` definitions, per rule package. You can write separate decision table spreadsheets for separate packages, but writing multiple spreadsheets in the same package can cause compilation errors from conflicting `RuleSet` or `RuleTable` attributes and is therefore not recommended.
+
+Refer to the following sample spreadsheet as you define your decision table:
+
+.Sample spreadsheet decision table for shipping charges
+image::language-reference/decision-table-example-02.png[Decision table example]
+
+.Procedure
+. In a new XLS or XLSX spreadsheet, go to the second or third column and label a cell `RuleSet` (row 1 in example). Reserve the column or columns to the left for descriptive metadata (optional).
+. In the next cell to the right, enter a name for the `RuleSet`. This named rule set will contain all `RuleTable` rules defined in the rule package.
+. Under the `RuleSet` cell, define any rule attributes (one per cell) that you want to apply globally to all rule tables in the package. Specify attribute values in the cells to the right. For example, you can enter an `Import` label and in the cell to the right, specify relevant data objects from other packages that you want to import into the package for the decision table (in the format `package.name.object.name`). For supported cell labels and values, see xref:decision-tables-rule-set-entries-ref[].
+. Below the `RuleSet` area and in the same column as the `RuleSet` cell, skip a row and label a new cell `RuleTable` (row 7 in example) and enter a table name in the same cell. The name is used as the initial part of the name for all rules derived from this rule table, with the row number appended for distinction. You can override this automatic naming by inserting a `NAME` attribute column.
+. Use the next four rows to define the following elements as needed (rows 8-11 in example):
++
+* *Rule attributes:* Conditions, actions, or other attributes. For supported cell labels and values, see xref:decision-tables-rule-table-entries-ref[].
+* *Object types:* The data objects to which the rule attributes apply. If the same object type applies to multiple columns, merge the object cells into one cell across multiple columns (as shown in the sample decision table), instead of repeating the object type in multiple cells. When an object type is merged, all columns below the merged range will be combined into one set of constraints within a single pattern for matching a single fact at a time. When an object is repeated in separate columns, the separate columns can create different patterns, potentially matching different or identical facts.
+* *Constraints:* Constraints on the object types.
+* *Column label:* (Optional) Any descriptive label for the column, as a visual aid. Leave blank if unused.
++
+NOTE: As an alternative to populating both the object type and constraint cells, you can leave the object type cell or cells empty and enter the full expression in the corresponding constraint cell or cells. For example, instead of `Order` as the object type and `itemsCount > $1` as a constraint (separate cells), you can leave the object type cell empty and enter `Order( itemsCount > $1 )` in the constraint cell, and then do the same for other constraint cells.
+
++
+. After you have defined all necessary rule attributes (columns), enter values for each column as needed, row by row, to generate rules (rows 12-17 in example). Cells with no data are ignored (such as when a condition or action does not apply).
++
+If you need to add more rule tables to this decision table spreadsheet, skip a row after the last rule in the previous table, label another `RuleTable` cell in the same column as the previous `RuleTable` and  `RuleSet` cells, and create the new table following the same steps in this section (rows 19-29 in example).
+. Save your XLS or XLSX spreadsheet to finish.
+
+[NOTE]
+====
+
+By default, only the first worksheet in a spreadsheet workbook is processed as a decision table. Each `RuleSet` name combined with the `RuleTable` name must be unique across all decision table files in the same package.
+
+If you want to process multiple worksheet decision tables, then create a `.properties` file with the same name as the spreadsheet workbook. The `.properties` file must contain a property sheet with comma-separated values (CSV) for the names of the worksheets, for example:
+
+[source]
+----
+sheets=Sheet1,Sheet2
+----
+
+====
+
+After {RULE_ENGINE} loads the decision table, the rules are internally rendered as DRL rules like the following example, from the sample spreadsheet:
+
+----
+//row 12
+rule "Basic_12"
+salience 10
+  when
+    $order : Order( itemsCount > 0, itemsCount <= 3, deliverInDays == 1 )
+  then
+    insert( new Charge( 35 ) );
+end
+----
+
+[NOTE]
+.Enabling white space used in cell values
+====
+By default, any white space before or after values in decision table cells is removed before the decision table is processed by the {RULE_ENGINE}. To retain white space that you use intentionally before or after values in cells, set the `drools.trimCellsInDTable` system property to `false` in your {PRODUCT} application.
+====

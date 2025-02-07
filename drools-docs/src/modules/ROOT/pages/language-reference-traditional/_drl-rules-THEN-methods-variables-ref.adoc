@@ -1,0 +1,53 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='drl-rules-THEN-methods-variables-ref_{context}']
+= Other rule action methods from `drools` variable
+
+In addition to the standard rule action methods, the {RULE_ENGINE} supports methods in conjunction with the predefined `drools` variable that you can also use in rule actions.
+
+You can use the `drools` variable to call methods from the `org.kie.api.runtime.rule.RuleContext` class in your {PRODUCT} distribution, which is also the class that the standard rule action methods are based on. For all `drools` rule action options,
+ifdef::DM,PAM[]
+download the *{PRODUCT_PAM} {PRODUCT_VERSION_LONG} Source Distribution* ZIP file from the https://access.redhat.com/jbossnetwork/restricted/listSoftware.html[Red Hat Customer Portal] and navigate to `~/{PRODUCT_FILE}-sources/src/kie-api-parent-$VERSION/kie-api/src/main/java/org/kie/api/runtime/rule/RuleContext.java`.
+endif::[]
+ifdef::DROOLS,JBPM,OP[]
+see the {PRODUCT} https://github.com/kiegroup/droolsjbpm-knowledge/blob/{COMMUNITY_VERSION_BRANCH}/kie-api/src/main/java/org/kie/api/runtime/rule/RuleContext.java[RuleContext.java] page in GitHub.
+endif::[]
+
+The `drools` variable contains methods that provide information about the firing rule and the set of facts that activated the firing rule:
+
+* `drools.getRule().getName()`: Returns the name of the currently firing rule.
+* `drools.getMatch()`: Returns the `Match` that activated the currently firing rule. It contains information that is useful for logging and debugging purposes, for instance `drools.getMatch().getObjects()` returns the list of objects, enabling rule to fire in the proper tuple order.
+
+From the `drools` variable, you can also obtain a reference to the `KieRuntime` providing useful methods to interact with the running session, for example:
+
+* `drools.getKieRuntime().halt()`: Terminates rule execution if a user or application previously called `fireUntilHalt()`. When a user or application calls `fireUntilHalt()` method, the {RULE_ENGINE} starts in `active` mode and evaluates rules until the user or application explicitly calls `halt()` method. Otherwise, by default, the {RULE_ENGINE} runs in `passive` mode and evaluates rules only when a user or an application explicitly calls `fireAllRules()` method.
+* `drools.getKieRuntime().getAgenda()`: Returns a reference to the KIE session `Agenda`, and in turn provides access to rule activation groups, rule agenda groups, and ruleflow groups.
+
+.Example call to access agenda group "CleanUp" and set the focus
+[source,java]
+----
+drools.getKieRuntime().getAgenda().getAgendaGroup( "CleanUp" ).setFocus();
+----
++
+This example sets the focus to a specified agenda group to which the rule belongs.
+
+* `drools.getKieRuntime().setGlobal()`, `~.getGlobal()`, `~.getGlobals()`: Sets or retrieves global variables.
+* `drools.getKieRuntime().getEnvironment()`: Returns the runtime `Environment`, similar to your operating system environment.
+* `drools.getKieRuntime().getQueryResults(<string> query)`: Runs a query and returns the results.

@@ -1,0 +1,60 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='dmn-gs-creating-drd-proc']
+[discrete]
+= Creating the traffic violations DMN decision requirements diagram (DRD)
+
+A decision requirements diagram (DRD) is a visual representation of your DMN model. Use the  {DMN_EDITOR} to design the DRD for the traffic violations project and to define the decision logic of the DRD components.
+
+.DRD for the Traffic Violations example
+image::dmn/dmn-traffic-violations-drd.png[DRD for the Traffic Violations example]
+
+.Prerequisites
+* You have created the traffic violations project in {PRODUCT}.
+
+.Procedure
+. On the *traffic-violation* project's home page, click *Add Asset*.
+. On the *Add Asset* page, click *DMN*. The *Create new DMN* window is opened.
+.. In the *Create new DMN* window, enter `Traffic Violation` in the *DMN* name field.
+.. From the *Package* list, select `com.myspace.traffic_violation`.
+.. Click *Ok*. The DMN asset in the DMN designer is opened.
+. In the DMN designer canvas, drag two *DMN Input Data* input nodes onto the canvas.
++
+
+.DMN Input Data nodes
+image::dmn/library_objects.png[DMN Input Data nodes]
+
+. In the upper-right corner, click the image:getting-started/diagram_properties.png[Properties] icon.
+. Double-click the input nodes and rename one to `Driver` and the other to `Violation`.
+. Drag a *DMN Decision* decision node onto the canvas.
+. Double-click the decision node and rename it to `Fine`.
+. Click the *Violation* input node, select the *Create DMN Information Requirement* icon and click the `Fine` decision node to link the two nodes.
++
+
+.Create DMN Information Requirement icon
+image::dmn/info-requirement.png[Create DMN Information Requirement icon]
+
+. Drag a *DMN Decision* decision node onto the canvas.
+. Double-click the decision node and rename it to `Should the driver be suspended?`.
+. Click the *Driver* input node, select the *Create DMN Information Requirement* icon and click the *Should the driver be suspended?* decision node to link the two nodes.
+. Click the *Fine* decision node, select the *Create DMN Information Requirement* icon, and select the *Should the driver be suspended?* decision node.
+. Click *Save*.
++
+NOTE: As you periodically save a DRD, the DMN designer performs a static validation of the DMN model and might produce error messages until the model is defined completely. After you finish defining the DMN model completely, if any errors remain, troubleshoot the specified problems accordingly.

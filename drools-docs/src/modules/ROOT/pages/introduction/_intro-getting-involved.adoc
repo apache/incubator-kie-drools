@@ -1,0 +1,53 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='intro-getting-involved_{context}']
+
+= Getting involved
+
+We are often asked - "How do I get involved?" The answer is simple, just write some code and submit it :) Below is a general overview of the things we request, along with some general advice. If you contribute some good work, please consider blogging about it :)
+
+== Requirements
+
+To contribute, you need to have:
+
+1. A link:https://issues.redhat.com/[JIRA] account. If you are not registered, please create an account in link:https://issues.redhat.com/[JIRA].
+2. A link:https://github.com/[GitHub] account. link:https://github.com/kiegroup/drools/[{PRODUCT} source code] is on GitHub. To submit code contributions, you need to have a GitHub account.
+
+== Submitting an issue or enhancement request
+
+We use link:https://issues.redhat.com/[JIRA] to track new feature requests, bugs etc. If you find a problem in {PRODUCT}, please file a ticket in JIRA under the link:https://issues.redhat.com/projects/DROOLS/[DROOLS] JIRA project. For code contributions, you could create a JIRA ticket for yourself, so your contribution gets tracked. This ensures that all requests are logged and allocated to a release schedule and all discussions are captured in one place. Bug reports, bug fixes, feature requests and feature submissions should all go here. General questions should be undertaken at the link:https://groups.google.com/g/drools-development[mailing lists]. Minor code submissions, like format or documentation fixes do not need an associated JIRA issue created.
+
+== Submitting a source code contribution
+
+We accept source code contributions in the form of link:https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests[GitHub pull requests]. Steps to create a pull request with your contribution are:
+
+1. link:https://docs.github.com/en/get-started/quickstart/fork-a-repo[Fork] the link:https://github.com/kiegroup/drools/[{PRODUCT} source code] repository.
+2. Clone your forked repository.
+3. Create a new git branch on your forked repository.
+4. Create a new JIRA to track your work in the link:https://issues.redhat.com/projects/DROOLS/[DROOLS] JIRA project.
+5. Do and commit the code changes on the new branch.
+* Please don't forget to cover your changes with tests. We require each code change to be covered by tests.
+* The commit(s) need to start with the JIRA issue ID, such as DROOLS-1946. This ensures the commits are cross-referenced in JIRA, so we can see all commits for a given issue there.
+* In general, please try to avoid combining unrelated issues or changes into the same commit or pull request. If you want to contribute multiple contributions, please split them into separate pull requests.
+* Please make sure your changes don't break other parts of the project or tests. To run all tests, please refer to <<intro-building-the-source_{context},Building the {PRODUCT} source code>>.
+6. Push the new branch to your GitHub forked repository. It is usually a good thing to link:https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/syncing-a-fork[sync your local branch] with the latest changes from the main {PRODUCT} source code repository before pushing your new branch.
+7. link:https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request[Create a pull request] to the main {PRODUCT} source code GitHub repository. When creating the pull request, there is a description template. Please fill the description based on the template. The setting "Allow edits and access to secrets by maintainers" should be left as `enabled` by default, to allow maintainers to collaborate on your PR as needed.
+8. Your pull request will get a review from the maintainers, so please be prepared to provide answers if something will not be clear, or updates to the code, if there are some code requirements raised during the review. Please be patient, the maintainers may take some time to get to your pull request as there may be a queue of pull request to review.
+9. If you get an approval from the maintainers, the pull request will get merged into the main {PRODUCT} source code repository.

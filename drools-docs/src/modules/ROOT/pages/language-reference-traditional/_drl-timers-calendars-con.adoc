@@ -1,0 +1,192 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='drl-timers-calendars-con_{context}']
+= Timer and calendar rule attributes in DRL
+
+Timers and calendars are DRL rule attributes that enable you to apply scheduling and timing constraints to your DRL rules. These attributes require additional configurations depending on the use case.
+
+The `timer` attribute in DRL rules is a string identifying either `int` (interval) or `cron` timer definitions for scheduling a rule and supports the following formats:
+
+.Timer attribute formats
+[source]
+----
+timer ( int: <initial delay> <repeat interval> )
+
+timer ( cron: <cron expression> )
+----
+
+.Example interval timer attributes
+[source]
+----
+// Run after a 30-second delay
+timer ( int: 30s )
+
+// Run every 5 minutes after a 30-second delay each time
+timer ( int: 30s 5m )
+----
+
+.Example cron timer attribute
+[source]
+----
+// Run every 15 minutes
+timer ( cron:* 0/15 * * * ? )
+----
+
+Interval timers follow the semantics of `java.util.Timer` objects, with an initial delay and an optional repeat interval. Cron timers follow standard Unix cron expressions.
+
+The following example DRL rule uses a cron timer to send an SMS text message every 15 minutes:
+
+.Example DRL rule with a cron timer
+[source]
+----
+rule "Send SMS message every 15 minutes"
+  timer ( cron:* 0/15 * * * ? )
+  when
+    $a : Alarm( on == true )
+  then
+    channels[ "sms" ].insert( new Sms( $a.mobileNumber, "The alarm is still on." );
+end
+----
+
+Generally, a rule that is controlled by a timer becomes active when the rule is triggered and the rule consequence is executed repeatedly, according to the timer settings. The execution stops when the rule condition no longer matches incoming facts. However, the way the {RULE_ENGINE} handles rules with timers depends on whether the {RULE_ENGINE} is in _active mode_ or in _passive mode_.
+
+By default, the {RULE_ENGINE} runs in _passive mode_ and evaluates rules, according to the defined timer settings, when a user or an application explicitly calls `fireAllRules()`. Conversely, if a user or application calls `fireUntilHalt()`, the {RULE_ENGINE} starts in _active mode_ and evaluates rules continually until the user or application explicitly calls `halt()`.
+
+When the {RULE_ENGINE} is in active mode, rule consequences are executed even after control returns from a call to `fireUntilHalt()` and the {RULE_ENGINE} remains _reactive_ to any changes made to the working memory. For example, removing a fact that was involved in triggering the timer rule execution causes the repeated execution to terminate, and inserting a fact so that some rule matches causes that rule to be executed. However, the {RULE_ENGINE} is not continually _active_, but is active only after a rule is executed. Therefore, the {RULE_ENGINE} does not react to asynchronous fact insertions until the next execution of a timer-controlled rule. Disposing a KIE session terminates all timer activity.
+
+When the {RULE_ENGINE} is in passive mode, rule consequences of timed rules are evaluated only when `fireAllRules()` is invoked again. However, you can change the default timer-execution behavior in passive mode by configuring the KIE session with a `TimedRuleExecutionOption` option, as shown in the following example:
+
+.KIE session configuration to automatically execute timed rules in passive mode
+[source,java]
+----
+KieSessionConfiguration ksconf = KieServices.Factory.get().newKieSessionConfiguration();
+ksconf.setOption( TimedRuleExecutionOption.YES );
+KSession ksession = kbase.newKieSession(ksconf, null);
+----
+
+You can additionally set a `FILTERED` specification on the `TimedRuleExecutionOption` option that enables you to define a
+callback to filter those rules, as shown in the following example:
+
+.KIE session configuration to filter which timed rules are automatically executed
+[source,java]
+----
+KieSessionConfiguration ksconf = KieServices.Factory.get().newKieSessionConfiguration();
+conf.setOption( new TimedRuleExecutionOption.FILTERED(new TimedRuleExecutionFilter() {
+    public boolean accept(Rule[] rules) {
+        return rules[0].getName().equals("MyRule");
+    }
+}) );
+----
+
+For interval timers, you can also use an expression timer with `expr` instead of `int` to define both the delay and interval as an expression instead of a fixed value.
+
+The following example DRL file declares a fact type with a delay and period that are then used in the subsequent rule with an expression timer:
+
+.Example rule with an expression timer
+[source]
+----
+declare Bean
+  delay   : String = "30s"
+  period  : long = 60000
+end
+
+rule "Expression timer"
+  timer ( expr: $d, $p )
+  when
+    Bean( $d : delay, $p : period )
+  then
+    // Actions
+end
+----
+
+The expressions, such as `$d` and `$p` in this example, can use any variable defined in the pattern-matching part of the rule. The variable can be any `String` value that can be parsed into a time duration or any numeric value that is internally converted in a `long` value for a duration in milliseconds.
+
+Both interval and expression timers can use the following optional parameters:
+
+* `start` and `end`: A `Date` or a `String` representing a `Date` or a `long` value. The value can also be a `Number` that is transformed into a Java `Date` in the format `new Date( ((Number) n).longValue() )`.
+* `repeat-limit`: An integer that defines the maximum number of repetitions allowed by the timer. If both the `end` and the `repeat-limit` parameters are set, the timer stops when the first of the two is reached.
+
+.Example timer attribute with optional `start`, `end`, and `repeat-limit` parameters
+[source,java]
+----
+timer (int: 30s 1h; start=3-JAN-2020, end=4-JAN-2020, repeat-limit=50)
+----
+
+In this example, the rule is scheduled for every hour, after a delay of 30 seconds each hour, beginning on 3 January 2020 and ending either on 4 January 2020 or when the cycle repeats 50 times.
+
+If the system is paused (for example, the session is serialized and then later deserialized), the rule is scheduled only one time to recover from missing activations regardless of how many activations were missed during the pause, and then the rule is subsequently scheduled again to continue in sync with the timer setting.
+
+The `calendar` attribute in DRL rules is a http://www.quartz-scheduler.org/[Quartz] calendar definition for scheduling a rule and supports the following format:
+
+.Calendar attribute format
+[source]
+----
+calendars "<definition or registered name>"
+----
+
+.Example calendar attributes
+[source]
+----
+// Exclude non-business hours
+calendars "* * 0-7,18-23 ? * *"
+
+// Weekdays only, as registered in the KIE session
+calendars "weekday"
+----
+
+You can adapt a Quartz calendar based on the Quartz calendar API and then register the calendar in the KIE session, as shown in the following example:
+
+.Adapting a Quartz Calendar
+[source,java]
+----
+Calendar weekDayCal = QuartzHelper.quartzCalendarAdapter(org.quartz.Calendar quartzCal)
+----
+
+.Registering the calendar in the KIE session
+[source,java]
+----
+ksession.getCalendars().set( "weekday", weekDayCal );
+----
+
+You can use calendars with standard rules and with rules that use timers. The calendar attribute can contain one or more comma-separated calendar names written as `String` literals.
+
+The following example rules use both calendars and timers to schedule the rules:
+
+.Example rules with calendars and timers
+[source]
+----
+rule "Weekdays are high priority"
+  calendars "weekday"
+  timer ( int:0 1h )
+  when
+    Alarm()
+  then
+    send( "priority high - we have an alarm" );
+end
+
+rule "Weekends are low priority"
+  calendars "weekend"
+  timer ( int:0 4h )
+  when
+    Alarm()
+  then
+    send( "priority low - we have an alarm" );
+end
+----

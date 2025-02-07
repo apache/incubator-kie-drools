@@ -1,0 +1,150 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='dmn-execution-embedded-proc']
+= Embedding a DMN call directly in a Java application
+
+A KIE container is local when the knowledge assets are either embedded directly into the calling program or are physically pulled in using Maven dependencies for the KJAR. You typically embed knowledge assets directly into a project if there is a tight relationship between the version of the code and the version of the DMN definition. Any changes to the decision take effect after you have intentionally updated and redeployed the application. A benefit of this approach is that proper operation does not rely on any external dependencies to the run time, which can be a limitation of locked-down environments.
+
+Using Maven dependencies enables further flexibility because the specific version of the decision can dynamically change, (for example, by using a `kmodule.xml` or a system property), and it can be periodically scanned for updates and automatically updated. This introduces an external dependency on the deploy time of the service, but executes the decision locally, reducing reliance on an external service being available during run time.
+
+.Prerequisites
+* You have built the DMN project as a KJAR artifact and deployed it to a Maven repository, or you have included your DMN assets as part of your project classpath:
++
+--
+[source]
+----
+mvn clean install
+----
+
+For more information about project packaging and deployment and executable models, see
+the xref:KIE/index.adoc[Build, Deploy, Utilize and Run section].
+--
+
+.Procedure
+. In your client application, add the following dependencies to the relevant classpath of your Java project:
++
+--
+[source,xml,subs="attributes+"]
+----
+<!-- Required for the DMN runtime API -->
+<dependency>
+  <groupId>org.kie</groupId>
+  <artifactId>kie-dmn-core</artifactId>
+  <version>${{PRODUCT_INIT}.version}</version>
+</dependency>
+
+<!-- Required if not using classpath KIE container -->
+<dependency>
+  <groupId>org.kie</groupId>
+  <artifactId>kie-ci</artifactId>
+  <version>${{PRODUCT_INIT}.version}</version>
+</dependency>
+----
+
+The `<version>` is the Maven artifact version for {PRODUCT} currently used in your project (for example, {COMMUNITY_VERSION_FINAL}).
+
+[NOTE]
+====
+Instead of specifying a {PRODUCT} `<version>` for individual dependencies, consider adding the {PRODUCT} bill of materials (BOM) dependency to `dependencyManagement` section of your project `pom.xml` file. When you add the BOM files, the correct versions of transitive dependencies from the provided Maven repositories are included in the project.
+
+Example BOM dependency:
+
+[source,xml,subs="attributes+"]
+----
+<dependency>
+  <groupId>org.kie</groupId>
+  <artifactId>kie-dmn-bom</artifactId>
+  <version>${drools.version}</version>
+  <scope>import</scope>
+  <type>pom</type>
+</dependency>
+----
+
+====
+
+--
+. Create a KIE container from `classpath` or `ReleaseId`:
++
+[source,java]
+----
+KieServices kieServices = KieServices.Factory.get();
+
+ReleaseId releaseId = kieServices.newReleaseId( "org.acme", "my-kjar", "1.0.0" );
+KieContainer kieContainer = kieServices.newKieContainer( releaseId );
+----
++
+Alternative option:
++
+[source,java]
+----
+KieServices kieServices = KieServices.Factory.get();
+
+KieContainer kieContainer = kieServices.getKieClasspathContainer();
+----
+
+. Obtain `DMNRuntime` from the KIE container and a reference to the DMN model to be evaluated, by using the model `namespace` and `modelName`:
++
+[source,java]
+----
+DMNRuntime dmnRuntime = KieRuntimeFactory.of(kieContainer.getKieBase()).get(DMNRuntime.class);
+
+String namespace = "http://www.redhat.com/_c7328033-c355-43cd-b616-0aceef80e52a";
+String modelName = "dmn-movieticket-ageclassification";
+
+DMNModel dmnModel = dmnRuntime.getModel(namespace, modelName);
+----
+
+. Execute the decision services for the desired model:
++
+[source,java]
+----
+DMNContext dmnContext = dmnRuntime.newContext();  // <1>
+
+for (Integer age : Arrays.asList(1,12,13,64,65,66)) {
+    dmnContext.set("Age", age);  // <2>
+    DMNResult dmnResult =
+        dmnRuntime.evaluateAll(dmnModel, dmnContext);  // <3>
+
+    for (DMNDecisionResult dr : dmnResult.getDecisionResults()) {  // <4>
+        log.info("Age: " + age + ", " +
+                 "Decision: '" + dr.getDecisionName() + "', " +
+                 "Result: " + dr.getResult());
+  }
+}
+----
+<1> Instantiate a new DMN Context to be the input for the model evaluation. Note that this example is looping through the Age Classification decision multiple times.
+<2> Assign input variables for the input DMN context.
+<3> Evaluate all DMN decisions defined in the DMN model.
+<4> Each evaluation may result in one or more results, creating the loop.
++
+--
+
+This example prints the following output:
+
+----
+Age 1 Decision 'AgeClassification' : Child
+Age 12 Decision 'AgeClassification' : Child
+Age 13 Decision 'AgeClassification' : Adult
+Age 64 Decision 'AgeClassification' : Adult
+Age 65 Decision 'AgeClassification' : Senior
+Age 66 Decision 'AgeClassification' : Senior
+----
+
+--
