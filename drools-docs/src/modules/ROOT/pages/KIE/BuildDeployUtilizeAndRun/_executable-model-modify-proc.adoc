@@ -1,0 +1,76 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='executable-model-modify-proc_{context}']
+
+= Modifying or disabling executable rule models in a {PRODUCT} project
+
+Rule assets in {PRODUCT} are built from executable rule models by default with the standard `kie-maven-plugin` plugin. The executable model is a more efficient alternative to the standard asset packaging in previous versions of {PRODUCT}. However, if needed, you can modify or disable executable rule models to build a {PRODUCT} project as a DRL-based KJAR instead of the default model-based KJAR.
+
+.Procedure
+Build your {PRODUCT} project in the usual way, but provide an alternate build option, depending on the type of project:
+
+* For a Maven project, navigate to your Maven project directory in a command terminal and run the following command:
++
+--
+[source]
+----
+mvn clean install -DgenerateModel=<VALUE>
+----
+
+Replace `<VALUE>` with one of three values:
+
+* `YES_WITHDRL`: (Default) Generates the executable model corresponding to the DRL files in the original project and also adds the DRL files to the generated KJAR for documentation purposes (the KIE base is built from the executable model regardless).
+* `YES`: Generates the executable model corresponding to the DRL files in the original project and excludes the DRL files from the generated KJAR.
+* `NO`: Does not generate the executable model.
+
+Example build command to disable the default executable model behavior:
+
+[source]
+----
+mvn clean install -DgenerateModel=NO
+----
+--
+
+* For a Java application configured programmatically, the executable model is disabled by default. Add rule assets to the KIE virtual file system `KieFileSystem` and use `KieBuilder` with one of the following `buildAll()` methods:
++
+--
+* `buildAll()` (Default) or `buildAll(DrlProject.class)`: Does not generate the executable model.
+* `buildAll(ExecutableModelProject.class)`: Generates the executable model corresponding to the DRL files in the original project.
+
+Example code to enable executable model behavior:
+
+[source,java]
+----
+import org.kie.api.KieServices;
+import org.kie.api.builder.KieFileSystem;
+import org.kie.api.builder.KieBuilder;
+
+  KieServices ks = KieServices.Factory.get();
+  KieFileSystem kfs = ks.newKieFileSystem()
+  kfs.write("src/main/resources/KBase1/ruleSet1.drl", stringContainingAValidDRL)
+  .write("src/main/resources/dtable.xls",
+    kieServices.getResources().newInputStreamResource(dtableFileStream));
+
+  KieBuilder kieBuilder = ks.newKieBuilder( kfs );
+  // Enable executable model
+  kieBuilder.buildAll(ExecutableModelProject.class)
+  assertEquals(0, kieBuilder.getResults().getMessages(Message.Level.ERROR).size());
+----
+--

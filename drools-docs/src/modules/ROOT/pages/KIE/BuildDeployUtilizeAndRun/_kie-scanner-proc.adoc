@@ -1,0 +1,94 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='kie-scanner-proc_{context}']
+
+= Using a KIE scanner to monitor and update KIE containers
+
+The KIE scanner in {PRODUCT} monitors your Maven repository for new `SNAPSHOT` versions of your {PRODUCT} project and then deploys the latest version of the project to a specified KIE container. You can use a KIE scanner in a development environment to maintain your {PRODUCT} project deployments more efficiently as new versions become available.
+
+[IMPORTANT]
+====
+For production environments, do not use a KIE scanner with `SNAPSHOT` project versions to avoid accidental or unexpected project updates. The KIE scanner is intended for development environments that use `SNAPSHOT` project versions.
+
+ifdef::PAM,JBPM[]
+Avoid using a KIE scanner with business processes. Using a KIE scanner with processes can lead to unforeseen updates that can then cause errors in long-running processes when changes are not compatible with running process instances.
+endif::[]
+====
+
+.Prerequisites
+* The `kie-ci.jar` file is available on the class path of your {PRODUCT} project.
+
+.Procedure
+. In the relevant `.java` class in your project, register and start the KIE scanner as shown in the following example code:
++
+--
+.Registering and starting a KIE scanner for a KIE container
+[source,java]
+----
+import org.kie.api.KieServices;
+import org.kie.api.builder.ReleaseId;
+import org.kie.api.runtime.KieContainer;
+import org.kie.api.builder.KieScanner;
+
+...
+
+KieServices kieServices = KieServices.Factory.get();
+ReleaseId releaseId = kieServices
+  .newReleaseId("com.sample", "my-app", "1.0-SNAPSHOT");
+KieContainer kContainer = kieServices.newKieContainer(releaseId);
+KieScanner kScanner = kieServices.newKieScanner(kContainer);
+
+// Start KIE scanner for polling the Maven repository every 10 seconds (10000 ms)
+kScanner.start(10000L);
+----
+
+In this example, the KIE scanner is configured to run with a fixed time interval. The minimum KIE scanner polling interval is 1 millisecond (ms) and the maximum polling interval is the maximum value of the data type `long`. A polling interval of 0 or less results in a `java.lang.IllegalArgumentException: pollingInterval must be positive` error. You can also configure the KIE scanner to run on demand by invoking the `scanNow()` method.
+
+The project group ID, artifact ID, and version (GAV) settings in the example are defined as `com.sample:my-app:1.0-SNAPSHOT`. The project version must contain the `-SNAPSHOT` suffix to enable the KIE scanner to retrieve the latest build of the specified artifact version. If you change the snapshot project version number, such as increasing to `1.0.1-SNAPSHOT`, then you must also update the version in the GAV definition in your KIE scanner configuration. The KIE scanner does not retrieve updates for projects with static versions, such as `com.sample:my-app:1.0`.
+--
+
+. In the `settings.xml` file of your Maven repository, set the `updatePolicy` configuration to `always` to enable the KIE scanner to function properly:
++
+[source,xml,subs="attributes+"]
+----
+<profile>
+  <id>my-nexus-env</id>
+  <repositories>
+    <repository>
+      <id>my-nexus</id>
+      <name>My Nexus repository</name>
+      <url>http://repository.example.org/nexus/content/groups/public/</url>
+      <layout>default</layout>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>always</updatePolicy>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>always</updatePolicy>
+      </snapshots>
+    </repository>
+  </repositories>
+</profile>
+----
++
+--
+After the KIE scanner starts polling, if the KIE scanner detects an updated version of the `SNAPSHOT` project in the specified KIE container, the KIE scanner automatically downloads the new project version and triggers an incremental build of the new project. From that moment, all of the new `KieBase` and `KieSession` objects that were created from the KIE container use the new project version.
+--

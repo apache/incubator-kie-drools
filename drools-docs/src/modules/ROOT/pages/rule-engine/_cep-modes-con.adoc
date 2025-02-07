@@ -1,0 +1,116 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='cep-modes-con_{context}']
+
+= Event processing modes in the {RULE_ENGINE}
+
+The {RULE_ENGINE} runs in either cloud mode or stream mode. In cloud mode, the {RULE_ENGINE} processes facts as facts with no temporal constraints, independent of time, and in no particular order. In stream mode, the {RULE_ENGINE} processes facts as events with strong temporal constraints, in real time or near real time. Stream mode uses synchronization to make event processing possible in {PRODUCT}.
+
+Cloud mode::
+Cloud mode is the default operating mode of the {RULE_ENGINE}. In cloud mode, the {RULE_ENGINE} treats events as an unordered cloud. Events still have time stamps, but the {RULE_ENGINE} running in cloud mode cannot draw relevance from the time stamp because cloud mode ignores the present time. This mode uses the rule constraints to find the matching tuples to activate and execute rules.
++
+--
+Cloud mode does not impose any kind of additional requirements on facts. However, because the {RULE_ENGINE} in this mode has no concept of time, it cannot use temporal features such as sliding windows or automatic life-cycle management. In cloud mode, events must be explicitly retracted when they are no longer needed.
+
+The following requirements are not imposed in cloud mode:
+
+* No clock synchronization because the {RULE_ENGINE} has no notion of time
+* No ordering of events because the {RULE_ENGINE} processes events as an unordered cloud, against which the {RULE_ENGINE} match rules
+
+You can specify cloud mode either by setting the system property in the relevant configuration files or by using the Java client API:
+
+.Set cloud mode using system property
+[source]
+----
+drools.eventProcessingMode=cloud
+----
+
+.Set cloud mode using Java client API
+[source,java]
+----
+import org.kie.api.conf.EventProcessingOption;
+import org.kie.api.KieBaseConfiguration;
+import org.kie.api.KieServices.Factory;
+
+KieBaseConfiguration config = KieServices.Factory.get().newKieBaseConfiguration();
+
+config.setOption(EventProcessingOption.CLOUD);
+----
+
+You can also specify cloud mode using the `eventProcessingMode="<mode>"` KIE base attribute in the KIE module descriptor file (`kmodule.xml`) for a specific {PRODUCT} project:
+
+.Set cloud mode using project `kmodule.xml` file
+[source,xml]
+----
+<kmodule>
+  ...
+  <kbase name="KBase2" default="false" eventProcessingMode="cloud" packages="org.domain.pkg2, org.domain.pkg3" includes="KBase1">
+    ...
+  </kbase>
+  ...
+</kmodule>
+----
+--
+
+Stream mode::
+Stream mode enables the {RULE_ENGINE} to process events chronologically and in real time as they are inserted into the {RULE_ENGINE}. In stream mode, the {RULE_ENGINE} synchronizes streams of events (so that events in different streams can be processed in chronological order), implements sliding windows of time or length, and enables automatic life-cycle management.
++
+--
+The following requirements apply to stream mode:
+
+* Events in each stream must be ordered chronologically.
+* A session clock must be present to synchronize event streams.
+
+NOTE: Your application does not need to enforce ordering events between streams, but using event streams that have not been synchronized may cause unexpected results.
+
+You can specify stream mode either by setting the system property in the relevant configuration files or by using the Java client API:
+
+.Set stream mode using system property
+[source]
+----
+drools.eventProcessingMode=stream
+----
+
+.Set stream mode using Java client API
+[source,java]
+----
+import org.kie.api.conf.EventProcessingOption;
+import org.kie.api.KieBaseConfiguration;
+import org.kie.api.KieServices.Factory;
+
+KieBaseConfiguration config = KieServices.Factory.get().newKieBaseConfiguration();
+
+config.setOption(EventProcessingOption.STREAM);
+----
+
+You can also specify stream mode using the `eventProcessingMode="<mode>"` KIE base attribute in the KIE module descriptor file (`kmodule.xml`) for a specific {PRODUCT} project:
+
+.Set stream mode using project `kmodule.xml` file
+[source,xml]
+----
+<kmodule>
+  ...
+  <kbase name="KBase2" default="false" eventProcessingMode="stream" packages="org.domain.pkg2, org.domain.pkg3" includes="KBase1">
+    ...
+  </kbase>
+  ...
+</kmodule>
+----
+--

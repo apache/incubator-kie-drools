@@ -1,0 +1,197 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='ai-gsg_{context}']
+
+= Using a PMML model with a DMN model to resolve credit card transaction disputes
+
+This example shows you how to use {PRODUCT} to create a DMN model that uses a PMML model to resolve credit card transaction disputes. When a customer disputes a credit card transaction, the system decides whether or not to process the transaction automatically.
+
+.Prerequisites
+
+* A PMML evaluation library such as the `kie-pmml-trusty` offered as part of {PRODUCT}
+
+* Alternatively, {PRODUCT} may be integrated with third-party PMML libraries such as JPMML, requiring:
++
+** `kie-dmn-jpmml-{MAVEN_ARTIFACT_VERSION}.jar`
++
+The group ID, artifact ID, and version (GAV) identifier of this file is `org.kie:kie-dmn-jpmml:{MAVEN_ARTIFACT_VERSION}`. For more information, see xref:dmn-included-models-pmml-proc_dmn-models[].
+
+** https://mvnrepository.com/artifact/org.jpmml/pmml-evaluator/1.5.1[JPMML Evaluator 1.5.1 JAR file]
+** https://mvnrepository.com/artifact/org.jpmml/pmml-evaluator-extension/1.5.1[JPMML Evaluator Extensions 1.5.1 JAR file]
++
+These files are required to enable JPMML evaluation.
++
+
+IMPORTANT: We provide these additional plug-in modules to support the integration with the Java Evaluator API for PMML (JPMML) for PMML execution in {PRODUCT}. However, we *do not* support the JPMML libraries directly. If *you* include JPMML libraries in your {PRODUCT} distribution, see the https://openscoring.io/[Openscoring.io] licensing terms for JPMML.
+
+.Procedure
+. Create the `dtree_risk_predictor.pmml` file with the contents of the XML example in xref:ai-pmml-ref_{context}[].
+. Add the `dtree_risk_predictor.pmml` file into the `com` package in your KJAR project.
+. Create the *Dispute Transaction Check* DMN model in *com* package in your KJAR project.
+. Using the {DMN_EDITOR}, create the *tTransaction* custom data type:
++
+image:pragmatic-ai/ttransactions.png[]
+
+.. Click the *Data Types* tab.
+.. Click *Add a custom Data Type*.
+.. In the *Name* box, enter `tTransaction`.
+.. Select *Structure* from the *Type* menu.
+.. To create the data type, click the check mark.
++
+The *tTransaction* custom data type appears with one variable row.
+.. In the *Name* field of the variable row, enter `transaction_amount`, select *Number* from the *Type* menu, and then click the check mark.
+.. To add a new variable row, click the plus symbol on the `transaction_amount` row. A new row appears.
+.. In the *Name* field, enter `cardholder_identifier`, select *Number* from the *Type* menu, and then click the check mark.
+. Add the *Risk Predictor* `dtree_risk_predictor.pmml` model:
++
+image:pragmatic-ai/include-model.png[]
++
+.. In the *Included Models* window of the DMN editor, click *Include Model*.
+.. In the *Include Model* dialog, select `dtree_risk_predictor.pmml` from the *Models* menu.
+.. Enter `Risk Predictor` in the *Provide a unique name* box and click *OK*.
+
+. Create the *Risk Predictor* Business Knowledge Model (BKM) node with the *Risk Predictor* and *DecisionTreeClassifier* model:
++
+image:pragmatic-ai/risk-predictor-function.png[]
+
+.. In the *Model* window of the DMN editor, drag a BKM node to the DMN editor palette.
++
+image:pragmatic-ai/bkm.png[]
+.. Rename the node *Risk Predictor*.
+.. Click the edit icon located below the trash can icon on the left side of the node.
++
+image:pragmatic-ai/risk-predictor-node.png[]
+.. Click *F* in the *Risk Predictor* box and select *PMML* from the *Select Function Kind* menu. The *F* changes to *P*.
+.. Double-click the *First select PMML document* box and select *Risk Predictor*.
+.. Double-click the *Second select PMML model* box and select *DecisionTreeClassifier*.
+.. To return to the DMN editor palette,  click *Back to Dispute Transaction Check*.
+
+. Create the *Transaction* input data node with the data type *tTransaction*:
++
+image:pragmatic-ai/risk-transaction.png[]
+
+.. In the *Model* window of the DMN editor, drag an input data node to the DMN editor palette.
++
+image:pragmatic-ai/input-node.png[]
+
+.. Rename the node *Transaction*.
+.. Select the node then click the properties pencil icon in the upper-right corner of the window.
+.. In the *Properties* panel, select *Information Item -> Data type -> tTransaction* then close the panel.
+
+. Create the *Transaction Dispute Risk* decision node and add the *Transaction* node for data input and the *Risk Predictor* node for the function:
++
+image:pragmatic-ai/model3.png[]
+
+.. In the *Model* window of the DMN editor, drag a decision data node to the DMN editor palette.
++
+image:pragmatic-ai/decision-node.png[]
+
+.. Rename the node *Transaction Dispute Risk*.
+.. Select the *Risk Predictor* node and drag the arrow from the top right of the node to the *Transaction Dispute Risk* node.
+.. Select the *Transaction* node and drag the arrow from the bottom right of the node to the *Transaction Dispute Risk* node.
+
+. In the *Transaction Dispute Risk* node, create the *Risk predictor* invocation function:
++
+image:pragmatic-ai/transaction-dispute-risk.png[]
+
+.. Select the *Transaction Dispute Risk* node and click the edit icon on the left side of the node.
+.. Click *Select expression* and select *Invocation* from the menu.
+.. Enter *Risk Predictor* in the *Enter function* box.
+.. Click *P1*.
+.. In the *Edit Parameter* dialog, enter `amount` in the *Name* box, select *number* from the *Data Type* menu, and press the Enter key.
+.. Click *Select expression* and select *Literal expression* from the menu.
+.. Enter `Transaction.transaction_amount` in the box next to *amount*.
+.. Right-click on *1* and select *Insert below*. The *Edit Parameter* dialog opens.
+.. Enter *holder_index* in the *Name* box, select *number* from the *Data Type* menu, and press the Enter key.
+.. Click *Select expression* on row *2* and select *Literal expression* from the menu.
+.. Enter `Transaction.cardholder_identifier` in the box next to *amount*.
+
+. Create the *Risk Threshold* input data node with the data type *number*:
++
+image:pragmatic-ai/model4.png[]
+
+.. In the *Model* window of the DMN editor, drag an input data node to the DMN editor palette.
+
+.. Rename the node *Risk Threshold*.
+.. Select the node then click the properties pencil icon in the upper-right corner of the window.
+.. In the *Properties* panel, select *Information Item -> Data type -> number* then close the panel.
+
+
+
+. Create the *Can be automatically processed?* decision node that takes as inputs the *Transaction Dispute Risk* and the *Risk threshold* nodes:
++
+image:pragmatic-ai/model5.png[]
+
+.. Drag a decision node to the DMN editor palette and rename it *Can be automatically processed?*.
+.. Select the node, then click the edit icon on the upper-left side of the node.
+.. Click *Select expression* and then select *Literal expression* from the menu.
+.. Enter `Transaction Dispute Risk.predicted_dispute_risk < Risk Threshold` in the box.
+.. Select the *Transaction Dispute Risk* node and drag the arrow in the top left of the node to the *Can be automatically processed?* node.
+.. Select the *Risk Threshold* node and drag the arrow from the bottom left of the node to the *Can be automatically processed?* node.
+. Save the model and build the project:
+.. In the DMN editor, click *Save*.
+.. If necessary, correct any errors that appear.
+.. To return to the project window, click *Credit Card Dispute* in the breadcrumb trail.
+.. Click *Build*. The project should successfully build.
+
+. Add and run a test scenario:
+image:pragmatic-ai/AIScenarioSimulations.png[]
+.. Create a *Test Scenario* file.
+.. In the *Create new Test Scenario* dialog, enter the name `Test Dispute Transaction Check`, select *com* from the *Package* menu, and select *DMN*.
+.. Select *Dispute Transaction Check.dmn* from the *Choose a DMN asset* menu and click *OK*. The test template builds.
+.. Enter the following values and click *Save*:
++
+NOTE: Do not add a value to the *Transaction Dispute Risk* column. This value is determined by the test scenario.
++
+.Test scenario parameters
+[cols="20%,13%,24%,24%,19%", options="header"]
+|===
+| *Description*
+| *Risk Threshold*
+| *cardholder_identifier*
+| *transaction_amount*
+| *Can be automatically processed?*
+
+| Risk threshold 5, automatically processed
+| 5
+| 1234
+| 1000
+| true
+
+| Risk threshold 4, amount = 1000, not processed
+| 4
+| 1234
+| 1000
+| false
+
+| Risk threshold 4, amount = 180, automatically processed
+| 4
+| 1234
+| 180
+| true
+
+| Risk threshold 1, amount = 1, not processed
+| 1
+| 1234
+| 1
+| false
+
+|===
+.. To run the test, click the *Play* button in your IDE. The results appear in the *Test Report* panel on the right of the screen.

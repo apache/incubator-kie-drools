@@ -1,0 +1,68 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='kie-sessions-stateless-globals-con_{context}']
+
+= Global variables in stateless KIE sessions
+
+The `StatelessKieSession` object supports global variables (globals) that you can configure to be resolved as session-scoped globals, delegate globals, or execution-scoped globals.
+
+* *Session-scoped globals:* For session-scoped globals, you can use the method `getGlobals()` to return a `Globals` instance that provides access to the KIE session globals. These globals are used for all execution calls. Use caution with mutable globals because execution calls can be executing simultaneously in different threads.
++
+.Session-scoped global
+[source,java]
+----
+import org.kie.api.runtime.StatelessKieSession;
+
+StatelessKieSession ksession = kbase.newStatelessKieSession();
+
+// Set a global `myGlobal` that can be used in the rules.
+ksession.setGlobal("myGlobal", "I am a global");
+
+// Execute while resolving the `myGlobal` identifier.
+ksession.execute(collection);
+----
+
+* *Delegate globals:* For delegate globals, you can assign a value to a global (with `setGlobal(String, Object)`) so that the value is stored in an internal collection that maps identifiers to values. Identifiers in this internal collection have priority over any supplied delegate. If an identifier cannot be found in this internal collection, the delegate global (if any) is used.
+
+* *Execution-scoped globals:* For execution-scoped globals, you can use the `Command` object to set a global that is passed to the `CommandExecutor` interface for execution-specific global resolution.
+
+The `CommandExecutor` interface also enables you to export data using out identifiers for globals, inserted facts, and query results:
+
+.Out identifiers for globals, inserted facts, and query results
+[source,java]
+----
+import org.kie.api.runtime.ExecutionResults;
+
+// Set up a list of commands.
+List cmds = new ArrayList();
+cmds.add(CommandFactory.newSetGlobal("list1", new ArrayList(), true));
+cmds.add(CommandFactory.newInsert(new Person("jon", 102), "person"));
+cmds.add(CommandFactory.newQuery("Get People" "getPeople"));
+
+// Execute the list.
+ExecutionResults results = ksession.execute(CommandFactory.newBatchExecution(cmds));
+
+// Retrieve the `ArrayList`.
+results.getValue("list1");
+// Retrieve the inserted `Person` fact.
+results.getValue("person");
+// Retrieve the query as a `QueryResults` instance.
+results.getValue("Get People");
+----

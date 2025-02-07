@@ -1,0 +1,36 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='drl-imports-con_{context}']
+= Import statements in DRL
+
+ifdef::DROOLS,JBPM,OP[]
+.Import
+image::language-reference/import.png[align="center"]
+endif::[]
+
+Similar to import statements in Java, imports in DRL files identify the fully qualified paths and type names for any objects that you want to use in the rules. You specify the package and data object in the format `packageName.objectName`, with multiple imports on separate lines. The {RULE_ENGINE} automatically imports classes from the Java package with the same name as the DRL package and from the package `java.lang`.
+
+The following example is an import statement for a loan application object in a mortgage application decision service:
+
+.Example import statement in a DRL file
+[source]
+----
+import org.mortgages.LoanApplication;
+----

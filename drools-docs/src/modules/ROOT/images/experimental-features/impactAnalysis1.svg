@@ -1,0 +1,86 @@
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<svg width="443px" height="206px"
+ viewBox="0.00 0.00 442.67 206.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1.0 1.0) rotate(0) translate(4 202)">
+<title>example&#45;impacted&#45;sub&#45;graph</title>
+<polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-202 438.6678,-202 438.6678,4 -4,4"/>
+<!-- Inventory shortage -->
+<g id="node1" class="node">
+<title>Inventory shortage</title>
+<ellipse fill="#ffff00" stroke="#ffff00" cx="334.5767" cy="-126" rx="100.1823" ry="18"/>
+<text text-anchor="middle" x="334.5767" y="-122.3" font-family="Times,serif" font-size="14.00" fill="#000000">Inventory shortage</text>
+</g>
+<!-- StatusCheck_11 -->
+<g id="node2" class="node">
+<title>StatusCheck_11</title>
+<ellipse fill="#ffff00" stroke="#ffff00" cx="334.5767" cy="-180" rx="87.1846" ry="18"/>
+<text text-anchor="middle" x="334.5767" y="-176.3" font-family="Times,serif" font-size="14.00" fill="#000000">StatusCheck_11</text>
+</g>
+<!-- PriceCheck_11 -->
+<g id="node3" class="node">
+<title>PriceCheck_11</title>
+<ellipse fill="#ff0000" stroke="#ff0000" cx="81.2428" cy="-126" rx="81.4863" ry="18"/>
+<text text-anchor="middle" x="81.2428" y="-122.3" font-family="Times,serif" font-size="14.00" fill="#000000">PriceCheck_11</text>
+</g>
+<!-- StatusCheck_11&#45;&gt;PriceCheck_11 -->
+<g id="edge1" class="edge">
+<title>StatusCheck_11&#45;&gt;PriceCheck_11</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M260.3839,-170.3916C220.743,-162.8112 172.773,-152.4127 136.4525,-143.4548"/>
+<polygon fill="#000000" stroke="#000000" points="137.0846,-140.0051 126.5338,-140.97 135.3835,-146.7953 137.0846,-140.0051"/>
+</g>
+<!-- PriceCheck_11&#45;&gt;Inventory shortage -->
+<g id="edge2" class="edge">
+<title>PriceCheck_11&#45;&gt;Inventory shortage</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M162.7937,-126C182.3093,-126 203.4684,-126 224.0497,-126"/>
+<polygon fill="#000000" stroke="#000000" points="224.0971,-129.5001 234.0971,-126 224.0971,-122.5001 224.0971,-129.5001"/>
+</g>
+<!-- PriceCheck_11&#45;&gt;StatusCheck_11 -->
+<g id="edge5" class="edge">
+<title>PriceCheck_11&#45;&gt;StatusCheck_11</title>
+<path fill="none" stroke="#000000" d="M152.1473,-134.9824C191.8852,-142.5119 240.7713,-153.0648 277.9324,-162.1921"/>
+<polygon fill="#000000" stroke="#000000" points="277.5356,-165.7003 288.0854,-164.7249 279.23,-158.9084 277.5356,-165.7003"/>
+</g>
+<!-- StatusCheck_12 -->
+<g id="node4" class="node">
+<title>StatusCheck_12</title>
+<ellipse fill="#ffff00" stroke="#ffff00" cx="334.5767" cy="-72" rx="87.1846" ry="18"/>
+<text text-anchor="middle" x="334.5767" y="-68.3" font-family="Times,serif" font-size="14.00" fill="#000000">StatusCheck_12</text>
+</g>
+<!-- PriceCheck_11&#45;&gt;StatusCheck_12 -->
+<g id="edge4" class="edge">
+<title>PriceCheck_11&#45;&gt;StatusCheck_12</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M139.9994,-113.4756C176.898,-105.6104 224.7122,-95.4184 263.7083,-87.1061"/>
+<polygon fill="#000000" stroke="#000000" points="264.8866,-90.4337 273.9372,-84.9258 263.4272,-83.5875 264.8866,-90.4337"/>
+</g>
+<!-- StatusCheck_13 -->
+<g id="node5" class="node">
+<title>StatusCheck_13</title>
+<ellipse fill="#ffff00" stroke="#ffff00" cx="334.5767" cy="-18" rx="87.1846" ry="18"/>
+<text text-anchor="middle" x="334.5767" y="-14.3" font-family="Times,serif" font-size="14.00" fill="#000000">StatusCheck_13</text>
+</g>
+<!-- PriceCheck_11&#45;&gt;StatusCheck_13 -->
+<g id="edge3" class="edge">
+<title>PriceCheck_11&#45;&gt;StatusCheck_13</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M108.8731,-108.9726C138.891,-91.0586 188.7009,-63.0148 234.4856,-45 244.6156,-41.0141 255.5462,-37.4045 266.3335,-34.2159"/>
+<polygon fill="#000000" stroke="#000000" points="267.5178,-37.5177 276.1729,-31.4072 265.5963,-30.7866 267.5178,-37.5177"/>
+</g>
+</g>
+</svg>

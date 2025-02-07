@@ -1,0 +1,54 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id="proc-kogito-migrate-dmn-model-kjar_{context}"]
+= Migrating a DMN model KJAR to a {KOGITO} microservice
+
+[role="_abstract"]
+After migrating your external application, you need to migrate a KJAR that is specific to a DMN model to a {KOGITO} microservice.
+
+.Procedure
+. Create a Maven project for your {KOGITO} microservice.
++
+For additional information about the procedure about creating a Maven project, you can reference https://blog.kie.org/2021/03/modeling-and-development-of-decision-services-dmn-with-kogito.html[_Modeling and development of decision services: DMN with Kogito_ blog post].
++
+The Maven project creates Kogito artifacts.
+
+. Copy the DMN models from the `src/main/resources` folder of the KJAR to the `src/main/resources` folder of the Kogito artifact.
+. Copy the test scenarios from the `src/test/resources` folder of the KJAR to the `src/test/resources` folder of the Kogito artifact.
++
+IMPORTANT: You need to import the {KOGITO} dependency of test scenarios in the `pom.xml` file of your project and create a JUnit activator using the {KIE_SERVER} REST API.
+
+. Run the following command and ensure that the test scenario is running for the specified non-regression tests.
++
+--
+[source]
+----
+mvn clean install
+----
+
+After running the {KOGITO} application, you can retrieve the Swagger or OAS specification file. The Swagger or OAS specifications provide the same information as the REST endpoint along with the following implementation details:
+
+* Base URL of the server where the API is available
+* References Schemas names
+
+You can use the provided implementation details when your external application is re-routed to the new URL.
+--
+
+After migrating a DMN model KJAR to a {KOGITO} microservice, you can deploy the microservice using {OPENSHIFT}. 

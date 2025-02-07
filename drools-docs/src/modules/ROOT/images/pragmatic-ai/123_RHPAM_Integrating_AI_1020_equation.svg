@@ -1,0 +1,20 @@
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<svg id="b0d83ddd-3c76-4584-ab4f-073d374c4051" data-name="artwork" xmlns="http://www.w3.org/2000/svg" width="760" height="193.615"><defs><style>.b2f27ae5-47b3-4796-be58-f508102116af,.bb0a414c-2fc4-433d-890c-61312754ed2a{font-size:12px;fill:#151515}.b2f27ae5-47b3-4796-be58-f508102116af,.b2fd0c97-c46d-425b-99a1-714ed1510c21{font-family:RedHatText,&quot;Red Hat Text&quot;,Overpass,&quot;Helvetica Neue&quot;,Arial,sans-serif}.b2fd0c97-c46d-425b-99a1-714ed1510c21{font-size:29px}.bb0a414c-2fc4-433d-890c-61312754ed2a{font-family:RedHatText,&quot;Red Hat Text&quot;,Overpass,&quot;Helvetica Neue&quot;,Arial,sans-serif;font-weight:700}</style></defs><text class="b2f27ae5-47b3-4796-be58-f508102116af" transform="translate(432.474 140.442)">Data process flow,<tspan x="12.138" y="13">decision table</tspan></text><text class="b2f27ae5-47b3-4796-be58-f508102116af" transform="translate(635.593 140.442)">Resource planning</text><text class="b2f27ae5-47b3-4796-be58-f508102116af" transform="translate(236.328 140.442)">Neural network,<tspan x="-21.426" y="13">clustering, classification</tspan></text><text class="b2fd0c97-c46d-425b-99a1-714ed1510c21" transform="translate(575.652 79.919)">+</text><text class="b2fd0c97-c46d-425b-99a1-714ed1510c21" transform="translate(372.348 79.919)">+</text><text class="b2fd0c97-c46d-425b-99a1-714ed1510c21" transform="translate(168.957 79.919)">=</text><text transform="translate(679.172 176.58)" font-size="10" fill="#f3f3f3" font-family="RedHatText,&quot;Red Hat Text&quot;,Overpass,&quot;Helvetica Neue&quot;,Arial,sans-serif">123_RHPAM_1020</text><path fill="none" d="M0 153.562h760v40H0z"/><path fill="#e5f0fa" d="M203.381 43.183v55l75 22.5 75-22.5v-55l-75-22.5-75 22.5z"/><text class="bb0a414c-2fc4-433d-890c-61312754ed2a" transform="translate(253.427 67.405)">Machine<tspan x="-1.607" y="13">Learning</tspan></text><path d="M70.009 21.728l78.981 22.213v53.485l-78.981 22.213L.99 97.455V43.912l69.019-22.184m-.019-1.045l-70 22.5v55l70 22.5 80-22.5v-55l-80-22.5z" fill="#06c"/><text class="bb0a414c-2fc4-433d-890c-61312754ed2a" transform="translate(68.69 73.906)">AI</text><path fill="#bfd9f2" d="M406.685 43.183v55l75 22.5 75-22.5v-55l-75-22.5-75 22.5z"/><text class="bb0a414c-2fc4-433d-890c-61312754ed2a" transform="translate(461.867 67.405)">Digital<tspan x="-14.76" y="13">Decisioning</tspan></text><path fill="#99c2eb" d="M609.99 43.183v55l80 22.5 70-22.5v-55l-70-22.5-80 22.5z"/><text class="bb0a414c-2fc4-433d-890c-61312754ed2a" transform="translate(666.443 67.405)">Maths<tspan x="-20.31" y="13">Optimization</tspan></text></svg>

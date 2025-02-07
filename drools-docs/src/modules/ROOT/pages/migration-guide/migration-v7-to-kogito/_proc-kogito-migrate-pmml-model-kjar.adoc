@@ -1,0 +1,50 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id="proc-kogito-migrate-pmml-model-kjar_{context}"]
+= Migrating a PMML model KJAR to a {KOGITO} microservice
+
+[role="_abstract"]
+You can migrate a KJAR that is implemented using PMML model to a {KOGITO} microservice.
+
+.Procedure
+. Create a Maven project for your {KOGITO} microservice.
++
+For the procedure about creating a Maven project, see {URL_GETTING_STARTED_KOGITO_MICROSERVICES}#proc-kogito-creating-maven-project_getting-started-kogito-microservices[_Creating a Maven project for a {KOGITO} microservice_].
++
+The Maven project creates Kogito artifacts.
+
+. Copy the PMML models from the `src/main/resources` folder of the KJAR to the `src/main/resources` folder of the Kogito artifact.
+. Run the following command to execute the {KOGITO} application:
++
+--
+[source]
+----
+mvn clean install
+----
+
+After running the {KOGITO} application, you can retrieve the Swagger or OAS specification file. The Swagger or OAS specifications provide the same information as the REST endpoint along with the following implementation details:
+
+* Base URL of the server where the API is available
+* References Schemas names
+
+You can use the provided implementation details when your external application is re-routed to the new URL.
+--
+
+After migrating a PMML model KJAR to a {KOGITO} microservice, you need to deploy the microservice using {OPENSHIFT}. For deployment options with Openshift, see {URL_GETTING_STARTED_KOGITO_MICROSERVICES}#con-kogito-operator-deployment-options_deploying-kogito-microservices-on-openshift[_OpenShift deployment options with the RHPAM Kogito Operator_].

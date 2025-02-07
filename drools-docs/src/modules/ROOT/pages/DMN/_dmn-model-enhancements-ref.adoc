@@ -1,0 +1,35 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='dmn-model-enhancements-ref_{context}']
+= DMN model enhancements in {DMN_ENGINE}
+
+{DMN_ENGINE} includes the following enhancements to DMN model support in the current DMN implementation:
+
+* __Support for types with spaces on names__: The DMN XML schema defines type refs such as QNames. The QNames do not allow spaces. Therefore, it is not possible to use types like FEEL `date and time`,   `days and time duration` or `years and months duration`. This implementation does parse such typerefs as strings and allows type names with spaces. However, in order to comply with the XML schema, it also adds the following aliases to such types that can be used instead:
+
+  ** `date and time` = `dateTime`
+  ** `days and time duration` = `duration` or `dayTimeDuration`
+  ** `years and months duration` = `duration` or `yearMonthDuration`
++
+Note that, for the "duration" types, the user can simply use `duration` and the {DMN_ENGINE} will infer the proper duration, either `days and time duration` or `years and months duration`.
+
+* __Lists support heterogeneous element types__: Currently this implementation supports lists with heterogeneous element types. This is an experimental extension and does limit the functionality of some functions and filters. This decision will be re-evaluated in the future.
+
+* __TypeRef link between Decision Tables and Item Definitions__: On decision tables/input clause, if no values list is defined, the {DMN_ENGINE} automatically checks the type reference and applies the allowed values check if it is defined.

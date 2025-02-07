@@ -1,0 +1,49 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+:DROOLS:
+include::../_artifacts/document-attributes.adoc[]
+
+[[migrationGuide]]
+= Migration Guide
+:context: migration-guide
+
+include::_traditional-to-ruleunit.adoc[leveloffset=+1]
+include::_nonexec-model-to-exec-model.adoc[leveloffset=+1]
+include::_missing_features_components.adoc[leveloffset=+1]
+include::_other_notes.adoc[leveloffset=+1]
+
+// migrated to Antora:
+include::migration-v7-to-kogito/_con-migration-to-kogito-overview.adoc[leveloffset=+1]
+//DMN
+include::migration-v7-to-kogito/_con-migrate-dmn-to-kogito-overview.adoc[leveloffset=+1]
+include::migration-v7-to-kogito/_proc-kogito-migrate-external-application-rest.adoc[leveloffset=+2]
+include::migration-v7-to-kogito/_proc-kogito-migrate-dmn-model-kjar.adoc[leveloffset=+2]
+include::migration-v7-to-kogito/_ref-migrate-kjar-dmn-example.adoc[leveloffset=+3]
+include::migration-v7-to-kogito/_ref-example-bind-external-app-kogito.adoc[leveloffset=+2]
+//PMML
+//include::migration-v7-to-kogito/_con-migrate-pmml-to-kogito-overview.adoc[leveloffset=+1]
+//include::migration-v7-to-kogito/_proc-kogito-migrate-pmml-model-kjar.adoc[leveloffset=+2]
+//include::migration-v7-to-kogito/_proc-kogito-modify-external-application-pmml-microservice.adoc[leveloffset=+2]
+//DRL
+include::migration-v7-to-kogito/_con-migrate-drl-to-kogito-loan-overview.adoc[leveloffset=+1]
+include::migration-v7-to-kogito/_ref-kogito-migrate-example-loan-application-project.adoc[leveloffset=+2]
+include::migration-v7-to-kogito/_proc-kogito-migrate-drl-expose-ruleunits.adoc[leveloffset=+3]
+include::migration-v7-to-kogito/_proc-kogito-migrate-drl-legacy-api.adoc[leveloffset=+3]
+include::migration-v7-to-kogito/_proc-kogito-migrate-drl-implement-ruleunits.adoc[leveloffset=+3]

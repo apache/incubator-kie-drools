@@ -1,0 +1,396 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='drl-rules-WHEN-con_{context}']
+= Rule conditions in DRL (WHEN)
+
+ifdef::DROOLS,JBPM,OP[]
+.Rule
+image::language-reference/rule.png[align="center"]
+
+.Conditional element in a rule
+image::language-reference/lhs.png[align="center"]
+endif::[]
+
+The `when` part of a DRL rule (also known as the _Left Hand Side (LHS)_ of the rule) contains the conditions that must be met to execute an action. Conditions consist of a series of stated _patterns_ and _constraints_, with optional _bindings_ and supported rule condition elements (keywords), based on the available data objects in the package. For example, if a bank requires loan applicants to have over 21 years of age, then the `when` condition of an `"Underage"` rule would be `Applicant( age < 21 )`.
+
+NOTE: DRL uses `when` instead of `if` because `if` is typically part of a procedural execution flow during which a condition is checked at a specific point in time. In contrast, `when` indicates that the condition evaluation is not limited to a specific evaluation sequence or point in time, but instead occurs continually at any time. Whenever the condition is met, the actions are executed.
+
+If the `when` section is empty, then the conditions are considered to be true and the actions in the `then` section are executed the first time a `fireAllRules()` call is made in the {RULE_ENGINE}. This is useful if you want to use rules to set up the {RULE_ENGINE} state.
+
+The following example rule uses empty conditions to insert a fact every time the rule is executed:
+
+.Example rule without conditions
+[source]
+----
+rule "Always insert applicant"
+  when
+    // Empty
+  then   // Actions to be executed once
+    insert( new Applicant() );
+end
+
+// The rule is internally rewritten in the following way:
+
+rule "Always insert applicant"
+  when
+    eval( true )
+  then
+    insert( new Applicant() );
+end
+----
+
+If rule conditions use multiple patterns with no defined keyword conjunctions (such as `and`, `or`, or `not`), the default conjunction is `and`:
+
+.Example rule without keyword conjunctions
+[source]
+----
+rule "Underage"
+  when
+    application : LoanApplication()
+    Applicant( age < 21 )
+  then
+    // Actions
+end
+
+// The rule is internally rewritten in the following way:
+
+rule "Underage"
+  when
+    application : LoanApplication()
+    and Applicant( age < 21 )
+  then
+    // Actions
+end
+----
+
+== Patterns and constraints
+
+A _pattern_ in a DRL rule condition is the segment to be matched by the {RULE_ENGINE}. A pattern can potentially match each fact that is inserted into the working memory of the {RULE_ENGINE}. A pattern can also contain _constraints_ to further define the facts to be matched.
+
+ifdef::DROOLS,JBPM,OP[]
+The railroad diagram below shows the syntax for this:
+
+.Pattern
+image::language-reference/Pattern.png[align="center"]
+endif::[]
+
+In the simplest form, with no constraints, a pattern matches a fact of the given type. In the following example, the type is `Person`, so the pattern will match against all `Person` objects in the working memory of the {RULE_ENGINE}:
+
+.Example pattern for a single fact type
+[source]
+----
+Person()
+----
+
+The type does not need to be the actual class of some fact object. Patterns can refer to superclasses or even interfaces, potentially matching facts from many different classes. For example, the following pattern matches all objects in the working memory of the {RULE_ENGINE}:
+
+.Example pattern for all objects
+[source]
+----
+Object() // Matches all objects in the working memory
+----
+
+The parentheses of a pattern enclose the constraints, such as the following constraint on the person's age:
+
+.Example pattern with a constraint
+[source]
+----
+Person( age == 50 )
+----
+
+A _constraint_ is an expression that returns `true` or `false`. Pattern constraints in DRL are essentially Java expressions with some enhancements, such as property access, and some differences, such as `equals()` and `!equals()` semantics for `==` and `!=` (instead of the usual `same` and `not same` semantics).
+
+Any JavaBeans property can be accessed directly from pattern constraints. A bean property is exposed internally using a standard JavaBeans getter that takes no arguments and returns something. For example, the `age` property is written as `age` in DRL instead of the getter `getAge()`:
+
+.DRL constraint syntax with JavaBeans properties
+[source]
+----
+Person( age == 50 )
+
+// This is the same as the following getter format:
+
+Person( getAge() == 50 )
+----
+
+{PRODUCT} uses the standard JDK `Introspector` class to achieve this mapping, so it follows the standard JavaBeans specification. For optimal {RULE_ENGINE} performance, use the property access format, such as `age`, instead of using getters explicitly, such as `getAge()`.
+
+[WARNING]
+====
+Do not use property accessors to change the state of the object in a way that might affect the rules because the {RULE_ENGINE} caches the results of the match between invocations for higher efficiency.
+
+For example, do not use property accessors in the following ways:
+
+[source,java]
+----
+public int getAge() {
+    age++; // Do not do this.
+    return age;
+}
+----
+
+[source,java]
+----
+public int getAge() {
+    Date now = DateUtil.now(); // Do not do this.
+    return DateUtil.differenceInYears(now, birthday);
+}
+----
+
+Instead of following the second example, insert a fact that wraps the current date in the working memory and update that fact between `fireAllRules()` as needed.
+====
+
+However, if the getter of a property cannot be found, the compiler uses the property name as a fallback method name, without arguments:
+
+.Fallback method if object is not found
+[source]
+----
+Person( age == 50 )
+
+// If `Person.getAge()` does not exist, the compiler uses the following syntax:
+
+Person( age() == 50 )
+----
+
+You can also nest access properties in patterns, as shown in the following example. Nested properties are indexed by the {RULE_ENGINE}.
+
+.Example pattern with nested property access
+[source]
+----
+Person( address.houseNumber == 50 )
+
+// This is the same as the following format:
+
+Person( getAddress().getHouseNumber() == 50 )
+----
+
+WARNING: In stateful KIE sessions, use nested accessors carefully because the working memory of the {RULE_ENGINE} is not aware of any of the nested values and does not detect when they change. Either consider the nested values immutable while any of their parent references are inserted into the working memory, or, if you want to modify a nested value, mark all of the outer facts as updated. In the previous example, when the `houseNumber` property changes, any `Person` with that `Address` must be marked as updated.
+
+You can use any Java expression that returns a `boolean` value as a constraint inside the parentheses of a pattern. Java expressions can be mixed with other expression enhancements, such as property access:
+
+.Example pattern with a constraint using property access and Java expression
+[source]
+----
+Person( age == 50 )
+----
+
+You can change the evaluation priority by using parentheses, as in any logical or mathematical expression:
+
+.Example evaluation order of constraints
+[source]
+----
+Person( age > 100 && ( age % 10 == 0 ) )
+----
+
+You can also reuse Java methods in constraints, as shown in the following example:
+
+.Example constraints with reused Java methods
+[source]
+----
+Person( Math.round( weight / ( height * height ) ) < 25.0 )
+----
+
+[WARNING]
+====
+Do not use constraints to change the state of the object in a way that might affect the rules because the {RULE_ENGINE} caches the results of the match between invocations for higher efficiency. Any method that is executed on a fact in the rule conditions must be a read-only method. Also, the state of a fact should not change between rule invocations unless those facts are marked as updated in the working memory on every change.
+
+For example, do not use a pattern constraint in the following ways:
+
+[source]
+----
+Person( incrementAndGetAge() == 10 ) // Do not do this.
+----
+
+[source]
+----
+Person( System.currentTimeMillis() % 1000 == 0 ) // Do not do this.
+----
+====
+
+Standard Java operator precedence applies to constraint operators in DRL, and DRL operators follow standard Java semantics except for the `==` and `!=` operators.
+
+The `==` operator uses null-safe `equals()` semantics instead of the usual `same` semantics. For example, the pattern `Person( firstName == "John" )` is similar to `java.util.Objects.equals(person.getFirstName(), "John")`, and because `"John"` is not null, the pattern is also similar to `"John".equals(person.getFirstName())`.
+
+The `!=` operator uses null-safe `!equals()` semantics instead of the usual `not same` semantics. For example, the pattern `Person( firstName != "John" )` is similar to `!java.util.Objects.equals(person.getFirstName(), "John")`.
+
+If the field and the value of a constraint are of different types, the {RULE_ENGINE} uses type coercion to resolve the conflict and reduce compilation errors. For instance, if `"ten"` is provided as a string in a numeric evaluator, a compilation error occurs, whereas `"10"` is coerced to a numeric 10. In coercion, the field type always takes precedence over the value type:
+
+.Example constraint with a value that is coerced
+[source]
+----
+Person( age == "10" ) // "10" is coerced to 10
+----
+
+For groups of constraints, you can use a delimiting comma `,` to use implicit `and` connective semantics:
+
+.Example patterns with multiple constraints
+[source]
+----
+// Person is at least 50 years old and weighs at least 80 kilograms:
+Person( age > 50, weight > 80 )
+
+// Person is at least 50 years old, weighs at least 80 kilograms, and is taller than 2 meters:
+Person( age > 50, weight > 80, height > 2 )
+----
+
+NOTE: Although the `&&` and `,` operators have the same semantics, they are resolved with different priorities. The `&&` operator precedes the `||` operator, and both the `&&` and `||` operators together precede the `,` operator. Use the comma operator at the top-level constraint for optimal {RULE_ENGINE} performance and human readability.
+
+You cannot embed a comma operator in a composite constraint expression, such as in parentheses:
+
+.Example of misused comma in composite constraint expression
+[source]
+----
+// Do not use the following format:
+Person( ( age > 50, weight > 80 ) || height > 2 )
+
+// Use the following format instead:
+Person( ( age > 50 && weight > 80 ) || height > 2 )
+----
+
+== Bound variables in patterns and constraints
+
+You can bind variables to patterns and constraints to refer to matched objects in other portions of a rule. Bound variables can help you define rules more efficiently or more consistently with how you annotate facts in your data model. To differentiate more easily between variables and fields in a rule, use the standard format `$variable` for variables, especially in complex rules. This convention is helpful but not required in DRL.
+
+For example, the following DRL rule uses the variable `$p` for a pattern with the `Person` fact:
+
+.Pattern with a bound variable
+[source]
+----
+rule "simple rule"
+  when
+    $p : Person()
+  then
+    System.out.println( "Person " + $p );
+end
+----
+
+Similarly, you can also bind variables to properties in pattern constraints, as shown in the following example:
+
+[source]
+----
+// Two persons of the same age:
+Person( $firstAge : age ) // Binding
+Person( age == $firstAge ) // Constraint expression
+----
+
+[NOTE]
+====
+Constraint binding considers only the first atomic expression that follows it. In the following example the pattern only binds the age of the person to the variable `$a`:
+
+[source]
+----
+Person( $a : age * 2 < 100 )
+----
+
+
+For clearer and more efficient rule definitions, separate constraint bindings and constraint expressions. Although mixed bindings and expressions are supported, which can complicate patterns and affect evaluation efficiency.
+
+[source]
+----
+// Do not use the following format:
+Person( $a : age * 2 < 100 )
+
+// Use the following format instead:
+Person( age * 2 < 100, $a : age )
+----
+
+In the preceding example, if you want to bind to the variable `$a` the double of the person's age, you must make it an atomic expression by wrapping it in parentheses as shown in the following example:
+
+[source]
+----
+Person( $a : (age * 2) )
+----
+====
+
+The {RULE_ENGINE} does not support bindings to the same declaration, but does support _unification_ of arguments across several properties. While positional arguments are always processed with unification, the unification symbol `:=` exists for named arguments.
+
+The following example patterns unify the `age` property across two `Person` facts:
+
+.Example pattern with unification
+[source]
+----
+Person( $age := age )
+Person( $age := age )
+----
+
+Unification declares a binding for the first occurrence and constrains to the same value of the bound field for sequence occurrences.
+
+== Nested constraints and inline casts
+
+In some cases, you might need to access multiple properties of a nested object, as shown in the following example:
+
+.Example pattern to access multiple properties
+[source]
+----
+Person( name == "mark", address.city == "london", address.country == "uk" )
+----
+
+You can group these property accessors to nested objects with the syntax `.( <constraints> )` for more readable rules, as shown in the following example:
+
+.Example pattern with grouped constraints
+[source]
+----
+Person( name == "mark", address.( city == "london", country == "uk") )
+----
+
+NOTE: The period prefix `.` differentiates the nested object constraints from a method call.
+
+When you work with nested objects in patterns, you can use the syntax `<type>#<subtype>` to cast to a subtype and make the getters from the parent type available to the subtype. You can use either the object name or fully qualified class name, and you can cast to one or multiple subtypes, as shown in the following examples:
+
+.Example patterns with inline casting to a subtype
+[source]
+----
+// Inline casting with subtype name:
+Person( name == "mark", address#LongAddress.country == "uk" )
+
+// Inline casting with fully qualified class name:
+Person( name == "mark", address#org.domain.LongAddress.country == "uk" )
+
+// Multiple inline casts:
+Person( name == "mark", address#LongAddress.country#DetailedCountry.population > 10000000 )
+----
+
+These example patterns cast `Address` to `LongAddress`, and additionally to `DetailedCountry` in the last example, making the parent getters available to the subtypes in each case.
+
+You can use the `instanceof` operator to infer the results of the specified type in subsequent uses of that field with the pattern, as shown in the following example:
+
+[source]
+----
+Person( name == "mark", address instanceof LongAddress, address.country == "uk" )
+----
+
+If an inline cast is not possible (for example, if `instanceof` returns `false`), the evaluation is considered `false`.
+
+== Date literal in constraints
+
+By default, the {RULE_ENGINE} supports the date format `dd-mmm-yyyy`. You can customize the date format, including a time format mask if needed, by providing an alternative format mask with the system property `drools.dateformat="dd-mmm-yyyy hh:mm"`. You can also customize the date format by changing the language locale with the `drools.defaultlanguage` and `drools.defaultcountry` system properties (for example, the locale of Thailand is set as `drools.defaultlanguage=th` and `drools.defaultcountry=TH`).
+
+.Example pattern with a date literal restriction
+[source]
+----
+Person( bornBefore < "27-Oct-2009" )
+----
+
+ifdef::DROOLS,JBPM,OP[]
+== Auto-boxing and primitive types
+
+Drools attempts to preserve numbers in their primitive or object wrapper form, so a variable bound to an int primitive when used in a code block or expression will no longer need manual unboxing; unlike early Drools versions where all primitives were autoboxed, requiring manual unboxing.
+A variable bound to an object wrapper will remain as an object; the existing JDK 1.5 and JDK 5 rules to handle auto-boxing and unboxing apply in this case.
+When evaluating field constraints, the system attempts to coerce one of the values into a comparable format; so a primitive is comparable to an object wrapper.
+endif::[]

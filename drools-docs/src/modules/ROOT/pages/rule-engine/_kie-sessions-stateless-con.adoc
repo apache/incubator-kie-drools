@@ -1,0 +1,160 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='kie-sessions-stateless-con_{context}']
+
+= Stateless KIE sessions
+
+A stateless KIE session is a session that does not use inference to make iterative changes to facts over time. In a stateless KIE session, data from a previous invocation of the KIE session (the previous session state) is discarded between session invocations, whereas in a stateful KIE session, that data is retained. A stateless KIE session behaves similarly to a function in that the results that it produces are determined by the contents of the KIE base and by the data that is passed into the KIE session for execution at a specific point in time. The KIE session has no memory of any data that was passed into the KIE session previously.
+
+Stateless KIE sessions are commonly used for the following use cases:
+
+* *Validation*, such as validating that a person is eligible for a mortgage
+* *Calculation*, such as computing a mortgage premium
+* *Routing and filtering*, such as sorting incoming emails into folders or sending incoming emails to a destination
+
+For example, consider the following driver's license data model and sample DRL rule:
+
+.Data model for driver's license application
+[source,java]
+----
+public class Applicant {
+  private String name;
+  private int age;
+  private boolean valid;
+  // Getter and setter methods
+}
+----
+
+.Sample DRL rule for driver's license application
+[source]
+----
+package com.company.license
+
+rule "Is of valid age"
+when
+  $a : Applicant(age < 18)
+then
+  $a.setValid(false);
+end
+----
+
+The `Is of valid age` rule disqualifies any applicant younger than 18 years old. When the `Applicant` object is inserted into the {RULE_ENGINE}, the {RULE_ENGINE} evaluates the constraints for each rule and searches for a match. The `"objectType"` constraint is always implied, after which any number of explicit field constraints are evaluated. The variable `$a` is a binding variable that references the matched object in the rule consequence.
+
+[NOTE]
+====
+The dollar sign (`$`) is optional and helps to differentiate between variable names and field names.
+====
+
+In this example, the sample rule and all other files in the `~/resources` folder of the {PRODUCT} project are built with the following code:
+
+.Create the KIE container
+[source,java]
+----
+KieServices kieServices = KieServices.Factory.get();
+
+KieContainer kContainer = kieServices.getKieClasspathContainer();
+----
+
+This code compiles all the rule files found on the class path and adds the result of this compilation, a `KieModule` object, in the `KieContainer`.
+
+Finally, the `StatelessKieSession` object is instantiated from the `KieContainer` and is executed against specified data:
+
+.Instantiate the stateless KIE session and enter data
+[source,java]
+----
+StatelessKieSession kSession = kContainer.newStatelessKieSession();
+
+Applicant applicant = new Applicant("Mr John Smith", 16);
+
+assertTrue(applicant.isValid());
+
+ksession.execute(applicant);
+
+assertFalse(applicant.isValid());
+----
+
+In a stateless KIE session configuration, the `execute()` call acts as a combination method that instantiates the `KieSession` object, adds all the user data and executes user commands, calls `fireAllRules()`, and then calls `dispose()`. Therefore, with a stateless KIE session, you do not need to call `fireAllRules()` or call `dispose()` after session invocation as you do with a stateful KIE session.
+
+In this case, the specified applicant is under the age of 18, so the application is declined.
+
+For a more complex use case, see the following example. This example uses a stateless KIE session and executes rules against an iterable list of objects, such as a collection.
+
+.Expanded data model for driver's license application
+[source,java]
+----
+public class Applicant {
+  private String name;
+  private int age;
+  // Getter and setter methods
+}
+
+public class Application {
+  private Date dateApplied;
+  private boolean valid;
+  // Getter and setter methods
+}
+----
+
+.Expanded DRL rule set for driver's license application
+[source]
+----
+package com.company.license
+
+rule "Is of valid age"
+when
+  Applicant(age < 18)
+  $a : Application()
+then
+  $a.setValid(false);
+end
+
+rule "Application was made this year"
+when
+  $a : Application(dateApplied > "01-jan-2009")
+then
+  $a.setValid(false);
+end
+----
+
+.Expanded Java source with iterable execution in a stateless KIE session
+[source,java]
+----
+StatelessKieSession ksession = kbase.newStatelessKnowledgeSession();
+Applicant applicant = new Applicant("Mr John Smith", 16);
+Application application = new Application();
+
+assertTrue(application.isValid());
+ksession.execute(Arrays.asList(new Object[] { application, applicant }));  // <1>
+assertFalse(application.isValid());
+
+ksession.execute
+  (CommandFactory.newInsertIterable(new Object[] { application, applicant }));  // <2>
+
+List<Command> cmds = new ArrayList<Command>();  // <3>
+cmds.add(CommandFactory.newInsert(new Person("Mr John Smith"), "mrSmith"));
+cmds.add(CommandFactory.newInsert(new Person("Mr John Doe"), "mrDoe"));
+
+BatchExecutionResults results = ksession.execute(CommandFactory.newBatchExecution(cmds));
+assertEquals(new Person("Mr John Smith"), results.getValue("mrSmith"));
+----
+
+<1> Method for executing rules against an iterable collection of objects produced by the `Arrays.asList()` method. Every collection element is inserted before any matched rules are executed. The `execute(Object object)` and `execute(Iterable objects)` methods are wrappers around the `execute(Command command)` method that comes from the `BatchExecutor` interface.
+<2> Execution of the iterable collection of objects using the `CommandFactory` interface.
+<3> `BatchExecutor` and `CommandFactory` configurations for working with many different commands or result output identifiers. The `CommandFactory` interface supports other commands that you can use in the `BatchExecutor`, such as `StartProcess`, `Query`, and `SetGlobal`.

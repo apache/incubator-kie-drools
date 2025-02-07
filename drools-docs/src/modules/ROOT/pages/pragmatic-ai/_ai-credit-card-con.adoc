@@ -1,0 +1,126 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='ai-credit-card-con_{context}']
+
+= Credit card fraud dispute use case example
+
+The financial industry uses pragmatic AI for decisioning in several areas. One area is credit card charge disputes. When a customer identifies an incorrect or unrecognized charge on a credit card bill, the customer can dispute the charge.  Human intervention in credit card fraud detection is required in some cases but the majority of reported credit card fraud can be completely or partially resolved with pragmatic AI.
+
+This use case example is about the fictitious Fortress Bank, the bank's customer Joe, and the business process management (BPM) developer Michelle. First we will look at how the bank originally used AI through {PRODUCT} digital decisioning and then we will see how Michelle enhanced the decision model with a Predictive Model Markup Language (PMML) model created from machine learning.
+
+Machine learning models such as Tensorflow™ and R™ produce predictive models. You can save these predictive models in an open standard such as PMML so that you can use the model with {PRODUCT} or other products that support the PMML standard.
+
+.{PRODUCT} and {OPENSHIFT}
+Fortress Bank uses {PRODUCT} on {OPENSHIFT} to develop and run the Fortress Bank decision services. {OPENSHIFT} is a cloud platform for developing and running containerized applications, on top of Kubernetes. It is designed to enable applications and the data centers that support them to expand from just a few machines and applications to thousands of machines that serve millions of clients. You can use {PRODUCT} as a platform for creating cloud-native decision services, business automation applications and microservices. {PRODUCT}, in this context, enables enterprise business and IT users to document, simulate, manage, automate, and monitor business processes and decisions.
+
+.Credit card dispute digital decisioning with {PRODUCT}
+Joe is a Fortress Bank customer. Each month, he logs in to the Fortress Bank website to review all of the charges on his bill before he pays it. This month, Joe sees a transaction that he recognizes but the amount is incorrect. The vendor has charged him $44.50 instead of $4.50. Joe selects the row that contains the incorrect item and clicks *Dispute*.
+
+image:pragmatic-ai/transaction-history.png[]
+
+This action initiates a series of questions about the dispute:
+
+. Why are you disputing these transactions?
+. Has your card been with you the entire time?
+. Is there anything else you would like to tell us about this dispute?
+
+After Joe answers the questions, the website provides Joe with an incident number, `FR-00000004`.
+
+Fortress Bank must now decide whether to reimburse the disputed amount without human investigation or whether to investigate the claim manually. Manual investigation requires more resources so automatic processing of the disputed amount costs the bank less in terms of human resources. However, if the bank automatically accepts all disputed amounts the cost will ultimately be greater to the bank because of money paid for fraudulent claims. Someone or something must make the decision whether or not to investigate.
+
+.Credit Card Dispute project
+To help with this decisioning, Fortress Bank created the *CreditCardDisputeCase* project that contains the *fraudDispute* business process that models the dispute process.
+
+image:pragmatic-ai/casefile.png[]
+
+.Process variables
+When Joe reported the dispute, an instance of the *fraudDispute* process was created with case ID `FR-00000004`.  The *Process Variables* tab contains several variables and values specific to Joe's account, including `CaseID`, `caseFile_cardholderRiskRating` (the credit card holder risk rating), and `caseFile_disputeRiskRating` (the risk rating of this dispute):
+
+image:pragmatic-ai/process-variables-3.png[]
+
+The table also has the `casefile_automated` variable with the value `true`. This indicates that the dispute met the criteria to be automatically processed.
+
+.Process diagram
+The *Diagram* tab contains the BPMN diagram that shows the decision paths that the bank uses when deciding whether to process a dispute automatically or manually:
+
+image:pragmatic-ai/bpmn.png[]
+
+The *Decision Task* task contains the rules that determine whether the dispute will be automatically charged back to Joe's account (*Milestone 1*) or whether more investigation is required (*Milestone 2*) based on the values of the `caseFile_cardholderRiskRating` and the `caseFile_disputeRiskRating` variables. If Joe's dispute matches the criteria for automatic approval, *Milestone 1* is followed and the disputed amount is charged back to his account. This sub-process is very lean and efficient. If Joe's dispute requires manual evaluation, the sub-process in *Milestone 2* is started, which will require some human actor involvement and will take more resources to process.
+
+In this case, the *Decision Task* task decided to process Joe's dispute automatically so it followed *Milestone 1: Automatic Chargeback*.
+
+.DMN model
+The following simplified DMN model shows the decision process that is part of the *fraudDispute* *Decision Task* task:
+
+
+image:pragmatic-ai/simple-dmn.png[]
+
+The input variables are *Age* (cardholder age), *Incident Count* (the number of previous disputes for this cardholder), *Cardholder Status* (standard, silver, gold, platinum), and *Fraud Amount*.
+
+{PRODUCT} uses input variables in decision tables to support digital decisioning. The decision tables are created by human business analysts. The analyst creates a draft business requirement analysis document or spreadsheet that stakeholders review and approve. The project designer then uses the {DMN_EDITOR} to transfer the data in the analysis document to the DMN model. The Fortress Bank *Credit Card Dispute* process has two decision tables, the *Cardholder Risk Rating* table and the *Dispute Risk Rating* table. The *Cardholder Risk Rating* table contains three input variables:  *Incident Count*, *Cardholder Status*, and *Age*. The *Dispute Risk Rating* table contains the *Cardholder Status* input variable. The table calculates the risk of the dispute based on the cardholder status and the amount of the dispute.
+
+image:pragmatic-ai/riskrating.png[]
+
+* *Cardholder Risk Rating*
++
+Joe is a Silver cardholder over the age of 25. He has had more than two previous disputes, so he has a risk rating of 2. If Joe had no previous disputes, he would have a risk rating of 0.
+
+* *Dispute Risk Rating*
++
+Because Joe is a Silver cardholder and the disputed amount is $40, Joe has a rating of 1 on the *Dispute Risk Rating* table. If the disputed amount was $140, Joe would have a risk rating of 2.
+
+The following formula, which is implemented as part of the *Process Automatically* final decision in the DMN model, uses the scores from the two decision tables to determine whether to automatically charge back the disputed amount (*Milestone 1*) or whether more investigation is needed (*Milestone 2*).
+[source]
+----
+(Cardholder Risk Rating + Dispute Risk Rating) < 5
+----
+If Joe's overall risk score is less than five, his disputed amount is charged back automatically (*Milestone 1*). If the overall score is 5 or greater, then his dispute is processed manually (*Milestone 2*).
+
+.Adding machine learning to {PRODUCT} digital decisioning
+Because Fortress Bank has historical data about its customers, including previous transaction and dispute history, the bank can use that data with machine learning to create predictive models that can be used in the DMN model decision tasks. This results in a more accurate assessment of the risk compared to the decision tables created by business analysts.
+
+Fortress Bank has two sets of PMML files that contain models which more accurately assess risk predictions. One set is based on the linear regression algorithm and the other is based on the random forests algorithm.
+
+image:pragmatic-ai/pmml-models.png[]
+
+Linear regression is one of the most widely used algorithms in both statistics and machine learning. It uses a linear equation that combines a set of numeric input and output values. Random forests use many decision trees as inputs to create prediction models.
+
+.Adding PMML files
+Michelle imports the *dispute_risk_linear_regression* PMML file into her project. She adds the *Cardholder Risk Model* business model knowledge node to the DMN model and associates the *dispute_risk_linear_regression* PMML file with the node. {PRODUCT} analyzes the PMML file and adds input parameters to the node. Michelle associates the *Cardholder Risk Model* node with the *Dispute Risk Rating*.
+
+Michelle then adds the *credit_card_holder_risk_linear_regression* PMML model to the projects, creates the *Dispute Risk Model* mode DMN file, creates and associates the *credit_card_holder_risk_linear_regression* PMML file with the node. {PRODUCT} analyzes the PMML file and adds input parameters to the node.
+
+The following image is Michelle's completed DMN model, which replaces analytical decision tables with the predictive models from the PMML files:
+
+
+image:pragmatic-ai/DMN-PMML-2.png[]
+
+Michelle now returns to the *fraudDispute* BPMN model and updates the model with the PMML files that she added. She then redeploys the project.
+
+.Increased score precision
+In this new scenario where Michelle has redeployed the Fortress Bank project with PMML models, we can see what happens when Joe logs in to his Fortress Bank account and reports the same transaction as incorrect. At this point, Michelle navigates to the *Process Instances* window and she sees Joe's new dispute instance.
+In the *Process Variables* tab, Michelle reviews the values of *cardHolderRiskRating* and the *disputeRiskRating*. They have changed because the model is now using the PMML files. This provides a much more precise prediction of risk by making use of machine learning models based on historical data. At the same time, the policy of the bank is still enforced by the DMN decision model: the risk predictor is below a specified threshold which allows for this dispute to be processed automatically.
+
+image:pragmatic-ai/process-variables-pmml.png[]
+
+.Monitoring
+Finally, Fortress Bank uses Prometheus to gather metrics about credit card disputes and Grafana to visualize those metrics in real time. The upper section of the monitor shows the business metrics key performance indicators (KPIs) and the lower section shows the operational metrics KPIs.
+
+image:pragmatic-ai/grafana.png[]

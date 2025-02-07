@@ -1,0 +1,64 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='logging-proc_{context}']
+
+= Configuring a logging utility in the {RULE_ENGINE}
+
+The {RULE_ENGINE} uses the Java logging API SLF4J for system logging. You can use one of the following logging utilities with the {RULE_ENGINE} to investigate {RULE_ENGINE} activity, such as for troubleshooting or data gathering:
+
+* Logback
+* Apache Commons Logging
+* Apache Log4j
+* `java.util.logging` package
+
+.Procedure
+For the logging utility that you want to use, add the relevant dependency to your Maven project or save the relevant XML configuration file in the `org.drools` package of your {PRODUCT} distribution:
+
+.Example Maven dependency for Logback
+[source,xml]
+----
+<dependency>
+  <groupId>ch.qos.logback</groupId>
+  <artifactId>logback-classic</artifactId>
+  <version>${logback.version}</version>
+</dependency>
+----
+
+.Example logback.xml configuration file in org.drools package
+[source,xml]
+----
+<configuration>
+  <logger name="org.drools" level="debug"/>
+  ...
+<configuration>
+----
+
+.Example log4j.xml configuration file in org.drools package
+[source,xml]
+----
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+  <category name="org.drools">
+    <priority value="debug" />
+  </category>
+  ...
+</log4j:configuration>
+----
+
+NOTE: If you are developing for an ultra light environment, use the `slf4j-nop` or `slf4j-simple` logger.

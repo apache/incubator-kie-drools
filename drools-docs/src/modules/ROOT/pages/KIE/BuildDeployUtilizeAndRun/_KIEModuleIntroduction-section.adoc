@@ -1,0 +1,60 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[[_kiemoduleintroductionbuildingintroductionsection]]
+= Introduction
+
+{PRODUCT} since version `6.0` introduced a new configuration and convention approach to building KIE bases, instead of using the programmatic builder approach of the `5.x` series.
+// The builder is still available to fall back on, as it's used for the tooling integration.
+
+Building {PRODUCT}-based KIE project make use of Maven, and aligns with Maven practices.
+A KIE project or module is simply a Maven Java project or module; with an additional metadata file META-INF/kmodule.xml.
+The kmodule.xml file is the descriptor that selects resources to KIE bases and configures those KIE bases and sessions.
+
+While standard Maven can build and package KIE resources, it will not provide validation at build time.
+There is a Maven plugin (`kie-maven-plugin`) which is recommended to use to get build time validation.
+The plugin also generates many classes, making the runtime loading faster too.
+
+The example project layout and Maven POM descriptor is illustrated in the screenshot
+
+.Example project layout and Maven POM
+image::KIE/BuildDeployUtilizeAndRun/project-layout.png[align="center"]
+
+
+KIE uses defaults to minimise the amount of configuration.
+With an empty kmodule.xml being the simplest configuration.
+There must always be a kmodule.xml file, even if empty, as it's used for discovery of the JAR and its contents.
+
+Maven can either 'mvn install' to deploy a KieModule to the local machine, where all other applications on the local machine use it.
+Or it can 'mvn deploy' to push the KieModule to a remote Maven repository.
+Building the Application will pull in the KieModule and populate the local Maven repository in the process.
+
+.Example project layout and Maven POM
+image::KIE/BuildDeployUtilizeAndRun/maven.png[align="center"]
+
+
+JARs can be deployed in one of two ways.
+Either added to the classpath, like any other JAR in a Maven dependency listing, or they can be dynamically loaded at runtime.
+KIE will scan the classpath to find all the JARs with a kmodule.xml in it.
+Each found JAR is represented by the KieModule interface.
+The terms classpath KieModule and dynamic KieModule are used to refer to the two loading approaches.
+While dynamic modules support side by side versioning, classpath modules do not.
+Further once a module is on the classpath, no other version may be loaded dynamically.
+
+Detailed references for the API are included in the next sections, the impatient can jump straight to the examples section, which is fairly self-explanatory on the different use cases.

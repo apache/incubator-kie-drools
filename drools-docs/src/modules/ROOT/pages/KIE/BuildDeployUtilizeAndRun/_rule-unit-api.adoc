@@ -1,0 +1,191 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='rule-unit-api_{context}']
+
+= Rule Unit API
+
+Previous sections in this chapter explained traditional KIE APIs to use {RULE_ENGINE}. However, as introduced in xref:getting-started/index.adoc#first-rule-project_getting-started[First Rule Project], Rule Unit is a new and recommended style for implementing rules since {PRODUCT} 8.
+
+A rule unit is an atomic module defining a set of rules and a set of strongly typed *data sources* through which the facts processed by the rules are inserted. The *data sources* of 2 kinds: `DataStream` and `DataStore` which will be described later in this section.
+
+image::KIE/BuildDeployUtilizeAndRun/RuleUnit01.png[align="center"]
+
+`DataSources` can be shared across different units, providing a coordination mechanism between them.
+
+image::KIE/BuildDeployUtilizeAndRun/RuleUnit02.png[align="center"]
+
+== RuleUnitData
+
+`RuleUnitData` is an interface to define your Rule Unit. Rule unit implementation would be like this:
+
+[source,java]
+----
+public class MeasurementUnit implements RuleUnitData {
+
+    private final DataStore<Measurement> measurements;
+    private final Set<String> controlSet = new HashSet<>();
+
+    public MeasurementUnit() {
+        this(DataSource.createStore());
+    }
+
+    public MeasurementUnit(DataStore<Measurement> measurements) {
+        this.measurements = measurements;
+    }
+
+    public DataStore<Measurement> getMeasurements() {
+        return measurements;
+    }
+
+    public Set<String> getControlSet() {
+        return controlSet;
+    }
+}
+----
+
+In this case, `Measurement` is your fact class, so you need to implement it as well.
+
+The name of the rule unit class `MeasurementUnit` is linked to DRL rules using the `unit` statement.
+
+[source]
+----
+package org.example;
+unit MeasurementUnit;
+
+rule "will execute per each Measurement having ID color"
+when
+  ....
+----
+
+== Data sources
+
+Data sources are typed sources of data that rule units can subscribe to for updates. You interact with the rule unit through the data sources it exposes.
+
+{PRODUCT} supports the following types of data sources.
+
+* `DataStream`: An append-only storage option. Use this storage option when you want to publish or share data values. You can use the notation `DataSource.createStream()` to return a `DataStream<T>` object and use the method `append(T)` to add more data.
++
+.Example DataStream data source usage
+[source,java]
+----
+DataStream<Measurement> measurements = DataSource.createStream();
+// Append value and notify all subscribers
+measurements.append(new Measurement("color", "red"));
+----
+
+* `DataStore`: A writable storage option for adding or removing data and then notifying all subscribers that mutable data has been modified. Rules can pattern-match against incoming values and update or remove available values.
+For users familiar with traditional DRL syntax, this option is equivalent to a typed version of an entry point. In fact, a `DataStore<Object>` is equivalent to a traditional-style entry point.
++
+.Example DataStore data source usage
+[source,java]
+----
+DataStore<Measurement> measurements = DataSource.createStore();
+Measurement measurement = new Measurement("color", "red");
+// Add value and notify all subscribers
+DataHandle mHandle = measurements.add(measurement);
+measure.setValue("blue");
+// Notify all subscribers that the value referenced by `mHandle` has changed
+measurements.update(mHandle, measurement);
+// Remove value referenced by `mHandle` and notify all subscribers
+measurements.remove(mHandle);
+----
+
+* `SingletonStore`: A writable storage option for setting or clearing a single element and then notifying all subscribers that the element has been modified. Rules can pattern-match against the value and update or clear available values.
+For users familiar with traditional DRL syntax, this option is similar to a global but reactive to changes. A `Singleton<Object>` is similar to a traditional-style global, except that when used in conjunction with rules, you can pattern-match against it.
++
+.Example SingletonStore data source definition
+[source,java]
+----
+SingletonStore<Measurement> measurement = DataSource.createSingleton();
+Measurement m1 = new Measurement("color", "red");
+// Add value `m1` and notify all subscribers
+measurement.set(m1);
+measure.setValue("blue");
+// Notify all subscribers that the value has changed
+measurement.update();
+
+Measurement m2 = new Measurement("color", "green");
+// Overwrite contained value with `m2` and notify all subscribers
+measurement.set(m2);
+measure2.setValue("black");
+// Notify all subscribers that the value has changed
+measurement.update();
+
+// Clear store and notify all subscribers
+measurement.clear();
+----
+
+Subscribers to a data source are known as _data processors_. A data processor implements the `DataProcessor<T>` interface. This interface contains callbacks to all the events that a subscribed data source can trigger.
+
+.DataProcessor
+[source,java]
+----
+public interface DataProcessor<T> {
+    default void insert(T object) {
+        insert(null, object);
+    }
+    FactHandle insert(DataHandle handle, T object);
+    void update(DataHandle handle, T object);
+    void delete(DataHandle handle);
+}
+----
+
+The `DataHandle` is an internal reference to an object of a data source. Each callback method might or might not be invoked, depending on whether the corresponding data source implements the capability. For example, a `DataStream` source invokes only the `insert` callback, whereas a `SingletonStore` source invokes the `insert` callback on `set` and the `delete` callback on `clear` or before an overwriting `set`.
+
+Note that `DataProcessor` is a little internal detail. If you instantiate `RuleUnitInstance`, `EntryPointDataProcessor` is automatically bound to the rule unit's data sources.
+
+== Client code
+
+Finally, you instantiate a `RuleUnitInstance` using `RuleUnitProvider` to execute the rules.
+
+[source,java]
+----
+    public void test() {
+        MeasurementUnit measurementUnit = new MeasurementUnit();
+
+        try (RuleUnitInstance<MeasurementUnit> instance = RuleUnitProvider.get().createRuleUnitInstance(measurementUnit)) {
+            measurementUnit.getMeasurements().add(new Measurement("color", "red"));
+            ...
+
+            List<Measurement> queryResult = instance.executeQuery("FindColor").stream().map(tuple -> (Measurement) tuple.get("$m")).collect(toList());
+            ...
+        } // instance.close() is called automatically
+    }
+----
+
+=== Configurations
+
+You can add configurations by creating `RuleUnitInstance` with `RuleConfig`.
+
+.Configuring event listeners
+[source,java]
+----
+        RuleConfig ruleConfig = RuleUnitProvider.get().newRuleConfig();
+        ruleConfig.getAgendaEventListeners().add(new MyAgendaEventListener());
+        ruleConfig.getRuleRuntimeListeners().add(new MyRuleRuntimeEventListener());
+        ruleConfig.getRuleEventListeners().add(new MyRuleEventListener());
+
+        HelloWorldUnit unit = new HelloWorldUnit();
+        RuleUnitInstance<HelloWorldUnit> unitInstance = RuleUnitProvider.get().createRuleUnitInstance(unit, ruleConfig);
+----
+
+== Declare rule units in DRL
+
+Instead of writing a Java class, you can declare rule units directly in DRL. See xref:language-reference/index.adoc#con-drl-rule-units_drl-rules[Rule units in DRL].

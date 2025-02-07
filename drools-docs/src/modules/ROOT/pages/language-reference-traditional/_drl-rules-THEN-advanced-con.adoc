@@ -1,0 +1,130 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='drl-rules-THEN-advanced-con_{context}']
+
+= Advanced rule actions with conditional and named consequences
+
+In general, effective rule actions are small, declarative, and readable. However, in some cases, the limitation of having a single consequence for each rule can be challenging and lead to verbose and repetitive rule syntax, as shown in the following example rules:
+
+.Example rules with verbose and repetitive syntax
+[source]
+----
+rule "Give 10% discount to customers older than 60"
+  when
+    $customer : Customer( age > 60 )
+  then
+    modify($customer) { setDiscount( 0.1 ) };
+end
+
+rule "Give free parking to customers older than 60"
+  when
+    $customer : Customer( age > 60 )
+    $car : Car( owner == $customer )
+  then
+    modify($car) { setFreeParking( true ) };
+end
+----
+
+A partial solution to the repetition is to make the second rule extend the first rule, as shown in the following modified example:
+
+.Partially enhanced example rules with an extended condition
+[source]
+----
+rule "Give 10% discount to customers older than 60"
+  when
+    $customer : Customer( age > 60 )
+  then
+    modify($customer) { setDiscount( 0.1 ) };
+end
+
+rule "Give free parking to customers older than 60"
+    extends "Give 10% discount to customers older than 60"
+  when
+    $car : Car( owner == $customer )
+  then
+    modify($car) { setFreeParking( true ) };
+end
+----
+
+As a more efficient alternative, you can consolidate the two rules into a single rule with modified conditions and labelled corresponding rule actions, as shown in the following consolidated example:
+
+.Consolidated example rule with conditional and named consequences
+[source]
+----
+rule "Give 10% discount and free parking to customers older than 60"
+  when
+    $customer : Customer( age > 60 )
+    do[giveDiscount]
+    $car : Car( owner == $customer )
+  then
+    modify($car) { setFreeParking( true ) };
+  then[giveDiscount]
+    modify($customer) { setDiscount( 0.1 ) };
+end
+----
+
+This example rule uses two actions: the usual default action and another action named `giveDiscount`. The `giveDiscount` action is activated in the condition with the keyword `do` when a customer older than 60 years old is found in the KIE base, regardless of whether or not the customer owns a car.
+
+You can configure the activation of a named consequence with an additional condition, such as the `if` statement in the following example. The condition in the `if` statement is always evaluated on the pattern that immediately precedes it.
+
+.Consolidated example rule with an additional condition
+[source]
+----
+rule "Give free parking to customers older than 60 and 10% discount to golden ones among them"
+  when
+    $customer : Customer( age > 60 )
+    if ( type == "Golden" ) do[giveDiscount]
+    $car : Car( owner == $customer )
+  then
+    modify($car) { setFreeParking( true ) };
+  then[giveDiscount]
+    modify($customer) { setDiscount( 0.1 ) };
+end
+----
+
+You can also evaluate different rule conditions using a nested `if` and `else if` construct, as shown in the following more complex example:
+
+.Consolidated example rule with more complex conditions
+[source]
+----
+rule "Give free parking and 10% discount to over 60 Golden customer and 5% to Silver ones"
+  when
+    $customer : Customer( age > 60 )
+    if ( type == "Golden" ) do[giveDiscount10]
+    else if ( type == "Silver" ) break[giveDiscount5]
+    $car : Car( owner == $customer )
+  then
+    modify($car) { setFreeParking( true ) };
+  then[giveDiscount10]
+    modify($customer) { setDiscount( 0.1 ) };
+  then[giveDiscount5]
+    modify($customer) { setDiscount( 0.05 ) };
+end
+----
+
+This example rule gives a 10% discount and free parking to Golden customers over 60, but only a 5% discount without free parking to Silver customers. The rule activates the consequence named `giveDiscount5` with the keyword `break` instead of `do`. The keyword `do` schedules a consequence in the {RULE_ENGINE} agenda, enabling the remaining part of the rule conditions to continue being evaluated, while `break` blocks any further condition evaluation. If a named consequence does not correspond to any condition with `do` but is activated with `break`, the rule fails to compile because the conditional part of the rule is never reached.
+
+ifdef::DROOLS,JBPM,OP[]
+ifdef::backend-docbook[]
+[index]
+== Index
+// Generated automatically by the DocBook toolchain.
+endif::backend-docbook[]
+endif::DROOLS,JBPM,OP[]

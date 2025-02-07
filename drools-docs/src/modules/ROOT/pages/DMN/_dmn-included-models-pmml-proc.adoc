@@ -1,0 +1,138 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='dmn-included-models-pmml-proc_{context}']
+= Including PMML models within a DMN file in {DMN_EDITOR}
+
+In {DMN_EDITOR}, you can include Predictive Model Markup Language (PMML) models from your project in a specified DMN file. When you include a PMML model within a DMN file, you can invoke that PMML model as a boxed function expression for a DMN decision node or business knowledge model node. If you update the source file for an included PMML model, you must remove and re-include the PMML model in the DMN file to apply the source changes.
+
+You cannot include PMML models from other projects in {DMN_EDITOR}.
+
+.Prerequisites
+* The PMML models are imported (as `.pmml` files) in the same project in {DMN_EDITOR} as the DMN file in which you want to include the models.
+
+.Procedure
+. In your DMN project, add the following dependencies to the project `pom.xml` file to enable PMML evaluation:
++
+--
+[source,xml,subs="attributes+"]
+----
+<!-- Required for the PMML compiler -->
+<dependency>
+  <groupId>org.drools</groupId>
+  <artifactId>kie-pmml-trusty</artifactId>
+  <version>${drools.version}</version>
+  <scope>provided</scope>
+</dependency>
+
+<!-- Alternative dependencies for JPMML Evaluator, override `kie-pmml-trusty` dependency -->
+<dependency>
+  <groupId>org.kie</groupId>
+  <artifactId>kie-dmn-jpmml</artifactId>
+  <version>${drools.version}</version>
+  <scope>provided</scope>
+</dependency>
+<dependency>
+  <groupId>org.jpmml</groupId>
+  <artifactId>pmml-evaluator</artifactId>
+  <version>1.5.1</version>
+  <scope>provided</scope>
+</dependency>
+<dependency>
+  <groupId>org.jpmml</groupId>
+  <artifactId>pmml-evaluator-extension</artifactId>
+  <version>1.5.1</version>
+  <scope>provided</scope>
+</dependency>
+----
+
+If you want to use the full PMML specification implementation with the Java Evaluator API for PMML (JPMML), use the alternative set of JPMML dependencies in your DMN project. If the JPMML dependencies and the standard `kie-pmml-trusty` dependency are both present, the `kie-pmml-trusty` dependency is disabled. For information about JPMML licensing terms, see https://openscoring.io/[Openscoring.io].
+
+[IMPORTANT]
+====
+The legacy `kie-pmml` dependency is deprecated with {PRODUCT} 7.48.0 and was be replaced by `kie-pmml-trusty` dependency in the following {PRODUCT} release.
+====
+
+[NOTE]
+====
+Instead of specifying a {PRODUCT} `<version>` for individual dependencies, consider adding the {PRODUCT} bill of materials (BOM) dependency to `dependencyManagement` section of your project `pom.xml` file. When you add the BOM files, the correct versions of transitive dependencies from the provided Maven repositories are included in the project.
+
+Example BOM dependency:
+
+[source,xml,subs="attributes+"]
+----
+<dependency>
+  <groupId>org.kie</groupId>
+  <artifactId>kie-dmn-bom</artifactId>
+  <version>${drools.version}</version>
+  <scope>import</scope>
+  <type>pom</type>
+</dependency>
+----
+
+====
+
+--
+. If you added the JPMML dependencies in your DMN project to use the JPMML Evaluator, download the following JAR files and add them to the classpath (in traditional {KIE_SERVER} deployment these were needed in the `~/kie-server.war/WEB-INF/lib` and `~/business-central.war/WEB-INF/lib` directories of the distribution):
+* https://mvnrepository.com/artifact/org.kie/kie-dmn-jpmml/{COMMUNITY_VERSION_FINAL}[KIE JPMML Integration {COMMUNITY_VERSION_FINAL}] JAR file from the online Maven repository
+* https://mvnrepository.com/artifact/org.jpmml/pmml-evaluator/1.5.1[JPMML Evaluator 1.5.1] JAR file from the online Maven repository
+* https://mvnrepository.com/artifact/org.jpmml/pmml-evaluator-extension/1.5.1[JPMML Evaluator Extensions 1.5.1] JAR file from the online Maven repository
+
++
+--
+These artifacts are required to enable JPMML evaluation.
+
+IMPORTANT: We provide these additional plug-in modules to support the integration with the Java Evaluator API for PMML (JPMML) for PMML execution in {PRODUCT}. However, we *do not* support the JPMML libraries directly. If *you* include JPMML libraries in your {PRODUCT} distribution, see the https://openscoring.io/[Openscoring.io] licensing terms for JPMML.
+
+--
+. In the {DMN_EDITOR}, click the *Included Models* tab.
+. Click *Include Model*, select a PMML model from your project in the *Models* list, enter a unique name for the included model, and click *Include*:
++
+--
+.Including a PMML model
+image::dmn/dmn-include-model-pmml.png[]
+
+The PMML model is added to this DMN file:
+
+.DMN file with included PMML model
+image::dmn/dmn-include-model-list-pmml.png[]
+--
+. In the *Model* tab of the DMN designer, select or create the decision node or business knowledge model node in which you want to invoke the PMML model and click the *Edit* icon to open the DMN boxed expression designer:
++
+--
+.Opening a new decision node boxed expression
+image::dmn/dmn-decision-edit.png[]
+
+.Opening a new business knowledge model boxed expression
+image::dmn/dmn-bkm-edit.png[]
+--
+. Set the expression type to *Function* (default for business knowledge model nodes), click the top-left function cell, and select *PMML*.
+. In the *document* and *model* rows in the table, double-click the undefined cells to specify the included PMML document and the relevant PMML model within that document:
++
+--
+.Adding a PMML model in a DMN business knowledge model
+image::dmn/dmn-include-model-expression-pmml.png[]
+
+.Example PMML definition in a DMN business knowledge model
+image::dmn/dmn-function-expression-example5.png[]
+
+If you update the source file for an included PMML model, you must remove and re-include the PMML model in the DMN file to apply the source changes.
+
+To edit the included model name or to remove the included model from the DMN file, use the *Included Models* tab in the DMN designer.
+--

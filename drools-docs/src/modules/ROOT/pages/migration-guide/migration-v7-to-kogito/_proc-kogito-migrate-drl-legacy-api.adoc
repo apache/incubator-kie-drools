@@ -1,0 +1,81 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id="proc-kogito-migrate-drl-legacy-api_{context}"]
+= Migrating a rule evaluation to a {KOGITO} microservice using legacy API
+
+After exposing a rule evaluation with a REST endpoint, you can migrate the rule evaluation to a {KOGITO} microservice using legacy API.
+
+.Procedure
+. Add the following dependencies to the project `pom.xml` file to enable the use of {QUARKUS} and legacy API:
++
+.Example dependencies for using Quarkus and legacy API
+[source]
+----
+<dependencies>
+ <dependency>
+  <groupId>org.kie.kogito</groupId>
+  <artifactId>kogito-quarkus-rules</artifactId>
+ </dependency>
+ <dependency>
+  <groupId>org.kie.kogito</groupId>
+  <artifactId>kogito-legacy-api</artifactId>
+ </dependency>
+</dependencies>
+----
+
+. Rewrite the REST endpoint implementation:
++
+--
+.Example REST endpoint implementation
+[source,java]
+----
+@Path("/find-approved")
+public class FindApprovedLoansEndpoint {
+
+   @Inject
+   KieRuntimeBuilder kieRuntimeBuilder;
+
+   @POST()
+   @Produces(MediaType.APPLICATION_JSON)
+   @Consumes(MediaType.APPLICATION_JSON)
+   public List<LoanApplication> executeQuery(LoanAppDto loanAppDto) {
+   	KieSession session = kieRuntimeBuilder.newKieSession();
+
+   	List<LoanApplication> approvedApplications = new ArrayList<>();
+   	session.setGlobal("approvedApplications", approvedApplications);
+   	session.setGlobal("maxAmount", loanAppDto.getMaxAmount());
+
+   	loanAppDto.getLoanApplications().forEach(session::insert);
+   	session.fireAllRules();
+   	session.dispose();
+
+   	return approvedApplications;
+   }
+}
+----
+
+In the rewritten REST endpoint implementation, instead of creating the `KieSession` from the `KieContainer`, the `KieSession` is created automatically using an integrated `KieRuntimeBuilder`.
+
+The `KieRuntimeBuilder` is an interface provided by the `kogito-legacy-api` module that replaces the `KieContainer`. Using `KieRuntimeBuilder`, you can create `KieBases` and `KieSessions` in a similar way you create in `KieContainer`. {KOGITO} automatically generates an implementation of `KieRuntimeBuilder` interface at compile time and integrates the `KieRuntimeBuilder` into a class, which implements the `FindApprovedLoansEndpoint` REST endpoint.
+--
+
+. Start your {QUARKUS} application in development mode.
++
+You can also use the hot reload to make the changes to the rules files that are applied to the running application. Also, you can create a native image of your rule based application.

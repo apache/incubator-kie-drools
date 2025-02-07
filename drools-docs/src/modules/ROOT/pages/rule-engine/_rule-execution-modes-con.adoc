@@ -1,0 +1,123 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='rule-execution-modes-con_{context}']
+
+= Rule execution modes and thread safety in the {RULE_ENGINE}
+
+The {RULE_ENGINE} supports the following rule execution modes that determine how and when the {RULE_ENGINE} executes rules:
+
+* *Passive mode*: (Default) The {RULE_ENGINE} evaluates rules when a user or an application explicitly calls `fireAllRules()`. Passive mode in the {RULE_ENGINE} is best for applications that require direct control over rule evaluation and execution, or for complex event processing (CEP) applications that use the pseudo clock implementation in the {RULE_ENGINE}.
++
+.Example CEP application code with the {RULE_ENGINE} in passive mode
+[source,java]
+----
+KieSessionConfiguration config = KieServices.Factory.get().newKieSessionConfiguration();
+config.setOption( ClockTypeOption.get("pseudo") );
+KieSession session = kbase.newKieSession( conf, null );
+SessionPseudoClock clock = session.getSessionClock();
+
+session.insert( tick1 );
+session.fireAllRules();
+
+clock.advanceTime(1, TimeUnit.SECONDS);
+session.insert( tick2 );
+session.fireAllRules();
+
+clock.advanceTime(1, TimeUnit.SECONDS);
+session.insert( tick3 );
+session.fireAllRules();
+
+session.dispose();
+----
+
+* *Active mode*: If a user or application calls `fireUntilHalt()`, the {RULE_ENGINE} starts in active mode and evaluates rules continually until the user or application explicitly calls `halt()`. Active mode in the {RULE_ENGINE} is best for applications that delegate control of rule evaluation and execution to the {RULE_ENGINE}, or for complex event processing (CEP) applications that use the real-time clock implementation in the {RULE_ENGINE}. Active mode is also optimal for CEP applications that use active queries.
++
+--
+.Example CEP application code with the {RULE_ENGINE} in active mode
+[source,java]
+----
+KieSessionConfiguration config = KieServices.Factory.get().newKieSessionConfiguration();
+config.setOption( ClockTypeOption.get("realtime") );
+KieSession session = kbase.newKieSession( conf, null );
+
+new Thread( new Runnable() {
+  @Override
+  public void run() {
+      session.fireUntilHalt();
+  }
+} ).start();
+
+session.insert( tick1 );
+
+... Thread.sleep( 1000L ); ...
+
+session.insert( tick2 );
+
+... Thread.sleep( 1000L ); ...
+
+session.insert( tick3 );
+
+session.halt();
+session.dispose();
+----
+
+This example calls `fireUntilHalt()` from a dedicated execution thread to prevent the current thread from being blocked indefinitely while the {RULE_ENGINE} continues evaluating rules. The dedicated thread also enables you to call `halt()` at a later stage in the application code.
+--
+
+Although you should avoid using both `fireAllRules()` and `fireUntilHalt()` calls, especially from different threads, the {RULE_ENGINE} can handle such situations safely using thread-safety logic and an internal state machine. If a `fireAllRules()` call is in progress and you call `fireUntilHalt()`, the {RULE_ENGINE} continues to run in passive mode until the `fireAllRules()` operation is complete and then starts in active mode in response to the `fireUntilHalt()` call. However, if the {RULE_ENGINE} is running in active mode following a `fireUntilHalt()` call and you call `fireAllRules()`, the `fireAllRules()` call is ignored and the {RULE_ENGINE} continues to run in active mode until you call `halt()`.
+
+For added thread safety in active mode, the {RULE_ENGINE} supports a `submit()` method that you can use to group and perform operations on a KIE session in a thread-safe, atomic action:
+
+.Example application code with `submit()` method to perform atomic operations in active mode
+[source,java]
+----
+KieSession session = ...;
+
+new Thread( new Runnable() {
+  @Override
+  public void run() {
+      session.fireUntilHalt();
+  }
+} ).start();
+
+final FactHandle fh = session.insert( fact_a );
+
+... Thread.sleep( 1000L ); ...
+
+session.submit( new KieSession.AtomicAction() {
+  @Override
+  public void execute( KieSession kieSession ) {
+    fact_a.setField("value");
+    kieSession.update( fh, fact_a );
+    kieSession.insert( fact_1 );
+    kieSession.insert( fact_2 );
+    kieSession.insert( fact_3 );
+  }
+} );
+
+... Thread.sleep( 1000L ); ...
+
+session.insert( fact_z );
+
+session.halt();
+session.dispose();
+----
+
+Thread safety and atomic operations are also helpful from a client-side perspective. For example, you might need to insert more than one fact at a given time, but require the {RULE_ENGINE} to consider the insertions as an atomic operation and to wait until all the insertions are complete before evaluating the rules again.

@@ -1,0 +1,13 @@
+{
+  "name": "drools-docs",
+  "homepage": ".",
+  "private": true,
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "@antora/cli": "^3.0.0",
+    "@antora/site-generator": "^3.0.0"
+  },
+  "dependencies": {
+    "@antora/lunr-extension": "^1.0.0-alpha.6"
+  }
+}

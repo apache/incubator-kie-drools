@@ -1,0 +1,35 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='runtime-commands-con_{context}']
+= Runtime Commands in {PRODUCT}
+
+{PRODUCT} supports runtime commands that you can use in combination with KIE API operations, such as executing all rules or inserting or retracting objects in a KIE session. The full list of supported runtime commands is located in the `org.drools.core.command.runtime` package in your {PRODUCT} instance.
+////
+In the {KIE_SERVER} REST API, you use the global `org.drools.core.command.runtime` commands or the rule-specific `org.drools.core.command.runtime.rule` commands as the request body for `POST` requests to `\http://SERVER:PORT/kie-server/services/rest/server/containers/instances/{containerId}`. For more information about using the {KIE_SERVER} REST API, see xref:kie-server-rest-api-con_kie-apis[].
+
+In the {KIE_SERVER} Java client API, you can embed these commands in your Java application along with the relevant Java client. For example, for rule-related commands, you use the `RuleServicesClient` Java client with the embedded commands. For more information about using the {KIE_SERVER} Java client API, see xref:kie-server-java-api-con_kie-apis[].
+
+[NOTE]
+====
+{PRODUCT_DM} commands will work only if your {KIE_SERVER} has {PRODUCT_DM} capability.
+The rest of the endpoints will work only if your {KIE_SERVER} has {PRODUCT_PAM} capabilities.
+Check the following URI for capabilities of your {KIE_SERVER} : __http://_SERVER:PORT_/kie-server/services/rest/server__.
+====
+////

@@ -1,0 +1,84 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='phreak-sequential-mode-con_{context}']
+
+= Sequential mode in Phreak
+
+Sequential mode is an advanced rule base configuration in the {RULE_ENGINE}, supported by Phreak, that enables the {RULE_ENGINE} to evaluate rules one time in the order that they are listed in the {RULE_ENGINE} agenda without regard to changes in the working memory. In sequential mode, the {RULE_ENGINE} ignores any `insert`, `modify`, or `update` statements in rules and executes rules in a single sequence. As a result, rule execution may be faster in sequential mode, but important updates may not be applied to your rules.
+
+Sequential mode applies to only stateless KIE sessions because stateful KIE sessions inherently use data from previously invoked KIE sessions. If you use a stateless KIE session and you want the execution of rules to influence subsequent rules in the agenda, then do not enable sequential mode. Sequential mode is disabled by default in the {RULE_ENGINE}.
+
+To enable sequential mode, use one of the following options:
+
+* Set the system property `drools.sequential` to `true`.
+* Enable sequential mode while creating the KIE base programmatically:
++
+[source,java]
+----
+KieServices ks = KieServices.Factory.get();
+KieBaseConfiguration kieBaseConf = ks.newKieBaseConfiguration();
+kieBaseConf.setOption(SequentialOption.YES);
+KieBase kieBase = kieContainer.newKieBase(kieBaseConf);
+----
+* Enable sequential mode in the KIE module descriptor file (`kmodule.xml`) for a specific {PRODUCT} project:
++
+[source,xml]
+----
+<kmodule>
+  ...
+  <kbase name="KBase2" default="false" sequential="true" packages="org.domain.pkg2, org.domain.pkg3" includes="KBase1">
+    ...
+  </kbase>
+  ...
+</kmodule>
+----
+
+To configure sequential mode to use a dynamic agenda, use one of the following options:
+
+* Set the system property `drools.sequential.agenda` to `dynamic`.
+* Set the sequential agenda option while creating the KIE base programmatically:
++
+[source,java]
+----
+KieServices ks = KieServices.Factory.get();
+KieBaseConfiguration kieBaseConf = ks.newKieBaseConfiguration();
+kieBaseConf.setOption(SequentialAgendaOption.DYNAMIC);
+KieBase kieBase = kieContainer.newKieBase(kieBaseConf);
+----
+
+When you enable sequential mode, the {RULE_ENGINE} evaluates rules in the following way:
+
+. Rules are ordered by salience and position in the rule set.
+. An element for each possible rule match is created. The element position indicates the execution order.
+. Node memory is disabled, with the exception of the right-input object memory.
+. The left-input adapter node propagation is disconnected and the object with the node is referenced in a `Command` object. The `Command` object is added to a list in the working memory for later execution.
+. All objects are asserted, and then the list of `Command` objects is checked and executed.
+. All matches that result from executing the list are added to elements based on the sequence number of the rule.
+. The elements that contain matches are executed in a sequence. If you set a maximum number of rule executions, the {RULE_ENGINE} activates no more than that number of rules in the agenda for execution.
+
+In sequential mode, the `LeftInputAdapterNode` node creates a `Command` object and adds it to a list in the working memory of the {RULE_ENGINE}. This `Command` object contains references to the `LeftInputAdapterNode` node and the propagated object. These references stop any left-input propagations at insertion time so that the right-input propagation never needs to attempt to join the left inputs. The references also avoid the need for the left-input memory.
+
+All nodes have their memory turned off, including the left-input tuple memory, but excluding the right-input object memory. After all the assertions are finished and the right-input memory of all the objects is populated, the {RULE_ENGINE} iterates over the list of `LeftInputAdatperNode` `Command` objects. The objects propagate down the network, attempting to join the right-input objects, but they are not retained in the left input.
+
+The agenda with a priority queue to schedule the tuples is replaced by an element for each rule. The sequence number of the `RuleTerminalNode` node indicates the element where to place the match. After all `Command` objects have finished, the elements are checked and existing matches are executed. To improve performance, the first and the last populated cell in the elements are retained.
+
+When the network is constructed, each `RuleTerminalNode` node receives a sequence number based on its salience number and the order in which it was added to the network.
+
+The right-input node memories are typically hash maps for fast object deletion. Because object deletions are not supported, Phreak uses an object list when the values of the object are not indexed. For a large number of objects, indexed hash maps provide a performance increase. If an object has only a few instances, Phreak uses an object list instead of an index.

@@ -1,0 +1,62 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='drl-declarations-with-metadata-con_{context}']
+= Type declarations with metadata in DRL
+
+You can associate metadata in the format `@key(value)` (the value is optional) with fact types or fact attributes. Metadata can be any kind of data that is not represented by the fact attributes and is consistent among all instances of that fact type. The metadata can be queried at run time by the {RULE_ENGINE} and used in the reasoning process. Any metadata that you declare before the attributes of a fact type are assigned to the fact type, while metadata that you declare after an attribute are assigned to that particular attribute.
+
+In the following example, the two metadata attributes `@author` and `@dateOfCreation` are declared for the `Person` fact type, and the two metadata items `@key` and `@maxLength` are declared for the `name` attribute. The `@key` metadata attribute has no required value, so the parentheses and the value are omitted.
+
+.Example metadata declaration for fact types and attributes
+[source]
+----
+import java.util.Date
+
+declare Person
+    @author( Bob )
+    @dateOfCreation( 01-Feb-2009 )
+
+    name : String @key @maxLength( 30 )
+    dateOfBirth : Date
+    address : Address
+end
+----
+
+For declarations of metadata attributes for existing types, you can identify the fully qualified class name as part of the `import` clause for all declarations or as part of the individual `declare` clause:
+
+.Example metadata declaration for an imported type
+[source]
+----
+import org.drools.examples.Person
+
+declare Person
+    @author( Bob )
+    @dateOfCreation( 01-Feb-2009 )
+end
+----
+
+.Example metadata declaration for a declared type
+[source]
+----
+declare org.drools.examples.Person
+    @author( Bob )
+    @dateOfCreation( 01-Feb-2009 )
+end
+----

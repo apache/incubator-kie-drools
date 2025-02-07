@@ -1,0 +1,189 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='performance-tuning-drl-ref_drl-rules']
+
+= Performance tuning considerations with DRL
+
+The following key concepts or suggested practices can help you optimize DRL rules and {RULE_ENGINE} performance. These concepts are summarized in this section as a convenience and are explained in more detail in the cross-referenced documentation, where applicable. This section will expand or change as needed with new releases of {PRODUCT}.
+
+Define the property and value of pattern constraints from left to right::
+In DRL pattern constraints, ensure that the fact property name is on the left side of the operator and that the value (constant or a variable) is on the right side. The property name must always be the key in the index and not the value. For example, write `Person( firstName == "John" )` instead of `Person( "John" == firstName )`. Defining the constraint property and value from right to left can hinder {RULE_ENGINE} performance.
++
+--
+For more information about DRL patterns and constraints, see xref:con-drl-rules-conditions_drl-rules[].
+--
+
+Use equality operators more than other operator types in pattern constraints when possible::
+Although the {RULE_ENGINE} supports many DRL operator types that you can use to define your business rule logic, the equality operator `==` is evaluated most efficiently by the {RULE_ENGINE}. Whenever practical, use this operator instead of other operator types. For example, the pattern `Person( firstName == "John" )` is evaluated more efficiently than `Person( firstName != "OtherName" )`. In some cases, using only equality operators might be impractical, so consider all of your business logic needs and options as you use DRL operators.
+
+List the most restrictive rule conditions first::
+For rules with multiple conditions, list the conditions from most to least restrictive so that the {RULE_ENGINE} can avoid assessing the entire set of conditions if the more restrictive conditions are not met.
++
+--
+For example, the following conditions are part of a travel-booking rule that applies a discount to travelers who book both a flight and a hotel together. In this scenario, customers rarely book hotels with flights to receive this discount, so the hotel condition is rarely met and the rule is rarely executed. Therefore, the first condition ordering is more efficient because it prevents the {RULE_ENGINE} from evaluating the flight condition frequently and unnecessarily when the hotel condition is not met.
+
+.Preferred condition order: hotel and flight
+[source]
+----
+when
+  $h:hotel() // Rarely booked
+  $f:flight()
+----
+
+.Inefficient condition order: flight and hotel
+[source]
+----
+when
+  $f:flight()
+  $h:hotel() // Rarely booked
+----
+
+For more information about DRL patterns and constraints, see xref:con-drl-rules-conditions_drl-rules[].
+--
+
+Avoid iterating over large collections of objects with excessive `from` clauses::
+Avoid using the `from` condition element in DRL rules to iterate over large collections of objects, as shown in the following example:
++
+--
+.Example conditions with `from` clause
+[source]
+----
+when
+  $c: Company()
+  $e : Employee ( salary > 100000.00) from $c.employees
+----
+
+In such cases, the {RULE_ENGINE} iterates over the large graph every time the rule condition is evaluated and impedes  rule evaluation.
+
+Alternatively, instead of adding an object with a large graph that the {RULE_ENGINE} must iterate over frequently, add the collection directly to the KIE session and then join the collection in the condition, as shown in the following example:
+
+.Example conditions without `from` clause
+[source]
+----
+when
+  $c: Company();
+  Employee (salary > 100000.00, company == $c)
+----
+
+In this example, the {RULE_ENGINE} iterates over the list only one time and can evaluate rules more efficiently.
+
+For more information about the `from` element or other DRL condition elements, see xref:con-drl-rules-conditions_drl-rules[].
+--
+
+Use {RULE_ENGINE} event listeners instead of `System.out.println` statements in rules for debug logging::
+You can use `System.out.println` statements in your rule actions for debug logging and console output, but doing this for many rules can impede rule evaluation. As a more efficient alternative, use the built-in {RULE_ENGINE} event listeners when possible. If these listeners do not meet your requirements, use a system logging utility supported by the {RULE_ENGINE}, such as Logback, Apache Commons Logging, or Apache Log4j.
++
+--
+For more information about supported {RULE_ENGINE} event listeners and logging utilities, see xref:rule-engine/index.adoc#engine-event-listeners-con_rule-engine[{RULE_ENGINE} event listeners and debug logging].
+--
+
+Use the `drools-metric` module to identify the obstruction in your rules::
+You can use the `drools-metric` module to identify slow rules especially when you process many rules. The `drools-metric` module can also assist in analyzing the {RULE_ENGINE} performance. Note that the `drools-metric` module is not for production environment use. However, you can perform the analysis in your test environment.
+
++
+To analyze the {RULE_ENGINE} performance using `drools-metric`, first add `drools-metric` to your project dependencies:
+
++
+.Example project dependency for `drools-metric`
+[source,xml]
+----
+<dependency>
+  <groupId>org.drools</groupId>
+  <artifactId>drools-metric</artifactId>
+</dependency>
+----
+
++
+If you want to use `drools-metric` to enable trace logging, configure a logger for `org.drools.metric.util.MetricLogUtils` as shown in the following example:
+
++
+.Example logback.xml configuration file
+[source,xml]
+----
+<configuration>
+  <logger name="org.drools.metric.util.MetricLogUtils" level="trace"/>
+  ...
+<configuration>
+----
+
++
+Alternatively, you can use `drools-metric` to expose the data using https://asciidoctor.org[Micrometer]. To expose the data, enable the Micrometer registry of your choice as shown in the following example:
+
++
+.Example project dependency for Micrometer
+[source,xml]
+----
+<dependency>
+  <groupId>io.micrometer</groupId>
+  <artifactId>micrometer-registry-jmx</artifactId> <!-- Discover more registries at micrometer.io. -->
+</dependency>
+----
+
++
+.Example Java code for Micrometer
+[source,xml]
+----
+  Metrics.addRegitry(new JmxMeterRegistry(s -> null, Clock.SYSTEM));
+----
+
++
+Regardless of whether you want to use logging or Micrometer, you need to enable `MetricLogUtils` by setting the system property `drools.metric.logger.enabled` to `true`. Optionally, you can change the microseconds threshold of metric reporting by setting the `drools.metric.logger.threshold` system property.
+
++
+NOTE: Only node executions exceeding the threshold are reported. The default value is `500`.
+
++
+After configuring the `drools-metric` to use logging, rule execution produces logs as shown in the following example:
+
++
+.Example rule execution output
+[source]
+----
+TRACE [JoinNode(6) - [ClassObjectType class=com.sample.Order]], evalCount:1000, elapsedMicro:5962
+TRACE [JoinNode(7) - [ClassObjectType class=com.sample.Order]], evalCount:100000, elapsedMicro:95553
+TRACE [ AccumulateNode(8) ], evalCount:4999500, elapsedMicro:2172836
+TRACE [EvalConditionNode(9)]: cond=com.sample.Rule_Collect_expensive_orders_combination930932360Eval1Invoker@ee2a6922], evalCount:49500, elapsedMicro:18787
+----
+
++
+--
+This example includes the following key parameters:
+
+* `evalCount` is the number of constraint evaluations against inserted facts during the node execution. When `evalCount` is used with Micrometer, a counter with the data is called `org.drools.metric.evaluation.count`.
+* `elapsedMicro` is the elapsed time of the node execution in microseconds. When `elapsedMicro` is used with Micrometer, look for a timer called `org.drools.metric.elapsed.time`.
+--
+
++
+If you find an outstanding `evalCount` or `elapsedMicro` log, correlate the node name with `ReteDumper.dumpAssociatedRulesRete()` output to identify the rule associated with the node.
+
++
+.Example ReteDumper usage
+[source,java]
+----
+ReteDumper.dumpAssociatedRulesRete(kbase);
+----
+
++
+.Example ReteDumper output
+[source]
+----
+[ AccumulateNode(8) ] : [Collect expensive orders combination]
+...
+----

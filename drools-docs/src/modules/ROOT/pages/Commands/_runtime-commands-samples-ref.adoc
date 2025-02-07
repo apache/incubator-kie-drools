@@ -1,0 +1,1215 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='runtime-commands-samples-ref_{context}']
+= Sample runtime Commands in {PRODUCT}
+
+The following are sample runtime commands that you can use in combination with KIE API operations:
+
+* `BatchExecutionCommand`
+* `InsertObjectCommand`
+* `RetractCommand`
+* `ModifyCommand`
+* `GetObjectCommand`
+* `GetObjectsCommand`
+* `InsertElementsCommand`
+* `FireAllRulesCommand`
+ifdef::PAM,JBPM[]
+* `StartProcessCommand`
+* `SignalEventCommand`
+* `CompleteWorkItemCommand`
+* `AbortWorkItemCommand`
+endif::PAM,JBPM[]
+* `QueryCommand`
+* `SetGlobalCommand`
+* `GetGlobalCommand`
+
+For the full list of supported runtime commands, see the `org.drools.core.command.runtime` package in your {PRODUCT} instance.
+
+Each command in this section includes a Java command example, making use of an object `org.drools.compiler.test.Person` with the fields `name` (String) and `age` (Integer).
+
+////
+Each command in this section includes a REST request body example (JSON) for the {KIE_SERVER} REST API and an embedded Java command example for the {KIE_SERVER} Java client API. The Java examples use an object `org.drools.compiler.test.Person` with the fields `name` (String) and `age` (Integer).
+
+// Not currently applicable to the examples, but leaving for now. (Stetson, Oct 5, 2018)
+The XStream, JSON, and JAXB examples use the following marshalling methods:
+
+* XStream
++
+[source,java]
+----
+String xml = BatchExecutionHelper.newXStreamMarshaller().toXML(command);
+----
+* JSON
++
+[source,java]
+----
+String xml = BatchExecutionHelper.newJSonMarshaller().toXML(command);
+----
+* JAXB
++
+[source,java]
+----
+Marshaller marshaller = jaxbContext.createMarshaller();
+StringWriter xml = new StringWriter();
+marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+marshaller.marshal(command, xml);
+----
+////
+== BatchExecutionCommand
+
+Contains multiple commands to be executed together.
+
+.Command attributes
+[cols="30%,50%,20%", frame="all", options="header"]
+|===
+|Name
+|Description
+|Requirement
+
+|`commands`
+|List of commands to be executed.
+|Required
+
+|`lookup`
+|Sets the KIE session ID on which the commands will be executed. For stateless KIE sessions, this attribute is required. For stateful KIE sessions, this attribute is optional and if not specified, the default KIE session is used.
+|Required for stateless KIE session, optional for stateful KIE session
+
+|===
+
+NOTE: KIE session IDs are in the `kmodule.xml` file of your {PRODUCT} project. 
+
+// .Example JSON request body
+// [source,json]
+// ----
+// {
+//   "lookup": "ksession1",
+//   "commands": [ {
+//       "insert": {
+//         "object": {
+//           "org.drools.compiler.test.Person": {
+//             "name": "john",
+//             "age": 25
+//           }
+//         }
+//       }
+//     },
+//     {
+//       "fire-all-rules": {
+//         "max": 10,
+//         "out-identifier": "firedActivations"
+//       }
+//     }
+//   ]
+// }
+// ----
+
+.Example Java command
+[source,java]
+----
+InsertObjectCommand insertCommand = new InsertObjectCommand(new Person("john", 25));
+FireAllRulesCommand fireCommand = new FireAllRulesCommand();
+
+BatchExecutionCommand batch = new BatchExecutionCommandImpl(Arrays.asList(insertCommand, fireCommand), "ksession1");
+----
+
+// .Example server response (JSON)
+// [source,json]
+// ----
+// {
+//   "response": [
+//     {
+//       "type": "SUCCESS",
+//       "msg": "Container command-script-container successfully called.",
+//       "result": {
+//         "execution-results": {
+//           "results": [
+//             {
+//               "value": 0,
+//               "key": "firedActivations"
+//             }
+//           ],
+//           "facts": []
+//         }
+//       }
+//     }
+//   ]
+// }
+// ----
+
+== InsertObjectCommand
+
+Inserts an object into the KIE session.
+
+.Command attributes
+[cols="30%,50%,20%", frame="all", options="header"]
+|===
+|Name
+|Description
+|Requirement
+
+|`object`
+|The object to be inserted
+|Required
+
+|`out-identifier`
+|ID of the `FactHandle` created from the object insertion and added to the execution results
+|Optional
+
+|`return-object`
+|Boolean to determine whether the object must be returned in the execution results (default: `true`)
+|Optional
+
+|`entry-point`
+|Entry point for the insertion
+|Optional
+|===
+
+// .Example JSON request body
+// [source,json]
+// ----
+// {
+//   "commands": [ {
+//       "insert": {
+//         "entry-point": "my stream",
+//         "object": {
+//           "org.drools.compiler.test.Person": {
+//             "age": 25,
+//             "name": "john"
+//           }
+//         },
+//         "out-identifier": "john",
+//         "return-object": false
+//       }
+//     }
+//   ]
+// }
+// ----
+
+.Example Java command
+[source,java]
+----
+
+Command insertObjectCommand =
+  CommandFactory.newInsert(new Person("john", 25), "john", false, null);
+
+ksession.execute(insertObjectCommand);
+----
+
+// .Example server response (JSON)
+// [source,json]
+// ----
+// {
+//   "response": [
+//     {
+//       "type": "SUCCESS",
+//       "msg": "Container command-script-container successfully called.",
+//       "result": {
+//         "execution-results": {
+//           "results": [],
+//           "facts": [
+//             {
+//               "value": {
+//                 "org.drools.core.common.DefaultFactHandle": {
+//                   "external-form": "0:4:436792766:-2127720265:4:DEFAULT:NON_TRAIT:java.util.LinkedHashMap"
+//                 }
+//               },
+//               "key": "john"
+//             }
+//           ]
+//         }
+//       }
+//     }
+//   ]
+// }
+// ----
+
+== RetractCommand
+
+Retracts an object from the KIE session.
+
+.Command attributes
+[cols="30%,50%,20%", frame="all", options="header"]
+|===
+|Name
+|Description
+|Requirement
+
+|`fact-handle`
+|The `FactHandle` associated with the object to be retracted
+|Required
+|===
+
+// .Example JSON request body
+// [source,json]
+// ----
+// {
+//   "commands": [ {
+//       "retract": {
+//         "fact-handle": "0:4:436792766:-2127720265:4:DEFAULT:NON_TRAIT:java.util.LinkedHashMap"
+//       }
+//     }
+//   ]
+// }
+// ----
+
+.Example Java command: Use `FactHandleFromString`
+[source,java]
+----
+RetractCommand retractCommand = new RetractCommand();
+retractCommand.setFactHandleFromString("123:234:345:456:567");
+----
+
+.Example Java command: Use `FactHandle` from inserted object
+[source,java]
+----
+RetractCommand retractCommand = new RetractCommand(factHandle);
+----
+
+// .Example server response (JSON)
+// [source,json]
+// ----
+// {
+//   "response": [
+//     {
+//       "type": "SUCCESS",
+//       "msg": "Container employee-rostering successfully called.",
+//       "result": {
+//         "execution-results": {
+//           "results": [],
+//           "facts": []
+//         }
+//       }
+//     }
+//   ]
+// }
+// ----
+
+== ModifyCommand
+
+Modifies a previously inserted object in the KIE session.
+
+.Command attributes
+[cols="30%,50%,20%", frame="all", options="header"]
+|===
+|Name
+|Description
+|Requirement
+
+|`fact-handle`
+|The `FactHandle` associated with the object to be modified
+|Required
+
+|`setters`
+|List of setters for object modifications
+|Required
+|===
+
+// .Example JSON request body
+// [source,json]
+// ----
+// {
+//   "commands": [ {
+//       "modify": {
+//         "fact-handle": "0:4:436792766:-2127720265:4:DEFAULT:NON_TRAIT:java.util.LinkedHashMap",
+//         "setters": {
+//           "accessor": "age",
+//           "value": 25
+//         }
+//       }
+//     }
+//   ]
+// }
+// ----
+
+.Example Java command
+[source,java]
+----
+ModifyCommand modifyCommand = new ModifyCommand(factHandle);
+
+List<Setter> setters = new ArrayList<Setter>();
+setters.add(new SetterImpl("age", "25"));
+
+modifyCommand.setSetters(setters);
+----
+
+// .Example server response (JSON)
+// [source,json]
+// ----
+// {
+//   "response": [
+//     {
+//       "type": "SUCCESS",
+//       "msg": "Container employee-rostering successfully called.",
+//       "result": {
+//         "execution-results": {
+//           "results": [],
+//           "facts": []
+//         }
+//       }
+//     }
+//   ]
+// }
+// ----
+
+== GetObjectCommand
+
+Retrieves an object from a KIE session.
+
+.Command attributes
+[cols="30%,50%,20%", frame="all", options="header"]
+|===
+|Name
+|Description
+|Requirement
+
+|`fact-handle`
+|The `FactHandle` associated with the object to be retrieved
+|Required
+
+|`out-identifier`
+|ID of the `FactHandle` created from the object insertion and added to the execution results
+|Optional
+|===
+
+// .Example JSON request body
+// [source,json]
+// ----
+// {
+//   "commands": [ {
+//       "get-object": {
+//         "fact-handle": "0:4:436792766:-2127720265:4:DEFAULT:NON_TRAIT:java.util.LinkedHashMap",
+//         "out-identifier": "john"
+//       }
+//     }
+//   ]
+// }
+// ----
+
+.Example Java command
+[source,java]
+----
+GetObjectCommand getObjectCommand = new GetObjectCommand();
+getObjectCommand.setFactHandleFromString("123:234:345:456:567");
+getObjectCommand.setOutIdentifier("john");
+----
+
+// .Example server response (JSON)
+// [source,json]
+// ----
+// {
+//   "response": [
+//     {
+//       "type": "SUCCESS",
+//       "msg": "Container command-script-container successfully called.",
+//       "result": {
+//         "execution-results": {
+//           "results": [
+//             {
+//               "value": null,
+//               "key": "john"
+//             }
+//           ],
+//           "facts": []
+//         }
+//       }
+//     }
+//   ]
+// }
+// ----
+
+== GetObjectsCommand
+
+Retrieves all objects from the KIE session as a collection.
+
+.Command attributes
+[cols="30%,50%,20%", frame="all", options="header"]
+|===
+|Name
+|Description
+|Requirement
+
+|`object-filter`
+|Filter for the objects returned from the KIE session
+|Optional
+
+|`out-identifier`
+|Identifier to be used in the execution results
+|Optional
+|===
+
+// .Example JSON request body
+// [source,json]
+// ----
+// {
+//   "commands": [ {
+//       "get-objects": {
+//         "out-identifier": "objects"
+//       }
+//     }
+//   ]
+// }
+// ----
+
+.Example Java command
+[source,java]
+----
+GetObjectsCommand getObjectsCommand = new GetObjectsCommand();
+getObjectsCommand.setOutIdentifier("objects");
+----
+
+// .Example server response (JSON)
+// [source,json]
+// ----
+// {
+//   "response": [
+//     {
+//       "type": "SUCCESS",
+//       "msg": "Container command-script-container successfully called.",
+//       "result": {
+//         "execution-results": {
+//           "results": [
+//             {
+//               "value": [
+//                 {
+//                   "org.apache.xerces.dom.ElementNSImpl": "<?xml version=\"1.0\" encoding=\"UTF-16\"?>\n<object xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"person\"><age>25</age><name>john</name>\n <\/object>"
+//                 },
+//                 {
+//                   "org.drools.compiler.test.Person": {
+//                     "name": "john",
+//                     "age": 25
+//                   }
+//                 }
+//               ],
+//               "key": "objects"
+//             }
+//           ],
+//           "facts": []
+//         }
+//       }
+//     }
+//   ]
+// }
+// ----
+
+== InsertElementsCommand
+
+Inserts a list of objects into the KIE session.
+
+.Command attributes
+[cols="30%,50%,20%", frame="all", options="header"]
+|===
+|Name
+|Description
+|Requirement
+
+|`objects`
+|The list of objects to be inserted into the KIE session
+|Required
+
+|`out-identifier`
+|ID of the `FactHandle` created from the object insertion and added to the execution results
+|Optional
+
+|`return-object`
+|Boolean to determine whether the object must be returned in the execution results. Default value: `true`.
+|Optional
+
+|`entry-point`
+|Entry point for the insertion
+|Optional
+|===
+
+// .Example JSON request body
+// [source,json]
+// ----
+// {
+//   "commands": [ {
+//     "insert-elements": {
+//         "objects": [
+//             {
+//                 "containedObject": {
+//                     "@class": "org.drools.compiler.test.Person",
+//                     "age": 25,
+//                     "name": "john"
+//                 }
+//             },
+//             {
+//                 "containedObject": {
+//                     "@class": "Person",
+//                     "age": 35,
+//                     "name": "sarah"
+//                 }
+//             }
+//         ]
+//     }
+//   }
+// ]
+// }
+// ----
+
+.Example Java command
+[source,java]
+----
+List<Object> objects = new ArrayList<Object>();
+objects.add(new Person("john", 25));
+objects.add(new Person("sarah", 35));
+
+Command insertElementsCommand = CommandFactory.newInsertElements(objects);
+----
+
+// .Example server response (JSON)
+// [source,json]
+// ----
+// {
+//   "response": [
+//     {
+//       "type": "SUCCESS",
+//       "msg": "Container command-script-container successfully called.",
+//       "result": {
+//         "execution-results": {
+//           "results": [],
+//           "facts": [
+//             {
+//               "value": {
+//                 "org.drools.core.common.DefaultFactHandle": {
+//                   "external-form": "0:4:436792766:-2127720265:4:DEFAULT:NON_TRAIT:java.util.LinkedHashMap"
+//                 }
+//               },
+//               "key": "john"
+//             },
+//             {
+//               "value": {
+//                 "org.drools.core.common.DefaultFactHandle": {
+//                   "external-form": "0:4:436792766:-2127720266:4:DEFAULT:NON_TRAIT:java.util.LinkedHashMap"
+//                 }
+//               },
+//               "key": "sarah"
+//             }
+//           ]
+//         }
+//       }
+//     }
+//   ]
+// }
+// ----
+
+== FireAllRulesCommand
+
+Executes all rules in the KIE session.
+
+.Command attributes
+[cols="30%,50%,20%", frame="all", options="header"]
+|===
+|Name
+|Description
+|Requirement
+
+|`max`
+|Maximum number of rules to be executed. The default is `-1` and does not put any restriction on execution.
+|Optional
+
+|`out-identifier`
+|ID to be used for retrieving the number of fired rules in execution results.
+|Optional
+
+|`agenda-filter`
+|Agenda Filter to be used for rule execution.
+|Optional
+|===
+
+// .Example JSON request body
+// [source,json]
+// ----
+// {
+//   "commands" : [ {
+//     "fire-all-rules": {
+//         "max": 10,
+//         "out-identifier": "firedActivations"
+//     }
+//   } ]
+// }
+// ----
+
+.Example Java command
+[source,java]
+----
+FireAllRulesCommand fireAllRulesCommand = new FireAllRulesCommand();
+fireAllRulesCommand.setMax(10);
+fireAllRulesCommand.setOutIdentifier("firedActivations");
+----
+
+// .Example server response (JSON)
+// [source,json]
+// ----
+// {
+//   "response": [
+//     {
+//       "type": "SUCCESS",
+//       "msg": "Container command-script-container successfully called.",
+//       "result": {
+//         "execution-results": {
+//           "results": [
+//             {
+//               "value": 0,
+//               "key": "firedActivations"
+//             }
+//           ],
+//           "facts": []
+//         }
+//       }
+//     }
+//   ]
+// }
+// ----
+// --
+// ifdef::PAM,JBPM[]
+// StartProcessCommand::
+// +
+// --
+// Starts a process using the process ID. You can also pass parameters and initial data to be inserted.
+
+// .Command attributes
+// [cols="30%,50%,20%", frame="all", options="header"]
+// |===
+// |Name
+// |Description
+// |Requirement
+
+// |`processId`
+// |ID of the process to be started
+// |Required
+
+// |`parameters`
+// |A `Map <String,Object>` argument to pass parameters in the process startup
+// |Optional
+
+// |`data`
+// |List of objects to be inserted into the KIE session before the process startup
+// |Optional
+// |===
+
+// .Example JSON request body
+// [source,json]
+// ----
+// {
+//   "commands": [
+//     {
+//       "start-process": {
+//         "processId": "myProject.myProcess",
+//         "data": null,
+//         "parameter": [],
+//         "out-identifier": null
+//       }
+//     }
+//   ]
+// }
+// ----
+
+// .Example Java command
+// [source,java]
+// ----
+// StartProcessCommand startProcessCommand = new StartProcessCommand();
+// startProcessCommand.setProcessId("org.drools.task.processOne");
+// ----
+
+// .Example server response (JSON)
+// [source,json]
+// ----
+// {
+//   "type": "SUCCESS",
+//   "msg": "Container stateful-session successfully called.",
+//   "result": {
+//     "execution-results": {
+//       "results": [],
+//       "facts": []
+//     }
+//   }
+// }
+// ----
+// --
+// SignalEventCommand::
+// +
+// --
+// Sends a signal event to the KIE session.
+
+// .Command attributes
+// [cols="30%,50%,20%", frame="all", options="header"]
+// |===
+// |Name
+// |Description
+// |Requirement
+
+// |`event-type`
+// |Type of the incoming event
+// |Required
+
+// |`process-instance-id`
+// |ID of the process instance to be signalled
+// |Optional
+
+// |`event`
+// |Data of the incoming event
+// |Optional
+// |===
+
+// .Example JSON request body
+// [source,json]
+// ----
+// {
+//   "commands": [
+//     {
+//       "signal-event": {
+//         "process-instance-id": 1001,
+//         "correlation-key": null,
+//         "event-type": "start",
+//         "event": {
+//           "org.kie.server.testing.Person": {
+//             "fullname": "john",
+//             "age": 25
+//           }
+//         }
+//       }
+//     }
+//   ]
+// }
+// ----
+
+// .Example Java command
+// [source,java]
+// ----
+// SignalEventCommand signalEventCommand = new SignalEventCommand();
+// signalEventCommand.setProcessInstanceId(1001);
+// signalEventCommand.setEventType("start");
+// signalEventCommand.setEvent(new Person("john", 25));
+// ----
+
+// .Example server response (JSON)
+// [source,json]
+// ----
+// {
+//   "type": "SUCCESS",
+//   "msg": "Container stateful-session successfully called.",
+//   "result": {
+//     "execution-results": {
+//       "results": [],
+//       "facts": []
+//     }
+//   }
+// }
+// ----
+// --
+// CompleteWorkItemCommand::
+// +
+// --
+// Completes a work item in the KIE session.
+
+// .Command attributes
+// [cols="30%,50%,20%", frame="all", options="header"]
+// |===
+// |Name
+// |Description
+// |Requirement
+
+// |`workItemId`
+// |ID of the work item to be completed
+// |Required
+
+// |`results`
+// |Result of the work item
+// |Optional
+// |===
+
+// .Example JSON request body
+// [source,json]
+// ----
+// {
+//   "commands": [ {
+//     "complete-work-item": {
+//         "id": 1001
+//     }
+//   }
+// ]
+// }
+// ----
+
+// .Example Java command
+// [source,java]
+// ----
+// CompleteWorkItemCommand completeWorkItemCommand = new CompleteWorkItemCommand();
+// completeWorkItemCommand.setWorkItemId(1001);
+// ----
+
+// .Example server response (JSON)
+// [source,json]
+// ----
+// {
+//   "response": [
+//     {
+//       "type": "SUCCESS",
+//       "msg": "Container employee-rostering successfully called.",
+//       "result": {
+//         "execution-results": {
+//           "results": [],
+//           "facts": []
+//         }
+//       }
+//     }
+//   ]
+// }
+// ----
+// --
+// AbortWorkItemCommand::
+// +
+// --
+// Aborts a work item in the KIE session in the same way as `ksession.getWorkItemManager().abortWorkItem(workItemId)`.
+
+// .Command attributes
+// [cols="30%,50%,20%", frame="all", options="header"]
+// |===
+// |Name
+// |Description
+// |Requirement
+
+// |`workItemId`
+// |ID of the work item to be aborted
+// |Required
+// |===
+
+// .Example JSON request body
+// [source,json]
+// ----
+// {
+//   "commands": [ {
+//       "abort-work-item": {
+//         "id": 1001
+//       }
+//     }
+//   ]
+// }
+// ----
+
+// .Example Java command
+// [source,java]
+// ----
+// AbortWorkItemCommand abortWorkItemCommand = new AbortWorkItemCommand();
+// abortWorkItemCommand.setWorkItemId(1001);
+// ----
+
+// .Example server response (JSON)
+// [source,json]
+// ----
+// {
+//   "response": [
+//     {
+//       "type": "SUCCESS",
+//       "msg": "Container employee-rostering successfully called.",
+//       "result": {
+//         "execution-results": {
+//           "results": [],
+//           "facts": []
+//         }
+//       }
+//     }
+//   ]
+// }
+// ----
+// --
+// endif::PAM,JBPM[]
+
+== QueryCommand
+
+Executes a query defined in the KIE base.
+
+.Command attributes
+[cols="30%,50%,20%", frame="all", options="header"]
+|===
+|Name
+|Description
+|Requirement
+
+|`name`
+|Query name.
+|Required
+
+|`out-identifier`
+|ID of the query results. The query results are added in the execution results with this identifier.
+|Optional
+
+|`arguments`
+|List of objects to be passed as a query parameter.
+|Optional
+|===
+
+// .Example JSON request body
+// [source,json]
+// ----
+// {
+//   "commands": [
+//     {
+//       "query": {
+//         "name": "persons",
+//         "arguments": [],
+//         "out-identifier": "persons"
+//       }
+//     }
+//   ]
+// }
+// ----
+
+.Example Java command
+[source,java]
+----
+QueryCommand queryCommand = new QueryCommand();
+queryCommand.setName("persons");
+queryCommand.setOutIdentifier("persons");
+----
+
+// .Example server response (JSON)
+// [source,json]
+// ----
+// {
+//   "type": "SUCCESS",
+//   "msg": "Container stateful-session successfully called.",
+//   "result": {
+//     "execution-results": {
+//       "results": [
+//         {
+//           "value": {
+//             "org.drools.core.runtime.rule.impl.FlatQueryResults": {
+//               "idFactHandleMaps": {
+//                 "type": "LIST",
+//                 "componentType": null,
+//                 "element": [
+//                   {
+//                     "type": "MAP",
+//                     "componentType": null,
+//                     "element": [
+//                       {
+//                         "value": {
+//                           "org.drools.core.common.DisconnectedFactHandle": {
+//                             "id": 1,
+//                             "identityHashCode": 1809949690,
+//                             "objectHashCode": 1809949690,
+//                             "recency": 1,
+//                             "object": {
+//                               "org.kie.server.testing.Person": {
+//                                 "fullname": "John Doe",
+//                                 "age": 47
+//                               }
+//                             },
+//                             "entryPointId": "DEFAULT",
+//                             "traitType": "NON_TRAIT",
+//                             "external-form": "0:1:1809949690:1809949690:1:DEFAULT:NON_TRAIT:org.kie.server.testing.Person"
+//                           }
+//                         },
+//                         "key": "$person"
+//                       }
+//                     ]
+//                   }
+//                 ]
+//               },
+//               "idResultMaps": {
+//                 "type": "LIST",
+//                 "componentType": null,
+//                 "element": [
+//                   {
+//                     "type": "MAP",
+//                     "componentType": null,
+//                     "element": [
+//                       {
+//                         "value": {
+//                           "org.kie.server.testing.Person": {
+//                             "fullname": "John Doe",
+//                             "age": 47
+//                           }
+//                         },
+//                         "key": "$person"
+//                       }
+//                     ]
+//                   }
+//                 ]
+//               },
+//               "identifiers": {
+//                 "type": "SET",
+//                 "componentType": null,
+//                 "element": [
+//                   "$person"
+//                 ]
+//               }
+//             }
+//           },
+//           "key": "persons"
+//         }
+//       ],
+//       "facts": []
+//     }
+//   }
+// }
+// ----
+
+== SetGlobalCommand
+
+Sets an object to a global state.
+
+.Command attributes
+[cols="30%,50%,20%", frame="all", options="header"]
+|===
+|Name
+|Description
+|Requirement
+
+|`identifier`
+|ID of the global variable defined in the KIE base
+|Required
+
+|`object`
+|Object to be set into the global variable
+|Optional
+
+|`out`
+|Boolean to exclude the global variable you set from the execution results
+|Optional
+
+|`out-identifier`
+|ID of the global execution result
+|Optional
+|===
+
+// .Example JSON request body
+// [source,json]
+// ----
+// {
+//   "commands": [
+//     {
+//       "set-global": {
+//         "identifier": "helper",
+//         "object": {
+//           "org.kie.server.testing.Person": {
+//             "fullname": "kyle",
+//             "age": 30
+//           }
+//         },
+//         "out-identifier": "output"
+//       }
+//     }
+//   ]
+// }
+// ----
+
+.Example Java command
+[source,java]
+----
+SetGlobalCommand setGlobalCommand = new SetGlobalCommand();
+setGlobalCommand.setIdentifier("helper");
+setGlobalCommand.setObject(new Person("kyle", 30));
+setGlobalCommand.setOut(true);
+setGlobalCommand.setOutIdentifier("output");
+----
+
+// .Example server response (JSON)
+// [source,json]
+// ----
+// {
+//   "type": "SUCCESS",
+//   "msg": "Container stateful-session successfully called.",
+//   "result": {
+//     "execution-results": {
+//       "results": [
+//         {
+//           "value": {
+//             "org.kie.server.testing.Person": {
+//               "fullname": "kyle",
+//               "age": 30
+//             }
+//           },
+//           "key": "output"
+//         }
+//       ],
+//       "facts": []
+//     }
+//   }
+// }
+// ----
+
+== GetGlobalCommand
+
+Retrieves a previously defined global object.
+
+.Command attributes
+[cols="30%,50%,20%", frame="all", options="header"]
+|===
+|Name
+|Description
+|Requirement
+
+|`identifier`
+|ID of the global variable defined in the KIE base
+|Required
+
+|`out-identifier`
+|ID to be used in the execution results
+|Optional
+|===
+
+// .Example JSON request body
+// [source,json]
+// ----
+// {
+//   "commands": [ {
+//       "get-global": {
+//         "identifier": "helper",
+//         "out-identifier": "helperOutput"
+//       }
+//     }
+//   ]
+// }
+// ----
+
+.Example Java command
+[source,java]
+----
+GetGlobalCommand getGlobalCommand = new GetGlobalCommand();
+getGlobalCommand.setIdentifier("helper");
+getGlobalCommand.setOutIdentifier("helperOutput");
+----
+
+// .Example server response (JSON)
+// [source,json]
+// ----
+// {
+//   "response": [
+//     {
+//       "type": "SUCCESS",
+//       "msg": "Container command-script-container successfully called.",
+//       "result": {
+//         "execution-results": {
+//           "results": [
+//             {
+//               "value": null,
+//               "key": "helperOutput"
+//             }
+//           ],
+//           "facts": []
+//         }
+//       }
+//     }
+//   ]
+// }
+// ----

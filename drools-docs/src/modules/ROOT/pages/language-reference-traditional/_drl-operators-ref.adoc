@@ -1,0 +1,263 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='drl-operators-ref_{context}']
+
+= Supported operators in DRL pattern constraints
+
+DRL supports standard Java semantics for operators in pattern constraints, with some exceptions and with some additional operators that are unique in DRL. The following list summarizes the operators that are handled differently in DRL constraints than in standard Java semantics or that are unique in DRL constraints.
+
+`.()`, `#`::
+Use the `.()` operator to group property accessors to nested objects, and use the `#` operator to cast to a subtype in nested objects. Casting to a subtype makes the getters from the parent type available to the subtype. You can use either the object name or fully qualified class name, and you can cast to one or multiple subtypes.
++
+--
+.Example patterns with nested objects
+[source]
+----
+// Ungrouped property accessors:
+Person( name == "mark", address.city == "london", address.country == "uk" )
+
+// Grouped property accessors:
+Person( name == "mark", address.( city == "london", country == "uk") )
+----
+
+NOTE: The period prefix `.` differentiates the nested object constraints from a method call.
+
+.Example patterns with inline casting to a subtype
+[source]
+----
+// Inline casting with subtype name:
+Person( name == "mark", address#LongAddress.country == "uk" )
+
+// Inline casting with fully qualified class name:
+Person( name == "mark", address#org.domain.LongAddress.country == "uk" )
+
+// Multiple inline casts:
+Person( name == "mark", address#LongAddress.country#DetailedCountry.population > 10000000 )
+----
+--
+
+`!.`::
+Use this operator to dereference a property in a null-safe way. The value to the left of the `!.` operator must be not null (interpreted as `!= null`) in order to give a positive result for pattern matching.
++
+--
+.Example constraint with null-safe dereferencing
+[source]
+----
+Person( $streetName : address!.street )
+
+// This is internally rewritten in the following way:
+
+Person( address != null, $streetName : address.street )
+----
+--
+
+`[]`::
+Use this operator to access a `List` value by index or a `Map` value by key.
++
+--
+.Example constraints with `List` and `Map` access
+[source]
+----
+// The following format is the same as `childList(0).getAge() == 18`:
+Person(childList[0].age == 18)
+
+// The following format is the same as `credentialMap.get("jdoe").isValid()`:
+Person(credentialMap["jdoe"].valid)
+----
+--
+
+`<`, `\<=`, `>`, `>=`::
+Use these operators on properties with natural ordering. For example, for `Date` fields, the `<` operator means _before_, and for `String` fields, the operator means _alphabetically before_. These properties apply only to comparable properties.
++
+--
+.Example constraints with `before` operator
+[source]
+----
+Person( birthDate < $otherBirthDate )
+
+Person( firstName < $otherFirstName )
+----
+--
+
+`==`, `!=`::
+Use these operators as `equals()` and `!equals()` methods in constraints, instead of the usual `same` and `not same` semantics.
++
+--
+.Example constraint with null-safe equality
+[source]
+----
+Person( firstName == "John" )
+
+// This is similar to the following formats:
+
+java.util.Objects.equals(person.getFirstName(), "John")
+"John".equals(person.getFirstName())
+----
+
+.Example constraint with null-safe not equality
+[source]
+----
+Person( firstName != "John" )
+
+// This is similar to the following format:
+
+!java.util.Objects.equals(person.getFirstName(), "John")
+----
+--
+
+`&&`, `||`::
+Use these operators to create an abbreviated combined relation condition that adds more than one restriction on a field. You can group constraints with parentheses `()` to create a recursive syntax pattern.
++
+--
+.Example constraints with abbreviated combined relation
+[source]
+----
+// Simple abbreviated combined relation condition using a single `&&`:
+Person(age > 30 && < 40)
+
+// Complex abbreviated combined relation using groupings:
+Person(age ((> 30 && < 40) || (> 20 && < 25)))
+
+// Mixing abbreviated combined relation with constraint connectives:
+Person(age > 30 && < 40 || location == "london")
+----
+
+ifdef::DROOLS,JBPM,OP[]
+.Abbreviated combined relation condition
+image::language-reference/abbreviatedCombinedRelationCondition.png[align="center"]
+
+.Abbreviated combined relation condition withparentheses
+image::language-reference/abbreviatedCombinedRelationConditionGroup.png[align="center"]
+endif::[]
+--
+
+`matches`, `not matches`::
+Use these operators to indicate that a field matches or does not match a specified Java regular expression. Typically, the regular expression is a `String` literal, but variables that resolve to a valid regular expression are also supported. These operators apply only to `String` properties. If you use `matches` against a `null` value, the resulting evaluation is always `false`. If you use `not matches` against a `null` value, the resulting evaluation is always `true`. As in Java, regular expressions that you write as `String` literals must use a double backslash `\\` to escape.
++
+--
+.Example constraint to match or not match a regular expression
+[source]
+----
+Person( country matches "(USA)?\\S*UK" )
+
+Person( country not matches "(USA)?\\S*UK" )
+----
+--
+
+`contains`, `not contains`::
+Use these operators to verify whether a field that is an `Array` or a `Collection` contains or does not contain a specified value. These operators apply to `Array` or `Collection` properties, but you can also use these operators in place of `String.contains()` and `!String.contains()` constraints checks.
++
+--
+.Example constraints with `contains` and `not contains` for a Collection
+[source]
+----
+// Collection with a specified field:
+FamilyTree( countries contains "UK" )
+
+FamilyTree( countries not contains "UK" )
+
+
+// Collection with a variable:
+FamilyTree( countries contains $var )
+
+FamilyTree( countries not contains $var )
+----
+
+.Example constraints with `contains` and `not contains` for a String literal
+[source]
+----
+// Sting literal with a specified field:
+Person( fullName contains "Jr" )
+
+Person( fullName not contains "Jr" )
+
+
+// String literal with a variable:
+Person( fullName contains $var )
+
+Person( fullName not contains $var )
+----
+
+NOTE: For backward compatibility, the `excludes` operator is a supported synonym for `not contains`.
+
+--
+
+`memberOf`, `not memberOf`::
+Use these operators to verify whether a field is a member of or is not a member of an `Array` or a `Collection` that is defined as a variable. The `Array` or `Collection` must be a variable.
++
+--
+.Example constraints with `memberOf` and `not memberOf` with a Collection
+[source]
+----
+FamilyTree( person memberOf $europeanDescendants )
+
+FamilyTree( person not memberOf $europeanDescendants )
+----
+--
+
+`soundslike`::
+Use this operator to verify whether a word has almost the same sound, using English pronunciation, as the given value (similar to the `matches` operator). This operator uses the Soundex algorithm.
++
+--
+.Example constraint with `soundslike`
+[source]
+----
+// Match firstName "Jon" or "John":
+Person( firstName soundslike "John" )
+----
+--
+
+`str`::
+Use this operator to verify whether a field that is a `String` starts with or ends with a specified value. You can also use this operator to verify the length of the `String`.
++
+--
+.Example constraints with `str`
+[source]
+----
+// Verify what the String starts with:
+Message( routingValue str[startsWith] "R1" )
+
+// Verify what the String ends with:
+Message( routingValue str[endsWith] "R2" )
+
+// Verify the length of the String:
+Message( routingValue str[length] 17 )
+----
+--
+
+`in`, `notin`::
+Use these operators to specify more than one possible value to match in a constraint (compound value restriction). This functionality of compound value restriction is supported only in the `in` and `not in` operators. The second operand of these operators must be a comma-separated list of values enclosed in parentheses. You can provide values as variables, literals, return values, or qualified identifiers. These operators are internally rewritten as a list of multiple restrictions using the operators `==` or `!=`.
++
+--
+ifdef::DROOLS,JBPM,OP[]
+.compoundValueRestriction
+image::language-reference/compoundValueRestriction.png[align="center"]
+endif::[]
+
+.Example constraints with `in` and `notin`
+[source]
+----
+Person( $color : favoriteColor )
+Color( type in ( "red", "blue", $color ) )
+
+Person( $color : favoriteColor )
+Color( type notin ( "red", "blue", $color ) )
+----
+--

@@ -1,0 +1,152 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id="proc-kogito-migrate-drl-expose-ruleunits_{context}"]
+= Exposing rule evaluation with a REST endpoint using {QUARKUS}
+
+You can expose the rule evaluation that is developed in {BUSINESS_CENTRAL} with a REST endpoint using {QUARKUS}.
+
+.Procedure
+. Create a new module based on the module that contains the rules and Quarkus libraries, providing the REST support:
++
+.Example dependencies for creating a new module
+[source]
+----
+<dependencies>
+
+ <dependency>
+   <groupId>io.quarkus</groupId>
+   <artifactId>quarkus-resteasy</artifactId>
+ </dependency>
+ <dependency>
+   <groupId>io.quarkus</groupId>
+   <artifactId>quarkus-resteasy-jackson</artifactId>
+ </dependency>
+
+ <dependency>
+   <groupId>org.example</groupId>
+   <artifactId>drools-project</artifactId>
+   <version>1.0-SNAPSHOT</version>
+ </dependency>
+
+<dependencies>
+----
+
+. Create a REST endpoint.
++
+--
+The following is an example setup for creating a REST endpoint:
+
+.Example `FindApprovedLoansEndpoint` endpoint setup
+[source,java]
+----
+@Path("/find-approved")
+public class FindApprovedLoansEndpoint {
+
+   private static final KieContainer kContainer = KieServices.Factory.get().newKieClasspathContainer();
+
+   @POST()
+   @Produces(MediaType.APPLICATION_JSON)
+   @Consumes(MediaType.APPLICATION_JSON)
+   public List<LoanApplication> executeQuery(LoanAppDto loanAppDto) {
+   	KieSession session = kContainer.newKieSession();
+
+   	List<LoanApplication> approvedApplications = new ArrayList<>();
+   	session.setGlobal("approvedApplications", approvedApplications);
+   	session.setGlobal("maxAmount", loanAppDto.getMaxAmount());
+
+   	loanAppDto.getLoanApplications().forEach(session::insert);
+   	session.fireAllRules();
+   	session.dispose();
+
+   	return approvedApplications;
+   }
+}
+----
+
+In the previous example, a `KieContainer` containing the rules is created and added into a static field. The rules in the `KieContainer` are obtained from the other module in the class path. Using this approach, you can reuse the same `KieContainer` for subsequent invocations related to the `FindApprovedLoansEndpoint` endpoint without recompiling the rules.
+
+NOTE: The two modules are consolidated in the next process of migrating rule units to a {KOGITO} microservice using legacy API.
+
+When the `FindApprovedLoansEndpoint` endpoint is invoked, a new `KieSession` is created from the `KieContainer`. The `KieSession` is populated with the objects from `LoanAppDto` resulting from the unmarshalling of a JSON request.
+
+.Example `LoanAppDto` class
+[source,java]
+----
+public class LoanAppDto {
+
+   private int maxAmount;
+
+   private List<LoanApplication> loanApplications;
+
+   public int getMaxAmount() {
+   	return maxAmount;
+   }
+
+   public void setMaxAmount(int maxAmount) {
+   	this.maxAmount = maxAmount;
+   }
+
+   public List<LoanApplication> getLoanApplications() {
+   	return loanApplications;
+   }
+
+   public void setLoanApplications(List<LoanApplication> loanApplications) {
+   	this.loanApplications = loanApplications;
+   }
+}
+----
+
+When the `fireAllRules()` method is called, `KieSession` is fired and the business logic is evaluated against the input data. After business logic evaluation, the last rule collects all the approved applications in a list and the same list is returned as an output.
+--
+
+. Start the {QUARKUS} application.
+. Invoke the `FindApprovedLoansEndpoint` endpoint with a JSON request that contains the loan applications to be checked.
++
+--
+The value of the `maxAmount` is used in the rules as shown in the following example:
+
+.Example curl request
+[source]
+----
+curl -X POST -H 'Accept: application/json' -H 'Content-Type: application/json' -d '{"maxAmount":5000,
+"loanApplications":[
+{"id":"ABC10001","amount":2000,"deposit":1000,"applicant":{"age":45,"name":"John"}}, {"id":"ABC10002","amount":5000,"deposit":100,"applicant":{"age":25,"name":"Paul"}}, {"id":"ABC10015","amount":1000,"deposit":100,"applicant":{"age":12,"name":"George"}}
+]}' http://localhost:8080/find-approved
+----
+
+.Example JSON response
+[source,json]
+----
+[
+  {
+    "id": "ABC10001",
+    "applicant": {
+      "name": "John",
+      "age": 45
+    },
+    "amount": 2000,
+    "deposit": 1000,
+    "approved": true
+  }
+]
+----
+--
+
+NOTE: Using this approach, you cannot use the hot reload feature and cannot create a native image of the project. In the next steps, the missing Quarkus features are provided by the Kogito extension that enables Quarkus aware of the DRL files and implement the hot reload feature in a similar way.

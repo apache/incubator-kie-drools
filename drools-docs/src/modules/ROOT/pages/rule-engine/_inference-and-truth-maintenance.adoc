@@ -1,0 +1,302 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='inference-and-truth-maintenance_{context}']
+
+= Inference and truth maintenance in the {RULE_ENGINE}
+
+The basic function of the {RULE_ENGINE} is to match data to business rules and determine whether and how to execute rules. To ensure that relevant data is applied to the appropriate rules, the {RULE_ENGINE} makes _inferences_ based on existing knowledge and performs the actions based on the inferred information.
+
+For example, the following DRL rule determines the age requirements for adults, such as in a bus pass policy:
+
+.Rule to define age requirement
+[source]
+----
+rule "Infer Adult"
+when
+  $p : Person(age >= 18)
+then
+  insert(new IsAdult($p));
+end
+----
+
+Based on this rule, the {RULE_ENGINE} infers whether a person is an adult or a child and performs the specified action (the `then` consequence). Every person who is 18 years old or older has an instance of `IsAdult` inserted for them in the working memory. This inferred relation of age and bus pass can then be invoked in any rule, such as in the following rule segment:
+
+[source]
+----
+$p : Person()
+IsAdult(person == $p)
+----
+
+In many cases, new data in a rule system is the result of other rule executions, and this new data can affect the execution of other rules. If the {RULE_ENGINE} asserts data as a result of executing a rule, the {RULE_ENGINE} uses truth maintenance to justify the assertion and enforce truthfulness when applying inferred information to other rules. Truth maintenance also helps to identify inconsistencies and to handle contradictions. For example, if two rules are executed and result in a contradictory action, the {RULE_ENGINE} chooses the action based on assumptions from previously calculated conclusions.
+
+The {RULE_ENGINE} inserts facts using either stated or logical insertions:
+
+* *Stated insertions:* Defined with `insert()`. After stated insertions, facts are generally retracted explicitly. (The term _insertion_, when used generically, refers to _stated insertion_.)
+* *Logical insertions:* Defined with `insertLogical()`. After logical insertions, the facts that were inserted are automatically retracted when the conditions in the rules that inserted the facts are no longer true. The facts are retracted when no condition supports the logical insertion. A fact that is logically inserted is considered to be _justified_ by the {RULE_ENGINE}.
+
+For example, the following sample DRL rules use stated fact insertion to determine the age requirements for issuing a child bus pass or an adult bus pass:
+
+.Rules to issue bus pass, stated insertion
+[source]
+----
+rule "Issue Child Bus Pass"
+when
+  $p : Person(age < 18)
+then
+  insert(new ChildBusPass($p));
+end
+
+rule "Issue Adult Bus Pass"
+when
+  $p : Person(age >= 18)
+then
+  insert(new AdultBusPass($p));
+end
+----
+
+These rules are not easily maintained in the {RULE_ENGINE} as bus riders increase in age and move from child to adult bus pass. As an alternative, these rules can be separated into rules for bus rider age and rules for bus pass type using logical fact insertion. The logical insertion of the fact makes the fact dependent on the truth of the `when` clause.
+
+The following DRL rules use logical insertion to determine the age requirements for children and adults:
+
+.Children and adult age requirements, logical insertion
+[source]
+----
+rule "Infer Child"
+when
+  $p : Person(age < 18)
+then
+  insertLogical(new IsChild($p));
+end
+
+rule "Infer Adult"
+when
+  $p : Person(age >= 18)
+then
+  insertLogical(new IsAdult($p));
+end
+----
+
+IMPORTANT: For logical insertions, your fact objects must override the `equals` and `hashCode` methods from the `java.lang.Object` object according to the Java standard. Two objects are equal if their `equals` methods return `true` for each other and if their `hashCode` methods return the same values. For more information, see the Java API documentation for your Java version.
+
+When the condition in the rule is false, the fact is automatically retracted. This behavior is helpful in this example because the two rules are mutually exclusive. In this example, if the person is younger than 18 years old, the rule logically inserts an `IsChild` fact. After the person is 18 years old or older, the `IsChild` fact is automatically retracted and the `IsAdult` fact is inserted.
+
+The following DRL rules then determine whether to issue a child bus pass or an adult bus pass and logically insert the `ChildBusPass` and `AdultBusPass` facts. This rule configuration is possible because the truth maintenance system in the {RULE_ENGINE} supports chaining of logical insertions for a cascading set of retracts.
+
+.Rules to issue bus pass, logical insertion
+[source]
+----
+rule "Issue Child Bus Pass"
+when
+  $p : Person()
+    IsChild(person == $p)
+then
+  insertLogical(new ChildBusPass($p));
+end
+
+rule "Issue Adult Bus Pass"
+when
+  $p : Person()
+    IsAdult(person =$p)
+then
+  insertLogical(new AdultBusPass($p));
+end
+----
+
+When a person turns 18 years old, the `IsChild` fact and the person's `ChildBusPass` fact is retracted. To these set of conditions, you can relate another rule that states that a person must return the child pass after turning 18 years old. When the {RULE_ENGINE} automatically retracts the `ChildBusPass` object, the following rule is executed to send a request to the person:
+
+.Rule to notify bus pass holder of new pass
+[source]
+----
+rule "Return ChildBusPass Request"
+when
+  $p : Person()
+    not(ChildBusPass(person == $p))
+then
+  requestChildBusPass($p);
+end
+----
+
+The following flowcharts illustrate the life cycle of stated and logical insertions:
+
+.Stated insertion
+ifdef::DROOLS,JBPM,OP[]
+image::rule-engine/Stated_Assertion.png[]
+endif::[]
+ifdef::DM,PAM[]
+image::rule-engine/Stated_Assertion_enterprise.png[]
+endif::[]
+
+.Logical insertion
+ifdef::DROOLS,JBPM,OP[]
+image::rule-engine/Logical_Assertion.png[]
+endif::[]
+ifdef::DM,PAM[]
+image::rule-engine/Logical_Assertion_enterprise.png[]
+endif::[]
+
+When the {RULE_ENGINE} logically inserts an object during a rule execution, the {RULE_ENGINE} _justifies_ the object by executing the rule. For each logical insertion, only one equal object can exist, and each subsequent equal logical insertion increases the justification counter for that logical insertion. A justification is removed when the conditions of the rule become untrue. When no more justifications exist, the logical object is automatically retracted.
+
+ifdef::Drools,JBPM,OP[]
+== Government ID example
+
+So now we know what inference is, and have a basic example, how does this facilitate good rule design and maintenance?
+
+Consider a government ID department that is responsible for issuing ID cards when children become adults.
+They might have a decision table that includes logic like this, which says when an adult living in London is 18 or over, issue the card:
+
+
+
+[cols="4*^"]
+|===
+
+|{set:cellbgcolor:#bfbfbf}
+3+|[white]#RuleTable ID Card{set:cellbgcolor:#000000}#
+
+|{set:cellbgcolor:#bfbfbf}
+|CONDITION{set:cellbgcolor:#ffcc99}
+|CONDITION
+|ACTION
+
+|{set:cellbgcolor:#bfbfbf}
+2+|p : Person{set:cellbgcolor:#ffcc99}
+|
+
+|{set:cellbgcolor:#bfbfbf}
+|location{set:cellbgcolor:#ffcc99}
+|age >= $1
+|issueIdCard($1)
+
+|{set:cellbgcolor:#ccffcc}
+|Select Person{set:cellbgcolor:#ccffff}
+|Select Adults
+|Issue ID Card{set:cellbgcolor:#ffff99}
+
+|Issue ID Card to Adults{set:cellbgcolor:#ffffff}
+|London
+|18
+|p
+
+|===
+
+
+However the ID department does not set the policy on who an adult is.
+That's done at a central government level.
+If the central government were to change that age to 21, this would initiate a change management process.
+Someone would have to liaise with the ID department and make sure their systems are updated, in time for the law going live.
+
+This change management process and communication between departments is not ideal for an agile environment, and change becomes costly and error prone.
+Also the card department is managing more information than it needs to be aware of with its "monolithic" approach to rules management which is "leaking" information better placed elsewhere.
+By this I mean that it doesn't care what explicit "age >= 18" information determines whether someone is an adult, only that they are an adult.
+
+In contrast to this, let's pursue an approach where we split (de-couple) the authoring responsibilities, so that both the central government and the ID department maintain their own rules.
+
+It's the central government's job to determine who is an adult.
+If they change the law they just update their central repository with the new rules, which others use:
+
+
+[cols="3*^"]
+|===
+
+|{set:cellbgcolor:#bfbfbf}
+2+|[white]#RuleTable Age Policy{set:cellbgcolor:#000000}#
+
+|{set:cellbgcolor:#bfbfbf}
+|CONDITION{set:cellbgcolor:#ffcc94}
+|ACTION
+
+|{set:cellbgcolor:#bfbfbf}
+|p : Person{set:cellbgcolor:#ffcc94}
+
+|
+|{set:cellbgcolor:#bfbfbf}
+|age >= $1{set:cellbgcolor:#ffcc94}
+|insert($1)
+
+|{set:cellbgcolor:#b9ffca}
+|Adult Age Policy{set:cellbgcolor:#ccffff}
+|Add Adult Relation{set:cellbgcolor:#f7ff92}
+|Infer Adult{set:cellbgcolor:#ffffff}
+
+|18
+|new IsAdult( p )
+
+|===
+
+
+
+The IsAdult fact, as discussed previously, is inferred from the policy rules.
+It encapsulates the seemingly arbitrary piece of logic "age >= 18" and provides semantic abstractions for its meaning.
+Now if anyone uses the above rules, they no longer need to be aware of explicit information that determines whether someone is an adult or not.
+They can just use the inferred fact:
+
+
+[cols="4*^"]
+|===
+
+|{set:cellbgcolor:#c0c0c0}
+3+|[white]#RuleTable ID Card{set:cellbgcolor:#000000}#
+
+|{set:cellbgcolor:#c0c0c0}
+|CONDITION{set:cellbgcolor:#ffcc99}
+|CONDITION
+|ACTION
+
+|{set:cellbgcolor:#c0c0c0}
+|p : Person{set:cellbgcolor:#ffcc99}
+|isAdult
+|
+
+|{set:cellbgcolor:#c0c0c0}
+|location{set:cellbgcolor:#ffcc99}
+|person == $1
+|issueIdCard($1)
+
+|{set:cellbgcolor:#ccffcc}
+|Select Person{set:cellbgcolor:#ccffff}
+|Select Adults
+|Issue ID Card{set:cellbgcolor:#ffff99}
+
+|Issue ID Card to Adults{set:cellbgcolor:#ffffff}
+|London
+|p
+|p
+|
+
+|===
+
+
+While the example is very minimal and trivial it illustrates some important points.
+We started with a monolithic and leaky approach to our knowledge engineering.
+We created a single decision table that had all possible information in it and that leaks information from central government that the ID department did not care about and did not want to manage.
+
+We first de-coupled the knowledge process so each department was responsible for only what it needed to know.
+We then encapsulated this leaky knowledge using an inferred fact IsAdult.
+The use of the term IsAdult also gave a semantic abstraction to the previously arbitrary logic "age >= 18".
+
+So a general rule of thumb when doing your knowledge engineering is:
+
+* *Bad*
+** Monolithic
+** Leaky
+* *Good*
+** De-couple knowledge responsibilities
+** Encapsulate knowledge
+** Provide semantic abstractions for those encapsulations
+endif::[]

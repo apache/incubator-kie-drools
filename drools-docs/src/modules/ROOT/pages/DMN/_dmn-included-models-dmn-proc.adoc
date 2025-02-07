@@ -1,0 +1,59 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='dmn-included-models-dmn-proc_{context}']
+= Including other DMN models within a DMN file in {DMN_EDITOR}
+
+In {DMN_EDITOR}, you can include other DMN models from your project in a specified DMN file. When you include a DMN model within another DMN file, you can use all of the nodes and logic from both models in the same decision requirements diagram (DRD), but you cannot edit the nodes from the included model. To edit nodes from included models, you must update the source file for the included model directly. If you update the source file for an included DMN model, open the DMN file where the DMN model is included (or close an re-open) to verify the changes.
+
+You cannot include DMN models from other projects in {DMN_EDITOR}.
+
+.Prerequisites
+* The DMN models are created or imported (as `.dmn` files) in the same project in {DMN_EDITOR} as the DMN file in which you want to include the models.
+
+.Procedure
+. In the {DMN_EDITOR}, click the *Included Models* tab.
+. Click *Include Model*, select a DMN model from your project in the *Models* list, enter a unique name for the included model, and click *Include*:
++
+--
+.Including a DMN model
+image::dmn/dmn-include-model.png[]
+
+The DMN model is added to this DMN file, and all DRD nodes from the included model are listed under *Decision Components* in the *Decision Navigator* view:
+
+.DMN file with decision components from the included DMN model
+image::dmn/dmn-include-model-list.png[]
+
+All data types from the included model are also listed in read-only mode in the *Data Types* tab for the DMN file:
+
+.DMN file with data types from the included DMN model
+image::dmn/dmn-include-model-data-types.png[]
+--
+. In the *Model* tab of the DMN designer, click and drag the included DRD components onto the canvas to begin implementing them in your DRD:
++
+--
+.Adding DRD components from the included DMN model
+image::dmn/dmn-include-model-drd.png[]
+
+To edit DRD nodes or data types from included models, you must update the source file for the included model directly. If you update the source file for an included DMN model, open the DMN file where the DMN model is included (or close an re-open) to verify the changes.
+
+To edit the included model name or to remove the included model from the DMN file, use the *Included Models* tab in the DMN designer.
+
+IMPORTANT: When you remove an included model, any nodes from that included model that are currently used in the DRD are also removed.
+--

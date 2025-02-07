@@ -1,0 +1,102 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='decision-tables-rule-table-entries-ref']
+= RuleTable definitions
+
+Entries in the `RuleTable` area of a decision table define conditions, actions, and other rule attributes for the rules in that rule table. A spreadsheet of decision tables can contain multiple `RuleTable` areas.
+
+The following table lists the supported labels (column headers) and values for `RuleTable` definitions. For column headers, you can use either the given labels or any custom labels that begin with the letters listed in the table.
+
+.Supported `RuleTable` definitions
+[cols="25%,20%,35%,20%", options="header"]
+|===
+|Label |Or custom label that begins with |Value |Usage
+
+|`NAME`
+|N
+|Provides the name for the rule generated from that row. The default is constructed from the text following the `RuleTable` tag and the row number.
+|At most one column.
+
+|`DESCRIPTION`
+|I
+|Results in a comment within the generated rule.
+|At most one column.
+
+|`CONDITION`
+|C
+|Code snippet and interpolated values for constructing a constraint within a pattern in a condition.
+|At least one per rule table.
+
+|`ACTION`
+|A
+|Code snippet and interpolated values for constructing an action for the consequence of the rule.
+|At least one per rule table.
+
+|`METADATA`
+|@
+|Code snippet and interpolated values for constructing a metadata entry for the rule.
+|Optional, any number of columns.
+|===
+
+The following sections provide more details about how condition, action, and metadata columns use cell data:
+
+Conditions::
+
+For columns headed `CONDITION`, the cells in consecutive lines result in a conditional element:
+
+* *First cell:* Text in the first cell below `CONDITION` develops into a pattern for the rule condition, and uses the snippet in the next line as a constraint. If the cell is merged with one or more neighboring cells, a single pattern with multiple constraints is formed. All constraints are combined into a parenthesized list and appended to the text in this cell.
++
+If this cell is empty, the code snippet in the cell below it must result in a valid conditional element on its own. For example, instead of `Order` as the object type and `itemsCount > $1` as a constraint (separate cells), you can leave the object type cell empty and enter `Order( itemsCount > $1 )` in the constraint cell, and then do the same for any other constraint cells.
++
+To include a pattern without constraints, you can write the pattern in front of the text of another pattern, with or without an empty pair of parentheses. You can also append a `from` clause to the pattern.
++
+If the pattern ends with `eval`, code snippets produce boolean expressions for inclusion into a pair of parentheses after `eval`.
++
+You can terminate the pattern with `@watch` annotation, which is used to customize the properties that the pattern is reactive on.
+
+* *Second cell:* Text in the second cell below `CONDITION` is processed as a constraint on the object reference in the first cell. The code snippet in this cell is modified by interpolating values from cells farther down in the column. If you want to create a constraint consisting of a comparison using `==` with the value from the cells below, then the field selector alone is sufficient. If you use the field selector alone, but you want to use the condition as it is without appending any `==` comparison, you must terminate the condition with the symbol `?`. Any other comparison operator must be specified as the last item within the snippet, and the value from the cells below is appended. For all other constraint forms, you must mark the position for including the contents of a cell with the symbol `$param`. Multiple insertions are possible if you use the symbols `$1`, `$2`, and so on, and a comma-separated list of values in the cells below. However, do not separate `$1`, `$2`, and so on, by commas, or the table will fail to process.
++
+To expand a text according to the pattern `forall($delimiter){$snippet}`, repeat the `$snippet` once for each of the values of the comma-separated list in each of the cells below, insert the value in place of the symbol `$`, and join these expansions by the given `$delimiter`. Note that the `forall` construct may be surrounded by other text.
++
+If the first cell contains an object, the completed code snippet is added to the conditional element from that cell. A pair of parentheses is provided automatically, as well as a separating comma if multiple constraints are added to a pattern in a merged cell. If the first cell is empty, the code snippet in this cell must result in a valid conditional element on its own. For example, instead of `Order` as the object type and `itemsCount > $1` as a constraint (separate cells), you can leave the object type cell empty and enter `Order( itemsCount > $1 )` in the constraint cell, and then do the same for any other constraint cells.
+* *Third cell:* Text in the third cell below `CONDITION` is a descriptive label that you define for the column, as a visual aid.
+* *Fourth cell:* From the fourth row on, non-blank entries provide data for interpolation. A blank cell omits the condition or constraint for this rule.
+
+Actions::
+
+For columns headed `ACTION`, the cells in consecutive lines result in an action statement:
+
+* *First cell:* Text in the first cell below `ACTION` is optional. If present, the text is interpreted as an object reference.
+* *Second cell:* Text in the second cell below `ACTION` is a code snippet that is modified by interpolating values from cells farther down in the column. For a singular insertion, mark the position for including the contents of a cell with the symbol `$param`. Multiple insertions are possible if you use the symbols `$1`, `$2`, and so on, and a comma-separated list of values in the cells below. However, do not separate `$1`, `$2`, and so on, by commas, or the table will fail to process.
++
+A text without any marker symbols can execute a method call without interpolation. In this case, use any non-blank entry in a row below the cell to include the statement. The `forall` construct is supported.
++
+If the first cell contains an object, then the cell text (followed by a period), the text in the second cell, and a terminating semicolon are strung together, resulting in a method call that is added as an action statement for the consequence. If the first cell is empty, the code snippet in this cell must result in a valid action element on its own.
+* *Third cell:* Text in the third cell below `ACTION` is a descriptive label that you define for the column, as a visual aid.
+* *Fourth cell:* From the fourth row on, non-blank entries provide data for interpolation. A blank cell omits the condition or constraint for this rule.
+
+Metadata::
+
+For columns headed `METADATA`, the cells in consecutive lines result in a metadata annotation for the generated rules:
+
+* *First cell:* Text in the first cell below `METADATA` is ignored.
+* *Second cell:* Text in the second cell below `METADATA` is subject to interpolation, using values from the cells in the rule rows. The metadata marker character `@` is prefixed automatically, so you do not need to include that character in the text for this cell.
+* *Third cell:* Text in the third cell below `METADATA` is a descriptive label that you define for the column, as a visual aid.
+* *Fourth cell:* From the fourth row on, non-blank entries provide data for interpolation. A blank cell results in the omission of the metadata annotation for this rule.

@@ -1,0 +1,84 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='dmn-gs-defining-decision-logic-proc']
+[discrete]
+= Defining the traffic violations DMN decision logic
+
+To calculate the fine and to decide whether the driver is to be suspended or not, you can define the traffic violations DMN decision logic using a DMN decision table and context boxed expression.
+
+.Fine expression
+image::dmn/dmn-gs-fine-decision-table.png[Fine expression decision table]
+
+.Should the driver be suspended expression
+image::dmn/dmn-gs-context-table.png[Should the driver be suspended expression decision table]
+
+.Prerequisites
+* You have assigned the DMN custom data types to the appropriate decision and input nodes in the traffic violations DRD in {DMN_EDITOR}.
+
+.Procedure
+. To calculate the fine, in the DMN designer canvas, select the *Fine* decision node and click the *Edit* icon to open the DMN boxed expression designer.
++
+
+.Decision node edit icon
+image::dmn/decision_node_edit.png[Decision node edit icon]
+
+. Click *Select expression* -> *Decision Table*.
++
+
+.Select Decisiong Table logic type
+image::dmn/select_logic_type.png[Select logic type menu]
+
+. For the *Violation.Date*, *Violation.Code*, and *Violation.Speed Limit* columns, right-click and select *Delete* for each field.
+. Click the *Violation.Actual Speed* column header and enter the expression `Violation.Actual Speed - Violation.Speed Limit` in the *Expression* field."
+. Enter the following values in the first row of the decision table:
+* *Violation.Type*: `"speed"`
+* *Violation.Actual Speed - Violation.Speed Limit*: `[10..30)`
+* *Amount*: `500`
+* *Points*: `3`
++
+Right-click the first row and select `Insert below` to add another row.
+. Enter the following values in the second row of the decision table:
+* *Violation.Type*: `"speed"`
+* *Violation.Actual Speed - Violation.Speed Limit*: `>= 30`
+* *Amount*: `1000`
+* *Points*: `7`
++
+Right-click the second row and select `Insert below` to add another row.
+. Enter the following values in the third row of the decision table:
+* *Violation.Type*: `"parking"`
+* *Violation.Actual Speed - Violation.Speed Limit*: `-`
+* *Amount*: `100`
+* *Points*: `1`
++
+Right-click the third row and select `Insert below` to add another row.
+. Enter the following values in the fourth row of the decision table:
+* *Violation.Type*: `"driving under the influence"`
+* *Violation.Actual Speed - Violation.Speed Limit*: `-`
+* *Amount*: `1000`
+* *Points*: `5`
+. Click *Save*.
+. To define the driver suspension rule, return to the DMN designer canvas, select the *Should the driver be suspended?* decision node, and click the *Edit* icon to open the DMN boxed expression designer.
+. Click *Select expression* -> *Context*.
+. Click *ContextEntry-1*, enter `Total Points` as the *Name*, and select `number` from the *Data Type* drop-down menu.
+. Click the cell next to *Total Points*, select `Literal expression` from the context menu, and enter `Driver.Points + Fine.Points` as the expression.
+. In the cell below *Driver.Points + Fine.Points*, select `Literal Expression` from the context menu, and enter `if Total Points >= 20 then "Yes" else "No"`.
+. Click *Save*.
++
+You have defined how to calculate the fine and the context for deciding when to suspend the driver. You can navigate to the *traffic-violation* project page and click *Build* to build the example project and address any errors noted in the *Alerts* panel.

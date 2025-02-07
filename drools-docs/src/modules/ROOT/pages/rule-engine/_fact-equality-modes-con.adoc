@@ -1,0 +1,84 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='fact-equality-modes-con_{context}']
+
+= Fact equality modes in the {RULE_ENGINE}
+
+The {RULE_ENGINE} supports the following fact equality modes that determine how the {RULE_ENGINE} stores and compares inserted facts:
+
+* `identity`: (Default) The {RULE_ENGINE} uses an `IdentityHashMap` to store all inserted facts. For every new fact insertion, the {RULE_ENGINE} returns a new `FactHandle` object. If a fact is inserted again, the {RULE_ENGINE} returns the original `FactHandle` object, ignoring repeated insertions for the same fact. In this mode, two facts are the same for the {RULE_ENGINE} only if they are the very same object with the same identity.
+* `equality`: The {RULE_ENGINE} uses a `HashMap` to store all inserted facts. The {RULE_ENGINE} returns a new `FactHandle` object only if the inserted fact is not equal to an existing fact, according to the `equals()` method of the inserted fact. In this mode, two facts are the same for the {RULE_ENGINE} if they are composed the same way, regardless of identity. Use this mode when you want objects to be assessed based on feature equality instead of explicit identity.
+
+As an illustration of fact equality modes, consider the following example facts:
+
+.Example facts
+[source]
+----
+Person p1 = new Person("John", 45);
+Person p2 = new Person("John", 45);
+----
+
+In `identity` mode, facts `p1` and `p2` are different instances of a `Person` class and are treated as separate objects because they have separate identities. In `equality` mode, facts `p1` and `p2` are treated as the same object because they are composed the same way. This difference in behavior affects how you can interact with fact handles.
+
+For example, assume that you insert facts `p1` and `p2` into the {RULE_ENGINE} and later you want to retrieve the fact handle for `p1`. In `identity` mode, you must specify `p1` to return the fact handle for that exact object, whereas in `equality` mode, you can specify `p1`, `p2`, or `new Person("John", 45)` to return the fact handle.
+
+.Example code to insert a fact and return the fact handle in `identity` mode
+[source]
+----
+ksession.insert(p1);
+
+ksession.getFactHandle(p1);
+----
+
+.Example code to insert a fact and return the fact handle in `equality` mode
+[source]
+----
+ksession.insert(p1);
+
+ksession.getFactHandle(p1);
+
+// Alternate option:
+ksession.getFactHandle(new Person("John", 45));
+----
+
+To set the fact equality mode, use one of the following options:
+
+* Set the system property `drools.equalityBehavior` to `identity` (default) or `equality`.
+* Set the equality mode while creating the KIE base programmatically:
++
+[source,java]
+----
+KieServices ks = KieServices.get();
+KieBaseConfiguration kieBaseConf = ks.newKieBaseConfiguration();
+kieBaseConf.setOption(EqualityBehaviorOption.EQUALITY);
+KieBase kieBase = kieContainer.newKieBase(kieBaseConf);
+----
+* Set the equality mode in the KIE module descriptor file (`kmodule.xml`) for a specific {PRODUCT} project:
++
+[source,xml]
+----
+<kmodule>
+  ...
+  <kbase name="KBase2" default="false" equalsBehavior="equality" packages="org.domain.pkg2, org.domain.pkg3" includes="KBase1">
+    ...
+  </kbase>
+  ...
+</kmodule>
+----

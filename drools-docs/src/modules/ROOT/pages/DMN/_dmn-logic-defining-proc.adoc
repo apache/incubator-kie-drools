@@ -1,0 +1,126 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='dmn-logic-defining-proc_{context}']
+= Defining DMN decision logic in boxed expressions in {DMN_EDITOR}
+
+Boxed expressions in DMN are tables that you use to define the underlying logic of decision nodes and business knowledge models in a decision requirements diagram (DRD). Some boxed expressions can contain other boxed expressions, but the top-level boxed expression corresponds to the decision logic of a single DRD artifact. While DRDs represent the flow of a DMN decision model, boxed expressions define the actual decision logic of individual nodes. DRDs and boxed expressions together form a complete and functional DMN decision model.
+
+You can use the {DMN_EDITOR} to define decision logic for your DRD components using built-in boxed expressions.
+
+.Prerequisites
+* A DMN file is created or imported in {DMN_EDITOR}.
+
+.Procedure
+. In the DMN designer canvas, select a decision node or business knowledge model node that you want to define and click the *Edit* icon to open the DMN boxed expression designer:
++
+--
+.Opening a new decision node boxed expression
+image::dmn/dmn-decision-edit.png[]
+
+.Opening a new business knowledge model boxed expression
+image::dmn/dmn-bkm-edit.png[]
+
+By default, all business knowledge models are defined as boxed function expressions containing a literal FEEL expression, a nested context expression of an external JAVA or PMML function, or a nested boxed expression of any type.
+
+For decision nodes, you click the undefined table to select the type of boxed expression you want to use, such as a boxed literal expression, boxed context expression, decision table, or other DMN boxed expression.
+
+.Selecting the logic type for a decision node
+image::dmn/dmn-decision-boxed-expression-options.png[]
+
+For business knowledge model nodes, you click the top-left function cell to select the function type, or right-click the function value cell, select *Clear*, and select a boxed expression of another type.
+
+.Selecting the function or other logic type for a business knowledge model
+image::dmn/dmn-bkm-define.png[]
+--
+. For this example, use a decision node and select *Decision Table* as the boxed expression type.
++
+A decision table in DMN is a visual representation of one or more rules in a tabular format. Each rule consists of a single row in the table, and includes columns that define the conditions (input) and outcome (output) for that particular row.
+. Click the input column header to define the name and data type for the input condition. For example, name the input column *Credit Score.FICO* with a `number` data type. This column specifies numeric credit score values or ranges of loan applicants.
+. Click the output column header to define the name and data type for the output values. For example, name the output column *Credit Score Rating* and next to the *Data Type* option, click *Manage* to go to the *Data Types* page where you can create a custom data type with score ratings as constraints.
++
+.Managing data types for a column header value
+image::dmn/dmn-manage-data-types.png[]
+
+. On the *Data Types* page, click *New Data Type* to add a new data type or click *Import Data Object* to import an existing data object from your project that you want to use as a DMN data type.
++
+--
+If you import a data object from your project as a DMN data type and then that object is updated, you must re-import the data object as a DMN data type to apply the changes in your DMN model.
+
+For this example, click *New Data Type* and create a *Credit_Score_Rating* data type as a `string`:
+
+.Adding a new data type
+image::dmn/dmn-custom-data-type-add.png[]
+--
+. Click *Add Constraints*, select *Enumeration* from the drop-down options, and add the following constraints:
++
+--
+* `"Excellent"`
+* `"Good"`
+* `"Fair"`
+* `"Poor"`
+* `"Bad"`
+
+.Adding constraints to the new data type
+image::dmn/dmn-custom-data-type-constraints.png[]
+
+To change the order of data type constraints, you can click the left end of the constraint row and drag the row as needed:
+
+.Dragging constraints to change constraint order
+image::dmn/dmn-custom-data-type-constraints-drag.png[]
+
+For information about constraint types and syntax requirements for the specified data type, see the https://www.omg.org/spec/DMN[Decision Model and Notation specification].
+--
+
+. Click *OK* to save the constraints and click the check mark to the right of the data type to save the data type.
+. Return to the *Credit Score Rating* decision table, click the *Credit Score Rating* column header, and set the data type to this new custom data type.
+. Use the *Credit Score.FICO* input column to define credit score values or ranges of values, and use the *Credit Score Rating* column to specify one of the corresponding ratings you defined in the *Credit_Score_Rating* data type.
++
+Right-click any value cell to insert or delete rows (rules) or columns (clauses).
++
+.Decision node decision table for credit score rating
+image::dmn/dmn-decision-table-example1a.png[]
+
+. After you define all rules, click the top-left corner of the decision table to define the rule *Hit Policy* and *Builtin Aggregator* (for *COLLECT* hit policy only).
++
+--
+The hit policy determines how to reach an outcome when multiple rules in a decision table match the provided input values. The built-in aggregator determines how to aggregate rule values when you use the *COLLECT* hit policy.
+
+.Defining the decision table hit policy
+image::dmn/dmn-hit-policies.png[]
+
+The following example is a more complex decision table that determines applicant qualification for a loan as the concluding decision node in the same loan prequalification decision model:
+
+.Decision table for loan prequalification
+image::dmn/dmn-decision-table-example3.png[]
+--
+
+For boxed expression types other than decision tables, you follow these guidelines similarly to navigate the boxed expression tables and define variables and parameters for decision logic, but according to the requirements of the boxed expression type. Some boxed expressions, such as boxed literal expressions, can be single-column tables, while other boxed expressions, such as function, context, and invocation expressions, can be multi-column tables with nested boxed expressions of other types.
+
+For example, the following boxed context expression defines the parameters that determine whether a loan applicant can meet minimum mortgage payments based on principal, interest, taxes, and insurance (PITI), represented as a front-end ratio calculation with a sub-context expression:
+
+.Boxed context expression for front-end client PITI ratio
+image::dmn/dmn-context-expression-example2.png[]
+
+The following boxed function expression determines a monthly mortgage installment as a business knowledge model in a lending decision, with the function value defined as a nested context expression:
+
+.Boxed function expression for installment calculation in business knowledge model
+image::dmn/dmn-function-expression-example3.png[]
+
+For more information and examples of each boxed expression type, see xref:dmn-boxed-expressions-con_dmn-models[].

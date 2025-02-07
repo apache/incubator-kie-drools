@@ -1,0 +1,273 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='first-rule-project_{context}']
+= First Rule Project
+
+This guide walks you through the process of creating a simple Drools application project.
+
+== Prerequisites
+
+* https://adoptium.net[JDK] {java-version}+ with `JAVA_HOME` configured appropriately
+* https://maven.apache.org/download.html[Apache Maven] {maven-version}+ 
+* Optionally, an IDE, such as IntelliJ IDEA, VSCode or Eclipse
+
+== Creating a project with maven archetype
+
+You can choose a style of rule project from Rule Unit or traditional style. Rule Unit is a new style that is recommended for microservices and cloud native applications. The traditional style has been used since Drools 7. Both styles are supported in Drools 10.
+
+=== Rule Unit style
+
+Create a project with the following command.
+
+[source,shell,subs=attributes+]
+----
+mvn archetype:generate -DarchetypeGroupId=org.kie -DarchetypeArtifactId=kie-drools-exec-model-ruleunit-archetype -DarchetypeVersion={drools-version}
+----
+
+During the command execution, input property values interactively. 
+[source,subs=attributes+]
+----
+Define value for property 'groupId': org.example
+Define value for property 'artifactId': my-project
+Define value for property 'version' 1.0-SNAPSHOT: : 
+Define value for property 'package' org.example: : 
+...
+ Y: : Y
+...
+[INFO] BUILD SUCCESS
+----
+
+Now your first rule project of Rule Unit is created. Let's look into the project.
+
+Firstly, `pom.xml`.
+[source,xml]
+----
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-ruleunits-engine</artifactId>
+    </dependency>
+----
+This is a required dependency for Rule Unit.
+
+The archetype contains one DRL file as an example `src/main/resources/org/example/rules.drl`.
+
+[source]
+----
+package org.example;
+
+unit MeasurementUnit;
+
+rule "will execute per each Measurement having ID color"
+when
+	/measurements[ id == "color", $colorVal : val ]
+then
+	controlSet.add($colorVal);
+end
+
+query FindColor
+    $m: /measurements[ id == "color" ]
+end
+----
+This rule checks incoming `Measurement` data and stores its value in a global variable `controlSet` when it's color information.
+
+`when` part implements the pattern matching and `then` part implements the action when the conditions are met.
+
+Next, find `src/main/java/org/example/MeasurementUnit.java` that is specified as `unit MeasurementUnit` in the rule. It is called `rule unit` that groups data sources, global variables and DRL rules.
+
+[source,java]
+----
+public class MeasurementUnit implements RuleUnitData {
+
+    private final DataStore<Measurement> measurements;
+    private final Set<String> controlSet = new HashSet<>();
+
+    ...
+----
+
+`/measurements` in `rules.drl` is bound to the `measurements` field in `MeasurementUnit`. So you know that the inserted data type is `Measurement`. This class also defines a global variable `controlSet`.
+
+Then, `src/main/java/org/example/Measurement.java` is a Java bean class used in the rule. Such an object is called `Fact`.
+
+Finally, `src/test/java/org/example/RuleTest.java` is the test case that executes the rule. You can learn the basic API usage that is used in your own applications.
+
+[source,java]
+----
+        MeasurementUnit measurementUnit = new MeasurementUnit();
+
+        RuleUnitInstance<MeasurementUnit> instance = RuleUnitProvider.get().createRuleUnitInstance(measurementUnit);
+----
+Create a `MeasurementUnit` instance. Then create a `RuleUnitInstance` with the `MeasurementUnit` instance using `RuleUnitProvider`.
+
+[source,java]
+----
+        measurementUnit.getMeasurements().add(new Measurement("color", "red"));
+        measurementUnit.getMeasurements().add(new Measurement("color", "green"));
+        measurementUnit.getMeasurements().add(new Measurement("color", "blue"));
+----
+Add `Measurement` facts into `measurementUnit.measurements`. It means the facts are inserted into {RULE_ENGINE}.
+
+[source,java]
+----
+        List<Measurement> queryResult = instance.executeQuery("FindColor").stream().map(tuple -> (Measurement) tuple.get("$m")).collect(toList());
+----
+Execute a query named `FindColor`. When you execute a query, rules that are matched with inserted facts are automatically fired. If you want to only fire rules without a query, you can call `instance.fire()` instead.
+
+[source,java]
+----
+        instance.close();
+----
+At the end, call `close()` to release resources retained by the `RuleUnitInstance`.
+
+Let's run the test with `mvn clean test`.
+----
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running org.example.RuleTest
+2022-06-13 12:49:56,499 [main] INFO  Creating RuleUnit
+2022-06-13 12:49:56,696 [main] INFO  Insert data
+2022-06-13 12:49:56,700 [main] INFO  Run query. Rules are also fired
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.411 s - in org.example.RuleTest
+----
+
+Now you can add your own rules and facts to this project!
+
+[NOTE]
+====
+The rule project requires code generation that is triggered by mvn compile phase. If you directly run `RuleTest.java` in IDE, you may need to run `mvn compile` first.
+====
+
+=== Traditional style
+
+Create a project with the following command.
+
+[source,shell,subs=attributes+]
+----
+mvn archetype:generate -DarchetypeGroupId=org.kie -DarchetypeArtifactId=kie-drools-exec-model-archetype -DarchetypeVersion={drools-version}
+----
+
+
+During the command execution, input property values interactively.
+[source,subs=attributes+]
+----
+Define value for property 'groupId': org.example
+Define value for property 'artifactId': my-project
+Define value for property 'version' 1.0-SNAPSHOT: :
+Define value for property 'package' org.example: :
+...
+ Y: : Y
+...
+[INFO] BUILD SUCCESS
+----
+
+Now your first rule project of traditional style is created. Let's look into the project.
+
+Firstly, `pom.xml`.
+[source,xml]
+----
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-engine</artifactId>
+    </dependency>
+----
+This is a required dependency for traditional style.
+
+The archetype contains one DRL file as an example `src/main/resources/org/example/rules.drl`.
+
+[source]
+----
+package org.example;
+
+global java.util.Set controlSet;
+
+rule "will execute per each Measurement having ID color"
+when
+	Measurement( id == "color", $colorVal : val )
+then
+	controlSet.add($colorVal);
+end
+----
+This rule checks incoming `Measurement` data and stores its value in a global variable `controlSet` when it's color information.
+
+`when` part implements the pattern matching and `then` part implements the action when the conditions are met.
+
+`src/main/java/org/example/Measurement.java` is a Java bean class used in the rule. Such an object is called `Fact`.
+
+Finally, `src/test/java/org/example/RuleTest.java` is the test case that executes the rule. You can learn the basic API usage that is used in your own applications.
+
+[source,java]
+----
+        KieContainer kContainer = createKieContainer();
+        ...
+        KieBase kieBase = kContainer.getKieBase();
+        ...
+        KieSession session = kieBase.newKieSession();
+----
+Create a `KieContainer` which collects resources. Then get a `KieBase` and creates a `KieSession`. `KieSession` is a unit of execution in {RULE_ENGINE}.
+
+[source,java]
+----
+            Set<String> check = new HashSet<String>();
+            session.setGlobal("controlSet", check);
+----
+Set `controlSet` global to `session`.
+
+
+[source,java]
+----
+            Measurement mRed = new Measurement("color", "red");
+            session.insert(mRed);
+            session.fireAllRules();
+
+            Measurement mGreen = new Measurement("color", "green");
+            session.insert(mGreen);
+            session.fireAllRules();
+
+            Measurement mBlue = new Measurement("color", "blue");
+            session.insert(mBlue);
+            session.fireAllRules();
+----
+Insert `Measurement` facts into `session`. Then fire all rules.
+
+[source,java]
+----
+            session.dispose();
+----
+At the end, call `dispose()` to release resources retained by the `KieSession`.
+
+Let's run the test with `mvn clean test`.
+----
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running org.example.RuleTest
+2023-10-03 12:27:29,182 [main] INFO  Creating kieBase
+2023-10-03 12:27:29,185 [main] INFO  Start creation of KieBase: defaultKieBase
+2023-10-03 12:27:29,293 [main] INFO  End creation of KieBase: defaultKieBase
+2023-10-03 12:27:29,293 [main] INFO  There should be rules:
+2023-10-03 12:27:29,294 [main] INFO  kp [Package name=org.example] rule will execute per each Measurement having ID color
+2023-10-03 12:27:29,294 [main] INFO  Creating kieSession
+2023-10-03 12:27:29,322 [main] INFO  Populating globals
+2023-10-03 12:27:29,322 [main] INFO  Now running data
+2023-10-03 12:27:29,348 [main] INFO  Final checks
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.586 s - in org.example.RuleTest
+----
+
+Now you can add your own rules and facts to this project!

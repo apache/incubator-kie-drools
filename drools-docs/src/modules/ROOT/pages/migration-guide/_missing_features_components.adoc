@@ -1,0 +1,39 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='missing-features-components_{context}']
+
+[id='kie-server_{context}']
+== {KIE_SERVER}
+
+{KIE_SERVER} is retired and no longer a component since {PRODUCT} 8. If your system is working on {KIE_SERVER} with {PRODUCT} 7, consider migration to https://kogito.kie.org/[{KOGITO}].
+
+While {KIE_SERVER} hosts multiple kjar containers, One {KOGITO} instance hosts one domain service. Hence, you would create {KOGITO} project per kjar container, which would be microservice style.
+
+You can find the detailed migration steps in the next sections, xref:con-migration-to-kogito-overview_migration-guide[].
+
+[id='business-central_{context}']
+== {BUSINESS_CENTRAL}
+
+{BUSINESS_CENTRAL} is retired and no longer a component since {PRODUCT} 8. For asset management, the usual version control system is recommended, for example, git. For editors, https://marketplace.visualstudio.com/items?itemName=kie-group.vscode-extension-kogito-bundle[VS Code Kogito extension] is recommended.
+
+[id='bpmn-integration_{context}']
+== BPMN integration / Rule flow
+
+BPMN integration and Rule flow can be achieved by {KOGITO}.

@@ -1,0 +1,43 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='dmn-decision-tables-con_{context}']
+= DMN decision tables
+
+A decision table in DMN is a visual representation of one or more business rules in a tabular format. You use decision tables to define rules for a decision node that applies those rules at a given point in the decision model. Each rule consists of a single row in the table, and includes columns that define the conditions (input) and outcome (output) for that particular row. The definition of each row is precise enough to derive the outcome using the values of the conditions. Input and output values can be FEEL expressions or defined data type values.
+
+For example, the following decision table determines credit score ratings based on a defined range of a loan applicant's credit score:
+
+.Decision table for credit score rating
+image::dmn/dmn-decision-table-example.png[]
+
+The following decision table determines the next step in a lending strategy for applicants depending on applicant loan eligibility and the bureau call type:
+
+.Decision table for lending strategy
+image::dmn/dmn-decision-table-example2.png[]
+
+The following decision table determines applicant qualification for a loan as the concluding decision node in a loan prequalification decision model:
+
+.Decision table for loan prequalification
+image::dmn/dmn-decision-table-example3.png[]
+
+Decision tables are a popular way of modeling rules and decision logic, and are used in many methodologies (such as DMN) and implementation frameworks (such as Drools).
+
+IMPORTANT: {PRODUCT} supports both DMN decision tables and Drools-native decision tables, but they are different types of assets with different syntax requirements and are not interchangeable. For more information about Drools-native decision tables in {PRODUCT}, see
+xref:language-reference/index.adoc#decision-tables-con_decision-tables[Spreadsheet decision tables].

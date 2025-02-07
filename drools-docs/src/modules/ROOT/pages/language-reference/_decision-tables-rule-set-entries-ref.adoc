@@ -1,0 +1,90 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='decision-tables-rule-set-entries-ref']
+= RuleSet definitions
+
+Entries in the `RuleSet` area of a decision table define DRL constructs and rule attributes that you want to apply to all rules in a package (not only in the spreadsheet). Entries must be in a vertically stacked sequence of cell pairs, where the first cell contains a label and the cell to the right contains the value. A decision table spreadsheet can have only one `RuleSet` area.
+
+The following table lists the supported labels and values for `RuleSet` definitions:
+
+.Supported `RuleSet` definitions
+[cols="30%,40%,30%", options="header"]
+|===
+|Label |Value |Usage
+
+|`RuleSet`
+|The package name for the generated DRL file. Optional, the default is `rule_table`.
+|Must be the first entry.
+
+|`Sequential`
+|`true` or `false`. If `true`, then salience is used to ensure that rules fire from the top down.
+|Optional, at most once. If omitted, no firing order is imposed.
+
+|`SequentialMaxPriority`
+|Integer numeric value
+|Optional, at most once. In sequential mode, this option is used to set the start value of the salience. If omitted, the default value is 65535.
+
+|`SequentialMinPriority`
+|Integer numeric value
+|Optional, at most once. In sequential mode, this option is used to check if this minimum salience value is not violated. If omitted, the default value is 0.
+
+|`EscapeQuotes`
+|`true` or `false`. If `true`, then quotation marks are escaped so that they appear literally in the DRL.
+|Optional, at most once. If omitted, quotation marks are escaped.
+
+|`NumericDisabled`
+|`true` or `false`. If `true`, then a String representation is used for DRL instead of a double value
+from a Numeric cell. It would also skip additional numeric processing for the double value. For example, date formatting based on {PRODUCT} system property.
+|Optional, at most once. If omitted, a double value is used.
+
+|`IgnoreNumericFormat`
+|`true` or `false`. If `true`, then the format for numeric values is ignored, for example, percent and currency.
+|Optional, at most once. If omitted, DRL takes formatted values.
+
+|`Import`
+|A comma-separated list of Java classes to import from another package.
+|Optional, may be used repeatedly.
+
+|`Variables`
+|Declarations of DRL globals (a type followed by a variable name). Multiple global definitions must be separated by commas.
+|Optional, may be used repeatedly.
+
+|`Functions`
+|One or more function definitions, according to DRL syntax.
+|Optional, may be used repeatedly.
+
+|`Queries`
+|One or more query definitions, according to DRL syntax.
+|Optional, may be used repeatedly.
+
+|`Declare`
+|One or more declarative types, according to DRL syntax.
+|Optional, may be used repeatedly.
+
+|`Unit`
+|The rule units that the rules generated from this decision table belong to.
+|Optional, at most once. If omitted, the rules do not belong to any unit.
+
+|`Dialect`
+|`java` or `mvel`. The dialect used in the actions of the decision table.
+|Optional, at most once. If omitted, `java` is imposed.
+|===
+
+WARNING: In some cases, Microsoft Office, LibreOffice, and OpenOffice might encode a double quotation mark differently, causing a compilation error. For example, `"`A`"` will fail, but `"A"` will pass.

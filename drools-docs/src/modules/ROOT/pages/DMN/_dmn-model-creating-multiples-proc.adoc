@@ -1,0 +1,79 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='dmn-model-creating-multiples-proc_{context}']
+= Creating DMN models with multiple diagrams in {DMN_EDITOR}
+
+For complex DMN models, you can use the DMN designer in {DMN_EDITOR} to design multiple DMN decision requirements diagrams (DRDs) that represent parts of the overall decision requirements graph (DRG) for the DMN decision model. In simple cases, you can use a single DRD to represent all of the overall DRG for the decision model, but in complex cases, a single DRD can become large and difficult to follow. Therefore, to better organize DMN decision models with many decision requirements, you can divide the model into smaller nested DRDs that constitute the larger central DRD representation of the overall DRG.
+
+.Prerequisites
+* You understand how to design DRDs in {DMN_EDITOR}. For information about creating DRDs, see xref:dmn-model-creating-proc_dmn-models[].
+
+.Procedure
+. In {DMN_EDITOR}, navigate to your DMN project and create or import a DMN file in the project.
+. Open the new or imported DMN file to view the DRD in the DMN designer, and begin designing or modifying the DRD using the DMN nodes in the left toolbar.
+. For any DMN nodes that you want to define in a separate nested DRD, select the node, click the *DRD Actions* icon, and select from the available options.
++
+--
+.DRD actions icon for subdividing a DRD
+image::dmn/dmn-drd-actions.png[]
+
+The following options are available:
+
+* *Create*: Use this option to create a nested DRD where you can separately define the DMN components and diagram for the selected node.
+* *Add to*: If you already created a nested DRD, use this option to add the selected node to an existing DRD.
+* *Remove*: If the node that you selected is already within a nested DRD, use this option to remove the node from that nested DRD.
+
+After you create a nested DRD within your DMN decision model, the new DRD opens in a separate DRD canvas and the available DRD and components are listed in the *Decision Navigator* left menu. You can use the *Decision Navigator* menu to rename or remove a nested DRD.
+
+.Rename new nested DRD in the Decision Navigator menu
+image::dmn/dmn-drd-actions-rename.png[]
+--
+. In the separate canvas for the new nested DRD, design the flow and logic for all required components in this portion of the DMN model, as usual.
+. Continue adding and defining any other nested DRDs for your decision model and save the completed DMN file.
++
+--
+For example, the following DRD for a loan prequalification decision model contains all DMN components for the model without any nested DRDs. This example relies on the single DRD for all components and logic, resulting in a large and complex diagram.
+
+.Single DRD for loan prequalification
+image::dmn/dmn-example-drd.png[]
+
+Alternatively, by following the steps in this procedure, you can divide this example DRD into multiple nested DRDs to better organize the decision requirements, as shown in the following example:
+
+.Multiple nested DRDs for loan prequalification
+image::dmn/dmn-drd-multiple.png[]
+
+.Overview of front end ratio DRD
+image::dmn/dmn-drd-multiple-front-end.png[]
+
+.DRD for front end ratio
+image::dmn/dmn-drd-multiple-front-end-details.png[]
+
+.Overview of credit score rating DRD
+image::dmn/dmn-drd-multiple-credit-score.png[]
+
+.DRD for credit score rating
+image::dmn/dmn-drd-multiple-credit-score-details.png[]
+
+.Overview of back end ratio DRD
+image::dmn/dmn-drd-multiple-back-end.png[]
+
+.DRD for back end ratio
+image::dmn/dmn-drd-multiple-back-end-details.png[]
+--

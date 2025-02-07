@@ -1,0 +1,180 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='kie-sessions-stateful-con_{context}']
+
+= Stateful KIE sessions
+
+A stateful KIE session is a session that uses inference to make iterative changes to facts over time. In a stateful KIE session, data from a previous invocation of the KIE session (the previous session state) is retained between session invocations, whereas in a stateless KIE session, that data is discarded.
+
+WARNING: Ensure that you call the `dispose()` method after running a stateful KIE session so that no memory leaks occur between session invocations.
+
+Stateful KIE sessions are commonly used for the following use cases:
+
+* *Monitoring*, such as monitoring a stock market and automating the buying process
+* *Diagnostics*, such as running fault-finding processes or medical diagnostic processes
+* *Logistics*, such as parcel tracking and delivery provisioning
+* *Ensuring compliance*, such as verifying the legality of market trades
+
+For example, consider the following fire alarm data model and sample DRL rules:
+
+.Data model for sprinklers and fire alarm
+[source,java]
+----
+public class Room {
+  private String name;
+  // Getter and setter methods
+}
+
+public class Sprinkler {
+  private Room room;
+  private boolean on;
+  // Getter and setter methods
+}
+
+public class Fire {
+  private Room room;
+  // Getter and setter methods
+}
+
+public class Alarm { }
+----
+
+.Sample DRL rule set for activating sprinklers and alarm
+[source]
+----
+rule "When there is a fire turn on the sprinkler"
+when
+  Fire($room : room)
+  $sprinkler : Sprinkler(room == $room, on == false)
+then
+  modify($sprinkler) { setOn(true) };
+  System.out.println("Turn on the sprinkler for room "+$room.getName());
+end
+
+rule "Raise the alarm when we have one or more fires"
+when
+    exists Fire()
+then
+    insert( new Alarm() );
+    System.out.println( "Raise the alarm" );
+end
+
+rule "Cancel the alarm when all the fires have gone"
+when
+    not Fire()
+    $alarm : Alarm()
+then
+    delete( $alarm );
+    System.out.println( "Cancel the alarm" );
+end
+
+
+rule "Status output when things are ok"
+when
+    not Alarm()
+    not Sprinkler( on == true )
+then
+    System.out.println( "Everything is ok" );
+end
+----
+
+For the `When there is a fire turn on the sprinkler` rule, when a fire occurs, the instances of the `Fire` class are created for that room and inserted into the KIE session. The rule adds a constraint for the specific `room` matched in the `Fire` instance so that only the sprinkler for that room is checked. When this rule is executed, the sprinkler activates. The other sample rules determine when the alarm is activated or deactivated accordingly.
+
+Whereas a stateless KIE session relies on standard Java syntax to modify a field, a stateful KIE session relies on the `modify` statement in rules to notify the {RULE_ENGINE} of changes. The {RULE_ENGINE} then reasons over the changes and assesses impact on subsequent rule executions. This process is part of the {RULE_ENGINE} ability to use _inference_ and _truth maintenance_ and is essential in stateful KIE sessions.
+
+In this example, the sample rules and all other files in the `~/resources` folder of the {PRODUCT} project are built with the following code:
+
+.Create the KIE container
+[source,java]
+----
+KieServices kieServices = KieServices.Factory.get();
+KieContainer kContainer = kieServices.getKieClasspathContainer();
+----
+
+This code compiles all the rule files found on the class path and adds the result of this compilation, a `KieModule` object, in the `KieContainer`.
+
+Finally, the `KieSession` object is instantiated from the `KieContainer` and is executed against specified data:
+
+.Instantiate the stateful KIE session and enter data
+[source,java]
+----
+KieSession ksession = kContainer.newKieSession();
+
+String[] names = new String[]{"kitchen", "bedroom", "office", "livingroom"};
+Map<String,Room> name2room = new HashMap<String,Room>();
+for( String name: names ){
+    Room room = new Room( name );
+    name2room.put( name, room );
+    ksession.insert( room );
+    Sprinkler sprinkler = new Sprinkler( room );
+    ksession.insert( sprinkler );
+}
+
+ksession.fireAllRules();
+----
+
+.Console output
+[source]
+----
+> Everything is ok
+----
+
+With the data added, the {RULE_ENGINE} completes all pattern matching but no rules have been executed, so the configured verification message appears. As new data triggers rule conditions, the {RULE_ENGINE} executes rules to activate the alarm and later to cancel the alarm that has been activated:
+
+.Enter new data to trigger rules
+[source,java]
+----
+Fire kitchenFire = new Fire( name2room.get( "kitchen" ) );
+Fire officeFire = new Fire( name2room.get( "office" ) );
+
+FactHandle kitchenFireHandle = ksession.insert( kitchenFire );
+FactHandle officeFireHandle = ksession.insert( officeFire );
+
+ksession.fireAllRules();
+----
+
+.Console output
+[source]
+----
+> Raise the alarm
+> Turn on the sprinkler for room kitchen
+> Turn on the sprinkler for room office
+----
+
+[source,java]
+----
+ksession.delete( kitchenFireHandle );
+ksession.delete( officeFireHandle );
+
+ksession.fireAllRules();
+----
+
+.Console output
+[source]
+----
+> Cancel the alarm
+> Turn off the sprinkler for room office
+> Turn off the sprinkler for room kitchen
+> Everything is ok
+----
+
+In this case, a reference is kept for the returned `FactHandle` object. A fact handle is an internal engine reference to the inserted instance and enables instances to be retracted or modified later.
+
+As this example illustrates, the data and results from previous stateful KIE sessions (the activated alarm) affect the invocation of subsequent sessions (alarm cancellation).

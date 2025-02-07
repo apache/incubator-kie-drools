@@ -1,0 +1,185 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='dmn-drd-components-ref_{context}']
+= DMN decision requirements diagram (DRD) components
+
+A decision requirements diagram (DRD) is a visual representation of your DMN model. A DRD can represent part or all of the overall decision requirements graph (DRG) for the DMN model. DRDs trace business decisions using decision nodes, business knowledge models, sources of business knowledge, input data, and decision services.
+
+The following table summarizes the components in a DRD:
+
+.DRD components
+[cols="20%,20%,40%,20%" options="header"]
+|===
+2+|Component
+|Description
+|Notation
+
+.5+|Elements
+|Decision
+|Node where one or more input elements determine an output based on defined decision logic.
+a|
+image::dmn/dmn-decision-node.png[]
+
+|Business knowledge model
+|Reusable function with one or more decision elements. Decisions that have the same logic but depend on different sub-input data or sub-decisions use business knowledge models to determine which procedure to follow.
+a|
+image::dmn/dmn-bkm-node.png[]
+
+|Knowledge source
+|External authorities, documents, committees, or policies that regulate a decision or business knowledge model. Knowledge sources are references to real-world factors rather than executable business rules.
+a|
+image::dmn/dmn-knowledge-source-node.png[]
+
+|Input data
+|Information used in a decision node or a business knowledge model. Input data usually includes business-level concepts or objects relevant to the business, such as loan applicant data used in a lending strategy.
+a|
+image::dmn/dmn-input-data-node.png[]
+
+|Decision service
+a|Top-level decision containing a set of reusable decisions published as a service for invocation. A decision service can be invoked from an external application or a BPMN business process.
+
+a|
+image::dmn/dmn-decision-service-node.png[]
+
+.3+|Requirement connectors
+|Information requirement
+|Connection from an input data node or decision node to another decision node that requires the information.
+a|
+image::dmn/dmn-info-connector.png[]
+
+|Knowledge requirement
+|Connection from a business knowledge model to a decision node or to another business knowledge model that invokes the decision logic.
+a|
+image::dmn/dmn-knowledge-connector.png[]
+
+|Authority requirement
+|Connection from an input data node or a decision node to a dependent knowledge source or from a knowledge source to a decision node, business knowledge model, or another knowledge source.
+a|
+image::dmn/dmn-authority-connector.png[]
+
+.2+|Artifacts
+|Text annotation
+|Explanatory note associated with an input data node, decision node, business knowledge model, or knowledge source.
+a|
+image::dmn/dmn-annotation-node.png[]
+
+|Association
+|Connection from an input data node, decision node, business knowledge model, or knowledge source to a text annotation.
+a|
+image::dmn/dmn-association-connector.png[]
+|===
+
+The following table summarizes the permitted connectors between DRD elements:
+
+.DRD connector rules
+[cols="20%,20%,20%,40%" options="header"]
+|===
+|Starts from
+|Connects to
+|Connection type
+|Example
+
+|Decision
+|Decision
+|Information requirement
+a|
+image::dmn/dmn-decision-to-decision.png[]
+
+.2+|Business knowledge model
+|Decision
+.2+|Knowledge requirement
+a|
+image::dmn/dmn-bkm-to-decision.png[]
+
+|Business knowledge model
+a|
+image::dmn/dmn-bkm-to-bkm.png[]
+
+.2+a|Decision service
+
+|Decision
+.2+|Knowledge requirement
+a|
+image::dmn/dmn-decision-service-to-decision.png[]
+
+|Business knowledge model
+a|
+image::dmn/dmn-decision-service-to-bkm.png[]
+
+.2+|Input data
+|Decision
+|Information requirement
+a|
+image::dmn/dmn-input-to-decision.png[]
+
+|Knowledge source
+|Authority requirement
+a|
+image::dmn/dmn-input-to-knowledge-source.png[]
+
+.3+|Knowledge source
+|Decision
+.3+|Authority requirement
+a|
+image::dmn/dmn-knowledge-source-to-decision.png[]
+
+|Business knowledge model
+a|
+image::dmn/dmn-knowledge-source-to-bkm.png[]
+
+|Knowledge source
+a|
+image::dmn/dmn-knowledge-source-to-knowledge-source.png[]
+
+|Decision
+.4+|Text annotation
+.4+|Association
+a|
+image::dmn/dmn-decision-to-annotation.png[]
+
+|Business knowledge model
+a|
+image::dmn/dmn-bkm-to-annotation.png[]
+
+|Knowledge source
+a|
+image::dmn/dmn-knowledge-source-to-annotation.png[]
+
+|Input data
+a|
+image::dmn/dmn-input-to-annotation.png[]
+|===
+
+The following example DRD illustrates some of these DMN components in practice:
+
+.Example DRD: Loan prequalification
+image::dmn/dmn-example-drd.png[]
+
+The following example DRD illustrates DMN components that are part of a reusable decision service:
+
+.Example DRD: Phone call handling as a decision service
+image::dmn/dmn-example-drd3.png[width=90%]
+
+In a DMN decision service node, the decision nodes in the bottom segment incorporate input data from outside of the decision service to arrive at a final decision in the top segment of the decision service node. The resulting top-level decisions from the decision service are then implemented in any subsequent decisions or business knowledge requirements of the DMN model. You can reuse DMN decision services in other DMN models to apply the same decision logic with different input data and different outgoing connections.
+
+////
+.Advanced DRD example: Lending strategy
+image::dmn/dmn-example-drd2.png[]
+////

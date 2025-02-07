@@ -1,0 +1,140 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='experimental-impact-analysis_{context}']
+
+= Impact analysis
+
+The impact analysis feature analyzes the relationships between the rules and generates a graph. When you specify a rule to be changed, the impact analysis feature analyzes the rules that are impacted by the change and renders the rules in the generated graph.
+
+The generated graph supports DOT, SVG, and PNG formats with simple text output.
+
+== Using the impact analysis feature
+
+You can find an example usage in `ExampleUsageTest.java` under `drools-impact-analysis/drools-impact-analysis-itests`
+
+. Configure the following dependency.
++
+[source,xml]
+----
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-impact-analysis-graph-graphviz</artifactId>
+      <version>${drools.version}</version>
+    </dependency>
+----
+
+. Create a `KieFileSystem` to store your assets and call `KieBuilder.buildAll(ImpactAnalysisProject.class)` method.
++
+[source,java]
+----
+      // set up KieFileSystem
+      ...
+      KieBuilder kieBuilder = KieServices.Factory.get().newKieBuilder(kfs).buildAll(ImpactAnalysisProject.class);
+      ImpactAnalysisKieModule analysisKieModule = (ImpactAnalysisKieModule) kieBuilder.getKieModule();
+      AnalysisModel analysisModel = analysisKieModule.getAnalysisModel();
+----
++
+You get `AnalysisModel`.
+
+. Convert the `AnalysisModel` to `Graph` using `ModelToGraphConverter`.
++
+[source,java]
+----
+      ModelToGraphConverter converter = new ModelToGraphConverter();
+      Graph graph = converter.toGraph(analysisModel);
+----
+
+. Specify a rule that you plan to change. The `ImpactAnalysisHelper` generates a graph, containing the changed rule and the impacted rules.
++
+[source,java]
+----
+      ImpactAnalysisHelper impactFilter = new ImpactAnalysisHelper();
+      Graph impactedSubGraph = impactFilter.filterImpactedNodes(graph, "org.drools.impact.analysis.example.PriceCheck_11");
+----
+
+. Generate a graph image using `GraphImageGenerator`. You can choose the format from DOT, SVG, and PNG.
++
+[source,java]
+----
+      GraphImageGenerator generator = new GraphImageGenerator("example-impacted-sub-graph");
+      generator.generateSvg(impactedSubGraph);
+----
+
+. Simple text output is also available using `TextReporter`. You can choose the format from `HierarchyText` and `FlatText`.
++
+[source,java]
+----
+      String hierarchyText = TextReporter.toHierarchyText(impactedSubGraph);
+      System.out.println(hierarchyText);
+----
+
+In a generated graph, red node represents a changed rule and yellow nodes represent the impacted rules. A solid arrow in a generated graph indicates a positive impact, in which the source rule activates the target rule. However, a dashed arrow indicates a negative impact, in which the source rule deactivates the target rule. Also, a dotted arrow represents an unknown impact, in which the source rule might activate or deactivate the target rule.
+
+image::experimental-features/impactAnalysis1.svg[align="center"]
+
+You can collapse a graph based on the rule name prefix or RuleSet in a spreadsheet using the `GraphCollapsionHelper`. This enables you to view the overview of a graph. Also, you can use `ImpactAnalysisHelper` to the collapsed graph.
+
+[source,java]
+----
+      Graph collapsedGraph = new GraphCollapsionHelper().collapseWithRuleNamePrefix(graph);
+      Graph impactedCollapsedSubGraph = impactFilter.filterImpactedNodes(collapsedGraph, "org.drools.impact.analysis.example.PriceCheck");
+----
+
+If you only want to view the positive relations in a graph, set the `positiveOnly` to `true` for `ModelToGraphConverter`, `ImpactAnalysisHelper`, and `GraphCollapsionHelper` constructor.
+
+[source,java]
+----
+      ModelToGraphConverter converter = new ModelToGraphConverter(true);
+      Graph graph = converter.toGraph(analysisModel);
+      ImpactAnalysisHelper impactFilter = new ImpactAnalysisHelper(true);
+      Graph impactedSubGraph = impactFilter.filterImpactedNodes(graph, "org.drools.impact.analysis.example.PriceCheck_11");
+----
+
+Text output is useful for a large number of rules. In a text output, `[*]` represents a changed rule, and `[+]` represents impacted rules.
+
+[source]
+----
+--- toHierarchyText ---
+Inventory shortage[+]
+PriceCheck_11[*]
+  StatusCheck_12[+]
+  (Inventory shortage)
+  StatusCheck_13[+]
+  StatusCheck_11[+]
+    (PriceCheck_11)
+
+--- toFlatText ---
+Inventory shortage[+]
+PriceCheck_11[*]
+StatusCheck_11[+]
+StatusCheck_12[+]
+StatusCheck_13[+]
+----
+
+== Troubleshooting
+
+If you get the warning message when rendering SVG or PNG:
+----
+graphviz-java failed to render an image. Solutions would be:
+1. Install graphviz tools in your local machine. graphviz-java will use graphviz command line binary (e.g. /usr/bin/dot) if available.
+2. Consider generating a graph in DOT format and then visualize it with an external tool.
+----
+
+You would need to install graphviz tools in your local machine. If not possible, you would need to generate the graph in DOT format so that you can render it with another tool later on.

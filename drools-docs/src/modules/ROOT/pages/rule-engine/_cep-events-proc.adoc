@@ -1,0 +1,56 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='cep-events-proc_{context}']
+
+= Declaring facts as events
+
+You can declare facts as events in your Java class or DRL rule file so that the {RULE_ENGINE} handles the facts as events during complex event processing. You can declare the facts as interval-based events or point-in-time events. Interval-based events have a duration time and persist in the working memory of the {RULE_ENGINE} until their duration time has lapsed. Point-in-time events have no duration and are essentially interval-based events with a duration of zero.
+
+.Procedure
+For the relevant fact type in your Java class or DRL rule file, enter the `@role( event )` metadata tag and parameter. The `@role` metadata tag accepts the following two values:
+
+* `fact`: (Default) Declares the type as a regular fact
+* `event`: Declares the type as an event
+
+For example, the following snippet declares that the `StockPoint` fact type in a stock broker application must be handled as an event:
+
+.Declare fact type as an event
+[source]
+----
+import some.package.StockPoint
+
+declare StockPoint
+  @role( event )
+end
+----
+
+If `StockPoint` is a fact type declared in the DRL rule file instead of in a pre-existing class, you can declare the event in-line in your application code:
+
+.Declare fact type in-line and assign it to event role
+[source]
+----
+declare StockPoint
+  @role( event )
+
+  datetime : java.util.Date
+  symbol : String
+  price : double
+end
+----

@@ -1,0 +1,75 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+:DROOLS:
+include::../_artifacts/document-attributes.adoc[]
+
+[[_droolslanguagereferencetraditionalchapter]]
+= Rule Language Reference (Traditional)
+:context: drl-rules-traditional
+
+include::_drl-rules-traditional.adoc[leveloffset=+1]
+
+include::_drl-packages-con.adoc[leveloffset=+2]
+
+include::_drl-imports-con.adoc[leveloffset=+2]
+
+include::_drl-functions-con.adoc[leveloffset=+2]
+
+include::_drl-queries-con.adoc[leveloffset=+2]
+
+include::_drl-declarations-con.adoc[leveloffset=+2]
+
+include::_drl-declarations-without-metadata-con.adoc[leveloffset=+3]
+
+include::_drl-declarations-enumerative-con.adoc[leveloffset=+3]
+
+include::_drl-declarations-extended-con.adoc[leveloffset=+3]
+
+include::_drl-declarations-with-metadata-con.adoc[leveloffset=+3]
+
+include::_drl-declarations-metadata-tags-ref.adoc[leveloffset=+3]
+
+include::_drl-declarations-access-con.adoc[leveloffset=+3]
+
+include::_drl-globals-con.adoc[leveloffset=+2]
+
+include::_drl-timers-calendars-con.adoc[leveloffset=+3]
+
+include::_drl-rules-WHEN-con.adoc[leveloffset=+2]
+
+include::_drl-operators-ref.adoc[leveloffset=+3]
+
+include::_drl-operator-precedence-ref.adoc[leveloffset=+3]
+
+include::_drl-rules-WHEN-elements-ref.adoc[leveloffset=+3]
+
+include::_drl-rules-THEN-con.adoc[leveloffset=+2]
+
+include::_drl-rules-THEN-methods-ref.adoc[leveloffset=+3]
+
+include::_drl-rules-THEN-methods-variables-ref.adoc[leveloffset=+3]
+
+include::_drl-rules-THEN-advanced-con.adoc[leveloffset=+3]
+
+include::_drl-rules-comments-con.adoc[leveloffset=+2]
+
+include::_drl-rules-errors-ref.adoc[leveloffset=+2]
+
+include::_DSL-section.adoc[leveloffset=+1]

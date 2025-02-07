@@ -1,0 +1,105 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='engine-queries-con_{context}']
+
+= {RULE_ENGINE} queries and live queries
+
+You can use queries with the {RULE_ENGINE} to retrieve fact sets based on fact patterns as they are used in rules. The patterns might also use optional parameters.
+
+To use queries with the {RULE_ENGINE}, you add the query definitions in DRL files and then obtain the matching results in your application code. While a query iterates over a result collection, you can use any identifier that is bound to the query to access the corresponding fact or fact field by calling the `get()` method with the binding variable name as the argument. If the binding refers to a fact object, you can retrieve the fact handle by calling `getFactHandle()` with the variable name as the parameter.
+
+ifdef::DROOLS,JBPM,OP[]
+.QueryResults
+image::rule-engine/QueryResults.png[align="center"]
+
+.QueryResultsRow
+image::rule-engine/QueryResultsRow.png[align="center"]
+endif::[]
+
+.Example query definition in a DRL file
+[source]
+----
+query "people under the age of 21"
+    $person : Person( age < 21 )
+end
+----
+
+.Example application code to obtain and iterate over query results
+[source,java]
+----
+QueryResults results = ksession.getQueryResults( "people under the age of 21" );
+System.out.println( "we have " + results.size() + " people under the age of 21" );
+
+System.out.println( "These people are under the age of 21:" );
+
+for ( QueryResultsRow row : results ) {
+    Person person = ( Person ) row.get( "person" );
+    System.out.println( person.getName() + "\n" );
+}
+----
+
+Invoking queries and processing the results by iterating over the returned set can be difficult when you are monitoring changes over time. To alleviate this difficulty with ongoing queries, {PRODUCT} provides _live queries_, which use an attached listener for change events instead of returning an iterable result set. Live queries remain open by creating a view and publishing change events for the contents of this view.
+
+To activate a live query, start your query with parameters and monitor changes in the resulting view. You can use the `dispose()` method to terminate the query and discontinue this reactive scenario.
+
+
+.Example query definition in a DRL file
+[source]
+----
+query colors(String $color1, String $color2)
+    TShirt(mainColor = $color1, secondColor = $color2, $price: manufactureCost)
+end
+----
+
+.Example application code with an event listener and a live query
+[source,java]
+----
+final List updated = new ArrayList();
+final List removed = new ArrayList();
+final List added = new ArrayList();
+
+ViewChangedEventListener listener = new ViewChangedEventListener() {
+ public void rowUpdated(Row row) {
+  updated.add( row.get( "$price" ) );
+ }
+
+ public void rowRemoved(Row row) {
+  removed.add( row.get( "$price" ) );
+ }
+
+ public void rowAdded(Row row) {
+  added.add( row.get( "$price" ) );
+ }
+};
+
+// Open the live query:
+LiveQuery query = ksession.openLiveQuery( "colors",
+                                          new Object[] { "red", "blue" },
+                                          listener );
+...
+...
+
+// Terminate the live query:
+query.dispose()
+----
+
+ifdef::DROOLS,JBPM,OP[]
+For more live query examples, see http://blog.athico.com/2010/07/glazed-lists-examples-for-drools-live.html[Glazed Lists examples for Drools Live Queries].
+endif::[]

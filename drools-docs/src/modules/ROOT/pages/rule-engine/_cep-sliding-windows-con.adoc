@@ -1,0 +1,38 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='cep-sliding-windows-con_{context}']
+
+= Sliding windows of time or length
+
+In stream mode, the {RULE_ENGINE} can process events from a specified sliding window of time or length. A sliding time window is a specified period of time during which events can be processed. A sliding length window is a specified number of events that can be processed. When you declare a sliding window in a DRL rule or Java application, the {RULE_ENGINE}, at compile time, identifies and creates the proper internal structures to use data from only that sliding window to evaluate that rule.
+
+For example, the following DRL rule snippets instruct the {RULE_ENGINE} to process only the stock points from the last 2 minutes (sliding time window) or to process only the last 10 stock points (sliding length window):
+
+.Process stock points from the last 2 minutes (sliding time window)
+[source]
+----
+StockPoint() over window:time(2m)
+----
+
+.Process the last 10 stock points (sliding length window)
+[source]
+----
+StockPoint() over window:length(10)
+----

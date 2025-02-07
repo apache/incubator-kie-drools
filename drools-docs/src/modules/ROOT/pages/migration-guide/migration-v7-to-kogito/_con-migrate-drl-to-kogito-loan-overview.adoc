@@ -1,0 +1,79 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id="con-migrate-drl-to-kogito-loan-overview_{context}"]
+= Migration of a DRL service from {PRODUCT} v7 to a {KOGITO} microservice
+
+[role="_abstract"]
+You can build and deploy a sample project in {KOGITO} to expose a stateless rules evaluation of the {RULE_ENGINE} in a {QUARKUS} REST endpoint, and migrate the REST endpoint to {KOGITO}.
+
+The stateless rule evaluation is a single execution of a rule set in {PRODUCT} and can be identified as a function invocation. In the invoked function, the output values are determined using the input values. Also, the invoked function uses the {RULE_ENGINE} to perform the jobs. Therefore, in such cases, a function is exposed using a REST endpoint and converted into a microservice. After converting into a microservice, a function is deployed into a Function as a Service environment to eliminate the cost of JVM startup time.
+
+You can find additional information in the https://blog.kie.org/2021/09/bringing-drools-rules-into-the-cloud-with-kogito-a-step-by-step-path.html[_Bringing Drools rules into the cloud with Kogito: a step by step path_ blog post].
+
+[id="ref-migrate-drl-to-kogito-considerations_{context}"]
+== Major changes and migration considerations
+
+The following table describes the major changes and features that affect migration from the {KIE_SERVER} API and KJAR to {KOGITO} deployments:
+
+.DRL migration considerations
+[cols="25%,25%,25%,25%" options="header"]
+|===
+|Feature
+|In {KIE_SERVER} API
+|In {KOGITO} with legacy API support
+|In {KOGITO} artifact
+
+|DRL files
+|stored in `src/main/resources` folder of KJAR.
+|copy as is to `src/main/resources` folder.
+|rewrite using the rule units and OOPath.
+
+|`KieContainer`
+|configured using a system property or `kmodule.xml` file.
+|replaced by `KieRuntimeBuilder`.
+|not required.
+
+|`KieBase` or `KieSession`
+|configured using a system property or `kmodule.xml` file.
+|configured using a system property or `kmodule.xml` file.
+|replaced by rule units.
+
+|===
+
+[id="con-migration-drl-strategy_{context}"]
+== Migration strategy
+
+In {PRODUCT}, you can migrate a rule evaluation to a {KOGITO} deployment in the following two ways:
+
+Using legacy API in {KOGITO}::
+In {KOGITO}, the `kogito-legacy-api` module makes the legacy API of {PRODUCT} available; therefore, the DRL files remain unchanged. This approach of migrating rule evaluation requires minimal changes and enables you to use major {QUARKUS} features, such as hot reload and native image creation.
+
+Migrating to {KOGITO} rule units::
++
+--
+Migrating to {KOGITO} rule units include the programming model of {KOGITO}, which is based on the concept of rule units.
+
+A rule unit in {KOGITO} includes both a set of rules and the facts, against which the rules are matched. Rule units in {KOGITO} also come with data sources. A rule unit data source is a source of the data processed by a given rule unit and represents the entry point, which is used to evaluate the rule unit. Rule units use two types of data sources:
+
+* `DataStream`: This is an append-only data source and the facts added into the `DataStream` cannot be updated or removed.
+* `DataStore`: This data source is for modifiable data. You can update or remove an object using the `FactHandle` that is returned when the object is added into the `DataStore`.
+
+Overall, a rule unit contains two parts: The definition of the fact to be evaluated and the set of rules evaluating the facts.
+--
