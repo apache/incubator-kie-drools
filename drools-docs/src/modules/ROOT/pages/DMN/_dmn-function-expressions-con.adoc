@@ -1,0 +1,43 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='dmn-function-expressions-con_{context}']
+= Boxed function expressions
+
+A boxed function expression in DMN is a parameterized boxed expression containing a literal FEEL expression, a nested context expression of an external JAVA or PMML function, or a nested boxed expression of any type. By default, all business knowledge models are defined as boxed function expressions. You use boxed function expressions to call functions on your decision logic and to define all business knowledge models.
+
+For example, the following boxed function expression determines airline flight capacity in a flight-rebooking decision model:
+
+.Boxed function expression for flight capacity
+image::dmn/dmn-function-expression-example.png[]
+
+The following boxed function expression contains a basic Java function as a context expression for determining absolute value in a decision model calculation:
+
+.Boxed function expression for absolute value
+image::dmn/dmn-function-expression-example2.png[]
+
+The following boxed function expression determines a monthly mortgage installment as a business knowledge model in a lending decision, with the function value defined as a nested context expression:
+
+.Boxed function expression for installment calculation in business knowledge model
+image::dmn/dmn-function-expression-example3.png[]
+
+The following boxed function expression uses a PMML model included in the DMN file to define the minimum acceptable PITI calculation (principal, interest, taxes, and insurance) in a lending decision:
+
+.Boxed function expression with an included PMML model in business knowledge model
+image::dmn/dmn-function-expression-example5.png[]

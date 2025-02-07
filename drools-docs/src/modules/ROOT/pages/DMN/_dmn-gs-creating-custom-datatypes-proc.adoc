@@ -1,0 +1,113 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='dmn-gs-creating-custom-datatypes-proc']
+[discrete]
+= Creating the traffic violations DMN custom data types
+
+DMN data types determine the structure of the data that you use within a table, column, or field in a DMN boxed expression for defining decision logic. You can use default DMN data types (such as string, number, or boolean) or you can create custom data types to specify additional fields and constraints that you want to implement for the boxed expression values. Use the {DMN_EDITOR}'s *Data Types* tab to define the custom data types for the traffic violations project.
+
+.The custom data types tab
+image::dmn/dmn-custom-datatypes-tab.png[The custom data types tab]
+
+The following tables list the `tDriver`, `tViolation`, and `tFine` custom data types that you will create for this project.
+
+.`tDriver` custom data type
+[cols="1,1", options="header"]
+|===
+|Name |Type
+
+|tDriver |Structure
+|Name |string
+|Age |number
+|State |string
+|City |string
+|Points |number
+|===
+
+.`tViolation` custom data type
+[cols="1,1", options="header"]
+|===
+|Name |Type
+
+|tViolation |Structure
+|Code |string
+|Date |date
+|Type |string
+|Speed Limit |number
+|Actual Speed |number
+|===
+
+.`tFine` custom data type
+[cols="1,1", options="header"]
+|===
+|Name |Type
+
+|tFine |Structure
+|Amount |number
+|Points |number
+|===
+
+.Prerequisites
+* You created the traffic violations DMN decision requirements diagram (DRDs) using {DMN_EDITOR}.
+
+.Procedure
+. To create the `tDriver` custom data type, click *Add a custom Data Type* on the *Data Types* tab, enter `tDriver` in the *Name* field, and select `Structure` from the *Type* list.
+. Click the check mark to the right of the new data type to save your changes.
++
+.The tDriver custom data type
+image::dmn/dmn-tDriver-custom-datatype.png[The tDriver custom data type]
+. Add each of the following nested data types to the `tDriver` structured data type by clicking the plus sign next to `tDriver` for each new nested data type. Click the check mark to the right of each new data type to save your changes.
++
+* `Name` (string)
+* `Age` (number)
+* `State` (string)
+* `City` (string)
+* `Points` (number)
+
+. To create the `tViolation` custom data type, click *New Data Type*, enter `tViolation` in the *Name* field, and select `Structure` from the *Type* list.
+. Click the check mark to the right of the new data type to save your changes.
++
+.The tViolation custom data type
+image::dmn/dmn-tViolation-custom-datatype.png[The tViolation custom data type]
+. Add each of the following nested data types to the `tViolation` structured data type by clicking the plus sign next to `tViolation` for each new nested data type. Click the check mark to the right of each new data type to save your changes.
++
+* `Code` (string)
+* `Date` (date)
+* `Type` (string)
+* `Speed Limit` (number)
+* `Actual Speed` (number)
+
+. To add the following constraints to the `Type` nested data type, click the edit icon, click *Add Constraints*, and select *Enumeration* from the *Select constraint type* drop-down menu.
++
+* `speed`
+* `parking`
+* `driving under the influence`
+
+. Click *OK*, then click the check mark to the right of the *Type* data type to save your changes.
+. To create the `tFine` custom data type, click *New Data Type*, enter `tFine` in the *Name* field, select `Structure` from the *Type* list, and click *Save*.
++
+.The tFine custom data type
+image::dmn/dmn-tFine-custom-datatype.png[The tFine custom data type]
+. Add each of the following nested data types to the `tFine` structured data type by clicking the plus sign next to `tFine` for each new nested data type. Click the check mark to the right of each new data type to save your changes.
++
+* `Amount` (number)
+* `Points` (number)
+
+. Click *Save*.

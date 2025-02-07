@@ -1,0 +1,100 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='dmn-gs-testing-test-scenario-proc']
+[discrete]
+= Testing the traffic violations using test scenarios
+
+Use the test scenarios designer to test the DMN decision requirements diagrams (DRDs) and define decision logic for the traffic violations project.
+
+.Test scenario for the traffic violations example
+image::dmn/dmn-gs-traffic-violation-test-scenarios.png[Test scenario for the traffic violations example]
+
+.Prerequisites
+* You have successfully built the traffic violations project using {PRODUCT}.
+
+.Procedure
+. Create a new Test Scenario file in your IDE.
+.. Enter `Violation Scenarios` in the *Test Scenario* field.
+.. From the *Package* list, select `com.myspace.traffic_violation`.
+.. Select `DMN` as the *Source type*.
+.. From the *Choose a DMN asset* list, select the path to the DMN asset.
+.. Click *Ok* to open the *Violation Scenarios* test scenario in the *Test Scenarios* designer.
+. Under *Driver* column sub-header, right-click the *State*, *City*, *Age*, and *Name* value cells and select *Delete column* from the context menu options to remove them.
+. Under *Violation* column sub-header, right-click the *Date* and *Code* value cells and select *Delete column* to remove them.
+. Enter the following information in the first row of the test scenarios:
+* *Scenario description*: `Above speed limit: 10km/h and 30 km/h`
+* *Points* (under *Given* column header): `10`
+* *Type*: `"speed"`
+* *Speed Limit*: `100`
+* *Actual Speed*: `120`
+* *Points*: `3`
+* *Amount*: `500`
+* *Should the driver be suspended?*: `"No"`
++
+Right-click the first row and select *Insert row below* to add another row.
+. Enter the following information in the second row of the test scenarios:
+* *Scenario description*: `Above speed limit: more than 30 km/h`
+* *Points* (under *Given* column header): `10`
+* *Type*: `"speed"`
+* *Speed Limit*: `100`
+* *Actual Speed*: `150`
+* *Points*: `7`
+* *Amount*: `1000`
+* *Should the driver be suspended?*: `"No"`
++
+Right-click the second row and select *Insert row below* to add another row.
+. Enter the following information in the third row of the test scenarios:
+* *Scenario description*: `Parking violation`
+* *Points* (under *Given* column header): `10`
+* *Type*: `"parking"`
+* *Speed Limit*: leave blank
+* *Actual Speed*: leave blank
+* *Points*: `1`
+* *Amount*: `100`
+* *Should the driver be suspended?*: `"No"`
++
+Right-click the third row and select *Insert row below* to add another row.
+. Enter the following information in the fourth row of the test scenarios:
+* *Scenario description*: `DUI violation`
+* *Points* (under *Given* column header): `10`
+* *Type*: `"driving under the influence"`
+* *Speed Limit*: leave blank
+* *Actual Speed*: leave blank
+* *Points*: `5`
+* *Amount*: `1000`
+* *Should the driver be suspended?*: `"No"`
++
+Right-click the fourth row and select *Insert row below* to add another row.
+. Enter the following information in the fifth row of the test scenarios:
+* *Scenario description*: `Driver suspended`
+* *Points* (under *Given* column header): `15`
+* *Type*: `"speed"`
+* *Speed Limit*: `100`
+* *Actual Speed*: `140`
+* *Points*: `7`
+* *Amount*: `1000`
+* *Should the driver be suspended?*: `"Yes"`
+. Click *Save*.
+. Click the *Play* icon image:dmn/dmn-play-icon.png[] to check whether the test scenarios pass or fail.
++
+.Test scenario execution result for the traffic violations example
+image::dmn/dmn-gs-test-scenarios-execution-results.png[Test scenario execution result for the traffic violations example]
++
+In case of failure, correct the errors and run the test scenarios again.

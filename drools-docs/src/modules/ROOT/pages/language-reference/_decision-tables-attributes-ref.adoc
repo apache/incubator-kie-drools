@@ -1,0 +1,108 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='decision-tables-attributes-ref']
+= Additional rule attributes for RuleSet or RuleTable definitions
+
+The `RuleSet` and `RuleTable` areas also support labels and values for other rule attributes, such as `PRIORITY` or `NO-LOOP`. Rule attributes specified in a `RuleSet` area will affect all rule assets in the same package (not only in the spreadsheet). Rule attributes specified in a `RuleTable` area will affect only the rules in that rule table. You can use each rule attribute only once in a `RuleSet` area and once in a `RuleTable` area. If the same attribute is used in both `RuleSet` and `RuleTable` areas within the spreadsheet, then `RuleTable` takes priority and the attribute in the `RuleSet` area is overridden.
+
+The following table lists the supported labels (column headers) and values for additional `RuleSet` or `RuleTable` definitions. For column headers, you can use either the given labels or any custom labels that begin with the letters listed in the table.
+
+.Additional rule attributes for `RuleSet` or `RuleTable` definitions
+[cols="25%,20%,55%", options="header"]
+|===
+|Label
+|Or custom label that begins with
+|Value
+
+|`PRIORITY`
+|P
+|An integer defining the `salience` value of the rule. Rules with a higher salience value are given higher priority when ordered in the internalMatch queue. Overridden by the `Sequential` flag.
+
+Example: `PRIORITY 10`
+
+|`DATE-EFFECTIVE`
+|V
+|A string containing a date and time definition. The rule can be activated only if the current date and time is after a `DATE-EFFECTIVE` attribute.
+
+Example: `DATE-EFFECTIVE "4-Sep-2018"`
+
+|`DATE-EXPIRES`
+|Z
+|A string containing a date and time definition. The rule cannot be activated if the current date and time is after the `DATE-EXPIRES` attribute.
+
+Example: `DATE-EXPIRES "4-Oct-2018"`
+
+|`NO-LOOP`
+|U
+|A Boolean value. When this option is set to `true`, the rule cannot be reactivated (looped) if a consequence of the rule re-triggers a previously met condition.
+
+Example: `NO-LOOP true`
+
+|`AGENDA-GROUP`
+|G
+|A string identifying an agenda group to which you want to assign the rule. Agenda groups allow you to partition the agenda to provide more execution control over groups of rules. Only rules in an agenda group that has acquired a focus are able to be activated.
+
+Example: `AGENDA-GROUP "GroupName"`
+
+|`ACTIVATION-GROUP`
+|X
+|A string identifying an internalMatch (or XOR) group to which you want to assign the rule. In internalMatch groups, only one rule can be activated. The first rule to fire will cancel all pending internalMatches of all rules in the internalMatch group.
+
+Example: `ACTIVATION-GROUP "GroupName"`
+
+|`DURATION`
+|D
+|A long integer value defining the duration of time in milliseconds after which the rule can be activated, if the rule conditions are still met.
+
+Example: `DURATION 10000`
+
+|`TIMER`
+|T
+|A string identifying either `int` (interval) or `cron` timer definitions for scheduling the rule.
+
+Example: `TIMER "*/5 * * * *"`  (every 5 minutes)
+
+|`CALENDAR`
+|E
+|A Quartz calendar definition for scheduling the rule.
+
+Example: `CALENDAR "* * 0-7,18-23 ? * *"`  (exclude non-business hours)
+
+|`AUTO-FOCUS`
+|F
+|A Boolean value, applicable only to rules within agenda groups. When this option is set to `true`, the next time the rule is activated, a focus is automatically given to the agenda group to which the rule is assigned.
+
+Example: `AUTO-FOCUS true`
+
+|`LOCK-ON-ACTIVE`
+|L
+|A Boolean value, applicable only to rules within rule flow groups or agenda groups. When this option is set to `true`, the next time the ruleflow group for the rule becomes active or the agenda group for the rule receives a focus, the rule cannot be activated again until the ruleflow group is no longer active or the agenda group loses the focus. This is a stronger version of the `no-loop` attribute, because the internalMatch of a matching rule is discarded regardless of the origin of the update (not only by the rule itself). This attribute is ideal for calculation rules where you have a number of rules that modify a fact and you do not want any rule re-matching and firing again.
+
+Example: `LOCK-ON-ACTIVE true`
+
+|`RULEFLOW-GROUP`
+|R
+|A string identifying a rule flow group. In rule flow groups, rules can fire only when the group is activated by the associated rule flow.
+
+Example: `RULEFLOW-GROUP "GroupName"`
+|===
+
+.Sample decision table spreadsheet with attribute columns
+image::language-reference/decision-table-example-03.png[Example decision table with definitions used]

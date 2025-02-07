@@ -1,0 +1,62 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='drl-globals-con_{context}']
+= Global variables in DRL
+
+ifdef::DROOLS,JBPM,OP[]
+.Global
+image::language-reference/global.png[align="center"]
+endif::[]
+
+Global variables in DRL files typically provide data or services for the rules, such as application services used in rule consequences, and return data from rules, such as logs or values added in rule consequences. You set the global value in the working memory of the {RULE_ENGINE} through a KIE session configuration or REST operation, declare the global variable above the rules in the DRL file, and then use it in an action (`then`) part of the rule. For multiple global variables, use separate lines in the DRL file.
+
+The following example illustrates a global variable list configuration for the {RULE_ENGINE} and the corresponding global variable definition in the DRL file:
+
+.Example global list configuration for the {RULE_ENGINE}
+[source]
+----
+List<String> list = new ArrayList<>();
+KieSession kieSession = kiebase.newKieSession();
+kieSession.setGlobal( "myGlobalList", list );
+----
+
+.Example global variable definition with a rule
+[source]
+----
+global java.util.List myGlobalList;
+
+rule "Using a global"
+  when
+    // Empty
+  then
+    myGlobalList.add( "My global list" );
+end
+----
+
+[WARNING]
+====
+Do not use global variables to establish conditions in rules unless a global variable has a constant immutable value. Global variables are not inserted into the working memory of the {RULE_ENGINE}, so the {RULE_ENGINE} cannot track value changes of variables.
+
+Do not use global variables to share data between rules. Rules always reason and react to the working memory state, so if you want to pass data from rule to rule, assert the data as facts into the working memory of the {RULE_ENGINE}.
+====
+
+A use case for a global variable might be an instance of an email service. In your integration code that is calling the {RULE_ENGINE}, you obtain your `emailService` object and then set it in the working memory of the {RULE_ENGINE}. In the DRL file, you declare that you have a global of type `emailService` and give it the name `"email"`, and then in your rule consequences, you can use actions such as `email.sendSMS(number, message)`.
+
+If you declare global variables with the same identifier in multiple packages, then you must set all the packages with the same type so that they all reference the same global value.

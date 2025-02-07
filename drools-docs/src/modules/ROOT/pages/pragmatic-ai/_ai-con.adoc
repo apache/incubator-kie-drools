@@ -1,0 +1,74 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='ai-con_{context}']
+= Introduction to Pragmatic AI
+
+When you think about Artificial Intelligence (AI), Machine Learning and big data might come to mind. But machine learning is only part of the picture. Artificial intelligence includes the following technologies:
+
+* Robotics: The integration of technology, science, and engineering that produces machines that can perform physical tasks that are performed by humans
+* Machine learning: The ability of a collection of algorithms to learn or improve when exposed to data without being explicitly programmed to do so
+* Natural language processing: A subset of machine learning that processes human speech
+* Mathematical optimization: The use of conditions and constraints to find the optimal solution to a problem
+* Digital decisioning: The use of defined criteria, conditions, and a series of machine and human tasks to make decisions
+
+image:pragmatic-ai/123_RHPAM_Integrating_AI_1020_building-blocks.svg[]
+
+While science fiction is filled with what is referred to as artificial general intelligence (AGI), machines that perform better than people and cannot be distinguished from them and learn and evolve without human intervention or control, AGI is decades away. Meanwhile, we have pragmatic AI which is much less frightening and much more useful to us today. Pragmatic AI is a collection of AI technologies that, when combined, provide solutions to problems such as predicting customer behavior, providing automated customer service, and helping customers make purchasing decisions.
+
+Leading industry analysts report that previously organizations have struggled with AI technologies because they invested in the potential of AI rather than the reality of what AI can deliver today. AI projects were not productive and as a result investment in AI slowed and budgets for AI projects were reduced. This disillusionment with AI is often referred to as an AI winter. AI has experienced several cycles of AI winters followed by AI springs and we are now decidedly in an AI spring. Organizations are seeing the practical reality of what AI can deliver. Being pragmatic means being practical and realistic.  A pragmatic approach to AI considers AI technologies that are available today, combines them where useful, and adds human intervention when needed to create solutions to real-world problems.
+
+.Pragmatic AI solution example
+////
+Note: Keeping for now.
+A major transportation company has a fleet of trains and a network of train tracks. The company uses machine learning to identify geographic clusters where trains reported some type of problem. If a train reports a problem when it passes a specific position on the track it is recorded as data and if enough problems are recorded in the same location, you can identify a cluster. But that information is not complete enough to be useful so you can add digital decision to filter the data. For example, you can say that a failure must be a specific type of failure and must be reported by at least three trains. If that condition it met, you can use maths optimization to schedule a repair crew to investigate the track. Or if only one train has the same type of problem more than once at the location, you can use maths optimization to schedule the train for repair.
+////
+
+One application of pragmatic AI is in customer support. A customer files a support ticket that reports a problem, for example, a login error. A machine learning algorithm is applied to the ticket to match the ticket content with existing solutions, based on keywords or natural language processing (NLP). The keywords might appear in many solutions, some relevant and some not as relevant. You can use digital decisioning to determine which solutions to present to the customer. However, sometimes none of the solutions proposed by the algorithm are appropriate to propose to the customer. This can be because all solutions have a low confidence score or multiple solutions have a high confidence score. In cases where an appropriate solution cannot be found, the digital decisioning can involve the human support team. To find the best support person based on availability and expertise, mathematical optimization selects the best assignee for the support ticket by considering employee rostering constraints.
+
+As this example shows, you can combine machine learning to extract information from data analysis and digital decisioning to model human knowledge and experience. You can then apply mathematical optimization to schedule human assistance. This is a pattern that you can apply to other situations, for example, a credit card dispute and credit card fraud detection.
+
+image:pragmatic-ai/123_RHPAM_Integrating_AI_1020_equation.svg[]
+
+These technologies use four industry standards:
+
+* Case Management Model and Notation (CMMN)
++
+CMMN is used to model work methods that include various activities that might be performed in an unpredictable order depending on circumstances. CMMN models are event centered. CMMN overcomes limitations of what can be modeled with BPMN2 by supporting less structured work tasks and tasks driven by humans. By combining BPMN and CMMN you can create much more powerful models.
++
+* Business Process Model and Notation (BPMN2)
++
+The BPMN2 specification is an Object Management Group (OMG) specification that defines standards for graphically representing a business process, defines execution semantics for the elements, and provides process definitions in XML format. BPMN2 can model computer and human tasks.
+
+* Decision Model and Notation (DMN)
++
+Decision Model and Notation (DMN) is a standard established by the OMG for describing and modeling operational decisions. DMN defines an XML schema that enables DMN models to be shared between DMN-compliant platforms and across organizations so that business analysts and business rules developers can collaborate in designing and implementing DMN decision services. The DMN standard is similar to and can be used together with the Business Process Model and Notation (BPMN) standard for designing and modeling business processes.
+
+* Predictive Model Markup Language (PMML)
++
+PMML is the language used to represent predictive models, mathematical models that use statistical techniques to uncover, or learn, patterns in large volumes of data. Predictive models use the patterns that they learn to predict the existence of patterns in new data. With PMML, you can share predictive models between applications. This data is exported as a PMML file that can be consumed by a DMN model. As a machine learning framework continues to train the model, the updated data can be saved to the existing PMML file. This means that you can use predictive models created by any application that can save the model as a PMML file. Therefore, DMN and PMML integrate well.
+
+.Putting it all together
+image:pragmatic-ai/123_RHPAM_Integrating_AI_1020_overview.svg[]
+
+This illustration shows how predictive decision automation works.
+
+. Business data enters the system, for example, data from a loan application.
+. A decision model that is integrated with a predictive model decides whether or not to approve the loan or whether additional tasks are required.
+. A business action results, for example, a rejection letter or loan offer is sent to the customer.

@@ -1,0 +1,96 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='dmn-validation-con_{context}']
+= Configurable DMN validation in {PRODUCT}
+
+By default, the `kie-maven-plugin` component in the `pom.xml` file of your {PRODUCT} project uses the following `<validateDMN>` configurations to perform pre-compilation validation of DMN model assets and to perform DMN decision table static analysis:
+
+* `VALIDATE_SCHEMA`: DMN model files are verified against the DMN specification XSD schema to ensure that the files are valid XML and compliant with the specification.
+* `VALIDATE_MODEL`: The pre-compilation analysis is performed for the DMN model to ensure that the basic semantic is aligned with the DMN specification.
+* `ANALYZE_DECISION_TABLE`: DMN decision tables are statically analyzed for gaps or overlaps and to ensure that the semantic of the decision table follows best practices.
+
+You can modify the default DMN validation and DMN decision table analysis behavior to perform only a specified validation during the project build, or you can disable this default behavior completely, as shown in the following examples:
+
+.Default configuration for DMN validation and decision table analysis
+[source,xml]
+----
+<plugin>
+  <groupId>org.kie</groupId>
+  <artifactId>kie-maven-plugin</artifactId>
+  <extensions>true</extensions>
+  <configuration>
+    <validateDMN>VALIDATE_SCHEMA,VALIDATE_MODEL,ANALYZE_DECISION_TABLE</validateDMN>
+  </configuration>
+</plugin>
+----
+
+.Configuration to perform only the DMN decision table static analysis
+[source,xml]
+----
+<plugin>
+  <groupId>org.kie</groupId>
+  <artifactId>kie-maven-plugin</artifactId>
+  <extensions>true</extensions>
+  <configuration>
+    <validateDMN>ANALYZE_DECISION_TABLE</validateDMN>
+  </configuration>
+</plugin>
+----
+
+.Configuration to perform only the XSD schema validation
+[source,xml]
+----
+<plugin>
+  <groupId>org.kie</groupId>
+  <artifactId>kie-maven-plugin</artifactId>
+  <extensions>true</extensions>
+  <configuration>
+    <validateDMN>VALIDATE_SCHEMA</validateDMN>
+  </configuration>
+</plugin>
+----
+
+.Configuration to perform only the DMN model validation
+[source,xml]
+----
+<plugin>
+  <groupId>org.kie</groupId>
+  <artifactId>kie-maven-plugin</artifactId>
+  <extensions>true</extensions>
+  <configuration>
+    <validateDMN>VALIDATE_MODEL</validateDMN>
+  </configuration>
+</plugin>
+----
+
+.Configuration to disable all DMN validation
+[source,xml]
+----
+<plugin>
+  <groupId>org.kie</groupId>
+  <artifactId>kie-maven-plugin</artifactId>
+  <extensions>true</extensions>
+  <configuration>
+    <validateDMN>disable</validateDMN>
+  </configuration>
+</plugin>
+----
+
+NOTE: If you enter an unrecognized `<validateDMN>` configuration flag, all pre-compilation validation is disabled and the Maven plugin emits related log messages.

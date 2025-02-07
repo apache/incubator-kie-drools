@@ -1,0 +1,559 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[[_kiebuildingsection]]
+= Building
+
+.org.kie.api.core.builder
+image::KIE/BuildDeployUtilizeAndRun/builder.png[align="center"]
+
+
+[[_creatingandbuildingakieproject]]
+== Creating and building a Kie Project
+
+
+A Kie Project has the structure of a normal Maven project with the only peculiarity of including a kmodule.xml file defining in a declaratively way the ``KieBase``s and ``KieSession``s that can be created from it.
+This file has to be placed in the resources/META-INF folder of the Maven project while all the other Kie artifacts, such as DRL or Excel files, must be stored in the resources folder or in any other subfolder under it.
+
+Since meaningful defaults have been provided for all configuration aspects, the simplest kmodule.xml file can contain just an empty kmodule tag like the following:
+
+.An empty kmodule.xml file
+====
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<kmodule xmlns="http://www.drools.org/xsd/kmodule"/>
+----
+====
+
+
+In this way the kmodule will contain one single default ``KieBase``.
+All Kie assets stored under the resources folder, or any of its subfolders, will be compiled and added to it.
+To trigger the building of these artifacts it is enough to create a `KieContainer` for them.
+
+.KieContainer
+image::KIE/BuildDeployUtilizeAndRun/KieContainer.png[align="center"]
+
+
+For this simple case it is enough to create a `KieContainer` that reads the files to be built from the classpath:
+
+.Creating a KieContainer from the classpath
+====
+[source,java]
+----
+KieServices kieServices = KieServices.Factory.get();
+KieContainer kContainer = kieServices.getKieClasspathContainer();
+----
+====
+
+`KieServices` is the interface from where it possible to access all the Kie building and runtime facilities:
+
+.KieServices
+image::KIE/BuildDeployUtilizeAndRun/KieServices.png[align="center"]
+
+
+In this way all the Java sources and the Kie resources are compiled and deployed into the KieContainer which makes its contents available for use at runtime.
+
+[[_thekmodulexmlfile]]
+== The kmodule.xml file
+
+
+As explained in the former section, the kmodule.xml file is the place where it is possible to declaratively configure the ``KieBase``(s) and ``KieSession``(s) that can be created from a KIE project.
+
+In particular a `KieBase` is a repository of all the application's knowledge definitions.
+It will contain rules, processes, functions, and type models.
+The `KieBase` itself does not contain data; instead, sessions are created from the `KieBase` into which data can be inserted and from which process instances may be started.
+Creating the `KieBase` can be heavy, whereas session creation is very light, so it is recommended that `KieBase` be cached where possible to allow for repeated session creation.
+However end-users usually shouldn't worry about it, because this caching mechanism is already automatically provided by the ``KieContainer``.
+
+.KieBase
+image::KIE/BuildDeployUtilizeAndRun/KieBase.png[align="center"]
+
+
+Conversely the `KieSession` stores and executes on the runtime data.
+It is created from the `KieBase` or more easily can be created directly from the `KieContainer` if it has been defined in the kmodule.xml file
+
+.KieSession
+image::KIE/BuildDeployUtilizeAndRun/KieSession.png[align="center"]
+
+
+The kmodule.xml allows to define and configure one or more ``KieBase``s and for each `KieBase` all the different ``KieSession``s that can be created from it, as showed by the follwing example:
+
+.A sample kmodule.xml file
+====
+[source,xml]
+----
+<kmodule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.drools.org/xsd/kmodule">
+  <configuration>
+    <property key="drools.evaluator.supersetOf" value="org.mycompany.SupersetOfEvaluatorDefinition"/>
+  </configuration>
+  <kbase name="KBase1" default="true" eventProcessingMode="cloud" equalsBehavior="equality" declarativeAgenda="enabled" packages="org.domain.pkg1">
+    <ksession name="KSession2_1" type="stateful" default="true"/>
+    <ksession name="KSession2_2" type="stateless" default="false" beliefSystem="jtms"/>
+  </kbase>
+  <kbase name="KBase2" default="false" eventProcessingMode="stream" equalsBehavior="equality" declarativeAgenda="enabled" packages="org.domain.pkg2, org.domain.pkg3" includes="KBase1">
+    <ksession name="KSession3_1" type="stateful" default="false" clockType="realtime">
+      <fileLogger file="drools.log" threaded="true" interval="10"/>
+      <workItemHandlers>
+        <workItemHandler name="name" type="org.domain.WorkItemHandler"/>
+      </workItemHandlers>
+      <calendars>
+        <calendar name="monday" type="org.domain.Monday"/>
+      </calendars>
+      <listeners>
+        <ruleRuntimeEventListener type="org.domain.RuleRuntimeListener"/>
+        <agendaEventListener type="org.domain.FirstAgendaListener"/>
+        <agendaEventListener type="org.domain.SecondAgendaListener"/>
+        <processEventListener type="org.domain.ProcessListener"/>
+      </listeners>
+    </ksession>
+  </kbase>
+</kmodule>
+----
+====
+
+
+Here the 
+tag contains a list of key-value pairs that are the optional properties used to configure the ``KieBase``s building process.
+For instance this sample kmodule.xml file defines an additional custom operator named `supersetOf` and implemented by the `org.mycompany.SupersetOfEvaluatorDefinition` class.
+
+After this 2 ``KieBase``s have been defined and it is possible to instance 2 different types of ``KieSession``s from the first one, while only one from the second.
+A list of the attributes that can be defined on the kbase tag, together with their meaning and default values follows:
+
+.kbase Attributes
+[cols="1,1,1,1", options="header"]
+|===
+| Attribute name
+| Default value
+| Admitted values
+| Meaning
+
+|name
+|none
+|any
+|The name with which retrieve this KieBase from the KieContainer.
+            This is the only mandatory attribute.
+
+|includes
+|none
+|any comma separated list
+|A comma separated list of other KieBases contained in this kmodule.
+            The artifacts of all these KieBases will be also included in this one.
+
+|packages
+|all
+|any comma separated list
+|By default all the Drools artifacts under the resources folder,
+            at any level, are included into the KieBase. This attribute allows to limit
+            the artifacts that will be compiled in this KieBase to only the ones
+            belonging to the list of packages.
+
+|default
+|false
+|true, false
+|Defines if this KieBase is the default one for this module, so
+            it can be created from the KieContainer without passing any name to it.
+            There can be at most one default KieBase in each module.
+
+|equalsBehavior
+|identity
+|identity, equality
+|Defines the behavior of Drools when a new fact is inserted into the
+            Working Memory. With identity it always create a new FactHandle unless the same
+            object isn't already present in the Working Memory, while with equality only if
+            the newly inserted object is not equal (according to its equal method) to an already
+            existing fact.
+
+|eventProcessingMode
+|cloud
+|cloud, stream
+|When compiled in cloud mode the KieBase treats events as normal facts, while
+            in stream mode allow temporal reasoning on them.
+
+|declarativeAgenda
+|disabled
+|disabled, enabled
+|Defines if the Declarative Agenda is enabled or not.
+|===
+
+
+Similarly all attributes of the ksession tag (except of course the name) have meaningful default.
+They are listed and described in the following table:
+
+.ksession Attributes
+[cols="1,1,1,1", options="header"]
+|===
+| Attribute name
+| Default value
+| Admitted values
+| Meaning
+
+|name
+|none
+|any
+|Unique name of this KieSession. Used to fetch the KieSession from the KieContainer.
+            This is the only mandatory attribute.
+
+|type
+|stateful
+|stateful, stateless
+|A stateful session allows to iteratively work with the Working Memory,
+            while a stateless one is a one-off execution of a Working Memory with a provided data set.
+
+|default
+|false
+|true, false
+|Defines if this KieSession is the default one for this module, so
+            it can be created from the KieContainer without passing any name to it.
+            In each module there can be at most one default KieSession for each type.
+
+|clockType
+|realtime
+|realtime, pseudo
+|Defines if events timestamps are determined by the system clock or by
+            a pseudo clock controlled by the application. This clock is especially useful for
+            unit testing temporal rules.
+
+|beliefSystem
+|simple
+|simple, jtms, defeasible
+|Defines the type of belief system used by the KieSession.
+|===
+
+
+As outlined in the former kmodule.xml sample, it is also possible to declaratively create on each `KieSession` a file (or a console) logger, one or more ``WorkItemHandler``s and ``Calendar``s plus some listeners that can be of 3 different types: ruleRuntimeEventListener, agendaEventListener and processEventListener
+
+Having defined a kmodule.xml like the one in the former sample, it is now possible to simply retrieve the KieBases and KieSessions from the KieContainer using their names.
+
+.Retrieving KieBases and KieSessions from the KieContainer
+====
+[source,java]
+----
+KieServices kieServices = KieServices.Factory.get();
+KieContainer kContainer = kieServices.getKieClasspathContainer();
+
+KieBase kBase1 = kContainer.getKieBase("KBase1");
+KieSession kieSession1 = kContainer.newKieSession("KSession2_1");
+StatelessKieSession kieSession2 = kContainer.newStatelessKieSession("KSession2_2");
+----
+====
+
+
+It has to be noted that since KSession2_1 and KSession2_2 are of 2 different types (the first is stateful, while the second is stateless) it is necessary to invoke 2 different methods on the `KieContainer` according to their declared type.
+If the type of the `KieSession` requested to the `KieContainer` doesn't correspond with the one declared in the kmodule.xml file the `KieContainer` will throw a ``RuntimeException``.
+Also since a `KieBase` and a `KieSession` have been flagged as default is it possible to get them from the `KieContainer` without passing any name.
+
+.Retrieving default KieBases and KieSessions from the KieContainer
+====
+[source,java]
+----
+KieContainer kContainer = ...
+
+KieBase kBase1 = kContainer.getKieBase(); // returns KBase1
+KieSession kieSession1 = kContainer.newKieSession(); // returns KSession2_1
+----
+====
+
+
+Since a Kie project is also a Maven project the groupId, artifactId and version declared in the pom.xml file are used to generate a `ReleaseId` that uniquely identifies this project inside your application.
+This allows creation of a new KieContainer from the project by simply passing its `ReleaseId` to the ``KieServices``.
+
+.Creating a KieContainer of an existing project by ReleaseId
+====
+[source,java]
+----
+KieServices kieServices = KieServices.Factory.get();
+ReleaseId releaseId = kieServices.newReleaseId( "org.acme", "myartifact", "1.0" );
+KieContainer kieContainer = kieServices.newKieContainer( releaseId );
+----
+====
+
+[WARNING]
+====
+KieBase and KiePackage don't support serialization since Drools 6. You need to build KieBase through KieContainer. On the other hand, KieSession can be marshalled/unmarshalled by KieMashaller. See xref:#_marshalling[].
+====
+
+[[_buildingwithmaven]]
+== Building with Maven
+
+
+The KIE plugin for Maven ensures that artifact resources are validated and pre-compiled, it is recommended that this is used at all times.
+To use the plugin simply add it to the build section of the Maven pom.xml and activate it by using packaging ``kjar``. 
+
+.Adding the KIE plugin to a Maven pom.xml and activating it
+====
+[source,xml,subs="verbatim,attributes"]
+----
+
+  <packaging>kjar</packaging>
+  ...
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-maven-plugin</artifactId>
+        <version>${version.org.drools}</version>
+        <extensions>true</extensions>
+      </plugin>
+    </plugins>
+  </build>
+----
+====
+
+
+The plugin comes with support for all the Drools/jBPM knowledge resources.
+However, in case you are using specific KIE annotations in your Java classes, like for example ``@kie.api.Position``, you will need to add compile time dependency on `kie-api` into your project.
+We recommend to use the provided scope for all the additional KIE dependencies.
+That way the kjar stays as lightweight as possible, and not dependant on any particular KIE version. 
+
+Building a KIE module without the Maven plugin will copy all the resources, as is, into the resulting JAR.
+When that JAR is loaded by the runtime, it will attempt to build all the resources then.
+If there are compilation issues it will return a null KieContainer.
+It also pushes the compilation overhead to the runtime.
+In general this is not recommended, and the Maven plugin should always be used.
+
+[[_enginedependency]]
+== Engine dependency
+
+{PRODUCT} has 3 types of engine dependency that aggregate a required collection of dependencies.
+
+*`drools-ruleunits-engine`* is the standard engine for rule units that enables an executable model.
+
+*`drools-engine`* is the standard engine for traditional DRL syntax that enables an executable model.
+
+*`drools-engine-classic`* is the old engine that utilizes an MVEL interpreter.  The `drools-engine-classic` and `drools-mvel` are now *deprecated*, so use `drools-ruleunits-engine` or `drools-engine` instead.
+
+[source,xml]
+----
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-engine</artifactId>
+    </dependency>
+----
+
+[NOTE]
+====
+`drools-engine` doesn't contain `drools-xml-support`, because a Rule Unit use case doesn't require `kmodule.xml`, so no need to process XML. In other words, you have to explicitly add the `drools-xml-support` dependency when you use `kmodule.xml` in your project with `drools-engine`.
+
+For example:
+[source,xml]
+----
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-engine</artifactId>
+    </dependency>
+    <dependency> <!-- when not using Rule Unit and using `kmodule.xml` for defining a rule base -->
+      <groupId>org.drools</groupId>
+      <artifactId>drools-xml-support</artifactId>
+    </dependency>
+----
+====
+
+[[_buildingwithmavenandrunningdroolsinauberjarorfatjar]]
+== Building with Maven and running Drools in a uber-jar or fat jar
+
+When building and running Drools in a _uber-jar_ (also known as a _fat JAR_ or _JAR with dependencies_), for example created by the Maven Shade Plugin, you will need to maintain conflicting resources from all dependencies.
+For instance when depending on `org.drools:drools-ecj` in your build, the `org.eclipse.jdt:ecj` dependency is transitively added, and you might want to remove signature files from the _ECJ artifact_ which would not match in the final artifact.
+In this case the Maven Shade Plugin could be configured as it follows:
+// example from https://docs.oracle.com/en-us/iaas/data-flow/data-flow-tutorial/develop-apps-locally/create-fat-jars.htm -->
+[source]
+----
+<plugin>
+  <groupId>org.apache.maven.plugins</groupId>
+  <artifactId>maven-shade-plugin</artifactId>
+  <version>3.1.0</version>
+  <executions>
+    <execution>
+      <phase>package</phase>
+      <goals>
+          <goal>shade</goal>
+      </goals>
+      <configuration>
+        <filters>
+          <filter>
+          <artifact>*:*</artifact>
+          <excludes>
+            <exclude>META-INF/*.SF</exclude>
+            <exclude>META-INF/*.DSA</exclude>
+            <exclude>META-INF/*.RSA</exclude>
+          </excludes>
+          </filter>
+        </filters>
+        <!-- ... additional configuration ... -->
+      </configuration>
+    </execution>
+  </executions>
+</plugin>
+----
+
+[[_definingakiemoduleprogrammatically]]
+== Defining a KieModule programmatically
+
+
+It is also possible to define the ``KieBase``s and ``KieSession``s belonging to a KieModule programmatically instead of the declarative definition in the kmodule.xml file.
+The same programmatic API also allows in explicitly adding the file containing the Kie artifacts instead of automatically read them from the resources folder of your project.
+To do that it is necessary to create a ``KieFileSystem``, a sort of virtual file system, and add all the resources contained in your project to it.
+
+.KieFileSystem
+image::KIE/BuildDeployUtilizeAndRun/KieFileSystem.png[align="center"]
+
+
+Like all other Kie core components you can obtain an instance of the `KieFileSystem` from the ``KieServices``.
+The kmodule.xml configuration file must be added to the filesystem.
+This is a mandatory step.
+Kie also provides a convenient fluent API, implemented by the ``KieModuleModel``, to programmatically create this file.
+
+.KieModuleModel
+image::KIE/BuildDeployUtilizeAndRun/KieModuleModel.png[align="center"]
+
+
+To do this in practice it is necessary to create a `KieModuleModel` from the ``KieServices``, configure it with the desired ``KieBase``s and ``KieSession``s, convert it in XML and add the XML to the ``KieFileSystem``.
+This process is shown by the following example:
+
+.Creating a kmodule.xml programmatically and adding it to a KieFileSystem
+====
+[source,java]
+----
+KieServices kieServices = KieServices.Factory.get();
+KieModuleModel kieModuleModel = kieServices.newKieModuleModel();
+
+KieBaseModel kieBaseModel1 = kieModuleModel.newKieBaseModel( "KBase1 ")
+        .setDefault( true )
+        .setEqualsBehavior( EqualityBehaviorOption.EQUALITY )
+        .setEventProcessingMode( EventProcessingOption.STREAM );
+
+KieSessionModel ksessionModel1 = kieBaseModel1.newKieSessionModel( "KSession1" )
+        .setDefault( true )
+        .setType( KieSessionModel.KieSessionType.STATEFUL )
+        .setClockType( ClockTypeOption.get("realtime") );
+
+KieFileSystem kfs = kieServices.newKieFileSystem();
+kfs.writeKModuleXML(kieModuleModel.toXML());
+----
+====
+
+
+At this point it is also necessary to add to the ``KieFileSystem``, through its fluent API, all others Kie artifacts composing your project.
+These artifacts have to be added in the same position of a corresponding usual Maven project.
+
+.Adding Kie artifacts to a KieFileSystem
+====
+[source,java]
+----
+KieFileSystem kfs = ...
+kfs.write( "src/main/resources/KBase1/ruleSet1.drl", stringContainingAValidDRL )
+        .write( "src/main/resources/dtable.xls",
+                kieServices.getResources().newInputStreamResource( dtableFileStream ) );
+----
+====
+
+
+This example shows that it is possible to add the Kie artifacts both as plain Strings and as ``Resource``s.
+In the latter case the ``Resource``s can be created by the `KieResources` factory, also provided by the ``KieServices``.
+The `KieResources` provides many convenient factory methods to convert an ``InputStream``, a ``File``, or a `String` representing a path of your file system to a `Resource` that can be managed by the ``KieFileSystem``.
+
+.KieResources
+image::KIE/BuildDeployUtilizeAndRun/KieResources.png[align="center"]
+
+NOTE: `URLResource` is no longer available since Drools 8, to ensure a more reproducible knowledge base build (avoiding remote URLs) and for better security. If you used `URLResource` in the past, you can manage the local-fetch of the remote resource externally to your Drools application, so to limit Drools build concerns to local resources containing knowledge assets.
+
+Normally the type of a `Resource` can be inferred from the extension of the name used to add it to the ``KieFileSystem``.
+However it also possible to not follow the Kie conventions about file extensions and explicitly assign a specific `ResourceType` to a `Resource` as shown below:
+
+.Creating and adding a Resource with an explicit type
+====
+[source,java]
+----
+KieFileSystem kfs = ...
+kfs.write( "src/main/resources/myDrl.txt",
+           kieServices.getResources().newInputStreamResource( drlStream )
+                      .setResourceType(ResourceType.DRL) );
+----
+====
+
+
+Add all the resources to the `KieFileSystem` and build it by passing the `KieFileSystem` to a `KieBuilder`
+
+.KieBuilder
+image::KIE/BuildDeployUtilizeAndRun/KieBuilder.png[align="center"]
+
+
+When the contents of a `KieFileSystem` are successfully built, the resulting `KieModule` is automatically added to the ``KieRepository``.
+The `KieRepository` is a singleton acting as a repository for all the available ``KieModule``s.
+
+.KieRepository
+image::KIE/BuildDeployUtilizeAndRun/KieRepository.png[align="center"]
+
+
+After this it is possible to create through the `KieServices` a new `KieContainer` for that `KieModule` using its ``ReleaseId``.
+However, since in this case the `KieFileSystem` doesn't contain any pom.xml file (it is possible to add one using the `KieFileSystem.writePomXML` method), Kie cannot determine the `ReleaseId` of the `KieModule` and assign to it a default one.
+This default `ReleaseId` can be obtained from the `KieRepository` and used to identify the `KieModule` inside the `KieRepository` itself.
+The following example shows this whole process.
+
+.Building the contents of a KieFileSystem and creating a KieContainer
+====
+[source,java]
+----
+KieServices kieServices = KieServices.Factory.get();
+KieFileSystem kfs = ...
+kieServices.newKieBuilder( kfs ).buildAll();
+KieContainer kieContainer = kieServices.newKieContainer(kieServices.getRepository().getDefaultReleaseId());
+----
+====
+
+
+At this point it is possible to get ``KieBase``s and create new ``KieSession``s from this `KieContainer` exactly in the same way as in the case of a `KieContainer` created directly from the classpath.
+
+It is a best practice to check the compilation results.
+The `KieBuilder` reports compilation results of 3 different severities: ERROR, WARNING and INFO.
+An ERROR indicates that the compilation of the project failed and in the case no `KieModule` is produced and nothing is added to the ``KieRepository``.
+WARNING and INFO results can be ignored, but are available for inspection.
+
+.Checking that a compilation didn't produce any error
+====
+[source,java]
+----
+KieBuilder kieBuilder = kieServices.newKieBuilder( kfs ).buildAll();
+assertEquals( 0, kieBuilder.getResults().getMessages( Message.Level.ERROR ).size() );
+----
+====
+
+[[_changingthedefaultbuildresultseverity]]
+== Changing the Default Build Result Severity
+
+
+In some cases, it is possible to change the default severity of a type of build result.
+For instance, when a new rule with the same name of an existing rule is added to a package, the default behavior is to replace the old rule by the new rule and report it as an INFO.
+This is probably ideal for most use cases, but in some deployments the user might want to prevent the rule update and report it as an error.
+
+Changing the default severity for a result type, configured like any other option in Drools, can be done by API calls, system properties or configuration files.
+As of this version, Drools supports configurable result severity for rule updates and function updates.
+To configure it using system properties or configuration files, the user has to use the following properties:
+
+.Setting the severity using properties
+====
+[source]
+----
+// sets the severity of rule updates
+drools.kbuilder.severity.duplicateRule = <INFO|WARNING|ERROR>
+// sets the severity of function updates
+drools.kbuilder.severity.duplicateFunction = <INFO|WARNING|ERROR>
+----
+====

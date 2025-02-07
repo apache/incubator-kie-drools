@@ -1,0 +1,30 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='dmn-execution-con_{context}']
+= DMN model execution
+
+You can create or import DMN files in your {PRODUCT} project using {DMN_EDITOR} or package the DMN files as part of your project knowledge JAR (KJAR) file without {DMN_EDITOR}.
+
+After you implement your DMN files in your {PRODUCT} project, you can execute the DMN decision service by instantiating a KIE container that contains it directly as a dependency of the calling application. Other options for creating and deploying DMN knowledge packages are also available, and most are similar for all types of knowledge assets, such as DRL files or process definitions.
+
+Alternatively, you could package your DMN files as part of a {KOGITO} cloud-native microservice.
+
+For information about including external DMN assets with your project packaging and deployment method, see
+the xref:KIE/index.adoc[Build, Deploy, Utilize and Run section].

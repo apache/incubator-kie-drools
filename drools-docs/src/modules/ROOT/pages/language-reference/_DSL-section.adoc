@@ -1,0 +1,417 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+= Domain Specific Languages
+
+
+(((Domain Specific Languages)))
+Domain Specific Languages (or DSLs) are a way of creating a rule language that is dedicated to your problem domain.
+A set of DSL definitions consists of transformations from DSL "sentences" to DRL constructs, which lets you use of all the underlying rule language and engine features.
+Given a DSL, you write rules in DSL rule (or DSLR) files, which will be translated into DRL files.
+
+DSL and DSLR files are plain text files, and you can use any text editor to create and modify them.
+But there are also DSL and DSLR editors, both in the IDE as well as in the web based BRMS, and you can use those as well, although they may not provide you with the full DSL functionality. 
+
+== When to Use a DSL
+
+
+DSLs can serve as a layer of separation between rule authoring (and rule authors) and the technical intricacies resulting from the modelling of domain object and the {RULE_ENGINE}'s native language and methods.
+If your rules need to be read and validated by domain experts (such as business analysts, for instance) who are not programmers, you should consider  using a DSL; it hides implementation details and focuses on the rule logic proper.
+DSL sentences can also act as "templates" for conditional elements and consequence actions that are used repeatedly in your rules, possibly with minor variations.
+You may define DSL sentences as being mapped to these repeated phrases, with parameters providing a means for accommodating those variations.
+
+DSLs have no impact on the {RULE_ENGINE} at runtime, they are just a compile time feature, requiring a special parser and transformer.
+
+== DSL Basics
+
+
+The Drools DSL mechanism allows you to customise conditional expressions and consequence actions.
+A global substitution mechanism ("keyword") is also available.
+
+.Example (((DSL))) DSL mapping
+====
+[source]
+----
+[when]Something is {colour}=Something(colour=="{colour}")
+----
+====
+
+
+In the preceding example, `[when]` indicates the scope of the expression, i.e., whether it is valid for the LHS or the RHS of a rule.
+The part after the bracketed keyword is the expression that you use in the rule; typically a natural language expression, but it doesn't have to be.
+The part to the right of the equal sign ("=") is the mapping of the expression into the rule language.
+The form of this string depends on its destination, RHS or  LHS.
+If it is for the LHS, then it ought to be a term according to the regular LHS syntax; if it is for the RHS then it might be a Java statement.
+
+Whenever the DSL parser matches a line from the rule file written in the DSL with an expression in the DSL definition, it performs three steps of string manipulation.
+First, it extracts the string values appearing where the expression contains variable names in braces (here: ``\{colour}``). Then, the values obtained from these captures are then interpolated wherever that name, again enclosed in braces, occurs on the right hand side of the mapping.
+Finally, the interpolated string replaces whatever was matched by the entire expression in the line of the DSL rule file.
+
+Note that the expressions (i.e., the strings on the left hand side of the equal sign) are used as regular expressions in a pattern matching operation against a line of the DSL rule file, matching all or part of a line.
+This means you can use (for instance) a '?' to indicate that the preceding character is optional.
+One good reason to use this is to overcome variations in natural language phrases of your DSL.
+But, given that these expressions are regular expression patterns, this also means that all "magic" characters of Java's pattern syntax have to be escaped with a preceding backslash ('\').
+
+It is important to note that the compiler transforms DSL rule files line by line.
+In the previous example, all the text after "Something is " to the end of the line is captured as the replacement value for "\{colour}", and this is used for interpolating the target string.
+This may not be exactly what you want.
+For instance, when you intend to merge different DSL expressions to generate a composite DRL pattern, you need to transform a DSLR line in several independent operations.
+The best way to achieve this is to ensure that the captures are surrounded by characteristic text - words or  even single characters.
+As a result, the matching operation done by the parser plucks out a substring from  somewhere within the line.
+In the example below, quotes are used as  distinctive characters.
+Note that the characters that surround the capture are not included during interpolation, just the contents between them.
+
+As a rule of thumb, use quotes for textual data that a rule editor may want to enter.
+You can also enclose the capture with words to ensure that the text is correctly matched.
+Both is illustrated by the following example.
+Note that a single line such as `Something is "green" and
+    another solid thing` is now correctly expanded.
+
+.Example with quotes
+====
+[source]
+----
+[when]something is "{colour}"=Something(colour=="{colour}")
+[when]another {state} thing=OtherThing(state=="{state})"
+----
+====
+
+
+It is a good idea to avoid punctuation (other than quotes or apostrophes) in your DSL expressions as much as possible.
+The main reason is that punctuation is easy to forget for rule authors using your DSL.
+Another reason is that parentheses, the period and the question mark are magic characters, requiring escaping in the DSL definition.
+
+In a DSL mapping, the braces "{" and "}" should only be used to enclose a variable definition or reference, resulting in a capture.
+If they should occur literally, either in the expression or within the replacement text on the right hand side, they must be escaped with a preceding backslash ("\"):
+
+[source]
+----
+[then]do something= if (foo) \{ doSomething(); \}
+----
+
+[NOTE]
+====
+If braces "{" and "}" should appear in the replacement string of a DSL definition, escape them with a backslash ('\').
+====
+
+.Examples of DSL mapping entries
+====
+[source]
+----
+# This is a comment to be ignored.
+[when]There is a person with name of "{name}"=Person(name=="{name}")
+[when]Person is at least {age} years old and lives in "{location}"=
+      Person(age >= {age}, location=="{location}")
+[then]Log "{message}"=System.out.println("{message}");
+[when]And = and
+----
+====
+
+
+Given the above DSL examples, the following examples show the expansion of various DSLR snippets:
+
+.Examples of DSL expansions 
+====
+[source]
+----
+There is a person with name of "Kitty"
+   ==> Person(name="Kitty")
+Person is at least 42 years old and lives in "Atlanta"
+   ==> Person(age >= 42, location="Atlanta")
+Log "boo"
+   ==> System.out.println("boo");
+There is a person with name of "Bob" And Person is at least 30 years old and lives in "Utah"
+   ==> Person(name="Bob") and Person(age >= 30, location="Utah")
+----
+====
+
+[NOTE]
+====
+Don't forget that if you are capturing plain text from a DSL rule line and want to use it as a string literal in the expansion, you must provide the quotes on the right hand side of the mapping.
+====
+
+
+You can chain DSL expressions together on one line, as long as it is clear to the parser where one ends and the next one begins and where the text representing a parameter ends.
+(Otherwise you risk getting all the text until the end of the line as a parameter value.) The DSL expressions are tried, one after the other, according to their order in the DSL definition file.
+After any match, all remaining DSL expressions are investigated, too.
+
+The resulting DRL text may consist of more than one line.
+Line ends are in the replacement text are written as ``\n``.
+
+== Adding Constraints to Facts
+
+
+A common requirement when writing rule conditions is to be able to add an arbitrary combination of constraints to a pattern.
+Given that a fact type may have many fields, having to provide an individual DSL statement for each combination would be plain folly.
+
+The DSL facility allows you to add constraints to a pattern by a simple convention: if your DSL expression starts with a hyphen (minus character, "-") it is assumed to be a field constraint and, consequently, is is added to the last pattern line preceding it.
+
+For an example, lets take look at class ``Cheese``, with the following fields: type, price, age and country.
+We can express some LHS condition in normal DRL like the following
+
+[source]
+----
+Cheese(age < 5, price == 20, type=="stilton", country=="ch")
+----
+
+
+The DSL definitions given below result in three DSL phrases which may be used to create any combination of constraint involving these fields.
+
+[source]
+----
+[when]There is a Cheese with=Cheese()
+[when]- age is less than {age}=age<{age}
+[when]- type is '{type}'=type=='{type}'
+[when]- country equal to '{country}'=country=='{country}'
+----
+
+
+You can then write rules with conditions like the following: 
+[source]
+----
+There is a Cheese with
+        - age is less than 42
+        - type is 'stilton'
+----
+ The parser will pick up a line beginning with "-" and add it as a constraint to  the preceding pattern, inserting a comma when it is required.
+For the preceding example, the resulting DRL is: 
+[source]
+----
+Cheese(age<42, type=='stilton')
+----
+
+Combining all numeric fields with all relational operators (according to the DSL expression "age is less than..." in the preceding example) produces an unwieldy amount of DSL entries.
+But you can define DSL phrases for the various operators and even a generic expression that handles any field constraint, as shown below.
+(Notice that the expression definition contains a regular expression in addition to the variable name.)
+
+[source]
+----
+[when][]is less than or equal to=<=
+[when][]is less than=<
+[when][]is greater than or equal to=>=
+[when][]is greater than=>
+[when][]is equal to===
+[when][]equals===
+[when][]There is a Cheese with=Cheese()
+[when][]- {field:\w*} {operator} {value:\d*}={field} {operator} {value}
+----
+
+
+Given these DSL definitions, you can write rules with conditions such as:
+
+[source]
+----
+There is a Cheese with
+   - age is less than 42
+   - rating is greater than 50
+   - type equals 'stilton'
+----
+
+
+In this specific case, a phrase such as "is less than" is replaced by ``<``, and then the line matches the last DSL entry.
+This removes the hyphen, but the final result is still added as a constraint to the preceding pattern.
+After processing all of the lines, the resulting DRL text is:
+
+[source]
+----
+Cheese(age<42, rating > 50, type=='stilton')
+----
+
+[NOTE]
+====
+The order of the entries in the DSL is important if separate DSL expressions are intended to match the same line, one after the other.
+====
+
+== Developing a DSL
+
+
+A good way to get started is to write representative samples of the rules your application requires, and to test them as you develop.
+This will provide you with a stable framework of conditional elements and their constraints.
+Rules, both in DRL and in DSLR, refer to entities according to the data model representing the application data that should be subject to the reasoning process defined in rules.
+Notice that writing rules is generally easier if most of the data model's types are facts.
+
+Given an initial set of rules, it should be possible to identify recurring or similar code snippets and to mark variable parts as parameters.
+This provides reliable leads as to what might be a handy DSL entry.
+Also, make sure you have a full grasp of the jargon the  domain experts are using, and base your DSL phrases on this vocabulary.
+
+You may postpone implementation decisions concerning conditions and actions during this first design phase by leaving certain conditional elements and actions in their DRL form by prefixing a line with a greater sign (">"). (This is also handy for inserting debugging statements.)
+
+During the next development phase, you should find that the DSL configuration stabilizes pretty quickly.
+New rules can be written by reusing the existing DSL definitions, or by adding a parameter to an existing condition or consequence entry.
+
+Try to keep the number of DSL entries small.
+Using parameters lets you apply the same DSL sentence for similar rule patterns or constraints.
+But do not exaggerate: authors using the DSL should still be able to identify DSL phrases by some fixed text.
+
+== DSL and DSLR Reference
+
+
+A DSL file is a text file in a line-oriented format.
+Its entries are used for transforming a DSLR file into a file according to DRL syntax.
+
+* A line starting with "\#" or "//" (with or without preceding white space) is treated as a comment. A comment line starting with "#/" is scanned for words requesting a debug option, see below.
+* Any line starting with an opening bracket ("[") is assumed to be the first line of a DSL entry definition.
+* Any other line is appended to the preceding DSL entry definition, with the line end replaced by a space.
+
+
+A DSL entry consists of the following four parts:
+
+* A scope definition, written as one of the keywords "when" or "condition", "then" or "consequence", "*" and "keyword", enclosed in brackets ("[" and "]"). This indicates whether the DSL entry is valid for the condition or the consequence of a rule, or both. A scope indication of "keyword" means that the entry has global significance, i.e., it is recognized anywhere in a DSLR file.
+* A type definition, written as a Java class name, enclosed in brackets. This part is optional unless the next part begins with an opening bracket. An empty pair of brackets is valid, too.
+* A DSL expression consists of a (Java) regular expression, with any number of embedded _variable definitions,_ terminated by an equal sign ("="). A variable definition is enclosed in braces ("{" and "}"). It consists of a variable name and two optional attachments, separated by colons (":"). If there is one attachment, it is a regular expression for matching text that is to be assigned to the variable; if there are two attachments, the first one is a hint for the GUI editor and the second one the regular expression.
++ 
+Note that all characters that are "magic" in regular expressions must be escaped with a preceding backslash ("\") if they should occur literally within the expression.
+* The remaining part of the line after the delimiting equal sign is the replacement text for any DSLR text matching the regular expression. It may contain variable references, i.e., a variable name enclosed in braces. Optionally, the variable name may be followed by an exclamation mark ("!") and a transformation function, see below.
++ 
+Note that braces ("{" and "}") must be escaped with a preceding backslash ("\") if they should occur literally within the replacement string.
+
+
+Debugging of DSL expansion can be turned on, selectively, by using a comment line starting with "#/" which may contain one or more words from the table presented below.
+The resulting output is written to standard output.
+
+.Debug options for DSL expansion
+[cols="1,1", options="header"]
+|===
+| Word
+| Description
+
+|result
+|Prints the resulting DRL text, with line numbers.
+
+|steps
+|Prints each expansion step of condition and consequence
+            lines.
+
+|keyword
+|Dumps the internal representation of all DSL entries with
+            scope "keyword".
+
+|when
+|Dumps the internal representation of all DSL entries with
+            scope "when" or "*".
+
+|then
+|Dumps the internal representation of all DSL entries with
+            scope "then" or "*".
+
+|usage
+|Displays a usage statistic of all DSL entries.
+|===
+
+
+Below are some sample DSL definitions, with comments describing the language features they illustrate.
+
+[source]
+----
+# Comment: DSL examples
+
+#/ debug: display result and usage
+
+# keyword definition: replaces "regula" by "rule"
+[keyword][]regula=rule
+
+# conditional element: "T" or "t", "a" or "an", convert matched word
+[when][][Tt]here is an? {entity:\w+}=
+        ${entity!lc}: {entity!ucfirst} ()
+
+# consequence statement: convert matched word, literal braces
+[then][]update {entity:\w+}=modify( ${entity!lc} )\{ \}
+----
+
+
+The transformation of a DSLR file proceeds as follows:
+
+. The text is read into memory.
+. Each of the "keyword" entries is applied to the entire text. First, the regular expression from the keyword definition is modified by replacing white space sequences with a pattern matching any number of white space characters, and by replacing variable definitions with a capture made from the regular expression provided with the definition, or with the default (".*?"). Then, the DSLR text is searched exhaustively for occurrences of strings matching the modified regular expression. Substrings of a matching string corresponding to variable captures are extracted and replace variable references in the corresponding replacement text, and this text replaces the matching string in the DSLR text.
+. Sections of the DSLR text between "when" and "then", and "then" and "end", respectively, are located and processed in a uniform manner, line by line, as described below.
++ 
+For a line, each DSL entry pertaining to the line's section is taken in turn, in the order it appears in the DSL file.
+Its regular expression part is modified: white space is replaced by a pattern matching any number of white space characters; variable definitions with a regular expression are replaced by a capture with this regular expression, its default being ".*?". If the resulting regular expression matches all or part of the line, the matched part is replaced by the suitably modified replacement text.
++ 
+Modification of the replacement text is done by replacing variable references with the text corresponding to the regular expression capture.
+This text may be modified according to the string transformation function given in the variable reference; see below for details.
++ 
+If there is a variable reference naming a variable that is not defined in the same entry, the expander substitutes a value bound to a variable of that name, provided it was defined in one of the preceding lines of the current rule.
+. If a DSLR line in a condition is written with a leading hyphen, the expanded result is inserted into the last line, which should contain a pattern CE, i.e., a type name followed by a pair of parentheses. if this pair is empty, the expanded line (which should contain a valid constraint) is simply inserted, otherwise a comma (",") is inserted beforehand.
++ 
+If a DSLR line in a consequence is written with a leading hyphen, the expanded result is inserted into the last line, which should contain a "modify" statement, ending in a pair of braces ("{" and "}"). If this pair is empty, the expanded line (which should contain a valid method call) is simply inserted, otherwise a comma (",") is inserted beforehand. 
+
+
+[NOTE]
+====
+It is currently _not_ possible to use a line with a leading hyphen to insert text into other conditional element forms (e.g., "accumulate") or it may only work for the first insertion (e.g., "eval").
+====
+
+
+All string transformation functions are described in the following table.
+
+.String transformation functions
+[cols="1,1", options="header"]
+|===
+| Name
+| Description
+
+|uc
+|Converts all letters to upper case.
+
+|lc
+|Converts all letters to lower case.
+
+|ucfirst
+|Converts the first letter to upper case, and
+            all other letters to lower case.
+
+|num
+|Extracts all digits and "-" from the string. If the
+            last two digits in the original string are preceded by "." or
+            ",", a decimal period is inserted in the corresponding position.
+
+|__a__?__b__/__c__
+|Compares the string with string __a__, and if they
+            are equal, replaces it with __b__, otherwise with
+            __c__. But _c_ can be another triplet
+            __a__, __b__, __c__, so
+            that the entire structure is, in fact, a translation table.
+|===
+
+
+The following DSL examples show how to use string transformation functions.
+
+[source]
+----
+# definitions for conditions
+[when][]There is an? {entity}=${entity!lc}: {entity!ucfirst}()
+[when][]- with an? {attr} greater than {amount}={attr} <= {amount!num}
+[when][]- with a {what} {attr}={attr} {what!positive?>0/negative?%lt;0/zero?==0/ERROR}
+----
+
+
+A file containing a DSL definition has to be put under the resources folder or any of its subfolders like any other drools artifact.
+It must have the extension ``$$.$$dsl``, or alternatively be marked with type ``ResourceType.DSL``.
+when programmatically added to a ``KieFileSystem``.
+For a file using DSL definition, the extension `$$.$$dslr` should be used, while it can be added to a `KieFileSystem` with type ``ResourceType.DSLR``.
+
+For parsing and expanding a DSLR file the DSL configuration is read and supplied to the parser.
+Thus, the parser can "recognize" the DSL expressions and transform them into native rule language expressions.
+
+ifdef::backend-docbook[]
+[index]
+== Index
+// Generated automatically by the DocBook toolchain.
+endif::backend-docbook[]

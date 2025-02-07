@@ -1,0 +1,65 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id="con-migrate-pmml-to-kogito-overview_{context}"]
+= Migration of a PMML service to a {KOGITO} microservice
+
+[role="_abstract"]
+You can migrate PMML-based services to {KOGITO} microservices by moving the PMML resources from KJAR artifacts to the respective {KOGITO} project.
+
+[id="ref-migrate-pmml-to-kogito-considerations_{context}"]
+== Major changes and migration considerations
+
+The following table describes the major changes and features that affect migration from the {KIE_SERVER} API and KJAR to {KOGITO} deployments:
+
+.PMML migration considerations
+[cols="30%,35%,35%" options="header"]
+|===
+|Feature
+|In {KIE_SERVER} API
+|In {KOGITO} artifact
+
+|PMML models
+|stored in `src/main/resources` of KJAR.
+|copy as is to `src/main/resources`.
+
+|Other configuration options
+|configured using a system property or `kmodule.xml` file.
+|only default values are considered and no override of configuration is supported.
+
+|Command-based REST API
+|use `ApplyPmmlModelCommand` to request PMML evaluation.
+|not supported.
+
+|Domain-driven REST API
+|not supported.
+|advanced support for PMML model-specific generation.
+
+|===
+
+NOTE: The features that are not mentioned in the previous table are either not supported or not required in a cloud-native {KOGITO} deployment.
+
+[id="con-migration-pmml-strategy_{context}"]
+== Migration strategy
+
+The migration strategy includes the following steps:
+
+. Migrate a KJAR that is deployed on the {KIE_SERVER} to a {KOGITO} microservice.
+. Deploy the {KOGITO} microservice using {OPENSHIFT}.
+. Modify the external application from client PMML API on the {KIE_SERVER} to the REST API of the {KOGITO} deployment.

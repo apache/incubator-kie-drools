@@ -1,0 +1,92 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='drl-operator-precedence-ref_{context}']
+= Operator precedence in DRL pattern constraints
+
+DRL supports standard Java operator precedence for applicable constraint operators, with some exceptions and with some additional operators that are unique in DRL. The following table lists DRL operator precedence where applicable, from highest to lowest precedence:
+
+.Operator precedence in DRL pattern constraints
+[cols="2,2,3", options="header"]
+|===
+|Operator type
+|Operators
+|Notes
+
+|Nested or null-safe property access
+|`.`, `.()`, `!.`
+|Not standard Java semantics
+
+|`List` or `Map` access
+|`[]`
+|Not standard Java semantics
+
+|Constraint binding
+|`:`
+|Not standard Java semantics
+
+|Multiplicative
+|`*`, `/%`
+|
+
+|Additive
+|`+`, `-`
+|
+
+|Shift
+|`>>`, `>>>`, `<<`
+|
+
+|Relational
+|`<`, `\<=`, `>`, `>=`, `instanceof`
+|
+
+|Equality
+|`== !=`
+|Uses `equals()` and `!equals()` semantics, not standard Java `same` and `not same` semantics
+
+
+|Non-short-circuiting `AND`
+|`&`
+|
+
+|	Non-short-circuiting exclusive `OR`
+|`^`
+|
+
+|Non-short-circuiting inclusive `OR`
+|`\|`
+|
+
+|Logical `AND`
+|`&&`
+|
+
+|Logical `OR`
+|`\|\|`
+|
+
+|Ternary
+|`? :`
+|
+
+|Comma-separated `AND`
+|`,`
+|Not standard Java semantics
+|===

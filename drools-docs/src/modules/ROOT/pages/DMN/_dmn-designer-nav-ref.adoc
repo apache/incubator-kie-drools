@@ -1,0 +1,65 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='dmn-designer-nav-ref_{context}']
+= DMN designer navigation and properties in {DMN_EDITOR}
+
+The DMN designer in {DMN_EDITOR} provides the following additional features to help you navigate through the components and properties of decision requirements diagrams (DRDs).
+
+DMN file and diagram views::
+In the upper-left corner of the DMN designer, select the *Project Explorer* view to navigate between all DMN and other files or select the *Decision Navigator* view to navigate between the decision components, graphs, and boxed expressions of a selected DRD:
++
+--
+.Project Explorer view
+image::dmn/dmn-designer-project-view.png[]
+
+.Decision Navigator view
+image::dmn/dmn-designer-nav-view.png[]
+
+image::dmn/dmn-designer-nav-view2.png[]
+
+NOTE: The DRD components from any DMN models included in the DMN file (in the *Included Models* tab) are also listed in the *Decision Components* panel for the DMN file.
+
+In the upper-right corner of the DMN designer, select the *Explore diagram* icon to view an elevated preview of the selected DRD and to navigate between the nodes of the selected DRD:
+
+.Explore diagram view
+image::dmn/dmn-designer-preview.png[]
+--
+
+DRD properties and design::
+In the upper-right corner of the DMN designer, select the *Properties* icon to modify the identifying information, data types, and appearance of a selected DRD, DRD node, or boxed expression cell:
++
+--
+.DRD node properties
+image::dmn/dmn-designer-properties.png[]
+
+To view the properties of the entire DRD, click the DRD canvas background instead of a specific node.
+--
+
+DRD search::
+In the upper-right corner of the DMN designer, use the search bar to search for text that appears in your DRD. The search feature is especially helpful in complex DRDs with many nodes:
++
+.DRD search
+image::dmn/dmn-designer-search.png[]
+
+DMN decision service details::
+Select a decision service node in the DMN designer to view additional properties, including *Input Data*, *Encapsulated Decisions*, and *Output Decisions* in the *Properties* panel.
++
+.Decision Service details
+image::dmn/dmn-decision-service-details.png[]

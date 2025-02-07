@@ -1,0 +1,102 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='drl-declarations-without-metadata-con_{context}']
+= Type declarations without metadata in DRL
+
+A declaration of a new fact does not require any metadata, but must include a list of attributes or fields. If a type declaration does not include identifying attributes, the {RULE_ENGINE} searches for an existing fact class in the classpath and raises an error if the class is missing.
+
+The following example is a declaration of a new fact type `Person` with no metadata in a DRL file:
+
+.Example declaration of a new fact type with a rule
+[source]
+----
+declare Person
+  name : String
+  dateOfBirth : java.util.Date
+  address : Address
+end
+
+rule "Using a declared type"
+  when
+    $p : Person( name == "James" )
+  then   // Insert Mark, who is a customer of James.
+    Person mark = new Person();
+    mark.setName( "Mark" );
+    insert( mark );
+end
+----
+
+In this example, the new fact type `Person` has the three attributes `name`, `dateOfBirth`, and `address`. Each attribute has a type that can be any valid Java type, including another class that you create or a fact type that you previously declared. The `dateOfBirth` attribute has the type `java.util.Date`, from the Java API, and the `address` attribute has the previously defined fact type `Address`.
+
+To avoid writing the fully qualified name of a class every time you declare it, you can define the full class name as part of the `import` clause:
+
+.Example type declaration with the fully qualified class name in the import
+[source]
+----
+import java.util.Date
+
+declare Person
+    name : String
+    dateOfBirth : Date
+    address : Address
+end
+----
+
+When you declare a new fact type, the {RULE_ENGINE} generates at compile time a Java class representing the fact type. The generated Java class is a one-to-one JavaBeans mapping of the type definition.
+
+For example, the following Java class is generated from the example `Person` type declaration:
+
+.Generated Java class for the Person fact type declaration
+[source,java]
+----
+public class Person implements Serializable {
+    private String name;
+    private java.util.Date dateOfBirth;
+    private Address address;
+
+    // Empty constructor
+    public Person() {...}
+
+    // Constructor with all fields
+    public Person( String name, Date dateOfBirth, Address address ) {...}
+
+    // If keys are defined, constructor with keys
+    public Person( ...keys... ) {...}
+
+    // Getters and setters
+    // `equals` and `hashCode`
+    // `toString`
+}
+----
+
+You can then use the generated class in your rules like any other fact, as illustrated in the previous rule example with the `Person` type declaration:
+
+.Example rule that uses the declared Person fact type
+[source]
+----
+rule "Using a declared type"
+  when
+    $p : Person( name == "James" )
+  then   // Insert Mark, who is a customer of James.
+    Person mark = new Person();
+    mark.setName( "Mark" );
+    insert( mark );
+end
+----

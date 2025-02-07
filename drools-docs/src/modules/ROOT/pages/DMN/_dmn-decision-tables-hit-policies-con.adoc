@@ -1,0 +1,37 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='dmn-decision-tables-hit-policies-con_{context}']
+
+= Hit policies in DMN decision tables
+
+Hit policies determine how to reach an outcome when multiple rules in a decision table match the provided input values. For example, if one rule in a decision table applies a sales discount to military personnel and another rule applies a discount to students, then when a customer is both a student and in the military, the decision table hit policy must indicate whether to apply one discount or the other (*Unique*, *First*) or both discounts (*Collect Sum*). You specify the single character of the hit policy (*U*, *F*, *C+*) in the upper-left corner of the decision table.
+
+The following decision table hit policies are supported in DMN:
+
+* *Unique (U):* Permits only one rule to match. Any overlap raises an error.
+* *Any (A):* Permits multiple rules to match, but they must all have the same output. If multiple matching rules do not have the same output, an error is raised.
+* *Priority (P):* Permits multiple rules to match, with different outputs. The output that comes first in the output values list is selected.
+* *First (F):* Uses the first match in rule order.
+* *Collect (C+, C>, C<, C#):* Aggregates output from multiple rules based on an aggregation function.
+** *Collect ( C ):* Aggregates values in an arbitrary list.
+** *Collect Sum (C+):* Outputs the sum of all collected values. Values must be numeric.
+** *Collect Min (C<):* Outputs the minimum value among the matches. The resulting values must be comparable, such as numbers, dates, or text (lexicographic order).
+** *Collect Max (C>):* Outputs the maximum value among the matches. The resulting values must be comparable, such as numbers, dates or text (lexicographic order).
+** *Collect Count (C#):* Outputs the number of matching rules.

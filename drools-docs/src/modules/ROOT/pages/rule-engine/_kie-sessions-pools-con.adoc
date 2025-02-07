@@ -1,0 +1,44 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='kie-sessions-pools-con_{context}']
+
+= KIE session pools
+
+In use cases with large amounts of KIE runtime data and high system activity, KIE sessions might be created and disposed very frequently. A high turnover of KIE sessions is not always time consuming, but when the turnover is repeated millions of times, the process can become a bottleneck and require substantial clean-up effort.
+
+For these high-volume cases, you can use KIE session pools instead of many individual KIE sessions. To use a KIE session pool, you obtain a KIE session pool from a KIE container, define the initial number of KIE sessions in the pool, and create the KIE sessions from that pool as usual:
+
+.Example KIE session pool
+[source,java]
+----
+// Obtain a KIE session pool from the KIE container
+KieContainerSessionsPool pool = kContainer.newKieSessionsPool(10);
+
+// Create KIE sessions from the KIE session pool
+KieSession kSession = pool.newKieSession();
+----
+
+In this example, the KIE session pool starts with 10 KIE sessions in it, but you can specify the number of KIE sessions that you need. This integer value is the number of KIE sessions that are only initially created in the pool. If required by the running application, the number of KIE sessions in the pool can dynamically grow beyond that value.
+
+After you define a KIE session pool, the next time you use the KIE session as usual and call `dispose()` on it, the KIE session is reset and pushed back into the pool instead of being destroyed.
+
+KIE session pools typically apply to stateful KIE sessions, but KIE session pools can also affect stateless KIE sessions that you reuse with multiple `execute()` calls. When you create a stateless KIE session directly from a KIE container, the KIE session continues to internally create a new KIE session for each `execute()` invocation. Conversely, when you create a stateless KIE session from a KIE session pool, the KIE session internally uses only the specific KIE sessions provided by the pool.
+
+When you finish using a KIE session pool, you can call the `shutdown()` method on it to avoid memory leaks. Alternatively, you can call `dispose()` on the KIE container to shut down all the pools created from the KIE container.

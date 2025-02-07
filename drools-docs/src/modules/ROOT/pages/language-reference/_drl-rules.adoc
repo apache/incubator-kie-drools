@@ -1,0 +1,3752 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id="con-drl_{context}"]
+= Drools Rule Language (DRL)
+
+[role="_abstract"]
+Drools Rule Language (DRL) is a notation established by the https://www.drools.org/[Drools] open source business automation project for defining and describing business rules. You define DRL rules in `.drl` text files. A DRL file can contain one or more rules that define at a minimum the rule conditions (`when`) and actions (`then`).
+
+DRL files consist of the following components:
+
+.Components in a DRL file
+[source,subs="attributes+"]
+----
+package
+unit
+
+import
+
+declare   // Optional
+
+query  // Optional
+
+rule "rule name"
+    // Attributes
+    when
+        // Conditions
+    then
+        // Actions
+end
+
+rule "rule2 name"
+
+...
+
+----
+
+The following example DRL rule determines the age limit in a loan application decision service:
+
+.Example rule for loan application age limit
+[source]
+----
+rule "Underage"
+  when
+    /applicants[ applicantName : name, age < 21 ]
+    $application : /loanApplications[ applicant == applicantName ]
+  then
+    $application.setApproved( false );
+    $application.setExplanation( "Underage" );
+    update($application);
+end
+----
+
+A DRL file can contain single or multiple rules and queries, and can define resource declarations and attributes that are assigned and used by your rules and queries. The components in a DRL file are grouped in a defined rule unit that serves as a unique namespace for each group of rules. The DRL package followed by the rule unit definition must be listed at the top of a DRL file, and the rules are typically listed last. All other DRL components can follow any order.
+
+Each rule must have a unique name within the rule unit. If you use the same rule name more than once in any DRL file in the unit, the rules fail to compile. Rule names generally must follow standard Java identifier conventions. However, you can enclose rule names with double quotation marks (`rule "rule name"`) to  prevent possible compilation errors, especially if you use spaces in rule names.
+
+[id="new-and-traditional-syntax_{context}"]
+== New and traditional syntax
+In Drools 10, we promote a new DRL syntax based on rule unit, data source, and OOPath. Hence, you will see such a new syntax in DRL syntax examples. However, Drools 10 still fully supports traditional DRL syntax that has been used in prior versions.
+
+.Example rule for loan application with traditional syntax
+[source]
+----
+rule "Underage"
+  when
+    Applicant( applicantName : name, age < 21 )
+    $application : LoanApplication( applicant == applicantName )
+  then
+    $application.setApproved( false );
+    $application.setExplanation( "Underage" );
+    update($application);
+end
+----
+
+For the traditional syntax, please refer to xref:ref-con-drl_drl-rules-traditional[]
+
+[id="con-drl-packages_{context}"]
+== Packages in DRL
+
+[role="_abstract"]
+A package is a folder of related assets in {PRODUCT}, such as data objects, DRL files, decision tables, and other asset types. A package also serves as a unique namespace for each group of rules. A single rule base can contain multiple packages. You typically store all the rules for a package in the same file as the package declaration so that the package is self-contained. However, you can import objects from other packages that you want to use in the rules.
+
+The following example is a package name and namespace for a DRL file in a mortgage application decision service:
+
+.Example package definition in a DRL file
+[source]
+----
+package org.mortgages;
+----
+
+The following railroad diagram shows all the components that may make up a package:
+
+.Package
+image::language-reference/package.png[align="center"]
+
+Note that a package _must_ have a namespace and be declared using standard Java conventions for package names; i.e., no spaces, unlike rule names which allow spaces.
+In terms of the order of elements, they can appear in any order in the rule file, with the exception of the `package` and `unit` statements, which must be at the top of the file.
+In all cases, the semicolons are optional.
+
+Notice that any rule attribute (as described in the section xref:ref-rules-attributes_{context}[]) may also be written at package level, superseding the attribute's default value.
+The modified default may still be replaced by an attribute setting within a rule.
+
+[id="con-drl-rule-units_{context}"]
+== Rule units in DRL
+
+[role="_abstract"]
+Rule Unit API is explained in xref:KIE/index.adoc#rule-unit-api_packaging-deploying[Rule Unit API]. This section focuses on how to use rule units in DRL.
+
+The following example is a rule unit designated in a DRL file in a mortgage application decision service:
+
+.Example package definition and rule unit designation in a DRL file
+[source]
+----
+package org.mortgages;
+unit MortgageRules;
+----
+
+To define a rule unit, you need to write a Java class that implements `RuleUnitData` as written in xref:KIE/index.adoc#rule-unit-api_packaging-deploying[Rule Unit API]. Alternatively, you can declare the rule unit by implementing the `RuleUnitData` interface directly in DRL:
+
+.Example DRL rule unit file
+[source]
+----
+package org.mortgages;
+unit MortgageRules;
+
+import org.drools.ruleunits.api.RuleUnitData;
+import org.drools.ruleunits.api.DataStream;
+
+declare Person
+    name : String
+    dateOfBirth : Date
+    address : Address
+end
+
+declare MortgageRules extends RuleUnitData
+  persons: DataStream<Person>
+end
+
+rule "Using a rule unit with a declared type"
+  when
+    $p : /persons[ name == "James" ]
+  then   // Insert Mark, who is a customer of James.
+    Person mark = new Person();
+    mark.setName( "Mark" );
+    persons.append( mark );
+end
+----
+
+[NOTE]
+====
+If you declare a rule unit in DRL, the rule unit class will be generated by {PRODUCT} at build time. It means that you can't refer to the class in your client codes. Declared rule units are only useful when the client is also auto-generated, for example, REST endpoint generation by Drools-Quarkus integration.
+====
+
+To separate the fact types from the rule unit for use with other DRL rules, you can declare the types in a separate DRL file and then use the DRL rule file to declare the data sources by using the `RuleUnitData` interface implementation:
+
+.Example DRL type declaration as a separate file
+[source]
+----
+package org.mortgages;
+
+declare Person
+    name : String
+    dateOfBirth : Date
+    address : Address
+end
+----
+
+.Example DRL rule unit file without explicitly defined types
+[source]
+----
+package org.mortgages;
+unit MortgageRules;
+
+import org.drools.ruleunits.api.RuleUnitData;
+import org.drools.ruleunits.api.DataStream;
+
+declare MortgageRules extends RuleUnitData
+  persons: DataStream<Person>
+end
+
+rule "Using a rule unit with a declared type"
+  when
+    $p : /persons[ name == "James" ]
+  then   // Insert Mark, who is a customer of James.
+    Person mark = new Person();
+    mark.setName( "Mark" );
+    persons.append( mark );
+end
+----
+
+In this example, `persons` is a `DataStream` data source for facts of type `Person`. Data sources are typed sources of data that rule units can subscribe to for updates. You interact with the rule unit through the data sources it exposes. A data source can be a `DataStream` source for append-only storage, a `DataStore` source for writable storage to add or remove data, or a `SingletonStore` source for writable storage to set and clear a single element.
+
+As part of your data source declaration, you also import `org.drools.ruleunits.api.RuleUnitData` and the relevant data source support, such as `import org.drools.ruleunits.api.DataStream` in this example.
+
+You can add several rules to the same DRL file, or further break down the rule set and type declarations by creating more files. However you construct your rule sets, ensure that all DRL rule files exist in the same directory and start with the correct `package` and `unit` declarations.
+
+=== Rule unit use case
+
+As an additional rule unit use case, consider the following example decision service that evaluates incoming data from a heat sensor for temperature measurements and produces alerts when the temperature is above a specified threshold.
+
+This example service uses the following `types.drl` file in the `src/main/resources/org/acme` folder of the {PRODUCT} project to declare the `Temperature` and the `Alert` fact types:
+
+.Example DRL type declarations
+[source]
+----
+package com.acme;
+
+declare Temperature
+  value: double
+end
+
+declare Alert
+    severity: String
+    message: String
+end
+----
+
+To define DRL rules that pattern-match against `Temperature` values, the example service must expose an entry point for the incoming data to the {RULE_ENGINE} and publish alerts on a separate channel. To establish this data source for decision data, the example service uses a rule unit with `DataStream` data sources for `Temperature` objects and for `Alert` objects.
+
+The `DataStream` data source is an append-only store for incoming data, similar to a queue. This type of data source is logical for both sources in this example because the temperature data is coming from an external source (the sensor) and the service publishes the alerts externally as they are produced.
+
+The example service uses the following `MonitoringService.drl` file in the same `src/main/resources/com/acme` folder of the {PRODUCT} project to declare the data sources for the fact types and defines the rules for the rule unit:
+
+.Example DRL rule unit file
+[source]
+----
+package com.acme;
+unit MonitoringService;
+
+import org.drools.ruleunits.api.RuleUnitData;
+import org.drools.ruleunits.api.DataStream;
+
+declare MonitoringService extends RuleUnitData
+  temperatures: DataStream<Temperature>
+  alertData: DataStream<Alert>
+end
+
+rule "tooHot"
+when
+    $temp : /temperatures[value >= 80]
+then
+    alertData.append(new Alert("HIGH", "Temperature exceeds threshold: " + temp.value));
+end
+----
+
+The rule unit implements the required `RuleUnitData` interface and declares the data sources for the previously defined types. The sample rule raises an alert when the temperature reaches or exceeds 80 degrees.
+
+[id="con-drl-imports_{context}"]
+== Import statements in DRL
+
+.Import
+image::language-reference/import.png[align="center"]
+
+[role="_abstract"]
+Similar to import statements in Java, imports in DRL files identify the fully qualified paths and type names for any objects that you want to use in the rules. You specify the package and data object in the format `packageName.objectName`, with multiple imports on separate lines. The {RULE_ENGINE} automatically imports classes from the Java package with the same name as the DRL package and from the package `java.lang`.
+
+The following example is an import statement for a loan application object in a mortgage application decision service:
+
+.Example import statement in a DRL file
+[source]
+----
+import org.mortgages.LoanApplication;
+----
+
+[id="con-drl-declarations_{context}"]
+== Type declarations and metadata in DRL
+
+.Type declaration
+image::language-reference/type_declaration.png[align="center"]
+
+.Metadata
+image::language-reference/meta_data.png[align="center"]
+
+[role="_abstract"]
+Declarations in DRL files define new fact types or metadata for fact types to be used by rules in the DRL file:
+
+* *New fact types:* The default fact type in the `java.lang` package of {PRODUCT} is `Object`, but you can declare other types in DRL files as needed. Declaring fact types in DRL files enables you to define a new fact model directly in the {RULE_ENGINE}, without creating models in a lower-level language like Java. You can also declare a new type when a domain model is already built and you want to complement this model with additional entities that are used mainly during the reasoning process.
+* *Metadata for fact types:* You can associate metadata in the format `@__KEY__( __VALUE__ )` with new or existing facts. Metadata can be any kind of data that is not represented by the fact attributes and is consistent among all instances of that fact type. The metadata can be queried at run time by the {RULE_ENGINE} and used in the reasoning process.
+
+[id="con-drl-declarations-without-metadata_{context}"]
+=== Type declarations without metadata in DRL
+
+[role="_abstract"]
+A declaration of a new fact does not require any metadata, but must include a list of attributes or fields. If a type declaration does not include identifying attributes, the {RULE_ENGINE} searches for an existing fact class in the classpath and raises an error if the class is missing.
+
+For example, the following DRL file contains a declaration of a new fact type `Person` from a `persons` data source and uses no metadata:
+
+.Example declaration of a new fact type with a rule
+[source]
+----
+declare Person
+  name : String
+  dateOfBirth : java.util.Date
+  address : Address
+end
+
+rule "Using a declared type"
+  when
+    $p : /persons[ name == "James" ]
+  then   // Insert Mark, who is a customer of James.
+    Person mark = new Person();
+    mark.setName( "Mark" );
+    persons.append( mark );
+end
+----
+
+In this example, the new fact type `Person` has the three attributes `name`, `dateOfBirth`, and `address`. Each attribute has a type that can be any valid Java type, including another class that you create or a fact type that you previously declared. The `dateOfBirth` attribute has the type `java.util.Date`, from the Java API, and the `address` attribute has the previously defined fact type `Address`.
+
+To avoid writing the fully qualified name of a class every time you declare it, you can define the full class name as part of the `import` clause:
+
+.Example type declaration with the fully qualified class name in the import
+[source]
+----
+import java.util.Date
+
+declare Person
+    name : String
+    dateOfBirth : Date
+    address : Address
+end
+----
+
+When you declare a new fact type, the {RULE_ENGINE} generates at compile time a Java class representing the fact type. The generated Java class is a one-to-one JavaBeans mapping of the type definition.
+
+For example, the following Java class is generated from the example `Person` type declaration:
+
+.Generated Java class for the Person fact type declaration
+[source,java]
+----
+public class Person implements Serializable {
+    private String name;
+    private java.util.Date dateOfBirth;
+    private Address address;
+
+    // Empty constructor
+    public Person() {...}
+
+    // Constructor with all fields
+    public Person( String name, Date dateOfBirth, Address address ) {...}
+
+    // If keys are defined, constructor with keys
+    public Person( ...keys... ) {...}
+
+    // Getters and setters
+    // `equals` and `hashCode`
+    // `toString`
+}
+----
+
+You can then use the generated class in your rules like any other fact, as illustrated in the previous rule example with the `Person` type declaration from a `persons` data source:
+
+.Example rule that uses the declared Person fact type
+[source]
+----
+rule "Using a declared type"
+  when
+    $p : /persons[ name == "James" ]
+  then   // Insert Mark, who is a customer of James.
+    Person mark = new Person();
+    mark.setName( "Mark" );
+    persons.append( mark );
+end
+----
+
+[id="con-drl-declarations-enumerative_{context}"]
+=== Enumerative type declarations in DRL
+
+[role="_abstract"]
+DRL supports the declaration of enumerative types in the format `declare enum __FACT_TYPE__`, followed by a comma-separated list of values ending with a semicolon. You can then use the enumerative list in the rules in the DRL file.
+
+For example, the following enumerative type declaration defines days of the week for an employee scheduling rule:
+
+.Example enumerative type declaration with a scheduling rule
+[source]
+----
+declare enum DaysOfWeek
+   SUN("Sunday"),MON("Monday"),TUE("Tuesday"),WED("Wednesday"),THU("Thursday"),FRI("Friday"),SAT("Saturday");
+
+   fullName : String
+end
+
+rule "Using a declared Enum"
+  when
+    $emp : /employees[ dayOff == DaysOfWeek.MON ]
+  then
+    ...
+end
+----
+
+[id="con-drl-declarations-extended_{context}"]
+=== Extended type declarations in DRL
+
+[role="_abstract"]
+DRL supports type declaration inheritance in the format `declare __FACT_TYPE_1__ extends __FACT_TYPE_2__`. To extend a type declared in Java by a subtype declared in DRL, you repeat the parent type in a declaration statement without any fields.
+
+For example, the following type declarations extend a `Student` type from a top-level `Person` type, and a `LongTermStudent` type from the `Student` subtype:
+
+.Example extended type declarations
+[source]
+----
+import org.people.Person
+
+declare Person end
+
+declare Student extends Person
+    school : String
+end
+
+declare LongTermStudent extends Student
+    years : int
+    course : String
+end
+----
+
+[id="con-drl-declarations-with-metadata_{context}"]
+=== Type declarations with metadata in DRL
+
+[role="_abstract"]
+You can associate metadata in the format `@__KEY__( __VALUE__ )` (the value is optional) with fact types or fact attributes. Metadata can be any kind of data that is not represented by the fact attributes and is consistent among all instances of that fact type. The metadata can be queried at run time by the {RULE_ENGINE} and used in the reasoning process. Any metadata that you declare before the attributes of a fact type are assigned to the fact type, while metadata that you declare after an attribute are assigned to that particular attribute.
+
+In the following example, the two metadata attributes `@author` and `@dateOfCreation` are declared for the `Person` fact type, and the two metadata items `@key` (literal) and `@maxLength` are declared for the `name` attribute. The `@key` literal metadata attribute has no required value, so the parentheses and the value are omitted.
+
+.Example metadata declaration for fact types and attributes
+[source]
+----
+import java.util.Date
+
+declare Person
+    @author( Bob )
+    @dateOfCreation( 01-Feb-2009 )
+
+    name : String @key @maxLength( 30 )
+    dateOfBirth : Date
+    address : Address
+end
+----
+
+For declarations of metadata attributes for existing types, you can identify the fully qualified class name as part of the `import` clause for all declarations or as part of the individual `declare` clause:
+
+.Example metadata declaration for an imported type
+[source]
+----
+import org.drools.examples.Person
+
+declare Person
+    @author( Bob )
+    @dateOfCreation( 01-Feb-2009 )
+end
+----
+
+.Example metadata declaration for a declared type
+[source]
+----
+declare org.drools.examples.Person
+    @author( Bob )
+    @dateOfCreation( 01-Feb-2009 )
+end
+----
+
+[id="ref-drl-declarations-metadata-tags_{context}"]
+=== Metadata tags for fact type and attribute declarations in DRL
+
+Although you can define custom metadata attributes in DRL declarations, the {RULE_ENGINE} also supports the following predefined metadata tags for declarations of fact types or fact type attributes.
+
+[NOTE]
+====
+The examples in this section that refer to the `VoiceCall` class assume that the sample application domain model includes the following class details:
+
+.VoiceCall fact class in an example Telecom domain model
+[source,java]
+----
+public class VoiceCall {
+  private String  originNumber;
+  private String  destinationNumber;
+  private Date    callDateTime;
+  private long    callDuration;  // in milliseconds
+
+  // Constructors, getters, and setters
+}
+----
+====
+
+@role::
+This tag determines whether a given fact type is handled as a regular fact or an event in the {RULE_ENGINE} during complex event processing.
++
+--
+Default parameter: `fact`
+
+Supported parameters: `fact`, `event`
+
+[source]
+----
+@role( fact | event )
+----
+
+.Example: Declare VoiceCall as event type
+[source]
+----
+declare VoiceCall
+  @role( event )
+end
+----
+--
+
+@timestamp::
+This tag is automatically assigned to every event in the {RULE_ENGINE}. By default, the time is provided by the session clock and assigned to the event when it is inserted into the working memory of the {RULE_ENGINE}. You can specify a custom time stamp attribute instead of the default time stamp added by the session clock.
++
+--
+Default parameter: The time added by the {RULE_ENGINE} session clock
+
+Supported parameters: Session clock time or custom time stamp attribute
+
+[source,subs="+quotes"]
+----
+@timestamp( __ATTRIBUTE_NAME__ )
+----
+
+.Example: Declare VoiceCall timestamp attribute
+[source]
+----
+declare VoiceCall
+  @role( event )
+  @timestamp( callDateTime )
+end
+----
+--
+
+@duration::
+This tag determines the duration time for events in the {RULE_ENGINE}. Events can be interval-based events or point-in-time events. Interval-based events have a duration time and persist in the working memory of the {RULE_ENGINE} until their duration time has lapsed. Point-in-time events have no duration and are essentially interval-based events with a duration of zero. By default, every event in the {RULE_ENGINE} has a duration of zero. You can specify a custom duration attribute instead of the default.
++
+--
+Default parameter: Null (zero)
+
+Supported parameters: Custom duration attribute
+
+[source,subs="+quotes"]
+----
+@duration( __ATTRIBUTE_NAME__ )
+----
+
+.Example: Declare VoiceCall duration attribute
+[source]
+----
+declare VoiceCall
+  @role( event )
+  @timestamp( callDateTime )
+  @duration( callDuration )
+end
+----
+--
+
+@expires::
+This tag determines the time duration before an event expires in the working memory of the {RULE_ENGINE}. By default, an event expires when the event can no longer match and activate any of the current rules. You can define an amount of time after which an event should expire. This tag definition also overrides the implicit expiration offset calculated from temporal constraints and sliding windows in the KIE base. This tag is available only when the {RULE_ENGINE} is running in stream mode.
++
+--
+Default parameter: Null (event expires after event can no longer match and activate rules)
+
+Supported parameters: Custom `timeOffset` attribute in the format `[#d][#h][#m][#s][#ms]`
+
+[source,subs="+quotes"]
+----
+@expires( __TIME_OFFSET__ )
+----
+
+.Example: Declare expiration offset for VoiceCall events
+[source]
+----
+declare VoiceCall
+  @role( event )
+  @timestamp( callDateTime )
+  @duration( callDuration )
+  @expires( 1h35m )
+end
+----
+--
+
+@typesafe::
+This tab determines whether a given fact type is compiled with or without type safety. By default, all type declarations are compiled with type safety enabled. You can override this behavior to type-unsafe evaluation, where all constraints are generated as MVEL constraints and executed dynamically. This is useful when dealing with collections that do not have any generics or mixed type collections.
++
+--
+Default parameter: `true`
+
+Supported parameters: `true`, `false`
+
+[source,subs="+quotes"]
+----
+@typesafe( __BOOLEAN__ )
+----
+
+.Example: Declare VoiceCall for type-unsafe evaluation
+[source]
+----
+declare VoiceCall
+  @role( fact )
+  @typesafe( false )
+end
+----
+--
+
+@serialVersionUID::
+This tag defines an identifying `serialVersionUID` value for a serializable class in a fact declaration. If a serializable class does not explicitly declare a `serialVersionUID`, the serialization run time calculates a default `serialVersionUID` value for that class based on various aspects of the class, as described in the https://docs.oracle.com/javase/10/docs/specs/serialization/index.html[Java Object Serialization Specification]. However, for optimal deserialization results and for greater compatibility with serialized KIE sessions, set the `serialVersionUID` as needed in the relevant class or in your DRL declarations.
++
+--
+Default parameter: Null
+
+Supported parameters: Custom `serialVersionUID` integer
+
+[source,subs="+quotes"]
+----
+@serialVersionUID( __INTEGER__ )
+----
+
+.Example: Declare serialVersionUID for a VoiceCall class
+[source]
+----
+declare VoiceCall
+  @serialVersionUID( 42 )
+end
+----
+--
+
+@key::
+This tag enables a fact type attribute to be used as a key identifier for the fact type. The generated class can then implement the `equals()` and `hashCode()` methods to determine if two instances of the type are equal to each other. The {RULE_ENGINE} can also generate a constructor using all the key attributes as parameters.
++
+--
+Default parameter: None
+
+Supported parameters: None
+
+[source,subs="+quotes"]
+----
+__ATTRIBUTE_DEFINITION__ @key
+----
+
+.Example: Declare Person type attributes as keys
+[source]
+----
+declare Person
+    firstName : String @key
+    lastName : String @key
+    age : int
+end
+----
+
+For this example, the {RULE_ENGINE} checks the `firstName` and `lastName` attributes to determine if two instances of `Person` are equal to each other, but it does not check the `age` attribute. The {RULE_ENGINE} also implicitly generates three constructors: one without parameters, one with the `@key` fields, and one with all fields:
+
+.Example constructors from the key declarations
+[source]
+----
+Person() // Empty constructor
+
+Person( String firstName, String lastName )
+
+Person( String firstName, String lastName, int age )
+----
+
+You can then create instances of the type based on the key constructors, as shown in the following example:
+
+.Example instance using the key constructor
+[source,java]
+----
+Person person = new Person( "John", "Doe" );
+----
+--
+
+//@comment Currently TBD in Kogito, so excluding for now. (Stetson 7 Apr 2020)
+////
+@position::
+This tag determines the position of a declared fact type attribute or field in a positional argument, overriding the default declared order of attributes. You can use this tag to modify positional constraints in patterns while maintaining a consistent format in your type declarations and positional arguments. You can use this tag only for fields in classes on the classpath. If some fields in a single class use this tag and some do not, the attributes without this tag are positioned last, in the declared order. Inheritance of classes is supported, but not interfaces of methods.
++
+--
+Default parameter: None
+
+Supported parameters: Any integer
+
+[source,subs="+quotes"]
+----
+__ATTRIBUTE_DEFINITION__ @position ( __INTEGER__ )
+----
+
+.Example: Declare a fact type and override declared order
+[source]
+----
+declare Person
+    firstName : String @position( 1 )
+    lastName : String @position( 0 )
+    age : int @position( 2 )
+    occupation: String
+end
+----
+
+In this example, the attributes are prioritized in positional arguments in the following order:
+
+. `lastName`
+. `firstName`
+. `age`
+. `occupation`
+
+In positional arguments, you do not need to specify the field name because the position maps to a known named field. For example, the argument `Person( lastName == "Doe" )` is the same as `Person( "Doe"; )`, where the `lastName` field has the highest position annotation in the DRL declaration. The semicolon `;` indicates that everything before it is a positional argument. You can mix positional and named arguments on a pattern by using the semicolon to separate them. Any variables in a positional argument that have not yet been bound are bound to the field that maps to that position.
+
+The following example patterns illustrate different ways of constructing positional and named arguments. The patterns have two constraints and a binding, and the semicolon differentiates the positional section from the named argument section. Variables and literals and expressions using only literals are supported in positional arguments, but not variables alone.
+
+.Example patterns with positional and named arguments
+[source]
+----
+Person( "Doe", "John", $a; )
+
+Person( "Doe", "John"; $a : age )
+
+Person( "Doe"; firstName == "John", $a : age )
+
+Person( lastName == "Doe"; firstName == "John", $a : age )
+----
+
+Positional arguments can be classified as _input arguments_ or _output arguments_. Input arguments contain a previously declared binding and constrain against that binding using unification. Output arguments generate the declaration and bind it to the field represented by the positional argument when the binding does not yet exist.
+
+In extended type declarations, use caution when defining `@position` annotations because the attribute positions are inherited in subtypes. This inheritance can result in a mixed attribute order that can be confusing in some cases. Two fields can have the same `@position` value and consecutive values do not need to be declared. If a position is repeated, the conflict is solved using inheritance, where position values in the parent type have precedence, and then using the declaration order from the first to last declaration.
+
+For example, the following extended type declarations result in mixed positional priorities:
+
+.Example extended fact type with mixed position annotations
+[source]
+----
+declare Person
+    firstName : String @position( 1 )
+    lastName : String @position( 0 )
+    age : int @position( 2 )
+    occupation: String
+end
+
+declare Student extends Person
+    degree : String @position( 1 )
+    school : String @position( 0 )
+    graduationDate : Date
+end
+----
+
+In this example, the attributes are prioritized in positional arguments in the following order:
+
+. `lastName` (position 0 in the parent type)
+. `school` (position 0 in the subtype)
+. `firstName` (position 1 in the parent type)
+. `degree` (position 1 in the subtype)
+. `age` (position 2 in the parent type)
+. `occupation` (first field with no position annotation)
+. `graduationDate` (second field with no position annotation)
+--
+////
+
+[id="con-drl-queries_{context}"]
+== Queries in DRL
+
+.Query
+image::language-reference/query.png[align="center"]
+
+[role="_abstract"]
+Queries in DRL files search the working memory of the {RULE_ENGINE} for facts related to the rules in the DRL file. You add the query definitions in DRL files and then obtain the matching results in your application code. Queries search for a set of defined conditions and do not require `when` or `then` specifications. Query names are scoped to the rule unit, so each query name must be unique within the same rule unit. In {PRODUCT}, queries are automatically exposed as REST endpoints.
+
+The following example is a query definition for an `Alert` object with a `severity` field set to `HIGH`:
+
+.Example query definition in a DRL file
+[source]
+----
+package com.acme;
+unit MonitoringService;
+
+query highSeverity
+    alerts : /alertData[ severity == "HIGH" ]
+end
+----
+
+{PRODUCT} automatically exposes this query through an endpoint `/high-severity`.
+
+For this example, assume that the `MonitoringService` rule unit class has the following form:
+
+.Example Java rule unit class
+[source,java]
+----
+package com.acme;
+
+import org.drools.ruleunits.api.DataSource;
+import org.drools.ruleunits.api.DataStream;
+
+public class MonitoringService implements RuleUnitData {
+    private DataStream<Temperature> temperature = DataSource.createStream();
+    private DataStream<Alert> alertData = DataSource.createStream();
+    public DataStream<Temperature> getTemperature() { return temperature; }
+    public DataStream<Alert> getAlertData() { return alertData; }
+}
+----
+
+In this case, you can invoke the query using the following command:
+
+.Example POST request to the `/high-severity` endpoint
+[source]
+----
+$ curl -X POST \
+        -H 'Accept: application/json' \
+        -H 'Content-Type: application/json' \
+        -d '{ "eventData": [ { "type": "temperature", "value" : 20 }, { "type": "temperature", "value" : 100 } ] }' \
+        http://localhost:8080/high-severity
+----
+
+.Example response (JSON)
+[source,json]
+----
+{
+    "alerts" : [
+        {
+            "severity" : "HIGH",
+            "message" : "Temperature exceeds threshold: 100"
+        }
+    ]
+}
+----
+
+This example submits the data to the `eventData` data source and returns the result of the `highSeverity` query as a response.
+
+
+////
+//@comment: Needs update for Kogito, but even then is legacy. Leaving for now until decided. (Stetson 6 Apr 2020)
+[id="con-drl-globals_{context}"]
+== Global variables in DRL
+
+.Global
+image::language-reference/global.png[align="center"]
+
+[role="_abstract"]
+Global variables in DRL files typically provide data or services for the rules, such as application services used in rule consequences, and return data from rules, such as logs or values added in rule consequences. You set the global value in the working memory of the {RULE_ENGINE} through a KIE session configuration or REST operation, declare the global variable above the rules in the DRL file, and then use it in an action (`then`) part of the rule. For multiple global variables, use separate lines in the DRL file.
+
+The following example illustrates a global variable list configuration for the {RULE_ENGINE} and the corresponding global variable definition in the DRL file:
+
+.Example global list configuration for the {RULE_ENGINE}
+[source]
+----
+List<String> list = new ArrayList<>();
+KieSession kieSession = kiebase.newKieSession();
+kieSession.setGlobal( "myGlobalList", list );
+----
+
+.Example global variable definition with a rule
+[source]
+----
+global java.util.List myGlobalList;
+
+rule "Using a global"
+  when
+    // Empty
+  then
+    myGlobalList.add( "My global list" );
+end
+----
+
+[WARNING]
+====
+Do not use global variables to establish conditions in rules unless a global variable has a constant immutable value. Global variables are not inserted into the working memory of the {RULE_ENGINE}, so the {RULE_ENGINE} cannot track value changes of variables.
+
+Do not use global variables to share data between rules. Rules always reason and react to the working memory state, so if you want to pass data from rule to rule, assert the data as facts into the working memory of the {RULE_ENGINE}.
+====
+
+A use case for a global variable might be an instance of an email service. In your integration code that is calling the {RULE_ENGINE}, you obtain your `emailService` object and then set it in the working memory of the {RULE_ENGINE}. In the DRL file, you declare that you have a global of type `emailService` and give it the name `"email"`, and then in your rule consequences, you can use actions such as `email.sendSMS(number, message)`.
+
+If you declare global variables with the same identifier in multiple packages, then you must set all the packages with the same type so that they all reference the same global value.
+////
+
+[id="ref-rules-attributes_{context}"]
+== Rule attributes in DRL
+
+.Rule attributes
+image::language-reference/rule_attributes.png[align="center"]
+
+[role="_abstract"]
+Rule attributes are additional specifications that you can add to business rules to modify rule behavior.
+In DRL files, you typically define rule attributes above the rule conditions and actions, with multiple attributes on separate lines, in the following format:
+
+[source]
+----
+rule "rule_name"
+    // Attribute
+    // Attribute
+    when
+        // Conditions
+    then
+        // Actions
+end
+----
+
+The following table lists the names and supported values of the attributes that you can assign to rules:
+
+.Rule attributes
+[cols="30%,70%", options="header"]
+|===
+|Attribute
+|Value
+
+|`salience`
+|An integer defining the priority of the rule. Rules with a higher salience value are given higher priority when ordered in the internalMatch queue.
+
+Example: `salience 10`
+
+|`enabled`
+|A Boolean value. When the option is selected, the rule is enabled. When the option is not selected, the rule is disabled.
+
+Example: `enabled true`
+
+|`date-effective`
+|A string containing a date and time definition. The rule can be activated only if the current date and time is after a `date-effective` attribute.
+
+Example: `date-effective "4-Sep-2018"`
+
+|`date-expires`
+|A string containing a date and time definition. The rule cannot be activated if the current date and time is after the `date-expires` attribute.
+
+Example: `date-expires "4-Oct-2018"`
+
+|`no-loop`
+|A Boolean value. When the option is selected, the rule cannot be reactivated (looped) if a consequence of the rule re-triggers a previously met condition. When the condition is not selected, the rule can be looped in these circumstances.
+
+Example: `no-loop true`
+
+|`activation-group`
+|A string identifying an internalMatch (or XOR) group to which you want to assign the rule. In internalMatch groups, only one rule can be activated. The first rule to fire will cancel all pending internalMatches of all rules in the internalMatch group.
+
+Example: `activation-group "GroupName"`
+
+|`duration`
+|A long integer value defining the duration of time in milliseconds after which the rule can be activated, if the rule conditions are still met.
+
+Example: `duration 10000`
+
+|`timer`
+|A string identifying either `int` (initialDelay interval) or `cron` timer definitions for scheduling the rule.
+
+Example: `timer ( int: 30s 5m )`  (every 5 minutes after a 30-second delay)
+
+         `timer ( cron:* 0/15 * * * ? )`  (every 15 minutes)
+
+|`calendar`
+|A http://www.quartz-scheduler.org/[Quartz] calendar definition for scheduling the rule.
+
+Example: `calendars "* * 0-7,18-23 ? * *"`  (exclude non-business hours)
+
+|`auto-focus`
+|A Boolean value, applicable only to rules within agenda groups. When the option is selected, the next time the rule is activated, a focus is automatically given to the agenda group to which the rule is assigned.
+
+Example: `auto-focus true`
+
+|`lock-on-active`
+|A Boolean value, applicable only to rules within rule flow groups or agenda groups. When the option is selected, the next time the ruleflow group for the rule becomes active or the agenda group for the rule receives a focus, the rule cannot be activated again until the ruleflow group is no longer active or the agenda group loses the focus. This is a stronger version of the `no-loop` attribute, because the internalMatch of a matching rule is discarded regardless of the origin of the update (not only by the rule itself). This attribute is ideal for calculation rules where you have a number of rules that modify a fact and you do not want any rule re-matching and firing again.
+
+Example: `lock-on-active true`
+
+|`dialect`
+|A string identifying either `JAVA` or `MVEL` as the language to be used for code expressions in the rule. By default, the rule uses the dialect specified at the package level. Any dialect specified here overrides the package dialect setting for the rule.
+
+Example: `dialect "JAVA"`
+|===
+
+[id="con-drl-timers-calendars_{context}"]
+=== Timer and calendar rule attributes in DRL
+
+[role="_abstract"]
+Timers and calendars are DRL rule attributes that enable you to apply scheduling and timing constraints to your DRL rules. These attributes require additional configurations depending on the use case.
+
+The `timer` attribute in DRL rules is a string identifying either `int` (interval) or `cron` timer definitions for scheduling a rule and supports the following formats:
+
+.Timer attribute formats
+[source,subs=""+quotes"]
+----
+timer ( int: __INITIAL_DELAY__ __REPEAT_INTERVAL__ )
+
+timer ( cron: __CRON_EXPRESSION__ )
+----
+
+.Example interval timer attributes
+[source]
+----
+// Run after a 30-second delay
+timer ( int: 30s )
+
+// Run every 5 minutes after a 30-second delay each time
+timer ( int: 30s 5m )
+----
+
+.Example cron timer attribute
+[source]
+----
+// Run every 15 minutes
+timer ( cron:* 0/15 * * * ? )
+----
+
+Interval timers follow the semantics of `java.util.Timer` objects, with an initial delay and an optional repeat interval. Cron timers follow standard Unix cron expressions.
+
+The following example DRL rule uses a cron timer to send an SMS text message every 15 minutes:
+
+.Example DRL rule with a cron timer
+[source]
+----
+rule "Send SMS message every 15 minutes"
+  timer ( cron:* 0/15 * * * ? )
+  when
+    $a : Alarm( on == true )
+  then
+    channels[ "sms" ].insert( new Sms( $a.mobileNumber, "The alarm is still on." );
+end
+----
+
+Generally, a rule that is controlled by a timer becomes active when the rule is triggered and the rule consequence is executed repeatedly, according to the timer settings. The execution stops when the rule condition no longer matches incoming facts. However, the way the {RULE_ENGINE} handles rules with timers depends on whether the {RULE_ENGINE} is in _active mode_ or in _passive mode_.
+
+By default, the {RULE_ENGINE} runs in _passive mode_ and evaluates rules, according to the defined timer settings, when a user or an application explicitly calls `fireAllRules()`. Conversely, if a user or application calls `fireUntilHalt()`, the {RULE_ENGINE} starts in _active mode_ and evaluates rules continually until the user or application explicitly calls `halt()`.
+
+When the {RULE_ENGINE} is in active mode, rule consequences are executed even after control returns from a call to `fireUntilHalt()` and the {RULE_ENGINE} remains _reactive_ to any changes made to the working memory. For example, removing a fact that was involved in triggering the timer rule execution causes the repeated execution to terminate, and inserting a fact so that some rule matches causes that rule to be executed. However, the {RULE_ENGINE} is not continually _active_, but is active only after a rule is executed. Therefore, the {RULE_ENGINE} does not react to asynchronous fact insertions until the next execution of a timer-controlled rule. Disposing a KIE session terminates all timer activity.
+
+When the {RULE_ENGINE} is in passive mode, rule consequences of timed rules are evaluated only when `fireAllRules()` is invoked again. However, you can change the default timer-execution behavior in passive mode by configuring the KIE session with a `TimedRuleExecutionOption` option, as shown in the following example:
+
+.KIE session configuration to automatically execute timed rules in passive mode
+[source,java]
+----
+KieSessionConfiguration ksconf = KieServices.Factory.get().newKieSessionConfiguration();
+ksconf.setOption( TimedRuleExecutionOption.YES );
+KSession ksession = kbase.newKieSession(ksconf, null);
+----
+
+You can additionally set a `FILTERED` specification on the `TimedRuleExecutionOption` option that enables you to define a
+callback to filter those rules, as shown in the following example:
+
+.KIE session configuration to filter which timed rules are automatically executed
+[source,java]
+----
+KieSessionConfiguration ksconf = KieServices.Factory.get().newKieSessionConfiguration();
+conf.setOption( new TimedRuleExecutionOption.FILTERED(new TimedRuleExecutionFilter() {
+    public boolean accept(Rule[] rules) {
+        return rules[0].getName().equals("MyRule");
+    }
+}) );
+----
+
+For interval timers, you can also use an expression timer with `expr` instead of `int` to define both the delay and interval as an expression instead of a fixed value.
+
+The following example DRL file declares a fact type with a delay and period that are then used in the subsequent rule with an expression timer:
+
+.Example rule with an expression timer
+[source]
+----
+declare Bean
+  delay   : String = "30s"
+  period  : long = 60000
+end
+
+rule "Expression timer"
+  timer ( expr: $d, $p )
+  when
+    Bean( $d : delay, $p : period )
+  then
+    // Actions
+end
+----
+
+The expressions, such as `$d` and `$p` in this example, can use any variable defined in the pattern-matching part of the rule. The variable can be any `String` value that can be parsed into a time duration or any numeric value that is internally converted in a `long` value for a duration in milliseconds.
+
+Both interval and expression timers can use the following optional parameters:
+
+* `start` and `end`: A `Date` or a `String` representing a `Date` or a `long` value. The value can also be a `Number` that is transformed into a Java `Date` in the format `new Date( ((Number) n).longValue() )`.
+* `repeat-limit`: An integer that defines the maximum number of repetitions allowed by the timer. If both the `end` and the `repeat-limit` parameters are set, the timer stops when the first of the two is reached.
+
+.Example timer attribute with optional `start`, `end`, and `repeat-limit` parameters
+[source,java]
+----
+timer (int: 30s 1h; start=3-JAN-2020, end=4-JAN-2020, repeat-limit=50)
+----
+
+In this example, the rule is scheduled for every hour, after a delay of 30 seconds each hour, beginning on 3 January 2020 and ending either on 4 January 2020 or when the cycle repeats 50 times.
+
+If the system is paused (for example, the session is serialized and then later deserialized), the rule is scheduled only one time to recover from missing internalMatches regardless of how many internalMatches were missed during the pause, and then the rule is subsequently scheduled again to continue in sync with the timer setting.
+
+The `calendar` attribute in DRL rules is a http://www.quartz-scheduler.org/[Quartz] calendar definition for scheduling a rule and supports the following format:
+
+.Calendar attribute format
+[source,subs="+quotes"]
+----
+calendars "__DEFINITION_OR_REGISTERED_NAME__"
+----
+
+.Example calendar attributes
+[source]
+----
+// Exclude non-business hours
+calendars "* * 0-7,18-23 ? * *"
+
+// Weekdays only, as registered in the KIE session
+calendars "weekday"
+----
+
+You can adapt a Quartz calendar based on the Quartz calendar API and then register the calendar in the KIE session, as shown in the following example:
+
+.Adapting a Quartz Calendar
+[source,java]
+----
+Calendar weekDayCal = QuartzHelper.quartzCalendarAdapter(org.quartz.Calendar quartzCal)
+----
+
+.Registering the calendar in the KIE session
+[source,java]
+----
+ksession.getCalendars().set( "weekday", weekDayCal );
+----
+
+You can use calendars with standard rules and with rules that use timers. The calendar attribute can contain one or more comma-separated calendar names written as `String` literals.
+
+The following example rules use both calendars and timers to schedule the rules:
+
+.Example rules with calendars and timers
+[source]
+----
+rule "Weekdays are high priority"
+  calendars "weekday"
+  timer ( int:0 1h )
+  when
+    Alarm()
+  then
+    send( "priority high - we have an alarm" );
+end
+
+rule "Weekends are low priority"
+  calendars "weekend"
+  timer ( int:0 4h )
+  when
+    Alarm()
+  then
+    send( "priority low - we have an alarm" );
+end
+----
+
+[id="con-drl-rules-conditions_{context}"]
+== Rule conditions in DRL
+
+.Rule
+image::language-reference/rule.png[align="center"]
+
+.Conditional element in a rule
+image::language-reference/lhs.png[align="center"]
+
+[role="_abstract"]
+The `when` part of a DRL rule (also known as the _Left Hand Side (LHS)_ of the rule) contains the conditions that must be met to execute an action. Conditions consist of a series of stated OOPath expressions of patterns and constraints, with optional bindings and supported rule condition elements (keywords), based on the available data objects in the package. OOPath is an object-oriented syntax extension to XPath for navigating through related elements while handling collections and filtering constraints.
+
+For example, in a decision service that raises alerts when the temperature reaches or exceeds 80 degrees, a rule `tooHot` contains the `when` condition `/temperature[value >= 80]`.
+
+NOTE: DRL uses `when` instead of `if` because `if` is typically part of a procedural execution flow during which a condition is checked at a specific point in time. In contrast, `when` indicates that the condition evaluation is not limited to a specific evaluation sequence or point in time, but instead occurs continually at any time. Whenever the condition is met, the actions are executed.
+
+If the `when` section is empty, then the conditions are considered to be true and the actions in the `then` section are executed the first time the rules are fired. This is useful if you want to use rules to set up the {RULE_ENGINE} state.
+
+The following example rule uses empty conditions to insert a fact every time the rule is executed:
+
+.Example rule without conditions
+[source]
+----
+rule "start-up"
+  when
+    // Empty
+  then   // Actions to be executed once
+    alerts.add( new Alert("INFO", "System started") );
+end
+----
+
+Formally, the core grammar of an OOPath expression is defined in extended Backus-Naur form (EBNF) notation in the following way:
+
+.EBNF notation for OOPath expressions
+[source]
+----
+OOPExpr = [ID ( ":" | ":=" )] ( "/" | "?/" ) OOPSegment { ( "/" | "?/" | "." ) OOPSegment } ;
+OOPSegment = ID ["#" ID] ["[" ( Number | Constraints ) "]"]
+----
+
+=== OOPath expressions and constraints
+
+An _OOPath expression_ of a pattern in a DRL rule condition is the segment to be matched by the {RULE_ENGINE}. An OOPath expression can potentially match each fact that is inserted into the working memory of the {RULE_ENGINE}. It can also contain constraints to further define the facts to be matched.
+
+In the simplest form, with no constraints, an OOPath expression matches a fact in the given data source. In the following example with a `DataSource<Person>` named `persons`, the expression matches against all `Person` objects in the data source of the {RULE_ENGINE}:
+
+.Example expression for a single fact type
+[source]
+----
+/persons
+----
+
+Patterns can also refer to superclasses or even interfaces, potentially matching facts from many different classes. For example, the following pattern matches all `Student` subtypes of the `Person` object:
+
+.Example pattern for subtypes
+[source]
+----
+/persons # Student
+----
+
+Square brackets in a pattern enclose the constraints, such as the following constraint on the person's age:
+
+.Example pattern with a constraint
+[source]
+----
+/persons[ age == 50 ]
+----
+
+A _constraint_ is an expression that returns `true` or `false`. Constraints in DRL are essentially Java expressions with some enhancements, such as property access, and some differences, such as `equals()` and `!equals()` semantics for `==` and `!=` (instead of the usual `same` and `not same` semantics).
+
+Any JavaBeans property can be accessed directly from pattern constraints. A JavaBeans property is exposed internally using a standard JavaBeans getter that takes no arguments and returns something. For example, the `age` property is written as `age` in DRL instead of the getter `getAge()`:
+
+.DRL constraint syntax with JavaBeans properties
+[source]
+----
+/persons[ age == 50 ]
+
+// This is equivalent to the following getter format:
+
+/persons[ getAge() == 50 ]
+----
+
+{PRODUCT} uses the standard JDK `Introspector` class to achieve this mapping and follows the standard JavaBeans specification. For optimal {RULE_ENGINE} performance, use the property access format, such as `age`, instead of using getters explicitly, such as `getAge()`.
+
+[WARNING]
+====
+Do not use property accessors to change the state of the object in a way that might affect the rules because the {RULE_ENGINE} caches the results of the match between invocations for higher efficiency.
+
+For example, do not use property accessors in the following ways:
+
+[source,java]
+----
+public int getAge() {
+    age++; // Do not do this.
+    return age;
+}
+----
+
+[source,java]
+----
+public int getAge() {
+    Date now = DateUtil.now(); // Do not do this.
+    return DateUtil.differenceInYears(now, birthday);
+}
+----
+
+Instead of following the second example, insert a fact that wraps the current date in the working memory and update that fact between rule executions as needed.
+====
+
+However, if the getter of a property cannot be found, the compiler uses the property name as a fallback method name, without arguments:
+
+.Fallback method if object is not found
+[source]
+----
+/persons[ age == 50 ]
+
+// If `Person.getAge()` does not exist, the compiler uses the following syntax:
+
+/persons[ age() == 50 ]
+----
+
+You can also nest access properties in patterns, as shown in the following example. Nested properties are indexed by the {RULE_ENGINE}.
+
+// FIXME: revisit this in the future
+.Example pattern with nested property access
+[source]
+----
+/persons[ address.houseNumber == 50 ]
+
+// This is equivalent to the following expression:
+
+/persons[ getAddress().getHouseNumber() == 50 ]
+----
+
+// FIXME: revisit this in the future
+// WARNING: In stateful KIE sessions, use nested accessors carefully because the working memory of the {RULE_ENGINE} is not aware of any of the nested values and does not detect when they change. Either consider the nested values immutable while any of their parent references are inserted into the working memory, or, if you want to modify a nested value, mark all of the outer facts as updated. In the previous example, when the `houseNumber` property changes, any `Person` with that `Address` must be marked as updated.
+
+You can use any Java expression that returns a `boolean` value as a constraint inside the parentheses of a pattern. Java expressions can be mixed with other expression enhancements, such as property access:
+
+.Example pattern with a constraint using property access and Java expression
+[source]
+----
+/persons[ age == 50 ]
+----
+
+You can change the evaluation priority by using parentheses, as in any logical or mathematical expression:
+
+.Example evaluation order of constraints
+[source]
+----
+/persons[ age > 100 && ( age % 10 == 0 ) ]
+----
+
+You can also reuse Java methods in constraints, as shown in the following example:
+
+.Example constraints with reused Java methods
+[source]
+----
+/persons[ Math.round( weight / ( height * height ) ) < 25.0 ]
+----
+
+[WARNING]
+====
+Do not use constraints to change the state of the object in a way that might affect the rules because the {RULE_ENGINE} caches the results of the match between invocations for higher efficiency. Any method that is executed on a fact in the rule conditions must be a read-only method. Also, the state of a fact should not change between rule invocations unless those facts are marked as updated in the working memory on every change.
+
+For example, do not use a pattern constraint in the following ways:
+
+[source]
+----
+/persons[ incrementAndGetAge() == 10 ] // Do not do this.
+----
+
+[source]
+----
+/persons[ System.currentTimeMillis() % 1000 == 0 ] // Do not do this.
+----
+====
+
+Standard Java operator precedence applies to constraint operators in DRL, and DRL operators follow standard Java semantics except for the `==` and `!=` operators.
+
+The `==` operator uses null-safe `equals()` semantics instead of the usual `same` semantics. For example, the pattern `/persons[ firstName == "John" ]` is similar to `java.util.Objects.equals(person.getFirstName(), "John")`, and because `"John"` is not null, the pattern is also similar to `"John".equals(person.getFirstName())`.
+
+The `!=` operator uses null-safe `!equals()` semantics instead of the usual `not same` semantics. For example, the pattern `/persons[ firstName != "John" ]` is similar to `!java.util.Objects.equals(person.getFirstName(), "John")`.
+
+If the field and the value of a constraint are of different types, the {RULE_ENGINE} uses type coercion to resolve the conflict and reduce compilation errors. For instance, if `"ten"` is provided as a string in a numeric evaluator, a compilation error occurs, whereas `"10"` is coerced to a numeric 10. In coercion, the field type always takes precedence over the value type:
+
+.Example constraint with a value that is coerced
+[source]
+----
+/persons[ age == "10" ] // "10" is coerced to 10
+----
+
+For groups of constraints, you can use a delimiting comma `,` to use implicit `and` connective semantics:
+
+.Example patterns with multiple constraints
+[source]
+----
+// Person is at least 50 years old and weighs at least 80 kilograms:
+/persons[ age > 50, weight > 80 ]
+
+// Person is at least 50 years old, weighs at least 80 kilograms, and is taller than 2 meters:
+/persons[ age > 50, weight > 80, height > 2 ]
+----
+
+NOTE: Although the `&&` and `,` operators have the same semantics, they are resolved with different priorities. The `&&` operator precedes the `||` operator, and both the `&&` and `||` operators together precede the `,` operator. Use the comma operator at the top-level constraint for optimal {RULE_ENGINE} performance and human readability.
+
+You cannot embed a comma operator in a composite constraint expression, such as in parentheses:
+
+.Example of misused comma in composite constraint expression
+[source]
+----
+// Do not use the following format:
+/persons[ ( age > 50, weight > 80 ) || height > 2 ]
+
+// Use the following format instead:
+/persons[ ( age > 50 && weight > 80 ) || height > 2 ]
+----
+
+[NOTE]
+====
+When you write multiple OOPath lines
+[source]
+----
+when
+  /persons[ age == "10" ]
+  /addresses[ city == "London" ]
+----
+Before {PRODUCT} 10, they were concatenated to one line `/persons[ age == "10" ]/addresses[ city == "London" ]`. To avoid that, you need to explicitly use a semicolon `;` to separate the OOPath lines.
+[source]
+----
+when
+  /persons[ age == "10" ];
+  /addresses[ city == "London" ];
+----
+Since {PRODUCT} 10, {PRODUCT} considers the new line as a separator between OOPath lines. So the semicolon is not required.
+====
+
+=== Bound variables in patterns and constraints
+
+You can bind variables to OOPath expressions of patterns and constraints to refer to matched objects in other portions of a rule. Bound variables can help you define rules more efficiently or more consistently with how you annotate facts in your data model.
+// evacchi: I think the "new" convention is to drop $ sign
+// To differentiate more easily between variables and fields in a rule, use the standard format `$__VARIABLE__` for variables, especially in complex rules. This convention is helpful but not required in DRL.
+
+For example, the following DRL rule uses the variable `$p` for an OOPath expression with the `Person` fact:
+
+.Pattern with a bound variable
+[source]
+----
+rule "simple rule"
+  when
+    $p : /persons
+  then
+    System.out.println( "Person " + p );
+end
+----
+
+Similarly, you can also bind variables to nested properties, as shown in the following example:
+
+[source]
+----
+// Two persons of the same age:
+/persons[ firstAge : age ]  // Binding
+and
+/persons[ age == firstAge ] // Constraint expression
+----
+
+[NOTE]
+====
+Ensure that you separate constraint bindings and constraint expressions for clearer and more efficient rule definitions. Although mixed bindings and expressions are supported, they can complicate patterns and affect evaluation efficiency.
+
+[source]
+----
+// Do not use the following format:
+/persons[ age : age * 2 < 100 ]
+
+// Use the following format instead:
+/persons[ age * 2 < 100, $age : age ]
+----
+====
+
+
+// evacchi: not sure these are supported in OOPath maybe move it in the Pattern section
+
+// The {RULE_ENGINE} does not support bindings to the same declaration, but does support _unification_ of arguments across several properties. While positional arguments are always processed with unification, the unification symbol `:=` exists for named arguments.
+
+// The following example patterns unify the `age` property across two `Person` facts:
+
+// .Example pattern with unification
+// [source]
+// ----
+// Person( $age := age )
+// Person( $age := age )
+// ----
+
+// Unification declares a binding for the first occurrence and constrains to the same value of the bound field for sequence occurrences.
+
+=== Nested constraints and inline casts
+
+In some cases, you might need to access multiple properties of a nested object, as shown in the following example:
+
+.Example pattern to access multiple properties
+[source]
+----
+/persons[ name == "mark", address.city == "london", address.country == "uk" ]
+----
+
+You can group these property accessors to nested objects for more readable rules, as shown in the following example:
+
+.Example pattern with grouped constraints
+[source]
+----
+/persons[ name == "mark"]/address[ city == "london", country == "uk" ]
+----
+
+When you work with nested objects, you can use the syntax `__TYPE__#__SUB_TYPE__` to cast to a subtype and make the getters from the parent type available to the subtype. You can use either the object name or fully qualified class name, and you can cast to one or multiple subtypes, as shown in the following examples:
+
+.Example patterns with inline casting to a subtype
+[source]
+----
+// Inline casting with subtype name:
+/persons[ name == "mark"]/address#LongAddress[ country == "uk" ]
+
+// Inline casting with fully qualified class name:
+/persons[ name == "mark"]/address#org.domain.LongAddress[ country == "uk" ]
+
+// Multiple inline casts:
+/persons[ name == "mark" ]/address#LongAddress/country#DetailedCountry[ population > 10000000 ]
+----
+
+These example patterns cast `Address` to `LongAddress`, and additionally to `DetailedCountry` in the last example, making the parent getters available to the subtypes in each case.
+
+// evacchi: not sure this works with oopath
+// You can use the `instanceof` operator to infer the results of the specified type in subsequent uses of that field with the pattern, as shown in the following example:
+
+// [source]
+// ----
+// Person( name == "mark", address instanceof LongAddress, address.country == "uk" )
+// ----
+
+// If an inline cast is not possible (for example, if `instanceof` returns `false`), the evaluation is considered `false`.
+
+=== Date literal in constraints
+
+By default, the {RULE_ENGINE} supports the date format `dd-mmm-yyyy`. You can customize the date format, including a time format mask if needed, by providing an alternative format mask with the system property `drools.dateformat="dd-mmm-yyyy hh:mm"`. You can also customize the date format by changing the language locale with the `drools.defaultlanguage` and `drools.defaultcountry` system properties. For example, the locale of Thailand is set as `drools.defaultlanguage=th` and `drools.defaultcountry=TH`.
+
+.Example pattern with a date literal restriction
+[source]
+----
+/persons[ bornBefore < "27-Oct-2009" ]
+----
+
+=== Auto-boxing and primitive types
+
+Drools attempts to preserve numbers in their primitive or object wrapper form, so a variable bound to an int primitive when used in a code block or expression will no longer need manual unboxing; unlike early Drools versions where all primitives were autoboxed, requiring manual unboxing.
+A variable bound to an object wrapper will remain as an object; the existing JDK 1.5 and JDK 5 rules to handle auto-boxing and unboxing apply in this case.
+When evaluating field constraints, the system attempts to coerce one of the values into a comparable format; so a primitive is comparable to an object wrapper.
+
+////
+//@comment evacchi: I am not sure the following sections still apply/work. I would hide for now (evacchi, 2020-03-16)*>
+
+=== Other Features
+
+OOPath has several other advanced features. We report them here for completeness
+
+* Can backreference an object of the graph that was traversed before the currently iterated graph. For example, the following OOPath expression matches only the grades that are above the average for the passed exam:
++
+.Constraints with backreferenced object
+[source]
+----
+grade: /student/plan/exams/grades[ result > ../averageResult ]
+----
+* Can recursively be another OOPath expression, as shown in the following example:
++
+.Recursive constraint expression
+[source]
+----
+exam: /student/plan/exams[ /grades[ result > 20 ] ]
+----
+* Can access objects by their index between square brackets `[]`, as shown in the following example. To adhere to Java convention, OOPath indexes are 0-based, while XPath indexes are 1-based.
++
+.Constraints with access to objects by index
+[source]
+----
+grade: /student/plan/exams[0]/grades
+----
+
+
+
+=== Object reactivity in OOPath expressions
+
+OOPath expressions can be reactive or non-reactive. The {RULE_ENGINE} does not react to updates involving a deeply nested object that is traversed during the evaluation of an OOPath expression.
+
+To make these objects reactive to changes, modify the objects to extend the class `org.drools.core.phreak.ReactiveObject`. After you modify an object to extend the `ReactiveObject` class, the domain object invokes the inherited method `notifyModification` to notify the {RULE_ENGINE} when one of the fields has been updated, as shown in the following example:
+
+.Example object method to notify the {RULE_ENGINE} that an exam has been moved to a different course
+[source,java]
+----
+public void setCourse(String course) {
+  this.course = course;
+  notifyModification(this);
+}
+----
+
+With the following corresponding OOPath expression, when an exam is moved to a different course, the rule is re-executed and the list of grades matching the rule is recomputed:
+
+.Example OOPath expression from "Big Data" rule
+[source]
+----
+$grade: /student/plan/exams[ course == "Big Data" ]/grades
+----
+
+You can also use the `?/` separator instead of the `/` separator to disable reactivity in only one sub-portion of an OOPath expression, as shown in the following example:
+
+.Example OOPath expression that is partially non-reactive
+[source]
+----
+$grade: /student/plan/exams[ course == "Big Data" ]?/grades
+----
+
+With this example, the {RULE_ENGINE} reacts to a change made to an exam or if an exam is added to the plan, but not if a new grade is added to an existing exam.
+
+If an OOPath portion is non-reactive, all remaining portions of the OOPath expression also become non-reactive. For example, the following OOPath expression is completely non-reactive:
+
+.Example OOPath expression that is completely non-reactive
+[source]
+----
+$grade: /student?/plan/exams[ course == "Big Data" ]/grades )
+----
+
+For this reason, you cannot use the `?/` separator more than once in the same OOPath expression. For example, the following expression causes a compilation error:
+
+.Example OOPath expression with duplicate non-reactivity markers
+[source]
+----
+$grade: /student/plan?/exams[ course == "Big Data" ]?/grades
+----
+
+Another alternative for enabling OOPath expression reactivity is to use the dedicated implementations for `List` and `Set` interfaces in {PRODUCT}. These implementations are the `ReactiveList` and `ReactiveSet` classes. A `ReactiveCollection` class is also available. The implementations also provide reactive support for performing mutable operations through the `Iterator` and `ListIterator` classes.
+
+The following example class uses these classes to configure OOPath expression reactivity:
+
+.Example Java class to configure OOPath expression reactivity
+[source,java]
+----
+public class School extends AbstractReactiveObject {
+  private String name;
+  private final List<Child> children = new ReactiveList<Child>(); // <1>
+
+  public void setName(String name) {
+      this.name = name;
+      notifyModification(); // <2>
+  }
+
+  public void addChild(Child child) {
+      children.add(child); // <3>
+      // No need to call `notifyModification()` here
+  }
+}
+----
+<1> Uses the `ReactiveList` instance for reactive support over the standard Java `List` instance.
+<2> Uses the required `notifyModification()` method for when a field is changed in reactive support.
+<3> The `children` field is a `ReactiveList` instance, so the `notifyModification()` method call is not required. The notification is handled automatically, like all other mutating operations performed over the `children` field.
+////
+
+[id="ref-drl-operators_{context}"]
+=== Supported operators in DRL constraints
+
+[role="_abstract"]
+DRL supports standard Java semantics for operators in constraints, with some exceptions and with some additional operators that are unique in DRL. The following list summarizes the operators that are handled differently in DRL constraints than in standard Java semantics or that are unique in DRL constraints.
+
+`/`, `#`::
+Use the `/` operator to group property accessors to nested objects, and use the `#` operator to cast to a subtype in nested objects. Casting to a subtype makes the getters from the parent type available to the subtype. You can use either the object name or fully qualified class name, and you can cast to one or multiple subtypes.
++
+--
+.Example constraints with nested objects
+[source]
+----
+// Ungrouped property accessors:
+/persons[ name == "mark", address.city == "london", address.country == "uk" ]
+
+// Grouped property accessors:
+/persons[ name == "mark"]/address[ city == "london", country == "uk" ]
+----
+
+.Example constraints with inline casting to a subtype
+[source]
+----
+// Inline casting with subtype name:
+/persons[ name == "mark", address#LongAddress.country == "uk" ]
+
+// Inline casting with fully qualified class name:
+/persons[ name == "mark", address#org.domain.LongAddress.country == "uk" ]
+
+// Multiple inline casts:
+/persons[ name == "mark", address#LongAddress.country#DetailedCountry.population > 10000000 ]
+----
+--
+
+`!.`::
+Use this operator to dereference a property in a null-safe way. The value to the left of the `!.` operator must be not null (interpreted as `!= null`) in order to give a positive result for pattern matching.
++
+--
+.Example constraint with null-safe dereferencing
+[source]
+----
+/persons[ $streetName : address!.street ]
+
+// This is internally rewritten in the following way:
+
+/persons[ address != null, $streetName : address.street ]
+----
+--
+
+`[]`::
+Use this operator to access a `List` value by index or a `Map` value by key.
++
+--
+.Example constraints with `List` and `Map` access
+[source]
+----
+// The following format is the same as `childList(0).getAge() == 18`:
+/persons[childList[0].age == 18]
+
+// The following format is the same as `credentialMap.get("jdoe").isValid()`:
+/persons[credentialMap["jdoe"].valid]
+----
+--
+
+`<`, `\<=`, `>`, `>=`::
+Use these operators on properties with natural ordering. For example, for `Date` fields, the `<` operator means _before_, and for `String` fields, the operator means _alphabetically before_. These properties apply only to comparable properties.
++
+--
+.Example constraints with `before` operator
+[source]
+----
+/persons[ birthDate < $otherBirthDate ]
+
+/persons[ firstName < $otherFirstName ]
+----
+--
+
+`==`, `!=`::
+Use these operators as `equals()` and `!equals()` methods in constraints, instead of the usual `same` and `not same` semantics.
++
+--
+.Example constraint with null-safe equality
+[source]
+----
+/persons[ firstName == "John" ]
+
+// This is similar to the following formats:
+
+java.util.Objects.equals(person.getFirstName(), "John")
+"John".equals(person.getFirstName())
+----
+
+.Example constraint with null-safe not equality
+[source]
+----
+/persons[ firstName != "John" ]
+
+// This is similar to the following format:
+
+!java.util.Objects.equals(person.getFirstName(), "John")
+----
+--
+
+`&&`, `||`::
+Use these operators to create an abbreviated combined relation condition that adds more than one restriction on a field. You can group constraints with parentheses `()` to create a recursive syntax pattern.
++
+--
+.Example constraints with abbreviated combined relation
+[source]
+----
+// Simple abbreviated combined relation condition using a single `&&`:
+/persons[age > 30 && < 40]
+
+// Complex abbreviated combined relation using groupings:
+/persons[age ((> 30 && < 40) || (> 20 && < 25))]
+
+// Mixing abbreviated combined relation with constraint connectives:
+/persons[age > 30 && < 40 || location == "london"]
+----
+
+.Abbreviated combined relation condition
+image::language-reference/abbreviatedCombinedRelationCondition.png[align="center"]
+
+.Abbreviated combined relation condition withparentheses
+image::language-reference/abbreviatedCombinedRelationConditionGroup.png[align="center"]
+--
+
+`matches`, `not matches`::
+Use these operators to indicate that a field matches or does not match a specified Java regular expression. Typically, the regular expression is a `String` literal, but variables that resolve to a valid regular expression are also supported. These operators apply only to `String` properties. If you use `matches` against a `null` value, the resulting evaluation is always `false`. If you use `not matches` against a `null` value, the resulting evaluation is always `true`. As in Java, regular expressions that you write as `String` literals must use a double backslash `\\` to escape.
++
+--
+.Example constraint to match or not match a regular expression
+[source]
+----
+/persons[ country matches "(USA)?\\S*UK" ]
+
+/persons[ country not matches "(USA)?\\S*UK" ]
+----
+--
+
+`contains`, `not contains`::
+Use these operators to verify whether a field that is an `Array` or a `Collection` contains or does not contain a specified value. These operators apply to `Array` or `Collection` properties, but you can also use these operators in place of `String.contains()` and `!String.contains()` constraints checks.
++
+--
+.Example constraints with `contains` and `not contains` for a Collection
+[source]
+----
+// Collection with a specified field:
+/familyTree[ countries contains "UK" ]
+
+/familyTree[ countries not contains "UK" ]
+
+
+// Collection with a variable:
+/familyTree[ countries contains $var ]
+
+/familyTree[ countries not contains $var ]
+----
+
+.Example constraints with `contains` and `not contains` for a String literal
+[source]
+----
+// Sting literal with a specified field:
+/persons[ fullName contains "Jr" ]
+
+/persons[ fullName not contains "Jr" ]
+
+
+// String literal with a variable:
+/persons[ fullName contains $var ]
+
+/persons[ fullName not contains $var ]
+----
+
+NOTE: For backward compatibility, the `excludes` operator is a supported synonym for `not contains`.
+
+--
+
+`memberOf`, `not memberOf`::
+Use these operators to verify whether a field is a member of or is not a member of an `Array` or a `Collection` that is defined as a variable. The `Array` or `Collection` must be a variable.
++
+--
+.Example constraints with `memberOf` and `not memberOf` with a Collection
+[source]
+----
+/familyTree[ person memberOf $europeanDescendants ]
+
+/familyTree[ person not memberOf $europeanDescendants ]
+----
+--
+
+`soundslike`::
+Use this operator to verify whether a word has almost the same sound, using English pronunciation, as the given value (similar to the `matches` operator). This operator uses the Soundex algorithm.
++
+--
+.Example constraint with `soundslike`
+[source]
+----
+// Match firstName "Jon" or "John":
+/persons[ firstName soundslike "John" ]
+----
+--
+
+`str`::
+Use this operator to verify whether a field that is a `String` starts with or ends with a specified value. You can also use this operator to verify the length of the `String`.
++
+--
+.Example constraints with `str`
+[source]
+----
+// Verify what the String starts with:
+/messages[ routingValue str[startsWith] "R1" ]
+
+// Verify what the String ends with:
+/messages[ routingValue str[endsWith] "R2" ]
+
+// Verify the length of the String:
+/messages[ routingValue str[length] 17 ]
+----
+--
+
+`in`, `notin`::
+Use these operators to specify more than one possible value to match in a constraint (compound value restriction). This functionality of compound value restriction is supported only in the `in` and `not in` operators. The second operand of these operators must be a comma-separated list of values enclosed in parentheses. You can provide values as variables, literals, return values, or qualified identifiers. These operators are internally rewritten as a list of multiple restrictions using the operators `==` or `!=`.
++
+--
+.compoundValueRestriction
+image::language-reference/compoundValueRestriction.png[align="center"]
+
+.Example constraints with `in` and `notin`
+[source]
+----
+/persons[ $color : favoriteColor ]
+/colors[ type in ( "red", "blue", $color ) ]
+
+/persons[ $color : favoriteColor ]
+/colors[ type notin ( "red", "blue", $color ) ]
+----
+--
+
+[id="ref-drl-operator-precedence_{context}"]
+=== Operator precedence in DRL pattern constraints
+
+[role="_abstract"]
+DRL supports standard Java operator precedence for applicable constraint operators, with some exceptions and with some additional operators that are unique in DRL. The following table lists DRL operator precedence where applicable, from highest to lowest precedence:
+
+.Operator precedence in DRL pattern constraints
+[cols="2,2,3", options="header"]
+|===
+|Operator type
+|Operators
+|Notes
+
+|Nested or null-safe property access
+|`/`, `!.`
+|Not standard Java semantics
+
+|`List` or `Map` access
+|`[]`
+|Not standard Java semantics
+
+|Constraint binding
+|`:`
+|Not standard Java semantics
+
+|Multiplicative
+|`*`, `/%`
+|
+
+|Additive
+|`+`, `-`
+|
+
+|Shift
+|`>>`, `>>>`, `<<`
+|
+
+|Relational
+|`<`, `\<=`, `>`, `>=`, `instanceof`
+|
+
+|Equality
+|`== !=`
+|Uses `equals()` and `!equals()` semantics, not standard Java `same` and `not same` semantics
+
+
+|Non-short-circuiting `AND`
+|`&`
+|
+
+|	Non-short-circuiting exclusive `OR`
+|`^`
+|
+
+|Non-short-circuiting inclusive `OR`
+|`\|`
+|
+
+|Logical `AND`
+|`&&`
+|
+
+|Logical `OR`
+|`\|\|`
+|
+
+|Ternary
+|`? :`
+|
+
+|Comma-separated `AND`
+|`,`
+|Not standard Java semantics
+|===
+
+[id="ref-drl-rules-conditions-elements_{context}"]
+=== Supported rule condition elements in DRL (keywords)
+
+[role="_abstract"]
+DRL supports the following rule condition elements (keywords) that you can use with the patterns that you define in DRL rule conditions:
+
+`and`::
+Use this to group conditional components into a logical conjunction. Infix and prefix `and` are supported. You can group patterns explicitly with parentheses `()`. By default, all listed patterns are combined with `and` when no conjunction is specified.
++
+--
+.infixAnd
+image::language-reference/infixAnd.png[align="center"]
+
+.prefixAnd
+image::language-reference/prefixAnd.png[align="center"]
+
+//@comment evacchi honestly I am not entirely sure all of these work
+.Example patterns with `and`
+[source]
+----
+//Infix `and`:
+colorType: /colors/type and /persons[ favoriteColor == colorType ]
+
+//Infix `and` with grouping:
+(colorType: /colors/type and (/persons[ favoriteColor == colorType ] or /persons[ favoriteColor == colorType ])
+
+// Prefix `and`:
+(and colorType: /colors/type /persons[ favoriteColor == colorType ])
+
+// Default implicit `and`:
+colorType: /colors/type
+/persons[ favoriteColor == colorType ]
+----
+
+[NOTE]
+====
+Do not use a leading declaration binding with the `and` keyword (as you can with `or`, for example). A declaration can only reference a single fact at a time, and if you use a declaration binding with `and`, then when `and` is satisfied, it matches both facts and results in an error.
+
+.Example misuse of `and`
+[source]
+----
+// Causes compile error:
+$person : (/persons[ name == "Romeo" ] and /persons[ name == "Juliet"])
+----
+====
+--
+
+`or`::
+Use this to group conditional components into a logical disjunction. Infix and prefix `or` are supported. You can group patterns explicitly with parentheses `()`. You can also use pattern binding with `or`, but each pattern must be bound separately.
++
+--
+.infixOr
+image::language-reference/infixOr.png[align="center"]
+
+.prefixOr
+image::language-reference/prefixOr.png[align="center"]
+
+//@comment evacchi honestly I am not entirely sure all of these work
+.Example patterns with `or`
+[source]
+----
+//Infix `or`:
+colorType: /colors/type or /persons[ favoriteColor == colorType]
+
+//Infix `or` with grouping:
+colorType: /colors/type or (/persons[ favoriteColor == colorType] and /persons[ favoriteColor == colorType])
+
+// Prefix `or`:
+(or colorType: /colors/type /persons[ favoriteColor == colorType])
+----
+
+.Example patterns with `or` and pattern binding
+[source]
+----
+pensioner : ( /persons[ sex == "f", age > 60 ] or /persons[ sex == "m", age > 65 ] )
+
+(or pensioner : /persons[ sex == "f", age > 60 ]
+    pensioner : /persons[ sex == "m", age > 65 ])
+----
+
+The behavior of the `or` condition element is different from the connective `||` operator for constraints and restrictions in field constraints. The {RULE_ENGINE} does not directly interpret the `or` element but uses logical transformations to rewrite a rule with `or` as a number of sub-rules. This process ultimately results in a rule that has a single `or` as the root node and one sub-rule for each of its condition elements. Each sub-rule is activated and executed like any normal rule, with no special behavior or interaction between the sub-rules.
+
+Therefore, consider the `or` condition element a shortcut for generating two or more similar rules that, in turn, can create multiple internalMatches when two or more terms of the disjunction are true.
+--
+
+`exists`::
+Use this to specify facts and constraints that must exist. This option is triggered on only the first match, not subsequent matches. If you use this element with multiple patterns, enclose the patterns with parentheses `()`.
++
+--
+.Exists
+image::language-reference/exists.png[align="center"]
+
+.Example patterns with `exists`
+[source]
+----
+exists /persons[ firstName == "John"]
+
+exists (/persons[ firstName == "John", age == 42 ])
+
+exists (/persons[ firstName == "John" ] and
+        /persons[ lastName == "Doe" ])
+----
+--
+
+`not`::
+Use this to specify facts and constraints that must not exist. If you use this element with multiple patterns, enclose the patterns with parentheses `()`.
++
+--
+.Not
+image::language-reference/not.png[align="center"]
+
+.Example patterns with `not`
+[source]
+----
+not /persons[ firstName == "John"]
+
+not (/persons[ firstName == "John", age == 42 )]
+
+not (/persons[ firstName == "John" ] and
+     /persons[ lastName == "Doe" ])
+----
+--
+
+`forall`::
+Use this to verify whether all facts that match the first pattern match all the remaining patterns. When a `forall` construct is satisfied, the rule evaluates to `true`. This element is a scope delimiter, so it can use any previously bound variable, but no variable bound inside of it is available for use outside of it.
++
+--
+.Forall
+image::language-reference/forall.png[align="center"]
+
+.Example rule with `forall`
+[source]
+----
+rule "All full-time employees have red ID badges"
+  when
+    forall( $emp : /employees[ type == "fulltime" ]
+                   /employees[ this == $emp, badgeColor = "red" ] )
+  then
+    // True, all full-time employees have red ID badges.
+end
+----
+
+In this example, the rule selects all `employee` objects whose type is `"fulltime"`. For each fact that matches this pattern, the rule evaluates the patterns that follow (badge color) and if they match, the rule evaluates to `true`.
+
+To state that all facts of a given type in the working memory of the {RULE_ENGINE} must match a set of constraints, you can use `forall` with a single pattern for simplicity.
+
+.Example rule with `forall` and a single pattern
+[source]
+----
+rule "All full-time employees have red ID badges"
+  when
+    forall( /employees[ badgeColor = "red" ] )
+  then
+    // True, all full-time employees have red ID badges.
+end
+----
+
+You can use `forall` constructs with multiple patterns or nest them with other condition elements, such as inside a `not` element construct.
+
+.Example rule with `forall` and multiple patterns
+[source]
+----
+rule "All employees have health and dental care programs"
+  when
+    forall( $emp : /employees
+            /healthCare[ employee == $emp ]
+            /dentalCare[ employee == $emp ]
+          )
+  then
+    // True, all employees have health and dental care.
+end
+----
+
+.Example rule with `forall` and `not`
+[source]
+----
+rule "Not all employees have health and dental care"
+  when
+    not ( forall( $emp : /employees
+            /healthCare[ employee == $emp ]
+            /dentalCare[ employee == $emp ] )
+        )
+  then
+    // True, not all employees have health and dental care.
+end
+----
+
+NOTE: The format `forall( p1 p2 p3 ...)` is equivalent to `not( p1 and not( and p2 p3 ... ) )`.
+
+--
+
+[id=accumulate]
+`accumulate`::
+Use this to iterate over a collection of objects, execute custom actions for each of the elements, and return one or more result objects (if the constraints evaluate to `true`). You can use predefined functions in your `accumulate` conditions or implement custom functions as needed. You can also use the abbreviation `acc` for `accumulate` in rule conditions.
++
+--
+Use the following format to define `accumulate` conditions in rules:
+
+.Preferred format for `accumulate`
+[source,subs="+quotes"]
+----
+accumulate( __SOURCE_PATTERN__; __FUNCTIONS__ [;__CONSTRAINTS__] )
+----
+
+.Accumulate
+image::language-reference/accumulate.png[align="center"]
+
+NOTE: Although the {RULE_ENGINE} supports alternate formats for the `accumulate` element for backward compatibility, this format is preferred for optimal performance in rules and applications.
+
+The {RULE_ENGINE} supports the following predefined `accumulate` functions. These functions accept any expression as input.
+
+* `average`
+* `min`
+* `max`
+* `count`
+* `sum`
+* `collectList`
+* `collectSet`
+
+In the following example rule, `min`, `max`, and `average` are `accumulate` functions that calculate the minimum, maximum, and average temperature values over all the readings for each sensor:
+
+.Example rule with `accumulate` to calculate temperature values
+[source]
+----
+rule "Raise alarm"
+  when
+    s : /sensors
+    accumulate( /readings( sensor == $s, $temp : temperature );
+                $min : min( $temp ),
+                $max : max( $temp ),
+                $avg : average( $temp );
+                $min < 20, $avg > 70 )
+  then
+    // Raise the alarm.
+end
+----
+
+The following example rule uses the `average` function with `accumulate` to calculate the average profit for all items in an order:
+
+.Example rule with `accumulate` to calculate average profit
+[source]
+----
+rule "Average profit"
+  when
+    $order : /orders
+    accumulate( /orderItems( order == $order, $cost : cost, $price : price );
+                $avgProfit : average( 1 - $cost / $price ) )
+  then
+    // Average profit for `$order` is `$avgProfit`.
+end
+----
+
+NOTE: Built-in accumulate functions' return types may vary depend on parameter types. `min` and `max` can take `Comparable` parameters even if they are not numeric types, for example, `LocalDateTime`. In this case, the return type would be `Comparable`, so you may need to cast the bind variable of the return value in the rule.
+
+To use custom, domain-specific functions in `accumulate` conditions, create a Java class that implements the `org.kie.api.runtime.rule.AccumulateFunction` interface. For example, the following Java class defines a custom implementation of an `AverageData` function:
+
+.Example Java class with custom implementation of `average` function
+[source,java]
+----
+// An implementation of an accumulator capable of calculating average values
+
+public class AverageAccumulateFunction implements org.kie.api.runtime.rule.AccumulateFunction<AverageAccumulateFunction.AverageData> {
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+
+    }
+
+    public static class AverageData implements Externalizable {
+        public int    count = 0;
+        public double total = 0;
+
+        public AverageData() {}
+
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            count   = in.readInt();
+            total   = in.readDouble();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeInt(count);
+            out.writeDouble(total);
+        }
+
+    }
+
+    /* (non-Javadoc)
+     * @see org.kie.api.runtime.rule.AccumulateFunction#createContext()
+     */
+    public AverageData createContext() {
+        return new AverageData();
+    }
+
+    /* (non-Javadoc)
+     * @see org.kie.api.runtime.rule.AccumulateFunction#init(java.io.Serializable)
+     */
+    public void init(AverageData context) {
+        context.count = 0;
+        context.total = 0;
+    }
+
+    /* (non-Javadoc)
+     * @see org.kie.api.runtime.rule.AccumulateFunction#accumulate(java.io.Serializable, java.lang.Object)
+     */
+    public void accumulate(AverageData context,
+                           Object value) {
+        context.count++;
+        context.total += ((Number) value).doubleValue();
+    }
+
+    /* (non-Javadoc)
+     * @see org.kie.api.runtime.rule.AccumulateFunction#reverse(java.io.Serializable, java.lang.Object)
+     */
+    public void reverse(AverageData context, Object value) {
+        context.count--;
+        context.total -= ((Number) value).doubleValue();
+    }
+
+    /* (non-Javadoc)
+     * @see org.kie.api.runtime.rule.AccumulateFunction#getResult(java.io.Serializable)
+     */
+    public Object getResult(AverageData context) {
+        return new Double( context.count == 0 ? 0 : context.total / context.count );
+    }
+
+    /* (non-Javadoc)
+     * @see org.kie.api.runtime.rule.AccumulateFunction#supportsReverse()
+     */
+    public boolean supportsReverse() {
+        return true;
+    }
+
+    /* (non-Javadoc)
+     * @see org.kie.api.runtime.rule.AccumulateFunction#getResultType()
+     */
+    public Class< ? > getResultType() {
+        return Number.class;
+    }
+
+}
+----
+
+To use the custom function in a DRL rule, import the function using the `import accumulate` statement:
+
+.Format to import a custom function
+[source,subs="+quotes"]
+----
+import accumulate __CLASS_NAME__ __FUNCTION_NAME__
+----
+
+.Example rule with the imported `average` function
+[source]
+----
+import accumulate AverageAccumulateFunction.AverageData average
+
+rule "Average profit"
+  when
+    $order : /orders
+    accumulate( /orderItems[ order == $order, $cost : cost, $price : price ];
+                $avgProfit : average( 1 - $cost / $price ) )
+  then
+    // Average profit for `$order` is `$avgProfit`.
+end
+----
+
+[NOTE]
+====
+For backward compatibility, the {RULE_ENGINE} also supports the configuration of `accumulate` functions through configuration files and system properties, but this is a deprecated method. To configure the `average` function from the previous example using the configuration file or system property, set a property as shown in the following example:
+
+[source]
+----
+drools.accumulate.function.average = AverageAccumulateFunction.AverageData
+----
+
+Note that `drools.accumulate.function` is a required prefix, `average` is how the function is used in the DRL files, and `AverageAccumulateFunction.AverageData` is the fully qualified name of the class that implements the function behavior.
+====
+--
+
+`groupby`::
+Use this to partition a collection of objects into groups, and perform accumulate functions independently on each group. You can use predefined functions in your `groupby` conditions or implement custom functions as needed.
++
+--
+Use the following format to define `groupby` conditions in rules:
+
+.Preferred format for `groupby`
+[source,subs="+quotes"]
+----
+groupby( __SOURCE_PATTERN__; __KEY_FUNCTION__ ; __FUNCTIONS__ [;__CONSTRAINTS__] )
+----
+
+.Groupby
+image::language-reference/groupby.png[align="center"]
+
+The {RULE_ENGINE} supports the same predefined `accumulate` functions that <<accumulate,accumulate>> allows. These functions accept any expression as input.
+
+In the following example rule, `min`, `max`, and `average` are `accumulate` functions that calculate the minimum, maximum, and average temperature values over all the readings for each sensor by area:
+
+.Example rule with `groupby` to calculate temperature values
+[source]
+----
+rule "Raise alarm"
+  when
+    s : /sensors
+    groupby( /readings( sensor == $s, $temp : temperature, $area: area );
+                $group: $area ;
+                $min : min( $temp ),
+                $max : max( $temp ),
+                $avg : average( $temp );
+                $min < 20, $avg > 70 )
+  then
+    // Raise the alarm for the group.
+    $group.raiseAlarm();
+end
+----
+
+The following example rule uses the `average` function with `accumulate` to calculate the average profit for all items in an order:
+
+.Example rule with `groupby` to calculate average profit
+[source]
+----
+rule "Average profit"
+  when
+    groupby( /orderItems( $order : order, $cost : cost, $price : price );
+                $group: $order;
+                $avgProfit : average( 1 - $cost / $price ) )
+  then
+    // Average profit for `$group` is `$avgProfit`.
+end
+----
+
+NOTE: Built-in accumulate functions' return types may vary depend on parameter types. `min` and `max` can take `Comparable` parameters even if they are not numeric types, for example, `LocalDateTime`. In this case, the return type would be `Comparable`, so you may need to cast the bind variable of the return value in the rule.
+
+To use custom, domain-specific functions in `groupby` conditions, follow the same procedure as <<accumulate,accumulate>>.
+
+To use the custom function in a DRL rule, import the function using the `import accumulate` statement:
+
+.Format to import a custom function
+[source,subs="+quotes"]
+----
+import accumulate __CLASS_NAME__ __FUNCTION_NAME__
+----
+
+.Example rule with the imported `average` function
+[source]
+----
+import accumulate AverageAccumulateFunction.AverageData average
+
+rule "Average profit"
+  when
+    groupby( /orderItems[ $order : order, $cost : cost, $price : price ];
+                $group: $order;
+                $avgProfit : average( 1 - $cost / $price ) )
+  then
+    // Average profit for `$group` is `$avgProfit`.
+end
+----
+--
+
+[id="ref-drl-rules-conditions-elements-diagrams_{context}"]
+=== Railroad diagrams for rule condition elements in DRL
+
+image::language-reference/AccumulateAction.png[align="center"]
+
+image::language-reference/AccumulateClause.png[align="center"]
+
+image::language-reference/AccumulateFunction.png[align="center"]
+
+image::language-reference/AccumulateInit.png[align="center"]
+
+image::language-reference/AccumulateResult.png[align="center"]
+
+image::language-reference/AccumulateReverse.png[align="center"]
+
+image::language-reference/AccumulateSteps.png[align="center"]
+
+image::language-reference/Accumulations.png[align="center"]
+
+image::language-reference/AdditiveExpr.png[align="center"]
+
+image::language-reference/Annotation.png[align="center"]
+
+image::language-reference/Arguments.png[align="center"]
+
+image::language-reference/ArrayCreatorRest.png[align="center"]
+
+image::language-reference/ArrayInitializer.png[align="center"]
+
+image::language-reference/AssignmentOperator.png[align="center"]
+
+image::language-reference/BindingPattern.png[align="center"]
+
+image::language-reference/Block.png[align="center"]
+
+image::language-reference/BooleanLiteral.png[align="center"]
+
+image::language-reference/CompilationUnit.png[align="center"]
+
+image::language-reference/ConditionalAnd.png[align="center"]
+
+image::language-reference/ConditionalElementAccumulate.png[align="center"]
+
+image::language-reference/ConditionalElementEval.png[align="center"]
+
+image::language-reference/ConditionalElementExists.png[align="center"]
+
+image::language-reference/ConditionalElementForall.png[align="center"]
+
+image::language-reference/ConditionalElementNot.png[align="center"]
+
+image::language-reference/ConditionalElement.png[align="center"]
+
+image::language-reference/ConditionalExpr.png[align="center"]
+
+image::language-reference/ConditionalOrExpr.png[align="center"]
+
+image::language-reference/ConditionalOr.png[align="center"]
+
+image::language-reference/Constraints.png[align="center"]
+
+image::language-reference/CreatedName.png[align="center"]
+
+image::language-reference/Creator.png[align="center"]
+
+image::language-reference/Definition.png[align="center"]
+
+image::language-reference/Digit.png[align="center"]
+
+image::language-reference/ExplicitGenericInvocationSuffix.png[align="center"]
+
+image::language-reference/ExplicitGenericInvocation.png[align="center"]
+
+image::language-reference/Exponent.png[align="center"]
+
+image::language-reference/ExpressionList.png[align="center"]
+
+image::language-reference/Expression.png[align="center"]
+
+image::language-reference/Field.png[align="center"]
+
+image::language-reference/Fraction.png[align="center"]
+
+image::language-reference/FromAccumulateClause.png[align="center"]
+
+image::language-reference/FromClause.png[align="center"]
+
+image::language-reference/FromCollectClause.png[align="center"]
+
+image::language-reference/FunctionDefinition.png[align="center"]
+
+image::language-reference/GlobalDefinition.png[align="center"]
+
+image::language-reference/IdentifierSuffix.png[align="center"]
+
+image::language-reference/ImportDefinition.png[align="center"]
+
+image::language-reference/InExpr.png[align="center"]
+
+image::language-reference/InlineListExpr.png[align="center"]
+
+image::language-reference/InlineMapExpr.png[align="center"]
+
+image::language-reference/InnerCreator.png[align="center"]
+
+image::language-reference/InstanceOfExpr.png[align="center"]
+
+image::language-reference/IntLiteral.png[align="center"]
+
+image::language-reference/Literal.png[align="center"]
+
+image::language-reference/ModifyStatement.png[align="center"]
+
+image::language-reference/NonWildcardTypeArguments.png[align="center"]
+
+image::language-reference/OrRestriction.png[align="center"]
+
+image::language-reference/OverClause.png[align="center"]
+
+image::language-reference/Parameters.png[align="center"]
+
+image::language-reference/Pattern.png[align="center"]
+
+image::language-reference/Placeholders.png[align="center"]
+
+image::language-reference/Primary.png[align="center"]
+
+image::language-reference/PrimitiveType.png[align="center"]
+
+image::language-reference/QualifiedName.png[align="center"]
+
+image::language-reference/QueryDefinition.png[align="center"]
+
+image::language-reference/QueryOptions.png[align="center"]
+
+image::language-reference/RealLiteral.png[align="center"]
+
+image::language-reference/RealTypeSuffix.png[align="center"]
+
+image::language-reference/RelationalExpr.png[align="center"]
+
+image::language-reference/RelationalOperator.png[align="center"]
+
+image::language-reference/RhsStatement.png[align="center"]
+
+image::language-reference/RuleAttributes.png[align="center"]
+
+image::language-reference/RuleAttribute.png[align="center"]
+
+image::language-reference/RuleDefinition.png[align="center"]
+
+image::language-reference/RuleOptions.png[align="center"]
+
+image::language-reference/Selector.png[align="center"]
+
+image::language-reference/ShiftExpr.png[align="center"]
+
+image::language-reference/SingleRestriction.png[align="center"]
+
+image::language-reference/SourcePattern.png[align="center"]
+
+image::language-reference/StringId.png[align="center"]
+
+image::language-reference/SuperSuffix.png[align="center"]
+
+image::language-reference/ThenPart.png[align="center"]
+
+image::language-reference/TypeArguments.png[align="center"]
+
+image::language-reference/TypeArgument.png[align="center"]
+
+image::language-reference/TypeDefinition.png[align="center"]
+
+image::language-reference/TypeOptions.png[align="center"]
+
+image::language-reference/Type.png[align="center"]
+
+image::language-reference/UnaryExprNotPlusMinus.png[align="center"]
+
+image::language-reference/UnaryExpr.png[align="center"]
+
+image::language-reference/Value.png[align="center"]
+
+image::language-reference/VariableInitializer.png[align="center"]
+
+image::language-reference/WhenPart.png[align="center"]
+
+[id="con-drl-rules-actions_{context}"]
+== Rule actions in DRL
+
+[role="_abstract"]
+The `then` part of the rule (also known as the _Right Hand Side (RHS)_ of the rule) contains the actions to be performed when the conditional part of the rule has been met. Rule actions are typically determined by one or more _data sources_ that you define as part of your DRL rule unit. For example, if a bank requires loan applicants to have over 21 years of age (with a rule condition `/applicants[ applicantName : name, age < 21 ]`) and a loan applicant is under 21 years old, the `then` action of an `"Underage"` rule would be `setApproved( false )` based on a defined data source, declining the loan because the applicant is under age.
+
+The main purpose of rule actions is to to insert, delete, or modify data in the working memory of the {RULE_ENGINE}. Effective rule actions are small, declarative, and readable. If you need to use imperative or conditional code in rule actions, then divide the rule into multiple smaller and more declarative rules.
+
+.Example rule for loan application age limit
+[source]
+----
+rule "Underage"
+  when
+    /applicants[ applicantName : name, age < 21 ]
+    $application : /loanApplications[ applicant == applicantName ]
+  then
+    $application.setApproved( false );
+    $application.setExplanation( "Underage" );
+end
+----
+
+For more information about using data sources for rule actions, see xref:con-drl-rule-units_drl-rules[].
+
+[id='drl-rules-THEN-methods-ref_{context}']
+= Supported rule action methods in DRL
+
+DRL supports the following rule action methods that you can use in DRL rule actions. You can use these methods to modify the working memory of the {RULE_ENGINE} without having to first reference a working memory instance.
+
+`modify`::
+Use this to specify fields to be modified for a fact and to notify the {RULE_ENGINE} of the change. This method provides a structured approach to fact updates. It combines the `update` operation with setter calls to change object fields.
++
+--
+[source]
+----
+modify ( <fact-expression> ) {
+    <expression>,
+    <expression>,
+    ...
+}
+----
+
+.Example rule action to modify a loan application amount and approval
+[source]
+----
+modify( $application ) {
+        setAmount( 100 ),
+        setApproved ( true )
+}
+----
+--
+
+`update`::
+Use this to specify fields and the entire related fact to be updated and to notify the {RULE_ENGINE} of the change. After a fact has changed, you must call `update` before changing another fact that might be affected by the updated values. To avoid this added step, use the `modify` method instead.
++
+--
+[source,subs="attributes+"]
+----
+update ( <object, <handle> )  // Informs the {RULE_ENGINE} that an object has changed
+
+update ( <object> )  // Causes `KieSession` to search for a fact handle of the object
+----
+
+.Example rule action to update a loan application amount and approval
+[source]
+----
+$application.setAmount( 100 );
+update( $application );
+----
+
+[NOTE]
+====
+When `modify` or `update` is called in a rule, its actual evaluation happens after executing the whole RHS code. It means all modifications in the RHS will affect in the evaluation. For example,
+[source]
+----
+$application.setAmount( 100 );
+update( $application );
+$application.setApproved( true );
+----
+The modifications of both `amount` and `approved` are considered in the evaluation of the update.
+====
+
+NOTE: If you provide property-change listeners, you do not need to call this method when an object changes. For more information about property-change listeners, see
+xref:rule-engine/index.adoc#property-change-listeners-con_rule-engine[Property-change settings and listeners for fact types].
+
+--
+
+`insert`::
+Use this to insert a `new` fact into the working memory of the {RULE_ENGINE} and to define resulting fields and values as needed for the fact.
++
+--
+[source,subs="attributes+"]
+----
+insert( new <object> );
+----
+
+.Example rule action to insert a new loan applicant object
+[source]
+----
+insert( new Applicant() );
+----
+--
+
+NOTE: `insert` and `insertLogical` insert a fact into "DEFAULT" entry-point. In Rule Unit use cases, you must specify a DataSource where you want to insert the fact. Hence, you must call `DataStore.add` instead of `insert` and `DataStore.addLogical` instead of `insertLogical`.
+
+`insertLogical`::
+Use this to insert a `new` fact logically into the {RULE_ENGINE}. The {RULE_ENGINE} is responsible for logical decisions on insertions and retractions of facts. After regular or stated insertions, facts must be retracted explicitly. After logical insertions, the facts that were inserted are automatically retracted when the conditions in the rules that inserted the facts are no longer true.
++
+--
+[source]
+----
+insertLogical( new <object> );
+----
+
+.Example rule action to logically insert a new loan applicant object
+[source]
+----
+insertLogical( new Applicant() );
+----
+--
+
+`delete`::
+Use this to remove an object from the {RULE_ENGINE}. The keyword `retract` is also supported in DRL and executes the same action, but `delete` is typically preferred in DRL code for consistency with the keyword `insert`.
++
+--
+[source]
+----
+delete( <object> );
+----
+
+.Example rule action to delete a loan applicant object
+[source]
+----
+delete( Applicant );
+----
+--
+
+[id='drl-rules-THEN-methods-variables-ref_{context}']
+= Other rule action methods from `drools` variable
+
+In addition to the standard rule action methods, the {RULE_ENGINE} supports methods in conjunction with the predefined `drools` variable that you can also use in rule actions.
+
+You can use the `drools` variable to call methods from the `org.kie.api.runtime.rule.RuleContext` class in your {PRODUCT} distribution, which is also the class that the standard rule action methods are based on. For all `drools` rule action options,
+
+see the {PRODUCT} https://github.com/kiegroup/drools/blob/main/kie-api/src/main/java/org/kie/api/runtime/rule/RuleContext.java[RuleContext.java] page in GitHub.
+
+The `drools` variable contains methods that provide information about the firing rule and the set of facts that activated the firing rule:
+
+* `drools.getRule().getName()`: Returns the name of the currently firing rule.
+* `drools.getMatch()`: Returns the `Match` that activated the currently firing rule. It contains information that is useful for logging and debugging purposes, for instance `drools.getMatch().getObjects()` returns the list of objects, enabling rule to fire in the proper tuple order.
+
+From the `drools` variable, you can also obtain a reference to the `KieRuntime` providing useful methods to interact with the running session, for example:
+
+* `drools.getKieRuntime().halt()`: Terminates rule execution if a user or application previously called `fireUntilHalt()`. When a user or application calls `fireUntilHalt()` method, the {RULE_ENGINE} starts in `active` mode and evaluates rules until the user or application explicitly calls `halt()` method. Otherwise, by default, the {RULE_ENGINE} runs in `passive` mode and evaluates rules only when a user or an application explicitly calls `fireAllRules()` method.
+* `drools.getKieRuntime().getAgenda()`: Returns a reference to the KIE session `Agenda`, and in turn provides access to rule internalMatch groups, rule agenda groups, and ruleflow groups.
+
+.Example call to access agenda group "CleanUp" and set the focus
+[source,java]
+----
+drools.getKieRuntime().getAgenda().getAgendaGroup( "CleanUp" ).setFocus();
+----
++
+This example sets the focus to a specified agenda group to which the rule belongs.
+
+* `drools.getKieRuntime().setGlobal()`, `~.getGlobal()`, `~.getGlobals()`: Sets or retrieves global variables.
+* `drools.getKieRuntime().getEnvironment()`: Returns the runtime `Environment`, similar to your operating system environment.
+* `drools.getKieRuntime().getQueryResults(<string> query)`: Runs a query and returns the results.
+
+NOTE: When you use rule units, `drools.getKieRuntime()` is not available, because rule units use lightweight sessions.
+
+////
+//@comment: Excluded for now until deemed relevant for Kogito. (Stetson, 28 Oct 2020)
+[id="con-drl-rules-actions-advanced_{context}"]
+=== Advanced rule actions with conditional and named consequences
+
+[role="_abstract"]
+In general, effective rule actions are small, declarative, and readable. However, in some cases, the limitation of having a single consequence for each rule can be challenging and lead to verbose and repetitive rule syntax, as shown in the following example rules:
+
+.Example rules with verbose and repetitive syntax
+[source]
+----
+rule "Give 10% discount to customers older than 60"
+  when
+    $customer : Customer( age > 60 )
+  then
+    modify($customer) { setDiscount( 0.1 ) };
+end
+
+rule "Give free parking to customers older than 60"
+  when
+    $customer : Customer( age > 60 )
+    $car : Car( owner == $customer )
+  then
+    modify($car) { setFreeParking( true ) };
+end
+----
+
+A partial solution to the repetition is to make the second rule extend the first rule, as shown in the following modified example:
+
+.Partially enhanced example rules with an extended condition
+[source]
+----
+rule "Give 10% discount to customers older than 60"
+  when
+    $customer : Customer( age > 60 )
+  then
+    modify($customer) { setDiscount( 0.1 ) };
+end
+
+rule "Give free parking to customers older than 60"
+    extends "Give 10% discount to customers older than 60"
+  when
+    $car : Car( owner == $customer )
+  then
+    modify($car) { setFreeParking( true ) };
+end
+----
+
+As a more efficient alternative, you can consolidate the two rules into a single rule with modified conditions and labelled corresponding rule actions, as shown in the following consolidated example:
+
+.Consolidated example rule with conditional and named consequences
+[source]
+----
+rule "Give 10% discount and free parking to customers older than 60"
+  when
+    $customer : Customer( age > 60 )
+    do[giveDiscount]
+    $car : Car( owner == $customer )
+  then
+    modify($car) { setFreeParking( true ) };
+  then[giveDiscount]
+    modify($customer) { setDiscount( 0.1 ) };
+end
+----
+
+This example rule uses two actions: the usual default action and another action named `giveDiscount`. The `giveDiscount` action is activated in the condition with the keyword `do` when a customer older than 60 years old is found in the KIE base, regardless of whether or not the customer owns a car.
+
+You can configure the internalMatch of a named consequence with an additional condition, such as the `if` statement in the following example. The condition in the `if` statement is always evaluated on the pattern that immediately precedes it.
+
+.Consolidated example rule with an additional condition
+[source]
+----
+rule "Give free parking to customers older than 60 and 10% discount to golden ones among them"
+  when
+    $customer : Customer( age > 60 )
+    if ( type == "Golden" ) do[giveDiscount]
+    $car : Car( owner == $customer )
+  then
+    modify($car) { setFreeParking( true ) };
+  then[giveDiscount]
+    modify($customer) { setDiscount( 0.1 ) };
+end
+----
+
+You can also evaluate different rule conditions using a nested `if` and `else if` construct, as shown in the following more complex example:
+
+.Consolidated example rule with more complex conditions
+[source]
+----
+rule "Give free parking and 10% discount to over 60 Golden customer and 5% to Silver ones"
+  when
+    $customer : Customer( age > 60 )
+    if ( type == "Golden" ) do[giveDiscount10]
+    else if ( type == "Silver" ) break[giveDiscount5]
+    $car : Car( owner == $customer )
+  then
+    modify($car) { setFreeParking( true ) };
+  then[giveDiscount10]
+    modify($customer) { setDiscount( 0.1 ) };
+  then[giveDiscount5]
+    modify($customer) { setDiscount( 0.05 ) };
+end
+----
+
+This example rule gives a 10% discount and free parking to Golden customers over 60, but only a 5% discount without free parking to Silver customers. The rule activates the consequence named `giveDiscount5` with the keyword `break` instead of `do`. The keyword `do` schedules a consequence in the {RULE_ENGINE} agenda, enabling the remaining part of the rule conditions to continue being evaluated, while `break` blocks any further condition evaluation. If a named consequence does not correspond to any condition with `do` but is activated with `break`, the rule fails to compile because the conditional part of the rule is never reached.
+////
+
+[id="con-drl-rules-comments_{context}"]
+== Comments in DRL files
+
+[role="_abstract"]
+DRL supports single-line comments prefixed with a double forward slash `//` and multi-line comments enclosed with a forward slash and asterisk `/* ... */`. You can use DRL comments to annotate rules or any related components in DRL files. DRL comments are ignored by the {RULE_ENGINE} when the DRL file is processed.
+
+.Example rule with comments
+[source]
+----
+rule "Underage"
+  // This is a single-line comment.
+  when
+    /applicants[ applicantName : name, age < 21 ]  // This is an in-line comment
+    $application : /loanApplications[ applicant == applicantName ]
+  then
+    /* This is a multi-line comment
+    in the rule actions. */
+    $application.setApproved( false );
+    $application.setExplanation( "Underage" );
+end
+----
+
+.Multi-line comment
+image::language-reference/multi_line_comment.png[align="center"]
+
+IMPORTANT: The hash symbol `#` is not supported for DRL comments.
+
+[id="ref-drl-rules-errors_{context}"]
+== Error messages for DRL troubleshooting
+
+[role="_abstract"]
+{PRODUCT} provides standardized messages for DRL errors to help you troubleshoot and resolve problems in your DRL files. The error messages use the following format:
+
+.Error message format for DRL file problems
+image::language-reference/error_message.png[align="center"]
+
+* *1st Block:* Error code
+* *2nd Block:* Line and column in the DRL source where the error occurred
+* *3rd Block:* Description of the problem
+* *4th Block:* Component in the DRL source (rule, function, query) where the error occurred
+* *5th Block:* Pattern in the DRL source where the error occurred (if applicable)
+
+{PRODUCT} supports the following standardized error messages:
+
+101: no viable alternative::
+Indicates that the parser reached a decision point but could not identify an alternative.
++
+--
+.Example rule with incorrect spelling
+[source]
+----
+1: rule "simple rule"
+2:   when
+3:     exists /persons
+4:     exits /students  // Must be `exists`
+5:   then
+6: end
+----
+
+.Error message
+[source]
+----
+[ERR 101] Line 4:4 no viable alternative at input 'exits' in rule "simple rule"
+----
+
+.Example rule without a rule name
+[source]
+----
+1: package org.drools.examples;
+2: rule    // Must be `rule "rule name"` (or `rule rule_name` if no spacing)
+3:   when
+4:     Object()
+5:   then
+6:     System.out.println("A RHS");
+7: end
+----
+
+.Error message
+[source]
+----
+[ERR 101] Line 3:2 no viable alternative at input 'when'
+----
+
+In this example, the parser encountered the keyword `when` but expected the rule name, so it flags `when` as the incorrect expected token.
+
+.Example rule with incorrect syntax
+[source]
+----
+1: rule "simple rule"
+2:   when
+3:     /students[ name == "Andy ]  // Must be `"Andy"`
+4:   then
+5: end
+----
+
+.Error message
+[source]
+----
+[ERR 101] Line 0:-1 no viable alternative at input '<eof>' in rule "simple rule" in pattern student
+----
+
+NOTE: A line and column value of `0:-1` means the parser reached the end of the source file (`<eof>`) but encountered incomplete constructs, usually due to missing quotation marks `"..."`, apostrophes `'...'`, or parentheses `(...)`.
+
+--
+
+102: mismatched input::
+Indicates that the parser expected a particular symbol that is missing at the current input position.
++
+--
+.Example rule with an incomplete rule statement
+[source]
+----
+1: rule "simple rule"
+2:   when
+3:     $p : /persons[
+        // Must be a complete rule statement
+----
+
+.Error message
+[source]
+----
+[ERR 102] Line 0:-1 mismatched input '<eof>' expecting ']' in rule "simple rule" in pattern person
+----
+
+NOTE: A line and column value of `0:-1` means the parser reached the end of the source file (`<eof>`) but encountered incomplete constructs, usually due to missing quotation marks `"..."`, apostrophes `'...'`, or parentheses `(...)`.
+
+.Example rule with incorrect syntax
+[source]
+----
+1: package org.drools.examples;
+2:
+3: rule "Wrong syntax"
+4:   when
+5:     not /cars[ ( type == "tesla", price == 10000 ) || ( type == "kia", price == 1000 ) ]
+       // Must use `&&` operators instead of commas `,`
+6:   then
+7:     System.out.println("OK");
+8: end
+----
+
+.Error messages
+[source]
+----
+[ERR 102] Line 5:36 mismatched input ',' expecting ')' in rule "Wrong syntax" in pattern car
+[ERR 101] Line 5:57 no viable alternative at input 'type' in rule "Wrong syntax"
+[ERR 102] Line 5:106 mismatched input ']' expecting 'then' in rule "Wrong syntax"
+----
+
+In this example, the syntactic problem results in multiple error messages related to each other. The single solution of replacing the commas `,` with `&&` operators resolves all errors. If you encounter multiple errors, resolve one at a time in case errors are consequences of previous errors.
+--
+
+103: failed predicate::
+Indicates that a validating semantic predicate evaluated to `false`. These semantic predicates are typically used to identify component keywords in DRL files, such as `declare`, `rule`, `exists`, `not`, and others.
++
+--
+.Example rule with an invalid keyword
+[source]
+----
+ 1: package nesting;
+ 2:
+ 3: import org.drools.compiler.Person
+ 4: import org.drools.compiler.Address
+ 5:
+ 6: Some text  // Must be a valid DRL keyword
+ 7:
+ 8: rule "test something"
+ 9:   when
+10:     $p: /persons[ name=="Michael" ]
+11:   then
+12:     $p.name = "other";
+13:     System.out.println(p.name);
+14: end
+----
+
+.Error message
+[source]
+----
+[ERR 103] Line 6:0 rule 'rule_key' failed predicate: {(validateIdentifierKey(DroolsSoftKeywords.RULE))}? in rule
+----
+
+The `Some text` line is invalid because it does not begin with or is not a part of a DRL keyword construct, so the parser fails to validate the rest of the DRL file.
+
+NOTE: This error is similar to `102: mismatched input`, but usually involves DRL keywords.
+
+--
+
+105: did not match anything::
+Indicates that the parser reached a sub-rule in the grammar that must match an alternative at least once, but the sub-rule did not match anything. The parser has entered a branch with no way out.
++
+--
+.Example rule with invalid text in an empty condition
+[source]
+----
+1: rule "empty condition"
+2:   when
+3:     None  // Must remove `None` if condition is empty
+4:   then
+5:      insert( new Person() );
+6: end
+----
+
+.Error message
+[source]
+----
+[ERR 105] Line 2:2 required (...)+ loop did not match anything at input 'WHEN' in rule "empty condition"
+----
+
+In this example, the condition is intended to be empty but the word `None` is used. This error is resolved by removing `None`, which is not a valid DRL keyword, data type, or pattern construct.
+--
+
+[id="con-drl-legacy_{context}"]
+== Legacy DRL conventions
+
+[role="_abstract"]
+The following Drools Rule Language (DRL) conventions are no longer applicable or optimal in {PRODUCT} but might be available for backward compatibility.
+
+=== Legacy functions in DRL
+
+.Function
+image::language-reference/function.png[align="center"]
+
+Functions in DRL files put semantic code in your rule source file instead of in Java classes. Functions are especially useful if an action (`then`) part of a rule is used repeatedly and only the parameters differ for each rule. Above the rules in the DRL file, you can declare the function or import a static method from a helper class as a function, and then use the function by name in an action (`then`) part of the rule.
+
+The following examples illustrate a function that is either declared or an imported static method in a DRL file:
+
+.Example function declaration with a rule (option 1)
+[source]
+----
+function String hello(String applicantName) {
+    return "Hello " + applicantName + "!";
+}
+
+rule "Using a function"
+  when
+    // Empty
+  then
+    System.out.println( hello( "James" ) );
+end
+----
+
+.Example import a static method of a Java class (option 2)
+[source,java]
+----
+package org.example.applicant;
+
+public class MyFunctions {
+
+    public static String hello(String applicantName) {
+        return "Hello " + applicantName + "!";
+    }
+}
+----
+
+[source]
+----
+import static org.example.applicant.MyFunctions.hello;
+
+rule "Using a function"
+  when
+    // Empty
+  then
+    System.out.println( hello( "James" ) );
+end
+----
+
+[NOTE]
+====
+A function declared in a DRL file cannot be imported to a rule in a different package while a Java static method in a different package can be imported.
+====
+
+// see https://stackoverflow.com/a/75788542/893991
+[NOTE]
+====
+A function body cannot access globals.
+
+From the RHS of a rule, you can always pass a global as a function parameter when invoking the function, for exmaple:
+
+[source]
+----
+global List names;
+
+rule "Using a function with parameters"
+  when
+    // Empty
+  then
+    addName( names, "James" );
+end
+
+function void addName(List names, String applicantName) {
+  names.add(applicantName);
+}
+----
+
+====
+
+=== Legacy rule attributes
+
+The following attributes were used in earlier versions of the {RULE_ENGINE} to provide grouping of rules across a rule base. These attributes are superseded by DRL rule units and are only available for backward compatibility reasons. If you need to group your rules, use DRL rule units as a clearer and simpler grouping method.
+
+.Legacy rule attributes
+[cols="30%,70%", options="header"]
+|===
+|Attribute
+|Value
+
+|`agenda-group`
+|A string identifying an agenda group to which you want to assign the rule. Agenda groups allow you to partition the agenda to provide more execution control over groups of rules. Only rules in an agenda group that has acquired a focus are able to be activated.
+
+Example: `agenda-group "GroupName"`
+
+|`ruleflow-group`
+|A string identifying a rule flow group. In rule flow groups, rules can fire only when the group is activated by the associated rule flow.
+
+Example: `ruleflow-group "GroupName"`
+|===
+
+=== Legacy DRL rule condition syntax
+
+In {PRODUCT}, the preferred syntax for DRL rule conditions is through OOPath expressions. For legacy use cases, you can write rules using traditional pattern matching. In this case, you must explicitly indicate the data source using the `from` clause, as shown in the following comparative examples:
+
+.Example `PersonRules` DRL file using OOPath notation
+[source]
+----
+package org.acme
+unit PersonRules;
+
+import org.acme.Person;
+
+rule isAdult
+	when
+		$person: /persons[ age > 18 ]
+	then
+    modify($person) {
+    	setAdult(true)
+    };
+end
+----
+
+.Example `PersonRules` DRL file using traditional notation
+[source]
+----
+package org.acme
+unit PersonRules;
+
+import org.acme.Person;
+
+rule isAdult
+	when
+		$person: Person(age > 18) from person
+	then
+    modify($person) {
+    	setAdult(true)
+    };
+end
+----
+
+[IMPORTANT]
+====
+Using OOPath, you can write nested paths. For example, `/persons[name == "Mark"]/addresses[city == "london"]/...`. The first path `persons` is translated into a normal pattern matching, but all other paths after that first one are rendered with a `from` clause that has performance inefficiency. Hence, you have to be careful about using nested paths the same as too much use of `from`.
+====
+
+=== Legacy DRL rule condition elements
+
+The following rule condition elements (keywords) are obsolete in {PRODUCT}:
+
+`from`::
+(Obsolete with OOPath notation)
++
+--
+Use this to specify a data source for a pattern. This enables the {RULE_ENGINE} to reason over data that is not in the working memory. The data source can be a sub-field on a bound variable or the result of a method call. The expression used to define the object source is any expression that follows regular MVEL syntax. Therefore, the `from` element enables you to easily use object property navigation, execute method calls, and access maps and collection elements.
+
+.from
+image::language-reference/from.png[align="center"]
+
+.Example rule with `from` and pattern binding
+[source]
+----
+rule "Validate zipcode"
+  when
+    Person( $personAddress : address )
+    Address( zipcode == "23920W" ) from $personAddress
+  then
+    // Zip code is okay.
+end
+----
+
+.Example rule with `from` and a graph notation
+[source]
+----
+rule "Validate zipcode"
+  when
+    $p : Person()
+    $a : Address( zipcode == "23920W" ) from $p.address
+  then
+    // Zip code is okay.
+end
+----
+
+.Example rule with `from` to iterate over all objects
+[source]
+----
+rule "Apply 10% discount to all items over US$ 100 in an order"
+  when
+    $order : Order()
+    $item  : OrderItem( value > 100 ) from $order.items
+  then
+    // Apply discount to `$item`.
+end
+----
+
+[NOTE]
+====
+For large collections of objects, instead of adding an object with a large graph that the {RULE_ENGINE} must iterate over frequently, add the collection directly to the KIE session and then join the collection in the condition, as shown in the following example:
+
+[source]
+----
+when
+  $order : Order()
+  OrderItem( value > 100, order == $order )
+----
+====
+
+.Example rule with `from` and `lock-on-active` rule attribute
+[source]
+----
+rule "Assign people in North Carolina (NC) to sales region 1"
+  ruleflow-group "test"
+  lock-on-active true
+  when
+    $p : Person()
+    $a : Address( state == "NC" ) from $p.address
+  then
+    modify ($p) {} // Assign the person to sales region 1.
+end
+
+rule "Apply a discount to people in the city of Raleigh"
+  ruleflow-group "test"
+  lock-on-active true
+  when
+    $p : Person()
+    $a : Address( city == "Raleigh" ) from $p.address
+  then
+    modify ($p) {} // Apply discount to the person.
+end
+----
+
+[IMPORTANT]
+====
+Using `from` with `lock-on-active` rule attribute can result in rules not being executed. You can address this issue in one of the following ways:
+
+* Avoid using the `from` element when you can insert all facts into the working memory of the {RULE_ENGINE} or use nested object references in your constraint expressions.
+* Place the variable used in the `modify()` block as the last sentence in your rule condition.
+* Avoid using the `lock-on-active` rule attribute when you can explicitly manage how rules within the same ruleflow group place internalMatches on one another.
+====
+
+The pattern that contains a `from` clause cannot be followed by another pattern starting with a parenthesis. The reason for this restriction is that the DRL parser reads the `from` expression as `"from $l (String() or Number())"` and it cannot differentiate this expression from a function call. The simplest workaround to this is to wrap the `from` clause in parentheses, as shown in the following example:
+
+.Example rules with `from` used incorrectly and correctly
+[source]
+----
+// Do not use `from` in this way:
+rule R
+  when
+    $l : List()
+    String() from $l
+    (String() or Number())
+  then
+    // Actions
+end
+
+// Use `from` in this way instead:
+rule R
+  when
+    $l : List()
+    (String() from $l)
+    (String() or Number())
+  then
+    // Actions
+end
+----
+--
+
+`entry-point`::
+(Superseded by rule unit data sources)
++
+--
+Use this to define an entry point, or _event stream_, corresponding to a data source for the pattern. This element is typically used with the `from` condition element. You can declare an entry point for events so that the {RULE_ENGINE} uses data from only that entry point to evaluate the rules. You can declare an entry point either implicitly by referencing it in DRL rules or explicitly in your Java application.
+
+.Example rule with `from entry-point`
+[source]
+----
+rule "Authorize withdrawal"
+  when
+    WithdrawRequest( $ai : accountId, $am : amount ) from entry-point "ATM Stream"
+    CheckingAccount( accountId == $ai, balance > $am )
+  then
+    // Authorize withdrawal.
+end
+----
+--
+
+`collect`::
+(Obsolete with OOPath notation)
++
+--
+Use this to define a collection of objects that the rule can use as part of the condition. The rule obtains the collection either from a specified source or from the working memory of the {RULE_ENGINE}. The result pattern of the `collect` element can be any concrete class that implements the `java.util.Collection` interface and provides a default no-arg public constructor. You can use Java collections like `List`, `LinkedList`, and `HashSet`, or your own class. If variables are bound before the `collect` element in a condition, you can use the variables to constrain both your source and result patterns. However, any binding made inside the `collect` element is not available for use outside of it.
+
+.Collect
+image::language-reference/collect.png[align="center"]
+
+.Example rule with `collect`
+[source]
+----
+import java.util.List
+
+rule "Raise priority when system has more than three pending alarms"
+  when
+    $system : System()
+    $alarms : List( size >= 3 )
+              from collect( Alarm( system == $system, status == 'pending' ) )
+  then
+    // Raise priority because `$system` has three or more `$alarms` pending.
+end
+----
+
+In this example, the rule assesses all pending alarms in the working memory of the {RULE_ENGINE} for each given system and groups them in a `List`. If three or more alarms are found for a given system, the rule is executed.
+
+You can also use the `collect` element with nested `from` elements, as shown in the following example:
+
+.Example rule with `collect` and nested `from`
+[source]
+----
+import java.util.LinkedList;
+
+rule "Send a message to all parents"
+  when
+    $town : Town( name == 'Paris' )
+    $mothers : LinkedList()
+               from collect( Person( children > 0 )
+                             from $town.getPeople()
+                           )
+  then
+    // Send a message to all parents.
+end
+----
+--
+
+`accumulate` alternate syntax for a single function with return type::
+The accumulate syntax evolved over time with the goal of becoming more compact and expressive.
+Nevertheless, {PRODUCT} still supports previous syntaxes for backward compatibility purposes.
++
+--
+In case the rule is using a single accumulate function on a given accumulate, the author may add a pattern for the result object and use the "from" keyword to link it to the accumulate result.
+
+Example: a rule to apply a 10% discount on orders over $100 could be written in the following way:
+
+[source]
+----
+rule "Apply 10% discount to orders over US$ 100,00"
+when
+    $order : /orders
+    $total : Number( doubleValue > 100 )
+             from accumulate( OrderItem( order == $order, $value : value ),
+                              sum( $value ) )
+then
+    // apply discount to $order
+end
+----
+
+In the above example, the accumulate element is using only one function (sum), and so, the rules author opted to explicitly write a pattern for the result type of the accumulate function (Number) and write the constraints inside it.
+There are no problems in using this syntax over the compact syntax presented before, except that is is a bit more verbose.
+Also note that it is not allowed to use both the return type and the functions binding in the same accumulate statement.
+
+Compile-time checks are performed in order to ensure the pattern used with the $$"$$``from``$$"$$ keyword is  assignable from the result of the accumulate function used.
+
+[NOTE]
+====
+With this syntax, the $$"$$``from``$$"$$ binds to the single result returned by the accumulate function, and it does not iterate.
+====
+
+In the above example, $$"$$``$total``$$"$$ is bound to the result returned by the accumulate sum() function.
+
+As another example however, if the result of the accumulate function is a collection, $$"$$``from``$$"$$ still binds to the single result and it does not iterate:
+
+[source]
+----
+rule "Person names"
+when
+  $x : Object() from accumulate(MyPerson( $val : name );
+                                collectList( $val ) )
+then
+  // $x is a List
+end
+----
+
+The bound $$"$$``$x : Object()``$$"$$ is the List itself, returned by the collectList accumulate function used.
+
+This is an important distinction to highlight, as the $$"$$``from``$$"$$ keyword can also be used separately of accumulate, to iterate over the elements of a collection:
+
+[source]
+----
+rule "Iterate the numbers"
+when
+    $xs : List()
+    $x : Integer() from $xs
+then
+  // $x matches and binds to each Integer in the collection
+end
+----
+
+While this syntax is still supported for backward compatibility purposes, for this and other reasons we encourage rule authors to make use instead of the preferred `accumulate` syntax (described previously), to avoid any potential pitfalls.
+--
+
+`accumulate` with inline custom code::
+Another possible syntax for the `accumulate` is to define inline custom code, instead of using accumulate functions.
++
+--
+[WARNING]
+====
+The use of accumulate with inline custom code is not a good practice for several reasons, including difficulties on maintaining and testing rules that use them, as well as the inability of reusing that code.
+Implementing your own accumulate functions is very simple and straightforward, they are easy to unit test and to use.
+This form of accumulate is supported for backward compatibility only.
+
+Only limited support for inline accumulate is provided while using the executable model.
+For example, you cannot use an external binding in the code while using the MVEL dialect:
+
+[source]
+----
+rule R
+dialect "mvel"
+when
+    String( $l : length )
+    $sum : Integer() from accumulate (
+                           Person( age > 18, $age : age ),
+                           init( int sum = 0 * $l; ),
+                           action( sum += $age; ),
+                           reverse( sum -= $age; ),
+                           result( sum )
+                     )
+----
+====
+
+The general syntax of the `accumulate` CE with inline custom code is:
+
+[source,subs="+quotes"]
+----
+__RESULT_PATTERN__ from accumulate( __SOURCE_PATTERN__,
+                                  init( __INIT_CODE__ ),
+                                  action( __ACTION_CODE__ ),
+                                  reverse( __REVERSE_CODE__ ),
+                                  result( __RESULT_EXPRESSION__ ) )
+----
+
+
+The meaning of each of the elements is the following:
+
+* __SOURCE_PATTERN__: the source pattern is a regular pattern that the {RULE_ENGINE} will try to match against each of the source objects.
+* __INIT_CODE__: this is a semantic block of code in the selected dialect that will be executed once for each tuple, before iterating over the source objects.
+* __ACTION_CODE__: this is a semantic block of code in the selected dialect that will be executed for each of the source objects.
+* __REVERSE_CODE__: this is an optional semantic block of code in the selected dialect that if present will be executed for each source object that no longer matches the source pattern. The objective of this code block is to undo any calculation done in the _ACTION_CODE_ block, so that the {RULE_ENGINE} can do decremental calculation when a source object is modified or deleted, hugely improving performance of these operations.
+* __RESULT_EXPRESSION__: this is a semantic expression in the selected dialect that is executed after all source objects are iterated.
+* __RESULT_PATTERN__: this is a regular pattern that the {RULE_ENGINE} tries to match against the object returned from the __RESULT_EXPRESSION__. If it matches, the `accumulate` conditional element evaluates to _true_ and the {RULE_ENGINE} proceeds with the evaluation of the next CE in the rule. If it does not matches, the `accumulate` CE evaluates to _false_ and the {RULE_ENGINE} stops evaluating CEs for that rule.
+
+It is easier to understand if we look at an example:
+
+[source]
+----
+rule "Apply 10% discount to orders over US$ 100,00"
+when
+    $order : Order()
+    $total : Number( doubleValue > 100 )
+             from accumulate( OrderItem( order == $order, $value : value ),
+                              init( double total = 0; ),
+                              action( total += $value; ),
+                              reverse( total -= $value; ),
+                              result( total ) )
+then
+    // apply discount to $order
+end
+----
+
+In the above example, for each `Order` in the Working Memory, the {RULE_ENGINE} will execute the __INIT_CODE__ initializing the total variable to zero.
+Then it will iterate over all `OrderItem` objects for that order, executing the _action_ for each one (in the example, it will sum the value of all items into the total variable). After iterating over all `OrderItem` objects, it will return the value corresponding to the _result
+          expression_ (in the above example, the value of variable ``total``). Finally, the {RULE_ENGINE} will try to match the result with the `Number` pattern, and if the double value is greater than 100, the rule will fire.
+
+The example used Java as the semantic dialect, and as such, note that the usage of the semicolon as statement delimiter is mandatory in the init, action and reverse code blocks.
+The result is an expression and, as such, it does not admit ';'. If the user uses any other dialect, he must comply to that dialect's specific syntax.
+
+As mentioned before, the __REVERSE_CODE__ is optional, but it is strongly recommended that the user writes it in order to benefit from the __improved performance on update
+          and delete__.
+
+The `accumulate` CE can be used to execute any action on source objects.
+The following example instantiates and populates a custom object:
+
+[source]
+----
+rule "Accumulate using custom objects"
+when
+    $person   : Person( $likes : likes )
+    $cheesery : Cheesery( totalAmount > 100 )
+                from accumulate( $cheese : Cheese( type == $likes ),
+                                 init( Cheesery cheesery = new Cheesery(); ),
+                                 action( cheesery.addCheese( $cheese ); ),
+                                 reverse( cheesery.removeCheese( $cheese ); ),
+                                 result( cheesery ) );
+then
+    // do something
+end
+----
+--
+
+[id="proc-drl-rules-central-create_{context}"]
+== Creating DRL rules for your {PRODUCT} project
+
+[role="_abstract"]
+You can create and manage DRL rules for your {PRODUCT} project in your integrated development environment (IDE). For {PRODUCT} service, VSCode is the preferred IDE. In each DRL rule file, you define rule conditions, actions, and other components related to the rule, based on the data objects you create or import in the package.
+
+In {PRODUCT}, you typically define DRL rules in rule units. A DRL rule unit is a module for rules and a unit of execution. A rule unit collects a set of rules with the declaration of the type of facts that the rules act on. A rule unit also serves as a unique namespace for each group of rules. A single rule base can contain multiple rule units. You typically store all the rules for a unit in the same file as the unit declaration so that the unit is self-contained.
+
+For this procedure, create the following example DRL type declarations and DRL rule unit to define DRL rules in a decision service for a loan application:
+
+.Example DRL type declarations for a loan application
+[source]
+----
+package org.mortgages;
+
+declare Bankruptcy
+    name: String
+    yearOfOccurrence: int
+end
+
+declare Applicant
+    name: String
+    age: int
+end
+
+declare LoanApplication
+    applicant: String
+    approved: boolean
+    explanation: String
+end
+----
+
+.Example DRL rule unit file for a loan application
+[source]
+----
+package org.mortgages;
+unit MortgageRules;
+
+import org.drools.ruleunits.api.RuleUnitData;
+import org.drools.ruleunits.api.DataStore;
+
+declare MortgageRules extends RuleUnitData
+  bankruptcies: DataStore<Bankruptcy>
+  applicants: DataStore<Applicant>
+  loanApplications: DataStore<LoanApplication>
+end
+
+rule "Bankruptcy history"
+	salience 10
+	when
+    $a : /loanApplications[ applicantName: applicant ]
+    exists (/bankruptcies[ name == applicantName, yearOfOccurrence > 1990 || amountOwed > 100000 ])
+	then
+		$a.setApproved( false );
+		$a.setExplanation( "has been bankrupt" );
+		loanApplications.remove( $a );
+end
+
+rule "Underage"
+	salience 15
+	when
+    /applicants[ applicantName : name, age < 21 ]
+    $application : /loanApplications[ applicant == applicantName ]
+	then
+		$application.setApproved( false );
+		$application.setExplanation( "Underage" );
+		loanApplications.remove( $a );
+end
+----
+
+.Prerequisites
+* You have created a {PRODUCT} project and have included any Java data objects required for your {PRODUCT} service.
+
+.Procedure
+. In your VSCode IDE, open your {PRODUCT} project and create a `src/main/resources/org/mortgages` folder. This folder serves as the package for your DRL files in this example.
+. In your new `src/main/resources/org/mortgages` folder, add the following `ApplicationTypes.drl` file to define the fact types for the loan application service:
++
+--
+.Example DRL type declarations for a loan application
+[source]
+----
+package org.mortgages;
+
+declare Bankruptcy
+    name: String
+    yearOfOccurrence: int
+end
+
+declare Applicant
+    name: String
+    age: int
+end
+
+declare LoanApplication
+    applicant: String
+    approved: boolean
+    explanation: String
+end
+----
+
+This DRL file defines the fact types that you can declare in any rule units in the same package for the decision service. Declarations in DRL files define new fact types or metadata for fact types to be used by rules in a DRL files. If you declare these types directly in the DRL rule unit file, you cannot declare them in any other rule units.
+
+This example defines the following fact types:
+
+* `Bankruptcy`: Provides data for bankruptcy status, if applicable
+* `Applicant`: Provides data about the loan applicant
+* `LoanApplication`: Provides data about loan approval status for a specified applicant, with an explanation if needed
+--
+. In the same `src/main/resources/org/mortgages` folder of your {PRODUCT} project, create the following `LoanApplication.drl` file to declare the DRL rule unit and data sources:
++
+--
+.Example DRL file with rule unit and data sources
+[source]
+----
+package org.mortgages;
+unit MortgageRules;
+
+import org.drools.ruleunits.api.RuleUnitData;
+import org.drools.ruleunits.api.DataStore;
+
+declare MortgageRules extends RuleUnitData
+  bankruptcies: DataStore<Bankruptcy>
+  applicants: DataStore<Applicant>
+  loanApplications: DataStore<LoanApplication>
+end
+...
+----
+
+In this example, the rule unit is named `MortgageRules` and the previously defined fact types are declared as `DataStore` data sources.
+
+Data sources are typed sources of data that rule units can subscribe to for updates. You interact with the rule unit through the data sources it exposes. A data source can be a `DataStream` source for append-only storage, a `DataStore` source for writable storage to add or remove data, or a `SingletonStore` source for writable storage to set and clear a single element.
+
+This example uses the `DataStore` data source to enable application data to be added or removed as part of the decision service.
+--
+. To complete the DRL rule unit file, add the following rules for `"Bankruptcy history"` and `"Underage"` logic:
++
+--
+.Example DRL rule unit file for a loan application
+[source]
+----
+package org.mortgages;
+unit MortgageRules;
+
+import org.drools.ruleunits.api.RuleUnitData;
+import org.drools.ruleunits.api.DataStore;
+
+declare MortgageRules extends RuleUnitData
+  bankruptcies: DataStore<Bankruptcy>
+  applicants: DataStore<Applicant>
+  loanApplications: DataStore<LoanApplication>
+end
+
+rule "Bankruptcy history"
+	salience 10
+	when
+    $a : /loanApplications[ applicantName: applicant ]
+    exists (/bankruptcies[ name == applicantName, yearOfOccurrence > 1990 || amountOwed > 100000 ])
+	then
+		$a.setApproved( false );
+		$a.setExplanation( "has been bankrupt" );
+		loanApplications.remove( $a );
+end
+
+rule "Underage"
+	salience 15
+	when
+    /applicants[ applicantName : name, age < 21 ]
+    $application : /loanApplications[ applicant == applicantName ]
+	then
+		$application.setApproved( false );
+		$application.setExplanation( "Underage" );
+		loanApplications.remove( $a );
+end
+----
+
+The example rules consist of the following rule components:
+
+* `rule`: Use this segment to define each rule in the DRL file. Rules consist of a rule name in the format `rule "rule name"`, followed by optional attributes that define rule behavior, such as `salience` or `no-loop`, followed by `when` and `then` definitions. Each rule must have a unique name within the rule package.
++
+In this example, the `"Bankruptcy history"` rule has a defined salience of `10` and the `"Underage"` rule has a defined salience of `15`. These values ensure that the `"Bankruptcy history"` rule is executed first.
+* `when` and `then`: Use the `when` portion to define the condition patterns and constraints in OOPath syntax and use the `then` portion to define the actions to be executed when the conditions are met.
++
+In this example, the `"Bankruptcy history"` rule states that if an applicant has owed more than 100,000 USD of unresolved debt since 1990 (beginning 1991), then the applicant is considered to have been bankrupt and is not approved for a loan. The application is removed from memory.
++
+If the applicant passes the bankruptcy check, then the `"Underage"` rule states that if the applicant is younger than 21 years old, then the applicant is not approved for the loan. The application is removed from memory.
++
+If the applicant passes both checks, then the loan is approved.
+--
+. After you define all components of the data sources and rules, save all DRL files.

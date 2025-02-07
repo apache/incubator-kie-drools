@@ -1,0 +1,59 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='cep-con_{context}']
+
+= Complex event processing (CEP)
+
+In {PRODUCT}, an event is a record of a significant change of state in the application domain at a point in time. Depending on how the domain is modeled, the change of state may be represented by a single event, multiple atomic events, or hierarchies of correlated events. From a complex event processing (CEP) perspective, an event is a type of fact or object that occurs at a specific point in time, and a business rule is a definition of how to react to the data from that fact or object. For example, in a stock broker application, a change in security prices, a change in ownership from seller to buyer, or a change in an account holder's balance are all considered to be events because a change has occurred in the state of the application domain at a given time.
+
+The {RULE_ENGINE} in {PRODUCT} uses complex event processing (CEP) to detect and process multiple events within a collection of events, to uncover relationships that exist between events, and to infer new data from the events and their relationships.
+
+CEP use cases share several requirements and goals with business rule use cases.
+
+From a business perspective, business rule definitions are often defined based on the occurrence of scenarios triggered by events. In the following examples, events form the basis of business rules:
+
+* In an algorithmic trading application, a rule performs an action if the security price increases by X percent above the day opening price. The price increases are denoted by events on a stock trading application.
+* In a monitoring application, a rule performs an action if the temperature in the server room increases X degrees in Y minutes. The sensor readings are denoted by events.
+
+From a technical perspective, business rule evaluation and CEP have the following key similarities:
+
+* Both business rule evaluation and CEP require seamless integration with the enterprise infrastructure and applications. This is particularly important with life-cycle management, auditing, and security.
+* Both business rule evaluation and CEP have functional requirements such as pattern matching, and non-functional requirements such as response time limits and query-rule explanations.
+
+CEP scenarios have the following key characteristics:
+
+* Scenarios usually process large numbers of events, but only a small percentage of the events are relevant.
+* Events are usually immutable and represent a record of change in state.
+* Rules and queries run against events and must react to detected event patterns.
+* Related events usually have a strong temporal relationship.
+* Individual events are not prioritized. The CEP system prioritizes patterns of related events and the relationships between them.
+* Events usually need to be composed and aggregated.
+
+Given these common CEP scenario characteristics, the CEP system in {PRODUCT} supports the following features and functions to optimize event processing:
+
+* Event processing with proper semantics
+* Event detection, correlation, aggregation, and composition
+* Event stream processing
+* Temporal constraints to model the temporal relationships between events
+* Sliding windows of significant events
+* Session-scoped unified clock
+* Required volumes of events for CEP use cases
+* Reactive rules
+* Adapters for event input into the {RULE_ENGINE} (pipeline)

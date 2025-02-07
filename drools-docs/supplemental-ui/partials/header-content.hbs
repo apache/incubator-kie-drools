@@ -1,0 +1,52 @@
+<!--Licensed to the Apache Software Foundation (ASF) under one-->
+<!--or more contributor license agreements.  See the NOTICE file-->
+<!--distributed with this work for additional information-->
+<!--regarding copyright ownership.  The ASF licenses this file-->
+<!--to you under the Apache License, Version 2.0 (the-->
+<!--"License"); you may not use this file except in compliance-->
+<!--with the License.  You may obtain a copy of the License at-->
+
+<!--http://www.apache.org/licenses/LICENSE-2.0-->
+
+<!--Unless required by applicable law or agreed to in writing,-->
+<!--software distributed under the License is distributed on an-->
+<!--"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY-->
+<!--KIND, either express or implied.  See the License for the-->
+<!--specific language governing permissions and limitations-->
+<!--under the License.-->
+
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <div class="navbar-item">
+        <a href="https://www.drools.org">
+          <img src="{{{uiRootPath}}}/img/droolsExpertLogo.png" alt="Drools logo"/>
+        </a>
+        <a class="navbar-item" href="https://www.drools.org/learn/documentation.html">
+          {{site.title}}
+        </a>
+      </div>
+      {{#if env.SITE_SEARCH_PROVIDER}}
+      <div class="navbar-item search hide-for-print">
+        <div id="search-field" class="field">
+          <input id="search-input" type="text" placeholder="Search docs"{{#if page.home}} autofocus{{/if}}>
+        </div>
+      </div>
+      {{/if}}
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://docs.drools.org">Archive</a>
+        <div class="navbar-item">
+          <a class="navbar-item small-item" href="https://github.com/kiegroup/drools" title="Follow Drools on GitHub"><div class="github-icon"></div></a>
+          <a class="navbar-item small-item" href="https://twitter.com/KieCommunity" target="_blank" title="Follow KIE Community on Twitter for more Drools tweets"><img alt="T" src="{{{uiRootPath}}}/img/twitterLogo.png"></a>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>

@@ -1,0 +1,89 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id="ref-kogito-migrate-example-loan-application-project_{context}"]
+= Example loan application project
+
+[role="_abstract"]
+In the following sections, a loan application project is used as an example to migrate a DRL project to {KOGITO} deployments. The domain model of the loan application project is made of two classes, the `LoanApplication` class and the `Applicant` class:
+
+.Example `LoanApplication` class
+[source,java]
+----
+public class LoanApplication {
+
+   private String id;
+   private Applicant applicant;
+   private int amount;
+   private int deposit;
+   private boolean approved = false;
+
+   public LoanApplication(String id, Applicant applicant,
+                      	int amount, int deposit) {
+   	this.id = id;
+   	this.applicant = applicant;
+   	this.amount = amount;
+   	this.deposit = deposit;
+   }
+}
+----
+
+.Example `Applicant` class
+[source,java]
+----
+public class Applicant {
+
+   private String name;
+   private int age;
+
+   public Applicant(String name, int age) {
+   	this.name = name;
+   	this.age = age;
+   }
+}
+----
+
+The rule set is created using business decisions to approve or reject an application, along with the last rule of collecting all the approved applications in a list.
+
+.Example rule set in loan application
+[source]
+----
+global Integer maxAmount;
+global java.util.List approvedApplications;
+
+rule LargeDepositApprove when
+   $l: LoanApplication( applicant.age >= 20, deposit >= 1000, amount <= maxAmount )
+then
+   modify($l) { setApproved(true) }; // loan is approved
+end
+
+rule LargeDepositReject when
+   $l: LoanApplication( applicant.age >= 20, deposit >= 1000, amount > maxAmount )
+then
+   modify($l) { setApproved(false) }; // loan is rejected
+end
+
+// ... more loans approval/rejections business rules ...
+
+rule CollectApprovedApplication when
+   $l: LoanApplication( approved )
+then
+   approvedApplications.add($l); // collect all approved loan applications
+end
+----

@@ -1,0 +1,98 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='cep-clock-ref_{context}']
+
+= Session clock implementations in the {RULE_ENGINE}
+
+During complex event processing, events in the {RULE_ENGINE} may have temporal constraints and therefore require a session clock that provides the current time. For example, if a rule needs to determine the average price of a given stock over the last 60 minutes, the {RULE_ENGINE} must be able to compare the stock price event time stamp with the current time in the session clock.
+
+The {RULE_ENGINE} supports a real-time clock and a pseudo clock. You can use one or both clock types depending on the scenario:
+
+* *Rules testing:* Testing requires a controlled environment, and when the tests include rules with temporal constraints, you must be able to control the input rules and facts and the flow of time.
+* *Regular execution:* The {RULE_ENGINE} reacts to events in real time and therefore requires a real-time clock.
+* *Special environments:* Specific environments may have specific time control requirements. For example, clustered environments may require clock synchronization or Java Enterprise Edition (JEE) environments may require a clock provided by the application server.
+* *Rules replay or simulation:* In order to replay or simulate scenarios, the application must be able to control the flow of time.
+
+Consider your environment requirements as you decide whether to use a real-time clock or pseudo clock in the {RULE_ENGINE}.
+
+Real-time clock::
+The real-time clock is the default clock implementation in the {RULE_ENGINE} and uses the system clock to determine the current time for time stamps. To configure the {RULE_ENGINE} to use the real-time clock, set the KIE session configuration parameter to `realtime`:
++
+--
+.Configure real-time clock in KIE session
+[source,java]
+----
+import org.kie.api.KieServices.Factory;
+import org.kie.api.runtime.conf.ClockTypeOption;
+import org.kie.api.runtime.KieSessionConfiguration;
+
+KieSessionConfiguration config = KieServices.Factory.get().newKieSessionConfiguration();
+
+config.setOption(ClockTypeOption.get("realtime"));
+----
+--
+
+Pseudo clock::
+The pseudo clock implementation in the {RULE_ENGINE} is helpful for testing temporal rules and it can be controlled by the application. To configure the {RULE_ENGINE} to use the pseudo clock, set the KIE session configuration parameter to `pseudo`:
++
+--
+.Configure pseudo clock in KIE session
+[source,java]
+----
+import org.kie.api.runtime.conf.ClockTypeOption;
+import org.kie.api.runtime.KieSessionConfiguration;
+import org.kie.api.KieServices.Factory;
+
+KieSessionConfiguration config = KieServices.Factory.get().newKieSessionConfiguration();
+
+config.setOption(ClockTypeOption.get("pseudo"));
+----
+
+You can also use additional configurations and fact handlers to control the pseudo clock:
+
+.Control pseudo clock behavior in KIE session
+[source,java]
+----
+import java.util.concurrent.TimeUnit;
+
+import org.kie.api.runtime.KieSessionConfiguration;
+import org.kie.api.KieServices.Factory;
+import org.kie.api.runtime.KieSession;
+import org.drools.core.time.SessionPseudoClock;
+import org.kie.api.runtime.rule.FactHandle;
+import org.kie.api.runtime.conf.ClockTypeOption;
+
+KieSessionConfiguration conf = KieServices.Factory.get().newKieSessionConfiguration();
+
+conf.setOption( ClockTypeOption.get("pseudo"));
+KieSession session = kbase.newKieSession(conf, null);
+
+SessionPseudoClock clock = session.getSessionClock();
+
+// While inserting facts, advance the clock as necessary.
+FactHandle handle1 = session.insert(tick1);
+clock.advanceTime(10, TimeUnit.SECONDS);
+
+FactHandle handle2 = session.insert(tick2);
+clock.advanceTime(30, TimeUnit.SECONDS);
+
+FactHandle handle3 = session.insert(tick3);
+----
+--

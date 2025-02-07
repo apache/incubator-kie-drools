@@ -1,0 +1,38 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='intro-building-the-source_{context}']
+
+= Building the {PRODUCT} source code
+
+{PRODUCT} is mainly a Java based set of projects that uses link:https://maven.apache.org/[Maven] as a build system. To build the {PRODUCT} repository:
+
+1. Install Java JDK, at least version 11.
+2. Install Maven, at least version `{maven-version}`. There are rules during the build, that enforce the version of Maven, so please try to use the most current Maven version possible.
+3. Clone the link:https://github.com/kiegroup/drools/[{PRODUCT} source code] repository.
+4. Run the Maven build on command line.
+
+Maven build executed with tests:
+----
+mvn clean install
+----
+Maven build executed without tests:
+----
+mvn clean install -Dquickly
+----

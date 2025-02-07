@@ -1,0 +1,136 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='experimental-declarative-agenda_{context}']
+
+= Declarative agenda
+
+The declarative agenda allows to use rules to control which other rules can fire and when. While this will add a lot more overhead than the simple use of salience, the advantage is it is declarative and thus more readable and maintainable and should allow more use cases to be achieved in a simpler fashion.
+
+As this feature is highly experimental and will be subject to change, it is off by default and must be explicitly enabled. It can be activated on a given KieBase by adding the `declarativeAgenda="enabled"` attribute in the corresponding `kbase` tag of the kmodule.xml file, as is specified in the following example.
+
+.Enabling the Declarative Agenda
+====
+[source,xml]
+----
+<kmodule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.drools.org/xsd/kmodule">
+      <kbase name="DeclarativeKBase" declarativeAgenda="enabled">
+      <ksession name="KSession"/>
+      </kbase>
+      </kmodule>
+----
+====
+
+The basic idea is:
+
+* All rule's matches are inserted into working memory as facts, represented as instances of `Match` class. So you can now do pattern matching against a `Match` instance. The rule's metadata and declarations are available as fields on the `Match` instance.
+* You can use the `kcontext.blockMatch(Match match)` call in a rule to block a selected match. Only when that rule becomes false will the match be eligible for firing. If it is already eligible for firing and is later blocked, it will be removed from the agenda until it is unblocked.
+* A match may have multiple blockers, so a count is kept. All blockers must become false for the counter to reach zero to enable the `Match` to be eligible for firing.
+* `kcontext.unblockAllMatches(Match match)` is an over-ride rule that will remove all blockers regardless.
+* An internalMatch may also be cancelled using `cancelMatch` call, so it never fires.
+* An unblocked `Match` is added to the agenda and obeys normal salience, agenda groups, ruleflow groups etc. definitions.
+* The `@Direct` annotation allows a rule to fire as soon as it's matched. This is supposed to be used for rules that block/unblock matches, it is not desirable for these rules to have side effects that impact else where.
+
+.New RuleContext methods
+====
+[source]
+----
+void blockMatch(Match match);
+void unblockAllMatches(Match match);
+void cancelMatch(Match match);
+----
+====
+
+Here is a basic example that will block all matches from rules that have metadata `@department('sales')`. They will stay blocked until the blockerAllSalesRules rule becomes false, i.e. "go2" is retracted.
+
+.Block rules based on rule metadata
+====
+[source]
+----
+rule "rule1" @Eager @department('sales')
+when
+    $s: String(this == 'go1')
+then
+    System.out.println("rule1 fired!");
+end
+
+rule "rule2" @Eager @department('sales')
+when
+    $s: String(this == 'go1')
+then
+    System.out.println("rule2 fired!");
+end
+
+rule "blockerAllSalesRules" @Direct @Eager
+when
+    $s: String(this == 'go2')
+    $i: Match(department == 'sales')
+then
+    kcontext.blockMatch($i);
+end
+----
+====
+
+[WARNING]
+====
+It is necessary to annotate all the rules that could be potentially blocked by rule with `@Direct` annotation with the annotation `@Eager`. This is because the potentially blocked rules must be evaluated immediately, so they produce `Match` instances, that can be evaluated by the blocking rule.
+====
+
+This example shows how you can use a property to count the number of active or inactive (already fired) matches.
+
+.Count the number of active/inactive Matches
+====
+[source]
+----
+rule "rule1" @Eager @department('sales')
+when
+    $s: String(this == 'go1')
+then
+    System.out.println("rule1 fired!");
+end
+
+rule "rule2" @Eager @department('sales')
+when
+    $s: String(this == 'go1')
+then
+    System.out.println("rule2 fired!");
+end
+
+rule "rule3" @Eager @department('sales')
+when
+    $s: String(this == 'go1')
+then
+    System.out.println("rule3 fired!");
+end
+
+rule "countActivateInActive" @Direct @Eager
+when
+    $s: String(this == 'go2')
+    $active: Number(this == 1) from accumulate(
+        $a: Match(department == 'sales', active == true),
+        count($a))
+    $inActive: Number(this == 2) from accumulate(
+        $a : Match(department == 'sales', active == false),
+        count($a))
+then
+    kcontext.halt();
+end
+----
+====

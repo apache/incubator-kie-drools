@@ -1,0 +1,107 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+// This section determined obsolete and handled by the Java client services in KIE Server. Retaining for now, just in case. (Stetson, 13 Nov 2018)
+
+[id='runtime-commands-marshalling-ref_{context}']
+= Runtime commands marshalling
+
+Marshalling and unmarshalling of the {PRODUCT} rule services commands requires the following classes, depending on the marshaller type:
+
+XStream::
+For the XStream commands marshaller, use the `DroolsHelperProvider` to obtain an `XStream` instance where the commands converters are registered. Also ensure that the `drools-compiler` library is present on the class path.
++
+--
+[source,java]
+----
+BatchExecutionHelper.newXStreamMarshaller().toXML(command);
+----
+
+[source,java]
+----
+BatchExecutionHelper.newXStreamMarshaller().fromXML(xml);
+----
+
+The fully-qualified class name of the `BatchExecutionHelper` class is `org.kie.internal.runtime.helper.BatchExecutionHelper`.
+--
+
+JSON::
+For the JSON commands marshaller, use the `DroolsHelperProvider` to obtain a `JSON` instance where the commands converters are registered. Also ensure that the `drools-compiler` library is present on the class path.
++
+--
+[source,java]
+----
+BatchExecutionHelper.newJSonMarshaller().toXML(command);
+----
+
+[source,java]
+----
+BatchExecutionHelper.newJSonMarshaller().fromXML(xml);
+----
+--
+JAXB::
+For the JAXB commands marshaller, you can define your model in an XSD file or use an object model. In both cases, you declare your model inside `JAXBContext` using Drools Helper classes. After you have the `JAXBContext`, you can create the marshellar or unmarsheller as needed.
++
+--
+* *JAXB marshalling in XSD file:* Add the XSD file as an XSD `ResourceType` into the KIE base and create the `JAXBContext` using the KIE base (created with the `KnowledgeBuilder`). Ensure that the `drools-compiler` and `jaxb-xjc` libraries are present on the class path.
++
+[source,java]
+----
+import org.kie.api.conf.Option;
+import org.kie.api.KieBase;
+
+Options xjcOpts = new Options();
+xjcOpts.setSchemaLanguage(Language.XMLSCHEMA);
+JaxbConfiguration jaxbConfiguration =
+  KnowledgeBuilderFactory.newJaxbConfiguration( xjcOpts, "xsd");
+kbuilder.add
+  (ResourceFactory.newClassPathResource
+    ("person.xsd", getClass()), ResourceType.XSD, jaxbConfiguration);
+KieBase kbase = kbuilder.newKnowledgeBase();
+
+List<String> classesName = new ArrayList<String>();
+classesName.add("org.drools.compiler.test.Person");
+
+JAXBContext jaxbContext = KnowledgeBuilderHelper
+  .newJAXBContext(classesName.toArray(new String[classesName.size()]), kbase);
+----
+
+* *JAXB marshalling in object model:* Use `DroolsJaxbHelperProviderImpl` to create the `JAXBContext`. `DroolsJaxbHelperProviderImpl.createDroolsJaxbContext()` has two parameters:
+
+** *classNames:* A list with the canonical name of the classes that you want to use in the marshalling and unmarshalling process
+** *properties:* JAXB custom properties
++
+[source,java]
+----
+List<String> classNames = new ArrayList<String>();
+classNames.add("org.drools.compiler.test.Person");
+
+JAXBContext jaxbContext = DroolsJaxbHelperProviderImpl
+  .createDroolsJaxbContext(classNames, null);
+Marshaller marshaller = jaxbContext.createMarshaller();
+----
++
+The fully-qualified class name of the `DroolsJaxbHelperProviderImpl` class is `org.drools.compiler.runtime.pipeline.impl.DroolsJaxbHelperProviderImpl`.
+--
+
+The following are example command scripts using XStream, JSON, and JAXB marshalling:
+
+* http://fisheye.jboss.org/browse/JBossRules/trunk/drools-camel/src/test/resources/org/drools/camel/component/xstream.mvt?r=HEAD[xstream.mvt]
+* http://fisheye.jboss.org/browse/JBossRules/trunk/drools-camel/src/test/resources/org/drools/camel/component/json.mvt?r=HEAD[json.mvt]
+* http://fisheye.jboss.org/browse/JBossRules/trunk/drools-camel/src/test/resources/org/drools/camel/component/jaxb.mvt?r=HEAD[jaxb.mvt]

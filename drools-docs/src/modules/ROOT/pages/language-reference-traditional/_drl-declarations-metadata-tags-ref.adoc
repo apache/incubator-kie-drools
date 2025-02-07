@@ -1,0 +1,316 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='drl-declarations-metadata-tags-ref_{context}']
+
+ifeval::["{context}" == "decision-engine"]
+= Metadata tags for events
+
+The {RULE_ENGINE} uses the following metadata tags for events that are inserted into the working memory of the {RULE_ENGINE}. You can change the default metadata tag values in your Java class or DRL rule file as needed.
+endif::[]
+ifeval::["{context}" == "drl-rules"]
+= Metadata tags for fact type and attribute declarations in DRL
+
+Although you can define custom metadata attributes in DRL declarations, the {RULE_ENGINE} also supports the following predefined metadata tags for declarations of fact types or fact type attributes.
+endif::[]
+
+[NOTE]
+====
+The examples in this section that refer to the `VoiceCall` class assume that the sample application domain model includes the following class details:
+
+.VoiceCall fact class in an example Telecom domain model
+[source,java]
+----
+public class VoiceCall {
+  private String  originNumber;
+  private String  destinationNumber;
+  private Date    callDateTime;
+  private long    callDuration;  // in milliseconds
+
+  // Constructors, getters, and setters
+}
+----
+====
+
+@role::
+This tag determines whether a given fact type is handled as a regular fact or an event in the {RULE_ENGINE} during complex event processing.
++
+--
+Default parameter: `fact`
+
+Supported parameters: `fact`, `event`
+
+[source]
+----
+@role( fact | event )
+----
+
+.Example: Declare VoiceCall as event type
+[source]
+----
+declare VoiceCall
+  @role( event )
+end
+----
+--
+
+@timestamp::
+This tag is automatically assigned to every event in the {RULE_ENGINE}. By default, the time is provided by the session clock and assigned to the event when it is inserted into the working memory of the {RULE_ENGINE}. You can specify a custom time stamp attribute instead of the default time stamp added by the session clock.
++
+--
+Default parameter: The time added by the {RULE_ENGINE} session clock
+
+Supported parameters: Session clock time or custom time stamp attribute
+
+[source]
+----
+@timestamp( <attributeName> )
+----
+
+.Example: Declare VoiceCall timestamp attribute
+[source]
+----
+declare VoiceCall
+  @role( event )
+  @timestamp( callDateTime )
+end
+----
+--
+
+@duration::
+This tag determines the duration time for events in the {RULE_ENGINE}. Events can be interval-based events or point-in-time events. Interval-based events have a duration time and persist in the working memory of the {RULE_ENGINE} until their duration time has lapsed. Point-in-time events have no duration and are essentially interval-based events with a duration of zero. By default, every event in the {RULE_ENGINE} has a duration of zero. You can specify a custom duration attribute instead of the default.
++
+--
+Default parameter: Null (zero)
+
+Supported parameters: Custom duration attribute
+
+[source]
+----
+@duration( <attributeName> )
+----
+
+.Example: Declare VoiceCall duration attribute
+[source]
+----
+declare VoiceCall
+  @role( event )
+  @timestamp( callDateTime )
+  @duration( callDuration )
+end
+----
+--
+
+@expires::
+This tag determines the time duration before an event expires in the working memory of the {RULE_ENGINE}. By default, an event expires when the event can no longer match and activate any of the current rules. You can define an amount of time after which an event should expire. This tag definition also overrides the implicit expiration offset calculated from temporal constraints and sliding windows in the KIE base. This tag is available only when the {RULE_ENGINE} is running in stream mode.
++
+--
+Default parameter: Null (event expires after event can no longer match and activate rules)
+
+Supported parameters: Custom `timeOffset` attribute in the format `[##d][#h][#m][#s][#[ms]]`
+// I had to put two #'s above for it to render only one. Otherwise removed the # from [d]. (Stetson, 28 May 2019)
+
+[source]
+----
+@expires( <timeOffset> )
+----
+
+.Example: Declare expiration offset for VoiceCall events
+[source]
+----
+declare VoiceCall
+  @role( event )
+  @timestamp( callDateTime )
+  @duration( callDuration )
+  @expires( 1h35m )
+end
+----
+--
+
+ifeval::["{context}" == "drl-rules"]
+@typesafe::
+This tab determines whether a given fact type is compiled with or without type safety. By default, all type declarations are compiled with type safety enabled. You can override this behavior to type-unsafe evaluation, where all constraints are generated as MVEL constraints and executed dynamically. This is useful when dealing with collections that do not have any generics or mixed type collections.
++
+--
+Default parameter: `true`
+
+Supported parameters: `true`, `false`
+
+[source]
+----
+@typesafe( <boolean> )
+----
+
+.Example: Declare VoiceCall for type-unsafe evaluation
+[source]
+----
+declare VoiceCall
+  @role( fact )
+  @typesafe( false )
+end
+----
+--
+
+@serialVersionUID::
+This tag defines an identifying `serialVersionUID` value for a serializable class in a fact declaration. If a serializable class does not explicitly declare a `serialVersionUID`, the serialization run time calculates a default `serialVersionUID` value for that class based on various aspects of the class, as described in the https://docs.oracle.com/javase/10/docs/specs/serialization/index.html[Java Object Serialization Specification]. However, for optimal deserialization results and for greater compatibility with serialized KIE sessions, set the `serialVersionUID` as needed in the relevant class or in your DRL declarations.
++
+--
+Default parameter: Null
+
+Supported parameters: Custom `serialVersionUID` integer
+
+[source]
+----
+@serialVersionUID( <integer> )
+----
+
+.Example: Declare serialVersionUID for a VoiceCall class
+[source]
+----
+declare VoiceCall
+  @serialVersionUID( 42 )
+end
+----
+--
+
+@key::
+This tag enables a fact type attribute to be used as a key identifier for the fact type. The generated class can then implement the `equals()` and `hashCode()` methods to determine if two instances of the type are equal to each other. The {RULE_ENGINE} can also generate a constructor using all the key attributes as parameters.
++
+--
+Default parameter: None
+
+Supported parameters: None
+
+[source]
+----
+<attributeDefinition> @key
+----
+
+.Example: Declare Person type attributes as keys
+[source]
+----
+declare Person
+    firstName : String @key
+    lastName : String @key
+    age : int
+end
+----
+
+For this example, the {RULE_ENGINE} checks the `firstName` and `lastName` attributes to determine if two instances of `Person` are equal to each other, but it does not check the `age` attribute. The {RULE_ENGINE} also implicitly generates three constructors: one without parameters, one with the `@key` fields, and one with all fields:
+
+.Example constructors from the key declarations
+[source]
+----
+Person() // Empty constructor
+
+Person( String firstName, String lastName )
+
+Person( String firstName, String lastName, int age )
+----
+
+You can then create instances of the type based on the key constructors, as shown in the following example:
+
+.Example instance using the key constructor
+[source,java]
+----
+Person person = new Person( "John", "Doe" );
+----
+--
+
+@position::
+This tag determines the position of a declared fact type attribute or field in a positional argument, overriding the default declared order of attributes. You can use this tag to modify positional constraints in patterns while maintaining a consistent format in your type declarations and positional arguments. You can use this tag only for fields in classes on the classpath. If some fields in a single class use this tag and some do not, the attributes without this tag are positioned last, in the declared order. Inheritance of classes is supported, but not interfaces of methods.
++
+--
+Default parameter: None
+
+Supported parameters: Any integer
+
+[source]
+----
+<attributeDefinition> @position ( <integer> )
+----
+
+.Example: Declare a fact type and override declared order
+[source]
+----
+declare Person
+    firstName : String @position( 1 )
+    lastName : String @position( 0 )
+    age : int @position( 2 )
+    occupation: String
+end
+----
+
+In this example, the attributes are prioritized in positional arguments in the following order:
+
+. `lastName`
+. `firstName`
+. `age`
+. `occupation`
+
+In positional arguments, you do not need to specify the field name because the position maps to a known named field. For example, the argument `Person( lastName == "Doe" )` is the same as `Person( "Doe"; )`, where the `lastName` field has the highest position annotation in the DRL declaration. The semicolon `;` indicates that everything before it is a positional argument. You can mix positional and named arguments on a pattern by using the semicolon to separate them. Any variables in a positional argument that have not yet been bound are bound to the field that maps to that position.
+
+The following example patterns illustrate different ways of constructing positional and named arguments. The patterns have two constraints and a binding, and the semicolon differentiates the positional section from the named argument section. Variables and literals and expressions using only literals are supported in positional arguments, but not variables alone.
+
+.Example patterns with positional and named arguments
+[source]
+----
+Person( "Doe", "John", $a; )
+
+Person( "Doe", "John"; $a : age )
+
+Person( "Doe"; firstName == "John", $a : age )
+
+Person( lastName == "Doe"; firstName == "John", $a : age )
+----
+
+Positional arguments can be classified as _input arguments_ or _output arguments_. Input arguments contain a previously declared binding and constrain against that binding using unification. Output arguments generate the declaration and bind it to the field represented by the positional argument when the binding does not yet exist.
+
+In extended type declarations, use caution when defining `@position` annotations because the attribute positions are inherited in subtypes. This inheritance can result in a mixed attribute order that can be confusing in some cases. Two fields can have the same `@position` value and consecutive values do not need to be declared. If a position is repeated, the conflict is solved using inheritance, where position values in the parent type have precedence, and then using the declaration order from the first to last declaration.
+
+For example, the following extended type declarations result in mixed positional priorities:
+
+.Example extended fact type with mixed position annotations
+[source]
+----
+declare Person
+    firstName : String @position( 1 )
+    lastName : String @position( 0 )
+    age : int @position( 2 )
+    occupation: String
+end
+
+declare Student extends Person
+    degree : String @position( 1 )
+    school : String @position( 0 )
+    graduationDate : Date
+end
+----
+
+In this example, the attributes are prioritized in positional arguments in the following order:
+
+. `lastName` (position 0 in the parent type)
+. `school` (position 0 in the subtype)
+. `firstName` (position 1 in the parent type)
+. `degree` (position 1 in the subtype)
+. `age` (position 2 in the parent type)
+. `occupation` (first field with no position annotation)
+. `graduationDate` (second field with no position annotation)
+--
+endif::[]

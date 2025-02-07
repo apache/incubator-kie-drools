@@ -1,0 +1,33 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='cep-event-streams-con_{context}']
+
+= Event streams and entry points
+
+The {RULE_ENGINE} can process high volumes of events in the form of event streams. In DRL rule declarations, a stream is also known as an _entry point_. When you declare an entry point in a DRL rule or Java application, the {RULE_ENGINE}, at compile time, identifies and creates the proper internal structures to use data from only that entry point to evaluate that rule.
+
+Facts from one entry point, or stream, can join facts from any other entry point in addition to facts already in the working memory of the {RULE_ENGINE}. Facts always remain associated with the entry point through which they entered the {RULE_ENGINE}. Facts of the same type can enter the {RULE_ENGINE} through several entry points, but facts that enter the {RULE_ENGINE} through entry point A can never match a pattern from entry point B.
+
+Event streams have the following characteristics:
+
+* Events in the stream are ordered by time stamp. The time stamps may have different semantics for different streams, but they are always ordered internally.
+* Event streams usually have a high volume of events.
+* Atomic events in streams are usually not useful individually, only collectively in a stream.
+* Event streams can be homogeneous and contain a single type of event, or heterogeneous and contain events of different types.

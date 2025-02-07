@@ -1,0 +1,126 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='decision-tables-use-case-con']
+= Decision table use case
+
+An online shopping site lists the shipping charges for ordered items. The site provides free shipping under the following conditions:
+
+* The number of items ordered is 4 or more and the checkout total is $300 or more.
+* Standard shipping is selected (4 or 5 business days from the date of purchase).
+
+The following are the shipping rates under these conditions:
+
+.For orders less than $300
+[cols="1,1,1", options="header"]
+|===
+|
+								Number of items
+
+|
+								Delivery day
+
+|
+								Shipping charge in USD, N = Number of items
+
+
+|
+
+3 or fewer
+| Next day
+
+
+2nd day
+
+
+Standard
+|
+
+35
+
+15
+
+10
+|
+
+4 or more
+|
+
+Next day
+
+
+2nd day
+
+
+Standard
+
+|N*7.50
+
+N*3.50
+
+N*2.50
+
+|===
+
+.For orders more than $300
+[cols="1,1,1", options="header"]
+|===
+|
+								Number of items
+
+|
+								Delivery day
+
+|
+								Shipping charge in USD, N = Number of items
+
+
+|
+
+3 or fewer
+|Next day
+
+2nd day
+
+Standard
+|25
+
+10
+
+N*1.50
+|4 or more
+|Next day
+
+2nd day
+
+Standard
+|N*5
+
+N*2
+
+FREE
+|===
+
+
+These conditions and rates are shown in the following example spreadsheet decision table:
+
+.Decision table for shipping charges
+image::language-reference/decision-table-example-02.png[Decision table example]
+
+In order for a decision table to be executed in {RULE_ENGINE}, the table must comply with certain structure and syntax requirements, within an XLS or XLSX spreadsheet, as shown in this example. For more information, see xref:decision-tables-defining-proc[].

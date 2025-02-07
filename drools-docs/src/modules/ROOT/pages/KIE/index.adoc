@@ -1,0 +1,41 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+:DROOLS:
+include::../_artifacts/document-attributes.adoc[]
+
+[[_builddeployutilizeandrunsection]]
+= Build, Deploy, Utilize and Run
+:context: packaging-deploying
+
+In this section you will learn the paradigms to use {PRODUCT} library as part of KIE (Knowledge Is Everything) for Building, Deploying and Running your {PRODUCT}-based solutions.
+
+include::BuildDeployUtilizeAndRun/_KIEModuleIntroduction-section.adoc[leveloffset=+1]
+include::BuildDeployUtilizeAndRun/_KIEBuilding-section.adoc[leveloffset=+1]
+include::BuildDeployUtilizeAndRun/_KIEDeploying-section.adoc[leveloffset=+1]
+include::BuildDeployUtilizeAndRun/_KIERunning-section.adoc[leveloffset=+1]
+include::BuildDeployUtilizeAndRun/_KIEExamples-section.adoc[leveloffset=+1]
+include::BuildDeployUtilizeAndRun/_executable-model-con.adoc[leveloffset=+1]
+include::BuildDeployUtilizeAndRun/_executable-model-modify-proc.adoc[leveloffset=+2]
+include::BuildDeployUtilizeAndRun/_executable-model-upgrading-proc.adoc[leveloffset=+2]
+include::BuildDeployUtilizeAndRun/_rule-unit-api.adoc[leveloffset=+1]
+include::BuildDeployUtilizeAndRun/_rule-unit-dsl.adoc[leveloffset=+1]
+include::BuildDeployUtilizeAndRun/_kie-scanner-proc.adoc[leveloffset=+1]
+
+include::Security/_SecurityManager-section.adoc[leveloffset=+1]

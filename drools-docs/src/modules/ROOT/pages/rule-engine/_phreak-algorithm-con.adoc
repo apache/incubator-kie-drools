@@ -1,0 +1,35 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='phreak-algorithm-con_{context}']
+
+= Phreak rule algorithm in the {RULE_ENGINE}
+
+The {RULE_ENGINE} in {PRODUCT} uses the Phreak algorithm for rule evaluation. Phreak evolved from the Rete algorithm, including the enhanced Rete algorithm ReteOO that was introduced in previous versions of {PRODUCT} for object-oriented systems. Overall, Phreak is more scalable than Rete and ReteOO, and is faster in large systems.
+
+While Rete is considered eager (immediate rule evaluation) and data oriented, Phreak is considered lazy (delayed rule evaluation) and goal oriented. The Rete algorithm performs many actions during the insert, update, and delete actions in order to find partial matches for all rules. This eagerness of the Rete algorithm during rule matching requires a lot of time before eventually executing rules, especially in large systems. With Phreak, this partial matching of rules is delayed deliberately to handle large amounts of data more efficiently.
+
+The Phreak algorithm adds the following set of enhancements to previous Rete algorithms:
+
+* Three layers of contextual memory: Node, segment, and rule memory types
+* Rule-based, segment-based, and node-based linking
+* Lazy (delayed) rule evaluation
+* Stack-based evaluations with pause and resume
+* Isolated rule evaluation
+* Set-oriented propagations

@@ -1,0 +1,81 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='fact-propagation-modes-con_{context}']
+
+= Fact propagation modes in the {RULE_ENGINE}
+
+The {RULE_ENGINE} supports the following fact propagation modes that determine how the {RULE_ENGINE} progresses inserted facts through the engine network in preparation for rule execution:
+
+* *Lazy*: (Default) Facts are propagated in batch collections at rule execution, not in real time as the facts are individually inserted by a user or application. As a result, the order in which the facts are ultimately propagated through the {RULE_ENGINE} may be different from the order in which the facts were individually inserted.
+* *Immediate*: Facts are propagated immediately in the order that they are inserted by a user or application.
+* *Eager*: Facts are propagated lazily (in batch collections), but before rule execution. The {RULE_ENGINE} uses this propagation behavior for rules that have the `no-loop` or `lock-on-active` attribute.
+
+By default, the Phreak rule algorithm in the {RULE_ENGINE} uses lazy fact propagation for improved rule evaluation overall. However, in few cases, this lazy propagation behavior can alter the expected result of certain rule executions that may require immediate or eager propagation.
+
+For example, the following rule uses a specified query with a `?` prefix to invoke the query in pull-only or passive fashion:
+
+.Example rule with a passive query
+[source]
+----
+query Q (Integer i)
+    String( this == i.toString() )
+end
+
+rule "Rule"
+  when
+    $i : Integer()
+    ?Q( $i; )
+  then
+    System.out.println( $i );
+end
+----
+
+For this example, the rule should be executed only when a `String` that satisfies the query is inserted before the `Integer`, such as in the following example commands:
+
+.Example commands that should trigger the rule execution
+[source,java]
+----
+KieSession ksession = ...
+ksession.insert("1");
+ksession.insert(1);
+ksession.fireAllRules();
+----
+
+However, due to the default lazy propagation behavior in Phreak, the {RULE_ENGINE} does not detect the insertion sequence of the two facts in this case, so this rule is executed regardless of `String` and `Integer` insertion order. For this example, immediate propagation is required for the expected rule evaluation.
+
+To alter the {RULE_ENGINE} propagation mode to achieve the expected rule evaluation in this case, you can add the `@Propagation(<type>)` tag to your rule and set `<type>` to `LAZY`, `IMMEDIATE`, or `EAGER`.
+
+In the same example rule, the immediate propagation annotation enables the rule to be evaluated only when a `String` that satisfies the query is inserted before the `Integer`, as expected:
+
+.Example rule with a passive query and specified propagation mode
+[source]
+----
+query Q (Integer i)
+    String( this == i.toString() )
+end
+
+rule "Rule" @Propagation(IMMEDIATE)
+  when
+    $i : Integer()
+    ?Q( $i; )
+  then
+    System.out.println( $i );
+end
+----

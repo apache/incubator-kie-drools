@@ -1,0 +1,420 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='ai-pmml-ref_{context}']
+
+= Credit card transaction dispute exercise PMML file
+Use the following XML content to create the `dtree_risk_predictor.pmml` file in the xref:ai-gsg_{context}[] exercise.
+
+[source, xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<PMML xmlns="http://www.dmg.org/PMML-4_2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="4.2" xsi:schemaLocation="http://www.dmg.org/PMML-4_2 http://www.dmg.org/v4-2-1/pmml-4-2.xsd">
+  <Header copyright="Copyright (c) 2018 Software AG" description="Default Description">
+    <Application name="Nyoka" version="4.3.0" />
+    <Timestamp>2020-10-09 14:27:26.622723</Timestamp>
+  </Header>
+  <DataDictionary numberOfFields="3">
+    <DataField name="amount" optype="continuous" dataType="double" />
+    <DataField name="holder_index" optype="continuous" dataType="double" />
+    <DataField name="dispute_risk" optype="categorical" dataType="integer">
+      <Value value="1" />
+      <Value value="2" />
+      <Value value="3" />
+      <Value value="4" />
+      <Value value="5" />
+    </DataField>
+  </DataDictionary>
+  <TreeModel modelName="DecisionTreeClassifier" functionName="classification" missingValuePenalty="1.0">
+    <MiningSchema>
+      <MiningField name="amount" usageType="active" optype="continuous" />
+      <MiningField name="holder_index" usageType="active" optype="continuous" />
+      <MiningField name="dispute_risk" usageType="target" optype="categorical" />
+    </MiningSchema>
+    <Output>
+      <OutputField name="probability_1" optype="continuous" dataType="double" feature="probability" value="1" />
+      <OutputField name="probability_2" optype="continuous" dataType="double" feature="probability" value="2" />
+      <OutputField name="probability_3" optype="continuous" dataType="double" feature="probability" value="3" />
+      <OutputField name="probability_4" optype="continuous" dataType="double" feature="probability" value="4" />
+      <OutputField name="probability_5" optype="continuous" dataType="double" feature="probability" value="5" />
+      <OutputField name="predicted_dispute_risk" optype="categorical" dataType="integer" feature="predictedValue" />
+    </Output>
+    <Node id="0" recordCount="600.0">
+      <True />
+      <Node id="1" recordCount="200.0">
+        <SimplePredicate field="amount" operator="lessOrEqual" value="99.94000244140625" />
+        <Node id="2" score="2" recordCount="55.0">
+          <SimplePredicate field="holder_index" operator="lessOrEqual" value="0.5" />
+          <ScoreDistribution value="1" recordCount="0.0" confidence="0.0" />
+          <ScoreDistribution value="2" recordCount="55.0" confidence="1.0" />
+          <ScoreDistribution value="3" recordCount="0.0" confidence="0.0" />
+          <ScoreDistribution value="4" recordCount="0.0" confidence="0.0" />
+          <ScoreDistribution value="5" recordCount="0.0" confidence="0.0" />
+        </Node>
+        <Node id="3" score="1" recordCount="145.0">
+          <SimplePredicate field="holder_index" operator="greaterThan" value="0.5" />
+          <ScoreDistribution value="1" recordCount="145.0" confidence="1.0" />
+          <ScoreDistribution value="2" recordCount="0.0" confidence="0.0" />
+          <ScoreDistribution value="3" recordCount="0.0" confidence="0.0" />
+          <ScoreDistribution value="4" recordCount="0.0" confidence="0.0" />
+          <ScoreDistribution value="5" recordCount="0.0" confidence="0.0" />
+        </Node>
+      </Node>
+      <Node id="4" recordCount="400.0">
+        <SimplePredicate field="amount" operator="greaterThan" value="99.94000244140625" />
+        <Node id="5" recordCount="105.0">
+          <SimplePredicate field="holder_index" operator="lessOrEqual" value="0.5" />
+          <Node id="6" score="3" recordCount="54.0">
+            <SimplePredicate field="amount" operator="lessOrEqual" value="150.4550018310547" />
+            <ScoreDistribution value="1" recordCount="0.0" confidence="0.0" />
+            <ScoreDistribution value="2" recordCount="0.0" confidence="0.0" />
+            <ScoreDistribution value="3" recordCount="54.0" confidence="1.0" />
+            <ScoreDistribution value="4" recordCount="0.0" confidence="0.0" />
+            <ScoreDistribution value="5" recordCount="0.0" confidence="0.0" />
+          </Node>
+          <Node id="7" recordCount="51.0">
+            <SimplePredicate field="amount" operator="greaterThan" value="150.4550018310547" />
+            <Node id="8" recordCount="40.0">
+              <SimplePredicate field="amount" operator="lessOrEqual" value="200.00499725341797" />
+              <Node id="9" recordCount="36.0">
+                <SimplePredicate field="amount" operator="lessOrEqual" value="195.4949951171875" />
+                <Node id="10" recordCount="2.0">
+                  <SimplePredicate field="amount" operator="lessOrEqual" value="152.2050018310547" />
+                  <Node id="11" score="4" recordCount="1.0">
+                    <SimplePredicate field="amount" operator="lessOrEqual" value="151.31500244140625" />
+                    <ScoreDistribution value="1" recordCount="0.0" confidence="0.0" />
+                    <ScoreDistribution value="2" recordCount="0.0" confidence="0.0" />
+                    <ScoreDistribution value="3" recordCount="0.0" confidence="0.0" />
+                    <ScoreDistribution value="4" recordCount="1.0" confidence="1.0" />
+                    <ScoreDistribution value="5" recordCount="0.0" confidence="0.0" />
+                  </Node>
+                  <Node id="12" score="3" recordCount="1.0">
+                    <SimplePredicate field="amount" operator="greaterThan" value="151.31500244140625" />
+                    <ScoreDistribution value="1" recordCount="0.0" confidence="0.0" />
+                    <ScoreDistribution value="2" recordCount="0.0" confidence="0.0" />
+                    <ScoreDistribution value="3" recordCount="1.0" confidence="1.0" />
+                    <ScoreDistribution value="4" recordCount="0.0" confidence="0.0" />
+                    <ScoreDistribution value="5" recordCount="0.0" confidence="0.0" />
+                  </Node>
+                </Node>
+                <Node id="13" recordCount="34.0">
+                  <SimplePredicate field="amount" operator="greaterThan" value="152.2050018310547" />
+                  <Node id="14" recordCount="20.0">
+                    <SimplePredicate field="amount" operator="lessOrEqual" value="176.5050048828125" />
+                    <Node id="15" recordCount="19.0">
+                      <SimplePredicate field="amount" operator="lessOrEqual" value="176.06500244140625" />
+                      <Node id="16" score="4" recordCount="9.0">
+                        <SimplePredicate field="amount" operator="lessOrEqual" value="166.6449966430664" />
+                        <ScoreDistribution value="1" recordCount="0.0" confidence="0.0" />
+                        <ScoreDistribution value="2" recordCount="0.0" confidence="0.0" />
+                        <ScoreDistribution value="3" recordCount="0.0" confidence="0.0" />
+                        <ScoreDistribution value="4" recordCount="9.0" confidence="1.0" />
+                        <ScoreDistribution value="5" recordCount="0.0" confidence="0.0" />
+                      </Node>
+                      <Node id="17" recordCount="10.0">
+                        <SimplePredicate field="amount" operator="greaterThan" value="166.6449966430664" />
+                        <Node id="18" score="3" recordCount="1.0">
+                          <SimplePredicate field="amount" operator="lessOrEqual" value="167.97999572753906" />
+                          <ScoreDistribution value="1" recordCount="0.0" confidence="0.0" />
+                          <ScoreDistribution value="2" recordCount="0.0" confidence="0.0" />
+                          <ScoreDistribution value="3" recordCount="1.0" confidence="1.0" />
+                          <ScoreDistribution value="4" recordCount="0.0" confidence="0.0" />
+                          <ScoreDistribution value="5" recordCount="0.0" confidence="0.0" />
+                        </Node>
+                        <Node id="19" score="4" recordCount="9.0">
+                          <SimplePredicate field="amount" operator="greaterThan" value="167.97999572753906" />
+                          <ScoreDistribution value="1" recordCount="0.0" confidence="0.0" />
+                          <ScoreDistribution value="2" recordCount="0.0" confidence="0.0" />
+                          <ScoreDistribution value="3" recordCount="0.0" confidence="0.0" />
+                          <ScoreDistribution value="4" recordCount="9.0" confidence="1.0" />
+                          <ScoreDistribution value="5" recordCount="0.0" confidence="0.0" />
+                        </Node>
+                      </Node>
+                    </Node>
+                    <Node id="20" score="3" recordCount="1.0">
+                      <SimplePredicate field="amount" operator="greaterThan" value="176.06500244140625" />
+                      <ScoreDistribution value="1" recordCount="0.0" confidence="0.0" />
+                      <ScoreDistribution value="2" recordCount="0.0" confidence="0.0" />
+                      <ScoreDistribution value="3" recordCount="1.0" confidence="1.0" />
+                      <ScoreDistribution value="4" recordCount="0.0" confidence="0.0" />
+                      <ScoreDistribution value="5" recordCount="0.0" confidence="0.0" />
+                    </Node>
+                  </Node>
+                  <Node id="21" score="4" recordCount="14.0">
+                    <SimplePredicate field="amount" operator="greaterThan" value="176.5050048828125" />
+                    <ScoreDistribution value="1" recordCount="0.0" confidence="0.0" />
+                    <ScoreDistribution value="2" recordCount="0.0" confidence="0.0" />
+                    <ScoreDistribution value="3" recordCount="0.0" confidence="0.0" />
+                    <ScoreDistribution value="4" recordCount="14.0" confidence="1.0" />
+                    <ScoreDistribution value="5" recordCount="0.0" confidence="0.0" />
+                  </Node>
+                </Node>
+              </Node>
+              <Node id="22" recordCount="4.0">
+                <SimplePredicate field="amount" operator="greaterThan" value="195.4949951171875" />
+                <Node id="23" score="3" recordCount="1.0">
+                  <SimplePredicate field="amount" operator="lessOrEqual" value="195.76499938964844" />
+                  <ScoreDistribution value="1" recordCount="0.0" confidence="0.0" />
+                  <ScoreDistribution value="2" recordCount="0.0" confidence="0.0" />
+                  <ScoreDistribution value="3" recordCount="1.0" confidence="1.0" />
+                  <ScoreDistribution value="4" recordCount="0.0" confidence="0.0" />
+                  <ScoreDistribution value="5" recordCount="0.0" confidence="0.0" />
+                </Node>
+                <Node id="24" recordCount="3.0">
+                  <SimplePredicate field="amount" operator="greaterThan" value="195.76499938964844" />
+                  <Node id="25" score="4" recordCount="1.0">
+                    <SimplePredicate field="amount" operator="lessOrEqual" value="196.74500274658203" />
+                    <ScoreDistribution value="1" recordCount="0.0" confidence="0.0" />
+                    <ScoreDistribution value="2" recordCount="0.0" confidence="0.0" />
+                    <ScoreDistribution value="3" recordCount="0.0" confidence="0.0" />
+                    <ScoreDistribution value="4" recordCount="1.0" confidence="1.0" />
+                    <ScoreDistribution value="5" recordCount="0.0" confidence="0.0" />
+                  </Node>
+                  <Node id="26" recordCount="2.0">
+                    <SimplePredicate field="amount" operator="greaterThan" value="196.74500274658203" />
+                    <Node id="27" score="3" recordCount="1.0">
+                      <SimplePredicate field="amount" operator="lessOrEqual" value="197.5800018310547" />
+                      <ScoreDistribution value="1" recordCount="0.0" confidence="0.0" />
+                      <ScoreDistribution value="2" recordCount="0.0" confidence="0.0" />
+                      <ScoreDistribution value="3" recordCount="1.0" confidence="1.0" />
+                      <ScoreDistribution value="4" recordCount="0.0" confidence="0.0" />
+                      <ScoreDistribution value="5" recordCount="0.0" confidence="0.0" />
+                    </Node>
+                    <Node id="28" score="4" recordCount="1.0">
+                      <SimplePredicate field="amount" operator="greaterThan" value="197.5800018310547" />
+                      <ScoreDistribution value="1" recordCount="0.0" confidence="0.0" />
+                      <ScoreDistribution value="2" recordCount="0.0" confidence="0.0" />
+                      <ScoreDistribution value="3" recordCount="0.0" confidence="0.0" />
+                      <ScoreDistribution value="4" recordCount="1.0" confidence="1.0" />
+                      <ScoreDistribution value="5" recordCount="0.0" confidence="0.0" />
+                    </Node>
+                  </Node>
+                </Node>
+              </Node>
+            </Node>
+            <Node id="29" score="5" recordCount="11.0">
+              <SimplePredicate field="amount" operator="greaterThan" value="200.00499725341797" />
+              <ScoreDistribution value="1" recordCount="0.0" confidence="0.0" />
+              <ScoreDistribution value="2" recordCount="0.0" confidence="0.0" />
+              <ScoreDistribution value="3" recordCount="0.0" confidence="0.0" />
+              <ScoreDistribution value="4" recordCount="0.0" confidence="0.0" />
+              <ScoreDistribution value="5" recordCount="11.0" confidence="1.0" />
+            </Node>
+          </Node>
+        </Node>
+        <Node id="30" recordCount="295.0">
+          <SimplePredicate field="holder_index" operator="greaterThan" value="0.5" />
+          <Node id="31" score="2" recordCount="170.0">
+            <SimplePredicate field="amount" operator="lessOrEqual" value="150.93499755859375" />
+            <ScoreDistribution value="1" recordCount="0.0" confidence="0.0" />
+            <ScoreDistribution value="2" recordCount="170.0" confidence="1.0" />
+            <ScoreDistribution value="3" recordCount="0.0" confidence="0.0" />
+            <ScoreDistribution value="4" recordCount="0.0" confidence="0.0" />
+            <ScoreDistribution value="5" recordCount="0.0" confidence="0.0" />
+          </Node>
+          <Node id="32" recordCount="125.0">
+            <SimplePredicate field="amount" operator="greaterThan" value="150.93499755859375" />
+            <Node id="33" recordCount="80.0">
+              <SimplePredicate field="holder_index" operator="lessOrEqual" value="2.5" />
+              <Node id="34" recordCount="66.0">
+                <SimplePredicate field="amount" operator="lessOrEqual" value="199.13500213623047" />
+                <Node id="35" score="3" recordCount="10.0">
+                  <SimplePredicate field="amount" operator="lessOrEqual" value="155.56999969482422" />
+                  <ScoreDistribution value="1" recordCount="0.0" confidence="0.0" />
+                  <ScoreDistribution value="2" recordCount="0.0" confidence="0.0" />
+                  <ScoreDistribution value="3" recordCount="10.0" confidence="1.0" />
+                  <ScoreDistribution value="4" recordCount="0.0" confidence="0.0" />
+                  <ScoreDistribution value="5" recordCount="0.0" confidence="0.0" />
+                </Node>
+                <Node id="36" recordCount="56.0">
+                  <SimplePredicate field="amount" operator="greaterThan" value="155.56999969482422" />
+                  <Node id="37" score="2" recordCount="1.0">
+                    <SimplePredicate field="amount" operator="lessOrEqual" value="155.9000015258789" />
+                    <ScoreDistribution value="1" recordCount="0.0" confidence="0.0" />
+                    <ScoreDistribution value="2" recordCount="1.0" confidence="1.0" />
+                    <ScoreDistribution value="3" recordCount="0.0" confidence="0.0" />
+                    <ScoreDistribution value="4" recordCount="0.0" confidence="0.0" />
+                    <ScoreDistribution value="5" recordCount="0.0" confidence="0.0" />
+                  </Node>
+                  <Node id="38" recordCount="55.0">
+                    <SimplePredicate field="amount" operator="greaterThan" value="155.9000015258789" />
+                    <Node id="39" recordCount="31.0">
+                      <SimplePredicate field="amount" operator="lessOrEqual" value="176.3699951171875" />
+                      <Node id="40" recordCount="30.0">
+                        <SimplePredicate field="amount" operator="lessOrEqual" value="175.72000122070312" />
+                        <Node id="41" recordCount="19.0">
+                          <SimplePredicate field="amount" operator="lessOrEqual" value="168.06999969482422" />
+                          <Node id="42" recordCount="6.0">
+                            <SimplePredicate field="amount" operator="lessOrEqual" value="158.125" />
+                            <Node id="43" score="3" recordCount="5.0">
+                              <SimplePredicate field="amount" operator="lessOrEqual" value="157.85499572753906" />
+                              <ScoreDistribution value="1" recordCount="0.0" confidence="0.0" />
+                              <ScoreDistribution value="2" recordCount="0.0" confidence="0.0" />
+                              <ScoreDistribution value="3" recordCount="5.0" confidence="1.0" />
+                              <ScoreDistribution value="4" recordCount="0.0" confidence="0.0" />
+                              <ScoreDistribution value="5" recordCount="0.0" confidence="0.0" />
+                            </Node>
+                            <Node id="44" score="2" recordCount="1.0">
+                              <SimplePredicate field="amount" operator="greaterThan" value="157.85499572753906" />
+                              <ScoreDistribution value="1" recordCount="0.0" confidence="0.0" />
+                              <ScoreDistribution value="2" recordCount="1.0" confidence="1.0" />
+                              <ScoreDistribution value="3" recordCount="0.0" confidence="0.0" />
+                              <ScoreDistribution value="4" recordCount="0.0" confidence="0.0" />
+                              <ScoreDistribution value="5" recordCount="0.0" confidence="0.0" />
+                            </Node>
+                          </Node>
+                          <Node id="45" score="3" recordCount="13.0">
+                            <SimplePredicate field="amount" operator="greaterThan" value="158.125" />
+                            <ScoreDistribution value="1" recordCount="0.0" confidence="0.0" />
+                            <ScoreDistribution value="2" recordCount="0.0" confidence="0.0" />
+                            <ScoreDistribution value="3" recordCount="13.0" confidence="1.0" />
+                            <ScoreDistribution value="4" recordCount="0.0" confidence="0.0" />
+                            <ScoreDistribution value="5" recordCount="0.0" confidence="0.0" />
+                          </Node>
+                        </Node>
+                        <Node id="46" recordCount="11.0">
+                          <SimplePredicate field="amount" operator="greaterThan" value="168.06999969482422" />
+                          <Node id="47" score="2" recordCount="1.0">
+                            <SimplePredicate field="amount" operator="lessOrEqual" value="168.69499969482422" />
+                            <ScoreDistribution value="1" recordCount="0.0" confidence="0.0" />
+                            <ScoreDistribution value="2" recordCount="1.0" confidence="1.0" />
+                            <ScoreDistribution value="3" recordCount="0.0" confidence="0.0" />
+                            <ScoreDistribution value="4" recordCount="0.0" confidence="0.0" />
+                            <ScoreDistribution value="5" recordCount="0.0" confidence="0.0" />
+                          </Node>
+                          <Node id="48" recordCount="10.0">
+                            <SimplePredicate field="amount" operator="greaterThan" value="168.69499969482422" />
+                            <Node id="49" recordCount="4.0">
+                              <SimplePredicate field="holder_index" operator="lessOrEqual" value="1.5" />
+                              <Node id="50" score="2" recordCount="1.0">
+                                <SimplePredicate field="amount" operator="lessOrEqual" value="172.0250015258789" />
+                                <ScoreDistribution value="1" recordCount="0.0" confidence="0.0" />
+                                <ScoreDistribution value="2" recordCount="1.0" confidence="1.0" />
+                                <ScoreDistribution value="3" recordCount="0.0" confidence="0.0" />
+                                <ScoreDistribution value="4" recordCount="0.0" confidence="0.0" />
+                                <ScoreDistribution value="5" recordCount="0.0" confidence="0.0" />
+                              </Node>
+                              <Node id="51" score="3" recordCount="3.0">
+                                <SimplePredicate field="amount" operator="greaterThan" value="172.0250015258789" />
+                                <ScoreDistribution value="1" recordCount="0.0" confidence="0.0" />
+                                <ScoreDistribution value="2" recordCount="0.0" confidence="0.0" />
+                                <ScoreDistribution value="3" recordCount="3.0" confidence="1.0" />
+                                <ScoreDistribution value="4" recordCount="0.0" confidence="0.0" />
+                                <ScoreDistribution value="5" recordCount="0.0" confidence="0.0" />
+                              </Node>
+                            </Node>
+                            <Node id="52" score="3" recordCount="6.0">
+                              <SimplePredicate field="holder_index" operator="greaterThan" value="1.5" />
+                              <ScoreDistribution value="1" recordCount="0.0" confidence="0.0" />
+                              <ScoreDistribution value="2" recordCount="0.0" confidence="0.0" />
+                              <ScoreDistribution value="3" recordCount="6.0" confidence="1.0" />
+                              <ScoreDistribution value="4" recordCount="0.0" confidence="0.0" />
+                              <ScoreDistribution value="5" recordCount="0.0" confidence="0.0" />
+                            </Node>
+                          </Node>
+                        </Node>
+                      </Node>
+                      <Node id="53" score="2" recordCount="1.0">
+                        <SimplePredicate field="amount" operator="greaterThan" value="175.72000122070312" />
+                        <ScoreDistribution value="1" recordCount="0.0" confidence="0.0" />
+                        <ScoreDistribution value="2" recordCount="1.0" confidence="1.0" />
+                        <ScoreDistribution value="3" recordCount="0.0" confidence="0.0" />
+                        <ScoreDistribution value="4" recordCount="0.0" confidence="0.0" />
+                        <ScoreDistribution value="5" recordCount="0.0" confidence="0.0" />
+                      </Node>
+                    </Node>
+                    <Node id="54" recordCount="24.0">
+                      <SimplePredicate field="amount" operator="greaterThan" value="176.3699951171875" />
+                      <Node id="55" score="3" recordCount="16.0">
+                        <SimplePredicate field="amount" operator="lessOrEqual" value="192.0999984741211" />
+                        <ScoreDistribution value="1" recordCount="0.0" confidence="0.0" />
+                        <ScoreDistribution value="2" recordCount="0.0" confidence="0.0" />
+                        <ScoreDistribution value="3" recordCount="16.0" confidence="1.0" />
+                        <ScoreDistribution value="4" recordCount="0.0" confidence="0.0" />
+                        <ScoreDistribution value="5" recordCount="0.0" confidence="0.0" />
+                      </Node>
+                      <Node id="56" recordCount="8.0">
+                        <SimplePredicate field="amount" operator="greaterThan" value="192.0999984741211" />
+                        <Node id="57" score="2" recordCount="1.0">
+                          <SimplePredicate field="amount" operator="lessOrEqual" value="192.75499725341797" />
+                          <ScoreDistribution value="1" recordCount="0.0" confidence="0.0" />
+                          <ScoreDistribution value="2" recordCount="1.0" confidence="1.0" />
+                          <ScoreDistribution value="3" recordCount="0.0" confidence="0.0" />
+                          <ScoreDistribution value="4" recordCount="0.0" confidence="0.0" />
+                          <ScoreDistribution value="5" recordCount="0.0" confidence="0.0" />
+                        </Node>
+                        <Node id="58" score="3" recordCount="7.0">
+                          <SimplePredicate field="amount" operator="greaterThan" value="192.75499725341797" />
+                          <ScoreDistribution value="1" recordCount="0.0" confidence="0.0" />
+                          <ScoreDistribution value="2" recordCount="0.0" confidence="0.0" />
+                          <ScoreDistribution value="3" recordCount="7.0" confidence="1.0" />
+                          <ScoreDistribution value="4" recordCount="0.0" confidence="0.0" />
+                          <ScoreDistribution value="5" recordCount="0.0" confidence="0.0" />
+                        </Node>
+                      </Node>
+                    </Node>
+                  </Node>
+                </Node>
+              </Node>
+              <Node id="59" recordCount="14.0">
+                <SimplePredicate field="amount" operator="greaterThan" value="199.13500213623047" />
+                <Node id="60" score="5" recordCount="10.0">
+                  <SimplePredicate field="holder_index" operator="lessOrEqual" value="1.5" />
+                  <ScoreDistribution value="1" recordCount="0.0" confidence="0.0" />
+                  <ScoreDistribution value="2" recordCount="0.0" confidence="0.0" />
+                  <ScoreDistribution value="3" recordCount="0.0" confidence="0.0" />
+                  <ScoreDistribution value="4" recordCount="0.0" confidence="0.0" />
+                  <ScoreDistribution value="5" recordCount="10.0" confidence="1.0" />
+                </Node>
+                <Node id="61" score="4" recordCount="4.0">
+                  <SimplePredicate field="holder_index" operator="greaterThan" value="1.5" />
+                  <ScoreDistribution value="1" recordCount="0.0" confidence="0.0" />
+                  <ScoreDistribution value="2" recordCount="0.0" confidence="0.0" />
+                  <ScoreDistribution value="3" recordCount="0.0" confidence="0.0" />
+                  <ScoreDistribution value="4" recordCount="4.0" confidence="1.0" />
+                  <ScoreDistribution value="5" recordCount="0.0" confidence="0.0" />
+                </Node>
+              </Node>
+            </Node>
+            <Node id="62" recordCount="45.0">
+              <SimplePredicate field="holder_index" operator="greaterThan" value="2.5" />
+              <Node id="63" score="2" recordCount="37.0">
+                <SimplePredicate field="amount" operator="lessOrEqual" value="199.13999938964844" />
+                <ScoreDistribution value="1" recordCount="0.0" confidence="0.0" />
+                <ScoreDistribution value="2" recordCount="37.0" confidence="1.0" />
+                <ScoreDistribution value="3" recordCount="0.0" confidence="0.0" />
+                <ScoreDistribution value="4" recordCount="0.0" confidence="0.0" />
+                <ScoreDistribution value="5" recordCount="0.0" confidence="0.0" />
+              </Node>
+              <Node id="64" score="4" recordCount="8.0">
+                <SimplePredicate field="amount" operator="greaterThan" value="199.13999938964844" />
+                <ScoreDistribution value="1" recordCount="0.0" confidence="0.0" />
+                <ScoreDistribution value="2" recordCount="0.0" confidence="0.0" />
+                <ScoreDistribution value="3" recordCount="0.0" confidence="0.0" />
+                <ScoreDistribution value="4" recordCount="8.0" confidence="1.0" />
+                <ScoreDistribution value="5" recordCount="0.0" confidence="0.0" />
+              </Node>
+            </Node>
+          </Node>
+        </Node>
+      </Node>
+    </Node>
+  </TreeModel>
+</PMML>
+----

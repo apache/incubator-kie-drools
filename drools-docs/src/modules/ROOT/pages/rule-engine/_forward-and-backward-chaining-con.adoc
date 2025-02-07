@@ -1,0 +1,36 @@
+////
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+////
+
+[id='forward-and-backward-chaining-con_{context}']
+
+= Rule evaluation with forward and backward chaining
+
+The {RULE_ENGINE} in {PRODUCT} is a hybrid reasoning system that uses both forward chaining and backward chaining to evaluate rules. A forward-chaining rule system is a data-driven system that starts with a fact in the working memory of the {RULE_ENGINE} and reacts to changes to that fact. When objects are inserted into working memory, any rule conditions that become true as a result of the change are scheduled for execution by the agenda.
+
+In contrast, a backward-chaining rule system is a goal-driven system that starts with a conclusion that the {RULE_ENGINE} attempts to satisfy, often using recursion. If the system cannot reach the conclusion or goal, it searches for subgoals, which are conclusions that complete part of the current goal. The system continues this process until either the initial conclusion is satisfied or all subgoals are satisfied.
+
+The following diagram illustrates how the {RULE_ENGINE} evaluates rules using forward chaining overall with a backward-chaining segment in the logic flow:
+
+.Rule evaluation logic using forward and backward chaining
+ifdef::DROOLS,JBPM,OP[]
+image::rule-engine/RuleEvaluation.png[align="center"]
+endif::[]
+ifdef::DM,PAM[]
+image::rule-engine/RuleEvaluation_Enterprise.png[align="center"]
+endif::[]
