@@ -53,7 +53,7 @@ public class ScenarioSimulationXMLPersistence {
 
     private static final ScenarioSimulationXMLPersistence INSTANCE = new ScenarioSimulationXMLPersistence();
     private static final String CURRENT_VERSION = new ScenarioSimulationModel().getVersion();
-    private static final Pattern p = Pattern.compile(SCENARIO_SIMULATION_MODEL_NODE + " version=\"([0-9]+\\.[0-9]+)");
+    private static final Pattern SCENARIO_SIMULATION_VERSION_EXTRACTOR_PATTERN = Pattern.compile("<" + SCENARIO_SIMULATION_MODEL_NODE + ".*version=\"([0-9]+\\.[0-9]+)");
 
     private XStream xt;
     private MigrationStrategy migrationStrategy = new InMemoryMigrationStrategy();
@@ -185,7 +185,7 @@ public class ScenarioSimulationXMLPersistence {
     }
 
     public String extractVersion(String rawXml) {
-        Matcher m = p.matcher(rawXml);
+        Matcher m = SCENARIO_SIMULATION_VERSION_EXTRACTOR_PATTERN.matcher(rawXml);
 
         if (m.find()) {
             return m.group(1);
