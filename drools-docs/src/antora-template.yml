@@ -23,12 +23,12 @@
 #   3. generate antora website using the antora.yml
 
 name: drools
-title: Drools User Guide ${project.version}
+title: Drools User Guide 10.0.0
 version: ~
 asciidoc:
   attributes:
     doctype: book
-    drools-version: ${project.version}
+    drools-version: 10.0.0
     java-version: ${maven.compiler.release}
     maven-version: ${version.org.apache.maven}
     quarkus-version: ${version.io.quarkus}
