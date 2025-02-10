@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -19,6 +19,7 @@
 package org.kie.dmn.feel.util;
 
 import org.kie.dmn.feel.lang.Type;
+import org.kie.dmn.feel.lang.ast.AtLiteralNode;
 import org.kie.dmn.feel.lang.ast.BaseNode;
 import org.kie.dmn.feel.lang.ast.FunctionInvocationNode;
 import org.kie.dmn.feel.lang.ast.IterationContextNode;
@@ -81,13 +82,30 @@ public class ExpressionNodeFactoryUtils {
         return new TemporalConstantNode(value, null, null, null);
     }
 
-    public static RangeNode getRangeNode(String text, LocalDate start, LocalDate end, RangeNode.IntervalBoundary lowerBound, RangeNode.IntervalBoundary upperBound) {
+    public static RangeNode getLocalDateRangeNode(String text, LocalDate start, LocalDate end, RangeNode.IntervalBoundary lowerBound, RangeNode.IntervalBoundary upperBound) {
         BaseNode nameRefNode = getNameRefNode(BuiltInType.DATE, "x");
         ListNode startParams = getListNode(start.toString(), List.of(start.toString()));
         ListNode endParams = getListNode(end.toString(), List.of(end.toString()));
         BaseNode startNode = new FunctionInvocationNode(nameRefNode, startParams, getTemporalConstantNode(start), start.toString());
         BaseNode endNode = new FunctionInvocationNode(nameRefNode, endParams, getTemporalConstantNode(end), end.toString());
+        return new RangeNode(lowerBound, upperBound, startNode, endNode, text);
+    }
 
+    public static RangeNode getNumericRangeNode(String text, BigDecimal start, BigDecimal end, RangeNode.IntervalBoundary lowerBound, RangeNode.IntervalBoundary upperBound) {
+        BaseNode startNode = new NumberNode(start, start.toString());
+        BaseNode endNode = new NumberNode(end, end.toString());
+        return new RangeNode(lowerBound, upperBound, startNode, endNode, text);
+    }
+
+    public static RangeNode getStringRangeNode(String text, String start, String end, RangeNode.IntervalBoundary lowerBound, RangeNode.IntervalBoundary upperBound) {
+        BaseNode startNode = new StringNode(start);
+        BaseNode endNode = new StringNode(end);
+        return new RangeNode(lowerBound, upperBound, startNode, endNode, text);
+    }
+
+    public static RangeNode getAtLiteralRangeNode(String text, String start, String end, RangeNode.IntervalBoundary lowerBound, RangeNode.IntervalBoundary upperBound) {
+        BaseNode startNode = new AtLiteralNode(new StringNode(start), start);
+        BaseNode endNode = new AtLiteralNode(new StringNode(end), end);
         return new RangeNode(lowerBound, upperBound, startNode, endNode, text);
     }
 

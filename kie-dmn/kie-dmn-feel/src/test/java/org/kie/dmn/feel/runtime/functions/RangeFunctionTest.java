@@ -103,6 +103,10 @@ class RangeFunctionTest {
                                                     new ComparablePeriod(Period.parse("P2Y6M")),
                                                     Range.RangeBoundary.OPEN),
                                       from);
+        from = "[..2]";
+        FunctionTestUtil.assertResultError(rangeFunction.invoke(from),
+                                      InvalidParametersEvent.class,
+                                      from);
     }
 
     @Test
@@ -137,6 +141,10 @@ class RangeFunctionTest {
                                                     null,
                                                     Range.RangeBoundary.OPEN),
                                       from);
+        from = "[1..]";
+        FunctionTestUtil.assertResultError(rangeFunction.invoke(from),
+                                           InvalidParametersEvent.class,
+                                           from);
     }
 
     @Test
@@ -261,25 +269,39 @@ class RangeFunctionTest {
     }
 
     @Test
+    void invoke_WithWhiteSpaces() {
+        String from = "[ 1 .. 3 ]";
+        FunctionTestUtil.assertResult(rangeFunction.invoke(from),
+                                      new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.ONE, BigDecimal.valueOf(3), Range.RangeBoundary.CLOSED),
+                                      from);
+        from = " [ 1 .. 3 ] ";
+        FunctionTestUtil.assertResult(rangeFunction.invoke(from),
+                                      new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.ONE, BigDecimal.valueOf(3), Range.RangeBoundary.CLOSED),
+                                      from);
+    }
+
+    @Test
     void nodeIsAllowed_True() {
         BaseNode node = rangeFunction.getNullNode();
-        assertThat(rangeFunction.nodeIsAllowed(node)).withFailMessage(node.getText()).isTrue();
+        assertThat(rangeFunction.nodeIsAllowed(node, Range.RangeBoundary.OPEN)).withFailMessage(node.getText()).isTrue();
         node = getNumberNode();
-        assertThat(rangeFunction.nodeIsAllowed(node)).withFailMessage(node.getText()).isTrue();
+        assertThat(rangeFunction.nodeIsAllowed(node, Range.RangeBoundary.OPEN)).withFailMessage(node.getText()).isTrue();
         node = getStringNode();
-        assertThat(rangeFunction.nodeIsAllowed(node)).withFailMessage(node.getText()).isTrue();
+        assertThat(rangeFunction.nodeIsAllowed(node, Range.RangeBoundary.OPEN)).withFailMessage(node.getText()).isTrue();
         node = getAtLiteralNode();
-        assertThat(rangeFunction.nodeIsAllowed(node)).withFailMessage(node.getText()).isTrue();
+        assertThat(rangeFunction.nodeIsAllowed(node, Range.RangeBoundary.OPEN)).withFailMessage(node.getText()).isTrue();
         node = getFunctionInvocationNodeA();
-        assertThat(rangeFunction.nodeIsAllowed(node)).withFailMessage(node.getText()).isTrue();
+        assertThat(rangeFunction.nodeIsAllowed(node, Range.RangeBoundary.OPEN)).withFailMessage(node.getText()).isTrue();
     }
 
     @Test
     void nodeIsAllowed_False() {
         BaseNode node = rangeFunction.parse("if(true)");
-        assertThat(rangeFunction.nodeIsAllowed(node)).withFailMessage(node.getText()).isFalse();
+        assertThat(rangeFunction.nodeIsAllowed(node, Range.RangeBoundary.OPEN)).withFailMessage(node.getText()).isFalse();
         node = getBooleanNode();
-        assertThat(rangeFunction.nodeIsAllowed(node)).withFailMessage(node.getText()).isFalse();
+        assertThat(rangeFunction.nodeIsAllowed(node, Range.RangeBoundary.OPEN)).withFailMessage(node.getText()).isFalse();
+        node = rangeFunction.getNullNode();
+        assertThat(rangeFunction.nodeIsAllowed(node, Range.RangeBoundary.CLOSED)).withFailMessage(node.getText()).isFalse();
     }
 
     @Test

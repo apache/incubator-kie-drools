@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,20 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.dmn.api.core.event;
+package org.kie.dmn.feel.exceptions;
 
-import org.kie.dmn.api.core.EvaluatorResult;
+import java.io.Serial;
 
-/**
- * Event fired after the <b>then/else</b> branches of an <b>if</b> condition are evaluated
- * @see AfterEvaluateConditionalEvent
- */
-public interface AfterConditionalEvaluationEvent {
+public class NullContentInsideForIterationException extends RuntimeException {
 
-    String getNodeName();
-
-    EvaluatorResult getEvaluatorResultResult();
-
-    String getExecutedId();
-
+    @Serial
+    private static final long serialVersionUID = -1400399311677539243L;
 }

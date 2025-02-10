@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -31,11 +31,12 @@ import org.kie.dmn.feel.util.EvaluationContextTestUtil;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.kie.dmn.feel.util.ExpressionNodeFactoryUtils.getAtLiteralRangeNode;
 import static org.kie.dmn.feel.util.ExpressionNodeFactoryUtils.getIterationContextNode;
 import static org.kie.dmn.feel.util.ExpressionNodeFactoryUtils.getListNode;
 import static org.kie.dmn.feel.util.ExpressionNodeFactoryUtils.getNameRefNode;
 import static org.kie.dmn.feel.util.ExpressionNodeFactoryUtils.getNestedListNode;
-import static org.kie.dmn.feel.util.ExpressionNodeFactoryUtils.getRangeNode;
+import static org.kie.dmn.feel.util.ExpressionNodeFactoryUtils.getLocalDateRangeNode;
 
 class ForExpressionNodeTest {
 
@@ -47,6 +48,15 @@ class ForExpressionNodeTest {
         Object retrieved = forExpressionNode.evaluate(EvaluationContextTestUtil.newEmptyEvaluationContext());
         assertThat(retrieved).isInstanceOf(List.class).asList().
                 containsExactly(BigDecimal.ONE, BigDecimal.valueOf(2), BigDecimal.valueOf(3), BigDecimal.valueOf(4));
+    }
+
+    @Test
+    void evaluateDescendingRange() {
+        RangeNode rangeNode = getAtLiteralRangeNode("[@\"1980-01-03T00:00:00\"..@\"1980-01-01T00:00:00\"]", "1980-01-03T00:00:00", "1980-01-01T00:00:00", RangeNode.IntervalBoundary.CLOSED, RangeNode.IntervalBoundary.CLOSED);
+        IterationContextNode i = getIterationContextNode("i", rangeNode, "i in [@\"1980-01-03T00:00:00\"..@\"1980-01-01T00:00:00\"]");
+        ForExpressionNode forExpressionNode = new ForExpressionNode(Collections.singletonList(i), getNameRefNode(BuiltInType.UNKNOWN, "i"), "for i in [@\"1980-01-03T00:00:00\"..@\"1980-01-01T00:00:00\"] return i");
+        Object retrieved = forExpressionNode.evaluate(EvaluationContextTestUtil.newEmptyEvaluationContext());
+        assertThat(retrieved).isNull();
     }
 
     @Test
@@ -65,7 +75,7 @@ class ForExpressionNodeTest {
 
     @Test
     void evaluateRange() {
-        IterationContextNode x = getIterationContextNode("x", getRangeNode("[1980-01-01 .. 1980-01-03]", LocalDate.of(1980, 1, 1), LocalDate.of(1980, 1, 3), RangeNode.IntervalBoundary.CLOSED, RangeNode.IntervalBoundary.CLOSED ), "x in [1980-01-01 .. 1980-01-03]");
+        IterationContextNode x = getIterationContextNode("x", getLocalDateRangeNode("[1980-01-01 .. 1980-01-03]", LocalDate.of(1980, 1, 1), LocalDate.of(1980, 1, 3), RangeNode.IntervalBoundary.CLOSED, RangeNode.IntervalBoundary.CLOSED ), "x in [1980-01-01 .. 1980-01-03]");
         ForExpressionNode forExpressionNode = new ForExpressionNode(Collections.singletonList(x), getNameRefNode(BuiltInType.DATE, "x"), "for x in [1980-01-01 .. 1980-01-03] return x");
         Object retrieved = forExpressionNode.evaluate(EvaluationContextTestUtil.newEmptyEvaluationContext());
         assertThat(retrieved).isInstanceOf(List.class).asList().containsExactly(LocalDate.of(1980, 1, 1),
