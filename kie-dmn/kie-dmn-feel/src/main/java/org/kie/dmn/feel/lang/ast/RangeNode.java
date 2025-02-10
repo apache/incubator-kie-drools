@@ -111,6 +111,9 @@ public class RangeNode
     public Range evaluate(EvaluationContext ctx) {
         Object s = start.evaluate( ctx );
         Object e = end.evaluate( ctx );
+        if (s == null && e == null) {
+            return null;
+        }
         
         Type sType = BuiltInType.determineTypeFromInstance(s);
         Type eType = BuiltInType.determineTypeFromInstance(e);
@@ -125,11 +128,15 @@ public class RangeNode
 
         Comparable start = s instanceof UndefinedValueComparable ? (Comparable) s : convertToComparable(ctx, s );
         Comparable end = e instanceof UndefinedValueComparable ? (Comparable) e : convertToComparable( ctx, e );
-
-        return new RangeImpl( lowerBound==IntervalBoundary.OPEN ? Range.RangeBoundary.OPEN : Range.RangeBoundary.CLOSED,
+        return isDescendingRange(start, end) ? null :
+        new RangeImpl( lowerBound==IntervalBoundary.OPEN ? Range.RangeBoundary.OPEN : Range.RangeBoundary.CLOSED,
                               start,
                               end,
                               upperBound==IntervalBoundary.OPEN ? Range.RangeBoundary.OPEN : Range.RangeBoundary.CLOSED );
+    }
+
+    static boolean isDescendingRange(Comparable start, Comparable end) {
+        return (start == null || start instanceof UndefinedValueComparable || end == null || end instanceof UndefinedValueComparable) ? false : start.compareTo(end) > 0;
     }
 
     private Comparable convertToComparable(EvaluationContext ctx, Object s) {

@@ -95,7 +95,7 @@ public class DMNConditionalEvaluator implements DMNExpressionEvaluator {
 
         EvaluatorResult toReturn = evaluatorToUse.evaluate(eventManager, result);
         String executedId  = evaluatorIdMap.get(evaluatorToUse);
-        DMNRuntimeEventManagerUtils.fireAfterConditionalEvaluation(eventManager, toReturn, executedId);
+        DMNRuntimeEventManagerUtils.fireAfterConditionalEvaluation(eventManager, name, toReturn, executedId);
         return toReturn;
     }
 
