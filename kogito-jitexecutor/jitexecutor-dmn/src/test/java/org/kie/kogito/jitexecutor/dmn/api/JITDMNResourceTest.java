@@ -51,14 +51,15 @@ import static org.kie.kogito.jitexecutor.dmn.TestingUtils.getModelFromIoUtils;
 @QuarkusTest
 public class JITDMNResourceTest {
 
-    private static String model;
-    private static String invalidModel;
+    private static String invalidModel1x;
+    private static String invalidModel15;
+    private static String validModel15;
     private static String modelWithExtensionElements;
     private static String modelWithMultipleEvaluationHitIds;
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
-    private static final String EVALUATION_HIT_IDS_FIELD_NAME = "evaluationHitIds";
+    static final String EVALUATION_HIT_IDS_FIELD_NAME = "evaluationHitIds";
 
     static {
         MAPPER.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
@@ -66,15 +67,16 @@ public class JITDMNResourceTest {
 
     @BeforeAll
     public static void setup() throws IOException {
-        model = getModelFromIoUtils("invalid_models/DMNv1_x/test.dmn");
-        invalidModel = getModelFromIoUtils("invalid_models/DMNv1_5/DMN-Invalid.dmn");
+        invalidModel1x = getModelFromIoUtils("invalid_models/DMNv1_x/test.dmn");
+        invalidModel15 = getModelFromIoUtils("invalid_models/DMNv1_5/DMN-Invalid.dmn");
+        validModel15 = getModelFromIoUtils("valid_models/DMNv1_5/RiskScore_Simple.dmn");
         modelWithExtensionElements = getModelFromIoUtils("valid_models/DMNv1_x/testWithExtensionElements.dmn");
         modelWithMultipleEvaluationHitIds = getModelFromIoUtils("valid_models/DMNv1_5/MultipleHitRules.dmn");
     }
 
     @Test
     void testjitEndpoint() {
-        JITDMNPayload jitdmnpayload = new JITDMNPayload(model, buildContext());
+        JITDMNPayload jitdmnpayload = new JITDMNPayload(invalidModel1x, buildContext());
         given()
                 .contentType(ContentType.JSON)
                 .body(jitdmnpayload)
@@ -182,14 +184,17 @@ public class JITDMNResourceTest {
 
     @Test
     void testjitExplainabilityEndpoint() {
-        JITDMNPayload jitdmnpayload = new JITDMNPayload(model, buildContext());
+        Map<String, Object> context = new HashMap<>();
+        context.put("Credit Score", "Poor");
+        context.put("DTI", 33);
+        JITDMNPayload jitdmnpayload = new JITDMNPayload(validModel15, context);
         given()
                 .contentType(ContentType.JSON)
                 .body(jitdmnpayload)
                 .when().post("/jitdmn/evaluateAndExplain")
                 .then()
                 .statusCode(200)
-                .body(containsString("dmnResult"), containsString("saliencies"), containsString("xls2dmn"),
+                .body(containsString("dmnResult"), containsString("saliencies"), containsString("DMN_A77074C1-21FE-4F7E-9753-F84661569AFC"),
                         containsString("featureName"));
     }
 
@@ -211,7 +216,7 @@ public class JITDMNResourceTest {
 
     @Test
     void testjitEndpointFailure() {
-        JITDMNPayload jitdmnpayload = new JITDMNPayload(invalidModel, buildContext());
+        JITDMNPayload jitdmnpayload = new JITDMNPayload(invalidModel15, buildContext());
         given()
                 .contentType(ContentType.JSON)
                 .body(jitdmnpayload)
@@ -223,7 +228,7 @@ public class JITDMNResourceTest {
 
     @Test
     void testjitdmnEvaluateInvalidModel() {
-        JITDMNPayload jitdmnpayload = new JITDMNPayload(invalidModel, buildInvalidModelContext());
+        JITDMNPayload jitdmnpayload = new JITDMNPayload(invalidModel15, buildInvalidModelContext());
         given()
                 .contentType(ContentType.JSON)
                 .body(jitdmnpayload)
@@ -235,7 +240,7 @@ public class JITDMNResourceTest {
 
     @Test
     void testjitdmnEvaluateAndExplainInvalidModel() {
-        JITDMNPayload jitdmnpayload = new JITDMNPayload(invalidModel, buildInvalidModelContext());
+        JITDMNPayload jitdmnpayload = new JITDMNPayload(invalidModel15, buildInvalidModelContext());
         given()
                 .contentType(ContentType.JSON)
                 .body(jitdmnpayload)
@@ -245,21 +250,21 @@ public class JITDMNResourceTest {
                 .body(containsString("Error compiling FEEL expression 'Person Age >= 18' for name 'Can Drive?' on node 'Can Drive?': syntax error near 'Age'"));
     }
 
-    private Map<String, Object> buildContext() {
-        Map<String, Object> context = new HashMap<>();
-        context.put("FICO Score", 800);
-        context.put("DTI Ratio", .1);
-        context.put("PITI Ratio", .1);
-        return context;
-    }
-
-    private Map<String, Object> buildMultipleHitContext() {
+    static Map<String, Object> buildMultipleHitContext() {
         final List<BigDecimal> numbers = new ArrayList<>();
         numbers.add(BigDecimal.valueOf(10));
         numbers.add(BigDecimal.valueOf(2));
         numbers.add(BigDecimal.valueOf(1));
         final Map<String, Object> context = new HashMap<>();
         context.put("Numbers", numbers);
+        return context;
+    }
+
+    private Map<String, Object> buildContext() {
+        Map<String, Object> context = new HashMap<>();
+        context.put("FICO Score", 800);
+        context.put("DTI Ratio", .1);
+        context.put("PITI Ratio", .1);
         return context;
     }
 

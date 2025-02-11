@@ -78,12 +78,12 @@ class JITDMNResultTest {
         dmnResult.setContext(createContext());
         dmnResult.addDecisionResult(decisionResult);
 
-        JITDMNResult jitdmnResult = new JITDMNResult("http://www.trisotech.com/definitions/_9d01a0c4-f529-4ad8-ad8e-ec5fb5d96ad4", "Chapter 11 Example", dmnResult);
+        JITDMNResult jitdmnResult = JITDMNResult.of("http://www.trisotech.com/definitions/_9d01a0c4-f529-4ad8-ad8e-ec5fb5d96ad4", "Chapter 11 Example", dmnResult, Collections.emptyMap());
         String retrieved = MAPPER.writeValueAsString(jitdmnResult);
         assertThat(retrieved).isNotNull().isNotBlank();
-        System.out.println(retrieved);
         JITDMNResult result = MAPPER.readValue(retrieved, JITDMNResult.class);
-        assertThat(result).isNotNull();
+        assertThat(result).isNotNull().isEqualTo(jitdmnResult);
+
     }
 
     @Test
@@ -459,7 +459,7 @@ class JITDMNResultTest {
                 "      \"decisionName\": \"Required monthly installment\",\n" +
                 "      \"result\": 333.3636546143084985132842970339110,\n" +
                 "      \"messages\": [],\n" +
-                "      \"evaluationHitIds\": {},\n" +
+                "      \"evaluationHitIds\": {\"_1FA12B9F-288C-42E8-B77F-BE2D3702B7B6\": 1},\n" +
                 "      \"evaluationStatus\": \"SUCCEEDED\"\n" +
                 "    },\n" +
                 "    {\n" +

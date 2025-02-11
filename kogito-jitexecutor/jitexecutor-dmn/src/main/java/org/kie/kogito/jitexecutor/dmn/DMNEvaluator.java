@@ -71,6 +71,7 @@ public class DMNEvaluator {
                 .buildConfiguration()
                 .fromResources(resources.values())
                 .getOrElseThrow(RuntimeException::new);
+        dmnRuntime.addListener(new JITDMNListener());
         DMNModel mainModel = null;
         for (DMNModel m : dmnRuntime.getModels()) {
             if (m.getResource().getSourcePath().equals(payload.getMainURI())) {
@@ -125,7 +126,7 @@ public class DMNEvaluator {
                 .findFirst()
                 .map(JITDMNListener.class::cast)
                 .map(JITDMNListener::getDecisionEvaluationHitIdsMap);
-        return new JITDMNResult(getNamespace(), getName(), dmnResult,
+        return JITDMNResult.of(getNamespace(), getName(), dmnResult,
                 decisionEvaluationHitIdsMap.orElse(Collections.emptyMap()));
     }
 

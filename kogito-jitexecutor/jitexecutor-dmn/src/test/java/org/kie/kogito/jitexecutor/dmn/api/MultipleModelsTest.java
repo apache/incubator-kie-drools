@@ -22,7 +22,10 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.core.DMNDecisionResult;
@@ -37,15 +40,21 @@ import org.kie.kogito.jitexecutor.dmn.responses.JITDMNResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.type.CollectionType;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import io.restassured.response.Response;
+import io.restassured.response.ResponseBody;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -54,15 +63,21 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.kie.kogito.jitexecutor.dmn.TestingUtils.getModelFromIoUtils;
+import static org.kie.kogito.jitexecutor.dmn.api.JITDMNResourceTest.EVALUATION_HIT_IDS_FIELD_NAME;
+import static org.kie.kogito.jitexecutor.dmn.api.JITDMNResourceTest.buildMultipleHitContext;
 
 @QuarkusTest
 public class MultipleModelsTest {
     private static final Logger LOG = LoggerFactory.getLogger(MultipleModelsTest.class);
 
-    private static final String URI1 = "invalid_models/DMNv1_x/multiple/importing.dmn";
-    private static final String URI2 = "valid_models/DMNv1_x/multiple/stdlib.dmn";
-    private static ResourceWithURI model1;
-    private static ResourceWithURI model2;
+    private static final String IMPORTING_MODEL_URI = "invalid_models/DMNv1_x/multiple/importing.dmn";
+    private static final String STDLIB_MODEL_URI = "valid_models/DMNv1_x/multiple/stdlib.dmn";
+    private static final String SAMPLE_MODEL_URI = "valid_models/DMNv1_5/Sample.dmn";
+    private static final String MULTIPLE_HIT_MODEL_URI = "valid_models/DMNv1_5/MultipleHitRules.dmn";
+    private static ResourceWithURI importingModel;
+    private static ResourceWithURI stdLibModel;
+    private static ResourceWithURI sampleModel;
+    private static ResourceWithURI multipleHitModel;
 
     private static final String XAIURI1 = "invalid_models/DMNv1_x/test.dmn";
     private static ResourceWithURI xaimodel1;
@@ -90,8 +105,10 @@ public class MultipleModelsTest {
     @BeforeAll
     public static void setup() throws IOException {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
-        model1 = new ResourceWithURI(URI1, getModelFromIoUtils(URI1));
-        model2 = new ResourceWithURI(URI2, getModelFromIoUtils(URI2));
+        importingModel = new ResourceWithURI(IMPORTING_MODEL_URI, getModelFromIoUtils(IMPORTING_MODEL_URI));
+        stdLibModel = new ResourceWithURI(STDLIB_MODEL_URI, getModelFromIoUtils(STDLIB_MODEL_URI));
+        sampleModel = new ResourceWithURI(SAMPLE_MODEL_URI, getModelFromIoUtils(SAMPLE_MODEL_URI));
+        multipleHitModel = new ResourceWithURI(MULTIPLE_HIT_MODEL_URI, getModelFromIoUtils(MULTIPLE_HIT_MODEL_URI));
         xaimodel1 = new ResourceWithURI(XAIURI1, getModelFromIoUtils(XAIURI1));
         ch11model1 = new ResourceWithURI(CH11URI1, getModelFromIoUtils(CH11URI1));
         ch11model2 = new ResourceWithURI(CH11URI2, getModelFromIoUtils(CH11URI2));
@@ -101,7 +118,7 @@ public class MultipleModelsTest {
     void testForm() {
         given()
                 .contentType(ContentType.JSON)
-                .body(new MultipleResourcesPayload(URI1, List.of(model1, model2)))
+                .body(new MultipleResourcesPayload(IMPORTING_MODEL_URI, List.of(importingModel, stdLibModel)))
                 .when().post("/jitdmn/schema/form")
                 .then()
                 .statusCode(200)
@@ -112,7 +129,7 @@ public class MultipleModelsTest {
     void testSchema() {
         given()
                 .contentType(ContentType.JSON)
-                .body(new MultipleResourcesPayload(URI1, List.of(model1, model2)))
+                .body(new MultipleResourcesPayload(IMPORTING_MODEL_URI, List.of(importingModel, stdLibModel)))
                 .when().post("/jitdmn/schema")
                 .then()
                 .statusCode(200)
@@ -121,7 +138,7 @@ public class MultipleModelsTest {
 
     @Test
     void testjitEndpoint() {
-        JITDMNPayload jitdmnpayload = new JITDMNPayload(URI1, List.of(model1, model2), buildContext());
+        JITDMNPayload jitdmnpayload = new JITDMNPayload(IMPORTING_MODEL_URI, List.of(importingModel, stdLibModel), buildContext());
         given()
                 .contentType(ContentType.JSON)
                 .body(jitdmnpayload)
@@ -133,7 +150,7 @@ public class MultipleModelsTest {
 
     @Test
     void testjitdmnResultEndpoint() {
-        JITDMNPayload jitdmnpayload = new JITDMNPayload(URI1, List.of(model1, model2), buildContext());
+        JITDMNPayload jitdmnpayload = new JITDMNPayload(IMPORTING_MODEL_URI, List.of(importingModel, stdLibModel), buildContext());
         given()
                 .contentType(ContentType.JSON)
                 .body(jitdmnpayload)
@@ -144,10 +161,89 @@ public class MultipleModelsTest {
     }
 
     @Test
+    void testEvaluationHitIds() throws IOException {
+        final String ruleId0 = "_1FA12B9F-288C-42E8-B77F-BE2D3702B7B6";
+        final String ruleId1 = "_C8FA33B1-AF6E-4A59-B7B9-6FDF1F495C44";
+        Map<String, Object> context = new HashMap<>();
+        context.put("Credit Score", Map.of("FICO", 700));
+        Map<String, Object> monthly = new HashMap<>();
+        monthly.put("Income", 121233);
+        monthly.put("Repayments", 33);
+        monthly.put("Expenses", 123);
+        monthly.put("Tax", 32);
+        monthly.put("Insurance", 55);
+        Map<String, Object> applicantData = new HashMap<>();
+        applicantData.put("Age", 32);
+        applicantData.put("Marital Status", "S");
+        applicantData.put("Employment Status", "Employed");
+        applicantData.put("Monthly", monthly);
+        context.put("Applicant Data", applicantData);
+        Map<String, Object> requestedProduct = new HashMap<>();
+        requestedProduct.put("Type", "Special Loan");
+        requestedProduct.put("Rate", 1);
+        requestedProduct.put("Term", 2);
+        requestedProduct.put("Amount", 333);
+        context.put("Requested Product", requestedProduct);
+        context.put("id", "_0A185BAC-7692-45FA-B722-7C86C626BD51");
+        JITDMNPayload jitdmnpayload = new JITDMNPayload(SAMPLE_MODEL_URI, List.of(sampleModel), context);
+
+        Response response = given().contentType(ContentType.JSON)
+                .body(jitdmnpayload)
+                .when().post("/jitdmn/dmnresult");
+
+        ResponseBody body = response.getBody();
+        String responseString = body.asString();
+        JsonNode retrieved = MAPPER.readTree(responseString);
+        ArrayNode decisionResultsNode = (ArrayNode) retrieved.get("decisionResults");
+        Iterable<JsonNode> iterable = () -> decisionResultsNode.elements();
+        Stream<JsonNode> targetStream = StreamSupport.stream(iterable.spliterator(), false);
+        ObjectNode decisionNode = (ObjectNode) targetStream.filter(node -> node.get("decisionName").asText().equals("Credit Score Rating")).findFirst().get();
+        ObjectNode evaluationHitIdsNode = (ObjectNode) decisionNode.get(EVALUATION_HIT_IDS_FIELD_NAME);
+        Assertions.assertThat(evaluationHitIdsNode).hasSize(1);
+        Map<String, Integer> expectedEvaluationHitIds0 = Map.of(ruleId0, 1);
+        evaluationHitIdsNode.fields().forEachRemaining(entry -> Assertions.assertThat(expectedEvaluationHitIds0).containsEntry(entry.getKey(), entry.getValue().asInt()));
+
+        targetStream = StreamSupport.stream(iterable.spliterator(), false);
+        decisionNode = (ObjectNode) targetStream.filter(node -> node.get("decisionName").asText().equals("Loan Pre-Qualification")).findFirst().get();
+        evaluationHitIdsNode = (ObjectNode) decisionNode.get(EVALUATION_HIT_IDS_FIELD_NAME);
+        Assertions.assertThat(evaluationHitIdsNode).hasSize(1);
+        Map<String, Integer> expectedEvaluationHitIds1 = Map.of(ruleId1, 1);
+        evaluationHitIdsNode.fields().forEachRemaining(entry -> Assertions.assertThat(expectedEvaluationHitIds1).containsEntry(entry.getKey(), entry.getValue().asInt()));
+    }
+
+    @Test
+    void testjitdmnResultEndpointWithEvaluationHitIds() throws JsonProcessingException {
+        JITDMNPayload jitdmnpayload = new JITDMNPayload(MULTIPLE_HIT_MODEL_URI, List.of(multipleHitModel), buildMultipleHitContext());
+        final String rule0 = "_E5C380DA-AF7B-4401-9804-C58296EC09DD";
+        final String rule1 = "_DFD65E8B-5648-4BFD-840F-8C76B8DDBD1A";
+        final String rule2 = "_E80EE7F7-1C0C-4050-B560-F33611F16B05";
+        String response = given().contentType(ContentType.JSON)
+                .body(jitdmnpayload)
+                .when().post("/jitdmn/dmnresult")
+                .then()
+                .statusCode(200)
+                .body(containsString("Statistics"),
+                        containsString(EVALUATION_HIT_IDS_FIELD_NAME),
+                        containsString(rule0),
+                        containsString(rule1),
+                        containsString(rule2))
+                .extract()
+                .asString();
+        JsonNode retrieved = MAPPER.readTree(response);
+        ArrayNode decisionResultsNode = (ArrayNode) retrieved.get("decisionResults");
+        ObjectNode decisionNode = (ObjectNode) decisionResultsNode.get(0);
+        ObjectNode evaluationHitIdsNode = (ObjectNode) decisionNode.get(EVALUATION_HIT_IDS_FIELD_NAME);
+        Assertions.assertThat(evaluationHitIdsNode).hasSize(3);
+
+        final Map<String, Integer> expectedEvaluationHitIds = Map.of(rule0, 3, rule1, 2, rule2, 1);
+        evaluationHitIdsNode.fields().forEachRemaining(entry -> Assertions.assertThat(expectedEvaluationHitIds).containsEntry(entry.getKey(), entry.getValue().asInt()));
+    }
+
+    @Test
     void testValidation() throws IOException {
         String response = given()
                 .contentType(ContentType.JSON)
-                .body(new MultipleResourcesPayload(URI1, List.of(model1, model2)))
+                .body(new MultipleResourcesPayload(IMPORTING_MODEL_URI, List.of(importingModel, stdLibModel)))
                 .when()
                 .post("/jitdmn/validate")
                 .then()
@@ -158,12 +254,12 @@ public class MultipleModelsTest {
         LOG.info("Validate response: {}", response);
         List<JITDMNMessage> messages = MAPPER.readValue(response, LIST_OF_MSGS);
         assertEquals(1, messages.size());
-        assertThat(messages.get(0)).hasFieldOrPropertyWithValue("path", URI1);
+        assertThat(messages.get(0)).hasFieldOrPropertyWithValue("path", IMPORTING_MODEL_URI);
     }
 
     @Test
     void testjitExplainabilityEndpoint() {
-        JITDMNPayload jitdmnpayload = new JITDMNPayload(XAIURI1, List.of(xaimodel1, model1, model2), Map.of("FICO Score", 800, "DTI Ratio", .1, "PITI Ratio", .1));
+        JITDMNPayload jitdmnpayload = new JITDMNPayload(XAIURI1, List.of(xaimodel1, importingModel, stdLibModel), Map.of("FICO Score", 800, "DTI Ratio", .1, "PITI Ratio", .1));
         given()
                 .contentType(ContentType.JSON)
                 .body(jitdmnpayload)

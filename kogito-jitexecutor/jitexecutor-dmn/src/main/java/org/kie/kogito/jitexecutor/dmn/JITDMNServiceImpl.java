@@ -19,6 +19,7 @@
 package org.kie.kogito.jitexecutor.dmn;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -29,7 +30,6 @@ import java.util.stream.Collectors;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.kie.dmn.api.core.DMNModel;
-import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.ast.DecisionNode;
 import org.kie.kogito.explainability.Config;
 import org.kie.kogito.explainability.api.FeatureImportanceModel;
@@ -80,6 +80,12 @@ public class JITDMNServiceImpl implements JITDMNService {
     }
 
     @Override
+    public JITDMNResult evaluateModel(MultipleResourcesPayload payload, Map<String, Object> context) {
+        DMNEvaluator dmnEvaluator = DMNEvaluator.fromMultiple(payload);
+        return dmnEvaluator.evaluate(context);
+    }
+
+    @Override
     public DMNResultWithExplanation evaluateModelAndExplain(String modelXML, Map<String, Object> context) {
         DMNEvaluator dmnEvaluator = DMNEvaluator.fromXML(modelXML);
         return evaluateModelAndExplain(dmnEvaluator, context);
@@ -94,7 +100,7 @@ public class JITDMNServiceImpl implements JITDMNService {
     public DMNResultWithExplanation evaluateModelAndExplain(DMNEvaluator dmnEvaluator, Map<String, Object> context) {
         LocalDMNPredictionProvider localDMNPredictionProvider = new LocalDMNPredictionProvider(dmnEvaluator);
 
-        DMNResult dmnResult = dmnEvaluator.evaluate(context);
+        JITDMNResult dmnResult = dmnEvaluator.evaluate(context);
 
         Prediction prediction = new SimplePrediction(LocalDMNPredictionProvider.toPredictionInput(context),
                 LocalDMNPredictionProvider.toPredictionOutput(dmnResult));
@@ -113,14 +119,14 @@ public class JITDMNServiceImpl implements JITDMNService {
                 Thread.currentThread().interrupt();
             }
             return new DMNResultWithExplanation(
-                    new JITDMNResult(dmnEvaluator.getNamespace(), dmnEvaluator.getName(), dmnResult),
+                    JITDMNResult.of(dmnEvaluator.getNamespace(), dmnEvaluator.getName(), dmnResult, Collections.emptyMap()),
                     new SalienciesResponse(EXPLAINABILITY_FAILED, EXPLAINABILITY_FAILED_MESSAGE, null));
         }
 
         List<SaliencyResponse> saliencyModelResponse = buildSalienciesResponse(dmnEvaluator.getDmnModel(), saliencyMap);
 
         return new DMNResultWithExplanation(
-                new JITDMNResult(dmnEvaluator.getNamespace(), dmnEvaluator.getName(), dmnResult),
+                JITDMNResult.of(dmnEvaluator.getNamespace(), dmnEvaluator.getName(), dmnResult, Collections.emptyMap()),
                 new SalienciesResponse(EXPLAINABILITY_SUCCEEDED, null, saliencyModelResponse));
     }
 
@@ -145,10 +151,4 @@ public class JITDMNServiceImpl implements JITDMNService {
         return new FeatureImportanceModel(model.getFeature().getName(), model.getScore());
     }
 
-    @Override
-    public JITDMNResult evaluateModel(MultipleResourcesPayload payload, Map<String, Object> context) {
-        DMNEvaluator dmnEvaluator = DMNEvaluator.fromMultiple(payload);
-        DMNResult dmnResult = dmnEvaluator.evaluate(context);
-        return new JITDMNResult(dmnEvaluator.getNamespace(), dmnEvaluator.getName(), dmnResult);
-    }
 }

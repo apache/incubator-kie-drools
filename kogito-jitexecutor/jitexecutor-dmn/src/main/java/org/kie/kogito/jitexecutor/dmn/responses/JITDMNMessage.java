@@ -19,6 +19,7 @@
 package org.kie.kogito.jitexecutor.dmn.responses;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNMessageType;
@@ -174,5 +175,29 @@ public class JITDMNMessage implements Serializable, DMNMessage {
     @Override
     public String getText() {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof JITDMNMessage that)) {
+            return false;
+        }
+        return severity == that.severity && Objects.equals(message, that.message) && messageType == that.messageType && Objects.equals(sourceId, that.sourceId) && Objects.equals(path, that.path);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(severity, message, messageType, sourceId, path);
+    }
+
+    @Override
+    public String toString() {
+        return "JITDMNMessage{" +
+                "severity=" + severity +
+                ", message='" + message + '\'' +
+                ", messageType=" + messageType +
+                ", sourceId='" + sourceId + '\'' +
+                ", path='" + path + '\'' +
+                '}';
     }
 }

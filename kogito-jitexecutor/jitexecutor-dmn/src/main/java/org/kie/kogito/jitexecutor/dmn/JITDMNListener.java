@@ -100,11 +100,11 @@ public class JITDMNListener implements DMNRuntimeEventListener {
     }
 
     private void logEvent(DMNEvent toLog) {
-        LOGGER.info("{} event {}", toLog.getClass().getSimpleName(), toLog);
+        LOGGER.debug("{} event {}", toLog.getClass().getSimpleName(), toLog);
     }
 
     private void logEvent(AfterConditionalEvaluationEvent toLog) {
-        LOGGER.info("{} event {}", toLog.getClass().getSimpleName(), toLog);
+        LOGGER.debug("{} event {}", toLog.getClass().getSimpleName(), toLog);
     }
 
 }

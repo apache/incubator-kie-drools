@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.kie.dmn.api.core.DMNDecisionResult;
 import org.kie.dmn.api.core.DMNMessage;
@@ -52,14 +54,14 @@ public class JITDMNDecisionResult implements Serializable,
     }
 
     public static JITDMNDecisionResult of(DMNDecisionResult value, Map<String, Integer> decisionEvaluationHitIdsMap) {
-        JITDMNDecisionResult res = new JITDMNDecisionResult();
-        res.decisionId = value.getDecisionId();
-        res.decisionName = value.getDecisionName();
-        res.setResult(value.getResult());
-        res.setMessages(value.getMessages());
-        res.status = value.getEvaluationStatus();
-        res.evaluationHitIds = decisionEvaluationHitIdsMap;
-        return res;
+        JITDMNDecisionResult toReturn = new JITDMNDecisionResult();
+        toReturn.decisionId = value.getDecisionId();
+        toReturn.decisionName = value.getDecisionName();
+        toReturn.result = internalGetResult(value.getResult());
+        toReturn.messages = internalGetMessages(value.getMessages());
+        toReturn.status = value.getEvaluationStatus();
+        toReturn.evaluationHitIds = decisionEvaluationHitIdsMap;
+        return toReturn;
     }
 
     @Override
@@ -95,18 +97,15 @@ public class JITDMNDecisionResult implements Serializable,
     }
 
     public void setResult(Object result) {
-        this.result = MarshallingStubUtils.stubDMNResult(result, String::valueOf);
+        this.result = result;
     }
 
     public List<DMNMessage> getMessages() {
         return (List) messages;
     }
 
-    public void setMessages(List<DMNMessage> messages) {
-        this.messages = new ArrayList<>();
-        for (DMNMessage m : messages) {
-            this.messages.add(JITDMNMessage.of(m));
-        }
+    public void setMessages(List<JITDMNMessage> messages) {
+        this.messages = messages;
     }
 
     public Map<String, Integer> getEvaluationHitIds() {
@@ -120,5 +119,39 @@ public class JITDMNDecisionResult implements Serializable,
     @Override
     public boolean hasErrors() {
         return messages != null && messages.stream().anyMatch(m -> m.getSeverity() == DMNMessage.Severity.ERROR);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof JITDMNDecisionResult that)) {
+            return false;
+        }
+        return Objects.equals(decisionId, that.decisionId) && Objects.equals(decisionName, that.decisionName) && Objects.equals(result, that.result) && Objects.equals(messages, that.messages)
+                && status == that.status && Objects.equals(evaluationHitIds, that.evaluationHitIds);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(decisionId, decisionName, result, messages, status, evaluationHitIds);
+    }
+
+    @Override
+    public String toString() {
+        return "JITDMNDecisionResult{" +
+                "decisionId='" + decisionId + '\'' +
+                ", decisionName='" + decisionName + '\'' +
+                ", result=" + result +
+                ", messages=" + messages +
+                ", status=" + status +
+                ", evaluationHitIds=" + evaluationHitIds +
+                '}';
+    }
+
+    private static Object internalGetResult(Object result) {
+        return MarshallingStubUtils.stubDMNResult(result, String::valueOf);
+    }
+
+    private static List<JITDMNMessage> internalGetMessages(List<DMNMessage> messages) {
+        return messages.stream().map(JITDMNMessage::of).collect(Collectors.toList());
     }
 }

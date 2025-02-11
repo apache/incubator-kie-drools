@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.kie.dmn.api.core.DMNContext;
@@ -48,22 +49,20 @@ public class JITDMNResult implements Serializable,
 
     private List<JITDMNMessage> messages = new ArrayList<>();
 
-    private Map<String, JITDMNDecisionResult> decisionResults = new HashMap<>();
+    private List<DMNDecisionResult> decisionResults;
+
+    public static JITDMNResult of(String namespace, String modelName, org.kie.dmn.api.core.DMNResult dmnResult, Map<String, Map<String, Integer>> decisionEvaluationHitIdsMap) {
+        JITDMNResult toReturn = new JITDMNResult();
+        toReturn.namespace = namespace;
+        toReturn.modelName = modelName;
+        toReturn.dmnContext = internalGetContext(dmnResult.getContext().getAll());
+        toReturn.messages = internalGetMessages(dmnResult.getMessages());
+        toReturn.decisionResults = internalGetDecisionResults(dmnResult.getDecisionResults(), decisionEvaluationHitIdsMap);
+        return toReturn;
+    }
 
     public JITDMNResult() {
         // Intentionally blank.
-    }
-
-    public JITDMNResult(String namespace, String modelName, org.kie.dmn.api.core.DMNResult dmnResult) {
-        this(namespace, modelName, dmnResult, Collections.emptyMap());
-    }
-
-    public JITDMNResult(String namespace, String modelName, org.kie.dmn.api.core.DMNResult dmnResult, Map<String, Map<String, Integer>> decisionEvaluationHitIdsMap) {
-        this.namespace = namespace;
-        this.modelName = modelName;
-        this.setDmnContext(dmnResult.getContext().getAll());
-        this.setMessages(dmnResult.getMessages());
-        this.internalSetDecisionResults(dmnResult.getDecisionResults(), decisionEvaluationHitIdsMap);
     }
 
     public String getNamespace() {
@@ -87,24 +86,11 @@ public class JITDMNResult implements Serializable,
     }
 
     public void setDmnContext(Map<String, Object> dmnContext) {
-        this.dmnContext = new HashMap<>();
-        for (Entry<String, Object> kv : dmnContext.entrySet()) {
-            this.dmnContext.put(kv.getKey(), MarshallingStubUtils.stubDMNResult(kv.getValue(), String::valueOf));
-        }
+        this.dmnContext = dmnContext;
     }
 
-    public void setMessages(List<? extends DMNMessage> messages) {
-        this.messages = new ArrayList<>();
-        for (DMNMessage m : messages) {
-            this.messages.add(JITDMNMessage.of(m));
-        }
-    }
-
-    public void setDecisionResults(List<? extends DMNDecisionResult> decisionResults) {
-        this.decisionResults = new HashMap<>();
-        for (DMNDecisionResult dr : decisionResults) {
-            this.decisionResults.put(dr.getDecisionId(), JITDMNDecisionResult.of(dr));
-        }
+    public void setMessages(List<JITDMNMessage> messages) {
+        this.messages = messages;
     }
 
     @JsonIgnore
@@ -130,14 +116,18 @@ public class JITDMNResult implements Serializable,
         return messages.stream().anyMatch(m -> DMNMessage.Severity.ERROR.equals(m.getSeverity()));
     }
 
+    public void setDecisionResults(List<DMNDecisionResult> decisionResults) {
+        this.decisionResults = decisionResults;
+    }
+
     @Override
     public List<DMNDecisionResult> getDecisionResults() {
-        return new ArrayList<>(decisionResults.values());
+        return decisionResults;
     }
 
     @Override
     public DMNDecisionResult getDecisionResultByName(String name) {
-        return decisionResults.values().stream()
+        return decisionResults.stream()
                 .filter(dr -> dr.getDecisionName().equals(name))
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Unknown decision result name."));
@@ -145,7 +135,24 @@ public class JITDMNResult implements Serializable,
 
     @Override
     public DMNDecisionResult getDecisionResultById(String id) {
-        return decisionResults.get(id);
+        return decisionResults.stream()
+                .filter(dr -> dr.getDecisionId().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Unknown decision result id."));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof JITDMNResult that)) {
+            return false;
+        }
+        return Objects.equals(namespace, that.namespace) && Objects.equals(modelName, that.modelName) && Objects.equals(dmnContext, that.dmnContext) && Objects.equals(messages, that.messages)
+                && Objects.equals(decisionResults, that.decisionResults);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(namespace, modelName, dmnContext, messages, decisionResults);
     }
 
     @Override
@@ -159,10 +166,19 @@ public class JITDMNResult implements Serializable,
                 .append("]").toString();
     }
 
-    private void internalSetDecisionResults(List<? extends DMNDecisionResult> decisionResults, Map<String, Map<String, Integer>> decisionEvaluationHitIdsMap) {
-        this.decisionResults = new HashMap<>();
-        for (DMNDecisionResult dr : decisionResults) {
-            this.decisionResults.put(dr.getDecisionId(), JITDMNDecisionResult.of(dr, decisionEvaluationHitIdsMap.getOrDefault(dr.getDecisionName(), Collections.emptyMap())));
+    private static Map<String, Object> internalGetContext(Map<String, Object> source) {
+        Map<String, Object> toReturn = new HashMap<>();
+        for (Entry<String, Object> kv : source.entrySet()) {
+            toReturn.put(kv.getKey(), MarshallingStubUtils.stubDMNResult(kv.getValue(), String::valueOf));
         }
+        return toReturn;
+    }
+
+    private static List<JITDMNMessage> internalGetMessages(List<? extends DMNMessage> messages) {
+        return messages.stream().map(JITDMNMessage::of).collect(Collectors.toList());
+    }
+
+    private static List<DMNDecisionResult> internalGetDecisionResults(List<? extends DMNDecisionResult> decisionResults, Map<String, Map<String, Integer>> decisionEvaluationHitIdsMap) {
+        return decisionResults.stream().map(dr -> JITDMNDecisionResult.of(dr, decisionEvaluationHitIdsMap.getOrDefault(dr.getDecisionName(), Collections.emptyMap()))).collect(Collectors.toList());
     }
 }
