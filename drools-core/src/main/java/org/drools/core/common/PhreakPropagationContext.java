@@ -233,7 +233,7 @@ public class PhreakPropagationContext
         Class<?> classType = classObjectType.getClassType();
         String pkgName = classType.getPackage().getName();
 
-        if (classType == modifiedClass || "java.lang".equals(pkgName) || !(classType.isInterface() || modifiedClass.isInterface())) {
+        if (classType == modifiedClass || "java.lang".equals(pkgName)) {
             if (typeBit) {
                 modificationMask = modificationMask.set(PropertySpecificUtil.TRAITABLE_BIT);
             }

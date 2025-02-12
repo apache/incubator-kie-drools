@@ -1931,4 +1931,183 @@ public class PropertyReactivityTest {
 
         assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
+
+    public static class MyPerson {
+
+        private String name;
+        private int age;
+        private String address;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public int getAge() {
+            return age;
+        }
+
+        public void setAge(int age) {
+            this.age = age;
+        }
+
+        public String getAddress() {
+            return address;
+        }
+
+        public void setAddress(String address) {
+            this.address = address;
+        }
+    }
+
+    public static class MyWorker extends MyPerson {
+
+        @Override
+        public String getAddress() {
+            return super.getAddress();
+        }
+    }
+
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(10000)
+    void getterOverrideSuperToSub(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        final String drl =
+                "package rules.basic.common;\n" +
+                        "import " + MyPerson.class.getCanonicalName() + ";\n" +
+                        "import " + MyWorker.class.getCanonicalName() + ";\n" +
+                        "rule R1\n" +
+                        "salience 1\n" +
+                        "when\n" +
+                        "    $fact : MyPerson( address == null )\n" +
+                        "then\n" +
+                        "    modify($fact) {\n" +
+                        "        setAddress(\"ROME\")\n" +
+                        "    }\n" +
+                        "end\n" +
+                        "rule R2\n" +
+                        "when\n" +
+                        "    $fact : MyWorker( $address: address != null )\n" +
+                        "then\n" +
+                        "    modify($fact) {\n" +
+                        "        setName(\"PIPPO\")\n" +
+                        "    }\n" +
+                        "end\n";
+
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
+        MyWorker myWorker = new MyWorker();
+        ksession.insert(myWorker);
+        ksession.fireAllRules();
+        assertThat(myWorker.getName()).isEqualTo("PIPPO");
+    }
+
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(10000)
+    void getterOverrideSubToSuper(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        final String drl =
+                "package rules.basic.common;\n" +
+                        "import " + MyPerson.class.getCanonicalName() + ";\n" +
+                        "import " + MyWorker.class.getCanonicalName() + ";\n" +
+                        "rule R1\n" +
+                        "salience 1\n" +
+                        "when\n" +
+                        "    $fact : MyWorker( address == null )\n" +
+                        "then\n" +
+                        "    modify($fact) {\n" +
+                        "        setAddress(\"ROME\")\n" +
+                        "    }\n" +
+                        "end\n" +
+                        "rule R2\n" +
+                        "when\n" +
+                        "    $fact : MyPerson( $address: address != null )\n" +
+                        "then\n" +
+                        "    modify($fact) {\n" +
+                        "        setName(\"PIPPO\")\n" +
+                        "    }\n" +
+                        "end\n";
+
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
+        MyWorker myWorker = new MyWorker();
+        ksession.insert(myWorker);
+        ksession.fireAllRules();
+        assertThat(myWorker.getName()).isEqualTo("PIPPO");
+    }
+
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(10000)
+    void getterOverrideSuperToSubBeta(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        final String drl =
+                "package rules.basic.common;\n" +
+                        "import " + MyPerson.class.getCanonicalName() + ";\n" +
+                        "import " + MyWorker.class.getCanonicalName() + ";\n" +
+                        "rule R1\n" +
+                        "salience 1\n" +
+                        "when\n" +
+                        "    $fact : MyPerson( address == null )\n" +
+                        "then\n" +
+                        "    modify($fact) {\n" +
+                        "        setAddress(\"ROME\")\n" +
+                        "    }\n" +
+                        "end\n" +
+                        "rule R2\n" +
+                        "when\n" +
+                        "    $checkAddress: String()\n" +
+                        "    $fact : MyWorker( $address: address == $checkAddress )\n" +
+                        "then\n" +
+                        "    modify($fact) {\n" +
+                        "        setName(\"PIPPO\")\n" +
+                        "    }\n" +
+                        "end\n";
+
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
+        MyWorker myWorker = new MyWorker();
+        ksession.insert(myWorker);
+        ksession.insert("ROME");
+        ksession.fireAllRules();
+        assertThat(myWorker.getName()).isEqualTo("PIPPO");
+    }
+
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(10000)
+    void getterOverrideSubToSuperBeta(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        final String drl =
+                "package rules.basic.common;\n" +
+                        "import " + MyPerson.class.getCanonicalName() + ";\n" +
+                        "import " + MyWorker.class.getCanonicalName() + ";\n" +
+                        "rule R1\n" +
+                        "salience 1\n" +
+                        "when\n" +
+                        "    $fact : MyWorker( address == null )\n" +
+                        "then\n" +
+                        "    modify($fact) {\n" +
+                        "        setAddress(\"ROME\")\n" +
+                        "    }\n" +
+                        "end\n" +
+                        "rule R2\n" +
+                        "when\n" +
+                        "    $checkAddress: String()\n" +
+                        "    $fact : MyPerson( $address: address == $checkAddress )\n" +
+                        "then\n" +
+                        "    modify($fact) {\n" +
+                        "        setName(\"PIPPO\")\n" +
+                        "    }\n" +
+                        "end\n";
+
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
+        MyWorker myWorker = new MyWorker();
+        ksession.insert(myWorker);
+        ksession.insert("ROME");
+        ksession.fireAllRules();
+        assertThat(myWorker.getName()).isEqualTo("PIPPO");
+    }
 }
