@@ -26,6 +26,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.MathContext;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -88,6 +89,7 @@ import static org.mvel2.asm.Opcodes.DREM;
 import static org.mvel2.asm.Opcodes.DSUB;
 import static org.mvel2.asm.Opcodes.DUP;
 import static org.mvel2.asm.Opcodes.FCMPL;
+import static org.mvel2.asm.Opcodes.GETSTATIC;
 import static org.mvel2.asm.Opcodes.GOTO;
 import static org.mvel2.asm.Opcodes.IALOAD;
 import static org.mvel2.asm.Opcodes.IASTORE;
@@ -873,16 +875,20 @@ public class ASMConditionEvaluatorJitter {
                 try {
                     switch (operator) {
                         case ADD:
-                            invoke(operationType.getMethod("add", operationType));
+                            addMathContext();
+                            invoke(operationType.getMethod("add", operationType, MathContext.class));
                             break;
                         case SUB:
-                            invoke(operationType.getMethod("subtract", operationType));
+                            addMathContext();
+                            invoke(operationType.getMethod("subtract", operationType, MathContext.class));
                             break;
                         case MUL:
-                            invoke(operationType.getMethod("multiply", operationType));
+                            addMathContext();
+                            invoke(operationType.getMethod("multiply", operationType, MathContext.class));
                             break;
                         case DIV:
-                            invoke(operationType.getMethod("divide", operationType));
+                            addMathContext();
+                            invoke(operationType.getMethod("divide", operationType, MathContext.class));
                             break;
                         case MOD:
                             invoke(operationType.getMethod("remainder", operationType));
@@ -894,6 +900,10 @@ public class ASMConditionEvaluatorJitter {
             } else {
                 throw new RuntimeException("Unknown operation type" + operationType);
             }
+        }
+
+        private void addMathContext() {
+            mv.visitFieldInsn(GETSTATIC, "java/math/MathContext", "DECIMAL128", "Ljava/math/MathContext;");
         }
 
         private Class<?> jitInvocation(Invocation invocation, Class<?> currentClass, boolean firstInvocation) {
