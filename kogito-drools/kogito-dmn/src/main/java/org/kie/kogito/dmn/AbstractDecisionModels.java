@@ -21,9 +21,11 @@ package org.kie.kogito.dmn;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
+import java.util.Set;
 import java.util.function.BiFunction;
 
 import org.kie.dmn.api.core.DMNRuntime;
+import org.kie.dmn.core.compiler.DMNProfile;
 import org.kie.kogito.Application;
 import org.kie.kogito.ExecutionIdSupplier;
 import org.kie.kogito.KogitoGAV;
@@ -45,9 +47,10 @@ public abstract class AbstractDecisionModels implements DecisionModels {
 
     protected static void init(ExecutionIdSupplier executionIdSupplier,
             BiFunction<DecisionModel, KogitoGAV, DecisionModel> decisionModelTransformerInit,
+            Set<DMNProfile> customDMNProfiles,
             Reader... readers) {
         DMNKogitoCallbacks.beforeAbstractDecisionModelsInit(executionIdSupplier, decisionModelTransformerInit, readers);
-        dmnRuntime = DMNKogito.createGenericDMNRuntime(readers);
+        dmnRuntime = DMNKogito.createGenericDMNRuntime(customDMNProfiles, readers);
         execIdSupplier = executionIdSupplier;
         decisionModelTransformer = decisionModelTransformerInit;
         DMNKogitoCallbacks.afterAbstractDecisionModelsInit(dmnRuntime);

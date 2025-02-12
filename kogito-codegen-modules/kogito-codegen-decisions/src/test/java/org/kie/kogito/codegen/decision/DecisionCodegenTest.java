@@ -23,18 +23,23 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.assertj.core.api.AbstractStringAssert;
 import org.drools.codegen.common.GeneratedFile;
 import org.drools.codegen.common.GeneratedFileType;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.kie.dmn.core.compiler.DMNProfile;
 import org.kie.kogito.codegen.api.AddonsConfig;
 import org.kie.kogito.codegen.api.ApplicationSection;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
@@ -53,11 +58,14 @@ import static java.util.Collections.singleton;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.kie.dmn.core.assembler.DMNAssemblerService.DMN_PROFILE_PREFIX;
 import static org.kie.kogito.codegen.api.utils.KogitoContextTestUtils.mockClassAvailabilityResolver;
 import static org.kie.kogito.grafana.utils.GrafanaDashboardUtils.DISABLED_DOMAIN_DASHBOARDS;
 import static org.kie.kogito.grafana.utils.GrafanaDashboardUtils.DISABLED_OPERATIONAL_DASHBOARDS;
 
 public class DecisionCodegenTest {
+
+    static final String CUSTOM_PROFILES_PACKAGE = "org.kie.kogito.codegen.decision.test.customprofiles";
 
     @ParameterizedTest
     @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#contextBuilders")
@@ -260,6 +268,33 @@ public class DecisionCodegenTest {
                 .doesNotContain(DecisionContainerGenerator.PMML_FUNCTION);
     }
 
+    @ParameterizedTest
+    @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#contextBuilders")
+    public void getCustomDMNProfilesProperties(KogitoBuildContext.Builder contextBuilder) {
+        Properties properties = new Properties();
+        Set<String> dmnProfiles = new HashSet<>();
+        IntStream.range(0, 3).forEach(index -> {
+            String dmnProfileKey = String.format("%sProfile_%d", DMN_PROFILE_PREFIX, index);
+            String dmnProfileValue = String.format("%s.Profile_%d", CUSTOM_PROFILES_PACKAGE, index);
+            properties.put(dmnProfileKey, dmnProfileValue);
+            dmnProfiles.add(dmnProfileValue);
+        });
+        DecisionCodegen codeGenerator = getDecisionCodegen("src/test/resources/decision/models/vacationDays", contextBuilder, properties);
+        Set<String> retrieved = codeGenerator.getCustomDMNProfilesProperties();
+        assertThat(retrieved).containsExactlyInAnyOrderElementsOf(dmnProfiles);
+    }
+
+    @Test
+    public void getCustomDMNProfiles() {
+        Set<String> customDMNProfiles = IntStream.range(0, 3)
+                .mapToObj(index -> String.format("%s.Profile_%d", CUSTOM_PROFILES_PACKAGE, index))
+                .collect(Collectors.toSet());
+        Set<DMNProfile> retrieved = DecisionCodegen.getCustomDMNProfiles(customDMNProfiles, Thread.currentThread().getContextClassLoader());
+        assertThat(retrieved).isNotNull().hasSize(3);
+        Set<String> retrievedStrings = retrieved.stream().map(profile -> profile.getClass().getCanonicalName()).collect(Collectors.toSet());
+        assertThat(retrievedStrings).containsExactlyInAnyOrderElementsOf(customDMNProfiles);
+    }
+
     private KogitoBuildContext.Builder stronglyTypedContext(KogitoBuildContext.Builder builder) {
         Properties properties = new Properties();
         properties.put(DecisionCodegen.STRONGLY_TYPED_CONFIGURATION_KEY, Boolean.TRUE.toString());
@@ -297,6 +332,14 @@ public class DecisionCodegenTest {
 
     protected DecisionCodegen getDecisionCodegen(String sourcePath, KogitoBuildContext.Builder contextBuilder) {
         return getDecisionCodegen(sourcePath, AddonsConfig.DEFAULT, contextBuilder);
+    }
+
+    protected DecisionCodegen getDecisionCodegen(String sourcePath, KogitoBuildContext.Builder contextBuilder, Properties properties) {
+        KogitoBuildContext context = contextBuilder
+                .withApplicationProperties(properties)
+                .build();
+        return DecisionCodegen.ofCollectedResources(context,
+                CollectedResourceProducer.fromPaths(Paths.get(sourcePath).toAbsolutePath()));
     }
 
     protected DecisionCodegen getDecisionCodegen(String sourcePath, AddonsConfig addonsConfig, KogitoBuildContext.Builder contextBuilder) {

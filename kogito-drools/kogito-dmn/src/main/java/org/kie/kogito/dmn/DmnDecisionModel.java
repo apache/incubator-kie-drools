@@ -19,6 +19,7 @@
 package org.kie.kogito.dmn;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import org.kie.dmn.api.core.DMNContext;
@@ -26,6 +27,8 @@ import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.api.core.FEELPropertyAccessible;
+import org.kie.dmn.core.compiler.DMNProfile;
+import org.kie.dmn.core.impl.DMNRuntimeImpl;
 import org.kie.kogito.ExecutionIdSupplier;
 import org.kie.kogito.decision.DecisionExecutionIdUtils;
 import org.kie.kogito.decision.DecisionModel;
@@ -78,5 +81,9 @@ public class DmnDecisionModel implements DecisionModel {
     @Override
     public DMNModel getDMNModel() {
         return dmnModel;
+    }
+
+    public List<DMNProfile> getProfiles() {
+        return Collections.unmodifiableList(((DMNRuntimeImpl) dmnRuntime).getProfiles());
     }
 }

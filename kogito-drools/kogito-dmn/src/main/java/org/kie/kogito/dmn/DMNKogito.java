@@ -21,6 +21,7 @@ package org.kie.kogito.dmn;
 import java.io.Reader;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -28,6 +29,7 @@ import org.drools.io.ReaderResource;
 import org.kie.api.io.Resource;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNRuntime;
+import org.kie.dmn.core.compiler.DMNProfile;
 import org.kie.dmn.core.compiler.RuntimeTypeCheckOption;
 import org.kie.dmn.core.impl.DMNRuntimeImpl;
 import org.kie.dmn.core.internal.utils.DMNEvaluationUtils;
@@ -53,11 +55,13 @@ public class DMNKogito {
      * Use {@link Application#decisionModels()} of Kogito API to programmatically access DMN assets and evaluate DMN
      * decisions.
      */
-    public static DMNRuntime createGenericDMNRuntime(Reader... readers) {
+    public static DMNRuntime createGenericDMNRuntime(Set<DMNProfile> customDMNProfiles, Reader... readers) {
         DMNKogitoCallbacks.beforeCreateGenericDMNRuntime(readers);
         List<Resource> resources = Stream.of(readers).map(ReaderResource::new).collect(Collectors.toList());
         EvalHelper.clearGenericAccessorCache(); // KOGITO-3325 DMN hot reload manage accessor cache when stronglytyped
-        DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults()
+        DMNRuntimeBuilder dmnRuntimeBuilder = DMNRuntimeBuilder.fromDefaults();
+        customDMNProfiles.forEach(dmnRuntimeBuilder::addProfile);
+        DMNRuntime dmnRuntime = dmnRuntimeBuilder
                 .buildConfiguration()
                 .fromResources(resources)
                 .getOrElseThrow(e -> new RuntimeException("Error initializing DMNRuntime", e));

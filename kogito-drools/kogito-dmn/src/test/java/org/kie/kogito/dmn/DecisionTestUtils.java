@@ -18,6 +18,7 @@
  */
 package org.kie.kogito.dmn;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -58,7 +59,7 @@ public class DecisionTestUtils {
     private static final int VIOLATION_SPEED_LIMIT_VALUE_100 = 100;
 
     public static DMNRuntime createDMNRuntime() {
-        return DMNKogito.createGenericDMNRuntime(new java.io.InputStreamReader(
+        return DMNKogito.createGenericDMNRuntime(Collections.emptySet(), new java.io.InputStreamReader(
                 DecisionTestUtils.class.getResourceAsStream(MODEL_RESOURCE)));
     }
 

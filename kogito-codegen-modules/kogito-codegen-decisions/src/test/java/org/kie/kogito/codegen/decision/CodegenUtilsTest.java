@@ -83,7 +83,7 @@ class CodegenUtilsTest {
         File dmnFile = FileUtils.getFile("Traffic Violation Simple.dmn");
         assertNotNull(dmnFile);
         assertTrue(dmnFile.exists());
-        DMNRuntime dmnRuntime = DMNKogito.createGenericDMNRuntime(new FileReader(dmnFile));
+        DMNRuntime dmnRuntime = DMNKogito.createGenericDMNRuntime(Collections.emptySet(), new FileReader(dmnFile));
         assertNotNull(dmnRuntime);
         assertThat(dmnRuntime.getModels()).hasSize(1);
         final DMNModel dmnModel = dmnRuntime.getModel("https://github.com/kiegroup/drools/kie-dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF", "Traffic Violation");

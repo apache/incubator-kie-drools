@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UncheckedIOException;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 
@@ -95,7 +96,7 @@ public class DMNTypeHandler implements FunctionTypeHandler {
 
     private DecisionModel loadDMNFromFile(String namespace, String model, String file) {
         try (Reader reader = new InputStreamReader(URIContentLoaderFactory.builder(file).withClassloader(this.getClass().getClassLoader()).build().getInputStream())) {
-            return new DmnDecisionModel(DMNKogito.createGenericDMNRuntime(reader), namespace, model);
+            return new DmnDecisionModel(DMNKogito.createGenericDMNRuntime(Collections.emptySet(), reader), namespace, model);
         } catch (IOException io) {
             throw new UncheckedIOException(io);
         }

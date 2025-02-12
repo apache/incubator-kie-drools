@@ -22,10 +22,12 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -38,6 +40,7 @@ import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.api.marshalling.DMNMarshaller;
 import org.kie.dmn.backend.marshalling.v1x.DMNMarshallerFactory;
+import org.kie.dmn.core.compiler.DMNProfile;
 import org.kie.dmn.core.internal.utils.DMNRuntimeBuilder;
 import org.kie.dmn.feel.codegen.feel11.CodegenStringUtil;
 import org.kie.dmn.model.api.BusinessKnowledgeModel;
@@ -65,6 +68,7 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static java.util.stream.Collectors.toList;
+import static org.kie.dmn.core.assembler.DMNAssemblerService.DMN_PROFILE_PREFIX;
 import static org.kie.kogito.codegen.decision.CodegenUtils.getDefinitionsFileFromModel;
 
 public class DecisionCodegen extends AbstractGenerator {
@@ -105,7 +109,8 @@ public class DecisionCodegen extends AbstractGenerator {
     public static final String KOGITO_ADDON_TRACING_DECISION_ASYNC_ENABLED = "kogito.addon.tracing.decision.asyncEnabled";
 
     public static DecisionCodegen ofCollectedResources(KogitoBuildContext context, Collection<CollectedResource> resources) {
-        OASFactoryResolver.instance(); // manually invoke SPI, o/w Kogito CodeGen Kogito Quarkus extension failure at NewFileHotReloadTest due to java.util.ServiceConfigurationError: org.eclipse.microprofile.openapi.spi.OASFactoryResolver: io.smallrye.openapi.spi.OASFactoryResolverImpl not a subtype
+        OASFactoryResolver.instance(); // manually invoke SPI, o/w Kogito CodeGen Kogito Quarkus extension failure at NewFileHotReloadTest due to java.util.ServiceConfigurationError: org.eclipse
+        // .microprofile.openapi.spi.OASFactoryResolver: io.smallrye.openapi.spi.OASFactoryResolverImpl not a subtype
         List<CollectedResource> dmnResources = resources.stream()
                 .filter(r -> r.resource().getResourceType() == ResourceType.DMN)
                 .collect(toList());
@@ -123,9 +128,12 @@ public class DecisionCodegen extends AbstractGenerator {
     private final List<DMNResource> resources = new ArrayList<>();
     private final List<GeneratedFile> generatedFiles = new ArrayList<>();
     private final List<String> classesForManualReflection = new ArrayList<>();
+    private final Set<DMNProfile> customDMNProfiles = new HashSet<>();
 
     public DecisionCodegen(KogitoBuildContext context, List<CollectedResource> cResources) {
         super(context, GENERATOR_NAME, new DecisionConfigGenerator(context));
+        Set<String> customDMNProfilesProperties = getCustomDMNProfilesProperties();
+        customDMNProfiles.addAll(getCustomDMNProfiles(customDMNProfilesProperties, context.getClassLoader()));
         this.cResources = cResources;
     }
 
@@ -134,7 +142,9 @@ public class DecisionCodegen extends AbstractGenerator {
         // First, we perform static validation on directly the XML
         DecisionValidation.dmnValidateResources(context(), r2cr.keySet());
         // DMN model processing; any semantic error during compilation will also be thrown accordingly
-        DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults()
+        DMNRuntimeBuilder dmnRuntimeBuilder = DMNRuntimeBuilder.fromDefaults();
+        customDMNProfiles.forEach(dmnRuntimeBuilder::addProfile);
+        DMNRuntime dmnRuntime = dmnRuntimeBuilder
                 .setRootClassLoader(context().getClassLoader()) // KOGITO-4788
                 .buildConfiguration()
                 .fromResources(r2cr.keySet())
@@ -157,6 +167,34 @@ public class DecisionCodegen extends AbstractGenerator {
     @Override
     public boolean isEmpty() {
         return cResources.isEmpty();
+    }
+
+    Set<String> getCustomDMNProfilesProperties() {
+        Map<String, String> propertiesMap = this.context().getPropertiesMap();
+        return propertiesMap.entrySet().stream()
+                .filter(stringStringEntry -> stringStringEntry.getKey().startsWith(DMN_PROFILE_PREFIX))
+                .map(Entry::getValue)
+                .collect(Collectors.toSet());
+    }
+
+    static Set<DMNProfile> getCustomDMNProfiles(Set<String> customDMNProfiles, ClassLoader classLoader) {
+        Set<DMNProfile> toReturn = new HashSet<>();
+        for (String profileName : customDMNProfiles) {
+            Class<? extends DMNProfile> profileClass = null;
+            try {
+                profileClass = classLoader.loadClass(profileName).asSubclass(DMNProfile.class);
+            } catch (Exception e) {
+                LOGGER.warn("Unable to load DMN profile {} from classloader.", profileName);
+            }
+            if (profileClass != null) {
+                try {
+                    toReturn.add(profileClass.getDeclaredConstructor().newInstance());
+                } catch (Exception e) {
+                    LOGGER.warn("Unable to instantiate DMN profile {}", profileName, e);
+                }
+            }
+        }
+        return toReturn;
     }
 
     private void generateAndStoreRestResources() {
@@ -315,7 +353,8 @@ public class DecisionCodegen extends AbstractGenerator {
                 context(),
                 applicationCanonicalName(),
                 this.cResources,
-                this.classesForManualReflection));
+                this.classesForManualReflection,
+                this.customDMNProfiles));
     }
 
     @Override

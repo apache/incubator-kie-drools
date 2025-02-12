@@ -19,6 +19,7 @@
 package org.kie.kogito.tracing.decision;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -88,7 +89,7 @@ public abstract class BaseSpringBootDecisionTracingTest {
     }
 
     private DMNRuntime buildDMNRuntime() {
-        return DMNKogito.createGenericDMNRuntime(new java.io.InputStreamReader(
+        return DMNKogito.createGenericDMNRuntime(Collections.emptySet(), new java.io.InputStreamReader(
                 BaseSpringBootDecisionTracingTest.class.getResourceAsStream(TEST_RESOURCE)));
     }
 
