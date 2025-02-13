@@ -39,7 +39,13 @@ import org.drools.scenariosimulation.backend.interfaces.ThrowingConsumer;
 import org.kie.utll.xml.XStreamUtils;
 import org.w3c.dom.Document;
 
-import static org.drools.scenariosimulation.api.utils.ConstantsHolder.*;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.BACKGROUND_NODE;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.SCENARIO_SIMULATION_MODEL_NODE;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.SCESIM_MODEL_DESCRIPTOR_NODE;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.SETTINGS;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.SIMULATION_DESCRIPTOR_NODE;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.SIMULATION_NODE;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.VERSION_ATTRIBUTE;
 
 public class ScenarioSimulationXMLPersistence {
 
