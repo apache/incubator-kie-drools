@@ -19,6 +19,7 @@
 package org.drools.mvel.integrationtests;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,6 +41,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.internal.conf.ConstraintJittingThresholdOption;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 public class JittingTest {
 
@@ -388,7 +390,7 @@ public class JittingTest {
     @ParameterizedTest(name = "KieBase type={0}")
     @MethodSource("parameters")
     void nonTerminatingDecimal(KieBaseTestConfiguration kieBaseTestConfiguration) {
-        //
+        // incubator-kie-drools/issues/6249
         String drl =
                 "package test\n" +
                         "import " + Person.class.getCanonicalName() + "\n" +
@@ -455,5 +457,38 @@ public class JittingTest {
         ksession.insert(person1);
         ksession.insert(person2);
         assertThat(ksession.fireAllRules()).isZero();
+    }
+
+    private static Stream<Arguments> argumentsArithmetic() {
+        List<KieBaseTestConfiguration> configurations = parameters().toList();
+        List<String> operators = Stream.of("+", "-", "*", "/").toList();
+        return configurations.stream()
+                .flatMap(config -> operators.stream()
+                        .map(operator -> Arguments.of(config, operator)));
+    }
+
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("argumentsArithmetic")
+    void bigIntegerArithmetic(KieBaseTestConfiguration kieBaseTestConfiguration, String operator) {
+        assumeFalse(kieBaseTestConfiguration.isExecutableModel(),
+                    "BigInteger arithmetic with exec-model is skipped " +
+                            "until incubator-kie-drools/issues/6253 is fixed");
+
+        String drl =
+                "package test\n" +
+                        "import " + Person.class.getCanonicalName() + "\n" +
+                        "\n" +
+                        "rule R1 when \n" +
+                        "    Person( bigInteger " + operator + " 7I >= 0 )\n" +
+                        "then \n" +
+                        "end";
+
+        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, drl);
+        final KieBase kieBase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, ConstraintJittingThresholdOption.get(0));
+        KieSession ksession = kieBase.newKieSession();
+        Person person = new Person();
+        person.setBigInteger(new BigInteger("15"));
+        ksession.insert(person);
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 }

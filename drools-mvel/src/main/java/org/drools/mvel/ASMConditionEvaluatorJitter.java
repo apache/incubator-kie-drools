@@ -26,7 +26,6 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.math.MathContext;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -89,7 +88,6 @@ import static org.mvel2.asm.Opcodes.DREM;
 import static org.mvel2.asm.Opcodes.DSUB;
 import static org.mvel2.asm.Opcodes.DUP;
 import static org.mvel2.asm.Opcodes.FCMPL;
-import static org.mvel2.asm.Opcodes.GETSTATIC;
 import static org.mvel2.asm.Opcodes.GOTO;
 import static org.mvel2.asm.Opcodes.IALOAD;
 import static org.mvel2.asm.Opcodes.IASTORE;
@@ -871,24 +869,42 @@ public class ASMConditionEvaluatorJitter {
                         mv.visitInsn(DREM);
                         break;
                 }
-            } else if (operationType == BigDecimal.class || operationType == BigInteger.class) {
+            } else if (operationType == BigInteger.class) {
                 try {
                     switch (operator) {
                         case ADD:
-                            addMathContext();
-                            invoke(operationType.getMethod("add", operationType, MathContext.class));
+                            invoke(operationType.getMethod("add", operationType));
                             break;
                         case SUB:
-                            addMathContext();
-                            invoke(operationType.getMethod("subtract", operationType, MathContext.class));
+                            invoke(operationType.getMethod("subtract", operationType));
                             break;
                         case MUL:
-                            addMathContext();
-                            invoke(operationType.getMethod("multiply", operationType, MathContext.class));
+                            invoke(operationType.getMethod("multiply", operationType));
                             break;
                         case DIV:
-                            addMathContext();
-                            invoke(operationType.getMethod("divide", operationType, MathContext.class));
+                            invoke(operationType.getMethod("divide", operationType));
+                            break;
+                        case MOD:
+                            invoke(operationType.getMethod("remainder", operationType));
+                            break;
+                    }
+                } catch (NoSuchMethodException e) {
+                    throw new RuntimeException(e);
+                }
+            } else if (operationType == BigDecimal.class) {
+                try {
+                    switch (operator) {
+                        case ADD:
+                            invokeBigDecimalArithmeticOperation("add");
+                            break;
+                        case SUB:
+                            invokeBigDecimalArithmeticOperation("subtract");
+                            break;
+                        case MUL:
+                            invokeBigDecimalArithmeticOperation("multiply");
+                            break;
+                        case DIV:
+                            invokeBigDecimalArithmeticOperation("divide");
                             break;
                         case MOD:
                             invoke(operationType.getMethod("remainder", operationType));
@@ -900,10 +916,6 @@ public class ASMConditionEvaluatorJitter {
             } else {
                 throw new RuntimeException("Unknown operation type" + operationType);
             }
-        }
-
-        private void addMathContext() {
-            mv.visitFieldInsn(GETSTATIC, "java/math/MathContext", "DECIMAL128", "Ljava/math/MathContext;");
         }
 
         private Class<?> jitInvocation(Invocation invocation, Class<?> currentClass, boolean firstInvocation) {
