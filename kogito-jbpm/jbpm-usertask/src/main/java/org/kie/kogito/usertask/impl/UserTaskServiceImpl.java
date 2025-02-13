@@ -79,13 +79,15 @@ public class UserTaskServiceImpl implements UserTaskService {
 
     @Override
     public Optional<UserTaskView> transition(String taskId, String transitionId, Map<String, Object> data, IdentityProvider identity) {
-        Optional<UserTaskInstance> userTaskInstance = application.get(UserTasks.class).instances().findById(taskId);
-        if (userTaskInstance.isEmpty()) {
-            return Optional.empty();
-        }
-        UserTaskInstance ut = userTaskInstance.get();
-        ut.transition(transitionId, data, identity);
-        return Optional.of(toUserTaskView(ut));
+        return UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(), () -> {
+            Optional<UserTaskInstance> userTaskInstance = application.get(UserTasks.class).instances().findById(taskId);
+            if (userTaskInstance.isEmpty()) {
+                return Optional.empty();
+            }
+            UserTaskInstance ut = userTaskInstance.get();
+            ut.transition(transitionId, data, identity);
+            return Optional.of(toUserTaskView(ut));
+        });
     }
 
     @Override

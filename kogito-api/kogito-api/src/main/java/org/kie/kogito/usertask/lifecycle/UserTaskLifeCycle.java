@@ -29,9 +29,14 @@ import org.kie.kogito.usertask.UserTaskInstance;
 public interface UserTaskLifeCycle {
 
     final String ACTIVATE = "activate";
+    final String REASSIGN = "reassign";
 
     default String startTransition() {
         return ACTIVATE;
+    }
+
+    default String reassignTransition() {
+        return REASSIGN;
     }
 
     Optional<UserTaskTransitionToken> transition(UserTaskInstance userTaskInstance, UserTaskTransitionToken transition, IdentityProvider identity);

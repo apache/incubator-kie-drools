@@ -735,14 +735,14 @@ public class DefaultUserTaskInstance implements UserTaskInstance {
 
     public void trigger(UserTaskInstanceJobDescription jobDescription) {
         LOG.trace("trigger timer in user tasks {} and job {}", this, jobDescription);
-        checkAndSendNotitication(jobDescription, notStartedDeadlinesTimers, this::startNotification);
-        checkAndSendNotitication(jobDescription, notCompletedDeadlinesTimers, this::endNotification);
+        checkAndSendNotification(jobDescription, notStartedDeadlinesTimers, this::startNotification);
+        checkAndSendNotification(jobDescription, notCompletedDeadlinesTimers, this::endNotification);
         checkAndReassign(jobDescription, notStartedReassignmentsTimers);
         checkAndReassign(jobDescription, notCompletedReassignmentsTimers);
         this.updatePersistence();
     }
 
-    private void checkAndSendNotitication(UserTaskInstanceJobDescription timerInstance, Map<String, Notification> timers, Consumer<Notification> publisher) {
+    private void checkAndSendNotification(UserTaskInstanceJobDescription timerInstance, Map<String, Notification> timers, Consumer<Notification> publisher) {
         Notification notification = timers.get(timerInstance.id());
         if (notification == null) {
             return;
@@ -784,9 +784,7 @@ public class DefaultUserTaskInstance implements UserTaskInstance {
             setPotentialGroups(reassignment.getPotentialGroups());
         }
 
-        this.userTaskLifeCycle.newReassignmentTransitionToken(this, emptyMap()).ifPresent(token -> {
-            this.userTaskLifeCycle.transition(this, token, IdentityProviders.of(WORKFLOW_ENGINE_USER));
-        });
+        this.transition(this.userTaskLifeCycle.reassignTransition(), emptyMap(), IdentityProviders.of(WORKFLOW_ENGINE_USER));
     }
 
     @Override
