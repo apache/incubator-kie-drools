@@ -18,9 +18,6 @@
  */
 package org.drools.scenariosimulation.backend.util;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 import com.thoughtworks.xstream.security.WildcardTypePermission;
@@ -48,12 +45,12 @@ import static org.drools.scenariosimulation.api.utils.ConstantsHolder.SCESIM_MOD
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.SETTINGS;
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.SIMULATION_DESCRIPTOR_NODE;
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.SIMULATION_NODE;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.VERSION_ATTRIBUTE;
 
 public class ScenarioSimulationXMLPersistence {
 
     private static final ScenarioSimulationXMLPersistence INSTANCE = new ScenarioSimulationXMLPersistence();
     private static final String CURRENT_VERSION = new ScenarioSimulationModel().getVersion();
-    private static final Pattern p = Pattern.compile(SCENARIO_SIMULATION_MODEL_NODE + " version=\"([0-9]+\\.[0-9]+)");
 
     private XStream xt;
     private MigrationStrategy migrationStrategy = new InMemoryMigrationStrategy();
@@ -147,7 +144,8 @@ public class ScenarioSimulationXMLPersistence {
     }
 
     public String migrateIfNecessary(String rawXml) throws Exception {
-        String fileVersion = extractVersion(rawXml);
+        Document document = DOMParserUtil.getDocument(rawXml);
+        String fileVersion = extractVersion(document);
         ThrowingConsumer<Document> migrator = getMigrationStrategy().start();
         boolean supported;
         switch (fileVersion) {
@@ -179,18 +177,17 @@ public class ScenarioSimulationXMLPersistence {
                                                        .append(CURRENT_VERSION).toString());
         }
         migrator = migrator.andThen(getMigrationStrategy().end());
-        Document document = DOMParserUtil.getDocument(rawXml);
         migrator.accept(document);
         return DOMParserUtil.getString(document);
     }
 
-    public String extractVersion(String rawXml) {
-        Matcher m = p.matcher(rawXml);
-
-        if (m.find()) {
-            return m.group(1);
+    public String extractVersion(Document document) {
+        try {
+            return document.getElementsByTagName(SCENARIO_SIMULATION_MODEL_NODE)
+                    .item(0).getAttributes().getNamedItem(VERSION_ATTRIBUTE).getTextContent();
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Impossible to extract version from the file", e);
         }
-        throw new IllegalArgumentException("Impossible to extract version from the file");
     }
 
     public MigrationStrategy getMigrationStrategy() {
