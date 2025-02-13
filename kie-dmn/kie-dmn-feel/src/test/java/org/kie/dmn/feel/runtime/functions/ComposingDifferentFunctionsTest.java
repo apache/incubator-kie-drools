@@ -92,6 +92,6 @@ class ComposingDifferentFunctionsTest {
         assertThat(timeOnDateTime.query(TemporalQueries.localTime())).isEqualTo(LocalTime.of(10, 20, 0));
         assertThat(timeOnDateTime.query(TemporalQueries.zone())).isEqualTo(ZoneId.of("Europe/Paris"));
 
-        FunctionTestUtil.assertResult(stringFunction.invoke(timeOnDateTime), "10:20@Europe/Paris");
+        FunctionTestUtil.assertResult(stringFunction.invoke(timeOnDateTime), "10:20:00@Europe/Paris");
     }
 }

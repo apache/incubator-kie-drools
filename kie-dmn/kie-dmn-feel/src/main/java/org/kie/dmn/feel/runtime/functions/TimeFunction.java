@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -68,7 +68,13 @@ public class TimeFunction
         return timePattern.matcher(val).find();
     }
 
-    private static final BigDecimal NANO_MULT = BigDecimal.valueOf( 1000000000 );
+    static String getFormattedStringFromTemporalAccessorAndZone(TemporalAccessor date, ZoneId zone) {
+        LocalTime localTime = date.query(TemporalQueries.localTime());
+        String localTimeString = localTime.format(DateTimeFormatter.ISO_LOCAL_TIME);
+        return String.format("%s@%s", localTimeString, zone);
+    }
+
+    private static final BigDecimal NANO_MULT = BigDecimal.valueOf(1000000000);
 
 
     protected TimeFunction() {
@@ -161,7 +167,7 @@ public class TimeFunction
                 if (!(zone instanceof ZoneOffset)) {
                     // TZ is a ZoneRegion, so do NOT normalize (although the result will be unreversible, but will keep what was supplied originally).
                     // Unfortunately java.time.Parsed is a package-private class, hence will need to re-parse in order to have it instantiated. 
-                    return invoke(date.query(TemporalQueries.localTime()) + "@" + zone);
+                    return invoke(getFormattedStringFromTemporalAccessorAndZone(date, zone));
                 } else {
                     return FEELFnResult.ofResult(OffsetTime.from(date));
                 }
