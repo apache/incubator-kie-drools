@@ -39,12 +39,7 @@ import org.drools.scenariosimulation.backend.interfaces.ThrowingConsumer;
 import org.kie.utll.xml.XStreamUtils;
 import org.w3c.dom.Document;
 
-import static org.drools.scenariosimulation.api.utils.ConstantsHolder.BACKGROUND_NODE;
-import static org.drools.scenariosimulation.api.utils.ConstantsHolder.SCENARIO_SIMULATION_MODEL_NODE;
-import static org.drools.scenariosimulation.api.utils.ConstantsHolder.SCESIM_MODEL_DESCRIPTOR_NODE;
-import static org.drools.scenariosimulation.api.utils.ConstantsHolder.SETTINGS;
-import static org.drools.scenariosimulation.api.utils.ConstantsHolder.SIMULATION_DESCRIPTOR_NODE;
-import static org.drools.scenariosimulation.api.utils.ConstantsHolder.SIMULATION_NODE;
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.*;
 
 public class ScenarioSimulationXMLPersistence {
 
@@ -182,7 +177,8 @@ public class ScenarioSimulationXMLPersistence {
 
     public String extractVersion(Document document) {
         try {
-            return document.getElementsByTagName(SCENARIO_SIMULATION_MODEL_NODE).item(0).getAttributes().getNamedItem("version").getTextContent();
+            return document.getElementsByTagName(SCENARIO_SIMULATION_MODEL_NODE)
+                    .item(0).getAttributes().getNamedItem(VERSION_ATTRIBUTE).getTextContent();
         } catch (Exception e) {
             throw new IllegalArgumentException("Impossible to extract version from the file", e);
         }

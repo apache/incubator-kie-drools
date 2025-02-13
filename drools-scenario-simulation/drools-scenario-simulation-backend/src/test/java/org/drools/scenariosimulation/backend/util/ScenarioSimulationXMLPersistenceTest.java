@@ -353,6 +353,12 @@ public class ScenarioSimulationXMLPersistenceTest {
     }
 
     @Test
+    public void extractVersionNullDocument() {
+        assertThatThrownBy(() -> instance.extractVersion(null))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
     public void extractVersionMissingAttribute() {
         assertThatThrownBy(() -> instance.extractVersion(DOMParserUtil.getDocument("<ScenarioSimulationModel />")))
                 .isInstanceOf(IllegalArgumentException.class);
