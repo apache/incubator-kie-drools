@@ -869,7 +869,7 @@ public class ASMConditionEvaluatorJitter {
                         mv.visitInsn(DREM);
                         break;
                 }
-            } else if (operationType == BigDecimal.class || operationType == BigInteger.class) {
+            } else if (operationType == BigInteger.class) {
                 try {
                     switch (operator) {
                         case ADD:
@@ -883,6 +883,28 @@ public class ASMConditionEvaluatorJitter {
                             break;
                         case DIV:
                             invoke(operationType.getMethod("divide", operationType));
+                            break;
+                        case MOD:
+                            invoke(operationType.getMethod("remainder", operationType));
+                            break;
+                    }
+                } catch (NoSuchMethodException e) {
+                    throw new RuntimeException(e);
+                }
+            } else if (operationType == BigDecimal.class) {
+                try {
+                    switch (operator) {
+                        case ADD:
+                            invokeBigDecimalArithmeticOperation("add");
+                            break;
+                        case SUB:
+                            invokeBigDecimalArithmeticOperation("subtract");
+                            break;
+                        case MUL:
+                            invokeBigDecimalArithmeticOperation("multiply");
+                            break;
+                        case DIV:
+                            invokeBigDecimalArithmeticOperation("divide");
                             break;
                         case MOD:
                             invoke(operationType.getMethod("remainder", operationType));

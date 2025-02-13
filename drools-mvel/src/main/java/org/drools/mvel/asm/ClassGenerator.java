@@ -25,6 +25,8 @@ import java.io.PrintStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -772,6 +774,11 @@ public class ClassGenerator {
 
         protected final void invoke(int opCode, Class<?> clazz, String methodName, Class<?> returnedType, Class<?>... paramsType) {
             mv.visitMethodInsn(opCode, internalName(clazz), methodName, methodDescr(returnedType, paramsType));
+        }
+
+        protected final void invokeBigDecimalArithmeticOperation(String operation) throws NoSuchMethodException {
+            mv.visitFieldInsn(GETSTATIC, "java/math/MathContext", "DECIMAL128", "Ljava/math/MathContext;");
+            invoke(BigDecimal.class.getMethod(operation, BigDecimal.class, MathContext.class));
         }
 
         protected final void putStaticField(String name, Class<?> type) {
