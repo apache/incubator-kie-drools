@@ -22,7 +22,9 @@ import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
@@ -1065,7 +1067,16 @@ public class DMNEvaluatorCompiler implements DMNDecisionLogicCompiler {
             return null;
         }
 
-        return new DMNConditionalEvaluator(exprName, node.getSource(), ifEvaluator, thenEvaluator, elseEvaluator);
+        Map<DMNConditionalEvaluator.EvaluatorIdentifier, DMNExpressionEvaluator> evaluatorIdMap = new HashMap<>();
+        evaluatorIdMap.put(getEvaluatorIdentifier(expression.getIf().getId(), DMNConditionalEvaluator.EvaluatorType.IF), ifEvaluator);
+        evaluatorIdMap.put(getEvaluatorIdentifier(expression.getThen().getId(), DMNConditionalEvaluator.EvaluatorType.THEN), thenEvaluator);
+        evaluatorIdMap.put(getEvaluatorIdentifier(expression.getElse().getId(), DMNConditionalEvaluator.EvaluatorType.ELSE), elseEvaluator);
+
+        return new DMNConditionalEvaluator(exprName, node.getSource(), evaluatorIdMap);
+    }
+
+    private DMNConditionalEvaluator.EvaluatorIdentifier getEvaluatorIdentifier(String id, DMNConditionalEvaluator.EvaluatorType type) {
+        return new DMNConditionalEvaluator.EvaluatorIdentifier(id, type);
     }
 
     private DMNExpressionEvaluator compileIterator(DMNCompilerContext ctx, DMNModelImpl model, DMNBaseNode node,

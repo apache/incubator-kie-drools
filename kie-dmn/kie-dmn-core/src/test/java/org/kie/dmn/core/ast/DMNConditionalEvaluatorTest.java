@@ -19,7 +19,8 @@
 package org.kie.dmn.core.ast;
 
 import java.util.Collections;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -32,11 +33,7 @@ import org.kie.dmn.api.core.event.DMNRuntimeEventListener;
 import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
 import org.kie.dmn.core.impl.DMNResultImpl;
-import org.kie.dmn.model.api.ChildExpression;
-import org.kie.dmn.model.api.Conditional;
 import org.kie.dmn.model.api.DMNElement;
-import org.kie.dmn.model.api.DMNModelInstrumentedBase;
-import org.kie.dmn.model.api.Expression;
 import org.mockito.ArgumentCaptor;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -48,7 +45,7 @@ import static org.mockito.Mockito.when;
 
 class DMNConditionalEvaluatorTest {
 
-    private static final String ID_ELEMENT_ID = "ID_ELEMENT_ID";
+    private static final String IF_ELEMENT_ID = "IF_ELEMENT_ID";
     private static final String THEN_ELEMENT_ID = "THEN_ELEMENT_ID";
     private static final String ELSE_ELEMENT_ID = "ELSE_ELEMENT_ID";
     private static DMNRuntimeEventManager eventManagerMock;
@@ -79,29 +76,18 @@ class DMNConditionalEvaluatorTest {
         when(thenEvaluatorMock.evaluate(eventManagerMock, dmnResultMock)).thenReturn(thenEvaluationMock);
         when(elseEvaluatorMock.evaluate(eventManagerMock, dmnResultMock)).thenReturn(elseEvaluationMock);
 
-        ChildExpression ifMock = mock(ChildExpression.class);
-        when(ifMock.getId()).thenReturn(ID_ELEMENT_ID);
-
-        ChildExpression thenMock = mock(ChildExpression.class);
-        when(thenMock.getId()).thenReturn(THEN_ELEMENT_ID);
-
-        ChildExpression elseMock = mock(ChildExpression.class);
-        when(elseMock.getId()).thenReturn(ELSE_ELEMENT_ID);
-
-        Conditional conditionalMock = mock(Conditional.class);
-        when(conditionalMock.getIf()).thenReturn(ifMock);
-        when(conditionalMock.getThen()).thenReturn(thenMock);
-        when(conditionalMock.getElse()).thenReturn(elseMock);
-
-        List<DMNModelInstrumentedBase> nodeChildren = Collections.singletonList(conditionalMock);
         DMNElement nodeMock = mock(DMNElement.class);
-        when(nodeMock.getChildren()).thenReturn(nodeChildren);
 
-        dmnConditionalEvaluator = new DMNConditionalEvaluator("name",
-                                                              nodeMock,
-                                                              ifEvaluatorMock,
-                                                              thenEvaluatorMock,
-                                                              elseEvaluatorMock);
+        DMNConditionalEvaluator.EvaluatorIdentifier ifIdentifier = new DMNConditionalEvaluator.EvaluatorIdentifier("IF_ELEMENT_ID", DMNConditionalEvaluator.EvaluatorType.IF);
+        DMNConditionalEvaluator.EvaluatorIdentifier thenIdentifier = new DMNConditionalEvaluator.EvaluatorIdentifier("THEN_ELEMENT_ID", DMNConditionalEvaluator.EvaluatorType.THEN);
+        DMNConditionalEvaluator.EvaluatorIdentifier elseIdentifier = new DMNConditionalEvaluator.EvaluatorIdentifier("ELSE_ELEMENT_ID", DMNConditionalEvaluator.EvaluatorType.ELSE);
+
+        Map<DMNConditionalEvaluator.EvaluatorIdentifier, DMNExpressionEvaluator> evaluatorIdMap = new HashMap<>();
+        evaluatorIdMap.put(ifIdentifier, ifEvaluatorMock);
+        evaluatorIdMap.put(thenIdentifier, thenEvaluatorMock);
+        evaluatorIdMap.put(elseIdentifier, elseEvaluatorMock);
+
+        dmnConditionalEvaluator = new DMNConditionalEvaluator("name", nodeMock, evaluatorIdMap);
     }
 
     @BeforeEach
@@ -121,7 +107,7 @@ class DMNConditionalEvaluatorTest {
         AfterEvaluateConditionalEvent evaluateConditionalEvent = evaluateConditionalEventArgumentCaptor.getValue();
         assertThat(evaluateConditionalEvent).isNotNull();
         assertThat(evaluateConditionalEvent.getEvaluatorResultResult()).isEqualTo(ifEvaluationMock);
-        assertThat(evaluateConditionalEvent.getExecutedId()).isEqualTo(ID_ELEMENT_ID);
+        assertThat(evaluateConditionalEvent.getExecutedId()).isEqualTo(IF_ELEMENT_ID);
     }
 
     @Test

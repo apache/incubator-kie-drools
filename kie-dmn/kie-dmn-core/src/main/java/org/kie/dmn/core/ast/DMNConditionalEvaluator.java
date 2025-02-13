@@ -18,7 +18,6 @@
  */
 package org.kie.dmn.core.ast;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.kie.dmn.api.core.DMNMessage;
@@ -31,12 +30,28 @@ import org.kie.dmn.core.impl.DMNResultImpl;
 import org.kie.dmn.core.impl.DMNRuntimeEventManagerUtils;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
-import org.kie.dmn.model.api.Conditional;
 import org.kie.dmn.model.api.DMNElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DMNConditionalEvaluator implements DMNExpressionEvaluator {
+
+    public enum EvaluatorType {
+        IF,
+        THEN,
+        ELSE
+    }
+
+    public static class EvaluatorIdentifier {
+        final String id;
+        final EvaluatorType type;
+
+        public EvaluatorIdentifier (String id, EvaluatorType type) {
+            this.id = id;
+            this.type = type;
+        }
+
+    }
 
     private static final Logger logger = LoggerFactory.getLogger(DMNConditionalEvaluator.class);
 
@@ -45,22 +60,21 @@ public class DMNConditionalEvaluator implements DMNExpressionEvaluator {
     private DMNExpressionEvaluator elseEvaluator;
     private DMNElement node;
     private String name;
-    private final Map<DMNExpressionEvaluator, String> evaluatorIdMap = new HashMap<>();
+    private final Map<EvaluatorIdentifier, DMNExpressionEvaluator> evaluatorIdMap;
+    private final EvaluatorIdentifier ifEvaluatorIdentifier;
+    private final EvaluatorIdentifier thenEvaluatorIdentifier;
+    private final EvaluatorIdentifier elseEvaluatorIdentifier;
 
-    public DMNConditionalEvaluator(String name, DMNElement node, DMNExpressionEvaluator ifEvaluator, DMNExpressionEvaluator thenEvaluator, DMNExpressionEvaluator elseEvaluator) {
+    public DMNConditionalEvaluator(String name, DMNElement node, Map <EvaluatorIdentifier, DMNExpressionEvaluator> evaluatorIdMap) {
         this.name = name;
         this.node = node;
-        this.ifEvaluator = ifEvaluator;
-        this.thenEvaluator = thenEvaluator;
-        this.elseEvaluator = elseEvaluator;
-        Conditional conditional = node.getChildren().stream()
-                .filter(c -> c instanceof Conditional)
-                .map(c -> (Conditional) c)
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("Missing Conditional element inside " + node));
-        evaluatorIdMap.put(ifEvaluator, conditional.getIf().getId());
-        evaluatorIdMap.put(thenEvaluator, conditional.getThen().getId());
-        evaluatorIdMap.put(elseEvaluator, conditional.getElse().getId());
+        this.ifEvaluatorIdentifier = getEvaluatorIdentifier(evaluatorIdMap, EvaluatorType.IF);
+        this.thenEvaluatorIdentifier = getEvaluatorIdentifier(evaluatorIdMap, EvaluatorType.THEN);
+        this.elseEvaluatorIdentifier = getEvaluatorIdentifier(evaluatorIdMap, EvaluatorType.ELSE);
+        this.ifEvaluator = evaluatorIdMap.get(ifEvaluatorIdentifier);
+        this.thenEvaluator = evaluatorIdMap.get(thenEvaluatorIdentifier);
+        this.elseEvaluator = evaluatorIdMap.get(elseEvaluatorIdentifier);
+        this.evaluatorIdMap = evaluatorIdMap;
     }
 
     @Override
@@ -68,7 +82,7 @@ public class DMNConditionalEvaluator implements DMNExpressionEvaluator {
         DMNResultImpl result = (DMNResultImpl) dmnr;
 
         EvaluatorResult ifEvaluation = ifEvaluator.evaluate(eventManager, result);
-        String executedId = evaluatorIdMap.get(ifEvaluator);
+        String executedId = ifEvaluatorIdentifier.id;
         DMNRuntimeEventManagerUtils.fireAfterEvaluateConditional(eventManager, ifEvaluation, executedId);
         if (ifEvaluation.getResultType().equals(ResultType.SUCCESS)) {
             Object ifResult = ifEvaluation.getResult();
@@ -94,9 +108,18 @@ public class DMNConditionalEvaluator implements DMNExpressionEvaluator {
         DMNExpressionEvaluator evaluatorToUse = booleanResult != null && booleanResult ? thenEvaluator : elseEvaluator;
 
         EvaluatorResult toReturn = evaluatorToUse.evaluate(eventManager, result);
-        String executedId  = evaluatorIdMap.get(evaluatorToUse);
+
+        String executedId = evaluatorToUse.equals(thenEvaluator) ? thenEvaluatorIdentifier.id : elseEvaluatorIdentifier.id;
+
         DMNRuntimeEventManagerUtils.fireAfterConditionalEvaluation(eventManager, name, toReturn, executedId);
         return toReturn;
+    }
+
+    private EvaluatorIdentifier getEvaluatorIdentifier(Map<EvaluatorIdentifier, DMNExpressionEvaluator> evaluatorIdMap, EvaluatorType type) {
+        return evaluatorIdMap.keySet().stream()
+                .filter(identifier -> identifier.type.equals(type))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Missing" + type + "evaluator in evaluatorIdMap"));
     }
 
 }
