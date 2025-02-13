@@ -41,6 +41,7 @@ import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.api.marshalling.DMNMarshaller;
 import org.kie.dmn.backend.marshalling.v1x.DMNMarshallerFactory;
 import org.kie.dmn.core.compiler.DMNProfile;
+import org.kie.dmn.core.compiler.RuntimeTypeCheckOption;
 import org.kie.dmn.core.internal.utils.DMNRuntimeBuilder;
 import org.kie.dmn.feel.codegen.feel11.CodegenStringUtil;
 import org.kie.dmn.model.api.BusinessKnowledgeModel;
@@ -129,11 +130,13 @@ public class DecisionCodegen extends AbstractGenerator {
     private final List<GeneratedFile> generatedFiles = new ArrayList<>();
     private final List<String> classesForManualReflection = new ArrayList<>();
     private final Set<DMNProfile> customDMNProfiles = new HashSet<>();
+    private final boolean enableRuntimeTypeCheckOption;
 
     public DecisionCodegen(KogitoBuildContext context, List<CollectedResource> cResources) {
         super(context, GENERATOR_NAME, new DecisionConfigGenerator(context));
         Set<String> customDMNProfilesProperties = getCustomDMNProfilesProperties();
         customDMNProfiles.addAll(getCustomDMNProfiles(customDMNProfilesProperties, context.getClassLoader()));
+        enableRuntimeTypeCheckOption = getEnableRuntimeTypeCheckOption();
         this.cResources = cResources;
     }
 
@@ -142,7 +145,7 @@ public class DecisionCodegen extends AbstractGenerator {
         // First, we perform static validation on directly the XML
         DecisionValidation.dmnValidateResources(context(), r2cr.keySet());
         // DMN model processing; any semantic error during compilation will also be thrown accordingly
-        DMNRuntimeBuilder dmnRuntimeBuilder = DMNRuntimeBuilder.fromDefaults();
+        DMNRuntimeBuilder dmnRuntimeBuilder = DMNRuntimeBuilder.fromDefaults().setOption(new RuntimeTypeCheckOption(enableRuntimeTypeCheckOption));
         customDMNProfiles.forEach(dmnRuntimeBuilder::addProfile);
         DMNRuntime dmnRuntime = dmnRuntimeBuilder
                 .setRootClassLoader(context().getClassLoader()) // KOGITO-4788
@@ -175,6 +178,11 @@ public class DecisionCodegen extends AbstractGenerator {
                 .filter(stringStringEntry -> stringStringEntry.getKey().startsWith(DMN_PROFILE_PREFIX))
                 .map(Entry::getValue)
                 .collect(Collectors.toSet());
+    }
+
+    boolean getEnableRuntimeTypeCheckOption() {
+        Map<String, String> propertiesMap = this.context().getPropertiesMap();
+        return Boolean.parseBoolean(propertiesMap.getOrDefault(RuntimeTypeCheckOption.PROPERTY_NAME, "false"));
     }
 
     static Set<DMNProfile> getCustomDMNProfiles(Set<String> customDMNProfiles, ClassLoader classLoader) {
@@ -354,7 +362,8 @@ public class DecisionCodegen extends AbstractGenerator {
                 applicationCanonicalName(),
                 this.cResources,
                 this.classesForManualReflection,
-                this.customDMNProfiles));
+                this.customDMNProfiles,
+                this.enableRuntimeTypeCheckOption));
     }
 
     @Override

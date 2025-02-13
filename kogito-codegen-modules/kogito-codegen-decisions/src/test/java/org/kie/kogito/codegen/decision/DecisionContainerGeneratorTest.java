@@ -22,13 +22,17 @@ package org.kie.kogito.codegen.decision;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.dmn.core.compiler.DMNProfile;
 import org.kie.kogito.dmn.DmnExecutionIdSupplier;
 
 import com.github.javaparser.ast.NodeList;
+import com.github.javaparser.ast.expr.BooleanLiteralExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
@@ -109,4 +113,21 @@ class DecisionContainerGeneratorTest {
             assertThat(retrievedArguments).contains(expectedArgument);
         });
     }
+
+    @ParameterizedTest
+    @MethodSource("booleans")
+    void setupEnableRuntimeTypeCheckOptionFalse(boolean enableRuntimeTypeCheckOption) {
+        NodeList<Expression> arguments = initMethod.getArguments();
+        assertThat(initMethod.getArguments()).isEmpty();
+        DecisionContainerGenerator.setupEnableRuntimeTypeCheckOption(initMethod, enableRuntimeTypeCheckOption);
+        assertThat(initMethod.getArguments()).hasSize(1);
+        Expression retrieved = arguments.get(0);
+        assertThat(retrieved).isInstanceOf(BooleanLiteralExpr.class);
+        assertThat(((BooleanLiteralExpr) retrieved).getValue()).isEqualTo(enableRuntimeTypeCheckOption);
+    }
+
+    static Stream<Boolean> booleans() {
+        return Stream.of(true, false);
+    }
+
 }

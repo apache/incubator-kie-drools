@@ -41,6 +41,7 @@ import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.InitializerDeclaration;
+import com.github.javaparser.ast.expr.BooleanLiteralExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
@@ -65,9 +66,11 @@ public class DecisionContainerGenerator extends AbstractApplicationSection {
     private final TemplatedGenerator templatedGenerator;
     private final List<String> classesForManualReflection = new ArrayList<>();
     private final Set<DMNProfile> customDMNProfiles = new HashSet<>();
+    private final boolean enableRuntimeTypeCheckOption;
 
     public DecisionContainerGenerator(KogitoBuildContext context, String applicationCanonicalName, Collection<CollectedResource> cResources, List<String> classesForManualReflection,
-            Set<DMNProfile> customDMNProfiles) {
+            Set<DMNProfile> customDMNProfiles,
+            boolean enableRuntimeTypeCheckOption) {
         super(context, SECTION_CLASS_NAME);
         this.applicationCanonicalName = applicationCanonicalName;
         this.resources = cResources;
@@ -76,6 +79,7 @@ public class DecisionContainerGenerator extends AbstractApplicationSection {
                 .build(context, "DecisionContainer");
         this.classesForManualReflection.addAll(classesForManualReflection);
         this.customDMNProfiles.addAll(customDMNProfiles);
+        this.enableRuntimeTypeCheckOption = enableRuntimeTypeCheckOption;
     }
 
     @Override
@@ -98,6 +102,7 @@ public class DecisionContainerGenerator extends AbstractApplicationSection {
         setupExecIdSupplierVariable(initMethod, context.getAddonsConfig().useTracing());
         setupDecisionModelTransformerVariable(initMethod, context.getAddonsConfig().useMonitoring());
         setupCustomDMNProfiles(initMethod, customDMNProfiles);
+        setupEnableRuntimeTypeCheckOption(initMethod, enableRuntimeTypeCheckOption);
 
         for (CollectedResource resource : resources) {
             Optional<String> encoding = determineEncoding(resource);
@@ -152,6 +157,11 @@ public class DecisionContainerGenerator extends AbstractApplicationSection {
         setOfExpression.setName(new SimpleName("of"));
         setOfExpression.setArguments(customDMNProfileArguments);
         initMethod.addArgument(setOfExpression);
+    }
+
+    static void setupEnableRuntimeTypeCheckOption(MethodCallExpr initMethod, boolean enableRuntimeTypeCheckOption) {
+        Expression toAdd = new BooleanLiteralExpr(enableRuntimeTypeCheckOption);
+        initMethod.addArgument(toAdd);
     }
 
     public List<String> getClassesForManualReflection() {

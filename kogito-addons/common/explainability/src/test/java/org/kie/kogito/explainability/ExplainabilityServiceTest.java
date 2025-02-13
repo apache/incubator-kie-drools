@@ -44,7 +44,7 @@ public class ExplainabilityServiceTest {
     public static final String MODEL_NAME = "Traffic Violation";
 
     final static String TEST_EXECUTION_ID = "test";
-    final static DMNRuntime genericDMNRuntime = DMNKogito.createGenericDMNRuntime(Collections.emptySet(), new InputStreamReader(
+    final static DMNRuntime genericDMNRuntime = DMNKogito.createGenericDMNRuntime(Collections.emptySet(), false, new InputStreamReader(
             ExplainabilityServiceTest.class.getResourceAsStream(MODEL_RESOURCE)));
     final static DmnDecisionModelSpy decisionModel = new DmnDecisionModelSpy(genericDMNRuntime, MODEL_NAMESPACE, MODEL_NAME, () -> TEST_EXECUTION_ID);
 

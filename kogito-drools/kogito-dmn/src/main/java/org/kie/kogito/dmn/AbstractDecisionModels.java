@@ -48,9 +48,10 @@ public abstract class AbstractDecisionModels implements DecisionModels {
     protected static void init(ExecutionIdSupplier executionIdSupplier,
             BiFunction<DecisionModel, KogitoGAV, DecisionModel> decisionModelTransformerInit,
             Set<DMNProfile> customDMNProfiles,
+            boolean enableRuntimeTypeCheckOption,
             Reader... readers) {
         DMNKogitoCallbacks.beforeAbstractDecisionModelsInit(executionIdSupplier, decisionModelTransformerInit, readers);
-        dmnRuntime = DMNKogito.createGenericDMNRuntime(customDMNProfiles, readers);
+        dmnRuntime = DMNKogito.createGenericDMNRuntime(customDMNProfiles, enableRuntimeTypeCheckOption, readers);
         execIdSupplier = executionIdSupplier;
         decisionModelTransformer = decisionModelTransformerInit;
         DMNKogitoCallbacks.afterAbstractDecisionModelsInit(dmnRuntime);

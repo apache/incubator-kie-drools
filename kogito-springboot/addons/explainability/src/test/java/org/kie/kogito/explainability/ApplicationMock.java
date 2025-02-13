@@ -32,7 +32,7 @@ import org.kie.kogito.uow.UnitOfWorkManager;
 
 public class ApplicationMock implements Application {
 
-    final static DMNRuntime genericDMNRuntime = DMNKogito.createGenericDMNRuntime(Collections.emptySet(), new InputStreamReader(
+    final static DMNRuntime genericDMNRuntime = DMNKogito.createGenericDMNRuntime(Collections.emptySet(), false, new InputStreamReader(
             ApplicationMock.class.getResourceAsStream(Constants.MODEL_RESOURCE)));
 
     final static DecisionModels decisionModels;

@@ -55,7 +55,7 @@ public class DMNKogito {
      * Use {@link Application#decisionModels()} of Kogito API to programmatically access DMN assets and evaluate DMN
      * decisions.
      */
-    public static DMNRuntime createGenericDMNRuntime(Set<DMNProfile> customDMNProfiles, Reader... readers) {
+    public static DMNRuntime createGenericDMNRuntime(Set<DMNProfile> customDMNProfiles, boolean enableRuntimeTypeCheckOption, Reader... readers) {
         DMNKogitoCallbacks.beforeCreateGenericDMNRuntime(readers);
         List<Resource> resources = Stream.of(readers).map(ReaderResource::new).collect(Collectors.toList());
         EvalHelper.clearGenericAccessorCache(); // KOGITO-3325 DMN hot reload manage accessor cache when stronglytyped
@@ -65,7 +65,6 @@ public class DMNKogito {
                 .buildConfiguration()
                 .fromResources(resources)
                 .getOrElseThrow(e -> new RuntimeException("Error initializing DMNRuntime", e));
-        boolean enableRuntimeTypeCheckOption = "true".equals(System.getProperty(RuntimeTypeCheckOption.PROPERTY_NAME, "false"));
         RuntimeTypeCheckOption runtimeTypeCheckOption = new RuntimeTypeCheckOption(enableRuntimeTypeCheckOption);
         ((DMNRuntimeImpl) dmnRuntime).setOption(runtimeTypeCheckOption);
         DMNKogitoCallbacks.afterCreateGenericDMNRuntime(dmnRuntime);

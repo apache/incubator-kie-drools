@@ -89,7 +89,7 @@ public abstract class BaseSpringBootDecisionTracingTest {
     }
 
     private DMNRuntime buildDMNRuntime() {
-        return DMNKogito.createGenericDMNRuntime(Collections.emptySet(), new java.io.InputStreamReader(
+        return DMNKogito.createGenericDMNRuntime(Collections.emptySet(), false, new java.io.InputStreamReader(
                 BaseSpringBootDecisionTracingTest.class.getResourceAsStream(TEST_RESOURCE)));
     }
 

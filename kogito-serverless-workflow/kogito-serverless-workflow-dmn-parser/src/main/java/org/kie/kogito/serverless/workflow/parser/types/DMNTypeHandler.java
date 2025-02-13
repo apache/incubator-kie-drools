@@ -96,7 +96,7 @@ public class DMNTypeHandler implements FunctionTypeHandler {
 
     private DecisionModel loadDMNFromFile(String namespace, String model, String file) {
         try (Reader reader = new InputStreamReader(URIContentLoaderFactory.builder(file).withClassloader(this.getClass().getClassLoader()).build().getInputStream())) {
-            return new DmnDecisionModel(DMNKogito.createGenericDMNRuntime(Collections.emptySet(), reader), namespace, model);
+            return new DmnDecisionModel(DMNKogito.createGenericDMNRuntime(Collections.emptySet(), false, reader), namespace, model);
         } catch (IOException io) {
             throw new UncheckedIOException(io);
         }

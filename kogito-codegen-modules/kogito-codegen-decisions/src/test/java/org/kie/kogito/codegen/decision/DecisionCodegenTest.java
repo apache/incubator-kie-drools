@@ -40,6 +40,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.dmn.core.compiler.DMNProfile;
+import org.kie.dmn.core.compiler.RuntimeTypeCheckOption;
 import org.kie.kogito.codegen.api.AddonsConfig;
 import org.kie.kogito.codegen.api.ApplicationSection;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
@@ -282,6 +283,23 @@ public class DecisionCodegenTest {
         DecisionCodegen codeGenerator = getDecisionCodegen("src/test/resources/decision/models/vacationDays", contextBuilder, properties);
         Set<String> retrieved = codeGenerator.getCustomDMNProfilesProperties();
         assertThat(retrieved).containsExactlyInAnyOrderElementsOf(dmnProfiles);
+    }
+
+    @ParameterizedTest
+    @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#contextBuilders")
+    public void getEnableRuntimeTypeCheckOption(KogitoBuildContext.Builder contextBuilder) {
+        Properties properties = new Properties();
+        DecisionCodegen codeGenerator = getDecisionCodegen("src/test/resources/decision/models/vacationDays", contextBuilder, properties);
+        boolean retrieved = codeGenerator.getEnableRuntimeTypeCheckOption();
+        assertThat(retrieved).isFalse();
+        properties.put(RuntimeTypeCheckOption.PROPERTY_NAME, "false");
+        codeGenerator = getDecisionCodegen("src/test/resources/decision/models/vacationDays", contextBuilder, properties);
+        retrieved = codeGenerator.getEnableRuntimeTypeCheckOption();
+        assertThat(retrieved).isFalse();
+        properties.put(RuntimeTypeCheckOption.PROPERTY_NAME, "true");
+        codeGenerator = getDecisionCodegen("src/test/resources/decision/models/vacationDays", contextBuilder, properties);
+        retrieved = codeGenerator.getEnableRuntimeTypeCheckOption();
+        assertThat(retrieved).isTrue();
     }
 
     @Test
