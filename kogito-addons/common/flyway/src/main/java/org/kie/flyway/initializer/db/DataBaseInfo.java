@@ -17,31 +17,35 @@
  * under the License.
  */
 
-package org.kie.flyway.test.dataSources;
+package org.kie.flyway.initializer.db;
 
-import javax.sql.DataSource;
+public class DataBaseInfo {
 
-import org.kie.kogito.testcontainers.KogitoPostgreSqlContainer;
-import org.postgresql.ds.PGSimpleDataSource;
+    private final String name;
+    private final String version;
+    private final String normalizedName;
 
-public class PostgreSQLTestDataSource implements TestDataSource {
-
-    private final PGSimpleDataSource dataSource;
-
-    public PostgreSQLTestDataSource(KogitoPostgreSqlContainer pgContainer) {
-        dataSource = new PGSimpleDataSource();
-        dataSource.setUrl(pgContainer.getJdbcUrl());
-        dataSource.setUser(pgContainer.getUsername());
-        dataSource.setPassword(pgContainer.getPassword());
+    public DataBaseInfo(String name, String version) {
+        this.name = name;
+        this.version = version;
+        this.normalizedName = normalizeName(name);
     }
 
-    @Override
-    public String getDbType() {
-        return "postgresql";
+    public String getName() {
+        return name;
     }
 
-    @Override
-    public DataSource getDataSource() {
-        return dataSource;
+    public String getVersion() {
+        return version;
+    }
+
+    public String getNormalizedName() {
+        return normalizedName;
+    }
+
+    private String normalizeName(String name) {
+        final String NORMALIZATION_REGEX = "[^a-zA-Z0-9]+";
+        String[] fragments = name.split(NORMALIZATION_REGEX);
+        return String.join("-", fragments).toLowerCase();
     }
 }

@@ -19,7 +19,6 @@
 
 package org.kie.flyway.initializer;
 
-import java.sql.Connection;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -27,12 +26,14 @@ import javax.sql.DataSource;
 
 import org.flywaydb.core.Flyway;
 import org.kie.flyway.KieFlywayException;
+import org.kie.flyway.initializer.db.DataBaseInfo;
 import org.kie.flyway.initializer.impl.DefaultKieModuleFlywayConfigLoader;
 import org.kie.flyway.model.KieFlywayModuleConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static java.util.stream.Collectors.groupingBy;
+import static org.kie.flyway.initializer.db.KieFlywayDataBaseHelper.readDataBaseInfo;
 
 public class KieFlywayInitializer {
     private static final String KIE_FLYWAY_BASELINE_VERSION = "0.0";
@@ -45,13 +46,13 @@ public class KieFlywayInitializer {
 
     private final KieModuleFlywayConfigLoader configLoader;
     private final DataSource dataSource;
-    private final String databaseType;
+    private final DataBaseInfo databaseInfo;
     private final List<String> moduleExclusions;
 
     private KieFlywayInitializer(KieModuleFlywayConfigLoader configLoader, DataSource dataSource, Collection<String> moduleExclusions) {
         this.configLoader = configLoader;
         this.dataSource = dataSource;
-        this.databaseType = getDataSourceType(dataSource);
+        this.databaseInfo = readDataBaseInfo(dataSource);
         this.moduleExclusions = new ArrayList<>(moduleExclusions);
     }
 
@@ -80,15 +81,6 @@ public class KieFlywayInitializer {
         }
     }
 
-    private String getDataSourceType(DataSource dataSource) {
-        try (Connection con = dataSource.getConnection()) {
-            return con.getMetaData().getDatabaseProductName().toLowerCase();
-        } catch (Exception e) {
-            LOGGER.error("Kie Flyway: Couldn't extract database product name from datasource ", e);
-            throw new KieFlywayException("Kie Flyway: Couldn't extract database product name from datasource.", e);
-        }
-    }
-
     private void runFlyway(KieFlywayModuleConfig config) {
         LOGGER.debug("Running Flyway for module: {}", config.getModule());
 
@@ -97,11 +89,11 @@ public class KieFlywayInitializer {
             return;
         }
 
-        String[] locations = config.getDBScriptLocations(databaseType);
+        String[] locations = config.getDBScriptLocations(databaseInfo.getNormalizedName());
 
         if (Objects.isNull(locations)) {
-            LOGGER.warn("Cannot run Flyway migration for module `{}`, cannot find SQL Script locations for db `{}`", config.getModule(), databaseType);
-            throw new KieFlywayException("Cannot run Flyway migration for module `" + config.getModule() + "`, cannot find SQL Script locations for db `" + databaseType + "`");
+            LOGGER.warn("Cannot run Flyway migration for module `{}`, cannot find SQL Script locations for db `{}`", config.getModule(), databaseInfo);
+            throw new KieFlywayException("Cannot run Flyway migration for module `" + config.getModule() + "`, cannot find SQL Script locations for db `" + databaseInfo + "`");
         }
 
         Flyway.configure()
