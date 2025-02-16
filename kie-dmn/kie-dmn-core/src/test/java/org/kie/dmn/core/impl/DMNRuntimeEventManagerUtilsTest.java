@@ -37,7 +37,6 @@ import org.kie.dmn.api.core.event.AfterEvaluateConditionalEvent;
 import org.kie.dmn.api.core.event.DMNRuntimeEventListener;
 import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
 import org.kie.dmn.core.api.DMNFactory;
-import org.kie.dmn.core.compiler.DMNCompilerContext;
 import org.kie.dmn.core.internal.utils.DMNRuntimeBuilder;
 import org.kie.internal.io.ResourceFactory;
 import org.mockito.ArgumentCaptor;
@@ -52,7 +51,6 @@ class DMNRuntimeEventManagerUtilsTest {
 
     private static DMNRuntimeEventManager eventManagerMock;
     private static DMNRuntimeEventListener spiedListener;
-    private static DMNCompilerContext DMN_COMPILER_CONTEXT;
 
     @BeforeAll
     static void setUp() {
@@ -93,7 +91,7 @@ class DMNRuntimeEventManagerUtilsTest {
 
     @Test
     void testConditionalEvent() {
-        File modelFile = FileUtils.getFile("FailValidation.dmn");
+        File modelFile = FileUtils.getFile("ConditionalEvent.dmn");
         assertThat(modelFile).isNotNull().exists();
         Resource modelResource = ResourceFactory.newFileResource(modelFile);
         DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults().buildConfiguration()
@@ -101,9 +99,7 @@ class DMNRuntimeEventManagerUtilsTest {
         assertThat(dmnRuntime).isNotNull();
         String nameSpace = "https://kie.org/dmn/_5B448C78-0DBF-4554-92A4-8C0247EB01FD";
 
-        final DMNModel dmnModel = dmnRuntime.getModel(
-                nameSpace,
-                "DMN_00DF4B93-0243-4813-BA70-A1894AC723BE");
+        final DMNModel dmnModel = dmnRuntime.getModel(nameSpace, "DMN_00DF4B93-0243-4813-BA70-A1894AC723BE");
         assertThat(dmnModel).isNotNull();
         DMNContext context = DMNFactory.newContext();
         context.set("A", Arrays.asList(1, -2, 3));

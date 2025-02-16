@@ -164,6 +164,6 @@ class DMNEvaluatorCompilerTest {
         DMNExpressionEvaluator result = spiedDMNEvaluatorCompiler.compileConditional(DMN_COMPILER_CONTEXT, dmnModelImpl, dmnBaseNode, exprName, expression);
 
         assertThat(result).isNotNull();
-        assertInstanceOf(DMNConditionalEvaluator.class, result, "The result should be an instance of DMNConditionalEvaluator");
+        assertThat(result).isInstanceOf(DMNConditionalEvaluator.class);
     }
 }
