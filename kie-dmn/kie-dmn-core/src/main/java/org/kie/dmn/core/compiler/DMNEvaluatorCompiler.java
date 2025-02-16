@@ -1037,8 +1037,8 @@ public class DMNEvaluatorCompiler implements DMNDecisionLogicCompiler {
         return ctx.getFeelHelper().evaluateUnaryTests(ctx, text, model, element, errorMsg, msgParams);
     }
 
-    private DMNExpressionEvaluator compileConditional(DMNCompilerContext ctx, DMNModelImpl model, DMNBaseNode node,
-                                                      String exprName, Conditional expression) {
+    protected DMNExpressionEvaluator compileConditional(DMNCompilerContext ctx, DMNModelImpl model, DMNBaseNode node,
+                                              String exprName, Conditional expression) {
         DMNExpressionEvaluator ifEvaluator = compileExpression(ctx, model, node, exprName + " [if]",
                                                                expression.getIf().getExpression());
         DMNExpressionEvaluator thenEvaluator = compileExpression(ctx, model, node, exprName + " [then]",

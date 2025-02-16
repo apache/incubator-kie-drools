@@ -37,6 +37,7 @@ import org.kie.dmn.model.api.DMNElement;
 import org.mockito.ArgumentCaptor;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatRuntimeException;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
@@ -48,13 +49,17 @@ class DMNConditionalEvaluatorTest {
     private static final String IF_ELEMENT_ID = "IF_ELEMENT_ID";
     private static final String THEN_ELEMENT_ID = "THEN_ELEMENT_ID";
     private static final String ELSE_ELEMENT_ID = "ELSE_ELEMENT_ID";
+    private static final Map<DMNConditionalEvaluator.EvaluatorIdentifier, DMNExpressionEvaluator> EVALUATOR_ID_MAP = new HashMap<>();
+    private static DMNConditionalEvaluator dmnConditionalEvaluator;
+    private static DMNConditionalEvaluator.EvaluatorIdentifier ifIdentifier;
+    private static DMNConditionalEvaluator.EvaluatorIdentifier thenIdentifier;
+    private static DMNConditionalEvaluator.EvaluatorIdentifier elseIdentifier;
     private static DMNRuntimeEventManager eventManagerMock;
     private static DMNRuntimeEventListener spiedListener;
+    private static DMNResultImpl dmnResultMock;
     private static EvaluatorResult ifEvaluationMock;
     private static EvaluatorResult thenEvaluationMock;
     private static EvaluatorResult elseEvaluationMock;
-    private static DMNResultImpl dmnResultMock;
-    private static DMNConditionalEvaluator dmnConditionalEvaluator;
 
     @BeforeAll
     static void setUp() {
@@ -78,16 +83,15 @@ class DMNConditionalEvaluatorTest {
 
         DMNElement nodeMock = mock(DMNElement.class);
 
-        DMNConditionalEvaluator.EvaluatorIdentifier ifIdentifier = new DMNConditionalEvaluator.EvaluatorIdentifier("IF_ELEMENT_ID", DMNConditionalEvaluator.EvaluatorType.IF);
-        DMNConditionalEvaluator.EvaluatorIdentifier thenIdentifier = new DMNConditionalEvaluator.EvaluatorIdentifier("THEN_ELEMENT_ID", DMNConditionalEvaluator.EvaluatorType.THEN);
-        DMNConditionalEvaluator.EvaluatorIdentifier elseIdentifier = new DMNConditionalEvaluator.EvaluatorIdentifier("ELSE_ELEMENT_ID", DMNConditionalEvaluator.EvaluatorType.ELSE);
+        ifIdentifier = new DMNConditionalEvaluator.EvaluatorIdentifier(IF_ELEMENT_ID, DMNConditionalEvaluator.EvaluatorType.IF);
+        thenIdentifier = new DMNConditionalEvaluator.EvaluatorIdentifier(THEN_ELEMENT_ID, DMNConditionalEvaluator.EvaluatorType.THEN);
+        elseIdentifier = new DMNConditionalEvaluator.EvaluatorIdentifier(ELSE_ELEMENT_ID, DMNConditionalEvaluator.EvaluatorType.ELSE);
 
-        Map<DMNConditionalEvaluator.EvaluatorIdentifier, DMNExpressionEvaluator> evaluatorIdMap = new HashMap<>();
-        evaluatorIdMap.put(ifIdentifier, ifEvaluatorMock);
-        evaluatorIdMap.put(thenIdentifier, thenEvaluatorMock);
-        evaluatorIdMap.put(elseIdentifier, elseEvaluatorMock);
+        EVALUATOR_ID_MAP.put(ifIdentifier, ifEvaluatorMock);
+        EVALUATOR_ID_MAP.put(thenIdentifier, thenEvaluatorMock);
+        EVALUATOR_ID_MAP.put(elseIdentifier, elseEvaluatorMock);
 
-        dmnConditionalEvaluator = new DMNConditionalEvaluator("name", nodeMock, evaluatorIdMap);
+        dmnConditionalEvaluator = new DMNConditionalEvaluator("name", nodeMock, EVALUATOR_ID_MAP);
     }
 
     @BeforeEach
@@ -157,5 +161,31 @@ class DMNConditionalEvaluatorTest {
         assertThat(conditionalEvaluationEvent).isNotNull();
         assertThat(conditionalEvaluationEvent.getEvaluatorResultResult()).isEqualTo(elseEvaluationMock);
         assertThat(conditionalEvaluationEvent.getExecutedId()).isEqualTo(ELSE_ELEMENT_ID);
+    }
+
+    @Test
+    void testMapEvaluatorIdentifiers() {
+        Map<DMNConditionalEvaluator.EvaluatorType, DMNConditionalEvaluator.EvaluatorIdentifier> mapEvaluatorIdentifiers = DMNConditionalEvaluator.mapEvaluatorIdentifiers(EVALUATOR_ID_MAP);
+
+        assertThat(mapEvaluatorIdentifiers.get(DMNConditionalEvaluator.EvaluatorType.IF)).isEqualTo(ifIdentifier);
+        assertThat(mapEvaluatorIdentifiers.get(DMNConditionalEvaluator.EvaluatorType.THEN)).isEqualTo(thenIdentifier);
+        assertThat(mapEvaluatorIdentifiers.get(DMNConditionalEvaluator.EvaluatorType.ELSE)).isEqualTo(elseIdentifier);
+    }
+
+    @Test
+    void testGetIFEvaluatorIdentifier() {
+        Map<DMNConditionalEvaluator.EvaluatorType, DMNConditionalEvaluator.EvaluatorIdentifier> evaluatorIdentifierMap = new HashMap<>();
+        DMNConditionalEvaluator.EvaluatorIdentifier ifIdentifier = new DMNConditionalEvaluator.EvaluatorIdentifier(IF_ELEMENT_ID, DMNConditionalEvaluator.EvaluatorType.IF);
+        evaluatorIdentifierMap.put(DMNConditionalEvaluator.EvaluatorType.IF, ifIdentifier);
+
+        DMNConditionalEvaluator.EvaluatorIdentifier result = DMNConditionalEvaluator.getEvaluatorIdentifier(evaluatorIdentifierMap, DMNConditionalEvaluator.EvaluatorType.IF);
+        assertThat(result).isEqualTo(ifIdentifier);
+    }
+
+    @Test
+    void testMissingEvaluatorIdentifier() {
+        Map<DMNConditionalEvaluator.EvaluatorType, DMNConditionalEvaluator.EvaluatorIdentifier> evaluatorIdentifierMap = new HashMap<>();
+        String errorMessage = "Missing THEN evaluator in evaluatorIdMap";
+        assertThatRuntimeException().isThrownBy(() -> DMNConditionalEvaluator.getEvaluatorIdentifier(evaluatorIdentifierMap, DMNConditionalEvaluator.EvaluatorType.THEN)).withMessage(errorMessage);
     }
 }

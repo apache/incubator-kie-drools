@@ -18,16 +18,28 @@
  */
 package org.kie.dmn.core.impl;
 
+import java.io.File;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Set;
 
+import org.drools.util.FileUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.kie.api.io.Resource;
+import org.kie.dmn.api.core.DMNContext;
+import org.kie.dmn.api.core.DMNModel;
+import org.kie.dmn.api.core.DMNResult;
+import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.api.core.EvaluatorResult;
 import org.kie.dmn.api.core.event.AfterConditionalEvaluationEvent;
 import org.kie.dmn.api.core.event.AfterEvaluateConditionalEvent;
 import org.kie.dmn.api.core.event.DMNRuntimeEventListener;
 import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
+import org.kie.dmn.core.api.DMNFactory;
+import org.kie.dmn.core.compiler.DMNCompilerContext;
+import org.kie.dmn.core.internal.utils.DMNRuntimeBuilder;
+import org.kie.internal.io.ResourceFactory;
 import org.mockito.ArgumentCaptor;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -40,6 +52,7 @@ class DMNRuntimeEventManagerUtilsTest {
 
     private static DMNRuntimeEventManager eventManagerMock;
     private static DMNRuntimeEventListener spiedListener;
+    private static DMNCompilerContext DMN_COMPILER_CONTEXT;
 
     @BeforeAll
     static void setUp() {
@@ -76,5 +89,25 @@ class DMNRuntimeEventManagerUtilsTest {
         assertThat(evaluateConditionalEvent.getNodeName()).isEqualTo(name);
         assertThat(evaluateConditionalEvent.getEvaluatorResultResult()).isEqualTo(evaluatorResult);
         assertThat(evaluateConditionalEvent.getExecutedId()).isEqualTo(executedId);
+    }
+
+    @Test
+    void testConditionalEvent() {
+        File modelFile = FileUtils.getFile("FailValidation.dmn");
+        assertThat(modelFile).isNotNull().exists();
+        Resource modelResource = ResourceFactory.newFileResource(modelFile);
+        DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults().buildConfiguration()
+                .fromResources(Collections.singletonList(modelResource)).getOrElseThrow(RuntimeException::new);
+        assertThat(dmnRuntime).isNotNull();
+        String nameSpace = "https://kie.org/dmn/_5B448C78-0DBF-4554-92A4-8C0247EB01FD";
+
+        final DMNModel dmnModel = dmnRuntime.getModel(
+                nameSpace,
+                "DMN_00DF4B93-0243-4813-BA70-A1894AC723BE");
+        assertThat(dmnModel).isNotNull();
+        DMNContext context = DMNFactory.newContext();
+        context.set("A", Arrays.asList(1, -2, 3));
+        DMNResult dmnResult = dmnRuntime.evaluateAll(dmnModel, context);
+        assertThat(dmnResult.getDecisionResultByName("B").getResult()).isEqualTo(Arrays.asList("pos", "neg", "pos"));
     }
 }
