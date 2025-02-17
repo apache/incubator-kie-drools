@@ -46,7 +46,7 @@ public class KafkaBaseSwitchStateTimeoutsIT extends BaseSwitchStateTimeoutsIT {
     }
 
     private static JsonPath waitForEvent(KafkaTestClient kafkaClient, String topic, long seconds) throws Exception {
-    	CompletableFuture<String> cloudEvent = new CompletableFuture<>();
+        CompletableFuture<String> cloudEvent = new CompletableFuture<>();
         kafkaClient.consume(topic, cloudEvent::complete);
         return new JsonPath(cloudEvent.orTimeout(seconds, TimeUnit.SECONDS).get());
     }
