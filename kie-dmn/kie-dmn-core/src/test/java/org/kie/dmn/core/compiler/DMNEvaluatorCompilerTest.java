@@ -18,75 +18,47 @@
  */
 package org.kie.dmn.core.compiler;
 
+import java.io.File;
 import java.util.Collections;
 
+import org.drools.util.FileUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.kie.api.io.Resource;
+import org.kie.dmn.api.core.DMNModel;
+import org.kie.dmn.api.core.DMNRuntime;
+import org.kie.dmn.api.core.ast.DecisionNode;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
 import org.kie.dmn.core.ast.DMNBaseNode;
 import org.kie.dmn.core.ast.DMNConditionalEvaluator;
 import org.kie.dmn.core.impl.DMNModelImpl;
+import org.kie.dmn.core.internal.utils.DMNRuntimeBuilder;
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.FEELDialect;
 import org.kie.dmn.feel.lang.impl.FEELImpl;
-import org.kie.dmn.model.api.ChildExpression;
 import org.kie.dmn.model.api.Conditional;
-import org.kie.dmn.model.api.Expression;
 import org.kie.dmn.model.api.LiteralExpression;
 import org.kie.dmn.model.v1_5.TLiteralExpression;
+import org.kie.internal.io.ResourceFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 class DMNEvaluatorCompilerTest {
 
     private static final FEELDialect DEFAULT_FEEL_DIALECT = FEELDialect.FEEL;
     private static Conditional expression;
-    private static DMNBaseNode dmnBaseNode;
     private static DMNCompilerContext DMN_COMPILER_CONTEXT;
     private static DMNEvaluatorCompiler dmnEvaluatorCompiler;
-    private static DMNExpressionEvaluator ifEvaluatorMock;
-    private static DMNExpressionEvaluator thenEvaluatorMock;
-    private static DMNExpressionEvaluator elseEvaluatorMock;
     private static DMNFEELHelper DMN_FEEL_HELPER;
-    private static DMNModelImpl dmnModelImpl;
-    private static Expression ifExpression;
-    private static Expression thenExpression;
-    private static Expression elseExpression;
-
 
     @BeforeAll
     static void setUp() {
         DMN_FEEL_HELPER = new DMNFEELHelper(Collections.emptyList(), DEFAULT_FEEL_DIALECT);
         DMN_COMPILER_CONTEXT = new DMNCompilerContext(DMN_FEEL_HELPER);
-        dmnBaseNode = mock(DMNBaseNode.class);
-        dmnEvaluatorCompiler = mock(DMNEvaluatorCompiler.class);
-        dmnModelImpl = mock(DMNModelImpl.class);
-        expression = mock(Conditional.class);
-        ifEvaluatorMock = mock(DMNExpressionEvaluator.class);
-        thenEvaluatorMock = mock(DMNExpressionEvaluator.class);
-        elseEvaluatorMock = mock(DMNExpressionEvaluator.class);
-        ifExpression = mock(Expression.class);
-        thenExpression = mock(Expression.class);
-        elseExpression = mock(Expression.class);
 
-        ChildExpression ifChildExpression = mock(ChildExpression.class);
-        ChildExpression thenChildExpression = mock(ChildExpression.class);
-        ChildExpression elseChildExpression = mock(ChildExpression.class);
-
-        when(expression.getIf()).thenReturn(ifChildExpression);
-        when(expression.getThen()).thenReturn(thenChildExpression);
-        when(expression.getElse()).thenReturn(elseChildExpression);
-
-        when(expression.getIf().getExpression()).thenReturn(ifExpression);
-        when(expression.getThen().getExpression()).thenReturn(thenExpression);
-        when(expression.getElse().getExpression()).thenReturn(elseExpression);
+        DMNCompilerImpl compiler = new DMNCompilerImpl();
+        dmnEvaluatorCompiler = new DMNEvaluatorCompiler(compiler);
     }
 
     @Test
@@ -135,35 +107,33 @@ class DMNEvaluatorCompilerTest {
     @Test
     void testCompileConditional() {
         String exprName = "testExpression";
+        File modelFile = FileUtils.getFile("ConditionalEvent.dmn");
+        Resource modelResource = ResourceFactory.newFileResource(modelFile);
+        DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults().buildConfiguration()
+                .fromResources(Collections.singletonList(modelResource)).getOrElseThrow(RuntimeException::new);
+        assertThat(dmnRuntime).isNotNull();
+        String nameSpace = "https://kie.org/dmn/_5B448C78-0DBF-4554-92A4-8C0247EB01FD";
 
-        DMNEvaluatorCompiler spiedDMNEvaluatorCompiler = spy(dmnEvaluatorCompiler);
+        final DMNModel dmnModel = dmnRuntime.getModel(nameSpace, "DMN_00DF4B93-0243-4813-BA70-A1894AC723BE");
+        assertThat(dmnModel).isNotNull();
+        DMNBaseNode dmnBaseNode = getNodeByName(dmnModel, "B");
+        DecisionNode decisionNode = (DecisionNode) dmnBaseNode;
+        if (decisionNode.getDecision().getExpression() instanceof Conditional conditional) {
+            expression.setIf(conditional.getIf());
+            expression.setElse(conditional.getElse());
+            expression.setThen(conditional.getThen());
 
-        doReturn(ifEvaluatorMock).when(spiedDMNEvaluatorCompiler)
-                .compileExpression(DMN_COMPILER_CONTEXT, dmnModelImpl, dmnBaseNode, exprName + " [if]", ifExpression);
-        doReturn(thenEvaluatorMock).when(spiedDMNEvaluatorCompiler)
-                .compileExpression(DMN_COMPILER_CONTEXT, dmnModelImpl, dmnBaseNode, exprName + " [then]", thenExpression);
-        doReturn(elseEvaluatorMock).when(spiedDMNEvaluatorCompiler)
-                .compileExpression(DMN_COMPILER_CONTEXT, dmnModelImpl, dmnBaseNode, exprName + " [else]", elseExpression);
+            DMNExpressionEvaluator result = dmnEvaluatorCompiler.compileConditional(DMN_COMPILER_CONTEXT, (DMNModelImpl) dmnModel, dmnBaseNode, exprName, expression);
 
-        spiedDMNEvaluatorCompiler.compileConditional(DMN_COMPILER_CONTEXT, dmnModelImpl, dmnBaseNode, exprName, expression);
-        verify(spiedDMNEvaluatorCompiler).compileConditional(DMN_COMPILER_CONTEXT, dmnModelImpl, dmnBaseNode, exprName, expression);
+            assertThat(result).isNotNull();
+            assertThat(result).isInstanceOf(DMNConditionalEvaluator.class);
+        }
+
     }
 
-    @Test
-    void testConditionalEvaluatorResults() {
-        String exprName = "testExpression";
-        DMNEvaluatorCompiler spiedDMNEvaluatorCompiler = spy(dmnEvaluatorCompiler);
-
-        doReturn(ifEvaluatorMock).when(spiedDMNEvaluatorCompiler)
-                .compileExpression(DMN_COMPILER_CONTEXT, dmnModelImpl, dmnBaseNode, exprName + " [if]", ifExpression);
-        doReturn(thenEvaluatorMock).when(spiedDMNEvaluatorCompiler)
-                .compileExpression(DMN_COMPILER_CONTEXT, dmnModelImpl, dmnBaseNode, exprName + " [then]", thenExpression);
-        doReturn(elseEvaluatorMock).when(spiedDMNEvaluatorCompiler)
-                .compileExpression(DMN_COMPILER_CONTEXT, dmnModelImpl, dmnBaseNode, exprName + " [else]", elseExpression);
-
-        DMNExpressionEvaluator result = spiedDMNEvaluatorCompiler.compileConditional(DMN_COMPILER_CONTEXT, dmnModelImpl, dmnBaseNode, exprName, expression);
-
-        assertThat(result).isNotNull();
-        assertThat(result).isInstanceOf(DMNConditionalEvaluator.class);
+    private DMNBaseNode getNodeByName(DMNModel dmnModel, String nodeName) {
+        return (DMNBaseNode) dmnModel.getDecisions().stream()
+                .filter(node -> node.getName().equals(nodeName))
+                .findFirst().orElse(null);
     }
 }
