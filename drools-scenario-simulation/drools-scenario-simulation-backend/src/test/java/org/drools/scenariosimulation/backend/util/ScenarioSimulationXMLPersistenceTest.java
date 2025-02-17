@@ -365,39 +365,76 @@ public class ScenarioSimulationXMLPersistenceTest {
     }
 
     @Test
-    public void extractVersionWhenXmlPrologIsPresent() throws ParserConfigurationException, IOException, SAXException {
-        String version = instance.extractVersion(DOMParserUtil.getDocument("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+    public void extractVersionMissingVersionAttribute_prolog() {
+        assertThatThrownBy(() -> instance.extractVersion(DOMParserUtil.getDocument(
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<ScenarioSimulationModel />")))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    public void extractVersionMissingVersionAttribute_prolog_attribute() {
+        assertThatThrownBy(() -> instance.extractVersion(DOMParserUtil.getDocument(
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                        "<ScenarioSimulationModel xmlns=\"whatever\" />")))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    public void extractVersionWithVersionAttribute() throws ParserConfigurationException, IOException, SAXException {
+        String version = instance.extractVersion(DOMParserUtil.getDocument(
                 "<ScenarioSimulationModel version=\"1.1\" />"));
         assertThat(version).isEqualTo("1.1");
     }
 
     @Test
-    public void extractVersionWhenXmlPrologIsPresentAndWithMultipleAttributes1() throws ParserConfigurationException, IOException, SAXException {
-        String version = instance.extractVersion(DOMParserUtil.getDocument("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                "<ScenarioSimulationModel version=\"1.1\" attribute1=\"whatever\" />"));
-        assertThat(version).isEqualTo("1.1");
-    }
-
-    @Test
-    public void extractVersionWhenXmlPrologIsPresentAndWithMultipleAttributes2() throws ParserConfigurationException, IOException, SAXException {
-        String version = instance.extractVersion(DOMParserUtil.getDocument("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                "<ScenarioSimulationModel attribute1=\"whatever\" version=\"1.2\" />"));
+    public void extractVersionWithVersionAttribute_prolog() throws ParserConfigurationException, IOException, SAXException {
+        String version = instance.extractVersion(DOMParserUtil.getDocument(
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<ScenarioSimulationModel version=\"1.2\" />"));
         assertThat(version).isEqualTo("1.2");
     }
 
     @Test
-    public void extractVersionWhenXmlPrologIsPresentAndWithMultipleAttributes3() throws ParserConfigurationException, IOException, SAXException  {
-        String version = instance.extractVersion(DOMParserUtil.getDocument("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                "<ScenarioSimulationModel attribute2=\"whatever\" version=\"1.3\" attribute1=\"whatever\" />"));
-        assertThat(version).isEqualTo("1.3");
+    public void extractVersionWithVersionAttribute_prolog_attributeRight() throws ParserConfigurationException, IOException, SAXException {
+        String version = instance.extractVersion(DOMParserUtil.getDocument(
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                        "<ScenarioSimulationModel version=\"1.4\" xmlns=\"whatever\" />"));
+        assertThat(version).isEqualTo("1.4");
     }
 
     @Test
-    public void extractVersionWhenXmlPrologIsPresentAndWithMultipleAttributes4() throws ParserConfigurationException, IOException, SAXException {
-        String version = instance.extractVersion(DOMParserUtil.getDocument("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                "<ScenarioSimulationModel attribute2=\"whatever\" attribute1=\"whatever\" version=\"1.4\" />"));
-        assertThat(version).isEqualTo("1.4");
+    public void extractVersionWithVersionAttribute_prolog_attributeLeft() throws ParserConfigurationException, IOException, SAXException {
+        String version = instance.extractVersion(DOMParserUtil.getDocument(
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                        "<ScenarioSimulationModel xmlns=\"whatever\" version=\"1.5\" />"));
+        assertThat(version).isEqualTo("1.5");
     }
+
+    @Test
+    public void extractVersionWithVersionAttribute_prolog_attributesMiddle() throws ParserConfigurationException, IOException, SAXException {
+        String version = instance.extractVersion(DOMParserUtil.getDocument(
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                        "<ScenarioSimulationModel attribute2=\"whatever\" version=\"1.6\" attribute1=\"whatever\" />"));
+        assertThat(version).isEqualTo("1.6");
+    }
+
+    @Test
+    public void extractVersionWithVersionAttribute_prolog_attributesRight() throws ParserConfigurationException, IOException, SAXException {
+        String version = instance.extractVersion(DOMParserUtil.getDocument(
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                        "<ScenarioSimulationModel attribute2=\"whatever\" attribute1=\"whatever\" version=\"1.7\" />"));
+        assertThat(version).isEqualTo("1.7");
+    }
+
+    @Test
+    public void extractVersionWithVersionAttribute_prolog_attributesLeft() throws ParserConfigurationException, IOException, SAXException {
+        String version = instance.extractVersion(DOMParserUtil.getDocument(
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                        "<ScenarioSimulationModel version=\"1.8\" attribute2=\"whatever\" attribute1=\"whatever\" />"));
+        assertThat(version).isEqualTo("1.8");
+    }
+
 
     @Test
     public void extractVersionWhenMoreVersionAttributesArePresent() throws ParserConfigurationException, IOException, SAXException {
