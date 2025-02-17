@@ -20,6 +20,7 @@ package org.kie.dmn.core.compiler;
 
 import java.io.File;
 import java.util.Collections;
+import java.util.function.Consumer;
 
 import org.drools.util.FileUtils;
 import org.junit.jupiter.api.BeforeAll;
@@ -37,6 +38,7 @@ import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.FEELDialect;
 import org.kie.dmn.feel.lang.impl.FEELImpl;
 import org.kie.dmn.model.api.Conditional;
+import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.LiteralExpression;
 import org.kie.dmn.model.v1_5.TLiteralExpression;
 import org.kie.internal.io.ResourceFactory;
@@ -65,27 +67,27 @@ class DMNEvaluatorCompilerTest {
     void getFEELDialectAdaptedFEELNoExpressionLanguage() {
         String expressionLanguage = null;
         LiteralExpression expression = getLiteralExpression(expressionLanguage);
-        FEEL retrieved =  DMNEvaluatorCompiler.getFEELDialectAdaptedFEEL(DMN_COMPILER_CONTEXT, expression, expressionLanguage);
+        FEEL retrieved = DMNEvaluatorCompiler.getFEELDialectAdaptedFEEL(DMN_COMPILER_CONTEXT, expression, expressionLanguage);
         assertThat(retrieved).isNotNull().isInstanceOf(FEELImpl.class);
-        assertThat(((FEELImpl)retrieved).getFeelDialect()).isEqualTo(DEFAULT_FEEL_DIALECT);
+        assertThat(((FEELImpl) retrieved).getFeelDialect()).isEqualTo(DEFAULT_FEEL_DIALECT);
     }
 
     @Test
     void getFEELDialectAdaptedFEELFEELURIExpressionLanguage() {
         LiteralExpression expression = getLiteralExpression(null);
         String expressionLanguage = expression.getURIFEEL();
-        FEEL retrieved =  DMNEvaluatorCompiler.getFEELDialectAdaptedFEEL(DMN_COMPILER_CONTEXT, expression, expressionLanguage);
+        FEEL retrieved = DMNEvaluatorCompiler.getFEELDialectAdaptedFEEL(DMN_COMPILER_CONTEXT, expression, expressionLanguage);
         assertThat(retrieved).isNotNull().isInstanceOf(FEELImpl.class);
-        assertThat(((FEELImpl)retrieved).getFeelDialect()).isEqualTo(DEFAULT_FEEL_DIALECT);
+        assertThat(((FEELImpl) retrieved).getFeelDialect()).isEqualTo(DEFAULT_FEEL_DIALECT);
     }
 
     @Test
     void getFEELDialectAdaptedFEELBFEELExpressionLanguage() {
         String expressionLanguage = FEELDialect.BFEEL.getNamespace();
         LiteralExpression expression = getLiteralExpression(expressionLanguage);
-        FEEL retrieved =  DMNEvaluatorCompiler.getFEELDialectAdaptedFEEL(DMN_COMPILER_CONTEXT, expression, expressionLanguage);
+        FEEL retrieved = DMNEvaluatorCompiler.getFEELDialectAdaptedFEEL(DMN_COMPILER_CONTEXT, expression, expressionLanguage);
         assertThat(retrieved).isNotNull().isInstanceOf(FEELImpl.class);
-        assertThat(((FEELImpl)retrieved).getFeelDialect()).isEqualTo(FEELDialect.BFEEL);
+        assertThat(((FEELImpl) retrieved).getFeelDialect()).isEqualTo(FEELDialect.BFEEL);
     }
 
     @Test
@@ -116,20 +118,40 @@ class DMNEvaluatorCompilerTest {
 
         final DMNModel dmnModel = dmnRuntime.getModel(nameSpace, "DMN_00DF4B93-0243-4813-BA70-A1894AC723BE");
         assertThat(dmnModel).isNotNull();
+        DMNModelInstrumentedBase retrieved = getNodeById(dmnModel, "_096DC616-A4D5-449C-A350-491E42F3C8FB");
         DMNBaseNode dmnBaseNode = getNodeByName(dmnModel, "B");
         DecisionNode decisionNode = (DecisionNode) dmnBaseNode;
-        if (decisionNode.getDecision().getExpression() instanceof Conditional conditional) {
-            expression.setIf(conditional.getIf());
-            expression.setElse(conditional.getElse());
-            expression.setThen(conditional.getThen());
-
-            DMNExpressionEvaluator result = dmnEvaluatorCompiler.compileConditional(DMN_COMPILER_CONTEXT, (DMNModelImpl) dmnModel, dmnBaseNode, exprName, expression);
-
-            assertThat(result).isNotNull();
-            assertThat(result).isInstanceOf(DMNConditionalEvaluator.class);
-        }
-
+        DMNExpressionEvaluator result = dmnEvaluatorCompiler.compileConditional(DMN_COMPILER_CONTEXT, (DMNModelImpl) dmnModel, dmnBaseNode, exprName, (Conditional) retrieved);
+        assertThat(result).isNotNull();
+        assertThat(result).isInstanceOf(DMNConditionalEvaluator.class);
     }
+
+    private DMNModelInstrumentedBase getNodeById(DMNModel dmnModel, String id) {
+        DMNModelInstrumentedBase toReturn = null;
+        for(DMNModelInstrumentedBase child : dmnModel.getDefinitions().getChildren()) {
+            toReturn = getNodeById(child, id);
+            if (toReturn != null) {
+                break;
+            }
+        }
+        return toReturn;
+    }
+
+    private DMNModelInstrumentedBase getNodeById(DMNModelInstrumentedBase dmnModelInstrumentedBase, String id) {
+        DMNModelInstrumentedBase toReturn = null;
+        if (dmnModelInstrumentedBase.getIdentifierString().equals(id)) {
+            toReturn = dmnModelInstrumentedBase;
+        } else if (!dmnModelInstrumentedBase.getChildren().isEmpty()) {
+            for(DMNModelInstrumentedBase child : dmnModelInstrumentedBase.getChildren()) {
+                toReturn = getNodeById(child, id);
+                if (toReturn != null) {
+                    break;
+                }
+            }
+        }
+        return toReturn;
+}
+
 
     private DMNBaseNode getNodeByName(DMNModel dmnModel, String nodeName) {
         return (DMNBaseNode) dmnModel.getDecisions().stream()
