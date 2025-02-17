@@ -32,6 +32,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
@@ -59,7 +61,7 @@ public class RangeFunction extends BaseFEELFunction {
 
     private static EvaluationContext STUBBED;
     private static final Range DEFAULT_VALUE = new RangeImpl(Range.RangeBoundary.OPEN, BigDecimal.ZERO, BigDecimal.ZERO, Range.RangeBoundary.OPEN);
-
+    private static final Pattern FUNCTION_CALL_PATTERN = Pattern.compile("(date|time|date and time|duration)\\([^)]*\\)");
 
     private static final List<Predicate<BaseNode>> ALLOWED_NODES = Arrays.asList(baseNode -> baseNode instanceof NullNode,
             baseNode -> baseNode instanceof NumberNode,
@@ -113,6 +115,9 @@ public class RangeFunction extends BaseFEELFunction {
         String rightString = split[1].substring(0, split[1].length() - 1);
         if ((leftString.isEmpty() || leftString.isBlank()) && (rightString.isEmpty() || rightString.isBlank())) {
             return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "from", "at least one endpoint must not be null"));
+        }
+        if (!isValidTemporalExpression(leftString) || !isValidTemporalExpression(rightString)) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "from", "at least one function call is non-literal"));
         }
         BaseNode leftNode = parse(leftString);
         if (!nodeIsAllowed(leftNode, startBoundary)) {
@@ -195,6 +200,14 @@ public class RangeFunction extends BaseFEELFunction {
         ASTBuilderVisitor v = new ASTBuilderVisitor(Collections.emptyMap(), null);
         BaseNode expr = v.visit(tree);
         return expr;
+    }
+
+    protected boolean isValidTemporalExpression(String expression) {
+        Matcher matcher = FUNCTION_CALL_PATTERN.matcher(expression);
+        if (matcher.find()) {
+            return expression.matches("(date|time|date and time|duration)\\(\"[^\"]+\"\\)");
+        }
+        return true;
     }
 
     private EvaluationContext getStubbed() {
