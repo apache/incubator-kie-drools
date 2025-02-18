@@ -19,6 +19,7 @@
 package org.kie.dmn.core.ast;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -54,6 +55,17 @@ public class DMNConditionalEvaluator implements DMNExpressionEvaluator {
             this.type = type;
         }
 
+        @Override
+        public boolean equals(Object o) {
+            if (o == null || getClass() != o.getClass()) return false;
+            EvaluatorIdentifier that = (EvaluatorIdentifier) o;
+            return Objects.equals(id, that.id) && type == that.type;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(id, type);
+        }
     }
 
     private static final Logger logger = LoggerFactory.getLogger(DMNConditionalEvaluator.class);

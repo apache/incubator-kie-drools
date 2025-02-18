@@ -18,17 +18,16 @@
  */
 package org.kie.dmn.core.compiler;
 
-import java.io.File;
 import java.util.Collections;
-import java.util.function.Consumer;
+import java.util.Map;
+import java.util.Objects;
 
-import org.drools.util.FileUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.api.io.Resource;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNRuntime;
-import org.kie.dmn.api.core.ast.DecisionNode;
+import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
 import org.kie.dmn.core.ast.DMNBaseNode;
 import org.kie.dmn.core.ast.DMNConditionalEvaluator;
@@ -45,11 +44,18 @@ import org.kie.internal.io.ResourceFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.kie.dmn.core.ast.DMNConditionalEvaluator.EvaluatorType.ELSE;
+import static org.kie.dmn.core.ast.DMNConditionalEvaluator.EvaluatorType.IF;
+import static org.kie.dmn.core.ast.DMNConditionalEvaluator.EvaluatorType.THEN;
+import static org.kie.dmn.core.compiler.DMNEvaluatorCompiler.getEvaluatorIdentifier;
+import static org.kie.dmn.core.compiler.DMNEvaluatorCompiler.getEvaluatorIdentifierMap;
 
 class DMNEvaluatorCompilerTest {
 
     private static final FEELDialect DEFAULT_FEEL_DIALECT = FEELDialect.FEEL;
-    private static Conditional expression;
+    private static final String IF_ELEMENT_ID = "IF_ELEMENT_ID";
+    private static final String THEN_ELEMENT_ID = "THEN_ELEMENT_ID";
+    private static final String ELSE_ELEMENT_ID = "ELSE_ELEMENT_ID";
     private static DMNCompilerContext DMN_COMPILER_CONTEXT;
     private static DMNEvaluatorCompiler dmnEvaluatorCompiler;
     private static DMNFEELHelper DMN_FEEL_HELPER;
@@ -100,19 +106,60 @@ class DMNEvaluatorCompilerTest {
                 .hasMessage(expectedMessage);
     }
 
-    private LiteralExpression getLiteralExpression(String expressionLanguage) {
-        LiteralExpression toReturn = new TLiteralExpression();
-        toReturn.setExpressionLanguage(expressionLanguage);
-        return toReturn;
+    @Test
+    void testGetEvaluatorIdentifierMap() {
+        String ifExprName = "testExpression [if]" ;
+        String thenExprName = "testExpression [then]";
+        String elseExprName = "testExpression [else]";
+        DMNConditionalEvaluator.EvaluatorIdentifier ifIdentifier = new DMNConditionalEvaluator.EvaluatorIdentifier("_96D34F2E-3CC0-45A6-9455-2F960361A9CC", DMNConditionalEvaluator.EvaluatorType.IF);
+        DMNConditionalEvaluator.EvaluatorIdentifier thenIdentifier = new DMNConditionalEvaluator.EvaluatorIdentifier("_F9D2FA33-4604-4AAA-8FF1-5A4AC5055385", DMNConditionalEvaluator.EvaluatorType.THEN);
+        DMNConditionalEvaluator.EvaluatorIdentifier elseIdentifier = new DMNConditionalEvaluator.EvaluatorIdentifier("_7C843AB8-961C-4A95-83B3-2D1593DF297C", DMNConditionalEvaluator.EvaluatorType.ELSE);
+
+        Resource resource = ResourceFactory.newClassPathResource("valid_models/DMNv1_5/ConditionalEvent.dmn");
+        DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults().buildConfiguration()
+                .fromResources(Collections.singletonList(resource)).getOrElseThrow(RuntimeException::new);
+        assertThat(dmnRuntime).isNotNull();
+        String nameSpace = "https://kie.org/dmn/_5B448C78-0DBF-4554-92A4-8C0247EB01FD";
+
+        final DMNModel dmnModel = dmnRuntime.getModel(nameSpace, "DMN_00DF4B93-0243-4813-BA70-A1894AC723BE");
+        assertThat(dmnModel).isNotNull();
+        DMNModelInstrumentedBase retrieved = getNodeById(dmnModel, "_096DC616-A4D5-449C-A350-491E42F3C8FB");
+        Conditional expr = (Conditional) retrieved;
+        DMNBaseNode dmnBaseNode = getNodeByName(dmnModel, "B");
+        DMNType numType = dmnBaseNode.getType();
+        DMN_COMPILER_CONTEXT.enterFrame();
+        DMN_COMPILER_CONTEXT.setVariable("num", numType);
+        DMNExpressionEvaluator ifEvaluator = dmnEvaluatorCompiler.compileExpression(DMN_COMPILER_CONTEXT, (DMNModelImpl) dmnModel, dmnBaseNode, ifExprName, expr.getIf().getExpression());
+        DMNExpressionEvaluator thenEvaluator = dmnEvaluatorCompiler.compileExpression(DMN_COMPILER_CONTEXT, (DMNModelImpl) dmnModel, dmnBaseNode, thenExprName, expr.getThen().getExpression());
+        DMNExpressionEvaluator elseEvaluator = dmnEvaluatorCompiler.compileExpression(DMN_COMPILER_CONTEXT, (DMNModelImpl) dmnModel, dmnBaseNode, elseExprName, expr.getElse().getExpression());
+
+        Map<DMNConditionalEvaluator.EvaluatorIdentifier, DMNExpressionEvaluator> result = getEvaluatorIdentifierMap(expr, ifEvaluator, thenEvaluator, elseEvaluator);
+        assertThat(result).hasSize(3);
+        assertThat(result.get(ifIdentifier)).isEqualTo(ifEvaluator);
+        assertThat(result.get(thenIdentifier)).isEqualTo(thenEvaluator);
+        assertThat(result.get(elseIdentifier)).isEqualTo(elseEvaluator);
+    }
+
+    @Test
+    void testGetEvaluatorIdentifier() {
+        DMNConditionalEvaluator.EvaluatorIdentifier ifIdentifier = new DMNConditionalEvaluator.EvaluatorIdentifier(IF_ELEMENT_ID, IF);
+        DMNConditionalEvaluator.EvaluatorIdentifier thenIdentifier = new DMNConditionalEvaluator.EvaluatorIdentifier(THEN_ELEMENT_ID, THEN);
+        DMNConditionalEvaluator.EvaluatorIdentifier elseIdentifier = new DMNConditionalEvaluator.EvaluatorIdentifier(ELSE_ELEMENT_ID, ELSE);
+        DMNConditionalEvaluator.EvaluatorIdentifier ifEvaluatorIdentifier = getEvaluatorIdentifier(IF_ELEMENT_ID, IF);
+        DMNConditionalEvaluator.EvaluatorIdentifier thenEvaluatorIdentifier = getEvaluatorIdentifier(THEN_ELEMENT_ID, THEN);
+        DMNConditionalEvaluator.EvaluatorIdentifier elseEvaluatorIdentifier = getEvaluatorIdentifier(ELSE_ELEMENT_ID, ELSE);
+
+        assertThat(ifEvaluatorIdentifier).isEqualTo(ifIdentifier);
+        assertThat(thenEvaluatorIdentifier).isEqualTo(thenIdentifier);
+        assertThat(elseEvaluatorIdentifier).isEqualTo(elseIdentifier);
     }
 
     @Test
     void testCompileConditional() {
         String exprName = "testExpression";
-        File modelFile = FileUtils.getFile("ConditionalEvent.dmn");
-        Resource modelResource = ResourceFactory.newFileResource(modelFile);
+        Resource resource = ResourceFactory.newClassPathResource("valid_models/DMNv1_5/ConditionalEvent.dmn");
         DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults().buildConfiguration()
-                .fromResources(Collections.singletonList(modelResource)).getOrElseThrow(RuntimeException::new);
+                .fromResources(Collections.singletonList(resource)).getOrElseThrow(RuntimeException::new);
         assertThat(dmnRuntime).isNotNull();
         String nameSpace = "https://kie.org/dmn/_5B448C78-0DBF-4554-92A4-8C0247EB01FD";
 
@@ -120,38 +167,32 @@ class DMNEvaluatorCompilerTest {
         assertThat(dmnModel).isNotNull();
         DMNModelInstrumentedBase retrieved = getNodeById(dmnModel, "_096DC616-A4D5-449C-A350-491E42F3C8FB");
         DMNBaseNode dmnBaseNode = getNodeByName(dmnModel, "B");
-        DecisionNode decisionNode = (DecisionNode) dmnBaseNode;
+        DMNType numType = dmnBaseNode.getType();
+        DMN_COMPILER_CONTEXT.enterFrame();
+        DMN_COMPILER_CONTEXT.setVariable("num", numType);
         DMNExpressionEvaluator result = dmnEvaluatorCompiler.compileConditional(DMN_COMPILER_CONTEXT, (DMNModelImpl) dmnModel, dmnBaseNode, exprName, (Conditional) retrieved);
         assertThat(result).isNotNull();
         assertThat(result).isInstanceOf(DMNConditionalEvaluator.class);
     }
 
-    private DMNModelInstrumentedBase getNodeById(DMNModel dmnModel, String id) {
-        DMNModelInstrumentedBase toReturn = null;
-        for(DMNModelInstrumentedBase child : dmnModel.getDefinitions().getChildren()) {
-            toReturn = getNodeById(child, id);
-            if (toReturn != null) {
-                break;
-            }
-        }
+    private LiteralExpression getLiteralExpression(String expressionLanguage) {
+        LiteralExpression toReturn = new TLiteralExpression();
+        toReturn.setExpressionLanguage(expressionLanguage);
         return toReturn;
     }
 
-    private DMNModelInstrumentedBase getNodeById(DMNModelInstrumentedBase dmnModelInstrumentedBase, String id) {
-        DMNModelInstrumentedBase toReturn = null;
-        if (dmnModelInstrumentedBase.getIdentifierString().equals(id)) {
-            toReturn = dmnModelInstrumentedBase;
-        } else if (!dmnModelInstrumentedBase.getChildren().isEmpty()) {
-            for(DMNModelInstrumentedBase child : dmnModelInstrumentedBase.getChildren()) {
-                toReturn = getNodeById(child, id);
-                if (toReturn != null) {
-                    break;
-                }
-            }
-        }
-        return toReturn;
-}
+    private DMNModelInstrumentedBase getNodeById(DMNModel dmnModel, String id) {
+        return dmnModel.getDefinitions().getChildren().stream().map(child -> getNodeById(child, id))
+                .filter(Objects::nonNull).findFirst().orElse(null);
+    }
 
+    private DMNModelInstrumentedBase getNodeById(DMNModelInstrumentedBase dmnModelInstrumentedBase, String id) {
+        if (dmnModelInstrumentedBase.getIdentifierString().equals(id)) {
+            return dmnModelInstrumentedBase;
+        }
+        return dmnModelInstrumentedBase.getChildren().stream().map(child -> getNodeById(child, id))
+                .filter(Objects::nonNull).findFirst().orElse(null);
+    }
 
     private DMNBaseNode getNodeByName(DMNModel dmnModel, String nodeName) {
         return (DMNBaseNode) dmnModel.getDecisions().stream()

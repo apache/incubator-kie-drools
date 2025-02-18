@@ -18,12 +18,10 @@
  */
 package org.kie.dmn.core.impl;
 
-import java.io.File;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Set;
 
-import org.drools.util.FileUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kie.api.io.Resource;
@@ -91,11 +89,9 @@ class DMNRuntimeEventManagerUtilsTest {
 
     @Test
     void testConditionalEvent() {
-        File modelFile = FileUtils.getFile("ConditionalEvent.dmn");
-        assertThat(modelFile).isNotNull().exists();
-        Resource modelResource = ResourceFactory.newFileResource(modelFile);
+        Resource resource = ResourceFactory.newClassPathResource("valid_models/DMNv1_5/ConditionalEvent.dmn");
         DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults().buildConfiguration()
-                .fromResources(Collections.singletonList(modelResource)).getOrElseThrow(RuntimeException::new);
+                .fromResources(Collections.singletonList(resource)).getOrElseThrow(RuntimeException::new);
         assertThat(dmnRuntime).isNotNull();
         String nameSpace = "https://kie.org/dmn/_5B448C78-0DBF-4554-92A4-8C0247EB01FD";
 
