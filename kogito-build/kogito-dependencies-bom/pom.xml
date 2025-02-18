@@ -111,7 +111,7 @@
     <version.jakarta.persistence-api>3.1.0</version.jakarta.persistence-api>
 
     <version.org.jboss.resteasy>6.2.7.Final</version.org.jboss.resteasy>
-    <version.org.keycloak>25.0.6</version.org.keycloak>
+    <version.org.keycloak>26.1.0</version.org.keycloak>
     <!-- It seems that the confluent kafka cannot replace wurstmeister/kafka so easily. See FAI-729 -->
     <version.wurstmeister.kafka>2.12-2.2.1</version.wurstmeister.kafka>
     <version.org.mongo>4.11.1</version.org.mongo>
