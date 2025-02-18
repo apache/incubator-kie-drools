@@ -51,6 +51,13 @@ public class DMN15ValidationsTest {
 
 
     @Test
+    // TODO to remove
+    void toBeRemoved() {
+        String importedModelFileName = "valid_models/DMNv1_5/AllowedValuesChecksInsideCollection.dmn";
+        validate(importedModelFileName);
+    }
+
+    @Test
     void overridingUnnamedImportValidation() {
         String importedModelFileName = "valid_models/DMNv1_5/Imported_Model_Unamed.dmn";
         String importingModelFileName = "valid_models/DMNv1_5/Importing_OverridingEmptyNamed_Model.dmn";

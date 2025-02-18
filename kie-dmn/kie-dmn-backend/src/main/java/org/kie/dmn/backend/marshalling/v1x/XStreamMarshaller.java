@@ -22,6 +22,7 @@ import java.io.BufferedReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.Writer;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,6 +34,7 @@ import com.thoughtworks.xstream.io.xml.StaxDriver;
 import org.kie.dmn.api.marshalling.DMNExtensionRegister;
 import org.kie.dmn.api.marshalling.DMNMarshaller;
 import org.kie.dmn.backend.marshalling.CustomStaxReader;
+import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.Definitions;
 import org.kie.dmn.model.v1_5.KieDMNModelInstrumentedBase;
 import org.slf4j.Logger;
@@ -101,7 +103,29 @@ public class XStreamMarshaller implements DMNMarshaller {
     }
 
     public enum DMN_VERSION {
-        UNKNOWN, DMN_v1_1, DMN_v1_2, DMN_v1_3, DMN_v1_4, DMN_v1_5;
+        UNKNOWN(""),
+        DMN_v1_1("v1_1"),
+        DMN_v1_2("v1_2"),
+        DMN_v1_3("v1_3"),
+        DMN_v1_4("v1_4"),
+        DMN_v1_5("v1_5");
+        final String versionString;
+
+        DMN_VERSION(String versionString) {
+            this.versionString = versionString;
+        }
+
+        public String getVersionString() {
+            return versionString;
+        }
+    }
+
+    public enum URI_NAMESPACE {
+        URI_DMN,
+        URI_FEEL,
+        URI_DMNDI,
+        URI_DI,
+        URI_DC;
     }
 
     public static DMN_VERSION inferDMNVersion(Reader from) {
@@ -127,6 +151,64 @@ public class XStreamMarshaller implements DMNMarshaller {
             logger.error("Error unmarshalling DMN model from reader.", e);
         }
         return DMN_VERSION.UNKNOWN;
+    }
+
+    /**
+     *
+     * @param from
+     * @param namespaceKind
+     * @return
+     */
+    public static DMN_VERSION inferDMNVersionOfNamsespace(Reader from, DMN_VERSION dmnVersion, URI_NAMESPACE namespaceKind) {
+        try {
+            XMLStreamReader xmlReader = staxDriver.getInputFactory().createXMLStreamReader(from);
+            CustomStaxReader customStaxReader = new CustomStaxReader(new QNameMap(), xmlReader);
+            DMN_VERSION result = DMN_VERSION.UNKNOWN;
+            switch (namespaceKind) {
+                case "URI_DMN":
+                case "URI_FEEL":
+                case "URI_DMNDI":
+                case "URI_DI":
+                case "URI_DC":
+
+            }
+
+
+            if (customStaxReader.getNsContext().values().stream().anyMatch(org.kie.dmn.model.v1_5.KieDMNModelInstrumentedBase.URI_DMN::equals)) {
+                result = DMN_VERSION.DMN_v1_5;
+            } else if (customStaxReader.getNsContext().values().stream().anyMatch(org.kie.dmn.model.v1_4.KieDMNModelInstrumentedBase.URI_DMN::equals)) {
+                result = DMN_VERSION.DMN_v1_4;
+            } else if (customStaxReader.getNsContext().values().stream().anyMatch(org.kie.dmn.model.v1_3.KieDMNModelInstrumentedBase.URI_DMN::equals)) {
+                result = DMN_VERSION.DMN_v1_3;
+            } else if (customStaxReader.getNsContext().values().stream().anyMatch(org.kie.dmn.model.v1_2.KieDMNModelInstrumentedBase.URI_DMN::equals)) {
+                result = DMN_VERSION.DMN_v1_2;
+            } else if (customStaxReader.getNsContext().values().stream().anyMatch(org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase.URI_DMN::equals)) {
+                result = DMN_VERSION.DMN_v1_1;
+            }
+            xmlReader.close();
+            customStaxReader.close();
+            return result;
+        } catch (Exception e) {
+            logger.error("Error unmarshalling DMN model from reader.", e);
+        }
+        return DMN_VERSION.UNKNOWN;
+    }
+
+    /**
+     *
+     * @param dmnVersion
+     * @param namespaceKind
+     * @return
+     */
+    static String getNamespaceValueReflectively(DMN_VERSION dmnVersion, URI_NAMESPACE namespaceKind) {
+        try {
+            String kieDMNModelInstrumentedBaseClassName = String.format("org.kie.dmn.model.%s.KieDMNModelInstrumentedBase", dmnVersion.getVersionString());
+            Class<? extends DMNModelInstrumentedBase> kieDMNModelInstrumentedBaseClass = (Class<? extends DMNModelInstrumentedBase>) Class.forName(kieDMNModelInstrumentedBaseClassName);
+            Field declaredField = kieDMNModelInstrumentedBaseClass.getDeclaredField(namespaceKind.name());
+            return (String) declaredField.get(null);
+        } catch (ClassNotFoundException | NoSuchFieldException | IllegalAccessException | ClassCastException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

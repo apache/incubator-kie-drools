@@ -580,6 +580,13 @@ public class DMNValidatorImpl implements DMNValidator {
         validator.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
         validator.validate(s);
     }
+
+//    private void validateNamespaces(Source s) throws SAXException, IOException {
+//        Validator validator = using.newValidator();
+//        validator.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+//        validator.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+//        validator.validate(s);
+//    }
     
     private List<DMNMessage> validateModel(DMNResource mainModel, List<DMNResource> otherModels) {
         Definitions mainDefinitions = mainModel.getDefinitions();
