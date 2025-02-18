@@ -36,9 +36,6 @@ import static org.drools.reliability.infinispan.InfinispanStorageManagerFactory.
 import static org.drools.reliability.test.util.TestConfigurationUtils.DROOLS_RELIABILITY_MODULE_TEST;
 import static org.drools.util.Config.getConfig;
 
-/**
- *  This class is a unit test for EmbeddedCacheManager methods with a fake cacheManager instead of Infinispan DefaultCacheManager.
- */
 @EnabledIf("isEmbeddedInfinispan")
 @ExtendWith(BeforeAllMethodExtension.class)
 class EmbeddedStorageManagerTest {
