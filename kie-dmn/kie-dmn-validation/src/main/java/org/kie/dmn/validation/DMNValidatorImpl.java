@@ -637,10 +637,11 @@ public class DMNValidatorImpl implements DMNValidator {
         mappedNamespaces.forEach((key, value) -> {
             String expectedUri = getNamespaceValueReflectively(inferDMNVersion, key);
             if (!value.equals(expectedUri)) {
-                String errorMessage = String.format("Invalid %s {%s} for version %s - %s",
+                String errorMessage = String.format("Invalid %s {%s} for version %s (expected %s) - at %s",
                                                     key.getIdentifier(),
                                                     value,
                                                     inferDMNVersion.getVersionString(),
+                                                    expectedUri,
                                                     path);
                 toReturn.add(new DMNMessageImpl(DMNMessage.Severity.ERROR,
                                                 MsgUtil.createMessage(Msg.FAILED_XML_VALIDATION, errorMessage),
