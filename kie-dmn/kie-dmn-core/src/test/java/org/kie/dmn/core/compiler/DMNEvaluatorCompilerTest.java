@@ -124,14 +124,15 @@ class DMNEvaluatorCompilerTest {
         final DMNModel dmnModel = dmnRuntime.getModel(nameSpace, "DMN_00DF4B93-0243-4813-BA70-A1894AC723BE");
         assertThat(dmnModel).isNotNull();
         DMNModelInstrumentedBase retrieved = getNodeById(dmnModel, "_096DC616-A4D5-449C-A350-491E42F3C8FB");
+        assertThat(retrieved).isNotNull();
         Conditional expr = (Conditional) retrieved;
         DMNBaseNode dmnBaseNode = getNodeByName(dmnModel, "B");
         DMNType numType = dmnBaseNode.getType();
-        DMN_COMPILER_CONTEXT.enterFrame();
-        DMN_COMPILER_CONTEXT.setVariable("num", numType);
-        DMNExpressionEvaluator ifEvaluator = dmnEvaluatorCompiler.compileExpression(DMN_COMPILER_CONTEXT, (DMNModelImpl) dmnModel, dmnBaseNode, ifExprName, expr.getIf().getExpression());
-        DMNExpressionEvaluator thenEvaluator = dmnEvaluatorCompiler.compileExpression(DMN_COMPILER_CONTEXT, (DMNModelImpl) dmnModel, dmnBaseNode, thenExprName, expr.getThen().getExpression());
-        DMNExpressionEvaluator elseEvaluator = dmnEvaluatorCompiler.compileExpression(DMN_COMPILER_CONTEXT, (DMNModelImpl) dmnModel, dmnBaseNode, elseExprName, expr.getElse().getExpression());
+        DMNCompilerContext compilerContext = new DMNCompilerContext(DMN_FEEL_HELPER);;
+        compilerContext.setVariable("num", numType);
+        DMNExpressionEvaluator ifEvaluator = dmnEvaluatorCompiler.compileExpression(compilerContext, (DMNModelImpl) dmnModel, dmnBaseNode, ifExprName, expr.getIf().getExpression());
+        DMNExpressionEvaluator thenEvaluator = dmnEvaluatorCompiler.compileExpression(compilerContext, (DMNModelImpl) dmnModel, dmnBaseNode, thenExprName, expr.getThen().getExpression());
+        DMNExpressionEvaluator elseEvaluator = dmnEvaluatorCompiler.compileExpression(compilerContext, (DMNModelImpl) dmnModel, dmnBaseNode, elseExprName, expr.getElse().getExpression());
 
         Map<DMNConditionalEvaluator.EvaluatorIdentifier, DMNExpressionEvaluator> result = getEvaluatorIdentifierMap(expr, ifEvaluator, thenEvaluator, elseEvaluator);
         assertThat(result).hasSize(3);
@@ -166,11 +167,12 @@ class DMNEvaluatorCompilerTest {
         final DMNModel dmnModel = dmnRuntime.getModel(nameSpace, "DMN_00DF4B93-0243-4813-BA70-A1894AC723BE");
         assertThat(dmnModel).isNotNull();
         DMNModelInstrumentedBase retrieved = getNodeById(dmnModel, "_096DC616-A4D5-449C-A350-491E42F3C8FB");
+        assertThat(retrieved).isNotNull();
         DMNBaseNode dmnBaseNode = getNodeByName(dmnModel, "B");
         DMNType numType = dmnBaseNode.getType();
-        DMN_COMPILER_CONTEXT.enterFrame();
-        DMN_COMPILER_CONTEXT.setVariable("num", numType);
-        DMNExpressionEvaluator result = dmnEvaluatorCompiler.compileConditional(DMN_COMPILER_CONTEXT, (DMNModelImpl) dmnModel, dmnBaseNode, exprName, (Conditional) retrieved);
+        DMNCompilerContext compilerContext = new DMNCompilerContext(DMN_FEEL_HELPER);
+        compilerContext.setVariable("num", numType);
+        DMNExpressionEvaluator result = dmnEvaluatorCompiler.compileConditional(compilerContext, (DMNModelImpl) dmnModel, dmnBaseNode, exprName, (Conditional) retrieved);
         assertThat(result).isNotNull();
         assertThat(result).isInstanceOf(DMNConditionalEvaluator.class);
     }

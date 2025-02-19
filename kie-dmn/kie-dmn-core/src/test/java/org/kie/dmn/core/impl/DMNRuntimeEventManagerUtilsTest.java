@@ -18,8 +18,8 @@
  */
 package org.kie.dmn.core.impl;
 
-import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -89,6 +89,9 @@ class DMNRuntimeEventManagerUtilsTest {
 
     @Test
     void testConditionalEvent() {
+        EvaluatorResult evaluatorResult = mock(EvaluatorResult.class);
+        String name = "B [return]";
+        String executedId = "_96D34F2E-3CC0-45A6-9455-2F960361A9CC";
         Resource resource = ResourceFactory.newClassPathResource("valid_models/DMNv1_5/ConditionalEvent.dmn");
         DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults().buildConfiguration()
                 .fromResources(Collections.singletonList(resource)).getOrElseThrow(RuntimeException::new);
@@ -98,8 +101,20 @@ class DMNRuntimeEventManagerUtilsTest {
         final DMNModel dmnModel = dmnRuntime.getModel(nameSpace, "DMN_00DF4B93-0243-4813-BA70-A1894AC723BE");
         assertThat(dmnModel).isNotNull();
         DMNContext context = DMNFactory.newContext();
-        context.set("A", Arrays.asList(1, -2, 3));
+        context.set("A", List.of(3));
         DMNResult dmnResult = dmnRuntime.evaluateAll(dmnModel, context);
-        assertThat(dmnResult.getDecisionResultByName("B").getResult()).isEqualTo(Arrays.asList("pos", "neg", "pos"));
+        assertThat(dmnResult.getDecisionResultByName("B").getResult()).isEqualTo(List.of("pos"));
+
+        DMNRuntimeEventManager eventManager = new DMNRuntimeEventManagerImpl();
+        eventManager.addListener(spiedListener);
+
+        DMNRuntimeEventManagerUtils.fireAfterConditionalEvaluation(eventManager, name, evaluatorResult, executedId);
+        ArgumentCaptor<AfterConditionalEvaluationEvent> conditionalEvaluationEventArgumentCaptor = ArgumentCaptor.forClass(AfterConditionalEvaluationEvent.class);
+        verify(spiedListener).afterConditionalEvaluation (conditionalEvaluationEventArgumentCaptor.capture());
+        AfterConditionalEvaluationEvent evaluateConditionalEvent = conditionalEvaluationEventArgumentCaptor.getValue();
+        assertThat(evaluateConditionalEvent).isNotNull();
+        assertThat(evaluateConditionalEvent.getNodeName()).isEqualTo(name);
+        assertThat(evaluateConditionalEvent.getEvaluatorResultResult()).isEqualTo(evaluatorResult);
+        assertThat(evaluateConditionalEvent.getExecutedId()).isEqualTo(executedId);
     }
 }

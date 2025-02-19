@@ -174,17 +174,13 @@ class DMNConditionalEvaluatorTest {
 
     @Test
     void testGetEvaluatorIdentifier() {
-        Map<DMNConditionalEvaluator.EvaluatorType, DMNConditionalEvaluator.EvaluatorIdentifier> evaluatorIdentifierMap = new HashMap<>();
-        evaluatorIdentifierMap.put(DMNConditionalEvaluator.EvaluatorType.IF, ifIdentifier);
-        evaluatorIdentifierMap.put(DMNConditionalEvaluator.EvaluatorType.THEN, thenIdentifier);
-        evaluatorIdentifierMap.put(DMNConditionalEvaluator.EvaluatorType.ELSE, elseIdentifier);
-
-        DMNConditionalEvaluator.EvaluatorIdentifier resultIf = DMNConditionalEvaluator.getEvaluatorIdentifier(evaluatorIdentifierMap, DMNConditionalEvaluator.EvaluatorType.IF);
-        DMNConditionalEvaluator.EvaluatorIdentifier resultThen = DMNConditionalEvaluator.getEvaluatorIdentifier(evaluatorIdentifierMap, DMNConditionalEvaluator.EvaluatorType.THEN);
-        DMNConditionalEvaluator.EvaluatorIdentifier resultElse = DMNConditionalEvaluator.getEvaluatorIdentifier(evaluatorIdentifierMap, DMNConditionalEvaluator.EvaluatorType.ELSE);
-        assertThat(resultIf).isEqualTo(ifIdentifier);
-        assertThat(resultThen).isEqualTo(thenIdentifier);
-        assertThat(resultElse).isEqualTo(elseIdentifier);
+        Map<DMNConditionalEvaluator.EvaluatorType, DMNConditionalEvaluator.EvaluatorIdentifier> evaluatorIdentifierMap = Map.of(
+                DMNConditionalEvaluator.EvaluatorType.IF, ifIdentifier,
+                DMNConditionalEvaluator.EvaluatorType.THEN, thenIdentifier,
+                DMNConditionalEvaluator.EvaluatorType.ELSE, elseIdentifier);
+        for (DMNConditionalEvaluator.EvaluatorType type : DMNConditionalEvaluator.EvaluatorType.values()) {
+            assertThat(DMNConditionalEvaluator.getEvaluatorIdentifier(evaluatorIdentifierMap, type)).isEqualTo(evaluatorIdentifierMap.get(type));
+        }
     }
 
     @Test

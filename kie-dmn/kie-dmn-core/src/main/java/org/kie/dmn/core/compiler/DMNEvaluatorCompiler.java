@@ -1050,30 +1050,30 @@ public class DMNEvaluatorCompiler implements DMNDecisionLogicCompiler {
 
     protected DMNExpressionEvaluator compileConditional(DMNCompilerContext ctx, DMNModelImpl model, DMNBaseNode node,
                                               String exprName, Conditional expression) {
-        DMNExpressionEvaluator ifEvaluator = compileExpression(ctx, model, node, exprName + " [" + DMNConditionalEvaluator.EvaluatorType.IF.name().toLowerCase() + "]",
+        DMNExpressionEvaluator ifEvaluator = compileExpression(ctx, model, node,  formatExpressionName(exprName, DMNConditionalEvaluator.EvaluatorType.IF),
                                                                expression.getIf().getExpression());
-        DMNExpressionEvaluator thenEvaluator = compileExpression(ctx, model, node, exprName + " [" + DMNConditionalEvaluator.EvaluatorType.THEN.name().toLowerCase() + "]",
+        DMNExpressionEvaluator thenEvaluator = compileExpression(ctx, model, node, formatExpressionName(exprName, DMNConditionalEvaluator.EvaluatorType.THEN),
                                                                  expression.getThen().getExpression());
-        DMNExpressionEvaluator elseEvaluator = compileExpression(ctx, model, node, exprName + " [" + DMNConditionalEvaluator.EvaluatorType.ELSE.name().toLowerCase() + "]",
+        DMNExpressionEvaluator elseEvaluator = compileExpression(ctx, model, node, formatExpressionName(exprName, DMNConditionalEvaluator.EvaluatorType.ELSE),
                                                                  expression.getElse().getExpression());
 
         if (ifEvaluator == null) {
             MsgUtil.reportMessage(logger, DMNMessage.Severity.ERROR, node.getSource(), model, null, null,
-                                  Msg.MISSING_EXPRESSION_FOR_CONDITION, DMNConditionalEvaluator.EvaluatorType.IF.name().toLowerCase(),
+                                  Msg.MISSING_EXPRESSION_FOR_CONDITION, DMNConditionalEvaluator.EvaluatorType.IF.getValue(),
                                   node.getIdentifierString());
             return null;
         }
 
         if (thenEvaluator == null) {
             MsgUtil.reportMessage(logger, DMNMessage.Severity.ERROR, node.getSource(), model, null, null,
-                                  Msg.MISSING_EXPRESSION_FOR_CONDITION, DMNConditionalEvaluator.EvaluatorType.THEN.name().toLowerCase(),
+                                  Msg.MISSING_EXPRESSION_FOR_CONDITION, DMNConditionalEvaluator.EvaluatorType.THEN.getValue(),
                                   node.getIdentifierString());
             return null;
         }
 
         if (elseEvaluator == null) {
             MsgUtil.reportMessage(logger, DMNMessage.Severity.ERROR, node.getSource(), model, null, null,
-                                  Msg.MISSING_EXPRESSION_FOR_CONDITION, DMNConditionalEvaluator.EvaluatorType.ELSE.name().toLowerCase(),
+                                  Msg.MISSING_EXPRESSION_FOR_CONDITION, DMNConditionalEvaluator.EvaluatorType.ELSE.getValue(),
                                   node.getIdentifierString());
             return null;
         }
@@ -1194,5 +1194,9 @@ public class DMNEvaluatorCompiler implements DMNDecisionLogicCompiler {
         }
 
         return new DMNFilterEvaluator(exprName, node.getSource(), inEvaluator, filterEvaluator);
+    }
+
+    private static String formatExpressionName(String exprName, DMNConditionalEvaluator.EvaluatorType type) {
+        return String.format("%s [%s]", exprName, type.getValue());
     }
 }

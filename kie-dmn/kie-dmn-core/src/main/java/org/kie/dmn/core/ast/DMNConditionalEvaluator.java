@@ -41,9 +41,18 @@ import org.slf4j.LoggerFactory;
 public class DMNConditionalEvaluator implements DMNExpressionEvaluator {
 
     public enum EvaluatorType {
-        IF,
-        THEN,
-        ELSE
+        IF( "if" ),
+        THEN( "then" ),
+        ELSE( "else" );
+
+        public final String value;
+
+        EvaluatorType(String value) {
+            this.value = value;
+        }
+        public String getValue() {
+            return value;
+        }
     }
 
     public static class EvaluatorIdentifier {
@@ -75,7 +84,6 @@ public class DMNConditionalEvaluator implements DMNExpressionEvaluator {
     private final DMNExpressionEvaluator elseEvaluator;
     private final DMNElement node;
     private final String name;
-    private final Map<EvaluatorIdentifier, DMNExpressionEvaluator> evaluatorIdMap;
     private final EvaluatorIdentifier ifEvaluatorIdentifier;
     private final EvaluatorIdentifier thenEvaluatorIdentifier;
     private final EvaluatorIdentifier elseEvaluatorIdentifier;
@@ -100,7 +108,6 @@ public class DMNConditionalEvaluator implements DMNExpressionEvaluator {
         this.ifEvaluator = evaluatorIdMap.get(ifEvaluatorIdentifier);
         this.thenEvaluator = evaluatorIdMap.get(thenEvaluatorIdentifier);
         this.elseEvaluator = evaluatorIdMap.get(elseEvaluatorIdentifier);
-        this.evaluatorIdMap = evaluatorIdMap;
     }
 
     @Override
@@ -132,11 +139,8 @@ public class DMNConditionalEvaluator implements DMNExpressionEvaluator {
 
     protected EvaluatorResult manageBooleanOrNullIfResult(Boolean booleanResult, DMNRuntimeEventManager eventManager, DMNResultImpl result) {
         DMNExpressionEvaluator evaluatorToUse = booleanResult != null && booleanResult ? thenEvaluator : elseEvaluator;
-
         EvaluatorResult toReturn = evaluatorToUse.evaluate(eventManager, result);
-
         String executedId = evaluatorToUse.equals(thenEvaluator) ? thenEvaluatorIdentifier.id : elseEvaluatorIdentifier.id;
-
         DMNRuntimeEventManagerUtils.fireAfterConditionalEvaluation(eventManager, name, toReturn, executedId);
         return toReturn;
     }
