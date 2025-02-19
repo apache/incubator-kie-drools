@@ -19,7 +19,9 @@
 package org.drools.mvel.integrationtests;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -31,6 +33,7 @@ import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil2;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.builder.KieModule;
@@ -38,6 +41,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.internal.conf.ConstraintJittingThresholdOption;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 public class JittingTest {
 
@@ -380,6 +384,111 @@ public class JittingTest {
         final KieBase kieBase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, ConstraintJittingThresholdOption.get(0));
         KieSession ksession = kieBase.newKieSession();
         ksession.insert(new Tester());
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+    }
+
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    void nonTerminatingDecimal(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        // incubator-kie-drools/issues/6249
+        String drl =
+                "package test\n" +
+                        "import " + Person.class.getCanonicalName() + "\n" +
+                        "\n" +
+                        "rule R1 when \n" +
+                        "    Person( bigDecimal / 7B >= 0 )\n" +
+                        "then \n" +
+                        "end";
+
+        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, drl);
+        final KieBase kieBase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, ConstraintJittingThresholdOption.get(0));
+        KieSession ksession = kieBase.newKieSession();
+        Person person = new Person();
+        person.setBigDecimal(new BigDecimal("15"));
+        ksession.insert(person);
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
+    }
+
+    private static Stream<String> accuracyConstraintsForDECIMAL128() {
+        // These constraints require more than MathContext.DECIMAL128 accuracy.
+        // Because Drools/Mvel BigDecimal calculation is based on MathContext.DECIMAL128, these constraints shouldn't match.
+        return Stream.of(
+                "(bigDecimal + $bd1) == 11111111101111111110111111111011111110B",
+                "(bigDecimal - $bd1) == 8641975320864197532086419753208641976B",
+                "(bigDecimal * $bd1) == 12193263113702179522618503273386678850399329371828684651861743636654061881B"
+        );
+    }
+
+    private static Stream<Arguments> argumentsForAccuracyTest() {
+        List<KieBaseTestConfiguration> configurations = parameters().toList();
+        List<String> constraints = accuracyConstraintsForDECIMAL128().toList();
+        List<ConstraintJittingThresholdOption> jittingThresholds = Stream.of(0, 1).map(ConstraintJittingThresholdOption::get).toList();
+        return configurations.stream()
+                .flatMap(config -> constraints.stream()
+                        .flatMap(constraint -> jittingThresholds.stream()
+                                .map(jittingThreshold -> Arguments.of(config, constraint, jittingThreshold))));
+    }
+
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("argumentsForAccuracyTest")
+    void bigDecimalAccuracyForDECIMAL128(KieBaseTestConfiguration kieBaseTestConfiguration, String constraint, ConstraintJittingThresholdOption jittingThreshold) {
+        //
+        String drl =
+                "package test\n" +
+                        "import " + Person.class.getCanonicalName() + "\n" +
+                        "rule R1 when \n" +
+                        "    Person( name == \"person1\", $bd1 : bigDecimal )\n" +
+                        "    Person( name == \"person2\", " + constraint + " )\n" +
+                        "then \n" +
+                        "end";
+
+        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, drl);
+        final KieBase kieBase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, jittingThreshold);
+        KieSession ksession = kieBase.newKieSession();
+
+        BigDecimal bd1 = new BigDecimal("1234567890123456789012345678901234567");
+        Person person1 = new Person("person1");
+        person1.setBigDecimal(bd1);
+
+        BigDecimal bd2 = new BigDecimal("9876543210987654321098765432109876543");
+        Person person2 = new Person("person2");
+        person2.setBigDecimal(bd2);
+
+        ksession.insert(person1);
+        ksession.insert(person2);
+        assertThat(ksession.fireAllRules()).isZero();
+    }
+
+    private static Stream<Arguments> argumentsArithmetic() {
+        List<KieBaseTestConfiguration> configurations = parameters().toList();
+        List<String> operators = Stream.of("+", "-", "*", "/").toList();
+        return configurations.stream()
+                .flatMap(config -> operators.stream()
+                        .map(operator -> Arguments.of(config, operator)));
+    }
+
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("argumentsArithmetic")
+    void bigIntegerArithmetic(KieBaseTestConfiguration kieBaseTestConfiguration, String operator) {
+        assumeFalse(kieBaseTestConfiguration.isExecutableModel(),
+                    "BigInteger arithmetic with exec-model is skipped " +
+                            "until incubator-kie-drools/issues/6253 is fixed");
+
+        String drl =
+                "package test\n" +
+                        "import " + Person.class.getCanonicalName() + "\n" +
+                        "\n" +
+                        "rule R1 when \n" +
+                        "    Person( bigInteger " + operator + " 7I >= 0 )\n" +
+                        "then \n" +
+                        "end";
+
+        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, drl);
+        final KieBase kieBase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, ConstraintJittingThresholdOption.get(0));
+        KieSession ksession = kieBase.newKieSession();
+        Person person = new Person();
+        person.setBigInteger(new BigInteger("15"));
+        ksession.insert(person);
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 }
