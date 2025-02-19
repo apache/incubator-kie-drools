@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.api.io.Resource;
 import org.kie.dmn.api.core.DMNContext;
@@ -41,6 +42,7 @@ import org.mockito.ArgumentCaptor;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -57,6 +59,11 @@ class DMNRuntimeEventManagerUtilsTest {
         eventManagerMock = mock(DMNRuntimeEventManager.class);
         when(eventManagerMock.hasListeners()).thenReturn(true);
         when(eventManagerMock.getListeners()).thenReturn(listeners);
+    }
+
+    @BeforeEach
+    void setup() {
+        reset(spiedListener);
     }
 
     @Test
