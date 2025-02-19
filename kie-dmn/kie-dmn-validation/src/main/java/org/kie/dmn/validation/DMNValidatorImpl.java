@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -29,12 +29,15 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
@@ -85,6 +88,8 @@ import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
 import static java.util.stream.Collectors.toList;
+import static org.kie.dmn.backend.marshalling.v1x.XStreamMarshaller.DMN_VERSION.DMN_v1_5;
+import static org.kie.dmn.backend.marshalling.v1x.XStreamMarshaller.getNamespaceValueReflectively;
 import static org.kie.dmn.core.compiler.UnnamedImportUtils.mergeDefinitions;
 import static org.kie.dmn.validation.DMNValidator.Validation.ANALYZE_DECISION_TABLE;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
@@ -92,68 +97,110 @@ import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_MODEL;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_SCHEMA;
 
 public class DMNValidatorImpl implements DMNValidator {
+
     public static final Logger LOG = LoggerFactory.getLogger(DMNValidatorImpl.class);
     static final Schema schemav1_1;
+
     static {
         try {
             schemav1_1 = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI)
-                                  .newSchema(new StreamSource(DMNValidatorImpl.class.getResourceAsStream("org/omg/spec/DMN/20151101/dmn.xsd")));
+                    .newSchema(new StreamSource(DMNValidatorImpl.class.getResourceAsStream("org/omg/spec/DMN/20151101" +
+                                                                                                   "/dmn.xsd")));
         } catch (SAXException e) {
             throw new RuntimeException("Unable to initialize correctly DMNValidator.", e);
         }
     }
+
     static final Schema schemav1_2;
+
     static {
         try {
             schemav1_2 = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI)
-                                      .newSchema(new Source[]{new StreamSource(DMNValidatorImpl.class.getResourceAsStream("org/omg/spec/DMN/20180521/DC.xsd")),
-                                                              new StreamSource(DMNValidatorImpl.class.getResourceAsStream("org/omg/spec/DMN/20180521/DI.xsd")),
-                                                              new StreamSource(DMNValidatorImpl.class.getResourceAsStream("org/omg/spec/DMN/20180521/DMNDI12.xsd")),
-                                                              new StreamSource(DMNValidatorImpl.class.getResourceAsStream("org/omg/spec/DMN/20180521/DMN12.xsd"))
-                                      });
+                    .newSchema(new Source[]{new StreamSource(DMNValidatorImpl.class.getResourceAsStream("org/omg/spec" +
+                                                                                                                "/DMN" +
+                                                                                                                "/20180521/DC.xsd")),
+                            new StreamSource(DMNValidatorImpl.class.getResourceAsStream("org/omg/spec/DMN/20180521/DI" +
+                                                                                                ".xsd")),
+                            new StreamSource(DMNValidatorImpl.class.getResourceAsStream("org/omg/spec/DMN/20180521" +
+                                                                                                "/DMNDI12.xsd")),
+                            new StreamSource(DMNValidatorImpl.class.getResourceAsStream("org/omg/spec/DMN/20180521" +
+                                                                                                "/DMN12.xsd"))
+                    });
         } catch (SAXException e) {
             throw new RuntimeException("Unable to initialize correctly DMNValidator.", e);
         }
     }
+
     static final Schema schemav1_3;
+
     static {
         try {
             schemav1_3 = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI)
-                                      .newSchema(new Source[]{new StreamSource(DMNValidatorImpl.class.getResourceAsStream("org/omg/spec/DMN/20191111/DC.xsd")),
-                                                              new StreamSource(DMNValidatorImpl.class.getResourceAsStream("org/omg/spec/DMN/20191111/DI.xsd")),
-                                                              new StreamSource(DMNValidatorImpl.class.getResourceAsStream("org/omg/spec/DMN/20191111/DMNDI13.xsd")),
-                                                              new StreamSource(DMNValidatorImpl.class.getResourceAsStream("org/omg/spec/DMN/20191111/DMN13.xsd"))
-                                      });
+                    .newSchema(new Source[]{new StreamSource(DMNValidatorImpl.class.getResourceAsStream("org/omg/spec" +
+                                                                                                                "/DMN" +
+                                                                                                                "/20191111/DC.xsd")),
+                            new StreamSource(DMNValidatorImpl.class.getResourceAsStream("org/omg/spec/DMN/20191111/DI" +
+                                                                                                ".xsd")),
+                            new StreamSource(DMNValidatorImpl.class.getResourceAsStream("org/omg/spec/DMN/20191111" +
+                                                                                                "/DMNDI13.xsd")),
+                            new StreamSource(DMNValidatorImpl.class.getResourceAsStream("org/omg/spec/DMN/20191111" +
+                                                                                                "/DMN13.xsd"))
+                    });
         } catch (SAXException e) {
             throw new RuntimeException("Unable to initialize correctly DMNValidator.", e);
         }
     }
+
     static final Schema schemav1_4;
+
     static {
         try {
             schemav1_4 = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI)
-                                      .newSchema(new Source[]{new StreamSource(DMNValidatorImpl.class.getResourceAsStream("org/omg/spec/DMN/20211108/DC.xsd")),
-                                                              new StreamSource(DMNValidatorImpl.class.getResourceAsStream("org/omg/spec/DMN/20211108/DI.xsd")),
-                                                              new StreamSource(DMNValidatorImpl.class.getResourceAsStream("org/omg/spec/DMN/20211108/DMNDI13.xsd")),
-                                                              new StreamSource(DMNValidatorImpl.class.getResourceAsStream("org/omg/spec/DMN/20211108/DMN14.xsd"))
-                                      });
+                    .newSchema(new Source[]{new StreamSource(DMNValidatorImpl.class.getResourceAsStream("org/omg/spec" +
+                                                                                                                "/DMN" +
+                                                                                                                "/20211108/DC.xsd")),
+                            new StreamSource(DMNValidatorImpl.class.getResourceAsStream("org/omg/spec/DMN/20211108/DI" +
+                                                                                                ".xsd")),
+                            new StreamSource(DMNValidatorImpl.class.getResourceAsStream("org/omg/spec/DMN/20211108" +
+                                                                                                "/DMNDI13.xsd")),
+                            new StreamSource(DMNValidatorImpl.class.getResourceAsStream("org/omg/spec/DMN/20211108" +
+                                                                                                "/DMN14.xsd"))
+                    });
         } catch (SAXException e) {
             throw new RuntimeException("Unable to initialize correctly DMNValidator.", e);
         }
     }
 
     static final Schema schemav1_5;
+
     static {
         try {
             schemav1_5 = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI)
-                    .newSchema(new Source[]{new StreamSource(DMNValidatorImpl.class.getResourceAsStream("org/omg/spec/DMN/20230324/DC.xsd")),
-                            new StreamSource(DMNValidatorImpl.class.getResourceAsStream("org/omg/spec/DMN/20230324/DI.xsd")),
-                            new StreamSource(DMNValidatorImpl.class.getResourceAsStream("org/omg/spec/DMN/20230324/DMNDI15.xsd")),
-                            new StreamSource(DMNValidatorImpl.class.getResourceAsStream("org/omg/spec/DMN/20230324/DMN15.xsd"))
+                    .newSchema(new Source[]{new StreamSource(DMNValidatorImpl.class.getResourceAsStream("org/omg/spec" +
+                                                                                                                "/DMN" +
+                                                                                                                "/20230324/DC.xsd")),
+                            new StreamSource(DMNValidatorImpl.class.getResourceAsStream("org/omg/spec/DMN/20230324/DI" +
+                                                                                                ".xsd")),
+                            new StreamSource(DMNValidatorImpl.class.getResourceAsStream("org/omg/spec/DMN/20230324" +
+                                                                                                "/DMNDI15.xsd")),
+                            new StreamSource(DMNValidatorImpl.class.getResourceAsStream("org/omg/spec/DMN/20230324" +
+                                                                                                "/DMN15.xsd"))
                     });
         } catch (SAXException e) {
             throw new RuntimeException("Unable to initialize correctly DMNValidator.", e);
         }
+    }
+
+    static final Map<DMN_VERSION, Schema> DMNVERSION_SCHEMA_MAP;
+
+    static {
+        DMNVERSION_SCHEMA_MAP = new HashMap<>();
+        DMNVERSION_SCHEMA_MAP.put(DMN_VERSION.DMN_v1_1, schemav1_1);
+        DMNVERSION_SCHEMA_MAP.put(DMN_VERSION.DMN_v1_2, schemav1_2);
+        DMNVERSION_SCHEMA_MAP.put(DMN_VERSION.DMN_v1_3, schemav1_3);
+        DMNVERSION_SCHEMA_MAP.put(DMN_VERSION.DMN_v1_4, schemav1_4);
+        DMNVERSION_SCHEMA_MAP.put(DMN_v1_5, schemav1_5);
+        DMNVERSION_SCHEMA_MAP.put(DMN_VERSION.UNKNOWN, schemav1_5);
     }
 
     private Schema overrideSchema = null;
@@ -176,14 +223,16 @@ public class DMNValidatorImpl implements DMNValidator {
         this.dmnProfiles.addAll(DMNAssemblerService.getDefaultDMNProfiles(localChainedProperties));
         this.dmnProfiles.addAll(dmnProfiles);
         final ClassLoader classLoader = cl == null ? ClassLoaderUtil.findDefaultClassLoader() : cl;
-        DMNCompilerConfigurationImpl dmnCompilerConfiguration = DMNAssemblerService.compilerConfigWithKModulePrefs(classLoader,
+        DMNCompilerConfigurationImpl dmnCompilerConfiguration =
+                DMNAssemblerService.compilerConfigWithKModulePrefs(classLoader,
                                                                                                                    localChainedProperties,
                                                                                                                    this.dmnProfiles,
                                                                                                                    (DMNCompilerConfigurationImpl) DMNFactory.newCompilerConfiguration());
         try {
             DMNAssemblerService.applyDecisionLogicCompilerFactory(classLoader, dmnCompilerConfiguration);
         } catch (Exception e) {
-            throw new IllegalStateException("Unable to initialize DMNCompiler decisionlogicCompilerFactory based on parameters provided", e);
+            throw new IllegalStateException("Unable to initialize DMNCompiler decisionlogicCompilerFactory based on " +
+                                                    "parameters provided", e);
         }
         this.dmnCompilerConfig = dmnCompilerConfiguration;
         dmnDTValidator = InternalDMNDTAnalyserFactory.newDMNDTAnalyser(this.dmnProfiles);
@@ -195,7 +244,6 @@ public class DMNValidatorImpl implements DMNValidator {
     }
 
     public static class ValidatorBuilderImpl implements ValidatorBuilder {
-
 
         private final EnumSet<Validation> flags;
         private final DMNValidatorImpl validator;
@@ -220,25 +268,28 @@ public class DMNValidatorImpl implements DMNValidator {
 
         @Override
         public List<DMNMessage> theseModels(File... files) {
-            Resource[] array = Arrays.stream(files).map(FileSystemResource::new).collect(Collectors.toList()).toArray(new Resource[] {});
+            Resource[] array =
+                    Arrays.stream(files).map(FileSystemResource::new).collect(Collectors.toList()).toArray(new Resource[]{});
             return theseModels(array);
         }
-        
+
         @Override
         public List<DMNMessage> theseModels(Resource... resources) {
-            DMNMessageManager results = new DefaultDMNMessagesManager( null ); // this collector span multiple resources.
+            DMNMessageManager results = new DefaultDMNMessagesManager(null); // this collector span multiple resources.
             List<DMNResource> models = new ArrayList<>();
             for (Resource r : resources) {
-            	try {
-                	// We get passed a Resource, which might be constructed from a Reader, so we have only 1-time opportunity to be sure to read it successfully,
-                	// we internalize the content:
-                    String content = readContent( r.getReader() );
+                try {
+                    // We get passed a Resource, which might be constructed from a Reader, so we have only 1-time
+                    // opportunity to be sure to read it successfully,
+                    // we internalize the content:
+                    String content = readContent(r.getReader());
                     if (flags.contains(VALIDATE_SCHEMA)) {
-                    	results.addAll(validator.validateSchema( content, r.getSourcePath() ));
+                        results.addAll(validator.validateSchemaAndNamespaces(content, r.getSourcePath()));
                     }
-                    if (!results.hasErrors()) { // pointless to unmarshall if failing the schema, and will eventually stop before VALIDATE_MODEL later.
+                    if (!results.hasErrors()) { // pointless to unmarshall if failing the schema, and will eventually
+                        // stop before VALIDATE_MODEL later.
                         DMNResource dmnResource = unmarshallDMNResource(validator.dmnCompilerConfig, r, content);
-                        models.add(dmnResource);                        
+                        models.add(dmnResource);
                     }
                 } catch (Exception t) {
                     MsgUtil.reportMessage(LOG,
@@ -275,13 +326,14 @@ public class DMNValidatorImpl implements DMNValidator {
 
         @Override
         public List<DMNMessage> theseModels(Reader... readers) {
-            Resource[] array = Arrays.stream(readers).map(ReaderResource::new).collect(Collectors.toList()).toArray(new Resource[] {});
+            Resource[] array =
+                    Arrays.stream(readers).map(ReaderResource::new).collect(Collectors.toList()).toArray(new Resource[]{});
             return theseModels(array);
         }
 
         @Override
         public List<DMNMessage> theseModels(Definitions... models) {
-            DMNMessageManager results = new DefaultDMNMessagesManager( null );
+            DMNMessageManager results = new DefaultDMNMessagesManager(null);
             if (flags.contains(VALIDATE_SCHEMA)) {
                 MsgUtil.reportMessage(LOG,
                                       DMNMessage.Severity.ERROR,
@@ -302,7 +354,8 @@ public class DMNValidatorImpl implements DMNValidator {
                                           Msg.VALIDATION_STOPPED);
                     return results.getMessages();
                 }
-                List<DMNResource> dmnRs = Arrays.stream(models).map(d -> wrapDefinitions(d, null)).collect(Collectors.toList());
+                List<DMNResource> dmnRs =
+                        Arrays.stream(models).map(d -> wrapDefinitions(d, null)).collect(Collectors.toList());
                 processDMNResourcesAndValidate(results, dmnRs);
             }
             return results.getMessages();
@@ -321,11 +374,14 @@ public class DMNValidatorImpl implements DMNValidator {
                         DMNCompilerImpl compiler = new DMNCompilerImpl(validator.dmnCompilerConfig);
                         Function<String, Reader> relativeResolver = null;
                         if (importResolver != null) {
-                            relativeResolver = locationURI -> importResolver.newReader(dmnR.getDefinitions().getNamespace(),
+                            relativeResolver =
+                                    locationURI -> importResolver.newReader(dmnR.getDefinitions().getNamespace(),
                                                                                        dmnR.getDefinitions().getName(),
                                                                                        locationURI);
                         }
-                        DMNModel model = compiler.compile( dmnR.getDefinitions(), otherModelsDMNModels, dmnR.getResAndConfig().getResource(), relativeResolver ); // must use this internal method to ensure the Definitions model is the same (identity wise)
+                        DMNModel model = compiler.compile(dmnR.getDefinitions(), otherModelsDMNModels,
+                                                          dmnR.getResAndConfig().getResource(), relativeResolver); //
+                        // must use this internal method to ensure the Definitions model is the same (identity wise)
                         if (model != null) {
                             results.addAll(model.getMessages());
                             otherModelsDMNModels.add(model);
@@ -350,15 +406,15 @@ public class DMNValidatorImpl implements DMNValidator {
                 }
             }
         }
-
     }
 
     private static List<DMNMessage> processDMNDTValidatorMessages(DMNResource dmnR, List<DTAnalysis> vs) {
         String path = dmnR.getResAndConfig().getResource().getSourcePath();
-        List<DMNMessage> dtAnalysisResults = vs.stream().flatMap(a -> a.asDMNMessages().stream()).map(m -> ((DMNMessageImpl) m).withPath(path)).collect(Collectors.toList());
+        List<DMNMessage> dtAnalysisResults =
+                vs.stream().flatMap(a -> a.asDMNMessages().stream()).map(m -> ((DMNMessageImpl) m).withPath(path)).collect(Collectors.toList());
         return dtAnalysisResults;
     }
-    
+
     public Schema getOverrideSchema() {
         return overrideSchema;
     }
@@ -373,25 +429,25 @@ public class DMNValidatorImpl implements DMNValidator {
 
     @Override
     public List<DMNMessage> validate(Definitions dmnModel) {
-        return validate( dmnModel, VALIDATE_MODEL );
+        return validate(dmnModel, VALIDATE_MODEL);
     }
 
     @Override
     public List<DMNMessage> validate(Definitions dmnModel, Validation... options) {
-        DMNMessageManager results = new DefaultDMNMessagesManager( null );
-        EnumSet<Validation> flags = EnumSet.copyOf( Arrays.asList( options ) );
-        if( flags.contains( VALIDATE_SCHEMA ) ) {
-            MsgUtil.reportMessage( LOG,
-                                   DMNMessage.Severity.ERROR,
-                                   dmnModel,
-                                   results,
-                                   null,
-                                   null,
-                                   Msg.FAILED_NO_XML_SOURCE );
+        DMNMessageManager results = new DefaultDMNMessagesManager(null);
+        EnumSet<Validation> flags = EnumSet.copyOf(Arrays.asList(options));
+        if (flags.contains(VALIDATE_SCHEMA)) {
+            MsgUtil.reportMessage(LOG,
+                                  DMNMessage.Severity.ERROR,
+                                  dmnModel,
+                                  results,
+                                  null,
+                                  null,
+                                  Msg.FAILED_NO_XML_SOURCE);
         }
         try {
-            validateModelCompilation( wrapDefinitions(dmnModel, null), results, flags );
-        } catch ( Throwable t ) {
+            validateModelCompilation(wrapDefinitions(dmnModel, null), results, flags);
+        } catch (Throwable t) {
             MsgUtil.reportMessage(LOG,
                                   DMNMessage.Severity.ERROR,
                                   null,
@@ -406,7 +462,7 @@ public class DMNValidatorImpl implements DMNValidator {
 
     @Override
     public List<DMNMessage> validate(File xmlFile) {
-        return validate( xmlFile, VALIDATE_MODEL );
+        return validate(xmlFile, VALIDATE_MODEL);
     }
 
     @Override
@@ -416,35 +472,36 @@ public class DMNValidatorImpl implements DMNValidator {
 
     @Override
     public List<DMNMessage> validate(Reader reader) {
-        return validate( reader, VALIDATE_MODEL );
+        return validate(reader, VALIDATE_MODEL);
     }
 
     @Override
     public List<DMNMessage> validate(Reader reader, Validation... options) {
         return validate(new ReaderResource(reader), options);
     }
-    
+
     @Override
     public List<DMNMessage> validate(Resource resource) {
-        return validate( resource, VALIDATE_MODEL );
+        return validate(resource, VALIDATE_MODEL);
     }
-    
+
     @Override
     public List<DMNMessage> validate(Resource resource, Validation... options) {
-        DMNMessageManager results = new DefaultDMNMessagesManager( resource );
-        EnumSet<Validation> flags = EnumSet.copyOf( Arrays.asList( options ) );
+        DMNMessageManager results = new DefaultDMNMessagesManager(resource);
+        EnumSet<Validation> flags = EnumSet.copyOf(Arrays.asList(options));
         try {
-            // We get passed a Resource, which might be constructed from a Reader, so we have only 1-time opportunity to be sure to read it successfully,
+            // We get passed a Resource, which might be constructed from a Reader, so we have only 1-time opportunity
+            // to be sure to read it successfully,
             // we internalize the content:
-            String content = readContent( resource.getReader() );
-            if( flags.contains( VALIDATE_SCHEMA ) ) {
-                results.addAll( validateSchema( content, resource.getSourcePath() ) );
+            String content = readContent(resource.getReader());
+            if (flags.contains(VALIDATE_SCHEMA)) {
+                results.addAll(validateSchemaAndNamespaces(content, resource.getSourcePath()));
             }
-            if( flags.contains( VALIDATE_MODEL ) || flags.contains( VALIDATE_COMPILATION ) || flags.contains( ANALYZE_DECISION_TABLE ) ) {
+            if (flags.contains(VALIDATE_MODEL) || flags.contains(VALIDATE_COMPILATION) || flags.contains(ANALYZE_DECISION_TABLE)) {
                 DMNResource dmnResource = unmarshallDMNResource(dmnCompilerConfig, resource, content);
-                validateModelCompilation( dmnResource, results, flags );
+                validateModelCompilation(dmnResource, results, flags);
             }
-        } catch ( Throwable t ) {
+        } catch (Throwable t) {
             MsgUtil.reportMessage(LOG,
                                   DMNMessage.Severity.ERROR,
                                   null,
@@ -460,33 +517,38 @@ public class DMNValidatorImpl implements DMNValidator {
     private static String readContent(Reader reader)
             throws IOException {
         char[] b = new char[32 * 1024];
-        StringBuilder content = new StringBuilder(  );
+        StringBuilder content = new StringBuilder();
         int chars = -1;
-        while( (chars = reader.read( b ) ) > 0 ) {
-            content.append( b, 0, chars );
+        while ((chars = reader.read(b)) > 0) {
+            content.append(b, 0, chars);
         }
         return content.toString();
     }
 
-    private static DMNResource unmarshallDMNResource(DMNCompilerConfiguration config, Resource originalResource, String content) {
-        Definitions dmndefs = DMNMarshallerFactory.newMarshallerWithExtensions(config.getRegisteredExtensions()).unmarshal(content);
+    private static DMNResource unmarshallDMNResource(DMNCompilerConfiguration config, Resource originalResource,
+                                                     String content) {
+        Definitions dmndefs =
+                DMNMarshallerFactory.newMarshallerWithExtensions(config.getRegisteredExtensions()).unmarshal(content);
         dmndefs.normalize();
         return wrapDefinitions(dmndefs, originalResource.getSourcePath());
     }
-    
+
     private static DMNResource wrapDefinitions(Definitions dmndefs, String path) {
-        return new DMNResource(dmndefs, new ResourceWithConfigurationImpl(new DMNValidatorResource(path), null, x -> {}, y -> {}));
+        return new DMNResource(dmndefs, new ResourceWithConfigurationImpl(new DMNValidatorResource(path), null, x -> {
+        }, y -> {
+        }));
     }
-    
+
     /**
-     * Used only to mark a reference to the original Resource's path, so to have the DMNMessage(s) correctly valorized using existing message-manager infrastructure.
+     * Used only to mark a reference to the original Resource's path, so to have the DMNMessage(s) correctly
+     * valorized using existing message-manager infrastructure.
      */
     private static class DMNValidatorResource extends BaseResource {
-        
+
         public DMNValidatorResource() {
             // intentionally blank, added for proper support of Externalizable
         }
-        
+
         public DMNValidatorResource(String path) {
             this.setSourcePath(path);
         }
@@ -525,69 +587,99 @@ public class DMNValidatorImpl implements DMNValidator {
         public Reader getReader() throws IOException {
             throw new UnsupportedOperationException();
         }
-        
     }
-    
+
     private void validateModelCompilation(DMNResource dmnModel, DMNMessageManager results, EnumSet<Validation> flags) {
-        if( flags.contains( VALIDATE_MODEL ) ) {
+        if (flags.contains(VALIDATE_MODEL)) {
             results.addAll(validateModel(dmnModel, Collections.emptyList()));
         }
-        if( flags.contains( VALIDATE_COMPILATION ) ) {
-            results.addAll( validateCompilation( dmnModel ) );
+        if (flags.contains(VALIDATE_COMPILATION)) {
+            results.addAll(validateCompilation(dmnModel));
         }
-        if (flags.contains( ANALYZE_DECISION_TABLE )) {
+        if (flags.contains(ANALYZE_DECISION_TABLE)) {
             results.addAllUnfiltered(analyseDT(dmnModel, flags));
         }
     }
 
-    private List<DMNMessage> validateSchema(String xml, String path) {
-        List<DMNMessage> problems = new ArrayList<>();
+    private List<DMNMessage> validateSchemaAndNamespaces(String xml, String path) {
+        List<DMNMessage> toReturn = new ArrayList<>();
         try {
-            DMN_VERSION inferDMNVersion = XStreamMarshaller.inferDMNVersion(new StringReader(xml));
-            Schema usingSchema = determineSchema(inferDMNVersion);
+            Collection<String> nsContextValues = XStreamMarshaller.getNsContextValues(new StringReader(xml));
+            DMN_VERSION inferDMNVersion = XStreamMarshaller.inferDMNVersion(nsContextValues);
+            Schema usingSchema = determineSchema(inferDMNVersion, overrideSchema);
+            toReturn.addAll(validateSchema(xml, path, usingSchema));
+            toReturn.addAll(validateNsContextValues(nsContextValues, path, inferDMNVersion));
+        } catch (Exception e) {
+            String errorMessage = String.format("%s - %s", path, e.getMessage());
+            toReturn.add(new DMNMessageImpl(DMNMessage.Severity.ERROR,
+                                            MsgUtil.createMessage(Msg.FAILED_XML_VALIDATION, errorMessage),
+                                            Msg.FAILED_XML_VALIDATION.getType(), null, e).withPath(path));
+        }
+        return toReturn;
+    }
+
+    static List<DMNMessage> validateSchema(String xml, String path, Schema usingSchema) {
+        List<DMNMessage> toReturn = new ArrayList<>();
+        try {
             Source s = new StreamSource(new StringReader(xml));
             validateSchema(s, usingSchema);
         } catch (Exception e) {
             String errorMessage = String.format("%s - %s", path, e.getMessage());
-            problems.add(new DMNMessageImpl(DMNMessage.Severity.ERROR, MsgUtil.createMessage(Msg.FAILED_XML_VALIDATION, errorMessage), Msg.FAILED_XML_VALIDATION.getType(), null, e).withPath(path));
+            toReturn.add(new DMNMessageImpl(DMNMessage.Severity.ERROR,
+                                            MsgUtil.createMessage(Msg.FAILED_XML_VALIDATION, errorMessage),
+                                            Msg.FAILED_XML_VALIDATION.getType(), null, e).withPath(path));
         }
-        return problems;
+        return toReturn;
     }
-    
-    private Schema determineSchema(DMN_VERSION dmnVersion) {
+
+    static List<DMNMessage> validateNsContextValues(Collection<String> nsContextValues, String path, DMN_VERSION inferDMNVersion) {
+        List<DMNMessage> toReturn = new ArrayList<>();
+        Map<XStreamMarshaller.URI_NAMESPACE, String> mappedNamespaces = getMappedNamespaces(nsContextValues);
+        mappedNamespaces.forEach((key, value) -> {
+            String expectedUri = getNamespaceValueReflectively(inferDMNVersion, key);
+            if (!value.equals(expectedUri)) {
+                String errorMessage = String.format("Invalid %s {%s} for version %s - %s",
+                                                    key.getIdentifier(),
+                                                    value,
+                                                    inferDMNVersion.getVersionString(),
+                                                    path);
+                toReturn.add(new DMNMessageImpl(DMNMessage.Severity.ERROR,
+                                                MsgUtil.createMessage(Msg.FAILED_XML_VALIDATION, errorMessage),
+                                                Msg.FAILED_XML_VALIDATION.getType(), null)
+                                     .withPath(path));
+            }
+        });
+        return toReturn;
+    }
+
+    static Map<XStreamMarshaller.URI_NAMESPACE, String> getMappedNamespaces(Collection<String> nsContextValues) {
+        Map<XStreamMarshaller.URI_NAMESPACE, String> toReturn = new HashMap<>();
+        Arrays.stream(XStreamMarshaller.URI_NAMESPACE.values()).forEach(uri -> {
+            String expected = String.format("/%s/", uri.getIdentifier());
+            for (String nsContextValue : nsContextValues) {
+                if (nsContextValue.contains(expected)) {
+                    toReturn.put(uri, nsContextValue);
+                }
+            }
+        });
+        return toReturn;
+    }
+
+    static Schema determineSchema(DMN_VERSION dmnVersion, Schema overrideSchema) {
         if (overrideSchema != null) {
             return overrideSchema;
         }
-        switch (dmnVersion) {
-            case DMN_v1_1:
-                return schemav1_1;
-            case DMN_v1_2:
-                return schemav1_2;
-            case DMN_v1_3:
-                return schemav1_3;
-            case DMN_v1_4:
-                return schemav1_4;
-            case DMN_v1_5:
-            case UNKNOWN:
-            default:
-                return schemav1_5;
-        }
+        return DMNVERSION_SCHEMA_MAP.containsKey(dmnVersion) ?
+                DMNVERSION_SCHEMA_MAP.get(dmnVersion) : DMNVERSION_SCHEMA_MAP.get(DMN_VERSION.UNKNOWN);
     }
 
-    private void validateSchema(Source s, Schema using) throws SAXException, IOException {
+    static void validateSchema(Source s, Schema using) throws SAXException, IOException {
         Validator validator = using.newValidator();
         validator.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
         validator.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
         validator.validate(s);
     }
 
-//    private void validateNamespaces(Source s) throws SAXException, IOException {
-//        Validator validator = using.newValidator();
-//        validator.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-//        validator.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
-//        validator.validate(s);
-//    }
-    
     private List<DMNMessage> validateModel(DMNResource mainModel, List<DMNResource> otherModels) {
         Definitions mainDefinitions = mainModel.getDefinitions();
         List<String> unnamedImports = mainDefinitions.getImport().stream()
@@ -603,17 +695,25 @@ public class DMNValidatorImpl implements DMNValidator {
             otherModelsDefinitions.add(other);
         });
 
-        StatelessKieSession kieSession = mainDefinitions instanceof org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase ? kb11.newStatelessKieSession() : kb12.newStatelessKieSession();
+        StatelessKieSession kieSession =
+                mainDefinitions instanceof org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase ?
+                        kb11.newStatelessKieSession() : kb12.newStatelessKieSession();
         MessageReporter reporter = new MessageReporter(mainModel);
-        kieSession.setGlobal( "reporter", reporter );
+        kieSession.setGlobal("reporter", reporter);
 
         // exclude dynamicDecisionService for validation
         List<DMNModelInstrumentedBase> dmnModelElements = allChildren(mainDefinitions)
-                       .filter(d -> !(d instanceof DecisionService &&
-                               Boolean.parseBoolean(d.getAdditionalAttributes().get(new QName("http://www.trisotech.com/2015/triso/modeling", "dynamicDecisionService")))))
-                       .collect(toList());
+                .filter(d -> !(d instanceof DecisionService &&
+                        Boolean.parseBoolean(d.getAdditionalAttributes().get(new QName("http://www.trisotech" +
+                                                                                               ".com/2015/triso" +
+                                                                                               "/modeling",
+                                                                                       "dynamicDecisionService")))))
+                .collect(toList());
 
-        BatchExecutionCommand batch = CommandFactory.newBatchExecution(Arrays.asList(CommandFactory.newInsertElements(dmnModelElements, "DEFAULT", false, "DEFAULT"),
+        BatchExecutionCommand batch =
+                CommandFactory.newBatchExecution(Arrays.asList(CommandFactory.newInsertElements(dmnModelElements,
+                                                                                                "DEFAULT", false,
+                                                                                                "DEFAULT"),
                                                                                      CommandFactory.newInsertElements(otherModelsDefinitions, "DMNImports", false, "DMNImports")));
         kieSession.execute(batch);
 
@@ -621,10 +721,12 @@ public class DMNValidatorImpl implements DMNValidator {
     }
 
     private List<DMNMessage> validateCompilation(DMNResource dmnR) {
-        if( dmnR != null ) {
+        if (dmnR != null) {
             DMNCompilerImpl compiler = new DMNCompilerImpl(dmnCompilerConfig);
-            DMNModel model = compiler.compile( dmnR.getDefinitions(), dmnR.getResAndConfig().getResource(), Collections.emptyList() ); // must use this internal method to ensure the Definitions model is the same (identity wise)
-            if( model != null ) {
+            DMNModel model = compiler.compile(dmnR.getDefinitions(), dmnR.getResAndConfig().getResource(),
+                                              Collections.emptyList()); // must use this internal method to ensure
+            // the Definitions model is the same (identity wise)
+            if (model != null) {
                 return model.getMessages();
             } else {
                 throw new IllegalStateException("Compiled model is null!");
@@ -636,7 +738,9 @@ public class DMNValidatorImpl implements DMNValidator {
     private List<DMNMessage> analyseDT(DMNResource dmnR, Set<Validation> flags) {
         if (dmnR != null) {
             DMNCompilerImpl compiler = new DMNCompilerImpl(dmnCompilerConfig);
-            DMNModel model = compiler.compile( dmnR.getDefinitions(), dmnR.getResAndConfig().getResource(), Collections.emptyList() ); // must use this internal method to ensure the Definitions model is the same (identity wise)
+            DMNModel model = compiler.compile(dmnR.getDefinitions(), dmnR.getResAndConfig().getResource(),
+                                              Collections.emptyList()); // must use this internal method to ensure
+            // the Definitions model is the same (identity wise)
             if (model != null) {
                 List<DTAnalysis> vs = dmnDTValidator.analyse(model, flags);
                 return processDMNDTValidatorMessages(dmnR, vs);
@@ -648,7 +752,7 @@ public class DMNValidatorImpl implements DMNValidator {
     }
 
     private static Stream<DMNModelInstrumentedBase> allChildren(DMNModelInstrumentedBase root) {
-        return Stream.concat( Stream.of(root),
-                              root.getChildren().stream().flatMap(DMNValidatorImpl::allChildren) );
+        return Stream.concat(Stream.of(root),
+                             root.getChildren().stream().flatMap(DMNValidatorImpl::allChildren));
     }
 }

@@ -49,14 +49,6 @@ public class DMN15ValidationsTest {
     static final DMNValidator validator = DMNValidatorFactory.newValidator(List.of(new ExtendedDMNProfile()));
     static final DMNValidator.ValidatorBuilder validatorBuilder = validator.validateUsing(DMNValidator.Validation.VALIDATE_SCHEMA, DMNValidator.Validation.VALIDATE_MODEL);
 
-
-    @Test
-    // TODO to remove
-    void toBeRemoved() {
-        String importedModelFileName = "valid_models/DMNv1_5/AllowedValuesChecksInsideCollection.dmn";
-        validate(importedModelFileName);
-    }
-
     @Test
     void overridingUnnamedImportValidation() {
         String importedModelFileName = "valid_models/DMNv1_5/Imported_Model_Unamed.dmn";

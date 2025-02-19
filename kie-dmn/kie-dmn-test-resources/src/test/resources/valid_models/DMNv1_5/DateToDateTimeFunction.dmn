@@ -22,7 +22,7 @@
                  xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
                  xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/"
                  xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
-                 xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
+                 xmlns:feel="https://www.omg.org/spec/DMN/20230324/FEEL/"
                  id="_14BDA5CA-C87F-448D-AF75-F976A9E0EF83"
                  name="new-file"
                  typeLanguage="http://www.omg.org/spec/DMN/20230324/FEEL/"
