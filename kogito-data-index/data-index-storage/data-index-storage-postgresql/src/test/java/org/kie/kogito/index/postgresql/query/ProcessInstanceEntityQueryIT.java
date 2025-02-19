@@ -19,17 +19,24 @@
 package org.kie.kogito.index.postgresql.query;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.event.process.ProcessInstanceVariableDataEvent;
 import org.kie.kogito.index.jpa.query.AbstractProcessInstanceEntityQueryIT;
+import org.kie.kogito.index.jpa.storage.ProcessDefinitionEntityStorage;
+import org.kie.kogito.index.model.ProcessDefinition;
+import org.kie.kogito.index.model.ProcessDefinitionKey;
 import org.kie.kogito.index.storage.ProcessInstanceStorage;
 import org.kie.kogito.index.test.TestUtils;
 import org.kie.kogito.testcontainers.quarkus.PostgreSqlQuarkusTestResource;
 
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
+
+import jakarta.inject.Inject;
 
 import static java.util.Collections.singletonList;
 import static org.kie.kogito.index.json.JsonUtils.jsonFilter;
@@ -41,6 +48,9 @@ import static org.kie.kogito.persistence.api.query.QueryFilterFactory.*;
 @QuarkusTestResource(PostgreSqlQuarkusTestResource.class)
 class ProcessInstanceEntityQueryIT extends AbstractProcessInstanceEntityQueryIT {
 
+    @Inject
+    ProcessDefinitionEntityStorage definitionStorage;
+
     @Test
     void testProcessInstanceVariables() {
         String processId = "travels";
@@ -48,6 +58,13 @@ class ProcessInstanceEntityQueryIT extends AbstractProcessInstanceEntityQueryIT 
         ProcessInstanceStorage storage = getStorage();
         ProcessInstanceVariableDataEvent variableEvent = TestUtils.createProcessInstanceVariableEvent(processInstanceId, processId, "John", 28, false,
                 List.of("Super", "Astonishing", "TheRealThing"));
+        final String version = "1.0";
+        ProcessDefinitionKey key = new ProcessDefinitionKey(processId, version);
+        ProcessDefinition definitionEvent = TestUtils.createProcessDefinition(processId, version, Set.of());
+        definitionEvent.setAnnotations(Set.of("Javierito", "Another"));
+        definitionEvent.setMetadata(Map.of("name", "Javierito", "hobbies", List.of("community", "first")));
+        variableEvent.setKogitoProcessInstanceVersion(version);
+        definitionStorage.put(key, definitionEvent);
         storage.indexVariable(variableEvent);
         queryAndAssert(assertWithId(), storage, singletonList(jsonFilter(equalTo("variables.traveller.name", "John"))), null, null, null,
                 processInstanceId);
@@ -123,5 +140,11 @@ class ProcessInstanceEntityQueryIT extends AbstractProcessInstanceEntityQueryIT 
                 processInstanceId);
         queryAndAssert(assertNotId(), storage, singletonList(jsonFilter(containsAll("variables.traveller.aliases", List.of("Super", "TheDummyThing")))), null, null, null,
                 processInstanceId);
+        queryAndAssert(assertWithId(), storage, singletonList(jsonFilter(equalTo("definition.metadata.name", "Javierito"))), null, null, null, processInstanceId);
+        queryAndAssert(assertNotId(), storage, singletonList(jsonFilter(equalTo("definition.metadata.name", "Fulanito"))), null, null, null, processInstanceId);
+        queryAndAssert(assertWithId(), storage, singletonList(jsonFilter(contains("definition.metadata.hobbies", "community"))), null, null, null, processInstanceId);
+        queryAndAssert(assertNotId(), storage, singletonList(jsonFilter(contains("definition.metadata.hobbies", "commercial"))), null, null, null, processInstanceId);
+        queryAndAssert(assertWithId(), storage, singletonList(contains("definition.annotations", "Javierito")), null, null, null, processInstanceId);
+        queryAndAssert(assertNotId(), storage, singletonList(contains("definition.annotations", "Fulanito")), null, null, null, processInstanceId);
     }
 }

@@ -18,14 +18,18 @@
  */
 package org.kie.kogito.index.postgresql;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.kie.kogito.persistence.api.query.AttributeFilter;
 
+import jakarta.persistence.PersistenceException;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Expression;
+import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 
@@ -101,11 +105,26 @@ public class PostgresqlJsonHelper {
 
     private static Expression buildPathExpression(CriteriaBuilder builder, Root<?> root, String attributeName, boolean isStr) {
         String[] attributes = attributeName.split("\\.");
-        Expression<?>[] arguments = new Expression[attributes.length];
-        arguments[0] = root.get(attributes[0]);
-        for (int i = 1; i < attributes.length; i++) {
-            arguments[i] = builder.literal(attributes[i]);
+
+        Collection<Expression> arguments = new ArrayList<>();
+        if (attributes.length == 1)
+            return root.get(attributeName);
+        int startIndex;
+        // Check if the first attribute is a join, if it is, assume next attribute is the json property (not sure thats necessarily correct but it will work)
+        try {
+            Join join = root.join(attributes[0]);
+            arguments.add(join.get(attributes[1]));
+            startIndex = 2;
+        } catch (PersistenceException ex) {
+            // If not, the first attribute is the json one, 
+            arguments.add(root.get(attributes[0]));
+            startIndex = 1;
         }
-        return isStr ? builder.function("jsonb_extract_path_text", String.class, arguments) : builder.function("jsonb_extract_path", Object.class, arguments);
+
+        for (int i = startIndex; i < attributes.length; i++) {
+            arguments.add(builder.literal(attributes[i]));
+        }
+        return isStr ? builder.function("jsonb_extract_path_text", String.class, arguments.toArray(new Expression[arguments.size()]))
+                : builder.function("jsonb_extract_path", Object.class, arguments.toArray(new Expression[arguments.size()]));
     }
 }

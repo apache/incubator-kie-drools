@@ -149,7 +149,7 @@ public abstract class AbstractGraphQLSchemaManager implements GraphQLSchemaManag
 
     public ProcessDefinition getProcessDefinition(DataFetchingEnvironment env) {
         ProcessInstance source = env.getSource();
-        return cacheService.getProcessDefinitionStorage().get(new ProcessDefinitionKey(source.getProcessId(), source.getVersion()));
+        return source.getDefinition();
     }
 
     protected String getServiceUrl(String endpoint, String processId) {

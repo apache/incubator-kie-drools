@@ -19,22 +19,24 @@
 package org.kie.kogito.index.jpa.model;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
 import org.kie.kogito.index.model.ProcessDefinitionKey;
+import org.kie.kogito.persistence.postgresql.hibernate.JsonBinaryConverter;
+
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.MapKeyColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
@@ -74,13 +76,9 @@ public class ProcessDefinitionEntity extends AbstractEntity {
             @JoinColumn(name = "process_version", referencedColumnName = "version") }, foreignKey = @ForeignKey(name = "fk_definitions_annotations"))
     @Column(name = "annotation")
     private Set<String> annotations;
-    @ElementCollection
-    @CollectionTable(name = "definitions_metadata", joinColumns = {
-            @JoinColumn(name = "process_id", referencedColumnName = "id"), @JoinColumn(name = "process_version", referencedColumnName = "version") },
-            foreignKey = @ForeignKey(name = "fk_definitions_metadata"))
-    @MapKeyColumn(name = "name")
-    @Column(name = "meta_value")
-    private Map<String, String> metadata;
+    @Convert(converter = JsonBinaryConverter.class)
+    @Column(columnDefinition = "jsonb")
+    private ObjectNode metadata;
 
     @Override
     public String getId() {
@@ -171,11 +169,11 @@ public class ProcessDefinitionEntity extends AbstractEntity {
         this.annotations = annotations;
     }
 
-    public Map<String, String> getMetadata() {
+    public ObjectNode getMetadata() {
         return metadata;
     }
 
-    public void setMetadata(Map<String, String> metadata) {
+    public void setMetadata(ObjectNode metadata) {
         this.metadata = metadata;
     }
 

@@ -35,7 +35,7 @@ public class ProcessDefinition {
     private String source;
     private String description;
     private Set<String> annotations;
-    private Map<String, String> metadata;
+    private Map<String, Object> metadata;
     private List<Node> nodes;
 
     public String getId() {
@@ -126,11 +126,11 @@ public class ProcessDefinition {
         this.annotations = annotations;
     }
 
-    public Map<String, String> getMetadata() {
+    public Map<String, Object> getMetadata() {
         return metadata;
     }
 
-    public void setMetadata(Map<String, String> metadata) {
+    public void setMetadata(Map<String, Object> metadata) {
         this.metadata = metadata;
     }
 

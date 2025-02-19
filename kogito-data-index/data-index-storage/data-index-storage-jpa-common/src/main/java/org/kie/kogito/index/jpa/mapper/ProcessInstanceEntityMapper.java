@@ -19,13 +19,16 @@
 package org.kie.kogito.index.jpa.mapper;
 
 import org.kie.kogito.index.jpa.model.MilestoneEntity;
+import org.kie.kogito.index.jpa.model.ProcessDefinitionEntity;
 import org.kie.kogito.index.jpa.model.ProcessInstanceEntity;
 import org.kie.kogito.index.model.Milestone;
+import org.kie.kogito.index.model.ProcessDefinition;
 import org.kie.kogito.index.model.ProcessInstance;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "cdi", suppressTimestampInGenerated = true)
 public interface ProcessInstanceEntityMapper {
@@ -39,6 +42,10 @@ public interface ProcessInstanceEntityMapper {
 
     @InheritInverseConfiguration
     ProcessInstance mapToModel(ProcessInstanceEntity pi);
+
+    default ProcessDefinition mapToDefinition(ProcessDefinitionEntity entity) {
+        return Mappers.getMapper(ProcessDefinitionEntityMapper.class).mapToModel(entity);
+    }
 
     @AfterMapping
     default void afterMapping(@MappingTarget ProcessInstanceEntity entity) {

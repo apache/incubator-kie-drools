@@ -20,6 +20,7 @@ package org.kie.kogito.index.infinispan.protostream;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
@@ -61,7 +62,7 @@ public class ProcessDefinitionMarshaller extends AbstractMarshaller implements M
         pd.setName(reader.readString(NAME));
         pd.setDescription(reader.readString(DESCRIPTION));
         pd.setAnnotations(reader.readCollection(ANNOTATIONS, new HashSet<>(), String.class));
-        pd.setMetadata(buildMetadata(reader));
+        pd.setMetadata(Collections.unmodifiableMap(buildMetadata(reader)));
         pd.setRoles(reader.readCollection(ROLES, new HashSet<>(), String.class));
         pd.setAddons(reader.readCollection(ADDONS, new HashSet<>(), String.class));
         pd.setType(reader.readString(TYPE));
@@ -97,7 +98,8 @@ public class ProcessDefinitionMarshaller extends AbstractMarshaller implements M
     private static Set<Entry> buildMetadata(ProcessDefinition pd) {
         return Optional.ofNullable(pd.getMetadata())
                 .map(Map::entrySet)
-                .map(entries -> entries.stream().map(e -> new Entry(e.getKey(), e.getValue())).collect(Collectors.toSet()))
+                .map(entries -> entries.stream().filter(e -> e.getValue() != null)
+                        .map(e -> new Entry(e.getKey(), e.getValue().toString())).collect(Collectors.toSet()))
                 .orElse(null);
     }
 

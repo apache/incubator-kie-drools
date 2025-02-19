@@ -18,12 +18,18 @@
  */
 package org.kie.kogito.index.jpa.mapper;
 
+import java.util.Map;
+
 import org.kie.kogito.index.jpa.model.ProcessDefinitionEntity;
 import org.kie.kogito.index.model.ProcessDefinition;
+import org.kie.kogito.jackson.utils.JsonObjectUtils;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 @Mapper(componentModel = "cdi", suppressTimestampInGenerated = true)
 public interface ProcessDefinitionEntityMapper {
@@ -39,6 +45,15 @@ public interface ProcessDefinitionEntityMapper {
 
     default String map(byte[] value) {
         return value == null ? null : new String(value);
+    }
+
+    default ObjectNode map(Map<String, Object> model) {
+        JsonNode entity = JsonObjectUtils.fromValue(model);
+        return entity == null || !entity.isObject() ? null : (ObjectNode) entity;
+    }
+
+    default Map<String, Object> map(ObjectNode entity) {
+        return (Map<String, Object>) JsonObjectUtils.convertValue(entity, Map.class);
     }
 
     @AfterMapping

@@ -113,6 +113,7 @@ public class ProcessInstanceEntityStorage extends AbstractJPAStorageFetcher<Stri
         return repository.findByIdOptional(event.getKogitoProcessInstanceId()).orElseGet(() -> {
             ProcessInstanceEntity pi = new ProcessInstanceEntity();
             pi.setProcessId(event.getKogitoProcessId());
+            pi.setVersion(event.getKogitoProcessInstanceVersion());
             pi.setId(event.getKogitoProcessInstanceId());
             pi.setLastUpdate(toZonedDateTime(event.getTime()));
             pi.setNodes(new ArrayList<>());

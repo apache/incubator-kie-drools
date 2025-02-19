@@ -21,6 +21,9 @@ package org.kie.kogito.index.test;
 import java.util.List;
 import java.util.function.BiConsumer;
 
+import org.assertj.core.groups.Tuple;
+import org.kie.kogito.index.model.ProcessDefinitionKey;
+
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -55,4 +58,12 @@ public class QueryTestUtils {
         return (instances, ids) -> assertThat(instances).extracting("id").doesNotContainAnyElementsOf(List.of(ids));
     }
 
+    public static <V> BiConsumer<List<V>, ProcessDefinitionKey[]> assertWithKey() {
+        return (instances, ids) -> assertThat(instances).hasSize(ids == null ? 0 : ids.length).extracting("id", "version").map(Tuple::toArray)
+                .map(objs -> new ProcessDefinitionKey((String) objs[0], (String) objs[1])).containsExactly(ids);
+    }
+
+    public static <V> BiConsumer<List<V>, ProcessDefinitionKey[]> assertNoKey() {
+        return (instances, ids) -> assertThat(instances).isEmpty();
+    }
 }

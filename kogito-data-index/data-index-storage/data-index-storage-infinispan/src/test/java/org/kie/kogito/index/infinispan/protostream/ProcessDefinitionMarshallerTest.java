@@ -21,6 +21,7 @@ package org.kie.kogito.index.infinispan.protostream;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.infinispan.protostream.MessageMarshaller;
 import org.junit.jupiter.api.Test;
@@ -29,7 +30,6 @@ import org.kie.kogito.index.model.ProcessDefinition;
 import org.mockito.InOrder;
 
 import static java.util.Collections.singleton;
-import static java.util.stream.Collectors.toSet;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.kogito.index.infinispan.protostream.ProcessDefinitionMarshaller.ADDONS;
 import static org.kie.kogito.index.infinispan.protostream.ProcessDefinitionMarshaller.ANNOTATIONS;
@@ -48,6 +48,9 @@ import static org.mockito.Mockito.when;
 
 class ProcessDefinitionMarshallerTest {
 
+    private static final String metaKey = "key1";
+    private final String metaValue = "value1";
+
     @Test
     void testReadFrom() throws IOException {
         MessageMarshaller.ProtoStreamReader reader = mock(MessageMarshaller.ProtoStreamReader.class);
@@ -56,7 +59,7 @@ class ProcessDefinitionMarshallerTest {
         when(reader.readString(NAME)).thenReturn("processName");
         when(reader.readString(DESCRIPTION)).thenReturn("descr");
         when(reader.readCollection(eq(ANNOTATIONS), any(), eq(String.class))).thenReturn(new HashSet<>(singleton("tag1")));
-        when(reader.readCollection(eq(METADATA), any(), eq(Entry.class))).thenReturn(new HashSet<>(singleton(new Entry("key1", "value1"))));
+        when(reader.readCollection(eq(METADATA), any(), eq(Entry.class))).thenReturn(new HashSet<>(singleton(new Entry(metaKey, metaValue))));
         when(reader.readCollection(eq(ROLES), any(), eq(String.class))).thenReturn(new HashSet<>(singleton("admin")));
         when(reader.readCollection(eq(ADDONS), any(), eq(String.class))).thenReturn(new HashSet<>(singleton("process-management")));
         when(reader.readString(TYPE)).thenReturn("processType");
@@ -71,7 +74,7 @@ class ProcessDefinitionMarshallerTest {
                 .hasFieldOrPropertyWithValue(NAME, "processName")
                 .hasFieldOrPropertyWithValue(DESCRIPTION, "descr")
                 .hasFieldOrPropertyWithValue(ANNOTATIONS, singleton("tag1"))
-                .hasFieldOrPropertyWithValue(METADATA, Map.of("key1", "value1"))
+                .hasFieldOrPropertyWithValue(METADATA, Map.of(metaKey, metaValue))
                 .hasFieldOrPropertyWithValue(ROLES, singleton("admin"))
                 .hasFieldOrPropertyWithValue(ADDONS, singleton("process-management"))
                 .hasFieldOrPropertyWithValue(TYPE, "processType");
@@ -90,13 +93,14 @@ class ProcessDefinitionMarshallerTest {
 
     @Test
     void testWriteTo() throws IOException {
+
         ProcessDefinition pd = new ProcessDefinition();
         pd.setId("processId");
         pd.setVersion("1.0");
         pd.setName("processName");
         pd.setDescription("descr");
         pd.setAnnotations(singleton("tag1"));
-        pd.setMetadata(Map.of("key1", "value1"));
+        pd.setMetadata(Map.of(metaKey, metaValue));
         pd.setRoles(singleton("admin"));
         pd.setAddons(singleton("process-management"));
         pd.setType("processType");
@@ -112,7 +116,7 @@ class ProcessDefinitionMarshallerTest {
         inOrder.verify(writer).writeString(NAME, pd.getName());
         inOrder.verify(writer).writeString(DESCRIPTION, pd.getDescription());
         inOrder.verify(writer).writeCollection(ANNOTATIONS, pd.getAnnotations(), String.class);
-        inOrder.verify(writer).writeCollection(METADATA, pd.getMetadata().entrySet().stream().map(e -> new Entry(e.getKey(), e.getValue())).collect(toSet()), Entry.class);
+        inOrder.verify(writer).writeCollection(METADATA, Set.of(new Entry(metaKey, metaValue)), Entry.class);
         inOrder.verify(writer).writeCollection(ROLES, pd.getRoles(), String.class);
         inOrder.verify(writer).writeCollection(ADDONS, pd.getAddons(), String.class);
         inOrder.verify(writer).writeString(TYPE, pd.getType());

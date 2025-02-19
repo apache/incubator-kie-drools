@@ -63,7 +63,7 @@ public class ProcessDefinitionHelper {
         instance.setEndpoint(doMerge(data.getEndpoint(), instance.getEndpoint()));
         instance.setDescription(doMerge(data.getDescription(), instance.getDescription()));
         instance.setAnnotations(doMerge(data.getAnnotations(), instance.getAnnotations()));
-        instance.setMetadata(CommonUtils.mergeMap(toStringMap(data.getMetadata()), instance.getMetadata()));
+        instance.setMetadata(CommonUtils.mergeMap(toObjectMap(data.getMetadata()), instance.getMetadata()));
         instance.setNodes(doMerge(nodeDefinitions(data), instance.getNodes()));
         instance.setSource(doMerge(data.getSource(), instance.getSource()));
         return instance;
@@ -93,6 +93,10 @@ public class ProcessDefinitionHelper {
             return incoming;
         }
         return current;
+    }
+
+    private static Map<String, Object> toObjectMap(Map<String, ?> map) {
+        return map == null ? null : Collections.unmodifiableMap(map);
     }
 
     private static Map<String, String> toStringMap(Map<String, ?> input) {

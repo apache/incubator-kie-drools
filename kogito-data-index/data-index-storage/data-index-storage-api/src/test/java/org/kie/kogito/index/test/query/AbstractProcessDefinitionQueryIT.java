@@ -18,11 +18,8 @@
  */
 package org.kie.kogito.index.test.query;
 
-import java.util.List;
 import java.util.Set;
-import java.util.function.BiConsumer;
 
-import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.index.model.ProcessDefinition;
 import org.kie.kogito.index.model.ProcessDefinitionKey;
@@ -33,7 +30,7 @@ import org.kie.kogito.persistence.api.query.SortDirection;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.kie.kogito.index.test.QueryTestUtils.assertWithKey;
 import static org.kie.kogito.persistence.api.query.QueryFilterFactory.contains;
 import static org.kie.kogito.persistence.api.query.QueryFilterFactory.containsAll;
 import static org.kie.kogito.persistence.api.query.QueryFilterFactory.containsAny;
@@ -69,11 +66,6 @@ public abstract class AbstractProcessDefinitionQueryIT extends QueryTestBase<Pro
                 singletonList(orderBy("version", SortDirection.ASC)), 1, 1, pdv2Key);
         queryAndAssert(assertWithKey(), storage, null, singletonList(orderBy("version", SortDirection.DESC)), null,
                 null, pdv2Key, pdv1Key);
-    }
-
-    public static <V> BiConsumer<List<V>, ProcessDefinitionKey[]> assertWithKey() {
-        return (instances, ids) -> assertThat(instances).hasSize(ids == null ? 0 : ids.length).extracting("id", "version").map(Tuple::toArray)
-                .map(objs -> new ProcessDefinitionKey((String) objs[0], (String) objs[1])).containsExactly(ids);
     }
 
 }
