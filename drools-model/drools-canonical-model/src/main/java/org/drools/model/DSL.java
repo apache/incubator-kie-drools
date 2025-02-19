@@ -23,27 +23,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
 import org.drools.model.consequences.ConsequenceBuilder;
-import org.drools.model.functions.Block0;
-import org.drools.model.functions.Block1;
-import org.drools.model.functions.Function0;
-import org.drools.model.functions.Function1;
-import org.drools.model.functions.Function2;
-import org.drools.model.functions.Function3;
-import org.drools.model.functions.Function4;
-import org.drools.model.functions.Operator;
-import org.drools.model.functions.Predicate1;
-import org.drools.model.functions.Predicate10;
-import org.drools.model.functions.Predicate11;
-import org.drools.model.functions.Predicate12;
-import org.drools.model.functions.Predicate13;
-import org.drools.model.functions.Predicate2;
-import org.drools.model.functions.Predicate3;
-import org.drools.model.functions.Predicate4;
-import org.drools.model.functions.Predicate5;
-import org.drools.model.functions.Predicate6;
-import org.drools.model.functions.Predicate7;
-import org.drools.model.functions.Predicate8;
-import org.drools.model.functions.Predicate9;
+import org.drools.model.functions.*;
 import org.drools.model.functions.accumulate.AccumulateFunction;
 import org.drools.model.functions.temporal.AbstractTemporalPredicate;
 import org.drools.model.functions.temporal.AfterPredicate;
@@ -60,47 +40,8 @@ import org.drools.model.functions.temporal.OverlapsPredicate;
 import org.drools.model.functions.temporal.StartedbyPredicate;
 import org.drools.model.functions.temporal.StartsPredicate;
 import org.drools.model.functions.temporal.TemporalPredicate;
-import org.drools.model.impl.AnnotationValueImpl;
-import org.drools.model.impl.DeclarationImpl;
-import org.drools.model.impl.EntryPointImpl;
-import org.drools.model.impl.Exchange;
-import org.drools.model.impl.From0Impl;
-import org.drools.model.impl.From1Impl;
-import org.drools.model.impl.From2Impl;
-import org.drools.model.impl.From3Impl;
-import org.drools.model.impl.From4Impl;
-import org.drools.model.impl.GlobalImpl;
-import org.drools.model.impl.TypeMetaDataImpl;
-import org.drools.model.impl.UnitDataImpl;
-import org.drools.model.impl.ValueImpl;
-import org.drools.model.impl.WindowImpl;
-import org.drools.model.impl.WindowReferenceImpl;
-import org.drools.model.view.AccumulateExprViewItem;
-import org.drools.model.view.CombinedExprViewItem;
-import org.drools.model.view.ExistentialExprViewItem;
-import org.drools.model.view.Expr10ViewItemImpl;
-import org.drools.model.view.Expr11ViewItemImpl;
-import org.drools.model.view.Expr12ViewItemImpl;
-import org.drools.model.view.Expr13ViewItemImpl;
-import org.drools.model.view.Expr1ViewItem;
-import org.drools.model.view.Expr1ViewItemImpl;
-import org.drools.model.view.Expr2ViewItem;
-import org.drools.model.view.Expr2ViewItemImpl;
-import org.drools.model.view.Expr3ViewItem;
-import org.drools.model.view.Expr3ViewItemImpl;
-import org.drools.model.view.Expr4ViewItem;
-import org.drools.model.view.Expr4ViewItemImpl;
-import org.drools.model.view.Expr5ViewItem;
-import org.drools.model.view.Expr5ViewItemImpl;
-import org.drools.model.view.Expr6ViewItemImpl;
-import org.drools.model.view.Expr7ViewItemImpl;
-import org.drools.model.view.Expr8ViewItemImpl;
-import org.drools.model.view.Expr9ViewItemImpl;
-import org.drools.model.view.ExprViewItem;
-import org.drools.model.view.FixedValueItem;
-import org.drools.model.view.GroupByExprViewItem;
-import org.drools.model.view.ViewItem;
-import org.drools.model.view.ViewItemBuilder;
+import org.drools.model.impl.*;
+import org.drools.model.view.*;
 
 import static org.drools.model.functions.FunctionUtils.toFunctionN;
 
@@ -278,6 +219,33 @@ public class DSL {
         return new From4Impl<>(var1, var2, var3, var4, new Function4.Impl<>(provider) );
     }
 
+    public static <A, B, C, D, E> From<A> from(Variable<A> var1, Variable<B> var2, Variable<C> var3, Variable<D> var4, Variable<E> var5, Function5<A, B, C, D, E, ?> provider) {
+        return new From5Impl<>(var1, var2, var3, var4, var5, new Function5.Impl<>(provider));
+    }
+
+    public static <A, B, C, D, E, F> From<A> from(Variable<A> var1, Variable<B> var2, Variable<C> var3, Variable<D> var4, Variable<E> var5, Variable<F> var6, Function6<A, B, C, D, E, F, ?> provider) {
+        return new From6Impl<>(var1, var2, var3, var4, var5, var6, new Function6.Impl<>(provider));
+    }
+
+    public static <A, B, C, D, E, F, G> From<A> from(Variable<A> var1, Variable<B> var2, Variable<C> var3, Variable<D> var4, Variable<E> var5, Variable<F> var6, Variable<G> var7, Function7<A, B, C, D, E, F, G, ?> provider) {
+        return new From7Impl<>(var1, var2, var3, var4, var5, var6, var7, new Function7.Impl<>(provider));
+    }
+
+    public static <A, B, C, D, E, F, G, H> From<A> from(Variable<A> var1, Variable<B> var2, Variable<C> var3, Variable<D> var4, Variable<E> var5, Variable<F> var6, Variable<G> var7, Variable<H> var8, Function8<A, B, C, D, E, F, G, H, ?> provider) {
+        return new From8Impl<>(var1, var2, var3, var4, var5, var6, var7, var8, new Function8.Impl<>(provider));
+    }
+
+    public static <A, B, C, D, E, F, G, H, I> From<A> from(Variable<A> var1, Variable<B> var2, Variable<C> var3, Variable<D> var4, Variable<E> var5, Variable<F> var6, Variable<G> var7, Variable<H> var8, Variable<I> var9, Function9<A, B, C, D, E, F, G, H, I, ?> provider) {
+        return new From9Impl<>(var1, var2, var3, var4, var5, var6, var7, var8, var9, new Function9.Impl<>(provider));
+    }
+
+    public static <A, B, C, D, E, F, G, H, I, J> From<A> from(Variable<A> var1, Variable<B> var2, Variable<C> var3, Variable<D> var4, Variable<E> var5, Variable<F> var6, Variable<G> var7, Variable<H> var8, Variable<I> var9, Variable<J> var10, Function10<A, B, C, D, E, F, G, H, I, J, ?> provider) {
+        return new From10Impl<>(var1, var2, var3, var4, var5, var6, var7, var8, var9, var10, new Function10.Impl<>(provider));
+    }
+    public static <A, B, C, D, E, F, G, H, I, J, K> From<A> from(Variable<A> var1, Variable<B> var2, Variable<C> var3, Variable<D> var4, Variable<E> var5, Variable<F> var6, Variable<G> var7, Variable<H> var8, Variable<I> var9, Variable<J> var10, Variable<K> var11, Function11<A, B, C, D, E, F, G, H, I, J, K, ?> provider) {
+        return new From11Impl<>(var1, var2, var3, var4, var5, var6, var7, var8, var9, var10, var11, new Function11.Impl<>(provider));
+    }
+
     public static <T> From<T> reactiveFrom( Variable<T> variable, Function1<T, ?> provider ) {
         return new From1Impl<>( variable, provider, true );
     }
@@ -437,6 +405,61 @@ public class DSL {
                                                                                Variable<H> var8, Variable<I> var9, Variable<J> var10, Variable<K> var11, Variable<L> var12, Variable<M> var13,
                                                                                Predicate13<A, B, C, D, E, F, G, H, I, J, K, L, M> predicate) {
         return new Expr13ViewItemImpl<>(exprId, var1, var2, var3, var4, var5, var6, var7, var8, var9, var10, var11, var12, var13, new Predicate13.Impl<>(predicate));
+    }
+
+    public static <A, B, C, D, E, F, G, H, I, J, K, L, M, N> ExprViewItem<A> expr(Variable<A> var1, Variable<B> var2, Variable<C> var3, Variable<D> var4, Variable<E> var5, Variable<F> var6, Variable<G> var7,
+                                                                                  Variable<H> var8, Variable<I> var9, Variable<J> var10, Variable<K> var11, Variable<L> var12, Variable<M> var13, Variable<N> var14,
+                                                                                  Predicate14<A, B, C, D, E, F, G, H, I, J, K, L, M, N> predicate) {
+        return new Expr14ViewItemImpl<>(var1, var2, var3, var4, var5, var6, var7, var8, var9, var10, var11, var12, var13, var14, new Predicate14.Impl<>(predicate));
+    }
+    public static <A, B, C, D, E, F, G, H, I, J, K, L, M, N> ExprViewItem<A> expr(String exprId, Variable<A> var1, Variable<B> var2, Variable<C> var3, Variable<D> var4, Variable<E> var5, Variable<F> var6, Variable<G> var7,
+                                                                                  Variable<H> var8, Variable<I> var9, Variable<J> var10, Variable<K> var11, Variable<L> var12, Variable<M> var13, Variable<N> var14,
+                                                                                  Predicate14<A, B, C, D, E, F, G, H, I, J, K, L, M, N> predicate) {
+        return new Expr14ViewItemImpl<>(exprId, var1, var2, var3, var4, var5, var6, var7, var8, var9, var10, var11, var12, var13, var14, new Predicate14.Impl<>(predicate));
+    }
+    public static <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O> ExprViewItem<A> expr(Variable<A> var1, Variable<B> var2, Variable<C> var3, Variable<D> var4, Variable<E> var5, Variable<F> var6, Variable<G> var7,
+                                                                                     Variable<H> var8, Variable<I> var9, Variable<J> var10, Variable<K> var11, Variable<L> var12, Variable<M> var13, Variable<N> var14, Variable<O> var15,
+                                                                                     Predicate15<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O> predicate) {
+        return new Expr15ViewItemImpl<>(var1, var2, var3, var4, var5, var6, var7, var8, var9, var10, var11, var12, var13, var14, var15, new Predicate15.Impl<>(predicate));
+    }
+
+    public static <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O> ExprViewItem<A> expr(String exprId, Variable<A> var1, Variable<B> var2, Variable<C> var3, Variable<D> var4, Variable<E> var5, Variable<F> var6, Variable<G> var7,
+                                                                                     Variable<H> var8, Variable<I> var9, Variable<J> var10, Variable<K> var11, Variable<L> var12, Variable<M> var13, Variable<N> var14, Variable<O> var15,
+                                                                                     Predicate15<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O> predicate) {
+        return new Expr15ViewItemImpl<>(exprId, var1, var2, var3, var4, var5, var6, var7, var8, var9, var10, var11, var12, var13, var14, var15, new Predicate15.Impl<>(predicate));
+    }
+
+    public static <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> ExprViewItem<A> expr(Variable<A> var1, Variable<B> var2, Variable<C> var3, Variable<D> var4, Variable<E> var5, Variable<F> var6, Variable<G> var7,
+                                                                                        Variable<H> var8, Variable<I> var9, Variable<J> var10, Variable<K> var11, Variable<L> var12, Variable<M> var13, Variable<N> var14, Variable<O> var15, Variable<P> var16,
+                                                                                        Predicate16<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> predicate) {
+        return new Expr16ViewItemImpl<>(var1, var2, var3, var4, var5, var6, var7, var8, var9, var10, var11, var12, var13, var14, var15, var16, new Predicate16.Impl<>(predicate));
+    }
+
+    public static <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> ExprViewItem<A> expr(String exprId, Variable<A> var1, Variable<B> var2, Variable<C> var3, Variable<D> var4, Variable<E> var5, Variable<F> var6, Variable<G> var7,
+                                                                                        Variable<H> var8, Variable<I> var9, Variable<J> var10, Variable<K> var11, Variable<L> var12, Variable<M> var13, Variable<N> var14, Variable<O> var15, Variable<P> var16,
+                                                                                        Predicate16<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> predicate) {
+        return new Expr16ViewItemImpl<>(exprId, var1, var2, var3, var4, var5, var6, var7, var8, var9, var10, var11, var12, var13, var14, var15, var16, new Predicate16.Impl<>(predicate));
+    }
+
+    public static <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q> ExprViewItem<A> expr(Variable<A> var1, Variable<B> var2, Variable<C> var3, Variable<D> var4, Variable<E> var5, Variable<F> var6, Variable<G> var7,
+                                                                                           Variable<H> var8, Variable<I> var9, Variable<J> var10, Variable<K> var11, Variable<L> var12, Variable<M> var13, Variable<N> var14, Variable<O> var15, Variable<P> var16, Variable<Q> var17,
+                                                                                           Predicate17<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q> predicate) {
+        return new Expr17ViewItemImpl<>(var1, var2, var3, var4, var5, var6, var7, var8, var9, var10, var11, var12, var13, var14, var15, var16, var17, new Predicate17.Impl<>(predicate));
+    }
+    public static <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q> ExprViewItem<A> expr(String exprId, Variable<A> var1, Variable<B> var2, Variable<C> var3, Variable<D> var4, Variable<E> var5, Variable<F> var6, Variable<G> var7,
+                                                                                           Variable<H> var8, Variable<I> var9, Variable<J> var10, Variable<K> var11, Variable<L> var12, Variable<M> var13, Variable<N> var14, Variable<O> var15, Variable<P> var16, Variable<Q> var17,
+                                                                                           Predicate17<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q> predicate) {
+        return new Expr17ViewItemImpl<>(exprId, var1, var2, var3, var4, var5, var6, var7, var8, var9, var10, var11, var12, var13, var14, var15, var16, var17, new Predicate17.Impl<>(predicate));
+    }
+    public static <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R> ExprViewItem<A> expr(Variable<A> var1, Variable<B> var2, Variable<C> var3, Variable<D> var4, Variable<E> var5, Variable<F> var6, Variable<G> var7,
+                                                                                              Variable<H> var8, Variable<I> var9, Variable<J> var10, Variable<K> var11, Variable<L> var12, Variable<M> var13, Variable<N> var14, Variable<O> var15, Variable<P> var16, Variable<Q> var17, Variable<R> var18,
+                                                                                              Predicate18<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R> predicate) {
+        return new Expr18ViewItemImpl<>(var1, var2, var3, var4, var5, var6, var7, var8, var9, var10, var11, var12, var13, var14, var15, var16, var17, var18, new Predicate18.Impl<>(predicate));
+    }
+    public static <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R> ExprViewItem<A> expr(String exprId, Variable<A> var1, Variable<B> var2, Variable<C> var3, Variable<D> var4, Variable<E> var5, Variable<F> var6, Variable<G> var7,
+                                                                                              Variable<H> var8, Variable<I> var9, Variable<J> var10, Variable<K> var11, Variable<L> var12, Variable<M> var13, Variable<N> var14, Variable<O> var15, Variable<P> var16, Variable<Q> var17, Variable<R> var18,
+                                                                                              Predicate18<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R> predicate) {
+        return new Expr18ViewItemImpl<>(exprId, var1, var2, var3, var4, var5, var6, var7, var8, var9, var10, var11, var12, var13, var14, var15, var16, var17, var18, new Predicate18.Impl<>(predicate));
     }
 
     public static FixedValueItem expr( boolean value ) {
@@ -782,6 +805,31 @@ public class DSL {
     public static <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24> ConsequenceBuilder._24<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24> on(Variable<T1> arg1, Variable<T2> arg2, Variable<T3> arg3, Variable<T4> arg4, Variable<T5> arg5, Variable<T6> arg6, Variable<T7> arg7, Variable<T8> arg8, Variable<T9> arg9, Variable<T10> arg10, Variable<T11> arg11, Variable<T12> arg12, Variable<T13> arg13, Variable<T14> arg14, Variable<T15> arg15, Variable<T16> arg16, Variable<T17> arg17, Variable<T18> arg18, Variable<T19> arg19, Variable<T20> arg20, Variable<T21> arg21, Variable<T22> arg22, Variable<T23> arg23, Variable<T24> arg24) {
         return new ConsequenceBuilder._24(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23, arg24);
     }
+
+    public static <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25>  ConsequenceBuilder._25<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25>  on(Variable<T1> arg1, Variable<T2> arg2, Variable<T3> arg3, Variable<T4> arg4, Variable<T5> arg5, Variable<T6> arg6, Variable<T7> arg7, Variable<T8> arg8, Variable<T9> arg9, Variable<T10> arg10, Variable<T11> arg11, Variable<T12> arg12, Variable<T13> arg13, Variable<T14> arg14, Variable<T15> arg15, Variable<T16> arg16, Variable<T17> arg17, Variable<T18> arg18, Variable<T19> arg19, Variable<T20> arg20, Variable<T21> arg21, Variable<T22> arg22, Variable<T23> arg23, Variable<T24> arg24, Variable<T25> arg25) {
+        return new ConsequenceBuilder._25(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23, arg24, arg25);
+    }
+
+    public static <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26> ConsequenceBuilder._26<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26> on(Variable<T1> arg1, Variable<T2> arg2, Variable<T3> arg3, Variable<T4> arg4, Variable<T5> arg5, Variable<T6> arg6, Variable<T7> arg7, Variable<T8> arg8, Variable<T9> arg9, Variable<T10> arg10, Variable<T11> arg11, Variable<T12> arg12, Variable<T13> arg13, Variable<T14> arg14, Variable<T15> arg15, Variable<T16> arg16, Variable<T17> arg17, Variable<T18> arg18, Variable<T19> arg19, Variable<T20> arg20, Variable<T21> arg21, Variable<T22> arg22, Variable<T23> arg23, Variable<T24> arg24, Variable<T25> arg25, Variable<T26> arg26) {
+        return new ConsequenceBuilder._26(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23, arg24, arg25, arg26);
+    }
+
+    public static <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27> ConsequenceBuilder._27<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27> on(Variable<T1> arg1, Variable<T2> arg2, Variable<T3> arg3, Variable<T4> arg4, Variable<T5> arg5, Variable<T6> arg6, Variable<T7> arg7, Variable<T8> arg8, Variable<T9> arg9, Variable<T10> arg10, Variable<T11> arg11, Variable<T12> arg12, Variable<T13> arg13, Variable<T14> arg14, Variable<T15> arg15, Variable<T16> arg16, Variable<T17> arg17, Variable<T18> arg18, Variable<T19> arg19, Variable<T20> arg20, Variable<T21> arg21, Variable<T22> arg22, Variable<T23> arg23, Variable<T24> arg24, Variable<T25> arg25, Variable<T26> arg26, Variable<T27> arg27) {
+        return new ConsequenceBuilder._27(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23, arg24, arg25, arg26, arg27);
+    }
+
+    public static <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28> ConsequenceBuilder._28<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28> on(Variable<T1> arg1, Variable<T2> arg2, Variable<T3> arg3, Variable<T4> arg4, Variable<T5> arg5, Variable<T6> arg6, Variable<T7> arg7, Variable<T8> arg8, Variable<T9> arg9, Variable<T10> arg10, Variable<T11> arg11, Variable<T12> arg12, Variable<T13> arg13, Variable<T14> arg14, Variable<T15> arg15, Variable<T16> arg16, Variable<T17> arg17, Variable<T18> arg18, Variable<T19> arg19, Variable<T20> arg20, Variable<T21> arg21, Variable<T22> arg22, Variable<T23> arg23, Variable<T24> arg24, Variable<T25> arg25, Variable<T26> arg26, Variable<T27> arg27, Variable<T28> arg28) {
+        return new ConsequenceBuilder._28(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23, arg24, arg25, arg26, arg27, arg28);
+    }
+
+    public static <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28, T29> ConsequenceBuilder._29<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28, T29> on(Variable<T1> arg1, Variable<T2> arg2, Variable<T3> arg3, Variable<T4> arg4, Variable<T5> arg5, Variable<T6> arg6, Variable<T7> arg7, Variable<T8> arg8, Variable<T9> arg9, Variable<T10> arg10, Variable<T11> arg11, Variable<T12> arg12, Variable<T13> arg13, Variable<T14> arg14, Variable<T15> arg15, Variable<T16> arg16, Variable<T17> arg17, Variable<T18> arg18, Variable<T19> arg19, Variable<T20> arg20, Variable<T21> arg21, Variable<T22> arg22, Variable<T23> arg23, Variable<T24> arg24, Variable<T25> arg25, Variable<T26> arg26, Variable<T27> arg27, Variable<T28> arg28, Variable<T29> arg29) {
+        return new ConsequenceBuilder._29(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23, arg24, arg25, arg26, arg27, arg28, arg29);
+    }
+
+    public static <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28, T29, T30> ConsequenceBuilder._30<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28, T29, T30> on(Variable<T1> arg1, Variable<T2> arg2, Variable<T3> arg3, Variable<T4> arg4, Variable<T5> arg5, Variable<T6> arg6, Variable<T7> arg7, Variable<T8> arg8, Variable<T9> arg9, Variable<T10> arg10, Variable<T11> arg11, Variable<T12> arg12, Variable<T13> arg13, Variable<T14> arg14, Variable<T15> arg15, Variable<T16> arg16, Variable<T17> arg17, Variable<T18> arg18, Variable<T19> arg19, Variable<T20> arg20, Variable<T21> arg21, Variable<T22> arg22, Variable<T23> arg23, Variable<T24> arg24, Variable<T25> arg25, Variable<T26> arg26, Variable<T27> arg27, Variable<T28> arg28, Variable<T29> arg29, Variable<T30> arg30) {
+        return new ConsequenceBuilder._30(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23, arg24, arg25, arg26, arg27, arg28, arg29, arg30);
+    }
+
 
     public static ConsequenceBuilder._N on(Variable... declarations) {
         return new ConsequenceBuilder._N(declarations);
