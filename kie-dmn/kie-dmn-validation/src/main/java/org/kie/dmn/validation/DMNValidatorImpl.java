@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -88,7 +88,6 @@ import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
 import static java.util.stream.Collectors.toList;
-import static org.kie.dmn.backend.marshalling.v1x.XStreamMarshaller.DMN_VERSION.DMN_v1_5;
 import static org.kie.dmn.backend.marshalling.v1x.XStreamMarshaller.getNamespaceValueReflectively;
 import static org.kie.dmn.core.compiler.UnnamedImportUtils.mergeDefinitions;
 import static org.kie.dmn.validation.DMNValidator.Validation.ANALYZE_DECISION_TABLE;
@@ -199,7 +198,7 @@ public class DMNValidatorImpl implements DMNValidator {
         DMNVERSION_SCHEMA_MAP.put(DMN_VERSION.DMN_v1_2, schemav1_2);
         DMNVERSION_SCHEMA_MAP.put(DMN_VERSION.DMN_v1_3, schemav1_3);
         DMNVERSION_SCHEMA_MAP.put(DMN_VERSION.DMN_v1_4, schemav1_4);
-        DMNVERSION_SCHEMA_MAP.put(DMN_v1_5, schemav1_5);
+        DMNVERSION_SCHEMA_MAP.put(DMN_VERSION.DMN_v1_5, schemav1_5);
         DMNVERSION_SCHEMA_MAP.put(DMN_VERSION.UNKNOWN, schemav1_5);
     }
 
@@ -607,8 +606,8 @@ public class DMNValidatorImpl implements DMNValidator {
             Collection<String> nsContextValues = XStreamMarshaller.getNsContextValues(new StringReader(xml));
             DMN_VERSION inferDMNVersion = XStreamMarshaller.inferDMNVersion(nsContextValues);
             Schema usingSchema = determineSchema(inferDMNVersion, overrideSchema);
-            toReturn.addAll(validateSchema(xml, path, usingSchema));
             toReturn.addAll(validateNsContextValues(nsContextValues, path, inferDMNVersion));
+            toReturn.addAll(validateSchema(xml, path, usingSchema));
         } catch (Exception e) {
             String errorMessage = String.format("%s - %s", path, e.getMessage());
             toReturn.add(new DMNMessageImpl(DMNMessage.Severity.ERROR,

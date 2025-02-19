@@ -23,7 +23,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Predicate;
 
 import javax.xml.validation.Schema;
 import javax.xml.validation.Validator;
@@ -35,7 +34,6 @@ import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.backend.marshalling.v1x.XStreamMarshaller;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.kie.dmn.backend.marshalling.v1x.XStreamMarshaller.URI_NAMESPACE.URI_DC;
 import static org.kie.dmn.backend.marshalling.v1x.XStreamMarshaller.URI_NAMESPACE.URI_DI;
 import static org.kie.dmn.backend.marshalling.v1x.XStreamMarshaller.URI_NAMESPACE.URI_DMN;
