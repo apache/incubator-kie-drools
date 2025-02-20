@@ -12,18 +12,18 @@ import java.util.Collections;
 
 class GenFnTypeTest {
 
-    private static final AnyFunction anyFunction = AnyFunction.INSTANCE;
+    private static final AbsFunction absFunctionInstance = AbsFunction.INSTANCE;
+    private static final AnyFunction anyFunctionInstance = AnyFunction.INSTANCE;
     private final GenFnType genFnType = new GenFnType(Arrays.asList(null, null), null);;
 
     @Test
     public void testIsInstanceOfWithNoParameters() {
-        AbsFunction functionWithNoParams = new AbsFunction();
-        assertThat(genFnType.isInstanceOf(functionWithNoParams)).isTrue();
+        assertThat(genFnType.isInstanceOf(absFunctionInstance)).isTrue();
     }
 
     @Test
     public void testIsInstanceOfWithNonMatchingParameters() {
-        FEELFnResult<Boolean> feelFn = anyFunction.invoke(new Object[]{Boolean.TRUE, Boolean.TRUE});
+        FEELFnResult<Boolean> feelFn = anyFunctionInstance.invoke(new Object[]{Boolean.TRUE, Boolean.TRUE});
         assertThat(genFnType.isInstanceOf(feelFn)).isFalse();
     }
 
@@ -31,8 +31,7 @@ class GenFnTypeTest {
     @Test
     public void testIsInstanceOfWithMatchingFunctionSignature() {
         GenFnType matchingGenFnType = new GenFnType(Arrays.asList(null, null), null);
-        AbsFunction matchingFunction = new AbsFunction();
-        assertThat(matchingGenFnType.isInstanceOf(matchingFunction)).isTrue();
+        assertThat(matchingGenFnType.isInstanceOf(absFunctionInstance)).isTrue();
     }
 
     @Test
@@ -42,8 +41,7 @@ class GenFnTypeTest {
 
     @Test
     public void testIsAssignableValueWithFunction() {
-        AbsFunction functionWithNoParams = new AbsFunction();
-        assertThat(genFnType.isAssignableValue(functionWithNoParams)).isTrue();
+        assertThat(genFnType.isAssignableValue(absFunctionInstance)).isTrue();
     }
 
 
