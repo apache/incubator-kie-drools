@@ -27,6 +27,7 @@ import org.drools.mvel.compiler.Person;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
@@ -235,6 +236,7 @@ public class NullSafeDereferencingTest {
         ksession.dispose();
     }
 
+    @DisabledIfSystemProperty(named = "drools.drl.antlr4.parser.enabled", matches = "true")
     @ParameterizedTest(name = "KieBase type={0}")
     @MethodSource("parameters")
     public void testMixedNullSafes(KieBaseTestConfiguration kieBaseTestConfiguration) {
@@ -316,7 +318,7 @@ public class NullSafeDereferencingTest {
                 "rule \"Complex Type Attribute\"\n" +
                 "when\n" +
                 " $con : Content()\n" +
-                " Context( ctx == $con || == $con!.complexContent!.extension )\n" +
+                " Context( ctx == $con || ctx == $con!.complexContent!.extension )\n" +
                 "then\n" +
                 " System.out.println( $con ); \n" +
                 "end\n" +

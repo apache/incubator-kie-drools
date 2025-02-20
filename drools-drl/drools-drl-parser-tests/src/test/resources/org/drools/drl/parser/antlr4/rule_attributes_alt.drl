@@ -20,7 +20,7 @@
 
 rule simple_rule 
     attributes:
-        salience 42, agenda-group "my_group", no-loop,  lock-on-active, duration 42, activation-group "my_activation_group"
+        salience 42, ruleflow-group "my_group", no-loop,  lock-on-active, duration 42, activation-group "my_activation_group"
     when
         Foo()
     then

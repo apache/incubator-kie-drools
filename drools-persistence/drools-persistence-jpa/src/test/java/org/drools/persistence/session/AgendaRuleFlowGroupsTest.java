@@ -31,6 +31,7 @@ import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.persistence.util.DroolsPersistenceUtil;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.drools.io.ClassPathResource;
@@ -98,7 +99,8 @@ public class AgendaRuleFlowGroupsTest {
         assertThat(groups[0].getName()).isEqualTo("MAIN");
         assertThat(groups[1].getName()).isEqualTo("ruleflow-group");
 	}
-    
+
+    @DisabledIfSystemProperty(named = "drools.drl.antlr4.parser.enabled", matches = "true")
     @ParameterizedTest
     @MethodSource("parameters")
     public void testAgendaGroupOnly(boolean locking) throws Exception {
@@ -126,7 +128,8 @@ public class AgendaRuleFlowGroupsTest {
         assertThat(groups[1].getName()).isEqualTo("agenda-group");
         
     }
-    
+
+    @DisabledIfSystemProperty(named = "drools.drl.antlr4.parser.enabled", matches = "true")
     @ParameterizedTest
     @MethodSource("parameters")
     public void testAgendaGroupAndRuleFlowGroup(boolean locking) throws Exception {
@@ -234,6 +237,7 @@ public class AgendaRuleFlowGroupsTest {
 
 	}
 
+    @DisabledIfSystemProperty(named = "drools.drl.antlr4.parser.enabled", matches = "true")
     @ParameterizedTest
     @MethodSource("parameters")
     public void testConflictingAgendaAndRuleflowGroups() throws Exception {

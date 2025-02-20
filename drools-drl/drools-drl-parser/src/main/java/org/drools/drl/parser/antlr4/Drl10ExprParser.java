@@ -36,37 +36,37 @@ import org.kie.internal.builder.conf.LanguageLevelOption;
  * This is a helper class that provides helper methods to parse expressions
  * using both the DRLExpressions parser and the DRLExprTree parser.
  */
-public class Drl6ExprParserAntlr4 implements DrlExprParser {
+public class Drl10ExprParser implements DrlExprParser {
 
     private ParserHelper helper = null;
 
     private final LanguageLevelOption languageLevel;
 
-    public Drl6ExprParserAntlr4(LanguageLevelOption languageLevel) {
+    public Drl10ExprParser(LanguageLevelOption languageLevel) {
         this.languageLevel = languageLevel;
     }
 
     /** Parse an expression from text */
     public ConstraintConnectiveDescr parse(final String text) {
         ConstraintConnectiveDescr constraint = null;
-            DRLLexer lexer = new DRLLexer(CharStreams.fromString(text));
-            CommonTokenStream input = new CommonTokenStream(lexer);
-            helper = new ParserHelper(input, languageLevel);
-            DRL6Expressions parser = new DRL6Expressions(input);
-            parser.setHelper(helper);
-            parser.addErrorListener(new BaseErrorListener() {
-                @Override
-                public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e) {
-                    helper.reportError(offendingSymbol, line, charPositionInLine, msg, e);
-                }
-            });
-            parser.setBuildDescr(true);
-            parser.setLeftMostExpr(null); // setting initial value just in case
-            BaseDescr expr = parser.conditionalOrExpressionDescr();
-            if (expr != null && !parser.hasErrors()) {
-                constraint = ConstraintConnectiveDescr.newAnd();
-                constraint.addOrMerge(expr);
+        DRL10Lexer lexer = new DRL10Lexer(CharStreams.fromString(text));
+        CommonTokenStream input = new CommonTokenStream(lexer);
+        helper = new ParserHelper(input, languageLevel);
+        DRL10Expressions parser = new DRL10Expressions(input);
+        parser.setHelper(helper);
+        parser.addErrorListener(new BaseErrorListener() {
+            @Override
+            public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e) {
+                helper.reportError(offendingSymbol, line, charPositionInLine, msg, e);
             }
+        });
+        parser.setBuildDescr(true);
+        parser.setLeftMostExpr(null); // setting initial value just in case
+        BaseDescr expr = parser.conditionalOrExpressionDescr();
+        if (expr != null && !parser.hasErrors()) {
+            constraint = ConstraintConnectiveDescr.newAnd();
+            constraint.addOrMerge(expr);
+        }
         return constraint;
     }
 
