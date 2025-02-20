@@ -22,14 +22,15 @@ import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import javax.swing.DefaultListSelectionModel;
 import javax.xml.namespace.QName;
 
 import org.kie.api.io.Resource;
@@ -122,6 +123,18 @@ public class DMNEvaluatorCompiler implements DMNDecisionLogicCompiler {
             logger.debug("default DMNEvaluatorCompiler.");
             return new DMNEvaluatorCompiler(dmnCompiler);
         }
+    }
+
+    static Map<DMNConditionalEvaluator.EvaluatorIdentifier, DMNExpressionEvaluator> getEvaluatorIdentifierMap(Conditional expression, DMNExpressionEvaluator ifEvaluator, DMNExpressionEvaluator thenEvaluator, DMNExpressionEvaluator elseEvaluator) {
+        Map<DMNConditionalEvaluator.EvaluatorIdentifier, DMNExpressionEvaluator> evaluatorIdMap = new HashMap<>();
+        evaluatorIdMap.put(getEvaluatorIdentifier(expression.getIf().getId(), DMNConditionalEvaluator.EvaluatorType.IF), ifEvaluator);
+        evaluatorIdMap.put(getEvaluatorIdentifier(expression.getThen().getId(), DMNConditionalEvaluator.EvaluatorType.THEN), thenEvaluator);
+        evaluatorIdMap.put(getEvaluatorIdentifier(expression.getElse().getId(), DMNConditionalEvaluator.EvaluatorType.ELSE), elseEvaluator);
+        return evaluatorIdMap;
+    }
+
+    static DMNConditionalEvaluator.EvaluatorIdentifier getEvaluatorIdentifier(String id, DMNConditionalEvaluator.EvaluatorType type) {
+        return new DMNConditionalEvaluator.EvaluatorIdentifier(id, type);
     }
 
     @Override
@@ -1035,37 +1048,39 @@ public class DMNEvaluatorCompiler implements DMNDecisionLogicCompiler {
         return ctx.getFeelHelper().evaluateUnaryTests(ctx, text, model, element, errorMsg, msgParams);
     }
 
-    private DMNExpressionEvaluator compileConditional(DMNCompilerContext ctx, DMNModelImpl model, DMNBaseNode node,
-                                                      String exprName, Conditional expression) {
-        DMNExpressionEvaluator ifEvaluator = compileExpression(ctx, model, node, exprName + " [if]",
+    protected DMNExpressionEvaluator compileConditional(DMNCompilerContext ctx, DMNModelImpl model, DMNBaseNode node,
+                                              String exprName, Conditional expression) {
+        DMNExpressionEvaluator ifEvaluator = compileExpression(ctx, model, node,  formatExpressionName(exprName, DMNConditionalEvaluator.EvaluatorType.IF),
                                                                expression.getIf().getExpression());
-        DMNExpressionEvaluator thenEvaluator = compileExpression(ctx, model, node, exprName + " [then]",
+        DMNExpressionEvaluator thenEvaluator = compileExpression(ctx, model, node, formatExpressionName(exprName, DMNConditionalEvaluator.EvaluatorType.THEN),
                                                                  expression.getThen().getExpression());
-        DMNExpressionEvaluator elseEvaluator = compileExpression(ctx, model, node, exprName + " [else]",
+        DMNExpressionEvaluator elseEvaluator = compileExpression(ctx, model, node, formatExpressionName(exprName, DMNConditionalEvaluator.EvaluatorType.ELSE),
                                                                  expression.getElse().getExpression());
 
         if (ifEvaluator == null) {
             MsgUtil.reportMessage(logger, DMNMessage.Severity.ERROR, node.getSource(), model, null, null,
-                                  Msg.MISSING_EXPRESSION_FOR_CONDITION, "if",
+                                  Msg.MISSING_EXPRESSION_FOR_CONDITION, DMNConditionalEvaluator.EvaluatorType.IF.getValue(),
                                   node.getIdentifierString());
             return null;
         }
 
         if (thenEvaluator == null) {
             MsgUtil.reportMessage(logger, DMNMessage.Severity.ERROR, node.getSource(), model, null, null,
-                                  Msg.MISSING_EXPRESSION_FOR_CONDITION, "then",
+                                  Msg.MISSING_EXPRESSION_FOR_CONDITION, DMNConditionalEvaluator.EvaluatorType.THEN.getValue(),
                                   node.getIdentifierString());
             return null;
         }
 
         if (elseEvaluator == null) {
             MsgUtil.reportMessage(logger, DMNMessage.Severity.ERROR, node.getSource(), model, null, null,
-                                  Msg.MISSING_EXPRESSION_FOR_CONDITION, "else",
+                                  Msg.MISSING_EXPRESSION_FOR_CONDITION, DMNConditionalEvaluator.EvaluatorType.ELSE.getValue(),
                                   node.getIdentifierString());
             return null;
         }
 
-        return new DMNConditionalEvaluator(exprName, node.getSource(), ifEvaluator, thenEvaluator, elseEvaluator);
+        Map<DMNConditionalEvaluator.EvaluatorIdentifier, DMNExpressionEvaluator> evaluatorIdMap = getEvaluatorIdentifierMap(expression, ifEvaluator, thenEvaluator, elseEvaluator);
+
+        return new DMNConditionalEvaluator(exprName, node.getSource(), evaluatorIdMap);
     }
 
     private DMNExpressionEvaluator compileIterator(DMNCompilerContext ctx, DMNModelImpl model, DMNBaseNode node,
@@ -1179,5 +1194,9 @@ public class DMNEvaluatorCompiler implements DMNDecisionLogicCompiler {
         }
 
         return new DMNFilterEvaluator(exprName, node.getSource(), inEvaluator, filterEvaluator);
+    }
+
+    private static String formatExpressionName(String exprName, DMNConditionalEvaluator.EvaluatorType type) {
+        return String.format("%s [%s]", exprName, type.getValue());
     }
 }
