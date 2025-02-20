@@ -16,11 +16,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 package org.kie.dmn.feel.lang.types;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.kie.dmn.feel.lang.SimpleType;
@@ -40,18 +40,20 @@ public class GenFnType implements SimpleType {
 
     @Override
     public boolean isInstanceOf(Object o) {
-        if (o instanceof FEELFunction) {
-            FEELFunction oFn = (FEELFunction) o;
-            List<List<Param>> signatures = oFn.getParameters().stream().filter(signature -> signature.size() == argsGen.size()).collect(Collectors.toList());
+        if (o instanceof FEELFunction oFn) {
+            List<List<Param>> parameters = oFn.getParameters();
+            if(parameters.isEmpty()){
+                /* this is used to consider function as parameter*/
+                return true;
+            }
+            List<List<Param>> signatures = parameters.stream().filter(signature -> signature.size() == argsGen.size()).toList();
             for (List<Param> signature : signatures) {
                 if (signature.size() == argsGen.size() && IntStream.range(0, argsGen.size()).allMatch(i -> argsGen.get(i).conformsTo(signature.get(i).type))) {
                     return true;
                 }
             }
-            return false;
-        } else {
-            return false;
         }
+        return false;
     }
 
     @Override
@@ -69,11 +71,10 @@ public class GenFnType implements SimpleType {
 
     @Override
     public boolean conformsTo(Type t) {
-        if (t instanceof GenFnType) {
-            GenFnType fnT = (GenFnType) t;
+        if (t instanceof GenFnType fnT) {
             return fnT.argsGen.size() == this.argsGen.size() &&
-                   IntStream.range(0, argsGen.size()).allMatch(i -> fnT.argsGen.get(i).conformsTo(this.argsGen.get(i))) &&
-                   this.returnGen.conformsTo(fnT.returnGen);
+                    IntStream.range(0, argsGen.size()).allMatch(i -> fnT.argsGen.get(i).conformsTo(this.argsGen.get(i))) &&
+                    this.returnGen.conformsTo(fnT.returnGen);
         } else {
             return t == BuiltInType.FUNCTION;
         }
