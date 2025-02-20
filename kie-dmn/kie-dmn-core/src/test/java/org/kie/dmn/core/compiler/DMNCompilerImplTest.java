@@ -1,5 +1,5 @@
-/**
- * Licensed to the Apache Software Foundation (ASF) under one
+
+ /* Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
  * regarding copyright ownership.  The ASF licenses this file
@@ -22,14 +22,15 @@ package org.kie.dmn.core.compiler;
 import org.drools.io.ClassPathResource;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.kie.api.io.Resource;
 import org.kie.dmn.api.core.DMNCompiler;
+import org.kie.dmn.api.core.DMNMessageType;
 import org.kie.dmn.api.core.DMNModel;
 
 import org.kie.dmn.model.api.*;
 import org.kie.dmn.model.v1_5.*;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.util.*;
@@ -38,20 +39,11 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 
-@ExtendWith(MockitoExtension.class)
 class DMNCompilerImplTest {
 
+    public static final Logger LOG = LoggerFactory.getLogger(DMNCompilerImplTest.class);
+
     private static DMNCompiler dMNCompiler;
-
-    private static List<DRGElementCompiler> drgCompilers = new ArrayList<>();
-    {
-        drgCompilers.add( new InputDataCompiler() );
-        drgCompilers.add( new BusinessKnowledgeModelCompiler() );
-        drgCompilers.add( new DecisionCompiler() );
-        drgCompilers.add( new DecisionServiceCompiler() );
-        drgCompilers.add( new KnowledgeSourceCompiler() ); // keep last as it's a void compiler
-    }
-
     private static final String nameSpace = "http://www.montera.com.au/spec/DMN/local-hrefs";
     private static Definitions parent;
 
@@ -100,21 +92,25 @@ class DMNCompilerImplTest {
     }
 
     @Test
-    void compileTest()  {
+    void compileTestWithDefinition() {
         List<DMNModel> dmnModels = new ArrayList<>();
-        Resource resource = new ClassPathResource( "valid_models/DMNv1_5/Sample.dmn",
+        //imported model - Imported_Model_Unamed.dmn
+        String nameSpace = "http://www.trisotech.com/dmn/definitions/_f27bb64b-6fc7-4e1f-9848-11ba35e0df44";
+        Resource resource = new ClassPathResource( "valid_models/DMNv1_5/Imported_Model_Unamed.dmn",
                 this.getClass());
-        DMNModel model = dMNCompiler.compile( resource, dmnModels);
-        assertThat(model).isNotNull();
+        DMNModel importedModel = dMNCompiler.compile( resource, dmnModels);
+        assertThat(importedModel).isNotNull();
+        assertThat(importedModel.getNamespace()).isNotNull().isEqualTo(nameSpace);
+        assertThat(importedModel.getMessages()).isEmpty();
     }
 
     @Test
-    void compileTestWithInvalidModelImports() {
+    void compileTestWithUnknownModelImports() {
         List<DMNModel> dmnModels = new ArrayList<>();
-        String nameSpace = "https://kie.apache.org/dmn/_857FE424-BEDA-4772-AB8E-2F4CDDB864AB";
-        String modelName = "loan_pre_qualification";
-        String importType = String.valueOf(ImportDMNResolverUtil.ImportType.DMN);
-        Resource resource = new ClassPathResource( "valid_models/DMNv1_5/Sample.dmn",
+        String nameSpace = "http://www.trisotech.com/dmn/definitions/_f27bb64b-6fc7-4e1f-9848-11ba35e0df44";
+        String modelName = "Imported Model";
+        String importType = String.valueOf(ImportDMNResolverUtil.ImportType.UNKNOWN);
+        Resource resource = new ClassPathResource( "valid_models/DMNv1_5/Imported_Model_Unamed.dmn",
                 this.getClass());
         DMNModel model = dMNCompiler.compile( resource, dmnModels);
         assertThat(model).isNotNull();
@@ -123,44 +119,50 @@ class DMNCompilerImplTest {
         dmnModels.add(model);
         model = dMNCompiler.compile(dmnDefn, resource, dmnModels);
         assertThat(model).isNotNull();
+        assertThat(model.getName()).isNotNull().isEqualTo(modelName);
+        assertThat(model.getMessages()).isNotEmpty();
+        assertThat(model.getMessages().get(0).getText()).isEqualTo("DMN: Import type unknown: 'UNKNOWN'. (Invalid FEEL syntax on the referenced expression) ");
 
     }
 
     @Test
-    void compileTestWithDmnModelImports() {
+    void compileTestWithImportingDmnModel() {
         List<DMNModel> dmnModels = new ArrayList<>();
-        String nameSpace = "https://kie.apache.org/dmn/_857FE424-BEDA-4772-AB8E-2F4CDDB864AB";
-        String modelName = "loan_pre_qualification";
-        String URI_DMN = "http://www.omg.org/spec/DMN/20180521/MODEL/";
-        Resource resource = new ClassPathResource( "valid_models/DMNv1_5/Sample.dmn",
+        Resource resource = new ClassPathResource( "valid_models/DMNv1_5/Imported_Model_Unamed.dmn",
+                this.getClass());
+        DMNModel importedModel = dMNCompiler.compile( resource, dmnModels);
+        assertThat(importedModel).isNotNull();
+        dmnModels.add(importedModel);
+
+        //imported model - Importing_Named_Model.dmn
+        String nameSpace = "http://www.trisotech.com/dmn/definitions/_f79aa7a4-f9a3-410a-ac95-bea496edabgc";
+        resource = new ClassPathResource( "valid_models/DMNv1_5/Importing_Named_Model.dmn",
+                this.getClass());
+
+        DMNModel importingModel = dMNCompiler.compile(resource, dmnModels);
+        assertThat(importingModel).isNotNull();
+        assertThat(importingModel.getNamespace()).isNotNull().isEqualTo(nameSpace);
+        assertThat(importingModel.getMessages()).isEmpty();
+    }
+
+    @Test
+    void compileImportingModelTestWithErrors()  {
+        List<DMNModel> dmnModels = new ArrayList<>();
+        String modelName = "Importing named Model";
+        Resource resource = new ClassPathResource( "valid_models/DMNv1_5/Importing_Named_Model.dmn",
                 this.getClass());
         DMNModel model = dMNCompiler.compile( resource, dmnModels);
         assertThat(model).isNotNull();
-        Definitions dmnDefn = model.getDefinitions();
-        addImport(dmnDefn, URI_DMN, nameSpace, modelName);
+        assertThat(model.getName()).isNotNull().isEqualTo(modelName);
 
+        Definitions dmnDefn = model.getDefinitions();
         dmnModels.add(model);
         model = dMNCompiler.compile(dmnDefn, resource, dmnModels);
         assertThat(model).isNotNull();
-    }
+        assertThat(model.getName()).isNotNull().isEqualTo(modelName);
+        assertThat(model.getMessages()).isNotEmpty();
+        assertThat(model.getMessages().get(0).getMessageType()).isEqualTo(DMNMessageType.IMPORT_NOT_FOUND);
 
-    @Test
-    void compileTestWithPmmlModelImports()  {
-        List<DMNModel> dmnModels = new ArrayList<>();
-        String nameSpace = "https://github.com/kiegroup/drools/kie-dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF";
-        String modelName = "Traffic Violation";
-        String location_pmml = "http://www.dmg.org/PMML-4_3";
-        //String URI_DMN = "http://www.omg.org/spec/DMN/20180521/MODEL/";
-        Resource resource = new ClassPathResource( "valid_models/DMNv1_x/Traffic Violation.dmn",
-                this.getClass());
-        DMNModel model = dMNCompiler.compile( resource, dmnModels);
-        assertThat(model).isNotNull();
-        Definitions dmnDefs = model.getDefinitions();
-        addImport(dmnDefs, location_pmml, nameSpace, modelName);
-
-        dmnModels.add(model);
-        model = dMNCompiler.compile(dmnDefs, resource, dmnModels);
-        assertThat(model).isNotNull();
     }
 
     private void addImport(Definitions dmnDefs, String importType, String nameSpace, String modelName) {
