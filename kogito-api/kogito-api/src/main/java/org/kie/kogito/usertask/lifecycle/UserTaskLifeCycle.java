@@ -51,6 +51,6 @@ public interface UserTaskLifeCycle {
 
     UserTaskTransitionToken newAbortTransitionToken(UserTaskInstance userTaskInstance, Map<String, Object> data);
 
-    List<UserTaskTransition> allowedTransitions(UserTaskInstance ut);
+    List<UserTaskTransition> allowedTransitions(UserTaskInstance ut, IdentityProvider identity);
 
 }

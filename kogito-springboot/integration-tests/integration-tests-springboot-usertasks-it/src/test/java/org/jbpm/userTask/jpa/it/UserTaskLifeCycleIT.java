@@ -19,6 +19,7 @@
 
 package org.jbpm.userTask.jpa.it;
 
+import java.util.List;
 import java.util.Map;
 
 import org.acme.travels.Address;
@@ -26,13 +27,17 @@ import org.acme.travels.Traveller;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.it.KogitoSpringbootApplication;
 import org.kie.kogito.testcontainers.springboot.PostgreSqlSpringBootTestResource;
+import org.kie.kogito.usertask.impl.lifecycle.DefaultUserTaskLifeCycle;
+import org.kie.kogito.usertask.lifecycle.UserTaskState;
 import org.kie.kogito.usertask.model.TransitionInfo;
+import org.kie.kogito.usertask.view.UserTaskTransitionView;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 
 import io.restassured.http.ContentType;
 
 import static io.restassured.RestAssured.given;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = KogitoSpringbootApplication.class)
@@ -192,5 +197,94 @@ public class UserTaskLifeCycleIT extends BaseUserTaskIT {
                 .get("/{processId}/{id}", PROCESS_ID, pid)
                 .then()
                 .statusCode(404);
+    }
+
+    @Test
+    public void testUserTaskAllowedTransitions() {
+        Traveller traveller = new Traveller("John", "Doe", "john.doe@example.com", "American", new Address("main street", "Boston", "10005", "US"));
+
+        String processId = startProcessInstance(traveller);
+
+        String taskId = given().contentType(ContentType.JSON)
+                .when()
+                .queryParam("user", "manager")
+                .queryParam("group", "department-managers")
+                .get(USER_TASKS_ENDPOINT)
+                .then()
+                .statusCode(200)
+                .body("$.size()", is(1))
+                .extract()
+                .path("[0].id");
+
+        List<UserTaskTransitionView> transitions = given().contentType(ContentType.JSON)
+                .when()
+                .queryParam("user", "manager")
+                .queryParam("group", "managers")
+                .get(USER_TASKS_INSTANCE_TRANSITION_ENDPOINT, taskId)
+                .then()
+                .statusCode(200)
+                .extract()
+                .jsonPath().getList(".", UserTaskTransitionView.class);
+
+        assertThat(transitions)
+                .hasSize(5)
+                .satisfiesExactlyInAnyOrder(transition -> matchTransitionView(transition, DefaultUserTaskLifeCycle.RELEASE, DefaultUserTaskLifeCycle.RESERVED, DefaultUserTaskLifeCycle.ACTIVE),
+                        transition -> matchTransitionView(transition, DefaultUserTaskLifeCycle.COMPLETE, DefaultUserTaskLifeCycle.RESERVED, DefaultUserTaskLifeCycle.COMPLETED),
+                        transition -> matchTransitionView(transition, DefaultUserTaskLifeCycle.REASSIGN, DefaultUserTaskLifeCycle.RESERVED, DefaultUserTaskLifeCycle.ACTIVE),
+                        transition -> matchTransitionView(transition, DefaultUserTaskLifeCycle.FAIL, DefaultUserTaskLifeCycle.RESERVED, DefaultUserTaskLifeCycle.ERROR),
+                        transition -> matchTransitionView(transition, DefaultUserTaskLifeCycle.SKIP, DefaultUserTaskLifeCycle.RESERVED, DefaultUserTaskLifeCycle.OBSOLETE));
+
+        given()
+                .contentType(ContentType.JSON)
+                .when()
+                .queryParam("user", "john")
+                .queryParam("group", "it")
+                .get(USER_TASKS_INSTANCE_TRANSITION_ENDPOINT, taskId)
+                .then()
+                .statusCode(500);
+
+        given()
+                .contentType(ContentType.JSON)
+                .when()
+                .queryParam("user", "manager")
+                .queryParam("group", "managers")
+                .body(new TransitionInfo("release", Map.of()))
+                .post(USER_TASKS_INSTANCE_TRANSITION_ENDPOINT, taskId)
+                .then()
+                .statusCode(200)
+                .body("id", equalTo(taskId))
+                .body("status.name", equalTo("Ready"))
+                .body("status.terminate", nullValue());
+
+        transitions = given().contentType(ContentType.JSON)
+                .when()
+                .queryParam("user", "manager")
+                .queryParam("group", "managers")
+                .get(USER_TASKS_INSTANCE_TRANSITION_ENDPOINT, taskId)
+                .then()
+                .statusCode(200)
+                .extract()
+                .jsonPath().getList(".", UserTaskTransitionView.class);
+
+        assertThat(transitions)
+                .hasSize(4)
+                .satisfiesExactlyInAnyOrder(transition -> matchTransitionView(transition, DefaultUserTaskLifeCycle.CLAIM, DefaultUserTaskLifeCycle.ACTIVE, DefaultUserTaskLifeCycle.RESERVED),
+                        transition -> matchTransitionView(transition, DefaultUserTaskLifeCycle.REASSIGN, DefaultUserTaskLifeCycle.ACTIVE, DefaultUserTaskLifeCycle.ACTIVE),
+                        transition -> matchTransitionView(transition, DefaultUserTaskLifeCycle.FAIL, DefaultUserTaskLifeCycle.ACTIVE, DefaultUserTaskLifeCycle.ERROR),
+                        transition -> matchTransitionView(transition, DefaultUserTaskLifeCycle.SKIP, DefaultUserTaskLifeCycle.ACTIVE, DefaultUserTaskLifeCycle.OBSOLETE));
+
+        given()
+                .accept(ContentType.JSON)
+                .when()
+                .delete("/{processId}/{id}", PROCESS_ID, processId)
+                .then()
+                .statusCode(200);
+    }
+
+    private void matchTransitionView(UserTaskTransitionView transition, String expectedId, UserTaskState expectedSource, UserTaskState expectedTarget) {
+        assertThat(transition)
+                .hasFieldOrPropertyWithValue("transitionId", expectedId)
+                .hasFieldOrPropertyWithValue("source", expectedSource)
+                .hasFieldOrPropertyWithValue("target", expectedTarget);
     }
 }

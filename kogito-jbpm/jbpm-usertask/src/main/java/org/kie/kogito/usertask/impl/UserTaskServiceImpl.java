@@ -98,7 +98,7 @@ public class UserTaskServiceImpl implements UserTaskService {
         }
         UserTaskInstance ut = userTaskInstance.get();
         UserTaskLifeCycle userTaskLifeCycle = application.config().get(UserTaskConfig.class).userTaskLifeCycle();
-        List<UserTaskTransition> transitions = userTaskLifeCycle.allowedTransitions(ut);
+        List<UserTaskTransition> transitions = userTaskLifeCycle.allowedTransitions(ut, identity);
         return toUserTaskTransitionView(transitions);
     }
 
