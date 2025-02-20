@@ -31,14 +31,14 @@ import org.drools.drl.ast.descr.RuleDescr;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.drools.drl.parser.antlr4.DRLParserHelper.computeTokenIndex;
-import static org.drools.drl.parser.antlr4.DRLParserHelper.createDrlParser;
-import static org.drools.drl.parser.antlr4.DRLParserHelper.parse;
+import static org.drools.drl.parser.antlr4.DRL10ParserHelper.computeTokenIndex;
+import static org.drools.drl.parser.antlr4.DRL10ParserHelper.createDrlParser;
+import static org.drools.drl.parser.antlr4.DRL10ParserHelper.parse;
 
 /**
  * This test class is specific to new antlr4 parser.
  */
-class DRLParserTest {
+class DRL10ParserTest {
 
     private static final String drl =
             "package org.test;\n" +
@@ -94,7 +94,7 @@ class DRLParserTest {
 
     @Test
     void computeTokenIndex_basicRule() {
-        DRLParser parser = createDrlParser(drl);
+        DRL10Parser parser = createDrlParser(drl);
         parser.compilationUnit();
 
         assertThat((int) computeTokenIndex(parser, 1, 0)).isEqualTo(0);

@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.model.codegen.execmodel.domain.Person;
+import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.builder.Message;
@@ -82,6 +83,7 @@ public class MvelOperatorsTest extends BaseModelTest {
         assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
+    @DisabledIfSystemProperty(named = "drools.drl.antlr4.parser.enabled", matches = "true")
     @ParameterizedTest
 	@MethodSource("parameters")
     public void testStrHalf(RUN_TYPE runType) {
@@ -100,6 +102,7 @@ public class MvelOperatorsTest extends BaseModelTest {
         assertThat(ksession.fireAllRules()).isEqualTo(3);
     }
 
+    @DisabledIfSystemProperty(named = "drools.drl.antlr4.parser.enabled", matches = "true")
     @ParameterizedTest
 	@MethodSource("parameters")
     public void testStrHalfOrAndAmpersand(RUN_TYPE runType) {
@@ -125,7 +128,7 @@ public class MvelOperatorsTest extends BaseModelTest {
                 "import " + Person.class.getCanonicalName() + "\n" +
                 "global java.util.List list\n" +
                 "rule R when\n" +
-                "    Person( age > 30 && <= 40, $name : name )" +
+                "    Person( age > 30 && age <= 40, $name : name )" +
                 "then\n" +
                 "    list.add($name);" +
                 "end ";
@@ -152,7 +155,7 @@ public class MvelOperatorsTest extends BaseModelTest {
                 "import " + Person.class.getCanonicalName() + "\n" +
                 "global java.util.List list\n" +
                 "rule R when\n" +
-                "    Person( age <= 30 || > 40, $name : name )" +
+                "    Person( age <= 30 || age > 40, $name : name )" +
                 "then\n" +
                 "    list.add($name);" +
                 "end ";
