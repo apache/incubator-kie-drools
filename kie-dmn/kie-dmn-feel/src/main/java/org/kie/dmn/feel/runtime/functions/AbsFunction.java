@@ -31,7 +31,7 @@ public class AbsFunction
         extends BaseFEELFunction implements FEELNumberFunction {
     public static final AbsFunction INSTANCE = new AbsFunction();
 
-    private AbsFunction() {
+    public AbsFunction() {
         super( "abs" );
     }
 
