@@ -84,8 +84,9 @@ class DMNCompilerImplTest {
 
         InformationRequirement informationRequirement = new TInformationRequirement();
         elementReference.setParent(informationRequirement);
-        assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> DMNCompilerImpl.getRootElement(elementReference));
-
+        assertThatExceptionOfType(RuntimeException.class).isThrownBy(
+                () -> DMNCompilerImpl.getRootElement(elementReference)).withMessageContaining
+                ("Failed to get Definitions parent for org.kie.dmn.model.v1_5");
         informationRequirement.setParent(parent);
         retrieved = DMNCompilerImpl.getRootElement(elementReference);
         assertThat(retrieved).isNotNull().isEqualTo(parent);
@@ -94,7 +95,6 @@ class DMNCompilerImplTest {
     @Test
     void compileTestWithDefinition() {
         List<DMNModel> dmnModels = new ArrayList<>();
-        //imported model - Imported_Model_Unamed.dmn
         String nameSpace = "http://www.trisotech.com/dmn/definitions/_f27bb64b-6fc7-4e1f-9848-11ba35e0df44";
         Resource resource = new ClassPathResource( "valid_models/DMNv1_5/Imported_Model_Unamed.dmn",
                 this.getClass());
