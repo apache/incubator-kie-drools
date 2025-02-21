@@ -75,7 +75,10 @@ public class $Type$Resource {
                                                                           businessKey,
                                                                           Optional.ofNullable(resource).orElse(new $Type$Input()).toModel(),
                                                                           httpHeaders,
-                                                                          httpHeaders.getOrEmpty("X-KOGITO-StartFromNode").stream().findFirst().orElse(null));
+                                                                          httpHeaders.getOrEmpty("X-KOGITO-StartFromNode").stream().findFirst().orElse(null),
+                                                                          null,
+                                                                          httpHeaders.getOrEmpty("X-KOGITO-ReferenceId").stream().findFirst().orElse(null),
+                                                                          null);
         return ResponseEntity.created(uriComponentsBuilder.path("/$name$/{id}").buildAndExpand(pi.id()).toUri())
                 .body(pi.checkError().variables().toModel());
     }
