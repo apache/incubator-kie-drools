@@ -32,7 +32,6 @@ import org.kie.dmn.model.v1_5.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
 import java.util.*;
 import java.util.List;
 
@@ -48,7 +47,7 @@ class DMNCompilerImplTest {
     private static Definitions parent;
 
     @BeforeAll
-    static void setup() throws IOException {
+    static void setup() {
         String modelName = "LocalHrefs";
         parent = new TDefinitions();
         parent.setName(modelName);
