@@ -92,7 +92,7 @@ class DMNCompilerImplTest {
     }
 
     @Test
-    void compileTestWithDefinition() {
+    void compile() {
         List<DMNModel> dmnModels = new ArrayList<>();
         String nameSpace = "http://www.trisotech.com/dmn/definitions/_f27bb64b-6fc7-4e1f-9848-11ba35e0df44";
         Resource resource = new ClassPathResource( "valid_models/DMNv1_5/Imported_Model_Unamed.dmn",
@@ -104,7 +104,7 @@ class DMNCompilerImplTest {
     }
 
     @Test
-    void compileTestWithUnknownModelImports() {
+    void compileWithUnknownTypeModelImports() {
         List<DMNModel> dmnModels = new ArrayList<>();
         String nameSpace = "http://www.trisotech.com/dmn/definitions/_f27bb64b-6fc7-4e1f-9848-11ba35e0df44";
         String modelName = "Imported Model";
@@ -125,7 +125,7 @@ class DMNCompilerImplTest {
     }
 
     @Test
-    void compileTestWithImportingDmnModel() {
+    void compileWithImportingDmnModel() {
         List<DMNModel> dmnModels = new ArrayList<>();
         Resource resource = new ClassPathResource( "valid_models/DMNv1_5/Imported_Model_Unamed.dmn",
                 this.getClass());
@@ -145,7 +145,7 @@ class DMNCompilerImplTest {
     }
 
     @Test
-    void compileImportingModelTestWithErrors()  {
+    void compileImportingModelWithoutImportedModel()  {
         List<DMNModel> dmnModels = new ArrayList<>();
         String modelName = "Importing named Model";
         Resource resource = new ClassPathResource( "valid_models/DMNv1_5/Importing_Named_Model.dmn",
