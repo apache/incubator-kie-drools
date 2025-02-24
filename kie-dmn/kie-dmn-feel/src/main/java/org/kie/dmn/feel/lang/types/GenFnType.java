@@ -43,15 +43,10 @@ public class GenFnType implements SimpleType {
         if (o instanceof FEELFunction oFn) {
             List<List<Param>> parameters = oFn.getParameters();
             if(parameters.isEmpty()){
-                /* this is used to consider function as parameter*/
+                //this is used to consider function as parameter
                 return true;
             }
-            List<List<Param>> signatures = parameters.stream().filter(signature -> signature.size() == argsGen.size()).toList();
-            for (List<Param> signature : signatures) {
-                if (signature.size() == argsGen.size() && IntStream.range(0, argsGen.size()).allMatch(i -> argsGen.get(i).conformsTo(signature.get(i).type))) {
-                    return true;
-                }
-            }
+            return checkSignatures(parameters,argsGen);
         }
         return false;
     }
@@ -78,5 +73,15 @@ public class GenFnType implements SimpleType {
         } else {
             return t == BuiltInType.FUNCTION;
         }
+    }
+
+    static boolean checkSignatures(List<List<Param>> parameters, List<Type> argsGen){
+        List<List<Param>> signatures = parameters.stream().filter(signature -> signature.size() == argsGen.size()).toList();
+        for (List<Param> signature : signatures) {
+            if (signature.size() == argsGen.size() && IntStream.range(0, argsGen.size()).allMatch(i -> argsGen.get(i).conformsTo(signature.get(i).type))) {
+                return true;
+            }
+        }
+        return false;
     }
 }
