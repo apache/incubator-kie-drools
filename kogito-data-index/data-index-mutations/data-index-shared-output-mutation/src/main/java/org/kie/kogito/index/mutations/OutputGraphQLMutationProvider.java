@@ -51,7 +51,7 @@ public class OutputGraphQLMutationProvider implements GraphQLMutationsProvider {
         return Map.of("ExecuteAfter", env -> sharedOutput(schemaManager, env));
     }
 
-    private CompletableFuture<String> sharedOutput(AbstractGraphQLSchemaManager schemaManager, DataFetchingEnvironment env) {
+    private CompletableFuture<JsonNode> sharedOutput(AbstractGraphQLSchemaManager schemaManager, DataFetchingEnvironment env) {
         DataIndexStorageService cacheService = schemaManager.getCacheService();
         ProcessDefinitionKey key = new ProcessDefinitionKey(mandatoryArgument(env, "processId"), mandatoryArgument(env, "processVersion"));
         ProcessDefinition processDefinition = cacheService.getProcessDefinitionStorage().get(key);

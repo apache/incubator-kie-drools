@@ -125,9 +125,6 @@ public class KogitoAddonRuntimeClientImplTest {
     private ProcessError error;
 
     @Mock
-    private Object variables;
-
-    @Mock
     Instance<Application> applicationInstance;
 
     @Mock
@@ -148,7 +145,7 @@ public class KogitoAddonRuntimeClientImplTest {
         lenient().when(process.instances()).thenReturn(instances);
         lenient().when(instances.findById(anyString())).thenReturn(Optional.of(processInstance));
         lenient().when(processInstance.error()).thenReturn(Optional.of(error));
-        lenient().when(processInstance.variables()).thenReturn(variables);
+        lenient().when(processInstance.variables()).thenReturn(model);
         lenient().when(processInstance.id()).thenReturn(PROCESS_INSTANCE_ID);
         lenient().when(processInstance.status()).thenReturn(org.kie.kogito.process.ProcessInstance.STATE_ERROR);
         lenient().when(error.failedNodeId()).thenReturn(NODE_ID_ERROR);
@@ -156,6 +153,7 @@ public class KogitoAddonRuntimeClientImplTest {
         lenient().when(application.unitOfWorkManager()).thenReturn(new DefaultUnitOfWorkManager(new CollectingUnitOfWorkFactory()));
         lenient().when(applicationInstance.isResolvable()).thenReturn(true);
         lenient().when(applicationInstance.get()).thenReturn(application);
+        lenient().when(model.toMap()).thenReturn(Map.of("name", "javierito"));
 
         client = spy(new KogitoAddonRuntimeClientImpl(processSvgServiceInstance, sourceFilesProvider, processesInstance, applicationInstance));
         client.setGatewayTargetUrl(Optional.empty());

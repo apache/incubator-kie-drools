@@ -48,6 +48,8 @@ import org.kie.kogito.services.uow.UnitOfWorkExecutor;
 import org.kie.kogito.source.files.SourceFilesProvider;
 import org.kie.kogito.svg.ProcessSvgService;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
@@ -279,7 +281,7 @@ public class KogitoAddonRuntimeClientImpl extends KogitoRuntimeCommonClient impl
     }
 
     @Override
-    public CompletableFuture<String> executeProcessInstance(ProcessDefinition definition, ExecuteArgs args) {
+    public CompletableFuture<JsonNode> executeProcessInstance(ProcessDefinition definition, ExecuteArgs args) {
         Process<?> process = processes != null ? processes.processById(definition.getId()) : null;
         if (process == null) {
             throw new DataIndexServiceException(String.format("Unable to find Process  with id %s to perform the operation requested", definition.getId()));
@@ -288,7 +290,6 @@ public class KogitoAddonRuntimeClientImpl extends KogitoRuntimeCommonClient impl
         m.update(JsonObjectUtils.convertValue(args.input(), Map.class));
         org.kie.kogito.process.ProcessInstance<? extends Model> pi = process.createInstance(m);
         pi.start();
-        return CompletableFuture.completedFuture(
-                String.format(SUCCESSFULLY_OPERATION_MESSAGE, "Started Process Instance with id: " + pi.id()));
+        return CompletableFuture.completedFuture(JsonObjectUtils.fromValue(pi.variables().toMap()));
     }
 }

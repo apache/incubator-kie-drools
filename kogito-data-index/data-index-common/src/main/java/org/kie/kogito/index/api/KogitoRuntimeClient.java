@@ -28,9 +28,11 @@ import org.kie.kogito.index.model.ProcessDefinition;
 import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.model.UserTaskInstance;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 public interface KogitoRuntimeClient {
 
-    CompletableFuture<String> executeProcessInstance(ProcessDefinition definition, ExecuteArgs args);
+    CompletableFuture<JsonNode> executeProcessInstance(ProcessDefinition definition, ExecuteArgs args);
 
     CompletableFuture<String> abortProcessInstance(String serviceURL, ProcessInstance processInstance);
 

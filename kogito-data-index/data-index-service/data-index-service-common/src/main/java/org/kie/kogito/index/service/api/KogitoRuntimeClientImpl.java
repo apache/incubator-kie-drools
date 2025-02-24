@@ -35,6 +35,8 @@ import org.kie.kogito.usertask.model.CommentInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 import io.vertx.core.AsyncResult;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.json.Json;
@@ -76,13 +78,14 @@ class KogitoRuntimeClientImpl extends KogitoRuntimeCommonClient implements Kogit
     private static final Logger LOGGER = LoggerFactory.getLogger(KogitoRuntimeClientImpl.class);
 
     @Override
-    public CompletableFuture<String> executeProcessInstance(ProcessDefinition definition, ExecuteArgs args) {
-        CompletableFuture<String> future = new CompletableFuture<>();
+    public CompletableFuture<JsonNode> executeProcessInstance(ProcessDefinition definition, ExecuteArgs args) {
+        CompletableFuture<JsonNode> future = new CompletableFuture<>();
         HttpRequest<Buffer> request = getWebClient(CommonUtils.getServiceUrl(definition.getEndpoint(), definition.getId())).post("/" + definition.getId());
         if (args.businessKey() != null) {
             request.addQueryParam("businessKey", args.businessKey());
         }
-        request.sendJson(args.input(), res -> asyncHttpResponseTreatment(res, future, "START ProcessInstance of type " + definition.getId()));
+        request.sendJson(args.input(), res -> asyncHttpResponseTreatment(res, future, result -> result.bodyAsJson(JsonNode.class),
+                "START ProcessInstance of type " + definition.getId()));
         return future;
     }
 

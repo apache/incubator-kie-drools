@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.kie.kogito.index.model.Job;
@@ -116,13 +117,20 @@ public class KogitoRuntimeCommonClient {
         return future;
     }
 
-    protected void asyncHttpResponseTreatment(AsyncResult<HttpResponse<Buffer>> res, CompletableFuture future, String logMessage) {
-        if (res.succeeded() && (res.result().statusCode() == 200 || res.result().statusCode() == 201)) {
-            String jsonMessage = res.result().bodyAsString();
+    protected void asyncHttpResponseTreatment(AsyncResult<HttpResponse<Buffer>> res, CompletableFuture<String> future, String logMessage) {
+        asyncHttpResponseTreatment(res, future, result -> {
+            String jsonMessage = result.bodyAsString();
             LOGGER.trace("Result {}", jsonMessage);
-            future.complete(jsonMessage != null ? jsonMessage : "Successfully performed: " + logMessage);
+            return jsonMessage != null ? jsonMessage : "Successfully performed: " + logMessage;
+        }, logMessage);
+
+    }
+
+    protected <T> void asyncHttpResponseTreatment(AsyncResult<HttpResponse<Buffer>> res, CompletableFuture<T> future, Function<HttpResponse<Buffer>, T> function, String logMessage) {
+        if (res.succeeded() && (res.result().statusCode() == 200 || res.result().statusCode() == 201)) {
+            future.complete(function.apply(res.result()));
         } else {
-            LOGGER.trace("Error {}", logMessage);
+            LOGGER.error("Error {}", logMessage);
             future.completeExceptionally(new DataIndexServiceException(getErrorMessage(logMessage, res.result())));
         }
     }
