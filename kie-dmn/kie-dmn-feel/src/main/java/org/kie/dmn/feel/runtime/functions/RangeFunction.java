@@ -116,9 +116,6 @@ public class RangeFunction extends BaseFEELFunction {
         if ((leftString.isEmpty() || leftString.isBlank()) && (rightString.isEmpty() || rightString.isBlank())) {
             return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "from", "at least one endpoint must not be null"));
         }
-        if (!isValidTemporalExpression(leftString) || !isValidTemporalExpression(rightString)) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "from", "at least one function call is non-literal"));
-        }
         BaseNode leftNode = parse(leftString);
         if (!nodeIsAllowed(leftNode, startBoundary)) {
             return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "from", "left endpoint is not a recognised valid literal"));
@@ -153,7 +150,7 @@ public class RangeFunction extends BaseFEELFunction {
 
     static Range getReturnedValue(Object left, Object right, Range.RangeBoundary startBoundary,
                                   Range.RangeBoundary endBoundary) {
-        return (left == null && right == null) ? null :
+        return (left == null || right == null) ? null :
                 new RangeImpl(startBoundary, (Comparable) left, (Comparable) right, endBoundary);
     }
 
@@ -200,14 +197,6 @@ public class RangeFunction extends BaseFEELFunction {
         ASTBuilderVisitor v = new ASTBuilderVisitor(Collections.emptyMap(), null);
         BaseNode expr = v.visit(tree);
         return expr;
-    }
-
-    protected boolean isValidTemporalExpression(String expression) {
-        Matcher matcher = FUNCTION_CALL_PATTERN.matcher(expression);
-        if (matcher.find()) {
-            return expression.matches("(date|time|date and time|duration)\\(\"[^\"]+\"\\)");
-        }
-        return true;
     }
 
     private EvaluationContext getStubbed() {
