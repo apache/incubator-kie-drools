@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -163,12 +163,16 @@ public class DMNValidatorImpl implements DMNValidator {
     private final InternalDMNDTAnalyser dmnDTValidator;
     private InternalKnowledgeBase kb11;
     private InternalKnowledgeBase kb12;
+    private InternalKnowledgeBase kb13;
 
     public DMNValidatorImpl(ClassLoader cl, List<DMNProfile> dmnProfiles, Properties p) {
         kb11 = KieBaseBuilder.createKieBaseFromModel(Arrays.asList(org.kie.dmn.validation.bootstrap.ValidationBootstrapModels.V1X_MODEL,
                                                                    org.kie.dmn.validation.bootstrap.ValidationBootstrapModels.V11_MODEL));
         kb12 = KieBaseBuilder.createKieBaseFromModel(Arrays.asList(org.kie.dmn.validation.bootstrap.ValidationBootstrapModels.V1X_MODEL,
                                                                    org.kie.dmn.validation.bootstrap.ValidationBootstrapModels.V12_MODEL));
+        kb13 = KieBaseBuilder.createKieBaseFromModel(Arrays.asList(org.kie.dmn.validation.bootstrap.ValidationBootstrapModels.V1X_MODEL,
+                                                                   org.kie.dmn.validation.bootstrap.ValidationBootstrapModels.V13_MODEL));
+
         ChainedProperties localChainedProperties = ChainedProperties.getChainedProperties(cl);
         if (p != null) {
             localChainedProperties.addProperties(p);
@@ -596,7 +600,15 @@ public class DMNValidatorImpl implements DMNValidator {
             otherModelsDefinitions.add(other);
         });
 
-        StatelessKieSession kieSession = mainDefinitions instanceof org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase ? kb11.newStatelessKieSession() : kb12.newStatelessKieSession();
+        StatelessKieSession kieSession;
+        // Pattern matching not available in Java 17
+        if (mainDefinitions instanceof org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase) {
+            kieSession = kb11.newStatelessKieSession();
+        } else if (mainDefinitions instanceof org.kie.dmn.model.v1_2.KieDMNModelInstrumentedBase) {
+            kieSession = kb12.newStatelessKieSession();
+        } else {
+            kieSession = kb13.newStatelessKieSession();
+        }
         MessageReporter reporter = new MessageReporter(mainModel);
         kieSession.setGlobal( "reporter", reporter );
 
