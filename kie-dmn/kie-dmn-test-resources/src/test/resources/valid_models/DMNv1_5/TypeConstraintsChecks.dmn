@@ -22,7 +22,7 @@
                       xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
                       xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
                       xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/"
-                      xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
+                      xmlns:feel="https://www.omg.org/spec/DMN/20230324/FEEL/"
                       xmlns:dmn="https://www.omg.org/spec/DMN/20230324/MODEL/"
                       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                       exporter="DMN Modeler"
