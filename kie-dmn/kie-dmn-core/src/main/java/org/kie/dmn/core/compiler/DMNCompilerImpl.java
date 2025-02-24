@@ -203,7 +203,7 @@ public class DMNCompilerImpl implements DMNCompiler {
         return null;
     }
 
-    public DMNModel compileOld123(Definitions dmndefs, Collection<DMNModel> dmnModels, Resource resource, Function<String, Reader> relativeResolver) {
+    public DMNModel compileOldd123(Definitions dmndefs, Collection<DMNModel> dmnModels, Resource resource, Function<String, Reader> relativeResolver) {
         if (dmndefs == null) {
             return null;
         }
