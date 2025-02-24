@@ -32,8 +32,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
@@ -61,7 +59,6 @@ public class RangeFunction extends BaseFEELFunction {
 
     private static EvaluationContext STUBBED;
     private static final Range DEFAULT_VALUE = new RangeImpl(Range.RangeBoundary.OPEN, BigDecimal.ZERO, BigDecimal.ZERO, Range.RangeBoundary.OPEN);
-    private static final Pattern FUNCTION_CALL_PATTERN = Pattern.compile("(date|time|date and time|duration)\\([^)]*\\)");
 
     private static final List<Predicate<BaseNode>> ALLOWED_NODES = Arrays.asList(baseNode -> baseNode instanceof NullNode,
             baseNode -> baseNode instanceof NumberNode,
