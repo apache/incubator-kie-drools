@@ -44,6 +44,7 @@ import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
 
+import org.codehaus.plexus.util.CollectionUtils;
 import org.drools.io.FileSystemResource;
 import org.kie.api.io.Resource;
 import org.kie.dmn.api.core.DMNCompiler;
@@ -270,12 +271,12 @@ public class DMNCompilerImpl implements DMNCompiler {
             return null;
         }
         DMNModelImpl model = new DMNModelImpl(dmndefs, resource);
-        List<DMNModel> toMerge = new ArrayList<>();
+        //List<DMNModel> toMerge = new ArrayList<>();
         DMNCompilerContext ctx = configureDMNCompiler(model, relativeResolver);
         if (!dmndefs.getImport().isEmpty()) {
-            iterateImports(dmndefs, dmnModels, model, relativeResolver, toMerge );
+            iterateImports(dmndefs, dmnModels, model, relativeResolver );
         }
-        toMerge.forEach(mergedModel -> processMergedModel(model, (DMNModelImpl) mergedModel));
+        //toMerge.forEach(mergedModel -> processMergedModel(model, (DMNModelImpl) mergedModel));
         processItemDefinitions(ctx, model, dmndefs);
         processDrgElements(ctx, model, dmndefs);
         return model;
@@ -291,10 +292,10 @@ public class DMNCompilerImpl implements DMNCompiler {
         return ctx;
     }
 
-    private void iterateImports(Definitions dmndefs, Collection<DMNModel> dmnModels, DMNModelImpl model, Function<String, Reader> relativeResolver, List<DMNModel> toMerge ) {
+    private void iterateImports(Definitions dmndefs, Collection<DMNModel> dmnModels, DMNModelImpl model, Function<String, Reader> relativeResolver ) {
         for (Import i : dmndefs.getImport()) {
             if (ImportDMNResolverUtil.whichImportType(i) == ImportType.DMN) {
-                resolveDMNImportType(i, dmnModels, model, toMerge);
+                resolveDMNImportType(i, dmnModels, model );
             } else if (ImportDMNResolverUtil.whichImportType(i) == ImportType.PMML) {
                 processPMMLImport(model, i, relativeResolver);
                 model.setImportAliasForNS(i.getName(), i.getNamespace(), i.getName());
@@ -304,7 +305,7 @@ public class DMNCompilerImpl implements DMNCompiler {
         }
     }
 
-    private void resolveDMNImportType(Import i, Collection<DMNModel> dmnModels, DMNModelImpl model, List<DMNModel> toMerge) {
+    static void resolveDMNImportType(Import i, Collection<DMNModel> dmnModels, DMNModelImpl model) {
         Either<String, DMNModel> resolvedResult = ImportDMNResolverUtil.resolveImportDMN(i, dmnModels, (DMNModel m) -> new QName(m.getNamespace(), m.getName()));
         DMNModel located = resolvedResult.cata(msg -> {
             MsgUtil.reportMessage(logger,
@@ -318,7 +319,11 @@ public class DMNCompilerImpl implements DMNCompiler {
                     i);
             return null;
         }, Function.identity());
-        checkLocatedDMNModel(i, located, model, toMerge);
+        List<DMNModel> toMerge = checkLocatedDMNModel(i, located, model);
+        if(!toMerge.isEmpty()) {
+            toMerge.forEach(mergedModel -> processMergedModel(model, (DMNModelImpl) mergedModel));
+        }
+
     }
 
     private void logErrorMessage(DMNModelImpl model, String importType) {
@@ -332,7 +337,8 @@ public class DMNCompilerImpl implements DMNCompiler {
                 importType);
     }
 
-    private void checkLocatedDMNModel(Import i, DMNModel located, DMNModelImpl model, List<DMNModel> toMerge) {
+    static List<DMNModel> checkLocatedDMNModel(Import i, DMNModel located, DMNModelImpl model) {
+        List<DMNModel> toMerge = new ArrayList<>();
         if (located != null) {
             String iAlias = Optional.ofNullable(i.getName()).orElse(located.getName());
             // incubator-kie-issues#852: The idea is to not treat the anonymous models as import, but to "merge" them
@@ -345,6 +351,7 @@ public class DMNCompilerImpl implements DMNCompiler {
                 toMerge.add(located);
             }
         }
+        return toMerge;
     }
 
     private void processPMMLImport(DMNModelImpl model, Import i, Function<String, Reader> relativeResolver) {
@@ -430,7 +437,7 @@ public class DMNCompilerImpl implements DMNCompiler {
         }
     }
 
-    private void importFromModel(DMNModelImpl model, DMNModel m, String iAlias) {
+    static void importFromModel(DMNModelImpl model, DMNModel m, String iAlias) {
         model.addImportChainChild(((DMNModelImpl) m).getImportChain(), iAlias);
         for (ItemDefNode idn : m.getItemDefinitions()) {
             model.getTypeRegistry().registerType(idn.getType());
