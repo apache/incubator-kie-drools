@@ -495,6 +495,19 @@ public class DMNCompilerTest extends BaseVariantTest {
 
     }
 
+    @ParameterizedTest
+    @MethodSource("params")
+    void checkModelWithGroupNode(VariantTestConf conf) {
+        testConfig = conf;
+        String nameSpace = "https://kie.org/dmn/_9D97759B-85C9-49CD-BE28-6B5F75830555";
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("valid_models/DMNv1_5/ModelWithGroupNode.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel(
+                nameSpace,
+                "DMN_9DEB9645-7512-4F0F-B799-53E2F0FC9182");
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
+    }
+
     private void commonValidateUnnamedImport(String importingModelRef, String importedModelRef) {
         final DMNRuntime runtime = createRuntimeWithAdditionalResources(importingModelRef,
                                                                         this.getClass(),

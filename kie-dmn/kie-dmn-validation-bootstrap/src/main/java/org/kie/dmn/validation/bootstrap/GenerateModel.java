@@ -113,9 +113,11 @@ public class GenerateModel {
         String v1x = lines.stream().filter(x -> x.startsWith("org.kie.dmn.validation.DMNv1x.Rules")).findFirst().orElseThrow(RuntimeException::new);
         String v11 = lines.stream().filter(x -> x.startsWith("org.kie.dmn.validation.DMNv1_1.Rules")).findFirst().orElseThrow(RuntimeException::new);
         String v12 = lines.stream().filter(x -> x.startsWith("org.kie.dmn.validation.DMNv1_2.Rules")).findFirst().orElseThrow(RuntimeException::new);
+        String v13 = lines.stream().filter(x -> x.startsWith("org.kie.dmn.validation.DMNv1_3.Rules")).findFirst().orElseThrow(RuntimeException::new);
         vbMain = vbMain.replaceAll("\\$V1X_MODEL\\$", v1x);
         vbMain = vbMain.replaceAll("\\$V11_MODEL\\$", v11);
         vbMain = vbMain.replaceAll("\\$V12_MODEL\\$", v12);
+        vbMain = vbMain.replaceAll("\\$V13_MODEL\\$", v13);
         final Path validationEntryPointFile = Paths.get(kieDmnValidationBaseDir.getAbsolutePath(),
                                                         "target",
                                                         "generated-sources",
