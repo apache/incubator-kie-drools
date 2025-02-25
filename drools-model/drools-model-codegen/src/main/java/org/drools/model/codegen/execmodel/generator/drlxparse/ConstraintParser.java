@@ -48,6 +48,7 @@ import com.github.javaparser.ast.expr.ThisExpr;
 import com.github.javaparser.ast.expr.UnaryExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithArguments;
 import com.github.javaparser.ast.nodeTypes.NodeWithOptionalScope;
+import org.drools.model.codegen.execmodel.util.ParserLogUtils;
 import org.drools.util.DateUtils;
 import org.drools.model.Index;
 import org.drools.model.codegen.execmodel.PackageModel;
@@ -631,7 +632,7 @@ public class ConstraintParser {
         if ( isLogicalOperator( operator ) && isCombinable( binaryExpr ) ) {
             DrlxParseResult leftResult = compileToJavaRecursive(patternType, bindingId, constraint, binaryExpr.getLeft(), hasBind, isPositional );
             Expression rightExpr = binaryExpr.getRight() instanceof HalfPointFreeExpr ?
-                    completeHalfExpr( (( PointFreeExpr ) binaryExpr.getLeft()).getLeft(), ( HalfPointFreeExpr ) binaryExpr.getRight()) :
+                    completeHalfExpr( (( PointFreeExpr ) binaryExpr.getLeft()).getLeft(), ( HalfPointFreeExpr ) binaryExpr.getRight(), context) :
                     binaryExpr.getRight();
             DrlxParseResult rightResult = compileToJavaRecursive(patternType, bindingId, constraint, rightExpr, hasBind, isPositional );
             return isMultipleResult(leftResult, operator, rightResult) ?
@@ -826,7 +827,8 @@ public class ConstraintParser {
         return !(binaryExpr.getRight() instanceof HalfBinaryExpr) && ( !(binaryExpr.getRight() instanceof HalfPointFreeExpr) || binaryExpr.getLeft() instanceof PointFreeExpr );
     }
 
-    private static PointFreeExpr completeHalfExpr(Expression left, HalfPointFreeExpr halfRight) {
+    private static PointFreeExpr completeHalfExpr(Expression left, HalfPointFreeExpr halfRight, RuleContext context) {
+        ParserLogUtils.logHalfConstraintWarn(halfRight, Optional.of(context));
         return new PointFreeExpr( halfRight.getTokenRange().orElse( null ), left, halfRight.getRight(), halfRight.getOperator(), halfRight.isNegated(), halfRight.getArg1(), halfRight.getArg2(), halfRight.getArg3(), halfRight.getArg4() );
     }
 
