@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.RuleContext;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -70,18 +69,18 @@ import org.kie.api.io.Resource;
 import static org.drools.drl.parser.antlr4.Antlr4ParserStringUtils.extractNamedConsequenceName;
 import static org.drools.drl.parser.antlr4.Antlr4ParserStringUtils.getTextPreservingWhitespace;
 import static org.drools.drl.parser.antlr4.Antlr4ParserStringUtils.getTokenTextPreservingWhitespace;
-import static org.drools.drl.parser.antlr4.DRLParserHelper.getTextWithoutErrorNode;
+import static org.drools.drl.parser.antlr4.DRL10ParserHelper.getTextWithoutErrorNode;
 import static org.drools.drl.parser.util.ParserStringUtils.appendPrefix;
 import static org.drools.drl.parser.util.ParserStringUtils.safeStripStringDelimiters;
 import static org.drools.util.StringUtils.unescapeJava;
 
 /**
- * Visitor implementation for DRLParser.
+ * Visitor implementation for DRL10Parser.
  * Basically, each visit method creates and returns a Descr object traversing the parse tree.
  * Finally, visitCompilationUnit() returns a PackageDescr object.
  * Try not to depend on DRLVisitorImpl's internal state for clean maintainability
  */
-public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
+public class DRLVisitorImpl extends DRL10ParserBaseVisitor<Object> {
 
     private final TokenStream tokenStream;
     private final Resource resource;
@@ -95,7 +94,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
      * Main entry point for creating PackageDescr from a parser tree.
      */
     @Override
-    public PackageDescr visitCompilationUnit(DRLParser.CompilationUnitContext ctx) {
+    public PackageDescr visitCompilationUnit(DRL10Parser.CompilationUnitContext ctx) {
         PackageDescr packageDescr = BaseDescrFactory.builder(new PackageDescr())
                 .withParserRuleContext(ctx)
                 .withResource(resource)
@@ -159,7 +158,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     }
 
     @Override
-    public UnitDescr visitUnitdef(DRLParser.UnitdefContext ctx) {
+    public UnitDescr visitUnitdef(DRL10Parser.UnitdefContext ctx) {
         return BaseDescrFactory.builder(new UnitDescr(ctx.name.getText()))
                 .withParserRuleContext(ctx)
                 .withResource(resource)
@@ -167,12 +166,12 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     }
 
     @Override
-    public BaseDescr visitDrlStatementdef(DRLParser.DrlStatementdefContext ctx) {
+    public BaseDescr visitDrlStatementdef(DRL10Parser.DrlStatementdefContext ctx) {
         return visitDescrChildren(ctx).get(0); // only one child. Ignore SEMICOLON
     }
 
     @Override
-    public GlobalDescr visitGlobaldef(DRLParser.GlobaldefContext ctx) {
+    public GlobalDescr visitGlobaldef(DRL10Parser.GlobaldefContext ctx) {
         return BaseDescrFactory.builder(new GlobalDescr(ctx.drlIdentifier().getText(), ctx.type().getText()))
                 .withParserRuleContext(ctx)
                 .withResource(resource)
@@ -180,7 +179,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     }
 
     @Override
-    public ImportDescr visitImportStandardDef(DRLParser.ImportStandardDefContext ctx) {
+    public ImportDescr visitImportStandardDef(DRL10Parser.ImportStandardDefContext ctx) {
         String target = ctx.drlQualifiedName().getText() + (ctx.MUL() != null ? ".*" : "");
         if (ctx.DRL_FUNCTION() != null || ctx.STATIC() != null) {
             FunctionImportDescr functionImportDescr = BaseDescrFactory.builder(new FunctionImportDescr())
@@ -200,7 +199,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     }
 
     @Override
-    public AccumulateImportDescr visitImportAccumulateDef(DRLParser.ImportAccumulateDefContext ctx) {
+    public AccumulateImportDescr visitImportAccumulateDef(DRL10Parser.ImportAccumulateDefContext ctx) {
         AccumulateImportDescr accumulateImportDescr = BaseDescrFactory.builder(new AccumulateImportDescr())
                 .withParserRuleContext(ctx)
                 .withResource(resource)
@@ -211,7 +210,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     }
 
     @Override
-    public FunctionDescr visitFunctiondef(DRLParser.FunctiondefContext ctx) {
+    public FunctionDescr visitFunctiondef(DRL10Parser.FunctiondefContext ctx) {
         FunctionDescr functionDescr = BaseDescrFactory.builder(new FunctionDescr())
                 .withParserRuleContext(ctx)
                 .withResource(resource)
@@ -224,13 +223,13 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
         functionDescr.setName(ctx.drlIdentifier().getText());
 
         // add function parameters
-        DRLParser.FormalParametersContext formalParametersContext = ctx.formalParameters();
-        DRLParser.FormalParameterListContext formalParameterListContext = formalParametersContext.formalParameterList();
+        DRL10Parser.FormalParametersContext formalParametersContext = ctx.formalParameters();
+        DRL10Parser.FormalParameterListContext formalParameterListContext = formalParametersContext.formalParameterList();
         if (formalParameterListContext != null) {
-            List<DRLParser.FormalParameterContext> formalParameterContexts = formalParameterListContext.formalParameter();
+            List<DRL10Parser.FormalParameterContext> formalParameterContexts = formalParameterListContext.formalParameter();
             formalParameterContexts.forEach(formalParameterContext -> {
-                DRLParser.TypeTypeContext typeTypeContext = formalParameterContext.typeType();
-                DRLParser.VariableDeclaratorIdContext variableDeclaratorIdContext = formalParameterContext.variableDeclaratorId();
+                DRL10Parser.TypeTypeContext typeTypeContext = formalParameterContext.typeType();
+                DRL10Parser.VariableDeclaratorIdContext variableDeclaratorIdContext = formalParameterContext.variableDeclaratorId();
                 functionDescr.addParameter(typeTypeContext.getText(), variableDeclaratorIdContext.getText());
             });
         }
@@ -239,12 +238,12 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     }
 
     @Override
-    public BaseDescr visitDeclaredef(DRLParser.DeclaredefContext ctx) {
+    public BaseDescr visitDeclaredef(DRL10Parser.DeclaredefContext ctx) {
         return visitDescrChildren(ctx).get(0); // only one child
     }
 
     @Override
-    public TypeDeclarationDescr visitTypeDeclaration(DRLParser.TypeDeclarationContext ctx) {
+    public TypeDeclarationDescr visitTypeDeclaration(DRL10Parser.TypeDeclarationContext ctx) {
         TypeDeclarationDescr typeDeclarationDescr = BaseDescrFactory.builder(new TypeDeclarationDescr())
                 .withParserRuleContext(ctx)
                 .withResource(resource)
@@ -256,7 +255,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
             typeDeclarationDescr.setTrait(true);
         }
         if (ctx.EXTENDS() != null) {
-            for (DRLParser.DrlQualifiedNameContext superType : ctx.superTypes) {
+            for (DRL10Parser.DrlQualifiedNameContext superType : ctx.superTypes) {
                 typeDeclarationDescr.addSuperType(superType.getText());
             }
         }
@@ -270,7 +269,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     }
 
     @Override
-    public EnumDeclarationDescr visitEnumDeclaration(DRLParser.EnumDeclarationContext ctx) {
+    public EnumDeclarationDescr visitEnumDeclaration(DRL10Parser.EnumDeclarationContext ctx) {
         EnumDeclarationDescr enumDeclarationDescr = BaseDescrFactory.builder(new EnumDeclarationDescr())
                 .withParserRuleContext(ctx)
                 .withResource(resource)
@@ -295,7 +294,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     }
 
     @Override
-    public EnumLiteralDescr visitEnumerative(DRLParser.EnumerativeContext ctx) {
+    public EnumLiteralDescr visitEnumerative(DRL10Parser.EnumerativeContext ctx) {
         EnumLiteralDescr enumLiteralDescr = BaseDescrFactory.builder(new EnumLiteralDescr(ctx.drlIdentifier().getText()))
                 .withParserRuleContext(ctx)
                 .withResource(resource)
@@ -307,7 +306,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     }
 
     @Override
-    public EntryPointDeclarationDescr visitEntryPointDeclaration(DRLParser.EntryPointDeclarationContext ctx) {
+    public EntryPointDeclarationDescr visitEntryPointDeclaration(DRL10Parser.EntryPointDeclarationContext ctx) {
         EntryPointDeclarationDescr entryPointDeclarationDescr = BaseDescrFactory.builder(new EntryPointDeclarationDescr())
                 .withParserRuleContext(ctx)
                 .withResource(resource)
@@ -320,7 +319,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     }
 
     @Override
-    public WindowDeclarationDescr visitWindowDeclaration(DRLParser.WindowDeclarationContext ctx) {
+    public WindowDeclarationDescr visitWindowDeclaration(DRL10Parser.WindowDeclarationContext ctx) {
         WindowDeclarationDescr windowDeclarationDescr = BaseDescrFactory.builder(new WindowDeclarationDescr())
                 .withParserRuleContext(ctx)
                 .withResource(resource)
@@ -337,7 +336,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
      * entry point for one rule
      */
     @Override
-    public RuleDescr visitRuledef(DRLParser.RuledefContext ctx) {
+    public RuleDescr visitRuledef(DRL10Parser.RuledefContext ctx) {
         RuleDescr ruleDescr = BaseDescrFactory.builder(new RuleDescr(safeStripStringDelimiters(ctx.name.getText())))
                 .withParserRuleContext(ctx)
                 .withResource(resource)
@@ -398,15 +397,15 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     }
 
     @Override
-    public QueryDescr visitQuerydef(DRLParser.QuerydefContext ctx) {
+    public QueryDescr visitQuerydef(DRL10Parser.QuerydefContext ctx) {
         QueryDescr queryDescr = BaseDescrFactory.builder(new QueryDescr(safeStripStringDelimiters(ctx.name.getText())))
                 .withParserRuleContext(ctx)
                 .withResource(resource)
                 .build();
 
-        DRLParser.ParametersContext parametersContext = ctx.parameters();
+        DRL10Parser.ParametersContext parametersContext = ctx.parameters();
         if (parametersContext != null) {
-            List<DRLParser.ParameterContext> parameterContexts = parametersContext.parameter();
+            List<DRL10Parser.ParameterContext> parameterContexts = parametersContext.parameter();
             parameterContexts.forEach(parameterContext -> {
                 String type = parameterContext.type() != null ? parameterContext.type().getText() : "Object"; // default type is Object
                 String name = parameterContext.drlIdentifier().getText();
@@ -425,7 +424,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     }
 
     @Override
-    public AnnotationDescr visitDrlAnnotation(DRLParser.DrlAnnotationContext ctx) {
+    public AnnotationDescr visitDrlAnnotation(DRL10Parser.DrlAnnotationContext ctx) {
         // Full Java-style annotation.
         if (ctx.anno != null) {
             if (ctx.anno.result == null) {
@@ -449,7 +448,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     }
 
     @Override
-    public TypeFieldDescr visitField(DRLParser.FieldContext ctx) {
+    public TypeFieldDescr visitField(DRL10Parser.FieldContext ctx) {
         TypeFieldDescr typeFieldDescr = BaseDescrFactory.builder(new TypeFieldDescr())
                 .withParserRuleContext(ctx)
                 .withResource(resource)
@@ -466,7 +465,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     }
 
     @Override
-    public AttributeDescr visitExpressionAttribute(DRLParser.ExpressionAttributeContext ctx) {
+    public AttributeDescr visitExpressionAttribute(DRL10Parser.ExpressionAttributeContext ctx) {
         AttributeDescr attributeDescr = BaseDescrFactory.builder(new AttributeDescr(ctx.name.getText()))
                 .withParserRuleContext(ctx)
                 .withResource(resource)
@@ -477,7 +476,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     }
 
     @Override
-    public AttributeDescr visitBooleanAttribute(DRLParser.BooleanAttributeContext ctx) {
+    public AttributeDescr visitBooleanAttribute(DRL10Parser.BooleanAttributeContext ctx) {
         AttributeDescr attributeDescr = BaseDescrFactory.builder(new AttributeDescr(ctx.name.getText()))
                 .withParserRuleContext(ctx)
                 .withResource(resource)
@@ -488,7 +487,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     }
 
     @Override
-    public AttributeDescr visitStringAttribute(DRLParser.StringAttributeContext ctx) {
+    public AttributeDescr visitStringAttribute(DRL10Parser.StringAttributeContext ctx) {
         AttributeDescr attributeDescr = BaseDescrFactory.builder(new AttributeDescr(ctx.name.getText()))
                 .withParserRuleContext(ctx)
                 .withResource(resource)
@@ -499,7 +498,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     }
 
     @Override
-    public AttributeDescr visitStringListAttribute(DRLParser.StringListAttributeContext ctx) {
+    public AttributeDescr visitStringListAttribute(DRL10Parser.StringListAttributeContext ctx) {
         AttributeDescr attributeDescr = BaseDescrFactory.builder(new AttributeDescr(ctx.name.getText()))
                 .withParserRuleContext(ctx)
                 .withResource(resource)
@@ -526,7 +525,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     }
 
     @Override
-    public AttributeDescr visitIntOrChunkAttribute(DRLParser.IntOrChunkAttributeContext ctx) {
+    public AttributeDescr visitIntOrChunkAttribute(DRL10Parser.IntOrChunkAttributeContext ctx) {
         AttributeDescr attributeDescr = BaseDescrFactory.builder(new AttributeDescr(ctx.name.getText()))
                 .withParserRuleContext(ctx)
                 .withResource(resource)
@@ -545,7 +544,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
      * entry point for LHS
      */
     @Override
-    public List<BaseDescr> visitLhs(DRLParser.LhsContext ctx) {
+    public List<BaseDescr> visitLhs(DRL10Parser.LhsContext ctx) {
         if (ctx.lhsExpression() != null) {
             return visitDescrChildren(ctx);
         } else {
@@ -554,7 +553,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     }
 
     @Override
-    public BaseDescr visitLhsPatternBind(DRLParser.LhsPatternBindContext ctx) {
+    public BaseDescr visitLhsPatternBind(DRL10Parser.LhsPatternBindContext ctx) {
         if (ctx.lhsPattern().size() == 1) {
             return getSinglePatternDescr(ctx);
         } else if (ctx.lhsPattern().size() > 1) {
@@ -564,7 +563,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
         }
     }
 
-    private PatternDescr getSinglePatternDescr(DRLParser.LhsPatternBindContext ctx) {
+    private PatternDescr getSinglePatternDescr(DRL10Parser.LhsPatternBindContext ctx) {
         List<BaseDescr> patternDescrList = visitDescrChildren(ctx);
         if (patternDescrList.isEmpty() || !(patternDescrList.get(0) instanceof PatternDescr)) {
             throw new IllegalStateException("lhsPatternBind must have at least one lhsPattern : " + ctx.getText());
@@ -581,7 +580,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
         return patternDescr;
     }
 
-    private OrDescr getOrDescrWithMultiplePatternDescr(DRLParser.LhsPatternBindContext ctx) {
+    private OrDescr getOrDescrWithMultiplePatternDescr(DRL10Parser.LhsPatternBindContext ctx) {
         OrDescr orDescr = BaseDescrFactory.builder(new OrDescr())
                 .withParserRuleContext(ctx)
                 .withResource(resource)
@@ -604,7 +603,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
      * entry point for a Pattern
      */
     @Override
-    public PatternDescr visitLhsPattern(DRLParser.LhsPatternContext ctx) {
+    public PatternDescr visitLhsPattern(DRL10Parser.LhsPatternContext ctx) {
         if (ctx.xpathPrimary() != null) {
             String constraint = visitConstraintChildren(ctx);
             ExprConstraintDescr constraintDescr = BaseDescrFactory.builder(new ExprConstraintDescr(constraint))
@@ -649,7 +648,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     }
 
     @Override
-    public NamedConsequenceDescr visitNamedConsequenceInvocation(DRLParser.NamedConsequenceInvocationContext ctx) {
+    public NamedConsequenceDescr visitNamedConsequenceInvocation(DRL10Parser.NamedConsequenceInvocationContext ctx) {
         NamedConsequenceDescr namedConsequenceDescr = BaseDescrFactory.builder(new NamedConsequenceDescr(ctx.drlIdentifier().getText()))
                 .withParserRuleContext(ctx)
                 .withResource(resource)
@@ -658,7 +657,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     }
 
     @Override
-    public NamedConsequenceDescr visitBreakingNamedConsequenceInvocation(DRLParser.BreakingNamedConsequenceInvocationContext ctx) {
+    public NamedConsequenceDescr visitBreakingNamedConsequenceInvocation(DRL10Parser.BreakingNamedConsequenceInvocationContext ctx) {
         NamedConsequenceDescr namedConsequenceDescr = BaseDescrFactory.builder(new NamedConsequenceDescr(ctx.drlIdentifier().getText()))
                 .withParserRuleContext(ctx)
                 .withResource(resource)
@@ -675,7 +674,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
      * into a ConditionalBranchDescr
      */
     @Override
-    public ConditionalBranchDescr visitConditionalBranch(DRLParser.ConditionalBranchContext ctx) {
+    public ConditionalBranchDescr visitConditionalBranch(DRL10Parser.ConditionalBranchContext ctx) {
         ConditionalBranchDescr conditionalBranchDescr = BaseDescrFactory.builder(new ConditionalBranchDescr())
                 .withParserRuleContext(ctx)
                 .withResource(resource)
@@ -723,7 +722,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     }
 
     @Override
-    public ForallDescr visitLhsForall(DRLParser.LhsForallContext ctx) {
+    public ForallDescr visitLhsForall(DRL10Parser.LhsForallContext ctx) {
         ForallDescr forallDescr = BaseDescrFactory.builder(new ForallDescr())
                 .withParserRuleContext(ctx)
                 .withResource(resource)
@@ -733,7 +732,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     }
 
     @Override
-    public PatternDescr visitLhsAccumulate(DRLParser.LhsAccumulateContext ctx) {
+    public PatternDescr visitLhsAccumulate(DRL10Parser.LhsAccumulateContext ctx) {
         AccumulateDescr accumulateDescr = BaseDescrFactory.builder(new AccumulateDescr())
                 .withParserRuleContext(ctx)
                 .withResource(resource)
@@ -742,7 +741,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
         accumulateDescr.setInput(wrapWithAndDescr(visitLhsAndDef(ctx.lhsAndDef()), ctx.lhsAndDef()));
 
         // accumulate function
-        for (DRLParser.AccumulateFunctionContext accumulateFunctionContext : ctx.accumulateFunction()) {
+        for (DRL10Parser.AccumulateFunctionContext accumulateFunctionContext : ctx.accumulateFunction()) {
             accumulateDescr.addFunction(visitAccumulateFunction(accumulateFunctionContext));
         }
 
@@ -769,7 +768,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     }
 
     @Override
-    public Object visitLhsGroupBy(DRLParser.LhsGroupByContext ctx) {
+    public Object visitLhsGroupBy(DRL10Parser.LhsGroupByContext ctx) {
         GroupByDescr groupByDescr = BaseDescrFactory.builder(new GroupByDescr())
                 .withParserRuleContext(ctx)
                 .withResource(resource)
@@ -782,7 +781,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
         groupByDescr.setGroupingFunction(getTextPreservingWhitespace(ctx.groupByKeyBinding().conditionalExpression()));
 
         // accumulate function
-        for (DRLParser.AccumulateFunctionContext accumulateFunctionContext : ctx.accumulateFunction()) {
+        for (DRL10Parser.AccumulateFunctionContext accumulateFunctionContext : ctx.accumulateFunction()) {
             groupByDescr.addFunction(visitAccumulateFunction(accumulateFunctionContext));
         }
 
@@ -797,21 +796,21 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     }
 
     @Override
-    public BehaviorDescr visitPatternFilter(DRLParser.PatternFilterContext ctx) {
+    public BehaviorDescr visitPatternFilter(DRL10Parser.PatternFilterContext ctx) {
         BehaviorDescr behaviorDescr = BaseDescrFactory.builder(new BehaviorDescr())
                 .withParserRuleContext(ctx)
                 .withResource(resource)
                 .build();
         behaviorDescr.setType(ctx.DRL_WINDOW().getText());
         behaviorDescr.setSubType(ctx.drlIdentifier().getText());
-        List<DRLParser.ExpressionContext> expressionContexts = ctx.expressionList().expression();
+        List<DRL10Parser.ExpressionContext> expressionContexts = ctx.expressionList().expression();
         List<String> parameters = expressionContexts.stream().map(Antlr4ParserStringUtils::getTextPreservingWhitespace).collect(Collectors.toList());
         behaviorDescr.setParameters(parameters);
         return behaviorDescr;
     }
 
     @Override
-    public FromDescr visitFromExpression(DRLParser.FromExpressionContext ctx) {
+    public FromDescr visitFromExpression(DRL10Parser.FromExpressionContext ctx) {
         FromDescr fromDescr = BaseDescrFactory.builder(new FromDescr())
                 .withParserRuleContext(ctx)
                 .withResource(resource)
@@ -821,7 +820,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     }
 
     @Override
-    public CollectDescr visitFromCollect(DRLParser.FromCollectContext ctx) {
+    public CollectDescr visitFromCollect(DRL10Parser.FromCollectContext ctx) {
         CollectDescr collectDescr = BaseDescrFactory.builder(new CollectDescr())
                 .withParserRuleContext(ctx)
                 .withResource(resource)
@@ -831,7 +830,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     }
 
     @Override
-    public AccumulateDescr visitFromAccumulate(DRLParser.FromAccumulateContext ctx) {
+    public AccumulateDescr visitFromAccumulate(DRL10Parser.FromAccumulateContext ctx) {
         AccumulateDescr accumulateDescr = BaseDescrFactory.builder(new AccumulateDescr())
                 .withParserRuleContext(ctx)
                 .withResource(resource)
@@ -854,7 +853,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     }
 
     @Override
-    public AccumulateDescr.AccumulateFunctionCallDescr visitAccumulateFunction(DRLParser.AccumulateFunctionContext ctx) {
+    public AccumulateDescr.AccumulateFunctionCallDescr visitAccumulateFunction(DRL10Parser.AccumulateFunctionContext ctx) {
         String function = ctx.drlIdentifier().getText();
         String bind = null;
         boolean unify = false;
@@ -872,7 +871,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     }
 
     @Override
-    public EntryPointDescr visitFromEntryPoint(DRLParser.FromEntryPointContext ctx) {
+    public EntryPointDescr visitFromEntryPoint(DRL10Parser.FromEntryPointContext ctx) {
         return BaseDescrFactory.builder(new EntryPointDescr(safeStripStringDelimiters(ctx.stringId().getText())))
                 .withParserRuleContext(ctx)
                 .withResource(resource)
@@ -880,7 +879,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     }
 
     @Override
-    public WindowReferenceDescr visitFromWindow(DRLParser.FromWindowContext ctx) {
+    public WindowReferenceDescr visitFromWindow(DRL10Parser.FromWindowContext ctx) {
         return BaseDescrFactory.builder(new WindowReferenceDescr(ctx.drlIdentifier().getText()))
                 .withParserRuleContext(ctx)
                 .withResource(resource)
@@ -891,7 +890,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
      * Collect constraints in a Pattern
      */
     @Override
-    public List<ExprConstraintDescr> visitConstraints(DRLParser.ConstraintsContext ctx) {
+    public List<ExprConstraintDescr> visitConstraints(DRL10Parser.ConstraintsContext ctx) {
         List<ExprConstraintDescr> exprConstraintDescrList = new ArrayList<>();
         populateExprConstraintDescrList(ctx, exprConstraintDescrList);
         return exprConstraintDescrList;
@@ -900,7 +899,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     /**
      * Collect constraints in a Pattern. Positional constraints comes first with semicolon.
      */
-    private List<ExprConstraintDescr> visitConstraints(DRLParser.PositionalConstraintsContext positionalCtx, DRLParser.ConstraintsContext ctx) {
+    private List<ExprConstraintDescr> visitConstraints(DRL10Parser.PositionalConstraintsContext positionalCtx, DRL10Parser.ConstraintsContext ctx) {
         List<ExprConstraintDescr> exprConstraintDescrList = new ArrayList<>();
         populateExprConstraintDescrList(positionalCtx, exprConstraintDescrList);
         populateExprConstraintDescrList(ctx, exprConstraintDescrList);
@@ -915,7 +914,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
         for (BaseDescr descr : descrList) {
             if (descr instanceof ExprConstraintDescr) {
                 ExprConstraintDescr exprConstraintDescr = (ExprConstraintDescr) descr;
-                exprConstraintDescr.setType(ctx instanceof DRLParser.PositionalConstraintsContext ? ExprConstraintDescr.Type.POSITIONAL : ExprConstraintDescr.Type.NAMED);
+                exprConstraintDescr.setType(ctx instanceof DRL10Parser.PositionalConstraintsContext ? ExprConstraintDescr.Type.POSITIONAL : ExprConstraintDescr.Type.NAMED);
                 exprConstraintDescr.setPosition(exprConstraintDescrList.size());
                 exprConstraintDescrList.add(exprConstraintDescr);
             }
@@ -927,7 +926,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
      * In case of nested constraint, it could be multiple ExprConstraintDescr objects.
      */
     @Override
-    public List<ExprConstraintDescr> visitConstraint(DRLParser.ConstraintContext ctx) {
+    public List<ExprConstraintDescr> visitConstraint(DRL10Parser.ConstraintContext ctx) {
         List<ExprConstraintDescr> descrList = new ArrayList<>();
         if (ctx.nestedConstraint() != null) {
             // nested constraint requires special string manipulation
@@ -955,7 +954,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
      *     address.city.startsWith("I"), address.city.length() == 5
      */
     @Override
-    public List<ExprConstraintDescr> visitNestedConstraint(DRLParser.NestedConstraintContext ctx) {
+    public List<ExprConstraintDescr> visitNestedConstraint(DRL10Parser.NestedConstraintContext ctx) {
         Token prefixStartToken = ctx.start;
         Token prefixEndToken = tokenStream.get(ctx.LPAREN().getSymbol().getTokenIndex() - 1);
         String prefix = tokenStream.getText(prefixStartToken, prefixEndToken);
@@ -965,12 +964,12 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     }
 
     @Override
-    public String visitDrlIdentifier(DRLParser.DrlIdentifierContext ctx) {
+    public String visitDrlIdentifier(DRL10Parser.DrlIdentifierContext ctx) {
         return ctx.getText();
     }
 
     @Override
-    public ExistsDescr visitLhsExists(DRLParser.LhsExistsContext ctx) {
+    public ExistsDescr visitLhsExists(DRL10Parser.LhsExistsContext ctx) {
         ExistsDescr existsDescr = BaseDescrFactory.builder(new ExistsDescr())
                 .withParserRuleContext(ctx)
                 .withResource(resource)
@@ -992,7 +991,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     }
 
     @Override
-    public NotDescr visitLhsNot(DRLParser.LhsNotContext ctx) {
+    public NotDescr visitLhsNot(DRL10Parser.LhsNotContext ctx) {
         NotDescr notDescr = BaseDescrFactory.builder(new NotDescr())
                 .withParserRuleContext(ctx)
                 .withResource(resource)
@@ -1014,7 +1013,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     }
 
     @Override
-    public EvalDescr visitLhsEval(DRLParser.LhsEvalContext ctx) {
+    public EvalDescr visitLhsEval(DRL10Parser.LhsEvalContext ctx) {
         return BaseDescrFactory.builder(new EvalDescr(getTextPreservingWhitespace(ctx.conditionalOrExpression())))
                 .withParserRuleContext(ctx)
                 .withResource(resource)
@@ -1022,13 +1021,13 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     }
 
     @Override
-    public List<BaseDescr> visitLhsExpressionEnclosed(DRLParser.LhsExpressionEnclosedContext ctx) {
+    public List<BaseDescr> visitLhsExpressionEnclosed(DRL10Parser.LhsExpressionEnclosedContext ctx) {
         // enclosed expression is simply stripped because Descr itself is encapsulated
         return visitDescrChildren(ctx);
     }
 
     @Override
-    public BaseDescr visitLhsOr(DRLParser.LhsOrContext ctx) {
+    public BaseDescr visitLhsOr(DRL10Parser.LhsOrContext ctx) {
         // For flatten nested OrDescr logic, we call visitDescrChildrenForDescrNodePair instead of usual visitDescrChildren
         List<DescrNodePair> descrList = visitDescrChildrenForDescrNodePair(ctx);
         if (descrList.size() == 1) {
@@ -1064,7 +1063,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
         for (DescrNodePair descrNodePair : descrList) {
             BaseDescr descr = descrNodePair.getDescr();
             ParseTree node = descrNodePair.getNode(); // parser node corresponding to the descr
-            if (descr instanceof OrDescr orDescr && !(node instanceof DRLParser.LhsExpressionEnclosedContext)) {
+            if (descr instanceof OrDescr orDescr && !(node instanceof DRL10Parser.LhsExpressionEnclosedContext)) {
                 // sibling OrDescr should be flattened unless it's explicitly enclosed by parenthesis
                 flattenedDescrs.addAll(orDescr.getDescrs());
                 flattenedDescrs.addAll(orDescr.getAnnotations());
@@ -1076,7 +1075,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     }
 
     @Override
-    public BaseDescr visitLhsAnd(DRLParser.LhsAndContext ctx) {
+    public BaseDescr visitLhsAnd(DRL10Parser.LhsAndContext ctx) {
         return createAndDescr(ctx);
     }
 
@@ -1116,7 +1115,7 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
         for (DescrNodePair descrNodePair : descrList) {
             BaseDescr descr = descrNodePair.getDescr();
             ParseTree node = descrNodePair.getNode(); // parser node corresponding to the descr
-            if (descr instanceof AndDescr andDescr && !(node instanceof DRLParser.LhsExpressionEnclosedContext)) {
+            if (descr instanceof AndDescr andDescr && !(node instanceof DRL10Parser.LhsExpressionEnclosedContext)) {
                 // sibling AndDescr should be flattened unless it's explicitly enclosed by parenthesis
                 flattenedDescrs.addAll(andDescr.getDescrs());
                 flattenedDescrs.addAll(andDescr.getAnnotations());
@@ -1128,12 +1127,12 @@ public class DRLVisitorImpl extends DRLParserBaseVisitor<Object> {
     }
 
     @Override
-    public BaseDescr visitLhsAndDef(DRLParser.LhsAndDefContext ctx) {
+    public BaseDescr visitLhsAndDef(DRL10Parser.LhsAndDefContext ctx) {
         return createAndDescr(ctx);
     }
 
     @Override
-    public BaseDescr visitLhsUnary(DRLParser.LhsUnaryContext ctx) {
+    public BaseDescr visitLhsUnary(DRL10Parser.LhsUnaryContext ctx) {
         List<BaseDescr> children = visitDescrChildren(ctx);
         if (children.size() > 1) {
             // lhsUnary may have multiple children e.g. consequenceInvocation, connect with AND

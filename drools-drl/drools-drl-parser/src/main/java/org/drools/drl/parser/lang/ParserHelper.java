@@ -20,19 +20,26 @@ package org.drools.drl.parser.lang;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.antlr.runtime.CommonToken;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.RecognizerSharedState;
 import org.antlr.runtime.Token;
 import org.antlr.runtime.TokenStream;
+import org.drools.drl.ast.descr.AnnotatedBaseDescr;
 import org.drools.drl.ast.descr.AttributeDescr;
 import org.drools.drl.ast.descr.BaseDescr;
+import org.drools.drl.ast.descr.RelationalExprDescr;
+import org.drools.drl.ast.descr.RuleDescr;
 import org.drools.drl.ast.dsl.AbstractClassTypeDeclarationBuilder;
 import org.drools.drl.ast.dsl.AccumulateDescrBuilder;
 import org.drools.drl.ast.dsl.AccumulateImportDescrBuilder;
@@ -65,13 +72,18 @@ import org.drools.drl.ast.dsl.TypeDeclarationDescrBuilder;
 import org.drools.drl.ast.dsl.UnitDescrBuilder;
 import org.drools.drl.ast.dsl.WindowDeclarationDescrBuilder;
 import org.drools.drl.parser.DroolsParserException;
+import org.drools.drl.parser.impl.Operator;
 import org.kie.internal.builder.conf.LanguageLevelOption;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This is a class to hold all the helper functions/methods used
  * by the DRL parser
  */
 public class ParserHelper {
+    public static final Logger LOG = LoggerFactory.getLogger(ParserHelper.class );
+
     public final String[]                             statementKeywords        = new String[]{
                                                                                DroolsSoftKeywords.PACKAGE,
                                                                                DroolsSoftKeywords.UNIT,
@@ -99,6 +111,17 @@ public class ParserHelper {
     private boolean                                   hasOperator              = false;
 
     private final LanguageLevelOption                 languageLevel;
+
+    private static final Set<String> BUILT_IN_OPERATORS = Arrays.stream(Operator.BuiltInOperator.values())
+            .map(Operator.BuiltInOperator::getSymbol)
+            .collect(Collectors.toSet());
+
+    private static int logCounterHalfConstraint = 0;
+    private static int logCounterCustomOperator = 0;
+    private static int logCounterInfixAnd = 0;
+    private static int logCounterInfixOr = 0;
+    private static int logCounterAnnotationInLhsPattern = 0;
+    private static int logCounterAgendaGroup = 0;
 
     public ParserHelper(TokenStream input,
                         RecognizerSharedState state,
@@ -655,5 +678,124 @@ public class ParserHelper {
 
     public String[] getStatementKeywords() {
         return statementKeywords;
+    }
+
+    public static void logHalfConstraintWarn(String logicalConstraint, BaseDescr descr) {
+        if (descr instanceof RelationalExprDescr relational) {
+            String halfConstraintStr = logicalConstraint + " " + relational.getOperator() + " " + relational.getRight().toString();
+            logHalfConstraintWarn("The use of a half constraint '" + halfConstraintStr + "' is deprecated" +
+                                          " and will be removed in the future version (LanguageLevel.DRL10)." +
+                                          " Please add a left operand.");
+        }
+    }
+
+    public static void logHalfConstraintWarn(String message) {
+        if (logCounterHalfConstraint > 10) {
+            return; // suppress further warnings
+        }
+
+        logCounterHalfConstraint++;
+        LOG.warn(message);
+        if (logCounterHalfConstraint == 10) {
+            LOG.warn("Further warnings about half constraints will be suppressed.");
+        }
+    }
+
+    public static void logCustomOperatorWarn(Token token) {
+        if (logCounterCustomOperator > 1) {
+            return; // suppress further warnings
+        }
+
+        String operator = token.getText();
+        if (BUILT_IN_OPERATORS.contains(operator)) {
+            return; // built-in operator
+        }
+        logCounterCustomOperator++;
+        LOG.warn("Custom operator will require a prefix '##' in the future version (LanguageLevel.DRL10)." +
+                         " If you use LanguageLevel.DRL10, you need to change '{}' to '##{}'." +
+                         " You don't need to change the rule while you use the default LanguageLevel.DRL6.", operator, operator);
+    }
+
+    public static void logInfixOrWarn(CEDescrBuilder descrBuilder) {
+        if (logCounterInfixOr > 5) {
+            return; // suppress further warnings
+        }
+
+        Optional<RuleDescr> ruleDescrOpt = getParentRuleDescr(descrBuilder);
+        if (ruleDescrOpt.isEmpty()) {
+            return;
+        }
+
+        logCounterInfixOr++;
+        LOG.warn("Connecting patterns with '||' is deprecated and will be removed in the future version (LanguageLevel.DRL10)." +
+                         " Please replace '||' with 'or' in rule '{}'. '||' in a constraint will remain supported.", ruleDescrOpt.get().getName());
+        if (logCounterInfixOr == 5) {
+            LOG.warn("Further warnings about '||' will be suppressed.");
+        }
+    }
+
+    public static void logInfixAndWarn(CEDescrBuilder descrBuilder) {
+        if (logCounterInfixAnd > 5) {
+            return; // suppress further warnings
+        }
+
+        Optional<RuleDescr> ruleDescrOpt = getParentRuleDescr(descrBuilder);
+        if (ruleDescrOpt.isEmpty()) {
+            return;
+        }
+
+        logCounterInfixAnd++;
+        LOG.warn("Connecting patterns with '&&' is deprecated and will be removed in the future version (LanguageLevel.DRL10)." +
+                         " Please replace '&&' with 'and' in rule '{}'. '&&' in a constraint will remain supported.", ruleDescrOpt.get().getName());
+        if (logCounterInfixAnd == 5) {
+            LOG.warn("Further warnings about '&&' will be suppressed.");
+        }
+    }
+
+    private static Optional<RuleDescr> getParentRuleDescr(DescrBuilder<?, ?> descrBuilder) {
+        while (descrBuilder != null) {
+            if (descrBuilder instanceof RuleDescrBuilder) {
+                return Optional.of(((RuleDescrBuilder) descrBuilder).getDescr());
+            } else if (descrBuilder instanceof PackageDescrBuilder) {
+                return Optional.empty();
+            }
+            descrBuilder = descrBuilder.getParent();
+        }
+        return Optional.empty();
+    }
+
+    public static void logAnnotationInLhsPatternWarn(CEDescrBuilder descrBuilder) {
+        if (logCounterAnnotationInLhsPattern > 5) {
+            return; // suppress further warnings
+        }
+
+        Optional<RuleDescr> ruleDescrOpt = getParentRuleDescr(descrBuilder);
+        if (ruleDescrOpt.isEmpty()) {
+            return;
+        }
+
+        BaseDescr descr = descrBuilder.getDescr();
+        if (descr instanceof AnnotatedBaseDescr annotated) {
+            String annotationNames = annotated.getAnnotationNames().stream().collect(Collectors.joining(", "));
+            logCounterAnnotationInLhsPattern++;
+            LOG.warn("Annotation inside LHS patterns is deprecated and will be removed in the future version (LanguageLevel.DRL10)." +
+                             " Found '{}' in rule '{}'. Annotation in other places will remain supported.", annotationNames, ruleDescrOpt.get().getName());
+            if (logCounterAnnotationInLhsPattern == 5) {
+                LOG.warn("Further warnings about Annotation inside LHS patterns will be suppressed.");
+            }
+        }
+    }
+
+    public static void logAgendaGroupWarn(AttributeDescr attributeDescr) {
+        if (logCounterAgendaGroup > 5) {
+            return; // suppress further warnings
+        }
+
+        logCounterAgendaGroup++;
+        LOG.warn("'agenda-group \"{}\"' is found. 'agenda-group' is deprecated and will be dropped in the future version (LanguageLevel.DRL10)." +
+                         " Please replace 'agenda-group' with 'ruleflow-group', which works as the same as 'agenda-group'.", attributeDescr.getValue());
+        if (logCounterAgendaGroup == 5) {
+            LOG.warn("Further warnings about 'agenda-group' will be suppressed.");
+        }
     }
 }

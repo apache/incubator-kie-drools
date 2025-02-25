@@ -88,4 +88,14 @@ public interface DescrBuilder<P extends DescrBuilder< ? , ? >, T extends BaseDes
      * @return
      */
     public P end();
+
+    /**
+     * Returns the parent container of this descr builder.
+     * Example: ruleDescrBuilder.getParent() will return the
+     * PackageDescrBuilder as that is its parent container
+     * without ending the current construction.
+     *
+     * @return
+     */
+    public P getParent();
 }

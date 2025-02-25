@@ -432,6 +432,7 @@ orRestriction returns [BaseDescr result]
   : left=andRestriction { if( buildDescr  ) { $result = $left.result; } }
     ( (DOUBLE_PIPE fullAnnotation[null]? andRestriction)=>lop=DOUBLE_PIPE args=fullAnnotation[null]? right=andRestriction
          { if( buildDescr ) {
+               helper.logHalfConstraintWarn("||", right);
                ConstraintConnectiveDescr descr = ConstraintConnectiveDescr.newOr();
                descr.addOrMerge( $result );
                descr.addOrMerge( $right.result );
@@ -448,6 +449,7 @@ andRestriction returns [BaseDescr result]
   	    { if ( isNotEOF() ) helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR ); }
         args=fullAnnotation[null]?right=singleRestriction
          { if( buildDescr  ) {
+               helper.logHalfConstraintWarn("&&", right);
                ConstraintConnectiveDescr descr = ConstraintConnectiveDescr.newAnd();
                descr.addOrMerge( $result );
                descr.addOrMerge( $right.result );
@@ -847,9 +849,9 @@ in_key
   ;
 
 operator_key
-  :      {(helper.isPluggableEvaluator(false))}?=> id=ID { helper.emit($ID, DroolsEditorType.KEYWORD); }
+  :      {(helper.isPluggableEvaluator(false))}?=> id=ID { helper.logCustomOperatorWarn(id); helper.emit($ID, DroolsEditorType.KEYWORD); }
   ;
 
 neg_operator_key
-  :      {(helper.isPluggableEvaluator(true))}?=> id=ID { helper.emit($ID, DroolsEditorType.KEYWORD); }
+  :      {(helper.isPluggableEvaluator(true))}?=> id=ID { helper.logCustomOperatorWarn(id); helper.emit($ID, DroolsEditorType.KEYWORD); }
   ;

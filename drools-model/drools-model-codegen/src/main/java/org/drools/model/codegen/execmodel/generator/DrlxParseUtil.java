@@ -92,6 +92,7 @@ import org.drools.drl.ast.descr.PatternDescr;
 import org.drools.model.Index;
 import org.drools.model.codegen.execmodel.errors.IncompatibleGetterOverloadError;
 import org.drools.model.codegen.execmodel.errors.InvalidExpressionErrorResult;
+import org.drools.model.codegen.execmodel.util.ParserLogUtils;
 import org.drools.modelcompiler.consequence.DroolsImpl;
 import org.drools.mvel.parser.DrlxParser;
 import org.drools.mvel.parser.ast.expr.BigDecimalLiteralExpr;
@@ -363,13 +364,14 @@ public class DrlxParseUtil {
 
     public static Node replaceAllHalfBinaryChildren(Node parent) {
         parent.findAll(HalfBinaryExpr.class)
-                .forEach(n -> n.replace(trasformHalfBinaryToBinary(n)));
+                .forEach(n -> n.replace(trasformHalfBinaryToBinary(n, Optional.empty())));
         return parent;
     }
 
-    public static Expression trasformHalfBinaryToBinary(Expression drlxExpr) {
+    public static Expression trasformHalfBinaryToBinary(Expression drlxExpr, Optional<RuleContext> ruleContextOpt) {
         final Optional<Node> parent = drlxExpr.getParentNode();
         if(drlxExpr instanceof HalfBinaryExpr && parent.isPresent()) {
+            ParserLogUtils.logHalfConstraintWarn(drlxExpr, ruleContextOpt);
             HalfBinaryExpr halfBinaryExpr = (HalfBinaryExpr) drlxExpr;
             Expression parentLeft = findLeftLeafOfNameExprTraversingParent( halfBinaryExpr );
             Operator operator = toBinaryExprOperator(halfBinaryExpr.getOperator());

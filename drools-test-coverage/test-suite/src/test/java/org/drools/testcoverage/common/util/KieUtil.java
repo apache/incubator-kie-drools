@@ -17,8 +17,12 @@
  * under the License.
  */
 package org.drools.testcoverage.common.util;
-
+;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringReader;
+import java.io.UncheckedIOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -34,6 +38,11 @@ import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.JoinNode;
 import org.drools.core.impl.InternalRuleBase;
 import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.decisiontable.InputType;
+import org.drools.decisiontable.SpreadsheetCompiler;
+import org.drools.drl.parser.DrlParser;
+import org.drools.io.ClassPathResource;
+import org.drools.io.InternalResource;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -46,7 +55,10 @@ import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.command.KieCommands;
 import org.kie.api.io.KieResources;
 import org.kie.api.io.Resource;
+import org.kie.api.io.ResourceConfiguration;
+import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
+import org.kie.internal.builder.DecisionTableConfiguration;
 import org.kie.internal.builder.conf.AlphaNetworkCompilerOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -94,17 +106,104 @@ public final class KieUtil {
                                                               final ReleaseId releaseId, final Resource... resources) {
         final KieFileSystem fileSystem = KieServices.Factory.get().newKieFileSystem();
         fileSystem.generateAndWritePomXML(releaseId);
-        for (final Resource resource : resources) {
+        for (Resource resource : resources) {
+            resource = newResourceForNewParserIfRequired(resource);
             fileSystem.write(resource);
         }
         fileSystem.writeKModuleXML(kieModuleModel.toXML());
         return fileSystem;
     }
 
+    private static Resource newResourceForNewParserIfRequired(Resource resource) {
+        if (DrlParser.ANTLR4_PARSER_ENABLED && resource instanceof InternalResource internalResource) {
+            if (isDrl(internalResource)) {
+                String encoding = internalResource.getEncoding();
+                String drl;
+                if (encoding != null) {
+                    try {
+                        drl = new String(internalResource.getBytes(), encoding);
+                    } catch (UnsupportedEncodingException e) {
+                        throw new UncheckedIOException(e);
+                    }
+                } else {
+                    drl = new String(internalResource.getBytes());
+                }
+                return convertResourceForNewParser(internalResource, drl);
+            } if (internalResource.getResourceType() == ResourceType.DTABLE) {
+                ResourceConfiguration resourceConfiguration = internalResource.getConfiguration();
+                SpreadsheetCompiler compiler = new SpreadsheetCompiler();
+                try (InputStream is = internalResource.getInputStream()) {
+                    String drl;
+                    if (resourceConfiguration instanceof DecisionTableConfiguration decisionTableConfiguration && decisionTableConfiguration.getWorksheetName() != null) {
+                        drl = compiler.compile(is, decisionTableConfiguration.getWorksheetName());
+                    } else {
+                        drl = compiler.compile(is, getInputType(internalResource));
+                    }
+                    Resource resourceForNewParser = convertResourceForNewParser(internalResource, drl);
+                    // overwrite
+                    resourceForNewParser.setSourcePath(internalResource.getSourcePath() + ".drl");
+                    resourceForNewParser.setTargetPath(internalResource.getTargetPath() + ".drl");
+                    resourceForNewParser.setResourceType(ResourceType.DRL);
+                    return resourceForNewParser;
+                } catch (IOException e) {
+                    throw new UncheckedIOException(e);
+                }
+            }
+        }
+        return resource;
+    }
+
+    private static boolean isDrl(InternalResource internalResource) {
+        String sourcePath = internalResource.getSourcePath();
+        String targetPath = internalResource.getTargetPath();
+        return internalResource.getResourceType() == ResourceType.DRL ||
+                (internalResource.getResourceType() == null &&
+                        ((sourcePath != null && sourcePath.endsWith(".drl")) ||
+                         (targetPath != null && targetPath.endsWith(".drl"))));
+    }
+
+    private static Resource convertResourceForNewParser(InternalResource internalResource, String drl) {
+        Resource resourceForNewParserTest = getResources().newReaderResource(new StringReader(replaceAgendaGroupIfRequired(drl)));
+        resourceForNewParserTest.setSourcePath(internalResource.getSourcePath());
+        resourceForNewParserTest.setTargetPath(internalResource.getTargetPath());
+        resourceForNewParserTest.setResourceType(internalResource.getResourceType());
+        return resourceForNewParserTest;
+    }
+
+    public static String replaceAgendaGroupIfRequired(String drl) {
+        if (DrlParser.ANTLR4_PARSER_ENABLED) {
+            // new parser (DRL10) supports only ruleflow-group, dropping agenda-group
+            return drl.replaceAll("agenda-group", "ruleflow-group");
+        }
+        return drl;
+    }
+
+    private static InputType getInputType(InternalResource internalResource) {
+        if (!(internalResource instanceof ClassPathResource classPathResource)) {
+            return InputType.CSV;
+        }
+        String path = classPathResource.getPath();
+        switch (path.substring(path.lastIndexOf('.') + 1)) {
+            case "xls", "xlsx":
+                return InputType.XLS;
+            case "csv":
+                return InputType.CSV;
+            default:
+                throw new IllegalArgumentException("Unsupported input type: " + path);
+        }
+    }
+
     public static KieBuilder getKieBuilderFromDrls(final KieBaseTestConfiguration kieBaseTestConfiguration,
                                                    final boolean failIfBuildError, final String... drls) {
         final List<Resource> resources = getResourcesFromDrls(drls);
         return getKieBuilderFromResources(kieBaseTestConfiguration, failIfBuildError, resources.toArray(new Resource[]{}));
+    }
+
+    public static KieBuilder getKieBuilderFromDrls(final KieBaseTestConfiguration kieBaseTestConfiguration, final KieModuleModel kieModuleModel,
+                                                   final boolean failIfBuildError, final String... drls) {
+        final List<Resource> resources = getResourcesFromDrls(drls);
+        final KieFileSystem kieFileSystem = getKieFileSystemWithKieModule(kieModuleModel, KieServices.get().getRepository().getDefaultReleaseId(), resources.toArray(new Resource[]{}));
+        return getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kieFileSystem, failIfBuildError);
     }
 
     public static KieBuilder getKieBuilderFromDrls(final KieBaseTestConfiguration kieBaseTestConfiguration,final Map<String, String> kieModuleConfigurationProperties,
