@@ -116,20 +116,16 @@ public class TraitTest extends CommonTraitTest {
         return Stream.of(VirtualPropertyMode.MAP, VirtualPropertyMode.TRIPLES);
     }
 
-    private KieSession getSession(String... ruleFiles) {
-        KieHelper kieHelper = new KieHelper();
-        for (String file : ruleFiles) {
-            kieHelper.kfs.write(new ClassPathResource(file));
-        }
-        return kieHelper.build().newKieSession();
+    private KieSession getSession(String ruleFile) {
+        return loadKnowledgeBaseFromDrlFile(ruleFile).newKieSession();
     }
 
     private KieSession getSessionFromString(String drl) {
-        return new KieHelper().addContent(drl, ResourceType.DRL).build().newKieSession();
+        return loadKnowledgeBaseFromString(drl).newKieSession();
     }
 
     private KieBase getKieBaseFromString(String drl, KieBaseOption... options) {
-        return new KieHelper().addContent(drl, ResourceType.DRL).build(options);
+        return loadKnowledgeBaseWithKieBaseOption(drl, options);
     }
 
     @ParameterizedTest()
@@ -169,16 +165,8 @@ public class TraitTest extends CommonTraitTest {
     public void testTraitWrapGetAndSet(VirtualPropertyMode mode) throws Exception {
         String source = "org/drools/compiler/factmodel/traits/testTraitDon.drl";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        Resource res = ResourceFactory.newClassPathResource(source);
-        assertThat(res).isNotNull();
-        kbuilder.add(res, ResourceType.DRL);
-        if (kbuilder.hasErrors()) {
-            fail(kbuilder.getErrors().toString());
-        }
-        InternalRuleBase kb = KnowledgeBaseFactory.newKnowledgeBase();
+        InternalRuleBase kb = (InternalRuleBase) loadKnowledgeBaseFromDrlFile(source);
         TraitFactoryImpl.setMode(mode, kb);
-        kb.addPackages(kbuilder.getKnowledgePackages());
 
         TraitFactoryImpl tFactory = (TraitFactoryImpl) RuntimeComponentFactory.get().getTraitFactory(kb);
 
@@ -334,15 +322,7 @@ public class TraitTest extends CommonTraitTest {
 
         String source = "org/drools/compiler/factmodel/traits/testTraitDon.drl";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        Resource res = ResourceFactory.newClassPathResource(source);
-        assertThat(res).isNotNull();
-        kbuilder.add(res, ResourceType.DRL);
-        if (kbuilder.hasErrors()) {
-            fail(kbuilder.getErrors().toString());
-        }
-        InternalRuleBase kb = KnowledgeBaseFactory.newKnowledgeBase();
-        kb.addPackages(kbuilder.getKnowledgePackages());
+        InternalRuleBase kb = (InternalRuleBase) loadKnowledgeBaseFromDrlFile(source);
         TraitFactoryImpl.setMode(mode, kb);
         TraitFactoryImpl tFactory = (TraitFactoryImpl) RuntimeComponentFactory.get().getTraitFactory(kb);
 
@@ -383,15 +363,7 @@ public class TraitTest extends CommonTraitTest {
     public void testWrapperSize(VirtualPropertyMode mode) throws Exception {
         String source = "org/drools/compiler/factmodel/traits/testTraitDon.drl";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        Resource res = ResourceFactory.newClassPathResource(source);
-        assertThat(res).isNotNull();
-        kbuilder.add(res, ResourceType.DRL);
-        if (kbuilder.hasErrors()) {
-            fail(kbuilder.getErrors().toString());
-        }
-        InternalRuleBase kb = KnowledgeBaseFactory.newKnowledgeBase();
-        kb.addPackages(kbuilder.getKnowledgePackages());
+        InternalRuleBase kb = (InternalRuleBase) loadKnowledgeBaseFromDrlFile(source);
 
         TraitFactoryImpl.setMode(mode, kb);
         TraitFactoryImpl tFactory = (TraitFactoryImpl) RuntimeComponentFactory.get().getTraitFactory(kb);
@@ -467,16 +439,7 @@ public class TraitTest extends CommonTraitTest {
     public void testWrapperEmpty(VirtualPropertyMode mode) throws Exception {
         String source = "org/drools/compiler/factmodel/traits/testTraitDon.drl";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        Resource res = ResourceFactory.newClassPathResource(source);
-        assertThat(res).isNotNull();
-        
-        kbuilder.add(res, ResourceType.DRL);
-        if (kbuilder.hasErrors()) {
-            fail(kbuilder.getErrors().toString());
-        }
-        InternalRuleBase kb = KnowledgeBaseFactory.newKnowledgeBase();
-        kb.addPackages(kbuilder.getKnowledgePackages());
+        InternalRuleBase kb = (InternalRuleBase) loadKnowledgeBaseFromDrlFile(source);
         TraitFactoryImpl.setMode(mode, kb);
 
         TraitFactoryImpl tFactory = (TraitFactoryImpl) RuntimeComponentFactory.get().getTraitFactory(kb);
@@ -526,16 +489,7 @@ public class TraitTest extends CommonTraitTest {
     public void testWrapperContainsKey(VirtualPropertyMode mode) throws Exception {
         String source = "org/drools/compiler/factmodel/traits/testTraitDon.drl";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        Resource res = ResourceFactory.newClassPathResource(source);
-        assertThat(res).isNotNull();
-        kbuilder.add(res, ResourceType.DRL);
-        if (kbuilder.hasErrors()) {
-            fail(kbuilder.getErrors().toString());
-        }
-        InternalRuleBase kb = KnowledgeBaseFactory.newKnowledgeBase();
-        kb.addPackages(kbuilder.getKnowledgePackages());
-
+        InternalRuleBase kb = (InternalRuleBase) loadKnowledgeBaseFromDrlFile(source);
 
         TraitFactoryImpl.setMode(mode, kb);
         TraitFactoryImpl tFactory = (TraitFactoryImpl) RuntimeComponentFactory.get().getTraitFactory(kb);
@@ -621,15 +575,7 @@ public class TraitTest extends CommonTraitTest {
     public void testInternalComponents1(VirtualPropertyMode mode) throws Exception {
         String source = "org/drools/compiler/factmodel/traits/testTraitDon.drl";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        Resource res = ResourceFactory.newClassPathResource(source);
-        assertThat(res).isNotNull();
-        kbuilder.add(res, ResourceType.DRL);
-        if (kbuilder.hasErrors()) {
-            fail(kbuilder.getErrors().toString());
-        }
-        InternalRuleBase kb = KnowledgeBaseFactory.newKnowledgeBase();
-        kb.addPackages(kbuilder.getKnowledgePackages());
+        InternalRuleBase kb = (InternalRuleBase) loadKnowledgeBaseFromDrlFile(source);
 
         TraitFactoryImpl.setMode(mode, kb);
         TraitFactoryImpl tFactory = (TraitFactoryImpl) RuntimeComponentFactory.get().getTraitFactory(kb);
@@ -673,15 +619,7 @@ public class TraitTest extends CommonTraitTest {
     public void testWrapperKeySetAndValues(VirtualPropertyMode mode) throws Exception {
         String source = "org/drools/compiler/factmodel/traits/testTraitDon.drl";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        Resource res = ResourceFactory.newClassPathResource(source);
-        assertThat(res).isNotNull();
-        kbuilder.add(res, ResourceType.DRL);
-        if (kbuilder.hasErrors()) {
-            fail(kbuilder.getErrors().toString());
-        }
-        InternalRuleBase kb = KnowledgeBaseFactory.newKnowledgeBase();
-        kb.addPackages(kbuilder.getKnowledgePackages());
+        InternalRuleBase kb = (InternalRuleBase) loadKnowledgeBaseFromDrlFile(source);
         TraitFactoryImpl.setMode(mode, kb);
 
         TraitFactoryImpl tFactory = (TraitFactoryImpl) RuntimeComponentFactory.get().getTraitFactory(kb);
@@ -737,15 +675,7 @@ public class TraitTest extends CommonTraitTest {
     public void testWrapperClearAndRemove(VirtualPropertyMode mode) throws Exception {
         String source = "org/drools/compiler/factmodel/traits/testTraitDon.drl";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        Resource res = ResourceFactory.newClassPathResource(source);
-        assertThat(res).isNotNull();
-        kbuilder.add(res, ResourceType.DRL);
-        if (kbuilder.hasErrors()) {
-            fail(kbuilder.getErrors().toString());
-        }
-        InternalRuleBase kb = KnowledgeBaseFactory.newKnowledgeBase();
-        kb.addPackages(kbuilder.getKnowledgePackages());
+        InternalRuleBase kb = (InternalRuleBase) loadKnowledgeBaseFromDrlFile(source);
         TraitFactoryImpl.setMode(mode, kb);
         TraitFactoryImpl tFactory = (TraitFactoryImpl) RuntimeComponentFactory.get().getTraitFactory(kb);
 
@@ -1284,16 +1214,10 @@ public class TraitTest extends CommonTraitTest {
                      "    list.add(2);\n" +
                      "end";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(new ByteArrayResource(str.getBytes()), ResourceType.DRL);
-
-        if (kbuilder.hasErrors()) {
-            throw new RuntimeException(kbuilder.getErrors().toString());
-        }
+        KieBase kbase = loadKnowledgeBaseFromString( str );
 
         List<Integer> list = new ArrayList<>();
 
-        KieBase kbase = kbuilder.newKieBase();
         TraitFactoryImpl.setMode(mode, kbase);
 
         StatelessKieSession ksession = kbase.newStatelessKieSession();
@@ -1555,13 +1479,7 @@ public class TraitTest extends CommonTraitTest {
                     "end\n";
 
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(new ByteArrayResource(s1.getBytes()), ResourceType.DRL);
-        if (kbuilder.hasErrors()) {
-            fail(kbuilder.getErrors().toString());
-        }
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages(kbuilder.getKnowledgePackages());
+        KieBase kbase = loadKnowledgeBaseFromString( s1 );
 
         KieSession ksession = kbase.newKieSession();
         TraitFactoryImpl.setMode(mode, ksession.getKieBase());
@@ -1624,15 +1542,7 @@ public class TraitTest extends CommonTraitTest {
                      "  list.add(m); \n" +
                      "end \n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL);
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-
-        if (kbuilder.hasErrors()) {
-            fail(kbuilder.getErrors().toString());
-        }
-
-        kbase.addPackages(kbuilder.getKnowledgePackages());
+        KieBase kbase = loadKnowledgeBaseFromString( str );
 
         KieSession ksession = kbase.newKieSession();
         TraitFactoryImpl.setMode(mode, ksession.getKieBase());
@@ -1670,15 +1580,7 @@ public class TraitTest extends CommonTraitTest {
 
         String source = "org/drools/compiler/factmodel/traits/testTraitDon.drl";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        Resource res = ResourceFactory.newClassPathResource(source);
-        assertThat(res).isNotNull();
-        kbuilder.add(res, ResourceType.DRL);
-        if (kbuilder.hasErrors()) {
-            fail(kbuilder.getErrors().toString());
-        }
-        InternalRuleBase kb = KnowledgeBaseFactory.newKnowledgeBase();
-        kb.addPackages(kbuilder.getKnowledgePackages());
+        InternalRuleBase kb = (InternalRuleBase) loadKnowledgeBaseFromDrlFile(source);
         TraitFactoryImpl traitBuilder = (TraitFactoryImpl) RuntimeComponentFactory.get().getTraitFactory(kb);
         TraitFactoryImpl.setMode(mode, kb);
 
@@ -1740,15 +1642,7 @@ public class TraitTest extends CommonTraitTest {
                      "   shed($p, IStudent.class);\n" +
                      "end \n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL);
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-
-        if (kbuilder.hasErrors()) {
-            fail(kbuilder.getErrors().toString());
-        }
-
-        kbase.addPackages(kbuilder.getKnowledgePackages());
+        KieBase kbase = loadKnowledgeBaseFromString( str );
 
         KieSession ksession = kbase.newKieSession();
         TraitFactoryImpl.setMode(mode, ksession.getKieBase());
@@ -1792,17 +1686,8 @@ public class TraitTest extends CommonTraitTest {
                     "" +
                     "rule \"Init\" when then insert(new ExamMark()); end \n";
 
-
-
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(new ByteArrayResource(s1.getBytes()), ResourceType.DRL);
-        if (kbuilder.hasErrors()) {
-            fail(kbuilder.getErrors().toString());
-        }
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        KieBase kbase = loadKnowledgeBaseFromString( s1 );
         TraitFactoryImpl.setMode(mode, (InternalRuleBase) kbase);
-
-        kbase.addPackages(kbuilder.getKnowledgePackages());
 
         KieSession ksession = kbase.newKieSession();
         ksession.fireAllRules();
@@ -1872,15 +1757,8 @@ public class TraitTest extends CommonTraitTest {
                     "end\n"
                 ;
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(new ByteArrayResource(s1.getBytes()), ResourceType.DRL);
-        if (kbuilder.hasErrors()) {
-            fail(kbuilder.getErrors().toString());
-        }
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        InternalKnowledgeBase kbase = (InternalKnowledgeBase) loadKnowledgeBaseFromString( s1 );
         TraitFactoryImpl.setMode(mode, (InternalRuleBase) kbase);
-
-        kbase.addPackages(kbuilder.getKnowledgePackages());
 
         TraitRegistryImpl tr = (TraitRegistryImpl) ((TraitRuntimeComponentFactory) RuntimeComponentFactory.get()).getTraitRegistry(kbase);
         LOGGER.debug(tr.getHierarchy().toString());
@@ -1914,15 +1792,8 @@ public class TraitTest extends CommonTraitTest {
 
 
     void testTraitActualTypeCodeWithEntities(String trig, VirtualPropertyMode mode) {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(new ClassPathResource("org/drools/compiler/factmodel/traits/testComplexDonShed.drl"), ResourceType.DRL);
-        if (kbuilder.hasErrors()) {
-            fail(kbuilder.getErrors().toString());
-        }
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        TraitFactoryImpl.setMode(mode, (KieBase) kbase);
-
-        kbase.addPackages(kbuilder.getKnowledgePackages());
+        KieBase kbase = loadKnowledgeBaseFromDrlFile("org/drools/compiler/factmodel/traits/testComplexDonShed.drl");
+        TraitFactoryImpl.setMode(mode, kbase);
 
         KieSession ksession = kbase.newKieSession();
 
@@ -2026,15 +1897,8 @@ public class TraitTest extends CommonTraitTest {
                     "end  " +
                     "";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(new ByteArrayResource(s1.getBytes()), ResourceType.DRL);
-        if (kbuilder.hasErrors()) {
-            fail(kbuilder.getErrors().toString());
-        }
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        KieBase kbase = loadKnowledgeBaseFromString( s1 );
         TraitFactoryImpl.setMode(mode, (InternalRuleBase) kbase);
-
-        kbase.addPackages(kbuilder.getKnowledgePackages());
 
         KieSession ksession = kbase.newKieSession();
         List<String> list = new ArrayList<>();
@@ -2114,15 +1978,8 @@ public class TraitTest extends CommonTraitTest {
                     "  modify ($p) { setName(\"alan\"); } " +
                     "end  ";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(new ByteArrayResource(s1.getBytes()), ResourceType.DRL);
-        if (kbuilder.hasErrors()) {
-            fail(kbuilder.getErrors().toString());
-        }
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        TraitFactoryImpl.setMode(mode, (KieBase) kbase); // not relevant
-
-        kbase.addPackages(kbuilder.getKnowledgePackages());
+        KieBase kbase = loadKnowledgeBaseFromString( s1 );
+        TraitFactoryImpl.setMode(mode, kbase); // not relevant
 
         KieSession ksession = kbase.newKieSession();
         int k = ksession.fireAllRules();
@@ -2177,15 +2034,9 @@ public class TraitTest extends CommonTraitTest {
                     "then \n" +
                     "end \n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(new ByteArrayResource(s1.getBytes()), ResourceType.DRL);
-        if (kbuilder.hasErrors()) {
-            fail(kbuilder.getErrors().toString());
-        }
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        TraitFactoryImpl.setMode(mode, (KieBase) kbase); // not relevant
+        KieBase kbase = loadKnowledgeBaseFromString( s1 );
+        TraitFactoryImpl.setMode(mode, kbase); // not relevant
 
-        kbase.addPackages(kbuilder.getKnowledgePackages());
         KieSession ksession = kbase.newKieSession();
 
         List<Boolean> list = new ArrayList<>();
@@ -2279,15 +2130,8 @@ public class TraitTest extends CommonTraitTest {
                     "end \n" +
                     "";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(new ByteArrayResource(s1.getBytes()), ResourceType.DRL);
-        if (kbuilder.hasErrors()) {
-            fail(kbuilder.getErrors().toString());
-        }
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        TraitFactoryImpl.setMode(mode, (KieBase) kbase); // not relevant
-
-        kbase.addPackages(kbuilder.getKnowledgePackages());
+        KieBase kbase = loadKnowledgeBaseFromString( s1 );
+        TraitFactoryImpl.setMode(mode, kbase); // not relevant
 
         List<Integer> list = new ArrayList<>();
         KieSession ksession = kbase.newKieSession();
@@ -2392,15 +2236,8 @@ public class TraitTest extends CommonTraitTest {
                     "  modify ($p) { setSchool(\"myschool\"), setAge(44), setName(\"alan\"); } " +
                     "end \n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(new ByteArrayResource(s1.getBytes()), ResourceType.DRL);
-        if (kbuilder.hasErrors()) {
-            fail(kbuilder.getErrors().toString());
-        }
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        KieBase kbase = loadKnowledgeBaseFromString( s1 );
         TraitFactoryImpl.setMode(mode, (KieBase) kbase); // not relevant
-
-        kbase.addPackages(kbuilder.getKnowledgePackages());
 
         List<Integer> list = new ArrayList<Integer>();
         KieSession ksession = kbase.newKieSession();
@@ -3403,15 +3240,8 @@ public class TraitTest extends CommonTraitTest {
                     "end \n" +
                     "";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(new ByteArrayResource(s1.getBytes()), ResourceType.DRL);
-        if (kbuilder.hasErrors()) {
-            fail(kbuilder.getErrors().toString());
-        }
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        KieBase kbase = loadKnowledgeBaseFromString( s1 );
         TraitFactoryImpl.setMode(mode, (KieBase) kbase); // not relevant
-
-        kbase.addPackages(kbuilder.getKnowledgePackages());
 
         List list = new ArrayList();
         KieSession ksession = kbase.newKieSession();
@@ -3475,15 +3305,8 @@ public class TraitTest extends CommonTraitTest {
                     "end \n" +
                     "";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(new ByteArrayResource(s1.getBytes()), ResourceType.DRL);
-        if (kbuilder.hasErrors()) {
-            fail(kbuilder.getErrors().toString());
-        }
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        KieBase kbase = loadKnowledgeBaseFromString( s1 );
         TraitFactoryImpl.setMode(mode, (KieBase) kbase); // not relevant
-
-        kbase.addPackages(kbuilder.getKnowledgePackages());
 
         List list = new ArrayList();
         KieSession ksession = kbase.newKieSession();
@@ -3985,7 +3808,7 @@ public class TraitTest extends CommonTraitTest {
             drl += ") then list.add(\"H" + x + "\"); end \n";
         }
 
-        KieSession ks = new KieHelper().addContent(drl, ResourceType.DRL).build().newKieSession();
+        KieSession ks = getSessionFromString(drl);
         TraitFactoryImpl.setMode(mode, ks.getKieBase());
 
         List<String> list = new ArrayList<>();
@@ -4870,7 +4693,7 @@ public class TraitTest extends CommonTraitTest {
                      "";
 
 
-        KieBase kbase = new KieHelper(PropertySpecificOption.ALLOWED).addContent(drl, ResourceType.DRL).build();
+        KieBase kbase = loadKnowledgeBaseWithKnowledgeBuilderOption(drl, PropertySpecificOption.ALLOWED);
         TraitFactoryImpl.setMode(mode, kbase);
         List<Integer> list = new ArrayList<>();
 
@@ -5224,7 +5047,7 @@ public class TraitTest extends CommonTraitTest {
                 "rule RC when C() then list.add('C'); end " +
                 " ";
 
-        KieBase kbase = new KieHelper().addContent(drl, ResourceType.DRL).build();
+        KieBase kbase = getKieBaseFromString(drl);
         TraitFactoryImpl.setMode(mode, kbase);
         KieSession ksession = kbase.newKieSession();
 
@@ -5819,8 +5642,7 @@ public class TraitTest extends CommonTraitTest {
                 " modify ($y) {} " +
                 "end ";
 
-        KieHelper helper = new KieHelper();
-        KieBase kieBase = helper.addContent(drl, ResourceType.DRL).getKieContainer().getKieBase();
+        KieBase kieBase = getKieBaseFromString(drl);
         TraitFactoryImpl.setMode(mode, kieBase);
 
         KieSession kSession = kieBase.newKieSession();

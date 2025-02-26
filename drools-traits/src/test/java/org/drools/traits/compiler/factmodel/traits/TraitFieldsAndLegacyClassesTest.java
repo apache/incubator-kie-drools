@@ -468,7 +468,7 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTraitTest {
                      "\n";
 
 
-        KieBase kBase = new KieHelper(PropertySpecificOption.ALLOWED).addContent( drl, ResourceType.DRL ).build();
+        KieBase kBase = loadKnowledgeBaseWithKnowledgeBuilderOption(drl, PropertySpecificOption.ALLOWED);
         TraitFactoryImpl.setMode(mode, kBase );
 
         KieSession knowledgeSession = kBase.newKieSession();
