@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -71,81 +71,45 @@ class RangeFunctionTest {
         FunctionTestUtil.assertResultError(rangeFunction.invoke(from), InvalidParametersEvent.class, from);
     }
 
-//    @Test
-//    void invoke_LeftNull() {
-//        String from = "(..2)";
-//        FunctionTestUtil.assertResult(rangeFunction.invoke(from),
-//                                      new RangeImpl(Range.RangeBoundary.OPEN, null, BigDecimal.valueOf(2),
-//                                                    Range.RangeBoundary.OPEN),
-//                                      from);
-//        from = "(..\"z\")";
-//        FunctionTestUtil.assertResult(rangeFunction.invoke(from),
-//                                      new RangeImpl(Range.RangeBoundary.OPEN, null, "z", Range.RangeBoundary.OPEN),
-//                                      from);
-//        from = "(..\"yz\")";
-//        FunctionTestUtil.assertResult(rangeFunction.invoke(from),
-//                                      new RangeImpl(Range.RangeBoundary.OPEN, null, "yz", Range.RangeBoundary.OPEN),
-//                                      from);
-//        from = "(..date(\"1978-10-13\"))";
-//        FunctionTestUtil.assertResult(rangeFunction.invoke(from),
-//                                      new RangeImpl(Range.RangeBoundary.OPEN, null, LocalDate.of(1978, 10, 13),
-//                                                    Range.RangeBoundary.OPEN),
-//                                      from);
-//        from = "(..duration(\"P3DT20H14M\"))";
-//        FunctionTestUtil.assertResult(rangeFunction.invoke(from),
-//                                      new RangeImpl(Range.RangeBoundary.OPEN, null, Duration.parse("P3DT20H14M"),
-//                                                    Range.RangeBoundary.OPEN),
-//                                      from);
-//        from = "(..duration(\"P2Y6M\"))";
-//        FunctionTestUtil.assertResult(rangeFunction.invoke(from),
-//                                      new RangeImpl(Range.RangeBoundary.OPEN,
-//                                                    null,
-//                                                    new ComparablePeriod(Period.parse("P2Y6M")),
-//                                                    Range.RangeBoundary.OPEN),
-//                                      from);
-//        from = "[..2]";
-//        FunctionTestUtil.assertResultError(rangeFunction.invoke(from),
-//                                      InvalidParametersEvent.class,
-//                                      from);
-//    }
-//
-//    @Test
-//    void invoke_RightNull() {
-//        String from = "(1..)";
-//        FunctionTestUtil.assertResult(rangeFunction.invoke(from),
-//                                      new RangeImpl(Range.RangeBoundary.OPEN, BigDecimal.ONE, null,
-//                                                    Range.RangeBoundary.OPEN),
-//                                      from);
-//        from = "(\"a\"..)";
-//        FunctionTestUtil.assertResult(rangeFunction.invoke(from),
-//                                      new RangeImpl(Range.RangeBoundary.OPEN, "a", null, Range.RangeBoundary.OPEN),
-//                                      from);
-//        from = "(\"ab\"..)";
-//        FunctionTestUtil.assertResult(rangeFunction.invoke(from),
-//                                      new RangeImpl(Range.RangeBoundary.OPEN, "ab", null, Range.RangeBoundary.OPEN),
-//                                      from);
-//        from = "(date(\"1978-09-12\")..)";
-//        FunctionTestUtil.assertResult(rangeFunction.invoke(from),
-//                                      new RangeImpl(Range.RangeBoundary.OPEN, LocalDate.of(1978, 9, 12), null,
-//                                                    Range.RangeBoundary.OPEN),
-//                                      from);
-//        from = "(duration(\"P2DT20H14M\")..)";
-//        FunctionTestUtil.assertResult(rangeFunction.invoke(from),
-//                                      new RangeImpl(Range.RangeBoundary.OPEN, Duration.parse("P2DT20H14M"), null,
-//                                                    Range.RangeBoundary.OPEN),
-//                                      from);
-//        from = "(duration(\"P1Y6M\")..)";
-//        FunctionTestUtil.assertResult(rangeFunction.invoke(from),
-//                                      new RangeImpl(Range.RangeBoundary.OPEN,
-//                                                    new ComparablePeriod(Period.parse("P1Y6M")),
-//                                                    null,
-//                                                    Range.RangeBoundary.OPEN),
-//                                      from);
-//        from = "[1..]";
-//        FunctionTestUtil.assertResultError(rangeFunction.invoke(from),
-//                                           InvalidParametersEvent.class,
-//                                           from);
-//    }
+    @Test
+    void invoke_LeftNull() {
+        String from = "(..2)";
+        FunctionTestUtil.assertResult(rangeFunction.invoke(from),null,from);
+        from = "(..\"z\")";
+        FunctionTestUtil.assertResult(rangeFunction.invoke(from),null,from);
+        from = "(..\"yz\")";
+        FunctionTestUtil.assertResult(rangeFunction.invoke(from),null,from);
+        from = "(..date(\"1978-10-13\"))";
+        FunctionTestUtil.assertResult(rangeFunction.invoke(from),null,from);
+        from = "(..duration(\"P3DT20H14M\"))";
+        FunctionTestUtil.assertResult(rangeFunction.invoke(from),null,from);
+        from = "(..duration(\"P2Y6M\"))";
+        FunctionTestUtil.assertResult(rangeFunction.invoke(from),null,from);
+        from = "[..2]";
+        FunctionTestUtil.assertResultError(rangeFunction.invoke(from),
+                                      InvalidParametersEvent.class,
+                                      from);
+    }
+
+    @Test
+    void invoke_RightNull() {
+        String from = "(1..)";
+        FunctionTestUtil.assertResult(rangeFunction.invoke(from),null,from);
+        from = "(\"a\"..)";
+        FunctionTestUtil.assertResult(rangeFunction.invoke(from),null,from);
+        from = "(\"ab\"..)";
+        FunctionTestUtil.assertResult(rangeFunction.invoke(from),null,from);
+        from = "(date(\"1978-09-12\")..)";
+        FunctionTestUtil.assertResult(rangeFunction.invoke(from),null,from);
+        from = "(duration(\"P2DT20H14M\")..)";
+        FunctionTestUtil.assertResult(rangeFunction.invoke(from),null,from);
+        from = "(duration(\"P1Y6M\")..)";
+        FunctionTestUtil.assertResult(rangeFunction.invoke(from),null,from);
+        from = "[1..]";
+        FunctionTestUtil.assertResultError(rangeFunction.invoke(from),
+                                           InvalidParametersEvent.class,
+                                           from);
+    }
 
     @Test
     void invoke_OpenOpenBoundaries() {
