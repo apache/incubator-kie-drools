@@ -34,6 +34,7 @@ import org.drools.core.FlowSessionConfiguration;
 import org.drools.commands.impl.CommandBasedStatefulKnowledgeSessionImpl;
 import org.drools.commands.impl.FireAllRulesInterceptor;
 import org.drools.commands.impl.LoggingInterceptor;
+import org.drools.mvel.CommonTestMethodBase;
 import org.drools.mvel.compiler.Person;
 import org.drools.persistence.PersistableRunner;
 import org.drools.persistence.util.DroolsPersistenceUtil;
@@ -328,6 +329,8 @@ public class JpaPersistentStatefulSessionTest {
         str += "  list.add( 1 );\n";
         str += "end\n";
         str += "\n";
+
+        str = CommonTestMethodBase.replaceAgendaGroupIfRequired(str);
 
         KieServices ks = KieServices.Factory.get();
 

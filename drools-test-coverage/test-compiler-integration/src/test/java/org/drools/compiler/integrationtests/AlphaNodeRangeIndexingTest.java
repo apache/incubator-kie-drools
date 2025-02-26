@@ -475,17 +475,18 @@ public class AlphaNodeRangeIndexingTest {
     @ParameterizedTest(name = "KieBase type={0}")
 	@MethodSource("parameters")
     public void testSurroundingRange(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        // incubator-kie-drools#6228 : `age >= 0 && age < 20` doesn't enable range index in exec-model
         final String drl =
                 "package org.drools.compiler.test\n" +
                            "import " + Person.class.getCanonicalName() + "\n" +
                            "rule test1\n when\n" +
-                           "   Person( age >= 0 && < 20 )\n" +
+                           "   Person( age >= 0, age < 20 )\n" +
                            "then\n end\n" +
                            "rule test2\n when\n" +
-                           "   Person( age >= 20 && < 40 )\n" +
+                           "   Person( age >= 20, age < 40 )\n" +
                            "then\n end\n" +
                            "rule test3\n when\n" +
-                           "   Person( age >= 40 && < 60 )\n" +
+                           "   Person( age >= 40, age < 60 )\n" +
                            "then\n end\n";
 
         final KieBase kbase = createKieBaseWithRangeIndexThresholdValue(kieBaseTestConfiguration, drl, 3);
