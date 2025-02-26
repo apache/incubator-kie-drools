@@ -17,17 +17,19 @@ with the License.  You may obtain a copy of the License at
   under the License.
 ////
 
-:DROOLS:
-include::../_artifacts/document-attributes.adoc[]
+== 10.1.0 release notes
 
-[[_droolslanguagereferencechapter]]
-= Rule Language Reference
-:context: drl-rules
+=== Language Level DRL10
+New language level DRL10 has been added. DRL10 is handled by the new parser based on ANTLR4. The default language level is still DRL6.
 
-include::_drl-rules.adoc[leveloffset=+1]
+DRL10 introduces the following changes mainly to reduce ambiguity:
 
-include::_performance-tuning-drl-ref.adoc[leveloffset=+2]
+* Require a prefix '##' to custom operators
+* Drop half constraint syntax
+* Drop double ampersand as infix and
+* Drop double pipe as infix or
+* Drop annotation inside LHS pattern
 
-include::_XLSDecisionTable-section.adoc[leveloffset=+1]
+Those syntaxes are deprecated and will be removed in the future. Warnings are logged when the deprecated syntax is used in DRL6.
 
-include::_language-level.adoc[leveloffset=+1]
+You can refer xref:language-reference/index.adoc#language-level_drl-rules[Language Level] for details.

@@ -245,7 +245,7 @@ class DescrCommonPropertyTest {
     void attributeDescr() {
         final String source = "rule R1\n" +
                 "  salience 42\n" +
-                "  agenda-group \"my_group\"\n" +
+                "  ruleflow-group \"my_group\"\n" +
                 "  when\n" +
                 "  then\n" +
                 "end";
@@ -257,10 +257,10 @@ class DescrCommonPropertyTest {
         //   Backward compatibility doesn't seem to be required in this case. (If do it, the code would be unnecessarily complicated.)
         if (DrlParser.ANTLR4_PARSER_ENABLED) {
             assertProperties(rule.getAttributes().get("salience"), 10, 21, 2, 2, 2, 12);
-            assertProperties(rule.getAttributes().get("agenda-group"), 24, 47, 3, 2, 3, 24);
+            assertProperties(rule.getAttributes().get("ruleflow-group"), 24, 49, 3, 2, 3, 26);
         } else {
             assertProperties(rule.getAttributes().get("salience"), 19, 21, 2, 11, 2, 12);
-            assertProperties(rule.getAttributes().get("agenda-group"), 37, 47, 3, 15, 3, 24);
+            assertProperties(rule.getAttributes().get("ruleflow-group"), 39, 49, 3, 17, 3, 26);
         }
     }
 

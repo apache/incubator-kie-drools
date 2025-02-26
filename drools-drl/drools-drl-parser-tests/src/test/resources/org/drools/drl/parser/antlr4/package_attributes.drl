@@ -17,7 +17,7 @@
 
 package com.foo;
 
-agenda-group "x"
+ruleflow-group "x"
 
 import goo.ber
 import wee.waa
