@@ -73,6 +73,8 @@
     <version.jakarta.validation-api>3.0.2</version.jakarta.validation-api>
     <version.jakarta.xml.bind-api>4.0.1</version.jakarta.xml.bind-api>
 
+    <version.io.netty>4.1.118.Final</version.io.netty>
+
     <version.io.cloudevents>2.3.0</version.io.cloudevents>
     <!--
     We add Fabric8 here to use as a basis for Addons/Kubernetes
@@ -420,6 +422,17 @@
         <groupId>io.smallrye.reactive</groupId>
         <artifactId>smallrye-mutiny-vertx-auth-oauth2</artifactId>
         <version>${version.io.smallrye.reactive.mutiny-vertx-web-client}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-handler</artifactId>
+        <version>${version.io.netty}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-common</artifactId>
+        <version>${version.io.netty}</version>
       </dependency>
 
       <!-- metrics - monitoring -->
