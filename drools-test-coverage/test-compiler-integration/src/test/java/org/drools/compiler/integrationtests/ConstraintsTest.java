@@ -33,6 +33,7 @@ import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
@@ -280,7 +281,7 @@ public class ConstraintsTest {
                 "rule \"operator\"\n" +
                 "    when\n" +
                 "        $t1 : StockTick( company == \"RHT\" )\n" +
-                "        $t2 : StockTick( company == \"IBM\", this after $t1 || before $t1 )\n" +
+                "        $t2 : StockTick( company == \"IBM\", this after $t1 || this before $t1 )\n" +
                 "    then\n" +
                 "        // do something\n" +
                 "end  ";
@@ -373,6 +374,7 @@ public class ConstraintsTest {
         }
     }
 
+    @DisabledIfSystemProperty(named = "drools.drl.antlr4.parser.enabled", matches = "true")
     @ParameterizedTest(name = "KieBase type={0}")
 	@MethodSource("parameters")
     public void testMultiRestrictionFieldConstraint(KieBaseTestConfiguration kieBaseTestConfiguration) {

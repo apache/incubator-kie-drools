@@ -38,7 +38,7 @@ end
 
 
 rule "match Person 2"
-    agenda-group "xxx"
+    ruleflow-group "xxx"
     salience ($age2 - $age1)
     when
        $person : Person(name=="mark", $age1 : age )
@@ -53,7 +53,7 @@ rule "match Person 2"
 end   
 
 rule "match Person 3"
-    agenda-group "xxx"
+    ruleflow-group "xxx"
     dialect "mvel"
     when
        not Person( name == "mark" )
@@ -62,7 +62,7 @@ rule "match Person 3"
 end 
 
 rule "match Integer"
-    agenda-group "yyy"
+    ruleflow-group "yyy"
     auto-focus true
     when
         Person( name ==  "bob" )
