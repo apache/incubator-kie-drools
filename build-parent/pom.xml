@@ -75,6 +75,7 @@
     <version.info.picocli>4.7.5</version.info.picocli>
     <version.io.micrometer>1.12.2</version.io.micrometer>
     <version.io.quarkus>3.15.3</version.io.quarkus>
+    <version.io.netty>4.1.118.Final</version.io.netty>
     <version.io.smallrye.openapi.core>3.10.0</version.io.smallrye.openapi.core>
     <version.it.unimi.dsi.fastutil>8.5.11</version.it.unimi.dsi.fastutil>
     <version.junit>4.13.1</version.junit>
@@ -300,6 +301,17 @@
         <groupId>com.fasterxml.jackson.datatype</groupId>
         <artifactId>jackson-datatype-jsr310</artifactId>
         <version>${version.com.fasterxml.jackson}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-handler</artifactId>
+        <version>${version.io.netty}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-common</artifactId>
+        <version>${version.io.netty}</version>
       </dependency>
   
       <dependency>
