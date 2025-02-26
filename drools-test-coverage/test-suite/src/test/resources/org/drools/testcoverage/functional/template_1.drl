@@ -36,7 +36,7 @@ template "appropriateToBuy"
 
 rule "is appropriate @{row.rowNumber}"
     when
-        Vegetable( $name : name == "@{name}", $field : @{field} >= @{fieldLower} && <= @{fieldUpper}, $price : price <= @{price}, $taste : taste @{tastes} )
+        Vegetable( $name : name == "@{name}", $field : @{field} >= @{fieldLower} && @{field} <= @{fieldUpper}, $price : price <= @{price}, $taste : taste @{tastes} )
     then
         list.add( $name );
 end

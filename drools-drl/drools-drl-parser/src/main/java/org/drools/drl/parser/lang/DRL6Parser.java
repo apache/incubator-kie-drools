@@ -1558,6 +1558,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
                             DroolsSoftKeywords.GROUP)) {
                 attribute = stringAttribute(as,
                         new String[]{DroolsSoftKeywords.AGENDA, "-", DroolsSoftKeywords.GROUP});
+                helper.logAgendaGroupWarn(attribute);
             } else if (helper.validateIdentifierKey(DroolsSoftKeywords.ACTIVATION) &&
                     helper.validateLT(2,
                             "-") &&
@@ -2155,6 +2156,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
                 while (input.LA(1) == DRL6Lexer.AT) {
                     // annotation*
                     annotation(or);
+                    helper.logAnnotationInLhsPatternWarn(or);
                     if (state.failed)
                         return null;
                 }
@@ -2212,6 +2214,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
                                     null,
                                     null,
                                     DroolsEditorType.SYMBOL);
+                            helper.logInfixOrWarn(or);
                         } else {
                             match(input,
                                     DRL6Lexer.ID,
@@ -2225,6 +2228,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
                         while (input.LA(1) == DRL6Lexer.AT) {
                             // annotation*
                             annotation(or);
+                            helper.logAnnotationInLhsPatternWarn(or);
                             if (state.failed)
                                 return null;
                         }
@@ -2299,6 +2303,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
                 while (input.LA(1) == DRL6Lexer.AT) {
                     // annotation*
                     annotation(and);
+                    helper.logAnnotationInLhsPatternWarn(and);
                     if (state.failed)
                         return null;
                 }
@@ -2354,6 +2359,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
                                     null,
                                     null,
                                     DroolsEditorType.SYMBOL);
+                            helper.logInfixAndWarn(and);
                         } else {
                             match(input,
                                     DRL6Lexer.ID,
@@ -2367,6 +2373,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
                         while (input.LA(1) == DRL6Lexer.AT) {
                             // annotation*
                             annotation(and);
+                            helper.logAnnotationInLhsPatternWarn(and);
                             if (state.failed)
                                 return null;
                         }

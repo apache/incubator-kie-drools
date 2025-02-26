@@ -28,6 +28,7 @@ import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieSessionTestConfiguration;
 import org.drools.testcoverage.common.util.KieUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -41,6 +42,7 @@ import static org.drools.testcoverage.common.util.KieUtil.getCommands;
  * Test to verify BRMS-364 (multi-restriction pattern throws UnsupportedOpEx) is
  * fixed
  */
+@DisabledIfSystemProperty(named = "drools.drl.antlr4.parser.enabled", matches = "true")
 public class MultiRestrictionPatternTest extends KieSessionTest {
 	
     private static final String DRL_FILE = "BRMS-364.drl";

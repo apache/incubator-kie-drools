@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.verifier.VerifierConfiguration;
@@ -31,6 +32,7 @@ import org.kie.api.io.Resource;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderError;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.builder.conf.LanguageLevelOption;
 
 public class VerifierKnowledgeBaseBuilder {
 
@@ -41,6 +43,11 @@ public class VerifierKnowledgeBaseBuilder {
         InternalKnowledgeBase verifierKnowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        LanguageLevelOption option = ((KnowledgeBuilderImpl) kbuilder).getBuilderConfiguration().getOption(LanguageLevelOption.KEY);
+        if (option == LanguageLevelOption.DRL10) {
+            // Temporarily verifier rules can be migrated to DRL10 (= fix half constraint). Need to be discussed.
+            throw new UnsupportedOperationException("Verifier does not support DRL10");
+        }
 
         if ( configuration.getVerifyingResources() != null ) {
             for ( Resource resource : configuration.getVerifyingResources().keySet() ) {

@@ -34,4 +34,14 @@ public class TGroup extends TArtifact implements Group {
         this.name = value;
     }
 
+    @Override
+    public String getId() {
+        return id;
+    }
+
+    @Override
+    public void setId(String value) {
+        this.id = value;
+    }
+
 }
