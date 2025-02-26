@@ -34,6 +34,7 @@ import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.FEELDialect;
 import org.kie.dmn.feel.lang.Symbol;
+import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.impl.NamedParameter;
 import org.kie.dmn.feel.lang.types.FunctionSymbol;
 import org.kie.dmn.feel.runtime.FEELFunction;
@@ -186,6 +187,26 @@ public abstract class BaseFEELFunction
         return toReturn;
     }
 
+    protected CandidateMethod getCandidateMethod(EvaluationContext ctx, Type[] types, boolean isNamedParams) {
+        CandidateMethod toReturn = null;
+        for (Method method : getClass().getDeclaredMethods()) {
+            if (Modifier.isPublic(method.getModifiers()) && method.getName().equals("invoke")) {
+                CandidateMethod candidateMethod = getCandidateMethod(ctx, types, isNamedParams, method);
+                if (candidateMethod == null) {
+                    continue;
+                }
+                if (toReturn == null) {
+                    toReturn = candidateMethod;
+                } else if (candidateMethod.score > toReturn.score) {
+                    toReturn = candidateMethod;
+                } else if (candidateMethod.score == toReturn.score) {
+                    toReturn = getBestScoredCandidateMethod(types, candidateMethod, toReturn);
+                }
+            }
+        }
+        return toReturn;
+    }
+
     private CandidateMethod getCandidateMethod(EvaluationContext ctx, Object[] originalInput,
                                                boolean isNamedParams, Method m) {
         Object[] adaptedInput = BaseFEELFunctionHelper.getAdjustedParametersForMethod(ctx, originalInput,
@@ -202,6 +223,24 @@ public abstract class BaseFEELFunction
 
         ScoreHelper.Compares compares = new ScoreHelper.Compares(originalInput, adaptedInput, parameterTypes);
         return new CandidateMethod(m, ScoreHelper.grossScore(compares), adaptedInput);
+    }
+
+    private CandidateMethod getCandidateMethod(EvaluationContext ctx, Type[] types,
+                                               boolean isNamedParams, Method m) {
+        Object[] adaptedType = BaseFEELFunctionHelper.getAdjustedParametersForMethod(ctx, types,
+                isNamedParams, m);
+        if (adaptedType == null) {
+            // incompatible method
+            return null;
+        }
+
+        Class<?>[] parameterTypes = m.getParameterTypes();
+        if (parameterTypes.length != adaptedType.length) {
+            return null;
+        }
+
+        ScoreHelper.Compares compares = new ScoreHelper.Compares(types, adaptedType, parameterTypes);
+        return new CandidateMethod(m, ScoreHelper.grossScore(compares), adaptedType);
     }
 
     /**

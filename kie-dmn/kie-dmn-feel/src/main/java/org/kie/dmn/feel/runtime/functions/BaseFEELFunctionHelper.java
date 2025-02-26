@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.impl.NamedParameter;
 import org.kie.dmn.feel.util.NumberEvalHelper;
 import org.slf4j.Logger;
@@ -62,6 +63,29 @@ public class BaseFEELFunctionHelper {
         return toReturn;
     }
 
+    static Object[] getAdjustedParametersForMethod(EvaluationContext ctx, Type[] types, boolean isNamedParams,
+                                                   Method m) {
+        logger.trace("getAdjustedParametersForMethod {} {} {} {}", ctx, types, isNamedParams, m);
+        Object[] toReturn = addCtxParamIfRequired(ctx, types, isNamedParams, m);
+        Class<?>[] parameterTypes = m.getParameterTypes();
+        if (isNamedParams) {
+            // This is inherently frail because it expects that, if, the first parameter is NamedParameter and the
+            // function is a CustomFunction, then all parameters are NamedParameter
+            NamedParameter[] namedParams =
+                    Arrays.stream(toReturn).map(NamedParameter.class::cast).toArray(NamedParameter[]::new);
+            toReturn = BaseFEELFunctionHelper.calculateActualParams(m, namedParams);
+            if (toReturn == null) {
+                // incompatible method
+                return null;
+            }
+        } else if (toReturn.length > 0) {
+            // if named parameters, then it has been adjusted already in the calculateActualParams method,
+            // otherwise adjust here
+            toReturn = adjustForVariableParameters(toReturn, parameterTypes);
+        }
+        toReturn = adjustByCoercion(parameterTypes, toReturn);
+        return toReturn;
+    }
     /**
      * This method check if the input parameters, set inside the given <code>CandidateMethod</code>,
      * could match the given <code>parameterTypes</code>, eventually <b>coerced</b>.

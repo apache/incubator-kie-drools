@@ -1,5 +1,4 @@
 /*
- *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -23,12 +22,16 @@ package org.kie.dmn.feel.lang.types;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
+import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.Symbol;
 import org.kie.dmn.feel.lang.Type;
+import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.dmn.feel.runtime.functions.AbsFunction;
 import org.kie.dmn.feel.runtime.functions.AnyFunction;
 import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 import org.kie.dmn.feel.runtime.FEELFunction.Param;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -143,6 +146,67 @@ class GenFnTypeTest {
 
         assertThat(GenFnType.checkSignatures(params, argsGen)).isFalse();
     }
+
+   /* @Test
+    void testMatchesFunctionSignature_withMatchingSignature() {
+        assertThat(GenFnType.matchesFunctionSignature(absFunctionInstance)).isTrue();
+    }*/
+
+   /* @Test
+    void testMatchesFunctionSignature_withNonMatchingSignature() {
+        FEELFunction function = new FEELFunction() {
+
+            @Override
+            public String getName() {
+                return "";
+            }
+
+            @Override
+            public Symbol getSymbol() {
+                return null;
+            }
+
+            @Override
+            public List<List<Param>> getParameters() {
+                return List.of();
+            }
+
+            @Override
+            public FEELFnResult<BigDecimal> invokeReflectively(EvaluationContext ctx, Object[] params) {
+                return FEELFnResult.ofResult(new BigDecimal("1.0"));
+            }
+        };
+
+        assertThat(GenFnType.matchesFunctionSignature((FEELFunction) function)).isFalse();
+    }
+
+    @Test
+    void testMatchesFunctionSignature_withDifferentReturnType() {
+        FEELFunction function = new FEELFunction() {
+
+            @Override
+            public String getName() {
+                return "";
+            }
+
+            @Override
+            public Symbol getSymbol() {
+                return null;
+            }
+
+            @Override
+            public List<List<Param>> getParameters() {
+                return List.of();
+            }
+
+            @Override
+            public Object invokeReflectively(EvaluationContext ctx, Object[] params) {
+                return FEELFnResult.ofResult(1);
+            }
+        };
+
+        assertThat(GenFnType.matchesFunctionSignature(function)).isFalse();
+    }*/
 
     static class SomeType implements Type {
         @Override
