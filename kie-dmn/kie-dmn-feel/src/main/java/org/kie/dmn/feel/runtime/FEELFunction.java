@@ -88,6 +88,10 @@ public interface FEELFunction {
         return toAdapt;
     }
 
+    default boolean isCompatible(Type[] inputTypes, Type outputType) {
+        return true;
+    }
+
     class Param {
 
         public final String name;

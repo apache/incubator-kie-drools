@@ -43,18 +43,12 @@ public class GenFnType implements SimpleType {
     @Override
     public boolean isInstanceOf(Object o) {
         if (o instanceof FEELFunction oFn) {
-            BaseFEELFunction baseFEELFunction=new BaseFEELFunction("Base Feel Function") {
-                @Override
-                public CandidateMethod getCandidateMethod(EvaluationContext ctx, Type[] types, boolean isNamedParams) {
-                    return super.getCandidateMethod(ctx, types, isNamedParams);
-                }
-            };
             List<List<Param>> currentGenFnTypeParams = oFn.getParameters();
             if (currentGenFnTypeParams.isEmpty()) {
                 //this is used to consider function as parameter
-                return true;
+                return oFn.isCompatible(evaluatedTypeArgs.toArray(new Type[0]), functionReturnType);
             }
-            return checkSignatures(currentGenFnTypeParams, evaluatedTypeArgs) && baseFEELFunction.getCandidateMethod(oFn, evaluatedTypeArgs, currentGenFnTypeParams);
+            return checkSignatures(currentGenFnTypeParams, evaluatedTypeArgs);
         }
         return false;
     }

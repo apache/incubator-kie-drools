@@ -160,6 +160,11 @@ public abstract class BaseFEELFunction
         throw new RuntimeException("This method should be overriden by classes that implement custom feel functions");
     }
 
+    @Override
+    public boolean isCompatible(Type[] inputTypes, Type outputType) {
+        return getCandidateMethod(inputTypes, outputType) != null;
+    }
+
     /**
      * @param ctx
      * @param originalInput
@@ -187,20 +192,23 @@ public abstract class BaseFEELFunction
         return toReturn;
     }
 
-    protected CandidateMethod getCandidateMethod(EvaluationContext ctx, Type[] types, boolean isNamedParams) {
-        CandidateMethod toReturn = null;
+    private Method getCandidateMethod(Type[] inputTypes, Type outputType) {
+        Method toReturn = null;
         for (Method method : getClass().getDeclaredMethods()) {
             if (Modifier.isPublic(method.getModifiers()) && method.getName().equals("invoke")) {
-                CandidateMethod candidateMethod = getCandidateMethod(ctx, types, isNamedParams, method);
-                if (candidateMethod == null) {
+                if (method.getParameterCount() != inputTypes.length) {
                     continue;
                 }
-                if (toReturn == null) {
-                    toReturn = candidateMethod;
-                } else if (candidateMethod.score > toReturn.score) {
-                    toReturn = candidateMethod;
-                } else if (candidateMethod.score == toReturn.score) {
-                    toReturn = getBestScoredCandidateMethod(types, candidateMethod, toReturn);
+                Class<?>[] methodParameterTypes = method.getParameterTypes();
+                for (int i = 0; i < inputTypes.length; i++) {
+                    if (!methodParameterTypes[i].equals(inputTypes[i])) {
+                        continue;
+                    }
+                }
+                java.lang.reflect.Type methodReturnType= method.getGenericReturnType();
+                if (methodReturnType.equals(outputType)) {
+                    toReturn = method;
+                    break;
                 }
             }
         }
@@ -225,6 +233,7 @@ public abstract class BaseFEELFunction
         return new CandidateMethod(m, ScoreHelper.grossScore(compares), adaptedInput);
     }
 
+    // TODO wrong
     private CandidateMethod getCandidateMethod(EvaluationContext ctx, Type[] types,
                                                boolean isNamedParams, Method m) {
         Object[] adaptedType = BaseFEELFunctionHelper.getAdjustedParametersForMethod(ctx, types,
