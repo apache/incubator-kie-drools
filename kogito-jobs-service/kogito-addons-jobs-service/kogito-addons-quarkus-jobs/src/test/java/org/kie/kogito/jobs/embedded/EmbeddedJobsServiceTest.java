@@ -18,6 +18,7 @@
  */
 package org.kie.kogito.jobs.embedded;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.function.Consumer;
@@ -84,7 +85,7 @@ public class EmbeddedJobsServiceTest {
 
         latch.await();
 
-        List<DataEvent<?>> events = publisher.getEvents();
+        List<DataEvent<?>> events = new ArrayList<>(publisher.getEvents());
 
         Assertions.assertEquals(8, events.size());
 
