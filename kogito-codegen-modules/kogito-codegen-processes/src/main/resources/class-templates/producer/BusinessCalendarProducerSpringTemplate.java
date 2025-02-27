@@ -18,8 +18,8 @@
  */
 package $Package$;
 
-import org.kie.kogito.calendar.BusinessCalendar;
 import org.jbpm.process.core.timer.BusinessCalendarImpl;
+import org.kie.kogito.calendar.BusinessCalendar;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
@@ -29,10 +29,14 @@ import org.springframework.context.annotation.Configuration;
 public class BusinessCalendarProducer {
 
     private static final Logger logger = LoggerFactory.getLogger(BusinessCalendarProducer.class);
+    private BusinessCalendar businessCalendar;
+
+    public BusinessCalendarProducer() {
+        this.businessCalendar = BusinessCalendarImpl.builder().build();
+    }
 
     @Bean
     public BusinessCalendar createBusinessCalendar() {
-
-        return BusinessCalendarImpl.builder().build();
+        return this.businessCalendar;
     }
 }

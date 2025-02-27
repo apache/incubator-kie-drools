@@ -21,16 +21,7 @@ package org.kie.kogito.codegen.process;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Stream;
 
 import org.drools.codegen.common.GeneratedFile;
@@ -39,11 +30,7 @@ import org.drools.io.InternalResource;
 import org.jbpm.bpmn2.xml.BPMNDISemanticModule;
 import org.jbpm.bpmn2.xml.BPMNExtensionsSemanticModule;
 import org.jbpm.bpmn2.xml.BPMNSemanticModule;
-import org.jbpm.compiler.canonical.ModelMetaData;
-import org.jbpm.compiler.canonical.ProcessMetaData;
-import org.jbpm.compiler.canonical.ProcessToExecModelGenerator;
-import org.jbpm.compiler.canonical.TriggerMetaData;
-import org.jbpm.compiler.canonical.WorkItemModelMetaData;
+import org.jbpm.compiler.canonical.*;
 import org.jbpm.compiler.xml.XmlProcessReader;
 import org.jbpm.compiler.xml.core.SemanticModules;
 import org.jbpm.process.core.impl.ProcessImpl;
@@ -84,6 +71,8 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import static java.lang.String.format;
 import static java.util.stream.Collectors.toList;
 import static org.jbpm.process.core.constants.CalendarConstants.BUSINESS_CALENDAR_PATH;
+import static org.kie.kogito.codegen.process.util.BusinessCalendarUtil.conditionallyAddCustomBusinessCalendar;
+import static org.kie.kogito.codegen.process.util.CodegenUtil.generatorProperty;
 import static org.kie.kogito.codegen.process.util.CodegenUtil.isTransactionEnabled;
 import static org.kie.kogito.grafana.GrafanaConfigurationWriter.buildDashboardName;
 import static org.kie.kogito.grafana.GrafanaConfigurationWriter.generateOperationalDashboard;
@@ -105,11 +94,13 @@ public class ProcessCodegen extends AbstractGenerator {
     private static final GeneratedFileType PRODUCER_TYPE = GeneratedFileType.of("PRODUCER", GeneratedFileType.Category.SOURCE);
     private static final SemanticModules BPMN_SEMANTIC_MODULES = new SemanticModules();
     public static final String SVG_EXPORT_NAME_EXPRESION = "%s-svg.svg";
+    public static final String CUSTOM_BUSINESS_CALENDAR_PROPERTY = "businessCalendar";
 
     private static final String GLOBAL_OPERATIONAL_DASHBOARD_TEMPLATE = "/grafana-dashboard-template/processes/global-operational-dashboard-template.json";
     private static final String PROCESS_OPERATIONAL_DASHBOARD_TEMPLATE = "/grafana-dashboard-template/processes/process-operational-dashboard-template.json";
     public static final String BUSINESS_CALENDAR_PRODUCER_TEMPLATE = "BusinessCalendarProducer";
     private static final String IS_BUSINESS_CALENDAR_PRESENT = "isBusinessCalendarPresent";
+
     static {
         ProcessValidatorRegistry.getInstance().registerAdditonalValidator(JavaRuleFlowProcessValidator.getInstance());
         BPMN_SEMANTIC_MODULES.addSemanticModule(new BPMNSemanticModule());
@@ -459,11 +450,8 @@ public class ProcessCodegen extends AbstractGenerator {
         staticDependencyInjectionProducerGenerator.generate()
                 .entrySet()
                 .forEach(entry -> storeFile(PRODUCER_TYPE, entry.getKey(), entry.getValue()));
-        Boolean isBusinessCalendarPresent = context().getContextAttribute(IS_BUSINESS_CALENDAR_PRESENT, Boolean.class);
-        if (Objects.nonNull(isBusinessCalendarPresent) && isBusinessCalendarPresent) {
-            staticDependencyInjectionProducerGenerator.generate(List.of(BUSINESS_CALENDAR_PRODUCER_TEMPLATE))
-                    .forEach((key, value) -> storeFile(PRODUCER_TYPE, key, value));
-        }
+
+        generateBusinessCalendarProducer();
 
         if (CodegenUtil.isTransactionEnabled(this, context()) && !isServerless) {
             String template = "ExceptionHandlerTransaction";
@@ -548,7 +536,7 @@ public class ProcessCodegen extends AbstractGenerator {
 
     private void storeFile(GeneratedFileType type, String path, String source) {
         if (generatedFiles.stream().anyMatch(f -> path.equals(f.relativePath()))) {
-            LOGGER.warn("There's already a generated file named {} to be compiled. Ignoring.", path);
+            LOGGER.warn("There is already a generated file named {} to be compiled. Ignoring.", path);
         } else {
             generatedFiles.add(new GeneratedFile(type, path, source));
         }
@@ -556,7 +544,7 @@ public class ProcessCodegen extends AbstractGenerator {
 
     private void storeFile(GeneratedFileType type, String path, byte[] source) {
         if (generatedFiles.stream().anyMatch(f -> path.equals(f.relativePath()))) {
-            LOGGER.warn("There's already a generated file named {} to be compiled. Ignoring.", path);
+            LOGGER.warn("There is already a generated file named {} to be compiled. Ignoring.", path);
         } else {
             generatedFiles.add(new GeneratedFile(type, path, source));
         }
@@ -581,5 +569,34 @@ public class ProcessCodegen extends AbstractGenerator {
     @Override
     public int priority() {
         return 10;
+    }
+
+    private void generateBusinessCalendarProducer() {
+
+        boolean isBusinessCalendarPresent = Optional.ofNullable(context().getContextAttribute(IS_BUSINESS_CALENDAR_PRESENT, Boolean.class)).orElse(false);
+        String businessCalendarClassName = CodegenUtil.getProperty(this, context(), CUSTOM_BUSINESS_CALENDAR_PROPERTY, String::valueOf, null);
+
+        if (isBusinessCalendarPresent && businessCalendarClassName != null) {
+            String message = String.format("Project could not provide both '%s' file and '%s' property.", BUSINESS_CALENDAR_PATH, generatorProperty(this, CUSTOM_BUSINESS_CALENDAR_PROPERTY));
+            throw new ProcessCodegenException(message);
+        }
+
+        if (!isBusinessCalendarPresent && businessCalendarClassName == null) {
+            return;
+        }
+
+        TemplatedGenerator generator = TemplatedGenerator.builder()
+                .withTemplateBasePath("/class-templates/producer/")
+                .withFallbackContext(JavaKogitoBuildContext.CONTEXT_NAME)
+                .withTargetTypeName(BUSINESS_CALENDAR_PRODUCER_TEMPLATE)
+                .build(context(), BUSINESS_CALENDAR_PRODUCER_TEMPLATE);
+
+        CompilationUnit compilationUnit = generator.compilationUnitOrThrow();
+
+        if (businessCalendarClassName != null) {
+            conditionallyAddCustomBusinessCalendar(compilationUnit, context(), businessCalendarClassName);
+        }
+
+        storeFile(PRODUCER_TYPE, generator.generatedFilePath(), compilationUnit.toString());
     }
 }

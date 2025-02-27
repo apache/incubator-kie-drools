@@ -16,26 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package $Package$;
 
-import org.jbpm.process.core.timer.BusinessCalendarImpl;
+package org.kie.kogito.codegen.process.util.calendars;
+
 import org.kie.kogito.calendar.BusinessCalendar;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import jakarta.enterprise.inject.Produces;
-
-public class BusinessCalendarProducer {
-
-    private static final Logger logger = LoggerFactory.getLogger(BusinessCalendarProducer.class);
-    private BusinessCalendar businessCalendar;
-
-    public BusinessCalendarProducer() {
-        this.businessCalendar = BusinessCalendarImpl.builder().build();
-    }
-
-    @Produces
-    public BusinessCalendar createBusinessCalendar() {
-        return this.businessCalendar;
-    }
+public interface CustomBusinessCalendarInterface extends BusinessCalendar {
 }
