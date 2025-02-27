@@ -18,25 +18,46 @@
  */
 package org.kie.kogito.serverless.workflow.functions;
 
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import io.serverlessworkflow.api.functions.FunctionDefinition;
 
-public class FunctionDefinitionEx<T, V> extends FunctionDefinition {
+public class FunctionDefinitionEx extends FunctionDefinition {
 
     private static final long serialVersionUID = 1L;
-    private transient Function<T, V> function;
+    private transient Function function;
+    private transient BiFunction bifunction;
+    private transient TriFunction trifunction;
 
     public FunctionDefinitionEx(String name) {
         super(name);
     }
 
-    public FunctionDefinition withFunction(Function<T, V> function) {
+    public FunctionDefinition withFunction(Function function) {
         this.function = function;
         return this;
     }
 
-    public Function<T, V> getFunction() {
+    public FunctionDefinition withBiFunction(BiFunction function) {
+        this.bifunction = function;
+        return this;
+    }
+
+    public FunctionDefinition withTriFunction(TriFunction function) {
+        this.trifunction = function;
+        return this;
+    }
+
+    public Function getFunction() {
         return function;
+    }
+
+    public BiFunction getBiFunction() {
+        return bifunction;
+    }
+
+    public TriFunction getTriFunction() {
+        return trifunction;
     }
 }

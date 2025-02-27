@@ -21,11 +21,13 @@ package org.kie.kogito.serverless.workflow.fluent;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import org.kie.kogito.serverless.workflow.SWFConstants;
 import org.kie.kogito.serverless.workflow.actions.WorkflowLogLevel;
 import org.kie.kogito.serverless.workflow.functions.FunctionDefinitionEx;
+import org.kie.kogito.serverless.workflow.functions.TriFunction;
 import org.kie.kogito.serverless.workflow.parser.types.ServiceTypeHandler;
 
 import io.serverlessworkflow.api.functions.FunctionDefinition;
@@ -64,7 +66,15 @@ public class FunctionBuilder {
     }
 
     public static <T, V> FunctionBuilder java(String funcName, Function<T, V> function) {
-        return new FunctionBuilder(new FunctionDefinitionEx<T, V>(funcName).withFunction(function).withType(Type.CUSTOM).withOperation("java"));
+        return new FunctionBuilder(new FunctionDefinitionEx(funcName).withFunction(function).withType(Type.CUSTOM).withOperation("java"));
+    }
+
+    public static <T, U, R> FunctionBuilder java(String funcName, BiFunction<T, U, R> function) {
+        return new FunctionBuilder(new FunctionDefinitionEx(funcName).withBiFunction(function).withType(Type.CUSTOM).withOperation("java"));
+    }
+
+    public static <T, U, V, R> FunctionBuilder java(String funcName, TriFunction<T, U, V, R> function) {
+        return new FunctionBuilder(new FunctionDefinitionEx(funcName).withTriFunction(function).withType(Type.CUSTOM).withOperation("java"));
     }
 
     public static FunctionBuilder java(String funcName, String className, String methodName) {

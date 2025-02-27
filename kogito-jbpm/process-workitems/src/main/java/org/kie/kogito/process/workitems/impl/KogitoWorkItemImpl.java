@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -39,7 +40,7 @@ public class KogitoWorkItemImpl implements InternalKogitoWorkItem, Serializable 
     private String id;
     private String name;
     private int state = 0;
-    private Map<String, Object> parameters = new ProxyMap(new HashMap<>());
+    private Map<String, Object> parameters = new ProxyMap(new LinkedHashMap<>());
     private Map<String, Object> results = new HashMap<>();
     private String processInstanceId;
     private String deploymentId;
@@ -325,7 +326,6 @@ public class KogitoWorkItemImpl implements InternalKogitoWorkItem, Serializable 
         @Override
         public void putAll(Map<? extends String, ? extends Object> m) {
             map.putAll(m);
-
         }
 
         @Override

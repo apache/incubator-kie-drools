@@ -16,19 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.serverless.workflow.executor;
+package org.kie.kogito.serverless.workflow.functions;
 
-import org.kie.kogito.serverless.workflow.functions.FunctionDefinitionEx;
-
-import io.serverlessworkflow.api.Workflow;
-
-public class StaticJavaRegister implements StaticWorkflowRegister {
-
-    @Override
-    public void register(StaticWorkflowApplication application, Workflow workflow) {
-        if (workflow.getFunctions() != null && workflow.getFunctions().getFunctionDefs() != null) {
-            workflow.getFunctions().getFunctionDefs().stream().filter(FunctionDefinitionEx.class::isInstance).map(FunctionDefinitionEx.class::cast)
-                    .forEach(function -> application.registerHandler(new StaticFunctionWorkItemHandler(function)));
-        }
-    }
+@FunctionalInterface
+public interface TriFunction<T, U, V, R> {
+    R apply(T arg1, U arg2, V arg3);
 }

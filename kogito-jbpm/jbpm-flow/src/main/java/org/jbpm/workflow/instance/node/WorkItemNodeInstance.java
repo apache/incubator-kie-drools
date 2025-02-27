@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -231,7 +232,7 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
         workItem.setStartDate(new Date());
         workItem.setState(ACTIVE);
 
-        Map<String, Object> resolvedParameters = new HashMap<>();
+        Map<String, Object> resolvedParameters = new LinkedHashMap<>();
 
         Collection<String> metaParameters = work.getMetaParameters();
 

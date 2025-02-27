@@ -22,6 +22,7 @@ import java.time.Duration;
 import java.util.Optional;
 
 import org.kie.kogito.jackson.utils.JsonObjectUtils;
+import org.kie.kogito.jackson.utils.ObjectMapperFactory;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.serverless.workflow.SWFConstants;
 import org.kie.kogito.serverless.workflow.actions.WorkflowLogLevel;
@@ -96,6 +97,17 @@ public class ActionBuilder {
 
     public static ActionBuilder call(FunctionBuilder functionBuilder, Object args) {
         return call(functionBuilder, JsonObjectUtils.fromValue(args));
+    }
+
+    public static ActionBuilder call(FunctionBuilder functionBuilder, Object first, Object second, Object... extras) {
+        ObjectNode node = ObjectMapperFactory.get().createObjectNode();
+        node.set("arg1", JsonObjectUtils.fromValue(first));
+        node.set("arg2", JsonObjectUtils.fromValue(second));
+        int i = 3;
+        for (Object extra : extras) {
+            node.set("arg" + i++, JsonObjectUtils.fromValue(extra));
+        }
+        return call(functionBuilder, node);
     }
 
     public static ActionBuilder call(String functionName, JsonNode args) {

@@ -21,6 +21,7 @@ package org.jbpm.workflow.core.impl;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -145,7 +146,7 @@ public class NodeIoHelper {
             Function<String, Object> targetResolver) {
 
         NodeIoHelper ioHelper = new NodeIoHelper(nodeInstanceImpl);
-        Map<String, Object> inputSet = new HashMap<>();
+        Map<String, Object> inputSet = new LinkedHashMap<>();
         // for inputs resolve it is supposed to create object by default constructor (that is the reason is null
         ioHelper.processInputs(dataInputAssociation, sourceResolver, targetResolver, (target, value) -> inputSet.put(target, value));
         return inputSet;

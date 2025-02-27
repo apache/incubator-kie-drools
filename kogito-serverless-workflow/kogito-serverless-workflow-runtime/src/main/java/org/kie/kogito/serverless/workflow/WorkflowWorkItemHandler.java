@@ -19,7 +19,7 @@
 package org.kie.kogito.serverless.workflow;
 
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -38,7 +38,7 @@ public abstract class WorkflowWorkItemHandler extends DefaultKogitoWorkItemHandl
 
     @Override
     public Optional<WorkItemTransition> activateWorkItemHandler(KogitoWorkItemManager manager, KogitoWorkItemHandler handler, KogitoWorkItem workItem, WorkItemTransition transition) {
-        Map<String, Object> parameters = new HashMap<>(workItem.getParameters());
+        Map<String, Object> parameters = new LinkedHashMap<>(workItem.getParameters());
         parameters.remove(SWFConstants.MODEL_WORKFLOW_VAR);
         logger.debug("Workflow workitem {} will be invoked with parameters {}", workItem.getName(), parameters);
 

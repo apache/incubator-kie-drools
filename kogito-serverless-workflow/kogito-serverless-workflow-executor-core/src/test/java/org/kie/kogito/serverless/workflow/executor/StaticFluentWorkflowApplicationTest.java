@@ -194,6 +194,10 @@ public class StaticFluentWorkflowApplicationTest {
         return one * two;
     }
 
+    private double quadratic(int one, int two, int three) {
+        return Math.sqrt(one * one + two * two - three * three);
+    }
+
     @Test
     void testJava() {
         final String DOUBLE = "double";
@@ -208,6 +212,30 @@ public class StaticFluentWorkflowApplicationTest {
             JsonNode result = application.execute(process, Collections.singletonMap("input", 4)).getWorkflowdata();
             assertThat(result.get("double").asInt()).isEqualTo(8);
             assertThat(result.get("half").asInt()).isEqualTo(2);
+        }
+    }
+
+    @Test
+    void testJavaTwoParams() {
+        try (StaticWorkflowApplication application = StaticWorkflowApplication.create()) {
+            Workflow workflow = workflow("Javatest")
+                    .start(operation().action(call(java("multiply", this::multiply), ".input1", ".input2")))
+                    .end().build();
+            Process<JsonNodeModel> process = application.process(workflow);
+            JsonNode result = application.execute(process, Map.of("input1", 4, "input2", 8)).getWorkflowdata();
+            assertThat(result.get("response").asInt()).isEqualTo(32);
+        }
+    }
+
+    @Test
+    void testJavaThreeParams() {
+        try (StaticWorkflowApplication application = StaticWorkflowApplication.create()) {
+            Workflow workflow = workflow("Javatest")
+                    .start(operation().action(call(java("quadratic", this::quadratic), ".input1", ".input2", ".input3")))
+                    .end().build();
+            Process<JsonNodeModel> process = application.process(workflow);
+            JsonNode result = application.execute(process, Map.of("input1", 3, "input2", 4, "input3", 5)).getWorkflowdata();
+            assertThat(result.get("response").asInt()).isEqualTo(0);
         }
     }
 
