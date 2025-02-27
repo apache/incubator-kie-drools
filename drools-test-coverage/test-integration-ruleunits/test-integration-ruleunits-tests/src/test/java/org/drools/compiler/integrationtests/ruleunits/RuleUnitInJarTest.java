@@ -36,7 +36,8 @@ import static org.assertj.core.api.Assertions.fail;
 public class RuleUnitInJarTest {
 
     private static final String TEST_JAR = "test-integration-ruleunits-jar.jar";
-    private static final String TEST_UNIT_CLASS = "org.drools.compiler.integrationtests.ruleunits.HelloJarUnit";
+    private static final String HELLO_TEST_UNIT_CLASS = "org.drools.compiler.integrationtests.ruleunits.HelloJarUnit";
+    private static final String LARGE_TEST_UNIT_CLASS = "org.drools.compiler.integrationtests.ruleunits.NumericUnit";
 
     @Test
     public void helloJar() {
@@ -44,7 +45,7 @@ public class RuleUnitInJarTest {
         try {
             URLClassLoader urlClassLoader = new URLClassLoader(new URL[]{this.getClass().getClassLoader().getResource(TEST_JAR)}, tccl);
             Thread.currentThread().setContextClassLoader(urlClassLoader);
-            Class<?> unitClass = urlClassLoader.loadClass(TEST_UNIT_CLASS);
+            Class<?> unitClass = urlClassLoader.loadClass(HELLO_TEST_UNIT_CLASS);
             RuleUnitData unit = (RuleUnitData) unitClass.getDeclaredConstructor().newInstance();
             Method getStringsMethod = unitClass.getMethod("getStrings");
             ((DataStore<String>) getStringsMethod.invoke(unit)).add("Hello Jar");
@@ -53,6 +54,26 @@ public class RuleUnitInJarTest {
                 assertThat(unitInstance.fire()).isEqualTo(2);
                 Method getResultsMethod = unitClass.getMethod("getResults");
                 assertThat(((List<String>) getResultsMethod.invoke(unit))).containsExactlyInAnyOrder("it worked!", "it worked in decision table!");
+            }
+        } catch (NoSuchMethodException | ClassNotFoundException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {
+            fail("Fail with reflection", e);
+        } finally {
+            Thread.currentThread().setContextClassLoader(tccl);
+        }
+    }
+    @Test
+    public void largeNumberOfBindings() {
+        ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+        try {
+            URLClassLoader urlClassLoader = new URLClassLoader(new URL[]{this.getClass().getClassLoader().getResource(TEST_JAR)}, tccl);
+            Thread.currentThread().setContextClassLoader(urlClassLoader);
+            Class<?> unitClass = urlClassLoader.loadClass(LARGE_TEST_UNIT_CLASS);
+            RuleUnitData unit = (RuleUnitData) unitClass.getDeclaredConstructor().newInstance();
+
+            try (RuleUnitInstance<RuleUnitData> unitInstance = RuleUnitProvider.get().createRuleUnitInstance(unit)) {
+                assertThat(unitInstance.fire()).isEqualTo(2);
+                Method getResultsMethod = unitClass.getMethod("getResult");
+                assertThat(((List<Integer>) getResultsMethod.invoke(unit)).get(0)).isEqualTo(26);
             }
         } catch (NoSuchMethodException | ClassNotFoundException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {
             fail("Fail with reflection", e);

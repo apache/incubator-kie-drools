@@ -32,7 +32,6 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import org.drools.base.base.ClassObjectType;
 import org.drools.base.base.DroolsQuery;
 import org.drools.base.base.EnabledBoolean;
@@ -80,7 +79,42 @@ import org.drools.core.reteoo.CoreComponentFactory;
 import org.drools.core.rule.BehaviorRuntime;
 import org.drools.core.rule.SlidingLengthWindow;
 import org.drools.core.rule.SlidingTimeWindow;
-import org.drools.model.*;
+import org.drools.model.AccumulatePattern;
+import org.drools.model.Argument;
+import org.drools.model.Binding;
+import org.drools.model.Condition;
+import org.drools.model.Consequence;
+import org.drools.model.Constraint;
+import org.drools.model.DomainClassMetadata;
+import org.drools.model.DynamicValueSupplier;
+import org.drools.model.EntryPoint;
+import org.drools.model.From;
+import org.drools.model.From0;
+import org.drools.model.From1;
+import org.drools.model.From10;
+import org.drools.model.From11;
+import org.drools.model.From2;
+import org.drools.model.From3;
+import org.drools.model.From4;
+import org.drools.model.From5;
+import org.drools.model.From6;
+import org.drools.model.From7;
+import org.drools.model.From8;
+import org.drools.model.From9;
+import org.drools.model.Global;
+import org.drools.model.GroupByPattern;
+import org.drools.model.Index;
+import org.drools.model.Model;
+import org.drools.model.Query;
+import org.drools.model.Rule;
+import org.drools.model.SingleConstraint;
+import org.drools.model.TypeMetaData;
+import org.drools.model.UnitData;
+import org.drools.model.Value;
+import org.drools.model.Variable;
+import org.drools.model.View;
+import org.drools.model.WindowDefinition;
+import org.drools.model.WindowReference;
 import org.drools.model.consequences.ConditionalNamedConsequenceImpl;
 import org.drools.model.consequences.ConsequenceImpl;
 import org.drools.model.consequences.NamedConsequenceImpl;
@@ -121,6 +155,7 @@ import org.kie.api.definition.rule.Propagation;
 import org.kie.api.definition.type.Role;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.conf.PropertySpecificOption;
+
 
 import static java.util.stream.Collectors.toList;
 import static org.drools.base.rule.EvalCondition.logWarnIfImproperEval;
@@ -1082,7 +1117,6 @@ public class KiePackagesBuilder {
         if (from instanceof From4) {
             return new LambdaDataProvider( toFunctionN( (( From4 ) from).getProvider() ), from.isReactive(), ctx.getDeclaration( from.getVariable() ), ctx.getDeclaration( (( From4 ) from).getVariable2() ), ctx.getDeclaration( (( From4 ) from).getVariable3() ), ctx.getDeclaration( (( From4 ) from).getVariable4() ) );
         }
-        //from5 to 11
         if (from instanceof From5) {
             return new LambdaDataProvider(
                     toFunctionN(((From5) from).getProvider()),
