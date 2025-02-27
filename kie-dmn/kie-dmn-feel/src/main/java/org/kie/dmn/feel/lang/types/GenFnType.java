@@ -22,12 +22,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.SimpleType;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.dmn.feel.runtime.FEELFunction.Param;
-import org.kie.dmn.feel.runtime.functions.BaseFEELFunction;
 
 
 public class GenFnType implements SimpleType {

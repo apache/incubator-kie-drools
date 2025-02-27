@@ -192,26 +192,34 @@ public abstract class BaseFEELFunction
         return toReturn;
     }
 
-    private Method getCandidateMethod(Type[] inputTypes, Type outputType) {
+    protected Method getCandidateMethod(Type[] inputTypes, Type outputType) {
         Method toReturn = null;
+
         for (Method method : getClass().getDeclaredMethods()) {
             if (Modifier.isPublic(method.getModifiers()) && method.getName().equals("invoke")) {
                 if (method.getParameterCount() != inputTypes.length) {
                     continue;
                 }
+
+                org.kie.dmn.feel.lang.Type[] feelTypes = Arrays.stream(inputTypes)
+                        .map(type -> (org.kie.dmn.feel.lang.Type) type)
+                        .toArray(org.kie.dmn.feel.lang.Type[]::new);
+
                 Class<?>[] methodParameterTypes = method.getParameterTypes();
-                for (int i = 0; i < inputTypes.length; i++) {
-                    if (!methodParameterTypes[i].equals(inputTypes[i])) {
+                for (int i = 0; i < feelTypes.length; i++) {
+                    if (!methodParameterTypes[i].equals(feelTypes[i].getClass())) {
                         continue;
                     }
                 }
-                java.lang.reflect.Type methodReturnType= method.getGenericReturnType();
+
+                java.lang.reflect.Type methodReturnType = method.getGenericReturnType();
                 if (methodReturnType.equals(outputType)) {
                     toReturn = method;
                     break;
                 }
             }
         }
+
         return toReturn;
     }
 
@@ -231,25 +239,6 @@ public abstract class BaseFEELFunction
 
         ScoreHelper.Compares compares = new ScoreHelper.Compares(originalInput, adaptedInput, parameterTypes);
         return new CandidateMethod(m, ScoreHelper.grossScore(compares), adaptedInput);
-    }
-
-    // TODO wrong
-    private CandidateMethod getCandidateMethod(EvaluationContext ctx, Type[] types,
-                                               boolean isNamedParams, Method m) {
-        Object[] adaptedType = BaseFEELFunctionHelper.getAdjustedParametersForMethod(ctx, types,
-                isNamedParams, m);
-        if (adaptedType == null) {
-            // incompatible method
-            return null;
-        }
-
-        Class<?>[] parameterTypes = m.getParameterTypes();
-        if (parameterTypes.length != adaptedType.length) {
-            return null;
-        }
-
-        ScoreHelper.Compares compares = new ScoreHelper.Compares(types, adaptedType, parameterTypes);
-        return new CandidateMethod(m, ScoreHelper.grossScore(compares), adaptedType);
     }
 
     /**

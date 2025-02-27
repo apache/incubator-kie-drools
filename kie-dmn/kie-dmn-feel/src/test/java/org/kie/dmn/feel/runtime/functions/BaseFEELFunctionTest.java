@@ -318,4 +318,38 @@ class BaseFEELFunctionTest {
         assertThat(parametersRetrieved).extracting("type").containsExactly(List.class);
     }
 
+    @Test
+    void testIsCompatible() {
+        BaseFEELFunction toTest = AllFunction.INSTANCE;
+
+        org.kie.dmn.feel.lang.Type stringType = BuiltInType.STRING;
+        org.kie.dmn.feel.lang.Type integerType = BuiltInType.NUMBER;
+
+        org.kie.dmn.feel.lang.Type[] inputTypes;
+        org.kie.dmn.feel.lang.Type outputType = stringType;
+        boolean result;
+
+        inputTypes = new org.kie.dmn.feel.lang.Type[]{stringType};
+        result = toTest.isCompatible(inputTypes, outputType);
+        assertThat(result).isTrue();
+
+        inputTypes = new org.kie.dmn.feel.lang.Type[]{integerType};
+        outputType = integerType;
+        result = toTest.isCompatible(inputTypes, outputType);
+        assertThat(result).isTrue();
+
+        inputTypes = new org.kie.dmn.feel.lang.Type[]{stringType};
+        outputType = stringType;
+        result = toTest.isCompatible(inputTypes, outputType);
+        assertThat(result).isTrue();
+
+        inputTypes = new org.kie.dmn.feel.lang.Type[]{integerType};
+        result = toTest.isCompatible(inputTypes, outputType);
+        assertThat(result).isFalse();
+
+        outputType = integerType;
+        result = toTest.isCompatible(inputTypes, outputType);
+        assertThat(result).isFalse();
+    }
+
 }
