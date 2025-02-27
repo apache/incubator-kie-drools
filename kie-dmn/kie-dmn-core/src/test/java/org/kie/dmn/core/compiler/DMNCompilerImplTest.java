@@ -27,6 +27,7 @@ import org.kie.dmn.api.core.DMNCompiler;
 import org.kie.dmn.api.core.DMNMessageType;
 import org.kie.dmn.api.core.DMNModel;
 
+import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.model.api.*;
 import org.kie.dmn.model.v1_5.*;
 import org.slf4j.Logger;
@@ -161,6 +162,74 @@ class DMNCompilerImplTest {
         assertThat(model.getName()).isNotNull().isEqualTo(modelName);
         assertThat(model.getMessages()).isNotEmpty();
         assertThat(model.getMessages().get(0).getMessageType()).isEqualTo(DMNMessageType.IMPORT_NOT_FOUND);
+
+    }
+
+    @Test
+    void resolveDMNImportType() {
+        List<DMNModel> toMerge = new ArrayList<>();
+        List<DMNModel> dmnModels = new ArrayList<>();
+        Resource resource = new ClassPathResource( "valid_models/DMNv1_5/Imported_Model_Unamed.dmn",
+                this.getClass());
+        DMNModel importedModel = dMNCompiler.compile( resource, dmnModels);
+        assertThat(importedModel).isNotNull();
+        dmnModels.add(importedModel);
+
+        //imported model - Importing_Named_Model.dmn
+        String nameSpace = "http://www.trisotech.com/dmn/definitions/_f79aa7a4-f9a3-410a-ac95-bea496edabgc";
+        resource = new ClassPathResource( "valid_models/DMNv1_5/Importing_Named_Model.dmn",
+                this.getClass());
+        DMNModel importingModel = dMNCompiler.compile(resource, dmnModels);
+        assertThat(importingModel).isNotNull();
+        assertThat(importingModel.getNamespace()).isNotNull().isEqualTo(nameSpace);
+        assertThat(importingModel.getMessages()).isEmpty();
+
+        Import input = importingModel.getDefinitions().getImport().get(0);
+        DMNModelImpl model = new DMNModelImpl(importingModel.getDefinitions(), resource);
+        DMNCompilerImpl.resolveDMNImportType(input, dmnModels, model, toMerge);
+        assertThat(model.getMessages()).isEmpty();
+        assertThat(model.getImportAliasesForNS().entrySet().stream().findFirst().get().getValue().getLocalPart()).isNotNull().isEqualTo("Imported Model");
+
+    }
+
+    @Test
+    void checkLocatedDMNModel() {
+        List<DMNModel> toMerge = new ArrayList<>();
+        List<DMNModel> dmnModels = new ArrayList<>();
+        String nameSpace = "http://www.trisotech.com/dmn/definitions/_f79aa7a4-f9a3-410a-ac95-bea496edabgc";
+        Resource resource = new ClassPathResource( "valid_models/DMNv1_5/Importing_Named_Model.dmn",
+                this.getClass());
+        DMNModel importingModel = dMNCompiler.compile(resource, dmnModels);
+        assertThat(importingModel).isNotNull();
+        assertThat(importingModel.getNamespace()).isNotNull().isEqualTo(nameSpace);
+
+        Import input = importingModel.getDefinitions().getImport().get(0);
+        DMNModelImpl model = new DMNModelImpl(importingModel.getDefinitions(), resource);
+        DMNModel located = new DMNModelImpl(importingModel.getDefinitions(), resource);
+        DMNCompilerImpl.checkLocatedDMNModel(input, located, model, toMerge);
+        assertThat(importingModel).isNotNull();
+        assertThat(importingModel.getNamespace()).isNotNull().isEqualTo(nameSpace);
+        assertThat(toMerge.isEmpty()).isTrue();
+    }
+
+    @Test
+    void checkLocatedDMNModelWithAliasNull() {
+        String namespace="http://www.trisotech.com/dmn/definitions/_f79aa7a4-f9a3-410a-ac95-bea496edabgc";
+        List<DMNModel> toMerge = new ArrayList<>();
+        List<DMNModel> dmnModels = new ArrayList<>();
+        Resource resource = new ClassPathResource( "valid_models/DMNv1_5/Importing_EmptyNamed_Model_Without_Href_Namespace.dmn",
+                this.getClass());
+        DMNModel emptyNamedModel = dMNCompiler.compile( resource, dmnModels);
+        assertThat(emptyNamedModel).isNotNull();
+        dmnModels.add(emptyNamedModel);
+
+        Import input = emptyNamedModel.getDefinitions().getImport().get(0);
+        DMNModelImpl model = new DMNModelImpl(emptyNamedModel.getDefinitions(), resource);
+        DMNModel located = new DMNModelImpl(emptyNamedModel.getDefinitions(), resource);
+        DMNCompilerImpl.checkLocatedDMNModel(input, located, model, toMerge);
+        assertThat(emptyNamedModel).isNotNull();
+        assertThat(toMerge.isEmpty()).isFalse();
+        assertThat(toMerge.get(0).getNamespace()).isNotNull().isEqualTo(namespace);
 
     }
 
