@@ -40,6 +40,10 @@ org.kie.kogito.app.audit.spi.GraphQLSchemaQueryProvider
 application.properties
 # data-index/data-index-graphql/src/main/resources/basic.schema.graphqls
 basic.schema.graphqls
+# data-index/data-index-graphql/src/main/resources/count.schema.graphqls
+count.schema.graphqls
+# data-index/data-index-graphql/src/main/resources/json.schema.graphqls
+json.schema.graphqls
 # data-index/data-index-service/data-index-service-common/src/main/resources/domain.schema.graphqls
 domain.schema.graphqls
 # /data-index/data-index-mutations/data-index-shared-output-mutation/src/main/resources/mutation.schema.graphqls

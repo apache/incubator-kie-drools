@@ -18,10 +18,19 @@
  */
 package org.kie.kogito.index.jpa.query;
 
+import java.util.List;
+import java.util.UUID;
+
+import org.junit.jupiter.api.Test;
+import org.kie.kogito.event.usertask.UserTaskInstanceStateDataEvent;
+import org.kie.kogito.event.usertask.UserTaskInstanceStateEventBody;
 import org.kie.kogito.index.jpa.storage.UserTaskInstanceEntityStorage;
 import org.kie.kogito.index.test.query.AbstractUserTaskInstanceQueryIT;
 
 import jakarta.inject.Inject;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.kie.kogito.persistence.api.query.QueryFilterFactory.in;
 
 public abstract class AbstractUserTaskInstanceEntityQueryIT extends AbstractUserTaskInstanceQueryIT {
 
@@ -36,5 +45,18 @@ public abstract class AbstractUserTaskInstanceEntityQueryIT extends AbstractUser
     @Override
     protected Boolean isDateTimeAsLong() {
         return false;
+    }
+
+    @Test
+    void testCount() {
+        String taskId = UUID.randomUUID().toString();
+        String processInstanceId = UUID.randomUUID().toString();
+        UserTaskInstanceStateDataEvent event = new UserTaskInstanceStateDataEvent();
+        event.setKogitoProcessInstanceId(processInstanceId);
+        event.setKogitoUserTaskInstanceId(taskId);
+        event.setData(UserTaskInstanceStateEventBody.create().processInstanceId(processInstanceId).state("InProgress").userTaskInstanceId(taskId).build());
+        storage.indexState(event);
+        assertThat(storage.query().count()).isNotZero();
+        assertThat(storage.query().filter(List.of(in("state", List.of("Javierito")))).count()).isZero();
     }
 }

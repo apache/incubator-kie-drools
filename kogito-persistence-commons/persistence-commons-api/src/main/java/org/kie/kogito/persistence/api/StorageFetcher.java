@@ -18,6 +18,9 @@
  */
 package org.kie.kogito.persistence.api;
 
+import java.util.EnumSet;
+import java.util.Set;
+
 import org.kie.kogito.persistence.api.query.Query;
 
 import io.smallrye.mutiny.Multi;
@@ -44,6 +47,10 @@ public interface StorageFetcher<K, V> {
      * @return The `Query` instance.
      */
     Query<V> query();
+
+    default Set<StorageServiceCapability> capabilities() {
+        return EnumSet.noneOf(StorageServiceCapability.class);
+    }
 
     /**
      * Gets an element by key. If the element is not present in the storage, then `null` is returned.

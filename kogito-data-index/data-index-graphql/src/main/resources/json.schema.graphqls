@@ -1,0 +1,7 @@
+extend input ProcessInstanceArgument {
+  variables: JSON
+}
+
+extend input ProcessDefinitionArgument {
+  metadata: JSON
+}

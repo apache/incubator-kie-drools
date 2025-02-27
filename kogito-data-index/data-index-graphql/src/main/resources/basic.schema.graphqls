@@ -69,7 +69,6 @@ input ProcessDefinitionArgument {
     serviceUrl: StringArgument
     description: StringArgument
     type: StringArgument
-    metadata: JSON
 }
 
 type ProcessInstance {
@@ -183,7 +182,6 @@ input ProcessInstanceArgument {
     id: IdArgument
     processId: StringArgument
     processName: StringArgument
-    variables: JSON
     parentProcessInstanceId: IdArgument
     rootProcessInstanceId: IdArgument
     rootProcessId: StringArgument

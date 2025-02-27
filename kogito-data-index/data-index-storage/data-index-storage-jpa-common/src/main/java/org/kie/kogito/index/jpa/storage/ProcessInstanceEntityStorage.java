@@ -20,6 +20,7 @@ package org.kie.kogito.index.jpa.storage;
 
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -47,6 +48,7 @@ import org.kie.kogito.index.json.JsonUtils;
 import org.kie.kogito.index.model.MilestoneStatus;
 import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.storage.ProcessInstanceStorage;
+import org.kie.kogito.persistence.api.StorageServiceCapability;
 
 import io.quarkus.arc.DefaultBean;
 
@@ -233,5 +235,9 @@ public class ProcessInstanceEntityStorage extends AbstractJPAStorageFetcher<Stri
 
     private void indexSla(ProcessInstanceEntity orInit, ProcessInstanceSLAEventBody data) {
         // SLA does nothing for now
+    }
+
+    public Set<StorageServiceCapability> capabilities() {
+        return EnumSet.of(StorageServiceCapability.COUNT);
     }
 }

@@ -18,10 +18,14 @@
  */
 package org.kie.kogito.index.postgresql;
 
+import java.util.EnumSet;
+import java.util.Set;
+
 import org.kie.kogito.index.jpa.mapper.ProcessInstanceEntityMapper;
 import org.kie.kogito.index.jpa.model.ProcessInstanceEntityRepository;
 import org.kie.kogito.index.jpa.storage.ProcessInstanceEntityStorage;
 import org.kie.kogito.index.model.ProcessInstance;
+import org.kie.kogito.persistence.api.StorageServiceCapability;
 import org.kie.kogito.persistence.api.query.Query;
 
 import jakarta.enterprise.context.ApplicationScoped;
@@ -38,5 +42,9 @@ public class PostgresqlProcessInstanceEntityStorage extends ProcessInstanceEntit
     @Override
     public Query<ProcessInstance> query() {
         return new PostgresqlJsonJPAQuery<>(repository, mapToModel, entityClass);
+    }
+
+    public Set<StorageServiceCapability> capabilities() {
+        return EnumSet.allOf(StorageServiceCapability.class);
     }
 }

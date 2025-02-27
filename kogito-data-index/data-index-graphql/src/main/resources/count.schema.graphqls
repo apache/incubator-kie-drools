@@ -1,0 +1,4 @@
+extend type Query {
+    CountProcessInstances(where: ProcessInstanceArgument): Int
+    CountUserTaskInstances(where: UserTaskInstanceArgument): Int
+}

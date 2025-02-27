@@ -74,6 +74,8 @@ public class GraphQLSchemaManagerImpl extends AbstractGraphQLSchemaManager {
         TypeDefinitionRegistry typeDefinitionRegistry = new TypeDefinitionRegistry();
         typeDefinitionRegistry.merge(loadSchemaDefinitionFile("basic.schema.graphqls"));
         typeDefinitionRegistry.merge(loadSchemaDefinitionFile("domain.schema.graphqls"));
+        addCountQueries(typeDefinitionRegistry);
+        addJsonQueries(typeDefinitionRegistry);
         loadAdditionalMutations(typeDefinitionRegistry);
 
         RuntimeWiring runtimeWiring = RuntimeWiring.newRuntimeWiring()
@@ -83,6 +85,7 @@ public class GraphQLSchemaManagerImpl extends AbstractGraphQLSchemaManager {
                     builder.dataFetcher("ProcessInstances", this::getProcessInstancesValues);
                     builder.dataFetcher("UserTaskInstances", this::getUserTaskInstancesValues);
                     builder.dataFetcher("Jobs", this::getJobsValues);
+                    addCountQueries(builder);
                     return builder;
                 })
                 .type("Mutation", builder -> {
