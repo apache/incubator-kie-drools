@@ -32,7 +32,6 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import org.drools.base.base.ClassObjectType;
 import org.drools.base.base.DroolsQuery;
 import org.drools.base.base.EnabledBoolean;
@@ -92,9 +91,16 @@ import org.drools.model.EntryPoint;
 import org.drools.model.From;
 import org.drools.model.From0;
 import org.drools.model.From1;
+import org.drools.model.From10;
+import org.drools.model.From11;
 import org.drools.model.From2;
 import org.drools.model.From3;
 import org.drools.model.From4;
+import org.drools.model.From5;
+import org.drools.model.From6;
+import org.drools.model.From7;
+import org.drools.model.From8;
+import org.drools.model.From9;
 import org.drools.model.Global;
 import org.drools.model.GroupByPattern;
 import org.drools.model.Index;
@@ -149,6 +155,7 @@ import org.kie.api.definition.rule.Propagation;
 import org.kie.api.definition.type.Role;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.conf.PropertySpecificOption;
+
 
 import static java.util.stream.Collectors.toList;
 import static org.drools.base.rule.EvalCondition.logWarnIfImproperEval;
@@ -1110,6 +1117,105 @@ public class KiePackagesBuilder {
         if (from instanceof From4) {
             return new LambdaDataProvider( toFunctionN( (( From4 ) from).getProvider() ), from.isReactive(), ctx.getDeclaration( from.getVariable() ), ctx.getDeclaration( (( From4 ) from).getVariable2() ), ctx.getDeclaration( (( From4 ) from).getVariable3() ), ctx.getDeclaration( (( From4 ) from).getVariable4() ) );
         }
+        if (from instanceof From5) {
+            return new LambdaDataProvider(
+                    toFunctionN(((From5) from).getProvider()),
+                    from.isReactive(),
+                    ctx.getDeclaration(from.getVariable()),
+                    ctx.getDeclaration(((From5) from).getVariable2()),
+                    ctx.getDeclaration(((From5) from).getVariable3()),
+                    ctx.getDeclaration(((From5) from).getVariable4()),
+                    ctx.getDeclaration(((From5) from).getVariable5())
+            );
+        }
+        if (from instanceof From6) {
+            return new LambdaDataProvider(
+                    toFunctionN(((From6) from).getProvider()),
+                    from.isReactive(),
+                    ctx.getDeclaration(from.getVariable()),
+                    ctx.getDeclaration(((From6) from).getVariable2()),
+                    ctx.getDeclaration(((From6) from).getVariable3()),
+                    ctx.getDeclaration(((From6) from).getVariable4()),
+                    ctx.getDeclaration(((From6) from).getVariable5()),
+                    ctx.getDeclaration(((From6) from).getVariable6())
+            );
+        }
+        if (from instanceof From7) {
+            return new LambdaDataProvider(
+                    toFunctionN(((From7) from).getProvider()),
+                    from.isReactive(),
+                    ctx.getDeclaration(from.getVariable()),
+                    ctx.getDeclaration(((From7) from).getVariable2()),
+                    ctx.getDeclaration(((From7) from).getVariable3()),
+                    ctx.getDeclaration(((From7) from).getVariable4()),
+                    ctx.getDeclaration(((From7) from).getVariable5()),
+                    ctx.getDeclaration(((From7) from).getVariable6()),
+                    ctx.getDeclaration(((From7) from).getVariable7())
+            );
+        }
+        if (from instanceof From8) {
+            return new LambdaDataProvider(
+                    toFunctionN(((From8) from).getProvider()),
+                    from.isReactive(),
+                    ctx.getDeclaration(from.getVariable()),
+                    ctx.getDeclaration(((From8) from).getVariable2()),
+                    ctx.getDeclaration(((From8) from).getVariable3()),
+                    ctx.getDeclaration(((From8) from).getVariable4()),
+                    ctx.getDeclaration(((From8) from).getVariable5()),
+                    ctx.getDeclaration(((From8) from).getVariable6()),
+                    ctx.getDeclaration(((From8) from).getVariable7()),
+                    ctx.getDeclaration(((From8) from).getVariable8())
+            );
+        }
+        if (from instanceof From9) {
+            return new LambdaDataProvider(
+                    toFunctionN(((From9) from).getProvider()),
+                    from.isReactive(),
+                    ctx.getDeclaration(from.getVariable()),
+                    ctx.getDeclaration(((From9) from).getVariable2()),
+                    ctx.getDeclaration(((From9) from).getVariable3()),
+                    ctx.getDeclaration(((From9) from).getVariable4()),
+                    ctx.getDeclaration(((From9) from).getVariable5()),
+                    ctx.getDeclaration(((From9) from).getVariable6()),
+                    ctx.getDeclaration(((From9) from).getVariable7()),
+                    ctx.getDeclaration(((From9) from).getVariable8()),
+                    ctx.getDeclaration(((From9) from).getVariable9())
+            );
+        }
+        if (from instanceof From10) {
+            return new LambdaDataProvider(
+                    toFunctionN(((From10) from).getProvider()),
+                    from.isReactive(),
+                    ctx.getDeclaration(from.getVariable()),
+                    ctx.getDeclaration(((From10) from).getVariable2()),
+                    ctx.getDeclaration(((From10) from).getVariable3()),
+                    ctx.getDeclaration(((From10) from).getVariable4()),
+                    ctx.getDeclaration(((From10) from).getVariable5()),
+                    ctx.getDeclaration(((From10) from).getVariable6()),
+                    ctx.getDeclaration(((From10) from).getVariable7()),
+                    ctx.getDeclaration(((From10) from).getVariable8()),
+                    ctx.getDeclaration(((From10) from).getVariable9()),
+                    ctx.getDeclaration(((From10) from).getVariable10())
+            );
+        }
+        if (from instanceof From11) {
+            return new LambdaDataProvider(
+                    toFunctionN(((From11) from).getProvider()),
+                    from.isReactive(),
+                    ctx.getDeclaration(from.getVariable()),
+                    ctx.getDeclaration(((From11) from).getVariable2()),
+                    ctx.getDeclaration(((From11) from).getVariable3()),
+                    ctx.getDeclaration(((From11) from).getVariable4()),
+                    ctx.getDeclaration(((From11) from).getVariable5()),
+                    ctx.getDeclaration(((From11) from).getVariable6()),
+                    ctx.getDeclaration(((From11) from).getVariable7()),
+                    ctx.getDeclaration(((From11) from).getVariable8()),
+                    ctx.getDeclaration(((From11) from).getVariable9()),
+                    ctx.getDeclaration(((From11) from).getVariable10()),
+                    ctx.getDeclaration(((From11) from).getVariable11())
+            );
+        }
+
         throw new UnsupportedOperationException( "Unknown from type " + from );
     }
 
