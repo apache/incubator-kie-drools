@@ -34,6 +34,7 @@ import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.FEELDialect;
 import org.kie.dmn.feel.lang.Symbol;
+import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.impl.NamedParameter;
 import org.kie.dmn.feel.lang.types.FunctionSymbol;
 import org.kie.dmn.feel.runtime.FEELFunction;
@@ -159,6 +160,11 @@ public abstract class BaseFEELFunction
         throw new RuntimeException("This method should be overriden by classes that implement custom feel functions");
     }
 
+    @Override
+    public boolean isCompatible(Type[] inputTypes, Type outputType) {
+        return getCandidateMethod(inputTypes, outputType) != null;
+    }
+
     /**
      * @param ctx
      * @param originalInput
@@ -183,6 +189,37 @@ public abstract class BaseFEELFunction
                 }
             }
         }
+        return toReturn;
+    }
+
+    protected Method getCandidateMethod(Type[] inputTypes, Type outputType) {
+        Method toReturn = null;
+
+        for (Method method : getClass().getDeclaredMethods()) {
+            if (Modifier.isPublic(method.getModifiers()) && method.getName().equals("invoke")) {
+                if (method.getParameterCount() != inputTypes.length) {
+                    continue;
+                }
+
+                org.kie.dmn.feel.lang.Type[] feelTypes = Arrays.stream(inputTypes)
+                        .map(type -> (org.kie.dmn.feel.lang.Type) type)
+                        .toArray(org.kie.dmn.feel.lang.Type[]::new);
+
+                Class<?>[] methodParameterTypes = method.getParameterTypes();
+                for (int i = 0; i < feelTypes.length; i++) {
+                    if (!methodParameterTypes[i].equals(feelTypes[i].getClass())) {
+                        continue;
+                    }
+                }
+
+                java.lang.reflect.Type methodReturnType = method.getGenericReturnType();
+                if (methodReturnType.equals(outputType)) {
+                    toReturn = method;
+                    break;
+                }
+            }
+        }
+
         return toReturn;
     }
 
