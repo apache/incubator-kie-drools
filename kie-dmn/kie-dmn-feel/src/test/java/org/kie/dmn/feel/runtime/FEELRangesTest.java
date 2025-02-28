@@ -51,6 +51,8 @@ public class FEELRangesTest extends BaseFEELTest {
                 {"(<=1)", new RangeImpl(Range.RangeBoundary.OPEN, new UndefinedValueComparable(), BigDecimal.ONE, Range.RangeBoundary.CLOSED), null},
                 {"(null..10)", null, null},
                 {"(10..null)", null, null},
+                {"(null..date(\"1978-10-13\"))", null, null},
+                {"(\"a\"..null)", null, null},
                 {"(null..null)", null, null},
 
                 {"[null..null]", null, null},
