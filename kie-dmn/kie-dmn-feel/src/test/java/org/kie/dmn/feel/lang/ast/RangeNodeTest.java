@@ -87,7 +87,7 @@ class RangeNodeTest {
         BigDecimal end = BigDecimal.TEN;
         BaseNode endNode = new NumberNode(end, end.toString());
         RangeNode rangeNode = new RangeNode(RangeNode.IntervalBoundary.CLOSED, RangeNode.IntervalBoundary.CLOSED,
-                startNode, endNode, null);
+                startNode, endNode, "[null..10]");
         assertThat(rangeNode).isNotNull();
         assertThat(rangeNode.evaluate(EvaluationContextTestUtil.newEmptyEvaluationContext())).isNull();
     }
@@ -98,7 +98,7 @@ class RangeNodeTest {
         BaseNode startNode = new NumberNode(start, start.toString());
         BaseNode endNode = new NullNode("null");
         RangeNode rangeNode = new RangeNode(RangeNode.IntervalBoundary.CLOSED, RangeNode.IntervalBoundary.CLOSED,
-                startNode, endNode, null);
+                startNode, endNode, "[10..null]");
         assertThat(rangeNode).isNotNull();
         assertThat(rangeNode.evaluate(EvaluationContextTestUtil.newEmptyEvaluationContext())).isNull();
     }
