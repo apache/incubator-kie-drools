@@ -18,13 +18,21 @@
  */
 package org.kie.kogito.index.jpa.query;
 
+import java.util.List;
+import java.util.Set;
+
+import org.junit.jupiter.api.Test;
 import org.kie.kogito.index.jpa.storage.ProcessDefinitionEntityStorage;
 import org.kie.kogito.index.model.ProcessDefinition;
 import org.kie.kogito.index.model.ProcessDefinitionKey;
+import org.kie.kogito.index.test.TestUtils;
 import org.kie.kogito.index.test.query.AbstractProcessDefinitionQueryIT;
 import org.kie.kogito.persistence.api.Storage;
 
 import jakarta.inject.Inject;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.kie.kogito.persistence.api.query.QueryFilterFactory.equalTo;
 
 public abstract class AbstractProcessDefinitionEntityQueryIT extends AbstractProcessDefinitionQueryIT {
 
@@ -34,6 +42,14 @@ public abstract class AbstractProcessDefinitionEntityQueryIT extends AbstractPro
     @Override
     public Storage<ProcessDefinitionKey, ProcessDefinition> getStorage() {
         return storage;
+    }
+
+    @Test
+    void testCount() {
+        ProcessDefinition pdv1 = TestUtils.createProcessDefinition("items", "1.0", Set.of("admin", "kogito"));
+        storage.put(new ProcessDefinitionKey(pdv1.getId(), pdv1.getVersion()), pdv1);
+        assertThat(storage.query().count()).isNotZero();
+        assertThat(storage.query().filter(List.of(equalTo("version", "60.0"))).count()).isZero();
     }
 
 }
