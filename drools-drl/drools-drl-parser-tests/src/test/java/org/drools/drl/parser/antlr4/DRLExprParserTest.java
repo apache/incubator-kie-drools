@@ -27,7 +27,6 @@ import org.drools.drl.ast.descr.ConnectiveType;
 import org.drools.drl.ast.descr.ConstraintConnectiveDescr;
 import org.drools.drl.ast.descr.RelationalExprDescr;
 import org.drools.drl.parser.DrlExprParser;
-import org.drools.drl.parser.DrlExprParserFactory;
 import org.drools.drl.parser.DrlParser;
 import org.drools.drl.parser.DroolsParserException;
 import org.drools.drl.parser.impl.Operator;
@@ -38,7 +37,6 @@ import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.kie.internal.builder.conf.LanguageLevelOption;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assumptions.assumeFalse;
@@ -52,7 +50,7 @@ class DRLExprParserTest {
 
     @BeforeEach
     void setUp() {
-        this.parser = DrlExprParserFactory.getDrlExprParser(LanguageLevelOption.DRL6);
+        this.parser = ParserTestUtils.getExprParser();
     }
 
     @AfterEach
@@ -175,7 +173,7 @@ class DRLExprParserTest {
 
     @Test
     void bindingWithRestrictions() {
-        String source = "$x : property > value && < 20";
+        String source = "$x : property > value && property < 20";
         ConstraintConnectiveDescr result = parser.parse( source );
         assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
 
@@ -458,7 +456,7 @@ class DRLExprParserTest {
             assertThat(exception.getColumn()).isEqualTo(2);
             assertThat(exception.getOffset()).isEqualTo(2);
             assertThat(exception.getMessage())
-                    .isEqualToIgnoringCase("[ERR 101] Line 1:2 no viable alternative at input 'a'");
+                    .isEqualToIgnoringCase("[ERR 101] Line 1:2 no viable alternative at input '~a'");
         } else {
             assertThat(parser.hasErrors()).isFalse();
         }
@@ -577,5 +575,49 @@ class DRLExprParserTest {
         BindingDescr bind = (BindingDescr) result.getDescrs().get(0);
         assertThat(bind.getVariable()).isEqualTo("$bd");
         assertThat(bind.getExpression()).isEqualTo("new BigDecimal(30)");
+    }
+
+    @Test
+    void halfConstraintAnd() {
+        String source = "age > 10 && < 20";
+        parser.parse(source);
+
+        if (DrlParser.ANTLR4_PARSER_ENABLED) {
+            // half constraint is dropped in DRL10
+            assertThat(parser.hasErrors()).isTrue();
+        } else {
+            assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
+        }
+    }
+
+    @Test
+    void halfConstraintOr() {
+        String source = "name == \"John\" || == \"Paul\"";
+        parser.parse(source);
+
+        if (DrlParser.ANTLR4_PARSER_ENABLED) {
+            // half constraint is dropped in DRL10
+            assertThat(parser.hasErrors()).isTrue();
+        } else {
+            assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
+        }
+    }
+
+    @Test
+    void customOperator() {
+        Operator.addOperatorToRegistry("supersetOf", false);
+        // prefix '##' is required for custom operators in DRL10
+        String source = DrlParser.ANTLR4_PARSER_ENABLED ? "this ##supersetOf $list" : "this supersetOf $list";
+        ConstraintConnectiveDescr result = parser.parse(source);
+        assertThat(parser.hasErrors()).as(parser.getErrors().toString()).isFalse();
+
+        RelationalExprDescr rel = (RelationalExprDescr) result.getDescrs().get(0);
+        assertThat(rel.getOperator()).isEqualTo("supersetOf");
+
+        AtomicExprDescr left = (AtomicExprDescr) rel.getLeft();
+        assertThat(left.getExpression()).isEqualTo("this");
+
+        AtomicExprDescr right = (AtomicExprDescr) rel.getRight();
+        assertThat(right.getExpression()).isEqualTo("$list");
     }
 }

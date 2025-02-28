@@ -74,8 +74,9 @@ import org.drools.drl.parser.DroolsError;
 import org.drools.drl.parser.DroolsParserException;
 import org.drools.drl.parser.impl.Operator;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -873,6 +874,7 @@ class MiscDRLParserTest {
         assertThat((String) rule.getConsequence()).isEqualToIgnoringWhitespace("if ( a == b ) { " + "  assert( foo3 );" + "} else {" + "  retract( foo4 );" + "}" + "  System.out.println( a4 );");
     }
 
+    @DisabledIfSystemProperty(named = "drools.drl.antlr4.parser.enabled", matches = "true")
     @Test
     void multipleRestrictionsConstraint() {
         RuleDescr rule = parseAndGetFirstRuleDescrFromFile("restrictions_test.drl");
@@ -1763,8 +1765,8 @@ class MiscDRLParserTest {
         assertThat(at.getName()).isEqualTo("salience");
         assertThat(at.getValue()).isEqualTo("42");
 
-        at = (AttributeDescr) attrs.get("agenda-group");
-        assertThat(at.getName()).isEqualTo("agenda-group");
+        at = (AttributeDescr) attrs.get("ruleflow-group");
+        assertThat(at.getName()).isEqualTo("ruleflow-group");
         assertThat(at.getValue()).isEqualTo("my_group");
 
         at = (AttributeDescr) attrs.get("no-loop");
@@ -1799,8 +1801,8 @@ class MiscDRLParserTest {
         AttributeDescr at = (AttributeDescr) attrs.get("salience");
         assertThat(at.getName()).isEqualTo("salience");
         assertThat(at.getValue()).isEqualTo("(42)");
-        at = (AttributeDescr) attrs.get("agenda-group");
-        assertThat(at.getName()).isEqualTo("agenda-group");
+        at = (AttributeDescr) attrs.get("ruleflow-group");
+        assertThat(at.getName()).isEqualTo("ruleflow-group");
         assertThat(at.getValue()).isEqualTo("my_group");
 
         rule = rules.get(1);
@@ -1955,8 +1957,8 @@ class MiscDRLParserTest {
         assertThat(at.getName()).isEqualTo("salience");
         assertThat(at.getValue()).isEqualTo("42");
 
-        at = attrs.get("agenda-group");
-        assertThat(at.getName()).isEqualTo("agenda-group");
+        at = attrs.get("ruleflow-group");
+        assertThat(at.getName()).isEqualTo("ruleflow-group");
         assertThat(at.getValue()).isEqualTo("my_group");
 
         at = attrs.get("no-loop");
@@ -2013,7 +2015,7 @@ class MiscDRLParserTest {
                 "package_attributes.drl");
 
         AttributeDescr at = (AttributeDescr) pkg.getAttributes().get(0);
-        assertThat(at.getName()).isEqualTo("agenda-group");
+        assertThat(at.getName()).isEqualTo("ruleflow-group");
         assertThat(at.getValue()).isEqualTo("x");
         at = (AttributeDescr) pkg.getAttributes().get(1);
         assertThat(at.getName()).isEqualTo("dialect");
@@ -2025,8 +2027,8 @@ class MiscDRLParserTest {
 
         RuleDescr rule = (RuleDescr) pkg.getRules().get(0);
         assertThat(rule.getName()).isEqualTo("bar");
-        at = (AttributeDescr) rule.getAttributes().get("agenda-group");
-        assertThat(at.getName()).isEqualTo("agenda-group");
+        at = (AttributeDescr) rule.getAttributes().get("ruleflow-group");
+        assertThat(at.getName()).isEqualTo("ruleflow-group");
         assertThat(at.getValue()).isEqualTo("x");
         at = (AttributeDescr) rule.getAttributes().get("dialect");
         assertThat(at.getName()).isEqualTo("dialect");
@@ -2037,8 +2039,8 @@ class MiscDRLParserTest {
         at = (AttributeDescr) rule.getAttributes().get("dialect");
         assertThat(at.getName()).isEqualTo("dialect");
         assertThat(at.getValue()).isEqualTo("mvel");
-        at = (AttributeDescr) rule.getAttributes().get("agenda-group");
-        assertThat(at.getName()).isEqualTo("agenda-group");
+        at = (AttributeDescr) rule.getAttributes().get("ruleflow-group");
+        assertThat(at.getName()).isEqualTo("ruleflow-group");
         assertThat(at.getValue()).isEqualTo("x");
     }
 
@@ -2444,7 +2446,7 @@ class MiscDRLParserTest {
         assertThat(pattern.getConstraint().getDescrs()).hasSize(1);
 
         ExprConstraintDescr fld = (ExprConstraintDescr) pattern.getConstraint().getDescrs().get(0);
-        assertThat(fld.getExpression()).isEqualTo("age > 30 && < 40");
+        assertThat(fld.getExpression()).isEqualTo("age > 30 && age < 40");
 
         // the second col, with 2 fields, the first with 2 restrictions, the
         // second field with one
@@ -2478,7 +2480,7 @@ class MiscDRLParserTest {
         assertThat(pattern.getConstraint().getDescrs()).hasSize(1);
 
         ExprConstraintDescr fld = (ExprConstraintDescr) pattern.getConstraint().getDescrs().get(0);
-        assertThat(fld.getExpression()).isEqualTo("age > 30 && < 40");
+        assertThat(fld.getExpression()).isEqualTo("age > 30 && age < 40");
 
         // the second col, with 2 fields, the first with 2 restrictions, the
         // second field with one
@@ -2528,6 +2530,7 @@ class MiscDRLParserTest {
         assertThat(fcd.getExpression()).isEqualToIgnoringWhitespace("age < 42 || location==\"atlanta\"");
     }
 
+    @DisabledIfSystemProperty(named = "drools.drl.antlr4.parser.enabled", matches = "true")
     @Test
     void restrictions() {
         final String text = "rule X when Foo( bar > 1 || == 1 ) then end\n";
@@ -2979,7 +2982,7 @@ class MiscDRLParserTest {
         assertThat(eventE.getConstraint().getDescrs()).hasSize(1);
 
         ExprConstraintDescr fcdE = (ExprConstraintDescr) eventE.getConstraint().getDescrs().get(0);
-        assertThat(fcdE.getExpression()).isEqualTo("this not before[1, 10] $b || after[1, 10] $c && this after[1, 5] $d");
+        assertThat(fcdE.getExpression()).isEqualTo("this not before[1, 10] $b || this after[1, 10] $c && this after[1, 5] $d");
     }
 
     @Test
@@ -3587,6 +3590,22 @@ class MiscDRLParserTest {
     }
 
     @Test
+    void endTokenWithSemiInRhs() {
+        final String text = "package org.drools\n" +
+                "rule X\n" +
+                "when\n" +
+                "    $s : String()\n" +
+                "then\n" +
+                "    int end = 10;" +
+                "    int a = end;\n" +
+                "end;\n";
+        PackageDescr packageDescr = parseAndGetPackageDescr(text);
+
+        RuleDescr ruleDescr = packageDescr.getRules().get(0);
+        assertThat(ruleDescr.getConsequence().toString()).isEqualToIgnoringWhitespace("int end = 10; int a = end;");
+    }
+
+    @Test
     void ruleTokenInRhs() {
         final String text = "package org.drools\n" +
                 "rule X\n" +
@@ -3888,6 +3907,7 @@ class MiscDRLParserTest {
         assertThat(exprConstraintDescr.getExpression()).isEqualToIgnoringWhitespace(constraint);
     }
 
+    @DisabledIfSystemProperty(named = "drools.drl.antlr4.parser.enabled", matches = "true")
     @ParameterizedTest
     @ValueSource(strings = {
             "country matches \"[a-z]*\" || matches \"[A-Z]*\"",
@@ -4053,6 +4073,7 @@ class MiscDRLParserTest {
         assertThat(annotationDescr.getSingleValueAsString()).isEqualTo("!*, age");
     }
 
+    @DisabledIfSystemProperty(named = "drools.drl.antlr4.parser.enabled", matches = "true")
     @Test
     void prefixAndDescrAnnotation() {
         final String text =
@@ -4074,6 +4095,7 @@ class MiscDRLParserTest {
         assertThat(andDescr.getDescrs()).hasSize(2);
     }
 
+    @DisabledIfSystemProperty(named = "drools.drl.antlr4.parser.enabled", matches = "true")
     @Test
     void prefixOrDescrAnnotation() {
         final String text =
@@ -4096,6 +4118,7 @@ class MiscDRLParserTest {
         assertThat(orDescr.getDescrs()).hasSize(2);
     }
 
+    @DisabledIfSystemProperty(named = "drools.drl.antlr4.parser.enabled", matches = "true")
     @Test
     void infixAndDescrAnnotation() {
         final String text =
@@ -4116,6 +4139,7 @@ class MiscDRLParserTest {
         assertThat(andDescr.getDescrs()).hasSize(3);
     }
 
+    @DisabledIfSystemProperty(named = "drools.drl.antlr4.parser.enabled", matches = "true")
     @Test
     void infixOrDescrAnnotation() {
         final String text =
@@ -4411,8 +4435,9 @@ class MiscDRLParserTest {
                 .containsExactlyInAnyOrder("com.sample.ParentTrait", "UncleTrait", "org.test.GrandParentTrait");
     }
 
+    @DisabledIfSystemProperty(named = "drools.drl.antlr4.parser.enabled", matches = "true")
     @Test
-    void pluggableEvaluator() {
+    void pluggableEvaluatorOldParser() {
         final String source = "package org.drools\n" +
                 "rule R\n" +
                 "when\n" +
@@ -4429,6 +4454,27 @@ class MiscDRLParserTest {
         assertThat(pattern.getConstraint().getDescrs())
                 .extracting(Object::toString)
                 .containsExactly("$c : core", "this not isA t.x.E.class", "this isA t.x.D.class");
+    }
+
+    @EnabledIfSystemProperty(named = "drools.drl.antlr4.parser.enabled", matches = "true")
+    @Test
+    void pluggableEvaluatorNewParser() {
+        final String source = "package org.drools\n" +
+                "rule R\n" +
+                "when\n" +
+                "   $t : Thing( $c : core, this not ##isA t.x.E.class, this ##isA t.x.D.class )\n" +
+                "then\n" +
+                "   list.add( \"E\" ); \n" +
+                "   don( $t, E.class ); \n" +
+                "end\n";
+
+        Operator.addOperatorToRegistry("isA", false);
+        Operator.addOperatorToRegistry("isA", true);
+
+        PatternDescr pattern = (PatternDescr) parseAndGetFirstRuleDescr(source).getLhs().getDescrs().get(0);
+        assertThat(pattern.getConstraint().getDescrs())
+                .extracting(Object::toString)
+                .containsExactly("$c : core", "this not ##isA t.x.E.class", "this ##isA t.x.D.class");
     }
 
     @Test
@@ -5114,6 +5160,7 @@ class MiscDRLParserTest {
         assertThat(accumulateDescr.getResultCode()).isEqualTo("null");
     }
 
+    @DisabledIfSystemProperty(named = "drools.drl.antlr4.parser.enabled", matches = "true")
     @Test
     void doublePipeInfixOr() {
         final String text =
@@ -5135,6 +5182,7 @@ class MiscDRLParserTest {
         });
     }
 
+    @DisabledIfSystemProperty(named = "drools.drl.antlr4.parser.enabled", matches = "true")
     @Test
     void doubleAmpersandInfixAnd() {
         final String text =
@@ -5154,6 +5202,7 @@ class MiscDRLParserTest {
         });
     }
 
+    @DisabledIfSystemProperty(named = "drools.drl.antlr4.parser.enabled", matches = "true")
     @Test
     void doubleAmpersandInfixAndInAccumulate() {
         final String text =
@@ -5270,5 +5319,25 @@ class MiscDRLParserTest {
         assertThat(typeDeclarationDescr.getTypeName()).isEqualTo("Foo");
         TypeFieldDescr typeFieldDescr = typeDeclarationDescr.getFields().get("id");
         assertThat(typeFieldDescr.getPattern().getObjectType()).isEqualTo("int");
+    }
+
+    @Test
+    void agendaGroup() {
+        final String drl = "rule R1\n" +
+                "  agenda-group \"group1\"\n" +
+                "  when\n" +
+                "  then\n" +
+                "end";
+        PackageDescr pkg = parseAndGetPackageDescrWithoutErrorCheck(drl);
+        if (DrlParser.ANTLR4_PARSER_ENABLED) {
+            // agenda-group is dropped in DRL10
+            assertThat(parser.hasErrors()).isTrue();
+        } else {
+            RuleDescr rule = pkg.getRules().get(0);
+            assertThat(rule).isNotNull();
+            final AttributeDescr att = rule.getAttributes().get("agenda-group");
+            assertThat(att.getValue()).isEqualTo("group1");
+            assertThat(att.getName()).isEqualTo("agenda-group");
+        }
     }
 }

@@ -186,6 +186,8 @@ public class TraitTypeGenerationTest extends CommonTraitTest {
                         "        students.add(student);\n" +
                         "end";
 
+        str = replaceCustomOperatorIfRequired(str);
+
         KieServices ks = KieServices.Factory.get();
         KieFileSystem kfs = ks.newKieFileSystem();
 
@@ -370,15 +372,7 @@ public class TraitTypeGenerationTest extends CommonTraitTest {
                         " mfield1 : int = 201 @position(2)\n" +
                         "end";
 
-        KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kBuilder.add(new ByteArrayResource(drl.getBytes()), ResourceType.DRL);
-        if (kBuilder.hasErrors()) {
-            LOGGER.error(kBuilder.getErrors().toString());
-        }
-        assertThat(kBuilder.hasErrors()).isFalse();
-
-        InternalKnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
-        knowledgeBase.addPackages(kBuilder.getKnowledgePackages());
+        KieBase knowledgeBase = loadKnowledgeBaseFromString( drl );
 
         FactType sw = knowledgeBase.getFactType("org.drools.test", "MultiInhPosTrait");
         assertThat(sw.getFields()).hasSize(5);
@@ -406,15 +400,7 @@ public class TraitTypeGenerationTest extends CommonTraitTest {
                         " mfield0 : int = 200 @position(0)\n" +
                         " mfield1 : int = 201 @position(2)\n" +
                         "end";
-        KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kBuilder.add(new ByteArrayResource(drl.getBytes()), ResourceType.DRL);
-        if (kBuilder.hasErrors()) {
-            LOGGER.error(kBuilder.getErrors().toString());
-        }
-        assertThat(kBuilder.hasErrors()).isFalse();
-
-        InternalKnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
-        knowledgeBase.addPackages(kBuilder.getKnowledgePackages());
+        KieBase knowledgeBase = loadKnowledgeBaseFromString( drl );
 
         FactType sw = knowledgeBase.getFactType("org.drools.test", "MultiInhPosTrait");
         assertThat(sw.getFields()).hasSize(5);
@@ -442,15 +428,7 @@ public class TraitTypeGenerationTest extends CommonTraitTest {
                         " mfield0 : int = 200 //@position(0)\n" +
                         " mfield1 : int = 201 @position(2)\n" +
                         "end";
-        KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kBuilder.add(new ByteArrayResource(drl.getBytes()), ResourceType.DRL);
-        if (kBuilder.hasErrors()) {
-            LOGGER.error(kBuilder.getErrors().toString());
-        }
-        assertThat(kBuilder.hasErrors()).isFalse();
-
-        InternalKnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
-        knowledgeBase.addPackages(kBuilder.getKnowledgePackages());
+        KieBase knowledgeBase = loadKnowledgeBaseFromString( drl );
 
         FactType sw = knowledgeBase.getFactType("org.drools.test", "MultiInhPosTrait");
         assertThat(sw.getFields()).hasSize(5);
@@ -478,15 +456,7 @@ public class TraitTypeGenerationTest extends CommonTraitTest {
                         " mfield0 : int = 200 @position(0)\n" +
                         " mfield1 : int = 201 @position(2)\n" +
                         "end";
-        KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kBuilder.add(new ByteArrayResource(drl.getBytes()), ResourceType.DRL);
-        if (kBuilder.hasErrors()) {
-            LOGGER.error(kBuilder.getErrors().toString());
-        }
-        assertThat(kBuilder.hasErrors()).isFalse();
-
-        InternalKnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
-        knowledgeBase.addPackages(kBuilder.getKnowledgePackages());
+        KieBase knowledgeBase = loadKnowledgeBaseFromString( drl );
 
         FactType sw = knowledgeBase.getFactType("org.drools.test", "MultiInhPosTrait");
         assertThat(sw.getFields()).hasSize(5);
@@ -514,15 +484,7 @@ public class TraitTypeGenerationTest extends CommonTraitTest {
                         " mfield0 : int = 200 @position(7)\n" +
                         " mfield1 : int = 201 @position(2)\n" +
                         "end";
-        KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kBuilder.add(new ByteArrayResource(drl.getBytes()), ResourceType.DRL);
-        if (kBuilder.hasErrors()) {
-            LOGGER.error(kBuilder.getErrors().toString());
-        }
-        assertThat(kBuilder.hasErrors()).isFalse();
-
-        InternalKnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
-        knowledgeBase.addPackages(kBuilder.getKnowledgePackages());
+        KieBase knowledgeBase = loadKnowledgeBaseFromString( drl );
 
         FactType sw = knowledgeBase.getFactType("org.drools.test", "MultiInhPosTrait");
         assertThat(sw.getFields()).hasSize(5);
@@ -556,15 +518,7 @@ public class TraitTypeGenerationTest extends CommonTraitTest {
                         " mfield0 : int = 200 //@position(0)\n" +
                         " mfield1 : int = 201 //@position(2)\n" +
                         "end";
-        KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kBuilder.add(new ByteArrayResource(drl.getBytes()), ResourceType.DRL);
-        if (kBuilder.hasErrors()) {
-            LOGGER.error(kBuilder.getErrors().toString());
-        }
-        assertThat(kBuilder.hasErrors()).isFalse();
-
-        InternalKnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
-        knowledgeBase.addPackages(kBuilder.getKnowledgePackages());
+        KieBase knowledgeBase = loadKnowledgeBaseFromString( drl );
 
         FactType sw = knowledgeBase.getFactType("org.drools.test", "MultiInhPosTrait");
         assertThat(sw.getFields()).hasSize(6);
@@ -599,15 +553,7 @@ public class TraitTypeGenerationTest extends CommonTraitTest {
                         " mfield0 : int = 200 @position(0)\n" +
                         " mfield1 : int = 201 @position(2)\n" +
                         "end";
-        KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kBuilder.add(new ByteArrayResource(drl.getBytes()), ResourceType.DRL);
-        if (kBuilder.hasErrors()) {
-            LOGGER.error(kBuilder.getErrors().toString());
-        }
-        assertThat(kBuilder.hasErrors()).isFalse();
-
-        InternalKnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
-        knowledgeBase.addPackages(kBuilder.getKnowledgePackages());
+        KieBase knowledgeBase = loadKnowledgeBaseFromString( drl );
 
         FactType sw = knowledgeBase.getFactType("org.drools.test", "MultiInhPosTrait");
         assertThat(sw.getFields()).hasSize(6);

@@ -53,7 +53,7 @@ public class ForAllTest {
     @ParameterizedTest(name = "KieBase type={0}")
 	@MethodSource("parameters")
     public void test1P1CFiring2(KieBaseTestConfiguration kieBaseTestConfiguration) {
-        check(kieBaseTestConfiguration, "age == 8 || == 45", 1, new Person("Mario", 45), new Person("Sofia", 8));
+        check(kieBaseTestConfiguration, "age == 8 || age == 45", 1, new Person("Mario", 45), new Person("Sofia", 8));
     }
 
     @ParameterizedTest(name = "KieBase type={0}")
