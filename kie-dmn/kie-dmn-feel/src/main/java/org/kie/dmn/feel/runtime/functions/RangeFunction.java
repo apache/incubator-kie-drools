@@ -60,7 +60,6 @@ public class RangeFunction extends BaseFEELFunction {
     private static EvaluationContext STUBBED;
     private static final Range DEFAULT_VALUE = new RangeImpl(Range.RangeBoundary.OPEN, BigDecimal.ZERO, BigDecimal.ZERO, Range.RangeBoundary.OPEN);
 
-
     private static final List<Predicate<BaseNode>> ALLOWED_NODES = Arrays.asList(baseNode -> baseNode instanceof NullNode,
             baseNode -> baseNode instanceof NumberNode,
             baseNode -> baseNode instanceof StringNode,
@@ -148,7 +147,7 @@ public class RangeFunction extends BaseFEELFunction {
 
     static Range getReturnedValue(Object left, Object right, Range.RangeBoundary startBoundary,
                                   Range.RangeBoundary endBoundary) {
-        return (left == null && right == null) ? null :
+        return (left == null || right == null) ? null :
                 new RangeImpl(startBoundary, (Comparable) left, (Comparable) right, endBoundary);
     }
 
