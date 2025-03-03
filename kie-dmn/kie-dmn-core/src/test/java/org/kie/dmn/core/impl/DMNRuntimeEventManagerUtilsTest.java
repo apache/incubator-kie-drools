@@ -90,7 +90,7 @@ class DMNRuntimeEventManagerUtilsTest {
         verify(spiedListener).afterConditionalEvaluation (conditionalEvaluationEventArgumentCaptor.capture());
         AfterConditionalEvaluationEvent evaluateConditionalEvent = conditionalEvaluationEventArgumentCaptor.getValue();
         assertThat(evaluateConditionalEvent).isNotNull();
-        assertThat(evaluateConditionalEvent.getConditionalName()).isEqualTo(conditionalName);
+        assertThat(evaluateConditionalEvent.getNodeName()).isEqualTo(conditionalName);
         assertThat(evaluateConditionalEvent.getDecisionName()).isEqualTo(decisionName);
         assertThat(evaluateConditionalEvent.getEvaluatorResultResult()).isEqualTo(evaluatorResult);
         assertThat(evaluateConditionalEvent.getExecutedId()).isEqualTo(executedId);

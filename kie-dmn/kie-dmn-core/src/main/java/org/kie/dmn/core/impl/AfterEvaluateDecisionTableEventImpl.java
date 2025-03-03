@@ -53,7 +53,7 @@ public class AfterEvaluateDecisionTableEventImpl
     }
 
     @Override
-    public String getDecisionTableName() {
+    public String getNodeName() {
         return decisionTableName;
     }
 

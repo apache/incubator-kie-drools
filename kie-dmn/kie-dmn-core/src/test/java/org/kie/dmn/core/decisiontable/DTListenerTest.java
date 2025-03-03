@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.assertj.core.api.SoftAssertions;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.dmn.api.core.DMNContext;
@@ -87,7 +86,7 @@ public class DTListenerTest extends BaseInterpretedVsAlphaNetworkTest {
         assertThat(listenerUT.getEvents()).hasSize(2)
         .anySatisfy(event1 -> {
             SoftAssertions softly = new SoftAssertions();
-            softly.assertThat(event1.getDecisionTableName()).isEqualTo(E1);
+            softly.assertThat(event1.getNodeName()).isEqualTo(E1);
             softly.assertThat(event1.getDecisionTableId()).isEqualTo("_B861D847-0BE9-4580-8DD0-836B6699963E");
             final DecisionTable locateDT = locateDTbyId(dmnModel, event1.getDecisionTableId());
             softly.assertThat(locateDT.getInput()).hasSize(2);
@@ -96,7 +95,7 @@ public class DTListenerTest extends BaseInterpretedVsAlphaNetworkTest {
             softly.assertAll();
         }).anySatisfy(event2 -> {
             SoftAssertions softly = new SoftAssertions();
-            softly.assertThat(event2.getDecisionTableName()).isEqualTo(E1); // the event report for a DT having the same name...
+            softly.assertThat(event2.getNodeName()).isEqualTo(E1); // the event report for a DT having the same name...
             softly.assertThat(event2.getDecisionTableId()).isEqualTo("_24DA98D6-34A6-4267-9667-1DA91C0AF5F9"); // ..but different id...
             final DecisionTable locateDT = locateDTbyId(dmnModel, event2.getDecisionTableId());
             softly.assertThat(locateDT.getInput()).hasSize(1); // ...having the different "shape".

@@ -29,7 +29,6 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -256,8 +255,8 @@ public class DMNDecisionTableRuntimeTest extends BaseDMN1_1VariantTest {
         final ArgumentCaptor<AfterEvaluateDecisionTableEvent> captor = ArgumentCaptor.forClass( AfterEvaluateDecisionTableEvent.class );
         verify( listener, times( 2 ) ).afterEvaluateDecisionTable( captor.capture() );
 
-        assertThat( captor.getAllValues().get( 0 ).getDecisionTableName()).isEqualTo("a" );
-        assertThat( captor.getAllValues().get( 1 ).getDecisionTableName()).isEqualTo("b" );
+        assertThat( captor.getAllValues().get( 0 ).getNodeName()).isEqualTo("a" );
+        assertThat( captor.getAllValues().get( 1 ).getNodeName()).isEqualTo("b" );
     }
 
     @ParameterizedTest(name = "{0}")
