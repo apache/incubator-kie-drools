@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -49,7 +49,11 @@ public class FEELRangesTest extends BaseFEELTest {
                 {"(>=1)", new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.ONE, new UndefinedValueComparable(), Range.RangeBoundary.OPEN), null},
                 {"(<1)", new RangeImpl(Range.RangeBoundary.OPEN, new UndefinedValueComparable(), BigDecimal.ONE, Range.RangeBoundary.OPEN), null},
                 {"(<=1)", new RangeImpl(Range.RangeBoundary.OPEN, new UndefinedValueComparable(), BigDecimal.ONE, Range.RangeBoundary.CLOSED), null},
-                {"(null..10)", new RangeImpl(Range.RangeBoundary.OPEN, null, BigDecimal.valueOf(10), Range.RangeBoundary.OPEN), null},
+                {"(null..10)", null, null},
+                {"(10..null)", null, null},
+                {"(null..date(\"1978-10-13\"))", null, null},
+                {"(\"a\"..null)", null, null},
+                {"(null..null)", null, null},
 
                 {"[null..null]", null, null},
                 {"[1..2]", new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.ONE, BigDecimal.valueOf(2), Range.RangeBoundary.CLOSED), null},
