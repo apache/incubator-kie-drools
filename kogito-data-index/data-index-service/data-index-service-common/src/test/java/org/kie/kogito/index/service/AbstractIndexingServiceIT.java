@@ -114,8 +114,8 @@ public abstract class AbstractIndexingServiceIT extends AbstractIndexingIT {
     @Transactional
     void tearDown() {
         cacheService.getJobsStorage().clear();
-        cacheService.getProcessDefinitionStorage().clear();
         cacheService.getProcessInstanceStorage().clear();
+        cacheService.getProcessDefinitionStorage().clear();
         cacheService.getUserTaskInstanceStorage().clear();
     }
 
@@ -191,6 +191,9 @@ public abstract class AbstractIndexingServiceIT extends AbstractIndexingIT {
     @Test
     void testProcessInstancePagination() {
         String processId = "travels";
+        ProcessDefinitionDataEvent definitionDataEvent = getProcessDefinitionDataEvent(processId);
+        indexProcessCloudEvent(definitionDataEvent);
+        validateProcessDefinition(getProcessDefinitionByIdAndVersion(processId, definitionDataEvent.getData().getVersion()), definitionDataEvent);
         List<String> pIds = new ArrayList<>();
 
         IntStream.range(0, 100).forEach(i -> {
@@ -230,8 +233,10 @@ public abstract class AbstractIndexingServiceIT extends AbstractIndexingIT {
     @Test
     void testUserTaskInstancePagination() {
         String processId = "deals";
+        ProcessDefinitionDataEvent definitionDataEvent = getProcessDefinitionDataEvent(processId);
+        indexProcessCloudEvent(definitionDataEvent);
+        validateProcessDefinition(getProcessDefinitionByIdAndVersion(processId, definitionDataEvent.getData().getVersion()), definitionDataEvent);
         List<String> taskIds = new ArrayList<>();
-
         IntStream.range(0, 100).forEach(i -> {
             String taskId = UUID.randomUUID().toString();
             UserTaskInstanceStateDataEvent event = getUserTaskCloudEvent(taskId, processId, UUID.randomUUID().toString(), null, null, "InProgress");
@@ -286,6 +291,9 @@ public abstract class AbstractIndexingServiceIT extends AbstractIndexingIT {
     @Test
     void testConcurrentProcessInstanceIndex() throws Exception {
         String processId = "travels";
+        ProcessDefinitionDataEvent definitionDataEvent = getProcessDefinitionDataEvent(processId);
+        indexProcessCloudEvent(definitionDataEvent);
+        validateProcessDefinition(getProcessDefinitionByIdAndVersion(processId, definitionDataEvent.getData().getVersion()), definitionDataEvent);
         ExecutorService executorService = new ScheduledThreadPoolExecutor(8);
         int max_instance_events = 10;
         List<CompletableFuture<Void>> futures = new ArrayList<>();
@@ -329,6 +337,10 @@ public abstract class AbstractIndexingServiceIT extends AbstractIndexingIT {
         ProcessDefinitionDataEvent definitionDataEvent = getProcessDefinitionDataEvent(processId);
         indexProcessCloudEvent(definitionDataEvent);
         validateProcessDefinition(getProcessDefinitionByIdAndVersion(processId, definitionDataEvent.getData().getVersion()), definitionDataEvent);
+
+        ProcessDefinitionDataEvent subProcessdefinitionDataEvent = getProcessDefinitionDataEvent(subProcessId);
+        indexProcessCloudEvent(subProcessdefinitionDataEvent);
+        validateProcessDefinition(getProcessDefinitionByIdAndVersion(subProcessId, subProcessdefinitionDataEvent.getData().getVersion()), subProcessdefinitionDataEvent);
 
         ProcessInstanceStateDataEvent startEvent = getProcessCloudEvent(processId, processInstanceId, ACTIVE, null, null, null, CURRENT_USER);
         indexProcessCloudEvent(startEvent);

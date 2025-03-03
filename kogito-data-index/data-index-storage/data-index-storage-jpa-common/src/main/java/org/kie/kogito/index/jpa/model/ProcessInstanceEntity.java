@@ -23,8 +23,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
 import org.kie.kogito.persistence.postgresql.hibernate.JsonBinaryConverter;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -93,7 +91,6 @@ public class ProcessInstanceEntity extends AbstractEntity {
     @ManyToOne(targetEntity = ProcessDefinitionEntity.class, fetch = FetchType.LAZY)
     @JoinColumns({ @JoinColumn(name = "processId", referencedColumnName = "id", insertable = false, updatable = false),
             @JoinColumn(name = "version", referencedColumnName = "version", insertable = false, updatable = false) })
-    @NotFound(action = NotFoundAction.IGNORE)
     private ProcessDefinitionEntity definition;
 
     @Override
@@ -288,10 +285,6 @@ public class ProcessInstanceEntity extends AbstractEntity {
     @Override
     public int hashCode() {
         return Objects.hash(id);
-    }
-
-    public ProcessDefinitionEntity getDefinition() {
-        return definition;
     }
 
     @Override
