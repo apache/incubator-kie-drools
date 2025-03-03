@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -26,7 +26,13 @@ import org.kie.dmn.api.core.EvaluatorResult;
  */
 public interface AfterConditionalEvaluationEvent {
 
-    String getNodeName();
+    String getConditionalName();
+
+    /**
+     * The decision that this node relates to
+     * @return
+     */
+    String getDecisionName();
 
     EvaluatorResult getEvaluatorResultResult();
 

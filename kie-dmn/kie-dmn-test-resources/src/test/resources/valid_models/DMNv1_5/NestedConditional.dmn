@@ -10,7 +10,7 @@
     </informationRequirement>
     <context id="_D95DDE65-71A6-4506-AB09-66A461CE12E0" typeRef="number" label="New Decision">
       <contextEntry id="_74284FC2-FBB0-4C94-9026-4DDC0B7CC5CB">
-        <variable id="_27CA9E90-1952-48F0-A354-F3AEFED8016B" name="ContextEntry-1" />
+        <variable id="_27CA9E90-1952-48F0-A354-F3AEFED8016B" name="ContextEntry-1" typeRef="number" />
         <conditional id="_6A6CABE7-BB94-4B34-B312-CCF97550D869" label="ContextEntry-1">
           <if id="_80CE666C-3436-4767-8A1D-2BE427F5679C">
             <literalExpression id="_80550B06-6A96-4C46-8D10-DD7D2E681C95" label="Expression Name">
