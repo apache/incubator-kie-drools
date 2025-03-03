@@ -33,6 +33,10 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
+/**
+ * This test focuses on issues with jar packaging.
+ * General rule engine issues should be tested in other unit tests.
+ */
 public class RuleUnitInJarTest {
 
     private static final String TEST_JAR = "test-integration-ruleunits-jar.jar";
