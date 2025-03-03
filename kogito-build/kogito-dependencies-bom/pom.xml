@@ -90,7 +90,7 @@
     <version.io.smallrye-open-api>3.10.0</version.io.smallrye-open-api>
     <version.org.awaitility>4.2.0</version.org.awaitility>
 
-    <version.io.smallrye.reactive.mutiny-vertx-web-client>3.11.0</version.io.smallrye.reactive.mutiny-vertx-web-client>
+    <version.io.smallrye.reactive.mutiny-vertx-web-client>3.17.1</version.io.smallrye.reactive.mutiny-vertx-web-client>
 
     <version.io.vertx>4.5.11</version.io.vertx>
     <version.io.grpc>1.65.1</version.io.grpc>
