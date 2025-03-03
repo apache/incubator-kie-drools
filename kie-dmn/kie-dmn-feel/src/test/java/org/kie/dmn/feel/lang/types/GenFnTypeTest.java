@@ -22,16 +22,12 @@ package org.kie.dmn.feel.lang.types;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
-import org.kie.dmn.feel.lang.EvaluationContext;
-import org.kie.dmn.feel.lang.Symbol;
 import org.kie.dmn.feel.lang.Type;
-import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.dmn.feel.runtime.functions.AbsFunction;
 import org.kie.dmn.feel.runtime.functions.AnyFunction;
 import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 import org.kie.dmn.feel.runtime.FEELFunction.Param;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;

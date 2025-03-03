@@ -23,6 +23,7 @@ import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -201,15 +202,21 @@ public abstract class BaseFEELFunction
                 if (method.getParameterCount() != inputTypes.length) {
                     continue;
                 }
-
+                if (!BuiltInTypeUtils.determineTypeFromInstance(this.defaultValue()).equals(outputType)) {
+                    continue;
+                }
                 Class<?>[] methodParameterTypes = method.getParameterTypes();
-                for (Class<?> methodParameterType : methodParameterTypes) {
-                    if (!BuiltInTypeUtils.determineTypeFromClass(methodParameterType).getClass().equals(methodParameterType)) {
+                boolean found = true;
+                for (int i = 0; i < methodParameterTypes.length; i++) {
+                    Class<?> methodParameterType = methodParameterTypes[i];
+                    Type inputType = inputTypes[i];
+                    Set<Type> expectedTypes = BuiltInTypeUtils.determineTypesFromClass(methodParameterType);
+                    if (!expectedTypes.contains(inputType)) {
+                        found = false;
                         break;
                     }
                 }
-
-                if (method.getGenericReturnType().equals(outputType)) {
+                if (found) {
                     toReturn = method;
                     break;
                 }

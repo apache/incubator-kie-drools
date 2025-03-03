@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -31,6 +31,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.util.EvaluationContextTestUtil;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.ast.BaseNode;
@@ -319,37 +320,48 @@ class BaseFEELFunctionTest {
     }
 
     @Test
-    void testIsCompatible() {
+    void testIsCompatibleTrue() {
         BaseFEELFunction toTest = AllFunction.INSTANCE;
+        Type outputType = BuiltInType.BOOLEAN;
+        Type[] inputTypes = { BuiltInType.LIST };
+        assertThat(toTest.isCompatible(inputTypes, outputType)).isTrue();
 
-        org.kie.dmn.feel.lang.Type stringType = BuiltInType.STRING;
-        org.kie.dmn.feel.lang.Type integerType = BuiltInType.NUMBER;
+        toTest = DateFunction.INSTANCE;
+        outputType = BuiltInType.DATE;
+        inputTypes = new Type[]{BuiltInType.STRING};
+        assertThat(toTest.isCompatible(inputTypes, outputType)).isTrue();
 
-        org.kie.dmn.feel.lang.Type[] inputTypes;
-        org.kie.dmn.feel.lang.Type outputType = stringType;
-        boolean result;
+        inputTypes = new Type[]{ BuiltInType.NUMBER,BuiltInType.NUMBER,BuiltInType.NUMBER };
+        assertThat(toTest.isCompatible(inputTypes, outputType)).isTrue();
 
-        inputTypes = new org.kie.dmn.feel.lang.Type[]{stringType};
-        result = toTest.isCompatible(inputTypes, outputType);
-        assertThat(result).isTrue();
+    }
 
-        inputTypes = new org.kie.dmn.feel.lang.Type[]{integerType};
-        outputType = integerType;
-        result = toTest.isCompatible(inputTypes, outputType);
-        assertThat(result).isTrue();
+    @Test
+    void testIsCompatibleFalse() {
+        BaseFEELFunction toTest = AllFunction.INSTANCE;
+        Type outputType = BuiltInType.DATE;
+        Type[] inputTypes = { BuiltInType.LIST };
+        assertThat(toTest.isCompatible(inputTypes, outputType)).isFalse();
 
-        inputTypes = new org.kie.dmn.feel.lang.Type[]{stringType};
-        outputType = stringType;
-        result = toTest.isCompatible(inputTypes, outputType);
-        assertThat(result).isTrue();
+        outputType = BuiltInType.BOOLEAN;
+        inputTypes = new Type[]{BuiltInType.STRING};
+        assertThat(toTest.isCompatible(inputTypes, outputType)).isFalse();
 
-        inputTypes = new org.kie.dmn.feel.lang.Type[]{integerType};
-        result = toTest.isCompatible(inputTypes, outputType);
-        assertThat(result).isFalse();
+        toTest = DateFunction.INSTANCE;
 
-        outputType = integerType;
-        result = toTest.isCompatible(inputTypes, outputType);
-        assertThat(result).isFalse();
+        outputType = BuiltInType.DATE;
+        inputTypes = new Type[]{BuiltInType.RANGE};
+        assertThat(toTest.isCompatible(inputTypes, outputType)).isFalse();
+
+        inputTypes = new Type[]{ BuiltInType.NUMBER,BuiltInType.STRING,BuiltInType.NUMBER };
+        assertThat(toTest.isCompatible(inputTypes, outputType)).isFalse();
+
+        outputType = BuiltInType.STRING;
+        inputTypes = new Type[]{BuiltInType.STRING};
+        assertThat(toTest.isCompatible(inputTypes, outputType)).isFalse();
+
+        inputTypes = new Type[]{ BuiltInType.NUMBER,BuiltInType.NUMBER,BuiltInType.NUMBER };
+        assertThat(toTest.isCompatible(inputTypes, outputType)).isFalse();
     }
 
 }

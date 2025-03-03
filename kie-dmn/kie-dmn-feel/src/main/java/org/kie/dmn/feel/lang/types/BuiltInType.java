@@ -93,10 +93,8 @@ public enum BuiltInType implements SimpleType {
 
     @Override
     public boolean isAssignableValue(Object value) {
-        if (value == null) {
-            return true; // a null-value can be assigned to any type.
-        }
-        return BuiltInTypeUtils.isInstanceOf(value, this);
+        // a null-value can be assigned to any type.
+        return value == null || isInstanceOf(value);
     }
 
     @Override

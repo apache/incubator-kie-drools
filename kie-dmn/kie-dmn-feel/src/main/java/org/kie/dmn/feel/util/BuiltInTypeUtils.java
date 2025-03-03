@@ -30,9 +30,12 @@ import java.time.temporal.ChronoField;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalQueries;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import java.util.Set;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.runtime.FEELFunction;
@@ -98,42 +101,31 @@ public class BuiltInTypeUtils {
         return BuiltInType.UNKNOWN;
     }
 
-    public static Type determineTypeFromClass(Class<?> clazz) {
+    public static Set<Type> determineTypesFromClass(Class<?> clazz) {
         if (clazz == null) {
-            return BuiltInType.UNKNOWN;
+            return Collections.singleton(BuiltInType.UNKNOWN);
         } else if (Number.class.isAssignableFrom(clazz)) {
-            return BuiltInType.NUMBER;
+            return Collections.singleton(BuiltInType.NUMBER);
         } else if (String.class.isAssignableFrom(clazz)) {
-            return BuiltInType.STRING;
-        } else if (LocalDate.class.isAssignableFrom(clazz)) {
-            return BuiltInType.DATE;
-        } else if (LocalTime.class.isAssignableFrom(clazz) || OffsetTime.class.isAssignableFrom(clazz) || ZoneTime.class.isAssignableFrom(clazz)) {
-            return BuiltInType.TIME;
-        } else if (ZonedDateTime.class.isAssignableFrom(clazz) || OffsetDateTime.class.isAssignableFrom(clazz) || LocalDateTime.class.isAssignableFrom(clazz)) {
-            return BuiltInType.DATE_TIME;
+            return Collections.singleton(BuiltInType.STRING);
         } else if (Duration.class.isAssignableFrom(clazz) || ChronoPeriod.class.isAssignableFrom(clazz)) {
-            return BuiltInType.DURATION;
+            return Collections.singleton(BuiltInType.DURATION);
         } else if (Boolean.class.isAssignableFrom(clazz)) {
-            return BuiltInType.BOOLEAN;
+            return Collections.singleton(BuiltInType.BOOLEAN);
         } else if (UnaryTest.class.isAssignableFrom(clazz)) {
-            return BuiltInType.UNARY_TEST;
+            return Collections.singleton(BuiltInType.UNARY_TEST);
         } else if (Range.class.isAssignableFrom(clazz)) {
-            return BuiltInType.RANGE;
+            return Collections.singleton(BuiltInType.RANGE);
         } else if (FEELFunction.class.isAssignableFrom(clazz)) {
-            return BuiltInType.FUNCTION;
+            return Collections.singleton(BuiltInType.FUNCTION);
         } else if (List.class.isAssignableFrom(clazz)) {
-            return BuiltInType.LIST;
+            return Collections.singleton(BuiltInType.LIST);
         } else if (Map.class.isAssignableFrom(clazz)) {
-            return BuiltInType.CONTEXT;
+            return Collections.singleton(BuiltInType.CONTEXT);
         } else if (TemporalAccessor.class.isAssignableFrom(clazz)) {
-            TemporalAccessor ta = TemporalAccessor.class.cast(clazz);
-            if (!(ta instanceof Temporal) && ta.isSupported(ChronoField.HOUR_OF_DAY)
-                    && ta.isSupported(ChronoField.MINUTE_OF_HOUR) && ta.isSupported(ChronoField.SECOND_OF_MINUTE)
-                    && ta.query(TemporalQueries.zone()) != null) {
-                return BuiltInType.TIME;
-            }
+            return Set.of(BuiltInType.DATE, BuiltInType.TIME, BuiltInType.DATE_TIME);
         }
-        return BuiltInType.UNKNOWN;
+        return Collections.singleton(BuiltInType.UNKNOWN);
     }
 
     public static boolean isInstanceOf(Object o, Type t) {
