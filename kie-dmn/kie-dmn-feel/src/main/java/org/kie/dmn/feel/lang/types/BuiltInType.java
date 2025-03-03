@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,22 +18,9 @@
  */
 package org.kie.dmn.feel.lang.types;
 
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.OffsetDateTime;
-import java.time.OffsetTime;
-import java.time.ZonedDateTime;
-import java.time.chrono.ChronoPeriod;
-import java.time.temporal.ChronoField;
-import java.time.temporal.Temporal;
-import java.time.temporal.TemporalAccessor;
-import java.time.temporal.TemporalQueries;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -41,10 +28,7 @@ import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.lang.SimpleType;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.marshaller.FEELStringMarshaller;
-import org.kie.dmn.feel.runtime.FEELFunction;
-import org.kie.dmn.feel.runtime.Range;
-import org.kie.dmn.feel.runtime.UnaryTest;
-import org.kie.dmn.feel.runtime.custom.ZoneTime;
+import org.kie.dmn.feel.util.BuiltInTypeUtils;
 
 public enum BuiltInType implements SimpleType {
 
@@ -67,7 +51,7 @@ public enum BuiltInType implements SimpleType {
 
     BuiltInType(String... names) {
         this.names = names;
-        this.symbols = Arrays.asList(names).stream().map(n -> new BuiltInTypeSymbol(n, this)).collect(Collectors.toList());
+        this.symbols = Arrays.stream(names).map(n -> new BuiltInTypeSymbol(n, this)).collect(Collectors.toList());
     }
 
     public String getName() {
@@ -79,13 +63,13 @@ public enum BuiltInType implements SimpleType {
     }
 
     public Object fromString(String value) {
-        return FEELStringMarshaller.INSTANCE.unmarshall( this, value );
+        return FEELStringMarshaller.INSTANCE.unmarshall(this, value);
     }
 
     public String toString(Object value) {
-        return FEELStringMarshaller.INSTANCE.marshall( value );
+        return FEELStringMarshaller.INSTANCE.marshall(value);
     }
-    
+
     public static <T> Function<FEELEvent, T> justNull() {
         // TODO we should add the EventListener here somehow?
         return t -> null;
@@ -98,88 +82,21 @@ public enum BuiltInType implements SimpleType {
     @Override
     public String toString() {
         return "Type{ " +
-               names[0] +
-               " }";
-    }
-
-    public static Type determineTypeFromName( String name ) {
-        if( name == null ) {
-            return UNKNOWN;
-        }
-        for( BuiltInType t : BuiltInType.values() ) {
-            for( String n : t.getNames() ) {
-                if( n.equals( name ) ) {
-                    return t;
-                }
-            }
-        }
-        return UNKNOWN;
-    }
-
-    public static Type determineTypeFromInstance( Object o ) {
-        if( o == null ) {
-            return UNKNOWN;
-        } else if( o instanceof Number ) {
-            return NUMBER;
-        } else if( o instanceof String ) {
-            return STRING;
-        } else if( o instanceof LocalDate ) {
-            return DATE;
-        } else if( o instanceof LocalTime || o instanceof OffsetTime || o instanceof ZoneTime) {
-            return TIME;
-        } else if( o instanceof ZonedDateTime || o instanceof OffsetDateTime || o instanceof LocalDateTime ) {
-            return DATE_TIME;
-        } else if (o instanceof Duration || o instanceof ChronoPeriod) {
-            return DURATION;
-        } else if( o instanceof Boolean ) {
-            return BOOLEAN;
-        } else if( o instanceof UnaryTest ) {
-            return UNARY_TEST;
-        } else if( o instanceof Range ) {
-            return RANGE;
-        } else if( o instanceof FEELFunction ) {
-            return FUNCTION;
-        } else if( o instanceof List ) {
-            return LIST;
-        } else if( o instanceof Map ) {
-            return CONTEXT;
-        } else if (o instanceof TemporalAccessor) {
-            // last, determine if it's a FEEL time with TZ
-            TemporalAccessor ta = (TemporalAccessor) o;
-            if (!(ta instanceof Temporal) && ta.isSupported(ChronoField.HOUR_OF_DAY) 
-                    && ta.isSupported(ChronoField.MINUTE_OF_HOUR) && ta.isSupported(ChronoField.SECOND_OF_MINUTE) 
-                    && ta.query(TemporalQueries.zone()) != null) {
-                return TIME;
-            }
-        }
-        return UNKNOWN;
-    }
-
-    public static boolean isInstanceOf( Object o, Type t ) {
-        if ( o == null ) {
-            return false; // See FEEL specifications Table 49.
-        }
-        if ( t == UNKNOWN ) {
-            return true;
-        }
-        return determineTypeFromInstance( o ) == t;
-    }
-
-    public static boolean isInstanceOf( Object o, String name ) {
-        return determineTypeFromInstance( o ) == determineTypeFromName( name );
+                names[0] +
+                " }";
     }
 
     @Override
     public boolean isInstanceOf(Object o) {
-        return isInstanceOf(o, this);
+        return BuiltInTypeUtils.isInstanceOf(o, this);
     }
 
     @Override
     public boolean isAssignableValue(Object value) {
-        if ( value == null ) {
+        if (value == null) {
             return true; // a null-value can be assigned to any type.
         }
-        return isInstanceOf(value, this);
+        return BuiltInTypeUtils.isInstanceOf(value, this);
     }
 
     @Override

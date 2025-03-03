@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -29,6 +29,7 @@ import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.impl.RangeImpl;
 import org.kie.dmn.feel.runtime.impl.UndefinedValueComparable;
+import org.kie.dmn.feel.util.BuiltInTypeUtils;
 import org.kie.dmn.feel.util.Msg;
 
 public class RangeNode
@@ -36,17 +37,21 @@ public class RangeNode
 
     public enum IntervalBoundary {
         OPEN, CLOSED;
+
         public static IntervalBoundary low(String input) {
             switch (input) {
-                case "[": return CLOSED;
+                case "[":
+                    return CLOSED;
                 case "]":
                 default:
-                        return OPEN;
+                    return OPEN;
             }
         }
+
         public static IntervalBoundary high(String input) {
             switch (input) {
-                case "]": return CLOSED;
+                case "]":
+                    return CLOSED;
                 case "[":
                 default:
                     return OPEN;
@@ -56,11 +61,11 @@ public class RangeNode
 
     private IntervalBoundary lowerBound;
     private IntervalBoundary upperBound;
-    private BaseNode         start;
-    private BaseNode         end;
+    private BaseNode start;
+    private BaseNode end;
 
     public RangeNode(ParserRuleContext ctx, IntervalBoundary lowerBound, BaseNode start, BaseNode end, IntervalBoundary upperBound) {
-        super( ctx );
+        super(ctx);
         this.lowerBound = lowerBound;
         this.upperBound = upperBound;
         this.start = start;
@@ -109,30 +114,30 @@ public class RangeNode
 
     @Override
     public Range evaluate(EvaluationContext ctx) {
-        Object s = start.evaluate( ctx );
-        Object e = end.evaluate( ctx );
+        Object s = start.evaluate(ctx);
+        Object e = end.evaluate(ctx);
         if (s == null && e == null) {
             return null;
         }
-        
-        Type sType = BuiltInType.determineTypeFromInstance(s);
-        Type eType = BuiltInType.determineTypeFromInstance(e);
+
+        Type sType = BuiltInTypeUtils.determineTypeFromInstance(s);
+        Type eType = BuiltInTypeUtils.determineTypeFromInstance(e);
         boolean withUndefined = s instanceof UndefinedValueComparable || e instanceof UndefinedValueComparable;
         if (s != null && e != null &&
                 !withUndefined &&
                 sType != eType &&
                 !s.getClass().isAssignableFrom(e.getClass())) {
-            ctx.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.X_TYPE_INCOMPATIBLE_WITH_Y_TYPE, "Start", "End")));
+            ctx.notifyEvt(astEvent(Severity.ERROR, Msg.createMessage(Msg.X_TYPE_INCOMPATIBLE_WITH_Y_TYPE, "Start", "End")));
             return null;
         }
 
-        Comparable start = s instanceof UndefinedValueComparable ? (Comparable) s : convertToComparable(ctx, s );
-        Comparable end = e instanceof UndefinedValueComparable ? (Comparable) e : convertToComparable( ctx, e );
+        Comparable start = s instanceof UndefinedValueComparable ? (Comparable) s : convertToComparable(ctx, s);
+        Comparable end = e instanceof UndefinedValueComparable ? (Comparable) e : convertToComparable(ctx, e);
         return isDescendingRange(start, end) ? null :
-        new RangeImpl( lowerBound==IntervalBoundary.OPEN ? Range.RangeBoundary.OPEN : Range.RangeBoundary.CLOSED,
-                              start,
-                              end,
-                              upperBound==IntervalBoundary.OPEN ? Range.RangeBoundary.OPEN : Range.RangeBoundary.CLOSED );
+                new RangeImpl(lowerBound == IntervalBoundary.OPEN ? Range.RangeBoundary.OPEN : Range.RangeBoundary.CLOSED,
+                        start,
+                        end,
+                        upperBound == IntervalBoundary.OPEN ? Range.RangeBoundary.OPEN : Range.RangeBoundary.CLOSED);
     }
 
     static boolean isDescendingRange(Comparable start, Comparable end) {
@@ -145,11 +150,11 @@ public class RangeNode
             start = null;
         } else if (s instanceof Comparable) {
             start = (Comparable) s;
-        } else if( s instanceof Period ) {
+        } else if (s instanceof Period) {
             // period has special semantics
-            start = new ComparablePeriod( (Period) s );
+            start = new ComparablePeriod((Period) s);
         } else {
-            ctx.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.INCOMPATIBLE_TYPE_FOR_RANGE, s.getClass().getSimpleName() )));
+            ctx.notifyEvt(astEvent(Severity.ERROR, Msg.createMessage(Msg.INCOMPATIBLE_TYPE_FOR_RANGE, s.getClass().getSimpleName())));
             start = null;
         }
         return start;
@@ -162,7 +167,7 @@ public class RangeNode
 
     @Override
     public ASTNode[] getChildrenNode() {
-        return new ASTNode[] { start, end };
+        return new ASTNode[]{start, end};
     }
 
     @Override

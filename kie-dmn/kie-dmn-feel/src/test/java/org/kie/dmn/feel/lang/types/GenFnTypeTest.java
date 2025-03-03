@@ -147,67 +147,6 @@ class GenFnTypeTest {
         assertThat(GenFnType.checkSignatures(params, argsGen)).isFalse();
     }
 
-   /* @Test
-    void testMatchesFunctionSignature_withMatchingSignature() {
-        assertThat(GenFnType.matchesFunctionSignature(absFunctionInstance)).isTrue();
-    }*/
-
-   /* @Test
-    void testMatchesFunctionSignature_withNonMatchingSignature() {
-        FEELFunction function = new FEELFunction() {
-
-            @Override
-            public String getName() {
-                return "";
-            }
-
-            @Override
-            public Symbol getSymbol() {
-                return null;
-            }
-
-            @Override
-            public List<List<Param>> getParameters() {
-                return List.of();
-            }
-
-            @Override
-            public FEELFnResult<BigDecimal> invokeReflectively(EvaluationContext ctx, Object[] params) {
-                return FEELFnResult.ofResult(new BigDecimal("1.0"));
-            }
-        };
-
-        assertThat(GenFnType.matchesFunctionSignature((FEELFunction) function)).isFalse();
-    }
-
-    @Test
-    void testMatchesFunctionSignature_withDifferentReturnType() {
-        FEELFunction function = new FEELFunction() {
-
-            @Override
-            public String getName() {
-                return "";
-            }
-
-            @Override
-            public Symbol getSymbol() {
-                return null;
-            }
-
-            @Override
-            public List<List<Param>> getParameters() {
-                return List.of();
-            }
-
-            @Override
-            public Object invokeReflectively(EvaluationContext ctx, Object[] params) {
-                return FEELFnResult.ofResult(1);
-            }
-        };
-
-        assertThat(GenFnType.matchesFunctionSignature(function)).isFalse();
-    }*/
-
     static class SomeType implements Type {
         @Override
         public String getName() {

@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -24,12 +24,11 @@ import java.util.Optional;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.feel.lang.Type;
+import org.kie.dmn.feel.util.BuiltInTypeUtils;
 import org.kie.dmn.model.api.DecisionRule;
 import org.kie.dmn.model.api.DecisionTable;
 import org.kie.dmn.model.api.InputClause;
 import org.kie.dmn.model.api.LiteralExpression;
-
-import static org.kie.dmn.feel.lang.types.BuiltInType.determineTypeFromName;
 
 public class TableCellParser {
     TableCell.TableCellFactory tableCellFactory;
@@ -55,9 +54,9 @@ public class TableCellParser {
                 final String columnName = column.getInputExpression().getText();
                 final Type columnType = resolver.resolve(column.getInputExpression().getTypeRef());
                 TableCell cell = tableCellFactory.createInputCell(tableIndex,
-                                                                  input,
-                                                                  columnName,
-                                                                  columnType);
+                        input,
+                        columnName,
+                        columnType);
 
 
                 tableCells.add(cell);
@@ -87,13 +86,13 @@ public class TableCellParser {
         for (int columnIndex = 0, columnsSize = columns.size(); columnIndex < columnsSize; columnIndex++) {
             InputClause column = columns.get(columnIndex);
 
-            Type type = determineTypeFromName(column.getInputExpression().getTypeRef() != null ? column.getInputExpression().getTypeRef().getLocalPart() : null);
+            Type type = BuiltInTypeUtils.determineTypeFromName(column.getInputExpression().getTypeRef() != null ? column.getInputExpression().getTypeRef().getLocalPart() : null);
 
             tableCells.addColumnCell(columnIndex, tableCellFactory.createColumnDefinition(columnIndex,
-                                                                       decisionTableName,
-                                                                       column.getInputExpression().getText(),
-                                                                       column.getInputValues(),
-                                                                                          type));
+                    decisionTableName,
+                    column.getInputExpression().getText(),
+                    column.getInputValues(),
+                    type));
         }
     }
 

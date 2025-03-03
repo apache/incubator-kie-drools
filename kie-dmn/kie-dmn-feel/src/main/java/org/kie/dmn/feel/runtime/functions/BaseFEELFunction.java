@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -40,6 +40,7 @@ import org.kie.dmn.feel.lang.types.FunctionSymbol;
 import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.dmn.feel.runtime.events.FEELEventBase;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
+import org.kie.dmn.feel.util.BuiltInTypeUtils;
 import org.kie.dmn.feel.util.Either;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -85,7 +86,7 @@ public abstract class BaseFEELFunction
                     if (cm.actualParams != null) {
                         for (int i = 0; i < cm.actualParams.length; i++) {
                             if (cm.actualParams[i] instanceof List list) {
-                                cm.actualParams[i] =  getFEELDialectAdaptedList(ctx, list);
+                                cm.actualParams[i] = getFEELDialectAdaptedList(ctx, list);
                             }
                         }
                     }
@@ -96,9 +97,9 @@ public abstract class BaseFEELFunction
                         @SuppressWarnings("unchecked")
                         Either<FEELEvent, Object> either = (Either<FEELEvent, Object>) result;
                         return getEitherResult(ctx,
-                                               either,
-                                               () -> Stream.of(cm.actualMethod.getParameters()).map(p -> p.getAnnotation(ParameterName.class).value()).collect(Collectors.toList()),
-                                               () -> Arrays.asList(cm.actualParams));
+                                either,
+                                () -> Stream.of(cm.actualMethod.getParameters()).map(p -> p.getAnnotation(ParameterName.class).value()).collect(Collectors.toList()),
+                                () -> Arrays.asList(cm.actualParams));
                     }
 
                     return result;
@@ -107,7 +108,7 @@ public abstract class BaseFEELFunction
                     // getClass().getDeclaredMethods()
                     String ps = getClass().toString();
                     logger.error("Unable to find function '" + getName() + "( " + ps.substring(1, ps.length() - 1) +
-                                         " )'");
+                            " )'");
                     ctx.notifyEvt(() -> new FEELEventBase(Severity.ERROR, "Unable to find function '" + getName() +
                             "( " + ps.substring(1, ps.length() - 1) + " )'", null));
                 }
@@ -118,7 +119,7 @@ public abstract class BaseFEELFunction
                     NamedParameter[] namedParams =
                             Arrays.stream(params).map(NamedParameter.class::cast).toArray(NamedParameter[]::new);
                     params = BaseFEELFunctionHelper.rearrangeParameters(namedParams,
-                                                                        this.getParameters().get(0).stream().map(Param::getName).collect(Collectors.toList()));
+                            this.getParameters().get(0).stream().map(Param::getName).collect(Collectors.toList()));
                 }
                 Object result = invoke(ctx, params);
                 if (result instanceof Either) {
@@ -127,10 +128,10 @@ public abstract class BaseFEELFunction
 
                     final Object[] usedParams = params;
                     Object eitherResult = getEitherResult(ctx,
-                                                          either,
-                                                          () -> IntStream.of(0, usedParams.length).mapToObj(i -> "arg"
-                                                                  + i).collect(Collectors.toList()),
-                                                          () -> Arrays.asList(usedParams));
+                            either,
+                            () -> IntStream.of(0, usedParams.length).mapToObj(i -> "arg"
+                                    + i).collect(Collectors.toList()),
+                            () -> Arrays.asList(usedParams));
                     return BaseFEELFunctionHelper.normalizeResult(eitherResult);
                 }
                 return BaseFEELFunctionHelper.normalizeResult(result);
@@ -138,7 +139,7 @@ public abstract class BaseFEELFunction
         } catch (Exception e) {
             logger.error("Error trying to call function " + getName() + ".", e);
             ctx.notifyEvt(() -> new FEELEventBase(Severity.ERROR, "Error trying to call function " + getName() + ".",
-                                                  e));
+                    e));
         }
         return getFEELDialectAdaptedObject(ctx, null);
     }
@@ -169,7 +170,7 @@ public abstract class BaseFEELFunction
      * @param ctx
      * @param originalInput
      * @param isNamedParams <code>true</code> if the parameter refers to value to be retrieved inside
-     * <code>ctx</code>; <code>false</code> if the parameter is the actual value
+     *                      <code>ctx</code>; <code>false</code> if the parameter is the actual value
      * @return
      */
     protected CandidateMethod getCandidateMethod(EvaluationContext ctx, Object[] originalInput, boolean isNamedParams) {
@@ -201,19 +202,14 @@ public abstract class BaseFEELFunction
                     continue;
                 }
 
-                org.kie.dmn.feel.lang.Type[] feelTypes = Arrays.stream(inputTypes)
-                        .map(type -> (org.kie.dmn.feel.lang.Type) type)
-                        .toArray(org.kie.dmn.feel.lang.Type[]::new);
-
                 Class<?>[] methodParameterTypes = method.getParameterTypes();
-                for (int i = 0; i < feelTypes.length; i++) {
-                    if (!methodParameterTypes[i].equals(feelTypes[i].getClass())) {
-                        continue;
+                for (Class<?> methodParameterType : methodParameterTypes) {
+                    if (!BuiltInTypeUtils.determineTypeFromClass(methodParameterType).getClass().equals(methodParameterType)) {
+                        break;
                     }
                 }
 
-                java.lang.reflect.Type methodReturnType = method.getGenericReturnType();
-                if (methodReturnType.equals(outputType)) {
+                if (method.getGenericReturnType().equals(outputType)) {
                     toReturn = method;
                     break;
                 }
@@ -226,7 +222,7 @@ public abstract class BaseFEELFunction
     private CandidateMethod getCandidateMethod(EvaluationContext ctx, Object[] originalInput,
                                                boolean isNamedParams, Method m) {
         Object[] adaptedInput = BaseFEELFunctionHelper.getAdjustedParametersForMethod(ctx, originalInput,
-                                                                                      isNamedParams, m);
+                isNamedParams, m);
         if (adaptedInput == null) {
             // incompatible method
             return null;
@@ -244,6 +240,7 @@ public abstract class BaseFEELFunction
     /**
      * Returns the <b>left</b> <code>CandidateMethod</code> if its <b>fineScore</b> is greater than the <b>right</b> one,
      * otherwise returns the <b>right</b> <code>CandidateMethod</code>
+     *
      * @param originalInput
      * @param left
      * @param right
@@ -253,7 +250,7 @@ public abstract class BaseFEELFunction
                                                          CandidateMethod right) {
 
         ScoreHelper.Compares compares = new ScoreHelper.Compares(originalInput, left.getActualParams(),
-                                                                 left.getParameterTypes());
+                left.getParameterTypes());
         int leftScore = ScoreHelper.fineScore(compares);
         compares = new ScoreHelper.Compares(originalInput, right.getActualParams(), right.getParameterTypes());
         int rightScore = ScoreHelper.fineScore(compares);
@@ -266,13 +263,13 @@ public abstract class BaseFEELFunction
         source = getFEELDialectAdaptedEither(ctx, source);
         return source.cata((left) -> {
             ctx.notifyEvt(() -> {
-                              if (left instanceof InvalidParametersEvent invalidParametersEvent) {
-                                  invalidParametersEvent.setNodeName(getName());
-                                  invalidParametersEvent.setActualParameters(parameterNamesSupplier.get(),
-                                                                             parameterValuesSupplier.get());
-                              }
-                              return left;
-                          }
+                        if (left instanceof InvalidParametersEvent invalidParametersEvent) {
+                            invalidParametersEvent.setNodeName(getName());
+                            invalidParametersEvent.setActualParameters(parameterNamesSupplier.get(),
+                                    parameterValuesSupplier.get());
+                        }
+                        return left;
+                    }
             );
             return null;
         }, Function.identity());
@@ -281,10 +278,10 @@ public abstract class BaseFEELFunction
     /**
      * Adapt the given <code>Either&lt;FEELEvent, Object&gt;</code> to contain FEEL-Dialect-specific value, if needed
      *
-     * @see FEELFunction#defaultValue()
      * @param ctx
      * @param source
      * @return
+     * @see FEELFunction#defaultValue()
      */
     private Either<FEELEvent, Object> getFEELDialectAdaptedEither(EvaluationContext ctx, Either<FEELEvent, Object> source) {
         if (ctx.getFEELDialect().equals(FEELDialect.BFEEL)
@@ -298,10 +295,10 @@ public abstract class BaseFEELFunction
     /**
      * Adapt the given <code>Object</code> to FEEL-Dialect-specific value, if needed
      *
-     * @see FEELFunction#defaultValue()
      * @param ctx
      * @param source
      * @return
+     * @see FEELFunction#defaultValue()
      */
     private Object getFEELDialectAdaptedObject(EvaluationContext ctx, Object source) {
         if (ctx.getFEELDialect().equals(FEELDialect.BFEEL)
@@ -315,10 +312,10 @@ public abstract class BaseFEELFunction
     /**
      * Adapt the given <code>List</code> to FEEL-Dialect-specific values, if needed
      *
-     * @see FEELFunction#feelDialectAdaptedInputList(List)
      * @param ctx
      * @param source
      * @return
+     * @see FEELFunction#feelDialectAdaptedInputList(List)
      */
     private List getFEELDialectAdaptedList(EvaluationContext ctx, List source) {
         if (ctx.getFEELDialect().equals(FEELDialect.BFEEL)
