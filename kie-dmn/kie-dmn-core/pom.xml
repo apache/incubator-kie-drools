@@ -276,13 +276,9 @@
         <directory>src/test/filtered-resources</directory>
         <filtering>true</filtering>
       </testResource>
-      <testResource>
-        <directory>${project.build.directory}/generated-resources</directory>
-        <filtering>false</filtering>
-      </testResource>
     </testResources>
     <plugins>
-      <!-- Unpack DMN resources from  org.kie:kie-dmn-test-resources -->
+      <!-- Unpack DMN resources from from org.kie:kie-dmn-test-resources -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
@@ -303,8 +299,8 @@
                   <classifier>tests</classifier>
                   <type>jar</type>
                   <overWrite>true</overWrite>
-                  <outputDirectory>${project.build.directory}/generated-resources</outputDirectory>
-                  <includes>valid_models/**/*.dmn
+                  <outputDirectory>${project.build.directory}/test-classes</outputDirectory>
+                  <includes>**/*.dmn
                   </includes>
                 </artifactItem>
               </artifactItems>
