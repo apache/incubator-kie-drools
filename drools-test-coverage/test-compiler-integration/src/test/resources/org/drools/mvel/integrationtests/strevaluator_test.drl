@@ -68,7 +68,7 @@ end
 
 rule testmultiple
 when
-    $m : RoutingMessage( routingValue str[startsWith] "R1" && str[endsWith] "R2" && str[length] 17)
+    $m : RoutingMessage( routingValue str[startsWith] "R1" && routingValue str[endsWith] "R2" && routingValue str[length] 17)
 then
     list.add("Message starts with R1, ends with R2 and it's length is 17");
 end

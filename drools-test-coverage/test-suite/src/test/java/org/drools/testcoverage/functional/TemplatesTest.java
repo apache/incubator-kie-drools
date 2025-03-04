@@ -69,20 +69,20 @@ public class TemplatesTest {
                 + "global java.util.List list;\n\n";
         final String rule2_when = "rule \"is appropriate 2\"\n"
                 + "\twhen\n"
-                + "\t\tVegetable( $name : name == \"carrot\", $field : weight >= 0 && <= 1000, $price : price <= 2, "
+                + "\t\tVegetable( $name : name == \"carrot\", $field : weight >= 0 && weight <= 1000, $price : price <= 2, "
                 + "$taste : taste  == Taste.HORRIBLE )\n";
         final String rule2_then = "\tthen\n\t\tlist.add( $name );\nend\n\n";
 
         final String rule1_when = "rule \"is appropriate 1\"\n"
                 + "\twhen\n"
-                + "\t\tVegetable( $name : name == \"cucumber\", $field : length >= 20 && <= 40, $price : price <= 15, "
+                + "\t\tVegetable( $name : name == \"cucumber\", $field : length >= 20 && length <= 40, $price : price <= 15, "
                 + "$taste : taste  == Taste.EXCELENT )\n";
         final String rule1_then = "\tthen\n\t\tlist.add( $name );\nend\n\n";
 
         final String rule0_when = "rule \"is appropriate 0\"\n"
                 + "\twhen\n"
-                + "\t\tVegetable( $name : name == \"tomato\", $field : weight >= 200 && <= 1000, $price : price <= 6, "
-                + "$taste : taste  == Taste.GOOD || == Taste.EXCELENT )\n";
+                + "\t\tVegetable( $name : name == \"tomato\", $field : weight >= 200 && weight <= 1000, $price : price <= 6, "
+                + "$taste : taste  == Taste.GOOD || taste == Taste.EXCELENT )\n";
         final String rule0_then = "\tthen\n\t\tlist.add( $name );\nend\n\n";
 
         EXPECTED_RULES.append(head);
@@ -135,7 +135,7 @@ public class TemplatesTest {
     @MethodSource("parameters")
     public void loadingFromDLRArrayCorrectnessCheck(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         final String[][] rows = new String[3][6];
-        rows[0] = new String[]{"tomato", "weight", "200", "1000", "6", "== Taste.GOOD || == Taste.EXCELENT"};
+        rows[0] = new String[]{"tomato", "weight", "200", "1000", "6", "== Taste.GOOD || taste == Taste.EXCELENT"};
         rows[1] = new String[]{"cucumber", "length", "20", "40", "15", "== Taste.EXCELENT"};
         rows[2] = new String[]{"carrot", "weight", "0", "1000", "2", "== Taste.HORRIBLE"};
 
@@ -336,7 +336,7 @@ public class TemplatesTest {
         mapTomato.put("fieldLower", 200);
         mapTomato.put("fieldUpper", 1000);
         mapTomato.put("price", 6);
-        mapTomato.put("tastes", "== Taste.GOOD || == Taste.EXCELENT");
+        mapTomato.put("tastes", "== Taste.GOOD || taste == Taste.EXCELENT");
         maps.add(mapTomato);
 
         final Map<String, Object> mapCucumber = new HashMap<String, Object>();
@@ -420,7 +420,7 @@ public class TemplatesTest {
             String conn = "";
             for (Taste t : tasteSet) {
                 sb.append(conn).append(" == Taste.").append(t);
-                conn = " ||";
+                conn = " || taste";
             }
             return sb.toString();
         }

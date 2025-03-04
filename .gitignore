@@ -29,6 +29,7 @@ nbproject
 *.ipr
 *.iws
 *.iml
+build.log
 
 # generated files
 dependency-reduced-pom.xml

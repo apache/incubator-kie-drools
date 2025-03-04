@@ -30,6 +30,8 @@ This chapter contains the release notes for the {PRODUCT} 10-series.
 
 For the release notes of the _previous releases_, you can refer to the {PRODUCT} documentation of link:https://docs.drools.org/8.44.0.Final/drools-docs/drools/release-notes/index.html[version 8].
 
+include::_release-notes-10.1.adoc[leveloffset=0]
+
 include::_release-notes-10.0.adoc[leveloffset=0]
 
 == Drools 10-series release notes

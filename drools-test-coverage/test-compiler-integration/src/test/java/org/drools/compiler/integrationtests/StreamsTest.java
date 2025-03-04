@@ -206,7 +206,7 @@ public class StreamsTest {
                 "\n" +
                 "rule \"Test entry point 1\"\n" +
                 "when\n" +
-                "    $st : StockTick( company == \"ACME\", price > 10 && < 100 ) from entry-point \"stream1\"\n" +
+                "    $st : StockTick( company == \"ACME\", price > 10 && price < 100 ) from entry-point \"stream1\"\n" +
                 "then\n" +
                 "    results.add( Double.valueOf( $st.getPrice() ) );\n" +
                 "    modify( $st ) { setPrice( 110 ) }\n" +

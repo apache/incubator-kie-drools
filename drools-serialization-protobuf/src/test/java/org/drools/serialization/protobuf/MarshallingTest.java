@@ -77,6 +77,7 @@ import org.drools.serialization.protobuf.marshalling.RuleBaseNodes;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
@@ -1560,6 +1561,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         assertThat(list.get(1)).isEqualTo("rule4");
     }
 
+    @DisabledIfSystemProperty(named = "drools.drl.antlr4.parser.enabled", matches = "true")
     @Test
     public void testAgendaGroups() throws Exception {
         String rule1 = "package org.drools.compiler.test;\n";
