@@ -1,0 +1,65 @@
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+package org.drools.model.codegen.execmodel;
+
+global java.util.List result;
+
+rule "sum"
+    when
+        $n1 : Integer(this == 1)
+        $n2 : Integer(this == 2)
+        $n3 : Integer(this == 3)
+        $n4 : Integer(this == 4)
+        $n5 : Integer(this == 5)
+        $n6 : Integer(this == 6)
+        $n7 : Integer(this == 7)
+        $n8 : Integer(this == 8)
+        $n9 : Integer(this == 9)
+        $n10 : Integer(this == 10)
+        $n11 : Integer(this == 11)
+        $n12 : Integer(this == 12)
+        $n13 : Integer(this == 13)
+        $n14 : Integer(this == 14)
+        $n15 : Integer(this == 15)
+        $n16 : Integer(this == 16)
+        $n17 : Integer(this == 17)
+        $n18 : Integer(this == 18)
+        $n19 : Integer(this == 19)
+        $n20 : Integer(this == 20)
+        $n21 : Integer(this == 21)
+        $n22 : Integer(this == 22)
+        $n23 : Integer(this == 23)
+        $n24 : Integer(this == 24)
+        $n25 : Integer(this == 25)
+        $n26 : Integer(this == 26)
+        $partialSum1: Integer() from sum(new Integer[]{$n1 , $n2 , $n3 , $n4 , $n5 , $n6 , $n7 , $n8 , $n9 , $n10 , $n11})
+        $partialSum2: Integer() from sum(new Integer[]{$n12 , $n13 , $n14 , $n15 , $n16 , $n17 , $n18 , $n19 , $n20 , $n21 , $n22})
+        $partialSum3: Integer() from sum(new Integer[]{$n23 , $n24 , $n25 , $n26 })
+    then
+        result.add($partialSum1 + $partialSum2 + $partialSum3);
+end
+
+function Integer sum(Integer[] numbers) {
+    Integer sum = 0;
+    for (Integer number : numbers) {
+        sum += number;
+    }
+    return sum;
+}

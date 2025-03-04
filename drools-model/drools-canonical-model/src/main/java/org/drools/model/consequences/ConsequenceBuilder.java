@@ -41,7 +41,13 @@ import org.drools.model.functions.Block22;
 import org.drools.model.functions.Block23;
 import org.drools.model.functions.Block24;
 import org.drools.model.functions.Block25;
+import org.drools.model.functions.Block26;
+import org.drools.model.functions.Block27;
+import org.drools.model.functions.Block28;
+import org.drools.model.functions.Block29;
 import org.drools.model.functions.Block3;
+import org.drools.model.functions.Block30;
+import org.drools.model.functions.Block31;
 import org.drools.model.functions.Block4;
 import org.drools.model.functions.Block5;
 import org.drools.model.functions.Block6;
@@ -734,4 +740,156 @@ public class ConsequenceBuilder {
             return this;
         }
     }
+
+
+    public static class _25<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25> extends AbstractValidBuilder<_25<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25>> {
+
+        public _25(Variable<T1> arg1, Variable<T2> arg2, Variable<T3> arg3, Variable<T4> arg4, Variable<T5> arg5, Variable<T6> arg6, Variable<T7> arg7, Variable<T8> arg8, Variable<T9> arg9, Variable<T10> arg10, Variable<T11> arg11, Variable<T12> arg12, Variable<T13> arg13, Variable<T14> arg14, Variable<T15> arg15, Variable<T16> arg16, Variable<T17> arg17, Variable<T18> arg18, Variable<T19> arg19, Variable<T20> arg20, Variable<T21> arg21, Variable<T22> arg22, Variable<T23> arg23, Variable<T24> arg24, Variable<T25> arg25) {
+            super(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23, arg24, arg25);
+        }
+
+        public _25<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25> execute(final Block25<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25> block) {
+            this.block = block.asBlockN();
+            return this;
+        }
+
+        public _25<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25> execute(final Block26<Drools, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25> block) {
+            this.usingDrools = true;
+            this.block = block.asBlockN();
+            return this;
+        }
+
+        public _25<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25> executeScript(String language, Class<?> ruleClass, String script) {
+            this.usingDrools = true;
+            this.language = language;
+            this.block = new ScriptBlock(ruleClass, script);
+            return this;
+        }
+    }
+
+    public static class _26<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26> extends AbstractValidBuilder<_26<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26>> {
+
+        public _26(Variable<T1> arg1, Variable<T2> arg2, Variable<T3> arg3, Variable<T4> arg4, Variable<T5> arg5, Variable<T6> arg6, Variable<T7> arg7, Variable<T8> arg8, Variable<T9> arg9, Variable<T10> arg10, Variable<T11> arg11, Variable<T12> arg12, Variable<T13> arg13, Variable<T14> arg14, Variable<T15> arg15, Variable<T16> arg16, Variable<T17> arg17, Variable<T18> arg18, Variable<T19> arg19, Variable<T20> arg20, Variable<T21> arg21, Variable<T22> arg22, Variable<T23> arg23, Variable<T24> arg24, Variable<T25> arg25, Variable<T26> arg26) {
+            super(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23, arg24, arg25, arg26);
+        }
+
+        public _26<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26> execute(final Block26<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26> block) {
+            this.block = block.asBlockN();
+            return this;
+        }
+
+        public _26<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26> execute(final Block27<Drools, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26> block) {
+            this.usingDrools = true;
+            this.block = block.asBlockN();
+            return this;
+        }
+
+        public _26<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26> executeScript(String language, Class<?> ruleClass, String script) {
+            this.usingDrools = true;
+            this.language = language;
+            this.block = new ScriptBlock(ruleClass, script);
+            return this;
+        }
+    }
+
+    public static class _27<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27> extends AbstractValidBuilder<_27<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27>> {
+
+        public _27(Variable<T1> arg1, Variable<T2> arg2, Variable<T3> arg3, Variable<T4> arg4, Variable<T5> arg5, Variable<T6> arg6, Variable<T7> arg7, Variable<T8> arg8, Variable<T9> arg9, Variable<T10> arg10, Variable<T11> arg11, Variable<T12> arg12, Variable<T13> arg13, Variable<T14> arg14, Variable<T15> arg15, Variable<T16> arg16, Variable<T17> arg17, Variable<T18> arg18, Variable<T19> arg19, Variable<T20> arg20, Variable<T21> arg21, Variable<T22> arg22, Variable<T23> arg23, Variable<T24> arg24, Variable<T25> arg25, Variable<T26> arg26, Variable<T27> arg27) {
+            super(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23, arg24, arg25, arg26, arg27);
+        }
+
+        public _27<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27> execute(final Block27<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27> block) {
+            this.block = block.asBlockN();
+            return this;
+        }
+
+        public _27<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27> execute(final Block28<Drools, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27> block) {
+            this.usingDrools = true;
+            this.block = block.asBlockN();
+            return this;
+        }
+
+        public _27<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27> executeScript(String language, Class<?> ruleClass, String script) {
+            this.usingDrools = true;
+            this.language = language;
+            this.block = new ScriptBlock(ruleClass, script);
+            return this;
+        }
+    }
+
+    public static class _28<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28> extends AbstractValidBuilder<_28<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28>> {
+
+        public _28(Variable<T1> arg1, Variable<T2> arg2, Variable<T3> arg3, Variable<T4> arg4, Variable<T5> arg5, Variable<T6> arg6, Variable<T7> arg7, Variable<T8> arg8, Variable<T9> arg9, Variable<T10> arg10, Variable<T11> arg11, Variable<T12> arg12, Variable<T13> arg13, Variable<T14> arg14, Variable<T15> arg15, Variable<T16> arg16, Variable<T17> arg17, Variable<T18> arg18, Variable<T19> arg19, Variable<T20> arg20, Variable<T21> arg21, Variable<T22> arg22, Variable<T23> arg23, Variable<T24> arg24, Variable<T25> arg25, Variable<T26> arg26, Variable<T27> arg27, Variable<T28> arg28) {
+            super(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23, arg24, arg25, arg26, arg27, arg28);
+        }
+
+        public _28<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28> execute(final Block28<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28> block) {
+            this.block = block.asBlockN();
+            return this;
+        }
+
+        public _28<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28> execute(final Block29<Drools, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28> block) {
+            this.usingDrools = true;
+            this.block = block.asBlockN();
+            return this;
+        }
+
+        public _28<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28> executeScript(String language, Class<?> ruleClass, String script) {
+            this.usingDrools = true;
+            this.language = language;
+            this.block = new ScriptBlock(ruleClass, script);
+            return this;
+        }
+    }
+
+    public static class _29<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28, T29> extends AbstractValidBuilder<_29<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28, T29>> {
+
+        public _29(Variable<T1> arg1, Variable<T2> arg2, Variable<T3> arg3, Variable<T4> arg4, Variable<T5> arg5, Variable<T6> arg6, Variable<T7> arg7, Variable<T8> arg8, Variable<T9> arg9, Variable<T10> arg10, Variable<T11> arg11, Variable<T12> arg12, Variable<T13> arg13, Variable<T14> arg14, Variable<T15> arg15, Variable<T16> arg16, Variable<T17> arg17, Variable<T18> arg18, Variable<T19> arg19, Variable<T20> arg20, Variable<T21> arg21, Variable<T22> arg22, Variable<T23> arg23, Variable<T24> arg24, Variable<T25> arg25, Variable<T26> arg26, Variable<T27> arg27, Variable<T28> arg28, Variable<T29> arg29) {
+            super(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23, arg24, arg25, arg26, arg27, arg28, arg29);
+        }
+
+        public _29<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28, T29> execute(final Block29<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28, T29> block) {
+            this.block = block.asBlockN();
+            return this;
+        }
+
+        public _29<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28, T29> execute(final Block30<Drools, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28, T29> block) {
+            this.usingDrools = true;
+            this.block = block.asBlockN();
+            return this;
+        }
+
+        public _29<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28, T29> executeScript(String language, Class<?> ruleClass, String script) {
+            this.usingDrools = true;
+            this.language = language;
+            this.block = new ScriptBlock(ruleClass, script);
+            return this;
+        }
+    }
+
+    public static class _30<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28, T29, T30> extends AbstractValidBuilder<_30<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28, T29, T30>> {
+
+        public _30(Variable<T1> arg1, Variable<T2> arg2, Variable<T3> arg3, Variable<T4> arg4, Variable<T5> arg5, Variable<T6> arg6, Variable<T7> arg7, Variable<T8> arg8, Variable<T9> arg9, Variable<T10> arg10, Variable<T11> arg11, Variable<T12> arg12, Variable<T13> arg13, Variable<T14> arg14, Variable<T15> arg15, Variable<T16> arg16, Variable<T17> arg17, Variable<T18> arg18, Variable<T19> arg19, Variable<T20> arg20, Variable<T21> arg21, Variable<T22> arg22, Variable<T23> arg23, Variable<T24> arg24, Variable<T25> arg25, Variable<T26> arg26, Variable<T27> arg27, Variable<T28> arg28, Variable<T29> arg29, Variable<T30> arg30) {
+            super(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21, arg22, arg23, arg24, arg25, arg26, arg27, arg28, arg29, arg30);
+        }
+
+        public _30<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28, T29, T30> execute(final Block30<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28, T29, T30> block) {
+            this.block = block.asBlockN();
+            return this;
+        }
+
+        public _30<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28, T29, T30> execute(final Block31<Drools, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28, T29, T30> block) {
+            this.usingDrools = true;
+            this.block = block.asBlockN();
+            return this;
+        }
+
+        public _30<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28, T29, T30> executeScript(String language, Class<?> ruleClass, String script) {
+            this.usingDrools = true;
+            this.language = language;
+            this.block = new ScriptBlock(ruleClass, script);
+            return this;
+        }
+    }
+
 }

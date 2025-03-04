@@ -16,11 +16,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-parser grammar DRL6Expressions;
+parser grammar DRL10Expressions;
 
 options {
     language = Java;
-    tokenVocab = DRLLexer;
+    tokenVocab = DRL10Lexer;
     superClass=DRLExpressions;
 }
 
@@ -81,13 +81,13 @@ options {
         /*if (state.backtracking != 0){
             return false;
         }*/
-        if (_input.get( _input.index() - 1 ).getType() == DRLLexer.WS){
+        if (_input.get( _input.index() - 1 ).getType() == DRL10Lexer.WS){
             return true;
         }
-        if (_input.LA(-1) == DRLLexer.LPAREN){
+        if (_input.LA(-1) == DRL10Lexer.LPAREN){
             return true;
         }
-        return _input.get( _input.index() ).getType() != DRLLexer.EOF;
+        return _input.get( _input.index() ).getType() != DRL10Lexer.EOF;
     }
 
     private boolean notStartWithNewline() {
@@ -126,7 +126,7 @@ literal
 operator returns [boolean negated, String opr]
 @init{ if ( isNotEOF() ) helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR ); helper.setHasOperator( true ); }
 // TODO verify that we can omit the backtracking check
-@after{ if( /*state.backtracking == 0 &&*/ _input.LA( 1 ) != DRLLexer.EOF) { helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT ); } }
+@after{ if( /*state.backtracking == 0 &&*/ _input.LA( 1 ) != DRL10Lexer.EOF) { helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT ); } }
   : x=TILDE?
     ( op=EQUAL         { $negated = false; $opr=($x != null ? $x.text : "")+$op.text; helper.emit($op, DroolsEditorType.SYMBOL); }
     | op=NOTEQUAL      { $negated = false; $opr=($x != null ? $x.text : "")+$op.text; helper.emit($op, DroolsEditorType.SYMBOL); }
@@ -139,7 +139,7 @@ operator returns [boolean negated, String opr]
 relationalOp returns [boolean negated, String opr, java.util.List<String> params]
 @init{ if ( isNotEOF() ) helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR ); helper.setHasOperator( true ); }
 // TODO verify that we can omit the backtracking check
-@after{ if( /*state.backtracking == 0 &&*/ _input.LA( 1 ) != DRLLexer.EOF) { helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT ); } }
+@after{ if( /*state.backtracking == 0 &&*/ _input.LA( 1 ) != DRL10Lexer.EOF) { helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT ); } }
   : ( op=LE              { $negated = false; $opr=$op.text; $params = null; helper.emit($op, DroolsEditorType.SYMBOL);}
     | op=GE              { $negated = false; $opr=$op.text; $params = null; helper.emit($op, DroolsEditorType.SYMBOL);}
     | op=LT              { $negated = false; $opr=$op.text; $params = null; helper.emit($op, DroolsEditorType.SYMBOL);}
@@ -290,7 +290,6 @@ drlKeywords returns [Token token]
     | DRL_LOCK_ON_ACTIVE
     | DRL_REFRACT
     | DRL_DIRECT
-    | DRL_AGENDA_GROUP
     | DRL_ACTIVATION_GROUP
     | DRL_RULEFLOW_GROUP
     | DRL_DATE_EFFECTIVE
@@ -476,7 +475,7 @@ equalityExpression returns [BaseDescr result]
   : left=instanceOfExpression { if( buildDescr  ) { $result = $left.result; } }
   ( ( op=EQUAL | op=NOTEQUAL )
     {  helper.setHasOperator( true );
-       if( _input.LA( 1 ) != DRLLexer.EOF ) helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT ); }
+       if( _input.LA( 1 ) != DRL10Lexer.EOF ) helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT ); }
     right=instanceOfExpression
          { if( buildDescr  ) {
                $result = new RelationalExprDescr( $op.text, false, null, $left.result, $right.result );
@@ -489,7 +488,7 @@ instanceOfExpression returns [BaseDescr result]
   : left=inExpression { if( buildDescr  ) { $result = $left.result; } }
   ( op=instanceof_key
     {  helper.setHasOperator( true );
-       if( _input.LA( 1 ) != DRLLexer.EOF ) helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT ); }
+       if( _input.LA( 1 ) != DRL10Lexer.EOF ) helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT ); }
     right=type
          { if( buildDescr  ) {
                $result = new RelationalExprDescr( $op.text, false, null, $left.result, new AtomicExprDescr($right.text) );
@@ -571,7 +570,7 @@ locals [ BaseDescr lsd ]
           $relationalExpression::lsd = $result;
       }
     }
-  ( right=orRestriction
+  ( right=singleRestriction
          { if( buildDescr  ) {
                $result = $right.result;
                // TODO access lsd directly instead of through dynamic context here
@@ -579,36 +578,6 @@ locals [ BaseDescr lsd ]
            }
          }
   )*
-  ;
-
-orRestriction returns [BaseDescr result]
-  : left=andRestriction { if( buildDescr  ) { $result = $left.result; } }
-    ( lop=OR args=fullAnnotation[null]? right=andRestriction
-         { if( buildDescr ) {
-               ConstraintConnectiveDescr descr = ConstraintConnectiveDescr.newOr();
-               descr.addOrMerge( $result );
-               descr.addOrMerge( $right.result );
-               if ( $ctx.args != null ) { descr.addAnnotation( $args.result ); }
-               $result = descr;
-           }
-         }
-   )*? EOF?
-  ;
-
-andRestriction returns [BaseDescr result]
-  : left=singleRestriction { if( buildDescr  ) { $result = $left.result; } }
-  ( lop=AND
-  	    { if ( isNotEOF() ) helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR ); }
-        args=fullAnnotation[null]?right=singleRestriction
-         { if( buildDescr  ) {
-               ConstraintConnectiveDescr descr = ConstraintConnectiveDescr.newAnd();
-               descr.addOrMerge( $result );
-               descr.addOrMerge( $right.result );
-               if ( $ctx.args != null ) { descr.addAnnotation( $args.result ); }
-               $result = descr;
-           }
-         }
-  )*?
   ;
 
 singleRestriction returns [BaseDescr result]
@@ -630,7 +599,6 @@ singleRestriction returns [BaseDescr result]
            }
            helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_END );
          }
-  |  LPAREN or=orRestriction RPAREN  { $result = $or.result; }
   ;
 
 
@@ -688,9 +656,9 @@ unaryExpressionNotPlusMinus returns [BaseDescr result]
     |   castExpression
     |   backReferenceExpression
     |   { isLeft = helper.getLeftMostExpr() == null;}
-        ( ({inMap == 0 && ternOp == 0 && _input.LA(2) == DRLLexer.COLON}? (var=drlIdentifier COLON
+        ( ({inMap == 0 && ternOp == 0 && _input.LA(2) == DRL10Lexer.COLON}? (var=drlIdentifier COLON
                 { hasBindings = true; helper.emit($var.token, DroolsEditorType.IDENTIFIER_VARIABLE); helper.emit($COLON, DroolsEditorType.SYMBOL); if( buildDescr ) { bind = new BindingDescr($var.text, null, false); helper.setStart( bind, $var.token ); } } ))
-        | ({inMap == 0 && ternOp == 0 && _input.LA(2) == DRLLexer.DRL_UNIFY}? (var=drlIdentifier DRL_UNIFY
+        | ({inMap == 0 && ternOp == 0 && _input.LA(2) == DRL10Lexer.DRL_UNIFY}? (var=drlIdentifier DRL_UNIFY
                 { hasBindings = true; helper.emit($var.token, DroolsEditorType.IDENTIFIER_VARIABLE); helper.emit($DRL_UNIFY, DroolsEditorType.SYMBOL); if( buildDescr ) { bind = new BindingDescr($var.text, null, true); helper.setStart( bind, $var.token ); } } ))
         )?
 
@@ -1000,12 +968,11 @@ in_key
     ;
 
 operator_key
-  // IDENTIFIER is required to accept custom operators. We need to keep this semantic predicate for custom operators
-  :      {(helper.isPluggableEvaluator(false))}? id=IDENTIFIER { helper.emit($id, DroolsEditorType.KEYWORD); }
+  :      DRL_CUSTOM_OPERATOR_PREFIX {(helper.isPluggableEvaluator(false))}? id=IDENTIFIER { helper.emit($id, DroolsEditorType.KEYWORD); }
   |      op=builtInOperator { helper.emit($op.token, DroolsEditorType.KEYWORD); }
   ;
 
 neg_operator_key
-  :      {(helper.isPluggableEvaluator(true))}? id=IDENTIFIER { helper.emit($id, DroolsEditorType.KEYWORD); }
+  :      DRL_CUSTOM_OPERATOR_PREFIX {(helper.isPluggableEvaluator(true))}? id=IDENTIFIER { helper.emit($id, DroolsEditorType.KEYWORD); }
   |      op=builtInOperator { helper.emit($op.token, DroolsEditorType.KEYWORD); }
   ;

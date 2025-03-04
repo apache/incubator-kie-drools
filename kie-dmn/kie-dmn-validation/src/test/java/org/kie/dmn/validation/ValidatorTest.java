@@ -33,6 +33,7 @@ import java.util.zip.ZipEntry;
 import org.drools.io.ClassPathResource;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.kie.api.builder.Message;
 import org.kie.api.builder.Message.Level;
 import org.kie.api.io.Resource;
 import org.kie.dmn.api.core.DMNMessage;
@@ -540,6 +541,20 @@ class ValidatorTest extends AbstractValidatorTest {
                                                      modelFilesJarFile.lastIndexOf("!"));
         final JarFile jarFile = new JarFile(new File(jarPath));
         testDirectoryInJar(jarFile, modelFilesPath);
+    }
+
+    @Test
+    void validateInvalidNamespaceModels() {
+        String modelFilePath = "invalid_models/DMNv1_5/DMN-invalid-namespaces.dmn";
+        Resource resource = new ClassPathResource(modelFilePath);
+        List<DMNMessage> retrieved = validatorBuilder.theseModels(resource);
+        assertThat(retrieved).isNotNull()
+                .hasSize(6) // There are other two messages
+                .allMatch(dmnMessage -> dmnMessage.getLevel().equals(Message.Level.ERROR))
+                .anyMatch(dmnMessage -> dmnMessage.getText().contains("http://www.omg.org/spec/FEEL/20140401"))
+                .anyMatch(dmnMessage -> dmnMessage.getText().contains("http://www.omg.org/spec/DMN/20180505/DC/"))
+                .anyMatch(dmnMessage -> dmnMessage.getText().contains("http://www.omg.org/spec/DMN/20180505/DI/"))
+                .anyMatch(dmnMessage -> dmnMessage.getText().contains("http://www.omg.org/spec/DMN/20180505/DMNDI/"));
     }
 
     private void testDirectoryInJar(JarFile jarFile, String directory) {

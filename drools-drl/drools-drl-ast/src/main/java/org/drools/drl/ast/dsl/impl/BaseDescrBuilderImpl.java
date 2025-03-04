@@ -72,4 +72,8 @@ public class BaseDescrBuilderImpl<P extends DescrBuilder<?,? extends BaseDescr>,
         return parent;
     }
 
+    @Override
+    public P getParent() {
+        return parent;
+    }
 }

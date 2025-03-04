@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -107,7 +107,8 @@ public final class ZoneTime
         this.offsetTime = OffsetTime.of(localTime, offset);
         this.zoneId = zoneId;
         this.hasSeconds = hasSeconds;
-        this.stringRepresentation = String.format("%s@%s", localTime, zoneId);
+        String localTimeString = localTime.format(DateTimeFormatter.ISO_LOCAL_TIME);
+        this.stringRepresentation = String.format("%s@%s", localTimeString, zoneId);
     }
 
     // package default for testing purpose
@@ -146,14 +147,12 @@ public final class ZoneTime
 
     @Override
     public Temporal minus(long amountToSubtract, TemporalUnit unit) {
-        return
-                getNewZoneOffset(offsetTime.minus(amountToSubtract, unit));
+        return getNewZoneOffset(offsetTime.minus(amountToSubtract, unit));
     }
 
     @Override
     public Temporal minus(TemporalAmount amount) {
-        return
-                getNewZoneOffset(offsetTime.minus(amount));
+        return getNewZoneOffset(offsetTime.minus(amount));
     }
 
     @Override

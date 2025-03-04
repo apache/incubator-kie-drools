@@ -27,6 +27,7 @@ import org.drools.compiler.kie.builder.impl.DrlProject;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.drl.parser.DrlParser;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.model.codegen.ExecutableModelProject;
 import org.kie.api.KieServices;
@@ -185,7 +186,15 @@ public abstract class BaseModelTest {
 
         public KieFile( String path, String content ) {
             this.path = path;
-            this.content = content;
+            this.content = replaceAgendaGroupIfRequired(content);
+        }
+
+        public static String replaceAgendaGroupIfRequired(String drl) {
+            if (DrlParser.ANTLR4_PARSER_ENABLED) {
+                // new parser (DRL10) supports only ruleflow-group, dropping agenda-group
+                return drl.replaceAll("agenda-group", "ruleflow-group");
+            }
+            return drl;
         }
     }
 

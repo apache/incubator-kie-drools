@@ -175,6 +175,14 @@ public class EmbeddedStorageManager implements InfinispanStorageManager {
 
     }
 
+    public DefaultCacheManager getEmbeddedCacheManager() {
+        return embeddedCacheManager;
+    }
+
+    public Configuration getCacheConfiguration() {
+        return cacheConfiguration;
+    }
+
     // test purpose to remove GlobalState and FileStore
     private static void cleanUpGlobalStateAndFileStore() {
         FileUtils.deleteDirectory(Paths.get(GLOBAL_STATE_DIR));

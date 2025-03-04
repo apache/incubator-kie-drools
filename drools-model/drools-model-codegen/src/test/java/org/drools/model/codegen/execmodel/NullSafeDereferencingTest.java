@@ -26,6 +26,7 @@ import org.drools.model.codegen.execmodel.domain.Address;
 import org.drools.model.codegen.execmodel.domain.MysteriousMan;
 import org.drools.model.codegen.execmodel.domain.Person;
 import org.drools.model.codegen.execmodel.domain.Result;
+import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.runtime.KieSession;
@@ -253,6 +254,7 @@ public class NullSafeDereferencingTest extends BaseModelTest {
         assertThat(results.get(0).getValue()).isEqualTo("John2");
     }
 
+    @DisabledIfSystemProperty(named = "drools.drl.antlr4.parser.enabled", matches = "true")
     @ParameterizedTest
 	@MethodSource("parameters")
     public void testNullSafeDereferncingWithOrHalfBinary(RUN_TYPE runType) {
