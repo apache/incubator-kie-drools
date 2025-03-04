@@ -40,6 +40,7 @@ jobs:
           java -jar apache-rat-0.16.1.jar -d . -E .rat-excludes | grep "== File:" && echo "The files listed above are missing license headers." && exit 1 || echo "All files have license headers."
 
       # This is a temporary workaround for https://github.com/apache/incubator-kie-drools/issues/6265
+      # To be checked after apache-rat 0.17 release
       - name: Run Apache RAT under drools-model
         run: |
           cd drools-model
