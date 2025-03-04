@@ -251,11 +251,11 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
                 .afterEvaluateDecisionTable( argument.capture() );
 
         AfterEvaluateDecisionTableEvent dte = argument.getAllValues().get( 0 );
-        assertThat(dte.getNodeName()).isEqualTo("Car Damage Responsibility" );
+        assertThat(dte.getDecisionTableName()).isEqualTo("Car Damage Responsibility" );
         assertThat(dte.getMatches()).containsExactly(5); // rows are 1-based
 
         dte = argument.getAllValues().get( 1 );
-        assertThat(dte.getNodeName()).isEqualTo("Payment method" );
+        assertThat(dte.getDecisionTableName()).isEqualTo("Payment method" );
         assertThat(dte.getMatches()).containsExactly(3); // rows are 1-based
 
         assertThat(dmnResult.hasErrors()).isFalse();

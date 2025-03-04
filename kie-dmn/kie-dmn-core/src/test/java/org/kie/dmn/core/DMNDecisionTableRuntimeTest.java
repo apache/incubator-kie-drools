@@ -278,8 +278,8 @@ public class DMNDecisionTableRuntimeTest extends BaseInterpretedVsCompiledTest {
         final ArgumentCaptor<AfterEvaluateDecisionTableEvent> captor = ArgumentCaptor.forClass( AfterEvaluateDecisionTableEvent.class );
         verify( listener, times( 2 ) ).afterEvaluateDecisionTable( captor.capture() );
 
-        assertThat( captor.getAllValues().get( 0 ).getNodeName()).isEqualTo("a" );
-        assertThat( captor.getAllValues().get( 1 ).getNodeName()).isEqualTo("b" );
+        assertThat( captor.getAllValues().get( 0 ).getDecisionTableName()).isEqualTo("a" );
+        assertThat( captor.getAllValues().get( 1 ).getDecisionTableName()).isEqualTo("b" );
     }
 
     @ParameterizedTest

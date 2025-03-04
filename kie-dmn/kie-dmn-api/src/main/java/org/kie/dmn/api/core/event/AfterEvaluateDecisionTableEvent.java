@@ -26,9 +26,9 @@ public interface AfterEvaluateDecisionTableEvent extends DMNEvent {
      * The decision that this node relates to
      * @return
      */
-    String getDecisionName();
-
     String getNodeName();
+
+    String getDecisionTableName();
     
     default String getDecisionTableId() {
         return null;

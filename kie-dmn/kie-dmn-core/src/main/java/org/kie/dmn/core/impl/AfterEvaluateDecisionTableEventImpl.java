@@ -27,7 +27,7 @@ import java.util.List;
 public class AfterEvaluateDecisionTableEventImpl
         implements AfterEvaluateDecisionTableEvent {
 
-    private final String decisionName;
+    private final String nodeName;
     private final String decisionTableName;
     private final String        dtId;
     private final DMNResult     result;
@@ -36,8 +36,8 @@ public class AfterEvaluateDecisionTableEventImpl
     private final List<String> matchesIds;
     private final List<String> firedIds;
 
-    public AfterEvaluateDecisionTableEventImpl(String decisionName, String decisionTableName, String dtId, DMNResult result, List<Integer> matches, List<Integer> fired, List<String> matchesIds, List<String> firedIds) {
-        this.decisionName = decisionName;
+    public AfterEvaluateDecisionTableEventImpl(String nodeName, String decisionTableName, String dtId, DMNResult result, List<Integer> matches, List<Integer> fired, List<String> matchesIds, List<String> firedIds) {
+        this.nodeName = nodeName;
         this.decisionTableName = decisionTableName;
         this.dtId = dtId;
         this.result = result;
@@ -48,12 +48,12 @@ public class AfterEvaluateDecisionTableEventImpl
     }
 
     @Override
-    public String getDecisionName() {
-        return decisionName;
+    public String getNodeName() {
+        return nodeName;
     }
 
     @Override
-    public String getNodeName() {
+    public String getDecisionTableName() {
         return decisionTableName;
     }
 
@@ -88,7 +88,7 @@ public class AfterEvaluateDecisionTableEventImpl
 
     @Override
     public String toString() {
-        return "AfterEvaluateDecisionTableEvent{ nodeName='"+ decisionName +"' decisionTableName='" + decisionTableName + "' matches=" + getMatches() + " fired=" + getSelected() + "' matchesIds=" + getMatchesIds() + " firedIds=" + getSelectedIds() + " }";
+        return "AfterEvaluateDecisionTableEvent{ nodeName='"+ nodeName +"' decisionTableName='" + decisionTableName + "' matches=" + getMatches() + " fired=" + getSelected() + "' matchesIds=" + getMatchesIds() + " firedIds=" + getSelectedIds() + " }";
     }
 
 }
