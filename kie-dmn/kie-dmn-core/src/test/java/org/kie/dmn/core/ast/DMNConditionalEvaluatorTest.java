@@ -34,6 +34,7 @@ import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
 import org.kie.dmn.core.impl.DMNResultImpl;
 import org.kie.dmn.model.api.DMNElement;
+import org.kie.dmn.model.api.Decision;
 import org.mockito.ArgumentCaptor;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -46,6 +47,7 @@ import static org.mockito.Mockito.when;
 
 class DMNConditionalEvaluatorTest {
 
+    private static final String DECISION_NAME = "DECISION_NAME";
     private static final String IF_ELEMENT_ID = "IF_ELEMENT_ID";
     private static final String THEN_ELEMENT_ID = "THEN_ELEMENT_ID";
     private static final String ELSE_ELEMENT_ID = "ELSE_ELEMENT_ID";
@@ -81,7 +83,10 @@ class DMNConditionalEvaluatorTest {
         when(thenEvaluatorMock.evaluate(eventManagerMock, dmnResultMock)).thenReturn(thenEvaluationMock);
         when(elseEvaluatorMock.evaluate(eventManagerMock, dmnResultMock)).thenReturn(elseEvaluationMock);
 
-        DMNElement nodeMock = mock(DMNElement.class);
+        Decision decisionMock = mock(Decision.class);
+        when(decisionMock.getName()).thenReturn(DECISION_NAME);
+        DMNElement dmnElementMocked = mock(DMNElement.class);
+        when(dmnElementMocked.getParentDRDElement()).thenReturn(decisionMock);
 
         ifIdentifier = new DMNConditionalEvaluator.EvaluatorIdentifier(IF_ELEMENT_ID, DMNConditionalEvaluator.EvaluatorType.IF);
         thenIdentifier = new DMNConditionalEvaluator.EvaluatorIdentifier(THEN_ELEMENT_ID, DMNConditionalEvaluator.EvaluatorType.THEN);
@@ -91,7 +96,7 @@ class DMNConditionalEvaluatorTest {
         EVALUATOR_ID_MAP.put(thenIdentifier, thenEvaluatorMock);
         EVALUATOR_ID_MAP.put(elseIdentifier, elseEvaluatorMock);
 
-        dmnConditionalEvaluator = new DMNConditionalEvaluator("name", nodeMock, EVALUATOR_ID_MAP);
+        dmnConditionalEvaluator = new DMNConditionalEvaluator("name", dmnElementMocked, EVALUATOR_ID_MAP);
     }
 
     @BeforeEach

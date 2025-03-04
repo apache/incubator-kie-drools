@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<definitions xmlns="https://www.omg.org/spec/DMN/20230324/MODEL/" expressionLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/" namespace="https://kie.org/dmn/_0E7C2E43-9E1B-4AB6-8FD1-B3A1461B8C54" id="_30FBF557-D95E-4550-945D-D0B705BF9D62" name="DMN_A50C20F0-B784-4749-A8FB-CF008006B0EC" xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="https://kie.org/dmn/extensions/1.0">
+  <inputData name="A" id="_7715EDD7-067A-4D86-B7E1-031A7F66CF3D">
+    <variable name="A" id="_EDA0C3CD-5204-4622-9940-18B9932E3C55" typeRef="number" />
+  </inputData>
+  <decision name="New Decision" id="_E0D45F9F-76E3-4F85-8A0D-6127965F717A">
+    <variable id="_8D290D9E-32C0-4D5F-A011-9A94D2E64E1C" typeRef="number" name="New Decision" />
+    <informationRequirement id="_0C714487-A634-4CA0-AA68-CE1831492229">
+      <requiredInput href="#_7715EDD7-067A-4D86-B7E1-031A7F66CF3D" />
+    </informationRequirement>
+    <context id="_D95DDE65-71A6-4506-AB09-66A461CE12E0" typeRef="number" label="New Decision">
+      <contextEntry id="_74284FC2-FBB0-4C94-9026-4DDC0B7CC5CB">
+        <variable id="_27CA9E90-1952-48F0-A354-F3AEFED8016B" name="ContextEntry-1" typeRef="number" />
+        <conditional id="_6A6CABE7-BB94-4B34-B312-CCF97550D869" label="ContextEntry-1">
+          <if id="_80CE666C-3436-4767-8A1D-2BE427F5679C">
+            <literalExpression id="_80550B06-6A96-4C46-8D10-DD7D2E681C95" label="Expression Name">
+              <text>A &gt; 0</text>
+            </literalExpression>
+          </if>
+          <then id="_C69417CB-474E-4742-9D26-8D1ADB75CAEC">
+            <literalExpression id="_D9E73191-D7E0-43C6-966F-E45BA5086F4B" label="Expression Name">
+              <text>10</text>
+            </literalExpression>
+          </then>
+          <else id="_0C94AE89-A771-4CD8-A62F-B7BA7F8F2359">
+            <literalExpression id="_A8DD132E-F489-4162-966F-4F4C3F198423" label="Expression Name">
+              <text>-10</text>
+            </literalExpression>
+          </else>
+        </conditional>
+      </contextEntry>
+      <contextEntry id="_9AF5E1C3-7A38-47B8-B5AC-FD9772115CBC">
+        <literalExpression id="_3D8E3BB1-6A75-4087-B233-01BE40C8E403" typeRef="number" label="New Decision">
+          <text>ContextEntry-1</text>
+        </literalExpression>
+      </contextEntry>
+    </context>
+  </decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_0AA69AD4-557F-481B-B939-71EDD6D5BE8D" name="Default DRD" useAlternativeInputDataShape="false">
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_D95DDE65-71A6-4506-AB09-66A461CE12E0">
+            <kie:width>120</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_3D8E3BB1-6A75-4087-B233-01BE40C8E403">
+            <kie:width>190</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_80550B06-6A96-4C46-8D10-DD7D2E681C95">
+            <kie:width>190</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_D9E73191-D7E0-43C6-966F-E45BA5086F4B">
+            <kie:width>190</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_A8DD132E-F489-4162-966F-4F4C3F198423">
+            <kie:width>190</kie:width>
+          </kie:ComponentWidths>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="_71932E62-B3AF-4B94-82F5-E28AA1FDF211" dmnElementRef="_7715EDD7-067A-4D86-B7E1-031A7F66CF3D" isCollapsed="false" isListedInputData="false">
+        <dc:Bounds x="60" y="80" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="_765B15F7-DF29-4D6D-B4A8-2C0D9AC7CAC7" dmnElementRef="_E0D45F9F-76E3-4F85-8A0D-6127965F717A" isCollapsed="false" isListedInputData="false">
+        <dc:Bounds x="360" y="80" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="_4516657F-0861-4577-BC70-A5030CF0CEAC-AUTO-TARGET" dmnElementRef="_0C714487-A634-4CA0-AA68-CE1831492229" sourceElement="_71932E62-B3AF-4B94-82F5-E28AA1FDF211" targetElement="_765B15F7-DF29-4D6D-B4A8-2C0D9AC7CAC7">
+        <di:waypoint x="140" y="120" />
+        <di:waypoint x="440" y="120" />
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>
