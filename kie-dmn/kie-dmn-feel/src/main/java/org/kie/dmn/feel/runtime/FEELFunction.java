@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -86,6 +86,10 @@ public interface FEELFunction {
     default List feelDialectAdaptedInputList(List toAdapt) {
         // To be overridden by specific classes for B-FEEL compliance
         return toAdapt;
+    }
+
+    default boolean isCompatible(Type[] inputTypes, Type outputType) {
+        return true;
     }
 
     class Param {

@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -24,6 +24,7 @@ import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.lang.types.impl.ImmutableFPAWrappingPOJO;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
+import org.kie.dmn.feel.util.BuiltInTypeUtils;
 
 public class GetValueFunction extends BaseFEELFunction {
 
@@ -38,7 +39,7 @@ public class GetValueFunction extends BaseFEELFunction {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "m", "cannot be null"));
         } else if (m instanceof Map) {
             return FEELFnResult.ofResult(((Map<?, ?>) m).get(key));
-        } else if (BuiltInType.determineTypeFromInstance(m) == BuiltInType.UNKNOWN) {
+        } else if (BuiltInTypeUtils.determineTypeFromInstance(m) == BuiltInType.UNKNOWN) {
             return FEELFnResult.ofResult(new ImmutableFPAWrappingPOJO(m).getFEELProperty(key).toOptional().orElse(null));
         } else {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "m", "is not a context"));

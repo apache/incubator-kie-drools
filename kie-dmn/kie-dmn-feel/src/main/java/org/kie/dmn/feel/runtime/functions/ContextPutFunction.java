@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -27,6 +27,7 @@ import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.lang.types.impl.ImmutableFPAWrappingPOJO;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
+import org.kie.dmn.feel.util.BuiltInTypeUtils;
 
 
 public class ContextPutFunction extends BaseFEELFunction {
@@ -48,7 +49,7 @@ public class ContextPutFunction extends BaseFEELFunction {
 
         return result;
     }
-    
+
     public FEELFnResult<Map<String, Object>> invoke(@ParameterName("context") Object context, @ParameterName("keys") List keys, @ParameterName("value") Object value) {
         if (context == null) {
             return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "context", "cannot be null"));
@@ -60,7 +61,7 @@ public class ContextPutFunction extends BaseFEELFunction {
         }
         Object head = keys.get(0);
         if (!(head instanceof String)) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "keys", "an element is not a key: "+head));
+            return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "keys", "an element is not a key: " + head));
         }
         final String key0 = (String) head;
         if (keys.size() == 1) {
@@ -68,10 +69,10 @@ public class ContextPutFunction extends BaseFEELFunction {
         }
         final List keysTail = keys.subList(1, keys.size());
         final FEELFnResult<Map<String, Object>> result = toMap(context).flatMap(r -> invoke(r.get(key0), keysTail, value).map(rv -> put(r, key0, rv)));
-                
+
         return result;
     }
-    
+
     private static <K, V> Map<K, V> put(Map<K, V> map, K key, V value) {
         map.put(key, value);
         return map;
@@ -89,7 +90,7 @@ public class ContextPutFunction extends BaseFEELFunction {
                     FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "found a key which is not a string: " + kv.getKey()));
                 }
             }
-        } else if (BuiltInType.determineTypeFromInstance(context) == BuiltInType.UNKNOWN) {
+        } else if (BuiltInTypeUtils.determineTypeFromInstance(context) == BuiltInType.UNKNOWN) {
             result = new ImmutableFPAWrappingPOJO(context).allFEELProperties();
         } else {
             return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "context", "is not a context"));
