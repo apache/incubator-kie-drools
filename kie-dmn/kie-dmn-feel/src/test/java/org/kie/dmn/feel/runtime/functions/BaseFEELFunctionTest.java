@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -31,6 +31,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.util.EvaluationContextTestUtil;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.ast.BaseNode;
@@ -316,6 +317,64 @@ class BaseFEELFunctionTest {
         assertThat(parametersRetrieved).isNotNull();
         assertThat(parametersRetrieved).hasSize(1);
         assertThat(parametersRetrieved).extracting("type").containsExactly(List.class);
+    }
+
+    @Test
+    void testIsCompatibleTrue() {
+        BaseFEELFunction toTest = AllFunction.INSTANCE;
+        Type outputType = BuiltInType.BOOLEAN;
+        Type[] inputTypes = { BuiltInType.LIST };
+        assertThat(toTest.isCompatible(inputTypes, outputType)).isTrue();
+
+        toTest = DateFunction.INSTANCE;
+        outputType = BuiltInType.DATE;
+        inputTypes = new Type[]{BuiltInType.STRING};
+        assertThat(toTest.isCompatible(inputTypes, outputType)).isTrue();
+
+        inputTypes = new Type[]{ BuiltInType.NUMBER,BuiltInType.NUMBER,BuiltInType.NUMBER };
+        assertThat(toTest.isCompatible(inputTypes, outputType)).isTrue();
+
+
+        // TODO find correct mapping for Object[] and test
+        // AllFunction.invoke(Object[])
+//        toTest = AllFunction.INSTANCE;
+//        outputType = BuiltInType.BOOLEAN;
+
+        // TODO find correct mapping for FEELFunction and test
+        //SortFunction.invoke(EvaluationContext, List, FEELFunction)
+//        toTest = SortFunction.INSTANCE;
+//        outputType = BuiltInType.LIST;
+//        inputTypes = new Type[]{BuiltInType.CONTEXT, BuiltInType.LIST, BeforeFunction.INSTANCE };
+//        assertThat(toTest.isCompatible(inputTypes, outputType)).isTrue();
+
+    }
+
+    @Test
+    void testIsCompatibleFalse() {
+        BaseFEELFunction toTest = AllFunction.INSTANCE;
+        Type outputType = BuiltInType.DATE;
+        Type[] inputTypes = { BuiltInType.LIST };
+        assertThat(toTest.isCompatible(inputTypes, outputType)).isFalse();
+
+        outputType = BuiltInType.BOOLEAN;
+        inputTypes = new Type[]{BuiltInType.STRING};
+        assertThat(toTest.isCompatible(inputTypes, outputType)).isFalse();
+
+        toTest = DateFunction.INSTANCE;
+
+        outputType = BuiltInType.DATE;
+        inputTypes = new Type[]{BuiltInType.RANGE};
+        assertThat(toTest.isCompatible(inputTypes, outputType)).isFalse();
+
+        inputTypes = new Type[]{ BuiltInType.NUMBER,BuiltInType.STRING,BuiltInType.NUMBER };
+        assertThat(toTest.isCompatible(inputTypes, outputType)).isFalse();
+
+        outputType = BuiltInType.STRING;
+        inputTypes = new Type[]{BuiltInType.STRING};
+        assertThat(toTest.isCompatible(inputTypes, outputType)).isFalse();
+
+        inputTypes = new Type[]{ BuiltInType.NUMBER,BuiltInType.NUMBER,BuiltInType.NUMBER };
+        assertThat(toTest.isCompatible(inputTypes, outputType)).isFalse();
     }
 
 }
