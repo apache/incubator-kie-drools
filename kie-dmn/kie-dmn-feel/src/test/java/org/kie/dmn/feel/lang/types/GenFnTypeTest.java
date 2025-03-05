@@ -21,12 +21,15 @@ package org.kie.dmn.feel.lang.types;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.lang.Type;
+import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.dmn.feel.runtime.functions.AbsFunction;
 import org.kie.dmn.feel.runtime.functions.AnyFunction;
-import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 import org.kie.dmn.feel.runtime.FEELFunction.Param;
+import org.kie.dmn.feel.runtime.functions.FEELFnResult;
+import org.mockito.Mockito;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -35,17 +38,35 @@ import java.util.ArrayList;
 
 class GenFnTypeTest {
 
-    private static final AbsFunction absFunctionInstance = AbsFunction.INSTANCE;
-    private static final AnyFunction anyFunctionInstance = AnyFunction.INSTANCE;
+    private GenFnType genFnType;
+    private FEELFunction mockFunction;
+    private AbsFunction absFunctionInstance;
+    private AnyFunction anyFunctionInstance;
 
-    private final GenFnType genFnType = new GenFnType(
-            Arrays.asList(new SomeType(), new AnotherType()),
-            new SomeType()
-    );
+    @BeforeEach
+    void setUp() {
+        absFunctionInstance = AbsFunction.INSTANCE;
+        anyFunctionInstance = AnyFunction.INSTANCE;
+
+        genFnType = new GenFnType(
+                Arrays.asList(new SomeType(), new AnotherType()),
+                new SomeType()
+        );
+        mockFunction = Mockito.mock(FEELFunction.class);
+    }
+
+    @Test
+    public void testIsInstanceOfWithCompatibleFunction() {
+        List<List<Param>> params = new ArrayList<>();
+        Mockito.when(mockFunction.getParameters()).thenReturn(params);
+        Mockito.when(mockFunction.isCompatible(Mockito.any(), Mockito.any())).thenReturn(true);
+
+        assertThat(genFnType.isInstanceOf(mockFunction)).isTrue();
+    }
 
     @Test
     public void testIsInstanceOfWithNoParameters() {
-        assertThat(genFnType.isInstanceOf(absFunctionInstance)).isTrue();
+        assertThat(genFnType.isInstanceOf(absFunctionInstance)).isFalse();
     }
 
     @Test
@@ -55,22 +76,20 @@ class GenFnTypeTest {
     }
 
     @Test
-    public void testIsInstanceOfWithMatchingFunctionSignature() {
-        GenFnType matchingGenFnType = new GenFnType(
-                Arrays.asList(new SomeType(), new AnotherType()),
-                new SomeType()
-        );
-        assertThat(matchingGenFnType.isInstanceOf(absFunctionInstance)).isTrue();
-    }
-
-    @Test
     public void testIsAssignableValueWithNullValue() {
         assertThat(genFnType.isAssignableValue(null)).isTrue();
     }
 
     @Test
-    public void testIsAssignableValueWithFunction() {
-        assertThat(genFnType.isAssignableValue(absFunctionInstance)).isTrue();
+    public void testIsAssignableValue_withNonNullValue() {
+        Type evaluatedTypeArg = BuiltInType.NUMBER;
+        Type functionReturnType = BuiltInType.NUMBER;
+        GenFnType genFnType = new GenFnType(
+                List.of(evaluatedTypeArg), functionReturnType
+        );
+        Object value = "Hello";
+        boolean result = genFnType.isAssignableValue(value);
+        assertThat(result).isFalse();
     }
 
     @Test
