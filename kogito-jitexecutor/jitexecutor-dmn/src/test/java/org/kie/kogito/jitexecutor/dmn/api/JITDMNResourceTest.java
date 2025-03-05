@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -56,6 +57,7 @@ public class JITDMNResourceTest {
     private static String validModel15;
     private static String modelWithExtensionElements;
     private static String modelWithMultipleEvaluationHitIds;
+    private static String modelWithNestedConditionalEvaluationHitIds;
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
@@ -72,6 +74,7 @@ public class JITDMNResourceTest {
         validModel15 = getModelFromIoUtils("valid_models/DMNv1_5/RiskScore_Simple.dmn");
         modelWithExtensionElements = getModelFromIoUtils("valid_models/DMNv1_x/testWithExtensionElements.dmn");
         modelWithMultipleEvaluationHitIds = getModelFromIoUtils("valid_models/DMNv1_5/MultipleHitRules.dmn");
+        modelWithNestedConditionalEvaluationHitIds = getModelFromIoUtils("valid_models/DMNv1_5/NestedConditional.dmn");
     }
 
     @Test
@@ -179,6 +182,41 @@ public class JITDMNResourceTest {
         Assertions.assertThat(evaluationHitIdsNode).hasSize(3);
 
         final Map<String, Integer> expectedEvaluationHitIds = Map.of(rule0, 3, rule1, 2, rule2, 1);
+        evaluationHitIdsNode.fields().forEachRemaining(entry -> Assertions.assertThat(expectedEvaluationHitIds).containsEntry(entry.getKey(), entry.getValue().asInt()));
+    }
+
+    @Test
+    void testjitdmnResultEndpointWithNestedConditionalEvaluationHitIds() throws JsonProcessingException {
+        final Map<String, Object> context = new HashMap<>();
+        context.put("A", 1);
+        JITDMNPayload jitdmnpayload = new JITDMNPayload(modelWithNestedConditionalEvaluationHitIds, context);
+        final String thenElementId = "_C69417CB-474E-4742-9D26-8D1ADB75CAEC";
+        final String elseElementId = "_0C94AE89-A771-4CD8-A62F-B7BA7F8F2359";
+        final String decisionId = "_E0D45F9F-76E3-4F85-8A0D-6127965F717A";
+        String response = given().contentType(ContentType.JSON)
+                .body(jitdmnpayload)
+                .when().post("/jitdmn/dmnresult")
+                .then()
+                .statusCode(200)
+                .body(containsString("New Decision"),
+                        containsString(EVALUATION_HIT_IDS_FIELD_NAME),
+                        containsString(decisionId))
+                .extract()
+                .asString();
+        JsonNode retrieved = MAPPER.readTree(response);
+        ArrayNode decisionResultsNode = (ArrayNode) retrieved.get("decisionResults");
+        Iterator<JsonNode> decisionResultsIterator = decisionResultsNode.elements();
+        Iterable<JsonNode> decisionResultsIterable = () -> decisionResultsIterator;
+        ObjectNode decisionNode = StreamSupport.stream(decisionResultsIterable.spliterator(), false)
+                .filter(jsonNode -> jsonNode instanceof ObjectNode &&
+                        jsonNode.has("decisionId") &&
+                        jsonNode.get("decisionId").asText().equals(decisionId))
+                .findFirst()
+                .map(ObjectNode.class::cast)
+                .orElseThrow(() -> new AssertionError(String.format("Expected decisionId %s not found", decisionId)));
+        ObjectNode evaluationHitIdsNode = (ObjectNode) decisionNode.get(EVALUATION_HIT_IDS_FIELD_NAME);
+        Assertions.assertThat(evaluationHitIdsNode).hasSize(1);
+        final Map<String, Integer> expectedEvaluationHitIds = Map.of(thenElementId, 1);
         evaluationHitIdsNode.fields().forEachRemaining(entry -> Assertions.assertThat(expectedEvaluationHitIds).containsEntry(entry.getKey(), entry.getValue().asInt()));
     }
 

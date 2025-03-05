@@ -249,6 +249,35 @@ public class JITDMNServiceImplTest {
     }
 
     @Test
+    void nestedConditionalEvaluationHitIdsCheck() throws IOException {
+        final String thenElementId = "_C69417CB-474E-4742-9D26-8D1ADB75CAEC";
+        final String elseElementId = "_0C94AE89-A771-4CD8-A62F-B7BA7F8F2359";
+        String nestedConditionalModel = getModelFromIoUtils("valid_models/DMNv1_5/NestedConditional.dmn");
+
+        final Map<String, Object> context = new HashMap<>();
+        context.put("A", 1);
+
+        JITDMNResult retrieved = jitdmnService.evaluateModel(nestedConditionalModel, context);
+        assertThat(retrieved.getMessages()).isEmpty();
+        JITDMNDecisionResult retrievedDecisionResult = (JITDMNDecisionResult) retrieved.getDecisionResultByName("New Decision");
+        assertThat(retrievedDecisionResult.getResult()).isEqualTo(BigDecimal.valueOf(10));
+        Map<String, Integer> evaluationHitIds = retrievedDecisionResult.getEvaluationHitIds();
+        assertThat(evaluationHitIds).isNotNull()
+                .containsExactlyInAnyOrderEntriesOf(Map.of(thenElementId, 1));
+
+        //
+        context.clear();
+        context.put("A", 0);
+        retrieved = jitdmnService.evaluateModel(nestedConditionalModel, context);
+        assertThat(retrieved.getMessages()).isEmpty();
+        retrievedDecisionResult = (JITDMNDecisionResult) retrieved.getDecisionResultByName("New Decision");
+        assertThat(retrievedDecisionResult.getResult()).isEqualTo(BigDecimal.valueOf(-10));
+        evaluationHitIds = retrievedDecisionResult.getEvaluationHitIds();
+        assertThat(evaluationHitIds).isNotNull()
+                .containsExactlyInAnyOrderEntriesOf(Map.of(elseElementId, 1));
+    }
+
+    @Test
     void testExplainability() throws IOException {
         String allTypesModel = getModelFromIoUtils("valid_models/DMNv1_x/allTypes.dmn");
 

@@ -39,7 +39,6 @@ import org.slf4j.LoggerFactory;
 public class JITDMNListener implements DMNRuntimeEventListener {
 
     private final Map<String, Map<String, Integer>> decisionEvaluationHitIdsMap = new HashMap<>();
-
     private static final Logger LOGGER = LoggerFactory.getLogger(JITDMNListener.class);
 
     @Override
@@ -81,7 +80,7 @@ public class JITDMNListener implements DMNRuntimeEventListener {
     @Override
     public void afterConditionalEvaluation(AfterConditionalEvaluationEvent event) {
         logEvent(event);
-        populateDecisionAndEvaluationHitIdMaps(event.getNodeName(), Collections.singleton(event.getExecutedId()));
+        populateDecisionAndEvaluationHitIdMaps(event.getDecisionName(), Collections.singleton(event.getExecutedId()));
     }
 
     public Map<String, Map<String, Integer>> getDecisionEvaluationHitIdsMap() {
