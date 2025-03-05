@@ -3067,10 +3067,41 @@ In this example, the condition is intended to be empty but the word `None` is us
 --
 
 [id="con-drl-legacy_{context}"]
-== Legacy DRL conventions
+== Legacy DRL conventions for rule unit
 
 [role="_abstract"]
-The following Drools Rule Language (DRL) conventions are no longer applicable or optimal in {PRODUCT} but might be available for backward compatibility.
+The following Drools Rule Language (DRL) conventions are no longer applicable or optimal with rule unit but might be available for backward compatibility. Note that they are still fully supported in traditional DRL.
+
+=== Global variables
+
+Global variables (`global`) are replaced by properties of a RuleUnitData. Properties of a RuleUnitData can be referred in DRL, so used just like global variables.
+
+.Example properties of a RuleUnitData as global
+[source,java]
+----
+public class HelloWorldUnit implements RuleUnitData {
+
+    private final List<String> results = new ArrayList<>();
+
+    public List<String> getResults() {
+        return results;
+    }
+
+    // DataSources...
+}
+----
+
+[source]
+----
+unit HelloWorldUnit;
+
+rule HelloWorld
+when
+    /strings [ this == "Hello World" ]
+then
+    results.add("it worked!");
+end
+----
 
 === Legacy functions in DRL
 
@@ -3126,34 +3157,9 @@ end
 A function declared in a DRL file cannot be imported to a rule in a different package while a Java static method in a different package can be imported.
 ====
 
-// see https://stackoverflow.com/a/75788542/893991
-[NOTE]
-====
-A function body cannot access globals.
-
-From the RHS of a rule, you can always pass a global as a function parameter when invoking the function, for exmaple:
-
-[source]
-----
-global List names;
-
-rule "Using a function with parameters"
-  when
-    // Empty
-  then
-    addName( names, "James" );
-end
-
-function void addName(List names, String applicantName) {
-  names.add(applicantName);
-}
-----
-
-====
-
 === Legacy rule attributes
 
-The following attributes were used in earlier versions of the {RULE_ENGINE} to provide grouping of rules across a rule base. These attributes are superseded by DRL rule units and are only available for backward compatibility reasons. If you need to group your rules, use DRL rule units as a clearer and simpler grouping method.
+The following attributes are used in traditional DRL to provide grouping of rules across a rule base. If you need to group your rules with rule unit, rule units themselves are a clearer and simpler grouping method.
 
 .Legacy rule attributes
 [cols="30%,70%", options="header"]
@@ -3174,7 +3180,7 @@ Example: `ruleflow-group "GroupName"`
 
 === Legacy DRL rule condition syntax
 
-In {PRODUCT}, the preferred syntax for DRL rule conditions is through OOPath expressions. For legacy use cases, you can write rules using traditional pattern matching. In this case, you must explicitly indicate the data source using the `from` clause, as shown in the following comparative examples:
+With rule unit, the preferred syntax for DRL rule conditions is through OOPath expressions. For legacy use cases, you can write rules using traditional pattern matching. In this case, you must explicitly indicate the data source using the `from` clause, as shown in the following comparative examples:
 
 .Example `PersonRules` DRL file using OOPath notation
 [source]
@@ -3185,11 +3191,11 @@ unit PersonRules;
 import org.acme.Person;
 
 rule isAdult
-	when
-		$person: /persons[ age > 18 ]
-	then
+    when
+        $person: /persons[ age > 18 ]
+    then
     modify($person) {
-    	setAdult(true)
+        setAdult(true)
     };
 end
 ----
@@ -3203,11 +3209,11 @@ unit PersonRules;
 import org.acme.Person;
 
 rule isAdult
-	when
-		$person: Person(age > 18) from person
-	then
+    when
+        $person: Person(age > 18) from person
+    then
     modify($person) {
-    	setAdult(true)
+        setAdult(true)
     };
 end
 ----
@@ -3219,7 +3225,7 @@ Using OOPath, you can write nested paths. For example, `/persons[name == "Mark"]
 
 === Legacy DRL rule condition elements
 
-The following rule condition elements (keywords) are obsolete in {PRODUCT}:
+The following rule condition elements (keywords) are obsolete with rule unit:
 
 `from`::
 (Obsolete with OOPath notation)
