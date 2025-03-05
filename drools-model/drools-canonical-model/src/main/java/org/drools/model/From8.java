@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,29 +16,18 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.dmn.api.core.event;
 
-import java.util.List;
+package org.drools.model;
 
-public interface AfterEvaluateDecisionTableEvent extends DMNEvent {
+import org.drools.model.functions.Function8;
 
-    /**
-     * The decision that this node relates to
-     * @return
-     */
-    String getNodeName();
-
-    String getDecisionTableName();
-    
-    default String getDecisionTableId() {
-        return null;
-    }
-
-    List<Integer> getMatches();
-
-    List<Integer> getSelected();
-
-    List<String> getMatchesIds();
-
-    List<String> getSelectedIds();
+public interface From8<A, B, C, D, E, F, G, H> extends From<A> {
+    Variable<B> getVariable2();
+    Variable<C> getVariable3();
+    Variable<D> getVariable4();
+    Variable<E> getVariable5();
+    Variable<F> getVariable6();
+    Variable<G> getVariable7();
+    Variable<H> getVariable8();
+    Function8<A, B, C, D, E, F, G, H, ?> getProvider();
 }

@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,29 +16,31 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.dmn.api.core.event;
 
-import java.util.List;
+package org.drools.model.functions;
 
-public interface AfterEvaluateDecisionTableEvent extends DMNEvent {
+import java.io.Serializable;
 
-    /**
-     * The decision that this node relates to
-     * @return
-     */
-    String getNodeName();
+public interface Function8<A, B, C, D, E, F, G, H, R> extends Serializable {
 
-    String getDecisionTableName();
-    
-    default String getDecisionTableId() {
-        return null;
+    R apply(A a, B b, C c, D d, E e, F f, G g, H h);
+
+    class Impl<A, B, C, D, E, F, G, H, R> extends IntrospectableLambda implements Function8<A, B, C, D, E, F, G, H, R> {
+
+        private final Function8<A, B, C, D, E, F, G, H, R> function;
+
+        public Impl(Function8<A, B, C, D, E, F, G, H, R> function) {
+            this.function = function;
+        }
+
+        @Override
+        public R apply(A a, B b, C c, D d, E e, F f, G g, H h) {
+            return function.apply(a, b, c, d, e, f, g, h);
+        }
+
+        @Override
+        public Object getLambda() {
+            return function;
+        }
     }
-
-    List<Integer> getMatches();
-
-    List<Integer> getSelected();
-
-    List<String> getMatchesIds();
-
-    List<String> getSelectedIds();
 }

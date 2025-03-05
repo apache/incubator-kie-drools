@@ -41,6 +41,7 @@ import org.kie.dmn.api.core.ast.InputDataNode;
 import org.kie.dmn.api.core.ast.ItemDefNode;
 import org.kie.dmn.api.core.event.AfterConditionalEvaluationEvent;
 import org.kie.dmn.api.core.event.AfterEvaluateConditionalEvent;
+import org.kie.dmn.api.core.event.AfterEvaluateDecisionEvent;
 import org.kie.dmn.api.core.event.AfterEvaluateDecisionTableEvent;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.api.event.DefaultDMNRuntimeEventListener;
@@ -452,11 +453,72 @@ public class DMNInputRuntimeTest extends BaseInterpretedVsCompiledTest {
         ctx2.set("Credit Score", "Excellent");
         ctx2.set("DTI", 10);
         final DMNResult dmnResult2 = runtime.evaluateAll(dmnModel, ctx2);
-        assertThat(dmnResult2.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult1.getMessages())).isFalse();
+        assertThat(dmnResult2.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult2.getMessages())).isFalse();
         assertThat(dmnResult2.getContext().get("Risk Score")).isEqualTo(BigDecimal.valueOf(20));
         assertThat(evaluateConditionalIds).hasSize(1).allMatch(id -> id.equals(ifElementId));
         assertThat(conditionalEvaluationIds).hasSize(1).allMatch(id -> id.equals(thenElementId));
         assertThat(executedRuleIds).hasSize(2).contains(ruleId1, ruleId4);
+    }
+
+    @ParameterizedTest
+    @MethodSource("params")
+    void nestedConditionalEvaluationHitIdsCheck(boolean useExecModelCompiler) {
+        init(useExecModelCompiler);
+        final String ifElementId = "_80CE666C-3436-4767-8A1D-2BE427F5679C";
+        final String thenElementId = "_C69417CB-474E-4742-9D26-8D1ADB75CAEC";
+        final String elseElementId = "_0C94AE89-A771-4CD8-A62F-B7BA7F8F2359";
+        final String decisionId = "_E0D45F9F-76E3-4F85-8A0D-6127965F717A";
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("valid_models/DMNv1_5/NestedConditional.dmn",
+                                                                this.getClass());
+
+        final List<String> evaluateConditionalIds = new ArrayList<>();
+        final List<String> conditionalEvaluationIds = new ArrayList<>();
+        final List<String> executedDecisionIds = new ArrayList<>();
+        runtime.addListener(new DefaultDMNRuntimeEventListener() {
+
+            @Override
+            public void afterConditionalEvaluation(AfterConditionalEvaluationEvent event) {
+                conditionalEvaluationIds.add(event.getExecutedId());
+            }
+
+            @Override
+            public void afterEvaluateConditional(AfterEvaluateConditionalEvent event) {
+                evaluateConditionalIds.add(event.getExecutedId());
+            }
+
+            @Override
+            public void afterEvaluateDecision(AfterEvaluateDecisionEvent event) {
+                executedDecisionIds.add(event.getDecision().getId());
+            }
+
+        });
+        final DMNModel dmnModel = runtime.getModel(
+                "https://kie.org/dmn/_0E7C2E43-9E1B-4AB6-8FD1-B3A1461B8C54",
+                "DMN_A50C20F0-B784-4749-A8FB-CF008006B0EC");
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
+
+        final DMNContext ctx1 = runtime.newContext();
+        ctx1.set("A", 1);
+        final DMNResult dmnResult1 = runtime.evaluateAll(dmnModel, ctx1);
+        assertThat(dmnResult1.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult1.getMessages())).isFalse();
+        assertThat(dmnResult1.getContext().get("New Decision")).isEqualTo(BigDecimal.valueOf(10));
+        assertThat(evaluateConditionalIds).hasSize(1).allMatch(id -> id.equals(ifElementId));
+        assertThat(conditionalEvaluationIds).hasSize(1).allMatch(id -> id.equals(thenElementId));
+        assertThat(executedDecisionIds).hasSize(1).contains(decisionId);
+
+        //
+        evaluateConditionalIds.clear();
+        conditionalEvaluationIds.clear();
+        executedDecisionIds.clear();
+        final DMNContext ctx2 = runtime.newContext();
+        ctx2.set("A", 0);
+        final DMNResult dmnResult2 = runtime.evaluateAll(dmnModel, ctx2);
+        assertThat(dmnResult2.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult2.getMessages())).isFalse();
+        assertThat(dmnResult2.getContext().get("New Decision")).isEqualTo(BigDecimal.valueOf(-10));
+        assertThat(evaluateConditionalIds).hasSize(1).allMatch(id -> id.equals(ifElementId));
+        assertThat(conditionalEvaluationIds).hasSize(1).allMatch(id -> id.equals(elseElementId));
+        assertThat(executedDecisionIds).hasSize(1).contains(decisionId);
     }
 
     @ParameterizedTest
