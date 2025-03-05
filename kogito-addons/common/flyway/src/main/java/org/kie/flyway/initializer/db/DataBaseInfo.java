@@ -48,4 +48,8 @@ public class DataBaseInfo {
         String[] fragments = name.split(NORMALIZATION_REGEX);
         return String.join("-", fragments).toLowerCase();
     }
+
+    public String toString() {
+        return "DataBaseInfo [name=" + name + ", version=" + version + ", normalizedName=" + normalizedName + "]";
+    }
 }
