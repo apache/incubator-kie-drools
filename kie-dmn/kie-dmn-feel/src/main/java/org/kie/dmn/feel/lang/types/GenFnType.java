@@ -76,6 +76,10 @@ public class GenFnType implements SimpleType {
     }
 
     static boolean checkSignatures(List<List<Param>> currentGenFnTypeParams, List<Type> evaluatedTypeArgs) {
+        // TODO
+        // This method, and the overall code, works by a side-effect, since there is only one calling code, isInstanceOf,
+        // that checks for empty parameters
+        // if this method relies on the assumption that currentGenFnTypeParams is not empty, then an exception should be thrown when an empty list is received
         List<List<Param>> signatures = currentGenFnTypeParams.stream().filter(signature -> signature.size() == evaluatedTypeArgs.size()).toList();
         for (List<Param> signature : signatures) {
             if (signature.size() == evaluatedTypeArgs.size() && IntStream.range(0, evaluatedTypeArgs.size()).allMatch(i -> evaluatedTypeArgs.get(i).conformsTo(signature.get(i).type))) {

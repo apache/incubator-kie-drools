@@ -334,6 +334,19 @@ class BaseFEELFunctionTest {
         inputTypes = new Type[]{ BuiltInType.NUMBER,BuiltInType.NUMBER,BuiltInType.NUMBER };
         assertThat(toTest.isCompatible(inputTypes, outputType)).isTrue();
 
+
+        // TODO find correct mapping for Object[] and test
+        // AllFunction.invoke(Object[])
+//        toTest = AllFunction.INSTANCE;
+//        outputType = BuiltInType.BOOLEAN;
+
+        // TODO find correct mapping for FEELFunction and test
+        //SortFunction.invoke(EvaluationContext, List, FEELFunction)
+//        toTest = SortFunction.INSTANCE;
+//        outputType = BuiltInType.LIST;
+//        inputTypes = new Type[]{BuiltInType.CONTEXT, BuiltInType.LIST, BeforeFunction.INSTANCE };
+//        assertThat(toTest.isCompatible(inputTypes, outputType)).isTrue();
+
     }
 
     @Test

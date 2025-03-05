@@ -52,25 +52,37 @@ class GenFnTypeTest {
                 Arrays.asList(new SomeType(), new AnotherType()),
                 new SomeType()
         );
+        // TODO remove usage of mock
         mockFunction = Mockito.mock(FEELFunction.class);
     }
 
     @Test
     public void testIsInstanceOfWithCompatibleFunction() {
+        // TODO remove usage of mock
+        // Instead, use a properly instantiated GenFnType that match the Function used as argument
         List<List<Param>> params = new ArrayList<>();
         Mockito.when(mockFunction.getParameters()).thenReturn(params);
         Mockito.when(mockFunction.isCompatible(Mockito.any(), Mockito.any())).thenReturn(true);
-
         assertThat(genFnType.isInstanceOf(mockFunction)).isTrue();
     }
 
     @Test
+    public void testIsInstanceOfWithIncompatibleFunction() {
+        // TODO
+        // Use a properly instantiated GenFnType that does not match the Function used as argument
+        // copy  copy testing values from testIsAssignableValuWithInvalidValue
+    }
+
+    @Test
     public void testIsInstanceOfWithNoParameters() {
+        // remove - to be replaced by testIsInstanceOfWithIncompatibleFunction
         assertThat(genFnType.isInstanceOf(absFunctionInstance)).isFalse();
     }
 
     @Test
     public void testIsInstanceOfWithNonMatchingParameters() {
+        // remove the anyFunctionInstance.invoke invocation, it makes test unclear.
+        // any object that is not a FEELFunction should return false
         FEELFnResult<Boolean> feelFn = anyFunctionInstance.invoke(new Object[]{Boolean.TRUE, Boolean.TRUE});
         assertThat(genFnType.isInstanceOf(feelFn)).isFalse();
     }
@@ -81,7 +93,13 @@ class GenFnTypeTest {
     }
 
     @Test
-    public void testIsAssignableValue_withNonNullValue() {
+    public void testIsAssignableValuWithValidValue() {
+        // TODO
+        // copy testing values from testIsInstanceOfWithCompatibleFunction
+    }
+
+    @Test
+    public void testIsAssignableValuWithInvalidValue() {
         Type evaluatedTypeArg = BuiltInType.NUMBER;
         Type functionReturnType = BuiltInType.NUMBER;
         GenFnType genFnType = new GenFnType(
@@ -93,7 +111,22 @@ class GenFnTypeTest {
     }
 
     @Test
-    public void testConformsToWithSignature() {
+    public void testConformsToWithValidBuiltinType() {
+        assertThat(genFnType.conformsTo(BuiltInType.FUNCTION)).isTrue();
+    }
+
+    @Test
+    public void testConformsToWithInvalidBuiltinType() {
+        //  TODO
+    }
+
+    @Test
+    public void testConformsToWithValidGenFnType() {
+        // TODO
+    }
+
+    @Test
+    public void testConformsToWithInvalidGenFnType() {
         GenFnType matchingGenFnType = new GenFnType(
                 Collections.singletonList(new SomeType()),
                 new SomeType()
@@ -102,12 +135,7 @@ class GenFnTypeTest {
     }
 
     @Test
-    public void testConformsToWithFunctionType() {
-        assertThat(genFnType.conformsTo(BuiltInType.FUNCTION)).isTrue();
-    }
-
-    @Test
-    void testCheckSignatures_withMatchingSignatures() {
+    void testCheckSignaturesWithMatchingSignatures() {
         List<Type> argsGen = Arrays.asList(new SomeType(), new AnotherType());
         List<Type> paramTypes = Arrays.asList(new SomeType(), new AnotherType());
         List<String> paramNames = Arrays.asList("param1", "param2");
@@ -117,7 +145,7 @@ class GenFnTypeTest {
     }
 
     @Test
-    void testCheckSignatures_withNonMatchingSignatures() {
+    void testCheckSignaturesWithNonMatchingSignatures() {
         List<Type> argsGen = Arrays.asList(new SomeType(), new AnotherType());
         List<Type> paramTypes = Arrays.asList(new SomeType(), new YetAnotherType());
         List<String> paramNames = Arrays.asList("param1", "param2");
@@ -127,7 +155,7 @@ class GenFnTypeTest {
     }
 
     @Test
-    void testCheckSignatures_withSignatureSizeMismatch() {
+    void testCheckSignaturesWithSignatureSizeMismatch() {
         List<Type> argsGen = Arrays.asList(new SomeType(), new AnotherType());
         List<Type> paramTypes = List.of(new SomeType());
         List<String> paramNames = List.of("param1");
@@ -137,7 +165,7 @@ class GenFnTypeTest {
     }
 
     @Test
-    void testCheckSignatures_withEmptyParams() {
+    void testCheckSignaturesWithEmptyParams() {
         List<Type> argsGen = Arrays.asList(new SomeType(), new AnotherType());
         List<List<Param>> params = List.of();
 
@@ -145,7 +173,7 @@ class GenFnTypeTest {
     }
 
     @Test
-    void testCheckSignatures_withEmptyArgsGen() {
+    void testCheckSignaturesWithEmptyArgsGen() {
         List<Type> argsGen = List.of();
         List<Type> paramTypes = Arrays.asList(new SomeType(), new AnotherType());
         List<String> paramNames = Arrays.asList("param1", "param2");
@@ -155,7 +183,9 @@ class GenFnTypeTest {
     }
 
     @Test
-    void testCheckSignatures_withMatchingEmptySignature() {
+    void testCheckSignaturesWithMatchingEmptySignature() {
+        // TODO
+        // This should throw an exception, because checkSignatures is implemented on the assumption that params is not empty
         List<Type> argsGen = List.of();
         List<List<Param>> params = List.of();
 
