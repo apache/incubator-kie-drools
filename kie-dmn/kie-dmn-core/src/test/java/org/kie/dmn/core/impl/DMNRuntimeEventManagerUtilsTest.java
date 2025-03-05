@@ -82,26 +82,30 @@ class DMNRuntimeEventManagerUtilsTest {
     @Test
     void fireAfterConditionalEvaluation() {
         EvaluatorResult evaluatorResult = mock(EvaluatorResult.class);
-        String name = "NAME";
+        String conditionalName = "NAME";
+        String decisionName = "DECISION";
         String executedId = "EXECUTED_ID";
-        DMNRuntimeEventManagerUtils.fireAfterConditionalEvaluation(eventManagerMock, name, evaluatorResult, executedId);
+        DMNRuntimeEventManagerUtils.fireAfterConditionalEvaluation(eventManagerMock, conditionalName, decisionName, evaluatorResult, executedId);
         ArgumentCaptor<AfterConditionalEvaluationEvent> conditionalEvaluationEventArgumentCaptor = ArgumentCaptor.forClass(AfterConditionalEvaluationEvent.class);
         verify(spiedListener).afterConditionalEvaluation (conditionalEvaluationEventArgumentCaptor.capture());
         AfterConditionalEvaluationEvent evaluateConditionalEvent = conditionalEvaluationEventArgumentCaptor.getValue();
         assertThat(evaluateConditionalEvent).isNotNull();
-        assertThat(evaluateConditionalEvent.getNodeName()).isEqualTo(name);
+        assertThat(evaluateConditionalEvent.getNodeName()).isEqualTo(conditionalName);
+        assertThat(evaluateConditionalEvent.getDecisionName()).isEqualTo(decisionName);
         assertThat(evaluateConditionalEvent.getEvaluatorResultResult()).isEqualTo(evaluatorResult);
         assertThat(evaluateConditionalEvent.getExecutedId()).isEqualTo(executedId);
     }
 
     @Test
     void testConditionalEvent() {
-        EvaluatorResult evaluatorResult = mock(EvaluatorResult.class);
-        String name = "B [return]";
-        String executedId = "_96D34F2E-3CC0-45A6-9455-2F960361A9CC";
+        String decisionName = "B";
+        String executedId = "_F9D2FA33-4604-4AAA-8FF1-5A4AC5055385";
         Resource resource = ResourceFactory.newClassPathResource("valid_models/DMNv1_5/ConditionalEvent.dmn");
-        DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults().buildConfiguration()
-                .fromResources(Collections.singletonList(resource)).getOrElseThrow(RuntimeException::new);
+        DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults()
+                .buildConfiguration()
+                .fromResources(Collections.singletonList(resource))
+                .getOrElseThrow(RuntimeException::new);
+        dmnRuntime.addListener(spiedListener);
         assertThat(dmnRuntime).isNotNull();
         String nameSpace = "https://kie.org/dmn/_5B448C78-0DBF-4554-92A4-8C0247EB01FD";
 
@@ -110,18 +114,15 @@ class DMNRuntimeEventManagerUtilsTest {
         DMNContext context = DMNFactory.newContext();
         context.set("A", List.of(3));
         DMNResult dmnResult = dmnRuntime.evaluateAll(dmnModel, context);
-        assertThat(dmnResult.getDecisionResultByName("B").getResult()).isEqualTo(List.of("pos"));
+        assertThat(dmnResult.getDecisionResultByName(decisionName).getResult()).isEqualTo(List.of("pos"));
 
-        DMNRuntimeEventManager eventManager = new DMNRuntimeEventManagerImpl();
-        eventManager.addListener(spiedListener);
-
-        DMNRuntimeEventManagerUtils.fireAfterConditionalEvaluation(eventManager, name, evaluatorResult, executedId);
         ArgumentCaptor<AfterConditionalEvaluationEvent> conditionalEvaluationEventArgumentCaptor = ArgumentCaptor.forClass(AfterConditionalEvaluationEvent.class);
         verify(spiedListener).afterConditionalEvaluation (conditionalEvaluationEventArgumentCaptor.capture());
         AfterConditionalEvaluationEvent evaluateConditionalEvent = conditionalEvaluationEventArgumentCaptor.getValue();
         assertThat(evaluateConditionalEvent).isNotNull();
-        assertThat(evaluateConditionalEvent.getNodeName()).isEqualTo(name);
-        assertThat(evaluateConditionalEvent.getEvaluatorResultResult()).isEqualTo(evaluatorResult);
+        assertThat(evaluateConditionalEvent.getDecisionName()).isEqualTo(decisionName);
+        EvaluatorResult retrieved = evaluateConditionalEvent.getEvaluatorResultResult();
+        assertThat(retrieved).isNotNull();
         assertThat(evaluateConditionalEvent.getExecutedId()).isEqualTo(executedId);
     }
 }
