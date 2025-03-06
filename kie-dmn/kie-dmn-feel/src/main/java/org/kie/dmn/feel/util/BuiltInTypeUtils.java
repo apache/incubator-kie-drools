@@ -117,7 +117,7 @@ public class BuiltInTypeUtils {
             return Collections.singleton(BuiltInType.RANGE);
         } else if (FEELFunction.class.isAssignableFrom(clazz)) {
             return Collections.singleton(BuiltInType.FUNCTION);
-        } else if (List.class.isAssignableFrom(clazz)) {
+        } else if (List.class.isAssignableFrom(clazz) || clazz.isArray()) {
             return Collections.singleton(BuiltInType.LIST);
         } else if (Map.class.isAssignableFrom(clazz)) {
             return Collections.singleton(BuiltInType.CONTEXT);
