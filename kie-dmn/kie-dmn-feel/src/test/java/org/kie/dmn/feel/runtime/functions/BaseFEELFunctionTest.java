@@ -337,7 +337,7 @@ class BaseFEELFunctionTest {
         toTest = AllFunction.INSTANCE;
         outputType = BuiltInType.BOOLEAN;
         inputTypes = new Type[]{BuiltInType.UNKNOWN};
-        assertThat(toTest.isCompatible(inputTypes, outputType)).isTrue();
+        assertThat(toTest.isCompatible(inputTypes, outputType)).isFalse();
 
         toTest = SortFunction.INSTANCE;
         outputType = BuiltInType.LIST;

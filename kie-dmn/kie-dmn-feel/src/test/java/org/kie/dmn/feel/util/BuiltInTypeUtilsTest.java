@@ -21,6 +21,8 @@ package org.kie.dmn.feel.util;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 
+import java.time.Duration;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 class BuiltInTypeUtilsTest {
@@ -38,7 +40,68 @@ class BuiltInTypeUtilsTest {
                 .hasSize(1)
                 .containsExactly(BuiltInType.NUMBER);
 
-        // TODO add missing cases
+        toTest = "Test string";
+        assertThat(BuiltInTypeUtils.determineTypesFromClass(toTest.getClass()))
+                .isNotEmpty()
+                .hasSize(1)
+                .containsExactly(BuiltInType.STRING);
 
+        toTest = true;
+        assertThat(BuiltInTypeUtils.determineTypesFromClass(toTest.getClass()))
+                .isNotEmpty()
+                .hasSize(1)
+                .containsExactly(BuiltInType.BOOLEAN);
+
+        toTest = Duration.ofHours(1);
+        assertThat(BuiltInTypeUtils.determineTypesFromClass(toTest.getClass()))
+                .isNotEmpty()
+                .hasSize(1)
+                .containsExactly(BuiltInType.DURATION);
+
+        toTest = java.util.Map.of("key", "value");
+        assertThat(BuiltInTypeUtils.determineTypesFromClass(toTest.getClass()))
+                .isNotEmpty()
+                .hasSize(1)
+                .containsExactly(BuiltInType.CONTEXT);
+
+        toTest = java.time.LocalDate.now();
+        assertThat(BuiltInTypeUtils.determineTypesFromClass(toTest.getClass()))
+                .isNotEmpty()
+                .hasSize(3)
+                .containsExactlyInAnyOrder(BuiltInType.DATE, BuiltInType.DATE_TIME, BuiltInType.TIME)
+                .filteredOn(type -> type == BuiltInType.DATE)
+                .hasSize(1);
+
+        toTest = java.time.ZonedDateTime.now();
+        assertThat(BuiltInTypeUtils.determineTypesFromClass(toTest.getClass()))
+                .isNotEmpty()
+                .hasSize(3)
+                .containsExactlyInAnyOrder(BuiltInType.DATE, BuiltInType.DATE_TIME, BuiltInType.TIME)
+                .filteredOn(type -> type == BuiltInType.DATE_TIME)
+                .hasSize(1);
+
+        toTest = java.time.OffsetDateTime.now();
+        assertThat(BuiltInTypeUtils.determineTypesFromClass(toTest.getClass()))
+                .isNotEmpty()
+                .hasSize(3)
+                .containsExactlyInAnyOrder(BuiltInType.DATE, BuiltInType.DATE_TIME, BuiltInType.TIME)
+                .filteredOn(type -> type == BuiltInType.DATE_TIME)
+                .hasSize(1);
+
+        toTest = java.time.OffsetTime.now();
+        assertThat(BuiltInTypeUtils.determineTypesFromClass(toTest.getClass()))
+                .isNotEmpty()
+                .hasSize(3)
+                .containsExactlyInAnyOrder(BuiltInType.DATE, BuiltInType.DATE_TIME, BuiltInType.TIME)
+                .filteredOn(type -> type == BuiltInType.TIME)
+                .hasSize(1);
+
+        toTest = java.time.LocalTime.now();
+        assertThat(BuiltInTypeUtils.determineTypesFromClass(toTest.getClass()))
+                .isNotEmpty()
+                .hasSize(3)
+                .containsExactlyInAnyOrder(BuiltInType.DATE, BuiltInType.DATE_TIME, BuiltInType.TIME)
+                .filteredOn(type -> type == BuiltInType.TIME)
+                .hasSize(1);
     }
 }
