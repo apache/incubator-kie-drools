@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -24,11 +24,13 @@ import org.kie.dmn.api.core.event.AfterConditionalEvaluationEvent;
 public class AfterConditionalEvaluationEventImpl implements AfterConditionalEvaluationEvent {
 
     private final String nodeName;
+    private final String decisionName;
     private final EvaluatorResult evaluatorResult;
     private final String executedId;
 
-    public AfterConditionalEvaluationEventImpl(String nodeName, EvaluatorResult evaluatorResult, String executedId) {
+    public AfterConditionalEvaluationEventImpl(String nodeName, String decisionName, EvaluatorResult evaluatorResult, String executedId) {
         this.nodeName = nodeName;
+        this.decisionName = decisionName;
         this.evaluatorResult = evaluatorResult;
         this.executedId = executedId;
     }
@@ -36,6 +38,11 @@ public class AfterConditionalEvaluationEventImpl implements AfterConditionalEval
     @Override
     public String getNodeName() {
         return nodeName;
+    }
+
+    @Override
+    public String getDecisionName() {
+        return decisionName;
     }
 
     @Override
