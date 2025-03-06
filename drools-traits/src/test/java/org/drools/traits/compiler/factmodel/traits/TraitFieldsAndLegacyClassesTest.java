@@ -27,11 +27,10 @@ import org.drools.traits.compiler.CommonTraitTest;
 import org.drools.traits.compiler.ReviseTraitTestWithPRAlwaysCategory;
 import org.drools.traits.core.factmodel.TraitFactoryImpl;
 import org.drools.traits.core.factmodel.VirtualPropertyMode;
-import org.junit.Ignore;
-import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.io.ResourceType;
@@ -41,27 +40,18 @@ import org.kie.internal.utils.KieHelper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class TraitFieldsAndLegacyClassesTest extends CommonTraitTest {
 
-    public VirtualPropertyMode mode;
 
-    @Parameterized.Parameters
-        public static Collection modes() {
-        return Arrays.asList( new VirtualPropertyMode[][]
-                                      {
-                                              { VirtualPropertyMode.MAP },
-                                              { VirtualPropertyMode.TRIPLES }
-                                      } );
-    }
-
-    public TraitFieldsAndLegacyClassesTest( VirtualPropertyMode m ) {
-        this.mode = m;
+    public static Collection<VirtualPropertyMode> modes() {
+    	return List.of(VirtualPropertyMode.MAP , VirtualPropertyMode.TRIPLES );
     }
 
 
-    @Test
-    public void testTraitFieldUpdate0() {
+
+    @ParameterizedTest
+    @MethodSource("modes")
+    public void testTraitFieldUpdate0(VirtualPropertyMode mode) {
 
         String drl = "" +
                      "package org.drools.factmodel.traits0;\n" +
@@ -114,19 +104,21 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTraitTest {
         TraitFactoryImpl.setMode(mode, kBase );
 
         KieSession knowledgeSession = kBase.newKieSession();
-        List list = new ArrayList();
+        List<String> list = new ArrayList<>();
         knowledgeSession.setGlobal("list", list);
 
         knowledgeSession.fireAllRules();
-        assertThat(list.contains("correct")).isTrue();
-        assertThat(list.size()).isEqualTo(1);
+        
+        assertThat(list).hasSize(1);
+        assertThat(list).contains("correct");
     }
 
 
 
 
-    @Test
-    public void testTraitFieldUpdate1() {
+    @ParameterizedTest
+    @MethodSource("modes")
+    public void testTraitFieldUpdate1(VirtualPropertyMode mode) {
 
         String drl = "" +
                      "package org.drools.factmodel.traits;\n" +
@@ -202,18 +194,20 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTraitTest {
         TraitFactoryImpl.setMode(mode, kBase );
 
         KieSession knowledgeSession = kBase.newKieSession();
-        List list = new ArrayList();
+        List<String> list = new ArrayList<>();
         knowledgeSession.setGlobal("list", list);
 
 
         knowledgeSession.fireAllRules();
-        assertThat(list.contains("correct")).isTrue();
-        assertThat(list.size()).isEqualTo(1);
+
+        assertThat(list).hasSize(1);
+        assertThat(list).contains("correct");
 
     }
 
-    @Test
-    public void testTraitFieldUpdate2() {
+    @ParameterizedTest
+    @MethodSource("modes")
+    public void testTraitFieldUpdate2(VirtualPropertyMode mode) {
 
         String drl = "" +
                      "package org.drools.factmodel.traits2;\n" +
@@ -301,17 +295,18 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTraitTest {
         KieSession knowledgeSession = kBase.newKieSession();
         TraitFactoryImpl.setMode(mode, kBase );
 
-        List list = new ArrayList();
+        List<String> list = new ArrayList<>();
         knowledgeSession.setGlobal("list", list);
 
 
         knowledgeSession.fireAllRules();
-        assertThat(list.contains("correct")).isTrue();
-        assertThat(list.size()).isEqualTo(1);
+        assertThat(list).hasSize(1);
+        assertThat(list).contains("correct");
     }
 
-    @Test
-    public void testTraitFieldUpdate3() {
+    @ParameterizedTest
+    @MethodSource("modes")
+    public void testTraitFieldUpdate3(VirtualPropertyMode mode) {
 
         String drl = "" +
                      "package org.drools.factmodel.traits3;\n" +
@@ -396,18 +391,20 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTraitTest {
         KieBase kBase = loadKnowledgeBaseFromString(drl);
         TraitFactoryImpl.setMode(mode, kBase );
         KieSession knowledgeSession = kBase.newKieSession();
-        List list = new ArrayList();
+        List<String> list = new ArrayList<>();
         knowledgeSession.setGlobal("list", list);
 
 
         knowledgeSession.fireAllRules();
-        assertThat(list.contains("correct")).isTrue();
-        assertThat(list.size()).isEqualTo(1);
+
+        assertThat(list).hasSize(1);
+        assertThat(list).contains("correct");
     }
 
     @Category(ReviseTraitTestWithPRAlwaysCategory.class)
-    @Test
-    public void testTraitFieldUpdate4() {
+    @ParameterizedTest
+    @MethodSource("modes")
+    public void testTraitFieldUpdate4(VirtualPropertyMode mode) {
 
         String drl = "" +
                      "package org.drools.factmodel.traits4;\n" +
@@ -471,21 +468,22 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTraitTest {
                      "\n";
 
 
-        KieBase kBase = new KieHelper(PropertySpecificOption.ALLOWED).addContent( drl, ResourceType.DRL ).build();
+        KieBase kBase = loadKnowledgeBaseWithKnowledgeBuilderOption(drl, PropertySpecificOption.ALLOWED);
         TraitFactoryImpl.setMode(mode, kBase );
 
         KieSession knowledgeSession = kBase.newKieSession();
-        List list = new ArrayList();
+        List<String> list = new ArrayList<>();
         knowledgeSession.setGlobal("list", list);
 
 
         knowledgeSession.fireAllRules();
-        assertThat(list.contains("correct")).isTrue();
-        assertThat(list.size()).isEqualTo(1);
+        assertThat(list).hasSize(1);
+        assertThat(list).contains("correct");
     }
 
-    @Test
-    public void testTraitFieldUpdate5() {
+    @ParameterizedTest
+    @MethodSource("modes")
+    public void testTraitFieldUpdate5(VirtualPropertyMode mode) {
 
         String drl = "" +
                      "package org.drools.factmodel.traits5;\n" +
@@ -559,17 +557,18 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTraitTest {
         TraitFactoryImpl.setMode(mode, kBase );
 
         KieSession knowledgeSession = kBase.newKieSession();
-        List list = new ArrayList();
+        List<String> list = new ArrayList<>();
         knowledgeSession.setGlobal("list", list);
 
 
         knowledgeSession.fireAllRules();
-        assertThat(list.contains("correct")).isTrue();
-        assertThat(list.size()).isEqualTo(1);
+        assertThat(list).hasSize(1);
+        assertThat(list).contains("correct");
     }
 
-    @Test
-    public void testTraitFieldUpdate6() {
+    @ParameterizedTest
+    @MethodSource("modes")
+    public void testTraitFieldUpdate6(VirtualPropertyMode mode) {
 
         String drl = "" +
                      "package org.drools.factmodel.traits6;\n" +
@@ -649,20 +648,20 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTraitTest {
         TraitFactoryImpl.setMode(mode, kBase );
 
         KieSession knowledgeSession = kBase.newKieSession();
-        List list = new ArrayList();
+        List<String> list = new ArrayList<>();
         knowledgeSession.setGlobal("list", list);
 
 
         knowledgeSession.fireAllRules();
 
-        assertThat(list.contains("correct")).isTrue();
-        assertThat(list.contains("correct2")).isTrue();
-        assertThat(list.size()).isEqualTo(2);
+        assertThat(list).hasSize(2);
+        assertThat(list).contains("correct", "correct2");
     }
 
 
-    @Test
-    public void testTraitFieldUpdate7() {
+    @ParameterizedTest
+    @MethodSource("modes")
+    public void testTraitFieldUpdate7(VirtualPropertyMode mode) {
 
         String drl = "" +
                      "package org.drools.factmodel.traits;\n" +
@@ -733,20 +732,21 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTraitTest {
         TraitFactoryImpl.setMode(mode, kBase );
 
         KieSession knowledgeSession = kBase.newKieSession();
-        List list = new ArrayList();
+        List<String> list = new ArrayList<>();
         knowledgeSession.setGlobal("list", list);
 
         knowledgeSession.fireAllRules();
 
-        assertThat(list.contains("correct")).isTrue();
-        assertThat(list.size()).isEqualTo(1);
+        assertThat(list).hasSize(1);
+        assertThat(list).contains("correct");
     }
 
 
 
 
-    @Test
-    public void testTraitFieldUpdate8() {
+    @ParameterizedTest
+    @MethodSource("modes")
+    public void testTraitFieldUpdate8(VirtualPropertyMode mode) {
 
         String drl = "" +
                      "package org.drools.factmodel.traits8;\n" +
@@ -818,17 +818,18 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTraitTest {
         TraitFactoryImpl.setMode(mode, kBase );
 
         KieSession knowledgeSession = kBase.newKieSession();
-        List list = new ArrayList();
+        List<String> list = new ArrayList<>();
         knowledgeSession.setGlobal("list", list);
 
 
         knowledgeSession.fireAllRules();
-        assertThat(list.contains("correct")).isTrue();
-        assertThat(list.size()).isEqualTo(1);
+        assertThat(list).hasSize(1);
+        assertThat(list).contains("correct");
     }
 
-    @Test
-    public void testTraitFieldUpdate9() {
+    @ParameterizedTest
+    @MethodSource("modes")
+    public void testTraitFieldUpdate9(VirtualPropertyMode mode) {
 
         String drl = "" +
                      "package org.drools.factmodel.traits9;\n" +
@@ -909,17 +910,18 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTraitTest {
         TraitFactoryImpl.setMode(mode, kBase );
 
         KieSession knowledgeSession = kBase.newKieSession();
-        List list = new ArrayList();
+        List<String> list = new ArrayList<>();
         knowledgeSession.setGlobal("list", list);
 
 
         knowledgeSession.fireAllRules();
-        assertThat(list.contains("correct")).isTrue();
-        assertThat(list.size()).isEqualTo(1);
+        assertThat(list).hasSize(1);
+        assertThat(list).contains("correct");
     }
 
-    @Test
-    public void testTraitFieldUpdate10() {
+    @ParameterizedTest
+    @MethodSource("modes")
+    public void testTraitFieldUpdate10(VirtualPropertyMode mode) {
 
         String drl = "" +
                      "package org.drools.factmodel.traits;\n" +
@@ -1001,17 +1003,18 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTraitTest {
         TraitFactoryImpl.setMode(mode, kBase );
 
         KieSession knowledgeSession = kBase.newKieSession();
-        List list = new ArrayList();
+        List<String> list = new ArrayList<>();
         knowledgeSession.setGlobal("list", list);
 
 
         knowledgeSession.fireAllRules();
-        assertThat(list.contains("correct")).isTrue();
-        assertThat(list.size()).isEqualTo(1);
+        assertThat(list).hasSize(1);
+        assertThat(list).contains("correct");
     }
 
-    @Test
-    public void testTraitTwoParentOneChild() {
+    @ParameterizedTest
+    @MethodSource("modes")
+    public void testTraitTwoParentOneChild(VirtualPropertyMode mode) {
 
         String drl = "" +
                      "package org.drools.factmodel.traits;\n" +
@@ -1112,17 +1115,19 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTraitTest {
         TraitFactoryImpl.setMode(mode, kBase );
 
         KieSession knowledgeSession = kBase.newKieSession();
-        List list = new ArrayList();
+        List<String> list = new ArrayList<>();
         knowledgeSession.setGlobal("list", list);
 
 
         knowledgeSession.fireAllRules();
-        assertThat(list.contains("correct")).isTrue();
-        assertThat(list.size()).isEqualTo(1);
+        assertThat(list).hasSize(1);
+        assertThat(list).contains("correct");
     }
 
-    @Test @Ignore
-    public void testTraitWithPositionArgs(){
+    @ParameterizedTest
+    @Disabled
+    @MethodSource("modes")
+    public void testTraitWithPositionArgs(VirtualPropertyMode mode){
 
         String drl = "" +
                      "package org.drools.traits.test;\n" +
@@ -1245,23 +1250,24 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTraitTest {
         TraitFactoryImpl.setMode(mode, kBase );
 
         KieSession kSession = kBase.newKieSession();
-        List list = new ArrayList();
+        List<String> list = new ArrayList<>();
         kSession.setGlobal("list", list);
 
         kSession.fireAllRules();
 
-        assertThat(list.contains("initialized")).isTrue();
-        assertThat(list.contains("student")).isTrue();
-        assertThat(list.contains("IR citizen")).isTrue();
-        assertThat(list.contains("US citizen")).isTrue();
-        assertThat(list.contains("worker")).isTrue();
-        assertThat(list.contains("You are working in US as student worker")).isTrue();
-        assertThat(list.contains("You are studying and working at ASU")).isTrue();
+        assertThat(list).contains("initialized");
+        assertThat(list).contains("student");
+        assertThat(list).contains("IR citizen");
+        assertThat(list).contains("US citizen");
+        assertThat(list).contains("worker");
+        assertThat(list).contains("You are working in US as student worker");
+        assertThat(list).contains("You are studying and working at ASU");
     }
 
 
-    @Test
-    public void singlePositionTraitTest(){
+    @ParameterizedTest
+    @MethodSource("modes")
+    public void singlePositionTraitTest(VirtualPropertyMode mode){
 
 
         String drl = "" +

@@ -24,10 +24,12 @@ local/
 !.github
 !.git-blame-ignore-revs
 !.openrewrite
+!.rat-excludes
 nbproject
 *.ipr
 *.iws
 *.iml
+build.log
 
 # generated files
 dependency-reduced-pom.xml

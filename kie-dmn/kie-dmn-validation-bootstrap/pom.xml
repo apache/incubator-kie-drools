@@ -68,6 +68,18 @@ This is not an user dependency, hence is not added to the boms</description>
       <artifactId>drools-wiring-dynamic</artifactId>
     </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>com.societegenerale.commons</groupId>
+        <artifactId>arch-unit-maven-plugin</artifactId>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
   
   <profiles>
     <profile>

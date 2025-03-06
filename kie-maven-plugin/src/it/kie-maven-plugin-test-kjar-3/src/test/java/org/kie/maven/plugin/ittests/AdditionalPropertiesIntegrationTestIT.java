@@ -23,9 +23,9 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class AdditionalPropertiesIntegrationTestIT {
 
@@ -38,7 +38,7 @@ public class AdditionalPropertiesIntegrationTestIT {
         final File basedir = new File(targetLocation.getFile().replace("/target/test-classes/", ""));
         final File buildLog = new File(basedir, "build.log");
         final String expected = "Additional system properties: {drools.dialect.java.compiler.lnglevel=1.8, my.property=some-value}";
-        assertTrue(Files.lines(buildLog.toPath(), StandardCharsets.UTF_8)
-                           .anyMatch(line -> line.contains(expected)));
+        assertThat(Files.lines(buildLog.toPath(), StandardCharsets.UTF_8)
+                           .anyMatch(line -> line.contains(expected))).isTrue();
     }
 }

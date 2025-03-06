@@ -19,17 +19,18 @@
 package org.drools.testcoverage.regression;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.drools.testcoverage.common.KieSessionTest;
 import org.drools.testcoverage.common.model.TestEvent;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieSessionTestConfiguration;
 import org.drools.testcoverage.common.util.KieUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.command.Command;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.event.rule.AgendaEventListener;
@@ -55,24 +56,21 @@ public class StarImportTest extends KieSessionTest {
 
     private static final String DRL_FILE = "star_import.drl";
 
-    public StarImportTest(final KieBaseTestConfiguration kieBaseTestConfiguration,
-                          final KieSessionTestConfiguration kieSessionTestConfiguration) {
-        super(kieBaseTestConfiguration, kieSessionTestConfiguration);
+    public static Stream<Arguments> parameters() {
+        return TestParametersUtil2.getKieBaseAndStatefulKieSessionConfigurations().stream();
     }
-
-    @Parameterized.Parameters(name = "{1}" + " (from " + "{0}" + ")")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseAndKieSessionConfigurations();
-    }
-
     /**
      * Tests that rule fires if supplied with a fact that is imported using
      * "star" import.
      *
      * See BZ 973264.
      */
-    @Test
-    public void starImportedFactAlsoDeclaredInDRL() throws Exception {
+    
+    @ParameterizedTest(name = "{1}" + " (from " + "{0}" + ")")
+	@MethodSource("parameters")
+    public void starImportedFactAlsoDeclaredInDRL(KieBaseTestConfiguration kieBaseTestConfiguration,
+            KieSessionTestConfiguration kieSessionTestConfiguration) throws Exception {
+    	createKieSession(kieBaseTestConfiguration, kieSessionTestConfiguration);
         session.setGlobal("LOGGER", LOGGER);
         AgendaEventListener ael = mock(AgendaEventListener.class);
         session.addEventListener(ael);

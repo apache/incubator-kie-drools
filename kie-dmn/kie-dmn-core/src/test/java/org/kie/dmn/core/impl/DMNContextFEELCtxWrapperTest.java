@@ -32,7 +32,7 @@ import org.kie.dmn.core.BaseDMNContextTest;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.FEELDialect;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 
 class DMNContextFEELCtxWrapperTest extends BaseDMNContextTest {
 
@@ -56,7 +56,7 @@ class DMNContextFEELCtxWrapperTest extends BaseDMNContextTest {
 
     @Test
     void pushScopeException() {
-        assertThrows(UnsupportedOperationException.class, () -> {
+        assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> {
             DMNContextFEELCtxWrapper ctx = new DMNContextFEELCtxWrapper(new EvaluationContextMock(Collections.emptyMap()));
             ctx.pushScope("scopeName", "scopeNamespace");
         });
@@ -64,7 +64,7 @@ class DMNContextFEELCtxWrapperTest extends BaseDMNContextTest {
 
     @Test
     void popScopeException() {
-        assertThrows(UnsupportedOperationException.class, () -> {
+        assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> {
             DMNContextFEELCtxWrapper ctx = new DMNContextFEELCtxWrapper(new EvaluationContextMock(Collections.emptyMap()));
             ctx.popScope();
         });
@@ -72,7 +72,7 @@ class DMNContextFEELCtxWrapperTest extends BaseDMNContextTest {
 
     @Test
     void scopeNamespaceException() {
-        assertThrows(UnsupportedOperationException.class, () -> {
+        assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> {
             DMNContextFEELCtxWrapper ctx = new DMNContextFEELCtxWrapper(new EvaluationContextMock(Collections.emptyMap()));
             ctx.scopeNamespace();
         });
@@ -163,7 +163,7 @@ class DMNContextFEELCtxWrapperTest extends BaseDMNContextTest {
         }
 
         @Override
-        public FEELDialect getDialect() {
+        public FEELDialect getFEELDialect() {
             // Defaulting FEELDialect to FEEL
             return FEELDialect.FEEL;
         }

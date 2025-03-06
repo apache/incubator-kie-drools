@@ -19,8 +19,8 @@
 package org.drools.testcoverage.functional.oopath;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.drools.testcoverage.common.model.Address;
 import org.drools.testcoverage.common.model.InternationalAddress;
@@ -28,10 +28,9 @@ import org.drools.testcoverage.common.model.Person;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.ResourceUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.QueryResults;
@@ -44,35 +43,30 @@ import static org.assertj.core.api.Assertions.*;
  * Test basic OOPath expressions used in Decision tables (*.xls, *.xlsx, *.csv)
  * in both RuleTable and Queries as well.
  */
-@RunWith(Parameterized.class)
 public class OOPathDtablesTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public OOPathDtablesTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseConfigurations().stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseConfigurations();
-    }
-
-    @Test
-    public void xlsWithOOPathTest() {
-        final KieSession kieSession = getKieSessionFromXls("oopath.drl.xls");
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void xlsWithOOPathTest(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        final KieSession kieSession = getKieSessionFromXls(kieBaseTestConfiguration, "oopath.drl.xls");
         testOOPathWithDTable(kieSession);
     }
 
-    @Test
-    public void xlsxWithOOPathTest() {
-        final KieSession kieSession = getKieSessionFromXlsx("oopath.drl.xlsx");
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void xlsxWithOOPathTest(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        final KieSession kieSession = getKieSessionFromXlsx(kieBaseTestConfiguration, "oopath.drl.xlsx");
         testOOPathWithDTable(kieSession);
     }
 
-    @Test
-    public void csvWithOOPathTest() {
-        final KieSession kieSession = getKieSessionFromCsv("oopath.drl.csv");
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void csvWithOOPathTest(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        final KieSession kieSession = getKieSessionFromCsv(kieBaseTestConfiguration, "oopath.drl.csv");
         testOOPathWithDTable(kieSession);
     }
 
@@ -87,22 +81,22 @@ public class OOPathDtablesTest {
         verifyQueryResults(kieSession.getQueryResults("listSafeCities"));
     }
 
-    private KieSession getKieSessionFromCsv(final String csvFile) {
+    private KieSession getKieSessionFromCsv(KieBaseTestConfiguration kieBaseTestConfiguration, final String csvFile) {
         final Resource resource =
                 ResourceUtil.getDecisionTableResourceFromClasspath(csvFile, getClass(), DecisionTableInputType.CSV);
 
         return KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, resource).newKieSession();
     }
 
-    private KieSession getKieSessionFromXls(final String xlsFile) {
-        return getKieSessionFromExcel(xlsFile, DecisionTableInputType.XLS);
+    private KieSession getKieSessionFromXls(KieBaseTestConfiguration kieBaseTestConfiguration, final String xlsFile) {
+        return getKieSessionFromExcel(kieBaseTestConfiguration, xlsFile, DecisionTableInputType.XLS);
     }
 
-    private KieSession getKieSessionFromXlsx(final String xlsxFile) {
-        return getKieSessionFromExcel(xlsxFile, DecisionTableInputType.XLSX);
+    private KieSession getKieSessionFromXlsx(KieBaseTestConfiguration kieBaseTestConfiguration, final String xlsxFile) {
+        return getKieSessionFromExcel(kieBaseTestConfiguration, xlsxFile, DecisionTableInputType.XLSX);
     }
 
-    private KieSession getKieSessionFromExcel(final String file, final DecisionTableInputType fileType) {
+    private KieSession getKieSessionFromExcel(KieBaseTestConfiguration kieBaseTestConfiguration, final String file, final DecisionTableInputType fileType) {
         final Resource resource = ResourceUtil.getDecisionTableResourceFromClasspath(file, getClass(), fileType);
 
         return KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, resource).newKieSession();

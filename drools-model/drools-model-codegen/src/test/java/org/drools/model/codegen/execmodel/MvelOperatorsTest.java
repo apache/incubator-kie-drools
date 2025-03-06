@@ -24,7 +24,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.model.codegen.execmodel.domain.Person;
-import org.junit.Test;
+import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.Results;
 import org.kie.api.runtime.KieSession;
@@ -34,47 +36,46 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class MvelOperatorsTest extends BaseModelTest {
 
-    public MvelOperatorsTest( RUN_TYPE testRunType ) {
-        super( testRunType );
-    }
-
-    @Test
-    public void testIn() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testIn(RUN_TYPE runType) {
         String str =
             "rule R when\n" +
             "    String(this in (\"a\", \"b\"))" +
             "then\n" +
             "end ";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert( "b" );
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testStr() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testStr(RUN_TYPE runType) {
         String str =
             "rule R when\n" +
             "    String(this str[startsWith] \"M\")" +
             "then\n" +
             "end ";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert( "Mario" );
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testStrNot() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testStrNot(RUN_TYPE runType) {
         String str =
             "rule R when\n" +
             "    String(this not str[startsWith] \"M\")" +
             "then\n" +
             "end ";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert( "Mario" );
         ksession.insert( "Luca" );
@@ -82,15 +83,17 @@ public class MvelOperatorsTest extends BaseModelTest {
         assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
-    @Test
-    public void testStrHalf() {
+    @DisabledIfSystemProperty(named = "drools.drl.antlr4.parser.enabled", matches = "true")
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testStrHalf(RUN_TYPE runType) {
         String str =
             "rule R when\n" +
             "    String(this str[startsWith] \"M\" || str[endsWith] \"a\" || str[length] 10)"+
             "then\n" +
             "end ";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert( "Mario" );
         ksession.insert( "Luca" );
@@ -99,15 +102,17 @@ public class MvelOperatorsTest extends BaseModelTest {
         assertThat(ksession.fireAllRules()).isEqualTo(3);
     }
 
-    @Test
-    public void testStrHalfOrAndAmpersand() {
+    @DisabledIfSystemProperty(named = "drools.drl.antlr4.parser.enabled", matches = "true")
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testStrHalfOrAndAmpersand(RUN_TYPE runType) {
         String str =
             "rule R when\n" +
             "    String(this str[startsWith] \"M\" || str[endsWith] \"a\" && str[length] 4)"+
             "then\n" +
             "end ";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert( "Mario" );
         ksession.insert( "Luca" );
@@ -116,18 +121,19 @@ public class MvelOperatorsTest extends BaseModelTest {
         assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
-    @Test
-    public void testRange() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testRange(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + "\n" +
                 "global java.util.List list\n" +
                 "rule R when\n" +
-                "    Person( age > 30 && <= 40, $name : name )" +
+                "    Person( age > 30 && age <= 40, $name : name )" +
                 "then\n" +
                 "    list.add($name);" +
                 "end ";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         List<String> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
@@ -142,18 +148,19 @@ public class MvelOperatorsTest extends BaseModelTest {
         assertThat(list.containsAll(asList("Mark", "Edson"))).isTrue();
     }
 
-    @Test
-    public void testExcludedRange() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testExcludedRange(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + "\n" +
                 "global java.util.List list\n" +
                 "rule R when\n" +
-                "    Person( age <= 30 || > 40, $name : name )" +
+                "    Person( age <= 30 || age > 40, $name : name )" +
                 "then\n" +
                 "    list.add($name);" +
                 "end ";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         List<String> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
@@ -168,8 +175,9 @@ public class MvelOperatorsTest extends BaseModelTest {
         assertThat(list.containsAll(asList("Luca", "Mario"))).isTrue();
     }
 
-    @Test
-    public void testBinding() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testBinding(RUN_TYPE runType) {
         String str =
             "import " + Person.class.getCanonicalName() + "\n" +
             "global java.util.List list\n" +
@@ -179,7 +187,7 @@ public class MvelOperatorsTest extends BaseModelTest {
             "    list.add($name);" +
             "end ";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         List<String> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
@@ -192,22 +200,24 @@ public class MvelOperatorsTest extends BaseModelTest {
         assertThat(list.get(0)).isEqualTo("Mario");
     }
 
-    @Test
-    public void testMatches() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testMatches(RUN_TYPE runType) {
         String str =
                 "rule R when\n" +
                 "    String(this matches \"\\\\w\")" +
                 "then\n" +
                 "end ";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert( "b" );
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testExcludes() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testExcludes(RUN_TYPE runType) {
         String str =
                 "import java.util.List\n" +
                 "rule R when\n" +
@@ -215,15 +225,16 @@ public class MvelOperatorsTest extends BaseModelTest {
                 "then\n" +
                 "end ";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
         ksession.insert( asList("ciao", "test") );
         assertThat(ksession.fireAllRules()).isEqualTo(0);
         ksession.insert( asList("hello", "world") );
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testNotContains() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testNotContains(RUN_TYPE runType) {
         String str =
                 "import java.util.List\n" +
                 "rule R when\n" +
@@ -231,15 +242,16 @@ public class MvelOperatorsTest extends BaseModelTest {
                 "then\n" +
                 "end ";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
         ksession.insert( asList("ciao", "test") );
         assertThat(ksession.fireAllRules()).isEqualTo(0);
         ksession.insert( asList("hello", "world") );
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testStartsWithWithChar() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testStartsWithWithChar(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + "\n" +
                 "global java.util.List list\n" +
@@ -250,7 +262,7 @@ public class MvelOperatorsTest extends BaseModelTest {
                 "    list.add($p.getName());" +
                 "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         List<String> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
@@ -263,8 +275,9 @@ public class MvelOperatorsTest extends BaseModelTest {
         assertThat(list.get(0)).isEqualTo("Luca");
     }
 
-    @Test
-    public void testNotIn() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testNotIn(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + "\n" +
                 "global java.util.List list\n" +
@@ -274,7 +287,7 @@ public class MvelOperatorsTest extends BaseModelTest {
                 "    list.add($name);" +
                 "end ";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         List<String> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
@@ -288,8 +301,9 @@ public class MvelOperatorsTest extends BaseModelTest {
         assertThat(list.get(0)).isEqualTo("Mario");
     }
 
-    @Test
-    public void testNotInUsingShort() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testNotInUsingShort(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + "\n" +
                 "global java.util.List list\n" +
@@ -299,7 +313,7 @@ public class MvelOperatorsTest extends BaseModelTest {
                 "    list.add($name);" +
                 "end ";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         List<String> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
@@ -313,8 +327,9 @@ public class MvelOperatorsTest extends BaseModelTest {
         assertThat(list.get(0)).isEqualTo("Mario");
     }
 
-    @Test
-    public void testMatchesWithFunction() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testMatchesWithFunction(RUN_TYPE runType) {
         // DROOLS-4382
         String str =
                 "import " + Person.class.getCanonicalName() + "\n" +
@@ -324,7 +339,7 @@ public class MvelOperatorsTest extends BaseModelTest {
                 "then\n" +
                 "end ";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         Person p = new Person("Mark", 40);
         p.setLikes( "M." );
@@ -332,8 +347,9 @@ public class MvelOperatorsTest extends BaseModelTest {
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testMatchesOnNullString() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testMatchesOnNullString(RUN_TYPE runType) {
         // DROOLS-4525
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -346,7 +362,7 @@ public class MvelOperatorsTest extends BaseModelTest {
                         "then\n" +
                         "end\n";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         Person first = new Person("686878");
         ksession.insert(first);
@@ -377,8 +393,9 @@ public class MvelOperatorsTest extends BaseModelTest {
         }
     }
 
-    @Test
-    public void testInDouble() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testInDouble(RUN_TYPE runType) {
         // DROOLS-4892
         String str =
                 "import " + DoubleFact.class.getCanonicalName() + ";" +
@@ -406,10 +423,10 @@ public class MvelOperatorsTest extends BaseModelTest {
                 "    System.out.println(\"Rule[\"+kcontext.getRule().getName()+\"] fires.\");\n" +
                 "end";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         DoubleFact f = new DoubleFact();
-        f.setDoubleVal(new Double(100));
+        f.setDoubleVal(Double.valueOf(100.0));
         f.setPrimitiveDoubleVal(200);
         ksession.insert(f);
         assertThat(ksession.fireAllRules()).isEqualTo(4);
@@ -432,8 +449,9 @@ public class MvelOperatorsTest extends BaseModelTest {
         }
     }
 
-    @Test
-    public void testContainsOnNull() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testContainsOnNull(RUN_TYPE runType) {
         // DROOLS-5315
         String str =
                 "import " + ListContainer.class.getCanonicalName() + ";" +
@@ -442,7 +460,7 @@ public class MvelOperatorsTest extends BaseModelTest {
                 "then\n" +
                 "end ";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert( new ListContainer() );
         assertThat(ksession.fireAllRules()).isEqualTo(0);
@@ -451,8 +469,9 @@ public class MvelOperatorsTest extends BaseModelTest {
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testNumericStringsWithLeadingZero() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testNumericStringsWithLeadingZero(RUN_TYPE runType) {
         // DROOLS-5926
         String str =
                 "rule R when\n" +
@@ -460,14 +479,15 @@ public class MvelOperatorsTest extends BaseModelTest {
                 "then\n" +
                 "end ";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert( 800 );
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testNumericHexadecimal() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testNumericHexadecimal(RUN_TYPE runType) {
         // DROOLS-5926
         String str =
                 "rule R when\n" +
@@ -475,14 +495,15 @@ public class MvelOperatorsTest extends BaseModelTest {
                 "then\n" +
                 "end ";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         ksession.insert( 2048 );
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testListLiteralCreation() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testListLiteralCreation(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                 "global java.util.List result;" +
@@ -492,7 +513,7 @@ public class MvelOperatorsTest extends BaseModelTest {
                 "    result.add($myList);" +
                 "end ";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
         List<Object> result = new ArrayList<>();
         ksession.setGlobal("result", result);
         ksession.insert( new Person() );
@@ -503,8 +524,9 @@ public class MvelOperatorsTest extends BaseModelTest {
         assertThat((List)obj).containsExactlyInAnyOrder("aaa", "bbb", "ccc");
     }
 
-    @Test
-    public void testMapLiteralCreation() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testMapLiteralCreation(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                      "global java.util.List result;" +
@@ -514,7 +536,7 @@ public class MvelOperatorsTest extends BaseModelTest {
                      "    result.add($myMap);" +
                      "end ";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
         List<Object> result = new ArrayList<>();
         ksession.setGlobal("result", result);
         ksession.insert(new Person());
@@ -525,8 +547,9 @@ public class MvelOperatorsTest extends BaseModelTest {
         assertThat(((Map) obj).get("key")).isEqualTo("value");
     }
 
-    @Test
-    public void testEmptySingleApexString() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testEmptySingleApexString(RUN_TYPE runType) {
         // DROOLS-6057
         String str =
                 "import " + Person.class.getCanonicalName() + "\n" +
@@ -537,7 +560,7 @@ public class MvelOperatorsTest extends BaseModelTest {
                 "    list.add($name);" +
                 "end ";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         List<String> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
@@ -550,8 +573,9 @@ public class MvelOperatorsTest extends BaseModelTest {
         assertThat(list.get(0)).isEqualTo("");
     }
 
-    @Test
-    public void testContainsOnString() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testContainsOnString(RUN_TYPE runType) {
         String str =
                 "import " + Person.class.getCanonicalName() + "\n" +
                 "rule R when\n" +
@@ -559,7 +583,7 @@ public class MvelOperatorsTest extends BaseModelTest {
                 "then\n" +
                 "end ";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         Person person1 = new Person("");
         ksession.insert(new Person("mario", 47));
@@ -567,8 +591,9 @@ public class MvelOperatorsTest extends BaseModelTest {
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testContainsOnMapShouldntCompile() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testContainsOnMapShouldntCompile(RUN_TYPE runType) {
         // BAPL-1957
         String str =
                 "import " + Person.class.getCanonicalName() + "\n" +
@@ -577,12 +602,13 @@ public class MvelOperatorsTest extends BaseModelTest {
                 "then\n" +
                 "end ";
 
-        Results results = createKieBuilder( str ).getResults();
+        Results results = createKieBuilder(runType, str).getResults();
         assertThat(results.getMessages(Message.Level.ERROR).isEmpty()).isFalse();
     }
 
-    @Test
-    public void testContainsOnIntShouldntCompile() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testContainsOnIntShouldntCompile(RUN_TYPE runType) {
         // BAPL-1957
         String str =
                 "import " + Person.class.getCanonicalName() + "\n" +
@@ -591,7 +617,7 @@ public class MvelOperatorsTest extends BaseModelTest {
                 "then\n" +
                 "end ";
 
-        Results results = createKieBuilder( str ).getResults();
+        Results results = createKieBuilder(runType, str).getResults();
         assertThat(results.getMessages(Message.Level.ERROR).isEmpty()).isFalse();
     }
 }

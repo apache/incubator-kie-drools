@@ -20,16 +20,15 @@ package org.drools.mvel.integrationtests;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.drools.mvel.compiler.Cheese;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.Channel;
 import org.kie.api.runtime.KieSession;
@@ -41,28 +40,21 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(Parameterized.class)
 public class IntegrationInterfacesTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public IntegrationInterfacesTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
-    }
-
-    private KieBase getKnowledgeBase(final String resourceName) {
+    private KieBase getKnowledgeBase(KieBaseTestConfiguration kieBaseTestConfiguration, final String resourceName) {
         return KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, resourceName);
     }
 
     @SuppressWarnings("unchecked")
-    @Test
-    public void testGlobals() throws Exception {
-        final KieBase kbase = getKnowledgeBase( "globals_rule_test.drl" );
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testGlobals(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
+        final KieBase kbase = getKnowledgeBase(kieBaseTestConfiguration, "globals_rule_test.drl" );
         KieSession ksession = kbase.newKieSession();
 
         final List<Object> list = mock( List.class );
@@ -84,9 +76,10 @@ public class IntegrationInterfacesTest {
     }
 
     @SuppressWarnings("unchecked")
-    @Test
-    public void testGlobals2() throws Exception {
-        final KieBase kbase = getKnowledgeBase( "test_globalsAsConstraints.drl" );
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testGlobals2(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
+        final KieBase kbase = getKnowledgeBase(kieBaseTestConfiguration, "test_globalsAsConstraints.drl" );
         KieSession ksession = kbase.newKieSession();
 
         final List<Object> results = mock( List.class );
@@ -121,8 +114,9 @@ public class IntegrationInterfacesTest {
                 times( 1 ) ).add( "not memberOf" );
     }
 
-    @Test
-    public void testGlobalMerge() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testGlobalMerge(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         // from JBRULES-1512
         String rule1 = "package com.sample\n" + 
                        "rule \"rule 1\"\n" + 
@@ -153,9 +147,10 @@ public class IntegrationInterfacesTest {
         assertThat(list.get(1)).isEqualTo("rule 2 executed boo");
     }
     
-    @Test
-    public void testChannels() throws IOException, ClassNotFoundException {
-        KieBase kbase = getKnowledgeBase( "test_Channels.drl" );
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testChannels(KieBaseTestConfiguration kieBaseTestConfiguration) throws IOException, ClassNotFoundException {
+        KieBase kbase = getKnowledgeBase(kieBaseTestConfiguration, "test_Channels.drl" );
         KieSession ksession = kbase.newKieSession();
         
         Channel someChannel = mock( Channel.class );

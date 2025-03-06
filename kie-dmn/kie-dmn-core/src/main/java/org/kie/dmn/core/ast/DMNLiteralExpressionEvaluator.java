@@ -19,7 +19,6 @@
 package org.kie.dmn.core.ast;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.kie.dmn.api.core.DMNMessage;
@@ -29,14 +28,15 @@ import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
-import org.kie.dmn.core.api.EvaluatorResult;
-import org.kie.dmn.core.api.EvaluatorResult.ResultType;
+import org.kie.dmn.api.core.EvaluatorResult;
+import org.kie.dmn.api.core.EvaluatorResult.ResultType;
 import org.kie.dmn.core.impl.DMNResultImpl;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.codegen.feel11.ProcessedExpression;
 import org.kie.dmn.feel.lang.CompiledExpression;
+import org.kie.dmn.feel.lang.FEELDialect;
 import org.kie.dmn.feel.lang.impl.CompiledExpressionImpl;
 import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
 import org.kie.dmn.feel.lang.impl.FEELImpl;
@@ -99,11 +99,26 @@ public class DMNLiteralExpressionEvaluator
                                   captured.getSeverity().toString(),
                                   MsgUtil.clipString(expressionNode.getText(), 50),
                                   captured.getMessage());
-            if (captured.getSeverity() == Severity.ERROR) { // as FEEL events are being cycled, compute it here.
-                resultType = ResultType.FAILURE;
-            }
+            resultType = getFEELDialectAdaptedResultType(captured.getSeverity(), val, feelInstance.getFeelDialect());
         }
         return new EvaluatorResultImpl(val, resultType);
+    }
+
+    /**
+     * If FEELDialect is "BFEEL" and returned object is != <code>null</code>, then result type is <b>success</b>, regardless of
+     * given <code>Severity</code>.
+     * Otherwise, if severity is <code>Severity.ERROR</code>, result type is <b>failure</b>
+     * @param severity
+     * @param value
+     * @param feelDialect
+     * @return
+     */
+    static ResultType getFEELDialectAdaptedResultType(Severity severity, Object value, FEELDialect feelDialect) {
+        if ((feelDialect == FEELDialect.BFEEL && value != null) || severity != Severity.ERROR) {
+            return ResultType.SUCCESS;
+        } else {
+            return ResultType.FAILURE;
+        }
     }
 
     private static DMNMessage.Severity dmnSeverityFromFEELSeverity(FEELEvent.Severity severity) {

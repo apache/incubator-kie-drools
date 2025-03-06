@@ -21,11 +21,12 @@ package org.drools.compiler.integrationtests;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.Collection;
+import java.util.stream.Stream;
 
 import org.drools.base.base.ValueResolver;
 import org.drools.base.base.ValueType;
 import org.drools.compiler.rule.builder.EvaluatorDefinition;
+import org.drools.drl.parser.DrlParser;
 import org.drools.drl.parser.impl.Operator;
 import org.drools.base.rule.accessor.Evaluator;
 import org.drools.base.rule.accessor.FieldValue;
@@ -34,30 +35,24 @@ import org.drools.mvel.evaluators.BaseEvaluator;
 import org.drools.mvel.evaluators.VariableRestriction;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.builder.conf.EvaluatorOption;
 
-@RunWith(Parameterized.class)
 public class CustomOperatorOnlyDrlTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+    private static final String F_STR = DrlParser.ANTLR4_PARSER_ENABLED ? "##F_str" : "F_str";
 
-    public CustomOperatorOnlyDrlTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
-    }
-
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
+    public static Stream<KieBaseTestConfiguration> parameters() {
         // TODO EM DROOLS-6302
-        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+        return TestParametersUtil2.getKieBaseCloudConfigurations(false).stream();
     }
 
-    @Test
-    public void testCustomOperatorCombiningConstraints() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testCustomOperatorCombiningConstraints(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // JBRULES-3517
         final String drl =
                 "declare GN\n" +
@@ -82,7 +77,7 @@ public class CustomOperatorOnlyDrlTest {
                         "when\n" +
                         "   gnId : GN()\n" +
                         "   la : t547147( )\n" +
-                        "   v1717 : Tra48( gnId.gNo == gNo, name F_str[startsWith] la.c547148 || postCode F_str[contains] la.c547149 )\n" +
+                        "   v1717 : Tra48( gnId.gNo == gNo, name " + F_STR + "[startsWith] la.c547148 || postCode " + F_STR + "[contains] la.c547149 )\n" +
                         "then\n" +
                         "end\n";
 

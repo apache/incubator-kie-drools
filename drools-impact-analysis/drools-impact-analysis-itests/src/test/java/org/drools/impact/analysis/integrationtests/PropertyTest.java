@@ -24,7 +24,7 @@ import org.drools.impact.analysis.graph.ReactivityType;
 import org.drools.impact.analysis.integrationtests.domain.Person;
 import org.drools.impact.analysis.model.AnalysisModel;
 import org.drools.impact.analysis.parser.ModelBuilder;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * 

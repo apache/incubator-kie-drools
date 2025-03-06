@@ -24,14 +24,18 @@ import java.util.stream.Collectors;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 import org.junit.jupiter.api.Test;
+import org.kie.api.KieServices;
+import org.kie.api.command.KieCommands;
 import org.kie.api.definition.KiePackage;
+import org.kie.api.internal.utils.KieService;
 import org.kie.api.prototype.PrototypeFact;
 import org.kie.api.prototype.PrototypeFactInstance;
 import org.kie.api.runtime.KieRuntimeBuilder;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.RuntimeSession;
+import org.kie.api.runtime.StatelessKieSession;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.api.prototype.PrototypeBuilder.prototype;
 
 @QuarkusTest
@@ -43,31 +47,59 @@ public class RuntimeTest {
     @Test
     public void testDrlEvaluation() {
         // canDrinkKS is the default session
-        testSimpleDrl(runtimeBuilder.newKieSession(), "org.drools.drl");
+        testSimpleDrl(runtimeBuilder.newKieSession(), "org.drools.drl", true);
     }
 
     @Test
     public void testDTableEvaluation() {
-        testSimpleDrl(runtimeBuilder.newKieSession("canDrinkKSDTable"), "org.drools.dtable");
+        testSimpleDrl(runtimeBuilder.newKieSession("canDrinkKSDTable"), "org.drools.dtable", true);
     }
 
     @Test
     public void testYamlEvaluation() {
-        testSimpleDrl(runtimeBuilder.newKieSession("canDrinkKSYaml"), "org.drools.yaml");
+        testSimpleDrl(runtimeBuilder.newKieSession("canDrinkKSYaml"), "org.drools.yaml", true);
     }
 
-    private void testSimpleDrl(KieSession ksession, String assetPackage) {
-        List<String> pkgNames = ksession.getKieBase().getKiePackages().stream().map(KiePackage::getName).collect(Collectors.toList());
-        assertEquals(2, pkgNames.size());
-        assertTrue(pkgNames.contains("org.drools.quarkus.test"));
-        assertTrue(pkgNames.contains(assetPackage));
+    @Test
+    public void testStatelessDrlEvaluation() {
+        // statelessCanDrinkKS is the default stateless session
+        testSimpleDrl(runtimeBuilder.newStatelessKieSession(), "org.drools.drl", false);
+    }
+
+    @Test
+    public void testStatelessDTableEvaluation() {
+        testSimpleDrl(runtimeBuilder.newStatelessKieSession("statelessCanDrinkKSDTable"), "org.drools.dtable", false);
+    }
+
+    @Test
+    public void testStatelessYamlEvaluation() {
+        testSimpleDrl(runtimeBuilder.newStatelessKieSession("statelessCanDrinkKSYaml"), "org.drools.yaml", false);
+    }
+
+    private void testSimpleDrl(RuntimeSession session, String assetPackage, boolean stateful) {
+        if (stateful) {
+            assertThat(session).isInstanceOf(KieSession.class);
+        } else {
+            assertThat(session).isInstanceOf(StatelessKieSession.class);
+        }
+
+        List<String> pkgNames = session.getKieBase().getKiePackages().stream().map(KiePackage::getName).collect(Collectors.toList());
+        
+        assertThat(pkgNames).hasSize(2).containsExactlyInAnyOrder("org.drools.quarkus.test", assetPackage);
+
+        KieCommands kieCommands = KieServices.get().getCommands();
 
         Result result = new Result();
-        ksession.insert(result);
-        ksession.insert(new Person("Mark", 17));
-        ksession.fireAllRules();
+        session.execute( kieCommands.newBatchExecution(
+                kieCommands.newInsert(result),
+                kieCommands.newInsert(new Person("Mark", 17)),
+                kieCommands.newFireAllRules() ) );
 
-        assertEquals("Mark can NOT drink", result.toString());
+        assertThat(result.toString()).isEqualTo("Mark can NOT drink");
+
+        if (stateful) {
+            ((KieSession) session).dispose();
+        }
     }
 
     @Test
@@ -85,7 +117,6 @@ public class RuntimeTest {
         ksession.insert(result);
 
         ksession.fireAllRules();
-
-        assertEquals("Mark can NOT drink", result.get("value"));
+        assertThat(result.get("value")).isEqualTo("Mark can NOT drink");
     }
 }

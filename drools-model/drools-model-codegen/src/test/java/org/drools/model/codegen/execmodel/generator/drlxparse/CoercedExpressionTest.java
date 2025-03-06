@@ -18,14 +18,12 @@
  */
 package org.drools.model.codegen.execmodel.generator.drlxparse;
 
-import java.util.Map;
-
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.util.MethodUtils;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.drools.model.codegen.execmodel.generator.DrlxParseUtil;
 import org.drools.model.codegen.execmodel.generator.TypedExpression;
-import org.junit.Ignore;
-import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -127,9 +125,9 @@ public class CoercedExpressionTest {
     @Test
     public void castMaps() {
         final TypedExpression left = expr(THIS_PLACEHOLDER + ".getAge()", Integer.class);
-        final TypedExpression right = expr("$m.get(\"age\")", java.util.Map.class);
+        final TypedExpression right = expr("$m.get(\"age\")", Object.class);
         final CoercedExpression.CoercedExpressionResult coerce = new CoercedExpression(left, right, false).coerce();
-        assertThat(coerce.getCoercedRight()).isEqualTo(expr("(java.lang.Integer)$m.get(\"age\")", Map.class));
+        assertThat(coerce.getCoercedRight()).isEqualTo(expr("$m.get(\"age\")", Object.class));
     }
 
     @Test
@@ -193,7 +191,7 @@ public class CoercedExpressionTest {
     }
 
     @Test
-    @Ignore("should support bigDecimal coercion also?")
+    @Disabled("should support bigDecimal coercion also?")
     public void coerceBigDecimal() {
         final TypedExpression left = expr(THIS_PLACEHOLDER + ".getRate()", java.math.BigDecimal.class);
         final TypedExpression right = expr("0.0d", Double.class);

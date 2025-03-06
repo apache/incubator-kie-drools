@@ -18,73 +18,31 @@
  */
 package org.drools.mvel.integrationtests;
 
-import org.drools.base.base.ClassObjectType;
-import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
-import org.drools.core.reteoo.AlphaNode;
-import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.kiesession.rulebase.InternalKnowledgeBase;
-import org.drools.mvel.MVELConstraint;
-import org.drools.mvel.accessors.ClassFieldReader;
-import org.drools.mvel.compiler.Address;
-import org.drools.mvel.compiler.Cheese;
-import org.drools.mvel.compiler.Cheesery;
-import org.drools.mvel.compiler.FactA;
-import org.drools.mvel.compiler.Person;
-import org.drools.mvel.compiler.TestEnum;
-import org.drools.mvel.expr.MVELDebugHandler;
-import org.drools.mvel.extractors.MVELObjectClassFieldReader;
 import org.drools.mvel.integrationtests.facts.FactWithList;
 import org.drools.mvel.integrationtests.facts.FactWithMap;
 import org.drools.mvel.integrationtests.facts.FactWithObject;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.drools.testcoverage.common.util.KieUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.drools.util.DateUtils;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
-import org.kie.api.builder.KieBuilder;
-import org.kie.api.builder.Message;
-import org.kie.api.definition.type.FactType;
 import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.StatelessKieSession;
-import org.mvel2.MVEL;
-import org.mvel2.ParserContext;
 
-import java.io.Serializable;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.math.MathContext;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
 
-@RunWith(Parameterized.class)
 public class MVELEmptyCollectionsTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public MVELEmptyCollectionsTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
-    }
-
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
+    public static Stream<KieBaseTestConfiguration> parameters() {
         // Some of these fail without executable model, so test only executable model.
-        return TestParametersUtil.getKieBaseCloudOnlyExecModelConfiguration();
+        return TestParametersUtil2.getKieBaseCloudOnlyExecModelConfiguration().stream();
     }
 
-    @Test
-    public void testEmptyListAsMethodParameter() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testEmptyListAsMethodParameter(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
                 "import " + FactWithList.class.getCanonicalName() + "; \n" +
                 "rule \"test\"\n" +
@@ -103,8 +61,9 @@ public class MVELEmptyCollectionsTest {
         assertThat(f.getItems()).hasSize(0);
     }
 
-    @Test
-    public void testEmptyListAsConstructorParameter() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testEmptyListAsConstructorParameter(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
                 "import " + FactWithList.class.getCanonicalName() + "; \n" +
                         "import " + FactWithObject.class.getCanonicalName() + "; \n" +
@@ -124,8 +83,9 @@ public class MVELEmptyCollectionsTest {
         assertThat(f.getObjectValue()).isInstanceOf(FactWithList.class);
     }
 
-    @Test
-    public void testEmptyMapAsMethodParameter() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testEmptyMapAsMethodParameter(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
                 "import " + FactWithMap.class.getCanonicalName() + "; \n" +
                         "rule \"test\"\n" +
@@ -144,8 +104,9 @@ public class MVELEmptyCollectionsTest {
         assertThat(f.getItemsMap()).hasSize(0);
     }
 
-    @Test
-    public void testEmptyMapAsConstructorParameter() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testEmptyMapAsConstructorParameter(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
                 "import " + FactWithMap.class.getCanonicalName() + "; \n" +
                         "import " + FactWithObject.class.getCanonicalName() + "; \n" +

@@ -19,37 +19,29 @@
 package org.drools.mvel.compiler.oopath.graph;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.drools.core.phreak.AbstractReactiveObject;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class OOPathOnGraphTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public OOPathOnGraphTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
-    }
-
-    @Test
-    public void testOOPathOnGraph() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testOOPathOnGraph(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String drl =
                 "import org.drools.mvel.compiler.oopath.graph.*;\n" +
                 "import " + Library.class.getCanonicalName() + ";\n" +
@@ -86,8 +78,9 @@ public class OOPathOnGraphTest {
         assertThat(list.contains("Alan")).isTrue();
     }
 
-    @Test
-    public void testOOPathOnGraphWithReactiveContentModification() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testOOPathOnGraphWithReactiveContentModification(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String drl =
                 "import org.drools.mvel.compiler.oopath.graph.*;\n" +
                 "import " + Library.class.getCanonicalName() + ";\n" +
@@ -124,8 +117,9 @@ public class OOPathOnGraphTest {
         assertThat(list.contains("Raoul")).isTrue();
     }
 
-    @Test
-    public void testOOPathOnGraphWithReactiveContentModificationInSubgraph() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testOOPathOnGraphWithReactiveContentModificationInSubgraph(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String drl =
                 "import org.drools.mvel.compiler.oopath.graph.*;\n" +
                 "import " + Library.class.getCanonicalName() + ";\n" +
@@ -162,8 +156,9 @@ public class OOPathOnGraphTest {
         assertThat(list.contains("Raoul")).isTrue();
     }
 
-    @Test
-    public void testOOPathOnGraphWithNonReactiveContentModification() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testOOPathOnGraphWithNonReactiveContentModification(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String drl =
                 "import org.drools.mvel.compiler.oopath.graph.*;\n" +
                 "import " + Library.class.getCanonicalName() + ";\n" +

@@ -21,37 +21,29 @@ package org.drools.mvel.integrationtests;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.Message;
 import org.kie.api.runtime.KieSession;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class RuleExtensionTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public RuleExtensionTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
-    }
-
-    @Test
-    public void testRuleExtendsNonexistingRule() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testRuleExtendsNonexistingRule(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-100
         String str =
                 "package org.drools.test;\n" +
@@ -75,8 +67,9 @@ public class RuleExtensionTest {
         assertThat(errors.isEmpty()).as("Should have an error").isFalse();
     }
 
-    @Test
-    public void testRuleExtendsBetweenDRLs() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testRuleExtendsBetweenDRLs(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-100
         String str =
                 "package org.drools.test;\n" +
@@ -115,8 +108,9 @@ public class RuleExtensionTest {
     }
 
 
-    @Test
-    public void testRuleExtendsOnIncrementalKB() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testRuleExtendsOnIncrementalKB(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-100
         String str =
                 "package org.drools.test;\n" +
@@ -155,8 +149,9 @@ public class RuleExtensionTest {
         assertThat(list.size()).isEqualTo(1);
     }
 
-    @Test
-    public void testRuleExtendsMissingOnIncrementalKB() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testRuleExtendsMissingOnIncrementalKB(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-100
         String str =
                 "package org.drools.test;\n" +
@@ -187,8 +182,9 @@ public class RuleExtensionTest {
 
 
 
-    @Test
-    public void testRuleExtendsWithCompositeKBuilder() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testRuleExtendsWithCompositeKBuilder(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-100
         String str =
                 "package org.drools.test;\n" +
@@ -227,8 +223,9 @@ public class RuleExtensionTest {
         assertThat(list.size()).isEqualTo(1);
     }
 
-    @Test
-    public void testRuleExtendsNonExistingWithCompositeKBuilder() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testRuleExtendsNonExistingWithCompositeKBuilder(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-100
         String str =
                 "package org.drools.test;\n" +
@@ -258,8 +255,9 @@ public class RuleExtensionTest {
     }
 
 
-    @Test
-    public void testRuleExtendsNonExistingWithCompositeKBuilderOutOfOrder() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testRuleExtendsNonExistingWithCompositeKBuilderOutOfOrder(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-100
         String str =
                 "package org.drools.test;\n" +
@@ -292,8 +290,9 @@ public class RuleExtensionTest {
         assertThat(errors.toString().contains("Base")).isTrue();
     }
 
-    @Test
-    public void testRuleExtendsWithCompositeKBuilderFreeOrder() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testRuleExtendsWithCompositeKBuilderFreeOrder(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-100
         String str =
                 "package org.drools.test;\n" +
@@ -332,8 +331,9 @@ public class RuleExtensionTest {
         assertThat(list.size()).isEqualTo(1);
     }
 
-    @Test
-    public void testRuleExtendsExtendsWithCompositeKBuilderFreeOrder() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testRuleExtendsExtendsWithCompositeKBuilderFreeOrder(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-100
         String str1 =
                 "package org.drools.test;\n" +
@@ -380,8 +380,9 @@ public class RuleExtensionTest {
         assertThat((int) list.get(0)).isEqualTo(10);
     }
 
-    @Test
-    public void testRuleCircularExtension() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testRuleCircularExtension(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-100
         String str1 =
                 "package org.drools.test;\n" +
@@ -422,8 +423,9 @@ public class RuleExtensionTest {
         assertThat(errors.iterator().next().toString().contains("Circular")).isTrue();
     }
 
-    @Test
-    public void testManyExtensions() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testManyExtensions(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-7542
         String base =
                 "package org.drools.test;\n" +

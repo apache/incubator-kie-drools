@@ -23,14 +23,14 @@ import java.time.temporal.TemporalAccessor;
 import java.time.temporal.WeekFields;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
+import org.kie.dmn.feel.runtime.FEELNumberFunction;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
-import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.dmn.feel.util.NumberEvalHelper;
 
-public class WeekOfYearFunction extends BaseFEELFunction {
+public class WeekOfYearFunction extends BaseFEELFunction implements FEELNumberFunction {
     public static final WeekOfYearFunction INSTANCE = new WeekOfYearFunction();
 
-    WeekOfYearFunction() {
+    private WeekOfYearFunction() {
         super("week of year");
     }
 

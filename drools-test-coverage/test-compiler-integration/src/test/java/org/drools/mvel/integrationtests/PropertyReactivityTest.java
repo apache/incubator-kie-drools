@@ -21,20 +21,19 @@ package org.drools.mvel.integrationtests;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
-import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.mvel.compiler.Address;
 import org.drools.mvel.compiler.Person;
 import org.drools.mvel.compiler.State;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.Message;
@@ -46,22 +45,16 @@ import org.kie.api.runtime.rule.FactHandle;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
-@RunWith(Parameterized.class)
 public class PropertyReactivityTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public PropertyReactivityTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
-    }
-
-    @Test(timeout=10000)
-    public void testComposedConstraint() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(10000)
+    public void testComposedConstraint(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String str =
                 "package org.drools.test;\n" +
                 "\n" +
@@ -82,8 +75,10 @@ public class PropertyReactivityTest {
         assertThat(k2.getD()).isEqualTo(1);
     }
 
-    @Test(timeout=10000)
-    public void testScrambleProperties() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(10000)
+    public void testScrambleProperties(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-91
         final String str =
                 "package org.drools.test\n" +
@@ -238,8 +233,10 @@ public class PropertyReactivityTest {
     }
 
 
-    @Test(timeout=10000)
-    public void testScrambleWithInterfaces() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(10000)
+    public void testScrambleWithInterfaces(KieBaseTestConfiguration kieBaseTestConfiguration) {
     /*
      *       K1 a b c d e f    1000
      *       I1     c d   f    10
@@ -327,8 +324,10 @@ public class PropertyReactivityTest {
         assertThat(list.size()).isEqualTo(5);
     }
 
-    @Test(timeout=10000)
-    public void testScrambleWithInterfacesAndObject() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(10000)
+    public void testScrambleWithInterfacesAndObject(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-91
         final String str =
                 "package org.drools.test;\n" +
@@ -377,8 +376,10 @@ public class PropertyReactivityTest {
         assertThat(list.get(1)).isEqualTo("Klass2");
     }
 
-    @Test(timeout=10000)
-    public void testRepeatedPatternWithPR() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(10000)
+    public void testRepeatedPatternWithPR(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // JBRULES-3705
         final String str1 =
                 "package org.test;\n" +
@@ -430,8 +431,10 @@ public class PropertyReactivityTest {
         assertThat(list.contains(new BigDecimal(5))).isTrue();
     }
 
-    @Test(timeout=10000)
-    public void testPRWithCollections() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(10000)
+    public void testPRWithCollections(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-135
         final String str1 = "package org.test;\n" +
                       "import java.util.*\n" +
@@ -523,8 +526,10 @@ public class PropertyReactivityTest {
 
     }
 
-    @Test(timeout=10000)
-    public void testPRWithPositionalUnification() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(10000)
+    public void testPRWithPositionalUnification(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-247
         final String str1 =
                 "package org.test;\n" +
@@ -602,12 +607,15 @@ public class PropertyReactivityTest {
      * Tests the use of PR on constraints involving 'virtual' properties
      * of a POJO: calculated properties without a setter.
      * Because getFullName doesn't have a setter, and we are not using
+     * @param kieBaseTestConfiguration 
      * @watch in the rule nor @Modified in setName() or in setLastName(), there
      * are no way that rule 'Find Heisenberg' gets activated because a modification
      * or a Klass3 object.
      */
-    @Test(timeout=10000)
-    public void testPRConstraintOnAttributesWithoutSetter(){
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(10000)
+    public void testPRConstraintOnAttributesWithoutSetter(KieBaseTestConfiguration kieBaseTestConfiguration){
         final String str =
                 "package org.drools.test;\n" +
                 "\n" +
@@ -656,9 +664,12 @@ public class PropertyReactivityTest {
      * nor setLastName() @Modifies fullName. We are explicitly using @watches
      * in the rule involving fullName to be aware of modifications in the name
      * and/or lastName of a Klass3 object.
+     * @param kieBaseTestConfiguration 
      */
-    @Test(timeout=10000)
-    public void testPRConstraintOnAttributesWithoutSetterUsingWatches(){
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(10000)
+    public void testPRConstraintOnAttributesWithoutSetterUsingWatches(KieBaseTestConfiguration kieBaseTestConfiguration){
         final String str =
                 "package org.drools.test;\n" +
                 "\n" +
@@ -705,9 +716,12 @@ public class PropertyReactivityTest {
      * of a POJO: calculated properties without a setter.
      * getFullName doesn't have a setter but Klass4 states that setName()
      * and setLastName() both @Modifies fullName.
+     * @param kieBaseTestConfiguration 
      */
-    @Test(timeout=10000)
-    public void testPRConstraintOnAttributesWithoutSetterUsingModifies(){
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(10000)
+    public void testPRConstraintOnAttributesWithoutSetterUsingModifies(KieBaseTestConfiguration kieBaseTestConfiguration){
         final String str =
                 "package org.drools.test;\n" +
                 "\n" +
@@ -753,12 +767,15 @@ public class PropertyReactivityTest {
      * Tests the use of PR on bindings involving 'virtual' properties
      * of a POJO: calculated properties without a setter.
      * Because getFullName doesn't have a setter, and we are not using
+     * @param kieBaseTestConfiguration 
      * @watch in the rule nor @Modified in setName() or in setLastName(), there
      * are no way that rule 'Get Person name' gets activated because a modification
      * or a Klass3 object.
      */
-    @Test(timeout=10000)
-    public void testPRBindingOnAttributesWithoutSetter(){
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(10000)
+    public void testPRBindingOnAttributesWithoutSetter(KieBaseTestConfiguration kieBaseTestConfiguration){
         final String str =
                 "package org.drools.test;\n" +
                 "\n" +
@@ -806,9 +823,12 @@ public class PropertyReactivityTest {
      * getFullName doesn't have a setter but we are explicitly using @watches
      * annotation in 'Get Person name' rule. After the name of Kalss3 instance is
      * modified, rule 'Get Person name' must be re-activated.
+     * @param kieBaseTestConfiguration 
      */
-    @Test(timeout=10000)
-    public void testPRBindingOnAttributesWithoutSetterUsingWatches(){
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(10000)
+    public void testPRBindingOnAttributesWithoutSetterUsingWatches(KieBaseTestConfiguration kieBaseTestConfiguration){
         final String str =
                 "package org.drools.test;\n" +
                 "\n" +
@@ -856,9 +876,12 @@ public class PropertyReactivityTest {
      * getFullName doesn't have a setter but we are explicitly using @Modifies
      * in Klass4's setName() and setLastName(). After the name of Kalss4
      * instance is modified, rule 'Get Person name' must be re-activated.
+     * @param kieBaseTestConfiguration 
      */
-    @Test(timeout=10000)
-    public void testPRBindingOnAttributesWithoutSetterUsingModifies(){
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(10000)
+    public void testPRBindingOnAttributesWithoutSetterUsingModifies(KieBaseTestConfiguration kieBaseTestConfiguration){
         final String str =
                 "package org.drools.test;\n" +
                 "\n" +
@@ -901,8 +924,10 @@ public class PropertyReactivityTest {
     }
 
 
-    @Test(timeout=10000)
-    public void testPRBindingOnNonexistingAttributes(){
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(10000)
+    public void testPRBindingOnNonexistingAttributes(KieBaseTestConfiguration kieBaseTestConfiguration){
         final String str =
                 "package org.drools.test;\n" +
                 "\n" +
@@ -924,8 +949,10 @@ public class PropertyReactivityTest {
         assertThat(errors.isEmpty()).as("Should have an error").isFalse();
     }
 
-    @Test(timeout=10000)
-    public void testPRBindingOnNonexistingWatchedAttribute(){
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(10000)
+    public void testPRBindingOnNonexistingWatchedAttribute(KieBaseTestConfiguration kieBaseTestConfiguration){
         final String str =
                 "package org.drools.test;\n" +
                 "\n" +
@@ -946,8 +973,10 @@ public class PropertyReactivityTest {
         assertThat(errors.isEmpty()).as("Should have an error").isFalse();
     }
 
-    @Test(timeout=10000)
-    public void testModifyAfterInsertWithPropertyReactive() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(10000)
+    public void testModifyAfterInsertWithPropertyReactive(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String rule1 =
                 "\n" +
                 "package com.sample;\n" +
@@ -1082,8 +1111,10 @@ public class PropertyReactivityTest {
         }
     }
 
-    @Test(timeout=10000)
-    public void testIndexedNotWatchedProperty() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(10000)
+    public void testIndexedNotWatchedProperty(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-569
         final String rule1 =
                 "package com.sample;\n" +
@@ -1129,8 +1160,9 @@ public class PropertyReactivityTest {
         assertThat(list.get(0)).isEqualTo("3");
     }
 
-    @Test
-    public void testModifyWithGetter() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testModifyWithGetter(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String rule1 =
                 "package foo.bar\n" +
                 "import " + Person.class.getName() + "\n" +
@@ -1155,8 +1187,10 @@ public class PropertyReactivityTest {
         assertThat(p.getAddress().getStreet()).isEqualTo("foo");
     }
 
-    @Test(timeout = 10000L)
-    public void testMoreThan64Fields() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(10000)
+    public void testMoreThan64Fields(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final StringBuilder fields = new StringBuilder();
         for (int i = 10; i < 100; i++) {
             fields.append("  a").append(i).append(" : int\n");
@@ -1188,8 +1222,10 @@ public class PropertyReactivityTest {
         assertThat(list.size()).isEqualTo(1);
     }
 
-    @Test(timeout = 10000L)
-    public void testMoreThan64FieldsMultipleFirings() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(10000)
+    public void testMoreThan64FieldsMultipleFirings(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final StringBuilder fields = new StringBuilder();
         for (int i = 10; i < 100; i++) {
             fields.append("  a").append(i).append(" : int\n");
@@ -1221,8 +1257,10 @@ public class PropertyReactivityTest {
         assertThat(list.size()).isEqualTo(10);
     }
 
-    @Test(timeout = 10000L)
-    public void testMoreThan64FieldsWithWatch() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(10000)
+    public void testMoreThan64FieldsWithWatch(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final StringBuilder fields = new StringBuilder();
         for (int i = 10; i < 100; i++) {
             fields.append("  a").append(i).append(" : int\n");
@@ -1254,8 +1292,9 @@ public class PropertyReactivityTest {
         assertThat(list.size()).isEqualTo(1);
     }
 
-    @Test
-    public void testPropReactiveAnnotationOnDifferentDrl() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testPropReactiveAnnotationOnDifferentDrl(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-800
         final String str1 =
                 "package org.jboss.ddoyle.drools.propertyreactive;\n" +
@@ -1359,8 +1398,9 @@ public class PropertyReactivityTest {
         }
     }
 
-    @Test
-    public void testPropReactiveWithParentClassNotImplementingChildInterface() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testPropReactiveWithParentClassNotImplementingChildInterface(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-1090
         final String str1 =
                 "import " + DummyBeanInterface.class.getCanonicalName() + "\n" +
@@ -1401,8 +1441,9 @@ public class PropertyReactivityTest {
         ksession.fireAllRules();
     }
 
-    @Test
-    public void testPropReactiveUpdate() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testPropReactiveUpdate(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-1275
         final String str1 =
                 "import " + Klass.class.getCanonicalName() + "\n" +
@@ -1433,8 +1474,9 @@ public class PropertyReactivityTest {
         assertThat(list.size()).isEqualTo(2);
     }
 
-    @Test
-    public void testSetterInConcreteClass() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testSetterInConcreteClass(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-1368
         final String drl = "import " + BaseFact.class.getCanonicalName() + ";\n"
                      + "import " + MyFact.class.getCanonicalName() + ";\n"
@@ -1508,8 +1550,9 @@ public class PropertyReactivityTest {
 
     }
 
-    @Test
-    public void testSetterInConcreteClass2() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testSetterInConcreteClass2(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-1369
         final String drl = "package org.test;\n"
                      + "import " + BusStop.class.getCanonicalName() + ";\n"
@@ -1546,8 +1589,9 @@ public class PropertyReactivityTest {
         assertThat(kieSession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testWatchFieldInExternalPattern() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testWatchFieldInExternalPattern(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-1445
         final String drl =
                 "import " + Person.class.getCanonicalName() + ";\n" +
@@ -1578,8 +1622,9 @@ public class PropertyReactivityTest {
         assertThat(list.get(0)).isEqualTo("t0");
     }
 
-    @Test
-    public void testWatchFieldInExternalPatternWithNoConstraints() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testWatchFieldInExternalPatternWithNoConstraints(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-2333
         final String drl =
                 "import " + Person.class.getCanonicalName() + ";\n" +
@@ -1610,8 +1655,9 @@ public class PropertyReactivityTest {
         assertThat(list.get(0)).isEqualTo("t0");
     }
 
-    @Test
-    public void testWatchFieldInExternalNotPattern() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testWatchFieldInExternalNotPattern(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-1445
         final String drl =
                 "import " + Person.class.getCanonicalName() + ";\n" +
@@ -1642,8 +1688,9 @@ public class PropertyReactivityTest {
         assertThat(list.get(0)).isEqualTo("t0");
     }
 
-    @Test
-    public void testPropertyChangeSupportNewAPI() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testPropertyChangeSupportNewAPI(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_PropertyChangeTypeDecl.drl");
         KieSession session = kbase.newKieSession();
 
@@ -1671,8 +1718,9 @@ public class PropertyReactivityTest {
         assertThat(state.getPropertyChangeListeners().length).isEqualTo(0);
     }
 
-    @Test
-    public void testAccumulateWithPR() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testAccumulateWithPR(KieBaseTestConfiguration kieBaseTestConfiguration) {
 
         String drl = "declare A end\n" +
                      " " +
@@ -1694,8 +1742,9 @@ public class PropertyReactivityTest {
         assertThat(errors.isEmpty()).as(errors.toString()).isTrue();
     }
 
-    @Test
-    public void testUpdateOnNonExistingProperty() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testUpdateOnNonExistingProperty(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-2170
         final String str1 =
                 "import " + Klass.class.getCanonicalName() + "\n" +
@@ -1719,8 +1768,10 @@ public class PropertyReactivityTest {
         }
     }
 
-    @Test(timeout = 5000L)
-    public void testPRAfterAccumulate() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(10000)
+    public void testPRAfterAccumulate(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-2427
         final String str1 =
                 "import " + Order.class.getCanonicalName() + "\n" +
@@ -1805,8 +1856,9 @@ public class PropertyReactivityTest {
         }
     }
 
-    @Test
-    public void testGetterWithoutArgShouldBePropReactve() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testGetterWithoutArgShouldBePropReactve(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-4288
         final String str1 =
                 "import " + StrangeGetter.class.getCanonicalName() + "\n" +
@@ -1826,8 +1878,9 @@ public class PropertyReactivityTest {
         assertThat(ksession.fireAllRules(3)).isEqualTo(1);
     }
 
-    @Test
-    public void testGetterWithArgShouldNotBePropReactve() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testGetterWithArgShouldNotBePropReactve(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-4288
         final String str1 =
                 "import " + StrangeGetter.class.getCanonicalName() + "\n" +
@@ -1847,8 +1900,9 @@ public class PropertyReactivityTest {
         assertThat(ksession.fireAllRules(3)).isEqualTo(3);
     }
 
-    @Test
-    public void testComment() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testComment(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-3583
         final String str1 =
                 "package com.example\n" +
@@ -1876,5 +1930,184 @@ public class PropertyReactivityTest {
         KieSession ksession = kbase.newKieSession();
 
         assertThat(ksession.fireAllRules()).isEqualTo(2);
+    }
+
+    public static class MyPerson {
+
+        private String name;
+        private int age;
+        private String address;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public int getAge() {
+            return age;
+        }
+
+        public void setAge(int age) {
+            this.age = age;
+        }
+
+        public String getAddress() {
+            return address;
+        }
+
+        public void setAddress(String address) {
+            this.address = address;
+        }
+    }
+
+    public static class MyWorker extends MyPerson {
+
+        @Override
+        public String getAddress() {
+            return super.getAddress();
+        }
+    }
+
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(10000)
+    void getterOverrideSuperToSub(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        final String drl =
+                "package rules.basic.common;\n" +
+                        "import " + MyPerson.class.getCanonicalName() + ";\n" +
+                        "import " + MyWorker.class.getCanonicalName() + ";\n" +
+                        "rule R1\n" +
+                        "salience 1\n" +
+                        "when\n" +
+                        "    $fact : MyPerson( address == null )\n" +
+                        "then\n" +
+                        "    modify($fact) {\n" +
+                        "        setAddress(\"ROME\")\n" +
+                        "    }\n" +
+                        "end\n" +
+                        "rule R2\n" +
+                        "when\n" +
+                        "    $fact : MyWorker( $address: address != null )\n" +
+                        "then\n" +
+                        "    modify($fact) {\n" +
+                        "        setName(\"PIPPO\")\n" +
+                        "    }\n" +
+                        "end\n";
+
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
+        MyWorker myWorker = new MyWorker();
+        ksession.insert(myWorker);
+        ksession.fireAllRules();
+        assertThat(myWorker.getName()).isEqualTo("PIPPO");
+    }
+
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(10000)
+    void getterOverrideSubToSuper(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        final String drl =
+                "package rules.basic.common;\n" +
+                        "import " + MyPerson.class.getCanonicalName() + ";\n" +
+                        "import " + MyWorker.class.getCanonicalName() + ";\n" +
+                        "rule R1\n" +
+                        "salience 1\n" +
+                        "when\n" +
+                        "    $fact : MyWorker( address == null )\n" +
+                        "then\n" +
+                        "    modify($fact) {\n" +
+                        "        setAddress(\"ROME\")\n" +
+                        "    }\n" +
+                        "end\n" +
+                        "rule R2\n" +
+                        "when\n" +
+                        "    $fact : MyPerson( $address: address != null )\n" +
+                        "then\n" +
+                        "    modify($fact) {\n" +
+                        "        setName(\"PIPPO\")\n" +
+                        "    }\n" +
+                        "end\n";
+
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
+        MyWorker myWorker = new MyWorker();
+        ksession.insert(myWorker);
+        ksession.fireAllRules();
+        assertThat(myWorker.getName()).isEqualTo("PIPPO");
+    }
+
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(10000)
+    void getterOverrideSuperToSubBeta(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        final String drl =
+                "package rules.basic.common;\n" +
+                        "import " + MyPerson.class.getCanonicalName() + ";\n" +
+                        "import " + MyWorker.class.getCanonicalName() + ";\n" +
+                        "rule R1\n" +
+                        "salience 1\n" +
+                        "when\n" +
+                        "    $fact : MyPerson( address == null )\n" +
+                        "then\n" +
+                        "    modify($fact) {\n" +
+                        "        setAddress(\"ROME\")\n" +
+                        "    }\n" +
+                        "end\n" +
+                        "rule R2\n" +
+                        "when\n" +
+                        "    $checkAddress: String()\n" +
+                        "    $fact : MyWorker( $address: address == $checkAddress )\n" +
+                        "then\n" +
+                        "    modify($fact) {\n" +
+                        "        setName(\"PIPPO\")\n" +
+                        "    }\n" +
+                        "end\n";
+
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
+        MyWorker myWorker = new MyWorker();
+        ksession.insert(myWorker);
+        ksession.insert("ROME");
+        ksession.fireAllRules();
+        assertThat(myWorker.getName()).isEqualTo("PIPPO");
+    }
+
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(10000)
+    void getterOverrideSubToSuperBeta(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        final String drl =
+                "package rules.basic.common;\n" +
+                        "import " + MyPerson.class.getCanonicalName() + ";\n" +
+                        "import " + MyWorker.class.getCanonicalName() + ";\n" +
+                        "rule R1\n" +
+                        "salience 1\n" +
+                        "when\n" +
+                        "    $fact : MyWorker( address == null )\n" +
+                        "then\n" +
+                        "    modify($fact) {\n" +
+                        "        setAddress(\"ROME\")\n" +
+                        "    }\n" +
+                        "end\n" +
+                        "rule R2\n" +
+                        "when\n" +
+                        "    $checkAddress: String()\n" +
+                        "    $fact : MyPerson( $address: address == $checkAddress )\n" +
+                        "then\n" +
+                        "    modify($fact) {\n" +
+                        "        setName(\"PIPPO\")\n" +
+                        "    }\n" +
+                        "end\n";
+
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
+        MyWorker myWorker = new MyWorker();
+        ksession.insert(myWorker);
+        ksession.insert("ROME");
+        ksession.fireAllRules();
+        assertThat(myWorker.getName()).isEqualTo("PIPPO");
     }
 }

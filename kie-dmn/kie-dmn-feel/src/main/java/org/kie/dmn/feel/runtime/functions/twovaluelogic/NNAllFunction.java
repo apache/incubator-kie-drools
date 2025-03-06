@@ -18,56 +18,58 @@
  */
 package org.kie.dmn.feel.runtime.functions.twovaluelogic;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
+import org.kie.dmn.feel.runtime.FEELBooleanFunction;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 import org.kie.dmn.feel.runtime.functions.BaseFEELFunction;
 import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 import org.kie.dmn.feel.runtime.functions.ParameterName;
 
-import java.util.Arrays;
-import java.util.List;
-
 /**
  * An implementation of the all() function that ignores nulls
  */
 public class NNAllFunction
-        extends BaseFEELFunction {
+        extends BaseFEELFunction implements FEELBooleanFunction {
 
     public static final NNAllFunction INSTANCE = new NNAllFunction();
 
-    public NNAllFunction() {
-        super( "nn all" );
+    private NNAllFunction() {
+        super("nn all");
     }
 
-    public FEELFnResult<Boolean> invoke(@ParameterName( "list" ) List list) {
-        if ( list == null ) {
-            return FEELFnResult.ofResult( true );
+    public FEELFnResult<Boolean> invoke(@ParameterName("list") List list) {
+        if (list == null) {
+            return FEELFnResult.ofResult(true);
         }
         boolean result = true;
-        for ( final Object element : list ) {
+        for (final Object element : list) {
             if (element != null && !(element instanceof Boolean)) {
-                return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "an element in the list is not a Boolean"));
+                return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "an element in the list is not" +
+                        " a Boolean"));
             } else {
                 if (element != null) {
                     result &= (Boolean) element;
                 }
             }
         }
-        return FEELFnResult.ofResult( result );
+        return FEELFnResult.ofResult(result);
     }
 
-    public FEELFnResult<Boolean> invoke(@ParameterName( "list" ) Boolean single) {
-        if( single == null ) {
-            return FEELFnResult.ofResult( true );
+    public FEELFnResult<Boolean> invoke(@ParameterName("list") Boolean single) {
+        if (single == null) {
+            return FEELFnResult.ofResult(true);
         }
-        return FEELFnResult.ofResult( Boolean.TRUE.equals( single ) );
+        return FEELFnResult.ofResult(Boolean.TRUE.equals(single));
     }
 
-    public FEELFnResult<Boolean> invoke(@ParameterName( "b" ) Object[] list) {
-        if ( list == null ) {
-            return FEELFnResult.ofResult( true );
+    public FEELFnResult<Boolean> invoke(@ParameterName("b") Object[] list) {
+        if (list == null) {
+            return FEELFnResult.ofResult(true);
         }
-        
-        return invoke( Arrays.asList( list ) );
+
+        return invoke(Arrays.asList(list));
     }
 }

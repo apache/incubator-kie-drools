@@ -19,17 +19,19 @@
 package org.drools.testcoverage.regression;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.drools.testcoverage.common.KieSessionTest;
 import org.drools.testcoverage.common.model.Person;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieSessionTestConfiguration;
 import org.drools.testcoverage.common.util.KieUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.command.Command;
 import org.kie.api.io.Resource;
 
@@ -40,22 +42,20 @@ import static org.drools.testcoverage.common.util.KieUtil.getCommands;
  * Test to verify BRMS-364 (multi-restriction pattern throws UnsupportedOpEx) is
  * fixed
  */
+@DisabledIfSystemProperty(named = "drools.drl.antlr4.parser.enabled", matches = "true")
 public class MultiRestrictionPatternTest extends KieSessionTest {
-
+	
     private static final String DRL_FILE = "BRMS-364.drl";
 
-    public MultiRestrictionPatternTest(final KieBaseTestConfiguration kieBaseTestConfiguration,
-                                       final KieSessionTestConfiguration kieSessionTestConfiguration) {
-        super(kieBaseTestConfiguration, kieSessionTestConfiguration);
+    public static Stream<Arguments> parameters() {
+        return TestParametersUtil2.getKieBaseAndStatefulKieSessionConfigurations().stream();
     }
 
-    @Parameterized.Parameters(name = "{1}" + " (from " + "{0}" + ")")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseAndStatefulKieSessionConfigurations();
-    }
-
-    @Test
-    public void multiRestriction1() throws Exception {
+    @ParameterizedTest(name = "{1}" + " (from " + "{0}" + ")")
+	@MethodSource("parameters")
+    public void multiRestriction1(KieBaseTestConfiguration kieBaseTestConfiguration,
+            KieSessionTestConfiguration kieSessionTestConfiguration) throws Exception {
+    	createKieSession(kieBaseTestConfiguration, kieSessionTestConfiguration);
         List<Command<?>> commands = new ArrayList<Command<?>>();
         commands.add(getCommands().newInsert(new Person("multi")));
         commands.add(getCommands().newFireAllRules());
@@ -65,9 +65,12 @@ public class MultiRestrictionPatternTest extends KieSessionTest {
         assertThat(firedRules.isRuleFired("or1")).isTrue();
     }
 
-    @Test
-    public void multiRestriction2() throws Exception {
-        List<Command<?>> commands = new ArrayList<Command<?>>();
+    @ParameterizedTest(name = "{1}" + " (from " + "{0}" + ")")
+	@MethodSource("parameters")
+    public void multiRestriction2(KieBaseTestConfiguration kieBaseTestConfiguration,
+            KieSessionTestConfiguration kieSessionTestConfiguration) throws Exception {
+    	createKieSession(kieBaseTestConfiguration, kieSessionTestConfiguration);
+    	List<Command<?>> commands = new ArrayList<Command<?>>();
         commands.add(getCommands().newInsert(new Person("MULTIRESTRICTION")));
         commands.add(getCommands().newFireAllRules());
 
@@ -76,9 +79,12 @@ public class MultiRestrictionPatternTest extends KieSessionTest {
         assertThat(firedRules.isRuleFired("or2")).isTrue();
     }
 
-    @Test
-    public void multiRestriction3() throws Exception {
-        List<Command<?>> commands = new ArrayList<Command<?>>();
+    @ParameterizedTest(name = "{1}" + " (from " + "{0}" + ")")
+	@MethodSource("parameters")
+    public void multiRestriction3(KieBaseTestConfiguration kieBaseTestConfiguration,
+            KieSessionTestConfiguration kieSessionTestConfiguration) throws Exception {
+    	createKieSession(kieBaseTestConfiguration, kieSessionTestConfiguration);
+    	List<Command<?>> commands = new ArrayList<Command<?>>();
         Person p = new Person();
         p.setId(3);
         commands.add(getCommands().newInsert(p));

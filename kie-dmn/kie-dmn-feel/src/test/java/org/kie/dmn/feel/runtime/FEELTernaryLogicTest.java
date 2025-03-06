@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -58,7 +58,12 @@ public class FEELTernaryLogicTest extends BaseFEELTest {
                 { "false and false or true", Boolean.TRUE , null},
                 { "false and (false or true)", Boolean.FALSE , null},
                 { "true or false and false", Boolean.TRUE , null},
-                { "(true or false) and false", Boolean.FALSE , null}
+                { "(true or false) and false", Boolean.FALSE , null},
+                //
+                { "123 and false", Boolean.FALSE , null},
+                { "\"true\" and false", Boolean.FALSE , null},
+                { "123 or true", Boolean.TRUE , null},
+                { "\"true\" or true", Boolean.TRUE , null}
         };
         return addAdditionalParameters(cases, false);
     }

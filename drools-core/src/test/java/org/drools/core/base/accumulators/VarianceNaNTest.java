@@ -19,7 +19,7 @@
 package org.drools.core.base.accumulators;
 
 import org.drools.core.base.accumulators.VarianceAccumulateFunction.VarianceData;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.within;

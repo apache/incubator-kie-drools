@@ -24,13 +24,13 @@ import java.util.List;
 
 import org.drools.core.common.PropagationContext;
 import org.drools.core.reteoo.TupleIterator.OnLeaf;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-
 public class TupleIterationTest {
-    @Test
+
+	@Test
     public void testRootTraversal() {
         LeftTuple t0 = new LeftTuple();
         LeftTuple t1 = new LeftTuple(t0, null, (PropagationContext) null, true);

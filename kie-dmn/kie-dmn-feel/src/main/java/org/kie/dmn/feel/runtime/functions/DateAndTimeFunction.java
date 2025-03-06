@@ -33,10 +33,11 @@ import java.time.temporal.TemporalQueries;
 import java.util.TimeZone;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
+import org.kie.dmn.feel.runtime.FEELDateTimeFunction;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
 public class DateAndTimeFunction
-        extends BaseFEELFunction {
+        extends BaseFEELFunction implements FEELDateTimeFunction {
 
     public static final DateAndTimeFunction INSTANCE = new DateAndTimeFunction();
 
@@ -57,7 +58,7 @@ public class DateAndTimeFunction
                                                                  .toFormatter();
     }
 
-    public DateAndTimeFunction() {
+    private DateAndTimeFunction() {
         super(FEELConversionFunctionNames.DATE_AND_TIME);
     }
 

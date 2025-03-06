@@ -23,59 +23,38 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
 class MeanFunctionTest {
 
-    private MeanFunction meanFunction;
-
-    @BeforeEach
-    void setUp() {
-        meanFunction = new MeanFunction();
-    }
+    private static final MeanFunction meanFunction = MeanFunction.INSTANCE;
 
     @Test
     void invokeNumberNull() {
-        FunctionTestUtil.assertResultError(meanFunction.invoke((Number) null), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(meanFunction.invoke(Arrays.asList(10, null, 30)), InvalidParametersEvent.class);
     }
 
     @Test
     void invokeNumberBigDecimal() {
-        FunctionTestUtil.assertResult(meanFunction.invoke(BigDecimal.TEN), BigDecimal.TEN);
-    }
-
-    @Test
-    void invokeNumberInteger() {
-        FunctionTestUtil.assertResult(meanFunction.invoke(10), BigDecimal.TEN);
-    }
-
-    @Test
-    void invokeNumberDoubleWithoutDecimalPart() {
-        FunctionTestUtil.assertResult(meanFunction.invoke(10d), BigDecimal.valueOf(10));
-    }
-
-    @Test
-    void invokeNumberDoubleWithDecimalPart() {
-        FunctionTestUtil.assertResult(meanFunction.invoke(10.1d), BigDecimal.valueOf(10.1));
+        FunctionTestUtil.assertResult(meanFunction.invoke(Arrays.asList(BigDecimal.TEN)), BigDecimal.TEN);
     }
 
     @Test
     void invokeNumberFloat() {
-        FunctionTestUtil.assertResult(meanFunction.invoke(10.1f), BigDecimal.valueOf(10.1));
+        FunctionTestUtil.assertResult(meanFunction.invoke(Arrays.asList(10.1f)), BigDecimal.valueOf(10.1));
     }
 
     @Test
     void invokeUnconvertableNumber() {
-        FunctionTestUtil.assertResultError(meanFunction.invoke(Double.POSITIVE_INFINITY), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(meanFunction.invoke(Double.NEGATIVE_INFINITY), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(meanFunction.invoke(Double.NaN), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(meanFunction.invoke(Arrays.asList(Double.POSITIVE_INFINITY)), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(meanFunction.invoke(Arrays.asList(Double.NEGATIVE_INFINITY)), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(meanFunction.invoke(Arrays.asList(Double.NaN)), InvalidParametersEvent.class);
     }
 
     @Test
     void invokeListNull() {
-        FunctionTestUtil.assertResultError(meanFunction.invoke((List) null), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(meanFunction.invoke((List<?>) null), InvalidParametersEvent.class);
     }
 
     @Test
@@ -98,7 +77,8 @@ class MeanFunctionTest {
     @Test
     void invokeListWithDoubles() {
         FunctionTestUtil.assertResult(meanFunction.invoke(Arrays.asList(10.0d, 20.0d, 30.0d)), BigDecimal.valueOf(20));
-        FunctionTestUtil.assertResult(meanFunction.invoke(Arrays.asList(10.2d, 20.2d, 30.2d)), BigDecimal.valueOf(20.2));
+        FunctionTestUtil.assertResult(meanFunction.invoke(Arrays.asList(10.2d, 20.2d, 30.2d)),
+                                      BigDecimal.valueOf(20.2));
     }
 
     @Test

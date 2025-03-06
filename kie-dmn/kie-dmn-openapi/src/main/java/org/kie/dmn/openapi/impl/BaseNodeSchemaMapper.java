@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -26,7 +26,6 @@ import java.util.Set;
 import java.util.function.BiConsumer;
 
 import org.eclipse.microprofile.openapi.models.media.Schema;
-import org.kie.dmn.feel.codegen.feel11.Functions;
 import org.kie.dmn.feel.lang.FEELDialect;
 import org.kie.dmn.feel.lang.ast.AtLiteralNode;
 import org.kie.dmn.feel.lang.ast.BaseNode;
@@ -52,7 +51,7 @@ public class BaseNodeSchemaMapper {
     private static BiConsumer<BaseNode, Schema> ATLITERALNODE_CONSUMER = (node, schema) -> {
         // Defaulting FEELDialect to FEEL
         EvaluationContextImpl emptyEvalCtx =
-                new EvaluationContextImpl(Functions.class.getClassLoader(), new FEELEventListenersManager(), FEELDialect.FEEL);
+                new EvaluationContextImpl(BaseNodeSchemaMapper.class.getClassLoader(), new FEELEventListenersManager(), FEELDialect.FEEL);
         Object evaluated = node.evaluate(emptyEvalCtx);
         Object toStore = evaluated != null ? evaluated : ((AtLiteralNode) node).getStringLiteral().toString();
         populateEnumSchema(schema, toStore);

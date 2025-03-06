@@ -21,15 +21,16 @@ package org.kie.dmn.feel.runtime.functions;
 import java.math.BigDecimal;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
+import org.kie.dmn.feel.runtime.FEELNumberFunction;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 import org.kie.dmn.feel.util.NumberEvalHelper;
 
 public class StringLengthFunction
-        extends BaseFEELFunction {
+        extends BaseFEELFunction implements FEELNumberFunction {
 
     public static final StringLengthFunction INSTANCE = new StringLengthFunction();
 
-    public StringLengthFunction() {
+    private StringLengthFunction() {
         super( "string length" );
     }
 

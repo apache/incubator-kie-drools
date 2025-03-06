@@ -19,38 +19,30 @@
 package org.drools.mvel.compiler.rule.builder.dialect.java;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.drools.mvel.compiler.Cheese;
 import org.drools.mvel.compiler.Person;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class AsmGeneratorTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public AsmGeneratorTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
-    }
-
-    @Test
-    public void testPatterDeclarations() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testPatterDeclarations(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String s = 
             "package org.kie.test\n" +
             "global java.util.List list\n" +        
@@ -82,8 +74,9 @@ public class AsmGeneratorTest {
         assertThat(list.get(0)).isEqualTo("s1s2s3s5");        
     }
     
-    @Test
-    public void testAllGeneratedConstructs() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testAllGeneratedConstructs(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String s = 
             "package org.kie.test\n" +
             "import " + Person.class.getCanonicalName() + "\n" +
@@ -122,8 +115,9 @@ public class AsmGeneratorTest {
         assertThat(list.get(0)).isEqualTo("s1[Person name='s1 age='0' likes='']s1s3[Person name='s3 age='0' likes='']s3");
     }    
     
-    @Test
-    public void testOr() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testOr(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String s = 
             "package org.kie.test\n" +
             "import " + Person.class.getCanonicalName() + "\n" +

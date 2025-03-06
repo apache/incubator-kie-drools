@@ -29,8 +29,8 @@ import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
 import org.drools.template.parser.DataListener;
 import org.drools.template.parser.TemplateDataListener;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.KnowledgeBuilder;
@@ -49,7 +49,7 @@ public class ExternalSpreadsheetCompilerTest {
     
     private ExternalSpreadsheetCompiler converter;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         converter = new ExternalSpreadsheetCompiler();
     }

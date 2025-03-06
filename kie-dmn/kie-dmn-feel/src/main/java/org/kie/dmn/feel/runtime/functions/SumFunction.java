@@ -23,16 +23,16 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
+import org.kie.dmn.feel.runtime.FEELNumberFunction;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
-import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.dmn.feel.util.NumberEvalHelper;
 
 public class SumFunction
-        extends BaseFEELFunction {
+        extends BaseFEELFunction implements FEELNumberFunction {
 
     public static final SumFunction INSTANCE = new SumFunction();
 
-    public SumFunction() {
+    private SumFunction() {
         super( "sum" );
     }
 
@@ -59,23 +59,6 @@ public class SumFunction
             }
         }
         return FEELFnResult.ofResult( sum );
-    }
-
-    public FEELFnResult<BigDecimal> invoke(@ParameterName("list") Number single) {
-        if ( single == null ) { 
-            // Arrays.asList does not accept null as parameter
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "the single value list cannot be null"));
-        }
-        
-        if( single instanceof BigDecimal ) {
-            return FEELFnResult.ofResult((BigDecimal) single );
-        } 
-        BigDecimal result = NumberEvalHelper.getBigDecimalOrNull( single );
-        if ( result != null ) {
-            return FEELFnResult.ofResult( result );
-        } else {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "single element in list not a number"));
-        }
     }
 
     public FEELFnResult<BigDecimal> invoke(@ParameterName("n") Object[] list) {

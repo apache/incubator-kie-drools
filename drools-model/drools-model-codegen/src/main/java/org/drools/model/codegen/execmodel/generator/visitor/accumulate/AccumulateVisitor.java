@@ -281,7 +281,8 @@ public class AccumulateVisitor {
         String rootNodeName = getRootNodeName(methodCallWithoutRootNode);
         Optional<TypedDeclarationSpec> decl = context.getTypedDeclarationById(rootNodeName);
 
-        Class<?> clazz = decl.map(TypedDeclarationSpec::getDeclarationClass)
+        
+        Class<?> clazz = decl.<Class<?>>map(TypedDeclarationSpec::getDeclarationClass)
                 .orElseGet( () -> {
                     try {
                         return context.getTypeResolver().resolveType(rootNodeName);

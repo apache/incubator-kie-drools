@@ -24,12 +24,13 @@ import java.time.temporal.TemporalAccessor;
 import java.util.Locale;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
+import org.kie.dmn.feel.runtime.FEELStringFunction;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
-public class DayOfWeekFunction extends BaseFEELFunction {
+public class DayOfWeekFunction extends BaseFEELFunction implements FEELStringFunction {
     public static final DayOfWeekFunction INSTANCE = new DayOfWeekFunction();
 
-    DayOfWeekFunction() {
+    private DayOfWeekFunction() {
         super("day of week");
     }
 

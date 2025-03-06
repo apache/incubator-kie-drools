@@ -49,10 +49,12 @@ import org.kie.dmn.feel.lang.ast.PathExpressionNode;
 import org.kie.dmn.feel.lang.ast.QualifiedNameNode;
 import org.kie.dmn.feel.lang.ast.QuantifiedExpressionNode;
 import org.kie.dmn.feel.lang.ast.RangeNode;
+import org.kie.dmn.feel.lang.ast.RangeTypeNode;
 import org.kie.dmn.feel.lang.ast.SignedUnaryNode;
 import org.kie.dmn.feel.lang.ast.StringNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestListNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestNode;
+import org.kie.dmn.feel.lang.ast.UndefinedValueNode;
 import org.kie.dmn.feel.lang.ast.Visitor;
 
 public abstract class DefaultedVisitor<T> implements Visitor<T> {
@@ -195,6 +197,11 @@ public abstract class DefaultedVisitor<T> implements Visitor<T> {
     }
 
     @Override
+    public T visit(RangeTypeNode n) {
+        return defaultVisit(n);
+    }
+
+    @Override
     public T visit(SignedUnaryNode n) {
         return defaultVisit(n);
     }
@@ -231,6 +238,11 @@ public abstract class DefaultedVisitor<T> implements Visitor<T> {
 
     @Override
     public T visit(FunctionTypeNode n) {
+        return defaultVisit(n);
+    }
+
+    @Override
+    public T visit(UndefinedValueNode n) {
         return defaultVisit(n);
     }
 

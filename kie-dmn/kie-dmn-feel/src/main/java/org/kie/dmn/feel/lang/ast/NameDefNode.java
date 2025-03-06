@@ -46,6 +46,12 @@ public class NameDefNode
         this.name = name;
     }
 
+    public NameDefNode(List<String> parts, String name, String text) {
+        this.parts = parts;
+        this.name = name;
+        this.setText(text);
+    }
+
     public List<String> getParts() {
         return parts;
     }

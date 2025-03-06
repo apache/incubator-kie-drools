@@ -19,15 +19,14 @@
 package org.drools.mvel.compiler.definitions;
 
 
-import java.util.Collection;
+import java.util.stream.Stream;
 
 import org.drools.base.definitions.rule.impl.GlobalImpl;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Query;
@@ -37,18 +36,10 @@ import org.kie.api.definition.type.FactType;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
-@RunWith(Parameterized.class)
 public class KnowledgePackageMetaDataTest {
-
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public KnowledgePackageMetaDataTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
-    }
-
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+	
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
     private String drl ="" +
@@ -89,8 +80,9 @@ public class KnowledgePackageMetaDataTest {
             "then\n" +
             "end";
 
-    @Test
-    public void testMetaData() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testMetaData(KieBaseTestConfiguration kieBaseTestConfiguration) {
         KieBase kBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KiePackage pack = kBase.getKiePackage( "org.drools.mvel.compiler.test.definitions" );
 

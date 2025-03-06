@@ -30,7 +30,7 @@ import org.drools.mvel.asm.ClassGenerator;
 import org.drools.mvel.asm.InvokerContext;
 import org.drools.mvel.asm.InvokerGenerator;
 import org.drools.mvel.asm.InvokerStub;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

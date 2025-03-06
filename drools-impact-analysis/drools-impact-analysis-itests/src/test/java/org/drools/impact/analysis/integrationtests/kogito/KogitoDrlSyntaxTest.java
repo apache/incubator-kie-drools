@@ -25,7 +25,7 @@ import org.drools.impact.analysis.integrationtests.AbstractGraphTest;
 import org.drools.impact.analysis.integrationtests.kogito.domain.LoanApplication;
 import org.drools.impact.analysis.model.AnalysisModel;
 import org.drools.impact.analysis.parser.ModelBuilder;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  *

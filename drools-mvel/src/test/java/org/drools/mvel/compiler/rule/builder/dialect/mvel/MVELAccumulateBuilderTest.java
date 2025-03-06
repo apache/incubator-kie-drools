@@ -45,7 +45,7 @@ import org.drools.mvel.builder.MVELAccumulateBuilder;
 import org.drools.mvel.builder.MVELDialect;
 import org.drools.mvel.compiler.Cheese;
 import org.drools.mvel.expr.MVELCompileable;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

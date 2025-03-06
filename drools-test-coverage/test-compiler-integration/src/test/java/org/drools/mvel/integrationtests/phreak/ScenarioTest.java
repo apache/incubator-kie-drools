@@ -39,7 +39,7 @@ import org.drools.core.reteoo.SegmentMemory.SegmentPrototype;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.JavaDialectRuntimeData;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.internal.conf.CompositeBaseConfiguration;
 
 import static org.assertj.core.api.Assertions.assertThat;

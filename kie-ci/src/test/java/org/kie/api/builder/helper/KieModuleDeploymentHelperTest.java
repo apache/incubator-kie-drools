@@ -30,8 +30,8 @@ import java.util.zip.ZipInputStream;
 
 import org.drools.core.impl.EnvironmentImpl;
 import org.drools.core.test.model.Cheese;
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.conf.EqualityBehaviorOption;
@@ -49,7 +49,7 @@ public class KieModuleDeploymentHelperTest {
     
     private ZipInputStream zip;
 
-    @After
+    @AfterEach
     public void cleanUp() {
         if (zip != null) {
             try {

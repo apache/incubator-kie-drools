@@ -19,20 +19,19 @@
 package org.drools.mvel.integrationtests;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
 
 import org.drools.mvel.compiler.Cheese;
 import org.drools.mvel.compiler.Person;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.EntryPoint;
@@ -40,22 +39,15 @@ import org.kie.api.runtime.rule.FactHandle;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class FireUntilHaltTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public FireUntilHaltTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
-    }
-
-    @Test
-    public void testSubmitOnFireUntilHalt() throws InterruptedException {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testSubmitOnFireUntilHalt(KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException {
         final String drl =
                 "import " + Person.class.getCanonicalName() + "\n" +
                 "global java.util.List list;" +
@@ -100,8 +92,9 @@ public class FireUntilHaltTest {
         kSession.dispose();
     }
 
-    @Test
-    public void testFireAllWhenFiringUntilHalt() throws InterruptedException {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testFireAllWhenFiringUntilHalt(KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException {
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration); // empty
         KieSession ksession = kbase.newKieSession();
 
@@ -126,8 +119,9 @@ public class FireUntilHaltTest {
         assertThat(aliveT1).as("T1 should have finished").isFalse();
     }
 
-    @Test
-    public void testFireUntilHaltFailingAcrossEntryPoints() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testFireUntilHaltFailingAcrossEntryPoints(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String rule1 = "package org.drools.mvel.compiler\n";
         rule1 += "global java.util.List list\n";
         rule1 += "rule testFireUntilHalt\n";
@@ -165,8 +159,9 @@ public class FireUntilHaltTest {
         assertThat(list.size()).isEqualTo(1);
     }
 
-    @Test
-    public void testAllFactsProcessedBeforeHalt() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testAllFactsProcessedBeforeHalt(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String drl = "package org.example.drools;\n" +
                 "\n" +
                 "global java.util.concurrent.CountDownLatch latch;\n" +

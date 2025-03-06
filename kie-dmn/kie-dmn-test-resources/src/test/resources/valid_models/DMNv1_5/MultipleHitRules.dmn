@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+  <!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+<definitions xmlns="https://www.omg.org/spec/DMN/20230324/MODEL/" expressionLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/" namespace="https://kie.org/dmn/_0F4F765C-8EB4-49EA-B0B7-1708350D85CB" id="_519DCACD-D3C7-4B4A-ABA9-862C791F1B50" name="DMN_38D7FBBB-9C00-411D-A3A9-FE7E52F1728B" xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="https://kie.org/dmn/extensions/1.0">
+  <itemDefinition id="_AA6B29A0-E5BF-4D8D-873A-E68F6E5E8388" name="tNumbers" isCollection="true" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/">
+    <description></description>
+    <typeRef>number</typeRef>
+  </itemDefinition>
+  <inputData name="Numbers" id="_22EC35CC-0A7F-4D91-B608-9EE280243526">
+    <variable name="Numbers" id="_08B75E97-1568-4ABE-8269-7EB669C4D715" typeRef="tNumbers" />
+  </inputData>
+  <decision name="Statistics" id="_08C2934A-7B60-4102-B9CF-39304CE6C002">
+    <variable id="_DC17E59A-A798-43E6-8B27-2805125C93B3" typeRef="Any" name="Statistics" />
+    <informationRequirement id="_415F2611-8C98-4C50-B56D-832CC7BCD022">
+      <requiredInput href="#_22EC35CC-0A7F-4D91-B608-9EE280243526" />
+    </informationRequirement>
+    <for id="_B119D1A7-28E5-4AF5-B50E-32FC8DB63AFB" label="Statistics" typeRef="Any" iteratorVariable="i">
+      <in id="_94B17847-6EB5-4550-B199-3347189EC393">
+        <literalExpression id="_EF33ABF3-46DB-45A2-9459-3A36C33467CF" label="Expression Name">
+          <text>Numbers</text>
+        </literalExpression>
+      </in>
+      <return id="_5B499829-5FE9-471F-BF5C-A0D2B85EE4B7">
+        <decisionTable id="_D1F21F6F-382A-49C9-AB4F-C03A7038B15D" hitPolicy="COLLECT" label="Expression Name" aggregation="SUM">
+          <input id="_9A17D4A0-0A71-4E71-9A1A-5C3127A9C7BA">
+            <inputExpression id="_E3B67A77-6968-4D80-96C1-0B4F3B3B3249" typeRef="number">
+              <text>i</text>
+            </inputExpression>
+          </input>
+          <output id="_BAB25151-3529-4601-9BB0-B221F29887C0" />
+          <annotation name="Annotations" />
+          <rule id="_E5C380DA-AF7B-4401-9804-C58296EC09DD">
+            <inputEntry id="_333FDC53-1BF3-42E1-B72B-F123B7AE49D7">
+              <text>&gt;0</text>
+            </inputEntry>
+            <outputEntry id="_436FE8D2-220E-4E63-8C63-4ADC34621DA8">
+              <text>1</text>
+            </outputEntry>
+            <annotationEntry>
+              <text>// Your annotations here</text>
+            </annotationEntry>
+          </rule>
+          <rule id="_DFD65E8B-5648-4BFD-840F-8C76B8DDBD1A">
+            <inputEntry id="_BD79F339-5699-4A88-BDCB-EB3483ECC7D1">
+              <text>&gt;1 </text>
+            </inputEntry>
+            <outputEntry id="_A4B9DBB3-8702-4CFA-86FB-07E27713D53C">
+              <text>2</text>
+            </outputEntry>
+            <annotationEntry>
+              <text></text>
+            </annotationEntry>
+          </rule>
+          <rule id="_E80EE7F7-1C0C-4050-B560-F33611F16B05">
+            <inputEntry id="_8B2BF12B-49FD-4F0F-A2A1-EBA2F77CFEAA">
+              <text>&gt;2</text>
+            </inputEntry>
+            <outputEntry id="_2D42D0EA-329C-48FA-80F8-7014742B3CC3">
+              <text>3</text>
+            </outputEntry>
+            <annotationEntry>
+              <text></text>
+            </annotationEntry>
+          </rule>
+        </decisionTable>
+      </return>
+    </for>
+  </decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_30C75292-4090-446C-9321-63142EA9C967" name="Default DRD" useAlternativeInputDataShape="false">
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_EF33ABF3-46DB-45A2-9459-3A36C33467CF">
+            <kie:width>190</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_D1F21F6F-382A-49C9-AB4F-C03A7038B15D">
+            <kie:width>60</kie:width>
+            <kie:width>118</kie:width>
+            <kie:width>118</kie:width>
+            <kie:width>240</kie:width>
+          </kie:ComponentWidths>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="_94CA2B2E-99BC-479A-879B-DB6638C9FCD7" dmnElementRef="_22EC35CC-0A7F-4D91-B608-9EE280243526" isCollapsed="false" isListedInputData="false">
+        <dc:Bounds x="260" y="140" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="_C0AA66E0-06D9-4F8A-AD37-0B67D2C49477" dmnElementRef="_08C2934A-7B60-4102-B9CF-39304CE6C002" isCollapsed="false" isListedInputData="false">
+        <dc:Bounds x="640" y="140" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="_DAAB7E77-4BCD-4066-908F-269A4D447D7B-AUTO-TARGET" dmnElementRef="_415F2611-8C98-4C50-B56D-832CC7BCD022" sourceElement="_94CA2B2E-99BC-479A-879B-DB6638C9FCD7" targetElement="_C0AA66E0-06D9-4F8A-AD37-0B67D2C49477">
+        <di:waypoint x="340" y="180" />
+        <di:waypoint x="720" y="180" />
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>

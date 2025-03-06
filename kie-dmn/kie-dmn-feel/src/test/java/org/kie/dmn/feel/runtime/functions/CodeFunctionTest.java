@@ -33,7 +33,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.functions.extended.CodeFunction;
@@ -41,12 +40,7 @@ import org.kie.dmn.feel.runtime.impl.RangeImpl;
 
 class CodeFunctionTest {
 
-    private CodeFunction codeFunction;
-
-    @BeforeEach
-    void setUp() {
-        codeFunction = new CodeFunction();
-    }
+    private static final CodeFunction codeFunction = CodeFunction.INSTANCE;
 
     @Test
     void invokeNull() {
@@ -72,31 +66,36 @@ class CodeFunctionTest {
     @Test
     void invokeLocalTime() {
         final LocalTime localTime = LocalTime.now();
-        FunctionTestUtil.assertResult(codeFunction.invoke(localTime), "time( \"" + TimeFunction.FEEL_TIME.format(localTime) + "\" )");
+        FunctionTestUtil.assertResult(codeFunction.invoke(localTime),
+                                      "time( \"" + TimeFunction.FEEL_TIME.format(localTime) + "\" )");
     }
 
     @Test
     void invokeOffsetTime() {
         final OffsetTime offsetTime = OffsetTime.now();
-        FunctionTestUtil.assertResult(codeFunction.invoke(offsetTime), "time( \"" + TimeFunction.FEEL_TIME.format(offsetTime) + "\" )");
+        FunctionTestUtil.assertResult(codeFunction.invoke(offsetTime),
+                                      "time( \"" + TimeFunction.FEEL_TIME.format(offsetTime) + "\" )");
     }
 
     @Test
     void invokeLocalDateTime() {
         final LocalDateTime localDateTime = LocalDateTime.now();
-        FunctionTestUtil.assertResult(codeFunction.invoke(localDateTime), "date and time( \"" + DateAndTimeFunction.FEEL_DATE_TIME.format(localDateTime) + "\" )");
+        FunctionTestUtil.assertResult(codeFunction.invoke(localDateTime),
+                                      "date and time( \"" + DateAndTimeFunction.FEEL_DATE_TIME.format(localDateTime) + "\" )");
     }
 
     @Test
     void invokeOffsetDateTime() {
         final OffsetDateTime offsetDateTime = OffsetDateTime.now();
-        FunctionTestUtil.assertResult(codeFunction.invoke(offsetDateTime), "date and time( \"" + DateAndTimeFunction.FEEL_DATE_TIME.format(offsetDateTime) + "\" )");
+        FunctionTestUtil.assertResult(codeFunction.invoke(offsetDateTime),
+                                      "date and time( \"" + DateAndTimeFunction.FEEL_DATE_TIME.format(offsetDateTime) + "\" )");
     }
 
     @Test
     void invokeZonedDateTime() {
         final ZonedDateTime zonedDateTime = ZonedDateTime.now();
-        FunctionTestUtil.assertResult(codeFunction.invoke(zonedDateTime), "date and time( \"" + DateAndTimeFunction.REGION_DATETIME_FORMATTER.format(zonedDateTime) + "\" )");
+        FunctionTestUtil.assertResult(codeFunction.invoke(zonedDateTime),
+                                      "date and time( \"" + DateAndTimeFunction.REGION_DATETIME_FORMATTER.format(zonedDateTime) + "\" )");
     }
 
     @Test
@@ -140,8 +139,10 @@ class CodeFunctionTest {
         FunctionTestUtil.assertResult(codeFunction.invoke(Duration.ofNanos(10000)), "duration( \"PT0.00001S\" )");
         FunctionTestUtil.assertResult(codeFunction.invoke(Duration.ofNanos(10025)), "duration( \"PT0.000010025S\" )");
         FunctionTestUtil.assertResult(codeFunction.invoke(Duration.ofMillis(1500)), "duration( \"PT1.5S\" )");
-        FunctionTestUtil.assertResult(codeFunction.invoke(Duration.ofMillis(90061025)), "duration( \"P1DT1H1M1.025S\" )");
-        FunctionTestUtil.assertResult(codeFunction.invoke(Duration.ofMillis(-90061025)), "duration( \"-P1DT1H1M1.025S\" )");
+        FunctionTestUtil.assertResult(codeFunction.invoke(Duration.ofMillis(90061025)), "duration( \"P1DT1H1M1.025S\"" +
+                " )");
+        FunctionTestUtil.assertResult(codeFunction.invoke(Duration.ofMillis(-90061025)), "duration( \"-P1DT1H1M1" +
+                ".025S\" )");
     }
 
     @Test
@@ -218,6 +219,7 @@ class CodeFunctionTest {
         contextMap.put("key1", "value1");
         contextMap.put("key2", childContextMap);
 
-        FunctionTestUtil.assertResult(codeFunction.invoke(contextMap), "{ key1 : \"value1\", key2 : { childKey1 : \"childValue1\" } }");
+        FunctionTestUtil.assertResult(codeFunction.invoke(contextMap), "{ key1 : \"value1\", key2 : { childKey1 : " +
+                "\"childValue1\" } }");
     }
 }

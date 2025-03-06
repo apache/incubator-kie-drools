@@ -49,6 +49,7 @@ import org.kie.dmn.feel.lang.ast.NameRefNode;
 import org.kie.dmn.feel.lang.ast.QualifiedNameNode;
 import org.kie.dmn.feel.lang.ast.QuantifiedExpressionNode;
 import org.kie.dmn.feel.lang.ast.RangeNode;
+import org.kie.dmn.feel.lang.ast.RangeTypeNode;
 import org.kie.dmn.feel.lang.ast.StringNode;
 import org.kie.dmn.feel.lang.ast.TypeNode;
 import org.kie.dmn.feel.lang.ast.UnaryTestListNode;
@@ -110,6 +111,11 @@ public class ASTBuilderVisitor
     @Override
     public BaseNode visitNullLiteral(FEEL_1_1Parser.NullLiteralContext ctx) {
         return ASTBuilderFactory.newNullNode( ctx );
+    }
+
+    @Override
+    public BaseNode visitUndefined(FEEL_1_1Parser.UndefinedContext ctx) {
+        return ASTBuilderFactory.newUndefinedValueNode();
     }
 
     @Override
@@ -178,7 +184,9 @@ public class ASTBuilderVisitor
     public BaseNode visitPositiveUnaryTestIneq(FEEL_1_1Parser.PositiveUnaryTestIneqContext ctx) {
         BaseNode value = visit( ctx.endpoint() );
         String op = ctx.op.getText();
-        return ASTBuilderFactory.newUnaryTestNode( ctx, op, value );
+        UnaryOperator unaryOperator = UnaryOperator.determineOperator(op);
+        return unaryOperator.equals(UnaryOperator.EQ) ? ASTBuilderFactory.newIntervalNode(ctx, RangeNode.IntervalBoundary.CLOSED, value, value, RangeNode.IntervalBoundary.CLOSED) :
+                ASTBuilderFactory.newUnaryTestNode( ctx, op, value );
     }
 
     @Override
@@ -187,13 +195,13 @@ public class ASTBuilderVisitor
         String op = ctx.op.getText();
         switch (UnaryOperator.determineOperator(op)) {
             case GT:
-                return ASTBuilderFactory.newIntervalNode(ctx, RangeNode.IntervalBoundary.OPEN, value, ASTBuilderFactory.newNullNode(ctx), RangeNode.IntervalBoundary.OPEN);
+                return ASTBuilderFactory.newIntervalNode(ctx, RangeNode.IntervalBoundary.OPEN, value, ASTBuilderFactory.newUndefinedValueNode(), RangeNode.IntervalBoundary.OPEN);
             case GTE:
-                return ASTBuilderFactory.newIntervalNode(ctx, RangeNode.IntervalBoundary.CLOSED, value, ASTBuilderFactory.newNullNode(ctx), RangeNode.IntervalBoundary.OPEN);
+                return ASTBuilderFactory.newIntervalNode(ctx, RangeNode.IntervalBoundary.CLOSED, value, ASTBuilderFactory.newUndefinedValueNode(), RangeNode.IntervalBoundary.OPEN);
             case LT:
-                return ASTBuilderFactory.newIntervalNode(ctx, RangeNode.IntervalBoundary.OPEN, ASTBuilderFactory.newNullNode(ctx), value, RangeNode.IntervalBoundary.OPEN);
+                return ASTBuilderFactory.newIntervalNode(ctx, RangeNode.IntervalBoundary.OPEN, ASTBuilderFactory.newUndefinedValueNode(), value, RangeNode.IntervalBoundary.OPEN);
             case LTE:
-                return ASTBuilderFactory.newIntervalNode(ctx, RangeNode.IntervalBoundary.OPEN, ASTBuilderFactory.newNullNode(ctx), value, RangeNode.IntervalBoundary.CLOSED);
+                return ASTBuilderFactory.newIntervalNode(ctx, RangeNode.IntervalBoundary.OPEN, ASTBuilderFactory.newUndefinedValueNode(), value, RangeNode.IntervalBoundary.CLOSED);
             default:
                 throw new UnsupportedOperationException("by the parser rule FEEL grammar rule 7.a for range syntax should not have determined the operator " + op);
         }
@@ -584,6 +592,12 @@ public class ASTBuilderVisitor
     public BaseNode visitListType(FEEL_1_1Parser.ListTypeContext ctx) {
         TypeNode type = (TypeNode) visit(ctx.type());
         return new ListTypeNode(ctx, type);
+    }
+
+    @Override
+    public BaseNode visitRangeType(FEEL_1_1Parser.RangeTypeContext ctx) {
+        TypeNode type = (TypeNode) visit(ctx.type());
+        return new RangeTypeNode(ctx, type);
     }
 
     @Override

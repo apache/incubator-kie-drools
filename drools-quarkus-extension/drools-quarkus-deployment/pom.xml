@@ -82,7 +82,7 @@
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-resteasy-reactive-spi-deployment</artifactId>
+            <artifactId>quarkus-rest-server-spi-deployment</artifactId>
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
@@ -135,6 +135,9 @@
                             <version>${version.io.quarkus}</version>
                         </path>
                     </annotationProcessorPaths>
+                    <compilerArgs>
+                        <arg>-AlegacyConfigRoot=true</arg>
+                    </compilerArgs>
                 </configuration>
             </plugin>
             <plugin>

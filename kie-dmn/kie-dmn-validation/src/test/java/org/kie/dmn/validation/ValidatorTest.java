@@ -33,6 +33,7 @@ import java.util.zip.ZipEntry;
 import org.drools.io.ClassPathResource;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.kie.api.builder.Message;
 import org.kie.api.builder.Message.Level;
 import org.kie.api.io.Resource;
 import org.kie.dmn.api.core.DMNMessage;
@@ -56,8 +57,6 @@ import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_MODEL;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_SCHEMA;
@@ -544,6 +543,20 @@ class ValidatorTest extends AbstractValidatorTest {
         testDirectoryInJar(jarFile, modelFilesPath);
     }
 
+    @Test
+    void validateInvalidNamespaceModels() {
+        String modelFilePath = "invalid_models/DMNv1_5/DMN-invalid-namespaces.dmn";
+        Resource resource = new ClassPathResource(modelFilePath);
+        List<DMNMessage> retrieved = validatorBuilder.theseModels(resource);
+        assertThat(retrieved).isNotNull()
+                .hasSize(6) // There are other two messages
+                .allMatch(dmnMessage -> dmnMessage.getLevel().equals(Message.Level.ERROR))
+                .anyMatch(dmnMessage -> dmnMessage.getText().contains("http://www.omg.org/spec/FEEL/20140401"))
+                .anyMatch(dmnMessage -> dmnMessage.getText().contains("http://www.omg.org/spec/DMN/20180505/DC/"))
+                .anyMatch(dmnMessage -> dmnMessage.getText().contains("http://www.omg.org/spec/DMN/20180505/DI/"))
+                .anyMatch(dmnMessage -> dmnMessage.getText().contains("http://www.omg.org/spec/DMN/20180505/DMNDI/"));
+    }
+
     private void testDirectoryInJar(JarFile jarFile, String directory) {
         List<String> allFiles = Collections.list(jarFile.entries())
                 .stream()
@@ -558,9 +571,9 @@ class ValidatorTest extends AbstractValidatorTest {
                 .map(ClassPathResource::new)
                 .toArray(value -> new Resource[modelFiles.size()]);
         List<DMNMessage> dmnMessages = validatorBuilder.theseModels(resources);
-        assertNotNull(dmnMessages);
+        assertThat(dmnMessages).isNotNull();
         dmnMessages.forEach(dmnMessage -> LOGGER.error(dmnMessage.toString()));
-        assertTrue(dmnMessages.isEmpty());
+        assertThat(dmnMessages).isEmpty();
     }
 
 

@@ -24,13 +24,14 @@ import java.time.Period;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
+import org.kie.dmn.feel.runtime.FEELNumberFunction;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
 public class AbsFunction
-        extends BaseFEELFunction {
+        extends BaseFEELFunction implements FEELNumberFunction {
     public static final AbsFunction INSTANCE = new AbsFunction();
 
-    AbsFunction() {
+    private AbsFunction() {
         super( "abs" );
     }
 

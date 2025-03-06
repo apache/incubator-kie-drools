@@ -18,6 +18,7 @@
  */
 package org.drools.core.util;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -35,7 +36,8 @@ import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
 
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
@@ -51,6 +53,16 @@ public class KeyStoreHelperTest {
     private static final String KEY_ALIAS = "droolsKey";
     private static final String KEY_PASSWORD = "keypwd";
     private static final String KEY_PHRASE = "secretkey";
+
+    @AfterAll
+    public static void cleanup() {
+        try {
+            new File(KEYSTORE_JCEKS_FILENAME).delete();
+        } catch (Exception e) {
+            // ignore
+        }
+
+    }
 
     @Test
     public void testSignDataWithPrivateKey() throws UnsupportedEncodingException,

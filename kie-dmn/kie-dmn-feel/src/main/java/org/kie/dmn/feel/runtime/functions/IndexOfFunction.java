@@ -21,15 +21,17 @@ package org.kie.dmn.feel.runtime.functions;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
+import org.kie.dmn.feel.runtime.FEELCollectionFunction;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
 public class IndexOfFunction
-        extends BaseFEELFunction {
+        extends BaseFEELFunction implements FEELCollectionFunction {
 
     public static final IndexOfFunction INSTANCE = new IndexOfFunction();
 
-    public IndexOfFunction() {
+    private IndexOfFunction() {
         super( "index of" );
     }
 

@@ -21,9 +21,9 @@ package org.drools.mvel.compiler.testframework;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Test;
-
 import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.jupiter.api.Test;
 import org.mvel2.MVEL;
 
 public class FactPopulatorTest {

@@ -47,11 +47,12 @@ import org.drools.mvel.parser.ast.expr.PointFreeExpr;
 import org.drools.mvel.parser.ast.expr.TemporalLiteralChunkExpr;
 import org.drools.mvel.parser.ast.expr.TemporalLiteralExpr;
 import org.drools.mvel.parser.printer.PrintUtil;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.drools.mvel.parser.DrlxParser.parseExpression;
 import static org.drools.mvel.parser.printer.PrintUtil.printNode;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 public class DroolsMvelParserTest {
 
@@ -293,10 +294,10 @@ public class DroolsMvelParserTest {
         assertThat(printNode(expression)).isEqualTo(expr);
     }
 
-    @Test(expected = ParseProblemException.class)
+    @Test
     public void testInvalidTemporalArgs() {
         String expr = "this after[5ms,8f] $a";
-        Expression expression = parseExpression( parser, expr ).getExpr();
+        assertThatExceptionOfType(ParseProblemException.class).isThrownBy(() -> parseExpression( parser, expr ).getExpr());
     }
 
     @Test
@@ -797,10 +798,10 @@ public class DroolsMvelParserTest {
                 "}");
     }
 
-    @Test(expected = ParseProblemException.class)
+    @Test
     public void testModifyFailing() {
         String expr = "{ modify  { name = \"Luca\", age = \"35\" }; }";
-        MvelParser.parseBlock(expr);
+        assertThatExceptionOfType(ParseProblemException.class).isThrownBy(() -> MvelParser.parseBlock(expr));
     }
 
     @Test
@@ -875,10 +876,10 @@ public class DroolsMvelParserTest {
                 "}");
     }
 
-    @Test(expected = ParseProblemException.class)
+    @Test
     public void testWithFailing() {
         String expr = "{ with  { name = \"Luca\", age = \"35\" }; }";
-        MvelParser.parseBlock(expr);
+        assertThatExceptionOfType(ParseProblemException.class).isThrownBy(() -> MvelParser.parseBlock(expr));
     }
 
     @Test

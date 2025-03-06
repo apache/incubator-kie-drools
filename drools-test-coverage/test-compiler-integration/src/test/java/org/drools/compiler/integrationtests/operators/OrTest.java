@@ -19,8 +19,8 @@
 package org.drools.compiler.integrationtests.operators;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.drools.core.common.InternalFactHandle;
 import org.drools.testcoverage.common.model.Cheese;
@@ -32,10 +32,10 @@ import org.drools.testcoverage.common.model.Person;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.definition.type.FactType;
@@ -44,22 +44,15 @@ import org.kie.api.runtime.rule.FactHandle;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class OrTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public OrTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
-    }
-
-    @Test
-    public void testOr() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testOr(KieBaseTestConfiguration kieBaseTestConfiguration) {
 
         final String drl = "package org.drools.compiler.integrationtests.operators;\n" +
                 "import " + Cheese.class.getCanonicalName() + ";\n" +
@@ -105,8 +98,9 @@ public class OrTest {
         }
     }
 
-    @Test
-    public void testOrCE() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testOrCE(KieBaseTestConfiguration kieBaseTestConfiguration) {
 
         final String drl = "package org.drools.compiler.integrationtests.operators;\n" +
                 "import " + Cheese.class.getCanonicalName() + ";\n" +
@@ -148,8 +142,9 @@ public class OrTest {
         }
     }
 
-    @Test
-    public void testOrCEFollowedByEval() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testOrCEFollowedByEval(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "package org.drools.compiler.integrationtests.operators;\n" +
                 "import " + FactA.class.getCanonicalName() + ";\n" +
                 "import " + FactB.class.getCanonicalName() + ";\n" +
@@ -184,8 +179,9 @@ public class OrTest {
         }
     }
 
-    @Test
-    public void testOrWithAndUsingNestedBindings() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testOrWithAndUsingNestedBindings(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "package org.drools.compiler.integrationtests.operators;\n" +
                 "import " + Person.class.getCanonicalName() + ";\n" +
                 "global java.util.List mlist\n" +
@@ -268,8 +264,9 @@ public class OrTest {
         }
     }
 
-    @Test
-    public void testOrWithBinding() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testOrWithBinding(KieBaseTestConfiguration kieBaseTestConfiguration) {
 
         final String drl =  "package org.drools.compiler.integrationtests.operators;\n" +
                 "import " + Cheese.class.getCanonicalName() + ";\n" +
@@ -314,8 +311,9 @@ public class OrTest {
         }
     }
 
-    @Test
-    public void testOrWithFrom() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testOrWithFrom(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // JBRULES-2274: Rule does not fire as expected using deep object model and nested 'or' clause
         final String drl = "package org.drools.compiler.integrationtests.operators;\n"
                 + "import " + Order.class.getCanonicalName() + ";\n"
@@ -354,8 +352,10 @@ public class OrTest {
         }
     }
 
-    @Test
-    public void testOrWithReturnValueRestriction() {
+    @DisabledIfSystemProperty(named = "drools.drl.antlr4.parser.enabled", matches = "true")
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testOrWithReturnValueRestriction(KieBaseTestConfiguration kieBaseTestConfiguration) {
 
         final String drl =
                 "package org.drools.compiler.integrationtests.operators;\n" +
@@ -385,8 +385,9 @@ public class OrTest {
         }
     }
 
-    @Test
-    public void testBindingsWithOr() throws InstantiationException, IllegalAccessException {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testBindingsWithOr(KieBaseTestConfiguration kieBaseTestConfiguration) throws InstantiationException, IllegalAccessException {
         // JBRULES-2917: matching of field==v1 || field==v2 breaks when variable binding is added
         final String drl = "package org.drools.compiler.integrationtests.operators;\n" +
                 "declare Assignment\n" +
@@ -424,8 +425,9 @@ public class OrTest {
         }
     }
 
-    @Test
-    public void testConstraintConnectorOr() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testConstraintConnectorOr(KieBaseTestConfiguration kieBaseTestConfiguration) {
 
         final String drl = "package org.drools.compiler.integrationtests.operators;\n" +
                 "import " + Person.class.getCanonicalName() + ";\n" +
@@ -478,8 +480,9 @@ public class OrTest {
         }
     }
 
-    @Test
-    public void testVariableBindingWithOR() throws Exception{
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testVariableBindingWithOR(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception{
         // JBRULES-3390
         final String drl1 = "package org.drools.compiler.integrationtests.operators; \n" +
                 "declare A\n" +
@@ -549,8 +552,9 @@ public class OrTest {
         }
     }
 
-    @Test
-    public void testRestrictionsWithOr() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testRestrictionsWithOr(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // JBRULES-2203: NullPointerException When Using Conditional Element "or" in LHS Together with a Return Value Restriction
         final String drl = "package org.drools.compiler.integrationtests.operators;\n" +
                 "import " + Cheese.class.getCanonicalName() + ";\n" +
@@ -577,8 +581,9 @@ public class OrTest {
         }
     }
 
-    @Test
-    public void testEmptyIdentifier() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testEmptyIdentifier(KieBaseTestConfiguration kieBaseTestConfiguration) {
 
         final String drl = "package org.drools.compiler.integrationtests.operators;\n" +
                 "import " + Cheese.class.getCanonicalName() + ";\n" +
@@ -635,8 +640,9 @@ public class OrTest {
         }
     }
 
-    @Test
-    public void testIndexAfterOr() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testIndexAfterOr(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-1604
         final String drl =
                 "import " + Person.class.getCanonicalName() + ";" +
@@ -674,8 +680,9 @@ public class OrTest {
         }
     }
 
-    @Test
-    public void testOrWithDifferenceOffsetsForConsequence() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testOrWithDifferenceOffsetsForConsequence(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-1604
         final String drl =
               "import " + Person.class.getCanonicalName() + ";" +

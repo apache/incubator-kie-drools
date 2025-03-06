@@ -18,9 +18,6 @@
  */
 package org.drools.mvel;
 
-import org.drools.base.rule.Declaration;
-import org.drools.base.rule.Pattern;
-import org.drools.base.rule.accessor.ReadAccessor;
 import org.drools.base.rule.constraint.AlphaNodeFieldConstraint;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.common.InternalFactHandle;
@@ -30,37 +27,23 @@ import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.mvel.accessors.ClassFieldAccessorStore;
 import org.drools.mvel.accessors.ClassFieldReader;
 import org.drools.mvel.model.Cheese;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.drools.base.base.AccessorKey.AccessorType.ClassObjectType;
 
-@RunWith(Parameterized.class)
 public class FieldConstraintTest {
 
     ClassFieldAccessorStore store = new ClassFieldAccessorStore();
 
-    private final boolean useLambdaConstraint;
-
-    public FieldConstraintTest(boolean useLambdaConstraint) {
-        this.useLambdaConstraint = useLambdaConstraint;
+    public static Stream<Boolean> parameters() {
+        return Stream.of(false, true);
     }
 
-    @Parameterized.Parameters(name = "useLambdaConstraint={0}")
-    public static Collection<Object[]> getParameters() {
-        Collection<Object[]> parameters = new ArrayList<>();
-        parameters.add(new Object[]{false});
-        parameters.add(new Object[]{true});
-        return parameters;
-    }
-
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         store.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
         store.setEagerWire( true );
@@ -78,8 +61,9 @@ public class FieldConstraintTest {
      * This is currently the same as using a ReturnValueConstraint just that it
      * doesn't need any requiredDeclarations
      */
-    @Test
-    public void testLiteralConstraint() {
+    @ParameterizedTest(name = "useLambdaConstraint={0}")
+    @MethodSource("parameters")
+    public void testLiteralConstraint(boolean useLambdaConstraint) {
         InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();;
         StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
 
@@ -116,8 +100,9 @@ public class FieldConstraintTest {
      *
      * </pre>
      */
-    @Test
-    public void testPrimitiveLiteralConstraint() {
+    @ParameterizedTest(name = "useLambdaConstraint={0}")
+    @MethodSource("parameters")
+    public void testPrimitiveLiteralConstraint(boolean useLambdaConstraint) {
         InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();;
         StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
 

@@ -18,18 +18,12 @@
  */
 package org.kie.dmn.feel.runtime.functions;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
 class EndsWithFunctionTest {
 
-    private EndsWithFunction endsWithFunction;
-
-    @BeforeEach
-    void setUp() {
-        endsWithFunction = new EndsWithFunction();
-    }
+    private static final EndsWithFunction endsWithFunction = EndsWithFunction.INSTANCE;
 
     @Test
     void invokeParamsNull() {

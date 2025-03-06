@@ -23,18 +23,12 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
 class CountFunctionTest {
 
-    private CountFunction countFunction;
-
-    @BeforeEach
-    void setUp() {
-        countFunction = new CountFunction();
-    }
+    private static final CountFunction countFunction = CountFunction.INSTANCE;
 
     @Test
     void invokeParamListNull() {
@@ -65,5 +59,4 @@ class CountFunctionTest {
     void invokeParamArrayNonEmpty() {
         FunctionTestUtil.assertResult(countFunction.invoke(new Object[]{1, 2, "test"}), BigDecimal.valueOf(3));
     }
-
 }

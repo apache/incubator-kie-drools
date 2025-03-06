@@ -21,15 +21,15 @@ package org.drools.testcoverage.regression;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import org.drools.compiler.builder.conf.DecisionTableConfigurationImpl;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -48,18 +48,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * Tests loading decision tables from several worksheets in a XLS file.
  */
-@RunWith(Parameterized.class)
 public class MultipleSheetsLoadingTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public MultipleSheetsLoadingTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
-    }
-
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseConfigurations();
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseConfigurations().stream();
     }
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MultipleSheetsLoadingTest.class);
@@ -71,9 +63,10 @@ public class MultipleSheetsLoadingTest {
     private static final String WORKSHEET_1_NAME = "first";
     private static final String WORKSHEET_2_NAME = "second";
 
-    @Test
-    public void test() {
-        final KieBuilder kbuilder = this.buildResources();
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void test(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        final KieBuilder kbuilder = this.buildResources(kieBaseTestConfiguration);
 
         final Collection<Message> results = kbuilder.getResults().getMessages(Level.ERROR, Level.WARNING);
         if (results.size() > 0) {
@@ -93,7 +86,7 @@ public class MultipleSheetsLoadingTest {
         }
     }
 
-    private KieBuilder buildResources() {
+    private KieBuilder buildResources(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final Resource resourceXlsFirst = this.createResourceWithConfig(WORKSHEET_1_NAME);
         final Resource resourceXlsSecond = this.createResourceWithConfig(WORKSHEET_2_NAME);
         return KieUtil.getKieBuilderFromResources(kieBaseTestConfiguration, false, resourceXlsFirst, resourceXlsSecond);

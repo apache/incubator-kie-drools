@@ -27,6 +27,7 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import org.drools.decisiontable.ExternalSpreadsheetCompiler;
 import org.drools.template.DataProviderCompiler;
@@ -35,10 +36,10 @@ import org.drools.template.objects.ArrayDataProvider;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.TestConstants;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.definition.KiePackage;
@@ -52,21 +53,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * Tests templates - providers, generating rules, performance.
  */
-@RunWith(Parameterized.class)
 public class TemplatesTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TemplatesTest.class);
     private static final StringBuffer EXPECTED_RULES = new StringBuffer();
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public TemplatesTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
-    }
-
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseConfigurations();
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseConfigurations().stream();
     }
 
     static {
@@ -76,20 +69,20 @@ public class TemplatesTest {
                 + "global java.util.List list;\n\n";
         final String rule2_when = "rule \"is appropriate 2\"\n"
                 + "\twhen\n"
-                + "\t\tVegetable( $name : name == \"carrot\", $field : weight >= 0 && <= 1000, $price : price <= 2, "
+                + "\t\tVegetable( $name : name == \"carrot\", $field : weight >= 0 && weight <= 1000, $price : price <= 2, "
                 + "$taste : taste  == Taste.HORRIBLE )\n";
         final String rule2_then = "\tthen\n\t\tlist.add( $name );\nend\n\n";
 
         final String rule1_when = "rule \"is appropriate 1\"\n"
                 + "\twhen\n"
-                + "\t\tVegetable( $name : name == \"cucumber\", $field : length >= 20 && <= 40, $price : price <= 15, "
+                + "\t\tVegetable( $name : name == \"cucumber\", $field : length >= 20 && length <= 40, $price : price <= 15, "
                 + "$taste : taste  == Taste.EXCELENT )\n";
         final String rule1_then = "\tthen\n\t\tlist.add( $name );\nend\n\n";
 
         final String rule0_when = "rule \"is appropriate 0\"\n"
                 + "\twhen\n"
-                + "\t\tVegetable( $name : name == \"tomato\", $field : weight >= 200 && <= 1000, $price : price <= 6, "
-                + "$taste : taste  == Taste.GOOD || == Taste.EXCELENT )\n";
+                + "\t\tVegetable( $name : name == \"tomato\", $field : weight >= 200 && weight <= 1000, $price : price <= 6, "
+                + "$taste : taste  == Taste.GOOD || taste == Taste.EXCELENT )\n";
         final String rule0_then = "\tthen\n\t\tlist.add( $name );\nend\n\n";
 
         EXPECTED_RULES.append(head);
@@ -98,8 +91,9 @@ public class TemplatesTest {
         EXPECTED_RULES.append(rule2_when).append(rule2_then);
     }
 
-    @Test
-    public void loadingFromDLRObjsCorrectnessCheck() throws IOException {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void loadingFromDLRObjsCorrectnessCheck(KieBaseTestConfiguration kieBaseTestConfiguration) throws IOException {
         final KieServices kieServices = KieServices.Factory.get();
         final Collection<ParamSet> cfl = new ArrayList<ParamSet>();
         cfl.add(new ParamSet("tomato", "weight", 200, 1000, 6, EnumSet.of(Taste.GOOD, Taste.EXCELENT)));
@@ -115,12 +109,13 @@ public class TemplatesTest {
 
             assertEqualsIgnoreWhitespace(EXPECTED_RULES.toString(), drl);
 
-            testCorrectnessCheck(drl);
+            testCorrectnessCheck(kieBaseTestConfiguration, drl);
         }
     }
 
-    @Test
-    public void loadingFromDLRMapsCorrectnessCheck() throws IOException {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void loadingFromDLRMapsCorrectnessCheck(KieBaseTestConfiguration kieBaseTestConfiguration) throws IOException {
         final KieServices kieServices = KieServices.Factory.get();
 
         final ObjectDataCompiler converter = new ObjectDataCompiler();
@@ -132,14 +127,15 @@ public class TemplatesTest {
 
             assertEqualsIgnoreWhitespace(EXPECTED_RULES.toString(), drl);
 
-            testCorrectnessCheck(drl);
+            testCorrectnessCheck(kieBaseTestConfiguration, drl);
         }
     }
 
-    @Test
-    public void loadingFromDLRArrayCorrectnessCheck() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void loadingFromDLRArrayCorrectnessCheck(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         final String[][] rows = new String[3][6];
-        rows[0] = new String[]{"tomato", "weight", "200", "1000", "6", "== Taste.GOOD || == Taste.EXCELENT"};
+        rows[0] = new String[]{"tomato", "weight", "200", "1000", "6", "== Taste.GOOD || taste == Taste.EXCELENT"};
         rows[1] = new String[]{"cucumber", "length", "20", "40", "15", "== Taste.EXCELENT"};
         rows[2] = new String[]{"carrot", "weight", "0", "1000", "2", "== Taste.HORRIBLE"};
 
@@ -154,12 +150,13 @@ public class TemplatesTest {
 
             assertEqualsIgnoreWhitespace(EXPECTED_RULES.toString(), drl);
 
-            testCorrectnessCheck(drl);
+            testCorrectnessCheck(kieBaseTestConfiguration, drl);
         }
     }
 
-    @Test
-    public void loadingFromDLRSpreadsheetCorrectnessCheck() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void loadingFromDLRSpreadsheetCorrectnessCheck(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         final ExternalSpreadsheetCompiler converter = new ExternalSpreadsheetCompiler();
 
         final KieServices kieServices = KieServices.Factory.get();
@@ -174,12 +171,14 @@ public class TemplatesTest {
 
             assertEqualsIgnoreWhitespace(EXPECTED_RULES.toString(), drl);
 
-            testCorrectnessCheck(drl);
+            testCorrectnessCheck(kieBaseTestConfiguration, drl);
         }
     }
 
-    @Test(timeout = 30000L)
-    public void OneRuleManyRows() throws IOException {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(30000L)
+    public void OneRuleManyRows(KieBaseTestConfiguration kieBaseTestConfiguration) throws IOException {
         final KieServices kieServices = KieServices.Factory.get();
         final Collection<ParamSet> cfl = new ArrayList<ParamSet>();
         cfl.add(new ParamSet("tomato", "weight", 200, 1000, 6, EnumSet.of(Taste.GOOD, Taste.EXCELENT)));
@@ -191,12 +190,14 @@ public class TemplatesTest {
             // prints rules generated from template
             LOGGER.debug(drl);
 
-            testManyRows(drl, 0, 1);
+            testManyRows(kieBaseTestConfiguration, drl, 0, 1);
         }
     }
 
-    @Test(timeout = 30000L)
-    public void TenRulesManyRows() throws IOException {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(30000L)
+    public void TenRulesManyRows(KieBaseTestConfiguration kieBaseTestConfiguration) throws IOException {
         final KieServices kieServices = KieServices.Factory.get();
         final ObjectDataCompiler converter = new ObjectDataCompiler();
 
@@ -206,12 +207,14 @@ public class TemplatesTest {
             // prints rules generated from template
             LOGGER.debug(drl);
 
-            testManyRows(drl, 500, 10);
+            testManyRows(kieBaseTestConfiguration, drl, 500, 10);
         }
     }
 
-    @Test(timeout = 30000L)
-    public void OneTemplateManyRules() throws IOException {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(30000L)
+    public void OneTemplateManyRules(KieBaseTestConfiguration kieBaseTestConfiguration) throws IOException {
         final KieServices kieServices = KieServices.Factory.get();
         final ObjectDataCompiler converter = new ObjectDataCompiler();
 
@@ -221,12 +224,14 @@ public class TemplatesTest {
             // prints rules generated from template
             LOGGER.debug(drl);
 
-            testManyRules(drl, 50);
+            testManyRules(kieBaseTestConfiguration, drl, 50);
         }
     }
 
-    @Test(timeout = 30000L)
-    public void TenTemplatesManyRules() throws IOException {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(30000L)
+    public void TenTemplatesManyRules(KieBaseTestConfiguration kieBaseTestConfiguration) throws IOException {
         final KieServices kieServices = KieServices.Factory.get();
         final ObjectDataCompiler converter = new ObjectDataCompiler();
         try (InputStream resourceStream = kieServices.getResources().newClassPathResource("template_2.drl", getClass()).getInputStream()) {
@@ -237,11 +242,11 @@ public class TemplatesTest {
             // prints rules generated from template
             LOGGER.debug(drl);
 
-            testManyRules(drl, 500);
+            testManyRules(kieBaseTestConfiguration, drl, 500);
         }
     }
 
-    private void testCorrectnessCheck(final String drl) {
+    private void testCorrectnessCheck(KieBaseTestConfiguration kieBaseTestConfiguration, final String drl) {
         final Resource drlResource = KieServices.Factory.get().getResources().newReaderResource(new StringReader(drl));
         drlResource.setTargetPath(TestConstants.DRL_TEST_TARGET_PATH);
         final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, drlResource);
@@ -278,7 +283,7 @@ public class TemplatesTest {
         assertThat(pkg.getRules().size()).isEqualTo(3);
     }
 
-    private void testManyRows(final String drl, final int expectedResultListSize, final int expectedRulesCount) {
+    private void testManyRows(KieBaseTestConfiguration kieBaseTestConfiguration, final String drl, final int expectedResultListSize, final int expectedRulesCount) {
         final Resource drlResource = KieServices.Factory.get().getResources().newReaderResource(new StringReader(drl));
         drlResource.setTargetPath(TestConstants.DRL_TEST_TARGET_PATH);
         final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, drlResource);
@@ -309,7 +314,7 @@ public class TemplatesTest {
         assertThat(pkg.getRules().size()).isEqualTo(expectedRulesCount);
     }
 
-    private void testManyRules(final String drl, final int expectedRulesCount) {
+    private void testManyRules(KieBaseTestConfiguration kieBaseTestConfiguration, final String drl, final int expectedRulesCount) {
         final Resource drlResource = KieServices.Factory.get().getResources().newReaderResource(new StringReader(drl));
         drlResource.setTargetPath(TestConstants.DRL_TEST_TARGET_PATH);
         final KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, drlResource);
@@ -331,7 +336,7 @@ public class TemplatesTest {
         mapTomato.put("fieldLower", 200);
         mapTomato.put("fieldUpper", 1000);
         mapTomato.put("price", 6);
-        mapTomato.put("tastes", "== Taste.GOOD || == Taste.EXCELENT");
+        mapTomato.put("tastes", "== Taste.GOOD || taste == Taste.EXCELENT");
         maps.add(mapTomato);
 
         final Map<String, Object> mapCucumber = new HashMap<String, Object>();
@@ -415,7 +420,7 @@ public class TemplatesTest {
             String conn = "";
             for (Taste t : tasteSet) {
                 sb.append(conn).append(" == Taste.").append(t);
-                conn = " ||";
+                conn = " || taste";
             }
             return sb.toString();
         }

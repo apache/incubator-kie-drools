@@ -27,25 +27,16 @@ import java.time.ZonedDateTime;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalQueries;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ComposingDifferentFunctionsTest {
 
-    private DateAndTimeFunction dateTimeFunction;
-    private DateFunction dateFunction;
-    private TimeFunction timeFunction;
-    private StringFunction stringFunction;
-
-    @BeforeEach
-    void setUp() {
-        dateTimeFunction = new DateAndTimeFunction();
-        dateFunction = new DateFunction();
-        timeFunction = new TimeFunction();
-        stringFunction = new StringFunction();
-    }
+    private static final DateAndTimeFunction dateTimeFunction = DateAndTimeFunction.INSTANCE;
+    private static final DateFunction dateFunction = DateFunction.INSTANCE;
+    private static final TimeFunction timeFunction = TimeFunction.INSTANCE;
+    private static final StringFunction stringFunction = StringFunction.INSTANCE;
 
     @Test
     void composite1() {

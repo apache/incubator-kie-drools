@@ -19,8 +19,8 @@
 package org.drools.mvel;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.drools.compiler.builder.impl.EvaluatorRegistry;
 import org.drools.core.base.ClassFieldAccessorCache;
@@ -37,23 +37,18 @@ import org.drools.model.functions.Predicate2;
 import org.drools.model.index.BetaIndexImpl;
 import org.drools.modelcompiler.util.EvaluationUtil;
 import org.drools.mvel.accessors.ClassFieldAccessorStore;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public abstract class AbstractTupleIndexHashTableIteratorTest {
 
     public static EvaluatorRegistry registry = new EvaluatorRegistry();
 
-    protected boolean useLambdaConstraint;
-
     private IndexMemory.EqualityMemoryType originalMemoryImpl;
 
-    @Before
+    @BeforeEach
     public void before() {
         try {
             originalMemoryImpl = IndexMemory.getEqualityMemoryType();
@@ -64,7 +59,7 @@ public abstract class AbstractTupleIndexHashTableIteratorTest {
     }
 
 
-    @After
+    @AfterEach
     public void after() {
         try {
             IndexMemory.setEqualityMemoryType(originalMemoryImpl);
@@ -73,12 +68,8 @@ public abstract class AbstractTupleIndexHashTableIteratorTest {
         }
     }
 
-    @Parameterized.Parameters(name = "useLambdaConstraint={0}")
-    public static Collection<Object[]> getParameters() {
-        Collection<Object[]> parameters = new ArrayList<>();
-        parameters.add(new Object[]{false});
-        parameters.add(new Object[]{true});
-        return parameters;
+    public static Stream<Boolean> parameters() {
+        return Stream.of(false, true);
     }
 
     protected static BetaConstraint createFooThisEqualsDBetaConstraint(boolean useLambdaConstraint) {

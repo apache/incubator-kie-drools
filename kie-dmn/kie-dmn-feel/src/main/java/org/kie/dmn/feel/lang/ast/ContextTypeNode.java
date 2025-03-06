@@ -36,6 +36,11 @@ public class ContextTypeNode extends TypeNode {
         this.gen = new HashMap<>(gen);
     }
 
+    public ContextTypeNode(Map<String, TypeNode> gen, String text) {
+        this.gen = gen;
+        this.setText(text);
+    }
+
     @Override
     public Type evaluate(EvaluationContext ctx) {
         return new MapBackedType("[anonymous]", evalTypes(ctx, gen));

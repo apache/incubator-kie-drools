@@ -30,7 +30,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -43,6 +42,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Stream;
 
 import org.drools.core.WorkingMemory;
 import org.drools.base.base.ClassObjectType;
@@ -71,13 +71,13 @@ import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieSessionTestConfiguration;
 import org.drools.testcoverage.common.util.KieUtil;
 import org.drools.testcoverage.common.util.SerializationHelper;
-import org.drools.testcoverage.common.util.TestParametersUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
 import org.drools.testcoverage.common.util.TimeUtil;
 import org.drools.util.DateUtils;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -106,20 +106,16 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-@RunWith(Parameterized.class)
 public class CepEspTest extends AbstractCepEspTest {
 
-    public CepEspTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        super(kieBaseTestConfiguration);
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseStreamConfigurations(true).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseStreamConfigurations(true);
-    }
-
-    @Test(timeout=10000)
-    public void testComplexTimestamp() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testComplexTimestamp(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "package " + Message.class.getPackage().getName() + "\n" +
                 "declare " + Message.class.getCanonicalName() + "\n" +
                  "   @role( event ) \n" +
@@ -144,8 +140,10 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test(timeout=10000)
-    public void testJavaSqlTimestamp() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testJavaSqlTimestamp(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "package " + Message.class.getPackage().getName() + "\n" +
                 "declare " + Message.class.getCanonicalName() + "\n" +
                  "   @role( event ) \n" +
@@ -168,8 +166,10 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test(timeout=10000)
-    public void testEventAssertion() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testEventAssertion(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources("cep-esp-test", kieBaseTestConfiguration,
                                                                            "org/drools/compiler/integrationtests/test_CEP_SimpleEventAssertion.drl");
         final KieSession session = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
@@ -212,8 +212,10 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test(timeout=10000)
-    public void testAnnotatedEventAssertion() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testAnnotatedEventAssertion(KieBaseTestConfiguration kieBaseTestConfiguration) {
 
         final String drl = "package org.drools.compiler.test;\n" +
                 "\n" +
@@ -270,8 +272,10 @@ public class CepEspTest extends AbstractCepEspTest {
     }
 
     @SuppressWarnings("unchecked")
-    @Test(timeout=10000)
-    public void testPackageSerializationWithEvents() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testPackageSerializationWithEvents(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources("cep-esp-test", kieBaseTestConfiguration,
                                                                            "org/drools/compiler/integrationtests/test_CEP_SimpleEventAssertion.drl");
         final KieSession session = kbase.newKieSession();
@@ -301,8 +305,10 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test(timeout=10000)
-    public void testEventAssertionWithDuration() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testEventAssertionWithDuration(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "package org.drools.compiler\n" +
                 "\n" +
                 "import " + StockTick.class.getCanonicalName() + ";\n" +
@@ -372,8 +378,10 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test(timeout=10000)
-    public void testEventAssertionWithDateTimestamp() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testEventAssertionWithDateTimestamp(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "package org.drools.compiler\n" +
                 "\n" +
                 "import " + StockTick.class.getCanonicalName() + ";\n" +
@@ -437,8 +445,10 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testEventExpiration() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testEventExpiration(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "package org.drools.compiler\n" +
                 "import " + StockTick.class.getCanonicalName() + ";\n" +
                 "global java.util.List results;\n" +
@@ -462,17 +472,21 @@ public class CepEspTest extends AbstractCepEspTest {
         assertThat(factType.getExpirationOffset()).isEqualTo(TimeIntervalParser.parse("1h30m")[0]);
     }
 
-    @Test(timeout = 10000)
-    public void testEventExpiration2() {
-        testEventExpiration("15m", "15m");
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testEventExpiration2(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        testEventExpiration(kieBaseTestConfiguration, "15m", "15m");
     }
 
-    @Test(timeout = 10000)
-    public void testEventExpiration3() {
-        testEventExpiration("5m", "5m");
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testEventExpiration3(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        testEventExpiration(kieBaseTestConfiguration, "5m", "5m");
     }
 
-    private void testEventExpiration(final String afterBoundary, final String windowTime) {
+    private void testEventExpiration(KieBaseTestConfiguration kieBaseTestConfiguration, final String afterBoundary, final String windowTime) {
         final String drl = "package org.drools.compiler\n" +
                 "import " + StockTick.class.getCanonicalName() + ";\n" +
                 "global java.util.List results;\n" +
@@ -510,8 +524,10 @@ public class CepEspTest extends AbstractCepEspTest {
         assertThat(node.getExpirationOffset()).isEqualTo(TimeIntervalParser.parse("10m")[0] + 1);
     }
 
-    @Test(timeout = 10000)
-    public void testEventExpiration4() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testEventExpiration4(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "package org.drools.compiler\n" +
                 "import " + StockTick.class.getCanonicalName() + ";\n" +
                 "global java.util.List results;\n" +
@@ -558,8 +574,10 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testTimeRelationalOperators() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testTimeRelationalOperators(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources("cep-esp-test", kieBaseTestConfiguration,
                                                                            "org/drools/compiler/integrationtests/test_CEP_TimeRelationalOperators.drl");
         final KieSession wm = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
@@ -683,8 +701,10 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testBeforeOperator() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testBeforeOperator(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources("cep-esp-test", kieBaseTestConfiguration,
                                                                            "org/drools/compiler/integrationtests/test_CEP_BeforeOperator.drl");
         final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
@@ -729,8 +749,10 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testMetByOperator() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testMetByOperator(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources("cep-esp-test", kieBaseTestConfiguration,
                                                                            "org/drools/compiler/integrationtests/test_CEP_MetByOperator.drl");
         final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
@@ -775,8 +797,10 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testComplexOperator() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testComplexOperator(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources("cep-esp-test", kieBaseTestConfiguration,
                                                                            "org/drools/compiler/integrationtests/test_CEP_ComplexOperator.drl");
         final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
@@ -819,22 +843,28 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testAfterOnArbitraryDates() {
-        testArbitraryDates("org/drools/compiler/integrationtests/test_CEP_AfterOperatorDates.drl", 100000, 104000);
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testAfterOnArbitraryDates(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        testArbitraryDates(kieBaseTestConfiguration, "org/drools/compiler/integrationtests/test_CEP_AfterOperatorDates.drl", 100000, 104000);
     }
 
-    @Test(timeout = 10000)
-    public void testBeforeOnArbitraryDates() {
-        testArbitraryDates("org/drools/compiler/integrationtests/test_CEP_BeforeOperatorDates.drl", 104000, 100000);
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testBeforeOnArbitraryDates(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        testArbitraryDates(kieBaseTestConfiguration, "org/drools/compiler/integrationtests/test_CEP_BeforeOperatorDates.drl", 104000, 100000);
     }
 
-    @Test(timeout = 10000)
-    public void testCoincidesOnArbitraryDates() {
-        testArbitraryDates("org/drools/compiler/integrationtests/test_CEP_CoincidesOperatorDates.drl", 100000, 100050);
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testCoincidesOnArbitraryDates(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        testArbitraryDates(kieBaseTestConfiguration, "org/drools/compiler/integrationtests/test_CEP_CoincidesOperatorDates.drl", 100000, 100050);
     }
 
-    private void testArbitraryDates(final String drlClasspathResource, final long tick1Time, final long tick2Time) {
+    private void testArbitraryDates(KieBaseTestConfiguration kieBaseTestConfiguration, final String drlClasspathResource, final long tick1Time, final long tick2Time) {
         final KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources("cep-esp-test", kieBaseTestConfiguration, drlClasspathResource);
         final KieSession wm = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
@@ -866,8 +896,10 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testSimpleTimeWindow() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testSimpleTimeWindow(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources("cep-esp-test", kieBaseTestConfiguration,
                                                                            "org/drools/compiler/integrationtests/test_CEP_SimpleTimeWindow.drl");
         final KieSession wm = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
@@ -947,8 +979,10 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testSimpleLengthWindow() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testSimpleLengthWindow(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources("cep-esp-test", kieBaseTestConfiguration,
                                                                            "org/drools/compiler/integrationtests/test_CEP_SimpleLengthWindow.drl");
         final KieSession wm = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
@@ -1001,8 +1035,10 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testDelayingNot() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testDelayingNot(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "package org.drools.compiler\n" +
                 "import " + StockTick.class.getCanonicalName() + ";\n" +
                 "global java.util.List results;\n" +
@@ -1062,8 +1098,10 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testSimpleLengthWindowWithQueue() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testSimpleLengthWindowWithQueue(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         final KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources("cep-esp-test", kieBaseTestConfiguration,
                                                                            "org/drools/compiler/integrationtests/test_CEP_SimpleLengthWindow.drl");
         KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
@@ -1109,8 +1147,10 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test(timeout=10000)
-    public void testDelayingNot2() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testDelayingNot2(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "package org.drools.compiler\n" +
                 "declare A @role(event) symbol : String end\n" +
                 "declare B @role(event) symbol : String end\n" +
@@ -1136,8 +1176,10 @@ public class CepEspTest extends AbstractCepEspTest {
 
     }
 
-    @Test(timeout=10000)
-    public void testDelayingNotWithPreEpochClock() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testDelayingNotWithPreEpochClock(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "package org.drools.compiler\n" +
                 "declare A @role(event) symbol : String end\n" +
                 "declare B @role(event) symbol : String end\n" +
@@ -1170,8 +1212,10 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testIdleTime() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testIdleTime(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources("cep-esp-test", kieBaseTestConfiguration,
                                                                            "org/drools/compiler/integrationtests/test_CEP_SimpleEventAssertion.drl");
         final KieSession session = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
@@ -1223,8 +1267,10 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testIdleTimeAndTimeToNextJob() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testIdleTimeAndTimeToNextJob(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources("cep-esp-test", kieBaseTestConfiguration,
                                                                            "org/drools/compiler/integrationtests/test_CEP_SimpleTimeWindow.drl");
         final StatefulKnowledgeSessionImpl wm =
@@ -1306,8 +1352,10 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testCollectWithWindows() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testCollectWithWindows(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources("cep-esp-test", kieBaseTestConfiguration,
                                                                            "org/drools/compiler/integrationtests/test_CEP_CollectWithWindows.drl");
         final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
@@ -1385,8 +1433,10 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testPseudoSchedulerRemoveJobTest() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testPseudoSchedulerRemoveJobTest(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "import " + CepEspTest.class.getName() + ".A\n" +
             "declare A\n" +
             "    @role( event )\n" +
@@ -1443,8 +1493,10 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testEventDeclarationForInterfaces() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testEventDeclarationForInterfaces(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "package org.drools.compiler\n" +
                 "import " + StockTick.class.getCanonicalName() + "\n" +
                 "declare StockTick \n" +
@@ -1480,8 +1532,10 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testTemporalOperators() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testTemporalOperators(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "package org.drools.compiler\n" +
                 "import " + StockTick.class.getCanonicalName() + ";\n" +
                 "declare StockTick \n" +
@@ -1507,8 +1561,10 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testTemporalOperators2() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testTemporalOperators2(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "package org.drools.compiler\n" +
                 "import " + StockTick.class.getCanonicalName() + ";\n" +
                 "global java.util.List list;\n" +
@@ -1552,8 +1608,10 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testTemporalOperatorsInfinity() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testTemporalOperatorsInfinity(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "package org.drools.compiler\n" +
                 "import " + StockTick.class.getCanonicalName() + ";\n" +
                 "global java.util.List list;\n" +
@@ -1597,8 +1655,10 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test (timeout=10000)
-    public void testMultipleSlidingWindows() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testMultipleSlidingWindows(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "declare A\n" +
                      "    @role( event )\n" +
                      "    id : int\n" +
@@ -1663,8 +1723,10 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test(timeout=10000)
-    public void testSalienceWithEventsPseudoClock() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testSalienceWithEventsPseudoClock(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "package org.drools.compiler\n" +
                      "import " + StockTick.class.getName() + "\n" +
                      "declare StockTick\n" +
@@ -1721,8 +1783,10 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test(timeout=10000)
-    public void testSalienceWithEventsRealtimeClock() throws InterruptedException {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testSalienceWithEventsRealtimeClock(KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException {
         final String drl = "package org.drools.compiler\n" +
                      "import " + StockTick.class.getName() + "\n" +
                      "declare StockTick\n" +
@@ -1777,8 +1841,10 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test(timeout=10000)
-    public void testExpireEventOnEndTimestamp() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testExpireEventOnEndTimestamp(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-40
         final String drl =
                 "package org.drools.compiler;\n" +
@@ -1819,8 +1885,10 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test(timeout=10000)
-    public void testEventExpirationDuringAccumulate() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testEventExpirationDuringAccumulate(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         // DROOLS-70
         final String drl =
                 "package org.drools.integrationtests\n" +
@@ -1923,8 +1991,10 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test(timeout=10000)
-    public void testEventExpirationInSlidingWindow() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testEventExpirationInSlidingWindow(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         // DROOLS-70
         final String drl =
                 "package org.drools.integrationtests\n" +
@@ -1967,8 +2037,10 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test(timeout=10000)
-    public void testSlidingWindowsAccumulateExternalJoin() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testSlidingWindowsAccumulateExternalJoin(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-106
         // The logic may not be optimal, but was used to detect a WM corruption
         final String drl =
@@ -2030,8 +2102,10 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test (timeout=10000)
-    public void testTimeAndLengthWindowConflict() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testTimeAndLengthWindowConflict(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // JBRULES-3671
         final String drl = "package org.drools.compiler;\n" +
                      "import java.util.List\n" +
@@ -2100,8 +2174,9 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test
-    public void testTimeStampOnNonExistingField() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testTimeStampOnNonExistingField(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // BZ-985942
         final String drl = "package org.drools.compiler;\n" +
                      "import " + StockTick.class.getCanonicalName() + ";\n" +
@@ -2114,8 +2189,10 @@ public class CepEspTest extends AbstractCepEspTest {
         assertThat(kieBuilder.getResults().getMessages()).isNotEmpty();
     }
 
-    @Test (timeout=10000)
-    public void testTimeWindowWithPastEvents() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testTimeWindowWithPastEvents(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // JBRULES-2258 
         final String drl = "package org.drools.compiler;\n" +
                      "import java.util.List\n" +
@@ -2180,8 +2257,9 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test
-    public void testLeakingActivationsWithDetachedExpiredNonCancelling() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testLeakingActivationsWithDetachedExpiredNonCancelling(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         // JBRULES-3558 - DROOLS 311
         // TODO: it is still possible to get multiple insertions of the Recording object
         // if you set the @expires of Motion to 1ms, maybe because the event expires too soon
@@ -2235,8 +2313,10 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test(timeout=10000)
-    public void testTwoWindowsInsideCEAndOut() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testTwoWindowsInsideCEAndOut(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "package org.drools.compiler;\n" +
                      "import java.util.List\n" +
                      "import " + OrderEvent.class.getCanonicalName() + ";\n" +
@@ -2271,8 +2351,9 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test
-    public void testUpdateEventThroughEntryPoint() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testUpdateEventThroughEntryPoint(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "import " + CepEspTest.TestEvent.class.getCanonicalName() + "\n" +
                      "\n" +
                      "declare TestEvent\n" +
@@ -2326,8 +2407,9 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test
-    public void testStreamModeWithSubnetwork() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testStreamModeWithSubnetwork(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // BZ-1009348
 
         final String drl = "package org.drools.compiler.integrationtests\n" +
@@ -2405,8 +2487,9 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test
-    public void testEventTimestamp() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testEventTimestamp(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-268
         final String drl = "\n" +
                      "import " + CepEspTest.Event.class.getCanonicalName() + "; \n" +
@@ -2473,8 +2556,9 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test
-    public void testEventTimestamp2() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testEventTimestamp2(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-268
         final String drl = "\n" +
                      "import " + CepEspTest.Event.class.getCanonicalName() + ";\n" +
@@ -2530,8 +2614,9 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test
-    public void testModifyInStreamMode() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testModifyInStreamMode(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // BZ-1012933
         final String drl =
                 "import " + CepEspTest.SimpleFact.class.getCanonicalName() + ";\n" +
@@ -2565,8 +2650,9 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test
-    public void testCollectAfterRetract() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testCollectAfterRetract(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // BZ-1015109
         final String drl =
                 "import " + CepEspTest.SimpleFact.class.getCanonicalName() + ";\n" +
@@ -2611,8 +2697,9 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test
-    public void testCollectAfterUpdate() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testCollectAfterUpdate(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-295
         final String drl =
                 "import " + CepEspTest.SimpleFact.class.getCanonicalName() + ";\n" +
@@ -2730,9 +2817,10 @@ public class CepEspTest extends AbstractCepEspTest {
         public void addValue () { total += 1; }
     }
 
-    @Test
-    @Ignore
-    public void testExpirationAtHighRates() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    @Disabled
+    public void testExpirationAtHighRates(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-130
         final String drl = "package droolsfusioneval\n" +
                      "" +
@@ -2790,8 +2878,9 @@ public class CepEspTest extends AbstractCepEspTest {
     }
 
 
-    @Test
-    public void AfterOperatorInCEPQueryTest() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void AfterOperatorInCEPQueryTest(KieBaseTestConfiguration kieBaseTestConfiguration) {
 
         final String drl = "package org.drools;\n" +
                      "import " + StockTick.class.getCanonicalName() + ";\n" +
@@ -2850,8 +2939,9 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test
-    public void testFromWithEvents() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testFromWithEvents(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "\n" +
                      "\n" +
                      "package org.drools.test\n" +
@@ -2902,8 +2992,9 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test
-    public void testDeserializationWithTrackableTimerJob() throws InterruptedException {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testDeserializationWithTrackableTimerJob(KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException {
         final String drl = "package org.drools.test;\n" +
                 "import " + StockTick.class.getCanonicalName() + "; \n" +
                 "global java.util.List list;\n" +
@@ -2959,8 +3050,9 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test
-    public void testDeserializationWithTrackableTimerJobShortExpiration() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testDeserializationWithTrackableTimerJobShortExpiration(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "package org.drools.test;\n" +
                 "import " + StockTick.class.getCanonicalName() + "; \n" +
                 "global java.util.List list;\n" +
@@ -2994,8 +3086,9 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test
-    public void testDeserializationWithExpiringEventAndAccumulate() throws InterruptedException {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testDeserializationWithExpiringEventAndAccumulate(KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException {
         final String drl = "package org.drools.test;\n" +
                      "import " + StockTick.class.getCanonicalName() + "; \n" +
                      "global java.util.List list;\n" +
@@ -3043,8 +3136,9 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test
-    public void testDeserializationWithCompositeTrigger() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testDeserializationWithCompositeTrigger(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "package org.drools.test;\n" +
                      "import " + StockTick.class.getCanonicalName() + "; \n" +
                      "global java.util.List list;\n" +
@@ -3080,8 +3174,9 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test
-    public void testWindowExpireActionDeserialization() throws InterruptedException {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testWindowExpireActionDeserialization(KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException {
         final String drl = "package org.drools.test;\n" +
                      "import " + StockTick.class.getCanonicalName() + "; \n" +
                      "global java.util.List list; \n" +
@@ -3126,8 +3221,9 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test
-    public void testDuplicateFiring1() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testDuplicateFiring1(KieBaseTestConfiguration kieBaseTestConfiguration) {
 
         final String drl = "package org.test;\n" +
                      "import " + StockTick.class.getCanonicalName() + ";\n " +
@@ -3185,8 +3281,9 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test
-    public void testPastEventExipration() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testPastEventExipration(KieBaseTestConfiguration kieBaseTestConfiguration) {
         //DROOLS-257
         final String drl = "package org.test;\n" +
                      "import " + StockTick.class.getCanonicalName() + ";\n " +
@@ -3246,8 +3343,9 @@ public class CepEspTest extends AbstractCepEspTest {
         public String toString() { return "MyEvent{" + "timestamp=" + timestamp + '}';  }
     }
 
-    @Test
-    public void testEventStreamWithEPsAndDefaultPseudo() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testEventStreamWithEPsAndDefaultPseudo(KieBaseTestConfiguration kieBaseTestConfiguration) {
         //DROOLS-286
         final String drl = "\n" +
                      "import java.util.*;\n" +
@@ -3356,8 +3454,9 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test
-    public void testExpirationOnModification() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testExpirationOnModification(KieBaseTestConfiguration kieBaseTestConfiguration) {
         //DROOLS-374
         final String drl = "\n" +
                      "import java.util.*;\n" +
@@ -3418,8 +3517,9 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test
-    public void testTemporalEvaluatorsWithEventsFromNode() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testTemporalEvaluatorsWithEventsFromNode(KieBaseTestConfiguration kieBaseTestConfiguration) {
         //DROOLS-421
         final String drl = "\n" +
                      "import java.util.*; " +
@@ -3457,11 +3557,12 @@ public class CepEspTest extends AbstractCepEspTest {
 
                      "";
 
-        testTemporalEvaluators(drl);
+        testTemporalEvaluators(kieBaseTestConfiguration, drl);
     }
 
-    @Test
-    public void testTemporalEvaluatorsUsingRawDateFields() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testTemporalEvaluatorsUsingRawDateFields(KieBaseTestConfiguration kieBaseTestConfiguration) {
         //DROOLS-421
         final String drl = "\n" +
                      "import java.util.*; " +
@@ -3496,11 +3597,12 @@ public class CepEspTest extends AbstractCepEspTest {
 
                      "";
 
-        testTemporalEvaluators(drl);
+        testTemporalEvaluators(kieBaseTestConfiguration, drl);
     }
 
-    @Test
-    public void testTemporalEvaluatorsUsingRawDateFieldsFromFrom() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testTemporalEvaluatorsUsingRawDateFieldsFromFrom(KieBaseTestConfiguration kieBaseTestConfiguration) {
         //DROOLS-421
         final String drl = "\n" +
                      "import java.util.*; " +
@@ -3524,11 +3626,12 @@ public class CepEspTest extends AbstractCepEspTest {
 
                      "";
 
-        testTemporalEvaluators(drl);
+        testTemporalEvaluators(kieBaseTestConfiguration, drl);
     }
 
-    @Test
-    public void testTemporalEvaluatorsUsingSelfDates() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testTemporalEvaluatorsUsingSelfDates(KieBaseTestConfiguration kieBaseTestConfiguration) {
         //DROOLS-421
         final String drl = "\n" +
                      "import java.util.*; " +
@@ -3550,10 +3653,10 @@ public class CepEspTest extends AbstractCepEspTest {
 
                      "";
 
-        testTemporalEvaluators(drl);
+        testTemporalEvaluators(kieBaseTestConfiguration, drl);
     }
 
-    private void testTemporalEvaluators(final String drl) {
+    private void testTemporalEvaluators(KieBaseTestConfiguration kieBaseTestConfiguration, final String drl) {
         final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
         final KieSession ksession = kbase.newKieSession();
         try {
@@ -3570,8 +3673,9 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test
-    public void testEventOffsetExpirationOverflow() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testEventOffsetExpirationOverflow(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-455
         final String drl = "\n" +
                      "import java.util.*; " +
@@ -3634,8 +3738,9 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test
-    public void testExpiredEventModification() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testExpiredEventModification(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // BZ-1082990
         final String drl = "import " + SimpleEvent.class.getCanonicalName() + "\n" +
                      "import java.util.Date\n" +
@@ -3712,8 +3817,9 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test
-    public void testTemporalOperatorWithConstant() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testTemporalOperatorWithConstant(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // BZ-1096243
         final String drl = "import " + SimpleEvent.class.getCanonicalName() + "\n" +
                      "import java.util.Date\n" +
@@ -3748,8 +3854,9 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test
-    public void testTemporalOperatorWithConstantAndJoin() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testTemporalOperatorWithConstantAndJoin(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // BZ 1096243
         final String drl = "import " + SimpleEvent.class.getCanonicalName() + "\n" +
                      "import java.util.Date\n" +
@@ -3787,8 +3894,9 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test
-    public void testDynamicSalienceInStreamMode() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testDynamicSalienceInStreamMode(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-526
         final String drl =
                 "import java.util.concurrent.atomic.AtomicInteger;\n" +
@@ -3840,8 +3948,9 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test
-    public void test2NotsWithTemporalConstraints() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void test2NotsWithTemporalConstraints(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // BZ-1122738 DROOLS-479
         final String drl = "import " + SimpleEvent.class.getCanonicalName() + "\n" +
                      "import java.util.Date\n" +
@@ -3882,8 +3991,9 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test
-    public void testRetractFromWindow() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testRetractFromWindow(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-636
         final String drl =
                 "import " + StockTick.class.getCanonicalName() + ";\n " +
@@ -3912,8 +4022,9 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test
-    public void testCEPNamedCons() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testCEPNamedCons(KieBaseTestConfiguration kieBaseTestConfiguration) {
 
         final String drl = "package org.drools " +
 
@@ -3985,8 +4096,9 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test
-    public void testCEPNamedConsTimers() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testCEPNamedConsTimers(KieBaseTestConfiguration kieBaseTestConfiguration) {
 
         final String drl = "package org.drools " +
 
@@ -4037,8 +4149,9 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test
-    public void test2TimersWithNamedCons() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void test2TimersWithNamedCons(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "package org.drools " +
 
                      "global java.util.List list; " +
@@ -4065,11 +4178,12 @@ public class CepEspTest extends AbstractCepEspTest {
                      "  list.add( 1 );\n" +
                      "end\n";
 
-        test2Timers(drl);
+        test2Timers(kieBaseTestConfiguration, drl);
     }
 
-    @Test
-    public void test2TimersWith2Rules() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void test2TimersWith2Rules(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "package org.drools " +
 
                      "global java.util.List list; " +
@@ -4100,10 +4214,10 @@ public class CepEspTest extends AbstractCepEspTest {
                      "  list.add( 1 );\n" +
                      "end\n";
 
-        test2Timers(drl);
+        test2Timers(kieBaseTestConfiguration, drl);
     }
     
-    private void test2Timers(final String drl) {
+    private void test2Timers(KieBaseTestConfiguration kieBaseTestConfiguration, final String drl) {
         final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("cep-esp-test", kieBaseTestConfiguration, drl);
         final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
@@ -4124,8 +4238,9 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     } 
 
-    @Test
-    public void testCEPWith2NamedConsAndEagerRule() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testCEPWith2NamedConsAndEagerRule(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "package org.drools " +
 
                      "global java.util.List list; " +
@@ -4183,8 +4298,9 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test
-    public void testExpireLogicalEvent() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testExpireLogicalEvent(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "package org.drools; " +
                      "declare Foo " +
                      "  @role(event) " +
@@ -4211,8 +4327,9 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test
-    public void testSerializationWithEventInPast() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testSerializationWithEventInPast(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-749
         final String drl =
                 "import " + Event1.class.getCanonicalName() + "\n" +
@@ -4272,8 +4389,9 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test
-    public void testUseMapAsEvent() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testUseMapAsEvent(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-753
         final String drl =
                 "import java.util.Map\n " +
@@ -4298,8 +4416,9 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test
-    public void testDisconnectedEventFactHandle() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testDisconnectedEventFactHandle(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-924
         final String drl =
                 "declare String \n"+
@@ -4324,8 +4443,10 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test(timeout = 5000)
-    public void testEventWithShortExpiration() throws InterruptedException {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    @Timeout(5000)
+    public void testEventWithShortExpiration(KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException {
         // DROOLS-921
         final String drl = "declare String\n" +
                      "  @expires( 1ms )\n" +
@@ -4357,8 +4478,9 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test
-    public void testDeleteExpiredEvent() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testDeleteExpiredEvent(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // BZ-1274696
         final String drl =
                 "import " + StockTick.class.getCanonicalName() + "\n" +
@@ -4393,8 +4515,9 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test
-    public void testDeleteExpiredEventWithTimestampAndEqualityKey() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testDeleteExpiredEventWithTimestampAndEqualityKey(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-1017
         final String drl =
                 "import " + StockTick.class.getCanonicalName() + "\n" +
@@ -4429,8 +4552,9 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test
-    public void testSerializationWithWindowLength() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testSerializationWithWindowLength(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-953
         final String drl =
                 "import " + StockTick.class.getCanonicalName() + "\n" +
@@ -4476,8 +4600,9 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test
-    public void testSerializationWithWindowLengthAndLiaSharing() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testSerializationWithWindowLengthAndLiaSharing(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-953
         final String drl =
                 "import " + StockTick.class.getCanonicalName() + "\n" +
@@ -4529,8 +4654,9 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test
-    public void testSerializationBeforeFireWithWindowLength() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testSerializationBeforeFireWithWindowLength(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-953
         final String drl =
                 "import " + StockTick.class.getCanonicalName() + "\n" +
@@ -4573,8 +4699,9 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test
-    public void testSubclassWithLongerExpirationThanSuper() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testSubclassWithLongerExpirationThanSuper(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-983
         final String drl =
                 "import " + SuperClass.class.getCanonicalName() + "\n" +
@@ -4612,8 +4739,9 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test
-    public void testSubclassWithLongerExpirationThanSuperWithSerialization() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testSubclassWithLongerExpirationThanSuperWithSerialization(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-983
         final String drl =
                 "import " + SuperClass.class.getCanonicalName() + "\n" +
@@ -4666,8 +4794,9 @@ public class CepEspTest extends AbstractCepEspTest {
     @Expires( "20s" )
     public static class SubClass extends SuperClass { }
 
-    @Test
-    public void testTemporalOperatorWithGlobal() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testTemporalOperatorWithGlobal(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-993
         final String drl = "import " + SimpleEvent.class.getCanonicalName() + "\n" +
                      "global java.util.List list;\n" +
@@ -4704,26 +4833,29 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test
-    public void testNoExpirationWithNot() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testNoExpirationWithNot(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-984
-        checkNoExpiration("$s: SimpleEvent ()\n" +
+        checkNoExpiration(kieBaseTestConfiguration, "$s: SimpleEvent ()\n" +
                           "not SimpleEvent (this != $s, this after[0, 30s] $s)\n" );
     }
 
-    @Test
-    public void testNoExpirationWithSlidingWindow() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testNoExpirationWithSlidingWindow(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-984
-        checkNoExpiration("SimpleEvent( ) over window:time(30s)\n" );
+        checkNoExpiration(kieBaseTestConfiguration, "SimpleEvent( ) over window:time(30s)\n" );
     }
 
-    @Test
-    public void testNoExpirationWithNoTemporalConstraint() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testNoExpirationWithNoTemporalConstraint(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-984
-        checkNoExpiration("SimpleEvent( )\n" );
+        checkNoExpiration(kieBaseTestConfiguration, "SimpleEvent( )\n" );
     }
 
-    private void checkNoExpiration(final String lhs) {
+    private void checkNoExpiration(KieBaseTestConfiguration kieBaseTestConfiguration, final String lhs) {
         final String drl = "import " + SimpleEvent.class.getCanonicalName() + "\n" +
                      "declare SimpleEvent\n" +
                      "    @role( event )\n" +
@@ -4758,8 +4890,9 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test
-    public void testCancelActivationWithExpiredEvent() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testCancelActivationWithExpiredEvent(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // RHBRMS-2463
         final String drl = "import " + MyEvent.class.getCanonicalName() + "\n" +
                      "import " + AtomicInteger.class.getCanonicalName() + "\n" +
@@ -4810,8 +4943,9 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test
-    public void testRightTupleExpiration() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testRightTupleExpiration(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // RHBRMS-2463
         final String drl = "import " + MyEvent.class.getCanonicalName() + "\n" +
                      "import " + AtomicInteger.class.getCanonicalName() + "\n" +
@@ -4858,8 +4992,9 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test
-    public void testLeftTupleExpiration() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testLeftTupleExpiration(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // RHBRMS-2463
         final String drl = "import " + MyEvent.class.getCanonicalName() + "\n" +
                      "import " + AtomicInteger.class.getCanonicalName() + "\n" +
@@ -4904,8 +5039,9 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test
-    public void testLeftTupleExpirationWithNot() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testLeftTupleExpirationWithNot(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // RHBRMS-2463
         final String drl = "import " + MyEvent.class.getCanonicalName() + "\n" +
                      "import " + AtomicInteger.class.getCanonicalName() + "\n" +
@@ -4951,8 +5087,9 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test
-    public void testExpireLogicallyInsertedEvent() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testExpireLogicallyInsertedEvent(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // RHBRMS-2515
         final String drl = "import " + MyEvent.class.getCanonicalName() + "\n" +
                      "declare MyEvent\n" +
@@ -4987,8 +5124,9 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test
-    public void testExpiredEventWithPendingActivations() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testExpiredEventWithPendingActivations(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         final String drl = "package org.drools.drools_usage_pZB7GRxZp64;\n" +
                      "\n" +
                      "declare time_Var\n" +
@@ -5098,8 +5236,9 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test
-    public void testTimerWithMillisPrecision() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testTimerWithMillisPrecision(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // RHBRMS-2627
         final String drl = "import " + MyEvent.class.getCanonicalName() + "\n" +
                      "import " + AtomicInteger.class.getCanonicalName() + "\n" +
@@ -5150,8 +5289,10 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test(timeout=10000)
-    public void testSerializationDeserliaizationWithRectractedExpireFact() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testSerializationDeserliaizationWithRectractedExpireFact(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-1328
         final String drl =
                 "package " + TestEvent.class.getPackage().getName() + "\n" +
@@ -5188,8 +5329,9 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test
-    public void testConflictingRightTuplesUpdate() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testConflictingRightTuplesUpdate(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-1338
         final String drl =
                 "declare Integer @role(event) end\n" +
@@ -5219,8 +5361,9 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test
-    public void testModifyEventOverWindow() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testModifyEventOverWindow(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-1346
         final String drl =
                 "import " + AtomicBoolean.class.getCanonicalName() + "\n" +
@@ -5259,8 +5402,9 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test
-    public void testExpirationOnAfter() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testExpirationOnAfter(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-1227
         final String drl = "declare String @role( event ) end\n" +
                      "declare Integer @role( event ) end\n" +
@@ -5292,8 +5436,9 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test
-    public void testExpirationOnBefore() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testExpirationOnBefore(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-1227
         final String drl = "declare String @role( event ) end\n" +
                      "declare Integer @role( event ) end\n" +
@@ -5324,8 +5469,9 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test
-    public void testFireExpiredEventOnInactiveGroup() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testFireExpiredEventOnInactiveGroup(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-1523
         final String drl = "global java.util.List list;\n" +
                      "declare String  @role(event) @expires( 6d ) end\n" +
@@ -5388,8 +5534,9 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test
-    public void testExpireUnusedDeclaredTypeEvent() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testExpireUnusedDeclaredTypeEvent(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-1524
         final String drl = "declare String @role( event ) @expires( 1s ) end\n" +
                      "\n" +
@@ -5416,8 +5563,9 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test
-    public void testExpireUnusedDeclaredTypeClass() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testExpireUnusedDeclaredTypeClass(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-1524
         final String drl = "rule R when\n"
                      + "then\n"
@@ -5485,8 +5633,9 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test
-    public void testDeleteOfDeserializedJob() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testDeleteOfDeserializedJob(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-1660
         final String drl =
                 "import " + EventA.class.getCanonicalName() + "\n" +
@@ -5595,8 +5744,9 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test
-    public void testInvalidWindowPredicate() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testInvalidWindowPredicate(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-1723
         final String drl = "declare A\n" +
                      "    @role( event )\n" +
@@ -5615,8 +5765,9 @@ public class CepEspTest extends AbstractCepEspTest {
     @Role(Role.Type.EVENT)
     public static class ExpiringEventD { }
 
-    @Test
-    public void testInsertLogicalNoExpires() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testInsertLogicalNoExpires(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-2182
         final String drl = "import " + ExpiringEventD.class.getCanonicalName() + "\n" +
                 "rule Insert when then " +
@@ -5631,8 +5782,9 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test
-    public void testPropertyReactiveWithDurationOnRule() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testPropertyReactiveWithDurationOnRule(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-2238
         final String drl = "package org.drools.test " +
                 " " +
@@ -5673,8 +5825,9 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test
-    public void testNPERiaPathMemWithEvent() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testNPERiaPathMemWithEvent(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-2241
         final String drl =
                 "package org.drools  " +
@@ -5702,8 +5855,9 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test
-    public void testCollectExpiredEvent() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testCollectExpiredEvent(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-4393
         final String drl =
                 "import java.util.Collection\n" +
@@ -5742,8 +5896,9 @@ public class CepEspTest extends AbstractCepEspTest {
         }
     }
 
-    @Test
-    public void testSlidingWindowExpire() throws InterruptedException {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testSlidingWindowExpire(KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException {
         // DROOLS-4805
         final String drl =
                 "package org.drools.compiler\n" +

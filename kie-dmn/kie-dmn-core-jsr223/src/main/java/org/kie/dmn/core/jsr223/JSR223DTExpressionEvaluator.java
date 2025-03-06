@@ -35,8 +35,8 @@ import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
-import org.kie.dmn.core.api.EvaluatorResult;
-import org.kie.dmn.core.api.EvaluatorResult.ResultType;
+import org.kie.dmn.api.core.EvaluatorResult;
+import org.kie.dmn.api.core.EvaluatorResult.ResultType;
 import org.kie.dmn.core.ast.DMNDTExpressionEvaluator;
 import org.kie.dmn.core.ast.DMNDTExpressionEvaluator.EventResults;
 import org.kie.dmn.core.ast.EvaluatorResultImpl;
@@ -106,7 +106,11 @@ public class JSR223DTExpressionEvaluator implements DMNExpressionEvaluator {
             LOG.debug("failed evaluate", e);
             throw new RuntimeException(e);
         } finally {
-            DMNRuntimeEventManagerUtils.fireAfterEvaluateDecisionTable( dmrem, node.getName(), node.getName(), dt.getId(), result, (r != null ? r.matchedRules : null), (r != null ? r.fired : null) );
+            DMNRuntimeEventManagerUtils.fireAfterEvaluateDecisionTable( dmrem, node.getName(), node.getName(), dt.getId(), result,
+                                                                        (r != null ? r.matchedRules : null),
+                                                                        (r != null ? r.fired : null),
+                                                                        (r != null ? r.matchedIds : null),
+                                                                        (r != null ? r.firedIds : null));
         }
     }
     
@@ -167,7 +171,7 @@ public class JSR223DTExpressionEvaluator implements DMNExpressionEvaluator {
         private final List<FEELEvent> events;
         // Defaulting FEELDialect to FEEL
         private final FEELDialect dialect = FEELDialect.FEEL;
-        
+
         public JSR223WrappingEC(Map<String, Object> values, List<FEELEvent> events) {
             this.values = Collections.unmodifiableMap(values);
             this.events = events;
@@ -249,7 +253,7 @@ public class JSR223DTExpressionEvaluator implements DMNExpressionEvaluator {
         }
 
         @Override
-        public FEELDialect getDialect() {
+        public FEELDialect getFEELDialect() {
             return dialect;
         }
     }

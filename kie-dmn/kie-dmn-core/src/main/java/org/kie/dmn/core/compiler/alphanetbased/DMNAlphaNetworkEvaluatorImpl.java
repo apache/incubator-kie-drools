@@ -27,7 +27,7 @@ import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
-import org.kie.dmn.core.api.EvaluatorResult;
+import org.kie.dmn.api.core.EvaluatorResult;
 import org.kie.dmn.core.ast.DMNBaseNode;
 import org.kie.dmn.core.ast.DMNDTExpressionEvaluator;
 import org.kie.dmn.core.ast.EvaluatorResultImpl;
@@ -111,7 +111,10 @@ public class DMNAlphaNetworkEvaluatorImpl implements DMNExpressionEvaluator {
         } finally {
             evalCtx.exitFrame();
             DMNRuntimeEventManagerUtils.fireAfterEvaluateDecisionTable(eventManager, node.getName(), decisionTableName, decisionTableId, dmnResult,
-                                                                       (eventResults != null ? eventResults.matchedRules : null), (eventResults != null ? eventResults.fired : null));
+                                                                       (eventResults != null ? eventResults.matchedRules : null),
+                                                                       (eventResults != null ? eventResults.fired : null),
+                                                                       (eventResults != null ? eventResults.matchedIds : null),
+                                                                       (eventResults != null ? eventResults.firedIds : null));
         }
     }
 

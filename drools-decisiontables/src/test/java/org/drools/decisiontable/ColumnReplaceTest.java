@@ -21,7 +21,7 @@ package org.drools.decisiontable;
 import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.DecisionTableConfiguration;
 import org.kie.internal.builder.DecisionTableInputType;

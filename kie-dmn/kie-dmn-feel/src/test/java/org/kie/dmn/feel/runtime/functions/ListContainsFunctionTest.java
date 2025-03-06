@@ -23,23 +23,19 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
 class ListContainsFunctionTest {
 
-    private ListContainsFunction listContainsFunction;
-
-    @BeforeEach
-    void setUp() {
-        listContainsFunction = new ListContainsFunction();
-    }
+    private static final ListContainsFunction listContainsFunction = ListContainsFunction.INSTANCE;
 
     @Test
     void invokeListNull() {
-        FunctionTestUtil.assertResultError(listContainsFunction.invoke((List) null, null), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(listContainsFunction.invoke(null, new Object()), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(listContainsFunction.invoke((List) null, null),
+                                           InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(listContainsFunction.invoke(null, new Object()),
+                                           InvalidParametersEvent.class);
     }
 
     @Test
@@ -67,6 +63,7 @@ class ListContainsFunctionTest {
     void invokeNotContains() {
         FunctionTestUtil.assertResult(listContainsFunction.invoke(Arrays.asList(1, 2, "test"), "testtt"), false);
         FunctionTestUtil.assertResult(listContainsFunction.invoke(Arrays.asList(1, 2, "test"), 3), false);
-        FunctionTestUtil.assertResult(listContainsFunction.invoke(Arrays.asList(1, 2, "test"), BigDecimal.valueOf(3)), false);
+        FunctionTestUtil.assertResult(listContainsFunction.invoke(Arrays.asList(1, 2, "test"), BigDecimal.valueOf(3))
+                , false);
     }
 }

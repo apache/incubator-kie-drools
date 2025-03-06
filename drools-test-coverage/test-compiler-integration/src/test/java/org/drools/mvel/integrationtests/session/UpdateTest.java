@@ -20,9 +20,10 @@ package org.drools.mvel.integrationtests.session;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
+import org.drools.drl.parser.DrlParser;
 import org.drools.mvel.compiler.Address;
 import org.drools.mvel.compiler.Asset;
 import org.drools.mvel.compiler.AssetCard;
@@ -36,16 +37,17 @@ import org.drools.mvel.integrationtests.facts.AFact;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.Message;
 import org.kie.api.command.Setter;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
+import org.kie.internal.builder.conf.LanguageLevelOption;
 import org.kie.internal.command.CommandFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -55,32 +57,26 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-@RunWith(Parameterized.class)
 public class UpdateTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public UpdateTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        // TODO: EM failed with some tests. File JIRAs
+        return TestParametersUtil2.getKieBaseCloudConfigurations(false).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-     // TODO: EM failed with some tests. File JIRAs
-        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testModifyBlock(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
+        doModifyTest(kieBaseTestConfiguration, "test_ModifyBlock.drl");
     }
 
-    @Test
-    public void testModifyBlock() throws Exception {
-        doModifyTest("test_ModifyBlock.drl");
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testModifyBlockWithPolymorphism(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
+        doModifyTest(kieBaseTestConfiguration, "test_ModifyBlockWithPolymorphism.drl");
     }
 
-    @Test
-    public void testModifyBlockWithPolymorphism() throws Exception {
-        doModifyTest("test_ModifyBlockWithPolymorphism.drl");
-    }
-
-    private void doModifyTest(final String drlResource) throws Exception {
+    private void doModifyTest(KieBaseTestConfiguration kieBaseTestConfiguration, final String drlResource) throws Exception {
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, drlResource);
         KieSession ksession = kbase.newKieSession();
 
@@ -101,8 +97,9 @@ public class UpdateTest {
         assertThat(bob.getStatus()).isEqualTo("fine");
     }
 
-    @Test
-    public void testModifyBlockWithFrom() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testModifyBlockWithFrom(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_ModifyBlockWithFrom.drl");
         KieSession ksession = kbase.newKieSession();
 
@@ -126,8 +123,9 @@ public class UpdateTest {
     }
 
     // this test requires mvel 1.2.19. Leaving it commented until mvel is released.
-    @Test
-    public void testJavaModifyBlock() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testJavaModifyBlock(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_JavaModifyBlock.drl");
         KieSession ksession = kbase.newKieSession();
 
@@ -149,17 +147,19 @@ public class UpdateTest {
         assertThat(((OuterClass.InnerClass) list.get(1)).getIntAttr()).isEqualTo(2);
     }
 
-    @Test
-    public void testModifyJava() {
-        testModifyWithDialect("java");
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testModifyJava(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        testModifyWithDialect(kieBaseTestConfiguration, "java");
     }
 
-    @Test
-    public void testModifyMVEL() {
-        testModifyWithDialect("mvel");
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testModifyMVEL(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        testModifyWithDialect(kieBaseTestConfiguration, "mvel");
     }
 
-    private void testModifyWithDialect(final String dialect) {
+    private void testModifyWithDialect(KieBaseTestConfiguration kieBaseTestConfiguration, final String dialect) {
         final String str = "package org.drools.mvel.compiler\n" +
                 "import java.util.List\n" +
                 "rule \"test\"\n" +
@@ -178,8 +178,9 @@ public class UpdateTest {
         assertThat(errors.isEmpty()).as(errors.toString()).isTrue();
     }
 
-    @Test
-    public void testModifySimple() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testModifySimple(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String str = "package org.drools.mvel.compiler;\n" +
                 "\n" +
                 "rule \"test modify block\"\n" +
@@ -205,8 +206,9 @@ public class UpdateTest {
         ksession.dispose();
     }
 
-    @Test
-    public void testModifyWithLockOnActive() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testModifyWithLockOnActive(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_ModifyWithLockOnActive.drl");
         KieSession session = kbase.newKieSession();
 
@@ -225,8 +227,9 @@ public class UpdateTest {
         assertThat(((List) session.getGlobal("results")).size()).isEqualTo(2);
     }
 
-    @Test
-    public void testMissingClosingBraceOnModify() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testMissingClosingBraceOnModify(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         // JBRULES-3436
         final String str = "package org.drools.mvel.compiler.test;\n" +
                 "import org.drools.compiler.*\n" +
@@ -242,8 +245,9 @@ public class UpdateTest {
         assertThat(errors.isEmpty()).as("Should have an error").isFalse();
     }
 
-    @Test
-    public void testInvalidModify1() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testInvalidModify1(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String str = "";
         str += "package org.drools.compiler \n";
         str += "import " + Cheese.class.getName() + "\n";
@@ -262,8 +266,9 @@ public class UpdateTest {
         assertThat(errors.isEmpty()).as("Should have an error").isFalse();
     }
 
-    @Test
-    public void testInvalidModify2() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testInvalidModify2(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String str = "";
         str += "package org.drools.compiler \n";
         str += "import " + Cheese.class.getName() + "\n";
@@ -282,8 +287,9 @@ public class UpdateTest {
         assertThat(errors.isEmpty()).as("Should have an error").isFalse();
     }
 
-    @Test
-    public void testJoinNodeModifyObject() throws IOException, ClassNotFoundException {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testJoinNodeModifyObject(KieBaseTestConfiguration kieBaseTestConfiguration) throws IOException, ClassNotFoundException {
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_JoinNodeModifyObject.drl");
         KieSession ksession = kbase.newKieSession();
 
@@ -304,8 +310,9 @@ public class UpdateTest {
         }
     }
 
-    @Test
-    public void testModifyCommand() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testModifyCommand(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String str =
                 "rule \"sample rule\"\n" +
                         "   when\n" +
@@ -329,8 +336,9 @@ public class UpdateTest {
         ksession.execute(CommandFactory.newModify(fh, setterList));
     }
 
-    @Test
-    public void testNotIterativeModifyBug() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testNotIterativeModifyBug(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // JBRULES-2809
         // This bug occurs when a tuple is modified, the remove/add puts it onto the memory end
         // However before this was done it would attempt to find the next tuple, starting from itself
@@ -384,8 +392,9 @@ public class UpdateTest {
         ksession.dispose();
     }
 
-    @Test
-    public void testLLR() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testLLR(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_JoinNodeModifyTuple.drl");
         KieSession ksession = kbase.newKieSession();
         ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession( ksession,true );
@@ -475,8 +484,9 @@ public class UpdateTest {
         ksession.fireAllRules();
     }
 
-    @Test
-    public void noDormantCheckOnModifies() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void noDormantCheckOnModifies(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         // Test case for BZ 862325
         final String str = "package org.drools.mvel.compiler;\n"
                 + " rule R1\n"
@@ -511,8 +521,10 @@ public class UpdateTest {
         verify(ael, never()).matchCancelled(any(org.kie.api.event.rule.MatchCancelledEvent.class));
     }
 
-    @Test(timeout = 10000)
-    public void testSwapChild() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(10000)
+    public void testSwapChild(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-6684
         final String str = "package org.drools.mvel.compiler;\n" +
                            "import " + Person.class.getCanonicalName() + "\n" +
@@ -582,8 +594,9 @@ public class UpdateTest {
         }
     }
 
-    @Test
-    public void testPeerUpdate() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testPeerUpdate(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-6783
         final String str =
                 "import " + Firings.class.getCanonicalName() + "\n" +

@@ -30,8 +30,8 @@ import org.drools.base.definitions.InternalKnowledgePackage;
 import org.drools.base.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.ReteooBuilder;
 import org.drools.mvel.integrationtests.LargeRuleBase;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.kie.api.definition.rule.Rule;
 import org.kie.internal.conf.CompositeBaseConfiguration;
 
@@ -41,7 +41,7 @@ import static org.assertj.core.api.Assertions.fail;
  * Created by IntelliJ IDEA. User: SG0521861 Date: Mar 20, 2008 Time: 2:36:47 PM To change this template use File |
  * Settings | File Templates.
  */
-@Ignore
+@Disabled
 public class ReteooBuilderPerformanceTest {
     private static final int    RULE_COUNT  = Integer.parseInt(System.getProperty("rule.count", "1000"));
     private static final int    RETEBUILDER_COUNT  = Integer.parseInt(System.getProperty("retebuilder.count", "1"));

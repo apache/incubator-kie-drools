@@ -19,7 +19,7 @@
 package org.drools.mvel.compiler.builder.impl;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.conf.ParallelRulesBuildThresholdOption;
 

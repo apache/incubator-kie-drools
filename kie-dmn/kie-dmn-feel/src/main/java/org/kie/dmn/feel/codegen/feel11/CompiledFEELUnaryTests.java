@@ -22,7 +22,7 @@ import java.util.List;
 
 import org.kie.dmn.feel.runtime.UnaryTest;
 
-public interface CompiledFEELUnaryTests {
+public interface CompiledFEELUnaryTests extends CompilationErrorNotifier {
 
     List<UnaryTest> getUnaryTests();
 

@@ -20,22 +20,20 @@ package org.kie.dmn.feel.runtime.functions;
 
 import java.math.BigDecimal;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
 class CeilingFunctionTest {
 
-    private CeilingFunction ceilingFunction;
-
-    @BeforeEach
-    void setUp() {
-        ceilingFunction = new CeilingFunction();
-    }
+    private static final CeilingFunction ceilingFunction = CeilingFunction.INSTANCE;
 
     @Test
     void invokeNull() {
         FunctionTestUtil.assertResultError(ceilingFunction.invoke(null), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(ceilingFunction.invoke((BigDecimal) null, null),
+                                           InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(ceilingFunction.invoke(BigDecimal.ONE, null), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(ceilingFunction.invoke(null, BigDecimal.ONE), InvalidParametersEvent.class);
     }
 
     @Test
@@ -45,11 +43,21 @@ class CeilingFunctionTest {
 
     @Test
     void invokePositive() {
-        FunctionTestUtil.assertResultBigDecimal(ceilingFunction.invoke(BigDecimal.valueOf(10.2)), BigDecimal.valueOf(11));
+        FunctionTestUtil.assertResultBigDecimal(ceilingFunction.invoke(BigDecimal.valueOf(10.2)),
+                                                BigDecimal.valueOf(11));
     }
 
     @Test
     void invokeNegative() {
-        FunctionTestUtil.assertResultBigDecimal(ceilingFunction.invoke(BigDecimal.valueOf(-10.2)), BigDecimal.valueOf(-10));
+        FunctionTestUtil.assertResultBigDecimal(ceilingFunction.invoke(BigDecimal.valueOf(-10.2)),
+                                                BigDecimal.valueOf(-10));
+    }
+
+    @Test
+    void invokeOutRangeScale() {
+        FunctionTestUtil.assertResultError(ceilingFunction.invoke(BigDecimal.valueOf(1.5), BigDecimal.valueOf(6177)),
+                                           InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(ceilingFunction.invoke(BigDecimal.valueOf(1.5), BigDecimal.valueOf(-6122))
+                , InvalidParametersEvent.class);
     }
 }

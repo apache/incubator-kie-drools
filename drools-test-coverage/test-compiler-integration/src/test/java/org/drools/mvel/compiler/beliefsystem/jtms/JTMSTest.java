@@ -19,9 +19,9 @@
 package org.drools.mvel.compiler.beliefsystem.jtms;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.drools.core.BeliefSystemType;
 import org.drools.core.RuleSessionConfiguration;
@@ -35,14 +35,14 @@ import org.drools.kiesession.session.StatefulKnowledgeSessionImpl;
 import org.drools.mvel.compiler.Person;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
 import org.drools.tms.TruthMaintenanceSystemEqualityKey;
 import org.drools.tms.TruthMaintenanceSystemImpl;
 import org.drools.tms.beliefsystem.jtms.JTMSBeliefSystem;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
@@ -54,22 +54,14 @@ import org.kie.internal.event.rule.RuleEventManager;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
-@RunWith(Parameterized.class)
 public class JTMSTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public JTMSTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
-    }
-
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
+    public static Stream<KieBaseTestConfiguration> parameters() {
      // TODO: EM failed with testConflictToggleWithoutGoingEmpty, testPosNegNonConflictingInsertions. File JIRAs
-        return TestParametersUtil.getKieBaseCloudConfigurations(false, true);
+        return TestParametersUtil2.getKieBaseCloudConfigurations(false, true).stream();
     }
 
-    protected KieSession getSessionFromString( String drlString) {
+    protected KieSession getSessionFromString( KieBaseTestConfiguration kieBaseTestConfiguration, String drlString) {
         KieBase kBase;
 
         try {
@@ -85,7 +77,7 @@ public class JTMSTest {
         return kSession;
     }
     
-    protected KieSession getSessionFromFile( String ruleFile ) {
+    protected KieSession getSessionFromFile( KieBaseTestConfiguration kieBaseTestConfiguration, String ruleFile ) {
         KieBase kBase = KieBaseUtil.getKieBaseFromClasspathResources(this.getClass(), kieBaseTestConfiguration, ruleFile);
 
         KieSessionConfiguration ksConf = RuleBaseFactory.newKnowledgeSessionConfiguration();
@@ -95,8 +87,10 @@ public class JTMSTest {
         return kSession;
     }    
     
-    @Test(timeout = 10000 )
-    public void testPosNegNonConflictingInsertions() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testPosNegNonConflictingInsertions(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String s = "package org.drools.core.beliefsystem.jtms;\n" +
                    "\n" +
                    "import java.util.List \n" +
@@ -119,7 +113,7 @@ public class JTMSTest {
                    "\n" +
                    "rule \"Positive\"\n" +
                    "when\n" +
-                   "    $n : String( this != 'go1' || == 'go2' ) \n" +
+                   "    $n : String( this != 'go1' || this == 'go2' ) \n" +
                    "then\n" +
                    "    final String s = '+' + $n;" +
                    "    final List l = list;" +
@@ -127,14 +121,14 @@ public class JTMSTest {
                    "end\n" +
                    "rule \"Negative\"\n" +
                    "when\n" +
-                   "    $n : String(   _.neg, this != 'go1' || == 'go2' ) \n" +
+                   "    $n : String(   _.neg, this != 'go1' || this == 'go2' ) \n" +
                    "then\n" +
                    "    final String s = '-' + $n; \n" +
                    "    final List l = list; \n" +
                    "    l.add( s ); \n" +
                    "end\n";
 
-        KieSession kSession =  getSessionFromString( s );
+        KieSession kSession =  getSessionFromString( kieBaseTestConfiguration, s );
         List list = new ArrayList();
         kSession.setGlobal( "list", list );
 
@@ -180,8 +174,10 @@ public class JTMSTest {
         assertThat(getNegativeObjects(kSession).size()).isEqualTo(0);
     }
 
-    @Test(timeout = 10000 )
-    public void testConflictToggleWithoutGoingEmpty() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testConflictToggleWithoutGoingEmpty(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String s = "package org.drools.core.beliefsystem.jtms;\n" +
                    "\n" +
                    "import java.util.List \n" +
@@ -235,7 +231,7 @@ public class JTMSTest {
                    "end\n" +
                    "";
 
-        KieSession kSession =  getSessionFromString( s );
+        KieSession kSession =  getSessionFromString( kieBaseTestConfiguration, s );
         List list = new ArrayList();
         kSession.setGlobal( "list", list );
 
@@ -268,9 +264,11 @@ public class JTMSTest {
         assertThat(list.contains("+xxx")).isTrue();
     }
     
-    @Test(timeout = 10000 )
-    @Ignore("Currently cannot support updates")
-    public void testChangeInPositivePrime() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    @Disabled("Currently cannot support updates")
+    public void testChangeInPositivePrime(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String s = "package org.drools.core.beliefsystem.jtms;\n" +
                 "\n" + 
                 "import org.kie.internal.event.rule.ActivationUnMatchListener;\n" +
@@ -305,7 +303,7 @@ public class JTMSTest {
                 "end\n" +                 
                 "\n";
         
-        KieSession kSession =  getSessionFromString( s );
+        KieSession kSession =  getSessionFromString( kieBaseTestConfiguration, s );
         List list = new ArrayList();
         kSession.setGlobal( "list", list );
         
@@ -364,9 +362,11 @@ public class JTMSTest {
         assertThat(((Person) key.getBeliefSet().getFactHandle().getObject()).getNotInEqualTestObject()).isEqualTo(Integer.valueOf(2));
     }    
     
-    @Test(timeout = 10000 )
-    @Ignore("Currently cannot support updates")
-    public void testChangeInNegativePrime() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000 )
+    @Disabled("Currently cannot support updates")
+    public void testChangeInNegativePrime(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String s = "package org.drools.core.beliefsystem.jtms;\n" +
                 "\n" + 
                 "import org.kie.internal.event.rule.ActivationUnMatchListener;\n" +
@@ -403,7 +403,7 @@ public class JTMSTest {
                 "end\n" +                 
                 "\n";
 
-        KieSession kSession =  getSessionFromString( s );
+        KieSession kSession =  getSessionFromString( kieBaseTestConfiguration, s );
         List list = new ArrayList();
         kSession.setGlobal( "list", list );
         
@@ -463,9 +463,11 @@ public class JTMSTest {
         assertThat(((Person) key.getBeliefSet().getFactHandle().getObject()).getNotInEqualTestObject()).isEqualTo(Integer.valueOf(2));
     }
     
-    @Test(timeout = 10000 )
-    @Ignore("Currently cannot support updates")
-    public void testRetractHandleWhenOnlyNeg() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    @Disabled("Currently cannot support updates")
+    public void testRetractHandleWhenOnlyNeg(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String s = "package org.drools.core.beliefsystem.jtms;\n" +
                 "\n" + 
                 "import java.util.List \n" +
@@ -500,7 +502,7 @@ public class JTMSTest {
                 "    l.add( s ); \n" +
                 "end\n";
         
-        KieSession kSession =  getSessionFromString( s );
+        KieSession kSession =  getSessionFromString( kieBaseTestConfiguration, s );
         List list = new ArrayList();
         kSession.setGlobal( "list", list );
 
@@ -542,9 +544,11 @@ public class JTMSTest {
         assertThat(tms.getEqualityKeysSize()).isEqualTo(1);
     }  
     
-    @Test(timeout = 10000 )
-    public void testConflictStrict() {
-        KieSession kSession = getSessionFromFile( "posNegConflict.drl" );
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testConflictStrict(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        KieSession kSession = getSessionFromFile( kieBaseTestConfiguration, "posNegConflict.drl" );
 
         ArrayList list = new ArrayList();
         kSession.setGlobal( "list", list );
@@ -563,10 +567,12 @@ public class JTMSTest {
         }
     }   
 
-    @Test(timeout = 10000 )
-    @Ignore("Currently cannot support updates")
-    public void testConflictTMS() {
-        KieSession kSession = getSessionFromFile( "posNegTms.drl" );
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    @Disabled("Currently cannot support updates")
+    public void testConflictTMS(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        KieSession kSession = getSessionFromFile( kieBaseTestConfiguration, "posNegTms.drl" );
 
         ArrayList list = new ArrayList();
         kSession.setGlobal( "list", list );
@@ -646,8 +652,9 @@ public class JTMSTest {
         return list;
     }
 
-    @Test
-    public void testPrimeJustificationWithEqualityMode() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testPrimeJustificationWithEqualityMode(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String droolsSource =
                 "package org.drools.tms.test; \n" +
                 "declare Bar end \n" +
@@ -676,7 +683,7 @@ public class JTMSTest {
                 " System.out.println( $b );  \n" +
                 "end \n" ;
 
-        KieSession session = getSessionFromString( droolsSource );
+        KieSession session = getSessionFromString( kieBaseTestConfiguration, droolsSource );
 
         FactHandle handle1 = session.insert( 10 );
         FactHandle handle2 = session.insert( 20 );

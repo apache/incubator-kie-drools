@@ -18,18 +18,17 @@
  */
 package org.drools.testcoverage.functional.oopath;
 
-import java.util.Collection;
+import java.util.stream.Stream;
 
 import org.drools.testcoverage.common.model.Address;
 import org.drools.testcoverage.common.model.Person;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.After;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
@@ -42,25 +41,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * Tests basic usage of OOPath expressions.
  */
-@RunWith(Parameterized.class)
 public class OOPathSmokeTest {
     private static final KieServices KIE_SERVICES = KieServices.Factory.get();
     private static final ReleaseId RELEASE_ID = KIE_SERVICES.newReleaseId("org.drools.testcoverage.oopath", "marshalling-test", "1.0");
 
     private KieSession kieSession;
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public OOPathSmokeTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseConfigurations().stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseConfigurations();
-    }
-
-    @After
+    @AfterEach
     public void disposeKieSession() {
         if (this.kieSession != null) {
             this.kieSession.dispose();
@@ -68,14 +59,16 @@ public class OOPathSmokeTest {
         }
     }
 
-    @Test
-    public void testBuildKieBase() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testBuildKieBase(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final KieBase kieBase = KieBaseUtil.getKieBaseFromClasspathResources(this.getClass(), kieBaseTestConfiguration,
                 "oopath.drl");
         assertThat(kieBase).isNotNull();
     }
 
-    @Test
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
     public void testBuildTwoKieBases() {
         final Resource drlResource = KIE_SERVICES.getResources().newClassPathResource("oopath.drl", this.getClass());
         KieUtil.getKieModuleFromResources(RELEASE_ID, KieBaseTestConfiguration.CLOUD_IDENTITY, drlResource);
@@ -88,8 +81,9 @@ public class OOPathSmokeTest {
         }
     }
 
-    @Test
-    public void testFireRule() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testFireRule(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final KieBase kieBase = KieBaseUtil.getKieBaseFromClasspathResources(this.getClass(), kieBaseTestConfiguration,
                 "oopath.drl");
         this.kieSession = kieBase.newKieSession();

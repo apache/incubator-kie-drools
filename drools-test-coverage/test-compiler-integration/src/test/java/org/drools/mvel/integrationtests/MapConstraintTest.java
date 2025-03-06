@@ -19,10 +19,10 @@
 package org.drools.mvel.integrationtests;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import org.drools.core.WorkingMemory;
 import org.drools.kiesession.audit.WorkingMemoryConsoleLogger;
@@ -32,10 +32,9 @@ import org.drools.mvel.compiler.Pet;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.Message;
@@ -48,22 +47,15 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-@RunWith(Parameterized.class)
 public class MapConstraintTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public MapConstraintTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
-    }
-
-    @Test
-    public void testMapAccess() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testMapAccess(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_MapAccess.drl");
         KieSession ksession = kbase.newKieSession();
 
@@ -83,8 +75,9 @@ public class MapConstraintTest {
         assertThat(list.contains(map)).isTrue();
     }
 
-    @Test
-    public void testMapAccessWithVariable() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testMapAccessWithVariable(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_MapAccessWithVariable.drl");
         KieSession ksession = kbase.newKieSession();
 
@@ -106,8 +99,9 @@ public class MapConstraintTest {
     }
 
     // Drools does not support variables inside bindings yet... but we should...
-    @Test
-    public void testMapAccessWithVariable2() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testMapAccessWithVariable2(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String str = "package org.drools.compiler;\n" +
                 "import java.util.Map;\n" +
                 "rule \"map access with variable\"\n" +
@@ -123,8 +117,9 @@ public class MapConstraintTest {
         assertThat(errors.isEmpty()).as("Should have an error").isFalse();
     }
 
-    @Test
-    public void testMapNullConstraint() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testMapNullConstraint(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_mapNullConstraints.drl");
         KieSession ksession = kbase.newKieSession();
 
@@ -153,8 +148,9 @@ public class MapConstraintTest {
         assertThat(aaf.getMatch().getRule().getName()).isEqualTo("8. not work != null");
     }
 
-    @Test
-    public void testMapAccessorWithPrimitiveKey() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testMapAccessorWithPrimitiveKey(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String str = "package com.sample\n" +
                 "import " + MapContainerBean.class.getCanonicalName() + ";\n" +
                 "rule R1 when\n" +
@@ -200,8 +196,9 @@ public class MapConstraintTest {
         }
     }
 
-    @Test
-    public void testMapModel() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testMapModel(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String str = "package org.drools.compiler\n" +
                 "import java.util.Map\n" +
                 "rule \"test\"\n" +
@@ -232,8 +229,9 @@ public class MapConstraintTest {
         assertThat(rules).isEqualTo(1);
     }
 
-    @Test
-    public void testListOfMaps() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testListOfMaps(KieBaseTestConfiguration kieBaseTestConfiguration) {
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_TestMapVariableRef.drl");
         KieSession ksession = kbase.newKieSession();
         final List<Map<String, Object>> list = new ArrayList<>();
@@ -252,8 +250,9 @@ public class MapConstraintTest {
         assertThat(list.size()).isEqualTo(3);
     }
 
-    @Test
-    public void testAccessingMapValues() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testAccessingMapValues(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         String rule = "";
         rule += "package org.drools.mvel.compiler;\n";
         rule += "import org.drools.mvel.compiler.Pet;\n";
@@ -281,8 +280,9 @@ public class MapConstraintTest {
         session.fireAllRules();
     }
 
-    @Test
-    public void testMapOfMap() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testMapOfMap(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-6599
         final String str =
                 "package org.drools.compiler\n" +

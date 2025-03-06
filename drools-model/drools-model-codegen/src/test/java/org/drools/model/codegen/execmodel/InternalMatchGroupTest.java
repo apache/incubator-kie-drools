@@ -22,7 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.commands.runtime.rule.ClearActivationGroupCommand;
-import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieServices;
 import org.kie.api.command.BatchExecutionCommand;
 import org.kie.api.command.Command;
@@ -39,12 +40,10 @@ public class InternalMatchGroupTest extends OnlyPatternTest {
     private static final String KIE_SESSION = "ksession1";
     private static final String ACTIVATION_GROUP = "first-group";
 
-    public InternalMatchGroupTest(RUN_TYPE testRunType) {
-        super(testRunType);
-    }
 
-    @Test
-    public void testClearActivationGroup() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testClearActivationGroup(RUN_TYPE runType) {
         // DROOLS-5685 ClearActivationGroup command changed its behaviour
         String str = "import java.util.List;\n" +
                      "\n" +
@@ -75,7 +74,7 @@ public class InternalMatchGroupTest extends OnlyPatternTest {
 
         List<Command<?>> commands = new ArrayList<Command<?>>();
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         KieCommands commandsFactory = KieServices.get().getCommands();
         BatchExecutionCommand batchExecution = commandsFactory.newBatchExecution(commands, KIE_SESSION);

@@ -19,17 +19,16 @@
 package org.drools.mvel.compiler.command;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.drools.mvel.compiler.Cheese;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.After;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.command.Command;
 import org.kie.api.runtime.ExecutionResults;
@@ -39,23 +38,15 @@ import org.kie.internal.command.CommandFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class MoreBatchExecutionTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public MoreBatchExecutionTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
-    }
-
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
     private KieSession ksession = null;
     
-    @After
+    @AfterEach
     public void disposeKSession() {
         if( ksession != null ) { 
             ksession.dispose();
@@ -63,8 +54,9 @@ public class MoreBatchExecutionTest {
         }
     }
     
-    @Test
-    public void testFireAllRules() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testFireAllRules(KieBaseTestConfiguration kieBaseTestConfiguration) {
 
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(this.getClass(), kieBaseTestConfiguration, "org/drools/mvel/integrationtests/drl/test_ImportFunctions.drl");
         ksession = kbase.newKieSession();
@@ -93,8 +85,9 @@ public class MoreBatchExecutionTest {
         assertThat(list.get(3)).isEqualTo("rule4");
     }
 
-    @Test
-    public void testQuery() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testQuery(KieBaseTestConfiguration kieBaseTestConfiguration) {
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(this.getClass(), kieBaseTestConfiguration, "org/drools/mvel/integrationtests/simple_query_test.drl");
         KieSession ksession = kbase.newKieSession();
         

@@ -18,8 +18,6 @@
  */
 package org.drools.decisiontable.project;
 
-import org.junit.After;
-import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -28,13 +26,16 @@ import org.kie.api.io.KieResources;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MultiSheetsTest {
     
     private KieSession ksession;
     
-    @After
+    @AfterEach
     public void tearDown() {
 
         if (ksession != null) {

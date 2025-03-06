@@ -27,9 +27,9 @@ import org.drools.commands.runtime.rule.GetFactHandlesCommand;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
 import org.drools.kiesession.rulebase.KnowledgeBaseFactory;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.ExecutableRunner;
 import org.kie.api.runtime.KieSession;
@@ -47,7 +47,7 @@ public class GetFactHandlesCommandTest {
     private Context context;
     private Random random = new Random();
     
-    @Before
+    @BeforeEach
     public void setup() { 
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         ksession = kbase.newKieSession();
@@ -55,7 +55,7 @@ public class GetFactHandlesCommandTest {
         context = ( (RegistryContext) runner.createContext() ).register( KieSession.class, ksession );
     }
     
-    @After
+    @AfterEach
     public void cleanUp() { 
        ksession.dispose(); 
     }

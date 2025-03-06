@@ -23,14 +23,15 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
+import org.kie.dmn.feel.runtime.FEELNumberFunction;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 import org.kie.dmn.feel.util.NumberEvalHelper;
 
 public class ProductFunction
-        extends BaseFEELFunction {
+        extends BaseFEELFunction implements FEELNumberFunction {
     public static final ProductFunction INSTANCE = new ProductFunction();
 
-    ProductFunction() {
+    private ProductFunction() {
         super( "product" );
     }
 
@@ -52,23 +53,6 @@ public class ProductFunction
             }
         }
         return FEELFnResult.ofResult( product );
-    }
-
-    public FEELFnResult<BigDecimal> invoke(@ParameterName("list") Number single) {
-        if ( single == null ) { 
-            // Arrays.asList does not accept null as parameter
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "the single value list cannot be null"));
-        }
-        
-        if( single instanceof BigDecimal ) {
-            return FEELFnResult.ofResult((BigDecimal) single );
-        } 
-        BigDecimal result = NumberEvalHelper.getBigDecimalOrNull( single );
-        if ( result != null ) {
-            return FEELFnResult.ofResult( result );
-        } else {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "single element in list not a number"));
-        }
     }
 
     public FEELFnResult<BigDecimal> invoke(@ParameterName("n") Object[] list) {

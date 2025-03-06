@@ -19,11 +19,11 @@
 package org.drools.mvel.integrationtests;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Stream;
 
 import org.drools.mvel.compiler.Cheese;
 import org.drools.mvel.compiler.Person;
@@ -31,11 +31,10 @@ import org.drools.mvel.compiler.StockTick;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.Message.Level;
@@ -46,30 +45,23 @@ import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@RunWith(Parameterized.class)
 public class NamedConsequencesTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public NamedConsequencesTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
-    }
-
-    @Test
-    public void testNamedConsequences() {
-        List<String> results = executeTestWithCondition("do[t1]");
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testNamedConsequences(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        List<String> results = executeTestWithCondition(kieBaseTestConfiguration, "do[t1]");
 
         assertThat(results.size()).isEqualTo(2);
         assertThat(results.contains("cheddar")).isTrue();
         assertThat(results.contains("stilton")).isTrue();
     }
 
-    private List<String> executeTestWithCondition(String conditionElement) {
+    private List<String> executeTestWithCondition(KieBaseTestConfiguration kieBaseTestConfiguration, String conditionElement) {
         String drl = "import org.drools.mvel.compiler.Cheese;\n " +
                 "global java.util.List results;\n" +
                 "\n" +
@@ -83,10 +75,10 @@ public class NamedConsequencesTest {
                 "    results.add( $a.getType() );\n" +
                 "end\n";
 
-        return executeTestWithDRL(drl);
+        return executeTestWithDRL(kieBaseTestConfiguration, drl);
     }
 
-    private List<String> executeTestWithDRL(String drl) {
+    private List<String> executeTestWithDRL(KieBaseTestConfiguration kieBaseTestConfiguration, String drl) {
         KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KieSession ksession = kbase.newKieSession();
 
@@ -105,8 +97,9 @@ public class NamedConsequencesTest {
         return results;
     }
 
-    @Test
-    public void testNonCompilingBreakingConsequences() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testNonCompilingBreakingConsequences(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str = "import org.drools.mvel.compiler.Cheese;\n " +
                 "global java.util.List results;\n" +
                 "\n" +
@@ -124,8 +117,9 @@ public class NamedConsequencesTest {
         assertThat(kieBuilder.getResults().hasMessages(Level.ERROR)).isTrue();
     }
 
-    @Test
-    public void testNonCompilingDuplicatedNamedConsequence() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testNonCompilingDuplicatedNamedConsequence(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str = "import org.drools.mvel.compiler.Cheese;\n " +
                 "global java.util.List results;\n" +
                 "\n" +
@@ -145,8 +139,9 @@ public class NamedConsequencesTest {
         assertThat(kieBuilder.getResults().hasMessages(Level.ERROR)).isTrue();
     }
 
-    @Test
-    public void testOutOfScopeNamedConsequences() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testOutOfScopeNamedConsequences(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str = "import org.drools.mvel.compiler.Cheese;\n " +
                 "global java.util.List results;\n" +
                 "\n" +
@@ -164,41 +159,46 @@ public class NamedConsequencesTest {
         assertThat(kieBuilder.getResults().hasMessages(Level.ERROR)).isTrue();
     }
 
-    @Test
-    public void testAllowedIfDo() {
-        List<String> results = executeTestWithCondition("if ( price < 10 ) do[t1]");
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testAllowedIfDo(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        List<String> results = executeTestWithCondition(kieBaseTestConfiguration, "if ( price < 10 ) do[t1]");
 
         assertThat(results.size()).isEqualTo(2);
         assertThat(results.contains("cheddar")).isTrue();
         assertThat(results.contains("stilton")).isTrue();
     }
 
-    @Test
-    public void testNotAllowedIfDo() {
-        List<String> results = executeTestWithCondition("if ( price > 10 ) do[t1]");
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testNotAllowedIfDo(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        List<String> results = executeTestWithCondition(kieBaseTestConfiguration, "if ( price > 10 ) do[t1]");
 
         assertThat(results.size()).isEqualTo(1);
         assertThat(results.contains("cheddar")).isTrue();
     }
 
-    @Test
-    public void testAllowedIfBreak() {
-        List<String> results = executeTestWithCondition("if ( price < 10 ) break[t1]");
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testAllowedIfBreak(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        List<String> results = executeTestWithCondition(kieBaseTestConfiguration, "if ( price < 10 ) break[t1]");
 
         assertThat(results.size()).isEqualTo(1);
         assertThat(results.contains("stilton")).isTrue();
     }
 
-    @Test
-    public void testNotAllowedIfBreak() {
-        List<String> results = executeTestWithCondition("if ( price > 10 ) break[t1]");
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testNotAllowedIfBreak(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        List<String> results = executeTestWithCondition(kieBaseTestConfiguration, "if ( price > 10 ) break[t1]");
 
         assertThat(results.size()).isEqualTo(1);
         assertThat(results.contains("cheddar")).isTrue();
     }
 
-    @Test
-    public void testNamedConsequencesOutsideOR() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testNamedConsequencesOutsideOR(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str = "import org.drools.mvel.compiler.Cheese;\n " +
                 "global java.util.List results;\n" +
                 "\n" +
@@ -214,16 +214,17 @@ public class NamedConsequencesTest {
                 "    results.add( $a.getType() );\n" +
                 "end\n";
 
-        List<String> results = executeTestWithDRL(str);
+        List<String> results = executeTestWithDRL(kieBaseTestConfiguration, str);
 
         assertThat(results.size()).isEqualTo(2);
         assertThat(results.contains("cheddar")).isTrue();
         assertThat(results.contains("stilton")).isTrue();
     }
 
-    @Ignore("Moved to EdgeCaseNonExecModelTest")
-    @Test
-    public void testNamedConsequencesInsideOR1() {
+    @Disabled("Moved to EdgeCaseNonExecModelTest")
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testNamedConsequencesInsideOR1(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str = "import org.drools.mvel.compiler.Cheese;\n " +
                 "global java.util.List results;\n" +
                 "\n" +
@@ -238,16 +239,17 @@ public class NamedConsequencesTest {
                 "    results.add( $a.getType() );\n" +
                 "end\n";
 
-        List<String> results = executeTestWithDRL(str);
+        List<String> results = executeTestWithDRL(kieBaseTestConfiguration, str);
 
         assertThat(results.size()).isEqualTo(2);
         assertThat(results.contains("cheddar")).isTrue();
         assertThat(results.contains("stilton")).isTrue();
     }
 
-    @Ignore("Moved to EdgeCaseNonExecModelTest")
-    @Test
-    public void testNamedConsequencesInsideOR2() {
+    @Disabled("Moved to EdgeCaseNonExecModelTest")
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testNamedConsequencesInsideOR2(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str = "import org.drools.mvel.compiler.Cheese;\n " +
                 "global java.util.List results;\n" +
                 "\n" +
@@ -262,14 +264,15 @@ public class NamedConsequencesTest {
                 "    results.add( $b.getType() );\n" +
                 "end\n";
 
-        List<String> results = executeTestWithDRL(str);
+        List<String> results = executeTestWithDRL(kieBaseTestConfiguration, str);
 
         assertThat(results.size()).isEqualTo(1);
         assertThat(results.contains("cheddar")).isTrue();
     }
 
-    @Test
-    public void testOutOfScopeNamedConsequencesWithOr1() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testOutOfScopeNamedConsequencesWithOr1(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str = "import org.drools.mvel.compiler.Cheese;\n " +
                 "global java.util.List results;\n" +
                 "\n" +
@@ -288,8 +291,9 @@ public class NamedConsequencesTest {
         assertThat(kieBuilder.getResults().hasMessages(Level.ERROR)).isTrue();
     }
 
-    @Test
-    public void testOutOfScopeNamedConsequencesWithOr2() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testOutOfScopeNamedConsequencesWithOr2(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str = "import org.drools.mvel.compiler.Cheese;\n " +
                 "global java.util.List results;\n" +
                 "\n" +
@@ -308,8 +312,9 @@ public class NamedConsequencesTest {
         assertThat(kieBuilder.getResults().hasMessages(Level.ERROR)).isTrue();
     }
 
-    @Test
-    public void testNonCompilingIFAfterOR() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testNonCompilingIFAfterOR(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str = "import org.drools.mvel.compiler.Cheese;\n " +
                 "global java.util.List results;\n" +
                 "\n" +
@@ -329,8 +334,9 @@ public class NamedConsequencesTest {
         assertThat(kieBuilder.getResults().hasMessages(Level.ERROR)).isTrue();
     }
 
-    @Test
-    public void testIfElse1() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testIfElse1(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str = "import org.drools.mvel.compiler.Cheese;\n " +
                 "global java.util.List results;\n" +
                 "\n" +
@@ -346,15 +352,16 @@ public class NamedConsequencesTest {
                 "    results.add( $a.getType().toUpperCase() );\n" +
                 "end\n";
 
-        List<String> results = executeTestWithDRL(str);
+        List<String> results = executeTestWithDRL(kieBaseTestConfiguration, str);
 
         assertThat(results.size()).isEqualTo(2);
         assertThat(results.contains("cheddar")).isTrue();
         assertThat(results.contains("STILTON")).isTrue();
     }
 
-    @Test
-    public void testIfElseWithConstant() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testIfElseWithConstant(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-325
         String str = "import org.drools.mvel.compiler.Cheese;\n " +
                 "global java.util.List results;\n" +
@@ -371,15 +378,16 @@ public class NamedConsequencesTest {
                 "    results.add( $a.getType().toUpperCase() );\n" +
                 "end\n";
 
-        List<String> results = executeTestWithDRL(str);
+        List<String> results = executeTestWithDRL(kieBaseTestConfiguration, str);
 
         assertThat(results.size()).isEqualTo(2);
         assertThat(results.contains("cheddar")).isTrue();
         assertThat(results.contains("STILTON")).isTrue();
     }
 
-    @Test
-    public void testIfElseWithMvelAccessor() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testIfElseWithMvelAccessor(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-324
         String str = "import org.drools.mvel.compiler.Cheese;\n " +
                 "global java.util.List results;\n" +
@@ -396,15 +404,16 @@ public class NamedConsequencesTest {
                 "    results.add( $a.getType().toUpperCase() );\n" +
                 "end\n";
 
-        List<String> results = executeTestWithDRL(str);
+        List<String> results = executeTestWithDRL(kieBaseTestConfiguration, str);
 
         assertThat(results.size()).isEqualTo(2);
         assertThat(results.contains("cheddar")).isTrue();
         assertThat(results.contains("STILTON")).isTrue();
     }
 
-    @Test
-    public void testIfElse2() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testIfElse2(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str = "import org.drools.mvel.compiler.Cheese;\n " +
                 "global java.util.List results;\n" +
                 "\n" +
@@ -420,15 +429,16 @@ public class NamedConsequencesTest {
                 "    results.add( $a.getType().toUpperCase() );\n" +
                 "end\n";
 
-        List<String> results = executeTestWithDRL(str);
+        List<String> results = executeTestWithDRL(kieBaseTestConfiguration, str);
 
         assertThat(results.size()).isEqualTo(2);
         assertThat(results.contains("cheddar")).isTrue();
         assertThat(results.contains("STILTON")).isTrue();
     }
 
-    @Test
-    public void testIfElseBreak() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testIfElseBreak(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str = "import org.drools.mvel.compiler.Cheese;\n " +
                 "global java.util.List results;\n" +
                 "\n" +
@@ -444,14 +454,15 @@ public class NamedConsequencesTest {
                 "    results.add( $a.getType().toUpperCase() );\n" +
                 "end\n";
 
-        List<String> results = executeTestWithDRL(str);
+        List<String> results = executeTestWithDRL(kieBaseTestConfiguration, str);
 
         assertThat(results.size()).isEqualTo(1);
         assertThat(results.contains("STILTON")).isTrue();
     }
 
-    @Test
-    public void testNestedIfElseBreak() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testNestedIfElseBreak(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str = "import org.drools.mvel.compiler.Cheese;\n " +
                 "global java.util.List results;\n" +
                 "\n" +
@@ -469,14 +480,15 @@ public class NamedConsequencesTest {
                 "    results.add( $a.getType().toUpperCase() );\n" +
                 "end\n";
 
-        List<String> results = executeTestWithDRL(str);
+        List<String> results = executeTestWithDRL(kieBaseTestConfiguration, str);
 
         assertThat(results.size()).isEqualTo(1);
         assertThat(results.contains("STILTON")).isTrue();
     }
 
-    @Test
-    public void testIfWithModify() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testIfWithModify(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str = "import org.drools.mvel.compiler.Cheese;\n " +
                 "global java.util.List results;\n" +
                 "\n" +
@@ -490,14 +502,15 @@ public class NamedConsequencesTest {
                 "    results.add( $a.getType() );\n" +
                 "end\n";
 
-        List<String> results = executeTestWithDRL(str);
+        List<String> results = executeTestWithDRL(kieBaseTestConfiguration, str);
 
         assertThat(results.size()).isEqualTo(1);
         assertThat(results.contains("stilton")).isTrue();
     }
 
-    @Test
-    public void testEndlessIfWithModify() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testEndlessIfWithModify(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str = "import org.drools.mvel.compiler.Cheese;\n " +
                 "global java.util.List results;\n" +
                 "\n" +
@@ -514,13 +527,14 @@ public class NamedConsequencesTest {
                 "    if (results.size() > 10) throw new RuntimeException();\n" +
                 "end\n";
 
-        assertThatThrownBy(() -> executeTestWithDRL(str))
+        assertThatThrownBy(() -> executeTestWithDRL(kieBaseTestConfiguration, str))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessageContaining("Exception executing consequence for rule \"R1\"");
     }
 
-    @Test
-    public void testIfWithModify2() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testIfWithModify2(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str = "import org.drools.mvel.compiler.Cheese;\n " +
                 "global java.util.List results;\n" +
                 "\n" +
@@ -534,14 +548,15 @@ public class NamedConsequencesTest {
                 "    modify( $a ) { setPrice(15) };\n" +
                 "end\n";
 
-        List<String> results = executeTestWithDRL(str);
+        List<String> results = executeTestWithDRL(kieBaseTestConfiguration, str);
 
         assertThat(results.size()).isEqualTo(1);
         assertThat(results.contains("stilton")).isTrue();
     }
 
-    @Test
-    public void testIfWithModify3() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testIfWithModify3(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str = "import org.drools.mvel.compiler.Cheese;\n " +
                 "global java.util.List results;\n" +
                 "\n" +
@@ -560,14 +575,15 @@ public class NamedConsequencesTest {
                 "    results.add( $a.getType() );\n" +
                 "end\n";
 
-        List<String> results = executeTestWithDRL(str);
+        List<String> results = executeTestWithDRL(kieBaseTestConfiguration, str);
 
         assertThat(results.size()).isEqualTo(1);
         assertThat(results.contains("stilton")).isTrue();
     }
 
-    @Test
-    public void testIfElseWithModify() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testIfElseWithModify(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str = "import org.drools.mvel.compiler.Cheese;\n " +
                 "global java.util.List results;\n" +
                 "\n" +
@@ -583,14 +599,15 @@ public class NamedConsequencesTest {
                 "    results.add( $a.getType().toUpperCase() );\n" +
                 "end\n";
 
-        List<String> results = executeTestWithDRL(str);
+        List<String> results = executeTestWithDRL(kieBaseTestConfiguration, str);
 
         assertThat(results.size()).isEqualTo(2);
         assertThat(results.contains("STILTON")).isTrue();
     }
 
-    @Test
-    public void testEndlessIfElseWithModify() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testEndlessIfElseWithModify(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str = "import org.drools.mvel.compiler.Cheese;\n " +
                 "global java.util.List results;\n" +
                 "\n" +
@@ -609,13 +626,14 @@ public class NamedConsequencesTest {
                 "    if (results.size() > 10) throw new RuntimeException();\n" +
                 "end\n";
 
-        assertThatThrownBy(() -> executeTestWithDRL(str))
+        assertThatThrownBy(() -> executeTestWithDRL(kieBaseTestConfiguration, str))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessageContaining("Exception executing consequence for rule \"R1\"");
     }
 
-    @Test
-    public void testNamedConsequenceAfterNotPattern() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testNamedConsequenceAfterNotPattern(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-5
         String str = "import org.drools.mvel.compiler.Cheese;\n " +
                 "global java.util.List results;\n" +
@@ -646,8 +664,9 @@ public class NamedConsequencesTest {
         assertThat(results.contains("cheddar")).isTrue();
     }
 
-    @Test
-    public void testMultipleIfAfterEval() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testMultipleIfAfterEval(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str = "import org.drools.mvel.compiler.Cheese;\n " +
                 "global java.util.List results;\n" +
                 "\n" +
@@ -665,15 +684,16 @@ public class NamedConsequencesTest {
                 "    results.add( $a.getType() );\n" +
                 "end\n";
 
-        List<String> results = executeTestWithDRL(str);
+        List<String> results = executeTestWithDRL(kieBaseTestConfiguration, str);
 
         assertThat(results.size()).isEqualTo(2);
         assertThat(results.contains("cheddar")).isTrue();
         assertThat(results.contains("stilton")).isTrue();
     }
 
-    @Test
-    public void testMultipleIfElseInARow() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testMultipleIfElseInARow(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-26
         String str =
                 "global java.util.List results;" +
@@ -728,8 +748,9 @@ public class NamedConsequencesTest {
         assertThat(results.contains("Car is NOT cheap")).isTrue();
     }
 
-    @Test
-    public void testDynamicSalience() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testDynamicSalience(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-335
         String str =
                 "import " + Fact.class.getCanonicalName() + ";\n" +
@@ -795,8 +816,9 @@ public class NamedConsequencesTest {
         }
     }
 
-    @Test
-    public void testNamedConsequenceOnEvents() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testNamedConsequenceOnEvents(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-641
         String drl =
                 "import " + StockTick.class.getCanonicalName() + ";\n" +
@@ -830,8 +852,9 @@ public class NamedConsequencesTest {
         assertThat(list.containsAll(asList("t1:YYY", "t0:ZZZ"))).isTrue();
     }
 
-    @Test //(timeout = 10000L)
-    public void testNoLoop() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testNoLoop(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-644
         String drl =
                 "import " + Person.class.getCanonicalName() + ";\n" +
@@ -872,8 +895,9 @@ public class NamedConsequencesTest {
         assertThat(list.get(1)).isEqualTo("t0");
     }
 
-    @Test
-    public void testMVELBreak() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testMVELBreak(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str = "import org.drools.mvel.compiler.Cheese;\n " +
                 "global java.util.List results;\n" +
                 "\n" +
@@ -887,15 +911,16 @@ public class NamedConsequencesTest {
                 "    results.add( $a.type.toUpperCase() );\n" +
                 "end\n";
 
-        List<String> results = executeTestWithDRL(str);
+        List<String> results = executeTestWithDRL(kieBaseTestConfiguration, str);
 
         System.out.println( results );
         assertThat(results.size()).isEqualTo(1);
         assertThat(results.contains("STILTON")).isTrue();
     }
 
-    @Test
-    public void testMVELNoBreak() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testMVELNoBreak(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str = "import org.drools.mvel.compiler.Cheese;\n " +
                 "global java.util.List results;\n" +
                 "\n" +
@@ -909,15 +934,16 @@ public class NamedConsequencesTest {
                 "    results.add( $a.type.toUpperCase() );\n" +
                 "end\n";
 
-        List<String> results = executeTestWithDRL(str);
+        List<String> results = executeTestWithDRL(kieBaseTestConfiguration, str);
 
         System.out.println( results );
         assertThat(results.size()).isEqualTo(1);
         assertThat(results.contains("cheddar")).isTrue();
     }
 
-    @Test
-    public void testMvelInsertWithNamedConsequence() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testMvelInsertWithNamedConsequence(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-726
         String drl2 =
                 "package org.drools.compiler\n" +
@@ -960,8 +986,9 @@ public class NamedConsequencesTest {
         assertThat(counter.get()).isEqualTo(2);
     }
 
-    @Test
-    public void testDeleteWithBreakingBranch() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testDeleteWithBreakingBranch(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         // DROOLS-1068
         String drl =
                 "global java.util.List list;\n" +
@@ -990,8 +1017,9 @@ public class NamedConsequencesTest {
         assertThat(list.get(0)).isEqualTo("branch");
     }
 
-    @Test
-    public void testQueryWithBreakingBranch() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testQueryWithBreakingBranch(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         // DROOLS-1115
         String drl =
                 "import " + ListHolder.class.getCanonicalName() + ";\n" +
@@ -1025,8 +1053,9 @@ public class NamedConsequencesTest {
         assertThat(list.get(1)).isEqualTo("ok");
     }
 
-    @Test
-    public void testInheritance() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testInheritance(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str = "dialect \"mvel\"\n" +
                 "import org.drools.mvel.compiler.Cheese;\n " +
                 "global java.util.List results;\n" +
@@ -1049,15 +1078,16 @@ public class NamedConsequencesTest {
                 "    results.add( $a.type );\n" +
                 "end\n";
 
-        List<String> results = executeTestWithDRL(str);
+        List<String> results = executeTestWithDRL(kieBaseTestConfiguration, str);
 
         assertThat(results.size()).isEqualTo(2);
         assertThat(results.contains("cheddar")).isTrue();
         assertThat(results.contains("stilton")).isTrue();
     }
 
-    @Test
-    public void testWrongConsequenceName() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testWrongConsequenceName(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str = "import org.drools.mvel.compiler.Cheese;\n " +
                 "global java.util.List results;\n" +
                 "\n" +

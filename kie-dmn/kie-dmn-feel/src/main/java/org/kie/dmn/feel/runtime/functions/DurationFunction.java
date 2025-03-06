@@ -25,25 +25,22 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
+import org.kie.dmn.feel.runtime.FEELDurationFunction;
 import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
 public class DurationFunction
-        extends BaseFEELFunction {
+        extends BaseFEELFunction implements FEELDurationFunction {
 
     public static final DurationFunction INSTANCE = new DurationFunction();
 
-    public DurationFunction() {
+    private DurationFunction() {
         super(FEELConversionFunctionNames.DURATION);
     }
 
     public FEELFnResult<TemporalAmount> invoke(@ParameterName( "from" ) String val) {
         if ( val == null ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "from", "cannot be null"));
-        }
-
-        if ( val.indexOf("-") > 0) {
-            return FEELFnResult.ofError( new InvalidParametersEvent(Severity.ERROR, "from", "negative values for units are not allowed.") );
         }
 
         try {

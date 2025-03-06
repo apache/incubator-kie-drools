@@ -19,11 +19,11 @@
 package org.drools.compiler.integrationtests;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import org.drools.testcoverage.common.model.Cheese;
 import org.drools.testcoverage.common.model.Message;
@@ -32,32 +32,25 @@ import org.drools.testcoverage.common.model.StockTick;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class ConstraintsTest {
-
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public ConstraintsTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+	
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
-    }
-
-    @Test
-    public void testExpressionConstraints1() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testExpressionConstraints1(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "package org.drools.compiler.integrationtests\n" +
                 "import " + Mailbox.FolderType.class.getCanonicalName() + ";\n" +
                 "import " + Mailbox.class.getCanonicalName() + ";\n" +
@@ -77,11 +70,12 @@ public class ConstraintsTest {
                 "    then\n" +
                 "end\n";
 
-        testExpressionConstraints(drl);
+        testExpressionConstraints(kieBaseTestConfiguration, drl);
     }
 
-    @Test
-    public void testExpressionConstraints2() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testExpressionConstraints2(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "package org.drools.compiler.integrationtests\n" +
                 "import " + Mailbox.FolderType.class.getCanonicalName() + ";\n" +
                 "import " + Mailbox.class.getCanonicalName() + ";\n" +
@@ -106,11 +100,12 @@ public class ConstraintsTest {
                 "    then\n" +
                 "end\n";
 
-        testExpressionConstraints(drl);
+        testExpressionConstraints(kieBaseTestConfiguration, drl);
     }
 
-    @Test
-    public void testExpressionConstraints3() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testExpressionConstraints3(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "package org.drools.compiler.integrationtests\n" +
                 "import " + Mailbox.FolderType.class.getCanonicalName() + ";\n" +
                 "import " + Mailbox.class.getCanonicalName() + ";\n" +
@@ -144,10 +139,10 @@ public class ConstraintsTest {
                 "    then\n" +
                 "end";
 
-        testExpressionConstraints(drl);
+        testExpressionConstraints(kieBaseTestConfiguration, drl);
     }
 
-    private void testExpressionConstraints(final String drl) {
+    private void testExpressionConstraints(KieBaseTestConfiguration kieBaseTestConfiguration, final String drl) {
         final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("constraints-test", kieBaseTestConfiguration, drl);
         final KieSession ksession = kbase.newKieSession();
         try {
@@ -165,8 +160,9 @@ public class ConstraintsTest {
         }
     }
 
-    @Test
-    public void testExpressionConstraints4() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testExpressionConstraints4(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "package org.drools.compiler.integrationtests\n" +
                 "import " + Mailbox.FolderType.class.getCanonicalName() + ";\n" +
                 "import " + Mailbox.class.getCanonicalName() + ";\n" +
@@ -196,8 +192,9 @@ public class ConstraintsTest {
         }
     }
 
-    @Test
-    public void testDeeplyNestedCompactExpressions() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testDeeplyNestedCompactExpressions(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "package org.drools\n" +
                 "rule R1\n" +
                 " when\n" +
@@ -212,8 +209,9 @@ public class ConstraintsTest {
         assertThat(kieBuilder.getResults().getMessages()).isNotEmpty();
     }
 
-    @Test
-    public void testConstraintConnectors() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testConstraintConnectors(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources("constraints-test", kieBaseTestConfiguration,
                                                                            "org/drools/compiler/integrationtests/test_ConstraintConnectors.drl");
         final KieSession ksession = kbase.newKieSession();
@@ -268,8 +266,9 @@ public class ConstraintsTest {
         }
     }
 
-    @Test
-    public void testConnectorsAndOperators() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testConnectorsAndOperators(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "package org.drools.compiler\n" +
                 "\n" +
                 "import " + StockTick.class.getCanonicalName() + ";\n" +
@@ -282,7 +281,7 @@ public class ConstraintsTest {
                 "rule \"operator\"\n" +
                 "    when\n" +
                 "        $t1 : StockTick( company == \"RHT\" )\n" +
-                "        $t2 : StockTick( company == \"IBM\", this after $t1 || before $t1 )\n" +
+                "        $t2 : StockTick( company == \"IBM\", this after $t1 || this before $t1 )\n" +
                 "    then\n" +
                 "        // do something\n" +
                 "end  ";
@@ -298,8 +297,9 @@ public class ConstraintsTest {
         }
     }
 
-    @Test
-    public void testConstraintExpression() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testConstraintExpression(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "package org.drools.compiler\n" +
                 "import " + Person.class.getCanonicalName() + ";\n" +
                 "rule \"test\"\n" +
@@ -318,8 +318,9 @@ public class ConstraintsTest {
         }
     }
 
-    @Test
-    public void testMethodConstraint() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testMethodConstraint(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "package org.drools.compiler\n" +
                 "import " + Person.class.getCanonicalName() + ";\n" +
                 "rule \"test\"\n" +
@@ -340,8 +341,9 @@ public class ConstraintsTest {
         }
     }
 
-    @Test
-    public void testDeepNestedConstraints() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testDeepNestedConstraints(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "package org.drools.compiler\n" +
                 "import " + Person.class.getCanonicalName() + ";\n" +
                 "import " + Cheese.class.getCanonicalName() + ";\n" +
@@ -372,8 +374,10 @@ public class ConstraintsTest {
         }
     }
 
-    @Test
-    public void testMultiRestrictionFieldConstraint() {
+    @DisabledIfSystemProperty(named = "drools.drl.antlr4.parser.enabled", matches = "true")
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testMultiRestrictionFieldConstraint(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources("constraints-test", kieBaseTestConfiguration,
                                                                            "org/drools/compiler/integrationtests/test_MultiRestrictionFieldConstraint.drl");
         final KieSession ksession = kbase.newKieSession();
@@ -438,8 +442,9 @@ public class ConstraintsTest {
         }
     }
 
-    @Test
-    public void testNonBooleanConstraint() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testNonBooleanConstraint(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "package org.drools.compiler\n" +
                 "import java.util.List\n" +
                 "import " + Person.class.getCanonicalName() + ";\n" +
@@ -457,8 +462,9 @@ public class ConstraintsTest {
                 .isNotEmpty();
     }
 
-    @Test
-    public void testVarargConstraint() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testVarargConstraint(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // JBRULES-3268
         final String drl = "package org.drools.compiler.test;\n" +
                 "import " + VarargBean.class.getCanonicalName() + ";\n" +

@@ -85,6 +85,10 @@ import org.kie.internal.builder.conf.LanguageLevelOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.drools.drl.parser.util.ParserStringUtils.appendPrefix;
+import static org.drools.drl.parser.util.ParserStringUtils.safeStripDelimiters;
+import static org.drools.drl.parser.util.ParserStringUtils.safeStripStringDelimiters;
+
 public class DRL6Parser extends AbstractDRLParser implements DRLParser {
 
     private static final Logger LOG = LoggerFactory.getLogger(DRL6Parser.class);
@@ -1554,6 +1558,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
                             DroolsSoftKeywords.GROUP)) {
                 attribute = stringAttribute(as,
                         new String[]{DroolsSoftKeywords.AGENDA, "-", DroolsSoftKeywords.GROUP});
+                helper.logAgendaGroupWarn(attribute);
             } else if (helper.validateIdentifierKey(DroolsSoftKeywords.ACTIVATION) &&
                     helper.validateLT(2,
                             "-") &&
@@ -2151,6 +2156,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
                 while (input.LA(1) == DRL6Lexer.AT) {
                     // annotation*
                     annotation(or);
+                    helper.logAnnotationInLhsPatternWarn(or);
                     if (state.failed)
                         return null;
                 }
@@ -2208,6 +2214,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
                                     null,
                                     null,
                                     DroolsEditorType.SYMBOL);
+                            helper.logInfixOrWarn(or);
                         } else {
                             match(input,
                                     DRL6Lexer.ID,
@@ -2221,6 +2228,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
                         while (input.LA(1) == DRL6Lexer.AT) {
                             // annotation*
                             annotation(or);
+                            helper.logAnnotationInLhsPatternWarn(or);
                             if (state.failed)
                                 return null;
                         }
@@ -2295,6 +2303,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
                 while (input.LA(1) == DRL6Lexer.AT) {
                     // annotation*
                     annotation(and);
+                    helper.logAnnotationInLhsPatternWarn(and);
                     if (state.failed)
                         return null;
                 }
@@ -2350,6 +2359,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
                                     null,
                                     null,
                                     DroolsEditorType.SYMBOL);
+                            helper.logInfixAndWarn(and);
                         } else {
                             match(input,
                                     DRL6Lexer.ID,
@@ -2363,6 +2373,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
                         while (input.LA(1) == DRL6Lexer.AT) {
                             // annotation*
                             annotation(and);
+                            helper.logAnnotationInLhsPatternWarn(and);
                             if (state.failed)
                                 return null;
                         }
@@ -3778,44 +3789,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
 
     private String toExpression(String prefix, int first, int last) {
         String expr = input.toString(first, last);
-        if (prefix.length() == 0) {
-            return expr;
-        }
-        StringBuilder sb = new StringBuilder();
-        toOrExpression(sb, prefix, expr);
-        return sb.toString();
-    }
-
-    private void toOrExpression(StringBuilder sb, String prefix, String expr) {
-        int start = 0;
-        int end = expr.indexOf("||");
-        do {
-            if (start > 0) {
-                sb.append(" || ");
-            }
-            toAndExpression(sb, prefix, end > 0 ? expr.substring(start, end) : expr.substring(start));
-            start = end + 2;
-            end = expr.indexOf("||", start);
-        } while (start > 1);
-    }
-
-    private void toAndExpression(StringBuilder sb, String prefix, String expr) {
-        int start = 0;
-        int end = expr.indexOf("&&");
-        do {
-            if (start > 0) {
-                sb.append(" && ");
-            }
-            sb.append(toExpression(prefix, end > 0 ? expr.substring(start, end) : expr.substring(start)));
-            start = end + 2;
-            end = expr.indexOf("&&", start);
-        } while (start > 1);
-    }
-
-    private String toExpression(String prefix, String expr) {
-        expr = expr.trim();
-        int colonPos = expr.indexOf(":");
-        return colonPos < 0 ? prefix + expr : expr.substring(0, colonPos + 1) + " " + prefix + expr.substring(colonPos + 1).trim();
+        return appendPrefix(prefix, expr);
     }
 
     private boolean speculateNestedConstraint() throws RecognitionException {
@@ -5225,31 +5199,6 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
         }
         // TODO: implement this error recovery strategy
         return false;
-    }
-
-    private String safeStripDelimiters(String value,
-            String left,
-            String right) {
-        if (value != null) {
-            value = value.trim();
-            if (value.length() >= left.length() + right.length() &&
-                    value.startsWith(left) && value.endsWith(right)) {
-                value = value.substring(left.length(),
-                        value.length() - right.length());
-            }
-        }
-        return value;
-    }
-
-    private String safeStripStringDelimiters(String value) {
-        if (value != null) {
-            value = value.trim();
-            if (value.length() >= 2 && value.startsWith("\"") && value.endsWith("\"")) {
-                value = value.substring(1,
-                        value.length() - 1);
-            }
-        }
-        return value;
     }
 
 }

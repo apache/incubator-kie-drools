@@ -19,7 +19,6 @@
 package org.kie.dmn.core.ast;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -29,8 +28,8 @@ import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
-import org.kie.dmn.core.api.EvaluatorResult;
-import org.kie.dmn.core.api.EvaluatorResult.ResultType;
+import org.kie.dmn.api.core.EvaluatorResult;
+import org.kie.dmn.api.core.EvaluatorResult.ResultType;
 import org.kie.dmn.core.impl.DMNResultImpl;
 import org.kie.dmn.core.util.IterableRange;
 import org.kie.dmn.core.util.Msg;
@@ -70,8 +69,8 @@ public class DMNFilterEvaluator implements DMNExpressionEvaluator {
         }
         Object inObj = inResult.getResult();
 
-        if (inObj instanceof Range) {
-            inObj = new IterableRange((Range) inObj);
+        if (inObj instanceof Range range) {
+            inObj = new IterableRange(range);
         } else if (!(inObj instanceof Iterable)) {
             if (inObj == null) {
                 MsgUtil.reportMessage(logger,
@@ -85,7 +84,7 @@ public class DMNFilterEvaluator implements DMNExpressionEvaluator {
                 return new EvaluatorResultImpl(null, ResultType.FAILURE);
             }
 
-            // 10.3.2.9.4 Type conversions "to singleton list" 
+            // 10.3.2.9.4 Type conversions "to singleton list"
             inObj = Collections.singletonList(inObj);
         }
 
@@ -96,45 +95,33 @@ public class DMNFilterEvaluator implements DMNExpressionEvaluator {
         try {
             result.setContext(dmnContext);
 
-            boolean first = true;
-            for (Object item : (Iterable) inObj) {
+            for (Object item : (Iterable<?>) inObj) {
 
                 dmnContext.set("item", item);
                 if (item instanceof Map) {
                     Map<String, Object> complexItem = (Map<String, Object>) item;
-                    complexItem.forEach((k, v) -> dmnContext.set(k, v));
+                    complexItem.forEach(dmnContext::set);
                 }
 
                 EvaluatorResult evaluate = filterEvaluator.evaluate(eventManager, dmnr);
                 Object evalReturn = evaluate.getResult();
 
                 //If the evaluation is a boolean result, we add the item based on a return of true
-                if (evalReturn instanceof Boolean && ((Boolean) evalReturn).booleanValue() == true) {
-                    returnList.add(item);
-                }
-
-                //If on the first evaluation, a number is returned, we are using an index instead of a boolean filter
-                if (first && evalReturn instanceof Number) {
-                    List list = inObj instanceof List ? (List) inObj : List.of(inObj);
-                    int i = ((Number) evalReturn).intValue();
-                    if (i > 0 && i <= list.size()) {
-                        return new EvaluatorResultImpl(list.get(i - 1), ResultType.SUCCESS);
-                    } else if (i < 0 && Math.abs(i) <= list.size()) {
-                        return new EvaluatorResultImpl(list.get(list.size() + i), ResultType.SUCCESS);
-                    } else {
-                        MsgUtil.reportMessage(logger,
-                                              DMNMessage.Severity.ERROR,
-                                              node,
-                                              result,
-                                              null,
-                                              null,
-                                              Msg.INDEX_OUT_OF_BOUND,
-                                              list.size(),
-                                              i);
-                        return new EvaluatorResultImpl(null, ResultType.FAILURE);
+                if (evalReturn instanceof Boolean booleanResult) {
+                    if (Boolean.TRUE.equals(booleanResult)) {
+                        returnList.add(item);
                     }
+                } else {
+                    MsgUtil.reportMessage(logger,
+                            DMNMessage.Severity.ERROR,
+                            node,
+                            result,
+                            null,
+                            null,
+                            Msg.FILTER_EXPRESSION_RESULT_NOT_BOOLEAN,
+                            name);
+                    return new EvaluatorResultImpl(null, ResultType.FAILURE);
                 }
-                first = false;
             }
 
         } finally {

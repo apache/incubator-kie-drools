@@ -18,12 +18,13 @@
  */
 package org.drools.mvel.integrationtests;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
 
 /**
  * Tests KIE package compilation when there is a XSD resource (BZ 1120972) - manifests only when using

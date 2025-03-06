@@ -21,10 +21,9 @@ package org.drools.beliefs.bayes;
 import org.drools.beliefs.graph.Graph;
 import org.drools.beliefs.graph.GraphNode;
 import org.drools.util.bitmask.OpenBitSet;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -187,8 +186,8 @@ public class JunctionTreeBuilderTest {
         boolean[][] clonedAdjMatrix = JunctionTreeBuilder.cloneAdjacencyMarix(jtBuilder.getAdjacencyMatrix());
         jtBuilder.createClique(dX1.getId(), clonedAdjMatrix, vertices, adjList );
 
-        assertThat(vertices.size()).isEqualTo(3);
-        assertThat(vertices.containsAll(Arrays.asList(2, 3, 4))).isTrue();
+        assertThat(vertices).hasSize(3);
+        assertThat(vertices).containsExactlyInAnyOrder(2, 3, 4);
 
         assertLinkedNode(jtBuilder, 1, 2, 3, 4);
         assertLinkedNode(jtBuilder, 2, 1, 3, 4);
@@ -204,18 +203,18 @@ public class JunctionTreeBuilderTest {
         List<OpenBitSet> cliques = new ArrayList<OpenBitSet>();
         OpenBitSet OpenBitSet1 = bitSet("00011110");
         jtBuilder.updateCliques(cliques, OpenBitSet1);
-        assertThat(cliques.size()).isEqualTo(1);
+        assertThat(cliques).hasSize(1);
 
         // ignore subset
         OpenBitSet OpenBitSet2 = bitSet("00000110");
         jtBuilder.updateCliques(cliques, OpenBitSet2);
-        assertThat(cliques.size()).isEqualTo(1);
+        assertThat(cliques).hasSize(1);
         assertThat(cliques.get(0)).isEqualTo(OpenBitSet1);
 
         // add overlapping, as not a pure subset
         OpenBitSet OpenBitSet3 = bitSet("01000110");
         jtBuilder.updateCliques(cliques, OpenBitSet3);
-        assertThat(cliques.size()).isEqualTo(2);
+        assertThat(cliques).hasSize(2);
         assertThat(cliques.get(0)).isEqualTo(OpenBitSet1);
         assertThat(cliques.get(1)).isEqualTo(OpenBitSet3);
     }
@@ -288,7 +287,7 @@ public class JunctionTreeBuilderTest {
         assertThat(id).isEqualTo(8);
         assertThat(v.getNewEdgesRequired()).isEqualTo(6);
 
-        assertThat(p.size()).isEqualTo(0);
+        assertThat(p).isEmpty();
     }
 
     @Test
@@ -363,7 +362,7 @@ public class JunctionTreeBuilderTest {
         assertThat(id).isEqualTo(5);
         assertThat(v.getWeightRequired()).isEqualTo(81);
 
-        assertThat(p.size()).isEqualTo(0);
+        assertThat(p).isEmpty();
     }
 
     @Test
@@ -443,8 +442,8 @@ public class JunctionTreeBuilderTest {
         Set<Integer> verticesToUpdate = new HashSet<Integer>();
         boolean[] adjList = clonedAdjMatrix[ id  ];
         jtBuilder.createClique(5, clonedAdjMatrix, verticesToUpdate, adjList);
-        assertThat(verticesToUpdate.size()).isEqualTo(4);
-        assertThat(verticesToUpdate.containsAll(Arrays.asList(1, 3, 6))).isTrue();
+        assertThat(verticesToUpdate).hasSize(4);
+        assertThat(verticesToUpdate).contains(1, 3, 6);
         jtBuilder.eliminateVertex(p, elmVertMap, clonedAdjMatrix, adjList, verticesToUpdate, v );
 
         // assert all new edges
@@ -477,8 +476,8 @@ public class JunctionTreeBuilderTest {
         verticesToUpdate = new HashSet<Integer>();
         adjList = clonedAdjMatrix[ id  ];
         jtBuilder.createClique(4, clonedAdjMatrix, verticesToUpdate, adjList);
-        assertThat(verticesToUpdate.size()).isEqualTo(3);
-        assertThat(verticesToUpdate.containsAll(Arrays.asList(1, 2, 6))).isTrue(); // don't forget 3 and 5 were already eliminated
+        assertThat(verticesToUpdate).hasSize(3);
+        assertThat(verticesToUpdate).containsExactlyInAnyOrder(1, 2, 6); // don't forget 3 and 5 were already eliminated
         jtBuilder.eliminateVertex(p, elmVertMap, clonedAdjMatrix, adjList, verticesToUpdate, v );
 
         // assert all new edges
@@ -518,7 +517,7 @@ public class JunctionTreeBuilderTest {
         jtBuilder.createClique(6, clonedAdjMatrix, verticesToUpdate, adjList);
         jtBuilder.eliminateVertex(p, elmVertMap, clonedAdjMatrix, adjList, verticesToUpdate, v );
 
-        assertThat(p.size()).isEqualTo(0);
+        assertThat(p).isEmpty();
     }
 
     @Test
@@ -611,11 +610,11 @@ public class JunctionTreeBuilderTest {
         assertLinkedVertex(jtBuilder.getAdjacencyMatrix(), 5, 2, 3, 6);
         assertLinkedVertex(jtBuilder.getAdjacencyMatrix(), 6, 2, 5);
 
-        assertThat(cliques.size()).isEqualTo(5); // 5th is 0, which is just a dummy V to get numbers aligned
-        assertThat(cliques.contains(bitSet("1110"))).isTrue(); // x1, x2, x3 //a, b, c
-        assertThat(cliques.contains(bitSet("10100"))).isTrue(); // x2, x4
-        assertThat(cliques.contains(bitSet("1100100"))).isTrue(); // x2, x5, x6
-        assertThat(cliques.contains(bitSet("101100"))).isTrue(); // x2, x3, x5
+        assertThat(cliques).hasSize(5); // 5th is 0, which is just a dummy V to get numbers aligned
+        assertThat(cliques).contains(bitSet("1110")); // x1, x2, x3 //a, b, c
+        assertThat(cliques).contains(bitSet("10100")); // x2, x4
+        assertThat(cliques).contains(bitSet("1100100")); // x2, x5, x6
+        assertThat(cliques).contains(bitSet("101100")); // x2, x3, x5
     }
 
     @Test
@@ -805,7 +804,7 @@ public class JunctionTreeBuilderTest {
 
 
         assertThat(jtNode.getBitSet()).isEqualTo(OpenBitSet1);
-        assertThat(jtNode.getChildren().size()).isEqualTo(1);
+        assertThat(jtNode.getChildren()).hasSize(1);
         JunctionTreeSeparator sep =  jtNode.getChildren().get(0);
         assertThat(sep.getParent().getBitSet()).isEqualTo(OpenBitSet1);
         assertThat(sep.getChild().getBitSet()).isEqualTo(OpenBitSet2);
@@ -813,7 +812,7 @@ public class JunctionTreeBuilderTest {
 
         jtNode = sep.getChild();
         assertThat(jtNode.getBitSet()).isEqualTo(OpenBitSet2);
-        assertThat(jtNode.getChildren().size()).isEqualTo(1);
+        assertThat(jtNode.getChildren()).hasSize(1);
         sep =   jtNode.getChildren().get(0);
         assertThat(sep.getParent().getBitSet()).isEqualTo(OpenBitSet2);
         assertThat(sep.getChild().getBitSet()).isEqualTo(OpenBitSet3);
@@ -853,16 +852,16 @@ public class JunctionTreeBuilderTest {
 
 
         assertThat(jtNode.getBitSet()).isEqualTo(OpenBitSet1);
-        assertThat(jtNode.getChildren().size()).isEqualTo(2);
+        assertThat(jtNode.getChildren()).hasSize(2);
         JunctionTreeSeparator sep =  jtNode.getChildren().get(0);
         assertThat(sep.getParent().getBitSet()).isEqualTo(OpenBitSet1);
         assertThat(sep.getChild().getBitSet()).isEqualTo(OpenBitSet2);
-        assertThat(sep.getChild().getChildren().size()).isEqualTo(0);
+        assertThat(sep.getChild().getChildren()).isEmpty();
 
         sep =  jtNode.getChildren().get(1);
         assertThat(sep.getParent().getBitSet()).isEqualTo(OpenBitSet1);
         assertThat(sep.getChild().getBitSet()).isEqualTo(OpenBitSet3);
-        assertThat(sep.getChild().getChildren().size()).isEqualTo(0);
+        assertThat(sep.getChild().getChildren()).isEmpty();
 
     }
 
@@ -904,26 +903,26 @@ public class JunctionTreeBuilderTest {
 
 
         assertThat(root.getBitSet()).isEqualTo(OpenBitSet1);
-        assertThat(root.getChildren().size()).isEqualTo(2);
+        assertThat(root.getChildren()).hasSize(2);
         JunctionTreeSeparator sep =  root.getChildren().get(0);
         assertThat(sep.getParent().getBitSet()).isEqualTo(OpenBitSet1);
         assertThat(sep.getChild().getBitSet()).isEqualTo(OpenBitSet2);
-        assertThat(sep.getChild().getChildren().size()).isEqualTo(1);
+        assertThat(sep.getChild().getChildren()).hasSize(1);
 
         jtNode = sep.getChild();
         assertThat(jtNode.getBitSet()).isEqualTo(OpenBitSet2);
-        assertThat(jtNode.getChildren().size()).isEqualTo(1);
+        assertThat(jtNode.getChildren()).hasSize(1);
         sep =   jtNode.getChildren().get(0);
         assertThat(sep.getParent().getBitSet()).isEqualTo(OpenBitSet2);
         assertThat(sep.getChild().getBitSet()).isEqualTo(OpenBitSet3);
         assertThat(sep.getBitSet()).isEqualTo(intersect2And3);
-        assertThat(sep.getChild().getChildren().size()).isEqualTo(0);
+        assertThat(sep.getChild().getChildren()).isEmpty();
 
         sep =  root.getChildren().get(1);
         assertThat(sep.getParent().getBitSet()).isEqualTo(OpenBitSet1);
         assertThat(sep.getChild().getBitSet()).isEqualTo(OpenBitSet4);
         assertThat(sep.getBitSet()).isEqualTo(intersect1And4);
-        assertThat(sep.getChild().getChildren().size()).isEqualTo(0);
+        assertThat(sep.getChild().getChildren()).isEmpty();
     }
 
     @Test
@@ -966,26 +965,26 @@ public class JunctionTreeBuilderTest {
         JunctionTreeClique root = jtNode;
 
         assertThat(root.getBitSet()).isEqualTo(OpenBitSet1);
-        assertThat(root.getChildren().size()).isEqualTo(2);
+        assertThat(root.getChildren()).hasSize(2);
         JunctionTreeSeparator sep =  root.getChildren().get(0);
         assertThat(sep.getParent().getBitSet()).isEqualTo(OpenBitSet1);
         assertThat(sep.getChild().getBitSet()).isEqualTo(OpenBitSet2);
-        assertThat(sep.getChild().getChildren().size()).isEqualTo(0);
+        assertThat(sep.getChild().getChildren()).isEmpty();
 
         sep =  root.getChildren().get(1);
         assertThat(sep.getParent().getBitSet()).isEqualTo(OpenBitSet1);
         assertThat(sep.getChild().getBitSet()).isEqualTo(OpenBitSet4);
         assertThat(sep.getBitSet()).isEqualTo(intersect1And4);
-        assertThat(sep.getChild().getChildren().size()).isEqualTo(1);
+        assertThat(sep.getChild().getChildren()).hasSize(1);
 
         jtNode = sep.getChild();
         assertThat(jtNode.getBitSet()).isEqualTo(OpenBitSet4);
-        assertThat(jtNode.getChildren().size()).isEqualTo(1);
+        assertThat(jtNode.getChildren()).hasSize(1);
         sep =   jtNode.getChildren().get(0);
         assertThat(sep.getParent().getBitSet()).isEqualTo(OpenBitSet4);
         assertThat(sep.getChild().getBitSet()).isEqualTo(OpenBitSet3);
         assertThat(sep.getBitSet()).isEqualTo(intersect3And4);
-        assertThat(sep.getChild().getChildren().size()).isEqualTo(0);
+        assertThat(sep.getChild().getChildren()).isEmpty();
     }
 
 
@@ -1109,7 +1108,7 @@ public class JunctionTreeBuilderTest {
         JunctionTreeBuilder jtBuilder = new JunctionTreeBuilder( graph );
         JunctionTreeClique root = jtBuilder.build(false).getRoot();
         assertThat(root.getBitSet()).isEqualTo(clique1);
-        assertThat(root.getChildren().size()).isEqualTo(1);
+        assertThat(root.getChildren()).hasSize(1);
 
         // clique2
         JunctionTreeSeparator sep =  root.getChildren().get(0);
@@ -1117,7 +1116,7 @@ public class JunctionTreeBuilderTest {
         JunctionTreeClique jtNode2 = sep.getChild();
         assertThat(sep.getParent().getBitSet()).isEqualTo(clique1);
         assertThat(jtNode2.getBitSet()).isEqualTo(clique2);
-        assertThat(jtNode2.getChildren().size()).isEqualTo(2);
+        assertThat(jtNode2.getChildren()).hasSize(2);
 
         // clique3
         sep =  jtNode2.getChildren().get(0);
@@ -1125,7 +1124,7 @@ public class JunctionTreeBuilderTest {
         JunctionTreeClique jtNode3 =sep.getChild();
         assertThat(sep.getParent().getBitSet()).isEqualTo(clique2);
         assertThat(jtNode3.getBitSet()).isEqualTo(clique3);
-        assertThat(jtNode3.getChildren().size()).isEqualTo(1);
+        assertThat(jtNode3.getChildren()).hasSize(1);
 
         // clique4
         sep =  jtNode3.getChildren().get(0);
@@ -1133,7 +1132,7 @@ public class JunctionTreeBuilderTest {
         JunctionTreeClique jtNode4 = sep.getChild();
         assertThat(sep.getParent().getBitSet()).isEqualTo(clique3);
         assertThat(jtNode4.getBitSet()).isEqualTo(clique4);
-        assertThat(jtNode4.getChildren().size()).isEqualTo(0);
+        assertThat(jtNode4.getChildren()).isEmpty();
 
         // clique5
         sep =  jtNode2.getChildren().get(1);
@@ -1141,7 +1140,7 @@ public class JunctionTreeBuilderTest {
         JunctionTreeClique jtNode5 = sep.getChild();
         assertThat(sep.getParent().getBitSet()).isEqualTo(clique2);
         assertThat(jtNode5.getBitSet()).isEqualTo(clique5);
-        assertThat(jtNode5.getChildren().size()).isEqualTo(1);
+        assertThat(jtNode5.getChildren()).hasSize(1);
 
         //clique 6
         sep =  jtNode5.getChildren().get(0);
@@ -1149,7 +1148,7 @@ public class JunctionTreeBuilderTest {
         JunctionTreeClique jtNode6 = sep.getChild();
         assertThat(sep.getParent().getBitSet()).isEqualTo(clique5);
         assertThat(jtNode6.getBitSet()).isEqualTo(clique6);
-        assertThat(jtNode6.getChildren().size()).isEqualTo(0);
+        assertThat(jtNode6.getChildren()).isEmpty();
     }
 
     @Test
@@ -1214,7 +1213,7 @@ public class JunctionTreeBuilderTest {
 
         // clique1
         assertThat(root.getBitSet()).isEqualTo(clique1);
-        assertThat(root.getChildren().size()).isEqualTo(1);
+        assertThat(root.getChildren()).hasSize(1);
 
         // clique2
         JunctionTreeSeparator sep =  root.getChildren().get(0);
@@ -1222,7 +1221,7 @@ public class JunctionTreeBuilderTest {
         JunctionTreeClique jtNode2 = sep.getChild();
         assertThat(sep.getParent().getBitSet()).isEqualTo(clique1);
         assertThat(jtNode2.getBitSet()).isEqualTo(clique2);
-        assertThat(jtNode2.getChildren().size()).isEqualTo(2);
+        assertThat(jtNode2.getChildren()).hasSize(2);
 
         // clique3
         assertThat(jtNode2.getParentSeparator()).isSameAs(sep);
@@ -1231,7 +1230,7 @@ public class JunctionTreeBuilderTest {
         JunctionTreeClique jtNode3 = sep.getChild();
         assertThat(sep.getParent().getBitSet()).isEqualTo(clique2);
         assertThat(jtNode3.getBitSet()).isEqualTo(clique3);
-        assertThat(jtNode3.getChildren().size()).isEqualTo(0);
+        assertThat(jtNode3.getChildren()).isEmpty();
 
         // clique4
         sep =  jtNode2.getChildren().get(1);
@@ -1239,7 +1238,7 @@ public class JunctionTreeBuilderTest {
         JunctionTreeClique jtNode4 = sep.getChild();
         assertThat(sep.getParent().getBitSet()).isEqualTo(clique2);
         assertThat(jtNode4.getBitSet()).isEqualTo(clique4);
-        assertThat(jtNode4.getChildren().size()).isEqualTo(0);
+        assertThat(jtNode4.getChildren()).isEmpty();
     }
 
 }

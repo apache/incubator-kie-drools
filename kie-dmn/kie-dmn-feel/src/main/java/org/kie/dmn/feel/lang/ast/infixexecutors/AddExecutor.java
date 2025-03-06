@@ -22,7 +22,6 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.time.Duration;
 import java.time.LocalDate;
-import java.time.Period;
 import java.time.chrono.ChronoPeriod;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAmount;
@@ -89,10 +88,6 @@ public class AddExecutor implements InfixExecutor {
         if (left instanceof Temporal temporal) {
             if (right instanceof TemporalAmount temporalAmount) {
                 return temporal.plus(temporalAmount);
-            }
-            if (right instanceof BigDecimal bigDecimal) {
-                Period toAdd = Period.ofDays(bigDecimal.intValue());
-                return temporal.plus(toAdd);
             }
         } else if (left instanceof TemporalAmount temporalAmount) {
             if (right instanceof Temporal temporal) {

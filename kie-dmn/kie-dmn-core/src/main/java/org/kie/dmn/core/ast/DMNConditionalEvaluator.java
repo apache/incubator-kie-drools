@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,35 +18,104 @@
  */
 package org.kie.dmn.core.ast;
 
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
-import org.kie.dmn.core.api.EvaluatorResult;
-import org.kie.dmn.core.api.EvaluatorResult.ResultType;
+import org.kie.dmn.api.core.EvaluatorResult;
+import org.kie.dmn.api.core.EvaluatorResult.ResultType;
 import org.kie.dmn.core.impl.DMNResultImpl;
+import org.kie.dmn.core.impl.DMNRuntimeEventManagerUtils;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.model.api.DMNElement;
+import org.kie.dmn.model.api.DMNModelInstrumentedBase;
+import org.kie.dmn.model.api.Decision;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DMNConditionalEvaluator implements DMNExpressionEvaluator {
 
+    public enum EvaluatorType {
+        IF( "if" ),
+        THEN( "then" ),
+        ELSE( "else" );
+
+        public final String value;
+
+        EvaluatorType(String value) {
+            this.value = value;
+        }
+        public String getValue() {
+            return value;
+        }
+    }
+
+    public static class EvaluatorIdentifier {
+        final String id;
+        final EvaluatorType type;
+
+        public EvaluatorIdentifier (String id, EvaluatorType type) {
+            this.id = id;
+            this.type = type;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (o == null || getClass() != o.getClass()) return false;
+            EvaluatorIdentifier that = (EvaluatorIdentifier) o;
+            return Objects.equals(id, that.id) && type == that.type;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(id, type);
+        }
+    }
+
     private static final Logger logger = LoggerFactory.getLogger(DMNConditionalEvaluator.class);
 
-    private DMNExpressionEvaluator ifEvaluator;
-    private DMNExpressionEvaluator thenEvaluator;
-    private DMNExpressionEvaluator elseEvaluator;
-    private DMNElement node;
-    private String name;
+    private final DMNExpressionEvaluator ifEvaluator;
+    private final DMNExpressionEvaluator thenEvaluator;
+    private final DMNExpressionEvaluator elseEvaluator;
+    private final DMNElement node;
+    private final String name;
+    private final String decisionName;
+    private final EvaluatorIdentifier ifEvaluatorIdentifier;
+    private final EvaluatorIdentifier thenEvaluatorIdentifier;
+    private final EvaluatorIdentifier elseEvaluatorIdentifier;
 
-    public DMNConditionalEvaluator(String name, DMNElement node, DMNExpressionEvaluator ifEvaluator, DMNExpressionEvaluator thenEvaluator, DMNExpressionEvaluator elseEvaluator) {
+    static Map<EvaluatorType, EvaluatorIdentifier> mapEvaluatorIdentifiers(Map<EvaluatorIdentifier, DMNExpressionEvaluator> evaluatorIdMap) {
+        return evaluatorIdMap.keySet().stream()
+                .collect(Collectors.toMap(identifier -> identifier.type, Function.identity()));
+    }
+
+    static EvaluatorIdentifier getEvaluatorIdentifier(Map<EvaluatorType, EvaluatorIdentifier> evaluatorIdentifierMap, EvaluatorType type) {
+        return Optional.ofNullable(evaluatorIdentifierMap.get(type))
+                .orElseThrow(() -> new RuntimeException("Missing " + type + " evaluator in evaluatorIdMap"));
+    }
+
+    static String getDecisionName(DMNModelInstrumentedBase dmnElement) {
+        return dmnElement instanceof Decision decision ? decision.getName() : getDecisionName(dmnElement.getParentDRDElement());
+    }
+
+    public DMNConditionalEvaluator(String name, DMNElement dmnElement, Map <EvaluatorIdentifier, DMNExpressionEvaluator> evaluatorIdMap) {
         this.name = name;
-        this.node = node;
-        this.ifEvaluator = ifEvaluator;
-        this.thenEvaluator = thenEvaluator;
-        this.elseEvaluator = elseEvaluator;
+        this.node = dmnElement;
+        Map<EvaluatorType, EvaluatorIdentifier> evaluatorIdentifierMap = mapEvaluatorIdentifiers(evaluatorIdMap);
+        this.ifEvaluatorIdentifier = getEvaluatorIdentifier(evaluatorIdentifierMap, EvaluatorType.IF);
+        this.thenEvaluatorIdentifier = getEvaluatorIdentifier(evaluatorIdentifierMap, EvaluatorType.THEN);
+        this.elseEvaluatorIdentifier = getEvaluatorIdentifier(evaluatorIdentifierMap, EvaluatorType.ELSE);
+        this.ifEvaluator = evaluatorIdMap.get(ifEvaluatorIdentifier);
+        this.thenEvaluator = evaluatorIdMap.get(thenEvaluatorIdentifier);
+        this.elseEvaluator = evaluatorIdMap.get(elseEvaluatorIdentifier);
+        this.decisionName = getDecisionName(dmnElement);
     }
 
     @Override
@@ -54,16 +123,12 @@ public class DMNConditionalEvaluator implements DMNExpressionEvaluator {
         DMNResultImpl result = (DMNResultImpl) dmnr;
 
         EvaluatorResult ifEvaluation = ifEvaluator.evaluate(eventManager, result);
+        String executedId = ifEvaluatorIdentifier.id;
+        DMNRuntimeEventManagerUtils.fireAfterEvaluateConditional(eventManager, ifEvaluation, executedId);
         if (ifEvaluation.getResultType().equals(ResultType.SUCCESS)) {
             Object ifResult = ifEvaluation.getResult();
-            if (ifResult instanceof Boolean) {
-                if (((Boolean) ifResult).booleanValue()) {
-                    return thenEvaluator.evaluate(eventManager, result);
-                } else {
-                    return elseEvaluator.evaluate(eventManager, result);
-                }
-            } else if (ifResult == null) {
-                return elseEvaluator.evaluate(eventManager, result);
+            if (ifResult == null || ifResult instanceof Boolean) {
+                return manageBooleanOrNullIfResult((Boolean) ifResult, eventManager, result);
             } else {
                 MsgUtil.reportMessage(logger,
                                       DMNMessage.Severity.ERROR,
@@ -78,6 +143,14 @@ public class DMNConditionalEvaluator implements DMNExpressionEvaluator {
         }
 
         return new EvaluatorResultImpl(null, ResultType.FAILURE);
+    }
+
+    protected EvaluatorResult manageBooleanOrNullIfResult(Boolean booleanResult, DMNRuntimeEventManager eventManager, DMNResultImpl result) {
+        DMNExpressionEvaluator evaluatorToUse = booleanResult != null && booleanResult ? thenEvaluator : elseEvaluator;
+        EvaluatorResult toReturn = evaluatorToUse.evaluate(eventManager, result);
+        String executedId = evaluatorToUse.equals(thenEvaluator) ? thenEvaluatorIdentifier.id : elseEvaluatorIdentifier.id;
+        DMNRuntimeEventManagerUtils.fireAfterConditionalEvaluation(eventManager, name, decisionName, toReturn, executedId);
+        return toReturn;
     }
 
 }

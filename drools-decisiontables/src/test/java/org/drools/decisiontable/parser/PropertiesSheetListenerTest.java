@@ -20,7 +20,7 @@ package org.drools.decisiontable.parser;
 
 import org.drools.decisiontable.parser.xls.PropertiesSheetListener;
 import org.drools.decisiontable.parser.xls.PropertiesSheetListener.CaseInsensitiveMap;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.template.parser.DataListener.NON_MERGED;

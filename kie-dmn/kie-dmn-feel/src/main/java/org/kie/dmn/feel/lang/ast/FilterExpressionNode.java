@@ -19,7 +19,6 @@
 package org.kie.dmn.feel.lang.ast;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -40,6 +39,12 @@ public class FilterExpressionNode
         super( ctx );
         this.expression = expression;
         this.filter = filter;
+    }
+
+    public FilterExpressionNode(BaseNode expression, BaseNode filter, String text) {
+        this.expression = expression;
+        this.filter = filter;
+        this.setText(text);
     }
 
     public BaseNode getExpression() {

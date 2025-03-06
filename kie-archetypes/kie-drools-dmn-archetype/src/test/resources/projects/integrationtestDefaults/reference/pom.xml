@@ -35,7 +35,7 @@
     <version.drools>${project.version}</version.drools>
     <version.slf4j>1.7.2</version.slf4j>
     <version.junit>4.11</version.junit>
-    <version.logback>1.2.13</version.logback>
+    <version.logback>1.5.16</version.logback>
   </properties>
 
   <dependencyManagement>

@@ -115,7 +115,6 @@
   <properties>
     <project.build.outputTimestamp>2024-01-12T00:00:00Z</project.build.outputTimestamp>
     <version.maven.artifact.plugin>3.4.1</version.maven.artifact.plugin>
-    <version.apache-rat-plugin>0.16.1</version.apache-rat-plugin>
   </properties>
 
   <build>
@@ -127,45 +126,6 @@
           <version>${version.maven.artifact.plugin}</version>
           <configuration>
             <outputTimestamp>${project.build.outputTimestamp}</outputTimestamp>
-          </configuration>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.rat</groupId>
-          <artifactId>apache-rat-plugin</artifactId>
-          <version>${version.apache-rat-plugin}</version>
-          <configuration>
-            <excludes>
-              <exclude>.git-blame-ignore-revs</exclude>
-              <exclude>**/lunr-2.3.9.min.js</exclude>
-              <exclude>**/mvel.jj</exclude>
-              <exclude>**/*.csv</exclude>
-              <exclude>**/*.sdo</exclude>
-              <exclude>**/*.sdt</exclude>
-              <exclude>**/TestingEmptyFile.txt</exclude>
-              <exclude>**/*.test_json</exclude>
-              <exclude>**/*.pmml_json</exclude>
-              <exclude>**/*.drl_json</exclude>
-              <exclude>**/*.dslr</exclude>
-              <exclude>**/DMN*.xsd</exclude>
-              <exclude>**/DC.xsd</exclude>
-              <exclude>**/DI.xsd</exclude>
-              <exclude>**/KiePMML*.txt</exclude>
-              <exclude>**/TargetValueFactoryTest_01.txt</exclude>
-              <exclude>**/TargetFieldFactoryTest_01.txt</exclude>
-              <exclude>**/*.uml</exclude>
-              <exclude>**/drools-model</exclude>
-              <exclude>**/testFile.txt</exclude>
-              <exclude>**/simple.dot</exclude>
-              <exclude>**/*.log</exclude>
-              <exclude>**/*.lst</exclude>
-              <exclude>**/checkstyle-cachefile</exclude>
-              <exclude>**/smoke*.drl.txt</exclude>
-              <exclude>**/test*.txt</exclude>
-              <exclude>**/test*.yml</exclude>
-              <exclude>**/drl.ftl</exclude>
-              <exclude>**/goal.txt</exclude>
-              <exclude>**/adult.txt</exclude>
-            </excludes>
           </configuration>
         </plugin>
       </plugins>
@@ -239,6 +199,42 @@
         <module>drools-distribution</module>
       </modules>
     </profile>
+    <profile>
+      <id>reproducible-build</id>
+      <activation>
+        <property>
+          <name>reproducible</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-artifact-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>check-buildplan</id>
+                <goals>
+                  <goal>check-buildplan</goal>
+                </goals>
+                <!-- The execution's configuration is part of the pluginManagement. This piece here only makes sure the
+                     execution is enabled (by specifying a phase) for full profile builds. -->
+                <phase>validate</phase>
+              </execution>
+              <execution>
+                <id>compare</id>
+                <goals>
+                  <goal>compare</goal>
+                </goals>
+                <!-- The execution's configuration is part of the pluginManagement. This piece here only makes sure the
+                     execution is enabled (by specifying a phase) for full profile builds. -->
+                <phase>install</phase>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
     <profile><!-- this profile is defined here in order to be available from the root of the drools repository and maven reactor build -->
       <id>rewrite</id>
       <build>
@@ -267,6 +263,29 @@
                 <version>1.23.0</version>
               </dependency>
             </dependencies>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>enableNewParser</id>
+      <activation>
+        <property>
+          <name>enableNewParser</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+              <systemPropertyVariables>
+                <!-- false by default. Activate this profile when you test the new parser -->
+                <drools.drl.antlr4.parser.enabled>true</drools.drl.antlr4.parser.enabled>
+              </systemPropertyVariables>
+            </configuration>
           </plugin>
         </plugins>
       </build>

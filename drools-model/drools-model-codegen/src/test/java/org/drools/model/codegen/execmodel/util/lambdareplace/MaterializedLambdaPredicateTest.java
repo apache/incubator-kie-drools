@@ -21,7 +21,7 @@ package org.drools.model.codegen.execmodel.util.lambdareplace;
 import java.util.ArrayList;
 
 import org.drools.model.functions.PredicateInformation;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.drools.model.codegen.execmodel.util.lambdareplace.MaterializedLambdaTestUtils.verifyCreatedClass;
 

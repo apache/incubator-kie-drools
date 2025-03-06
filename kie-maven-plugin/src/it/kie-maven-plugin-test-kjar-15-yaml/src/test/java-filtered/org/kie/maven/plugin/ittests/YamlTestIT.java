@@ -27,15 +27,11 @@ import java.util.Set;
 
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieContainer;
-
-import org.assertj.core.api.Assertions;
-import org.junit.Test;
 import org.kie.api.runtime.KieSession;
-
+import org.junit.jupiter.api.Test;
 import org.yaml.Measurement;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class YamlTestIT {
 
@@ -50,12 +46,12 @@ public class YamlTestIT {
         final URL targetLocation = YamlTestIT.class.getProtectionDomain().getCodeSource().getLocation();
         final KieContainer kieContainer = ITTestsUtils.getKieContainer(targetLocation, GAV_ARTIFACT_ID, GAV_VERSION);
         final KieBase kieBase = kieContainer.getKieBase(KBASE_NAME);
-        Assertions.assertThat(kieBase).isNotNull();
+        assertThat(kieBase).isNotNull();
         KieSession kSession = null;
         try {
 
             kSession = kieBase.newKieSession();
-            Assertions.assertThat(kSession).isNotNull();
+            assertThat(kSession).isNotNull();
 
             Set<String> check = new HashSet<String>();
             kSession.setGlobal("controlSet", check);
@@ -72,11 +68,10 @@ public class YamlTestIT {
             kSession.insert(mBlue);
             kSession.fireAllRules();
 
-            assertEquals("Size of object in Working Memory is 3", 3, kSession.getObjects().size());
-            assertTrue("contains red", check.contains("red"));
-            assertTrue("contains green", check.contains("green"));
-            assertTrue("contains blue", check.contains("blue"));
-
+            assertThat(kSession.getObjects()).as("Size of object in Working Memory is 3").hasSize(3);
+            assertThat(check).as("contains red").contains("red");
+            assertThat(check).as("contains green").contains("green");
+            assertThat(check).as("contains blue").contains("blue");
         } finally {
             kSession.dispose();
         }

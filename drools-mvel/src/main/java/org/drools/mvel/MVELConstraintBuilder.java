@@ -97,6 +97,8 @@ import org.drools.mvel.expr.MVELCompileable;
 import org.drools.mvel.expr.MVELObjectExpression;
 import org.drools.mvel.expr.MvelEvaluator;
 import org.drools.mvel.java.JavaForMvelDialectConfiguration;
+import org.drools.util.CoercionUtil;
+import org.drools.util.MethodUtils;
 import org.kie.api.definition.rule.Rule;
 import org.mvel2.ConversionHandler;
 import org.mvel2.DataConversion;
@@ -426,8 +428,6 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
             }
         }
 
-        MVELDialect dialect = (MVELDialect) context.getDialect( "mvel" );
-
         MVELCompilationUnit unit = null;
 
         try {
@@ -439,16 +439,8 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
                         ((ClassObjectType) p.getObjectType()).getClassType() );
             }
 
-            unit = dialect.getMVELCompilationUnit( (String) predicateDescr.getContent(),
-                                                   analysis,
-                                                   previousDeclarations,
-                                                   localDeclarations,
-                                                   null,
-                                                   context,
-                                                   "drools",
-                                                   KnowledgeHelper.class,
-                                                   context.isInXpath(),
-                                                   MVELCompilationUnit.Scope.CONSTRAINT );
+            unit = MVELDialect.getMVELCompilationUnit( (String) predicateDescr.getContent(), analysis, previousDeclarations, localDeclarations,
+                                                   null, context, "drools", KnowledgeHelper.class, context.isInXpath(), MVELCompilationUnit.Scope.CONSTRAINT );
         } catch ( final Exception e ) {
             copyErrorLocation(e, predicateDescr);
             context.addError( new DescrBuildError( context.getParentDescr(),
@@ -486,48 +478,14 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
 
         @Override
         public boolean areEqualityCompatible(Class<?> c1, Class<?> c2) {
-            if (c1 == NullType.class || c2 == NullType.class) {
-                return true;
-            }
-            if (c1 == String.class || c2 == String.class) {
-                return true;
-            }
-            Class<?> boxed1 = convertFromPrimitiveType(c1);
-            Class<?> boxed2 = convertFromPrimitiveType(c2);
-            if (boxed1.isAssignableFrom(boxed2) || boxed2.isAssignableFrom(boxed1)) {
-                return true;
-            }
-            if (Number.class.isAssignableFrom(boxed1) && Number.class.isAssignableFrom(boxed2)) {
-                return true;
-            }
-            if (areEqualityCompatibleEnums(boxed1, boxed2)) {
-                return true;
-            }
-            return !Modifier.isFinal(c1.getModifiers()) && !Modifier.isFinal(c2.getModifiers());
-        }
-
-        protected boolean areEqualityCompatibleEnums(final Class<?> boxed1,
-                                                     final Class<?> boxed2) {
-            return boxed1.isEnum() && boxed2.isEnum() && boxed1.getName().equals(boxed2.getName())
-                    && equalEnumConstants(boxed1.getEnumConstants(), boxed2.getEnumConstants());
-        }
-
-        private boolean equalEnumConstants(final Object[] aa,
-                                           final Object[] bb) {
-            if (aa.length != bb.length) {
-                return false;
-            }
-            for (int i = 0; i < aa.length; i++) {
-                if (!Objects.equals(aa[i].getClass().getName(), bb[i].getClass().getName())) {
-                    return false;
-                }
-            }
-            return true;
+            return CoercionUtil.areEqualityCompatible(c1 == NullType.class ? MethodUtils.NullType.class : c1,
+                                                      c2 == NullType.class ? MethodUtils.NullType.class : c2);
         }
 
         @Override
         public boolean areComparisonCompatible(Class<?> c1, Class<?> c2) {
-            return areEqualityCompatible(c1, c2);
+            return CoercionUtil.areComparisonCompatible(c1 == NullType.class ? MethodUtils.NullType.class : c1,
+                                                        c2 == NullType.class ? MethodUtils.NullType.class : c2);
         }
     }
 
@@ -558,16 +516,8 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
             }
             Arrays.sort(previousDeclarations, SortDeclarations.instance);
 
-            MVELCompilationUnit unit = dialect.getMVELCompilationUnit( expression,
-                    analysis,
-                    previousDeclarations,
-                    null,
-                    null,
-                    context,
-                    "drools",
-                    KnowledgeHelper.class,
-                    false,
-                    MVELCompilationUnit.Scope.EXPRESSION );
+            MVELCompilationUnit unit = MVELDialect.getMVELCompilationUnit( expression, analysis, previousDeclarations, null, null,
+                    context, "drools", KnowledgeHelper.class, false, MVELCompilationUnit.Scope.EXPRESSION );
 
             MVELObjectExpression expr = new MVELObjectExpression( unit, dialect.getId() );
 
@@ -578,9 +528,7 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
             return expr;
         } catch ( final Exception e ) {
             AsmUtil.copyErrorLocation(e, context.getRuleDescr());
-            context.addError( new DescrBuildError( context.getParentDescr(),
-                    context.getRuleDescr(),
-                    null,
+            context.addError( new DescrBuildError( context.getParentDescr(), context.getRuleDescr(), null,
                     "Unable to build expression : " + e.getMessage() + "'" + expression + "'" ) );
             return null;
         } finally {
@@ -595,10 +543,8 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
         return analyzeExpression( expr, conf, new BoundIdentifiers( thisClass ) );
     }
 
-    private static MVELAnalysisResult analyzeExpression(String expr,
-                                                        ParserConfiguration conf,
-                                                        BoundIdentifiers availableIdentifiers) {
-        if (expr.trim().length() == 0) {
+    private static MVELAnalysisResult analyzeExpression(String expr, ParserConfiguration conf, BoundIdentifiers availableIdentifiers) {
+        if (expr.trim().isEmpty()) {
             MVELAnalysisResult result = analyze( (Set<String> ) Collections.EMPTY_SET, availableIdentifiers );
             result.setMvelVariables( new HashMap<>() );
             result.setTypesafe( true );

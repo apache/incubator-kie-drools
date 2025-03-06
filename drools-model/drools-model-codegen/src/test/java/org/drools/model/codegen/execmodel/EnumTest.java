@@ -18,19 +18,18 @@
  */
 package org.drools.model.codegen.execmodel;
 
-import org.junit.Test;
 import org.kie.api.runtime.KieSession;
+
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class EnumTest extends BaseModelTest {
 
-    public EnumTest( RUN_TYPE testRunType ) {
-        super( testRunType );
-    }
-
-    @Test
-    public void testMatchEnum() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testMatchEnum(RUN_TYPE runType) {
         String str =
                 "import " + Bus.class.getCanonicalName() + ";" +
                 "rule bus2 when\n" +
@@ -39,7 +38,7 @@ public class EnumTest extends BaseModelTest {
                 "       System.out.println(\"bus=\" + $bus + \", maker=\" + $maker);\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str );
 
         Bus a = new Bus("blue", 25, Bus.Maker.HINO);
         ksession.insert(a);
@@ -49,8 +48,9 @@ public class EnumTest extends BaseModelTest {
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testBindEnum() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testBindEnum(RUN_TYPE runType) {
         // DROOLS-5851
         String str =
                 "import " + Bus.class.getCanonicalName() + ";" +
@@ -60,7 +60,7 @@ public class EnumTest extends BaseModelTest {
                 "       System.out.println(\"bus=\" + $bus + \", maker=\" + $maker);\n" +
                 "end";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(runType, str);
 
         Bus a = new Bus("blue", 25, Bus.Maker.HINO);
         ksession.insert(a);

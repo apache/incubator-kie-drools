@@ -18,7 +18,7 @@
  */
 package org.drools.compiler;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.utils.KieHelper;
 

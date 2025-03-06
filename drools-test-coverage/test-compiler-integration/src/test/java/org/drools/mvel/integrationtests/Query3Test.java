@@ -19,15 +19,13 @@
 package org.drools.mvel.integrationtests;
 
 
-import java.util.Collection;
+import java.util.stream.Stream;
 
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
@@ -35,27 +33,15 @@ import org.kie.api.runtime.rule.QueryResults;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class Query3Test {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public Query3Test(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
-    }
-
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
     private KieBase knowledgeBase;
 
-    /**
-     * @throws java.lang.Exception
-     */
-    @Before
-    public void setUp() throws Exception {
+    public void setUp(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String text = "";
         text += "package org.drools.integrationtests\n";
         text += "import " + Query3Test.Bar.class.getCanonicalName() + "\n";
@@ -101,8 +87,10 @@ public class Query3Test {
         }
     }
 
-    @Test
-    public void testDifferent() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testDifferent(KieBaseTestConfiguration kieBaseTestConfiguration) {
+    	setUp(kieBaseTestConfiguration);
         Foo foo = new Foo();
         foo.setId( "x" );
         Bar bar = new Bar();
@@ -115,8 +103,10 @@ public class Query3Test {
               false );
     }
 
-    @Test
-    public void testDifferentWithUpdate() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testDifferentWithUpdate(KieBaseTestConfiguration kieBaseTestConfiguration) {
+    	setUp(kieBaseTestConfiguration);
         Foo foo = new Foo();
         foo.setId( "x" );
         Bar bar = new Bar();
@@ -129,8 +119,10 @@ public class Query3Test {
               false );
     }
 
-    @Test
-    public void testSame() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testSame(KieBaseTestConfiguration kieBaseTestConfiguration) {
+    	setUp(kieBaseTestConfiguration);
         Foo foo = new Foo();
         foo.setId( "x" );
         Foo foo2 = new Foo();
@@ -143,8 +135,10 @@ public class Query3Test {
               false );
     }
 
-    @Test
-    public void testSameWithUpdate() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testSameWithUpdate(KieBaseTestConfiguration kieBaseTestConfiguration) {
+    	setUp(kieBaseTestConfiguration);
         Foo foo = new Foo();
         foo.setId( "x" );
         Foo foo2 = new Foo();
@@ -157,8 +151,10 @@ public class Query3Test {
               false );
     }
 
-    @Test
-    public void testExtends() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testExtends(KieBaseTestConfiguration kieBaseTestConfiguration) {
+    	setUp(kieBaseTestConfiguration);
         Foo foo = new Foo();
         foo.setId( "x" );
         Foo2 foo2 = new Foo2();
@@ -171,8 +167,10 @@ public class Query3Test {
               false );
     }
 
-    @Test
-    public void testExtendsWithUpdate() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testExtendsWithUpdate(KieBaseTestConfiguration kieBaseTestConfiguration) {
+    	setUp(kieBaseTestConfiguration);
         Foo foo = new Foo();
         foo.setId( "x" );
         Foo2 foo2 = new Foo2();
@@ -185,8 +183,10 @@ public class Query3Test {
               false );
     }
 
-    @Test
-    public void testExtendsWithRetract() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testExtendsWithRetract(KieBaseTestConfiguration kieBaseTestConfiguration) {
+    	setUp(kieBaseTestConfiguration);
         Foo foo = new Foo();
         foo.setId( "x" );
         Foo2 foo2 = new Foo2();

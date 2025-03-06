@@ -23,26 +23,26 @@ import java.util.List;
 
 import org.drools.model.codegen.execmodel.domain.Address;
 import org.drools.model.codegen.execmodel.domain.Person;
-import org.junit.Test;
+import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@DisabledIfSystemProperty(named = "drools.drl.antlr4.parser.enabled", matches = "true")
 public class HalfBinaryTest extends BaseModelTest {
 
-    public HalfBinaryTest( RUN_TYPE testRunType ) {
-        super( testRunType );
-    }
-
-    @Test
-    public void testHalfBinary() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testHalfBinary(RUN_TYPE runType) {
         final String drl1 =
                 "rule R1 when\n" +
                 "    Integer(this > 2 && < 5)\n" +
                 "then\n" +
                 "end\n";
 
-        KieSession ksession = getKieSession( drl1 );
+        KieSession ksession = getKieSession(runType, drl1);
 
         ksession.insert( 3 );
         ksession.insert( 4 );
@@ -50,8 +50,9 @@ public class HalfBinaryTest extends BaseModelTest {
         assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
-    @Test
-    public void testHalfBinaryWithParenthesis() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testHalfBinaryWithParenthesis(RUN_TYPE runType) {
         // DROOLS-6006
         final String drl1 =
                 "rule R1 when\n" +
@@ -59,7 +60,7 @@ public class HalfBinaryTest extends BaseModelTest {
                 "then\n" +
                 "end\n";
 
-        KieSession ksession = getKieSession( drl1 );
+        KieSession ksession = getKieSession(runType, drl1);
 
         ksession.insert( 3 );
         ksession.insert( 4 );
@@ -67,8 +68,9 @@ public class HalfBinaryTest extends BaseModelTest {
         assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
-    @Test
-    public void testHalfBinaryOrWithParenthesis() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testHalfBinaryOrWithParenthesis(RUN_TYPE runType) {
         // DROOLS-6006
         final String drl1 =
                 "rule R1 when\n" +
@@ -76,7 +78,7 @@ public class HalfBinaryTest extends BaseModelTest {
                 "then\n" +
                 "end\n";
 
-        KieSession ksession = getKieSession( drl1 );
+        KieSession ksession = getKieSession(runType, drl1);
 
         ksession.insert( 3 );
         ksession.insert( 4 );
@@ -84,8 +86,9 @@ public class HalfBinaryTest extends BaseModelTest {
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testComplexHalfBinary() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testComplexHalfBinary(RUN_TYPE runType) {
         // DROOLS-6006
         final String drl1 =
                 "rule R1 when\n" +
@@ -93,7 +96,7 @@ public class HalfBinaryTest extends BaseModelTest {
                 "then\n" +
                 "end\n";
 
-        KieSession ksession = getKieSession( drl1 );
+        KieSession ksession = getKieSession(runType, drl1);
 
         ksession.insert( 3 );
         ksession.insert( 4 );
@@ -101,8 +104,9 @@ public class HalfBinaryTest extends BaseModelTest {
         assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
-    @Test
-    public void testHalfBinaryOnComparable() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testHalfBinaryOnComparable(RUN_TYPE runType) {
         // DROOLS-6421
         final String drl1 =
                 "rule R1 when\n" +
@@ -110,7 +114,7 @@ public class HalfBinaryTest extends BaseModelTest {
                 "then\n" +
                 "end\n";
 
-        KieSession ksession = getKieSession( drl1 );
+        KieSession ksession = getKieSession(runType, drl1);
 
         ksession.insert( "B" );
         ksession.insert( "D" );
@@ -119,8 +123,9 @@ public class HalfBinaryTest extends BaseModelTest {
         assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
-    @Test
-    public void testHalfBinaryOrOnComparable() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testHalfBinaryOrOnComparable(RUN_TYPE runType) {
         // DROOLS-6421
         final String drl1 =
                 "rule R1 when\n" +
@@ -128,7 +133,7 @@ public class HalfBinaryTest extends BaseModelTest {
                 "then\n" +
                 "end\n";
 
-        KieSession ksession = getKieSession( drl1 );
+        KieSession ksession = getKieSession(runType, drl1);
 
         ksession.insert( "B" );
         ksession.insert( "D" );
@@ -137,8 +142,9 @@ public class HalfBinaryTest extends BaseModelTest {
         assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
-    @Test
-    public void testComplexHalfBinaryOnComparable() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testComplexHalfBinaryOnComparable(RUN_TYPE runType) {
         // DROOLS-6421
         final String drl1 =
                 "rule R1 when\n" +
@@ -146,7 +152,7 @@ public class HalfBinaryTest extends BaseModelTest {
                 "then\n" +
                 "end\n";
 
-        KieSession ksession = getKieSession( drl1 );
+        KieSession ksession = getKieSession(runType, drl1);
 
         ksession.insert( "B" );
         ksession.insert( "D" );
@@ -155,8 +161,9 @@ public class HalfBinaryTest extends BaseModelTest {
         assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
-    @Test
-    public void testComplexHalfBinaryOnComparableField() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testComplexHalfBinaryOnComparableField(RUN_TYPE runType) {
         // DROOLS-6421
         final String drl1 =
                 "import " + Person.class.getCanonicalName() + ";\n" +
@@ -165,7 +172,7 @@ public class HalfBinaryTest extends BaseModelTest {
                 "then\n" +
                 "end\n";
 
-        KieSession ksession = getKieSession( drl1 );
+        KieSession ksession = getKieSession(runType, drl1);
 
         ksession.insert( new Person("B") );
         ksession.insert( new Person("D") );
@@ -174,8 +181,9 @@ public class HalfBinaryTest extends BaseModelTest {
         assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
-    @Test
-    public void testComplexHalfBinaryOnComparableInternalField() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testComplexHalfBinaryOnComparableInternalField(RUN_TYPE runType) {
         // DROOLS-6421
         final String drl1 =
                 "import " + Person.class.getCanonicalName() + ";\n" +
@@ -184,7 +192,7 @@ public class HalfBinaryTest extends BaseModelTest {
                 "then\n" +
                 "end\n";
 
-        KieSession ksession = getKieSession( drl1 );
+        KieSession ksession = getKieSession(runType, drl1);
 
         Person b = new Person("B");
         b.setAddress(new Address("B"));
@@ -202,8 +210,9 @@ public class HalfBinaryTest extends BaseModelTest {
         assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
-    @Test
-    public void testComplexHalfBinaryOnComparableInternalNullSafeField() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testComplexHalfBinaryOnComparableInternalNullSafeField(RUN_TYPE runType) {
         // DROOLS-6421
         final String drl1 =
                 "import " + Person.class.getCanonicalName() + ";\n" +
@@ -212,7 +221,7 @@ public class HalfBinaryTest extends BaseModelTest {
                 "then\n" +
                 "end\n";
 
-        KieSession ksession = getKieSession( drl1 );
+        KieSession ksession = getKieSession(runType, drl1);
 
         Person a = new Person("A");
         a.setAddress(new Address(null));
@@ -233,8 +242,9 @@ public class HalfBinaryTest extends BaseModelTest {
         assertThat(ksession.fireAllRules()).isEqualTo(2);
     }
 
-    @Test
-    public void testHalfBinaryOrAndAmpersand() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testHalfBinaryOrAndAmpersand(RUN_TYPE runType) {
         final String drl =
                 "import " + Person.class.getCanonicalName() + ";\n" +
                            "global java.util.List result;\n" +
@@ -244,7 +254,7 @@ public class HalfBinaryTest extends BaseModelTest {
                            "    result.add($p.getName());\n" +
                            "end\n";
 
-        KieSession ksession = getKieSession(drl);
+        KieSession ksession = getKieSession(runType, drl);
         List<String> result = new ArrayList<>();
         ksession.setGlobal("result", result);
 
@@ -257,8 +267,9 @@ public class HalfBinaryTest extends BaseModelTest {
         assertThat(result).containsExactlyInAnyOrder("A", "C");
     }
 
-    @Test
-    public void testNestedHalfBinaryOrAndAmpersand() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testNestedHalfBinaryOrAndAmpersand(RUN_TYPE runType) {
         final String drl =
                 "import " + Person.class.getCanonicalName() + ";\n" +
                            "global java.util.List result;\n" +
@@ -268,7 +279,7 @@ public class HalfBinaryTest extends BaseModelTest {
                            "    result.add($p.getName());\n" +
                            "end\n";
 
-        KieSession ksession = getKieSession(drl);
+        KieSession ksession = getKieSession(runType, drl);
         List<String> result = new ArrayList<>();
         ksession.setGlobal("result", result);
 

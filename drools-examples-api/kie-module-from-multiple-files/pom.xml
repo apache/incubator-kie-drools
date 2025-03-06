@@ -42,18 +42,17 @@
       <artifactId>drools-engine-classic</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
-    </dependency>
-
     <!-- Needed by the example as it uses this kjar -->
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>kiebase-inclusion</artifactId>
       <scope>runtime</scope>
     </dependency>
+  <dependency>
+   <groupId>org.junit.jupiter</groupId>
+   <artifactId>junit-jupiter</artifactId>
+   <scope>test</scope>
+  </dependency>
   </dependencies>
 
 </project>

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -28,6 +28,7 @@ import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.impl.RangeImpl;
+import org.kie.dmn.feel.runtime.impl.UndefinedValueComparable;
 import org.kie.dmn.feel.util.Msg;
 
 public class RangeNode
@@ -66,6 +67,14 @@ public class RangeNode
         this.end = end;
     }
 
+    public RangeNode(IntervalBoundary lowerBound, IntervalBoundary upperBound, BaseNode start, BaseNode end, String text) {
+        this.lowerBound = lowerBound;
+        this.upperBound = upperBound;
+        this.start = start;
+        this.end = end;
+        this.setText(text);
+    }
+
     public IntervalBoundary getLowerBound() {
         return lowerBound;
     }
@@ -102,21 +111,32 @@ public class RangeNode
     public Range evaluate(EvaluationContext ctx) {
         Object s = start.evaluate( ctx );
         Object e = end.evaluate( ctx );
+        if (s == null || e == null) {
+            return null;
+        }
         
         Type sType = BuiltInType.determineTypeFromInstance(s);
         Type eType = BuiltInType.determineTypeFromInstance(e);
-        if (s != null && e != null && sType != eType && !s.getClass().isAssignableFrom(e.getClass())) {
+        boolean withUndefined = s instanceof UndefinedValueComparable || e instanceof UndefinedValueComparable;
+        if (s != null && e != null &&
+                !withUndefined &&
+                sType != eType &&
+                !s.getClass().isAssignableFrom(e.getClass())) {
             ctx.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.X_TYPE_INCOMPATIBLE_WITH_Y_TYPE, "Start", "End")));
             return null;
         }
 
-        Comparable start = convertToComparable( ctx, s );
-        Comparable end = convertToComparable( ctx, e );
-
-        return new RangeImpl( lowerBound==IntervalBoundary.OPEN ? Range.RangeBoundary.OPEN : Range.RangeBoundary.CLOSED,
+        Comparable start = s instanceof UndefinedValueComparable ? (Comparable) s : convertToComparable(ctx, s );
+        Comparable end = e instanceof UndefinedValueComparable ? (Comparable) e : convertToComparable( ctx, e );
+        return isDescendingRange(start, end) ? null :
+        new RangeImpl( lowerBound==IntervalBoundary.OPEN ? Range.RangeBoundary.OPEN : Range.RangeBoundary.CLOSED,
                               start,
                               end,
                               upperBound==IntervalBoundary.OPEN ? Range.RangeBoundary.OPEN : Range.RangeBoundary.CLOSED );
+    }
+
+    static boolean isDescendingRange(Comparable start, Comparable end) {
+        return (start == null || start instanceof UndefinedValueComparable || end == null || end instanceof UndefinedValueComparable) ? false : start.compareTo(end) > 0;
     }
 
     private Comparable convertToComparable(EvaluationContext ctx, Object s) {

@@ -20,10 +20,10 @@ package org.drools.compiler.integrationtests;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import org.drools.ancompiler.CompiledNetwork;
 import org.drools.base.base.DroolsQuery;
@@ -54,10 +54,10 @@ import org.drools.testcoverage.common.model.Person;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.definition.type.FactType;
@@ -70,22 +70,15 @@ import org.kie.api.runtime.rule.ViewChangedEventListener;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.core.util.DroolsTestUtil.rulestoMap;
 
-@RunWith(Parameterized.class)
 public class IndexingTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public IndexingTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
-    }
-
-    @Test()
-    public void testAlphaNodeSharing() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testAlphaNodeSharing(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
                 "package org.drools.compiler.test\n" +
                         "import " + Person.class.getCanonicalName() + "\n" +
@@ -135,8 +128,10 @@ public class IndexingTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testBuildsIndexedAlphaNodes() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testBuildsIndexedAlphaNodes(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
                 "package org.drools.compiler.test\n" +
                         "import " + Person.class.getCanonicalName() + "\n" +
@@ -168,8 +163,10 @@ public class IndexingTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testBuildsIndexedMemory() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testBuildsIndexedMemory(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // tests indexes are correctly built        
         final String drl =
                 "package org.drools.compiler.test\n" +
@@ -247,8 +244,10 @@ public class IndexingTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testIndexingOnQueryUnification() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testIndexingOnQueryUnification(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
                 "package org.drools.compiler.test  \n" +
                         "import " + Person.class.getCanonicalName() + "\n" +
@@ -283,8 +282,10 @@ public class IndexingTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testIndexingOnQueryUnificationWithNot() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testIndexingOnQueryUnificationWithNot(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
                 "package org.drools.compiler.test  \n" +
                         "import " + Person.class.getCanonicalName() + "\n" +
@@ -416,8 +417,10 @@ public class IndexingTest {
         assertThat(insertUpdateDeleteMap.get("deleted").intValue()).isEqualTo(expectedDeleted);
     }
 
-    @Test(timeout = 10000)
-    public void testFullFastIteratorResume() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testFullFastIteratorResume(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
                 "package org.drools.compiler.test  \n" +
                         "import " + Person.class.getCanonicalName() + "\n" +
@@ -496,8 +499,10 @@ public class IndexingTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testRangeIndex() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testRangeIndex(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "import " + Cheese.class.getCanonicalName() + ";\n" +
                 "rule R1\n" +
                 "when\n" +
@@ -519,8 +524,10 @@ public class IndexingTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testRangeIndex2() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testRangeIndex2(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "import " + Cheese.class.getCanonicalName() + ";\n" +
                 "rule R1\n" +
                 "when\n" +
@@ -542,8 +549,10 @@ public class IndexingTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testNotNode() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testNotNode(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "import " + Cheese.class.getCanonicalName() + ";\n" +
                 "import " + Person.class.getCanonicalName() + ";\n" +
                 "rule R1 salience 10\n" +
@@ -570,8 +579,10 @@ public class IndexingTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testNotNodeModifyRight() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testNotNodeModifyRight(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "import " + Cheese.class.getCanonicalName() + ";\n" +
                 "import " + Person.class.getCanonicalName() + ";\n" +
                 "rule R1 salience 10 when\n" +
@@ -597,13 +608,15 @@ public class IndexingTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testRange() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testRange(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl = "import " + Cheese.class.getCanonicalName() + ";\n" +
                 "import " + Person.class.getCanonicalName() + ";\n" +
                 "rule R1 salience 10 when\n" +
                 "   Person( $age : age, $doubleAge : doubleAge )\n" +
-                "   not Cheese( price > $age && < $doubleAge )\n" +
+                "   not Cheese( price > $age && price < $doubleAge )\n" +
                 "then\n" +
                 "end\n" +
                 "rule R3 salience 5 when\n" +
@@ -624,8 +637,10 @@ public class IndexingTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testRange2() throws IllegalAccessException, InstantiationException {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testRange2(KieBaseTestConfiguration kieBaseTestConfiguration) throws IllegalAccessException, InstantiationException {
         final String drl = "package org.drools.compiler.test\n" +
                 "declare A\n" +
                 "    a: int\n" +
@@ -639,7 +654,7 @@ public class IndexingTest {
                 "rule R1 when\n" +
                 "   A( $a : a )\n" +
                 "   B( $b : b )\n" +
-                "   exists C( c > $a && < $b )\n" +
+                "   exists C( c > $a && c < $b )\n" +
                 "then\n" +
                 "end";
 
@@ -674,8 +689,9 @@ public class IndexingTest {
         }
     }
 
-    @Test
-    public void testHashingAfterRemoveRightTuple() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testHashingAfterRemoveRightTuple(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-1326
         final String drl = "package " + this.getClass().getPackage().getName() + ";\n" +
                 "import " + MyPojo.class.getCanonicalName() + "\n" +
@@ -776,8 +792,9 @@ public class IndexingTest {
         }
     }
 
-    @Test
-    public void testRequireLeftReorderingWithRangeIndex() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testRequireLeftReorderingWithRangeIndex(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-1326
         final String drl = "import " + Queen.class.getCanonicalName() + ";\n"
                 + "rule \"multipleQueensHorizontal\"\n"
@@ -846,8 +863,10 @@ public class IndexingTest {
         }
     }
 
-    @Test(timeout = 10000)
-    public void testBuildsIndexedMemoryWithThis() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+	@Timeout(10000)
+    public void testBuildsIndexedMemoryWithThis(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // tests indexes are correctly built
         final String drl =
                 "package org.drools.compiler.test\n" +
@@ -879,8 +898,9 @@ public class IndexingTest {
         }
     }
 
-    @Test
-    public void testAlphaIndexWithBigDecimalCoercion() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testAlphaIndexWithBigDecimalCoercion(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
                 "package org.drools.compiler.test\n" +
                         "import " + Person.class.getCanonicalName() + "\n" +
@@ -909,7 +929,7 @@ public class IndexingTest {
 
         try {
             // BigDecimal Index is disabled
-            assertAlphaIndex(kbase, Person.class, 0);
+            assertAlphaIndex(kieBaseTestConfiguration, kbase, Person.class, 0);
 
             List<String> list = new ArrayList<>();
             ksession.setGlobal("list", list);
@@ -924,8 +944,9 @@ public class IndexingTest {
         }
     }
 
-    @Test
-    public void testBeta() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testBeta(KieBaseTestConfiguration kieBaseTestConfiguration) {
 
         final String drl =
                 "package org.drools.compiler.test\n" +
@@ -962,11 +983,11 @@ public class IndexingTest {
         }
     }
 
-    private void assertAlphaIndex(KieBase kbase, Class<?> clazz, int hashedSize) {
+    private void assertAlphaIndex(KieBaseTestConfiguration kieBaseTestConfiguration, KieBase kbase, Class<?> clazz, int hashedSize) {
         final ObjectTypeNode otn = KieUtil.getObjectTypeNode(kbase, clazz);
         assertThat(otn).isNotNull();
         ObjectSinkPropagator objectSinkPropagator = otn.getObjectSinkPropagator();
-        if (this.kieBaseTestConfiguration.useAlphaNetworkCompiler()) {
+        if (kieBaseTestConfiguration.useAlphaNetworkCompiler()) {
             objectSinkPropagator = ((CompiledNetwork) objectSinkPropagator).getOriginalSinkPropagator();
         }
         CompositeObjectSinkAdapter sinkAdapter = (CompositeObjectSinkAdapter) objectSinkPropagator;
@@ -978,8 +999,9 @@ public class IndexingTest {
         }
     }
 
-    @Test
-    public void testAlphaIndexWithBigDecimalDifferentScale() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testAlphaIndexWithBigDecimalDifferentScale(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
                 "package org.drools.compiler.test\n" +
                         "import " + Person.class.getCanonicalName() + "\n" +
@@ -1008,7 +1030,7 @@ public class IndexingTest {
 
         try {
             // BigDecimal Index is disabled
-            assertAlphaIndex(kbase, Person.class, 0);
+            assertAlphaIndex(kieBaseTestConfiguration, kbase, Person.class, 0);
 
             List<String> list = new ArrayList<>();
             ksession.setGlobal("list", list);
@@ -1023,8 +1045,9 @@ public class IndexingTest {
         }
     }
 
-    @Test
-    public void testBetaIndexWithBigDecimalDifferentScale() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testBetaIndexWithBigDecimalDifferentScale(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
                 "package org.drools.compiler.test\n" +
                         "import " + Person.class.getCanonicalName() + "\n" +
@@ -1057,8 +1080,9 @@ public class IndexingTest {
         }
     }
 
-    @Test
-    public void testAlphaIndexOnField() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testAlphaIndexOnField(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
                 "package org.drools.compiler.test\n" +
                 "import " + Person.class.getCanonicalName() + "\n" +
@@ -1086,7 +1110,7 @@ public class IndexingTest {
         KieSession ksession = kbase.newKieSession();
 
         try {
-            assertAlphaIndex(kbase, Person.class, 3);
+            assertAlphaIndex(kieBaseTestConfiguration, kbase, Person.class, 3);
 
             List<String> list = new ArrayList<>();
             ksession.setGlobal("list", list);
@@ -1100,8 +1124,9 @@ public class IndexingTest {
         }
     }
 
-    @Test
-    public void testAlphaIndexOnThis() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testAlphaIndexOnThis(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
                 "package org.drools.compiler.test\n" +
                 "global java.util.List list\n" +
@@ -1128,7 +1153,7 @@ public class IndexingTest {
         KieSession ksession = kbase.newKieSession();
 
         try {
-            assertAlphaIndex(kbase, Integer.class, 3);
+            assertAlphaIndex(kieBaseTestConfiguration, kbase, Integer.class, 3);
 
             List<String> list = new ArrayList<>();
             ksession.setGlobal("list", list);
@@ -1141,41 +1166,47 @@ public class IndexingTest {
         }
     }
 
-    public void betaIndexWithBigDecimalAndInt() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")    
+    public void betaIndexWithBigDecimalAndInt(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String constraints = "salary == $p1.salary, age == $p1.age";
-        betaIndexWithBigDecimalWithAdditionalBetaConstraint(constraints, new Person("John", 30, new BigDecimal("10")), new Person("Paul", 30, new BigDecimal("10")), true, 1);
-        betaIndexWithBigDecimalWithAdditionalBetaConstraint(constraints, new Person("John", 30, new BigDecimal("10")), new Person("Paul", 28, new BigDecimal("10")), false, 1);
+        betaIndexWithBigDecimalWithAdditionalBetaConstraint(kieBaseTestConfiguration, constraints, new Person("John", 30, new BigDecimal("10")), new Person("Paul", 30, new BigDecimal("10")), true, 1);
+        betaIndexWithBigDecimalWithAdditionalBetaConstraint(kieBaseTestConfiguration, constraints, new Person("John", 30, new BigDecimal("10")), new Person("Paul", 28, new BigDecimal("10")), false, 1);
     }
 
-    @Test
-    public void betaIndexWithIntAndBigDecimal() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void betaIndexWithIntAndBigDecimal(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String constraints = "age == $p1.age, salary == $p1.salary";
-        betaIndexWithBigDecimalWithAdditionalBetaConstraint(constraints, new Person("John", 30, new BigDecimal("10")), new Person("Paul", 30, new BigDecimal("10")), true, 1);
-        betaIndexWithBigDecimalWithAdditionalBetaConstraint(constraints, new Person("John", 30, new BigDecimal("10")), new Person("Paul", 28, new BigDecimal("10")), false, 1);
+        betaIndexWithBigDecimalWithAdditionalBetaConstraint(kieBaseTestConfiguration, constraints, new Person("John", 30, new BigDecimal("10")), new Person("Paul", 30, new BigDecimal("10")), true, 1);
+        betaIndexWithBigDecimalWithAdditionalBetaConstraint(kieBaseTestConfiguration, constraints, new Person("John", 30, new BigDecimal("10")), new Person("Paul", 28, new BigDecimal("10")), false, 1);
     }
 
-    @Test
-    public void betaIndexWithIntAndBigDecimalAndString() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void betaIndexWithIntAndBigDecimalAndString(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String constraints = "age == $p1.age, salary == $p1.salary, likes == $p1.likes";
-        betaIndexWithBigDecimalWithAdditionalBetaConstraint(constraints, new Person("John", 30, new BigDecimal("10"), "dog"), new Person("Paul", 30, new BigDecimal("10"), "dog"), true, 2);
-        betaIndexWithBigDecimalWithAdditionalBetaConstraint(constraints, new Person("John", 30, new BigDecimal("10"), "dog"), new Person("Paul", 30, new BigDecimal("10"), "cat"), false, 2);
+        betaIndexWithBigDecimalWithAdditionalBetaConstraint(kieBaseTestConfiguration, constraints, new Person("John", 30, new BigDecimal("10"), "dog"), new Person("Paul", 30, new BigDecimal("10"), "dog"), true, 2);
+        betaIndexWithBigDecimalWithAdditionalBetaConstraint(kieBaseTestConfiguration, constraints, new Person("John", 30, new BigDecimal("10"), "dog"), new Person("Paul", 30, new BigDecimal("10"), "cat"), false, 2);
     }
 
-    @Test
-    public void betaIndexWithIntInequalityAndBigDecimal() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void betaIndexWithIntInequalityAndBigDecimal(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String constraints = "age > $p1.age, salary == $p1.salary";
-        betaIndexWithBigDecimalWithAdditionalBetaConstraint(constraints, new Person("John", 30, new BigDecimal("10")), new Person("Paul", 40, new BigDecimal("10")), true, 0);
-        betaIndexWithBigDecimalWithAdditionalBetaConstraint(constraints, new Person("John", 30, new BigDecimal("10")), new Person("Paul", 28, new BigDecimal("10")), false, 0);
+        betaIndexWithBigDecimalWithAdditionalBetaConstraint(kieBaseTestConfiguration, constraints, new Person("John", 30, new BigDecimal("10")), new Person("Paul", 40, new BigDecimal("10")), true, 0);
+        betaIndexWithBigDecimalWithAdditionalBetaConstraint(kieBaseTestConfiguration, constraints, new Person("John", 30, new BigDecimal("10")), new Person("Paul", 28, new BigDecimal("10")), false, 0);
     }
 
-    @Test
-    public void betaIndexWithBigDecimalOnly() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void betaIndexWithBigDecimalOnly(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String constraints = "salary == $p1.salary";
-        betaIndexWithBigDecimalWithAdditionalBetaConstraint(constraints, new Person("John", 30, new BigDecimal("10")), new Person("Paul", 28, new BigDecimal("10")), true, 0);
-        betaIndexWithBigDecimalWithAdditionalBetaConstraint(constraints, new Person("John", 30, new BigDecimal("10")), new Person("Paul", 28, new BigDecimal("20")), false, 0);
+        betaIndexWithBigDecimalWithAdditionalBetaConstraint(kieBaseTestConfiguration, constraints, new Person("John", 30, new BigDecimal("10")), new Person("Paul", 28, new BigDecimal("10")), true, 0);
+        betaIndexWithBigDecimalWithAdditionalBetaConstraint(kieBaseTestConfiguration, constraints, new Person("John", 30, new BigDecimal("10")), new Person("Paul", 28, new BigDecimal("20")), false, 0);
     }
 
-    private void betaIndexWithBigDecimalWithAdditionalBetaConstraint(String constraints, Person firstPerson, Person secondPerson, boolean shouldMatch, int expectedIndexCount) {
+    private void betaIndexWithBigDecimalWithAdditionalBetaConstraint(KieBaseTestConfiguration kieBaseTestConfiguration, String constraints, Person firstPerson, Person secondPerson, boolean shouldMatch, int expectedIndexCount) {
         final String drl =
                 "package org.drools.compiler.test\n" +
                            "import " + Person.class.getCanonicalName() + "\n" +

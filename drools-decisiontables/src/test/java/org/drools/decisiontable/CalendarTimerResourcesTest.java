@@ -21,9 +21,9 @@ package org.drools.decisiontable;
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -42,7 +42,7 @@ public class CalendarTimerResourcesTest {
 
     private SessionPseudoClock clock;
 
-    @Before
+    @BeforeEach
     public void init() {
 
         final KieServices ks = KieServices.Factory.get();
@@ -66,7 +66,7 @@ public class CalendarTimerResourcesTest {
         clock = ksession.getSessionClock();
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
 
         if (ksession != null) {

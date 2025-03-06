@@ -20,7 +20,7 @@ package org.drools.mvel.compiler.util.debug;
 
 import java.awt.Dimension;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.stream.Stream;
 
 import org.drools.kiesession.debug.SessionInspector;
 import org.drools.kiesession.debug.StatefulKnowledgeSessionInfo;
@@ -31,32 +31,24 @@ import org.drools.mvel.compiler.Person;
 import org.drools.mvel.compiler.Worker;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class SessionInspectorTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public SessionInspectorTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
-    }
-
-    @Test
-    public void testGetSessionInfo() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testGetSessionInfo(KieBaseTestConfiguration kieBaseTestConfiguration) {
         KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(this.getClass(), kieBaseTestConfiguration,
                                                                      "org/drools/mvel/integrationtests/test_SubNetworks.drl",
                                                                      "org/drools/mvel/integrationtests/test_AccumulateWithFromChaining.drl",
@@ -125,8 +117,9 @@ public class SessionInspectorTest {
         assertThat(report).isNotNull();
     }
     
-    @Test
-    public void testGetSessionInfoWithCustomTemplate() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testGetSessionInfoWithCustomTemplate(KieBaseTestConfiguration kieBaseTestConfiguration) {
         if ( System.getProperty("java.vendor").toUpperCase().contains("IBM") ) {
             return; //Does not work in the IBM JDK due to a bug in MVEL
         }

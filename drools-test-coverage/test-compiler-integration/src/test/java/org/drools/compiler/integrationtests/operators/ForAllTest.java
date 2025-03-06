@@ -20,131 +20,138 @@ package org.drools.compiler.integrationtests.operators;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Stream;
 
 import org.drools.testcoverage.common.model.Person;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class ForAllTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public ForAllTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void test1P1CFiring1(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        check(kieBaseTestConfiguration, "age >= 18", 1, new Person("Mario", 45));
     }
 
-    @Test
-    public void test1P1CFiring1() {
-        check("age >= 18", 1, new Person("Mario", 45));
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void test1P1CFiring2(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        check(kieBaseTestConfiguration, "age == 8 || age == 45", 1, new Person("Mario", 45), new Person("Sofia", 8));
     }
 
-    @Test
-    public void test1P1CFiring2() {
-        check("age == 8 || == 45", 1, new Person("Mario", 45), new Person("Sofia", 8));
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void test1P1CNotFiring(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        check(kieBaseTestConfiguration, "age >= 18", 0, new Person("Sofia", 8));
     }
 
-    @Test
-    public void test1P1CNotFiring() {
-        check("age >= 18", 0, new Person("Sofia", 8));
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void test1P1CNotFiringWithAnd(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        check(kieBaseTestConfiguration, "name == \"Sofia\" && age >= 18", 0, new Person("Sofia", 8));
     }
 
-    @Test
-    public void test1P1CNotFiringWithAnd() {
-        check("name == \"Sofia\" && age >= 18", 0, new Person("Sofia", 8));
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void test1P1CNotFiringWithParenthesis(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        check(kieBaseTestConfiguration, "(name == \"Sofia\" && age >= 18)", 0, new Person("Sofia", 8));
     }
 
-    @Test
-    public void test1P1CNotFiringWithParenthesis() {
-        check("(name == \"Sofia\" && age >= 18)", 0, new Person("Sofia", 8));
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void test1P1CNotFiringWithOr(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        check(kieBaseTestConfiguration, "age >= 18 || name == \"Mario\"", 0, new Person("Sofia", 8));
     }
 
-    @Test
-    public void test1P1CNotFiringWithOr() {
-        check("age >= 18 || name == \"Mario\"", 0, new Person("Sofia", 8));
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void test1P1CNotFiringWithParenthesisAndOr(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        check(kieBaseTestConfiguration, "(name == \"Sofia\" && age >= 18) || name == \"Mario\"", 0, new Person("Sofia", 8));
     }
 
-    @Test
-    public void test1P1CNotFiringWithParenthesisAndOr() {
-        check("(name == \"Sofia\" && age >= 18) || name == \"Mario\"", 0, new Person("Sofia", 8));
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void test1P2CFiring(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        check(kieBaseTestConfiguration, "age >= 18, name.startsWith(\"M\")", 1, new Person("Mario", 45), new Person("Mark", 43));
     }
 
-    @Test
-    public void test1P2CFiring() {
-        check("age >= 18, name.startsWith(\"M\")", 1, new Person("Mario", 45), new Person("Mark", 43));
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void test1P2CFiringWithIn(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        check(kieBaseTestConfiguration, "age >= 18, name in(\"Mario\", \"Mark\")", 1, new Person("Mario", 45), new Person("Mark", 43));
     }
 
-    @Test
-    public void test1P2CFiringWithIn() {
-        check("age >= 18, name in(\"Mario\", \"Mark\")", 1, new Person("Mario", 45), new Person("Mark", 43));
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void test1P2CNotFiring1(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        check(kieBaseTestConfiguration, "age >= 18, name.startsWith(\"M\")", 0, new Person("Mario", 45), new Person("Mark", 43), new Person("Edson", 40));
     }
 
-    @Test
-    public void test1P2CNotFiring1() {
-        check("age >= 18, name.startsWith(\"M\")", 0, new Person("Mario", 45), new Person("Mark", 43), new Person("Edson", 40));
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void test1P2CNotFiring2(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        check(kieBaseTestConfiguration, "age < 18, name.startsWith(\"M\")", 0, new Person("Sofia", 8));
     }
 
-    @Test
-    public void test1P2CNotFiring2() {
-        check("age < 18, name.startsWith(\"M\")", 0, new Person("Sofia", 8));
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void test2P1CFiring(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        check(kieBaseTestConfiguration, "age >= 18", "name.startsWith(\"M\")", 1, new Person("Mario", 45), new Person("Sofia", 8));
     }
 
-    @Test
-    public void test2P1CFiring() {
-        check("age >= 18", "name.startsWith(\"M\")", 1, new Person("Mario", 45), new Person("Sofia", 8));
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void test2P1CNotFiring(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        check(kieBaseTestConfiguration, "age >= 1", "name.startsWith(\"M\")", 0, new Person("Mario", 45), new Person("Sofia", 8));
     }
 
-    @Test
-    public void test2P1CNotFiring() {
-        check("age >= 1", "name.startsWith(\"M\")", 0, new Person("Mario", 45), new Person("Sofia", 8));
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void test2P2CFiring(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        check(kieBaseTestConfiguration, "", "age >= 18, name.startsWith(\"M\")", 1, new Person("Mario", 45), new Person("Mark", 43));
     }
 
-    @Test
-    public void test2P2CFiring() {
-        check("", "age >= 18, name.startsWith(\"M\")", 1, new Person("Mario", 45), new Person("Mark", 43));
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void test2P2CNotFiring1(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        check(kieBaseTestConfiguration, "", "age >= 18, name.startsWith(\"M\")", 0, new Person("Mario", 45), new Person("Mark", 43), new Person("Edson", 40));
     }
 
-    @Test
-    public void test2P2CNotFiring1() {
-        check("", "age >= 18, name.startsWith(\"M\")", 0, new Person("Mario", 45), new Person("Mark", 43), new Person("Edson", 40));
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void test2P3CFiring(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        check(kieBaseTestConfiguration, "name.length() < 6", "age >= 18, name.startsWith(\"M\")", 1, new Person("Mario", 45), new Person("Mark", 43), new Person("Daniele", 43));
     }
 
-    @Test
-    public void test2P3CFiring() {
-        check("name.length() < 6", "age >= 18, name.startsWith(\"M\")", 1, new Person("Mario", 45), new Person("Mark", 43), new Person("Daniele", 43));
-    }
-
-    @Test
-    public void testNoFiring() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testNoFiring(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-5915
-        check("", "age >= 18", 0);
+        check(kieBaseTestConfiguration, "", "age >= 18", 0);
     }
 
-    private void check(String constraints1, int expectedFires, Object... objs) {
-        check( constraints1, null, expectedFires, objs );
+    private void check(KieBaseTestConfiguration kieBaseTestConfiguration, String constraints1, int expectedFires, Object... objs) {
+        check( kieBaseTestConfiguration, constraints1, null, expectedFires, objs );
     }
 
-    private void check(String constraints1, String constraints2, int expectedFires, Object... objs) {
+    private void check(KieBaseTestConfiguration kieBaseTestConfiguration, String constraints1, String constraints2, int expectedFires, Object... objs) {
         final String drl =
                 "package org.drools.compiler.integrationtests.operators;\n" +
                 "import " + Person.class.getCanonicalName() + ";\n" +
@@ -173,8 +180,9 @@ public class ForAllTest {
         }
     }
 
-    @Test
-    public void testWithDate() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testWithDate(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         // DROOLS-4925
 
         String pkg = "org.drools.compiler.integrationtests.operators";
@@ -206,8 +214,9 @@ public class ForAllTest {
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testWithIndexedAlpha() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testWithIndexedAlpha(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         // DROOLS-5019
 
         String pkg = "org.drools.compiler.integrationtests.operators";
@@ -237,8 +246,9 @@ public class ForAllTest {
         assertThat(ksession2.fireAllRules()).isEqualTo(0);
     }
 
-    @Test
-    public void testForallWithNotEqualConstraint() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testForallWithNotEqualConstraint(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         // DROOLS-5100
 
         String drl =
@@ -256,8 +266,9 @@ public class ForAllTest {
         assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
-    @Test
-    public void testForallWithNotEqualConstraintOnDate() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testForallWithNotEqualConstraintOnDate(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         // DROOLS-5224
 
         String drl =
@@ -316,17 +327,19 @@ public class ForAllTest {
         }
     }
 
-    @Test
-    public void testForallWithEmptyListConstraintCombinedWithOrFiring() throws Exception {
-        checkForallWithEmptyListConstraintCombinedWithOrFiring(true);
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testForallWithEmptyListConstraintCombinedWithOrFiring(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
+        checkForallWithEmptyListConstraintCombinedWithOrFiring(kieBaseTestConfiguration, true);
     }
 
-    @Test
-    public void testForallWithEmptyListConstraintCombinedWithOrNotFiring() throws Exception {
-        checkForallWithEmptyListConstraintCombinedWithOrFiring(false);
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testForallWithEmptyListConstraintCombinedWithOrNotFiring(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
+        checkForallWithEmptyListConstraintCombinedWithOrFiring(kieBaseTestConfiguration, false);
     }
 
-    private void checkForallWithEmptyListConstraintCombinedWithOrFiring(boolean firing) {
+    private void checkForallWithEmptyListConstraintCombinedWithOrFiring(KieBaseTestConfiguration kieBaseTestConfiguration, boolean firing) {
         // DROOLS-5682
 
         String drl =
@@ -348,39 +361,45 @@ public class ForAllTest {
         assertThat(ksession.fireAllRules()).isEqualTo(firing ? 1 : 0);
     }
 
-    @Test
-    public void testForallWithMultipleConstraints() throws Exception {
-        checkForallWithComplexExpression("value > 1, value < 10");
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testForallWithMultipleConstraints(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
+        checkForallWithComplexExpression(kieBaseTestConfiguration, "value > 1, value < 10");
     }
 
-    @Test
-    public void testForallWithAnd() throws Exception {
-        checkForallWithComplexExpression("value > 1 && value < 10");
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testForallWithAnd(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
+        checkForallWithComplexExpression(kieBaseTestConfiguration, "value > 1 && value < 10");
     }
 
-    @Test
-    public void testForallWithAndInMultipleConstraints() throws Exception {
-        checkForallWithComplexExpression("value > 1, value > 2 && value < 10");
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testForallWithAndInMultipleConstraints(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
+        checkForallWithComplexExpression(kieBaseTestConfiguration, "value > 1, value > 2 && value < 10");
     }
 
-    @Test
-    public void testForallWithOr() throws Exception {
-        checkForallWithComplexExpression("value < 1 || value > 50");
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testForallWithOr(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
+        checkForallWithComplexExpression(kieBaseTestConfiguration, "value < 1 || value > 50");
     }
 
-    @Test
-    public void testForallWithIn() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testForallWithIn(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         // DROOLS-6560
-        checkForallWithComplexExpression("value in (1, 43)");
+        checkForallWithComplexExpression(kieBaseTestConfiguration, "value in (1, 43)");
     }
 
-    @Test
-    public void testForallWithNotIn() throws Exception {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testForallWithNotIn(KieBaseTestConfiguration kieBaseTestConfiguration) throws Exception {
         // DROOLS-6560
-        checkForallWithComplexExpression("value not in (1, 42)");
+        checkForallWithComplexExpression(kieBaseTestConfiguration, "value not in (1, 42)");
     }
 
-    private void checkForallWithComplexExpression(String expression) throws Exception {
+    private void checkForallWithComplexExpression(KieBaseTestConfiguration kieBaseTestConfiguration, String expression) throws Exception {
         // DROOLS-6469
         String drl =
                 "package test\n" +

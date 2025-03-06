@@ -40,7 +40,6 @@
     <java.module.name>org.kie.maven.plugin</java.module.name>
     <plugin.testing.harness.version>3.3.0</plugin.testing.harness.version>
     <plugin.plugin.version>3.6.4</plugin.plugin.version>
-    <maven.version>3.8.4</maven.version>
     <sisu.inject.version>1.4.2</sisu.inject.version>
     <maven.resolver.api.version>1.7.3</maven.resolver.api.version>
   </properties>
@@ -107,11 +106,6 @@
         <version>${project.version}</version>
         <type>pom</type>
         <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.maven</groupId>
-        <artifactId>maven-plugin-api</artifactId>
-        <version>${maven.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.maven.plugin-testing</groupId>
@@ -350,7 +344,11 @@
       <artifactId>sisu-inject-plexus</artifactId>
       <scope>test</scope>
     </dependency>
-
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-dependencies</artifactId>
+      <scope>test</scope>
+    </dependency>
 
     <dependency>
       <groupId>org.mockito</groupId>
@@ -366,11 +364,6 @@
     <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>

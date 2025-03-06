@@ -39,6 +39,12 @@ public class ContextEntryNode
         this.value = value;
     }
 
+    public ContextEntryNode(BaseNode name, BaseNode value, String text) {
+        this.name = name;
+        this.value = value;
+        this.setText(text);
+    }
+
     public BaseNode getName() {
         return name;
     }

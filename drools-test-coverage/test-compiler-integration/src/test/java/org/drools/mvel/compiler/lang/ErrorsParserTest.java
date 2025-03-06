@@ -26,7 +26,7 @@ import org.drools.drl.parser.DroolsParserException;
 import org.drools.drl.parser.lang.DRLParser;
 import org.drools.drl.parser.lang.Expander;
 import org.drools.drl.parser.lang.dsl.DefaultExpander;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -48,14 +48,14 @@ public class ErrorsParserTest {
         String name = "expander_post_errors.dslr";
         Expander expander = new DefaultExpander();
         String expanded = expander.expand( this.getReader( name ) );
-        
+
         DRLParser parser = parse( name, expanded );
         parser.compilationUnit();
         assertThat(parser.hasErrors()).isTrue();
 
         assertThat(parser.getErrors().size()).isEqualTo(1);
         DroolsParserException err = parser.getErrors().get(0);
-        assertThat(err.getLineNumber()).isEqualTo(6);
+        assertThat(err.getLineNumber()).isEqualTo(7);
     }
 
     @Test

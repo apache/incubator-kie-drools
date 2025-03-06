@@ -22,55 +22,34 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
 class SumFunctionTest {
 
-    private SumFunction sumFunction;
-
-    @BeforeEach
-    void setUp() {
-        sumFunction = new SumFunction();
-    }
-
-    @Test
-    void invokeNumberParamNull() {
-        FunctionTestUtil.assertResultError(sumFunction.invoke((Number) null), InvalidParametersEvent.class);
-    }
-
-    @Test
-    void invokeNumberParamUnsupportedNumber() {
-        FunctionTestUtil.assertResultError(sumFunction.invoke(Double.NaN), InvalidParametersEvent.class);
-    }
-
-    @Test
-    void invokeNumberParamSupportedNumber() {
-        FunctionTestUtil.assertResult(sumFunction.invoke(BigDecimal.TEN), BigDecimal.TEN);
-        FunctionTestUtil.assertResult(sumFunction.invoke(10), BigDecimal.TEN);
-        FunctionTestUtil.assertResult(sumFunction.invoke(-10), BigDecimal.valueOf(-10));
-        FunctionTestUtil.assertResult(sumFunction.invoke(10.12), BigDecimal.valueOf(10.12));
-    }
+    private static final SumFunction sumFunction = SumFunction.INSTANCE;
 
     @Test
     void invokeListParam() {
-        FunctionTestUtil.assertResultError(sumFunction.invoke((List) null), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(sumFunction.invoke((List<?>) null), InvalidParametersEvent.class);
     }
 
     @Test
     void invokeListParamContainsUnsupportedNumber() {
-        FunctionTestUtil.assertResultError(sumFunction.invoke(Arrays.asList(10, 2, Double.NaN)), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(sumFunction.invoke(Arrays.asList(10, 2, Double.NaN)),
+                                           InvalidParametersEvent.class);
     }
 
     @Test
     void invokeListParamContainsUnsupportedType() {
-        FunctionTestUtil.assertResultError(sumFunction.invoke(Arrays.asList(10, "test", 2)), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(sumFunction.invoke(Arrays.asList(10, "test", 2)),
+                                           InvalidParametersEvent.class);
     }
 
     @Test
     void invokeListParamSupportedTypes() {
-        FunctionTestUtil.assertResult(sumFunction.invoke(Arrays.asList(4, -1, 12.1, (long) 5, BigDecimal.TEN)), BigDecimal.valueOf(30.1));
+        FunctionTestUtil.assertResult(sumFunction.invoke(Arrays.asList(4, -1, 12.1, (long) 5, BigDecimal.TEN)),
+                                      BigDecimal.valueOf(30.1));
     }
 
     @Test
@@ -80,16 +59,19 @@ class SumFunctionTest {
 
     @Test
     void invokeArrayParamContainsUnsupportedNumber() {
-        FunctionTestUtil.assertResultError(sumFunction.invoke(new Object[]{10, 2, Double.NaN}), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(sumFunction.invoke(new Object[]{10, 2, Double.NaN}),
+                                           InvalidParametersEvent.class);
     }
 
     @Test
     void invokeArrayParamContainsUnsupportedType() {
-        FunctionTestUtil.assertResultError(sumFunction.invoke(new Object[]{10, "test", 2}), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(sumFunction.invoke(new Object[]{10, "test", 2}),
+                                           InvalidParametersEvent.class);
     }
 
     @Test
     void invokeArrayParamSupportedTypes() {
-        FunctionTestUtil.assertResult(sumFunction.invoke(new Object[]{4, -1, 12.1, (long) 5, BigDecimal.TEN}), BigDecimal.valueOf(30.1));
+        FunctionTestUtil.assertResult(sumFunction.invoke(new Object[]{4, -1, 12.1, (long) 5, BigDecimal.TEN}),
+                                      BigDecimal.valueOf(30.1));
     }
 }

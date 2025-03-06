@@ -19,39 +19,31 @@
 package org.drools.mvel.integrationtests;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.drools.mvel.compiler.Address;
 import org.drools.mvel.compiler.Person;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class NullSafeDereferencingTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public NullSafeDereferencingTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
-    }
-
-    @Test
-    public void testNullSafeBinding() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testNullSafeBinding(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str = "import org.drools.mvel.compiler.*;\n" +
                 "rule R1 when\n" +
                 "   Person( $streetName : address!.street ) \n" +
@@ -75,8 +67,9 @@ public class NullSafeDereferencingTest {
         ksession.dispose();
     }
 
-    @Test
-    public void testNullSafeNullComparison() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testNullSafeNullComparison(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str = "import org.drools.mvel.compiler.*;\n" +
                 "rule R1 when\n" +
                 "   Person( address!.street == null ) \n" +
@@ -100,8 +93,9 @@ public class NullSafeDereferencingTest {
         ksession.dispose();
     }
 
-    @Test
-    public void testNullSafeNullComparison2() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testNullSafeNullComparison2(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str = "import org.drools.mvel.compiler.*;\n" +
                      "rule R1 when\n" +
                      " $street : String()\n"+
@@ -127,8 +121,9 @@ public class NullSafeDereferencingTest {
         ksession.dispose();
     }
 
-    @Test
-    public void testNullSafeWithMethod() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testNullSafeWithMethod(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-4095
         String str = "import org.drools.mvel.compiler.*;\n" +
                      "rule R1 when\n" +
@@ -155,8 +150,9 @@ public class NullSafeDereferencingTest {
         ksession.dispose();
     }
 
-    @Test
-    public void testNullSafeNullComparisonReverse() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testNullSafeNullComparisonReverse(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-82
         String str =
                 "import org.drools.mvel.compiler.*;\n" +
@@ -182,8 +178,9 @@ public class NullSafeDereferencingTest {
         ksession.dispose();
     }
 
-    @Test
-    public void testNullSafeNullComparisonReverseComplex() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testNullSafeNullComparisonReverseComplex(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-82
         String str =
                 "import org.drools.mvel.compiler.*;\n" +
@@ -209,8 +206,9 @@ public class NullSafeDereferencingTest {
         ksession.dispose();
     }
 
-    @Test
-    public void testDoubleNullSafe() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testDoubleNullSafe(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str = "import org.drools.mvel.compiler.*;\n" +
                 "rule R1 when\n" +
                 "   Person( address!.street!.length > 15 ) \n" +
@@ -238,8 +236,10 @@ public class NullSafeDereferencingTest {
         ksession.dispose();
     }
 
-    @Test
-    public void testMixedNullSafes() {
+    @DisabledIfSystemProperty(named = "drools.drl.antlr4.parser.enabled", matches = "true")
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testMixedNullSafes(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str = "import org.drools.mvel.compiler.*;\n" +
                      "rule R1 when\n" +
                      " $p : Person( " +
@@ -275,8 +275,9 @@ public class NullSafeDereferencingTest {
         ksession.dispose();
     }
 
-    @Test
-    public void testNullSafeMemberOf() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testNullSafeMemberOf(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-50
         String str =
                 "declare A\n" +
@@ -301,8 +302,9 @@ public class NullSafeDereferencingTest {
         ksession.dispose();
     }
 
-    @Test
-    public void testNullSafeInnerConstraint() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testNullSafeInnerConstraint(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str =
                 "declare Content\n" +
                 " complexContent : Content\n" +
@@ -316,7 +318,7 @@ public class NullSafeDereferencingTest {
                 "rule \"Complex Type Attribute\"\n" +
                 "when\n" +
                 " $con : Content()\n" +
-                " Context( ctx == $con || == $con!.complexContent!.extension )\n" +
+                " Context( ctx == $con || ctx == $con!.complexContent!.extension )\n" +
                 "then\n" +
                 " System.out.println( $con ); \n" +
                 "end\n" +
@@ -342,8 +344,9 @@ public class NullSafeDereferencingTest {
         ksession.dispose();
     }
 
-   @Test
-   public void testNullSafeNestedAccessors() {
+   @ParameterizedTest(name = "KieBase type={0}")
+   @MethodSource("parameters")
+   public void testNullSafeNestedAccessors(KieBaseTestConfiguration kieBaseTestConfiguration) {
       String str = "package org.drools.test; " +
                    "import " + Person.class.getName() + "; " +
                    "global java.util.List list; " +

@@ -21,15 +21,17 @@ package org.kie.dmn.feel.runtime.functions;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
+import org.kie.dmn.feel.runtime.FEELCollectionFunction;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
 public class ReverseFunction
-        extends BaseFEELFunction {
+        extends BaseFEELFunction implements FEELCollectionFunction {
 
     public static final ReverseFunction INSTANCE = new ReverseFunction();
 
-    public ReverseFunction() {
+    private ReverseFunction() {
         super( "reverse" );
     }
 

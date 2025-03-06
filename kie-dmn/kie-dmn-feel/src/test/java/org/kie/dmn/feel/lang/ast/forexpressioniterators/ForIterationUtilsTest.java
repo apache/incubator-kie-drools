@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -25,15 +25,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
-import org.kie.dmn.feel.exceptions.EndpointOfRangeNotValidTypeException;
-import org.kie.dmn.feel.exceptions.EndpointOfRangeOfDifferentTypeException;
+import org.kie.dmn.feel.exceptions.EndpointOfForIterationDifferentTypeException;
+import org.kie.dmn.feel.exceptions.EndpointOfForIterationNotValidTypeException;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
 import org.mockito.ArgumentCaptor;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.kie.dmn.feel.codegen.feel11.CodegenTestUtil.newEmptyEvaluationContext;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.kie.dmn.feel.util.EvaluationContextTestUtil.newEmptyEvaluationContext;
 import static org.kie.dmn.feel.lang.ast.forexpressioniterators.ForIterationUtils.getForIteration;
 import static org.kie.dmn.feel.lang.ast.forexpressioniterators.ForIterationUtils.validateValues;
 import static org.kie.dmn.feel.lang.ast.forexpressioniterators.ForIterationUtils.valueMustBeValid;
@@ -60,10 +59,10 @@ class ForIterationUtilsTest {
     @Test
     void getForIterationValidTest() {
         ForIteration retrieved = getForIteration(ctx, "iteration", BigDecimal.valueOf(1), BigDecimal.valueOf(3));
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         verify(listener, never()).onEvent(any(FEELEvent.class));
         retrieved = getForIteration(ctx, "iteration", LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 3));
-        assertNotNull(retrieved);
+        assertThat(retrieved).isNotNull();
         verify(listener, never()).onEvent(any(FEELEvent.class));
     }
 
@@ -72,7 +71,7 @@ class ForIterationUtilsTest {
         try {
             getForIteration(ctx, "iteration", "NOT", "VALID");
         } catch (Exception e) {
-            assertTrue(e instanceof EndpointOfRangeNotValidTypeException);
+            assertThat(e).isInstanceOf(EndpointOfForIterationNotValidTypeException.class);
             final ArgumentCaptor<FEELEvent> captor = ArgumentCaptor.forClass(FEELEvent.class);
             verify(listener, times(1)).onEvent(captor.capture());
             reset(listener);
@@ -80,7 +79,7 @@ class ForIterationUtilsTest {
         try {
             getForIteration(ctx, "iteration", BigDecimal.valueOf(1), LocalDate.of(2021, 1, 1));
         } catch (Exception e) {
-            assertTrue(e instanceof EndpointOfRangeOfDifferentTypeException);
+            assertThat(e).isInstanceOf(EndpointOfForIterationDifferentTypeException.class);
             final ArgumentCaptor<FEELEvent> captor = ArgumentCaptor.forClass(FEELEvent.class);
             verify(listener, times(1)).onEvent(captor.capture());
             reset(listener);
@@ -88,7 +87,7 @@ class ForIterationUtilsTest {
         try {
             getForIteration(ctx, "iteration", LocalDate.of(2021, 1, 1), BigDecimal.valueOf(1));
         } catch (Exception e) {
-            assertTrue(e instanceof EndpointOfRangeOfDifferentTypeException);
+            assertThat(e).isInstanceOf(EndpointOfForIterationDifferentTypeException.class);
             final ArgumentCaptor<FEELEvent> captor = ArgumentCaptor.forClass(FEELEvent.class);
             verify(listener, times(1)).onEvent(captor.capture());
             reset(listener);
@@ -108,7 +107,7 @@ class ForIterationUtilsTest {
         try {
             valueMustBeValid(ctx, "INVALID");
         } catch (Exception e) {
-            assertTrue(e instanceof EndpointOfRangeNotValidTypeException);
+            assertThat(e).isInstanceOf(EndpointOfForIterationNotValidTypeException.class);
             final ArgumentCaptor<FEELEvent> captor = ArgumentCaptor.forClass(FEELEvent.class);
             verify(listener, times(1)).onEvent(captor.capture());
         }
@@ -127,7 +126,7 @@ class ForIterationUtilsTest {
         try {
             validateValues(ctx, "INVALID", "INVALID");
         } catch (Exception e) {
-            assertTrue(e instanceof EndpointOfRangeNotValidTypeException);
+            assertThat(e).isInstanceOf(EndpointOfForIterationNotValidTypeException.class);
             final ArgumentCaptor<FEELEvent> captor = ArgumentCaptor.forClass(FEELEvent.class);
             verify(listener, times(1)).onEvent(captor.capture());
             reset(listener);
@@ -135,7 +134,7 @@ class ForIterationUtilsTest {
         try {
             validateValues(ctx, BigDecimal.valueOf(1), LocalDate.of(2021, 1, 1));
         } catch (Exception e) {
-            assertTrue(e instanceof EndpointOfRangeOfDifferentTypeException);
+            assertThat(e).isInstanceOf(EndpointOfForIterationDifferentTypeException.class);
             final ArgumentCaptor<FEELEvent> captor = ArgumentCaptor.forClass(FEELEvent.class);
             verify(listener, times(1)).onEvent(captor.capture());
             reset(listener);
@@ -143,12 +142,10 @@ class ForIterationUtilsTest {
         try {
             validateValues(ctx, LocalDate.of(2021, 1, 1), BigDecimal.valueOf(1));
         } catch (Exception e) {
-            assertTrue(e instanceof EndpointOfRangeOfDifferentTypeException);
+            assertThat(e).isInstanceOf(EndpointOfForIterationDifferentTypeException.class);
             final ArgumentCaptor<FEELEvent> captor = ArgumentCaptor.forClass(FEELEvent.class);
             verify(listener, times(1)).onEvent(captor.capture());
             reset(listener);
         }
     }
-
-
 }

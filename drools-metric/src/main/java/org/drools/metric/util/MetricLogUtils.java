@@ -30,6 +30,11 @@ public class MetricLogUtils {
 
     public static final String METRIC_LOGGER_ENABLED = "drools.metric.logger.enabled";
     private boolean enabled = Boolean.parseBoolean(getConfig(METRIC_LOGGER_ENABLED, "false"));
+
+    // Set true when you want to disable Micrometer even if it is available.
+    public static final String METRIC_MICROMETER_DISABLED = "drools.metric.micrometer.disabled";
+    private boolean micrometerDisabled = Boolean.parseBoolean(getConfig(METRIC_MICROMETER_DISABLED, "false"));
+
     private boolean micrometerAvailable = isMicrometerAvailable();
 
     public static final String METRIC_LOGGER_THRESHOLD = "drools.metric.logger.threshold";
@@ -37,7 +42,7 @@ public class MetricLogUtils {
 
     private final ThreadLocal<NodeStats> nodeStats = new ThreadLocal<>();
 
-    private static final MetricLogUtils INSTANCE = new MetricLogUtils();
+    private static MetricLogUtils INSTANCE = new MetricLogUtils();
 
     private static boolean isMicrometerAvailable() {
         try {
@@ -92,7 +97,7 @@ public class MetricLogUtils {
                 long elapsedTimeInNanos = (System.nanoTime() - stats.getStartTime());
                 long elapsedTimeInMicro = elapsedTimeInNanos / 1000;
                 if (evalCount > 0 && elapsedTimeInMicro > threshold) {
-                    if (micrometerAvailable) {
+                    if (micrometerAvailable && !micrometerDisabled) {
                         MicrometerUtils.INSTANCE.triggerMicrometer(stats.getNode(), evalCount, elapsedTimeInNanos);
                     } else {  // Only log when Micrometer is not enabled.
                         logger.trace("{}, evalCount:{}, elapsedMicro:{}", stats.getNode(), evalCount, elapsedTimeInMicro);
@@ -105,4 +110,10 @@ public class MetricLogUtils {
         }
     }
 
+    /*
+     * This method is only used for testing purposes.
+     */
+    public static void recreateInstance() {
+        MetricLogUtils.INSTANCE = new MetricLogUtils();
+    }
 }

@@ -42,6 +42,7 @@ import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.lang.types.DefaultBuiltinFEELTypeRegistry;
 import org.kie.dmn.feel.lang.types.FEELTypeRegistry;
 import org.kie.dmn.feel.lang.types.GenListType;
+import org.kie.dmn.feel.lang.types.GenRangeType;
 import org.kie.dmn.feel.lang.types.ScopeImpl;
 import org.kie.dmn.feel.lang.types.SymbolTable;
 import org.kie.dmn.feel.lang.types.VariableSymbol;
@@ -142,6 +143,10 @@ public class ParserHelper {
             Type scopeType = resolved != null ? resolved.getType() : null;
             if (scopeType instanceof GenListType) {
                 scopeType = ((GenListType) scopeType).getGen();
+            }
+
+            if (scopeType instanceof GenRangeType) {
+                scopeType = ((GenRangeType) scopeType).getGen();
             }
 
             if (resolved != null && scopeType instanceof CompositeType) {

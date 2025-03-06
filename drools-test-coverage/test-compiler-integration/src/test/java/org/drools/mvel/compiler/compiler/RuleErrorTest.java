@@ -21,7 +21,7 @@ package org.drools.mvel.compiler.compiler;
 import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.drl.ast.descr.AndDescr;
 import org.drools.drl.ast.descr.RuleDescr;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.internal.jci.CompilationProblem;
 
 import static org.assertj.core.api.Assertions.assertThat;

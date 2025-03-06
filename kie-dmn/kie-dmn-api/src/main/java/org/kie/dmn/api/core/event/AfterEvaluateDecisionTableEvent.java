@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -22,6 +22,10 @@ import java.util.List;
 
 public interface AfterEvaluateDecisionTableEvent extends DMNEvent {
 
+    /**
+     * The decision that this node relates to
+     * @return
+     */
     String getNodeName();
 
     String getDecisionTableName();
@@ -33,4 +37,8 @@ public interface AfterEvaluateDecisionTableEvent extends DMNEvent {
     List<Integer> getMatches();
 
     List<Integer> getSelected();
+
+    List<String> getMatchesIds();
+
+    List<String> getSelectedIds();
 }

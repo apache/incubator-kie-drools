@@ -1035,11 +1035,11 @@ public class DMNRuntimeTypesTest extends BaseVariantTest {
             Map<String, Object> allProperties = outputSet.allFEELProperties();
             List<List<List<FEELPropertyAccessible>>> colCOut = (List<List<List<FEELPropertyAccessible>>>) allProperties.get("Decision-1");
             List<FEELPropertyAccessible>  personOutList = colCOut.stream().flatMap(colB -> colB.stream()).flatMap(colA -> colA.stream()).collect(Collectors.toList());
-            personOutList.stream().forEach(person -> assertPersonInDeepCol(person));
+            assertThat(personOutList).allSatisfy(person -> assertPersonInDeepCol(person));
         } else {
             List<List<List<Map<String, Object>>>> colCOut = (List<List<List<Map<String, Object>>>>)dmnResult.getContext().get("Decision-1");
             List<Map<String, Object>>  personOutList = colCOut.stream().flatMap(colB -> colB.stream()).flatMap(colA -> colA.stream()).collect(Collectors.toList());
-            personOutList.stream().forEach(person -> assertPersonMapInDeepCol(person));
+            assertThat(personOutList).allSatisfy(person -> assertPersonMapInDeepCol(person));
         }
     }
 

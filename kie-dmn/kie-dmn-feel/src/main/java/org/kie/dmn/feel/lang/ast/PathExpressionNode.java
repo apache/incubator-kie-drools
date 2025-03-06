@@ -42,6 +42,12 @@ public class PathExpressionNode
         this.name = name;
     }
 
+    public PathExpressionNode(BaseNode expression, BaseNode name, String text) {
+        this.expression = expression;
+        this.name = name;
+        this.setText(text);
+    }
+
     public BaseNode getExpression() {
         return expression;
     }

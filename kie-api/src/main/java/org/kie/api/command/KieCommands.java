@@ -28,6 +28,8 @@ import org.kie.api.runtime.ObjectFilter;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.rule.FactHandle;
 
+import static java.util.Arrays.asList;
+
 /**
  * KieCommands is a factory for Commands that can be used by classes that implement CommandExecutor. Typically more than one Command
  * will want to be executed, where is where the BatchExecution comes in, which takes a List of commands, think of it as CompositeCommand.
@@ -113,6 +115,10 @@ public interface KieCommands extends KieService {
     Command newQuery(String identifier,
                      String name,
                      Object[] arguments);
+
+    default BatchExecutionCommand newBatchExecution(Command... commands) {
+        return newBatchExecution( asList(commands) );
+    }
 
     BatchExecutionCommand newBatchExecution(List< ? extends Command> commands);
 

@@ -18,18 +18,19 @@
  */
 package org.kie.dmn.feel.runtime.functions;
 
-import org.kie.dmn.api.feel.runtime.events.FEELEvent;
-import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
-
 import java.math.BigDecimal;
 
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
+import org.kie.dmn.feel.runtime.FEELBooleanFunction;
+import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
+
 public class OddFunction
-        extends BaseFEELFunction {
+        extends BaseFEELFunction implements FEELBooleanFunction {
     public static final OddFunction INSTANCE = new OddFunction();
 
     private static final BigDecimal TWO = BigDecimal.valueOf(2);
 
-    OddFunction() {
+    private OddFunction() {
         super("odd");
     }
 

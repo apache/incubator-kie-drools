@@ -27,9 +27,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.kie.dmn.feel.lang.FEELDialect;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.Range.RangeBoundary;
 import org.kie.dmn.feel.runtime.impl.RangeImpl;
+import org.kie.dmn.feel.runtime.impl.UndefinedValueComparable;
 import org.kie.dmn.feel.util.Generated;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -99,7 +101,7 @@ public class Interval {
         if (input != POS_INF && input != NEG_INF) {
             return input;
         } else {
-            return null;
+            return new UndefinedValueComparable();
         }
     }
 
@@ -168,7 +170,8 @@ public class Interval {
     }
 
     public boolean asRangeIncludes(Object param) {
-        Boolean result = this.asRange.includes(param);
+        // Defaulting FEELDialect to FEEL
+        Boolean result = this.asRange.includes(FEELDialect.FEEL, param);
         if (result != null) {
             return result;
         } else if (this.lowerBound.getValue() == NEG_INF &&

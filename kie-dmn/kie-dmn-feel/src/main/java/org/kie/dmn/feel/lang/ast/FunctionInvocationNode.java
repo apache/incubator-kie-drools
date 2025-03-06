@@ -48,6 +48,13 @@ public class FunctionInvocationNode
         this.params = params;
     }
 
+    public FunctionInvocationNode(BaseNode name, ListNode params, TemporalConstantNode tcFolded, String text) {
+        this.name = name;
+        this.params = params;
+        this.tcFolded = tcFolded;
+        this.setText(text);
+    }
+
     public BaseNode getName() {
         return name;
     }
@@ -117,7 +124,7 @@ public class FunctionInvocationNode
         } else if (value instanceof Range) {
             if (params.getElements().size() == 1) {
                 Object p = params.getElements().get(0).evaluate(ctx);
-                return ((Range) value).includes(p);
+                return ((Range) value).includes(ctx.getFEELDialect(), p);
             } else {
                 ctx.notifyEvt(astEvent(Severity.ERROR, Msg.createMessage(Msg.CAN_T_INVOKE_AN_UNARY_TEST_WITH_S_PARAMETERS_UNARY_TESTS_REQUIRE_1_SINGLE_PARAMETER, params.getElements().size())));
             }

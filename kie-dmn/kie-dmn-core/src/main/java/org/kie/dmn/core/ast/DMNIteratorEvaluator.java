@@ -27,8 +27,8 @@ import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
-import org.kie.dmn.core.api.EvaluatorResult;
-import org.kie.dmn.core.api.EvaluatorResult.ResultType;
+import org.kie.dmn.api.core.EvaluatorResult;
+import org.kie.dmn.api.core.EvaluatorResult.ResultType;
 import org.kie.dmn.core.impl.DMNResultImpl;
 import org.kie.dmn.core.util.IterableRange;
 import org.kie.dmn.core.util.Msg;
@@ -72,8 +72,8 @@ public class DMNIteratorEvaluator implements DMNExpressionEvaluator {
         }
         Object inObj = inResult.getResult();
 
-        if (inObj instanceof Range) {
-            inObj = new IterableRange((Range) inObj);
+        if (inObj instanceof Range range) {
+            inObj = new IterableRange(range);
         } else if (!(inObj instanceof Iterable)) {
             if (inObj == null) {
                 MsgUtil.reportMessage(logger,
@@ -112,16 +112,40 @@ public class DMNIteratorEvaluator implements DMNExpressionEvaluator {
 
         if (type instanceof Every) {
             for (Object satisfies : returnList) {
-                if (!(satisfies instanceof Boolean) || ((Boolean) satisfies).booleanValue() == false) {
-                    return new EvaluatorResultImpl(Boolean.FALSE, ResultType.SUCCESS);
+                if (satisfies instanceof Boolean satifiesBoolean) {
+                    if (Boolean.FALSE.equals(satifiesBoolean)) {
+                        return new EvaluatorResultImpl(Boolean.FALSE, ResultType.SUCCESS);
+                    }
+                } else {
+                    MsgUtil.reportMessage(logger,
+                            DMNMessage.Severity.ERROR,
+                            node,
+                            result,
+                            null,
+                            null,
+                            Msg.ITERATOR_EXPRESSION_RESULT_NOT_BOOLEAN,
+                            name);
+                    return new EvaluatorResultImpl(null, ResultType.FAILURE);
                 }
             }
             return new EvaluatorResultImpl(Boolean.TRUE, ResultType.SUCCESS);
         }
         if (type instanceof Some) {
             for (Object satisfies : returnList) {
-                if (satisfies instanceof Boolean && ((Boolean) satisfies).booleanValue() == true) {
-                    return new EvaluatorResultImpl(Boolean.TRUE, ResultType.SUCCESS);
+                if (satisfies instanceof Boolean satifiesBoolean) {
+                    if (Boolean.TRUE.equals(satifiesBoolean)) {
+                        return new EvaluatorResultImpl(Boolean.TRUE, ResultType.SUCCESS);
+                    }
+                } else {
+                    MsgUtil.reportMessage(logger,
+                            DMNMessage.Severity.ERROR,
+                            node,
+                            result,
+                            null,
+                            null,
+                            Msg.ITERATOR_EXPRESSION_RESULT_NOT_BOOLEAN,
+                            name);
+                    return new EvaluatorResultImpl(null, ResultType.FAILURE);
                 }
             }
             return new EvaluatorResultImpl(Boolean.FALSE, ResultType.SUCCESS);

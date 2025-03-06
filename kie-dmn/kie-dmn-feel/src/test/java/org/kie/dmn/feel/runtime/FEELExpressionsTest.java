@@ -91,7 +91,7 @@ public class FEELExpressionsTest extends BaseFEELTest {
                 {"{ x : 10, test : > x, y : 20, result : y in ( test ) }.result", Boolean.TRUE , null},
                 {"{ x : 10, test : > x, y : 20, result : test( y ) }.result", Boolean.TRUE , null},
                 {"{ test : in x, y : 20, x : [10, 20, 30], result : test( y ) }.result", null, FEELEvent.Severity.ERROR},
-                
+
                 {"2 in 2", Boolean.TRUE , null},
                 {"{ x : 2, result : x in 2 }.result", Boolean.TRUE , null},
                 {"{ someList : [1, 2, 3], result : 2 in someList }.result", Boolean.TRUE , null},

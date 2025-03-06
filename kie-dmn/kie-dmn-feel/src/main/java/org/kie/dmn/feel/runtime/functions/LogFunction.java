@@ -23,13 +23,14 @@ import java.math.MathContext;
 
 import ch.obermuhlner.math.big.BigDecimalMath;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
+import org.kie.dmn.feel.runtime.FEELNumberFunction;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
 public class LogFunction
-        extends BaseFEELFunction {
+        extends BaseFEELFunction implements FEELNumberFunction {
     public static final LogFunction INSTANCE = new LogFunction();
 
-    LogFunction() {
+    private LogFunction() {
         super("log");
     }
 

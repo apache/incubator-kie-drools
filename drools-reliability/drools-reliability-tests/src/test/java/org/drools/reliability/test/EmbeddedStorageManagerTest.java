@@ -20,16 +20,14 @@ package org.drools.reliability.test;
 
 import org.drools.reliability.core.StorageManagerFactory;
 import org.drools.reliability.core.TestableStorageManager;
-import org.drools.reliability.infinispan.InfinispanStorageManager;
+import org.drools.reliability.infinispan.EmbeddedStorageManager;
+import org.infinispan.configuration.cache.Configuration;
 import org.infinispan.manager.DefaultCacheManager;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIf;
 import org.junit.jupiter.api.extension.ExtendWith;
-
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.reliability.core.StorageManagerFactory.SESSION_STORAGE_PREFIX;
@@ -38,9 +36,6 @@ import static org.drools.reliability.infinispan.InfinispanStorageManagerFactory.
 import static org.drools.reliability.test.util.TestConfigurationUtils.DROOLS_RELIABILITY_MODULE_TEST;
 import static org.drools.util.Config.getConfig;
 
-/**
- *  This class is a unit test for EmbeddedCacheManager methods with a fake cacheManager instead of Infinispan DefaultCacheManager.
- */
 @EnabledIf("isEmbeddedInfinispan")
 @ExtendWith(BeforeAllMethodExtension.class)
 class EmbeddedStorageManagerTest {
@@ -49,9 +44,19 @@ class EmbeddedStorageManagerTest {
         System.setProperty(INFINISPAN_STORAGE_ALLOWED_PACKAGES, "org.test.domain");
     }
 
+    @BeforeEach
+    public void setUp() {
+        // Cache will be [METADATA_0, ___protobuf_metadata, ___script_cache, session_0_epDefault, session_1_epDefault]
+        DefaultCacheManager cacheManager = ((EmbeddedStorageManager) StorageManagerFactory.get().getStorageManager()).getEmbeddedCacheManager();
+        Configuration cacheConfiguration = ((EmbeddedStorageManager) StorageManagerFactory.get().getStorageManager()).getCacheConfiguration();
+        cacheManager.createCache(SESSION_STORAGE_PREFIX + "0_" + "epDefault", cacheConfiguration);
+        cacheManager.createCache(SESSION_STORAGE_PREFIX + "1_" + "epDefault", cacheConfiguration);
+        cacheManager.createCache("METADATA_0", cacheConfiguration);
+    }
+
     @AfterEach
     public void tearDown() {
-        ((TestableStorageManager) StorageManagerFactory.get().getStorageManager()).restart(); // make sure that FakeCacheManager is removed
+        ((TestableStorageManager) StorageManagerFactory.get().getStorageManager()).restart();
     }
 
     static boolean isEmbeddedInfinispan() {
@@ -61,56 +66,17 @@ class EmbeddedStorageManagerTest {
 
     @Test
     void removeAllSessionCaches_shouldLeaveNonSessionCache() {
-        ((InfinispanStorageManager) StorageManagerFactory.get().getStorageManager()).setEmbeddedCacheManager(new FakeCacheManager());
-
-        assertThat(StorageManagerFactory.get().getStorageManager().getStorageNames()).containsExactlyInAnyOrder(
-                SESSION_STORAGE_PREFIX + "0_" + "epDefault", SESSION_STORAGE_PREFIX + "1_" + "epDefault", "METADATA_0");
-
         StorageManagerFactory.get().getStorageManager().removeAllSessionStorages();
 
-        assertThat(StorageManagerFactory.get().getStorageManager().getStorageNames()).containsExactly("METADATA_0");
+        assertThat(StorageManagerFactory.get().getStorageManager().getStorageNames())
+                .containsExactlyInAnyOrder("METADATA_0", "___protobuf_metadata", "___script_cache");
     }
 
     @Test
     void removeCachesBySessionId_shouldRemoveSpecifiedCacheOnly() {
-        ((InfinispanStorageManager) StorageManagerFactory.get().getStorageManager()).setEmbeddedCacheManager(new FakeCacheManager());
-
-        assertThat(StorageManagerFactory.get().getStorageManager().getStorageNames()).containsExactlyInAnyOrder(
-                SESSION_STORAGE_PREFIX + "0_" + "epDefault", SESSION_STORAGE_PREFIX + "1_" + "epDefault", "METADATA_0");
-
         StorageManagerFactory.get().getStorageManager().removeStoragesBySessionId("1");
 
-        assertThat(StorageManagerFactory.get().getStorageManager().getStorageNames()).containsExactlyInAnyOrder(SESSION_STORAGE_PREFIX + "0_" + "epDefault", "METADATA_0");
-    }
-
-    public static class FakeCacheManager extends DefaultCacheManager {
-
-        private Map<String, Object> cacheMap = new ConcurrentHashMap<>();
-
-        public FakeCacheManager() {
-            cacheMap.put(SESSION_STORAGE_PREFIX + "0_" + "epDefault", new Object());
-            cacheMap.put(SESSION_STORAGE_PREFIX + "1_" + "epDefault", new Object());
-            cacheMap.put("METADATA_0", new Object());
-        }
-
-        @Override
-        public Set<String> getCacheNames() {
-            return cacheMap.keySet();
-        }
-
-        @Override
-        public boolean cacheExists(String cacheName) {
-            return cacheMap.containsKey(cacheName);
-        }
-
-        @Override
-        public void removeCache(String cacheName) {
-            cacheMap.remove(cacheName);
-        }
-
-        @Override
-        public void stop() {
-            // do nothing
-        }
+        assertThat(StorageManagerFactory.get().getStorageManager().getStorageNames())
+                .containsExactlyInAnyOrder(SESSION_STORAGE_PREFIX + "0_" + "epDefault", "METADATA_0", "___protobuf_metadata", "___script_cache");
     }
 }

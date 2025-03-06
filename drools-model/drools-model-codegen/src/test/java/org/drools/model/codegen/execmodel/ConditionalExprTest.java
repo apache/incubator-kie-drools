@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -22,8 +22,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.model.codegen.execmodel.domain.Person;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.runtime.KieSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -47,41 +49,40 @@ public class ConditionalExprTest extends BaseModelTest {
     private KieSession ksession;
     private List<Boolean> booleanListGlobal;
 
-    public ConditionalExprTest(RUN_TYPE testRunType) {
-        super(testRunType);
-    }
-
-    @Before
+    @BeforeEach
     public void setup() {
-        ksession = getKieSession(RULE_STRING);
         booleanListGlobal = new ArrayList<>();
-        ksession.setGlobal("booleanListGlobal", booleanListGlobal);
+    }
+    
+    @AfterEach
+    public void tearDown() {
+    	if (ksession != null) {
+    		ksession.dispose();
+    	}
     }
 
-    @Test
-    public void testConditionalExpressionWithNamedPerson() {
-        try {
-            Person person = new Person("someName");
-            ksession.insert(person);
-            int rulesFired = ksession.fireAllRules();
-            assertThat(rulesFired).isEqualTo(1);
-            assertThat(booleanListGlobal).isNotEmpty().containsExactly(Boolean.TRUE);
-        } finally {
-            ksession.dispose();
-        }
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void testConditionalExpressionWithNamedPerson(RUN_TYPE runType) {
+        ksession = getKieSession(runType, RULE_STRING);
+		ksession.setGlobal("booleanListGlobal", booleanListGlobal);
+		Person person = new Person("someName");
+		ksession.insert(person);
+		int rulesFired = ksession.fireAllRules();
+		assertThat(rulesFired).isEqualTo(1);
+		assertThat(booleanListGlobal).isNotEmpty().containsExactly(Boolean.TRUE);
     }
 
-    @Test
-    public void testConditionalExpressionWithUnnamedPerson() {
-        try {
-            Person person = new Person();
-            ksession.insert(person);
-            int rulesFired = ksession.fireAllRules();
-            assertThat(rulesFired).isEqualTo(1);
-            assertThat(booleanListGlobal).isNotEmpty().containsExactly(Boolean.FALSE);
-        } finally {
-            ksession.dispose();
-        }
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void testConditionalExpressionWithUnnamedPerson(RUN_TYPE runType) {
+        ksession = getKieSession(runType, RULE_STRING);
+		ksession.setGlobal("booleanListGlobal", booleanListGlobal);
+        Person person = new Person();
+		ksession.insert(person);
+		int rulesFired = ksession.fireAllRules();
+		assertThat(rulesFired).isEqualTo(1);
+		assertThat(booleanListGlobal).isNotEmpty().containsExactly(Boolean.FALSE);
     }
 
 }

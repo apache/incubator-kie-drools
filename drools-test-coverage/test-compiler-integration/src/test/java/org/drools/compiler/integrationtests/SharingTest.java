@@ -20,8 +20,8 @@ package org.drools.compiler.integrationtests;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.drools.base.base.ClassObjectType;
 import org.drools.kiesession.rulebase.InternalKnowledgeBase;
@@ -36,28 +36,19 @@ import org.drools.testcoverage.common.model.FactWithList;
 import org.drools.testcoverage.common.model.Person;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.Agenda;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class SharingTest {
-
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public SharingTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
-    }
-
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+	
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
     public static class TestStaticUtils {
@@ -81,8 +72,9 @@ public class SharingTest {
         CCC;
     }
 
-    @Test
-    public void testDontShareAlphaWithStaticMethod() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testDontShareAlphaWithStaticMethod(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-6418
         final String drl1 = "package c;\n" +
                             "import " + TestObject.class.getCanonicalName() + "\n" +
@@ -148,8 +140,9 @@ public class SharingTest {
         }
     }
 
-    @Test
-    public void testDontShareAlphaWithNonFinalField() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testDontShareAlphaWithNonFinalField(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-6418
         final String drl = "package com.example;\n" +
                            "import " + TestObject.class.getCanonicalName() + "\n" +
@@ -184,8 +177,9 @@ public class SharingTest {
         }
     }
 
-    @Test
-    public void testShareAlphaWithFinalField() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testShareAlphaWithFinalField(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-6418
         final String drl = "package com.example;\n" +
                            "import " + TestObject.class.getCanonicalName() + "\n" +
@@ -225,8 +219,9 @@ public class SharingTest {
         }
     }
 
-    @Test
-    public void testShareAlphaWithNestedFinalField() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testShareAlphaWithNestedFinalField(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-6418
         final String drl = "package com.example;\n" +
                            "import " + TestObject.class.getCanonicalName() + "\n" +
@@ -263,8 +258,9 @@ public class SharingTest {
         }
     }
 
-    @Test
-    public void testShareAlphaWithEnum() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testShareAlphaWithEnum(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-6418
         final String drl = "package com.example;\n" +
                            "import " + TestObject.class.getCanonicalName() + "\n" +
@@ -298,8 +294,9 @@ public class SharingTest {
         }
     }
 
-    @Test
-    public void testDontShareAlphaWithBigDecimalConstructor() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testDontShareAlphaWithBigDecimalConstructor(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-6418
         final String drl = "package com.example;\n" +
                            "import " + Person.class.getCanonicalName() + "\n" +
@@ -333,8 +330,9 @@ public class SharingTest {
         }
     }
 
-    @Test
-    public void testShouldAlphaShareNotEqualsInDifferentPackages() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testShouldAlphaShareNotEqualsInDifferentPackages(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-1404
         final String drl1 = "package c;\n" +
                             "import " + TestObject.class.getCanonicalName() + "\n" +
@@ -369,8 +367,9 @@ public class SharingTest {
         }
     }
 
-    @Test
-    public void testShouldAlphaShareNotEqualsInDifferentPackages2() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testShouldAlphaShareNotEqualsInDifferentPackages2(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // DROOLS-1404
         final String drl1 = "package c;\n" +
                             "import " + FactWithList.class.getCanonicalName() + "\n" +
@@ -408,8 +407,9 @@ public class SharingTest {
         }
     }
 
-    @Test
-    public void testSubnetworkSharing() {
+    @ParameterizedTest(name = "KieBase type={0}")
+	@MethodSource("parameters")
+    public void testSubnetworkSharing(KieBaseTestConfiguration kieBaseTestConfiguration) {
         final String drl =
                 "import " + A.class.getCanonicalName() + "\n" +
                            "import " + B.class.getCanonicalName() + "\n" +

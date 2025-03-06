@@ -18,18 +18,12 @@
  */
 package org.kie.dmn.feel.runtime.functions;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
 class StringUpperCaseFunctionTest {
 
-    private StringUpperCaseFunction stringUpperCaseFunction;
-
-    @BeforeEach
-    void setUp() {
-        stringUpperCaseFunction = new StringUpperCaseFunction();
-    }
+    private static final StringUpperCaseFunction stringUpperCaseFunction = StringUpperCaseFunction.INSTANCE;
 
     @Test
     void invokeNull() {

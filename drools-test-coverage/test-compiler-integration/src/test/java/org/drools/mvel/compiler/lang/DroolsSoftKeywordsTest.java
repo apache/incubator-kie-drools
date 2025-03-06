@@ -19,8 +19,8 @@
 package org.drools.mvel.compiler.lang;
 
 import org.drools.drl.parser.lang.DroolsSoftKeywords;
+import org.junit.jupiter.api.Test;
 import org.drools.compiler.builder.impl.EvaluatorRegistry;
-import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

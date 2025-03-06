@@ -45,6 +45,7 @@ import org.drools.compiler.kie.builder.impl.event.KieModuleDiscovered;
 import org.drools.compiler.kie.builder.impl.event.KieServicesEventListerner;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.util.IoUtils;
+import org.drools.util.JarUtils;
 import org.drools.util.PortablePath;
 import org.drools.util.StringUtils;
 import org.kie.api.KieServices;
@@ -409,6 +410,9 @@ public class ClasspathKieProject extends AbstractKieProject {
         if (urlPath.endsWith(".jar!")) {
             urlPath = urlPath.substring( 0, urlPath.length() - 1 );
         }
+
+        // Replace "/!BOOT-INF/" with "!/BOOT-INF/" to make it consistent with the actual path in the jar file
+        urlPath = JarUtils.replaceNestedPathForSpringBoot32(urlPath);
 
         // remove any remaining protocols, normally only if it was a jar
         int firstSlash = urlPath.indexOf( '/' );

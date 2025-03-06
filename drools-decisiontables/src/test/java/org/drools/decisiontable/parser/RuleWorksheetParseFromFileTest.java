@@ -29,8 +29,8 @@ import org.drools.template.model.Consequence;
 import org.drools.template.model.Package;
 import org.drools.template.model.Rule;
 import org.drools.template.parser.DecisionTableParseException;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -180,7 +180,8 @@ public class RuleWorksheetParseFromFileTest {
         }
     }
 
-    @Test @Ignore // TODO JBRULES-2880 TIRELLI: Ignore test while we decide what to do in order to solve i18n issues
+    @Disabled // TODO JBRULES-2880 TIRELLI: Ignore test while we decide what to do in order to solve i18n issues
+    @Test 
     public void testComplexWorksheetMissingConditionsInLocaleFrFr() throws Exception {
         Locale originalDefaultLocale = Locale.getDefault();
         Locale.setDefault(Locale.FRANCE);

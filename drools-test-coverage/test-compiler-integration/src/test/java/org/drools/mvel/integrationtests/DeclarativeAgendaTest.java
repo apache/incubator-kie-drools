@@ -20,16 +20,16 @@ package org.drools.mvel.integrationtests;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -53,23 +53,17 @@ import org.kie.api.runtime.rule.Match;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class DeclarativeAgendaTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public DeclarativeAgendaTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
-    }
-
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
+    public static Stream<KieBaseTestConfiguration> parameters() {
         // Declarative Agenda is experimental. Not supported by exec-model
-        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+        return TestParametersUtil2.getKieBaseCloudConfigurations(false).stream();
     }
     
-    @Test(timeout=10000)
-    public void testSimpleBlockingUsingForall() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(10000)
+    public void testSimpleBlockingUsingForall(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str = "";
         str += "package org.domain.test \n";
         str += "import " + Match.class.getName() + "\n";
@@ -107,8 +101,10 @@ public class DeclarativeAgendaTest {
         ksession.dispose();
     }
 
-    @Test(timeout=10000)
-    public void testBasicBlockOnAnnotation() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(10000)
+    public void testBasicBlockOnAnnotation(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str = "";
         str += "package org.domain.test \n";
         str += "import " + Match.class.getName() + "\n";
@@ -169,9 +165,11 @@ public class DeclarativeAgendaTest {
         ksession.dispose();
     }
 
-    @Test(timeout=10000)
-    public void testApplyBlockerFirst() {
-        KieSession ksession = getStatefulKnowledgeSession();
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(10000)
+    public void testApplyBlockerFirst(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        KieSession ksession = getStatefulKnowledgeSession(kieBaseTestConfiguration);
 
         List list = new ArrayList();
         ksession.setGlobal( "list",
@@ -193,9 +191,11 @@ public class DeclarativeAgendaTest {
         assertThat(list.contains("rule1:go1")).isTrue();
     }
 
-    @Test(timeout=10000)
-    public void testApplyBlockerFirstWithFireAllRulesInbetween() {
-        KieSession ksession = getStatefulKnowledgeSession();
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(10000)
+    public void testApplyBlockerFirstWithFireAllRulesInbetween(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        KieSession ksession = getStatefulKnowledgeSession(kieBaseTestConfiguration);
 
         List list = new ArrayList();
         ksession.setGlobal( "list",
@@ -219,9 +219,11 @@ public class DeclarativeAgendaTest {
         assertThat(list.contains("rule1:go1")).isTrue();
     }
 
-    @Test(timeout=10000)
-    public void testApplyBlockerSecond() {
-        KieSession ksession = getStatefulKnowledgeSession();
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(10000)
+    public void testApplyBlockerSecond(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        KieSession ksession = getStatefulKnowledgeSession(kieBaseTestConfiguration);
 
         List list = new ArrayList();
         ksession.setGlobal( "list",
@@ -242,9 +244,11 @@ public class DeclarativeAgendaTest {
         assertThat(list.contains("rule1:go1")).isTrue();
     }
 
-    @Test(timeout=10000)
-    public void testApplyBlockerSecondWithUpdate() {
-        KieSession ksession = getStatefulKnowledgeSession();
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(10000)
+    public void testApplyBlockerSecondWithUpdate(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        KieSession ksession = getStatefulKnowledgeSession(kieBaseTestConfiguration);
 
         List list = new ArrayList();
         ksession.setGlobal( "list",
@@ -273,9 +277,11 @@ public class DeclarativeAgendaTest {
         assertThat(list.contains("rule1:go1")).isTrue();
     }
 
-    @Test(timeout=10000)
-    public void testApplyBlockerSecondAfterUpdate() {
-        KieSession ksession = getStatefulKnowledgeSession();
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(10000)
+    public void testApplyBlockerSecondAfterUpdate(KieBaseTestConfiguration kieBaseTestConfiguration) {
+        KieSession ksession = getStatefulKnowledgeSession(kieBaseTestConfiguration);
 
         List list = new ArrayList();
         ksession.setGlobal( "list",
@@ -312,7 +318,7 @@ public class DeclarativeAgendaTest {
         assertThat(list.contains("rule1:go1")).isTrue();
     }
 
-    public KieSession getStatefulKnowledgeSession() {
+    public KieSession getStatefulKnowledgeSession(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str = "";
         str += "package org.domain.test \n";
         str += "import " + Match.class.getName() + "\n";
@@ -342,8 +348,10 @@ public class DeclarativeAgendaTest {
         return ksession;
     }
 
-    @Test(timeout=10000)
-    public void testMultipleBlockers() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(10000)
+    public void testMultipleBlockers(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str = "";
         str += "package org.domain.test \n";
         str += "import " + Match.class.getName() + "\n";
@@ -419,8 +427,10 @@ public class DeclarativeAgendaTest {
         ksession.dispose();
     }
 
-    @Test(timeout=10000)
-    public void testMultipleBlockersWithUnblockAll() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(10000)
+    public void testMultipleBlockersWithUnblockAll(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // This test is a bit wierd as it recurses. Maybe unblockAll is not feasible...
         String str = "";
         str += "package org.domain.test \n";
@@ -503,8 +513,10 @@ public class DeclarativeAgendaTest {
         assertThat(list.contains("blockerAllSalesRules3:rule0:go3")).isTrue();
     }
 
-    @Test(timeout=10000)
-    public void testIterativeUpdate() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(10000)
+    public void testIterativeUpdate(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str = "";
         str += "package org.domain.test \n";
         str += "import " + Match.class.getName() + "\n";
@@ -641,8 +653,10 @@ public class DeclarativeAgendaTest {
         assertThat(list.contains("block:rule2")).isTrue();
     }
 
-    @Test(timeout=10000)
-    public void testCancelActivation() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(10000)
+    public void testCancelActivation(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str = "";
         str += "package org.domain.test \n";
         str += "import " + Match.class.getName() + "\n";
@@ -715,8 +729,10 @@ public class DeclarativeAgendaTest {
         ksession.dispose();
     }
 
-    @Test(timeout=10000)
-    public void testActiveInActiveChanges() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(10000)
+    public void testActiveInActiveChanges(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str = "";
         str += "package org.domain.test \n";
         str += "import " + Match.class.getName() + "\n";
@@ -770,8 +786,10 @@ public class DeclarativeAgendaTest {
         ksession.dispose();
     }
 
-    @Test(timeout=10000)
-    public void testCancelMultipleActivations() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(10000)
+    public void testCancelMultipleActivations(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str = "package org.domain.test\n" +
                 "import " + Match.class.getName() + "\n" +
                 "global java.util.List list\n" +
@@ -811,8 +829,10 @@ public class DeclarativeAgendaTest {
         ksession.dispose();
     }
 
-    @Test(timeout=10000)
-    public void testCancelActivationOnInsertAndUpdate() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(10000)
+    public void testCancelActivationOnInsertAndUpdate(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String str = "package org.domain.test\n" +
                 "import " + Match.class.getName() + "\n" +
                 "global java.util.List list\n" +
@@ -860,8 +880,9 @@ public class DeclarativeAgendaTest {
         ksession.dispose();
     }
 
-    @Test
-    public void testFiredRuleDoNotRefireAfterUnblock() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testFiredRuleDoNotRefireAfterUnblock(KieBaseTestConfiguration kieBaseTestConfiguration) {
         // BZ-1038076
         String drl =
                 "package org.drools.mvel.integrationtests\n" +
@@ -898,7 +919,6 @@ public class DeclarativeAgendaTest {
                 "end\n";
 
         final KieServices ks = KieServices.Factory.get();
-        KieFileSystem kfs = ks.newKieFileSystem();
         KieModuleModel kmodule = ks.newKieModuleModel();
 
         KieBaseModel baseModel = kmodule.newKieBaseModel("defaultKBase")
@@ -907,10 +927,7 @@ public class DeclarativeAgendaTest {
         baseModel.newKieSessionModel("defaultKSession")
                  .setDefault(true);
 
-        kfs.writeKModuleXML(kmodule.toXML());
-        kfs.write("src/main/resources/block_rule.drl", drl);
-        final KieBuilder kieBuilder = KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
-        assertThat(kieBuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR).size()).isEqualTo(0);
+        KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, kmodule, true, drl);
 
         KieSession ksession = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).newKieSession();
 
@@ -947,8 +964,9 @@ public class DeclarativeAgendaTest {
         }
     }
 
-    @Test
-    public void testExplicitUndercutWithDeclarativeAgenda() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    public void testExplicitUndercutWithDeclarativeAgenda(KieBaseTestConfiguration kieBaseTestConfiguration) {
 
         String drl = "package org.drools.test;\n" +
                      "\n" +

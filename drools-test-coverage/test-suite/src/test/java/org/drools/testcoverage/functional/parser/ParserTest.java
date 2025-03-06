@@ -26,8 +26,9 @@ import java.util.List;
 import java.util.Set;
 
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.provider.Arguments;
+
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 /**
  * Tests ability to parse resources. To add a test to this class simply add a
@@ -40,19 +41,9 @@ import org.junit.runners.Parameterized;
  * new folder can be added
  * 
  */
-@RunWith(Parameterized.class)
 public abstract class ParserTest {
     private static final String PARSER_RESOURCES_DIR_PATH = "src/test/resources/org/drools/testcoverage/functional/parser";
     private static final File PARSER_RESOURCES_DIR = new File(PARSER_RESOURCES_DIR_PATH);
-
-    protected final File file;
-
-    protected final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public ParserTest(final File file, final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.file = file;
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
-    }
 
     protected static List<File> getFiles(final String directory) {
         return getFiles(directory, null);
@@ -73,12 +64,12 @@ public abstract class ParserTest {
         return result;
     }
 
-    protected static Collection<Object[]> getTestParamsFromFiles(Collection<File> files) {
-        final Set<Object[]> set = new HashSet<>();
+    protected static Collection<Arguments> getTestParamsFromFiles(Collection<File> files) {
+        final Set<Arguments> set = new HashSet<>();
 
         for (File file : files) {
-            set.add(new Object[] {file, KieBaseTestConfiguration.CLOUD_EQUALITY});
-            set.add(new Object[]{file, KieBaseTestConfiguration.CLOUD_EQUALITY_MODEL_PATTERN});
+            set.add(arguments(file, KieBaseTestConfiguration.CLOUD_EQUALITY));
+            set.add(arguments(file, KieBaseTestConfiguration.CLOUD_EQUALITY_MODEL_PATTERN));
         }
 
         return set;

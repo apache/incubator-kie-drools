@@ -25,7 +25,7 @@ import org.drools.drl.ast.dsl.DescrFactory;
 import org.drools.model.codegen.ExecutableModelProject;
 import org.drools.model.codegen.execmodel.domain.Person;
 import org.drools.model.codegen.execmodel.domain.Result;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.utils.KieHelper;
 

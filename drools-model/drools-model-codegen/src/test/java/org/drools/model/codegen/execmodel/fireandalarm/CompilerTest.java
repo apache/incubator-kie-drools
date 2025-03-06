@@ -22,21 +22,19 @@ import org.drools.model.codegen.execmodel.BaseModelTest;
 import org.drools.model.codegen.execmodel.fireandalarm.model.Alarm;
 import org.drools.model.codegen.execmodel.fireandalarm.model.Fire;
 import org.drools.model.codegen.execmodel.fireandalarm.model.Room;
-import org.drools.model.codegen.execmodel.fireandalarm.model.Sprinkler;
-import org.junit.Test;
+import org.drools.model.codegen.execmodel.fireandalarm.model.Sprinkler; 
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.rule.FactHandle;
+import org.kie.api.runtime.rule.FactHandle; 
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class CompilerTest extends BaseModelTest {
 
-    public CompilerTest( RUN_TYPE testRunType ) {
-        super( testRunType );
-    }
-
-    @Test
-    public void testFireAndAlarm() {
+    @ParameterizedTest
+	@MethodSource("parameters")
+    public void testFireAndAlarm(RUN_TYPE runType) {
         String str =
                 "import " + StringBuilder.class.getCanonicalName() + ";\n" +
                 "import " + Alarm.class.getCanonicalName() + ";\n" +
@@ -87,7 +85,7 @@ public class CompilerTest extends BaseModelTest {
                 "   sb.append( \"Everything is ok\\n\" );\n" +
                 "end\n";
 
-        KieSession ksession = getKieSession(str);
+        KieSession ksession = getKieSession(runType, str);
 
         StringBuilder sb = new StringBuilder();
         ksession.setGlobal( "sb", sb );

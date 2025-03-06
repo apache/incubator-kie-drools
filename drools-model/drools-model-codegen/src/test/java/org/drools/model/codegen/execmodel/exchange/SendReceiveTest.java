@@ -29,7 +29,7 @@ import org.drools.model.Variable;
 import org.drools.model.impl.Exchange;
 import org.drools.model.impl.ModelImpl;
 import org.drools.modelcompiler.KieBaseBuilder;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 

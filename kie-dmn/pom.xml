@@ -36,6 +36,10 @@
   <name>KIE :: Decision Model Notation</name>
   <description>Top level pom for the KIE DMN support implementation</description>
 
+  <properties>
+    <archunit.maven.plugin.version>2.9.1</archunit.maven.plugin.version>
+  </properties>
+
   <modules>
     <module>kie-dmn-api</module>
     <module>kie-dmn-model</module>
@@ -73,6 +77,15 @@
   </dependencyManagement>
 
   <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>com.societegenerale.commons</groupId>
+          <artifactId>arch-unit-maven-plugin</artifactId>
+          <version>${archunit.maven.plugin.version}</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -95,6 +108,35 @@
             <configuration>
               <fail>true</fail>
             </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>com.societegenerale.commons</groupId>
+        <artifactId>arch-unit-maven-plugin</artifactId>
+        <configuration>
+
+          <!--  optional - you can avoid build fail if there is issue. True to avoid build failure, default is false -->
+          <!--  <noFailOnError>true</noFailOnError>-->
+
+          <!--  optional - you can exclude classes that have a path containing any of the mentioned paths -->
+          <!--  <excludedPaths>-->
+          <!--    <excludedPath>my/package/to/exclude</excludedPath>-->
+          <!--  </excludedPaths>-->
+
+          <rules>
+            <!-- using a rule available out of the box... -->
+            <preConfiguredRules>
+              <rule>com.societegenerale.commons.plugin.rules.NoJunitAssertRuleTest</rule>
+            </preConfiguredRules>
+          </rules>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>test</phase>
+            <goals>
+              <goal>arch-test</goal>
+            </goals>
           </execution>
         </executions>
       </plugin>

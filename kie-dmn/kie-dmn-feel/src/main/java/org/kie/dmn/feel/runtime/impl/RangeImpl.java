@@ -18,10 +18,18 @@
  */
 package org.kie.dmn.feel.runtime.impl;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.function.BiPredicate;
 
+import org.kie.dmn.feel.lang.FEELDialect;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.util.BooleanEvalHelper;
+
+import static org.kie.dmn.feel.lang.ast.UnaryTestNode.UnaryOperator.GT;
+import static org.kie.dmn.feel.lang.ast.UnaryTestNode.UnaryOperator.GTE;
+import static org.kie.dmn.feel.lang.ast.UnaryTestNode.UnaryOperator.LT;
+import static org.kie.dmn.feel.lang.ast.UnaryTestNode.UnaryOperator.LTE;
 
 public class RangeImpl
         implements Range {
@@ -30,7 +38,7 @@ public class RangeImpl
     private RangeBoundary highBoundary;
     private Comparable    lowEndPoint;
     private Comparable    highEndPoint;
-
+    private boolean withUndefined = false;
 
     public RangeImpl() {
     }
@@ -40,6 +48,7 @@ public class RangeImpl
         this.highBoundary = highBoundary;
         this.lowEndPoint = lowEndPoint;
         this.highEndPoint = highEndPoint;
+        withUndefined = lowEndPoint instanceof UndefinedValueComparable || highEndPoint instanceof UndefinedValueComparable;
     }
 
     @Override
@@ -63,51 +72,88 @@ public class RangeImpl
     }
 
     @Override
-    public Boolean includes(Object param) {
+    public Boolean includes(FEELDialect feelDialect, Object param) {
         if (param == null) {
             return null;
         }
-        if (lowEndPoint == null) {
-            if (highEndPoint == null) {
+        if (lowEndPoint == null || lowEndPoint instanceof UndefinedValueComparable) {
+            if (highEndPoint == null || highEndPoint instanceof UndefinedValueComparable) {
                 return null;
+            } else if (lowEndPoint != null) { // it means it is UndefinedValueComparable
+                return negInfRangeIncludes(feelDialect, param);
             } else {
-                return negInfRangeIncludes(param);
+                return false;
             }
         } else {
-            if (highEndPoint == null) {
-                return posInfRangeIncludes(param);
+            if (highEndPoint instanceof UndefinedValueComparable) {
+                return posInfRangeIncludes(feelDialect, param);
+            } else if (highEndPoint != null) {
+                return finiteRangeIncludes(feelDialect, param);
             } else {
-                return finiteRangeIncludes(param);
+                return false;
             }
         }
     }
 
-    private Boolean finiteRangeIncludes(Object param) {
+    @Override
+    public boolean isWithUndefined() {
+        return withUndefined;
+    }
+
+    @Override
+    public Comparable getStart() {
+        if(lowEndPoint instanceof BigDecimal) {
+            BigDecimal start = (BigDecimal) lowEndPoint;
+            start = lowBoundary == Range.RangeBoundary.OPEN ? start.add(BigDecimal.ONE) : start;
+            return start;
+        } else if (lowEndPoint instanceof LocalDate) {
+            LocalDate start = (LocalDate) lowEndPoint;
+            start = lowBoundary == Range.RangeBoundary.OPEN ? start.plusDays(1) : start;
+            return start;
+        }
+        return lowEndPoint;
+    }
+
+    @Override
+    public Comparable getEnd() {
+        if (highEndPoint instanceof BigDecimal) {
+            BigDecimal end = (BigDecimal) highEndPoint;
+            end = highBoundary == Range.RangeBoundary.OPEN ? end.subtract(BigDecimal.ONE) : end;
+            return end;
+        } else if (highEndPoint instanceof LocalDate) {
+            LocalDate end = (LocalDate) highEndPoint;
+            end = highBoundary == Range.RangeBoundary.OPEN ? end.minusDays(1) : end;
+            return end;
+        }
+        return highEndPoint;
+    }
+
+    private Boolean finiteRangeIncludes(FEELDialect feelDialect, Object param) {
         if (lowBoundary == RangeBoundary.OPEN && highBoundary == RangeBoundary.OPEN) {
-            return bothOrThrow(compare(lowEndPoint, param, (l, r) -> l.compareTo(r) < 0) , compare(highEndPoint, param,  (l, r) -> l.compareTo(r) > 0), param);
+            return bothOrThrow(compare(feelDialect, lowEndPoint, param, (l, r) -> l.compareTo(r) < 0) , compare(feelDialect, highEndPoint, param,  (l, r) -> l.compareTo(r) > 0), param);
         } else if (lowBoundary == RangeBoundary.OPEN && highBoundary == RangeBoundary.CLOSED) {
-            return bothOrThrow(compare(lowEndPoint, param, (l, r) -> l.compareTo(r) < 0) , compare(highEndPoint, param,  (l, r) -> l.compareTo(r) >= 0), param);
+            return bothOrThrow(compare(feelDialect, lowEndPoint, param, (l, r) -> l.compareTo(r) < 0) , compare(feelDialect, highEndPoint, param,  (l, r) -> l.compareTo(r) >= 0), param);
         } else if (lowBoundary == RangeBoundary.CLOSED && highBoundary == RangeBoundary.OPEN) {
-            return bothOrThrow(compare(lowEndPoint, param, (l, r) -> l.compareTo(r) <= 0) , compare(highEndPoint, param,  (l, r) -> l.compareTo(r) > 0), param);
+            return bothOrThrow(compare(feelDialect, lowEndPoint, param, (l, r) -> l.compareTo(r) <= 0) , compare(feelDialect, highEndPoint, param,  (l, r) -> l.compareTo(r) > 0), param);
         } else if (lowBoundary == RangeBoundary.CLOSED && highBoundary == RangeBoundary.CLOSED) {
-            return bothOrThrow(compare(lowEndPoint, param, (l, r) -> l.compareTo(r) <= 0) , compare(highEndPoint, param,  (l, r) -> l.compareTo(r) >= 0), param);
+            return bothOrThrow(compare(feelDialect, lowEndPoint, param, (l, r) -> l.compareTo(r) <= 0) , compare(feelDialect, highEndPoint, param,  (l, r) -> l.compareTo(r) >= 0), param);
         }
         throw new RuntimeException("unknown boundary combination");
     }
 
-    private Boolean posInfRangeIncludes(Object param) {
+    private Boolean posInfRangeIncludes(FEELDialect feelDialect, Object param) {
         if (lowBoundary == RangeBoundary.OPEN) {
-            return compare(lowEndPoint, param, (l, r) -> l.compareTo(r) < 0);
+            return compare(feelDialect, lowEndPoint, param, (l, r) -> l.compareTo(r) < 0);
         } else {
-            return compare(lowEndPoint, param, (l, r) -> l.compareTo(r) <= 0);
+            return compare(feelDialect, lowEndPoint, param, (l, r) -> l.compareTo(r) <= 0);
         }
     }
 
-    private Boolean negInfRangeIncludes(Object param) {
+    private Boolean negInfRangeIncludes(FEELDialect feelDialect, Object param) {
         if (highBoundary == RangeBoundary.OPEN) {
-            return compare(highEndPoint, param,  (l, r) -> l.compareTo(r) > 0);
+            return compare(feelDialect, highEndPoint, param,  (l, r) -> l.compareTo(r) > 0);
         } else {
-            return compare(highEndPoint, param,  (l, r) -> l.compareTo(r) >= 0);
+            return compare(feelDialect, highEndPoint, param,  (l, r) -> l.compareTo(r) >= 0);
         }
     }
     
@@ -122,11 +168,11 @@ public class RangeImpl
         return p != null ? p.getClass().toString() : "null";
     }
     
-    private static Boolean compare(Comparable left, Object right, BiPredicate<Comparable, Comparable> op) {
+    private static Boolean compare(FEELDialect feelDialect, Comparable left, Object right, BiPredicate<Comparable, Comparable> op) {
         if (left.getClass().isAssignableFrom(right.getClass())) { // short path
                 return op.test(left, (Comparable) right);
         }
-        return BooleanEvalHelper.compare(left, right, op); // defer to full DMN/FEEL semantic
+        return BooleanEvalHelper.compare(left, right, feelDialect, op); // defer to full DMN/FEEL semantic
     }
 
     @Override
@@ -154,9 +200,36 @@ public class RangeImpl
 
     @Override
     public String toString() {
+        return withUndefined ? withUndefinedtoString() : withoutUndefinedtoString();
+    }
+
+    private String withoutUndefinedtoString() {
         return (lowBoundary == RangeBoundary.OPEN ? "(" : "[") +
-               " " + lowEndPoint +
-               " .. " + highEndPoint +
-               " " + ( highBoundary == RangeBoundary.OPEN ? ")" : "]" );
+                " " + lowEndPoint +
+                " .. " + highEndPoint +
+                " " + ( highBoundary == RangeBoundary.OPEN ? ")" : "]" );
+    }
+
+    private String withUndefinedtoString() {
+        StringBuilder sb = new StringBuilder("( ");
+        if (lowEndPoint instanceof UndefinedValueComparable) {
+            if (highBoundary == RangeBoundary.OPEN) {
+                sb.append(LT.symbol);
+            } else {
+                sb.append(LTE.symbol);
+            }
+            sb.append(" ");
+            sb.append(highEndPoint);
+        } else if (highEndPoint instanceof UndefinedValueComparable) {
+            if (lowBoundary == RangeBoundary.OPEN) {
+                sb.append(GT.symbol);
+            } else {
+                sb.append(GTE.symbol);
+            }
+            sb.append(" ");
+            sb.append(lowEndPoint);
+        }
+        sb.append(" )");
+        return sb.toString();
     }
 }

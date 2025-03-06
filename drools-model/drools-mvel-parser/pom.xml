@@ -48,9 +48,9 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter</artifactId>
+        <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.assertj</groupId>
@@ -87,6 +87,7 @@
             <arg>-parameters</arg>
           </compilerArgs>
         </configuration>
+
       </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>

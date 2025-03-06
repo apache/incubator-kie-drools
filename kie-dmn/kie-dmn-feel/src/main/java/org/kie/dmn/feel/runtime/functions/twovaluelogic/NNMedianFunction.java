@@ -37,7 +37,7 @@ public class NNMedianFunction
 
     public static final NNMedianFunction INSTANCE = new NNMedianFunction();
 
-    NNMedianFunction() {
+    private NNMedianFunction() {
         super("nn median");
     }
 

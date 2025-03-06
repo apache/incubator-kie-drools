@@ -20,8 +20,8 @@ package org.drools.mvel.compiler.compiler.io.memory;
 
 import org.drools.compiler.compiler.io.File;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -29,7 +29,7 @@ public class MemoryFileSystemTest {
 
     private MemoryFileSystem memoryFileSystem;
 
-    @Before
+    @BeforeEach
     public void setup() {
         memoryFileSystem = new MemoryFileSystem();
     }

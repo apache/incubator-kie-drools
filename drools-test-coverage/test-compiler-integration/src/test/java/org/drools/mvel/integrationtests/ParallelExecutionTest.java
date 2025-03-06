@@ -33,11 +33,11 @@ import org.drools.mvel.compiler.util.debug.DebugList;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.drools.testcoverage.common.util.TestParametersUtil2;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.api.KieBase;
 import org.kie.api.builder.KieModule;
 import org.kie.api.runtime.KieSession;
@@ -48,29 +48,30 @@ import org.kie.internal.conf.ParallelExecutionOption;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class ParallelExecutionTest {
 
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public ParallelExecutionTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
-        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    public static Stream<KieBaseTestConfiguration> parameters() {
+        return TestParametersUtil2.getKieBaseCloudConfigurations(true).stream();
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
-    }
-
-    @Test(timeout = 40000L)
-    public void test() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(40000)
+    public void test(KieBaseTestConfiguration kieBaseTestConfiguration) {
         StringBuilder sb = new StringBuilder( 400 );
         sb.append( "global java.util.List list;\n" );
         for (int i = 0; i < 10; i++) {
@@ -100,8 +101,10 @@ public class ParallelExecutionTest {
         assertThat(list.size()).isEqualTo(10);
     }
 
-    @Test(timeout = 40000L)
-    public void testWithInsertions() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(40000)
+    public void testWithInsertions(KieBaseTestConfiguration kieBaseTestConfiguration) {
         StringBuilder sb = new StringBuilder( 4000 );
         sb.append( "global java.util.List list;\n" );
         int ruleNr = 200;
@@ -129,8 +132,10 @@ public class ParallelExecutionTest {
         assertThat(list.size()).isEqualTo(ruleNr);
     }
 
-    @Test(timeout = 40000L)
-    public void testWithDeletes() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(40000)
+    public void testWithDeletes(KieBaseTestConfiguration kieBaseTestConfiguration) {
         StringBuilder sb = new StringBuilder( 400 );
         sb.append( "global java.util.List list;\n" );
         for (int i = 1; i < 11; i++) {
@@ -159,8 +164,10 @@ public class ParallelExecutionTest {
         assertThat(list.size()).isEqualTo(20);
     }
 
-    @Test(timeout = 40000L)
-    public void testWithAsyncInsertions() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(40000)
+    public void testWithAsyncInsertions(KieBaseTestConfiguration kieBaseTestConfiguration) {
         StringBuilder sb = new StringBuilder( 4000 );
         sb.append( "global java.util.List list;\n" );
         int ruleNr = 200;
@@ -213,8 +220,10 @@ public class ParallelExecutionTest {
                 "end\n";
     }
 
-    @Test(timeout = 40000L)
-    public void testFireUntilHalt() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(40000)
+    public void testFireUntilHalt(KieBaseTestConfiguration kieBaseTestConfiguration) {
         StringBuilder sb = new StringBuilder( 400 );
         sb.append( "global java.util.List list;\n" );
         for (int i = 0; i < 10; i++) {
@@ -256,9 +265,11 @@ public class ParallelExecutionTest {
         }
     }
 
-    @Test(timeout = 40000L)
-    @Ignore("this test is failing on Jenkins but not locally, we need to figure out why")
-    public void testFireUntilHalt2() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(40000)
+    @Disabled("this test is failing on Jenkins but not locally, we need to figure out why")
+    public void testFireUntilHalt2(KieBaseTestConfiguration kieBaseTestConfiguration) {
         int rulesNr = 4;
         int factsNr = 1;
         int fireNr = rulesNr * factsNr;
@@ -360,8 +371,10 @@ public class ParallelExecutionTest {
         }
     }
 
-    @Test(timeout = 40000L)
-    public void testFireUntilHaltWithAsyncInsert() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(40000)
+    public void testFireUntilHaltWithAsyncInsert(KieBaseTestConfiguration kieBaseTestConfiguration) {
         StringBuilder sb = new StringBuilder( 400 );
         sb.append( "global java.util.List list;\n" );
         for (int i = 0; i < 10; i++) {
@@ -405,8 +418,10 @@ public class ParallelExecutionTest {
         }
     }
 
-    @Test(timeout = 40000L)
-    public void testDisableParallelismOnSinglePartition() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(40000)
+    public void testDisableParallelismOnSinglePartition(KieBaseTestConfiguration kieBaseTestConfiguration) {
         String drl =
                 "rule R1 when\n" +
                 "    $i : Integer( this == 4 )" +
@@ -431,8 +446,10 @@ public class ParallelExecutionTest {
         assertThat(((InternalWorkingMemory) ksession).getAgenda().isParallelAgenda()).isFalse();
     }
 
-    @Test(timeout = 40000L)
-    public void testEventsExpiration() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(40000)
+    public void testEventsExpiration(KieBaseTestConfiguration kieBaseTestConfiguration) {
         StringBuilder sb = new StringBuilder( 400 );
         sb.append( "global java.util.List list;\n" );
         sb.append( "import " + MyEvent.class.getCanonicalName() + ";\n" );
@@ -444,7 +461,7 @@ public class ParallelExecutionTest {
         KieSessionConfiguration sessionConfig = RuleBaseFactory.newKnowledgeSessionConfiguration();
         sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
 
-        KieBaseTestConfiguration streamConfig = TestParametersUtil.getStreamInstanceOf(kieBaseTestConfiguration);
+        KieBaseTestConfiguration streamConfig = TestParametersUtil2.getStreamInstanceOf(kieBaseTestConfiguration);
         final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", streamConfig, sb.toString());
         final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, streamConfig, ParallelExecutionOption.FULLY_PARALLEL );
         KieSession ksession = kbase.newKieSession(sessionConfig, null);
@@ -475,8 +492,10 @@ public class ParallelExecutionTest {
         assertThat(ksession.getFactCount()).isEqualTo(0L);
     }
 
-    @Test(timeout = 40000L)
-    public void testImmediateEventsExpiration() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(40000)
+    public void testImmediateEventsExpiration(KieBaseTestConfiguration kieBaseTestConfiguration) {
         StringBuilder sb = new StringBuilder( 400 );
         sb.append( "global java.util.List list;\n" );
         sb.append( "import " + MyEvent.class.getCanonicalName() + ";\n" );
@@ -488,7 +507,7 @@ public class ParallelExecutionTest {
         KieSessionConfiguration sessionConfig = RuleBaseFactory.newKnowledgeSessionConfiguration();
         sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
 
-        KieBaseTestConfiguration streamConfig = TestParametersUtil.getStreamInstanceOf(kieBaseTestConfiguration);
+        KieBaseTestConfiguration streamConfig = TestParametersUtil2.getStreamInstanceOf(kieBaseTestConfiguration);
         final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", streamConfig, sb.toString());
         final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, streamConfig, ParallelExecutionOption.FULLY_PARALLEL );
         KieSession ksession = kbase.newKieSession(sessionConfig, null);
@@ -562,8 +581,10 @@ public class ParallelExecutionTest {
                 "end\n";
     }
 
-    @Test(timeout = 40000L)
-    public void testFireUntilHaltWithExpiration() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(40000)
+    public void testFireUntilHaltWithExpiration(KieBaseTestConfiguration kieBaseTestConfiguration) {
         StringBuilder sb = new StringBuilder( 400 );
         sb.append( "global java.util.List list;\n" );
         sb.append( "import " + MyEvent.class.getCanonicalName() + ";\n" );
@@ -582,7 +603,7 @@ public class ParallelExecutionTest {
         KieSessionConfiguration sessionConfig = RuleBaseFactory.newKnowledgeSessionConfiguration();
         sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
 
-        KieBaseTestConfiguration streamConfig = TestParametersUtil.getStreamInstanceOf(kieBaseTestConfiguration);
+        KieBaseTestConfiguration streamConfig = TestParametersUtil2.getStreamInstanceOf(kieBaseTestConfiguration);
         final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", streamConfig, sb.toString());
         final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, streamConfig, ParallelExecutionOption.FULLY_PARALLEL );
         KieSession ksession = kbase.newKieSession(sessionConfig, null);
@@ -650,9 +671,11 @@ public class ParallelExecutionTest {
         }
     }
 
-    @Test(timeout = 40000L)
-    @Ignore("this test is failing on Jenkins but not locally, we need to figure out why")
-    public void testFireUntilHaltWithExpiration2() throws InterruptedException {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(40000)
+    @Disabled("this test is failing on Jenkins but not locally, we need to figure out why")
+    public void testFireUntilHaltWithExpiration2(KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException {
         String drl =
                 "import " + A.class.getCanonicalName() + "\n" +
                 "import " + B.class.getCanonicalName() + "\n" +
@@ -692,7 +715,7 @@ public class ParallelExecutionTest {
         KieSessionConfiguration sessionConfig = RuleBaseFactory.newKnowledgeSessionConfiguration();
         sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
 
-        KieBaseTestConfiguration streamConfig = TestParametersUtil.getStreamInstanceOf(kieBaseTestConfiguration);
+        KieBaseTestConfiguration streamConfig = TestParametersUtil2.getStreamInstanceOf(kieBaseTestConfiguration);
         final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", streamConfig, drl);
         final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, streamConfig, ParallelExecutionOption.FULLY_PARALLEL );
         KieSession ksession = kbase.newKieSession(sessionConfig, null);
@@ -725,8 +748,10 @@ public class ParallelExecutionTest {
         }
     }
 
-    @Test(timeout = 40000L)
-    public void testWithUpdates() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(40000)
+    public void testWithUpdates(KieBaseTestConfiguration kieBaseTestConfiguration) {
         StringBuilder sb = new StringBuilder( 400 );
         sb.append( "global java.util.List list;\n" );
         for (int i = 0; i < 10; i++) {
@@ -762,8 +787,10 @@ public class ParallelExecutionTest {
         assertThat(list.size()).isEqualTo(10);
     }
 
-    @Test(timeout = 40000L)
-    public void testDisableParallelismWithAgendaGroups() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(40000)
+    public void testDisableParallelismWithAgendaGroups(KieBaseTestConfiguration kieBaseTestConfiguration) {
         StringBuilder sb = new StringBuilder( 400 );
         sb.append( "global java.util.List list;\n" );
         sb.append( "rule first\n" +
@@ -796,8 +823,10 @@ public class ParallelExecutionTest {
         assertThat(list.size()).isEqualTo(10);
     }
 
-    @Test(timeout = 40000L)
-    public void testDisableParallelismWithSalience() {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(40000)
+    public void testDisableParallelismWithSalience(KieBaseTestConfiguration kieBaseTestConfiguration) {
         StringBuilder sb = new StringBuilder( 400 );
         sb.append( "global java.util.List list;\n" );
         for (int i = 0; i < 10; i++) {
@@ -826,8 +855,10 @@ public class ParallelExecutionTest {
         assertThat(Arrays.asList(9, 8, 7, 6, 5, 4, 3, 2, 1, 0)).isEqualTo(list);
     }
 
-    @Test(timeout = 40000L)
-    public void testMultipleParallelKieSessionsWithInsertions() throws InterruptedException, ExecutionException, TimeoutException {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(40000)
+    public void testMultipleParallelKieSessionsWithInsertions(KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException, ExecutionException, TimeoutException {
         final int NUMBER_OF_PARALLEL_SESSIONS = 5;
 
         /* Create KIE base */
@@ -870,8 +901,10 @@ public class ParallelExecutionTest {
         };
     }
 
-    @Test(timeout = 40000L)
-    public void testMultipleParallelKieSessionsWithUpdates() throws InterruptedException, ExecutionException, TimeoutException {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(40000)
+    public void testMultipleParallelKieSessionsWithUpdates(KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException, ExecutionException, TimeoutException {
         final int NUMBER_OF_PARALLEL_SESSIONS = 5;
 
         /* Create KIE base */
@@ -923,8 +956,10 @@ public class ParallelExecutionTest {
         };
     }
 
-    @Test(timeout = 40000L)
-    public void testMultipleParallelKieSessionsWithDeletes() throws InterruptedException, ExecutionException, TimeoutException {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(40000)
+    public void testMultipleParallelKieSessionsWithDeletes(KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException, ExecutionException, TimeoutException {
         final int NUMBER_OF_PARALLEL_SESSIONS = 5;
 
         /* Create KIE base */
@@ -969,8 +1004,10 @@ public class ParallelExecutionTest {
         };
     }
 
-    @Test(timeout = 40000L)
-    public void testMultipleParallelKieSessionsFireUntilHalt() throws InterruptedException, ExecutionException, TimeoutException {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(40000)
+    public void testMultipleParallelKieSessionsFireUntilHalt(KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException, ExecutionException, TimeoutException {
         final int NUMBER_OF_PARALLEL_SESSIONS = 5;
 
         /* Create KIE base */
@@ -1031,8 +1068,10 @@ public class ParallelExecutionTest {
         };
     }
 
-    @Test(timeout = 40000L)
-    public void testMultipleParallelKieSessionsFireUntilHaltWithAsyncInsert() throws InterruptedException, ExecutionException, TimeoutException {
+    @ParameterizedTest(name = "KieBase type={0}")
+    @MethodSource("parameters")
+    @Timeout(40000)
+    public void testMultipleParallelKieSessionsFireUntilHaltWithAsyncInsert(KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException, ExecutionException, TimeoutException {
         final int NUMBER_OF_PARALLEL_SESSIONS = 5;
 
         /* Create KIE base */

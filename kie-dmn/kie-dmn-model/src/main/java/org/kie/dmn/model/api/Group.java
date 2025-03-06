@@ -27,4 +27,9 @@ public interface Group {
 
     void setName(String value);
 
+    String getId();
+
+    void setId(String value);
+
+
 }

@@ -27,7 +27,7 @@ import java.io.ObjectOutputStream;
 import java.util.Date;
 import java.util.Objects;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

@@ -22,8 +22,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
-import org.kie.dmn.feel.exceptions.EndpointOfRangeNotValidTypeException;
-import org.kie.dmn.feel.exceptions.EndpointOfRangeOfDifferentTypeException;
+import org.kie.dmn.feel.exceptions.EndpointOfForIterationDifferentTypeException;
+import org.kie.dmn.feel.exceptions.EndpointOfForIterationNotValidTypeException;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.runtime.events.ASTEventBase;
 import org.kie.dmn.feel.util.Msg;
@@ -42,15 +42,15 @@ public class ForIterationUtils {
             return new ForIteration(name, localDate, (LocalDate) end);
         }
         ctx.notifyEvt(() -> new ASTEventBase(FEELEvent.Severity.ERROR,
-                                             Msg.createMessage(Msg.VALUE_X_NOT_A_VALID_ENDPOINT_FOR_RANGE_BECAUSE_NOT_A_NUMBER_NOT_A_DATE, start), null));
-        throw new EndpointOfRangeOfDifferentTypeException();
+                                             Msg.createMessage(Msg.VALUE_X_NOT_A_VALID_ENDPOINT_FOR_FORITERATION_BECAUSE_NOT_A_NUMBER_NOT_A_DATE, start), null));
+        throw new EndpointOfForIterationDifferentTypeException();
     }
 
     static void validateValues(EvaluationContext ctx, Object start, Object end) {
         if (start.getClass() != end.getClass()) {
             ctx.notifyEvt(() -> new ASTEventBase(FEELEvent.Severity.ERROR,
                     Msg.createMessage(Msg.X_TYPE_INCOMPATIBLE_WITH_Y_TYPE, start, end), null));
-            throw new EndpointOfRangeOfDifferentTypeException();
+            throw new EndpointOfForIterationDifferentTypeException();
         }
         valueMustBeValid(ctx, start);
         valueMustBeValid(ctx, end);
@@ -58,9 +58,10 @@ public class ForIterationUtils {
 
     static void valueMustBeValid(EvaluationContext ctx, Object value) {
         if (!(value instanceof BigDecimal) && !(value instanceof LocalDate)) {
-            ctx.notifyEvt(() -> new ASTEventBase(FEELEvent.Severity.ERROR, Msg.createMessage(Msg.VALUE_X_NOT_A_VALID_ENDPOINT_FOR_RANGE_BECAUSE_NOT_A_NUMBER_NOT_A_DATE, value), null));
-            throw new EndpointOfRangeNotValidTypeException();
+            ctx.notifyEvt(() -> new ASTEventBase(FEELEvent.Severity.ERROR, Msg.createMessage(Msg.VALUE_X_NOT_A_VALID_ENDPOINT_FOR_FORITERATION_BECAUSE_NOT_A_NUMBER_NOT_A_DATE, value), null));
+            throw new EndpointOfForIterationNotValidTypeException();
         }
     }
-
 }
+
+

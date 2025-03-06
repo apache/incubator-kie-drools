@@ -50,7 +50,7 @@ public class DecisionTableFunction
 
     private static final Logger LOG = LoggerFactory.getLogger( DecisionTableFunction.class );
 
-    public DecisionTableFunction() {
+    private DecisionTableFunction() {
         super( "decision table" );
     }
 
@@ -153,7 +153,7 @@ public class DecisionTableFunction
      */
     private static DTDecisionRule toDecisionRule(EvaluationContext mainCtx, FEEL embeddedFEEL, int index, List<?> rule, int inputSize) {
         // TODO should be check indeed block of inputSize n inputs, followed by block of outputs.
-        DTDecisionRule dr = new DTDecisionRule( index );
+        DTDecisionRule dr = new DTDecisionRule( index, null );
         for ( int i = 0; i < rule.size(); i++ ) {
             Object o = rule.get( i );
             if ( i < inputSize ) {
@@ -177,7 +177,7 @@ public class DecisionTableFunction
         } else if ( o instanceof Range ) {
             return (c, x) -> {
                 try {
-                    return ((Range) o).includes( x );
+                    return ((Range) o).includes(ctx.getFEELDialect(), x );
                 } catch ( Exception e ) {
                     ctx.notifyEvt( () -> new FEELEventBase( FEELEvent.Severity.ERROR,
                                                             Msg.createMessage( Msg.EXPRESSION_IS_RANGE_BUT_VALUE_IS_NOT_COMPARABLE, o.toString(), x.toString() ),

@@ -23,13 +23,14 @@ import java.util.List;
 import java.util.regex.PatternSyntaxException;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
+import org.kie.dmn.feel.runtime.FEELCollectionFunction;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
 public class SplitFunction
-        extends BaseFEELFunction {
+        extends BaseFEELFunction implements FEELCollectionFunction {
     public static final SplitFunction INSTANCE = new SplitFunction();
 
-    SplitFunction() {
+    private SplitFunction() {
         super( "split" );
     }
 

@@ -55,8 +55,8 @@ import org.drools.mvel.builder.MVELDialect;
 import org.drools.mvel.builder.MVELSalienceBuilder;
 import org.drools.mvel.compiler.Person;
 import org.drools.mvel.expr.MVELSalienceExpression;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.kie.api.definition.rule.Rule;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -66,7 +66,7 @@ public class MVELSalienceBuilderTest {
     private InternalKnowledgeBase kBase ;
     private BuildContext buildContext;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         InternalKnowledgePackage pkg = CoreComponentFactory.get().createKnowledgePackage( "pkg1" );
         final RuleDescr ruleDescr = new RuleDescr( "rule 1" );

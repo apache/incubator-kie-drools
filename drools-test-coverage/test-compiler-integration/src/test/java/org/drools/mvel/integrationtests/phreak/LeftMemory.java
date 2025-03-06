@@ -23,7 +23,6 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.PhreakPropagationContext;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.BetaNode;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.reteoo.TupleFactory;
 import org.drools.core.reteoo.TupleImpl;

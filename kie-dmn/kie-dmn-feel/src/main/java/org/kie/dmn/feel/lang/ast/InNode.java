@@ -25,7 +25,7 @@ import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.UnaryTest;
-import org.kie.dmn.feel.runtime.functions.ListContainsFunction;
+import org.kie.dmn.feel.util.BooleanEvalHelper;
 import org.kie.dmn.feel.util.Msg;
 
 public class InNode
@@ -38,6 +38,12 @@ public class InNode
         super( ctx );
         this.value = value;
         this.exprs = exprs;
+    }
+
+    public InNode(BaseNode value, BaseNode exprs, String text) {
+        this.value = value;
+        this.exprs = exprs;
+        this.setText(text);
     }
 
     public BaseNode getValue() {
@@ -88,13 +94,13 @@ public class InNode
             return ((UnaryTest) expr).apply( ctx, value );
         } else if ( expr instanceof Range ) {
             try {
-                return ((Range) expr).includes( value );
+                return ((Range) expr).includes(ctx.getFEELDialect(), value );
             } catch ( Exception e ) {
                 ctx.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.EXPRESSION_IS_RANGE_BUT_VALUE_IS_NOT_COMPARABLE, value.toString(), expr.toString() ), e ) );
                 return null;
             }
         } else if ( value != null ) {
-            return ListContainsFunction.itemEqualsSC(value, expr);
+            return BooleanEvalHelper.isEqualsStringCompare(value, expr);
         } else {
             // value == null, expr != null
             return Boolean.FALSE;

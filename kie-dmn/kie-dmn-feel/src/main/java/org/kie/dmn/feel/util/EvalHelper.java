@@ -38,6 +38,7 @@ import org.kie.dmn.api.core.FEELPropertyAccessible;
 import org.kie.dmn.feel.lang.FEELProperty;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.Range.RangeBoundary;
+import org.kie.dmn.feel.runtime.impl.UndefinedValueComparable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -185,6 +186,9 @@ public class EvalHelper {
                     break;
                 default:
                     return PropertyValueResult.notDefined();
+            }
+            if (result instanceof UndefinedValueComparable) {
+                result = null;
             }
         } else {
             Method getter = getGenericAccessor( current.getClass(), property );

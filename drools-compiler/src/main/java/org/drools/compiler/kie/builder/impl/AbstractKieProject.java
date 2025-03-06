@@ -225,6 +225,8 @@ public abstract class AbstractKieProject implements KieProject {
 
         Set<Asset> assets = new LinkedHashSet<>();
 
+        InternalKieModule kModule = getKieModuleForKBase(kBaseModel.getName());
+
         boolean allIncludesAreValid = true;
         for (String include : getTransitiveIncludes(kBaseModel)) {
             if ( StringUtils.isEmpty( include )) {
@@ -240,6 +242,11 @@ public abstract class AbstractKieProject implements KieProject {
             }
             if (compileIncludedKieBases()) {
                 addFiles( buildFilter, assets, getKieBaseModel( include ), includeModule, useFolders );
+            } else {
+                if (kModule != includeModule) {
+                    // includeModule is not part of the current kModule
+                    buildContext.addIncludeModule(getKieBaseModel(include), includeModule);
+                }
             }
         }
 
@@ -247,7 +254,6 @@ public abstract class AbstractKieProject implements KieProject {
             return null;
         }
 
-        InternalKieModule kModule = getKieModuleForKBase(kBaseModel.getName());
         addFiles( buildFilter, assets, kBaseModel, kModule, useFolders );
 
         KnowledgeBuilder kbuilder;
