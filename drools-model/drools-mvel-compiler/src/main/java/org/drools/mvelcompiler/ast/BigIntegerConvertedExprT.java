@@ -25,7 +25,12 @@ import java.util.Optional;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.IntegerLiteralExpr;
+import com.github.javaparser.ast.expr.LiteralStringValueExpr;
+import com.github.javaparser.ast.expr.LongLiteralExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
+import com.github.javaparser.ast.expr.StringLiteralExpr;
+import com.github.javaparser.ast.expr.UnaryExpr;
 
 import static com.github.javaparser.ast.NodeList.nodeList;
 
@@ -34,8 +39,15 @@ public class BigIntegerConvertedExprT implements TypedExpression {
     private final TypedExpression value;
     private final Type type = BigInteger.class;
 
+    private final Optional<UnaryExpr> unaryExpr;
+
     public BigIntegerConvertedExprT(TypedExpression value) {
+        this(value, Optional.empty());
+    }
+
+    public BigIntegerConvertedExprT(TypedExpression value, Optional<UnaryExpr> unaryExpr) {
         this.value = value;
+        this.unaryExpr = unaryExpr;
     }
 
     @Override
@@ -46,9 +58,22 @@ public class BigIntegerConvertedExprT implements TypedExpression {
     @Override
     public Node toJavaExpression() {
 
+        Expression expr = (Expression) value.toJavaExpression();
+        Expression arg = unaryExpr.map(u -> (Expression) new UnaryExpr(expr, u.getOperator())).orElse(expr);
+        arg = convertToStringLiteralExprIfPossible(arg);
         return new ObjectCreationExpr(null,
                                       StaticJavaParser.parseClassOrInterfaceType(type.getTypeName()),
-                                      nodeList((Expression) value.toJavaExpression()));
+                                      nodeList(arg));
+    }
+
+    private Expression convertToStringLiteralExprIfPossible(Expression expr) {
+        // use BigInterger(String) constructor
+        if (expr instanceof IntegerLiteralExpr || expr instanceof LongLiteralExpr) {
+            return new StringLiteralExpr(((LiteralStringValueExpr) expr).getValue());
+        } else if (expr instanceof UnaryExpr newUnaryExpr) {
+            return new StringLiteralExpr(newUnaryExpr.toString());
+        }
+        return expr;
     }
 
     @Override
