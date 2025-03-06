@@ -20,16 +20,17 @@
 package org.kie.dmn.feel.lang.types;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.Symbol;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.runtime.FEELFunction;
-import org.kie.dmn.feel.runtime.functions.AbsFunction;
-import org.kie.dmn.feel.runtime.functions.AnyFunction;
 import org.kie.dmn.feel.runtime.FEELFunction.Param;
-import org.kie.dmn.feel.runtime.functions.FEELFnResult;
-import org.mockito.Mockito;
+import org.kie.dmn.feel.runtime.functions.ContextPutFunction;
+import org.kie.dmn.feel.runtime.functions.EvenFunction;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -39,52 +40,53 @@ import java.util.ArrayList;
 class GenFnTypeTest {
 
     private GenFnType genFnType;
-    private FEELFunction mockFunction;
-    private AbsFunction absFunctionInstance;
-    private AnyFunction anyFunctionInstance;
 
     @BeforeEach
     void setUp() {
-        absFunctionInstance = AbsFunction.INSTANCE;
-        anyFunctionInstance = AnyFunction.INSTANCE;
-
         genFnType = new GenFnType(
                 Arrays.asList(new SomeType(), new AnotherType()),
                 new SomeType()
         );
-        // TODO remove usage of mock
-        mockFunction = Mockito.mock(FEELFunction.class);
     }
 
     @Test
     public void testIsInstanceOfWithCompatibleFunction() {
-        // TODO remove usage of mock
-        // Instead, use a properly instantiated GenFnType that match the Function used as argument
-        List<List<Param>> params = new ArrayList<>();
-        Mockito.when(mockFunction.getParameters()).thenReturn(params);
-        Mockito.when(mockFunction.isCompatible(Mockito.any(), Mockito.any())).thenReturn(true);
-        assertThat(genFnType.isInstanceOf(mockFunction)).isTrue();
+        FEELFunction compatibleFunction = new FEELFunction() {
+            @Override
+            public String getName() {
+                return "SomeType";
+            }
+
+            @Override
+            public Symbol getSymbol() {
+                return null;
+            }
+
+            @Override
+            public List<List<Param>> getParameters() {
+                List<Type> paramTypes = Arrays.asList(new SomeType(), new AnotherType());
+                List<String> paramNames = Arrays.asList("param1", "param2");
+                return createParams(paramTypes, paramNames);
+            }
+
+            @Override
+            public Object invokeReflectively(EvaluationContext ctx, Object[] params) {
+                return null;
+            }
+        };
+        assertThat(genFnType.isInstanceOf(compatibleFunction)).isTrue();
     }
 
     @Test
     public void testIsInstanceOfWithIncompatibleFunction() {
-        // TODO
-        // Use a properly instantiated GenFnType that does not match the Function used as argument
-        // copy  copy testing values from testIsAssignableValuWithInvalidValue
+        FEELFunction incompatibleFunction = ContextPutFunction.INSTANCE;
+        assertThat(genFnType.isInstanceOf(incompatibleFunction)).isFalse();
     }
 
     @Test
-    public void testIsInstanceOfWithNoParameters() {
-        // remove - to be replaced by testIsInstanceOfWithIncompatibleFunction
-        assertThat(genFnType.isInstanceOf(absFunctionInstance)).isFalse();
-    }
-
-    @Test
-    public void testIsInstanceOfWithNonMatchingParameters() {
-        // remove the anyFunctionInstance.invoke invocation, it makes test unclear.
-        // any object that is not a FEELFunction should return false
-        FEELFnResult<Boolean> feelFn = anyFunctionInstance.invoke(new Object[]{Boolean.TRUE, Boolean.TRUE});
-        assertThat(genFnType.isInstanceOf(feelFn)).isFalse();
+    public void testIsInstanceOfWithNonFeelFunction() {
+        FEELFunction notFeelFn = EvenFunction.INSTANCE;
+        assertThat(genFnType.isInstanceOf(notFeelFn)).isFalse();
     }
 
     @Test
@@ -93,13 +95,36 @@ class GenFnTypeTest {
     }
 
     @Test
-    public void testIsAssignableValuWithValidValue() {
-        // TODO
-        // copy testing values from testIsInstanceOfWithCompatibleFunction
+    public void testIsAssignableValueWithValidValue() {
+        FEELFunction compatibleFunction = new FEELFunction() {
+            @Override
+            public String getName() {
+                return "SomeType";
+            }
+
+            @Override
+            public Symbol getSymbol() {
+                return null;
+            }
+
+            @Override
+            public List<List<Param>> getParameters() {
+                List<Type> paramTypes = Arrays.asList(new SomeType(), new AnotherType());
+                List<String> paramNames = Arrays.asList("param1", "param2");
+                return createParams(paramTypes, paramNames);
+            }
+
+            @Override
+            public Object invokeReflectively(EvaluationContext ctx, Object[] params) {
+                return null;
+            }
+        };
+        boolean result = genFnType.isAssignableValue(compatibleFunction);
+        assertThat(result).isTrue();
     }
 
     @Test
-    public void testIsAssignableValuWithInvalidValue() {
+    public void testIsAssignableValueWithInvalidValue() {
         Type evaluatedTypeArg = BuiltInType.NUMBER;
         Type functionReturnType = BuiltInType.NUMBER;
         GenFnType genFnType = new GenFnType(
@@ -117,21 +142,27 @@ class GenFnTypeTest {
 
     @Test
     public void testConformsToWithInvalidBuiltinType() {
-        //  TODO
+        assertThat(genFnType.conformsTo(BuiltInType.STRING)).isFalse();
     }
 
     @Test
     public void testConformsToWithValidGenFnType() {
-        // TODO
+        GenFnType anotherGenFnType = new GenFnType(
+                Arrays.asList(new SomeType(), new AnotherType()),
+                new SomeType()
+        );
+
+        assertThat(genFnType.conformsTo(anotherGenFnType)).isTrue();
     }
 
     @Test
     public void testConformsToWithInvalidGenFnType() {
-        GenFnType matchingGenFnType = new GenFnType(
+        GenFnType invalidGenFnType = new GenFnType(
                 Collections.singletonList(new SomeType()),
                 new SomeType()
         );
-        assertThat(genFnType.conformsTo(matchingGenFnType)).isFalse();
+
+        assertThat(genFnType.conformsTo(invalidGenFnType)).isFalse();
     }
 
     @Test
@@ -169,7 +200,9 @@ class GenFnTypeTest {
         List<Type> argsGen = Arrays.asList(new SomeType(), new AnotherType());
         List<List<Param>> params = List.of();
 
-        assertThat(GenFnType.checkSignatures(params, argsGen)).isFalse();
+        assertThatThrownBy(() -> GenFnType.checkSignatures(params, argsGen))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("The list of function parameter signatures cannot be empty.");
     }
 
     @Test
@@ -183,13 +216,12 @@ class GenFnTypeTest {
     }
 
     @Test
-    void testCheckSignaturesWithMatchingEmptySignature() {
-        // TODO
-        // This should throw an exception, because checkSignatures is implemented on the assumption that params is not empty
+    void testCheckSignaturesWithEmptySignature() {
         List<Type> argsGen = List.of();
         List<List<Param>> params = List.of();
-
-        assertThat(GenFnType.checkSignatures(params, argsGen)).isFalse();
+        assertThatThrownBy(() -> GenFnType.checkSignatures(params, argsGen))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("The list of function parameter signatures cannot be empty.");
     }
 
     static class SomeType implements Type {
