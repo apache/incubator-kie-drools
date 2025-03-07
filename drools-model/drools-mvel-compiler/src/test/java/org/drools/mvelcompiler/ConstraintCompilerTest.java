@@ -19,6 +19,7 @@
 package org.drools.mvelcompiler;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -112,6 +113,67 @@ public class ConstraintCompilerTest implements CompilerTest {
                 "$bdvalue.add(BigDecimal.valueOf(0.5), java.math.MathContext.DECIMAL128)");
     }
 
+    @Test
+    public void testBigIntegerStringEquality() {
+        testExpression(c -> c.setRootPatternPrefix(Person.class, "_this"), "salaryBI == \"90\"",
+                       "_this.getSalaryBI().compareTo(new java.math.BigInteger(\"90\")) == 0");
+    }
+
+    @Test
+    public void testBigIntegerStringNonEquality() {
+        testExpression(c -> c.setRootPatternPrefix(Person.class, "_this"), "salaryBI != \"90\"",
+                       "_this.getSalaryBI().compareTo(new java.math.BigInteger(\"90\")) != 0");
+    }
+
+    @Test
+    public void testBigIntegerPromotionToIntMethod() {
+        testExpression(c -> c.setRootPatternPrefix(Person.class, "_this"), "isEven(salaryBI)",
+                       "_this.isEven(_this.getSalaryBI().intValue())");
+    }
+
+    @Test
+    public void testBigIntegerMultiplyInt() {
+        testExpression(c -> c.addDeclaration("$bi1", BigInteger.class), "$bi1 * 10",
+                       "$bi1.multiply(new java.math.BigInteger(\"10\"))");
+    }
+
+    @Test
+    public void testBigIntegerMultiplyNegativeInt() {
+        testExpression(c -> c.addDeclaration("$bi1", BigInteger.class), "$bi1 * -1",
+                       "$bi1.multiply(new java.math.BigInteger(\"-1\"))");
+    }
+
+    @Test
+    public void testBigIntegerAddInt() {
+        testExpression(c -> c.addDeclaration("$bi1", BigInteger.class), "$bi1 + 10",
+                       "$bi1.add(new java.math.BigInteger(\"10\"))");
+    }
+
+    @Test
+    public void testBigIntegerSubtractInt() {
+        testExpression(c -> c.addDeclaration("$bi1", BigInteger.class), "$bi1 - 10",
+                       "$bi1.subtract(new java.math.BigInteger(\"10\"))");
+    }
+
+    @Test
+    public void testBigIntegerDivideInt() {
+        testExpression(c -> c.addDeclaration("$bi1", BigInteger.class), "$bi1 / 10",
+                       "$bi1.divide(new java.math.BigInteger(\"10\"))");
+    }
+
+    @Test
+    public void testBigIntegerModInt() {
+        testExpression(c -> c.addDeclaration("$bi1", BigInteger.class), "$bi1 % 10",
+                       "$bi1.remainder(new java.math.BigInteger(\"10\"))");
+    }
+
+    @Test
+    public void testBigIntegerValueOfInteger() {
+        testExpression(c -> c.addDeclaration("$bivalue", BigInteger.class),
+                       "$bivalue + BigInteger.valueOf(10)",
+                       "$bivalue.add(BigInteger.valueOf(10))");
+    }
+
     public void testExpression(Consumer<MvelCompilerContext> testFunction,
                                String inputExpression,
                                String expectedResult,
@@ -122,6 +184,7 @@ public class ConstraintCompilerTest implements CompilerTest {
         imports.add("java.util.HashMap");
         imports.add("java.util.Map");
         imports.add("java.math.BigDecimal");
+        imports.add("java.math.BigInteger");
         imports.add("org.drools.Address");
         imports.add(Person.class.getCanonicalName());
         imports.add(Gender.class.getCanonicalName());
