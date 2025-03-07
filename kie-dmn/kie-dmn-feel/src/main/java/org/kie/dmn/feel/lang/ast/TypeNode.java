@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -21,7 +21,7 @@ package org.kie.dmn.feel.lang.ast;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.Type;
-import org.kie.dmn.feel.lang.types.BuiltInType;
+import org.kie.dmn.feel.util.BuiltInTypeUtils;
 
 public abstract class TypeNode
         extends BaseNode {
@@ -31,12 +31,12 @@ public abstract class TypeNode
     }
 
     public TypeNode(ParserRuleContext ctx) {
-        super( ctx );
+        super(ctx);
     }
 
     @Override
     public Type evaluate(EvaluationContext ctx) {
-        return BuiltInType.determineTypeFromName( getText() );
+        return BuiltInTypeUtils.determineTypeFromName(getText());
     }
 
     @Override

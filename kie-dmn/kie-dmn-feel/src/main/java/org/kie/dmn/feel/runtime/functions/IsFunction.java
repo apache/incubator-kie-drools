@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -25,6 +25,7 @@ import org.kie.dmn.feel.lang.FEELDialect;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.runtime.FEELBooleanFunction;
 import org.kie.dmn.feel.util.BooleanEvalHelper;
+import org.kie.dmn.feel.util.BuiltInTypeUtils;
 
 public class IsFunction extends BaseFEELFunction implements FEELBooleanFunction {
     public static final IsFunction INSTANCE = new IsFunction();
@@ -41,9 +42,9 @@ public class IsFunction extends BaseFEELFunction implements FEELBooleanFunction 
             // Handle specific cases when both time / datetime
             TemporalAccessor left = (TemporalAccessor) value1;
             TemporalAccessor right = (TemporalAccessor) value2;
-            if (BuiltInType.determineTypeFromInstance(left) == BuiltInType.TIME && BuiltInType.determineTypeFromInstance(right) == BuiltInType.TIME) {
+            if (BuiltInTypeUtils.determineTypeFromInstance(left) == BuiltInType.TIME && BuiltInTypeUtils.determineTypeFromInstance(right) == BuiltInType.TIME) {
                 return FEELFnResult.ofResult(BooleanEvalHelper.isEqualTimeInSemanticD(left, right));
-            } else if (BuiltInType.determineTypeFromInstance(left) == BuiltInType.DATE_TIME && BuiltInType.determineTypeFromInstance(right) == BuiltInType.DATE_TIME) {
+            } else if (BuiltInTypeUtils.determineTypeFromInstance(left) == BuiltInType.DATE_TIME && BuiltInTypeUtils.determineTypeFromInstance(right) == BuiltInType.DATE_TIME) {
                 return FEELFnResult.ofResult(BooleanEvalHelper.isEqualDateTimeInSemanticD(left, right));
             } // fallback; continue:
         }
