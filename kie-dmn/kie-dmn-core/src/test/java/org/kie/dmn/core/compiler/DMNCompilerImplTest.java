@@ -1,5 +1,4 @@
-
- /* Licensed to the Apache Software Foundation (ASF) under one
+/* Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
  * regarding copyright ownership.  The ASF licenses this file
@@ -33,6 +32,7 @@ import org.kie.dmn.model.v1_5.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.xml.namespace.QName;
 import java.util.*;
 import java.util.List;
 
@@ -121,6 +121,7 @@ class DMNCompilerImplTest {
         assertThat(model).isNotNull();
         assertThat(model.getName()).isNotNull().isEqualTo(modelName);
         assertThat(model.getMessages()).isNotEmpty();
+        assertThat(model.getMessages().size()).isEqualTo(1);
         assertThat(model.getMessages().get(0).getText()).isEqualTo("DMN: Import type unknown: 'UNKNOWN'. (Invalid FEEL syntax on the referenced expression) ");
 
     }
@@ -161,12 +162,13 @@ class DMNCompilerImplTest {
         assertThat(model).isNotNull();
         assertThat(model.getName()).isNotNull().isEqualTo(modelName);
         assertThat(model.getMessages()).isNotEmpty();
+        assertThat(model.getMessages().size()).isEqualTo(5);
         assertThat(model.getMessages().get(0).getMessageType()).isEqualTo(DMNMessageType.IMPORT_NOT_FOUND);
 
     }
 
     @Test
-    void resolveDMNImportType() {
+    void resolveDMNImportType()  {
         List<DMNModel> toMerge = new ArrayList<>();
         List<DMNModel> dmnModels = new ArrayList<>();
         Resource resource = new ClassPathResource( "valid_models/DMNv1_5/Imported_Model_Unamed.dmn",
@@ -188,7 +190,9 @@ class DMNCompilerImplTest {
         DMNModelImpl model = new DMNModelImpl(importingModel.getDefinitions(), resource);
         DMNCompilerImpl.resolveDMNImportType(input, dmnModels, model, toMerge);
         assertThat(model.getMessages()).isEmpty();
-        assertThat(model.getImportAliasesForNS().entrySet().stream().findFirst().get().getValue().getLocalPart()).isNotNull().isEqualTo("Imported Model");
+        assertThat(model.getImportAliasesForNS().entrySet().stream().findFirst())
+                .isPresent().get().extracting(Map.Entry::getValue)
+                .extracting(QName::getLocalPart).isNotNull().isEqualTo("Imported Model");
 
     }
 
@@ -209,7 +213,7 @@ class DMNCompilerImplTest {
         DMNCompilerImpl.checkLocatedDMNModel(input, located, model, toMerge);
         assertThat(importingModel).isNotNull();
         assertThat(importingModel.getNamespace()).isNotNull().isEqualTo(nameSpace);
-        assertThat(toMerge.isEmpty()).isTrue();
+        assertThat(toMerge).isEmpty();
     }
 
     @Test
@@ -228,7 +232,8 @@ class DMNCompilerImplTest {
         DMNModel located = new DMNModelImpl(emptyNamedModel.getDefinitions(), resource);
         DMNCompilerImpl.checkLocatedDMNModel(input, located, model, toMerge);
         assertThat(emptyNamedModel).isNotNull();
-        assertThat(toMerge.isEmpty()).isFalse();
+        assertThat(toMerge).isNotEmpty();
+        assertThat(toMerge.size()).isEqualTo(1);
         assertThat(toMerge.get(0).getNamespace()).isNotNull().isEqualTo(namespace);
 
     }
