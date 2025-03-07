@@ -44,6 +44,7 @@ interface CompilerTest {
         imports.add("java.util.HashMap");
         imports.add("java.util.Map");
         imports.add("java.math.BigDecimal");
+        imports.add("java.math.BigInteger");
         imports.add("org.drools.Address");
         imports.add(Person.class.getCanonicalName());
         imports.add(Gender.class.getCanonicalName());

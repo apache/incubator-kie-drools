@@ -473,7 +473,7 @@ public class MvelCompilerTest implements CompilerTest {
                  ctx.addDeclaration("$p", Person.class);
              },
              "{ $p.ageAsInteger = 10000I; }",
-             "{ $p.setAgeAsInteger(new java.math.BigInteger(\"10000\")); }");
+             "{ $p.setAgeAsInteger(new java.math.BigInteger(\"10000\").intValue()); }");
     }
 
     @Test
@@ -990,6 +990,322 @@ public class MvelCompilerTest implements CompilerTest {
              "{ " +
                      "        int anotherVariable = 20;\n" +
                      "        $p.setSalary($p.getSalary().add(new java.math.BigDecimal(anotherVariable), java.math.MathContext.DECIMAL128));\n" +
+                     "}");
+    }
+
+    @Test
+    public void testBigInteger() {
+        test("{ " +
+                     "    BigInteger sum = 0;\n" +
+                     "    BigInteger money = 10;\n" +
+                     "    sum += money;\n" +
+                     "    sum -= money;\n" +
+                     "}",
+             "{ " +
+                     "    java.math.BigInteger sum = new java.math.BigInteger(\"0\");\n" +
+                     "    java.math.BigInteger money = new java.math.BigInteger(\"10\");\n" +
+                     "    sum = sum.add(money);\n" +
+                     "    sum = sum.subtract(money);\n" +
+                     "}");
+    }
+
+    @Test
+    public void bigIntegerLessThan() {
+        test("{ " +
+                     "    BigInteger zero = 0;\n" +
+                     "    BigInteger ten = 10;\n" +
+                     "    if(zero < ten) {}\n" +
+                     "}",
+             "{ " +
+                     "    java.math.BigInteger zero = new java.math.BigInteger(\"0\");\n" +
+                     "    java.math.BigInteger ten = new java.math.BigInteger(\"10\");\n" +
+                     "    if (zero.compareTo(ten) < 0) {\n" +
+                     "    }\n" +
+                     "}");
+    }
+
+    @Test
+    public void bigIntegerLessThanOrEqual() {
+        test("{ " +
+                     "    BigInteger zero = 0;\n" +
+                     "    BigInteger ten = 10;\n" +
+                     "    if(zero <= ten) {}\n" +
+                     "}",
+             "{ " +
+                     "    java.math.BigInteger zero = new java.math.BigInteger(\"0\");\n" +
+                     "    java.math.BigInteger ten = new java.math.BigInteger(\"10\");\n" +
+                     "    if (zero.compareTo(ten) <= 0) {\n" +
+                     "    }\n" +
+                     "}");
+    }
+
+    @Test
+    public void bigIntegerGreaterThan() {
+        test("{ " +
+                     "    BigInteger zero = 0;\n" +
+                     "    BigInteger ten = 10;\n" +
+                     "    if(zero > ten) {}\n" +
+                     "}",
+             "{ " +
+                     "    java.math.BigInteger zero = new java.math.BigInteger(\"0\");\n" +
+                     "    java.math.BigInteger ten = new java.math.BigInteger(\"10\");\n" +
+                     "    if (zero.compareTo(ten) > 0) {\n" +
+                     "    }\n" +
+                     "}");
+    }
+
+    @Test
+    public void bigIntegerGreaterThanOrEqual() {
+        test("{ " +
+                     "    BigInteger zero = 0;\n" +
+                     "    BigInteger ten = 10;\n" +
+                     "    if(zero >= ten) {}\n" +
+                     "}",
+             "{ " +
+                     "    java.math.BigInteger zero = new java.math.BigInteger(\"0\");\n" +
+                     "    java.math.BigInteger ten = new java.math.BigInteger(\"10\");\n" +
+                     "    if (zero.compareTo(ten) >= 0) {\n" +
+                     "    }\n" +
+                     "}");
+    }
+
+    @Test
+    public void bigIntegerEquals() {
+        test("{ " +
+                     "    BigInteger zero = 0;\n" +
+                     "    if(zero == 23) {}\n" +
+                     "}",
+             "{ " +
+                     "    java.math.BigInteger zero = new java.math.BigInteger(\"0\");\n" +
+                     "    if (zero.compareTo(new java.math.BigInteger(\"23\")) == 0) {\n" +
+                     "    }\n" +
+                     "}");
+    }
+
+    @Test
+    public void bigIntegerNotEquals() {
+        test("{ " +
+                     "    BigInteger zero = 0;\n" +
+                     "    if(zero != 23) {}\n" +
+                     "}",
+             "{ " +
+                     "    java.math.BigInteger zero = new java.math.BigInteger(\"0\");\n" +
+                     "    if (zero.compareTo(new java.math.BigInteger(\"23\")) != 0) {\n" +
+                     "    }\n" +
+                     "}");
+    }
+
+    @Test
+    public void testBigIntegerCompoundOperatorOnField() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ " +
+                     "    $p.salaryBI += 50000I;\n" +
+                     "}",
+             "{ " +
+                     "    $p.setSalaryBI($p.getSalaryBI().add(new java.math.BigInteger(\"50000\")));\n" +
+                     "}");
+    }
+
+    @Test
+    public void testBigIntegerCompoundOperatorWithOnField() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ " +
+                     "    $p.salaryBI += $p.salaryBI;\n" +
+                     "}",
+             "{ " +
+                     "    $p.setSalaryBI($p.getSalaryBI().add($p.getSalaryBI()));\n" +
+                     "}");
+    }
+
+    @Test
+    public void testBigIntegerArithmetic() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ " +
+                     "    java.math.BigInteger operation = $p.salaryBI + $p.salaryBI;\n" +
+                     "}",
+             "{ " +
+                     "    java.math.BigInteger operation = $p.getSalaryBI().add($p.getSalaryBI());\n" +
+                     "}");
+    }
+
+    @Test
+    public void testBigIntegerArithmeticWithConversionLiteral() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ " +
+                     "    java.math.BigInteger operation = $p.salaryBI + 10I;\n" +
+                     "}",
+             "{ " +
+                     "    java.math.BigInteger operation = $p.getSalaryBI().add(new java.math.BigInteger(\"10\"));\n" +
+                     "}");
+    }
+
+    @Test
+    public void testBigIntegerArithmeticWithConversionFromInteger() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ " +
+                     "    java.math.BigInteger operation = $p.salaryBI + 10;\n" +
+                     "}",
+             "{ " +
+                     "    java.math.BigInteger operation = $p.getSalaryBI().add(new java.math.BigInteger(\"10\"));\n" +
+                     "}");
+    }
+
+    @Test
+    public void testBigIntegerAssignmentToInt() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ " +
+                     "    $p.age = $p.salaryBI;\n" +
+                     "}",
+             "{ " +
+                     "    $p.setAge($p.getSalaryBI().intValue());\n" +
+                     "}");
+    }
+
+    @Test
+    public void testBigIntegerAssignmentToIntegerBoxed() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ " +
+                     "    $p.integerBoxed = $p.salaryBI;\n" +
+                     "}",
+             "{ " +
+                     "    $p.setIntegerBoxed($p.getSalaryBI().intValue());\n" +
+                     "}");
+    }
+
+    @Test
+    public void testBigIntegerAssignmentToLong() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ " +
+                     "    $p.longValue = $p.salaryBI;\n" +
+                     "}",
+             "{ " +
+                     "    $p.setLongValue($p.getSalaryBI().longValue());\n" +
+                     "}");
+    }
+
+    @Test
+    public void testBigIntegerAssignmentToLongBoxed() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ " +
+                     "    $p.longBoxed = $p.salaryBI;\n" +
+                     "}",
+             "{ " +
+                     "    $p.setLongBoxed($p.getSalaryBI().longValue());\n" +
+                     "}");
+    }
+
+    @Test
+    public void testBigIntegerAssignmentToShort() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ " +
+                     "    $p.shortValue = $p.salaryBI;\n" +
+                     "}",
+             "{ " +
+                     "    $p.setShortValue($p.getSalaryBI().shortValue());\n" +
+                     "}");
+    }
+
+    @Test
+    public void testBigIntegerAssignmentToShortBoxed() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ " +
+                     "    $p.shortBoxed = $p.salaryBI;\n" +
+                     "}",
+             "{ " +
+                     "    $p.setShortBoxed($p.getSalaryBI().shortValue());\n" +
+                     "}");
+    }
+
+    @Test
+    public void testBigIntegerAssignmentToDouble() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ " +
+                     "    $p.doubleValue = $p.salaryBI;\n" +
+                     "}",
+             "{ " +
+                     "    $p.setDoubleValue($p.getSalaryBI().doubleValue());\n" +
+                     "}");
+    }
+
+    @Test
+    public void testBigIntegerAssignmentToDoubleBoxed() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ " +
+                     "    $p.doubleBoxed = $p.salaryBI;\n" +
+                     "}",
+             "{ " +
+                     "    $p.setDoubleBoxed($p.getSalaryBI().doubleValue());\n" +
+                     "}");
+    }
+
+    @Test
+    public void testBigIntegerAssignmentToFloat() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ " +
+                     "    $p.floatValue = $p.salaryBI;\n" +
+                     "}",
+             "{ " +
+                     "    $p.setFloatValue($p.getSalaryBI().floatValue());\n" +
+                     "}");
+    }
+
+    @Test
+    public void testBigIntegerAssignmentToFloatBoxed() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ " +
+                     "    $p.floatBoxed = $p.salaryBI;\n" +
+                     "}",
+             "{ " +
+                     "    $p.setFloatBoxed($p.getSalaryBI().floatValue());\n" +
+                     "}");
+    }
+
+    @Test
+    public void testBigIntegerPromotionAllFourOperations() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ " +
+                     "    BigInteger result = 0I;" +
+                     "    result += 50000;\n" +
+                     "    result -= 10000;\n" +
+                     "    result /= 10;\n" +
+                     "    result *= 10;\n" +
+                     "    (result *= $p.salaryBI);\n" +
+                     "    $p.salaryBI = result;" +
+                     "}",
+             "{ " +
+                     "        java.math.BigInteger result = new java.math.BigInteger(\"0\");\n" +
+                     "        result = result.add(new java.math.BigInteger(\"50000\"));\n" +
+                     "        result = result.subtract(new java.math.BigInteger(\"10000\"));\n" +
+                     "        result = result.divide(new java.math.BigInteger(\"10\"));\n" +
+                     "        result = result.multiply(new java.math.BigInteger(\"10\"));\n" +
+                     "        result = result.multiply($p.getSalaryBI());\n" +
+                     "        $p.setSalaryBI(result);\n" +
+                     "}");
+    }
+
+    @Test
+    public void testPromotionOfIntToBigInteger() {
+        test("{ " +
+                     "    BigInteger result = 0I;" +
+                     "    int anotherVariable = 20;" +
+                     "    result += anotherVariable;\n" + // 20
+                     "}",
+             "{ " +
+                     "        java.math.BigInteger result = new java.math.BigInteger(\"0\");\n" +
+                     "        int anotherVariable = 20;\n" +
+                     "        result = result.add(new java.math.BigInteger(anotherVariable));\n" +
+                     "}");
+    }
+
+    @Test
+    public void testPromotionOfIntToBigIntegerOnField() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class), "{ " +
+                     "    int anotherVariable = 20;" +
+                     "    $p.salaryBI += anotherVariable;" +
+                     "}",
+             "{ " +
+                     "        int anotherVariable = 20;\n" +
+                     "        $p.setSalaryBI($p.getSalaryBI().add(new java.math.BigInteger(anotherVariable)));\n" +
                      "}");
     }
 
