@@ -20,6 +20,7 @@ package org.drools.model.codegen.execmodel.generator.drlxparse;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -265,6 +266,7 @@ public class CoercedExpression {
                 b.getType() != String.class &&
                 b.getType() != Object.class &&
                 b.getType() != BigDecimal.class &&
+                b.getType() != BigInteger.class &&
                 !(Map.class.isAssignableFrom(b.getRawClass())) &&
                 !(b.getExpression() instanceof NullLiteralExpr) &&
                 b.getType() != Serializable.class;

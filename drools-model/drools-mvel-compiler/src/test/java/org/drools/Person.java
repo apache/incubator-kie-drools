@@ -19,6 +19,7 @@
 package org.drools;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -50,6 +51,7 @@ public class Person {
     private Map<String, String> items = new HashMap<>();
 
     private BigDecimal salary;
+    private BigInteger salaryBI;
 
     private Integer ageAsInteger;
 
@@ -127,6 +129,14 @@ public class Person {
 
     public void setSalary( BigDecimal salary ) {
         this.salary = salary;
+    }
+
+    public BigInteger getSalaryBI() {
+        return salaryBI;
+    }
+
+    public void setSalaryBI(BigInteger salaryBI) {
+        this.salaryBI = salaryBI;
     }
 
     public Integer getAgeAsInteger() {

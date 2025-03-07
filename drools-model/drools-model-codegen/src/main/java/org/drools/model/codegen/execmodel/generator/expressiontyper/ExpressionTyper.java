@@ -23,6 +23,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -92,7 +93,7 @@ import org.drools.mvel.parser.ast.expr.PointFreeExpr;
 import org.drools.mvel.parser.printer.PrintUtil;
 import org.drools.mvelcompiler.CompiledExpressionResult;
 import org.drools.mvelcompiler.ConstraintCompiler;
-import org.drools.mvelcompiler.util.BigDecimalArgumentCoercion;
+import org.drools.mvelcompiler.util.BigNumberArgumentCoercion;
 import org.drools.util.ClassUtils;
 import org.drools.util.MethodUtils;
 import org.drools.util.Pair;
@@ -827,17 +828,23 @@ public class ExpressionTyper {
     }
 
     /*
-     * BigDecimal arithmetic operations should be converted to method calls. We may also apply this to BigInteger.
+     * BigDecimal/BigInteger arithmetic operations should be converted to method calls.
      */
     public static boolean shouldConvertArithmeticBinaryToMethodCall(BinaryExpr.Operator operator, java.lang.reflect.Type leftType, java.lang.reflect.Type rightType) {
-        return isArithmeticOperator(operator) && (leftType.equals(BigDecimal.class) || rightType.equals(BigDecimal.class));
+        return isArithmeticOperator(operator) && (leftType.equals(BigDecimal.class) || rightType.equals(BigDecimal.class) || leftType.equals(BigInteger.class) || rightType.equals(BigInteger.class));
     }
 
     /*
-     * After arithmetic to method call conversion, BigDecimal should take precedence regardless of left or right. We may also apply this to BigInteger.
+     * After arithmetic to method call conversion, BigDecimal/BigInteger should take precedence regardless of left or right.
      */
     public static java.lang.reflect.Type getBinaryTypeAfterConversion(java.lang.reflect.Type leftType, java.lang.reflect.Type rightType) {
-        return (leftType.equals(BigDecimal.class) || rightType.equals(BigDecimal.class)) ? BigDecimal.class : leftType;
+        if (leftType.equals(BigDecimal.class) || rightType.equals(BigDecimal.class)) {
+            return BigDecimal.class;
+        } else if (leftType.equals(BigInteger.class) || rightType.equals(BigInteger.class)) {
+            return BigInteger.class;
+        } else {
+            return leftType;
+        }
     }
 
     private java.lang.reflect.Type getBinaryType(TypedExpression leftTypedExpression, TypedExpression rightTypedExpression, Operator operator) {
@@ -906,7 +913,7 @@ public class ExpressionTyper {
                 RuleContext.FunctionType typedDeclaredFunction = functionType.get();
                 methodCallExpr.setScope(null);
 
-                promoteBigDecimalParameters(methodCallExpr, argsType, typedDeclaredFunction.getArgumentsType().toArray(new Class[0]));
+                promoteBigNumberParameters(methodCallExpr, argsType, typedDeclaredFunction.getArgumentsType().toArray(new Class[0]));
 
                 return new TypedExpressionCursor(methodCallExpr, typedDeclaredFunction.getReturnType());
             }
@@ -917,7 +924,7 @@ public class ExpressionTyper {
         }
 
         Class<?>[] actualArgumentTypes = m.getParameterTypes();
-        promoteBigDecimalParameters(methodCallExpr, argsType, actualArgumentTypes);
+        promoteBigNumberParameters(methodCallExpr, argsType, actualArgumentTypes);
 
         if (methodName.equals("get") && List.class.isAssignableFrom(rawClassCursor) && originalTypeCursor instanceof ParameterizedType) {
             return new TypedExpressionCursor(methodCallExpr, ((ParameterizedType) originalTypeCursor).getActualTypeArguments()[0]);
@@ -926,7 +933,7 @@ public class ExpressionTyper {
         return new TypedExpressionCursor(methodCallExpr, actualTypeFromGenerics(originalTypeCursor, m.getGenericReturnType(), rawClassCursor));
     }
 
-    private void promoteBigDecimalParameters(MethodCallExpr methodCallExpr, Class[] argsType, Class<?>[] actualArgumentTypes) {
+    private void promoteBigNumberParameters(MethodCallExpr methodCallExpr, Class[] argsType, Class<?>[] actualArgumentTypes) {
         if (actualArgumentTypes.length == argsType.length && actualArgumentTypes.length == methodCallExpr.getArguments().size()) {
             for (int i = 0; i < argsType.length; i++) {
                 Class<?> argumentType = argsType[i];
@@ -938,7 +945,7 @@ public class ExpressionTyper {
                     // unbind the original argumentExpression first, otherwise setArgument() will remove the argumentExpression from coercedExpression.childrenNodes
                     // It will result in failing to find DrlNameExpr in AST at DrlsParseUtil.transformDrlNameExprToNameExpr()
                     methodCallExpr.replace(argumentExpression, new NameExpr("placeholder"));
-                    Expression coercedExpression = new BigDecimalArgumentCoercion().coercedArgument(argumentType, actualArgumentType, argumentExpression);
+                    Expression coercedExpression = new BigNumberArgumentCoercion().coercedArgument(argumentType, actualArgumentType, argumentExpression);
                     methodCallExpr.setArgument(i, coercedExpression);
                 }
             }
