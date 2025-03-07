@@ -21,17 +21,17 @@ package org.kie.kogito.index.addon.api;
 import java.nio.Buffer;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.kie.kogito.Application;
-import org.kie.kogito.Model;
+import org.kie.kogito.index.addon.api.models.TestModel;
 import org.kie.kogito.index.api.ExecuteArgs;
 import org.kie.kogito.index.api.KogitoRuntimeCommonClient;
-import org.kie.kogito.index.model.Job;
-import org.kie.kogito.index.model.ProcessDefinition;
-import org.kie.kogito.index.model.ProcessInstance;
+import org.kie.kogito.index.model.*;
+import org.kie.kogito.index.service.DataIndexServiceException;
 import org.kie.kogito.index.test.TestUtils;
 import org.kie.kogito.jackson.utils.ObjectMapperFactory;
 import org.kie.kogito.process.ProcessError;
@@ -43,11 +43,13 @@ import org.kie.kogito.services.uow.CollectingUnitOfWorkFactory;
 import org.kie.kogito.services.uow.DefaultUnitOfWorkManager;
 import org.kie.kogito.source.files.SourceFilesProvider;
 import org.kie.kogito.svg.ProcessSvgService;
+import org.mockito.AdditionalAnswers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.quarkus.security.credential.TokenCredential;
 import io.quarkus.security.identity.SecurityIdentity;
@@ -64,6 +66,7 @@ import jakarta.enterprise.inject.Instance;
 
 import static java.lang.String.format;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -127,14 +130,14 @@ public class KogitoAddonRuntimeClientImplTest {
     @Mock
     Instance<Application> applicationInstance;
 
-    @Mock
-    Model model;
+    TestModel model;
 
     @Mock
     private Application application;
 
     @BeforeEach
     public void setup() {
+        model = spy(new TestModel());
         lenient().when(processSvgServiceInstance.isResolvable()).thenReturn(true);
         lenient().when(processSvgServiceInstance.get()).thenReturn(processSvgService);
         lenient().when(processesInstance.isResolvable()).thenReturn(true);
@@ -148,12 +151,13 @@ public class KogitoAddonRuntimeClientImplTest {
         lenient().when(processInstance.variables()).thenReturn(model);
         lenient().when(processInstance.id()).thenReturn(PROCESS_INSTANCE_ID);
         lenient().when(processInstance.status()).thenReturn(org.kie.kogito.process.ProcessInstance.STATE_ERROR);
+        lenient().when(processInstance.updateVariables(any())).then(AdditionalAnswers.returnsFirstArg());
         lenient().when(error.failedNodeId()).thenReturn(NODE_ID_ERROR);
         lenient().when(error.errorMessage()).thenReturn("Test error message");
         lenient().when(application.unitOfWorkManager()).thenReturn(new DefaultUnitOfWorkManager(new CollectingUnitOfWorkFactory()));
         lenient().when(applicationInstance.isResolvable()).thenReturn(true);
         lenient().when(applicationInstance.get()).thenReturn(application);
-        lenient().when(model.toMap()).thenReturn(Map.of("name", "javierito"));
+        //lenient().when(model.toMap()).thenReturn(Map.of("name", "javierito"));
 
         client = spy(new KogitoAddonRuntimeClientImpl(processSvgServiceInstance, sourceFilesProvider, processesInstance, applicationInstance));
         client.setGatewayTargetUrl(Optional.empty());
@@ -353,6 +357,40 @@ public class KogitoAddonRuntimeClientImplTest {
         when(identityMock.getCredential(TokenCredential.class)).thenReturn(null);
         token = client.getAuthHeader();
         assertThat(token).isEqualTo("");
+    }
+
+    @Test
+    void testUpdateProcessInstanceVariables_exception() throws Exception {
+
+        ObjectMapper mapper = ObjectMapperFactory.get();
+        JsonNode originalVariables = mapper.createObjectNode()
+                .put("key", "value");
+
+        ProcessInstance pI = createProcessInstance(PROCESS_INSTANCE_ID, ACTIVE);
+
+        assertThatThrownBy(() -> {
+            client.updateProcessInstanceVariables("http://example.com", pI, mapper.writeValueAsString(originalVariables));
+        }).isInstanceOf(DataIndexServiceException.class).hasMessageContaining("Failure to update the variables");
+    }
+
+    @Test
+    void testUpdateProcessInstanceVariablesSuccess() throws Exception {
+        ObjectMapper mapper = ObjectMapperFactory.get();
+        JsonNode originalVariables = mapper.createObjectNode()
+                .put("name", "jdoe")
+                .put("age", 20)
+                .put("adult", true);
+
+        ProcessInstance pI = createProcessInstance(PROCESS_INSTANCE_ID, ACTIVE);
+
+        CompletableFuture<String> result = client.updateProcessInstanceVariables("http://service.url", pI, mapper.writeValueAsString(originalVariables));
+
+        assertNotNull(result);
+        verify(processInstance).updateVariables(any());
+
+        String updatedVariablesString = result.get();
+        JsonNode updatedVariables = mapper.readTree(updatedVariablesString);
+        assertThat(updatedVariables).isEqualTo(originalVariables);
     }
 
     private ProcessInstance createProcessInstance(String processInstanceId, int status) {
