@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -216,6 +216,65 @@ public class DMNCompilerImpl implements DMNCompiler {
         return model;
     }
 
+    static void resolveDMNImportType(Import i, Collection<DMNModel> dmnModels, DMNModelImpl model, List<DMNModel> toMerge) {
+        Either<String, DMNModel> resolvedResult = ImportDMNResolverUtil.resolveImportDMN(i, dmnModels, (DMNModel m) -> new QName(m.getNamespace(), m.getName()));
+        DMNModel located = resolvedResult.cata(msg -> {
+            MsgUtil.reportMessage(logger,
+                    DMNMessage.Severity.ERROR,
+                    i,
+                    model,
+                    null,
+                    null,
+                    Msg.IMPORT_NOT_FOUND_FOR_NODE,
+                    msg,
+                    i);
+            return null;
+        }, Function.identity());
+        checkLocatedDMNModel(i, located, model, toMerge);
+
+    }
+
+    static void checkLocatedDMNModel(Import i, DMNModel located, DMNModelImpl model, List<DMNModel> toMerge) {
+        if (located != null) {
+            String iAlias = Optional.ofNullable(i.getName()).orElse(located.getName());
+            // incubator-kie-issues#852: The idea is to not treat the anonymous models as import, but to "merge" them
+            //  with original one,
+            // because otherwise we would have to deal with clashing name aliases, or similar issues
+            if (iAlias != null && !iAlias.isEmpty()) {
+                model.setImportAliasForNS(iAlias, located.getNamespace(), located.getName());
+                importFromModel(model, located, iAlias);
+            } else {
+                toMerge.add(located);
+            }
+        }
+    }
+
+    static void resolvePMMLImportType(DMNModelImpl model, Import i, Function<String, Reader> relativeResolver, DMNCompilerConfigurationImpl dmnCompilerConfig) {
+        ClassLoader rootClassLoader = dmnCompilerConfig.getRootClassLoader();
+        Resource relativeResource = resolveRelativeResource(rootClassLoader, model, i, i, relativeResolver);
+        resolvePMMLImportType(model, i, relativeResource, dmnCompilerConfig);
+    }
+
+    static void resolvePMMLImportType(DMNModelImpl model, Import i, Resource relativeResource, DMNCompilerConfigurationImpl dmnCompilerConfig) {
+        try (InputStream pmmlIS = relativeResource.getInputStream()) {
+            DMNImportPMMLInfo.from(pmmlIS, dmnCompilerConfig, model, i).consume(new PMMLImportErrConsumer(model, i),
+                                                                                model::addPMMLImportInfo);
+        } catch (IOException e) {
+            new PMMLImportErrConsumer(model, i).accept(e);
+        }
+    }
+
+    static void logErrorMessage(DMNModelImpl model, String importType) {
+        MsgUtil.reportMessage(logger,
+                              DMNMessage.Severity.ERROR,
+                              null,
+                              model,
+                              null,
+                              null,
+                              Msg.IMPORT_TYPE_UNKNOWN,
+                              importType);
+    }
+
     private DMNCompilerContext configureDMNCompiler(FEELDialect feeldialect, Function<String, Reader> relativeResolver) {
 
         DMNCompilerConfigurationImpl cc = (DMNCompilerConfigurationImpl) dmnCompilerConfig;
@@ -235,7 +294,7 @@ public class DMNCompilerImpl implements DMNCompiler {
                     resolveDMNImportType(i, dmnModels, model, toMerge);
                     break;
                 case PMML:
-                    processPMMLImport(model, i, relativeResolver);
+                    resolvePMMLImportType(model, i, relativeResolver, (DMNCompilerConfigurationImpl) dmnCompilerConfig);
                     model.setImportAliasForNS(i.getName(), i.getNamespace(), i.getName());
                     break;
                 default :
@@ -244,61 +303,6 @@ public class DMNCompilerImpl implements DMNCompiler {
             }
         }
         toMerge.forEach(mergedModel -> processMergedModel(model, (DMNModelImpl) mergedModel));
-    }
-
-    static void resolveDMNImportType(Import i, Collection<DMNModel> dmnModels, DMNModelImpl model, List<DMNModel> toMerge) {
-        Either<String, DMNModel> resolvedResult = ImportDMNResolverUtil.resolveImportDMN(i, dmnModels, (DMNModel m) -> new QName(m.getNamespace(), m.getName()));
-        DMNModel located = resolvedResult.cata(msg -> {
-            MsgUtil.reportMessage(logger,
-                    DMNMessage.Severity.ERROR,
-                    i,
-                    model,
-                    null,
-                    null,
-                    Msg.IMPORT_NOT_FOUND_FOR_NODE,
-                    msg,
-                    i);
-            return null;
-        }, Function.identity());
-        checkLocatedDMNModel(i, located, model, toMerge);
-
-    }
-
-    private void logErrorMessage(DMNModelImpl model, String importType) {
-        MsgUtil.reportMessage(logger,
-                DMNMessage.Severity.ERROR,
-                null,
-                model,
-                null,
-                null,
-                Msg.IMPORT_TYPE_UNKNOWN,
-                importType);
-    }
-
-    static void checkLocatedDMNModel(Import i, DMNModel located, DMNModelImpl model, List<DMNModel> toMerge) {
-        if (located != null) {
-            String iAlias = Optional.ofNullable(i.getName()).orElse(located.getName());
-            // incubator-kie-issues#852: The idea is to not treat the anonymous models as import, but to "merge" them
-            //  with original one,
-            // because otherwise we would have to deal with clashing name aliases, or similar issues
-            if (iAlias != null && !iAlias.isEmpty()) {
-                model.setImportAliasForNS(iAlias, located.getNamespace(), located.getName());
-                importFromModel(model, located, iAlias);
-            } else {
-                toMerge.add(located);
-            }
-        }
-    }
-
-    private void processPMMLImport(DMNModelImpl model, Import i, Function<String, Reader> relativeResolver) {
-        ClassLoader rootClassLoader = ((DMNCompilerConfigurationImpl) dmnCompilerConfig).getRootClassLoader();
-        Resource relativeResource = resolveRelativeResource(rootClassLoader, model, i, i, relativeResolver);
-        try (InputStream pmmlIS = relativeResource.getInputStream()) {
-            DMNImportPMMLInfo.from(pmmlIS, (DMNCompilerConfigurationImpl) dmnCompilerConfig, model, i).consume(new PMMLImportErrConsumer(model, i),
-                                                                                                               model::addPMMLImportInfo);
-        } catch (IOException e) {
-            new PMMLImportErrConsumer(model, i).accept(e);
-        }
     }
 
     public static class PMMLImportErrConsumer implements Consumer<Exception> {

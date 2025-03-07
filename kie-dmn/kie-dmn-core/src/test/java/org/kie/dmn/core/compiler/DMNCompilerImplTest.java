@@ -17,7 +17,6 @@
  */
 package org.kie.dmn.core.compiler;
 
-
 import org.drools.io.ClassPathResource;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -235,7 +234,26 @@ class DMNCompilerImplTest {
         assertThat(toMerge).isNotEmpty();
         assertThat(toMerge.size()).isEqualTo(1);
         assertThat(toMerge.get(0).getNamespace()).isNotNull().isEqualTo(namespace);
+    }
 
+    @Test
+    void resolvePMMLImportType() {
+        List<DMNModel> dmnModels = new ArrayList<>();
+        Resource dmnResource = new ClassPathResource( "../pmml/KiePMMLNewTree.dmn",
+                                                   this.getClass());
+        DMNModel importingModel = dMNCompiler.compile( dmnResource, dmnModels);
+        assertThat(importingModel).isNotNull();
+
+
+        Import input = importingModel.getDefinitions().getImport().get(0);
+        DMNModelImpl model = new DMNModelImpl(importingModel.getDefinitions(), dmnResource);
+
+        Resource relativeResource = new ClassPathResource( "../pmml/test_tree_new.pmml",
+                                                      this.getClass());
+        assertThat(model.getPmmlImportInfo()).isEmpty();
+        DMNCompilerConfigurationImpl dmnCompilerConfig = (DMNCompilerConfigurationImpl)((DMNCompilerImpl)dMNCompiler).getDmnCompilerConfig();
+        DMNCompilerImpl.resolvePMMLImportType(model, input, relativeResource, dmnCompilerConfig);
+        assertThat(model.getPmmlImportInfo()).hasSize(1).containsOnlyKeys("test_tree");
     }
 
     private void addImport(Definitions dmnDefs, String importType, String nameSpace, String modelName) {
