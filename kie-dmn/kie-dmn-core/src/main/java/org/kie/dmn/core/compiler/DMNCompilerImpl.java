@@ -229,13 +229,18 @@ public class DMNCompilerImpl implements DMNCompiler {
     private void iterateImports(Definitions dmndefs, Collection<DMNModel> dmnModels, DMNModelImpl model, Function<String, Reader> relativeResolver ) {
         List<DMNModel> toMerge = new ArrayList<>();
         for (Import i : dmndefs.getImport()) {
-            if (ImportDMNResolverUtil.whichImportType(i) == ImportType.DMN) {
-                resolveDMNImportType(i, dmnModels, model, toMerge );
-            } else if (ImportDMNResolverUtil.whichImportType(i) == ImportType.PMML) {
-                processPMMLImport(model, i, relativeResolver);
-                model.setImportAliasForNS(i.getName(), i.getNamespace(), i.getName());
-            } else {
-                logErrorMessage(model, i.getImportType());
+            ImportType importType = ImportDMNResolverUtil.whichImportType(i);
+            switch(importType) {
+                case DMN :
+                    resolveDMNImportType(i, dmnModels, model, toMerge);
+                    break;
+                case PMML:
+                    processPMMLImport(model, i, relativeResolver);
+                    model.setImportAliasForNS(i.getName(), i.getNamespace(), i.getName());
+                    break;
+                default :
+                    logErrorMessage(model, i.getImportType());
+                    break;
             }
         }
         toMerge.forEach(mergedModel -> processMergedModel(model, (DMNModelImpl) mergedModel));
