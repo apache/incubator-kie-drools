@@ -214,17 +214,6 @@
 
   <profiles>
     <profile>
-      <id>runTurtleTests</id>
-      <activation>
-        <property>
-          <name>runTurtleTests</name>
-        </property>
-      </activation>
-      <properties>
-        <excludedGroups/>
-      </properties>
-    </profile>
-    <profile>
       <id>enableTestStatusListener</id>
       <activation>
         <property>
