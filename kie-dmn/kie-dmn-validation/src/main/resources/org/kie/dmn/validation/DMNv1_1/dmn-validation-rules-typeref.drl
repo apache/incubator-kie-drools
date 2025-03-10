@@ -26,6 +26,7 @@ import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.parser.feel11.FEELParser;
 import org.kie.dmn.feel.runtime.events.SyntaxErrorEvent;
+import org.kie.dmn.feel.util.BuiltInTypeUtils;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.core.util.Msg;
 
@@ -56,28 +57,28 @@ end
 
 rule TYPEREF_NO_FEEL_TYPE_p1
 when
-  $o: Expression( !(this instanceof UnaryTests), typeRef!.prefix != null, getNamespaceURI( typeRef.prefix ) == getURIFEEL(), BuiltInType.determineTypeFromName( typeRef.localPart ) == BuiltInType.UNKNOWN )
+  $o: Expression( !(this instanceof UnaryTests), typeRef!.prefix != null, getNamespaceURI( typeRef.prefix ) == getURIFEEL(), BuiltInTypeUtils.determineTypeFromName( typeRef.localPart ) == BuiltInType.UNKNOWN )
 then
   reporter.report( DMNMessage.Severity.ERROR,  $o , Msg.UNKNOWN_FEEL_TYPE_REF_ON_NODE, $o.getTypeRef(), $o.getParentDRDElement().getIdentifierString() );
 end
 
 rule TYPEREF_NO_FEEL_TYPE_p2
 when
-  $o: InformationItem( typeRef!.prefix != null, getNamespaceURI( typeRef.prefix ) == getURIFEEL(), BuiltInType.determineTypeFromName( typeRef.localPart ) == BuiltInType.UNKNOWN )
+  $o: InformationItem( typeRef!.prefix != null, getNamespaceURI( typeRef.prefix ) == getURIFEEL(), BuiltInTypeUtils.determineTypeFromName( typeRef.localPart ) == BuiltInType.UNKNOWN )
 then
   $o: reporter.report( DMNMessage.Severity.ERROR,  $o , Msg.UNKNOWN_FEEL_TYPE_REF_ON_NODE, $o.getTypeRef(), $o.getParentDRDElement().getIdentifierString() );
 end
 
 rule TYPEREF_NO_FEEL_TYPE_p3
 when
-  $o: ItemDefinition( typeRef!.prefix != null, getNamespaceURI( typeRef.prefix ) == getURIFEEL(), BuiltInType.determineTypeFromName( typeRef.localPart ) == BuiltInType.UNKNOWN )
+  $o: ItemDefinition( typeRef!.prefix != null, getNamespaceURI( typeRef.prefix ) == getURIFEEL(), BuiltInTypeUtils.determineTypeFromName( typeRef.localPart ) == BuiltInType.UNKNOWN )
 then
   reporter.report( DMNMessage.Severity.ERROR,  $o , Msg.UNKNOWN_FEEL_TYPE_REF_ON_NODE, $o.getTypeRef(), $o.getParentDRDElement().getIdentifierString() );
 end
 
 rule TYPEREF_NO_FEEL_TYPE_p4
 when
-  $o: OutputClause( typeRef!.prefix != null, getNamespaceURI( typeRef.prefix ) == getURIFEEL(), BuiltInType.determineTypeFromName( typeRef.localPart ) == BuiltInType.UNKNOWN )
+  $o: OutputClause( typeRef!.prefix != null, getNamespaceURI( typeRef.prefix ) == getURIFEEL(), BuiltInTypeUtils.determineTypeFromName( typeRef.localPart ) == BuiltInType.UNKNOWN )
 then
   reporter.report( DMNMessage.Severity.ERROR,  $o , Msg.UNKNOWN_FEEL_TYPE_REF_ON_NODE, $o.getTypeRef(), $o.getParentDRDElement().getIdentifierString() );
 end
