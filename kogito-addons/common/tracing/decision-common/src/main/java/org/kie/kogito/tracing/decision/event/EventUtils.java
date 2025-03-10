@@ -33,6 +33,7 @@ import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.types.BuiltInType;
+import org.kie.dmn.feel.util.BuiltInTypeUtils;
 import org.kie.kogito.event.cloudevents.utils.CloudEventUtils;
 import org.kie.kogito.tracing.decision.message.InternalMessageType;
 import org.kie.kogito.tracing.event.message.Message;
@@ -170,11 +171,11 @@ public class EventUtils {
     }
 
     public static TypedValue typedValueFrom(Object value) {
-        return typedValueFromJsonNode(jsonNodeFrom(value), BuiltInType.determineTypeFromInstance(value));
+        return typedValueFromJsonNode(jsonNodeFrom(value), BuiltInTypeUtils.determineTypeFromInstance(value));
     }
 
     public static TypedValue typedValueFrom(DMNType type, Object value) {
-        return typedValueFromJsonNode(type, jsonNodeFrom(value), BuiltInType.determineTypeFromInstance(value));
+        return typedValueFromJsonNode(type, jsonNodeFrom(value), BuiltInTypeUtils.determineTypeFromInstance(value));
     }
 
     static TypedValue typedValueFromJsonNode(JsonNode value, Type suggestedType) {
