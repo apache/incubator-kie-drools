@@ -119,7 +119,6 @@ class DMNCompilerImplTest {
         model = dMNCompiler.compile(dmnDefn, resource, dmnModels);
         assertThat(model).isNotNull();
         assertThat(model.getName()).isNotNull().isEqualTo(modelName);
-        assertThat(model.getMessages()).isNotEmpty();
         assertThat(model.getMessages().size()).isEqualTo(1);
         assertThat(model.getMessages().get(0).getText()).isEqualTo("DMN: Import type unknown: 'UNKNOWN'. (Invalid FEEL syntax on the referenced expression) ");
 
@@ -160,7 +159,6 @@ class DMNCompilerImplTest {
         model = dMNCompiler.compile(dmnDefn, resource, dmnModels);
         assertThat(model).isNotNull();
         assertThat(model.getName()).isNotNull().isEqualTo(modelName);
-        assertThat(model.getMessages()).isNotEmpty();
         assertThat(model.getMessages().size()).isEqualTo(5);
         assertThat(model.getMessages().get(0).getMessageType()).isEqualTo(DMNMessageType.IMPORT_NOT_FOUND);
 
