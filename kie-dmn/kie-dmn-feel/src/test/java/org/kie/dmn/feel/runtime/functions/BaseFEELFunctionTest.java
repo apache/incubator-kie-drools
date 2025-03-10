@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -31,6 +31,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.util.EvaluationContextTestUtil;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.ast.BaseNode;
@@ -57,23 +58,23 @@ class BaseFEELFunctionTest {
     @Test
     void invokeReflectiveCustomFunction() {
         List<FEELFunction.Param> parameters = List.of(new FEELFunction.Param("foo", BuiltInType.UNKNOWN),
-                                                  new FEELFunction.Param("person's age", BuiltInType.UNKNOWN));
+                new FEELFunction.Param("person's age", BuiltInType.UNKNOWN));
 
         BaseNode left = new InfixOpNode(InfixOperator.EQ,
-                                        new NameRefNode(BuiltInType.UNKNOWN, "foo"),
-                                        new NullNode(""),
-                                        "foo = null");
+                new NameRefNode(BuiltInType.UNKNOWN, "foo"),
+                new NullNode(""),
+                "foo = null");
         BaseNode right = new InfixOpNode(InfixOperator.LT,
-                                        new NameRefNode(BuiltInType.UNKNOWN, "person's age"),
-                                        new NumberNode(BigDecimal.valueOf(18), "18"),
-                                        "person's age < 18");
+                new NameRefNode(BuiltInType.UNKNOWN, "person's age"),
+                new NumberNode(BigDecimal.valueOf(18), "18"),
+                "person's age < 18");
         BaseNode body = new InfixOpNode(InfixOperator.AND, left, right, "foo = null and person's age < 18");
         BaseFEELFunction toTest = new CustomFEELFunction("<anonymous>",
-                                                         parameters,
-                                                         body,
-                                                         ctx);
-       Object[] params = {new NamedParameter("foo", null),
-       new NamedParameter("person's age", 16)};
+                parameters,
+                body,
+                ctx);
+        Object[] params = {new NamedParameter("foo", null),
+                new NamedParameter("person's age", 16)};
         Object retrieved = toTest.invokeReflectively(ctx, params);
         assertThat(retrieved).isNotNull();
         assertThat(retrieved).isInstanceOf(Boolean.class);
@@ -163,8 +164,8 @@ class BaseFEELFunctionTest {
         parametersRetrieved = retrieved.getParameters();
         assertThat(parametersRetrieved).isNotNull();
         assertThat(parametersRetrieved).hasSize(6);
-        assertThat(parametersRetrieved).extracting("type").containsExactly(Number.class, Number.class, Number.class, 
-        		Number.class, Number.class, Number.class);
+        assertThat(parametersRetrieved).extracting("type").containsExactly(Number.class, Number.class, Number.class,
+                Number.class, Number.class, Number.class);
 
 //        invoke(@ParameterName( "year" ) Number year, @ParameterName( "month" ) Number month, @ParameterName( "day"
 //        ) Number day,
@@ -181,8 +182,8 @@ class BaseFEELFunctionTest {
         parametersRetrieved = retrieved.getParameters();
         assertThat(parametersRetrieved).isNotNull();
         assertThat(parametersRetrieved).hasSize(7);
-        assertThat(parametersRetrieved).extracting("type").containsExactly(Number.class, Number.class, Number.class, 
-        		Number.class, Number.class, Number.class, Number.class);
+        assertThat(parametersRetrieved).extracting("type").containsExactly(Number.class, Number.class, Number.class,
+                Number.class, Number.class, Number.class, Number.class);
 
 //        invoke(@ParameterName( "year" ) Number year, @ParameterName( "month" ) Number month, @ParameterName( "day"
 //        ) Number day,
@@ -199,8 +200,8 @@ class BaseFEELFunctionTest {
         parametersRetrieved = retrieved.getParameters();
         assertThat(parametersRetrieved).isNotNull();
         assertThat(parametersRetrieved).hasSize(7);
-        assertThat(parametersRetrieved).extracting("type").containsExactly(Number.class, Number.class, Number.class, 
-        		Number.class, Number.class, Number.class, String.class);
+        assertThat(parametersRetrieved).extracting("type").containsExactly(Number.class, Number.class, Number.class,
+                Number.class, Number.class, Number.class, String.class);
     }
 
     @Test
@@ -248,7 +249,7 @@ class BaseFEELFunctionTest {
         parametersRetrieved = retrieved.getParameters();
         assertThat(parametersRetrieved).isNotNull();
         assertThat(parametersRetrieved).hasSize(4);
-        
+
         assertThat(parametersRetrieved).extracting("type").containsExactly(Number.class, Number.class, Number.class, Duration.class);
 
 
@@ -316,6 +317,59 @@ class BaseFEELFunctionTest {
         assertThat(parametersRetrieved).isNotNull();
         assertThat(parametersRetrieved).hasSize(1);
         assertThat(parametersRetrieved).extracting("type").containsExactly(List.class);
+    }
+
+    @Test
+    void testIsCompatibleTrue() {
+        BaseFEELFunction toTest = AllFunction.INSTANCE;
+        Type outputType = BuiltInType.BOOLEAN;
+        Type[] inputTypes = {BuiltInType.LIST};
+        assertThat(toTest.isCompatible(inputTypes, outputType)).isTrue();
+
+        toTest = DateFunction.INSTANCE;
+        outputType = BuiltInType.DATE;
+        inputTypes = new Type[]{BuiltInType.STRING};
+        assertThat(toTest.isCompatible(inputTypes, outputType)).isTrue();
+
+        inputTypes = new Type[]{BuiltInType.NUMBER, BuiltInType.NUMBER, BuiltInType.NUMBER};
+        assertThat(toTest.isCompatible(inputTypes, outputType)).isTrue();
+
+        toTest = AllFunction.INSTANCE;
+        outputType = BuiltInType.BOOLEAN;
+        inputTypes = new Type[]{BuiltInType.UNKNOWN};
+        assertThat(toTest.isCompatible(inputTypes, outputType)).isFalse();
+
+        toTest = SortFunction.INSTANCE;
+        outputType = BuiltInType.LIST;
+        inputTypes = new Type[]{BuiltInType.LIST};
+        assertThat(toTest.isCompatible(inputTypes, outputType)).isTrue();
+    }
+
+    @Test
+    void testIsCompatibleFalse() {
+        BaseFEELFunction toTest = AllFunction.INSTANCE;
+        Type outputType = BuiltInType.DATE;
+        Type[] inputTypes = {BuiltInType.LIST};
+        assertThat(toTest.isCompatible(inputTypes, outputType)).isFalse();
+
+        outputType = BuiltInType.BOOLEAN;
+        inputTypes = new Type[]{BuiltInType.STRING};
+        assertThat(toTest.isCompatible(inputTypes, outputType)).isFalse();
+
+        toTest = DateFunction.INSTANCE;
+        outputType = BuiltInType.DATE;
+        inputTypes = new Type[]{BuiltInType.RANGE};
+        assertThat(toTest.isCompatible(inputTypes, outputType)).isFalse();
+
+        inputTypes = new Type[]{BuiltInType.NUMBER, BuiltInType.STRING, BuiltInType.NUMBER};
+        assertThat(toTest.isCompatible(inputTypes, outputType)).isFalse();
+
+        outputType = BuiltInType.STRING;
+        inputTypes = new Type[]{BuiltInType.STRING};
+        assertThat(toTest.isCompatible(inputTypes, outputType)).isFalse();
+
+        inputTypes = new Type[]{BuiltInType.NUMBER, BuiltInType.NUMBER, BuiltInType.NUMBER};
+        assertThat(toTest.isCompatible(inputTypes, outputType)).isFalse();
     }
 
 }
