@@ -42,7 +42,7 @@ import static org.kie.dmn.feel.util.DateTimeEvalHelper.valuet;
 import static org.kie.dmn.feel.util.NumberEvalHelper.getBigDecimalOrNull;
 
 public class BooleanEvalHelper {
-    public static final Logger LOG = LoggerFactory.getLogger( BooleanEvalHelper.class );
+    public static final Logger LOG = LoggerFactory.getLogger(BooleanEvalHelper.class);
 
     public static Boolean getBooleanOrNull(Object value) {
         if (!(value instanceof Boolean)) {
@@ -60,22 +60,22 @@ public class BooleanEvalHelper {
      * @return
      */
     public static Boolean compare(Object left, Object right, FEELDialect feelDialect, BiPredicate<Comparable, Comparable> op) {
-        if ( left == null || right == null ) {
+        if (left == null || right == null) {
             return getBooleanOrDialectDefault(null, feelDialect);
         }
         if (left instanceof ChronoPeriod && right instanceof ChronoPeriod) {
             // periods have special compare semantics in FEEL as it ignores "days". Only months and years are compared
             Long l = ComparablePeriod.toTotalMonths((ChronoPeriod) left);
             Long r = ComparablePeriod.toTotalMonths((ChronoPeriod) right);
-            return op.test( l, r );
+            return op.test(l, r);
         }
         if (left instanceof TemporalAccessor && right instanceof TemporalAccessor) {
             // Handle specific cases when both time / datetime
             TemporalAccessor l = (TemporalAccessor) left;
             TemporalAccessor r = (TemporalAccessor) right;
-            if (BuiltInType.determineTypeFromInstance(left) == BuiltInType.TIME && BuiltInType.determineTypeFromInstance(right) == BuiltInType.TIME) {
+            if (BuiltInTypeUtils.determineTypeFromInstance(left) == BuiltInType.TIME && BuiltInTypeUtils.determineTypeFromInstance(right) == BuiltInType.TIME) {
                 return op.test(valuet(l), valuet(r));
-            } else if (BuiltInType.determineTypeFromInstance(left) == BuiltInType.DATE_TIME && BuiltInType.determineTypeFromInstance(right) == BuiltInType.DATE_TIME) {
+            } else if (BuiltInTypeUtils.determineTypeFromInstance(left) == BuiltInType.DATE_TIME && BuiltInTypeUtils.determineTypeFromInstance(right) == BuiltInType.DATE_TIME) {
                 return op.test(valuedt(l, r.query(TemporalQueries.zone())), valuedt(r, l.query(TemporalQueries.zone())));
             }
         }
@@ -104,24 +104,24 @@ public class BooleanEvalHelper {
      * @return
      */
     public static Boolean isEqual(Object left, Object right, FEELDialect feelDialect) {
-        if ( left == null || right == null ) {
+        if (left == null || right == null) {
             return left == right;
         }
 
         // spec defines that "a=[a]", i.e., singleton collections should be treated as the single element
         // and vice-versa
-        if( left instanceof Collection && !(right instanceof Collection) && ((Collection)left).size() == 1 ) {
-            left = ((Collection)left).toArray()[0];
-        } else if( right instanceof Collection && !(left instanceof Collection) && ((Collection)right).size()==1 ) {
+        if (left instanceof Collection && !(right instanceof Collection) && ((Collection) left).size() == 1) {
+            left = ((Collection) left).toArray()[0];
+        } else if (right instanceof Collection && !(left instanceof Collection) && ((Collection) right).size() == 1) {
             right = ((Collection) right).toArray()[0];
         }
 
-        if( left instanceof Range && right instanceof Range ) {
-            return isEqual( (Range)left, (Range) right );
-        } else if( left instanceof Iterable && right instanceof Iterable ) {
-            return isEqual( (Iterable)left, (Iterable) right );
-        } else if( left instanceof Map && right instanceof Map ) {
-            return isEqual( (Map)left, (Map) right );
+        if (left instanceof Range && right instanceof Range) {
+            return isEqual((Range) left, (Range) right);
+        } else if (left instanceof Iterable && right instanceof Iterable) {
+            return isEqual((Iterable) left, (Iterable) right);
+        } else if (left instanceof Map && right instanceof Map) {
+            return isEqual((Map) left, (Map) right);
         } else if (left instanceof ChronoPeriod && right instanceof ChronoPeriod) {
             // periods have special compare semantics in FEEL as it ignores "days". Only months and years are compared
             Long l = ComparablePeriod.toTotalMonths((ChronoPeriod) left);
@@ -131,13 +131,13 @@ public class BooleanEvalHelper {
             // Handle specific cases when both time / datetime
             TemporalAccessor l = (TemporalAccessor) left;
             TemporalAccessor r = (TemporalAccessor) right;
-            if (BuiltInType.determineTypeFromInstance(left) == BuiltInType.TIME && BuiltInType.determineTypeFromInstance(right) == BuiltInType.TIME) {
+            if (BuiltInTypeUtils.determineTypeFromInstance(left) == BuiltInType.TIME && BuiltInTypeUtils.determineTypeFromInstance(right) == BuiltInType.TIME) {
                 return isEqual(DateTimeEvalHelper.valuet(l), DateTimeEvalHelper.valuet(r), feelDialect);
-            } else if (BuiltInType.determineTypeFromInstance(left) == BuiltInType.DATE_TIME && BuiltInType.determineTypeFromInstance(right) == BuiltInType.DATE_TIME) {
+            } else if (BuiltInTypeUtils.determineTypeFromInstance(left) == BuiltInType.DATE_TIME && BuiltInTypeUtils.determineTypeFromInstance(right) == BuiltInType.DATE_TIME) {
                 return isEqual(DateTimeEvalHelper.valuedt(l, r.query(TemporalQueries.zone())), DateTimeEvalHelper.valuedt(r, l.query(TemporalQueries.zone())), feelDialect);
             } // fallback; continue:
         }
-        return compare( left, right, feelDialect, (l, r) -> l.compareTo( r ) == 0  );
+        return compare(left, right, feelDialect, (l, r) -> l.compareTo(r) == 0);
     }
 
     /**
@@ -184,6 +184,7 @@ public class BooleanEvalHelper {
      * This method consider if the <code>value</code> object is a <code>String</code>
      * In that case, return the {@link String#equals(Object)} result
      * Otherwise, default to the {@link #isEqual(Object, Object, FEELDialect)}
+     *
      * @param value
      * @param itemFromList
      * @return
@@ -200,6 +201,7 @@ public class BooleanEvalHelper {
 
     /**
      * Return the original object or, depending on the FEELDialect, a default value
+     *
      * @param rawReturn
      * @param feelDialect
      * @return
@@ -216,6 +218,7 @@ public class BooleanEvalHelper {
 
     /**
      * Return <code>TRUE</code> if it is the original object or, depending on the FEELDialect, a default value
+     *
      * @param rawReturn
      * @param feelDialect
      * @return
@@ -230,6 +233,7 @@ public class BooleanEvalHelper {
 
     /**
      * Return <code>TRUE</code> if it is the original object or, depending on the FEELDialect, a default value
+     *
      * @param rawReturn
      * @param feelDialect
      * @return
@@ -243,40 +247,40 @@ public class BooleanEvalHelper {
     }
 
     static Boolean isEqual(Range left, Range right) {
-        return left.equals( right );
+        return left.equals(right);
     }
 
     static Boolean isEqual(Iterable left, Iterable right) {
         Iterator li = left.iterator();
         Iterator ri = right.iterator();
-        while( li.hasNext() && ri.hasNext() ) {
+        while (li.hasNext() && ri.hasNext()) {
             Object l = li.next();
             Object r = ri.next();
-            if ( !isEqualObject(l, r ) ) return false;
+            if (!isEqualObject(l, r)) return false;
         }
         return li.hasNext() == ri.hasNext();
     }
 
-    static Boolean isEqual(Map<?,?> left, Map<?,?> right) {
-        if( left.size() != right.size() ) {
+    static Boolean isEqual(Map<?, ?> left, Map<?, ?> right) {
+        if (left.size() != right.size()) {
             return false;
         }
-        for( Map.Entry le : left.entrySet() ) {
+        for (Map.Entry le : left.entrySet()) {
             Object l = le.getValue();
-            Object r = right.get( le.getKey() );
-            if ( !isEqualObject( l, r ) ) return false;
+            Object r = right.get(le.getKey());
+            if (!isEqualObject(l, r)) return false;
         }
         return true;
     }
 
     static Boolean isEqualObject(Object l, Object r) {
-        if( l instanceof Iterable && r instanceof Iterable && !isEqual( (Iterable) l, (Iterable) r ) ) {
+        if (l instanceof Iterable && r instanceof Iterable && !isEqual((Iterable) l, (Iterable) r)) {
             return false;
-        } else if( l instanceof Map && r instanceof Map && !isEqual( (Map) l, (Map) r ) ) {
+        } else if (l instanceof Map && r instanceof Map && !isEqual((Map) l, (Map) r)) {
             return false;
-        } else if( l != null && r != null && !l.equals( r ) ) {
+        } else if (l != null && r != null && !l.equals(r)) {
             return false;
-        } else if( ( l == null || r == null ) && l != r ) {
+        } else if ((l == null || r == null) && l != r) {
             return false;
         }
         return true;
