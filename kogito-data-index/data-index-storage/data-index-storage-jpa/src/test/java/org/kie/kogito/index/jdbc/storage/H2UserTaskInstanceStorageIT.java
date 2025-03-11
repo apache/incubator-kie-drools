@@ -18,15 +18,12 @@
  */
 package org.kie.kogito.index.jdbc.storage;
 
-import org.kie.kogito.index.jdbc.H2QuarkusTestProfile;
 import org.kie.kogito.index.jpa.storage.AbstractUserTaskInstanceStorageIT;
 
 import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
-import io.quarkus.test.junit.TestProfile;
 
 @QuarkusTest
 @TestTransaction
-@TestProfile(H2QuarkusTestProfile.class)
 public class H2UserTaskInstanceStorageIT extends AbstractUserTaskInstanceStorageIT {
 }

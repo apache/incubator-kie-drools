@@ -46,10 +46,6 @@
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-hibernate-orm-panache-deployment</artifactId>
     </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-jdbc-h2-deployment</artifactId>
-    </dependency>
   </dependencies>
   <build>
     <plugins>
