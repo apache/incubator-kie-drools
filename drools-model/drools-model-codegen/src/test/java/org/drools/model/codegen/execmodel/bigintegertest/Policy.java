@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -16,31 +16,29 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.dmn.feel.lang.ast;
+package org.drools.model.codegen.execmodel.bigintegertest;
 
-import org.antlr.v4.runtime.ParserRuleContext;
-import org.kie.dmn.feel.lang.EvaluationContext;
-import org.kie.dmn.feel.lang.Type;
-import org.kie.dmn.feel.util.BuiltInTypeUtils;
+import java.math.BigInteger;
 
-public abstract class TypeNode
-        extends BaseNode {
+public class Policy {
 
-    public TypeNode() {
-        super();
+    private String customer;
+
+    private BigInteger rate;
+
+    public String getCustomer() {
+        return customer;
     }
 
-    public TypeNode(ParserRuleContext ctx) {
-        super(ctx);
+    public void setCustomer(String customer) {
+        this.customer = customer;
     }
 
-    @Override
-    public Type evaluate(EvaluationContext ctx) {
-        return BuiltInTypeUtils.determineTypeFromName(getText());
+    public BigInteger getRate() {
+        return rate;
     }
 
-    @Override
-    public <T> T accept(Visitor<T> v) {
-        return v.visit(this);
+    public void setRate(BigInteger rate) {
+        this.rate = rate;
     }
 }
