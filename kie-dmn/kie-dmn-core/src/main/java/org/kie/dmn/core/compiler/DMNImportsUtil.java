@@ -6,9 +6,7 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -18,12 +16,24 @@
  */
 package org.kie.dmn.core.compiler;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 
 import javax.xml.namespace.QName;
 
+import org.kie.api.io.Resource;
+import org.kie.dmn.api.core.DMNMessage;
+import org.kie.dmn.api.core.DMNModel;
+import org.kie.dmn.api.core.ast.*;
+import org.kie.dmn.core.impl.DMNModelImpl;
+import org.kie.dmn.core.pmml.DMNImportPMMLInfo;
+import org.kie.dmn.core.util.Msg;
+import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.util.Either;
 import org.kie.dmn.model.api.Definitions;
 import org.kie.dmn.model.api.Import;
@@ -32,11 +42,13 @@ import org.kie.dmn.model.v1_1.TImport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ImportDMNResolverUtil {
+import static org.kie.dmn.core.compiler.DMNCompilerImpl.resolveRelativeResource;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ImportDMNResolverUtil.class);
+public class DMNImportsUtil {
 
-    private ImportDMNResolverUtil() {
+    private static final Logger LOGGER = LoggerFactory.getLogger(DMNImportsUtil.class);
+
+    private DMNImportsUtil() {
         // No constructor for util class.
     }
 
@@ -108,7 +120,6 @@ public class ImportDMNResolverUtil {
         DMN,
         PMML;
     }
-
     public static ImportType whichImportType(Import importElement) {
         switch (importElement.getImportType()) {
             case org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase.URI_DMN:
@@ -129,5 +140,85 @@ public class ImportDMNResolverUtil {
             default:
                 return ImportType.UNKNOWN;
         }
+    }
+
+    static void resolveDMNImportType(Import i, Collection<DMNModel> dmnModels, DMNModelImpl model, List<DMNModel> toMerge) {
+        Either<String, DMNModel> resolvedResult = DMNImportsUtil.resolveImportDMN(i, dmnModels, (DMNModel m) -> new QName(m.getNamespace(), m.getName()));
+        DMNModel located = resolvedResult.cata(msg -> {
+            MsgUtil.reportMessage(LOGGER,
+                    DMNMessage.Severity.ERROR,
+                    i,
+                    model,
+                    null,
+                    null,
+                    Msg.IMPORT_NOT_FOUND_FOR_NODE,
+                    msg,
+                    i);
+            return null;
+        }, Function.identity());
+        checkLocatedDMNModel(i, located, model, toMerge);
+
+    }
+
+    static void checkLocatedDMNModel(Import i, DMNModel located, DMNModelImpl model, List<DMNModel> toMerge) {
+        if (located != null) {
+            String iAlias = Optional.ofNullable(i.getName()).orElse(located.getName());
+            // incubator-kie-issues#852: The idea is to not treat the anonymous models as import, but to "merge" them
+            //  with original one,
+            // because otherwise we would have to deal with clashing name aliases, or similar issues
+            if (iAlias != null && !iAlias.isEmpty()) {
+                model.setImportAliasForNS(iAlias, located.getNamespace(), located.getName());
+                importFromModel(model, located, iAlias);
+            } else {
+                toMerge.add(located);
+            }
+        }
+    }
+
+    static void resolvePMMLImportType(DMNModelImpl model, Import i, Function<String, Reader> relativeResolver, DMNCompilerConfigurationImpl dmnCompilerConfig) {
+        ClassLoader rootClassLoader = dmnCompilerConfig.getRootClassLoader();
+        Resource relativeResource = resolveRelativeResource(rootClassLoader, model, i, i, relativeResolver);
+        resolvePMMLImportType(model, i, relativeResource, dmnCompilerConfig);
+    }
+
+    static void resolvePMMLImportType(DMNModelImpl model, Import i, Resource relativeResource, DMNCompilerConfigurationImpl dmnCompilerConfig) {
+        try (InputStream pmmlIS = relativeResource.getInputStream()) {
+            DMNImportPMMLInfo.from(pmmlIS, dmnCompilerConfig, model, i).consume(new DMNCompilerImpl.PMMLImportErrConsumer(model, i),
+                    model::addPMMLImportInfo);
+        } catch (IOException e) {
+            new DMNCompilerImpl.PMMLImportErrConsumer(model, i).accept(e);
+        }
+    }
+
+    static void logErrorMessage(DMNModelImpl model, String importType) {
+        MsgUtil.reportMessage(LOGGER,
+                DMNMessage.Severity.ERROR,
+                null,
+                model,
+                null,
+                null,
+                Msg.IMPORT_TYPE_UNKNOWN,
+                importType);
+    }
+
+    static void importFromModel(DMNModelImpl model, DMNModel m, String iAlias) {
+        model.addImportChainChild(((DMNModelImpl) m).getImportChain(), iAlias);
+        for (ItemDefNode idn : m.getItemDefinitions()) {
+            model.getTypeRegistry().registerType(idn.getType());
+        }
+        for (InputDataNode idn : m.getInputs()) {
+            model.addInput(idn);
+        }
+        for (BusinessKnowledgeModelNode bkm : m.getBusinessKnowledgeModels()) {
+            model.addBusinessKnowledgeModel(bkm);
+        }
+        for (DecisionNode dn : m.getDecisions()) {
+            model.addDecision(dn);
+        }
+        for (DecisionServiceNode dsn : m.getDecisionServices()) {
+            model.addDecisionService(dsn);
+        }
+
+
     }
 }

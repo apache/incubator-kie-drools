@@ -6,9 +6,7 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -19,7 +17,6 @@
 package org.kie.dmn.core.compiler;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.Reader;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -33,7 +30,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -54,7 +50,6 @@ import org.kie.dmn.api.core.ast.DMNNode;
 import org.kie.dmn.api.core.ast.DecisionNode;
 import org.kie.dmn.api.core.ast.DecisionServiceNode;
 import org.kie.dmn.api.core.ast.InputDataNode;
-import org.kie.dmn.api.core.ast.ItemDefNode;
 import org.kie.dmn.api.marshalling.DMNExtensionRegister;
 import org.kie.dmn.api.marshalling.DMNMarshaller;
 import org.kie.dmn.backend.marshalling.v1x.DMNMarshallerFactory;
@@ -64,13 +59,12 @@ import org.kie.dmn.core.ast.DMNBaseNode;
 import org.kie.dmn.core.ast.DecisionNodeImpl;
 import org.kie.dmn.core.ast.DecisionServiceNodeImpl;
 import org.kie.dmn.core.ast.ItemDefNodeImpl;
-import org.kie.dmn.core.compiler.ImportDMNResolverUtil.ImportType;
+import org.kie.dmn.core.compiler.DMNImportsUtil.ImportType;
 import org.kie.dmn.core.impl.BaseDMNTypeImpl;
 import org.kie.dmn.core.impl.CompositeTypeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.impl.SimpleFnTypeImpl;
 import org.kie.dmn.core.impl.SimpleTypeImpl;
-import org.kie.dmn.core.pmml.DMNImportPMMLInfo;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.core.util.NamespaceUtil;
@@ -82,7 +76,6 @@ import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.lang.types.GenFnType;
 import org.kie.dmn.feel.lang.types.GenListType;
 import org.kie.dmn.feel.runtime.UnaryTest;
-import org.kie.dmn.feel.util.Either;
 import org.kie.dmn.model.api.DMNElementReference;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.DRGElement;
@@ -105,6 +98,7 @@ import org.kie.internal.io.ResourceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.kie.dmn.core.compiler.DMNImportsUtil.*;
 import static org.kie.dmn.core.compiler.UnnamedImportUtils.processMergedModel;
 
 public class DMNCompilerImpl implements DMNCompiler {
@@ -216,64 +210,7 @@ public class DMNCompilerImpl implements DMNCompiler {
         return model;
     }
 
-    static void resolveDMNImportType(Import i, Collection<DMNModel> dmnModels, DMNModelImpl model, List<DMNModel> toMerge) {
-        Either<String, DMNModel> resolvedResult = ImportDMNResolverUtil.resolveImportDMN(i, dmnModels, (DMNModel m) -> new QName(m.getNamespace(), m.getName()));
-        DMNModel located = resolvedResult.cata(msg -> {
-            MsgUtil.reportMessage(logger,
-                    DMNMessage.Severity.ERROR,
-                    i,
-                    model,
-                    null,
-                    null,
-                    Msg.IMPORT_NOT_FOUND_FOR_NODE,
-                    msg,
-                    i);
-            return null;
-        }, Function.identity());
-        checkLocatedDMNModel(i, located, model, toMerge);
 
-    }
-
-    static void checkLocatedDMNModel(Import i, DMNModel located, DMNModelImpl model, List<DMNModel> toMerge) {
-        if (located != null) {
-            String iAlias = Optional.ofNullable(i.getName()).orElse(located.getName());
-            // incubator-kie-issues#852: The idea is to not treat the anonymous models as import, but to "merge" them
-            //  with original one,
-            // because otherwise we would have to deal with clashing name aliases, or similar issues
-            if (iAlias != null && !iAlias.isEmpty()) {
-                model.setImportAliasForNS(iAlias, located.getNamespace(), located.getName());
-                importFromModel(model, located, iAlias);
-            } else {
-                toMerge.add(located);
-            }
-        }
-    }
-
-    static void resolvePMMLImportType(DMNModelImpl model, Import i, Function<String, Reader> relativeResolver, DMNCompilerConfigurationImpl dmnCompilerConfig) {
-        ClassLoader rootClassLoader = dmnCompilerConfig.getRootClassLoader();
-        Resource relativeResource = resolveRelativeResource(rootClassLoader, model, i, i, relativeResolver);
-        resolvePMMLImportType(model, i, relativeResource, dmnCompilerConfig);
-    }
-
-    static void resolvePMMLImportType(DMNModelImpl model, Import i, Resource relativeResource, DMNCompilerConfigurationImpl dmnCompilerConfig) {
-        try (InputStream pmmlIS = relativeResource.getInputStream()) {
-            DMNImportPMMLInfo.from(pmmlIS, dmnCompilerConfig, model, i).consume(new PMMLImportErrConsumer(model, i),
-                                                                                model::addPMMLImportInfo);
-        } catch (IOException e) {
-            new PMMLImportErrConsumer(model, i).accept(e);
-        }
-    }
-
-    static void logErrorMessage(DMNModelImpl model, String importType) {
-        MsgUtil.reportMessage(logger,
-                              DMNMessage.Severity.ERROR,
-                              null,
-                              model,
-                              null,
-                              null,
-                              Msg.IMPORT_TYPE_UNKNOWN,
-                              importType);
-    }
 
     private DMNCompilerContext configureDMNCompiler(FEELDialect feeldialect, Function<String, Reader> relativeResolver) {
 
@@ -288,7 +225,7 @@ public class DMNCompilerImpl implements DMNCompiler {
     private void iterateImports(Definitions dmndefs, Collection<DMNModel> dmnModels, DMNModelImpl model, Function<String, Reader> relativeResolver ) {
         List<DMNModel> toMerge = new ArrayList<>();
         for (Import i : dmndefs.getImport()) {
-            ImportType importType = ImportDMNResolverUtil.whichImportType(i);
+            ImportType importType = DMNImportsUtil.whichImportType(i);
             switch(importType) {
                 case DMN :
                     resolveDMNImportType(i, dmnModels, model, toMerge);
@@ -335,7 +272,6 @@ public class DMNCompilerImpl implements DMNCompiler {
         }
 
     }
-
     protected static Resource resolveRelativeResource(ClassLoader classLoader, DMNModelImpl model, Import i, DMNModelInstrumentedBase node, Function<String, Reader> relativeResolver) {
         if (relativeResolver != null) {
             Reader reader = relativeResolver.apply(i.getLocationURI());
@@ -345,6 +281,7 @@ public class DMNCompilerImpl implements DMNCompiler {
         }
         throw new UnsupportedOperationException("Unable to determine relative Resource for import named: " + i.getName());
     }
+
 
     protected static Resource pmmlImportResource(ClassLoader classLoader, DMNModelImpl model, Import i, DMNModelInstrumentedBase node) {
         String locationURI = i.getLocationURI();
@@ -377,24 +314,7 @@ public class DMNCompilerImpl implements DMNCompiler {
         }
     }
 
-    static void importFromModel(DMNModelImpl model, DMNModel m, String iAlias) {
-        model.addImportChainChild(((DMNModelImpl) m).getImportChain(), iAlias);
-        for (ItemDefNode idn : m.getItemDefinitions()) {
-            model.getTypeRegistry().registerType(idn.getType());
-        }
-        for (InputDataNode idn : m.getInputs()) {
-            model.addInput(idn);
-        }
-        for (BusinessKnowledgeModelNode bkm : m.getBusinessKnowledgeModels()) {
-            model.addBusinessKnowledgeModel(bkm);
-        }
-        for (DecisionNode dn : m.getDecisions()) {
-            model.addDecision(dn);
-        }
-        for (DecisionServiceNode dsn : m.getDecisionServices()) {
-            model.addDecisionService(dsn);
-        }
-    }
+
 
     private void processItemDefinitions(DMNCompilerContext ctx, DMNModelImpl model, Definitions dmndefs) {
         dmndefs.normalize();
