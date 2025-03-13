@@ -27,16 +27,35 @@ public class UserTaskInstanceJobDescription implements JobDescription {
     private ExpirationTime expirationTime;
     private Integer priority = ProcessInstanceJobDescription.DEFAULT_PRIORITY;
     private String userTaskInstanceId;
+    private String processId;
+    private String processInstanceId;
+    private String nodeInstanceId;
+    private String rootProcessInstanceId;
+    private String rootProcessId;
 
     public UserTaskInstanceJobDescription() {
         // do nothing
     }
 
-    public UserTaskInstanceJobDescription(String id, ExpirationTime expirationTime, Integer priority, String userTaskInstanceId) {
+    public UserTaskInstanceJobDescription(
+            String id,
+            ExpirationTime expirationTime,
+            Integer priority,
+            String userTaskInstanceId,
+            String processId,
+            String processInstanceId,
+            String nodeInstanceId,
+            String rootProcessInstanceId,
+            String rootProcessId) {
         this.id = id;
         this.expirationTime = expirationTime;
         this.priority = priority;
         this.userTaskInstanceId = userTaskInstanceId;
+        this.processId = processId;
+        this.processInstanceId = processInstanceId;
+        this.nodeInstanceId = nodeInstanceId;
+        this.rootProcessInstanceId = rootProcessInstanceId;
+        this.rootProcessId = rootProcessId;
     }
 
     @Override
@@ -59,8 +78,28 @@ public class UserTaskInstanceJobDescription implements JobDescription {
         return null;
     }
 
-    public String getUserTaskInstanceId() {
+    public String userTaskInstanceId() {
         return userTaskInstanceId;
+    }
+
+    public String processId() {
+        return processId;
+    }
+
+    public String processInstanceId() {
+        return processInstanceId;
+    }
+
+    public String nodeInstanceId() {
+        return nodeInstanceId;
+    }
+
+    public String rootProcessInstanceId() {
+        return rootProcessInstanceId;
+    }
+
+    public String rootProcessId() {
+        return rootProcessId;
     }
 
     public static UserTaskInstanceJobDescriptionBuilder newUserTaskInstanceJobDescriptionBuilder() {

@@ -614,6 +614,8 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
                         .processInstanceId(getStringId())
                         .processId(getProcessId())
                         .nodeInstanceId(nodeInstanceId)
+                        .rootProcessId(getRootProcessId())
+                        .rootProcessInstanceId(getRootProcessInstanceId())
                         .build();
         JobsService jobsService = InternalProcessRuntime.asKogitoProcessRuntime(getKnowledgeRuntime().getProcessRuntime()).getJobsService();
         jobsService.scheduleJob(description);

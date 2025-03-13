@@ -98,6 +98,7 @@ public class UserTaskKogitoWorkItemHandler extends DefaultKogitoWorkItemHandler 
         instance.setMetadata("RootProcessId", workItem.getProcessInstance().getRootProcessId());
         instance.setMetadata("RootProcessInstanceId", workItem.getProcessInstance().getRootProcessInstanceId());
         instance.setMetadata("ParentProcessInstanceId", workItem.getProcessInstance().getParentProcessInstanceId());
+        instance.setMetadata("NodeInstanceId", workItem.getNodeInstance().getId());
 
         instance.fireInitialStateChange();
         workItem.getParameters().entrySet().stream().filter(e -> !HumanTaskNode.TASK_PARAMETERS.contains(e.getKey())).forEach(e -> instance.setInput(e.getKey(), e.getValue()));

@@ -94,7 +94,7 @@ class SignalUserTaskInstanceOnExpiredTimer implements Runnable {
     @Override
     public void run() {
         String jobId = userTaskInstanceJobDescription.id();
-        String userTaskInstanceId = userTaskInstanceJobDescription.getUserTaskInstanceId();
+        String userTaskInstanceId = userTaskInstanceJobDescription.userTaskInstanceId();
         try {
             Optional<UserTaskInstance> userTaskInstance = jobsConfiguration.userTasks().instances().findById(userTaskInstanceId);
             if (userTaskInstance.isEmpty()) {

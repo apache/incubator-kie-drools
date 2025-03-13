@@ -18,37 +18,18 @@
  */
 package org.kie.kogito.jobs.descriptors;
 
+import java.util.Map;
 import java.util.UUID;
 
 import org.kie.kogito.jobs.ExpirationTime;
-import org.kie.kogito.jobs.JobDescription;
 
-public class UserTaskInstanceJobDescriptionBuilder implements JobDescription {
+public class UserTaskInstanceJobDescriptionBuilder {
 
     private String id;
     private ExpirationTime expirationTime;
     private Integer priority = ProcessInstanceJobDescription.DEFAULT_PRIORITY;
     private String userTaskInstanceId;
-
-    @Override
-    public String id() {
-        return id;
-    }
-
-    @Override
-    public ExpirationTime expirationTime() {
-        return expirationTime;
-    }
-
-    @Override
-    public Integer priority() {
-        return priority;
-    }
-
-    @Override
-    public String path() {
-        return null;
-    }
+    private Map<String, Object> metadata;
 
     public UserTaskInstanceJobDescriptionBuilder id(String id) {
         this.id = id;
@@ -74,7 +55,21 @@ public class UserTaskInstanceJobDescriptionBuilder implements JobDescription {
         return this;
     }
 
+    public UserTaskInstanceJobDescriptionBuilder metadata(Map<String, Object> metadata) {
+        this.metadata = metadata;
+        return this;
+    }
+
     public UserTaskInstanceJobDescription build() {
-        return new UserTaskInstanceJobDescription(id, expirationTime, priority, userTaskInstanceId);
+        return new UserTaskInstanceJobDescription(
+                id,
+                expirationTime,
+                priority,
+                userTaskInstanceId,
+                (String) this.metadata.get("ProcessId"),
+                (String) this.metadata.get("ProcessInstanceId"),
+                (String) this.metadata.get("NodeInstanceId"),
+                (String) this.metadata.get("RootProcessInstanceId"),
+                (String) this.metadata.get("RootProcessId"));
     }
 }
