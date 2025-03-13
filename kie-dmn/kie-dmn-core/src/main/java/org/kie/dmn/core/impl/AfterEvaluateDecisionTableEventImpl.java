@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -27,8 +27,8 @@ import java.util.List;
 public class AfterEvaluateDecisionTableEventImpl
         implements AfterEvaluateDecisionTableEvent {
 
-    private final String        nodeName;
-    private final String        dtName;
+    private final String nodeName;
+    private final String decisionTableName;
     private final String        dtId;
     private final DMNResult     result;
     private final List<Integer> matches;
@@ -36,9 +36,9 @@ public class AfterEvaluateDecisionTableEventImpl
     private final List<String> matchesIds;
     private final List<String> firedIds;
 
-    public AfterEvaluateDecisionTableEventImpl(String nodeName, String dtName, String dtId, DMNResult result, List<Integer> matches, List<Integer> fired, List<String> matchesIds, List<String> firedIds) {
+    public AfterEvaluateDecisionTableEventImpl(String nodeName, String decisionTableName, String dtId, DMNResult result, List<Integer> matches, List<Integer> fired, List<String> matchesIds, List<String> firedIds) {
         this.nodeName = nodeName;
-        this.dtName = dtName;
+        this.decisionTableName = decisionTableName;
         this.dtId = dtId;
         this.result = result;
         this.matches = matches;
@@ -54,7 +54,7 @@ public class AfterEvaluateDecisionTableEventImpl
 
     @Override
     public String getDecisionTableName() {
-        return dtName;
+        return decisionTableName;
     }
 
     @Override
@@ -88,7 +88,7 @@ public class AfterEvaluateDecisionTableEventImpl
 
     @Override
     public String toString() {
-        return "AfterEvaluateDecisionTableEvent{ nodeName='"+nodeName+"' decisionTableName='" + dtName + "' matches=" + getMatches() + " fired=" + getSelected() + "' matchesIds=" + getMatchesIds() + " firedIds=" + getSelectedIds() + " }";
+        return "AfterEvaluateDecisionTableEvent{ nodeName='"+ nodeName +"' decisionTableName='" + decisionTableName + "' matches=" + getMatches() + " fired=" + getSelected() + "' matchesIds=" + getMatchesIds() + " firedIds=" + getSelectedIds() + " }";
     }
 
 }

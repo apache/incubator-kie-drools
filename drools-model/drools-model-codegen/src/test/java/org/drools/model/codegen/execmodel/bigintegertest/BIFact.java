@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,29 +16,28 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.dmn.api.core.event;
+package org.drools.model.codegen.execmodel.bigintegertest;
 
-import java.util.List;
+import java.math.BigInteger;
 
-public interface AfterEvaluateDecisionTableEvent extends DMNEvent {
+public class BIFact {
 
-    /**
-     * The decision that this node relates to
-     * @return
-     */
-    String getNodeName();
+    private BigInteger value1;
+    private BigInteger value2;
 
-    String getDecisionTableName();
-    
-    default String getDecisionTableId() {
-        return null;
+    public BigInteger getValue1() {
+        return value1;
     }
 
-    List<Integer> getMatches();
+    public void setValue1(BigInteger value1) {
+        this.value1 = value1;
+    }
 
-    List<Integer> getSelected();
+    public BigInteger getValue2() {
+        return value2;
+    }
 
-    List<String> getMatchesIds();
-
-    List<String> getSelectedIds();
+    public void setValue2(BigInteger value2) {
+        this.value2 = value2;
+    }
 }

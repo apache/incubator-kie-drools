@@ -18,7 +18,9 @@
  */
 package org.drools.mvelcompiler;
 
+import java.lang.reflect.Type;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -31,6 +33,7 @@ import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.UnaryExpr;
 import org.drools.mvel.parser.ast.visitor.DrlGenericVisitor;
 import org.drools.mvelcompiler.ast.BigDecimalConvertedExprT;
+import org.drools.mvelcompiler.ast.BigIntegerConvertedExprT;
 import org.drools.mvelcompiler.ast.DoubleLiteralExpressionT;
 import org.drools.mvelcompiler.ast.IntegerLiteralExpressionT;
 import org.drools.mvelcompiler.ast.LongLiteralExpressionT;
@@ -80,39 +83,46 @@ public class ReProcessRHSPhase implements DrlGenericVisitor<Optional<TypedExpres
 
     @Override
     public Optional<TypedExpression> visit(BinaryExpr n, ReProcessRHSPhase.Context context) {
-        return convertWhenLHSISBigDecimal(() -> new UnalteredTypedExpression(n), context);
+        return convertWhenLHSIsBigNumber(() -> new UnalteredTypedExpression(n), context);
     }
 
     @Override
     public Optional<TypedExpression> visit(IntegerLiteralExpr n, ReProcessRHSPhase.Context context) {
-        return convertWhenLHSISBigDecimal(() -> new IntegerLiteralExpressionT(n), context);
+        return convertWhenLHSIsBigNumber(() -> new IntegerLiteralExpressionT(n), context);
     }
 
     @Override
     public Optional<TypedExpression> visit(DoubleLiteralExpr n, ReProcessRHSPhase.Context context) {
-        return convertWhenLHSISBigDecimal(() -> new DoubleLiteralExpressionT(n), context);
+        return convertWhenLHSIsBigNumber(() -> new DoubleLiteralExpressionT(n), context);
     }
 
     @Override
     public Optional<TypedExpression> visit(LongLiteralExpr n, ReProcessRHSPhase.Context context) {
-        return convertWhenLHSISBigDecimal(() -> new LongLiteralExpressionT(n), context);
+        return convertWhenLHSIsBigNumber(() -> new LongLiteralExpressionT(n), context);
     }
 
     @Override
     public Optional<TypedExpression> visit(NameExpr n, ReProcessRHSPhase.Context context) {
         if(mvelCompilerContext
                 .findDeclarations(n.toString())
-                .filter(d -> d.getClazz() != BigDecimal.class)
-                .isPresent()) { // avoid wrapping BigDecimal declarations
-            return convertWhenLHSISBigDecimal(() -> new UnalteredTypedExpression(n), context);
+                .filter(d -> d.getClazz() != BigDecimal.class && d.getClazz() != BigInteger.class)
+                .isPresent()) { // avoid wrapping BigDecimal/BigInteger declarations
+            return convertWhenLHSIsBigNumber(() -> new UnalteredTypedExpression(n), context);
         } else {
             return Optional.empty();
         }
     }
 
-    private Optional<TypedExpression> convertWhenLHSISBigDecimal(Supplier<TypedExpression> conversionFunction, ReProcessRHSPhase.Context context) {
-        return lhs.getType()
-                .filter(BigDecimal.class::equals)
-                .flatMap(t -> Optional.of(new BigDecimalConvertedExprT(conversionFunction.get(), context.getUnaryExpr())));
+    private Optional<TypedExpression> convertWhenLHSIsBigNumber(Supplier<TypedExpression> conversionFunction, ReProcessRHSPhase.Context context) {
+        Optional<Type> typeOpt = lhs.getType();
+        if (typeOpt.isPresent()) {
+            Type lhsType = typeOpt.get();
+            if (lhsType.equals(BigDecimal.class)) {
+                return Optional.of(new BigDecimalConvertedExprT(conversionFunction.get(), context.getUnaryExpr()));
+            } else if (lhsType.equals(BigInteger.class)) {
+                return Optional.of(new BigIntegerConvertedExprT(conversionFunction.get(), context.getUnaryExpr()));
+            }
+        }
+        return Optional.empty();
     }
 }

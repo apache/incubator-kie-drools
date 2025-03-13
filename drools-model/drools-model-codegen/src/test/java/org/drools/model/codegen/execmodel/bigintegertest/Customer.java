@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,29 +16,49 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.dmn.api.core.event;
+package org.drools.model.codegen.execmodel.bigintegertest;
 
-import java.util.List;
+import java.math.BigInteger;
 
-public interface AfterEvaluateDecisionTableEvent extends DMNEvent {
+public class Customer {
 
-    /**
-     * The decision that this node relates to
-     * @return
-     */
-    String getNodeName();
+    private String code;
 
-    String getDecisionTableName();
-    
-    default String getDecisionTableId() {
-        return null;
+    private BigInteger rate;
+    private BigInteger value;
+
+    private Long longValue;
+
+    public String getCode() {
+        return code;
     }
 
-    List<Integer> getMatches();
+    public void setCode(String code) {
+        this.code = code;
+    }
 
-    List<Integer> getSelected();
+    public BigInteger getRate() {
+        return rate;
+    }
 
-    List<String> getMatchesIds();
+    public void setRate(BigInteger rate) {
+        this.rate = rate;
+    }
 
-    List<String> getSelectedIds();
+    public BigInteger getValue() {
+        return value;
+    }
+
+    public void setValue( BigInteger value ) {
+        this.value = value;
+    }
+
+    public Long getLongValue() {
+        return longValue;
+    }
+
+    public void setLongValue(Long longValue) {
+        this.longValue = longValue;
+    }
+
 }

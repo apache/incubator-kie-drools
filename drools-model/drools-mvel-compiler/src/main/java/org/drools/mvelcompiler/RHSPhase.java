@@ -22,6 +22,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -61,7 +62,9 @@ import org.drools.mvel.parser.ast.visitor.DrlGenericVisitor;
 import org.drools.mvelcompiler.ast.BigDecimalArithmeticExprT;
 import org.drools.mvelcompiler.ast.BigDecimalConvertedExprT;
 import org.drools.mvelcompiler.ast.BigDecimalRelationalExprT;
+import org.drools.mvelcompiler.ast.BigIntegerArithmeticExprT;
 import org.drools.mvelcompiler.ast.BigIntegerConvertedExprT;
+import org.drools.mvelcompiler.ast.BigIntegerRelationalExprT;
 import org.drools.mvelcompiler.ast.BinaryExprT;
 import org.drools.mvelcompiler.ast.BooleanLiteralExpressionT;
 import org.drools.mvelcompiler.ast.CastExprT;
@@ -90,6 +93,7 @@ import org.drools.util.MethodUtils.NullType;
 
 import static java.util.Optional.ofNullable;
 import static org.drools.mvelcompiler.ast.BigDecimalArithmeticExprT.toBigDecimalMethod;
+import static org.drools.mvelcompiler.ast.BigIntegerArithmeticExprT.toBigIntegerMethod;
 import static org.drools.mvelcompiler.util.OptionalUtils.map2;
 import static org.drools.util.ClassUtils.classFromType;
 import static org.drools.util.ClassUtils.getAccessor;
@@ -261,10 +265,10 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, VisitorConte
     public TypedExpression visit(BinaryExpr n, VisitorContext arg) {
         TypedExpression left = n.getLeft().accept(this, arg);
         TypedExpression right = n.getRight().accept(this, arg);
-        return withPossiblyBigDecimalConversion(left, right, n.getOperator());
+        return withPossiblyBigNumberConversion(left, right, n.getOperator());
     }
 
-    private TypedExpression withPossiblyBigDecimalConversion(TypedExpression left, TypedExpression right, BinaryExpr.Operator operator) {
+    private TypedExpression withPossiblyBigNumberConversion(TypedExpression left, TypedExpression right, BinaryExpr.Operator operator) {
         Optional<Type> optTypeLeft = left.getType();
         Optional<Type> optTypeRight = right.getType();
 
@@ -279,7 +283,7 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, VisitorConte
                 (typeLeft == String.class || typeRight == String.class);
 
         if (arithmeticOperators.contains(operator) && !isStringConcatenation) {
-            return convertToBigDecimalArithmeticExprTIfNeeded(left, right, operator, typeLeft, typeRight);
+            return convertToBigNumberArithmeticExprTIfNeeded(left, right, operator, typeLeft, typeRight);
         } else if (relationalOperators.contains(operator)) {
             return convertToBigDecimalRelationalExprTIfNeeded(left, right, operator, typeLeft, typeRight);
         }
@@ -287,13 +291,19 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, VisitorConte
         return new BinaryExprT(left, right, operator);
     }
 
-    private TypedExpression convertToBigDecimalArithmeticExprTIfNeeded(TypedExpression left, TypedExpression right, BinaryExpr.Operator operator, Type typeLeft, Type typeRight) {
+    private TypedExpression convertToBigNumberArithmeticExprTIfNeeded(TypedExpression left, TypedExpression right, BinaryExpr.Operator operator, Type typeLeft, Type typeRight) {
         if (typeLeft == BigDecimal.class && typeRight == BigDecimal.class) { // do not convert
             return new BigDecimalArithmeticExprT(toBigDecimalMethod(operator), left, right);
         } else if (typeLeft != BigDecimal.class && typeRight == BigDecimal.class) { // convert left
             return new BigDecimalArithmeticExprT(toBigDecimalMethod(operator), new BigDecimalConvertedExprT(left), right);
         } else if (typeLeft == BigDecimal.class && typeRight != BigDecimal.class) { // convert right
             return new BigDecimalArithmeticExprT(toBigDecimalMethod(operator), left, new BigDecimalConvertedExprT(right));
+        } else if (typeLeft == BigInteger.class && typeRight == BigInteger.class) { // do not convert
+            return new BigIntegerArithmeticExprT(toBigIntegerMethod(operator), left, right);
+        } else if (typeLeft != BigInteger.class && typeRight == BigInteger.class) { // convert left
+            return new BigIntegerArithmeticExprT(toBigIntegerMethod(operator), new BigIntegerConvertedExprT(left), right);
+        } else if (typeLeft == BigInteger.class && typeRight != BigInteger.class) { // convert right
+            return new BigIntegerArithmeticExprT(toBigIntegerMethod(operator), left, new BigIntegerConvertedExprT(right));
         } else {
             return new BinaryExprT(left, right, operator);
         }
@@ -306,6 +316,12 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, VisitorConte
             return new BigDecimalRelationalExprT(operator, new BigDecimalConvertedExprT(left), right);
         } else if (typeLeft == BigDecimal.class && typeRight != BigDecimal.class) { // convert right
             return new BigDecimalRelationalExprT(operator, left, new BigDecimalConvertedExprT(right));
+        } else if (typeLeft == BigInteger.class && typeRight == BigInteger.class) { // do not convert
+            return new BigIntegerRelationalExprT(operator, left, right);
+        } else if (typeLeft != BigInteger.class && typeRight == BigInteger.class) { // convert left
+            return new BigIntegerRelationalExprT(operator, new BigIntegerConvertedExprT(left), right);
+        } else if (typeLeft == BigInteger.class && typeRight != BigInteger.class) { // convert right
+            return new BigIntegerRelationalExprT(operator, left, new BigIntegerConvertedExprT(right));
         } else {
             return new BinaryExprT(left, right, operator);
         }

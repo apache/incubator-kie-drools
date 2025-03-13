@@ -21,6 +21,7 @@ package org.drools.mvelcompiler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -44,6 +45,8 @@ import org.drools.mvel.parser.ast.visitor.DrlGenericVisitor;
 import org.drools.mvelcompiler.ast.AssignExprT;
 import org.drools.mvelcompiler.ast.BigDecimalArithmeticExprT;
 import org.drools.mvelcompiler.ast.BigDecimalConvertedExprT;
+import org.drools.mvelcompiler.ast.BigIntegerArithmeticExprT;
+import org.drools.mvelcompiler.ast.BigIntegerConvertedExprT;
 import org.drools.mvelcompiler.ast.BinaryExprT;
 import org.drools.mvelcompiler.ast.ExpressionStmtT;
 import org.drools.mvelcompiler.ast.FieldToAccessorTExpr;
@@ -157,10 +160,10 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, Void> {
     }
 
 
-    // Conversion of AssignExpr to BigDecimal Arithmetic operation when LHS is is a BigDecimal variable
-    public Optional<TypedExpression> withBigDecimalConversion(AssignExpr assignExpr,
-                                                              TypedExpression target,
-                                                              TypedExpression value) {
+    // Conversion of AssignExpr to BigDecimal/BigInteger Arithmetic operation when LHS is a BigDecimal/BigInteger variable
+    public Optional<TypedExpression> withBigNumberConversion(AssignExpr assignExpr,
+                                                             TypedExpression target,
+                                                             TypedExpression value) {
 
         Optional<Type> optRHSType = value.getType();
         if(!optRHSType.isPresent()) {
@@ -173,10 +176,16 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, Void> {
         }
 
         boolean assigningToFieldAccess = target instanceof FieldToAccessorTExpr; // handled previously in FieldAccessExpr visitor
-        if (!assigningToFieldAccess && target.getType().filter(t -> t == BigDecimal.class).isPresent()) {
-            String bigDecimalMethod = BigDecimalArithmeticExprT.toBigDecimalMethod(operator);
-            BigDecimalArithmeticExprT convertedBigDecimalExpr = new BigDecimalArithmeticExprT(bigDecimalMethod, target, value);
-            return Optional.of(new AssignExprT(AssignExpr.Operator.ASSIGN, target, convertedBigDecimalExpr));
+        if (!assigningToFieldAccess) {
+            if (target.getType().filter(t -> t == BigDecimal.class).isPresent()) {
+                String bigDecimalMethod = BigDecimalArithmeticExprT.toBigDecimalMethod(operator);
+                BigDecimalArithmeticExprT convertedBigDecimalExpr = new BigDecimalArithmeticExprT(bigDecimalMethod, target, value);
+                return Optional.of(new AssignExprT(AssignExpr.Operator.ASSIGN, target, convertedBigDecimalExpr));
+            } else if (target.getType().filter(t -> t == BigInteger.class).isPresent()) {
+                String bigIntegerMethod = BigIntegerArithmeticExprT.toBigIntegerMethod(operator);
+                BigIntegerArithmeticExprT convertedBigIntegerExpr = new BigIntegerArithmeticExprT(bigIntegerMethod, target, value);
+                return Optional.of(new AssignExprT(AssignExpr.Operator.ASSIGN, target, convertedBigIntegerExpr));
+            }
         }
         return Optional.empty();
     }
@@ -195,6 +204,8 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, Void> {
                 return new FieldToAccessorTExpr(fieldAccessScope, setter, singletonList(rhsOrError()));
             } else if(setter.getParameterTypes()[0] == BigDecimal.class) {
                 return bigDecimalCompoundOperator(fieldAccessScope, accessorName, scopeType, parentOperator, setter);
+            } else if(setter.getParameterTypes()[0] == BigInteger.class) {
+                return bigIntegerCompoundOperator(fieldAccessScope, accessorName, scopeType, parentOperator, setter);
             } else {
                 return compoundOperator(fieldAccessScope, accessorName, scopeType, parentOperator, setter);
             }
@@ -223,6 +234,25 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, Void> {
         }
         BigDecimalArithmeticExprT bigDecimalArithmeticExprT = new BigDecimalArithmeticExprT(bigDecimalArithmeticMethod, getterExpression, argument);
         return new FieldToAccessorTExpr(fieldAccessScope, setter, singletonList(bigDecimalArithmeticExprT));
+    }
+
+    private FieldToAccessorTExpr bigIntegerCompoundOperator(TypedExpression fieldAccessScope,
+                                                            String accessorName,
+                                                            Class<?> scopeType,
+                                                            AssignExpr.Operator parentOperator,
+                                                            Method setter) {
+        String bigIntegerArithmeticMethod = BigIntegerArithmeticExprT.toBigIntegerMethod(parentOperator);
+
+        Method optGetter = ofNullable(getAccessor(scopeType, accessorName))
+                .orElseThrow(() -> new MvelCompilerException("No getter found but setter is present for accessor: " + accessorName));
+
+        FieldToAccessorTExpr getterExpression = new FieldToAccessorTExpr(fieldAccessScope, optGetter, emptyList());
+        TypedExpression argument = rhsOrError();
+        if(argument.getType().filter(t -> t != BigInteger.class).isPresent()) {
+            argument = new BigIntegerConvertedExprT(argument);
+        }
+        BigIntegerArithmeticExprT bigIntegerArithmeticExprT = new BigIntegerArithmeticExprT(bigIntegerArithmeticMethod, getterExpression, argument);
+        return new FieldToAccessorTExpr(fieldAccessScope, setter, singletonList(bigIntegerArithmeticExprT));
     }
 
     /**
@@ -330,7 +360,7 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, Void> {
         TypedExpression target = n.getTarget().accept(this, arg);
 
         Optional<TypedExpression> bigDecimalConversion =
-                withBigDecimalConversion(n, target, rhsOrError());
+                withBigNumberConversion(n, target, rhsOrError());
 
         if(bigDecimalConversion.isPresent()) {
             return bigDecimalConversion.get();

@@ -19,31 +19,30 @@
 package org.drools.mvelcompiler.ast;
 
 import java.lang.reflect.Type;
-import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Optional;
 
-import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.Expression;
-import com.github.javaparser.ast.expr.ObjectCreationExpr;
-import com.github.javaparser.ast.expr.UnaryExpr;
+import com.github.javaparser.ast.expr.IntegerLiteralExpr;
+import com.github.javaparser.ast.expr.MethodCallExpr;
 
 import static com.github.javaparser.ast.NodeList.nodeList;
 
-public class BigDecimalConvertedExprT implements TypedExpression {
+public class BigIntegerRelationalExprT implements TypedExpression {
 
-    private final TypedExpression value;
-    private final Type type = BigDecimal.class;
+    private final BinaryExpr.Operator operator;
+    private final TypedExpression argument;
+    private final TypedExpression scope;
+    private final Type type = BigInteger.class;
 
-    private final Optional<UnaryExpr> unaryExpr;
-
-    public BigDecimalConvertedExprT(TypedExpression value) {
-        this(value, Optional.empty());
-    }
-
-    public BigDecimalConvertedExprT(TypedExpression value, Optional<UnaryExpr> unaryExpr) {
-        this.value = value;
-        this.unaryExpr = unaryExpr;
+    public BigIntegerRelationalExprT(BinaryExpr.Operator operator,
+                                     TypedExpression scope,
+                                     TypedExpression argument) {
+        this.operator = operator;
+        this.scope = scope;
+        this.argument = argument;
     }
 
     @Override
@@ -53,15 +52,18 @@ public class BigDecimalConvertedExprT implements TypedExpression {
 
     @Override
     public Node toJavaExpression() {
-        Expression expr = (Expression) value.toJavaExpression();
-        Expression arg = unaryExpr.map(u -> (Expression) new UnaryExpr(expr, u.getOperator())).orElse(expr);
-        return new ObjectCreationExpr(null, StaticJavaParser.parseClassOrInterfaceType(type.getTypeName()), nodeList(arg));
+        MethodCallExpr methodCallExpr = new MethodCallExpr((Expression) scope.toJavaExpression(), "compareTo",
+                                                           nodeList((Expression) argument.toJavaExpression()));
+        return new BinaryExpr(methodCallExpr, new IntegerLiteralExpr("0"), operator);
     }
 
     @Override
     public String toString() {
-        return "BigDecimalConvertedExprT{" +
-                "value=" + value +
+        return "BigIntegerRelationalExprT{" +
+                "operator=" + operator +
+                ", argument=" + argument +
+                ", scope=" + scope +
+                ", type=" + type +
                 '}';
     }
 }

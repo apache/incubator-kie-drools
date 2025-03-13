@@ -19,33 +19,36 @@
 package org.drools.mvelcompiler.util;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 
 import static com.github.javaparser.ast.NodeList.nodeList;
 
-public class BigDecimalArgumentCoercion {
+public class BigNumberArgumentCoercion {
 
     public Expression coercedArgument(Class<?> argumentType, Class<?> actualType, Expression argument) {
-        boolean argumentTypeIsBigDecimal = BigDecimal.class.isAssignableFrom(argumentType);
+        boolean argumentTypeIsBigNumber = BigDecimal.class.isAssignableFrom(argumentType) || BigInteger.class.isAssignableFrom(argumentType);
 
-        if (isInteger(actualType) && argumentTypeIsBigDecimal) {
-            return bigDecimalToPrimitive(argument, "intValue");
-        } else if (isLong(actualType) && argumentTypeIsBigDecimal) {
-            return bigDecimalToPrimitive(argument, "longValue");
-        } else if (isShort(actualType) && argumentTypeIsBigDecimal) {
-            return bigDecimalToPrimitive(argument, "shortValue");
-        } else if (isDouble(actualType) && argumentTypeIsBigDecimal) {
-            return bigDecimalToPrimitive(argument, "doubleValue");
-        } else if (isFloat(actualType) && argumentTypeIsBigDecimal) {
-            return bigDecimalToPrimitive(argument, "floatValue");
+        if (argumentTypeIsBigNumber) {
+            if (isInteger(actualType)) {
+                return bigNumberToPrimitive(argument, "intValue");
+            } else if (isLong(actualType)) {
+                return bigNumberToPrimitive(argument, "longValue");
+            } else if (isShort(actualType)) {
+                return bigNumberToPrimitive(argument, "shortValue");
+            } else if (isDouble(actualType)) {
+                return bigNumberToPrimitive(argument, "doubleValue");
+            } else if (isFloat(actualType)) {
+                return bigNumberToPrimitive(argument, "floatValue");
+            }
         }
 
         return argument;
     }
 
-    private MethodCallExpr bigDecimalToPrimitive(Expression argumentExpression, String intValue) {
+    private MethodCallExpr bigNumberToPrimitive(Expression argumentExpression, String intValue) {
         return new MethodCallExpr(argumentExpression, intValue, nodeList());
     }
 
