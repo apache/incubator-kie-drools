@@ -142,6 +142,13 @@ public class DMNImportsUtil {
         }
     }
 
+    /**
+     * Method to resolve the dmn models based on the import type
+     * @param i
+     * @param dmnModels
+     * @param model
+     * @param toMerge
+     */
     static void resolveDMNImportType(Import i, Collection<DMNModel> dmnModels, DMNModelImpl model, List<DMNModel> toMerge) {
         Either<String, DMNModel> resolvedResult = DMNImportsUtil.resolveImportDMN(i, dmnModels, (DMNModel m) -> new QName(m.getNamespace(), m.getName()));
         DMNModel located = resolvedResult.cata(msg -> {
@@ -160,21 +167,35 @@ public class DMNImportsUtil {
 
     }
 
+    /**
+     * Method to import the dmn model to the default namespace
+     * @param i
+     * @param located
+     * @param model
+     * @param toMerge
+     */
     static void checkLocatedDMNModel(Import i, DMNModel located, DMNModelImpl model, List<DMNModel> toMerge) {
         if (located != null) {
-            String iAlias = Optional.ofNullable(i.getName()).orElse(located.getName());
+            String importAlias = Optional.ofNullable(i.getName()).orElse(located.getName());
             // incubator-kie-issues#852: The idea is to not treat the anonymous models as import, but to "merge" them
             //  with original one,
             // because otherwise we would have to deal with clashing name aliases, or similar issues
-            if (iAlias != null && !iAlias.isEmpty()) {
-                model.setImportAliasForNS(iAlias, located.getNamespace(), located.getName());
-                importFromModel(model, located, iAlias);
+            if (importAlias != null && !importAlias.isEmpty()) {
+                model.setImportAliasForNS(importAlias, located.getNamespace(), located.getName());
+                importFromModel(model, located, importAlias);
             } else {
                 toMerge.add(located);
             }
         }
     }
 
+    /**
+     * Reolve model with import type as PMML
+     * @param model
+     * @param i
+     * @param relativeResolver
+     * @param dmnCompilerConfig
+     */
     static void resolvePMMLImportType(DMNModelImpl model, Import i, Function<String, Reader> relativeResolver, DMNCompilerConfigurationImpl dmnCompilerConfig) {
         ClassLoader rootClassLoader = dmnCompilerConfig.getRootClassLoader();
         Resource relativeResource = resolveRelativeResource(rootClassLoader, model, i, i, relativeResolver);
@@ -201,6 +222,12 @@ public class DMNImportsUtil {
                 importType);
     }
 
+    /**
+     * Method to handle imports from the model
+     * @param model
+     * @param m
+     * @param iAlias
+     */
     static void importFromModel(DMNModelImpl model, DMNModel m, String iAlias) {
         model.addImportChainChild(((DMNModelImpl) m).getImportChain(), iAlias);
         for (ItemDefNode idn : m.getItemDefinitions()) {

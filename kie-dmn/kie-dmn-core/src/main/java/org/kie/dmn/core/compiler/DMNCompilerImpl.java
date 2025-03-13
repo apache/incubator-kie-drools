@@ -98,7 +98,10 @@ import org.kie.internal.io.ResourceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.dmn.core.compiler.DMNImportsUtil.*;
+
+import static org.kie.dmn.core.compiler.DMNImportsUtil.resolveDMNImportType;
+import static org.kie.dmn.core.compiler.DMNImportsUtil.logErrorMessage;
+import static org.kie.dmn.core.compiler.DMNImportsUtil.resolvePMMLImportType;
 import static org.kie.dmn.core.compiler.UnnamedImportUtils.processMergedModel;
 
 public class DMNCompilerImpl implements DMNCompiler {
@@ -195,6 +198,14 @@ public class DMNCompilerImpl implements DMNCompiler {
         return null;
     }
 
+    /**
+     * Method to compile the dmn model
+     * @param dmndefs
+     * @param dmnModels
+     * @param resource
+     * @param relativeResolver
+     * @return
+     */
     public DMNModel compile(Definitions dmndefs, Collection<DMNModel> dmnModels, Resource resource, Function<String, Reader> relativeResolver) {
         if (dmndefs == null) {
             return null;
@@ -210,8 +221,12 @@ public class DMNCompilerImpl implements DMNCompiler {
         return model;
     }
 
-
-
+    /**
+     * Method to configure the dmn compiler
+     * @param feeldialect
+     * @param relativeResolver
+     * @return
+     */
     private DMNCompilerContext configureDMNCompiler(FEELDialect feeldialect, Function<String, Reader> relativeResolver) {
 
         DMNCompilerConfigurationImpl cc = (DMNCompilerConfigurationImpl) dmnCompilerConfig;
@@ -222,6 +237,13 @@ public class DMNCompilerImpl implements DMNCompiler {
         return ctx;
     }
 
+    /**
+     * Methods to iterate the models based on the import type
+     * @param dmndefs
+     * @param dmnModels
+     * @param model
+     * @param relativeResolver
+     */
     private void iterateImports(Definitions dmndefs, Collection<DMNModel> dmnModels, DMNModelImpl model, Function<String, Reader> relativeResolver ) {
         List<DMNModel> toMerge = new ArrayList<>();
         for (Import i : dmndefs.getImport()) {
@@ -281,7 +303,6 @@ public class DMNCompilerImpl implements DMNCompiler {
         }
         throw new UnsupportedOperationException("Unable to determine relative Resource for import named: " + i.getName());
     }
-
 
     protected static Resource pmmlImportResource(ClassLoader classLoader, DMNModelImpl model, Import i, DMNModelInstrumentedBase node) {
         String locationURI = i.getLocationURI();

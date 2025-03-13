@@ -43,9 +43,14 @@ import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.marshalling.DMNMarshaller;
 import org.kie.dmn.core.api.DMNFactory;
-import org.kie.dmn.core.compiler.*;
+
+import org.kie.dmn.core.compiler.DMNCompilerConfigurationImpl;
+import org.kie.dmn.core.compiler.DMNCompilerImpl;
 import org.kie.dmn.core.compiler.DMNImportsUtil;
 import org.kie.dmn.core.compiler.DMNImportsUtil.ImportType;
+import org.kie.dmn.core.compiler.DMNDecisionLogicCompilerFactory;
+import org.kie.dmn.core.compiler.DMNProfile;
+import org.kie.dmn.core.compiler.RuntimeTypeCheckOption;
 import org.kie.dmn.core.compiler.profiles.ExtendedDMNProfile;
 import org.kie.dmn.core.impl.DMNKnowledgeBuilderError;
 import org.kie.dmn.core.impl.DMNPackageImpl;
