@@ -27,6 +27,7 @@ import org.kie.kogito.event.EventPublisher;
 import org.kie.kogito.event.job.JobInstanceDataEvent;
 import org.kie.kogito.jobs.JobDescription;
 import org.kie.kogito.jobs.descriptors.ProcessInstanceJobDescription;
+import org.kie.kogito.jobs.descriptors.UserTaskInstanceJobDescription;
 import org.kie.kogito.jobs.service.adapter.ScheduledJobAdapter;
 import org.kie.kogito.jobs.service.api.Recipient;
 import org.kie.kogito.jobs.service.model.JobDetails;
@@ -102,6 +103,12 @@ public class JobInVMEventPublisher implements JobEventPublisher {
                 scheduledJob.setRootProcessInstanceId(processInstanceJobDescription.rootProcessInstanceId());
                 scheduledJob.setRootProcessId(processInstanceJobDescription.rootProcessId());
                 scheduledJob.setNodeInstanceId(processInstanceJobDescription.nodeInstanceId());
+            } else if (jobDescription instanceof UserTaskInstanceJobDescription userTaskInstanceJobDescription) {
+                scheduledJob.setProcessInstanceId(userTaskInstanceJobDescription.processInstanceId());
+                scheduledJob.setProcessId(userTaskInstanceJobDescription.processId());
+                scheduledJob.setNodeInstanceId(userTaskInstanceJobDescription.nodeInstanceId());
+                scheduledJob.setRootProcessInstanceId(userTaskInstanceJobDescription.rootProcessInstanceId());
+                scheduledJob.setRootProcessId(userTaskInstanceJobDescription.rootProcessId());
             }
 
             byte[] jsonContent = objectMapper.writeValueAsBytes(scheduledJob);

@@ -19,6 +19,7 @@
 package org.kie.kogito.jobs.service.json;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 import org.kie.kogito.jobs.ExpirationTime;
 import org.kie.kogito.jobs.JobDescription;
@@ -73,6 +74,13 @@ public class JobDescriptionDeserializer extends StdDeserializer<JobDescription> 
                     builder.expirationTime((ExpirationTime) ctxt.readTreeAsValue(node.get("expirationTime"), Class.forName(expirationTimeType)));
 
                     ofNullable(node.get("userTaskInstanceId")).ifPresent(e -> builder.userTaskInstanceId(e.textValue()));
+                    var metadata = new HashMap<String, Object>();
+                    ofNullable(node.get("processId")).ifPresent(e -> metadata.put("ProcessId", e.textValue()));
+                    ofNullable(node.get("processInstanceId")).ifPresent(e -> metadata.put("ProcessInstanceId", e.textValue()));
+                    ofNullable(node.get("nodeInstanceId")).ifPresent(e -> metadata.put("NodeInstanceId", e.textValue()));
+                    ofNullable(node.get("rootProcessInstanceId")).ifPresent(e -> metadata.put("RootProcessInstanceId", e.textValue()));
+                    ofNullable(node.get("rootProcessId")).ifPresent(e -> metadata.put("RootProcessId", e.textValue()));
+                    builder.metadata(metadata);
                     return builder.build();
                 }
             }

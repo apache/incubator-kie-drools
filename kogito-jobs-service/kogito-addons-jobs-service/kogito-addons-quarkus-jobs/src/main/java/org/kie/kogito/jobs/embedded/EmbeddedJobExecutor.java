@@ -82,7 +82,7 @@ public class EmbeddedJobExecutor implements JobExecutor {
 
     private Uni<JobExecutionResponse> processJobDescription(JobDetails jobDetails, UserTaskInstanceJobDescription userTaskInstanceJobDescription) {
         Supplier<Void> execute = () -> executeInUnitOfWork(application.unitOfWorkManager(), () -> {
-            Optional<UserTaskInstance> userTaskInstance = userTasks.get().instances().findById(userTaskInstanceJobDescription.getUserTaskInstanceId());
+            Optional<UserTaskInstance> userTaskInstance = userTasks.get().instances().findById(userTaskInstanceJobDescription.userTaskInstanceId());
             if (userTaskInstance.isEmpty()) {
                 return null;
             }
