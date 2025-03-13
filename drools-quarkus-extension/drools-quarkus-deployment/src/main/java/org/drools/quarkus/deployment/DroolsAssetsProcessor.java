@@ -18,11 +18,17 @@
  */
 package org.drools.quarkus.deployment;
 
+import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import io.quarkus.arc.deployment.GeneratedBeanBuildItem;
 import io.quarkus.deployment.annotations.BuildProducer;
@@ -34,6 +40,7 @@ import io.quarkus.deployment.builditem.GeneratedResourceBuildItem;
 import io.quarkus.deployment.builditem.LiveReloadBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.NativeImageResourceBuildItem;
 import io.quarkus.deployment.pkg.builditem.CurateOutcomeBuildItem;
+import io.quarkus.maven.dependency.DependencyFlags;
 import io.quarkus.maven.dependency.ResolvedDependency;
 import io.quarkus.resteasy.reactive.spi.GeneratedJaxRsResourceBuildItem;
 import io.quarkus.vertx.http.deployment.spi.AdditionalStaticResourceBuildItem;
@@ -87,6 +94,8 @@ public class DroolsAssetsProcessor {
 
     private static final String CONFIG_PREFIX = "drools.kbase.";
 
+    private static final String ASSET_DEPENDENCIES_CONFIG = "drools.asset.dependencies";
+
     @BuildStep
     public FeatureBuildItem feature() {
         return new FeatureBuildItem(FEATURE);
@@ -104,7 +113,8 @@ public class DroolsAssetsProcessor {
 
         DroolsModelBuildContext context = createDroolsBuildContext(root.getPaths(), combinedIndexBuildItem.getIndex());
 
-        Collection<Resource> resources = ResourceCollector.fromPaths(context.getAppPaths().getPaths());
+        Path[] assetPaths = getAssetPaths(context);
+        Collection<Resource> resources = ResourceCollector.fromPaths(assetPaths);
 
         RuleCodegen ruleCodegen = ofResources(context, resources).withKieBaseModels(readKieBaseModels());
         Collection<GeneratedFile> generatedFiles = ruleCodegen.generate();
@@ -141,6 +151,26 @@ public class DroolsAssetsProcessor {
         generatedBeanBuildItems.stream()
                 .filter(b -> restResourceClassNameSet.contains(b.getName()))
                 .forEach(b -> jaxrsProducer.produce(new GeneratedJaxRsResourceBuildItem(b.getName(), b.getData())));
+    }
+
+    private Path[] getAssetPaths(DroolsModelBuildContext context) {
+        Path[] appPaths = context.getAppPaths().getPaths();
+
+        Config config = ConfigProvider.getConfig();
+        Optional<List<String>> assetDependenciesOpt = config.getOptionalValues(ASSET_DEPENDENCIES_CONFIG, String.class);
+        if (assetDependenciesOpt.isPresent()) {
+            List<String> assetDependencies = assetDependenciesOpt.get().stream().map(String::trim).toList();
+            Iterable<ResolvedDependency> directDependenciesIter = curateOutcomeBuildItem.getApplicationModel().getDependencies(DependencyFlags.DIRECT);
+            List<ResolvedDependency> directDependencies = StreamSupport.stream(directDependenciesIter.spliterator(), false).toList();
+            Path[] assetDependencyPaths = directDependencies.stream()
+                    .filter(d -> assetDependencies.contains(d.getGroupId() + ":" + d.getArtifactId()))
+                    .flatMap(d -> d.getResolvedPaths().stream())
+                    .toArray(Path[]::new);
+            LOGGER.debug("assetDependencyPaths: {}", Arrays.asList(assetDependencyPaths));
+            return Stream.concat(Arrays.stream(assetDependencyPaths), Arrays.stream(appPaths)).toArray(Path[]::new);
+        } else {
+            return appPaths;
+        }
     }
 
     private Map<String, KieBaseModel> readKieBaseModels() {
