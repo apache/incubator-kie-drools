@@ -24,40 +24,17 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.kie</groupId>
-    <artifactId>drools-build-parent</artifactId>
+    <groupId>org.drools</groupId>
+    <artifactId>drools-quarkus-extension</artifactId>
     <version>999-SNAPSHOT</version>
-    <relativePath>../build-parent/pom.xml</relativePath>
   </parent>
 
-  <name>Drools :: Quarkus Extension</name>
-  <groupId>org.drools</groupId>
-  <artifactId>drools-quarkus-extension</artifactId>
+  <name>Drools :: Quarkus Extension :: Integration Test :: Multi Module</name>
+  <artifactId>drools-quarkus-integration-test-multimodule</artifactId>
   <packaging>pom</packaging>
 
   <modules>
-    <module>drools-quarkus-util-deployment</module>
-    <module>drools-quarkus</module>
-    <module>drools-quarkus-deployment</module>
-    <module>drools-quarkus-integration-test</module>
-    <module>drools-quarkus-integration-test-kmodule</module>
-    <module>drools-quarkus-integration-test-hotreload</module>
-    <module>drools-quarkus-integration-test-multimodule</module>
-    <module>drools-quarkus-ruleunit-integration-test</module>
-    <module>drools-quarkus-quickstart-test</module>
-    <module>drools-quarkus-examples</module>
+    <module>drools-quarkus-integration-test-multimodule-dep</module>
+    <module>drools-quarkus-integration-test-multimodule-main</module>
   </modules>
-
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>io.quarkus</groupId>
-        <artifactId>quarkus-bom</artifactId>
-        <version>${version.io.quarkus}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
 </project>
