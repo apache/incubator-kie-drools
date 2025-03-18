@@ -16,13 +16,42 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.api.event.process;
+package org.drools.quarkus.test.multimodule.dep;
 
-/**
- * An event when a node inside a process instance has been triggered.
- */
-public interface ProcessNodeTriggeredEvent extends ProcessNodeEvent {
-	default boolean isRetrigger() {
-		return false;
-	}
+public class Person {
+    private String name;
+    private int age;
+    private boolean adult;
+
+    public Person() {
+    }
+
+    public Person(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public boolean isAdult() {
+        return adult;
+    }
+
+    public void setAdult(boolean adult) {
+        this.adult = adult;
+    }
 }

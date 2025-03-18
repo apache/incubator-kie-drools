@@ -19,10 +19,10 @@
 package org.kie.api.event.process;
 
 /**
- * An event when a node inside a process instance has been triggered.
+ * A runtime event that is generated when a ProcessInstance is re-triggered after an error.
  */
-public interface ProcessNodeTriggeredEvent extends ProcessNodeEvent {
-	default boolean isRetrigger() {
-		return false;
-	}
+public interface ProcessRetriggeredEvent
+    extends
+    ProcessEvent {
+
 }
