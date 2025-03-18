@@ -5,6 +5,7 @@ org.kie.kogito.event.impl.adapter.ProcessNodeEnteredEventDataEventAdapter
 org.kie.kogito.event.impl.adapter.ProcessNodeLeftEventDataEventAdapter
 org.kie.kogito.event.impl.adapter.ProcessSLAEventDataEventAdapter
 org.kie.kogito.event.impl.adapter.ProcessStartedEventDataEventAdapter
+org.kie.kogito.event.impl.adapter.ProcessRetriggeredEventDataEventAdapter
 org.kie.kogito.event.impl.adapter.ProcessVariableEventDataEventAdapter
 org.kie.kogito.event.impl.adapter.UserTaskAssignmentEventDataEventAdapter
 org.kie.kogito.event.impl.adapter.UserTaskCommentEventDataEventAdapter

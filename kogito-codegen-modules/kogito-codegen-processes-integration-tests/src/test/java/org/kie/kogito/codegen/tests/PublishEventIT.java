@@ -497,15 +497,20 @@ public class PublishEventIT extends AbstractCodegenIT {
 
         uow = app.unitOfWorkManager().newUnitOfWork();
         uow.start();
+        int stateEventCount;
         if (processInstance.error().isPresent()) {
+            stateEventCount = 2;
             ((ProcessError) processInstance.error().get()).retrigger();
+        } else {
+            stateEventCount = 1;
         }
+
         uow.end();
 
         events = publisher.extract().stream().filter(ProcessInstanceStateDataEvent.class::isInstance).collect(Collectors.toList());
-        assertThat(events).hasSize(1);
+        assertThat(events).hasSize(stateEventCount);
 
-        assertProcessInstanceEvent(events.get(0), "ServiceProcessDifferentOperations", "Service Process", 2);
+        assertProcessInstanceEvent(events.get(stateEventCount - 1), "ServiceProcessDifferentOperations", "Service Process", 2);
 
         assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_COMPLETED);
         Model result = (Model) processInstance.variables();

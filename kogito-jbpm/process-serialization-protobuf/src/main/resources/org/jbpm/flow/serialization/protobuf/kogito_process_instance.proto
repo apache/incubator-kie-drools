@@ -47,6 +47,7 @@ message ProcessInstance {
     optional string root_process_id = 13;
 
     optional string error_node_id = 14;
+    optional string error_node_instance_id=23;
     optional string error_message = 15;
 
     optional string reference_id = 16;

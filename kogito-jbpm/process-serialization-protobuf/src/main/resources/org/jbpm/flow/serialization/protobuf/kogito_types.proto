@@ -48,6 +48,7 @@ message NodeInstance {
     optional int64 trigger_date = 5;
 
     optional SLAContext sla = 6;
+    optional bool retrigger= 7;
 }
 
 message WorkflowContext {

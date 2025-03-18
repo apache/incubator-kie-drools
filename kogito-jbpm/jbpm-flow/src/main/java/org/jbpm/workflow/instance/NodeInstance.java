@@ -37,6 +37,8 @@ public interface NodeInstance extends KogitoNodeInstance {
 
     void trigger(KogitoNodeInstance from, String type);
 
+    void retrigger(boolean remove);
+
     void cancel();
 
     void cancel(CancelType type);

@@ -75,4 +75,11 @@ public interface KogitoNodeInstance extends NodeInstance {
     default Map<String, Object> getMetaData() {
         return Collections.emptyMap();
     }
+
+    /**
+     * Returns if this node has been executed as the first one of a retrigger operation
+     * 
+     * @return true if this a retrigger node (see above), false otherwise
+     */
+    boolean isRetrigger();
 }

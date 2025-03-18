@@ -125,6 +125,9 @@ public class ProtobufProcessInstanceWriter {
         if (workFlow.getNodeIdInError() != null) {
             instance.setErrorNodeId(workFlow.getNodeIdInError());
         }
+        if (workFlow.getNodeInstanceIdInError() != null) {
+            instance.setErrorNodeInstanceId(workFlow.getNodeInstanceIdInError());
+        }
         if (workFlow.getErrorMessage() != null) {
             instance.setErrorMessage(workFlow.getErrorMessage());
         }
@@ -198,7 +201,8 @@ public class ProtobufProcessInstanceWriter {
             KogitoTypesProtobuf.NodeInstance.Builder node = KogitoTypesProtobuf.NodeInstance.newBuilder()
                     .setId(((KogitoNodeInstance) nodeInstance).getStringId())
                     .setNodeId(nodeInstance.getNodeId().toExternalFormat())
-                    .setLevel(((org.jbpm.workflow.instance.NodeInstance) nodeInstance).getLevel());
+                    .setLevel(((org.jbpm.workflow.instance.NodeInstance) nodeInstance).getLevel())
+                    .setRetrigger(((org.jbpm.workflow.instance.NodeInstance) nodeInstance).isRetrigger());
 
             Date triggerDate = ((org.jbpm.workflow.instance.NodeInstance) nodeInstance).getTriggerTime();
             if (triggerDate != null) {

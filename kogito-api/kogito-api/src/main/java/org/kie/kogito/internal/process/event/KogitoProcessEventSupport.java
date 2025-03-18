@@ -32,6 +32,8 @@ public interface KogitoProcessEventSupport {
 
     void fireAfterProcessStarted(KogitoProcessInstance instance, KieRuntime kruntime);
 
+    void fireProcessRetriggered(KogitoProcessInstance instance, KieRuntime kruntime);
+
     void fireBeforeProcessCompleted(KogitoProcessInstance instance, KieRuntime kruntime);
 
     void fireAfterProcessCompleted(KogitoProcessInstance instance, KieRuntime kruntime);

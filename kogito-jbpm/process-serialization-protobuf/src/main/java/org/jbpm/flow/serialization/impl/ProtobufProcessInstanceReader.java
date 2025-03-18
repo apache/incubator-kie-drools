@@ -155,6 +155,10 @@ public class ProtobufProcessInstanceReader {
             processInstance.internalSetErrorNodeId(processInstanceProtobuf.getErrorNodeId());
         }
 
+        if (processInstanceProtobuf.hasErrorNodeInstanceId()) {
+            processInstance.internalSetErrorNodeInstanceId(processInstanceProtobuf.getErrorNodeInstanceId());
+        }
+
         if (processInstanceProtobuf.hasErrorMessage()) {
             processInstance.internalSetErrorMessage(processInstanceProtobuf.getErrorMessage());
         }
@@ -194,6 +198,9 @@ public class ProtobufProcessInstanceReader {
         if (nodeInstanceImpl.getProcessInstance() == null) {
             nodeInstanceImpl.setProcessInstance(processInstance);
         }
+
+        if (nodeInstanceProtobuf.hasRetrigger())
+            nodeInstanceImpl.internalSetRetrigger(nodeInstanceProtobuf.getRetrigger());
 
         nodeInstanceImpl.setLevel(nodeInstanceProtobuf.getLevel() == 0 ? 1 : nodeInstanceProtobuf.getLevel());
     }

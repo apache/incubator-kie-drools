@@ -1323,6 +1323,10 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
         this.nodeIdInError = errorNodeId;
     }
 
+    public void internalSetErrorNodeInstanceId(String errorNodeInstanceId) {
+        this.nodeInstanceIdInError = errorNodeInstanceId;
+    }
+
     public void internalSetErrorMessage(String errorMessage) {
         this.errorMessage = errorMessage;
         this.errorCause = Optional.empty();
@@ -1330,6 +1334,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl im
 
     public void internalSetError(ProcessInstanceExecutionException e) {
         this.nodeIdInError = e.getFailedNodeId();
+        this.nodeInstanceIdInError = e.getFailedNodeInstanceId();
         Throwable rootException = getRootException(e);
         this.errorMessage = rootException instanceof MessageException ? rootException.getMessage() : rootException.getClass().getCanonicalName() + " - " + rootException.getMessage();
         this.errorCause = Optional.of(e);

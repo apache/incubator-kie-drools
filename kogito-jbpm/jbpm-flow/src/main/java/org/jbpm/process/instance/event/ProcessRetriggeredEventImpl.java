@@ -16,30 +16,23 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.internal.process.event;
+package org.jbpm.process.instance.event;
 
-import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.process.ProcessRetriggeredEvent;
+import org.kie.api.runtime.KieRuntime;
+import org.kie.api.runtime.process.ProcessInstance;
 
-public interface KogitoProcessEventListener extends ProcessEventListener {
+public class ProcessRetriggeredEventImpl extends ProcessEvent implements ProcessRetriggeredEvent {
 
-    /**
-     * This listener method is invoked right before a work item transition.
-     * 
-     * @param event
-     */
-    default void beforeWorkItemTransition(ProcessWorkItemTransitionEvent event) {
-    };
+    private static final long serialVersionUID = 510l;
 
-    /**
-     * This listener method is invoked right after a work item transition.
-     * 
-     * @param event
-     */
-    default void afterWorkItemTransition(ProcessWorkItemTransitionEvent event) {
+    public ProcessRetriggeredEventImpl(ProcessInstance instance, KieRuntime kruntime, String identity) {
+        super(instance, kruntime, identity);
     }
 
-    default void onProcessRetriggered(ProcessRetriggeredEvent event) {
-
+    @Override
+    public String toString() {
+        return "==>[ProcessRetriggered(name=" + getProcessInstance().getProcessName() + "; id=" + getProcessInstance().getProcessId() + ")]";
     }
+
 }

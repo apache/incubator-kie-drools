@@ -76,6 +76,8 @@ public class ProcessInstanceNodeEventBody implements KogitoMarshallEventSupport,
 
     private Date slaDueDate;
 
+    private Boolean retrigger;
+
     private Map<String, Object> data;
 
     @Override
@@ -89,6 +91,7 @@ public class ProcessInstanceNodeEventBody implements KogitoMarshallEventSupport,
         writeUTF(out, workItemId);
         writeDate(out, slaDueDate);
         writeObject(out, data);
+        writeObject(out, retrigger);
     }
 
     @Override
@@ -102,6 +105,7 @@ public class ProcessInstanceNodeEventBody implements KogitoMarshallEventSupport,
         workItemId = readUTF(in);
         slaDueDate = readDate(in);
         data = (Map<String, Object>) readObject(in);
+        retrigger = (Boolean) readObject(in);
     }
 
     @Override
@@ -119,6 +123,10 @@ public class ProcessInstanceNodeEventBody implements KogitoMarshallEventSupport,
 
     public Date getEventDate() {
         return eventDate;
+    }
+
+    public Boolean isRetrigger() {
+        return retrigger;
     }
 
     public String getEventUser() {
@@ -255,6 +263,11 @@ public class ProcessInstanceNodeEventBody implements KogitoMarshallEventSupport,
 
         public Builder nodeName(String nodeName) {
             instance.nodeName = nodeName;
+            return this;
+        }
+
+        public Builder setRetrigger(Boolean isRetrigger) {
+            instance.retrigger = isRetrigger;
             return this;
         }
 

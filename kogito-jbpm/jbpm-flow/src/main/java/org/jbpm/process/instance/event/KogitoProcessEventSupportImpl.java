@@ -27,6 +27,7 @@ import org.kie.api.event.process.MessageEvent;
 import org.kie.api.event.process.ProcessCompletedEvent;
 import org.kie.api.event.process.ProcessNodeLeftEvent;
 import org.kie.api.event.process.ProcessNodeTriggeredEvent;
+import org.kie.api.event.process.ProcessRetriggeredEvent;
 import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.api.event.process.ProcessVariableChangedEvent;
 import org.kie.api.event.process.SLAViolatedEvent;
@@ -216,6 +217,12 @@ public class KogitoProcessEventSupportImpl implements KogitoProcessEventSupport 
     public void fireOnError(KogitoProcessInstance instance, KogitoNodeInstance nodeInstance, KieRuntime kruntime, Exception exception) {
         ErrorEventImpl event = new ErrorEventImpl(instance, kruntime, nodeInstance, exception);
         notifyAllListeners(l -> l.onError(event));
+    }
+
+    @Override
+    public void fireProcessRetriggered(KogitoProcessInstance instance, KieRuntime kruntime) {
+        final ProcessRetriggeredEvent event = new ProcessRetriggeredEventImpl(instance, kruntime, identityProvider.getName());
+        notifyAllListeners(l -> l.onProcessRetriggered(event));
     }
 
 }

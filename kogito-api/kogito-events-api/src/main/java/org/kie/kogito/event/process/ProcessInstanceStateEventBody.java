@@ -37,6 +37,7 @@ public class ProcessInstanceStateEventBody implements KogitoMarshallEventSupport
     public static final int EVENT_TYPE_STARTED = 1;
     public static final int EVENT_TYPE_ENDED = 2;
     public static final int EVENT_TYPE_MIGRATED = 3;
+    public static final int EVENT_TYPE_RETRIGGERED = 4;
 
     // common fields for events
     private Date eventDate;

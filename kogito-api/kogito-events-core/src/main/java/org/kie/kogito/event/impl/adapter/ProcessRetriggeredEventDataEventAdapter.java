@@ -16,30 +16,21 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.internal.process.event;
+package org.kie.kogito.event.impl.adapter;
 
-import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.process.ProcessRetriggeredEvent;
+import org.kie.kogito.event.DataEvent;
+import org.kie.kogito.event.process.ProcessInstanceStateEventBody;
 
-public interface KogitoProcessEventListener extends ProcessEventListener {
+public class ProcessRetriggeredEventDataEventAdapter extends AbstractDataEventAdapter {
 
-    /**
-     * This listener method is invoked right before a work item transition.
-     * 
-     * @param event
-     */
-    default void beforeWorkItemTransition(ProcessWorkItemTransitionEvent event) {
-    };
-
-    /**
-     * This listener method is invoked right after a work item transition.
-     * 
-     * @param event
-     */
-    default void afterWorkItemTransition(ProcessWorkItemTransitionEvent event) {
+    public ProcessRetriggeredEventDataEventAdapter() {
+        super(ProcessRetriggeredEvent.class);
     }
 
-    default void onProcessRetriggered(ProcessRetriggeredEvent event) {
-
+    @Override
+    public DataEvent<?> adapt(Object payload) {
+        return adapt((ProcessRetriggeredEvent) payload, ProcessInstanceStateEventBody.EVENT_TYPE_RETRIGGERED);
     }
+
 }

@@ -22,6 +22,8 @@ public interface ProcessError {
 
     String failedNodeId();
 
+    String failedNodeInstanceId();
+
     String errorMessage();
 
     default Throwable errorCause() {

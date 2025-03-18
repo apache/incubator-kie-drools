@@ -25,6 +25,7 @@ import org.kie.api.event.process.ProcessEvent;
 import org.kie.api.event.process.ProcessMigrationEvent;
 import org.kie.api.event.process.ProcessNodeLeftEvent;
 import org.kie.api.event.process.ProcessNodeTriggeredEvent;
+import org.kie.api.event.process.ProcessRetriggeredEvent;
 import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.api.event.process.ProcessVariableChangedEvent;
 import org.kie.api.event.process.SLAViolatedEvent;
@@ -133,6 +134,11 @@ public class UnitOfWorkProcessEventListener extends DefaultKogitoProcessEventLis
 
     @Override
     public void onError(ErrorEvent event) {
+        intercept(event);
+    }
+
+    @Override
+    public void onProcessRetriggered(ProcessRetriggeredEvent event) {
         intercept(event);
     }
 

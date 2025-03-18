@@ -20,21 +20,28 @@ package org.jbpm.process.instance.event;
 
 import org.kie.api.event.process.ProcessNodeTriggeredEvent;
 import org.kie.api.runtime.KieRuntime;
-import org.kie.api.runtime.process.NodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 
 public class KogitoProcessNodeTriggeredEventImpl extends AbstractProcessNodeEvent implements ProcessNodeTriggeredEvent {
 
     private static final long serialVersionUID = 510l;
 
-    public KogitoProcessNodeTriggeredEventImpl(NodeInstance nodeInstance, KieRuntime kruntime, String identity) {
-        super(nodeInstance, nodeInstance.getProcessInstance(), kruntime, identity);
+    private boolean isRetrigger;
 
+    public KogitoProcessNodeTriggeredEventImpl(KogitoNodeInstance nodeInstance, KieRuntime kruntime, String identity) {
+        super(nodeInstance, nodeInstance.getProcessInstance(), kruntime, identity);
+        this.isRetrigger = nodeInstance.isRetrigger();
+    }
+
+    @Override
+    public boolean isRetrigger() {
+        return isRetrigger;
     }
 
     @Override
     public String toString() {
         return "==>[ProcessNodeTriggered(nodeId=" + getNodeInstance().getNodeId() + "; id=" + ((KogitoNodeInstance) getNodeInstance()).getStringId()
-                + "; nodeName=" + getNodeInstance().getNodeName() + "; processName=" + getProcessInstance().getProcessName() + "; processId=" + getProcessInstance().getProcessId() + ")]";
+                + "; nodeName=" + getNodeInstance().getNodeName() + "; processName=" + getProcessInstance().getProcessName() + "; processId=" + getProcessInstance().getProcessId()
+                + "; isRetrigger=" + isRetrigger + ")]";
     }
 }

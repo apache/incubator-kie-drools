@@ -29,16 +29,18 @@ public class ProcessInstanceExecutionException extends RuntimeException {
 
     private final String processInstanceId;
     private final String failedNodeId;
+    private final String failedNodeInstanceId;
     private final String errorMessage;
 
-    public ProcessInstanceExecutionException(String processInstanceId, String failedNodeId, String errorMessage) {
-        this(processInstanceId, failedNodeId, errorMessage, null);
+    public ProcessInstanceExecutionException(String processInstanceId, String failedNodeId, String failedNodeInstanceId, String errorMessage) {
+        this(processInstanceId, failedNodeId, failedNodeInstanceId, errorMessage, null);
     }
 
-    public ProcessInstanceExecutionException(String processInstanceId, String failedNodeId, String errorMessage, Throwable rootCause) {
+    public ProcessInstanceExecutionException(String processInstanceId, String failedNodeId, String failedNodeInstanceId, String errorMessage, Throwable rootCause) {
         super("Process instance with id " + processInstanceId + " failed because of " + errorMessage, rootCause);
         this.processInstanceId = processInstanceId;
         this.failedNodeId = failedNodeId;
+        this.failedNodeInstanceId = failedNodeInstanceId;
         this.errorMessage = errorMessage;
     }
 
@@ -70,4 +72,12 @@ public class ProcessInstanceExecutionException extends RuntimeException {
         return errorMessage;
     }
 
+    public String getFailedNodeInstanceId() {
+        return failedNodeInstanceId;
+    }
+
+    public static ProcessInstanceExecutionException fromError(ProcessInstance<?> processInstance) {
+        ProcessError error = processInstance.error().get();
+        return new ProcessInstanceExecutionException(processInstance.id(), error.failedNodeId(), error.failedNodeInstanceId(), error.errorMessage(), error.errorCause());
+    }
 }

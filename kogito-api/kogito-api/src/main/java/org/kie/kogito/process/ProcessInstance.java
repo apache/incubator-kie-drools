@@ -256,7 +256,7 @@ public interface ProcessInstance<T> {
     default ProcessInstance<T> checkError() {
         Optional<ProcessError> error = error();
         if (error.isPresent()) {
-            throw new ProcessInstanceExecutionException(id(), error.get().failedNodeId(), error.get().errorMessage(), error.get().errorCause());
+            throw ProcessInstanceExecutionException.fromError(this);
         }
         return this;
     }

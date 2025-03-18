@@ -93,6 +93,7 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
     protected String slaTimerId;
     protected Date triggerTime;
     protected Date leaveTime;
+    protected boolean isRetrigger;
 
     protected transient CancelType cancelType;
 
@@ -110,6 +111,11 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
     @Override
     public String getStringId() {
         return this.id;
+    }
+
+    @Override
+    public boolean isRetrigger() {
+        return isRetrigger;
     }
 
     public void setNodeId(WorkflowElementIdentifier nodeId) {
@@ -257,7 +263,7 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
                 return;
             } else {
                 logger.error("Node instance causing process instance error in id {} in a transactional environment (Wrapping)", this.getStringId());
-                throw new ProcessInstanceExecutionException(this.getProcessInstance().getId(), this.getNodeDefinitionId(), e.getMessage(), e);
+                throw new ProcessInstanceExecutionException(this.getProcessInstance().getId(), this.getNodeDefinitionId(), this.getId(), e.getMessage(), e);
             }
             // stop after capturing error
         }
@@ -482,10 +488,12 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
         triggerNodeInstance(followConnection(connection), connection.getToType());
     }
 
+    @Override
     public void retrigger(boolean remove) {
         if (remove) {
             cancel();
         }
+        isRetrigger = true;
         triggerNode(getNodeId(), !remove);
     }
 
@@ -742,5 +750,10 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
                 }
             }
         }
+    }
+
+    public void internalSetRetrigger(boolean isRetrigger) {
+        this.isRetrigger = isRetrigger;
+
     }
 }

@@ -119,7 +119,7 @@ class BaseExceptionHandlerTest {
 
     @Test
     void testMapProcessInstanceExecutionException() {
-        Object response = tested.mapException(new ProcessInstanceExecutionException("processInstanceId", "nodeId", "message"));
+        Object response = tested.mapException(new ProcessInstanceExecutionException("processInstanceId", "nodeId", "nodeInstanceId", "message"));
         assertThat(response).isEqualTo(internalErrorResponse);
     }
 

@@ -20,9 +20,11 @@ package org.kie.kogito.event.impl.adapter;
 
 import java.util.Date;
 import java.util.Map;
+import java.util.function.BiConsumer;
 
 import org.kie.api.event.process.ProcessEvent;
 import org.kie.api.event.process.ProcessNodeEvent;
+import org.kie.api.event.process.ProcessNodeTriggeredEvent;
 import org.kie.kogito.event.process.ProcessInstanceNodeDataEvent;
 import org.kie.kogito.event.process.ProcessInstanceNodeEventBody;
 import org.kie.kogito.event.process.ProcessInstanceStateDataEvent;
@@ -91,7 +93,16 @@ public abstract class AbstractDataEventAdapter implements DataEventAdapter {
         return piEvent;
     }
 
+    protected ProcessInstanceNodeDataEvent toProcessInstanceNodeEvent(ProcessNodeTriggeredEvent event, int eventType) {
+        return toProcessInstanceNodeEvent(event, eventType, (k, v) -> k.setRetrigger(v.isRetrigger()));
+    }
+
     protected ProcessInstanceNodeDataEvent toProcessInstanceNodeEvent(ProcessNodeEvent event, int eventType) {
+        return toProcessInstanceNodeEvent(event, eventType, (k, v) -> {
+        });
+    }
+
+    protected <T extends ProcessNodeEvent> ProcessInstanceNodeDataEvent toProcessInstanceNodeEvent(T event, int eventType, BiConsumer<ProcessInstanceNodeEventBody.Builder, T> consumer) {
         Map<String, Object> metadata = AdapterHelper.buildProcessMetadata((KogitoWorkflowProcessInstance) event.getProcessInstance());
         KogitoWorkflowProcessInstance pi = (KogitoWorkflowProcessInstance) event.getProcessInstance();
         KogitoNodeInstance nodeInstance = (KogitoNodeInstance) event.getNodeInstance();
@@ -107,7 +118,7 @@ public abstract class AbstractDataEventAdapter implements DataEventAdapter {
                 .nodeInstanceId(event.getNodeInstance().getId())
                 .nodeDefinitionId(event.getNodeInstance().getNode().getUniqueId())
                 .slaDueDate(nodeInstance.getSlaDueDate());
-
+        consumer.accept(builder, event);
         if (event.getNodeInstance() instanceof KogitoWorkItemNodeInstance workItemNodeInstance && workItemNodeInstance.getWorkItem() != null) {
             KogitoWorkItem workItem = workItemNodeInstance.getWorkItem();
             builder.workItemId(workItem.getStringId());
