@@ -136,7 +136,9 @@
                 <executable>pip</executable>
                 <arguments>
                     <argument>install</argument>
-                    <argument>jep==4.2.0</argument>
+                    <argument>--no-cache-dir</argument> 
+                    <arguemnt>--no-build-isolation</arguemnt>
+                    <argument>jep==4.2.2</argument>
                 </arguments>
             </configuration>
           </execution>
