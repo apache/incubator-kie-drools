@@ -149,6 +149,8 @@ public class ProcessInstanceEntityMapper implements MongoEntityMapper<ProcessIns
         instance.setExit(instantToZonedDateTime(entity.getExit()));
         instance.setDefinitionId(entity.getDefinitionId());
         instance.setSlaDueDate(instantToZonedDateTime(entity.getSlaDueDate()));
+        instance.setRetrigger(entity.isRetrigger());
+        instance.setErrorMessage(entity.getErrorMessage());
         return instance;
     }
 
@@ -166,6 +168,8 @@ public class ProcessInstanceEntityMapper implements MongoEntityMapper<ProcessIns
         entity.setExit(zonedDateTimeToInstant(instance.getExit()));
         entity.setDefinitionId(instance.getDefinitionId());
         entity.setSlaDueDate(zonedDateTimeToInstant(instance.getSlaDueDate()));
+        entity.setRetrigger(instance.isRetrigger());
+        entity.setErrorMessage(instance.getErrorMessage());
         return entity;
     }
 
@@ -176,6 +180,7 @@ public class ProcessInstanceEntityMapper implements MongoEntityMapper<ProcessIns
 
         ProcessInstanceError error = new ProcessInstanceError();
         error.setNodeDefinitionId(entity.getNodeDefinitionId());
+        error.setNodeInstanceId(entity.getNodeInstanceId());
         error.setMessage(entity.getMessage());
         return error;
     }
@@ -187,6 +192,7 @@ public class ProcessInstanceEntityMapper implements MongoEntityMapper<ProcessIns
 
         ProcessInstanceEntity.ProcessInstanceErrorEntity entity = new ProcessInstanceEntity.ProcessInstanceErrorEntity();
         entity.setNodeDefinitionId(error.getNodeDefinitionId());
+        entity.setNodeInstanceId(error.getNodeInstanceId());
         entity.setMessage(error.getMessage());
         return entity;
     }

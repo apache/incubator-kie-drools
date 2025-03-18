@@ -20,6 +20,7 @@ package org.kie.kogito.index.storage.merger;
 
 import org.kie.kogito.event.process.ProcessInstanceDataEvent;
 import org.kie.kogito.event.process.ProcessInstanceErrorDataEvent;
+import org.kie.kogito.event.process.ProcessInstanceErrorEventBody;
 import org.kie.kogito.index.CommonUtils;
 import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.model.ProcessInstanceError;
@@ -30,14 +31,19 @@ import jakarta.enterprise.context.ApplicationScoped;
 public class ProcessInstanceErrorDataEventMerger extends ProcessInstanceEventMerger {
 
     @Override
-    public ProcessInstance merge(ProcessInstance pi, ProcessInstanceDataEvent<?> data) {
-        ProcessInstanceErrorDataEvent event = (ProcessInstanceErrorDataEvent) data;
-        pi = getOrNew(pi, data, event.getData().getEventDate());
+    public ProcessInstance merge(ProcessInstance pi, ProcessInstanceDataEvent<?> dataEvent) {
+        ProcessInstanceErrorDataEvent event = (ProcessInstanceErrorDataEvent) dataEvent;
+        ProcessInstanceErrorEventBody data = event.getData();
+        pi = getOrNew(pi, dataEvent, data.getEventDate());
         ProcessInstanceError error = new ProcessInstanceError();
-        error.setMessage(event.getData().getErrorMessage());
-        error.setNodeDefinitionId(event.getData().getNodeDefinitionId());
+        error.setMessage(data.getErrorMessage());
+        error.setNodeDefinitionId(data.getNodeDefinitionId());
+        error.setNodeInstanceId(data.getNodeInstanceId());
         pi.setError(error);
         pi.setState(CommonUtils.ERROR_STATE);
+        if (pi.getNodes() != null) {
+            pi.getNodes().stream().filter(n -> n.getId().equals(error.getNodeInstanceId())).findAny().ifPresent(n -> n.setErrorMessage(data.getErrorMessage()));
+        }
         return pi;
     }
 

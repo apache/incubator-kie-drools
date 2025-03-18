@@ -94,7 +94,7 @@ public class KogitoAddonRuntimeClientImpl extends KogitoRuntimeCommonClient impl
             pInstance.abort();
 
             if (pInstance.status() == org.kie.kogito.process.ProcessInstance.STATE_ERROR) {
-                throw new ProcessInstanceExecutionException(pInstance.id(), pInstance.error().get().failedNodeId(), pInstance.error().get().errorMessage());
+                throw ProcessInstanceExecutionException.fromError(pInstance);
             } else {
                 return String.format(SUCCESSFULLY_OPERATION_MESSAGE, "ABORT ProcessInstance with id: " + processInstance.getId());
             }
@@ -107,7 +107,7 @@ public class KogitoAddonRuntimeClientImpl extends KogitoRuntimeCommonClient impl
             pInstance.error().get().retrigger();
 
             if (pInstance.status() == org.kie.kogito.process.ProcessInstance.STATE_ERROR) {
-                throw new ProcessInstanceExecutionException(pInstance.id(), pInstance.error().get().failedNodeId(), pInstance.error().get().errorMessage());
+                throw ProcessInstanceExecutionException.fromError(pInstance);
             } else {
                 return String.format(SUCCESSFULLY_OPERATION_MESSAGE, "RETRY ProcessInstance in error with id: " + processInstance.getId());
             }
@@ -120,7 +120,7 @@ public class KogitoAddonRuntimeClientImpl extends KogitoRuntimeCommonClient impl
             pInstance.error().get().skip();
 
             if (pInstance.status() == org.kie.kogito.process.ProcessInstance.STATE_ERROR) {
-                throw new ProcessInstanceExecutionException(pInstance.id(), pInstance.error().get().failedNodeId(), pInstance.error().get().errorMessage());
+                throw ProcessInstanceExecutionException.fromError(pInstance);
             } else {
                 return String.format(SUCCESSFULLY_OPERATION_MESSAGE, "SKIP ProcessInstance in error with id: " + processInstance.getId());
             }
@@ -200,7 +200,7 @@ public class KogitoAddonRuntimeClientImpl extends KogitoRuntimeCommonClient impl
             pInstance.triggerNode(nodeDefinitionId);
 
             if (pInstance.status() == org.kie.kogito.process.ProcessInstance.STATE_ERROR) {
-                throw new ProcessInstanceExecutionException(pInstance.id(), pInstance.error().get().failedNodeId(), pInstance.error().get().errorMessage());
+                throw ProcessInstanceExecutionException.fromError(pInstance);
             } else {
                 return String.format(SUCCESSFULLY_OPERATION_MESSAGE,
                         "TRIGGER Node " + nodeDefinitionId + "from ProcessInstance with id: " + processInstance.getId());
@@ -214,7 +214,7 @@ public class KogitoAddonRuntimeClientImpl extends KogitoRuntimeCommonClient impl
             pInstance.retriggerNodeInstance(nodeInstanceId);
 
             if (pInstance.status() == org.kie.kogito.process.ProcessInstance.STATE_ERROR) {
-                throw new ProcessInstanceExecutionException(pInstance.id(), pInstance.error().get().failedNodeId(), pInstance.error().get().errorMessage());
+                throw ProcessInstanceExecutionException.fromError(pInstance);
             } else {
                 return String.format(SUCCESSFULLY_OPERATION_MESSAGE,
                         "RETRIGGER Node instance " + nodeInstanceId + "from ProcessInstance with id: " + processInstance.getId());
@@ -228,7 +228,7 @@ public class KogitoAddonRuntimeClientImpl extends KogitoRuntimeCommonClient impl
             pInstance.cancelNodeInstance(nodeInstanceId);
 
             if (pInstance.status() == org.kie.kogito.process.ProcessInstance.STATE_ERROR) {
-                throw new ProcessInstanceExecutionException(pInstance.id(), pInstance.error().get().failedNodeId(), pInstance.error().get().errorMessage());
+                throw ProcessInstanceExecutionException.fromError(pInstance);
             } else {
                 return String.format(SUCCESSFULLY_OPERATION_MESSAGE,
                         "CANCEL Node instance " + nodeInstanceId + "from ProcessInstance with id: " + processInstance.getId());

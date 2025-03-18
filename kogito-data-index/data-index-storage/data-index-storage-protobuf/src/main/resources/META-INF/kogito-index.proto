@@ -179,6 +179,8 @@ message NodeInstance {
     /* @Field(store = Store.YES) */
     optional string nodeId = 7;
     optional int64 slaDueDate = 8;
+    optional bool retrigger = 9;
+    optional string errorMessage= 10;
 }
 
 /* @Indexed */

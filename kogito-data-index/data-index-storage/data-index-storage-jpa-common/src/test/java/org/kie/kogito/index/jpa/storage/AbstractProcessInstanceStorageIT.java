@@ -109,7 +109,7 @@ public abstract class AbstractProcessInstanceStorageIT {
                 .hasSize(1);
 
         Assertions.assertThat(processInstance.getNodes().get(0))
-                .hasNoNullFieldsOrPropertiesExcept("exit", "slaDueDate")
+                .hasNoNullFieldsOrPropertiesExcept("exit", "slaDueDate", "errorMessage", "retrigger")
                 .hasFieldOrPropertyWithValue("name", "nodeName")
                 .hasFieldOrPropertyWithValue("type", "BoundaryEventNode")
                 .hasFieldOrPropertyWithValue("definitionId", nodeDefinitionId)
@@ -125,7 +125,7 @@ public abstract class AbstractProcessInstanceStorageIT {
                 .hasSize(1);
 
         Assertions.assertThat(processInstance.getNodes().get(0))
-                .hasNoNullFieldsOrPropertiesExcept("slaDueDate")
+                .hasNoNullFieldsOrPropertiesExcept("slaDueDate", "errorMessage", "retrigger")
                 .hasFieldOrPropertyWithValue("name", "nodeName")
                 .hasFieldOrPropertyWithValue("type", "BoundaryEventNode")
                 .hasFieldOrPropertyWithValue("definitionId", nodeDefinitionId)

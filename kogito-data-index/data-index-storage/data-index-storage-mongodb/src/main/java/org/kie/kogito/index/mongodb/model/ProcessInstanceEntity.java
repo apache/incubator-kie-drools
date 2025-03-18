@@ -283,6 +283,10 @@ public class ProcessInstanceEntity {
 
         Long slaDueDate;
 
+        private Boolean isRetrigger;
+
+        private String errorMessage;
+
         public String getId() {
             return id;
         }
@@ -363,6 +367,22 @@ public class ProcessInstanceEntity {
         public int hashCode() {
             return Objects.hash(id);
         }
+
+        public String getErrorMessage() {
+            return errorMessage;
+        }
+
+        public void setErrorMessage(String errorMessage) {
+            this.errorMessage = errorMessage;
+        }
+
+        public void setRetrigger(Boolean retrigger) {
+            this.isRetrigger = retrigger;
+        }
+
+        public Boolean isRetrigger() {
+            return isRetrigger;
+        }
     }
 
     public static class ProcessInstanceErrorEntity {
@@ -370,6 +390,8 @@ public class ProcessInstanceEntity {
         String nodeDefinitionId;
 
         String message;
+
+        private String nodeInstanceId;
 
         public String getNodeDefinitionId() {
             return nodeDefinitionId;
@@ -387,22 +409,30 @@ public class ProcessInstanceEntity {
             this.message = message;
         }
 
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (o == null || getClass() != o.getClass()) {
-                return false;
-            }
-            ProcessInstanceErrorEntity that = (ProcessInstanceErrorEntity) o;
-            return Objects.equals(nodeDefinitionId, that.nodeDefinitionId) &&
-                    Objects.equals(message, that.message);
+        public String getNodeInstanceId() {
+            return nodeInstanceId;
+        }
+
+        public void setNodeInstanceId(String nodeInstanceId) {
+            this.nodeInstanceId = nodeInstanceId;
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(nodeDefinitionId, message);
+            return Objects.hash(message, nodeDefinitionId, nodeInstanceId);
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            ProcessInstanceErrorEntity other = (ProcessInstanceErrorEntity) obj;
+            return Objects.equals(message, other.message) && Objects.equals(nodeDefinitionId, other.nodeDefinitionId)
+                    && Objects.equals(nodeInstanceId, other.nodeInstanceId);
         }
     }
 

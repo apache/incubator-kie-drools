@@ -25,6 +25,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class ProcessInstanceError {
 
     private String nodeDefinitionId;
+    private String nodeInstanceId;
     @JsonProperty("errorMessage")
     private String message;
 
@@ -76,5 +77,13 @@ public class ProcessInstanceError {
     @Override
     public int hashCode() {
         return Objects.hash(nodeDefinitionId, message);
+    }
+
+    public String getNodeInstanceId() {
+        return nodeInstanceId;
+    }
+
+    public void setNodeInstanceId(String nodeInstanceId) {
+        this.nodeInstanceId = nodeInstanceId;
     }
 }

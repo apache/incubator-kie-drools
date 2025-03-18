@@ -56,6 +56,8 @@ public class ProcessInstanceStateDataEventMerger extends ProcessInstanceEventMer
             pi.setCreatedBy(event.getData().getEventUser());
         } else if (event.getData().getEventType() == ProcessInstanceStateEventBody.EVENT_TYPE_STARTED) {
             pi.setEnd(toZonedDateTime(event.getData().getEventDate()));
+        } else if (event.getData().getEventType() == ProcessInstanceStateEventBody.EVENT_TYPE_RETRIGGERED) {
+            pi.setError(null);
         }
         pi.setBusinessKey(event.getData().getBusinessKey());
         pi.setAddons(isNullOrEmpty(event.getKogitoAddons()) ? null : Set.of(event.getKogitoAddons().split(",")));

@@ -212,7 +212,7 @@ public class KogitoAddonRuntimeClientImplTest {
         mockProcessInstanceStatusError().abort();
         assertThrows(ProcessInstanceExecutionException.class,
                 () -> client.abortProcessInstance(SERVICE_URL, pI));
-        verify(processInstance, times(2)).error();
+        verify(processInstance, times(1)).error();
         verify(processInstance, times(1)).abort();
     }
 

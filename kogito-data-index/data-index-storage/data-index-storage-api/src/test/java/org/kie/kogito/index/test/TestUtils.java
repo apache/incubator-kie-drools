@@ -111,6 +111,7 @@ public class TestUtils {
                 .nodeType(nodeType)
                 .eventDate(new Date())
                 .eventType(eventType)
+                .setRetrigger(false)
                 .build();
 
         ProcessInstanceNodeDataEvent event = new ProcessInstanceNodeDataEvent();

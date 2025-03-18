@@ -147,7 +147,9 @@ public class ProcessInstanceEntityStorage extends AbstractJPAStorageFetcher<Stri
         }
         errorEntity.setMessage(error.getErrorMessage());
         errorEntity.setNodeDefinitionId(error.getNodeDefinitionId());
+        errorEntity.setNodeInstanceId(error.getNodeInstanceId());
         pi.setState(CommonUtils.ERROR_STATE);
+        pi.getNodes().stream().filter(n -> n.getId().equals(error.getNodeInstanceId())).findAny().ifPresent(n -> n.setErrorMessage(error.getErrorMessage()));
     }
 
     private void indexNode(ProcessInstanceEntity pi, ProcessInstanceNodeEventBody data) {
@@ -186,6 +188,9 @@ public class ProcessInstanceEntityStorage extends AbstractJPAStorageFetcher<Stri
         nodeInstance.setName(body.getNodeName());
         nodeInstance.setType(body.getNodeType());
         nodeInstance.setSlaDueDate(toZonedDateTime(body.getSlaDueDate()));
+        if (body.isRetrigger() != null) {
+            nodeInstance.setRetrigger(body.isRetrigger());
+        }
         ZonedDateTime eventDate = toZonedDateTime(body.getEventDate());
         switch (body.getEventType()) {
             case EVENT_TYPE_ENTER:
@@ -220,6 +225,8 @@ public class ProcessInstanceEntityStorage extends AbstractJPAStorageFetcher<Stri
             pi.setCreatedBy(data.getEventUser());
         } else if (data.getEventType() == ProcessInstanceStateEventBody.EVENT_TYPE_ENDED) {
             pi.setEnd(toZonedDateTime(data.getEventDate()));
+        } else if (data.getEventType() == ProcessInstanceStateEventBody.EVENT_TYPE_RETRIGGERED) {
+            pi.setError(null);
         }
         pi.setBusinessKey(data.getBusinessKey());
         pi.setUpdatedBy(data.getEventUser());

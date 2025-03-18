@@ -26,6 +26,7 @@ import jakarta.persistence.Embeddable;
 public class ProcessInstanceErrorEntity {
 
     private String nodeDefinitionId;
+    private String nodeInstanceId;
     private String message;
 
     public String getNodeDefinitionId() {
@@ -44,22 +45,28 @@ public class ProcessInstanceErrorEntity {
         this.message = message;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        ProcessInstanceErrorEntity that = (ProcessInstanceErrorEntity) o;
-        return Objects.equals(nodeDefinitionId, that.nodeDefinitionId) &&
-                Objects.equals(message, that.message);
+    public void setNodeInstanceId(String nodeInstanceId) {
+        this.nodeInstanceId = nodeInstanceId;
+    }
+
+    public String getNodeInstanceId() {
+        return nodeInstanceId;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(nodeDefinitionId, message);
+        return Objects.hash(message, nodeDefinitionId, nodeInstanceId);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (!(obj instanceof ProcessInstanceErrorEntity))
+            return false;
+        ProcessInstanceErrorEntity other = (ProcessInstanceErrorEntity) obj;
+        return Objects.equals(message, other.message) && Objects.equals(nodeDefinitionId, other.nodeDefinitionId)
+                && Objects.equals(nodeInstanceId, other.nodeInstanceId);
     }
 
 }
