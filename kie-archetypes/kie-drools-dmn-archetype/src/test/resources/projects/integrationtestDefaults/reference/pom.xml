@@ -31,11 +31,11 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.release>11</maven.compiler.release>
-    <version.drools>${project.version}</version.drools>
-    <version.slf4j>1.7.2</version.slf4j>
-    <version.junit>4.11</version.junit>
-    <version.logback>1.5.16</version.logback>
+    <maven.compiler.release>${maven.compiler.release}</maven.compiler.release>
+    <drools-version>${project.version}</drools-version>
+    <slf4j-version>${version.org.slf4j}</slf4j-version>
+    <junit-version>${version.junit}</junit-version>
+    <logback-version>${version.ch.qos.logback}</logback-version>
   </properties>
 
   <dependencyManagement>
@@ -43,7 +43,7 @@
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-dmn-bom</artifactId>
-        <version>${dollar}{version.drools}</version>
+        <version>${dollar}{drools-version}</version>
         <scope>import</scope>
         <type>pom</type>
       </dependency>
@@ -67,7 +67,7 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.13.1</version>
+      <version>${junit-version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -78,7 +78,7 @@
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
-      <version>${version.logback}</version>
+      <version>${logback-version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -92,7 +92,7 @@
       <plugin>
         <groupId>org.kie</groupId>
         <artifactId>kie-maven-plugin</artifactId>
-        <version>${version.drools}</version>
+        <version>${drools-version}</version>
         <extensions>true</extensions>
       </plugin>
     </plugins>
