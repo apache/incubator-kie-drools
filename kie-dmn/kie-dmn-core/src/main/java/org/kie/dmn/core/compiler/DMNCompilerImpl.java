@@ -244,7 +244,7 @@ public class DMNCompilerImpl implements DMNCompiler {
      * @param model
      * @param relativeResolver
      */
-    private void iterateImports(Definitions dmndefs, Collection<DMNModel> dmnModels, DMNModelImpl model, Function<String, Reader> relativeResolver ) {
+    void iterateImports(Definitions dmndefs, Collection<DMNModel> dmnModels, DMNModelImpl model, Function<String, Reader> relativeResolver ) {
         List<DMNModel> toMerge = new ArrayList<>();
         for (Import i : dmndefs.getImport()) {
             ImportType importType = DMNImportsUtil.whichImportType(i);
