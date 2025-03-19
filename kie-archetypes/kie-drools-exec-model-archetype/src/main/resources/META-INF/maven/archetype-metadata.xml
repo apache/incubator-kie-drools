@@ -23,6 +23,9 @@
     xmlns="http://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <requiredProperties>
+        <requiredProperty key="javaVersion">
+          <defaultValue>${maven.compiler.release}</defaultValue>
+        </requiredProperty>
         <requiredProperty key="droolsVersion">
             <defaultValue>${project.version}</defaultValue>
         </requiredProperty>

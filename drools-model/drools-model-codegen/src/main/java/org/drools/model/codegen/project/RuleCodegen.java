@@ -18,6 +18,7 @@
  */
 package org.drools.model.codegen.project;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
@@ -49,7 +50,7 @@ public class RuleCodegen {
     }
 
     private final Collection<Resource> resources;
-    private Collection<PackageModel> packageModels;
+    private Collection<PackageModel> packageModels = Collections.emptySet();
 
     private boolean hotReloadMode = false;
     private final boolean decisionTableSupported;
@@ -110,7 +111,7 @@ public class RuleCodegen {
 
     public final Collection<GeneratedFile> generate() {
         if (isEmpty()) {
-            return Collections.emptySet();
+            return new ArrayList<>(); // mutable
         }
         return internalGenerate();
     }

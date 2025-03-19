@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -16,13 +16,25 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.api.event.process;
+package org.drools.quarkus.deployment;
 
-/**
- * An event when a node inside a process instance has been triggered.
- */
-public interface ProcessNodeTriggeredEvent extends ProcessNodeEvent {
-	default boolean isRetrigger() {
-		return false;
-	}
+import io.quarkus.test.QuarkusUnitTest;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import static org.assertj.core.api.Assertions.assertThatNoException;
+
+public class NoDrlTest {
+
+    static final Logger LOG = LoggerFactory.getLogger(NoDrlTest.class);
+
+    @RegisterExtension
+    static final QuarkusUnitTest config = new QuarkusUnitTest(); // Not adding Drl to the project
+
+    @Test
+    public void testQuarkusUTByAddBuildChainCustomizer() {
+        assertThatNoException().isThrownBy(() -> LOG.info("No exception with no DRL"));
+    }
 }

@@ -34,7 +34,7 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.release>11</maven.compiler.release>
+    <maven.compiler.release>${javaVersion}</maven.compiler.release>
     <drools-version>${droolsVersion}</drools-version>
     <slf4j-version>${slf4jVersion}</slf4j-version>
     <junit-version>${junitVersion}</junit-version>
