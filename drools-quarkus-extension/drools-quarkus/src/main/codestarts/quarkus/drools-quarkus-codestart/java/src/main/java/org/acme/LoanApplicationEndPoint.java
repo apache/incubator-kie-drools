@@ -21,34 +21,33 @@ package org.acme;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.kie.api.runtime.KieRuntimeBuilder;
-import org.kie.api.runtime.KieSession;
-
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
+import org.kie.api.runtime.KieRuntimeBuilder;
+import org.kie.api.runtime.KieSession;
 
 @Path("/find-approved")
 public class LoanApplicationEndPoint {
 
-   @Inject
-   KieRuntimeBuilder kieRuntimeBuilder;
+	@Inject
+	KieRuntimeBuilder kieRuntimeBuilder;
 
-   @POST
-   @Produces("application/json")
-   @Consumes("application/json")
-   public List<LoanApplication> executeQuery(LoanAppDTO loanAppDto) {
-       KieSession session = kieRuntimeBuilder.newKieSession();
-       List<LoanApplication> approvedApplications = new ArrayList<>();
+	@POST
+	@Produces("application/json")
+	@Consumes("application/json")
+	public List<LoanApplication> executeQuery(LoanAppDTO loanAppDto) {
+		KieSession session = kieRuntimeBuilder.newKieSession();
+		List<LoanApplication> approvedApplications = new ArrayList<>();
 
-       session.setGlobal("approvedApplications", approvedApplications);
-       session.setGlobal("maxAmount", loanAppDto.getMaxAmount());
-       loanAppDto.getLoanApplications().forEach(session::insert);
+		session.setGlobal("approvedApplications", approvedApplications);
+		session.setGlobal("maxAmount", loanAppDto.getMaxAmount());
+		loanAppDto.getLoanApplications().forEach(session::insert);
 
-       session.fireAllRules();
-       session.dispose();
-       return approvedApplications;
-   }
+		session.fireAllRules();
+		session.dispose();
+		return approvedApplications;
+	}
 }

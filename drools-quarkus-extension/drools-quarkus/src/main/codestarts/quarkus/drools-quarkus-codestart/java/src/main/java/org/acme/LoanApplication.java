@@ -63,6 +63,4 @@ public class LoanApplication {
 	public void setApproved(boolean approved) {
 		this.approved = approved;
 	}
-   
-   
 }
