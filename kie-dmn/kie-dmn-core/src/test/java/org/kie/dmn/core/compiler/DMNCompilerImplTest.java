@@ -27,14 +27,19 @@ import org.kie.dmn.api.core.DMNModel;
 
 import org.kie.dmn.model.api.*;
 import org.kie.dmn.model.v1_5.*;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Reader;
 import java.util.*;
 import java.util.List;
+import java.util.function.Function;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
+import static org.mockito.Mockito.times;
 
 class DMNCompilerImplTest {
 
@@ -160,6 +165,87 @@ class DMNCompilerImplTest {
         assertThat(model.getMessages().size()).isEqualTo(5);
         assertThat(model.getMessages().get(0).getMessageType()).isEqualTo(DMNMessageType.IMPORT_NOT_FOUND);
 
+    }
+
+    @Test
+    void compileWithInvalidModel() {
+        List<DMNModel> dmnModels = new ArrayList<>();
+        Resource resource = new ClassPathResource( "invalid_models/DMNv1_5/DMN-invalid.dmn",
+                this.getClass());
+        DMNModel importedModel = dMNCompiler.compile( resource, dmnModels);
+        assertThat(importedModel).isNotNull();
+        assertThat(importedModel.getMessages()).isNotEmpty();
+        assertThat(importedModel.getMessages().size()).isEqualTo(1);
+        assertThat(importedModel.getMessages().get(0).getMessageType()).isEqualTo(DMNMessageType.ERR_COMPILING_FEEL);
+    }
+
+    @Test
+    void compileDmnWithSMockedStaticMethods() {
+
+        List<DMNModel> dmnModels = new ArrayList<>();
+        Resource resource = new ClassPathResource("valid_models/DMNv1_5/Importing_Named_Model.dmn",
+                this.getClass());
+        try (MockedStatic<DMNImportsUtil> mockDMNImportsUtil = Mockito.mockStatic(DMNImportsUtil.class)) {
+            mockDMNImportsUtil.when(() -> DMNImportsUtil.resolveDMNImportType(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenAnswer(invocation -> {
+                System.out.println("Mocked static void resolveDMNImportType !");
+                return null;
+            });
+            mockDMNImportsUtil.when(() -> DMNImportsUtil.whichImportType(Mockito.any())).thenAnswer(invocation -> {
+                System.out.println("Mocked static void resolveDMNImportType !");
+                return DMNImportsUtil.ImportType.DMN;
+            });
+
+            DMNModel importedModel = dMNCompiler.compile(resource, dmnModels);
+            mockDMNImportsUtil.verify(() -> DMNImportsUtil.resolveDMNImportType(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()), times(1));
+            mockDMNImportsUtil.verify(() -> DMNImportsUtil.whichImportType(Mockito.any()), times(1));
+            mockDMNImportsUtil.verify(() -> DMNImportsUtil.resolvePMMLImportType(Mockito.any(), Mockito.any(), (Function<String, Reader>) Mockito.any(), Mockito.any()), times(0));
+        }
+    }
+
+    @Test
+    void compilePmmlWithSMockedStaticMethods() {
+        List<DMNModel> dmnModels = new ArrayList<>();
+        Resource dmnResource = new ClassPathResource( "../pmml/KiePMMLNewTree.dmn",
+                this.getClass());
+        try (MockedStatic<DMNImportsUtil> mockDMNImportsUtil = Mockito.mockStatic(DMNImportsUtil.class)) {
+            mockDMNImportsUtil.when(() -> DMNImportsUtil.resolveDMNImportType(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenAnswer(invocation -> {
+                System.out.println("Mocked static void resolveDMNImportType !");
+                return null;
+            });
+            mockDMNImportsUtil.when(() -> DMNImportsUtil.whichImportType(Mockito.any())).thenAnswer(invocation -> {
+                System.out.println("Mocked static void resolveDMNImportType !");
+                return DMNImportsUtil.ImportType.PMML;
+            });
+
+            DMNModel importedModel = dMNCompiler.compile( dmnResource, dmnModels);
+            mockDMNImportsUtil.verify(() -> DMNImportsUtil.resolveDMNImportType(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()), times(0));
+            mockDMNImportsUtil.verify(() -> DMNImportsUtil.whichImportType(Mockito.any()), times(1));
+            mockDMNImportsUtil.verify(() -> DMNImportsUtil.resolvePMMLImportType(Mockito.any(), Mockito.any(), (Function<String, Reader>) Mockito.any(), Mockito.any()), times(1));
+
+        }
+    }
+
+    @Test
+    void compileUnknownWithSMockedStaticMethods() {
+        List<DMNModel> dmnModels = new ArrayList<>();
+        Resource dmnResource = new ClassPathResource( "../pmml/KiePMMLNewTree.dmn",
+                this.getClass());
+        try (MockedStatic<DMNImportsUtil> mockDMNImportsUtil = Mockito.mockStatic(DMNImportsUtil.class)) {
+            mockDMNImportsUtil.when(() -> DMNImportsUtil.resolveDMNImportType(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenAnswer(invocation -> {
+                System.out.println("Mocked static void resolveDMNImportType !");
+                return null;
+            });
+            mockDMNImportsUtil.when(() -> DMNImportsUtil.whichImportType(Mockito.any())).thenAnswer(invocation -> {
+                System.out.println("Mocked static void resolveDMNImportType !");
+                return DMNImportsUtil.ImportType.UNKNOWN;
+            });
+
+            DMNModel importedModel = dMNCompiler.compile( dmnResource, dmnModels);
+            mockDMNImportsUtil.verify(() -> DMNImportsUtil.resolveDMNImportType(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()), times(0));
+            mockDMNImportsUtil.verify(() -> DMNImportsUtil.whichImportType(Mockito.any()), times(1));
+            mockDMNImportsUtil.verify(() -> DMNImportsUtil.resolvePMMLImportType(Mockito.any(), Mockito.any(), (Function<String, Reader>) Mockito.any(), Mockito.any()), times(0));
+
+        }
     }
 
     private void addImport(Definitions dmnDefs, String importType, String nameSpace, String modelName) {
