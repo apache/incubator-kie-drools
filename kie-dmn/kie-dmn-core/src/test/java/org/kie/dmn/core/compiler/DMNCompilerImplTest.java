@@ -175,7 +175,7 @@ class DMNCompilerImplTest {
     @Test
     void compileWithInvalidModel() {
         List<DMNModel> dmnModels = new ArrayList<>();
-        Resource resource = new ClassPathResource( "invalid_models/DMNv1_5/DMN-invalid.dmn",
+        Resource resource = new ClassPathResource( "invalid_models/DMNv1_5/DMN-Invalid.dmn",
                 this.getClass());
         DMNModel importedModel = dMNCompiler.compile( resource, dmnModels);
         assertThat(importedModel).isNotNull();

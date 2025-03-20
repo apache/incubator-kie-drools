@@ -200,8 +200,8 @@ public class DMNCompilerImpl implements DMNCompiler {
 
     /**
      * Method to compile the dmn model
-     * @param dmndefs
-     * @param dmnModels
+     * @param dmndefs : This defines the structure of the rules, models, and associated metadata
+     * @param dmnModels : List of decision models
      * @param resource
      * @param relativeResolver
      * @return
